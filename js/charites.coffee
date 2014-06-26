@@ -1,7 +1,13 @@
-h = require './helpers'
+Bubble = require './bits/bubble'
 
-class Main
-  constructor:->
-    console.log 'a'
 
-new Main
+setTimeout ->
+  new Bubble
+    radius: 50
+, 1000
+
+animationLoop = (time)->
+  requestAnimationFrame animationLoop
+  TWEEN.update(time)
+
+animationLoop()

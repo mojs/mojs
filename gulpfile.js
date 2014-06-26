@@ -69,13 +69,18 @@ gulp.task('coffee', function(e){
     .pipe(rename('charites.js'))
     .pipe(gulp.dest('dist/'))
     .pipe(livereload())
-  var a = '';
 
-  return gulp.src(paths.src.js)
+  gulp.src(paths.src.js)
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(changed(paths.src.js))
           .pipe(coffeelint())
           .pipe(coffeelint.reporter('fail'))
+
+  return gulp.src(paths.src.js)
+          .pipe(plumber())
+          .pipe(changed(paths.src.js))
+          .pipe(coffeelint())
+          .pipe(coffeelint.reporter())
           // .pipe(notify())
           // .pipe(coffee())
           // .pipe(gulp.dest(paths.dist.js))
