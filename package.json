@@ -25,6 +25,9 @@
     "gulp-plumber": "*",
     "gulp-karma": "*",
     "gulp-concat": "*",
-    "gulp-csslint": "*"
+    "gulp-csslint": "*",
+    "gulp-browserify": "latest",
+    "gulp-rename": "latest",
+    "coffeeify": "latest"
   }
 }
