@@ -60,21 +60,23 @@ gulp.task('stylus', function(){
 
 
 gulp.task('coffee', function(e){
-  gulp.src('js/main.coffee', { read: false })
-    .pipe(plumber())
+  gulp.src('js/charites.coffee', { read: false })
+    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
     .pipe(browserify({
       transform:  ['coffeeify'],
       extensions: ['.coffee']
     }))
-    .pipe(rename('main.js'))
-    .pipe(gulp.dest('js/'))
+    .pipe(rename('charites.js'))
+    .pipe(gulp.dest('dist/'))
     .pipe(livereload())
+  var a = '';
 
   return gulp.src(paths.src.js)
-          .pipe(plumber())
+          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(changed(paths.src.js))
           .pipe(coffeelint())
-          .pipe(coffeelint.reporter())
+          .pipe(coffeelint.reporter('fail'))
+          // .pipe(notify())
           // .pipe(coffee())
           // .pipe(gulp.dest(paths.dist.js))
           // .pipe(livereload())
