@@ -1,0 +1,16 @@
+{
+  "name": "sample-app",
+  "version": "0.0.1",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "tweenjs": "latest",
+    "requirejs": "latest"
+  }
+}
+
+
+
