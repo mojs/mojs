@@ -10,6 +10,7 @@ class Bit
     @size *= h.pixel
     @radius = @o.radius or @size/2 or 50
     @radius *= h.pixel
+    @rate = @o.rate or .15
     if !@o.context then @createContext()
     else @context = @o.context
 

@@ -15,6 +15,7 @@ Bit = (function() {
     this.size *= h.pixel;
     this.radius = this.o.radius || this.size / 2 || 50;
     this.radius *= h.pixel;
+    this.rate = this.o.rate || .15;
     if (!this.o.context) {
       return this.createContext();
     } else {
@@ -47,6 +48,8 @@ var Bit, Bubble, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+require('../polyfills');
+
 h = require('../helpers');
 
 Bit = require('./bit');
@@ -68,12 +71,12 @@ Bubble = (function(_super) {
     return tween = new TWEEN.Tween({
       r: 0,
       p: 0,
-      lw: 10
+      lw: this.radius * this.rate
     }).to({
       r: this.radius,
       p: 1,
       lw: 0
-    }, 500).onUpdate(function() {
+    }, 600).onUpdate(function() {
       ctx.clear();
       ctx.beginPath();
       (this.r < 0) && (this.r = -this.r);
@@ -99,14 +102,15 @@ module.exports = (function() {
 })();
 
 
-},{"../helpers":4,"./bit":1}],3:[function(require,module,exports){
+},{"../helpers":4,"../polyfills":5,"./bit":1}],3:[function(require,module,exports){
 var Bubble, animationLoop;
 
 Bubble = require('./bits/bubble');
 
 setTimeout(function() {
   return new Bubble({
-    radius: 50
+    radius: 50,
+    rate: .5
   });
 }, 1000);
 
@@ -141,18 +145,22 @@ module.exports = (function() {
   return new Helpers;
 })();
 
-if (!CanvasRenderingContext2D.prototype.clear) {
-  CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
-    if (preserveTransform) {
-      this.save();
-      this.setTransform(1, 0, 0, 1, 0, 0);
-    }
-    this.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    if (preserveTransform) {
-      this.restore();
-    }
-  };
-}
+
+},{}],5:[function(require,module,exports){
+module.exports = (function() {
+  if (!CanvasRenderingContext2D.prototype.clear) {
+    return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
+      if (preserveTransform) {
+        this.save();
+        this.setTransform(1, 0, 0, 1, 0, 0);
+      }
+      this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      if (preserveTransform) {
+        this.restore();
+      }
+    };
+  }
+})();
 
 
 },{}]},{},[3])

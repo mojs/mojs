@@ -1,3 +1,4 @@
+require '../polyfills'
 h  = require '../helpers'
 Bit  = require './bit'
 
@@ -12,8 +13,8 @@ class Bubble extends Bit
     centerX = @radius
     centerY = @radius
 
-    tween = new TWEEN.Tween(r: 0, p: 0, lw: 10)
-      .to({r: @radius, p: 1, lw: 0}, 500)
+    tween = new TWEEN.Tween(r: 0, p: 0, lw: @radius*@rate)
+      .to({r: @radius, p: 1, lw: 0}, 600)
       # .easing( TWEEN.Easing.Cubic.Out )
       .onUpdate ->
         ctx.clear()
