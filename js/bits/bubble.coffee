@@ -19,7 +19,7 @@ class Bubble extends Bit
 
         ctx.clear()
         ctx.beginPath()
-        ctx.arc(it.radius, it.radius, @r, 0, 2 * Math.PI, false)
+        ctx.arc(it.x, it.y, @r, 0, 2 * Math.PI, false)
         ctx.lineWidth = @lw*h.pixel
         ctx.strokeStyle = it.color
         ctx.stroke()

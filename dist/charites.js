@@ -27,11 +27,17 @@ Bit = (function() {
     if (this.imidiate == null) {
       this.imidiate = true;
     }
+    (this.o.el != null) && (this.foreignContext = true);
+    this.x = this.foreignContext && this.o.x ? this.o.x : this.radius;
+    this.y = this.foreignContext && this.o.y ? this.o.y : this.radius;
     this.el = this.o.el || this.el || this.createContext();
     return this.ctx = this.ctx || this.el.getContext('2d');
   };
 
   Bit.prototype.createContext = function() {
+    if (this.foreignContext) {
+      return;
+    }
     this.el = document.createElement('canvas');
     this.el.setAttribute('width', 2 * this.radius);
     this.el.setAttribute('height', 2 * this.radius);
@@ -97,7 +103,7 @@ Bubble = (function(_super) {
       }
       ctx.clear();
       ctx.beginPath();
-      ctx.arc(it.radius, it.radius, this.r, 0, 2 * Math.PI, false);
+      ctx.arc(it.x, it.y, this.r, 0, 2 * Math.PI, false);
       ctx.lineWidth = this.lw * h.pixel;
       ctx.strokeStyle = it.color;
       ctx.stroke();
@@ -117,15 +123,18 @@ module.exports = (function() {
 
 
 },{"../helpers":4,"../polyfills":5,"./bit":1}],3:[function(require,module,exports){
-var Bubble, animationLoop, bubble1, h;
+var Bubble, animationLoop, bubble1, canvas, h;
 
 Bubble = require('./bits/bubble');
 
 h = require('./helpers');
 
+canvas = document.getElementById('js-canvas');
+
 bubble1 = new Bubble({
-  imidiate: false,
-  radius: 25
+  radius: 50,
+  x: 100,
+  y: 50
 });
 
 window.addEventListener('click', function(e) {

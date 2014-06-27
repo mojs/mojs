@@ -1,9 +1,13 @@
 Bubble = require './bits/bubble'
 h = require './helpers'
 
+canvas = document.getElementById 'js-canvas'
+
 bubble1  = new Bubble
-  imidiate: false
-  radius: 25
+  radius: 50
+  # el: canvas
+  x: 100
+  y: 50
 
 window.addEventListener 'click', (e)->
   style1 = h.getStyle bubble1.el
@@ -15,8 +19,6 @@ window.addEventListener 'click', (e)->
   bubble1.el.style.left = "#{e.x-(size1/2)}px"
   bubble1.animate
     duration: 400
-
-
 
 animationLoop = (time)->
   requestAnimationFrame animationLoop

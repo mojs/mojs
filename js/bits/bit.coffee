@@ -23,12 +23,19 @@ class Bit
     @imidiate = @o.imidiate
     @imidiate ?= true
 
+    @o.el? and (@foreignContext = true)
+
+    @x = if @foreignContext and @o.x then @o.x else @radius
+    @y = if @foreignContext and @o.y then @o.y else @radius
+    
     @el = @o.el or @el or @createContext()
+
     @ctx = @ctx or @el.getContext('2d')
 
   createContext:->
+    #just in case
+    return if @foreignContext
     @el = document.createElement 'canvas'
-
     @el.setAttribute 'width',  2*@radius
     @el.setAttribute 'height', 2*@radius
 
