@@ -3,8 +3,10 @@ Bubble = require './bits/bubble'
 
 setTimeout ->
   new Bubble
-    radius: 50
-    rate: .5
+    easing: 'Cubic.InOut'
+    # radius: 200
+    # duration: 400
+    # rate: .15
 , 1000
 
 animationLoop = (time)->

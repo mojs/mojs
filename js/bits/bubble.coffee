@@ -14,8 +14,8 @@ class Bubble extends Bit
     centerY = @radius
 
     tween = new TWEEN.Tween(r: 0, p: 0, lw: @radius*@rate)
-      .to({r: @radius, p: 1, lw: 0}, 600)
-      # .easing( TWEEN.Easing.Cubic.Out )
+      .to({r: @radius, p: 1, lw: 0}, @duration)
+      .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate ->
         ctx.clear()
         ctx.beginPath()

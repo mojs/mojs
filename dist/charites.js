@@ -15,7 +15,10 @@ Bit = (function() {
     this.size *= h.pixel;
     this.radius = this.o.radius || this.size / 2 || 50;
     this.radius *= h.pixel;
-    this.rate = this.o.rate || .15;
+    this.rate = this.o.rate || .2;
+    this.duration = this.o.duration || 600;
+    this.easing = this.o.easing || 'Linear.None';
+    this.easingArr = this.easing.split('.');
     if (!this.o.context) {
       return this.createContext();
     } else {
@@ -76,7 +79,7 @@ Bubble = (function(_super) {
       r: this.radius,
       p: 1,
       lw: 0
-    }, 600).onUpdate(function() {
+    }, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       ctx.clear();
       ctx.beginPath();
       (this.r < 0) && (this.r = -this.r);
@@ -109,8 +112,7 @@ Bubble = require('./bits/bubble');
 
 setTimeout(function() {
   return new Bubble({
-    radius: 50,
-    rate: .5
+    easing: 'Cubic.InOut'
   });
 }, 1000);
 
