@@ -7,6 +7,12 @@ class Helpers
   doc:  document
   body: document.body
 
+  getStyle:(el)->
+    if window.getComputedStyle
+      computedStyle = getComputedStyle(el, null)
+    else
+      computedStyle = el.currentStyle
+
 module.exports = do -> new Helpers
 
 

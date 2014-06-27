@@ -4,10 +4,12 @@ var Bit, h;
 h = require('../helpers');
 
 Bit = (function() {
+  Bit.prototype.oa = {};
+
   function Bit(o) {
     this.o = o != null ? o : {};
-    console.log('bit');
     this.vars();
+    this.imidiate && this.animate();
   }
 
   Bit.prototype.vars = function() {
@@ -15,15 +17,18 @@ Bit = (function() {
     this.size *= h.pixel;
     this.radius = this.o.radius || this.size / 2 || 50;
     this.radius *= h.pixel;
-    this.rate = this.o.rate || .2;
-    this.duration = this.o.duration || 600;
-    this.easing = this.o.easing || 'Linear.None';
+    this.color = this["default"]('color', 'deeppink');
+    this.rate = this["default"]('rate', .2);
+    this.duration = this["default"]('duration', 600);
+    this.delay = this["default"]('delay', 0);
+    this.easing = this["default"]('easing', 'Linear.None');
     this.easingArr = this.easing.split('.');
-    if (!this.o.context) {
-      return this.createContext();
-    } else {
-      return this.context = this.o.context;
+    this.imidiate = this.o.imidiate;
+    if (this.imidiate == null) {
+      this.imidiate = true;
     }
+    this.el = this.o.el || this.el || this.createContext();
+    return this.ctx = this.ctx || this.el.getContext('2d');
   };
 
   Bit.prototype.createContext = function() {
@@ -34,7 +39,12 @@ Bit = (function() {
       this.el.style.width = "" + this.radius + "px";
       this.el.style.height = "" + this.radius + "px";
     }
-    return h.body.appendChild(this.el);
+    h.body.appendChild(this.el);
+    return this.el;
+  };
+
+  Bit.prototype["default"] = function(prop, def) {
+    return this[prop] = this.oa[prop] || this[prop] || this.o[prop] || def;
   };
 
   return Bit;
@@ -60,18 +70,17 @@ Bit = require('./bit');
 Bubble = (function(_super) {
   __extends(Bubble, _super);
 
-  function Bubble(o) {
-    this.o = o != null ? o : {};
-    Bubble.__super__.constructor.apply(this, arguments);
-    this.animate();
+  function Bubble() {
+    return Bubble.__super__.constructor.apply(this, arguments);
   }
 
-  Bubble.prototype.animate = function() {
-    var centerX, centerY, ctx, tween;
-    ctx = this.el.getContext('2d');
-    centerX = this.radius;
-    centerY = this.radius;
-    return tween = new TWEEN.Tween({
+  Bubble.prototype.animate = function(oa) {
+    var it;
+    this.oa = oa != null ? oa : {};
+    this.vars();
+    TWEEN.remove(this.tween);
+    it = this;
+    return this.tween = new TWEEN.Tween({
       r: 0,
       p: 0,
       lw: this.radius * this.rate
@@ -80,18 +89,20 @@ Bubble = (function(_super) {
       p: 1,
       lw: 0
     }, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
-      ctx.clear();
-      ctx.beginPath();
+      var ctx;
+      ctx = it.ctx;
       (this.r < 0) && (this.r = -this.r);
       if (this.lw > this.r) {
         this.lw = this.r;
       }
-      ctx.arc(centerX, centerY, this.r, 0, 2 * Math.PI, false);
+      ctx.clear();
+      ctx.beginPath();
+      ctx.arc(it.radius, it.radius, this.r, 0, 2 * Math.PI, false);
       ctx.lineWidth = this.lw * h.pixel;
-      ctx.strokeStyle = 'deeppink';
+      ctx.strokeStyle = it.color;
       ctx.stroke();
       return this.p === 1 && ctx.clear();
-    }).start();
+    }).delay(this.delay).start();
   };
 
   Bubble.prototype.draw = function() {};
@@ -106,15 +117,28 @@ module.exports = (function() {
 
 
 },{"../helpers":4,"../polyfills":5,"./bit":1}],3:[function(require,module,exports){
-var Bubble, animationLoop;
+var Bubble, animationLoop, bubble1, h;
 
 Bubble = require('./bits/bubble');
 
-setTimeout(function() {
-  return new Bubble({
-    easing: 'Cubic.InOut'
+h = require('./helpers');
+
+bubble1 = new Bubble({
+  imidiate: false,
+  radius: 25
+});
+
+window.addEventListener('click', function(e) {
+  var size1, style1;
+  style1 = h.getStyle(bubble1.el);
+  size1 = parseInt(style1.width, 10);
+  bubble1.el.style.position = 'absolute';
+  bubble1.el.style.top = "" + (e.y - (size1 / 2)) + "px";
+  bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
+  return bubble1.animate({
+    duration: 400
   });
-}, 1000);
+});
 
 animationLoop = function(time) {
   requestAnimationFrame(animationLoop);
@@ -124,7 +148,7 @@ animationLoop = function(time) {
 animationLoop();
 
 
-},{"./bits/bubble":2}],4:[function(require,module,exports){
+},{"./bits/bubble":2,"./helpers":4}],4:[function(require,module,exports){
 var Helpers;
 
 Helpers = (function() {
@@ -138,6 +162,15 @@ Helpers = (function() {
   Helpers.prototype.doc = document;
 
   Helpers.prototype.body = document.body;
+
+  Helpers.prototype.getStyle = function(el) {
+    var computedStyle;
+    if (window.getComputedStyle) {
+      return computedStyle = getComputedStyle(el, null);
+    } else {
+      return computedStyle = el.currentStyle;
+    }
+  };
 
   return Helpers;
 
