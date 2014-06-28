@@ -1219,6 +1219,3 @@ a,
   fill: #717171;
   cursor: pointer;
 }
-.foo__bar:hover + .foo__bar {
-  outline: 1px solid #008000;
-}

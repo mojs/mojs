@@ -10,8 +10,10 @@ class Bit
     @size = @o.size or 100
     @size *= h.pixel
 
+    @cnt = @default(prop:'cnt', def: 0)
+
     @oldRadius = @radius
-    @radius = @default('radius', 50)
+    @radius = @default(prop:'radius', def: 50)
     @radius *= h.pixel
 
     @el = @o.el or @el or @createContext()
@@ -20,20 +22,21 @@ class Bit
 
     @radius isnt @oldRadius and @setElSize()
 
-    @color    = @default('color', 'deeppink')
-    @rate     = @default('rate', .5)
-    @fillRate = @default('fillRate', .33)
-    @duration = @default('duration', 600)
-    @delay    = @default('delay', 0)
+    @color    = @default(prop:'color', def: 'deeppink')
+    @rate     = @default(prop:'rate', def: .5)
+    @fillRate = @default(prop:'fillRate', def: .33)
+    @duration = @default(prop:'duration', def: 600)
+    @delay    = @default(prop:'delay', def: 0)
 
-    @easing = @default('easing', 'Linear.None')
+    @easing = @default(prop:'easing', def: 'Linear.None')
+
     @easingArr = @easing.split('.')
 
     @imidiate = @o.imidiate
     @imidiate ?= true
 
-    @x = if @foreignContext then @default('x', @radius) else @radius
-    @y = if @foreignContext then @default('y', @radius) else @radius
+    @x = if @foreignContext then @default(prop:'x', def: @radius) else @radius
+    @y = if @foreignContext then @default(prop: 'y', def: @radius) else @radius
 
   createContext:->
     #just in case
@@ -42,7 +45,6 @@ class Bit
     h.body.appendChild @el
 
   setElSize:->
-    console.log 'set'
     @el.setAttribute 'width',  2*@radius
     @el.setAttribute 'height', 2*@radius
 
@@ -52,7 +54,9 @@ class Bit
       @el.style.height  = "#{@radius}px"
     @el
 
-  default:(prop, def)->
+  default:(o)->
+    prop = o.prop
+    def  = o.def
     @[prop] = if @oa[prop]?
       @oa[prop]
     else if @[prop]?
@@ -60,6 +64,7 @@ class Bit
     else if @o[prop]?
       @o[prop]
     else def
+
     # @[prop] = @oa[prop] or @[prop] or @o[prop] or def
 
 

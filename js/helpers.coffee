@@ -1,5 +1,5 @@
 class Helpers
-  pixel: 1
+  pixel: 2
   constructor:(@o={})->
 
   # SHORTCUTS
@@ -14,6 +14,10 @@ class Helpers
 
   rand:(min,max)->
     Math.floor((Math.random() * ((max + 1) - min)) + min)
+
+  lock:(o)->
+    !@[o.lock] and o.fun()
+    @[o.lock] = true
 
 module.exports = do -> new Helpers
 
