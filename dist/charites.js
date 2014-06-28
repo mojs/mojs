@@ -19,7 +19,7 @@ Bit = (function() {
     this.radius *= h.pixel;
     this.color = this["default"]('color', 'deeppink');
     this.rate = this["default"]('rate', .5);
-    this.fillRate = this["default"]('fillRate', .25);
+    this.fillRate = this["default"]('fillRate', .33);
     this.duration = this["default"]('duration', 600);
     this.delay = this["default"]('delay', 0);
     this.easing = this["default"]('easing', 'Linear.None');
@@ -141,6 +141,7 @@ window.addEventListener('click', function(e) {
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
   return bubble1.run({
     duration: 300,
+    color: 'green',
     x: 100,
     y: 150
   });
@@ -175,6 +176,10 @@ Helpers = (function() {
     } else {
       return computedStyle = el.currentStyle;
     }
+  };
+
+  Helpers.prototype.rand = function(min, max) {
+    return Math.floor((Math.random() * ((max + 1) - min)) + min);
   };
 
   return Helpers;

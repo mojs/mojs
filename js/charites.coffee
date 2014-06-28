@@ -18,6 +18,7 @@ window.addEventListener 'click', (e)->
   bubble1.el.style.left = "#{e.x-(size1/2)}px"
   bubble1.run
     duration: 300
+    color: 'green'
     x: 100
     y: 150
 

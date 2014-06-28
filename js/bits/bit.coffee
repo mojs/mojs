@@ -14,7 +14,7 @@ class Bit
 
     @color    = @default('color', 'deeppink')
     @rate     = @default('rate', .5)
-    @fillRate = @default('fillRate', .25)
+    @fillRate = @default('fillRate', .33)
     @duration = @default('duration', 600)
     @delay    = @default('delay', 0)
 

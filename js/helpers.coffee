@@ -12,6 +12,9 @@ class Helpers
     else
       computedStyle = el.currentStyle
 
+  rand:(min,max)->
+    Math.floor((Math.random() * ((max + 1) - min)) + min)
+
 module.exports = do -> new Helpers
 
 # extends:(child, parent) ->
