@@ -1,7 +1,6 @@
 class Helpers
   pixel: 1
   constructor:(@o={})->
-    console.log 'helpers'
 
   # SHORTCUTS
   doc:  document
@@ -14,8 +13,6 @@ class Helpers
       computedStyle = el.currentStyle
 
 module.exports = do -> new Helpers
-
-
 
 # extends:(child, parent) ->
 #   ctor = ->

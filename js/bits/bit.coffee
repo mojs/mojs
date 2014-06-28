@@ -4,7 +4,7 @@ class Bit
   oa: {}
   constructor:(@o={})->
     @vars()
-    @imidiate and @animate()
+    @imidiate and @run()
 
   vars:->
     @size = @o.size or 100
@@ -13,7 +13,8 @@ class Bit
     @radius *= h.pixel
 
     @color    = @default('color', 'deeppink')
-    @rate     = @default('rate', .2)
+    @rate     = @default('rate', .5)
+    @fillRate = @default('fillRate', .25)
     @duration = @default('duration', 600)
     @delay    = @default('delay', 0)
 
@@ -25,8 +26,8 @@ class Bit
 
     @o.el? and (@foreignContext = true)
 
-    @x = if @foreignContext and @o.x then @o.x else @radius
-    @y = if @foreignContext and @o.y then @o.y else @radius
+    @x = if @foreignContext then @default('x', @radius) else @radius
+    @y = if @foreignContext then @default('y', @radius) else @radius
     
     @el = @o.el or @el or @createContext()
 
@@ -47,7 +48,14 @@ class Bit
     @el
 
   default:(prop, def)->
-    @[prop] = @oa[prop] or @[prop] or @o[prop] or def
+    @[prop] = if @oa[prop]?
+      @oa[prop]
+    else if @[prop]?
+      @[prop]
+    else if @o[prop]?
+      @o[prop]
+    else def
+    # @[prop] = @oa[prop] or @[prop] or @o[prop] or def
 
 
 module.exports = do -> Bit

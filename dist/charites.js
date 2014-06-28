@@ -9,7 +9,7 @@ Bit = (function() {
   function Bit(o) {
     this.o = o != null ? o : {};
     this.vars();
-    this.imidiate && this.animate();
+    this.imidiate && this.run();
   }
 
   Bit.prototype.vars = function() {
@@ -18,7 +18,8 @@ Bit = (function() {
     this.radius = this.o.radius || this.size / 2 || 50;
     this.radius *= h.pixel;
     this.color = this["default"]('color', 'deeppink');
-    this.rate = this["default"]('rate', .2);
+    this.rate = this["default"]('rate', .5);
+    this.fillRate = this["default"]('fillRate', .25);
     this.duration = this["default"]('duration', 600);
     this.delay = this["default"]('delay', 0);
     this.easing = this["default"]('easing', 'Linear.None');
@@ -28,8 +29,8 @@ Bit = (function() {
       this.imidiate = true;
     }
     (this.o.el != null) && (this.foreignContext = true);
-    this.x = this.foreignContext && this.o.x ? this.o.x : this.radius;
-    this.y = this.foreignContext && this.o.y ? this.o.y : this.radius;
+    this.x = this.foreignContext ? this["default"]('x', this.radius) : this.radius;
+    this.y = this.foreignContext ? this["default"]('y', this.radius) : this.radius;
     this.el = this.o.el || this.el || this.createContext();
     return this.ctx = this.ctx || this.el.getContext('2d');
   };
@@ -50,7 +51,7 @@ Bit = (function() {
   };
 
   Bit.prototype["default"] = function(prop, def) {
-    return this[prop] = this.oa[prop] || this[prop] || this.o[prop] || def;
+    return this[prop] = this.oa[prop] != null ? this.oa[prop] : this[prop] != null ? this[prop] : this.o[prop] != null ? this.o[prop] : def;
   };
 
   return Bit;
@@ -80,16 +81,16 @@ Bubble = (function(_super) {
     return Bubble.__super__.constructor.apply(this, arguments);
   }
 
-  Bubble.prototype.animate = function(oa) {
+  Bubble.prototype.run = function(oa) {
     var it;
     this.oa = oa != null ? oa : {};
     this.vars();
     TWEEN.remove(this.tween);
     it = this;
     return this.tween = new TWEEN.Tween({
-      r: 0,
+      r: this.radius * this.rate,
       p: 0,
-      lw: this.radius * this.rate
+      lw: this.radius * this.fillRate
     }).to({
       r: this.radius,
       p: 1,
@@ -98,9 +99,6 @@ Bubble = (function(_super) {
       var ctx;
       ctx = it.ctx;
       (this.r < 0) && (this.r = -this.r);
-      if (this.lw > this.r) {
-        this.lw = this.r;
-      }
       ctx.clear();
       ctx.beginPath();
       ctx.arc(it.x, it.y, this.r, 0, 2 * Math.PI, false);
@@ -110,8 +108,6 @@ Bubble = (function(_super) {
       return this.p === 1 && ctx.clear();
     }).delay(this.delay).start();
   };
-
-  Bubble.prototype.draw = function() {};
 
   return Bubble;
 
@@ -132,9 +128,8 @@ h = require('./helpers');
 canvas = document.getElementById('js-canvas');
 
 bubble1 = new Bubble({
-  radius: 50,
-  x: 100,
-  y: 50
+  radius: 20,
+  imidiate: false
 });
 
 window.addEventListener('click', function(e) {
@@ -144,8 +139,10 @@ window.addEventListener('click', function(e) {
   bubble1.el.style.position = 'absolute';
   bubble1.el.style.top = "" + (e.y - (size1 / 2)) + "px";
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
-  return bubble1.animate({
-    duration: 400
+  return bubble1.run({
+    duration: 300,
+    x: 100,
+    y: 150
   });
 });
 
@@ -165,7 +162,6 @@ Helpers = (function() {
 
   function Helpers(o) {
     this.o = o != null ? o : {};
-    console.log('helpers');
   }
 
   Helpers.prototype.doc = document;
