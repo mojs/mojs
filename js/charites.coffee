@@ -16,11 +16,11 @@ window.addEventListener 'click', (e)->
   bubble1.el.style.position = 'absolute'
   bubble1.el.style.top  = "#{e.y-(size1/2)}px"
   bubble1.el.style.left = "#{e.x-(size1/2)}px"
+  rad = h.rand 10, 50
   bubble1.run
     duration: 300
     color: 'green'
-    x: 100
-    y: 150
+    radius: rad
 
 animationLoop = (time)->
   requestAnimationFrame animationLoop

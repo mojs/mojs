@@ -9,8 +9,16 @@ class Bit
   vars:->
     @size = @o.size or 100
     @size *= h.pixel
-    @radius = @o.radius or @size/2 or 50
+
+    @oldRadius = @radius
+    @radius = @default('radius', 50)
     @radius *= h.pixel
+
+    @el = @o.el or @el or @createContext()
+    @o.el? and (@foreignContext = true)
+    @ctx = @ctx or @el.getContext('2d')
+
+    @radius isnt @oldRadius and @setElSize()
 
     @color    = @default('color', 'deeppink')
     @rate     = @default('rate', .5)
@@ -24,19 +32,17 @@ class Bit
     @imidiate = @o.imidiate
     @imidiate ?= true
 
-    @o.el? and (@foreignContext = true)
-
     @x = if @foreignContext then @default('x', @radius) else @radius
     @y = if @foreignContext then @default('y', @radius) else @radius
-    
-    @el = @o.el or @el or @createContext()
-
-    @ctx = @ctx or @el.getContext('2d')
 
   createContext:->
     #just in case
     return if @foreignContext
     @el = document.createElement 'canvas'
+    h.body.appendChild @el
+
+  setElSize:->
+    console.log 'set'
     @el.setAttribute 'width',  2*@radius
     @el.setAttribute 'height', 2*@radius
 
@@ -44,7 +50,6 @@ class Bit
     if h.pixel > 1
       @el.style.width   = "#{@radius}px"
       @el.style.height  = "#{@radius}px"
-    h.body.appendChild @el
     @el
 
   default:(prop, def)->

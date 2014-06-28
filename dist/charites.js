@@ -15,8 +15,13 @@ Bit = (function() {
   Bit.prototype.vars = function() {
     this.size = this.o.size || 100;
     this.size *= h.pixel;
-    this.radius = this.o.radius || this.size / 2 || 50;
+    this.oldRadius = this.radius;
+    this.radius = this["default"]('radius', 50);
     this.radius *= h.pixel;
+    this.el = this.o.el || this.el || this.createContext();
+    (this.o.el != null) && (this.foreignContext = true);
+    this.ctx = this.ctx || this.el.getContext('2d');
+    this.radius !== this.oldRadius && this.setElSize();
     this.color = this["default"]('color', 'deeppink');
     this.rate = this["default"]('rate', .5);
     this.fillRate = this["default"]('fillRate', .33);
@@ -28,11 +33,8 @@ Bit = (function() {
     if (this.imidiate == null) {
       this.imidiate = true;
     }
-    (this.o.el != null) && (this.foreignContext = true);
     this.x = this.foreignContext ? this["default"]('x', this.radius) : this.radius;
-    this.y = this.foreignContext ? this["default"]('y', this.radius) : this.radius;
-    this.el = this.o.el || this.el || this.createContext();
-    return this.ctx = this.ctx || this.el.getContext('2d');
+    return this.y = this.foreignContext ? this["default"]('y', this.radius) : this.radius;
   };
 
   Bit.prototype.createContext = function() {
@@ -40,13 +42,17 @@ Bit = (function() {
       return;
     }
     this.el = document.createElement('canvas');
+    return h.body.appendChild(this.el);
+  };
+
+  Bit.prototype.setElSize = function() {
+    console.log('set');
     this.el.setAttribute('width', 2 * this.radius);
     this.el.setAttribute('height', 2 * this.radius);
     if (h.pixel > 1) {
       this.el.style.width = "" + this.radius + "px";
       this.el.style.height = "" + this.radius + "px";
     }
-    h.body.appendChild(this.el);
     return this.el;
   };
 
@@ -133,17 +139,17 @@ bubble1 = new Bubble({
 });
 
 window.addEventListener('click', function(e) {
-  var size1, style1;
+  var rad, size1, style1;
   style1 = h.getStyle(bubble1.el);
   size1 = parseInt(style1.width, 10);
   bubble1.el.style.position = 'absolute';
   bubble1.el.style.top = "" + (e.y - (size1 / 2)) + "px";
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
+  rad = h.rand(10, 50);
   return bubble1.run({
     duration: 300,
     color: 'green',
-    x: 100,
-    y: 150
+    radius: rad
   });
 });
 
