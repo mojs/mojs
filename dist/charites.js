@@ -128,9 +128,11 @@ Burst = (function(_super) {
     TWEEN.remove(this.tween2);
     it = this;
     this.tween2 = new TWEEN.Tween({
-      r: this.radius * this.rate
+      r: this.radius * this.rate,
+      d: this.initialRotation
     }).to({
-      r: this.radius
+      r: this.radius,
+      d: this.initialRotation + this.rotate
     }, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw2.call(this, it);
     });
@@ -160,14 +162,27 @@ Burst = (function(_super) {
       prop: 'initialRotation',
       def: 0
     });
-    return h.lock({
-      lock: 'isRotationLock',
+    h.lock({
+      lock: 'burstRotationLock',
       fun: (function(_this) {
         return function() {
           return _this.initialRotation *= Math.PI / 180;
         };
       })(this)
     });
+    this.rotate = this["default"]({
+      prop: 'rotate',
+      def: 0
+    });
+    h.lock({
+      lock: 'burstRotateLock',
+      fun: (function(_this) {
+        return function() {
+          return _this.rotate *= Math.PI / 180;
+        };
+      })(this)
+    });
+    return console.log(this.rotate);
   };
 
   Burst.prototype.draw = function(it) {
@@ -212,13 +227,13 @@ Burst = (function(_super) {
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    rotateAngle = 0;
+    rotateAngle = this.d;
     angle = it.initialRotation;
     for (i = _i = 0, _ref = it.cnt; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-      x1 = it.x + (Math.cos(angle) * this.r);
-      y1 = it.y + (Math.sin(angle) * this.r);
-      x2 = it.x + (Math.cos(angle) * it.radius);
-      y2 = it.y + (Math.sin(angle) * it.radius);
+      x1 = it.x + (Math.cos(angle + rotateAngle) * this.r);
+      y1 = it.y + (Math.sin(angle + rotateAngle) * this.r);
+      x2 = it.x + (Math.cos(angle + rotateAngle) * it.radius);
+      y2 = it.y + (Math.sin(angle + rotateAngle) * it.radius);
       it.drawLine({
         point1: {
           x: x1,
@@ -261,9 +276,10 @@ bubble1 = new Burst({
   radius: 100,
   duration: 1000,
   delay: 200,
-  initialRotation: 45,
-  cnt: 2,
-  rate: 0.5
+  initialRotation: 90,
+  cnt: 3,
+  rate: 0.5,
+  rotate: 45
 });
 
 window.addEventListener('click', function(e) {
@@ -275,9 +291,9 @@ window.addEventListener('click', function(e) {
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
   rad = h.rand(30, 50);
   return bubble1.run({
-    duration: 11400,
+    duration: 300,
     radius: rad,
-    rate: 0,
+    rate: .5,
     bitWidth: 1,
     initialRotation: 30
   });

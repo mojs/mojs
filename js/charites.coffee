@@ -10,9 +10,10 @@ bubble1  = new Burst
   radius: 100
   duration: 1000
   delay: 200
-  initialRotation: 45
-  cnt: 2
+  initialRotation: 90
+  cnt: 3
   rate: 0.5
+  rotate: 45
   # imidiate: false
   # el: canvas
 
@@ -32,9 +33,9 @@ window.addEventListener 'click', (e)->
   bubble1.el.style.left = "#{e.x-(size1/2)}px"
   rad = h.rand 30, 50
   bubble1.run
-    duration: 11400
+    duration: 300
     radius: rad
-    rate: 0
+    rate: .5
     bitWidth: 1
     initialRotation: 30
 
