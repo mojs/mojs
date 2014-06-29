@@ -140,19 +140,23 @@ Bubble = (function(_super) {
       p: 1,
       lw: 0
     }, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
-      var ctx;
-      ctx = it.ctx;
-      (this.r < 0) && (this.r = -this.r);
-      ctx.clear();
-      ctx.beginPath();
-      ctx.arc(it.x, it.y, this.r, 0, 2 * Math.PI, false);
-      ctx.lineWidth = this.lw * h.pixel;
-      ctx.strokeStyle = it.color;
-      ctx.stroke();
-      return this.p === 1 && ctx.clear();
+      return it.draw.call(this, it);
     }).onComplete(function() {
       return h.stopAnimationLoop();
     }).delay(this.delay).start();
+  };
+
+  Bubble.prototype.draw = function(it) {
+    var ctx;
+    ctx = it.ctx;
+    (this.r < 0) && (this.r = -this.r);
+    ctx.clear();
+    ctx.beginPath();
+    ctx.arc(it.x, it.y, this.r, 0, 2 * Math.PI, false);
+    ctx.lineWidth = this.lw * h.pixel;
+    ctx.strokeStyle = it.color;
+    ctx.stroke();
+    return this.p === 1 && ctx.clear();
   };
 
   return Bubble;
@@ -345,14 +349,11 @@ h = require('./helpers');
 
 canvas = document.getElementById('js-canvas');
 
-bubble1 = new Burst({
+bubble1 = new Bubble({
   radius: 30,
   duration: 500,
-  delay: 200,
-  initialRotation: 90,
-  cnt: 4,
-  rate: 0.01,
-  rotate: 90
+  delay: 2000,
+  rate: .95
 });
 
 window.addEventListener('click', function(e) {

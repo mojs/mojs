@@ -4,14 +4,11 @@ h = require './helpers'
 
 canvas = document.getElementById 'js-canvas'
 
-bubble1  = new Burst
+bubble1  = new Bubble
   radius: 30
   duration: 500
-  delay: 200
-  initialRotation: 90
-  cnt: 4
-  rate: 0.01
-  rotate: 90
+  delay: 2000
+  rate: .95
   # imidiate: false
   # el: canvas
 
