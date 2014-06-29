@@ -31,8 +31,8 @@ window.addEventListener 'click', (e)->
 
   bubble1.run
     radius: h.rand 50,100
-    rate: .15
-    fillRate: .2
+    rate: .2
+    fillRate: .05
     # lineCap: 'butt'
 
 # animationLoop = (time)->

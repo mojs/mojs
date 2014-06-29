@@ -1,6 +1,7 @@
 require '../polyfills'
 h  = require '../helpers'
 Bit  = require './bit'
+TWEEN  = require '../vendor/tween'
 
 
 class Burst extends Bit

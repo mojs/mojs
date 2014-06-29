@@ -1,7 +1,7 @@
 require '../polyfills'
 h  = require '../helpers'
 Bit  = require './bit'
-
+TWEEN  = require '../vendor/tween'
 
 class Bubble extends Bit
   run:(@oa={})->
@@ -9,7 +9,7 @@ class Bubble extends Bit
     TWEEN.remove @tween
     it = @
     h.startAnimationLoop()
-    
+
     @tween = new TWEEN.Tween(r: @radius*@rate, p: 0, lw: @radius*@fillRate)
       .to({r: @radius, p: 1, lw: 0}, @duration)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )

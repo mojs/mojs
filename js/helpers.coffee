@@ -1,3 +1,5 @@
+TWEEN  = require './vendor/tween'
+
 class Helpers
   pixel: 2
   # SHORTCUTS
