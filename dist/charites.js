@@ -25,6 +25,10 @@ Bit = (function() {
       def: 50
     });
     this.radius *= h.pixel;
+    this["default"]({
+      prop: 'lineCap',
+      def: 'round'
+    });
     this.el = this.o.el || this.el || this.createContext();
     (this.o.el != null) && (this.foreignContext = true);
     this.ctx = this.ctx || this.el.getContext('2d');
@@ -102,7 +106,62 @@ module.exports = (function() {
 })();
 
 
-},{"../helpers":4}],2:[function(require,module,exports){
+},{"../helpers":5}],2:[function(require,module,exports){
+var Bit, Bubble, h,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+require('../polyfills');
+
+h = require('../helpers');
+
+Bit = require('./bit');
+
+Bubble = (function(_super) {
+  __extends(Bubble, _super);
+
+  function Bubble() {
+    return Bubble.__super__.constructor.apply(this, arguments);
+  }
+
+  Bubble.prototype.run = function(oa) {
+    var it;
+    this.oa = oa != null ? oa : {};
+    this.vars();
+    TWEEN.remove(this.tween);
+    it = this;
+    return this.tween = new TWEEN.Tween({
+      r: this.radius * this.rate,
+      p: 0,
+      lw: this.radius * this.fillRate
+    }).to({
+      r: this.radius,
+      p: 1,
+      lw: 0
+    }, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
+      var ctx;
+      ctx = it.ctx;
+      (this.r < 0) && (this.r = -this.r);
+      ctx.clear();
+      ctx.beginPath();
+      ctx.arc(it.x, it.y, this.r, 0, 2 * Math.PI, false);
+      ctx.lineWidth = this.lw * h.pixel;
+      ctx.strokeStyle = it.color;
+      ctx.stroke();
+      return this.p === 1 && ctx.clear();
+    }).delay(this.delay).start();
+  };
+
+  return Bubble;
+
+})(Bit);
+
+module.exports = (function() {
+  return Bubble;
+})();
+
+
+},{"../helpers":5,"../polyfills":6,"./bit":1}],3:[function(require,module,exports){
 var Bit, Burst, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -121,7 +180,7 @@ Burst = (function(_super) {
   }
 
   Burst.prototype.run = function(oa) {
-    var it;
+    var from, it;
     this.oa = oa != null ? oa : {};
     this.vars();
     TWEEN.remove(this.tween);
@@ -129,24 +188,27 @@ Burst = (function(_super) {
     it = this;
     this.tween2 = new TWEEN.Tween({
       r: this.radius * this.rate,
-      d: this.initialRotation
+      d: this.rotate / 2
     }).to({
-      r: this.radius,
-      d: this.initialRotation + this.rotate
+      r: this.radius - this.radiusSlice,
+      d: this.rotate
     }, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw2.call(this, it);
     });
-    return this.tween = new TWEEN.Tween({
+    from = {
+      lw: this.radius * this.fillRate,
       r: this.radius * this.rate,
       p: 0,
-      lw: this.radius * this.fillRate
-    }).to({
-      r: this.radius,
+      d: 0
+    };
+    return this.tween = new TWEEN.Tween(from).to({
+      r: this.radius - this.radiusSlice,
       p: 1,
-      lw: 0
+      lw: 0,
+      d: this.rotate / 2
     }, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw.call(this, it);
-    }).delay(this.delay).chain(this.tween2).start();
+    }).delay(this.delay).start().delay(this.delay2).chain(this.tween2);
   };
 
   Burst.prototype.vars = function() {
@@ -162,6 +224,7 @@ Burst = (function(_super) {
       prop: 'initialRotation',
       def: 0
     });
+    this["default"]('delay2', 0);
     h.lock({
       lock: 'burstRotationLock',
       fun: (function(_this) {
@@ -170,9 +233,12 @@ Burst = (function(_super) {
         };
       })(this)
     });
-    this.rotate = this["default"]({
+    this["default"]({
       prop: 'rotate',
       def: 0
+    });
+    (this.oa.rotate != null) && h.unlock({
+      lock: 'burstRotateLock'
     });
     h.lock({
       lock: 'burstRotateLock',
@@ -182,21 +248,20 @@ Burst = (function(_super) {
         };
       })(this)
     });
-    return console.log(this.rotate);
+    return this.radiusSlice = this.lineCap !== 'butt' ? this.bitWidth : 0;
   };
 
   Burst.prototype.draw = function(it) {
-    var angle, ctx, i, rotateAngle, x1, x2, y1, y2, _i, _ref;
+    var angle, ctx, i, x1, x2, y1, y2, _i, _ref;
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    rotateAngle = 0;
     angle = it.initialRotation;
     for (i = _i = 0, _ref = it.cnt; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-      x1 = it.x + (Math.cos(angle) * (it.radius * it.rate));
-      y1 = it.y + (Math.sin(angle) * (it.radius * it.rate));
-      x2 = it.x + (Math.cos(angle) * this.r);
-      y2 = it.y + (Math.sin(angle) * this.r);
+      x1 = it.x + (Math.cos(angle + this.d) * (it.radius * it.rate));
+      y1 = it.y + (Math.sin(angle + this.d) * (it.radius * it.rate));
+      x2 = it.x + (Math.cos(angle + this.d) * this.r);
+      y2 = it.y + (Math.sin(angle + this.d) * this.r);
       it.drawLine({
         point1: {
           x: x1,
@@ -208,12 +273,12 @@ Burst = (function(_super) {
         },
         ctx: ctx
       });
-      rotateAngle += it.rotateStep;
       angle += it.step;
     }
     ctx.stroke();
     ctx.lineWidth = it.bitWidth * h.pixel;
     ctx.strokeStyle = it.color;
+    ctx.lineCap = it.lineCap;
     return ctx.stroke();
   };
 
@@ -223,17 +288,16 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.draw2 = function(it) {
-    var angle, ctx, i, rotateAngle, x1, x2, y1, y2, _i, _ref;
+    var angle, ctx, i, x1, x2, y1, y2, _i, _ref;
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    rotateAngle = this.d;
     angle = it.initialRotation;
     for (i = _i = 0, _ref = it.cnt; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-      x1 = it.x + (Math.cos(angle + rotateAngle) * this.r);
-      y1 = it.y + (Math.sin(angle + rotateAngle) * this.r);
-      x2 = it.x + (Math.cos(angle + rotateAngle) * it.radius);
-      y2 = it.y + (Math.sin(angle + rotateAngle) * it.radius);
+      x1 = it.x + (Math.cos(angle + this.d) * this.r);
+      y1 = it.y + (Math.sin(angle + this.d) * this.r);
+      x2 = it.x + (Math.cos(angle + this.d) * (it.radius - it.radiusSlice));
+      y2 = it.y + (Math.sin(angle + this.d) * (it.radius - it.radiusSlice));
       it.drawLine({
         point1: {
           x: x1,
@@ -245,12 +309,13 @@ Burst = (function(_super) {
         },
         ctx: ctx
       });
-      rotateAngle += it.rotateStep;
       angle += it.step;
     }
     ctx.stroke();
     ctx.lineWidth = it.bitWidth * h.pixel;
     ctx.strokeStyle = it.color;
+    ctx.lineCap = it.lineCap;
+    this.p === 1 && ctx.clear();
     return ctx.stroke();
   };
 
@@ -263,39 +328,41 @@ module.exports = (function() {
 })();
 
 
-},{"../helpers":4,"../polyfills":5,"./bit":1}],3:[function(require,module,exports){
-var Burst, animationLoop, bubble1, canvas, h;
+},{"../helpers":5,"../polyfills":6,"./bit":1}],4:[function(require,module,exports){
+var Bubble, Burst, animationLoop, bubble1, canvas, h;
 
 Burst = require('./bits/burst');
+
+Bubble = require('./bits/bubble');
 
 h = require('./helpers');
 
 canvas = document.getElementById('js-canvas');
 
 bubble1 = new Burst({
-  radius: 100,
-  duration: 1000,
+  radius: 50,
+  duration: 1500,
   delay: 200,
   initialRotation: 90,
-  cnt: 3,
-  rate: 0.5,
-  rotate: 45
+  cnt: 4,
+  rate: 0.25,
+  rotate: 90
 });
 
 window.addEventListener('click', function(e) {
-  var rad, size1, style1;
+  var size1, style1;
   style1 = h.getStyle(bubble1.el);
   size1 = parseInt(style1.width, 10);
   bubble1.el.style.position = 'absolute';
   bubble1.el.style.top = "" + (e.y - (size1 / 2)) + "px";
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
-  rad = h.rand(30, 50);
   return bubble1.run({
-    duration: 300,
-    radius: rad,
+    duration: 400,
+    radius: 50,
     rate: .5,
-    bitWidth: 1,
-    initialRotation: 30
+    bitWidth: 2,
+    cnt: 4,
+    rotate: 0
   });
 });
 
@@ -307,7 +374,7 @@ animationLoop = function(time) {
 animationLoop();
 
 
-},{"./bits/burst":2,"./helpers":4}],4:[function(require,module,exports){
+},{"./bits/bubble":2,"./bits/burst":3,"./helpers":5}],5:[function(require,module,exports){
 var Helpers;
 
 Helpers = (function() {
@@ -339,6 +406,10 @@ Helpers = (function() {
     return this[o.lock] = true;
   };
 
+  Helpers.prototype.unlock = function(o) {
+    return this[o.lock] = false;
+  };
+
   return Helpers;
 
 })();
@@ -348,7 +419,7 @@ module.exports = (function() {
 })();
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -365,4 +436,4 @@ module.exports = (function() {
 })();
 
 
-},{}]},{},[3])
+},{}]},{},[4])

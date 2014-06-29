@@ -16,6 +16,8 @@ class Bit
     @radius = @default(prop:'radius', def: 50)
     @radius *= h.pixel
 
+    @default prop: 'lineCap', def: 'round'
+
     @el = @o.el or @el or @createContext()
     @o.el? and (@foreignContext = true)
     @ctx = @ctx or @el.getContext('2d')

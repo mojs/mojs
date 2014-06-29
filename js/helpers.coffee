@@ -18,6 +18,8 @@ class Helpers
   lock:(o)->
     !@[o.lock] and o.fun()
     @[o.lock] = true
+  unlock:(o)->
+    @[o.lock] = false
 
 module.exports = do -> new Helpers
 
