@@ -14,9 +14,13 @@ class Bit
 
     @oldRadius = @radius
     @radius = @default(prop:'radius', def: 50)
-    @radius *= h.pixel
 
-    @default prop: 'lineCap', def: 'round'
+    @oa.radius? and h.unlock lock: 'bitRadiusLock'
+    h.lock
+      lock: 'bitRadiusLock'
+      fun:=> @radius *= h.pixel
+
+    @default prop: 'lineCap', def:'round'
 
     @el = @o.el or @el or @createContext()
     @o.el? and (@foreignContext = true)

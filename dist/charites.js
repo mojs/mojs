@@ -24,7 +24,17 @@ Bit = (function() {
       prop: 'radius',
       def: 50
     });
-    this.radius *= h.pixel;
+    (this.oa.radius != null) && h.unlock({
+      lock: 'bitRadiusLock'
+    });
+    h.lock({
+      lock: 'bitRadiusLock',
+      fun: (function(_this) {
+        return function() {
+          return _this.radius *= h.pixel;
+        };
+      })(this)
+    });
     this["default"]({
       prop: 'lineCap',
       def: 'round'
@@ -351,9 +361,11 @@ canvas = document.getElementById('js-canvas');
 
 bubble1 = new Bubble({
   radius: 30,
-  duration: 500,
-  delay: 2000,
-  rate: .95
+  duration: 400,
+  delay: 200,
+  initialRotation: 90,
+  cnt: 4,
+  rotate: 90
 });
 
 window.addEventListener('click', function(e) {
@@ -364,12 +376,9 @@ window.addEventListener('click', function(e) {
   bubble1.el.style.top = "" + (e.y - (size1 / 2)) + "px";
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
   return bubble1.run({
-    duration: 400,
-    radius: 50,
-    rate: .5,
-    bitWidth: 2,
-    cnt: 4,
-    rotate: 0
+    radius: h.rand(50, 100),
+    rate: .15,
+    fillRate: .2
   });
 });
 
