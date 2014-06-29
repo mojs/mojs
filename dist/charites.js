@@ -130,6 +130,7 @@ Bubble = (function(_super) {
     this.vars();
     TWEEN.remove(this.tween);
     it = this;
+    h.startAnimationLoop();
     return this.tween = new TWEEN.Tween({
       r: this.radius * this.rate,
       p: 0,
@@ -149,6 +150,8 @@ Bubble = (function(_super) {
       ctx.strokeStyle = it.color;
       ctx.stroke();
       return this.p === 1 && ctx.clear();
+    }).onComplete(function() {
+      return h.stopAnimationLoop();
     }).delay(this.delay).start();
   };
 
@@ -194,6 +197,8 @@ Burst = (function(_super) {
       d: this.rotate
     }, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw2.call(this, it);
+    }).onComplete(function() {
+      return h.stopAnimationLoop();
     });
     from = {
       lw: this.radius * this.fillRate,
@@ -201,6 +206,7 @@ Burst = (function(_super) {
       p: 0,
       d: 0
     };
+    h.startAnimationLoop();
     return this.tween = new TWEEN.Tween(from).to({
       r: this.radius - this.radiusSlice,
       p: 1,
@@ -329,7 +335,7 @@ module.exports = (function() {
 
 
 },{"../helpers":5,"../polyfills":6,"./bit":1}],4:[function(require,module,exports){
-var Bubble, Burst, animationLoop, bubble1, canvas, h;
+var Bubble, Burst, bubble1, canvas, h;
 
 Burst = require('./bits/burst');
 
@@ -340,12 +346,12 @@ h = require('./helpers');
 canvas = document.getElementById('js-canvas');
 
 bubble1 = new Burst({
-  radius: 50,
-  duration: 1500,
+  radius: 30,
+  duration: 500,
   delay: 200,
   initialRotation: 90,
   cnt: 4,
-  rate: 0.25,
+  rate: 0.01,
   rotate: 90
 });
 
@@ -366,13 +372,6 @@ window.addEventListener('click', function(e) {
   });
 });
 
-animationLoop = function(time) {
-  requestAnimationFrame(animationLoop);
-  return TWEEN.update(time);
-};
-
-animationLoop();
-
 
 },{"./bits/bubble":2,"./bits/burst":3,"./helpers":5}],5:[function(require,module,exports){
 var Helpers;
@@ -380,13 +379,14 @@ var Helpers;
 Helpers = (function() {
   Helpers.prototype.pixel = 2;
 
-  function Helpers(o) {
-    this.o = o != null ? o : {};
-  }
-
   Helpers.prototype.doc = document;
 
   Helpers.prototype.body = document.body;
+
+  function Helpers(o) {
+    this.o = o != null ? o : {};
+    this.animationLoop = this.animationLoop.bind(this);
+  }
 
   Helpers.prototype.getStyle = function(el) {
     var computedStyle;
@@ -408,6 +408,26 @@ Helpers = (function() {
 
   Helpers.prototype.unlock = function(o) {
     return this[o.lock] = false;
+  };
+
+  Helpers.prototype.animationLoop = function(time) {
+    if (!this.isAnimateLoop) {
+      return;
+    }
+    requestAnimationFrame(this.animationLoop);
+    return TWEEN.update(time);
+  };
+
+  Helpers.prototype.startAnimationLoop = function() {
+    if (this.isAnimateLoop) {
+      return;
+    }
+    this.isAnimateLoop = true;
+    return this.animationLoop();
+  };
+
+  Helpers.prototype.stopAnimationLoop = function() {
+    return this.isAnimateLoop = false;
   };
 
   return Helpers;

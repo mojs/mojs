@@ -4,16 +4,13 @@ h = require './helpers'
 
 canvas = document.getElementById 'js-canvas'
 
-
-
-
 bubble1  = new Burst
-  radius: 50
-  duration: 1500
+  radius: 30
+  duration: 500
   delay: 200
   initialRotation: 90
   cnt: 4
-  rate: 0.25
+  rate: 0.01
   rotate: 90
   # imidiate: false
   # el: canvas
@@ -41,9 +38,3 @@ window.addEventListener 'click', (e)->
     cnt: 4
     rotate: 0
     # lineCap: 'butt'
-
-animationLoop = (time)->
-  requestAnimationFrame animationLoop
-  TWEEN.update(time)
-
-animationLoop()

@@ -14,6 +14,7 @@ class Burst extends Bit
       .to({r: @radius-@radiusSlice, d: @rotate }, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate -> it.draw2.call @, it
+      .onComplete -> h.stopAnimationLoop()
 
     from =
       lw: @radius*@fillRate
@@ -21,6 +22,7 @@ class Burst extends Bit
       p:  0
       d:  0
 
+    h.startAnimationLoop()
     @tween = new TWEEN.Tween(from)
       .to({r: @radius-@radiusSlice, p: 1, lw: 0, d: @rotate/2 }, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )

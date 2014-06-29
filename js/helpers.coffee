@@ -1,10 +1,11 @@
 class Helpers
   pixel: 2
-  constructor:(@o={})->
-
   # SHORTCUTS
   doc:  document
   body: document.body
+
+  constructor:(@o={})->
+    @animationLoop = @animationLoop.bind @
 
   getStyle:(el)->
     if window.getComputedStyle
@@ -20,6 +21,19 @@ class Helpers
     @[o.lock] = true
   unlock:(o)->
     @[o.lock] = false
+
+  animationLoop: (time)->
+    return if !@isAnimateLoop
+    requestAnimationFrame @animationLoop
+    TWEEN.update(time)
+
+  startAnimationLoop:->
+    return if @isAnimateLoop
+    @isAnimateLoop = true
+    @animationLoop()
+
+  stopAnimationLoop:->
+    @isAnimateLoop = false
 
 module.exports = do -> new Helpers
 
