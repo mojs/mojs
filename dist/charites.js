@@ -374,11 +374,11 @@ Quirk = (function(_super) {
     h.startAnimationLoop();
     from2 = {
       angle: this.angle * h.deg,
-      rotate: this.rotate / 2
+      rotate: this.direction * (this.rotate / 2)
     };
     to2 = {
       angle: 0,
-      rotate: this.rotate
+      rotate: this.direction * this.rotate
     };
     this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw2.call(this, it);
@@ -391,7 +391,7 @@ Quirk = (function(_super) {
     };
     to = {
       angle: this.angle * h.deg,
-      rotate: this.rotate / 2
+      rotate: this.direction * (this.rotate / 2)
     };
     return this.tween = new TWEEN.Tween(from).to(to, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw.call(this, it);
@@ -417,8 +417,8 @@ Quirk = (function(_super) {
   Quirk.prototype.draw = function(it) {
     var ctx, endAngle, rotate, startAngle;
     rotate = this.rotate * h.deg;
-    startAngle = (rotate - (this.angle / 2)) * it.direction;
-    endAngle = (rotate + (this.angle / 2)) * it.direction;
+    startAngle = rotate - (this.angle / 2);
+    endAngle = rotate + (this.angle / 2);
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
@@ -432,8 +432,8 @@ Quirk = (function(_super) {
   Quirk.prototype.draw2 = function(it) {
     var ctx, endAngle, rotate, startAngle;
     rotate = this.rotate * h.deg;
-    startAngle = (rotate - (this.angle / 2)) * it.direction;
-    endAngle = (rotate + (this.angle / 2)) * it.direction;
+    startAngle = rotate - (this.angle / 2);
+    endAngle = rotate + (this.angle / 2);
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();

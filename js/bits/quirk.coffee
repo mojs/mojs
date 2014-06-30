@@ -12,10 +12,10 @@ class Quirk extends Bit
 
     from2 =
       angle: @angle*h.deg
-      rotate: @rotate/2
+      rotate: @direction*(@rotate/2)
     to2 =
       angle: 0
-      rotate: @rotate
+      rotate: @direction*@rotate
 
     @tween2 = new TWEEN.Tween(from2)
       .to(to2, @duration/2)
@@ -28,7 +28,7 @@ class Quirk extends Bit
       rotate: 0
     to =
       angle: @angle*h.deg
-      rotate: @rotate/2
+      rotate: @direction*(@rotate/2)
 
     @tween = new TWEEN.Tween(from)
       .to(to, @duration/2)
@@ -44,8 +44,8 @@ class Quirk extends Bit
 
   draw:(it)->
     rotate = @rotate*h.deg
-    startAngle = (rotate-(@angle/2))*it.direction
-    endAngle = (rotate+(@angle/2))*it.direction
+    startAngle = rotate-(@angle/2)
+    endAngle = rotate+(@angle/2)
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
@@ -57,8 +57,8 @@ class Quirk extends Bit
 
   draw2:(it)->
     rotate = @rotate*h.deg
-    startAngle = (rotate-(@angle/2))*it.direction
-    endAngle = (rotate+(@angle/2))*it.direction
+    startAngle = rotate-(@angle/2)
+    endAngle = rotate+(@angle/2)
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
