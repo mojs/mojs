@@ -18,7 +18,7 @@ class Quirk extends Bit
       rotate: @rotate
 
     @tween2 = new TWEEN.Tween(from2)
-      .to(to2, @duration)
+      .to(to2, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate -> it.draw2.call @, it
       .onComplete -> h.stopAnimationLoop()
@@ -31,14 +31,14 @@ class Quirk extends Bit
       rotate: @rotate/2
 
     @tween = new TWEEN.Tween(from)
-      .to(to, @duration)
+      .to(to, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate -> it.draw.call @, it
       .delay(@delay).start().delay(@delay2).chain(@tween2)
 
   vars:->
     super
-    @default prop: 'angle',  def: 20
+    @default prop: 'angle',  def: 180
     @default prop: 'rotate', def: 360
 
   draw:(it)->
@@ -46,7 +46,7 @@ class Quirk extends Bit
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
-    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, rotate, @angle+rotate, false)
+    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, (rotate)-(@angle/2), (rotate)+(@angle/2), false)
     ctx.lineWidth = it.strokeWidth*h.pixel
     ctx.lineCap = it.lineCap
     ctx.strokeStyle = it.color
@@ -57,7 +57,7 @@ class Quirk extends Bit
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
-    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, rotate, @angle+rotate, false)
+    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, (rotate)-(@angle/2), (@angle/2)+(rotate), false)
     ctx.lineWidth = it.strokeWidth*h.pixel
     ctx.lineCap = it.lineCap
     ctx.strokeStyle = it.color

@@ -380,7 +380,7 @@ Quirk = (function(_super) {
       angle: 0,
       rotate: this.rotate
     };
-    this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
+    this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw2.call(this, it);
     }).onComplete(function() {
       return h.stopAnimationLoop();
@@ -393,7 +393,7 @@ Quirk = (function(_super) {
       angle: this.angle * h.deg,
       rotate: this.rotate / 2
     };
-    return this.tween = new TWEEN.Tween(from).to(to, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
+    return this.tween = new TWEEN.Tween(from).to(to, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw.call(this, it);
     }).delay(this.delay).start().delay(this.delay2).chain(this.tween2);
   };
@@ -402,7 +402,7 @@ Quirk = (function(_super) {
     Quirk.__super__.vars.apply(this, arguments);
     this["default"]({
       prop: 'angle',
-      def: 20
+      def: 180
     });
     return this["default"]({
       prop: 'rotate',
@@ -416,7 +416,7 @@ Quirk = (function(_super) {
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate, this.angle + rotate, false);
+    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate - (this.angle / 2), rotate + (this.angle / 2), false);
     ctx.lineWidth = it.strokeWidth * h.pixel;
     ctx.lineCap = it.lineCap;
     ctx.strokeStyle = it.color;
@@ -429,7 +429,7 @@ Quirk = (function(_super) {
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate, this.angle + rotate, false);
+    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate - (this.angle / 2), (this.angle / 2) + rotate, false);
     ctx.lineWidth = it.strokeWidth * h.pixel;
     ctx.lineCap = it.lineCap;
     ctx.strokeStyle = it.color;
@@ -459,9 +459,11 @@ canvas = document.getElementById('js-canvas');
 
 bubble1 = new Quirk({
   radius: 200,
-  duration: 5000,
-  strokeWidth: 15,
-  angle: 180
+  duration: 800,
+  strokeWidth: 5,
+  angle: 60,
+  delay: 1400,
+  rotate: 360
 });
 
 window.addEventListener('click', function(e) {
@@ -473,7 +475,8 @@ window.addEventListener('click', function(e) {
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
   return bubble1.run({
     radius: h.rand(50, 100),
-    initialRotation: h.rand(-90, 90)
+    initialRotation: h.rand(-90, 90),
+    delay: 0
   });
 });
 
