@@ -28,11 +28,12 @@ class Bit
 
     @radius isnt @oldRadius and @setElSize()
 
-    @color    = @default(prop:'color', def: 'deeppink')
-    @rate     = @default(prop:'rate', def: .5)
-    @fillRate = @default(prop:'fillRate', def: .33)
-    @duration = @default(prop:'duration', def: 600)
-    @delay    = @default(prop:'delay', def: 0)
+    @color        = @default(prop:'color', def: 'deeppink')
+    @rate         = @default(prop:'rate', def: .5)
+    @fillRate     = @default(prop:'fillRate', def: .33)
+    @duration     = @default(prop:'duration', def: 600)
+    @delay        = @default(prop:'delay', def: 0)
+    @strokeWidth  = @default(prop: 'strokeWidth', def: 1)
 
     @easing = @default(prop:'easing', def: 'Linear.None')
 
@@ -74,4 +75,4 @@ class Bit
     # @[prop] = @oa[prop] or @[prop] or @o[prop] or def
 
 
-module.exports = do -> Bit
+module.exports = Bit

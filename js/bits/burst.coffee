@@ -3,7 +3,6 @@ h  = require '../helpers'
 Bit  = require './bit'
 TWEEN  = require '../vendor/tween'
 
-
 class Burst extends Bit
   run:(@oa={})->
     @vars()
@@ -35,7 +34,6 @@ class Burst extends Bit
     @degreeRate = 1
     @step = (@degreeRate*2*Math.PI)/(@cnt)
     @rotateStep = @degreeRate*360/(@cnt)
-    @bitWidth = @default(prop: 'bitWidth', def: 1)
     @initialRotation = @default prop: 'initialRotation', def: 0
     @default 'delay2', 0
     h.lock
@@ -48,7 +46,7 @@ class Burst extends Bit
       lock: 'burstRotateLock'
       fun:=> @rotate *= Math.PI/180
 
-    @radiusSlice = if @lineCap isnt 'butt' then @bitWidth else 0
+    @radiusSlice = if @lineCap isnt 'butt' then @strokeWidth else 0
 
   draw:(it)->
     ctx = it.ctx
@@ -70,7 +68,7 @@ class Burst extends Bit
     
     ctx.stroke()
     # ctx.arc(it.x, it.y, @r, 0, 2 * Math.PI, false)
-    ctx.lineWidth = it.bitWidth*h.pixel
+    ctx.lineWidth = it.strokeWidth*h.pixel
     ctx.strokeStyle = it.color
     ctx.lineCap = it.lineCap
     ctx.stroke()
@@ -99,7 +97,7 @@ class Burst extends Bit
       angle += it.step
     
     ctx.stroke()
-    ctx.lineWidth = it.bitWidth*h.pixel
+    ctx.lineWidth = it.strokeWidth*h.pixel
     ctx.strokeStyle = it.color
     ctx.lineCap = it.lineCap
     @p is 1 and ctx.clear()
@@ -108,4 +106,4 @@ class Burst extends Bit
 
 
 
-module.exports = do -> Burst
+module.exports = Burst

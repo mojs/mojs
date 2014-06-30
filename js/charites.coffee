@@ -1,24 +1,18 @@
 Burst  = require './bits/burst'
 Bubble = require './bits/bubble'
+Quirk = require './bits/quirk'
 h = require './helpers'
 
 canvas = document.getElementById 'js-canvas'
 
-bubble1  = new Bubble
-  radius: 30
-  duration: 400
-  delay: 200
-  initialRotation: 90
-  cnt: 4
-  rotate: 90
-  # imidiate: false
-  # el: canvas
-
-# setInterval ->
-#   bubble1.run
-#     duration: 400
-#     radius: 100
-# , 1000
+bubble1  = new Quirk
+  radius: 200
+  duration: 5000
+  strokeWidth: 15
+  angle: 180
+  # initialRotation: 90
+  # cnt: 5
+  # rate: .75
 
 window.addEventListener 'click', (e)->
   style1 = h.getStyle bubble1.el
@@ -31,8 +25,7 @@ window.addEventListener 'click', (e)->
 
   bubble1.run
     radius: h.rand 50,100
-    rate: .2
-    fillRate: .05
+    initialRotation: h.rand -90, 90
     # lineCap: 'butt'
 
 # animationLoop = (time)->

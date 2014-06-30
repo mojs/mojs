@@ -29,4 +29,4 @@ class Bubble extends Bit
     ctx.stroke()
     @p is 1 and ctx.clear()
 
-module.exports = do -> Bubble
+module.exports = Bubble

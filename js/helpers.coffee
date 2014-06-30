@@ -5,6 +5,7 @@ class Helpers
   # SHORTCUTS
   doc:  document
   body: document.body
+  deg: Math.PI/180
 
   constructor:(@o={})->
     @animationLoop = @animationLoop.bind @

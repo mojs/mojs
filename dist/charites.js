@@ -63,6 +63,10 @@ Bit = (function() {
       prop: 'delay',
       def: 0
     });
+    this.strokeWidth = this["default"]({
+      prop: 'strokeWidth',
+      def: 1
+    });
     this.easing = this["default"]({
       prop: 'easing',
       def: 'Linear.None'
@@ -111,12 +115,10 @@ Bit = (function() {
 
 })();
 
-module.exports = (function() {
-  return Bit;
-})();
+module.exports = Bit;
 
 
-},{"../helpers":5}],2:[function(require,module,exports){
+},{"../helpers":6}],2:[function(require,module,exports){
 var Bit, Bubble, TWEEN, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -175,12 +177,10 @@ Bubble = (function(_super) {
 
 })(Bit);
 
-module.exports = (function() {
-  return Bubble;
-})();
+module.exports = Bubble;
 
 
-},{"../helpers":5,"../polyfills":6,"../vendor/tween":7,"./bit":1}],3:[function(require,module,exports){
+},{"../helpers":6,"../polyfills":7,"../vendor/tween":8,"./bit":1}],3:[function(require,module,exports){
 var Bit, Burst, TWEEN, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -240,10 +240,6 @@ Burst = (function(_super) {
     this.degreeRate = 1;
     this.step = (this.degreeRate * 2 * Math.PI) / this.cnt;
     this.rotateStep = this.degreeRate * 360 / this.cnt;
-    this.bitWidth = this["default"]({
-      prop: 'bitWidth',
-      def: 1
-    });
     this.initialRotation = this["default"]({
       prop: 'initialRotation',
       def: 0
@@ -272,7 +268,7 @@ Burst = (function(_super) {
         };
       })(this)
     });
-    return this.radiusSlice = this.lineCap !== 'butt' ? this.bitWidth : 0;
+    return this.radiusSlice = this.lineCap !== 'butt' ? this.strokeWidth : 0;
   };
 
   Burst.prototype.draw = function(it) {
@@ -300,7 +296,7 @@ Burst = (function(_super) {
       angle += it.step;
     }
     ctx.stroke();
-    ctx.lineWidth = it.bitWidth * h.pixel;
+    ctx.lineWidth = it.strokeWidth * h.pixel;
     ctx.strokeStyle = it.color;
     ctx.lineCap = it.lineCap;
     return ctx.stroke();
@@ -336,7 +332,7 @@ Burst = (function(_super) {
       angle += it.step;
     }
     ctx.stroke();
-    ctx.lineWidth = it.bitWidth * h.pixel;
+    ctx.lineWidth = it.strokeWidth * h.pixel;
     ctx.strokeStyle = it.color;
     ctx.lineCap = it.lineCap;
     this.p === 1 && ctx.clear();
@@ -347,29 +343,125 @@ Burst = (function(_super) {
 
 })(Bit);
 
-module.exports = (function() {
-  return Burst;
-})();
+module.exports = Burst;
 
 
-},{"../helpers":5,"../polyfills":6,"../vendor/tween":7,"./bit":1}],4:[function(require,module,exports){
-var Bubble, Burst, bubble1, canvas, h;
+},{"../helpers":6,"../polyfills":7,"../vendor/tween":8,"./bit":1}],4:[function(require,module,exports){
+var Bit, Quirk, TWEEN, h,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+h = require('../helpers');
+
+Bit = require('./bit');
+
+TWEEN = require('../vendor/tween');
+
+Quirk = (function(_super) {
+  __extends(Quirk, _super);
+
+  function Quirk() {
+    return Quirk.__super__.constructor.apply(this, arguments);
+  }
+
+  Quirk.prototype.run = function(oa) {
+    var from, from2, it, to, to2;
+    this.oa = oa != null ? oa : {};
+    this.vars();
+    TWEEN.remove(this.tween);
+    TWEEN.remove(this.tween2);
+    it = this;
+    h.startAnimationLoop();
+    from2 = {
+      angle: this.angle * h.deg,
+      rotate: this.rotate / 2
+    };
+    to2 = {
+      angle: 0,
+      rotate: this.rotate
+    };
+    this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
+      return it.draw2.call(this, it);
+    }).onComplete(function() {
+      return h.stopAnimationLoop();
+    });
+    from = {
+      angle: 0,
+      rotate: 0
+    };
+    to = {
+      angle: this.angle * h.deg,
+      rotate: this.rotate / 2
+    };
+    return this.tween = new TWEEN.Tween(from).to(to, this.duration).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
+      return it.draw.call(this, it);
+    }).delay(this.delay).start().delay(this.delay2).chain(this.tween2);
+  };
+
+  Quirk.prototype.vars = function() {
+    Quirk.__super__.vars.apply(this, arguments);
+    this["default"]({
+      prop: 'angle',
+      def: 20
+    });
+    return this["default"]({
+      prop: 'rotate',
+      def: 360
+    });
+  };
+
+  Quirk.prototype.draw = function(it) {
+    var ctx, rotate;
+    rotate = this.rotate * h.deg;
+    ctx = it.ctx;
+    ctx.clear();
+    ctx.beginPath();
+    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate, this.angle + rotate, false);
+    ctx.lineWidth = it.strokeWidth * h.pixel;
+    ctx.lineCap = it.lineCap;
+    ctx.strokeStyle = it.color;
+    return ctx.stroke();
+  };
+
+  Quirk.prototype.draw2 = function(it) {
+    var ctx, rotate;
+    rotate = this.rotate * h.deg;
+    ctx = it.ctx;
+    ctx.clear();
+    ctx.beginPath();
+    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate, this.angle + rotate, false);
+    ctx.lineWidth = it.strokeWidth * h.pixel;
+    ctx.lineCap = it.lineCap;
+    ctx.strokeStyle = it.color;
+    ctx.stroke();
+    return this.p === 1 && ctx.clear();
+  };
+
+  return Quirk;
+
+})(Bit);
+
+module.exports = Quirk;
+
+
+},{"../helpers":6,"../vendor/tween":8,"./bit":1}],5:[function(require,module,exports){
+var Bubble, Burst, Quirk, bubble1, canvas, h;
 
 Burst = require('./bits/burst');
 
 Bubble = require('./bits/bubble');
 
+Quirk = require('./bits/quirk');
+
 h = require('./helpers');
 
 canvas = document.getElementById('js-canvas');
 
-bubble1 = new Bubble({
-  radius: 30,
-  duration: 400,
-  delay: 200,
-  initialRotation: 90,
-  cnt: 4,
-  rotate: 90
+bubble1 = new Quirk({
+  radius: 200,
+  duration: 5000,
+  strokeWidth: 15,
+  angle: 180
 });
 
 window.addEventListener('click', function(e) {
@@ -381,13 +473,12 @@ window.addEventListener('click', function(e) {
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
   return bubble1.run({
     radius: h.rand(50, 100),
-    rate: .2,
-    fillRate: .05
+    initialRotation: h.rand(-90, 90)
   });
 });
 
 
-},{"./bits/bubble":2,"./bits/burst":3,"./helpers":5}],5:[function(require,module,exports){
+},{"./bits/bubble":2,"./bits/burst":3,"./bits/quirk":4,"./helpers":6}],6:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -398,6 +489,8 @@ Helpers = (function() {
   Helpers.prototype.doc = document;
 
   Helpers.prototype.body = document.body;
+
+  Helpers.prototype.deg = Math.PI / 180;
 
   function Helpers(o) {
     this.o = o != null ? o : {};
@@ -455,7 +548,7 @@ module.exports = (function() {
 })();
 
 
-},{"./vendor/tween":7}],6:[function(require,module,exports){
+},{"./vendor/tween":8}],7:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -472,7 +565,7 @@ module.exports = (function() {
 })();
 
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ;(function(undefined){
 
 	/**
@@ -1237,4 +1330,4 @@ module.exports = (function() {
 })()
 
 
-},{}]},{},[4])
+},{}]},{},[5])
