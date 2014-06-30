@@ -404,19 +404,25 @@ Quirk = (function(_super) {
       prop: 'angle',
       def: 180
     });
-    return this["default"]({
+    this["default"]({
       prop: 'rotate',
       def: 360
+    });
+    return this["default"]({
+      prop: 'direction',
+      def: 1
     });
   };
 
   Quirk.prototype.draw = function(it) {
-    var ctx, rotate;
+    var ctx, endAngle, rotate, startAngle;
     rotate = this.rotate * h.deg;
+    startAngle = (rotate - (this.angle / 2)) * it.direction;
+    endAngle = (rotate + (this.angle / 2)) * it.direction;
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate - (this.angle / 2), rotate + (this.angle / 2), false);
+    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, startAngle, endAngle, false);
     ctx.lineWidth = it.strokeWidth * h.pixel;
     ctx.lineCap = it.lineCap;
     ctx.strokeStyle = it.color;
@@ -424,12 +430,14 @@ Quirk = (function(_super) {
   };
 
   Quirk.prototype.draw2 = function(it) {
-    var ctx, rotate;
+    var ctx, endAngle, rotate, startAngle;
     rotate = this.rotate * h.deg;
+    startAngle = (rotate - (this.angle / 2)) * it.direction;
+    endAngle = (rotate + (this.angle / 2)) * it.direction;
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, rotate - (this.angle / 2), (this.angle / 2) + rotate, false);
+    ctx.arc(it.x, it.y, it.radius - it.strokeWidth, startAngle, endAngle, false);
     ctx.lineWidth = it.strokeWidth * h.pixel;
     ctx.lineCap = it.lineCap;
     ctx.strokeStyle = it.color;

@@ -38,15 +38,18 @@ class Quirk extends Bit
 
   vars:->
     super
-    @default prop: 'angle',  def: 180
-    @default prop: 'rotate', def: 360
+    @default prop: 'angle',     def: 180
+    @default prop: 'rotate',    def: 360
+    @default prop: 'direction', def: 1
 
   draw:(it)->
     rotate = @rotate*h.deg
+    startAngle = (rotate-(@angle/2))*it.direction
+    endAngle = (rotate+(@angle/2))*it.direction
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
-    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, (rotate)-(@angle/2), (rotate)+(@angle/2), false)
+    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, startAngle, endAngle, false)
     ctx.lineWidth = it.strokeWidth*h.pixel
     ctx.lineCap = it.lineCap
     ctx.strokeStyle = it.color
@@ -54,10 +57,12 @@ class Quirk extends Bit
 
   draw2:(it)->
     rotate = @rotate*h.deg
+    startAngle = (rotate-(@angle/2))*it.direction
+    endAngle = (rotate+(@angle/2))*it.direction
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
-    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, (rotate)-(@angle/2), (@angle/2)+(rotate), false)
+    ctx.arc(it.x, it.y, it.radius-it.strokeWidth, startAngle, endAngle, false)
     ctx.lineWidth = it.strokeWidth*h.pixel
     ctx.lineCap = it.lineCap
     ctx.strokeStyle = it.color
