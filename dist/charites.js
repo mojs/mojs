@@ -402,7 +402,7 @@ Quirk = (function(_super) {
     Quirk.__super__.vars.apply(this, arguments);
     this["default"]({
       prop: 'angle',
-      def: 180
+      def: 60
     });
     this["default"]({
       prop: 'rotate',
@@ -466,12 +466,10 @@ h = require('./helpers');
 canvas = document.getElementById('js-canvas');
 
 bubble1 = new Quirk({
-  radius: 200,
   duration: 800,
   strokeWidth: 5,
-  angle: 60,
   delay: 1400,
-  rotate: 360
+  imidiate: false
 });
 
 window.addEventListener('click', function(e) {

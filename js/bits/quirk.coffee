@@ -38,7 +38,7 @@ class Quirk extends Bit
 
   vars:->
     super
-    @default prop: 'angle',     def: 180
+    @default prop: 'angle',     def: 60
     @default prop: 'rotate',    def: 360
     @default prop: 'direction', def: 1
 
