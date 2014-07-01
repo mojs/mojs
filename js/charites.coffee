@@ -5,7 +5,7 @@ h = require './helpers'
 
 canvas = document.getElementById 'js-canvas'
 
-bubble1  = new Quirk
+bubble1  = new Burst
   duration: 800
   strokeWidth: 5
   delay: 1400
@@ -24,10 +24,12 @@ window.addEventListener 'click', (e)->
   bubble1.el.style.left = "#{e.x-(size1/2)}px"
 
   bubble1.run
-    radius: h.rand 50,100
+    radius: h.rand 40,80
     initialRotation: h.rand -90, 90
     delay: 0
     shrinkStroke: true
+    duration: 500
+    direction: -1
     # lineCap: 'butt'
 
 # animationLoop = (time)->

@@ -10,8 +10,19 @@ class Burst extends Bit
     TWEEN.remove @tween
     TWEEN.remove @tween2
     it = @
-    @tween2 = new TWEEN.Tween(r: @radius*@rate, d: @rotate/2 )
-      .to({r: @radius-@radiusSlice, d: @rotate }, @duration/2)
+
+    from2 =
+      r: @radius*@rate
+      d: @rotate/2
+      strokeWidth: if @shrinkStroke then @strokeWidth/2 else @strokeWidth
+
+    to2 =
+      r: @radius-@radiusSlice
+      d: @rotate
+      strokeWidth: if @shrinkStroke then 0 else @strokeWidth
+
+    @tween2 = new TWEEN.Tween(from2)
+      .to(to2, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate -> it.draw2.call @, it
       .onComplete -> h.stopAnimationLoop()
@@ -21,10 +32,19 @@ class Burst extends Bit
       r:  @radius*@rate
       p:  0
       d:  0
+      strokeWidth: @strokeWidth
+
+    to =
+      r: @radius-@radiusSlice
+      p: 1
+      lw: 0
+      d: @rotate/2
+      strokeWidth: if @shrinkStroke then @strokeWidth/2 else @strokeWidth
+
 
     h.startAnimationLoop()
     @tween = new TWEEN.Tween(from)
-      .to({r: @radius-@radiusSlice, p: 1, lw: 0, d: @rotate/2 }, @duration/2)
+      .to(to, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate -> it.draw.call @, it
       .delay(@delay).start().delay(@delay2).chain(@tween2)
@@ -48,6 +68,8 @@ class Burst extends Bit
 
     @radiusSlice = if @lineCap isnt 'butt' then @strokeWidth else 0
 
+    @default prop: 'shrinkStroke', def: false
+
   draw:(it)->
     ctx = it.ctx
     ctx.clear()
@@ -68,7 +90,7 @@ class Burst extends Bit
     
     ctx.stroke()
     # ctx.arc(it.x, it.y, @r, 0, 2 * Math.PI, false)
-    ctx.lineWidth = it.strokeWidth*h.pixel
+    ctx.lineWidth = @strokeWidth*h.pixel
     ctx.strokeStyle = it.color
     ctx.lineCap = it.lineCap
     ctx.stroke()
@@ -97,7 +119,7 @@ class Burst extends Bit
       angle += it.step
     
     ctx.stroke()
-    ctx.lineWidth = it.strokeWidth*h.pixel
+    ctx.lineWidth = @strokeWidth*h.pixel
     ctx.strokeStyle = it.color
     ctx.lineCap = it.lineCap
     @p is 1 and ctx.clear()

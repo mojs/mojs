@@ -10,7 +10,7 @@ class Bit
     @size = @o.size or 100
     @size *= h.pixel
 
-    @cnt = @default(prop:'cnt', def: 0)
+    @cnt = @default(prop:'cnt', def: 3)
 
     @oldRadius = @radius
     @radius = @default(prop:'radius', def: 50)

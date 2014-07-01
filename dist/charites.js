@@ -17,7 +17,7 @@ Bit = (function() {
     this.size *= h.pixel;
     this.cnt = this["default"]({
       prop: 'cnt',
-      def: 0
+      def: 3
     });
     this.oldRadius = this.radius;
     this.radius = this["default"]({
@@ -201,19 +201,23 @@ Burst = (function(_super) {
   }
 
   Burst.prototype.run = function(oa) {
-    var from, it;
+    var from, from2, it, to, to2;
     this.oa = oa != null ? oa : {};
     this.vars();
     TWEEN.remove(this.tween);
     TWEEN.remove(this.tween2);
     it = this;
-    this.tween2 = new TWEEN.Tween({
+    from2 = {
       r: this.radius * this.rate,
-      d: this.rotate / 2
-    }).to({
+      d: this.rotate / 2,
+      strokeWidth: this.shrinkStroke ? this.strokeWidth / 2 : this.strokeWidth
+    };
+    to2 = {
       r: this.radius - this.radiusSlice,
-      d: this.rotate
-    }, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
+      d: this.rotate,
+      strokeWidth: this.shrinkStroke ? 0 : this.strokeWidth
+    };
+    this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw2.call(this, it);
     }).onComplete(function() {
       return h.stopAnimationLoop();
@@ -222,15 +226,18 @@ Burst = (function(_super) {
       lw: this.radius * this.fillRate,
       r: this.radius * this.rate,
       p: 0,
-      d: 0
+      d: 0,
+      strokeWidth: this.strokeWidth
     };
-    h.startAnimationLoop();
-    return this.tween = new TWEEN.Tween(from).to({
+    to = {
       r: this.radius - this.radiusSlice,
       p: 1,
       lw: 0,
-      d: this.rotate / 2
-    }, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
+      d: this.rotate / 2,
+      strokeWidth: this.shrinkStroke ? this.strokeWidth / 2 : this.strokeWidth
+    };
+    h.startAnimationLoop();
+    return this.tween = new TWEEN.Tween(from).to(to, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw.call(this, it);
     }).delay(this.delay).start().delay(this.delay2).chain(this.tween2);
   };
@@ -268,7 +275,11 @@ Burst = (function(_super) {
         };
       })(this)
     });
-    return this.radiusSlice = this.lineCap !== 'butt' ? this.strokeWidth : 0;
+    this.radiusSlice = this.lineCap !== 'butt' ? this.strokeWidth : 0;
+    return this["default"]({
+      prop: 'shrinkStroke',
+      def: false
+    });
   };
 
   Burst.prototype.draw = function(it) {
@@ -296,7 +307,7 @@ Burst = (function(_super) {
       angle += it.step;
     }
     ctx.stroke();
-    ctx.lineWidth = it.strokeWidth * h.pixel;
+    ctx.lineWidth = this.strokeWidth * h.pixel;
     ctx.strokeStyle = it.color;
     ctx.lineCap = it.lineCap;
     return ctx.stroke();
@@ -332,7 +343,7 @@ Burst = (function(_super) {
       angle += it.step;
     }
     ctx.stroke();
-    ctx.lineWidth = it.strokeWidth * h.pixel;
+    ctx.lineWidth = this.strokeWidth * h.pixel;
     ctx.strokeStyle = it.color;
     ctx.lineCap = it.lineCap;
     this.p === 1 && ctx.clear();
@@ -473,7 +484,7 @@ h = require('./helpers');
 
 canvas = document.getElementById('js-canvas');
 
-bubble1 = new Quirk({
+bubble1 = new Burst({
   duration: 800,
   strokeWidth: 5,
   delay: 1400,
@@ -488,10 +499,12 @@ window.addEventListener('click', function(e) {
   bubble1.el.style.top = "" + (e.y - (size1 / 2)) + "px";
   bubble1.el.style.left = "" + (e.x - (size1 / 2)) + "px";
   return bubble1.run({
-    radius: h.rand(50, 100),
+    radius: h.rand(40, 80),
     initialRotation: h.rand(-90, 90),
     delay: 0,
-    shrinkStroke: true
+    shrinkStroke: true,
+    duration: 500,
+    direction: -1
   });
 });
 
