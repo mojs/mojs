@@ -13,9 +13,11 @@ class Quirk extends Bit
     from2 =
       angle: @angle*h.deg
       rotate: @direction*(@rotate/2)
+      strokeWidth: if @shrinkStroke then @strokeWidth/2 else @strokeWidth
     to2 =
       angle: 0
       rotate: @direction*@rotate
+      strokeWidth: if @shrinkStroke then 0 else @strokeWidth
 
     @tween2 = new TWEEN.Tween(from2)
       .to(to2, @duration/2)
@@ -26,9 +28,12 @@ class Quirk extends Bit
     from =
       angle: 0
       rotate: 0
+      strokeWidth: @strokeWidth
+
     to =
       angle: @angle*h.deg
       rotate: @direction*(@rotate/2)
+      strokeWidth: if @shrinkStroke then @strokeWidth/2 else @strokeWidth
 
     @tween = new TWEEN.Tween(from)
       .to(to, @duration/2)
@@ -41,6 +46,7 @@ class Quirk extends Bit
     @default prop: 'angle',     def: 60
     @default prop: 'rotate',    def: 360
     @default prop: 'direction', def: 1
+    @default prop: 'shrinkStroke', def: false
 
   draw:(it)->
     rotate = @rotate*h.deg
@@ -50,7 +56,7 @@ class Quirk extends Bit
     ctx.clear()
     ctx.beginPath()
     ctx.arc(it.x, it.y, it.radius-it.strokeWidth, startAngle, endAngle, false)
-    ctx.lineWidth = it.strokeWidth*h.pixel
+    ctx.lineWidth = @strokeWidth*h.pixel
     ctx.lineCap = it.lineCap
     ctx.strokeStyle = it.color
     ctx.stroke()
@@ -63,10 +69,16 @@ class Quirk extends Bit
     ctx.clear()
     ctx.beginPath()
     ctx.arc(it.x, it.y, it.radius-it.strokeWidth, startAngle, endAngle, false)
-    ctx.lineWidth = it.strokeWidth*h.pixel
+    ctx.lineWidth = @strokeWidth*h.pixel
     ctx.lineCap = it.lineCap
     ctx.strokeStyle = it.color
     ctx.stroke()
     @p is 1 and ctx.clear()
 
 module.exports = Quirk
+
+
+
+
+
+

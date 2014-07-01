@@ -374,11 +374,13 @@ Quirk = (function(_super) {
     h.startAnimationLoop();
     from2 = {
       angle: this.angle * h.deg,
-      rotate: this.direction * (this.rotate / 2)
+      rotate: this.direction * (this.rotate / 2),
+      strokeWidth: this.shrinkStroke ? this.strokeWidth / 2 : this.strokeWidth
     };
     to2 = {
       angle: 0,
-      rotate: this.direction * this.rotate
+      rotate: this.direction * this.rotate,
+      strokeWidth: this.shrinkStroke ? 0 : this.strokeWidth
     };
     this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw2.call(this, it);
@@ -387,11 +389,13 @@ Quirk = (function(_super) {
     });
     from = {
       angle: 0,
-      rotate: 0
+      rotate: 0,
+      strokeWidth: this.strokeWidth
     };
     to = {
       angle: this.angle * h.deg,
-      rotate: this.direction * (this.rotate / 2)
+      rotate: this.direction * (this.rotate / 2),
+      strokeWidth: this.shrinkStroke ? this.strokeWidth / 2 : this.strokeWidth
     };
     return this.tween = new TWEEN.Tween(from).to(to, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
       return it.draw.call(this, it);
@@ -408,9 +412,13 @@ Quirk = (function(_super) {
       prop: 'rotate',
       def: 360
     });
-    return this["default"]({
+    this["default"]({
       prop: 'direction',
       def: 1
+    });
+    return this["default"]({
+      prop: 'shrinkStroke',
+      def: false
     });
   };
 
@@ -423,7 +431,7 @@ Quirk = (function(_super) {
     ctx.clear();
     ctx.beginPath();
     ctx.arc(it.x, it.y, it.radius - it.strokeWidth, startAngle, endAngle, false);
-    ctx.lineWidth = it.strokeWidth * h.pixel;
+    ctx.lineWidth = this.strokeWidth * h.pixel;
     ctx.lineCap = it.lineCap;
     ctx.strokeStyle = it.color;
     return ctx.stroke();
@@ -438,7 +446,7 @@ Quirk = (function(_super) {
     ctx.clear();
     ctx.beginPath();
     ctx.arc(it.x, it.y, it.radius - it.strokeWidth, startAngle, endAngle, false);
-    ctx.lineWidth = it.strokeWidth * h.pixel;
+    ctx.lineWidth = this.strokeWidth * h.pixel;
     ctx.lineCap = it.lineCap;
     ctx.strokeStyle = it.color;
     ctx.stroke();
@@ -482,7 +490,8 @@ window.addEventListener('click', function(e) {
   return bubble1.run({
     radius: h.rand(50, 100),
     initialRotation: h.rand(-90, 90),
-    delay: 0
+    delay: 0,
+    shrinkStroke: true
   });
 });
 

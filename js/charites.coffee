@@ -27,6 +27,7 @@ window.addEventListener 'click', (e)->
     radius: h.rand 50,100
     initialRotation: h.rand -90, 90
     delay: 0
+    shrinkStroke: true
     # lineCap: 'butt'
 
 # animationLoop = (time)->
