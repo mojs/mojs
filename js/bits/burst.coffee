@@ -13,12 +13,12 @@ class Burst extends Bit
 
     from2 =
       r: @radius*@rate
-      d: @rotate/2
+      d: @rotate*h.deg/2
       strokeWidth: if @shrinkStroke then @strokeWidth/2 else @strokeWidth
 
     to2 =
       r: @radius-@radiusSlice
-      d: @rotate
+      d: @rotate*h.deg
       strokeWidth: if @shrinkStroke then 0 else @strokeWidth
 
     @tween2 = new TWEEN.Tween(from2)
@@ -38,7 +38,7 @@ class Burst extends Bit
       r: @radius-@radiusSlice
       p: 1
       lw: 0
-      d: @rotate/2
+      d: @rotate*h.deg/2
       strokeWidth: if @shrinkStroke then @strokeWidth/2 else @strokeWidth
 
 
@@ -57,11 +57,6 @@ class Burst extends Bit
     @initialRotation = @default prop: 'initialRotation', def: 0
     @default 'delay2', 0
     @default prop: 'rotate', def: 0
-    @oa.rotate? and h.unlock lock: 'burstRotateLock'
-    h.lock
-      lock: 'burstRotateLock'
-      fun:=> @rotate *= Math.PI/180
-
     @radiusSlice = if @lineCap isnt 'butt' then @strokeWidth else 0
 
     @default prop: 'shrinkStroke', def: false

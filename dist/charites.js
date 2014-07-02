@@ -209,12 +209,12 @@ Burst = (function(_super) {
     it = this;
     from2 = {
       r: this.radius * this.rate,
-      d: this.rotate / 2,
+      d: this.rotate * h.deg / 2,
       strokeWidth: this.shrinkStroke ? this.strokeWidth / 2 : this.strokeWidth
     };
     to2 = {
       r: this.radius - this.radiusSlice,
-      d: this.rotate,
+      d: this.rotate * h.deg,
       strokeWidth: this.shrinkStroke ? 0 : this.strokeWidth
     };
     this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
@@ -233,7 +233,7 @@ Burst = (function(_super) {
       r: this.radius - this.radiusSlice,
       p: 1,
       lw: 0,
-      d: this.rotate / 2,
+      d: this.rotate * h.deg / 2,
       strokeWidth: this.shrinkStroke ? this.strokeWidth / 2 : this.strokeWidth
     };
     h.startAnimationLoop();
@@ -258,17 +258,6 @@ Burst = (function(_super) {
     this["default"]({
       prop: 'rotate',
       def: 0
-    });
-    (this.oa.rotate != null) && h.unlock({
-      lock: 'burstRotateLock'
-    });
-    h.lock({
-      lock: 'burstRotateLock',
-      fun: (function(_this) {
-        return function() {
-          return _this.rotate *= Math.PI / 180;
-        };
-      })(this)
     });
     this.radiusSlice = this.lineCap !== 'butt' ? this.strokeWidth : 0;
     return this["default"]({
@@ -504,7 +493,8 @@ window.addEventListener('click', function(e) {
     cnt: 7,
     rate: .6,
     angle: 180,
-    initialRotation: 10
+    initialRotation: 90,
+    rotate: 90
   });
 });
 

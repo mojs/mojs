@@ -35,7 +35,8 @@ window.addEventListener 'click', (e)->
     cnt: 7
     rate: .6
     angle: 180
-    initialRotation: 10
+    initialRotation: 90
+    rotate: 90
     # lineCap: 'butt'
 
 # animationLoop = (time)->
