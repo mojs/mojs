@@ -244,22 +244,17 @@ Burst = (function(_super) {
 
   Burst.prototype.vars = function() {
     Burst.__super__.vars.apply(this, arguments);
-    this.degreeRate = 1;
-    this.step = (this.degreeRate * 2 * Math.PI) / this.cnt;
-    this.rotateStep = this.degreeRate * 360 / this.cnt;
+    this["default"]({
+      prop: 'angle',
+      def: 360
+    });
+    this.step = ((this.angle / 360) * 2 * Math.PI) / this.cnt;
+    this.rotateStep = (this.angle / 360) * 360 / this.cnt;
     this.initialRotation = this["default"]({
       prop: 'initialRotation',
       def: 0
     });
     this["default"]('delay2', 0);
-    h.lock({
-      lock: 'burstRotationLock',
-      fun: (function(_this) {
-        return function() {
-          return _this.initialRotation *= Math.PI / 180;
-        };
-      })(this)
-    });
     this["default"]({
       prop: 'rotate',
       def: 0
@@ -287,7 +282,7 @@ Burst = (function(_super) {
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    angle = it.initialRotation;
+    angle = it.initialRotation * h.deg;
     for (i = _i = 0, _ref = it.cnt; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       x1 = it.x + (Math.cos(angle + this.d) * (it.radius * it.rate));
       y1 = it.y + (Math.sin(angle + this.d) * (it.radius * it.rate));
@@ -323,7 +318,7 @@ Burst = (function(_super) {
     ctx = it.ctx;
     ctx.clear();
     ctx.beginPath();
-    angle = it.initialRotation;
+    angle = it.initialRotation * h.deg;
     for (i = _i = 0, _ref = it.cnt; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       x1 = it.x + (Math.cos(angle + this.d) * this.r);
       y1 = it.y + (Math.sin(angle + this.d) * this.r);
@@ -488,7 +483,8 @@ bubble1 = new Burst({
   duration: 800,
   strokeWidth: 5,
   delay: 1400,
-  imidiate: false
+  imidiate: false,
+  degreeRate: .5
 });
 
 window.addEventListener('click', function(e) {
@@ -505,8 +501,10 @@ window.addEventListener('click', function(e) {
     strokeWidth: 20,
     duration: 400,
     direction: -1,
-    cnt: 4,
-    rate: .2
+    cnt: 7,
+    rate: .6,
+    angle: 180,
+    initialRotation: 10
   });
 });
 

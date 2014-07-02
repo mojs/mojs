@@ -10,6 +10,7 @@ bubble1  = new Burst
   strokeWidth: 5
   delay: 1400
   imidiate: false
+  degreeRate: .5
   # initialRotation: 90
   # cnt: 5
   # rate: .75
@@ -31,8 +32,10 @@ window.addEventListener 'click', (e)->
     strokeWidth: 20
     duration: 400
     direction: -1
-    cnt: 4
-    rate: .2
+    cnt: 7
+    rate: .6
+    angle: 180
+    initialRotation: 10
     # lineCap: 'butt'
 
 # animationLoop = (time)->

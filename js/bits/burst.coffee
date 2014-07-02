@@ -51,15 +51,11 @@ class Burst extends Bit
 
   vars:->
     super
-    @degreeRate = 1
-    @step = (@degreeRate*2*Math.PI)/(@cnt)
-    @rotateStep = @degreeRate*360/(@cnt)
+    @default prop:'angle', def: 360
+    @step = ((@angle/360)*2*Math.PI)/(@cnt)
+    @rotateStep = (@angle/360)*360/(@cnt)
     @initialRotation = @default prop: 'initialRotation', def: 0
     @default 'delay2', 0
-    h.lock
-      lock: 'burstRotationLock'
-      fun:=> @initialRotation *= Math.PI/180
-
     @default prop: 'rotate', def: 0
     @oa.rotate? and h.unlock lock: 'burstRotateLock'
     h.lock
@@ -75,7 +71,7 @@ class Burst extends Bit
     ctx.clear()
     ctx.beginPath()
 
-    angle = it.initialRotation
+    angle = it.initialRotation*h.deg
 
     for i in [0..it.cnt]
       x1  = it.x+(Math.cos(angle+@d)*(it.radius*it.rate))
@@ -105,7 +101,7 @@ class Burst extends Bit
     ctx.clear()
     ctx.beginPath()
 
-    angle = it.initialRotation
+    angle = it.initialRotation*h.deg
 
     for i in [0..it.cnt]
       x1  = it.x+(Math.cos(angle+@d)*(@r))
