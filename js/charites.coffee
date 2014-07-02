@@ -10,10 +10,6 @@ bubble1  = new Burst
   strokeWidth: 5
   delay: 1400
   imidiate: false
-  degreeRate: .5
-  # initialRotation: 90
-  # cnt: 5
-  # rate: .75
 
 window.addEventListener 'click', (e)->
   style1 = h.getStyle bubble1.el

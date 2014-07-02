@@ -472,8 +472,7 @@ bubble1 = new Burst({
   duration: 800,
   strokeWidth: 5,
   delay: 1400,
-  imidiate: false,
-  degreeRate: .5
+  imidiate: false
 });
 
 window.addEventListener('click', function(e) {
