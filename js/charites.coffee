@@ -24,12 +24,15 @@ window.addEventListener 'click', (e)->
   bubble1.el.style.left = "#{e.x-(size1/2)}px"
 
   bubble1.run
-    radius: h.rand 40,80
-    initialRotation: h.rand -90, 90
+    radius: h.rand 40,120
+    # initialRotation: h.rand -90, 90
     delay: 0
     shrinkStroke: true
-    duration: 500
+    strokeWidth: 20
+    duration: 400
     direction: -1
+    cnt: 4
+    rate: .2
     # lineCap: 'butt'
 
 # animationLoop = (time)->
