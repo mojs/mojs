@@ -218,7 +218,7 @@ Burst = (function(_super) {
       strokeWidth: this.shrinkStroke ? 0 : this.strokeWidth
     };
     this.tween2 = new TWEEN.Tween(from2).to(to2, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
-      return it.draw2.call(this, it);
+      return it.drawLines2.call(this, it);
     }).onComplete(function() {
       return h.stopAnimationLoop();
     });
@@ -238,7 +238,7 @@ Burst = (function(_super) {
     };
     h.startAnimationLoop();
     return this.tween = new TWEEN.Tween(from).to(to, this.duration / 2).easing(TWEEN.Easing[this.easingArr[0]][this.easingArr[1]]).onUpdate(function() {
-      return it.draw.call(this, it);
+      return it.drawLines.call(this, it);
     }).delay(this.delay).start().delay(this.delay2).chain(this.tween2);
   };
 
@@ -266,7 +266,12 @@ Burst = (function(_super) {
     });
   };
 
-  Burst.prototype.draw = function(it) {
+  Burst.prototype.drawLine = function(o) {
+    o.ctx.moveTo(o.point1.x, o.point1.y);
+    return o.ctx.lineTo(o.point2.x, o.point2.y);
+  };
+
+  Burst.prototype.drawLines = function(it) {
     var angle, ctx, i, x1, x2, y1, y2, _i, _ref;
     ctx = it.ctx;
     ctx.clear();
@@ -297,12 +302,7 @@ Burst = (function(_super) {
     return ctx.stroke();
   };
 
-  Burst.prototype.drawLine = function(o) {
-    o.ctx.moveTo(o.point1.x, o.point1.y);
-    return o.ctx.lineTo(o.point2.x, o.point2.y);
-  };
-
-  Burst.prototype.draw2 = function(it) {
+  Burst.prototype.drawLines2 = function(it) {
     var angle, ctx, i, x1, x2, y1, y2, _i, _ref;
     ctx = it.ctx;
     ctx.clear();
@@ -491,9 +491,8 @@ window.addEventListener('click', function(e) {
     direction: -1,
     cnt: 7,
     rate: .6,
-    angle: 180,
-    initialRotation: 90,
-    rotate: 90
+    angle: 240,
+    initialRotation: 0
   });
 });
 

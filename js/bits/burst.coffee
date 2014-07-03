@@ -7,9 +7,7 @@ class Burst extends Bit
   run:(@oa={})->
     @vars()
     
-    TWEEN.remove @tween
-    TWEEN.remove @tween2
-    it = @
+    TWEEN.remove @tween ; TWEEN.remove @tween2; it = @
 
     from2 =
       r: @radius*@rate
@@ -24,7 +22,7 @@ class Burst extends Bit
     @tween2 = new TWEEN.Tween(from2)
       .to(to2, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
-      .onUpdate -> it.draw2.call @, it
+      .onUpdate -> it.drawLines2.call @, it
       .onComplete -> h.stopAnimationLoop()
 
     from =
@@ -46,7 +44,7 @@ class Burst extends Bit
     @tween = new TWEEN.Tween(from)
       .to(to, @duration/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
-      .onUpdate -> it.draw.call @, it
+      .onUpdate -> it.drawLines.call @, it
       .delay(@delay).start().delay(@delay2).chain(@tween2)
 
   vars:->
@@ -61,7 +59,11 @@ class Burst extends Bit
 
     @default prop: 'shrinkStroke', def: false
 
-  draw:(it)->
+  drawLine:(o)->
+    o.ctx.moveTo(o.point1.x,o.point1.y)
+    o.ctx.lineTo(o.point2.x,o.point2.y)
+
+  drawLines:(it)->
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
@@ -85,13 +87,8 @@ class Burst extends Bit
     ctx.strokeStyle = it.color
     ctx.lineCap = it.lineCap
     ctx.stroke()
-    # @p is 1 and ctx.clear()
 
-  drawLine:(o)->
-    o.ctx.moveTo(o.point1.x,o.point1.y)
-    o.ctx.lineTo(o.point2.x,o.point2.y)
-
-  draw2:(it)->
+  drawLines2:(it)->
     ctx = it.ctx
     ctx.clear()
     ctx.beginPath()
@@ -115,8 +112,6 @@ class Burst extends Bit
     ctx.lineCap = it.lineCap
     @p is 1 and ctx.clear()
     ctx.stroke()
-
-
 
 
 module.exports = Burst
