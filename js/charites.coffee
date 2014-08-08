@@ -3,7 +3,7 @@ Bit   = require './bits/bit'
 
 new Line
   start: x: 20, y: 20
-  end:   x: 40, y: 40
+  end:   x: 20, y: 40
 
 
 # Burst  = require './bits/burst'

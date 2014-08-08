@@ -14,6 +14,8 @@ Bit = (function() {
 
   Bit.prototype.deg = 0;
 
+  Bit.prototype.px = h.pixel;
+
   function Bit(o) {
     this.o = o != null ? o : {};
     if (typeof this.vars === "function") {
@@ -54,8 +56,15 @@ Bit = (function() {
   };
 
   Bit.prototype.setElSize = function(size) {
-    this.el.setAttribute('width', size.width);
-    return this.el.setAttribute('height', size.height || size.width);
+    var height, width;
+    width = this.size.width * this.px;
+    height = this.size.height * this.px || this.size.width * this.px;
+    this.el.setAttribute('width', width);
+    this.el.setAttribute('height', height);
+    if (this.px > 1) {
+      this.el.style.width = "" + (width / 2) + "px";
+      return this.el.style.height = "" + (height / 2) + "px";
+    }
   };
 
   Bit.prototype["default"] = function(o) {
@@ -87,7 +96,6 @@ Line = (function(_super) {
   }
 
   Line.prototype.vars = function() {
-    Line.__super__.vars.apply(this, arguments);
     this.start = this["default"]({
       prop: 'start',
       def: {
@@ -102,21 +110,36 @@ Line = (function(_super) {
         y: 0
       }
     });
-    return this.position = this["default"]({
+    this.position = this["default"]({
       prop: 'position',
       def: {
         x: 0,
         y: 0
       }
     });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineCap = this["default"]({
+      prop: 'lineCap',
+      def: 1
+    });
+    this.size = {
+      width: (this.end.x - this.start.x) + this.lineWidth,
+      height: this.end.y - this.start.y
+    };
+    return Line.__super__.vars.apply(this, arguments);
   };
 
   Line.prototype.render = function() {
     this.ctx.clear();
     this.ctx.beginPath();
-    this.ctx.moveTo(this.start.x, this.start.y);
-    this.ctx.lineTo(this.end.x, this.end.y);
+    this.ctx.moveTo(0, 0);
+    this.ctx.lineTo((this.end.x - this.start.x) * this.px, (this.end.y - this.start.y) * this.px);
+    this.ctx.lineWidth = this.lineWidth * this.px;
     this.ctx.strokeStyle = this.color;
+    this.ctx.lineCap = this.lineCap;
     return this.ctx.stroke();
   };
 
@@ -140,7 +163,7 @@ new Line({
     y: 20
   },
   end: {
-    x: 40,
+    x: 20,
     y: 40
   }
 });

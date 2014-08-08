@@ -7,6 +7,7 @@ class Bit
   x:   0
   y:   0
   deg: 0
+  px: h.pixel
 
   constructor:(@o={})->
     @vars?()
@@ -34,8 +35,13 @@ class Bit
     @el
 
   setElSize:(size)->
-    @el.setAttribute 'width',  size.width
-    @el.setAttribute 'height', size.height or size.width
+    width  = @size.width*@px
+    height = @size.height*@px or @size.width*@px
+    @el.setAttribute 'width',  width
+    @el.setAttribute 'height', height
+    if @px > 1
+      @el.style.width   = "#{width/2}px"
+      @el.style.height  = "#{height/2}px"
 
   default:(o)->
     prop = o.prop
