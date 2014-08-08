@@ -19,7 +19,7 @@ var rename        = require('gulp-rename');
 var devFolder   = '';
 var distFolder  = '';
 
-var testFiles = [ 'spec/**/*.js' ];
+var testFiles = [ 'tests/**/*.js' ];
 
 var paths = {
   src: {
@@ -29,11 +29,11 @@ var paths = {
     index:    devFolder + 'index.jade',
     partials: devFolder + 'css/partials/**/*.jade',
     templates:devFolder + 'templates/**/*.jade',
-    tests:    distFolder + 'spec/**/*.coffee'
+    tests:    distFolder + 'tests/**/*.coffee'
   },
   dist:{
     js:       distFolder + 'js/',
-    tests:    distFolder + 'spec/',
+    tests:    distFolder + 'tests/',
     css:      distFolder + 'css/',
     kit:      distFolder + 'css/',
     index:    distFolder
