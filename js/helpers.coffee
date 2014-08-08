@@ -6,6 +6,10 @@ class Helpers
   doc:  document
   body: document.body
   deg: Math.PI/180
+  s: 1
+
+  time:(time)->
+    time*@s
 
   constructor:(@o={})->
     @animationLoop = @animationLoop.bind @
@@ -39,16 +43,5 @@ class Helpers
     @isAnimateLoop = false
 
 module.exports = do -> new Helpers
-
-# extends:(child, parent) ->
-#   ctor = ->
-#     @constructor = child
-#     return
-#   for key of parent
-#     child[key] = parent[key]  if __hasProp_.call(parent, key)
-#   ctor:: = parent::
-#   child:: = new ctor
-#   child.__super__ = parent::
-#   child
 
 

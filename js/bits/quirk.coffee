@@ -1,8 +1,8 @@
-h  = require '../helpers'
-Bit  = require './bit'
+h  = require     '../helpers'
+Byte  = require  './byte'
 TWEEN  = require '../vendor/tween'
 
-class Quirk extends Bit
+class Quirk extends Byte
   run:(@oa={})->
     @vars()
     TWEEN.remove @tween

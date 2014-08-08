@@ -1,11 +1,12 @@
 require '../polyfills'
 h  = require '../helpers'
-Bit  = require './bit'
+Byte  = require './byte'
 TWEEN  = require '../vendor/tween'
 
-class Burst extends Bit
+class Burst extends Byte
   run:(@oa={})->
     @vars()
+    @s = 1*h.time 1
     
     TWEEN.remove @tween ; TWEEN.remove @tween2; it = @
 
@@ -20,7 +21,7 @@ class Burst extends Bit
       strokeWidth: if @shrinkStroke then 0 else @strokeWidth
 
     @tween2 = new TWEEN.Tween(from2)
-      .to(to2, @duration/2)
+      .to(to2, @duration*@s/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate -> it.drawLines2.call @, it
       .onComplete -> h.stopAnimationLoop()
@@ -30,7 +31,7 @@ class Burst extends Bit
       r:  @radius*@rate
       p:  0
       d:  0
-      strokeWidth: @strokeWidth
+      strokeWidth: if @shrinkStroke then 0 else @strokeWidth
 
     to =
       r: @radius-@radiusSlice
@@ -42,14 +43,14 @@ class Burst extends Bit
 
     h.startAnimationLoop()
     @tween = new TWEEN.Tween(from)
-      .to(to, @duration/2)
+      .to(to, @duration*@s/2)
       .easing( TWEEN.Easing[@easingArr[0]][@easingArr[1]] )
       .onUpdate -> it.drawLines.call @, it
-      .delay(@delay).start().delay(@delay2).chain(@tween2)
+      .delay(@delay*@s).start().delay(@delay2*@s).chain(@tween2)
 
   vars:->
     super
-    @default prop:'angle', def: 360
+    @default prop: 'angle', def: 360
     @step = ((@angle/360)*2*Math.PI)/(@cnt)
     @rotateStep = (@angle/360)*360/(@cnt)
     @initialRotation = @default prop: 'initialRotation', def: 0

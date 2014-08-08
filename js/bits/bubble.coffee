@@ -1,9 +1,9 @@
 require '../polyfills'
 h  = require '../helpers'
-Bit  = require './bit'
+Byte  = require './byte'
 TWEEN  = require '../vendor/tween'
 
-class Bubble extends Bit
+class Bubble extends Byte
   run:(@oa={})->
     @vars()
     TWEEN.remove @tween

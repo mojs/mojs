@@ -1,6 +1,4 @@
 module.exports = do ->
-
-
   # clear canvas fun
   if !CanvasRenderingContext2D::clear
     CanvasRenderingContext2D::clear = (preserveTransform)->
