@@ -3,6 +3,8 @@ var Bit, h;
 
 h = require('../helpers');
 
+require('../polyfills');
+
 Bit = (function() {
   Bit.prototype.oa = {};
 
@@ -27,6 +29,10 @@ Bit = (function() {
       prop: 'parent',
       def: h.body
     });
+    this.color = this["default"]({
+      prop: 'color',
+      def: '#333'
+    });
     this.el = this.o.el || this.el || this.createElement();
     return this.ctx = this.ctx || this.el.getContext('2d');
   };
@@ -40,16 +46,11 @@ Bit = (function() {
     return this.render();
   };
 
-  Bit.prototype.render = function() {
-    return console.log('render');
-  };
-
   Bit.prototype.createElement = function() {
-    if (this.foreignContext) {
-      return;
-    }
     this.el = document.createElement('canvas');
-    return this.parent.appendChild(this.el);
+    this.parent.appendChild(this.el);
+    this.setElSize();
+    return this.el;
   };
 
   Bit.prototype.setElSize = function(size) {
@@ -71,7 +72,7 @@ Bit = (function() {
 module.exports = Bit;
 
 
-},{"../helpers":4}],2:[function(require,module,exports){
+},{"../helpers":4,"../polyfills":5}],2:[function(require,module,exports){
 var Bit, Line,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -85,6 +86,40 @@ Line = (function(_super) {
     return Line.__super__.constructor.apply(this, arguments);
   }
 
+  Line.prototype.vars = function() {
+    Line.__super__.vars.apply(this, arguments);
+    this.start = this["default"]({
+      prop: 'start',
+      def: {
+        x: 0,
+        y: 0
+      }
+    });
+    this.end = this["default"]({
+      prop: 'end',
+      def: {
+        x: 0,
+        y: 0
+      }
+    });
+    return this.position = this["default"]({
+      prop: 'position',
+      def: {
+        x: 0,
+        y: 0
+      }
+    });
+  };
+
+  Line.prototype.render = function() {
+    this.ctx.clear();
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.start.x, this.start.y);
+    this.ctx.lineTo(this.end.x, this.end.y);
+    this.ctx.strokeStyle = this.color;
+    return this.ctx.stroke();
+  };
+
   return Line;
 
 })(Bit);
@@ -93,14 +128,25 @@ module.exports = Line;
 
 
 },{"./bit":1}],3:[function(require,module,exports){
-var Line;
+var Bit, Line;
 
 Line = require('./bits/line');
 
-new Line;
+Bit = require('./bits/bit');
+
+new Line({
+  start: {
+    x: 20,
+    y: 20
+  },
+  end: {
+    x: 40,
+    y: 40
+  }
+});
 
 
-},{"./bits/line":2}],4:[function(require,module,exports){
+},{"./bits/bit":1,"./bits/line":2}],4:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -176,7 +222,24 @@ module.exports = (function() {
 })();
 
 
-},{"./vendor/tween":5}],5:[function(require,module,exports){
+},{"./vendor/tween":6}],5:[function(require,module,exports){
+module.exports = (function() {
+  if (!CanvasRenderingContext2D.prototype.clear) {
+    return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
+      if (preserveTransform) {
+        this.save();
+        this.setTransform(1, 0, 0, 1, 0, 0);
+      }
+      this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      if (preserveTransform) {
+        this.restore();
+      }
+    };
+  }
+})();
+
+
+},{}],6:[function(require,module,exports){
 ;(function(undefined){
 
 	/**

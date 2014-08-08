@@ -1,4 +1,5 @@
 h = require '../helpers'
+require '../polyfills'
 
 class Bit
   oa: {} # options
@@ -13,7 +14,7 @@ class Bit
 
   vars:->
     @parent = @default prop: 'parent', def: h.body
-
+    @color  = @default prop: 'color' , def: '#333'
     # create element if it is not exist
     @el = @o.el or @el or @createElement()
     # get CANVAS context
@@ -25,12 +26,12 @@ class Bit
 
     @render()
 
-  render:-> console.log 'render'
-
   createElement:->
-    return if @foreignContext
+    # return if @foreignContext
     @el = document.createElement 'canvas'
     @parent.appendChild @el
+    @setElSize()
+    @el
 
   setElSize:(size)->
     @el.setAttribute 'width',  size.width
