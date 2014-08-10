@@ -12,6 +12,8 @@ class Helpers
 
   constructor:(@o={})-> @animationLoop = @animationLoop.bind @
 
+  slice:(value, max)-> if value > max then max else value
+
   clone:(obj)->
     target = {}
     for key, value of obj

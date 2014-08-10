@@ -209,7 +209,6 @@
 		};
 
 		this.repeat = function ( times ) {
-
 			_repeat = times;
 			return this;
 

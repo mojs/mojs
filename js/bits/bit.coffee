@@ -8,9 +8,7 @@ class Bit
     y:   0
     deg: 0
 
-  constructor:(@o={})->
-    @vars()
-    @render()
+  constructor:(@o={})-> @vars(); @run?() # @render()
 
   vars:->
     # get CANVAS context

@@ -17,7 +17,9 @@ Bit = (function() {
   function Bit(o) {
     this.o = o != null ? o : {};
     this.vars();
-    this.render();
+    if (typeof this.run === "function") {
+      this.run();
+    }
   }
 
   Bit.prototype.vars = function() {
@@ -86,8 +88,8 @@ BurstLine = (function(_super) {
     this.end = this["default"]({
       prop: 'end',
       def: {
-        x: 100,
-        y: 100
+        x: 0,
+        y: 0
       }
     });
     this.lineWidth = this["default"]({
@@ -100,12 +102,17 @@ BurstLine = (function(_super) {
     });
     this.duration = this["default"]({
       prop: 'duration',
-      def: 500
+      def: 1000
     });
     this.delay = this["default"]({
       prop: 'delay',
       def: 0
     });
+    this.easing = this["default"]({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
+    this.easings = this.easing.split('.');
     this.size = 100;
     BurstLine.__super__.vars.apply(this, arguments);
     return this.line = new Line({
@@ -115,7 +122,7 @@ BurstLine = (function(_super) {
     });
   };
 
-  BurstLine.prototype.render = function() {
+  BurstLine.prototype.run = function() {
     var from, it, to;
     this.TWEEN.remove(this.tween);
     it = this;
@@ -123,24 +130,18 @@ BurstLine = (function(_super) {
     from.progress = 0;
     to = this.h.clone(this.end);
     to.progress = 100;
-    console.log(from);
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
-      if (this.progress < 50) {
-        return it.line.setProp({
-          end: {
-            x: 2 * this.x,
-            y: 2 * this.y
-          }
-        });
-      } else {
-        return it.line.setProp({
-          start: {
-            x: 2 * (this.x - (to.x / 2)),
-            y: 2 * (this.y - (to.y / 2))
-          }
-        });
-      }
-    }).start();
+      return it.line.setProp({
+        end: {
+          x: it.h.slice(2 * this.x, to.x),
+          y: it.h.slice(2 * this.y, to.y)
+        },
+        start: {
+          x: 2 * (this.x - (to.x / 2)),
+          y: 2 * (this.y - (to.y / 2))
+        }
+      });
+    }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
     return this.h.startAnimationLoop();
   };
 
@@ -278,9 +279,17 @@ BurstLine = require('./bits/burst-line');
 
 Bit = require('./bits/bit');
 
-setTimeout((function() {
-  return new BurstLine;
-}), 500);
+setTimeout(function() {
+  return new BurstLine({
+    lineWidth: 4,
+    lineCap: 'round',
+    end: {
+      x: 100,
+      y: 100
+    },
+    duration: 5000
+  }, 5000);
+});
 
 
 },{"./bits/bit":1,"./bits/burst-line":2}],6:[function(require,module,exports){
@@ -307,6 +316,14 @@ Helpers = (function() {
     this.o = o != null ? o : {};
     this.animationLoop = this.animationLoop.bind(this);
   }
+
+  Helpers.prototype.slice = function(value, max) {
+    if (value > max) {
+      return max;
+    } else {
+      return value;
+    }
+  };
 
   Helpers.prototype.clone = function(obj) {
     var key, target, value;
@@ -598,7 +615,6 @@ module.exports = (function() {
 		};
 
 		this.repeat = function ( times ) {
-
 			_repeat = times;
 			return this;
 
