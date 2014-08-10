@@ -1,13 +1,14 @@
 BurstLine  = require './bits/burst-line'
 Bit   = require './bits/bit'
 
-setTimeout -> new BurstLine
-  lineWidth: 4
-  lineCap: 'round'
-  end: x: 100, y: 100
-  duration: 5000
-  # easing: 'Elastic.In'
-, 5000
+setTimeout ->
+  new BurstLine
+    lineWidth: 4
+    lineCap: 'round'
+    end: x: 100, y: 100
+    easing: 'Bounce.Out'
+    duration: 1000
+, 2000
 
 # Burst  = require './bits/burst'
 # Bubble = require './bits/bubble'

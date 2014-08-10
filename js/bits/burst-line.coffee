@@ -4,7 +4,6 @@ Line = require './line'
 
 # TODO:
 #   add size calc
-#   tween flip
 
 class BurstLine extends Byte
 
@@ -13,7 +12,7 @@ class BurstLine extends Byte
     @end      = @default prop: 'end' ,     def: {x: 0, y: 0}
     @lineWidth= @default prop: 'lineWidth',def: 1
     @lineCap  = @default prop: 'lineCap',  def: 1
-    @duration = @default prop: 'duration', def: 1000
+    @duration = @default prop: 'duration', def: 0
     @delay    = @default prop: 'delay' ,   def: 0
     @easing   = @default prop: 'easing' ,  def: 'Linear.None'
     @easings  = @easing.split '.'
@@ -38,6 +37,8 @@ class BurstLine extends Byte
           start: x: 2*(@x-(to.x/2)), y: 2*(@y-(to.y/2))
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .start()
+      # .onStart    -> console.time    'len'
+      # .onComplete -> console.timeEnd 'len'
 
     @h.startAnimationLoop()
 

@@ -102,7 +102,7 @@ BurstLine = (function(_super) {
     });
     this.duration = this["default"]({
       prop: 'duration',
-      def: 1000
+      def: 0
     });
     this.delay = this["default"]({
       prop: 'delay',
@@ -287,9 +287,10 @@ setTimeout(function() {
       x: 100,
       y: 100
     },
-    duration: 5000
-  }, 5000);
-});
+    easing: 'Bounce.Out',
+    duration: 1000
+  });
+}, 2000);
 
 
 },{"./bits/bit":1,"./bits/burst-line":2}],6:[function(require,module,exports){
