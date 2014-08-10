@@ -1,12 +1,12 @@
-BurstLine  = require './bits/burst-line'
-Bit   = require './bits/bit'
+BurstLine = require './bits/burst-line'
+Bit       = require './bits/bit'
 
 setTimeout ->
   new BurstLine
     # lineWidth: 4
     # lineCap: 'round'
     start: x: 0,    y: 0
-    end:   x: 100,  y: 100
+    end:   x: 1280,  y: 900
     color: 'deeppink'
     # duration: 500
 , 1000

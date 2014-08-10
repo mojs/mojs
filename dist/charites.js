@@ -304,8 +304,8 @@ setTimeout(function() {
       y: 0
     },
     end: {
-      x: 100,
-      y: 100
+      x: 1280,
+      y: 900
     },
     color: 'deeppink'
   });
