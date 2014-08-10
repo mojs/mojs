@@ -14,13 +14,13 @@ class Byte extends Bit
     @setElSize()
 
   setElSize:->
-    @el.setAttribute 'width',  2*@size
-    @el.setAttribute 'height', 2*@size
+    @el.setAttribute 'width',  2*@sizeX
+    @el.setAttribute 'height', 2*@sizeY
 
     # for retina
     if h.pixel > 1
-      @el.style.width   = "#{@size}px"
-      @el.style.height  = "#{@size}px"
+      @el.style.width   = "#{@sizeX}px"
+      @el.style.height  = "#{@sizeY}px"
     @el
 
 module.exports = Byte

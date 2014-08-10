@@ -31,10 +31,11 @@ Bit = (function() {
       prop: 'parent',
       def: h.body
     });
-    return this.color = this["default"]({
+    this.color = this["default"]({
       prop: 'color',
       def: '#333'
     });
+    return this.o = {};
   };
 
   Bit.prototype.setProp = function(props) {
@@ -102,46 +103,63 @@ BurstLine = (function(_super) {
     });
     this.duration = this["default"]({
       prop: 'duration',
-      def: 0
+      def: 400
     });
     this.delay = this["default"]({
       prop: 'delay',
       def: 0
     });
-    this.easing = this["default"]({
-      prop: 'easing',
+    this.easing1 = this["default"]({
+      prop: 'easing1',
       def: 'Linear.None'
     });
-    this.easings = this.easing.split('.');
-    this.size = 100;
+    this.easing2 = this["default"]({
+      prop: 'easing2',
+      def: 'Linear.None'
+    });
+    this.easings1 = this.easing1.split('.');
+    this.easings2 = this.easing2.split('.');
+    this.sizeX = Math.max(this.end.x, this.start.x);
+    this.sizeY = Math.max(this.end.y, this.start.y);
     BurstLine.__super__.vars.apply(this, arguments);
-    return this.line = new Line({
+    this.line = new Line({
+      start: this.h.clone(this.start),
+      end: this.h.clone(this.end),
       lineWidth: this.lineWidth,
       lineCap: this.lineCap,
-      ctx: this.ctx
+      ctx: this.ctx,
+      color: this.color
     });
+    return this.easingFun = this.h.bind(this.easingFun, this);
   };
 
   BurstLine.prototype.run = function() {
     var from, it, to;
-    this.TWEEN.remove(this.tween);
+    this.TWEEN.remove(this.tween1);
+    this.TWEEN.remove(this.tween2);
     it = this;
     from = this.h.clone(this.start);
     from.progress = 0;
     to = this.h.clone(this.end);
-    to.progress = 100;
-    this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
+    to.progress = 1;
+    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration / 2 * this.s).onUpdate(function() {
       return it.line.setProp({
-        end: {
-          x: it.h.slice(2 * this.x, to.x),
-          y: it.h.slice(2 * this.y, to.y)
-        },
         start: {
-          x: 2 * (this.x - (to.x / 2)),
-          y: 2 * (this.y - (to.y / 2))
+          x: this.x,
+          y: this.y
         }
       });
-    }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
+    }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
+    from = this.h.clone(from);
+    to = this.h.clone(to);
+    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration / 2 * this.s).delay(this.delay * this.s).onUpdate(function() {
+      return it.line.setProp({
+        end: {
+          x: this.x,
+          y: this.y
+        }
+      });
+    }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
     return this.h.startAnimationLoop();
   };
 
@@ -183,11 +201,11 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setElSize = function() {
-    this.el.setAttribute('width', 2 * this.size);
-    this.el.setAttribute('height', 2 * this.size);
+    this.el.setAttribute('width', 2 * this.sizeX);
+    this.el.setAttribute('height', 2 * this.sizeY);
     if (h.pixel > 1) {
-      this.el.style.width = "" + this.size + "px";
-      this.el.style.height = "" + this.size + "px";
+      this.el.style.width = "" + this.sizeX + "px";
+      this.el.style.height = "" + this.sizeY + "px";
     }
     return this.el;
   };
@@ -281,16 +299,17 @@ Bit = require('./bits/bit');
 
 setTimeout(function() {
   return new BurstLine({
-    lineWidth: 4,
-    lineCap: 'round',
+    start: {
+      x: 0,
+      y: 0
+    },
     end: {
       x: 100,
       y: 100
     },
-    easing: 'Bounce.Out',
-    duration: 1000
+    color: 'deeppink'
   });
-}, 2000);
+}, 1000);
 
 
 },{"./bits/bit":1,"./bits/burst-line":2}],6:[function(require,module,exports){
@@ -347,6 +366,18 @@ Helpers = (function() {
 
   Helpers.prototype.rand = function(min, max) {
     return Math.floor((Math.random() * ((max + 1) - min)) + min);
+  };
+
+  Helpers.prototype.bind = function(func, context) {
+    var bindArgs, wrapper;
+    wrapper = function() {
+      var args, unshiftArgs;
+      args = Array.prototype.slice.call(arguments);
+      unshiftArgs = bindArgs.concat(args);
+      return func.apply(context, unshiftArgs);
+    };
+    bindArgs = Array.prototype.slice.call(arguments, 2);
+    return wrapper;
   };
 
   Helpers.prototype.lock = function(o) {

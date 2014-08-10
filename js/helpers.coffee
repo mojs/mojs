@@ -26,8 +26,15 @@ class Helpers
     else
       computedStyle = el.currentStyle
 
-  rand:(min,max)->
-    Math.floor((Math.random() * ((max + 1) - min)) + min)
+  rand:(min,max)-> Math.floor((Math.random() * ((max + 1) - min)) + min)
+
+  bind:(func, context) ->
+    wrapper = ->
+      args = Array::slice.call(arguments)
+      unshiftArgs = bindArgs.concat(args)
+      func.apply context, unshiftArgs
+    bindArgs = Array::slice.call(arguments, 2)
+    wrapper
 
   lock:(o)->
     !@[o.lock] and o.fun()

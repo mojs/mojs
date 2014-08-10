@@ -8,7 +8,7 @@ class Bit
     y:   0
     deg: 0
 
-  constructor:(@o={})-> @vars(); @run?() # @render()
+  constructor:(@o={})-> @vars(); @run?()
 
   vars:->
     # get CANVAS context
@@ -19,11 +19,11 @@ class Bit
 
     @parent = @default prop: 'parent', def: h.body
     @color  = @default prop: 'color' , def: '#333'
+    @o = {}
 
   setProp:(props)->
     for propName, propValue of props
       @[propName] = propValue
-
     @vars(); @render()
 
   default:(o)->
