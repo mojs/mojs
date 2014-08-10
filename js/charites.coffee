@@ -1,10 +1,7 @@
-Line  = require './bits/line'
+BurstLine  = require './bits/burst-line'
 Bit   = require './bits/bit'
 
-new Line
-  start: x: 20, y: 20
-  end:   x: 20, y: 40
-
+setTimeout (-> new BurstLine), 500
 
 # Burst  = require './bits/burst'
 # Bubble = require './bits/bubble'

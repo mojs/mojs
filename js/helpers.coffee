@@ -8,11 +8,15 @@ class Helpers
   deg: Math.PI/180
   s: 1
 
-  time:(time)->
-    time*@s
+  time:(time)-> time*@s
 
-  constructor:(@o={})->
-    @animationLoop = @animationLoop.bind @
+  constructor:(@o={})-> @animationLoop = @animationLoop.bind @
+
+  clone:(obj)->
+    target = {}
+    for key, value of obj
+      target[key] = value
+    target
 
   getStyle:(el)->
     if window.getComputedStyle

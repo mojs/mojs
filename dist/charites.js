@@ -1,42 +1,38 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Bit, h;
+var Bit, TWEEN, h;
 
 h = require('../helpers');
 
 require('../polyfills');
 
+TWEEN = require('../vendor/tween');
+
 Bit = (function() {
-  Bit.prototype.oa = {};
-
-  Bit.prototype.x = 0;
-
-  Bit.prototype.y = 0;
-
-  Bit.prototype.deg = 0;
-
-  Bit.prototype.px = h.pixel;
+  Bit.prototype.defaultOptions = {
+    x: 0,
+    y: 0,
+    deg: 0
+  };
 
   function Bit(o) {
     this.o = o != null ? o : {};
-    if (typeof this.vars === "function") {
-      this.vars();
-    }
-    this.setProp({
-      x: 10
-    });
+    this.vars();
+    this.render();
   }
 
   Bit.prototype.vars = function() {
+    this.TWEEN = TWEEN;
+    this.h = h;
+    this.ctx = this.o.ctx || this.ctx;
+    this.px = h.pixel;
     this.parent = this["default"]({
       prop: 'parent',
       def: h.body
     });
-    this.color = this["default"]({
+    return this.color = this["default"]({
       prop: 'color',
       def: '#333'
     });
-    this.el = this.o.el || this.el || this.createElement();
-    return this.ctx = this.ctx || this.el.getContext('2d');
   };
 
   Bit.prototype.setProp = function(props) {
@@ -45,33 +41,15 @@ Bit = (function() {
       propValue = props[propName];
       this[propName] = propValue;
     }
+    this.vars();
     return this.render();
-  };
-
-  Bit.prototype.createElement = function() {
-    this.el = document.createElement('canvas');
-    this.parent.appendChild(this.el);
-    this.setElSize();
-    return this.el;
-  };
-
-  Bit.prototype.setElSize = function(size) {
-    var height, width;
-    width = this.size.width * this.px;
-    height = this.size.height * this.px || this.size.width * this.px;
-    this.el.setAttribute('width', width);
-    this.el.setAttribute('height', height);
-    if (this.px > 1) {
-      this.el.style.width = "" + (width / 2) + "px";
-      return this.el.style.height = "" + (height / 2) + "px";
-    }
   };
 
   Bit.prototype["default"] = function(o) {
     var def, prop;
     prop = o.prop;
     def = o.def;
-    return this[prop] = this.oa[prop] != null ? this.oa[prop] : this[prop] != null ? this[prop] : this.o[prop] != null ? this.o[prop] : def;
+    return this[prop] = this.o[prop] != null ? this.o[prop] : this[prop] != null ? this[prop] : this.defaultOptions[prop] != null ? this.defaultOptions[prop] : def;
   };
 
   return Bit;
@@ -81,7 +59,146 @@ Bit = (function() {
 module.exports = Bit;
 
 
-},{"../helpers":4,"../polyfills":5}],2:[function(require,module,exports){
+},{"../helpers":6,"../polyfills":7,"../vendor/tween":8}],2:[function(require,module,exports){
+var BurstLine, Byte, Line,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Byte = require('./byte');
+
+Line = require('./line');
+
+BurstLine = (function(_super) {
+  __extends(BurstLine, _super);
+
+  function BurstLine() {
+    return BurstLine.__super__.constructor.apply(this, arguments);
+  }
+
+  BurstLine.prototype.vars = function() {
+    this.start = this["default"]({
+      prop: 'start',
+      def: {
+        x: 0,
+        y: 0
+      }
+    });
+    this.end = this["default"]({
+      prop: 'end',
+      def: {
+        x: 100,
+        y: 100
+      }
+    });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineCap = this["default"]({
+      prop: 'lineCap',
+      def: 1
+    });
+    this.duration = this["default"]({
+      prop: 'duration',
+      def: 500
+    });
+    this.delay = this["default"]({
+      prop: 'delay',
+      def: 0
+    });
+    this.size = 100;
+    BurstLine.__super__.vars.apply(this, arguments);
+    return this.line = new Line({
+      lineWidth: this.lineWidth,
+      lineCap: this.lineCap,
+      ctx: this.ctx
+    });
+  };
+
+  BurstLine.prototype.render = function() {
+    var from, it, to;
+    this.TWEEN.remove(this.tween);
+    it = this;
+    from = this.h.clone(this.start);
+    from.progress = 0;
+    to = this.h.clone(this.end);
+    to.progress = 100;
+    console.log(from);
+    this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
+      if (this.progress < 50) {
+        return it.line.setProp({
+          end: {
+            x: 2 * this.x,
+            y: 2 * this.y
+          }
+        });
+      } else {
+        return it.line.setProp({
+          start: {
+            x: 2 * (this.x - (to.x / 2)),
+            y: 2 * (this.y - (to.y / 2))
+          }
+        });
+      }
+    }).start();
+    return this.h.startAnimationLoop();
+  };
+
+  return BurstLine;
+
+})(Byte);
+
+module.exports = BurstLine;
+
+
+},{"./byte":3,"./line":4}],3:[function(require,module,exports){
+var Bit, Byte, h,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+h = require('../helpers');
+
+Bit = require('./bit');
+
+Byte = (function(_super) {
+  __extends(Byte, _super);
+
+  function Byte() {
+    return Byte.__super__.constructor.apply(this, arguments);
+  }
+
+  Byte.prototype.vars = function() {
+    Byte.__super__.vars.apply(this, arguments);
+    this.s = 1 * h.time(1);
+    this.parent = this.o.parent || h.body;
+    this.el = this.o.el || this.createEl();
+    return this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
+  };
+
+  Byte.prototype.createEl = function() {
+    this.el = document.createElement('canvas');
+    this.parent.appendChild(this.el);
+    return this.setElSize();
+  };
+
+  Byte.prototype.setElSize = function() {
+    this.el.setAttribute('width', 2 * this.size);
+    this.el.setAttribute('height', 2 * this.size);
+    if (h.pixel > 1) {
+      this.el.style.width = "" + this.size + "px";
+      this.el.style.height = "" + this.size + "px";
+    }
+    return this.el;
+  };
+
+  return Byte;
+
+})(Bit);
+
+module.exports = Byte;
+
+
+},{"../helpers":6,"./bit":1}],4:[function(require,module,exports){
 var Bit, Line,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -133,10 +250,14 @@ Line = (function(_super) {
   };
 
   Line.prototype.render = function() {
+    if (!this.ctx) {
+      console.error('Line.render: no context!');
+      return;
+    }
     this.ctx.clear();
     this.ctx.beginPath();
-    this.ctx.moveTo(0, 0);
-    this.ctx.lineTo((this.end.x - this.start.x) * this.px, (this.end.y - this.start.y) * this.px);
+    this.ctx.moveTo(this.start.x * this.px, this.start.y * this.px);
+    this.ctx.lineTo(this.end.x * this.px, this.end.y * this.px);
     this.ctx.lineWidth = this.lineWidth * this.px;
     this.ctx.strokeStyle = this.color;
     this.ctx.lineCap = this.lineCap;
@@ -150,26 +271,19 @@ Line = (function(_super) {
 module.exports = Line;
 
 
-},{"./bit":1}],3:[function(require,module,exports){
-var Bit, Line;
+},{"./bit":1}],5:[function(require,module,exports){
+var Bit, BurstLine;
 
-Line = require('./bits/line');
+BurstLine = require('./bits/burst-line');
 
 Bit = require('./bits/bit');
 
-new Line({
-  start: {
-    x: 20,
-    y: 20
-  },
-  end: {
-    x: 20,
-    y: 40
-  }
-});
+setTimeout((function() {
+  return new BurstLine;
+}), 500);
 
 
-},{"./bits/bit":1,"./bits/line":2}],4:[function(require,module,exports){
+},{"./bits/bit":1,"./bits/burst-line":2}],6:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -193,6 +307,16 @@ Helpers = (function() {
     this.o = o != null ? o : {};
     this.animationLoop = this.animationLoop.bind(this);
   }
+
+  Helpers.prototype.clone = function(obj) {
+    var key, target, value;
+    target = {};
+    for (key in obj) {
+      value = obj[key];
+      target[key] = value;
+    }
+    return target;
+  };
 
   Helpers.prototype.getStyle = function(el) {
     var computedStyle;
@@ -245,7 +369,7 @@ module.exports = (function() {
 })();
 
 
-},{"./vendor/tween":6}],5:[function(require,module,exports){
+},{"./vendor/tween":8}],7:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -262,7 +386,7 @@ module.exports = (function() {
 })();
 
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ;(function(undefined){
 
 	/**
@@ -1027,4 +1151,4 @@ module.exports = (function() {
 })()
 
 
-},{}]},{},[3])
+},{}]},{},[5])
