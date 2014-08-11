@@ -24,11 +24,17 @@ class BurstLine extends Byte
     @lineWidth= @default prop: 'lineWidth',def: 1
     @lineCap  = @default prop: 'lineCap',  def: 1
     @duration = @default prop: 'duration', def: 400
+    @duration1= @default prop: 'duration1',def: (@duration/2)
+    @duration2= @default prop: 'duration2',def: (@duration/2)
     @delay    = @default prop: 'delay' ,   def: 0
-    @easing1  = @default prop: 'easing1' ,  def: 'Linear.None'
-    @easing2  = @default prop: 'easing2' ,  def: 'Linear.None'
+    @easing1  = @default prop: 'easing1' , def: 'Linear.None'
+    @easing2  = @default prop: 'easing2' , def: 'Linear.None'
     @easings1 = @easing1.split '.'
     @easings2 = @easing2.split '.'
+    
+
+    console.log @duration1
+    console.log @duration2
 
     @fade  = @default prop: 'fade' ,  def: 'none'
     
@@ -57,14 +63,9 @@ class BurstLine extends Byte
     if @fade.match(/in/i) and !@fade.match(/out/i) then to.opacity   = 1
     if @fade? and @fade isnt 'none' then from.opacity = .5
 
-    console.log '--->', to.opacity
-
-    @tween2 = new @TWEEN.Tween(from).to(to, @duration/2*@s)
-      .onUpdate ->
-        it.line.setProp
-          start: x: @x, y: @y
-          opacity: @opacity
-        console.log @opacity
+    # console.log '--->', to.opacity
+    @tween2 = new @TWEEN.Tween(from).to(to, @duration2*@s)
+      .onUpdate -> it.line.setProp start: {x: @x, y: @y}, opacity: @opacity
       .easing @TWEEN.Easing[@easings2[0]][@easings2[1]]
 
     from = @h.clone(from)
@@ -74,13 +75,9 @@ class BurstLine extends Byte
     if @fade.match(/out/i) and !@fade.match(/in/i) then from.opacity = 1
     if @fade.match(/in/i) or @fade.match(/out/i) then to.opacity = .5
 
-    @tween1 = new @TWEEN.Tween(from).to(to, @duration/2*@s)
+    @tween1 = new @TWEEN.Tween(from).to(to, @duration1*@s)
       .delay(@delay*@s)
-      .onUpdate ->
-        it.line.setProp
-          end: x: @x, y: @y
-          opacity: @opacity
-          console.log @opacity
+      .onUpdate -> it.line.setProp end:{x: @x, y: @y}, opacity: @opacity
       .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
       .chain(@tween2)
       .start()

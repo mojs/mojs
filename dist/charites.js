@@ -106,6 +106,14 @@ BurstLine = (function(_super) {
       prop: 'duration',
       def: 400
     });
+    this.duration1 = this["default"]({
+      prop: 'duration1',
+      def: this.duration / 2
+    });
+    this.duration2 = this["default"]({
+      prop: 'duration2',
+      def: this.duration / 2
+    });
     this.delay = this["default"]({
       prop: 'delay',
       def: 0
@@ -120,6 +128,8 @@ BurstLine = (function(_super) {
     });
     this.easings1 = this.easing1.split('.');
     this.easings2 = this.easing2.split('.');
+    console.log(this.duration1);
+    console.log(this.duration2);
     this.fade = this["default"]({
       prop: 'fade',
       def: 'none'
@@ -156,16 +166,14 @@ BurstLine = (function(_super) {
     if ((this.fade != null) && this.fade !== 'none') {
       from.opacity = .5;
     }
-    console.log('--->', to.opacity);
-    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration / 2 * this.s).onUpdate(function() {
-      it.line.setProp({
+    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
+      return it.line.setProp({
         start: {
           x: this.x,
           y: this.y
         },
         opacity: this.opacity
       });
-      return console.log(this.opacity);
     }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
     from = this.h.clone(from);
     to = this.h.clone(to);
@@ -180,14 +188,14 @@ BurstLine = (function(_super) {
     if (this.fade.match(/in/i) || this.fade.match(/out/i)) {
       to.opacity = .5;
     }
-    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration / 2 * this.s).delay(this.delay * this.s).onUpdate(function() {
+    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).delay(this.delay * this.s).onUpdate(function() {
       return it.line.setProp({
         end: {
           x: this.x,
           y: this.y
         },
         opacity: this.opacity
-      }, console.log(this.opacity));
+      });
     }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
     return this.h.startAnimationLoop();
   };
@@ -334,17 +342,17 @@ Bit = require('./bits/bit');
 
 setTimeout(function() {
   return new BurstLine({
-    lineWidth: 40,
+    lineWidth: 2,
     start: {
       x: 0,
       y: 0
     },
     end: {
-      x: 1280,
-      y: 900
+      x: 600,
+      y: 600
     },
-    fade: 'inOut',
-    duration: 1000
+    duration: 1500,
+    easing2: 'Bounce.Out'
   });
 }, 1000);
 

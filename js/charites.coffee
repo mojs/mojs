@@ -3,13 +3,14 @@ Bit       = require './bits/bit'
 
 setTimeout ->
   new BurstLine
-    lineWidth: 40
+    lineWidth: 2
     # lineCap: 'round'
-    start: x: 0,    y: 0
-    end:   x: 1280,  y: 900
+    start: x: 0,     y: 0
+    end:   x: 600,  y: 600
     # color: 'deeppink'
-    fade:  'inOut'
-    duration: 1000
+    # fade:  'out'
+    duration:  1500
+    easing2: 'Bounce.Out'
 , 1000
 
 # Burst  = require './bits/burst'
