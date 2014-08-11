@@ -8,8 +8,8 @@ setTimeout ->
     start: x: 0,    y: 0
     end:   x: 1280,  y: 900
     # color: 'deeppink'
-    fade:  'out'
-    # duration: 500
+    fade:  'in'
+    duration: 1000
 , 1000
 
 # Burst  = require './bits/burst'

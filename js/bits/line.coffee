@@ -21,7 +21,8 @@ class Line extends Bit
     @ctx.lineTo  @end.x*@px,   @end.y*@px
 
     @ctx.lineWidth   = @lineWidth*@px
-    @ctx.strokeStyle = @color
+    c = @colorObj
+    @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity})"
     @ctx.lineCap     = @lineCap
     @ctx.stroke()
 

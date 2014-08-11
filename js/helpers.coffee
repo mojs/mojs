@@ -36,13 +36,18 @@ class Helpers
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
 
-  hexToRgb:(hex) ->
-    result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  makeColorObj:(hex) ->
+    result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(hex)
+    colorObj = {}
     if result
-      r: parseInt(result[1], 16)
-      g: parseInt(result[2], 16)
-      b: parseInt(result[3], 16)
-    else null
+      r = if result[1].length is 2 then result[1] else result[1]+result[1]
+      g = if result[2].length is 2 then result[2] else result[2]+result[2]
+      b = if result[3].length is 2 then result[3] else result[3]+result[3]
+      colorObj =
+        r: parseInt(r, 16)
+        g: parseInt(g, 16)
+        b: parseInt(b, 16)
+    colorObj
 
   lock:(o)->
     !@[o.lock] and o.fun()

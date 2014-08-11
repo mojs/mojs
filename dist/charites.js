@@ -35,7 +35,7 @@ Bit = (function() {
       prop: 'color',
       def: '#333'
     });
-    console.log(this.color);
+    this.colorObj = this.h.makeColorObj(this.color);
     return this.o = {};
   };
 
@@ -120,6 +120,10 @@ BurstLine = (function(_super) {
     });
     this.easings1 = this.easing1.split('.');
     this.easings2 = this.easing2.split('.');
+    this.fade = this["default"]({
+      prop: 'fade',
+      def: 'none'
+    });
     this.sizeX = Math.max(this.end.x, this.start.x);
     this.sizeY = Math.max(this.end.y, this.start.y);
     BurstLine.__super__.vars.apply(this, arguments);
@@ -143,23 +147,47 @@ BurstLine = (function(_super) {
     from.progress = 0;
     to = this.h.clone(this.end);
     to.progress = 1;
+    if (this.fade.match(/out/i)) {
+      to.opacity = 0;
+    }
+    if (this.fade.match(/in/i) && !this.fade.match(/out/i)) {
+      to.opacity = 1;
+    }
+    if ((this.fade != null) && this.fade !== 'none') {
+      from.opacity = .5;
+    }
+    console.log('--->', to.opacity);
     this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration / 2 * this.s).onUpdate(function() {
-      return it.line.setProp({
+      it.line.setProp({
         start: {
           x: this.x,
           y: this.y
-        }
+        },
+        opacity: this.opacity
       });
+      return console.log(this.opacity);
     }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
     from = this.h.clone(from);
     to = this.h.clone(to);
+    from.opacity = 1;
+    to.opacity = 1;
+    if (this.fade.match(/in/i)) {
+      from.opacity = 0;
+    }
+    if (this.fade.match(/out/i) && !this.fade.match(/in/i)) {
+      from.opacity = 1;
+    }
+    if (this.fade.match(/in/i) || this.fade.match(/out/i)) {
+      to.opacity = .5;
+    }
     this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration / 2 * this.s).delay(this.delay * this.s).onUpdate(function() {
       return it.line.setProp({
         end: {
           x: this.x,
           y: this.y
-        }
-      });
+        },
+        opacity: this.opacity
+      }, console.log(this.opacity));
     }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
     return this.h.startAnimationLoop();
   };
@@ -274,6 +302,7 @@ Line = (function(_super) {
   };
 
   Line.prototype.render = function() {
+    var c;
     if (!this.ctx) {
       console.error('Line.render: no context!');
       return;
@@ -283,7 +312,8 @@ Line = (function(_super) {
     this.ctx.moveTo(this.start.x * this.px, this.start.y * this.px);
     this.ctx.lineTo(this.end.x * this.px, this.end.y * this.px);
     this.ctx.lineWidth = this.lineWidth * this.px;
-    this.ctx.strokeStyle = this.color;
+    c = this.colorObj;
+    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + this.opacity + ")";
     this.ctx.lineCap = this.lineCap;
     return this.ctx.stroke();
   };
@@ -313,7 +343,8 @@ setTimeout(function() {
       x: 1280,
       y: 900
     },
-    fade: 'out'
+    fade: 'in',
+    duration: 1000
   });
 }, 1000);
 
@@ -386,18 +417,21 @@ Helpers = (function() {
     return wrapper;
   };
 
-  Helpers.prototype.hexToRgb = function(hex) {
-    var result;
-    result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  Helpers.prototype.makeColorObj = function(hex) {
+    var b, colorObj, g, r, result;
+    result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(hex);
+    colorObj = {};
     if (result) {
-      return {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
+      r = result[1].length === 2 ? result[1] : result[1] + result[1];
+      g = result[2].length === 2 ? result[2] : result[2] + result[2];
+      b = result[3].length === 2 ? result[3] : result[3] + result[3];
+      colorObj = {
+        r: parseInt(r, 16),
+        g: parseInt(g, 16),
+        b: parseInt(b, 16)
       };
-    } else {
-      return null;
     }
+    return colorObj;
   };
 
   Helpers.prototype.lock = function(o) {
