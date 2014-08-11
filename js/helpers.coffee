@@ -36,6 +36,14 @@ class Helpers
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
 
+  hexToRgb:(hex) ->
+    result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    if result
+      r: parseInt(result[1], 16)
+      g: parseInt(result[2], 16)
+      b: parseInt(result[3], 16)
+    else null
+
   lock:(o)->
     !@[o.lock] and o.fun()
     @[o.lock] = true

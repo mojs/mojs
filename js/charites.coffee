@@ -7,7 +7,8 @@ setTimeout ->
     # lineCap: 'round'
     start: x: 0,    y: 0
     end:   x: 1280,  y: 900
-    color: 'deeppink'
+    # color: 'deeppink'
+    fade:  'out'
     # duration: 500
 , 1000
 

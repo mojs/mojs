@@ -14,6 +14,7 @@ Line = require './line'
 # easing2: ease/string
 # lineWidth: int
 # lineCap: string(canvas lineCap)
+# fade: string(in out inOut)
 
 class BurstLine extends Byte
 

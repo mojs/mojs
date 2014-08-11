@@ -35,6 +35,7 @@ Bit = (function() {
       prop: 'color',
       def: '#333'
     });
+    console.log(this.color);
     return this.o = {};
   };
 
@@ -261,6 +262,10 @@ Line = (function(_super) {
       prop: 'lineCap',
       def: 1
     });
+    this.opacity = this["default"]({
+      prop: 'opacity',
+      def: 1
+    });
     this.size = {
       width: (this.end.x - this.start.x) + this.lineWidth,
       height: this.end.y - this.start.y
@@ -308,7 +313,7 @@ setTimeout(function() {
       x: 1280,
       y: 900
     },
-    color: 'deeppink'
+    fade: 'out'
   });
 }, 1000);
 
@@ -379,6 +384,20 @@ Helpers = (function() {
     };
     bindArgs = Array.prototype.slice.call(arguments, 2);
     return wrapper;
+  };
+
+  Helpers.prototype.hexToRgb = function(hex) {
+    var result;
+    result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (result) {
+      return {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      };
+    } else {
+      return null;
+    }
   };
 
   Helpers.prototype.lock = function(o) {

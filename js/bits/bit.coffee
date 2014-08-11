@@ -19,6 +19,7 @@ class Bit
 
     @parent = @default prop: 'parent', def: h.body
     @color  = @default prop: 'color' , def: '#333'
+    console.log @color
     @o = {}
 
   setProp:(props)->

@@ -7,6 +7,7 @@ class Line extends Bit
     @position = @default prop: 'position', def: {x: 0, y: 0}
     @lineWidth= @default prop: 'lineWidth',def: 1
     @lineCap  = @default prop: 'lineCap',  def: 1
+    @opacity  = @default prop: 'opacity',  def: 1
 
     @size     = width: (@end.x-@start.x)+@lineWidth, height: @end.y-@start.y
     super
