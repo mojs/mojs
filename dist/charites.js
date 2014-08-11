@@ -343,7 +343,7 @@ setTimeout(function() {
       x: 1280,
       y: 900
     },
-    fade: 'in',
+    fade: 'inOut',
     duration: 1000
   });
 }, 1000);

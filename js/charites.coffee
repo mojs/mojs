@@ -8,7 +8,7 @@ setTimeout ->
     start: x: 0,    y: 0
     end:   x: 1280,  y: 900
     # color: 'deeppink'
-    fade:  'in'
+    fade:  'inOut'
     duration: 1000
 , 1000
 
