@@ -299,6 +299,7 @@ Bit = require('./bits/bit');
 
 setTimeout(function() {
   return new BurstLine({
+    lineWidth: 40,
     start: {
       x: 0,
       y: 0

@@ -3,7 +3,7 @@ Bit       = require './bits/bit'
 
 setTimeout ->
   new BurstLine
-    # lineWidth: 4
+    lineWidth: 40
     # lineCap: 'round'
     start: x: 0,    y: 0
     end:   x: 1280,  y: 900
