@@ -21,13 +21,13 @@ class Line extends Bit
     @minY = Math.min @start.y, @end.y
     @maxY = Math.max @start.y, @end.y
 
-    @centerX = @minX + (@maxX/2)
-    @centerY = @minY + (@maxY/2)
-    @centerX = 300
-    @centerY = 300
+    # @centerX = @minX + (@maxX/2)
+    # @centerY = @minY + (@maxY/2)
+    # @centerX = 300
+    # @centerY = 300
 
-    x = @centerX + Math.cos(@angle)*@radius
-    y = @centerY + Math.sin(@angle)*@radius
+    # x = @centerX + Math.cos(@angle)*@radius
+    # y = @centerY + Math.sin(@angle)*@radius
 
     # console.log @centerX, @centerY
 
@@ -35,18 +35,18 @@ class Line extends Bit
     super
 
   render:->
-    @vars()
+    # @vars()
     if !@ctx then console.error('Line.render: no context!'); return
     @ctx.clear()
-    @ctx.save()
+    # @ctx.save()
     # console.log @angle*Math.PI/180
     # @ctx.translate(@centerX, @centerY)
     # @ctx.rotate(@angle*(Math.PI/180))
 
     @ctx.beginPath()
 
-    @ctx.moveTo  (@start.x-@centerX)*@px, (@start.y-@centerY)*@px
-    @ctx.lineTo  (@end.x-@centerX)*@px,   (@end.y-@centerY)*@px
+    @ctx.moveTo  (@start.x)*@px, (@start.y)*@px
+    @ctx.lineTo  (@end.x)*@px,   (@end.y)*@px
 
     @ctx.lineWidth   = @lineWidth*@px
     
@@ -55,7 +55,7 @@ class Line extends Bit
     @ctx.lineCap     = @lineCap
     @ctx.stroke()
 
-    @ctx.restore()
+    # @ctx.restore()
 
 
 

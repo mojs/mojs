@@ -21,7 +21,7 @@ class Bit
     @color  = @default prop: 'color' , def: '#222'
 
     @colorObj = @h.makeColorObj @color
-    @o = {}
+    # @o = {}
 
   setProp:(props)->
     for propName, propValue of props
