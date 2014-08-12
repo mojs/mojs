@@ -26,7 +26,7 @@ class Bit
   setProp:(props)->
     for propName, propValue of props
       @[propName] = propValue
-    @vars(); @render()
+    @render()
 
   default:(o)->
     prop = o.prop; def = o.def

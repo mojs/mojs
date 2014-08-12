@@ -6,10 +6,10 @@ setTimeout ->
     lineWidth: 2
     # lineCap: 'round'
     start: x: 600,  y: 600
-    end:   x: 200,  y: 200
+    end:   x: 0,  y: 0
     # color: '#222'
     fade:  'out'
-    duration:  5000
+    duration:  500
 
   # new BurstLine
   #   lineWidth: 2

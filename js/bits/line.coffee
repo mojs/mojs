@@ -8,6 +8,26 @@ class Line extends Bit
     @lineWidth= @default prop: 'lineWidth',def: 1
     @lineCap  = @default prop: 'lineCap',  def: 1
     @opacity  = @default prop: 'opacity',  def: 1
+    @angle      = @default prop: 'angle',  def: 0
+    @transformOrigin = @default prop: 'transform-origin', def: 'center'
+
+    @x = @end.x - @start.x; @y = @end.y - @start.y
+    @length = Math.sqrt(@x*@x + @y*@y)
+    @radius = @length/2
+
+    @minX = Math.min @start.x, @end.x
+    @maxX = Math.max @start.x, @end.x
+
+    @minY = Math.min @start.y, @end.y
+    @maxY = Math.max @start.y, @end.y
+
+    @centerX = @minX + (@maxX/2)
+    @centerY = @minY + (@maxY/2)
+
+    x = @centerX + Math.cos(@angle)*@radius
+    y = @centerX + Math.sin(@angle)*@radius
+
+    console.log x, y
 
     @size     = width: (@end.x-@start.x)+@lineWidth, height: @end.y-@start.y
     super
@@ -15,16 +35,23 @@ class Line extends Bit
   render:->
     if !@ctx then console.error('Line.render: no context!'); return
     @ctx.clear()
+    @ctx.save()
+    @ctx.rotate(2*Math.PI/@angle++)
+
     @ctx.beginPath()
 
     @ctx.moveTo  @start.x*@px, @start.y*@px
     @ctx.lineTo  @end.x*@px,   @end.y*@px
 
     @ctx.lineWidth   = @lineWidth*@px
+    
     c = @colorObj
     @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity})"
     @ctx.lineCap     = @lineCap
     @ctx.stroke()
+
+    @ctx.restore()
+
 
 
 module.exports = Line

@@ -45,7 +45,6 @@ Bit = (function() {
       propValue = props[propName];
       this[propName] = propValue;
     }
-    this.vars();
     return this.render();
   };
 
@@ -277,6 +276,7 @@ Line = (function(_super) {
   }
 
   Line.prototype.vars = function() {
+    var x, y;
     this.start = this["default"]({
       prop: 'start',
       def: {
@@ -310,6 +310,27 @@ Line = (function(_super) {
       prop: 'opacity',
       def: 1
     });
+    this.angle = this["default"]({
+      prop: 'angle',
+      def: 0
+    });
+    this.transformOrigin = this["default"]({
+      prop: 'transform-origin',
+      def: 'center'
+    });
+    this.x = this.end.x - this.start.x;
+    this.y = this.end.y - this.start.y;
+    this.length = Math.sqrt(this.x * this.x + this.y * this.y);
+    this.radius = this.length / 2;
+    this.minX = Math.min(this.start.x, this.end.x);
+    this.maxX = Math.max(this.start.x, this.end.x);
+    this.minY = Math.min(this.start.y, this.end.y);
+    this.maxY = Math.max(this.start.y, this.end.y);
+    this.centerX = this.minX + (this.maxX / 2);
+    this.centerY = this.minY + (this.maxY / 2);
+    x = this.centerX + Math.cos(this.angle) * this.radius;
+    y = this.centerX + Math.sin(this.angle) * this.radius;
+    console.log(x, y);
     this.size = {
       width: (this.end.x - this.start.x) + this.lineWidth,
       height: this.end.y - this.start.y
@@ -324,6 +345,8 @@ Line = (function(_super) {
       return;
     }
     this.ctx.clear();
+    this.ctx.save();
+    this.ctx.rotate(2 * Math.PI / this.angle++);
     this.ctx.beginPath();
     this.ctx.moveTo(this.start.x * this.px, this.start.y * this.px);
     this.ctx.lineTo(this.end.x * this.px, this.end.y * this.px);
@@ -331,7 +354,8 @@ Line = (function(_super) {
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + this.opacity + ")";
     this.ctx.lineCap = this.lineCap;
-    return this.ctx.stroke();
+    this.ctx.stroke();
+    return this.ctx.restore();
   };
 
   return Line;
@@ -356,11 +380,11 @@ setTimeout(function() {
       y: 600
     },
     end: {
-      x: 200,
-      y: 200
+      x: 0,
+      y: 0
     },
     fade: 'out',
-    duration: 5000
+    duration: 500
   });
 }, 1000);
 
