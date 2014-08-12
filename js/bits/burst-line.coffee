@@ -60,6 +60,7 @@ class BurstLine extends Byte
     if @fade.match /out/i then to.opacity   = 0
     if @fade.match(/in/i) and !@fade.match(/out/i) then to.opacity   = 1
     if @fade? and @fade isnt 'none' then from.opacity = .5
+    if @fade is 'inOut' then from.opacity = 1
 
     # console.log '--->', to.opacity
     @tween2 = new @TWEEN.Tween(from).to(to, @duration2*@s)

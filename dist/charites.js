@@ -168,6 +168,9 @@ BurstLine = (function(_super) {
     if ((this.fade != null) && this.fade !== 'none') {
       from.opacity = .5;
     }
+    if (this.fade === 'inOut') {
+      from.opacity = 1;
+    }
     this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
       return it.line.setProp({
         start: {
@@ -346,31 +349,18 @@ BurstLine = require('./bits/burst-line');
 Bit = require('./bits/bit');
 
 setTimeout(function() {
-  new BurstLine({
-    lineWidth: 2,
-    start: {
-      x: 600,
-      y: 600
-    },
-    end: {
-      x: 200,
-      y: 200
-    },
-    fade: 'inOut',
-    duration: 500
-  });
   return new BurstLine({
     lineWidth: 2,
     start: {
-      x: 200,
+      x: 600,
       y: 600
     },
     end: {
-      x: 600,
+      x: 200,
       y: 200
     },
-    fade: 'inOut',
-    duration: 500
+    fade: 'out',
+    duration: 5000
   });
 }, 1000);
 

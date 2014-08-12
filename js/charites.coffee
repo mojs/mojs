@@ -8,17 +8,17 @@ setTimeout ->
     start: x: 600,  y: 600
     end:   x: 200,  y: 200
     # color: '#222'
-    fade:  'inOut'
-    duration:  500
+    fade:  'out'
+    duration:  5000
 
-  new BurstLine
-    lineWidth: 2
-    # lineCap: 'round'
-    start: x: 200,  y: 600
-    end:   x: 600,  y: 200
-    # color: '#222'
-    fade:  'inOut'
-    duration:  500
+  # new BurstLine
+  #   lineWidth: 2
+  #   # lineCap: 'round'
+  #   start: x: 200,  y: 600
+  #   end:   x: 600,  y: 200
+  #   # color: '#222'
+  #   fade:  'inOut'
+  #   duration:  5000
 
 , 1000
 
