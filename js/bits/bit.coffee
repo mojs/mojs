@@ -18,7 +18,7 @@ class Bit
     @px    = h.pixel
 
     @parent = @default prop: 'parent', def: h.body
-    @color  = @default prop: 'color' , def: '#333'
+    @color  = @default prop: 'color' , def: '#222'
 
     @colorObj = @h.makeColorObj @color
     @o = {}

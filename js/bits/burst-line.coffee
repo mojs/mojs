@@ -3,7 +3,7 @@ Line = require './line'
 
 
 # TODO:
-#   add size calc
+#   fade: 'inOut' fix to 1 in the middle
 
 # OPTIONS
 # start: point/obj -> end: point/obj
@@ -27,15 +27,13 @@ class BurstLine extends Byte
     @duration1= @default prop: 'duration1',def: (@duration/2)
     @duration2= @default prop: 'duration2',def: (@duration/2)
     @delay    = @default prop: 'delay' ,   def: 0
-    @easing1  = @default prop: 'easing1' , def: 'Linear.None'
-    @easing2  = @default prop: 'easing2' , def: 'Linear.None'
+    
+    @easing   = @default prop: 'easing' ,  def: 'Linear.None'
+    @easing1  = @default prop: 'easing1' , def: @easing
+    @easing2  = @default prop: 'easing2' , def: @easing
     @easings1 = @easing1.split '.'
     @easings2 = @easing2.split '.'
     
-
-    console.log @duration1
-    console.log @duration2
-
     @fade  = @default prop: 'fade' ,  def: 'none'
     
     # !self size should be before super!

@@ -33,7 +33,7 @@ Bit = (function() {
     });
     this.color = this["default"]({
       prop: 'color',
-      def: '#333'
+      def: '#222'
     });
     this.colorObj = this.h.makeColorObj(this.color);
     return this.o = {};
@@ -118,18 +118,20 @@ BurstLine = (function(_super) {
       prop: 'delay',
       def: 0
     });
+    this.easing = this["default"]({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
     this.easing1 = this["default"]({
       prop: 'easing1',
-      def: 'Linear.None'
+      def: this.easing
     });
     this.easing2 = this["default"]({
       prop: 'easing2',
-      def: 'Linear.None'
+      def: this.easing
     });
     this.easings1 = this.easing1.split('.');
     this.easings2 = this.easing2.split('.');
-    console.log(this.duration1);
-    console.log(this.duration2);
     this.fade = this["default"]({
       prop: 'fade',
       def: 'none'
@@ -233,6 +235,9 @@ Byte = (function(_super) {
 
   Byte.prototype.createEl = function() {
     this.el = document.createElement('canvas');
+    this.el.style.position = 'absolute';
+    this.el.style.left = 0;
+    this.el.style.top = 0;
     this.parent.appendChild(this.el);
     return this.setElSize();
   };
@@ -341,18 +346,31 @@ BurstLine = require('./bits/burst-line');
 Bit = require('./bits/bit');
 
 setTimeout(function() {
-  return new BurstLine({
+  new BurstLine({
     lineWidth: 2,
     start: {
-      x: 0,
-      y: 0
-    },
-    end: {
       x: 600,
       y: 600
     },
-    duration: 1500,
-    easing2: 'Bounce.Out'
+    end: {
+      x: 200,
+      y: 200
+    },
+    fade: 'inOut',
+    duration: 500
+  });
+  return new BurstLine({
+    lineWidth: 2,
+    start: {
+      x: 200,
+      y: 600
+    },
+    end: {
+      x: 600,
+      y: 200
+    },
+    fade: 'inOut',
+    duration: 500
   });
 }, 1000);
 

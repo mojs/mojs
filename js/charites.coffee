@@ -5,12 +5,21 @@ setTimeout ->
   new BurstLine
     lineWidth: 2
     # lineCap: 'round'
-    start: x: 0,     y: 0
-    end:   x: 600,  y: 600
-    # color: 'deeppink'
-    # fade:  'out'
-    duration:  1500
-    easing2: 'Bounce.Out'
+    start: x: 600,  y: 600
+    end:   x: 200,  y: 200
+    # color: '#222'
+    fade:  'inOut'
+    duration:  500
+
+  new BurstLine
+    lineWidth: 2
+    # lineCap: 'round'
+    start: x: 200,  y: 600
+    end:   x: 600,  y: 200
+    # color: '#222'
+    fade:  'inOut'
+    duration:  500
+
 , 1000
 
 # Burst  = require './bits/burst'

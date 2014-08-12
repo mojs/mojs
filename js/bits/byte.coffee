@@ -10,8 +10,9 @@ class Byte extends Bit
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
 
   createEl:->
-    @el = document.createElement('canvas'); @parent.appendChild @el
-    @setElSize()
+    @el = document.createElement('canvas')
+    @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
+    @parent.appendChild(@el); @setElSize()
 
   setElSize:->
     @el.setAttribute 'width',  2*@sizeX
