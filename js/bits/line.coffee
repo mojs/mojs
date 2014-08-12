@@ -23,25 +23,30 @@ class Line extends Bit
 
     @centerX = @minX + (@maxX/2)
     @centerY = @minY + (@maxY/2)
+    @centerX = 300
+    @centerY = 300
 
     x = @centerX + Math.cos(@angle)*@radius
-    y = @centerX + Math.sin(@angle)*@radius
+    y = @centerY + Math.sin(@angle)*@radius
 
-    console.log x, y
+    # console.log @centerX, @centerY
 
     @size     = width: (@end.x-@start.x)+@lineWidth, height: @end.y-@start.y
     super
 
   render:->
+    @vars()
     if !@ctx then console.error('Line.render: no context!'); return
     @ctx.clear()
     @ctx.save()
-    @ctx.rotate(2*Math.PI/@angle++)
+    # console.log @angle*Math.PI/180
+    # @ctx.translate(@centerX, @centerY)
+    # @ctx.rotate(@angle*(Math.PI/180))
 
     @ctx.beginPath()
 
-    @ctx.moveTo  @start.x*@px, @start.y*@px
-    @ctx.lineTo  @end.x*@px,   @end.y*@px
+    @ctx.moveTo  (@start.x-@centerX)*@px, (@start.y-@centerY)*@px
+    @ctx.lineTo  (@end.x-@centerX)*@px,   (@end.y-@centerY)*@px
 
     @ctx.lineWidth   = @lineWidth*@px
     

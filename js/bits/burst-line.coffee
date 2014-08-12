@@ -56,6 +56,8 @@ class BurstLine extends Byte
     
     from = @h.clone(@start); from.progress = 0
     to   = @h.clone(@end);   to.progress   = 1
+    from.angle = 180
+    to.angle  =  360
 
     if @fade.match /out/i then to.opacity   = 0
     if @fade.match(/in/i) and !@fade.match(/out/i) then to.opacity   = 1
@@ -64,19 +66,30 @@ class BurstLine extends Byte
 
     # console.log '--->', to.opacity
     @tween2 = new @TWEEN.Tween(from).to(to, @duration2*@s)
-      .onUpdate -> it.line.setProp start: {x: @x, y: @y}, opacity: @opacity
+      .onUpdate ->
+        it.line.setProp
+          start: {x: @x, y: @y}
+          opacity: @opacity
+          angle: @angle
       .easing @TWEEN.Easing[@easings2[0]][@easings2[1]]
 
     from = @h.clone(from)
     to   = @h.clone(to)
     from.opacity = 1; to.opacity = 1
+    from.angle = 0
+    to.angle  =  180
     if @fade.match(/in/i)  then from.opacity = 0
     if @fade.match(/out/i) and !@fade.match(/in/i) then from.opacity = 1
     if @fade.match(/in/i) or @fade.match(/out/i) then to.opacity = .5
 
     @tween1 = new @TWEEN.Tween(from).to(to, @duration1*@s)
       .delay(@delay*@s)
-      .onUpdate -> it.line.setProp end:{x: @x, y: @y}, opacity: @opacity
+      .onUpdate ->
+        it.line.setProp
+          end:{x: @x, y: @y}
+          opacity: @opacity
+          angle: @angle
+
       .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
       .chain(@tween2)
       .start()

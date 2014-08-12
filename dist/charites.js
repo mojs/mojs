@@ -158,6 +158,8 @@ BurstLine = (function(_super) {
     from.progress = 0;
     to = this.h.clone(this.end);
     to.progress = 1;
+    from.angle = 180;
+    to.angle = 360;
     if (this.fade.match(/out/i)) {
       to.opacity = 0;
     }
@@ -176,13 +178,16 @@ BurstLine = (function(_super) {
           x: this.x,
           y: this.y
         },
-        opacity: this.opacity
+        opacity: this.opacity,
+        angle: this.angle
       });
     }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
     from = this.h.clone(from);
     to = this.h.clone(to);
     from.opacity = 1;
     to.opacity = 1;
+    from.angle = 0;
+    to.angle = 180;
     if (this.fade.match(/in/i)) {
       from.opacity = 0;
     }
@@ -198,7 +203,8 @@ BurstLine = (function(_super) {
           x: this.x,
           y: this.y
         },
-        opacity: this.opacity
+        opacity: this.opacity,
+        angle: this.angle
       });
     }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
     return this.h.startAnimationLoop();
@@ -328,9 +334,10 @@ Line = (function(_super) {
     this.maxY = Math.max(this.start.y, this.end.y);
     this.centerX = this.minX + (this.maxX / 2);
     this.centerY = this.minY + (this.maxY / 2);
+    this.centerX = 300;
+    this.centerY = 300;
     x = this.centerX + Math.cos(this.angle) * this.radius;
-    y = this.centerX + Math.sin(this.angle) * this.radius;
-    console.log(x, y);
+    y = this.centerY + Math.sin(this.angle) * this.radius;
     this.size = {
       width: (this.end.x - this.start.x) + this.lineWidth,
       height: this.end.y - this.start.y
@@ -340,16 +347,16 @@ Line = (function(_super) {
 
   Line.prototype.render = function() {
     var c;
+    this.vars();
     if (!this.ctx) {
       console.error('Line.render: no context!');
       return;
     }
     this.ctx.clear();
     this.ctx.save();
-    this.ctx.rotate(2 * Math.PI / this.angle++);
     this.ctx.beginPath();
-    this.ctx.moveTo(this.start.x * this.px, this.start.y * this.px);
-    this.ctx.lineTo(this.end.x * this.px, this.end.y * this.px);
+    this.ctx.moveTo((this.start.x - this.centerX) * this.px, (this.start.y - this.centerY) * this.px);
+    this.ctx.lineTo((this.end.x - this.centerX) * this.px, (this.end.y - this.centerY) * this.px);
     this.ctx.lineWidth = this.lineWidth * this.px;
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + this.opacity + ")";
@@ -376,15 +383,15 @@ setTimeout(function() {
   return new BurstLine({
     lineWidth: 2,
     start: {
-      x: 600,
-      y: 600
-    },
-    end: {
       x: 0,
       y: 0
     },
+    end: {
+      x: 600,
+      y: 600
+    },
     fade: 'out',
-    duration: 500
+    duration: 5000
   });
 }, 1000);
 
