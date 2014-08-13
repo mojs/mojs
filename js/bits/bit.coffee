@@ -16,9 +16,11 @@ class Bit
     @h     = h
     @ctx   = @o.ctx or @ctx
     @px    = h.pixel
+    @DEG = (Math.PI/180)
 
     @parent = @default prop: 'parent', def: h.body
     @color  = @default prop: 'color' , def: '#222'
+    @colorMap   = @default prop: 'colorMap',  def: [@color]
 
     @colorObj = @h.makeColorObj @color
     # @o = {}

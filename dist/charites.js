@@ -27,6 +27,7 @@ Bit = (function() {
     this.h = h;
     this.ctx = this.o.ctx || this.ctx;
     this.px = h.pixel;
+    this.DEG = Math.PI / 180;
     this.parent = this["default"]({
       prop: 'parent',
       def: h.body
@@ -34,6 +35,10 @@ Bit = (function() {
     this.color = this["default"]({
       prop: 'color',
       def: '#222'
+    });
+    this.colorMap = this["default"]({
+      prop: 'colorMap',
+      def: [this.color]
     });
     return this.colorObj = this.h.makeColorObj(this.color);
   };
@@ -81,7 +86,7 @@ Burst = (function(_super) {
     var i, line, _i, _ref, _results;
     this.cnt = this["default"]({
       prop: 'cnt',
-      def: 5
+      def: 4
     });
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
@@ -133,20 +138,31 @@ Burst = (function(_super) {
     });
     this.easings1 = this.easing1.split('.');
     this.easings2 = this.easing2.split('.');
+    this.initialRotation = this["default"]({
+      prop: 'initialRotation',
+      def: 0
+    });
+    this.rotation = this["default"]({
+      prop: 'rotation',
+      def: 0
+    });
+    this.rotation1 = this["default"]({
+      prop: 'rotation1',
+      def: this.rotation / 2
+    });
+    this.rotation2 = this["default"]({
+      prop: 'rotation2',
+      def: this.rotation / 2
+    });
     this.step = (2 * Math.PI) / this.cnt;
     this.size = 2 * this.radiusEnd + 2 * this.lineWidth;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
     Burst.__super__.vars.apply(this, arguments);
-    this.colorMap = this["default"]({
-      prop: 'colorMap',
-      def: this.color
-    });
     this.lines = [];
     _results = [];
     for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      console.log(this.colorMap[i % this.colorMap.length]);
       line = new Line({
         ctx: this.ctx,
         color: this.colorMap[i % this.colorMap.length],
@@ -160,25 +176,30 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function() {
-    var it;
+    var from, it, to;
     this.TWEEN.remove(this.tween1);
     it = this;
-    this.tween2 = new this.TWEEN.Tween({
-      r: this.radiusStart
-    }).to({
-      r: this.radiusEnd
-    }, this.duration2 * this.s).onUpdate(function() {
-      var angle, i, line, x, x1, y, y1, _i, _len, _ref, _results;
+    from = {
+      r: this.radiusStart,
+      deg: this.rotation1
+    };
+    to = {
+      r: this.radiusEnd,
+      deg: this.rotation1 + this.rotation2
+    };
+    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
+      var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
       angle = it.angle;
       _ref = it.lines;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         line = _ref[i];
-        x1 = it.center + Math.cos(angle) * it.radiusEnd;
-        y1 = it.center + Math.sin(angle) * it.radiusEnd;
-        x = it.center + Math.cos(angle) * this.r;
-        y = it.center + Math.sin(angle) * this.r;
+        rotation = angle + ((it.initialRotation + this.deg) * it.DEG);
+        x1 = it.center + Math.cos(rotation) * it.radiusEnd;
+        y1 = it.center + Math.sin(rotation) * it.radiusEnd;
+        x = it.center + Math.cos(rotation) * this.r;
+        y = it.center + Math.sin(rotation) * this.r;
         angle += it.step;
         _results.push(line.setProp({
           start: {
@@ -193,22 +214,27 @@ Burst = (function(_super) {
       }
       return _results;
     }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
-    this.tween1 = new this.TWEEN.Tween({
-      r: this.radiusStart
-    }).to({
-      r: this.radiusEnd
-    }, this.duration1 * this.s).onUpdate(function() {
-      var angle, i, line, x, x1, y, y1, _i, _len, _ref, _results;
+    from = {
+      r: this.radiusStart,
+      deg: 0
+    };
+    to = {
+      r: this.radiusEnd,
+      deg: this.rotation1
+    };
+    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).onUpdate(function() {
+      var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
       angle = it.angle;
       _ref = it.lines;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         line = _ref[i];
-        x1 = it.center + Math.cos(angle) * it.radiusStart;
-        y1 = it.center + Math.sin(angle) * it.radiusStart;
-        x = it.center + Math.cos(angle) * this.r;
-        y = it.center + Math.sin(angle) * this.r;
+        rotation = angle + ((it.initialRotation + this.deg) * it.DEG);
+        x1 = it.center + Math.cos(rotation) * it.radiusStart;
+        y1 = it.center + Math.sin(rotation) * it.radiusStart;
+        x = it.center + Math.cos(rotation) * this.r;
+        y = it.center + Math.sin(rotation) * this.r;
         angle += it.step;
         _results.push(line.setProp({
           start: {
@@ -374,13 +400,14 @@ Burst = require('./bits/burst');
 setTimeout(function() {
   var burst;
   return burst = new Burst({
-    lineWidth: 5,
+    lineWidth: 2,
     lineCap: 'round',
     duration: 500,
     radiusStart: 20,
-    radiusEnd: 100,
-    easing2: 'Sinusoidal.Out',
-    colorMap: ['#ff0', '#0ff', '#f0f']
+    radiusEnd: 40,
+    colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
+    initialRotation: 75,
+    rotation: 30
   });
 }, 1000);
 
