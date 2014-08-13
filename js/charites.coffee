@@ -4,8 +4,10 @@ setTimeout ->
   burst = new Burst
     lineWidth: 5
     lineCap: 'round'
-    start: x: 0,  y: 0
-    end:   x: 600,  y: 600
     duration:  500
+    radiusStart: 20
+    radiusEnd:   200
+    easing2:    'Quadratic.Out'
+    duration2:  700
 
 , 1000

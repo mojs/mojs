@@ -119,6 +119,20 @@ Burst = (function(_super) {
       prop: 'delay',
       def: 0
     });
+    this.easing = this["default"]({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
+    this.easing1 = this["default"]({
+      prop: 'easing1',
+      def: this.easing
+    });
+    this.easing2 = this["default"]({
+      prop: 'easing2',
+      def: this.easing
+    });
+    this.easings1 = this.easing1.split('.');
+    this.easings2 = this.easing2.split('.');
     this.step = (2 * Math.PI) / this.cnt;
     this.size = 2 * this.radiusEnd + 2 * this.lineWidth;
     this.center = this.size / 2;
@@ -147,7 +161,7 @@ Burst = (function(_super) {
       r: this.radiusStart
     }).to({
       r: this.radiusEnd
-    }, this.duration1 * this.s).onUpdate(function() {
+    }, this.duration2 * this.s).onUpdate(function() {
       var angle, i, line, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
       angle = it.angle;
@@ -172,7 +186,7 @@ Burst = (function(_super) {
         }));
       }
       return _results;
-    });
+    }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
     this.tween1 = new this.TWEEN.Tween({
       r: this.radiusStart
     }).to({
@@ -202,7 +216,7 @@ Burst = (function(_super) {
         }));
       }
       return _results;
-    }).chain(this.tween2).start();
+    }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
     return this.h.startAnimationLoop();
   };
 
@@ -356,15 +370,11 @@ setTimeout(function() {
   return burst = new Burst({
     lineWidth: 5,
     lineCap: 'round',
-    start: {
-      x: 0,
-      y: 0
-    },
-    end: {
-      x: 600,
-      y: 600
-    },
-    duration: 500
+    duration: 500,
+    radiusStart: 20,
+    radiusEnd: 200,
+    easing2: 'Quadratic.Out',
+    duration2: 700
   });
 }, 1000);
 
