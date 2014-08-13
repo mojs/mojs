@@ -6,8 +6,8 @@ class Burst extends Byte
 
   vars:->
     @cnt    = @default prop: 'cnt' ,    def: 3
-    @radiusStart = @default prop: 'radiusStart', def: 50
-    @radiusEnd   = @default prop: 'radiusEnd',   def: 100
+    @radiusStart = @default prop: 'radiusStart', def: 100
+    @radiusEnd   = @default prop: 'radiusEnd',   def: 200
     @lineWidth   = @default prop: 'lineWidth',   def: 1
     @lineCap     = @default prop: 'lineCap',     def: 'none'
     @angle       = @default prop: 'angle',       def: 360
@@ -34,7 +34,24 @@ class Burst extends Byte
 
   run:->
     @TWEEN.remove @tween1; it = @
-    
+
+    @tween2= new @TWEEN.Tween({r:@radiusStart}).to({r:@radiusEnd},@duration1*@s)
+      # .delay(@delay*@s)
+      .onUpdate ->
+        it.ctx.clear()
+        angle = it.angle
+        for line, i in it.lines
+          x1 = it.center + Math.cos(angle)*it.radiusEnd
+          y1 = it.center + Math.sin(angle)*it.radiusEnd
+          x = it.center + Math.cos(angle)*@r
+          y = it.center + Math.sin(angle)*@r
+          angle += it.step
+          line.setProp
+            start: {x: x,  y: y}
+            end:   {x: x1, y: y1}
+          # it.line.setProp
+          #   end:{x: @x, y: @y}, opacity: @opacity
+      # .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
 
     @tween1= new @TWEEN.Tween({r:@radiusStart}).to({r:@radiusEnd},@duration1*@s)
       # .delay(@delay*@s)
@@ -53,7 +70,7 @@ class Burst extends Byte
           # it.line.setProp
           #   end:{x: @x, y: @y}, opacity: @opacity
       # .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
-      # .chain(@tween2)
+      .chain(@tween2)
       .start()
 
     

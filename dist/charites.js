@@ -85,11 +85,11 @@ Burst = (function(_super) {
     });
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
-      def: 50
+      def: 100
     });
     this.radiusEnd = this["default"]({
       prop: 'radiusEnd',
-      def: 100
+      def: 200
     });
     this.lineWidth = this["default"]({
       prop: 'lineWidth',
@@ -143,6 +143,36 @@ Burst = (function(_super) {
     var it;
     this.TWEEN.remove(this.tween1);
     it = this;
+    this.tween2 = new this.TWEEN.Tween({
+      r: this.radiusStart
+    }).to({
+      r: this.radiusEnd
+    }, this.duration1 * this.s).onUpdate(function() {
+      var angle, i, line, x, x1, y, y1, _i, _len, _ref, _results;
+      it.ctx.clear();
+      angle = it.angle;
+      _ref = it.lines;
+      _results = [];
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        line = _ref[i];
+        x1 = it.center + Math.cos(angle) * it.radiusEnd;
+        y1 = it.center + Math.sin(angle) * it.radiusEnd;
+        x = it.center + Math.cos(angle) * this.r;
+        y = it.center + Math.sin(angle) * this.r;
+        angle += it.step;
+        _results.push(line.setProp({
+          start: {
+            x: x,
+            y: y
+          },
+          end: {
+            x: x1,
+            y: y1
+          }
+        }));
+      }
+      return _results;
+    });
     this.tween1 = new this.TWEEN.Tween({
       r: this.radiusStart
     }).to({
@@ -172,7 +202,7 @@ Burst = (function(_super) {
         }));
       }
       return _results;
-    }).start();
+    }).chain(this.tween2).start();
     return this.h.startAnimationLoop();
   };
 
