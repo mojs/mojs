@@ -6,7 +6,6 @@ class Byte extends Bit
     super
     @s = 1*h.time 1
     @parent = @o.parent or h.body
-    console.log @o.el
     @el = @o.el or @createEl()
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
 

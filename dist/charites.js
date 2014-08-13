@@ -62,7 +62,7 @@ module.exports = Bit;
 
 
 },{"../helpers":6,"../polyfills":7,"../vendor/tween":8}],2:[function(require,module,exports){
-var BurstLine, Byte, Line,
+var Burst, Byte, Line,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -70,27 +70,26 @@ Byte = require('./byte');
 
 Line = require('./line');
 
-BurstLine = (function(_super) {
-  __extends(BurstLine, _super);
+Burst = (function(_super) {
+  __extends(Burst, _super);
 
-  function BurstLine() {
-    return BurstLine.__super__.constructor.apply(this, arguments);
+  function Burst() {
+    return Burst.__super__.constructor.apply(this, arguments);
   }
 
-  BurstLine.prototype.vars = function() {
-    this.start = this["default"]({
-      prop: 'start',
-      def: {
-        x: 0,
-        y: 0
-      }
+  Burst.prototype.vars = function() {
+    var i, line, _i, _ref, _results;
+    this.cnt = this["default"]({
+      prop: 'cnt',
+      def: 3
     });
-    this.end = this["default"]({
-      prop: 'end',
-      def: {
-        x: 0,
-        y: 0
-      }
+    this.radiusStart = this["default"]({
+      prop: 'radiusStart',
+      def: 50
+    });
+    this.radiusEnd = this["default"]({
+      prop: 'radiusEnd',
+      def: 100
     });
     this.lineWidth = this["default"]({
       prop: 'lineWidth',
@@ -98,7 +97,11 @@ BurstLine = (function(_super) {
     });
     this.lineCap = this["default"]({
       prop: 'lineCap',
-      def: 1
+      def: 'none'
+    });
+    this.angle = this["default"]({
+      prop: 'angle',
+      def: 360
     });
     this.duration = this["default"]({
       prop: 'duration',
@@ -116,98 +119,68 @@ BurstLine = (function(_super) {
       prop: 'delay',
       def: 0
     });
-    this.easing = this["default"]({
-      prop: 'easing',
-      def: 'Linear.None'
-    });
-    this.easing1 = this["default"]({
-      prop: 'easing1',
-      def: this.easing
-    });
-    this.easing2 = this["default"]({
-      prop: 'easing2',
-      def: this.easing
-    });
-    this.easings1 = this.easing1.split('.');
-    this.easings2 = this.easing2.split('.');
-    this.fade = this["default"]({
-      prop: 'fade',
-      def: 'none'
-    });
-    this.sizeX = Math.max(this.end.x, this.start.x);
-    this.sizeY = Math.max(this.end.y, this.start.y);
-    BurstLine.__super__.vars.apply(this, arguments);
-    this.line = new Line({
-      start: this.h.clone(this.start),
-      end: this.h.clone(this.end),
-      lineWidth: this.lineWidth,
-      lineCap: this.lineCap,
-      ctx: this.ctx,
-      color: this.color
-    });
-    return this.easingFun = this.h.bind(this.easingFun, this);
+    this.step = (2 * Math.PI) / this.cnt;
+    this.size = 2 * this.radiusEnd + 2 * this.lineWidth;
+    this.center = this.size / 2;
+    this.sizeX = this.size;
+    this.sizeY = this.size;
+    Burst.__super__.vars.apply(this, arguments);
+    this.lines = [];
+    _results = [];
+    for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      line = new Line({
+        ctx: this.ctx,
+        isClearLess: true,
+        lineWidth: this.lineWidth,
+        lineCap: this.lineCap
+      });
+      _results.push(this.lines.push(line));
+    }
+    return _results;
   };
 
-  BurstLine.prototype.run = function() {
-    var from, it, to;
+  Burst.prototype.run = function() {
+    var it;
     this.TWEEN.remove(this.tween1);
-    this.TWEEN.remove(this.tween2);
     it = this;
-    from = this.h.clone(this.start);
-    from.progress = 0;
-    to = this.h.clone(this.end);
-    to.progress = 1;
-    if (this.fade.match(/out/i)) {
-      to.opacity = 0;
-    }
-    if (this.fade.match(/in/i) && !this.fade.match(/out/i)) {
-      to.opacity = 1;
-    }
-    if ((this.fade != null) && this.fade !== 'none') {
-      from.opacity = .5;
-    }
-    if (this.fade === 'inOut') {
-      from.opacity = 1;
-    }
-    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
-      return it.line.setProp({
-        start: {
-          x: this.x,
-          y: this.y
-        },
-        opacity: this.opacity
-      });
-    }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
-    from = this.h.clone(from);
-    to = this.h.clone(to);
-    from.opacity = 1;
-    to.opacity = 1;
-    if (this.fade.match(/in/i)) {
-      from.opacity = 0;
-    }
-    if (this.fade.match(/out/i) && !this.fade.match(/in/i)) {
-      from.opacity = 1;
-    }
-    if (this.fade.match(/in/i) || this.fade.match(/out/i)) {
-      to.opacity = .5;
-    }
-    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).delay(this.delay * this.s).onUpdate(function() {
-      return it.line.setProp({
-        end: {
-          x: this.x,
-          y: this.y
-        },
-        opacity: this.opacity
-      });
-    }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
+    this.tween1 = new this.TWEEN.Tween({
+      r: this.radiusStart
+    }).to({
+      r: this.radiusEnd
+    }, this.duration1 * this.s).onUpdate(function() {
+      var angle, i, line, x, x1, y, y1, _i, _len, _ref, _results;
+      it.ctx.clear();
+      angle = it.angle;
+      _ref = it.lines;
+      _results = [];
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        line = _ref[i];
+        x1 = it.center + Math.cos(angle) * it.radiusStart;
+        y1 = it.center + Math.sin(angle) * it.radiusStart;
+        x = it.center + Math.cos(angle) * this.r;
+        y = it.center + Math.sin(angle) * this.r;
+        angle += it.step;
+        _results.push(line.setProp({
+          start: {
+            x: x1,
+            y: y1
+          },
+          end: {
+            x: x,
+            y: y
+          }
+        }));
+      }
+      return _results;
+    }).start();
     return this.h.startAnimationLoop();
   };
 
-  return BurstLine;
+  return Burst;
 
 })(Byte);
 
-module.exports = BurstLine;
+module.exports = Burst;
 
 
 },{"./byte":3,"./line":4}],3:[function(require,module,exports){
@@ -230,7 +203,6 @@ Byte = (function(_super) {
     Byte.__super__.vars.apply(this, arguments);
     this.s = 1 * h.time(1);
     this.parent = this.o.parent || h.body;
-    console.log(this.o.el);
     this.el = this.o.el || this.createEl();
     return this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
   };
@@ -309,22 +281,10 @@ Line = (function(_super) {
       prop: 'opacity',
       def: 1
     });
-    this.angle = this["default"]({
-      prop: 'angle',
-      def: 0
+    this.isClearLess = this["default"]({
+      prop: 'isClearLess',
+      def: false
     });
-    this.transformOrigin = this["default"]({
-      prop: 'transform-origin',
-      def: 'center'
-    });
-    this.x = this.end.x - this.start.x;
-    this.y = this.end.y - this.start.y;
-    this.length = Math.sqrt(this.x * this.x + this.y * this.y);
-    this.radius = this.length / 2;
-    this.minX = Math.min(this.start.x, this.end.x);
-    this.maxX = Math.max(this.start.x, this.end.x);
-    this.minY = Math.min(this.start.y, this.end.y);
-    this.maxY = Math.max(this.start.y, this.end.y);
     this.size = {
       width: (this.end.x - this.start.x) + this.lineWidth,
       height: this.end.y - this.start.y
@@ -338,7 +298,7 @@ Line = (function(_super) {
       console.error('Line.render: no context!');
       return;
     }
-    this.ctx.clear();
+    this.isClearLess || this.ctx.clear();
     this.ctx.beginPath();
     this.ctx.moveTo(this.start.x * this.px, this.start.y * this.px);
     this.ctx.lineTo(this.end.x * this.px, this.end.y * this.px);
@@ -357,16 +317,14 @@ module.exports = Line;
 
 
 },{"./bit":1}],5:[function(require,module,exports){
-var Bit, BurstLine;
+var Burst;
 
-BurstLine = require('./bits/burst-line');
-
-Bit = require('./bits/bit');
+Burst = require('./bits/burst');
 
 setTimeout(function() {
   var burst;
-  return burst = new BurstLine({
-    lineWidth: 2,
+  return burst = new Burst({
+    lineWidth: 5,
     lineCap: 'round',
     start: {
       x: 0,
@@ -381,7 +339,7 @@ setTimeout(function() {
 }, 1000);
 
 
-},{"./bits/bit":1,"./bits/burst-line":2}],6:[function(require,module,exports){
+},{"./bits/burst":2}],6:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');

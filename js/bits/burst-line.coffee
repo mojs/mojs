@@ -1,10 +1,6 @@
 Byte = require './byte'
 Line = require './line'
 
-
-# TODO:
-#   fade: 'inOut' fix to 1 in the middle
-
 # OPTIONS
 # start: point/obj -> end: point/obj
 # delay:   int

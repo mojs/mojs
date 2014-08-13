@@ -8,18 +8,19 @@ class Line extends Bit
     @lineWidth= @default prop: 'lineWidth',def: 1
     @lineCap  = @default prop: 'lineCap',  def: 1
     @opacity  = @default prop: 'opacity',  def: 1
-    @angle      = @default prop: 'angle',  def: 0
-    @transformOrigin = @default prop: 'transform-origin', def: 'center'
+    @isClearLess  = @default prop: 'isClearLess',  def: false
+    # @angle      = @default prop: 'angle',  def: 0
+    # @transformOrigin = @default prop: 'transform-origin', def: 'center'
 
-    @x = @end.x - @start.x; @y = @end.y - @start.y
-    @length = Math.sqrt(@x*@x + @y*@y)
-    @radius = @length/2
+    # @x = @end.x - @start.x; @y = @end.y - @start.y
+    # @length = Math.sqrt(@x*@x + @y*@y)
+    # @radius = @length/2
 
-    @minX = Math.min @start.x, @end.x
-    @maxX = Math.max @start.x, @end.x
+    # @minX = Math.min @start.x, @end.x
+    # @maxX = Math.max @start.x, @end.x
 
-    @minY = Math.min @start.y, @end.y
-    @maxY = Math.max @start.y, @end.y
+    # @minY = Math.min @start.y, @end.y
+    # @maxY = Math.max @start.y, @end.y
 
     # @centerX = @minX + (@maxX/2)
     # @centerY = @minY + (@maxY/2)
@@ -37,7 +38,7 @@ class Line extends Bit
   render:->
     # @vars()
     if !@ctx then console.error('Line.render: no context!'); return
-    @ctx.clear()
+    @isClearLess or @ctx.clear()
     # @ctx.save()
     # console.log @angle*Math.PI/180
     # @ctx.translate(@centerX, @centerY)
