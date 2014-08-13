@@ -81,7 +81,7 @@ Burst = (function(_super) {
     var i, line, _i, _ref, _results;
     this.cnt = this["default"]({
       prop: 'cnt',
-      def: 3
+      def: 5
     });
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
@@ -139,11 +139,17 @@ Burst = (function(_super) {
     this.sizeX = this.size;
     this.sizeY = this.size;
     Burst.__super__.vars.apply(this, arguments);
+    this.colorMap = this["default"]({
+      prop: 'colorMap',
+      def: this.color
+    });
     this.lines = [];
     _results = [];
     for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      console.log(this.colorMap[i % this.colorMap.length]);
       line = new Line({
         ctx: this.ctx,
+        color: this.colorMap[i % this.colorMap.length],
         isClearLess: true,
         lineWidth: this.lineWidth,
         lineCap: this.lineCap
@@ -372,9 +378,9 @@ setTimeout(function() {
     lineCap: 'round',
     duration: 500,
     radiusStart: 20,
-    radiusEnd: 200,
-    easing2: 'Quadratic.Out',
-    duration2: 700
+    radiusEnd: 100,
+    easing2: 'Sinusoidal.Out',
+    colorMap: ['#ff0', '#0ff', '#f0f']
   });
 }, 1000);
 

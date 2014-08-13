@@ -5,7 +5,7 @@ Line = require './line'
 class Burst extends Byte
 
   vars:->
-    @cnt    = @default prop: 'cnt' ,    def: 3
+    @cnt    = @default prop: 'cnt' ,    def: 5
     @radiusStart = @default prop: 'radiusStart', def: 100
     @radiusEnd   = @default prop: 'radiusEnd',   def: 200
     @lineWidth   = @default prop: 'lineWidth',   def: 1
@@ -20,8 +20,8 @@ class Burst extends Byte
     @easing1     = @default prop: 'easing1',     def: @easing
     @easing2     = @default prop: 'easing2',     def: @easing
 
-    @easings1    =  @easing1.split '.'
-    @easings2    =  @easing2.split '.'
+    @easings1    = @easing1.split '.'
+    @easings2    = @easing2.split '.'
 
     @step = (2*Math.PI)/@cnt
 
@@ -29,11 +29,14 @@ class Burst extends Byte
     @sizeX = @size; @sizeY = @size
 
     super
+    @colorMap   = @default prop: 'colorMap',    def: @color
 
     @lines = []
     for i in [0...@cnt]
+      console.log @colorMap[i % @colorMap.length]
       line = new Line
         ctx: @ctx
+        color: @colorMap[i % @colorMap.length]
         isClearLess: true
         lineWidth: @lineWidth
         lineCap:   @lineCap

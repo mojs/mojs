@@ -6,8 +6,8 @@ setTimeout ->
     lineCap: 'round'
     duration:  500
     radiusStart: 20
-    radiusEnd:   200
-    easing2:    'Quadratic.Out'
-    duration2:  700
+    radiusEnd:   100
+    easing2:    'Sinusoidal.Out'
+    colorMap: ['#ff0', '#0ff', '#f0f']
 
 , 1000
