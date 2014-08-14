@@ -8,6 +8,8 @@ require('../polyfills');
 TWEEN = require('../vendor/tween');
 
 Bit = (function() {
+  Bit.prototype.oa = {};
+
   Bit.prototype.defaultOptions = {
     x: 0,
     y: 0,
@@ -56,7 +58,12 @@ Bit = (function() {
     var def, prop;
     prop = o.prop;
     def = o.def;
-    return this[prop] = this.o[prop] != null ? this.o[prop] : this[prop] != null ? this[prop] : this.defaultOptions[prop] != null ? this.defaultOptions[prop] : def;
+    return this[prop] = this.oa[prop] != null ? this.oa[prop] : this.o[prop] != null ? this.o[prop] : this[prop] != null ? this[prop] : this.defaultOptions[prop] != null ? this.defaultOptions[prop] : def;
+  };
+
+  Bit.prototype.defaultPart = function(o) {
+    this[o.prop] = null;
+    return this["default"](o);
   };
 
   return Bit;
@@ -146,11 +153,11 @@ Burst = (function(_super) {
       prop: 'rotation',
       def: 0
     });
-    this.rotation1 = this["default"]({
+    this.rotation1 = this.defaultPart({
       prop: 'rotation1',
       def: this.rotation / 2
     });
-    this.rotation2 = this["default"]({
+    this.rotation2 = this.defaultPart({
       prop: 'rotation2',
       def: this.rotation / 2
     });
@@ -175,8 +182,10 @@ Burst = (function(_super) {
     return _results;
   };
 
-  Burst.prototype.run = function() {
+  Burst.prototype.run = function(oa) {
     var from, it, to;
+    this.oa = oa != null ? oa : {};
+    this.h.size(this.oa) && this.vars();
     this.TWEEN.remove(this.tween1);
     it = this;
     from = {
@@ -399,16 +408,22 @@ Burst = require('./bits/burst');
 
 setTimeout(function() {
   var burst;
-  return burst = new Burst({
+  burst = new Burst({
     lineWidth: 2,
     lineCap: 'round',
     duration: 500,
-    radiusStart: 20,
+    radiusStart: 30,
     radiusEnd: 40,
+    cnt: 3,
     colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
     initialRotation: 75,
     rotation: 30
   });
+  return setTimeout(function() {
+    return burst.run({
+      rotation: -30
+    });
+  }, 2000);
 }, 1000);
 
 
@@ -495,6 +510,16 @@ Helpers = (function() {
       };
     }
     return colorObj;
+  };
+
+  Helpers.prototype.size = function(obj) {
+    var i, key, value;
+    i = 0;
+    for (key in obj) {
+      value = obj[key];
+      i++;
+    }
+    return i;
   };
 
   Helpers.prototype.lock = function(o) {

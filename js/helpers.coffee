@@ -49,6 +49,12 @@ class Helpers
         b: parseInt(b, 16)
     colorObj
 
+  size:(obj)->
+    i = 0
+    for key, value of obj
+      i++
+    i
+
   lock:(o)->
     !@[o.lock] and o.fun()
     @[o.lock] = true

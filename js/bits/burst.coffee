@@ -25,8 +25,8 @@ class Burst extends Byte
 
     @initialRotation = @default prop: 'initialRotation', def: 0
     @rotation        = @default prop: 'rotation',        def: 0
-    @rotation1       = @default prop: 'rotation1',       def: @rotation/2
-    @rotation2       = @default prop: 'rotation2',       def: @rotation/2
+    @rotation1       = @defaultPart prop: 'rotation1',       def: @rotation/2
+    @rotation2       = @defaultPart prop: 'rotation2',       def: @rotation/2
 
     @step = (2*Math.PI)/@cnt
 
@@ -45,7 +45,9 @@ class Burst extends Byte
         lineCap:   @lineCap
       @lines.push line
 
-  run:->
+  run:(@oa={})->
+    @h.size(@oa) and @vars()
+
     @TWEEN.remove @tween1; it = @
 
     from = r: @radiusStart, deg: @rotation1

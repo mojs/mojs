@@ -3,6 +3,7 @@ require '../polyfills'
 TWEEN  = require '../vendor/tween'
 
 class Bit
+  oa: {}
   defaultOptions:
     x:   0
     y:   0
@@ -32,13 +33,19 @@ class Bit
 
   default:(o)->
     prop = o.prop; def = o.def
-    @[prop] = if @o[prop]?
+    @[prop] = if @oa[prop]?
+      @oa[prop]
+    else if @o[prop]?
       @o[prop]
     else if @[prop]?
       @[prop]
     else if @defaultOptions[prop]?
       @defaultOptions[prop]
     else def
+
+  defaultPart:(o)->
+    @[o.prop] = null
+    @default o
 
 module.exports = Bit
 
