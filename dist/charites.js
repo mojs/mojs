@@ -19,9 +19,7 @@ Bit = (function() {
   function Bit(o) {
     this.o = o != null ? o : {};
     this.vars();
-    if (typeof this.run === "function") {
-      this.run();
-    }
+    this.o.isRunLess || (typeof this.run === "function" ? this.run() : void 0);
   }
 
   Bit.prototype.vars = function() {
@@ -93,7 +91,7 @@ Burst = (function(_super) {
     var i, line, _i, _ref, _results;
     this.cnt = this["default"]({
       prop: 'cnt',
-      def: 4
+      def: 3
     });
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
@@ -161,7 +159,8 @@ Burst = (function(_super) {
       prop: 'rotation2',
       def: this.rotation / 2
     });
-    this.step = (2 * Math.PI) / this.cnt;
+    this.step = this.angle / (this.cnt - 1);
+    console.log(this.step);
     this.size = 2 * this.radiusEnd + 2 * this.lineWidth;
     this.center = this.size / 2;
     this.sizeX = this.size;
@@ -199,18 +198,17 @@ Burst = (function(_super) {
     this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
-      angle = it.angle;
+      angle = 0;
       _ref = it.lines;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         line = _ref[i];
-        rotation = angle + ((it.initialRotation + this.deg) * it.DEG);
+        rotation = (angle + it.initialRotation + this.deg) * it.DEG;
         x1 = it.center + Math.cos(rotation) * it.radiusEnd;
         y1 = it.center + Math.sin(rotation) * it.radiusEnd;
         x = it.center + Math.cos(rotation) * this.r;
         y = it.center + Math.sin(rotation) * this.r;
-        angle += it.step;
-        _results.push(line.setProp({
+        line.setProp({
           start: {
             x: x,
             y: y
@@ -219,7 +217,8 @@ Burst = (function(_super) {
             x: x1,
             y: y1
           }
-        }));
+        });
+        _results.push(angle += it.step);
       }
       return _results;
     }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
@@ -234,18 +233,17 @@ Burst = (function(_super) {
     this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
-      angle = it.angle;
+      angle = 0;
       _ref = it.lines;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         line = _ref[i];
-        rotation = angle + ((it.initialRotation + this.deg) * it.DEG);
+        rotation = (angle + it.initialRotation + this.deg) * it.DEG;
         x1 = it.center + Math.cos(rotation) * it.radiusStart;
         y1 = it.center + Math.sin(rotation) * it.radiusStart;
         x = it.center + Math.cos(rotation) * this.r;
         y = it.center + Math.sin(rotation) * this.r;
-        angle += it.step;
-        _results.push(line.setProp({
+        line.setProp({
           start: {
             x: x1,
             y: y1
@@ -254,7 +252,8 @@ Burst = (function(_super) {
             x: x,
             y: y
           }
-        }));
+        });
+        _results.push(angle += it.step);
       }
       return _results;
     }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
@@ -402,29 +401,28 @@ module.exports = Line;
 
 
 },{"./bit":1}],5:[function(require,module,exports){
-var Burst;
+var Burst, burst;
 
 Burst = require('./bits/burst');
 
-setTimeout(function() {
-  var burst;
-  burst = new Burst({
-    lineWidth: 2,
-    lineCap: 'round',
-    duration: 500,
-    radiusStart: 30,
-    radiusEnd: 40,
-    cnt: 3,
-    colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
-    initialRotation: 75,
-    rotation: 30
-  });
-  return setTimeout(function() {
-    return burst.run({
-      rotation: -30
-    });
-  }, 2000);
-}, 1000);
+burst = new Burst({
+  lineWidth: 2,
+  lineCap: 'round',
+  duration: 300,
+  radiusStart: 15,
+  radiusEnd: 30,
+  cnt: 5,
+  angle: 180,
+  initialRotation: 180,
+  rotation: 90,
+  isRunLess: true
+});
+
+window.addEventListener('click', function(e) {
+  burst.el.style.top = "" + (e.y - (burst.size / 2)) + "px";
+  burst.el.style.left = "" + (e.x - (burst.size / 2)) + "px";
+  return burst.run();
+});
 
 
 },{"./bits/burst":2}],6:[function(require,module,exports){

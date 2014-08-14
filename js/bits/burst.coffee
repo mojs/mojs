@@ -5,7 +5,7 @@ Line = require './line'
 class Burst extends Byte
 
   vars:->
-    @cnt    = @default prop: 'cnt' , def: 4
+    @cnt    = @default prop: 'cnt' , def: 3
     @radiusStart = @default prop: 'radiusStart', def: 100
     @radiusEnd   = @default prop: 'radiusEnd',   def: 200
     @lineWidth   = @default prop: 'lineWidth',   def: 1
@@ -28,7 +28,8 @@ class Burst extends Byte
     @rotation1       = @defaultPart prop: 'rotation1',       def: @rotation/2
     @rotation2       = @defaultPart prop: 'rotation2',       def: @rotation/2
 
-    @step = (2*Math.PI)/@cnt
+    @step = @angle/(@cnt-1)
+    console.log @step
 
     @size = 2*@radiusEnd + 2*@lineWidth; @center = @size/2
     @sizeX = @size; @sizeY = @size
@@ -56,17 +57,17 @@ class Burst extends Byte
       # .delay(@delay*@s)
       .onUpdate ->
         it.ctx.clear()
-        angle = it.angle
+        angle = 0
         for line, i in it.lines
-          rotation = angle+((it.initialRotation+@deg)*it.DEG)
+          rotation = (angle+it.initialRotation+@deg)*it.DEG
           x1 = it.center + Math.cos(rotation)*it.radiusEnd
           y1 = it.center + Math.sin(rotation)*it.radiusEnd
           x = it.center + Math.cos(rotation)*@r
           y = it.center + Math.sin(rotation)*@r
-          angle += it.step
           line.setProp
             start: {x: x,  y: y}
             end:   {x: x1, y: y1}
+          angle += it.step
       .easing @TWEEN.Easing[@easings2[0]][@easings2[1]]
 
     from = r: @radiusStart, deg: 0
@@ -75,17 +76,17 @@ class Burst extends Byte
       # .delay(@delay*@s)
       .onUpdate ->
         it.ctx.clear()
-        angle = it.angle
+        angle = 0
         for line, i in it.lines
-          rotation = angle+((it.initialRotation+@deg)*it.DEG)
+          rotation = (angle+it.initialRotation+@deg)*it.DEG
           x1 = it.center + Math.cos(rotation)*it.radiusStart
           y1 = it.center + Math.sin(rotation)*it.radiusStart
           x = it.center + Math.cos(rotation)*@r
           y = it.center + Math.sin(rotation)*@r
-          angle += it.step
           line.setProp
             start: {x: x1, y: y1}
             end:   {x: x, y: y}
+          angle += it.step
       .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
       .chain(@tween2)
       .start()

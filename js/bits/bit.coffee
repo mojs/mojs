@@ -9,7 +9,7 @@ class Bit
     y:   0
     deg: 0
 
-  constructor:(@o={})-> @vars(); @run?()
+  constructor:(@o={})-> @vars(); @o.isRunLess or @run?()
 
   vars:->
     # get CANVAS context
