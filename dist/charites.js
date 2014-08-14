@@ -88,7 +88,7 @@ Burst = (function(_super) {
   }
 
   Burst.prototype.vars = function() {
-    var i, line, _i, _ref, _results;
+    var i, line, maxEndRadius, _i, _ref, _results;
     this.cnt = this["default"]({
       prop: 'cnt',
       def: 3
@@ -100,6 +100,22 @@ Burst = (function(_super) {
     this.radiusEnd = this["default"]({
       prop: 'radiusEnd',
       def: 200
+    });
+    this.radiusStartX = this.defaultPart({
+      prop: 'radiusStartX',
+      def: this.radiusStart
+    });
+    this.radiusStartY = this.defaultPart({
+      prop: 'radiusStartY',
+      def: this.radiusStart
+    });
+    this.radiusEndX = this.defaultPart({
+      prop: 'radiusEndX',
+      def: this.radiusEnd
+    });
+    this.radiusEndY = this.defaultPart({
+      prop: 'radiusEndY',
+      def: this.radiusEnd
     });
     this.lineWidth = this["default"]({
       prop: 'lineWidth',
@@ -117,11 +133,11 @@ Burst = (function(_super) {
       prop: 'duration',
       def: 400
     });
-    this.duration1 = this["default"]({
+    this.duration1 = this.defaultPart({
       prop: 'duration1',
       def: this.duration / 2
     });
-    this.duration2 = this["default"]({
+    this.duration2 = this.defaultPart({
       prop: 'duration2',
       def: this.duration / 2
     });
@@ -133,11 +149,11 @@ Burst = (function(_super) {
       prop: 'easing',
       def: 'Linear.None'
     });
-    this.easing1 = this["default"]({
+    this.easing1 = this.defaultPart({
       prop: 'easing1',
       def: this.easing
     });
-    this.easing2 = this["default"]({
+    this.easing2 = this.defaultPart({
       prop: 'easing2',
       def: this.easing
     });
@@ -159,9 +175,10 @@ Burst = (function(_super) {
       prop: 'rotation2',
       def: this.rotation / 2
     });
-    this.step = this.angle / (this.cnt - 1);
+    this.step = this.angle / this.cnt;
     console.log(this.step);
-    this.size = 2 * this.radiusEnd + 2 * this.lineWidth;
+    maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
+    this.size = 2 * maxEndRadius + 2 * this.lineWidth;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -188,11 +205,13 @@ Burst = (function(_super) {
     this.TWEEN.remove(this.tween1);
     it = this;
     from = {
-      r: this.radiusStart,
+      rx: this.radiusStartX,
+      ry: this.radiusStartY,
       deg: this.rotation1
     };
     to = {
-      r: this.radiusEnd,
+      rx: this.radiusEndX,
+      ry: this.radiusEndY,
       deg: this.rotation1 + this.rotation2
     };
     this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
@@ -204,10 +223,10 @@ Burst = (function(_super) {
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         line = _ref[i];
         rotation = (angle + it.initialRotation + this.deg) * it.DEG;
-        x1 = it.center + Math.cos(rotation) * it.radiusEnd;
-        y1 = it.center + Math.sin(rotation) * it.radiusEnd;
-        x = it.center + Math.cos(rotation) * this.r;
-        y = it.center + Math.sin(rotation) * this.r;
+        x1 = it.center + Math.cos(rotation) * it.radiusEndX;
+        y1 = it.center + Math.sin(rotation) * it.radiusEndY;
+        x = it.center + Math.cos(rotation) * this.rx;
+        y = it.center + Math.sin(rotation) * this.ry;
         line.setProp({
           start: {
             x: x,
@@ -223,11 +242,13 @@ Burst = (function(_super) {
       return _results;
     }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
     from = {
-      r: this.radiusStart,
+      rx: this.radiusStartX,
+      ry: this.radiusStartY,
       deg: 0
     };
     to = {
-      r: this.radiusEnd,
+      rx: this.radiusEndX,
+      ry: this.radiusEndY,
       deg: this.rotation1
     };
     this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).onUpdate(function() {
@@ -239,10 +260,10 @@ Burst = (function(_super) {
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         line = _ref[i];
         rotation = (angle + it.initialRotation + this.deg) * it.DEG;
-        x1 = it.center + Math.cos(rotation) * it.radiusStart;
-        y1 = it.center + Math.sin(rotation) * it.radiusStart;
-        x = it.center + Math.cos(rotation) * this.r;
-        y = it.center + Math.sin(rotation) * this.r;
+        x1 = it.center + Math.cos(rotation) * it.radiusStartX;
+        y1 = it.center + Math.sin(rotation) * it.radiusStartY;
+        x = it.center + Math.cos(rotation) * this.rx;
+        y = it.center + Math.sin(rotation) * this.ry;
         line.setProp({
           start: {
             x: x1,
@@ -408,13 +429,13 @@ Burst = require('./bits/burst');
 burst = new Burst({
   lineWidth: 2,
   lineCap: 'round',
-  duration: 300,
-  radiusStart: 15,
-  radiusEnd: 30,
-  cnt: 5,
-  angle: 180,
-  initialRotation: 180,
-  rotation: 90,
+  duration: 1000,
+  radiusStart: 5,
+  radiusStartX: 25,
+  radiusEnd: 50,
+  radiusEndX: 600,
+  cnt: 3,
+  rotation: 360,
   isRunLess: true
 });
 
