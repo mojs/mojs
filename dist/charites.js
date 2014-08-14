@@ -427,14 +427,13 @@ var Burst, burst;
 Burst = require('./bits/burst');
 
 burst = new Burst({
-  lineWidth: 2,
+  lineWidth: 1,
   lineCap: 'round',
   duration: 1000,
   radiusStart: 5,
-  radiusStartX: 25,
   radiusEnd: 50,
-  radiusEndX: 600,
   cnt: 3,
+  angle: 180,
   rotation: 360,
   isRunLess: true
 });

@@ -45,6 +45,7 @@ class Line extends Bit
     # @ctx.rotate(@angle*(Math.PI/180))
 
     @ctx.beginPath()
+    # @ctx.setLineDash([100])
 
     @ctx.moveTo  (@start.x)*@px, (@start.y)*@px
     @ctx.lineTo  (@end.x)*@px,   (@end.y)*@px
