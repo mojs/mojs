@@ -1,7 +1,7 @@
 TWEEN  = require './vendor/tween'
 
 class Helpers
-  pixel: 1
+  pixel: 2
   # SHORTCUTS
   doc:  document
   body: document.body
@@ -54,6 +54,14 @@ class Helpers
     for key, value of obj
       i++
     i
+
+  isSizeChange:(o)->
+    isRadius = o.radiusStart or o.radiusEnd
+    isRadiusAxes1 = o.radiusStartX or o.radiusStartY
+    isRadiusAxes2 = o.radiusEndX or o.radiusEndX
+    isLineWidth = o.lineWidth or o.lineWidthMiddle or o.lineWidthEnd
+
+    isRadius or isRadiusAxes1 or isRadiusAxes2 or isLineWidth
 
   lock:(o)->
     !@[o.lock] and o.fun()

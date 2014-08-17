@@ -201,7 +201,10 @@ Burst = (function(_super) {
     this.sizeX = this.size;
     this.sizeY = this.size;
     Burst.__super__.vars.apply(this, arguments);
-    this.lines = [];
+    if (this.lines == null) {
+      this.lines = [];
+    }
+    this.lines.length = 0;
     _results = [];
     for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       line = new Line({
@@ -220,6 +223,7 @@ Burst = (function(_super) {
     var from, it, to;
     this.oa = oa != null ? oa : {};
     this.h.size(this.oa) && this.vars();
+    this.h.isSizeChange(this.oa) && this.setElSize();
     this.TWEEN.remove(this.tween1);
     it = this;
     from = {
@@ -332,7 +336,7 @@ Byte = (function(_super) {
     Byte.__super__.vars.apply(this, arguments);
     this.s = 1 * h.time(1);
     this.parent = this.o.parent || h.body;
-    this.el = this.o.el || this.createEl();
+    this.el = this.oa.el || this.o.el || this.el || this.createEl();
     return this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
   };
 
@@ -456,17 +460,20 @@ burst = new Burst({
   lineWidthEnd: 0,
   lineCap: 'round',
   radiusStart: 10,
-  radiusEnd: 150,
+  radiusEnd: 50,
   cnt: 5,
   colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
-  rotation: -30,
+  rotation: -130,
   isRunLess: true
 });
 
 window.addEventListener('click', function(e) {
   burst.el.style.top = "" + (e.y - (burst.size / 2)) + "px";
   burst.el.style.left = "" + (e.x - (burst.size / 2)) + "px";
-  return burst.run();
+  return burst.run({
+    radiusEnd: 100,
+    cnt: 8
+  });
 });
 
 
@@ -476,7 +483,7 @@ var Helpers, TWEEN;
 TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
-  Helpers.prototype.pixel = 1;
+  Helpers.prototype.pixel = 2;
 
   Helpers.prototype.doc = document;
 
@@ -563,6 +570,15 @@ Helpers = (function() {
       i++;
     }
     return i;
+  };
+
+  Helpers.prototype.isSizeChange = function(o) {
+    var isLineWidth, isRadius, isRadiusAxes1, isRadiusAxes2;
+    isRadius = o.radiusStart || o.radiusEnd;
+    isRadiusAxes1 = o.radiusStartX || o.radiusStartY;
+    isRadiusAxes2 = o.radiusEndX || o.radiusEndX;
+    isLineWidth = o.lineWidth || o.lineWidthMiddle || o.lineWidthEnd;
+    return isRadius || isRadiusAxes1 || isRadiusAxes2 || isLineWidth;
   };
 
   Helpers.prototype.lock = function(o) {

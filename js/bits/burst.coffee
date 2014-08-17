@@ -46,7 +46,6 @@ class Burst extends Byte
       if @lineWidth > @lineWidthEnd
         @lineWidthMiddle = @lineWidth - @lineWidthEnd/2
 
-
     angleCnt = if @angle % 360 is 0 then @cnt else @cnt-1
     @step = @angle/angleCnt
 
@@ -55,10 +54,11 @@ class Burst extends Byte
     @size = 2*maxEndRadius + maxLineWidth
     @center = @size/2
     @sizeX = @size; @sizeY = @size
-
+    
     super
 
-    @lines = []
+    @lines ?= []
+    @lines.length = 0
     for i in [0...@cnt]
       line = new Line
         ctx: @ctx
@@ -70,6 +70,7 @@ class Burst extends Byte
 
   run:(@oa={})->
     @h.size(@oa) and @vars()
+    @h.isSizeChange(@oa) and @setElSize()
 
     @TWEEN.remove @tween1; it = @
 
