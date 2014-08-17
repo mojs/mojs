@@ -15,7 +15,10 @@ class Burst extends Byte
     @radiusEndX  = @defaultPart prop: 'radiusEndX', def: @radiusEnd
     @radiusEndY  = @defaultPart prop: 'radiusEndY', def: @radiusEnd
 
-    @lineWidth   = @default prop: 'lineWidth',   def: 1
+    @lineWidth      = @default prop: 'lineWidth',   def: 1
+    @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
+    @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
+
     @lineCap     = @default prop: 'lineCap',     def: 'none'
     @angle       = @default prop: 'angle',       def: 360
     @angle       = if @angle > 360 then 360 else @angle
@@ -36,12 +39,21 @@ class Burst extends Byte
     @rotation1       = @defaultPart prop: 'rotation1',       def: @rotation/2
     @rotation2       = @defaultPart prop: 'rotation2',       def: @rotation/2
 
+    if !@lineWidthMiddle
+      if @lineWidth < @lineWidthEnd
+        @lineWidthMiddle = @lineWidth + @lineWidthEnd/2
+
+      if @lineWidth > @lineWidthEnd
+        @lineWidthMiddle = @lineWidth - @lineWidthEnd/2
+
 
     angleCnt = if @angle % 360 is 0 then @cnt else @cnt-1
     @step = @angle/angleCnt
 
     maxEndRadius = Math.max @radiusEndX, @radiusEndY
-    @size = 2*maxEndRadius + 2*@lineWidth; @center = @size/2
+    maxLineWidth = Math.max @lineWidth, @lineWidthMiddle, @lineWidthEnd
+    @size = 2*maxEndRadius + maxLineWidth
+    @center = @size/2
     @sizeX = @size; @sizeY = @size
 
     super
@@ -61,8 +73,17 @@ class Burst extends Byte
 
     @TWEEN.remove @tween1; it = @
 
-    from = rx: @radiusStartX, ry: @radiusStartY, deg: @rotation1
-    to   = rx: @radiusEndX, ry: @radiusEndY, deg: @rotation1+@rotation2
+    from =
+      rx: @radiusStartX
+      ry: @radiusStartY
+      deg: @rotation1
+      lineWidth: @lineWidthMiddle
+    to =
+      rx: @radiusEndX
+      ry: @radiusEndY
+      deg: @rotation1+@rotation2
+      lineWidth: @lineWidthEnd
+
     @tween2= new @TWEEN.Tween(from).to(to,@duration2*@s)
       # .delay(@delay*@s)
       .onUpdate ->
@@ -77,11 +98,21 @@ class Burst extends Byte
           line.setProp
             start: {x: x,  y: y}
             end:   {x: x1, y: y1}
+            lineWidth: @lineWidth
           angle += it.step
       .easing @TWEEN.Easing[@easings2[0]][@easings2[1]]
 
-    from = rx: @radiusStartX, ry: @radiusStartY, deg: 0
-    to   = rx: @radiusEndX, ry: @radiusEndY, deg: @rotation1
+    from =
+      rx: @radiusStartX
+      ry: @radiusStartY
+      lineWidth: @lineWidth
+      deg: 0
+    to =
+      rx: @radiusEndX
+      ry: @radiusEndY
+      deg: @rotation1
+      lineWidth: @lineWidthMiddle
+
     @tween1= new @TWEEN.Tween(from).to(to,@duration1*@s)
       # .delay(@delay*@s)
       .onUpdate ->
@@ -96,6 +127,7 @@ class Burst extends Byte
           line.setProp
             start: {x: x1, y: y1}
             end:   {x: x, y: y}
+            lineWidth: @lineWidth
           angle += it.step
       .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
       .chain(@tween2)

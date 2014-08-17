@@ -88,7 +88,7 @@ Burst = (function(_super) {
   }
 
   Burst.prototype.vars = function() {
-    var angleCnt, i, line, maxEndRadius, _i, _ref, _results;
+    var angleCnt, i, line, maxEndRadius, maxLineWidth, _i, _ref, _results;
     this.cnt = this["default"]({
       prop: 'cnt',
       def: 3
@@ -120,6 +120,14 @@ Burst = (function(_super) {
     this.lineWidth = this["default"]({
       prop: 'lineWidth',
       def: 1
+    });
+    this.lineWidthMiddle = this["default"]({
+      prop: 'lineWidthMiddle',
+      def: null
+    });
+    this.lineWidthEnd = this["default"]({
+      prop: 'lineWidthEnd',
+      def: this.lineWidth
     });
     this.lineCap = this["default"]({
       prop: 'lineCap',
@@ -176,10 +184,19 @@ Burst = (function(_super) {
       prop: 'rotation2',
       def: this.rotation / 2
     });
+    if (!this.lineWidthMiddle) {
+      if (this.lineWidth < this.lineWidthEnd) {
+        this.lineWidthMiddle = this.lineWidth + this.lineWidthEnd / 2;
+      }
+      if (this.lineWidth > this.lineWidthEnd) {
+        this.lineWidthMiddle = this.lineWidth - this.lineWidthEnd / 2;
+      }
+    }
     angleCnt = this.angle % 360 === 0 ? this.cnt : this.cnt - 1;
     this.step = this.angle / angleCnt;
     maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
-    this.size = 2 * maxEndRadius + 2 * this.lineWidth;
+    maxLineWidth = Math.max(this.lineWidth, this.lineWidthMiddle, this.lineWidthEnd);
+    this.size = 2 * maxEndRadius + maxLineWidth;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -208,12 +225,14 @@ Burst = (function(_super) {
     from = {
       rx: this.radiusStartX,
       ry: this.radiusStartY,
-      deg: this.rotation1
+      deg: this.rotation1,
+      lineWidth: this.lineWidthMiddle
     };
     to = {
       rx: this.radiusEndX,
       ry: this.radiusEndY,
-      deg: this.rotation1 + this.rotation2
+      deg: this.rotation1 + this.rotation2,
+      lineWidth: this.lineWidthEnd
     };
     this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
@@ -236,7 +255,8 @@ Burst = (function(_super) {
           end: {
             x: x1,
             y: y1
-          }
+          },
+          lineWidth: this.lineWidth
         });
         _results.push(angle += it.step);
       }
@@ -245,12 +265,14 @@ Burst = (function(_super) {
     from = {
       rx: this.radiusStartX,
       ry: this.radiusStartY,
+      lineWidth: this.lineWidth,
       deg: 0
     };
     to = {
       rx: this.radiusEndX,
       ry: this.radiusEndY,
-      deg: this.rotation1
+      deg: this.rotation1,
+      lineWidth: this.lineWidthMiddle
     };
     this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
@@ -273,7 +295,8 @@ Burst = (function(_super) {
           end: {
             x: x,
             y: y
-          }
+          },
+          lineWidth: this.lineWidth
         });
         _results.push(angle += it.step);
       }
@@ -428,13 +451,15 @@ var Burst, burst;
 Burst = require('./bits/burst');
 
 burst = new Burst({
-  lineWidth: 1,
+  lineWidth: 10,
+  lineWidthMiddle: 80,
+  lineWidthEnd: 0,
   lineCap: 'round',
-  duration: 5000,
   radiusStart: 10,
-  radiusEnd: 50,
+  radiusEnd: 150,
   cnt: 5,
-  angle: 90,
+  colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
+  rotation: -30,
   isRunLess: true
 });
 

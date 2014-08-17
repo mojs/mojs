@@ -21,20 +21,22 @@ Burst = require './bits/burst'
 # , 1000
 
 burst = new Burst
-  lineWidth: 1
+  lineWidth: 10
+  lineWidthMiddle: 80
+  lineWidthEnd: 0
   lineCap: 'round'
-  duration:  5000
+  # duration:  5000
   # duration2:  2000
   radiusStart: 10
   # radiusStartX:25
-  radiusEnd:   50
+  radiusEnd:   150
   # radiusEndX:  100
   cnt: 5
-  angle: 90
+  # angle: 90
   # easing2:    'Bounce.Out'
-  # colorMap: ['#ff0', '#0ff', '#f0f', '#0ff']
+  colorMap: ['#ff0', '#0ff', '#f0f', '#0ff']
   # initialRotation: 180
-  # rotation: 360
+  rotation: -30
   isRunLess: true
 
 
