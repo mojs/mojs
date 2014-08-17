@@ -461,6 +461,8 @@ burst = new Burst({
   lineCap: 'round',
   radiusStart: 10,
   radiusEnd: 50,
+  radiusEndX: 200,
+  opacity: .25,
   cnt: 5,
   colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
   rotation: -130,
@@ -483,7 +485,7 @@ var Helpers, TWEEN;
 TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
-  Helpers.prototype.pixel = 2;
+  Helpers.prototype.pixel = 1;
 
   Helpers.prototype.doc = document;
 
@@ -638,6 +640,34 @@ module.exports = (function() {
 
 },{}],8:[function(require,module,exports){
 ;(function(undefined){
+
+
+	
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+ 
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+	
 
 	/**
 	 * Tween.js - Licensed under the MIT license

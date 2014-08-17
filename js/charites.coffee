@@ -30,7 +30,8 @@ burst = new Burst
   radiusStart: 10
   # radiusStartX:25
   radiusEnd:   50
-  # radiusEndX:  100
+  radiusEndX:  200
+  opacity: .25
   cnt: 5
   # angle: 90
   # easing2:    'Bounce.Out'

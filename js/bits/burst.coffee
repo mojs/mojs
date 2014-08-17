@@ -117,6 +117,7 @@ class Burst extends Byte
     @tween1= new @TWEEN.Tween(from).to(to,@duration1*@s)
       # .delay(@delay*@s)
       .onUpdate ->
+        # console.log @
         it.ctx.clear()
         angle = 0
         for line, i in it.lines
