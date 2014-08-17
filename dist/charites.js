@@ -88,7 +88,7 @@ Burst = (function(_super) {
   }
 
   Burst.prototype.vars = function() {
-    var i, line, maxEndRadius, _i, _ref, _results;
+    var angleCnt, i, line, maxEndRadius, _i, _ref, _results;
     this.cnt = this["default"]({
       prop: 'cnt',
       def: 3
@@ -129,6 +129,7 @@ Burst = (function(_super) {
       prop: 'angle',
       def: 360
     });
+    this.angle = this.angle > 360 ? 360 : this.angle;
     this.duration = this["default"]({
       prop: 'duration',
       def: 400
@@ -175,8 +176,8 @@ Burst = (function(_super) {
       prop: 'rotation2',
       def: this.rotation / 2
     });
-    this.step = this.angle / this.cnt;
-    console.log(this.step);
+    angleCnt = this.angle % 360 === 0 ? this.cnt : this.cnt - 1;
+    this.step = this.angle / angleCnt;
     maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
     this.size = 2 * maxEndRadius + 2 * this.lineWidth;
     this.center = this.size / 2;
@@ -429,12 +430,11 @@ Burst = require('./bits/burst');
 burst = new Burst({
   lineWidth: 1,
   lineCap: 'round',
-  duration: 1000,
-  radiusStart: 5,
+  duration: 5000,
+  radiusStart: 10,
   radiusEnd: 50,
-  cnt: 3,
-  angle: 180,
-  rotation: 360,
+  cnt: 5,
+  angle: 90,
   isRunLess: true
 });
 
@@ -451,7 +451,7 @@ var Helpers, TWEEN;
 TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
-  Helpers.prototype.pixel = 2;
+  Helpers.prototype.pixel = 1;
 
   Helpers.prototype.doc = document;
 

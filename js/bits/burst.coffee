@@ -18,6 +18,7 @@ class Burst extends Byte
     @lineWidth   = @default prop: 'lineWidth',   def: 1
     @lineCap     = @default prop: 'lineCap',     def: 'none'
     @angle       = @default prop: 'angle',       def: 360
+    @angle       = if @angle > 360 then 360 else @angle
     @duration    = @default prop: 'duration',    def: 400
     @duration1   = @defaultPart prop: 'duration1',   def: @duration/2
     @duration2   = @defaultPart prop: 'duration2',   def: @duration/2
@@ -35,8 +36,9 @@ class Burst extends Byte
     @rotation1       = @defaultPart prop: 'rotation1',       def: @rotation/2
     @rotation2       = @defaultPart prop: 'rotation2',       def: @rotation/2
 
-    @step = @angle/(@cnt)
-    console.log @step
+
+    angleCnt = if @angle % 360 is 0 then @cnt else @cnt-1
+    @step = @angle/angleCnt
 
     maxEndRadius = Math.max @radiusEndX, @radiusEndY
     @size = 2*maxEndRadius + 2*@lineWidth; @center = @size/2

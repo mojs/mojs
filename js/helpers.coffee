@@ -1,7 +1,7 @@
 TWEEN  = require './vendor/tween'
 
 class Helpers
-  pixel: 2
+  pixel: 1
   # SHORTCUTS
   doc:  document
   body: document.body
