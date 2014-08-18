@@ -464,7 +464,6 @@ var Burst, burst;
 Burst = require('./bits/burst');
 
 burst = new Burst({
-  delay2: 1000,
   lineWidth: 10,
   lineWidthMiddle: 80,
   lineWidthEnd: 0,
