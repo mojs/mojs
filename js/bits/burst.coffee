@@ -3,7 +3,6 @@ Line = require './line'
 
 
 class Burst extends Byte
-
   vars:->
     @cnt    = @default prop: 'cnt' , def: 3
     @radiusStart = @default prop: 'radiusStart', def: 100
@@ -88,7 +87,7 @@ class Burst extends Byte
       deg: @rotation1+@rotation2
       lineWidth: @lineWidthEnd
 
-    @tween2= new @TWEEN.Tween(from).to(to,@duration2*@s)
+    @tween2 = new @TWEEN.Tween(from).to(to,@duration2*@s)
       .delay(@delay2*@s)
       .onUpdate ->
         it.ctx.clear()
@@ -117,10 +116,9 @@ class Burst extends Byte
       deg: @rotation1
       lineWidth: @lineWidthMiddle
 
-    @tween1= new @TWEEN.Tween(from).to(to,@duration1*@s)
+    @tween1 = new @TWEEN.Tween(from).to(to,@duration1*@s)
       .delay(@delay1*@s)
       .onUpdate ->
-        # console.log @
         it.ctx.clear()
         angle = 0
         for line, i in it.lines
@@ -137,7 +135,6 @@ class Burst extends Byte
       .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
       .chain(@tween2)
       .start()
-
     
     @h.startAnimationLoop()
 
