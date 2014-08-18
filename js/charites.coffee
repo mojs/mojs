@@ -21,6 +21,8 @@ Burst = require './bits/burst'
 # , 1000
 
 burst = new Burst
+  # delay1: 1000
+  delay2: 1000
   lineWidth: 10
   lineWidthMiddle: 80
   lineWidthEnd: 0

@@ -25,7 +25,10 @@ class Burst extends Byte
     @duration    = @default prop: 'duration',    def: 400
     @duration1   = @defaultPart prop: 'duration1',   def: @duration/2
     @duration2   = @defaultPart prop: 'duration2',   def: @duration/2
-    @delay       = @default prop: 'delay',       def: 0
+    
+    @delay       = @default prop: 'delay',        def: 0
+    @delay1      = @default prop: 'delay1',       def: @delay
+    @delay2      = @default prop: 'delay2',       def: 0
 
     @easing      = @default prop: 'easing',      def: 'Linear.None'
     @easing1     = @defaultPart prop: 'easing1',     def: @easing
@@ -72,7 +75,7 @@ class Burst extends Byte
     @h.size(@oa) and @vars()
     @h.isSizeChange(@oa) and @setElSize()
 
-    @TWEEN.remove @tween1; it = @
+    @TWEEN.remove @tween1; @TWEEN.remove @tween2; it = @
 
     from =
       rx: @radiusStartX
@@ -86,7 +89,7 @@ class Burst extends Byte
       lineWidth: @lineWidthEnd
 
     @tween2= new @TWEEN.Tween(from).to(to,@duration2*@s)
-      # .delay(@delay*@s)
+      .delay(@delay2*@s)
       .onUpdate ->
         it.ctx.clear()
         angle = 0
@@ -115,7 +118,7 @@ class Burst extends Byte
       lineWidth: @lineWidthMiddle
 
     @tween1= new @TWEEN.Tween(from).to(to,@duration1*@s)
-      # .delay(@delay*@s)
+      .delay(@delay1*@s)
       .onUpdate ->
         # console.log @
         it.ctx.clear()

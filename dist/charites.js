@@ -154,6 +154,14 @@ Burst = (function(_super) {
       prop: 'delay',
       def: 0
     });
+    this.delay1 = this["default"]({
+      prop: 'delay1',
+      def: this.delay
+    });
+    this.delay2 = this["default"]({
+      prop: 'delay2',
+      def: 0
+    });
     this.easing = this["default"]({
       prop: 'easing',
       def: 'Linear.None'
@@ -225,6 +233,7 @@ Burst = (function(_super) {
     this.h.size(this.oa) && this.vars();
     this.h.isSizeChange(this.oa) && this.setElSize();
     this.TWEEN.remove(this.tween1);
+    this.TWEEN.remove(this.tween2);
     it = this;
     from = {
       rx: this.radiusStartX,
@@ -238,7 +247,7 @@ Burst = (function(_super) {
       deg: this.rotation1 + this.rotation2,
       lineWidth: this.lineWidthEnd
     };
-    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).onUpdate(function() {
+    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).delay(this.delay2 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
       angle = 0;
@@ -278,7 +287,7 @@ Burst = (function(_super) {
       deg: this.rotation1,
       lineWidth: this.lineWidthMiddle
     };
-    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).onUpdate(function() {
+    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).delay(this.delay1 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
       angle = 0;
@@ -455,6 +464,7 @@ var Burst, burst;
 Burst = require('./bits/burst');
 
 burst = new Burst({
+  delay2: 1000,
   lineWidth: 10,
   lineWidthMiddle: 80,
   lineWidthEnd: 0,
