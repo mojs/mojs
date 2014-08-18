@@ -7,7 +7,7 @@ burst = new Burst
   lineWidthMiddle: 80
   lineWidthEnd: 0
   lineCap: 'round'
-  # duration:  5000
+  duration:  5000
   # duration2:  2000
   radiusStart: 10
   # radiusStartX:25
@@ -21,6 +21,7 @@ burst = new Burst
   # initialRotation: 180
   rotation: -130
   isRunLess: true
+  fade: 'out'
 
 window.addEventListener 'click', (e)->
   burst.el.style.top  = "#{e.y-(burst.size/2)}px"

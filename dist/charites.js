@@ -224,7 +224,8 @@ Burst = (function(_super) {
         color: this.colorMap[i % this.colorMap.length],
         isClearLess: true,
         lineWidth: this.lineWidth,
-        lineCap: this.lineCap
+        lineCap: this.lineCap,
+        opacity: this.opacity
       });
       _results.push(this.lines.push(line));
     }
@@ -285,7 +286,8 @@ Burst = (function(_super) {
             x: x1,
             y: y1
           },
-          lineWidth: this.lineWidth
+          lineWidth: this.lineWidth,
+          opacity: this.opacity
         });
         _results.push(angle += it.step);
       }
@@ -336,7 +338,8 @@ Burst = (function(_super) {
             x: x,
             y: y
           },
-          lineWidth: this.lineWidth
+          lineWidth: this.lineWidth,
+          opacity: this.opacity
         });
         _results.push(angle += it.step);
       }
@@ -495,6 +498,7 @@ burst = new Burst({
   lineWidthMiddle: 80,
   lineWidthEnd: 0,
   lineCap: 'round',
+  duration: 5000,
   radiusStart: 10,
   radiusEnd: 50,
   radiusEndX: 200,
@@ -502,7 +506,8 @@ burst = new Burst({
   cnt: 5,
   colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
   rotation: -130,
-  isRunLess: true
+  isRunLess: true,
+  fade: 'out'
 });
 
 window.addEventListener('click', function(e) {

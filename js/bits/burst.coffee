@@ -69,6 +69,7 @@ class Burst extends Byte
         isClearLess: true
         lineWidth: @lineWidth
         lineCap:   @lineCap
+        opacity: @opacity
       @lines.push line
 
   run:(@oa={})->
@@ -92,7 +93,6 @@ class Burst extends Byte
     if @fade.match(/in/i) and !@fade.match(/out/i) then to.opacity   = 1
     if @fade? and @fade isnt 'none' then from.opacity = .5
     if @fade is 'inOut' then from.opacity = 1
-
     @tween2 = new @TWEEN.Tween(from).to(to,@duration2*@s)
       .delay(@delay2*@s)
       .onUpdate ->
@@ -108,6 +108,7 @@ class Burst extends Byte
             start: {x: x,  y: y}
             end:   {x: x1, y: y1}
             lineWidth: @lineWidth
+            opacity: @opacity
           angle += it.step
       .easing @TWEEN.Easing[@easings2[0]][@easings2[1]]
 
@@ -142,6 +143,7 @@ class Burst extends Byte
             start: {x: x1, y: y1}
             end:   {x: x, y: y}
             lineWidth: @lineWidth
+            opacity: @opacity
           angle += it.step
       .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
       .chain(@tween2)
