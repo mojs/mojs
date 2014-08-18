@@ -174,6 +174,10 @@ Burst = (function(_super) {
       prop: 'easing2',
       def: this.easing
     });
+    this.fade = this["default"]({
+      prop: 'fade',
+      def: 'none'
+    });
     this.easings1 = this.easing1.split('.');
     this.easings2 = this.easing2.split('.');
     this.initialRotation = this["default"]({
@@ -247,6 +251,18 @@ Burst = (function(_super) {
       deg: this.rotation1 + this.rotation2,
       lineWidth: this.lineWidthEnd
     };
+    if (this.fade.match(/out/i)) {
+      to.opacity = 0;
+    }
+    if (this.fade.match(/in/i) && !this.fade.match(/out/i)) {
+      to.opacity = 1;
+    }
+    if ((this.fade != null) && this.fade !== 'none') {
+      from.opacity = .5;
+    }
+    if (this.fade === 'inOut') {
+      from.opacity = 1;
+    }
     this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).delay(this.delay2 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
@@ -287,6 +303,17 @@ Burst = (function(_super) {
       deg: this.rotation1,
       lineWidth: this.lineWidthMiddle
     };
+    from.opacity = 1;
+    to.opacity = 1;
+    if (this.fade.match(/in/i)) {
+      from.opacity = 0;
+    }
+    if (this.fade.match(/out/i) && !this.fade.match(/in/i)) {
+      from.opacity = 1;
+    }
+    if (this.fade.match(/in/i) || this.fade.match(/out/i)) {
+      to.opacity = .5;
+    }
     this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).delay(this.delay1 * this.s).onUpdate(function() {
       var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
       it.ctx.clear();
