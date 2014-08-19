@@ -10,7 +10,9 @@ class Helpers
 
   time:(time)-> time*@s
 
-  constructor:(@o={})-> @animationLoop = @animationLoop.bind @
+  constructor:(@o={})->
+    @animationLoop = @animationLoop.bind @
+    @div = document.createElement 'div'
 
   slice:(value, max)-> if value > max then max else value
 
@@ -36,17 +38,34 @@ class Helpers
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
 
-  makeColorObj:(hex) ->
-    result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(hex)
-    colorObj = {}
-    if result
-      r = if result[1].length is 2 then result[1] else result[1]+result[1]
-      g = if result[2].length is 2 then result[2] else result[2]+result[2]
-      b = if result[3].length is 2 then result[3] else result[3]+result[3]
-      colorObj =
-        r: parseInt(r, 16)
-        g: parseInt(g, 16)
-        b: parseInt(b, 16)
+  makeColorObj:(color) ->
+    if color[0] is '#'
+      result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color)
+      colorObj = {}
+      if result
+        r = if result[1].length is 2 then result[1] else result[1]+result[1]
+        g = if result[2].length is 2 then result[2] else result[2]+result[2]
+        b = if result[3].length is 2 then result[3] else result[3]+result[3]
+        colorObj =
+          r: parseInt(r, 16)
+          g: parseInt(g, 16)
+          b: parseInt(b, 16)
+    # shorthand color
+    if color[0] isnt '#' and color[0] isnt 'r' and color[1] isnt 'g'
+      @div.style.color = color
+      rgbColor = @div.style.color
+      console.log rgbColor
+      # rgbColor.match
+      result = /rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)/gi.exec(rgbColor)
+      console.log result
+      colorObj = {}
+      if result
+        colorObj =
+          r: result[1]
+          g: result[2]
+          b: result[3]
+
+    console.log colorObj
     colorObj
 
   size:(obj)->

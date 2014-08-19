@@ -503,11 +503,12 @@ burst = new Burst({
   lineWidthEnd: 2,
   lineCap: 'round',
   duration: 500,
-  radiusStart: 30,
-  radiusEnd: 50,
+  radiusStart: 20,
+  radiusEnd: 30,
   opacity: .25,
   cnt: 5,
-  isRunLess: true
+  isRunLess: true,
+  color: 'deeppink'
 });
 
 window.addEventListener('click', function(e) {
@@ -540,6 +541,7 @@ Helpers = (function() {
   function Helpers(o) {
     this.o = o != null ? o : {};
     this.animationLoop = this.animationLoop.bind(this);
+    this.div = document.createElement('div');
   }
 
   Helpers.prototype.slice = function(value, max) {
@@ -585,20 +587,38 @@ Helpers = (function() {
     return wrapper;
   };
 
-  Helpers.prototype.makeColorObj = function(hex) {
-    var b, colorObj, g, r, result;
-    result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(hex);
-    colorObj = {};
-    if (result) {
-      r = result[1].length === 2 ? result[1] : result[1] + result[1];
-      g = result[2].length === 2 ? result[2] : result[2] + result[2];
-      b = result[3].length === 2 ? result[3] : result[3] + result[3];
-      colorObj = {
-        r: parseInt(r, 16),
-        g: parseInt(g, 16),
-        b: parseInt(b, 16)
-      };
+  Helpers.prototype.makeColorObj = function(color) {
+    var b, colorObj, g, r, result, rgbColor;
+    if (color[0] === '#') {
+      result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
+      colorObj = {};
+      if (result) {
+        r = result[1].length === 2 ? result[1] : result[1] + result[1];
+        g = result[2].length === 2 ? result[2] : result[2] + result[2];
+        b = result[3].length === 2 ? result[3] : result[3] + result[3];
+        colorObj = {
+          r: parseInt(r, 16),
+          g: parseInt(g, 16),
+          b: parseInt(b, 16)
+        };
+      }
     }
+    if (color[0] !== '#' && color[0] !== 'r' && color[1] !== 'g') {
+      this.div.style.color = color;
+      rgbColor = this.div.style.color;
+      console.log(rgbColor);
+      result = /rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)/gi.exec(rgbColor);
+      console.log(result);
+      colorObj = {};
+      if (result) {
+        colorObj = {
+          r: result[1],
+          g: result[2],
+          b: result[3]
+        };
+      }
+    }
+    console.log(colorObj);
     return colorObj;
   };
 
