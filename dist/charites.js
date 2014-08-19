@@ -508,7 +508,7 @@ burst = new Burst({
   opacity: .25,
   cnt: 5,
   isRunLess: true,
-  color: 'deeppink'
+  color: 'green'
 });
 
 window.addEventListener('click', function(e) {
@@ -588,7 +588,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.makeColorObj = function(color) {
-    var b, colorObj, g, r, result, rgbColor;
+    var b, colorObj, g, isRgb, r, result, rgbColor;
     if (color[0] === '#') {
       result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
       colorObj = {};
@@ -599,26 +599,32 @@ Helpers = (function() {
         colorObj = {
           r: parseInt(r, 16),
           g: parseInt(g, 16),
-          b: parseInt(b, 16)
+          b: parseInt(b, 16),
+          a: 1
         };
       }
     }
-    if (color[0] !== '#' && color[0] !== 'r' && color[1] !== 'g') {
-      this.div.style.color = color;
-      rgbColor = this.div.style.color;
+    if (color[0] !== '#') {
+      isRgb = color[0] === 'r' && color[1] === 'g' && color[2] === 'b';
+      if (isRgb && color[3] !== 'a') {
+        rgbColor = color;
+      }
+      if (!isRgb) {
+        this.div.style.color = color;
+        rgbColor = this.div.style.color;
+      }
       console.log(rgbColor);
-      result = /rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)/gi.exec(rgbColor);
-      console.log(result);
+      result = /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/gi.exec(rgbColor);
       colorObj = {};
       if (result) {
         colorObj = {
           r: result[1],
           g: result[2],
-          b: result[3]
+          b: result[3],
+          a: 1
         };
       }
     }
-    console.log(colorObj);
     return colorObj;
   };
 

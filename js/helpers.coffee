@@ -50,22 +50,27 @@ class Helpers
           r: parseInt(r, 16)
           g: parseInt(g, 16)
           b: parseInt(b, 16)
-    # shorthand color
-    if color[0] isnt '#' and color[0] isnt 'r' and color[1] isnt 'g'
-      @div.style.color = color
-      rgbColor = @div.style.color
+          a: 1
+    
+    # console.log color
+    # shorthand color and rgb()
+    if color[0] isnt '#'
+      isRgb = color[0] is 'r' and color[1] is 'g' and color[2] is 'b'
+      if isRgb and color[3] isnt 'a'
+        rgbColor = color
+      if !isRgb
+        @div.style.color = color
+        rgbColor = @div.style.color
+        # console.log rgbColor
       console.log rgbColor
-      # rgbColor.match
-      result = /rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)/gi.exec(rgbColor)
-      console.log result
+      result = /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/gi.exec(rgbColor)
       colorObj = {}
       if result
         colorObj =
           r: result[1]
           g: result[2]
           b: result[3]
-
-    console.log colorObj
+          a: 1
     colorObj
 
   size:(obj)->

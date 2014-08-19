@@ -10,7 +10,7 @@ burst = new Burst
   opacity: .25
   cnt: 5
   isRunLess: true
-  color: 'deeppink'
+  color: 'green'
 
 window.addEventListener 'click', (e)->
   burst.el.style.top  = "#{e.y-(burst.size/2)}px"
