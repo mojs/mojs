@@ -14,6 +14,25 @@ class Helpers
     @animationLoop = @animationLoop.bind @
     @div = document.createElement 'div'
 
+    @shortColors =
+      aqua:   'rgb(0,255,255)'
+      black:  'rgb(0,0,0)'
+      blue:   'rgb(0,0,255)'
+      fuchsia:'rgb(255,0,255)'
+      gray:   'rgb(128,128,128)'
+      green:  'rgb(0,128,0)'
+      lime:   'rgb(0,255,0)'
+      maroon: 'rgb(128,0,0)'
+      navy:   'rgb(0,0,128)'
+      olive:  'rgb(128,128,0)'
+      purple: 'rgb(128,0,128)'
+      red:    'rgb(255,0,0)'
+      silver: 'rgb(192,192,192)'
+      teal:   'rgb(0,128,128)'
+      white:  'rgb(255,255,255)'
+      yellow: 'rgb(255,255,0)'
+      orange: 'rgb(255,128,0)'
+
   slice:(value, max)-> if value > max then max else value
 
   clone:(obj)->
@@ -58,12 +77,13 @@ class Helpers
       isRgb = color[0] is 'r' and color[1] is 'g' and color[2] is 'b'
       if isRgb and color[3] isnt 'a'
         rgbColor = color
-      if !isRgb
-        @div.style.color = color
-        rgbColor = @div.style.color
-        # console.log rgbColor
-      console.log rgbColor
-      result = /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/gi.exec(rgbColor)
+      if !isRgb and color[3] isnt 'a'
+        rgbColor = if !@shortColors[color]
+          @div.style.color = color
+          @div.style.color
+        else @shortColors[color]
+
+      result = /^rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)$/gi.exec(rgbColor)
       colorObj = {}
       if result
         colorObj =

@@ -502,13 +502,13 @@ burst = new Burst({
   lineWidth: 2,
   lineWidthEnd: 2,
   lineCap: 'round',
-  duration: 500,
+  duration: 300,
   radiusStart: 20,
-  radiusEnd: 30,
+  radiusEnd: 40,
   opacity: .25,
   cnt: 5,
   isRunLess: true,
-  color: 'green'
+  color: 'maroon'
 });
 
 window.addEventListener('click', function(e) {
@@ -542,6 +542,25 @@ Helpers = (function() {
     this.o = o != null ? o : {};
     this.animationLoop = this.animationLoop.bind(this);
     this.div = document.createElement('div');
+    this.shortColors = {
+      aqua: 'rgb(0,255,255)',
+      black: 'rgb(0,0,0)',
+      blue: 'rgb(0,0,255)',
+      fuchsia: 'rgb(255,0,255)',
+      gray: 'rgb(128,128,128)',
+      green: 'rgb(0,128,0)',
+      lime: 'rgb(0,255,0)',
+      maroon: 'rgb(128,0,0)',
+      navy: 'rgb(0,0,128)',
+      olive: 'rgb(128,128,0)',
+      purple: 'rgb(128,0,128)',
+      red: 'rgb(255,0,0)',
+      silver: 'rgb(192,192,192)',
+      teal: 'rgb(0,128,128)',
+      white: 'rgb(255,255,255)',
+      yellow: 'rgb(255,255,0)',
+      orange: 'rgb(255,128,0)'
+    };
   }
 
   Helpers.prototype.slice = function(value, max) {
@@ -609,12 +628,10 @@ Helpers = (function() {
       if (isRgb && color[3] !== 'a') {
         rgbColor = color;
       }
-      if (!isRgb) {
-        this.div.style.color = color;
-        rgbColor = this.div.style.color;
+      if (!isRgb && color[3] !== 'a') {
+        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.div.style.color) : this.shortColors[color];
       }
-      console.log(rgbColor);
-      result = /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/gi.exec(rgbColor);
+      result = /^rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)$/gi.exec(rgbColor);
       colorObj = {};
       if (result) {
         colorObj = {
