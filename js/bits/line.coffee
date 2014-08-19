@@ -5,37 +5,11 @@ class Line extends Bit
     @start    = @default prop: 'start' ,   def: {x: 0, y: 0}
     @end      = @default prop: 'end' ,     def: {x: 0, y: 0}
     @position = @default prop: 'position', def: {x: 0, y: 0}
-    @lineWidth= @default prop: 'lineWidth',def: 1
-    @lineCap  = @default prop: 'lineCap',  def: 1
-    @opacity  = @default prop: 'opacity',  def: 1
-    @isClearLess  = @default prop: 'isClearLess',  def: false
-    # @angle      = @default prop: 'angle',  def: 0
-    # @transformOrigin = @default prop: 'transform-origin', def: 'center'
-
-    # @x = @end.x - @start.x; @y = @end.y - @start.y
-    # @length = Math.sqrt(@x*@x + @y*@y)
-    # @radius = @length/2
-
-    # @minX = Math.min @start.x, @end.x
-    # @maxX = Math.max @start.x, @end.x
-
-    # @minY = Math.min @start.y, @end.y
-    # @maxY = Math.max @start.y, @end.y
-
-    # @centerX = @minX + (@maxX/2)
-    # @centerY = @minY + (@maxY/2)
-    # @centerX = 300
-    # @centerY = 300
-
-    # x = @centerX + Math.cos(@angle)*@radius
-    # y = @centerY + Math.sin(@angle)*@radius
-
-    # console.log @centerX, @centerY
-
     @size     = width: (@end.x-@start.x)+@lineWidth, height: @end.y-@start.y
     super
 
   render:->
+    console.log 'render'
     # @vars()
     if !@ctx then console.error('Line.render: no context!'); return
     @isClearLess or @ctx.clear()

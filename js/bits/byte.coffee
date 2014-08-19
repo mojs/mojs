@@ -15,8 +15,8 @@ class Byte extends Bit
     @parent.appendChild(@el); @setElSize()
 
   setElSize:->
-    @el.setAttribute 'width',  2*@sizeX
-    @el.setAttribute 'height', 2*@sizeY
+    @el.setAttribute 'width',  h.pixel*@sizeX
+    @el.setAttribute 'height', h.pixel*@sizeY
 
     # for retina
     if h.pixel > 1

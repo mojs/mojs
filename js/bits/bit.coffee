@@ -23,6 +23,11 @@ class Bit
     @color  = @default prop: 'color' , def: '#222'
     @colorMap   = @default prop: 'colorMap',  def: [@color]
 
+    @lineWidth= @default prop: 'lineWidth',def: 1
+    @lineCap  = @default prop: 'lineCap',  def: 'none'
+    @opacity  = @default prop: 'opacity',  def: 1
+    @isClearLess  = @default prop: 'isClearLess',  def: false
+
     @colorObj = @h.makeColorObj @color
     # @o = {}
 

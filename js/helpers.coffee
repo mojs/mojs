@@ -1,7 +1,10 @@
 TWEEN  = require './vendor/tween'
 
+# TODO
+# add rgba colors support
+
 class Helpers
-  pixel: 1
+  pixel: 2
   # SHORTCUTS
   doc:  document
   body: document.body

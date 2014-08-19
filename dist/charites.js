@@ -1,4 +1,113 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var Bubble, Byte, Circle, Line,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Byte = require('./byte');
+
+Circle = require('./circle');
+
+Line = require('./line');
+
+Bubble = (function(_super) {
+  __extends(Bubble, _super);
+
+  function Bubble() {
+    return Bubble.__super__.constructor.apply(this, arguments);
+  }
+
+  Bubble.prototype.vars = function() {
+    var maxEndRadius, maxLineWidth;
+    this.radiusStart = this["default"]({
+      prop: 'radiusStart',
+      def: 100
+    });
+    this.radiusEnd = this["default"]({
+      prop: 'radiusEnd',
+      def: 200
+    });
+    this.radiusStartX = this.defaultPart({
+      prop: 'radiusStartX',
+      def: this.radiusStart
+    });
+    this.radiusStartY = this.defaultPart({
+      prop: 'radiusStartY',
+      def: this.radiusStart
+    });
+    this.radiusEndX = this.defaultPart({
+      prop: 'radiusEndX',
+      def: this.radiusEnd
+    });
+    this.radiusEndY = this.defaultPart({
+      prop: 'radiusEndY',
+      def: this.radiusEnd
+    });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineWidthMiddle = this["default"]({
+      prop: 'lineWidthMiddle',
+      def: null
+    });
+    this.lineWidthEnd = this["default"]({
+      prop: 'lineWidthEnd',
+      def: this.lineWidth
+    });
+    this.duration = this["default"]({
+      prop: 'duration',
+      def: 400
+    });
+    this.delay = this["default"]({
+      prop: 'delay',
+      def: 0
+    });
+    this.easing = this.defaultPart({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
+    this.easings = this.easing.split('.');
+    maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
+    maxLineWidth = Math.max(this.lineWidth, this.lineWidthMiddle, this.lineWidthEnd);
+    this.size = 2 * maxEndRadius + maxLineWidth;
+    this.center = this.size / 2;
+    this.sizeX = this.size;
+    this.sizeY = this.size;
+    Bubble.__super__.vars.apply(this, arguments);
+    this.circle = new Circle({
+      ctx: this.ctx,
+      radius: this.radiusStart
+    });
+    return this.circle.setProp({
+      opacity: 1
+    });
+  };
+
+  Bubble.prototype.run = function() {
+    var from, it, to;
+    this.h.size(this.oa) && this.vars();
+    this.h.isSizeChange(this.oa) && this.setElSize();
+    this.TWEEN.remove(this.tween1);
+    this.TWEEN.remove(this.tween2);
+    it = this;
+    from = {
+      r: this.radiusStart
+    };
+    to = {
+      r: this.radiusEnd
+    };
+    this.h.startAnimationLoop();
+    return console.log(this.tween);
+  };
+
+  return Bubble;
+
+})(Byte);
+
+module.exports = Bubble;
+
+
+},{"./byte":3,"./circle":4,"./line":5}],2:[function(require,module,exports){
 var Bit, TWEEN, h;
 
 h = require('../helpers');
@@ -40,6 +149,22 @@ Bit = (function() {
       prop: 'colorMap',
       def: [this.color]
     });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineCap = this["default"]({
+      prop: 'lineCap',
+      def: 'none'
+    });
+    this.opacity = this["default"]({
+      prop: 'opacity',
+      def: 1
+    });
+    this.isClearLess = this["default"]({
+      prop: 'isClearLess',
+      def: false
+    });
     return this.colorObj = this.h.makeColorObj(this.color);
   };
 
@@ -71,296 +196,7 @@ Bit = (function() {
 module.exports = Bit;
 
 
-},{"../helpers":6,"../polyfills":7,"../vendor/tween":8}],2:[function(require,module,exports){
-var Burst, Byte, Line,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Byte = require('./byte');
-
-Line = require('./line');
-
-Burst = (function(_super) {
-  __extends(Burst, _super);
-
-  function Burst() {
-    return Burst.__super__.constructor.apply(this, arguments);
-  }
-
-  Burst.prototype.vars = function() {
-    var angleCnt, i, line, maxEndRadius, maxLineWidth, _i, _ref, _results;
-    this.cnt = this["default"]({
-      prop: 'cnt',
-      def: 3
-    });
-    this.radiusStart = this["default"]({
-      prop: 'radiusStart',
-      def: 100
-    });
-    this.radiusEnd = this["default"]({
-      prop: 'radiusEnd',
-      def: 200
-    });
-    this.radiusStartX = this.defaultPart({
-      prop: 'radiusStartX',
-      def: this.radiusStart
-    });
-    this.radiusStartY = this.defaultPart({
-      prop: 'radiusStartY',
-      def: this.radiusStart
-    });
-    this.radiusEndX = this.defaultPart({
-      prop: 'radiusEndX',
-      def: this.radiusEnd
-    });
-    this.radiusEndY = this.defaultPart({
-      prop: 'radiusEndY',
-      def: this.radiusEnd
-    });
-    this.lineWidth = this["default"]({
-      prop: 'lineWidth',
-      def: 1
-    });
-    this.lineWidthMiddle = this["default"]({
-      prop: 'lineWidthMiddle',
-      def: null
-    });
-    this.lineWidthEnd = this["default"]({
-      prop: 'lineWidthEnd',
-      def: this.lineWidth
-    });
-    this.lineCap = this["default"]({
-      prop: 'lineCap',
-      def: 'none'
-    });
-    this.angle = this["default"]({
-      prop: 'angle',
-      def: 360
-    });
-    this.angle = this.angle > 360 ? 360 : this.angle;
-    this.duration = this["default"]({
-      prop: 'duration',
-      def: 400
-    });
-    this.duration1 = this.defaultPart({
-      prop: 'duration1',
-      def: this.duration / 2
-    });
-    this.duration2 = this.defaultPart({
-      prop: 'duration2',
-      def: this.duration / 2
-    });
-    this.delay = this["default"]({
-      prop: 'delay',
-      def: 0
-    });
-    this.delay1 = this["default"]({
-      prop: 'delay1',
-      def: this.delay
-    });
-    this.delay2 = this["default"]({
-      prop: 'delay2',
-      def: 0
-    });
-    this.easing = this["default"]({
-      prop: 'easing',
-      def: 'Linear.None'
-    });
-    this.easing1 = this.defaultPart({
-      prop: 'easing1',
-      def: this.easing
-    });
-    this.easing2 = this.defaultPart({
-      prop: 'easing2',
-      def: this.easing
-    });
-    this.fade = this["default"]({
-      prop: 'fade',
-      def: 'none'
-    });
-    this.easings1 = this.easing1.split('.');
-    this.easings2 = this.easing2.split('.');
-    this.initialRotation = this["default"]({
-      prop: 'initialRotation',
-      def: 0
-    });
-    this.rotation = this["default"]({
-      prop: 'rotation',
-      def: 0
-    });
-    this.rotation1 = this.defaultPart({
-      prop: 'rotation1',
-      def: this.rotation / 2
-    });
-    this.rotation2 = this.defaultPart({
-      prop: 'rotation2',
-      def: this.rotation / 2
-    });
-    if (!this.lineWidthMiddle) {
-      if (this.lineWidth < this.lineWidthEnd) {
-        this.lineWidthMiddle = this.lineWidth + this.lineWidthEnd / 2;
-      }
-      if (this.lineWidth > this.lineWidthEnd) {
-        this.lineWidthMiddle = this.lineWidth - this.lineWidthEnd / 2;
-      }
-      if (this.lineWidth === this.lineWidthEnd) {
-        this.lineWidthMiddle = this.lineWidthEnd;
-      }
-    }
-    angleCnt = this.angle % 360 === 0 ? this.cnt : this.cnt - 1;
-    this.step = this.angle / angleCnt;
-    maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
-    maxLineWidth = Math.max(this.lineWidth, this.lineWidthMiddle, this.lineWidthEnd);
-    this.size = 2 * maxEndRadius + maxLineWidth;
-    this.center = this.size / 2;
-    this.sizeX = this.size;
-    this.sizeY = this.size;
-    Burst.__super__.vars.apply(this, arguments);
-    if (this.lines == null) {
-      this.lines = [];
-    }
-    this.lines.length = 0;
-    _results = [];
-    for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      line = new Line({
-        ctx: this.ctx,
-        color: this.colorMap[i % this.colorMap.length],
-        isClearLess: true,
-        lineWidth: this.lineWidth,
-        lineCap: this.lineCap,
-        opacity: this.opacity
-      });
-      _results.push(this.lines.push(line));
-    }
-    return _results;
-  };
-
-  Burst.prototype.run = function(oa) {
-    var from, it, to;
-    this.oa = oa != null ? oa : {};
-    this.h.size(this.oa) && this.vars();
-    this.h.isSizeChange(this.oa) && this.setElSize();
-    this.TWEEN.remove(this.tween1);
-    this.TWEEN.remove(this.tween2);
-    it = this;
-    from = {
-      rx: this.radiusStartX,
-      ry: this.radiusStartY,
-      deg: this.rotation1,
-      lineWidth: this.lineWidthMiddle
-    };
-    to = {
-      rx: this.radiusEndX,
-      ry: this.radiusEndY,
-      deg: this.rotation1 + this.rotation2,
-      lineWidth: this.lineWidthEnd
-    };
-    from.opacity = 1;
-    to.opacity = 1;
-    if (this.fade.match(/out/i)) {
-      to.opacity = 0;
-    }
-    if (this.fade.match(/in/i) && !this.fade.match(/out/i)) {
-      to.opacity = 1;
-    }
-    if ((this.fade != null) && this.fade !== 'none') {
-      from.opacity = .5;
-    }
-    if (this.fade === 'inOut') {
-      from.opacity = 1;
-    }
-    this.tween2 = new this.TWEEN.Tween(from).to(to, this.duration2 * this.s).delay(this.delay2 * this.s).onUpdate(function() {
-      var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
-      it.ctx.clear();
-      angle = 0;
-      _ref = it.lines;
-      _results = [];
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        line = _ref[i];
-        rotation = (angle + it.initialRotation + this.deg) * it.DEG;
-        x1 = it.center + Math.cos(rotation) * it.radiusEndX;
-        y1 = it.center + Math.sin(rotation) * it.radiusEndY;
-        x = it.center + Math.cos(rotation) * this.rx;
-        y = it.center + Math.sin(rotation) * this.ry;
-        line.setProp({
-          start: {
-            x: x,
-            y: y
-          },
-          end: {
-            x: x1,
-            y: y1
-          },
-          lineWidth: this.lineWidth,
-          opacity: this.opacity
-        });
-        _results.push(angle += it.step);
-      }
-      return _results;
-    }).easing(this.TWEEN.Easing[this.easings2[0]][this.easings2[1]]);
-    from = {
-      rx: this.radiusStartX,
-      ry: this.radiusStartY,
-      lineWidth: this.lineWidth,
-      deg: 0
-    };
-    to = {
-      rx: this.radiusEndX,
-      ry: this.radiusEndY,
-      deg: this.rotation1,
-      lineWidth: this.lineWidthMiddle
-    };
-    from.opacity = 1;
-    to.opacity = 1;
-    if (this.fade.match(/in/i)) {
-      from.opacity = 0;
-    }
-    if (this.fade.match(/out/i) && !this.fade.match(/in/i)) {
-      from.opacity = 1;
-    }
-    if (this.fade.match(/in/i) || this.fade.match(/out/i)) {
-      to.opacity = .5;
-    }
-    this.tween1 = new this.TWEEN.Tween(from).to(to, this.duration1 * this.s).delay(this.delay1 * this.s).onUpdate(function() {
-      var angle, i, line, rotation, x, x1, y, y1, _i, _len, _ref, _results;
-      it.ctx.clear();
-      angle = 0;
-      _ref = it.lines;
-      _results = [];
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        line = _ref[i];
-        rotation = (angle + it.initialRotation + this.deg) * it.DEG;
-        x1 = it.center + Math.cos(rotation) * it.radiusStartX;
-        y1 = it.center + Math.sin(rotation) * it.radiusStartY;
-        x = it.center + Math.cos(rotation) * this.rx;
-        y = it.center + Math.sin(rotation) * this.ry;
-        line.setProp({
-          start: {
-            x: x1,
-            y: y1
-          },
-          end: {
-            x: x,
-            y: y
-          },
-          lineWidth: this.lineWidth,
-          opacity: this.opacity
-        });
-        _results.push(angle += it.step);
-      }
-      return _results;
-    }).easing(this.TWEEN.Easing[this.easings1[0]][this.easings1[1]]).chain(this.tween2).start();
-    return this.h.startAnimationLoop();
-  };
-
-  return Burst;
-
-})(Byte);
-
-module.exports = Burst;
-
-
-},{"./byte":3,"./line":4}],3:[function(require,module,exports){
+},{"../helpers":7,"../polyfills":8,"../vendor/tween":9}],3:[function(require,module,exports){
 var Bit, Byte, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -394,8 +230,8 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setElSize = function() {
-    this.el.setAttribute('width', 2 * this.sizeX);
-    this.el.setAttribute('height', 2 * this.sizeY);
+    this.el.setAttribute('width', h.pixel * this.sizeX);
+    this.el.setAttribute('height', h.pixel * this.sizeY);
     if (h.pixel > 1) {
       this.el.style.width = "" + this.sizeX + "px";
       this.el.style.height = "" + this.sizeY + "px";
@@ -410,7 +246,65 @@ Byte = (function(_super) {
 module.exports = Byte;
 
 
-},{"../helpers":6,"./bit":1}],4:[function(require,module,exports){
+},{"../helpers":7,"./bit":2}],4:[function(require,module,exports){
+var Bit, Circle,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Bit = require('./bit');
+
+Circle = (function(_super) {
+  __extends(Circle, _super);
+
+  function Circle() {
+    return Circle.__super__.constructor.apply(this, arguments);
+  }
+
+  Circle.prototype.vars = function() {
+    var defPosition;
+    this.radius = this["default"]({
+      prop: 'radius',
+      def: 50
+    });
+    this.size = {
+      width: 2 * this.radius,
+      height: 2 * this.radius
+    };
+    defPosition = {
+      x: this.size.width / 2,
+      y: this.size.height / 2
+    };
+    this.position = this["default"]({
+      prop: 'position',
+      def: defPosition
+    });
+    return Circle.__super__.vars.apply(this, arguments);
+  };
+
+  Circle.prototype.render = function() {
+    var c;
+    if (!this.ctx) {
+      console.error('Circle.render: no context!');
+      return;
+    }
+    this.isClearLess || this.ctx.clear();
+    this.ctx.beginPath();
+    this.ctx.arc(this.position.x * this.px, this.position.y * this.px, this.radius * this.px, 0, 2 * Math.PI);
+    this.ctx.lineWidth = this.lineWidth * this.px;
+    c = this.colorObj;
+    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
+    this.ctx.lineCap = this.lineCap;
+    return this.ctx.stroke();
+  };
+
+  return Circle;
+
+})(Bit);
+
+module.exports = Circle;
+
+
+},{"./bit":2}],5:[function(require,module,exports){
 var Bit, Line,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -446,22 +340,6 @@ Line = (function(_super) {
         y: 0
       }
     });
-    this.lineWidth = this["default"]({
-      prop: 'lineWidth',
-      def: 1
-    });
-    this.lineCap = this["default"]({
-      prop: 'lineCap',
-      def: 1
-    });
-    this.opacity = this["default"]({
-      prop: 'opacity',
-      def: 1
-    });
-    this.isClearLess = this["default"]({
-      prop: 'isClearLess',
-      def: false
-    });
     this.size = {
       width: (this.end.x - this.start.x) + this.lineWidth,
       height: this.end.y - this.start.y
@@ -471,6 +349,7 @@ Line = (function(_super) {
 
   Line.prototype.render = function() {
     var c;
+    console.log('render');
     if (!this.ctx) {
       console.error('Line.render: no context!');
       return;
@@ -493,22 +372,16 @@ Line = (function(_super) {
 module.exports = Line;
 
 
-},{"./bit":1}],5:[function(require,module,exports){
-var Burst, burst;
+},{"./bit":2}],6:[function(require,module,exports){
+var Bubble, burst;
 
-Burst = require('./bits/burst');
+Bubble = require('./bits/Bubble');
 
-burst = new Burst({
-  lineWidth: 2,
-  lineWidthEnd: 2,
-  lineCap: 'round',
-  duration: 300,
+burst = new Bubble({
   radiusStart: 20,
   radiusEnd: 40,
-  opacity: .25,
-  cnt: 5,
-  isRunLess: true,
-  color: 'maroon'
+  lineWidth: 10,
+  color: 'deeppink'
 });
 
 window.addEventListener('click', function(e) {
@@ -518,13 +391,13 @@ window.addEventListener('click', function(e) {
 });
 
 
-},{"./bits/burst":2}],6:[function(require,module,exports){
+},{"./bits/Bubble":1}],7:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
-  Helpers.prototype.pixel = 1;
+  Helpers.prototype.pixel = 2;
 
   Helpers.prototype.doc = document;
 
@@ -702,7 +575,7 @@ module.exports = (function() {
 })();
 
 
-},{"./vendor/tween":8}],7:[function(require,module,exports){
+},{"./vendor/tween":9}],8:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -719,7 +592,7 @@ module.exports = (function() {
 })();
 
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ;(function(undefined){
 
 
@@ -1511,4 +1384,4 @@ module.exports = (function() {
 })()
 
 
-},{}]},{},[5])
+},{}]},{},[6])
