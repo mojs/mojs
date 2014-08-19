@@ -203,6 +203,9 @@ Burst = (function(_super) {
       if (this.lineWidth > this.lineWidthEnd) {
         this.lineWidthMiddle = this.lineWidth - this.lineWidthEnd / 2;
       }
+      if (this.lineWidth === this.lineWidthEnd) {
+        this.lineWidthMiddle = this.lineWidthEnd;
+      }
     }
     angleCnt = this.angle % 360 === 0 ? this.cnt : this.cnt - 1;
     this.step = this.angle / angleCnt;
@@ -252,6 +255,8 @@ Burst = (function(_super) {
       deg: this.rotation1 + this.rotation2,
       lineWidth: this.lineWidthEnd
     };
+    from.opacity = 1;
+    to.opacity = 1;
     if (this.fade.match(/out/i)) {
       to.opacity = 0;
     }
@@ -494,29 +499,21 @@ var Burst, burst;
 Burst = require('./bits/burst');
 
 burst = new Burst({
-  lineWidth: 10,
-  lineWidthMiddle: 80,
-  lineWidthEnd: 0,
+  lineWidth: 2,
+  lineWidthEnd: 2,
   lineCap: 'round',
-  duration: 5000,
-  radiusStart: 10,
+  duration: 500,
+  radiusStart: 30,
   radiusEnd: 50,
-  radiusEndX: 200,
   opacity: .25,
   cnt: 5,
-  colorMap: ['#ff0', '#0ff', '#f0f', '#0ff'],
-  rotation: -130,
-  isRunLess: true,
-  fade: 'out'
+  isRunLess: true
 });
 
 window.addEventListener('click', function(e) {
   burst.el.style.top = "" + (e.y - (burst.size / 2)) + "px";
   burst.el.style.left = "" + (e.x - (burst.size / 2)) + "px";
-  return burst.run({
-    radiusEnd: 100,
-    cnt: 8
-  });
+  return burst.run();
 });
 
 

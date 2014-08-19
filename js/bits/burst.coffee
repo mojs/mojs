@@ -49,6 +49,9 @@ class Burst extends Byte
       if @lineWidth > @lineWidthEnd
         @lineWidthMiddle = @lineWidth - @lineWidthEnd/2
 
+      if @lineWidth is @lineWidthEnd
+        @lineWidthMiddle = @lineWidthEnd
+
     angleCnt = if @angle % 360 is 0 then @cnt else @cnt-1
     @step = @angle/angleCnt
 
@@ -79,16 +82,17 @@ class Burst extends Byte
     @TWEEN.remove @tween1; @TWEEN.remove @tween2; it = @
 
     from =
-      rx: @radiusStartX
-      ry: @radiusStartY
-      deg: @rotation1
+      rx:        @radiusStartX
+      ry:        @radiusStartY
+      deg:       @rotation1
       lineWidth: @lineWidthMiddle
     to =
-      rx: @radiusEndX
-      ry: @radiusEndY
-      deg: @rotation1+@rotation2
+      rx:        @radiusEndX
+      ry:        @radiusEndY
+      deg:       @rotation1+@rotation2
       lineWidth: @lineWidthEnd
 
+    from.opacity = 1; to.opacity = 1
     if @fade.match /out/i then to.opacity   = 0
     if @fade.match(/in/i) and !@fade.match(/out/i) then to.opacity   = 1
     if @fade? and @fade isnt 'none' then from.opacity = .5
@@ -105,10 +109,10 @@ class Burst extends Byte
           x = it.center + Math.cos(rotation)*@rx
           y = it.center + Math.sin(rotation)*@ry
           line.setProp
-            start: {x: x,  y: y}
-            end:   {x: x1, y: y1}
-            lineWidth: @lineWidth
-            opacity: @opacity
+            start:      {x: x,  y: y}
+            end:        {x: x1, y: y1}
+            lineWidth:  @lineWidth
+            opacity:    @opacity
           angle += it.step
       .easing @TWEEN.Easing[@easings2[0]][@easings2[1]]
 
@@ -140,10 +144,10 @@ class Burst extends Byte
           x = it.center + Math.cos(rotation)*@rx
           y = it.center + Math.sin(rotation)*@ry
           line.setProp
-            start: {x: x1, y: y1}
-            end:   {x: x, y: y}
-            lineWidth: @lineWidth
-            opacity: @opacity
+            start:      {x: x1, y: y1}
+            end:        {x: x, y: y}
+            lineWidth:  @lineWidth
+            opacity:    @opacity
           angle += it.step
       .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
       .chain(@tween2)
