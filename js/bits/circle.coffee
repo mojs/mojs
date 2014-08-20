@@ -1,5 +1,8 @@
 Bit = require './bit'
 
+# TODO
+# ellipse
+
 class Circle extends Bit
   vars:->
     @radius   = @default prop: 'radius', def: 50

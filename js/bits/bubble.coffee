@@ -2,6 +2,8 @@ Byte   = require './byte'
 Circle = require './circle'
 Line = require './line'
 
+
+
 class Bubble extends Byte
 
   vars:->
@@ -23,14 +25,15 @@ class Bubble extends Byte
     @easing      = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings     = @easing.split '.'
 
-    maxEndRadius = Math.max @radiusEndX, @radiusEndY, @radiusStartX, @radiusStartY
+    maxRadius = Math.max @radiusEndX, @radiusEndY,@radiusStartX, @radiusStartY
 
-    @size = 2*maxEndRadius + @lineWidthEnd
+    @size = 2*maxRadius + @lineWidthEnd
     @center = @size/2
     @sizeX = @size; @sizeY = @size
     super
     @circle = new Circle
       ctx: @ctx
+      color: @color
       radius: @radiusStart
       # lineWidthEnd: @lineWidthEnd
       position: x: @center, y: @center

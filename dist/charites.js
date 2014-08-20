@@ -17,7 +17,7 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
-    var maxEndRadius;
+    var maxRadius;
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
       def: 100
@@ -67,14 +67,15 @@ Bubble = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
-    maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
-    this.size = 2 * maxEndRadius + this.lineWidthEnd;
+    maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
+    this.size = 2 * maxRadius + this.lineWidthEnd;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
     Bubble.__super__.vars.apply(this, arguments);
     this.circle = new Circle({
       ctx: this.ctx,
+      color: this.color,
       radius: this.radiusStart,
       position: {
         x: this.center,
@@ -390,8 +391,8 @@ Bubble = require('./bits/Bubble');
 burst = new Bubble({
   radiusStart: 0,
   radiusEnd: 30,
-  lineWidth: 1,
-  lineWidthEnd: 1,
+  lineWidth: 4,
+  lineWidthEnd: 0,
   color: 'deeppink',
   duration: 500
 });
