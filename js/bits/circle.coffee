@@ -6,7 +6,6 @@ class Circle extends Bit
     @size     = width: 2*@radius, height: 2*@radius
     defPosition = {x: @size.width, y: @size.height}
     @position = @default prop: 'position', def: defPosition
-    @lineWEnd = @o.lineWidthEnd
     super
 
   render:->
@@ -14,10 +13,7 @@ class Circle extends Bit
     @isClearLess or @ctx.clear()
 
     @ctx.beginPath()
-    lwe = @lineWEnd
-    x = (@position.x+(lwe/2))*@px
-    y = (@position.y+(lwe/2))*@px
-    @ctx.arc(x, y, @radius*@px, 0, 2*Math.PI)
+    @ctx.arc(@position.x*@px, @position.y*@px, @radius*@px, 0, 2*Math.PI)
    
     @ctx.lineWidth   = @lineWidth*@px
 

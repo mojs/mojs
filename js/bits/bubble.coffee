@@ -23,8 +23,7 @@ class Bubble extends Byte
     @easing      = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings     = @easing.split '.'
 
-    maxEndRadius = Math.max @radiusEndX, @radiusEndY
-    # maxLineWidth = Math.max @lineWidth, @lineWidthMiddle, @lineWidthEnd
+    maxEndRadius = Math.max @radiusEndX, @radiusEndY, @radiusStartX, @radiusStartY
 
     @size = 2*maxEndRadius + @lineWidthEnd
     @center = @size/2
@@ -33,7 +32,8 @@ class Bubble extends Byte
     @circle = new Circle
       ctx: @ctx
       radius: @radiusStart
-      lineWidthEnd: @lineWidthEnd
+      # lineWidthEnd: @lineWidthEnd
+      position: x: @center, y: @center
 
     @circle.setProp
       opacity: 1

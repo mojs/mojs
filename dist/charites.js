@@ -67,7 +67,7 @@ Bubble = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
-    maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
+    maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
     this.size = 2 * maxEndRadius + this.lineWidthEnd;
     this.center = this.size / 2;
     this.sizeX = this.size;
@@ -76,7 +76,10 @@ Bubble = (function(_super) {
     this.circle = new Circle({
       ctx: this.ctx,
       radius: this.radiusStart,
-      lineWidthEnd: this.lineWidthEnd
+      position: {
+        x: this.center,
+        y: this.center
+      }
     });
     return this.circle.setProp({
       opacity: 1
@@ -285,22 +288,18 @@ Circle = (function(_super) {
       prop: 'position',
       def: defPosition
     });
-    this.lineWEnd = this.o.lineWidthEnd;
     return Circle.__super__.vars.apply(this, arguments);
   };
 
   Circle.prototype.render = function() {
-    var c, lwe, x, y;
+    var c;
     if (!this.ctx) {
       console.error('Circle.render: no context!');
       return;
     }
     this.isClearLess || this.ctx.clear();
     this.ctx.beginPath();
-    lwe = this.lineWEnd;
-    x = (this.position.x + (lwe / 2)) * this.px;
-    y = (this.position.y + (lwe / 2)) * this.px;
-    this.ctx.arc(x, y, this.radius * this.px, 0, 2 * Math.PI);
+    this.ctx.arc(this.position.x * this.px, this.position.y * this.px, this.radius * this.px, 0, 2 * Math.PI);
     this.ctx.lineWidth = this.lineWidth * this.px;
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
@@ -389,10 +388,10 @@ var Bubble, burst;
 Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
-  radiusStart: 20,
-  radiusEnd: 40,
-  lineWidth: 10,
-  lineWidthEnd: 0,
+  radiusStart: 0,
+  radiusEnd: 30,
+  lineWidth: 1,
+  lineWidthEnd: 1,
   color: 'deeppink',
   duration: 500
 });
