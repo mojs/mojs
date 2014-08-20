@@ -6,6 +6,7 @@ class Line extends Bit
     @end      = @default prop: 'end' ,     def: {x: 0, y: 0}
     @position = @default prop: 'position', def: {x: 0, y: 0}
     @size     = width: (@end.x-@start.x)+@lineWidth, height: @end.y-@start.y
+    
     super
 
   render:->

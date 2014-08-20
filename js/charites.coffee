@@ -1,11 +1,12 @@
 Bubble = require './bits/Bubble'
 
 burst = new Bubble
-  radiusStart: 20
-  radiusEnd:   40
-  lineWidth:    0
+  radiusStart:  20
+  radiusEnd:    40
+  lineWidth:    10
   lineWidthEnd: 0
-  color: 'deeppink'
+  color:        'deeppink'
+  duration:     500
   
 window.addEventListener 'click', (e)->
   burst.el.style.top  = "#{e.y-(burst.size/2)}px"

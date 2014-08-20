@@ -24,14 +24,16 @@ class Bubble extends Byte
     @easings     = @easing.split '.'
 
     maxEndRadius = Math.max @radiusEndX, @radiusEndY
-    maxLineWidth = Math.max @lineWidth, @lineWidthMiddle, @lineWidthEnd
-    @size = 2*maxEndRadius# + maxLineWidth
+    # maxLineWidth = Math.max @lineWidth, @lineWidthMiddle, @lineWidthEnd
+
+    @size = 2*maxEndRadius + @lineWidthEnd
     @center = @size/2
     @sizeX = @size; @sizeY = @size
     super
     @circle = new Circle
       ctx: @ctx
       radius: @radiusStart
+      lineWidthEnd: @lineWidthEnd
 
     @circle.setProp
       opacity: 1
@@ -65,7 +67,7 @@ class Bubble extends Byte
         it.circle.setProp
           radius: @r
           lineWidth: @lineW
-        console.log @lineW
+        # console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .start()
 

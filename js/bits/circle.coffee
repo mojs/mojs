@@ -6,6 +6,7 @@ class Circle extends Bit
     @size     = width: 2*@radius, height: 2*@radius
     defPosition = {x: @size.width, y: @size.height}
     @position = @default prop: 'position', def: defPosition
+    @lineWEnd = @o.lineWidthEnd
     super
 
   render:->
@@ -13,14 +14,18 @@ class Circle extends Bit
     @isClearLess or @ctx.clear()
 
     @ctx.beginPath()
-    @ctx.arc(@position.x*@px, @position.y*@px, @radius*@px, 0, 2*Math.PI)
+    lwe = @lineWEnd
+    x = (@position.x+(lwe/2))*@px
+    y = (@position.y+(lwe/2))*@px
+    @ctx.arc(x, y, @radius*@px, 0, 2*Math.PI)
    
     @ctx.lineWidth   = @lineWidth*@px
 
     c = @colorObj
     @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{c.a})"
     @ctx.lineCap     = @lineCap
-    @ctx.stroke()
+
+    (@lineWidth > 0) and @ctx.stroke()
 
 
 module.exports = Circle

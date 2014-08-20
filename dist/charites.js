@@ -17,7 +17,7 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
-    var maxEndRadius, maxLineWidth;
+    var maxEndRadius;
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
       def: 100
@@ -68,15 +68,15 @@ Bubble = (function(_super) {
     });
     this.easings = this.easing.split('.');
     maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
-    maxLineWidth = Math.max(this.lineWidth, this.lineWidthMiddle, this.lineWidthEnd);
-    this.size = 2 * maxEndRadius;
+    this.size = 2 * maxEndRadius + this.lineWidthEnd;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
     Bubble.__super__.vars.apply(this, arguments);
     this.circle = new Circle({
       ctx: this.ctx,
-      radius: this.radiusStart
+      radius: this.radiusStart,
+      lineWidthEnd: this.lineWidthEnd
     });
     return this.circle.setProp({
       opacity: 1
@@ -99,11 +99,10 @@ Bubble = (function(_super) {
       lineW: this.lineWidthEnd
     };
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
-      it.circle.setProp({
+      return it.circle.setProp({
         radius: this.r,
         lineWidth: this.lineW
       });
-      return console.log(this.lineW);
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
     return this.h.startAnimationLoop();
   };
@@ -286,23 +285,27 @@ Circle = (function(_super) {
       prop: 'position',
       def: defPosition
     });
+    this.lineWEnd = this.o.lineWidthEnd;
     return Circle.__super__.vars.apply(this, arguments);
   };
 
   Circle.prototype.render = function() {
-    var c;
+    var c, lwe, x, y;
     if (!this.ctx) {
       console.error('Circle.render: no context!');
       return;
     }
     this.isClearLess || this.ctx.clear();
     this.ctx.beginPath();
-    this.ctx.arc(this.position.x * this.px, this.position.y * this.px, this.radius * this.px, 0, 2 * Math.PI);
+    lwe = this.lineWEnd;
+    x = (this.position.x + (lwe / 2)) * this.px;
+    y = (this.position.y + (lwe / 2)) * this.px;
+    this.ctx.arc(x, y, this.radius * this.px, 0, 2 * Math.PI);
     this.ctx.lineWidth = this.lineWidth * this.px;
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
     this.ctx.lineCap = this.lineCap;
-    return this.ctx.stroke();
+    return (this.lineWidth > 0) && this.ctx.stroke();
   };
 
   return Circle;
@@ -388,9 +391,10 @@ Bubble = require('./bits/Bubble');
 burst = new Bubble({
   radiusStart: 20,
   radiusEnd: 40,
-  lineWidth: 0,
+  lineWidth: 10,
   lineWidthEnd: 0,
-  color: 'deeppink'
+  color: 'deeppink',
+  duration: 500
 });
 
 window.addEventListener('click', function(e) {
