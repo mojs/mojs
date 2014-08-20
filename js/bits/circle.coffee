@@ -4,7 +4,7 @@ class Circle extends Bit
   vars:->
     @radius   = @default prop: 'radius', def: 50
     @size     = width: 2*@radius, height: 2*@radius
-    defPosition = {x: @size.width/2, y: @size.height/2}
+    defPosition = {x: @size.width, y: @size.height}
     @position = @default prop: 'position', def: defPosition
     super
 

@@ -25,7 +25,7 @@ class Bubble extends Byte
 
     maxEndRadius = Math.max @radiusEndX, @radiusEndY
     maxLineWidth = Math.max @lineWidth, @lineWidthMiddle, @lineWidthEnd
-    @size = 2*maxEndRadius + maxLineWidth
+    @size = 2*maxEndRadius# + maxLineWidth
     @center = @size/2
     @sizeX = @size; @sizeY = @size
     super
@@ -57,16 +57,14 @@ class Bubble extends Byte
     to =
       r: @radiusEnd
 
-    # @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
-    #   .delay(@delay*@s)
-    #   .onUpdate ->
-    #     it.circle.setProp
-    #       radius: @r
-    #     it.ctx.clear()
-    #   .easing @TWEEN.Easing[@easings[0]][@easings[1]]
-    #   .start()
+    @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
+      .delay(@delay*@s)
+      .onUpdate ->
+        it.circle.setProp
+          radius: @r
+      .easing @TWEEN.Easing[@easings[0]][@easings[1]]
+      .start()
 
     @h.startAnimationLoop()
-    console.log @tween
 
 module.exports = Bubble

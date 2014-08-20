@@ -69,7 +69,7 @@ Bubble = (function(_super) {
     this.easings = this.easing.split('.');
     maxEndRadius = Math.max(this.radiusEndX, this.radiusEndY);
     maxLineWidth = Math.max(this.lineWidth, this.lineWidthMiddle, this.lineWidthEnd);
-    this.size = 2 * maxEndRadius + maxLineWidth;
+    this.size = 2 * maxEndRadius;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -96,8 +96,12 @@ Bubble = (function(_super) {
     to = {
       r: this.radiusEnd
     };
-    this.h.startAnimationLoop();
-    return console.log(this.tween);
+    this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
+      return it.circle.setProp({
+        radius: this.r
+      });
+    }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
+    return this.h.startAnimationLoop();
   };
 
   return Bubble;
@@ -271,8 +275,8 @@ Circle = (function(_super) {
       height: 2 * this.radius
     };
     defPosition = {
-      x: this.size.width / 2,
-      y: this.size.height / 2
+      x: this.size.width,
+      y: this.size.height
     };
     this.position = this["default"]({
       prop: 'position',
