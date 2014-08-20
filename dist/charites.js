@@ -91,15 +91,19 @@ Bubble = (function(_super) {
     this.TWEEN.remove(this.tween2);
     it = this;
     from = {
-      r: this.radiusStart
+      r: this.radiusStart,
+      lineW: this.lineWidth
     };
     to = {
-      r: this.radiusEnd
+      r: this.radiusEnd,
+      lineW: this.lineWidthEnd
     };
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
-      return it.circle.setProp({
-        radius: this.r
+      it.circle.setProp({
+        radius: this.r,
+        lineWidth: this.lineW
       });
+      return console.log(this.lineW);
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
     return this.h.startAnimationLoop();
   };
@@ -384,7 +388,8 @@ Bubble = require('./bits/Bubble');
 burst = new Bubble({
   radiusStart: 20,
   radiusEnd: 40,
-  lineWidth: 10,
+  lineWidth: 0,
+  lineWidthEnd: 0,
   color: 'deeppink'
 });
 

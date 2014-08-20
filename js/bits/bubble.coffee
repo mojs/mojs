@@ -54,14 +54,18 @@ class Bubble extends Byte
 
     from =
       r: @radiusStart
+      lineW: @lineWidth
     to =
       r: @radiusEnd
+      lineW: @lineWidthEnd
 
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
         it.circle.setProp
           radius: @r
+          lineWidth: @lineW
+        console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .start()
 

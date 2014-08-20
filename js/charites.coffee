@@ -3,7 +3,8 @@ Bubble = require './bits/Bubble'
 burst = new Bubble
   radiusStart: 20
   radiusEnd:   40
-  lineWidth: 10
+  lineWidth:    0
+  lineWidthEnd: 0
   color: 'deeppink'
   
 window.addEventListener 'click', (e)->
