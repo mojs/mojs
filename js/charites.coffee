@@ -8,8 +8,8 @@ Bubble = require './bits/Bubble'
 burst = new Bubble
   radiusStart:  10
   radiusEnd:    20
-  radiusStartX: 30
-  radiusEndX:   60
+  radiusStartX: 100
+  radiusEndX:   200
   lineWidth:    5
   lineWidthEnd: 0
   color:        'deeppink'

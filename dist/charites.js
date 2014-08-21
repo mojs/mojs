@@ -297,11 +297,15 @@ Circle = (function(_super) {
       prop: 'position',
       def: defPosition
     });
+    this.deg = this["default"]({
+      prop: 'deg',
+      def: 0
+    });
     return Circle.__super__.vars.apply(this, arguments);
   };
 
   Circle.prototype.render = function() {
-    var c, dy, lx, magic, rx, ty, xmagic, ymagic;
+    var c, dy, lx, magic, rx, ty, xMagic, xMagic2, xmagic, yMagic, yMagic2, ymagic;
     if (!this.ctx) {
       console.error('Circle.render: no context!');
       return;
@@ -315,11 +319,15 @@ Circle = (function(_super) {
     magic = 0.551784;
     xmagic = 2 * this.radiusX * magic;
     ymagic = 2 * this.radiusY * magic;
+    xMagic = this.position.x + xmagic;
+    yMagic = this.position.y + ymagic;
+    yMagic2 = this.position.y - ymagic;
+    xMagic2 = this.position.x - xmagic;
     this.ctx.moveTo(this.position.x, ty);
-    this.ctx.bezierCurveTo(this.position.x + xmagic, ty, rx, this.position.y - ymagic, rx, this.position.y);
-    this.ctx.bezierCurveTo(rx, this.position.y + ymagic, this.position.x + xmagic, dy, this.position.x, dy);
-    this.ctx.bezierCurveTo(this.position.x - xmagic, dy, lx, this.position.y + ymagic, lx, this.position.y);
-    this.ctx.bezierCurveTo(lx, this.position.y - ymagic, this.position.x - xmagic, ty, this.position.x, ty);
+    this.ctx.bezierCurveTo(xMagic, ty, rx, yMagic2, rx, this.position.y);
+    this.ctx.bezierCurveTo(rx, yMagic, xMagic, dy, this.position.x, dy);
+    this.ctx.bezierCurveTo(xMagic2, dy, lx, yMagic, lx, this.position.y);
+    this.ctx.bezierCurveTo(lx, yMagic2, xMagic2, ty, this.position.x, ty);
     this.ctx.lineWidth = this.lineWidth * this.px;
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
@@ -410,8 +418,8 @@ Bubble = require('./bits/Bubble');
 burst = new Bubble({
   radiusStart: 10,
   radiusEnd: 20,
-  radiusStartX: 30,
-  radiusEndX: 60,
+  radiusStartX: 100,
+  radiusEndX: 200,
   lineWidth: 5,
   lineWidthEnd: 0,
   color: 'deeppink',

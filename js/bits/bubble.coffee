@@ -2,7 +2,8 @@ Byte   = require './byte'
 Circle = require './circle'
 Line = require './line'
 
-
+# TODO
+# add angle
 
 class Bubble extends Byte
 
