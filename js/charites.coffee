@@ -1,9 +1,16 @@
 Bubble = require './bits/Bubble'
 
+
+# TODO
+# chains
+# positions
+
 burst = new Bubble
-  radiusStart:  20
-  radiusEnd:    40
-  lineWidth:    4
+  radiusStart:  10
+  radiusEnd:    20
+  radiusStartX: 30
+  radiusEndX:   60
+  lineWidth:    5
   lineWidthEnd: 0
   color:        'deeppink'
   duration:     500
