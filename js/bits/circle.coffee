@@ -8,7 +8,7 @@ class Circle extends Bit
     @radius   = @default prop: 'radius', def: 50
     @radiusX  = @defaultPart prop: 'radiusX', def: @radius
     @radiusY  = @defaultPart prop: 'radiusY', def: @radius
-    @size     = width: 2*@radius, height: 2*@radius
+    @size     = width: 2*@radiusX, height: 2*@radiusY
     defPosition = {x: @size.width, y: @size.height}
     @position = @default prop: 'position', def: defPosition
     super
@@ -16,15 +16,14 @@ class Circle extends Bit
   render:->
     if !@ctx then console.error('Circle.render: no context!'); return
     @isClearLess or @ctx.clear()
-
     @ctx.beginPath()
-    lx = @position.x - @radiusX
-    rx = @position.x + @radiusX
-    ty = @position.y - @radiusY
-    dy = @position.y + @radiusY
+    lx = @position.x - 2*@radiusX
+    rx = @position.x + 2*@radiusX
+    ty = @position.y - 2*@radiusY
+    dy = @position.y + 2*@radiusY
     magic = 0.551784
-    xmagic = @radiusX*magic
-    ymagic = @radiusY*magic
+    xmagic = 2*@radiusX*magic
+    ymagic = 2*@radiusY*magic
 
     @ctx.moveTo @position.x, ty
     @ctx.bezierCurveTo(@position.x+xmagic,ty,rx,@position.y-ymagic,rx,@position.y)

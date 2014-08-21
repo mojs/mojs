@@ -78,8 +78,8 @@ Bubble = (function(_super) {
       color: this.color,
       radius: this.radiusStart,
       position: {
-        x: this.center,
-        y: this.center
+        x: 2 * this.center,
+        y: 2 * this.center
       }
     });
   };
@@ -92,16 +92,19 @@ Bubble = (function(_super) {
     this.TWEEN.remove(this.tween2);
     it = this;
     from = {
-      r: this.radiusStart,
+      rx: this.radiusStartX,
+      ry: this.radiusStartY,
       lineW: this.lineWidth
     };
     to = {
-      r: this.radiusEnd,
+      rx: this.radiusEndX,
+      ry: this.radiusEndY,
       lineW: this.lineWidthEnd
     };
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
       return it.circle.setProp({
-        radius: this.r,
+        radiusX: this.rx,
+        radiusY: this.ry,
         lineWidth: this.lineW
       });
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
@@ -283,8 +286,8 @@ Circle = (function(_super) {
       def: this.radius
     });
     this.size = {
-      width: 2 * this.radius,
-      height: 2 * this.radius
+      width: 2 * this.radiusX,
+      height: 2 * this.radiusY
     };
     defPosition = {
       x: this.size.width,
@@ -305,13 +308,13 @@ Circle = (function(_super) {
     }
     this.isClearLess || this.ctx.clear();
     this.ctx.beginPath();
-    lx = this.position.x - this.radiusX;
-    rx = this.position.x + this.radiusX;
-    ty = this.position.y - this.radiusY;
-    dy = this.position.y + this.radiusY;
+    lx = this.position.x - 2 * this.radiusX;
+    rx = this.position.x + 2 * this.radiusX;
+    ty = this.position.y - 2 * this.radiusY;
+    dy = this.position.y + 2 * this.radiusY;
     magic = 0.551784;
-    xmagic = this.radiusX * magic;
-    ymagic = this.radiusY * magic;
+    xmagic = 2 * this.radiusX * magic;
+    ymagic = 2 * this.radiusY * magic;
     this.ctx.moveTo(this.position.x, ty);
     this.ctx.bezierCurveTo(this.position.x + xmagic, ty, rx, this.position.y - ymagic, rx, this.position.y);
     this.ctx.bezierCurveTo(rx, this.position.y + ymagic, this.position.x + xmagic, dy, this.position.x, dy);
@@ -405,8 +408,10 @@ var Bubble, burst;
 Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
-  radiusStart: 0,
-  radiusEnd: 30,
+  radiusStartX: 20,
+  radiusEndX: 40,
+  radiusStartY: 10,
+  radiusEndY: 20,
   lineWidth: 4,
   lineWidthEnd: 0,
   color: 'deeppink',

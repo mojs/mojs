@@ -36,7 +36,7 @@ class Bubble extends Byte
       color: @color
       radius: @radiusStart
       # lineWidthEnd: @lineWidthEnd
-      position: x: @center, y: @center
+      position: x: 2*@center, y: 2*@center
 
 
   run:->
@@ -46,17 +46,20 @@ class Bubble extends Byte
     @TWEEN.remove @tween1; @TWEEN.remove @tween2; it = @
 
     from =
-      r: @radiusStart
+      rx: @radiusStartX
+      ry: @radiusStartY
       lineW: @lineWidth
     to =
-      r: @radiusEnd
+      rx: @radiusEndX
+      ry: @radiusEndY
       lineW: @lineWidthEnd
 
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
         it.circle.setProp
-          radius: @r
+          radiusX: @rx
+          radiusY: @ry
           lineWidth: @lineW
         # console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
