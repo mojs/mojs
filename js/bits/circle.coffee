@@ -6,6 +6,8 @@ Bit = require './bit'
 class Circle extends Bit
   vars:->
     @radius   = @default prop: 'radius', def: 50
+    @radiusX  = @defaultPart prop: 'radiusX', def: @radius
+    @radiusY  = @defaultPart prop: 'radiusY', def: @radius
     @size     = width: 2*@radius, height: 2*@radius
     defPosition = {x: @size.width, y: @size.height}
     @position = @default prop: 'position', def: defPosition
@@ -16,8 +18,20 @@ class Circle extends Bit
     @isClearLess or @ctx.clear()
 
     @ctx.beginPath()
-    @ctx.arc(@position.x*@px, @position.y*@px, @radius*@px, 0, 2*Math.PI)
-   
+    lx = @position.x - @radiusX
+    rx = @position.x + @radiusX
+    ty = @position.y - @radiusY
+    dy = @position.y + @radiusY
+    magic = 0.551784
+    xmagic = @radiusX*magic
+    ymagic = @radiusY*magic
+
+    @ctx.moveTo @position.x, ty
+    @ctx.bezierCurveTo(@position.x+xmagic,ty,rx,@position.y-ymagic,rx,@position.y)
+    @ctx.bezierCurveTo(rx,@position.y+ymagic,@position.x+xmagic,dy,@position.x,dy)
+    @ctx.bezierCurveTo(@position.x-xmagic,dy,lx,@position.y+ymagic,lx,@position.y)
+    @ctx.bezierCurveTo(lx,@position.y-ymagic,@position.x-xmagic,ty,@position.x,ty)
+
     @ctx.lineWidth   = @lineWidth*@px
 
     c = @colorObj

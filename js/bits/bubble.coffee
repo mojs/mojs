@@ -38,18 +38,6 @@ class Bubble extends Byte
       # lineWidthEnd: @lineWidthEnd
       position: x: @center, y: @center
 
-    @circle.setProp
-      opacity: 1
-
-    # @line = new Line
-    #   ctx: @ctx
-    #   start:      {x: 0, y: 0}
-    #   end:        {x: 40, y: 40}
-    #   lineWidth:  @lineWidth
-    #   opacity: 1
-
-    # @line.setProp
-    #   opacity: 1
 
   run:->
     @h.size(@oa) and @vars()

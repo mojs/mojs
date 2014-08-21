@@ -73,7 +73,7 @@ Bubble = (function(_super) {
     this.sizeX = this.size;
     this.sizeY = this.size;
     Bubble.__super__.vars.apply(this, arguments);
-    this.circle = new Circle({
+    return this.circle = new Circle({
       ctx: this.ctx,
       color: this.color,
       radius: this.radiusStart,
@@ -81,9 +81,6 @@ Bubble = (function(_super) {
         x: this.center,
         y: this.center
       }
-    });
-    return this.circle.setProp({
-      opacity: 1
     });
   };
 
@@ -277,6 +274,14 @@ Circle = (function(_super) {
       prop: 'radius',
       def: 50
     });
+    this.radiusX = this.defaultPart({
+      prop: 'radiusX',
+      def: this.radius
+    });
+    this.radiusY = this.defaultPart({
+      prop: 'radiusY',
+      def: this.radius
+    });
     this.size = {
       width: 2 * this.radius,
       height: 2 * this.radius
@@ -293,14 +298,25 @@ Circle = (function(_super) {
   };
 
   Circle.prototype.render = function() {
-    var c;
+    var c, dy, lx, magic, rx, ty, xmagic, ymagic;
     if (!this.ctx) {
       console.error('Circle.render: no context!');
       return;
     }
     this.isClearLess || this.ctx.clear();
     this.ctx.beginPath();
-    this.ctx.arc(this.position.x * this.px, this.position.y * this.px, this.radius * this.px, 0, 2 * Math.PI);
+    lx = this.position.x - this.radiusX;
+    rx = this.position.x + this.radiusX;
+    ty = this.position.y - this.radiusY;
+    dy = this.position.y + this.radiusY;
+    magic = 0.551784;
+    xmagic = this.radiusX * magic;
+    ymagic = this.radiusY * magic;
+    this.ctx.moveTo(this.position.x, ty);
+    this.ctx.bezierCurveTo(this.position.x + xmagic, ty, rx, this.position.y - ymagic, rx, this.position.y);
+    this.ctx.bezierCurveTo(rx, this.position.y + ymagic, this.position.x + xmagic, dy, this.position.x, dy);
+    this.ctx.bezierCurveTo(this.position.x - xmagic, dy, lx, this.position.y + ymagic, lx, this.position.y);
+    this.ctx.bezierCurveTo(lx, this.position.y - ymagic, this.position.x - xmagic, ty, this.position.x, ty);
     this.ctx.lineWidth = this.lineWidth * this.px;
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
