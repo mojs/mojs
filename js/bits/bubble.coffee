@@ -26,6 +26,11 @@ class Bubble extends Byte
     @easing      = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings     = @easing.split '.'
 
+    
+    @angle        = @default prop: 'angle',       def: 0
+    @angleStart   = @default prop: 'angleStart',  def: @angle
+    @angleEnd     = @default prop: 'angleEnd',    def: @angleStart
+
     maxRadius = Math.max @radiusEndX, @radiusEndY,@radiusStartX, @radiusStartY
 
     @size = 2*maxRadius + @lineWidthEnd
@@ -36,6 +41,7 @@ class Bubble extends Byte
       ctx: @ctx
       color: @color
       radius: @radiusStart
+      parentSize: x: @sizeX, y: @sizeY
       # lineWidthEnd: @lineWidthEnd
       position: x: 2*@center, y: 2*@center
 
@@ -50,10 +56,12 @@ class Bubble extends Byte
       rx: @radiusStartX
       ry: @radiusStartY
       lineW: @lineWidth
+      deg:   @angleStart
     to =
       rx: @radiusEndX
       ry: @radiusEndY
       lineW: @lineWidthEnd
+      deg:   @angleEnd
 
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
@@ -62,6 +70,7 @@ class Bubble extends Byte
           radiusX: @rx
           radiusY: @ry
           lineWidth: @lineW
+          angle: @deg
         # console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .start()

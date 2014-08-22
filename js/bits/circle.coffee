@@ -14,7 +14,8 @@ class Circle extends Bit
     @size     = width: 2*@radiusX, height: 2*@radiusY
     defPosition = {x: @size.width, y: @size.height}
     @position = @default prop: 'position', def: defPosition
-    @deg      = @default prop: 'deg', def: 0
+    @angle      = @default prop: 'angle', def: 0
+    console.log @o.parentSize
     super
 
   render:->
@@ -23,24 +24,18 @@ class Circle extends Bit
     @isClearLess or @ctx.clear()
     
     @ctx.save()
-    @ctx.translate(800,0)
-    @ctx.rotate(90*Math.PI/180)
+
+    # deg = 45
+    # step = @deg/100
+    # x = 800*step
+    # y = 400*step
     @ctx.beginPath()
 
-    # i = 0 * Math.PI
+    @ctx.translate(@o.parentSize.x,@o.parentSize.y)
 
-    # while i < (2 * Math.PI) + 0.1
-    #   xPos = @position.x - (2*@radiusY * Math.sin(i))
-    #    * Math.sin(@deg * Math.PI) + (2*@radiusX * Math.cos(i))
-    #     * Math.cos(@deg * Math.PI)
-    #   yPos = @position.y + (2*@radiusX * Math.cos(i))
-    #    * Math.sin(@deg * Math.PI) + (2*@radiusY * Math.sin(i))
-    #     * Math.cos(@deg * Math.PI)
-    #   if i is 0
-    #     @ctx.moveTo xPos, yPos
-    #   else
-    #     @ctx.lineTo xPos, yPos
-    #   i += 0.1
+    @ctx.rotate(@angle*Math.PI/180)
+
+    @ctx.translate(-@o.parentSize.x,-@o.parentSize.y)
 
     lx = @position.x - 2*@radiusX
     rx = @position.x + 2*@radiusX
@@ -54,8 +49,7 @@ class Circle extends Bit
     yMagic = @position.y+ymagic
     yMagic2 = @position.y-ymagic
     xMagic2 = @position.x-xmagic
-
-    
+ 
     @ctx.moveTo @position.x, ty
     @ctx.bezierCurveTo(xMagic,ty,rx,yMagic2,rx,@position.y)
     @ctx.bezierCurveTo(rx,yMagic,xMagic,dy,@position.x,dy)

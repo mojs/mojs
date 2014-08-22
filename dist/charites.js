@@ -67,6 +67,18 @@ Bubble = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
+    this.angle = this["default"]({
+      prop: 'angle',
+      def: 0
+    });
+    this.angleStart = this["default"]({
+      prop: 'angleStart',
+      def: this.angle
+    });
+    this.angleEnd = this["default"]({
+      prop: 'angleEnd',
+      def: this.angleStart
+    });
     maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
     this.size = 2 * maxRadius + this.lineWidthEnd;
     this.center = this.size / 2;
@@ -77,6 +89,10 @@ Bubble = (function(_super) {
       ctx: this.ctx,
       color: this.color,
       radius: this.radiusStart,
+      parentSize: {
+        x: this.sizeX,
+        y: this.sizeY
+      },
       position: {
         x: 2 * this.center,
         y: 2 * this.center
@@ -94,18 +110,21 @@ Bubble = (function(_super) {
     from = {
       rx: this.radiusStartX,
       ry: this.radiusStartY,
-      lineW: this.lineWidth
+      lineW: this.lineWidth,
+      deg: this.angleStart
     };
     to = {
       rx: this.radiusEndX,
       ry: this.radiusEndY,
-      lineW: this.lineWidthEnd
+      lineW: this.lineWidthEnd,
+      deg: this.angleEnd
     };
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
       return it.circle.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
-        lineWidth: this.lineW
+        lineWidth: this.lineW,
+        angle: this.deg
       });
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
     return this.h.startAnimationLoop();
@@ -297,10 +316,11 @@ Circle = (function(_super) {
       prop: 'position',
       def: defPosition
     });
-    this.deg = this["default"]({
-      prop: 'deg',
+    this.angle = this["default"]({
+      prop: 'angle',
       def: 0
     });
+    console.log(this.o.parentSize);
     return Circle.__super__.vars.apply(this, arguments);
   };
 
@@ -312,9 +332,10 @@ Circle = (function(_super) {
     }
     this.isClearLess || this.ctx.clear();
     this.ctx.save();
-    this.ctx.translate(800, 0);
-    this.ctx.rotate(90 * Math.PI / 180);
     this.ctx.beginPath();
+    this.ctx.translate(this.o.parentSize.x, this.o.parentSize.y);
+    this.ctx.rotate(this.angle * Math.PI / 180);
+    this.ctx.translate(-this.o.parentSize.x, -this.o.parentSize.y);
     lx = this.position.x - 2 * this.radiusX;
     rx = this.position.x + 2 * this.radiusX;
     ty = this.position.y - 2 * this.radiusY;
@@ -422,12 +443,14 @@ Bubble = require('./bits/Bubble');
 burst = new Bubble({
   radiusStart: 10,
   radiusEnd: 20,
-  radiusStartX: 100,
-  radiusEndX: 200,
+  radiusStartX: 40,
+  radiusEndX: 50,
   lineWidth: 5,
   lineWidthEnd: 0,
   color: 'deeppink',
-  duration: 500
+  duration: 500,
+  angle: 0,
+  angleEnd: 90
 });
 
 window.addEventListener('click', function(e) {
