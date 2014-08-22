@@ -312,8 +312,8 @@ Circle = (function(_super) {
     }
     this.isClearLess || this.ctx.clear();
     this.ctx.save();
-    this.ctx.translate(-50, -50);
-    this.ctx.rotate(20 * Math.PI / 180);
+    this.ctx.translate(800, 0);
+    this.ctx.rotate(90 * Math.PI / 180);
     this.ctx.beginPath();
     lx = this.position.x - 2 * this.radiusX;
     rx = this.position.x + 2 * this.radiusX;

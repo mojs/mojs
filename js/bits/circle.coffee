@@ -23,8 +23,8 @@ class Circle extends Bit
     @isClearLess or @ctx.clear()
     
     @ctx.save()
-    @ctx.translate(-50,-50)
-    @ctx.rotate(20*Math.PI/180)
+    @ctx.translate(800,0)
+    @ctx.rotate(90*Math.PI/180)
     @ctx.beginPath()
 
     # i = 0 * Math.PI
