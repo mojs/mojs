@@ -3,7 +3,8 @@ Circle = require './circle'
 Line = require './line'
 
 # TODO
-# add angle
+# fix safari
+# test browsers
 
 class Bubble extends Byte
 

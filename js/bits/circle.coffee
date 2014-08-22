@@ -3,6 +3,16 @@ Bit = require './bit'
 
 # TODO
 # add stroske dash array option
+# try to move circle to scale trick
+
+
+# ff
+#   mozDash
+#   mozDashOffset
+
+# chrome, IE, OPERA 15+
+#   setLineDash
+#   linedashOffset
 
 class Circle extends Bit
   vars:->
