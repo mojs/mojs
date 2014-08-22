@@ -80,6 +80,14 @@ Bubble = (function(_super) {
       def: this.angleStart
     });
     maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
+    this.repeat = this["default"]({
+      prop: 'repeat',
+      def: 0
+    });
+    this.yoyo = this["default"]({
+      prop: 'yoyo',
+      def: false
+    });
     this.size = 2 * maxRadius + this.lineWidthEnd;
     this.center = this.size / 2;
     this.sizeX = this.size;
@@ -126,7 +134,7 @@ Bubble = (function(_super) {
         lineWidth: this.lineW,
         angle: this.deg
       });
-    }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).start();
+    }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
     return this.h.startAnimationLoop();
   };
 
@@ -320,7 +328,6 @@ Circle = (function(_super) {
       prop: 'angle',
       def: 0
     });
-    console.log(this.o.parentSize);
     return Circle.__super__.vars.apply(this, arguments);
   };
 
@@ -441,16 +448,13 @@ var Bubble, burst;
 Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
-  radiusStart: 10,
-  radiusEnd: 20,
-  radiusStartX: 40,
-  radiusEndX: 50,
+  radiusStart: 15,
+  radiusEnd: 25,
   lineWidth: 5,
   lineWidthEnd: 0,
   color: 'deeppink',
   duration: 500,
-  angle: 0,
-  angleEnd: 90
+  angle: 90
 });
 
 window.addEventListener('click', function(e) {

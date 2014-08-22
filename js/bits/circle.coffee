@@ -2,8 +2,6 @@ Bit = require './bit'
 
 
 # TODO
-# add rotation option
-# add angle option
 # add stroske dash array option
 
 class Circle extends Bit
@@ -15,7 +13,6 @@ class Circle extends Bit
     defPosition = {x: @size.width, y: @size.height}
     @position = @default prop: 'position', def: defPosition
     @angle      = @default prop: 'angle', def: 0
-    console.log @o.parentSize
     super
 
   render:->

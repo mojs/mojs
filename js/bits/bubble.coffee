@@ -33,6 +33,9 @@ class Bubble extends Byte
 
     maxRadius = Math.max @radiusEndX, @radiusEndY,@radiusStartX, @radiusStartY
 
+    @repeat       = @default prop: 'repeat',      def: 0
+    @yoyo         = @default prop: 'yoyo',        def: false
+
     @size = 2*maxRadius + @lineWidthEnd
     @center = @size/2
     @sizeX = @size; @sizeY = @size
@@ -73,6 +76,8 @@ class Bubble extends Byte
           angle: @deg
         # console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
+      .repeat(@repeat-1)
+      .yoyo(@yoyo)
       .start()
 
     @h.startAnimationLoop()
