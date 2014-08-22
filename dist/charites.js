@@ -311,6 +311,9 @@ Circle = (function(_super) {
       return;
     }
     this.isClearLess || this.ctx.clear();
+    this.ctx.save();
+    this.ctx.translate(-50, -50);
+    this.ctx.rotate(20 * Math.PI / 180);
     this.ctx.beginPath();
     lx = this.position.x - 2 * this.radiusX;
     rx = this.position.x + 2 * this.radiusX;
@@ -332,7 +335,8 @@ Circle = (function(_super) {
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
     this.ctx.lineCap = this.lineCap;
-    return (this.lineWidth > 0) && this.ctx.stroke();
+    (this.lineWidth > 0) && this.ctx.stroke();
+    return this.ctx.restore();
   };
 
   return Circle;

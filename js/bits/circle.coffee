@@ -21,6 +21,10 @@ class Circle extends Bit
     # console.time 'render'
     if !@ctx then console.error('Circle.render: no context!'); return
     @isClearLess or @ctx.clear()
+    
+    @ctx.save()
+    @ctx.translate(-50,-50)
+    @ctx.rotate(20*Math.PI/180)
     @ctx.beginPath()
 
     # i = 0 * Math.PI
@@ -65,6 +69,7 @@ class Circle extends Bit
     @ctx.lineCap     = @lineCap
 
     (@lineWidth > 0) and @ctx.stroke()
+    @ctx.restore()
     # console.timeEnd 'render'
 
 
