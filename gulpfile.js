@@ -60,7 +60,7 @@ gulp.task('stylus', function(){
 
 
 gulp.task('coffee', function(e){
-  gulp.src('js/charites.coffee', { read: false })
+  return gulp.src('js/charites.coffee', { read: false })
     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
     .pipe(browserify({
       transform:  ['coffeeify'],
@@ -70,21 +70,15 @@ gulp.task('coffee', function(e){
     .pipe(gulp.dest('dist/'))
     .pipe(livereload())
 
-  gulp.src(paths.src.js)
-          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-          .pipe(changed(paths.src.js))
-          .pipe(coffeelint())
-          .pipe(coffeelint.reporter('fail'))
+});
 
+gulp.task('coffee-lint', function(e){
   return gulp.src(paths.src.js)
-          .pipe(plumber())
-          .pipe(changed(paths.src.js))
-          .pipe(coffeelint())
-          .pipe(coffeelint.reporter())
-          // .pipe(notify())
-          // .pipe(coffee())
-          // .pipe(gulp.dest(paths.dist.js))
-          // .pipe(livereload())
+    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+    .pipe(changed(paths.src.js), { extension: '.js'} )
+    .pipe(coffeelint())
+    .pipe(coffeelint.reporter())
+    .pipe(coffeelint.reporter('fail'))
 });
 
 gulp.task('coffee:tests', function(e){
@@ -121,14 +115,11 @@ gulp.task('default', function(){
     gulp.run('stylus');
   });
 
-  gulp.watch(paths.src.js, function(e){
-    gulp.run('coffee');
-    server.changed(e.path)
-  });
+  gulp.watch(paths.src.js, ['coffee', 'coffee-lint']);
 
   gulp.watch(paths.src.tests, function(e){
     gulp.run('coffee:tests');
-    server.changed(e.path)
+    // server.changed(e.path)
   });
 
   gulp.watch(paths.src.kit, function(e){

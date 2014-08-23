@@ -9,7 +9,7 @@ burst = new Bubble
   # radiusStart:  100
   # radiusEnd:    150
   radiusStartX: 35
-  radiusEndX:   105
+  radiusEndX:   85
   radiusStartY: 10
   radiusEndY:   15
   lineWidth:    5

@@ -1,7 +1,7 @@
 Bit = require './bit'
 
 class Circle extends Bit
-  vars:->
+  vars:->  
     @radius   = @default prop: 'radius', def: 50
     @radiusX  = @defaultPart prop: 'radiusX', def: @radius
     @radiusY  = @defaultPart prop: 'radiusY', def: @radius

@@ -433,7 +433,7 @@ Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
   radiusStartX: 35,
-  radiusEndX: 105,
+  radiusEndX: 85,
   radiusStartY: 10,
   radiusEndY: 15,
   lineWidth: 5,
