@@ -32,12 +32,14 @@ class Bubble extends Byte
     @angleStart   = @default prop: 'angleStart',  def: @angle
     @angleEnd     = @default prop: 'angleEnd',    def: @angleStart
 
-    maxRadius = Math.max @radiusEndX, @radiusEndY,@radiusStartX, @radiusStartY
+    maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusStartX, @radiusStartY
+    maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
     @repeat       = @default prop: 'repeat',      def: 0
     @yoyo         = @default prop: 'yoyo',        def: false
 
-    @size = 2*maxRadius + @lineWidthEnd
+    @size = 2*maxRadius + maxLineWidth
+    console.log @size
     @center = @size/2
     @sizeX = @size; @sizeY = @size
     super

@@ -8,15 +8,18 @@ Bubble = require './bits/Bubble'
 burst = new Bubble
   # radiusStart:  100
   # radiusEnd:    150
-  radiusStartX: 35
-  radiusEndX:   85
-  radiusStartY: 10
-  radiusEndY:   15
-  lineWidth:    5
-  lineWidthEnd: 1
+  radiusStartX: 85
+  radiusEndX:   35
+  radiusStartY: 15
+  radiusEndY:   10
+  lineWidth:    50
+  lineWidthEnd: 0
   color:        'deeppink'
-  duration:     500
+  duration:     5000
   angle:        90
+  angleEnd:     720
+  repeat:       99999
+  yoyo:         true
   
 window.addEventListener 'click', (e)->
   burst.el.style.top  = "#{e.y-(burst.size/2)}px"

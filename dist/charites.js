@@ -17,7 +17,7 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
-    var maxRadius;
+    var maxLineWidth, maxRadius;
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
       def: 100
@@ -80,6 +80,7 @@ Bubble = (function(_super) {
       def: this.angleStart
     });
     maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
+    maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
     this.repeat = this["default"]({
       prop: 'repeat',
       def: 0
@@ -88,7 +89,8 @@ Bubble = (function(_super) {
       prop: 'yoyo',
       def: false
     });
-    this.size = 2 * maxRadius + this.lineWidthEnd;
+    this.size = 2 * maxRadius + maxLineWidth;
+    console.log(this.size);
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -340,14 +342,17 @@ Circle = (function(_super) {
     this.isClearLess || this.ctx.clear();
     this.ctx.save();
     this.ctx.beginPath();
+    this.ctx.translate(this.o.parentSize.x, this.o.parentSize.y);
+    this.ctx.rotate(this.angle * Math.PI / 180);
+    this.ctx.translate(-this.o.parentSize.x, -this.o.parentSize.y);
     this.ctx.translate(this.position.x - 2 * this.radiusX, this.position.y - 2 * this.radiusY);
     this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
     this.ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
     this.ctx.restore();
     this.ctx.lineWidth = this.lineWidth * this.px;
+    this.ctx.lineCap = this.lineCap;
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
-    this.ctx.lineCap = this.lineCap;
     return (this.lineWidth > 0) && this.ctx.stroke();
   };
 
@@ -432,15 +437,18 @@ var Bubble, burst;
 Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
-  radiusStartX: 35,
-  radiusEndX: 85,
-  radiusStartY: 10,
-  radiusEndY: 15,
-  lineWidth: 5,
-  lineWidthEnd: 1,
+  radiusStartX: 85,
+  radiusEndX: 35,
+  radiusStartY: 15,
+  radiusEndY: 10,
+  lineWidth: 50,
+  lineWidthEnd: 0,
   color: 'deeppink',
-  duration: 500,
-  angle: 90
+  duration: 5000,
+  angle: 90,
+  angleEnd: 720,
+  repeat: 99999,
+  yoyo: true
 });
 
 window.addEventListener('click', function(e) {
