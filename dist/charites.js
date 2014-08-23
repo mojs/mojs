@@ -332,7 +332,7 @@ Circle = (function(_super) {
   };
 
   Circle.prototype.render = function() {
-    var c, dy, lx, magic, rx, ty, xMagic, xMagic2, xmagic, yMagic, yMagic2, ymagic;
+    var c;
     if (!this.ctx) {
       console.error('Circle.render: no context!');
       return;
@@ -340,31 +340,15 @@ Circle = (function(_super) {
     this.isClearLess || this.ctx.clear();
     this.ctx.save();
     this.ctx.beginPath();
-    this.ctx.translate(this.o.parentSize.x, this.o.parentSize.y);
-    this.ctx.rotate(this.angle * Math.PI / 180);
-    this.ctx.translate(-this.o.parentSize.x, -this.o.parentSize.y);
-    lx = this.position.x - 2 * this.radiusX;
-    rx = this.position.x + 2 * this.radiusX;
-    ty = this.position.y - 2 * this.radiusY;
-    dy = this.position.y + 2 * this.radiusY;
-    magic = 0.551784;
-    xmagic = 2 * this.radiusX * magic;
-    ymagic = 2 * this.radiusY * magic;
-    xMagic = this.position.x + xmagic;
-    yMagic = this.position.y + ymagic;
-    yMagic2 = this.position.y - ymagic;
-    xMagic2 = this.position.x - xmagic;
-    this.ctx.moveTo(this.position.x, ty);
-    this.ctx.bezierCurveTo(xMagic, ty, rx, yMagic2, rx, this.position.y);
-    this.ctx.bezierCurveTo(rx, yMagic, xMagic, dy, this.position.x, dy);
-    this.ctx.bezierCurveTo(xMagic2, dy, lx, yMagic, lx, this.position.y);
-    this.ctx.bezierCurveTo(lx, yMagic2, xMagic2, ty, this.position.x, ty);
+    this.ctx.translate(this.position.x - this.radiusX, this.position.y - this.radiusY);
+    this.ctx.scale(this.radiusX, this.radiusY);
+    this.ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
+    this.ctx.restore();
     this.ctx.lineWidth = this.lineWidth * this.px;
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
     this.ctx.lineCap = this.lineCap;
-    (this.lineWidth > 0) && this.ctx.stroke();
-    return this.ctx.restore();
+    return (this.lineWidth > 0) && this.ctx.stroke();
   };
 
   return Circle;
@@ -448,8 +432,10 @@ var Bubble, burst;
 Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
-  radiusStart: 15,
-  radiusEnd: 25,
+  radiusStartX: 35,
+  radiusEndX: 105,
+  radiusStartY: 1,
+  radiusEndY: 1,
   lineWidth: 5,
   lineWidthEnd: 0,
   color: 'deeppink',

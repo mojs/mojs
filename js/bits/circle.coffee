@@ -5,12 +5,11 @@ Bit = require './bit'
 # add stroske dash array option
 # try to move circle to scale trick
 
-
 # ff
 #   mozDash
 #   mozDashOffset
 
-# chrome, IE, OPERA 15+
+# chrome, IE11+?, OPERA 15+, SAFARI ?+
 #   setLineDash
 #   linedashOffset
 
@@ -38,39 +37,39 @@ class Circle extends Bit
     # y = 400*step
     @ctx.beginPath()
 
-    @ctx.translate(@o.parentSize.x,@o.parentSize.y)
+    @ctx.translate(@position.x-@radiusX, @position.y-@radiusY)
+    @ctx.scale(@radiusX, @radiusY)
+    @ctx.arc(1, 1, 1, 0, 2 * Math.PI, false)
 
-    @ctx.rotate(@angle*Math.PI/180)
+    # @ctx.translate(@o.parentSize.x,@o.parentSize.y)
+    # @ctx.rotate(@angle*Math.PI/180)
+    # @ctx.translate(-@o.parentSize.x,-@o.parentSize.y)
 
-    @ctx.translate(-@o.parentSize.x,-@o.parentSize.y)
+    # lx = @position.x - 2*@radiusX
+    # rx = @position.x + 2*@radiusX
+    # ty = @position.y - 2*@radiusY
+    # dy = @position.y + 2*@radiusY
+    # magic = 0.551784
+    # xmagic = 2*@radiusX*magic
+    # ymagic = 2*@radiusY*magic
 
-    lx = @position.x - 2*@radiusX
-    rx = @position.x + 2*@radiusX
-    ty = @position.y - 2*@radiusY
-    dy = @position.y + 2*@radiusY
-    magic = 0.551784
-    xmagic = 2*@radiusX*magic
-    ymagic = 2*@radiusY*magic
-
-    xMagic = @position.x+xmagic
-    yMagic = @position.y+ymagic
-    yMagic2 = @position.y-ymagic
-    xMagic2 = @position.x-xmagic
+    # xMagic = @position.x+xmagic
+    # yMagic = @position.y+ymagic
+    # yMagic2 = @position.y-ymagic
+    # xMagic2 = @position.x-xmagic
  
-    @ctx.moveTo @position.x, ty
-    @ctx.bezierCurveTo(xMagic,ty,rx,yMagic2,rx,@position.y)
-    @ctx.bezierCurveTo(rx,yMagic,xMagic,dy,@position.x,dy)
-    @ctx.bezierCurveTo(xMagic2,dy,lx,yMagic,lx,@position.y)
-    @ctx.bezierCurveTo(lx,yMagic2,xMagic2,ty,@position.x,ty)
+    # @ctx.moveTo @position.x, ty
+    # @ctx.bezierCurveTo(xMagic,ty,rx,yMagic2,rx,@position.y)
+    # @ctx.bezierCurveTo(rx,yMagic,xMagic,dy,@position.x,dy)
+    # @ctx.bezierCurveTo(xMagic2,dy,lx,yMagic,lx,@position.y)
+    # @ctx.bezierCurveTo(lx,yMagic2,xMagic2,ty,@position.x,ty)
 
+    @ctx.restore()
     @ctx.lineWidth   = @lineWidth*@px
-
     c = @colorObj
     @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{c.a})"
     @ctx.lineCap     = @lineCap
-
     (@lineWidth > 0) and @ctx.stroke()
-    @ctx.restore()
     # console.timeEnd 'render'
 
 

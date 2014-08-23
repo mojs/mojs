@@ -6,10 +6,12 @@ Bubble = require './bits/Bubble'
 # positions
 
 burst = new Bubble
-  radiusStart:  15
-  radiusEnd:    25
-  # radiusStartX: 20
-  # radiusEndX:   15
+  # radiusStart:  100
+  # radiusEnd:    150
+  radiusStartX: 35
+  radiusEndX:   105
+  radiusStartY: 1
+  radiusEndY:   1
   lineWidth:    5
   lineWidthEnd: 0
   color:        'deeppink'
