@@ -340,8 +340,8 @@ Circle = (function(_super) {
     this.isClearLess || this.ctx.clear();
     this.ctx.save();
     this.ctx.beginPath();
-    this.ctx.translate(this.position.x - this.radiusX, this.position.y - this.radiusY);
-    this.ctx.scale(this.radiusX, this.radiusY);
+    this.ctx.translate(this.position.x - 2 * this.radiusX, this.position.y - 2 * this.radiusY);
+    this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
     this.ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
     this.ctx.restore();
     this.ctx.lineWidth = this.lineWidth * this.px;
@@ -434,10 +434,10 @@ Bubble = require('./bits/Bubble');
 burst = new Bubble({
   radiusStartX: 35,
   radiusEndX: 105,
-  radiusStartY: 1,
-  radiusEndY: 1,
+  radiusStartY: 10,
+  radiusEndY: 15,
   lineWidth: 5,
-  lineWidthEnd: 0,
+  lineWidthEnd: 1,
   color: 'deeppink',
   duration: 500,
   angle: 90

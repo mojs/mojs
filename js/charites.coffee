@@ -10,10 +10,10 @@ burst = new Bubble
   # radiusEnd:    150
   radiusStartX: 35
   radiusEndX:   105
-  radiusStartY: 1
-  radiusEndY:   1
+  radiusStartY: 10
+  radiusEndY:   15
   lineWidth:    5
-  lineWidthEnd: 0
+  lineWidthEnd: 1
   color:        'deeppink'
   duration:     500
   angle:        90

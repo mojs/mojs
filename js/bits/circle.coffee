@@ -1,18 +1,5 @@
 Bit = require './bit'
 
-
-# TODO
-# add stroske dash array option
-# try to move circle to scale trick
-
-# ff
-#   mozDash
-#   mozDashOffset
-
-# chrome, IE11+?, OPERA 15+, SAFARI ?+
-#   setLineDash
-#   linedashOffset
-
 class Circle extends Bit
   vars:->
     @radius   = @default prop: 'radius', def: 50
@@ -37,8 +24,8 @@ class Circle extends Bit
     # y = 400*step
     @ctx.beginPath()
 
-    @ctx.translate(@position.x-@radiusX, @position.y-@radiusY)
-    @ctx.scale(@radiusX, @radiusY)
+    @ctx.translate(@position.x-2*@radiusX, @position.y-2*@radiusY)
+    @ctx.scale(2*@radiusX, 2*@radiusY)
     @ctx.arc(1, 1, 1, 0, 2 * Math.PI, false)
 
     # @ctx.translate(@o.parentSize.x,@o.parentSize.y)
