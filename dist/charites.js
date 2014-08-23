@@ -24,7 +24,7 @@ Bubble = (function(_super) {
     });
     this.radiusEnd = this["default"]({
       prop: 'radiusEnd',
-      def: 200
+      def: this.radiusStart
     });
     this.radiusStartX = this.defaultPart({
       prop: 'radiusStartX',
@@ -79,6 +79,24 @@ Bubble = (function(_super) {
       prop: 'angleEnd',
       def: this.angleStart
     });
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeEnd = this["default"]({
+      prop: 'degreeEnd',
+      def: this.degree
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
+    this.degreeOffsetEnd = this["default"]({
+      prop: 'degreeOffsetEnd',
+      def: this.degreeOffset
+    });
+    this.degree = this.h.slice(this.degree, 360);
+    this.degreeEnd = this.h.slice(this.degreeEnd, 360);
     maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
     maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
     this.repeat = this["default"]({
@@ -90,7 +108,6 @@ Bubble = (function(_super) {
       def: false
     });
     this.size = 2 * maxRadius + maxLineWidth;
-    console.log(this.size);
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -103,6 +120,8 @@ Bubble = (function(_super) {
         x: this.sizeX,
         y: this.sizeY
       },
+      degree: this.degree,
+      degreeOffset: this.degreeOffset,
       position: {
         x: 2 * this.center,
         y: 2 * this.center
@@ -121,20 +140,26 @@ Bubble = (function(_super) {
       rx: this.radiusStartX,
       ry: this.radiusStartY,
       lineW: this.lineWidth,
-      deg: this.angleStart
+      angle: this.angleStart,
+      degree: this.degree,
+      degreeOffset: this.degreeOffset
     };
     to = {
       rx: this.radiusEndX,
       ry: this.radiusEndY,
       lineW: this.lineWidthEnd,
-      deg: this.angleEnd
+      angle: this.angleEnd,
+      degree: this.degreeEnd,
+      degreeOffset: this.degreeOffsetEnd
     };
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
       return it.circle.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
         lineWidth: this.lineW,
-        angle: this.deg
+        angle: this.angle,
+        degree: this.degree,
+        degreeOffset: this.degreeOffset
       });
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
     return this.h.startAnimationLoop();
@@ -159,6 +184,10 @@ TWEEN = require('../vendor/tween');
 Bit = (function() {
   Bit.prototype.oa = {};
 
+  Bit.prototype.h = h;
+
+  Bit.prototype.TWEEN = TWEEN;
+
   Bit.prototype.defaultOptions = {
     x: 0,
     y: 0,
@@ -172,8 +201,6 @@ Bit = (function() {
   }
 
   Bit.prototype.vars = function() {
-    this.TWEEN = TWEEN;
-    this.h = h;
     this.ctx = this.o.ctx || this.ctx;
     this.px = h.pixel;
     this.DEG = Math.PI / 180;
@@ -330,11 +357,19 @@ Circle = (function(_super) {
       prop: 'angle',
       def: 0
     });
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
     return Circle.__super__.vars.apply(this, arguments);
   };
 
   Circle.prototype.render = function() {
-    var c;
+    var angle, c;
     if (!this.ctx) {
       console.error('Circle.render: no context!');
       return;
@@ -345,9 +380,10 @@ Circle = (function(_super) {
     this.ctx.translate(this.o.parentSize.x, this.o.parentSize.y);
     this.ctx.rotate(this.angle * Math.PI / 180);
     this.ctx.translate(-this.o.parentSize.x, -this.o.parentSize.y);
+    angle = Math.PI / 180;
     this.ctx.translate(this.position.x - 2 * this.radiusX, this.position.y - 2 * this.radiusY);
     this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
-    this.ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
+    this.ctx.arc(1, 1, 1, this.degreeOffset * angle, (this.degree + this.degreeOffset) * angle, false);
     this.ctx.restore();
     this.ctx.lineWidth = this.lineWidth * this.px;
     this.ctx.lineCap = this.lineCap;
@@ -437,18 +473,17 @@ var Bubble, burst;
 Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
-  radiusStartX: 85,
-  radiusEndX: 35,
-  radiusStartY: 15,
-  radiusEndY: 10,
-  lineWidth: 50,
-  lineWidthEnd: 0,
+  radiusStart: 100,
+  radiusEnd: 50,
+  lineWidth: 2,
   color: 'deeppink',
-  duration: 5000,
-  angle: 90,
-  angleEnd: 720,
-  repeat: 99999,
-  yoyo: true
+  duration: 500,
+  degree: 360,
+  degreeEnd: 0,
+  degreeOffset: 0,
+  degreeOffsetEnd: 360,
+  angle: 180,
+  angleEnd: 360
 });
 
 window.addEventListener('click', function(e) {

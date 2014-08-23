@@ -4,6 +4,8 @@ TWEEN  = require '../vendor/tween'
 
 class Bit
   oa: {}
+  h:  h
+  TWEEN: TWEEN
   defaultOptions:
     x:   0
     y:   0
@@ -13,8 +15,7 @@ class Bit
 
   vars:->
     # get CANVAS context
-    @TWEEN = TWEEN
-    @h     = h
+    # @h     = h
     @ctx   = @o.ctx or @ctx
     @px    = h.pixel
     @DEG = (Math.PI/180)
