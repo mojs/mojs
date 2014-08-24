@@ -8,6 +8,7 @@ class Byte extends Bit
     @parent = @o.parent or h.body
     @el = @oa.el or @o.el or @el or @createEl()
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
+    @colorEnd and (@colorEndObj = @h.makeColorObj @colorEnd)
 
   createEl:->
     @el = document.createElement('canvas')

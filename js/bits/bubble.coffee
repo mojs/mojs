@@ -9,7 +9,8 @@ Line = require './line'
 class Bubble extends Byte
 
   vars:->
-    @radiusStart = @default prop: 'radiusStart', def: 100
+    @radius      = @default prop: 'radius',      def: 100
+    @radiusStart = @default prop: 'radiusStart', def: @radius
     @radiusEnd   = @default prop: 'radiusEnd',   def: @radiusStart
 
     @radiusStartX  = @defaultPart prop: 'radiusStartX', def: @radiusStart
@@ -45,6 +46,7 @@ class Bubble extends Byte
 
     @lineDash     = @default prop: 'lineDash',    def: []
     @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
+    @colorEnd = @default prop: 'colorEnd',        def: @color
 
     if @lineDash.length < @lineDashEnd.length
       for dash, i in @lineDashEnd
@@ -52,8 +54,6 @@ class Bubble extends Byte
     if @lineDash.length > @lineDashEnd.length
       for dash, i in @lineDash
         @lineDashEnd[i] ?= @lineDashEnd[0]
-
-    console.log @lineDash, @lineDashEnd
 
     @repeat       = @default prop: 'repeat',      def: 0
     @yoyo         = @default prop: 'yoyo',        def: false
@@ -63,6 +63,7 @@ class Bubble extends Byte
     @center = @size/2
     @sizeX = @size; @sizeY = @size
     super
+
     @circle = new Circle
       ctx: @ctx
       color: @color
@@ -73,7 +74,6 @@ class Bubble extends Byte
       # lineWidthEnd: @lineWidthEnd
       position: x: 2*@center, y: 2*@center
       lineDash: @lineDash
-
 
   run:->
     @h.size(@oa) and @vars()
@@ -102,9 +102,20 @@ class Bubble extends Byte
       for dash, i in @lineDashEnd
         to["lineDash#{i}"] = dash
 
+    if @color and @colorEnd
+      from.r = @colorObj.r
+      from.g = @colorObj.g
+      from.b = @colorObj.b
+      to.r = @colorEndObj.r
+      to.g = @colorEndObj.g
+      to.b = @colorEndObj.b
+
+    it.colorObj = @h.clone @colorObj
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
+        console.time 'run'
+
         i = 0; lineDash = []
         if it.lineDash and it.lineDashEnd
           for key, val of @
@@ -112,6 +123,9 @@ class Bubble extends Byte
               lineDash.push val
               i++
 
+        it.colorObj.r = parseInt(@r,10)
+        it.colorObj.g = parseInt(@g,10)
+        it.colorObj.b = parseInt(@b,10)
         it.circle.setProp
           radiusX: @rx
           radiusY: @ry
@@ -120,8 +134,9 @@ class Bubble extends Byte
           degree: @degree
           degreeOffset: @degreeOffset
           lineDash: lineDash
-        # console.log @
-        # console.timeEnd 'run'
+          colorObj: it.colorObj
+
+        console.timeEnd 'run'
 
         # console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]

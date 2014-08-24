@@ -94,9 +94,9 @@ class Helpers
       colorObj = {}
       if result
         colorObj =
-          r: result[1]
-          g: result[2]
-          b: result[3]
+          r: parseInt(result[1],10)
+          g: parseInt(result[2],10)
+          b: parseInt(result[3],10)
           a: 1
     colorObj
 

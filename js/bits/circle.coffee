@@ -12,7 +12,6 @@ class Circle extends Bit
     @degree   = @default prop: 'degree', def: 360
     @degreeOffset = @default prop: 'degreeOffset', def: 0
     @lineDash     = @default prop: 'lineDash',    def: []
-
     super
 
   render:->
@@ -37,7 +36,7 @@ class Circle extends Bit
     @ctx.lineWidth   = @lineWidth*@px
     @ctx.lineCap     = @lineCap
     @ctx.setLineDash?(@lineDash)
-    c = @colorObj; @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{c.a})"
+    c = @colorObj; @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{c.a ?= 1 })"
     (@lineWidth > 0) and @ctx.stroke()
     
     # @ctx.restore()

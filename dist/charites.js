@@ -18,9 +18,13 @@ Bubble = (function(_super) {
 
   Bubble.prototype.vars = function() {
     var dash, i, maxLineWidth, maxRadius, _base, _base1, _i, _j, _len, _len1, _ref, _ref1;
+    this.radius = this["default"]({
+      prop: 'radius',
+      def: 100
+    });
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
-      def: 100
+      def: this.radius
     });
     this.radiusEnd = this["default"]({
       prop: 'radiusEnd',
@@ -107,6 +111,10 @@ Bubble = (function(_super) {
       prop: 'lineDashEnd',
       def: this.lineDash
     });
+    this.colorEnd = this["default"]({
+      prop: 'colorEnd',
+      def: this.color
+    });
     if (this.lineDash.length < this.lineDashEnd.length) {
       _ref = this.lineDashEnd;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -125,7 +133,6 @@ Bubble = (function(_super) {
         }
       }
     }
-    console.log(this.lineDash, this.lineDashEnd);
     this.repeat = this["default"]({
       prop: 'repeat',
       def: 0
@@ -192,8 +199,18 @@ Bubble = (function(_super) {
         to["lineDash" + i] = dash;
       }
     }
+    if (this.color && this.colorEnd) {
+      from.r = this.colorObj.r;
+      from.g = this.colorObj.g;
+      from.b = this.colorObj.b;
+      to.r = this.colorEndObj.r;
+      to.g = this.colorEndObj.g;
+      to.b = this.colorEndObj.b;
+    }
+    it.colorObj = this.h.clone(this.colorObj);
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
       var key, lineDash, val;
+      console.time('run');
       i = 0;
       lineDash = [];
       if (it.lineDash && it.lineDashEnd) {
@@ -205,15 +222,20 @@ Bubble = (function(_super) {
           }
         }
       }
-      return it.circle.setProp({
+      it.colorObj.r = parseInt(this.r, 10);
+      it.colorObj.g = parseInt(this.g, 10);
+      it.colorObj.b = parseInt(this.b, 10);
+      it.circle.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
         lineWidth: this.lineW,
         angle: this.angle,
         degree: this.degree,
         degreeOffset: this.degreeOffset,
-        lineDash: lineDash
+        lineDash: lineDash,
+        colorObj: it.colorObj
       });
+      return console.timeEnd('run');
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
     return this.h.startAnimationLoop();
   };
@@ -337,7 +359,8 @@ Byte = (function(_super) {
     this.s = 1 * h.time(1);
     this.parent = this.o.parent || h.body;
     this.el = this.oa.el || this.o.el || this.el || this.createEl();
-    return this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
+    this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
+    return this.colorEnd && (this.colorEndObj = this.h.makeColorObj(this.colorEnd));
   };
 
   Byte.prototype.createEl = function() {
@@ -448,7 +471,7 @@ Circle = (function(_super) {
       _base.setLineDash(this.lineDash);
     }
     c = this.colorObj;
-    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
+    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (c.a != null ? c.a : c.a = 1) + ")";
     return (this.lineWidth > 0) && this.ctx.stroke();
   };
 
@@ -533,12 +556,16 @@ var Bubble, burst;
 Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
-  radiusStart: 100,
-  lineWidth: 2,
+  radius: 100,
+  lineWidth: 3,
+  lineWidthEnd: 10,
   color: 'deeppink',
+  colorEnd: '#0000FF',
   duration: 5000,
-  lineDash: [400, 20, 100, 500, 200, 400],
-  lineDashEnd: [0]
+  lineDash: [400, 20, 100, 500, 20, 400],
+  lineDashEnd: [200, 10, 50, 200, 100, 200],
+  angleEnd: -360,
+  degreeEnd: 0
 });
 
 window.addEventListener('click', function(e) {
@@ -679,9 +706,9 @@ Helpers = (function() {
       colorObj = {};
       if (result) {
         colorObj = {
-          r: result[1],
-          g: result[2],
-          b: result[3],
+          r: parseInt(result[1], 10),
+          g: parseInt(result[2], 10),
+          b: parseInt(result[3], 10),
           a: 1
         };
       }
