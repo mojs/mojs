@@ -19,6 +19,8 @@ burst = new Bubble
   lineDashEnd: [200,10,50, 200, 100, 200]
   angleEnd:    -360
   degreeEnd:   0
+  opacity:     0
+  opacityEnd:  1
   
 window.addEventListener 'click', (e)->
   burst.el.style.top  = "#{e.y-(burst.size/2)}px"

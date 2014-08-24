@@ -41,6 +41,9 @@ class Bubble extends Byte
     @degree    = @h.slice @degree,    360
     @degreeEnd = @h.slice @degreeEnd, 360
 
+    @opacity      = @default prop: 'opacity',    def: 1
+    @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
+
     maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusStartX, @radiusStartY
     maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
@@ -74,6 +77,7 @@ class Bubble extends Byte
       # lineWidthEnd: @lineWidthEnd
       position: x: 2*@center, y: 2*@center
       lineDash: @lineDash
+      opacity: @opacity
 
   run:->
     @h.size(@oa) and @vars()
@@ -88,6 +92,7 @@ class Bubble extends Byte
       angle:   @angleStart
       degree:  @degree
       degreeOffset: @degreeOffset
+      opacity: @opacity
     to =
       rx: @radiusEndX
       ry: @radiusEndY
@@ -95,6 +100,7 @@ class Bubble extends Byte
       angle:   @angleEnd
       degree:  @degreeEnd
       degreeOffset: @degreeOffsetEnd
+      opacity: @opacityEnd
 
     if @lineDash and @lineDashEnd
       for dash, i in @lineDash
@@ -106,16 +112,16 @@ class Bubble extends Byte
       from.r = @colorObj.r
       from.g = @colorObj.g
       from.b = @colorObj.b
+      from.a = @colorObj.a
       to.r = @colorEndObj.r
       to.g = @colorEndObj.g
       to.b = @colorEndObj.b
+      to.a = @colorEndObj.a
 
     it.colorObj = @h.clone @colorObj
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
-        console.time 'run'
-
         i = 0; lineDash = []
         if it.lineDash and it.lineDashEnd
           for key, val of @
@@ -126,6 +132,7 @@ class Bubble extends Byte
         it.colorObj.r = parseInt(@r,10)
         it.colorObj.g = parseInt(@g,10)
         it.colorObj.b = parseInt(@b,10)
+        it.colorObj.a = parseInt(@a,10)
         it.circle.setProp
           radiusX: @rx
           radiusY: @ry
@@ -135,8 +142,7 @@ class Bubble extends Byte
           degreeOffset: @degreeOffset
           lineDash: lineDash
           colorObj: it.colorObj
-
-        console.timeEnd 'run'
+          opacity: @opacity
 
         # console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]

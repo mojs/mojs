@@ -36,7 +36,8 @@ class Circle extends Bit
     @ctx.lineWidth   = @lineWidth*@px
     @ctx.lineCap     = @lineCap
     @ctx.setLineDash?(@lineDash)
-    c = @colorObj; @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{c.a ?= 1 })"
+    c = @colorObj
+    @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"
     (@lineWidth > 0) and @ctx.stroke()
     
     # @ctx.restore()

@@ -101,6 +101,14 @@ Bubble = (function(_super) {
     });
     this.degree = this.h.slice(this.degree, 360);
     this.degreeEnd = this.h.slice(this.degreeEnd, 360);
+    this.opacity = this["default"]({
+      prop: 'opacity',
+      def: 1
+    });
+    this.opacityEnd = this["default"]({
+      prop: 'opacityEnd',
+      def: this.opacity
+    });
     maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
     maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
     this.lineDash = this["default"]({
@@ -160,7 +168,8 @@ Bubble = (function(_super) {
         x: 2 * this.center,
         y: 2 * this.center
       },
-      lineDash: this.lineDash
+      lineDash: this.lineDash,
+      opacity: this.opacity
     });
   };
 
@@ -177,7 +186,8 @@ Bubble = (function(_super) {
       lineW: this.lineWidth,
       angle: this.angleStart,
       degree: this.degree,
-      degreeOffset: this.degreeOffset
+      degreeOffset: this.degreeOffset,
+      opacity: this.opacity
     };
     to = {
       rx: this.radiusEndX,
@@ -185,7 +195,8 @@ Bubble = (function(_super) {
       lineW: this.lineWidthEnd,
       angle: this.angleEnd,
       degree: this.degreeEnd,
-      degreeOffset: this.degreeOffsetEnd
+      degreeOffset: this.degreeOffsetEnd,
+      opacity: this.opacityEnd
     };
     if (this.lineDash && this.lineDashEnd) {
       _ref = this.lineDash;
@@ -203,14 +214,15 @@ Bubble = (function(_super) {
       from.r = this.colorObj.r;
       from.g = this.colorObj.g;
       from.b = this.colorObj.b;
+      from.a = this.colorObj.a;
       to.r = this.colorEndObj.r;
       to.g = this.colorEndObj.g;
       to.b = this.colorEndObj.b;
+      to.a = this.colorEndObj.a;
     }
     it.colorObj = this.h.clone(this.colorObj);
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
       var key, lineDash, val;
-      console.time('run');
       i = 0;
       lineDash = [];
       if (it.lineDash && it.lineDashEnd) {
@@ -225,7 +237,8 @@ Bubble = (function(_super) {
       it.colorObj.r = parseInt(this.r, 10);
       it.colorObj.g = parseInt(this.g, 10);
       it.colorObj.b = parseInt(this.b, 10);
-      it.circle.setProp({
+      it.colorObj.a = parseInt(this.a, 10);
+      return it.circle.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
         lineWidth: this.lineW,
@@ -233,9 +246,9 @@ Bubble = (function(_super) {
         degree: this.degree,
         degreeOffset: this.degreeOffset,
         lineDash: lineDash,
-        colorObj: it.colorObj
+        colorObj: it.colorObj,
+        opacity: this.opacity
       });
-      return console.timeEnd('run');
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
     return this.h.startAnimationLoop();
   };
@@ -471,7 +484,7 @@ Circle = (function(_super) {
       _base.setLineDash(this.lineDash);
     }
     c = this.colorObj;
-    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (c.a != null ? c.a : c.a = 1) + ")";
+    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
     return (this.lineWidth > 0) && this.ctx.stroke();
   };
 
@@ -565,7 +578,9 @@ burst = new Bubble({
   lineDash: [400, 20, 100, 500, 20, 400],
   lineDashEnd: [200, 10, 50, 200, 100, 200],
   angleEnd: -360,
-  degreeEnd: 0
+  degreeEnd: 0,
+  opacity: 0,
+  opacityEnd: 1
 });
 
 window.addEventListener('click', function(e) {
