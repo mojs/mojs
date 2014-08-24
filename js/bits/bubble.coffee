@@ -44,6 +44,16 @@ class Bubble extends Byte
     maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
     @lineDash     = @default prop: 'lineDash',    def: []
+    @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
+
+    if @lineDash.length < @lineDashEnd.length
+      for dash, i in @lineDashEnd
+        @lineDash[i] ?= @lineDash[0]
+    if @lineDash.length > @lineDashEnd.length
+      for dash, i in @lineDash
+        @lineDashEnd[i] ?= @lineDashEnd[0]
+
+    console.log @lineDash, @lineDashEnd
 
     @repeat       = @default prop: 'repeat',      def: 0
     @yoyo         = @default prop: 'yoyo',        def: false
@@ -86,9 +96,22 @@ class Bubble extends Byte
       degree:  @degreeEnd
       degreeOffset: @degreeOffsetEnd
 
+    if @lineDash and @lineDashEnd
+      for dash, i in @lineDash
+        from["lineDash#{i}"] = dash
+      for dash, i in @lineDashEnd
+        to["lineDash#{i}"] = dash
+
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
+        i = 0; lineDash = []
+        if it.lineDash and it.lineDashEnd
+          for key, val of @
+            if key is 'lineDash0' or key is "lineDash#{i}"
+              lineDash.push val
+              i++
+
         it.circle.setProp
           radiusX: @rx
           radiusY: @ry
@@ -96,6 +119,10 @@ class Bubble extends Byte
           angle: @angle
           degree: @degree
           degreeOffset: @degreeOffset
+          lineDash: lineDash
+        # console.log @
+        # console.timeEnd 'run'
+
         # console.log @lineW
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)

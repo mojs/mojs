@@ -11,7 +11,6 @@ class Circle extends Bit
     @angle    = @default prop: 'angle',  def: 0
     @degree   = @default prop: 'degree', def: 360
     @degreeOffset = @default prop: 'degreeOffset', def: 0
-
     @lineDash     = @default prop: 'lineDash',    def: []
 
     super

@@ -17,7 +17,7 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
-    var maxLineWidth, maxRadius;
+    var dash, i, maxLineWidth, maxRadius, _base, _base1, _i, _j, _len, _len1, _ref, _ref1;
     this.radiusStart = this["default"]({
       prop: 'radiusStart',
       def: 100
@@ -103,6 +103,29 @@ Bubble = (function(_super) {
       prop: 'lineDash',
       def: []
     });
+    this.lineDashEnd = this["default"]({
+      prop: 'lineDashEnd',
+      def: this.lineDash
+    });
+    if (this.lineDash.length < this.lineDashEnd.length) {
+      _ref = this.lineDashEnd;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        dash = _ref[i];
+        if ((_base = this.lineDash)[i] == null) {
+          _base[i] = this.lineDash[0];
+        }
+      }
+    }
+    if (this.lineDash.length > this.lineDashEnd.length) {
+      _ref1 = this.lineDash;
+      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+        dash = _ref1[i];
+        if ((_base1 = this.lineDashEnd)[i] == null) {
+          _base1[i] = this.lineDashEnd[0];
+        }
+      }
+    }
+    console.log(this.lineDash, this.lineDashEnd);
     this.repeat = this["default"]({
       prop: 'repeat',
       def: 0
@@ -135,7 +158,7 @@ Bubble = (function(_super) {
   };
 
   Bubble.prototype.run = function() {
-    var from, it, to;
+    var dash, from, i, it, to, _i, _j, _len, _len1, _ref, _ref1;
     this.h.size(this.oa) && this.vars();
     this.h.isSizeChange(this.oa) && this.setElSize();
     this.TWEEN.remove(this.tween1);
@@ -157,14 +180,39 @@ Bubble = (function(_super) {
       degree: this.degreeEnd,
       degreeOffset: this.degreeOffsetEnd
     };
+    if (this.lineDash && this.lineDashEnd) {
+      _ref = this.lineDash;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        dash = _ref[i];
+        from["lineDash" + i] = dash;
+      }
+      _ref1 = this.lineDashEnd;
+      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+        dash = _ref1[i];
+        to["lineDash" + i] = dash;
+      }
+    }
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
+      var key, lineDash, val;
+      i = 0;
+      lineDash = [];
+      if (it.lineDash && it.lineDashEnd) {
+        for (key in this) {
+          val = this[key];
+          if (key === 'lineDash0' || key === ("lineDash" + i)) {
+            lineDash.push(val);
+            i++;
+          }
+        }
+      }
       return it.circle.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
         lineWidth: this.lineW,
         angle: this.angle,
         degree: this.degree,
-        degreeOffset: this.degreeOffset
+        degreeOffset: this.degreeOffset,
+        lineDash: lineDash
       });
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
     return this.h.startAnimationLoop();
@@ -488,8 +536,9 @@ burst = new Bubble({
   radiusStart: 100,
   lineWidth: 2,
   color: 'deeppink',
-  duration: 500,
-  lineDash: [100, 200]
+  duration: 5000,
+  lineDash: [400, 20, 100, 500, 200, 400],
+  lineDashEnd: [0]
 });
 
 window.addEventListener('click', function(e) {
