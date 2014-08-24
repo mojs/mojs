@@ -37,6 +37,10 @@ class Helpers
       orange: 'rgb(255,128,0)'
 
   slice:(value, max)-> if value > max then max else value
+  
+  sliceMod:(value, max)->
+    if value > 0 then (if value > max then max else value)
+    else if value < -max then -max else value
 
   clone:(obj)->
     target = {}

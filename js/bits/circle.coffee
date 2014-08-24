@@ -11,6 +11,9 @@ class Circle extends Bit
     @angle    = @default prop: 'angle',  def: 0
     @degree   = @default prop: 'degree', def: 360
     @degreeOffset = @default prop: 'degreeOffset', def: 0
+
+    @lineDash     = @default prop: 'lineDash',    def: []
+
     super
 
   render:->
@@ -25,7 +28,6 @@ class Circle extends Bit
     @ctx.rotate(@angle*Math.PI/180)
     @ctx.translate(-@o.parentSize.x,-@o.parentSize.y)
 
-
     # ellipse
     angle = Math.PI/180
     @ctx.translate(@position.x-2*@radiusX, @position.y-2*@radiusY)
@@ -35,6 +37,7 @@ class Circle extends Bit
 
     @ctx.lineWidth   = @lineWidth*@px
     @ctx.lineCap     = @lineCap
+    @ctx.setLineDash(@lineDash)
     c = @colorObj; @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{c.a})"
     (@lineWidth > 0) and @ctx.stroke()
     

@@ -99,6 +99,10 @@ Bubble = (function(_super) {
     this.degreeEnd = this.h.slice(this.degreeEnd, 360);
     maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
     maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+    this.lineDash = this["default"]({
+      prop: 'lineDash',
+      def: []
+    });
     this.repeat = this["default"]({
       prop: 'repeat',
       def: 0
@@ -125,7 +129,8 @@ Bubble = (function(_super) {
       position: {
         x: 2 * this.center,
         y: 2 * this.center
-      }
+      },
+      lineDash: this.lineDash
     });
   };
 
@@ -222,7 +227,7 @@ Bit = (function() {
     });
     this.lineCap = this["default"]({
       prop: 'lineCap',
-      def: 'none'
+      def: 'round'
     });
     this.opacity = this["default"]({
       prop: 'opacity',
@@ -365,6 +370,10 @@ Circle = (function(_super) {
       prop: 'degreeOffset',
       def: 0
     });
+    this.lineDash = this["default"]({
+      prop: 'lineDash',
+      def: []
+    });
     return Circle.__super__.vars.apply(this, arguments);
   };
 
@@ -387,6 +396,7 @@ Circle = (function(_super) {
     this.ctx.restore();
     this.ctx.lineWidth = this.lineWidth * this.px;
     this.ctx.lineCap = this.lineCap;
+    this.ctx.setLineDash(this.lineDash);
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
     return (this.lineWidth > 0) && this.ctx.stroke();
@@ -474,16 +484,10 @@ Bubble = require('./bits/Bubble');
 
 burst = new Bubble({
   radiusStart: 100,
-  radiusEnd: 50,
   lineWidth: 2,
   color: 'deeppink',
   duration: 500,
-  degree: 360,
-  degreeEnd: 0,
-  degreeOffset: 0,
-  degreeOffsetEnd: 360,
-  angle: 180,
-  angleEnd: 360
+  lineDash: [100, 200]
 });
 
 window.addEventListener('click', function(e) {
@@ -541,6 +545,20 @@ Helpers = (function() {
   Helpers.prototype.slice = function(value, max) {
     if (value > max) {
       return max;
+    } else {
+      return value;
+    }
+  };
+
+  Helpers.prototype.sliceMod = function(value, max) {
+    if (value > 0) {
+      if (value > max) {
+        return max;
+      } else {
+        return value;
+      }
+    } else if (value < -max) {
+      return -max;
     } else {
       return value;
     }

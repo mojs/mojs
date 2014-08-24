@@ -25,7 +25,7 @@ class Bit
     @colorMap   = @default prop: 'colorMap',  def: [@color]
 
     @lineWidth= @default prop: 'lineWidth',def: 1
-    @lineCap  = @default prop: 'lineCap',  def: 'none'
+    @lineCap  = @default prop: 'lineCap',  def: 'round'
     @opacity  = @default prop: 'opacity',  def: 1
     @isClearLess  = @default prop: 'isClearLess',  def: false
 

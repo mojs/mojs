@@ -43,6 +43,8 @@ class Bubble extends Byte
     maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusStartX, @radiusStartY
     maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
+    @lineDash     = @default prop: 'lineDash',    def: []
+
     @repeat       = @default prop: 'repeat',      def: 0
     @yoyo         = @default prop: 'yoyo',        def: false
 
@@ -60,6 +62,7 @@ class Bubble extends Byte
       degreeOffset: @degreeOffset
       # lineWidthEnd: @lineWidthEnd
       position: x: 2*@center, y: 2*@center
+      lineDash: @lineDash
 
 
   run:->
