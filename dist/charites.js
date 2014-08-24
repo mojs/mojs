@@ -378,7 +378,7 @@ Circle = (function(_super) {
   };
 
   Circle.prototype.render = function() {
-    var angle, c;
+    var angle, c, _base;
     if (!this.ctx) {
       console.error('Circle.render: no context!');
       return;
@@ -396,7 +396,9 @@ Circle = (function(_super) {
     this.ctx.restore();
     this.ctx.lineWidth = this.lineWidth * this.px;
     this.ctx.lineCap = this.lineCap;
-    this.ctx.setLineDash(this.lineDash);
+    if (typeof (_base = this.ctx).setLineDash === "function") {
+      _base.setLineDash(this.lineDash);
+    }
     c = this.colorObj;
     this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + c.a + ")";
     return (this.lineWidth > 0) && this.ctx.stroke();
