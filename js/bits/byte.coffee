@@ -19,15 +19,6 @@ class Byte extends Bit
     @radiusEndY  = @defaultPart prop: 'radiusEndY', def: @radiusEnd
 
     @lineWidth      = @default prop: 'lineWidth',   def: 1
-    # @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
-    @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
-
-    @duration    = @default prop: 'duration',     def: 400
-    @delay       = @default prop: 'delay',        def: 0
-    @easing      = @defaultPart prop: 'easing',   def: 'Linear.None'
-    @easings     = @easing.split '.'
-
-    @lineWidth      = @default prop: 'lineWidth',   def: 1
     @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
     @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
 
@@ -39,8 +30,6 @@ class Byte extends Bit
     @easing      = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings     = @easing.split '.'
 
-    @lineDash     = @default prop: 'lineDash',    def: []
-    @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
     @colorEnd = @default prop: 'colorEnd',        def: @color
     @colorEnd and (@colorEndObj = @h.makeColorObj @colorEnd)
 
@@ -57,22 +46,33 @@ class Byte extends Bit
     @degree    = @h.slice @degree,    360
     @degreeEnd = @h.slice @degreeEnd, 360
 
+    @lineDash     = @default prop: 'lineDash',    def: []
+    @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
+    @normalizeLineDashes()
+
+    # TWEEN OPTIONS
+    @repeat       = @default prop: 'repeat',      def: 0
+    @yoyo         = @default prop: 'yoyo',        def: false
+    @duration     = @default prop: 'duration',     def: 400
+    @delay        = @default prop: 'delay',        def: 0
+    @easing       = @defaultPart prop: 'easing',   def: 'Linear.None'
+    @easings      = @easing.split '.'
+
+    # CANVAS SIZE
     maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusX, @radiusY
     maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
+    @size = 2*maxRadius + maxLineWidth
+    @center = @size/2; @sizeX = @size; @sizeY = @size
 
+  normalizeLineDashes:->
+    # line dash arrays should be equal length
+    # for animation purposes
     if @lineDash.length < @lineDashEnd.length
       for dash, i in @lineDashEnd
         @lineDash[i] ?= @lineDash[0]
     if @lineDash.length > @lineDashEnd.length
       for dash, i in @lineDash
         @lineDashEnd[i] ?= @lineDashEnd[0]
-
-    @repeat       = @default prop: 'repeat',      def: 0
-    @yoyo         = @default prop: 'yoyo',        def: false
-
-
-    @size = 2*maxRadius + maxLineWidth
-    @center = @size/2; @sizeX = @size; @sizeY = @size
 
 
   createEl:->

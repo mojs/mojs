@@ -242,7 +242,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.defaultByteVars = function() {
-    var dash, i, maxLineWidth, maxRadius, _base, _base1, _i, _j, _len, _len1, _ref, _ref1;
+    var maxLineWidth, maxRadius;
     this.radius = this["default"]({
       prop: 'radius',
       def: 100
@@ -267,27 +267,6 @@ Byte = (function(_super) {
       prop: 'radiusEndY',
       def: this.radiusEnd
     });
-    this.lineWidth = this["default"]({
-      prop: 'lineWidth',
-      def: 1
-    });
-    this.lineWidthEnd = this["default"]({
-      prop: 'lineWidthEnd',
-      def: this.lineWidth
-    });
-    this.duration = this["default"]({
-      prop: 'duration',
-      def: 400
-    });
-    this.delay = this["default"]({
-      prop: 'delay',
-      def: 0
-    });
-    this.easing = this.defaultPart({
-      prop: 'easing',
-      def: 'Linear.None'
-    });
-    this.easings = this.easing.split('.');
     this.lineWidth = this["default"]({
       prop: 'lineWidth',
       def: 1
@@ -321,14 +300,6 @@ Byte = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
-    this.lineDash = this["default"]({
-      prop: 'lineDash',
-      def: []
-    });
-    this.lineDashEnd = this["default"]({
-      prop: 'lineDashEnd',
-      def: this.lineDash
-    });
     this.colorEnd = this["default"]({
       prop: 'colorEnd',
       def: this.color
@@ -364,8 +335,46 @@ Byte = (function(_super) {
     });
     this.degree = this.h.slice(this.degree, 360);
     this.degreeEnd = this.h.slice(this.degreeEnd, 360);
+    this.lineDash = this["default"]({
+      prop: 'lineDash',
+      def: []
+    });
+    this.lineDashEnd = this["default"]({
+      prop: 'lineDashEnd',
+      def: this.lineDash
+    });
+    this.normalizeLineDashes();
+    this.repeat = this["default"]({
+      prop: 'repeat',
+      def: 0
+    });
+    this.yoyo = this["default"]({
+      prop: 'yoyo',
+      def: false
+    });
+    this.duration = this["default"]({
+      prop: 'duration',
+      def: 400
+    });
+    this.delay = this["default"]({
+      prop: 'delay',
+      def: 0
+    });
+    this.easing = this.defaultPart({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
+    this.easings = this.easing.split('.');
     maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusX, this.radiusY);
     maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+    this.size = 2 * maxRadius + maxLineWidth;
+    this.center = this.size / 2;
+    this.sizeX = this.size;
+    return this.sizeY = this.size;
+  };
+
+  Byte.prototype.normalizeLineDashes = function() {
+    var dash, i, _base, _base1, _i, _j, _len, _len1, _ref, _ref1, _results;
     if (this.lineDash.length < this.lineDashEnd.length) {
       _ref = this.lineDashEnd;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -377,25 +386,13 @@ Byte = (function(_super) {
     }
     if (this.lineDash.length > this.lineDashEnd.length) {
       _ref1 = this.lineDash;
+      _results = [];
       for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
         dash = _ref1[i];
-        if ((_base1 = this.lineDashEnd)[i] == null) {
-          _base1[i] = this.lineDashEnd[0];
-        }
+        _results.push((_base1 = this.lineDashEnd)[i] != null ? _base1[i] : _base1[i] = this.lineDashEnd[0]);
       }
+      return _results;
     }
-    this.repeat = this["default"]({
-      prop: 'repeat',
-      def: 0
-    });
-    this.yoyo = this["default"]({
-      prop: 'yoyo',
-      def: false
-    });
-    this.size = 2 * maxRadius + maxLineWidth;
-    this.center = this.size / 2;
-    this.sizeX = this.size;
-    return this.sizeY = this.size;
   };
 
   Byte.prototype.createEl = function() {
