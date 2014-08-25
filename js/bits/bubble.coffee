@@ -14,15 +14,8 @@ class Bubble extends Byte
     super
     @circle = new Circle
       ctx: @ctx
-      color: @color
-      radius: @radius
       parentSize: x: @sizeX, y: @sizeY
-      degree: @degree
-      degreeOffset: @degreeOffset
-      # lineWidthEnd: @lineWidthEnd
       position: x: 2*@center, y: 2*@center
-      lineDash: @lineDash
-      opacity: @opacity
 
   run:(@oa={})->
     h.size(@oa) and @vars()

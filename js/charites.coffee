@@ -7,22 +7,9 @@ Bubble = require './bits/Bubble'
 # positions
 
 bubble = new Bubble
-  radiusX: 150
-  radiusY: 350
   radius: 50
   radiusEnd: 200
-  radiusEndX: 50
-  radiusEndY: 50
   color: 'orange'
-  # lineWidth:    2
-  # lineWidthEnd: 0
-
-  # color:        '#FF0000'
-  # colorEnd:     '#0000FF'
-
-  # duration:     500
-  # degreeEnd:    0
-  # angleEnd: 180
 
 window.addEventListener 'click', (e)->
   # console.log h.rand -360,360

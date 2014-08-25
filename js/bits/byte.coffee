@@ -22,22 +22,6 @@ class Byte extends Bit
     @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
     @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
 
-    @opacity      = @default prop: 'opacity',    def: 1
-    @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
-
-    @duration    = @default prop: 'duration',     def: 400
-    @delay       = @default prop: 'delay',        def: 0
-    @easing      = @defaultPart prop: 'easing',   def: 'Linear.None'
-    @easings     = @easing.split '.'
-
-    @colorEnd = @default prop: 'colorEnd',        def: @color
-    @colorEnd and (@colorEndObj = h.makeColorObj @colorEnd)
-    @colorMap   = @default prop: 'colorMap',  def: [@color]
-
-    @angle        = @default prop: 'angle',       def: 0
-    @angleStart   = @default prop: 'angleStart',  def: @angle
-    @angleEnd     = @default prop: 'angleEnd',    def: @angleStart
-
     @degree       = @default prop: 'degree',       def: 360
     @degreeEnd    = @default prop: 'degreeEnd',    def: @degree
     
@@ -46,6 +30,19 @@ class Byte extends Bit
 
     @degree    = h.slice @degree,    360
     @degreeEnd = h.slice @degreeEnd, 360
+
+    # DEFENITELY UNIVERSAL OPTIONS
+    @opacity      = @default prop: 'opacity',    def: 1
+    @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
+
+    @colorEnd = @default prop: 'colorEnd',        def: @color
+    @colorEnd and (@colorEndObj = h.makeColorObj @colorEnd)
+    @colorMap   = @default prop: 'colorMap',  def: [@color]
+
+
+    @angle        = @default prop: 'angle',       def: 0
+    @angleStart   = @default prop: 'angleStart',  def: @angle
+    @angleEnd     = @default prop: 'angleEnd',    def: @angleStart
 
     @lineDash     = @default prop: 'lineDash',    def: []
     @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash

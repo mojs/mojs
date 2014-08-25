@@ -22,20 +22,14 @@ Bubble = (function(_super) {
     Bubble.__super__.vars.apply(this, arguments);
     return this.circle = new Circle({
       ctx: this.ctx,
-      color: this.color,
-      radius: this.radius,
       parentSize: {
         x: this.sizeX,
         y: this.sizeY
       },
-      degree: this.degree,
-      degreeOffset: this.degreeOffset,
       position: {
         x: 2 * this.center,
         y: 2 * this.center
-      },
-      lineDash: this.lineDash,
-      opacity: this.opacity
+      }
     });
   };
 
@@ -275,6 +269,24 @@ Byte = (function(_super) {
       prop: 'lineWidthEnd',
       def: this.lineWidth
     });
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeEnd = this["default"]({
+      prop: 'degreeEnd',
+      def: this.degree
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
+    this.degreeOffsetEnd = this["default"]({
+      prop: 'degreeOffsetEnd',
+      def: this.degreeOffset
+    });
+    this.degree = h.slice(this.degree, 360);
+    this.degreeEnd = h.slice(this.degreeEnd, 360);
     this.opacity = this["default"]({
       prop: 'opacity',
       def: 1
@@ -283,19 +295,6 @@ Byte = (function(_super) {
       prop: 'opacityEnd',
       def: this.opacity
     });
-    this.duration = this["default"]({
-      prop: 'duration',
-      def: 400
-    });
-    this.delay = this["default"]({
-      prop: 'delay',
-      def: 0
-    });
-    this.easing = this.defaultPart({
-      prop: 'easing',
-      def: 'Linear.None'
-    });
-    this.easings = this.easing.split('.');
     this.colorEnd = this["default"]({
       prop: 'colorEnd',
       def: this.color
@@ -317,24 +316,6 @@ Byte = (function(_super) {
       prop: 'angleEnd',
       def: this.angleStart
     });
-    this.degree = this["default"]({
-      prop: 'degree',
-      def: 360
-    });
-    this.degreeEnd = this["default"]({
-      prop: 'degreeEnd',
-      def: this.degree
-    });
-    this.degreeOffset = this["default"]({
-      prop: 'degreeOffset',
-      def: 0
-    });
-    this.degreeOffsetEnd = this["default"]({
-      prop: 'degreeOffsetEnd',
-      def: this.degreeOffset
-    });
-    this.degree = h.slice(this.degree, 360);
-    this.degreeEnd = h.slice(this.degreeEnd, 360);
     this.lineDash = this["default"]({
       prop: 'lineDash',
       def: []
@@ -435,36 +416,9 @@ Circle = (function(_super) {
     return Circle.__super__.constructor.apply(this, arguments);
   }
 
+  Circle.prototype.name = 'circle';
+
   Circle.prototype.vars = function() {
-    var defPosition;
-    this.radius = this["default"]({
-      prop: 'radius',
-      def: 50
-    });
-    this.radiusX = this.defaultPart({
-      prop: 'radiusX',
-      def: this.radius
-    });
-    this.radiusY = this.defaultPart({
-      prop: 'radiusY',
-      def: this.radius
-    });
-    this.size = {
-      width: 2 * this.radiusX,
-      height: 2 * this.radiusY
-    };
-    defPosition = {
-      x: this.size.width,
-      y: this.size.height
-    };
-    this.position = this["default"]({
-      prop: 'position',
-      def: defPosition
-    });
-    this.angle = this["default"]({
-      prop: 'angle',
-      def: 0
-    });
     this.degree = this["default"]({
       prop: 'degree',
       def: 360
@@ -473,38 +427,15 @@ Circle = (function(_super) {
       prop: 'degreeOffset',
       def: 0
     });
-    this.lineDash = this["default"]({
-      prop: 'lineDash',
-      def: []
-    });
     return Circle.__super__.vars.apply(this, arguments);
   };
 
   Circle.prototype.render = function() {
-    var angle, c, _base;
-    if (!this.ctx) {
-      console.error('Circle.render: no context!');
-      return;
-    }
-    this.isClearLess || this.ctx.clear();
-    this.ctx.save();
-    this.ctx.beginPath();
-    this.ctx.translate(this.o.parentSize.x, this.o.parentSize.y);
-    this.ctx.rotate(this.angle * Math.PI / 180);
-    this.ctx.translate(-this.o.parentSize.x, -this.o.parentSize.y);
-    angle = Math.PI / 180;
-    this.ctx.translate(this.position.x - 2 * this.radiusX, this.position.y - 2 * this.radiusY);
-    this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
-    this.ctx.arc(1, 1, 1, this.degreeOffset * angle, (this.degree + this.degreeOffset) * angle, false);
+    this.renderStart();
+    this.rotation();
+    this.ellipse();
     this.ctx.restore();
-    this.ctx.lineWidth = this.lineWidth * this.px;
-    this.ctx.lineCap = this.lineCap;
-    if (typeof (_base = this.ctx).setLineDash === "function") {
-      _base.setLineDash(this.lineDash);
-    }
-    c = this.colorObj;
-    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
-    return (this.lineWidth > 0) && this.ctx.stroke();
+    return this.stroke();
   };
 
   return Circle;
@@ -598,6 +529,7 @@ Object = (function(_super) {
   }
 
   Object.prototype.vars = function() {
+    var defPosition;
     this.ctx = this.o.ctx || this.ctx;
     this.px = this.h.pixel;
     this.parent = this["default"]({
@@ -624,6 +556,38 @@ Object = (function(_super) {
       prop: 'isClearLess',
       def: false
     });
+    this.angle = this["default"]({
+      prop: 'angle',
+      def: 0
+    });
+    this.lineDash = this["default"]({
+      prop: 'lineDash',
+      def: []
+    });
+    this.radius = this["default"]({
+      prop: 'radius',
+      def: 50
+    });
+    this.radiusX = this.defaultPart({
+      prop: 'radiusX',
+      def: this.radius
+    });
+    this.radiusY = this.defaultPart({
+      prop: 'radiusY',
+      def: this.radius
+    });
+    this.size = {
+      width: 2 * this.radiusX,
+      height: 2 * this.radiusY
+    };
+    defPosition = {
+      x: this.size.width / 2,
+      y: this.size.height / 2
+    };
+    this.position = this["default"]({
+      prop: 'position',
+      def: defPosition
+    });
     return this.colorObj = this.h.makeColorObj(this.color);
   };
 
@@ -634,6 +598,44 @@ Object = (function(_super) {
       this[propName] = propValue;
     }
     return typeof this.render === "function" ? this.render() : void 0;
+  };
+
+  Object.prototype.renderStart = function() {
+    var name;
+    name = this.name || 'object';
+    if (!this.ctx) {
+      console.error("" + name + ".render: no context!");
+      return;
+    }
+    this.isClearLess || this.ctx.clear();
+    this.ctx.save();
+    return this.ctx.beginPath();
+  };
+
+  Object.prototype.rotation = function() {
+    this.ctx.translate(this.o.parentSize.x, this.o.parentSize.y);
+    this.ctx.rotate(this.angle * Math.PI / 180);
+    return this.ctx.translate(-this.o.parentSize.x, -this.o.parentSize.y);
+  };
+
+  Object.prototype.ellipse = function() {
+    var angle;
+    angle = Math.PI / 180;
+    this.ctx.translate(this.position.x - 2 * this.radiusX, this.position.y - 2 * this.radiusY);
+    this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
+    return this.ctx.arc(1, 1, 1, this.degreeOffset * angle, (this.degree + this.degreeOffset) * angle, false);
+  };
+
+  Object.prototype.stroke = function() {
+    var c, _base;
+    this.ctx.lineWidth = this.lineWidth * this.px;
+    this.ctx.lineCap = this.lineCap;
+    if (typeof (_base = this.ctx).setLineDash === "function") {
+      _base.setLineDash(this.lineDash);
+    }
+    c = this.colorObj;
+    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
+    return (this.lineWidth > 0) && this.ctx.stroke();
   };
 
   return Object;
@@ -651,12 +653,8 @@ h = require('./helpers');
 Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
-  radiusX: 150,
-  radiusY: 350,
   radius: 50,
   radiusEnd: 200,
-  radiusEndX: 50,
-  radiusEndY: 50,
   color: 'orange'
 });
 
