@@ -17,147 +17,11 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
-    var dash, i, maxLineWidth, maxRadius, _base, _base1, _i, _j, _len, _len1, _ref, _ref1;
-    this.radius = this["default"]({
-      prop: 'radius',
-      def: 100
-    });
-    this.radiusStart = this["default"]({
-      prop: 'radiusStart',
-      def: this.radius
-    });
-    this.radiusEnd = this["default"]({
-      prop: 'radiusEnd',
-      def: this.radiusStart
-    });
-    this.radiusStartX = this.defaultPart({
-      prop: 'radiusStartX',
-      def: this.radiusStart
-    });
-    this.radiusStartY = this.defaultPart({
-      prop: 'radiusStartY',
-      def: this.radiusStart
-    });
-    this.radiusEndX = this.defaultPart({
-      prop: 'radiusEndX',
-      def: this.radiusEnd
-    });
-    this.radiusEndY = this.defaultPart({
-      prop: 'radiusEndY',
-      def: this.radiusEnd
-    });
-    this.lineWidth = this["default"]({
-      prop: 'lineWidth',
-      def: 1
-    });
-    this.lineWidthMiddle = this["default"]({
-      prop: 'lineWidthMiddle',
-      def: null
-    });
-    this.lineWidthEnd = this["default"]({
-      prop: 'lineWidthEnd',
-      def: this.lineWidth
-    });
-    this.duration = this["default"]({
-      prop: 'duration',
-      def: 400
-    });
-    this.delay = this["default"]({
-      prop: 'delay',
-      def: 0
-    });
-    this.easing = this.defaultPart({
-      prop: 'easing',
-      def: 'Linear.None'
-    });
-    this.easings = this.easing.split('.');
-    this.angle = this["default"]({
-      prop: 'angle',
-      def: 0
-    });
-    this.angleStart = this["default"]({
-      prop: 'angleStart',
-      def: this.angle
-    });
-    this.angleEnd = this["default"]({
-      prop: 'angleEnd',
-      def: this.angleStart
-    });
-    this.degree = this["default"]({
-      prop: 'degree',
-      def: 360
-    });
-    this.degreeEnd = this["default"]({
-      prop: 'degreeEnd',
-      def: this.degree
-    });
-    this.degreeOffset = this["default"]({
-      prop: 'degreeOffset',
-      def: 0
-    });
-    this.degreeOffsetEnd = this["default"]({
-      prop: 'degreeOffsetEnd',
-      def: this.degreeOffset
-    });
-    this.degree = this.h.slice(this.degree, 360);
-    this.degreeEnd = this.h.slice(this.degreeEnd, 360);
-    this.opacity = this["default"]({
-      prop: 'opacity',
-      def: 1
-    });
-    this.opacityEnd = this["default"]({
-      prop: 'opacityEnd',
-      def: this.opacity
-    });
-    maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusStartX, this.radiusStartY);
-    maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
-    this.lineDash = this["default"]({
-      prop: 'lineDash',
-      def: []
-    });
-    this.lineDashEnd = this["default"]({
-      prop: 'lineDashEnd',
-      def: this.lineDash
-    });
-    this.colorEnd = this["default"]({
-      prop: 'colorEnd',
-      def: this.color
-    });
-    if (this.lineDash.length < this.lineDashEnd.length) {
-      _ref = this.lineDashEnd;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        dash = _ref[i];
-        if ((_base = this.lineDash)[i] == null) {
-          _base[i] = this.lineDash[0];
-        }
-      }
-    }
-    if (this.lineDash.length > this.lineDashEnd.length) {
-      _ref1 = this.lineDash;
-      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-        dash = _ref1[i];
-        if ((_base1 = this.lineDashEnd)[i] == null) {
-          _base1[i] = this.lineDashEnd[0];
-        }
-      }
-    }
-    this.repeat = this["default"]({
-      prop: 'repeat',
-      def: 0
-    });
-    this.yoyo = this["default"]({
-      prop: 'yoyo',
-      def: false
-    });
-    this.size = 2 * maxRadius + maxLineWidth;
-    this.center = this.size / 2;
-    this.sizeX = this.size;
-    this.sizeY = this.size;
     Bubble.__super__.vars.apply(this, arguments);
     return this.circle = new Circle({
       ctx: this.ctx,
       color: this.color,
-      radius: this.radiusStart,
+      radius: this.radius,
       parentSize: {
         x: this.sizeX,
         y: this.sizeY
@@ -182,8 +46,8 @@ Bubble = (function(_super) {
     this.TWEEN.remove(this.tween2);
     it = this;
     from = {
-      rx: this.radiusStartX,
-      ry: this.radiusStartY,
+      rx: this.radiusX,
+      ry: this.radiusY,
       lineW: this.lineWidth,
       angle: this.angleStart,
       degree: this.degree,
@@ -370,11 +234,168 @@ Byte = (function(_super) {
 
   Byte.prototype.vars = function() {
     Byte.__super__.vars.apply(this, arguments);
+    this.defaultByteVars();
     this.s = 1 * h.time(1);
     this.parent = this.o.parent || h.body;
     this.el = this.oa.el || this.o.el || this.el || this.createEl();
-    this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
-    return this.colorEnd && (this.colorEndObj = this.h.makeColorObj(this.colorEnd));
+    return this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
+  };
+
+  Byte.prototype.defaultByteVars = function() {
+    var dash, i, maxLineWidth, maxRadius, _base, _base1, _i, _j, _len, _len1, _ref, _ref1;
+    this.radius = this["default"]({
+      prop: 'radius',
+      def: 100
+    });
+    this.radiusX = this["default"]({
+      prop: 'radiusX',
+      def: this.radius
+    });
+    this.radiusY = this["default"]({
+      prop: 'radiusY',
+      def: this.radius
+    });
+    this.radiusEnd = this["default"]({
+      prop: 'radiusEnd',
+      def: this.radius
+    });
+    this.radiusEndX = this.defaultPart({
+      prop: 'radiusEndX',
+      def: this.radiusEnd
+    });
+    this.radiusEndY = this.defaultPart({
+      prop: 'radiusEndY',
+      def: this.radiusEnd
+    });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineWidthEnd = this["default"]({
+      prop: 'lineWidthEnd',
+      def: this.lineWidth
+    });
+    this.duration = this["default"]({
+      prop: 'duration',
+      def: 400
+    });
+    this.delay = this["default"]({
+      prop: 'delay',
+      def: 0
+    });
+    this.easing = this.defaultPart({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
+    this.easings = this.easing.split('.');
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineWidthMiddle = this["default"]({
+      prop: 'lineWidthMiddle',
+      def: null
+    });
+    this.lineWidthEnd = this["default"]({
+      prop: 'lineWidthEnd',
+      def: this.lineWidth
+    });
+    this.opacity = this["default"]({
+      prop: 'opacity',
+      def: 1
+    });
+    this.opacityEnd = this["default"]({
+      prop: 'opacityEnd',
+      def: this.opacity
+    });
+    this.duration = this["default"]({
+      prop: 'duration',
+      def: 400
+    });
+    this.delay = this["default"]({
+      prop: 'delay',
+      def: 0
+    });
+    this.easing = this.defaultPart({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
+    this.easings = this.easing.split('.');
+    this.lineDash = this["default"]({
+      prop: 'lineDash',
+      def: []
+    });
+    this.lineDashEnd = this["default"]({
+      prop: 'lineDashEnd',
+      def: this.lineDash
+    });
+    this.colorEnd = this["default"]({
+      prop: 'colorEnd',
+      def: this.color
+    });
+    this.colorEnd && (this.colorEndObj = this.h.makeColorObj(this.colorEnd));
+    this.angle = this["default"]({
+      prop: 'angle',
+      def: 0
+    });
+    this.angleStart = this["default"]({
+      prop: 'angleStart',
+      def: this.angle
+    });
+    this.angleEnd = this["default"]({
+      prop: 'angleEnd',
+      def: this.angleStart
+    });
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeEnd = this["default"]({
+      prop: 'degreeEnd',
+      def: this.degree
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
+    this.degreeOffsetEnd = this["default"]({
+      prop: 'degreeOffsetEnd',
+      def: this.degreeOffset
+    });
+    this.degree = this.h.slice(this.degree, 360);
+    this.degreeEnd = this.h.slice(this.degreeEnd, 360);
+    maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusX, this.radiusY);
+    maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+    if (this.lineDash.length < this.lineDashEnd.length) {
+      _ref = this.lineDashEnd;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        dash = _ref[i];
+        if ((_base = this.lineDash)[i] == null) {
+          _base[i] = this.lineDash[0];
+        }
+      }
+    }
+    if (this.lineDash.length > this.lineDashEnd.length) {
+      _ref1 = this.lineDash;
+      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+        dash = _ref1[i];
+        if ((_base1 = this.lineDashEnd)[i] == null) {
+          _base1[i] = this.lineDashEnd[0];
+        }
+      }
+    }
+    this.repeat = this["default"]({
+      prop: 'repeat',
+      def: 0
+    });
+    this.yoyo = this["default"]({
+      prop: 'yoyo',
+      def: false
+    });
+    this.size = 2 * maxRadius + maxLineWidth;
+    this.center = this.size / 2;
+    this.sizeX = this.size;
+    return this.sizeY = this.size;
   };
 
   Byte.prototype.createEl = function() {
@@ -572,13 +593,13 @@ h = require('./helpers');
 Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
-  lineWidth: 2,
-  lineWidthEnd: 0,
-  color: '#FF0000',
-  colorEnd: '#0000FF',
-  duration: 500,
-  degreeEnd: 0,
-  angleEnd: 180
+  radiusX: 150,
+  radiusY: 350,
+  radius: 50,
+  radiusEnd: 200,
+  radiusEndX: 50,
+  radiusEndY: 50,
+  color: 'orange'
 });
 
 window.addEventListener('click', function(e) {

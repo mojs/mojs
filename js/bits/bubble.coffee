@@ -9,68 +9,11 @@ Line = require './line'
 class Bubble extends Byte
 
   vars:->
-    @radius      = @default prop: 'radius',      def: 100
-    @radiusStart = @default prop: 'radiusStart', def: @radius
-    @radiusEnd   = @default prop: 'radiusEnd',   def: @radiusStart
-
-    @radiusStartX  = @defaultPart prop: 'radiusStartX', def: @radiusStart
-    @radiusStartY  = @defaultPart prop: 'radiusStartY', def: @radiusStart
-
-    @radiusEndX  = @defaultPart prop: 'radiusEndX', def: @radiusEnd
-    @radiusEndY  = @defaultPart prop: 'radiusEndY', def: @radiusEnd
-
-    @lineWidth      = @default prop: 'lineWidth',   def: 1
-    @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
-    @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
-
-    @duration    = @default prop: 'duration',     def: 400
-    @delay       = @default prop: 'delay',        def: 0
-    @easing      = @defaultPart prop: 'easing',   def: 'Linear.None'
-    @easings     = @easing.split '.'
-    
-    @angle        = @default prop: 'angle',       def: 0
-    @angleStart   = @default prop: 'angleStart',  def: @angle
-    @angleEnd     = @default prop: 'angleEnd',    def: @angleStart
-
-    @degree       = @default prop: 'degree',       def: 360
-    @degreeEnd    = @default prop: 'degreeEnd',    def: @degree
-    
-    @degreeOffset    = @default prop: 'degreeOffset',    def: 0
-    @degreeOffsetEnd = @default prop: 'degreeOffsetEnd', def: @degreeOffset
-
-    @degree    = @h.slice @degree,    360
-    @degreeEnd = @h.slice @degreeEnd, 360
-
-    @opacity      = @default prop: 'opacity',    def: 1
-    @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
-
-    maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusStartX, @radiusStartY
-    maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
-
-    @lineDash     = @default prop: 'lineDash',    def: []
-    @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
-    @colorEnd = @default prop: 'colorEnd',        def: @color
-
-    if @lineDash.length < @lineDashEnd.length
-      for dash, i in @lineDashEnd
-        @lineDash[i] ?= @lineDash[0]
-    if @lineDash.length > @lineDashEnd.length
-      for dash, i in @lineDash
-        @lineDashEnd[i] ?= @lineDashEnd[0]
-
-    @repeat       = @default prop: 'repeat',      def: 0
-    @yoyo         = @default prop: 'yoyo',        def: false
-
-    @size = 2*maxRadius + maxLineWidth
-
-    @center = @size/2
-    @sizeX = @size; @sizeY = @size
     super
-
     @circle = new Circle
       ctx: @ctx
       color: @color
-      radius: @radiusStart
+      radius: @radius
       parentSize: x: @sizeX, y: @sizeY
       degree: @degree
       degreeOffset: @degreeOffset
@@ -86,8 +29,8 @@ class Bubble extends Byte
     @TWEEN.remove @tween1; @TWEEN.remove @tween2; it = @
 
     from =
-      rx: @radiusStartX
-      ry: @radiusStartY
+      rx: @radiusX
+      ry: @radiusY
       lineW:   @lineWidth
       angle:   @angleStart
       degree:  @degree
