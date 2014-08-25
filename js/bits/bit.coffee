@@ -6,16 +6,11 @@ class Bit
   oa: {}
   h:  h
   TWEEN: TWEEN
-  defaultOptions:
-    x:   0
-    y:   0
-    deg: 0
 
   constructor:(@o={})-> @vars(); @o.isRunLess or @run?()
 
   vars:->
     # get CANVAS context
-    # @h     = h
     @ctx   = @o.ctx or @ctx
     @px    = h.pixel
     @DEG = (Math.PI/180)
@@ -29,13 +24,13 @@ class Bit
     @opacity  = @default prop: 'opacity',  def: 1
     @isClearLess  = @default prop: 'isClearLess',  def: false
 
-    @colorObj = @h.makeColorObj @color
+    @colorObj = h.makeColorObj @color
     # @o = {}
 
   setProp:(props)->
     for propName, propValue of props
       @[propName] = propValue
-      # if propName is 'color' then @colorObj = @h.makeColorObj @color
+      # if propName is 'color' then @colorObj = h.makeColorObj @color
     @render()
 
   default:(o)->
@@ -46,8 +41,6 @@ class Bit
       @o[prop]
     else if @[prop]?
       @[prop]
-    else if @defaultOptions[prop]?
-      @defaultOptions[prop]
     else def
 
   defaultPart:(o)->

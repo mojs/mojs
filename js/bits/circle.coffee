@@ -1,6 +1,6 @@
-Bit = require './bit'
+Object = require './object'
 
-class Circle extends Bit
+class Circle extends Object
   vars:->
     @radius   = @default prop: 'radius', def: 50
     @radiusX  = @defaultPart prop: 'radiusX', def: @radius
@@ -15,7 +15,6 @@ class Circle extends Bit
     super
 
   render:->
-    # console.time 'render'
     if !@ctx then console.error('Circle.render: no context!'); return
     @isClearLess or @ctx.clear()
 
@@ -39,9 +38,5 @@ class Circle extends Bit
     c = @colorObj
     @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"
     (@lineWidth > 0) and @ctx.stroke()
-    
-    # @ctx.restore()
-    # console.timeEnd 'render'
-
 
 module.exports = Circle

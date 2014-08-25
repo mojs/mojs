@@ -31,7 +31,8 @@ class Byte extends Bit
     @easings     = @easing.split '.'
 
     @colorEnd = @default prop: 'colorEnd',        def: @color
-    @colorEnd and (@colorEndObj = @h.makeColorObj @colorEnd)
+    @colorEnd and (@colorEndObj = h.makeColorObj @colorEnd)
+    @colorMap   = @default prop: 'colorMap',  def: [@color]
 
     @angle        = @default prop: 'angle',       def: 0
     @angleStart   = @default prop: 'angleStart',  def: @angle
@@ -43,8 +44,8 @@ class Byte extends Bit
     @degreeOffset    = @default prop: 'degreeOffset',    def: 0
     @degreeOffsetEnd = @default prop: 'degreeOffsetEnd', def: @degreeOffset
 
-    @degree    = @h.slice @degree,    360
-    @degreeEnd = @h.slice @degreeEnd, 360
+    @degree    = h.slice @degree,    360
+    @degreeEnd = h.slice @degreeEnd, 360
 
     @lineDash     = @default prop: 'lineDash',    def: []
     @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
@@ -73,7 +74,6 @@ class Byte extends Bit
     if @lineDash.length > @lineDashEnd.length
       for dash, i in @lineDash
         @lineDashEnd[i] ?= @lineDashEnd[0]
-
 
   createEl:->
     @el = document.createElement('canvas')

@@ -1,6 +1,8 @@
 Byte   = require './byte'
 Circle = require './circle'
 Line = require './line'
+h = require '../helpers'
+
 
 # TODO
 # fix safari
@@ -23,8 +25,8 @@ class Bubble extends Byte
       opacity: @opacity
 
   run:(@oa={})->
-    @h.size(@oa) and @vars()
-    @h.isSizeChange(@oa) and @setElSize()
+    h.size(@oa) and @vars()
+    h.isSizeChange(@oa) and @setElSize()
 
     @TWEEN.remove @tween1; @TWEEN.remove @tween2; it = @
 
@@ -61,7 +63,7 @@ class Bubble extends Byte
       to.b = @colorEndObj.b
       to.a = @colorEndObj.a
 
-    it.colorObjTween = @h.clone @colorObj
+    it.colorObjTween = h.clone @colorObj
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
@@ -93,6 +95,6 @@ class Bubble extends Byte
       .yoyo(@yoyo)
       .start()
 
-    @h.startAnimationLoop()
+    h.startAnimationLoop()
 
 module.exports = Bubble
