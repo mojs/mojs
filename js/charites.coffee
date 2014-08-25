@@ -1,3 +1,4 @@
+h = require './helpers'
 Bubble = require './bits/Bubble'
 
 
@@ -5,24 +6,19 @@ Bubble = require './bits/Bubble'
 # chains
 # positions
 
-burst = new Bubble
-  radius: 100
-  # radiusStart:  100
-  # radiusEnd:    120
-  # radiusEndX:   200
-  lineWidth:    3
-  lineWidthEnd: 10
-  color:        'deeppink'
+bubble = new Bubble
+  lineWidth:    2
+  lineWidthEnd: 0
+
+  color:        '#FF0000'
   colorEnd:     '#0000FF'
-  duration:     5000
-  lineDash:    [400,20,100, 500, 20, 400]
-  lineDashEnd: [200,10,50, 200, 100, 200]
-  angleEnd:    -360
-  degreeEnd:   0
-  opacity:     0
-  opacityEnd:  1
-  
+
+  duration:     500
+  degreeEnd:    0
+  angleEnd: 180
+
 window.addEventListener 'click', (e)->
-  burst.el.style.top  = "#{e.y-(burst.size/2)}px"
-  burst.el.style.left = "#{e.x-(burst.size/2)}px"
-  burst.run()
+  # console.log h.rand -360,360
+  bubble.el.style.top  = "#{e.y-(bubble.size/2)}px"
+  bubble.el.style.left = "#{e.x-(bubble.size/2)}px"
+  bubble.run()

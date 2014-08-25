@@ -173,8 +173,9 @@ Bubble = (function(_super) {
     });
   };
 
-  Bubble.prototype.run = function() {
+  Bubble.prototype.run = function(oa) {
     var dash, from, i, it, to, _i, _j, _len, _len1, _ref, _ref1;
+    this.oa = oa != null ? oa : {};
     this.h.size(this.oa) && this.vars();
     this.h.isSizeChange(this.oa) && this.setElSize();
     this.TWEEN.remove(this.tween1);
@@ -220,7 +221,7 @@ Bubble = (function(_super) {
       to.b = this.colorEndObj.b;
       to.a = this.colorEndObj.a;
     }
-    it.colorObj = this.h.clone(this.colorObj);
+    it.colorObjTween = this.h.clone(this.colorObj);
     this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
       var key, lineDash, val;
       i = 0;
@@ -234,10 +235,10 @@ Bubble = (function(_super) {
           }
         }
       }
-      it.colorObj.r = parseInt(this.r, 10);
-      it.colorObj.g = parseInt(this.g, 10);
-      it.colorObj.b = parseInt(this.b, 10);
-      it.colorObj.a = parseInt(this.a, 10);
+      it.colorObjTween.r = parseInt(this.r, 10);
+      it.colorObjTween.g = parseInt(this.g, 10);
+      it.colorObjTween.b = parseInt(this.b, 10);
+      it.colorObjTween.a = parseInt(this.a, 10);
       return it.circle.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
@@ -246,7 +247,7 @@ Bubble = (function(_super) {
         degree: this.degree,
         degreeOffset: this.degreeOffset,
         lineDash: lineDash,
-        colorObj: it.colorObj,
+        colorObj: it.colorObjTween,
         opacity: this.opacity
       });
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
@@ -564,33 +565,30 @@ module.exports = Line;
 
 
 },{"./bit":2}],6:[function(require,module,exports){
-var Bubble, burst;
+var Bubble, bubble, h;
+
+h = require('./helpers');
 
 Bubble = require('./bits/Bubble');
 
-burst = new Bubble({
-  radius: 100,
-  lineWidth: 3,
-  lineWidthEnd: 10,
-  color: 'deeppink',
+bubble = new Bubble({
+  lineWidth: 2,
+  lineWidthEnd: 0,
+  color: '#FF0000',
   colorEnd: '#0000FF',
-  duration: 5000,
-  lineDash: [400, 20, 100, 500, 20, 400],
-  lineDashEnd: [200, 10, 50, 200, 100, 200],
-  angleEnd: -360,
+  duration: 500,
   degreeEnd: 0,
-  opacity: 0,
-  opacityEnd: 1
+  angleEnd: 180
 });
 
 window.addEventListener('click', function(e) {
-  burst.el.style.top = "" + (e.y - (burst.size / 2)) + "px";
-  burst.el.style.left = "" + (e.x - (burst.size / 2)) + "px";
-  return burst.run();
+  bubble.el.style.top = "" + (e.y - (bubble.size / 2)) + "px";
+  bubble.el.style.left = "" + (e.x - (bubble.size / 2)) + "px";
+  return bubble.run();
 });
 
 
-},{"./bits/Bubble":1}],7:[function(require,module,exports){
+},{"./bits/Bubble":1,"./helpers":7}],7:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');

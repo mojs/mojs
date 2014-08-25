@@ -79,7 +79,7 @@ class Bubble extends Byte
       lineDash: @lineDash
       opacity: @opacity
 
-  run:->
+  run:(@oa={})->
     @h.size(@oa) and @vars()
     @h.isSizeChange(@oa) and @setElSize()
 
@@ -118,7 +118,7 @@ class Bubble extends Byte
       to.b = @colorEndObj.b
       to.a = @colorEndObj.a
 
-    it.colorObj = @h.clone @colorObj
+    it.colorObjTween = @h.clone @colorObj
     @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
@@ -129,10 +129,10 @@ class Bubble extends Byte
               lineDash.push val
               i++
 
-        it.colorObj.r = parseInt(@r,10)
-        it.colorObj.g = parseInt(@g,10)
-        it.colorObj.b = parseInt(@b,10)
-        it.colorObj.a = parseInt(@a,10)
+        it.colorObjTween.r = parseInt(@r,10)
+        it.colorObjTween.g = parseInt(@g,10)
+        it.colorObjTween.b = parseInt(@b,10)
+        it.colorObjTween.a = parseInt(@a,10)
         it.circle.setProp
           radiusX: @rx
           radiusY: @ry
@@ -141,7 +141,7 @@ class Bubble extends Byte
           degree: @degree
           degreeOffset: @degreeOffset
           lineDash: lineDash
-          colorObj: it.colorObj
+          colorObj: it.colorObjTween
           opacity: @opacity
 
         # console.log @lineW
