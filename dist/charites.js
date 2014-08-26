@@ -63,7 +63,6 @@ Bubble = (function(_super) {
       var i, key, lineDash, val;
       i = 0;
       lineDash = [];
-      it.that();
       if (it.lineDash && it.lineDashEnd) {
         for (key in this) {
           val = this[key];

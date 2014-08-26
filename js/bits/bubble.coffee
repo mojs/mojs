@@ -45,7 +45,6 @@ class Bubble extends Byte
       .delay(@delay*@s)
       .onUpdate ->
         i = 0; lineDash = []
-        it.that()
         if it.lineDash and it.lineDashEnd
           for key, val of @
             if key is 'lineDash0' or key is "lineDash#{i}"
