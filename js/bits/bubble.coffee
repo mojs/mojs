@@ -3,7 +3,6 @@ Circle = require './circle'
 Line = require './line'
 h = require '../helpers'
 
-
 # TODO
 # fix safari
 # test browsers
@@ -18,12 +17,10 @@ class Bubble extends Byte
       position: x: 2*@center, y: 2*@center
 
   run:(@oa={})->
-    h.size(@oa) and @vars()
-    h.isSizeChange(@oa) and @setElSize()
+    super
+    it = @
 
-    @TWEEN.remove @tween1; @TWEEN.remove @tween2; it = @
-
-    from =
+    @from =
       rx: @radiusX
       ry: @radiusY
       lineW:   @lineWidth
@@ -31,7 +28,7 @@ class Bubble extends Byte
       degree:  @degree
       degreeOffset: @degreeOffset
       opacity: @opacity
-    to =
+    @to =
       rx: @radiusEndX
       ry: @radiusEndY
       lineW:   @lineWidthEnd
@@ -40,27 +37,15 @@ class Bubble extends Byte
       degreeOffset: @degreeOffsetEnd
       opacity: @opacityEnd
 
-    if @lineDash and @lineDashEnd
-      for dash, i in @lineDash
-        from["lineDash#{i}"] = dash
-      for dash, i in @lineDashEnd
-        to["lineDash#{i}"] = dash
-
-    if @color and @colorEnd
-      from.r = @colorObj.r
-      from.g = @colorObj.g
-      from.b = @colorObj.b
-      from.a = @colorObj.a
-      to.r = @colorEndObj.r
-      to.g = @colorEndObj.g
-      to.b = @colorEndObj.b
-      to.a = @colorEndObj.a
+    @mixLineDash()
+    @mixColor()
 
     it.colorObjTween = h.clone @colorObj
-    @tween = new @TWEEN.Tween(from).to(to,@duration*@s)
+    tween = new @TWEEN.Tween(@from).to(@to,@duration*@s)
       .delay(@delay*@s)
       .onUpdate ->
         i = 0; lineDash = []
+        it.that()
         if it.lineDash and it.lineDashEnd
           for key, val of @
             if key is 'lineDash0' or key is "lineDash#{i}"
@@ -88,6 +73,6 @@ class Bubble extends Byte
       .yoyo(@yoyo)
       .start()
 
-    h.startAnimationLoop()
+    @tweens.push tween
 
 module.exports = Bubble

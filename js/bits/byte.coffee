@@ -8,6 +8,34 @@ class Byte extends Bit
     @parent = @o.parent or h.body
     @el = @oa.el or @o.el or @el or @createEl()
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
+    @tweens = []
+
+  that:-> console.log @
+
+  run:(@oa={})->
+    h.size(@oa) and @vars()
+    h.isSizeChange(@oa) and @setElSize()
+    h.startAnimationLoop()
+    for tween, i in @tweens
+      @TWEEN.remove tween
+
+  mixLineDash:(from, to)->
+    if @lineDash and @lineDashEnd
+      for dash, i in @lineDash
+        @from["lineDash#{i}"] = dash
+      for dash, i in @lineDashEnd
+        @to["lineDash#{i}"] = dash
+
+  mixColor:->
+    if @color and @colorEnd
+      @from.r = @colorObj.r
+      @from.g = @colorObj.g
+      @from.b = @colorObj.b
+      @from.a = @colorObj.a
+      @to.r = @colorEndObj.r
+      @to.g = @colorEndObj.g
+      @to.b = @colorEndObj.b
+      @to.a = @colorEndObj.a
 
   defaultByteVars:->
     @radius      = @default prop: 'radius',       def: 100
@@ -31,7 +59,7 @@ class Byte extends Bit
     @degree    = h.slice @degree,    360
     @degreeEnd = h.slice @degreeEnd, 360
 
-    # DEFENITELY UNIVERSAL OPTIONS
+    # DEFINITELY UNIVERSAL OPTIONS
     @opacity      = @default prop: 'opacity',    def: 1
     @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
 

@@ -34,14 +34,11 @@ Bubble = (function(_super) {
   };
 
   Bubble.prototype.run = function(oa) {
-    var dash, from, i, it, to, _i, _j, _len, _len1, _ref, _ref1;
+    var it, tween;
     this.oa = oa != null ? oa : {};
-    h.size(this.oa) && this.vars();
-    h.isSizeChange(this.oa) && this.setElSize();
-    this.TWEEN.remove(this.tween1);
-    this.TWEEN.remove(this.tween2);
+    Bubble.__super__.run.apply(this, arguments);
     it = this;
-    from = {
+    this.from = {
       rx: this.radiusX,
       ry: this.radiusY,
       lineW: this.lineWidth,
@@ -50,7 +47,7 @@ Bubble = (function(_super) {
       degreeOffset: this.degreeOffset,
       opacity: this.opacity
     };
-    to = {
+    this.to = {
       rx: this.radiusEndX,
       ry: this.radiusEndY,
       lineW: this.lineWidthEnd,
@@ -59,33 +56,14 @@ Bubble = (function(_super) {
       degreeOffset: this.degreeOffsetEnd,
       opacity: this.opacityEnd
     };
-    if (this.lineDash && this.lineDashEnd) {
-      _ref = this.lineDash;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        dash = _ref[i];
-        from["lineDash" + i] = dash;
-      }
-      _ref1 = this.lineDashEnd;
-      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-        dash = _ref1[i];
-        to["lineDash" + i] = dash;
-      }
-    }
-    if (this.color && this.colorEnd) {
-      from.r = this.colorObj.r;
-      from.g = this.colorObj.g;
-      from.b = this.colorObj.b;
-      from.a = this.colorObj.a;
-      to.r = this.colorEndObj.r;
-      to.g = this.colorEndObj.g;
-      to.b = this.colorEndObj.b;
-      to.a = this.colorEndObj.a;
-    }
+    this.mixLineDash();
+    this.mixColor();
     it.colorObjTween = h.clone(this.colorObj);
-    this.tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
-      var key, lineDash, val;
+    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
+      var i, key, lineDash, val;
       i = 0;
       lineDash = [];
+      it.that();
       if (it.lineDash && it.lineDashEnd) {
         for (key in this) {
           val = this[key];
@@ -111,7 +89,7 @@ Bubble = (function(_super) {
         opacity: this.opacity
       });
     }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
-    return h.startAnimationLoop();
+    return this.tweens.push(tween);
   };
 
   return Bubble;
@@ -228,7 +206,58 @@ Byte = (function(_super) {
     this.s = 1 * h.time(1);
     this.parent = this.o.parent || h.body;
     this.el = this.oa.el || this.o.el || this.el || this.createEl();
-    return this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
+    this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
+    return this.tweens = [];
+  };
+
+  Byte.prototype.that = function() {
+    return console.log(this);
+  };
+
+  Byte.prototype.run = function(oa) {
+    var i, tween, _i, _len, _ref, _results;
+    this.oa = oa != null ? oa : {};
+    h.size(this.oa) && this.vars();
+    h.isSizeChange(this.oa) && this.setElSize();
+    h.startAnimationLoop();
+    _ref = this.tweens;
+    _results = [];
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      tween = _ref[i];
+      _results.push(this.TWEEN.remove(tween));
+    }
+    return _results;
+  };
+
+  Byte.prototype.mixLineDash = function(from, to) {
+    var dash, i, _i, _j, _len, _len1, _ref, _ref1, _results;
+    if (this.lineDash && this.lineDashEnd) {
+      _ref = this.lineDash;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        dash = _ref[i];
+        this.from["lineDash" + i] = dash;
+      }
+      _ref1 = this.lineDashEnd;
+      _results = [];
+      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+        dash = _ref1[i];
+        _results.push(this.to["lineDash" + i] = dash);
+      }
+      return _results;
+    }
+  };
+
+  Byte.prototype.mixColor = function() {
+    if (this.color && this.colorEnd) {
+      this.from.r = this.colorObj.r;
+      this.from.g = this.colorObj.g;
+      this.from.b = this.colorObj.b;
+      this.from.a = this.colorObj.a;
+      this.to.r = this.colorEndObj.r;
+      this.to.g = this.colorEndObj.g;
+      this.to.b = this.colorEndObj.b;
+      return this.to.a = this.colorEndObj.a;
+    }
   };
 
   Byte.prototype.defaultByteVars = function() {
