@@ -6,6 +6,7 @@ class Bit
   oa: {}
   h:  h
   TWEEN: TWEEN
+  deg: Math.PI/180
 
   constructor:(@o={})-> @vars(); @o.isRunLess or @run?()
 

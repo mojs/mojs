@@ -1,11 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Bubble, Byte, Circle, Line, h,
+var Bubble, Byte, Circle, Line, Square, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Byte = require('./byte');
 
 Circle = require('./circle');
+
+Square = require('./Square');
 
 Line = require('./line');
 
@@ -20,7 +22,25 @@ Bubble = (function(_super) {
 
   Bubble.prototype.vars = function() {
     Bubble.__super__.vars.apply(this, arguments);
-    return this.circle = new Circle({
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeEnd = this["default"]({
+      prop: 'degreeEnd',
+      def: this.degree
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
+    this.degreeOffsetEnd = this["default"]({
+      prop: 'degreeOffsetEnd',
+      def: this.degreeOffset
+    });
+    this.degree = h.slice(this.degree, 360);
+    this.degreeEnd = h.slice(this.degreeEnd, 360);
+    return this.circle = new Square({
       ctx: this.ctx,
       parentSize: {
         x: this.sizeX,
@@ -34,7 +54,7 @@ Bubble = (function(_super) {
   };
 
   Bubble.prototype.run = function(oa) {
-    var it, tween;
+    var it;
     this.oa = oa != null ? oa : {};
     Bubble.__super__.run.apply(this, arguments);
     it = this;
@@ -58,24 +78,7 @@ Bubble = (function(_super) {
     };
     this.mixLineDash();
     this.mixColor();
-    it.colorObjTween = h.clone(this.colorObj);
-    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).onUpdate(function() {
-      var i, key, lineDash, val;
-      i = 0;
-      lineDash = [];
-      if (it.lineDash && it.lineDashEnd) {
-        for (key in this) {
-          val = this[key];
-          if (key === 'lineDash0' || key === ("lineDash" + i)) {
-            lineDash.push(val);
-            i++;
-          }
-        }
-      }
-      it.colorObjTween.r = parseInt(this.r, 10);
-      it.colorObjTween.g = parseInt(this.g, 10);
-      it.colorObjTween.b = parseInt(this.b, 10);
-      it.colorObjTween.a = parseInt(this.a, 10);
+    return this.initTween().onUpdate(function() {
       return it.circle.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
@@ -83,12 +86,11 @@ Bubble = (function(_super) {
         angle: this.angle,
         degree: this.degree,
         degreeOffset: this.degreeOffset,
-        lineDash: lineDash,
-        colorObj: it.colorObjTween,
+        lineDash: it.updateLineDash(this),
+        colorObj: it.updateColors(this),
         opacity: this.opacity
       });
-    }).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
-    return this.tweens.push(tween);
+    });
   };
 
   return Bubble;
@@ -98,7 +100,51 @@ Bubble = (function(_super) {
 module.exports = Bubble;
 
 
-},{"../helpers":8,"./byte":3,"./circle":4,"./line":5}],2:[function(require,module,exports){
+},{"../helpers":9,"./Square":2,"./byte":4,"./circle":5,"./line":6}],2:[function(require,module,exports){
+var Object, Square,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Square = (function(_super) {
+  __extends(Square, _super);
+
+  function Square() {
+    return Square.__super__.constructor.apply(this, arguments);
+  }
+
+  Square.prototype.name = 'Square';
+
+  Square.prototype.vars = function() {
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
+    return Square.__super__.vars.apply(this, arguments);
+  };
+
+  Square.prototype.render = function() {
+    this.renderStart();
+    this.rotation();
+    this.radius();
+    this.ctx.rect(0, 0, 2, 2);
+    this.ctx.restore();
+    return this.stroke();
+  };
+
+  return Square;
+
+})(Object);
+
+module.exports = Square;
+
+
+},{"./object":7}],3:[function(require,module,exports){
 var Bit, TWEEN, h;
 
 h = require('../helpers');
@@ -113,6 +159,8 @@ Bit = (function() {
   Bit.prototype.h = h;
 
   Bit.prototype.TWEEN = TWEEN;
+
+  Bit.prototype.deg = Math.PI / 180;
 
   function Bit(o) {
     this.o = o != null ? o : {};
@@ -183,7 +231,7 @@ Bit = (function() {
 module.exports = Bit;
 
 
-},{"../helpers":8,"../polyfills":9,"../vendor/tween":10}],3:[function(require,module,exports){
+},{"../helpers":9,"../polyfills":10,"../vendor/tween":11}],4:[function(require,module,exports){
 var Bit, Byte, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -207,10 +255,6 @@ Byte = (function(_super) {
     this.el = this.oa.el || this.o.el || this.el || this.createEl();
     this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
     return this.tweens = [];
-  };
-
-  Byte.prototype.that = function() {
-    return console.log(this);
   };
 
   Byte.prototype.run = function(oa) {
@@ -255,8 +299,40 @@ Byte = (function(_super) {
       this.to.r = this.colorEndObj.r;
       this.to.g = this.colorEndObj.g;
       this.to.b = this.colorEndObj.b;
-      return this.to.a = this.colorEndObj.a;
+      this.to.a = this.colorEndObj.a;
     }
+    return this.colorObjTween = h.clone(this.colorObj);
+  };
+
+  Byte.prototype.updateColors = function(that) {
+    this.colorObjTween.r = parseInt(that.r, 10);
+    this.colorObjTween.g = parseInt(that.g, 10);
+    this.colorObjTween.b = parseInt(that.b, 10);
+    this.colorObjTween.a = parseInt(that.a, 10);
+    return this.colorObjTween;
+  };
+
+  Byte.prototype.updateLineDash = function(that) {
+    var i, key, lineDash, val;
+    i = 0;
+    lineDash = [];
+    if (this.lineDash && this.lineDashEnd) {
+      for (key in that) {
+        val = that[key];
+        if (key === 'lineDash0' || key === ("lineDash" + i)) {
+          lineDash.push(val);
+          i++;
+        }
+      }
+    }
+    return lineDash;
+  };
+
+  Byte.prototype.initTween = function() {
+    var tween;
+    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
+    this.tweens.push(tween);
+    return tween;
   };
 
   Byte.prototype.defaultByteVars = function() {
@@ -297,24 +373,6 @@ Byte = (function(_super) {
       prop: 'lineWidthEnd',
       def: this.lineWidth
     });
-    this.degree = this["default"]({
-      prop: 'degree',
-      def: 360
-    });
-    this.degreeEnd = this["default"]({
-      prop: 'degreeEnd',
-      def: this.degree
-    });
-    this.degreeOffset = this["default"]({
-      prop: 'degreeOffset',
-      def: 0
-    });
-    this.degreeOffsetEnd = this["default"]({
-      prop: 'degreeOffsetEnd',
-      def: this.degreeOffset
-    });
-    this.degree = h.slice(this.degree, 360);
-    this.degreeEnd = h.slice(this.degreeEnd, 360);
     this.opacity = this["default"]({
       prop: 'opacity',
       def: 1
@@ -430,7 +488,7 @@ Byte = (function(_super) {
 module.exports = Byte;
 
 
-},{"../helpers":8,"./bit":2}],4:[function(require,module,exports){
+},{"../helpers":9,"./bit":3}],5:[function(require,module,exports){
 var Circle, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -461,7 +519,8 @@ Circle = (function(_super) {
   Circle.prototype.render = function() {
     this.renderStart();
     this.rotation();
-    this.ellipse();
+    this.radius();
+    this.ctx.arc(1, 1, 1, this.degreeOffset * this.deg, (this.degree + this.degreeOffset) * this.deg, false);
     this.ctx.restore();
     return this.stroke();
   };
@@ -473,7 +532,7 @@ Circle = (function(_super) {
 module.exports = Circle;
 
 
-},{"./object":6}],5:[function(require,module,exports){
+},{"./object":7}],6:[function(require,module,exports){
 var Bit, Line,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -541,7 +600,7 @@ Line = (function(_super) {
 module.exports = Line;
 
 
-},{"./bit":2}],6:[function(require,module,exports){
+},{"./bit":3}],7:[function(require,module,exports){
 var Bit, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -646,12 +705,9 @@ Object = (function(_super) {
     return this.ctx.translate(-this.o.parentSize.x, -this.o.parentSize.y);
   };
 
-  Object.prototype.ellipse = function() {
-    var angle;
-    angle = Math.PI / 180;
+  Object.prototype.radius = function() {
     this.ctx.translate(this.position.x - 2 * this.radiusX, this.position.y - 2 * this.radiusY);
-    this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
-    return this.ctx.arc(1, 1, 1, this.degreeOffset * angle, (this.degree + this.degreeOffset) * angle, false);
+    return this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
   };
 
   Object.prototype.stroke = function() {
@@ -673,7 +729,7 @@ Object = (function(_super) {
 module.exports = Object;
 
 
-},{"./bit":2}],7:[function(require,module,exports){
+},{"./bit":3}],8:[function(require,module,exports){
 var Bubble, bubble, h;
 
 h = require('./helpers');
@@ -683,7 +739,12 @@ Bubble = require('./bits/Bubble');
 bubble = new Bubble({
   radius: 50,
   radiusEnd: 200,
-  color: 'orange'
+  color: 'orange',
+  colorEnd: 'black',
+  lineWidth: 3,
+  lineWidthEnd: 0,
+  duration: 5000,
+  angleEnd: 360
 });
 
 window.addEventListener('click', function(e) {
@@ -693,7 +754,7 @@ window.addEventListener('click', function(e) {
 });
 
 
-},{"./bits/Bubble":1,"./helpers":8}],8:[function(require,module,exports){
+},{"./bits/Bubble":1,"./helpers":9}],9:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -891,7 +952,7 @@ module.exports = (function() {
 })();
 
 
-},{"./vendor/tween":10}],9:[function(require,module,exports){
+},{"./vendor/tween":11}],10:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -908,7 +969,7 @@ module.exports = (function() {
 })();
 
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 ;(function(undefined){
 
 
@@ -1700,4 +1761,4 @@ module.exports = (function() {
 })()
 
 
-},{}]},{},[7])
+},{}]},{},[8])

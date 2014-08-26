@@ -42,11 +42,9 @@ class Object extends Bit
     @ctx.rotate(@angle*Math.PI/180)
     @ctx.translate(-@o.parentSize.x,-@o.parentSize.y)
 
-  ellipse:->
-    angle = Math.PI/180
+  radius:->
     @ctx.translate(@position.x-2*@radiusX, @position.y-2*@radiusY)
     @ctx.scale(2*@radiusX, 2*@radiusY)
-    @ctx.arc(1, 1, 1, @degreeOffset*angle, (@degree+@degreeOffset)*angle, false)
 
   stroke:->
     @ctx.lineWidth   = @lineWidth*@px

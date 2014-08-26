@@ -1,7 +1,7 @@
 Object = require './object'
 
-class Circle extends Object
-  name: 'circle'
+class Square extends Object
+  name: 'Square'
   vars:->
     @degree       = @default prop: 'degree',       def: 360
     @degreeOffset = @default prop: 'degreeOffset', def: 0
@@ -10,9 +10,9 @@ class Circle extends Object
   render:->
     @renderStart(); @rotation(); @radius()
 
-    @ctx.arc(1, 1, 1, @degreeOffset*@deg, (@degree+@degreeOffset)*@deg, false)
+    @ctx.rect(0, 0, 2, 2)
     
     @ctx.restore(); @stroke()
 
 
-module.exports = Circle
+module.exports = Square

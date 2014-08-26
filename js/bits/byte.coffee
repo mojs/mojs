@@ -10,8 +10,6 @@ class Byte extends Bit
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
     @tweens = []
 
-  that:-> console.log @
-
   run:(@oa={})->
     h.size(@oa) and @vars()
     h.isSizeChange(@oa) and @setElSize()
@@ -37,6 +35,36 @@ class Byte extends Bit
       @to.b = @colorEndObj.b
       @to.a = @colorEndObj.a
 
+    @colorObjTween = h.clone @colorObj
+
+  # METHODS FOR TWEEN UPDATE FUNCTION
+  updateColors:(that)->
+    @colorObjTween.r = parseInt(that.r,10)
+    @colorObjTween.g = parseInt(that.g,10)
+    @colorObjTween.b = parseInt(that.b,10)
+    @colorObjTween.a = parseInt(that.a,10)
+    @colorObjTween
+  updateLineDash:(that)->
+    i = 0; lineDash = []
+    if @lineDash and @lineDashEnd
+      for key, val of that
+        if key is 'lineDash0' or key is "lineDash#{i}"
+          lineDash.push val
+          i++
+    lineDash
+  # METHODS FOR TWEEN UPDATE FUNCTION
+
+  initTween:->
+    tween = new @TWEEN.Tween(@from).to(@to,@duration*@s)
+      .delay(@delay*@s)
+      .easing @TWEEN.Easing[@easings[0]][@easings[1]]
+      .repeat(@repeat-1)
+      .yoyo(@yoyo)
+      .start()
+
+    @tweens.push tween
+    tween
+
   defaultByteVars:->
     @radius      = @default prop: 'radius',       def: 100
     @radiusX     = @default prop: 'radiusX',      def: @radius
@@ -50,16 +78,6 @@ class Byte extends Bit
     @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
     @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
 
-    @degree       = @default prop: 'degree',       def: 360
-    @degreeEnd    = @default prop: 'degreeEnd',    def: @degree
-    
-    @degreeOffset    = @default prop: 'degreeOffset',    def: 0
-    @degreeOffsetEnd = @default prop: 'degreeOffsetEnd', def: @degreeOffset
-
-    @degree    = h.slice @degree,    360
-    @degreeEnd = h.slice @degreeEnd, 360
-
-    # DEFINITELY UNIVERSAL OPTIONS
     @opacity      = @default prop: 'opacity',    def: 1
     @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
 
