@@ -7,6 +7,9 @@ class Bit
   h:  h
   TWEEN: TWEEN
   deg: Math.PI/180
+  DEG: Math.PI/180
+  px: h.pixel
+  parent: h.body
 
   constructor:(@o={})-> @vars(); @o.isRunLess or @run?()
 
@@ -14,7 +17,6 @@ class Bit
     # get CANVAS context
     @ctx   = @o.ctx or @ctx
     @px    = h.pixel
-    @DEG = (Math.PI/180)
 
     @parent = @default prop: 'parent', def: h.body
     @color  = @default prop: 'color' , def: '#222'

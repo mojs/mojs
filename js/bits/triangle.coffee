@@ -1,7 +1,7 @@
 Object = require './object'
 
-class Square extends Object
-  name: 'Square'
+class Trangle extends Object
+  name: 'Trangle'
   vars:->
     @degree       = @default prop: 'degree',       def: 360
     @degreeOffset = @default prop: 'degreeOffset', def: 0
@@ -10,9 +10,13 @@ class Square extends Object
   render:->
     @renderStart(); @rotation(); @radius()
 
-    @ctx.rect(0, 0, 2, 2)
+    @ctx.moveTo(1,0,1,0)
+    @ctx.lineTo(1,0,2,2)
+    @ctx.lineTo(2,2,0,2)
+    @ctx.lineTo(0,2,1,0)
+    @ctx.closePath()
     
     @ctx.restore(); @stroke()
 
 
-module.exports = Square
+module.exports = Trangle

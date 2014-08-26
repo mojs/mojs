@@ -3,11 +3,12 @@ Bit = require './bit'
 
 class Byte extends Bit
   vars:->
+    @el = @oa.el or @o.el or @el or @createEl()
+    @ctx = @o.ctx or @ctx or @el.getContext '2d'
+
     super; @defaultByteVars()
     @s = 1*h.time 1
     @parent = @o.parent or h.body
-    @el = @oa.el or @o.el or @el or @createEl()
-    @ctx = @o.ctx or @ctx or @el.getContext '2d'
     @tweens = []
 
   run:(@oa={})->
@@ -81,7 +82,7 @@ class Byte extends Bit
     @opacity      = @default prop: 'opacity',    def: 1
     @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
 
-    @colorEnd = @default prop: 'colorEnd',        def: @color
+    @colorEnd  = @default prop: 'colorEnd',        def: @color
     @colorEnd and (@colorEndObj = h.makeColorObj @colorEnd)
     @colorMap   = @default prop: 'colorMap',  def: [@color]
 
@@ -101,12 +102,18 @@ class Byte extends Bit
     @delay        = @default prop: 'delay',        def: 0
     @easing       = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings      = @easing.split '.'
+    @maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusX, @radiusY
+    @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
+    @canvasSize()
 
+  canvasSize:(o={})->
+    o.plusCoef ?= 0
+    o.mulCoef  ?= 1
     # CANVAS SIZE
-    maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusX, @radiusY
-    maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
-    @size = 2*maxRadius + maxLineWidth
+    @size = ((2*@maxRadius*1.484848) + @maxLineWidth + o.plusCoef)
     @center = @size/2; @sizeX = @size; @sizeY = @size
+
+    @setElSize()
 
   normalizeLineDashes:->
     # line dash arrays should be equal length
@@ -121,7 +128,7 @@ class Byte extends Bit
   createEl:->
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
-    @parent.appendChild(@el); @setElSize()
+    @parent.appendChild(@el) #; @setElSize()
 
   setElSize:->
     @el.setAttribute 'width',  h.pixel*@sizeX

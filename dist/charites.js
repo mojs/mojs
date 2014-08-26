@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Bubble, Byte, Circle, Line, Square, h,
+var Bubble, Byte, Circle, Line, Rectangle, Triangle, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -7,7 +7,9 @@ Byte = require('./byte');
 
 Circle = require('./circle');
 
-Square = require('./Square');
+Rectangle = require('./rectangle');
+
+Triangle = require('./triangle');
 
 Line = require('./line');
 
@@ -21,7 +23,17 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
+    var Shape;
     Bubble.__super__.vars.apply(this, arguments);
+    this.shape = this["default"]({
+      prop: 'shape',
+      def: 'circle'
+    });
+    if (this.shape !== 'circle') {
+      this.canvasSize({
+        mulCoef: 1.484848
+      });
+    }
     this.degree = this["default"]({
       prop: 'degree',
       def: 360
@@ -40,7 +52,19 @@ Bubble = (function(_super) {
     });
     this.degree = h.slice(this.degree, 360);
     this.degreeEnd = h.slice(this.degreeEnd, 360);
-    return this.circle = new Square({
+    Shape = (function() {
+      switch (this.shape.toLowerCase()) {
+        case 'circle':
+          return Circle;
+        case 'rectangle':
+          return Rectangle;
+        case 'triangle':
+          return Triangle;
+        default:
+          return Circle;
+      }
+    }).call(this);
+    return this.circle = new Shape({
       ctx: this.ctx,
       parentSize: {
         x: this.sizeX,
@@ -100,51 +124,7 @@ Bubble = (function(_super) {
 module.exports = Bubble;
 
 
-},{"../helpers":9,"./Square":2,"./byte":4,"./circle":5,"./line":6}],2:[function(require,module,exports){
-var Object, Square,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Object = require('./object');
-
-Square = (function(_super) {
-  __extends(Square, _super);
-
-  function Square() {
-    return Square.__super__.constructor.apply(this, arguments);
-  }
-
-  Square.prototype.name = 'Square';
-
-  Square.prototype.vars = function() {
-    this.degree = this["default"]({
-      prop: 'degree',
-      def: 360
-    });
-    this.degreeOffset = this["default"]({
-      prop: 'degreeOffset',
-      def: 0
-    });
-    return Square.__super__.vars.apply(this, arguments);
-  };
-
-  Square.prototype.render = function() {
-    this.renderStart();
-    this.rotation();
-    this.radius();
-    this.ctx.rect(0, 0, 2, 2);
-    this.ctx.restore();
-    return this.stroke();
-  };
-
-  return Square;
-
-})(Object);
-
-module.exports = Square;
-
-
-},{"./object":7}],3:[function(require,module,exports){
+},{"../helpers":10,"./byte":3,"./circle":4,"./line":5,"./rectangle":7,"./triangle":8}],2:[function(require,module,exports){
 var Bit, TWEEN, h;
 
 h = require('../helpers');
@@ -162,6 +142,12 @@ Bit = (function() {
 
   Bit.prototype.deg = Math.PI / 180;
 
+  Bit.prototype.DEG = Math.PI / 180;
+
+  Bit.prototype.px = h.pixel;
+
+  Bit.prototype.parent = h.body;
+
   function Bit(o) {
     this.o = o != null ? o : {};
     this.vars();
@@ -171,7 +157,6 @@ Bit = (function() {
   Bit.prototype.vars = function() {
     this.ctx = this.o.ctx || this.ctx;
     this.px = h.pixel;
-    this.DEG = Math.PI / 180;
     this.parent = this["default"]({
       prop: 'parent',
       def: h.body
@@ -231,7 +216,7 @@ Bit = (function() {
 module.exports = Bit;
 
 
-},{"../helpers":9,"../polyfills":10,"../vendor/tween":11}],4:[function(require,module,exports){
+},{"../helpers":10,"../polyfills":11,"../vendor/tween":12}],3:[function(require,module,exports){
 var Bit, Byte, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -248,12 +233,12 @@ Byte = (function(_super) {
   }
 
   Byte.prototype.vars = function() {
+    this.el = this.oa.el || this.o.el || this.el || this.createEl();
+    this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
     Byte.__super__.vars.apply(this, arguments);
     this.defaultByteVars();
     this.s = 1 * h.time(1);
     this.parent = this.o.parent || h.body;
-    this.el = this.oa.el || this.o.el || this.el || this.createEl();
-    this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
     return this.tweens = [];
   };
 
@@ -336,7 +321,6 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.defaultByteVars = function() {
-    var maxLineWidth, maxRadius;
     this.radius = this["default"]({
       prop: 'radius',
       def: 100
@@ -432,12 +416,26 @@ Byte = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
-    maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusX, this.radiusY);
-    maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
-    this.size = 2 * maxRadius + maxLineWidth;
+    this.maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusX, this.radiusY);
+    this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+    return this.canvasSize();
+  };
+
+  Byte.prototype.canvasSize = function(o) {
+    if (o == null) {
+      o = {};
+    }
+    if (o.plusCoef == null) {
+      o.plusCoef = 0;
+    }
+    if (o.mulCoef == null) {
+      o.mulCoef = 1;
+    }
+    this.size = (2 * this.maxRadius * 1.484848) + this.maxLineWidth + o.plusCoef;
     this.center = this.size / 2;
     this.sizeX = this.size;
-    return this.sizeY = this.size;
+    this.sizeY = this.size;
+    return this.setElSize();
   };
 
   Byte.prototype.normalizeLineDashes = function() {
@@ -467,8 +465,7 @@ Byte = (function(_super) {
     this.el.style.position = 'absolute';
     this.el.style.left = 0;
     this.el.style.top = 0;
-    this.parent.appendChild(this.el);
-    return this.setElSize();
+    return this.parent.appendChild(this.el);
   };
 
   Byte.prototype.setElSize = function() {
@@ -488,7 +485,7 @@ Byte = (function(_super) {
 module.exports = Byte;
 
 
-},{"../helpers":9,"./bit":3}],5:[function(require,module,exports){
+},{"../helpers":10,"./bit":2}],4:[function(require,module,exports){
 var Circle, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -532,7 +529,7 @@ Circle = (function(_super) {
 module.exports = Circle;
 
 
-},{"./object":7}],6:[function(require,module,exports){
+},{"./object":6}],5:[function(require,module,exports){
 var Bit, Line,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -600,7 +597,7 @@ Line = (function(_super) {
 module.exports = Line;
 
 
-},{"./bit":3}],7:[function(require,module,exports){
+},{"./bit":2}],6:[function(require,module,exports){
 var Bit, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -729,7 +726,87 @@ Object = (function(_super) {
 module.exports = Object;
 
 
-},{"./bit":3}],8:[function(require,module,exports){
+},{"./bit":2}],7:[function(require,module,exports){
+var Object, Square,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Square = (function(_super) {
+  __extends(Square, _super);
+
+  function Square() {
+    return Square.__super__.constructor.apply(this, arguments);
+  }
+
+  Square.prototype.name = 'Square';
+
+  Square.prototype.render = function() {
+    this.renderStart();
+    this.rotation();
+    this.radius();
+    this.ctx.rect(0, 0, 2, 2);
+    this.ctx.restore();
+    return this.stroke();
+  };
+
+  return Square;
+
+})(Object);
+
+module.exports = Square;
+
+
+},{"./object":6}],8:[function(require,module,exports){
+var Object, Trangle,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Trangle = (function(_super) {
+  __extends(Trangle, _super);
+
+  function Trangle() {
+    return Trangle.__super__.constructor.apply(this, arguments);
+  }
+
+  Trangle.prototype.name = 'Trangle';
+
+  Trangle.prototype.vars = function() {
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
+    return Trangle.__super__.vars.apply(this, arguments);
+  };
+
+  Trangle.prototype.render = function() {
+    this.renderStart();
+    this.rotation();
+    this.radius();
+    this.ctx.moveTo(1, 0, 1, 0);
+    this.ctx.lineTo(1, 0, 2, 2);
+    this.ctx.lineTo(2, 2, 0, 2);
+    this.ctx.lineTo(0, 2, 1, 0);
+    this.ctx.closePath();
+    this.ctx.restore();
+    return this.stroke();
+  };
+
+  return Trangle;
+
+})(Object);
+
+module.exports = Trangle;
+
+
+},{"./object":6}],9:[function(require,module,exports){
 var Bubble, bubble, h;
 
 h = require('./helpers');
@@ -738,13 +815,12 @@ Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
   radius: 50,
-  radiusEnd: 200,
-  color: 'orange',
-  colorEnd: 'black',
-  lineWidth: 3,
+  radiusEnd: 100,
+  lineWidth: 5,
   lineWidthEnd: 0,
-  duration: 5000,
-  angleEnd: 360
+  shape: 'triangle',
+  color: 'deeppink',
+  duration: 500
 });
 
 window.addEventListener('click', function(e) {
@@ -754,7 +830,7 @@ window.addEventListener('click', function(e) {
 });
 
 
-},{"./bits/Bubble":1,"./helpers":9}],9:[function(require,module,exports){
+},{"./bits/Bubble":1,"./helpers":10}],10:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -952,7 +1028,7 @@ module.exports = (function() {
 })();
 
 
-},{"./vendor/tween":11}],10:[function(require,module,exports){
+},{"./vendor/tween":12}],11:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -969,7 +1045,7 @@ module.exports = (function() {
 })();
 
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 ;(function(undefined){
 
 
@@ -1761,4 +1837,4 @@ module.exports = (function() {
 })()
 
 
-},{}]},{},[8])
+},{}]},{},[9])

@@ -1,6 +1,7 @@
 Byte   = require './byte'
 Circle = require './circle'
-Square = require './Square'
+Rectangle = require './rectangle'
+Triangle = require './triangle'
 Line = require './line'
 h = require '../helpers'
 
@@ -9,10 +10,13 @@ h = require '../helpers'
 # test browsers
 
 class Bubble extends Byte
-
   vars:->
     super
+    @shape        = @default prop: 'shape',       def: 'circle'
     
+    if @shape isnt 'circle'
+      @canvasSize mulCoef: 1.484848
+
     @degree       = @default prop: 'degree',       def: 360
     @degreeEnd    = @default prop: 'degreeEnd',    def: @degree
     
@@ -22,7 +26,16 @@ class Bubble extends Byte
     @degree    = h.slice @degree,    360
     @degreeEnd = h.slice @degreeEnd, 360
 
-    @circle = new Square
+    Shape = switch @shape.toLowerCase()
+      when 'circle'
+        Circle
+      when 'rectangle'
+        Rectangle
+      when 'triangle'
+        Triangle
+      else Circle
+
+    @circle = new Shape
       ctx: @ctx
       parentSize: x: @sizeX, y: @sizeY
       position: x: 2*@center, y: 2*@center
