@@ -26,6 +26,14 @@ Bubble = (function(_super) {
     return Bubble.__super__.constructor.apply(this, arguments);
   }
 
+  Bubble.prototype.shapes = {
+    circle: Circle,
+    rectangle: Rectangle,
+    triangle: Triangle,
+    star: Star,
+    cross: Cross
+  };
+
   Bubble.prototype.vars = function() {
     var Shape, coef, def;
     Bubble.__super__.vars.apply(this, arguments);
@@ -79,23 +87,8 @@ Bubble = (function(_super) {
         mulCoef: coef
       });
     }
-    Shape = (function() {
-      switch (this.shape.toLowerCase()) {
-        case 'circle':
-          return Circle;
-        case 'rectangle':
-          return Rectangle;
-        case 'triangle':
-          return Triangle;
-        case 'star':
-          return Star;
-        case 'cross':
-          return Cross;
-        default:
-          return Circle;
-      }
-    }).call(this);
-    return this.circle = new Shape({
+    Shape = this.shapes[this.shape.toLowerCase()] || Circle;
+    return this.object = new Shape({
       ctx: this.ctx,
       parentSize: {
         x: this.sizeX,
@@ -106,13 +99,6 @@ Bubble = (function(_super) {
         y: 2 * this.center
       }
     });
-  };
-
-  Bubble.prototype.mixStarSpikesProps = function() {
-    this.from.spikes = this.starSpikes;
-    this.to.spikes = this.starSpikesEnd;
-    this.from.innerRadius = this.starInnerRadius;
-    return this.to.innerRadius = this.starInnerRadiusEnd;
   };
 
   Bubble.prototype.run = function(oa) {
@@ -144,7 +130,7 @@ Bubble = (function(_super) {
     this.mixLineDash();
     this.mixColor();
     return this.initTween().onUpdate(function() {
-      return it.circle.setProp({
+      return it.object.setProp({
         radiusX: this.rx,
         radiusY: this.ry,
         lineWidth: this.lineW,
@@ -158,6 +144,13 @@ Bubble = (function(_super) {
         innerRadius: this.innerRadius
       });
     });
+  };
+
+  Bubble.prototype.mixStarSpikesProps = function() {
+    this.from.spikes = this.starSpikes;
+    this.to.spikes = this.starSpikesEnd;
+    this.from.innerRadius = this.starInnerRadius;
+    return this.to.innerRadius = this.starInnerRadiusEnd;
   };
 
   return Bubble;
@@ -949,9 +942,11 @@ Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
   radius: 200,
+  radiusX: 1,
   radiusEnd: 10,
+  radiusEndX: 1,
   lineWidth: 3,
-  lineWidthEnd: 0,
+  lineWidthEnd: 1,
   shape: 'cross',
   color: 'deeppink',
   duration: 500,

@@ -12,6 +12,12 @@ h         = require '../helpers'
 # test browsers
 
 class Bubble extends Byte
+  shapes:
+    circle:    Circle
+    rectangle: Rectangle
+    triangle:  Triangle
+    star:      Star
+    cross:     Cross
   vars:->
     super
     @shape        = @default prop: 'shape',       def: 'circle'
@@ -39,30 +45,12 @@ class Bubble extends Byte
       coef = if @starInnerRadiusEnd > 1 then @starInnerRadiusEnd else 1
       @canvasSize mulCoef: coef
 
-    Shape = switch @shape.toLowerCase()
-      when 'circle'
-        Circle
-      when 'rectangle'
-        Rectangle
-      when 'triangle'
-        Triangle
-      when 'star'
-        Star
-      when 'cross'
-        Cross
-      else Circle
+    Shape = @shapes[@shape.toLowerCase()] or Circle
 
-    @circle = new Shape
+    @object = new Shape
       ctx: @ctx
       parentSize: x: @sizeX, y: @sizeY
       position: x: 2*@center, y: 2*@center
-
-  mixStarSpikesProps:->
-    @from.spikes = @starSpikes
-    @to.spikes   = @starSpikesEnd
-
-    @from.innerRadius = @starInnerRadius
-    @to.innerRadius   = @starInnerRadiusEnd
 
   run:(@oa={})->
     super; it = @
@@ -90,9 +78,8 @@ class Bubble extends Byte
     @mixLineDash()
     @mixColor()
 
-
     @initTween().onUpdate ->
-      it.circle.setProp
+      it.object.setProp
         radiusX:    @rx
         radiusY:    @ry
         lineWidth:  @lineW
@@ -104,5 +91,12 @@ class Bubble extends Byte
         opacity:    @opacity
         spikes:     @spikes or 5
         innerRadius: @innerRadius
+
+  mixStarSpikesProps:->
+    @from.spikes = @starSpikes
+    @to.spikes   = @starSpikesEnd
+
+    @from.innerRadius = @starInnerRadius
+    @to.innerRadius   = @starInnerRadiusEnd
 
 module.exports = Bubble
