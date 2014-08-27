@@ -867,10 +867,13 @@ Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
   radius: 50,
-  lineWidth: 1,
+  radiusEnd: 100,
+  lineWidth: 3,
+  lineWidthEnd: 0,
   shape: 'star',
   color: 'deeppink',
-  duration: 500
+  duration: 500,
+  angleEnd: 60
 });
 
 window.addEventListener('click', function(e) {
