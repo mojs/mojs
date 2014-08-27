@@ -7,18 +7,18 @@ Bubble = require './bits/Bubble'
 # positions
 
 bubble = new Bubble
-  radius: 50
-  # radiusEnd: 100
+  radius: 200
+  radiusEnd: 10
   lineWidth:    3
   lineWidthEnd: 0
-  shape: 'star'
+  shape: 'cross'
   color: 'deeppink'
   duration: 500
   angleEnd: 60
   # starSpikes:    5
   # starSpikesEnd: 15
-  starInnerRadius:    .25
-  starInnerRadiusEnd: 1.5
+  # starInnerRadius:    .8
+  # starInnerRadiusEnd: .8
 
 window.addEventListener 'click', (e)->
   # console.log h.rand -360,360

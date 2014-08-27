@@ -3,6 +3,7 @@ Circle    = require './circle'
 Rectangle = require './rectangle'
 Triangle  = require './triangle'
 Star      = require './star'
+Cross     = require './cross'
 Line      = require './line'
 h         = require '../helpers'
 
@@ -31,12 +32,12 @@ class Bubble extends Byte
     def = @starInnerRadius
     @starInnerRadiusEnd = @default prop: 'starInnerRadiusEnd', def: def
 
-    if @shape isnt 'circle'
+    if @shape isnt 'circle' and @shape isnt 'star' and @shape isnt 'cross'
       @canvasSize mulCoef: 1.484848
 
     if @shape is 'star' and (@starInnerRadius isnt @starInnerRadiusEnd)
-      console.log 'a'
-      @canvasSize mulCoef: @starInnerRadiusEnd
+      coef = if @starInnerRadiusEnd > 1 then @starInnerRadiusEnd else 1
+      @canvasSize mulCoef: coef
 
     Shape = switch @shape.toLowerCase()
       when 'circle'
@@ -47,6 +48,8 @@ class Bubble extends Byte
         Triangle
       when 'star'
         Star
+      when 'cross'
+        Cross
       else Circle
 
     @circle = new Shape
