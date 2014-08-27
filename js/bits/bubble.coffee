@@ -1,9 +1,10 @@
-Byte   = require './byte'
-Circle = require './circle'
+Byte      = require './byte'
+Circle    = require './circle'
 Rectangle = require './rectangle'
-Triangle = require './triangle'
-Line = require './line'
-h = require '../helpers'
+Triangle  = require './triangle'
+Star      = require './star'
+Line      = require './line'
+h         = require '../helpers'
 
 # TODO
 # fix safari
@@ -33,6 +34,8 @@ class Bubble extends Byte
         Rectangle
       when 'triangle'
         Triangle
+      when 'star'
+        Star
       else Circle
 
     @circle = new Shape

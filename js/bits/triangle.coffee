@@ -2,10 +2,6 @@ Object = require './object'
 
 class Trangle extends Object
   name: 'Trangle'
-  vars:->
-    @degree       = @default prop: 'degree',       def: 360
-    @degreeOffset = @default prop: 'degreeOffset', def: 0
-    super
 
   render:->
     @renderStart(); @rotation(); @radius()

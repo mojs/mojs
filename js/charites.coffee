@@ -8,12 +8,12 @@ Bubble = require './bits/Bubble'
 
 bubble = new Bubble
   radius: 50
-  radiusEnd: 100
-  lineWidth:    5
-  lineWidthEnd: 0
-  shape: 'triangle'
+  # radiusEnd: 100
+  lineWidth:    1
+  shape: 'star'
   color: 'deeppink'
   duration: 500
+  # angleEnd: 360
 
 window.addEventListener 'click', (e)->
   # console.log h.rand -360,360
