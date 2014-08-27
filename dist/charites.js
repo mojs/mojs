@@ -25,17 +25,12 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
-    var Shape;
+    var Shape, def;
     Bubble.__super__.vars.apply(this, arguments);
     this.shape = this["default"]({
       prop: 'shape',
       def: 'circle'
     });
-    if (this.shape !== 'circle') {
-      this.canvasSize({
-        mulCoef: 1.484848
-      });
-    }
     this.degree = this["default"]({
       prop: 'degree',
       def: 360
@@ -54,6 +49,34 @@ Bubble = (function(_super) {
     });
     this.degree = h.slice(this.degree, 360);
     this.degreeEnd = h.slice(this.degreeEnd, 360);
+    this.starSpikes = this["default"]({
+      prop: 'starSpikes',
+      def: 5
+    });
+    this.starSpikesEnd = this["default"]({
+      prop: 'starSpikesEnd',
+      def: this.starSpikes
+    });
+    this.starInnerRadius = this["default"]({
+      prop: 'starInnerRadius',
+      def: .5
+    });
+    def = this.starInnerRadius;
+    this.starInnerRadiusEnd = this["default"]({
+      prop: 'starInnerRadiusEnd',
+      def: def
+    });
+    if (this.shape !== 'circle') {
+      this.canvasSize({
+        mulCoef: 1.484848
+      });
+    }
+    if (this.shape === 'star' && (this.starInnerRadius !== this.starInnerRadiusEnd)) {
+      console.log('a');
+      this.canvasSize({
+        mulCoef: this.starInnerRadiusEnd
+      });
+    }
     Shape = (function() {
       switch (this.shape.toLowerCase()) {
         case 'circle':
@@ -81,6 +104,13 @@ Bubble = (function(_super) {
     });
   };
 
+  Bubble.prototype.mixStarSpikesProps = function() {
+    this.from.spikes = this.starSpikes;
+    this.to.spikes = this.starSpikesEnd;
+    this.from.innerRadius = this.starInnerRadius;
+    return this.to.innerRadius = this.starInnerRadiusEnd;
+  };
+
   Bubble.prototype.run = function(oa) {
     var it;
     this.oa = oa != null ? oa : {};
@@ -104,6 +134,9 @@ Bubble = (function(_super) {
       degreeOffset: this.degreeOffsetEnd,
       opacity: this.opacityEnd
     };
+    if (this.shape.toLowerCase() === 'star') {
+      this.mixStarSpikesProps();
+    }
     this.mixLineDash();
     this.mixColor();
     return this.initTween().onUpdate(function() {
@@ -116,7 +149,9 @@ Bubble = (function(_super) {
         degreeOffset: this.degreeOffset,
         lineDash: it.updateLineDash(this),
         colorObj: it.updateColors(this),
-        opacity: this.opacity
+        opacity: this.opacity,
+        spikes: this.spikes || 5,
+        innerRadius: this.innerRadius
       });
     });
   };
@@ -435,7 +470,7 @@ Byte = (function(_super) {
     if (o.mulCoef == null) {
       o.mulCoef = 1;
     }
-    this.size = (2 * this.maxRadius * 1.484848) + this.maxLineWidth + o.plusCoef;
+    this.size = (2 * this.maxRadius * o.mulCoef) + this.maxLineWidth + o.plusCoef;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -779,11 +814,20 @@ Star = (function(_super) {
   Star.prototype.name = 'Star';
 
   Star.prototype.vars = function() {
-    return Star.__super__.vars.apply(this, arguments);
+    Star.__super__.vars.apply(this, arguments);
+    this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 5
+    });
+    this.innerRadius = this["default"]({
+      prop: 'innerRadius',
+      def: .5
+    });
+    return this.innerRadius = this.h.slice(this.innerRadius, 1);
   };
 
   Star.prototype.render = function() {
-    var cx, cy, i, r0, r1, rot, spikes, step, x, y;
+    var cx, cy, i, r0, r1, rot, step, x, y;
     this.renderStart();
     this.rotation();
     this.radius();
@@ -792,13 +836,12 @@ Star = (function(_super) {
     cy = 1;
     x = cx;
     y = cy;
-    r0 = .5;
+    r0 = this.innerRadius;
     r1 = 1;
-    spikes = 5;
-    step = Math.PI / spikes;
+    step = Math.PI / this.spikes;
     this.ctx.moveTo(cx, cy - r0);
     i = 0;
-    while (i < spikes) {
+    while (i < this.spikes) {
       x = cx + Math.cos(rot) * r0;
       y = cy + Math.sin(rot) * r0;
       this.ctx.lineTo(x, y);
@@ -867,13 +910,14 @@ Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
   radius: 50,
-  radiusEnd: 100,
   lineWidth: 3,
   lineWidthEnd: 0,
   shape: 'star',
   color: 'deeppink',
   duration: 500,
-  angleEnd: 60
+  angleEnd: 60,
+  starInnerRadius: .25,
+  starInnerRadiusEnd: 1.5
 });
 
 window.addEventListener('click', function(e) {

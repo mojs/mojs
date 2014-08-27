@@ -14,9 +14,6 @@ class Bubble extends Byte
   vars:->
     super
     @shape        = @default prop: 'shape',       def: 'circle'
-    
-    if @shape isnt 'circle'
-      @canvasSize mulCoef: 1.484848
 
     @degree       = @default prop: 'degree',       def: 360
     @degreeEnd    = @default prop: 'degreeEnd',    def: @degree
@@ -26,6 +23,20 @@ class Bubble extends Byte
 
     @degree    = h.slice @degree,    360
     @degreeEnd = h.slice @degreeEnd, 360
+
+    @starSpikes    = @default prop: 'starSpikes',    def: 5
+    @starSpikesEnd = @default prop: 'starSpikesEnd', def: @starSpikes
+
+    @starInnerRadius    = @default prop: 'starInnerRadius',    def: .5
+    def = @starInnerRadius
+    @starInnerRadiusEnd = @default prop: 'starInnerRadiusEnd', def: def
+
+    if @shape isnt 'circle'
+      @canvasSize mulCoef: 1.484848
+
+    if @shape is 'star' and (@starInnerRadius isnt @starInnerRadiusEnd)
+      console.log 'a'
+      @canvasSize mulCoef: @starInnerRadiusEnd
 
     Shape = switch @shape.toLowerCase()
       when 'circle'
@@ -42,6 +53,13 @@ class Bubble extends Byte
       ctx: @ctx
       parentSize: x: @sizeX, y: @sizeY
       position: x: 2*@center, y: 2*@center
+
+  mixStarSpikesProps:->
+    @from.spikes = @starSpikes
+    @to.spikes   = @starSpikesEnd
+
+    @from.innerRadius = @starInnerRadius
+    @to.innerRadius   = @starInnerRadiusEnd
 
   run:(@oa={})->
     super; it = @
@@ -63,18 +81,25 @@ class Bubble extends Byte
       degreeOffset: @degreeOffsetEnd
       opacity: @opacityEnd
 
+    if @shape.toLowerCase() is 'star'
+      @mixStarSpikesProps()
+
     @mixLineDash()
     @mixColor()
+
+
     @initTween().onUpdate ->
       it.circle.setProp
-        radiusX: @rx
-        radiusY: @ry
-        lineWidth: @lineW
-        angle: @angle
-        degree: @degree
+        radiusX:    @rx
+        radiusY:    @ry
+        lineWidth:  @lineW
+        angle:      @angle
+        degree:     @degree
         degreeOffset: @degreeOffset
-        lineDash: it.updateLineDash(@)
-        colorObj: it.updateColors(@)
-        opacity: @opacity
+        lineDash:   it.updateLineDash(@)
+        colorObj:   it.updateColors(@)
+        opacity:    @opacity
+        spikes:     @spikes or 5
+        innerRadius: @innerRadius
 
 module.exports = Bubble
