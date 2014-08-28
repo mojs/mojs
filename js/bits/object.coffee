@@ -16,6 +16,7 @@ class Object extends Bit
     @isClearLess  = @default prop: 'isClearLess',  def: false
     @angle        = @default prop: 'angle',       def: 0
     @lineDash     = @default prop: 'lineDash',    def: []
+    @lineDashOffset = @default prop: 'lineDashOffset', def: 0
 
     @radius     = @default prop: 'radius', def: 50
     @radiusX    = @defaultPart prop: 'radiusX', def: @radius
@@ -44,6 +45,7 @@ class Object extends Bit
   stroke:->
     @ctx.lineWidth   = @lineWidth*@px
     @ctx.lineCap     = @lineCap
+    @ctx.lineDashOffset = @lineDashOffset
     @ctx.setLineDash?(@lineDash)
     c = @colorObj
     @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"

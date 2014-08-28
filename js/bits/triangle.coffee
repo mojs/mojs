@@ -8,7 +8,7 @@ class Triangle extends Object
   render:->
     @renderStart(); @rotation(); @radius()
 
-    angle = 31
+    angle = 30
     step = 360/@spikes
 
     for i in [0..@spikes]

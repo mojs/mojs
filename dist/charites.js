@@ -61,6 +61,14 @@ Bubble = (function(_super) {
       prop: 'degreeOffsetEnd',
       def: this.degreeOffset
     });
+    this.lineDashOffset = this["default"]({
+      prop: 'lineDashOffset',
+      def: 0
+    });
+    this.lineDashOffsetEnd = this["default"]({
+      prop: 'lineDashOffsetEnd',
+      def: this.lineDashOffset
+    });
     this.degree = h.slice(this.degree, 360);
     this.degreeEnd = h.slice(this.degreeEnd, 360);
     this.spikes = this["default"]({
@@ -118,7 +126,8 @@ Bubble = (function(_super) {
       angle: this.angleStart,
       degree: this.degree,
       degreeOffset: this.degreeOffset,
-      opacity: this.opacity
+      opacity: this.opacity,
+      lineDashOffset: this.lineDashOffset
     };
     this.to = {
       rx: this.radiusEndX,
@@ -127,11 +136,10 @@ Bubble = (function(_super) {
       angle: this.angleEnd,
       degree: this.degreeEnd,
       degreeOffset: this.degreeOffsetEnd,
-      opacity: this.opacityEnd
+      opacity: this.opacityEnd,
+      lineDashOffset: this.lineDashOffsetEnd
     };
-    if (this.shape.toLowerCase() === 'star') {
-      this.mixStarSpikesProps();
-    }
+    this.mixStarSpikesProps();
     this.mixLineDash();
     this.mixColor();
     return this.initTween().onUpdate(function() {
@@ -146,7 +154,8 @@ Bubble = (function(_super) {
         colorObj: it.updateColors(this),
         opacity: this.opacity,
         spikes: this.spikes,
-        rate: this.rate
+        rate: this.rate,
+        lineDashOffset: this.lineDashOffset
       });
     });
   };
@@ -691,6 +700,10 @@ Object = (function(_super) {
       prop: 'lineDash',
       def: []
     });
+    this.lineDashOffset = this["default"]({
+      prop: 'lineDashOffset',
+      def: 0
+    });
     this.radius = this["default"]({
       prop: 'radius',
       def: 50
@@ -745,6 +758,7 @@ Object = (function(_super) {
     var c, _base;
     this.ctx.lineWidth = this.lineWidth * this.px;
     this.ctx.lineCap = this.lineCap;
+    this.ctx.lineDashOffset = this.lineDashOffset;
     if (typeof (_base = this.ctx).setLineDash === "function") {
       _base.setLineDash(this.lineDash);
     }
@@ -889,7 +903,7 @@ Triangle = (function(_super) {
     this.renderStart();
     this.rotation();
     this.radius();
-    angle = 31;
+    angle = 30;
     step = 360 / this.spikes;
     for (i = _i = 0, _ref = this.spikes; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       rotation = (angle + this.angle) * this.h.DEG;
@@ -968,14 +982,14 @@ h = require('./helpers');
 Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
-  radius: 50,
-  radiusEnd: 100,
+  radius: 150,
   lineWidth: 3,
-  lineWidthEnd: 0,
   shape: 'triangle',
-  duration: 600,
-  delay: 1500,
-  spikes: 3
+  duration: 1000,
+  spikes: 3,
+  lineDash: [1600],
+  lineDashOffset: 1600,
+  lineDashOffsetEnd: 0
 });
 
 window.addEventListener('click', function(e) {

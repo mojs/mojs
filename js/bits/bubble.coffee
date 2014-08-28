@@ -32,6 +32,9 @@ class Bubble extends Byte
     @degreeOffset    = @default prop: 'degreeOffset',    def: 0
     @degreeOffsetEnd = @default prop: 'degreeOffsetEnd', def: @degreeOffset
 
+    @lineDashOffset    = @default prop: 'lineDashOffset', def: 0
+    @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd',def: @lineDashOffset
+
     @degree    = h.slice @degree,    360
     @degreeEnd = h.slice @degreeEnd, 360
 
@@ -68,6 +71,7 @@ class Bubble extends Byte
       degree:  @degree
       degreeOffset: @degreeOffset
       opacity: @opacity
+      lineDashOffset: @lineDashOffset
     @to =
       rx:      @radiusEndX
       ry:      @radiusEndY
@@ -76,10 +80,10 @@ class Bubble extends Byte
       degree:  @degreeEnd
       degreeOffset: @degreeOffsetEnd
       opacity: @opacityEnd
+      lineDashOffset: @lineDashOffsetEnd
 
-    if @shape.toLowerCase() is 'star'
-      @mixStarSpikesProps()
-
+    # if @shape.toLowerCase() is 'star'
+    @mixStarSpikesProps()
     @mixLineDash()
     @mixColor()
 
@@ -96,6 +100,7 @@ class Bubble extends Byte
         opacity:    @opacity
         spikes:     @spikes
         rate: @rate
+        lineDashOffset: @lineDashOffset
 
   mixStarSpikesProps:->
     @from.spikes = @spikes
