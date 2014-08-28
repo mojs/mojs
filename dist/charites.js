@@ -145,7 +145,7 @@ Bubble = (function(_super) {
         lineDash: it.updateLineDash(this),
         colorObj: it.updateColors(this),
         opacity: this.opacity,
-        spikes: this.spikes || 5,
+        spikes: this.spikes,
         rate: this.rate
       });
     });
@@ -233,7 +233,9 @@ Bit = (function() {
     var propName, propValue;
     for (propName in props) {
       propValue = props[propName];
-      this[propName] = propValue;
+      if (propValue != null) {
+        this[propName] = propValue;
+      }
     }
     return this.render();
   };
@@ -716,15 +718,6 @@ Object = (function(_super) {
     return this.colorObj = this.h.makeColorObj(this.color);
   };
 
-  Object.prototype.setProp = function(props) {
-    var propName, propValue;
-    for (propName in props) {
-      propValue = props[propName];
-      this[propName] = propValue;
-    }
-    return typeof this.render === "function" ? this.render() : void 0;
-  };
-
   Object.prototype.renderStart = function() {
     var name;
     name = this.name || 'object';
@@ -868,39 +861,53 @@ module.exports = Star;
 
 
 },{"./object":7}],10:[function(require,module,exports){
-var Object, Trangle,
+var Object, Triangle,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Object = require('./object');
 
-Trangle = (function(_super) {
-  __extends(Trangle, _super);
+Triangle = (function(_super) {
+  __extends(Triangle, _super);
 
-  function Trangle() {
-    return Trangle.__super__.constructor.apply(this, arguments);
+  function Triangle() {
+    return Triangle.__super__.constructor.apply(this, arguments);
   }
 
-  Trangle.prototype.name = 'Trangle';
+  Triangle.prototype.name = 'Triangle';
 
-  Trangle.prototype.render = function() {
+  Triangle.prototype.vars = function() {
+    Triangle.__super__.vars.apply(this, arguments);
+    return this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 3
+    });
+  };
+
+  Triangle.prototype.render = function() {
+    var angle, i, method, rotation, step, x, y, _i, _ref;
     this.renderStart();
     this.rotation();
     this.radius();
-    this.ctx.moveTo(1, 0, 1, 0);
-    this.ctx.lineTo(1, 0, 2, 2);
-    this.ctx.lineTo(2, 2, 0, 2);
-    this.ctx.lineTo(0, 2, 1, 0);
-    this.ctx.closePath();
+    angle = 31;
+    step = 360 / this.spikes;
+    for (i = _i = 0, _ref = this.spikes; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      rotation = (angle + this.angle) * this.h.DEG;
+      x = 1 + Math.cos(rotation);
+      y = 1 + Math.sin(rotation);
+      angle += step;
+      method = i === 0 ? 'moveTo' : 'lineTo';
+      this.ctx[method](x, y);
+    }
     this.ctx.restore();
     return this.stroke();
   };
 
-  return Trangle;
+  return Triangle;
 
 })(Object);
 
-module.exports = Trangle;
+module.exports = Triangle;
 
 
 },{"./object":7}],11:[function(require,module,exports){
@@ -919,19 +926,23 @@ ZigZag = (function(_super) {
 
   ZigZag.prototype.name = 'ZigZag';
 
+  ZigZag.prototype.vars = function() {
+    ZigZag.__super__.vars.apply(this, arguments);
+    this.rate = this["default"]({
+      prop: 'rate',
+      def: .25
+    });
+    return this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 10
+    });
+  };
+
   ZigZag.prototype.render = function() {
     var i, method, x, y, _i, _ref;
     this.renderStart();
     this.rotation();
     this.radius();
-    this.rate = this["default"]({
-      prop: 'rate',
-      def: .25
-    });
-    this.spikes = this["default"]({
-      prop: 'spikes',
-      def: 10
-    });
     for (i = _i = 0, _ref = this.spikes; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       method = i === 0 ? 'moveTo' : 'lineTo';
       y = i % 2 === 0 ? this.rate : -this.rate;
@@ -958,11 +969,13 @@ Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
   radius: 50,
-  radiusEndX: 100,
+  radiusEnd: 100,
   lineWidth: 3,
-  lineWidthEnd: 2,
-  shape: 'zigzag',
-  spikes: 10
+  lineWidthEnd: 0,
+  shape: 'triangle',
+  duration: 600,
+  delay: 1500,
+  spikes: 3
 });
 
 window.addEventListener('click', function(e) {
@@ -985,6 +998,8 @@ Helpers = (function() {
   Helpers.prototype.body = document.body;
 
   Helpers.prototype.deg = Math.PI / 180;
+
+  Helpers.prototype.DEG = Math.PI / 180;
 
   Helpers.prototype.s = 1;
 

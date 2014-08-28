@@ -32,8 +32,7 @@ class Bit
 
   setProp:(props)->
     for propName, propValue of props
-      @[propName] = propValue
-      # if propName is 'color' then @colorObj = h.makeColorObj @color
+      if propValue? then @[propName] = propValue
     @render()
 
   default:(o)->

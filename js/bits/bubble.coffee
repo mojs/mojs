@@ -21,6 +21,7 @@ class Bubble extends Byte
     cross:     Cross
     line:      Line
     zigzag:    ZigZag
+
   vars:->
     super
     @shape        = @default prop: 'shape',       def: 'circle'
@@ -36,7 +37,7 @@ class Bubble extends Byte
 
     @spikes    = @default prop: 'spikes',    def: 5
     @spikesEnd = @default prop: 'spikesEnd', def: @spikes
-    
+
     @rate      = @default prop: 'rate',    def: .25
     @rateEnd   = @default prop: 'rateEnd', def: @rate
 
@@ -93,7 +94,7 @@ class Bubble extends Byte
         lineDash:   it.updateLineDash(@)
         colorObj:   it.updateColors(@)
         opacity:    @opacity
-        spikes:     @spikes or 5
+        spikes:     @spikes
         rate: @rate
 
   mixStarSpikesProps:->

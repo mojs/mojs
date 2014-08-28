@@ -3,10 +3,13 @@ Object = require './object'
 class ZigZag extends Object
   name: 'ZigZag'
 
-  render:->
-    @renderStart(); @rotation(); @radius()
+  vars:->
+    super
     @rate   = @default prop: 'rate', def: .25
     @spikes = @default prop: 'spikes', def: 10
+
+  render:->
+    @renderStart(); @rotation(); @radius()
 
     for i in [0...@spikes]
       method = if i is 0 then 'moveTo' else 'lineTo'

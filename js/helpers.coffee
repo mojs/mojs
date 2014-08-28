@@ -9,6 +9,7 @@ class Helpers
   doc:  document
   body: document.body
   deg: Math.PI/180
+  DEG: Math.PI/180
   s: 1
 
   time:(time)-> time*@s

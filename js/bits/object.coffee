@@ -26,11 +26,6 @@ class Object extends Bit
 
     @colorObj = @h.makeColorObj @color
 
-  setProp:(props)->
-    for propName, propValue of props
-      @[propName] = propValue
-    @render?()
-
   renderStart:->
     name = @name or 'object'
     if !@ctx then console.error("#{name}.render: no context!"); return
