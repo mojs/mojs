@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Bubble, Byte, Circle, Cross, Line, Rectangle, Star, Triangle, h,
+var Bubble, Byte, Circle, Cross, Line, Rectangle, Star, Triangle, ZigZag, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -17,6 +17,8 @@ Cross = require('./cross');
 
 Line = require('./line');
 
+ZigZag = require('./zigzag');
+
 h = require('../helpers');
 
 Bubble = (function(_super) {
@@ -32,11 +34,12 @@ Bubble = (function(_super) {
     triangle: Triangle,
     star: Star,
     cross: Cross,
-    line: Line
+    line: Line,
+    zigzag: ZigZag
   };
 
   Bubble.prototype.vars = function() {
-    var Shape, coef, def;
+    var Shape, coef;
     Bubble.__super__.vars.apply(this, arguments);
     this.shape = this["default"]({
       prop: 'shape',
@@ -60,22 +63,21 @@ Bubble = (function(_super) {
     });
     this.degree = h.slice(this.degree, 360);
     this.degreeEnd = h.slice(this.degreeEnd, 360);
-    this.starSpikes = this["default"]({
-      prop: 'starSpikes',
+    this.spikes = this["default"]({
+      prop: 'spikes',
       def: 5
     });
-    this.starSpikesEnd = this["default"]({
-      prop: 'starSpikesEnd',
-      def: this.starSpikes
+    this.spikesEnd = this["default"]({
+      prop: 'spikesEnd',
+      def: this.spikes
     });
-    this.starInnerRadius = this["default"]({
-      prop: 'starInnerRadius',
-      def: .5
+    this.rate = this["default"]({
+      prop: 'rate',
+      def: .25
     });
-    def = this.starInnerRadius;
-    this.starInnerRadiusEnd = this["default"]({
-      prop: 'starInnerRadiusEnd',
-      def: def
+    this.rateEnd = this["default"]({
+      prop: 'rateEnd',
+      def: this.rate
     });
     if (this.shape !== 'circle' && this.shape !== 'star' && this.shape !== 'cross') {
       this.canvasSize({
@@ -98,7 +100,9 @@ Bubble = (function(_super) {
       position: {
         x: 2 * this.center,
         y: 2 * this.center
-      }
+      },
+      rate: this.rate,
+      spikes: this.spikes
     });
   };
 
@@ -142,16 +146,16 @@ Bubble = (function(_super) {
         colorObj: it.updateColors(this),
         opacity: this.opacity,
         spikes: this.spikes || 5,
-        innerRadius: this.innerRadius
+        rate: this.rate
       });
     });
   };
 
   Bubble.prototype.mixStarSpikesProps = function() {
-    this.from.spikes = this.starSpikes;
-    this.to.spikes = this.starSpikesEnd;
-    this.from.innerRadius = this.starInnerRadius;
-    return this.to.innerRadius = this.starInnerRadiusEnd;
+    this.from.spikes = this.spikes;
+    this.to.spikes = this.spikesEnd;
+    this.from.rate = this.rate;
+    return this.to.rate = this.rateEnd;
   };
 
   return Bubble;
@@ -161,7 +165,7 @@ Bubble = (function(_super) {
 module.exports = Bubble;
 
 
-},{"../helpers":12,"./byte":3,"./circle":4,"./cross":5,"./line":6,"./rectangle":8,"./star":9,"./triangle":10}],2:[function(require,module,exports){
+},{"../helpers":13,"./byte":3,"./circle":4,"./cross":5,"./line":6,"./rectangle":8,"./star":9,"./triangle":10,"./zigzag":11}],2:[function(require,module,exports){
 var Bit, TWEEN, h;
 
 h = require('../helpers');
@@ -253,7 +257,7 @@ Bit = (function() {
 module.exports = Bit;
 
 
-},{"../helpers":12,"../polyfills":13,"../vendor/tween":14}],3:[function(require,module,exports){
+},{"../helpers":13,"../polyfills":14,"../vendor/tween":15}],3:[function(require,module,exports){
 var Bit, Byte, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -522,7 +526,7 @@ Byte = (function(_super) {
 module.exports = Byte;
 
 
-},{"../helpers":12,"./bit":2}],4:[function(require,module,exports){
+},{"../helpers":13,"./bit":2}],4:[function(require,module,exports){
 var Circle, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -621,8 +625,8 @@ Line = (function(_super) {
     this.renderStart();
     this.rotation();
     this.radius();
-    this.ctx.moveTo(1, 0);
-    this.ctx.lineTo(1, 2);
+    this.ctx.moveTo(0, 1);
+    this.ctx.lineTo(2, 1);
     this.ctx.restore();
     return this.stroke();
   };
@@ -817,11 +821,11 @@ Star = (function(_super) {
       prop: 'spikes',
       def: 5
     });
-    this.innerRadius = this["default"]({
-      prop: 'innerRadius',
+    this.rate = this["default"]({
+      prop: 'rate',
       def: .5
     });
-    return this.innerRadius = this.h.slice(this.innerRadius, 1);
+    return this.rate = this.h.slice(this.rate, 1);
   };
 
   Star.prototype.render = function() {
@@ -834,7 +838,7 @@ Star = (function(_super) {
     cy = 1;
     x = cx;
     y = cy;
-    r0 = this.innerRadius;
+    r0 = this.rate;
     r1 = 1;
     step = Math.PI / this.spikes;
     this.ctx.moveTo(cx, cy - r0);
@@ -900,6 +904,52 @@ module.exports = Trangle;
 
 
 },{"./object":7}],11:[function(require,module,exports){
+var Object, ZigZag,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+ZigZag = (function(_super) {
+  __extends(ZigZag, _super);
+
+  function ZigZag() {
+    return ZigZag.__super__.constructor.apply(this, arguments);
+  }
+
+  ZigZag.prototype.name = 'ZigZag';
+
+  ZigZag.prototype.render = function() {
+    var i, method, x, y, _i, _ref;
+    this.renderStart();
+    this.rotation();
+    this.radius();
+    this.rate = this["default"]({
+      prop: 'rate',
+      def: .25
+    });
+    this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 10
+    });
+    for (i = _i = 0, _ref = this.spikes; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      method = i === 0 ? 'moveTo' : 'lineTo';
+      y = i % 2 === 0 ? this.rate : -this.rate;
+      x = 0 + (i * (2 / (this.spikes - 1)));
+      this.ctx[method](x, 1 + y);
+    }
+    this.ctx.restore();
+    return this.stroke();
+  };
+
+  return ZigZag;
+
+})(Object);
+
+module.exports = ZigZag;
+
+
+},{"./object":7}],12:[function(require,module,exports){
 var Bubble, bubble, h;
 
 h = require('./helpers');
@@ -908,9 +958,11 @@ Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
   radius: 50,
-  radiusEnd: 100,
-  lineWidthEnd: 1,
-  shape: 'line'
+  radiusEndX: 100,
+  lineWidth: 3,
+  lineWidthEnd: 2,
+  shape: 'zigzag',
+  spikes: 10
 });
 
 window.addEventListener('click', function(e) {
@@ -920,7 +972,7 @@ window.addEventListener('click', function(e) {
 });
 
 
-},{"./bits/Bubble":1,"./helpers":12}],12:[function(require,module,exports){
+},{"./bits/Bubble":1,"./helpers":13}],13:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -1118,7 +1170,7 @@ module.exports = (function() {
 })();
 
 
-},{"./vendor/tween":14}],13:[function(require,module,exports){
+},{"./vendor/tween":15}],14:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -1135,7 +1187,7 @@ module.exports = (function() {
 })();
 
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ;(function(undefined){
 
 
@@ -1927,4 +1979,4 @@ module.exports = (function() {
 })()
 
 
-},{}]},{},[11])
+},{}]},{},[12])

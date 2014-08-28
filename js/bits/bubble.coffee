@@ -5,6 +5,7 @@ Triangle  = require './triangle'
 Star      = require './star'
 Cross     = require './cross'
 Line      = require './line'
+ZigZag    = require './zigzag'
 h         = require '../helpers'
 
 # TODO
@@ -19,6 +20,7 @@ class Bubble extends Byte
     star:      Star
     cross:     Cross
     line:      Line
+    zigzag:    ZigZag
   vars:->
     super
     @shape        = @default prop: 'shape',       def: 'circle'
@@ -32,12 +34,11 @@ class Bubble extends Byte
     @degree    = h.slice @degree,    360
     @degreeEnd = h.slice @degreeEnd, 360
 
-    @starSpikes    = @default prop: 'starSpikes',    def: 5
-    @starSpikesEnd = @default prop: 'starSpikesEnd', def: @starSpikes
-
-    @starInnerRadius    = @default prop: 'starInnerRadius',    def: .5
-    def = @starInnerRadius
-    @starInnerRadiusEnd = @default prop: 'starInnerRadiusEnd', def: def
+    @spikes    = @default prop: 'spikes',    def: 5
+    @spikesEnd = @default prop: 'spikesEnd', def: @spikes
+    
+    @rate      = @default prop: 'rate',    def: .25
+    @rateEnd   = @default prop: 'rateEnd', def: @rate
 
     if @shape isnt 'circle' and @shape isnt 'star' and @shape isnt 'cross'
       @canvasSize mulCoef: 1.484848
@@ -52,6 +53,8 @@ class Bubble extends Byte
       ctx: @ctx
       parentSize: x: @sizeX, y: @sizeY
       position: x: 2*@center, y: 2*@center
+      rate:   @rate
+      spikes: @spikes
 
   run:(@oa={})->
     super; it = @
@@ -91,13 +94,13 @@ class Bubble extends Byte
         colorObj:   it.updateColors(@)
         opacity:    @opacity
         spikes:     @spikes or 5
-        innerRadius: @innerRadius
+        rate: @rate
 
   mixStarSpikesProps:->
-    @from.spikes = @starSpikes
-    @to.spikes   = @starSpikesEnd
+    @from.spikes = @spikes
+    @to.spikes   = @spikesEnd
 
-    @from.innerRadius = @starInnerRadius
-    @to.innerRadius   = @starInnerRadiusEnd
+    @from.rate = @rate
+    @to.rate   = @rateEnd
 
 module.exports = Bubble

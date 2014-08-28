@@ -8,9 +8,11 @@ Bubble = require './bits/Bubble'
 
 bubble = new Bubble
   radius:    50
-  radiusEnd: 100
-  lineWidthEnd: 1
-  shape: 'line'
+  radiusEndX: 100
+  lineWidth:    3
+  lineWidthEnd: 2
+  shape: 'zigzag'
+  spikes: 10
 
 window.addEventListener 'click', (e)->
   # console.log h.rand -360,360

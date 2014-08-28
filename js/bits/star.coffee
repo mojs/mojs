@@ -4,16 +4,16 @@ class Star extends Object
   name: 'Star'
   vars:->
     super
-    @spikes       = @default prop: 'spikes',       def: 5
-    @innerRadius  = @default prop: 'innerRadius',  def: .5
-    @innerRadius  = @h.slice @innerRadius, 1
+    @spikes = @default prop: 'spikes',       def: 5
+    @rate  = @default prop: 'rate',  def: .5
+    @rate  = @h.slice @rate, 1
   render:->
     @renderStart(); @rotation(); @radius()
 
     rot = Math.PI/2 * 3
     cx = 1; cy = 1
     x = cx; y = cy
-    r0 = @innerRadius; r1 = 1
+    r0 = @rate; r1 = 1
     step = Math.PI/@spikes
 
     @ctx.moveTo cx, cy - r0
