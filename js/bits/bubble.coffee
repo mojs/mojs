@@ -18,6 +18,7 @@ class Bubble extends Byte
     triangle:  Triangle
     star:      Star
     cross:     Cross
+    line:      Line
   vars:->
     super
     @shape        = @default prop: 'shape',       def: 'circle'

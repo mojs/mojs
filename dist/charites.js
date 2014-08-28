@@ -31,7 +31,8 @@ Bubble = (function(_super) {
     rectangle: Rectangle,
     triangle: Triangle,
     star: Star,
-    cross: Cross
+    cross: Cross,
+    line: Line
   };
 
   Bubble.prototype.vars = function() {
@@ -601,11 +602,11 @@ module.exports = Cross;
 
 
 },{"./object":7}],6:[function(require,module,exports){
-var Bit, Line,
+var Line, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Bit = require('./bit');
+Object = require('./object');
 
 Line = (function(_super) {
   __extends(Line, _super);
@@ -614,61 +615,26 @@ Line = (function(_super) {
     return Line.__super__.constructor.apply(this, arguments);
   }
 
-  Line.prototype.vars = function() {
-    this.start = this["default"]({
-      prop: 'start',
-      def: {
-        x: 0,
-        y: 0
-      }
-    });
-    this.end = this["default"]({
-      prop: 'end',
-      def: {
-        x: 0,
-        y: 0
-      }
-    });
-    this.position = this["default"]({
-      prop: 'position',
-      def: {
-        x: 0,
-        y: 0
-      }
-    });
-    this.size = {
-      width: (this.end.x - this.start.x) + this.lineWidth,
-      height: this.end.y - this.start.y
-    };
-    return Line.__super__.vars.apply(this, arguments);
-  };
+  Line.prototype.name = 'Line';
 
   Line.prototype.render = function() {
-    var c;
-    console.log('render');
-    if (!this.ctx) {
-      console.error('Line.render: no context!');
-      return;
-    }
-    this.isClearLess || this.ctx.clear();
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.start.x * this.px, this.start.y * this.px);
-    this.ctx.lineTo(this.end.x * this.px, this.end.y * this.px);
-    this.ctx.lineWidth = this.lineWidth * this.px;
-    c = this.colorObj;
-    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + this.opacity + ")";
-    this.ctx.lineCap = this.lineCap;
-    return this.ctx.stroke();
+    this.renderStart();
+    this.rotation();
+    this.radius();
+    this.ctx.moveTo(1, 0);
+    this.ctx.lineTo(1, 2);
+    this.ctx.restore();
+    return this.stroke();
   };
 
   return Line;
 
-})(Bit);
+})(Object);
 
 module.exports = Line;
 
 
-},{"./bit":2}],7:[function(require,module,exports){
+},{"./object":7}],7:[function(require,module,exports){
 var Bit, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -941,15 +907,10 @@ h = require('./helpers');
 Bubble = require('./bits/Bubble');
 
 bubble = new Bubble({
-  radius: 200,
-  radiusX: 1,
-  radiusEnd: 10,
-  lineWidth: 3,
+  radius: 50,
+  radiusEnd: 100,
   lineWidthEnd: 1,
-  shape: 'cross',
-  color: 'deeppink',
-  duration: 500,
-  angleEnd: 60
+  shape: 'line'
 });
 
 window.addEventListener('click', function(e) {
