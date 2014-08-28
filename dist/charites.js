@@ -944,7 +944,6 @@ bubble = new Bubble({
   radius: 200,
   radiusX: 1,
   radiusEnd: 10,
-  radiusEndX: 1,
   lineWidth: 3,
   lineWidthEnd: 1,
   shape: 'cross',
