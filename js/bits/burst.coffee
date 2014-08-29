@@ -1,5 +1,10 @@
 Byte      = require './byte'
 
+
+# TODO
+#   size calculations
+#   angle
+
 class Bubble extends Byte
   vars:->
     super
