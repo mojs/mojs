@@ -8,9 +8,9 @@ class Star extends Object
     @rate  = @default prop: 'rate',  def: .5
     @rate  = @h.slice @rate, 1
   render:->
-    @renderStart(); @rotation(); @radius()
+    @preRender()
 
-    rot = Math.PI/2 * 3
+    rot = (Math.PI/2 * 3)
     cx = 1; cy = 1
     x = cx; y = cy
     r0 = @rate; r1 = 1
@@ -30,7 +30,7 @@ class Star extends Object
       i++
     @ctx.lineTo cx, cy - r0
 
-    @ctx.closePath(); @ctx.restore(); @stroke()
+    @postRender()
 
 
 module.exports = Star

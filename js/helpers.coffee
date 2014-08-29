@@ -65,7 +65,8 @@ class Helpers
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
 
-  makeColorObj:(color) ->
+  makeColorObj:(color)->
+    # HEX
     if color[0] is '#'
       result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color)
       colorObj = {}
@@ -79,26 +80,32 @@ class Helpers
           b: parseInt(b, 16)
           a: 1
     
+    # not HEX
     # console.log color
     # shorthand color and rgb()
     if color[0] isnt '#'
       isRgb = color[0] is 'r' and color[1] is 'g' and color[2] is 'b'
-      if isRgb and color[3] isnt 'a'
+      # rgb color
+      if isRgb
         rgbColor = color
-      if !isRgb and color[3] isnt 'a'
+      # shorthand color name
+      if !isRgb
         rgbColor = if !@shortColors[color]
           @div.style.color = color
           @div.style.color
         else @shortColors[color]
 
-      result = /^rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)$/gi.exec(rgbColor)
+      regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),'
+      regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$'
+      result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor)
       colorObj = {}
+      alpha = parseFloat(result[4])
       if result
         colorObj =
           r: parseInt(result[1],10)
           g: parseInt(result[2],10)
           b: parseInt(result[3],10)
-          a: 1
+          a: if alpha? and !isNaN(alpha) then alpha else 1
     colorObj
 
   size:(obj)->

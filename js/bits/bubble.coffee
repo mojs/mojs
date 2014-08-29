@@ -1,30 +1,8 @@
 Byte      = require './byte'
-Circle    = require './circle'
-Rectangle = require './rectangle'
-Triangle  = require './triangle'
-Star      = require './star'
-Cross     = require './cross'
-Line      = require './line'
-ZigZag    = require './zigzag'
-h         = require '../helpers'
-
-# TODO
-# fix safari
-# test browsers
 
 class Bubble extends Byte
-  shapes:
-    circle:    Circle
-    rectangle: Rectangle
-    triangle:  Triangle
-    star:      Star
-    cross:     Cross
-    line:      Line
-    zigzag:    ZigZag
-
   vars:->
     super
-    @shape        = @default prop: 'shape',       def: 'circle'
 
     @degree       = @default prop: 'degree',       def: 360
     @degreeEnd    = @default prop: 'degreeEnd',    def: @degree
@@ -32,11 +10,8 @@ class Bubble extends Byte
     @degreeOffset    = @default prop: 'degreeOffset',    def: 0
     @degreeOffsetEnd = @default prop: 'degreeOffsetEnd', def: @degreeOffset
 
-    @lineDashOffset    = @default prop: 'lineDashOffset', def: 0
-    @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd',def: @lineDashOffset
-
-    @degree    = h.slice @degree,    360
-    @degreeEnd = h.slice @degreeEnd, 360
+    @degree    = @h.slice @degree,    360
+    @degreeEnd = @h.slice @degreeEnd, 360
 
     @spikes    = @default prop: 'spikes',    def: 5
     @spikesEnd = @default prop: 'spikesEnd', def: @spikes

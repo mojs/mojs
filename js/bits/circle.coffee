@@ -8,11 +8,11 @@ class Circle extends Object
     super
 
   render:->
-    @renderStart(); @rotation(); @radius()
+    @preRender()
 
     @ctx.arc(1, 1, 1, @degreeOffset*@deg, (@degree+@degreeOffset)*@deg, false)
     
-    @ctx.restore(); @stroke()
+    @postRender()
 
 
 module.exports = Circle

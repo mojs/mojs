@@ -1,7 +1,23 @@
 h = require '../helpers'
 Bit = require './bit'
+Circle    = require './circle'
+Rectangle = require './rectangle'
+Triangle  = require './triangle'
+Star      = require './star'
+Cross     = require './cross'
+Line      = require './line'
+ZigZag    = require './zigzag'
 
 class Byte extends Bit
+  shapes:
+    circle:    Circle
+    rectangle: Rectangle
+    triangle:  Triangle
+    star:      Star
+    cross:     Cross
+    line:      Line
+    zigzag:    ZigZag
+
   vars:->
     @el = @oa.el or @o.el or @el or @createEl()
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
@@ -35,16 +51,34 @@ class Byte extends Bit
       @to.g = @colorEndObj.g
       @to.b = @colorEndObj.b
       @to.a = @colorEndObj.a
-
     @colorObjTween = h.clone @colorObj
+
+  mixFill:->
+    if @fill and @fillEnd
+      @from.fr = @fillObj.r
+      @from.fg = @fillObj.g
+      @from.fb = @fillObj.b
+      @from.fa = @fillObj.a
+      @to.fr = @fillEndObj.r
+      @to.fg = @fillEndObj.g
+      @to.fb = @fillEndObj.b
+      @to.fa = @fillEndObj.a
+
+    @fillObjTween  = h.clone @fillObj
 
   # METHODS FOR TWEEN UPDATE FUNCTION
   updateColors:(that)->
     @colorObjTween.r = parseInt(that.r,10)
     @colorObjTween.g = parseInt(that.g,10)
     @colorObjTween.b = parseInt(that.b,10)
-    @colorObjTween.a = parseInt(that.a,10)
+    @colorObjTween.a = parseFloat(that.a)
     @colorObjTween
+  updateFill:(that)->
+    @fillObjTween.r = parseInt(that.fr,10)
+    @fillObjTween.g = parseInt(that.fg,10)
+    @fillObjTween.b = parseInt(that.fb,10)
+    @fillObjTween.a = parseFloat(that.fa)
+    @fillObjTween
   updateLineDash:(that)->
     i = 0; lineDash = []
     if @lineDash and @lineDashEnd
@@ -79,21 +113,27 @@ class Byte extends Bit
     @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
     @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
 
+    @lineDashOffset    = @default prop: 'lineDashOffset', def: 0
+    @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd',def: @lineDashOffset
+
+    @lineDash     = @default prop: 'lineDash',    def: []
+    @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
+    @normalizeLineDashes()
+
     @opacity      = @default prop: 'opacity',    def: 1
     @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
 
     @colorEnd  = @default prop: 'colorEnd',        def: @color
     @colorEnd and (@colorEndObj = h.makeColorObj @colorEnd)
+    @fillEnd  and (@fillEndObj  = h.makeColorObj @fillEnd)
     @colorMap   = @default prop: 'colorMap',  def: [@color]
-
 
     @angle        = @default prop: 'angle',       def: 0
     @angleStart   = @default prop: 'angleStart',  def: @angle
     @angleEnd     = @default prop: 'angleEnd',    def: @angleStart
 
-    @lineDash     = @default prop: 'lineDash',    def: []
-    @lineDashEnd  = @default prop: 'lineDashEnd', def: @lineDash
-    @normalizeLineDashes()
+    @shape        = @default prop: 'shape',       def: 'circle'
+    @Shape = @shapes[@shape.toLowerCase()] or Circle
 
     # TWEEN OPTIONS
     @repeat       = @default prop: 'repeat',      def: 0
@@ -102,7 +142,7 @@ class Byte extends Bit
     @delay        = @default prop: 'delay',        def: 0
     @easing       = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings      = @easing.split '.'
-    @maxRadius = Math.max @radiusEndX, @radiusEndY, @radiusX, @radiusY
+    @maxRadius    = Math.max @radiusEndX, @radiusEndY, @radiusX, @radiusY
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
     @canvasSize()
 

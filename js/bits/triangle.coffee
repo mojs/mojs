@@ -6,11 +6,10 @@ class Triangle extends Object
   vars:-> super; @spikes = @default prop: 'spikes', def: 3
 
   render:->
-    @renderStart(); @rotation(); @radius()
+    @preRender()
 
     angle = 30
     step = 360/@spikes
-
     for i in [0..@spikes]
       rotation = (angle+@angle)*@h.DEG
       x = 1 + Math.cos(rotation)
@@ -20,7 +19,7 @@ class Triangle extends Object
       method = if i is 0 then 'moveTo' else 'lineTo'
       @ctx[method](x, y)
 
-    @ctx.restore(); @stroke()
+    @postRender()
 
 
 module.exports = Triangle

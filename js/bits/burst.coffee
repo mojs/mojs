@@ -1,159 +1,77 @@
-Byte = require './byte'
-Line = require './line'
+Byte      = require './byte'
 
-class Burst extends Byte
+class Bubble extends Byte
   vars:->
-    @cnt    = @default prop: 'cnt' , def: 3
-    @radiusStart = @default prop: 'radiusStart', def: 100
-    @radiusEnd   = @default prop: 'radiusEnd',   def: 200
-
-    @radiusStartX  = @defaultPart prop: 'radiusStartX', def: @radiusStart
-    @radiusStartY  = @defaultPart prop: 'radiusStartY', def: @radiusStart
-
-    @radiusEndX  = @defaultPart prop: 'radiusEndX', def: @radiusEnd
-    @radiusEndY  = @defaultPart prop: 'radiusEndY', def: @radiusEnd
-
-    @lineWidth      = @default prop: 'lineWidth',   def: 1
-    @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
-    @lineWidthEnd   = @default prop: 'lineWidthEnd',def: @lineWidth
-
-    @lineCap     = @default prop: 'lineCap',     def: 'none'
-    @angle       = @default prop: 'angle',       def: 360
-    @angle       = if @angle > 360 then 360 else @angle
-    @duration    = @default prop: 'duration',    def: 400
-    @duration1   = @defaultPart prop: 'duration1',   def: @duration/2
-    @duration2   = @defaultPart prop: 'duration2',   def: @duration/2
-    
-    @delay       = @default prop: 'delay',        def: 0
-    @delay1      = @default prop: 'delay1',       def: @delay
-    @delay2      = @default prop: 'delay2',       def: 0
-
-    @easing      = @default prop: 'easing',      def: 'Linear.None'
-    @easing1     = @defaultPart prop: 'easing1',     def: @easing
-    @easing2     = @defaultPart prop: 'easing2',     def: @easing
-
-    @fade        = @default prop: 'fade' ,  def: 'none'
-
-    @easings1    = @easing1.split '.'
-    @easings2    = @easing2.split '.'
-
-    @initialRotation = @default prop: 'initialRotation', def: 0
-    @rotation        = @default prop: 'rotation',        def: 0
-    @rotation1       = @defaultPart prop: 'rotation1',       def: @rotation/2
-    @rotation2       = @defaultPart prop: 'rotation2',       def: @rotation/2
-
-    if !@lineWidthMiddle
-      if @lineWidth < @lineWidthEnd
-        @lineWidthMiddle = @lineWidth + @lineWidthEnd/2
-
-      if @lineWidth > @lineWidthEnd
-        @lineWidthMiddle = @lineWidth - @lineWidthEnd/2
-
-      if @lineWidth is @lineWidthEnd
-        @lineWidthMiddle = @lineWidthEnd
-
-    angleCnt = if @angle % 360 is 0 then @cnt else @cnt-1
-    @step = @angle/angleCnt
-
-    maxEndRadius = Math.max @radiusEndX, @radiusEndY
-    maxLineWidth = Math.max @lineWidth, @lineWidthMiddle, @lineWidthEnd
-    @size = 2*maxEndRadius + maxLineWidth
-    @center = @size/2
-    @sizeX = @size; @sizeY = @size
-    
     super
+    Shape = @shapes[@shape.toLowerCase()] or Circle
 
-    @lines ?= []
-    @lines.length = 0
+    @cnt       = @default prop: 'cnt', def: 3
+    @bitAngle     = @default prop: 'bitAngle', def: 0
+    @bitAngleEnd  = @default prop: 'bitAngleEnd', def: @bitAngle
+
+    @bitRadius     = @default prop: 'bitRadius',    def: 10
+    @bitRadiusEnd  = @default prop: 'bitRadiusEnd', def: @bitRadius
+
+    @els ?= []; @els.length = 0
     for i in [0...@cnt]
-      line = new Line
+      @els.push new Shape
         ctx: @ctx
-        color: @colorMap[i % @colorMap.length]
+        parentSize: x: @sizeX, y: @sizeY
+        position:   x: 2*@center, y: 2*@center
         isClearLess: true
-        lineWidth: @lineWidth
-        lineCap:   @lineCap
-        opacity: @opacity
-      @lines.push line
+        radius: @bitRadius
+        fill: @fill
 
   run:(@oa={})->
-    @h.size(@oa) and @vars()
-    @h.isSizeChange(@oa) and @setElSize()
+    super; it = @
 
-    @TWEEN.remove @tween1; @TWEEN.remove @tween2; it = @
-
-    from =
-      rx:        @radiusStartX
-      ry:        @radiusStartY
-      deg:       @rotation1
-      lineWidth: @lineWidthMiddle
-    to =
-      rx:        @radiusEndX
-      ry:        @radiusEndY
-      deg:       @rotation1+@rotation2
-      lineWidth: @lineWidthEnd
-
-    from.opacity = 1; to.opacity = 1
-    if @fade.match /out/i then to.opacity   = 0
-    if @fade.match(/in/i) and !@fade.match(/out/i) then to.opacity   = 1
-    if @fade? and @fade isnt 'none' then from.opacity = .5
-    if @fade is 'inOut' then from.opacity = 1
-    @tween2 = new @TWEEN.Tween(from).to(to,@duration2*@s)
-      .delay(@delay2*@s)
-      .onUpdate ->
-        it.ctx.clear()
-        angle = 0
-        for line, i in it.lines
-          rotation = (angle+it.initialRotation+@deg)*it.DEG
-          x1 = it.center + Math.cos(rotation)*it.radiusEndX
-          y1 = it.center + Math.sin(rotation)*it.radiusEndY
-          x = it.center + Math.cos(rotation)*@rx
-          y = it.center + Math.sin(rotation)*@ry
-          line.setProp
-            start:      {x: x,  y: y}
-            end:        {x: x1, y: y1}
-            lineWidth:  @lineWidth
-            opacity:    @opacity
-          angle += it.step
-      .easing @TWEEN.Easing[@easings2[0]][@easings2[1]]
-
-    from =
-      rx: @radiusStartX
-      ry: @radiusStartY
+    @from =
+      rx: @radiusX
+      ry: @radiusY
+      bitAngle: @bitAngle
       lineWidth: @lineWidth
-      deg: 0
-    to =
+      bitRadius: @bitRadius
+    @to =
       rx: @radiusEndX
       ry: @radiusEndY
-      deg: @rotation1
-      lineWidth: @lineWidthMiddle
+      bitAngle: @bitAngleEnd
+      lineWidth: @lineWidthEnd
+      bitRadius: @bitRadiusEnd
 
-    from.opacity = 1; to.opacity = 1
-    if @fade.match(/in/i)  then from.opacity = 0
-    if @fade.match(/out/i) and !@fade.match(/in/i) then from.opacity = 1
-    if @fade.match(/in/i) or @fade.match(/out/i) then to.opacity = .5
+    @mixStarSpikesProps()
+    @mixLineDash()
+    @mixColor()
+    @mixFill()
 
-    @tween1 = new @TWEEN.Tween(from).to(to,@duration1*@s)
-      .delay(@delay1*@s)
-      .onUpdate ->
-        it.ctx.clear()
-        angle = 0
-        for line, i in it.lines
-          rotation = (angle+it.initialRotation+@deg)*it.DEG
-          x1 = it.center + Math.cos(rotation)*it.radiusStartX
-          y1 = it.center + Math.sin(rotation)*it.radiusStartY
-          x = it.center + Math.cos(rotation)*@rx
-          y = it.center + Math.sin(rotation)*@ry
-          line.setProp
-            start:      {x: x1, y: y1}
-            end:        {x: x, y: y}
-            lineWidth:  @lineWidth
-            opacity:    @opacity
-          angle += it.step
-      .easing @TWEEN.Easing[@easings1[0]][@easings1[1]]
-      .chain(@tween2)
-      .start()
-    
-    @h.startAnimationLoop()
+    angle = 0
+    step = 360/@cnt
+    @initTween().onUpdate ->
+      it.ctx.clear()
+      for el, i in it.els
+        rotation = (angle+it.angle)*it.h.DEG
+        x = 2*it.center + Math.cos(rotation)*@rx
+        y = 2*it.center + Math.sin(rotation)*@ry
+        el.setProp
+          position: x:x, y:y
+          angle: @bitAngle
+          lineWidth: @lineWidth
+          fillObj: it.updateFill(@)
+          radiusX:  @bitRadius
+          radiusY:  @bitRadius
 
+        # console.log it.updateFill(@)
+        # if i is 0
+        #   el.setProp
+        #   # angle: @bitAngle
+        #   # radiusX:    @rx-(4*i)
+        #   # radiusY:    @ry-(4*i)
+        angle += step
 
-module.exports = Burst
+  mixStarSpikesProps:->
+    @from.spikes = @spikes
+    @to.spikes   = @spikesEnd
+
+    @from.rate = @rate
+    @to.rate   = @rateEnd
+
+module.exports = Bubble

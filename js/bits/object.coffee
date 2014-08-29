@@ -9,6 +9,7 @@ class Object extends Bit
 
     @parent     = @default prop: 'parent', def: @h.body
     @color      = @default prop: 'color' , def: '#222'
+    @fill       = @default prop: 'fill' ,  def: '#222'
 
     @lineWidth= @default prop: 'lineWidth',def: 1
     @lineCap  = @default prop: 'lineCap',  def: 'round'
@@ -26,6 +27,7 @@ class Object extends Bit
     @position   = @default prop: 'position', def: defPosition
 
     @colorObj = @h.makeColorObj @color
+    @fillObj  = @h.makeColorObj @fill
 
   renderStart:->
     name = @name or 'object'
@@ -33,12 +35,18 @@ class Object extends Bit
     @isClearLess or @ctx.clear()
     @ctx.save(); @ctx.beginPath()
 
-  rotation:->
-    @ctx.translate(@o.parentSize.x,@o.parentSize.y)
-    @ctx.rotate(@angle*Math.PI/180)
-    @ctx.translate(-@o.parentSize.x,-@o.parentSize.y)
+  preRender:->  @renderStart(); @rotation(); @radiusRender()
+  postRender:->
+    c = @fillObj
+    @ctx.fillStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"
+    @ctx.fill(); @ctx.closePath(); @ctx.restore(); @stroke()
 
-  radius:->
+  rotation:->
+    @ctx.translate(@position.x,@position.y)
+    @ctx.rotate(@angle*Math.PI/180)
+    @ctx.translate(-@position.x,-@position.y)
+
+  radiusRender:->
     @ctx.translate(@position.x-2*@radiusX, @position.y-2*@radiusY)
     @ctx.scale(2*@radiusX, 2*@radiusY)
 
