@@ -4,6 +4,7 @@ Byte      = require './byte'
 # TODO
 #   size calculations
 #   angle
+#   degree
 
 class Bubble extends Byte
   vars:->
