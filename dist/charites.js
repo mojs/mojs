@@ -72,7 +72,9 @@ Bubble = (function(_super) {
         y: 2 * this.center
       },
       rate: this.rate,
-      spikes: this.spikes
+      spikes: this.spikes,
+      lineDash: this.lineDash,
+      fill: this.fill
     });
   };
 
@@ -198,6 +200,14 @@ Burst = (function(_super) {
       prop: 'bitRadiusEnd',
       def: this.bitRadius
     });
+    this.lineDashOffset = this["default"]({
+      prop: 'lineDashOffset',
+      def: 0
+    });
+    this.lineDashOffsetEnd = this["default"]({
+      prop: 'lineDashOffsetEnd',
+      def: this.lineDashOffset
+    });
     if (this.els == null) {
       this.els = [];
     }
@@ -219,14 +229,15 @@ Burst = (function(_super) {
         color: this.color,
         fill: this.fill,
         spikes: this.spikes,
-        rate: this.bitRate
+        rate: this.bitRate,
+        lineDash: this.lineDash
       })));
     }
     return _results;
   };
 
   Burst.prototype.run = function(oa) {
-    var it;
+    var degreeCnt, it, rotStep;
     this.oa = oa != null ? oa : {};
     Burst.__super__.run.apply(this, arguments);
     it = this;
@@ -239,7 +250,8 @@ Burst = (function(_super) {
       degree: this.degree,
       angle: this.angle,
       spikes: this.spikes,
-      bitRate: this.bitRate
+      bitRate: this.bitRate,
+      lineDashOffset: this.lineDashOffset
     };
     this.to = {
       rx: this.radiusEndX,
@@ -250,17 +262,21 @@ Burst = (function(_super) {
       degree: this.degreeEnd,
       angle: this.angleEnd,
       spikes: this.spikesEnd,
-      bitRate: this.bitRateEnd
+      bitRate: this.bitRateEnd,
+      lineDashOffset: this.lineDashOffsetEnd
     };
     this.mixStarSpikesProps();
     this.mixLineDash();
     this.mixColor();
     this.mixFill();
+    degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
+    rotStep = this.degree / degreeCnt;
     return this.initTween().onUpdate(function() {
-      var angle, el, i, rotation, step, x, y, _i, _len, _ref, _results;
+      var angle, el, i, rotAngle, rotation, step, x, y, _i, _len, _ref, _results;
       it.ctx.clear();
-      step = this.degree / it.cnt - 1;
+      step = this.degree / degreeCnt;
       angle = 0;
+      rotAngle = 0;
       _ref = it.els;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -273,15 +289,18 @@ Burst = (function(_super) {
             x: x,
             y: y
           },
-          angle: this.bitAngle,
+          angle: rotAngle + this.bitAngle,
           lineWidth: this.lineWidth,
           fillObj: it.updateFill(this),
           radiusX: this.bitRadius,
           radiusY: this.bitRadius,
           spikes: this.spikes,
-          rate: this.bitRate
+          rate: this.bitRate,
+          lineDash: it.updateLineDash(this),
+          lineDashOffset: this.lineDashOffset
         });
-        _results.push(angle += step);
+        angle += step;
+        _results.push(rotAngle += rotStep);
       }
       return _results;
     });
@@ -946,15 +965,17 @@ Object = (function(_super) {
     c = this.fillObj;
     this.ctx.fillStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
     this.ctx.fill();
-    this.ctx.closePath();
     this.ctx.restore();
     return this.stroke();
   };
 
   Object.prototype.rotation = function() {
-    this.ctx.translate(this.position.x, this.position.y);
-    this.ctx.rotate(this.angle * Math.PI / 180);
-    return this.ctx.translate(-this.position.x, -this.position.y);
+    var x, y;
+    x = this.position.x;
+    y = this.position.y;
+    this.ctx.translate(x, y);
+    this.ctx.rotate(this.angle * this.h.DEG);
+    return this.ctx.translate(-x, -y);
   };
 
   Object.prototype.radiusRender = function() {
@@ -999,12 +1020,9 @@ Square = (function(_super) {
   Square.prototype.name = 'Square';
 
   Square.prototype.render = function() {
-    this.renderStart();
-    this.rotation();
-    this.radius();
+    this.preRender();
     this.ctx.rect(0, 0, 2, 2);
-    this.ctx.restore();
-    return this.stroke();
+    return this.postRender();
   };
 
   return Square;
@@ -1185,18 +1203,17 @@ Bubble = require('./bits/Bubble');
 Burst = require('./bits/Burst');
 
 bubble = new Burst({
-  radius: 50,
+  radius: 100,
   radiusEnd: 200,
-  shape: 'star',
-  lineWidth: 3,
-  lineWidthEnd: 0,
+  shape: 'line',
+  lineWidth: 2,
   duration: 500,
-  cnt: 5,
   color: 'deeppink',
-  bitRadius: 10,
-  spikes: 5,
-  bitRate: 1.5,
-  bitRateEnd: .25
+  lineDash: [40 * 5],
+  lineDashOffset: 40 * 5,
+  lineDashOffsetEnd: -40 * 5,
+  degree: 360,
+  bitRadius: 50
 });
 
 window.addEventListener('click', function(e) {

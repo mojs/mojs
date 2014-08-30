@@ -39,12 +39,12 @@ class Object extends Bit
   postRender:->
     c = @fillObj
     @ctx.fillStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"
-    @ctx.fill(); @ctx.closePath(); @ctx.restore(); @stroke()
+    # @ctx.closePath();
+    @ctx.fill();  @ctx.restore(); @stroke()
 
   rotation:->
-    @ctx.translate(@position.x,@position.y)
-    @ctx.rotate(@angle*Math.PI/180)
-    @ctx.translate(-@position.x,-@position.y)
+    x = @position.x; y = @position.y
+    @ctx.translate(x,y); @ctx.rotate(@angle*@h.DEG); @ctx.translate(-x,-y)
 
   radiusRender:->
     @ctx.translate(@position.x-2*@radiusX, @position.y-2*@radiusY)

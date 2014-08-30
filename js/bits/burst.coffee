@@ -3,7 +3,6 @@ Byte      = require './byte'
 
 # TODO
 #   size calculations
-#   angle
 
 class Burst extends Byte
   vars:->
@@ -23,6 +22,9 @@ class Burst extends Byte
 
     @bitRadius     = @default prop: 'bitRadius',    def: 10
     @bitRadiusEnd  = @default prop: 'bitRadiusEnd', def: @bitRadius
+    
+    @lineDashOffset = @default prop: 'lineDashOffset', def: 0
+    @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd', def:@lineDashOffset
 
     @els ?= []; @els.length = 0
     for i in [0...@cnt]
@@ -36,6 +38,7 @@ class Burst extends Byte
         fill: @fill
         spikes: @spikes
         rate: @bitRate
+        lineDash: @lineDash
 
   run:(@oa={})->
     super; it = @
@@ -50,6 +53,7 @@ class Burst extends Byte
       angle: @angle
       spikes: @spikes
       bitRate: @bitRate
+      lineDashOffset: @lineDashOffset
     @to =
       rx: @radiusEndX
       ry: @radiusEndY
@@ -60,31 +64,38 @@ class Burst extends Byte
       angle: @angleEnd
       spikes: @spikesEnd
       bitRate:     @bitRateEnd
+      lineDashOffset: @lineDashOffsetEnd
 
     @mixStarSpikesProps()
     @mixLineDash()
     @mixColor()
     @mixFill()
-
+    
+    degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
+    rotStep  = @degree/degreeCnt
     @initTween().onUpdate ->
       it.ctx.clear()
-      step = @degree/it.cnt-1
+      step = @degree/degreeCnt
       angle = 0
+      rotAngle = 0
       for el, i in it.els
         rotation = (angle+it.angle+@angle)*it.h.DEG
         x = 2*it.center + Math.cos(rotation)*@rx
         y = 2*it.center + Math.sin(rotation)*@ry
         el.setProp
           position:   x:x, y:y
-          angle:      @bitAngle
+          angle:      (rotAngle) + @bitAngle
           lineWidth:  @lineWidth
           fillObj:    it.updateFill(@)
           radiusX:    @bitRadius
           radiusY:    @bitRadius
           spikes:     @spikes
           rate:       @bitRate
-          
+          lineDash:   it.updateLineDash(@)
+          lineDashOffset: @lineDashOffset
+
         angle += step
+        rotAngle += rotStep
 
   mixStarSpikesProps:->
     @from.spikes = @spikes

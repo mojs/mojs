@@ -7,29 +7,19 @@ Burst  = require './bits/Burst'
 # chains
 
 bubble = new Burst
-  radius:    50
+  radius:    100
   radiusEnd: 200
-  # radiusEndY: 500
-  shape: 'star'
-  lineWidth:    3
-  lineWidthEnd: 0
+  shape:     'line'
+  lineWidth:     2
+  # lineWidthEnd:  0
   duration: 500
-  # bitAngle:     0
-  # bitAngleEnd: 240
-  cnt: 5
-  # fill:    'deeppink'
-  color:   'deeppink'
-  # fillEnd: 'rgba(0,255,0,1)'
-  bitRadius:    10
-  # bitRadiusEnd: 0
-  # angleEnd: 200
-
-  # degree: 90
-  # degreeEnd: 360
-  spikes: 5
-
-  bitRate: 1.5
-  bitRateEnd: .25
+  # cnt: 3
+  color:    'deeppink'
+  lineDash: [40*5]
+  lineDashOffset:    40*5
+  lineDashOffsetEnd: -40*5
+  degree: 360
+  bitRadius: 50
 
 
 window.addEventListener 'click', (e)->

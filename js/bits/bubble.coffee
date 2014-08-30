@@ -32,8 +32,11 @@ class Bubble extends Byte
       ctx: @ctx
       parentSize: x: @sizeX, y: @sizeY
       position: x: 2*@center, y: 2*@center
-      rate:   @rate
-      spikes: @spikes
+      rate:     @rate
+      spikes:   @spikes
+      lineDash: @lineDash
+      fill:     @fill
+
 
   run:(@oa={})->
     super; it = @

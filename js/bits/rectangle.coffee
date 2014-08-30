@@ -4,11 +4,11 @@ class Square extends Object
   name: 'Square'
 
   render:->
-    @renderStart(); @rotation(); @radius()
+    @preRender()
 
     @ctx.rect(0, 0, 2, 2)
     
-    @ctx.restore(); @stroke()
+    @postRender()
 
 
 module.exports = Square
