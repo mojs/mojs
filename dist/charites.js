@@ -162,6 +162,18 @@ Burst = (function(_super) {
       prop: 'degree',
       def: 360
     });
+    this.degreeEnd = this["default"]({
+      prop: 'degreeEnd',
+      def: this.degree
+    });
+    this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 5
+    });
+    this.spikesEnd = this["default"]({
+      prop: 'spikesEnd',
+      def: this.spikes
+    });
     this.bitAngle = this["default"]({
       prop: 'bitAngle',
       def: 0
@@ -197,14 +209,15 @@ Burst = (function(_super) {
         isClearLess: true,
         radius: this.bitRadius,
         color: this.color,
-        fill: this.fill
+        fill: this.fill,
+        spikes: this.spikes
       })));
     }
     return _results;
   };
 
   Burst.prototype.run = function(oa) {
-    var it, step;
+    var it;
     this.oa = oa != null ? oa : {};
     Burst.__super__.run.apply(this, arguments);
     it = this;
@@ -213,30 +226,33 @@ Burst = (function(_super) {
       ry: this.radiusY,
       bitAngle: this.bitAngle,
       lineWidth: this.lineWidth,
-      bitRadius: this.bitRadius
+      bitRadius: this.bitRadius,
+      degree: this.degree,
+      angle: this.angle
     };
     this.to = {
       rx: this.radiusEndX,
       ry: this.radiusEndY,
       bitAngle: this.bitAngleEnd,
       lineWidth: this.lineWidthEnd,
-      bitRadius: this.bitRadiusEnd
+      bitRadius: this.bitRadiusEnd,
+      degree: this.degreeEnd,
+      angle: this.angleEnd
     };
     this.mixStarSpikesProps();
     this.mixLineDash();
     this.mixColor();
     this.mixFill();
-    console.log(this.degree);
-    step = this.degree / this.cnt - 1;
     return this.initTween().onUpdate(function() {
-      var angle, el, i, rotation, x, y, _i, _len, _ref, _results;
+      var angle, el, i, rotation, step, x, y, _i, _len, _ref, _results;
       it.ctx.clear();
+      step = this.degree / it.cnt - 1;
       angle = 0;
       _ref = it.els;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         el = _ref[i];
-        rotation = (angle + it.angle) * it.h.DEG;
+        rotation = (angle + it.angle + this.angle) * it.h.DEG;
         x = 2 * it.center + Math.cos(rotation) * this.rx;
         y = 2 * it.center + Math.sin(rotation) * this.ry;
         el.setProp({
@@ -1161,12 +1177,13 @@ bubble = new Burst({
   lineWidth: 3,
   lineWidthEnd: 0,
   duration: 500,
-  cnt: 3,
-  color: 'pink',
+  cnt: 5,
+  color: 'deeppink',
   bitRadius: 10,
   bitRadiusEnd: 0,
   degree: 90,
-  angle: 212
+  degreeEnd: 360,
+  angleEnd: 240
 });
 
 window.addEventListener('click', function(e) {

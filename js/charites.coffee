@@ -16,16 +16,18 @@ bubble = new Burst
   duration: 500
   # bitAngle:     0
   # bitAngleEnd: 240
-  cnt: 3
+  cnt: 5
   # fill:    'deeppink'
-  color:   'pink'
+  color:   'deeppink'
   # fillEnd: 'rgba(0,255,0,1)'
   bitRadius:    10
   bitRadiusEnd: 0
   # angleEnd: 200
 
   degree: 90
-  angle: 212
+  degreeEnd: 360
+  # spikes: 3
+  angleEnd: 240
 
 
 window.addEventListener 'click', (e)->

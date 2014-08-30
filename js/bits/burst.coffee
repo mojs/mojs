@@ -4,7 +4,6 @@ Byte      = require './byte'
 # TODO
 #   size calculations
 #   angle
-#   degree
 
 class Burst extends Byte
   vars:->
@@ -13,6 +12,9 @@ class Burst extends Byte
 
     @cnt          = @default prop: 'cnt', def: 3
     @degree       = @default prop: 'degree', def: 360
+    @degreeEnd    = @default prop: 'degreeEnd', def: @degree
+    @spikes       = @default prop: 'spikes', def: 5
+    @spikesEnd    = @default prop: 'spikesEnd', def: @spikes
     @bitAngle     = @default prop: 'bitAngle', def: 0
     @bitAngleEnd  = @default prop: 'bitAngleEnd', def: @bitAngle
 
@@ -29,6 +31,7 @@ class Burst extends Byte
         radius: @bitRadius
         color: @color
         fill: @fill
+        spikes: @spikes
 
   run:(@oa={})->
     super; it = @
@@ -39,25 +42,28 @@ class Burst extends Byte
       bitAngle: @bitAngle
       lineWidth: @lineWidth
       bitRadius: @bitRadius
+      degree: @degree
+      angle: @angle
     @to =
       rx: @radiusEndX
       ry: @radiusEndY
       bitAngle: @bitAngleEnd
       lineWidth: @lineWidthEnd
       bitRadius: @bitRadiusEnd
+      degree: @degreeEnd
+      angle: @angleEnd
 
     @mixStarSpikesProps()
     @mixLineDash()
     @mixColor()
     @mixFill()
 
-    console.log @degree
-    step = @degree/@cnt-1
     @initTween().onUpdate ->
       it.ctx.clear()
+      step = @degree/it.cnt-1
       angle = 0
       for el, i in it.els
-        rotation = (angle+it.angle)*it.h.DEG
+        rotation = (angle+it.angle+@angle)*it.h.DEG
         x = 2*it.center + Math.cos(rotation)*@rx
         y = 2*it.center + Math.sin(rotation)*@ry
         el.setProp
