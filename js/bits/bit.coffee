@@ -22,7 +22,7 @@ class Bit
     @color  = @default prop: 'color' , def: '#222'
     @colorMap   = @default prop: 'colorMap',  def: [@color]
 
-    @fill         = @default prop: 'fill',    def: '#222'
+    @fill         = @default prop: 'fill',    def: 'rgba(0,0,0,0)'
     @fillEnd      = @default prop: 'fillEnd', def: @fill
 
     @lineWidth= @default prop: 'lineWidth',def: 1

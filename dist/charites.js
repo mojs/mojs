@@ -227,7 +227,7 @@ Burst = (function(_super) {
     this.mixColor();
     this.mixFill();
     console.log(this.degree);
-    step = this.degree / this.cnt;
+    step = this.degree / this.cnt - 1;
     return this.initTween().onUpdate(function() {
       var angle, el, i, rotation, x, y, _i, _len, _ref, _results;
       it.ctx.clear();
@@ -317,7 +317,7 @@ Bit = (function() {
     });
     this.fill = this["default"]({
       prop: 'fill',
-      def: '#222'
+      def: 'rgba(0,0,0,0)'
     });
     this.fillEnd = this["default"]({
       prop: 'fillEnd',
@@ -1154,19 +1154,19 @@ Bubble = require('./bits/Bubble');
 Burst = require('./bits/Burst');
 
 bubble = new Burst({
-  radius: 20,
-  radiusEnd: 400,
-  shape: 'circle',
-  lineWidth: 20,
+  radius: 50,
+  radiusEnd: 200,
+  radiusEndY: 500,
+  shape: 'star',
+  lineWidth: 3,
   lineWidthEnd: 0,
-  duration: 2000,
+  duration: 500,
   cnt: 3,
-  fill: 'deeppink',
   color: 'pink',
-  bitRadius: 20,
+  bitRadius: 10,
   bitRadiusEnd: 0,
-  degree: 180,
-  angle: 191
+  degree: 90,
+  angle: 212
 });
 
 window.addEventListener('click', function(e) {

@@ -52,7 +52,7 @@ class Burst extends Byte
     @mixFill()
 
     console.log @degree
-    step = @degree/@cnt
+    step = @degree/@cnt-1
     @initTween().onUpdate ->
       it.ctx.clear()
       angle = 0
