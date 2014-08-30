@@ -12,15 +12,19 @@ bubble = new Burst
   shape: 'circle'
   lineWidth:    20
   lineWidthEnd: 0
-  duration: 500
-  bitAngle:     0
-  bitAngleEnd: 240
-  cnt: 5
+  duration: 2000
+  # bitAngle:     0
+  # bitAngleEnd: 240
+  cnt: 3
   fill:    'deeppink'
+  color:   'pink'
   # fillEnd: 'rgba(0,255,0,1)'
   bitRadius:    20
   bitRadiusEnd: 0
-  angleEnd: 200
+  # angleEnd: 200
+
+  degree: 180
+  angle: 191
 
 
 window.addEventListener 'click', (e)->

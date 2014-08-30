@@ -137,26 +137,30 @@ module.exports = Bubble;
 
 
 },{"./byte":4}],2:[function(require,module,exports){
-var Bubble, Byte,
+var Burst, Byte,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Byte = require('./byte');
 
-Bubble = (function(_super) {
-  __extends(Bubble, _super);
+Burst = (function(_super) {
+  __extends(Burst, _super);
 
-  function Bubble() {
-    return Bubble.__super__.constructor.apply(this, arguments);
+  function Burst() {
+    return Burst.__super__.constructor.apply(this, arguments);
   }
 
-  Bubble.prototype.vars = function() {
+  Burst.prototype.vars = function() {
     var Shape, i, _i, _ref, _results;
-    Bubble.__super__.vars.apply(this, arguments);
+    Burst.__super__.vars.apply(this, arguments);
     Shape = this.shapes[this.shape.toLowerCase()] || Circle;
     this.cnt = this["default"]({
       prop: 'cnt',
       def: 3
+    });
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
     });
     this.bitAngle = this["default"]({
       prop: 'bitAngle',
@@ -192,16 +196,17 @@ Bubble = (function(_super) {
         },
         isClearLess: true,
         radius: this.bitRadius,
+        color: this.color,
         fill: this.fill
       })));
     }
     return _results;
   };
 
-  Bubble.prototype.run = function(oa) {
-    var angle, it, step;
+  Burst.prototype.run = function(oa) {
+    var it, step;
     this.oa = oa != null ? oa : {};
-    Bubble.__super__.run.apply(this, arguments);
+    Burst.__super__.run.apply(this, arguments);
     it = this;
     this.from = {
       rx: this.radiusX,
@@ -221,11 +226,12 @@ Bubble = (function(_super) {
     this.mixLineDash();
     this.mixColor();
     this.mixFill();
-    angle = 0;
-    step = 360 / this.cnt;
+    console.log(this.degree);
+    step = this.degree / this.cnt;
     return this.initTween().onUpdate(function() {
-      var el, i, rotation, x, y, _i, _len, _ref, _results;
+      var angle, el, i, rotation, x, y, _i, _len, _ref, _results;
       it.ctx.clear();
+      angle = 0;
       _ref = it.els;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -250,18 +256,18 @@ Bubble = (function(_super) {
     });
   };
 
-  Bubble.prototype.mixStarSpikesProps = function() {
+  Burst.prototype.mixStarSpikesProps = function() {
     this.from.spikes = this.spikes;
     this.to.spikes = this.spikesEnd;
     this.from.rate = this.rate;
     return this.to.rate = this.rateEnd;
   };
 
-  return Bubble;
+  return Burst;
 
 })(Byte);
 
-module.exports = Bubble;
+module.exports = Burst;
 
 
 },{"./byte":4}],3:[function(require,module,exports){
@@ -1153,14 +1159,14 @@ bubble = new Burst({
   shape: 'circle',
   lineWidth: 20,
   lineWidthEnd: 0,
-  duration: 500,
-  bitAngle: 0,
-  bitAngleEnd: 240,
-  cnt: 5,
+  duration: 2000,
+  cnt: 3,
   fill: 'deeppink',
+  color: 'pink',
   bitRadius: 20,
   bitRadiusEnd: 0,
-  angleEnd: 200
+  degree: 180,
+  angle: 191
 });
 
 window.addEventListener('click', function(e) {

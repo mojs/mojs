@@ -6,12 +6,13 @@ Byte      = require './byte'
 #   angle
 #   degree
 
-class Bubble extends Byte
+class Burst extends Byte
   vars:->
     super
     Shape = @shapes[@shape.toLowerCase()] or Circle
 
-    @cnt       = @default prop: 'cnt', def: 3
+    @cnt          = @default prop: 'cnt', def: 3
+    @degree       = @default prop: 'degree', def: 360
     @bitAngle     = @default prop: 'bitAngle', def: 0
     @bitAngleEnd  = @default prop: 'bitAngleEnd', def: @bitAngle
 
@@ -26,6 +27,7 @@ class Bubble extends Byte
         position:   x: 2*@center, y: 2*@center
         isClearLess: true
         radius: @bitRadius
+        color: @color
         fill: @fill
 
   run:(@oa={})->
@@ -49,10 +51,11 @@ class Bubble extends Byte
     @mixColor()
     @mixFill()
 
-    angle = 0
-    step = 360/@cnt
+    console.log @degree
+    step = @degree/@cnt
     @initTween().onUpdate ->
       it.ctx.clear()
+      angle = 0
       for el, i in it.els
         rotation = (angle+it.angle)*it.h.DEG
         x = 2*it.center + Math.cos(rotation)*@rx
@@ -65,12 +68,6 @@ class Bubble extends Byte
           radiusX:  @bitRadius
           radiusY:  @bitRadius
 
-        # console.log it.updateFill(@)
-        # if i is 0
-        #   el.setProp
-        #   # angle: @bitAngle
-        #   # radiusX:    @rx-(4*i)
-        #   # radiusY:    @ry-(4*i)
         angle += step
 
   mixStarSpikesProps:->
@@ -80,4 +77,4 @@ class Bubble extends Byte
     @from.rate = @rate
     @to.rate   = @rateEnd
 
-module.exports = Bubble
+module.exports = Burst
