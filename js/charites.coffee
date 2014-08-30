@@ -9,7 +9,7 @@ Burst  = require './bits/Burst'
 bubble = new Burst
   radius:    50
   radiusEnd: 200
-  radiusEndY: 500
+  # radiusEndY: 500
   shape: 'star'
   lineWidth:    3
   lineWidthEnd: 0
@@ -21,13 +21,15 @@ bubble = new Burst
   color:   'deeppink'
   # fillEnd: 'rgba(0,255,0,1)'
   bitRadius:    10
-  bitRadiusEnd: 0
+  # bitRadiusEnd: 0
   # angleEnd: 200
 
-  degree: 90
-  degreeEnd: 360
-  # spikes: 3
-  angleEnd: 240
+  # degree: 90
+  # degreeEnd: 360
+  spikes: 5
+
+  bitRate: 1.5
+  bitRateEnd: .25
 
 
 window.addEventListener 'click', (e)->

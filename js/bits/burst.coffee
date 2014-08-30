@@ -18,6 +18,9 @@ class Burst extends Byte
     @bitAngle     = @default prop: 'bitAngle', def: 0
     @bitAngleEnd  = @default prop: 'bitAngleEnd', def: @bitAngle
 
+    @bitRate     = @default prop: 'bitRate', def: .5
+    @bitRateEnd  = @default prop: 'bitRateEnd', def: @bitRate
+
     @bitRadius     = @default prop: 'bitRadius',    def: 10
     @bitRadiusEnd  = @default prop: 'bitRadiusEnd', def: @bitRadius
 
@@ -32,6 +35,7 @@ class Burst extends Byte
         color: @color
         fill: @fill
         spikes: @spikes
+        rate: @bitRate
 
   run:(@oa={})->
     super; it = @
@@ -44,6 +48,8 @@ class Burst extends Byte
       bitRadius: @bitRadius
       degree: @degree
       angle: @angle
+      spikes: @spikes
+      bitRate: @bitRate
     @to =
       rx: @radiusEndX
       ry: @radiusEndY
@@ -52,6 +58,8 @@ class Burst extends Byte
       bitRadius: @bitRadiusEnd
       degree: @degreeEnd
       angle: @angleEnd
+      spikes: @spikesEnd
+      bitRate:     @bitRateEnd
 
     @mixStarSpikesProps()
     @mixLineDash()
@@ -67,13 +75,15 @@ class Burst extends Byte
         x = 2*it.center + Math.cos(rotation)*@rx
         y = 2*it.center + Math.sin(rotation)*@ry
         el.setProp
-          position: x:x, y:y
-          angle: @bitAngle
-          lineWidth: @lineWidth
-          fillObj: it.updateFill(@)
-          radiusX:  @bitRadius
-          radiusY:  @bitRadius
-
+          position:   x:x, y:y
+          angle:      @bitAngle
+          lineWidth:  @lineWidth
+          fillObj:    it.updateFill(@)
+          radiusX:    @bitRadius
+          radiusY:    @bitRadius
+          spikes:     @spikes
+          rate:       @bitRate
+          
         angle += step
 
   mixStarSpikesProps:->

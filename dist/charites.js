@@ -182,6 +182,14 @@ Burst = (function(_super) {
       prop: 'bitAngleEnd',
       def: this.bitAngle
     });
+    this.bitRate = this["default"]({
+      prop: 'bitRate',
+      def: .5
+    });
+    this.bitRateEnd = this["default"]({
+      prop: 'bitRateEnd',
+      def: this.bitRate
+    });
     this.bitRadius = this["default"]({
       prop: 'bitRadius',
       def: 10
@@ -210,7 +218,8 @@ Burst = (function(_super) {
         radius: this.bitRadius,
         color: this.color,
         fill: this.fill,
-        spikes: this.spikes
+        spikes: this.spikes,
+        rate: this.bitRate
       })));
     }
     return _results;
@@ -228,7 +237,9 @@ Burst = (function(_super) {
       lineWidth: this.lineWidth,
       bitRadius: this.bitRadius,
       degree: this.degree,
-      angle: this.angle
+      angle: this.angle,
+      spikes: this.spikes,
+      bitRate: this.bitRate
     };
     this.to = {
       rx: this.radiusEndX,
@@ -237,7 +248,9 @@ Burst = (function(_super) {
       lineWidth: this.lineWidthEnd,
       bitRadius: this.bitRadiusEnd,
       degree: this.degreeEnd,
-      angle: this.angleEnd
+      angle: this.angleEnd,
+      spikes: this.spikesEnd,
+      bitRate: this.bitRateEnd
     };
     this.mixStarSpikesProps();
     this.mixLineDash();
@@ -264,7 +277,9 @@ Burst = (function(_super) {
           lineWidth: this.lineWidth,
           fillObj: it.updateFill(this),
           radiusX: this.bitRadius,
-          radiusY: this.bitRadius
+          radiusY: this.bitRadius,
+          spikes: this.spikes,
+          rate: this.bitRate
         });
         _results.push(angle += step);
       }
@@ -1172,7 +1187,6 @@ Burst = require('./bits/Burst');
 bubble = new Burst({
   radius: 50,
   radiusEnd: 200,
-  radiusEndY: 500,
   shape: 'star',
   lineWidth: 3,
   lineWidthEnd: 0,
@@ -1180,10 +1194,9 @@ bubble = new Burst({
   cnt: 5,
   color: 'deeppink',
   bitRadius: 10,
-  bitRadiusEnd: 0,
-  degree: 90,
-  degreeEnd: 360,
-  angleEnd: 240
+  spikes: 5,
+  bitRate: 1.5,
+  bitRateEnd: .25
 });
 
 window.addEventListener('click', function(e) {
