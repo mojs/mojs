@@ -71,7 +71,10 @@ class Burst extends Byte
     @mixColor()
     @mixFill()
     
+    # fix this
     degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
+
+
     rotStep  = @degree/degreeCnt
     @initTween().onUpdate ->
       it.ctx.clear()

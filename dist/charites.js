@@ -1206,14 +1206,16 @@ bubble = new Burst({
   radius: 100,
   radiusEnd: 200,
   shape: 'line',
-  lineWidth: 2,
+  lineWidth: 1,
+  lineWidthEnd: 0,
   duration: 500,
+  cnt: 4,
   color: 'deeppink',
   lineDash: [40 * 5],
   lineDashOffset: 40 * 5,
   lineDashOffsetEnd: -40 * 5,
-  degree: 360,
-  bitRadius: 50
+  bitRadius: 50,
+  bitAngle: 360
 });
 
 window.addEventListener('click', function(e) {
