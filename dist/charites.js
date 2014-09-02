@@ -464,12 +464,12 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.vars = function() {
+    this.parent = this.o.parent || h.body;
     this.el = this.oa.el || this.o.el || this.el || this.createEl();
     this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
     Byte.__super__.vars.apply(this, arguments);
     this.defaultByteVars();
     this.s = 1 * h.time(1);
-    this.parent = this.o.parent || h.body;
     return this.tweens = [];
   };
 
@@ -568,7 +568,7 @@ Byte = (function(_super) {
 
   Byte.prototype.initTween = function() {
     var tween;
-    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).yoyo(this.yoyo).start();
+    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onComplete(this.o.onComplete || function() {}).yoyo(this.yoyo).start();
     this.tweens.push(tween);
     return tween;
   };
@@ -732,6 +732,7 @@ Byte = (function(_super) {
     this.el.style.position = 'absolute';
     this.el.style.left = 0;
     this.el.style.top = 0;
+    console.log(this.parent);
     return this.parent.appendChild(this.el);
   };
 
@@ -1194,7 +1195,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, bubble;
+var Bubble, Burst, Charites, bubble, wrapper;
 
 Bubble = require('./bits/Bubble');
 
@@ -1211,7 +1212,10 @@ Charites = (function() {
 
 })();
 
+wrapper = document.getElementById('js-wrapper');
+
 bubble = new Burst({
+  parent: wrapper,
   radius: 100,
   radiusEnd: 200,
   shape: 'line',

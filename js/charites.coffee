@@ -7,7 +7,9 @@ class Charites
 
 # TODO
 # chains
+wrapper = document.getElementById 'js-wrapper'
 bubble = new Burst
+  parent:   wrapper
   radius:    100
   radiusEnd: 200
   shape:     'line'
@@ -24,6 +26,7 @@ bubble = new Burst
   # angle:    200
   # angleEnd: 400
   bitAngle: 360
+  # onComplete: -> alert 'a'
 
 window.addEventListener 'click', (e)->
   bubble.el.style.top  = "#{e.y-(bubble.size/2)}px"

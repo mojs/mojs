@@ -19,12 +19,12 @@ class Byte extends Bit
     zigzag:    ZigZag
 
   vars:->
+    @parent = @o.parent or h.body
     @el = @oa.el or @o.el or @el or @createEl()
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
 
     super; @defaultByteVars()
     @s = 1*h.time 1
-    @parent = @o.parent or h.body
     @tweens = []
 
   run:(@oa={})->
@@ -94,6 +94,7 @@ class Byte extends Bit
       .delay(@delay*@s)
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
+      .onComplete(@o.onComplete or ->)
       .yoyo(@yoyo)
       .start()
 
@@ -168,6 +169,7 @@ class Byte extends Bit
   createEl:->
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
+    console.log @parent
     @parent.appendChild(@el) #; @setElSize()
 
   setElSize:->
