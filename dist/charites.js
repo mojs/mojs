@@ -1194,13 +1194,22 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, bubble, h;
-
-h = require('./helpers');
+var Bubble, Burst, Charites, bubble;
 
 Bubble = require('./bits/Bubble');
 
 Burst = require('./bits/Burst');
+
+Charites = (function() {
+  function Charites() {}
+
+  Charites.prototype.Bubble = Bubble;
+
+  Charites.prototype.Burst = Burst;
+
+  return Charites;
+
+})();
 
 bubble = new Burst({
   radius: 100,
@@ -1224,8 +1233,14 @@ window.addEventListener('click', function(e) {
   return bubble.run();
 });
 
+if ((typeof define === "function") && define.amd) {
+  define("charites", [], function() {
+    return Charites;
+  });
+}
 
-},{"./bits/Bubble":1,"./bits/Burst":2,"./helpers":14}],14:[function(require,module,exports){
+
+},{"./bits/Bubble":1,"./bits/Burst":2}],14:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
