@@ -168,13 +168,13 @@ Burst = (function(_super) {
       prop: 'degreeEnd',
       def: this.degree
     });
-    this.spikes = this["default"]({
-      prop: 'spikes',
+    this.bitSpikes = this["default"]({
+      prop: 'bitSpikes',
       def: 5
     });
-    this.spikesEnd = this["default"]({
-      prop: 'spikesEnd',
-      def: this.spikes
+    this.bitSpikesEnd = this["default"]({
+      prop: 'bitSpikesEnd',
+      def: this.bitSpikes
     });
     this.bitAngle = this["default"]({
       prop: 'bitAngle',
@@ -208,6 +208,10 @@ Burst = (function(_super) {
       prop: 'lineDashOffsetEnd',
       def: this.lineDashOffset
     });
+    this.canvasSize({
+      plusCoef: 2 * Math.max(this.bitRadius, this.bitRadiusEnd) + 2,
+      mulCoef: 1
+    });
     if (this.els == null) {
       this.els = [];
     }
@@ -228,7 +232,7 @@ Burst = (function(_super) {
         radius: this.bitRadius,
         color: this.color,
         fill: this.fill,
-        spikes: this.spikes,
+        spikes: this.bitSpikes,
         rate: this.bitRate,
         lineDash: this.lineDash
       })));
@@ -249,7 +253,7 @@ Burst = (function(_super) {
       bitRadius: this.bitRadius,
       degree: this.degree,
       angle: this.angle,
-      spikes: this.spikes,
+      spikes: this.bitSpikesEnd,
       bitRate: this.bitRate,
       lineDashOffset: this.lineDashOffset
     };
@@ -698,7 +702,7 @@ Byte = (function(_super) {
     if (o.mulCoef == null) {
       o.mulCoef = 1;
     }
-    this.size = (2 * this.maxRadius * o.mulCoef) + this.maxLineWidth + o.plusCoef;
+    this.size = (this.maxRadius * o.mulCoef) + this.maxLineWidth + o.plusCoef;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -1173,17 +1177,14 @@ ZigZag = (function(_super) {
 
   ZigZag.prototype.render = function() {
     var i, method, x, y, _i, _ref;
-    this.renderStart();
-    this.rotation();
-    this.radius();
+    this.preRender();
     for (i = _i = 0, _ref = this.spikes; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       method = i === 0 ? 'moveTo' : 'lineTo';
       y = i % 2 === 0 ? this.rate : -this.rate;
       x = 0 + (i * (2 / (this.spikes - 1)));
       this.ctx[method](x, 1 + y);
     }
-    this.ctx.restore();
-    return this.stroke();
+    return this.postRender();
   };
 
   return ZigZag;
@@ -1194,7 +1195,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, charites;
+var Bubble, Burst, Charites, bubble, charites, wrapper;
 
 Bubble = require('./bits/Bubble');
 
@@ -1218,6 +1219,27 @@ if ((typeof define === "function") && define.amd) {
     return charites;
   });
 }
+
+wrapper = document.getElementById('js-wrapper');
+
+bubble = new charites.Burst({
+  parent: wrapper,
+  radius: 0,
+  radiusEnd: 200,
+  shape: 'line',
+  lineWidth: 10,
+  duration: 500,
+  cnt: 3,
+  color: 'deeppink',
+  bitSpikes: 20,
+  bitRadius: 20
+});
+
+window.addEventListener('click', function(e) {
+  bubble.el.style.top = "" + (e.y - (bubble.size / 2)) + "px";
+  bubble.el.style.left = "" + (e.x - (bubble.size / 2)) + "px";
+  return bubble.run();
+});
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2}],14:[function(require,module,exports){

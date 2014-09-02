@@ -9,7 +9,7 @@ class ZigZag extends Object
     @spikes = @default prop: 'spikes', def: 10
 
   render:->
-    @renderStart(); @rotation(); @radius()
+    @preRender()
 
     for i in [0...@spikes]
       method = if i is 0 then 'moveTo' else 'lineTo'
@@ -17,8 +17,7 @@ class ZigZag extends Object
       x = 0+(i*(2/(@spikes-1)))
       @ctx[method](x,1+y)
 
-    
-    @ctx.restore(); @stroke()
+    @postRender()
 
 
 module.exports = ZigZag

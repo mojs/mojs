@@ -152,7 +152,7 @@ class Byte extends Bit
     o.plusCoef ?= 0
     o.mulCoef  ?= 1
     # CANVAS SIZE
-    @size = ((2*@maxRadius*o.mulCoef) + @maxLineWidth + o.plusCoef)
+    @size = ((@maxRadius*o.mulCoef) + @maxLineWidth + o.plusCoef)
     @center = @size/2; @sizeX = @size; @sizeY = @size
 
     @setElSize()

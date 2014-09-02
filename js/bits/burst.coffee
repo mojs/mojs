@@ -2,8 +2,6 @@ Byte      = require './byte'
 
 
 # TODO
-#   size calculations
-
 class Burst extends Byte
   vars:->
     super
@@ -12,8 +10,8 @@ class Burst extends Byte
     @cnt          = @default prop: 'cnt', def: 3
     @degree       = @default prop: 'degree', def: 360
     @degreeEnd    = @default prop: 'degreeEnd', def: @degree
-    @spikes       = @default prop: 'spikes', def: 5
-    @spikesEnd    = @default prop: 'spikesEnd', def: @spikes
+    @bitSpikes       = @default prop: 'bitSpikes', def: 5
+    @bitSpikesEnd    = @default prop: 'bitSpikesEnd', def: @bitSpikes
     @bitAngle     = @default prop: 'bitAngle', def: 0
     @bitAngleEnd  = @default prop: 'bitAngleEnd', def: @bitAngle
 
@@ -26,6 +24,10 @@ class Burst extends Byte
     @lineDashOffset = @default prop: 'lineDashOffset', def: 0
     @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd', def:@lineDashOffset
 
+    @canvasSize
+      plusCoef: 2*Math.max(@bitRadius, @bitRadiusEnd) + 2
+      mulCoef: 1
+
     @els ?= []; @els.length = 0
     for i in [0...@cnt]
       @els.push new Shape
@@ -36,7 +38,7 @@ class Burst extends Byte
         radius: @bitRadius
         color: @color
         fill: @fill
-        spikes: @spikes
+        spikes: @bitSpikes
         rate: @bitRate
         lineDash: @lineDash
 
@@ -51,7 +53,7 @@ class Burst extends Byte
       bitRadius: @bitRadius
       degree: @degree
       angle: @angle
-      spikes: @spikes
+      spikes: @bitSpikesEnd
       bitRate: @bitRate
       lineDashOffset: @lineDashOffset
     @to =
