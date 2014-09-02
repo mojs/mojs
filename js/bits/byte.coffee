@@ -95,6 +95,7 @@ class Byte extends Bit
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .onComplete(@o.onComplete or ->)
+      .onStart(@o.onStart or ->)
       .yoyo(@yoyo)
       .start()
 
@@ -169,7 +170,6 @@ class Byte extends Bit
   createEl:->
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
-    console.log @parent
     @parent.appendChild(@el) #; @setElSize()
 
   setElSize:->

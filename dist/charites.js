@@ -568,7 +568,7 @@ Byte = (function(_super) {
 
   Byte.prototype.initTween = function() {
     var tween;
-    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onComplete(this.o.onComplete || function() {}).yoyo(this.yoyo).start();
+    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onComplete(this.o.onComplete || function() {}).onStart(this.o.onStart || function() {}).yoyo(this.yoyo).start();
     this.tweens.push(tween);
     return tween;
   };
@@ -732,7 +732,6 @@ Byte = (function(_super) {
     this.el.style.position = 'absolute';
     this.el.style.left = 0;
     this.el.style.top = 0;
-    console.log(this.parent);
     return this.parent.appendChild(this.el);
   };
 
@@ -1195,7 +1194,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, bubble, wrapper;
+var Bubble, Burst, Charites, charites;
 
 Bubble = require('./bits/Bubble');
 
@@ -1212,34 +1211,11 @@ Charites = (function() {
 
 })();
 
-wrapper = document.getElementById('js-wrapper');
-
-bubble = new Burst({
-  parent: wrapper,
-  radius: 100,
-  radiusEnd: 200,
-  shape: 'line',
-  lineWidth: 1,
-  lineWidthEnd: 0,
-  duration: 500,
-  cnt: 4,
-  color: 'deeppink',
-  lineDash: [40 * 5],
-  lineDashOffset: 40 * 5,
-  lineDashOffsetEnd: -40 * 5,
-  bitRadius: 50,
-  bitAngle: 360
-});
-
-window.addEventListener('click', function(e) {
-  bubble.el.style.top = "" + (e.y - (bubble.size / 2)) + "px";
-  bubble.el.style.left = "" + (e.x - (bubble.size / 2)) + "px";
-  return bubble.run();
-});
+charites = new Charites;
 
 if ((typeof define === "function") && define.amd) {
   define("charites", [], function() {
-    return Charites;
+    return charites;
   });
 }
 
