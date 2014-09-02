@@ -258,8 +258,8 @@ Burst = (function(_super) {
       lineDashOffset: this.lineDashOffset
     };
     this.to = {
-      rx: this.radiusEndX,
-      ry: this.radiusEndY,
+      rx: 2 * this.radiusEndX,
+      ry: 2 * this.radiusEndY,
       bitAngle: this.bitAngleEnd,
       lineWidth: this.lineWidthEnd,
       bitRadius: this.bitRadiusEnd,
@@ -702,7 +702,7 @@ Byte = (function(_super) {
     if (o.mulCoef == null) {
       o.mulCoef = 1;
     }
-    this.size = (this.maxRadius * o.mulCoef) + this.maxLineWidth + o.plusCoef;
+    this.size = (2 * this.maxRadius * o.mulCoef) + this.maxLineWidth + o.plusCoef;
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -1227,12 +1227,14 @@ bubble = new charites.Burst({
   radius: 0,
   radiusEnd: 200,
   shape: 'line',
-  lineWidth: 10,
+  lineWidth: 2,
+  lineWidthEnd: 1,
   duration: 500,
   cnt: 3,
   color: 'deeppink',
   bitSpikes: 20,
-  bitRadius: 20
+  bitRadius: 0,
+  bitRadiusEnd: 20
 });
 
 window.addEventListener('click', function(e) {

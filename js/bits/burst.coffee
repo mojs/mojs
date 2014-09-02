@@ -57,8 +57,8 @@ class Burst extends Byte
       bitRate: @bitRate
       lineDashOffset: @lineDashOffset
     @to =
-      rx: @radiusEndX
-      ry: @radiusEndY
+      rx: 2*@radiusEndX
+      ry: 2*@radiusEndY
       bitAngle: @bitAngleEnd
       lineWidth: @lineWidthEnd
       bitRadius: @bitRadiusEnd
@@ -67,6 +67,7 @@ class Burst extends Byte
       spikes: @spikesEnd
       bitRate:     @bitRateEnd
       lineDashOffset: @lineDashOffsetEnd
+
 
     @mixStarSpikesProps()
     @mixLineDash()

@@ -27,8 +27,8 @@ bubble = new charites.Burst
   radius:    0
   radiusEnd: 200
   shape:     'line'
-  lineWidth:     10
-  # lineWidthEnd:  1
+  lineWidth:     2
+  lineWidthEnd:  1
   duration: 500
   cnt: 3
   color:    'deeppink'
@@ -39,7 +39,8 @@ bubble = new charites.Burst
   # bitRateEnd: 2
   bitSpikes: 20
   # degree: 240
-  bitRadius: 20
+  bitRadius: 0
+  bitRadiusEnd: 20
   # angle:    200
   # angleEnd: 400
   # bitAngleEnd: 360
