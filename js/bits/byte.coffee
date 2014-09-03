@@ -30,7 +30,6 @@ class Byte extends Bit
   run:(@oa={})->
     h.size(@oa) and @vars()
     h.isSizeChange(@oa) and @setElSize()
-    h.startAnimationLoop()
     for tween, i in @tweens
       @TWEEN.remove tween
 
@@ -100,6 +99,7 @@ class Byte extends Bit
       .start()
 
     @tweens.push tween
+    h.startAnimationLoop()
     tween
 
   defaultByteVars:->

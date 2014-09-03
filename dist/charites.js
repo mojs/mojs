@@ -482,7 +482,6 @@ Byte = (function(_super) {
     this.oa = oa != null ? oa : {};
     h.size(this.oa) && this.vars();
     h.isSizeChange(this.oa) && this.setElSize();
-    h.startAnimationLoop();
     _ref = this.tweens;
     _results = [];
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -574,6 +573,7 @@ Byte = (function(_super) {
     var tween;
     tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onComplete(this.o.onComplete || function() {}).onStart(this.o.onStart || function() {}).yoyo(this.yoyo).start();
     this.tweens.push(tween);
+    h.startAnimationLoop();
     return tween;
   };
 
@@ -1426,6 +1426,9 @@ Helpers = (function() {
   };
 
   Helpers.prototype.animationLoop = function(time) {
+    if (!TWEEN.getAll().length) {
+      this.isAnimateLoop = false;
+    }
     if (!this.isAnimateLoop) {
       return;
     }
