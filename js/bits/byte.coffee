@@ -97,12 +97,14 @@ class Byte extends Bit
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .onStart(=>
+        @ctx.clear()
         (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
         @o.onStart?.call @, arguments
       ).onComplete(=>
         @isShowStart = false
-        !@isShowEnd and (@el.style.display = 'none'); @o.onComplete?())
-      .yoyo(@yoyo)
+        !@isShowEnd and (@el.style.display = 'none')
+        @o.onComplete?.call @, arguments
+      ).yoyo(@yoyo)
       .start()
 
     h.startAnimationLoop()
@@ -162,8 +164,7 @@ class Byte extends Bit
     @size = ((2*@maxRadius*o.mulCoef) + @maxLineWidth + o.plusCoef)
     # console.log @size
     @center = @size/2; @sizeX = @size; @sizeY = @size
-    console.log @center
-
+    @centerX = @sizeX/2; @centerY = @sizeY/2
     @setElSize()
 
   normalizeLineDashes:->

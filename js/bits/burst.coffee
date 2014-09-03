@@ -83,7 +83,6 @@ class Burst extends Byte
       it.ctx.clear()
       it.rotate
         angle: @angle*it.h.DEG
-        point: 2*it.center
 
       step = @degree/degreeCnt
       angle = 0
@@ -109,9 +108,9 @@ class Burst extends Byte
 
   rotate:(o)->
     @ctx.save()
-    @ctx.translate(o.point,o.point)
+    @ctx.translate(2*@centerX,2*@centerY)
     @ctx.rotate(o.angle)
-    @ctx.translate(-o.point,-o.point)
+    @ctx.translate(-2*@centerX,-2*@centerY)
 
   mixStarSpikesProps:->
     @from.spikes = @spikes

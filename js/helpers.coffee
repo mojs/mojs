@@ -65,6 +65,8 @@ class Helpers
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
 
+  isObj:(obj)-> !!obj and (obj.constructor is Object)
+
   makeColorObj:(color)->
     # HEX
     if color[0] is '#'

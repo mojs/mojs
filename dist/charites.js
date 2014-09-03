@@ -279,8 +279,7 @@ Burst = (function(_super) {
       var angle, el, i, rotAngle, rotation, step, x, y, _i, _len, _ref;
       it.ctx.clear();
       it.rotate({
-        angle: this.angle * it.h.DEG,
-        point: 2 * it.center
+        angle: this.angle * it.h.DEG
       });
       step = this.degree / degreeCnt;
       angle = 0;
@@ -315,9 +314,9 @@ Burst = (function(_super) {
 
   Burst.prototype.rotate = function(o) {
     this.ctx.save();
-    this.ctx.translate(o.point, o.point);
+    this.ctx.translate(2 * this.centerX, 2 * this.centerY);
     this.ctx.rotate(o.angle);
-    return this.ctx.translate(-o.point, -o.point);
+    return this.ctx.translate(-2 * this.centerX, -2 * this.centerY);
   };
 
   Burst.prototype.mixStarSpikesProps = function() {
@@ -419,9 +418,37 @@ Bit = (function() {
   };
 
   Bit.prototype["default"] = function(o) {
-    var def, prop;
+    var def, key, prop, value, _ref, _ref1, _ref2, _ref3;
     prop = o.prop;
     def = o.def;
+    if (this.o[prop] && this.h.isObj(this.o[prop])) {
+      if (((_ref = this.o[prop]) != null ? _ref.end : void 0) != null) {
+        this.o["" + prop + "End"] = this.o[prop].end;
+        this.o["" + prop] = this.o[prop].start;
+      } else if (!this.o[prop].x) {
+        _ref1 = this.o[prop];
+        for (key in _ref1) {
+          value = _ref1[key];
+          this.o["" + prop + "End"] = value;
+          this.o["" + prop] = parseFloat(key);
+          break;
+        }
+      }
+    }
+    if (this.oa[prop] && this.h.isObj(this.oa[prop])) {
+      if (((_ref2 = this.oa[prop]) != null ? _ref2.end : void 0) != null) {
+        this.oa["" + prop + "End"] = this.oa[prop].end;
+        this.oa["" + prop] = this.oa[prop].start;
+      } else if (!this.oa[prop].x) {
+        _ref3 = this.oa[prop];
+        for (key in _ref3) {
+          value = _ref3[key];
+          this.oa["" + prop + "End"] = value;
+          this.oa["" + prop] = parseFloat(key);
+          break;
+        }
+      }
+    }
     return this[prop] = this.oa[prop] != null ? this.oa[prop] : this.o[prop] != null ? this.o[prop] : this[prop] != null ? this[prop] : def;
   };
 
@@ -583,15 +610,16 @@ Byte = (function(_super) {
     this.tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
       return function() {
         var _ref;
+        _this.ctx.clear();
         (!_this.isShowStart || _this.isShowEnd) && (_this.el.style.display = 'block');
         return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
       };
     })(this)).onComplete((function(_this) {
       return function() {
-        var _base;
+        var _ref;
         _this.isShowStart = false;
         !_this.isShowEnd && (_this.el.style.display = 'none');
-        return typeof (_base = _this.o).onComplete === "function" ? _base.onComplete() : void 0;
+        return (_ref = _this.o.onComplete) != null ? _ref.call(_this, arguments) : void 0;
       };
     })(this)).yoyo(this.yoyo).start();
     h.startAnimationLoop();
@@ -727,7 +755,8 @@ Byte = (function(_super) {
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
-    console.log(this.center);
+    this.centerX = this.sizeX / 2;
+    this.centerY = this.sizeY / 2;
     return this.setElSize();
   };
 
@@ -1255,19 +1284,19 @@ wrapper = document.getElementById('js-wrapper');
 
 bubble = new charites.Burst({
   parent: wrapper,
-  radius: 0,
   radiusEnd: 100,
+  radius: {
+    start: 0,
+    end: 500
+  },
+  lineWidth: {
+    4: 1
+  },
   shape: 'line',
-  lineWidth: 2,
-  lineWidthEnd: 0,
-  duration: 5000,
+  duration: 500,
   cnt: 5,
   color: 'deeppink',
-  bitSpikes: 20,
-  bitRadius: 0,
-  bitRadiusEnd: 20,
-  angle: 0,
-  angleEnd: 400
+  bitSpikes: 20
 });
 
 window.addEventListener('click', function(e) {
@@ -1378,6 +1407,10 @@ Helpers = (function() {
     };
     bindArgs = Array.prototype.slice.call(arguments, 2);
     return wrapper;
+  };
+
+  Helpers.prototype.isObj = function(obj) {
+    return !!obj && (obj.constructor === Object);
   };
 
   Helpers.prototype.makeColorObj = function(color) {

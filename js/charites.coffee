@@ -13,30 +13,29 @@ if (typeof define is "function") and define.amd
 # TODO
 #   chains on run?
 #   className
-#   fix rotation
 #   options syntax sugar
+#   clear canvas on show/hide
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
-  radius:    0
+  # radius:    0
   radiusEnd: 100
+  radius:    { start: 0, end: 500 }
+  lineWidth: { 4: 1 }
   shape:     'line'
-  lineWidth:     2
-  lineWidthEnd:  0
-  duration: 5000
-  cnt: 5
+  duration: 500
+  cnt:      5
   color:    'deeppink'
-  # lineDash: [40*5]
-  # lineDashOffset:    40*5
-  # lineDashOffsetEnd: -40*5
+  # lineDash: [40]
+  # lineDashOffset: { 40: -40}
+  # lineDashOffsetEnd: -40
   # bitRate: .1
   # bitRateEnd: 2
   bitSpikes: 20
   # degree: 240
-  bitRadius: 0
-  bitRadiusEnd: 20
-  angle:    0
-  angleEnd: 400
+  # bitRadius: {start: 10, end: 10}
+  # angle:    0
+  # angleEnd: 10
   # bitAngleEnd: 360
   # onComplete: -> console.log 'b'
   # onStart: -> console.log 'a'
