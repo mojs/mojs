@@ -1219,3 +1219,6 @@ a,
   fill: #717171;
   cursor: pointer;
 }
+canvas {
+  outline: 1px solid #ffa500;
+}

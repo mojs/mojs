@@ -11,10 +11,11 @@ if (typeof define is "function") and define.amd
   define "charites", [], -> charites
 
 # TODO
-# chains
-# className
-# stop loop on empty tweens
-# fix rotation
+#   chains on run?
+#   className
+#   fix rotation
+#   show/hide on animation
+#   options syntax sugar
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
@@ -40,6 +41,8 @@ bubble = new charites.Burst
   # bitAngleEnd: 360
   # onComplete: -> console.log 'b'
   # onStart: -> console.log 'a'
+  # isShowStart: true
+  # isShowEnd:   true
 
 window.addEventListener 'click', (e)->
   bubble.setPosition e.x, e.y

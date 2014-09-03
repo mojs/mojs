@@ -468,27 +468,27 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.vars = function() {
+    this.isShowStart = this["default"]({
+      prop: 'isShowStart',
+      def: false
+    });
+    this.isShowEnd = this["default"]({
+      prop: 'isShowEnd',
+      def: false
+    });
     this.parent = this.o.parent || h.body;
     this.el = this.oa.el || this.o.el || this.el || this.createEl();
     this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
     Byte.__super__.vars.apply(this, arguments);
     this.defaultByteVars();
-    this.s = 1 * h.time(1);
-    return this.tweens = [];
+    return this.s = 1 * h.time(1);
   };
 
   Byte.prototype.run = function(oa) {
-    var i, tween, _i, _len, _ref, _results;
     this.oa = oa != null ? oa : {};
     h.size(this.oa) && this.vars();
     h.isSizeChange(this.oa) && this.setElSize();
-    _ref = this.tweens;
-    _results = [];
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      tween = _ref[i];
-      _results.push(this.TWEEN.remove(tween));
-    }
-    return _results;
+    return this.TWEEN.remove(this.tween);
   };
 
   Byte.prototype.mixLineDash = function(from, to) {
@@ -509,7 +509,7 @@ Byte = (function(_super) {
     }
   };
 
-  Byte.prototype.mixColor = function() {
+  Byte.prototype.mixColor = function(from, to) {
     if (this.color && this.colorEnd) {
       this.from.r = this.colorObj.r;
       this.from.g = this.colorObj.g;
@@ -523,7 +523,7 @@ Byte = (function(_super) {
     return this.colorObjTween = h.clone(this.colorObj);
   };
 
-  Byte.prototype.mixFill = function() {
+  Byte.prototype.mixFill = function(from, to) {
     if (this.fill && this.fillEnd) {
       this.from.fr = this.fillObj.r;
       this.from.fg = this.fillObj.g;
@@ -570,11 +570,22 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.initTween = function() {
-    var tween;
-    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onComplete(this.o.onComplete || function() {}).onStart(this.o.onStart || function() {}).yoyo(this.yoyo).start();
-    this.tweens.push(tween);
+    this.tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
+      return function() {
+        var _ref;
+        (!_this.isShowStart || _this.isShowEnd) && (_this.el.style.display = 'block');
+        return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
+      };
+    })(this)).onComplete((function(_this) {
+      return function() {
+        var _base;
+        _this.isShowStart = false;
+        !_this.isShowEnd && (_this.el.style.display = 'none');
+        return typeof (_base = _this.o).onComplete === "function" ? _base.onComplete() : void 0;
+      };
+    })(this)).yoyo(this.yoyo).start();
     h.startAnimationLoop();
-    return tween;
+    return this.tween;
   };
 
   Byte.prototype.defaultByteVars = function() {
@@ -736,6 +747,7 @@ Byte = (function(_super) {
     this.el.style.position = 'absolute';
     this.el.style.left = 0;
     this.el.style.top = 0;
+    !this.isShowStart && (this.el.style.display = 'none');
     return this.parent.appendChild(this.el);
   };
 

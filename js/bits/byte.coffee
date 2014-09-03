@@ -19,19 +19,22 @@ class Byte extends Bit
     zigzag:    ZigZag
 
   vars:->
+    @isShowStart = @default prop: 'isShowStart',  def: false
+    @isShowEnd   = @default prop: 'isShowEnd',    def: false
+
     @parent = @o.parent or h.body
     @el = @oa.el or @o.el or @el or @createEl()
     @ctx = @o.ctx or @ctx or @el.getContext '2d'
 
     super; @defaultByteVars()
     @s = 1*h.time 1
-    @tweens = []
+    # @tweens = []
 
   run:(@oa={})->
     h.size(@oa) and @vars()
     h.isSizeChange(@oa) and @setElSize()
-    for tween, i in @tweens
-      @TWEEN.remove tween
+
+    @TWEEN.remove @tween
 
   mixLineDash:(from, to)->
     if @lineDash and @lineDashEnd
@@ -40,7 +43,7 @@ class Byte extends Bit
       for dash, i in @lineDashEnd
         @to["lineDash#{i}"] = dash
 
-  mixColor:->
+  mixColor:(from, to)->
     if @color and @colorEnd
       @from.r = @colorObj.r
       @from.g = @colorObj.g
@@ -52,7 +55,7 @@ class Byte extends Bit
       @to.a = @colorEndObj.a
     @colorObjTween = h.clone @colorObj
 
-  mixFill:->
+  mixFill:(from, to)->
     if @fill and @fillEnd
       @from.fr = @fillObj.r
       @from.fg = @fillObj.g
@@ -89,18 +92,21 @@ class Byte extends Bit
   # METHODS FOR TWEEN UPDATE FUNCTION
 
   initTween:->
-    tween = new @TWEEN.Tween(@from).to(@to,@duration*@s)
+    @tween = new @TWEEN.Tween(@from).to(@to,@duration*@s)
       .delay(@delay*@s)
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
-      .onComplete(@o.onComplete or ->)
-      .onStart(@o.onStart or ->)
+      .onStart(=>
+        (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
+        @o.onStart?.call @, arguments
+      ).onComplete(=>
+        @isShowStart = false
+        !@isShowEnd and (@el.style.display = 'none'); @o.onComplete?())
       .yoyo(@yoyo)
       .start()
 
-    @tweens.push tween
     h.startAnimationLoop()
-    tween
+    @tween
 
   defaultByteVars:->
     @radius      = @default prop: 'radius',       def: 100
@@ -146,6 +152,7 @@ class Byte extends Bit
     @easings      = @easing.split '.'
     @maxRadius    = Math.max @radiusEndX, @radiusEndY, @radiusX, @radiusY
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
+
     @canvasSize()
 
   canvasSize:(o={})->
@@ -170,7 +177,7 @@ class Byte extends Bit
   createEl:->
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
-    @parent.appendChild(@el) #; @setElSize()
+    !@isShowStart and (@el.style.display = 'none'); @parent.appendChild(@el)
 
   setElSize:->
     @el.setAttribute 'width',  h.pixel*@sizeX
