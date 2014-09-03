@@ -749,6 +749,14 @@ Byte = (function(_super) {
     return this.el;
   };
 
+  Byte.prototype.setPosition = function(x, y) {
+    if (y == null) {
+      y = 0;
+    }
+    this.el.style.left = "" + (x - this.sizeX / 2) + "px";
+    return this.el.style.top = "" + (y - this.sizeY / 2) + "px";
+  };
+
   return Byte;
 
 })(Bit);
@@ -1225,12 +1233,12 @@ wrapper = document.getElementById('js-wrapper');
 bubble = new charites.Burst({
   parent: wrapper,
   radius: 0,
-  radiusEnd: 200,
+  radiusEnd: 100,
   shape: 'line',
   lineWidth: 2,
-  lineWidthEnd: 1,
+  lineWidthEnd: 0,
   duration: 500,
-  cnt: 3,
+  cnt: 5,
   color: 'deeppink',
   bitSpikes: 20,
   bitRadius: 0,
@@ -1238,8 +1246,7 @@ bubble = new charites.Burst({
 });
 
 window.addEventListener('click', function(e) {
-  bubble.el.style.top = "" + (e.y - (bubble.size / 2)) + "px";
-  bubble.el.style.left = "" + (e.x - (bubble.size / 2)) + "px";
+  bubble.setPosition(e.x, e.y);
   return bubble.run();
 });
 

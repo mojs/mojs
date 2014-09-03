@@ -182,4 +182,19 @@ class Byte extends Bit
       @el.style.height  = "#{@sizeY}px"
     @el
 
+  setPosition:(x, y=0)->
+    @el.style.left = "#{x-@sizeX/2}px"
+    @el.style.top  = "#{y-@sizeY/2}px"
+
 module.exports = Byte
+
+
+
+
+
+
+
+
+
+
+

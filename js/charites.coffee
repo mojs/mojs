@@ -10,27 +10,21 @@ charites = new Charites
 if (typeof define is "function") and define.amd
   define "charites", [], -> charites
 
-
-
-
-
-
-
-
-
-
 # TODO
 # chains
+# className
+# stop loop on empty tweens
+# fix rotation
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
   radius:    0
-  radiusEnd: 200
+  radiusEnd: 100
   shape:     'line'
   lineWidth:     2
-  lineWidthEnd:  1
+  lineWidthEnd:  0
   duration: 500
-  cnt: 3
+  cnt: 5
   color:    'deeppink'
   # lineDash: [40*5]
   # lineDashOffset:    40*5
@@ -48,8 +42,7 @@ bubble = new charites.Burst
   # onStart: -> console.log 'a'
 
 window.addEventListener 'click', (e)->
-  bubble.el.style.top  = "#{e.y-(bubble.size/2)}px"
-  bubble.el.style.left = "#{e.x-(bubble.size/2)}px"
+  bubble.setPosition e.x, e.y
   bubble.run()
 
 
