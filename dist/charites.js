@@ -276,16 +276,19 @@ Burst = (function(_super) {
     degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     rotStep = this.degree / degreeCnt;
     return this.initTween().onUpdate(function() {
-      var angle, el, i, rotAngle, rotation, step, x, y, _i, _len, _ref, _results;
+      var angle, el, i, rotAngle, rotation, step, x, y, _i, _len, _ref;
       it.ctx.clear();
+      it.rotate({
+        angle: this.angle * it.h.DEG,
+        point: 2 * it.center
+      });
       step = this.degree / degreeCnt;
       angle = 0;
       rotAngle = 0;
       _ref = it.els;
-      _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         el = _ref[i];
-        rotation = (angle + it.angle + this.angle) * it.h.DEG;
+        rotation = (angle + it.angle) * it.h.DEG;
         x = 2 * it.center + Math.cos(rotation) * this.rx;
         y = 2 * it.center + Math.sin(rotation) * this.ry;
         el.setProp({
@@ -304,10 +307,17 @@ Burst = (function(_super) {
           lineDashOffset: this.lineDashOffset
         });
         angle += step;
-        _results.push(rotAngle += rotStep);
+        rotAngle += rotStep;
       }
-      return _results;
+      return it.ctx.restore();
     });
+  };
+
+  Burst.prototype.rotate = function(o) {
+    this.ctx.save();
+    this.ctx.translate(o.point, o.point);
+    this.ctx.rotate(o.angle);
+    return this.ctx.translate(-o.point, -o.point);
   };
 
   Burst.prototype.mixStarSpikesProps = function() {
@@ -717,6 +727,7 @@ Byte = (function(_super) {
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
+    console.log(this.center);
     return this.setElSize();
   };
 
@@ -1249,12 +1260,14 @@ bubble = new charites.Burst({
   shape: 'line',
   lineWidth: 2,
   lineWidthEnd: 0,
-  duration: 500,
+  duration: 5000,
   cnt: 5,
   color: 'deeppink',
   bitSpikes: 20,
   bitRadius: 0,
-  bitRadiusEnd: 20
+  bitRadiusEnd: 20,
+  angle: 0,
+  angleEnd: 400
 });
 
 window.addEventListener('click', function(e) {

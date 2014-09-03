@@ -160,7 +160,9 @@ class Byte extends Bit
     o.mulCoef  ?= 1
     # CANVAS SIZE
     @size = ((2*@maxRadius*o.mulCoef) + @maxLineWidth + o.plusCoef)
+    # console.log @size
     @center = @size/2; @sizeX = @size; @sizeY = @size
+    console.log @center
 
     @setElSize()
 

@@ -81,11 +81,15 @@ class Burst extends Byte
     rotStep  = @degree/degreeCnt
     @initTween().onUpdate ->
       it.ctx.clear()
+      it.rotate
+        angle: @angle*it.h.DEG
+        point: 2*it.center
+
       step = @degree/degreeCnt
       angle = 0
       rotAngle = 0
       for el, i in it.els
-        rotation = (angle+it.angle+@angle)*it.h.DEG
+        rotation = (angle+it.angle)*it.h.DEG
         x = 2*it.center + Math.cos(rotation)*@rx
         y = 2*it.center + Math.sin(rotation)*@ry
         el.setProp
@@ -99,9 +103,15 @@ class Burst extends Byte
           rate:       @bitRate
           lineDash:   it.updateLineDash(@)
           lineDashOffset: @lineDashOffset
-
         angle += step
         rotAngle += rotStep
+      it.ctx.restore()
+
+  rotate:(o)->
+    @ctx.save()
+    @ctx.translate(o.point,o.point)
+    @ctx.rotate(o.angle)
+    @ctx.translate(-o.point,-o.point)
 
   mixStarSpikesProps:->
     @from.spikes = @spikes
