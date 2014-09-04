@@ -42,26 +42,14 @@ class Bit
   default:(o)->
     prop = o.prop; def = o.def
 
-    if @o[prop] and @h.isObj @o[prop]
-      if @o[prop]?.end?
-        @o["#{prop}End"] = @o[prop].end
-        @o["#{prop}"] = @o[prop].start
-      else if !@o[prop].x
-        for key, value of @o[prop]
-          @o["#{prop}End"] = value
-          @o["#{prop}"] = parseFloat key
-          break
-
-    if @oa[prop] and @h.isObj @oa[prop]
-      if @oa[prop]?.end?
-        @oa["#{prop}End"] = @oa[prop].end
-        @oa["#{prop}"] = @oa[prop].start
-      else if !@oa[prop].x
-        for key, value of @oa[prop]
-          @oa["#{prop}End"] = value
-          @oa["#{prop}"] = parseFloat key
-          break
-
+    @syntaxSugar
+      o: @o
+      prop: prop
+    
+    @syntaxSugar
+      o: @oa
+      prop: prop
+    
     @[prop] = if @oa[prop]?
       @oa[prop]
     else if @o[prop]?
@@ -73,6 +61,17 @@ class Bit
   defaultPart:(o)->
     @[o.prop] = null
     @default o
+
+  syntaxSugar:(o)->
+    if o.o[o.prop] and @h.isObj o.o[o.prop]
+      if o.o[o.prop]?.end?
+        o.o["#{o.prop}End"] = o.o[o.prop].end
+        o.o["#{o.prop}"] = o.o[o.prop].start
+      else if !o.o[o.prop].x
+        for key, value of o.o[o.prop]
+          o.o["#{o.prop}End"] = value
+          o.o["#{o.prop}"] = parseFloat key
+          break
 
 module.exports = Bit
 

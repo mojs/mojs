@@ -418,43 +418,43 @@ Bit = (function() {
   };
 
   Bit.prototype["default"] = function(o) {
-    var def, key, prop, value, _ref, _ref1, _ref2, _ref3;
+    var def, prop;
     prop = o.prop;
     def = o.def;
-    if (this.o[prop] && this.h.isObj(this.o[prop])) {
-      if (((_ref = this.o[prop]) != null ? _ref.end : void 0) != null) {
-        this.o["" + prop + "End"] = this.o[prop].end;
-        this.o["" + prop] = this.o[prop].start;
-      } else if (!this.o[prop].x) {
-        _ref1 = this.o[prop];
-        for (key in _ref1) {
-          value = _ref1[key];
-          this.o["" + prop + "End"] = value;
-          this.o["" + prop] = parseFloat(key);
-          break;
-        }
-      }
-    }
-    if (this.oa[prop] && this.h.isObj(this.oa[prop])) {
-      if (((_ref2 = this.oa[prop]) != null ? _ref2.end : void 0) != null) {
-        this.oa["" + prop + "End"] = this.oa[prop].end;
-        this.oa["" + prop] = this.oa[prop].start;
-      } else if (!this.oa[prop].x) {
-        _ref3 = this.oa[prop];
-        for (key in _ref3) {
-          value = _ref3[key];
-          this.oa["" + prop + "End"] = value;
-          this.oa["" + prop] = parseFloat(key);
-          break;
-        }
-      }
-    }
+    this.syntaxSugar({
+      o: this.o,
+      prop: prop
+    });
+    this.syntaxSugar({
+      o: this.oa,
+      prop: prop
+    });
     return this[prop] = this.oa[prop] != null ? this.oa[prop] : this.o[prop] != null ? this.o[prop] : this[prop] != null ? this[prop] : def;
   };
 
   Bit.prototype.defaultPart = function(o) {
     this[o.prop] = null;
     return this["default"](o);
+  };
+
+  Bit.prototype.syntaxSugar = function(o) {
+    var key, value, _ref, _ref1, _results;
+    if (o.o[o.prop] && this.h.isObj(o.o[o.prop])) {
+      if (((_ref = o.o[o.prop]) != null ? _ref.end : void 0) != null) {
+        o.o["" + o.prop + "End"] = o.o[o.prop].end;
+        return o.o["" + o.prop] = o.o[o.prop].start;
+      } else if (!o.o[o.prop].x) {
+        _ref1 = o.o[o.prop];
+        _results = [];
+        for (key in _ref1) {
+          value = _ref1[key];
+          o.o["" + o.prop + "End"] = value;
+          o.o["" + o.prop] = parseFloat(key);
+          break;
+        }
+        return _results;
+      }
+    }
   };
 
   return Bit;
@@ -1286,25 +1286,18 @@ if ((typeof define === "function") && define.amd) {
 
 wrapper = document.getElementById('js-wrapper');
 
-bubble = new charites.Burst({
+bubble = new charites.Bubble({
   parent: wrapper,
-  radius: {
-    start: 0,
-    end: 100
-  },
+  radius: 100,
   lineWidth: {
     2: 0
   },
-  shape: 'line',
+  shape: 'circle',
   duration: 500,
   cnt: 5,
   color: 'deeppink',
-  angle: {
-    0: 100
-  },
-  bitAngle: {
-    0: -360
-  }
+  lineDash: [40],
+  lineDashEnd: [0]
 });
 
 window.addEventListener('click', function(e) {
