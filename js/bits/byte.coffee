@@ -116,8 +116,8 @@ class Byte extends Bit
     @radiusY     = @default prop: 'radiusY',      def: @radius
 
     @radiusEnd   = @default prop: 'radiusEnd',   def: @radius
-    @radiusEndX  = @defaultPart prop: 'radiusEndX', def: @radiusEnd
-    @radiusEndY  = @defaultPart prop: 'radiusEndY', def: @radiusEnd
+    @radiusXEnd  = @defaultPart prop: 'radiusXEnd', def: @radiusEnd
+    @radiusYEnd  = @defaultPart prop: 'radiusYEnd', def: @radiusEnd
 
     @lineWidth      = @default prop: 'lineWidth',   def: 1
     @lineWidthMiddle= @default prop: 'lineWidthMiddle',def: null
@@ -152,7 +152,7 @@ class Byte extends Bit
     @delay        = @default prop: 'delay',        def: 0
     @easing       = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings      = @easing.split '.'
-    @maxRadius    = Math.max @radiusEndX, @radiusEndY, @radiusX, @radiusY
+    @maxRadius    = Math.max @radiusXEnd, @radiusYEnd, @radiusX, @radiusY
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
     @canvasSize()

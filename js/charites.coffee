@@ -14,15 +14,16 @@ if (typeof define is "function") and define.amd
 #   chains on run?
 #   className
 #   options syntax sugar
-#   clear canvas on show/hide
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
   # radius:    0
-  radiusEnd: 100
-  radius:    { start: 0, end: 500 }
-  lineWidth: { 4: 1 }
-  shape:     'line'
+  # radiusEnd: 100
+  radius:    { start: 0, end: 100 }
+  # radiusEndX: 200
+  radiusX:   { 200: -200 }
+  lineWidth: { 4: 0 }
+  shape:     'circle'
   duration: 500
   cnt:      5
   color:    'deeppink'

@@ -258,8 +258,8 @@ Burst = (function(_super) {
       lineDashOffset: this.lineDashOffset
     };
     this.to = {
-      rx: 2 * this.radiusEndX,
-      ry: 2 * this.radiusEndY,
+      rx: 2 * this.radiusXEnd,
+      ry: 2 * this.radiusYEnd,
       bitAngle: this.bitAngleEnd,
       lineWidth: this.lineWidthEnd,
       bitRadius: this.bitRadiusEnd,
@@ -643,12 +643,12 @@ Byte = (function(_super) {
       prop: 'radiusEnd',
       def: this.radius
     });
-    this.radiusEndX = this.defaultPart({
-      prop: 'radiusEndX',
+    this.radiusXEnd = this.defaultPart({
+      prop: 'radiusXEnd',
       def: this.radiusEnd
     });
-    this.radiusEndY = this.defaultPart({
-      prop: 'radiusEndY',
+    this.radiusYEnd = this.defaultPart({
+      prop: 'radiusYEnd',
       def: this.radiusEnd
     });
     this.lineWidth = this["default"]({
@@ -736,7 +736,7 @@ Byte = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
-    this.maxRadius = Math.max(this.radiusEndX, this.radiusEndY, this.radiusX, this.radiusY);
+    this.maxRadius = Math.max(this.radiusXEnd, this.radiusYEnd, this.radiusX, this.radiusY);
     this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
     return this.canvasSize();
   };
@@ -1284,15 +1284,17 @@ wrapper = document.getElementById('js-wrapper');
 
 bubble = new charites.Burst({
   parent: wrapper,
-  radiusEnd: 100,
   radius: {
     start: 0,
-    end: 500
+    end: 100
+  },
+  radiusX: {
+    200: -200
   },
   lineWidth: {
-    4: 1
+    4: 0
   },
-  shape: 'line',
+  shape: 'circle',
   duration: 500,
   cnt: 5,
   color: 'deeppink',

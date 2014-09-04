@@ -57,8 +57,8 @@ class Burst extends Byte
       bitRate: @bitRate
       lineDashOffset: @lineDashOffset
     @to =
-      rx: 2*@radiusEndX
-      ry: 2*@radiusEndY
+      rx: 2*@radiusXEnd
+      ry: 2*@radiusYEnd
       bitAngle: @bitAngleEnd
       lineWidth: @lineWidthEnd
       bitRadius: @bitRadiusEnd
