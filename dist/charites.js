@@ -448,13 +448,29 @@ Bit = (function() {
         _results = [];
         for (key in _ref1) {
           value = _ref1[key];
-          o.o["" + o.prop + "End"] = value;
-          o.o["" + o.prop] = parseFloat(key);
+          if (!(o.prop === 'lineDash' || o.prop === 'lineDashEnd')) {
+            o.o["" + o.prop + "End"] = value;
+            o.o["" + o.prop] = parseFloat(key);
+          } else {
+            o.o["" + o.prop + "End"] = this.stringToArray(value);
+            o.o["" + o.prop] = this.stringToArray(key);
+          }
           break;
         }
         return _results;
       }
     }
+  };
+
+  Bit.prototype.stringToArray = function(str) {
+    var arr, i, item, _i, _len, _ref;
+    arr = [];
+    _ref = str.split(',');
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      item = _ref[i];
+      arr.push(parseFloat(item));
+    }
+    return arr;
   };
 
   return Bit;
@@ -1289,6 +1305,9 @@ wrapper = document.getElementById('js-wrapper');
 bubble = new charites.Bubble({
   parent: wrapper,
   radius: 100,
+  radiusX: {
+    0: 100
+  },
   lineWidth: {
     2: 0
   },
@@ -1296,8 +1315,12 @@ bubble = new charites.Bubble({
   duration: 500,
   cnt: 5,
   color: 'deeppink',
-  lineDash: [40],
-  lineDashEnd: [0]
+  lineDash: {
+    '400, 20': '800, 200'
+  },
+  angle: {
+    0: 200
+  }
 });
 
 window.addEventListener('click', function(e) {

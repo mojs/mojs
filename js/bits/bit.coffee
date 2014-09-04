@@ -58,20 +58,29 @@ class Bit
       @[prop]
     else def
 
-  defaultPart:(o)->
-    @[o.prop] = null
-    @default o
+  defaultPart:(o)-> @[o.prop] = null; @default o
 
   syntaxSugar:(o)->
     if o.o[o.prop] and @h.isObj o.o[o.prop]
       if o.o[o.prop]?.end?
         o.o["#{o.prop}End"] = o.o[o.prop].end
-        o.o["#{o.prop}"] = o.o[o.prop].start
+        o.o["#{o.prop}"]    = o.o[o.prop].start
       else if !o.o[o.prop].x
         for key, value of o.o[o.prop]
-          o.o["#{o.prop}End"] = value
-          o.o["#{o.prop}"] = parseFloat key
+          unless o.prop is 'lineDash' or o.prop is 'lineDashEnd'
+            o.o["#{o.prop}End"] = value
+            o.o["#{o.prop}"]    = parseFloat key
+          else
+            o.o["#{o.prop}End"] = @stringToArray value
+            o.o["#{o.prop}"]    = @stringToArray key
           break
+
+  stringToArray:(str)->
+    arr = []
+    for item, i in str.split ','
+      arr.push parseFloat item
+    arr
+
 
 module.exports = Bit
 
