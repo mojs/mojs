@@ -241,13 +241,13 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(oa) {
-    var degreeCnt, it, rotStep;
+    var it;
     this.oa = oa != null ? oa : {};
     Burst.__super__.run.apply(this, arguments);
     it = this;
     this.from = {
-      rx: this.radiusX,
-      ry: this.radiusY,
+      radiusX: this.radiusX,
+      radiusY: this.radiusY,
       bitAngle: this.bitAngle,
       lineWidth: this.lineWidth,
       bitRadius: this.bitRadius,
@@ -258,8 +258,8 @@ Burst = (function(_super) {
       lineDashOffset: this.lineDashOffset
     };
     this.to = {
-      rx: 2 * this.radiusXEnd,
-      ry: 2 * this.radiusYEnd,
+      radiusX: 2 * this.radiusXEnd,
+      radiusY: 2 * this.radiusYEnd,
       bitAngle: this.bitAngleEnd,
       lineWidth: this.lineWidthEnd,
       bitRadius: this.bitRadiusEnd,
@@ -273,42 +273,65 @@ Burst = (function(_super) {
     this.mixLineDash();
     this.mixColor();
     this.mixFill();
-    degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
-    rotStep = this.degree / degreeCnt;
-    return this.initTween().onUpdate(function() {
-      var angle, el, i, rotAngle, rotation, step, x, y, _i, _len, _ref;
-      it.ctx.clear();
-      it.rotate({
-        angle: this.angle * it.h.DEG
+    this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
+    this.rotStep = this.degree / this.degreeCnt;
+    return this.tween = this.initTween().onUpdate(function() {
+      return it.draw.call(this, it);
+    });
+  };
+
+  Burst.prototype.draw = function(it) {
+    var angle, degreeCnt, el, i, rotAngle, rotStep, rotation, step, x, y, _i, _len, _ref;
+    console.log(this);
+    degreeCnt = it.degreeCnt;
+    rotStep = it.rotStep;
+    it.ctx.clear();
+    it.rotate({
+      angle: this.angle * it.h.DEG
+    });
+    step = this.degree / degreeCnt;
+    angle = 0;
+    rotAngle = 0;
+    _ref = it.els;
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      el = _ref[i];
+      rotation = (angle + it.angle) * it.h.DEG;
+      x = 2 * it.center + Math.cos(rotation) * this.radiusX;
+      y = 2 * it.center + Math.sin(rotation) * this.radiusY;
+      el.setProp({
+        position: {
+          x: x,
+          y: y
+        },
+        angle: rotAngle + this.bitAngle,
+        lineWidth: this.lineWidth,
+        fillObj: it.updateFill(this),
+        radiusX: this.bitRadius,
+        radiusY: this.bitRadius,
+        spikes: this.spikes,
+        rate: this.bitRate,
+        lineDash: it.updateLineDash(this),
+        lineDashOffset: this.lineDashOffset
       });
-      step = this.degree / degreeCnt;
-      angle = 0;
-      rotAngle = 0;
-      _ref = it.els;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        el = _ref[i];
-        rotation = (angle + it.angle) * it.h.DEG;
-        x = 2 * it.center + Math.cos(rotation) * this.rx;
-        y = 2 * it.center + Math.sin(rotation) * this.ry;
-        el.setProp({
-          position: {
-            x: x,
-            y: y
-          },
-          angle: rotAngle + this.bitAngle,
-          lineWidth: this.lineWidth,
-          fillObj: it.updateFill(this),
-          radiusX: this.bitRadius,
-          radiusY: this.bitRadius,
-          spikes: this.spikes,
-          rate: this.bitRate,
-          lineDash: it.updateLineDash(this),
-          lineDashOffset: this.lineDashOffset
-        });
-        angle += step;
-        rotAngle += rotStep;
-      }
-      return it.ctx.restore();
+      angle += step;
+      rotAngle += rotStep;
+    }
+    return it.ctx.restore();
+  };
+
+  Burst.prototype.chain = function(oc) {
+    var it, opts, tween;
+    if (oc == null) {
+      oc = {};
+    }
+    Burst.__super__.chain.apply(this, arguments);
+    it = this;
+    opts = {
+      isChain: true,
+      options: oc
+    };
+    return tween = this.initTween(opts).onUpdate(function() {
+      return it.draw.call(this, it);
     });
   };
 
@@ -534,14 +557,25 @@ Byte = (function(_super) {
     this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
     Byte.__super__.vars.apply(this, arguments);
     this.defaultByteVars();
-    return this.s = 1 * h.time(1);
+    this.s = 1 * h.time(1);
+    return this.tweens != null ? this.tweens : this.tweens = [];
   };
 
   Byte.prototype.run = function(oa) {
+    var i, tween, _i, _len, _ref;
     this.oa = oa != null ? oa : {};
     h.size(this.oa) && this.vars();
     h.isSizeChange(this.oa) && this.setElSize();
-    return this.TWEEN.remove(this.tween);
+    _ref = this.tweens;
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      tween = _ref[i];
+      this.TWEEN.remove(tween);
+    }
+    return this.tweens.length = 0;
+  };
+
+  Byte.prototype.chain = function(oc) {
+    this.oc = oc != null ? oc : {};
   };
 
   Byte.prototype.mixLineDash = function(from, to) {
@@ -622,8 +656,18 @@ Byte = (function(_super) {
     return lineDash;
   };
 
-  Byte.prototype.initTween = function() {
-    this.tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
+  Byte.prototype.initTween = function(o) {
+    var from, to, tween;
+    if (o == null) {
+      o = {};
+    }
+    from = o.isChain ? this.h.clone(this.lastTween.to) : this.from;
+    if (o.isChain) {
+      to = this.h.clone(this.lastTween.to);
+      to.lineWidth = 20;
+    }
+    to = o.isChain ? to : this.to;
+    tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
       return function() {
         var _ref;
         _this.ctx.clear();
@@ -637,9 +681,20 @@ Byte = (function(_super) {
         !_this.isShowEnd && (_this.el.style.display = 'none');
         return (_ref = _this.o.onComplete) != null ? _ref.call(_this, arguments) : void 0;
       };
-    })(this)).yoyo(this.yoyo).start();
+    })(this)).yoyo(this.yoyo);
+    tween.isChain = o.isChain;
+    tween.to = to;
+    if (o.isChain) {
+      this.lastTween.chain(tween);
+    } else {
+      tween.start();
+    }
+    if (o.isChain || !this.tweens.length) {
+      this.tweens.push(tween);
+      this.lastTween = tween;
+    }
     h.startAnimationLoop();
-    return this.tween;
+    return tween;
   };
 
   Byte.prototype.defaultByteVars = function() {
@@ -1275,7 +1330,9 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, bubble, charites, wrapper;
+var Bubble, Burst, Charites, bubble, charites, h, wrapper;
+
+h = require('./helpers');
 
 Bubble = require('./bits/Bubble');
 
@@ -1302,17 +1359,16 @@ if ((typeof define === "function") && define.amd) {
 
 wrapper = document.getElementById('js-wrapper');
 
-bubble = new charites.Bubble({
+bubble = new charites.Burst({
   parent: wrapper,
-  radius: 100,
-  radiusX: {
-    0: 100
+  radius: {
+    50: 100
   },
   lineWidth: {
     2: 0
   },
   shape: 'circle',
-  duration: 500,
+  duration: 5000,
   cnt: 5,
   color: 'deeppink',
   lineDash: {
@@ -1320,16 +1376,21 @@ bubble = new charites.Bubble({
   },
   angle: {
     0: 200
+  },
+  onComplete: function() {
+    return console.log('a');
   }
 });
 
 window.addEventListener('click', function(e) {
   bubble.setPosition(e.x, e.y);
-  return bubble.run();
+  return bubble.chain({
+    lineWidthEnd: 20
+  });
 });
 
 
-},{"./bits/Bubble":1,"./bits/Burst":2}],14:[function(require,module,exports){
+},{"./bits/Bubble":1,"./bits/Burst":2,"./helpers":14}],14:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');

@@ -44,10 +44,9 @@ class Burst extends Byte
 
   run:(@oa={})->
     super; it = @
-
     @from =
-      rx: @radiusX
-      ry: @radiusY
+      radiusX: @radiusX
+      radiusY: @radiusY
       bitAngle: @bitAngle
       lineWidth: @lineWidth
       bitRadius: @bitRadius
@@ -57,8 +56,8 @@ class Burst extends Byte
       bitRate: @bitRate
       lineDashOffset: @lineDashOffset
     @to =
-      rx: 2*@radiusXEnd
-      ry: 2*@radiusYEnd
+      radiusX: 2*@radiusXEnd
+      radiusY: 2*@radiusYEnd
       bitAngle: @bitAngleEnd
       lineWidth: @lineWidthEnd
       bitRadius: @bitRadiusEnd
@@ -68,43 +67,87 @@ class Burst extends Byte
       bitRate:     @bitRateEnd
       lineDashOffset: @lineDashOffsetEnd
 
-
     @mixStarSpikesProps()
     @mixLineDash()
     @mixColor()
     @mixFill()
+
+    @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
+    @rotStep    = @degree/@degreeCnt
+    @tween = @initTween().onUpdate -> it.draw.call(@, it)
+
+  draw:(it)->
+    console.log @
+    degreeCnt = it.degreeCnt
+    rotStep   = it.rotStep
+
+    it.ctx.clear()
+    it.rotate
+      angle: @angle*it.h.DEG
+
+    step = @degree/degreeCnt
+    angle = 0
+    rotAngle = 0
+    for el, i in it.els
+      rotation = (angle+it.angle)*it.h.DEG
+      x = 2*it.center + Math.cos(rotation)*@radiusX
+      y = 2*it.center + Math.sin(rotation)*@radiusY
+      el.setProp
+        position:   x:x, y:y
+        angle:      (rotAngle) + @bitAngle
+        lineWidth:  @lineWidth
+        fillObj:    it.updateFill(@)
+        radiusX:    @bitRadius
+        radiusY:    @bitRadius
+        spikes:     @spikes
+        rate:       @bitRate
+        lineDash:   it.updateLineDash(@)
+        lineDashOffset: @lineDashOffset
+      angle += step
+      rotAngle += rotStep
+    it.ctx.restore()
+
+  chain:(oc={})->
+    super; it = @
+
+    # @from =
+    #   radiusX: @radiusX
+    #   radiusY: @radiusY
+    #   bitAngle: @bitAngle
+    #   lineWidth: @lineWidth
+    #   bitRadius: @bitRadius
+    #   degree: @degree
+    #   angle: @angle
+    #   spikes: @bitSpikesEnd
+    #   bitRate: @bitRate
+    #   lineDashOffset: @lineDashOffset
+    # @to =
+    #   radiusX: 2*@radiusXEnd
+    #   radiusY: 2*@radiusYEnd
+    #   bitAngle: @bitAngleEnd
+    #   lineWidth: @lineWidthEnd
+    #   bitRadius: @bitRadiusEnd
+    #   degree: @degreeEnd
+    #   angle: @angleEnd
+    #   spikes: @spikesEnd
+    #   bitRate:     @bitRateEnd
+    #   lineDashOffset: @lineDashOffsetEnd
+
+    # @mixStarSpikesProps()
+    # @mixLineDash()
+    # @mixColor()
+    # @mixFill()
     
-    # fix this
-    degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
+    # @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
+    # @rotStep    = @degree/@degreeCnt
+    opts =
+      isChain: true
+      options: oc
+    tween = @initTween(opts).onUpdate ->
+      it.draw.call(@, it)
 
-
-    rotStep  = @degree/degreeCnt
-    @initTween().onUpdate ->
-      it.ctx.clear()
-      it.rotate
-        angle: @angle*it.h.DEG
-
-      step = @degree/degreeCnt
-      angle = 0
-      rotAngle = 0
-      for el, i in it.els
-        rotation = (angle+it.angle)*it.h.DEG
-        x = 2*it.center + Math.cos(rotation)*@rx
-        y = 2*it.center + Math.sin(rotation)*@ry
-        el.setProp
-          position:   x:x, y:y
-          angle:      (rotAngle) + @bitAngle
-          lineWidth:  @lineWidth
-          fillObj:    it.updateFill(@)
-          radiusX:    @bitRadius
-          radiusY:    @bitRadius
-          spikes:     @spikes
-          rate:       @bitRate
-          lineDash:   it.updateLineDash(@)
-          lineDashOffset: @lineDashOffset
-        angle += step
-        rotAngle += rotStep
-      it.ctx.restore()
+  # makeTweenObjects:->
+    
 
   rotate:(o)->
     @ctx.save()

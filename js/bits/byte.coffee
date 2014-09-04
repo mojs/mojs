@@ -28,13 +28,19 @@ class Byte extends Bit
 
     super; @defaultByteVars()
     @s = 1*h.time 1
-    # @tweens = []
+    @tweens ?= []
 
   run:(@oa={})->
     h.size(@oa) and @vars()
     h.isSizeChange(@oa) and @setElSize()
 
-    @TWEEN.remove @tween
+    for tween, i in @tweens
+      @TWEEN.remove tween
+    @tweens.length = 0
+
+  chain:(@oc={})->
+    # h.size(@oc) and @vars()
+    # h.isSizeChange(@oc) and @setElSize()
 
   mixLineDash:(from, to)->
     if @lineDash and @lineDashEnd
@@ -91,12 +97,18 @@ class Byte extends Bit
     lineDash
   # METHODS FOR TWEEN UPDATE FUNCTION
 
-  initTween:->
-    @tween = new @TWEEN.Tween(@from).to(@to,@duration*@s)
+  initTween:(o={})->
+    from = if o.isChain then @h.clone @lastTween.to else @from
+    if o.isChain
+      to = @h.clone @lastTween.to
+      to.lineWidth = 20
+    to   = if o.isChain then to else @to
+    tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .onStart(=>
+        # console.log from, to
         @ctx.clear()
         (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
         @o.onStart?.call @, arguments
@@ -105,10 +117,21 @@ class Byte extends Bit
         !@isShowEnd and (@el.style.display = 'none')
         @o.onComplete?.call @, arguments
       ).yoyo(@yoyo)
-      .start()
+
+    tween.isChain = o.isChain
+
+    tween.to = to
+
+    if o.isChain then @lastTween.chain tween
+    else tween.start()
+
+    if o.isChain or !@tweens.length
+      @tweens.push tween
+      @lastTween = tween
 
     h.startAnimationLoop()
-    @tween
+    tween
+
 
   defaultByteVars:->
     @radius      = @default prop: 'radius',       def: 100
