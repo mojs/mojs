@@ -51,8 +51,8 @@ class Bubble extends Byte
       opacity: @opacity
       lineDashOffset: @lineDashOffset
     @to =
-      rx:      @radiusEndX
-      ry:      @radiusEndY
+      rx:      @radiusXEnd
+      ry:      @radiusYEnd
       lineW:   @lineWidthEnd
       angle:   @angleEnd
       degree:  @degreeEnd

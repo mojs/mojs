@@ -94,8 +94,8 @@ Bubble = (function(_super) {
       lineDashOffset: this.lineDashOffset
     };
     this.to = {
-      rx: this.radiusEndX,
-      ry: this.radiusEndY,
+      rx: this.radiusXEnd,
+      ry: this.radiusYEnd,
       lineW: this.lineWidthEnd,
       angle: this.angleEnd,
       degree: this.degreeEnd,
@@ -627,6 +627,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.defaultByteVars = function() {
+    var abs, maxEnd, maxStart;
     this.radius = this["default"]({
       prop: 'radius',
       def: 100
@@ -736,7 +737,10 @@ Byte = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
-    this.maxRadius = Math.max(this.radiusXEnd, this.radiusYEnd, this.radiusX, this.radiusY);
+    abs = Math.abs;
+    maxEnd = Math.max(abs(this.radiusXEnd), abs(this.radiusYEnd));
+    maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
+    this.maxRadius = Math.max(maxEnd, maxStart);
     this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
     return this.canvasSize();
   };
@@ -1288,17 +1292,19 @@ bubble = new charites.Burst({
     start: 0,
     end: 100
   },
-  radiusX: {
-    200: -200
-  },
   lineWidth: {
-    4: 0
+    2: 0
   },
-  shape: 'circle',
+  shape: 'line',
   duration: 500,
   cnt: 5,
   color: 'deeppink',
-  bitSpikes: 20
+  angle: {
+    0: 100
+  },
+  bitAngle: {
+    0: -360
+  }
 });
 
 window.addEventListener('click', function(e) {

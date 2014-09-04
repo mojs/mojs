@@ -152,7 +152,10 @@ class Byte extends Bit
     @delay        = @default prop: 'delay',        def: 0
     @easing       = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings      = @easing.split '.'
-    @maxRadius    = Math.max @radiusXEnd, @radiusYEnd, @radiusX, @radiusY
+    abs = Math.abs
+    maxEnd = Math.max abs(@radiusXEnd), abs(@radiusYEnd)
+    maxStart = Math.max abs(@radiusX), abs(@radiusY)
+    @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
     @canvasSize()

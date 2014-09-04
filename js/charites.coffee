@@ -12,8 +12,6 @@ if (typeof define is "function") and define.amd
 
 # TODO
 #   chains on run?
-#   className
-#   options syntax sugar
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
@@ -21,9 +19,9 @@ bubble = new charites.Burst
   # radiusEnd: 100
   radius:    { start: 0, end: 100 }
   # radiusEndX: 200
-  radiusX:   { 200: -200 }
-  lineWidth: { 4: 0 }
-  shape:     'circle'
+  # radiusX:   { 100: -100 }
+  lineWidth: { 2: 0 }
+  shape:     'line'
   duration: 500
   cnt:      5
   color:    'deeppink'
@@ -32,7 +30,8 @@ bubble = new charites.Burst
   # lineDashOffsetEnd: -40
   # bitRate: .1
   # bitRateEnd: 2
-  bitSpikes: 20
+  angle: {0: 100}
+  bitAngle: {0: -360}
   # degree: 240
   # bitRadius: {start: 10, end: 10}
   # angle:    0

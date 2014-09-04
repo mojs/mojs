@@ -7,6 +7,7 @@ class Star extends Object
     @spikes = @default prop: 'spikes',       def: 5
     @rate  = @default prop: 'rate',  def: .5
     @rate  = @h.slice @rate, 1
+
   render:->
     @preRender()
 
