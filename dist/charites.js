@@ -282,7 +282,6 @@ Burst = (function(_super) {
 
   Burst.prototype.draw = function(it) {
     var angle, degreeCnt, el, i, rotAngle, rotStep, rotation, step, x, y, _i, _len, _ref;
-    console.log(this);
     degreeCnt = it.degreeCnt;
     rotStep = it.rotStep;
     it.ctx.clear();
@@ -664,7 +663,7 @@ Byte = (function(_super) {
     from = o.isChain ? this.h.clone(this.lastTween.to) : this.from;
     if (o.isChain) {
       to = this.h.clone(this.lastTween.to);
-      to.lineWidth = 20;
+      to.lineWidth = o.options.lineWidthEnd;
     }
     to = o.isChain ? to : this.to;
     tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
@@ -1384,8 +1383,10 @@ bubble = new charites.Burst({
 
 window.addEventListener('click', function(e) {
   bubble.setPosition(e.x, e.y);
-  return bubble.chain({
-    lineWidthEnd: 20
+  return bubble.run({
+    lineWidth: {
+      0: 20
+    }
   });
 });
 

@@ -77,7 +77,7 @@ class Burst extends Byte
     @tween = @initTween().onUpdate -> it.draw.call(@, it)
 
   draw:(it)->
-    console.log @
+    # console.log @
     degreeCnt = it.degreeCnt
     rotStep   = it.rotStep
 

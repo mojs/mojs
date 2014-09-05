@@ -13,6 +13,8 @@ if (typeof define is "function") and define.amd
 
 # TODO
 #   chains
+#     merge options on chain
+#     if no active tween then run
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
@@ -32,8 +34,8 @@ bubble = new charites.Burst
 
 window.addEventListener 'click', (e)->
   bubble.setPosition e.x, e.y
-  bubble.chain
-    lineWidthEnd: 20
+  bubble.run
+    lineWidth: {0: 20}
 
 
 

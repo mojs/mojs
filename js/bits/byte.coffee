@@ -101,7 +101,7 @@ class Byte extends Bit
     from = if o.isChain then @h.clone @lastTween.to else @from
     if o.isChain
       to = @h.clone @lastTween.to
-      to.lineWidth = 20
+      to.lineWidth = o.options.lineWidthEnd
     to   = if o.isChain then to else @to
     tween = new @TWEEN.Tween(from).to(to,@duration*@s)
       .delay(@delay*@s)
