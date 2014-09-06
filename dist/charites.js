@@ -511,19 +511,19 @@ h = require('../helpers');
 
 Bit = require('./bit');
 
-Circle = require('./circle');
+Circle = require('./objects/circle');
 
-Rectangle = require('./rectangle');
+Rectangle = require('./objects/rectangle');
 
-Triangle = require('./triangle');
+Triangle = require('./objects/triangle');
 
-Star = require('./star');
+Star = require('./objects/star');
 
-Cross = require('./cross');
+Cross = require('./objects/cross');
 
-Line = require('./line');
+Line = require('./objects/line');
 
-ZigZag = require('./zigzag');
+ZigZag = require('./objects/zigzag');
 
 Byte = (function(_super) {
   __extends(Byte, _super);
@@ -890,7 +890,7 @@ Byte = (function(_super) {
 module.exports = Byte;
 
 
-},{"../helpers":14,"./bit":3,"./circle":5,"./cross":6,"./line":7,"./rectangle":9,"./star":10,"./triangle":11,"./zigzag":12}],5:[function(require,module,exports){
+},{"../helpers":14,"./bit":3,"./objects/circle":5,"./objects/cross":6,"./objects/line":7,"./objects/rectangle":9,"./objects/star":10,"./objects/triangle":11,"./objects/zigzag":12}],5:[function(require,module,exports){
 var Circle, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -998,7 +998,7 @@ var Bit, Object,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Bit = require('./bit');
+Bit = require('../bit');
 
 Object = (function(_super) {
   __extends(Object, _super);
@@ -1141,7 +1141,7 @@ Object = (function(_super) {
 module.exports = Object;
 
 
-},{"./bit":3}],9:[function(require,module,exports){
+},{"../bit":3}],9:[function(require,module,exports){
 var Object, Square,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };

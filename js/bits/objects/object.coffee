@@ -1,4 +1,4 @@
-Bit  = require './bit'
+Bit  = require '../bit'
 
 class Object extends Bit
   constructor:(@o={})-> @vars()

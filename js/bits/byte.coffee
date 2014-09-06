@@ -1,12 +1,12 @@
 h = require '../helpers'
 Bit = require './bit'
-Circle    = require './circle'
-Rectangle = require './rectangle'
-Triangle  = require './triangle'
-Star      = require './star'
-Cross     = require './cross'
-Line      = require './line'
-ZigZag    = require './zigzag'
+Circle    = require './objects/circle'
+Rectangle = require './objects/rectangle'
+Triangle  = require './objects/triangle'
+Star      = require './objects/star'
+Cross     = require './objects/cross'
+Line      = require './objects/line'
+ZigZag    = require './objects/zigzag'
 
 class Byte extends Bit
   shapes:
