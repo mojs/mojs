@@ -15,6 +15,7 @@ if (typeof define is "function") and define.amd
 #   chains
 #     merge options on chain
 #     if no active tween then run
+
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
