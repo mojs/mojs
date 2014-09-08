@@ -245,18 +245,20 @@ Burst = (function(_super) {
     this.oa = oa != null ? oa : {};
     Burst.__super__.run.apply(this, arguments);
     it = this;
-    this.from = {
-      radiusX: this.radiusX,
-      radiusY: this.radiusY,
-      bitAngle: this.bitAngle,
-      lineWidth: this.lineWidth,
-      bitRadius: this.bitRadius,
-      degree: this.degree,
-      angle: this.angle,
-      spikes: this.bitSpikesEnd,
-      bitRate: this.bitRate,
-      lineDashOffset: this.lineDashOffset
-    };
+    if (!this.oa.isChain) {
+      this.from = {
+        radiusX: this.radiusX,
+        radiusY: this.radiusY,
+        bitAngle: this.bitAngle,
+        lineWidth: this.lineWidth,
+        bitRadius: this.bitRadius,
+        degree: this.degree,
+        angle: this.angle,
+        spikes: this.bitSpikesEnd,
+        bitRate: this.bitRate,
+        lineDashOffset: this.lineDashOffset
+      };
+    }
     this.to = {
       radiusX: 2 * this.radiusXEnd,
       radiusY: 2 * this.radiusYEnd,
@@ -275,7 +277,7 @@ Burst = (function(_super) {
     this.mixFill();
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
-    return this.tween = this.initTween().onUpdate(function() {
+    return this.tween = this.initTween(this.oa.isChain).onUpdate(function() {
       return it.draw.call(this, it);
     });
   };
@@ -319,7 +321,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.chain = function(oc) {
-    var it, opts, tween;
+    var it, opts;
     if (oc == null) {
       oc = {};
     }
@@ -329,9 +331,10 @@ Burst = (function(_super) {
       isChain: true,
       options: oc
     };
-    return tween = this.initTween(opts).onUpdate(function() {
-      return it.draw.call(this, it);
-    });
+    if (this.chains == null) {
+      this.chains = [];
+    }
+    return this.chains.push(oc);
   };
 
   Burst.prototype.rotate = function(o) {
@@ -655,44 +658,34 @@ Byte = (function(_super) {
     return lineDash;
   };
 
-  Byte.prototype.initTween = function(o) {
-    var from, to, tween;
-    if (o == null) {
-      o = {};
-    }
-    from = o.isChain ? this.h.clone(this.lastTween.to) : this.from;
-    if (o.isChain) {
-      to = this.h.clone(this.lastTween.to);
-      to.lineWidth = o.options.lineWidthEnd;
-    }
-    console.log(to);
-    to = o.isChain ? to : this.to;
-    tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
+  Byte.prototype.initTween = function(isChain) {
+    var tween;
+    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
       return function() {
         var _ref;
-        _this.ctx.clear();
+        !isChain && _this.ctx.clear();
         (!_this.isShowStart || _this.isShowEnd) && (_this.el.style.display = 'block');
         return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
       };
     })(this)).onComplete((function(_this) {
       return function() {
-        var _ref;
+        var item, _ref, _ref1;
         _this.isShowStart = false;
-        !_this.isShowEnd && (_this.el.style.display = 'none');
-        return (_ref = _this.o.onComplete) != null ? _ref.call(_this, arguments) : void 0;
+        if ((_ref = _this.o.onComplete) != null) {
+          _ref.call(_this, arguments);
+        }
+        item = (_ref1 = _this.chains) != null ? _ref1[0] : void 0;
+        if (item) {
+          _this.from = _this.h.clone(_this.to);
+          item.isChain = true;
+          _this.run(item);
+          return _this.chains.shift();
+        } else {
+          console.log('a');
+          return !_this.isShowEnd && (_this.el.style.display = 'none');
+        }
       };
-    })(this)).yoyo(this.yoyo);
-    tween.isChain = o.isChain;
-    tween.to = to;
-    if (o.isChain) {
-      this.lastTween.chain(tween);
-    } else {
-      tween.start();
-    }
-    if (o.isChain || !this.tweens.length) {
-      this.tweens.push(tween);
-      this.lastTween = tween;
-    }
+    })(this)).yoyo(this.yoyo).start();
     h.startAnimationLoop();
     return tween;
   };
@@ -812,8 +805,16 @@ Byte = (function(_super) {
     maxEnd = Math.max(abs(this.radiusXEnd), abs(this.radiusYEnd));
     maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
     this.maxRadius = Math.max(maxEnd, maxStart);
-    this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
-    return this.canvasSize();
+    this.maxLineWidth = 2 * Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+    this.canvasSize();
+    this.position = this["default"]({
+      prop: 'position',
+      def: {
+        x: this.sizeX / 2,
+        y: this.sizeY / 2
+      }
+    });
+    return this.posit();
   };
 
   Byte.prototype.canvasSize = function(o) {
@@ -880,8 +881,18 @@ Byte = (function(_super) {
     if (y == null) {
       y = 0;
     }
-    this.el.style.left = "" + (x - this.sizeX / 2) + "px";
-    return this.el.style.top = "" + (y - this.sizeY / 2) + "px";
+    this.position.x = x;
+    (y != null) && (this.position.y = y);
+    return this.posit();
+  };
+
+  Byte.prototype.posit = function() {
+    var x, y;
+    console.log(this.position.x - this.sizeX / 2, this.position.y - this.sizeY / 2);
+    x = Math.floor(this.position.x - this.sizeX / 2);
+    y = Math.floor(this.position.y - this.sizeY / 2);
+    this.el.style.left = "" + x + "px";
+    return this.el.style.top = "" + y + "px";
   };
 
   return Byte;
@@ -1383,9 +1394,11 @@ bubble = new charites.Burst({
 });
 
 window.addEventListener('click', function(e) {
+  var a;
   bubble.setPosition(e.x, e.y);
+  a = h.rand(1, 20);
   return bubble.chain({
-    lineWidthEnd: h.rand(0, 30)
+    lineWidthEnd: a
   });
 });
 

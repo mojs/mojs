@@ -44,17 +44,18 @@ class Burst extends Byte
 
   run:(@oa={})->
     super; it = @
-    @from =
-      radiusX: @radiusX
-      radiusY: @radiusY
-      bitAngle: @bitAngle
-      lineWidth: @lineWidth
-      bitRadius: @bitRadius
-      degree: @degree
-      angle: @angle
-      spikes: @bitSpikesEnd
-      bitRate: @bitRate
-      lineDashOffset: @lineDashOffset
+    if !@oa.isChain
+      @from =
+        radiusX: @radiusX
+        radiusY: @radiusY
+        bitAngle: @bitAngle
+        lineWidth: @lineWidth
+        bitRadius: @bitRadius
+        degree: @degree
+        angle: @angle
+        spikes: @bitSpikesEnd
+        bitRate: @bitRate
+        lineDashOffset: @lineDashOffset
     @to =
       radiusX: 2*@radiusXEnd
       radiusY: 2*@radiusYEnd
@@ -74,7 +75,7 @@ class Burst extends Byte
 
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt
-    @tween = @initTween().onUpdate -> it.draw.call(@, it)
+    @tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
 
   draw:(it)->
     # console.log @
@@ -143,7 +144,9 @@ class Burst extends Byte
     opts =
       isChain: true
       options: oc
-    tween = @initTween(opts).onUpdate -> it.draw.call(@, it)
+    @chains ?= []
+    @chains.push oc
+    # tween = @initTween(opts).onUpdate -> it.draw.call(@, it)
 
   # makeTweenObjects:->
     
