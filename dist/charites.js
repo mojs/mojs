@@ -678,10 +678,10 @@ Byte = (function(_super) {
         if (item) {
           _this.from = _this.h.clone(_this.to);
           item.isChain = true;
+          _this.lineWidth = _this.to.lineWidth;
           _this.run(item);
           return _this.chains.shift();
         } else {
-          console.log('a');
           return !_this.isShowEnd && (_this.el.style.display = 'none');
         }
       };
@@ -805,7 +805,8 @@ Byte = (function(_super) {
     maxEnd = Math.max(abs(this.radiusXEnd), abs(this.radiusYEnd));
     maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
     this.maxRadius = Math.max(maxEnd, maxStart);
-    this.maxLineWidth = 2 * Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+    this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+    console.log(this.maxLineWidth);
     this.canvasSize();
     this.position = this["default"]({
       prop: 'position',
@@ -888,9 +889,8 @@ Byte = (function(_super) {
 
   Byte.prototype.posit = function() {
     var x, y;
-    console.log(this.position.x - this.sizeX / 2, this.position.y - this.sizeY / 2);
-    x = Math.floor(this.position.x - this.sizeX / 2);
-    y = Math.floor(this.position.y - this.sizeY / 2);
+    x = this.position.x - this.sizeX / 2;
+    y = this.position.y - this.sizeY / 2;
     this.el.style.left = "" + x + "px";
     return this.el.style.top = "" + y + "px";
   };
@@ -1394,11 +1394,16 @@ bubble = new charites.Burst({
 });
 
 window.addEventListener('click', function(e) {
-  var a;
-  bubble.setPosition(e.x, e.y);
+  var a, r;
   a = h.rand(1, 20);
+  r = h.rand(-400, 400);
   return bubble.chain({
-    lineWidthEnd: a
+    lineWidthEnd: a,
+    angleEnd: r,
+    position: {
+      x: e.x,
+      y: e.y
+    }
   });
 });
 

@@ -98,21 +98,6 @@ class Byte extends Bit
   # METHODS FOR TWEEN UPDATE FUNCTION
 
   initTween:(isChain)->
-    # from = if o.isChain then @h.clone @lastTween.to else @from
-    # if o.isChain
-    #   to = @h.clone @lastTween.to
-
-    #   for key, value of o.options
-    #     # if key.match /end/gi
-    #     #   to[key.replace /end/gi, ''] = value
-    #     if key.match /color/gi
-    #       if key.mat
-    #   to.lineWidth = o.options.lineWidthEnd
-    # console.log to
-
-    # # console.log a extends b
-    
-    # to   = if o.isChain then to else @to
     tween = new @TWEEN.Tween(@from).to(@to,@duration*@s)
       .delay(@delay*@s)
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
@@ -129,21 +114,13 @@ class Byte extends Bit
         if item
           @from = @h.clone @to
           item.isChain = true
+          @lineWidth = @to.lineWidth
           @run item
           @chains.shift()
-        else
-          console.log 'a'
-          !@isShowEnd and (@el.style.display = 'none')
+        else !@isShowEnd and (@el.style.display = 'none')
 
       ).yoyo(@yoyo)
       .start()
-
-    # tween.isChain = o.isChain; tween.to = to
-
-    # if o.isChain then @lastTween.chain(tween) else tween.start()
-
-    # if o.isChain or !@tweens.length
-    #   @tweens.push(tween); @lastTween = tween
 
     h.startAnimationLoop()
     tween
@@ -195,12 +172,15 @@ class Byte extends Bit
     maxEnd = Math.max abs(@radiusXEnd), abs(@radiusYEnd)
     maxStart = Math.max abs(@radiusX), abs(@radiusY)
     @maxRadius    = Math.max maxEnd, maxStart
-    @maxLineWidth = 2*Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
+    @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
+
+    console.log @maxLineWidth
 
     @canvasSize()
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
 
     @posit()
+
 
   canvasSize:(o={})->
     o.plusCoef ?= 0
@@ -243,9 +223,10 @@ class Byte extends Bit
     @posit()
 
   posit:->
-    console.log @position.x - @sizeX/2, @position.y - @sizeY/2
-    x = Math.floor @position.x-@sizeX/2
-    y = Math.floor @position.y-@sizeY/2
+    # console.log @size
+    # console.log @position.x - @sizeX/2, @position.y - @sizeY/2
+    x = @position.x-@sizeX/2
+    y = @position.y-@sizeY/2
     @el.style.left = "#{x}px"
     @el.style.top  = "#{y}px"
 

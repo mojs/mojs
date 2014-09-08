@@ -34,11 +34,15 @@ bubble = new charites.Burst
 
 
 window.addEventListener 'click', (e)->
-  bubble.setPosition e.x, e.y
+  # bubble.setPosition e.x, e.y
   a = h.rand(1,20)
+  r = h.rand(-400,400)
   # console.log a
   bubble.chain
     lineWidthEnd: a
+    angleEnd:     r
+    position: x:e.x, y:e.y
+
 
 
 
