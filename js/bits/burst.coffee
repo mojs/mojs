@@ -107,48 +107,6 @@ class Burst extends Byte
       angle += step
       rotAngle += rotStep
     it.ctx.restore()
-
-  chain:(oc={})->
-    super; it = @
-
-    # @from =
-    #   radiusX: @radiusX
-    #   radiusY: @radiusY
-    #   bitAngle: @bitAngle
-    #   lineWidth: @lineWidth
-    #   bitRadius: @bitRadius
-    #   degree: @degree
-    #   angle: @angle
-    #   spikes: @bitSpikesEnd
-    #   bitRate: @bitRate
-    #   lineDashOffset: @lineDashOffset
-    # @to =
-    #   radiusX: 2*@radiusXEnd
-    #   radiusY: 2*@radiusYEnd
-    #   bitAngle: @bitAngleEnd
-    #   lineWidth: @lineWidthEnd
-    #   bitRadius: @bitRadiusEnd
-    #   degree: @degreeEnd
-    #   angle: @angleEnd
-    #   spikes: @spikesEnd
-    #   bitRate:     @bitRateEnd
-    #   lineDashOffset: @lineDashOffsetEnd
-
-    # @mixStarSpikesProps()
-    # @mixLineDash()
-    # @mixColor()
-    # @mixFill()
-    
-    # @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
-    # @rotStep    = @degree/@degreeCnt
-    opts =
-      isChain: true
-      options: oc
-    @chains ?= []
-    @chains.push oc
-    # tween = @initTween(opts).onUpdate -> it.draw.call(@, it)
-
-  # makeTweenObjects:->
     
 
   rotate:(o)->

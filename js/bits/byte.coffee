@@ -29,6 +29,7 @@ class Byte extends Bit
     super; @defaultByteVars()
     @s = 1*h.time 1
     @tweens ?= []
+    @chains ?= []
 
   run:(@oa={})->
     h.size(@oa) and @vars()
@@ -37,10 +38,6 @@ class Byte extends Bit
     for tween, i in @tweens
       @TWEEN.remove tween
     @tweens.length = 0
-
-  chain:(@oc={})->
-    # h.size(@oc) and @vars()
-    # h.isSizeChange(@oc) and @setElSize()
 
   mixLineDash:(from, to)->
     if @lineDash and @lineDashEnd
@@ -103,6 +100,7 @@ class Byte extends Bit
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .onStart(=>
+        @isRunning = true
         !isChain and @ctx.clear()
         (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
         @o.onStart?.call @, arguments
@@ -111,20 +109,28 @@ class Byte extends Bit
         @o.onComplete?.call @, arguments
         
         item = @chains?[0]
-        if item
-          @from = @h.clone @to
-          item.isChain = true
-          @lineWidth = @to.lineWidth
-          @run item
-          @chains.shift()
-        else !@isShowEnd and (@el.style.display = 'none')
+        if item then @runFromChain item
+        else
+          !@isShowEnd and (@el.style.display = 'none')
+          @isRunning = false
 
       ).yoyo(@yoyo)
       .start()
 
+    @currentTween = @
     h.startAnimationLoop()
     tween
 
+  runFromChain:(item)->
+    @from = @h.clone @to
+    item.isChain = true
+    # size calculation options here
+    item.lineWidth = @to.lineWidth
+
+    @run item
+    @chains.shift()
+
+  chain:(oc={})-> if @isRunning then @chains.push oc else @runFromChain oc
 
   defaultByteVars:->
     @radius      = @default prop: 'radius',       def: 100
@@ -173,8 +179,6 @@ class Byte extends Bit
     maxStart = Math.max abs(@radiusX), abs(@radiusY)
     @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
-
-    console.log @maxLineWidth
 
     @canvasSize()
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}

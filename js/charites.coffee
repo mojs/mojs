@@ -13,8 +13,9 @@ if (typeof define is "function") and define.amd
 
 # TODO
 #   chains
-#     merge options on chain
 #     if no active tween then run
+#     replace callbacks
+#     remove resize blinking
 
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst

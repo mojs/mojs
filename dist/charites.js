@@ -320,23 +320,6 @@ Burst = (function(_super) {
     return it.ctx.restore();
   };
 
-  Burst.prototype.chain = function(oc) {
-    var it, opts;
-    if (oc == null) {
-      oc = {};
-    }
-    Burst.__super__.chain.apply(this, arguments);
-    it = this;
-    opts = {
-      isChain: true,
-      options: oc
-    };
-    if (this.chains == null) {
-      this.chains = [];
-    }
-    return this.chains.push(oc);
-  };
-
   Burst.prototype.rotate = function(o) {
     this.ctx.save();
     this.ctx.translate(2 * this.centerX, 2 * this.centerY);
@@ -560,7 +543,10 @@ Byte = (function(_super) {
     Byte.__super__.vars.apply(this, arguments);
     this.defaultByteVars();
     this.s = 1 * h.time(1);
-    return this.tweens != null ? this.tweens : this.tweens = [];
+    if (this.tweens == null) {
+      this.tweens = [];
+    }
+    return this.chains != null ? this.chains : this.chains = [];
   };
 
   Byte.prototype.run = function(oa) {
@@ -574,10 +560,6 @@ Byte = (function(_super) {
       this.TWEEN.remove(tween);
     }
     return this.tweens.length = 0;
-  };
-
-  Byte.prototype.chain = function(oc) {
-    this.oc = oc != null ? oc : {};
   };
 
   Byte.prototype.mixLineDash = function(from, to) {
@@ -663,6 +645,7 @@ Byte = (function(_super) {
     tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
       return function() {
         var _ref;
+        _this.isRunning = true;
         !isChain && _this.ctx.clear();
         (!_this.isShowStart || _this.isShowEnd) && (_this.el.style.display = 'block');
         return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
@@ -676,18 +659,35 @@ Byte = (function(_super) {
         }
         item = (_ref1 = _this.chains) != null ? _ref1[0] : void 0;
         if (item) {
-          _this.from = _this.h.clone(_this.to);
-          item.isChain = true;
-          _this.lineWidth = _this.to.lineWidth;
-          _this.run(item);
-          return _this.chains.shift();
+          return _this.runFromChain(item);
         } else {
-          return !_this.isShowEnd && (_this.el.style.display = 'none');
+          !_this.isShowEnd && (_this.el.style.display = 'none');
+          return _this.isRunning = false;
         }
       };
     })(this)).yoyo(this.yoyo).start();
+    this.currentTween = this;
     h.startAnimationLoop();
     return tween;
+  };
+
+  Byte.prototype.runFromChain = function(item) {
+    this.from = this.h.clone(this.to);
+    item.isChain = true;
+    item.lineWidth = this.to.lineWidth;
+    this.run(item);
+    return this.chains.shift();
+  };
+
+  Byte.prototype.chain = function(oc) {
+    if (oc == null) {
+      oc = {};
+    }
+    if (this.isRunning) {
+      return this.chains.push(oc);
+    } else {
+      return this.runFromChain(oc);
+    }
   };
 
   Byte.prototype.defaultByteVars = function() {
@@ -806,7 +806,6 @@ Byte = (function(_super) {
     maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
     this.maxRadius = Math.max(maxEnd, maxStart);
     this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
-    console.log(this.maxLineWidth);
     this.canvasSize();
     this.position = this["default"]({
       prop: 'position',
