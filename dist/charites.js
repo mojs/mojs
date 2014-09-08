@@ -665,6 +665,7 @@ Byte = (function(_super) {
       to = this.h.clone(this.lastTween.to);
       to.lineWidth = o.options.lineWidthEnd;
     }
+    console.log(to);
     to = o.isChain ? to : this.to;
     tween = new this.TWEEN.Tween(from).to(to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
       return function() {
@@ -1383,10 +1384,8 @@ bubble = new charites.Burst({
 
 window.addEventListener('click', function(e) {
   bubble.setPosition(e.x, e.y);
-  return bubble.run({
-    lineWidth: {
-      0: 20
-    }
+  return bubble.chain({
+    lineWidthEnd: h.rand(0, 30)
   });
 });
 
