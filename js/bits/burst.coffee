@@ -143,8 +143,7 @@ class Burst extends Byte
     opts =
       isChain: true
       options: oc
-    tween = @initTween(opts).onUpdate ->
-      it.draw.call(@, it)
+    tween = @initTween(opts).onUpdate -> it.draw.call(@, it)
 
   # makeTweenObjects:->
     
