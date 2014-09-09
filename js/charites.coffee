@@ -14,6 +14,7 @@ if (typeof define is "function") and define.amd
 # TODO
 #   chains
 #     remove resize blinking
+#     fix after the chain/run variable issue
 
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
@@ -27,6 +28,7 @@ bubble = new charites.Burst
   color:    'deeppink'
   lineDash: { '400, 20': '800, 200' }
   angle: {0: 200}
+  fillEnd: '#f0f'
   onComplete:-> console.log 'a'
   # lineDash: [40]
   # lineDashEnd: [0]
@@ -42,7 +44,7 @@ window.addEventListener 'click', (e)->
     angleEnd:     r
     position: x:e.x, y:e.y
     bitSpikes: 3
-    duration: 3000
+    duration: 10000
     fillEnd: '#0F0'
 
 

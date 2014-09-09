@@ -127,6 +127,9 @@ class Byte extends Bit
 
     # size calculation options here
     item.lineWidth = @to.lineWidth
+    item.fill = "rgba(#{@to.fr}, #{@to.fg}, #{@to.fb}, #{@to.fa})"
+
+    console.log item.fillObj
     
     item.onComplete ?= ->
     item.onStart ?= ->

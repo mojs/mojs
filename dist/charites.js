@@ -675,6 +675,8 @@ Byte = (function(_super) {
     this.from = this.h.clone(this.to);
     item.isChain = true;
     item.lineWidth = this.to.lineWidth;
+    item.fill = "rgba(" + this.to.fr + ", " + this.to.fg + ", " + this.to.fb + ", " + this.to.fa + ")";
+    console.log(item.fillObj);
     if (item.onComplete == null) {
       item.onComplete = function() {};
     }
@@ -1410,6 +1412,7 @@ bubble = new charites.Burst({
   angle: {
     0: 200
   },
+  fillEnd: '#f0f',
   onComplete: function() {
     return console.log('a');
   }
@@ -1427,7 +1430,7 @@ window.addEventListener('click', function(e) {
       y: e.y
     },
     bitSpikes: 3,
-    duration: 3000,
+    duration: 10000,
     fillEnd: '#0F0'
   });
 });
