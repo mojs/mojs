@@ -1409,7 +1409,6 @@ bubble = new charites.Burst({
   angle: {
     0: 200
   },
-  repeat: 5,
   onComplete: function() {
     return console.log('a');
   }
@@ -1425,7 +1424,10 @@ window.addEventListener('click', function(e) {
     position: {
       x: e.x,
       y: e.y
-    }
+    },
+    shape: 'triangle',
+    bitSpikes: 3,
+    duration: 1000
   });
 });
 

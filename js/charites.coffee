@@ -28,7 +28,6 @@ bubble = new charites.Burst
   color:    'deeppink'
   lineDash: { '400, 20': '800, 200' }
   angle: {0: 200}
-  repeat: 5
   onComplete:-> console.log 'a'
   # lineDash: [40]
   # lineDashEnd: [0]
@@ -43,6 +42,9 @@ window.addEventListener 'click', (e)->
     lineWidthEnd: a
     angleEnd:     r
     position: x:e.x, y:e.y
+    shape: 'triangle'
+    bitSpikes: 3
+    duration: 1000
 
 
 
