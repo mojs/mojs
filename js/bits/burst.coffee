@@ -82,9 +82,9 @@ class Burst extends Byte
     degreeCnt = it.degreeCnt
     rotStep   = it.rotStep
 
+    it.rotate angle: @angle*it.h.DEG
+
     it.ctx.clear()
-    it.rotate
-      angle: @angle*it.h.DEG
 
     step = @degree/degreeCnt
     angle = 0
@@ -108,7 +108,6 @@ class Burst extends Byte
       rotAngle += rotStep
     it.ctx.restore()
     
-
   rotate:(o)->
     @ctx.save()
     @ctx.translate(2*@centerX,2*@centerY)

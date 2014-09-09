@@ -286,10 +286,10 @@ Burst = (function(_super) {
     var angle, degreeCnt, el, i, rotAngle, rotStep, rotation, step, x, y, _i, _len, _ref;
     degreeCnt = it.degreeCnt;
     rotStep = it.rotStep;
-    it.ctx.clear();
     it.rotate({
       angle: this.angle * it.h.DEG
     });
+    it.ctx.clear();
     step = this.degree / degreeCnt;
     angle = 0;
     rotAngle = 0;
@@ -843,6 +843,7 @@ Byte = (function(_super) {
     if (o == null) {
       o = {};
     }
+    console.log('size');
     if (o.plusCoef == null) {
       o.plusCoef = 0;
     }
@@ -1425,9 +1426,9 @@ window.addEventListener('click', function(e) {
       x: e.x,
       y: e.y
     },
-    shape: 'triangle',
     bitSpikes: 3,
-    duration: 1000
+    duration: 3000,
+    fillEnd: '#0F0'
   });
 });
 

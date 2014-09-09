@@ -41,9 +41,9 @@ window.addEventListener 'click', (e)->
     lineWidthEnd: a
     angleEnd:     r
     position: x:e.x, y:e.y
-    shape: 'triangle'
     bitSpikes: 3
-    duration: 1000
+    duration: 3000
+    fillEnd: '#0F0'
 
 
 

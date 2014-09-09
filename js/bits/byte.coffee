@@ -188,6 +188,7 @@ class Byte extends Bit
     @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
+
     @canvasSize()
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
     @onComplete   = @default prop: 'onComplete', def: null
@@ -196,6 +197,7 @@ class Byte extends Bit
 
 
   canvasSize:(o={})->
+    console.log 'size'
     o.plusCoef ?= 0
     o.mulCoef  ?= 1
     # CANVAS SIZE
