@@ -13,7 +13,6 @@ if (typeof define is "function") and define.amd
 
 # TODO
 #   chains
-#     replace callbacks
 #     remove resize blinking
 
 wrapper = document.getElementById 'js-wrapper'
