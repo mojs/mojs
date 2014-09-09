@@ -654,7 +654,7 @@ Byte = (function(_super) {
       return function() {
         var item, _ref, _ref1;
         _this.isShowStart = false;
-        if ((_ref = _this.o.onComplete) != null) {
+        if ((_ref = _this.onComplete) != null) {
           _ref.call(_this, arguments);
         }
         item = (_ref1 = _this.chains) != null ? _ref1[0] : void 0;
@@ -675,6 +675,24 @@ Byte = (function(_super) {
     this.from = this.h.clone(this.to);
     item.isChain = true;
     item.lineWidth = this.to.lineWidth;
+    if (item.onComplete == null) {
+      item.onComplete = function() {};
+    }
+    if (item.onStart == null) {
+      item.onStart = function() {};
+    }
+    if (item.repeat == null) {
+      item.repeat = 0;
+    }
+    if (item.yoyo == null) {
+      item.yoyo = false;
+    }
+    if (item.delay == null) {
+      item.delay = 0;
+    }
+    if (item.duration == null) {
+      item.duration = 400 * this.s;
+    }
     this.run(item);
     return this.chains.shift();
   };
@@ -813,6 +831,10 @@ Byte = (function(_super) {
         x: this.sizeX / 2,
         y: this.sizeY / 2
       }
+    });
+    this.onComplete = this["default"]({
+      prop: 'onComplete',
+      def: null
     });
     return this.posit();
   };
@@ -1378,7 +1400,7 @@ bubble = new charites.Burst({
     2: 0
   },
   shape: 'circle',
-  duration: 5000,
+  duration: 2000,
   cnt: 5,
   color: 'deeppink',
   lineDash: {
@@ -1387,6 +1409,7 @@ bubble = new charites.Burst({
   angle: {
     0: 200
   },
+  repeat: 5,
   onComplete: function() {
     return console.log('a');
   }

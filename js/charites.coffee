@@ -13,7 +13,6 @@ if (typeof define is "function") and define.amd
 
 # TODO
 #   chains
-#     if no active tween then run
 #     replace callbacks
 #     remove resize blinking
 
@@ -24,11 +23,12 @@ bubble = new charites.Burst
   # radiusX:   { 0: 100 }
   lineWidth: { 2: 0 }
   shape:     'circle'
-  duration: 5000
+  duration: 2000
   cnt:      5
   color:    'deeppink'
   lineDash: { '400, 20': '800, 200' }
   angle: {0: 200}
+  repeat: 5
   onComplete:-> console.log 'a'
   # lineDash: [40]
   # lineDashEnd: [0]

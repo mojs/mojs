@@ -106,7 +106,7 @@ class Byte extends Bit
         @o.onStart?.call @, arguments
       ).onComplete(=>
         @isShowStart = false
-        @o.onComplete?.call @, arguments
+        @onComplete?.call @, arguments
         
         item = @chains?[0]
         if item then @runFromChain item
@@ -124,8 +124,16 @@ class Byte extends Bit
   runFromChain:(item)->
     @from = @h.clone @to
     item.isChain = true
+
     # size calculation options here
     item.lineWidth = @to.lineWidth
+    
+    item.onComplete ?= ->
+    item.onStart ?= ->
+    item.repeat ?= 0
+    item.yoyo ?= false
+    item.delay ?= 0
+    item.duration ?= 400*@s
 
     @run item
     @chains.shift()
@@ -182,6 +190,7 @@ class Byte extends Bit
 
     @canvasSize()
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
+    @onComplete   = @default prop: 'onComplete', def: null
 
     @posit()
 
