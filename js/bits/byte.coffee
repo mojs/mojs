@@ -114,6 +114,7 @@ class Byte extends Bit
         if item then @runFromChain item
         else
           !@isShowEnd and (@el.style.display = 'none')
+          !@isShowEnd and console.log 'hide'
           @isRunning = false
 
       ).yoyo(@yoyo)
@@ -195,9 +196,6 @@ class Byte extends Bit
     @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
-    # # @canvasSize()
-
-    # @posit()
 
 
 
@@ -248,7 +246,6 @@ class Byte extends Bit
   posit:->
     x = @position.x-@sizeX/2
     y = @position.y-@sizeY/2
-    console.log x, y
     @el.style.left = "#{x}px"
     @el.style.top  = "#{y}px"
 

@@ -670,6 +670,7 @@ Byte = (function(_super) {
           return _this.runFromChain(item);
         } else {
           !_this.isShowEnd && (_this.el.style.display = 'none');
+          !_this.isShowEnd && console.log('hide');
           return _this.isRunning = false;
         }
       };
@@ -917,7 +918,6 @@ Byte = (function(_super) {
     var x, y;
     x = this.position.x - this.sizeX / 2;
     y = this.position.y - this.sizeY / 2;
-    console.log(x, y);
     this.el.style.left = "" + x + "px";
     return this.el.style.top = "" + y + "px";
   };
@@ -1368,7 +1368,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, a, bubble, charites, h, r, wrapper;
+var Bubble, Burst, Charites, a, bubble, charites, h, i, r, wrapper, _i;
 
 h = require('./helpers');
 
@@ -1405,7 +1405,7 @@ bubble = new charites.Burst({
   lineWidth: {
     3: 0
   },
-  shape: 'circle',
+  shape: 'line',
   duration: 2000,
   cnt: 5,
   color: 'deeppink',
@@ -1418,35 +1418,17 @@ bubble = new charites.Burst({
   }
 });
 
-a = h.rand(1, 20);
-
-r = h.rand(-400, 400);
-
-bubble.chain({
-  lineWidthEnd: a,
-  duration: 2000,
-  fillEnd: '#0F0',
-  colorEnd: 'black',
-  bitRadiusEnd: 20
-});
-
-window.addEventListener('click', function(e) {
+for (i = _i = 0; _i <= 20; i = ++_i) {
   a = h.rand(1, 20);
-  r = h.rand(-400, 400);
-  return bubble.chain({
+  r = h.rand(-20, 20);
+  bubble.chain({
     lineWidthEnd: a,
-    angleEnd: r,
-    position: {
-      x: e.x,
-      y: e.y
-    },
-    bitSpikes: 3,
-    duration: 10000,
+    duration: 2000,
     fillEnd: '#0F0',
     colorEnd: 'black',
     bitRadiusEnd: 20
   });
-});
+}
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./helpers":14}],14:[function(require,module,exports){
