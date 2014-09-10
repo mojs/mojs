@@ -153,9 +153,8 @@ Burst = (function(_super) {
   }
 
   Burst.prototype.vars = function() {
-    var Shape, i, _i, _ref, _results;
     Burst.__super__.vars.apply(this, arguments);
-    Shape = this.shapes[this.shape.toLowerCase()] || Circle;
+    this.Shape = this.shapes[this.shape.toLowerCase()] || Circle;
     this.cnt = this["default"]({
       prop: 'cnt',
       def: 3
@@ -204,36 +203,10 @@ Burst = (function(_super) {
       prop: 'lineDashOffset',
       def: 0
     });
-    this.lineDashOffsetEnd = this["default"]({
+    return this.lineDashOffsetEnd = this["default"]({
       prop: 'lineDashOffsetEnd',
       def: this.lineDashOffset
     });
-    if (this.els == null) {
-      this.els = [];
-    }
-    this.els.length = 0;
-    _results = [];
-    for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      _results.push(this.els.push(new Shape({
-        ctx: this.ctx,
-        parentSize: {
-          x: this.sizeX,
-          y: this.sizeY
-        },
-        position: {
-          x: 2 * this.center,
-          y: 2 * this.center
-        },
-        isClearLess: true,
-        radius: this.bitRadius,
-        color: this.color,
-        fill: this.fill,
-        spikes: this.bitSpikes,
-        rate: this.bitRate,
-        lineDash: this.lineDash
-      })));
-    }
-    return _results;
   };
 
   Burst.prototype.run = function(oa, from) {
@@ -274,6 +247,7 @@ Burst = (function(_super) {
     this.mixColor(this.oa.isChain);
     this.mixFill(this.oa.isChain);
     this.calcSize();
+    this.addElements();
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
     return this.tween = this.initTween(this.oa.isChain).onUpdate(function() {
@@ -318,6 +292,36 @@ Burst = (function(_super) {
       rotAngle += rotStep;
     }
     return it.ctx.restore();
+  };
+
+  Burst.prototype.addElements = function() {
+    var i, _i, _ref, _results;
+    if (this.els == null) {
+      this.els = [];
+    }
+    this.els.length = 0;
+    _results = [];
+    for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      _results.push(this.els.push(new this.Shape({
+        ctx: this.ctx,
+        parentSize: {
+          x: this.sizeX,
+          y: this.sizeY
+        },
+        position: {
+          x: 2 * this.center,
+          y: 2 * this.center
+        },
+        isClearLess: true,
+        radius: this.bitRadius,
+        color: this.color,
+        fill: this.fill,
+        spikes: this.bitSpikes,
+        rate: this.bitRate,
+        lineDash: this.lineDash
+      })));
+    }
+    return _results;
   };
 
   Burst.prototype.rotate = function(o) {
@@ -581,7 +585,6 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.mixColor = function(isChain) {
-    console.log(this.colorEndObj);
     if (this.color && this.colorEnd) {
       if (!isChain) {
         this.from.r = this.colorObj.r;
@@ -832,35 +835,7 @@ Byte = (function(_super) {
     maxEnd = Math.max(abs(this.radiusXEnd), abs(this.radiusYEnd));
     maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
     this.maxRadius = Math.max(maxEnd, maxStart);
-    this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
-    this.canvasSize();
-    this.position = this["default"]({
-      prop: 'position',
-      def: {
-        x: this.sizeX / 2,
-        y: this.sizeY / 2
-      }
-    });
-    return this.posit();
-  };
-
-  Byte.prototype.canvasSize = function(o) {
-    if (o == null) {
-      o = {};
-    }
-    if (o.plusCoef == null) {
-      o.plusCoef = 0;
-    }
-    if (o.mulCoef == null) {
-      o.mulCoef = 1;
-    }
-    this.size = (2 * this.maxRadius * o.mulCoef) + this.maxLineWidth + o.plusCoef;
-    this.center = this.size / 2;
-    this.sizeX = this.size;
-    this.sizeY = this.size;
-    this.centerX = this.sizeX / 2;
-    this.centerY = this.sizeY / 2;
-    return this.setElSize();
+    return this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
   };
 
   Byte.prototype.normalizeLineDashes = function() {
@@ -903,12 +878,18 @@ Byte = (function(_super) {
     this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
     this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
     this.size = this.maxRadius + this.maxLineWidth + 2 * this.maxBitRadius;
-    console.log(this.size);
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
     this.centerX = this.sizeX / 2;
     this.centerY = this.sizeY / 2;
+    this.position = this["default"]({
+      prop: 'position',
+      def: {
+        x: this.sizeX / 2,
+        y: this.sizeY / 2
+      }
+    });
     return this.setElSize();
   };
 
@@ -919,6 +900,7 @@ Byte = (function(_super) {
       this.el.style.width = "" + this.sizeX + "px";
       this.el.style.height = "" + this.sizeY + "px";
     }
+    this.posit();
     return this.el;
   };
 
@@ -935,6 +917,7 @@ Byte = (function(_super) {
     var x, y;
     x = this.position.x - this.sizeX / 2;
     y = this.position.y - this.sizeY / 2;
+    console.log(x, y);
     this.el.style.left = "" + x + "px";
     return this.el.style.top = "" + y + "px";
   };
@@ -1385,7 +1368,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, bubble, charites, h, wrapper;
+var Bubble, Burst, Charites, a, bubble, charites, h, r, wrapper;
 
 h = require('./helpers');
 
@@ -1423,7 +1406,7 @@ bubble = new charites.Burst({
     3: 0
   },
   shape: 'circle',
-  duration: 500,
+  duration: 2000,
   cnt: 5,
   color: 'deeppink',
   angle: {
@@ -1431,12 +1414,23 @@ bubble = new charites.Burst({
   },
   fillEnd: '#f0f',
   bitRadius: {
-    10: 0
+    10: 2
   }
 });
 
+a = h.rand(1, 20);
+
+r = h.rand(-400, 400);
+
+bubble.chain({
+  lineWidthEnd: a,
+  duration: 2000,
+  fillEnd: '#0F0',
+  colorEnd: 'black',
+  bitRadiusEnd: 20
+});
+
 window.addEventListener('click', function(e) {
-  var a, r;
   a = h.rand(1, 20);
   r = h.rand(-400, 400);
   return bubble.chain({

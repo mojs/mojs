@@ -5,7 +5,7 @@ Byte      = require './byte'
 class Burst extends Byte
   vars:->
     super
-    Shape = @shapes[@shape.toLowerCase()] or Circle
+    @Shape = @shapes[@shape.toLowerCase()] or Circle
 
     @cnt          = @default prop: 'cnt', def: 3
     @degree       = @default prop: 'degree', def: 360
@@ -24,19 +24,6 @@ class Burst extends Byte
     @lineDashOffset = @default prop: 'lineDashOffset', def: 0
     @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd', def:@lineDashOffset
 
-    @els ?= []; @els.length = 0
-    for i in [0...@cnt]
-      @els.push new Shape
-        ctx: @ctx
-        parentSize: x: @sizeX, y: @sizeY
-        position:   x: 2*@center, y: 2*@center
-        isClearLess: true
-        radius: @bitRadius
-        color: @color
-        fill: @fill
-        spikes: @bitSpikes
-        rate: @bitRate
-        lineDash: @lineDash
 
   run:(@oa={}, from)->
     super; it = @
@@ -70,17 +57,13 @@ class Burst extends Byte
     @mixColor(@oa.isChain)
     @mixFill(@oa.isChain)
 
-    @calcSize()
+    @calcSize(); @addElements()
 
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt
     @tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
 
-    # console.log size
-    # @canvasSize()
-
   draw:(it)->
-    # console.log @
     degreeCnt = it.degreeCnt
     rotStep   = it.rotStep
 
@@ -110,6 +93,21 @@ class Burst extends Byte
       angle += step
       rotAngle += rotStep
     it.ctx.restore()
+
+  addElements:->
+    @els ?= []; @els.length = 0
+    for i in [0...@cnt]
+      @els.push new @Shape
+        ctx: @ctx
+        parentSize: x: @sizeX, y: @sizeY
+        position:   x: 2*@center, y: 2*@center
+        isClearLess: true
+        radius: @bitRadius
+        color: @color
+        fill: @fill
+        spikes: @bitSpikes
+        rate: @bitRate
+        lineDash: @lineDash
     
   rotate:(o)->
     @ctx.save()

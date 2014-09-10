@@ -47,7 +47,6 @@ class Byte extends Bit
         @to["lineDash#{i}"] = dash
 
   mixColor:(isChain)->
-    console.log @colorEndObj
     if @color and @colorEnd
       if !isChain
         @from.r = @colorObj.r
@@ -174,8 +173,6 @@ class Byte extends Bit
     @fillEnd  and (@fillEndObj  = h.makeColorObj @fillEnd)
     @colorMap   = @default prop: 'colorMap',  def: [@color]
 
-
-
     @angle        = @default prop: 'angle',       def: 0
     @angleStart   = @default prop: 'angleStart',  def: @angle
     @angleEnd     = @default prop: 'angleEnd',    def: @angleStart
@@ -198,22 +195,11 @@ class Byte extends Bit
     @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
-    @canvasSize()
-    @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
+    # # @canvasSize()
 
-    @posit()
+    # @posit()
 
 
-  canvasSize:(o={})->
-    # console.log 'size'
-    o.plusCoef ?= 0
-    o.mulCoef  ?= 1
-    # CANVAS SIZE
-    @size = ((2*@maxRadius*o.mulCoef) + @maxLineWidth + o.plusCoef)
-    # console.log @size
-    @center = @size/2; @sizeX = @size; @sizeY = @size
-    @centerX = @sizeX/2; @centerY = @sizeY/2
-    @setElSize()
 
   normalizeLineDashes:->
     # line dash arrays should be equal length
@@ -238,9 +224,9 @@ class Byte extends Bit
     @maxLineWidth = Math.max @from.lineWidth, @to.lineWidth
     @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
     @size = @maxRadius + @maxLineWidth + 2*@maxBitRadius
-    console.log @size
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
+    @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
     @setElSize()
 
   setElSize:->
@@ -251,6 +237,7 @@ class Byte extends Bit
     if h.pixel > 1
       @el.style.width   = "#{@sizeX}px"
       @el.style.height  = "#{@sizeY}px"
+    @posit()
     @el
 
   setPosition:(x, y=0)->
@@ -259,12 +246,12 @@ class Byte extends Bit
     @posit()
 
   posit:->
-    # console.log @size
-    # console.log @position.x - @sizeX/2, @position.y - @sizeY/2
     x = @position.x-@sizeX/2
     y = @position.y-@sizeY/2
+    console.log x, y
     @el.style.left = "#{x}px"
     @el.style.top  = "#{y}px"
+
 
 module.exports = Byte
 
