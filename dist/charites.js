@@ -240,7 +240,7 @@ Burst = (function(_super) {
     return _results;
   };
 
-  Burst.prototype.run = function(oa) {
+  Burst.prototype.run = function(oa, from) {
     var it;
     this.oa = oa != null ? oa : {};
     Burst.__super__.run.apply(this, arguments);
@@ -258,6 +258,8 @@ Burst = (function(_super) {
         bitRate: this.bitRate,
         lineDashOffset: this.lineDashOffset
       };
+    } else {
+      this.from = from;
     }
     this.to = {
       radiusX: 2 * this.radiusXEnd,
@@ -273,8 +275,8 @@ Burst = (function(_super) {
     };
     this.mixStarSpikesProps();
     this.mixLineDash();
-    this.mixColor();
-    this.mixFill();
+    this.mixColor(this.oa.isChain);
+    this.mixFill(this.oa.isChain);
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
     return this.tween = this.initTween(this.oa.isChain).onUpdate(function() {
@@ -307,6 +309,7 @@ Burst = (function(_super) {
         angle: rotAngle + this.bitAngle,
         lineWidth: this.lineWidth,
         fillObj: it.updateFill(this),
+        colorObj: it.updateColor(this),
         radiusX: this.bitRadius,
         radiusY: this.bitRadius,
         spikes: this.spikes,
@@ -580,12 +583,15 @@ Byte = (function(_super) {
     }
   };
 
-  Byte.prototype.mixColor = function(from, to) {
+  Byte.prototype.mixColor = function(isChain) {
+    console.log(this.colorEndObj);
     if (this.color && this.colorEnd) {
-      this.from.r = this.colorObj.r;
-      this.from.g = this.colorObj.g;
-      this.from.b = this.colorObj.b;
-      this.from.a = this.colorObj.a;
+      if (!isChain) {
+        this.from.r = this.colorObj.r;
+        this.from.g = this.colorObj.g;
+        this.from.b = this.colorObj.b;
+        this.from.a = this.colorObj.a;
+      }
       this.to.r = this.colorEndObj.r;
       this.to.g = this.colorEndObj.g;
       this.to.b = this.colorEndObj.b;
@@ -594,12 +600,14 @@ Byte = (function(_super) {
     return this.colorObjTween = h.clone(this.colorObj);
   };
 
-  Byte.prototype.mixFill = function(from, to) {
+  Byte.prototype.mixFill = function(isChain) {
     if (this.fill && this.fillEnd) {
-      this.from.fr = this.fillObj.r;
-      this.from.fg = this.fillObj.g;
-      this.from.fb = this.fillObj.b;
-      this.from.fa = this.fillObj.a;
+      if (!isChain) {
+        this.from.fr = this.fillObj.r;
+        this.from.fg = this.fillObj.g;
+        this.from.fb = this.fillObj.b;
+        this.from.fa = this.fillObj.a;
+      }
       this.to.fr = this.fillEndObj.r;
       this.to.fg = this.fillEndObj.g;
       this.to.fb = this.fillEndObj.b;
@@ -608,7 +616,7 @@ Byte = (function(_super) {
     return this.fillObjTween = h.clone(this.fillObj);
   };
 
-  Byte.prototype.updateColors = function(that) {
+  Byte.prototype.updateColor = function(that) {
     this.colorObjTween.r = parseInt(that.r, 10);
     this.colorObjTween.g = parseInt(that.g, 10);
     this.colorObjTween.b = parseInt(that.b, 10);
@@ -672,11 +680,9 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.runFromChain = function(item) {
-    this.from = this.h.clone(this.to);
+    var from;
+    from = this.h.clone(this.to);
     item.isChain = true;
-    item.lineWidth = this.to.lineWidth;
-    item.fill = "rgba(" + this.to.fr + ", " + this.to.fg + ", " + this.to.fb + ", " + this.to.fa + ")";
-    console.log(item.fillObj);
     if (item.onComplete == null) {
       item.onComplete = function() {};
     }
@@ -695,7 +701,7 @@ Byte = (function(_super) {
     if (item.duration == null) {
       item.duration = 400 * this.s;
     }
-    this.run(item);
+    this.run(item, from);
     return this.chains.shift();
   };
 
@@ -845,7 +851,6 @@ Byte = (function(_super) {
     if (o == null) {
       o = {};
     }
-    console.log('size');
     if (o.plusCoef == null) {
       o.plusCoef = 0;
     }
@@ -1400,22 +1405,17 @@ bubble = new charites.Burst({
     50: 100
   },
   lineWidth: {
-    2: 0
+    2: 20
   },
   shape: 'circle',
   duration: 2000,
   cnt: 5,
   color: 'deeppink',
-  lineDash: {
-    '400, 20': '800, 200'
-  },
   angle: {
     0: 200
   },
   fillEnd: '#f0f',
-  onComplete: function() {
-    return console.log('a');
-  }
+  colorEnd: 'orange'
 });
 
 window.addEventListener('click', function(e) {
@@ -1431,7 +1431,8 @@ window.addEventListener('click', function(e) {
     },
     bitSpikes: 3,
     duration: 10000,
-    fillEnd: '#0F0'
+    fillEnd: '#0F0',
+    colorEnd: 'black'
   });
 });
 

@@ -46,24 +46,27 @@ class Byte extends Bit
       for dash, i in @lineDashEnd
         @to["lineDash#{i}"] = dash
 
-  mixColor:(from, to)->
+  mixColor:(isChain)->
+    console.log @colorEndObj
     if @color and @colorEnd
-      @from.r = @colorObj.r
-      @from.g = @colorObj.g
-      @from.b = @colorObj.b
-      @from.a = @colorObj.a
+      if !isChain
+        @from.r = @colorObj.r
+        @from.g = @colorObj.g
+        @from.b = @colorObj.b
+        @from.a = @colorObj.a
       @to.r = @colorEndObj.r
       @to.g = @colorEndObj.g
       @to.b = @colorEndObj.b
       @to.a = @colorEndObj.a
     @colorObjTween = h.clone @colorObj
 
-  mixFill:(from, to)->
+  mixFill:(isChain)->
     if @fill and @fillEnd
-      @from.fr = @fillObj.r
-      @from.fg = @fillObj.g
-      @from.fb = @fillObj.b
-      @from.fa = @fillObj.a
+      if !isChain
+        @from.fr = @fillObj.r
+        @from.fg = @fillObj.g
+        @from.fb = @fillObj.b
+        @from.fa = @fillObj.a
       @to.fr = @fillEndObj.r
       @to.fg = @fillEndObj.g
       @to.fb = @fillEndObj.b
@@ -72,7 +75,7 @@ class Byte extends Bit
     @fillObjTween  = h.clone @fillObj
 
   # METHODS FOR TWEEN UPDATE FUNCTION
-  updateColors:(that)->
+  updateColor:(that)->
     @colorObjTween.r = parseInt(that.r,10)
     @colorObjTween.g = parseInt(that.g,10)
     @colorObjTween.b = parseInt(that.b,10)
@@ -122,14 +125,14 @@ class Byte extends Bit
     tween
 
   runFromChain:(item)->
-    @from = @h.clone @to
+    from = @h.clone @to
+    
     item.isChain = true
 
     # size calculation options here
-    item.lineWidth = @to.lineWidth
-    item.fill = "rgba(#{@to.fr}, #{@to.fg}, #{@to.fb}, #{@to.fa})"
+    # item.lineWidth = @to.lineWidth
+    # item.fill = "rgba(#{@to.fr}, #{@to.fg}, #{@to.fb}, #{@to.fa})"
 
-    console.log item.fillObj
     
     item.onComplete ?= ->
     item.onStart ?= ->
@@ -138,7 +141,7 @@ class Byte extends Bit
     item.delay ?= 0
     item.duration ?= 400*@s
 
-    @run item
+    @run item, from
     @chains.shift()
 
   chain:(oc={})-> if @isRunning then @chains.push oc else @runFromChain oc
@@ -166,10 +169,12 @@ class Byte extends Bit
     @opacity      = @default prop: 'opacity',    def: 1
     @opacityEnd   = @default prop: 'opacityEnd', def: @opacity
 
-    @colorEnd  = @default prop: 'colorEnd',        def: @color
+    @colorEnd  = @default prop: 'colorEnd',  def: @color
     @colorEnd and (@colorEndObj = h.makeColorObj @colorEnd)
     @fillEnd  and (@fillEndObj  = h.makeColorObj @fillEnd)
     @colorMap   = @default prop: 'colorMap',  def: [@color]
+
+
 
     @angle        = @default prop: 'angle',       def: 0
     @angleStart   = @default prop: 'angleStart',  def: @angle
@@ -200,7 +205,7 @@ class Byte extends Bit
 
 
   canvasSize:(o={})->
-    console.log 'size'
+    # console.log 'size'
     o.plusCoef ?= 0
     o.mulCoef  ?= 1
     # CANVAS SIZE

@@ -42,7 +42,7 @@ class Burst extends Byte
         rate: @bitRate
         lineDash: @lineDash
 
-  run:(@oa={})->
+  run:(@oa={}, from)->
     super; it = @
     if !@oa.isChain
       @from =
@@ -56,6 +56,7 @@ class Burst extends Byte
         spikes: @bitSpikesEnd
         bitRate: @bitRate
         lineDashOffset: @lineDashOffset
+    else @from = from
     @to =
       radiusX: 2*@radiusXEnd
       radiusY: 2*@radiusYEnd
@@ -70,8 +71,8 @@ class Burst extends Byte
 
     @mixStarSpikesProps()
     @mixLineDash()
-    @mixColor()
-    @mixFill()
+    @mixColor(@oa.isChain)
+    @mixFill(@oa.isChain)
 
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt
@@ -98,6 +99,7 @@ class Burst extends Byte
         angle:      (rotAngle) + @bitAngle
         lineWidth:  @lineWidth
         fillObj:    it.updateFill(@)
+        colorObj:   it.updateColor(@)
         radiusX:    @bitRadius
         radiusY:    @bitRadius
         spikes:     @spikes
