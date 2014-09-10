@@ -24,10 +24,6 @@ class Burst extends Byte
     @lineDashOffset = @default prop: 'lineDashOffset', def: 0
     @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd', def:@lineDashOffset
 
-    @canvasSize
-      plusCoef: 2*Math.max(@bitRadius, @bitRadiusEnd) + 2
-      mulCoef: 1
-
     @els ?= []; @els.length = 0
     for i in [0...@cnt]
       @els.push new Shape
@@ -46,8 +42,8 @@ class Burst extends Byte
     super; it = @
     if !@oa.isChain
       @from =
-        radiusX: @radiusX
-        radiusY: @radiusY
+        radiusX: 2*@radiusX
+        radiusY: 2*@radiusY
         bitAngle: @bitAngle
         lineWidth: @lineWidth
         bitRadius: @bitRadius
@@ -58,14 +54,14 @@ class Burst extends Byte
         lineDashOffset: @lineDashOffset
     else @from = from
     @to =
-      radiusX: 2*@radiusXEnd
-      radiusY: 2*@radiusYEnd
-      bitAngle: @bitAngleEnd
-      lineWidth: @lineWidthEnd
-      bitRadius: @bitRadiusEnd
-      degree: @degreeEnd
-      angle: @angleEnd
-      spikes: @spikesEnd
+      radiusX:     2*@radiusXEnd
+      radiusY:     2*@radiusYEnd
+      bitAngle:    @bitAngleEnd
+      lineWidth:   @lineWidthEnd
+      bitRadius:   @bitRadiusEnd
+      degree:      @degreeEnd
+      angle:       @angleEnd
+      spikes:      @spikesEnd
       bitRate:     @bitRateEnd
       lineDashOffset: @lineDashOffsetEnd
 
@@ -74,9 +70,14 @@ class Burst extends Byte
     @mixColor(@oa.isChain)
     @mixFill(@oa.isChain)
 
+    @calcSize()
+
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt
     @tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
+
+    # console.log size
+    # @canvasSize()
 
   draw:(it)->
     # console.log @

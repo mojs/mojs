@@ -208,10 +208,6 @@ Burst = (function(_super) {
       prop: 'lineDashOffsetEnd',
       def: this.lineDashOffset
     });
-    this.canvasSize({
-      plusCoef: 2 * Math.max(this.bitRadius, this.bitRadiusEnd) + 2,
-      mulCoef: 1
-    });
     if (this.els == null) {
       this.els = [];
     }
@@ -247,8 +243,8 @@ Burst = (function(_super) {
     it = this;
     if (!this.oa.isChain) {
       this.from = {
-        radiusX: this.radiusX,
-        radiusY: this.radiusY,
+        radiusX: 2 * this.radiusX,
+        radiusY: 2 * this.radiusY,
         bitAngle: this.bitAngle,
         lineWidth: this.lineWidth,
         bitRadius: this.bitRadius,
@@ -277,6 +273,7 @@ Burst = (function(_super) {
     this.mixLineDash();
     this.mixColor(this.oa.isChain);
     this.mixFill(this.oa.isChain);
+    this.calcSize();
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
     return this.tween = this.initTween(this.oa.isChain).onUpdate(function() {
@@ -827,6 +824,10 @@ Byte = (function(_super) {
       def: 'Linear.None'
     });
     this.easings = this.easing.split('.');
+    this.onComplete = this["default"]({
+      prop: 'onComplete',
+      def: null
+    });
     abs = Math.abs;
     maxEnd = Math.max(abs(this.radiusXEnd), abs(this.radiusYEnd));
     maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
@@ -839,10 +840,6 @@ Byte = (function(_super) {
         x: this.sizeX / 2,
         y: this.sizeY / 2
       }
-    });
-    this.onComplete = this["default"]({
-      prop: 'onComplete',
-      def: null
     });
     return this.posit();
   };
@@ -895,6 +892,24 @@ Byte = (function(_super) {
     this.el.style.top = 0;
     !this.isShowStart && (this.el.style.display = 'none');
     return this.parent.appendChild(this.el);
+  };
+
+  Byte.prototype.calcSize = function() {
+    var abs, maxEnd, maxStart;
+    abs = Math.abs;
+    maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
+    maxStart = Math.max(abs(this.from.radiusX), abs(this.from.radiusY));
+    this.maxRadius = Math.max(maxEnd, maxStart);
+    this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
+    this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
+    this.size = this.maxRadius + this.maxLineWidth + 2 * this.maxBitRadius;
+    console.log(this.size);
+    this.center = this.size / 2;
+    this.sizeX = this.size;
+    this.sizeY = this.size;
+    this.centerX = this.sizeX / 2;
+    this.centerY = this.sizeY / 2;
+    return this.setElSize();
   };
 
   Byte.prototype.setElSize = function() {
@@ -1402,20 +1417,22 @@ wrapper = document.getElementById('js-wrapper');
 bubble = new charites.Burst({
   parent: wrapper,
   radius: {
-    50: 100
+    10: 100
   },
   lineWidth: {
-    2: 20
+    3: 0
   },
   shape: 'circle',
-  duration: 2000,
+  duration: 500,
   cnt: 5,
   color: 'deeppink',
   angle: {
-    0: 200
+    0: 20
   },
   fillEnd: '#f0f',
-  colorEnd: 'orange'
+  bitRadius: {
+    10: 0
+  }
 });
 
 window.addEventListener('click', function(e) {
@@ -1432,7 +1449,8 @@ window.addEventListener('click', function(e) {
     bitSpikes: 3,
     duration: 10000,
     fillEnd: '#0F0',
-    colorEnd: 'black'
+    colorEnd: 'black',
+    bitRadiusEnd: 20
   });
 });
 

@@ -190,16 +190,16 @@ class Byte extends Bit
     @delay        = @default prop: 'delay',        def: 0
     @easing       = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings      = @easing.split '.'
+    @onComplete   = @default prop: 'onComplete', def: null
+
     abs = Math.abs
     maxEnd = Math.max abs(@radiusXEnd), abs(@radiusYEnd)
     maxStart = Math.max abs(@radiusX), abs(@radiusY)
     @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
 
-
     @canvasSize()
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
-    @onComplete   = @default prop: 'onComplete', def: null
 
     @posit()
 
@@ -229,6 +229,19 @@ class Byte extends Bit
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
     !@isShowStart and (@el.style.display = 'none'); @parent.appendChild(@el)
+
+  calcSize:->
+    abs = Math.abs
+    maxEnd = Math.max abs(@to.radiusX), abs(@to.radiusY)
+    maxStart = Math.max abs(@from.radiusX), abs(@from.radiusY)
+    @maxRadius    = Math.max maxEnd, maxStart
+    @maxLineWidth = Math.max @from.lineWidth, @to.lineWidth
+    @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
+    @size = @maxRadius + @maxLineWidth + 2*@maxBitRadius
+    console.log @size
+    @center = @size/2; @sizeX = @size; @sizeY = @size
+    @centerX = @sizeX/2; @centerY = @sizeY/2
+    @setElSize()
 
   setElSize:->
     @el.setAttribute 'width',  h.pixel*@sizeX
