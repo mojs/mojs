@@ -101,16 +101,18 @@ class Byte extends Bit
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .onStart(=>
+        @setElSize()
         @isRunning = true
         !isChain and @ctx.clear()
-        # (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
+        (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
         @o.onStart?.call @, arguments
       ).onComplete(=>
         @isShowStart = false
         @onComplete?.call @, arguments
         item = @chains?[0]
         if item then @runFromChain item
-        else @isRunning = false
+        else
+          @isRunning = false
       ).yoyo(@yoyo)
       .start()
 
@@ -200,7 +202,7 @@ class Byte extends Bit
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
     @parent.appendChild(@el)
 
-  calcSize:(isChain)->
+  calcSize:->
     abs = Math.abs
     maxEnd = Math.max abs(@to.radiusX), abs(@to.radiusY)
     maxStart = Math.max abs(@from.radiusX), abs(@from.radiusY)
@@ -211,11 +213,9 @@ class Byte extends Bit
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
-    @setElSize(isChain)
+    @setElSize()
 
-  setElSize:(isChain)->
-    if isChain then return
-
+  setElSize:->
     @el.setAttribute 'width',  h.pixel*@sizeX
     @el.setAttribute 'height', h.pixel*@sizeY
 

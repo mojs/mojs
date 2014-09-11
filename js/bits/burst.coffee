@@ -57,13 +57,10 @@ class Burst extends Byte
     @mixLineDash()
     @mixColor(@oa.isChain)
     @mixFill(@oa.isChain)
-
     
-    # if !@oa.isChain
-    @calcSize(@oa.isChain)
-  
+    @calcSize()
+    
     @addElements()
-
   
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt

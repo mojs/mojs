@@ -246,7 +246,7 @@ Burst = (function(_super) {
     this.mixLineDash();
     this.mixColor(this.oa.isChain);
     this.mixFill(this.oa.isChain);
-    this.calcSize(this.oa.isChain);
+    this.calcSize();
     this.addElements();
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
@@ -652,8 +652,10 @@ Byte = (function(_super) {
     tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
       return function() {
         var _ref;
+        _this.setElSize();
         _this.isRunning = true;
         !isChain && _this.ctx.clear();
+        (!_this.isShowStart || _this.isShowEnd) && (_this.el.style.display = 'block');
         return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
       };
     })(this)).onComplete((function(_this) {
@@ -868,7 +870,7 @@ Byte = (function(_super) {
     return this.parent.appendChild(this.el);
   };
 
-  Byte.prototype.calcSize = function(isChain) {
+  Byte.prototype.calcSize = function() {
     var abs, maxEnd, maxStart;
     abs = Math.abs;
     maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
@@ -889,13 +891,10 @@ Byte = (function(_super) {
         y: this.sizeY / 2
       }
     });
-    return this.setElSize(isChain);
+    return this.setElSize();
   };
 
-  Byte.prototype.setElSize = function(isChain) {
-    if (isChain) {
-      return;
-    }
+  Byte.prototype.setElSize = function() {
     this.el.setAttribute('width', h.pixel * this.sizeX);
     this.el.setAttribute('height', h.pixel * this.sizeY);
     if (h.pixel > 1) {
