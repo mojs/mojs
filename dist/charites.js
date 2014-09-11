@@ -669,6 +669,7 @@ Byte = (function(_super) {
         if (item) {
           return _this.runFromChain(item);
         } else {
+          !_this.isShowEnd && (_this.el.style.display = 'none');
           return _this.isRunning = false;
         }
       };
@@ -867,6 +868,7 @@ Byte = (function(_super) {
     this.el.style.position = 'absolute';
     this.el.style.left = 0;
     this.el.style.top = 0;
+    !this.isShowStart && (this.el.style.display = 'none');
     return this.parent.appendChild(this.el);
   };
 
@@ -884,14 +886,13 @@ Byte = (function(_super) {
     this.sizeY = this.size;
     this.centerX = this.sizeX / 2;
     this.centerY = this.sizeY / 2;
-    this.position = this["default"]({
+    return this.position = this["default"]({
       prop: 'position',
       def: {
         x: this.sizeX / 2,
         y: this.sizeY / 2
       }
     });
-    return this.setElSize();
   };
 
   Byte.prototype.setElSize = function() {

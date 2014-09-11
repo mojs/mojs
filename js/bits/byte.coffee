@@ -112,6 +112,7 @@ class Byte extends Bit
         item = @chains?[0]
         if item then @runFromChain item
         else
+          !@isShowEnd and (@el.style.display = 'none')
           @isRunning = false
       ).yoyo(@yoyo)
       .start()
@@ -200,7 +201,7 @@ class Byte extends Bit
   createEl:->
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
-    @parent.appendChild(@el)
+    !@isShowStart and (@el.style.display = 'none'); @parent.appendChild(@el)
 
   calcSize:->
     abs = Math.abs
@@ -213,7 +214,7 @@ class Byte extends Bit
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
-    @setElSize()
+    # @setElSize()
 
   setElSize:->
     @el.setAttribute 'width',  h.pixel*@sizeX
