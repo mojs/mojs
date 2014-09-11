@@ -1427,9 +1427,9 @@ for (i = _i = 0; _i <= 20; i = ++_i) {
     angleEnd: r,
     duration: 2000,
     fillEnd: '#0F0',
+    color: 'green',
     colorEnd: 'black',
-    bitRadiusEnd: 20,
-    delay: 1000
+    bitRadiusEnd: 20
   });
 }
 
@@ -1456,10 +1456,21 @@ Helpers = (function() {
     return time * this.s;
   };
 
+  Helpers.prototype.isFF = function() {
+    return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  };
+
   function Helpers(o) {
     this.o = o != null ? o : {};
     this.animationLoop = this.animationLoop.bind(this);
     this.div = document.createElement('div');
+    this.computedStyle = function(elem) {
+      if (window.getComputedStyle) {
+        return getComputedStyle(elem, '');
+      } else {
+        return elem.currentStyle;
+      }
+    };
     this.shortColors = {
       aqua: 'rgb(0,255,255)',
       black: 'rgb(0,0,0)',
@@ -1565,13 +1576,13 @@ Helpers = (function() {
         rgbColor = color;
       }
       if (!isRgb) {
-        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.div.style.color) : this.shortColors[color];
+        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF() ? this.computedStyle(this.div).color : this.div.style.color) : this.shortColors[color];
       }
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
       result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor);
       colorObj = {};
-      alpha = parseFloat(result[4]);
+      alpha = parseFloat(result[4] || 1);
       if (result) {
         colorObj = {
           r: parseInt(result[1], 10),

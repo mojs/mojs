@@ -12,9 +12,9 @@ if (typeof define is "function") and define.amd
   define "charites", [], -> charites
 
 # TODO
-#   chains
-#     remove resize blinking
-#     add size option
+#  add size option
+#  make bubble work
+#  fix browsers
   
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
@@ -39,9 +39,9 @@ for i in [0..20]
     # bitSpikes: 3
     duration: 2000
     fillEnd: '#0F0'
+    color: 'green'
     colorEnd: 'black'
     bitRadiusEnd: 20
-    delay: 1000
 
 # window.addEventListener 'click', (e)->
 #   # bubble.setPosition e.x, e.y

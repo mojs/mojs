@@ -14,9 +14,15 @@ class Helpers
 
   time:(time)-> time*@s
 
+  isFF:-> navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+
   constructor:(@o={})->
     @animationLoop = @animationLoop.bind @
     @div = document.createElement 'div'
+
+    @computedStyle = (elem)->
+      if window.getComputedStyle then getComputedStyle(elem, '')
+      else elem.currentStyle
 
     @shortColors =
       aqua:   'rgb(0,255,255)'
@@ -94,14 +100,15 @@ class Helpers
       if !isRgb
         rgbColor = if !@shortColors[color]
           @div.style.color = color
-          @div.style.color
+          if @isFF() then @computedStyle(@div).color
+          else @div.style.color
         else @shortColors[color]
 
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),'
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$'
       result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor)
       colorObj = {}
-      alpha = parseFloat(result[4])
+      alpha = parseFloat(result[4] or 1)
       if result
         colorObj =
           r: parseInt(result[1],10)
