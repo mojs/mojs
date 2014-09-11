@@ -15,6 +15,7 @@ class Helpers
   time:(time)-> time*@s
 
   isFF:-> navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+  isIE:-> navigator.userAgent.toLowerCase().indexOf('msie') > -1
 
   constructor:(@o={})->
     @animationLoop = @animationLoop.bind @
@@ -100,7 +101,7 @@ class Helpers
       if !isRgb
         rgbColor = if !@shortColors[color]
           @div.style.color = color
-          if @isFF() then @computedStyle(@div).color
+          if @isFF() or @isIE() then @computedStyle(@div).color
           else @div.style.color
         else @shortColors[color]
 

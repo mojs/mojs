@@ -14,7 +14,6 @@ if (typeof define is "function") and define.amd
 # TODO
 #  add size option
 #  make bubble work
-#  fix browsers
   
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst

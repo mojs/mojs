@@ -1460,6 +1460,10 @@ Helpers = (function() {
     return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   };
 
+  Helpers.prototype.isIE = function() {
+    return navigator.userAgent.toLowerCase().indexOf('msie') > -1;
+  };
+
   function Helpers(o) {
     this.o = o != null ? o : {};
     this.animationLoop = this.animationLoop.bind(this);
@@ -1576,7 +1580,7 @@ Helpers = (function() {
         rgbColor = color;
       }
       if (!isRgb) {
-        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF() ? this.computedStyle(this.div).color : this.div.style.color) : this.shortColors[color];
+        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF() || this.isIE() ? this.computedStyle(this.div).color : this.div.style.color) : this.shortColors[color];
       }
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
