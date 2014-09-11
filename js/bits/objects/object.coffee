@@ -39,8 +39,8 @@ class Object extends Bit
   postRender:->
     c = @fillObj
     @ctx.fillStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"
-    # @ctx.closePath();
-    @ctx.fill();  @ctx.restore(); @stroke()
+    # @ctx.closePath()
+    @ctx.restore(); @ctx.fill();  @stroke()
 
   rotation:->
     x = @position.x; y = @position.y
@@ -58,7 +58,6 @@ class Object extends Bit
     c = @colorObj
     @ctx.strokeStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"
     (@lineWidth > 0) and @ctx.stroke()
-
 
 module.exports = Object
 

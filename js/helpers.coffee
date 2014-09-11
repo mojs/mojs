@@ -130,11 +130,11 @@ class Helpers
   unlock:(o)->
     @[o.lock] = false
 
-  animationLoop: (time)->
+  animationLoop: ()->
     if !TWEEN.getAll().length then @isAnimateLoop = false
     return if !@isAnimateLoop
+    TWEEN.update()
     requestAnimationFrame @animationLoop
-    TWEEN.update(time)
 
   startAnimationLoop:->
     return if @isAnimateLoop

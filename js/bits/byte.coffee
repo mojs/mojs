@@ -24,7 +24,7 @@ class Byte extends Bit
 
     @parent = @o.parent or h.body
     @el = @oa.el or @o.el or @el or @createEl()
-    @ctx = @o.ctx or @ctx or @el.getContext '2d'
+    @ctx = @o.ctx or @ctx or @el.getContext('2d')
 
     super; @defaultByteVars()
     @s = 1*h.time 1
@@ -33,7 +33,7 @@ class Byte extends Bit
 
   run:(@oa={})->
     h.size(@oa) and @vars()
-    h.isSizeChange(@oa) and @setElSize()
+    # h.isSizeChange(@oa) and @setElSize()
 
     for tween, i in @tweens
       @TWEEN.remove tween
@@ -95,7 +95,6 @@ class Byte extends Bit
           i++
     lineDash
   # METHODS FOR TWEEN UPDATE FUNCTION
-
   initTween:(isChain)->
     tween = new @TWEEN.Tween(@from).to(@to,@duration*@s)
       .delay(@delay*@s)
@@ -104,23 +103,17 @@ class Byte extends Bit
       .onStart(=>
         @isRunning = true
         !isChain and @ctx.clear()
-        (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
+        # (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
         @o.onStart?.call @, arguments
       ).onComplete(=>
         @isShowStart = false
         @onComplete?.call @, arguments
-        
         item = @chains?[0]
         if item then @runFromChain item
-        else
-          !@isShowEnd and (@el.style.display = 'none')
-          !@isShowEnd and console.log 'hide'
-          @isRunning = false
-
+        else @isRunning = false
       ).yoyo(@yoyo)
       .start()
 
-    @currentTween = @
     h.startAnimationLoop()
     tween
 
@@ -129,11 +122,6 @@ class Byte extends Bit
     
     item.isChain = true
 
-    # size calculation options here
-    # item.lineWidth = @to.lineWidth
-    # item.fill = "rgba(#{@to.fr}, #{@to.fg}, #{@to.fb}, #{@to.fa})"
-
-    
     item.onComplete ?= ->
     item.onStart ?= ->
     item.repeat ?= 0
@@ -189,15 +177,13 @@ class Byte extends Bit
     @easing       = @defaultPart prop: 'easing',   def: 'Linear.None'
     @easings      = @easing.split '.'
     @onComplete   = @default prop: 'onComplete', def: null
+    @onStart      = @default prop: 'onStart', def: null
 
     abs = Math.abs
     maxEnd = Math.max abs(@radiusXEnd), abs(@radiusYEnd)
     maxStart = Math.max abs(@radiusX), abs(@radiusY)
     @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @lineWidthEnd, @lineWidthMiddle, @lineWidth
-
-
-
 
   normalizeLineDashes:->
     # line dash arrays should be equal length
@@ -212,9 +198,9 @@ class Byte extends Bit
   createEl:->
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
-    !@isShowStart and (@el.style.display = 'none'); @parent.appendChild(@el)
+    @parent.appendChild(@el)
 
-  calcSize:->
+  calcSize:(isChain)->
     abs = Math.abs
     maxEnd = Math.max abs(@to.radiusX), abs(@to.radiusY)
     maxStart = Math.max abs(@from.radiusX), abs(@from.radiusY)
@@ -225,9 +211,11 @@ class Byte extends Bit
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
-    @setElSize()
+    @setElSize(isChain)
 
-  setElSize:->
+  setElSize:(isChain)->
+    if isChain then return
+
     @el.setAttribute 'width',  h.pixel*@sizeX
     @el.setAttribute 'height', h.pixel*@sizeY
 
@@ -248,7 +236,6 @@ class Byte extends Bit
     y = @position.y-@sizeY/2
     @el.style.left = "#{x}px"
     @el.style.top  = "#{y}px"
-
 
 module.exports = Byte
 

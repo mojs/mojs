@@ -26,6 +26,7 @@ class Burst extends Byte
 
 
   run:(@oa={}, from)->
+
     super; it = @
     if !@oa.isChain
       @from =
@@ -57,19 +58,24 @@ class Burst extends Byte
     @mixColor(@oa.isChain)
     @mixFill(@oa.isChain)
 
-    @calcSize()
+    
+    # if !@oa.isChain
+    @calcSize(@oa.isChain)
+  
     @addElements()
 
+  
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt
+  
     @tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
 
   draw:(it)->
+    # console.log 'draw'
     degreeCnt = it.degreeCnt
     rotStep   = it.rotStep
 
     it.rotate angle: @angle*it.h.DEG
-
     it.ctx.clear()
 
     step = @degree/degreeCnt

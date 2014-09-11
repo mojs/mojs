@@ -1221,9 +1221,4 @@ a,
 }
 canvas {
   outline: 1px solid #ffa500;
-  width: 200px !important;
-  height: 200px !important;
-  left: 0 !important;
-  display: block !important;
-  right: 0 !important;
 }

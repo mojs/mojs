@@ -246,7 +246,7 @@ Burst = (function(_super) {
     this.mixLineDash();
     this.mixColor(this.oa.isChain);
     this.mixFill(this.oa.isChain);
-    this.calcSize();
+    this.calcSize(this.oa.isChain);
     this.addElements();
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
@@ -557,7 +557,6 @@ Byte = (function(_super) {
     var i, tween, _i, _len, _ref;
     this.oa = oa != null ? oa : {};
     h.size(this.oa) && this.vars();
-    h.isSizeChange(this.oa) && this.setElSize();
     _ref = this.tweens;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       tween = _ref[i];
@@ -655,7 +654,6 @@ Byte = (function(_super) {
         var _ref;
         _this.isRunning = true;
         !isChain && _this.ctx.clear();
-        (!_this.isShowStart || _this.isShowEnd) && (_this.el.style.display = 'block');
         return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
       };
     })(this)).onComplete((function(_this) {
@@ -669,13 +667,10 @@ Byte = (function(_super) {
         if (item) {
           return _this.runFromChain(item);
         } else {
-          !_this.isShowEnd && (_this.el.style.display = 'none');
-          !_this.isShowEnd && console.log('hide');
           return _this.isRunning = false;
         }
       };
     })(this)).yoyo(this.yoyo).start();
-    this.currentTween = this;
     h.startAnimationLoop();
     return tween;
   };
@@ -832,6 +827,10 @@ Byte = (function(_super) {
       prop: 'onComplete',
       def: null
     });
+    this.onStart = this["default"]({
+      prop: 'onStart',
+      def: null
+    });
     abs = Math.abs;
     maxEnd = Math.max(abs(this.radiusXEnd), abs(this.radiusYEnd));
     maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
@@ -866,11 +865,10 @@ Byte = (function(_super) {
     this.el.style.position = 'absolute';
     this.el.style.left = 0;
     this.el.style.top = 0;
-    !this.isShowStart && (this.el.style.display = 'none');
     return this.parent.appendChild(this.el);
   };
 
-  Byte.prototype.calcSize = function() {
+  Byte.prototype.calcSize = function(isChain) {
     var abs, maxEnd, maxStart;
     abs = Math.abs;
     maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
@@ -891,10 +889,13 @@ Byte = (function(_super) {
         y: this.sizeY / 2
       }
     });
-    return this.setElSize();
+    return this.setElSize(isChain);
   };
 
-  Byte.prototype.setElSize = function() {
+  Byte.prototype.setElSize = function(isChain) {
+    if (isChain) {
+      return;
+    }
     this.el.setAttribute('width', h.pixel * this.sizeX);
     this.el.setAttribute('height', h.pixel * this.sizeY);
     if (h.pixel > 1) {
@@ -1141,8 +1142,8 @@ Object = (function(_super) {
     var c;
     c = this.fillObj;
     this.ctx.fillStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
-    this.ctx.fill();
     this.ctx.restore();
+    this.ctx.fill();
     return this.stroke();
   };
 
@@ -1403,7 +1404,7 @@ bubble = new charites.Burst({
     10: 100
   },
   lineWidth: {
-    3: 0
+    3: 10
   },
   shape: 'line',
   duration: 2000,
@@ -1423,10 +1424,12 @@ for (i = _i = 0; _i <= 20; i = ++_i) {
   r = h.rand(-20, 20);
   bubble.chain({
     lineWidthEnd: a,
+    angleEnd: r,
     duration: 2000,
     fillEnd: '#0F0',
     colorEnd: 'black',
-    bitRadiusEnd: 20
+    bitRadiusEnd: 20,
+    delay: 1000
   });
 }
 
@@ -1609,15 +1612,15 @@ Helpers = (function() {
     return this[o.lock] = false;
   };
 
-  Helpers.prototype.animationLoop = function(time) {
+  Helpers.prototype.animationLoop = function() {
     if (!TWEEN.getAll().length) {
       this.isAnimateLoop = false;
     }
     if (!this.isAnimateLoop) {
       return;
     }
-    requestAnimationFrame(this.animationLoop);
-    return TWEEN.update(time);
+    TWEEN.update();
+    return requestAnimationFrame(this.animationLoop);
   };
 
   Helpers.prototype.startAnimationLoop = function() {
