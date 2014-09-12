@@ -1461,7 +1461,15 @@ Helpers = (function() {
   };
 
   Helpers.prototype.isIE = function() {
+    return this.isIE9l() || this.isIE10g();
+  };
+
+  Helpers.prototype.isIE9l = function() {
     return navigator.userAgent.toLowerCase().indexOf('msie') > -1;
+  };
+
+  Helpers.prototype.isIE10g = function() {
+    return navigator.userAgent.toLowerCase().indexOf('rv') > -1;
   };
 
   function Helpers(o) {

@@ -14,8 +14,11 @@ class Helpers
 
   time:(time)-> time*@s
 
-  isFF:-> navigator.userAgent.toLowerCase().indexOf('firefox') > -1
-  isIE:-> navigator.userAgent.toLowerCase().indexOf('msie') > -1
+  isFF:->    navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+  isIE:->    @isIE9l() or @isIE10g()
+  isIE9l:->  navigator.userAgent.toLowerCase().indexOf('msie') > -1
+  isIE10g:-> navigator.userAgent.toLowerCase().indexOf('rv') > -1
+
 
   constructor:(@o={})->
     @animationLoop = @animationLoop.bind @
