@@ -19,15 +19,17 @@ wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Bubble
   parent:   wrapper
   radius:    {10: 100}
-  lineWidth: { 3: 10 }
-  shape:     'line'
-  duration: 2000
+  lineWidth: { 10: 0 }
+  shape:     'triangle'
+  duration: 8500
   cnt:      5
   color:    'deeppink'
+  fill:    "rgba(0,0,0,0)"
   angle: {0: 20}
-  fillEnd: '#f0f'
+  fillEnd: 'rgba(255,0,255, 1)'
   bitRadius: {10: 2  }
-
+  delay: 0
+  lineCap: 'none'
 # for i in [0..20]
 #   a = h.rand(1,20)
 #   r = h.rand(-20,20)

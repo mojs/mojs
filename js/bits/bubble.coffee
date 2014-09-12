@@ -31,9 +31,9 @@ class Bubble extends Byte
     super; it = @
     if !@oa.isChain
       @from =
-        rx:      @radiusX
-        ry:      @radiusY
-        lineW:   @lineWidth
+        radiusX:      2*@radiusX
+        radiusY:      2*@radiusY
+        lineWidth:   @lineWidth
         angle:   @angleStart
         degree:  @degree
         degreeOffset: @degreeOffset
@@ -41,9 +41,9 @@ class Bubble extends Byte
         lineDashOffset: @lineDashOffset
     else @from = from
     @to =
-      rx:      @radiusXEnd
-      ry:      @radiusYEnd
-      lineW:   @lineWidthEnd
+      radiusX:      2*@radiusXEnd
+      radiusY:      2*@radiusYEnd
+      lineWidth:   @lineWidthEnd
       angle:   @angleEnd
       degree:  @degreeEnd
       degreeOffset: @degreeOffsetEnd
@@ -62,29 +62,36 @@ class Bubble extends Byte
     @tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
 
   draw:(it)->
+    it.rotate angle: @angle*it.h.DEG
+
     it.object.setProp
-      radiusX:    @rx
-      radiusY:    @ry
-      lineWidth:  @lineW
-      angle:      @angle
-      degree:     @degree
-      degreeOffset: @degreeOffset
-      lineDash:   it.updateLineDash(@)
-      colorObj:   it.updateColor(@)
-      opacity:    @opacity
-      spikes:     @spikes
-      rate: @rate
-      lineDashOffset: @lineDashOffset
+      radiusX:    @radiusX/2
+      radiusY:    @radiusY/2
+      position:   x: 2*it.center, y: 2*it.center
+      lineWidth:  @lineWidth
+      # angle:      @angle
+      # degree:     @degree
+      # degreeOffset: @degreeOffset
+      # lineDash:   it.updateLineDash(@)
+      # colorObj:   it.updateColor(@)
+      fillObj:   it.updateFill(@)
+      # opacity:    @opacity
+      # spikes:     @spikes
+      # rate:       @rate
+      # lineDashOffset: @lineDashOffset
+
+    it.ctx.restore()
+
 
   addElements:->
     Shape = @shapes[@shape.toLowerCase()] or Circle
 
     @object = new Shape
       ctx: @ctx
-      parentSize: x: @sizeX, y: @sizeY
-      position: x: 2*@center, y: 2*@center
+      position:   x: @center, y: @center
       rate:     @rate
-      spikes:   @spikes
+      lineCap: @lineCap
+      # spikes:   @spikes
       lineDash: @lineDash
       fill:     @fill
 

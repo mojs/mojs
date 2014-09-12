@@ -40,7 +40,7 @@ class Object extends Bit
     c = @fillObj
     @ctx.fillStyle = "rgba(#{c.r},#{c.g},#{c.b}, #{@opacity-(1-c.a)})"
     # @ctx.closePath()
-    @ctx.restore(); @ctx.fill();  @stroke()
+    @ctx.fill();  @ctx.restore(); @stroke()
 
   rotation:->
     x = @position.x; y = @position.y

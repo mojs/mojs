@@ -19,6 +19,8 @@ class Triangle extends Object
       method = if i is 0 then 'moveTo' else 'lineTo'
       @ctx[method](x, y)
 
+    @ctx.closePath()
+
     @postRender()
 
 

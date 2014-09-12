@@ -210,13 +210,17 @@ class Byte extends Bit
     @maxRadius    = Math.max maxEnd, maxStart
     @maxLineWidth = Math.max @from.lineWidth, @to.lineWidth
     @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
+    @maxBitRadius |= 0
+    console.log @maxBitRadius
     @size = @maxRadius + @maxLineWidth + 2*@maxBitRadius
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
     @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
-    # @setElSize()
+
 
   setElSize:->
+    # console.log @sizeX
+    # console.log @sizeY
     @el.setAttribute 'width',  h.pixel*@sizeX
     @el.setAttribute 'height', h.pixel*@sizeY
 
@@ -237,6 +241,12 @@ class Byte extends Bit
     y = @position.y-@sizeY/2
     @el.style.left = "#{x}px"
     @el.style.top  = "#{y}px"
+
+  rotate:(o)->
+    @ctx.save()
+    @ctx.translate(2*@centerX,2*@centerY)
+    @ctx.rotate(o.angle)
+    @ctx.translate(-2*@centerX,-2*@centerY)
 
 module.exports = Byte
 

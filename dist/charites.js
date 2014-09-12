@@ -57,9 +57,9 @@ Bubble = (function(_super) {
     it = this;
     if (!this.oa.isChain) {
       this.from = {
-        rx: this.radiusX,
-        ry: this.radiusY,
-        lineW: this.lineWidth,
+        radiusX: 2 * this.radiusX,
+        radiusY: 2 * this.radiusY,
+        lineWidth: this.lineWidth,
         angle: this.angleStart,
         degree: this.degree,
         degreeOffset: this.degreeOffset,
@@ -70,9 +70,9 @@ Bubble = (function(_super) {
       this.from = from;
     }
     this.to = {
-      rx: this.radiusXEnd,
-      ry: this.radiusYEnd,
-      lineW: this.lineWidthEnd,
+      radiusX: 2 * this.radiusXEnd,
+      radiusY: 2 * this.radiusYEnd,
+      lineWidth: this.lineWidthEnd,
       angle: this.angleEnd,
       degree: this.degreeEnd,
       degreeOffset: this.degreeOffsetEnd,
@@ -91,20 +91,20 @@ Bubble = (function(_super) {
   };
 
   Bubble.prototype.draw = function(it) {
-    return it.object.setProp({
-      radiusX: this.rx,
-      radiusY: this.ry,
-      lineWidth: this.lineW,
-      angle: this.angle,
-      degree: this.degree,
-      degreeOffset: this.degreeOffset,
-      lineDash: it.updateLineDash(this),
-      colorObj: it.updateColor(this),
-      opacity: this.opacity,
-      spikes: this.spikes,
-      rate: this.rate,
-      lineDashOffset: this.lineDashOffset
+    it.rotate({
+      angle: this.angle * it.h.DEG
     });
+    it.object.setProp({
+      radiusX: this.radiusX / 2,
+      radiusY: this.radiusY / 2,
+      position: {
+        x: 2 * it.center,
+        y: 2 * it.center
+      },
+      lineWidth: this.lineWidth,
+      fillObj: it.updateFill(this)
+    });
+    return it.ctx.restore();
   };
 
   Bubble.prototype.addElements = function() {
@@ -112,16 +112,12 @@ Bubble = (function(_super) {
     Shape = this.shapes[this.shape.toLowerCase()] || Circle;
     return this.object = new Shape({
       ctx: this.ctx,
-      parentSize: {
-        x: this.sizeX,
-        y: this.sizeY
-      },
       position: {
-        x: 2 * this.center,
-        y: 2 * this.center
+        x: this.center,
+        y: this.center
       },
       rate: this.rate,
-      spikes: this.spikes,
+      lineCap: this.lineCap,
       lineDash: this.lineDash,
       fill: this.fill
     });
@@ -198,17 +194,9 @@ Burst = (function(_super) {
       prop: 'bitRadius',
       def: 10
     });
-    this.bitRadiusEnd = this["default"]({
+    return this.bitRadiusEnd = this["default"]({
       prop: 'bitRadiusEnd',
       def: this.bitRadius
-    });
-    this.lineDashOffset = this["default"]({
-      prop: 'lineDashOffset',
-      def: 0
-    });
-    return this.lineDashOffsetEnd = this["default"]({
-      prop: 'lineDashOffsetEnd',
-      def: this.lineDashOffset
     });
   };
 
@@ -325,13 +313,6 @@ Burst = (function(_super) {
       })));
     }
     return _results;
-  };
-
-  Burst.prototype.rotate = function(o) {
-    this.ctx.save();
-    this.ctx.translate(2 * this.centerX, 2 * this.centerY);
-    this.ctx.rotate(o.angle);
-    return this.ctx.translate(-2 * this.centerX, -2 * this.centerY);
   };
 
   Burst.prototype.mixStarSpikesProps = function() {
@@ -883,6 +864,8 @@ Byte = (function(_super) {
     this.maxRadius = Math.max(maxEnd, maxStart);
     this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
     this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
+    this.maxBitRadius |= 0;
+    console.log(this.maxBitRadius);
     this.size = this.maxRadius + this.maxLineWidth + 2 * this.maxBitRadius;
     this.center = this.size / 2;
     this.sizeX = this.size;
@@ -924,6 +907,13 @@ Byte = (function(_super) {
     y = this.position.y - this.sizeY / 2;
     this.el.style.left = "" + x + "px";
     return this.el.style.top = "" + y + "px";
+  };
+
+  Byte.prototype.rotate = function(o) {
+    this.ctx.save();
+    this.ctx.translate(2 * this.centerX, 2 * this.centerY);
+    this.ctx.rotate(o.angle);
+    return this.ctx.translate(-2 * this.centerX, -2 * this.centerY);
   };
 
   return Byte;
@@ -1145,8 +1135,8 @@ Object = (function(_super) {
     var c;
     c = this.fillObj;
     this.ctx.fillStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
-    this.ctx.restore();
     this.ctx.fill();
+    this.ctx.restore();
     return this.stroke();
   };
 
@@ -1314,6 +1304,7 @@ Triangle = (function(_super) {
       method = i === 0 ? 'moveTo' : 'lineTo';
       this.ctx[method](x, y);
     }
+    this.ctx.closePath();
     return this.postRender();
   };
 
@@ -1407,19 +1398,22 @@ bubble = new charites.Bubble({
     10: 100
   },
   lineWidth: {
-    3: 10
+    10: 0
   },
-  shape: 'line',
-  duration: 2000,
+  shape: 'triangle',
+  duration: 8500,
   cnt: 5,
   color: 'deeppink',
+  fill: "rgba(0,0,0,0)",
   angle: {
     0: 20
   },
-  fillEnd: '#f0f',
+  fillEnd: 'rgba(255,0,255, 1)',
   bitRadius: {
     10: 2
-  }
+  },
+  delay: 0,
+  lineCap: 'none'
 });
 
 

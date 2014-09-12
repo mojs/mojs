@@ -19,10 +19,6 @@ class Burst extends Byte
 
     @bitRadius     = @default prop: 'bitRadius',    def: 10
     @bitRadiusEnd  = @default prop: 'bitRadiusEnd', def: @bitRadius
-    
-    @lineDashOffset = @default prop: 'lineDashOffset', def: 0
-    @lineDashOffsetEnd = @default prop: 'lineDashOffsetEnd', def:@lineDashOffset
-
 
   run:(@oa={}, from)->
     super; it = @
@@ -57,7 +53,7 @@ class Burst extends Byte
     @mixFill(@oa.isChain)
     
     @calcSize()
-    
+
     @addElements()
   
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
@@ -110,12 +106,6 @@ class Burst extends Byte
         spikes: @bitSpikes
         rate: @bitRate
         lineDash: @lineDash
-    
-  rotate:(o)->
-    @ctx.save()
-    @ctx.translate(2*@centerX,2*@centerY)
-    @ctx.rotate(o.angle)
-    @ctx.translate(-2*@centerX,-2*@centerY)
 
   mixStarSpikesProps:->
     @from.spikes = @spikes
