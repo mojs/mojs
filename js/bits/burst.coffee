@@ -1,6 +1,5 @@
 Byte      = require './byte'
 
-
 # TODO
 class Burst extends Byte
   vars:->
@@ -26,7 +25,6 @@ class Burst extends Byte
 
 
   run:(@oa={}, from)->
-
     super; it = @
     if !@oa.isChain
       @from =

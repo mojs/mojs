@@ -13,7 +13,6 @@ Bubble = (function(_super) {
   }
 
   Bubble.prototype.vars = function() {
-    var Shape, coef;
     Bubble.__super__.vars.apply(this, arguments);
     this.degree = this["default"]({
       prop: 'degree',
@@ -45,21 +44,71 @@ Bubble = (function(_super) {
       prop: 'rate',
       def: .25
     });
-    this.rateEnd = this["default"]({
+    return this.rateEnd = this["default"]({
       prop: 'rateEnd',
       def: this.rate
     });
-    if (this.shape !== 'circle' && this.shape !== 'star' && this.shape !== 'cross') {
-      this.canvasSize({
-        mulCoef: 1.484848
-      });
+  };
+
+  Bubble.prototype.run = function(oa, from) {
+    var it;
+    this.oa = oa != null ? oa : {};
+    Bubble.__super__.run.apply(this, arguments);
+    it = this;
+    if (!this.oa.isChain) {
+      this.from = {
+        rx: this.radiusX,
+        ry: this.radiusY,
+        lineW: this.lineWidth,
+        angle: this.angleStart,
+        degree: this.degree,
+        degreeOffset: this.degreeOffset,
+        opacity: this.opacity,
+        lineDashOffset: this.lineDashOffset
+      };
+    } else {
+      this.from = from;
     }
-    if (this.shape === 'star' && (this.starInnerRadius !== this.starInnerRadiusEnd)) {
-      coef = this.starInnerRadiusEnd > 1 ? this.starInnerRadiusEnd : 1;
-      this.canvasSize({
-        mulCoef: coef
-      });
-    }
+    this.to = {
+      rx: this.radiusXEnd,
+      ry: this.radiusYEnd,
+      lineW: this.lineWidthEnd,
+      angle: this.angleEnd,
+      degree: this.degreeEnd,
+      degreeOffset: this.degreeOffsetEnd,
+      opacity: this.opacityEnd,
+      lineDashOffset: this.lineDashOffsetEnd
+    };
+    this.mixStarSpikesProps();
+    this.mixLineDash();
+    this.mixColor(this.oa.isChain);
+    this.mixFill(this.oa.isChain);
+    this.calcSize();
+    this.addElements();
+    return this.tween = this.initTween(this.oa.isChain).onUpdate(function() {
+      return it.draw.call(this, it);
+    });
+  };
+
+  Bubble.prototype.draw = function(it) {
+    return it.object.setProp({
+      radiusX: this.rx,
+      radiusY: this.ry,
+      lineWidth: this.lineW,
+      angle: this.angle,
+      degree: this.degree,
+      degreeOffset: this.degreeOffset,
+      lineDash: it.updateLineDash(this),
+      colorObj: it.updateColor(this),
+      opacity: this.opacity,
+      spikes: this.spikes,
+      rate: this.rate,
+      lineDashOffset: this.lineDashOffset
+    });
+  };
+
+  Bubble.prototype.addElements = function() {
+    var Shape;
     Shape = this.shapes[this.shape.toLowerCase()] || Circle;
     return this.object = new Shape({
       ctx: this.ctx,
@@ -75,52 +124,6 @@ Bubble = (function(_super) {
       spikes: this.spikes,
       lineDash: this.lineDash,
       fill: this.fill
-    });
-  };
-
-  Bubble.prototype.run = function(oa) {
-    var it;
-    this.oa = oa != null ? oa : {};
-    Bubble.__super__.run.apply(this, arguments);
-    it = this;
-    this.from = {
-      rx: this.radiusX,
-      ry: this.radiusY,
-      lineW: this.lineWidth,
-      angle: this.angleStart,
-      degree: this.degree,
-      degreeOffset: this.degreeOffset,
-      opacity: this.opacity,
-      lineDashOffset: this.lineDashOffset
-    };
-    this.to = {
-      rx: this.radiusXEnd,
-      ry: this.radiusYEnd,
-      lineW: this.lineWidthEnd,
-      angle: this.angleEnd,
-      degree: this.degreeEnd,
-      degreeOffset: this.degreeOffsetEnd,
-      opacity: this.opacityEnd,
-      lineDashOffset: this.lineDashOffsetEnd
-    };
-    this.mixStarSpikesProps();
-    this.mixLineDash();
-    this.mixColor();
-    return this.initTween().onUpdate(function() {
-      return it.object.setProp({
-        radiusX: this.rx,
-        radiusY: this.ry,
-        lineWidth: this.lineW,
-        angle: this.angle,
-        degree: this.degree,
-        degreeOffset: this.degreeOffset,
-        lineDash: it.updateLineDash(this),
-        colorObj: it.updateColors(this),
-        opacity: this.opacity,
-        spikes: this.spikes,
-        rate: this.rate,
-        lineDashOffset: this.lineDashOffset
-      });
     });
   };
 
@@ -1369,7 +1372,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, a, bubble, charites, h, i, r, wrapper, _i;
+var Bubble, Burst, Charites, bubble, charites, h, wrapper;
 
 h = require('./helpers');
 
@@ -1398,7 +1401,7 @@ if ((typeof define === "function") && define.amd) {
 
 wrapper = document.getElementById('js-wrapper');
 
-bubble = new charites.Burst({
+bubble = new charites.Bubble({
   parent: wrapper,
   radius: {
     10: 100
@@ -1418,20 +1421,6 @@ bubble = new charites.Burst({
     10: 2
   }
 });
-
-for (i = _i = 0; _i <= 20; i = ++_i) {
-  a = h.rand(1, 20);
-  r = h.rand(-20, 20);
-  bubble.chain({
-    lineWidthEnd: a,
-    angleEnd: r,
-    duration: 2000,
-    fillEnd: '#0F0',
-    color: 'green',
-    colorEnd: 'black',
-    bitRadiusEnd: 20
-  });
-}
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./helpers":14}],14:[function(require,module,exports){

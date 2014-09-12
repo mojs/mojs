@@ -19,37 +19,27 @@ class Bubble extends Byte
     @rate      = @default prop: 'rate',    def: .25
     @rateEnd   = @default prop: 'rateEnd', def: @rate
 
-    if @shape isnt 'circle' and @shape isnt 'star' and @shape isnt 'cross'
-      @canvasSize mulCoef: 1.484848
+    # if @shape isnt 'circle' and @shape isnt 'star' and @shape isnt 'cross'
+    #   @canvasSize mulCoef: 1.484848
 
-    if @shape is 'star' and (@starInnerRadius isnt @starInnerRadiusEnd)
-      coef = if @starInnerRadiusEnd > 1 then @starInnerRadiusEnd else 1
-      @canvasSize mulCoef: coef
-
-    Shape = @shapes[@shape.toLowerCase()] or Circle
-
-    @object = new Shape
-      ctx: @ctx
-      parentSize: x: @sizeX, y: @sizeY
-      position: x: 2*@center, y: 2*@center
-      rate:     @rate
-      spikes:   @spikes
-      lineDash: @lineDash
-      fill:     @fill
+    # if @shape is 'star' and (@starInnerRadius isnt @starInnerRadiusEnd)
+    #   coef = if @starInnerRadiusEnd > 1 then @starInnerRadiusEnd else 1
+    #   @canvasSize mulCoef: coef
 
 
-  run:(@oa={})->
+  run:(@oa={}, from)->
     super; it = @
-
-    @from =
-      rx:      @radiusX
-      ry:      @radiusY
-      lineW:   @lineWidth
-      angle:   @angleStart
-      degree:  @degree
-      degreeOffset: @degreeOffset
-      opacity: @opacity
-      lineDashOffset: @lineDashOffset
+    if !@oa.isChain
+      @from =
+        rx:      @radiusX
+        ry:      @radiusY
+        lineW:   @lineWidth
+        angle:   @angleStart
+        degree:  @degree
+        degreeOffset: @degreeOffset
+        opacity: @opacity
+        lineDashOffset: @lineDashOffset
+    else @from = from
     @to =
       rx:      @radiusXEnd
       ry:      @radiusYEnd
@@ -60,25 +50,43 @@ class Bubble extends Byte
       opacity: @opacityEnd
       lineDashOffset: @lineDashOffsetEnd
 
-    # if @shape.toLowerCase() is 'star'
     @mixStarSpikesProps()
     @mixLineDash()
-    @mixColor()
+    @mixColor(@oa.isChain)
+    @mixFill(@oa.isChain)
 
-    @initTween().onUpdate ->
-      it.object.setProp
-        radiusX:    @rx
-        radiusY:    @ry
-        lineWidth:  @lineW
-        angle:      @angle
-        degree:     @degree
-        degreeOffset: @degreeOffset
-        lineDash:   it.updateLineDash(@)
-        colorObj:   it.updateColors(@)
-        opacity:    @opacity
-        spikes:     @spikes
-        rate: @rate
-        lineDashOffset: @lineDashOffset
+    @calcSize()
+    
+    @addElements()
+
+    @tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
+
+  draw:(it)->
+    it.object.setProp
+      radiusX:    @rx
+      radiusY:    @ry
+      lineWidth:  @lineW
+      angle:      @angle
+      degree:     @degree
+      degreeOffset: @degreeOffset
+      lineDash:   it.updateLineDash(@)
+      colorObj:   it.updateColor(@)
+      opacity:    @opacity
+      spikes:     @spikes
+      rate: @rate
+      lineDashOffset: @lineDashOffset
+
+  addElements:->
+    Shape = @shapes[@shape.toLowerCase()] or Circle
+
+    @object = new Shape
+      ctx: @ctx
+      parentSize: x: @sizeX, y: @sizeY
+      position: x: 2*@center, y: 2*@center
+      rate:     @rate
+      spikes:   @spikes
+      lineDash: @lineDash
+      fill:     @fill
 
   mixStarSpikesProps:->
     @from.spikes = @spikes

@@ -1,8 +1,5 @@
 TWEEN  = require './vendor/tween'
 
-# TODO
-# add rgba colors support
-
 class Helpers
   pixel: 2
   # SHORTCUTS
@@ -18,8 +15,7 @@ class Helpers
   isIE:->    @isIE9l() or @isIE10g()
   isIE9l:->  navigator.userAgent.toLowerCase().indexOf('msie') > -1
   isIE10g:-> navigator.userAgent.toLowerCase().indexOf('rv') > -1
-
-
+  
   constructor:(@o={})->
     @animationLoop = @animationLoop.bind @
     @div = document.createElement 'div'

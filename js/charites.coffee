@@ -16,7 +16,7 @@ if (typeof define is "function") and define.amd
 #  make bubble work
   
 wrapper = document.getElementById 'js-wrapper'
-bubble = new charites.Burst
+bubble = new charites.Bubble
   parent:   wrapper
   radius:    {10: 100}
   lineWidth: { 3: 10 }
@@ -28,19 +28,19 @@ bubble = new charites.Burst
   fillEnd: '#f0f'
   bitRadius: {10: 2  }
 
-for i in [0..20]
-  a = h.rand(1,20)
-  r = h.rand(-20,20)
-  bubble.chain
-    lineWidthEnd: a
-    angleEnd:     r
-    # position: x:e.x, y:e.y
-    # bitSpikes: 3
-    duration: 2000
-    fillEnd: '#0F0'
-    color: 'green'
-    colorEnd: 'black'
-    bitRadiusEnd: 20
+# for i in [0..20]
+#   a = h.rand(1,20)
+#   r = h.rand(-20,20)
+#   bubble.chain
+#     lineWidthEnd: a
+#     angleEnd:     r
+#     # position: x:e.x, y:e.y
+#     # bitSpikes: 3
+#     duration: 2000
+#     fillEnd: '#0F0'
+#     color: 'green'
+#     colorEnd: 'black'
+#     bitRadiusEnd: 20
 
 # window.addEventListener 'click', (e)->
 #   # bubble.setPosition e.x, e.y
