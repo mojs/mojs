@@ -47,8 +47,8 @@ class Object extends Bit
     @ctx.translate(x,y); @ctx.rotate(@angle*@h.DEG); @ctx.translate(-x,-y)
 
   radiusRender:->
-    @ctx.translate(@position.x-2*@radiusX, @position.y-2*@radiusY)
-    @ctx.scale(2*@radiusX, 2*@radiusY)
+    @ctx.translate(@position.x-4*@radiusX, @position.y-4*@radiusY)
+    @ctx.scale(4*@radiusX, 4*@radiusY)
 
   stroke:->
     @ctx.lineWidth   = @lineWidth*@px

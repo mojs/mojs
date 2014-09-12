@@ -31,13 +31,15 @@ class Byte extends Bit
     @tweens ?= []
     @chains ?= []
 
-  run:(@oa={})->
+  run:(@oa={}, from)->
     h.size(@oa) and @vars()
     # h.isSizeChange(@oa) and @setElSize()
 
-    for tween, i in @tweens
-      @TWEEN.remove tween
-    @tweens.length = 0
+    if !from
+      for tween, i in @tweens
+        @TWEEN.remove tween
+      @tweens.length = 0
+      @chains.length = 0
 
   mixLineDash:(from, to)->
     if @lineDash and @lineDashEnd
@@ -211,16 +213,13 @@ class Byte extends Bit
     @maxLineWidth = Math.max @from.lineWidth, @to.lineWidth
     @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
     @maxBitRadius |= 0
-    console.log @maxBitRadius
-    @size = @maxRadius + @maxLineWidth + 2*@maxBitRadius
+    @size = 2*(@maxRadius + @maxLineWidth + 2*@maxBitRadius)
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
-    @position     = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
+    @position  = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
 
 
   setElSize:->
-    # console.log @sizeX
-    # console.log @sizeY
     @el.setAttribute 'width',  h.pixel*@sizeX
     @el.setAttribute 'height', h.pixel*@sizeY
 

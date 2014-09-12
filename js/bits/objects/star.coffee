@@ -31,6 +31,8 @@ class Star extends Object
       i++
     @ctx.lineTo cx, cy - r0
 
+    @ctx.closePath()
+
     @postRender()
 
 

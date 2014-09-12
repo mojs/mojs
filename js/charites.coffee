@@ -13,52 +13,65 @@ if (typeof define is "function") and define.amd
 
 # TODO
 #  add size option
-#  make bubble work
+#  fill syntax sugar
+#  position syntax sugar
+#  inclde rate to size calc
   
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Bubble
   parent:   wrapper
-  radius:    {10: 100}
-  lineWidth: { 10: 0 }
-  shape:     'rectangle'
-  duration: 5000
+  radius:    {50: 100}
+  lineWidth: { 3: 1 }
+  shape:     'star'
+  duration: 500
   cnt:      5
   color:    'deeppink'
-  fill:    "rgba(0,0,0,0)"
-  angle: {45: 45}
-  fillEnd: 'rgba(255,0,255, 1)'
-  bitRadius: {10: 2  }
+  # angle: {45: 45}
+  # bitRadius: {10: 2  }
   delay: 0
   lineCap: 'none'
   position: x: 200, y: 200
-# for i in [0..20]
-#   a = h.rand(1,20)
-#   r = h.rand(-20,20)
-#   bubble.chain
-#     lineWidthEnd: a
-#     angleEnd:     r
-#     # position: x:e.x, y:e.y
-#     # bitSpikes: 3
-#     duration: 2000
-#     fillEnd: '#0F0'
-#     color: 'green'
-#     colorEnd: 'black'
-#     bitRadiusEnd: 20
+  # degree: 180
+  bitRadius: 20
+  bitRadiusEnd: 20
+  rate: .5
+  # angle: {0: 360}
+  # isShowEnd: true
+  # rate:    {.5: 1.5}
+  # rateEnd: 1.5
+  # lineDash: [400,100]
+  # lineDashEnd: [100,1000]
 
-# window.addEventListener 'click', (e)->
-#   # bubble.setPosition e.x, e.y
-#   a = h.rand(1,20)
-#   r = h.rand(-20,20)
-#   # console.log a
-#   bubble.chain
-#     lineWidthEnd: a
-#     angleEnd:     r
-#     position: x:e.x, y:e.y
-#     bitSpikes: 3
-#     duration: 10000
-#     fillEnd: '#0F0'
-#     colorEnd: 'black'
-#     bitRadiusEnd: 20
+for i in [0..20]
+  a = h.rand(1,20)
+  r = h.rand(-20,20)
+  bubble.chain
+    lineWidthEnd: 40
+    angleEnd:     r
+    # position: x:e.x, y:e.y
+    # bitSpikes: 3
+    duration: 1000
+    # fillEnd: '#0F0'
+    color: 'green'
+    colorEnd: 'black'
+    bitRadiusEnd: 20
+    # lineDashEnd: [400,100]
+
+
+window.addEventListener 'click', (e)->
+  # bubble.setPosition e.x, e.y
+  a = h.rand(1,20)
+  r = h.rand(-20,20)
+  # console.log a
+  bubble.run
+    # lineWidthEnd: a
+    # angleEnd:     r
+    position: x:e.x, y:e.y
+    # bitSpikes: 3
+    duration: 500
+    # fillEnd: '#0F0'
+    # colorEnd: 'black'
+    # bitRadiusEnd: 20
 
 
 

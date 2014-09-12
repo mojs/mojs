@@ -14,24 +14,6 @@ Bubble = (function(_super) {
 
   Bubble.prototype.vars = function() {
     Bubble.__super__.vars.apply(this, arguments);
-    this.degree = this["default"]({
-      prop: 'degree',
-      def: 360
-    });
-    this.degreeEnd = this["default"]({
-      prop: 'degreeEnd',
-      def: this.degree
-    });
-    this.degreeOffset = this["default"]({
-      prop: 'degreeOffset',
-      def: 0
-    });
-    this.degreeOffsetEnd = this["default"]({
-      prop: 'degreeOffsetEnd',
-      def: this.degreeOffset
-    });
-    this.degree = this.h.slice(this.degree, 360);
-    this.degreeEnd = this.h.slice(this.degreeEnd, 360);
     this.spikes = this["default"]({
       prop: 'spikes',
       def: 5
@@ -51,33 +33,33 @@ Bubble = (function(_super) {
   };
 
   Bubble.prototype.run = function(oa, from) {
-    var it;
+    var it, tween;
     this.oa = oa != null ? oa : {};
     Bubble.__super__.run.apply(this, arguments);
     it = this;
     if (!this.oa.isChain) {
       this.from = {
-        radiusX: 2 * this.radiusX,
-        radiusY: 2 * this.radiusY,
+        radiusX: this.radiusX,
+        radiusY: this.radiusY,
         lineWidth: this.lineWidth,
         angle: this.angleStart,
-        degree: this.degree,
-        degreeOffset: this.degreeOffset,
         opacity: this.opacity,
-        lineDashOffset: this.lineDashOffset
+        lineDashOffset: this.lineDashOffset,
+        spikes: this.spikes,
+        rate: this.bitRate
       };
     } else {
       this.from = from;
     }
     this.to = {
-      radiusX: 2 * this.radiusXEnd,
-      radiusY: 2 * this.radiusYEnd,
+      radiusX: this.radiusXEnd,
+      radiusY: this.radiusYEnd,
       lineWidth: this.lineWidthEnd,
       angle: this.angleEnd,
-      degree: this.degreeEnd,
-      degreeOffset: this.degreeOffsetEnd,
       opacity: this.opacityEnd,
-      lineDashOffset: this.lineDashOffsetEnd
+      lineDashOffset: this.lineDashOffsetEnd,
+      spikes: this.spikesEnd,
+      rate: this.bitRateEnd
     };
     this.mixStarSpikesProps();
     this.mixLineDash();
@@ -85,9 +67,10 @@ Bubble = (function(_super) {
     this.mixFill(this.oa.isChain);
     this.calcSize();
     this.addElements();
-    return this.tween = this.initTween(this.oa.isChain).onUpdate(function() {
+    tween = this.initTween(this.oa.isChain).onUpdate(function() {
       return it.draw.call(this, it);
     });
+    return this.tweens.push(tween);
   };
 
   Bubble.prototype.draw = function(it) {
@@ -102,7 +85,13 @@ Bubble = (function(_super) {
         y: 2 * it.center
       },
       lineWidth: this.lineWidth,
-      fillObj: it.updateFill(this)
+      lineDash: it.updateLineDash(this),
+      colorObj: it.updateColor(this),
+      fillObj: it.updateFill(this),
+      opacity: this.opacity,
+      spikes: this.spikes,
+      rate: this.rate,
+      lineDashOffset: this.lineDashOffset
     });
     return it.ctx.restore();
   };
@@ -201,14 +190,14 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(oa, from) {
-    var it;
+    var it, tween;
     this.oa = oa != null ? oa : {};
     Burst.__super__.run.apply(this, arguments);
     it = this;
     if (!this.oa.isChain) {
       this.from = {
-        radiusX: 2 * this.radiusX,
-        radiusY: 2 * this.radiusY,
+        radiusX: this.radiusX,
+        radiusY: this.radiusY,
         bitAngle: this.bitAngle,
         lineWidth: this.lineWidth,
         bitRadius: this.bitRadius,
@@ -222,8 +211,8 @@ Burst = (function(_super) {
       this.from = from;
     }
     this.to = {
-      radiusX: 2 * this.radiusXEnd,
-      radiusY: 2 * this.radiusYEnd,
+      radiusX: this.radiusXEnd,
+      radiusY: this.radiusYEnd,
       bitAngle: this.bitAngleEnd,
       lineWidth: this.lineWidthEnd,
       bitRadius: this.bitRadiusEnd,
@@ -241,9 +230,10 @@ Burst = (function(_super) {
     this.addElements();
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
-    return this.tween = this.initTween(this.oa.isChain).onUpdate(function() {
+    tween = this.initTween(this.oa.isChain).onUpdate(function() {
       return it.draw.call(this, it);
     });
+    return this.tweens.push(tween);
   };
 
   Burst.prototype.draw = function(it) {
@@ -537,16 +527,19 @@ Byte = (function(_super) {
     return this.chains != null ? this.chains : this.chains = [];
   };
 
-  Byte.prototype.run = function(oa) {
+  Byte.prototype.run = function(oa, from) {
     var i, tween, _i, _len, _ref;
     this.oa = oa != null ? oa : {};
     h.size(this.oa) && this.vars();
-    _ref = this.tweens;
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      tween = _ref[i];
-      this.TWEEN.remove(tween);
+    if (!from) {
+      _ref = this.tweens;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        tween = _ref[i];
+        this.TWEEN.remove(tween);
+      }
+      this.tweens.length = 0;
+      return this.chains.length = 0;
     }
-    return this.tweens.length = 0;
   };
 
   Byte.prototype.mixLineDash = function(from, to) {
@@ -865,8 +858,7 @@ Byte = (function(_super) {
     this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
     this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
     this.maxBitRadius |= 0;
-    console.log(this.maxBitRadius);
-    this.size = this.maxRadius + this.maxLineWidth + 2 * this.maxBitRadius;
+    this.size = 2 * (this.maxRadius + this.maxLineWidth + 2 * this.maxBitRadius);
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -1150,8 +1142,8 @@ Object = (function(_super) {
   };
 
   Object.prototype.radiusRender = function() {
-    this.ctx.translate(this.position.x - 2 * this.radiusX, this.position.y - 2 * this.radiusY);
-    return this.ctx.scale(2 * this.radiusX, 2 * this.radiusY);
+    this.ctx.translate(this.position.x - 4 * this.radiusX, this.position.y - 4 * this.radiusY);
+    return this.ctx.scale(4 * this.radiusX, 4 * this.radiusY);
   };
 
   Object.prototype.stroke = function() {
@@ -1257,6 +1249,7 @@ Star = (function(_super) {
       i++;
     }
     this.ctx.lineTo(cx, cy - r0);
+    this.ctx.closePath();
     return this.postRender();
   };
 
@@ -1363,7 +1356,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, bubble, charites, h, wrapper;
+var Bubble, Burst, Charites, a, bubble, charites, h, i, r, wrapper, _i;
 
 h = require('./helpers');
 
@@ -1395,29 +1388,49 @@ wrapper = document.getElementById('js-wrapper');
 bubble = new charites.Bubble({
   parent: wrapper,
   radius: {
-    10: 100
+    50: 100
   },
   lineWidth: {
-    10: 0
+    3: 1
   },
-  shape: 'rectangle',
-  duration: 5000,
+  shape: 'star',
+  duration: 500,
   cnt: 5,
   color: 'deeppink',
-  fill: "rgba(0,0,0,0)",
-  angle: {
-    45: 45
-  },
-  fillEnd: 'rgba(255,0,255, 1)',
-  bitRadius: {
-    10: 2
-  },
   delay: 0,
   lineCap: 'none',
   position: {
     x: 200,
     y: 200
-  }
+  },
+  bitRadius: 20,
+  bitRadiusEnd: 20,
+  rate: .5
+});
+
+for (i = _i = 0; _i <= 20; i = ++_i) {
+  a = h.rand(1, 20);
+  r = h.rand(-20, 20);
+  bubble.chain({
+    lineWidthEnd: 40,
+    angleEnd: r,
+    duration: 1000,
+    color: 'green',
+    colorEnd: 'black',
+    bitRadiusEnd: 20
+  });
+}
+
+window.addEventListener('click', function(e) {
+  a = h.rand(1, 20);
+  r = h.rand(-20, 20);
+  return bubble.run({
+    position: {
+      x: e.x,
+      y: e.y
+    },
+    duration: 500
+  });
 });
 
 

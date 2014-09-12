@@ -24,8 +24,8 @@ class Burst extends Byte
     super; it = @
     if !@oa.isChain
       @from =
-        radiusX: 2*@radiusX
-        radiusY: 2*@radiusY
+        radiusX: @radiusX
+        radiusY: @radiusY
         bitAngle: @bitAngle
         lineWidth: @lineWidth
         bitRadius: @bitRadius
@@ -36,8 +36,8 @@ class Burst extends Byte
         lineDashOffset: @lineDashOffset
     else @from = from
     @to =
-      radiusX:     2*@radiusXEnd
-      radiusY:     2*@radiusYEnd
+      radiusX:     @radiusXEnd
+      radiusY:     @radiusYEnd
       bitAngle:    @bitAngleEnd
       lineWidth:   @lineWidthEnd
       bitRadius:   @bitRadiusEnd
@@ -59,10 +59,10 @@ class Burst extends Byte
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt
   
-    @tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
+    tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
+    @tweens.push tween
 
   draw:(it)->
-    # console.log 'draw'
     degreeCnt = it.degreeCnt
     rotStep   = it.rotStep
 
@@ -88,6 +88,7 @@ class Burst extends Byte
         rate:       @bitRate
         lineDash:   it.updateLineDash(@)
         lineDashOffset: @lineDashOffset
+        
       angle += step
       rotAngle += rotStep
     it.ctx.restore()
