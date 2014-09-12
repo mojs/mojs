@@ -6,7 +6,10 @@ class Square extends Object
   render:->
     @preRender()
 
-    @ctx.rect(0, 0, 2, 2)
+
+    # 70% of the rectangle
+    # or rectangle placed in radius 2
+    @ctx.rect(.3, .3, 1.4, 1.4)
     
     @postRender()
 

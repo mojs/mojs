@@ -1192,7 +1192,7 @@ Square = (function(_super) {
 
   Square.prototype.render = function() {
     this.preRender();
-    this.ctx.rect(0, 0, 2, 2);
+    this.ctx.rect(.3, .3, 1.4, 1.4);
     return this.postRender();
   };
 
@@ -1400,20 +1400,24 @@ bubble = new charites.Bubble({
   lineWidth: {
     10: 0
   },
-  shape: 'triangle',
-  duration: 8500,
+  shape: 'rectangle',
+  duration: 5000,
   cnt: 5,
   color: 'deeppink',
   fill: "rgba(0,0,0,0)",
   angle: {
-    0: 20
+    45: 45
   },
   fillEnd: 'rgba(255,0,255, 1)',
   bitRadius: {
     10: 2
   },
   delay: 0,
-  lineCap: 'none'
+  lineCap: 'none',
+  position: {
+    x: 200,
+    y: 200
+  }
 });
 
 

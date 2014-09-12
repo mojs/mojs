@@ -20,16 +20,17 @@ bubble = new charites.Bubble
   parent:   wrapper
   radius:    {10: 100}
   lineWidth: { 10: 0 }
-  shape:     'triangle'
-  duration: 8500
+  shape:     'rectangle'
+  duration: 5000
   cnt:      5
   color:    'deeppink'
   fill:    "rgba(0,0,0,0)"
-  angle: {0: 20}
+  angle: {45: 45}
   fillEnd: 'rgba(255,0,255, 1)'
   bitRadius: {10: 2  }
   delay: 0
   lineCap: 'none'
+  position: x: 200, y: 200
 # for i in [0..20]
 #   a = h.rand(1,20)
 #   r = h.rand(-20,20)
