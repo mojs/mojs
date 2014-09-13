@@ -10,29 +10,28 @@ class Bubble extends Byte
     @rate      = @default prop: 'rate',    def: .25
     @rateEnd   = @default prop: 'rateEnd', def: @rate
 
-
   run:(@oa={}, from)->
     super; it = @
     if !@oa.isChain
       @from =
         radiusX:      @radiusX
         radiusY:      @radiusY
-        lineWidth:   @lineWidth
-        angle:   @angleStart
-        opacity: @opacity
+        lineWidth:    @lineWidth
+        angle:        @angleStart
+        opacity:      @opacity
         lineDashOffset: @lineDashOffset
-        spikes:      @spikes
-        rate:     @rate
+        spikes:       @spikes
+        rate:         @rate
     else @from = from
     @to =
       radiusX:      @radiusXEnd
       radiusY:      @radiusYEnd
-      lineWidth:   @lineWidthEnd
-      angle:   @angleEnd
-      opacity: @opacityEnd
+      lineWidth:    @lineWidthEnd
+      angle:        @angleEnd
+      opacity:      @opacityEnd
       lineDashOffset: @lineDashOffsetEnd
-      spikes:      @spikesEnd
-      rate:     @rateEnd
+      spikes:       @spikesEnd
+      rate:         @rateEnd
 
     @mixStarSpikesProps()
     @mixLineDash()
@@ -40,7 +39,6 @@ class Bubble extends Byte
     @mixFill(@oa.isChain)
 
     @calcSize()
-    
     @addElements()
 
     tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
@@ -49,8 +47,8 @@ class Bubble extends Byte
 
   draw:(it)->
     it.rotate angle: @angle*it.h.DEG
-    console.clear()
-    console.log @rate
+    # console.clear()
+    # console.log @rate
 
     it.object.setProp
       radiusX:    @radiusX/2
@@ -74,7 +72,7 @@ class Bubble extends Byte
     @object = new Shape
       ctx: @ctx
       position:   x: @center, y: @center
-      rate:     @rate
+      # rate:     @rate
       lineCap:  @lineCap
       # spikes:   @spikes
       lineDash: @lineDash
@@ -84,7 +82,7 @@ class Bubble extends Byte
     @from.spikes = @spikes
     @to.spikes   = @spikesEnd
 
-    @from.rate = @rate
-    @to.rate   = @rateEnd
+    # @from.rate = @rate
+    # @to.rate   = @rateEnd
 
 module.exports = Bubble

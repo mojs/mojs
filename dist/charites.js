@@ -77,8 +77,6 @@ Bubble = (function(_super) {
     it.rotate({
       angle: this.angle * it.h.DEG
     });
-    console.clear();
-    console.log(this.rate);
     it.object.setProp({
       radiusX: this.radiusX / 2,
       radiusY: this.radiusY / 2,
@@ -107,7 +105,6 @@ Bubble = (function(_super) {
         x: this.center,
         y: this.center
       },
-      rate: this.rate,
       lineCap: this.lineCap,
       lineDash: this.lineDash,
       fill: this.fill
@@ -116,9 +113,7 @@ Bubble = (function(_super) {
 
   Bubble.prototype.mixStarSpikesProps = function() {
     this.from.spikes = this.spikes;
-    this.to.spikes = this.spikesEnd;
-    this.from.rate = this.rate;
-    return this.to.rate = this.rateEnd;
+    return this.to.spikes = this.spikesEnd;
   };
 
   return Bubble;
@@ -861,7 +856,7 @@ Byte = (function(_super) {
     this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
     this.maxBitRadius |= 0;
     this.size = 2 * (this.maxRadius + 2 * this.maxLineWidth + 2 * this.maxBitRadius);
-    maxRate = Math.max(this.rate, this.rateEnd);
+    maxRate = Math.max(this.from.rate, this.to.rate);
     if (maxRate > 1) {
       this.size *= maxRate;
     }
@@ -1223,11 +1218,10 @@ Star = (function(_super) {
       prop: 'spikes',
       def: 5
     });
-    this.rate = this["default"]({
+    return this.rate = this["default"]({
       prop: 'rate',
       def: .5
     });
-    return this.rate = this.h.slice(this.rate, 1);
   };
 
   Star.prototype.render = function() {
@@ -1397,33 +1391,31 @@ bubble = new charites.Bubble({
     50: 100
   },
   lineWidth: {
-    3: 1
+    40: 1
   },
   shape: 'star',
-  duration: 500,
+  duration: 1000,
   cnt: 5,
   color: 'deeppink',
   delay: 0,
   lineCap: 'none',
   position: {
-    x: 200,
-    y: 200
+    x: 400,
+    y: 400
   },
   bitRadius: 20,
   bitRadiusEnd: 20,
-  rateEnd: 1.5
+  rate: .5,
+  rateEnd: 2.5
 });
 
 for (i = _i = 0; _i <= 20; i = ++_i) {
   a = h.rand(1, 20);
-  r = h.rand(-20, 20);
+  r = h.rand(-200, 200);
   bubble.chain({
-    lineWidthEnd: 40,
-    angleEnd: r,
     duration: 1000,
-    color: 'green',
-    colorEnd: 'black',
-    bitRadiusEnd: 20
+    rateEnd: i % 2 === 0 ? .5 : 2.5,
+    angleEnd: r
   });
 }
 

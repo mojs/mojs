@@ -214,7 +214,7 @@ class Byte extends Bit
     @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
     @maxBitRadius |= 0
     @size = 2*(@maxRadius + 2*@maxLineWidth + 2*@maxBitRadius)
-    maxRate = Math.max @rate, @rateEnd
+    maxRate = Math.max @from.rate, @to.rate
     if maxRate > 1 then @size *= maxRate
     # console.log maxRate
     @center = @size/2; @sizeX = @size; @sizeY = @size

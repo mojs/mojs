@@ -4,9 +4,10 @@ class Star extends Object
   name: 'Star'
   vars:->
     super
-    @spikes = @default prop: 'spikes',       def: 5
-    @rate  = @default prop: 'rate',  def: .5
-    @rate  = @h.slice @rate, 1
+    @spikes = @default prop: 'spikes',  def: 5
+    @rate   = @default prop: 'rate',    def: .5
+    # console.log @rate
+    # @rate  = @h.slice @rate, 1
 
   render:->
     @preRender()

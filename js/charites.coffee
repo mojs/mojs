@@ -15,47 +15,34 @@ if (typeof define is "function") and define.amd
 #  add size option
 #  fill syntax sugar
 #  position syntax sugar
-#  inclde rate to size calc
   
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Bubble
   parent:   wrapper
   radius:    {50: 100}
-  lineWidth: { 3: 1 }
+  lineWidth: {40:1}
   shape:     'star'
-  duration: 500
+  duration: 1000
   cnt:      5
   color:    'deeppink'
   # angle: {45: 45}
   # bitRadius: {10: 2  }
   delay: 0
   lineCap: 'none'
-  position: x: 200, y: 200
+  position: x: 400, y: 400
   # degree: 180
   bitRadius: 20
   bitRadiusEnd: 20
-  rateEnd: 1.5
-  # angle: {0: 360}
-  # isShowEnd: true
-  # rate:    {.5: 1.5}
-  # rateEnd: 1.5
-  # lineDash: [400,100]
-  # lineDashEnd: [100,1000]
+  rate: .5
+  rateEnd: 2.5
 
 for i in [0..20]
   a = h.rand(1,20)
-  r = h.rand(-20,20)
+  r = h.rand(-200,200)
   bubble.chain
-    lineWidthEnd: 40
-    angleEnd:     r
-    # position: x:e.x, y:e.y
-    # bitSpikes: 3
     duration: 1000
-    # fillEnd: '#0F0'
-    color: 'green'
-    colorEnd: 'black'
-    bitRadiusEnd: 20
-    # lineDashEnd: [400,100]
+    rateEnd: if i % 2 is 0 then .5 else 2.5
+    angleEnd: r
 
 
 window.addEventListener 'click', (e)->
