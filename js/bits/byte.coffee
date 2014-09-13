@@ -213,11 +213,13 @@ class Byte extends Bit
     @maxLineWidth = Math.max @from.lineWidth, @to.lineWidth
     @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
     @maxBitRadius |= 0
-    @size = 2*(@maxRadius + @maxLineWidth + 2*@maxBitRadius)
+    @size = 2*(@maxRadius + 2*@maxLineWidth + 2*@maxBitRadius)
+    maxRate = Math.max @rate, @rateEnd
+    if maxRate > 1 then @size *= maxRate
+    # console.log maxRate
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
     @position  = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
-
 
   setElSize:->
     @el.setAttribute 'width',  h.pixel*@sizeX

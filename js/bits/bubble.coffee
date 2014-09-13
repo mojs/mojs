@@ -22,7 +22,7 @@ class Bubble extends Byte
         opacity: @opacity
         lineDashOffset: @lineDashOffset
         spikes:      @spikes
-        rate:     @bitRate
+        rate:     @rate
     else @from = from
     @to =
       radiusX:      @radiusXEnd
@@ -32,7 +32,7 @@ class Bubble extends Byte
       opacity: @opacityEnd
       lineDashOffset: @lineDashOffsetEnd
       spikes:      @spikesEnd
-      rate:     @bitRateEnd
+      rate:     @rateEnd
 
     @mixStarSpikesProps()
     @mixLineDash()
@@ -49,6 +49,8 @@ class Bubble extends Byte
 
   draw:(it)->
     it.rotate angle: @angle*it.h.DEG
+    console.clear()
+    console.log @rate
 
     it.object.setProp
       radiusX:    @radiusX/2
@@ -73,7 +75,7 @@ class Bubble extends Byte
       ctx: @ctx
       position:   x: @center, y: @center
       rate:     @rate
-      lineCap: @lineCap
+      lineCap:  @lineCap
       # spikes:   @spikes
       lineDash: @lineDash
       fill:     @fill

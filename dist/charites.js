@@ -46,7 +46,7 @@ Bubble = (function(_super) {
         opacity: this.opacity,
         lineDashOffset: this.lineDashOffset,
         spikes: this.spikes,
-        rate: this.bitRate
+        rate: this.rate
       };
     } else {
       this.from = from;
@@ -59,7 +59,7 @@ Bubble = (function(_super) {
       opacity: this.opacityEnd,
       lineDashOffset: this.lineDashOffsetEnd,
       spikes: this.spikesEnd,
-      rate: this.bitRateEnd
+      rate: this.rateEnd
     };
     this.mixStarSpikesProps();
     this.mixLineDash();
@@ -77,6 +77,8 @@ Bubble = (function(_super) {
     it.rotate({
       angle: this.angle * it.h.DEG
     });
+    console.clear();
+    console.log(this.rate);
     it.object.setProp({
       radiusX: this.radiusX / 2,
       radiusY: this.radiusY / 2,
@@ -850,7 +852,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.calcSize = function() {
-    var abs, maxEnd, maxStart;
+    var abs, maxEnd, maxRate, maxStart;
     abs = Math.abs;
     maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
     maxStart = Math.max(abs(this.from.radiusX), abs(this.from.radiusY));
@@ -858,7 +860,11 @@ Byte = (function(_super) {
     this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
     this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
     this.maxBitRadius |= 0;
-    this.size = 2 * (this.maxRadius + this.maxLineWidth + 2 * this.maxBitRadius);
+    this.size = 2 * (this.maxRadius + 2 * this.maxLineWidth + 2 * this.maxBitRadius);
+    maxRate = Math.max(this.rate, this.rateEnd);
+    if (maxRate > 1) {
+      this.size *= maxRate;
+    }
     this.center = this.size / 2;
     this.sizeX = this.size;
     this.sizeY = this.size;
@@ -1405,7 +1411,7 @@ bubble = new charites.Bubble({
   },
   bitRadius: 20,
   bitRadiusEnd: 20,
-  rate: .5
+  rateEnd: 1.5
 });
 
 for (i = _i = 0; _i <= 20; i = ++_i) {

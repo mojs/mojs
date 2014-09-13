@@ -34,7 +34,7 @@ bubble = new charites.Bubble
   # degree: 180
   bitRadius: 20
   bitRadiusEnd: 20
-  rate: .5
+  rateEnd: 1.5
   # angle: {0: 360}
   # isShowEnd: true
   # rate:    {.5: 1.5}
