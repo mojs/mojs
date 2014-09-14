@@ -28,6 +28,7 @@
     "gulp-csslint": "*",
     "gulp-browserify": "latest",
     "gulp-rename": "latest",
+    "gulp-uglify": "latest",
     "coffeeify": "latest"
   }
 }

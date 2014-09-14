@@ -15,6 +15,7 @@ var concat        = require('gulp-concat');
 var csslint       = require('gulp-csslint');
 var browserify    = require('gulp-browserify');
 var rename        = require('gulp-rename');
+var uglify        = require('gulp-uglify');
 
 var devFolder   = '';
 var distFolder  = '';
@@ -67,6 +68,9 @@ gulp.task('coffee', function(e){
       extensions: ['.coffee']
     }))
     .pipe(rename('charites.js'))
+    .pipe(gulp.dest('dist/'))
+    .pipe(uglify())
+    .pipe(rename('charites.min.js'))
     .pipe(gulp.dest('dist/'))
     .pipe(livereload())
 

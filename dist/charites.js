@@ -123,6 +123,7 @@ Bubble = (function(_super) {
 module.exports = Bubble;
 
 
+
 },{"./byte":4}],2:[function(require,module,exports){
 var Burst, Byte,
   __hasProp = {}.hasOwnProperty,
@@ -316,6 +317,7 @@ Burst = (function(_super) {
 module.exports = Burst;
 
 
+
 },{"./byte":4}],3:[function(require,module,exports){
 var Bit, TWEEN, h;
 
@@ -461,6 +463,7 @@ Bit = (function() {
 })();
 
 module.exports = Bit;
+
 
 
 },{"../helpers":14,"../polyfills":15,"../vendor/tween":16}],4:[function(require,module,exports){
@@ -916,6 +919,7 @@ Byte = (function(_super) {
 module.exports = Byte;
 
 
+
 },{"../helpers":14,"./bit":3,"./objects/circle":5,"./objects/cross":6,"./objects/line":7,"./objects/rectangle":9,"./objects/star":10,"./objects/triangle":11,"./objects/zigzag":12}],5:[function(require,module,exports){
 var Circle, Object,
   __hasProp = {}.hasOwnProperty,
@@ -957,6 +961,7 @@ Circle = (function(_super) {
 module.exports = Circle;
 
 
+
 },{"./object":8}],6:[function(require,module,exports){
 var Cross, Object,
   __hasProp = {}.hasOwnProperty,
@@ -989,6 +994,7 @@ Cross = (function(_super) {
 module.exports = Cross;
 
 
+
 },{"./object":8}],7:[function(require,module,exports){
 var Line, Object,
   __hasProp = {}.hasOwnProperty,
@@ -1017,6 +1023,7 @@ Line = (function(_super) {
 })(Object);
 
 module.exports = Line;
+
 
 
 },{"./object":8}],8:[function(require,module,exports){
@@ -1167,6 +1174,7 @@ Object = (function(_super) {
 module.exports = Object;
 
 
+
 },{"../bit":3}],9:[function(require,module,exports){
 var Object, Square,
   __hasProp = {}.hasOwnProperty,
@@ -1194,6 +1202,7 @@ Square = (function(_super) {
 })(Object);
 
 module.exports = Square;
+
 
 
 },{"./object":8}],10:[function(require,module,exports){
@@ -1260,6 +1269,7 @@ Star = (function(_super) {
 module.exports = Star;
 
 
+
 },{"./object":8}],11:[function(require,module,exports){
 var Object, Triangle,
   __hasProp = {}.hasOwnProperty,
@@ -1306,6 +1316,7 @@ Triangle = (function(_super) {
 })(Object);
 
 module.exports = Triangle;
+
 
 
 },{"./object":8}],12:[function(require,module,exports){
@@ -1355,8 +1366,9 @@ ZigZag = (function(_super) {
 module.exports = ZigZag;
 
 
+
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, a, bubble, charites, h, i, r, wrapper, _i;
+var Bubble, Burst, Charites, charites, h;
 
 h = require('./helpers');
 
@@ -1381,55 +1393,10 @@ if ((typeof define === "function") && define.amd) {
   define("charites", [], function() {
     return charites;
   });
+} else {
+  window.charites = charites;
 }
 
-wrapper = document.getElementById('js-wrapper');
-
-bubble = new charites.Bubble({
-  parent: wrapper,
-  radius: {
-    50: 100
-  },
-  lineWidth: {
-    40: 1
-  },
-  shape: 'star',
-  duration: 1000,
-  cnt: 5,
-  color: 'deeppink',
-  delay: 0,
-  lineCap: 'none',
-  position: {
-    x: 400,
-    y: 400
-  },
-  bitRadius: 20,
-  bitRadiusEnd: 20,
-  rate: .5,
-  rateEnd: 2.5
-});
-
-for (i = _i = 0; _i <= 20; i = ++_i) {
-  a = h.rand(1, 20);
-  r = h.rand(-200, 200);
-  bubble.chain({
-    duration: 1000,
-    rateEnd: i % 2 === 0 ? .5 : 2.5,
-    angleEnd: r
-  });
-}
-
-window.addEventListener('click', function(e) {
-  a = h.rand(1, 20);
-  r = h.rand(-20, 20);
-  return bubble.run({
-    position: {
-      x: e.x,
-      y: e.y
-    },
-    duration: 500
-  });
-});
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./helpers":14}],14:[function(require,module,exports){
@@ -1665,6 +1632,7 @@ module.exports = (function() {
 })();
 
 
+
 },{"./vendor/tween":16}],15:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
@@ -1680,6 +1648,7 @@ module.exports = (function() {
     };
   }
 })();
+
 
 
 },{}],16:[function(require,module,exports){
