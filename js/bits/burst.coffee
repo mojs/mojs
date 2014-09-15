@@ -93,6 +93,9 @@ class Burst extends Byte
       rotAngle += rotStep
     it.ctx.restore()
 
+    if @x or @y
+      it.setPosition(@x or 0, @y or 0)
+
   addElements:->
     @els ?= []; @els.length = 0
     for i in [0...@cnt]

@@ -274,7 +274,10 @@ Burst = (function(_super) {
       angle += step;
       rotAngle += rotStep;
     }
-    return it.ctx.restore();
+    it.ctx.restore();
+    if (this.x || this.y) {
+      return it.setPosition(this.x || 0, this.y || 0);
+    }
   };
 
   Burst.prototype.addElements = function() {
