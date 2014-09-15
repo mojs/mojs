@@ -75,6 +75,17 @@ class Byte extends Bit
 
     @fillObjTween  = h.clone @fillObj
 
+  mixPosition:(isChain)->
+    if @position.x isnt @positionEnd.x
+      if !isChain
+        @from.x = @position.x
+      @to.x = @positionEnd.x
+
+    if @position.y isnt @positionEnd.y
+      if !isChain
+        @from.y = @position.y
+      @to.y = @positionEnd.y
+
   # METHODS FOR TWEEN UPDATE FUNCTION
   updateColor:(that)->
     @colorObjTween.r = parseInt(that.r,10)
@@ -216,10 +227,11 @@ class Byte extends Bit
     @size = 2*(@maxRadius + 2*@maxLineWidth + 2*@maxBitRadius)
     maxRate = Math.max @from.rate, @to.rate
     if maxRate > 1 then @size *= maxRate
-    # console.log maxRate
+    
     @center = @size/2; @sizeX = @size; @sizeY = @size
     @centerX = @sizeX/2; @centerY = @sizeY/2
-    @position  = @default prop: 'position', def: {x: @sizeX/2, y:@sizeY/2}
+    @position    = @default prop: 'position',    def: {x: @sizeX/2, y:@sizeY/2}
+    @positionEnd = @default prop: 'positionEnd', def: @position
 
   setElSize:->
     @el.setAttribute 'width',  h.pixel*@sizeX

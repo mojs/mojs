@@ -21,7 +21,8 @@ bubble = new charites.Bubble
   parent:   wrapper
   radius:    {50: 100}
   fill: {'#000': '#ff0000'}
-  # lineWidth: {4:1}
+  color: {'#f0f': 'orange'}
+  lineWidth: {20:1}
   # shape:     'star'
   # duration: 1000
   # cnt:      5
@@ -30,7 +31,8 @@ bubble = new charites.Bubble
   # # bitRadius: {10: 2  }
   # delay: 0
   # lineCap: 'none'
-  # position: x: 400, y: 400
+  position: {x: 200, y: 0 }
+  positionEnd: {x: 500, y: 500 }
   # # degree: 180
   # bitRadius: 20
   # bitRadiusEnd: 20
@@ -54,7 +56,8 @@ window.addEventListener 'click', (e)->
   bubble.run
     # lineWidthEnd: a
     # angleEnd:     r
-    position: x:e.x, y:e.y
+    position:    x:e.x, y:e.y
+    positionEnd: x:200, y:200
     # bitSpikes: 3
     duration: 500
     # fillEnd: '#0F0'

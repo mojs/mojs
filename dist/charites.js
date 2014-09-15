@@ -67,6 +67,7 @@ Bubble = (function(_super) {
     this.mixFill(this.oa.isChain);
     this.calcSize();
     this.addElements();
+    this.mixPosition(this.oa.isChain);
     tween = this.initTween(this.oa.isChain).onUpdate(function() {
       return it.draw.call(this, it);
     });
@@ -93,7 +94,10 @@ Bubble = (function(_super) {
       rate: this.rate,
       lineDashOffset: this.lineDashOffset
     });
-    return it.ctx.restore();
+    it.ctx.restore();
+    if (this.x || this.y) {
+      return it.setPosition(this.x || 0, this.y || 0);
+    }
   };
 
   Bubble.prototype.addElements = function() {
@@ -592,6 +596,21 @@ Byte = (function(_super) {
     return this.fillObjTween = h.clone(this.fillObj);
   };
 
+  Byte.prototype.mixPosition = function(isChain) {
+    if (this.position.x !== this.positionEnd.x) {
+      if (!isChain) {
+        this.from.x = this.position.x;
+      }
+      this.to.x = this.positionEnd.x;
+    }
+    if (this.position.y !== this.positionEnd.y) {
+      if (!isChain) {
+        this.from.y = this.position.y;
+      }
+      return this.to.y = this.positionEnd.y;
+    }
+  };
+
   Byte.prototype.updateColor = function(that) {
     this.colorObjTween.r = parseInt(that.r, 10);
     this.colorObjTween.g = parseInt(that.g, 10);
@@ -868,12 +887,16 @@ Byte = (function(_super) {
     this.sizeY = this.size;
     this.centerX = this.sizeX / 2;
     this.centerY = this.sizeY / 2;
-    return this.position = this["default"]({
+    this.position = this["default"]({
       prop: 'position',
       def: {
         x: this.sizeX / 2,
         y: this.sizeY / 2
       }
+    });
+    return this.positionEnd = this["default"]({
+      prop: 'positionEnd',
+      def: this.position
     });
   };
 
@@ -1406,6 +1429,20 @@ bubble = new charites.Bubble({
   },
   fill: {
     '#000': '#ff0000'
+  },
+  color: {
+    '#f0f': 'orange'
+  },
+  lineWidth: {
+    20: 1
+  },
+  position: {
+    x: 200,
+    y: 0
+  },
+  positionEnd: {
+    x: 500,
+    y: 500
   }
 });
 
@@ -1417,6 +1454,10 @@ window.addEventListener('click', function(e) {
     position: {
       x: e.x,
       y: e.y
+    },
+    positionEnd: {
+      x: 200,
+      y: 200
     },
     duration: 500
   });

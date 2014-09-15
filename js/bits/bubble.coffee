@@ -40,6 +40,8 @@ class Bubble extends Byte
 
     @calcSize()
     @addElements()
+    @mixPosition(@oa.isChain)
+    # console.log @position, @positionEnd
 
     tween = @initTween(@oa.isChain).onUpdate -> it.draw.call(@, it)
     @tweens.push tween
@@ -47,8 +49,6 @@ class Bubble extends Byte
 
   draw:(it)->
     it.rotate angle: @angle*it.h.DEG
-    # console.clear()
-    # console.log @rate
 
     it.object.setProp
       radiusX:    @radiusX/2
@@ -64,6 +64,9 @@ class Bubble extends Byte
       lineDashOffset: @lineDashOffset
 
     it.ctx.restore()
+
+    if @x or @y
+      it.setPosition(@x or 0, @y or 0)
 
 
   addElements:->
