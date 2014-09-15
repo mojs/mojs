@@ -53,7 +53,7 @@ class Burst extends Byte
     @mixFill(@oa.isChain)
     
     @calcSize()
-
+    @mixPosition(@oa.isChain)
     @addElements()
   
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
@@ -93,8 +93,7 @@ class Burst extends Byte
       rotAngle += rotStep
     it.ctx.restore()
 
-    if @x or @y
-      it.setPosition(@x or 0, @y or 0)
+    if @x or @y then it.setPosition(@x or 0, @y or 0)
 
   addElements:->
     @els ?= []; @els.length = 0

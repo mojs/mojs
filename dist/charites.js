@@ -229,6 +229,7 @@ Burst = (function(_super) {
     this.mixColor(this.oa.isChain);
     this.mixFill(this.oa.isChain);
     this.calcSize();
+    this.mixPosition(this.oa.isChain);
     this.addElements();
     this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
     this.rotStep = this.degree / this.degreeCnt;
@@ -1425,10 +1426,10 @@ if ((typeof define === "function") && define.amd) {
 
 wrapper = document.getElementById('js-wrapper');
 
-bubble = new charites.Bubble({
+bubble = new charites.Burst({
   parent: wrapper,
   radius: {
-    50: 100
+    50: 150
   },
   fill: {
     '#000': '#ff0000'

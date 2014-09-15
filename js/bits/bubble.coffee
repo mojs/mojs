@@ -65,8 +65,7 @@ class Bubble extends Byte
 
     it.ctx.restore()
 
-    if @x or @y
-      it.setPosition(@x or 0, @y or 0)
+    if @x or @y then it.setPosition(@x or 0, @y or 0)
 
 
   addElements:->

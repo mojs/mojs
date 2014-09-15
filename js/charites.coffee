@@ -17,9 +17,9 @@ else window.charites = charites
 #  position syntax sugar
   
 wrapper = document.getElementById 'js-wrapper'
-bubble = new charites.Bubble
+bubble = new charites.Burst
   parent:   wrapper
-  radius:    {50: 100}
+  radius:    {50: 150}
   fill: {'#000': '#ff0000'}
   color: {'#f0f': 'orange'}
   lineWidth: {20:1}
