@@ -435,7 +435,7 @@ Bit = (function() {
           value = _ref1[key];
           if (!(o.prop === 'lineDash' || o.prop === 'lineDashEnd')) {
             o.o["" + o.prop + "End"] = value;
-            o.o["" + o.prop] = parseFloat(key);
+            o.o["" + o.prop] = o.prop === 'fill' || o.prop === 'color' ? key : parseFloat(key);
           } else {
             o.o["" + o.prop + "End"] = this.stringToArray(value);
             o.o["" + o.prop] = this.stringToArray(key);
@@ -1368,7 +1368,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, charites, h;
+var Bubble, Burst, Charites, bubble, charites, h, wrapper;
 
 h = require('./helpers');
 
@@ -1396,6 +1396,31 @@ if ((typeof define === "function") && define.amd) {
 } else {
   window.charites = charites;
 }
+
+wrapper = document.getElementById('js-wrapper');
+
+bubble = new charites.Bubble({
+  parent: wrapper,
+  radius: {
+    50: 100
+  },
+  fill: {
+    '#000': '#ff0000'
+  }
+});
+
+window.addEventListener('click', function(e) {
+  var a, r;
+  a = h.rand(1, 20);
+  r = h.rand(-20, 20);
+  return bubble.run({
+    position: {
+      x: e.x,
+      y: e.y
+    },
+    duration: 500
+  });
+});
 
 
 

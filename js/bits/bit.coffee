@@ -61,15 +61,21 @@ class Bit
   defaultPart:(o)-> @[o.prop] = null; @default o
 
   syntaxSugar:(o)->
+
+
     if o.o[o.prop] and @h.isObj o.o[o.prop]
       if o.o[o.prop]?.end?
         o.o["#{o.prop}End"] = o.o[o.prop].end
         o.o["#{o.prop}"]    = o.o[o.prop].start
       else if !o.o[o.prop].x
+        # syntax sugar
         for key, value of o.o[o.prop]
           unless o.prop is 'lineDash' or o.prop is 'lineDashEnd'
             o.o["#{o.prop}End"] = value
-            o.o["#{o.prop}"]    = parseFloat key
+            o.o["#{o.prop}"] = if o.prop is 'fill' or o.prop is 'color'
+              key
+            else parseFloat key
+
           else
             o.o["#{o.prop}End"] = @stringToArray value
             o.o["#{o.prop}"]    = @stringToArray key
