@@ -144,7 +144,7 @@ Burst = (function(_super) {
 
   Burst.prototype.vars = function() {
     Burst.__super__.vars.apply(this, arguments);
-    this.Shape = this.shapes[this.shape.toLowerCase()] || Circle;
+    this.Shape = this.shapes[this.shape.toLowerCase()] || Line;
     this.cnt = this["default"]({
       prop: 'cnt',
       def: 3
@@ -431,14 +431,13 @@ Bit = (function() {
   };
 
   Bit.prototype.syntaxSugar = function(o) {
-    var key, value, _ref, _ref1, _results;
+    var key, position, positionEnd, value, _ref, _ref1, _ref2, _ref3;
     if (o.o[o.prop] && this.h.isObj(o.o[o.prop])) {
       if (((_ref = o.o[o.prop]) != null ? _ref.end : void 0) != null) {
         o.o["" + o.prop + "End"] = o.o[o.prop].end;
-        return o.o["" + o.prop] = o.o[o.prop].start;
+        o.o["" + o.prop] = o.o[o.prop].start;
       } else if (!o.o[o.prop].x) {
         _ref1 = o.o[o.prop];
-        _results = [];
         for (key in _ref1) {
           value = _ref1[key];
           if (!(o.prop === 'lineDash' || o.prop === 'lineDashEnd')) {
@@ -450,7 +449,29 @@ Bit = (function() {
           }
           break;
         }
-        return _results;
+      }
+      if (o.prop === 'position' && this.h.isObj(o.o[o.prop].x)) {
+        position = {};
+        positionEnd = {};
+        _ref2 = o.o[o.prop].x;
+        for (key in _ref2) {
+          value = _ref2[key];
+          position = {
+            x: parseFloat(key)
+          };
+          positionEnd = {
+            x: parseFloat(value)
+          };
+        }
+        _ref3 = o.o[o.prop].y;
+        for (key in _ref3) {
+          value = _ref3[key];
+          position.y = parseFloat(key);
+          positionEnd.y = parseFloat(value);
+        }
+        this.position = position;
+        this.positionEnd = positionEnd;
+        return console.log('yup');
       }
     }
   };
@@ -1429,7 +1450,7 @@ wrapper = document.getElementById('js-wrapper');
 bubble = new charites.Burst({
   parent: wrapper,
   radius: {
-    50: 150
+    20: 80
   },
   fill: {
     '#000': '#ff0000'
@@ -1440,31 +1461,16 @@ bubble = new charites.Burst({
   lineWidth: {
     20: 1
   },
+  shape: 'line',
   position: {
-    x: 200,
-    y: 0
-  },
-  positionEnd: {
-    x: 500,
-    y: 500
+    x: {
+      0: 600
+    },
+    y: {
+      0: 0,
+      300: 300
+    }
   }
-});
-
-window.addEventListener('click', function(e) {
-  var a, r;
-  a = h.rand(1, 20);
-  r = h.rand(-20, 20);
-  return bubble.run({
-    position: {
-      x: e.x,
-      y: e.y
-    },
-    positionEnd: {
-      x: 200,
-      y: 200
-    },
-    duration: 500
-  });
 });
 
 

@@ -78,6 +78,21 @@ class Bit
             o.o["#{o.prop}"]    = @stringToArray key
           break
 
+      if o.prop is 'position' and @h.isObj o.o[o.prop].x
+        position = {}; positionEnd = {}
+        for key, value of o.o[o.prop].x
+          position = { x: parseFloat key }
+          positionEnd = { x: parseFloat value }
+        for key, value of o.o[o.prop].y
+          position.y = parseFloat key
+          positionEnd.y = parseFloat value
+          
+        @position = position; @positionEnd = positionEnd
+
+        console.log 'yup'
+        # if o.o[o.prop].x
+        #   console.log o.o[o.prop]
+
   stringToArray:(str)->
     arr = []
     for item, i in str.split ','

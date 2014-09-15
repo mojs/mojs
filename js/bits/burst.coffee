@@ -4,7 +4,7 @@ Byte      = require './byte'
 class Burst extends Byte
   vars:->
     super
-    @Shape = @shapes[@shape.toLowerCase()] or Circle
+    @Shape = @shapes[@shape.toLowerCase()] or Line
 
     @cnt          = @default prop: 'cnt', def: 3
     @degree       = @default prop: 'degree', def: 360

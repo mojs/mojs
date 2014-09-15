@@ -14,16 +14,15 @@ else window.charites = charites
 
 # TODO
 #  add size option
-#  position syntax sugar
   
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   parent:   wrapper
-  radius:    {50: 150}
+  radius:    {20: 80}
   fill: {'#000': '#ff0000'}
   color: {'#f0f': 'orange'}
   lineWidth: {20:1}
-  # shape:     'star'
+  shape:     'line'
   # duration: 1000
   # cnt:      5
   # color:    'deeppink'
@@ -31,8 +30,8 @@ bubble = new charites.Burst
   # # bitRadius: {10: 2  }
   # delay: 0
   # lineCap: 'none'
-  position: {x: 200, y: 0 }
-  positionEnd: {x: 500, y: 500 }
+  position: {x: {0:600}, y: {0, 300} }
+  # positionEnd: {x: 600, y: 600 }
   # # degree: 180
   # bitRadius: 20
   # bitRadiusEnd: 20
@@ -48,21 +47,21 @@ bubble = new charites.Burst
 #     # angleEnd: r
 
 
-window.addEventListener 'click', (e)->
-  # bubble.setPosition e.x, e.y
-  a = h.rand(1,20)
-  r = h.rand(-20,20)
-  # console.log a
-  bubble.run
-    # lineWidthEnd: a
-    # angleEnd:     r
-    position:    x:e.x, y:e.y
-    positionEnd: x:200, y:200
-    # bitSpikes: 3
-    duration: 500
-    # fillEnd: '#0F0'
-    # colorEnd: 'black'
-    # bitRadiusEnd: 20
+# window.addEventListener 'click', (e)->
+#   # bubble.setPosition e.x, e.y
+#   a = h.rand(1,20)
+#   r = h.rand(-20,20)
+#   # console.log a
+#   bubble.run
+#     # lineWidthEnd: a
+#     # angleEnd:     r
+#     position:    x:e.x, y:e.y
+#     positionEnd: x:200, y:200
+#     # bitSpikes: 3
+#     duration: 500
+#     # fillEnd: '#0F0'
+#     # colorEnd: 'black'
+#     # bitRadiusEnd: 20
 
 
 
