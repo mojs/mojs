@@ -470,8 +470,7 @@ Bit = (function() {
           positionEnd.y = parseFloat(value);
         }
         this.position = position;
-        this.positionEnd = positionEnd;
-        return console.log('yup');
+        return this.positionEnd = positionEnd;
       }
     }
   };

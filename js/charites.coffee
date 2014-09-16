@@ -13,7 +13,6 @@ if (typeof define is "function") and define.amd
 else window.charites = charites
 
 # TODO
-#  add size option
   
 wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
@@ -27,8 +26,6 @@ bubble = new charites.Burst
   duration: 5000
 
   dimentions: { x: 400, y: 400 }
-
-
 
 # for i in [0..20]
 #   a = h.rand(1,20)

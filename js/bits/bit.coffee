@@ -32,7 +32,6 @@ class Bit
 
     @colorObj = h.makeColorObj @color
     @fillObj  = @h.makeColorObj @fill
-    # @o = {}
 
   setProp:(props)->
     for propName, propValue of props
@@ -88,10 +87,6 @@ class Bit
           positionEnd.y = parseFloat value
           
         @position = position; @positionEnd = positionEnd
-
-        console.log 'yup'
-        # if o.o[o.prop].x
-        #   console.log o.o[o.prop]
 
   stringToArray:(str)->
     arr = []
