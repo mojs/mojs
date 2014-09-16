@@ -156,6 +156,9 @@ class Byte extends Bit
     @radiusY     = @default prop: 'radiusY',      def: @radius
 
     @radiusEnd   = @default prop: 'radiusEnd',   def: @radius
+    
+    @dimentions   = @default prop: 'dimentions',   def: null
+
     @radiusXEnd  = @defaultPart prop: 'radiusXEnd', def: @radiusEnd
     @radiusYEnd  = @defaultPart prop: 'radiusYEnd', def: @radiusEnd
 

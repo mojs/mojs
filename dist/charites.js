@@ -754,6 +754,10 @@ Byte = (function(_super) {
       prop: 'radiusEnd',
       def: this.radius
     });
+    this.dimentions = this["default"]({
+      prop: 'dimentions',
+      def: null
+    });
     this.radiusXEnd = this.defaultPart({
       prop: 'radiusXEnd',
       def: this.radiusEnd
@@ -1470,6 +1474,10 @@ bubble = new charites.Burst({
       0: 0,
       300: 300
     }
+  },
+  dimentions: {
+    x: 200,
+    y: 200
   }
 });
 
