@@ -220,18 +220,24 @@ class Byte extends Bit
     !@isShowStart and (@el.style.display = 'none'); @parent.appendChild(@el)
 
   calcSize:->
-    abs = Math.abs
-    maxEnd = Math.max abs(@to.radiusX), abs(@to.radiusY)
-    maxStart = Math.max abs(@from.radiusX), abs(@from.radiusY)
-    @maxRadius    = Math.max maxEnd, maxStart
-    @maxLineWidth = Math.max @from.lineWidth, @to.lineWidth
-    @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
-    @maxBitRadius |= 0
-    @size = 2*(@maxRadius + 2*@maxLineWidth + 2*@maxBitRadius)
-    maxRate = Math.max @from.rate, @to.rate
-    if maxRate > 1 then @size *= maxRate
-    
-    @center = @size/2; @sizeX = @size; @sizeY = @size
+    if !@dimentions
+      abs = Math.abs
+      maxEnd = Math.max abs(@to.radiusX), abs(@to.radiusY)
+      maxStart = Math.max abs(@from.radiusX), abs(@from.radiusY)
+      @maxRadius    = Math.max maxEnd, maxStart
+      @maxLineWidth = Math.max @from.lineWidth, @to.lineWidth
+      @maxBitRadius = Math.max @from.bitRadius, @to.bitRadius
+      @maxBitRadius |= 0
+      @size = 2*(@maxRadius + 2*@maxLineWidth + 2*@maxBitRadius)
+      maxRate = Math.max @from.rate, @to.rate
+      if maxRate > 1 then @size *= maxRate
+      @sizeX = @size; @sizeY = @size
+    else
+      @sizeX = @dimentions.x or @dimentions.y
+      @sizeY = @dimentions.y or dimentions.x
+
+
+    @center = @sizeX/2
     @centerX = @sizeX/2; @centerY = @sizeY/2
     @position    = @default prop: 'position',    def: {x: @sizeX/2, y:@sizeY/2}
     @positionEnd = @default prop: 'positionEnd', def: @position

@@ -82,8 +82,8 @@ Bubble = (function(_super) {
       radiusX: this.radiusX / 2,
       radiusY: this.radiusY / 2,
       position: {
-        x: 2 * it.center,
-        y: 2 * it.center
+        x: 2 * it.centerX,
+        y: 2 * it.centerY
       },
       lineWidth: this.lineWidth,
       lineDash: it.updateLineDash(this),
@@ -106,8 +106,8 @@ Bubble = (function(_super) {
     return this.object = new Shape({
       ctx: this.ctx,
       position: {
-        x: this.center,
-        y: this.center
+        x: this.centerX,
+        y: this.centerY
       },
       lineCap: this.lineCap,
       lineDash: this.lineDash,
@@ -254,8 +254,8 @@ Burst = (function(_super) {
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       el = _ref[i];
       rotation = (angle + it.angle) * it.h.DEG;
-      x = 2 * it.center + Math.cos(rotation) * this.radiusX;
-      y = 2 * it.center + Math.sin(rotation) * this.radiusY;
+      x = 2 * it.centerX + Math.cos(rotation) * this.radiusX;
+      y = 2 * it.centerY + Math.sin(rotation) * this.radiusY;
       el.setProp({
         position: {
           x: x,
@@ -296,8 +296,8 @@ Burst = (function(_super) {
           y: this.sizeY
         },
         position: {
-          x: 2 * this.center,
-          y: 2 * this.center
+          x: 2 * this.centerX,
+          y: 2 * this.centerY
         },
         isClearLess: true,
         radius: this.bitRadius,
@@ -899,21 +899,26 @@ Byte = (function(_super) {
 
   Byte.prototype.calcSize = function() {
     var abs, maxEnd, maxRate, maxStart;
-    abs = Math.abs;
-    maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
-    maxStart = Math.max(abs(this.from.radiusX), abs(this.from.radiusY));
-    this.maxRadius = Math.max(maxEnd, maxStart);
-    this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
-    this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
-    this.maxBitRadius |= 0;
-    this.size = 2 * (this.maxRadius + 2 * this.maxLineWidth + 2 * this.maxBitRadius);
-    maxRate = Math.max(this.from.rate, this.to.rate);
-    if (maxRate > 1) {
-      this.size *= maxRate;
+    if (!this.dimentions) {
+      abs = Math.abs;
+      maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
+      maxStart = Math.max(abs(this.from.radiusX), abs(this.from.radiusY));
+      this.maxRadius = Math.max(maxEnd, maxStart);
+      this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
+      this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
+      this.maxBitRadius |= 0;
+      this.size = 2 * (this.maxRadius + 2 * this.maxLineWidth + 2 * this.maxBitRadius);
+      maxRate = Math.max(this.from.rate, this.to.rate);
+      if (maxRate > 1) {
+        this.size *= maxRate;
+      }
+      this.sizeX = this.size;
+      this.sizeY = this.size;
+    } else {
+      this.sizeX = this.dimentions.x || this.dimentions.y;
+      this.sizeY = this.dimentions.y || dimentions.x;
     }
-    this.center = this.size / 2;
-    this.sizeX = this.size;
-    this.sizeY = this.size;
+    this.center = this.sizeX / 2;
     this.centerX = this.sizeX / 2;
     this.centerY = this.sizeY / 2;
     this.position = this["default"]({
@@ -1467,17 +1472,13 @@ bubble = new charites.Burst({
   },
   shape: 'line',
   position: {
-    x: {
-      0: 600
-    },
-    y: {
-      0: 0,
-      300: 300
-    }
+    x: 600,
+    y: 600
   },
+  duration: 5000,
   dimentions: {
-    x: 200,
-    y: 200
+    x: 400,
+    y: 400
   }
 });
 

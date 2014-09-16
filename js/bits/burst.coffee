@@ -74,8 +74,8 @@ class Burst extends Byte
     rotAngle = 0
     for el, i in it.els
       rotation = (angle+it.angle)*it.h.DEG
-      x = 2*it.center + Math.cos(rotation)*@radiusX
-      y = 2*it.center + Math.sin(rotation)*@radiusY
+      x = 2*it.centerX + Math.cos(rotation)*@radiusX
+      y = 2*it.centerY + Math.sin(rotation)*@radiusY
       el.setProp
         position:   x:x, y:y
         angle:      (rotAngle) + @bitAngle
@@ -101,7 +101,7 @@ class Burst extends Byte
       @els.push new @Shape
         ctx: @ctx
         parentSize: x: @sizeX, y: @sizeY
-        position:   x: 2*@center, y: 2*@center
+        position:   x: 2*@centerX, y: 2*@centerY
         isClearLess: true
         radius: @bitRadius
         color: @color

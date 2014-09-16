@@ -53,7 +53,7 @@ class Bubble extends Byte
     it.object.setProp
       radiusX:    @radiusX/2
       radiusY:    @radiusY/2
-      position:   x: 2*it.center, y: 2*it.center
+      position:   x: 2*it.centerX, y: 2*it.centerY
       lineWidth:  @lineWidth
       lineDash:   it.updateLineDash(@)
       colorObj:   it.updateColor(@)
@@ -73,7 +73,7 @@ class Bubble extends Byte
 
     @object = new Shape
       ctx: @ctx
-      position:   x: @center, y: @center
+      position:   x: @centerX, y: @centerY
       # rate:     @rate
       lineCap:  @lineCap
       # spikes:   @spikes
