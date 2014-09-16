@@ -10,22 +10,24 @@ charites = new Charites
 
 if (typeof define is "function") and define.amd
   define "charites", [], -> charites
-else window.charites = charites
+else if typeof module is "object" and typeof module?.exports is "object"
+  module.exports = charites
+else window?.charites = charites
 
-# TODO
+# # TODO
   
-wrapper = document.getElementById 'js-wrapper'
-bubble = new charites.Burst
-  parent:   wrapper
-  radius:    {20: 80}
-  fill: {'#000': '#ff0000'}
-  color: {'#f0f': 'orange'}
-  lineWidth: {20:1}
-  shape:     'line'
-  position: {x: 600, y: 600 }
-  duration: 5000
+# wrapper = document.getElementById 'js-wrapper'
+# bubble = new charites.Burst
+#   parent:   wrapper
+#   radius:    {20: 80}
+#   fill: {'#000': '#ff0000'}
+#   color: {'#f0f': 'orange'}
+#   lineWidth: {20:1}
+#   shape:     'line'
+#   position: {x: 600, y: 600 }
+#   duration: 5000
 
-  dimentions: { x: 400, y: 400 }
+#   dimentions: { x: 400, y: 400 }
 
 # for i in [0..20]
 #   a = h.rand(1,20)

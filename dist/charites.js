@@ -1424,7 +1424,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, bubble, charites, h, wrapper;
+var Bubble, Burst, Charites, charites, h;
 
 h = require('./helpers');
 
@@ -1449,37 +1449,13 @@ if ((typeof define === "function") && define.amd) {
   define("charites", [], function() {
     return charites;
   });
+} else if (typeof module === "object" && typeof (typeof module !== "undefined" && module !== null ? module.exports : void 0) === "object") {
+  module.exports = charites;
 } else {
-  window.charites = charites;
-}
-
-wrapper = document.getElementById('js-wrapper');
-
-bubble = new charites.Burst({
-  parent: wrapper,
-  radius: {
-    20: 80
-  },
-  fill: {
-    '#000': '#ff0000'
-  },
-  color: {
-    '#f0f': 'orange'
-  },
-  lineWidth: {
-    20: 1
-  },
-  shape: 'line',
-  position: {
-    x: 600,
-    y: 600
-  },
-  duration: 5000,
-  dimentions: {
-    x: 400,
-    y: 400
+  if (typeof window !== "undefined" && window !== null) {
+    window.charites = charites;
   }
-});
+}
 
 
 
