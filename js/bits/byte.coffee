@@ -215,11 +215,13 @@ class Byte extends Bit
         @lineDashEnd[i] ?= @lineDashEnd[0]
 
   createEl:->
+    @isOwnContext = true
     @el = document.createElement('canvas')
     @el.style.position = 'absolute'; @el.style.left = 0; @el.style.top = 0
     !@isShowStart and (@el.style.display = 'none'); @parent.appendChild(@el)
 
   calcSize:->
+    return if !@isOwnContext
     if !@dimentions
       abs = Math.abs
       maxEnd = Math.max abs(@to.radiusX), abs(@to.radiusY)

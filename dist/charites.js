@@ -888,6 +888,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.createEl = function() {
+    this.isOwnContext = true;
     this.el = document.createElement('canvas');
     this.el.style.position = 'absolute';
     this.el.style.left = 0;
@@ -898,6 +899,9 @@ Byte = (function(_super) {
 
   Byte.prototype.calcSize = function() {
     var abs, maxEnd, maxRate, maxStart;
+    if (!this.isOwnContext) {
+      return;
+    }
     if (!this.dimentions) {
       abs = Math.abs;
       maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
@@ -1424,7 +1428,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, charites, h;
+var Bubble, Burst, Charites, bubble, canvas, charites, h;
 
 h = require('./helpers');
 
@@ -1456,6 +1460,32 @@ if ((typeof define === "function") && define.amd) {
     window.charites = charites;
   }
 }
+
+canvas = document.getElementById('js-canvas');
+
+console.log(canvas);
+
+bubble = new charites.Burst({
+  el: canvas,
+  radius: {
+    20: 80
+  },
+  fill: {
+    '#000': '#ff0000'
+  },
+  color: {
+    '#f0f': 'orange'
+  },
+  lineWidth: {
+    20: 1
+  },
+  shape: 'line',
+  position: {
+    x: 600,
+    y: 600
+  },
+  duration: 5000
+});
 
 
 
