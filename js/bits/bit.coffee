@@ -85,8 +85,11 @@ class Bit
         for key, value of o.o[o.prop].y
           position.y = parseFloat key
           positionEnd.y = parseFloat value
-          
+
         @position = position; @positionEnd = positionEnd
+        @o?.position  = null; @o?.positionEnd  = null
+        @oa?.position = null; @oa?.positionEnd = null
+
 
   stringToArray:(str)->
     arr = []

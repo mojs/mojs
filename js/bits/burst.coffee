@@ -55,7 +55,7 @@ class Burst extends Byte
     @calcSize()
     @mixPosition(@oa.isChain)
     @addElements()
-  
+
     @degreeCnt = if @degree % 360 is 0 then @cnt else @cnt-1
     @rotStep    = @degree/@degreeCnt
   
@@ -74,8 +74,12 @@ class Burst extends Byte
     rotAngle = 0
     for el, i in it.els
       rotation = (angle+it.angle)*it.h.DEG
-      x = 2*it.centerX + Math.cos(rotation)*@radiusX
-      y = 2*it.centerY + Math.sin(rotation)*@radiusY
+      if it.isOwnContext
+        x = 2*it.centerX + Math.cos(rotation)*@radiusX
+        y = 2*it.centerY + Math.sin(rotation)*@radiusY
+      else
+        x = (@x or it.position.x) + Math.cos(rotation)*@radiusX
+        y = (@y or it.position.y) + Math.sin(rotation)*@radiusY
       el.setProp
         position:   x:x, y:y
         angle:      (rotAngle) + @bitAngle
@@ -93,7 +97,8 @@ class Burst extends Byte
       rotAngle += rotStep
     it.ctx.restore()
 
-    if @x or @y then it.setPosition(@x or 0, @y or 0)
+    if it.isOwnContext
+      if @x or @y then it.setPosition(@x or 0, @y or 0)
 
   addElements:->
     @els ?= []; @els.length = 0
@@ -101,7 +106,7 @@ class Burst extends Byte
       @els.push new @Shape
         ctx: @ctx
         parentSize: x: @sizeX, y: @sizeY
-        position:   x: 2*@centerX, y: 2*@centerY
+        # position:   x: 2*@centerX, y: 2*@centerY
         isClearLess: true
         radius: @bitRadius
         color: @color

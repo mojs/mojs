@@ -254,8 +254,13 @@ Burst = (function(_super) {
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       el = _ref[i];
       rotation = (angle + it.angle) * it.h.DEG;
-      x = 2 * it.centerX + Math.cos(rotation) * this.radiusX;
-      y = 2 * it.centerY + Math.sin(rotation) * this.radiusY;
+      if (it.isOwnContext) {
+        x = 2 * it.centerX + Math.cos(rotation) * this.radiusX;
+        y = 2 * it.centerY + Math.sin(rotation) * this.radiusY;
+      } else {
+        x = (this.x || it.position.x) + Math.cos(rotation) * this.radiusX;
+        y = (this.y || it.position.y) + Math.sin(rotation) * this.radiusY;
+      }
       el.setProp({
         position: {
           x: x,
@@ -276,8 +281,10 @@ Burst = (function(_super) {
       rotAngle += rotStep;
     }
     it.ctx.restore();
-    if (this.x || this.y) {
-      return it.setPosition(this.x || 0, this.y || 0);
+    if (it.isOwnContext) {
+      if (this.x || this.y) {
+        return it.setPosition(this.x || 0, this.y || 0);
+      }
     }
   };
 
@@ -294,10 +301,6 @@ Burst = (function(_super) {
         parentSize: {
           x: this.sizeX,
           y: this.sizeY
-        },
-        position: {
-          x: 2 * this.centerX,
-          y: 2 * this.centerY
         },
         isClearLess: true,
         radius: this.bitRadius,
@@ -431,7 +434,7 @@ Bit = (function() {
   };
 
   Bit.prototype.syntaxSugar = function(o) {
-    var key, position, positionEnd, value, _ref, _ref1, _ref2, _ref3;
+    var key, position, positionEnd, value, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
     if (o.o[o.prop] && this.h.isObj(o.o[o.prop])) {
       if (((_ref = o.o[o.prop]) != null ? _ref.end : void 0) != null) {
         o.o["" + o.prop + "End"] = o.o[o.prop].end;
@@ -470,7 +473,17 @@ Bit = (function() {
           positionEnd.y = parseFloat(value);
         }
         this.position = position;
-        return this.positionEnd = positionEnd;
+        this.positionEnd = positionEnd;
+        if ((_ref4 = this.o) != null) {
+          _ref4.position = null;
+        }
+        if ((_ref5 = this.o) != null) {
+          _ref5.positionEnd = null;
+        }
+        if ((_ref6 = this.oa) != null) {
+          _ref6.position = null;
+        }
+        return (_ref7 = this.oa) != null ? _ref7.positionEnd = null : void 0;
       }
     }
   };
@@ -671,16 +684,17 @@ Byte = (function(_super) {
     var tween;
     tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
       return function() {
-        var _ref;
+        var isSetDistplay, _ref;
         _this.setElSize();
         _this.isRunning = true;
         !isChain && _this.ctx.clear();
-        (!_this.isShowStart || _this.isShowEnd) && (_this.el.style.display = 'block');
+        isSetDistplay = !_this.isShowStart || _this.isShowEnd && _this.isOwnContext;
+        isSetDistplay && (_this.el.style.display = 'block');
         return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
       };
     })(this)).onComplete((function(_this) {
       return function() {
-        var item, _ref, _ref1;
+        var isSetDistplay, item, _ref, _ref1;
         _this.isShowStart = false;
         if ((_ref = _this.onComplete) != null) {
           _ref.call(_this, arguments);
@@ -689,7 +703,8 @@ Byte = (function(_super) {
         if (item) {
           return _this.runFromChain(item);
         } else {
-          !_this.isShowEnd && (_this.el.style.display = 'none');
+          isSetDistplay = !_this.isShowEnd && _this.isOwnContext;
+          isSetDistplay && (_this.el.style.display = 'none');
           return _this.isRunning = false;
         }
       };
@@ -902,7 +917,6 @@ Byte = (function(_super) {
     if (!this.isOwnContext) {
       this.sizeX = this.el.style.width;
       this.sizeY = this.el.style.height;
-      console.log(this.sizeX, this.sizeY);
     } else {
       if (!this.dimentions) {
         abs = Math.abs;
@@ -1468,12 +1482,14 @@ if ((typeof define === "function") && define.amd) {
 
 canvas = document.getElementById('js-canvas');
 
-console.log(canvas);
+canvas.setAttribute('width', 400);
+
+canvas.setAttribute('height', 400);
 
 bubble = new charites.Burst({
   el: canvas,
   radius: {
-    20: 80
+    5: 50
   },
   fill: {
     '#000': '#ff0000'
@@ -1486,10 +1502,17 @@ bubble = new charites.Burst({
   },
   shape: 'line',
   position: {
-    x: 200,
-    y: 200
+    x: {
+      0: 400
+    },
+    y: {
+      0: 400
+    }
   },
-  duration: 5000
+  duration: 5000,
+  bitRadius: {
+    2: 0
+  }
 });
 
 

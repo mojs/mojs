@@ -117,7 +117,8 @@ class Byte extends Bit
         @setElSize()
         @isRunning = true
         !isChain and @ctx.clear()
-        (!@isShowStart or @isShowEnd) and (@el.style.display = 'block')
+        isSetDistplay = !@isShowStart or @isShowEnd and @isOwnContext
+        (isSetDistplay) and (@el.style.display = 'block')
         @o.onStart?.call @, arguments
       ).onComplete(=>
         @isShowStart = false
@@ -125,7 +126,8 @@ class Byte extends Bit
         item = @chains?[0]
         if item then @runFromChain item
         else
-          !@isShowEnd and (@el.style.display = 'none')
+          isSetDistplay = !@isShowEnd and @isOwnContext
+          isSetDistplay and (@el.style.display = 'none')
           @isRunning = false
       ).yoyo(@yoyo)
       .start()
@@ -224,7 +226,6 @@ class Byte extends Bit
     if !@isOwnContext
       @sizeX = @el.style.width
       @sizeY = @el.style.height
-      console.log @sizeX, @sizeY
     else
       if !@dimentions
         abs = Math.abs
@@ -242,10 +243,10 @@ class Byte extends Bit
         @sizeX = @dimentions.x or @dimentions.y
         @sizeY = @dimentions.y or dimentions.x
 
-
     @centerX = @sizeX/2; @centerY = @sizeY/2
     @position    = @default prop: 'position',    def: {x: @sizeX/2, y:@sizeY/2}
     @positionEnd = @default prop: 'positionEnd', def: @position
+
 
   setElSize:->
     return if !@isOwnContext

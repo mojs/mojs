@@ -18,19 +18,23 @@ else window?.charites = charites
 #   check foreign context
 
 canvas = document.getElementById 'js-canvas'
-console.log canvas
+
+
+canvas.setAttribute 'width', 400
+canvas.setAttribute 'height', 400
 
 # wrapper = document.getElementById 'js-wrapper'
 bubble = new charites.Burst
   # parent:   wrapper
   el: canvas
-  radius:    {20: 80}
+  radius:    {5: 50}
   fill: {'#000': '#ff0000'}
   color: {'#f0f': 'orange'}
   lineWidth: {5:1}
   shape:     'line'
-  position: {x: 200, y: 200 }
+  position: {x: {0: 400}, y: {0: 400} }
   duration: 5000
+  bitRadius: {2: 0}
 
 #   dimentions: { x: 400, y: 400 }
 
