@@ -24,7 +24,7 @@ canvas.setAttribute 'width', 400
 canvas.setAttribute 'height', 400
 
 # wrapper = document.getElementById 'js-wrapper'
-bubble = new charites.Burst
+bubble = new charites.Bubble
   # parent:   wrapper
   el: canvas
   radius:    {5: 50}

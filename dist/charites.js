@@ -75,15 +75,23 @@ Bubble = (function(_super) {
   };
 
   Bubble.prototype.draw = function(it) {
+    var x, y;
     it.rotate({
       angle: this.angle * it.h.DEG
     });
+    if (it.isOwnContext) {
+      x = 2 * it.centerX;
+      y = 2 * it.centerY;
+    } else {
+      x = this.x || it.position.x;
+      y = this.y || it.position.y;
+    }
     it.object.setProp({
       radiusX: this.radiusX / 2,
       radiusY: this.radiusY / 2,
       position: {
-        x: 2 * it.centerX,
-        y: 2 * it.centerY
+        x: x,
+        y: y
       },
       lineWidth: this.lineWidth,
       lineDash: it.updateLineDash(this),
@@ -1486,7 +1494,7 @@ canvas.setAttribute('width', 400);
 
 canvas.setAttribute('height', 400);
 
-bubble = new charites.Burst({
+bubble = new charites.Bubble({
   el: canvas,
   radius: {
     5: 50
