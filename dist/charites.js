@@ -900,28 +900,30 @@ Byte = (function(_super) {
   Byte.prototype.calcSize = function() {
     var abs, maxEnd, maxRate, maxStart;
     if (!this.isOwnContext) {
-      return;
-    }
-    if (!this.dimentions) {
-      abs = Math.abs;
-      maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
-      maxStart = Math.max(abs(this.from.radiusX), abs(this.from.radiusY));
-      this.maxRadius = Math.max(maxEnd, maxStart);
-      this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
-      this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
-      this.maxBitRadius |= 0;
-      this.size = 2 * (this.maxRadius + 2 * this.maxLineWidth + 2 * this.maxBitRadius);
-      maxRate = Math.max(this.from.rate, this.to.rate);
-      if (maxRate > 1) {
-        this.size *= maxRate;
-      }
-      this.sizeX = this.size;
-      this.sizeY = this.size;
+      this.sizeX = this.el.style.width;
+      this.sizeY = this.el.style.height;
+      console.log(this.sizeX, this.sizeY);
     } else {
-      this.sizeX = this.dimentions.x || this.dimentions.y;
-      this.sizeY = this.dimentions.y || dimentions.x;
+      if (!this.dimentions) {
+        abs = Math.abs;
+        maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
+        maxStart = Math.max(abs(this.from.radiusX), abs(this.from.radiusY));
+        this.maxRadius = Math.max(maxEnd, maxStart);
+        this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
+        this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
+        this.maxBitRadius |= 0;
+        this.size = 2 * (this.maxRadius + 2 * this.maxLineWidth + 2 * this.maxBitRadius);
+        maxRate = Math.max(this.from.rate, this.to.rate);
+        if (maxRate > 1) {
+          this.size *= maxRate;
+        }
+        this.sizeX = this.size;
+        this.sizeY = this.size;
+      } else {
+        this.sizeX = this.dimentions.x || this.dimentions.y;
+        this.sizeY = this.dimentions.y || dimentions.x;
+      }
     }
-    this.center = this.sizeX / 2;
     this.centerX = this.sizeX / 2;
     this.centerY = this.sizeY / 2;
     this.position = this["default"]({
@@ -938,6 +940,9 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setElSize = function() {
+    if (!this.isOwnContext) {
+      return;
+    }
     this.el.setAttribute('width', h.pixel * this.sizeX);
     this.el.setAttribute('height', h.pixel * this.sizeY);
     if (h.pixel > 1) {
@@ -1477,12 +1482,12 @@ bubble = new charites.Burst({
     '#f0f': 'orange'
   },
   lineWidth: {
-    20: 1
+    5: 1
   },
   shape: 'line',
   position: {
-    x: 600,
-    y: 600
+    x: 200,
+    y: 200
   },
   duration: 5000
 });

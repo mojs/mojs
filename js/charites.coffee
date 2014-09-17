@@ -27,9 +27,9 @@ bubble = new charites.Burst
   radius:    {20: 80}
   fill: {'#000': '#ff0000'}
   color: {'#f0f': 'orange'}
-  lineWidth: {20:1}
+  lineWidth: {5:1}
   shape:     'line'
-  position: {x: 600, y: 600 }
+  position: {x: 200, y: 200 }
   duration: 5000
 
 #   dimentions: { x: 400, y: 400 }
