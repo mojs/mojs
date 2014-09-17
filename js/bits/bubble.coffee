@@ -49,12 +49,14 @@ class Bubble extends Byte
   draw:(it)->
     it.rotate angle: @angle*it.h.DEG
 
+    # it.ctx.clear()
+
     if it.isOwnContext
-        x = 2*it.centerX
-        y = 2*it.centerY
-      else
-        x = (@x or it.position.x)
-        y = (@y or it.position.y)
+      x = 2*it.centerX
+      y = 2*it.centerY
+    else
+      x = (@x or it.position.x)
+      y = (@y or it.position.y)
 
     it.object.setProp
       radiusX:    @radiusX/2
@@ -85,6 +87,7 @@ class Bubble extends Byte
       # spikes:   @spikes
       lineDash: @lineDash
       fill:     @fill
+      isClearLess: true
 
   mixStarSpikesProps:->
     @from.spikes = @spikes

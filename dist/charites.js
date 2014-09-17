@@ -119,7 +119,8 @@ Bubble = (function(_super) {
       },
       lineCap: this.lineCap,
       lineDash: this.lineDash,
-      fill: this.fill
+      fill: this.fill,
+      isClearLess: true
     });
   };
 
@@ -254,7 +255,6 @@ Burst = (function(_super) {
     it.rotate({
       angle: this.angle * it.h.DEG
     });
-    it.ctx.clear();
     step = this.degree / degreeCnt;
     angle = 0;
     rotAngle = 0;
@@ -1493,6 +1493,35 @@ canvas = document.getElementById('js-canvas');
 canvas.setAttribute('width', 400);
 
 canvas.setAttribute('height', 400);
+
+bubble = new charites.Burst({
+  el: canvas,
+  radius: {
+    5: 50
+  },
+  fill: {
+    '#000': '#ff0000'
+  },
+  color: {
+    '#f0f': 'orange'
+  },
+  lineWidth: {
+    5: 1
+  },
+  shape: 'line',
+  position: {
+    x: {
+      400: 0
+    },
+    y: {
+      400: 0
+    }
+  },
+  duration: 5000,
+  bitRadius: {
+    2: 0
+  }
+});
 
 bubble = new charites.Bubble({
   el: canvas,
