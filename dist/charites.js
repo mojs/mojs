@@ -1494,7 +1494,10 @@ if ((typeof define === "function") && define.amd) {
   }
 }
 
-pather = new Pather;
+pather = new Pather({
+  repeat: 5,
+  path: document.getElementById('js-svg-path').getAttribute('d')
+});
 
 
 
@@ -1715,7 +1718,7 @@ Helpers = (function() {
       return;
     }
     this.isAnimateLoop = true;
-    return this.animationLoop();
+    return requestAnimationFrame(this.animationLoop);
   };
 
   Helpers.prototype.stopAnimationLoop = function() {
@@ -1754,16 +1757,45 @@ Pather = (function() {
     this.duration = this.o.duration || 1000;
     this.delay = this.o.delay || 0;
     this.yoyo = this.o.yoyo || false;
-    this.easing = this.o.easin || 'Linear.None';
-    return this.repeat = this.o.repeat || 0;
+    this.easing = this.o.easing || 'Linear.None';
+    this.easings = this.easing.split('.');
+    this.repeat = this.o.repeat || 0;
+    this.NS = 'http://www.w3.org/2000/svg';
+    return this.path = this.getPath();
+  };
+
+  Pather.prototype.getPath = function() {
+    var path, svg;
+    if (typeof this.o.path === 'string') {
+      if (this.o.path.charAt(0).toLowerCase() === 'm') {
+        svg = document.createElementNS(this.NS, 'svg');
+        path = document.createElementNS(this.NS, 'path');
+        path.setAttributeNS(null, 'd', this.o.path);
+        return path;
+      } else {
+        return document.querySelector(this.o.path);
+      }
+    }
+    if (this.o.path.addEventListener) {
+      return this.o.path;
+    }
   };
 
   Pather.prototype.run = function() {
-    var it;
+    var end, it, len, start;
+    len = this.path.getTotalLength();
     it = this;
-    this.tween = new this.T.Tween({}).to({}, this.duration).onUpdate(function() {
-      return console.log(this);
-    }).delay(this.delay).yoyo(this.yoyo).easing(this.easing).repeat(this.repeat - 1).start();
+    start = this.direction ? 0 : len;
+    end = this.direction ? len : 0;
+    this.tween = new this.T.Tween({
+      p: 0,
+      len: start
+    }).to({
+      p: 1,
+      len: end
+    }, this.duration).onUpdate(function() {
+      return console.log(it.path.getPointAtLength(this.len));
+    }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
   };
 

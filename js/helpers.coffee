@@ -146,7 +146,7 @@ class Helpers
   startAnimationLoop:->
     return if @isAnimateLoop
     @isAnimateLoop = true
-    @animationLoop()
+    requestAnimationFrame @animationLoop
 
   stopAnimationLoop:->
     @isAnimateLoop = false
