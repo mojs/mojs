@@ -1,6 +1,7 @@
 h      = require './helpers'
 Bubble = require './bits/Bubble'
 Burst  = require './bits/Burst'
+Pather = require './pather/pather'
 
 class Charites
   Bubble: Bubble

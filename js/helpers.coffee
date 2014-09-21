@@ -137,7 +137,7 @@ class Helpers
   unlock:(o)->
     @[o.lock] = false
 
-  animationLoop: ()->
+  animationLoop:()->
     if !TWEEN.getAll().length then @isAnimateLoop = false
     return if !@isAnimateLoop
     TWEEN.update()

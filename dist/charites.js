@@ -517,7 +517,7 @@ module.exports = Bit;
 
 
 
-},{"../helpers":14,"../polyfills":15,"../vendor/tween":16}],4:[function(require,module,exports){
+},{"../helpers":14,"../polyfills":16,"../vendor/tween":17}],4:[function(require,module,exports){
 var Bit, Byte, Circle, Cross, Line, Rectangle, Star, Triangle, ZigZag, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1457,13 +1457,15 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, charites, h, pather;
+var Bubble, Burst, Charites, Pather, charites, h, pather;
 
 h = require('./helpers');
 
 Bubble = require('./bits/Bubble');
 
 Burst = require('./bits/Burst');
+
+Pather = require('./pather/pather');
 
 Charites = (function() {
   function Charites() {}
@@ -1496,7 +1498,7 @@ pather = new Pather;
 
 
 
-},{"./bits/Bubble":1,"./bits/Burst":2,"./helpers":14}],14:[function(require,module,exports){
+},{"./bits/Bubble":1,"./bits/Burst":2,"./helpers":14,"./pather/pather":15}],14:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -1730,7 +1732,52 @@ module.exports = (function() {
 
 
 
-},{"./vendor/tween":16}],15:[function(require,module,exports){
+},{"./vendor/tween":17}],15:[function(require,module,exports){
+var Pather, TWEEN, h;
+
+h = require('../helpers');
+
+require('../polyfills');
+
+TWEEN = require('../vendor/tween');
+
+Pather = (function() {
+  function Pather(o) {
+    this.o = o != null ? o : {};
+    console.log(this.o);
+    this.vars();
+    this.run();
+  }
+
+  Pather.prototype.vars = function() {
+    this.T = TWEEN;
+    this.duration = this.o.duration || 1000;
+    this.delay = this.o.delay || 0;
+    this.yoyo = this.o.yoyo || false;
+    this.easing = this.o.easin || 'Linear.None';
+    return this.repeat = this.o.repeat || 0;
+  };
+
+  Pather.prototype.run = function() {
+    var it;
+    it = this;
+    this.tween = new this.T.Tween({}).to({}, this.duration).onUpdate(function() {
+      return console.log(this);
+    }).delay(this.delay).yoyo(this.yoyo).easing(this.easing).repeat(this.repeat - 1).start();
+    return h.startAnimationLoop();
+  };
+
+  return Pather;
+
+})();
+
+Pather;
+
+module.exports = Pather;
+
+
+
+},{"../helpers":14,"../polyfills":16,"../vendor/tween":17}],16:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -1748,7 +1795,7 @@ module.exports = (function() {
 
 
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ;(function(undefined){
 
 
