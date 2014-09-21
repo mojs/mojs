@@ -1457,7 +1457,7 @@ module.exports = ZigZag;
 
 
 },{"./object":8}],13:[function(require,module,exports){
-var Bubble, Burst, Charites, bubble, canvas, charites, h;
+var Bubble, Burst, Charites, charites, h, pather;
 
 h = require('./helpers');
 
@@ -1471,6 +1471,8 @@ Charites = (function() {
   Charites.prototype.Bubble = Bubble;
 
   Charites.prototype.Burst = Burst;
+
+  Charites.prototype.Pather = Pather;
 
   return Charites;
 
@@ -1490,68 +1492,7 @@ if ((typeof define === "function") && define.amd) {
   }
 }
 
-canvas = document.getElementById('js-canvas');
-
-canvas.setAttribute('width', 400);
-
-canvas.setAttribute('height', 400);
-
-bubble = new charites.Burst({
-  el: canvas,
-  radius: {
-    5: 50
-  },
-  fill: {
-    '#000': '#ff0000'
-  },
-  color: {
-    '#f0f': 'orange'
-  },
-  lineWidth: {
-    5: 1
-  },
-  shape: 'line',
-  position: {
-    x: {
-      400: 0
-    },
-    y: {
-      400: 0
-    }
-  },
-  duration: 5000,
-  bitRadius: {
-    2: 0
-  }
-});
-
-bubble = new charites.Bubble({
-  radius: {
-    5: 50
-  },
-  fill: {
-    '#000': '#ff0000'
-  },
-  color: {
-    '#f0f': 'orange'
-  },
-  lineWidth: {
-    5: 1
-  },
-  shape: 'line',
-  position: {
-    x: {
-      0: 400
-    },
-    y: {
-      0: 400
-    }
-  },
-  duration: 5000,
-  bitRadius: {
-    2: 0
-  }
-});
+pather = new Pather;
 
 
 

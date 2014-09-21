@@ -113,14 +113,14 @@ class Byte extends Bit
       .delay(@delay*@s)
       .easing @TWEEN.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
-      .onStart(=>
+      .onStart =>
         @setElSize()
         @isRunning = true
         !isChain and @ctx.clear()
         isSetDistplay = !@isShowStart or @isShowEnd and @isOwnContext
         (isSetDistplay) and (@el.style.display = 'block')
         @o.onStart?.call @, arguments
-      ).onComplete(=>
+      .onComplete(=>
         @isShowStart = false
         @onComplete?.call @, arguments
         item = @chains?[0]
