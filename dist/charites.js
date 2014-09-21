@@ -79,6 +79,7 @@ Bubble = (function(_super) {
     it.rotate({
       angle: this.angle * it.h.DEG
     });
+    it.ctx.clear();
     if (it.isOwnContext) {
       x = 2 * it.centerX;
       y = 2 * it.centerY;
@@ -255,6 +256,7 @@ Burst = (function(_super) {
     it.rotate({
       angle: this.angle * it.h.DEG
     });
+    it.ctx.clear();
     step = this.degree / degreeCnt;
     angle = 0;
     rotAngle = 0;
@@ -1524,7 +1526,6 @@ bubble = new charites.Burst({
 });
 
 bubble = new charites.Bubble({
-  el: canvas,
   radius: {
     5: 50
   },

@@ -40,7 +40,7 @@ bubble = new charites.Burst
 
 bubble = new charites.Bubble
   # parent:   wrapper
-  el: canvas
+  # el: canvas
   radius:    {5: 50}
   fill: {'#000': '#ff0000'}
   color: {'#f0f': 'orange'}

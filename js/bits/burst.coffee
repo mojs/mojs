@@ -67,7 +67,7 @@ class Burst extends Byte
     rotStep   = it.rotStep
 
     it.rotate angle: @angle*it.h.DEG
-    # it.ctx.clear()
+    it.ctx.clear()
 
     step = @degree/degreeCnt
     angle = 0
@@ -123,3 +123,8 @@ class Burst extends Byte
     @to.rate   = @rateEnd
 
 module.exports = Burst
+
+
+
+
+

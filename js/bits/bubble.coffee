@@ -49,7 +49,7 @@ class Bubble extends Byte
   draw:(it)->
     it.rotate angle: @angle*it.h.DEG
 
-    # it.ctx.clear()
+    it.ctx.clear()
 
     if it.isOwnContext
       x = 2*it.centerX

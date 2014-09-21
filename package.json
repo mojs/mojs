@@ -11,9 +11,9 @@
   "dependencies": {},
   "devDependencies": {
     "nodemon": "*",
-    "gulp": "~3.5.2",
+    "gulp": "latest",
     "gulp-minify-css": "~0.3.0",
-    "gulp-stylus": "0.0.12",
+    "gulp-stylus": "latest",
     "gulp-autoprefixer": "0.0.6",
     "gulp-notify": "~0.5.1",
     "gulp-livereload": "~1.2.0",
