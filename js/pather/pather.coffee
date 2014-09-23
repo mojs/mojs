@@ -37,7 +37,10 @@ class Pather
     @tween = new @T.Tween({p:0, len: start}).to({p:1, len:end}, @duration)
       .onUpdate ->
         # @p is 1 and console.log 'start'
-        console.log it.path.getPointAtLength @len
+        point = it.path.getPointAtLength @len
+        it.o.el.style['transform'] = "translate(#{point.x}px,#{point.y}px)"
+        # it.o.el.style.left = "#{point.x}px"
+        # it.o.el.style.top  = "#{point.y}px"
 
       .delay(@delay)
       .yoyo(@yoyo)

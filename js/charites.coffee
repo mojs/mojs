@@ -18,9 +18,12 @@ else window?.charites = charites
 
 pather = new Pather
   repeat: 5
+  duration: 15000
+  yoyo: true
   # path: document.getElementById 'js-svg-path'
   # path: '#js-svg-path'
   path: document.getElementById('js-svg-path').getAttribute 'd'
+  el:  document.getElementById('js-el')
 
 
 # canvas = document.getElementById 'js-canvas'

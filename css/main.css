@@ -141,7 +141,8 @@ body {
   height: 100%;
   overflow: hidden;
 }
-::selection{
+
+	::selection{
 		background-color: #f59995;
 	  color: white;
 	  text-shadow: none;
@@ -1219,6 +1220,12 @@ a,
   fill: #717171;
   cursor: pointer;
 }
-canvas {
-  outline: 1px solid #ffa500;
+.el {
+  border: 1px solid #ff1493;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

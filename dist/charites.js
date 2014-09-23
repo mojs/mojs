@@ -1496,7 +1496,10 @@ if ((typeof define === "function") && define.amd) {
 
 pather = new Pather({
   repeat: 5,
-  path: document.getElementById('js-svg-path').getAttribute('d')
+  duration: 15000,
+  yoyo: true,
+  path: document.getElementById('js-svg-path').getAttribute('d'),
+  el: document.getElementById('js-el')
 });
 
 
@@ -1794,7 +1797,9 @@ Pather = (function() {
       p: 1,
       len: end
     }, this.duration).onUpdate(function() {
-      return console.log(it.path.getPointAtLength(this.len));
+      var point;
+      point = it.path.getPointAtLength(this.len);
+      return it.o.el.style['transform'] = "translate(" + point.x + "px," + point.y + "px)";
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
   };
