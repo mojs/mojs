@@ -1,27 +1,25 @@
 # h      = require './helpers'
-# Bubble = require './bits/Bubble'
-# Burst  = require './bits/Burst'
+Bubble = require './bits/Bubble'
+Burst  = require './bits/Burst'
 MotionPath = require './motion-path/MotionPath'
 
-# class Mojs
-#   # Bubble: Bubble
-#   # Burst:  Burst
-#   MotionPath: MotionPath
+class Mojs
+  Bubble: Bubble
+  Burst:  Burst
+  MotionPath: MotionPath
 
-# mojs = new Mojs
+mojs = new Mojs
 
-# if (typeof define is "function") and define.amd
-#   define "mojs", [], -> mojs
-# else if typeof module is "object" and typeof module?.exports is "object"
-#   module.exports = mojs
-# else window?.mojs = mojs
+if (typeof define is "function") and define.amd
+  define "mojs", [], -> mojs
+if (typeof module is "object") and (typeof module.exports is "object")
+  module.exports = mojs
+window?.mojs = mojs
 
 motionPath = new MotionPath
   repeat: 5
-  duration: 15000
-  yoyo: true
-  # path: document.getElementById 'js-svg-path'
-  # path: '#js-svg-path'
+  duration: 1500
+  # yoyo: true
   path: document.getElementById('js-svg-path').getAttribute 'd'
   el:  document.getElementById('js-el')
 

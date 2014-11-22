@@ -3,11 +3,10 @@ require '../polyfills'
 TWEEN  = require '../vendor/tween'
 
 class MotionPath
-
   constructor:(@o={})->
-    console.log @o
     @vars()
     @run()
+    @
 
   vars:->
     @T = TWEEN

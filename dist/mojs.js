@@ -1,4 +1,1462 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var Bubble, Byte,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Byte = require('./byte');
+
+Bubble = (function(_super) {
+  __extends(Bubble, _super);
+
+  function Bubble() {
+    return Bubble.__super__.constructor.apply(this, arguments);
+  }
+
+  Bubble.prototype.vars = function() {
+    Bubble.__super__.vars.apply(this, arguments);
+    this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 5
+    });
+    this.spikesEnd = this["default"]({
+      prop: 'spikesEnd',
+      def: this.spikes
+    });
+    this.rate = this["default"]({
+      prop: 'rate',
+      def: .25
+    });
+    return this.rateEnd = this["default"]({
+      prop: 'rateEnd',
+      def: this.rate
+    });
+  };
+
+  Bubble.prototype.run = function(oa, from) {
+    var it, tween;
+    this.oa = oa != null ? oa : {};
+    Bubble.__super__.run.apply(this, arguments);
+    it = this;
+    if (!this.oa.isChain) {
+      this.from = {
+        radiusX: this.radiusX,
+        radiusY: this.radiusY,
+        lineWidth: this.lineWidth,
+        angle: this.angleStart,
+        opacity: this.opacity,
+        lineDashOffset: this.lineDashOffset,
+        spikes: this.spikes,
+        rate: this.rate
+      };
+    } else {
+      this.from = from;
+    }
+    this.to = {
+      radiusX: this.radiusXEnd,
+      radiusY: this.radiusYEnd,
+      lineWidth: this.lineWidthEnd,
+      angle: this.angleEnd,
+      opacity: this.opacityEnd,
+      lineDashOffset: this.lineDashOffsetEnd,
+      spikes: this.spikesEnd,
+      rate: this.rateEnd
+    };
+    this.mixStarSpikesProps();
+    this.mixLineDash();
+    this.mixColor(this.oa.isChain);
+    this.mixFill(this.oa.isChain);
+    this.calcSize();
+    this.addElements();
+    this.mixPosition(this.oa.isChain);
+    tween = this.initTween(this.oa.isChain).onUpdate(function() {
+      return it.draw.call(this, it);
+    });
+    return this.tweens.push(tween);
+  };
+
+  Bubble.prototype.draw = function(it) {
+    var x, y;
+    it.rotate({
+      angle: this.angle * it.h.DEG
+    });
+    it.ctx.clear();
+    if (it.isOwnContext) {
+      x = 2 * it.centerX;
+      y = 2 * it.centerY;
+    } else {
+      x = this.x || it.position.x;
+      y = this.y || it.position.y;
+    }
+    it.object.setProp({
+      radiusX: this.radiusX / 2,
+      radiusY: this.radiusY / 2,
+      position: {
+        x: x,
+        y: y
+      },
+      lineWidth: this.lineWidth,
+      lineDash: it.updateLineDash(this),
+      colorObj: it.updateColor(this),
+      fillObj: it.updateFill(this),
+      opacity: this.opacity,
+      spikes: this.spikes,
+      rate: this.rate,
+      lineDashOffset: this.lineDashOffset
+    });
+    it.ctx.restore();
+    if (this.x || this.y) {
+      return it.setPosition(this.x || 0, this.y || 0);
+    }
+  };
+
+  Bubble.prototype.addElements = function() {
+    var Shape;
+    Shape = this.shapes[this.shape.toLowerCase()] || Circle;
+    return this.object = new Shape({
+      ctx: this.ctx,
+      position: {
+        x: this.centerX,
+        y: this.centerY
+      },
+      lineCap: this.lineCap,
+      lineDash: this.lineDash,
+      fill: this.fill,
+      isClearLess: true
+    });
+  };
+
+  Bubble.prototype.mixStarSpikesProps = function() {
+    this.from.spikes = this.spikes;
+    return this.to.spikes = this.spikesEnd;
+  };
+
+  return Bubble;
+
+})(Byte);
+
+module.exports = Bubble;
+
+
+
+},{"./byte":4}],2:[function(require,module,exports){
+var Burst, Byte,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Byte = require('./byte');
+
+Burst = (function(_super) {
+  __extends(Burst, _super);
+
+  function Burst() {
+    return Burst.__super__.constructor.apply(this, arguments);
+  }
+
+  Burst.prototype.vars = function() {
+    Burst.__super__.vars.apply(this, arguments);
+    this.Shape = this.shapes[this.shape.toLowerCase()] || Line;
+    this.cnt = this["default"]({
+      prop: 'cnt',
+      def: 3
+    });
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeEnd = this["default"]({
+      prop: 'degreeEnd',
+      def: this.degree
+    });
+    this.bitSpikes = this["default"]({
+      prop: 'bitSpikes',
+      def: 5
+    });
+    this.bitSpikesEnd = this["default"]({
+      prop: 'bitSpikesEnd',
+      def: this.bitSpikes
+    });
+    this.bitAngle = this["default"]({
+      prop: 'bitAngle',
+      def: 0
+    });
+    this.bitAngleEnd = this["default"]({
+      prop: 'bitAngleEnd',
+      def: this.bitAngle
+    });
+    this.bitRate = this["default"]({
+      prop: 'bitRate',
+      def: .5
+    });
+    this.bitRateEnd = this["default"]({
+      prop: 'bitRateEnd',
+      def: this.bitRate
+    });
+    this.bitRadius = this["default"]({
+      prop: 'bitRadius',
+      def: 10
+    });
+    return this.bitRadiusEnd = this["default"]({
+      prop: 'bitRadiusEnd',
+      def: this.bitRadius
+    });
+  };
+
+  Burst.prototype.run = function(oa, from) {
+    var it, tween;
+    this.oa = oa != null ? oa : {};
+    Burst.__super__.run.apply(this, arguments);
+    it = this;
+    if (!this.oa.isChain) {
+      this.from = {
+        radiusX: this.radiusX,
+        radiusY: this.radiusY,
+        bitAngle: this.bitAngle,
+        lineWidth: this.lineWidth,
+        bitRadius: this.bitRadius,
+        degree: this.degree,
+        angle: this.angle,
+        spikes: this.bitSpikesEnd,
+        bitRate: this.bitRate,
+        lineDashOffset: this.lineDashOffset
+      };
+    } else {
+      this.from = from;
+    }
+    this.to = {
+      radiusX: this.radiusXEnd,
+      radiusY: this.radiusYEnd,
+      bitAngle: this.bitAngleEnd,
+      lineWidth: this.lineWidthEnd,
+      bitRadius: this.bitRadiusEnd,
+      degree: this.degreeEnd,
+      angle: this.angleEnd,
+      spikes: this.spikesEnd,
+      bitRate: this.bitRateEnd,
+      lineDashOffset: this.lineDashOffsetEnd
+    };
+    this.mixStarSpikesProps();
+    this.mixLineDash();
+    this.mixColor(this.oa.isChain);
+    this.mixFill(this.oa.isChain);
+    this.calcSize();
+    this.mixPosition(this.oa.isChain);
+    this.addElements();
+    this.degreeCnt = this.degree % 360 === 0 ? this.cnt : this.cnt - 1;
+    this.rotStep = this.degree / this.degreeCnt;
+    tween = this.initTween(this.oa.isChain).onUpdate(function() {
+      return it.draw.call(this, it);
+    });
+    return this.tweens.push(tween);
+  };
+
+  Burst.prototype.draw = function(it) {
+    var angle, degreeCnt, el, i, rotAngle, rotStep, rotation, step, x, y, _i, _len, _ref;
+    degreeCnt = it.degreeCnt;
+    rotStep = it.rotStep;
+    it.rotate({
+      angle: this.angle * it.h.DEG
+    });
+    it.ctx.clear();
+    step = this.degree / degreeCnt;
+    angle = 0;
+    rotAngle = 0;
+    _ref = it.els;
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      el = _ref[i];
+      rotation = (angle + it.angle) * it.h.DEG;
+      if (it.isOwnContext) {
+        x = 2 * it.centerX + Math.cos(rotation) * this.radiusX;
+        y = 2 * it.centerY + Math.sin(rotation) * this.radiusY;
+      } else {
+        x = (this.x || it.position.x) + Math.cos(rotation) * this.radiusX;
+        y = (this.y || it.position.y) + Math.sin(rotation) * this.radiusY;
+      }
+      el.setProp({
+        position: {
+          x: x,
+          y: y
+        },
+        angle: rotAngle + this.bitAngle,
+        lineWidth: this.lineWidth,
+        fillObj: it.updateFill(this),
+        colorObj: it.updateColor(this),
+        radiusX: this.bitRadius,
+        radiusY: this.bitRadius,
+        spikes: this.spikes,
+        rate: this.bitRate,
+        lineDash: it.updateLineDash(this),
+        lineDashOffset: this.lineDashOffset
+      });
+      angle += step;
+      rotAngle += rotStep;
+    }
+    it.ctx.restore();
+    if (it.isOwnContext) {
+      if (this.x || this.y) {
+        return it.setPosition(this.x || 0, this.y || 0);
+      }
+    }
+  };
+
+  Burst.prototype.addElements = function() {
+    var i, _i, _ref, _results;
+    if (this.els == null) {
+      this.els = [];
+    }
+    this.els.length = 0;
+    _results = [];
+    for (i = _i = 0, _ref = this.cnt; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      _results.push(this.els.push(new this.Shape({
+        ctx: this.ctx,
+        parentSize: {
+          x: this.sizeX,
+          y: this.sizeY
+        },
+        isClearLess: true,
+        radius: this.bitRadius,
+        color: this.color,
+        fill: this.fill,
+        spikes: this.bitSpikes,
+        rate: this.bitRate,
+        lineDash: this.lineDash
+      })));
+    }
+    return _results;
+  };
+
+  Burst.prototype.mixStarSpikesProps = function() {
+    this.from.spikes = this.spikes;
+    this.to.spikes = this.spikesEnd;
+    this.from.rate = this.rate;
+    return this.to.rate = this.rateEnd;
+  };
+
+  return Burst;
+
+})(Byte);
+
+module.exports = Burst;
+
+
+
+},{"./byte":4}],3:[function(require,module,exports){
+var Bit, TWEEN, h;
+
+h = require('../helpers');
+
+require('../polyfills');
+
+TWEEN = require('../vendor/tween');
+
+Bit = (function() {
+  Bit.prototype.oa = {};
+
+  Bit.prototype.h = h;
+
+  Bit.prototype.TWEEN = TWEEN;
+
+  Bit.prototype.deg = Math.PI / 180;
+
+  Bit.prototype.DEG = Math.PI / 180;
+
+  Bit.prototype.px = h.pixel;
+
+  Bit.prototype.parent = h.body;
+
+  function Bit(o) {
+    this.o = o != null ? o : {};
+    this.vars();
+    this.o.isRunLess || (typeof this.run === "function" ? this.run() : void 0);
+  }
+
+  Bit.prototype.vars = function() {
+    this.ctx = this.o.ctx || this.ctx;
+    this.px = h.pixel;
+    this.parent = this["default"]({
+      prop: 'parent',
+      def: h.body
+    });
+    this.color = this["default"]({
+      prop: 'color',
+      def: '#222'
+    });
+    this.colorMap = this["default"]({
+      prop: 'colorMap',
+      def: [this.color]
+    });
+    this.fill = this["default"]({
+      prop: 'fill',
+      def: 'rgba(0,0,0,0)'
+    });
+    this.fillEnd = this["default"]({
+      prop: 'fillEnd',
+      def: this.fill
+    });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineCap = this["default"]({
+      prop: 'lineCap',
+      def: 'round'
+    });
+    this.opacity = this["default"]({
+      prop: 'opacity',
+      def: 1
+    });
+    this.isClearLess = this["default"]({
+      prop: 'isClearLess',
+      def: false
+    });
+    this.colorObj = h.makeColorObj(this.color);
+    return this.fillObj = this.h.makeColorObj(this.fill);
+  };
+
+  Bit.prototype.setProp = function(props) {
+    var propName, propValue;
+    for (propName in props) {
+      propValue = props[propName];
+      if (propValue != null) {
+        this[propName] = propValue;
+      }
+    }
+    return this.render();
+  };
+
+  Bit.prototype["default"] = function(o) {
+    var def, prop;
+    prop = o.prop;
+    def = o.def;
+    this.syntaxSugar({
+      o: this.o,
+      prop: prop
+    });
+    this.syntaxSugar({
+      o: this.oa,
+      prop: prop
+    });
+    return this[prop] = this.oa[prop] != null ? this.oa[prop] : this.o[prop] != null ? this.o[prop] : this[prop] != null ? this[prop] : def;
+  };
+
+  Bit.prototype.defaultPart = function(o) {
+    this[o.prop] = null;
+    return this["default"](o);
+  };
+
+  Bit.prototype.syntaxSugar = function(o) {
+    var key, position, positionEnd, value, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
+    if (o.o[o.prop] && this.h.isObj(o.o[o.prop])) {
+      if (((_ref = o.o[o.prop]) != null ? _ref.end : void 0) != null) {
+        o.o["" + o.prop + "End"] = o.o[o.prop].end;
+        o.o["" + o.prop] = o.o[o.prop].start;
+      } else if (!o.o[o.prop].x) {
+        _ref1 = o.o[o.prop];
+        for (key in _ref1) {
+          value = _ref1[key];
+          if (!(o.prop === 'lineDash' || o.prop === 'lineDashEnd')) {
+            o.o["" + o.prop + "End"] = value;
+            o.o["" + o.prop] = o.prop === 'fill' || o.prop === 'color' ? key : parseFloat(key);
+          } else {
+            o.o["" + o.prop + "End"] = this.stringToArray(value);
+            o.o["" + o.prop] = this.stringToArray(key);
+          }
+          break;
+        }
+      }
+      if (o.prop === 'position' && this.h.isObj(o.o[o.prop].x)) {
+        position = {};
+        positionEnd = {};
+        _ref2 = o.o[o.prop].x;
+        for (key in _ref2) {
+          value = _ref2[key];
+          position = {
+            x: parseFloat(key)
+          };
+          positionEnd = {
+            x: parseFloat(value)
+          };
+        }
+        _ref3 = o.o[o.prop].y;
+        for (key in _ref3) {
+          value = _ref3[key];
+          position.y = parseFloat(key);
+          positionEnd.y = parseFloat(value);
+        }
+        this.position = position;
+        this.positionEnd = positionEnd;
+        if ((_ref4 = this.o) != null) {
+          _ref4.position = null;
+        }
+        if ((_ref5 = this.o) != null) {
+          _ref5.positionEnd = null;
+        }
+        if ((_ref6 = this.oa) != null) {
+          _ref6.position = null;
+        }
+        return (_ref7 = this.oa) != null ? _ref7.positionEnd = null : void 0;
+      }
+    }
+  };
+
+  Bit.prototype.stringToArray = function(str) {
+    var arr, i, item, _i, _len, _ref;
+    arr = [];
+    _ref = str.split(',');
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      item = _ref[i];
+      arr.push(parseFloat(item));
+    }
+    return arr;
+  };
+
+  return Bit;
+
+})();
+
+module.exports = Bit;
+
+
+
+},{"../helpers":13,"../polyfills":16,"../vendor/tween":17}],4:[function(require,module,exports){
+var Bit, Byte, Circle, Cross, Line, Rectangle, Star, Triangle, ZigZag, h,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+h = require('../helpers');
+
+Bit = require('./bit');
+
+Circle = require('./objects/circle');
+
+Rectangle = require('./objects/rectangle');
+
+Triangle = require('./objects/triangle');
+
+Star = require('./objects/star');
+
+Cross = require('./objects/cross');
+
+Line = require('./objects/line');
+
+ZigZag = require('./objects/zigzag');
+
+Byte = (function(_super) {
+  __extends(Byte, _super);
+
+  function Byte() {
+    return Byte.__super__.constructor.apply(this, arguments);
+  }
+
+  Byte.prototype.shapes = {
+    circle: Circle,
+    rectangle: Rectangle,
+    triangle: Triangle,
+    star: Star,
+    cross: Cross,
+    line: Line,
+    zigzag: ZigZag
+  };
+
+  Byte.prototype.vars = function() {
+    this.isShowStart = this["default"]({
+      prop: 'isShowStart',
+      def: false
+    });
+    this.isShowEnd = this["default"]({
+      prop: 'isShowEnd',
+      def: false
+    });
+    this.parent = this.o.parent || h.body;
+    this.el = this.oa.el || this.o.el || this.el || this.createEl();
+    this.ctx = this.o.ctx || this.ctx || this.el.getContext('2d');
+    Byte.__super__.vars.apply(this, arguments);
+    this.defaultByteVars();
+    this.s = 1 * h.time(1);
+    if (this.tweens == null) {
+      this.tweens = [];
+    }
+    return this.chains != null ? this.chains : this.chains = [];
+  };
+
+  Byte.prototype.run = function(oa, from) {
+    var i, tween, _i, _len, _ref;
+    this.oa = oa != null ? oa : {};
+    h.size(this.oa) && this.vars();
+    if (!from) {
+      _ref = this.tweens;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        tween = _ref[i];
+        this.TWEEN.remove(tween);
+      }
+      this.tweens.length = 0;
+      return this.chains.length = 0;
+    }
+  };
+
+  Byte.prototype.mixLineDash = function(from, to) {
+    var dash, i, _i, _j, _len, _len1, _ref, _ref1, _results;
+    if (this.lineDash && this.lineDashEnd) {
+      _ref = this.lineDash;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        dash = _ref[i];
+        this.from["lineDash" + i] = dash;
+      }
+      _ref1 = this.lineDashEnd;
+      _results = [];
+      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+        dash = _ref1[i];
+        _results.push(this.to["lineDash" + i] = dash);
+      }
+      return _results;
+    }
+  };
+
+  Byte.prototype.mixColor = function(isChain) {
+    if (this.color && this.colorEnd) {
+      if (!isChain) {
+        this.from.r = this.colorObj.r;
+        this.from.g = this.colorObj.g;
+        this.from.b = this.colorObj.b;
+        this.from.a = this.colorObj.a;
+      }
+      this.to.r = this.colorEndObj.r;
+      this.to.g = this.colorEndObj.g;
+      this.to.b = this.colorEndObj.b;
+      this.to.a = this.colorEndObj.a;
+    }
+    return this.colorObjTween = h.clone(this.colorObj);
+  };
+
+  Byte.prototype.mixFill = function(isChain) {
+    if (this.fill && this.fillEnd) {
+      if (!isChain) {
+        this.from.fr = this.fillObj.r;
+        this.from.fg = this.fillObj.g;
+        this.from.fb = this.fillObj.b;
+        this.from.fa = this.fillObj.a;
+      }
+      this.to.fr = this.fillEndObj.r;
+      this.to.fg = this.fillEndObj.g;
+      this.to.fb = this.fillEndObj.b;
+      this.to.fa = this.fillEndObj.a;
+    }
+    return this.fillObjTween = h.clone(this.fillObj);
+  };
+
+  Byte.prototype.mixPosition = function(isChain) {
+    if (this.position.x !== this.positionEnd.x) {
+      if (!isChain) {
+        this.from.x = this.position.x;
+      }
+      this.to.x = this.positionEnd.x;
+    }
+    if (this.position.y !== this.positionEnd.y) {
+      if (!isChain) {
+        this.from.y = this.position.y;
+      }
+      return this.to.y = this.positionEnd.y;
+    }
+  };
+
+  Byte.prototype.updateColor = function(that) {
+    this.colorObjTween.r = parseInt(that.r, 10);
+    this.colorObjTween.g = parseInt(that.g, 10);
+    this.colorObjTween.b = parseInt(that.b, 10);
+    this.colorObjTween.a = parseFloat(that.a);
+    return this.colorObjTween;
+  };
+
+  Byte.prototype.updateFill = function(that) {
+    this.fillObjTween.r = parseInt(that.fr, 10);
+    this.fillObjTween.g = parseInt(that.fg, 10);
+    this.fillObjTween.b = parseInt(that.fb, 10);
+    this.fillObjTween.a = parseFloat(that.fa);
+    return this.fillObjTween;
+  };
+
+  Byte.prototype.updateLineDash = function(that) {
+    var i, key, lineDash, val;
+    i = 0;
+    lineDash = [];
+    if (this.lineDash && this.lineDashEnd) {
+      for (key in that) {
+        val = that[key];
+        if (key === 'lineDash0' || key === ("lineDash" + i)) {
+          lineDash.push(val);
+          i++;
+        }
+      }
+    }
+    return lineDash;
+  };
+
+  Byte.prototype.initTween = function(isChain) {
+    var tween;
+    tween = new this.TWEEN.Tween(this.from).to(this.to, this.duration * this.s).delay(this.delay * this.s).easing(this.TWEEN.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).onStart((function(_this) {
+      return function() {
+        var isSetDistplay, _ref;
+        _this.setElSize();
+        _this.isRunning = true;
+        !isChain && _this.ctx.clear();
+        isSetDistplay = !_this.isShowStart || _this.isShowEnd && _this.isOwnContext;
+        isSetDistplay && (_this.el.style.display = 'block');
+        return (_ref = _this.o.onStart) != null ? _ref.call(_this, arguments) : void 0;
+      };
+    })(this)).onComplete((function(_this) {
+      return function() {
+        var isSetDistplay, item, _ref, _ref1;
+        _this.isShowStart = false;
+        if ((_ref = _this.onComplete) != null) {
+          _ref.call(_this, arguments);
+        }
+        item = (_ref1 = _this.chains) != null ? _ref1[0] : void 0;
+        if (item) {
+          return _this.runFromChain(item);
+        } else {
+          isSetDistplay = !_this.isShowEnd && _this.isOwnContext;
+          isSetDistplay && (_this.el.style.display = 'none');
+          return _this.isRunning = false;
+        }
+      };
+    })(this)).yoyo(this.yoyo).start();
+    h.startAnimationLoop();
+    return tween;
+  };
+
+  Byte.prototype.runFromChain = function(item) {
+    var from;
+    from = this.h.clone(this.to);
+    item.isChain = true;
+    if (item.onComplete == null) {
+      item.onComplete = function() {};
+    }
+    if (item.onStart == null) {
+      item.onStart = function() {};
+    }
+    if (item.repeat == null) {
+      item.repeat = 0;
+    }
+    if (item.yoyo == null) {
+      item.yoyo = false;
+    }
+    if (item.delay == null) {
+      item.delay = 0;
+    }
+    if (item.duration == null) {
+      item.duration = 400 * this.s;
+    }
+    this.run(item, from);
+    return this.chains.shift();
+  };
+
+  Byte.prototype.chain = function(oc) {
+    if (oc == null) {
+      oc = {};
+    }
+    if (this.isRunning) {
+      return this.chains.push(oc);
+    } else {
+      return this.runFromChain(oc);
+    }
+  };
+
+  Byte.prototype.defaultByteVars = function() {
+    var abs, maxEnd, maxStart;
+    this.radius = this["default"]({
+      prop: 'radius',
+      def: 100
+    });
+    this.radiusX = this["default"]({
+      prop: 'radiusX',
+      def: this.radius
+    });
+    this.radiusY = this["default"]({
+      prop: 'radiusY',
+      def: this.radius
+    });
+    this.radiusEnd = this["default"]({
+      prop: 'radiusEnd',
+      def: this.radius
+    });
+    this.dimentions = this["default"]({
+      prop: 'dimentions',
+      def: null
+    });
+    this.radiusXEnd = this.defaultPart({
+      prop: 'radiusXEnd',
+      def: this.radiusEnd
+    });
+    this.radiusYEnd = this.defaultPart({
+      prop: 'radiusYEnd',
+      def: this.radiusEnd
+    });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineWidthMiddle = this["default"]({
+      prop: 'lineWidthMiddle',
+      def: null
+    });
+    this.lineWidthEnd = this["default"]({
+      prop: 'lineWidthEnd',
+      def: this.lineWidth
+    });
+    this.lineDashOffset = this["default"]({
+      prop: 'lineDashOffset',
+      def: 0
+    });
+    this.lineDashOffsetEnd = this["default"]({
+      prop: 'lineDashOffsetEnd',
+      def: this.lineDashOffset
+    });
+    this.lineDash = this["default"]({
+      prop: 'lineDash',
+      def: []
+    });
+    this.lineDashEnd = this["default"]({
+      prop: 'lineDashEnd',
+      def: this.lineDash
+    });
+    this.normalizeLineDashes();
+    this.opacity = this["default"]({
+      prop: 'opacity',
+      def: 1
+    });
+    this.opacityEnd = this["default"]({
+      prop: 'opacityEnd',
+      def: this.opacity
+    });
+    this.colorEnd = this["default"]({
+      prop: 'colorEnd',
+      def: this.color
+    });
+    this.colorEnd && (this.colorEndObj = h.makeColorObj(this.colorEnd));
+    this.fillEnd && (this.fillEndObj = h.makeColorObj(this.fillEnd));
+    this.colorMap = this["default"]({
+      prop: 'colorMap',
+      def: [this.color]
+    });
+    this.angle = this["default"]({
+      prop: 'angle',
+      def: 0
+    });
+    this.angleStart = this["default"]({
+      prop: 'angleStart',
+      def: this.angle
+    });
+    this.angleEnd = this["default"]({
+      prop: 'angleEnd',
+      def: this.angleStart
+    });
+    this.shape = this["default"]({
+      prop: 'shape',
+      def: 'circle'
+    });
+    this.Shape = this.shapes[this.shape.toLowerCase()] || Circle;
+    this.repeat = this["default"]({
+      prop: 'repeat',
+      def: 0
+    });
+    this.yoyo = this["default"]({
+      prop: 'yoyo',
+      def: false
+    });
+    this.duration = this["default"]({
+      prop: 'duration',
+      def: 400
+    });
+    this.delay = this["default"]({
+      prop: 'delay',
+      def: 0
+    });
+    this.easing = this.defaultPart({
+      prop: 'easing',
+      def: 'Linear.None'
+    });
+    this.easings = this.easing.split('.');
+    this.onComplete = this["default"]({
+      prop: 'onComplete',
+      def: null
+    });
+    this.onStart = this["default"]({
+      prop: 'onStart',
+      def: null
+    });
+    abs = Math.abs;
+    maxEnd = Math.max(abs(this.radiusXEnd), abs(this.radiusYEnd));
+    maxStart = Math.max(abs(this.radiusX), abs(this.radiusY));
+    this.maxRadius = Math.max(maxEnd, maxStart);
+    return this.maxLineWidth = Math.max(this.lineWidthEnd, this.lineWidthMiddle, this.lineWidth);
+  };
+
+  Byte.prototype.normalizeLineDashes = function() {
+    var dash, i, _base, _base1, _i, _j, _len, _len1, _ref, _ref1, _results;
+    if (this.lineDash.length < this.lineDashEnd.length) {
+      _ref = this.lineDashEnd;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        dash = _ref[i];
+        if ((_base = this.lineDash)[i] == null) {
+          _base[i] = this.lineDash[0];
+        }
+      }
+    }
+    if (this.lineDash.length > this.lineDashEnd.length) {
+      _ref1 = this.lineDash;
+      _results = [];
+      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+        dash = _ref1[i];
+        _results.push((_base1 = this.lineDashEnd)[i] != null ? _base1[i] : _base1[i] = this.lineDashEnd[0]);
+      }
+      return _results;
+    }
+  };
+
+  Byte.prototype.createEl = function() {
+    this.isOwnContext = true;
+    this.el = document.createElement('canvas');
+    this.el.style.position = 'absolute';
+    this.el.style.left = 0;
+    this.el.style.top = 0;
+    !this.isShowStart && (this.el.style.display = 'none');
+    return this.parent.appendChild(this.el);
+  };
+
+  Byte.prototype.calcSize = function() {
+    var abs, maxEnd, maxRate, maxStart;
+    if (!this.isOwnContext) {
+      this.sizeX = this.el.style.width;
+      this.sizeY = this.el.style.height;
+    } else {
+      if (!this.dimentions) {
+        abs = Math.abs;
+        maxEnd = Math.max(abs(this.to.radiusX), abs(this.to.radiusY));
+        maxStart = Math.max(abs(this.from.radiusX), abs(this.from.radiusY));
+        this.maxRadius = Math.max(maxEnd, maxStart);
+        this.maxLineWidth = Math.max(this.from.lineWidth, this.to.lineWidth);
+        this.maxBitRadius = Math.max(this.from.bitRadius, this.to.bitRadius);
+        this.maxBitRadius |= 0;
+        this.size = 2 * (this.maxRadius + 2 * this.maxLineWidth + 2 * this.maxBitRadius);
+        maxRate = Math.max(this.from.rate, this.to.rate);
+        if (maxRate > 1) {
+          this.size *= maxRate;
+        }
+        this.sizeX = this.size;
+        this.sizeY = this.size;
+      } else {
+        this.sizeX = this.dimentions.x || this.dimentions.y;
+        this.sizeY = this.dimentions.y || dimentions.x;
+      }
+    }
+    this.centerX = this.sizeX / 2;
+    this.centerY = this.sizeY / 2;
+    this.position = this["default"]({
+      prop: 'position',
+      def: {
+        x: this.sizeX / 2,
+        y: this.sizeY / 2
+      }
+    });
+    return this.positionEnd = this["default"]({
+      prop: 'positionEnd',
+      def: this.position
+    });
+  };
+
+  Byte.prototype.setElSize = function() {
+    if (!this.isOwnContext) {
+      return;
+    }
+    this.el.setAttribute('width', h.pixel * this.sizeX);
+    this.el.setAttribute('height', h.pixel * this.sizeY);
+    if (h.pixel > 1) {
+      this.el.style.width = "" + this.sizeX + "px";
+      this.el.style.height = "" + this.sizeY + "px";
+    }
+    this.posit();
+    return this.el;
+  };
+
+  Byte.prototype.setPosition = function(x, y) {
+    if (y == null) {
+      y = 0;
+    }
+    this.position.x = x;
+    (y != null) && (this.position.y = y);
+    return this.posit();
+  };
+
+  Byte.prototype.posit = function() {
+    var x, y;
+    x = this.position.x - this.sizeX / 2;
+    y = this.position.y - this.sizeY / 2;
+    this.el.style.left = "" + x + "px";
+    return this.el.style.top = "" + y + "px";
+  };
+
+  Byte.prototype.rotate = function(o) {
+    this.ctx.save();
+    this.ctx.translate(2 * this.centerX, 2 * this.centerY);
+    this.ctx.rotate(o.angle);
+    return this.ctx.translate(-2 * this.centerX, -2 * this.centerY);
+  };
+
+  return Byte;
+
+})(Bit);
+
+module.exports = Byte;
+
+
+
+},{"../helpers":13,"./bit":3,"./objects/circle":5,"./objects/cross":6,"./objects/line":7,"./objects/rectangle":9,"./objects/star":10,"./objects/triangle":11,"./objects/zigzag":12}],5:[function(require,module,exports){
+var Circle, Object,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Circle = (function(_super) {
+  __extends(Circle, _super);
+
+  function Circle() {
+    return Circle.__super__.constructor.apply(this, arguments);
+  }
+
+  Circle.prototype.name = 'circle';
+
+  Circle.prototype.vars = function() {
+    this.degree = this["default"]({
+      prop: 'degree',
+      def: 360
+    });
+    this.degreeOffset = this["default"]({
+      prop: 'degreeOffset',
+      def: 0
+    });
+    return Circle.__super__.vars.apply(this, arguments);
+  };
+
+  Circle.prototype.render = function() {
+    this.preRender();
+    this.ctx.arc(1, 1, 1, this.degreeOffset * this.deg, (this.degree + this.degreeOffset) * this.deg, false);
+    return this.postRender();
+  };
+
+  return Circle;
+
+})(Object);
+
+module.exports = Circle;
+
+
+
+},{"./object":8}],6:[function(require,module,exports){
+var Cross, Object,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Cross = (function(_super) {
+  __extends(Cross, _super);
+
+  function Cross() {
+    return Cross.__super__.constructor.apply(this, arguments);
+  }
+
+  Cross.prototype.name = 'Cross';
+
+  Cross.prototype.render = function() {
+    this.preRender();
+    this.ctx.moveTo(1, 0);
+    this.ctx.lineTo(1, 2);
+    this.ctx.moveTo(0, 1);
+    this.ctx.lineTo(2, 1);
+    return this.postRender();
+  };
+
+  return Cross;
+
+})(Object);
+
+module.exports = Cross;
+
+
+
+},{"./object":8}],7:[function(require,module,exports){
+var Line, Object,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Line = (function(_super) {
+  __extends(Line, _super);
+
+  function Line() {
+    return Line.__super__.constructor.apply(this, arguments);
+  }
+
+  Line.prototype.name = 'Line';
+
+  Line.prototype.render = function() {
+    this.preRender();
+    this.ctx.moveTo(0, 1);
+    this.ctx.lineTo(2, 1);
+    return this.postRender();
+  };
+
+  return Line;
+
+})(Object);
+
+module.exports = Line;
+
+
+
+},{"./object":8}],8:[function(require,module,exports){
+var Bit, Object,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Bit = require('../bit');
+
+Object = (function(_super) {
+  __extends(Object, _super);
+
+  function Object(o) {
+    this.o = o != null ? o : {};
+    this.vars();
+  }
+
+  Object.prototype.vars = function() {
+    var defPosition;
+    this.ctx = this.o.ctx || this.ctx;
+    this.px = this.h.pixel;
+    this.parent = this["default"]({
+      prop: 'parent',
+      def: this.h.body
+    });
+    this.color = this["default"]({
+      prop: 'color',
+      def: '#222'
+    });
+    this.fill = this["default"]({
+      prop: 'fill',
+      def: '#222'
+    });
+    this.lineWidth = this["default"]({
+      prop: 'lineWidth',
+      def: 1
+    });
+    this.lineCap = this["default"]({
+      prop: 'lineCap',
+      def: 'round'
+    });
+    this.opacity = this["default"]({
+      prop: 'opacity',
+      def: 1
+    });
+    this.isClearLess = this["default"]({
+      prop: 'isClearLess',
+      def: false
+    });
+    this.angle = this["default"]({
+      prop: 'angle',
+      def: 0
+    });
+    this.lineDash = this["default"]({
+      prop: 'lineDash',
+      def: []
+    });
+    this.lineDashOffset = this["default"]({
+      prop: 'lineDashOffset',
+      def: 0
+    });
+    this.radius = this["default"]({
+      prop: 'radius',
+      def: 50
+    });
+    this.radiusX = this.defaultPart({
+      prop: 'radiusX',
+      def: this.radius
+    });
+    this.radiusY = this.defaultPart({
+      prop: 'radiusY',
+      def: this.radius
+    });
+    this.size = {
+      width: 2 * this.radiusX,
+      height: 2 * this.radiusY
+    };
+    defPosition = {
+      x: this.size.width / 2,
+      y: this.size.height / 2
+    };
+    this.position = this["default"]({
+      prop: 'position',
+      def: defPosition
+    });
+    this.colorObj = this.h.makeColorObj(this.color);
+    return this.fillObj = this.h.makeColorObj(this.fill);
+  };
+
+  Object.prototype.renderStart = function() {
+    var name;
+    name = this.name || 'object';
+    if (!this.ctx) {
+      console.error("" + name + ".render: no context!");
+      return;
+    }
+    this.isClearLess || this.ctx.clear();
+    this.ctx.save();
+    return this.ctx.beginPath();
+  };
+
+  Object.prototype.preRender = function() {
+    this.renderStart();
+    this.rotation();
+    return this.radiusRender();
+  };
+
+  Object.prototype.postRender = function() {
+    var c;
+    c = this.fillObj;
+    this.ctx.fillStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
+    this.ctx.fill();
+    this.ctx.restore();
+    return this.stroke();
+  };
+
+  Object.prototype.rotation = function() {
+    var x, y;
+    x = this.position.x;
+    y = this.position.y;
+    this.ctx.translate(x, y);
+    this.ctx.rotate(this.angle * this.h.DEG);
+    return this.ctx.translate(-x, -y);
+  };
+
+  Object.prototype.radiusRender = function() {
+    this.ctx.translate(this.position.x - 4 * this.radiusX, this.position.y - 4 * this.radiusY);
+    return this.ctx.scale(4 * this.radiusX, 4 * this.radiusY);
+  };
+
+  Object.prototype.stroke = function() {
+    var c, _base;
+    this.ctx.lineWidth = this.lineWidth * this.px;
+    this.ctx.lineCap = this.lineCap;
+    this.ctx.lineDashOffset = this.lineDashOffset;
+    if (typeof (_base = this.ctx).setLineDash === "function") {
+      _base.setLineDash(this.lineDash);
+    }
+    c = this.colorObj;
+    this.ctx.strokeStyle = "rgba(" + c.r + "," + c.g + "," + c.b + ", " + (this.opacity - (1 - c.a)) + ")";
+    return (this.lineWidth > 0) && this.ctx.stroke();
+  };
+
+  return Object;
+
+})(Bit);
+
+module.exports = Object;
+
+
+
+},{"../bit":3}],9:[function(require,module,exports){
+var Object, Square,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Square = (function(_super) {
+  __extends(Square, _super);
+
+  function Square() {
+    return Square.__super__.constructor.apply(this, arguments);
+  }
+
+  Square.prototype.name = 'Square';
+
+  Square.prototype.render = function() {
+    this.preRender();
+    this.ctx.rect(.3, .3, 1.4, 1.4);
+    return this.postRender();
+  };
+
+  return Square;
+
+})(Object);
+
+module.exports = Square;
+
+
+
+},{"./object":8}],10:[function(require,module,exports){
+var Object, Star,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Star = (function(_super) {
+  __extends(Star, _super);
+
+  function Star() {
+    return Star.__super__.constructor.apply(this, arguments);
+  }
+
+  Star.prototype.name = 'Star';
+
+  Star.prototype.vars = function() {
+    Star.__super__.vars.apply(this, arguments);
+    this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 5
+    });
+    return this.rate = this["default"]({
+      prop: 'rate',
+      def: .5
+    });
+  };
+
+  Star.prototype.render = function() {
+    var cx, cy, i, r0, r1, rot, step, x, y;
+    this.preRender();
+    rot = Math.PI / 2 * 3;
+    cx = 1;
+    cy = 1;
+    x = cx;
+    y = cy;
+    r0 = this.rate;
+    r1 = 1;
+    step = Math.PI / this.spikes;
+    this.ctx.moveTo(cx, cy - r0);
+    i = 0;
+    while (i < this.spikes) {
+      x = cx + Math.cos(rot) * r0;
+      y = cy + Math.sin(rot) * r0;
+      this.ctx.lineTo(x, y);
+      rot += step;
+      x = cx + Math.cos(rot) * r1;
+      y = cy + Math.sin(rot) * r1;
+      this.ctx.lineTo(x, y);
+      rot += step;
+      i++;
+    }
+    this.ctx.lineTo(cx, cy - r0);
+    this.ctx.closePath();
+    return this.postRender();
+  };
+
+  return Star;
+
+})(Object);
+
+module.exports = Star;
+
+
+
+},{"./object":8}],11:[function(require,module,exports){
+var Object, Triangle,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+Triangle = (function(_super) {
+  __extends(Triangle, _super);
+
+  function Triangle() {
+    return Triangle.__super__.constructor.apply(this, arguments);
+  }
+
+  Triangle.prototype.name = 'Triangle';
+
+  Triangle.prototype.vars = function() {
+    Triangle.__super__.vars.apply(this, arguments);
+    return this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 3
+    });
+  };
+
+  Triangle.prototype.render = function() {
+    var angle, i, method, rotation, step, x, y, _i, _ref;
+    this.preRender();
+    angle = 30;
+    step = 360 / this.spikes;
+    for (i = _i = 0, _ref = this.spikes; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      rotation = (angle + this.angle) * this.h.DEG;
+      x = 1 + Math.cos(rotation);
+      y = 1 + Math.sin(rotation);
+      angle += step;
+      method = i === 0 ? 'moveTo' : 'lineTo';
+      this.ctx[method](x, y);
+    }
+    this.ctx.closePath();
+    return this.postRender();
+  };
+
+  return Triangle;
+
+})(Object);
+
+module.exports = Triangle;
+
+
+
+},{"./object":8}],12:[function(require,module,exports){
+var Object, ZigZag,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Object = require('./object');
+
+ZigZag = (function(_super) {
+  __extends(ZigZag, _super);
+
+  function ZigZag() {
+    return ZigZag.__super__.constructor.apply(this, arguments);
+  }
+
+  ZigZag.prototype.name = 'ZigZag';
+
+  ZigZag.prototype.vars = function() {
+    ZigZag.__super__.vars.apply(this, arguments);
+    this.rate = this["default"]({
+      prop: 'rate',
+      def: .25
+    });
+    return this.spikes = this["default"]({
+      prop: 'spikes',
+      def: 10
+    });
+  };
+
+  ZigZag.prototype.render = function() {
+    var i, method, x, y, _i, _ref;
+    this.preRender();
+    for (i = _i = 0, _ref = this.spikes; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      method = i === 0 ? 'moveTo' : 'lineTo';
+      y = i % 2 === 0 ? this.rate : -this.rate;
+      x = 0 + (i * (2 / (this.spikes - 1)));
+      this.ctx[method](x, 1 + y);
+    }
+    return this.postRender();
+  };
+
+  return ZigZag;
+
+})(Object);
+
+module.exports = ZigZag;
+
+
+
+},{"./object":8}],13:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -232,22 +1690,54 @@ module.exports = (function() {
 
 
 
-},{"./vendor/tween":5}],2:[function(require,module,exports){
-var MotionPath, motionPath;
+},{"./vendor/tween":17}],14:[function(require,module,exports){
+var Bubble, Burst, Mojs, MotionPath, mojs, motionPath;
+
+Bubble = require('./bits/Bubble');
+
+Burst = require('./bits/Burst');
 
 MotionPath = require('./motion-path/MotionPath');
 
+Mojs = (function() {
+  function Mojs() {}
+
+  Mojs.prototype.Bubble = Bubble;
+
+  Mojs.prototype.Burst = Burst;
+
+  Mojs.prototype.MotionPath = MotionPath;
+
+  return Mojs;
+
+})();
+
+mojs = new Mojs;
+
+if ((typeof define === "function") && define.amd) {
+  define("mojs", [], function() {
+    return mojs;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = mojs;
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs = mojs;
+}
+
 motionPath = new MotionPath({
   repeat: 5,
-  duration: 15000,
-  yoyo: true,
+  duration: 1500,
   path: document.getElementById('js-svg-path').getAttribute('d'),
   el: document.getElementById('js-el')
 });
 
 
 
-},{"./motion-path/MotionPath":3}],3:[function(require,module,exports){
+},{"./bits/Bubble":1,"./bits/Burst":2,"./motion-path/MotionPath":15}],15:[function(require,module,exports){
 var MotionPath, TWEEN, h;
 
 h = require('../helpers');
@@ -259,9 +1749,9 @@ TWEEN = require('../vendor/tween');
 MotionPath = (function() {
   function MotionPath(o) {
     this.o = o != null ? o : {};
-    console.log(this.o);
     this.vars();
     this.run();
+    this;
   }
 
   MotionPath.prototype.vars = function() {
@@ -323,7 +1813,7 @@ module.exports = MotionPath;
 
 
 
-},{"../helpers":1,"../polyfills":4,"../vendor/tween":5}],4:[function(require,module,exports){
+},{"../helpers":13,"../polyfills":16,"../vendor/tween":17}],16:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -341,7 +1831,7 @@ module.exports = (function() {
 
 
 
-},{}],5:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ;(function(undefined){
 
 
@@ -1133,4 +2623,4 @@ module.exports = (function() {
 })()
 
 
-},{}]},{},[2])
+},{}]},{},[14])
