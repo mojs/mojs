@@ -1,22 +1,22 @@
-h      = require './helpers'
-Bubble = require './bits/Bubble'
-Burst  = require './bits/Burst'
-Pather = require './pather/pather'
+# h      = require './helpers'
+# Bubble = require './bits/Bubble'
+# Burst  = require './bits/Burst'
+MotionPath = require './motion-path/MotionPath'
 
-class Charites
-  Bubble: Bubble
-  Burst:  Burst
-  Pather: Pather
+# class Mojs
+#   # Bubble: Bubble
+#   # Burst:  Burst
+#   MotionPath: MotionPath
 
-charites = new Charites
+# mojs = new Mojs
 
-if (typeof define is "function") and define.amd
-  define "charites", [], -> charites
-else if typeof module is "object" and typeof module?.exports is "object"
-  module.exports = charites
-else window?.charites = charites
+# if (typeof define is "function") and define.amd
+#   define "mojs", [], -> mojs
+# else if typeof module is "object" and typeof module?.exports is "object"
+#   module.exports = mojs
+# else window?.mojs = mojs
 
-pather = new Pather
+motionPath = new MotionPath
   repeat: 5
   duration: 15000
   yoyo: true

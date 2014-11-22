@@ -61,16 +61,16 @@ gulp.task('stylus', function(){
 
 
 gulp.task('coffee', function(e){
-  return gulp.src('js/charites.coffee', { read: false })
+  return gulp.src('js/mojs.coffee', { read: false })
     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
     .pipe(browserify({
       transform:  ['coffeeify'],
       extensions: ['.coffee']
     }))
-    .pipe(rename('charites.js'))
+    .pipe(rename('mojs.js'))
     .pipe(gulp.dest('dist/'))
     .pipe(uglify())
-    .pipe(rename('charites.min.js'))
+    .pipe(rename('mojs.min.js'))
     .pipe(gulp.dest('dist/'))
     .pipe(livereload())
 

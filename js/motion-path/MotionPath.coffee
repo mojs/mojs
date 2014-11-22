@@ -2,7 +2,7 @@ h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
 
-class Pather
+class MotionPath
 
   constructor:(@o={})->
     console.log @o
@@ -50,6 +50,6 @@ class Pather
 
     h.startAnimationLoop()
 
-Pather
+MotionPath
 
-module.exports = Pather
+module.exports = MotionPath

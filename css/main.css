@@ -1221,7 +1221,7 @@ a,
   cursor: pointer;
 }
 .el {
-  border: 1px solid #ff1493;
+  background: #ff69b4;
   border-radius: 50%;
   width: 16px;
   height: 16px;
