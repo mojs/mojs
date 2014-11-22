@@ -20,8 +20,10 @@ motionPath = new MotionPath
   repeat: 5
   duration: 1500
   # yoyo: true
+  # path: '#js-svg-path'
   path: document.getElementById('js-svg-path').getAttribute 'd'
-  el:  document.getElementById('js-el')
+  # el:  document.getElementById('js-el')
+  el:  '#js-el'
 
 
 # canvas = document.getElementById 'js-canvas'

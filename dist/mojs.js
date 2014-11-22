@@ -1732,7 +1732,7 @@ motionPath = new MotionPath({
   repeat: 5,
   duration: 1500,
   path: document.getElementById('js-svg-path').getAttribute('d'),
-  el: document.getElementById('js-el')
+  el: '#js-el'
 });
 
 
@@ -1763,14 +1763,27 @@ MotionPath = (function() {
     this.easings = this.easing.split('.');
     this.repeat = this.o.repeat || 0;
     this.NS = 'http://www.w3.org/2000/svg';
-    return this.path = this.getPath();
+    this.path = this.getPath();
+    this.el = this.getEl();
+    return console.log(this.el);
+  };
+
+  MotionPath.prototype.getEl = function() {
+    if (!this.o.el) {
+      throw new Error('MotionPath needs an el to be animated');
+    }
+    if (typeof this.o.el === 'string') {
+      return document.querySelector(this.o.el);
+    }
+    if (this.o.el.style != null) {
+      return this.o.el;
+    }
   };
 
   MotionPath.prototype.getPath = function() {
-    var path, svg;
+    var path;
     if (typeof this.o.path === 'string') {
       if (this.o.path.charAt(0).toLowerCase() === 'm') {
-        svg = document.createElementNS(this.NS, 'svg');
         path = document.createElementNS(this.NS, 'path');
         path.setAttributeNS(null, 'd', this.o.path);
         return path;
@@ -1778,7 +1791,7 @@ MotionPath = (function() {
         return document.querySelector(this.o.path);
       }
     }
-    if (this.o.path.addEventListener) {
+    if (this.o.path.style) {
       return this.o.path;
     }
   };
@@ -1798,7 +1811,7 @@ MotionPath = (function() {
     }, this.duration).onUpdate(function() {
       var point;
       point = it.path.getPointAtLength(this.len);
-      return it.o.el.style['transform'] = "translate(" + point.x + "px," + point.y + "px)";
+      return it.el.style['transform'] = "translate(" + point.x + "px," + point.y + "px)";
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
   };

@@ -17,16 +17,24 @@ class MotionPath
     @repeat   = @o.repeat or 0
     @NS = 'http://www.w3.org/2000/svg'
     @path = @getPath()
+    @el = @getEl()
+    console.log @el
+
+  getEl:->
+    if !@o.el then throw new Error 'MotionPath needs an el to be animated'
+    return document.querySelector @o.el if typeof @o.el is 'string'
+    return @o.el if @o.el.style?
+
 
   getPath:->
     if typeof @o.path is 'string'
       return if @o.path.charAt(0).toLowerCase() is 'm'
-        svg  = document.createElementNS @NS, 'svg'
+        # svg  = document.createElementNS @NS, 'svg'
         path = document.createElementNS @NS, 'path'
         path.setAttributeNS(null, 'd', @o.path); path
       else document.querySelector @o.path
     # DOM node
-    if @o.path.addEventListener
+    if @o.path.style
       return @o.path
 
   run:->
@@ -37,7 +45,7 @@ class MotionPath
       .onUpdate ->
         # @p is 1 and console.log 'start'
         point = it.path.getPointAtLength @len
-        it.o.el.style['transform'] = "translate(#{point.x}px,#{point.y}px)"
+        it.el.style['transform'] = "translate(#{point.x}px,#{point.y}px)"
         # it.o.el.style.left = "#{point.x}px"
         # it.o.el.style.top  = "#{point.y}px"
 
