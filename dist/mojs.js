@@ -1691,7 +1691,7 @@ module.exports = (function() {
 
 
 },{"./vendor/tween":17}],14:[function(require,module,exports){
-var Bubble, Burst, Mojs, MotionPath, mojs, motionPath;
+var Bubble, Burst, Mojs, MotionPath, mojs;
 
 Bubble = require('./bits/Bubble');
 
@@ -1728,13 +1728,6 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
 
-motionPath = new MotionPath({
-  repeat: 5,
-  duration: 1500,
-  path: document.getElementById('js-svg-path').getAttribute('d'),
-  el: '#js-el'
-});
-
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./motion-path/MotionPath":15}],15:[function(require,module,exports){
@@ -1747,6 +1740,8 @@ require('../polyfills');
 TWEEN = require('../vendor/tween');
 
 MotionPath = (function() {
+  MotionPath.prototype.NS = 'http://www.w3.org/2000/svg';
+
   function MotionPath(o) {
     this.o = o != null ? o : {};
     this.vars();
@@ -1762,10 +1757,8 @@ MotionPath = (function() {
     this.easing = this.o.easing || 'Linear.None';
     this.easings = this.easing.split('.');
     this.repeat = this.o.repeat || 0;
-    this.NS = 'http://www.w3.org/2000/svg';
     this.path = this.getPath();
-    this.el = this.getEl();
-    return console.log(this.el);
+    return this.el = this.getEl();
   };
 
   MotionPath.prototype.getEl = function() {

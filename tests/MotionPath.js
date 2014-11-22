@@ -4,20 +4,22 @@
   MotionPath = window.mojs.MotionPath;
 
   describe('MotionPath ::', function() {
-    return describe('enviroment ::', function() {
+    var ns;
+    ns = 'http://www.w3.org/2000/svg';
+    describe('enviroment ::', function() {
       it('SVG should be supported', function() {
         var isSVG;
-        isSVG = !!(typeof document.createElementNS === "function" ? document.createElementNS('http://www.w3.org/2000/svg', "svg").createSVGRect : void 0);
+        isSVG = !!(typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg").createSVGRect : void 0);
         return expect(isSVG).toBeTruthy();
       });
       it('SVG path should have getTotalLength method', function() {
         var path;
-        path = document.createElementNS('http://www.w3.org/2000/svg', "path");
+        path = document.createElementNS(ns, "path");
         return expect(path.getTotalLength).toBeDefined();
       });
       it('SVG path should have getPointAtLength method', function() {
         var path;
-        path = document.createElementNS('http://www.w3.org/2000/svg', "path");
+        path = document.createElementNS(ns, "path");
         return expect(path.getPointAtLength).toBeDefined();
       });
       it('document.querySelector should be defined', function() {
@@ -25,7 +27,7 @@
       });
       it('style propety should be defined on DOM node', function() {
         var div, path;
-        path = document.createElementNS('http://www.w3.org/2000/svg', "path");
+        path = document.createElementNS(ns, "path");
         div = document.createElement('div');
         expect(path.style).toBeDefined();
         return expect(div.style).toBeDefined();
@@ -33,11 +35,14 @@
       return it('transforms should be supported', function() {
         var isTransforms;
         isTransforms = function() {
-          var i, prefixes;
-          prefixes = "transform WebkitTransform MozTransform OTransform msTransform".split(" ");
+          var div, i, isProp, prefixes, trStr;
+          trStr = "transform WebkitTransform MozTransform OTransform msTransform";
+          prefixes = trStr.split(" ");
           i = 0;
           while (i < prefixes.length) {
-            if (document.createElement("div").style[prefixes[i]] !== undefined) {
+            div = document.createElement("div");
+            isProp = div.style[prefixes[i]] !== 'undefined';
+            if (isProp) {
               return prefixes[i];
             }
             i++;
@@ -45,6 +50,122 @@
           return false;
         };
         return expect(isTransforms()).toBeTruthy();
+      });
+    });
+    describe('defaults ::', function() {
+      var el, mp;
+      el = document.createElement('div');
+      mp = new MotionPath({
+        path: 'M0.55859375,593.527344L0.55859375,593.527344',
+        el: el
+      });
+      it('delay should be defined', function() {
+        return expect(mp.delay).toBeDefined();
+      });
+      it('TWEEN should be defined', function() {
+        return expect(mp.T).toBeDefined();
+      });
+      it('duration should be defined', function() {
+        return expect(mp.duration).toBeDefined();
+      });
+      it('easing should be defined', function() {
+        expect(mp.easing).toBeDefined();
+        return expect(mp.easings).toBeDefined();
+      });
+      it('yoyo should be defined', function() {
+        return expect(mp.yoyo).toBeDefined();
+      });
+      return it('repeat should be defined', function() {
+        return expect(mp.yoyo).toBeDefined();
+      });
+    });
+    return describe('functionality ::', function() {
+      var coords, div;
+      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
+      div = document.createElement('div');
+      describe('path option ::', function() {
+        it('should have a getPath method', function() {
+          var mp;
+          mp = new MotionPath({
+            path: coords,
+            el: div
+          });
+          return expect(mp.getPath).toBeDefined();
+        });
+        it('getPath should return a path when it was specified by coordinates', function() {
+          var mp;
+          mp = new MotionPath({
+            path: coords,
+            el: div
+          });
+          return expect(mp.getPath() instanceof SVGElement).toBe(true);
+        });
+        it('getPath should return a path when it was specified by SVG path', function() {
+          var mp, path;
+          path = document.createElementNS(ns, 'path');
+          mp = new MotionPath({
+            path: path,
+            el: div
+          });
+          return expect(mp.getPath() instanceof SVGElement).toBe(true);
+        });
+        return it('getPath should return a path when it was specified selector', function() {
+          var id, mp, path, svg;
+          id = 'js-path';
+          svg = document.createElementNS(ns, 'svg');
+          path = document.createElementNS(ns, 'path');
+          path.setAttribute('id', id);
+          path.setAttribute('class', id);
+          svg.appendChild(path);
+          document.body.appendChild(svg);
+          mp = new MotionPath({
+            path: "#" + id,
+            el: div
+          });
+          expect(mp.getPath() instanceof SVGElement).toBe(true);
+          mp = new MotionPath({
+            path: "." + id,
+            el: div
+          });
+          return expect(mp.getPath() instanceof SVGElement).toBe(true);
+        });
+      });
+      return describe('el option ::', function() {
+        it('should have a getEl method', function() {
+          var mp;
+          mp = new MotionPath({
+            path: coords,
+            el: div
+          });
+          return expect(mp.getEl).toBeDefined();
+        });
+        it('getPath should return an el when it was specified by selector', function() {
+          var id, mp;
+          id = 'js-el';
+          div = document.createElement('div');
+          div.setAttribute('id', id);
+          div.setAttribute('class', id);
+          document.body.appendChild(div);
+          mp = new MotionPath({
+            path: coords,
+            el: "#" + id
+          });
+          expect(mp.getEl() instanceof HTMLElement).toBe(true);
+          mp = new MotionPath({
+            path: coords,
+            el: "." + id
+          });
+          return expect(mp.getEl() instanceof HTMLElement).toBe(true);
+        });
+        return it('getPath should return an el when an element was passed', function() {
+          var mp;
+          div = document.createElement('div');
+          mp = new MotionPath({
+            path: coords,
+            el: div
+          });
+          return expect(mp.getEl() instanceof HTMLElement).toBe(true);
+        });
       });
     });
   });

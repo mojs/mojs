@@ -3,6 +3,7 @@ require '../polyfills'
 TWEEN  = require '../vendor/tween'
 
 class MotionPath
+  NS: 'http://www.w3.org/2000/svg'
   constructor:(@o={})->
     @vars()
     @run()
@@ -15,21 +16,17 @@ class MotionPath
     @yoyo     = @o.yoyo or false
     @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
     @repeat   = @o.repeat or 0
-    @NS = 'http://www.w3.org/2000/svg'
     @path = @getPath()
     @el = @getEl()
-    console.log @el
 
   getEl:->
     if !@o.el then throw new Error 'MotionPath needs an el to be animated'
     return document.querySelector @o.el if typeof @o.el is 'string'
     return @o.el if @o.el.style?
 
-
   getPath:->
     if typeof @o.path is 'string'
       return if @o.path.charAt(0).toLowerCase() is 'm'
-        # svg  = document.createElementNS @NS, 'svg'
         path = document.createElementNS @NS, 'path'
         path.setAttributeNS(null, 'd', @o.path); path
       else document.querySelector @o.path
@@ -43,12 +40,8 @@ class MotionPath
     end   = if @direction then len else 0
     @tween = new @T.Tween({p:0, len: start}).to({p:1, len:end}, @duration)
       .onUpdate ->
-        # @p is 1 and console.log 'start'
         point = it.path.getPointAtLength @len
         it.el.style['transform'] = "translate(#{point.x}px,#{point.y}px)"
-        # it.o.el.style.left = "#{point.x}px"
-        # it.o.el.style.top  = "#{point.y}px"
-
       .delay(@delay)
       .yoyo(@yoyo)
       .easing @T.Easing[@easings[0]][@easings[1]]
