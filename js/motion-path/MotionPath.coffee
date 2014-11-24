@@ -25,6 +25,10 @@ class MotionPath
     @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
     @repeat   = @o.repeat or 0
     @path = @getPath()
+    # callbacks
+    @onStart    = @o.onStart
+    @onComplete = @o.onComplete
+    @onUpdate   = @o.onUpdate
     @el = @getEl()
 
   getEl:->
@@ -47,9 +51,12 @@ class MotionPath
     start = if @direction then 0 else len
     end   = if @direction then len else 0
     @tween = new @T.Tween({p:0, len: start}).to({p:1, len:end}, @duration)
+      .onStart => @onStart?()
+      .onComplete => @onComplete?()
       .onUpdate ->
         point = it.path.getPointAtLength @len
         it.el.style['transform'] = "translate(#{point.x}px,#{point.y}px)"
+        it.onUpdate?.apply @, arguments
       .delay(@delay)
       .yoyo(@yoyo)
       .easing @T.Easing[@easings[0]][@easings[1]]

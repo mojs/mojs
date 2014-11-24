@@ -130,7 +130,7 @@
           return expect(mp.getPath() instanceof SVGElement).toBe(true);
         });
       });
-      return describe('el option ::', function() {
+      describe('el option ::', function() {
         it('should have a getEl method', function() {
           var mp;
           mp = new MotionPath({
@@ -165,6 +165,82 @@
             el: div
           });
           return expect(mp.getEl() instanceof HTMLElement).toBe(true);
+        });
+      });
+      return describe('callbacks :: ', function() {
+        it('onStart callback should work', function() {
+          var isOnStart, mp;
+          isOnStart = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            onStart: function() {
+              return isOnStart = true;
+            }
+          });
+          waitsFor((function() {
+            return isOnStart;
+          }), 'isOnStart should be changed to true', 50);
+          return runs(function() {
+            return expect(isOnStart).toBe(true);
+          });
+        });
+        it('onComplete callback should work', function() {
+          var isOnComplete, mp;
+          isOnComplete = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 1,
+            onComplete: function() {
+              return isOnComplete = true;
+            }
+          });
+          waitsFor((function() {
+            return isOnComplete;
+          }), 'isOnComplete should be changed to true', 50);
+          return runs(function() {
+            return expect(isOnComplete).toBe(true);
+          });
+        });
+        it('onUpdate callback should work', function() {
+          var isOnUpdate, mp;
+          isOnUpdate = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 3,
+            onUpdate: function() {
+              return isOnUpdate = true;
+            }
+          });
+          waitsFor((function() {
+            return isOnUpdate;
+          }), 'isOnUpdate should be changed to true', 50);
+          return runs(function() {
+            return expect(isOnUpdate).toBe(true);
+          });
+        });
+        return it('onUpdate callback should have tween\'s scope and have "p" property', function() {
+          var isOnUpdate, mp;
+          isOnUpdate = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 3,
+            onUpdate: function() {
+              if (this.p != null) {
+                isOnUpdate = true;
+              }
+              return isOnUpdate = isOnUpdate && this !== mp;
+            }
+          });
+          waitsFor((function() {
+            return isOnUpdate;
+          }), 'isOnUpdate should be changed to true', 50);
+          return runs(function() {
+            return expect(isOnUpdate).toBe(true);
+          });
         });
       });
     });

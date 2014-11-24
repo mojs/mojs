@@ -65,6 +65,7 @@ describe 'MotionPath ::', ->
   describe 'functionality ::', ->
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
     div = document.createElement 'div'
+    
     describe 'path option ::', ->
       it 'should have a getPath method', ->
         mp = new MotionPath
@@ -130,6 +131,53 @@ describe 'MotionPath ::', ->
           path: coords
           el: div
         expect(mp.getEl() instanceof HTMLElement).toBe(true)
+
+    describe 'callbacks :: ', ->
+      it 'onStart callback should work', ->
+        isOnStart = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          onStart:-> isOnStart = true
+
+        waitsFor((-> isOnStart), 'isOnStart should be changed to true', 50)
+        runs -> expect(isOnStart).toBe(true)
+
+      it 'onComplete callback should work', ->
+        isOnComplete = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 1
+          onComplete:-> isOnComplete = true
+
+        waitsFor((-> isOnComplete), 'isOnComplete should be changed to true', 50)
+        runs -> expect(isOnComplete).toBe(true)
+
+      it 'onUpdate callback should work', ->
+        isOnUpdate = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 3
+          onUpdate:-> isOnUpdate = true
+        waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 50)
+        runs -> expect(isOnUpdate).toBe(true)
+
+      it 'onUpdate callback should have tween\'s scope and have "p" property', ->
+        isOnUpdate = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 3
+          onUpdate:->
+            isOnUpdate = true if @p?
+            isOnUpdate = isOnUpdate and @ isnt mp
+
+        waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 50)
+        runs -> expect(isOnUpdate).toBe(true)
+
+
 
 
 

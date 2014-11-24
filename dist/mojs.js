@@ -1758,6 +1758,9 @@ MotionPath = (function() {
     this.easings = this.easing.split('.');
     this.repeat = this.o.repeat || 0;
     this.path = this.getPath();
+    this.onStart = this.o.onStart;
+    this.onComplete = this.o.onComplete;
+    this.onUpdate = this.o.onUpdate;
     return this.el = this.getEl();
   };
 
@@ -1801,10 +1804,19 @@ MotionPath = (function() {
     }).to({
       p: 1,
       len: end
-    }, this.duration).onUpdate(function() {
-      var point;
+    }, this.duration).onStart((function(_this) {
+      return function() {
+        return typeof _this.onStart === "function" ? _this.onStart() : void 0;
+      };
+    })(this)).onComplete((function(_this) {
+      return function() {
+        return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
+      };
+    })(this)).onUpdate(function() {
+      var point, _ref;
       point = it.path.getPointAtLength(this.len);
-      return it.el.style['transform'] = "translate(" + point.x + "px," + point.y + "px)";
+      it.el.style['transform'] = "translate(" + point.x + "px," + point.y + "px)";
+      return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
   };
