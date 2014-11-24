@@ -5,10 +5,10 @@ TWEEN  = require '../vendor/tween'
 #   add offsets options
 #   add angle control
 #   add angle control callback
-#   add callback options
-#   add fill to elemement option
 #   run function
 #   add run options
+#   add fill to elemement option
+
 
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
@@ -25,6 +25,8 @@ class MotionPath
     @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
     @repeat   = @o.repeat or 0
     @path = @getPath()
+    @offsetX = @o.offsetX or 0
+    @offsetY = @o.offsetY or 0
     # callbacks
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
@@ -55,7 +57,8 @@ class MotionPath
       .onComplete => @onComplete?()
       .onUpdate ->
         point = it.path.getPointAtLength @len
-        it.el.style['transform'] = "translate(#{point.x}px,#{point.y}px)"
+        x = point.x + it.offsetX; y = point.y + it.offsetY
+        it.el.style['transform'] = "translate(#{x}px,#{y}px)"
         it.onUpdate?.apply @, arguments
       .delay(@delay)
       .yoyo(@yoyo)

@@ -52,6 +52,12 @@ describe 'MotionPath ::', ->
     it 'duration should be defined', ->
       expect(mp.duration).toBeDefined()
 
+    it 'offsetX should be defined', ->
+      expect(mp.offsetX).toBeDefined()
+
+    it 'offsetY should be defined', ->
+      expect(mp.offsetY).toBeDefined()
+
     it 'easing should be defined', ->
       expect(mp.easing).toBeDefined()
       expect(mp.easings).toBeDefined()
@@ -66,6 +72,68 @@ describe 'MotionPath ::', ->
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
     div = document.createElement 'div'
     
+    describe 'offsets ::', ->
+      coords = 'M20,20 L20,30'
+      it 'should work with positive offsetX', ->
+        x = 0; isEquial = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          offsetX: 10
+          duration: 100
+          onComplete: ->
+            x = parseInt div.style.transform.split(/(translate\()|,|\)/)[2], 10
+            isEquial = x is 30
+
+        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        runs -> expect(isEquial).toBe(true)
+
+      it 'should work with negative offsetX', ->
+        x = 0; isEquial = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          offsetX: -10
+          duration: 100
+          onComplete: ->
+            x = parseInt div.style.transform.split(/(translate\()|,|\)/)[2], 10
+            isEquial = x is 10
+
+        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        runs -> expect(isEquial).toBe(true)
+
+
+      coords = 'M20,20 L30,20'
+      it 'should work with positive offsetY', ->
+        x = 0; isEquial = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          offsetY: 10
+          duration: 100
+          onComplete: ->
+            x = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
+            isEquial = x is 30
+
+        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        runs -> expect(isEquial).toBe(true)
+
+      it 'should work with negative offsetY', ->
+        x = 0; isEquial = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          offsetY: -10
+          duration: 100
+          onComplete: ->
+            x = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
+            isEquial = x is 10
+
+        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        runs -> expect(isEquial).toBe(true)
+
+
+
     describe 'path option ::', ->
       it 'should have a getPath method', ->
         mp = new MotionPath

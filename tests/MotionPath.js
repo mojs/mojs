@@ -68,6 +68,12 @@
       it('duration should be defined', function() {
         return expect(mp.duration).toBeDefined();
       });
+      it('offsetX should be defined', function() {
+        return expect(mp.offsetX).toBeDefined();
+      });
+      it('offsetY should be defined', function() {
+        return expect(mp.offsetY).toBeDefined();
+      });
       it('easing should be defined', function() {
         expect(mp.easing).toBeDefined();
         return expect(mp.easings).toBeDefined();
@@ -83,6 +89,94 @@
       var coords, div;
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       div = document.createElement('div');
+      describe('offsets ::', function() {
+        coords = 'M20,20 L20,30';
+        it('should work with positive offsetX', function() {
+          var isEquial, mp, x;
+          x = 0;
+          isEquial = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            offsetX: 10,
+            duration: 100,
+            onComplete: function() {
+              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[2], 10);
+              return isEquial = x === 30;
+            }
+          });
+          waitsFor((function() {
+            return isEquial;
+          }), 'isOnUpdate should be changed to true', 200);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
+        it('should work with negative offsetX', function() {
+          var isEquial, mp, x;
+          x = 0;
+          isEquial = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            offsetX: -10,
+            duration: 100,
+            onComplete: function() {
+              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[2], 10);
+              return isEquial = x === 10;
+            }
+          });
+          waitsFor((function() {
+            return isEquial;
+          }), 'isOnUpdate should be changed to true', 200);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
+        coords = 'M20,20 L30,20';
+        it('should work with positive offsetY', function() {
+          var isEquial, mp, x;
+          x = 0;
+          isEquial = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            offsetY: 10,
+            duration: 100,
+            onComplete: function() {
+              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
+              return isEquial = x === 30;
+            }
+          });
+          waitsFor((function() {
+            return isEquial;
+          }), 'isOnUpdate should be changed to true', 200);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
+        return it('should work with negative offsetY', function() {
+          var isEquial, mp, x;
+          x = 0;
+          isEquial = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            offsetY: -10,
+            duration: 100,
+            onComplete: function() {
+              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
+              return isEquial = x === 10;
+            }
+          });
+          waitsFor((function() {
+            return isEquial;
+          }), 'isOnUpdate should be changed to true', 200);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
+      });
       describe('path option ::', function() {
         it('should have a getPath method', function() {
           var mp;

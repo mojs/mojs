@@ -1758,6 +1758,8 @@ MotionPath = (function() {
     this.easings = this.easing.split('.');
     this.repeat = this.o.repeat || 0;
     this.path = this.getPath();
+    this.offsetX = this.o.offsetX || 0;
+    this.offsetY = this.o.offsetY || 0;
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
@@ -1813,9 +1815,11 @@ MotionPath = (function() {
         return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
       };
     })(this)).onUpdate(function() {
-      var point, _ref;
+      var point, x, y, _ref;
       point = it.path.getPointAtLength(this.len);
-      it.el.style['transform'] = "translate(" + point.x + "px," + point.y + "px)";
+      x = point.x + it.offsetX;
+      y = point.y + it.offsetY;
+      it.el.style['transform'] = "translate(" + x + "px," + y + "px)";
       return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
