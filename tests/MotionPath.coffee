@@ -49,6 +49,9 @@ describe 'MotionPath ::', ->
     it 'TWEEN should be defined', ->
       expect(mp.T).toBeDefined()
 
+    it 'helpers should be defined', ->
+      expect(mp.h).toBeDefined()
+
     it 'duration should be defined', ->
       expect(mp.duration).toBeDefined()
 
@@ -105,29 +108,29 @@ describe 'MotionPath ::', ->
 
       coords = 'M20,20 L30,20'
       it 'should work with positive offsetY', ->
-        x = 0; isEquial = false
+        y = 0; isEquial = false
         mp = new MotionPath
           path: coords
           el: div
           offsetY: 10
           duration: 100
           onComplete: ->
-            x = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
-            isEquial = x is 30
+            y = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
+            isEquial = y is 30
 
         waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
         runs -> expect(isEquial).toBe(true)
 
       it 'should work with negative offsetY', ->
-        x = 0; isEquial = false
+        y = 0; isEquial = false
         mp = new MotionPath
           path: coords
           el: div
           offsetY: -10
           duration: 100
           onComplete: ->
-            x = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
-            isEquial = x is 10
+            y = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
+            isEquial = y is 10
 
         waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
         runs -> expect(isEquial).toBe(true)

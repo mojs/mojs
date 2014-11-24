@@ -18,11 +18,9 @@ class Helpers
   
   constructor:(@o={})->
     @animationLoop = @animationLoop.bind @
-    @div = document.createElement 'div'
+    @prefix = @getPrefix()
 
-    @computedStyle = (elem)->
-      if window.getComputedStyle then getComputedStyle(elem, '')
-      else elem.currentStyle
+    @div = document.createElement 'div'
 
     @shortColors =
       aqua:   'rgb(0,255,255)'
@@ -42,6 +40,24 @@ class Helpers
       white:  'rgb(255,255,255)'
       yellow: 'rgb(255,255,0)'
       orange: 'rgb(255,128,0)'
+
+  computedStyle:(elem)->
+    if window.getComputedStyle then getComputedStyle(elem, '')
+    else elem.currentStyle
+
+  getPrefix:->
+    styles = window.getComputedStyle(document.documentElement, "")
+    v = Array::slice.call(styles).join("").match(/-(moz|webkit|ms)-/)
+    pre = (v or (styles.OLink is "" and [
+      ""
+      "o"
+    ]))[1]
+    dom = ("WebKit|Moz|MS|O").match(new RegExp("(" + pre + ")", "i"))[1]
+    
+    dom: dom
+    lowercase: pre
+    css: "-" + pre + "-"
+    js: pre[0].toUpperCase() + pre.substr(1)
 
   slice:(value, max)-> if value > max then max else value
   

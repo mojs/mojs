@@ -2,12 +2,12 @@ h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
 # TODO
-#   add offsets options
 #   add angle control
 #   add angle control callback
 #   run function
 #   add run options
 #   add fill to elemement option
+#   fix ff callbacks
 
 
 class MotionPath
@@ -19,6 +19,7 @@ class MotionPath
 
   vars:->
     @T = TWEEN
+    @h = h
     @duration = @o.duration or 1000
     @delay    = @o.delay or 0
     @yoyo     = @o.yoyo or false
@@ -58,13 +59,17 @@ class MotionPath
       .onUpdate ->
         point = it.path.getPointAtLength @len
         x = point.x + it.offsetX; y = point.y + it.offsetY
-        it.el.style['transform'] = "translate(#{x}px,#{y}px)"
+        translate = "translate(#{x}px,#{y}px)"
+        it.el.style["#{h.prefix.js}Transform"] = translate
+        it.el.style['transform'] = translate
         it.onUpdate?.apply @, arguments
       .delay(@delay)
       .yoyo(@yoyo)
       .easing @T.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .start()
+
+    # console.log @onStart?()
 
     h.startAnimationLoop()
 

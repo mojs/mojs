@@ -65,6 +65,9 @@
       it('TWEEN should be defined', function() {
         return expect(mp.T).toBeDefined();
       });
+      it('helpers should be defined', function() {
+        return expect(mp.h).toBeDefined();
+      });
       it('duration should be defined', function() {
         return expect(mp.duration).toBeDefined();
       });
@@ -135,8 +138,8 @@
         });
         coords = 'M20,20 L30,20';
         it('should work with positive offsetY', function() {
-          var isEquial, mp, x;
-          x = 0;
+          var isEquial, mp, y;
+          y = 0;
           isEquial = false;
           mp = new MotionPath({
             path: coords,
@@ -144,8 +147,8 @@
             offsetY: 10,
             duration: 100,
             onComplete: function() {
-              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
-              return isEquial = x === 30;
+              y = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
+              return isEquial = y === 30;
             }
           });
           waitsFor((function() {
@@ -156,8 +159,8 @@
           });
         });
         return it('should work with negative offsetY', function() {
-          var isEquial, mp, x;
-          x = 0;
+          var isEquial, mp, y;
+          y = 0;
           isEquial = false;
           mp = new MotionPath({
             path: coords,
@@ -165,8 +168,8 @@
             offsetY: -10,
             duration: 100,
             onComplete: function() {
-              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
-              return isEquial = x === 10;
+              y = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
+              return isEquial = y === 10;
             }
           });
           waitsFor((function() {

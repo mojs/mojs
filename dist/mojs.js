@@ -1497,14 +1497,8 @@ Helpers = (function() {
   function Helpers(o) {
     this.o = o != null ? o : {};
     this.animationLoop = this.animationLoop.bind(this);
+    this.prefix = this.getPrefix();
     this.div = document.createElement('div');
-    this.computedStyle = function(elem) {
-      if (window.getComputedStyle) {
-        return getComputedStyle(elem, '');
-      } else {
-        return elem.currentStyle;
-      }
-    };
     this.shortColors = {
       aqua: 'rgb(0,255,255)',
       black: 'rgb(0,0,0)',
@@ -1525,6 +1519,28 @@ Helpers = (function() {
       orange: 'rgb(255,128,0)'
     };
   }
+
+  Helpers.prototype.computedStyle = function(elem) {
+    if (window.getComputedStyle) {
+      return getComputedStyle(elem, '');
+    } else {
+      return elem.currentStyle;
+    }
+  };
+
+  Helpers.prototype.getPrefix = function() {
+    var dom, pre, styles, v;
+    styles = window.getComputedStyle(document.documentElement, "");
+    v = Array.prototype.slice.call(styles).join("").match(/-(moz|webkit|ms)-/);
+    pre = (v || (styles.OLink === "" && ["", "o"]))[1];
+    dom = "WebKit|Moz|MS|O".match(new RegExp("(" + pre + ")", "i"))[1];
+    return {
+      dom: dom,
+      lowercase: pre,
+      css: "-" + pre + "-",
+      js: pre[0].toUpperCase() + pre.substr(1)
+    };
+  };
 
   Helpers.prototype.slice = function(value, max) {
     if (value > max) {
@@ -1751,6 +1767,7 @@ MotionPath = (function() {
 
   MotionPath.prototype.vars = function() {
     this.T = TWEEN;
+    this.h = h;
     this.duration = this.o.duration || 1000;
     this.delay = this.o.delay || 0;
     this.yoyo = this.o.yoyo || false;
@@ -1815,11 +1832,13 @@ MotionPath = (function() {
         return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
       };
     })(this)).onUpdate(function() {
-      var point, x, y, _ref;
+      var point, translate, x, y, _ref;
       point = it.path.getPointAtLength(this.len);
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
-      it.el.style['transform'] = "translate(" + x + "px," + y + "px)";
+      translate = "translate(" + x + "px," + y + "px)";
+      it.el.style["" + h.prefix.js + "Transform"] = translate;
+      it.el.style['transform'] = translate;
       return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
