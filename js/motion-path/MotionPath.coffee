@@ -1,6 +1,14 @@
 h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
+# TODO
+#   add offsets options
+#   add angle control
+#   add angle control callback
+#   add callback options
+#   add fill to elemement option
+#   run function
+#   add run options
 
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
