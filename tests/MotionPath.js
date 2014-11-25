@@ -202,12 +202,12 @@
             isAngle: true,
             onUpdate: function() {
               if (detect.firstAngle == null) {
-                detect.firstAngle = mp.angle * (180 / Math.PI);
+                detect.firstAngle = mp.angle;
               }
               return isEquial2 = detect.firstAngle === 0;
             },
             onComplete: function() {
-              return isEquial = mp.angle * (180 / Math.PI) === 90;
+              return isEquial = mp.angle === 90;
             }
           });
           waitsFor((function() {
@@ -232,12 +232,12 @@
             isReverse: true,
             onUpdate: function() {
               if (detect.firstAngle == null) {
-                detect.firstAngle = mp.angle * (180 / Math.PI);
+                detect.firstAngle = mp.angle;
               }
               return isEquial2 = detect.firstAngle === 90;
             },
             onComplete: function() {
-              return isEquial = mp.angle * (180 / Math.PI) === 0;
+              return isEquial = mp.angle === 0;
             }
           });
           waitsFor((function() {
@@ -440,11 +440,9 @@
               angleSum2 += mp.angle;
               return angle;
             },
-            onComplete: (function(_this) {
-              return function() {
-                return isOnAngle = angleSum1 === angleSum2;
-              };
-            })(this)
+            onComplete: function() {
+              return isOnAngle = angleSum1 === angleSum2;
+            }
           });
           waitsFor((function() {
             return isOnAngle;

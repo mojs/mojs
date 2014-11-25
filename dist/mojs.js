@@ -1472,6 +1472,8 @@ Helpers = (function() {
 
   Helpers.prototype.DEG = Math.PI / 180;
 
+  Helpers.prototype.DEG2 = 180 / Math.PI;
+
   Helpers.prototype.s = 1;
 
   Helpers.prototype.time = function(time) {
@@ -1841,14 +1843,14 @@ MotionPath = (function() {
         prevPoint = it.path.getPointAtLength(this.len - 1);
         x1 = point.y - prevPoint.y;
         x2 = point.x - prevPoint.x;
-        it.angle = Math.atan(x1 / x2);
+        it.angle = Math.atan(x1 / x2) * h.DEG2;
       } else {
         it.angle = 0;
       }
       it.angle = it.onAngle != null ? typeof it.onAngle === "function" ? it.onAngle(it.angle) : void 0 : it.angle;
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
-      transform = "translate(" + x + "px," + y + "px) rotate(" + it.angle + "rad)";
+      transform = "translate(" + x + "px," + y + "px) rotate(" + it.angle + "deg)";
       it.el.style["" + h.prefix.js + "Transform"] = transform;
       it.el.style['transform'] = transform;
       return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;

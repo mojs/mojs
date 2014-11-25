@@ -2,8 +2,7 @@ h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
 # TODO
-#   add angle control
-#   add angle control callback
+#   angle callback to angle offset
 #   run function
 #   add run options
 #   add fill to elemement option
@@ -64,13 +63,13 @@ class MotionPath
           prevPoint = it.path.getPointAtLength @len - 1
           x1 = point.y - prevPoint.y
           x2 = point.x - prevPoint.x
-          it.angle = Math.atan x1/x2
+          it.angle = Math.atan(x1/x2)*h.DEG2
         else it.angle = 0
 
         it.angle = if it.onAngle? then it.onAngle?(it.angle) else it.angle
 
         x = point.x + it.offsetX; y = point.y + it.offsetY
-        transform = "translate(#{x}px,#{y}px) rotate(#{it.angle}rad)"
+        transform = "translate(#{x}px,#{y}px) rotate(#{it.angle}deg)"
         it.el.style["#{h.prefix.js}Transform"] = transform
         it.el.style['transform'] = transform
         it.onUpdate?.apply @, arguments

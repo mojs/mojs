@@ -16,6 +16,7 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 window?.mojs = mojs
 
+# i = 0
 # motionPath = new MotionPath
 #   # repeat: 5
 #   duration: 5000
@@ -23,9 +24,12 @@ window?.mojs = mojs
 #   isAngle: true
 #   onUpdate:->
 #     # console.log motionPath.angle*(180/Math.PI)
-#   # path: '#js-svg-path'
-#   #document.getElementById('js-svg-path').getAttribute 'd'
-#   path: 'M0,0 L100,0 L100,100'
+#   path: '#js-svg-path'
+#   onAngle: (angle)->
+#     console.log angle
+#     angle+(i += 1)
+#   # document.getElementById('js-svg-path').getAttribute 'd'
+#   # path: 'M0,0 L100,0 L100,100'
 #   el:   document.getElementById('js-el')
 # # console.log document.getElementById('js-svg-path').getAttribute 'd'
 # #   el:  '#js-el'

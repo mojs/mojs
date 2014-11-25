@@ -153,9 +153,9 @@ describe 'MotionPath ::', ->
           duration: 50
           isAngle: true
           onUpdate:->
-            detect.firstAngle ?= mp.angle*(180/Math.PI)
+            detect.firstAngle ?= mp.angle
             isEquial2 = detect.firstAngle is 0
-          onComplete: -> isEquial = mp.angle*(180/Math.PI) is 90
+          onComplete:-> isEquial = mp.angle is 90
         waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
         runs -> expect(isEquial).toBe(true)
 
@@ -169,9 +169,9 @@ describe 'MotionPath ::', ->
           isAngle: true
           isReverse: true
           onUpdate:->
-            detect.firstAngle ?= mp.angle*(180/Math.PI)
+            detect.firstAngle ?= mp.angle
             isEquial2 = detect.firstAngle is 90
-          onComplete: -> isEquial = mp.angle*(180/Math.PI) is 0
+          onComplete: -> isEquial = mp.angle is 0
         waitsFor((-> isEquial and isEquial2), '', 100)
         runs -> expect(isEquial).toBe(true)
 
@@ -298,7 +298,7 @@ describe 'MotionPath ::', ->
         runs -> expect(isOnAngle).toBe(true)
 
       it 'onAngle callback should get current angle', ->
-        isOnAngle = false;
+        isOnAngle = false
         angleSum1 = 0; angleSum2 = 0
         mp = new MotionPath
           path: coords
@@ -307,7 +307,7 @@ describe 'MotionPath ::', ->
           onAngle:(angle)->
             angleSum1 += angle; angleSum2 += mp.angle
             angle
-          onComplete:=> isOnAngle = angleSum1 is angleSum2
+          onComplete:-> isOnAngle = angleSum1 is angleSum2
 
         waitsFor((-> isOnAngle), '', 100)
         runs -> expect(isOnAngle).toBe(true)
