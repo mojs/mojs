@@ -1707,7 +1707,7 @@ module.exports = (function() {
 
 
 },{"./vendor/tween":17}],14:[function(require,module,exports){
-var Bubble, Burst, Mojs, MotionPath, mojs, motionPath;
+var Bubble, Burst, Mojs, MotionPath, mojs;
 
 Bubble = require('./bits/Bubble');
 
@@ -1744,14 +1744,6 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
 
-motionPath = new MotionPath({
-  repeat: 5,
-  duration: 5000,
-  yoyo: true,
-  path: document.getElementById('js-svg-path').getAttribute('d'),
-  el: document.getElementById('js-el')
-});
-
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./motion-path/MotionPath":15}],15:[function(require,module,exports){
@@ -1786,6 +1778,7 @@ MotionPath = (function() {
     this.offsetX = this.o.offsetX || 0;
     this.offsetY = this.o.offsetY || 0;
     this.isAngle = this.o.isAngle || false;
+    this.isReverse = this.o.isReverse || false;
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
@@ -1824,8 +1817,8 @@ MotionPath = (function() {
     var end, it, len, start;
     len = this.path.getTotalLength();
     it = this;
-    start = this.direction ? 0 : len;
-    end = this.direction ? len : 0;
+    start = !this.isReverse ? 0 : len;
+    end = !this.isReverse ? len : 0;
     this.tween = new this.T.Tween({
       p: 0,
       len: start
@@ -1841,17 +1834,21 @@ MotionPath = (function() {
         return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
       };
     })(this)).onUpdate(function() {
-      var angle, point, prevPoint, translate, x, x1, x2, y, _ref;
+      var point, prevPoint, transform, x, x1, x2, y, _ref;
       point = it.path.getPointAtLength(this.len);
-      prevPoint = it.path.getPointAtLength(this.len - 1);
-      x1 = point.y - prevPoint.y;
-      x2 = point.x - prevPoint.x;
-      angle = Math.atan(x1 / x2) * 57.29577951308232;
+      if (it.isAngle) {
+        prevPoint = it.path.getPointAtLength(this.len - 1);
+        x1 = point.y - prevPoint.y;
+        x2 = point.x - prevPoint.x;
+        it.angle = Math.atan(x1 / x2);
+      } else {
+        it.angle = 0;
+      }
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
-      translate = "translate(" + x + "px," + y + "px)";
-      it.el.style["" + h.prefix.js + "Transform"] = translate;
-      it.el.style['transform'] = translate;
+      transform = "translate(" + x + "px," + y + "px) rotate(" + it.angle + "rad)";
+      it.el.style["" + h.prefix.js + "Transform"] = transform;
+      it.el.style['transform'] = transform;
       return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();

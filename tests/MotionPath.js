@@ -74,6 +74,9 @@
       it('offsetX should be defined', function() {
         return expect(mp.offsetX).toBeDefined();
       });
+      it('isReverse should be defined', function() {
+        return expect(mp.isReverse).toBeDefined();
+      });
       it('offsetY should be defined', function() {
         return expect(mp.offsetY).toBeDefined();
       });
@@ -96,37 +99,17 @@
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       div = document.createElement('div');
       describe('offsets ::', function() {
-        coords = 'M20,20 L20,30';
         it('should work with positive offsetX', function() {
           var isEquial, mp, x;
+          coords = 'M0,0 L0,10';
           x = 0;
           isEquial = false;
           mp = new MotionPath({
             path: coords,
             el: div,
             offsetX: 10,
-            duration: 100,
-            onComplete: function() {
-              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[2], 10);
-              return isEquial = x === 30;
-            }
-          });
-          waitsFor((function() {
-            return isEquial;
-          }), 'isOnUpdate should be changed to true', 200);
-          return runs(function() {
-            return expect(isEquial).toBe(true);
-          });
-        });
-        it('should work with negative offsetX', function() {
-          var isEquial, mp, x;
-          x = 0;
-          isEquial = false;
-          mp = new MotionPath({
-            path: coords,
-            el: div,
-            offsetX: -10,
-            duration: 100,
+            duration: 50,
+            isAngle: true,
             onComplete: function() {
               x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[2], 10);
               return isEquial = x === 10;
@@ -134,42 +117,43 @@
           });
           waitsFor((function() {
             return isEquial;
-          }), 'isOnUpdate should be changed to true', 200);
+          }), 'isOnUpdate should be changed to true', 100);
           return runs(function() {
             return expect(isEquial).toBe(true);
           });
         });
-        coords = 'M20,20 L30,20';
+        it('should work with negative offsetX', function() {
+          var isEquial, mp, x;
+          coords = 'M0,0 L0,10';
+          x = 0;
+          isEquial = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            offsetX: -10,
+            duration: 50,
+            onComplete: function() {
+              x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[2], 10);
+              return isEquial = x === -10;
+            }
+          });
+          waitsFor((function() {
+            return isEquial;
+          }), 'isOnUpdate should be changed to true', 100);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
         it('should work with positive offsetY', function() {
           var isEquial, mp, y;
+          coords = 'M0,0 L10,0';
           y = 0;
           isEquial = false;
           mp = new MotionPath({
             path: coords,
             el: div,
             offsetY: 10,
-            duration: 100,
-            onComplete: function() {
-              y = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
-              return isEquial = y === 30;
-            }
-          });
-          waitsFor((function() {
-            return isEquial;
-          }), 'isOnUpdate should be changed to true', 200);
-          return runs(function() {
-            return expect(isEquial).toBe(true);
-          });
-        });
-        return it('should work with negative offsetY', function() {
-          var isEquial, mp, y;
-          y = 0;
-          isEquial = false;
-          mp = new MotionPath({
-            path: coords,
-            el: div,
-            offsetY: -10,
-            duration: 100,
+            duration: 50,
             onComplete: function() {
               y = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
               return isEquial = y === 10;
@@ -177,7 +161,88 @@
           });
           waitsFor((function() {
             return isEquial;
-          }), 'isOnUpdate should be changed to true', 200);
+          }), 'isEquial should be changed to true', 100);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
+        it('should work with negative offsetY', function() {
+          var isEquial, mp, y;
+          coords = 'M0,0 L10,0';
+          y = 0;
+          isEquial = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            offsetY: -10,
+            duration: 50,
+            onComplete: function() {
+              y = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
+              return isEquial = y === -10;
+            }
+          });
+          waitsFor((function() {
+            return isEquial;
+          }), 'isEquial should be changed to true', 100);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
+        it('should calculate current angle', function() {
+          var angle, detect, isEquial, isEquial2, mp;
+          coords = 'M0,0 L10,0 L10,10';
+          angle = 0;
+          isEquial = false;
+          isEquial2 = false;
+          detect = {};
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            isAngle: true,
+            onUpdate: function() {
+              if (detect.firstAngle == null) {
+                detect.firstAngle = mp.angle * (180 / Math.PI);
+              }
+              return isEquial2 = detect.firstAngle === 0;
+            },
+            onComplete: function() {
+              return isEquial = mp.angle * (180 / Math.PI) === 90;
+            }
+          });
+          waitsFor((function() {
+            return isEquial;
+          }), 'isEquial should be changed to true', 100);
+          return runs(function() {
+            return expect(isEquial).toBe(true);
+          });
+        });
+        return it('should calculate current angle with isReverse', function() {
+          var angle, detect, isEquial, isEquial2, mp;
+          coords = 'M0,0 L10,0 L10,10';
+          angle = 0;
+          isEquial = false;
+          isEquial2 = false;
+          detect = {};
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            isAngle: true,
+            isReverse: true,
+            onUpdate: function() {
+              if (detect.firstAngle == null) {
+                detect.firstAngle = mp.angle * (180 / Math.PI);
+              }
+              return isEquial2 = detect.firstAngle === 90;
+            },
+            onComplete: function() {
+              return isEquial = mp.angle * (180 / Math.PI) === 0;
+            }
+          });
+          waitsFor((function() {
+            return isEquial && isEquial2;
+          }), '', 100);
           return runs(function() {
             return expect(isEquial).toBe(true);
           });
@@ -291,14 +356,14 @@
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 1,
+            duration: 5,
             onComplete: function() {
               return isOnComplete = true;
             }
           });
           waitsFor((function() {
             return isOnComplete;
-          }), 'isOnComplete should be changed to true', 50);
+          }), 'isOnComplete should be true', 100);
           return runs(function() {
             return expect(isOnComplete).toBe(true);
           });
@@ -309,25 +374,25 @@
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 3,
+            duration: 5,
             onUpdate: function() {
               return isOnUpdate = true;
             }
           });
           waitsFor((function() {
             return isOnUpdate;
-          }), 'isOnUpdate should be changed to true', 50);
+          }), 'isOnUpdate should be changed to true', 100);
           return runs(function() {
             return expect(isOnUpdate).toBe(true);
           });
         });
-        return it('onUpdate callback should have tween\'s scope and have "p" property', function() {
+        return it('onUpdate callback should have "p" property', function() {
           var isOnUpdate, mp;
           isOnUpdate = false;
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 3,
+            duration: 5,
             onUpdate: function() {
               if (this.p != null) {
                 isOnUpdate = true;
@@ -337,7 +402,7 @@
           });
           waitsFor((function() {
             return isOnUpdate;
-          }), 'isOnUpdate should be changed to true', 50);
+          }), 'isOnUpdate should be changed to true', 100);
           return runs(function() {
             return expect(isOnUpdate).toBe(true);
           });

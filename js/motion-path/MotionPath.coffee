@@ -4,6 +4,7 @@ TWEEN  = require '../vendor/tween'
 # TODO
 #   add angle control
 #   add angle control callback
+#   add animation duration
 #   run function
 #   add run options
 #   add fill to elemement option
@@ -25,9 +26,10 @@ class MotionPath
     @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
     @repeat   = @o.repeat or 0
     @path = @getPath()
-    @offsetX = @o.offsetX or 0
-    @offsetY = @o.offsetY or 0
-    @isAngle = @o.isAngle or false
+    @offsetX    = @o.offsetX or 0
+    @offsetY    = @o.offsetY or 0
+    @isAngle    = @o.isAngle or false
+    @isReverse  = @o.isReverse or false
     # callbacks
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
@@ -51,23 +53,23 @@ class MotionPath
 
   run:->
     len = @path.getTotalLength(); it = @
-    start = if @direction then 0 else len
-    end   = if @direction then len else 0
+    start = if !@isReverse then 0 else len
+    end   = if !@isReverse then len else 0
     @tween = new @T.Tween({p:0, len: start}).to({p:1, len:end}, @duration)
       .onStart => @onStart?()
       .onComplete => @onComplete?()
       .onUpdate ->
         point = it.path.getPointAtLength @len
-        prevPoint = it.path.getPointAtLength @len - 1
-        x1 = point.y - prevPoint.y
-        x2 = point.x - prevPoint.x
-        # 180/Math.PI = 57.29577951308232
-        angle = Math.atan(x1 / x2) * 57.29577951308232
-        # console.log angle
+        if it.isAngle
+          prevPoint = it.path.getPointAtLength @len - 1
+          x1 = point.y - prevPoint.y
+          x2 = point.x - prevPoint.x
+          it.angle = Math.atan x1/x2
+        else it.angle = 0
         x = point.x + it.offsetX; y = point.y + it.offsetY
-        translate = "translate(#{x}px,#{y}px)"
-        it.el.style["#{h.prefix.js}Transform"] = translate
-        it.el.style['transform'] = translate
+        transform = "translate(#{x}px,#{y}px) rotate(#{it.angle}rad)"
+        it.el.style["#{h.prefix.js}Transform"] = transform
+        it.el.style['transform'] = transform
         it.onUpdate?.apply @, arguments
       .delay(@delay)
       .yoyo(@yoyo)

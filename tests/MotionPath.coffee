@@ -58,6 +58,9 @@ describe 'MotionPath ::', ->
     it 'offsetX should be defined', ->
       expect(mp.offsetX).toBeDefined()
 
+    it 'isReverse should be defined', ->
+      expect(mp.isReverse).toBeDefined()
+
     it 'offsetY should be defined', ->
       expect(mp.offsetY).toBeDefined()
 
@@ -79,66 +82,98 @@ describe 'MotionPath ::', ->
     div = document.createElement 'div'
     
     describe 'offsets ::', ->
-      coords = 'M20,20 L20,30'
       it 'should work with positive offsetX', ->
+        coords = 'M0,0 L0,10'
         x = 0; isEquial = false
         mp = new MotionPath
           path: coords
           el: div
           offsetX: 10
-          duration: 100
+          duration: 50
+          isAngle: true
           onComplete: ->
             x = parseInt div.style.transform.split(/(translate\()|,|\)/)[2], 10
-            isEquial = x is 30
+            isEquial = x is 10
 
-        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 100)
         runs -> expect(isEquial).toBe(true)
 
       it 'should work with negative offsetX', ->
+        coords = 'M0,0 L0,10'
         x = 0; isEquial = false
         mp = new MotionPath
           path: coords
           el: div
           offsetX: -10
-          duration: 100
+          duration: 50
           onComplete: ->
             x = parseInt div.style.transform.split(/(translate\()|,|\)/)[2], 10
-            isEquial = x is 10
+            isEquial = x is -10
 
-        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 100)
         runs -> expect(isEquial).toBe(true)
 
 
-      coords = 'M20,20 L30,20'
       it 'should work with positive offsetY', ->
+        coords = 'M0,0 L10,0'
         y = 0; isEquial = false
         mp = new MotionPath
           path: coords
           el: div
           offsetY: 10
-          duration: 100
+          duration: 50
           onComplete: ->
             y = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
-            isEquial = y is 30
+            isEquial = y is 10
 
-        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
         runs -> expect(isEquial).toBe(true)
 
       it 'should work with negative offsetY', ->
+        coords = 'M0,0 L10,0'
         y = 0; isEquial = false
         mp = new MotionPath
           path: coords
           el: div
           offsetY: -10
-          duration: 100
+          duration: 50
           onComplete: ->
             y = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
-            isEquial = y is 10
+            isEquial = y is -10
 
-        waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 200)
+        waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
         runs -> expect(isEquial).toBe(true)
 
+      it 'should calculate current angle', ->
+        coords = 'M0,0 L10,0 L10,10'
+        angle = 0; isEquial = false; isEquial2 = false; detect = {}
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          isAngle: true
+          onUpdate:->
+            detect.firstAngle ?= mp.angle*(180/Math.PI)
+            isEquial2 = detect.firstAngle is 0
+          onComplete: -> isEquial = mp.angle*(180/Math.PI) is 90
+        waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
+        runs -> expect(isEquial).toBe(true)
 
+      it 'should calculate current angle with isReverse', ->
+        coords = 'M0,0 L10,0 L10,10'
+        angle = 0; isEquial = false; isEquial2 = false; detect = {}
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          isAngle: true
+          isReverse: true
+          onUpdate:->
+            detect.firstAngle ?= mp.angle*(180/Math.PI)
+            isEquial2 = detect.firstAngle is 90
+          onComplete: -> isEquial = mp.angle*(180/Math.PI) is 0
+        waitsFor((-> isEquial and isEquial2), '', 100)
+        runs -> expect(isEquial).toBe(true)
 
     describe 'path option ::', ->
       it 'should have a getPath method', ->
@@ -222,10 +257,10 @@ describe 'MotionPath ::', ->
         mp = new MotionPath
           path: coords
           el: div
-          duration: 1
+          duration: 5
           onComplete:-> isOnComplete = true
 
-        waitsFor((-> isOnComplete), 'isOnComplete should be changed to true', 50)
+        waitsFor((-> isOnComplete), 'isOnComplete should be true', 100)
         runs -> expect(isOnComplete).toBe(true)
 
       it 'onUpdate callback should work', ->
@@ -233,22 +268,22 @@ describe 'MotionPath ::', ->
         mp = new MotionPath
           path: coords
           el: div
-          duration: 3
+          duration: 5
           onUpdate:-> isOnUpdate = true
-        waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 50)
+        waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 100)
         runs -> expect(isOnUpdate).toBe(true)
 
-      it 'onUpdate callback should have tween\'s scope and have "p" property', ->
+      it 'onUpdate callback should have "p" property', ->
         isOnUpdate = false
         mp = new MotionPath
           path: coords
           el: div
-          duration: 3
+          duration: 5
           onUpdate:->
             isOnUpdate = true if @p?
             isOnUpdate = isOnUpdate and @ isnt mp
 
-        waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 50)
+        waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 100)
         runs -> expect(isOnUpdate).toBe(true)
 
 
