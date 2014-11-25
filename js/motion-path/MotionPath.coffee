@@ -4,7 +4,6 @@ TWEEN  = require '../vendor/tween'
 # TODO
 #   add angle control
 #   add angle control callback
-#   add animation duration
 #   run function
 #   add run options
 #   add fill to elemement option
@@ -34,6 +33,7 @@ class MotionPath
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
     @onUpdate   = @o.onUpdate
+    @onAngle    = @o.onAngle
     @el = @getEl()
 
   getEl:->
@@ -66,6 +66,9 @@ class MotionPath
           x2 = point.x - prevPoint.x
           it.angle = Math.atan x1/x2
         else it.angle = 0
+
+        it.angle = if it.onAngle? then it.onAngle?(it.angle) else it.angle
+
         x = point.x + it.offsetX; y = point.y + it.offsetY
         transform = "translate(#{x}px,#{y}px) rotate(#{it.angle}rad)"
         it.el.style["#{h.prefix.js}Transform"] = transform

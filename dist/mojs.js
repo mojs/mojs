@@ -1782,6 +1782,7 @@ MotionPath = (function() {
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
+    this.onAngle = this.o.onAngle;
     return this.el = this.getEl();
   };
 
@@ -1844,6 +1845,7 @@ MotionPath = (function() {
       } else {
         it.angle = 0;
       }
+      it.angle = it.onAngle != null ? typeof it.onAngle === "function" ? it.onAngle(it.angle) : void 0 : it.angle;
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
       transform = "translate(" + x + "px," + y + "px) rotate(" + it.angle + "rad)";

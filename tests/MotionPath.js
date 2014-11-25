@@ -91,7 +91,7 @@
         return expect(mp.yoyo).toBeDefined();
       });
       return it('repeat should be defined', function() {
-        return expect(mp.yoyo).toBeDefined();
+        return expect(mp.repeat).toBeDefined();
       });
     });
     return describe('functionality ::', function() {
@@ -386,7 +386,7 @@
             return expect(isOnUpdate).toBe(true);
           });
         });
-        return it('onUpdate callback should have "p" property', function() {
+        it('onUpdate callback should have "p" property', function() {
           var isOnUpdate, mp;
           isOnUpdate = false;
           mp = new MotionPath({
@@ -405,6 +405,90 @@
           }), 'isOnUpdate should be changed to true', 100);
           return runs(function() {
             return expect(isOnUpdate).toBe(true);
+          });
+        });
+        it('onAngle callback should work', function() {
+          var isOnAngle, mp;
+          isOnAngle = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            onAngle: function(angle) {
+              isOnAngle = true;
+              return angle;
+            }
+          });
+          waitsFor((function() {
+            return isOnAngle;
+          }), 'isonAngle should be true', 100);
+          return runs(function() {
+            return expect(isOnAngle).toBe(true);
+          });
+        });
+        it('onAngle callback should get current angle', function() {
+          var angleSum1, angleSum2, isOnAngle, mp;
+          isOnAngle = false;
+          angleSum1 = 0;
+          angleSum2 = 0;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            onAngle: function(angle) {
+              angleSum1 += angle;
+              angleSum2 += mp.angle;
+              return angle;
+            },
+            onComplete: (function(_this) {
+              return function() {
+                return isOnAngle = angleSum1 === angleSum2;
+              };
+            })(this)
+          });
+          waitsFor((function() {
+            return isOnAngle;
+          }), '', 100);
+          return runs(function() {
+            return expect(isOnAngle).toBe(true);
+          });
+        });
+        return it('onAngle callback should set current angle', function() {
+          var currAngle, isAnglesArray, isCompleted, isSet, mp;
+          isSet = false;
+          isCompleted = false;
+          currAngle = 0;
+          isAnglesArray = [];
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            isAngle: true,
+            onAngle: function(angle) {
+              currAngle = angle;
+              return angle + 5;
+            },
+            onUpdate: function() {
+              return isAnglesArray.push(currAngle + 5 === mp.angle);
+            },
+            onComplete: function() {
+              var i, isSetItem, _i, _len;
+              for (i = _i = 0, _len = isAnglesArray.length; _i < _len; i = ++_i) {
+                isSetItem = isAnglesArray[i];
+                if (!isSetItem) {
+                  isSet = true;
+                }
+                isCompleted = true;
+                return;
+              }
+              return isCompleted = true;
+            }
+          });
+          waitsFor((function() {
+            return isCompleted;
+          }), '', 100);
+          return runs(function() {
+            return expect(isSet).toBe(false);
           });
         });
       });

@@ -75,7 +75,7 @@ describe 'MotionPath ::', ->
       expect(mp.yoyo).toBeDefined()
 
     it 'repeat should be defined', ->
-      expect(mp.yoyo).toBeDefined()
+      expect(mp.repeat).toBeDefined()
 
   describe 'functionality ::', ->
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -285,6 +285,51 @@ describe 'MotionPath ::', ->
 
         waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 100)
         runs -> expect(isOnUpdate).toBe(true)
+
+      it 'onAngle callback should work', ->
+        isOnAngle = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          onAngle:(angle)-> isOnAngle = true; angle
+
+        waitsFor((-> isOnAngle), 'isonAngle should be true', 100)
+        runs -> expect(isOnAngle).toBe(true)
+
+      it 'onAngle callback should get current angle', ->
+        isOnAngle = false;
+        angleSum1 = 0; angleSum2 = 0
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          onAngle:(angle)->
+            angleSum1 += angle; angleSum2 += mp.angle
+            angle
+          onComplete:=> isOnAngle = angleSum1 is angleSum2
+
+        waitsFor((-> isOnAngle), '', 100)
+        runs -> expect(isOnAngle).toBe(true)
+
+      it 'onAngle callback should set current angle', ->
+        isSet = false; isCompleted = false
+        currAngle = 0; isAnglesArray = []
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          isAngle: true
+          onAngle:(angle)-> currAngle = angle; angle+5
+          onUpdate:-> isAnglesArray.push currAngle+5 is mp.angle
+          onComplete:->
+            for isSetItem, i in isAnglesArray
+              if !isSetItem then isSet = true
+              isCompleted = true; return
+            isCompleted = true
+
+        waitsFor((-> isCompleted), '', 100)
+        runs -> expect(isSet).toBe(false)
 
 
 
