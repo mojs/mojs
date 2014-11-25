@@ -16,15 +16,15 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 window?.mojs = mojs
 
-# motionPath = new MotionPath
-#   repeat: 5
-#   duration: 5000
-#   yoyo: true
-#   # path: '#js-svg-path'
-#   path: document.getElementById('js-svg-path').getAttribute 'd'
-#   el:   document.getElementById('js-el')
+motionPath = new MotionPath
+  repeat: 5
+  duration: 5000
+  yoyo: true
+  # path: '#js-svg-path'
+  path: document.getElementById('js-svg-path').getAttribute 'd'
+  el:   document.getElementById('js-el')
 # console.log document.getElementById('js-svg-path').getAttribute 'd'
-  # el:  '#js-el'
+#   el:  '#js-el'
 
 
 # canvas = document.getElementById 'js-canvas'

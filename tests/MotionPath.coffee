@@ -61,6 +61,9 @@ describe 'MotionPath ::', ->
     it 'offsetY should be defined', ->
       expect(mp.offsetY).toBeDefined()
 
+    it 'isAngle should be defined', ->
+      expect(mp.isAngle).toBeDefined()
+
     it 'easing should be defined', ->
       expect(mp.easing).toBeDefined()
       expect(mp.easings).toBeDefined()

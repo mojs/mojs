@@ -9,7 +9,6 @@ TWEEN  = require '../vendor/tween'
 #   add fill to elemement option
 #   fix ff callbacks
 
-
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
   constructor:(@o={})->
@@ -28,6 +27,7 @@ class MotionPath
     @path = @getPath()
     @offsetX = @o.offsetX or 0
     @offsetY = @o.offsetY or 0
+    @isAngle = @o.isAngle or false
     # callbacks
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
@@ -58,6 +58,12 @@ class MotionPath
       .onComplete => @onComplete?()
       .onUpdate ->
         point = it.path.getPointAtLength @len
+        prevPoint = it.path.getPointAtLength @len - 1
+        x1 = point.y - prevPoint.y
+        x2 = point.x - prevPoint.x
+        # 180/Math.PI = 57.29577951308232
+        angle = Math.atan(x1 / x2) * 57.29577951308232
+        # console.log angle
         x = point.x + it.offsetX; y = point.y + it.offsetY
         translate = "translate(#{x}px,#{y}px)"
         it.el.style["#{h.prefix.js}Transform"] = translate
@@ -68,8 +74,6 @@ class MotionPath
       .easing @T.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .start()
-
-    # console.log @onStart?()
 
     h.startAnimationLoop()
 

@@ -1707,7 +1707,7 @@ module.exports = (function() {
 
 
 },{"./vendor/tween":17}],14:[function(require,module,exports){
-var Bubble, Burst, Mojs, MotionPath, mojs;
+var Bubble, Burst, Mojs, MotionPath, mojs, motionPath;
 
 Bubble = require('./bits/Bubble');
 
@@ -1744,6 +1744,14 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
 
+motionPath = new MotionPath({
+  repeat: 5,
+  duration: 5000,
+  yoyo: true,
+  path: document.getElementById('js-svg-path').getAttribute('d'),
+  el: document.getElementById('js-el')
+});
+
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./motion-path/MotionPath":15}],15:[function(require,module,exports){
@@ -1777,6 +1785,7 @@ MotionPath = (function() {
     this.path = this.getPath();
     this.offsetX = this.o.offsetX || 0;
     this.offsetY = this.o.offsetY || 0;
+    this.isAngle = this.o.isAngle || false;
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
@@ -1832,8 +1841,12 @@ MotionPath = (function() {
         return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
       };
     })(this)).onUpdate(function() {
-      var point, translate, x, y, _ref;
+      var angle, point, prevPoint, translate, x, x1, x2, y, _ref;
       point = it.path.getPointAtLength(this.len);
+      prevPoint = it.path.getPointAtLength(this.len - 1);
+      x1 = point.y - prevPoint.y;
+      x2 = point.x - prevPoint.x;
+      angle = Math.atan(x1 / x2) * 57.29577951308232;
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
       translate = "translate(" + x + "px," + y + "px)";

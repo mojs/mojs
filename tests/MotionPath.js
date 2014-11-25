@@ -77,6 +77,9 @@
       it('offsetY should be defined', function() {
         return expect(mp.offsetY).toBeDefined();
       });
+      it('isAngle should be defined', function() {
+        return expect(mp.isAngle).toBeDefined();
+      });
       it('easing should be defined', function() {
         expect(mp.easing).toBeDefined();
         return expect(mp.easings).toBeDefined();
