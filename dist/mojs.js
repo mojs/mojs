@@ -1847,7 +1847,7 @@ MotionPath = (function() {
         if ((typeof it.angleOffset) !== 'function') {
           it.angle += it.angleOffset;
         } else {
-          it.angle = it.angleOffset(it.angle);
+          it.angle = it.angleOffset(it.angle, this.p);
         }
       } else {
         it.angle = 0;

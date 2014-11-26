@@ -192,7 +192,7 @@
               return expect(isOnAngle).toBe(true);
             });
           });
-          return it('angleOffset should set current angle', function() {
+          it('angleOffset should set current angle', function() {
             var angleShift, currAngle, isAnglesArray, isCompleted, isSet, mp;
             coords = 'M0,0 L10,0 L10,10';
             isSet = false;
@@ -229,6 +229,30 @@
             }), '', 100);
             return runs(function() {
               return expect(isSet).toBe(false);
+            });
+          });
+          return it('angleOffset should get current progress as second parameter', function() {
+            var isProgress, mp, proc;
+            coords = 'M0,0 L10,0 L10,10';
+            isProgress = false;
+            proc = -1;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              angleOffset: function(angle, progress) {
+                proc = progress;
+                return angle;
+              },
+              onComplete: function() {
+                return isProgress = proc === 1;
+              }
+            });
+            waitsFor((function() {
+              return isProgress;
+            }), '', 100);
+            return runs(function() {
+              return expect(isProgress).toBe(true);
             });
           });
         });

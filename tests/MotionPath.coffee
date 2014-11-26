@@ -167,6 +167,20 @@ describe 'MotionPath ::', ->
           runs -> expect(isSet).toBe(false)
 
 
+        it 'angleOffset should get current progress as second parameter', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isProgress = false; proc = -1
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            angleOffset:(angle, progress)-> proc = progress; angle
+            onComplete:-> isProgress = proc is 1
+
+          waitsFor((-> isProgress), '', 100)
+          runs -> expect(isProgress).toBe(true)
+
+
       it 'should work with positive offsetX', ->
         coords = 'M0,0 L0,10'
         x = 0; isEquial = false

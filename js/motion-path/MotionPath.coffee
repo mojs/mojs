@@ -2,7 +2,6 @@ h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
 # TODO
-#   angle callback to angle offset
 #   run function
 #   add run options
 #   add fill to elemement option
@@ -69,7 +68,7 @@ class MotionPath
           if (typeof it.angleOffset) isnt 'function'
             it.angle += it.angleOffset
           else
-            it.angle = it.angleOffset(it.angle)
+            it.angle = it.angleOffset(it.angle, @p)
         else it.angle = 0
 
         # it.angle = if it.onAngle? then it.onAngle?(it.angle) else it.angle
