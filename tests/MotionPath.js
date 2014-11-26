@@ -83,6 +83,9 @@
       it('isAngle should be defined', function() {
         return expect(mp.isAngle).toBeDefined();
       });
+      it('angleOffset should be defined', function() {
+        return expect(mp.angleOffset).toBeDefined();
+      });
       it('easing should be defined', function() {
         expect(mp.easing).toBeDefined();
         return expect(mp.easings).toBeDefined();
@@ -99,6 +102,136 @@
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       div = document.createElement('div');
       describe('offsets ::', function() {
+        describe('angleOffset ::', function() {
+          it('angleOffset should work with positive angles', function() {
+            var isEqual, mp;
+            coords = 'M0,0 L10,0 L10,10';
+            isEqual = false;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              angleOffset: 90,
+              isAngle: true,
+              onComplete: function() {
+                return isEqual = mp.angle === 180;
+              }
+            });
+            waitsFor((function() {
+              return isEqual;
+            }), 'isEqual should be true', 100);
+            return runs(function() {
+              return expect(isEqual).toBe(true);
+            });
+          });
+          it('angleOffset should work with negative angles', function() {
+            var isEqual, mp;
+            coords = 'M0,0 L10,0 L10,10';
+            isEqual = false;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              angleOffset: -90,
+              isAngle: true,
+              onComplete: function() {
+                return isEqual = mp.angle === 0;
+              }
+            });
+            waitsFor((function() {
+              return isEqual;
+            }), 'isEqual should be true', 100);
+            return runs(function() {
+              return expect(isEqual).toBe(true);
+            });
+          });
+          it('angleOffset should be evaluated if a function', function() {
+            var isFunction, mp;
+            coords = 'M0,0 L10,0 L10,10';
+            isFunction = false;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              angleOffset: function(angle) {
+                isFunction = true;
+                return angle;
+              }
+            });
+            waitsFor((function() {
+              return isFunction;
+            }), 'isFunction should be true', 100);
+            return runs(function() {
+              return expect(isFunction).toBe(true);
+            });
+          });
+          it('angleOffset should get current angle', function() {
+            var angleSum1, angleSum2, isOnAngle, mp;
+            coords = 'M0,0 L10,0 L10,10';
+            isOnAngle = false;
+            angleSum1 = 0;
+            angleSum2 = 0;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              isAngle: true,
+              angleOffset: function(angle) {
+                angleSum1 += angle;
+                angleSum2 += mp.angle;
+                return angle;
+              },
+              onComplete: function() {
+                return isOnAngle = angleSum1 === angleSum2;
+              }
+            });
+            waitsFor((function() {
+              return isOnAngle;
+            }), '', 100);
+            return runs(function() {
+              return expect(isOnAngle).toBe(true);
+            });
+          });
+          return it('angleOffset should set current angle', function() {
+            var angleShift, currAngle, isAnglesArray, isCompleted, isSet, mp;
+            coords = 'M0,0 L10,0 L10,10';
+            isSet = false;
+            isCompleted = false;
+            currAngle = 0;
+            isAnglesArray = [];
+            angleShift = 5;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              angleOffset: function(angle) {
+                currAngle = angle;
+                return angle + angleShift;
+              },
+              onUpdate: function() {
+                return isAnglesArray.push(currAngle + angleShift === mp.angle);
+              },
+              onComplete: function() {
+                var i, isSetItem, _i, _len;
+                for (i = _i = 0, _len = isAnglesArray.length; _i < _len; i = ++_i) {
+                  isSetItem = isAnglesArray[i];
+                  if (!isSetItem) {
+                    isSet = true;
+                  }
+                  isCompleted = true;
+                  return;
+                }
+                return isCompleted = true;
+              }
+            });
+            waitsFor((function() {
+              return isCompleted;
+            }), '', 100);
+            return runs(function() {
+              return expect(isSet).toBe(false);
+            });
+          });
+        });
         it('should work with positive offsetX', function() {
           var isEquial, mp, x;
           coords = 'M0,0 L0,10';
@@ -386,7 +519,7 @@
             return expect(isOnUpdate).toBe(true);
           });
         });
-        it('onUpdate callback should have "p" property', function() {
+        return it('onUpdate callback should have "p" property', function() {
           var isOnUpdate, mp;
           isOnUpdate = false;
           mp = new MotionPath({
@@ -405,88 +538,6 @@
           }), 'isOnUpdate should be changed to true', 100);
           return runs(function() {
             return expect(isOnUpdate).toBe(true);
-          });
-        });
-        it('onAngle callback should work', function() {
-          var isOnAngle, mp;
-          isOnAngle = false;
-          mp = new MotionPath({
-            path: coords,
-            el: div,
-            duration: 50,
-            onAngle: function(angle) {
-              isOnAngle = true;
-              return angle;
-            }
-          });
-          waitsFor((function() {
-            return isOnAngle;
-          }), 'isonAngle should be true', 100);
-          return runs(function() {
-            return expect(isOnAngle).toBe(true);
-          });
-        });
-        it('onAngle callback should get current angle', function() {
-          var angleSum1, angleSum2, isOnAngle, mp;
-          isOnAngle = false;
-          angleSum1 = 0;
-          angleSum2 = 0;
-          mp = new MotionPath({
-            path: coords,
-            el: div,
-            duration: 50,
-            onAngle: function(angle) {
-              angleSum1 += angle;
-              angleSum2 += mp.angle;
-              return angle;
-            },
-            onComplete: function() {
-              return isOnAngle = angleSum1 === angleSum2;
-            }
-          });
-          waitsFor((function() {
-            return isOnAngle;
-          }), '', 100);
-          return runs(function() {
-            return expect(isOnAngle).toBe(true);
-          });
-        });
-        return it('onAngle callback should set current angle', function() {
-          var currAngle, isAnglesArray, isCompleted, isSet, mp;
-          isSet = false;
-          isCompleted = false;
-          currAngle = 0;
-          isAnglesArray = [];
-          mp = new MotionPath({
-            path: coords,
-            el: div,
-            duration: 50,
-            isAngle: true,
-            onAngle: function(angle) {
-              currAngle = angle;
-              return angle + 5;
-            },
-            onUpdate: function() {
-              return isAnglesArray.push(currAngle + 5 === mp.angle);
-            },
-            onComplete: function() {
-              var i, isSetItem, _i, _len;
-              for (i = _i = 0, _len = isAnglesArray.length; _i < _len; i = ++_i) {
-                isSetItem = isAnglesArray[i];
-                if (!isSetItem) {
-                  isSet = true;
-                }
-                isCompleted = true;
-                return;
-              }
-              return isCompleted = true;
-            }
-          });
-          waitsFor((function() {
-            return isCompleted;
-          }), '', 100);
-          return runs(function() {
-            return expect(isSet).toBe(false);
           });
         });
       });

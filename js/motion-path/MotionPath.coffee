@@ -26,13 +26,14 @@ class MotionPath
     @path = @getPath()
     @offsetX    = @o.offsetX or 0
     @offsetY    = @o.offsetY or 0
+    @angleOffset= @o.angleOffset or 0
     @isAngle    = @o.isAngle or false
     @isReverse  = @o.isReverse or false
     # callbacks
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
     @onUpdate   = @o.onUpdate
-    @onAngle    = @o.onAngle
+    # @onAngle    = @o.onAngle
     @el = @getEl()
 
   getEl:->
@@ -59,14 +60,19 @@ class MotionPath
       .onComplete => @onComplete?()
       .onUpdate ->
         point = it.path.getPointAtLength @len
-        if it.isAngle
+        
+        if it.isAngle or it.angleOffset?
           prevPoint = it.path.getPointAtLength @len - 1
           x1 = point.y - prevPoint.y
           x2 = point.x - prevPoint.x
           it.angle = Math.atan(x1/x2)*h.DEG2
+          if (typeof it.angleOffset) isnt 'function'
+            it.angle += it.angleOffset
+          else
+            it.angle = it.angleOffset(it.angle)
         else it.angle = 0
 
-        it.angle = if it.onAngle? then it.onAngle?(it.angle) else it.angle
+        # it.angle = if it.onAngle? then it.onAngle?(it.angle) else it.angle
 
         x = point.x + it.offsetX; y = point.y + it.offsetY
         transform = "translate(#{x}px,#{y}px) rotate(#{it.angle}deg)"

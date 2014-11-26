@@ -67,6 +67,9 @@ describe 'MotionPath ::', ->
     it 'isAngle should be defined', ->
       expect(mp.isAngle).toBeDefined()
 
+    it 'angleOffset should be defined', ->
+      expect(mp.angleOffset).toBeDefined()
+
     it 'easing should be defined', ->
       expect(mp.easing).toBeDefined()
       expect(mp.easings).toBeDefined()
@@ -82,6 +85,88 @@ describe 'MotionPath ::', ->
     div = document.createElement 'div'
     
     describe 'offsets ::', ->
+      describe 'angleOffset ::', ->
+        it 'angleOffset should work with positive angles', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isEqual = false
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            angleOffset: 90
+            isAngle: true
+            onComplete:-> isEqual = mp.angle is 180
+
+          waitsFor((-> isEqual), 'isEqual should be true', 100)
+          runs -> expect(isEqual).toBe(true)
+
+        it 'angleOffset should work with negative angles', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isEqual = false
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            angleOffset: -90
+            isAngle: true
+            onComplete:-> isEqual = mp.angle is 0
+
+          waitsFor((-> isEqual), 'isEqual should be true', 100)
+          runs -> expect(isEqual).toBe(true)
+
+        it 'angleOffset should be evaluated if a function', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isFunction = false
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            angleOffset:(angle)->
+              isFunction = true
+              angle
+
+          waitsFor((-> isFunction), 'isFunction should be true', 100)
+          runs -> expect(isFunction).toBe(true)
+
+        it 'angleOffset should get current angle', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isOnAngle = false
+          angleSum1 = 0; angleSum2 = 0
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            isAngle: true
+            angleOffset:(angle)->
+              angleSum1 += angle; angleSum2 += mp.angle
+              angle
+            onComplete:-> isOnAngle = angleSum1 is angleSum2
+
+          waitsFor((-> isOnAngle), '', 100)
+          runs -> expect(isOnAngle).toBe(true)
+
+        it 'angleOffset should set current angle', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isSet = false; isCompleted = false
+          currAngle = 0; isAnglesArray = []
+          angleShift = 5
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            angleOffset:(angle)->
+              currAngle = angle; angle+angleShift
+            onUpdate:-> isAnglesArray.push currAngle+angleShift is mp.angle
+            onComplete:->
+              for isSetItem, i in isAnglesArray
+                if !isSetItem then isSet = true
+                isCompleted = true; return
+              isCompleted = true
+
+          waitsFor((-> isCompleted), '', 100)
+          runs -> expect(isSet).toBe(false)
+
+
       it 'should work with positive offsetX', ->
         coords = 'M0,0 L0,10'
         x = 0; isEquial = false
@@ -285,53 +370,6 @@ describe 'MotionPath ::', ->
 
         waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 100)
         runs -> expect(isOnUpdate).toBe(true)
-
-      it 'onAngle callback should work', ->
-        isOnAngle = false
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          onAngle:(angle)-> isOnAngle = true; angle
-
-        waitsFor((-> isOnAngle), 'isonAngle should be true', 100)
-        runs -> expect(isOnAngle).toBe(true)
-
-      it 'onAngle callback should get current angle', ->
-        isOnAngle = false
-        angleSum1 = 0; angleSum2 = 0
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          onAngle:(angle)->
-            angleSum1 += angle; angleSum2 += mp.angle
-            angle
-          onComplete:-> isOnAngle = angleSum1 is angleSum2
-
-        waitsFor((-> isOnAngle), '', 100)
-        runs -> expect(isOnAngle).toBe(true)
-
-      it 'onAngle callback should set current angle', ->
-        isSet = false; isCompleted = false
-        currAngle = 0; isAnglesArray = []
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          isAngle: true
-          onAngle:(angle)-> currAngle = angle; angle+5
-          onUpdate:-> isAnglesArray.push currAngle+5 is mp.angle
-          onComplete:->
-            for isSetItem, i in isAnglesArray
-              if !isSetItem then isSet = true
-              isCompleted = true; return
-            isCompleted = true
-
-        waitsFor((-> isCompleted), '', 100)
-        runs -> expect(isSet).toBe(false)
-
-
 
 
 

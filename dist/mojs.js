@@ -1779,12 +1779,12 @@ MotionPath = (function() {
     this.path = this.getPath();
     this.offsetX = this.o.offsetX || 0;
     this.offsetY = this.o.offsetY || 0;
+    this.angleOffset = this.o.angleOffset || 0;
     this.isAngle = this.o.isAngle || false;
     this.isReverse = this.o.isReverse || false;
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
-    this.onAngle = this.o.onAngle;
     return this.el = this.getEl();
   };
 
@@ -1839,15 +1839,19 @@ MotionPath = (function() {
     })(this)).onUpdate(function() {
       var point, prevPoint, transform, x, x1, x2, y, _ref;
       point = it.path.getPointAtLength(this.len);
-      if (it.isAngle) {
+      if (it.isAngle || (it.angleOffset != null)) {
         prevPoint = it.path.getPointAtLength(this.len - 1);
         x1 = point.y - prevPoint.y;
         x2 = point.x - prevPoint.x;
         it.angle = Math.atan(x1 / x2) * h.DEG2;
+        if ((typeof it.angleOffset) !== 'function') {
+          it.angle += it.angleOffset;
+        } else {
+          it.angle = it.angleOffset(it.angle);
+        }
       } else {
         it.angle = 0;
       }
-      it.angle = it.onAngle != null ? typeof it.onAngle === "function" ? it.onAngle(it.angle) : void 0 : it.angle;
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
       transform = "translate(" + x + "px," + y + "px) rotate(" + it.angle + "deg)";
