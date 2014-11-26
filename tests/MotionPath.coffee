@@ -70,6 +70,9 @@ describe 'MotionPath ::', ->
     it 'angleOffset should be defined', ->
       expect(mp.angleOffset).toBeDefined()
 
+    it 'isRunLess should be defined', ->
+      expect(mp.isRunLess).toBeDefined()
+
     it 'easing should be defined', ->
       expect(mp.easing).toBeDefined()
       expect(mp.easings).toBeDefined()
@@ -340,7 +343,21 @@ describe 'MotionPath ::', ->
           el: div
         expect(mp.getEl() instanceof HTMLElement).toBe(true)
 
-    describe 'callbacks :: ', ->
+    describe 'run ability ::', ->
+      it 'should not run with isRunLess option passed', ->
+        isStarted = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          isRunLess: true
+          duration: 50
+          onStart:-> isStarted = true
+
+        setTimout =>
+          expect(isStarted).toBe(false)
+        , 100
+
+    describe 'callbacks ::', ->
       it 'onStart callback should work', ->
         isOnStart = false
         mp = new MotionPath

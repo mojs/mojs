@@ -86,6 +86,9 @@
       it('angleOffset should be defined', function() {
         return expect(mp.angleOffset).toBeDefined();
       });
+      it('isRunLess should be defined', function() {
+        return expect(mp.isRunLess).toBeDefined();
+      });
       it('easing should be defined', function() {
         expect(mp.easing).toBeDefined();
         return expect(mp.easings).toBeDefined();
@@ -489,7 +492,27 @@
           return expect(mp.getEl() instanceof HTMLElement).toBe(true);
         });
       });
-      return describe('callbacks :: ', function() {
+      describe('run ability ::', function() {
+        return it('should not run with isRunLess option passed', function() {
+          var isStarted, mp;
+          isStarted = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            isRunLess: true,
+            duration: 50,
+            onStart: function() {
+              return isStarted = true;
+            }
+          });
+          return setTimout((function(_this) {
+            return function() {
+              return expect(isStarted).toBe(false);
+            };
+          })(this), 100);
+        });
+      });
+      return describe('callbacks ::', function() {
         it('onStart callback should work', function() {
           var isOnStart, mp;
           isOnStart = false;

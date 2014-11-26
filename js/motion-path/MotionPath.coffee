@@ -11,7 +11,7 @@ class MotionPath
   NS: 'http://www.w3.org/2000/svg'
   constructor:(@o={})->
     @vars()
-    @run()
+    if !@isRunLess then @run()
     @
 
   vars:->
@@ -28,6 +28,7 @@ class MotionPath
     @angleOffset= @o.angleOffset or 0
     @isAngle    = @o.isAngle or false
     @isReverse  = @o.isReverse or false
+    @isRunLess  = @o.isRunLess or false
     # callbacks
     @onStart    = @o.onStart
     @onComplete = @o.onComplete

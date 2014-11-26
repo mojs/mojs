@@ -1763,7 +1763,9 @@ MotionPath = (function() {
   function MotionPath(o) {
     this.o = o != null ? o : {};
     this.vars();
-    this.run();
+    if (!this.isRunLess) {
+      this.run();
+    }
     this;
   }
 
@@ -1782,6 +1784,7 @@ MotionPath = (function() {
     this.angleOffset = this.o.angleOffset || 0;
     this.isAngle = this.o.isAngle || false;
     this.isReverse = this.o.isReverse || false;
+    this.isRunLess = this.o.isRunLess || false;
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
