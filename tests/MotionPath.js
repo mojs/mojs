@@ -83,9 +83,6 @@
       it('isAngle should be defined', function() {
         return expect(mp.isAngle).toBeDefined();
       });
-      it('angleOffset should be defined', function() {
-        return expect(mp.angleOffset).toBeDefined();
-      });
       it('isRunLess should be defined', function() {
         return expect(mp.isRunLess).toBeDefined();
       });
@@ -493,23 +490,44 @@
         });
       });
       describe('run ability ::', function() {
-        return it('should not run with isRunLess option passed', function() {
-          var isStarted, mp;
+        it('should not run with isRunLess option passed', function() {
+          var isDelayed, isStarted, mp;
           isStarted = false;
+          isDelayed = false;
           mp = new MotionPath({
             path: coords,
             el: div,
             isRunLess: true,
             duration: 50,
             onStart: function() {
+              console.log('a');
               return isStarted = true;
             }
           });
-          return setTimout((function(_this) {
+          setTimeout(((function(_this) {
             return function() {
-              return expect(isStarted).toBe(false);
+              return isDelayed = true;
             };
-          })(this), 100);
+          })(this)), 70);
+          waitsFor((function() {
+            return isDelayed;
+          }), 'isDelayed should be true', 100);
+          return runs(function() {
+            return expect(isStarted).toBe(false);
+          });
+        });
+        return it('run call should modify defaults', function() {
+          var mp;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            isRunLess: true,
+            duration: 50
+          });
+          mp.run({
+            duration: 100
+          });
+          return expect(mp.duration).toBe(100);
         });
       });
       return describe('callbacks ::', function() {

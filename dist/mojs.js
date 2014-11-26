@@ -1709,7 +1709,7 @@ module.exports = (function() {
 
 
 },{"./vendor/tween":17}],14:[function(require,module,exports){
-var Bubble, Burst, Mojs, MotionPath, mojs;
+var Bubble, Burst, Mojs, MotionPath, i, mojs, motionPath;
 
 Bubble = require('./bits/Bubble');
 
@@ -1746,6 +1746,26 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
 
+i = 0;
+
+motionPath = new MotionPath({
+  duration: 500,
+  yoyo: true,
+  isAngle: true,
+  path: '#js-svg-path',
+  isRunLess: true,
+  el: document.getElementById('js-el')
+});
+
+setTimeout((function(_this) {
+  return function() {
+    return motionPath.run({
+      duration: 20000,
+      isAngle: false
+    });
+  };
+})(this), 1000);
+
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./motion-path/MotionPath":15}],15:[function(require,module,exports){
@@ -1781,7 +1801,7 @@ MotionPath = (function() {
     this.path = this.getPath();
     this.offsetX = this.o.offsetX || 0;
     this.offsetY = this.o.offsetY || 0;
-    this.angleOffset = this.o.angleOffset || 0;
+    this.angleOffset = this.o.angleOffset;
     this.isAngle = this.o.isAngle || false;
     this.isReverse = this.o.isReverse || false;
     this.isRunLess = this.o.isRunLess || false;
@@ -1819,8 +1839,12 @@ MotionPath = (function() {
     }
   };
 
-  MotionPath.prototype.run = function() {
+  MotionPath.prototype.run = function(o) {
     var end, it, len, start;
+    if (o == null) {
+      o = {};
+    }
+    this.extendDefaults(o);
     len = this.path.getTotalLength();
     it = this;
     start = !this.isReverse ? 0 : len;
@@ -1848,7 +1872,7 @@ MotionPath = (function() {
         x2 = point.x - prevPoint.x;
         it.angle = Math.atan(x1 / x2) * h.DEG2;
         if ((typeof it.angleOffset) !== 'function') {
-          it.angle += it.angleOffset;
+          it.angle += it.angleOffset || 0;
         } else {
           it.angle = it.angleOffset(it.angle, this.p);
         }
@@ -1863,6 +1887,20 @@ MotionPath = (function() {
       return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
+  };
+
+  MotionPath.prototype.extendDefaults = function(o) {
+    var key, value, _results;
+    _results = [];
+    for (key in o) {
+      value = o[key];
+      if (this[key] != null) {
+        _results.push(this[key] = value);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
   };
 
   return MotionPath;

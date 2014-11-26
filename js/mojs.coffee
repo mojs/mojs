@@ -16,23 +16,22 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 window?.mojs = mojs
 
-# i = 0
-# motionPath = new MotionPath
-#   # repeat: 5
-#   duration: 5000
-#   yoyo: true
-#   isAngle: true
-#   onUpdate:->
-#     # console.log motionPath.angle*(180/Math.PI)
-#   path: '#js-svg-path'
-#   onAngle: (angle)->
-#     console.log angle
-#     angle+(i += 1)
-#   # document.getElementById('js-svg-path').getAttribute 'd'
-#   # path: 'M0,0 L100,0 L100,100'
-#   el:   document.getElementById('js-el')
-# # console.log document.getElementById('js-svg-path').getAttribute 'd'
-# #   el:  '#js-el'
+i = 0
+motionPath = new MotionPath
+  # repeat: 5
+  duration: 500
+  yoyo: true
+  isAngle: true
+  path: '#js-svg-path'
+  isRunLess: true
+  el:   document.getElementById('js-el')
+
+
+setTimeout =>
+  motionPath.run
+    duration: 20000
+    isAngle: false
+, 1000
 
 
 # canvas = document.getElementById 'js-canvas'

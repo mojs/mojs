@@ -2,10 +2,9 @@ h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
 # TODO
-#   run function
-#   add run options
 #   add fill to elemement option
 #   fix ff callbacks
+#   junk?
 
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
@@ -22,10 +21,10 @@ class MotionPath
     @yoyo     = @o.yoyo or false
     @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
     @repeat   = @o.repeat or 0
-    @path = @getPath()
+    @path     = @getPath()
     @offsetX    = @o.offsetX or 0
     @offsetY    = @o.offsetY or 0
-    @angleOffset= @o.angleOffset or 0
+    @angleOffset= @o.angleOffset
     @isAngle    = @o.isAngle or false
     @isReverse  = @o.isReverse or false
     @isRunLess  = @o.isRunLess or false
@@ -51,7 +50,8 @@ class MotionPath
     if @o.path.style
       return @o.path
 
-  run:->
+  run:(o={})->
+    @extendDefaults o
     len = @path.getTotalLength(); it = @
     start = if !@isReverse then 0 else len
     end   = if !@isReverse then len else 0
@@ -67,7 +67,7 @@ class MotionPath
           x2 = point.x - prevPoint.x
           it.angle = Math.atan(x1/x2)*h.DEG2
           if (typeof it.angleOffset) isnt 'function'
-            it.angle += it.angleOffset
+            it.angle += it.angleOffset or 0
           else
             it.angle = it.angleOffset(it.angle, @p)
         else it.angle = 0
@@ -86,6 +86,10 @@ class MotionPath
       .start()
 
     h.startAnimationLoop()
+
+  extendDefaults:(o)->
+    for key, value of o
+      @[key] = value if @[key]?
 
 MotionPath
 
