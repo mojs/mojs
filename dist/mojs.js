@@ -1749,22 +1749,13 @@ if (typeof window !== "undefined" && window !== null) {
 i = 0;
 
 motionPath = new MotionPath({
-  duration: 500,
-  yoyo: true,
-  isAngle: true,
+  duration: 15000,
   path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625',
-  isRunLess: true,
-  el: document.getElementById('js-el')
+  el: document.getElementById('js-el'),
+  fill: {
+    container: document.getElementById('js-container')
+  }
 });
-
-setTimeout((function(_this) {
-  return function() {
-    return motionPath.run({
-      duration: 10000,
-      isAngle: false
-    });
-  };
-})(this), 2000);
 
 
 
@@ -1811,7 +1802,16 @@ MotionPath = (function() {
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
-    return this.el = this.getEl();
+    this.el = this.getEl();
+    this.fill = this.o.fill;
+    if (this.fill != null) {
+      this.container = this.fill.container;
+      this.fillRule = this.fill.fillRule || 'all';
+      return this.cSize = {
+        width: this.container.outerWidth || 200,
+        height: this.container.outerHeight || 200
+      };
+    }
   };
 
   MotionPath.prototype.getEl = function() {
@@ -1842,6 +1842,24 @@ MotionPath = (function() {
     }
   };
 
+  MotionPath.prototype.getScaler = function(len) {
+    var end, size, start;
+    start = this.path.getPointAtLength(0);
+    end = this.path.getPointAtLength(len);
+    size = {};
+    size.width = end.x >= start.x ? end.x - start.x : start.x - end.x;
+    size.height = end.y >= start.y ? end.y - start.y : start.y - end.y;
+    this.scaler = {};
+    this.scaler.x = this.cSize.width / size.width;
+    this.scaler.y = this.cSize.height / size.height;
+    if (!isFinite(this.scaler.x)) {
+      this.scaler.x = 1;
+    }
+    if (!isFinite(this.scaler.y)) {
+      return this.scaler.y = 1;
+    }
+  };
+
   MotionPath.prototype.run = function(o) {
     var end, it, len, start;
     if (o == null) {
@@ -1852,6 +1870,7 @@ MotionPath = (function() {
     it = this;
     start = !this.isReverse ? 0 : len;
     end = !this.isReverse ? len : 0;
+    this.fill && this.getScaler(len);
     this.tween = new this.T.Tween({
       p: 0,
       len: start
@@ -1884,6 +1903,10 @@ MotionPath = (function() {
       }
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
+      if (it.scaler) {
+        x *= it.scaler.x;
+        y *= it.scaler.y;
+      }
       rotate = it.angle !== 0 ? "rotate(" + it.angle + "deg)" : '';
       transform = "translate(" + x + "px," + y + "px) " + rotate + " translateZ(0)";
       it.el.style["" + h.prefix.js + "Transform"] = transform;

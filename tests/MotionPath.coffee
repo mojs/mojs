@@ -89,10 +89,39 @@ describe 'MotionPath ::', ->
   describe 'functionality ::', ->
     div = document.createElement 'div'
 
-    # describe 'fill ::', ->
-    #   it 'if '
+    describe 'fill ::', ->
+      container = document.createElement 'div'
+      div = document.createElement 'div'
+      size = 200
+      container.style.width  = "#{size}px"
+      container.style.height = "#{size}px"
+      it 'if fill is specified it should have container, fillRule, cSize', ->
+        mp = new MotionPath
+          path: 'M0,0 L500,0'
+          el: div
+          fill: { container: container }
 
+        expect(mp.container).toBeDefined()
+        expect(mp.fillRule).toBeDefined()
+        expect(mp.cSize).toBeDefined()
 
+      it 'if fillRule is "all" it should keep container\'s size', ->
+        isFilled = false; isCompleted = false
+        mp = new MotionPath
+          path: 'M0,0 L500,500'
+          el: div
+          duration: 50
+          fill: { container: container }
+          all: true
+          onComplete:->
+            args = mp.el.style.transform.split /(translate\()|\,|\)/
+            width  = parseInt(args[2], 10)
+            height = parseInt(args[4], 10)
+            isFilled = width is 200 and height is 200
+            isCompleted = true
+
+        waitsFor((-> isCompleted), '', 100)
+        runs -> expect(isFilled).toBe(true)
 
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
     describe 'offsets ::', ->

@@ -4,6 +4,11 @@ TWEEN  = require '../vendor/tween'
 resize  = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
+#     get el's size
+#     filRule could be w or h or all
+#     on el's resize scaler should recalc
+#     parse container selector/node?
+#     transform origin
 #   fix ff callbacks
 #   junk?
 
@@ -34,8 +39,16 @@ class MotionPath
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
     @onUpdate   = @o.onUpdate
-    # @onAngle    = @o.onAngle
     @el = @getEl()
+
+    @fill       = @o.fill
+    if @fill?
+      @container  = @fill.container
+      @fillRule   = @fill.fillRule or 'all'
+      @cSize =
+        width: @container.outerWidth or 200
+        height: @container.outerHeight or 200
+
 
   getEl:->
     if !@o.el then throw new Error 'MotionPath needs an el to be animated'
@@ -52,11 +65,29 @@ class MotionPath
     if @o.path.style
       return @o.path
 
+  getScaler:(len)->
+    start = @path.getPointAtLength 0
+    end   = @path.getPointAtLength len
+
+    size = {}
+    size.width  = if end.x >= start.x then end.x-start.x else start.x-end.x
+    size.height = if end.y >= start.y then end.y-start.y else start.y-end.y
+
+    @scaler = {}
+    @scaler.x = @cSize.width/size.width
+    @scaler.y = @cSize.height/size.height
+
+    if !isFinite(@scaler.x) then @scaler.x = 1
+    if !isFinite(@scaler.y) then @scaler.y = 1
+
   run:(o={})->
     @extendDefaults o
     len = @path.getTotalLength(); it = @
     start = if !@isReverse then 0 else len
     end   = if !@isReverse then len else 0
+    
+    @fill and @getScaler(len)
+    # it.cSize?.width? and @getScaler()
     @tween = new @T.Tween({p:0, len: start}).to({p:1, len:end}, @duration)
       .onStart => @onStart?()
       .onComplete => @onComplete?()
@@ -73,10 +104,10 @@ class MotionPath
           else
             it.angle = it.angleOffset(it.angle, @p)
         else it.angle = 0
-
-        # it.angle = if it.onAngle? then it.onAngle?(it.angle) else it.angle
-
+        
         x = point.x + it.offsetX; y = point.y + it.offsetY
+        if it.scaler then x *= it.scaler.x; y *= it.scaler.y
+
         rotate = if it.angle isnt 0 then "rotate(#{it.angle}deg)" else ''
         transform = "translate(#{x}px,#{y}px) #{rotate} translateZ(0)"
         it.el.style["#{h.prefix.js}Transform"] = transform

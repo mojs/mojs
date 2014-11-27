@@ -103,6 +103,55 @@
     return describe('functionality ::', function() {
       var coords, div;
       div = document.createElement('div');
+      describe('fill ::', function() {
+        var container, size;
+        container = document.createElement('div');
+        div = document.createElement('div');
+        size = 200;
+        container.style.width = "" + size + "px";
+        container.style.height = "" + size + "px";
+        it('if fill is specified it should have container, fillRule, cSize', function() {
+          var mp;
+          mp = new MotionPath({
+            path: 'M0,0 L500,0',
+            el: div,
+            fill: {
+              container: container
+            }
+          });
+          expect(mp.container).toBeDefined();
+          expect(mp.fillRule).toBeDefined();
+          return expect(mp.cSize).toBeDefined();
+        });
+        return it('if fillRule is "all" it should keep container\'s size', function() {
+          var isCompleted, isFilled, mp;
+          isFilled = false;
+          isCompleted = false;
+          mp = new MotionPath({
+            path: 'M0,0 L500,500',
+            el: div,
+            duration: 50,
+            fill: {
+              container: container
+            },
+            all: true,
+            onComplete: function() {
+              var args, height, width;
+              args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+              width = parseInt(args[2], 10);
+              height = parseInt(args[4], 10);
+              isFilled = width === 200 && height === 200;
+              return isCompleted = true;
+            }
+          });
+          waitsFor((function() {
+            return isCompleted;
+          }), '', 100);
+          return runs(function() {
+            return expect(isFilled).toBe(true);
+          });
+        });
+      });
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       describe('offsets ::', function() {
         describe('angleOffset ::', function() {

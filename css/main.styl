@@ -12,11 +12,18 @@ use('assets/nesting-tree-traversal.js')
 // canvas
 //   hl orange
 
+.container
+  width  200px
+  height 200px
+  border 1px solid hotpink
+  position relative
+
 .el
   // border 1px solid deeppink
   background hotpink
-  // border-radius 50%
-  rect 2*gs
+  border-radius 50%
+  rect gs
+  margin-left -(gs/2)
   position absolute
   nw 0
   // backface-visibility hidden

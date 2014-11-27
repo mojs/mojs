@@ -1220,10 +1220,18 @@ a,
   fill: #717171;
   cursor: pointer;
 }
+.container {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #ff69b4;
+  position: relative;
+}
 .el {
   background: #ff69b4;
-  width: 16px;
-  height: 16px;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
   position: absolute;
   top: 0;
   left: 0;
