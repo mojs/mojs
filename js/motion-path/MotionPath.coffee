@@ -1,6 +1,7 @@
 h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
+resize  = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
 #   fix ff callbacks
@@ -16,6 +17,7 @@ class MotionPath
   vars:->
     @T = TWEEN
     @h = h
+    @resize = resize
     @duration = @o.duration or 1000
     @delay    = @o.delay or 0
     @yoyo     = @o.yoyo or false

@@ -68,6 +68,9 @@
       it('helpers should be defined', function() {
         return expect(mp.h).toBeDefined();
       });
+      it('resize should be defined', function() {
+        return expect(mp.resize).toBeDefined();
+      });
       it('duration should be defined', function() {
         return expect(mp.duration).toBeDefined();
       });
@@ -99,8 +102,8 @@
     });
     return describe('functionality ::', function() {
       var coords, div;
-      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       div = document.createElement('div');
+      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       describe('offsets ::', function() {
         describe('angleOffset ::', function() {
           it('angleOffset should work with positive angles', function() {

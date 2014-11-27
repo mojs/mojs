@@ -52,6 +52,9 @@ describe 'MotionPath ::', ->
     it 'helpers should be defined', ->
       expect(mp.h).toBeDefined()
 
+    it 'resize should be defined', ->
+      expect(mp.resize).toBeDefined()
+
     it 'duration should be defined', ->
       expect(mp.duration).toBeDefined()
 
@@ -84,9 +87,14 @@ describe 'MotionPath ::', ->
       expect(mp.repeat).toBeDefined()
 
   describe 'functionality ::', ->
-    coords = 'M0.55859375,593.527344L0.55859375,593.527344'
     div = document.createElement 'div'
-    
+
+    # describe 'fill ::', ->
+    #   it 'if '
+
+
+
+    coords = 'M0.55859375,593.527344L0.55859375,593.527344'
     describe 'offsets ::', ->
       describe 'angleOffset ::', ->
         it 'angleOffset should work with positive angles', ->

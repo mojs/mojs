@@ -517,7 +517,7 @@ module.exports = Bit;
 
 
 
-},{"../helpers":13,"../polyfills":16,"../vendor/tween":17}],4:[function(require,module,exports){
+},{"../helpers":13,"../polyfills":16,"../vendor/tween":18}],4:[function(require,module,exports){
 var Bit, Byte, Circle, Cross, Line, Rectangle, Star, Triangle, ZigZag, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1708,7 +1708,7 @@ module.exports = (function() {
 
 
 
-},{"./vendor/tween":17}],14:[function(require,module,exports){
+},{"./vendor/tween":18}],14:[function(require,module,exports){
 var Bubble, Burst, Mojs, MotionPath, i, mojs, motionPath;
 
 Bubble = require('./bits/Bubble');
@@ -1769,13 +1769,15 @@ setTimeout((function(_this) {
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./motion-path/MotionPath":15}],15:[function(require,module,exports){
-var MotionPath, TWEEN, h;
+var MotionPath, TWEEN, h, resize;
 
 h = require('../helpers');
 
 require('../polyfills');
 
 TWEEN = require('../vendor/tween');
+
+resize = require('../vendor/resize');
 
 MotionPath = (function() {
   MotionPath.prototype.NS = 'http://www.w3.org/2000/svg';
@@ -1792,6 +1794,7 @@ MotionPath = (function() {
   MotionPath.prototype.vars = function() {
     this.T = TWEEN;
     this.h = h;
+    this.resize = resize;
     this.duration = this.o.duration || 1000;
     this.delay = this.o.delay || 0;
     this.yoyo = this.o.yoyo || false;
@@ -1914,7 +1917,7 @@ module.exports = MotionPath;
 
 
 
-},{"../helpers":13,"../polyfills":16,"../vendor/tween":17}],16:[function(require,module,exports){
+},{"../helpers":13,"../polyfills":16,"../vendor/resize":17,"../vendor/tween":18}],16:[function(require,module,exports){
 module.exports = (function() {
   if (!CanvasRenderingContext2D.prototype.clear) {
     return CanvasRenderingContext2D.prototype.clear = function(preserveTransform) {
@@ -1933,6 +1936,8 @@ module.exports = (function() {
 
 
 },{}],17:[function(require,module,exports){
+(function(){var e;e=function(){function e(e){this.o=null!=e?e:{},window.anyResizeEventInited||(this.vars(),this.redefineProto())}return e.prototype.vars=function(){return window.anyResizeEventInited=!0,this.allowedProtos=[HTMLDivElement,HTMLFormElement,HTMLLinkElement,HTMLBodyElement,HTMLParagraphElement,HTMLFieldSetElement,HTMLLegendElement,HTMLLabelElement,HTMLButtonElement,HTMLUListElement,HTMLOListElement,HTMLLIElement,HTMLHeadingElement,HTMLQuoteElement,HTMLPreElement,HTMLBRElement,HTMLFontElement,HTMLHRElement,HTMLModElement,HTMLParamElement,HTMLMapElement,HTMLTableElement,HTMLTableCaptionElement,HTMLImageElement,HTMLTableCellElement,HTMLSelectElement,HTMLInputElement,HTMLTextAreaElement,HTMLAnchorElement,HTMLObjectElement,HTMLTableColElement,HTMLTableSectionElement,HTMLTableRowElement],this.timerElements={img:1,textarea:1,input:1,embed:1,object:1,svg:1,canvas:1,tr:1,tbody:1,thead:1,tfoot:1,a:1,select:1,option:1,optgroup:1,dl:1,dt:1,br:1,basefont:1,font:1,col:1,iframe:1}},e.prototype.redefineProto=function(){var e,t,n,o,i,r,l;for(t=this,r=this.allowedProtos,l=[],e=o=0,i=r.length;i>o;e=++o)n=r[e],null!=n.prototype&&l.push(function(e){var n;return n=e.prototype.addEventListener||e.prototype.attachEvent,function(n){var o;return o=function(){var e;return(this!==window||this!==document)&&(e="onresize"===arguments[0]&&!this.anyResizeEventInited,e&&t.handleResize({args:arguments,that:this})),n.apply(this,arguments)},e.prototype.addEventListener?e.prototype.addEventListener=o:e.prototype.attachEvent?e.prototype.attachEvent=o:void 0}(n)}(n));return l},e.prototype.handleResize=function(e){var t,n,o,i,r,l;return n=e.that,this.timerElements[n.tagName.toLowerCase()]?this.initTimer(n):(o=document.createElement("iframe"),n.appendChild(o),o.style.width="100%",o.style.height="100%",o.style.position="absolute",o.style.zIndex=-999,o.style.opacity=0,o.style.top=0,o.style.left=0,t=window.getComputedStyle?getComputedStyle(n):n.currentStyle,r="static"===t.position&&""===n.style.position,i=""===t.position&&""===n.style.position,(r||i)&&(n.style.position="relative"),null!=(l=o.contentWindow)&&(l.onresize=function(e){return function(){return e.dispatchEvent(n)}}(this))),n.anyResizeEventInited=!0},e.prototype.initTimer=function(e){var t,n;return n=0,t=0,this.interval=setInterval(function(o){return function(){var i,r;return r=e.offsetWidth,i=e.offsetHeight,r!==n||i!==t?(o.dispatchEvent(e),n=r,t=i):void 0}}(this),this.o.interval||200)},e.prototype.dispatchEvent=function(e){var t;return document.createEvent?(t=document.createEvent("HTMLEvents"),t.initEvent("onresize",!1,!1),e.dispatchEvent(t)):document.createEventObject?(t=document.createEventObject(),e.fireEvent("onresize",t)):!1},e.prototype.destroy=function(){return clearInterval(this.interval),this.interval=null,window.anyResizeEventInited=!1,Node.prototype.addEventListener?Node.prototype.addEventListener=this.listener:Node.prototype.attachEvent?Node.prototype.attachEvent=this.listener:void 0},e}(),"function"==typeof define&&define.amd?define("any-resize-event",[],function(){return new e}):"object"==typeof module&&"object"==typeof module.exports?module.exports=new e:("undefined"!=typeof window&&null!==window&&(window.AnyResizeEvent=e),"undefined"!=typeof window&&null!==window&&(window.anyResizeEvent=new e))}).call(this);
+},{}],18:[function(require,module,exports){
 ;(function(undefined){
 
 
