@@ -1752,7 +1752,7 @@ motionPath = new MotionPath({
   duration: 500,
   yoyo: true,
   isAngle: true,
-  path: '#js-svg-path',
+  path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625',
   isRunLess: true,
   el: document.getElementById('js-el')
 });
@@ -1760,11 +1760,11 @@ motionPath = new MotionPath({
 setTimeout((function(_this) {
   return function() {
     return motionPath.run({
-      duration: 20000,
+      duration: 10000,
       isAngle: false
     });
   };
-})(this), 1000);
+})(this), 2000);
 
 
 
@@ -1864,7 +1864,7 @@ MotionPath = (function() {
         return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
       };
     })(this)).onUpdate(function() {
-      var point, prevPoint, transform, x, x1, x2, y, _ref;
+      var point, prevPoint, rotate, transform, x, x1, x2, y, _ref;
       point = it.path.getPointAtLength(this.len);
       if (it.isAngle || (it.angleOffset != null)) {
         prevPoint = it.path.getPointAtLength(this.len - 1);
@@ -1881,7 +1881,8 @@ MotionPath = (function() {
       }
       x = point.x + it.offsetX;
       y = point.y + it.offsetY;
-      transform = "translate(" + x + "px," + y + "px) rotate(" + it.angle + "deg)";
+      rotate = it.angle !== 0 ? "rotate(" + it.angle + "deg)" : '';
+      transform = "translate(" + x + "px," + y + "px) " + rotate + " translateZ(0)";
       it.el.style["" + h.prefix.js + "Transform"] = transform;
       it.el.style['transform'] = transform;
       return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;

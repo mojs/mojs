@@ -75,7 +75,8 @@ class MotionPath
         # it.angle = if it.onAngle? then it.onAngle?(it.angle) else it.angle
 
         x = point.x + it.offsetX; y = point.y + it.offsetY
-        transform = "translate(#{x}px,#{y}px) rotate(#{it.angle}deg)"
+        rotate = if it.angle isnt 0 then "rotate(#{it.angle}deg)" else ''
+        transform = "translate(#{x}px,#{y}px) #{rotate} translateZ(0)"
         it.el.style["#{h.prefix.js}Transform"] = transform
         it.el.style['transform'] = transform
         it.onUpdate?.apply @, arguments
