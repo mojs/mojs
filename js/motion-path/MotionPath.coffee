@@ -4,9 +4,9 @@ TWEEN  = require '../vendor/tween'
 resize  = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
-#     get el's size
 #     filRule could be w or h or all
 #     on el's resize scaler should recalc
+#     setProgress fun
 #     parse container selector/node?
 #     transform origin
 #   fix ff callbacks
@@ -46,8 +46,8 @@ class MotionPath
       @container  = @fill.container
       @fillRule   = @fill.fillRule or 'all'
       @cSize =
-        width: @container.outerWidth or 200
-        height: @container.outerHeight or 200
+        width:  @container.offsetWidth or 0
+        height: @container.offsetHeight or 0
 
 
   getEl:->

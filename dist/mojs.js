@@ -1751,11 +1751,23 @@ i = 0;
 motionPath = new MotionPath({
   duration: 15000,
   path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625',
+  isRunLess: true,
   el: document.getElementById('js-el'),
   fill: {
     container: document.getElementById('js-container')
   }
 });
+
+console.log(document.getElementById('js-el'));
+
+setTimeout((function(_this) {
+  return function() {
+    return motionPath.run({
+      duration: 10000,
+      isAngle: false
+    });
+  };
+})(this), 2000);
 
 
 
@@ -1808,8 +1820,8 @@ MotionPath = (function() {
       this.container = this.fill.container;
       this.fillRule = this.fill.fillRule || 'all';
       return this.cSize = {
-        width: this.container.outerWidth || 200,
-        height: this.container.outerHeight || 200
+        width: this.container.offsetWidth || 0,
+        height: this.container.offsetHeight || 0
       };
     }
   };
