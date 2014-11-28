@@ -28,8 +28,8 @@ document.addEventListener 'DOMContentLoaded', (e)->
 
       it 'transforms should be supported', ->
         isTransforms = ->
-          trStr = "transform WebkitTransform MozTransform OTransform msTransform"
-          prefixes = trStr.split(" ")
+          trS = "transform WebkitTransform MozTransform OTransform msTransform"
+          prefixes = trS.split(" ")
           i = 0
           while i < prefixes.length
             div = document.createElement("div")
@@ -129,24 +129,43 @@ document.addEventListener 'DOMContentLoaded', (e)->
           waitsFor((-> isCompleted), '', 100)
           runs -> expect(isFilled).toBe(true)
 
-        it 'if fillRule is "width" it should keep container\'s width', ->
+        it "if fillRule is \"width\" it should keep container\'s width
+        and set \"height\" with aspect ratio", ->
           isFilled = false; isCompleted = false
           mp = new MotionPath
-            path: 'M0,0 L500,500'
+            path: 'M0,0 L500,250'
             el: div
             duration: 50
-            fill: { container: container }
+            fill: { container: container, fillRule: 'width' }
             all: true
             onComplete:->
               args = mp.el.style.transform.split /(translate\()|\,|\)/
               width  = parseInt(args[2], 10)
               height = parseInt(args[4], 10)
-              # console.log width, height
               isWidth  = width  is container.offsetWidth
-              isHeight = height isnt container.offsetHeight
+              isHeight = height is (width/2)
               isFilled = isWidth and isHeight
               isCompleted = true
+          waitsFor((-> isCompleted), '', 100)
+          runs -> expect(isFilled).toBe(true)
 
+        it "if fillRule is \"height\" it should keep container\'s height
+        and set \"width\" with aspect ratio", ->
+          isFilled = false; isCompleted = false
+          mp = new MotionPath
+            path: 'M0,0 L250,500'
+            el: div
+            duration: 50
+            fill: { container: container, fillRule: 'height' }
+            all: true
+            onComplete:->
+              args = mp.el.style.transform.split /(translate\()|\,|\)/
+              width  = parseInt(args[2], 10)
+              height = parseInt(args[4], 10)
+              isWidth  = width  is (height/2)
+              isHeight = height is container.offsetHeight
+              isFilled = isWidth and isHeight
+              isCompleted = true
           waitsFor((-> isCompleted), '', 100)
           runs -> expect(isFilled).toBe(true)
 
@@ -256,8 +275,8 @@ document.addEventListener 'DOMContentLoaded', (e)->
             duration: 50
             isAngle: true
             onComplete: ->
-              x = parseInt div.style.transform.split(/(translate\()|,|\)/)[2], 10
-              isEquial = x is 10
+              x = div.style.transform.split(/(translate\()|,|\)/)[2]
+              isEquial = parseInt(x, 10) is 10
 
           waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 100)
           runs -> expect(isEquial).toBe(true)
@@ -271,7 +290,8 @@ document.addEventListener 'DOMContentLoaded', (e)->
             offsetX: -10
             duration: 50
             onComplete: ->
-              x = parseInt div.style.transform.split(/(translate\()|,|\)/)[2], 10
+              x = div.style.transform.split(/(translate\()|,|\)/)[2]
+              x = parseInt(x, 10)
               isEquial = x is -10
 
           waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 100)
@@ -286,7 +306,8 @@ document.addEventListener 'DOMContentLoaded', (e)->
             offsetY: 10
             duration: 50
             onComplete: ->
-              y = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
+              y = div.style.transform.split(/(translate\()|,|\)/)[4]
+              y = parseInt(y, 10)
               isEquial = y is 10
 
           waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
@@ -301,8 +322,8 @@ document.addEventListener 'DOMContentLoaded', (e)->
             offsetY: -10
             duration: 50
             onComplete: ->
-              y = parseInt div.style.transform.split(/(translate\()|,|\)/)[4], 10
-              isEquial = y is -10
+              y = div.style.transform.split(/(translate\()|,|\)/)[4]
+              isEquial = parseInt(y, 10) is -10
 
           waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
           runs -> expect(isEquial).toBe(true)
@@ -345,7 +366,7 @@ document.addEventListener 'DOMContentLoaded', (e)->
             el: div
           expect(mp.getPath).toBeDefined()
 
-        it 'getPath should return a path when it was specified by coordinates', ->
+        it 'getPath should return a path when was specified by coordinates', ->
           mp = new MotionPath
             path: coords
             el: div

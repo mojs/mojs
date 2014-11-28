@@ -1709,7 +1709,7 @@ module.exports = (function() {
 
 
 },{"./vendor/tween":18}],14:[function(require,module,exports){
-var Bubble, Burst, Mojs, MotionPath, i, mojs;
+var Bubble, Burst, Mojs, MotionPath, mojs;
 
 Bubble = require('./bits/Bubble');
 
@@ -1745,8 +1745,6 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
-
-i = 0;
 
 
 
@@ -1834,20 +1832,40 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.getScaler = function(len) {
-    var end, size, start;
+    var calcBoth, calcHeight, calcWidth, end, size, start;
     start = this.path.getPointAtLength(0);
     end = this.path.getPointAtLength(len);
     size = {};
     size.width = end.x >= start.x ? end.x - start.x : start.x - end.x;
     size.height = end.y >= start.y ? end.y - start.y : start.y - end.y;
     this.scaler = {};
-    this.scaler.x = this.cSize.width / size.width;
-    this.scaler.y = this.cSize.height / size.height;
-    if (!isFinite(this.scaler.x)) {
-      this.scaler.x = 1;
-    }
-    if (!isFinite(this.scaler.y)) {
-      return this.scaler.y = 1;
+    calcWidth = (function(_this) {
+      return function() {
+        return _this.scaler.x = _this.cSize.width / size.width || 1;
+      };
+    })(this);
+    calcHeight = (function(_this) {
+      return function() {
+        return _this.scaler.y = _this.cSize.height / size.height || 1;
+      };
+    })(this);
+    calcBoth = (function(_this) {
+      return function() {
+        calcWidth();
+        return calcHeight();
+      };
+    })(this);
+    switch (this.fillRule) {
+      case 'all':
+        return calcBoth();
+      case 'width':
+        calcWidth();
+        return this.scaler.y = this.scaler.x;
+      case 'height':
+        calcHeight();
+        return this.scaler.x = this.scaler.y;
+      default:
+        return calcBoth();
     }
   };
 

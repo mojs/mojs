@@ -34,9 +34,9 @@
         return it('transforms should be supported', function() {
           var isTransforms;
           isTransforms = function() {
-            var div, i, isProp, prefixes, trStr;
-            trStr = "transform WebkitTransform MozTransform OTransform msTransform";
-            prefixes = trStr.split(" ");
+            var div, i, isProp, prefixes, trS;
+            trS = "transform WebkitTransform MozTransform OTransform msTransform";
+            prefixes = trS.split(" ");
             i = 0;
             while (i < prefixes.length) {
               div = document.createElement("div");
@@ -155,16 +155,17 @@
               return expect(isFilled).toBe(true);
             });
           });
-          return it('if fillRule is "width" it should keep container\'s width', function() {
+          it("if fillRule is \"width\" it should keep container\'s width and set \"height\" with aspect ratio", function() {
             var isCompleted, isFilled, mp;
             isFilled = false;
             isCompleted = false;
             mp = new MotionPath({
-              path: 'M0,0 L500,500',
+              path: 'M0,0 L500,250',
               el: div,
               duration: 50,
               fill: {
-                container: container
+                container: container,
+                fillRule: 'width'
               },
               all: true,
               onComplete: function() {
@@ -173,7 +174,38 @@
                 width = parseInt(args[2], 10);
                 height = parseInt(args[4], 10);
                 isWidth = width === container.offsetWidth;
-                isHeight = height !== container.offsetHeight;
+                isHeight = height === (width / 2);
+                isFilled = isWidth && isHeight;
+                return isCompleted = true;
+              }
+            });
+            waitsFor((function() {
+              return isCompleted;
+            }), '', 100);
+            return runs(function() {
+              return expect(isFilled).toBe(true);
+            });
+          });
+          return it("if fillRule is \"height\" it should keep container\'s height and set \"width\" with aspect ratio", function() {
+            var isCompleted, isFilled, mp;
+            isFilled = false;
+            isCompleted = false;
+            mp = new MotionPath({
+              path: 'M0,0 L250,500',
+              el: div,
+              duration: 50,
+              fill: {
+                container: container,
+                fillRule: 'height'
+              },
+              all: true,
+              onComplete: function() {
+                var args, height, isHeight, isWidth, width;
+                args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+                width = parseInt(args[2], 10);
+                height = parseInt(args[4], 10);
+                isWidth = width === (height / 2);
+                isHeight = height === container.offsetHeight;
                 isFilled = isWidth && isHeight;
                 return isCompleted = true;
               }
@@ -354,8 +386,8 @@
               duration: 50,
               isAngle: true,
               onComplete: function() {
-                x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[2], 10);
-                return isEquial = x === 10;
+                x = div.style.transform.split(/(translate\()|,|\)/)[2];
+                return isEquial = parseInt(x, 10) === 10;
               }
             });
             waitsFor((function() {
@@ -376,7 +408,8 @@
               offsetX: -10,
               duration: 50,
               onComplete: function() {
-                x = parseInt(div.style.transform.split(/(translate\()|,|\)/)[2], 10);
+                x = div.style.transform.split(/(translate\()|,|\)/)[2];
+                x = parseInt(x, 10);
                 return isEquial = x === -10;
               }
             });
@@ -398,7 +431,8 @@
               offsetY: 10,
               duration: 50,
               onComplete: function() {
-                y = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
+                y = div.style.transform.split(/(translate\()|,|\)/)[4];
+                y = parseInt(y, 10);
                 return isEquial = y === 10;
               }
             });
@@ -420,8 +454,8 @@
               offsetY: -10,
               duration: 50,
               onComplete: function() {
-                y = parseInt(div.style.transform.split(/(translate\()|,|\)/)[4], 10);
-                return isEquial = y === -10;
+                y = div.style.transform.split(/(translate\()|,|\)/)[4];
+                return isEquial = parseInt(y, 10) === -10;
               }
             });
             waitsFor((function() {
@@ -500,7 +534,7 @@
             });
             return expect(mp.getPath).toBeDefined();
           });
-          it('getPath should return a path when it was specified by coordinates', function() {
+          it('getPath should return a path when was specified by coordinates', function() {
             var mp;
             mp = new MotionPath({
               path: coords,

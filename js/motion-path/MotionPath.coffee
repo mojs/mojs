@@ -4,7 +4,6 @@ TWEEN  = require '../vendor/tween'
 resize  = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
-#     filRule could be w or h or all
 #     on el's resize scaler should recalc
 #     setProgress fun
 #     parse container selector/node?
@@ -46,7 +45,7 @@ class MotionPath
       @container  = @fill.container
       @fillRule   = @fill.fillRule or 'all'
       @cSize =
-        width:  @container.offsetWidth or 0
+        width:  @container.offsetWidth  or 0
         height: @container.offsetHeight or 0
 
   getEl:->
@@ -73,12 +72,22 @@ class MotionPath
     size.height = if end.y >= start.y then end.y-start.y else start.y-end.y
 
     @scaler = {}
-    @scaler.x = @cSize.width/size.width
-    @scaler.y = @cSize.height/size.height
-    # console.log @cSize
 
-    if !isFinite(@scaler.x) then @scaler.x = 1
-    if !isFinite(@scaler.y) then @scaler.y = 1
+    calcWidth  = => @scaler.x = @cSize.width/size.width or 1
+    calcHeight = => @scaler.y = @cSize.height/size.height or 1
+    calcBoth   = => calcWidth(); calcHeight()
+
+    switch @fillRule
+      when 'all'
+        calcBoth()
+      when 'width'
+        calcWidth();  @scaler.y = @scaler.x
+      when 'height'
+        calcHeight(); @scaler.x = @scaler.y
+      else
+        calcBoth()
+
+
 
   run:(o={})->
     @extendDefaults o
