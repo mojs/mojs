@@ -49,7 +49,6 @@ class MotionPath
         width:  @container.offsetWidth or 0
         height: @container.offsetHeight or 0
 
-
   getEl:->
     if !@o.el then throw new Error 'MotionPath needs an el to be animated'
     return document.querySelector @o.el if typeof @o.el is 'string'
@@ -76,6 +75,7 @@ class MotionPath
     @scaler = {}
     @scaler.x = @cSize.width/size.width
     @scaler.y = @cSize.height/size.height
+    # console.log @cSize
 
     if !isFinite(@scaler.x) then @scaler.x = 1
     if !isFinite(@scaler.y) then @scaler.y = 1
@@ -87,7 +87,6 @@ class MotionPath
     end   = if !@isReverse then len else 0
     
     @fill and @getScaler(len)
-    # it.cSize?.width? and @getScaler()
     @tween = new @T.Tween({p:0, len: start}).to({p:1, len:end}, @duration)
       .onStart => @onStart?()
       .onComplete => @onComplete?()

@@ -17,23 +17,23 @@ if (typeof module is "object") and (typeof module.exports is "object")
 window?.mojs = mojs
 
 i = 0
-motionPath = new MotionPath
-  # repeat: 5
-  duration: 15000
-  # yoyo: true
-  # isAngle: true
-  # path: '#js-svg-path'
-  path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625'
-  isRunLess: true
-  el:         document.getElementById('js-el')
-  fill: container:  document.getElementById('js-container')
+# motionPath = new MotionPath
+#   # repeat: 5
+#   duration: 15000
+#   # yoyo: true
+#   # isAngle: true
+#   # path: '#js-svg-path'
+#   path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625'
+#   isRunLess: true
+#   el:         document.getElementById('js-el')
+#   fill: container:  document.getElementById('js-container')
 
-console.log document.getElementById('js-el')
-setTimeout =>
-  motionPath.run
-    duration: 10000
-    isAngle: false
-, 2000
+# console.log document.getElementById('js-el')
+# setTimeout =>
+#   motionPath.run
+#     duration: 10000
+#     isAngle: false
+# , 2000
 
 
 # canvas = document.getElementById 'js-canvas'
