@@ -31,7 +31,7 @@
           expect(path.style).toBeDefined();
           return expect(div.style).toBeDefined();
         });
-        return it('transforms should be supported', function() {
+        it('transforms should be supported', function() {
           var isTransforms;
           isTransforms = function() {
             var div, i, isProp, prefixes, trS;
@@ -49,6 +49,12 @@
             return false;
           };
           return expect(isTransforms()).toBeTruthy();
+        });
+        return it('HTML el should have offsetWidth/offsetHeight propety', function() {
+          var div;
+          div = document.createElement('div');
+          expect(div.offsetWidth).toBeDefined();
+          return expect(div.offsetHeight).toBeDefined();
         });
       });
       describe('defaults ::', function() {
@@ -111,7 +117,19 @@
           container.style.height = "" + size + "px";
           container.style.position = 'absolute';
           container.style.top = '-100%';
+          container.setAttribute('id', 'js-container');
           document.body.appendChild(container);
+          it('container could be specified by selector or DOM node', function() {
+            var mp;
+            mp = new MotionPath({
+              path: 'M0,0 L500,0',
+              el: div,
+              fill: {
+                container: '#js-container'
+              }
+            });
+            return expect(mp.container instanceof HTMLElement).toBe(true);
+          });
           it('if fill is specified it should have container, fillRule, cSize', function() {
             var mp;
             mp = new MotionPath({
@@ -494,7 +512,7 @@
               return expect(isEquial).toBe(true);
             });
           });
-          return it('should calculate current angle with isReverse', function() {
+          it('should calculate current angle with isReverse', function() {
             var angle, detect, isEquial, isEquial2, mp;
             coords = 'M0,0 L10,0 L10,10';
             angle = 0;
@@ -522,6 +540,54 @@
             }), '', 100);
             return runs(function() {
               return expect(isEquial).toBe(true);
+            });
+          });
+          it('should have transform-origin', function() {
+            var isComplete, mp;
+            coords = 'M0,0 L10,0 L10,10';
+            isComplete = false;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              transformOrigin: '50% 50%',
+              onComplete: function() {
+                return isComplete = true;
+              }
+            });
+            waitsFor((function() {
+              return isComplete;
+            }), '', 100);
+            return runs(function() {
+              return expect(mp.el.style.transformOrigin.length >= 1).toBe(true);
+            });
+          });
+          return it('transform-origin could be a function', function() {
+            var isAngle, isComplete, isProgress, mp;
+            coords = 'M0,0 L10,0 L10,10';
+            isComplete = false;
+            isAngle = false;
+            isProgress = false;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              duration: 50,
+              transformOrigin: function(angle, proc) {
+                var isFunction;
+                isFunction = true;
+                isAngle = angle != null;
+                isProgress = proc != null;
+                return '50% 50%';
+              },
+              onComplete: function() {
+                return isComplete = true;
+              }
+            });
+            waitsFor((function() {
+              return isComplete;
+            }), '', 100);
+            return runs(function() {
+              return expect(isAngle && isProgress).toBe(true);
             });
           });
         });
@@ -573,15 +639,7 @@
           });
         });
         describe('el option ::', function() {
-          it('should have a getEl method', function() {
-            var mp;
-            mp = new MotionPath({
-              path: coords,
-              el: div
-            });
-            return expect(mp.getEl).toBeDefined();
-          });
-          it('getPath should return an el when it was specified by selector', function() {
+          it('should return an el when it was specified by selector', function() {
             var id, mp;
             id = 'js-el';
             div = document.createElement('div');
@@ -592,12 +650,12 @@
               path: coords,
               el: "#" + id
             });
-            expect(mp.getEl() instanceof HTMLElement).toBe(true);
+            expect(mp.el instanceof HTMLElement).toBe(true);
             mp = new MotionPath({
               path: coords,
               el: "." + id
             });
-            return expect(mp.getEl() instanceof HTMLElement).toBe(true);
+            return expect(mp.el instanceof HTMLElement).toBe(true);
           });
           return it('getPath should return an el when an element was passed', function() {
             var mp;
@@ -606,7 +664,7 @@
               path: coords,
               el: div
             });
-            return expect(mp.getEl() instanceof HTMLElement).toBe(true);
+            return expect(mp.el instanceof HTMLElement).toBe(true);
           });
         });
         describe('run ability ::', function() {

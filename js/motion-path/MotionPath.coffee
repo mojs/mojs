@@ -1,13 +1,11 @@
 h = require '../helpers'
 require '../polyfills'
 TWEEN  = require '../vendor/tween'
-resize  = require '../vendor/resize'
+resize = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
 #     on el's resize scaler should recalc
 #     setProgress fun
-#     parse container selector/node?
-#     transform origin
 #   fix ff callbacks
 #   junk?
 
@@ -34,24 +32,24 @@ class MotionPath
     @isAngle    = @o.isAngle or false
     @isReverse  = @o.isReverse or false
     @isRunLess  = @o.isRunLess or false
+    @transformOrigin = @o.transformOrigin
     # callbacks
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
     @onUpdate   = @o.onUpdate
-    @el = @getEl()
+    @el         = @parseEl @o.el
 
     @fill       = @o.fill
     if @fill?
-      @container  = @fill.container
+      @container  = @parseEl @fill.container
       @fillRule   = @fill.fillRule or 'all'
       @cSize =
         width:  @container.offsetWidth  or 0
         height: @container.offsetHeight or 0
 
-  getEl:->
-    if !@o.el then throw new Error 'MotionPath needs an el to be animated'
-    return document.querySelector @o.el if typeof @o.el is 'string'
-    return @o.el if @o.el.style?
+  parseEl:(el)->
+    return document.querySelector el if typeof el is 'string'
+    return el if el instanceof HTMLElement
 
   getPath:->
     if typeof @o.path is 'string'
@@ -120,6 +118,13 @@ class MotionPath
         transform = "translate(#{x}px,#{y}px) #{rotate} translateZ(0)"
         it.el.style["#{h.prefix.js}Transform"] = transform
         it.el.style['transform'] = transform
+        if it.transformOrigin
+          # transform origin could be a function
+          tOrigin = if typeof it.transformOrigin is 'function'
+            it.transformOrigin(it.angle, @p)
+          else it.transformOrigin
+          it.el.style["#{h.prefix.js}TransformOrigin"] = tOrigin
+          it.el.style['transformOrigin'] = tOrigin
         it.onUpdate?.apply @, arguments
       .delay(@delay)
       .yoyo(@yoyo)

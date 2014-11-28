@@ -1221,17 +1221,17 @@ a,
   cursor: pointer;
 }
 .container {
-  width: 200px;
-  height: 200px;
+  width: 800px;
+  height: 800px;
   border: 1px solid #ff69b4;
   position: relative;
 }
 .el {
   background: #ff69b4;
   border-radius: 50%;
-  width: 8px;
-  height: 8px;
-  margin-left: -4px;
+  width: 200px;
+  height: 200px;
+  margin-left: -100px;
   position: absolute;
   top: 0;
   left: 0;

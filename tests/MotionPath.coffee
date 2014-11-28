@@ -39,6 +39,11 @@ document.addEventListener 'DOMContentLoaded', (e)->
           false
         expect(isTransforms()).toBeTruthy()
 
+      it 'HTML el should have offsetWidth/offsetHeight propety', ->
+        div = document.createElement('div')
+        expect(div.offsetWidth).toBeDefined()
+        expect(div.offsetHeight).toBeDefined()
+
     describe 'defaults ::', ->
       el = document.createElement 'div'
       mp = new MotionPath
@@ -98,7 +103,17 @@ document.addEventListener 'DOMContentLoaded', (e)->
         container.style.height = "#{size}px"
         container.style.position = 'absolute'
         container.style.top = '-100%'
+        container.setAttribute 'id', 'js-container'
         document.body.appendChild container
+
+        it 'container could be specified by selector or DOM node', ->
+          mp = new MotionPath
+            path: 'M0,0 L500,0'
+            el: div
+            fill: { container: '#js-container' }
+
+          expect(mp.container instanceof HTMLElement).toBe(true)
+
         it 'if fill is specified it should have container, fillRule, cSize', ->
           mp = new MotionPath
             path: 'M0,0 L500,0'
@@ -359,6 +374,35 @@ document.addEventListener 'DOMContentLoaded', (e)->
           waitsFor((-> isEquial and isEquial2), '', 100)
           runs -> expect(isEquial).toBe(true)
 
+        it 'should have transform-origin', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isComplete = false
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            transformOrigin: '50% 50%'
+            onComplete: -> isComplete = true
+
+          waitsFor((-> isComplete), '', 100)
+          runs -> expect(mp.el.style.transformOrigin.length >= 1).toBe(true)
+
+        it 'transform-origin could be a function', ->
+          coords = 'M0,0 L10,0 L10,10'
+          isComplete = false; isAngle = false; isProgress = false
+          mp = new MotionPath
+            path: coords
+            el: div
+            duration: 50
+            transformOrigin:(angle, proc)->
+              isFunction = true
+              isAngle = angle?; isProgress = proc?
+              '50% 50%'
+            onComplete: -> isComplete = true
+
+          waitsFor((-> isComplete), '', 100)
+          runs -> expect(isAngle and isProgress).toBe(true)
+
       describe 'path option ::', ->
         it 'should have a getPath method', ->
           mp = new MotionPath
@@ -398,12 +442,7 @@ document.addEventListener 'DOMContentLoaded', (e)->
           expect(mp.getPath() instanceof SVGElement).toBe(true)
 
       describe 'el option ::', ->
-        it 'should have a getEl method', ->
-          mp = new MotionPath
-            path: coords
-            el: div
-          expect(mp.getEl).toBeDefined()
-        it 'getPath should return an el when it was specified by selector', ->
+        it 'should return an el when it was specified by selector', ->
           id = 'js-el'
           div = document.createElement 'div'
           div.setAttribute 'id', id
@@ -412,18 +451,18 @@ document.addEventListener 'DOMContentLoaded', (e)->
           mp = new MotionPath
             path: coords
             el: "##{id}"
-          expect(mp.getEl() instanceof HTMLElement).toBe(true)
+          expect(mp.el instanceof HTMLElement).toBe(true)
           mp = new MotionPath
             path: coords
             el: ".#{id}"
-          expect(mp.getEl() instanceof HTMLElement).toBe(true)
+          expect(mp.el instanceof HTMLElement).toBe(true)
 
         it 'getPath should return an el when an element was passed', ->
           div = document.createElement 'div'
           mp = new MotionPath
             path: coords
             el: div
-          expect(mp.getEl() instanceof HTMLElement).toBe(true)
+          expect(mp.el instanceof HTMLElement).toBe(true)
 
       describe 'run ability ::', ->
         it 'should not run with isRunLess option passed', ->

@@ -1709,7 +1709,7 @@ module.exports = (function() {
 
 
 },{"./vendor/tween":18}],14:[function(require,module,exports){
-var Bubble, Burst, Mojs, MotionPath, mojs;
+var Bubble, Burst, Mojs, MotionPath, i, mojs, motionPath;
 
 Bubble = require('./bits/Bubble');
 
@@ -1745,6 +1745,18 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
+
+i = 0;
+
+motionPath = new MotionPath({
+  duration: 10000,
+  path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625',
+  el: document.getElementById('js-el'),
+  fill: {
+    container: document.getElementById('js-container')
+  },
+  isAngle: true
+});
 
 
 
@@ -1788,13 +1800,14 @@ MotionPath = (function() {
     this.isAngle = this.o.isAngle || false;
     this.isReverse = this.o.isReverse || false;
     this.isRunLess = this.o.isRunLess || false;
+    this.transformOrigin = this.o.transformOrigin;
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
-    this.el = this.getEl();
+    this.el = this.parseEl(this.o.el);
     this.fill = this.o.fill;
     if (this.fill != null) {
-      this.container = this.fill.container;
+      this.container = this.parseEl(this.fill.container);
       this.fillRule = this.fill.fillRule || 'all';
       return this.cSize = {
         width: this.container.offsetWidth || 0,
@@ -1803,15 +1816,12 @@ MotionPath = (function() {
     }
   };
 
-  MotionPath.prototype.getEl = function() {
-    if (!this.o.el) {
-      throw new Error('MotionPath needs an el to be animated');
+  MotionPath.prototype.parseEl = function(el) {
+    if (typeof el === 'string') {
+      return document.querySelector(el);
     }
-    if (typeof this.o.el === 'string') {
-      return document.querySelector(this.o.el);
-    }
-    if (this.o.el.style != null) {
-      return this.o.el;
+    if (el instanceof HTMLElement) {
+      return el;
     }
   };
 
@@ -1895,7 +1905,7 @@ MotionPath = (function() {
         return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
       };
     })(this)).onUpdate(function() {
-      var point, prevPoint, rotate, transform, x, x1, x2, y, _ref;
+      var point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y, _ref;
       point = it.path.getPointAtLength(this.len);
       if (it.isAngle || (it.angleOffset != null)) {
         prevPoint = it.path.getPointAtLength(this.len - 1);
@@ -1920,6 +1930,11 @@ MotionPath = (function() {
       transform = "translate(" + x + "px," + y + "px) " + rotate + " translateZ(0)";
       it.el.style["" + h.prefix.js + "Transform"] = transform;
       it.el.style['transform'] = transform;
+      if (it.transformOrigin) {
+        tOrigin = typeof it.transformOrigin === 'function' ? it.transformOrigin(it.angle, this.p) : it.transformOrigin;
+        it.el.style["" + h.prefix.js + "TransformOrigin"] = tOrigin;
+        it.el.style['transformOrigin'] = tOrigin;
+      }
       return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
