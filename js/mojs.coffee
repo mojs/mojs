@@ -25,6 +25,8 @@ window?.mojs = mojs
 #   isAngle: true
 #   easing: 'Exponential.Out'
 #   isRunLess: true
+#   pathStart:  .95
+#   pathEnd:    .15
 
 # setTimeout (=> motionPath.run()), 1000
 

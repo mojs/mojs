@@ -1776,6 +1776,7 @@ MotionPath = (function() {
   }
 
   MotionPath.prototype.vars = function() {
+    var pathEnd, pathStart;
     this.T = TWEEN;
     this.h = h;
     this.resize = resize;
@@ -1791,6 +1792,20 @@ MotionPath = (function() {
     this.isAngle = this.o.isAngle || false;
     this.isReverse = this.o.isReverse || false;
     this.isRunLess = this.o.isRunLess || false;
+    this.pathStart = this.o.pathStart || 0;
+    this.pathEnd = this.o.pathEnd || 1;
+    if (pathStart < 0) {
+      pathStart = 0;
+    }
+    if (pathStart > 1) {
+      pathStart = 1;
+    }
+    if (pathEnd < 0) {
+      pathEnd = 0;
+    }
+    if (pathEnd > 1) {
+      pathEnd = 1;
+    }
     this.isPresetPosition = this.o.isPresetPosition || true;
     this.transformOrigin = this.o.transformOrigin;
     this.onStart = this.o.onStart;
@@ -1879,7 +1894,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.presetPosition = function() {
-    return this.setProgress(0);
+    return this.setProgress(this.pathStart);
   };
 
   MotionPath.prototype.run = function(o) {
@@ -1900,9 +1915,9 @@ MotionPath = (function() {
     this.postVars();
     it = this;
     this.tween = new this.T.Tween({
-      p: 0
+      p: this.pathStart
     }).to({
-      p: 1
+      p: this.pathEnd
     }, this.duration).onStart((function(_this) {
       return function() {
         return typeof _this.onStart === "function" ? _this.onStart() : void 0;

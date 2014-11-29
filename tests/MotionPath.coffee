@@ -434,6 +434,34 @@ document.addEventListener 'DOMContentLoaded', (e)->
           pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
           expect(pos).toBe(50)
 
+      describe 'progress bounds ::', ->
+        it 'should start from pathStart position', ->
+          div = document.createElement 'div'
+          mp = new MotionPath
+            path: 'M0,0 L500,0'
+            el: div
+            isRunLess: true
+            pathStart: .5
+
+          pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+          expect(pos).toBe(250)
+
+        it 'should start from pathEnd position', ->
+          div = document.createElement 'div'
+          pos = -1; isComplete = false
+          mp = new MotionPath
+            path: 'M0,0 L500,0'
+            el: div
+            duration:   50
+            pathEnd:    .5
+            onComplete:->
+              pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+              isComplete = true
+          
+          waitsFor((-> isComplete), '', 100)
+          runs -> expect(pos).toBe(250)
+
+
       describe 'path option ::', ->
         it 'should have a getPath method', ->
           mp = new MotionPath

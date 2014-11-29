@@ -5,7 +5,6 @@ resize = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
 #     on el's resize scaler should recalc
-#     progress bounds
 #   fix ff callbacks
 #   junk?
 
@@ -33,6 +32,12 @@ class MotionPath
     @isAngle    = @o.isAngle or false
     @isReverse  = @o.isReverse or false
     @isRunLess  = @o.isRunLess or false
+    @pathStart  = @o.pathStart or 0
+    @pathEnd    = @o.pathEnd or 1
+    if pathStart < 0 then pathStart = 0
+    if pathStart > 1 then pathStart = 1
+    if pathEnd   < 0 then pathEnd   = 0
+    if pathEnd   > 1 then pathEnd   = 1
     @isPresetPosition = @o.isPresetPosition or true
     @transformOrigin = @o.transformOrigin
     # callbacks
@@ -93,7 +98,7 @@ class MotionPath
       else
         calcBoth()
 
-  presetPosition:-> @setProgress(0)
+  presetPosition:-> @setProgress(@pathStart)
 
   run:(o={})->
     if o.path then @o.path = o.path
@@ -102,7 +107,7 @@ class MotionPath
     o and @extendDefaults o
     @postVars(); it = @
 
-    @tween = new @T.Tween({p:0}).to({p:1}, @duration)
+    @tween = new @T.Tween({p:@pathStart}).to({p:@pathEnd}, @duration)
       .onStart => @onStart?()
       .onComplete => @onComplete?()
       .onUpdate -> it.setProgress @p

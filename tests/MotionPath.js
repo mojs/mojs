@@ -630,6 +630,42 @@
             return expect(pos).toBe(50);
           });
         });
+        describe('progress bounds ::', function() {
+          it('should start from pathStart position', function() {
+            var mp, pos;
+            div = document.createElement('div');
+            mp = new MotionPath({
+              path: 'M0,0 L500,0',
+              el: div,
+              isRunLess: true,
+              pathStart: .5
+            });
+            pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+            return expect(pos).toBe(250);
+          });
+          return it('should start from pathEnd position', function() {
+            var isComplete, mp, pos;
+            div = document.createElement('div');
+            pos = -1;
+            isComplete = false;
+            mp = new MotionPath({
+              path: 'M0,0 L500,0',
+              el: div,
+              duration: 50,
+              pathEnd: .5,
+              onComplete: function() {
+                pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+                return isComplete = true;
+              }
+            });
+            waitsFor((function() {
+              return isComplete;
+            }), '', 100);
+            return runs(function() {
+              return expect(pos).toBe(250);
+            });
+          });
+        });
         describe('path option ::', function() {
           it('should have a getPath method', function() {
             var mp;
