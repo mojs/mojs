@@ -1767,6 +1767,10 @@ MotionPath = (function() {
     this.vars();
     if (!this.isRunLess) {
       this.run();
+    } else {
+      if (this.isPresetPosition) {
+        this.presetPosition();
+      }
     }
     this;
   }
@@ -1787,6 +1791,7 @@ MotionPath = (function() {
     this.isAngle = this.o.isAngle || false;
     this.isReverse = this.o.isReverse || false;
     this.isRunLess = this.o.isRunLess || false;
+    this.isPresetPosition = this.o.isPresetPosition || true;
     this.transformOrigin = this.o.transformOrigin;
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
@@ -1871,6 +1876,10 @@ MotionPath = (function() {
       default:
         return calcBoth();
     }
+  };
+
+  MotionPath.prototype.presetPosition = function() {
+    return this.setProgress(0);
   };
 
   MotionPath.prototype.run = function(o) {

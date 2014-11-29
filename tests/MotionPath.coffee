@@ -402,7 +402,7 @@ document.addEventListener 'DOMContentLoaded', (e)->
           waitsFor((-> isComplete), '', 100)
           runs -> expect(isAngle and isProgress).toBe(true)
 
-      describe 'setProgress function', ->
+      describe 'setProgress function ::', ->
         it 'should have own function for setting up current progress', ->
           div = document.createElement 'div'
           mp = new MotionPath
@@ -413,6 +413,26 @@ document.addEventListener 'DOMContentLoaded', (e)->
           mp.setProgress(.5)
           pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
           expect(pos).toBe(250)
+
+      describe 'preset position ::', ->
+        it 'should preset initial position by default if isRunLess', ->
+          div = document.createElement 'div'
+          mp = new MotionPath
+            path: 'M50,0 L500,0'
+            el: div
+            isRunLess: true
+          pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+          expect(pos).toBe(50)
+
+        it 'should not set initial position if isPresetPosition is false', ->
+          div = document.createElement 'div'
+          mp = new MotionPath
+            path: 'M50,0 L500,0'
+            el: div
+            isRunLess: true
+            isPresetPosition: false
+          pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+          expect(pos).toBe(50)
 
       describe 'path option ::', ->
         it 'should have a getPath method', ->
@@ -505,7 +525,7 @@ document.addEventListener 'DOMContentLoaded', (e)->
           mp.run
             onComplete:-> isComplete = true
             path: 'M0,0 L600,00'
-            
+
           waitsFor((-> isComplete), 'isComplete should be true', 100)
           runs ->
             pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10

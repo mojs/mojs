@@ -5,7 +5,6 @@ resize = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
 #     on el's resize scaler should recalc
-#     preset position
 #     progress bounds
 #   fix ff callbacks
 #   junk?
@@ -15,6 +14,8 @@ class MotionPath
   constructor:(@o={})->
     @vars()
     if !@isRunLess then @run()
+    else
+      if @isPresetPosition then @presetPosition()
     @
 
   vars:->
@@ -32,12 +33,12 @@ class MotionPath
     @isAngle    = @o.isAngle or false
     @isReverse  = @o.isReverse or false
     @isRunLess  = @o.isRunLess or false
+    @isPresetPosition = @o.isPresetPosition or true
     @transformOrigin = @o.transformOrigin
     # callbacks
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
     @onUpdate   = @o.onUpdate
-
     @postVars()
 
   postVars:->
@@ -91,6 +92,8 @@ class MotionPath
         calcHeight(); @scaler.x = @scaler.y
       else
         calcBoth()
+
+  presetPosition:-> @setProgress(0)
 
   run:(o={})->
     if o.path then @o.path = o.path

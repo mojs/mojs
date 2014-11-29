@@ -591,7 +591,7 @@
             });
           });
         });
-        describe('setProgress function', function() {
+        describe('setProgress function ::', function() {
           return it('should have own function for setting up current progress', function() {
             var mp, pos;
             div = document.createElement('div');
@@ -603,6 +603,31 @@
             mp.setProgress(.5);
             pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
             return expect(pos).toBe(250);
+          });
+        });
+        describe('preset position ::', function() {
+          it('should preset initial position by default if isRunLess', function() {
+            var mp, pos;
+            div = document.createElement('div');
+            mp = new MotionPath({
+              path: 'M50,0 L500,0',
+              el: div,
+              isRunLess: true
+            });
+            pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+            return expect(pos).toBe(50);
+          });
+          return it('should not set initial position if isPresetPosition is false', function() {
+            var mp, pos;
+            div = document.createElement('div');
+            mp = new MotionPath({
+              path: 'M50,0 L500,0',
+              el: div,
+              isRunLess: true,
+              isPresetPosition: false
+            });
+            pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+            return expect(pos).toBe(50);
           });
         });
         describe('path option ::', function() {
