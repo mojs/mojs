@@ -1767,10 +1767,8 @@ MotionPath = (function() {
     this.vars();
     if (!this.isRunLess) {
       this.run();
-    } else {
-      if (this.isPresetPosition) {
-        this.presetPosition();
-      }
+    } else if (this.isPresetPosition) {
+      this.presetPosition();
     }
     this;
   }
@@ -1779,6 +1777,7 @@ MotionPath = (function() {
     var pathEnd, pathStart;
     this.T = TWEEN;
     this.h = h;
+    this.getScaler = this.getScaler.bind(this);
     this.resize = resize;
     this.duration = this.o.duration || 1000;
     this.delay = this.o.delay || 0;
@@ -1815,6 +1814,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.postVars = function() {
+    var _ref;
     this.el = this.parseEl(this.o.el);
     this.path = this.getPath();
     this.len = this.path.getTotalLength();
@@ -1822,11 +1822,8 @@ MotionPath = (function() {
     if (this.fill != null) {
       this.container = this.parseEl(this.fill.container);
       this.fillRule = this.fill.fillRule || 'all';
-      this.cSize = {
-        width: this.container.offsetWidth || 0,
-        height: this.container.offsetHeight || 0
-      };
-      return this.getScaler();
+      this.getScaler();
+      return (_ref = this.container) != null ? _ref.addEventListener('onresize', this.getScaler) : void 0;
     }
   };
 
@@ -1857,6 +1854,10 @@ MotionPath = (function() {
 
   MotionPath.prototype.getScaler = function() {
     var calcBoth, calcHeight, calcWidth, end, size, start;
+    this.cSize = {
+      width: this.container.offsetWidth || 0,
+      height: this.container.offsetHeight || 0
+    };
     start = this.path.getPointAtLength(0);
     end = this.path.getPointAtLength(this.len);
     size = {};
@@ -1865,12 +1866,18 @@ MotionPath = (function() {
     this.scaler = {};
     calcWidth = (function(_this) {
       return function() {
-        return _this.scaler.x = _this.cSize.width / size.width || 1;
+        _this.scaler.x = _this.cSize.width / size.width;
+        if (!isFinite(_this.scaler.x)) {
+          return _this.scaler.x = 1;
+        }
       };
     })(this);
     calcHeight = (function(_this) {
       return function() {
-        return _this.scaler.y = _this.cSize.height / size.height || 1;
+        _this.scaler.y = _this.cSize.height / size.height;
+        if (!isFinite(_this.scaler.y)) {
+          return _this.scaler.y = 1;
+        }
       };
     })(this);
     calcBoth = (function(_this) {
@@ -1899,20 +1906,17 @@ MotionPath = (function() {
 
   MotionPath.prototype.run = function(o) {
     var it;
-    if (o == null) {
-      o = {};
-    }
-    if (o.path) {
+    if (o != null ? o.path : void 0) {
       this.o.path = o.path;
     }
-    if (o.el) {
+    if (o != null ? o.el : void 0) {
       this.o.el = o.el;
     }
-    if (o.fill) {
+    if (o != null ? o.fill : void 0) {
       this.o.fill = o.fill;
     }
     o && this.extendDefaults(o);
-    this.postVars();
+    o && this.postVars();
     it = this;
     this.tween = new this.T.Tween({
       p: this.pathStart

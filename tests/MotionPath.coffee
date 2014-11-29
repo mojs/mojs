@@ -171,7 +171,6 @@ document.addEventListener 'DOMContentLoaded', (e)->
             el: div
             duration: 50
             fill: { container: container, fillRule: 'height' }
-            all: true
             onComplete:->
               args = mp.el.style.transform.split /(translate\()|\,|\)/
               width  = parseInt(args[2], 10)
@@ -182,6 +181,35 @@ document.addEventListener 'DOMContentLoaded', (e)->
               isCompleted = true
           waitsFor((-> isCompleted), '', 100)
           runs -> expect(isFilled).toBe(true)
+
+        it 'if container size was changed should recalc scaler', ->
+          isCompleted = false; isSizeChange = false
+          el = document.createElement 'div'
+          c = document.createElement 'div'
+          size = 200
+          c.style.width  = "#{size}px"
+          c.style.height = "#{size}px"
+          c.style.position = 'absolute'
+          c.style.top = '-100%'
+          c.setAttribute 'id', 'js-container2'
+          document.body.appendChild c
+          x = -1
+          mp = new MotionPath
+            path: 'M0,0 L500,0'
+            el: el
+            duration: 50
+            fill: { container: c }
+            isIt: true
+            onUpdate:(proc)->
+              if proc >= .5 and !isSizeChange
+                mp.container.style.width = '100px'
+                isSizeChange = true
+            onComplete:->
+              x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
+              isCompleted = true
+
+          waitsFor((-> isCompleted), '', 100)
+          runs -> expect(parseInt(x, 10)).toBe(100)
 
       coords = 'M0.55859375,593.527344L0.55859375,593.527344'
       describe 'offsets ::', ->
@@ -460,7 +488,6 @@ document.addEventListener 'DOMContentLoaded', (e)->
           
           waitsFor((-> isComplete), '', 100)
           runs -> expect(pos).toBe(250)
-
 
       describe 'path option ::', ->
         it 'should have a getPath method', ->

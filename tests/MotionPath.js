@@ -204,7 +204,7 @@
               return expect(isFilled).toBe(true);
             });
           });
-          return it("if fillRule is \"height\" it should keep container\'s height and set \"width\" with aspect ratio", function() {
+          it("if fillRule is \"height\" it should keep container\'s height and set \"width\" with aspect ratio", function() {
             var isCompleted, isFilled, mp;
             isFilled = false;
             isCompleted = false;
@@ -216,7 +216,6 @@
                 container: container,
                 fillRule: 'height'
               },
-              all: true,
               onComplete: function() {
                 var args, height, isHeight, isWidth, width;
                 args = mp.el.style.transform.split(/(translate\()|\,|\)/);
@@ -233,6 +232,46 @@
             }), '', 100);
             return runs(function() {
               return expect(isFilled).toBe(true);
+            });
+          });
+          return it('if container size was changed should recalc scaler', function() {
+            var c, el, isCompleted, isSizeChange, mp, x;
+            isCompleted = false;
+            isSizeChange = false;
+            el = document.createElement('div');
+            c = document.createElement('div');
+            size = 200;
+            c.style.width = "" + size + "px";
+            c.style.height = "" + size + "px";
+            c.style.position = 'absolute';
+            c.style.top = '-100%';
+            c.setAttribute('id', 'js-container2');
+            document.body.appendChild(c);
+            x = -1;
+            mp = new MotionPath({
+              path: 'M0,0 L500,0',
+              el: el,
+              duration: 50,
+              fill: {
+                container: c
+              },
+              isIt: true,
+              onUpdate: function(proc) {
+                if (proc >= .5 && !isSizeChange) {
+                  mp.container.style.width = '100px';
+                  return isSizeChange = true;
+                }
+              },
+              onComplete: function() {
+                x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
+                return isCompleted = true;
+              }
+            });
+            waitsFor((function() {
+              return isCompleted;
+            }), '', 100);
+            return runs(function() {
+              return expect(parseInt(x, 10)).toBe(100);
             });
           });
         });

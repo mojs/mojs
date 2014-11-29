@@ -5,6 +5,8 @@ resize = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
 #     on el's resize scaler should recalc
+#       fix removeEventListener
+#       add cross browsers' event binder
 #   fix ff callbacks
 #   junk?
 
@@ -13,13 +15,14 @@ class MotionPath
   constructor:(@o={})->
     @vars()
     if !@isRunLess then @run()
-    else
-      if @isPresetPosition then @presetPosition()
+    else if @isPresetPosition then @presetPosition()
+
     @
 
   vars:->
     @T = TWEEN
     @h = h
+    @getScaler = @getScaler.bind(@)
     @resize = resize
     @duration = @o.duration or 1000
     @delay    = @o.delay or 0
@@ -52,13 +55,15 @@ class MotionPath
     @len        = @path.getTotalLength()
     @fill       = @o.fill
     if @fill?
+      # @container?.removeEventListener 'onresize', @getScaler
+      # console.log @container?.anyResizeEventInited
       @container  = @parseEl @fill.container
       @fillRule   = @fill.fillRule or 'all'
-      @cSize =
-        width:  @container.offsetWidth  or 0
-        height: @container.offsetHeight or 0
-
       @getScaler()
+      @container?.addEventListener 'onresize', @getScaler
+      # @container?.removeEventListener 'onresize', @getScaler
+      # @container.anyResizeEventInited = false
+      # console.log @container.anyResizeEventInited
 
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
@@ -75,6 +80,11 @@ class MotionPath
       return @o.path
 
   getScaler:()->
+    # @o.isIt and console.log 'get'
+    @cSize =
+      width:  @container.offsetWidth  or 0
+      height: @container.offsetHeight or 0
+
     start = @path.getPointAtLength 0
     end   = @path.getPointAtLength @len
 
@@ -84,8 +94,12 @@ class MotionPath
 
     @scaler = {}
 
-    calcWidth  = => @scaler.x = @cSize.width/size.width or 1
-    calcHeight = => @scaler.y = @cSize.height/size.height or 1
+    calcWidth  = =>
+      @scaler.x = @cSize.width/size.width
+      if !isFinite(@scaler.x) then @scaler.x = 1
+    calcHeight = =>
+      @scaler.y = @cSize.height/size.height
+      if !isFinite(@scaler.y) then @scaler.y = 1
     calcBoth   = => calcWidth(); calcHeight()
 
     switch @fillRule
@@ -100,12 +114,12 @@ class MotionPath
 
   presetPosition:-> @setProgress(@pathStart)
 
-  run:(o={})->
-    if o.path then @o.path = o.path
-    if o.el then @o.el = o.el
-    if o.fill then @o.fill = o.fill
+  run:(o)->
+    if o?.path then @o.path = o.path
+    if o?.el then @o.el = o.el
+    if o?.fill then @o.fill = o.fill
     o and @extendDefaults o
-    @postVars(); it = @
+    o and @postVars(); it = @
 
     @tween = new @T.Tween({p:@pathStart}).to({p:@pathEnd}, @duration)
       .onStart => @onStart?()
