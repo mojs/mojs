@@ -94,7 +94,6 @@ document.addEventListener 'DOMContentLoaded', (e)->
 
     describe 'functionality ::', ->
       div = document.createElement 'div'
-
       describe 'fill ::', ->
         container = document.createElement 'div'
         div = document.createElement 'div'
@@ -403,6 +402,18 @@ document.addEventListener 'DOMContentLoaded', (e)->
           waitsFor((-> isComplete), '', 100)
           runs -> expect(isAngle and isProgress).toBe(true)
 
+      describe 'setProgress function', ->
+        it 'should have own function for setting up current progress', ->
+          div = document.createElement 'div'
+          mp = new MotionPath
+            path: 'M0,0 L500,0'
+            el: div
+            isRunLess: true
+
+          mp.setProgress(.5)
+          pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+          expect(pos).toBe(250)
+
       describe 'path option ::', ->
         it 'should have a getPath method', ->
           mp = new MotionPath
@@ -480,17 +491,25 @@ document.addEventListener 'DOMContentLoaded', (e)->
           waitsFor((-> isDelayed), 'isDelayed should be true', 100)
           runs -> expect(isStarted).toBe(false)
 
-        it 'run call should modify defaults', ->
+        it 'run call should extend defaults', ->
+          div = document.createElement 'div'
+          coords = 'M0,0 L500,00'
+          isComplete = false
           mp = new MotionPath
             path: coords
             el: div
             isRunLess: true
             duration: 50
+            r: true
 
-          mp.run duration: 100
-
-          expect(mp.duration).toBe(100)
-
+          mp.run
+            onComplete:-> isComplete = true
+            path: 'M0,0 L600,00'
+            
+          waitsFor((-> isComplete), 'isComplete should be true', 100)
+          runs ->
+            pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+            expect(pos).toBe(600)
           
 
       describe 'callbacks ::', ->
@@ -525,15 +544,13 @@ document.addEventListener 'DOMContentLoaded', (e)->
           waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 100)
           runs -> expect(isOnUpdate).toBe(true)
 
-        it 'onUpdate callback should have "p" property', ->
+        it 'onUpdate callback should have "progress" argument', ->
           isOnUpdate = false
           mp = new MotionPath
             path: coords
             el: div
             duration: 5
-            onUpdate:->
-              isOnUpdate = true if @p?
-              isOnUpdate = isOnUpdate and @ isnt mp
+            onUpdate:(progress)-> isOnUpdate = true if progress?
 
           waitsFor((-> isOnUpdate), 'isOnUpdate should be changed to true', 100)
           runs -> expect(isOnUpdate).toBe(true)

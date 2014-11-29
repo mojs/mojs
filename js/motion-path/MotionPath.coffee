@@ -5,7 +5,8 @@ resize = require '../vendor/resize'
 # TODO
 #   add fill to elemement option
 #     on el's resize scaler should recalc
-#     setProgress fun
+#     preset position
+#     progress bounds
 #   fix ff callbacks
 #   junk?
 
@@ -25,7 +26,6 @@ class MotionPath
     @yoyo     = @o.yoyo or false
     @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
     @repeat   = @o.repeat or 0
-    @path     = @getPath()
     @offsetX    = @o.offsetX or 0
     @offsetY    = @o.offsetY or 0
     @angleOffset= @o.angleOffset
@@ -37,8 +37,13 @@ class MotionPath
     @onStart    = @o.onStart
     @onComplete = @o.onComplete
     @onUpdate   = @o.onUpdate
-    @el         = @parseEl @o.el
 
+    @postVars()
+
+  postVars:->
+    @el         = @parseEl @o.el
+    @path       = @getPath()
+    @len        = @path.getTotalLength()
     @fill       = @o.fill
     if @fill?
       @container  = @parseEl @fill.container
@@ -46,6 +51,8 @@ class MotionPath
       @cSize =
         width:  @container.offsetWidth  or 0
         height: @container.offsetHeight or 0
+
+      @getScaler()
 
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
@@ -61,9 +68,9 @@ class MotionPath
     if @o.path.style
       return @o.path
 
-  getScaler:(len)->
+  getScaler:()->
     start = @path.getPointAtLength 0
-    end   = @path.getPointAtLength len
+    end   = @path.getPointAtLength @len
 
     size = {}
     size.width  = if end.x >= start.x then end.x-start.x else start.x-end.x
@@ -85,58 +92,58 @@ class MotionPath
       else
         calcBoth()
 
-
-
   run:(o={})->
-    @extendDefaults o
-    len = @path.getTotalLength(); it = @
-    start = if !@isReverse then 0 else len
-    end   = if !@isReverse then len else 0
-    
-    @fill and @getScaler(len)
-    @tween = new @T.Tween({p:0, len: start}).to({p:1, len:end}, @duration)
+    if o.path then @o.path = o.path
+    if o.el then @o.el = o.el
+    if o.fill then @o.fill = o.fill
+    o and @extendDefaults o
+    @postVars(); it = @
+
+    @tween = new @T.Tween({p:0}).to({p:1}, @duration)
       .onStart => @onStart?()
       .onComplete => @onComplete?()
-      .onUpdate ->
-        point = it.path.getPointAtLength @len
-        
-        if it.isAngle or it.angleOffset?
-          prevPoint = it.path.getPointAtLength @len - 1
-          x1 = point.y - prevPoint.y
-          x2 = point.x - prevPoint.x
-          it.angle = Math.atan(x1/x2)*h.DEG2
-          if (typeof it.angleOffset) isnt 'function'
-            it.angle += it.angleOffset or 0
-          else
-            it.angle = it.angleOffset(it.angle, @p)
-        else it.angle = 0
-        
-        x = point.x + it.offsetX; y = point.y + it.offsetY
-        if it.scaler then x *= it.scaler.x; y *= it.scaler.y
-
-        rotate = if it.angle isnt 0 then "rotate(#{it.angle}deg)" else ''
-        transform = "translate(#{x}px,#{y}px) #{rotate} translateZ(0)"
-        it.el.style["#{h.prefix.js}Transform"] = transform
-        it.el.style['transform'] = transform
-        if it.transformOrigin
-          # transform origin could be a function
-          tOrigin = if typeof it.transformOrigin is 'function'
-            it.transformOrigin(it.angle, @p)
-          else it.transformOrigin
-          it.el.style["#{h.prefix.js}TransformOrigin"] = tOrigin
-          it.el.style['transformOrigin'] = tOrigin
-        it.onUpdate?.apply @, arguments
+      .onUpdate -> it.setProgress @p
       .delay(@delay)
       .yoyo(@yoyo)
       .easing @T.Easing[@easings[0]][@easings[1]]
       .repeat(@repeat-1)
       .start()
-
     h.startAnimationLoop()
+
+  setProgress:(p)->
+    # o and @extendDefaults o
+    len = if !@isReverse then p*@len else (1-p)*@len
+    point = @path.getPointAtLength len
+    if @isAngle or @angleOffset?
+      prevPoint = @path.getPointAtLength len - 1
+      x1 = point.y - prevPoint.y
+      x2 = point.x - prevPoint.x
+      @angle = Math.atan(x1/x2)*h.DEG2
+      if (typeof @angleOffset) isnt 'function'
+        @angle += @angleOffset or 0
+      else
+        @angle = @angleOffset(@angle, p)
+    else @angle = 0
+    
+    x = point.x + @offsetX; y = point.y + @offsetY
+    if @scaler then x *= @scaler.x; y *= @scaler.y
+
+    rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+    transform = "translate(#{x}px,#{y}px) #{rotate} translateZ(0)"
+    @el.style["#{h.prefix.js}Transform"] = transform
+    @el.style['transform'] = transform
+    if @transformOrigin
+      # transform origin could be a function
+      tOrigin = if typeof @transformOrigin is 'function'
+        @transformOrigin(@angle, p)
+      else @transformOrigin
+      @el.style["#{h.prefix.js}TransformOrigin"] = tOrigin
+      @el.style['transformOrigin'] = tOrigin
+    @onUpdate?(p)
 
   extendDefaults:(o)->
     for key, value of o
-      @[key] = value if @[key]?
+      @[key] = value
 
 MotionPath
 

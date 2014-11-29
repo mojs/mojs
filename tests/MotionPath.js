@@ -591,6 +591,20 @@
             });
           });
         });
+        describe('setProgress function', function() {
+          return it('should have own function for setting up current progress', function() {
+            var mp, pos;
+            div = document.createElement('div');
+            mp = new MotionPath({
+              path: 'M0,0 L500,0',
+              el: div,
+              isRunLess: true
+            });
+            mp.setProgress(.5);
+            pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+            return expect(pos).toBe(250);
+          });
+        });
         describe('path option ::', function() {
           it('should have a getPath method', function() {
             var mp;
@@ -692,18 +706,32 @@
               return expect(isStarted).toBe(false);
             });
           });
-          return it('run call should modify defaults', function() {
-            var mp;
+          return it('run call should extend defaults', function() {
+            var isComplete, mp;
+            div = document.createElement('div');
+            coords = 'M0,0 L500,00';
+            isComplete = false;
             mp = new MotionPath({
               path: coords,
               el: div,
               isRunLess: true,
-              duration: 50
+              duration: 50,
+              r: true
             });
             mp.run({
-              duration: 100
+              onComplete: function() {
+                return isComplete = true;
+              },
+              path: 'M0,0 L600,00'
             });
-            return expect(mp.duration).toBe(100);
+            waitsFor((function() {
+              return isComplete;
+            }), 'isComplete should be true', 100);
+            return runs(function() {
+              var pos;
+              pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+              return expect(pos).toBe(600);
+            });
           });
         });
         return describe('callbacks ::', function() {
@@ -760,18 +788,17 @@
               return expect(isOnUpdate).toBe(true);
             });
           });
-          return it('onUpdate callback should have "p" property', function() {
+          return it('onUpdate callback should have "progress" argument', function() {
             var isOnUpdate, mp;
             isOnUpdate = false;
             mp = new MotionPath({
               path: coords,
               el: div,
               duration: 5,
-              onUpdate: function() {
-                if (this.p != null) {
-                  isOnUpdate = true;
+              onUpdate: function(progress) {
+                if (progress != null) {
+                  return isOnUpdate = true;
                 }
-                return isOnUpdate = isOnUpdate && this !== mp;
               }
             });
             waitsFor((function() {

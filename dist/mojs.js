@@ -1709,7 +1709,7 @@ module.exports = (function() {
 
 
 },{"./vendor/tween":18}],14:[function(require,module,exports){
-var Bubble, Burst, Mojs, MotionPath, i, mojs, motionPath;
+var Bubble, Burst, Mojs, MotionPath, mojs;
 
 Bubble = require('./bits/Bubble');
 
@@ -1746,18 +1746,6 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
 
-i = 0;
-
-motionPath = new MotionPath({
-  duration: 10000,
-  path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625',
-  el: document.getElementById('js-el'),
-  fill: {
-    container: document.getElementById('js-container')
-  },
-  isAngle: true
-});
-
 
 
 },{"./bits/Bubble":1,"./bits/Burst":2,"./motion-path/MotionPath":15}],15:[function(require,module,exports){
@@ -1793,7 +1781,6 @@ MotionPath = (function() {
     this.easing = this.o.easing || 'Linear.None';
     this.easings = this.easing.split('.');
     this.repeat = this.o.repeat || 0;
-    this.path = this.getPath();
     this.offsetX = this.o.offsetX || 0;
     this.offsetY = this.o.offsetY || 0;
     this.angleOffset = this.o.angleOffset;
@@ -1804,15 +1791,22 @@ MotionPath = (function() {
     this.onStart = this.o.onStart;
     this.onComplete = this.o.onComplete;
     this.onUpdate = this.o.onUpdate;
+    return this.postVars();
+  };
+
+  MotionPath.prototype.postVars = function() {
     this.el = this.parseEl(this.o.el);
+    this.path = this.getPath();
+    this.len = this.path.getTotalLength();
     this.fill = this.o.fill;
     if (this.fill != null) {
       this.container = this.parseEl(this.fill.container);
       this.fillRule = this.fill.fillRule || 'all';
-      return this.cSize = {
+      this.cSize = {
         width: this.container.offsetWidth || 0,
         height: this.container.offsetHeight || 0
       };
+      return this.getScaler();
     }
   };
 
@@ -1841,10 +1835,10 @@ MotionPath = (function() {
     }
   };
 
-  MotionPath.prototype.getScaler = function(len) {
+  MotionPath.prototype.getScaler = function() {
     var calcBoth, calcHeight, calcWidth, end, size, start;
     start = this.path.getPointAtLength(0);
-    end = this.path.getPointAtLength(len);
+    end = this.path.getPointAtLength(this.len);
     size = {};
     size.width = end.x >= start.x ? end.x - start.x : start.x - end.x;
     size.height = end.y >= start.y ? end.y - start.y : start.y - end.y;
@@ -1880,22 +1874,26 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.run = function(o) {
-    var end, it, len, start;
+    var it;
     if (o == null) {
       o = {};
     }
-    this.extendDefaults(o);
-    len = this.path.getTotalLength();
+    if (o.path) {
+      this.o.path = o.path;
+    }
+    if (o.el) {
+      this.o.el = o.el;
+    }
+    if (o.fill) {
+      this.o.fill = o.fill;
+    }
+    o && this.extendDefaults(o);
+    this.postVars();
     it = this;
-    start = !this.isReverse ? 0 : len;
-    end = !this.isReverse ? len : 0;
-    this.fill && this.getScaler(len);
     this.tween = new this.T.Tween({
-      p: 0,
-      len: start
+      p: 0
     }).to({
-      p: 1,
-      len: end
+      p: 1
     }, this.duration).onStart((function(_this) {
       return function() {
         return typeof _this.onStart === "function" ? _this.onStart() : void 0;
@@ -1905,39 +1903,44 @@ MotionPath = (function() {
         return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
       };
     })(this)).onUpdate(function() {
-      var point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y, _ref;
-      point = it.path.getPointAtLength(this.len);
-      if (it.isAngle || (it.angleOffset != null)) {
-        prevPoint = it.path.getPointAtLength(this.len - 1);
-        x1 = point.y - prevPoint.y;
-        x2 = point.x - prevPoint.x;
-        it.angle = Math.atan(x1 / x2) * h.DEG2;
-        if ((typeof it.angleOffset) !== 'function') {
-          it.angle += it.angleOffset || 0;
-        } else {
-          it.angle = it.angleOffset(it.angle, this.p);
-        }
-      } else {
-        it.angle = 0;
-      }
-      x = point.x + it.offsetX;
-      y = point.y + it.offsetY;
-      if (it.scaler) {
-        x *= it.scaler.x;
-        y *= it.scaler.y;
-      }
-      rotate = it.angle !== 0 ? "rotate(" + it.angle + "deg)" : '';
-      transform = "translate(" + x + "px," + y + "px) " + rotate + " translateZ(0)";
-      it.el.style["" + h.prefix.js + "Transform"] = transform;
-      it.el.style['transform'] = transform;
-      if (it.transformOrigin) {
-        tOrigin = typeof it.transformOrigin === 'function' ? it.transformOrigin(it.angle, this.p) : it.transformOrigin;
-        it.el.style["" + h.prefix.js + "TransformOrigin"] = tOrigin;
-        it.el.style['transformOrigin'] = tOrigin;
-      }
-      return (_ref = it.onUpdate) != null ? _ref.apply(this, arguments) : void 0;
+      return it.setProgress(this.p);
     }).delay(this.delay).yoyo(this.yoyo).easing(this.T.Easing[this.easings[0]][this.easings[1]]).repeat(this.repeat - 1).start();
     return h.startAnimationLoop();
+  };
+
+  MotionPath.prototype.setProgress = function(p) {
+    var len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
+    len = !this.isReverse ? p * this.len : (1 - p) * this.len;
+    point = this.path.getPointAtLength(len);
+    if (this.isAngle || (this.angleOffset != null)) {
+      prevPoint = this.path.getPointAtLength(len - 1);
+      x1 = point.y - prevPoint.y;
+      x2 = point.x - prevPoint.x;
+      this.angle = Math.atan(x1 / x2) * h.DEG2;
+      if ((typeof this.angleOffset) !== 'function') {
+        this.angle += this.angleOffset || 0;
+      } else {
+        this.angle = this.angleOffset(this.angle, p);
+      }
+    } else {
+      this.angle = 0;
+    }
+    x = point.x + this.offsetX;
+    y = point.y + this.offsetY;
+    if (this.scaler) {
+      x *= this.scaler.x;
+      y *= this.scaler.y;
+    }
+    rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
+    transform = "translate(" + x + "px," + y + "px) " + rotate + " translateZ(0)";
+    this.el.style["" + h.prefix.js + "Transform"] = transform;
+    this.el.style['transform'] = transform;
+    if (this.transformOrigin) {
+      tOrigin = typeof this.transformOrigin === 'function' ? this.transformOrigin(this.angle, p) : this.transformOrigin;
+      this.el.style["" + h.prefix.js + "TransformOrigin"] = tOrigin;
+      this.el.style['transformOrigin'] = tOrigin;
+    }
+    return typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0;
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
@@ -1945,11 +1948,7 @@ MotionPath = (function() {
     _results = [];
     for (key in o) {
       value = o[key];
-      if (this[key] != null) {
-        _results.push(this[key] = value);
-      } else {
-        _results.push(void 0);
-      }
+      _results.push(this[key] = value);
     }
     return _results;
   };
