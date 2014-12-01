@@ -26,6 +26,9 @@ document.addEventListener 'DOMContentLoaded', (e)->
         expect(path.style).toBeDefined()
         expect(div.style).toBeDefined()
 
+      it 'have Function::bind defined', ->
+        expect(typeof Function::bind is 'function').toBe(true)
+
       it 'transforms should be supported', ->
         isTransforms = ->
           trS = "transform WebkitTransform MozTransform OTransform msTransform"
@@ -197,18 +200,19 @@ document.addEventListener 'DOMContentLoaded', (e)->
           mp = new MotionPath
             path: 'M0,0 L500,0'
             el: el
-            duration: 50
+            duration: 300
             fill: { container: c }
             isIt: true
             onUpdate:(proc)->
-              if proc >= .5 and !isSizeChange
+              if proc >= .1 and !isSizeChange
                 mp.container.style.width = '100px'
                 isSizeChange = true
+
             onComplete:->
               x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
               isCompleted = true
 
-          waitsFor((-> isCompleted), '', 100)
+          waitsFor((-> isCompleted), '', 400)
           runs -> expect(parseInt(x, 10)).toBe(100)
 
       coords = 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -559,7 +563,6 @@ document.addEventListener 'DOMContentLoaded', (e)->
             isRunLess: true
             duration: 50
             onStart:->
-              console.log 'a'
               isStarted = true
 
           setTimeout (->isDelayed = true), 70

@@ -31,6 +31,9 @@
           expect(path.style).toBeDefined();
           return expect(div.style).toBeDefined();
         });
+        it('have Function::bind defined', function() {
+          return expect(typeof Function.prototype.bind === 'function').toBe(true);
+        });
         it('transforms should be supported', function() {
           var isTransforms;
           isTransforms = function() {
@@ -251,13 +254,13 @@
             mp = new MotionPath({
               path: 'M0,0 L500,0',
               el: el,
-              duration: 50,
+              duration: 300,
               fill: {
                 container: c
               },
               isIt: true,
               onUpdate: function(proc) {
-                if (proc >= .5 && !isSizeChange) {
+                if (proc >= .1 && !isSizeChange) {
                   mp.container.style.width = '100px';
                   return isSizeChange = true;
                 }
@@ -269,7 +272,7 @@
             });
             waitsFor((function() {
               return isCompleted;
-            }), '', 100);
+            }), '', 400);
             return runs(function() {
               return expect(parseInt(x, 10)).toBe(100);
             });
@@ -792,7 +795,6 @@
               isRunLess: true,
               duration: 50,
               onStart: function() {
-                console.log('a');
                 return isStarted = true;
               }
             });

@@ -3,10 +3,6 @@ require '../polyfills'
 TWEEN  = require '../vendor/tween'
 resize = require '../vendor/resize'
 # TODO
-#   add fill to elemement option
-#     on el's resize scaler should recalc
-#       fix removeEventListener
-#       add cross browsers' event binder
 #   fix ff callbacks
 #   junk?
 
@@ -55,15 +51,22 @@ class MotionPath
     @len        = @path.getTotalLength()
     @fill       = @o.fill
     if @fill?
-      # @container?.removeEventListener 'onresize', @getScaler
-      # console.log @container?.anyResizeEventInited
       @container  = @parseEl @fill.container
       @fillRule   = @fill.fillRule or 'all'
       @getScaler()
-      @container?.addEventListener 'onresize', @getScaler
-      # @container?.removeEventListener 'onresize', @getScaler
-      # @container.anyResizeEventInited = false
-      # console.log @container.anyResizeEventInited
+      return if !@container
+      
+      @removeEvent @container, 'onresize', @getScaler
+      @addEvent    @container, 'onresize', @getScaler
+
+  addEvent:(el, type, handler)->
+    # @o.isIt and console.log 'add'
+    if el.addEventListener then @container.addEventListener type, handler
+    else if el.attachEvent then @container.attachEvent type, handler
+
+  removeEvent:(el, type, handler)->
+    if el.removeEventListener then @container.removeEventListener type, handler
+    else if el.detachEvent then @container.detachEvent type, handler
 
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
@@ -100,7 +103,7 @@ class MotionPath
     calcHeight = =>
       @scaler.y = @cSize.height/size.height
       if !isFinite(@scaler.y) then @scaler.y = 1
-    calcBoth   = => calcWidth(); calcHeight()
+    calcBoth   = -> calcWidth(); calcHeight()
 
     switch @fillRule
       when 'all'

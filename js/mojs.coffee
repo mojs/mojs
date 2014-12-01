@@ -16,19 +16,19 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 window?.mojs = mojs
 
-# i = 0
-# motionPath = new MotionPath
-#   duration: 4000
-#   path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625'
-#   el:   document.getElementById('js-el')
-#   fill: container:  document.getElementById('js-container')
-#   isAngle: true
-#   easing: 'Exponential.Out'
-#   isRunLess: true
-#   # pathStart:  .95
-#   # pathEnd:    .15
+i = 0
+motionPath = new MotionPath
+  duration: 4000
+  path: 'M0.55859375,593.527344 C0.55859375,593.527344 -37.2335443,231.85498 148.347656,187.753906 C333.928857,143.652832 762.699219,412.414062 762.699219,412.414062 L1132.85547,1.15625'
+  el:   document.getElementById('js-el')
+  fill: container:  document.getElementById('js-container')
+  isAngle: true
+  easing: 'Exponential.Out'
+  isRunLess: true
+  # pathStart:  .95
+  # pathEnd:    .15
 
-# setTimeout (=> motionPath.run()), 1000
+setTimeout (=> motionPath.run()), 5000
 
 # canvas = document.getElementById 'js-canvas'
 # bubble = new charites.Burst
