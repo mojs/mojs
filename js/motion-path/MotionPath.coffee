@@ -3,6 +3,7 @@ require '../polyfills'
 TWEEN  = require '../vendor/tween'
 resize = require '../vendor/resize'
 # TODO
+#   switch to jasmine 2.0 + add travis ci
 #   fix ff callbacks
 #   junk?
 
