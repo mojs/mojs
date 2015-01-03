@@ -1,14 +1,31 @@
-d = require '../dist/mojs'
+Line = require './line'
+Bit  = require './bit'
 
-class Mojs
-  constructor:->
-    @var = 'var'
-    # @bar = 'tar'
-  method:->
-    @gar = 'mar'
-  method2:->
-    @tar = 'nar'
+svg = document.getElementById 'js-svg'
+console.log svg
 
-mojs = new Mojs
-module.exports = mojs
-window.mojs    = mojs
+line  = new Line
+  ctx: svg
+  x:   100
+  y:   100
+  deg: 90
+# bit   = new Bit ctx: svg
+
+# # line.type = 'circle'
+# console.log bit.type, line.type
+
+# # line = new Line
+
+# class Mojs
+#   constructor:->
+#     @var = 'var'
+#     # @bar = 'tar'
+#   method:->
+#     @gar = 'mar'
+#   method2:->
+#     @tar = 'nar'
+#     line.method()
+
+# mojs           = new Mojs
+# window.mojs    = mojs
+# module.exports = mojs

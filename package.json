@@ -10,6 +10,10 @@
   "private": false,
   "dependencies": {},
   "devDependencies": {
+    "brfs": "^1.2.0",
+    "browserify": "^6.2.0",
+    "browserify-istanbul": "^0.1.2",
+    "browserify-shim": "~3.8.0",
     "coffeeify": "latest",
     "gulp": "latest",
     "gulp-autoprefixer": "0.0.6",
@@ -32,14 +36,11 @@
     "karma": "^0.12.24",
     "karma-browserify": "^2.0.0",
     "karma-chrome-launcher": "^0.1.4",
+    "karma-clear-screen-reporter": "0.0.1",
     "karma-cli": "0.0.4",
     "karma-coverage": "0.2.6",
     "karma-jasmine": "^0.2.0",
     "karma-phantomjs-launcher": "^0.1.4",
-    "browserify-istanbul": "^0.1.2",
-    "brfs": "^1.2.0",
-    "browserify-shim": "~3.8.0",
-    "browserify": "^6.2.0",
     "nodemon": "*"
   }
 }

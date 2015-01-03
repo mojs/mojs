@@ -16,15 +16,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'dist/mojs.js',
+      'dist/**/*.js',
       'spec/**/*.js'
     ],
 
 
     // list of files to exclude
-    // exclude: [
-    //   'dist/any-resize-event.js'
-    // ],
+    exclude: [
+      'dist/mojs.js',
+      'dist/mojs.min.js'
+    ],
 
 
     // preprocess matching files before serving them to the browser
@@ -32,6 +33,10 @@ module.exports = function(config) {
     preprocessors: {
         // 'spec/*.js': 'coverage',
         'dist/*.js': ['browserify']
+    },
+
+    onRunStart: function() {
+        console.log("\u001b[2J\u001b[0;0H");
     },
 
     browserify: {
@@ -46,13 +51,15 @@ module.exports = function(config) {
           {type: 'html', dir:'coverage/'},
           // {type: 'teamcity'},
           {type: 'text-summary'}
+          // {type: 'coverage'},
+          // {type: 'growl'}
         ],
       },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'clear-screen'],
 
 
     // web server port
@@ -74,8 +81,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-    // browsers: ['Chrome'],
+    browsers: ['PhantomJS', 'Chrome'],
 
 
     // Continuous Integration mode
