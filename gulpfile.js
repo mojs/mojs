@@ -20,7 +20,7 @@ var uglify        = require('gulp-uglify');
 var devFolder   = '';
 var distFolder  = '';
 
-var testFiles = [ 'tests/**/*.js' ];
+var testFiles = [ 'spec/**/*.js' ];
 
 var paths = {
   src: {
@@ -30,11 +30,11 @@ var paths = {
     index:    devFolder + 'index.jade',
     partials: devFolder + 'css/partials/**/*.jade',
     templates:devFolder + 'templates/**/*.jade',
-    tests:    distFolder + 'tests/**/*.coffee'
+    tests:    distFolder + 'spec/**/*.coffee'
   },
   dist:{
     js:       distFolder + 'js/',
-    tests:    distFolder + 'tests/',
+    tests:    distFolder + 'spec/',
     css:      distFolder + 'css/',
     kit:      distFolder + 'css/',
     index:    distFolder
@@ -60,20 +60,29 @@ gulp.task('stylus', function(){
 });
 
 
-gulp.task('coffee', function(e){
-  return gulp.src('js/mojs.coffee', { read: false })
-    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-    .pipe(browserify({
-      transform:  ['coffeeify'],
-      extensions: ['.coffee']
-    }))
-    .pipe(rename('mojs.js'))
-    .pipe(gulp.dest('dist/'))
-    .pipe(uglify())
-    .pipe(rename('mojs.min.js'))
-    .pipe(gulp.dest('dist/'))
-    .pipe(livereload())
+// gulp.task('coffee', function(e){
+//   return gulp.src('js/mojs.coffee', { read: false })
+//     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+//     // .pipe(browserify({
+//     //   transform:  ['coffeeify'],
+//     //   extensions: ['.coffee']
+//     // }))
+//     .pipe(coffee({bare: true}))
+//     // .pipe(rename('mojs.js'))
+//     .pipe(gulp.dest('dist/'))
+//     // .pipe(uglify())
+//     // .pipe(rename('mojs.min.js'))
+//     // .pipe(gulp.dest('dist/'))
+//     .pipe(livereload())
 
+// });
+
+gulp.task('coffee', function(e){
+  return gulp.src('js/mojs.coffee')
+    .pipe(plumber())
+    .pipe(coffee({ bare: true }))
+    .pipe(gulp.dest('dist'))
+    .pipe(livereload())
 });
 
 gulp.task('coffee-lint', function(e){
