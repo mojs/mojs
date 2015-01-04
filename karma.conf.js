@@ -35,10 +35,6 @@ module.exports = function(config) {
         'dist/*.js': ['browserify']
     },
 
-    onRunStart: function() {
-        console.log("\u001b[2J\u001b[0;0H");
-    },
-
     browserify: {
       debug: true,
       transform: [ 'brfs', istanbul({
@@ -50,9 +46,10 @@ module.exports = function(config) {
         reporters:[
           {type: 'html', dir:'coverage/'},
           // {type: 'teamcity'},
-          {type: 'text-summary'}
+          {type: 'text-summary'},
           // {type: 'coverage'},
           // {type: 'growl'}
+          {type: 'lcov', subdir: 'lcov-report'}
         ],
       },
 

@@ -8,19 +8,29 @@
     "test": "karma start --single-run"
   },
   "author": {
-    "name":     "LegoMushroom",
-    "email":    "legomushroom@gmail.com",
-    "twitter":  "@legomushroom",
-    "url":      "http://legomushroom.com"
+    "name": "LegoMushroom",
+    "email": "legomushroom@gmail.com",
+    "twitter": "@legomushroom",
+    "url": "http://legomushroom.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/legomushroom/mojs.git" },
-  "keywords": [ "motion", "effects", "animation", "motion graphics" ],
-  "bugs": { "url": "https://github.com/legomushroom/mojs/issues" },
+    "url": "https://github.com/legomushroom/mojs.git"
+  },
+  "keywords": [
+    "motion",
+    "effects",
+    "animation",
+    "motion graphics"
+  ],
+  "bugs": {
+    "url": "https://github.com/legomushroom/mojs/issues"
+  },
   "homepage": "https://github.com/legomushroom/mojs",
   "main": "dis/mojs.min.js",
-  "dependencies": {},
+  "dependencies": {
+    "coveralls": "^2.11.2"
+  },
   "devDependencies": {
     "brfs": "^1.2.0",
     "browserify": "^6.2.0",
