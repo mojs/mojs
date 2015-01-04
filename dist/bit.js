@@ -61,7 +61,7 @@ Bit = (function() {
   Bit.prototype.render = function() {
     this.isRendered = true;
     this.el = document.createElementNS(this.ns, 'line');
-    this.draw();
+    !this.o.isDrawLess && this.draw();
     return this.ctx.appendChild(this.el);
   };
 

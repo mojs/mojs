@@ -1,6 +1,6 @@
 Bit   = mojs.Bit
 ns    = 'http://www.w3.org/2000/svg'
-svg   = document.createElementNS?(ns, "svg")
+svg   = document.createElementNS?(ns, 'svg')
 bit   = new Bit ctx: svg
 describe 'Bit', ->
   describe 'context', ->
@@ -18,9 +18,26 @@ describe 'Bit', ->
     it 'should call render method on init', ->
       expect(bit.isRendered).toBe(true)
     it 'should add self to context', ->
-      svg     = document.createElementNS?(ns, "svg")
+      svg     = document.createElementNS?(ns, 'svg')
       bit     = new Bit ctx: svg
       expect(svg.firstChild).toBeTruthy()
+    it 'should run draw method', ->
+      svg     = document.createElementNS?(ns, 'svg')
+      bit     = new Bit ctx: svg
+      spyOn bit, 'draw'
+      bit.render()
+      expect(bit.draw).toHaveBeenCalled()
+
+    it 'should not run draw method if isDrawLess option passed', ->
+      svg     = document.createElementNS?(ns, 'svg')
+      bit     = new Bit
+        ctx:        svg
+        isDrawLess: true
+      spyOn bit, 'draw'
+      bit.render()
+      expect(bit.draw).not.toHaveBeenCalled()
+
+
   describe 'setAttr method', ->
     it 'should have setAttr method', ->
       expect(bit.setAttr).toBeDefined()

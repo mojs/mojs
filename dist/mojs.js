@@ -62,7 +62,7 @@ Bit = (function() {
   Bit.prototype.render = function() {
     this.isRendered = true;
     this.el = document.createElementNS(this.ns, 'line');
-    this.draw();
+    !this.o.isDrawLess && this.draw();
     return this.ctx.appendChild(this.el);
   };
 
@@ -172,8 +172,11 @@ line = new Line({
   ctx: svg,
   x: 100,
   y: 100,
-  deg: 90
+  deg: 90,
+  isDrawLess: true
 });
+
+line.draw();
 
 
 

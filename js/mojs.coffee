@@ -9,6 +9,9 @@ line  = new Line
   x:   100
   y:   100
   deg: 90
+  isDrawLess: true
+
+line.draw()
 # bit   = new Bit ctx: svg
 
 # # line.type = 'circle'

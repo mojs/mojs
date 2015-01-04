@@ -35,7 +35,7 @@ class Bit
   render:->
     @isRendered = true
     @el = document.createElementNS @ns, 'line'
-    @draw()
+    !@o.isDrawLess and @draw()
     @ctx.appendChild @el
   draw:->
 

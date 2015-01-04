@@ -5,7 +5,7 @@
 
   ns = 'http://www.w3.org/2000/svg';
 
-  svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
+  svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
 
   bit = new Bit({
     ctx: svg
@@ -41,12 +41,31 @@
       it('should call render method on init', function() {
         return expect(bit.isRendered).toBe(true);
       });
-      return it('should add self to context', function() {
-        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
+      it('should add self to context', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
           ctx: svg
         });
         return expect(svg.firstChild).toBeTruthy();
+      });
+      it('should run draw method', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg
+        });
+        spyOn(bit, 'draw');
+        bit.render();
+        return expect(bit.draw).toHaveBeenCalled();
+      });
+      return it('should not run draw method if isDrawLess option passed', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          isDrawLess: true
+        });
+        spyOn(bit, 'draw');
+        bit.render();
+        return expect(bit.draw).not.toHaveBeenCalled();
       });
     });
     describe('setAttr method', function() {
