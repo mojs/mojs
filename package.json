@@ -1,13 +1,25 @@
 {
-  "name": "gradient-name",
+  "name": "mojs",
+  "description": "motion graphics toolbelt for the web",
   "version": "0.2.1",
   "license": "MIT",
-  "author": {
-    "name": "LegoMushroom",
-    "email": "legomushroom@gmail.com",
-    "url": "http://legomushroom.com"
-  },
   "private": false,
+  "scripts": {
+    "test": "karma start --single-run"
+  },
+  "author": {
+    "name":     "LegoMushroom",
+    "email":    "legomushroom@gmail.com",
+    "twitter":  "@legomushroom",
+    "url":      "http://legomushroom.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/legomushroom/mojs.git" },
+  "keywords": [ "motion", "effects", "animation", "motion graphics" ],
+  "bugs": { "url": "https://github.com/legomushroom/mojs/issues" },
+  "homepage": "https://github.com/legomushroom/mojs",
+  "main": "dis/mojs.min.js",
   "dependencies": {},
   "devDependencies": {
     "brfs": "^1.2.0",
