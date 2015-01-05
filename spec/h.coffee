@@ -1,10 +1,6 @@
 h  = mojs.helpers
 
-describe 'Triangle ->', ->
-
-  it 'should have stylePropsMap', ->
-    expect(h.stylePropsMap).toBeDefined()
-
+describe 'Helpers ->', ->
   describe 'methods ->', ->
     describe 'getRadialPoint', ->
       it 'should calculate radial point', ->

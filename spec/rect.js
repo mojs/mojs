@@ -29,12 +29,12 @@
           x: 50,
           y: 100
         });
-        width = rect.el.style['width'];
-        height = rect.el.style['height'];
+        width = rect.el.getAttribute('width');
+        height = rect.el.getAttribute('height');
         x = rect.el.getAttribute('x');
         y = rect.el.getAttribute('y');
-        expect(width).toBe('40px');
-        expect(height).toBe('40px');
+        expect(width).toBe('40');
+        expect(height).toBe('40');
         expect(x).toBe('30');
         return expect(y).toBe('80');
       });

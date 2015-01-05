@@ -70,7 +70,7 @@
     });
     describe('draw method ->', function() {
       return it('should set presentations attributes', function() {
-        var transform;
+        var fill, stroke, strokeDasharray, strokeOffset, strokeWidth, transform;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
           ctx: svg,
@@ -81,9 +81,18 @@
           strokeDashoffset: 50,
           deg: 45
         });
+        stroke = bit.el.getAttribute('stroke');
+        strokeWidth = bit.el.getAttribute('stroke-width');
+        fill = bit.el.getAttribute('fill');
+        strokeDasharray = bit.el.getAttribute('stroke-dasharray');
+        strokeOffset = bit.el.getAttribute('stroke-dashoffset');
         transform = bit.el.getAttribute('transform');
-        expect(transform).toBe('rotate(45, 0, 0)');
-        return expect(bit.el.style.stroke).toBe('#00ff00');
+        expect(stroke).toBe('#0f0');
+        expect(strokeWidth).toBe('3');
+        expect(fill).toBe('#0ff');
+        expect(strokeDasharray).toBe('100');
+        expect(strokeOffset).toBe('50');
+        return expect(transform).toBe('rotate(45, 0, 0)');
       });
     });
     describe('setAttr method', function() {
@@ -101,15 +110,15 @@
           stroke: '#f0f',
           fill: '#0f0'
         });
-        expect(bit.el.style['stroke']).toBe('#ff00ff');
-        return expect(bit.el.style['fill']).toBe('#00ff00');
+        expect(bit.el.getAttribute('stroke')).toBe('#f0f');
+        return expect(bit.el.getAttribute('fill')).toBe('#0f0');
       });
       return it('should work with camelCase attribute names', function() {
         bit.el = typeof document.createElementNS === "function" ? document.createElementNS(ns, "rect") : void 0;
         bit.setAttr({
           strokeWidth: 2
         });
-        return expect(bit.el.style['stroke-width']).toBe('2px');
+        return expect(bit.el.getAttribute('stroke-width')).toBe('2');
       });
     });
     describe('defaults and options', function() {

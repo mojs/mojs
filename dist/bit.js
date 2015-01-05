@@ -47,17 +47,13 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, keySnake, val, _results;
+    var key, val, _results;
     if (typeof attr === 'object') {
       _results = [];
       for (key in attr) {
         val = attr[key];
-        keySnake = key.split(/(?=[A-Z])/).join('-').toLowerCase();
-        if (h.stylePropsMap[key]) {
-          _results.push((value || this.el).style[keySnake] = val);
-        } else {
-          _results.push((value || this.el).setAttribute(keySnake, val));
-        }
+        key = key.split(/(?=[A-Z])/).join('-').toLowerCase();
+        _results.push((value || this.el).setAttribute(key, val));
       }
       return _results;
     } else {

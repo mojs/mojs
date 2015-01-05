@@ -31,10 +31,8 @@ class Bit
     if typeof attr is 'object'
       for key, val of attr
         # handle camelCase
-        keySnake = key.split(/(?=[A-Z])/).join('-').toLowerCase()
-
-        if h.stylePropsMap[key] then (value or @el).style[keySnake] = val
-        else (value or @el).setAttribute keySnake, val
+        key = key.split(/(?=[A-Z])/).join('-').toLowerCase()
+        (value or @el).setAttribute key, val
     else @el.setAttribute attr, value
   render:->
     @isRendered = true
@@ -49,7 +47,6 @@ class Bit
       strokeDashoffset: @props.strokeDashoffset
       fill:             @props.fill
       transform:        @props.transform
-
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

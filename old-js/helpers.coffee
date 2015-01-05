@@ -3,12 +3,12 @@ TWEEN  = require './vendor/tween'
 class Helpers
   pixel: 2
   # SHORTCUTS
-  doc:  document
-  body: document.body
-  deg: Math.PI/180
-  DEG: Math.PI/180
-  DEG2: 180/Math.PI
-  s: 1
+  doc:    document
+  body:   document.body
+  deg:    Math.PI/180
+  DEG:    Math.PI/180
+  DEG2:   180/Math.PI
+  s:      1
 
   time:(time)-> time*@s
 

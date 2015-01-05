@@ -3,10 +3,7 @@
 
   h = mojs.helpers;
 
-  describe('Triangle ->', function() {
-    it('should have stylePropsMap', function() {
-      return expect(h.stylePropsMap).toBeDefined();
-    });
+  describe('Helpers ->', function() {
     return describe('methods ->', function() {
       return describe('getRadialPoint', function() {
         it('should calculate radial point', function() {

@@ -48,17 +48,13 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, keySnake, val, _results;
+    var key, val, _results;
     if (typeof attr === 'object') {
       _results = [];
       for (key in attr) {
         val = attr[key];
-        keySnake = key.split(/(?=[A-Z])/).join('-').toLowerCase();
-        if (h.stylePropsMap[key]) {
-          _results.push((value || this.el).style[keySnake] = val);
-        } else {
-          _results.push((value || this.el).setAttribute(keySnake, val));
-        }
+        key = key.split(/(?=[A-Z])/).join('-').toLowerCase();
+        _results.push((value || this.el).setAttribute(key, val));
       }
       return _results;
     } else {
@@ -260,18 +256,6 @@ Helpers = (function() {
       x: o.center.x + (Math.cos(radAngle) * o.radius),
       y: o.center.y + (Math.sin(radAngle) * o.radius)
     };
-  };
-
-  Helpers.prototype.stylePropsMap = {
-    fill: 1,
-    fillOpacity: 1,
-    opacity: 1,
-    stroke: 1,
-    strokeWidth: 1,
-    strokeDasharray: 1,
-    strokeOffset: 1,
-    strokeLinejoin: 1,
-    strokeLinecap: 1
   };
 
   return Helpers;
