@@ -68,6 +68,33 @@
         return expect(bit.draw).not.toHaveBeenCalled();
       });
     });
+    describe('draw method ->', function() {
+      return it('should set presentations attributes', function() {
+        var fill, stroke, strokeDasharray, strokeOffset, strokeWidth, transform;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          stroke: '#0f0',
+          strokeWidth: 3,
+          fill: '#0ff',
+          strokeDasharray: 100,
+          strokeDashoffset: 50,
+          deg: 45
+        });
+        stroke = bit.el.getAttribute('stroke');
+        strokeWidth = bit.el.getAttribute('stroke-width');
+        fill = bit.el.getAttribute('fill');
+        strokeDasharray = bit.el.getAttribute('stroke-dasharray');
+        strokeOffset = bit.el.getAttribute('stroke-dashoffset');
+        transform = bit.el.getAttribute('transform');
+        expect(stroke).toBe('#0f0');
+        expect(strokeWidth).toBe('3');
+        expect(fill).toBe('#0ff');
+        expect(strokeDasharray).toBe('100');
+        expect(strokeOffset).toBe('50');
+        return expect(transform).toBe('rotate(45, 0, 0)');
+      });
+    });
     describe('setAttr method', function() {
       it('should have setAttr method', function() {
         return expect(bit.setAttr).toBeDefined();
@@ -123,19 +150,12 @@
       });
     });
     return describe('calculations', function() {
-      it('should calculate center points', function() {
-        bit = new Bit({
-          ctx: svg
-        });
-        expect(bit.props.cX).toBe(-50);
-        return expect(bit.props.cY).toBe(-50);
-      });
       return it('should calculate transform object', function() {
         bit = new Bit({
           ctx: svg,
           deg: 90
         });
-        return expect(bit.props.transform).toBe('translate(-50, -50) rotate(90, -50, -50)');
+        return expect(bit.props.transform).toBe('rotate(90, 0, 0)');
       });
     });
   });

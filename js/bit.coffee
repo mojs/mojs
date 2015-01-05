@@ -2,13 +2,17 @@ class Bit
   ns: 'http://www.w3.org/2000/svg'
   type: 'line'
   defaults:
-    radius:      50
-    strokeWidth: 2
-    strokeColor: 'hotpink'
-    fillColor:   'deeppink'
-    x:    0
-    y:    0
-    deg:  0
+    radius:             50
+    radiusX:            null
+    radiusY:            null
+    strokeWidth:        2
+    stroke:             'hotpink'
+    fill:               'transparent'
+    strokeDasharray:    ''
+    strokeDashoffset:   ''
+    x:                  0
+    y:                  0
+    deg:                0
   constructor:(@o={})-> @vars(); @render()
   vars:->
     if @o.ctx and @o.ctx.tagName is 'svg' then @ctx = @o.ctx
@@ -18,26 +22,29 @@ class Bit
     for key, value of @defaults
       @props[key] = @o[key] or value
 
-    @props.cX = @props.x - @props.radius
-    @props.cY = @props.y - @props.radius
-
-    translate = "translate(#{@props.cX}, #{@props.cY})"
-    rotate    = "rotate(#{@props.deg}, #{@props.cX}, #{@props.cY})"
-    @props.transform = "#{translate} #{rotate}"
+    rotate    = "rotate(#{@props.deg}, #{@props.x}, #{@props.y})"
+    @props.transform = "#{rotate}"
 
   setAttr:(attr, value)->
     if typeof attr is 'object'
-      for key, value of attr
+      for key, val of attr
         # handle camelCase
         key = key.split(/(?=[A-Z])/).join('-').toLowerCase()
-        @el.setAttribute key, value
+        (value or @el).setAttribute key, val
     else @el.setAttribute attr, value
   render:->
     @isRendered = true
-    @el = document.createElementNS @ns, 'line'
+    @el = document.createElementNS @ns, @type or 'line'
     !@o.isDrawLess and @draw()
     @ctx.appendChild @el
   draw:->
+    @setAttr
+      stroke:           @props.stroke
+      strokeWidth:      @props.strokeWidth
+      strokeDasharray:  @props.strokeDasharray
+      strokeDashoffset: @props.strokeDashoffset
+      fill:             @props.fill
+      transform:        @props.transform
 
 
 ### istanbul ignore next ###

@@ -11,7 +11,6 @@ describe 'Bit', ->
   describe 'methods', ->
     it 'should have vars method', ->
       expect(bit.vars).toBeDefined()
-
   describe 'render method', ->
     it 'should have render method', ->
       expect(bit.render).toBeDefined()
@@ -27,7 +26,6 @@ describe 'Bit', ->
       spyOn bit, 'draw'
       bit.render()
       expect(bit.draw).toHaveBeenCalled()
-
     it 'should not run draw method if isDrawLess option passed', ->
       svg     = document.createElementNS?(ns, 'svg')
       bit     = new Bit
@@ -37,6 +35,29 @@ describe 'Bit', ->
       bit.render()
       expect(bit.draw).not.toHaveBeenCalled()
 
+  describe 'draw method ->', ->
+    it 'should set presentations attributes', ->
+      svg     = document.createElementNS?(ns, 'svg')
+      bit     = new Bit
+        ctx: svg
+        stroke:               '#0f0'
+        strokeWidth:          3
+        fill:                 '#0ff'
+        strokeDasharray:      100
+        strokeDashoffset:     50
+        deg:                  45
+      stroke          = bit.el.getAttribute 'stroke'
+      strokeWidth     = bit.el.getAttribute 'stroke-width'
+      fill            = bit.el.getAttribute 'fill'
+      strokeDasharray = bit.el.getAttribute 'stroke-dasharray'
+      strokeOffset    = bit.el.getAttribute 'stroke-dashoffset'
+      transform       = bit.el.getAttribute 'transform'
+      expect(stroke)          .toBe   '#0f0'
+      expect(strokeWidth)     .toBe   '3'
+      expect(fill)            .toBe   '#0ff'
+      expect(strokeDasharray) .toBe   '100'
+      expect(strokeOffset)    .toBe   '50'
+      expect(transform)       .toBe   'rotate(45, 0, 0)'
 
   describe 'setAttr method', ->
     it 'should have setAttr method', ->
@@ -74,16 +95,11 @@ describe 'Bit', ->
       expect(bit.ns).toBe 'http://www.w3.org/2000/svg'
     it 'should have type object', ->
       expect(bit.type).toBeDefined()
-
   describe 'calculations', ->
-    it 'should calculate center points', ->
-      bit = new Bit ctx: svg
-      expect(bit.props.cX).toBe(-50)
-      expect(bit.props.cY).toBe(-50)
     it 'should calculate transform object', ->
       bit = new Bit
         ctx: svg
         deg: 90
-      expect(bit.props.transform).toBe('translate(-50, -50) rotate(90, -50, -50)')
+      expect(bit.props.transform).toBe('rotate(90, 0, 0)')
 
 

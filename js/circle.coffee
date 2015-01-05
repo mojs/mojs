@@ -2,22 +2,23 @@
 ### istanbul ignore next ###
 
 Bit = require './bit'
-# Bit = mojs.Bit
-class Line extends Bit
+
+class Circle extends Bit
+  type: 'ellipse'
   draw:->
     super
     @setAttr
-      x1:  @props.x - @props.radius
-      x2:  @props.x + @props.radius
-      y1:  @props.y
-      y2:  @props.y
+      rx:  @props.radiusX or @props.radius
+      ry:  @props.radiusY or @props.radius
+      cx:  @props.x
+      cy:  @props.y
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
-  define "Line", [], -> Line
+  define "Circle", [], -> Circle
 if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Line
+  module.exports = Circle
 ### istanbul ignore next ###
 window?.mojs ?= {}
-window?.mojs.Line = Line
+window?.mojs.Circle = Circle
 

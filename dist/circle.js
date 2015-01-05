@@ -1,29 +1,31 @@
 
 /* istanbul ignore next */
-var Bit, Line,
+var Bit, Circle,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Bit = require('./bit');
 
-Line = (function(_super) {
-  __extends(Line, _super);
+Circle = (function(_super) {
+  __extends(Circle, _super);
 
-  function Line() {
-    return Line.__super__.constructor.apply(this, arguments);
+  function Circle() {
+    return Circle.__super__.constructor.apply(this, arguments);
   }
 
-  Line.prototype.draw = function() {
-    Line.__super__.draw.apply(this, arguments);
+  Circle.prototype.type = 'ellipse';
+
+  Circle.prototype.draw = function() {
+    Circle.__super__.draw.apply(this, arguments);
     return this.setAttr({
-      x1: this.props.x - this.props.radius,
-      x2: this.props.x + this.props.radius,
-      y1: this.props.y,
-      y2: this.props.y
+      rx: this.props.radiusX || this.props.radius,
+      ry: this.props.radiusY || this.props.radius,
+      cx: this.props.x,
+      cy: this.props.y
     });
   };
 
-  return Line;
+  return Circle;
 
 })(Bit);
 
@@ -31,13 +33,13 @@ Line = (function(_super) {
 /* istanbul ignore next */
 
 if ((typeof define === "function") && define.amd) {
-  define("Line", [], function() {
-    return Line;
+  define("Circle", [], function() {
+    return Circle;
   });
 }
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Line;
+  module.exports = Circle;
 }
 
 
@@ -50,5 +52,5 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Line = Line;
+  window.mojs.Circle = Circle;
 }

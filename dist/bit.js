@@ -7,9 +7,13 @@ Bit = (function() {
 
   Bit.prototype.defaults = {
     radius: 50,
+    radiusX: null,
+    radiusY: null,
     strokeWidth: 2,
-    strokeColor: 'hotpink',
-    fillColor: 'deeppink',
+    stroke: 'hotpink',
+    fill: 'transparent',
+    strokeDasharray: '',
+    strokeDashoffset: '',
     x: 0,
     y: 0,
     deg: 0
@@ -22,7 +26,7 @@ Bit = (function() {
   }
 
   Bit.prototype.vars = function() {
-    var key, rotate, translate, value, _ref;
+    var key, rotate, value, _ref;
     if (this.o.ctx && this.o.ctx.tagName === 'svg') {
       this.ctx = this.o.ctx;
     } else {
@@ -36,21 +40,18 @@ Bit = (function() {
       value = _ref[key];
       this.props[key] = this.o[key] || value;
     }
-    this.props.cX = this.props.x - this.props.radius;
-    this.props.cY = this.props.y - this.props.radius;
-    translate = "translate(" + this.props.cX + ", " + this.props.cY + ")";
-    rotate = "rotate(" + this.props.deg + ", " + this.props.cX + ", " + this.props.cY + ")";
-    return this.props.transform = "" + translate + " " + rotate;
+    rotate = "rotate(" + this.props.deg + ", " + this.props.x + ", " + this.props.y + ")";
+    return this.props.transform = "" + rotate;
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, _results;
+    var key, val, _results;
     if (typeof attr === 'object') {
       _results = [];
       for (key in attr) {
-        value = attr[key];
+        val = attr[key];
         key = key.split(/(?=[A-Z])/).join('-').toLowerCase();
-        _results.push(this.el.setAttribute(key, value));
+        _results.push((value || this.el).setAttribute(key, val));
       }
       return _results;
     } else {
@@ -60,12 +61,21 @@ Bit = (function() {
 
   Bit.prototype.render = function() {
     this.isRendered = true;
-    this.el = document.createElementNS(this.ns, 'line');
+    this.el = document.createElementNS(this.ns, this.type || 'line');
     !this.o.isDrawLess && this.draw();
     return this.ctx.appendChild(this.el);
   };
 
-  Bit.prototype.draw = function() {};
+  Bit.prototype.draw = function() {
+    return this.setAttr({
+      stroke: this.props.stroke,
+      strokeWidth: this.props.strokeWidth,
+      strokeDasharray: this.props.strokeDasharray,
+      strokeDashoffset: this.props.strokeDashoffset,
+      fill: this.props.fill,
+      transform: this.props.transform
+    });
+  };
 
   return Bit;
 

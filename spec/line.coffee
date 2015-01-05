@@ -1,4 +1,3 @@
-# console.log mojs.Line
 Line  = mojs.Line
 Bit   = mojs.Bit
 ns    = 'http://www.w3.org/2000/svg'
@@ -15,9 +14,6 @@ describe 'Line', ->
 
   describe 'methods ->', ->
     describe 'draw method ->', ->
-      it 'should have draw method', ->
-        expect(line.draw).toBeDefined()
-
       it 'should add properties to el', ->
         svg     = document.createElementNS?(ns, "svg")
         line     = new Line
@@ -27,5 +23,11 @@ describe 'Line', ->
         attr2 = parseInt line.el.getAttribute('x2'), 10
         delta = attr2 - attr1
         expect(delta).toBe(40)
+      it 'should call super method', ->
+        svg     = document.createElementNS?(ns, "svg")
+        line     = new Line ctx: svg
+        spyOn(Line.__super__, 'draw')
+        line.draw()
+        expect(Line.__super__.draw).toHaveBeenCalled()
 
 

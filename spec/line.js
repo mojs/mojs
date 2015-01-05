@@ -29,10 +29,7 @@
     });
     return describe('methods ->', function() {
       return describe('draw method ->', function() {
-        it('should have draw method', function() {
-          return expect(line.draw).toBeDefined();
-        });
-        return it('should add properties to el', function() {
+        it('should add properties to el', function() {
           var attr1, attr2, delta;
           svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
           line = new Line({
@@ -43,6 +40,15 @@
           attr2 = parseInt(line.el.getAttribute('x2'), 10);
           delta = attr2 - attr1;
           return expect(delta).toBe(40);
+        });
+        return it('should call super method', function() {
+          svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
+          line = new Line({
+            ctx: svg
+          });
+          spyOn(Line.__super__, 'draw');
+          line.draw();
+          return expect(Line.__super__.draw).toHaveBeenCalled();
         });
       });
     });

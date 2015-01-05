@@ -2,22 +2,25 @@
 ### istanbul ignore next ###
 
 Bit = require './bit'
-# Bit = mojs.Bit
-class Line extends Bit
+
+class Rect extends Bit
+  type: 'rect'
   draw:->
     super
+    rad2 = 2*@props.radius
     @setAttr
-      x1:  @props.x - @props.radius
-      x2:  @props.x + @props.radius
-      y1:  @props.y
-      y2:  @props.y
+      width:  rad2
+      height: rad2
+      x:      @props.x - @props.radius
+      y:      @props.y - @props.radius
+
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
-  define "Line", [], -> Line
+  define "Rect", [], -> Rect
 if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Line
+  module.exports = Rect
 ### istanbul ignore next ###
 window?.mojs ?= {}
-window?.mojs.Line = Line
+window?.mojs.Rect = Rect
 

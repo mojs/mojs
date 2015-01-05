@@ -1,17 +1,17 @@
-Line = require './line'
-Bit  = require './bit'
+Cross     = require './cross'
+Circle    = require './circle'
+Triangle  = require './triangle'
+Rect      = require './rect'
+Line      = require './line'
+Bit       = require './bit'
+svg       = document.getElementById 'js-svg'
 
-svg = document.getElementById 'js-svg'
-console.log svg
+rect = new Rect
+  ctx:  svg
+  x:    100
+  y:    100
+  deg:  45
 
-line  = new Line
-  ctx: svg
-  x:   100
-  y:   100
-  deg: 90
-  isDrawLess: true
-
-line.draw()
 # bit   = new Bit ctx: svg
 
 # # line.type = 'circle'
