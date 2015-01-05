@@ -13,7 +13,7 @@
     ctx: svg
   });
 
-  describe('Triangle ->', function() {
+  describe('Rect ->', function() {
     describe('defaults ->', function() {
       return it('should have type of "rect"', function() {
         return expect(rect.type).toBe('rect');
@@ -29,12 +29,12 @@
           x: 50,
           y: 100
         });
-        width = rect.el.getAttribute('width');
-        height = rect.el.getAttribute('height');
+        width = rect.el.style['width'];
+        height = rect.el.style['height'];
         x = rect.el.getAttribute('x');
         y = rect.el.getAttribute('y');
-        expect(width).toBe('40');
-        expect(height).toBe('40');
+        expect(width).toBe('40px');
+        expect(height).toBe('40px');
         expect(x).toBe('30');
         return expect(y).toBe('80');
       });

@@ -17,14 +17,16 @@ Rect = (function(_super) {
 
   Rect.prototype.draw = function() {
     var rad2;
+    console.time('draw');
     Rect.__super__.draw.apply(this, arguments);
     rad2 = 2 * this.props.radius;
-    return this.setAttr({
+    this.setAttr({
       width: rad2,
       height: rad2,
       x: this.props.x - this.props.radius,
       y: this.props.y - this.props.radius
     });
+    return console.timeEnd('draw');
   };
 
   return Rect;

@@ -1,4 +1,6 @@
-var Bit;
+var Bit, h;
+
+h = require('./h');
 
 Bit = (function() {
   Bit.prototype.ns = 'http://www.w3.org/2000/svg';
@@ -45,13 +47,17 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, val, _results;
+    var key, keySnake, val, _results;
     if (typeof attr === 'object') {
       _results = [];
       for (key in attr) {
         val = attr[key];
-        key = key.split(/(?=[A-Z])/).join('-').toLowerCase();
-        _results.push((value || this.el).setAttribute(key, val));
+        keySnake = key.split(/(?=[A-Z])/).join('-').toLowerCase();
+        if (h.stylePropsMap[key]) {
+          _results.push((value || this.el).style[keySnake] = val);
+        } else {
+          _results.push((value || this.el).setAttribute(keySnake, val));
+        }
       }
       return _results;
     } else {
@@ -93,6 +99,9 @@ if ((typeof define === "function") && define.amd) {
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Bit;
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   if (window.mojs == null) {

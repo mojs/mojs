@@ -1,5 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Bit;
+var Bit, h;
+
+h = require('./h');
 
 Bit = (function() {
   Bit.prototype.ns = 'http://www.w3.org/2000/svg';
@@ -46,13 +48,17 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, val, _results;
+    var key, keySnake, val, _results;
     if (typeof attr === 'object') {
       _results = [];
       for (key in attr) {
         val = attr[key];
-        key = key.split(/(?=[A-Z])/).join('-').toLowerCase();
-        _results.push((value || this.el).setAttribute(key, val));
+        keySnake = key.split(/(?=[A-Z])/).join('-').toLowerCase();
+        if (h.stylePropsMap[key]) {
+          _results.push((value || this.el).style[keySnake] = val);
+        } else {
+          _results.push((value || this.el).setAttribute(keySnake, val));
+        }
       }
       return _results;
     } else {
@@ -95,6 +101,9 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Bit;
 }
 
+
+/* istanbul ignore next */
+
 if (typeof window !== "undefined" && window !== null) {
   if (window.mojs == null) {
     window.mojs = {};
@@ -107,7 +116,7 @@ if (typeof window !== "undefined" && window !== null) {
 
 
 
-},{}],2:[function(require,module,exports){
+},{"./h":4}],2:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -253,6 +262,18 @@ Helpers = (function() {
     };
   };
 
+  Helpers.prototype.stylePropsMap = {
+    fill: 1,
+    fillOpacity: 1,
+    opacity: 1,
+    stroke: 1,
+    strokeWidth: 1,
+    strokeDasharray: 1,
+    strokeOffset: 1,
+    strokeLinejoin: 1,
+    strokeLinecap: 1
+  };
+
   return Helpers;
 
 })();
@@ -389,14 +410,16 @@ Rect = (function(_super) {
 
   Rect.prototype.draw = function() {
     var rad2;
+    console.time('draw');
     Rect.__super__.draw.apply(this, arguments);
     rad2 = 2 * this.props.radius;
-    return this.setAttr({
+    this.setAttr({
       width: rad2,
       height: rad2,
       x: this.props.x - this.props.radius,
       y: this.props.y - this.props.radius
     });
+    return console.timeEnd('draw');
   };
 
   return Rect;

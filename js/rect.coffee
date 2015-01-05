@@ -6,6 +6,7 @@ Bit = require './bit'
 class Rect extends Bit
   type: 'rect'
   draw:->
+    console.time 'draw'
     super
     rad2 = 2*@props.radius
     @setAttr
@@ -13,6 +14,7 @@ class Rect extends Bit
       height: rad2
       x:      @props.x - @props.radius
       y:      @props.y - @props.radius
+    console.timeEnd 'draw'
 
 
 ### istanbul ignore next ###

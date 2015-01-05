@@ -46,18 +46,20 @@ describe 'Bit', ->
         strokeDasharray:      100
         strokeDashoffset:     50
         deg:                  45
-      stroke          = bit.el.getAttribute 'stroke'
-      strokeWidth     = bit.el.getAttribute 'stroke-width'
-      fill            = bit.el.getAttribute 'fill'
-      strokeDasharray = bit.el.getAttribute 'stroke-dasharray'
-      strokeOffset    = bit.el.getAttribute 'stroke-dashoffset'
+      # stroke          = bit.el.getAttribute 'stroke'
+      # strokeWidth     = bit.el.getAttribute 'stroke-width'
+      # fill            = bit.el.getAttribute 'fill'
+      # strokeDasharray = bit.el.getAttribute 'stroke-dasharray'
+      # strokeOffset    = bit.el.getAttribute 'stroke-dashoffset'
+      
       transform       = bit.el.getAttribute 'transform'
-      expect(stroke)          .toBe   '#0f0'
-      expect(strokeWidth)     .toBe   '3'
-      expect(fill)            .toBe   '#0ff'
-      expect(strokeDasharray) .toBe   '100'
-      expect(strokeOffset)    .toBe   '50'
-      expect(transform)       .toBe   'rotate(45, 0, 0)'
+      # expect(stroke)          .toBe   '#0f0'
+      # expect(strokeWidth)     .toBe   '3'
+      # expect(fill)            .toBe   '#0ff'
+      # expect(strokeDasharray) .toBe   '100'
+      # expect(strokeOffset)    .toBe   '50'
+      expect(transform).toBe            'rotate(45, 0, 0)'
+      expect(bit.el.style.stroke).toBe   '#00ff00'
 
   describe 'setAttr method', ->
     it 'should have setAttr method', ->
@@ -66,17 +68,19 @@ describe 'Bit', ->
       bit.el = document.createElementNS?(ns, "line")
       bit.setAttr 'stroke', '#ff00ff'
       expect(bit.el.getAttribute('stroke')).toBe '#ff00ff'
+
     it 'should set multiple attributes on element', ->
       bit.el = document.createElementNS?(ns, "circle")
       bit.setAttr
         stroke:           '#f0f'
         fill:             '#0f0'
-      expect(bit.el.getAttribute('stroke')).toBe '#f0f'
-      expect(bit.el.getAttribute('fill')).toBe   '#0f0'
+      expect(bit.el.style['stroke']).toBe '#ff00ff'
+      expect(bit.el.style['fill']).toBe   '#00ff00'
+
     it 'should work with camelCase attribute names', ->
       bit.el = document.createElementNS?(ns, "rect")
       bit.setAttr strokeWidth: 2
-      expect(bit.el.getAttribute('stroke-width')).toBe '2'
+      expect(bit.el.style['stroke-width']).toBe '2px'
   describe 'defaults and options', ->
     it 'should have defaults object', ->
       expect(bit.defaults).toBeDefined()

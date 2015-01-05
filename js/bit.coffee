@@ -1,3 +1,5 @@
+h = require './h'
+
 class Bit
   ns: 'http://www.w3.org/2000/svg'
   type: 'line'
@@ -29,8 +31,10 @@ class Bit
     if typeof attr is 'object'
       for key, val of attr
         # handle camelCase
-        key = key.split(/(?=[A-Z])/).join('-').toLowerCase()
-        (value or @el).setAttribute key, val
+        keySnake = key.split(/(?=[A-Z])/).join('-').toLowerCase()
+
+        if h.stylePropsMap[key] then (value or @el).style[keySnake] = val
+        else (value or @el).setAttribute keySnake, val
     else @el.setAttribute attr, value
   render:->
     @isRendered = true
@@ -52,6 +56,7 @@ if (typeof define is "function") and define.amd
   define "Bit", [], -> Bit
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = Bit
+### istanbul ignore next ###
 window?.mojs ?= {}
 window?.mojs.Bit = Bit
 

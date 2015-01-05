@@ -18,6 +18,18 @@ Helpers = (function() {
     };
   };
 
+  Helpers.prototype.stylePropsMap = {
+    fill: 1,
+    fillOpacity: 1,
+    opacity: 1,
+    stroke: 1,
+    strokeWidth: 1,
+    strokeDasharray: 1,
+    strokeOffset: 1,
+    strokeLinejoin: 1,
+    strokeLinecap: 1
+  };
+
   return Helpers;
 
 })();
