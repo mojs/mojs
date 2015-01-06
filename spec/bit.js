@@ -95,7 +95,29 @@
         return expect(transform).toBe('rotate(45, 0, 0)');
       });
     });
-    describe('setAttr method', function() {
+    describe('setProp method ->', function() {
+      it('should set properties ->', function() {
+        bit = new Bit({
+          ctx: svg,
+          stroke: '#0f0'
+        });
+        bit.setProp('stroke', '#ff0000');
+        return expect(bit.props.stroke).toBe('#ff0000');
+      });
+      return it('should set multiple properties ->', function() {
+        bit = new Bit({
+          ctx: svg,
+          stroke: '#0f0'
+        });
+        bit.setProp({
+          stroke: '#ff0000',
+          fill: '#0000ff'
+        });
+        expect(bit.props.stroke).toBe('#ff0000');
+        return expect(bit.props.fill).toBe('#0000ff');
+      });
+    });
+    describe('setAttr method ->', function() {
       it('should have setAttr method', function() {
         return expect(bit.setAttr).toBeDefined();
       });

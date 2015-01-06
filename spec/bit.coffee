@@ -34,7 +34,6 @@ describe 'Bit', ->
       spyOn bit, 'draw'
       bit.render()
       expect(bit.draw).not.toHaveBeenCalled()
-
   describe 'draw method ->', ->
     it 'should set presentations attributes', ->
       svg     = document.createElementNS?(ns, 'svg')
@@ -59,7 +58,27 @@ describe 'Bit', ->
       expect(strokeOffset)    .toBe   '50'
       expect(transform)       .toBe   'rotate(45, 0, 0)'
 
-  describe 'setAttr method', ->
+  describe 'setProp method ->', ->
+    it 'should set properties ->', ->
+      bit     = new Bit
+        ctx:    svg
+        stroke: '#0f0'
+
+      bit.setProp 'stroke', '#ff0000'
+      expect(bit.props.stroke).toBe '#ff0000'
+
+    it 'should set multiple properties ->', ->
+      bit     = new Bit
+        ctx:    svg
+        stroke: '#0f0'
+
+      bit.setProp
+        stroke:   '#ff0000'
+        fill:     '#0000ff'
+      expect(bit.props.stroke)  .toBe '#ff0000'
+      expect(bit.props.fill)    .toBe '#0000ff'
+
+  describe 'setAttr method ->', ->
     it 'should have setAttr method', ->
       expect(bit.setAttr).toBeDefined()
     it 'should set attribute on element', ->

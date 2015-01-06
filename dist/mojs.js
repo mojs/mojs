@@ -62,6 +62,20 @@ Bit = (function() {
     }
   };
 
+  Bit.prototype.setProp = function(attr, value) {
+    var key, val, _results;
+    if (typeof attr === 'object') {
+      _results = [];
+      for (key in attr) {
+        val = attr[key];
+        _results.push(this.props[key] = val);
+      }
+      return _results;
+    } else {
+      return this.props[attr] = value;
+    }
+  };
+
   Bit.prototype.render = function() {
     this.isRendered = true;
     this.el = document.createElementNS(this.ns, this.type || 'line');

@@ -26,7 +26,6 @@ class Bit
 
     rotate    = "rotate(#{@props.deg}, #{@props.x}, #{@props.y})"
     @props.transform = "#{rotate}"
-
   setAttr:(attr, value)->
     if typeof attr is 'object'
       for key, val of attr
@@ -34,6 +33,11 @@ class Bit
         key = key.split(/(?=[A-Z])/).join('-').toLowerCase()
         (value or @el).setAttribute key, val
     else @el.setAttribute attr, value
+  setProp:(attr, value)->
+    if typeof attr is 'object'
+      for key, val of attr
+        @props[key] = val
+    else @props[attr] = value
   render:->
     @isRendered = true
     @el = document.createElementNS @ns, @type or 'line'
