@@ -14,6 +14,9 @@
   });
 
   describe('Triangle ->', function() {
+    it('should extend Bit', function() {
+      return expect(triangle instanceof Bit).toBe(true);
+    });
     return describe('draw ->', function() {
       it('should add properties to el', function() {
         var cross, d, d2;

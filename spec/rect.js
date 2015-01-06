@@ -14,6 +14,9 @@
   });
 
   describe('Rect ->', function() {
+    it('should extend Bit', function() {
+      return expect(rect instanceof Bit).toBe(true);
+    });
     describe('defaults ->', function() {
       return it('should have type of "rect"', function() {
         return expect(rect.type).toBe('rect');

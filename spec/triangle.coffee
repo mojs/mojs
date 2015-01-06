@@ -5,6 +5,8 @@ svg     = document.createElementNS?(ns, "svg")
 triangle  = new Triangle ctx: svg
 
 describe 'Triangle ->', ->
+  it 'should extend Bit', ->
+    expect(triangle instanceof Bit).toBe(true)
   describe 'draw ->', ->
     it 'should add properties to el', ->
       svg   = document.createElementNS?(ns, "svg")

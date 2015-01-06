@@ -14,6 +14,9 @@
   });
 
   describe('Circle ->', function() {
+    it('should extend Bit', function() {
+      return expect(circle instanceof Bit).toBe(true);
+    });
     return describe('draw ->', function() {
       it('should add properties to el', function() {
         var cross, cx, cy, rx, ry;

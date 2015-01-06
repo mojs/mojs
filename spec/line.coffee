@@ -6,7 +6,6 @@ line  = new Line ctx: svg
 
 describe 'Line', ->
   it 'should extend Bit', ->
-    bit = new Bit ctx: svg
     expect(line instanceof Bit).toBe(true)
   it 'should add itself to context', ->
     line = new Line ctx: svg

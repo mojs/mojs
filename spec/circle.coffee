@@ -5,6 +5,8 @@ svg     = document.createElementNS?(ns, "svg")
 circle  = new Circle ctx: svg
 
 describe 'Circle ->', ->
+  it 'should extend Bit', ->
+    expect(circle instanceof Bit).toBe(true)
   describe 'draw ->', ->
     it 'should add properties to el', ->
       svg   = document.createElementNS?(ns, "svg")

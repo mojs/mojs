@@ -1,33 +1,31 @@
 
 /* istanbul ignore next */
-var Bit, Rect,
+var Bit, Byte,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Bit = require('./bit');
 
-Rect = (function(_super) {
-  __extends(Rect, _super);
+Byte = (function(_super) {
+  __extends(Byte, _super);
 
-  function Rect() {
-    return Rect.__super__.constructor.apply(this, arguments);
-  }
-
-  Rect.prototype.type = 'rect';
-
-  Rect.prototype.draw = function() {
-    var rad2;
-    Rect.__super__.draw.apply(this, arguments);
-    rad2 = 2 * this.props.radius;
-    return this.setAttr({
-      width: rad2,
-      height: rad2,
-      x: this.props.x - this.props.radius,
-      y: this.props.y - this.props.radius
-    });
+  Byte.prototype.defaults = {
+    radius: 50,
+    strokeWidth: 2,
+    strokeColor: '#ff00ff',
+    fill: 'transparent',
+    duration: 500,
+    delay: 0
   };
 
-  return Rect;
+  function Byte(o) {
+    this.o = o != null ? o : {};
+    this.vars();
+  }
+
+  Byte.prototype.vars = function() {};
+
+  return Byte;
 
 })(Bit);
 
@@ -35,13 +33,13 @@ Rect = (function(_super) {
 /* istanbul ignore next */
 
 if ((typeof define === "function") && define.amd) {
-  define("Rect", [], function() {
-    return Rect;
+  define("Byte", [], function() {
+    return Byte;
   });
 }
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Rect;
+  module.exports = Byte;
 }
 
 
@@ -54,5 +52,5 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Rect = Rect;
+  window.mojs.Byte = Byte;
 }

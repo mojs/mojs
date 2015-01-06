@@ -105,6 +105,12 @@ describe 'Bit', ->
       svg     = document.createElementNS?(ns, "svg")
       bit     = new Bit ctx:    svg
       expect(bit.props.radius).toBe(50)
+    it 'should have extendDefaults method', ->
+      bit = new Bit
+        ctx:    svg
+        radius: 45
+      expect(bit.extendDefaults).toBeDefined()
+      expect(-> bit.extendDefaults()).not.toThrow()
     it 'should extend defaults object to properties', ->
       bit = new Bit
         ctx:    svg
@@ -120,5 +126,6 @@ describe 'Bit', ->
         ctx: svg
         deg: 90
       expect(bit.props.transform).toBe('rotate(90, 0, 0)')
+      expect(bit.calcTranform).toBeDefined()
 
 

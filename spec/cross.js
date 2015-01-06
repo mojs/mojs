@@ -1,5 +1,5 @@
 (function() {
-  var Bit, Cross, line, ns, svg;
+  var Bit, Cross, cross, ns, svg;
 
   Cross = mojs.Cross;
 
@@ -9,14 +9,17 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
 
-  line = new Cross({
+  cross = new Cross({
     ctx: svg
   });
 
   describe('Cross ->', function() {
+    it('should extend Bit', function() {
+      return expect(cross instanceof Bit).toBe(true);
+    });
     return describe('draw ->', function() {
       it('should add properties to el', function() {
-        var cross, d;
+        var d;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         cross = new Cross({
           ctx: svg,
@@ -26,7 +29,6 @@
         return expect(d).toBe('M-20,0 L20,0 M0,-20 L0,20');
       });
       return it('should call super method', function() {
-        var cross;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         cross = new Cross({
           ctx: svg

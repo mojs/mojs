@@ -19,13 +19,16 @@ class Bit
   vars:->
     if @o.ctx and @o.ctx.tagName is 'svg' then @ctx = @o.ctx
     else throw Error 'You should pass a real context(ctx) to the bit'
+    @extendDefaults()
+    @calcTranform()
+  calcTranform:->
+    rotate    = "rotate(#{@props.deg}, #{@props.x}, #{@props.y})"
+    @props.transform = "#{rotate}"
+  extendDefaults:->
     @props ?= {}
     # extends defaults by options to properties
     for key, value of @defaults
       @props[key] = @o[key] or value
-
-    rotate    = "rotate(#{@props.deg}, #{@props.x}, #{@props.y})"
-    @props.transform = "#{rotate}"
   setAttr:(attr, value)->
     if typeof attr is 'object'
       for key, val of attr

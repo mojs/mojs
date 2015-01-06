@@ -157,6 +157,16 @@
         });
         return expect(bit.props.radius).toBe(50);
       });
+      it('should have extendDefaults method', function() {
+        bit = new Bit({
+          ctx: svg,
+          radius: 45
+        });
+        expect(bit.extendDefaults).toBeDefined();
+        return expect(function() {
+          return bit.extendDefaults();
+        }).not.toThrow();
+      });
       it('should extend defaults object to properties', function() {
         bit = new Bit({
           ctx: svg,
@@ -177,7 +187,8 @@
           ctx: svg,
           deg: 90
         });
-        return expect(bit.props.transform).toBe('rotate(90, 0, 0)');
+        expect(bit.props.transform).toBe('rotate(90, 0, 0)');
+        return expect(bit.calcTranform).toBeDefined();
       });
     });
   });

@@ -2,9 +2,11 @@ Cross = mojs.Cross
 Bit   = mojs.Bit
 ns    = 'http://www.w3.org/2000/svg'
 svg   = document.createElementNS?(ns, "svg")
-line  = new Cross ctx: svg
+cross  = new Cross ctx: svg
 
 describe 'Cross ->', ->
+  it 'should extend Bit', ->
+    expect(cross instanceof Bit).toBe(true)
   describe 'draw ->', ->
     it 'should add properties to el', ->
       svg     = document.createElementNS?(ns, "svg")

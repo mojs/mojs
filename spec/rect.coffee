@@ -5,10 +5,11 @@ svg     = document.createElementNS?(ns, "svg")
 rect    = new Rect ctx: svg
 
 describe 'Rect ->', ->
+  it 'should extend Bit', ->
+    expect(rect instanceof Bit).toBe(true)
   describe 'defaults ->', ->
     it 'should have type of "rect"', ->
       expect(rect.type).toBe 'rect'
-
   describe 'draw ->', ->
     it 'should add properties to el', ->
       svg     = document.createElementNS?(ns, "svg")

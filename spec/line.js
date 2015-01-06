@@ -15,10 +15,6 @@
 
   describe('Line', function() {
     it('should extend Bit', function() {
-      var bit;
-      bit = new Bit({
-        ctx: svg
-      });
       return expect(line instanceof Bit).toBe(true);
     });
     it('should add itself to context', function() {

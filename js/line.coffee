@@ -2,7 +2,7 @@
 ### istanbul ignore next ###
 
 Bit = require './bit'
-# Bit = mojs.Bit
+
 class Line extends Bit
   draw:->
     super

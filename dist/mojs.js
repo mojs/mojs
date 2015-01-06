@@ -29,22 +29,33 @@ Bit = (function() {
   }
 
   Bit.prototype.vars = function() {
-    var key, rotate, value, _ref;
     if (this.o.ctx && this.o.ctx.tagName === 'svg') {
       this.ctx = this.o.ctx;
     } else {
       throw Error('You should pass a real context(ctx) to the bit');
     }
+    this.extendDefaults();
+    return this.calcTranform();
+  };
+
+  Bit.prototype.calcTranform = function() {
+    var rotate;
+    rotate = "rotate(" + this.props.deg + ", " + this.props.x + ", " + this.props.y + ")";
+    return this.props.transform = "" + rotate;
+  };
+
+  Bit.prototype.extendDefaults = function() {
+    var key, value, _ref, _results;
     if (this.props == null) {
       this.props = {};
     }
     _ref = this.defaults;
+    _results = [];
     for (key in _ref) {
       value = _ref[key];
-      this.props[key] = this.o[key] || value;
+      _results.push(this.props[key] = this.o[key] || value);
     }
-    rotate = "rotate(" + this.props.deg + ", " + this.props.x + ", " + this.props.y + ")";
-    return this.props.transform = "" + rotate;
+    return _results;
   };
 
   Bit.prototype.setAttr = function(attr, value) {
@@ -408,16 +419,14 @@ Rect = (function(_super) {
 
   Rect.prototype.draw = function() {
     var rad2;
-    console.time('draw');
     Rect.__super__.draw.apply(this, arguments);
     rad2 = 2 * this.props.radius;
-    this.setAttr({
+    return this.setAttr({
       width: rad2,
       height: rad2,
       x: this.props.x - this.props.radius,
       y: this.props.y - this.props.radius
     });
-    return console.timeEnd('draw');
   };
 
   return Rect;
