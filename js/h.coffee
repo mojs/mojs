@@ -1,10 +1,27 @@
 class Helpers
+  constructor:-> @vars()
+  vars:-> @prefix = @getPrefix()
+
   getRadialPoint:(o={})->
     return if !o.radius? or !o.angle? or !o.center?
     radAngle = (o.angle-90)*(Math.PI/180)
     point =
       x: o.center.x + (Math.cos(radAngle)*o.radius)
       y: o.center.y + (Math.sin(radAngle)*o.radius)
+
+  getPrefix:->
+    styles = window.getComputedStyle(document.documentElement, "")
+    v = Array::slice.call(styles).join("").match(/-(moz|webkit|ms)-/)
+    pre = (v or (styles.OLink is "" and [
+      ""
+      "o"
+    ]))[1]
+    dom = ("WebKit|Moz|MS|O").match(new RegExp("(" + pre + ")", "i"))[1]
+    
+    dom: dom
+    lowercase: pre
+    css: "-" + pre + "-"
+    js: pre[0].toUpperCase() + pre.substr(1)
 
   # stylePropsMap:
   #   # width:              1

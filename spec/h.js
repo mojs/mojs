@@ -5,6 +5,15 @@
 
   describe('Helpers ->', function() {
     return describe('methods ->', function() {
+      describe('prefix', function() {
+        return it('should have prefix', function() {
+          expect(h.prefix).toBeDefined();
+          expect(h.prefix.js).toBeDefined();
+          expect(h.prefix.css).toBeDefined();
+          expect(h.prefix.lowercase).toBeDefined();
+          return expect(h.prefix.dom).toBeDefined();
+        });
+      });
       return describe('getRadialPoint', function() {
         it('should calculate radial point', function() {
           var point;

@@ -1,7 +1,13 @@
 var Helpers;
 
 Helpers = (function() {
-  function Helpers() {}
+  function Helpers() {
+    this.vars();
+  }
+
+  Helpers.prototype.vars = function() {
+    return this.prefix = this.getPrefix();
+  };
 
   Helpers.prototype.getRadialPoint = function(o) {
     var point, radAngle;
@@ -15,6 +21,20 @@ Helpers = (function() {
     return point = {
       x: o.center.x + (Math.cos(radAngle) * o.radius),
       y: o.center.y + (Math.sin(radAngle) * o.radius)
+    };
+  };
+
+  Helpers.prototype.getPrefix = function() {
+    var dom, pre, styles, v;
+    styles = window.getComputedStyle(document.documentElement, "");
+    v = Array.prototype.slice.call(styles).join("").match(/-(moz|webkit|ms)-/);
+    pre = (v || (styles.OLink === "" && ["", "o"]))[1];
+    dom = "WebKit|Moz|MS|O".match(new RegExp("(" + pre + ")", "i"))[1];
+    return {
+      dom: dom,
+      lowercase: pre,
+      css: "-" + pre + "-",
+      js: pre[0].toUpperCase() + pre.substr(1)
     };
   };
 

@@ -34,10 +34,10 @@ Bit = (function() {
       throw Error('You should pass a real context(ctx) to the bit');
     }
     this.extendDefaults();
-    return this.calcTranform();
+    return this.calcTransform();
   };
 
-  Bit.prototype.calcTranform = function() {
+  Bit.prototype.calcTransform = function() {
     var rotate;
     rotate = "rotate(" + this.props.deg + ", " + this.props.x + ", " + this.props.y + ")";
     return this.props.transform = "" + rotate;

@@ -2,6 +2,13 @@ h  = mojs.helpers
 
 describe 'Helpers ->', ->
   describe 'methods ->', ->
+    describe 'prefix', ->
+      it 'should have prefix', ->
+        expect(h.prefix).toBeDefined()
+        expect(h.prefix.js).toBeDefined()
+        expect(h.prefix.css).toBeDefined()
+        expect(h.prefix.lowercase).toBeDefined()
+        expect(h.prefix.dom).toBeDefined()
     describe 'getRadialPoint', ->
       it 'should calculate radial point', ->
         point = h.getRadialPoint

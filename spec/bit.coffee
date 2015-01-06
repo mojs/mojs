@@ -126,6 +126,6 @@ describe 'Bit', ->
         ctx: svg
         deg: 90
       expect(bit.props.transform).toBe('rotate(90, 0, 0)')
-      expect(bit.calcTranform).toBeDefined()
+      expect(bit.calcTransform).toBeDefined()
 
 

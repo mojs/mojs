@@ -1,8 +1,8 @@
 h = require './h'
 
 class Bit
-  ns: 'http://www.w3.org/2000/svg'
-  type: 'line'
+  ns:                   'http://www.w3.org/2000/svg'
+  type:                 'line'
   defaults:
     radius:             50
     radiusX:            null
@@ -20,13 +20,12 @@ class Bit
     if @o.ctx and @o.ctx.tagName is 'svg' then @ctx = @o.ctx
     else throw Error 'You should pass a real context(ctx) to the bit'
     @extendDefaults()
-    @calcTranform()
-  calcTranform:->
+    @calcTransform()
+  calcTransform:->
     rotate    = "rotate(#{@props.deg}, #{@props.x}, #{@props.y})"
     @props.transform = "#{rotate}"
   extendDefaults:->
     @props ?= {}
-    # extends defaults by options to properties
     for key, value of @defaults
       @props[key] = @o[key] or value
   setAttr:(attr, value)->
