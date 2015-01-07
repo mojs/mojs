@@ -53,7 +53,17 @@ class Byte extends Bit
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
     for key, value of @deltas
-      @props[key] = value.start + value.delta*@progress
+      # if not a color
+      if !value.delta.r?
+        @props[key] = value.start + value.delta*@progress
+      # if color
+      else
+        r = parseInt (value.start.r + value.delta.r*@progress), 10
+        g = parseInt (value.start.g + value.delta.g*@progress), 10
+        b = parseInt (value.start.b + value.delta.b*@progress), 10
+        a = parseInt (value.start.a + value.delta.a*@progress), 10
+        @props[key] = "rgba(#{r},#{g},#{b},#{a})"
+
     @draw()
 
   draw:->
@@ -90,13 +100,27 @@ class Byte extends Bit
       optionsValue = @o[key]
       if optionsValue and typeof optionsValue is 'object'
         start = Object.keys(optionsValue)
-        end   = parseFloat optionsValue[start]
-        start = parseFloat start
-        @deltas[key] =
-          start:  start
-          end:    end
-          delta:  end - start
-        @props[key] = start
+        # if color was passed
+        if isNaN parseFloat(start)
+          end           = optionsValue[start]
+          startColorObj = h.makeColorObj start
+          endColorObj   = h.makeColorObj end
+          @deltas[key]  =
+            start:  startColorObj
+            end:    endColorObj
+            delta:
+              r: endColorObj.r - startColorObj.r
+              g: endColorObj.g - startColorObj.g
+              b: endColorObj.b - startColorObj.b
+              a: endColorObj.a - startColorObj.a
+        else
+          end   = parseFloat optionsValue[start]
+          start = parseFloat start
+          @deltas[key] =
+            start:  start
+            end:    end
+            delta:  end - start
+          @props[key] = start
       else @props[key] = @o[key] or defaultsValue
 
 ### istanbul ignore next ###

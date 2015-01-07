@@ -216,12 +216,20 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setProgress = function(progress) {
-    var key, value, _ref;
+    var a, b, g, key, r, value, _ref;
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     _ref = this.deltas;
     for (key in _ref) {
       value = _ref[key];
-      this.props[key] = value.start + value.delta * this.progress;
+      if (value.delta.r == null) {
+        this.props[key] = value.start + value.delta * this.progress;
+      } else {
+        r = parseInt(value.start.r + value.delta.r * this.progress, 10);
+        g = parseInt(value.start.g + value.delta.g * this.progress, 10);
+        b = parseInt(value.start.b + value.delta.b * this.progress, 10);
+        a = parseInt(value.start.a + value.delta.a * this.progress, 10);
+        this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+      }
     }
     return this.draw();
   };
@@ -255,7 +263,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.extendDefaults = function() {
-    var defaultsValue, end, key, optionsValue, start, _ref, _results;
+    var defaultsValue, end, endColorObj, key, optionsValue, start, startColorObj, _ref, _results;
     if (this.props == null) {
       this.props = {};
     }
@@ -269,14 +277,30 @@ Byte = (function(_super) {
       optionsValue = this.o[key];
       if (optionsValue && typeof optionsValue === 'object') {
         start = Object.keys(optionsValue);
-        end = parseFloat(optionsValue[start]);
-        start = parseFloat(start);
-        this.deltas[key] = {
-          start: start,
-          end: end,
-          delta: end - start
-        };
-        _results.push(this.props[key] = start);
+        if (isNaN(parseFloat(start))) {
+          end = optionsValue[start];
+          startColorObj = h.makeColorObj(start);
+          endColorObj = h.makeColorObj(end);
+          _results.push(this.deltas[key] = {
+            start: startColorObj,
+            end: endColorObj,
+            delta: {
+              r: endColorObj.r - startColorObj.r,
+              g: endColorObj.g - startColorObj.g,
+              b: endColorObj.b - startColorObj.b,
+              a: endColorObj.a - startColorObj.a
+            }
+          });
+        } else {
+          end = parseFloat(optionsValue[start]);
+          start = parseFloat(start);
+          this.deltas[key] = {
+            start: start,
+            end: end,
+            delta: end - start
+          };
+          _results.push(this.props[key] = start);
+        }
       } else {
         _results.push(this.props[key] = this.o[key] || defaultsValue);
       }
@@ -445,12 +469,36 @@ if (typeof window !== "undefined" && window !== null) {
 var Helpers;
 
 Helpers = (function() {
+  Helpers.prototype.div = document.createElement('div');
+
+  Helpers.prototype.shortColors = {
+    aqua: 'rgb(0,255,255)',
+    black: 'rgb(0,0,0)',
+    blue: 'rgb(0,0,255)',
+    fuchsia: 'rgb(255,0,255)',
+    gray: 'rgb(128,128,128)',
+    green: 'rgb(0,128,0)',
+    lime: 'rgb(0,255,0)',
+    maroon: 'rgb(128,0,0)',
+    navy: 'rgb(0,0,128)',
+    olive: 'rgb(128,128,0)',
+    purple: 'rgb(128,0,128)',
+    red: 'rgb(255,0,0)',
+    silver: 'rgb(192,192,192)',
+    teal: 'rgb(0,128,128)',
+    white: 'rgb(255,255,255)',
+    yellow: 'rgb(255,255,0)',
+    orange: 'rgb(255,128,0)'
+  };
+
   function Helpers() {
     this.vars();
   }
 
   Helpers.prototype.vars = function() {
-    return this.prefix = this.getPrefix();
+    this.prefix = this.getPrefix();
+    this.isFF = this.prefix.lowercase === 'moz';
+    return this.isIE = this.prefix.lowercase === 'ms';
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
@@ -480,6 +528,48 @@ Helpers = (function() {
       css: "-" + pre + "-",
       js: pre[0].toUpperCase() + pre.substr(1)
     };
+  };
+
+  Helpers.prototype.makeColorObj = function(color) {
+    var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor;
+    if (color[0] === '#') {
+      result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
+      colorObj = {};
+      if (result) {
+        r = result[1].length === 2 ? result[1] : result[1] + result[1];
+        g = result[2].length === 2 ? result[2] : result[2] + result[2];
+        b = result[3].length === 2 ? result[3] : result[3] + result[3];
+        colorObj = {
+          r: parseInt(r, 16),
+          g: parseInt(g, 16),
+          b: parseInt(b, 16),
+          a: 1
+        };
+      }
+    }
+    if (color[0] !== '#') {
+      isRgb = color[0] === 'r' && color[1] === 'g' && color[2] === 'b';
+      if (isRgb) {
+        rgbColor = color;
+      }
+      if (!isRgb) {
+        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF || this.isIE ? this.computedStyle(this.div).color : this.div.style.color) : this.shortColors[color];
+      }
+      regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
+      regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
+      result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor);
+      colorObj = {};
+      alpha = parseFloat(result[4] || 1);
+      if (result) {
+        colorObj = {
+          r: parseInt(result[1], 10),
+          g: parseInt(result[2], 10),
+          b: parseInt(result[3], 10),
+          a: (alpha != null) && !isNaN(alpha) ? alpha : 1
+        };
+      }
+    }
+    return colorObj;
   };
 
   return Helpers;
@@ -601,19 +691,25 @@ rect = new Byte({
     75: 5
   },
   strokeWidth: {
-    0: 10
+    5: 10
+  },
+  stroke: {
+    'yellow': 'deeppink'
   },
   type: 'rect'
 });
 
 setTimeout(function() {
-  var i;
+  var i, int;
   i = 0;
-  return setInterval(function() {
+  return int = setInterval(function() {
     rect.setProgress(i++ / 10);
-    return rect.draw();
-  }, 16);
-}, 5000);
+    rect.draw();
+    if (rect.progress === 1) {
+      return clearInterval(int);
+    }
+  }, 160);
+}, 1000);
 
 
 

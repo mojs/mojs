@@ -76,12 +76,20 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setProgress = function(progress) {
-    var key, value, _ref;
+    var a, b, g, key, r, value, _ref;
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     _ref = this.deltas;
     for (key in _ref) {
       value = _ref[key];
-      this.props[key] = value.start + value.delta * this.progress;
+      if (value.delta.r == null) {
+        this.props[key] = value.start + value.delta * this.progress;
+      } else {
+        r = parseInt(value.start.r + value.delta.r * this.progress, 10);
+        g = parseInt(value.start.g + value.delta.g * this.progress, 10);
+        b = parseInt(value.start.b + value.delta.b * this.progress, 10);
+        a = parseInt(value.start.a + value.delta.a * this.progress, 10);
+        this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+      }
     }
     return this.draw();
   };
@@ -115,7 +123,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.extendDefaults = function() {
-    var defaultsValue, end, key, optionsValue, start, _ref, _results;
+    var defaultsValue, end, endColorObj, key, optionsValue, start, startColorObj, _ref, _results;
     if (this.props == null) {
       this.props = {};
     }
@@ -129,14 +137,30 @@ Byte = (function(_super) {
       optionsValue = this.o[key];
       if (optionsValue && typeof optionsValue === 'object') {
         start = Object.keys(optionsValue);
-        end = parseFloat(optionsValue[start]);
-        start = parseFloat(start);
-        this.deltas[key] = {
-          start: start,
-          end: end,
-          delta: end - start
-        };
-        _results.push(this.props[key] = start);
+        if (isNaN(parseFloat(start))) {
+          end = optionsValue[start];
+          startColorObj = h.makeColorObj(start);
+          endColorObj = h.makeColorObj(end);
+          _results.push(this.deltas[key] = {
+            start: startColorObj,
+            end: endColorObj,
+            delta: {
+              r: endColorObj.r - startColorObj.r,
+              g: endColorObj.g - startColorObj.g,
+              b: endColorObj.b - startColorObj.b,
+              a: endColorObj.a - startColorObj.a
+            }
+          });
+        } else {
+          end = parseFloat(optionsValue[start]);
+          start = parseFloat(start);
+          this.deltas[key] = {
+            start: start,
+            end: end,
+            delta: end - start
+          };
+          _results.push(this.props[key] = start);
+        }
       } else {
         _results.push(this.props[key] = this.o[key] || defaultsValue);
       }

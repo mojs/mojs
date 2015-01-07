@@ -224,61 +224,77 @@
         });
       });
       describe('delta calculations ->', function() {
-        it('should calculate delta', function() {
-          var byte, radiusDelta;
-          byte = new Byte({
-            radius: {
-              25: 75
-            }
+        describe('numeric values ->', function() {
+          it('should calculate delta', function() {
+            var byte, radiusDelta;
+            byte = new Byte({
+              radius: {
+                25: 75
+              }
+            });
+            radiusDelta = byte.deltas.radius;
+            expect(radiusDelta.start).toBe(25);
+            return expect(radiusDelta.delta).toBe(50);
           });
-          radiusDelta = byte.deltas.radius;
-          expect(radiusDelta.start).toBe(25);
-          return expect(radiusDelta.delta).toBe(50);
+          it('should calculate delta with string arguments', function() {
+            var byte, radiusDelta;
+            byte = new Byte({
+              radius: {
+                '25': '75'
+              }
+            });
+            radiusDelta = byte.deltas.radius;
+            expect(radiusDelta.start).toBe(25);
+            return expect(radiusDelta.delta).toBe(50);
+          });
+          it('should calculate delta with float arguments', function() {
+            var byte, radiusDelta;
+            byte = new Byte({
+              radius: {
+                '25.50': 75.50
+              }
+            });
+            radiusDelta = byte.deltas.radius;
+            expect(radiusDelta.start).toBe(25.5);
+            return expect(radiusDelta.delta).toBe(50);
+          });
+          it('should calculate delta with negative start arguments', function() {
+            var byte, radiusDelta;
+            byte = new Byte({
+              radius: {
+                '-25.50': 75.50
+              }
+            });
+            radiusDelta = byte.deltas.radius;
+            expect(radiusDelta.start).toBe(-25.5);
+            return expect(radiusDelta.delta).toBe(101);
+          });
+          return it('should calculate delta with negative end arguments', function() {
+            var byte, radiusDelta;
+            byte = new Byte({
+              radius: {
+                '25.50': -75.50
+              }
+            });
+            radiusDelta = byte.deltas.radius;
+            expect(radiusDelta.start).toBe(25.5);
+            expect(radiusDelta.end).toBe(-75.5);
+            return expect(radiusDelta.delta).toBe(-101);
+          });
         });
-        it('should calculate delta with string arguments', function() {
-          var byte, radiusDelta;
-          byte = new Byte({
-            radius: {
-              '25': '75'
-            }
+        return describe('color values ->', function() {
+          return it('should calculate color delta', function() {
+            var byte, colorDelta;
+            byte = new Byte({
+              stroke: {
+                '#000': 'rgb(255,255,255)'
+              }
+            });
+            colorDelta = byte.deltas.stroke;
+            expect(colorDelta.start.r).toBe(0);
+            expect(colorDelta.end.r).toBe(255);
+            return expect(colorDelta.delta.r).toBe(255);
           });
-          radiusDelta = byte.deltas.radius;
-          expect(radiusDelta.start).toBe(25);
-          return expect(radiusDelta.delta).toBe(50);
-        });
-        it('should calculate delta with float arguments', function() {
-          var byte, radiusDelta;
-          byte = new Byte({
-            radius: {
-              '25.50': 75.50
-            }
-          });
-          radiusDelta = byte.deltas.radius;
-          expect(radiusDelta.start).toBe(25.5);
-          return expect(radiusDelta.delta).toBe(50);
-        });
-        it('should calculate delta with negative start arguments', function() {
-          var byte, radiusDelta;
-          byte = new Byte({
-            radius: {
-              '-25.50': 75.50
-            }
-          });
-          radiusDelta = byte.deltas.radius;
-          expect(radiusDelta.start).toBe(-25.5);
-          return expect(radiusDelta.delta).toBe(101);
-        });
-        return it('should calculate delta with negative end arguments', function() {
-          var byte, radiusDelta;
-          byte = new Byte({
-            radius: {
-              '25.50': -75.50
-            }
-          });
-          radiusDelta = byte.deltas.radius;
-          expect(radiusDelta.start).toBe(25.5);
-          expect(radiusDelta.end).toBe(-75.5);
-          return expect(radiusDelta.delta).toBe(-101);
         });
       });
       return describe('setProgress method ->', function() {
@@ -301,6 +317,28 @@
           });
           byte.setProgress(.5);
           return expect(byte.props.radius).toBe(50);
+        });
+        it('should set color value progress and only int', function() {
+          var byte, colorDelta;
+          byte = new Byte({
+            stroke: {
+              '#000': 'rgb(255,255,255)'
+            }
+          });
+          colorDelta = byte.deltas.stroke;
+          byte.setProgress(.5);
+          return expect(byte.props.stroke).toBe('rgba(127,127,127,1)');
+        });
+        it('should set color value progress for delta starting with 0', function() {
+          var byte, colorDelta;
+          byte = new Byte({
+            stroke: {
+              '#000': 'rgb(0,255,255)'
+            }
+          });
+          colorDelta = byte.deltas.stroke;
+          byte.setProgress(.5);
+          return expect(byte.props.stroke).toBe('rgba(0,127,127,1)');
         });
         it('should set 0 if progress is less then 0', function() {
           var byte;

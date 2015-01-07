@@ -116,7 +116,6 @@ describe 'Byte ->', ->
         radius: 25
         parent: div
       expect(byte.el.parentNode.isDiv).toBe true
-
     describe 'render method ->', ->
       it 'should call draw method', ->
         byte = new Byte radius: 25
@@ -128,34 +127,41 @@ describe 'Byte ->', ->
         spyOn byte, 'draw'
         byte.render()
         expect(byte.draw).not.toHaveBeenCalled()
-
     describe 'delta calculations ->', ->
-      it 'should calculate delta', ->
-        byte = new Byte radius:  {25: 75}
-        radiusDelta = byte.deltas.radius
-        expect(radiusDelta.start)   .toBe   25
-        expect(radiusDelta.delta)   .toBe   50
-      it 'should calculate delta with string arguments', ->
-        byte = new Byte radius:  {'25': '75'}
-        radiusDelta = byte.deltas.radius
-        expect(radiusDelta.start)   .toBe   25
-        expect(radiusDelta.delta)   .toBe   50
-      it 'should calculate delta with float arguments', ->
-        byte = new Byte radius:  {'25.50': 75.50}
-        radiusDelta = byte.deltas.radius
-        expect(radiusDelta.start)   .toBe   25.5
-        expect(radiusDelta.delta)   .toBe   50
-      it 'should calculate delta with negative start arguments', ->
-        byte = new Byte radius:  {'-25.50': 75.50}
-        radiusDelta = byte.deltas.radius
-        expect(radiusDelta.start)   .toBe   -25.5
-        expect(radiusDelta.delta)   .toBe   101
-      it 'should calculate delta with negative end arguments', ->
-        byte = new Byte radius:  {'25.50': -75.50}
-        radiusDelta = byte.deltas.radius
-        expect(radiusDelta.start)   .toBe   25.5
-        expect(radiusDelta.end)     .toBe   -75.5
-        expect(radiusDelta.delta)   .toBe   -101
+      describe 'numeric values ->', ->
+        it 'should calculate delta', ->
+          byte = new Byte radius:  {25: 75}
+          radiusDelta = byte.deltas.radius
+          expect(radiusDelta.start)   .toBe   25
+          expect(radiusDelta.delta)   .toBe   50
+        it 'should calculate delta with string arguments', ->
+          byte = new Byte radius:  {'25': '75'}
+          radiusDelta = byte.deltas.radius
+          expect(radiusDelta.start)   .toBe   25
+          expect(radiusDelta.delta)   .toBe   50
+        it 'should calculate delta with float arguments', ->
+          byte = new Byte radius:  {'25.50': 75.50}
+          radiusDelta = byte.deltas.radius
+          expect(radiusDelta.start)   .toBe   25.5
+          expect(radiusDelta.delta)   .toBe   50
+        it 'should calculate delta with negative start arguments', ->
+          byte = new Byte radius:  {'-25.50': 75.50}
+          radiusDelta = byte.deltas.radius
+          expect(radiusDelta.start)   .toBe   -25.5
+          expect(radiusDelta.delta)   .toBe   101
+        it 'should calculate delta with negative end arguments', ->
+          byte = new Byte radius:  {'25.50': -75.50}
+          radiusDelta = byte.deltas.radius
+          expect(radiusDelta.start)   .toBe   25.5
+          expect(radiusDelta.end)     .toBe   -75.5
+          expect(radiusDelta.delta)   .toBe   -101
+      describe 'color values ->', ->
+        it 'should calculate color delta', ->
+          byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
+          colorDelta = byte.deltas.stroke
+          expect(colorDelta.start.r)    .toBe   0
+          expect(colorDelta.end.r)      .toBe   255
+          expect(colorDelta.delta.r)    .toBe   255
 
     describe 'setProgress method ->', ->
       it 'should set transition progress', ->
@@ -166,6 +172,16 @@ describe 'Byte ->', ->
         byte = new Byte radius:  {'25': 75}
         byte.setProgress .5
         expect(byte.props.radius).toBe 50
+      it 'should set color value progress and only int', ->
+        byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
+        colorDelta = byte.deltas.stroke
+        byte.setProgress .5
+        expect(byte.props.stroke).toBe 'rgba(127,127,127,1)'
+      it 'should set color value progress for delta starting with 0', ->
+        byte = new Byte stroke:  {'#000': 'rgb(0,255,255)'}
+        colorDelta = byte.deltas.stroke
+        byte.setProgress .5
+        expect(byte.props.stroke).toBe 'rgba(0,127,127,1)'
       it 'should set 0 if progress is less then 0', ->
         byte = new Byte radius:  {'25': 75}
         byte.setProgress -1

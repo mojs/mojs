@@ -106,7 +106,6 @@ class Helpers
           a: 1
     
     # not HEX
-    # console.log color
     # shorthand color and rgb()
     if color[0] isnt '#'
       isRgb = color[0] is 'r' and color[1] is 'g' and color[2] is 'b'

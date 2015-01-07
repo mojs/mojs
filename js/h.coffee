@@ -1,14 +1,34 @@
 class Helpers
+  div:    document.createElement 'div'
+  shortColors:
+    aqua:   'rgb(0,255,255)'
+    black:  'rgb(0,0,0)'
+    blue:   'rgb(0,0,255)'
+    fuchsia:'rgb(255,0,255)'
+    gray:   'rgb(128,128,128)'
+    green:  'rgb(0,128,0)'
+    lime:   'rgb(0,255,0)'
+    maroon: 'rgb(128,0,0)'
+    navy:   'rgb(0,0,128)'
+    olive:  'rgb(128,128,0)'
+    purple: 'rgb(128,0,128)'
+    red:    'rgb(255,0,0)'
+    silver: 'rgb(192,192,192)'
+    teal:   'rgb(0,128,128)'
+    white:  'rgb(255,255,255)'
+    yellow: 'rgb(255,255,0)'
+    orange: 'rgb(255,128,0)'
   constructor:-> @vars()
-  vars:-> @prefix = @getPrefix()
-
+  vars:->
+    @prefix = @getPrefix()
+    @isFF = @prefix.lowercase is 'moz'
+    @isIE = @prefix.lowercase is 'ms'
   getRadialPoint:(o={})->
     return if !o.radius? or !o.angle? or !o.center?
     radAngle = (o.angle-90)*(Math.PI/180)
     point =
       x: o.center.x + (Math.cos(radAngle)*o.radius)
       y: o.center.y + (Math.sin(radAngle)*o.radius)
-
   getPrefix:->
     styles = window.getComputedStyle(document.documentElement, "")
     v = Array::slice.call(styles).join("").match(/-(moz|webkit|ms)-/)
@@ -17,11 +37,53 @@ class Helpers
       "o"
     ]))[1]
     dom = ("WebKit|Moz|MS|O").match(new RegExp("(" + pre + ")", "i"))[1]
-    
     dom: dom
     lowercase: pre
     css: "-" + pre + "-"
     js: pre[0].toUpperCase() + pre.substr(1)
+
+  makeColorObj:(color)->
+    # HEX
+    if color[0] is '#'
+      result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color)
+      colorObj = {}
+      if result
+        r = if result[1].length is 2 then result[1] else result[1]+result[1]
+        g = if result[2].length is 2 then result[2] else result[2]+result[2]
+        b = if result[3].length is 2 then result[3] else result[3]+result[3]
+        colorObj =
+          r: parseInt(r, 16)
+          g: parseInt(g, 16)
+          b: parseInt(b, 16)
+          a: 1
+    
+    # not HEX
+    # shorthand color and rgb()
+    if color[0] isnt '#'
+      isRgb = color[0] is 'r' and color[1] is 'g' and color[2] is 'b'
+      # rgb color
+      if isRgb
+        rgbColor = color
+      # shorthand color name
+      if !isRgb
+        rgbColor = if !@shortColors[color]
+          @div.style.color = color
+          if @isFF or @isIE then @computedStyle(@div).color
+          else @div.style.color
+        else @shortColors[color]
+
+      regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),'
+      regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$'
+      result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor)
+      colorObj = {}
+      alpha = parseFloat(result[4] or 1)
+      if result
+        colorObj =
+          r: parseInt(result[1],10)
+          g: parseInt(result[2],10)
+          b: parseInt(result[3],10)
+          a: if alpha? and !isNaN(alpha) then alpha else 1
+    colorObj
 
   # stylePropsMap:
   #   # width:              1
