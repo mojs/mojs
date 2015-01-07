@@ -33,9 +33,9 @@ class Byte extends Bit
       @el.style.position  = 'absolute'
       @el.style.width     = size
       @el.style.height    = size
-      # console.log "#{h.prefix.css}backface-visibility"
-      @el.style['transform'] = 'translateZ(0px)'
-      @el.style["#{h.prefix.css}transform"] = 'translateZ(0px)'
+
+      @el.style['backface-visibility'] = 'hidden'
+      @el.style["#{h.prefix.css}backface-visibility"] = 'hidden'
 
       @ctx = document.createElementNS @ns, 'svg'
       @ctx.style.position  = 'absolute'

@@ -162,8 +162,8 @@
         expect(byte.el.style.position).toBe('absolute');
         expect(byte.el.style.width).toBe('3.25rem');
         expect(byte.el.style.height).toBe('3.25rem');
-        expect(byte.el.style['transform']).toBe('translateZ(0px)');
-        return expect(byte.el.style["" + h.prefix.css + "transform"]).toBe('translateZ(0px)');
+        expect(byte.el.style['backface-visibility']).toBe('hidden');
+        return expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).toBe('hidden');
       });
       it('should create bit', function() {
         var byte;
