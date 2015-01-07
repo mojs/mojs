@@ -25,9 +25,19 @@ class Byte extends Bit
     y:            0
     deg:          0
     size:         null
-  vars:-> @extendDefaults(); @calcTransform(); @calcSize()
+  vars:-> @extendDefaults(); @calcTransform()
+
+  calcTransform:->
+    @props.transform = "rotate(#{@props.deg},#{@props.center},#{@props.center})"
+
   render:->
     if !@o.ctx?
+      @ctx = document.createElementNS @ns, 'svg'
+      @ctx.style.position  = 'absolute'
+      @ctx.style.width     = '100%'
+      @ctx.style.height    = '100%'
+      @createBit(); @calcSize()
+
       @el   = document.createElement 'div'
       size  = "#{@props.size/16}rem"
       @el.style.position  = 'absolute'
@@ -37,17 +47,15 @@ class Byte extends Bit
       @el.style['backface-visibility'] = 'hidden'
       @el.style["#{h.prefix.css}backface-visibility"] = 'hidden'
 
-      @ctx = document.createElementNS @ns, 'svg'
-      @ctx.style.position  = 'absolute'
-      @ctx.style.width     = '100%'
-      @ctx.style.height    = '100%'
       @el.appendChild @ctx
       (@o.parent or document.body).appendChild @el
-    else @ctx = @o.ctx
+    else @ctx = @o.ctx; @createBit()
 
+    !@o.isDrawLess and @draw()
+
+  createBit:->
     bitClass = elsMap[@o.type or @type]
     @bit = new bitClass ctx: @ctx, isDrawLess: true
-    !@o.isDrawLess and @draw()
 
   setProgress:(progress)->
     @progress = if progress < 0 or !progress then 0
@@ -76,7 +84,7 @@ class Byte extends Bit
       strokeDashoffset:   @props.strokeDasharray
       fill:               @props.fill
       radius:             @props.radius
-      deg:                @props.deg
+      transform:          @calcTransform()
     @bit.draw()
 
   calcSize:->
@@ -90,6 +98,7 @@ class Byte extends Bit
       Math.max Math.abs(dStroke.start), Math.abs(dStroke.end)
     else @props.strokeWidth
     @props.size   = 2*radius + stroke
+    @props.size   *= @bit.ratio
     @props.center = @props.size/2
 
   extendDefaults:->

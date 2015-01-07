@@ -44,13 +44,22 @@ Byte = (function(_super) {
 
   Byte.prototype.vars = function() {
     this.extendDefaults();
-    this.calcTransform();
-    return this.calcSize();
+    return this.calcTransform();
+  };
+
+  Byte.prototype.calcTransform = function() {
+    return this.props.transform = "rotate(" + this.props.deg + "," + this.props.center + "," + this.props.center + ")";
   };
 
   Byte.prototype.render = function() {
-    var bitClass, size;
+    var size;
     if (this.o.ctx == null) {
+      this.ctx = document.createElementNS(this.ns, 'svg');
+      this.ctx.style.position = 'absolute';
+      this.ctx.style.width = '100%';
+      this.ctx.style.height = '100%';
+      this.createBit();
+      this.calcSize();
       this.el = document.createElement('div');
       size = "" + (this.props.size / 16) + "rem";
       this.el.style.position = 'absolute';
@@ -58,21 +67,22 @@ Byte = (function(_super) {
       this.el.style.height = size;
       this.el.style['backface-visibility'] = 'hidden';
       this.el.style["" + h.prefix.css + "backface-visibility"] = 'hidden';
-      this.ctx = document.createElementNS(this.ns, 'svg');
-      this.ctx.style.position = 'absolute';
-      this.ctx.style.width = '100%';
-      this.ctx.style.height = '100%';
       this.el.appendChild(this.ctx);
       (this.o.parent || document.body).appendChild(this.el);
     } else {
       this.ctx = this.o.ctx;
+      this.createBit();
     }
+    return !this.o.isDrawLess && this.draw();
+  };
+
+  Byte.prototype.createBit = function() {
+    var bitClass;
     bitClass = elsMap[this.o.type || this.type];
-    this.bit = new bitClass({
+    return this.bit = new bitClass({
       ctx: this.ctx,
       isDrawLess: true
     });
-    return !this.o.isDrawLess && this.draw();
   };
 
   Byte.prototype.setProgress = function(progress) {
@@ -104,7 +114,7 @@ Byte = (function(_super) {
       strokeDashoffset: this.props.strokeDasharray,
       fill: this.props.fill,
       radius: this.props.radius,
-      deg: this.props.deg
+      transform: this.calcTransform()
     });
     return this.bit.draw();
   };
@@ -119,6 +129,7 @@ Byte = (function(_super) {
     radius = dRadius != null ? Math.max(Math.abs(dRadius.start), Math.abs(dRadius.end)) : this.props.radius;
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
     this.props.size = 2 * radius + stroke;
+    this.props.size *= this.bit.ratio;
     return this.props.center = this.props.size / 2;
   };
 

@@ -3,6 +3,7 @@ h = require './h'
 class Bit
   ns:                   'http://www.w3.org/2000/svg'
   type:                 'line'
+  ratio:                1
   defaults:
     radius:             50
     radiusX:            null

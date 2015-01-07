@@ -150,6 +150,9 @@
       it('should have options object', function() {
         return expect(bit.o).toBeDefined();
       });
+      it('should have ratio', function() {
+        return expect(bit.ratio).toBeDefined();
+      });
       it('should have dafaults', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         bit = new Bit({

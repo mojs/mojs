@@ -101,6 +101,8 @@ describe 'Bit', ->
       expect(bit.defaults).toBeDefined()
     it 'should have options object', ->
       expect(bit.o).toBeDefined()
+    it 'should have ratio', ->
+      expect(bit.ratio).toBeDefined()
     it 'should have dafaults', ->
       svg     = document.createElementNS?(ns, "svg")
       bit     = new Bit ctx:    svg

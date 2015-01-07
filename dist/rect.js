@@ -15,6 +15,8 @@ Rect = (function(_super) {
 
   Rect.prototype.type = 'rect';
 
+  Rect.prototype.ratio = 1.43;
+
   Rect.prototype.draw = function() {
     var rad2;
     Rect.__super__.draw.apply(this, arguments);

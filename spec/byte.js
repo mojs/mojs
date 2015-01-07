@@ -1,9 +1,11 @@
 (function() {
-  var Bit, Byte, h, ns, svg;
+  var Bit, Byte, Rect, h, ns, svg;
 
   Byte = mojs.Byte;
 
   Bit = mojs.Bit;
+
+  Rect = mojs.Rect;
 
   h = mojs.helpers;
 
@@ -67,9 +69,11 @@
     it('should calculate transform object', function() {
       var byte;
       byte = new Byte({
-        deg: 90
+        deg: 90,
+        radius: 25,
+        strokeWidth: 4
       });
-      expect(byte.props.transform).toBe('rotate(90, 0, 0)');
+      expect(byte.props.transform).toBe('rotate(90,27,27)');
       return expect(byte.calcTransform).toBeDefined();
     });
     describe('size calculations ->', function() {
@@ -84,6 +88,23 @@
           }
         });
         return expect(byte.props.size).toBe(206);
+      });
+      it('should calculate size el size depending on shape\'s ratio', function() {
+        var byte, rect;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            6: 4
+          },
+          type: 'rect'
+        });
+        svg = document.createElementNS(ns, 'svg');
+        rect = new Rect({
+          ctx: svg
+        });
+        return expect(byte.props.size).toBe(206 * rect.ratio);
       });
       it('should not calculate size el size if size was passed', function() {
         var byte;
@@ -212,7 +233,7 @@
           byte.render();
           return expect(byte.draw).toHaveBeenCalled();
         });
-        return it('should not call draw method if isDrawLess option is true', function() {
+        it('should not call draw method if isDrawLess option is true', function() {
           var byte;
           byte = new Byte({
             radius: 25,
@@ -221,6 +242,63 @@
           spyOn(byte, 'draw');
           byte.render();
           return expect(byte.draw).not.toHaveBeenCalled();
+        });
+        it('should call createBit method', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25
+          });
+          spyOn(byte, 'createBit');
+          byte.render();
+          return expect(byte.createBit).toHaveBeenCalled();
+        });
+        it('should call calcSize method', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25
+          });
+          spyOn(byte, 'calcSize');
+          byte.render();
+          return expect(byte.calcSize).toHaveBeenCalled();
+        });
+        return it('should not call calcSize method id context was passed', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25,
+            ctx: svg
+          });
+          spyOn(byte, 'calcSize');
+          byte.render();
+          return expect(byte.calcSize).not.toHaveBeenCalled();
+        });
+      });
+      describe('draw method ->', function() {
+        it('should call setProp method', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25
+          });
+          spyOn(byte.bit, 'setProp');
+          byte.draw();
+          return expect(byte.bit.setProp).toHaveBeenCalled();
+        });
+        it('should call bit.draw method', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25
+          });
+          spyOn(byte.bit, 'draw');
+          byte.draw();
+          return expect(byte.bit.draw).toHaveBeenCalled();
+        });
+        return it('should call calcTransform method', function() {
+          var byte;
+          byte = new Byte({
+            radius: 25
+          });
+          spyOn(byte, 'calcTransform');
+          byte.draw();
+          return expect(byte.calcTransform).toHaveBeenCalled();
         });
       });
       describe('delta calculations ->', function() {

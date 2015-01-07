@@ -1,5 +1,6 @@
 Byte = mojs.Byte
 Bit  = mojs.Bit
+Rect = mojs.Rect
 h    = mojs.helpers
 ns   = 'http://www.w3.org/2000/svg'
 svg  = document.createElementNS?(ns, 'svg')
@@ -35,8 +36,11 @@ describe 'Byte ->', ->
     expect(byte.props.radius).toBe(45)
 
   it 'should calculate transform object', ->
-    byte = new Byte deg: 90
-    expect(byte.props.transform).toBe('rotate(90, 0, 0)')
+    byte = new Byte
+      deg: 90
+      radius:       25
+      strokeWidth:  4
+    expect(byte.props.transform).toBe('rotate(90,27,27)')
     expect(byte.calcTransform).toBeDefined()
 
   describe 'size calculations ->', ->
@@ -45,6 +49,14 @@ describe 'Byte ->', ->
         radius:       { 25: -100 }
         strokeWidth:  { 6:  4    }
       expect(byte.props.size).toBe(206)
+    it 'should calculate size el size depending on shape\'s ratio', ->
+      byte = new Byte
+        radius:       { 25: -100 }
+        strokeWidth:  { 6:  4    }
+        type:         'rect'
+      svg = document.createElementNS ns, 'svg'
+      rect  = new Rect ctx: svg
+      expect(byte.props.size).toBe(206*rect.ratio)
     it 'should not calculate size el size if size was passed', ->
       byte = new Byte
         radius:       100
@@ -127,6 +139,40 @@ describe 'Byte ->', ->
         spyOn byte, 'draw'
         byte.render()
         expect(byte.draw).not.toHaveBeenCalled()
+      it 'should call createBit method', ->
+        byte = new Byte radius: 25
+        spyOn byte, 'createBit'
+        byte.render()
+        expect(byte.createBit).toHaveBeenCalled()
+      it 'should call calcSize method', ->
+        byte = new Byte radius: 25
+        spyOn byte, 'calcSize'
+        byte.render()
+        expect(byte.calcSize).toHaveBeenCalled()
+      it 'should not call calcSize method id context was passed', ->
+        byte = new Byte radius: 25, ctx: svg
+        spyOn byte, 'calcSize'
+        byte.render()
+        expect(byte.calcSize).not.toHaveBeenCalled()
+
+    describe 'draw method ->', ->
+      it 'should call setProp method', ->
+        byte = new Byte radius: 25
+        spyOn byte.bit, 'setProp'
+        byte.draw()
+        expect(byte.bit.setProp).toHaveBeenCalled()
+      it 'should call bit.draw method', ->
+        byte = new Byte radius: 25
+        spyOn byte.bit, 'draw'
+        byte.draw()
+        expect(byte.bit.draw).toHaveBeenCalled()
+
+      it 'should call calcTransform method', ->
+        byte = new Byte radius: 25
+        spyOn byte, 'calcTransform'
+        byte.draw()
+        expect(byte.calcTransform).toHaveBeenCalled()
+
     describe 'delta calculations ->', ->
       describe 'numeric values ->', ->
         it 'should calculate delta', ->

@@ -10,6 +10,8 @@ describe 'Rect ->', ->
   describe 'defaults ->', ->
     it 'should have type of "rect"', ->
       expect(rect.type).toBe 'rect'
+    it 'should have ratio of 1.43', ->
+      expect(rect.ratio).toBe 1.43
   describe 'draw ->', ->
     it 'should add properties to el', ->
       svg     = document.createElementNS?(ns, "svg")

@@ -7,6 +7,8 @@ Bit = (function() {
 
   Bit.prototype.type = 'line';
 
+  Bit.prototype.ratio = 1;
+
   Bit.prototype.defaults = {
     radius: 50,
     radiusX: null,

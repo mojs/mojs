@@ -12,11 +12,11 @@ rect = new Byte
   x:    100
   y:    100
   deg:  45
-  radius:       { 75: 5 }
+  # deg:          { 0: 360 }
+  radius:       { 5: 75 }
   strokeWidth:  { 5: 10 }
   stroke:       { 'yellow': 'deeppink' }
-  type: 'rect'
-  # deg:          {2: 90}
+  type:         'rect'
   # parent: div
 
 setTimeout ->
