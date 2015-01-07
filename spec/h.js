@@ -4,20 +4,113 @@
   h = mojs.helpers;
 
   describe('Helpers ->', function() {
+    describe('prefix', function() {
+      return it('should have prefix', function() {
+        expect(h.prefix).toBeDefined();
+        expect(h.prefix.js).toBeDefined();
+        expect(h.prefix.css).toBeDefined();
+        expect(h.prefix.lowercase).toBeDefined();
+        return expect(h.prefix.dom).toBeDefined();
+      });
+    });
+    describe('browsers detection', function() {
+      return it('should have browsers flag', function() {
+        expect(h.isFF).toBeDefined();
+        return expect(h.isIE).toBeDefined();
+      });
+    });
     return describe('methods ->', function() {
-      describe('prefix', function() {
-        return it('should have prefix', function() {
-          expect(h.prefix).toBeDefined();
-          expect(h.prefix.js).toBeDefined();
-          expect(h.prefix.css).toBeDefined();
-          expect(h.prefix.lowercase).toBeDefined();
-          return expect(h.prefix.dom).toBeDefined();
+      describe('strToArr method', function() {
+        it('should parse string to array', function() {
+          return expect(h.strToArr('200 100').join(' ')).toBe('200 100');
+        });
+        it('should parse string with multiple spaces to array', function() {
+          return expect(h.strToArr('200   100').join(' ')).toBe('200 100');
+        });
+        it('should trim string before parse', function() {
+          return expect(h.strToArr(' 200   100 ').join(' ')).toBe('200 100');
+        });
+        it('should return array of numbers', function() {
+          return expect(h.strToArr(' 200.5   100 ')[0]).toBe(200.5);
+        });
+        return it('should throw if parsing fails', function() {
+          return expect(function() {
+            return h.strToArr(' 200.5 ,  100 ');
+          }).toThrow();
         });
       });
-      describe('browsers detection', function() {
-        return it('should have browsers flag', function() {
-          expect(h.isFF).toBeDefined();
-          return expect(h.isIE).toBeDefined();
+      describe('normDashArrays method', function() {
+        it('should normalize two inconsistent dash arrays', function() {
+          var arr1, arr2;
+          arr1 = [100, 500];
+          arr2 = [150, 200, 300.7];
+          h.normDashArrays(arr1, arr2);
+          return expect(arr1.join(' ')).toBe('100 500 0');
+        });
+        it('should normalize MODIFY passed arrays', function() {
+          var arr1, arr2;
+          arr1 = [100];
+          arr2 = [150, 200, 25];
+          h.normDashArrays(arr1, arr2);
+          return expect(arr1.join(' ')).toBe('100 0 0');
+        });
+        it('should normalize two inconsistent dash arrays #2', function() {
+          var arr1, arr2;
+          arr1 = [100, 500];
+          arr2 = [150];
+          h.normDashArrays(arr1, arr2);
+          return expect(arr1.join(' ')).toBe('100 500');
+        });
+        it('should normalize two inconsistent dash arrays #3', function() {
+          var arr1, arr2;
+          arr1 = [100];
+          arr2 = [150, 200, 17.5];
+          h.normDashArrays(arr1, arr2);
+          return expect(arr2.join(' ')).toBe('150 200 17.5');
+        });
+        return it('should should throw if one arg or nothing was passed', function() {
+          expect(function() {
+            return h.normDashArrays([100, 500]);
+          }).toThrow();
+          return expect(function() {
+            return h.normDashArrays();
+          }).toThrow();
+        });
+      });
+      describe('isArray method', function() {
+        return it('should check if variable is array', function() {
+          expect(h.isArray([])).toBe(true);
+          expect(h.isArray({})).toBe(false);
+          expect(h.isArray('')).toBe(false);
+          expect(h.isArray(2)).toBe(false);
+          expect(h.isArray(NaN)).toBe(false);
+          expect(h.isArray(null)).toBe(false);
+          return expect(h.isArray()).toBe(false);
+        });
+      });
+      describe('calcArrDelta method', function() {
+        it('should should throw if on of the args are not arrays', function() {
+          expect(function() {
+            return h.calcArrDelta([200, 300, 100], 'a');
+          }).toThrow();
+          return expect(function() {
+            return h.calcArrDelta('a', [200, 300, 100]);
+          }).toThrow();
+        });
+        it('should should throw if less then 2 arrays passed', function() {
+          expect(function() {
+            return h.calcArrDelta([200, 300, 100]);
+          }).toThrow();
+          return expect(function() {
+            return h.calcArrDelta();
+          }).toThrow();
+        });
+        return it('should calculate delta of two arrays', function() {
+          var arr1, arr2, delta;
+          arr1 = [200, 300, 100];
+          arr2 = [250, 150, 0];
+          delta = h.calcArrDelta(arr1, arr2);
+          return expect(delta.join(' ')).toBe('50 -150 -100');
         });
       });
       describe('getRadialPoint', function() {

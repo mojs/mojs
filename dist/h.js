@@ -62,6 +62,59 @@ Helpers = (function() {
     };
   };
 
+  Helpers.prototype.strToArr = function(string) {
+    var arr;
+    arr = [];
+    string.trim().split(/\s+/gim).forEach(function(str) {
+      var number;
+      number = parseFloat(str);
+      if (isNaN(number)) {
+        throw Error('Fail to parse strokeDasharray/strokeDashoffset value, check the syntax please');
+      }
+      return arr.push(number);
+    });
+    return arr;
+  };
+
+  Helpers.prototype.calcArrDelta = function(arr1, arr2) {
+    var delta, i, num, _i, _len;
+    if ((arr1 == null) || (arr2 == null)) {
+      throw Error('Two arrays should be passed');
+    }
+    if (!this.isArray(arr1) || !this.isArray(arr2)) {
+      throw Error('Two arrays expected');
+    }
+    delta = [];
+    for (i = _i = 0, _len = arr1.length; _i < _len; i = ++_i) {
+      num = arr1[i];
+      delta[i] = arr2[i] - arr1[i];
+    }
+    return delta;
+  };
+
+  Helpers.prototype.isArray = function(variable) {
+    return variable instanceof Array;
+  };
+
+  Helpers.prototype.normDashArrays = function(arr1, arr2) {
+    var arr1Len, arr2Len, i, _i, _j, _ref, _ref1;
+    if ((arr1 == null) || (arr2 == null)) {
+      throw Error('Two arrays should be passed');
+    }
+    arr1Len = arr1.length;
+    arr2Len = arr2.length;
+    if (arr1Len > arr2Len) {
+      for (i = _i = 0, _ref = arr1Len - arr2Len; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        arr2.push(0);
+      }
+    } else if (arr2Len > arr1Len) {
+      for (i = _j = 0, _ref1 = arr2Len - arr1Len; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        arr1.push(0);
+      }
+    }
+    return [arr1, arr2];
+  };
+
   Helpers.prototype.makeColorObj = function(color) {
     var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor;
     if (color[0] === '#') {

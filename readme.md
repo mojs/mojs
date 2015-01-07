@@ -3,7 +3,7 @@
 
 #### todo
 - add transition
-  - rename circle to ellipse
+- add movement arc
 - module definition to utils
 - add radial transition(burst)
 - add more shapes(bits)

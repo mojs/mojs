@@ -360,7 +360,7 @@
             return expect(radiusDelta.delta).toBe(-101);
           });
         });
-        return describe('color values ->', function() {
+        describe('color values ->', function() {
           return it('should calculate color delta', function() {
             var byte, colorDelta;
             byte = new Byte({
@@ -372,6 +372,20 @@
             expect(colorDelta.start.r).toBe(0);
             expect(colorDelta.end.r).toBe(255);
             return expect(colorDelta.delta.r).toBe(255);
+          });
+        });
+        return describe('array values ->', function() {
+          return it('should calculate array delta', function() {
+            var arrayDelta, byte;
+            byte = new Byte({
+              strokeDasharray: {
+                '200 100': '300'
+              }
+            });
+            arrayDelta = byte.deltas.strokeDasharray;
+            expect(arrayDelta.start.join(' ')).toBe('200 100');
+            expect(arrayDelta.end.join(' ')).toBe('300 0');
+            return expect(arrayDelta.delta.join(' ')).toBe('100 -100');
           });
         });
       });

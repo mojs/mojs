@@ -4,27 +4,31 @@
 Bit       = require './bit'
 Line      = require './line'
 Circle    = require './circle'
+Triangle  = require './triangle'
 Rect      = require './rect'
 h         = require './h'
 
 elsMap =
-  circle:   Circle
-  line:     Line
-  rect:     Rect
+  circle:     Circle
+  triangle:   Triangle
+  line:       Line
+  rect:       Rect
 
 class Byte extends Bit
   progress: 0
   defaults:
-    radius:       50
-    strokeWidth:  2
-    stroke:       '#ff00ff'
-    fill:         'transparent'
-    duration:     500
-    delay:        0
-    x:            0
-    y:            0
-    deg:          0
-    size:         null
+    radius:             50
+    strokeWidth:        2
+    strokeDasharray:    ''
+    strokeDashoffset:   ''
+    stroke:             '#ff00ff'
+    fill:               'transparent'
+    duration:           500
+    delay:              0
+    x:                  0
+    y:                  0
+    deg:                0
+    size:               null
   vars:-> @extendDefaults(); @calcTransform()
 
   calcTransform:->
@@ -108,7 +112,7 @@ class Byte extends Bit
       # if { 20: 75 } was passed
       optionsValue = @o[key]
       if optionsValue and typeof optionsValue is 'object'
-        start = Object.keys(optionsValue)
+        start = Object.keys(optionsValue)[0]
         # if color was passed
         if isNaN parseFloat(start)
           end           = optionsValue[start]
@@ -122,7 +126,16 @@ class Byte extends Bit
               g: endColorObj.g - startColorObj.g
               b: endColorObj.b - startColorObj.b
               a: endColorObj.a - startColorObj.a
-        else
+        else if key is 'strokeDasharray' or key is 'strokeDashoffset'
+          end   = optionsValue[start]
+          startArr  = h.strToArr start
+          endArr    = h.strToArr end
+          h.normDashArrays startArr, endArr
+          @deltas[key] =
+            start:  startArr
+            end:    endArr
+            delta:  h.calcArrDelta startArr, endArr
+        else # plain numeric value
           end   = parseFloat optionsValue[start]
           start = parseFloat start
           @deltas[key] =

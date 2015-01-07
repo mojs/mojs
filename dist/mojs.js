@@ -142,7 +142,7 @@ if (typeof window !== "undefined" && window !== null) {
 },{"./h":5}],2:[function(require,module,exports){
 
 /* istanbul ignore next */
-var Bit, Byte, Circle, Line, Rect, elsMap, h,
+var Bit, Byte, Circle, Line, Rect, Triangle, elsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -152,12 +152,15 @@ Line = require('./line');
 
 Circle = require('./circle');
 
+Triangle = require('./triangle');
+
 Rect = require('./rect');
 
 h = require('./h');
 
 elsMap = {
   circle: Circle,
+  triangle: Triangle,
   line: Line,
   rect: Rect
 };
@@ -174,6 +177,8 @@ Byte = (function(_super) {
   Byte.prototype.defaults = {
     radius: 50,
     strokeWidth: 2,
+    strokeDasharray: '',
+    strokeDashoffset: '',
     stroke: '#ff00ff',
     fill: 'transparent',
     duration: 500,
@@ -276,7 +281,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.extendDefaults = function() {
-    var defaultsValue, end, endColorObj, key, optionsValue, start, startColorObj, _ref, _results;
+    var defaultsValue, end, endArr, endColorObj, key, optionsValue, start, startArr, startColorObj, _ref, _results;
     if (this.props == null) {
       this.props = {};
     }
@@ -289,7 +294,7 @@ Byte = (function(_super) {
       defaultsValue = _ref[key];
       optionsValue = this.o[key];
       if (optionsValue && typeof optionsValue === 'object') {
-        start = Object.keys(optionsValue);
+        start = Object.keys(optionsValue)[0];
         if (isNaN(parseFloat(start))) {
           end = optionsValue[start];
           startColorObj = h.makeColorObj(start);
@@ -303,6 +308,16 @@ Byte = (function(_super) {
               b: endColorObj.b - startColorObj.b,
               a: endColorObj.a - startColorObj.a
             }
+          });
+        } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
+          end = optionsValue[start];
+          startArr = h.strToArr(start);
+          endArr = h.strToArr(end);
+          h.normDashArrays(startArr, endArr);
+          _results.push(this.deltas[key] = {
+            start: startArr,
+            end: endArr,
+            delta: h.calcArrDelta(startArr, endArr)
           });
         } else {
           end = parseFloat(optionsValue[start]);
@@ -353,7 +368,7 @@ if (typeof window !== "undefined" && window !== null) {
 
 
 
-},{"./bit":1,"./circle":3,"./h":5,"./line":6,"./rect":8}],3:[function(require,module,exports){
+},{"./bit":1,"./circle":3,"./h":5,"./line":6,"./rect":8,"./triangle":9}],3:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -543,6 +558,59 @@ Helpers = (function() {
     };
   };
 
+  Helpers.prototype.strToArr = function(string) {
+    var arr;
+    arr = [];
+    string.trim().split(/\s+/gim).forEach(function(str) {
+      var number;
+      number = parseFloat(str);
+      if (isNaN(number)) {
+        throw Error('Fail to parse strokeDasharray/strokeDashoffset value, check the syntax please');
+      }
+      return arr.push(number);
+    });
+    return arr;
+  };
+
+  Helpers.prototype.calcArrDelta = function(arr1, arr2) {
+    var delta, i, num, _i, _len;
+    if ((arr1 == null) || (arr2 == null)) {
+      throw Error('Two arrays should be passed');
+    }
+    if (!this.isArray(arr1) || !this.isArray(arr2)) {
+      throw Error('Two arrays expected');
+    }
+    delta = [];
+    for (i = _i = 0, _len = arr1.length; _i < _len; i = ++_i) {
+      num = arr1[i];
+      delta[i] = arr2[i] - arr1[i];
+    }
+    return delta;
+  };
+
+  Helpers.prototype.isArray = function(variable) {
+    return variable instanceof Array;
+  };
+
+  Helpers.prototype.normDashArrays = function(arr1, arr2) {
+    var arr1Len, arr2Len, i, _i, _j, _ref, _ref1;
+    if ((arr1 == null) || (arr2 == null)) {
+      throw Error('Two arrays should be passed');
+    }
+    arr1Len = arr1.length;
+    arr2Len = arr2.length;
+    if (arr1Len > arr2Len) {
+      for (i = _i = 0, _ref = arr1Len - arr2Len; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        arr2.push(0);
+      }
+    } else if (arr2Len > arr1Len) {
+      for (i = _j = 0, _ref1 = arr2Len - arr1Len; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        arr1.push(0);
+      }
+    }
+    return [arr1, arr2];
+  };
+
   Helpers.prototype.makeColorObj = function(color) {
     var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor;
     if (color[0] === '#') {
@@ -699,7 +767,6 @@ div = document.getElementById('js-div');
 rect = new Byte({
   x: 100,
   y: 100,
-  deg: 45,
   radius: {
     5: 75
   },
@@ -709,7 +776,7 @@ rect = new Byte({
   stroke: {
     'yellow': 'deeppink'
   },
-  type: 'rect'
+  type: 'circle'
 });
 
 setTimeout(function() {
@@ -721,7 +788,7 @@ setTimeout(function() {
     if (rect.progress === 1) {
       return clearInterval(int);
     }
-  }, 160);
+  }, 16);
 }, 1000);
 
 

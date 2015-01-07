@@ -1,18 +1,71 @@
 h  = mojs.helpers
 
 describe 'Helpers ->', ->
+  describe 'prefix', ->
+    it 'should have prefix', ->
+      expect(h.prefix).toBeDefined()
+      expect(h.prefix.js).toBeDefined()
+      expect(h.prefix.css).toBeDefined()
+      expect(h.prefix.lowercase).toBeDefined()
+      expect(h.prefix.dom).toBeDefined()
+  describe 'browsers detection', ->
+    it 'should have browsers flag', ->
+      expect(h.isFF).toBeDefined()
+      expect(h.isIE).toBeDefined()
   describe 'methods ->', ->
-    describe 'prefix', ->
-      it 'should have prefix', ->
-        expect(h.prefix).toBeDefined()
-        expect(h.prefix.js).toBeDefined()
-        expect(h.prefix.css).toBeDefined()
-        expect(h.prefix.lowercase).toBeDefined()
-        expect(h.prefix.dom).toBeDefined()
-    describe 'browsers detection', ->
-      it 'should have browsers flag', ->
-        expect(h.isFF).toBeDefined()
-        expect(h.isIE).toBeDefined()
+    describe 'strToArr method', ->
+      it 'should parse string to array',->
+        expect(h.strToArr('200 100').join ' ').toBe '200 100'
+      it 'should parse string with multiple spaces to array',->
+        expect(h.strToArr('200   100').join ' ').toBe '200 100'
+      it 'should trim string before parse',->
+        expect(h.strToArr(' 200   100 ').join ' ').toBe '200 100'
+      it 'should return array of numbers',->
+        expect(h.strToArr(' 200.5   100 ')[0]).toBe 200.5
+      it 'should throw if parsing fails',->
+        expect(-> h.strToArr(' 200.5 ,  100 ')).toThrow()
+    describe 'normDashArrays method', ->
+      it 'should normalize two inconsistent dash arrays', ->
+        arr1 = [100, 500]; arr2 = [150, 200, 300.7]
+        h.normDashArrays(arr1, arr2)
+        expect(arr1.join(' ')).toBe '100 500 0'
+      it 'should normalize MODIFY passed arrays', ->
+        arr1 = [100]; arr2 = [150, 200, 25]
+        h.normDashArrays(arr1, arr2)
+        expect(arr1.join(' ')).toBe '100 0 0'
+      it 'should normalize two inconsistent dash arrays #2', ->
+        arr1 = [100, 500]; arr2 = [150]
+        h.normDashArrays(arr1, arr2)
+        expect(arr1.join(' ')).toBe '100 500'
+      it 'should normalize two inconsistent dash arrays #3', ->
+        arr1 = [100]; arr2 = [150, 200, 17.5]
+        h.normDashArrays(arr1, arr2)
+        expect(arr2.join(' ')).toBe '150 200 17.5'
+      it 'should should throw if one arg or nothing was passed', ->
+        expect(-> h.normDashArrays([100, 500])).toThrow()
+        expect(-> h.normDashArrays()).toThrow()
+    describe 'isArray method', ->
+      it 'should check if variable is array', ->
+        expect(h.isArray []).toBe true
+        expect(h.isArray {}).toBe false
+        expect(h.isArray '').toBe false
+        expect(h.isArray 2).toBe false
+        expect(h.isArray NaN).toBe false
+        expect(h.isArray null).toBe false
+        expect(h.isArray()).toBe false
+
+    describe 'calcArrDelta method', ->
+      it 'should should throw if on of the args are not arrays', ->
+        expect(-> h.calcArrDelta([200, 300, 100], 'a')).toThrow()
+        expect(-> h.calcArrDelta('a', [200, 300, 100])).toThrow()
+
+      it 'should should throw if less then 2 arrays passed', ->
+        expect(-> h.calcArrDelta [200, 300, 100]).toThrow()
+        expect(-> h.calcArrDelta()).toThrow()
+      it 'should calculate delta of two arrays', ->
+        arr1 = [200, 300, 100]; arr2 = [250, 150, 0]
+        delta = h.calcArrDelta arr1, arr2
+        expect(delta.join ' ').toBe '50 -150 -100'
     describe 'getRadialPoint', ->
       it 'should calculate radial point', ->
         point = h.getRadialPoint

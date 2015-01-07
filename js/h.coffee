@@ -42,6 +42,40 @@ class Helpers
     css: "-" + pre + "-"
     js: pre[0].toUpperCase() + pre.substr(1)
 
+  strToArr:(string)->
+    arr = []
+    string.trim().split(/\s+/gim).forEach (str)->
+      number = parseFloat str
+      if isNaN(number)
+        throw Error 'Fail to parse strokeDasharray/strokeDashoffset value,
+         check the syntax please'
+      arr.push number
+    arr
+
+  calcArrDelta:(arr1, arr2)->
+    if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
+    if !@isArray(arr1) or !@isArray(arr2) then throw Error 'Two arrays expected'
+    delta = []
+    for num, i in arr1
+      delta[i] = arr2[i] - arr1[i]
+    delta
+
+  isArray:(variable)-> variable instanceof Array
+
+  normDashArrays:(arr1, arr2)->
+    if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
+    # newArr1 = arr1.slice(0); newArr2 = arr2.slice(0)
+    arr1Len = arr1.length; arr2Len = arr2.length
+    if arr1Len > arr2Len
+      for i in [0...arr1Len-arr2Len]
+        arr2.push 0
+    else if arr2Len > arr1Len
+      for i in [0...arr2Len-arr1Len]
+        arr1.push 0
+
+    [ arr1, arr2 ]
+
+
   makeColorObj:(color)->
     # HEX
     if color[0] is '#'

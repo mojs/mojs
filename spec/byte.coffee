@@ -4,7 +4,6 @@ Rect = mojs.Rect
 h    = mojs.helpers
 ns   = 'http://www.w3.org/2000/svg'
 svg  = document.createElementNS?(ns, 'svg')
-# circle  = new Circle ctx: svg
 
 describe 'Byte ->', ->
   describe 'extension ->', ->
@@ -208,7 +207,13 @@ describe 'Byte ->', ->
           expect(colorDelta.start.r)    .toBe   0
           expect(colorDelta.end.r)      .toBe   255
           expect(colorDelta.delta.r)    .toBe   255
-
+      describe 'array values ->', ->
+        it 'should calculate array delta', ->
+          byte = new Byte strokeDasharray:  { '200 100': '300' }
+          arrayDelta = byte.deltas.strokeDasharray  
+          expect(arrayDelta.start.join(' '))   .toBe   '200 100'
+          expect(arrayDelta.end.join(' '))     .toBe   '300 0'
+          expect(arrayDelta.delta.join(' '))   .toBe   '100 -100'
     describe 'setProgress method ->', ->
       it 'should set transition progress', ->
         byte = new Byte radius:  {'25.50': -75.50}

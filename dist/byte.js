@@ -1,6 +1,6 @@
 
 /* istanbul ignore next */
-var Bit, Byte, Circle, Line, Rect, elsMap, h,
+var Bit, Byte, Circle, Line, Rect, Triangle, elsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -10,12 +10,15 @@ Line = require('./line');
 
 Circle = require('./circle');
 
+Triangle = require('./triangle');
+
 Rect = require('./rect');
 
 h = require('./h');
 
 elsMap = {
   circle: Circle,
+  triangle: Triangle,
   line: Line,
   rect: Rect
 };
@@ -32,6 +35,8 @@ Byte = (function(_super) {
   Byte.prototype.defaults = {
     radius: 50,
     strokeWidth: 2,
+    strokeDasharray: '',
+    strokeDashoffset: '',
     stroke: '#ff00ff',
     fill: 'transparent',
     duration: 500,
@@ -134,7 +139,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.extendDefaults = function() {
-    var defaultsValue, end, endColorObj, key, optionsValue, start, startColorObj, _ref, _results;
+    var defaultsValue, end, endArr, endColorObj, key, optionsValue, start, startArr, startColorObj, _ref, _results;
     if (this.props == null) {
       this.props = {};
     }
@@ -147,7 +152,7 @@ Byte = (function(_super) {
       defaultsValue = _ref[key];
       optionsValue = this.o[key];
       if (optionsValue && typeof optionsValue === 'object') {
-        start = Object.keys(optionsValue);
+        start = Object.keys(optionsValue)[0];
         if (isNaN(parseFloat(start))) {
           end = optionsValue[start];
           startColorObj = h.makeColorObj(start);
@@ -161,6 +166,16 @@ Byte = (function(_super) {
               b: endColorObj.b - startColorObj.b,
               a: endColorObj.a - startColorObj.a
             }
+          });
+        } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
+          end = optionsValue[start];
+          startArr = h.strToArr(start);
+          endArr = h.strToArr(end);
+          h.normDashArrays(startArr, endArr);
+          _results.push(this.deltas[key] = {
+            start: startArr,
+            end: endArr,
+            delta: h.calcArrDelta(startArr, endArr)
           });
         } else {
           end = parseFloat(optionsValue[start]);

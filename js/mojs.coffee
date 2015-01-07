@@ -11,12 +11,12 @@ div       = document.getElementById 'js-div'
 rect = new Byte
   x:    100
   y:    100
-  deg:  45
+  # deg:  45
   # deg:          { 0: 360 }
   radius:       { 5: 75 }
   strokeWidth:  { 5: 10 }
   stroke:       { 'yellow': 'deeppink' }
-  type:         'rect'
+  type:         'circle'
   # parent: div
 
 setTimeout ->
@@ -26,7 +26,7 @@ setTimeout ->
     rect.draw()
     # console.log rect.props.stroke
     if rect.progress is 1 then clearInterval int
-  , 160
+  , 16
 , 1000
 
 # rect.draw()
