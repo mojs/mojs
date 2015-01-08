@@ -8,9 +8,11 @@ class Bit
     radius:             50
     radiusX:            null
     radiusY:            null
-    strokeWidth:        2
     stroke:             'hotpink'
+    strokeWidth:        2
+    strokeOpacity:      1
     fill:               'transparent'
+    fillOpacity:        1
     strokeDasharray:    ''
     strokeDashoffset:   ''
     x:                  0
@@ -50,9 +52,11 @@ class Bit
     @setAttr
       stroke:           @props.stroke
       strokeWidth:      @props.strokeWidth
+      strokeOpacity:    @props.strokeOpacity
       strokeDasharray:  @props.strokeDasharray
       strokeDashoffset: @props.strokeDashoffset
       fill:             @props.fill
+      fillOpacity:      @props.fillOpacity
       transform:        @props.transform
 
 ### istanbul ignore next ###

@@ -14,9 +14,11 @@ Bit = (function() {
     radius: 50,
     radiusX: null,
     radiusY: null,
-    strokeWidth: 2,
     stroke: 'hotpink',
+    strokeWidth: 2,
+    strokeOpacity: 1,
     fill: 'transparent',
+    fillOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
     x: 0,
@@ -100,9 +102,11 @@ Bit = (function() {
     return this.setAttr({
       stroke: this.props.stroke,
       strokeWidth: this.props.strokeWidth,
+      strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDashoffset,
       fill: this.props.fill,
+      fillOpacity: this.props.fillOpacity,
       transform: this.props.transform
     });
   };
@@ -177,10 +181,12 @@ Byte = (function(_super) {
   Byte.prototype.defaults = {
     radius: 50,
     strokeWidth: 2,
+    strokeOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
     stroke: '#ff00ff',
     fill: 'transparent',
+    fillOpacity: 1,
     duration: 500,
     delay: 0,
     x: 0,
@@ -266,9 +272,11 @@ Byte = (function(_super) {
       y: this.props.center,
       stroke: this.props.stroke,
       strokeWidth: this.props.strokeWidth,
+      strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDasharray,
       fill: this.props.fill,
+      fillOpacity: this.props.fillOpacity,
       radius: this.props.radius,
       transform: this.calcTransform()
     });
@@ -780,17 +788,9 @@ div = document.getElementById('js-div');
 rect = new Byte({
   x: 100,
   y: 100,
-  strokeWidth: {
-    5: 0
-  },
+  fill: 'hotpink',
   radius: 150,
-  stroke: {
-    'yellow': 'deeppink'
-  },
-  type: 'circle',
-  strokeDasharray: {
-    50: 150
-  }
+  type: 'circle'
 });
 
 setTimeout(function() {

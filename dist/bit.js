@@ -13,9 +13,11 @@ Bit = (function() {
     radius: 50,
     radiusX: null,
     radiusY: null,
-    strokeWidth: 2,
     stroke: 'hotpink',
+    strokeWidth: 2,
+    strokeOpacity: 1,
     fill: 'transparent',
+    fillOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
     x: 0,
@@ -99,9 +101,11 @@ Bit = (function() {
     return this.setAttr({
       stroke: this.props.stroke,
       strokeWidth: this.props.strokeWidth,
+      strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDashoffset,
       fill: this.props.fill,
+      fillOpacity: this.props.fillOpacity,
       transform: this.props.transform
     });
   };

@@ -11,14 +11,17 @@ div       = document.getElementById 'js-div'
 rect = new Byte
   x:    100
   y:    100
+  # strokeOpacity: .1
+  fill:          'hotpink'
+  # fillOpacity:   .2
   # deg:  45
   # deg:          { 0: 360 }
   # radius:       { 5: 75 }
-  strokeWidth:  { 5: 0 }
+  # strokeWidth:  { 5: 0 }
   radius:       150
-  stroke:       { 'yellow': 'deeppink' }
+  # stroke:       { 'yellow': 'deeppink' }
   type:         'circle'
-  strokeDasharray: { 50: 150 }
+  # strokeDasharray: { 50: 150 }
   # parent: div
 
 setTimeout ->

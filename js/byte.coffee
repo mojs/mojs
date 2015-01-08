@@ -19,10 +19,12 @@ class Byte extends Bit
   defaults:
     radius:             50
     strokeWidth:        2
+    strokeOpacity:      1
     strokeDasharray:    ''
     strokeDashoffset:   ''
     stroke:             '#ff00ff'
     fill:               'transparent'
+    fillOpacity:        1
     duration:           500
     delay:              0
     x:                  0
@@ -89,9 +91,11 @@ class Byte extends Bit
       y:                  @props.center
       stroke:             @props.stroke
       strokeWidth:        @props.strokeWidth
+      strokeOpacity:      @props.strokeOpacity
       strokeDasharray:    @props.strokeDasharray
       strokeDashoffset:   @props.strokeDasharray
       fill:               @props.fill
+      fillOpacity:        @props.fillOpacity
       radius:             @props.radius
       transform:          @calcTransform()
     @bit.draw()

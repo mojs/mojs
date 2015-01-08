@@ -77,7 +77,6 @@ describe 'Bit', ->
         fill:     '#0000ff'
       expect(bit.props.stroke)  .toBe '#ff0000'
       expect(bit.props.fill)    .toBe '#0000ff'
-
   describe 'setAttr method ->', ->
     it 'should have setAttr method', ->
       expect(bit.setAttr).toBeDefined()

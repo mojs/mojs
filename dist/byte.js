@@ -35,10 +35,12 @@ Byte = (function(_super) {
   Byte.prototype.defaults = {
     radius: 50,
     strokeWidth: 2,
+    strokeOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
     stroke: '#ff00ff',
     fill: 'transparent',
+    fillOpacity: 1,
     duration: 500,
     delay: 0,
     x: 0,
@@ -124,9 +126,11 @@ Byte = (function(_super) {
       y: this.props.center,
       stroke: this.props.stroke,
       strokeWidth: this.props.strokeWidth,
+      strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDasharray,
       fill: this.props.fill,
+      fillOpacity: this.props.fillOpacity,
       radius: this.props.radius,
       transform: this.calcTransform()
     });
