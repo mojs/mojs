@@ -24,6 +24,9 @@
         it('should parse string to array', function() {
           return expect(h.strToArr('200 100').join(' ')).toBe('200 100');
         });
+        it('should parse number to array', function() {
+          return expect(h.strToArr(200).join(' ')).toBe('200');
+        });
         it('should parse string with multiple spaces to array', function() {
           return expect(h.strToArr('200   100').join(' ')).toBe('200 100');
         });

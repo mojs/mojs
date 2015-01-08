@@ -13,10 +13,12 @@ rect = new Byte
   y:    100
   # deg:  45
   # deg:          { 0: 360 }
-  radius:       { 5: 75 }
-  strokeWidth:  { 5: 10 }
+  # radius:       { 5: 75 }
+  strokeWidth:  { 5: 0 }
+  radius:       150
   stroke:       { 'yellow': 'deeppink' }
   type:         'circle'
+  strokeDasharray: { 50: 150 }
   # parent: div
 
 setTimeout ->
@@ -26,7 +28,7 @@ setTimeout ->
     rect.draw()
     # console.log rect.props.stroke
     if rect.progress is 1 then clearInterval int
-  , 16
+  , 160
 , 1000
 
 # rect.draw()

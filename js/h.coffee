@@ -44,6 +44,9 @@ class Helpers
 
   strToArr:(string)->
     arr = []
+    if typeof string is 'number' and !isNaN(string)
+      arr.push string
+      return arr
     string.trim().split(/\s+/gim).forEach (str)->
       number = parseFloat str
       if isNaN(number)

@@ -65,6 +65,10 @@ Helpers = (function() {
   Helpers.prototype.strToArr = function(string) {
     var arr;
     arr = [];
+    if (typeof string === 'number' && !isNaN(string)) {
+      arr.push(string);
+      return arr;
+    }
     string.trim().split(/\s+/gim).forEach(function(str) {
       var number;
       number = parseFloat(str);

@@ -65,16 +65,21 @@ class Byte extends Bit
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
     for key, value of @deltas
-      # if not a color
-      if !value.delta.r?
-        @props[key] = value.start + value.delta*@progress
-      # if color
-      else
-        r = parseInt (value.start.r + value.delta.r*@progress), 10
-        g = parseInt (value.start.g + value.delta.g*@progress), 10
-        b = parseInt (value.start.b + value.delta.b*@progress), 10
-        a = parseInt (value.start.a + value.delta.a*@progress), 10
-        @props[key] = "rgba(#{r},#{g},#{b},#{a})"
+
+      # strokeDasharray/strokeDashoffset
+      if value.delta instanceof Array
+        @props[key] = ''
+        for num, i in value.delta
+          @props[key] += "#{value.start[i] + num*@progress} "
+      else # number or color
+        if !value.delta.r? # if not a color
+          @props[key] = value.start + value.delta*@progress
+        else # if color
+          r = parseInt (value.start.r + value.delta.r*@progress), 10
+          g = parseInt (value.start.g + value.delta.g*@progress), 10
+          b = parseInt (value.start.b + value.delta.b*@progress), 10
+          a = parseInt (value.start.a + value.delta.a*@progress), 10
+          @props[key] = "rgba(#{r},#{g},#{b},#{a})"
 
     @draw()
 

@@ -16,6 +16,8 @@ describe 'Helpers ->', ->
     describe 'strToArr method', ->
       it 'should parse string to array',->
         expect(h.strToArr('200 100').join ' ').toBe '200 100'
+      it 'should parse number to array',->
+        expect(h.strToArr(200).join ' ').toBe '200'
       it 'should parse string with multiple spaces to array',->
         expect(h.strToArr('200   100').join ' ').toBe '200 100'
       it 'should trim string before parse',->

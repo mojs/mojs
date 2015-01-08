@@ -233,19 +233,28 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setProgress = function(progress) {
-    var a, b, g, key, r, value, _ref;
+    var a, b, g, i, key, num, r, value, _i, _len, _ref, _ref1;
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     _ref = this.deltas;
     for (key in _ref) {
       value = _ref[key];
-      if (value.delta.r == null) {
-        this.props[key] = value.start + value.delta * this.progress;
+      if (value.delta instanceof Array) {
+        this.props[key] = '';
+        _ref1 = value.delta;
+        for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
+          num = _ref1[i];
+          this.props[key] += "" + (value.start[i] + num * this.progress) + " ";
+        }
       } else {
-        r = parseInt(value.start.r + value.delta.r * this.progress, 10);
-        g = parseInt(value.start.g + value.delta.g * this.progress, 10);
-        b = parseInt(value.start.b + value.delta.b * this.progress, 10);
-        a = parseInt(value.start.a + value.delta.a * this.progress, 10);
-        this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+        if (value.delta.r == null) {
+          this.props[key] = value.start + value.delta * this.progress;
+        } else {
+          r = parseInt(value.start.r + value.delta.r * this.progress, 10);
+          g = parseInt(value.start.g + value.delta.g * this.progress, 10);
+          b = parseInt(value.start.b + value.delta.b * this.progress, 10);
+          a = parseInt(value.start.a + value.delta.a * this.progress, 10);
+          this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+        }
       }
     }
     return this.draw();
@@ -561,6 +570,10 @@ Helpers = (function() {
   Helpers.prototype.strToArr = function(string) {
     var arr;
     arr = [];
+    if (typeof string === 'number' && !isNaN(string)) {
+      arr.push(string);
+      return arr;
+    }
     string.trim().split(/\s+/gim).forEach(function(str) {
       var number;
       number = parseFloat(str);
@@ -767,16 +780,17 @@ div = document.getElementById('js-div');
 rect = new Byte({
   x: 100,
   y: 100,
-  radius: {
-    5: 75
-  },
   strokeWidth: {
-    5: 10
+    5: 0
   },
+  radius: 150,
   stroke: {
     'yellow': 'deeppink'
   },
-  type: 'circle'
+  type: 'circle',
+  strokeDasharray: {
+    50: 150
+  }
 });
 
 setTimeout(function() {
@@ -788,7 +802,7 @@ setTimeout(function() {
     if (rect.progress === 1) {
       return clearInterval(int);
     }
-  }, 16);
+  }, 160);
 }, 1000);
 
 

@@ -432,6 +432,16 @@
           byte.setProgress(.5);
           return expect(byte.props.stroke).toBe('rgba(0,127,127,1)');
         });
+        it('should set strokeDasharray/strokeDashoffset value progress', function() {
+          var byte;
+          byte = new Byte({
+            strokeDasharray: {
+              '200 100': '400'
+            }
+          });
+          byte.setProgress(.5);
+          return expect(byte.props.strokeDasharray).toBe('300 50 ');
+        });
         it('should set 0 if progress is less then 0', function() {
           var byte;
           byte = new Byte({
