@@ -24,15 +24,15 @@ rect = new Byte
   # strokeDasharray: { 50: 150 }
   # parent: div
 
-setTimeout ->
-  i = 0
-  int = setInterval ->
-    rect.setProgress i++/10
-    rect.draw()
-    # console.log rect.props.stroke
-    if rect.progress is 1 then clearInterval int
-  , 160
-, 1000
+# setTimeout ->
+#   i = 0
+#   int = setInterval ->
+#     rect.setProgress i++/10
+#     rect.draw()
+#     # console.log rect.props.stroke
+#     if rect.progress is 1 then clearInterval int
+#   , 160
+# , 1000
 
 # rect.draw()
 

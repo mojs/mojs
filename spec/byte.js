@@ -139,7 +139,7 @@
         return expect(byte.props.center).toBe(103);
       });
     });
-    return describe('el creation ->', function() {
+    describe('el creation ->', function() {
       it('should create el', function() {
         var byte;
         byte = new Byte({
@@ -462,6 +462,26 @@
           byte.setProgress(2);
           return expect(byte.progress).toBe(1);
         });
+      });
+    });
+    return describe('Tweens ->', function() {
+      it('should have TWEEN object', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        return expect(byte.TWEEN).toBeDefined();
+      });
+      return it('should create tween object', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        return expect(byte.tween).toBeDefined();
       });
     });
   });

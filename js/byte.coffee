@@ -7,6 +7,7 @@ Circle    = require './circle'
 Triangle  = require './triangle'
 Rect      = require './rect'
 h         = require './h'
+TWEEN     = require './vendor/tween'
 
 elsMap =
   circle:     Circle
@@ -15,6 +16,7 @@ elsMap =
   rect:       Rect
 
 class Byte extends Bit
+  TWEEN: TWEEN
   progress: 0
   defaults:
     radius:             50
@@ -24,14 +26,15 @@ class Byte extends Bit
     strokeDashoffset:   ''
     stroke:             '#ff00ff'
     fill:               'transparent'
-    fillOpacity:        1
+    fillOpacity:        'transparent'
     duration:           500
     delay:              0
     x:                  0
     y:                  0
     deg:                0
     size:               null
-  vars:-> @extendDefaults(); @calcTransform()
+  vars:->
+    @extendDefaults(); @calcTransform()
 
   calcTransform:->
     @props.transform = "rotate(#{@props.deg},#{@props.center},#{@props.center})"
@@ -58,6 +61,7 @@ class Byte extends Bit
     else @ctx = @o.ctx; @createBit()
 
     !@o.isDrawLess and @draw()
+    @createTween()
 
   createBit:->
     bitClass = elsMap[@o.type or @type]
@@ -153,6 +157,10 @@ class Byte extends Bit
             delta:  end - start
           @props[key] = start
       else @props[key] = @o[key] or defaultsValue
+
+  createTween:->
+    @tween = new @TWEEN.Tween({ p: 0 }).to({ p: 1 })
+    console.log @tween
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

@@ -1,7 +1,7 @@
 {
   "name": "mojs",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -36,6 +36,7 @@
     "browserify": "^6.2.0",
     "browserify-istanbul": "^0.1.2",
     "browserify-shim": "~3.8.0",
+    "chalk": "^0.5.1",
     "coffeeify": "latest",
     "gulp": "latest",
     "gulp-autoprefixer": "0.0.6",
@@ -63,6 +64,7 @@
     "karma-coverage": "0.2.6",
     "karma-jasmine": "^0.2.0",
     "karma-phantomjs-launcher": "^0.1.4",
-    "nodemon": "*"
+    "nodemon": "*",
+    "run-sequence": "^1.0.2"
   }
 }

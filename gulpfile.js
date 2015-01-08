@@ -16,6 +16,7 @@ var csslint       = require('gulp-csslint');
 var browserify    = require('gulp-browserify');
 var rename        = require('gulp-rename');
 var uglify        = require('gulp-uglify');
+var sequence      = require('run-sequence');
 
 var devFolder   = '';
 var distFolder  = '';
@@ -59,30 +60,28 @@ gulp.task('stylus', function(){
           .pipe(livereload())
 });
 
+gulp.task('coffee-all + cofee:mojs', function() {
+  sequence('coffee-all', 'coffee:mojs');
+});
 
-gulp.task('coffee', function(e){
-  return gulp.src('js/mojs.coffee', { read: false })
+gulp.task('coffee:mojs', function(e){
+  return gulp.src('dist/mojs.js', { read: false })
     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-    .pipe(browserify({
-      transform:  ['coffeeify'],
-      extensions: ['.coffee']
-    }))
-    // .pipe(coffee({bare: true}))
+    .pipe(browserify())
     .pipe(rename('mojs.js'))
     .pipe(gulp.dest('dist/'))
     .pipe(uglify())
     .pipe(rename('mojs.min.js'))
     .pipe(gulp.dest('dist/'))
     .pipe(livereload())
-
 });
 
 gulp.task('coffee-all', function(e){
-  return gulp.src(['js/**/*.coffee', '!js/mojs.coffee'])
+  return gulp.src(['js/**/*.coffee'])
     .pipe(plumber())
     .pipe(coffee({ bare: true }))
     .pipe(gulp.dest('dist/'))
-    .pipe(livereload())
+    // .pipe(livereload())
 });
 
 gulp.task('coffee-lint', function(e){
@@ -128,8 +127,8 @@ gulp.task('default', function(){
     gulp.run('stylus');
   });
 
-  gulp.watch(paths.src.js, ['coffee',     'coffee-lint']);
-  gulp.watch(paths.src.js, ['coffee-all', 'coffee-lint']);
+  // gulp.watch(paths.src.js, ['coffee',     'coffee-lint']);
+  gulp.watch(paths.src.js, ['coffee-all + cofee:mojs', 'coffee-lint']);
 
   gulp.watch(paths.src.tests, function(e){
     gulp.run('coffee:tests');

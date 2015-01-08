@@ -27,7 +27,6 @@ module.exports = function(config) {
       'dist/mojs.min.js'
     ],
 
-
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
@@ -38,7 +37,7 @@ module.exports = function(config) {
     browserify: {
       debug: true,
       transform: [ 'brfs', istanbul({
-        ignore: ['**/node_modules/**', '**/spec/**'],
+        ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
       })]
     },
 

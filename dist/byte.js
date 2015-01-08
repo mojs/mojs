@@ -1,6 +1,6 @@
 
 /* istanbul ignore next */
-var Bit, Byte, Circle, Line, Rect, Triangle, elsMap, h,
+var Bit, Byte, Circle, Line, Rect, TWEEN, Triangle, elsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -16,6 +16,8 @@ Rect = require('./rect');
 
 h = require('./h');
 
+TWEEN = require('./vendor/tween');
+
 elsMap = {
   circle: Circle,
   triangle: Triangle,
@@ -30,6 +32,8 @@ Byte = (function(_super) {
     return Byte.__super__.constructor.apply(this, arguments);
   }
 
+  Byte.prototype.TWEEN = TWEEN;
+
   Byte.prototype.progress = 0;
 
   Byte.prototype.defaults = {
@@ -40,7 +44,7 @@ Byte = (function(_super) {
     strokeDashoffset: '',
     stroke: '#ff00ff',
     fill: 'transparent',
-    fillOpacity: 1,
+    fillOpacity: 'transparent',
     duration: 500,
     delay: 0,
     x: 0,
@@ -80,7 +84,8 @@ Byte = (function(_super) {
       this.ctx = this.o.ctx;
       this.createBit();
     }
-    return !this.o.isDrawLess && this.draw();
+    !this.o.isDrawLess && this.draw();
+    return this.createTween();
   };
 
   Byte.prototype.createBit = function() {
@@ -205,6 +210,15 @@ Byte = (function(_super) {
       }
     }
     return _results;
+  };
+
+  Byte.prototype.createTween = function() {
+    this.tween = new this.TWEEN.Tween({
+      p: 0
+    }).to({
+      p: 1
+    });
+    return console.log(this.tween);
   };
 
   return Byte;

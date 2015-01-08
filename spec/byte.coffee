@@ -244,6 +244,14 @@ describe 'Byte ->', ->
         byte.setProgress 2
         expect(byte.progress).toBe 1
 
+  describe 'Tweens ->', ->
+    it 'should have TWEEN object', ->
+      byte = new Byte radius:  {'25': 75}
+      expect(byte.TWEEN).toBeDefined()
+    it 'should create tween object', ->
+      byte = new Byte radius:  {'25': 75}
+      expect(byte.tween).toBeDefined()
+      
 
 
 
