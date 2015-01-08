@@ -157,7 +157,44 @@
           return expect(h.getRadialPoint).not.toThrow();
         });
       });
-      return describe('color parsing makeColorObj', function() {
+      describe('capitalize method', function() {
+        it('should capitalize strings', function() {
+          return expect(h.capitalize('hello there')).toBe('Hello there');
+        });
+        it('should should throw if bad string was passed', function() {
+          return expect(function() {
+            return h.capitalize();
+          }).toThrow();
+        });
+        return it('should should not throw with empty strings', function() {
+          return expect(function() {
+            return h.capitalize('');
+          }).not.toThrow();
+        });
+      });
+      describe('splitEasing method', function() {
+        it('should split easing string to array', function() {
+          expect(h.splitEasing('Linear.None')[0]).toBe('Linear');
+          return expect(h.splitEasing('Linear.None')[1]).toBe('None');
+        });
+        it('should return default easing Linear.None if argument is bad', function() {
+          expect(h.splitEasing(4)[0]).toBe('Linear');
+          return expect(h.splitEasing(4)[1]).toBe('None');
+        });
+        it('should return default easing Linear.None if argument is bad #2', function() {
+          expect(h.splitEasing('')[0]).toBe('Linear');
+          return expect(h.splitEasing('')[1]).toBe('None');
+        });
+        it('should return default easing Linear.None if argument is bad #3', function() {
+          expect(h.splitEasing('Linear..None')[0]).toBe('Linear');
+          return expect(h.splitEasing('Linear..None')[1]).toBe('None');
+        });
+        return it('should work with lovercase easing', function() {
+          expect(h.splitEasing('linear..none')[0]).toBe('Linear');
+          return expect(h.splitEasing('linear..none')[1]).toBe('None');
+        });
+      });
+      describe('color parsing - makeColorObj method', function() {
         it('should have shortColors map', function() {
           return expect(h.shortColors).toBeDefined();
         });
@@ -211,6 +248,73 @@
           expect(colorObj.g).toBe(200);
           expect(colorObj.b).toBe(100);
           return expect(colorObj.a).toBe(.5);
+        });
+      });
+      return describe('animation loop ->', function() {
+        it('should have TWEEN object', function() {
+          return expect(h.TWEEN).toBeDefined();
+        });
+        it('update Tweens on loop', function(dfr) {
+          var tween;
+          spyOn(h.TWEEN, 'update');
+          tween = new h.TWEEN.Tween({
+            p: 0
+          }).to({
+            p: 1
+          }, 120).start();
+          h.startAnimationLoop();
+          return setTimeout(function() {
+            expect(h.TWEEN.update).toHaveBeenCalled();
+            return dfr();
+          }, 34);
+        });
+        it('should start animation loop', function(dfr) {
+          console.log('in');
+          spyOn(h, 'animationLoop');
+          h.startAnimationLoop();
+          return setTimeout(function() {
+            expect(h.animationLoop).toHaveBeenCalled();
+            return dfr();
+          }, 160);
+        });
+        it('should stop animation loop', function(dfr) {
+          h.stopAnimationLoop();
+          return setTimeout(function() {
+            spyOn(h, 'animationLoop');
+            return setTimeout(function() {
+              expect(h.animationLoop).not.toHaveBeenCalled();
+              return dfr();
+            }, 34);
+          }, 20);
+        });
+        it('should stop itself if there is no tween left', function(dfr) {
+          var tween;
+          tween = new h.TWEEN.Tween({
+            p: 0
+          }).to({
+            p: 1
+          }, 20).start();
+          h.startAnimationLoop();
+          return setTimeout(function() {
+            spyOn(h, 'animationLoop');
+            return setTimeout(function() {
+              expect(h.animationLoop).not.toHaveBeenCalled();
+              return dfr();
+            }, 34);
+          }, 34);
+        });
+        return it('should start only 1 concurrent loop', function(dfr) {
+          h.stopAnimationLoop();
+          return setTimeout(function() {
+            spyOn(h, 'animationLoop');
+            h.isAnimateLoop = true;
+            h.startAnimationLoop();
+            return setTimeout(function() {
+              expect(h.animationLoop).not.toHaveBeenCalled();
+              h.isAnimateLoop = false;
+              return dfr();
+            }, 34);
+          }, 34);
         });
       });
     });

@@ -1,7 +1,11 @@
-var Helpers;
+var Helpers, TWEEN;
+
+TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
   Helpers.prototype.div = document.createElement('div');
+
+  Helpers.prototype.TWEEN = TWEEN;
 
   Helpers.prototype.shortColors = {
     aqua: 'rgb(0,255,255)',
@@ -30,7 +34,20 @@ Helpers = (function() {
   Helpers.prototype.vars = function() {
     this.prefix = this.getPrefix();
     this.isFF = this.prefix.lowercase === 'moz';
-    return this.isIE = this.prefix.lowercase === 'ms';
+    this.isIE = this.prefix.lowercase === 'ms';
+    return this.animationLoop = this.bind(this.animationLoop, this);
+  };
+
+  Helpers.prototype.bind = function(func, context) {
+    var bindArgs, wrapper;
+    wrapper = function() {
+      var args, unshiftArgs;
+      args = Array.prototype.slice.call(arguments);
+      unshiftArgs = bindArgs.concat(args);
+      return func.apply(context, unshiftArgs);
+    };
+    bindArgs = Array.prototype.slice.call(arguments, 2);
+    return wrapper;
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
@@ -159,6 +176,50 @@ Helpers = (function() {
       }
     }
     return colorObj;
+  };
+
+  Helpers.prototype.splitEasing = function(string) {
+    var firstPart, secondPart, split;
+    if (typeof string === 'string' && string.length) {
+      split = string.split('.');
+      firstPart = this.capitalize(split[0] || 'Linear');
+      secondPart = this.capitalize(split[1] || 'None');
+      return [firstPart, secondPart];
+    } else {
+      return ['Linear', 'None'];
+    }
+  };
+
+  Helpers.prototype.capitalize = function(str) {
+    if (typeof str !== 'string') {
+      throw Error('String expected - nothing to capitalize');
+    }
+    return str.charAt(0).toUpperCase() + str.substring(1);
+  };
+
+  Helpers.prototype.startAnimationLoop = function() {
+    if (this.isAnimateLoop) {
+      return this;
+    }
+    this.isAnimateLoop = true;
+    requestAnimationFrame(this.animationLoop);
+    return this;
+  };
+
+  Helpers.prototype.stopAnimationLoop = function() {
+    return this.isAnimateLoop = false;
+  };
+
+  Helpers.prototype.animationLoop = function() {
+    if (!this.TWEEN.getAll().length) {
+      this.isAnimateLoop = false;
+    }
+    if (!this.isAnimateLoop) {
+      return this;
+    }
+    this.TWEEN.update();
+    requestAnimationFrame(this.animationLoop);
+    return this;
   };
 
   return Helpers;

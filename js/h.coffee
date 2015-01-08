@@ -1,5 +1,8 @@
+TWEEN = require './vendor/tween'
+
 class Helpers
   div:    document.createElement 'div'
+  TWEEN:  TWEEN
   shortColors:
     aqua:   'rgb(0,255,255)'
     black:  'rgb(0,0,0)'
@@ -23,6 +26,18 @@ class Helpers
     @prefix = @getPrefix()
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
+    # console.log @animationLoop
+    @animationLoop = @bind @animationLoop, @
+
+  bind:(func, context) ->
+    wrapper = ->
+      args = Array::slice.call(arguments)
+      unshiftArgs = bindArgs.concat(args)
+      func.apply context, unshiftArgs
+    bindArgs = Array::slice.call(arguments, 2)
+    wrapper
+
+
   getRadialPoint:(o={})->
     return if !o.radius? or !o.angle? or !o.center?
     radAngle = (o.angle-90)*(Math.PI/180)
@@ -121,6 +136,31 @@ class Helpers
           b: parseInt(result[3],10)
           a: if alpha? and !isNaN(alpha) then alpha else 1
     colorObj
+
+  splitEasing:(string)->
+    if typeof string is 'string' and string.length
+      split = string.split '.'
+      firstPart   = @capitalize   split[0] or 'Linear'
+      secondPart  = @capitalize   split[1] or 'None'
+      [ firstPart, secondPart ]
+    else ['Linear', 'None']
+
+  capitalize:(str)->
+    if typeof str isnt 'string'
+      throw Error 'String expected - nothing to capitalize'
+    str.charAt(0).toUpperCase() + str.substring(1)
+  startAnimationLoop:->
+    return @ if @isAnimateLoop
+    @isAnimateLoop = true
+    requestAnimationFrame @animationLoop
+    @
+  stopAnimationLoop:-> @isAnimateLoop = false
+  animationLoop:->
+    if !@TWEEN.getAll().length then @isAnimateLoop = false
+    return @ if !@isAnimateLoop
+    @TWEEN.update()
+    requestAnimationFrame @animationLoop
+    @
 
   # stylePropsMap:
   #   # width:              1

@@ -210,6 +210,12 @@ describe 'Byte ->', ->
           expect(arrayDelta.start.join(' '))   .toBe   '200 100'
           expect(arrayDelta.end.join(' '))     .toBe   '300 0'
           expect(arrayDelta.delta.join(' '))   .toBe   '100 -100'
+      describe 'easing', ->
+        it 'should set easing option to props', ->
+          byte = new Byte easing: 'Linear.None'
+          expect(byte.props.easing).toBe 'Linear.None'
+
+
     describe 'setProgress method ->', ->
       it 'should set transition progress', ->
         byte = new Byte radius:  {'25.50': -75.50}
@@ -251,7 +257,20 @@ describe 'Byte ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}
       expect(byte.tween).toBeDefined()
-      
+    describe 'startTween method', ->
+      it 'should start tween', ()->
+        byte = new Byte radius:  {'25': 75}
+        spyOn byte.tween, 'start'
+        byte.startTween()
+        h.stopAnimationLoop()
+        expect(byte.tween.start).toHaveBeenCalled()
+      it 'should start animation loop', ->
+        byte = new Byte radius:  {'25': 75}
+        spyOn byte.h, 'startAnimationLoop'
+        byte.startTween()
+        expect(byte.h.startAnimationLoop).toHaveBeenCalled()
+
+
 
 
 

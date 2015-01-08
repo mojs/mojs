@@ -50,10 +50,12 @@ Byte = (function(_super) {
     x: 0,
     y: 0,
     deg: 0,
-    size: null
+    size: null,
+    easing: 'Linear.None'
   };
 
   Byte.prototype.vars = function() {
+    this.h = h;
     this.extendDefaults();
     return this.calcTransform();
   };
@@ -213,12 +215,21 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.createTween = function() {
-    this.tween = new this.TWEEN.Tween({
+    var eadings, it;
+    it = this;
+    eadings = h.splitEasing(this.props.easing);
+    return this.tween = new this.TWEEN.Tween({
       p: 0
     }).to({
       p: 1
+    }, this.props.duration).delay(this.props.delay).easing(TWEEN.Easing[eadings[0]][eadings[1]]).onUpdate(function() {
+      return it.setProgress(this.p);
     });
-    return console.log(this.tween);
+  };
+
+  Byte.prototype.startTween = function() {
+    this.h.startAnimationLoop();
+    return this.tween.start();
   };
 
   return Byte;

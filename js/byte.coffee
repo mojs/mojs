@@ -33,7 +33,10 @@ class Byte extends Bit
     y:                  0
     deg:                0
     size:               null
+    easing:             'Linear.None'
+
   vars:->
+    @h = h
     @extendDefaults(); @calcTransform()
 
   calcTransform:->
@@ -159,8 +162,15 @@ class Byte extends Bit
       else @props[key] = @o[key] or defaultsValue
 
   createTween:->
-    @tween = new @TWEEN.Tween({ p: 0 }).to({ p: 1 })
-    console.log @tween
+    it = @; eadings = h.splitEasing(@props.easing)
+    @tween = new @TWEEN.Tween({ p: 0 }).to({ p: 1 }, @props.duration)
+      .delay(@props.delay)
+      .easing(TWEEN.Easing[eadings[0]][eadings[1]])
+      .onUpdate -> it.setProgress @p
+  startTween:->
+    @h.startAnimationLoop()
+    @tween.start()
+
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

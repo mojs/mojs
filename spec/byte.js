@@ -374,7 +374,7 @@
             return expect(colorDelta.delta.r).toBe(255);
           });
         });
-        return describe('array values ->', function() {
+        describe('array values ->', function() {
           return it('should calculate array delta', function() {
             var arrayDelta, byte;
             byte = new Byte({
@@ -386,6 +386,15 @@
             expect(arrayDelta.start.join(' ')).toBe('200 100');
             expect(arrayDelta.end.join(' ')).toBe('300 0');
             return expect(arrayDelta.delta.join(' ')).toBe('100 -100');
+          });
+        });
+        return describe('easing', function() {
+          return it('should set easing option to props', function() {
+            var byte;
+            byte = new Byte({
+              easing: 'Linear.None'
+            });
+            return expect(byte.props.easing).toBe('Linear.None');
           });
         });
       });
@@ -474,7 +483,7 @@
         });
         return expect(byte.TWEEN).toBeDefined();
       });
-      return it('should create tween object', function() {
+      it('should create tween object', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -482,6 +491,31 @@
           }
         });
         return expect(byte.tween).toBeDefined();
+      });
+      return describe('startTween method', function() {
+        it('should start tween', function() {
+          var byte;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            }
+          });
+          spyOn(byte.tween, 'start');
+          byte.startTween();
+          h.stopAnimationLoop();
+          return expect(byte.tween.start).toHaveBeenCalled();
+        });
+        return it('should start animation loop', function() {
+          var byte;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            }
+          });
+          spyOn(byte.h, 'startAnimationLoop');
+          byte.startTween();
+          return expect(byte.h.startAnimationLoop).toHaveBeenCalled();
+        });
       });
     });
   });

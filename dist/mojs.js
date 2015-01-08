@@ -194,10 +194,12 @@ Byte = (function(_super) {
     x: 0,
     y: 0,
     deg: 0,
-    size: null
+    size: null,
+    easing: 'Linear.None'
   };
 
   Byte.prototype.vars = function() {
+    this.h = h;
     this.extendDefaults();
     return this.calcTransform();
   };
@@ -357,12 +359,21 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.createTween = function() {
-    this.tween = new this.TWEEN.Tween({
+    var eadings, it;
+    it = this;
+    eadings = h.splitEasing(this.props.easing);
+    return this.tween = new this.TWEEN.Tween({
       p: 0
     }).to({
       p: 1
+    }, this.props.duration).delay(this.props.delay).easing(TWEEN.Easing[eadings[0]][eadings[1]]).onUpdate(function() {
+      return it.setProgress(this.p);
     });
-    return console.log(this.tween);
+  };
+
+  Byte.prototype.startTween = function() {
+    this.h.startAnimationLoop();
+    return this.tween.start();
   };
 
   return Byte;
@@ -517,10 +528,14 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":1}],5:[function(require,module,exports){
-var Helpers;
+var Helpers, TWEEN;
+
+TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
   Helpers.prototype.div = document.createElement('div');
+
+  Helpers.prototype.TWEEN = TWEEN;
 
   Helpers.prototype.shortColors = {
     aqua: 'rgb(0,255,255)',
@@ -549,7 +564,20 @@ Helpers = (function() {
   Helpers.prototype.vars = function() {
     this.prefix = this.getPrefix();
     this.isFF = this.prefix.lowercase === 'moz';
-    return this.isIE = this.prefix.lowercase === 'ms';
+    this.isIE = this.prefix.lowercase === 'ms';
+    return this.animationLoop = this.bind(this.animationLoop, this);
+  };
+
+  Helpers.prototype.bind = function(func, context) {
+    var bindArgs, wrapper;
+    wrapper = function() {
+      var args, unshiftArgs;
+      args = Array.prototype.slice.call(arguments);
+      unshiftArgs = bindArgs.concat(args);
+      return func.apply(context, unshiftArgs);
+    };
+    bindArgs = Array.prototype.slice.call(arguments, 2);
+    return wrapper;
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
@@ -680,6 +708,50 @@ Helpers = (function() {
     return colorObj;
   };
 
+  Helpers.prototype.splitEasing = function(string) {
+    var firstPart, secondPart, split;
+    if (typeof string === 'string' && string.length) {
+      split = string.split('.');
+      firstPart = this.capitalize(split[0] || 'Linear');
+      secondPart = this.capitalize(split[1] || 'None');
+      return [firstPart, secondPart];
+    } else {
+      return ['Linear', 'None'];
+    }
+  };
+
+  Helpers.prototype.capitalize = function(str) {
+    if (typeof str !== 'string') {
+      throw Error('String expected - nothing to capitalize');
+    }
+    return str.charAt(0).toUpperCase() + str.substring(1);
+  };
+
+  Helpers.prototype.startAnimationLoop = function() {
+    if (this.isAnimateLoop) {
+      return this;
+    }
+    this.isAnimateLoop = true;
+    requestAnimationFrame(this.animationLoop);
+    return this;
+  };
+
+  Helpers.prototype.stopAnimationLoop = function() {
+    return this.isAnimateLoop = false;
+  };
+
+  Helpers.prototype.animationLoop = function() {
+    if (!this.TWEEN.getAll().length) {
+      this.isAnimateLoop = false;
+    }
+    if (!this.isAnimateLoop) {
+      return this;
+    }
+    this.TWEEN.update();
+    requestAnimationFrame(this.animationLoop);
+    return this;
+  };
+
   return Helpers;
 
 })();
@@ -710,7 +782,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = new Helpers;
 }
 
-},{}],6:[function(require,module,exports){
+},{"./vendor/tween":10}],6:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -791,9 +863,15 @@ rect = new Byte({
   x: 100,
   y: 100,
   fill: 'hotpink',
-  radius: 150,
+  radius: {
+    5: 75
+  },
   type: 'circle'
 });
+
+setTimeout(function() {
+  return rect.startTween();
+}, 1000);
 
 },{"./bit":1,"./byte":2,"./circle":3,"./cross":4,"./line":6,"./rect":8,"./triangle":9}],8:[function(require,module,exports){
 

@@ -16,13 +16,17 @@ rect = new Byte
   # fillOpacity:   .2
   # deg:  45
   # deg:          { 0: 360 }
-  # radius:       { 5: 75 }
+  radius:       { 5: 75 }
   # strokeWidth:  { 5: 0 }
-  radius:       150
+  # radius:       150
   # stroke:       { 'yellow': 'deeppink' }
   type:         'circle'
   # strokeDasharray: { 50: 150 }
   # parent: div
+
+setTimeout ->
+  rect.startTween()
+, 1000
 
 # setTimeout ->
 #   i = 0

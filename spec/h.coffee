@@ -91,7 +91,32 @@ describe 'Helpers ->', ->
         point = h.getRadialPoint()
         expect(point).toBeFalsy()
         expect(h.getRadialPoint).not.toThrow()
-    describe 'color parsing makeColorObj', ->
+
+    describe 'capitalize method', ->
+      it 'should capitalize strings', ->
+        expect(h.capitalize 'hello there').toBe 'Hello there'
+      it 'should should throw if bad string was passed', ->
+        expect(-> h.capitalize()).toThrow()
+      it 'should should not throw with empty strings', ->
+        expect(-> h.capitalize('')).not.toThrow()
+    describe 'splitEasing method', ->
+      it 'should split easing string to array',->
+        expect(h.splitEasing('Linear.None')[0]).toBe 'Linear'
+        expect(h.splitEasing('Linear.None')[1]).toBe 'None'
+      it 'should return default easing Linear.None if argument is bad', ->
+        expect(h.splitEasing(4)[0]).toBe 'Linear'
+        expect(h.splitEasing(4)[1]).toBe 'None'
+      it 'should return default easing Linear.None if argument is bad #2', ->
+        expect(h.splitEasing('')[0]).toBe 'Linear'
+        expect(h.splitEasing('')[1]).toBe 'None'
+      it 'should return default easing Linear.None if argument is bad #3', ->
+        expect(h.splitEasing('Linear..None')[0]).toBe 'Linear'
+        expect(h.splitEasing('Linear..None')[1]).toBe 'None'
+      it 'should work with lovercase easing', ->
+        expect(h.splitEasing('linear..none')[0]).toBe 'Linear'
+        expect(h.splitEasing('linear..none')[1]).toBe 'None'
+
+    describe 'color parsing - makeColorObj method', ->
       it 'should have shortColors map', ->
         expect(h.shortColors).toBeDefined()
       it 'should have div node', ->
@@ -132,6 +157,61 @@ describe 'Helpers ->', ->
         expect(colorObj.g)  .toBe 200
         expect(colorObj.b)  .toBe 100
         expect(colorObj.a)  .toBe .5
+    describe 'animation loop ->', ->
+      it 'should have TWEEN object', ->
+        expect(h.TWEEN).toBeDefined()
+      it 'update Tweens on loop', (dfr)->
+        spyOn h.TWEEN, 'update'
+        tween = new h.TWEEN.Tween({p:0}).to({p:1}, 120)
+          .start()
+        h.startAnimationLoop()
+        setTimeout ->
+          expect(h.TWEEN.update).toHaveBeenCalled()
+          dfr()
+        , 34
+      it 'should start animation loop', (dfr)->
+        console.log 'in'
+        spyOn h, 'animationLoop'
+        h.startAnimationLoop()
+        setTimeout ->
+          expect(h.animationLoop).toHaveBeenCalled()
+          dfr()
+        , 160
+      it 'should stop animation loop', (dfr)->
+        h.stopAnimationLoop()
+        setTimeout ->
+          spyOn h, 'animationLoop'
+          setTimeout ->
+            expect(h.animationLoop).not.toHaveBeenCalled()
+            dfr()
+          , 34
+        , 20
+
+      it 'should stop itself if there is no tween left', (dfr)->
+        tween = new h.TWEEN.Tween({p:0}).to({p:1}, 20)
+          .start()
+        h.startAnimationLoop()
+        setTimeout ->
+          spyOn h, 'animationLoop'
+          setTimeout ->
+            expect(h.animationLoop).not.toHaveBeenCalled()
+            dfr()
+          , 34
+        , 34
+
+      it 'should start only 1 concurrent loop', (dfr)->
+        h.stopAnimationLoop()
+        setTimeout ->
+          spyOn h, 'animationLoop'
+          h.isAnimateLoop = true
+          h.startAnimationLoop()
+          setTimeout ->
+            expect(h.animationLoop).not.toHaveBeenCalled()
+            h.isAnimateLoop = false
+            dfr()
+          , 34
+        , 34
+
 
 
 
