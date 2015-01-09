@@ -180,6 +180,9 @@ Helpers = (function() {
 
   Helpers.prototype.splitEasing = function(string) {
     var firstPart, secondPart, split;
+    if (typeof string === 'function') {
+      return string;
+    }
     if (typeof string === 'string' && string.length) {
       split = string.split('.');
       firstPart = this.capitalize(split[0] || 'Linear');

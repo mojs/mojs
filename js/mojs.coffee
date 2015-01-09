@@ -23,10 +23,14 @@ rect = new Byte
   type:         'circle'
   # strokeDasharray: { 50: 150 }
   # parent: div
+  easing: 'Elastic.Out'
+  duration: 500
+  sizeGap: 40
+  # onStart: -> console.log @
 
-setTimeout ->
-  rect.startTween()
-, 1000
+# setTimeout ->
+#   rect.startTween()
+# , 1000
 
 # setTimeout ->
 #   i = 0

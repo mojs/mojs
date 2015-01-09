@@ -189,9 +189,16 @@
           expect(h.splitEasing('Linear..None')[0]).toBe('Linear');
           return expect(h.splitEasing('Linear..None')[1]).toBe('None');
         });
-        return it('should work with lovercase easing', function() {
+        it('should work with lovercase easing', function() {
           expect(h.splitEasing('linear..none')[0]).toBe('Linear');
           return expect(h.splitEasing('linear..none')[1]).toBe('None');
+        });
+        return it('should work with function easing', function() {
+          var easing;
+          easing = function() {
+            return console.log('function');
+          };
+          return expect(h.splitEasing(easing) + '').toBe(easing + '');
         });
       });
       describe('color parsing - makeColorObj method', function() {
@@ -269,7 +276,6 @@
           }, 34);
         });
         it('should start animation loop', function(dfr) {
-          console.log('in');
           spyOn(h, 'animationLoop');
           h.startAnimationLoop();
           return setTimeout(function() {

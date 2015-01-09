@@ -195,7 +195,9 @@ Byte = (function(_super) {
     y: 0,
     deg: 0,
     size: null,
-    easing: 'Linear.None'
+    easing: 'Linear.None',
+    sizeGap: 0,
+    onStart: null
   };
 
   Byte.prototype.vars = function() {
@@ -231,7 +233,8 @@ Byte = (function(_super) {
       this.createBit();
     }
     !this.o.isDrawLess && this.draw();
-    return this.createTween();
+    this.createTween();
+    return this;
   };
 
   Byte.prototype.createBit = function() {
@@ -299,6 +302,7 @@ Byte = (function(_super) {
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
     this.props.size = 2 * radius + stroke;
     this.props.size *= this.bit.ratio;
+    this.props.size += 2 * this.props.sizeGap;
     return this.props.center = this.props.size / 2;
   };
 
@@ -359,19 +363,25 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.createTween = function() {
-    var eadings, it;
+    var ease, easings, it;
     it = this;
-    eadings = h.splitEasing(this.props.easing);
-    return this.tween = new this.TWEEN.Tween({
+    easings = h.splitEasing(this.props.easing);
+    ease = typeof easings === 'function' ? easings : TWEEN.Easing[easings[0]][easings[1]];
+    this.tween = new this.TWEEN.Tween({
       p: 0
     }).to({
       p: 1
-    }, this.props.duration).delay(this.props.delay).easing(TWEEN.Easing[eadings[0]][eadings[1]]).onUpdate(function() {
+    }, this.props.duration).delay(this.props.delay).easing(ease).onUpdate(function() {
       return it.setProgress(this.p);
     });
+    return !this.o.isRunLess && this.startTween();
   };
 
   Byte.prototype.startTween = function() {
+    var _ref;
+    if ((_ref = this.props.onStart) != null) {
+      _ref.call(this);
+    }
     this.h.startAnimationLoop();
     return this.tween.start();
   };
@@ -710,6 +720,9 @@ Helpers = (function() {
 
   Helpers.prototype.splitEasing = function(string) {
     var firstPart, secondPart, split;
+    if (typeof string === 'function') {
+      return string;
+    }
     if (typeof string === 'string' && string.length) {
       split = string.split('.');
       firstPart = this.capitalize(split[0] || 'Linear');
@@ -866,12 +879,11 @@ rect = new Byte({
   radius: {
     5: 75
   },
-  type: 'circle'
+  type: 'circle',
+  easing: 'Elastic.Out',
+  duration: 500,
+  sizeGap: 40
 });
-
-setTimeout(function() {
-  return rect.startTween();
-}, 1000);
 
 },{"./bit":1,"./byte":2,"./circle":3,"./cross":4,"./line":6,"./rect":8,"./triangle":9}],8:[function(require,module,exports){
 

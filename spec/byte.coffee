@@ -44,6 +44,13 @@ describe 'Byte ->', ->
         radius:       { 25: -100 }
         strokeWidth:  { 6:  4    }
       expect(byte.props.size).toBe(206)
+    it 'should have sizeGap option', ->
+      byte = new Byte
+        radius:       { 25: -100 }
+        strokeWidth:  { 6:  4    }
+        sizeGap: 40
+      expect(byte.props.size).toBe(286)
+
     it 'should calculate size el size depending on shape\'s ratio', ->
       byte = new Byte
         radius:       { 25: -100 }
@@ -210,11 +217,6 @@ describe 'Byte ->', ->
           expect(arrayDelta.start.join(' '))   .toBe   '200 100'
           expect(arrayDelta.end.join(' '))     .toBe   '300 0'
           expect(arrayDelta.delta.join(' '))   .toBe   '100 -100'
-      describe 'easing', ->
-        it 'should set easing option to props', ->
-          byte = new Byte easing: 'Linear.None'
-          expect(byte.props.easing).toBe 'Linear.None'
-
 
     describe 'setProgress method ->', ->
       it 'should set transition progress', ->
@@ -249,6 +251,13 @@ describe 'Byte ->', ->
         byte = new Byte radius:  {'25': 75}
         byte.setProgress 2
         expect(byte.progress).toBe 1
+  
+  describe 'Callbacks ->', ->
+    describe 'onStart callback', ->
+      it 'should call onStart callback',->
+        isOnStart = null
+        byte = new Byte radius:  {'25': 75}, onStart:-> isOnStart = true
+        expect(isOnStart).toBe true
 
   describe 'Tweens ->', ->
     it 'should have TWEEN object', ->
@@ -257,6 +266,27 @@ describe 'Byte ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}
       expect(byte.tween).toBeDefined()
+    it 'should start tween after init', ->
+      byte = new Byte
+        radius: {'25': 75}
+        onStart:->
+          spyOn @.tween, 'start'
+      expect(byte.tween.start).toHaveBeenCalled()
+    it 'should not start tween after init is isRunLess was passed', ->
+      isStarted = null
+      byte = new Byte
+        radius: {'25': 75}
+        isRunLess: true
+        onStart:-> isStarted = true
+      expect(isStarted).toBeFalsy()
+    it 'should have scope of byte', ->
+      isRightScope = null
+      byte = new Byte
+        radius: {'25': 75}
+        onStart:-> isRightScope = @ instanceof Byte
+      expect(isRightScope).toBe true
+
+
     describe 'startTween method', ->
       it 'should start tween', ()->
         byte = new Byte radius:  {'25': 75}
@@ -270,9 +300,23 @@ describe 'Byte ->', ->
         byte.startTween()
         expect(byte.h.startAnimationLoop).toHaveBeenCalled()
 
-
-
-
+  describe 'easing ->', ->
+    it 'should set easing option to props', ->
+      byte = new Byte easing: 'Linear.None'
+      expect(byte.props.easing).toBe 'Linear.None'
+    it 'should work with easing function', ->
+      easings = one: -> a = 1
+      byte = new Byte easing: easings.one
+      expect(byte.props.easing.toString()).toBe easings.one.toString()
+    it 'should work with easing function', (dfr)->
+      easings = one: -> a = 2
+      spyOn easings, 'one'
+      byte = new Byte easing: easings.one
+      byte.startTween()
+      setTimeout ->
+        expect(easings.one).toHaveBeenCalled()
+        dfr()
+      , 25
 
 
 

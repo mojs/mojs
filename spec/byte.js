@@ -89,6 +89,19 @@
         });
         return expect(byte.props.size).toBe(206);
       });
+      it('should have sizeGap option', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            6: 4
+          },
+          sizeGap: 40
+        });
+        return expect(byte.props.size).toBe(286);
+      });
       it('should calculate size el size depending on shape\'s ratio', function() {
         var byte, rect;
         byte = new Byte({
@@ -374,7 +387,7 @@
             return expect(colorDelta.delta.r).toBe(255);
           });
         });
-        describe('array values ->', function() {
+        return describe('array values ->', function() {
           return it('should calculate array delta', function() {
             var arrayDelta, byte;
             byte = new Byte({
@@ -386,15 +399,6 @@
             expect(arrayDelta.start.join(' ')).toBe('200 100');
             expect(arrayDelta.end.join(' ')).toBe('300 0');
             return expect(arrayDelta.delta.join(' ')).toBe('100 -100');
-          });
-        });
-        return describe('easing', function() {
-          return it('should set easing option to props', function() {
-            var byte;
-            byte = new Byte({
-              easing: 'Linear.None'
-            });
-            return expect(byte.props.easing).toBe('Linear.None');
           });
         });
       });
@@ -473,7 +477,24 @@
         });
       });
     });
-    return describe('Tweens ->', function() {
+    describe('Callbacks ->', function() {
+      return describe('onStart callback', function() {
+        return it('should call onStart callback', function() {
+          var byte, isOnStart;
+          isOnStart = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onStart: function() {
+              return isOnStart = true;
+            }
+          });
+          return expect(isOnStart).toBe(true);
+        });
+      });
+    });
+    describe('Tweens ->', function() {
       it('should have TWEEN object', function() {
         var byte;
         byte = new Byte({
@@ -491,6 +512,45 @@
           }
         });
         return expect(byte.tween).toBeDefined();
+      });
+      it('should start tween after init', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          },
+          onStart: function() {
+            return spyOn(this.tween, 'start');
+          }
+        });
+        return expect(byte.tween.start).toHaveBeenCalled();
+      });
+      it('should not start tween after init is isRunLess was passed', function() {
+        var byte, isStarted;
+        isStarted = null;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          },
+          isRunLess: true,
+          onStart: function() {
+            return isStarted = true;
+          }
+        });
+        return expect(isStarted).toBeFalsy();
+      });
+      it('should have scope of byte', function() {
+        var byte, isRightScope;
+        isRightScope = null;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          },
+          onStart: function() {
+            return isRightScope = this instanceof Byte;
+          }
+        });
+        return expect(isRightScope).toBe(true);
       });
       return describe('startTween method', function() {
         it('should start tween', function() {
@@ -516,6 +576,46 @@
           byte.startTween();
           return expect(byte.h.startAnimationLoop).toHaveBeenCalled();
         });
+      });
+    });
+    return describe('easing ->', function() {
+      it('should set easing option to props', function() {
+        var byte;
+        byte = new Byte({
+          easing: 'Linear.None'
+        });
+        return expect(byte.props.easing).toBe('Linear.None');
+      });
+      it('should work with easing function', function() {
+        var byte, easings;
+        easings = {
+          one: function() {
+            var a;
+            return a = 1;
+          }
+        };
+        byte = new Byte({
+          easing: easings.one
+        });
+        return expect(byte.props.easing.toString()).toBe(easings.one.toString());
+      });
+      return it('should work with easing function', function(dfr) {
+        var byte, easings;
+        easings = {
+          one: function() {
+            var a;
+            return a = 2;
+          }
+        };
+        spyOn(easings, 'one');
+        byte = new Byte({
+          easing: easings.one
+        });
+        byte.startTween();
+        return setTimeout(function() {
+          expect(easings.one).toHaveBeenCalled();
+          return dfr();
+        }, 25);
       });
     });
   });

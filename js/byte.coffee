@@ -34,6 +34,8 @@ class Byte extends Bit
     deg:                0
     size:               null
     easing:             'Linear.None'
+    sizeGap:            0
+    onStart:            null
 
   vars:->
     @h = h
@@ -65,6 +67,7 @@ class Byte extends Bit
 
     !@o.isDrawLess and @draw()
     @createTween()
+    @
 
   createBit:->
     bitClass = elsMap[@o.type or @type]
@@ -119,6 +122,7 @@ class Byte extends Bit
     else @props.strokeWidth
     @props.size   = 2*radius + stroke
     @props.size   *= @bit.ratio
+    @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2
 
   extendDefaults:->
@@ -162,15 +166,20 @@ class Byte extends Bit
       else @props[key] = @o[key] or defaultsValue
 
   createTween:->
-    it = @; eadings = h.splitEasing(@props.easing)
+    it = @; easings = h.splitEasing(@props.easing)
+    ease = if typeof easings is 'function' then easings
+    else TWEEN.Easing[easings[0]][easings[1]]
+    # console.log easings
     @tween = new @TWEEN.Tween({ p: 0 }).to({ p: 1 }, @props.duration)
       .delay(@props.delay)
-      .easing(TWEEN.Easing[eadings[0]][eadings[1]])
+      .easing(ease)
       .onUpdate -> it.setProgress @p
+    !@o.isRunLess and @startTween()
+
   startTween:->
+    @props.onStart?.call @
     @h.startAnimationLoop()
     @tween.start()
-
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

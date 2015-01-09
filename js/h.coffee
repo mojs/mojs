@@ -138,6 +138,7 @@ class Helpers
     colorObj
 
   splitEasing:(string)->
+    return string if typeof string is 'function'
     if typeof string is 'string' and string.length
       split = string.split '.'
       firstPart   = @capitalize   split[0] or 'Linear'

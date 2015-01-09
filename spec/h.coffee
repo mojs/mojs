@@ -116,6 +116,10 @@ describe 'Helpers ->', ->
         expect(h.splitEasing('linear..none')[0]).toBe 'Linear'
         expect(h.splitEasing('linear..none')[1]).toBe 'None'
 
+      it 'should work with function easing', ->
+        easing = -> console.log 'function'
+        expect(h.splitEasing(easing)+'').toBe easing+''
+
     describe 'color parsing - makeColorObj method', ->
       it 'should have shortColors map', ->
         expect(h.shortColors).toBeDefined()
@@ -170,7 +174,6 @@ describe 'Helpers ->', ->
           dfr()
         , 34
       it 'should start animation loop', (dfr)->
-        console.log 'in'
         spyOn h, 'animationLoop'
         h.startAnimationLoop()
         setTimeout ->
