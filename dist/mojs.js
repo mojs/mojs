@@ -189,15 +189,18 @@ Byte = (function(_super) {
     stroke: '#ff00ff',
     fill: 'transparent',
     fillOpacity: 'transparent',
-    duration: 500,
-    delay: 0,
     x: 0,
     y: 0,
     deg: 0,
     size: null,
-    easing: 'Linear.None',
     sizeGap: 0,
-    onStart: null
+    onStart: null,
+    onComplete: null,
+    duration: 500,
+    delay: 0,
+    repeat: 1,
+    yoyo: false,
+    easing: 'Linear.None'
   };
 
   Byte.prototype.vars = function() {
@@ -363,8 +366,9 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.createTween = function() {
-    var ease, easings, it;
+    var ease, easings, it, onComplete;
     it = this;
+    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
     easings = h.splitEasing(this.props.easing);
     ease = typeof easings === 'function' ? easings : TWEEN.Easing[easings[0]][easings[1]];
     this.tween = new this.TWEEN.Tween({
@@ -373,7 +377,7 @@ Byte = (function(_super) {
       p: 1
     }, this.props.duration).delay(this.props.delay).easing(ease).onUpdate(function() {
       return it.setProgress(this.p);
-    });
+    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo).onComplete(onComplete);
     return !this.o.isRunLess && this.startTween();
   };
 
@@ -881,8 +885,10 @@ rect = new Byte({
   },
   type: 'circle',
   easing: 'Elastic.Out',
-  duration: 500,
-  sizeGap: 40
+  duration: 1000,
+  sizeGap: 40,
+  repeat: 5,
+  yoyo: true
 });
 
 },{"./bit":1,"./byte":2,"./circle":3,"./cross":4,"./line":6,"./rect":8,"./triangle":9}],8:[function(require,module,exports){

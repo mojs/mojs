@@ -27,15 +27,20 @@ class Byte extends Bit
     stroke:             '#ff00ff'
     fill:               'transparent'
     fillOpacity:        'transparent'
-    duration:           500
-    delay:              0
     x:                  0
     y:                  0
     deg:                0
     size:               null
-    easing:             'Linear.None'
     sizeGap:            0
+    
     onStart:            null
+    onComplete:         null
+
+    duration:           500
+    delay:              0
+    repeat:             1
+    yoyo:               false
+    easing:             'Linear.None'
 
   vars:->
     @h = h
@@ -166,14 +171,21 @@ class Byte extends Bit
       else @props[key] = @o[key] or defaultsValue
 
   createTween:->
-    it = @; easings = h.splitEasing(@props.easing)
+    it = @
+    onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
+    else null
+
+    easings = h.splitEasing(@props.easing)
     ease = if typeof easings is 'function' then easings
     else TWEEN.Easing[easings[0]][easings[1]]
-    # console.log easings
+
     @tween = new @TWEEN.Tween({ p: 0 }).to({ p: 1 }, @props.duration)
       .delay(@props.delay)
       .easing(ease)
       .onUpdate -> it.setProgress @p
+      .repeat @props.repeat-1
+      .yoyo @props.yoyo
+      .onComplete onComplete
     !@o.isRunLess and @startTween()
 
   startTween:->

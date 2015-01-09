@@ -258,6 +258,33 @@ describe 'Byte ->', ->
         isOnStart = null
         byte = new Byte radius:  {'25': 75}, onStart:-> isOnStart = true
         expect(isOnStart).toBe true
+      it 'should have scope of byte', ->
+        isRightScope = null
+        byte = new Byte
+          radius: {'25': 75}
+          onStart:-> isRightScope = @ instanceof Byte
+        expect(isRightScope).toBe true
+    describe 'onComplete callback', ->
+      it 'should call onComplete callback',(dfr)->
+        isOnComplete = null
+        byte = new Byte
+          radius:  {'25': 75}
+          onComplete:-> isOnComplete = true
+          duration: 10
+        setTimeout ->
+          expect(isOnComplete).toBe true
+          dfr()
+        , 20
+      it 'should have scope of byte', (dfr)->
+        isRightScope = null
+        byte = new Byte
+          radius: {'25': 75}
+          onComplete:-> isRightScope = @ instanceof Byte
+          duration: 20
+        setTimeout ->
+          expect(isRightScope).toBe true
+          dfr()
+        , 40
 
   describe 'Tweens ->', ->
     it 'should have TWEEN object', ->
@@ -279,14 +306,6 @@ describe 'Byte ->', ->
         isRunLess: true
         onStart:-> isStarted = true
       expect(isStarted).toBeFalsy()
-    it 'should have scope of byte', ->
-      isRightScope = null
-      byte = new Byte
-        radius: {'25': 75}
-        onStart:-> isRightScope = @ instanceof Byte
-      expect(isRightScope).toBe true
-
-
     describe 'startTween method', ->
       it 'should start tween', ()->
         byte = new Byte radius:  {'25': 75}

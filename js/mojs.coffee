@@ -23,9 +23,11 @@ rect = new Byte
   type:         'circle'
   # strokeDasharray: { 50: 150 }
   # parent: div
-  easing: 'Elastic.Out'
-  duration: 500
-  sizeGap: 40
+  easing:   'Elastic.Out'
+  duration: 1000
+  sizeGap:  40
+  repeat:   5
+  yoyo:     true
   # onStart: -> console.log @
 
 # setTimeout ->

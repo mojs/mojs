@@ -478,8 +478,8 @@
       });
     });
     describe('Callbacks ->', function() {
-      return describe('onStart callback', function() {
-        return it('should call onStart callback', function() {
+      describe('onStart callback', function() {
+        it('should call onStart callback', function() {
           var byte, isOnStart;
           isOnStart = null;
           byte = new Byte({
@@ -491,6 +491,55 @@
             }
           });
           return expect(isOnStart).toBe(true);
+        });
+        return it('should have scope of byte', function() {
+          var byte, isRightScope;
+          isRightScope = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onStart: function() {
+              return isRightScope = this instanceof Byte;
+            }
+          });
+          return expect(isRightScope).toBe(true);
+        });
+      });
+      return describe('onComplete callback', function() {
+        it('should call onComplete callback', function(dfr) {
+          var byte, isOnComplete;
+          isOnComplete = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onComplete: function() {
+              return isOnComplete = true;
+            },
+            duration: 10
+          });
+          return setTimeout(function() {
+            expect(isOnComplete).toBe(true);
+            return dfr();
+          }, 20);
+        });
+        return it('should have scope of byte', function(dfr) {
+          var byte, isRightScope;
+          isRightScope = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onComplete: function() {
+              return isRightScope = this instanceof Byte;
+            },
+            duration: 20
+          });
+          return setTimeout(function() {
+            expect(isRightScope).toBe(true);
+            return dfr();
+          }, 40);
         });
       });
     });
@@ -538,19 +587,6 @@
           }
         });
         return expect(isStarted).toBeFalsy();
-      });
-      it('should have scope of byte', function() {
-        var byte, isRightScope;
-        isRightScope = null;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          },
-          onStart: function() {
-            return isRightScope = this instanceof Byte;
-          }
-        });
-        return expect(isRightScope).toBe(true);
       });
       return describe('startTween method', function() {
         it('should start tween', function() {
