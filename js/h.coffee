@@ -21,12 +21,21 @@ class Helpers
     white:  'rgb(255,255,255)'
     yellow: 'rgb(255,255,0)'
     orange: 'rgb(255,128,0)'
+  tweenOptionMap:
+    duration:     1
+    delay:        1
+    repeat:       1
+    easing:       1
+    yoyo:         1
+    onStart:      1
+    onComplete:   1
+    onUpdate:     1
+
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
-    # console.log @animationLoop
     @animationLoop = @bind @animationLoop, @
 
   bind:(func, context) ->

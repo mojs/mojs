@@ -42,9 +42,7 @@ class Byte extends Bit
     yoyo:               false
     easing:             'Linear.None'
 
-  vars:->
-    @h = h
-    @extendDefaults(); @calcTransform()
+  vars:-> @h = h; @extendDefaults(); @calcTransform()
 
   calcTransform:->
     @props.transform = "rotate(#{@props.deg},#{@props.center},#{@props.center})"
@@ -160,13 +158,19 @@ class Byte extends Bit
             start:  startArr
             end:    endArr
             delta:  h.calcArrDelta startArr, endArr
-        else # plain numeric value
-          end   = parseFloat optionsValue[start]
-          start = parseFloat start
-          @deltas[key] =
-            start:  start
-            end:    end
-            delta:  end - start
+        ## plain numeric value ##
+        else
+          ## filter tween-related properties
+          # defined in helpers.tweenOptionMap
+          # because tween-related props shouldn't
+          ## have deltas
+          if !@h.tweenOptionMap[key]
+            end   = parseFloat optionsValue[start]
+            start = parseFloat start
+            @deltas[key] =
+              start:  start
+              end:    end
+              delta:  end - start
           @props[key] = start
       else @props[key] = @o[key] or defaultsValue
 

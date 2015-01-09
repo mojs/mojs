@@ -349,13 +349,15 @@ Byte = (function(_super) {
             delta: h.calcArrDelta(startArr, endArr)
           });
         } else {
-          end = parseFloat(optionsValue[start]);
-          start = parseFloat(start);
-          this.deltas[key] = {
-            start: start,
-            end: end,
-            delta: end - start
-          };
+          if (!this.h.tweenOptionMap[key]) {
+            end = parseFloat(optionsValue[start]);
+            start = parseFloat(start);
+            this.deltas[key] = {
+              start: start,
+              end: end,
+              delta: end - start
+            };
+          }
           _results.push(this.props[key] = start);
         }
       } else {
@@ -569,6 +571,17 @@ Helpers = (function() {
     white: 'rgb(255,255,255)',
     yellow: 'rgb(255,255,0)',
     orange: 'rgb(255,128,0)'
+  };
+
+  Helpers.prototype.tweenOptionMap = {
+    duration: 1,
+    delay: 1,
+    repeat: 1,
+    easing: 1,
+    yoyo: 1,
+    onStart: 1,
+    onComplete: 1,
+    onUpdate: 1
   };
 
   function Helpers() {

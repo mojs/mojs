@@ -19,6 +19,21 @@
         return expect(h.isIE).toBeDefined();
       });
     });
+    describe('tween related map ->', function() {
+      return it('should be a map of tween related options ->', function() {
+        var mapLen;
+        expect(h.tweenOptionMap.duration).toBe(1);
+        expect(h.tweenOptionMap.delay).toBe(1);
+        expect(h.tweenOptionMap.repeat).toBe(1);
+        expect(h.tweenOptionMap.easing).toBe(1);
+        expect(h.tweenOptionMap.yoyo).toBe(1);
+        expect(h.tweenOptionMap.onStart).toBe(1);
+        expect(h.tweenOptionMap.onComplete).toBe(1);
+        expect(h.tweenOptionMap.onUpdate).toBe(1);
+        mapLen = Object.keys(h.tweenOptionMap).length;
+        return expect(mapLen).toBe(8);
+      });
+    });
     return describe('methods ->', function() {
       describe('strToArr method', function() {
         it('should parse string to array', function() {

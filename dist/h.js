@@ -27,6 +27,17 @@ Helpers = (function() {
     orange: 'rgb(255,128,0)'
   };
 
+  Helpers.prototype.tweenOptionMap = {
+    duration: 1,
+    delay: 1,
+    repeat: 1,
+    easing: 1,
+    yoyo: 1,
+    onStart: 1,
+    onComplete: 1,
+    onUpdate: 1
+  };
+
   function Helpers() {
     this.vars();
   }

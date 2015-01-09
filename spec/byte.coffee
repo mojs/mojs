@@ -217,6 +217,12 @@ describe 'Byte ->', ->
           expect(arrayDelta.start.join(' '))   .toBe   '200 100'
           expect(arrayDelta.end.join(' '))     .toBe   '300 0'
           expect(arrayDelta.delta.join(' '))   .toBe   '100 -100'
+      describe 'tween-related values ->', ->
+        it 'should not calc delta for tween related props', ->
+          byte = new Byte
+            duration:  { 2000: 1000 }
+            isRunLess: true
+          expect(byte.deltas.duration).not.toBeDefined()
 
     describe 'setProgress method ->', ->
       it 'should set transition progress', ->
@@ -237,12 +243,10 @@ describe 'Byte ->', ->
         colorDelta = byte.deltas.stroke
         byte.setProgress .5
         expect(byte.props.stroke).toBe 'rgba(0,127,127,1)'
-
       it 'should set strokeDasharray/strokeDashoffset value progress', ->
         byte = new Byte strokeDasharray:  {'200 100': '400'}
         byte.setProgress .5
         expect(byte.props.strokeDasharray).toBe '300 50 '
-
       it 'should set 0 if progress is less then 0', ->
         byte = new Byte radius:  {'25': 75}
         byte.setProgress -1
@@ -251,7 +255,6 @@ describe 'Byte ->', ->
         byte = new Byte radius:  {'25': 75}
         byte.setProgress 2
         expect(byte.progress).toBe 1
-  
   describe 'Callbacks ->', ->
     describe 'onStart callback', ->
       it 'should call onStart callback',->
@@ -270,11 +273,11 @@ describe 'Byte ->', ->
         byte = new Byte
           radius:  {'25': 75}
           onComplete:-> isOnComplete = true
-          duration: 10
+          duration: 20
         setTimeout ->
           expect(isOnComplete).toBe true
           dfr()
-        , 20
+        , 40
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -285,7 +288,6 @@ describe 'Byte ->', ->
           expect(isRightScope).toBe true
           dfr()
         , 40
-
   describe 'Tweens ->', ->
     it 'should have TWEEN object', ->
       byte = new Byte radius:  {'25': 75}

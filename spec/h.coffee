@@ -12,6 +12,20 @@ describe 'Helpers ->', ->
     it 'should have browsers flag', ->
       expect(h.isFF).toBeDefined()
       expect(h.isIE).toBeDefined()
+
+  describe 'tween related map ->', ->
+    it 'should be a map of tween related options ->', ->
+      expect(h.tweenOptionMap.duration)   .toBe 1
+      expect(h.tweenOptionMap.delay)      .toBe 1
+      expect(h.tweenOptionMap.repeat)     .toBe 1
+      expect(h.tweenOptionMap.easing)     .toBe 1
+      expect(h.tweenOptionMap.yoyo)       .toBe 1
+      expect(h.tweenOptionMap.onStart)    .toBe 1
+      expect(h.tweenOptionMap.onComplete) .toBe 1
+      expect(h.tweenOptionMap.onUpdate)   .toBe 1
+      mapLen = Object.keys(h.tweenOptionMap).length
+      expect(mapLen)                      .toBe 8
+
   describe 'methods ->', ->
     describe 'strToArr method', ->
       it 'should parse string to array',->

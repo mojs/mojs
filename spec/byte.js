@@ -387,7 +387,7 @@
             return expect(colorDelta.delta.r).toBe(255);
           });
         });
-        return describe('array values ->', function() {
+        describe('array values ->', function() {
           return it('should calculate array delta', function() {
             var arrayDelta, byte;
             byte = new Byte({
@@ -399,6 +399,18 @@
             expect(arrayDelta.start.join(' ')).toBe('200 100');
             expect(arrayDelta.end.join(' ')).toBe('300 0');
             return expect(arrayDelta.delta.join(' ')).toBe('100 -100');
+          });
+        });
+        return describe('tween-related values ->', function() {
+          return it('should not calc delta for tween related props', function() {
+            var byte;
+            byte = new Byte({
+              duration: {
+                2000: 1000
+              },
+              isRunLess: true
+            });
+            return expect(byte.deltas.duration).not.toBeDefined();
           });
         });
       });
@@ -517,12 +529,12 @@
             onComplete: function() {
               return isOnComplete = true;
             },
-            duration: 10
+            duration: 20
           });
           return setTimeout(function() {
             expect(isOnComplete).toBe(true);
             return dfr();
-          }, 20);
+          }, 40);
         });
         return it('should have scope of byte', function(dfr) {
           var byte, isRightScope;

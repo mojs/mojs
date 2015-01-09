@@ -3,8 +3,8 @@
 
 #### todo
 - add transition
-  - add more tween options
   - filter tween related options
+  - cover setProgress from tween
   - add positioning, opacity
   - rename to transition
 - make refactor

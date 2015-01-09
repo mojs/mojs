@@ -205,13 +205,15 @@ Byte = (function(_super) {
             delta: h.calcArrDelta(startArr, endArr)
           });
         } else {
-          end = parseFloat(optionsValue[start]);
-          start = parseFloat(start);
-          this.deltas[key] = {
-            start: start,
-            end: end,
-            delta: end - start
-          };
+          if (!this.h.tweenOptionMap[key]) {
+            end = parseFloat(optionsValue[start]);
+            start = parseFloat(start);
+            this.deltas[key] = {
+              start: start,
+              end: end,
+              delta: end - start
+            };
+          }
           _results.push(this.props[key] = start);
         }
       } else {
