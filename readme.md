@@ -3,9 +3,10 @@
 
 #### todo
 - add transition
-  - filter tween related options
-  - cover setProgress from tween
-  - add positioning, opacity
+  - add position, opacity
+  - add percent values for strokeDasharray/strokedashOffset
+  - add strokeLinecap options
+  - add chains
   - rename to transition
 - make refactor
   - module definition to utils
@@ -20,6 +21,7 @@
 - add spriter
 - add glare (is transition shorthand)
 - add stagger
+- add camera glare
 - add backgrounds
 - add line trails
 - add text tricks

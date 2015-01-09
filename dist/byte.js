@@ -52,6 +52,7 @@ Byte = (function(_super) {
     sizeGap: 0,
     onStart: null,
     onComplete: null,
+    onUpdate: null,
     duration: 500,
     delay: 0,
     repeat: 1,
@@ -106,16 +107,19 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setProgress = function(progress) {
-    var a, b, g, i, key, num, r, value, _i, _len, _ref, _ref1;
+    var a, b, g, i, key, num, r, value, _i, _len, _ref, _ref1, _ref2;
+    if ((_ref = this.props.onUpdate) != null) {
+      _ref.call(this, progress);
+    }
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
-    _ref = this.deltas;
-    for (key in _ref) {
-      value = _ref[key];
+    _ref1 = this.deltas;
+    for (key in _ref1) {
+      value = _ref1[key];
       if (value.delta instanceof Array) {
         this.props[key] = '';
-        _ref1 = value.delta;
-        for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
-          num = _ref1[i];
+        _ref2 = value.delta;
+        for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
+          num = _ref2[i];
           this.props[key] += "" + (value.start[i] + num * this.progress) + " ";
         }
       } else {
@@ -141,7 +145,7 @@ Byte = (function(_super) {
       strokeWidth: this.props.strokeWidth,
       strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
-      strokeDashoffset: this.props.strokeDasharray,
+      strokeDashoffset: this.props.strokeDashoffset,
       fill: this.props.fill,
       fillOpacity: this.props.fillOpacity,
       radius: this.props.radius,

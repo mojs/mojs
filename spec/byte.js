@@ -518,6 +518,58 @@
           return expect(isRightScope).toBe(true);
         });
       });
+      describe('onUpdate callback', function() {
+        it('should call onUpdate callback', function(dfr) {
+          var byte, isOnUpdate;
+          isOnUpdate = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onUpdate: function() {
+              return isOnUpdate = true;
+            }
+          });
+          return setTimeout(function() {
+            expect(isOnUpdate).toBe(true);
+            return dfr();
+          }, 34);
+        });
+        it('should have scope of byte', function(dfr) {
+          var byte, isRightScope;
+          isRightScope = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onUpdate: function() {
+              return isRightScope = this instanceof Byte;
+            }
+          });
+          return setTimeout(function() {
+            expect(isRightScope).toBe(true);
+            return dfr();
+          }, 34);
+        });
+        return it('should set current progress', function(dfr) {
+          var byte, progress;
+          progress = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onUpdate: function(p) {
+              return progress = p;
+            },
+            duration: 64
+          });
+          return setTimeout(function() {
+            expect(progress).toBeGreaterThan(0);
+            expect(progress).not.toBeGreaterThan(1);
+            return dfr();
+          }, 34);
+        });
+      });
       return describe('onComplete callback', function() {
         it('should call onComplete callback', function(dfr) {
           var byte, isOnComplete;

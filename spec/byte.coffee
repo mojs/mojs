@@ -156,7 +156,6 @@ describe 'Byte ->', ->
         spyOn byte, 'calcSize'
         byte.render()
         expect(byte.calcSize).not.toHaveBeenCalled()
-
     describe 'draw method ->', ->
       it 'should call setProp method', ->
         byte = new Byte radius: 25
@@ -168,13 +167,11 @@ describe 'Byte ->', ->
         spyOn byte.bit, 'draw'
         byte.draw()
         expect(byte.bit.draw).toHaveBeenCalled()
-
       it 'should call calcTransform method', ->
         byte = new Byte radius: 25
         spyOn byte, 'calcTransform'
         byte.draw()
         expect(byte.calcTransform).toHaveBeenCalled()
-
     describe 'delta calculations ->', ->
       describe 'numeric values ->', ->
         it 'should calculate delta', ->
@@ -223,7 +220,6 @@ describe 'Byte ->', ->
             duration:  { 2000: 1000 }
             isRunLess: true
           expect(byte.deltas.duration).not.toBeDefined()
-
     describe 'setProgress method ->', ->
       it 'should set transition progress', ->
         byte = new Byte radius:  {'25.50': -75.50}
@@ -267,6 +263,38 @@ describe 'Byte ->', ->
           radius: {'25': 75}
           onStart:-> isRightScope = @ instanceof Byte
         expect(isRightScope).toBe true
+
+
+    describe 'onUpdate callback', ->
+      it 'should call onUpdate callback', (dfr)->
+        isOnUpdate = null
+        byte = new Byte radius:  {'25': 75}, onUpdate:-> isOnUpdate = true
+        setTimeout ->
+          expect(isOnUpdate).toBe true
+          dfr()
+        , 34
+      it 'should have scope of byte', (dfr)->
+        isRightScope = null
+        byte = new Byte
+          radius: {'25': 75}
+          onUpdate:-> isRightScope = @ instanceof Byte
+        setTimeout ->
+          expect(isRightScope).toBe true
+          dfr()
+        , 34
+
+      it 'should set current progress', (dfr)->
+        progress = null
+        byte = new Byte
+          radius: {'25': 75}
+          onUpdate:(p)-> progress = p
+          duration: 64
+        setTimeout ->
+          expect(progress).toBeGreaterThan 0
+          expect(progress).not.toBeGreaterThan 1
+          dfr()
+        , 34
+
     describe 'onComplete callback', ->
       it 'should call onComplete callback',(dfr)->
         isOnComplete = null

@@ -35,6 +35,7 @@ class Byte extends Bit
     
     onStart:            null
     onComplete:         null
+    onUpdate:           null
 
     duration:           500
     delay:              0
@@ -77,10 +78,11 @@ class Byte extends Bit
     @bit = new bitClass ctx: @ctx, isDrawLess: true
 
   setProgress:(progress)->
+    @props.onUpdate?.call(@, progress)
+
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
     for key, value of @deltas
-
       # strokeDasharray/strokeDashoffset
       if value.delta instanceof Array
         @props[key] = ''
@@ -95,7 +97,6 @@ class Byte extends Bit
           b = parseInt (value.start.b + value.delta.b*@progress), 10
           a = parseInt (value.start.a + value.delta.a*@progress), 10
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
-
     @draw()
 
   draw:->
@@ -106,7 +107,7 @@ class Byte extends Bit
       strokeWidth:        @props.strokeWidth
       strokeOpacity:      @props.strokeOpacity
       strokeDasharray:    @props.strokeDasharray
-      strokeDashoffset:   @props.strokeDasharray
+      strokeDashoffset:   @props.strokeDashoffset
       fill:               @props.fill
       fillOpacity:        @props.fillOpacity
       radius:             @props.radius
@@ -154,6 +155,7 @@ class Byte extends Bit
           startArr  = h.strToArr start
           endArr    = h.strToArr end
           h.normDashArrays startArr, endArr
+
           @deltas[key] =
             start:  startArr
             end:    endArr

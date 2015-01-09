@@ -9,26 +9,17 @@ svg       = document.getElementById 'js-svg'
 div       = document.getElementById 'js-div'
 
 rect = new Byte
-  x:    100
-  y:    100
-  # strokeOpacity: .1
-  fill:          'hotpink'
-  # fillOpacity:   .2
-  # deg:  45
-  # deg:          { 0: 360 }
-  radius:       { 5: 75 }
-  # strokeWidth:  { 5: 0 }
-  # radius:       150
-  # stroke:       { 'yellow': 'deeppink' }
-  type:         'circle'
-  # strokeDasharray: { 50: 150 }
-  # parent: div
-  easing:   'Elastic.Out'
-  duration: 1000
-  sizeGap:  40
-  repeat:   5
-  yoyo:     true
-  # onStart: -> console.log @
+  type: 'line'
+  radius:       75
+  strokeWidth: {5:0}
+  strokeDasharray: 2*75
+  strokeDashoffset: { 150: -150 }
+  duration: 600
+  deg: 50
+  isDrawLess: true
+  delay: 2000
+
+  # repeat: 10
 
 # setTimeout ->
 #   rect.startTween()
