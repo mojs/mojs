@@ -9,6 +9,8 @@
   - rename to transition
 - make refactor
   - module definition to utils
+  - draw on render to setPosition 0
+  - shiftX <-> x
   - create animation map for props that should be animated and draw only them
   - extend to utils?
   - fix triangle

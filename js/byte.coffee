@@ -27,8 +27,7 @@ class Byte extends Bit
     stroke:             '#ff00ff'
     fill:               'transparent'
     fillOpacity:        'transparent'
-    x:                  0
-    y:                  0
+
     deg:                0
     size:               null
     sizeGap:            0
@@ -42,6 +41,11 @@ class Byte extends Bit
     repeat:             1
     yoyo:               false
     easing:             'Linear.None'
+
+    x:                  0
+    y:                  0
+    shiftX:             0
+    shiftY:             0
 
   vars:-> @h = h; @extendDefaults(); @calcTransform()
 
@@ -95,7 +99,6 @@ class Byte extends Bit
         when 'unit'
           units = value.end.unit
           @props[key] = "#{value.start.value+value.delta*@progress}#{units}"
-          # console.log 'unit', key, @props[key]
         when 'color'
           r = parseInt (value.start.r + value.delta.r*@progress), 10
           g = parseInt (value.start.g + value.delta.g*@progress), 10
@@ -123,6 +126,12 @@ class Byte extends Bit
       @el.style.left = @props.x
       @el.style.top  = @props.y
 
+      x = @props.shiftX; y = @props.shiftY
+      transform = "#{@h.prefix}transform"
+      translate = "translate(#{x}, #{y})"
+      @el.style[transform]   = translate
+      @el.style['transform'] = translate
+
   calcSize:->
     return if @o.size? or @o.ctx
 
@@ -146,9 +155,9 @@ class Byte extends Bit
       # if non-object value - just save it to @props
       if !(optionsValue and typeof optionsValue is 'object')
         @props[key] = @o[key] or defaultsValue
-        # position property parse with ubits
+        # position property parse with units
         if @h.posPropsMap[key]
-          @props[key] = @h.parseUnit @props[key]
+          @props[key] = @h.parseUnit(@props[key]).string
         continue
       # if delta object was passed: like { 20: 75 }
       start = Object.keys(optionsValue)[0]
@@ -193,6 +202,7 @@ class Byte extends Bit
               end:    end
               delta:  end.value - start.value
               type:   'unit'
+            @props[key] = start.string
           else
             end   = parseFloat optionsValue[start]
             start = parseFloat start
@@ -201,8 +211,8 @@ class Byte extends Bit
               end:    end
               delta:  end - start
               type:   'number'
-        @props[key] = start
-      # else @props[key] = @o[key] or defaultsValue
+            @props[key] = start
+        else @props[key] = start
 
   createTween:->
     it = @

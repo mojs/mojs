@@ -128,28 +128,71 @@ describe 'Byte ->', ->
         parent: div
       expect(byte.el.parentNode.isDiv).toBe true
     describe 'position set ->', ->
-      it 'should set a position with respect to units', ->
-        byte = new Byte
-          x: 100
-          y: 50
-        expect(byte.el.style.left)   .toBe '100px'
-        expect(byte.el.style.top)    .toBe '50px'
-      it 'should animate position', (dfr)->
-        byte = new Byte
-          x: {100: '200px'}
-          duration: 20
-        setTimeout ->
-          expect(byte.el.style.left)   .toBe '200px'
-          dfr()
-        , 40
-      it 'should animate position with respect to units', (dfr)->
-        byte = new Byte
-          x: {'20%': '50%'}
-          duration: 20
-        setTimeout ->
-          expect(byte.el.style.left)   .toBe '50%'
-          dfr()
-        , 40
+      describe 'x/y coordinates ->', ->
+        it 'should set a position with respect to units', ->
+          byte = new Byte
+            x: 100
+            y: 50
+          expect(byte.el.style.left)   .toBe '100px'
+          expect(byte.el.style.top)    .toBe '50px'
+        it 'should animate position', (dfr)->
+          byte = new Byte
+            x: {100: '200px'}
+            duration: 20
+          setTimeout ->
+            expect(byte.el.style.left)   .toBe '200px'
+            dfr()
+          , 40
+        it 'should animate position with respect to units', (dfr)->
+          byte = new Byte
+            x: {'20%': '50%'}
+            duration: 20
+          setTimeout ->
+            expect(byte.el.style.left)   .toBe '50%'
+            dfr()
+          , 40
+        it 'should fallback to end units if units are differnt', (dfr)->
+          byte = new Byte
+            x: {'20%': '50px'}
+            duration: 20
+          setTimeout ->
+            expect(byte.el.style.left)   .toBe '50px'
+            dfr()
+          , 40
+      describe 'shiftX/shiftY coordinates', ->
+        it 'should set a position with respect to units', ->
+          byte = new Byte
+            shiftX: 100
+            shiftY: 50
+
+          expect(byte.el.style.transform).toBe 'translate(100px, 50px)'
+        it 'should animate position', (dfr)->
+          byte = new Byte
+            shiftX: {100: '200px'}
+            isDrawLess: true
+            duration: 20
+          setTimeout ->
+            expect(byte.el.style.transform) .toBe 'translate(200px, 0px)'
+            dfr()
+          , 40
+        it 'should animate position with respect to units', (dfr)->
+          byte = new Byte
+            shiftX: {'20%': '50%'}
+            duration: 20
+          setTimeout ->
+            expect(byte.el.style.transform) .toBe 'translate(50%, 0px)'
+            dfr()
+          , 40
+        it 'should fallback to end units if units are differnt', (dfr)->
+          byte = new Byte
+            shiftX: {'20%': '50px'}
+            shiftY: { 0: '50%'}
+            duration: 20
+          setTimeout ->
+            expect(byte.el.style.transform) .toBe 'translate(50px, 50%)'
+            dfr()
+          , 40
+
     describe 'render method ->', ->
       it 'should call draw method', ->
         byte = new Byte radius: 25

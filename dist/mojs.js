@@ -189,8 +189,6 @@ Byte = (function(_super) {
     stroke: '#ff00ff',
     fill: 'transparent',
     fillOpacity: 'transparent',
-    x: 0,
-    y: 0,
     deg: 0,
     size: null,
     sizeGap: 0,
@@ -201,7 +199,11 @@ Byte = (function(_super) {
     delay: 0,
     repeat: 1,
     yoyo: false,
-    easing: 'Linear.None'
+    easing: 'Linear.None',
+    x: 0,
+    y: 0,
+    shiftX: 0,
+    shiftY: 0
   };
 
   Byte.prototype.vars = function() {
@@ -289,6 +291,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.draw = function() {
+    var transform, translate, x, y;
     this.bit.setProp({
       x: this.props.center,
       y: this.props.center,
@@ -305,7 +308,13 @@ Byte = (function(_super) {
     this.bit.draw();
     if (this.el) {
       this.el.style.left = this.props.x;
-      return this.el.style.top = this.props.y;
+      this.el.style.top = this.props.y;
+      x = this.props.shiftX;
+      y = this.props.shiftY;
+      transform = "" + this.h.prefix + "transform";
+      translate = "translate(" + x + ", " + y + ")";
+      this.el.style[transform] = translate;
+      return this.el.style['transform'] = translate;
     }
   };
 
@@ -340,7 +349,7 @@ Byte = (function(_super) {
       if (!(optionsValue && typeof optionsValue === 'object')) {
         this.props[key] = this.o[key] || defaultsValue;
         if (this.h.posPropsMap[key]) {
-          this.props[key] = this.h.parseUnit(this.props[key]);
+          this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
         continue;
       }
@@ -382,6 +391,7 @@ Byte = (function(_super) {
               delta: end.value - start.value,
               type: 'unit'
             };
+            _results.push(this.props[key] = start.string);
           } else {
             end = parseFloat(optionsValue[start]);
             start = parseFloat(start);
@@ -391,9 +401,11 @@ Byte = (function(_super) {
               delta: end - start,
               type: 'number'
             };
+            _results.push(this.props[key] = start);
           }
+        } else {
+          _results.push(this.props[key] = start);
         }
-        _results.push(this.props[key] = start);
       }
     }
     return _results;

@@ -237,40 +237,108 @@
         return expect(byte.el.parentNode.isDiv).toBe(true);
       });
       describe('position set ->', function() {
-        it('should set a position with respect to units', function() {
-          var byte;
-          byte = new Byte({
-            x: 100,
-            y: 50
+        describe('x/y coordinates ->', function() {
+          it('should set a position with respect to units', function() {
+            var byte;
+            byte = new Byte({
+              x: 100,
+              y: 50
+            });
+            expect(byte.el.style.left).toBe('100px');
+            return expect(byte.el.style.top).toBe('50px');
           });
-          expect(byte.el.style.left).toBe('100px');
-          return expect(byte.el.style.top).toBe('50px');
+          it('should animate position', function(dfr) {
+            var byte;
+            byte = new Byte({
+              x: {
+                100: '200px'
+              },
+              duration: 20
+            });
+            return setTimeout(function() {
+              expect(byte.el.style.left).toBe('200px');
+              return dfr();
+            }, 40);
+          });
+          it('should animate position with respect to units', function(dfr) {
+            var byte;
+            byte = new Byte({
+              x: {
+                '20%': '50%'
+              },
+              duration: 20
+            });
+            return setTimeout(function() {
+              expect(byte.el.style.left).toBe('50%');
+              return dfr();
+            }, 40);
+          });
+          return it('should fallback to end units if units are differnt', function(dfr) {
+            var byte;
+            byte = new Byte({
+              x: {
+                '20%': '50px'
+              },
+              duration: 20
+            });
+            return setTimeout(function() {
+              expect(byte.el.style.left).toBe('50px');
+              return dfr();
+            }, 40);
+          });
         });
-        it('should animate position', function(dfr) {
-          var byte;
-          byte = new Byte({
-            x: {
-              100: '200px'
-            },
-            duration: 20
+        return describe('shiftX/shiftY coordinates', function() {
+          it('should set a position with respect to units', function() {
+            var byte;
+            byte = new Byte({
+              shiftX: 100,
+              shiftY: 50
+            });
+            return expect(byte.el.style.transform).toBe('translate(100px, 50px)');
           });
-          return setTimeout(function() {
-            expect(byte.el.style.left).toBe('200px');
-            return dfr();
-          }, 40);
-        });
-        return it('should animate position with respect to units', function(dfr) {
-          var byte;
-          byte = new Byte({
-            x: {
-              '20%': '50%'
-            },
-            duration: 20
+          it('should animate position', function(dfr) {
+            var byte;
+            byte = new Byte({
+              shiftX: {
+                100: '200px'
+              },
+              isDrawLess: true,
+              duration: 20
+            });
+            return setTimeout(function() {
+              expect(byte.el.style.transform).toBe('translate(200px, 0px)');
+              return dfr();
+            }, 40);
           });
-          return setTimeout(function() {
-            expect(byte.el.style.left).toBe('50%');
-            return dfr();
-          }, 40);
+          it('should animate position with respect to units', function(dfr) {
+            var byte;
+            byte = new Byte({
+              shiftX: {
+                '20%': '50%'
+              },
+              duration: 20
+            });
+            return setTimeout(function() {
+              expect(byte.el.style.transform).toBe('translate(50%, 0px)');
+              return dfr();
+            }, 40);
+          });
+          return it('should fallback to end units if units are differnt', function(dfr) {
+            var byte;
+            byte = new Byte({
+              shiftX: {
+                '20%': '50px'
+              },
+              shiftY: {
+                0: '50%'
+              },
+              duration: 20
+            });
+            return setTimeout(function() {
+              expect(byte.el.style.transform).toBe('translate(50px, 50%)');
+              return dfr();
+            }, 40);
+          });
         });
       });
       describe('render method ->', function() {
