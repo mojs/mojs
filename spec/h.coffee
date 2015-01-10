@@ -25,6 +25,13 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                      .toBe 8
   describe 'methods ->', ->
+    describe 'setPrefixedStyle method', ->
+      it 'should set prefixed style', ->
+        el = document.createElement 'div'
+        h.setPrefixedStyle el, 'transform', 'translate(20px, 10px)'
+        expect(el.style['-webkit-transform']).toBe 'translate(20px, 10px)'
+        expect(el.style['transform']).toBe         'translate(20px, 10px)'
+
     describe 'parseUnit method', ->
       it 'should parse number to pixels', ->
         unit = h.parseUnit(100)
@@ -208,11 +215,9 @@ describe 'Helpers ->', ->
       it 'should work with lovercase easing', ->
         expect(h.splitEasing('linear..none')[0]).toBe 'Linear'
         expect(h.splitEasing('linear..none')[1]).toBe 'None'
-
       it 'should work with function easing', ->
         easing = -> console.log 'function'
         expect(h.splitEasing(easing)+'').toBe easing+''
-
     describe 'color parsing - makeColorObj method', ->
       it 'should have shortColors map', ->
         expect(h.shortColors).toBeDefined()

@@ -21,6 +21,7 @@ Bit = (function() {
     fillOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
+    strokeLinecap: '',
     x: 0,
     y: 0,
     deg: 0
@@ -105,6 +106,7 @@ Bit = (function() {
       strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDashoffset,
+      strokeLinecap: this.props.strokeLinecap,
       fill: this.props.fill,
       fillOpacity: this.props.fillOpacity,
       transform: this.props.transform
@@ -181,7 +183,6 @@ Byte = (function(_super) {
   Byte.prototype.progress = 0;
 
   Byte.prototype.defaults = {
-    radius: 50,
     strokeWidth: 2,
     strokeOpacity: 1,
     strokeDasharray: '',
@@ -189,6 +190,13 @@ Byte = (function(_super) {
     stroke: '#ff00ff',
     fill: 'transparent',
     fillOpacity: 'transparent',
+    strokeLinecap: '',
+    x: 0,
+    y: 0,
+    shiftX: 0,
+    shiftY: 0,
+    opacity: 1,
+    radius: 50,
     deg: 0,
     size: null,
     sizeGap: 0,
@@ -199,11 +207,7 @@ Byte = (function(_super) {
     delay: 0,
     repeat: 1,
     yoyo: false,
-    easing: 'Linear.None',
-    x: 0,
-    y: 0,
-    shiftX: 0,
-    shiftY: 0
+    easing: 'Linear.None'
   };
 
   Byte.prototype.vars = function() {
@@ -230,10 +234,10 @@ Byte = (function(_super) {
       this.el.style.position = 'absolute';
       this.el.style.top = this.props.y.string;
       this.el.style.left = this.props.x.string;
+      this.el.style.opacity = this.props.opacity;
       this.el.style.width = size;
       this.el.style.height = size;
-      this.el.style['backface-visibility'] = 'hidden';
-      this.el.style["" + h.prefix.css + "backface-visibility"] = 'hidden';
+      this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
       this.el.appendChild(this.ctx);
       (this.o.parent || document.body).appendChild(this.el);
     } else {
@@ -291,7 +295,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.draw = function() {
-    var transform, translate, x, y;
+    var translate;
     this.bit.setProp({
       x: this.props.center,
       y: this.props.center,
@@ -300,6 +304,7 @@ Byte = (function(_super) {
       strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDashoffset,
+      strokeLinecap: this.props.strokeLinecap,
       fill: this.props.fill,
       fillOpacity: this.props.fillOpacity,
       radius: this.props.radius,
@@ -309,12 +314,9 @@ Byte = (function(_super) {
     if (this.el) {
       this.el.style.left = this.props.x;
       this.el.style.top = this.props.y;
-      x = this.props.shiftX;
-      y = this.props.shiftY;
-      transform = "" + this.h.prefix + "transform";
-      translate = "translate(" + x + ", " + y + ")";
-      this.el.style[transform] = translate;
-      return this.el.style['transform'] = translate;
+      this.el.style.opacity = this.props.opacity;
+      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+      return this.h.setPrefixedStyle(this.el, 'transform', translate);
     }
   };
 
@@ -646,6 +648,13 @@ Helpers = (function() {
     return this.animationLoop = this.bind(this.animationLoop, this);
   };
 
+  Helpers.prototype.setPrefixedStyle = function(el, name, value) {
+    var prefixedName;
+    prefixedName = "" + this.prefix.css + name;
+    el.style[name] = value;
+    return el.style[prefixedName] = value;
+  };
+
   Helpers.prototype.parseUnit = function(value) {
     var amount, regex, returnVal, unit, _ref;
     if (typeof value === 'number') {
@@ -962,9 +971,7 @@ div = document.getElementById('js-div');
 
 rect = new Byte({
   type: 'line',
-  x: {
-    100: 200
-  },
+  x: 100,
   y: 100,
   radius: 75,
   strokeWidth: {
@@ -975,8 +982,13 @@ rect = new Byte({
     150: -150
   },
   duration: 600,
-  deg: 50,
-  delay: 2000
+  deg: 60,
+  opacity: {
+    1: 0
+  },
+  isDrawLess: true,
+  delay: 1000,
+  strokeLinecap: 'round'
 });
 
 },{"./bit":1,"./byte":2,"./circle":3,"./cross":4,"./line":6,"./rect":8,"./triangle":9}],8:[function(require,module,exports){

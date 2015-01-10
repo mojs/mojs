@@ -10,16 +10,19 @@ div       = document.getElementById 'js-div'
 
 rect = new Byte
   type:       'line'
-  x:            {100: 200}
-  y:            100
+  x:           100
+  y:           100
+  # shiftX:      {100: 150}
   radius:       75
   strokeWidth: {5:0}
   strokeDasharray: 2*75
   strokeDashoffset: { 150: -150 }
   duration: 600
-  deg: 50
-  # isDrawLess: true
-  delay: 2000
+  deg: 60
+  opacity:    { 1: 0 }
+  isDrawLess: true
+  delay: 1000
+  strokeLinecap: 'round'
   # isRunLess: true
 
   # repeat: 10

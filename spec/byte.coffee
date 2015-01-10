@@ -101,9 +101,11 @@ describe 'Byte ->', ->
       byte = new Byte
         radius:       25
         strokeWidth:  2
-      expect(byte.el.style.position)  .toBe 'absolute'
-      expect(byte.el.style.width)     .toBe '3.25rem'
-      expect(byte.el.style.height)    .toBe '3.25rem'
+        x:            10
+        y:            20
+      expect(byte.el.style.position)    .toBe 'absolute'
+      expect(byte.el.style.width)       .toBe '3.25rem'
+      expect(byte.el.style.height)      .toBe '3.25rem'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
     it 'should create bit', ->
@@ -127,6 +129,19 @@ describe 'Byte ->', ->
         radius: 25
         parent: div
       expect(byte.el.parentNode.isDiv).toBe true
+    describe 'opacity set ->', ->
+      it 'should set a position with respect to units', ->
+          byte = new Byte opacity: .5
+          expect(byte.el.style.opacity).toBe '0.5'
+      it 'should animate opacity', (dfr)->
+          byte = new Byte
+            opacity: { 1: 0}
+            duration: 20
+            setTimeout ->
+              expect(byte.el.style.opacity).toBe '0'
+              dfr()
+            , 40
+
     describe 'position set ->', ->
       describe 'x/y coordinates ->', ->
         it 'should set a position with respect to units', ->

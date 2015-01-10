@@ -3,7 +3,6 @@
 
 #### todo
 - add transition
-  - add position, opacity
   - add strokeLinecap options
   - add chains
   - rename to transition
@@ -12,6 +11,7 @@
   - draw on render to setPosition 0
   - shiftX <-> x
   - create animation map for props that should be animated and draw only them
+  - don't set default values
   - extend to utils?
   - fix triangle
 - add radial transition(burst)

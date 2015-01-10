@@ -15,6 +15,7 @@ class Bit
     fillOpacity:        1
     strokeDasharray:    ''
     strokeDashoffset:   ''
+    strokeLinecap:      ''
     x:                  0
     y:                  0
     deg:                0
@@ -55,9 +56,11 @@ class Bit
       strokeOpacity:    @props.strokeOpacity
       strokeDasharray:  @props.strokeDasharray
       strokeDashoffset: @props.strokeDashoffset
+      strokeLinecap:    @props.strokeLinecap
       fill:             @props.fill
       fillOpacity:      @props.fillOpacity
       transform:        @props.transform
+
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

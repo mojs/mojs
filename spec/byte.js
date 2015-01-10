@@ -191,7 +191,9 @@
         var byte;
         byte = new Byte({
           radius: 25,
-          strokeWidth: 2
+          strokeWidth: 2,
+          x: 10,
+          y: 20
         });
         expect(byte.el.style.position).toBe('absolute');
         expect(byte.el.style.width).toBe('3.25rem');
@@ -235,6 +237,27 @@
           parent: div
         });
         return expect(byte.el.parentNode.isDiv).toBe(true);
+      });
+      describe('opacity set ->', function() {
+        it('should set a position with respect to units', function() {
+          var byte;
+          byte = new Byte({
+            opacity: .5
+          });
+          return expect(byte.el.style.opacity).toBe('0.5');
+        });
+        return it('should animate opacity', function(dfr) {
+          var byte;
+          return byte = new Byte({
+            opacity: {
+              1: 0
+            },
+            duration: 20
+          }, setTimeout(function() {
+            expect(byte.el.style.opacity).toBe('0');
+            return dfr();
+          }, 40));
+        });
       });
       describe('position set ->', function() {
         describe('x/y coordinates ->', function() {

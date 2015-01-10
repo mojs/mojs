@@ -19,7 +19,7 @@ class Byte extends Bit
   TWEEN: TWEEN
   progress: 0
   defaults:
-    radius:             50
+    # presentation props
     strokeWidth:        2
     strokeOpacity:      1
     strokeDasharray:    ''
@@ -27,25 +27,28 @@ class Byte extends Bit
     stroke:             '#ff00ff'
     fill:               'transparent'
     fillOpacity:        'transparent'
-
+    strokeLinecap:      ''
+    # position props/el props
+    x:                  0
+    y:                  0
+    shiftX:             0
+    shiftY:             0
+    opacity:            1
+    # size props
+    radius:             50
     deg:                0
     size:               null
     sizeGap:            0
-    
+    # callbacks
     onStart:            null
     onComplete:         null
     onUpdate:           null
-
+    # tween props
     duration:           500
     delay:              0
     repeat:             1
     yoyo:               false
     easing:             'Linear.None'
-
-    x:                  0
-    y:                  0
-    shiftX:             0
-    shiftY:             0
 
   vars:-> @h = h; @extendDefaults(); @calcTransform()
 
@@ -65,11 +68,10 @@ class Byte extends Bit
       @el.style.position  = 'absolute'
       @el.style.top       = @props.y.string
       @el.style.left      = @props.x.string
+      @el.style.opacity   = @props.opacity
       @el.style.width     = size
       @el.style.height    = size
-
-      @el.style['backface-visibility'] = 'hidden'
-      @el.style["#{h.prefix.css}backface-visibility"] = 'hidden'
+      @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
       @el.appendChild @ctx
       (@o.parent or document.body).appendChild @el
@@ -116,6 +118,7 @@ class Byte extends Bit
       strokeOpacity:      @props.strokeOpacity
       strokeDasharray:    @props.strokeDasharray
       strokeDashoffset:   @props.strokeDashoffset
+      strokeLinecap:      @props.strokeLinecap
       fill:               @props.fill
       fillOpacity:        @props.fillOpacity
       radius:             @props.radius
@@ -123,14 +126,12 @@ class Byte extends Bit
     @bit.draw()
 
     if @el
-      @el.style.left = @props.x
-      @el.style.top  = @props.y
+      @el.style.left    = @props.x
+      @el.style.top     = @props.y
+      @el.style.opacity = @props.opacity
 
-      x = @props.shiftX; y = @props.shiftY
-      transform = "#{@h.prefix}transform"
-      translate = "translate(#{x}, #{y})"
-      @el.style[transform]   = translate
-      @el.style['transform'] = translate
+      translate = "translate(#{@props.shiftX}, #{@props.shiftY})"
+      @h.setPrefixedStyle @el, 'transform', translate
 
   calcSize:->
     return if @o.size? or @o.ctx

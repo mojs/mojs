@@ -20,6 +20,7 @@ Bit = (function() {
     fillOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
+    strokeLinecap: '',
     x: 0,
     y: 0,
     deg: 0
@@ -104,6 +105,7 @@ Bit = (function() {
       strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDashoffset,
+      strokeLinecap: this.props.strokeLinecap,
       fill: this.props.fill,
       fillOpacity: this.props.fillOpacity,
       transform: this.props.transform

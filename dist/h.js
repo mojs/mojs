@@ -56,6 +56,13 @@ Helpers = (function() {
     return this.animationLoop = this.bind(this.animationLoop, this);
   };
 
+  Helpers.prototype.setPrefixedStyle = function(el, name, value) {
+    var prefixedName;
+    prefixedName = "" + this.prefix.css + name;
+    el.style[name] = value;
+    return el.style[prefixedName] = value;
+  };
+
   Helpers.prototype.parseUnit = function(value) {
     var amount, regex, returnVal, unit, _ref;
     if (typeof value === 'number') {

@@ -41,6 +41,12 @@ class Helpers
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
     @animationLoop = @bind @animationLoop, @
+
+  setPrefixedStyle:(el, name, value)->
+    prefixedName            = "#{@prefix.css}#{name}"
+    el.style[name]          = value
+    el.style[prefixedName]  = value
+
   parseUnit:(value)->
     if typeof value is 'number'
       return returnVal =

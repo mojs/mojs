@@ -37,7 +37,6 @@ Byte = (function(_super) {
   Byte.prototype.progress = 0;
 
   Byte.prototype.defaults = {
-    radius: 50,
     strokeWidth: 2,
     strokeOpacity: 1,
     strokeDasharray: '',
@@ -45,6 +44,13 @@ Byte = (function(_super) {
     stroke: '#ff00ff',
     fill: 'transparent',
     fillOpacity: 'transparent',
+    strokeLinecap: '',
+    x: 0,
+    y: 0,
+    shiftX: 0,
+    shiftY: 0,
+    opacity: 1,
+    radius: 50,
     deg: 0,
     size: null,
     sizeGap: 0,
@@ -55,11 +61,7 @@ Byte = (function(_super) {
     delay: 0,
     repeat: 1,
     yoyo: false,
-    easing: 'Linear.None',
-    x: 0,
-    y: 0,
-    shiftX: 0,
-    shiftY: 0
+    easing: 'Linear.None'
   };
 
   Byte.prototype.vars = function() {
@@ -86,10 +88,10 @@ Byte = (function(_super) {
       this.el.style.position = 'absolute';
       this.el.style.top = this.props.y.string;
       this.el.style.left = this.props.x.string;
+      this.el.style.opacity = this.props.opacity;
       this.el.style.width = size;
       this.el.style.height = size;
-      this.el.style['backface-visibility'] = 'hidden';
-      this.el.style["" + h.prefix.css + "backface-visibility"] = 'hidden';
+      this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
       this.el.appendChild(this.ctx);
       (this.o.parent || document.body).appendChild(this.el);
     } else {
@@ -147,7 +149,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.draw = function() {
-    var transform, translate, x, y;
+    var translate;
     this.bit.setProp({
       x: this.props.center,
       y: this.props.center,
@@ -156,6 +158,7 @@ Byte = (function(_super) {
       strokeOpacity: this.props.strokeOpacity,
       strokeDasharray: this.props.strokeDasharray,
       strokeDashoffset: this.props.strokeDashoffset,
+      strokeLinecap: this.props.strokeLinecap,
       fill: this.props.fill,
       fillOpacity: this.props.fillOpacity,
       radius: this.props.radius,
@@ -165,12 +168,9 @@ Byte = (function(_super) {
     if (this.el) {
       this.el.style.left = this.props.x;
       this.el.style.top = this.props.y;
-      x = this.props.shiftX;
-      y = this.props.shiftY;
-      transform = "" + this.h.prefix + "transform";
-      translate = "translate(" + x + ", " + y + ")";
-      this.el.style[transform] = translate;
-      return this.el.style['transform'] = translate;
+      this.el.style.opacity = this.props.opacity;
+      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+      return this.h.setPrefixedStyle(this.el, 'transform', translate);
     }
   };
 

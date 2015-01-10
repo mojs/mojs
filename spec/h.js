@@ -35,6 +35,15 @@
       });
     });
     return describe('methods ->', function() {
+      describe('setPrefixedStyle method', function() {
+        return it('should set prefixed style', function() {
+          var el;
+          el = document.createElement('div');
+          h.setPrefixedStyle(el, 'transform', 'translate(20px, 10px)');
+          expect(el.style['-webkit-transform']).toBe('translate(20px, 10px)');
+          return expect(el.style['transform']).toBe('translate(20px, 10px)');
+        });
+      });
       describe('parseUnit method', function() {
         it('should parse number to pixels', function() {
           var unit;
