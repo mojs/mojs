@@ -226,6 +226,8 @@ Byte = (function(_super) {
       this.el = document.createElement('div');
       size = "" + (this.props.size / 16) + "rem";
       this.el.style.position = 'absolute';
+      this.el.style.top = this.props.y.string;
+      this.el.style.left = this.props.x.string;
       this.el.style.width = size;
       this.el.style.height = size;
       this.el.style['backface-visibility'] = 'hidden';
@@ -251,7 +253,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.setProgress = function(progress) {
-    var a, b, g, i, key, num, r, value, _i, _len, _ref, _ref1, _ref2;
+    var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2;
     if ((_ref = this.props.onUpdate) != null) {
       _ref.call(this, progress);
     }
@@ -259,23 +261,28 @@ Byte = (function(_super) {
     _ref1 = this.deltas;
     for (key in _ref1) {
       value = _ref1[key];
-      if (value.delta instanceof Array) {
-        this.props[key] = '';
-        _ref2 = value.delta;
-        for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
-          num = _ref2[i];
-          this.props[key] += "" + (value.start[i] + num * this.progress) + " ";
-        }
-      } else {
-        if (value.delta.r == null) {
+      switch (value.type) {
+        case 'array':
+          this.props[key] = '';
+          _ref2 = value.delta;
+          for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
+            num = _ref2[i];
+            this.props[key] += "" + (value.start[i] + num * this.progress) + " ";
+          }
+          break;
+        case 'number':
           this.props[key] = value.start + value.delta * this.progress;
-        } else {
+          break;
+        case 'unit':
+          units = value.end.unit;
+          this.props[key] = "" + (value.start.value + value.delta * this.progress) + units;
+          break;
+        case 'color':
           r = parseInt(value.start.r + value.delta.r * this.progress, 10);
           g = parseInt(value.start.g + value.delta.g * this.progress, 10);
           b = parseInt(value.start.b + value.delta.b * this.progress, 10);
           a = parseInt(value.start.a + value.delta.a * this.progress, 10);
           this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
-        }
       }
     }
     return this.draw();
@@ -295,7 +302,11 @@ Byte = (function(_super) {
       radius: this.props.radius,
       transform: this.calcTransform()
     });
-    return this.bit.draw();
+    this.bit.draw();
+    if (this.el) {
+      this.el.style.left = this.props.x;
+      return this.el.style.top = this.props.y;
+    }
   };
 
   Byte.prototype.calcSize = function() {
@@ -326,46 +337,63 @@ Byte = (function(_super) {
     for (key in _ref) {
       defaultsValue = _ref[key];
       optionsValue = this.o[key];
-      if (optionsValue && typeof optionsValue === 'object') {
-        start = Object.keys(optionsValue)[0];
-        if (isNaN(parseFloat(start))) {
-          end = optionsValue[start];
-          startColorObj = h.makeColorObj(start);
-          endColorObj = h.makeColorObj(end);
-          _results.push(this.deltas[key] = {
-            start: startColorObj,
-            end: endColorObj,
-            delta: {
-              r: endColorObj.r - startColorObj.r,
-              g: endColorObj.g - startColorObj.g,
-              b: endColorObj.b - startColorObj.b,
-              a: endColorObj.a - startColorObj.a
-            }
-          });
-        } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
-          end = optionsValue[start];
-          startArr = h.strToArr(start);
-          endArr = h.strToArr(end);
-          h.normDashArrays(startArr, endArr);
-          _results.push(this.deltas[key] = {
-            start: startArr,
-            end: endArr,
-            delta: h.calcArrDelta(startArr, endArr)
-          });
-        } else {
-          if (!this.h.tweenOptionMap[key]) {
+      if (!(optionsValue && typeof optionsValue === 'object')) {
+        this.props[key] = this.o[key] || defaultsValue;
+        if (this.h.posPropsMap[key]) {
+          this.props[key] = this.h.parseUnit(this.props[key]);
+        }
+        continue;
+      }
+      start = Object.keys(optionsValue)[0];
+      if (isNaN(parseFloat(start))) {
+        end = optionsValue[start];
+        startColorObj = h.makeColorObj(start);
+        endColorObj = h.makeColorObj(end);
+        _results.push(this.deltas[key] = {
+          start: startColorObj,
+          end: endColorObj,
+          type: 'color',
+          delta: {
+            r: endColorObj.r - startColorObj.r,
+            g: endColorObj.g - startColorObj.g,
+            b: endColorObj.b - startColorObj.b,
+            a: endColorObj.a - startColorObj.a
+          }
+        });
+      } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
+        end = optionsValue[start];
+        startArr = h.strToArr(start);
+        endArr = h.strToArr(end);
+        h.normDashArrays(startArr, endArr);
+        _results.push(this.deltas[key] = {
+          start: startArr,
+          end: endArr,
+          delta: h.calcArrDelta(startArr, endArr),
+          type: 'array'
+        });
+      } else {
+        if (!this.h.tweenOptionMap[key]) {
+          if (this.h.posPropsMap[key]) {
+            end = this.h.parseUnit(optionsValue[start]);
+            start = this.h.parseUnit(start);
+            this.deltas[key] = {
+              start: start,
+              end: end,
+              delta: end.value - start.value,
+              type: 'unit'
+            };
+          } else {
             end = parseFloat(optionsValue[start]);
             start = parseFloat(start);
             this.deltas[key] = {
               start: start,
               end: end,
-              delta: end - start
+              delta: end - start,
+              type: 'number'
             };
           }
-          _results.push(this.props[key] = start);
         }
-      } else {
-        _results.push(this.props[key] = this.o[key] || defaultsValue);
+        _results.push(this.props[key] = start);
       }
     }
     return _results;
@@ -588,6 +616,13 @@ Helpers = (function() {
     onUpdate: 1
   };
 
+  Helpers.prototype.posPropsMap = {
+    x: 1,
+    y: 1,
+    shiftX: 1,
+    shiftY: 1
+  };
+
   function Helpers() {
     this.vars();
   }
@@ -597,6 +632,26 @@ Helpers = (function() {
     this.isFF = this.prefix.lowercase === 'moz';
     this.isIE = this.prefix.lowercase === 'ms';
     return this.animationLoop = this.bind(this.animationLoop, this);
+  };
+
+  Helpers.prototype.parseUnit = function(value) {
+    var amount, regex, returnVal, unit, _ref;
+    if (typeof value === 'number') {
+      return returnVal = {
+        unit: 'px',
+        value: value,
+        string: "" + value + "px"
+      };
+    } else if (typeof value === 'string') {
+      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
+      unit = ((_ref = value.match(regex)) != null ? _ref[0] : void 0) || 'px';
+      amount = parseFloat(value);
+      return returnVal = {
+        unit: unit,
+        value: amount,
+        string: "" + amount + unit
+      };
+    }
   };
 
   Helpers.prototype.bind = function(func, context) {
@@ -895,6 +950,10 @@ div = document.getElementById('js-div');
 
 rect = new Byte({
   type: 'line',
+  x: {
+    100: 200
+  },
+  y: 100,
   radius: 75,
   strokeWidth: {
     5: 0
@@ -905,7 +964,6 @@ rect = new Byte({
   },
   duration: 600,
   deg: 50,
-  isDrawLess: true,
   delay: 2000
 });
 

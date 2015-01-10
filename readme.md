@@ -4,12 +4,12 @@
 #### todo
 - add transition
   - add position, opacity
-  - add percent values for strokeDasharray/strokedashOffset
   - add strokeLinecap options
   - add chains
   - rename to transition
 - make refactor
   - module definition to utils
+  - create animation map for props that should be animated and draw only them
   - extend to utils?
   - fix triangle
 - add radial transition(burst)
@@ -25,5 +25,8 @@
 - add backgrounds
 - add line trails
 - add text tricks
+
+#### plan
+- add percent values for strokeDasharray/strokedashOffset
 
 [@LegoMushroom](https://twitter.com/legomushroom)(Oleg Solomka) [legomushroom@gmail.com](mailto:legomushroom@gmail.com) 2015 MIT License

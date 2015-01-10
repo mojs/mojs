@@ -9,15 +9,18 @@ svg       = document.getElementById 'js-svg'
 div       = document.getElementById 'js-div'
 
 rect = new Byte
-  type: 'line'
+  type:       'line'
+  x:            {100: 200}
+  y:            100
   radius:       75
   strokeWidth: {5:0}
   strokeDasharray: 2*75
   strokeDashoffset: { 150: -150 }
   duration: 600
   deg: 50
-  isDrawLess: true
+  # isDrawLess: true
   delay: 2000
+  # isRunLess: true
 
   # repeat: 10
 
@@ -28,10 +31,7 @@ rect = new Byte
 # setTimeout ->
 #   i = 0
 #   int = setInterval ->
-#     rect.setProgress i++/10
-#     rect.draw()
-#     # console.log rect.props.stroke
-#     if rect.progress is 1 then clearInterval int
+#     rect.el.style['-webkit-transform'] = "translate(#{i++}px, 0)"
 #   , 160
 # , 1000
 

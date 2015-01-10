@@ -30,14 +30,31 @@ class Helpers
     onStart:      1
     onComplete:   1
     onUpdate:     1
-
+  posPropsMap:
+    x:            1
+    y:            1
+    shiftX:       1
+    shiftY:       1
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
     @animationLoop = @bind @animationLoop, @
-
+  parseUnit:(value)->
+    if typeof value is 'number'
+      return returnVal =
+        unit:     'px'
+        value:   value
+        string:   "#{value}px"
+    else if typeof value is 'string'
+      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim
+      unit = value.match(regex)?[0] or 'px'
+      amount = parseFloat value
+      return returnVal =
+        unit:     unit
+        value:    amount
+        string:   "#{amount}#{unit}"
   bind:(func, context) ->
     wrapper = ->
       args = Array::slice.call(arguments)
@@ -45,8 +62,6 @@ class Helpers
       func.apply context, unshiftArgs
     bindArgs = Array::slice.call(arguments, 2)
     wrapper
-
-
   getRadialPoint:(o={})->
     return if !o.radius? or !o.angle? or !o.center?
     radAngle = (o.angle-90)*(Math.PI/180)
@@ -65,7 +80,6 @@ class Helpers
     lowercase: pre
     css: "-" + pre + "-"
     js: pre[0].toUpperCase() + pre.substr(1)
-
   strToArr:(string)->
     arr = []
     if typeof string is 'number' and !isNaN(string)
@@ -78,7 +92,6 @@ class Helpers
          check the syntax please'
       arr.push number
     arr
-
   calcArrDelta:(arr1, arr2)->
     if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
     if !@isArray(arr1) or !@isArray(arr2) then throw Error 'Two arrays expected'

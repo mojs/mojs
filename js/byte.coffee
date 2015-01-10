@@ -59,6 +59,8 @@ class Byte extends Bit
       @el   = document.createElement 'div'
       size  = "#{@props.size/16}rem"
       @el.style.position  = 'absolute'
+      @el.style.top       = @props.y.string
+      @el.style.left      = @props.x.string
       @el.style.width     = size
       @el.style.height    = size
 
@@ -83,15 +85,18 @@ class Byte extends Bit
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
     for key, value of @deltas
-      # strokeDasharray/strokeDashoffset
-      if value.delta instanceof Array
-        @props[key] = ''
-        for num, i in value.delta
-          @props[key] += "#{value.start[i] + num*@progress} "
-      else # number or color
-        if !value.delta.r? # if not a color
+      switch value.type
+        when 'array' # strokeDasharray/strokeDashoffset
+          @props[key] = ''
+          for num, i in value.delta
+            @props[key] += "#{value.start[i] + num*@progress} "
+        when 'number'
           @props[key] = value.start + value.delta*@progress
-        else # if color
+        when 'unit'
+          units = value.end.unit
+          @props[key] = "#{value.start.value+value.delta*@progress}#{units}"
+          # console.log 'unit', key, @props[key]
+        when 'color'
           r = parseInt (value.start.r + value.delta.r*@progress), 10
           g = parseInt (value.start.g + value.delta.g*@progress), 10
           b = parseInt (value.start.b + value.delta.b*@progress), 10
@@ -114,6 +119,10 @@ class Byte extends Bit
       transform:          @calcTransform()
     @bit.draw()
 
+    if @el
+      @el.style.left = @props.x
+      @el.style.top  = @props.y
+
   calcSize:->
     return if @o.size? or @o.ctx
 
@@ -133,48 +142,67 @@ class Byte extends Bit
     @props  ?= {}
     @deltas ?= {}
     for key, defaultsValue of @defaults
-      # if { 20: 75 } was passed
       optionsValue = @o[key]
-      if optionsValue and typeof optionsValue is 'object'
-        start = Object.keys(optionsValue)[0]
-        # if color was passed
-        if isNaN parseFloat(start)
-          end           = optionsValue[start]
-          startColorObj = h.makeColorObj start
-          endColorObj   = h.makeColorObj end
-          @deltas[key]  =
-            start:  startColorObj
-            end:    endColorObj
-            delta:
-              r: endColorObj.r - startColorObj.r
-              g: endColorObj.g - startColorObj.g
-              b: endColorObj.b - startColorObj.b
-              a: endColorObj.a - startColorObj.a
-        else if key is 'strokeDasharray' or key is 'strokeDashoffset'
-          end   = optionsValue[start]
-          startArr  = h.strToArr start
-          endArr    = h.strToArr end
-          h.normDashArrays startArr, endArr
-
-          @deltas[key] =
-            start:  startArr
-            end:    endArr
-            delta:  h.calcArrDelta startArr, endArr
-        ## plain numeric value ##
-        else
-          ## filter tween-related properties
-          # defined in helpers.tweenOptionMap
-          # because tween-related props shouldn't
-          ## have deltas
-          if !@h.tweenOptionMap[key]
+      # if non-object value - just save it to @props
+      if !(optionsValue and typeof optionsValue is 'object')
+        @props[key] = @o[key] or defaultsValue
+        # position property parse with ubits
+        if @h.posPropsMap[key]
+          @props[key] = @h.parseUnit @props[key]
+        continue
+      # if delta object was passed: like { 20: 75 }
+      start = Object.keys(optionsValue)[0]
+      # color values
+      if isNaN parseFloat(start)
+        end           = optionsValue[start]
+        startColorObj = h.makeColorObj start
+        endColorObj   = h.makeColorObj end
+        @deltas[key]  =
+          start:  startColorObj
+          end:    endColorObj
+          type:   'color'
+          delta:
+            r: endColorObj.r - startColorObj.r
+            g: endColorObj.g - startColorObj.g
+            b: endColorObj.b - startColorObj.b
+            a: endColorObj.a - startColorObj.a
+      # color strokeDasharray/strokeDashoffset
+      else if key is 'strokeDasharray' or key is 'strokeDashoffset'
+        end   = optionsValue[start]
+        startArr  = h.strToArr start
+        endArr    = h.strToArr end
+        h.normDashArrays startArr, endArr
+        @deltas[key] =
+          start:  startArr
+          end:    endArr
+          delta:  h.calcArrDelta startArr, endArr
+          type:   'array'
+      ## plain numeric value ##
+      else
+        ## filter tween-related properties
+        # defined in helpers.tweenOptionMap
+        # because tween-related props shouldn't
+        ## have deltas
+        if !@h.tweenOptionMap[key]
+          # position values
+          if @h.posPropsMap[key]
+            end   = @h.parseUnit optionsValue[start]
+            start = @h.parseUnit start
+            @deltas[key] =
+              start:  start
+              end:    end
+              delta:  end.value - start.value
+              type:   'unit'
+          else
             end   = parseFloat optionsValue[start]
             start = parseFloat start
             @deltas[key] =
               start:  start
               end:    end
               delta:  end - start
-          @props[key] = start
-      else @props[key] = @o[key] or defaultsValue
+              type:   'number'
+        @props[key] = start
+      # else @props[key] = @o[key] or defaultsValue
 
   createTween:->
     it = @

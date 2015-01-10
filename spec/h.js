@@ -35,6 +35,120 @@
       });
     });
     return describe('methods ->', function() {
+      describe('parseUnit method', function() {
+        it('should parse number to pixels', function() {
+          var unit;
+          unit = h.parseUnit(100);
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('px');
+          return expect(unit.string).toBe('100px');
+        });
+        it('should parse unitless string', function() {
+          var unit;
+          unit = h.parseUnit('100');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('px');
+          return expect(unit.string).toBe('100px');
+        });
+        it('should parse pixel string', function() {
+          var unit;
+          unit = h.parseUnit('100px');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('px');
+          return expect(unit.string).toBe('100px');
+        });
+        it('should parse percent string', function() {
+          var unit;
+          unit = h.parseUnit('100%');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('%');
+          return expect(unit.string).toBe('100%');
+        });
+        it('should parse rem string', function() {
+          var unit;
+          unit = h.parseUnit('100rem');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('rem');
+          return expect(unit.string).toBe('100rem');
+        });
+        it('should parse em string', function() {
+          var unit;
+          unit = h.parseUnit('100em');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('em');
+          return expect(unit.string).toBe('100em');
+        });
+        it('should parse ex string', function() {
+          var unit;
+          unit = h.parseUnit('100ex');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('ex');
+          return expect(unit.string).toBe('100ex');
+        });
+        it('should parse cm string', function() {
+          var unit;
+          unit = h.parseUnit('100cm');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('cm');
+          return expect(unit.string).toBe('100cm');
+        });
+        it('should parse mm string', function() {
+          var unit;
+          unit = h.parseUnit('100mm');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('mm');
+          return expect(unit.string).toBe('100mm');
+        });
+        it('should parse in string', function() {
+          var unit;
+          unit = h.parseUnit('100in');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('in');
+          return expect(unit.string).toBe('100in');
+        });
+        it('should parse pt string', function() {
+          var unit;
+          unit = h.parseUnit('100pt');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('pt');
+          return expect(unit.string).toBe('100pt');
+        });
+        it('should parse pc string', function() {
+          var unit;
+          unit = h.parseUnit('100pc');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('pc');
+          return expect(unit.string).toBe('100pc');
+        });
+        it('should parse ch string', function() {
+          var unit;
+          unit = h.parseUnit('100ch');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('ch');
+          return expect(unit.string).toBe('100ch');
+        });
+        it('should parse vh string', function() {
+          var unit;
+          unit = h.parseUnit('100vh');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('vh');
+          return expect(unit.string).toBe('100vh');
+        });
+        it('should parse vw string', function() {
+          var unit;
+          unit = h.parseUnit('100vw');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('vw');
+          return expect(unit.string).toBe('100vw');
+        });
+        return it('should parse vmin string', function() {
+          var unit;
+          unit = h.parseUnit('100vmin');
+          expect(unit.value).toBe(100);
+          expect(unit.unit).toBe('vmin');
+          return expect(unit.string).toBe('100vmin');
+        });
+      });
       describe('strToArr method', function() {
         it('should parse string to array', function() {
           return expect(h.strToArr('200 100').join(' ')).toBe('200 100');
@@ -219,6 +333,12 @@
       describe('color parsing - makeColorObj method', function() {
         it('should have shortColors map', function() {
           return expect(h.shortColors).toBeDefined();
+        });
+        it('should have posPropsMap map', function() {
+          expect(h.posPropsMap.x).toBe(1);
+          expect(h.posPropsMap.y).toBe(1);
+          expect(h.posPropsMap.shiftX).toBe(1);
+          return expect(h.posPropsMap.shiftY).toBe(1);
         });
         it('should have div node', function() {
           return expect(h.div.tagName.toLowerCase()).toBe('div');

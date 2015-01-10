@@ -78,7 +78,6 @@ describe 'Byte ->', ->
         strokeWidth:  { 4:  6    }
       expect(byte.props.size)   .toBe(206)
       expect(byte.props.center) .toBe(103)
-
   describe 'el creation ->', ->
     it 'should create el', ->
       byte = new Byte radius: 25
@@ -118,11 +117,9 @@ describe 'Byte ->', ->
       byte2 = new Byte radius: 25
       expect(byte.bit.type).toBe  'rect'
       expect(byte2.bit.type).toBe 'line'
-
     it 'should add itself to body', ->
       byte = new Byte radius: 25
       expect(byte.el.parentNode.tagName.toLowerCase()).toBe('body')
-
     it 'should add itself to parent if the option was passed', ->
       div  = document.createElement?('div')
       div.isDiv = true
@@ -130,6 +127,29 @@ describe 'Byte ->', ->
         radius: 25
         parent: div
       expect(byte.el.parentNode.isDiv).toBe true
+    describe 'position set ->', ->
+      it 'should set a position with respect to units', ->
+        byte = new Byte
+          x: 100
+          y: 50
+        expect(byte.el.style.left)   .toBe '100px'
+        expect(byte.el.style.top)    .toBe '50px'
+      it 'should animate position', (dfr)->
+        byte = new Byte
+          x: {100: '200px'}
+          duration: 20
+        setTimeout ->
+          expect(byte.el.style.left)   .toBe '200px'
+          dfr()
+        , 40
+      it 'should animate position with respect to units', (dfr)->
+        byte = new Byte
+          x: {'20%': '50%'}
+          duration: 20
+        setTimeout ->
+          expect(byte.el.style.left)   .toBe '50%'
+          dfr()
+        , 40
     describe 'render method ->', ->
       it 'should call draw method', ->
         byte = new Byte radius: 25
@@ -179,6 +199,7 @@ describe 'Byte ->', ->
           radiusDelta = byte.deltas.radius
           expect(radiusDelta.start)   .toBe   25
           expect(radiusDelta.delta)   .toBe   50
+          expect(radiusDelta.type)    .toBe   'number'
         it 'should calculate delta with string arguments', ->
           byte = new Byte radius:  {'25': '75'}
           radiusDelta = byte.deltas.radius
@@ -207,13 +228,23 @@ describe 'Byte ->', ->
           expect(colorDelta.start.r)    .toBe   0
           expect(colorDelta.end.r)      .toBe   255
           expect(colorDelta.delta.r)    .toBe   255
+          expect(colorDelta.type)       .toBe   'color'
       describe 'array values ->', ->
         it 'should calculate array delta', ->
           byte = new Byte strokeDasharray:  { '200 100': '300' }
           arrayDelta = byte.deltas.strokeDasharray
-          expect(arrayDelta.start.join(' '))   .toBe   '200 100'
-          expect(arrayDelta.end.join(' '))     .toBe   '300 0'
-          expect(arrayDelta.delta.join(' '))   .toBe   '100 -100'
+          expect(arrayDelta.start.join(' '))        .toBe   '200 100'
+          expect(arrayDelta.end.join(' '))          .toBe   '300 0'
+          expect(arrayDelta.delta.join(' '))        .toBe   '100 -100'
+          expect(arrayDelta.type)                   .toBe   'array'
+      describe 'unit values ->', ->
+        it 'should calculate unit delta', ->
+          byte = new Byte x:  {'0%': '100%'}
+          xDelta = byte.deltas.x
+          expect(xDelta.start.string)    .toBe   '0%'
+          expect(xDelta.end.string)      .toBe   '100%'
+          expect(xDelta.delta)          .toBe   100
+          expect(xDelta.type)            .toBe   'unit'
       describe 'tween-related values ->', ->
         it 'should not calc delta for tween related props', ->
           byte = new Byte

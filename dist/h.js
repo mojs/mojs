@@ -38,6 +38,13 @@ Helpers = (function() {
     onUpdate: 1
   };
 
+  Helpers.prototype.posPropsMap = {
+    x: 1,
+    y: 1,
+    shiftX: 1,
+    shiftY: 1
+  };
+
   function Helpers() {
     this.vars();
   }
@@ -47,6 +54,26 @@ Helpers = (function() {
     this.isFF = this.prefix.lowercase === 'moz';
     this.isIE = this.prefix.lowercase === 'ms';
     return this.animationLoop = this.bind(this.animationLoop, this);
+  };
+
+  Helpers.prototype.parseUnit = function(value) {
+    var amount, regex, returnVal, unit, _ref;
+    if (typeof value === 'number') {
+      return returnVal = {
+        unit: 'px',
+        value: value,
+        string: "" + value + "px"
+      };
+    } else if (typeof value === 'string') {
+      regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
+      unit = ((_ref = value.match(regex)) != null ? _ref[0] : void 0) || 'px';
+      amount = parseFloat(value);
+      return returnVal = {
+        unit: unit,
+        value: amount,
+        string: "" + amount + unit
+      };
+    }
   };
 
   Helpers.prototype.bind = function(func, context) {

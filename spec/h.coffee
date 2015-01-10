@@ -12,7 +12,6 @@ describe 'Helpers ->', ->
     it 'should have browsers flag', ->
       expect(h.isFF).toBeDefined()
       expect(h.isIE).toBeDefined()
-
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
       expect(h.tweenOptionMap.duration)   .toBe 1
@@ -25,8 +24,88 @@ describe 'Helpers ->', ->
       expect(h.tweenOptionMap.onUpdate)   .toBe 1
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                      .toBe 8
-
   describe 'methods ->', ->
+    describe 'parseUnit method', ->
+      it 'should parse number to pixels', ->
+        unit = h.parseUnit(100)
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'px'
+        expect(unit.string)   .toBe '100px'
+      it 'should parse unitless string', ->
+        unit = h.parseUnit('100')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'px'
+        expect(unit.string)   .toBe '100px'
+      it 'should parse pixel string', ->
+        unit = h.parseUnit('100px')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'px'
+        expect(unit.string)   .toBe '100px'
+      it 'should parse percent string', ->
+        unit = h.parseUnit('100%')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe '%'
+        expect(unit.string)   .toBe '100%'
+      it 'should parse rem string', ->
+        unit = h.parseUnit('100rem')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'rem'
+        expect(unit.string)   .toBe '100rem'
+      it 'should parse em string', ->
+        unit = h.parseUnit('100em')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'em'
+        expect(unit.string)   .toBe '100em'
+      it 'should parse ex string', ->
+        unit = h.parseUnit('100ex')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'ex'
+        expect(unit.string)   .toBe '100ex'
+      it 'should parse cm string', ->
+        unit = h.parseUnit('100cm')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'cm'
+        expect(unit.string)   .toBe '100cm'
+      it 'should parse mm string', ->
+        unit = h.parseUnit('100mm')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'mm'
+        expect(unit.string)   .toBe '100mm'
+      it 'should parse in string', ->
+        unit = h.parseUnit('100in')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'in'
+        expect(unit.string)   .toBe '100in'
+      it 'should parse pt string', ->
+        unit = h.parseUnit('100pt')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'pt'
+        expect(unit.string)   .toBe '100pt'
+      it 'should parse pc string', ->
+        unit = h.parseUnit('100pc')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'pc'
+        expect(unit.string)   .toBe '100pc'
+      it 'should parse ch string', ->
+        unit = h.parseUnit('100ch')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'ch'
+        expect(unit.string)   .toBe '100ch'
+      it 'should parse vh string', ->
+        unit = h.parseUnit('100vh')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'vh'
+        expect(unit.string)   .toBe '100vh'
+      it 'should parse vw string', ->
+        unit = h.parseUnit('100vw')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'vw'
+        expect(unit.string)   .toBe '100vw'
+      it 'should parse vmin string', ->
+        unit = h.parseUnit('100vmin')
+        expect(unit.value)    .toBe 100
+        expect(unit.unit)     .toBe 'vmin'
+        expect(unit.string)   .toBe '100vmin'
     describe 'strToArr method', ->
       it 'should parse string to array',->
         expect(h.strToArr('200 100').join ' ').toBe '200 100'
@@ -137,6 +216,11 @@ describe 'Helpers ->', ->
     describe 'color parsing - makeColorObj method', ->
       it 'should have shortColors map', ->
         expect(h.shortColors).toBeDefined()
+      it 'should have posPropsMap map', ->
+        expect(h.posPropsMap.x).toBe      1
+        expect(h.posPropsMap.y).toBe      1
+        expect(h.posPropsMap.shiftX).toBe 1
+        expect(h.posPropsMap.shiftY).toBe 1
       it 'should have div node', ->
         expect(h.div.tagName.toLowerCase()).toBe 'div'
       it 'should parse 3 hex color', ->

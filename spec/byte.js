@@ -236,6 +236,43 @@
         });
         return expect(byte.el.parentNode.isDiv).toBe(true);
       });
+      describe('position set ->', function() {
+        it('should set a position with respect to units', function() {
+          var byte;
+          byte = new Byte({
+            x: 100,
+            y: 50
+          });
+          expect(byte.el.style.left).toBe('100px');
+          return expect(byte.el.style.top).toBe('50px');
+        });
+        it('should animate position', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              100: '200px'
+            },
+            duration: 20
+          });
+          return setTimeout(function() {
+            expect(byte.el.style.left).toBe('200px');
+            return dfr();
+          }, 40);
+        });
+        return it('should animate position with respect to units', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              '20%': '50%'
+            },
+            duration: 20
+          });
+          return setTimeout(function() {
+            expect(byte.el.style.left).toBe('50%');
+            return dfr();
+          }, 40);
+        });
+      });
       describe('render method ->', function() {
         it('should call draw method', function() {
           var byte;
@@ -325,7 +362,8 @@
             });
             radiusDelta = byte.deltas.radius;
             expect(radiusDelta.start).toBe(25);
-            return expect(radiusDelta.delta).toBe(50);
+            expect(radiusDelta.delta).toBe(50);
+            return expect(radiusDelta.type).toBe('number');
           });
           it('should calculate delta with string arguments', function() {
             var byte, radiusDelta;
@@ -384,7 +422,8 @@
             colorDelta = byte.deltas.stroke;
             expect(colorDelta.start.r).toBe(0);
             expect(colorDelta.end.r).toBe(255);
-            return expect(colorDelta.delta.r).toBe(255);
+            expect(colorDelta.delta.r).toBe(255);
+            return expect(colorDelta.type).toBe('color');
           });
         });
         describe('array values ->', function() {
@@ -398,7 +437,23 @@
             arrayDelta = byte.deltas.strokeDasharray;
             expect(arrayDelta.start.join(' ')).toBe('200 100');
             expect(arrayDelta.end.join(' ')).toBe('300 0');
-            return expect(arrayDelta.delta.join(' ')).toBe('100 -100');
+            expect(arrayDelta.delta.join(' ')).toBe('100 -100');
+            return expect(arrayDelta.type).toBe('array');
+          });
+        });
+        describe('unit values ->', function() {
+          return it('should calculate unit delta', function() {
+            var byte, xDelta;
+            byte = new Byte({
+              x: {
+                '0%': '100%'
+              }
+            });
+            xDelta = byte.deltas.x;
+            expect(xDelta.start.string).toBe('0%');
+            expect(xDelta.end.string).toBe('100%');
+            expect(xDelta.delta).toBe(100);
+            return expect(xDelta.type).toBe('unit');
           });
         });
         return describe('tween-related values ->', function() {
