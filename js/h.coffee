@@ -3,6 +3,8 @@ TWEEN = require './vendor/tween'
 class Helpers
   div:    document.createElement 'div'
   TWEEN:  TWEEN
+  logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
+    padding: 1px 0 2px; border: 1px solid #FF512F;'
   shortColors:
     aqua:   'rgb(0,255,255)'
     black:  'rgb(0,0,0)'
@@ -47,7 +49,13 @@ class Helpers
     prefixedName            = "#{@prefix.css}#{name}"
     el.style[name]          = value
     el.style[prefixedName]  = value
-
+  prepareForLog:(args)->
+    args = Array::slice.apply args
+    args.unshift(@logBadgeCss); args.unshift('%c mo·js ')
+    args
+  log:->    console.log.apply   console, @prepareForLog arguments
+  warn:->   console.warn.apply  console, @prepareForLog arguments
+  error:->  console.error.apply console, @prepareForLog arguments
   parseUnit:(value)->
     if typeof value is 'number'
       return returnVal =

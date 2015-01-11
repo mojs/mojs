@@ -144,7 +144,7 @@ class Transit extends Bit
         end = value[keys[0]]
         # write the old start value
         start = opts[key]
-        console.warn "::mojs:: new end value expected instead of object,
+        @h.warn "new end value expected instead of object,
          using end(#{end}) value", value
         opts[key] = {}
         opts[key][start] = end
@@ -223,8 +223,8 @@ class Transit extends Bit
       # color values
       if isNaN parseFloat(start)
         if key is 'strokeLinecap'
-          console?.warn '::mojs:: Sorry, stroke-linecap propety is not
-            animateable yet, using the start value'
+          @h.warn "Sorry, stroke-linecap property is not
+            animatable yet, using the start(#{start}) value", optionsValue
           @props[key] = start; continue
         end           = optionsValue[start]
         startColorObj = h.makeColorObj start

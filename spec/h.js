@@ -4,6 +4,9 @@
   h = mojs.helpers;
 
   describe('Helpers ->', function() {
+    it('should have logBadgeCss', function() {
+      return expect(h.logBadgeCss).toBeDefined();
+    });
     describe('prefix', function() {
       return it('should have prefix', function() {
         expect(h.prefix).toBeDefined();
@@ -36,6 +39,68 @@
       });
     });
     return describe('methods ->', function() {
+      describe('logging methods', function() {
+        describe('prepareForLog method', function() {
+          return it('should prepare for arguments for logging', function() {
+            var prepared;
+            prepared = h.prepareForLog(['message']);
+            expect(prepared[0]).toBe('%c mo·js ');
+            expect(prepared[1]).toBe(h.logBadgeCss);
+            return expect(prepared[2]).toBe('message');
+          });
+        });
+        describe('log method', function() {
+          it('should log to console', function() {
+            spyOn(console, 'log');
+            h.log('something');
+            return expect(console.log).toHaveBeenCalled();
+          });
+          it('should prepend mojs badge to message', function() {
+            spyOn(console, 'log');
+            h.log('something');
+            return expect(console.log).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
+          });
+          return it('should call @prepareForLog method', function() {
+            spyOn(h, 'prepareForLog');
+            h.log('something');
+            return expect(h.prepareForLog).toHaveBeenCalled();
+          });
+        });
+        describe('warn method', function() {
+          it('should warn to console', function() {
+            spyOn(console, 'warn');
+            h.warn('something');
+            return expect(console.warn).toHaveBeenCalled();
+          });
+          it('should prepend mojs badge to message', function() {
+            spyOn(console, 'warn');
+            h.warn('something');
+            return expect(console.warn).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
+          });
+          return it('should call @prepareForLog method', function() {
+            spyOn(h, 'prepareForLog');
+            h.log('something');
+            return expect(h.prepareForLog).toHaveBeenCalled();
+          });
+        });
+        return describe('error method', function() {
+          it('should error to console', function() {
+            spyOn(console, 'error');
+            h.error('something');
+            return expect(console.error).toHaveBeenCalled();
+          });
+          it('should prepend mojs badge to message', function() {
+            spyOn(console, 'error');
+            h.error('something');
+            return expect(console.error).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
+          });
+          return it('should call @prepareForLog method', function() {
+            spyOn(h, 'prepareForLog');
+            h.log('something');
+            return expect(h.prepareForLog).toHaveBeenCalled();
+          });
+        });
+      });
       describe('setPrefixedStyle method', function() {
         return it('should set prefixed style', function() {
           var el;

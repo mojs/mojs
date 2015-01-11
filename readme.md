@@ -4,7 +4,7 @@
 #### todo
 - make refactor
   - module definition to utils
-  - stylize console
+  - els map to helper + warn if not in map
   - position to center
   - draw on render to setPosition 0
   - shiftX <-> x

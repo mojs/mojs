@@ -203,7 +203,7 @@ Transit = (function(_super) {
         keys = Object.keys(value);
         end = value[keys[0]];
         start = opts[key];
-        console.warn("::mojs:: new end value expected instead of object, using end(" + end + ") value", value);
+        this.h.warn("new end value expected instead of object, using end(" + end + ") value", value);
         opts[key] = {};
         opts[key][start] = end;
       } else {
@@ -295,9 +295,7 @@ Transit = (function(_super) {
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
         if (key === 'strokeLinecap') {
-          if (typeof console !== "undefined" && console !== null) {
-            console.warn('::mojs:: Sorry, stroke-linecap propety is not animateable yet, using the start value');
-          }
+          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value", optionsValue);
           this.props[key] = start;
           continue;
         }

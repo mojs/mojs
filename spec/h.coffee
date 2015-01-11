@@ -1,6 +1,8 @@
 h  = mojs.helpers
 
 describe 'Helpers ->', ->
+  it 'should have logBadgeCss', ->
+    expect(h.logBadgeCss).toBeDefined()
   describe 'prefix', ->
     it 'should have prefix', ->
       expect(h.prefix).toBeDefined()
@@ -26,13 +28,62 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 9
   describe 'methods ->', ->
+
+    describe 'logging methods', ->
+      describe 'prepareForLog method', ->
+        it 'should prepare for arguments for logging', ->
+          prepared = h.prepareForLog [ 'message' ]
+          expect(prepared[0]).toBe '%c mo·js '
+          expect(prepared[1]).toBe h.logBadgeCss
+          expect(prepared[2]).toBe 'message'
+      describe 'log method', ->
+        it 'should log to console',->
+          spyOn console, 'log'
+          h.log 'something'
+          expect(console.log).toHaveBeenCalled()
+        it 'should prepend mojs badge to message',->
+          spyOn console, 'log'
+          h.log 'something'
+          expect(console.log)
+            .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
+        it 'should call @prepareForLog method',->
+          spyOn h, 'prepareForLog'
+          h.log 'something'
+          expect(h.prepareForLog).toHaveBeenCalled()
+      describe 'warn method', ->
+        it 'should warn to console',->
+          spyOn console, 'warn'
+          h.warn 'something'
+          expect(console.warn).toHaveBeenCalled()
+        it 'should prepend mojs badge to message',->
+          spyOn console, 'warn'
+          h.warn 'something'
+          expect(console.warn)
+            .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
+        it 'should call @prepareForLog method',->
+          spyOn h, 'prepareForLog'
+          h.log 'something'
+          expect(h.prepareForLog).toHaveBeenCalled()
+      describe 'error method', ->
+        it 'should error to console',->
+          spyOn console, 'error'
+          h.error 'something'
+          expect(console.error).toHaveBeenCalled()
+        it 'should prepend mojs badge to message',->
+          spyOn console, 'error'
+          h.error 'something'
+          expect(console.error)
+            .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
+        it 'should call @prepareForLog method',->
+          spyOn h, 'prepareForLog'
+          h.log 'something'
+          expect(h.prepareForLog).toHaveBeenCalled()
     describe 'setPrefixedStyle method', ->
       it 'should set prefixed style', ->
         el = document.createElement 'div'
         h.setPrefixedStyle el, 'transform', 'translate(20px, 10px)'
         expect(el.style['-webkit-transform']).toBe 'translate(20px, 10px)'
         expect(el.style['transform']).toBe         'translate(20px, 10px)'
-
     describe 'parseUnit method', ->
       it 'should parse number to pixels', ->
         unit = h.parseUnit(100)

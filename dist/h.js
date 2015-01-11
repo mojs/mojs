@@ -7,6 +7,8 @@ Helpers = (function() {
 
   Helpers.prototype.TWEEN = TWEEN;
 
+  Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 0 2px; border: 1px solid #FF512F;';
+
   Helpers.prototype.shortColors = {
     aqua: 'rgb(0,255,255)',
     black: 'rgb(0,0,0)',
@@ -62,6 +64,25 @@ Helpers = (function() {
     prefixedName = "" + this.prefix.css + name;
     el.style[name] = value;
     return el.style[prefixedName] = value;
+  };
+
+  Helpers.prototype.prepareForLog = function(args) {
+    args = Array.prototype.slice.apply(args);
+    args.unshift(this.logBadgeCss);
+    args.unshift('%c mo·js ');
+    return args;
+  };
+
+  Helpers.prototype.log = function() {
+    return console.log.apply(console, this.prepareForLog(arguments));
+  };
+
+  Helpers.prototype.warn = function() {
+    return console.warn.apply(console, this.prepareForLog(arguments));
+  };
+
+  Helpers.prototype.error = function() {
+    return console.error.apply(console, this.prepareForLog(arguments));
   };
 
   Helpers.prototype.parseUnit = function(value) {

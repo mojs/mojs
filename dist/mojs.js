@@ -279,6 +279,8 @@ Helpers = (function() {
 
   Helpers.prototype.TWEEN = TWEEN;
 
+  Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 0 2px; border: 1px solid #FF512F;';
+
   Helpers.prototype.shortColors = {
     aqua: 'rgb(0,255,255)',
     black: 'rgb(0,0,0)',
@@ -334,6 +336,25 @@ Helpers = (function() {
     prefixedName = "" + this.prefix.css + name;
     el.style[name] = value;
     return el.style[prefixedName] = value;
+  };
+
+  Helpers.prototype.prepareForLog = function(args) {
+    args = Array.prototype.slice.apply(args);
+    args.unshift(this.logBadgeCss);
+    args.unshift('%c mo·js ');
+    return args;
+  };
+
+  Helpers.prototype.log = function() {
+    return console.log.apply(console, this.prepareForLog(arguments));
+  };
+
+  Helpers.prototype.warn = function() {
+    return console.warn.apply(console, this.prepareForLog(arguments));
+  };
+
+  Helpers.prototype.error = function() {
+    return console.error.apply(console, this.prepareForLog(arguments));
   };
 
   Helpers.prototype.parseUnit = function(value) {
@@ -942,7 +963,7 @@ Transit = (function(_super) {
         keys = Object.keys(value);
         end = value[keys[0]];
         start = opts[key];
-        console.warn("::mojs:: new end value expected instead of object, using end(" + end + ") value", value);
+        this.h.warn("new end value expected instead of object, using end(" + end + ") value", value);
         opts[key] = {};
         opts[key][start] = end;
       } else {
@@ -1034,9 +1055,7 @@ Transit = (function(_super) {
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
         if (key === 'strokeLinecap') {
-          if (typeof console !== "undefined" && console !== null) {
-            console.warn('::mojs:: Sorry, stroke-linecap propety is not animateable yet, using the start value');
-          }
+          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value", optionsValue);
           this.props[key] = start;
           continue;
         }
