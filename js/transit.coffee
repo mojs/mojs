@@ -15,7 +15,7 @@ elsMap =
   line:       Line
   rect:       Rect
 
-class Byte extends Bit
+class Transit extends Bit
   TWEEN: TWEEN
   progress: 0
   defaults:
@@ -302,10 +302,10 @@ class Byte extends Bit
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
-  define "Byte", [], -> Byte
+  define "Transit", [], -> Transit
 if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Byte
+  module.exports = Transit
 ### istanbul ignore next ###
 window?.mojs ?= {}
-window?.mojs.Byte = Byte
+window?.mojs.Transit = Transit
 

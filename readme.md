@@ -2,9 +2,6 @@
 ----
 
 #### todo
-- add transition
-  - chain inherit type
-  - rename to transition
 - make refactor
   - module definition to utils
   - stylize console

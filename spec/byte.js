@@ -1,7 +1,7 @@
 (function() {
   var Bit, Byte, Rect, h, ns, svg;
 
-  Byte = mojs.Byte;
+  Byte = mojs.Transit;
 
   Bit = mojs.Bit;
 

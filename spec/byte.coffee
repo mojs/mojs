@@ -1,4 +1,4 @@
-Byte = mojs.Byte
+Byte = mojs.Transit
 Bit  = mojs.Bit
 Rect = mojs.Rect
 h    = mojs.helpers

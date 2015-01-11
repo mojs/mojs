@@ -4,11 +4,11 @@ Triangle  = require './triangle'
 Rect      = require './rect'
 Line      = require './line'
 Bit       = require './bit'
-Byte      = require './byte'
+Transit   = require './transit'
 svg       = document.getElementById 'js-svg'
 div       = document.getElementById 'js-div'
 
-rect = new Byte
+rect = new Transit
   type:       'line'
   x:           100
   y:           100

@@ -1,6 +1,6 @@
 
 /* istanbul ignore next */
-var Bit, Byte, Circle, Line, Rect, TWEEN, Triangle, elsMap, h,
+var Bit, Circle, Line, Rect, TWEEN, Transit, Triangle, elsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -25,18 +25,18 @@ elsMap = {
   rect: Rect
 };
 
-Byte = (function(_super) {
-  __extends(Byte, _super);
+Transit = (function(_super) {
+  __extends(Transit, _super);
 
-  function Byte() {
-    return Byte.__super__.constructor.apply(this, arguments);
+  function Transit() {
+    return Transit.__super__.constructor.apply(this, arguments);
   }
 
-  Byte.prototype.TWEEN = TWEEN;
+  Transit.prototype.TWEEN = TWEEN;
 
-  Byte.prototype.progress = 0;
+  Transit.prototype.progress = 0;
 
-  Byte.prototype.defaults = {
+  Transit.prototype.defaults = {
     strokeWidth: 2,
     strokeOpacity: 1,
     strokeDasharray: '',
@@ -65,7 +65,7 @@ Byte = (function(_super) {
     easing: 'Linear.None'
   };
 
-  Byte.prototype.vars = function() {
+  Transit.prototype.vars = function() {
     this.h = h;
     if (this.chainArr == null) {
       this.chainArr = [];
@@ -74,11 +74,11 @@ Byte = (function(_super) {
     return this.calcTransform();
   };
 
-  Byte.prototype.calcTransform = function() {
+  Transit.prototype.calcTransform = function() {
     return this.props.transform = "rotate(" + this.props.deg + "," + this.props.center + "," + this.props.center + ")";
   };
 
-  Byte.prototype.render = function() {
+  Transit.prototype.render = function() {
     var size;
     if (!this.isRendered) {
       if (this.o.ctx == null) {
@@ -110,7 +110,7 @@ Byte = (function(_super) {
     return this;
   };
 
-  Byte.prototype.chain = function(options) {
+  Transit.prototype.chain = function(options) {
     options.type = this.o.type;
     this.chainArr.push({
       type: 'chain',
@@ -119,7 +119,7 @@ Byte = (function(_super) {
     return this;
   };
 
-  Byte.prototype.then = function(options) {
+  Transit.prototype.then = function(options) {
     this.chainArr.push({
       type: 'then',
       options: options
@@ -127,7 +127,7 @@ Byte = (function(_super) {
     return this;
   };
 
-  Byte.prototype.createBit = function() {
+  Transit.prototype.createBit = function() {
     var bitClass;
     bitClass = elsMap[this.o.type || this.type];
     return this.bit = new bitClass({
@@ -136,7 +136,7 @@ Byte = (function(_super) {
     });
   };
 
-  Byte.prototype.setProgress = function(progress) {
+  Transit.prototype.setProgress = function(progress) {
     var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2;
     if ((_ref = this.props.onUpdate) != null) {
       _ref.call(this, progress);
@@ -175,7 +175,7 @@ Byte = (function(_super) {
     }
   };
 
-  Byte.prototype.runChain = function() {
+  Transit.prototype.runChain = function() {
     var chain, _ref;
     if (!this.chainArr.length) {
       return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
@@ -190,7 +190,7 @@ Byte = (function(_super) {
     return this.init();
   };
 
-  Byte.prototype.mergeThenOptions = function(chain) {
+  Transit.prototype.mergeThenOptions = function(chain) {
     var currValue, end, key, keys, nextValue, options, opts, start, value;
     opts = this.copyEndOptions();
     if (!opts) {
@@ -220,7 +220,7 @@ Byte = (function(_super) {
     return this.o = opts;
   };
 
-  Byte.prototype.copyEndOptions = function() {
+  Transit.prototype.copyEndOptions = function() {
     var key, opts, value, _ref;
     opts = {};
     _ref = this.o;
@@ -231,7 +231,7 @@ Byte = (function(_super) {
     return opts;
   };
 
-  Byte.prototype.draw = function() {
+  Transit.prototype.draw = function() {
     var translate;
     this.bit.setProp({
       x: this.props.center,
@@ -257,7 +257,7 @@ Byte = (function(_super) {
     }
   };
 
-  Byte.prototype.calcSize = function() {
+  Transit.prototype.calcSize = function() {
     var dRadius, dStroke, radius, stroke;
     if ((this.o.size != null) || this.o.ctx) {
       return;
@@ -272,7 +272,7 @@ Byte = (function(_super) {
     return this.props.center = this.props.size / 2;
   };
 
-  Byte.prototype.extendDefaults = function() {
+  Transit.prototype.extendDefaults = function() {
     var defaultsValue, end, endArr, endColorObj, key, optionsValue, start, startArr, startColorObj, _ref, _results;
     if (this.props == null) {
       this.props = {};
@@ -357,7 +357,7 @@ Byte = (function(_super) {
     return _results;
   };
 
-  Byte.prototype.createTween = function() {
+  Transit.prototype.createTween = function() {
     var ease, easings, it, onComplete;
     it = this;
     onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
@@ -373,7 +373,7 @@ Byte = (function(_super) {
     return !this.o.isRunLess && this.startTween();
   };
 
-  Byte.prototype.startTween = function() {
+  Transit.prototype.startTween = function() {
     var _ref;
     if ((_ref = this.props.onStart) != null) {
       _ref.call(this);
@@ -382,7 +382,7 @@ Byte = (function(_super) {
     return this.tween.start();
   };
 
-  return Byte;
+  return Transit;
 
 })(Bit);
 
@@ -390,13 +390,13 @@ Byte = (function(_super) {
 /* istanbul ignore next */
 
 if ((typeof define === "function") && define.amd) {
-  define("Byte", [], function() {
-    return Byte;
+  define("Transit", [], function() {
+    return Transit;
   });
 }
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Byte;
+  module.exports = Transit;
 }
 
 
@@ -409,5 +409,5 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Byte = Byte;
+  window.mojs.Transit = Transit;
 }
