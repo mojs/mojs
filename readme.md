@@ -3,15 +3,17 @@
 
 #### todo
 - add transition
-  - add strokeLinecap options
-  - add chains
+  - add then
   - rename to transition
 - make refactor
   - module definition to utils
+  - stylize console
+  - position to center
   - draw on render to setPosition 0
   - shiftX <-> x
   - create animation map for props that should be animated and draw only them
   - don't set default values
+  - coverage to 100%
   - extend to utils?
   - fix triangle
 - add radial transition(burst)

@@ -50,36 +50,45 @@ class Byte extends Bit
     yoyo:               false
     easing:             'Linear.None'
 
-  vars:-> @h = h; @extendDefaults(); @calcTransform()
+  vars:->
+    @h = h; @chainArr ?= []
+    @extendDefaults(); @calcTransform()
 
   calcTransform:->
     @props.transform = "rotate(#{@props.deg},#{@props.center},#{@props.center})"
 
   render:->
-    if !@o.ctx?
-      @ctx = document.createElementNS @ns, 'svg'
-      @ctx.style.position  = 'absolute'
-      @ctx.style.width     = '100%'
-      @ctx.style.height    = '100%'
-      @createBit(); @calcSize()
+    # console.log @isRendered
+    if !@isRendered
+      if !@o.ctx?
+        @ctx = document.createElementNS @ns, 'svg'
+        @ctx.style.position  = 'absolute'
+        @ctx.style.width     = '100%'
+        @ctx.style.height    = '100%'
+        @createBit(); @calcSize()
 
-      @el   = document.createElement 'div'
-      size  = "#{@props.size/16}rem"
-      @el.style.position  = 'absolute'
-      @el.style.top       = @props.y.string
-      @el.style.left      = @props.x.string
-      @el.style.opacity   = @props.opacity
-      @el.style.width     = size
-      @el.style.height    = size
-      @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
+        @el   = document.createElement 'div'
+        size  = "#{@props.size/16}rem"
+        @el.style.position  = 'absolute'
+        @el.style.top       = @props.y.string
+        @el.style.left      = @props.x.string
+        @el.style.opacity   = @props.opacity
+        @el.style.width     = size
+        @el.style.height    = size
+        @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
-      @el.appendChild @ctx
-      (@o.parent or document.body).appendChild @el
-    else @ctx = @o.ctx; @createBit()
+        @el.appendChild @ctx
+        (@o.parent or document.body).appendChild @el
+      else @ctx = @o.ctx; @createBit()
+      
+      @isRendered = true
 
     !@o.isDrawLess and @draw()
     @createTween()
     @
+
+  chain:(options)-> @chainArr.push { type: 'chain', options: options }; @
+  then:(options)->  @chainArr.push { type: 'then',  options: options }; @
 
   createBit:->
     bitClass = elsMap[@o.type or @type]
@@ -108,6 +117,53 @@ class Byte extends Bit
           a = parseInt (value.start.a + value.delta.a*@progress), 10
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
     @draw()
+    
+    if progress is 1 and @o.isRunLess then @runChain()
+    
+  runChain:->
+    return if !@chainArr.length
+    chain = @chainArr.shift()
+    if chain.type is 'chain'
+      @o = chain.options
+    
+    if chain.type is 'then'
+      @mergeThenOptions chain
+
+    @init()
+
+  mergeThenOptions:(chain)->
+    opts = @copyEndOptions()
+    return if !opts
+    options = chain.options
+    for key, value of options
+      if typeof value is 'object'
+        keys = Object.keys value
+        # get end value
+        end = value[keys[0]]
+        # write the old start value
+        start = opts[key]
+        console.warn "::mojs:: new end value expected instead of object,
+         using end(#{end}) value", value
+        opts[key] = {}
+        opts[key][start] = end
+      else
+        if !@h.tweenOptionMap[key]
+          currValue = opts[key]
+          nextValue = value
+          opts[key] = {}
+          opts[key][currValue] = nextValue
+        else opts[key] = value
+    @o = opts
+
+  copyEndOptions:->
+    opts = {}
+    for key, value of @o
+      opts[key] = if typeof value is 'object'
+        # get the end value
+        value[Object.keys(value)[0]]
+      else value
+    # console.log 'ops', opts
+    opts
 
   draw:->
     @bit.setProp
@@ -164,6 +220,10 @@ class Byte extends Bit
       start = Object.keys(optionsValue)[0]
       # color values
       if isNaN parseFloat(start)
+        if key is 'strokeLinecap'
+          console?.warn '::mojs:: Sorry, stroke-linecap propety is not
+            animateable yet, using the start value'
+          @props[key] = start; continue
         end           = optionsValue[start]
         startColorObj = h.makeColorObj start
         endColorObj   = h.makeColorObj end
@@ -217,8 +277,7 @@ class Byte extends Bit
 
   createTween:->
     it = @
-    onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
-    else null
+    if @props.onComplete then @props.onComplete = @h.bind(@props.onComplete, @)
 
     easings = h.splitEasing(@props.easing)
     ease = if typeof easings is 'function' then easings
@@ -230,7 +289,7 @@ class Byte extends Bit
       .onUpdate -> it.setProgress @p
       .repeat @props.repeat-1
       .yoyo @props.yoyo
-      .onComplete onComplete
+      .onComplete => @runChain(); @props.onComplete?()
     !@o.isRunLess and @startTween()
 
   startTween:->

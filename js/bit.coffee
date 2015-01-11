@@ -19,7 +19,8 @@ class Bit
     x:                  0
     y:                  0
     deg:                0
-  constructor:(@o={})-> @vars(); @render()
+  constructor:(@o={})-> @init()
+  init:-> @vars(); @render(); @
   vars:->
     if @o.ctx and @o.ctx.tagName is 'svg' then @ctx = @o.ctx
     else throw Error 'You should pass a real context(ctx) to the bit'

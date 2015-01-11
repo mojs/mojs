@@ -28,9 +28,14 @@ Bit = (function() {
 
   function Bit(o) {
     this.o = o != null ? o : {};
+    this.init();
+  }
+
+  Bit.prototype.init = function() {
     this.vars();
     this.render();
-  }
+    return this;
+  };
 
   Bit.prototype.vars = function() {
     if (this.o.ctx && this.o.ctx.tagName === 'svg') {

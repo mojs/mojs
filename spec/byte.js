@@ -259,7 +259,7 @@
           }, 40));
         });
       });
-      describe('position set ->', function() {
+      return describe('position set ->', function() {
         describe('x/y coordinates ->', function() {
           it('should set a position with respect to units', function() {
             var byte;
@@ -364,224 +364,253 @@
           });
         });
       });
-      describe('render method ->', function() {
-        it('should call draw method', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25
-          });
-          spyOn(byte, 'draw');
-          byte.render();
-          return expect(byte.draw).toHaveBeenCalled();
+    });
+    describe('mergeThenOptions method ->', function() {
+      it('should call copyEndOptions method', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            40: 20
+          },
+          radius: 25,
+          duration: 500,
+          isRunLess: true
         });
-        it('should not call draw method if isDrawLess option is true', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25,
-            isDrawLess: true
-          });
-          spyOn(byte, 'draw');
-          byte.render();
-          return expect(byte.draw).not.toHaveBeenCalled();
-        });
-        it('should call createBit method', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25
-          });
-          spyOn(byte, 'createBit');
-          byte.render();
-          return expect(byte.createBit).toHaveBeenCalled();
-        });
-        it('should call calcSize method', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25
-          });
-          spyOn(byte, 'calcSize');
-          byte.render();
-          return expect(byte.calcSize).toHaveBeenCalled();
-        });
-        return it('should not call calcSize method id context was passed', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25,
-            ctx: svg
-          });
-          spyOn(byte, 'calcSize');
-          byte.render();
-          return expect(byte.calcSize).not.toHaveBeenCalled();
-        });
+        byte.chainArr = [
+          {
+            options: {
+              strokeWidth: 0
+            },
+            type: 'then'
+          }
+        ];
+        spyOn(byte, 'copyEndOptions');
+        byte.mergeThenOptions(byte.chainArr[0]);
+        return expect(byte.copyEndOptions).toHaveBeenCalled();
       });
-      describe('draw method ->', function() {
-        it('should call setProp method', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25
-          });
-          spyOn(byte.bit, 'setProp');
-          byte.draw();
-          return expect(byte.bit.setProp).toHaveBeenCalled();
+      it('should call merge options values with old ones', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            40: 20
+          },
+          radius: 25,
+          duration: 500,
+          isRunLess: true
         });
-        it('should call bit.draw method', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25
-          });
-          spyOn(byte.bit, 'draw');
-          byte.draw();
-          return expect(byte.bit.draw).toHaveBeenCalled();
-        });
-        return it('should call calcTransform method', function() {
-          var byte;
-          byte = new Byte({
-            radius: 25
-          });
-          spyOn(byte, 'calcTransform');
-          byte.draw();
-          return expect(byte.calcTransform).toHaveBeenCalled();
-        });
+        byte.chainArr = [
+          {
+            options: {
+              strokeWidth: 0
+            },
+            type: 'then'
+          }
+        ];
+        byte.mergeThenOptions(byte.chainArr[0]);
+        return expect(byte.o.strokeWidth[20]).toBe(0);
       });
-      describe('delta calculations ->', function() {
-        describe('numeric values ->', function() {
-          it('should calculate delta', function() {
-            var byte, radiusDelta;
-            byte = new Byte({
-              radius: {
-                25: 75
-              }
-            });
-            radiusDelta = byte.deltas.radius;
-            expect(radiusDelta.start).toBe(25);
-            expect(radiusDelta.delta).toBe(50);
-            return expect(radiusDelta.type).toBe('number');
-          });
-          it('should calculate delta with string arguments', function() {
-            var byte, radiusDelta;
-            byte = new Byte({
-              radius: {
-                '25': '75'
-              }
-            });
-            radiusDelta = byte.deltas.radius;
-            expect(radiusDelta.start).toBe(25);
-            return expect(radiusDelta.delta).toBe(50);
-          });
-          it('should calculate delta with float arguments', function() {
-            var byte, radiusDelta;
-            byte = new Byte({
-              radius: {
-                '25.50': 75.50
-              }
-            });
-            radiusDelta = byte.deltas.radius;
-            expect(radiusDelta.start).toBe(25.5);
-            return expect(radiusDelta.delta).toBe(50);
-          });
-          it('should calculate delta with negative start arguments', function() {
-            var byte, radiusDelta;
-            byte = new Byte({
-              radius: {
-                '-25.50': 75.50
-              }
-            });
-            radiusDelta = byte.deltas.radius;
-            expect(radiusDelta.start).toBe(-25.5);
-            return expect(radiusDelta.delta).toBe(101);
-          });
-          return it('should calculate delta with negative end arguments', function() {
-            var byte, radiusDelta;
-            byte = new Byte({
-              radius: {
-                '25.50': -75.50
-              }
-            });
-            radiusDelta = byte.deltas.radius;
-            expect(radiusDelta.start).toBe(25.5);
-            expect(radiusDelta.end).toBe(-75.5);
-            return expect(radiusDelta.delta).toBe(-101);
-          });
+      return it('should set new values', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            40: 20
+          },
+          radius: 25,
+          duration: 500,
+          isRunLess: true,
+          strokeDasharray: '100'
         });
-        describe('color values ->', function() {
-          return it('should calculate color delta', function() {
-            var byte, colorDelta;
-            byte = new Byte({
-              stroke: {
-                '#000': 'rgb(255,255,255)'
-              }
-            });
-            colorDelta = byte.deltas.stroke;
-            expect(colorDelta.start.r).toBe(0);
-            expect(colorDelta.end.r).toBe(255);
-            expect(colorDelta.delta.r).toBe(255);
-            return expect(colorDelta.type).toBe('color');
-          });
-        });
-        describe('array values ->', function() {
-          return it('should calculate array delta', function() {
-            var arrayDelta, byte;
-            byte = new Byte({
-              strokeDasharray: {
-                '200 100': '300'
-              }
-            });
-            arrayDelta = byte.deltas.strokeDasharray;
-            expect(arrayDelta.start.join(' ')).toBe('200 100');
-            expect(arrayDelta.end.join(' ')).toBe('300 0');
-            expect(arrayDelta.delta.join(' ')).toBe('100 -100');
-            return expect(arrayDelta.type).toBe('array');
-          });
-        });
-        describe('unit values ->', function() {
-          return it('should calculate unit delta', function() {
-            var byte, xDelta;
-            byte = new Byte({
-              x: {
-                '0%': '100%'
-              }
-            });
-            xDelta = byte.deltas.x;
-            expect(xDelta.start.string).toBe('0%');
-            expect(xDelta.end.string).toBe('100%');
-            expect(xDelta.delta).toBe(100);
-            return expect(xDelta.type).toBe('unit');
-          });
-        });
-        return describe('tween-related values ->', function() {
-          return it('should not calc delta for tween related props', function() {
-            var byte;
-            byte = new Byte({
-              duration: {
-                2000: 1000
-              },
-              isRunLess: true
-            });
-            return expect(byte.deltas.duration).not.toBeDefined();
-          });
-        });
+        byte.chainArr = [
+          {
+            options: {
+              strokeWidth: 0,
+              duration: 1500
+            },
+            type: 'then'
+          }
+        ];
+        byte.mergeThenOptions(byte.chainArr[0]);
+        return expect(byte.o.duration).toBe(1500);
       });
-      return describe('setProgress method ->', function() {
-        it('should set transition progress', function() {
-          var byte;
+    });
+    describe('copyEndOptions method ->', function() {
+      return it('should copy end value of options', function() {
+        var byte, opt;
+        byte = new Byte({
+          strokeWidth: {
+            40: 20
+          },
+          radius: 25,
+          duration: 500,
+          isRunLess: true
+        });
+        byte.chainArr = [
+          {
+            options: {
+              strokeWidth: 0
+            },
+            type: 'then'
+          }
+        ];
+        opt = byte.copyEndOptions();
+        expect(opt.strokeWidth).toBe(20);
+        expect(opt.radius).toBe(25);
+        expect(opt.duration).toBe(500);
+        return expect(opt.isRunLess).toBe(true);
+      });
+    });
+    describe('render method ->', function() {
+      it('should call draw method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'draw');
+        byte.render();
+        return expect(byte.draw).toHaveBeenCalled();
+      });
+      it('should not call draw method if isDrawLess option is true', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          isDrawLess: true
+        });
+        spyOn(byte, 'draw');
+        byte.render();
+        return expect(byte.draw).not.toHaveBeenCalled();
+      });
+      it('should call createBit method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'createBit');
+        byte.isRendered = false;
+        byte.render();
+        return expect(byte.createBit).toHaveBeenCalled();
+      });
+      it('should set isRendered to true method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        expect(byte.isRendered).toBe(true);
+        byte.isRendered = false;
+        byte.render();
+        return expect(byte.isRendered).toBe(true);
+      });
+      it('should call calcSize method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'calcSize');
+        byte.isRendered = false;
+        byte.render();
+        return expect(byte.calcSize).toHaveBeenCalled();
+      });
+      return it('should not call calcSize method id context was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          ctx: svg
+        });
+        spyOn(byte, 'calcSize');
+        byte.render();
+        return expect(byte.calcSize).not.toHaveBeenCalled();
+      });
+    });
+    describe('draw method ->', function() {
+      it('should call setProp method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte.bit, 'setProp');
+        byte.draw();
+        return expect(byte.bit.setProp).toHaveBeenCalled();
+      });
+      it('should call bit.draw method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte.bit, 'draw');
+        byte.draw();
+        return expect(byte.bit.draw).toHaveBeenCalled();
+      });
+      return it('should call calcTransform method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'calcTransform');
+        byte.draw();
+        return expect(byte.calcTransform).toHaveBeenCalled();
+      });
+    });
+    describe('delta calculations ->', function() {
+      describe('numeric values ->', function() {
+        it('should calculate delta', function() {
+          var byte, radiusDelta;
+          byte = new Byte({
+            radius: {
+              25: 75
+            }
+          });
+          radiusDelta = byte.deltas.radius;
+          expect(radiusDelta.start).toBe(25);
+          expect(radiusDelta.delta).toBe(50);
+          return expect(radiusDelta.type).toBe('number');
+        });
+        it('should calculate delta with string arguments', function() {
+          var byte, radiusDelta;
+          byte = new Byte({
+            radius: {
+              '25': '75'
+            }
+          });
+          radiusDelta = byte.deltas.radius;
+          expect(radiusDelta.start).toBe(25);
+          return expect(radiusDelta.delta).toBe(50);
+        });
+        it('should calculate delta with float arguments', function() {
+          var byte, radiusDelta;
+          byte = new Byte({
+            radius: {
+              '25.50': 75.50
+            }
+          });
+          radiusDelta = byte.deltas.radius;
+          expect(radiusDelta.start).toBe(25.5);
+          return expect(radiusDelta.delta).toBe(50);
+        });
+        it('should calculate delta with negative start arguments', function() {
+          var byte, radiusDelta;
+          byte = new Byte({
+            radius: {
+              '-25.50': 75.50
+            }
+          });
+          radiusDelta = byte.deltas.radius;
+          expect(radiusDelta.start).toBe(-25.5);
+          return expect(radiusDelta.delta).toBe(101);
+        });
+        return it('should calculate delta with negative end arguments', function() {
+          var byte, radiusDelta;
           byte = new Byte({
             radius: {
               '25.50': -75.50
             }
           });
-          byte.setProgress(.5);
-          return expect(byte.progress).toBe(.5);
+          radiusDelta = byte.deltas.radius;
+          expect(radiusDelta.start).toBe(25.5);
+          expect(radiusDelta.end).toBe(-75.5);
+          return expect(radiusDelta.delta).toBe(-101);
         });
-        it('should set value progress', function() {
-          var byte;
-          byte = new Byte({
-            radius: {
-              '25': 75
-            }
-          });
-          byte.setProgress(.5);
-          return expect(byte.props.radius).toBe(50);
-        });
-        it('should set color value progress and only int', function() {
+      });
+      describe('color values ->', function() {
+        it('should calculate color delta', function() {
           var byte, colorDelta;
           byte = new Byte({
             stroke: {
@@ -589,50 +618,144 @@
             }
           });
           colorDelta = byte.deltas.stroke;
-          byte.setProgress(.5);
-          return expect(byte.props.stroke).toBe('rgba(127,127,127,1)');
+          expect(colorDelta.start.r).toBe(0);
+          expect(colorDelta.end.r).toBe(255);
+          expect(colorDelta.delta.r).toBe(255);
+          return expect(colorDelta.type).toBe('color');
         });
-        it('should set color value progress for delta starting with 0', function() {
-          var byte, colorDelta;
-          byte = new Byte({
-            stroke: {
-              '#000': 'rgb(0,255,255)'
-            }
-          });
-          colorDelta = byte.deltas.stroke;
-          byte.setProgress(.5);
-          return expect(byte.props.stroke).toBe('rgba(0,127,127,1)');
+        return it('should ignore stroke-linecap prop, use start prop and warn', function() {
+          var byte, fun;
+          byte = null;
+          spyOn(console, 'warn');
+          fun = function() {
+            return byte = new Byte({
+              strokeLinecap: {
+                'round': 'butt'
+              }
+            });
+          };
+          expect(function() {
+            return fun();
+          }).not.toThrow();
+          expect(console.warn).toHaveBeenCalled();
+          return expect(byte.deltas.strokeLinecap).not.toBeDefined();
         });
-        it('should set strokeDasharray/strokeDashoffset value progress', function() {
-          var byte;
+      });
+      describe('array values ->', function() {
+        return it('should calculate array delta', function() {
+          var arrayDelta, byte;
           byte = new Byte({
             strokeDasharray: {
-              '200 100': '400'
+              '200 100': '300'
             }
           });
-          byte.setProgress(.5);
-          return expect(byte.props.strokeDasharray).toBe('300 50 ');
+          arrayDelta = byte.deltas.strokeDasharray;
+          expect(arrayDelta.start.join(' ')).toBe('200 100');
+          expect(arrayDelta.end.join(' ')).toBe('300 0');
+          expect(arrayDelta.delta.join(' ')).toBe('100 -100');
+          return expect(arrayDelta.type).toBe('array');
         });
-        it('should set 0 if progress is less then 0', function() {
+      });
+      describe('unit values ->', function() {
+        return it('should calculate unit delta', function() {
+          var byte, xDelta;
+          byte = new Byte({
+            x: {
+              '0%': '100%'
+            }
+          });
+          xDelta = byte.deltas.x;
+          expect(xDelta.start.string).toBe('0%');
+          expect(xDelta.end.string).toBe('100%');
+          expect(xDelta.delta).toBe(100);
+          return expect(xDelta.type).toBe('unit');
+        });
+      });
+      return describe('tween-related values ->', function() {
+        return it('should not calc delta for tween related props', function() {
           var byte;
           byte = new Byte({
-            radius: {
-              '25': 75
-            }
+            duration: {
+              2000: 1000
+            },
+            isRunLess: true
           });
-          byte.setProgress(-1);
-          return expect(byte.progress).toBe(0);
+          return expect(byte.deltas.duration).not.toBeDefined();
         });
-        return it('should set 1 if progress is greater then 1', function() {
-          var byte;
-          byte = new Byte({
-            radius: {
-              '25': 75
-            }
-          });
-          byte.setProgress(2);
-          return expect(byte.progress).toBe(1);
+      });
+    });
+    describe('setProgress method ->', function() {
+      it('should set transition progress', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25.50': -75.50
+          }
         });
+        byte.setProgress(.5);
+        return expect(byte.progress).toBe(.5);
+      });
+      it('should set value progress', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        byte.setProgress(.5);
+        return expect(byte.props.radius).toBe(50);
+      });
+      it('should set color value progress and only int', function() {
+        var byte, colorDelta;
+        byte = new Byte({
+          stroke: {
+            '#000': 'rgb(255,255,255)'
+          }
+        });
+        colorDelta = byte.deltas.stroke;
+        byte.setProgress(.5);
+        return expect(byte.props.stroke).toBe('rgba(127,127,127,1)');
+      });
+      it('should set color value progress for delta starting with 0', function() {
+        var byte, colorDelta;
+        byte = new Byte({
+          stroke: {
+            '#000': 'rgb(0,255,255)'
+          }
+        });
+        colorDelta = byte.deltas.stroke;
+        byte.setProgress(.5);
+        return expect(byte.props.stroke).toBe('rgba(0,127,127,1)');
+      });
+      it('should set strokeDasharray/strokeDashoffset value progress', function() {
+        var byte;
+        byte = new Byte({
+          strokeDasharray: {
+            '200 100': '400'
+          }
+        });
+        byte.setProgress(.5);
+        return expect(byte.props.strokeDasharray).toBe('300 50 ');
+      });
+      it('should set 0 if progress is less then 0', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        byte.setProgress(-1);
+        return expect(byte.progress).toBe(0);
+      });
+      return it('should set 1 if progress is greater then 1', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        byte.setProgress(2);
+        return expect(byte.progress).toBe(1);
       });
     });
     describe('Callbacks ->', function() {
@@ -824,7 +947,7 @@
         });
       });
     });
-    return describe('easing ->', function() {
+    describe('easing ->', function() {
       it('should set easing option to props', function() {
         var byte;
         byte = new Byte({
@@ -862,6 +985,188 @@
           expect(easings.one).toHaveBeenCalled();
           return dfr();
         }, 25);
+      });
+    });
+    describe('chain ->', function() {
+      it('should have chain array', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        });
+        return expect(byte.chainArr).toBeDefined();
+      });
+      it('should push to chainArr', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        }).chain({
+          strokeWidth: {
+            5: 0
+          },
+          duration: 20
+        });
+        return expect(byte.chainArr.length).toBe(1);
+      });
+      it('should wrap options to object with chain type', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        }).chain({
+          strokeWidth: {
+            5: 0
+          },
+          duration: 20
+        });
+        expect(byte.chainArr[0].type).toBe('chain');
+        return expect(byte.chainArr[0].options.strokeWidth[5]).toBe(0);
+      });
+      it('should run next chain', function(dfr) {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        }).chain({
+          strokeWidth: {
+            5: 0
+          },
+          duration: 20
+        });
+        return setTimeout(function() {
+          expect(byte.props.strokeWidth).toBe(0);
+          return dfr();
+        }, 80);
+      });
+      it('should run next chain from setProgress if isInitLess is true', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            20: 30
+          },
+          isRunLess: true,
+          duration: 20
+        });
+        byte.chainArr = [
+          {
+            strokeWidth: {
+              30: 20
+            }
+          }
+        ];
+        spyOn(byte, 'runChain');
+        byte.setProgress(1);
+        return expect(byte.runChain).toHaveBeenCalled();
+      });
+      return describe('runChain method ->', function() {
+        it('should run chain', function() {
+          var byte;
+          byte = new Byte({
+            strokeWidth: {
+              20: 30
+            },
+            isRunLess: true,
+            duration: 20
+          });
+          byte.chainArr = [
+            {
+              options: {
+                strokeWidth: {
+                  30: 20
+                }
+              },
+              type: 'chain'
+            }
+          ];
+          spyOn(byte, 'init');
+          byte.runChain();
+          expect(byte.chainArr.length).toBe(0);
+          expect(byte.o.strokeWidth[30]).toBe(20);
+          return expect(byte.init).toHaveBeenCalled();
+        });
+        return it('should not run empty chain', function() {
+          var byte;
+          byte = new Byte({
+            strokeWidth: {
+              20: 30
+            },
+            isRunLess: true,
+            duration: 20
+          });
+          byte.chainArr = [];
+          spyOn(byte, 'init');
+          byte.runChain();
+          expect(byte.o.strokeWidth[20]).toBe(30);
+          return expect(byte.init).not.toHaveBeenCalled();
+        });
+      });
+    });
+    return describe('then ->', function() {
+      it('should push to chainArr with type of then', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        }).then({
+          strokeWidth: {
+            5: 0
+          },
+          duration: 20
+        });
+        expect(byte.chainArr[0].type).toBe('then');
+        return expect(byte.chainArr[0].options.strokeWidth[5]).toBe(0);
+      });
+      it('should continue the current prop', function(dfr) {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        }).then({
+          strokeWidth: 0,
+          duration: 20
+        });
+        return setTimeout(function() {
+          expect(byte.props.strokeWidth).toBe(0);
+          return dfr();
+        }, 80);
+      });
+      return it('should warn if new value is object and use end value', function(dfr) {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        });
+        spyOn(console, 'warn');
+        byte.then({
+          strokeWidth: {
+            7: 20
+          },
+          duration: 20
+        });
+        return setTimeout(function() {
+          var delta;
+          expect(console.warn).toHaveBeenCalled();
+          delta = byte.deltas.strokeWidth;
+          expect(delta.start).toBe(5);
+          expect(delta.end).toBe(20);
+          expect(byte.props.strokeWidth).toBe(20);
+          return dfr();
+        }, 80);
       });
     });
   });

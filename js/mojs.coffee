@@ -12,20 +12,22 @@ rect = new Byte
   type:       'line'
   x:           100
   y:           100
-  # shiftX:      {100: 150}
   radius:       75
-  strokeWidth: {5:0}
   strokeDasharray: 2*75
-  strokeDashoffset: { 150: -150 }
-  duration: 600
-  deg: 60
-  opacity:    { 1: 0 }
+  duration: 1000
+  deg: {0: 60}
   isDrawLess: true
   delay: 1000
-  strokeLinecap: 'round'
-  # isRunLess: true
+  strokeLinecap: {'round': 'butt'}
+  # repeat: 3
+  # yoyo: true
 
-  # repeat: 10
+rect
+  .then deg: 0
+  .then
+    deg:    1000
+    delay:  0
+
 
 # setTimeout ->
 #   rect.startTween()

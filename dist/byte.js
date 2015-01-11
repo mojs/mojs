@@ -66,6 +66,9 @@ Byte = (function(_super) {
 
   Byte.prototype.vars = function() {
     this.h = h;
+    if (this.chainArr == null) {
+      this.chainArr = [];
+    }
     this.extendDefaults();
     return this.calcTransform();
   };
@@ -76,30 +79,49 @@ Byte = (function(_super) {
 
   Byte.prototype.render = function() {
     var size;
-    if (this.o.ctx == null) {
-      this.ctx = document.createElementNS(this.ns, 'svg');
-      this.ctx.style.position = 'absolute';
-      this.ctx.style.width = '100%';
-      this.ctx.style.height = '100%';
-      this.createBit();
-      this.calcSize();
-      this.el = document.createElement('div');
-      size = "" + (this.props.size / 16) + "rem";
-      this.el.style.position = 'absolute';
-      this.el.style.top = this.props.y.string;
-      this.el.style.left = this.props.x.string;
-      this.el.style.opacity = this.props.opacity;
-      this.el.style.width = size;
-      this.el.style.height = size;
-      this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
-      this.el.appendChild(this.ctx);
-      (this.o.parent || document.body).appendChild(this.el);
-    } else {
-      this.ctx = this.o.ctx;
-      this.createBit();
+    if (!this.isRendered) {
+      if (this.o.ctx == null) {
+        this.ctx = document.createElementNS(this.ns, 'svg');
+        this.ctx.style.position = 'absolute';
+        this.ctx.style.width = '100%';
+        this.ctx.style.height = '100%';
+        this.createBit();
+        this.calcSize();
+        this.el = document.createElement('div');
+        size = "" + (this.props.size / 16) + "rem";
+        this.el.style.position = 'absolute';
+        this.el.style.top = this.props.y.string;
+        this.el.style.left = this.props.x.string;
+        this.el.style.opacity = this.props.opacity;
+        this.el.style.width = size;
+        this.el.style.height = size;
+        this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+        this.el.appendChild(this.ctx);
+        (this.o.parent || document.body).appendChild(this.el);
+      } else {
+        this.ctx = this.o.ctx;
+        this.createBit();
+      }
+      this.isRendered = true;
     }
     !this.o.isDrawLess && this.draw();
     this.createTween();
+    return this;
+  };
+
+  Byte.prototype.chain = function(options) {
+    this.chainArr.push({
+      type: 'chain',
+      options: options
+    });
+    return this;
+  };
+
+  Byte.prototype.then = function(options) {
+    this.chainArr.push({
+      type: 'then',
+      options: options
+    });
     return this;
   };
 
@@ -145,7 +167,66 @@ Byte = (function(_super) {
           this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
       }
     }
-    return this.draw();
+    this.draw();
+    if (progress === 1 && this.o.isRunLess) {
+      return this.runChain();
+    }
+  };
+
+  Byte.prototype.runChain = function() {
+    var chain;
+    if (!this.chainArr.length) {
+      return;
+    }
+    chain = this.chainArr.shift();
+    if (chain.type === 'chain') {
+      this.o = chain.options;
+    }
+    if (chain.type === 'then') {
+      this.mergeThenOptions(chain);
+    }
+    return this.init();
+  };
+
+  Byte.prototype.mergeThenOptions = function(chain) {
+    var currValue, end, key, keys, nextValue, options, opts, start, value;
+    opts = this.copyEndOptions();
+    if (!opts) {
+      return;
+    }
+    options = chain.options;
+    for (key in options) {
+      value = options[key];
+      if (typeof value === 'object') {
+        keys = Object.keys(value);
+        end = value[keys[0]];
+        start = opts[key];
+        console.warn("::mojs:: new end value expected instead of object, using end(" + end + ") value", value);
+        opts[key] = {};
+        opts[key][start] = end;
+      } else {
+        if (!this.h.tweenOptionMap[key]) {
+          currValue = opts[key];
+          nextValue = value;
+          opts[key] = {};
+          opts[key][currValue] = nextValue;
+        } else {
+          opts[key] = value;
+        }
+      }
+    }
+    return this.o = opts;
+  };
+
+  Byte.prototype.copyEndOptions = function() {
+    var key, opts, value, _ref;
+    opts = {};
+    _ref = this.o;
+    for (key in _ref) {
+      value = _ref[key];
+      opts[key] = typeof value === 'object' ? value[Object.keys(value)[0]] : value;
+    }
+    return opts;
   };
 
   Byte.prototype.draw = function() {
@@ -211,6 +292,13 @@ Byte = (function(_super) {
       }
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
+        if (key === 'strokeLinecap') {
+          if (typeof console !== "undefined" && console !== null) {
+            console.warn('::mojs:: Sorry, stroke-linecap propety is not animateable yet, using the start value');
+          }
+          this.props[key] = start;
+          continue;
+        }
         end = optionsValue[start];
         startColorObj = h.makeColorObj(start);
         endColorObj = h.makeColorObj(end);
@@ -268,9 +356,11 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.createTween = function() {
-    var ease, easings, it, onComplete;
+    var ease, easings, it;
     it = this;
-    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
+    if (this.props.onComplete) {
+      this.props.onComplete = this.h.bind(this.props.onComplete, this);
+    }
     easings = h.splitEasing(this.props.easing);
     ease = typeof easings === 'function' ? easings : TWEEN.Easing[easings[0]][easings[1]];
     this.tween = new this.TWEEN.Tween({
@@ -279,7 +369,13 @@ Byte = (function(_super) {
       p: 1
     }, this.props.duration).delay(this.props.delay).easing(ease).onUpdate(function() {
       return it.setProgress(this.p);
-    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo).onComplete(onComplete);
+    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo).onComplete((function(_this) {
+      return function() {
+        var _base;
+        _this.runChain();
+        return typeof (_base = _this.props).onComplete === "function" ? _base.onComplete() : void 0;
+      };
+    })(this));
     return !this.o.isRunLess && this.startTween();
   };
 

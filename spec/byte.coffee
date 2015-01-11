@@ -131,17 +131,16 @@ describe 'Byte ->', ->
       expect(byte.el.parentNode.isDiv).toBe true
     describe 'opacity set ->', ->
       it 'should set a position with respect to units', ->
-          byte = new Byte opacity: .5
-          expect(byte.el.style.opacity).toBe '0.5'
+        byte = new Byte opacity: .5
+        expect(byte.el.style.opacity).toBe '0.5'
       it 'should animate opacity', (dfr)->
-          byte = new Byte
-            opacity: { 1: 0}
-            duration: 20
-            setTimeout ->
-              expect(byte.el.style.opacity).toBe '0'
-              dfr()
-            , 40
-
+        byte = new Byte
+          opacity: { 1: 0}
+          duration: 20
+          setTimeout ->
+            expect(byte.el.style.opacity).toBe '0'
+            dfr()
+          , 40
     describe 'position set ->', ->
       describe 'x/y coordinates ->', ->
         it 'should set a position with respect to units', ->
@@ -208,138 +207,215 @@ describe 'Byte ->', ->
             dfr()
           , 40
 
-    describe 'render method ->', ->
-      it 'should call draw method', ->
-        byte = new Byte radius: 25
-        spyOn byte, 'draw'
-        byte.render()
-        expect(byte.draw).toHaveBeenCalled()
-      it 'should not call draw method if isDrawLess option is true', ->
-        byte = new Byte radius: 25, isDrawLess: true
-        spyOn byte, 'draw'
-        byte.render()
-        expect(byte.draw).not.toHaveBeenCalled()
-      it 'should call createBit method', ->
-        byte = new Byte radius: 25
-        spyOn byte, 'createBit'
-        byte.render()
-        expect(byte.createBit).toHaveBeenCalled()
-      it 'should call calcSize method', ->
-        byte = new Byte radius: 25
-        spyOn byte, 'calcSize'
-        byte.render()
-        expect(byte.calcSize).toHaveBeenCalled()
-      it 'should not call calcSize method id context was passed', ->
-        byte = new Byte radius: 25, ctx: svg
-        spyOn byte, 'calcSize'
-        byte.render()
-        expect(byte.calcSize).not.toHaveBeenCalled()
-    describe 'draw method ->', ->
-      it 'should call setProp method', ->
-        byte = new Byte radius: 25
-        spyOn byte.bit, 'setProp'
-        byte.draw()
-        expect(byte.bit.setProp).toHaveBeenCalled()
-      it 'should call bit.draw method', ->
-        byte = new Byte radius: 25
-        spyOn byte.bit, 'draw'
-        byte.draw()
-        expect(byte.bit.draw).toHaveBeenCalled()
-      it 'should call calcTransform method', ->
-        byte = new Byte radius: 25
-        spyOn byte, 'calcTransform'
-        byte.draw()
-        expect(byte.calcTransform).toHaveBeenCalled()
-    describe 'delta calculations ->', ->
-      describe 'numeric values ->', ->
-        it 'should calculate delta', ->
-          byte = new Byte radius:  {25: 75}
-          radiusDelta = byte.deltas.radius
-          expect(radiusDelta.start)   .toBe   25
-          expect(radiusDelta.delta)   .toBe   50
-          expect(radiusDelta.type)    .toBe   'number'
-        it 'should calculate delta with string arguments', ->
-          byte = new Byte radius:  {'25': '75'}
-          radiusDelta = byte.deltas.radius
-          expect(radiusDelta.start)   .toBe   25
-          expect(radiusDelta.delta)   .toBe   50
-        it 'should calculate delta with float arguments', ->
-          byte = new Byte radius:  {'25.50': 75.50}
-          radiusDelta = byte.deltas.radius
-          expect(radiusDelta.start)   .toBe   25.5
-          expect(radiusDelta.delta)   .toBe   50
-        it 'should calculate delta with negative start arguments', ->
-          byte = new Byte radius:  {'-25.50': 75.50}
-          radiusDelta = byte.deltas.radius
-          expect(radiusDelta.start)   .toBe   -25.5
-          expect(radiusDelta.delta)   .toBe   101
-        it 'should calculate delta with negative end arguments', ->
-          byte = new Byte radius:  {'25.50': -75.50}
-          radiusDelta = byte.deltas.radius
-          expect(radiusDelta.start)   .toBe   25.5
-          expect(radiusDelta.end)     .toBe   -75.5
-          expect(radiusDelta.delta)   .toBe   -101
-      describe 'color values ->', ->
-        it 'should calculate color delta', ->
-          byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
-          colorDelta = byte.deltas.stroke
-          expect(colorDelta.start.r)    .toBe   0
-          expect(colorDelta.end.r)      .toBe   255
-          expect(colorDelta.delta.r)    .toBe   255
-          expect(colorDelta.type)       .toBe   'color'
-      describe 'array values ->', ->
-        it 'should calculate array delta', ->
-          byte = new Byte strokeDasharray:  { '200 100': '300' }
-          arrayDelta = byte.deltas.strokeDasharray
-          expect(arrayDelta.start.join(' '))        .toBe   '200 100'
-          expect(arrayDelta.end.join(' '))          .toBe   '300 0'
-          expect(arrayDelta.delta.join(' '))        .toBe   '100 -100'
-          expect(arrayDelta.type)                   .toBe   'array'
-      describe 'unit values ->', ->
-        it 'should calculate unit delta', ->
-          byte = new Byte x:  {'0%': '100%'}
-          xDelta = byte.deltas.x
-          expect(xDelta.start.string)    .toBe   '0%'
-          expect(xDelta.end.string)      .toBe   '100%'
-          expect(xDelta.delta)          .toBe   100
-          expect(xDelta.type)            .toBe   'unit'
-      describe 'tween-related values ->', ->
-        it 'should not calc delta for tween related props', ->
-          byte = new Byte
-            duration:  { 2000: 1000 }
-            isRunLess: true
-          expect(byte.deltas.duration).not.toBeDefined()
-    describe 'setProgress method ->', ->
-      it 'should set transition progress', ->
+  describe 'mergeThenOptions method ->', ->
+    it 'should call copyEndOptions method', ->
+      byte = new Byte
+        strokeWidth:  { 40: 20 }
+        radius:       25
+        duration:     500
+        isRunLess:    true
+      byte.chainArr = [{
+        options: {strokeWidth: 0}
+        type: 'then'
+      }]
+
+      spyOn byte, 'copyEndOptions'
+      byte.mergeThenOptions byte.chainArr[0]
+      expect(byte.copyEndOptions).toHaveBeenCalled()
+    it 'should call merge options values with old ones', ->
+      byte = new Byte
+        strokeWidth:  { 40: 20 }
+        radius:       25
+        duration:     500
+        isRunLess:    true
+      
+      byte.chainArr = [{
+        options: {strokeWidth: 0}
+        type: 'then'
+      }]
+      byte.mergeThenOptions byte.chainArr[0]
+      expect(byte.o.strokeWidth[20]).toBe 0
+    it 'should set new values', ->
+      byte = new Byte
+        strokeWidth:      { 40: 20 }
+        radius:           25
+        duration:         500
+        isRunLess:        true
+        strokeDasharray:  '100'
+      byte.chainArr = [{
+        options: {strokeWidth: 0, duration: 1500}
+        type: 'then'
+      }]
+      byte.mergeThenOptions byte.chainArr[0]
+      expect(byte.o.duration).toBe 1500
+
+  describe 'copyEndOptions method ->', ->
+    it 'should copy end value of options', ->
+      byte = new Byte
+        strokeWidth:  { 40: 20 }
+        radius:       25
+        duration:     500
+        isRunLess:    true
+      
+      byte.chainArr = [{
+        options: {strokeWidth: 0}
+        type: 'then'
+      }]
+
+      opt = byte.copyEndOptions()
+      expect(opt.strokeWidth).toBe  20
+      expect(opt.radius).toBe       25
+      expect(opt.duration).toBe     500
+      expect(opt.isRunLess).toBe    true
+
+  describe 'render method ->', ->
+    it 'should call draw method', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'draw'
+      byte.render()
+      expect(byte.draw).toHaveBeenCalled()
+    it 'should not call draw method if isDrawLess option is true', ->
+      byte = new Byte radius: 25, isDrawLess: true
+      spyOn byte, 'draw'
+      byte.render()
+      expect(byte.draw).not.toHaveBeenCalled()
+    it 'should call createBit method', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'createBit'
+      byte.isRendered = false
+      byte.render()
+      expect(byte.createBit).toHaveBeenCalled()
+    it 'should set isRendered to true method', ->
+      byte = new Byte radius: 25
+      expect(byte.isRendered).toBe true
+      
+      byte.isRendered = false; byte.render()
+      expect(byte.isRendered).toBe true
+
+    it 'should call calcSize method', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'calcSize'
+      byte.isRendered = false
+      byte.render()
+      expect(byte.calcSize).toHaveBeenCalled()
+    it 'should not call calcSize method id context was passed', ->
+      byte = new Byte radius: 25, ctx: svg
+      spyOn byte, 'calcSize'
+      byte.render()
+      expect(byte.calcSize).not.toHaveBeenCalled()
+  describe 'draw method ->', ->
+    it 'should call setProp method', ->
+      byte = new Byte radius: 25
+      spyOn byte.bit, 'setProp'
+      byte.draw()
+      expect(byte.bit.setProp).toHaveBeenCalled()
+    it 'should call bit.draw method', ->
+      byte = new Byte radius: 25
+      spyOn byte.bit, 'draw'
+      byte.draw()
+      expect(byte.bit.draw).toHaveBeenCalled()
+    it 'should call calcTransform method', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'calcTransform'
+      byte.draw()
+      expect(byte.calcTransform).toHaveBeenCalled()
+  describe 'delta calculations ->', ->
+    describe 'numeric values ->', ->
+      it 'should calculate delta', ->
+        byte = new Byte radius:  {25: 75}
+        radiusDelta = byte.deltas.radius
+        expect(radiusDelta.start)   .toBe   25
+        expect(radiusDelta.delta)   .toBe   50
+        expect(radiusDelta.type)    .toBe   'number'
+      it 'should calculate delta with string arguments', ->
+        byte = new Byte radius:  {'25': '75'}
+        radiusDelta = byte.deltas.radius
+        expect(radiusDelta.start)   .toBe   25
+        expect(radiusDelta.delta)   .toBe   50
+      it 'should calculate delta with float arguments', ->
+        byte = new Byte radius:  {'25.50': 75.50}
+        radiusDelta = byte.deltas.radius
+        expect(radiusDelta.start)   .toBe   25.5
+        expect(radiusDelta.delta)   .toBe   50
+      it 'should calculate delta with negative start arguments', ->
+        byte = new Byte radius:  {'-25.50': 75.50}
+        radiusDelta = byte.deltas.radius
+        expect(radiusDelta.start)   .toBe   -25.5
+        expect(radiusDelta.delta)   .toBe   101
+      it 'should calculate delta with negative end arguments', ->
         byte = new Byte radius:  {'25.50': -75.50}
-        byte.setProgress .5
-        expect(byte.progress).toBe .5
-      it 'should set value progress', ->
-        byte = new Byte radius:  {'25': 75}
-        byte.setProgress .5
-        expect(byte.props.radius).toBe 50
-      it 'should set color value progress and only int', ->
+        radiusDelta = byte.deltas.radius
+        expect(radiusDelta.start)   .toBe   25.5
+        expect(radiusDelta.end)     .toBe   -75.5
+        expect(radiusDelta.delta)   .toBe   -101
+    describe 'color values ->', ->
+      it 'should calculate color delta', ->
         byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
         colorDelta = byte.deltas.stroke
-        byte.setProgress .5
-        expect(byte.props.stroke).toBe 'rgba(127,127,127,1)'
-      it 'should set color value progress for delta starting with 0', ->
-        byte = new Byte stroke:  {'#000': 'rgb(0,255,255)'}
-        colorDelta = byte.deltas.stroke
-        byte.setProgress .5
-        expect(byte.props.stroke).toBe 'rgba(0,127,127,1)'
-      it 'should set strokeDasharray/strokeDashoffset value progress', ->
-        byte = new Byte strokeDasharray:  {'200 100': '400'}
-        byte.setProgress .5
-        expect(byte.props.strokeDasharray).toBe '300 50 '
-      it 'should set 0 if progress is less then 0', ->
-        byte = new Byte radius:  {'25': 75}
-        byte.setProgress -1
-        expect(byte.progress).toBe 0
-      it 'should set 1 if progress is greater then 1', ->
-        byte = new Byte radius:  {'25': 75}
-        byte.setProgress 2
-        expect(byte.progress).toBe 1
+        expect(colorDelta.start.r)    .toBe   0
+        expect(colorDelta.end.r)      .toBe   255
+        expect(colorDelta.delta.r)    .toBe   255
+        expect(colorDelta.type)       .toBe   'color'
+      it 'should ignore stroke-linecap prop, use start prop and warn', ->
+        byte = null
+        spyOn console, 'warn'
+        fun = -> byte = new Byte strokeLinecap:  {'round': 'butt'}
+        expect(-> fun()).not.toThrow()
+        expect(console.warn).toHaveBeenCalled()
+        expect(byte.deltas.strokeLinecap).not.toBeDefined()
+    describe 'array values ->', ->
+      it 'should calculate array delta', ->
+        byte = new Byte strokeDasharray:  { '200 100': '300' }
+        arrayDelta = byte.deltas.strokeDasharray
+        expect(arrayDelta.start.join(' '))        .toBe   '200 100'
+        expect(arrayDelta.end.join(' '))          .toBe   '300 0'
+        expect(arrayDelta.delta.join(' '))        .toBe   '100 -100'
+        expect(arrayDelta.type)                   .toBe   'array'
+    describe 'unit values ->', ->
+      it 'should calculate unit delta', ->
+        byte = new Byte x:  {'0%': '100%'}
+        xDelta = byte.deltas.x
+        expect(xDelta.start.string)    .toBe   '0%'
+        expect(xDelta.end.string)      .toBe   '100%'
+        expect(xDelta.delta)          .toBe   100
+        expect(xDelta.type)            .toBe   'unit'
+    describe 'tween-related values ->', ->
+      it 'should not calc delta for tween related props', ->
+        byte = new Byte
+          duration:  { 2000: 1000 }
+          isRunLess: true
+        expect(byte.deltas.duration).not.toBeDefined()
+  describe 'setProgress method ->', ->
+    it 'should set transition progress', ->
+      byte = new Byte radius:  {'25.50': -75.50}
+      byte.setProgress .5
+      expect(byte.progress).toBe .5
+    it 'should set value progress', ->
+      byte = new Byte radius:  {'25': 75}
+      byte.setProgress .5
+      expect(byte.props.radius).toBe 50
+    it 'should set color value progress and only int', ->
+      byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
+      colorDelta = byte.deltas.stroke
+      byte.setProgress .5
+      expect(byte.props.stroke).toBe 'rgba(127,127,127,1)'
+    it 'should set color value progress for delta starting with 0', ->
+      byte = new Byte stroke:  {'#000': 'rgb(0,255,255)'}
+      colorDelta = byte.deltas.stroke
+      byte.setProgress .5
+      expect(byte.props.stroke).toBe 'rgba(0,127,127,1)'
+    it 'should set strokeDasharray/strokeDashoffset value progress', ->
+      byte = new Byte strokeDasharray:  {'200 100': '400'}
+      byte.setProgress .5
+      expect(byte.props.strokeDasharray).toBe '300 50 '
+    it 'should set 0 if progress is less then 0', ->
+      byte = new Byte radius:  {'25': 75}
+      byte.setProgress -1
+      expect(byte.progress).toBe 0
+    it 'should set 1 if progress is greater then 1', ->
+      byte = new Byte radius:  {'25': 75}
+      byte.setProgress 2
+      expect(byte.progress).toBe 1
   describe 'Callbacks ->', ->
     describe 'onStart callback', ->
       it 'should call onStart callback',->
@@ -352,8 +428,6 @@ describe 'Byte ->', ->
           radius: {'25': 75}
           onStart:-> isRightScope = @ instanceof Byte
         expect(isRightScope).toBe true
-
-
     describe 'onUpdate callback', ->
       it 'should call onUpdate callback', (dfr)->
         isOnUpdate = null
@@ -371,7 +445,6 @@ describe 'Byte ->', ->
           expect(isRightScope).toBe true
           dfr()
         , 34
-
       it 'should set current progress', (dfr)->
         progress = null
         byte = new Byte
@@ -383,7 +456,6 @@ describe 'Byte ->', ->
           expect(progress).not.toBeGreaterThan 1
           dfr()
         , 34
-
     describe 'onComplete callback', ->
       it 'should call onComplete callback',(dfr)->
         isOnComplete = null
@@ -455,6 +527,84 @@ describe 'Byte ->', ->
         expect(easings.one).toHaveBeenCalled()
         dfr()
       , 25
+  describe 'chain ->', ->
+    it 'should have chain array', ->
+      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+      expect(byte.chainArr).toBeDefined()
+    it 'should push to chainArr', ->
+      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+        .chain(strokeWidth: {5: 0}, duration: 20)
+      expect(byte.chainArr.length).toBe 1
+    it 'should wrap options to object with chain type', ->
+      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+        .chain(strokeWidth: {5: 0}, duration: 20)
+      expect(byte.chainArr[0].type)                    .toBe 'chain'
+      expect(byte.chainArr[0].options.strokeWidth[5])  .toBe 0
+    it 'should run next chain', (dfr)->
+      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+        .chain(strokeWidth: {5: 0}, duration: 20)
+      setTimeout ->
+        expect(byte.props.strokeWidth).toBe 0
+        dfr()
+      , 80
+    it 'should run next chain from setProgress if isInitLess is true', ->
+      byte = new Byte
+        strokeWidth: {20:30}
+        isRunLess:   true
+        duration: 20
+      byte.chainArr = [{strokeWidth: {30:20}}]
+      spyOn byte, 'runChain'
+      byte.setProgress 1
+      expect(byte.runChain).toHaveBeenCalled()
+    describe 'runChain method ->', ->
+      it 'should run chain', ->
+        byte = new Byte
+          strokeWidth: {20:30}
+          isRunLess:   true
+          duration: 20
+        byte.chainArr = [{options: {strokeWidth: {30:20}}, type: 'chain'}]
+        spyOn byte, 'init'
+        byte.runChain()
+        expect(byte.chainArr.length).toBe     0
+        expect(byte.o.strokeWidth[30]).toBe   20
+        expect(byte.init).toHaveBeenCalled()
+      it 'should not run empty chain', ->
+        byte = new Byte
+          strokeWidth: {20:30}
+          isRunLess:   true
+          duration: 20
+        byte.chainArr = []; spyOn byte, 'init'
+        byte.runChain()
+        expect(byte.o.strokeWidth[20]).toBe   30
+        expect(byte.init).not.toHaveBeenCalled()
+  describe 'then ->', ->
+    it 'should push to chainArr with type of then', ->
+      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+        .then(strokeWidth: {5: 0}, duration: 20)
+      expect(byte.chainArr[0].type)                    .toBe 'then'
+      expect(byte.chainArr[0].options.strokeWidth[5])  .toBe 0
+    it 'should continue the current prop', (dfr)->
+      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+        .then(strokeWidth: 0, duration: 20)
+      setTimeout ->
+        expect(byte.props.strokeWidth).toBe 0
+        dfr()
+      , 80
+
+    it 'should warn if new value is object and use end value', (dfr)->
+      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+      spyOn console, 'warn'
+      byte.then strokeWidth: { 7: 20 }, duration: 20
+      
+      setTimeout ->
+        expect(console.warn).toHaveBeenCalled()
+        delta = byte.deltas.strokeWidth
+        # OLD DELTA
+        expect(delta.start).toBe            5
+        expect(delta.end).toBe              20
+        expect(byte.props.strokeWidth).toBe 20
+        dfr()
+      , 80
 
 
 
