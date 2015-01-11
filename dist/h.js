@@ -35,6 +35,7 @@ Helpers = (function() {
     yoyo: 1,
     onStart: 1,
     onComplete: 1,
+    onCompleteChain: 1,
     onUpdate: 1
   };
 

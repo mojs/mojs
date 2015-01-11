@@ -29,9 +29,10 @@
         expect(h.tweenOptionMap.yoyo).toBe(1);
         expect(h.tweenOptionMap.onStart).toBe(1);
         expect(h.tweenOptionMap.onComplete).toBe(1);
+        expect(h.tweenOptionMap.onCompleteChain).toBe(1);
         expect(h.tweenOptionMap.onUpdate).toBe(1);
         mapLen = Object.keys(h.tweenOptionMap).length;
-        return expect(mapLen).toBe(8);
+        return expect(mapLen).toBe(9);
       });
     });
     return describe('methods ->', function() {

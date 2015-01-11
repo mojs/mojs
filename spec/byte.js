@@ -839,7 +839,7 @@
           }, 34);
         });
       });
-      return describe('onComplete callback', function() {
+      describe('onComplete callback', function() {
         it('should call onComplete callback', function(dfr) {
           var byte, isOnComplete;
           isOnComplete = null;
@@ -868,6 +868,42 @@
               return isRightScope = this instanceof Byte;
             },
             duration: 20
+          });
+          return setTimeout(function() {
+            expect(isRightScope).toBe(true);
+            return dfr();
+          }, 40);
+        });
+      });
+      return describe('onCompleteChain callback', function() {
+        it('should call onCompleteChain callback when chain ends', function(dfr) {
+          var byte, isOnComplete;
+          isOnComplete = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            onCompleteChain: function() {
+              return isOnComplete = true;
+            },
+            duration: 20
+          });
+          return setTimeout(function() {
+            expect(isOnComplete).toBe(true);
+            return dfr();
+          }, 40);
+        });
+        return it('should have scope of byte', function(dfr) {
+          var byte, isRightScope;
+          isRightScope = null;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            },
+            duration: 20,
+            onCompleteChain: function() {
+              return isRightScope = this instanceof Byte;
+            }
           });
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
@@ -1013,6 +1049,22 @@
         });
         return expect(byte.chainArr.length).toBe(1);
       });
+      it('should inherit type', function() {
+        var byte;
+        byte = new Byte({
+          type: 'circle',
+          strokeWidth: {
+            10: 5
+          },
+          duration: 20
+        }).chain({
+          strokeWidth: {
+            5: 0
+          },
+          duration: 20
+        });
+        return expect(byte.chainArr[0].options.type).toBe('circle');
+      });
       it('should wrap options to object with chain type', function() {
         var byte;
         byte = new Byte({
@@ -1047,13 +1099,12 @@
           return dfr();
         }, 80);
       });
-      it('should run next chain from setProgress if isInitLess is true', function() {
+      it('should run next chain from setProgress', function() {
         var byte;
         byte = new Byte({
           strokeWidth: {
             20: 30
           },
-          isRunLess: true,
           duration: 20
         });
         byte.chainArr = [

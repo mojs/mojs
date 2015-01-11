@@ -3,7 +3,7 @@
 
 #### todo
 - add transition
-  - add then
+  - chain inherit type
   - rename to transition
 - make refactor
   - module definition to utils

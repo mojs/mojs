@@ -42,6 +42,7 @@ class Byte extends Bit
     # callbacks
     onStart:            null
     onComplete:         null
+    onCompleteChain:    null
     onUpdate:           null
     # tween props
     duration:           500
@@ -58,7 +59,6 @@ class Byte extends Bit
     @props.transform = "rotate(#{@props.deg},#{@props.center},#{@props.center})"
 
   render:->
-    # console.log @isRendered
     if !@isRendered
       if !@o.ctx?
         @ctx = document.createElementNS @ns, 'svg'
@@ -87,7 +87,9 @@ class Byte extends Bit
     @createTween()
     @
 
-  chain:(options)-> @chainArr.push { type: 'chain', options: options }; @
+  chain:(options)->
+    options.type = @o.type
+    @chainArr.push { type: 'chain', options: options }; return @
   then:(options)->  @chainArr.push { type: 'then',  options: options }; @
 
   createBit:->
@@ -118,14 +120,14 @@ class Byte extends Bit
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
     @draw()
     
-    if progress is 1 and @o.isRunLess then @runChain()
+    if progress is 1 then @runChain()
     
   runChain:->
-    return if !@chainArr.length
+    if !@chainArr.length then return @props.onCompleteChain?.call @
+
     chain = @chainArr.shift()
     if chain.type is 'chain'
       @o = chain.options
-    
     if chain.type is 'then'
       @mergeThenOptions chain
 
@@ -277,7 +279,8 @@ class Byte extends Bit
 
   createTween:->
     it = @
-    if @props.onComplete then @props.onComplete = @h.bind(@props.onComplete, @)
+    onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
+    else null
 
     easings = h.splitEasing(@props.easing)
     ease = if typeof easings is 'function' then easings
@@ -289,7 +292,7 @@ class Byte extends Bit
       .onUpdate -> it.setProgress @p
       .repeat @props.repeat-1
       .yoyo @props.yoyo
-      .onComplete => @runChain(); @props.onComplete?()
+      .onComplete onComplete
     !@o.isRunLess and @startTween()
 
   startTween:->

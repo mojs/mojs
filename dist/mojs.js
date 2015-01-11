@@ -207,6 +207,7 @@ Byte = (function(_super) {
     sizeGap: 0,
     onStart: null,
     onComplete: null,
+    onCompleteChain: null,
     onUpdate: null,
     duration: 500,
     delay: 0,
@@ -261,6 +262,7 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.chain = function(options) {
+    options.type = this.o.type;
     this.chainArr.push({
       type: 'chain',
       options: options
@@ -319,15 +321,15 @@ Byte = (function(_super) {
       }
     }
     this.draw();
-    if (progress === 1 && this.o.isRunLess) {
+    if (progress === 1) {
       return this.runChain();
     }
   };
 
   Byte.prototype.runChain = function() {
-    var chain;
+    var chain, _ref;
     if (!this.chainArr.length) {
-      return;
+      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
     }
     chain = this.chainArr.shift();
     if (chain.type === 'chain') {
@@ -507,11 +509,9 @@ Byte = (function(_super) {
   };
 
   Byte.prototype.createTween = function() {
-    var ease, easings, it;
+    var ease, easings, it, onComplete;
     it = this;
-    if (this.props.onComplete) {
-      this.props.onComplete = this.h.bind(this.props.onComplete, this);
-    }
+    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
     easings = h.splitEasing(this.props.easing);
     ease = typeof easings === 'function' ? easings : TWEEN.Easing[easings[0]][easings[1]];
     this.tween = new this.TWEEN.Tween({
@@ -520,13 +520,7 @@ Byte = (function(_super) {
       p: 1
     }, this.props.duration).delay(this.props.delay).easing(ease).onUpdate(function() {
       return it.setProgress(this.p);
-    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo).onComplete((function(_this) {
-      return function() {
-        var _base;
-        _this.runChain();
-        return typeof (_base = _this.props).onComplete === "function" ? _base.onComplete() : void 0;
-      };
-    })(this));
+    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo).onComplete(onComplete);
     return !this.o.isRunLess && this.startTween();
   };
 
@@ -728,6 +722,7 @@ Helpers = (function() {
     yoyo: 1,
     onStart: 1,
     onComplete: 1,
+    onCompleteChain: 1,
     onUpdate: 1
   };
 

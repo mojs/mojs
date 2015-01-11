@@ -477,6 +477,27 @@ describe 'Byte ->', ->
           expect(isRightScope).toBe true
           dfr()
         , 40
+    describe 'onCompleteChain callback', ->
+      it 'should call onCompleteChain callback when chain ends', (dfr)->
+        isOnComplete = null
+        byte = new Byte
+          radius:   {'25': 75}
+          onCompleteChain:-> isOnComplete = true
+          duration: 20
+        setTimeout ->
+          expect(isOnComplete).toBe true
+          dfr()
+        , 40
+      it 'should have scope of byte', (dfr)->
+        isRightScope = null
+        byte = new Byte
+          radius: {'25': 75}
+          duration: 20
+          onCompleteChain:-> isRightScope = @ instanceof Byte
+        setTimeout ->
+          expect(isRightScope).toBe true
+          dfr()
+        , 40
   describe 'Tweens ->', ->
     it 'should have TWEEN object', ->
       byte = new Byte radius:  {'25': 75}
@@ -535,6 +556,10 @@ describe 'Byte ->', ->
       byte = new Byte(strokeWidth: {10: 5}, duration: 20)
         .chain(strokeWidth: {5: 0}, duration: 20)
       expect(byte.chainArr.length).toBe 1
+    it 'should inherit type', ->
+      byte = new Byte(type: 'circle', strokeWidth: {10: 5}, duration: 20)
+        .chain(strokeWidth: {5: 0}, duration: 20)
+      expect(byte.chainArr[0].options.type).toBe 'circle'
     it 'should wrap options to object with chain type', ->
       byte = new Byte(strokeWidth: {10: 5}, duration: 20)
         .chain(strokeWidth: {5: 0}, duration: 20)
@@ -547,10 +572,9 @@ describe 'Byte ->', ->
         expect(byte.props.strokeWidth).toBe 0
         dfr()
       , 80
-    it 'should run next chain from setProgress if isInitLess is true', ->
+    it 'should run next chain from setProgress', ->
       byte = new Byte
         strokeWidth: {20:30}
-        isRunLess:   true
         duration: 20
       byte.chainArr = [{strokeWidth: {30:20}}]
       spyOn byte, 'runChain'
@@ -590,12 +614,10 @@ describe 'Byte ->', ->
         expect(byte.props.strokeWidth).toBe 0
         dfr()
       , 80
-
     it 'should warn if new value is object and use end value', (dfr)->
       byte = new Byte(strokeWidth: {10: 5}, duration: 20)
       spyOn console, 'warn'
       byte.then strokeWidth: { 7: 20 }, duration: 20
-      
       setTimeout ->
         expect(console.warn).toHaveBeenCalled()
         delta = byte.deltas.strokeWidth

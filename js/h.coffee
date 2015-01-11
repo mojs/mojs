@@ -22,19 +22,20 @@ class Helpers
     yellow: 'rgb(255,255,0)'
     orange: 'rgb(255,128,0)'
   tweenOptionMap:
-    duration:     1
-    delay:        1
-    repeat:       1
-    easing:       1
-    yoyo:         1
-    onStart:      1
-    onComplete:   1
-    onUpdate:     1
+    duration:         1
+    delay:            1
+    repeat:           1
+    easing:           1
+    yoyo:             1
+    onStart:          1
+    onComplete:       1
+    onCompleteChain:  1
+    onUpdate:         1
   posPropsMap:
-    x:            1
-    y:            1
-    shiftX:       1
-    shiftY:       1
+    x:                1
+    y:                1
+    shiftX:           1
+    shiftY:           1
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()
