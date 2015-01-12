@@ -28,6 +28,8 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 9
   describe 'methods ->', ->
+
+    
     describe 'logging methods', ->
       describe 'prepareForLog method', ->
         it 'should prepare for arguments for logging', ->
@@ -45,10 +47,10 @@ describe 'Helpers ->', ->
           h.log 'something'
           expect(console.log)
             .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
-        it 'should call @prepareForLog method',->
-          spyOn h, 'prepareForLog'
-          h.log 'something'
-          expect(h.prepareForLog).toHaveBeenCalled()
+        # it 'should call @prepareForLog method',->
+        #   spyOn h, 'prepareForLog'
+        #   h.log 'something'
+        #   expect(h.prepareForLog).toHaveBeenCalled()
       describe 'warn method', ->
         it 'should warn to console',->
           spyOn console, 'warn'
@@ -59,10 +61,10 @@ describe 'Helpers ->', ->
           h.warn 'something'
           expect(console.warn)
             .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
-        it 'should call @prepareForLog method',->
-          spyOn h, 'prepareForLog'
-          h.log 'something'
-          expect(h.prepareForLog).toHaveBeenCalled()
+        # it 'should call @prepareForLog method',->
+        #   spyOn h, 'prepareForLog'
+        #   h.log 'something'
+        #   expect(h.prepareForLog).toHaveBeenCalled()
       describe 'error method', ->
         it 'should error to console',->
           spyOn console, 'error'
@@ -73,10 +75,11 @@ describe 'Helpers ->', ->
           h.error 'something'
           expect(console.error)
             .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
-        it 'should call @prepareForLog method',->
-          spyOn h, 'prepareForLog'
-          h.log 'something'
-          expect(h.prepareForLog).toHaveBeenCalled()
+        # it 'should call @prepareForLog method',->
+        #   spyOn h, 'prepareForLog'
+        #   h.log 'something'
+        #   expect(h.prepareForLog).toHaveBeenCalled()
+
     describe 'setPrefixedStyle method', ->
       it 'should set prefixed style', ->
         el = document.createElement 'div'

@@ -3,14 +3,13 @@
 
 #### todo
 - make refactor
-  - add transit run method
-  - shiftX <-> x
   - create animation map for props that should be animated and draw only them
   - don't set default values on draw
   - size and margin shift to rems based on html font-size value
   - extend to utils?
   - fix triangle
 - add radial transition(burst)
+- write/fork tween
 - add movement arc
 - add more shapes(bits)
 - add motion path

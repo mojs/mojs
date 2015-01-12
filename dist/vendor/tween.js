@@ -159,6 +159,8 @@
 		};
 
 		this.start = function ( time ) {
+						
+			if (_isPlaying && !(this.progress === 1)) { TWEEN.remove( this ); }
 
 			TWEEN.add( this );
 
@@ -189,6 +191,8 @@
 
 				if( ( _valuesStart[ property ] instanceof Array ) === false ) {
 					_valuesStart[ property ] *= 1.0; // Ensures we're using numbers, not strings
+					// set progress value to 0
+					_valuesStart[ 'p' ] = 0;
 				}
 
 				_valuesStartRepeat[ property ] = _valuesStart[ property ] || 0;
@@ -286,7 +290,6 @@
 		};
 
 		this.onComplete = function ( callback ) {
-
 			_onCompleteCallback = callback;
 			return this;
 
@@ -352,9 +355,8 @@
 			}
 
 			if ( _onUpdateCallback !== null ) {
-
+				this.progress = _object.p;
 				_onUpdateCallback.call( _object, value );
-
 			}
 
 			if ( elapsed == 1 ) {
@@ -379,7 +381,6 @@
 						}
 
 						_valuesStart[ property ] = _valuesStartRepeat[ property ];
-
 					}
 
 					if (_yoyo) {
@@ -391,11 +392,10 @@
 					return true;
 
 				} else {
-
+					// this.progress = 1;
+					// console.log('complete');
 					if ( _onCompleteCallback !== null ) {
-
 						_onCompleteCallback.call( _object );
-
 					}
 
 					for ( var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++ ) {

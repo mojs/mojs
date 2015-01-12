@@ -55,15 +55,10 @@
             h.log('something');
             return expect(console.log).toHaveBeenCalled();
           });
-          it('should prepend mojs badge to message', function() {
+          return it('should prepend mojs badge to message', function() {
             spyOn(console, 'log');
             h.log('something');
             return expect(console.log).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
-          });
-          return it('should call @prepareForLog method', function() {
-            spyOn(h, 'prepareForLog');
-            h.log('something');
-            return expect(h.prepareForLog).toHaveBeenCalled();
           });
         });
         describe('warn method', function() {
@@ -72,15 +67,10 @@
             h.warn('something');
             return expect(console.warn).toHaveBeenCalled();
           });
-          it('should prepend mojs badge to message', function() {
+          return it('should prepend mojs badge to message', function() {
             spyOn(console, 'warn');
             h.warn('something');
             return expect(console.warn).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
-          });
-          return it('should call @prepareForLog method', function() {
-            spyOn(h, 'prepareForLog');
-            h.log('something');
-            return expect(h.prepareForLog).toHaveBeenCalled();
           });
         });
         return describe('error method', function() {
@@ -89,15 +79,10 @@
             h.error('something');
             return expect(console.error).toHaveBeenCalled();
           });
-          it('should prepend mojs badge to message', function() {
+          return it('should prepend mojs badge to message', function() {
             spyOn(console, 'error');
             h.error('something');
             return expect(console.error).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
-          });
-          return it('should call @prepareForLog method', function() {
-            spyOn(h, 'prepareForLog');
-            h.log('something');
-            return expect(h.prepareForLog).toHaveBeenCalled();
           });
         });
       });

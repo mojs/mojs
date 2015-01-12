@@ -159,6 +159,11 @@ describe 'Byte ->', ->
             expect(byte.el.style.left)   .toBe '200px'
             dfr()
           , 40
+        it 'should warn when x/y animated position', ->
+          spyOn console, 'warn'
+          byte = new Byte x: {100: '200px'}
+          expect(console.warn).toHaveBeenCalled()
+          
         it 'should animate position with respect to units', (dfr)->
           byte = new Byte
             x: {'20%': '50%'}
@@ -458,7 +463,7 @@ describe 'Byte ->', ->
           expect(progress).not.toBeGreaterThan 1
           dfr()
         , 34
-    describe 'onComplete callback', ->
+    describe 'onComplete callback ->', ->
       it 'should call onComplete callback',(dfr)->
         isOnComplete = null
         byte = new Byte
@@ -468,7 +473,7 @@ describe 'Byte ->', ->
         setTimeout ->
           expect(isOnComplete).toBe true
           dfr()
-        , 40
+        , 50
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -629,6 +634,30 @@ describe 'Byte ->', ->
         expect(byte.props.strokeWidth).toBe 20
         dfr()
       , 80
+  
+  describe 'run ->', ->
+    it 'should run tween', ->
+      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
+      spyOn byte, 'startTween'
+      byte.run()
+      expect(byte.startTween).toHaveBeenCalled()
+    it 'should restart progress value tween', (dfr)->
+      isOne = 0
+      i = 0
+      byte = new Byte
+        strokeWidth:  {10: 5}
+        duration:     50
+        isRunLess:    true
+        onUpdate:(p)-> p is 1 and isOne++
+        onComplete:->
+          i++ < 1 and byte.run()
+          if i is 2 then expect(isOne).toBe(2); dfr()
+      byte.run()
+
+
+
+
+
 
 
 

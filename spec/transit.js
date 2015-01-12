@@ -285,6 +285,16 @@
               return dfr();
             }, 40);
           });
+          it('should warn when x/y animated position', function() {
+            var byte;
+            spyOn(console, 'warn');
+            byte = new Byte({
+              x: {
+                100: '200px'
+              }
+            });
+            return expect(console.warn).toHaveBeenCalled();
+          });
           it('should animate position with respect to units', function(dfr) {
             var byte;
             byte = new Byte({
@@ -841,7 +851,7 @@
           }, 34);
         });
       });
-      describe('onComplete callback', function() {
+      describe('onComplete callback ->', function() {
         it('should call onComplete callback', function(dfr) {
           var byte, isOnComplete;
           isOnComplete = null;
@@ -857,7 +867,7 @@
           return setTimeout(function() {
             expect(isOnComplete).toBe(true);
             return dfr();
-          }, 40);
+          }, 50);
         });
         return it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -1163,7 +1173,7 @@
         });
       });
     });
-    return describe('then ->', function() {
+    describe('then ->', function() {
       it('should push to chainArr with type of then', function() {
         var byte;
         byte = new Byte({
@@ -1220,6 +1230,43 @@
           expect(byte.props.strokeWidth).toBe(20);
           return dfr();
         }, 80);
+      });
+    });
+    return describe('run ->', function() {
+      it('should run tween', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        spyOn(byte, 'startTween');
+        byte.run();
+        return expect(byte.startTween).toHaveBeenCalled();
+      });
+      return it('should restart progress value tween', function(dfr) {
+        var byte, i, isOne;
+        isOne = 0;
+        i = 0;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          duration: 50,
+          isRunLess: true,
+          onUpdate: function(p) {
+            return p === 1 && isOne++;
+          },
+          onComplete: function() {
+            i++ < 1 && byte.run();
+            if (i === 2) {
+              expect(isOne).toBe(2);
+              return dfr();
+            }
+          }
+        });
+        return byte.run();
       });
     });
   });

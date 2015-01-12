@@ -1,11 +1,6 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-# Bit       = require './bit'
-# Line      = require './line'
-# Circle    = require './circle'
-# Triangle  = require './triangle'
-# Rect      = require './rect'
 h         = require './h'
 TWEEN     = require './vendor/tween'
 bitsMap   = require './bitsMap'
@@ -35,6 +30,7 @@ class Transit extends bitsMap.map.bit
     size:               null
     sizeGap:            0
     # callbacks
+    onInit:             null
     onStart:            null
     onComplete:         null
     onCompleteChain:    null
@@ -93,10 +89,10 @@ class Transit extends bitsMap.map.bit
 
   createBit:->
     bitClass = bitsMap.getBit(@o.type or @type)
-
     @bit = new bitClass ctx: @ctx, isDrawLess: true
 
   setProgress:(progress)->
+    # console.log progress
     @props.onUpdate?.call(@, progress)
 
     @progress = if progress < 0 or !progress then 0
@@ -120,8 +116,8 @@ class Transit extends bitsMap.map.bit
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
     @draw()
     
-    if progress is 1 then @runChain()
-    
+    if progress is 1 then @runChain(); @props.onComplete?.call @
+
   runChain:->
     if !@chainArr.length then return @props.onCompleteChain?.call @
 
@@ -217,6 +213,9 @@ class Transit extends bitsMap.map.bit
           @props[key] = @h.parseUnit(@props[key]).string
         continue
       # if delta object was passed: like { 20: 75 }
+      if key is 'x' or key is 'y'
+        @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
+         as it would be much more perfomant', optionsValue
       start = Object.keys(optionsValue)[0]
       # color values
       if isNaN parseFloat(start)
@@ -277,8 +276,8 @@ class Transit extends bitsMap.map.bit
 
   createTween:->
     it = @
-    onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
-    else null
+    # onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
+    # else null
 
     easings = h.splitEasing(@props.easing)
     ease = if typeof easings is 'function' then easings
@@ -290,8 +289,10 @@ class Transit extends bitsMap.map.bit
       .onUpdate -> it.setProgress @p
       .repeat @props.repeat-1
       .yoyo @props.yoyo
-      .onComplete onComplete
+      # .onComplete => @tween.isComplete = true
     !@o.isRunLess and @startTween()
+
+  run:-> @startTween()
 
   startTween:->
     @props.onStart?.call @

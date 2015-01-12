@@ -9,59 +9,31 @@ svg       = document.getElementById 'js-svg'
 div       = document.getElementById 'js-div'
 
 rect = new Transit
-  type:       'line'
-  x:           200
-  y:           100
-  radius:       75
-  strokeDasharray: 2*75
-  duration: 1000
-  deg: {0: 60}
-  isDrawLess: true
-  delay: 1000
-  strokeLinecap: {'round': 'butt'}
-  isRunLess: true
-  # repeat: 3
-  # yoyo: true
+  type:             'line'
+  x:                {200 : 100}
+  y:                100
+  radius:           75
+  strokeDasharray:  2*75
+  duration:         1000
+  deg:              {0: 60}
+  isDrawLess:       true
+  # delay:            1000
+  strokeLinecap:    {'round': 'butt'}
+  isRunLess:        true
+  onComplete:->
+    # console.log 'complete'
+    # @run()
 
-rect
-  .then deg: 0
-  .then
-    deg:    1000
-    delay:  0
+rect.run()
+
+# setInterval ->
+#   rect.run()
+#   console.log rect.TWEEN.getAll()
+# , 500
 
 
-# setTimeout ->
-#   rect.startTween()
-# , 1000
-
-# setTimeout ->
-#   i = 0
-#   int = setInterval ->
-#     rect.el.style['-webkit-transform'] = "translate(#{i++}px, 0)"
-#   , 160
-# , 1000
-
-# rect.draw()
-
-# console.log rect.el.parentNode.tagName
-
-# bit   = new Bit ctx: svg
-
-# # line.type = 'circle'
-# console.log bit.type, line.type
-
-# # line = new Line
-
-# class Mojs
-#   constructor:->
-#     @var = 'var'
-#     # @bar = 'tar'
-#   method:->
-#     @gar = 'mar'
-#   method2:->
-#     @tar = 'nar'
-#     line.method()
-
-# mojs           = new Mojs
-# window.mojs    = mojs
-# module.exports = mojs
+# rect
+#   .then deg: 0
+#   .then
+#     deg:    1000
+#     delay:  0

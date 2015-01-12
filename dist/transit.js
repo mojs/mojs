@@ -39,6 +39,7 @@ Transit = (function(_super) {
     deg: 0,
     size: null,
     sizeGap: 0,
+    onInit: null,
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
@@ -126,7 +127,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress) {
-    var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2;
+    var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2, _ref3;
     if ((_ref = this.props.onUpdate) != null) {
       _ref.call(this, progress);
     }
@@ -160,7 +161,8 @@ Transit = (function(_super) {
     }
     this.draw();
     if (progress === 1) {
-      return this.runChain();
+      this.runChain();
+      return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;
     }
   };
 
@@ -281,6 +283,9 @@ Transit = (function(_super) {
         }
         continue;
       }
+      if (key === 'x' || key === 'y') {
+        this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more perfomant', optionsValue);
+      }
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
         if (key === 'strokeLinecap') {
@@ -345,9 +350,8 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.createTween = function() {
-    var ease, easings, it, onComplete;
+    var ease, easings, it;
     it = this;
-    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
     easings = h.splitEasing(this.props.easing);
     ease = typeof easings === 'function' ? easings : TWEEN.Easing[easings[0]][easings[1]];
     this.tween = new this.TWEEN.Tween({
@@ -356,8 +360,12 @@ Transit = (function(_super) {
       p: 1
     }, this.props.duration).delay(this.props.delay).easing(ease).onUpdate(function() {
       return it.setProgress(this.p);
-    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo).onComplete(onComplete);
+    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo);
     return !this.o.isRunLess && this.startTween();
+  };
+
+  Transit.prototype.run = function() {
+    return this.startTween();
   };
 
   Transit.prototype.startTween = function() {

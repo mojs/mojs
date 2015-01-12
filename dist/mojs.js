@@ -735,7 +735,9 @@ div = document.getElementById('js-div');
 
 rect = new Transit({
   type: 'line',
-  x: 200,
+  x: {
+    200: 100
+  },
   y: 100,
   radius: 75,
   strokeDasharray: 2 * 75,
@@ -744,19 +746,14 @@ rect = new Transit({
     0: 60
   },
   isDrawLess: true,
-  delay: 1000,
   strokeLinecap: {
     'round': 'butt'
   },
-  isRunLess: true
+  isRunLess: true,
+  onComplete: function() {}
 });
 
-rect.then({
-  deg: 0
-}).then({
-  deg: 1000,
-  delay: 0
-});
+rect.run();
 
 },{"./bit":1,"./circle":3,"./cross":4,"./line":6,"./rect":8,"./transit":9,"./triangle":10}],8:[function(require,module,exports){
 
@@ -862,6 +859,7 @@ Transit = (function(_super) {
     deg: 0,
     size: null,
     sizeGap: 0,
+    onInit: null,
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
@@ -949,7 +947,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress) {
-    var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2;
+    var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2, _ref3;
     if ((_ref = this.props.onUpdate) != null) {
       _ref.call(this, progress);
     }
@@ -983,7 +981,8 @@ Transit = (function(_super) {
     }
     this.draw();
     if (progress === 1) {
-      return this.runChain();
+      this.runChain();
+      return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;
     }
   };
 
@@ -1104,6 +1103,9 @@ Transit = (function(_super) {
         }
         continue;
       }
+      if (key === 'x' || key === 'y') {
+        this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more perfomant', optionsValue);
+      }
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
         if (key === 'strokeLinecap') {
@@ -1168,9 +1170,8 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.createTween = function() {
-    var ease, easings, it, onComplete;
+    var ease, easings, it;
     it = this;
-    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
     easings = h.splitEasing(this.props.easing);
     ease = typeof easings === 'function' ? easings : TWEEN.Easing[easings[0]][easings[1]];
     this.tween = new this.TWEEN.Tween({
@@ -1179,8 +1180,12 @@ Transit = (function(_super) {
       p: 1
     }, this.props.duration).delay(this.props.delay).easing(ease).onUpdate(function() {
       return it.setProgress(this.p);
-    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo).onComplete(onComplete);
+    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo);
     return !this.o.isRunLess && this.startTween();
+  };
+
+  Transit.prototype.run = function() {
+    return this.startTween();
   };
 
   Transit.prototype.startTween = function() {
@@ -1463,6 +1468,8 @@ if (typeof window !== "undefined" && window !== null) {
 		};
 
 		this.start = function ( time ) {
+						
+			if (_isPlaying && !(this.progress === 1)) { TWEEN.remove( this ); }
 
 			TWEEN.add( this );
 
@@ -1493,6 +1500,8 @@ if (typeof window !== "undefined" && window !== null) {
 
 				if( ( _valuesStart[ property ] instanceof Array ) === false ) {
 					_valuesStart[ property ] *= 1.0; // Ensures we're using numbers, not strings
+					// set progress value to 0
+					_valuesStart[ 'p' ] = 0;
 				}
 
 				_valuesStartRepeat[ property ] = _valuesStart[ property ] || 0;
@@ -1590,7 +1599,6 @@ if (typeof window !== "undefined" && window !== null) {
 		};
 
 		this.onComplete = function ( callback ) {
-
 			_onCompleteCallback = callback;
 			return this;
 
@@ -1656,9 +1664,8 @@ if (typeof window !== "undefined" && window !== null) {
 			}
 
 			if ( _onUpdateCallback !== null ) {
-
+				this.progress = _object.p;
 				_onUpdateCallback.call( _object, value );
-
 			}
 
 			if ( elapsed == 1 ) {
@@ -1683,7 +1690,6 @@ if (typeof window !== "undefined" && window !== null) {
 						}
 
 						_valuesStart[ property ] = _valuesStartRepeat[ property ];
-
 					}
 
 					if (_yoyo) {
@@ -1695,11 +1701,10 @@ if (typeof window !== "undefined" && window !== null) {
 					return true;
 
 				} else {
-
+					// this.progress = 1;
+					// console.log('complete');
 					if ( _onCompleteCallback !== null ) {
-
 						_onCompleteCallback.call( _object );
-
 					}
 
 					for ( var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++ ) {
