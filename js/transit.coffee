@@ -59,9 +59,8 @@ class Transit extends bitsMap.map.bit
         @createBit(); @calcSize()
 
         @el         = document.createElement 'div'
-        fontSize = 16
-        size        = "#{@props.size/fontSize}rem"
-        marginSize  = "#{-@props.size/(2*fontSize)}rem"
+        size        = "#{@props.size/@h.remBase}rem"
+        marginSize  = "#{-@props.size/(2*@h.remBase)}rem"
         @el.style.position    = 'absolute'
         @el.style.top         = @props.y.string
         @el.style.left        = @props.x.string

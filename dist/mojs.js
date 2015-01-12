@@ -893,7 +893,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.render = function() {
-    var fontSize, marginSize, size;
+    var marginSize, size;
     if (!this.isRendered) {
       if (this.o.ctx == null) {
         this.ctx = document.createElementNS(this.ns, 'svg');
@@ -903,9 +903,8 @@ Transit = (function(_super) {
         this.createBit();
         this.calcSize();
         this.el = document.createElement('div');
-        fontSize = 16;
-        size = "" + (this.props.size / fontSize) + "rem";
-        marginSize = "" + (-this.props.size / (2 * fontSize)) + "rem";
+        size = "" + (this.props.size / this.h.remBase) + "rem";
+        marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
         this.el.style.position = 'absolute';
         this.el.style.top = this.props.y.string;
         this.el.style.left = this.props.x.string;

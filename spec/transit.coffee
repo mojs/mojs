@@ -110,6 +110,27 @@ describe 'Byte ->', ->
       expect(byte.el.style['margin-top'])         .toBe '-1.625rem'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
+
+    it 'should set el size based on remBase', ->
+      byte = new Byte
+        radius:       25
+        strokeWidth:  2
+        x:            10
+        y:            20
+      
+      byte.isRendered = false
+      byte.h.remBase = 8
+      byte.render()
+
+      expect(byte.el.style.position)              .toBe 'absolute'
+      expect(byte.el.style.width)                 .toBe '6.5rem'
+      expect(byte.el.style.height)                .toBe '6.5rem'
+      expect(byte.el.style['margin-left'])        .toBe '-3.25rem'
+      expect(byte.el.style['margin-top'])         .toBe '-3.25rem'
+      expect(byte.el.style['backface-visibility']).toBe 'hidden'
+      expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
+
+
     it 'should create bit', ->
       byte = new Byte radius: 25
       expect(byte.bit).toBeDefined()
