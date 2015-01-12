@@ -41,9 +41,15 @@ class Helpers
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()
+    @getRemBase()
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
     @animationLoop = @bind @animationLoop, @
+
+  getRemBase:->
+    html = document.querySelector('html')
+    style = getComputedStyle(html)
+    @remBase = parseFloat style.fontSize
 
   setPrefixedStyle:(el, name, value)->
     prefixedName            = "#{@prefix.css}#{name}"

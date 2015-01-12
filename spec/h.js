@@ -7,6 +7,9 @@
     it('should have logBadgeCss', function() {
       return expect(h.logBadgeCss).toBeDefined();
     });
+    it('should have remBase', function() {
+      return expect(typeof h.remBase).toBe('number');
+    });
     describe('prefix', function() {
       return it('should have prefix', function() {
         expect(h.prefix).toBeDefined();
@@ -39,6 +42,16 @@
       });
     });
     return describe('methods ->', function() {
+      describe('getRemBase method', function() {
+        it('should return remBase', function() {
+          expect(h.getRemBase()).toBeDefined();
+          return expect(typeof h.getRemBase()).toBe('number');
+        });
+        return it('should set remBase to h', function() {
+          h.getRemBase();
+          return expect(h.remBase).toBe(16);
+        });
+      });
       describe('logging methods', function() {
         describe('prepareForLog method', function() {
           return it('should prepare for arguments for logging', function() {

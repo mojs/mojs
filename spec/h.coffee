@@ -3,6 +3,8 @@ h  = mojs.helpers
 describe 'Helpers ->', ->
   it 'should have logBadgeCss', ->
     expect(h.logBadgeCss).toBeDefined()
+  it 'should have remBase', ->
+    expect(typeof h.remBase).toBe 'number'
   describe 'prefix', ->
     it 'should have prefix', ->
       expect(h.prefix).toBeDefined()
@@ -28,8 +30,13 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 9
   describe 'methods ->', ->
-
-    
+    describe 'getRemBase method', ->
+      it 'should return remBase', ->
+        expect(h.getRemBase()).toBeDefined()
+        expect(typeof h.getRemBase()).toBe 'number'
+      it 'should set remBase to h', ->
+        h.getRemBase()
+        expect(h.remBase).toBe 16
     describe 'logging methods', ->
       describe 'prepareForLog method', ->
         it 'should prepare for arguments for logging', ->

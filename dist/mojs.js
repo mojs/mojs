@@ -388,9 +388,17 @@ Helpers = (function() {
 
   Helpers.prototype.vars = function() {
     this.prefix = this.getPrefix();
+    this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
     this.isIE = this.prefix.lowercase === 'ms';
     return this.animationLoop = this.bind(this.animationLoop, this);
+  };
+
+  Helpers.prototype.getRemBase = function() {
+    var html, style;
+    html = document.querySelector('html');
+    style = getComputedStyle(html);
+    return this.remBase = parseFloat(style.fontSize);
   };
 
   Helpers.prototype.setPrefixedStyle = function(el, name, value) {
