@@ -1,29 +1,14 @@
 
 /* istanbul ignore next */
-var Bit, Circle, Line, Rect, TWEEN, Transit, Triangle, elsMap, h,
+var TWEEN, Transit, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Bit = require('./bit');
-
-Line = require('./line');
-
-Circle = require('./circle');
-
-Triangle = require('./triangle');
-
-Rect = require('./rect');
 
 h = require('./h');
 
 TWEEN = require('./vendor/tween');
 
-elsMap = {
-  circle: Circle,
-  triangle: Triangle,
-  line: Line,
-  rect: Rect
-};
+bitsMap = require('./bitsMap');
 
 Transit = (function(_super) {
   __extends(Transit, _super);
@@ -79,7 +64,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.render = function() {
-    var size;
+    var fontSize, marginSize, size;
     if (!this.isRendered) {
       if (this.o.ctx == null) {
         this.ctx = document.createElementNS(this.ns, 'svg');
@@ -89,13 +74,17 @@ Transit = (function(_super) {
         this.createBit();
         this.calcSize();
         this.el = document.createElement('div');
-        size = "" + (this.props.size / 16) + "rem";
+        fontSize = 16;
+        size = "" + (this.props.size / fontSize) + "rem";
+        marginSize = "" + (-this.props.size / (2 * fontSize)) + "rem";
         this.el.style.position = 'absolute';
         this.el.style.top = this.props.y.string;
         this.el.style.left = this.props.x.string;
         this.el.style.opacity = this.props.opacity;
         this.el.style.width = size;
         this.el.style.height = size;
+        this.el.style['margin-left'] = marginSize;
+        this.el.style['margin-top'] = marginSize;
         this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
         this.el.appendChild(this.ctx);
         (this.o.parent || document.body).appendChild(this.el);
@@ -105,7 +94,7 @@ Transit = (function(_super) {
       }
       this.isRendered = true;
     }
-    !this.o.isDrawLess && this.draw();
+    !this.o.isDrawLess && this.setProgress(0);
     this.createTween();
     return this;
   };
@@ -129,7 +118,7 @@ Transit = (function(_super) {
 
   Transit.prototype.createBit = function() {
     var bitClass;
-    bitClass = elsMap[this.o.type || this.type];
+    bitClass = bitsMap.getBit(this.o.type || this.type);
     return this.bit = new bitClass({
       ctx: this.ctx,
       isDrawLess: true
@@ -203,7 +192,7 @@ Transit = (function(_super) {
         keys = Object.keys(value);
         end = value[keys[0]];
         start = opts[key];
-        this.h.warn("new end value expected instead of object, using end(" + end + ") value", value);
+        this.h.warn("new end value expected instead of object, using end(" + end + ") value instead", value);
         opts[key] = {};
         opts[key][start] = end;
       } else {
@@ -295,7 +284,7 @@ Transit = (function(_super) {
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
         if (key === 'strokeLinecap') {
-          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value", optionsValue);
+          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value insttead", optionsValue);
           this.props[key] = start;
           continue;
         }
@@ -382,7 +371,7 @@ Transit = (function(_super) {
 
   return Transit;
 
-})(Bit);
+})(bitsMap.map.bit);
 
 
 /* istanbul ignore next */

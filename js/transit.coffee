@@ -1,21 +1,16 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Bit       = require './bit'
-Line      = require './line'
-Circle    = require './circle'
-Triangle  = require './triangle'
-Rect      = require './rect'
+# Bit       = require './bit'
+# Line      = require './line'
+# Circle    = require './circle'
+# Triangle  = require './triangle'
+# Rect      = require './rect'
 h         = require './h'
 TWEEN     = require './vendor/tween'
+bitsMap   = require './bitsMap'
 
-elsMap =
-  circle:     Circle
-  triangle:   Triangle
-  line:       Line
-  rect:       Rect
-
-class Transit extends Bit
+class Transit extends bitsMap.map.bit
   TWEEN: TWEEN
   progress: 0
   defaults:
@@ -67,14 +62,18 @@ class Transit extends Bit
         @ctx.style.height    = '100%'
         @createBit(); @calcSize()
 
-        @el   = document.createElement 'div'
-        size  = "#{@props.size/16}rem"
-        @el.style.position  = 'absolute'
-        @el.style.top       = @props.y.string
-        @el.style.left      = @props.x.string
-        @el.style.opacity   = @props.opacity
-        @el.style.width     = size
-        @el.style.height    = size
+        @el         = document.createElement 'div'
+        fontSize = 16
+        size        = "#{@props.size/fontSize}rem"
+        marginSize  = "#{-@props.size/(2*fontSize)}rem"
+        @el.style.position    = 'absolute'
+        @el.style.top         = @props.y.string
+        @el.style.left        = @props.x.string
+        @el.style.opacity     = @props.opacity
+        @el.style.width       = size
+        @el.style.height      = size
+        @el.style['margin-left'] = marginSize
+        @el.style['margin-top']  = marginSize
         @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
         @el.appendChild @ctx
@@ -83,7 +82,7 @@ class Transit extends Bit
       
       @isRendered = true
 
-    !@o.isDrawLess and @draw()
+    !@o.isDrawLess and @setProgress 0
     @createTween()
     @
 
@@ -93,7 +92,8 @@ class Transit extends Bit
   then:(options)->  @chainArr.push { type: 'then',  options: options }; @
 
   createBit:->
-    bitClass = elsMap[@o.type or @type]
+    bitClass = bitsMap.getBit(@o.type or @type)
+
     @bit = new bitClass ctx: @ctx, isDrawLess: true
 
   setProgress:(progress)->
@@ -145,7 +145,7 @@ class Transit extends Bit
         # write the old start value
         start = opts[key]
         @h.warn "new end value expected instead of object,
-         using end(#{end}) value", value
+         using end(#{end}) value instead", value
         opts[key] = {}
         opts[key][start] = end
       else
@@ -161,10 +161,8 @@ class Transit extends Bit
     opts = {}
     for key, value of @o
       opts[key] = if typeof value is 'object'
-        # get the end value
         value[Object.keys(value)[0]]
       else value
-    # console.log 'ops', opts
     opts
 
   draw:->
@@ -223,8 +221,8 @@ class Transit extends Bit
       # color values
       if isNaN parseFloat(start)
         if key is 'strokeLinecap'
-          @h.warn "Sorry, stroke-linecap property is not
-            animatable yet, using the start(#{start}) value", optionsValue
+          @h.warn "Sorry, stroke-linecap property is not animatable
+             yet, using the start(#{start}) value insttead", optionsValue
           @props[key] = start; continue
         end           = optionsValue[start]
         startColorObj = h.makeColorObj start

@@ -1,7 +1,7 @@
 {
   "name": "mojs",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.28.1",
+  "version": "0.29.1",
   "license": "MIT",
   "private": false,
   "scripts": {

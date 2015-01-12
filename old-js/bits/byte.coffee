@@ -8,6 +8,7 @@ Cross     = require './objects/cross'
 Line      = require './objects/line'
 ZigZag    = require './objects/zigzag'
 
+
 class Byte extends Bit
   shapes:
     circle:    Circle

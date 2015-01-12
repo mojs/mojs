@@ -103,9 +103,11 @@ describe 'Byte ->', ->
         strokeWidth:  2
         x:            10
         y:            20
-      expect(byte.el.style.position)    .toBe 'absolute'
-      expect(byte.el.style.width)       .toBe '3.25rem'
-      expect(byte.el.style.height)      .toBe '3.25rem'
+      expect(byte.el.style.position)              .toBe 'absolute'
+      expect(byte.el.style.width)                 .toBe '3.25rem'
+      expect(byte.el.style.height)                .toBe '3.25rem'
+      expect(byte.el.style['margin-left'])        .toBe '-1.625rem'
+      expect(byte.el.style['margin-top'])         .toBe '-1.625rem'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
     it 'should create bit', ->

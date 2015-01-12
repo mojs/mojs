@@ -10,7 +10,7 @@ div       = document.getElementById 'js-div'
 
 rect = new Transit
   type:       'line'
-  x:           100
+  x:           200
   y:           100
   radius:       75
   strokeDasharray: 2*75
@@ -19,6 +19,7 @@ rect = new Transit
   isDrawLess: true
   delay: 1000
   strokeLinecap: {'round': 'butt'}
+  isRunLess: true
   # repeat: 3
   # yoyo: true
 

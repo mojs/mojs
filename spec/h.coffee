@@ -28,7 +28,6 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 9
   describe 'methods ->', ->
-
     describe 'logging methods', ->
       describe 'prepareForLog method', ->
         it 'should prepare for arguments for logging', ->

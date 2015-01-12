@@ -148,7 +148,69 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"./h":4}],2:[function(require,module,exports){
+},{"./h":5}],2:[function(require,module,exports){
+var Bit, BitsMap, Circle, Line, Rect, Triangle, h;
+
+Bit = require('./bit');
+
+Circle = require('./circle');
+
+Line = require('./line');
+
+Rect = require('./rect');
+
+Triangle = require('./triangle');
+
+h = require('./h');
+
+BitsMap = (function() {
+  function BitsMap() {}
+
+  BitsMap.prototype.h = h;
+
+  BitsMap.prototype.map = {
+    bit: Bit,
+    circle: Circle,
+    line: Line,
+    rect: Rect,
+    triangle: Triangle
+  };
+
+  BitsMap.prototype.getBit = function(name) {
+    return this.map[name] || this.h.error("no \"" + name + "\" shape available yet, please choose from this list:", this.map);
+  };
+
+  return BitsMap;
+
+})();
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("bitsMap", [], function() {
+    return new BitsMap;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = new BitsMap;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.bitsMap = new BitsMap;
+}
+
+},{"./bit":1,"./circle":3,"./h":5,"./line":6,"./rect":8,"./triangle":10}],3:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -206,7 +268,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
 }
 
-},{"./bit":1}],3:[function(require,module,exports){
+},{"./bit":1}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
@@ -269,7 +331,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Cross = Cross;
 }
 
-},{"./bit":1}],4:[function(require,module,exports){
+},{"./bit":1}],5:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -594,7 +656,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = new Helpers;
 }
 
-},{"./vendor/tween":10}],5:[function(require,module,exports){
+},{"./vendor/tween":11}],6:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -650,7 +712,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":1}],6:[function(require,module,exports){
+},{"./bit":1}],7:[function(require,module,exports){
 var Bit, Circle, Cross, Line, Rect, Transit, Triangle, div, rect, svg;
 
 Cross = require('./cross');
@@ -673,7 +735,7 @@ div = document.getElementById('js-div');
 
 rect = new Transit({
   type: 'line',
-  x: 100,
+  x: 200,
   y: 100,
   radius: 75,
   strokeDasharray: 2 * 75,
@@ -685,7 +747,8 @@ rect = new Transit({
   delay: 1000,
   strokeLinecap: {
     'round': 'butt'
-  }
+  },
+  isRunLess: true
 });
 
 rect.then({
@@ -695,7 +758,7 @@ rect.then({
   delay: 0
 });
 
-},{"./bit":1,"./circle":2,"./cross":3,"./line":5,"./rect":7,"./transit":8,"./triangle":9}],7:[function(require,module,exports){
+},{"./bit":1,"./circle":3,"./cross":4,"./line":6,"./rect":8,"./transit":9,"./triangle":10}],8:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -757,33 +820,18 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":1}],8:[function(require,module,exports){
+},{"./bit":1}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
-var Bit, Circle, Line, Rect, TWEEN, Transit, Triangle, elsMap, h,
+var TWEEN, Transit, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Bit = require('./bit');
-
-Line = require('./line');
-
-Circle = require('./circle');
-
-Triangle = require('./triangle');
-
-Rect = require('./rect');
 
 h = require('./h');
 
 TWEEN = require('./vendor/tween');
 
-elsMap = {
-  circle: Circle,
-  triangle: Triangle,
-  line: Line,
-  rect: Rect
-};
+bitsMap = require('./bitsMap');
 
 Transit = (function(_super) {
   __extends(Transit, _super);
@@ -839,7 +887,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.render = function() {
-    var size;
+    var fontSize, marginSize, size;
     if (!this.isRendered) {
       if (this.o.ctx == null) {
         this.ctx = document.createElementNS(this.ns, 'svg');
@@ -849,13 +897,17 @@ Transit = (function(_super) {
         this.createBit();
         this.calcSize();
         this.el = document.createElement('div');
-        size = "" + (this.props.size / 16) + "rem";
+        fontSize = 16;
+        size = "" + (this.props.size / fontSize) + "rem";
+        marginSize = "" + (-this.props.size / (2 * fontSize)) + "rem";
         this.el.style.position = 'absolute';
         this.el.style.top = this.props.y.string;
         this.el.style.left = this.props.x.string;
         this.el.style.opacity = this.props.opacity;
         this.el.style.width = size;
         this.el.style.height = size;
+        this.el.style['margin-left'] = marginSize;
+        this.el.style['margin-top'] = marginSize;
         this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
         this.el.appendChild(this.ctx);
         (this.o.parent || document.body).appendChild(this.el);
@@ -865,7 +917,7 @@ Transit = (function(_super) {
       }
       this.isRendered = true;
     }
-    !this.o.isDrawLess && this.draw();
+    !this.o.isDrawLess && this.setProgress(0);
     this.createTween();
     return this;
   };
@@ -889,7 +941,7 @@ Transit = (function(_super) {
 
   Transit.prototype.createBit = function() {
     var bitClass;
-    bitClass = elsMap[this.o.type || this.type];
+    bitClass = bitsMap.getBit(this.o.type || this.type);
     return this.bit = new bitClass({
       ctx: this.ctx,
       isDrawLess: true
@@ -963,7 +1015,7 @@ Transit = (function(_super) {
         keys = Object.keys(value);
         end = value[keys[0]];
         start = opts[key];
-        this.h.warn("new end value expected instead of object, using end(" + end + ") value", value);
+        this.h.warn("new end value expected instead of object, using end(" + end + ") value instead", value);
         opts[key] = {};
         opts[key][start] = end;
       } else {
@@ -1055,7 +1107,7 @@ Transit = (function(_super) {
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
         if (key === 'strokeLinecap') {
-          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value", optionsValue);
+          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value insttead", optionsValue);
           this.props[key] = start;
           continue;
         }
@@ -1142,7 +1194,7 @@ Transit = (function(_super) {
 
   return Transit;
 
-})(Bit);
+})(bitsMap.map.bit);
 
 
 /* istanbul ignore next */
@@ -1170,7 +1222,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bit":1,"./circle":2,"./h":4,"./line":5,"./rect":7,"./triangle":9,"./vendor/tween":10}],9:[function(require,module,exports){
+},{"./bitsMap":2,"./h":5,"./vendor/tween":11}],10:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Triangle, h,
@@ -1249,7 +1301,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Triangle = Triangle;
 }
 
-},{"./bit":1,"./h":4}],10:[function(require,module,exports){
+},{"./bit":1,"./h":5}],11:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
@@ -2052,4 +2104,4 @@ if (typeof window !== "undefined" && window !== null) {
 })()
 
 
-},{}]},{},[6])
+},{}]},{},[7])

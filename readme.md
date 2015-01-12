@@ -3,14 +3,11 @@
 
 #### todo
 - make refactor
-  - module definition to utils
-  - els map to helper + warn if not in map
-  - position to center
-  - draw on render to setPosition 0
+  - add transit run method
   - shiftX <-> x
   - create animation map for props that should be animated and draw only them
-  - don't set default values
-  - coverage to 100%
+  - don't set default values on draw
+  - size and margin shift to rems based on html font-size value
   - extend to utils?
   - fix triangle
 - add radial transition(burst)
