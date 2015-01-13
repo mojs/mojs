@@ -1,4 +1,4 @@
-var Bit, BitsMap, Circle, Line, Rect, Triangle, h;
+var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
 
 Bit = require('./bit');
 
@@ -8,7 +8,9 @@ Line = require('./line');
 
 Rect = require('./rect');
 
-Triangle = require('./triangle');
+Polygon = require('./polygon');
+
+Cross = require('./cross');
 
 h = require('./h');
 
@@ -22,7 +24,8 @@ BitsMap = (function() {
     circle: Circle,
     line: Line,
     rect: Rect,
-    triangle: Triangle
+    polygon: Polygon,
+    cross: Cross
   };
 
   BitsMap.prototype.getBit = function(name) {

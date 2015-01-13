@@ -4,7 +4,7 @@
 Bit = require './bit'
 h   = require './h'
 
-class Triangle extends Bit
+class Polygon extends Bit
   type:     'polygon'
   draw:->
     !@isDraw and @drawShape()
@@ -15,7 +15,7 @@ class Triangle extends Bit
     for i in [0...@props.points]
       @radialPoints.push h.getRadialPoint
         radius: @props.radius
-        angle:  (i*step) + @props.deg
+        angle:  (i*step)
         center: x: @props.x, y: @props.y
     d = ''
     for point, i in @radialPoints
@@ -24,10 +24,10 @@ class Triangle extends Bit
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
-  define "Triangle", [], -> Triangle
+  define "Polygon", [], -> Polygon
 if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Triangle
+  module.exports = Polygon
 ### istanbul ignore next ###
 window?.mojs ?= {}
-window?.mojs.Triangle = Triangle
+window?.mojs.Polygon = Polygon
 

@@ -12,7 +12,8 @@
       expect(bitsMap.map.circle).toBeDefined();
       expect(bitsMap.map.line).toBeDefined();
       expect(bitsMap.map.rect).toBeDefined();
-      return expect(bitsMap.map.triangle).toBeDefined();
+      expect(bitsMap.map.polygon).toBeDefined();
+      return expect(bitsMap.map.cross).toBeDefined();
     });
     return describe('getBit', function() {
       it('should get bit by string', function() {

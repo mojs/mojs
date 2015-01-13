@@ -69,7 +69,7 @@
     it('should calculate transform object', function() {
       var byte;
       byte = new Byte({
-        deg: 90,
+        angle: 90,
         radius: 25,
         strokeWidth: 4
       });

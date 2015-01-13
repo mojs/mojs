@@ -19,7 +19,7 @@ class Bit
     points:             3
     x:                  0
     y:                  0
-    deg:                0
+    angle:              0
   constructor:(@o={})-> @init()
   init:-> @vars(); @render(); @
   vars:->
@@ -28,7 +28,7 @@ class Bit
     @extendDefaults()
     @calcTransform()
   calcTransform:->
-    rotate    = "rotate(#{@props.deg}, #{@props.x}, #{@props.y})"
+    rotate    = "rotate(#{@props.angle}, #{@props.x}, #{@props.y})"
     @props.transform = "#{rotate}"
   extendDefaults:->
     @props ?= {}

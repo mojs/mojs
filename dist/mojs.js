@@ -25,7 +25,7 @@ Bit = (function() {
     points: 3,
     x: 0,
     y: 0,
-    deg: 0
+    angle: 0
   };
 
   function Bit(o) {
@@ -51,7 +51,7 @@ Bit = (function() {
 
   Bit.prototype.calcTransform = function() {
     var rotate;
-    rotate = "rotate(" + this.props.deg + ", " + this.props.x + ", " + this.props.y + ")";
+    rotate = "rotate(" + this.props.angle + ", " + this.props.x + ", " + this.props.y + ")";
     return this.props.transform = "" + rotate;
   };
 
@@ -150,7 +150,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./h":5}],2:[function(require,module,exports){
-var Bit, BitsMap, Circle, Line, Rect, Triangle, h;
+var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
 
 Bit = require('./bit');
 
@@ -160,7 +160,9 @@ Line = require('./line');
 
 Rect = require('./rect');
 
-Triangle = require('./triangle');
+Polygon = require('./polygon');
+
+Cross = require('./cross');
 
 h = require('./h');
 
@@ -174,7 +176,8 @@ BitsMap = (function() {
     circle: Circle,
     line: Line,
     rect: Rect,
-    triangle: Triangle
+    polygon: Polygon,
+    cross: Cross
   };
 
   BitsMap.prototype.getBit = function(name) {
@@ -211,7 +214,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":1,"./circle":3,"./h":5,"./line":6,"./rect":8,"./triangle":10}],3:[function(require,module,exports){
+},{"./bit":1,"./circle":3,"./cross":4,"./h":5,"./line":6,"./polygon":8,"./rect":9}],3:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -728,36 +731,21 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":1}],7:[function(require,module,exports){
-var Bit, Circle, Cross, Line, Rect, Transit, Triangle, div, rect, svg;
-
-Cross = require('./cross');
-
-Circle = require('./circle');
-
-Triangle = require('./triangle');
-
-Rect = require('./rect');
-
-Line = require('./line');
-
-Bit = require('./bit');
+var Transit, rect;
 
 Transit = require('./transit');
 
-svg = document.getElementById('js-svg');
-
-div = document.getElementById('js-div');
-
 rect = new Transit({
-  type: 'triangle',
+  type: 'polygon',
   stroke: {
     "deeppink": "orange"
   },
   x: 200,
   y: 100,
+  points: 6,
   strokeWidth: 10,
   duration: 2000,
-  deg: {
+  angle: {
     0: 360
   },
   isDrawLess: true,
@@ -771,7 +759,88 @@ rect = new Transit({
 
 rect.run();
 
-},{"./bit":1,"./circle":3,"./cross":4,"./line":6,"./rect":8,"./transit":9,"./triangle":10}],8:[function(require,module,exports){
+},{"./transit":10}],8:[function(require,module,exports){
+
+/* istanbul ignore next */
+var Bit, Polygon, h,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Bit = require('./bit');
+
+h = require('./h');
+
+Polygon = (function(_super) {
+  __extends(Polygon, _super);
+
+  function Polygon() {
+    return Polygon.__super__.constructor.apply(this, arguments);
+  }
+
+  Polygon.prototype.type = 'polygon';
+
+  Polygon.prototype.draw = function() {
+    !this.isDraw && this.drawShape();
+    return Polygon.__super__.draw.apply(this, arguments);
+  };
+
+  Polygon.prototype.drawShape = function() {
+    var d, i, point, step, _i, _j, _len, _ref, _ref1;
+    this.isDraw = true;
+    step = 360 / this.props.points;
+    this.radialPoints = [];
+    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      this.radialPoints.push(h.getRadialPoint({
+        radius: this.props.radius,
+        angle: i * step,
+        center: {
+          x: this.props.x,
+          y: this.props.y
+        }
+      }));
+    }
+    d = '';
+    _ref1 = this.radialPoints;
+    for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
+      point = _ref1[i];
+      d += "" + point.x + "," + point.y + " ";
+    }
+    return this.setAttr({
+      points: d
+    });
+  };
+
+  return Polygon;
+
+})(Bit);
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Polygon", [], function() {
+    return Polygon;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Polygon;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Polygon = Polygon;
+}
+
+},{"./bit":1,"./h":5}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -833,7 +902,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":1}],9:[function(require,module,exports){
+},{"./bit":1}],10:[function(require,module,exports){
 
 /* istanbul ignore next */
 var TWEEN, Transit, bitsMap, h,
@@ -873,7 +942,7 @@ Transit = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: 50,
-    deg: 0,
+    angle: 0,
     size: null,
     sizeGap: 0,
     onInit: null,
@@ -896,10 +965,6 @@ Transit = (function(_super) {
     this.lastSet = {};
     this.extendDefaults();
     return this.calcTransform();
-  };
-
-  Transit.prototype.calcTransform = function() {
-    return this.props.transform = "rotate(" + this.props.deg + "," + this.props.center + "," + this.props.center + ")";
   };
 
   Transit.prototype.render = function() {
@@ -937,21 +1002,67 @@ Transit = (function(_super) {
     return this;
   };
 
-  Transit.prototype.chain = function(options) {
-    options.type = this.o.type;
-    this.chainArr.push({
-      type: 'chain',
-      options: options
+  Transit.prototype.draw = function() {
+    this.bit.setProp({
+      x: this.props.center,
+      y: this.props.center,
+      stroke: this.props.stroke,
+      strokeWidth: this.props.strokeWidth,
+      strokeOpacity: this.props.strokeOpacity,
+      strokeDasharray: this.props.strokeDasharray,
+      strokeDashoffset: this.props.strokeDashoffset,
+      strokeLinecap: this.props.strokeLinecap,
+      fill: this.props.fill,
+      fillOpacity: this.props.fillOpacity,
+      radius: this.props.radius,
+      points: this.props.points,
+      transform: this.calcTransform()
     });
-    return this;
+    this.bit.draw();
+    return this.drawEl();
   };
 
-  Transit.prototype.then = function(options) {
-    this.chainArr.push({
-      type: 'then',
-      options: options
-    });
-    return this;
+  Transit.prototype.drawEl = function() {
+    var translate;
+    if (!this.el) {
+      return;
+    }
+    this.isPropChanged('x') && (this.el.style.left = this.props.x);
+    this.isPropChanged('y') && (this.el.style.top = this.props.y);
+    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
+    if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
+      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+      return this.h.setPrefixedStyle(this.el, 'transform', translate);
+    }
+  };
+
+  Transit.prototype.isPropChanged = function(name) {
+    var _base;
+    if ((_base = this.lastSet)[name] == null) {
+      _base[name] = {};
+    }
+    return this.lastSet[name].isChanged = this.lastSet[name].value !== this.props[name] ? (this.lastSet[name].value = this.props[name], true) : false;
+  };
+
+  Transit.prototype.calcTransform = function() {
+    var origin;
+    origin = "" + this.props.center + "," + this.props.center + ")";
+    return this.props.transform = "rotate(" + this.props.angle + "," + origin;
+  };
+
+  Transit.prototype.calcSize = function() {
+    var dRadius, dStroke, radius, stroke;
+    if ((this.o.size != null) || this.o.ctx) {
+      return;
+    }
+    dRadius = this.deltas['radius'];
+    dStroke = this.deltas['strokeWidth'];
+    radius = dRadius != null ? Math.max(Math.abs(dRadius.start), Math.abs(dRadius.end)) : this.props.radius;
+    stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
+    this.props.size = 2 * radius + 2 * stroke;
+    this.props.size *= this.bit.ratio;
+    this.props.size += 2 * this.props.sizeGap;
+    return this.props.center = this.props.size / 2;
   };
 
   Transit.prototype.createBit = function() {
@@ -1001,119 +1112,6 @@ Transit = (function(_super) {
       this.runChain();
       return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;
     }
-  };
-
-  Transit.prototype.runChain = function() {
-    var chain, _ref;
-    if (!this.chainArr.length) {
-      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
-    }
-    chain = this.chainArr.shift();
-    if (chain.type === 'chain') {
-      this.o = chain.options;
-    }
-    if (chain.type === 'then') {
-      this.mergeThenOptions(chain);
-    }
-    return this.init();
-  };
-
-  Transit.prototype.mergeThenOptions = function(chain) {
-    var currValue, end, key, keys, nextValue, options, opts, start, value;
-    opts = this.copyEndOptions();
-    if (!opts) {
-      return;
-    }
-    options = chain.options;
-    for (key in options) {
-      value = options[key];
-      if (typeof value === 'object') {
-        keys = Object.keys(value);
-        end = value[keys[0]];
-        start = opts[key];
-        this.h.warn("new end value expected instead of object, using end(" + end + ") value instead", value);
-        opts[key] = {};
-        opts[key][start] = end;
-      } else {
-        if (!this.h.tweenOptionMap[key]) {
-          currValue = opts[key];
-          nextValue = value;
-          opts[key] = {};
-          opts[key][currValue] = nextValue;
-        } else {
-          opts[key] = value;
-        }
-      }
-    }
-    return this.o = opts;
-  };
-
-  Transit.prototype.copyEndOptions = function() {
-    var key, opts, value, _ref;
-    opts = {};
-    _ref = this.o;
-    for (key in _ref) {
-      value = _ref[key];
-      opts[key] = typeof value === 'object' ? value[Object.keys(value)[0]] : value;
-    }
-    return opts;
-  };
-
-  Transit.prototype.draw = function() {
-    this.bit.setProp({
-      x: this.props.center,
-      y: this.props.center,
-      stroke: this.props.stroke,
-      strokeWidth: this.props.strokeWidth,
-      strokeOpacity: this.props.strokeOpacity,
-      strokeDasharray: this.props.strokeDasharray,
-      strokeDashoffset: this.props.strokeDashoffset,
-      strokeLinecap: this.props.strokeLinecap,
-      fill: this.props.fill,
-      fillOpacity: this.props.fillOpacity,
-      radius: this.props.radius,
-      points: this.props.points,
-      transform: this.calcTransform()
-    });
-    this.bit.draw();
-    return this.drawEl();
-  };
-
-  Transit.prototype.drawEl = function() {
-    var translate;
-    if (!this.el) {
-      return;
-    }
-    this.isPropChanged('x') && (this.el.style.left = this.props.x);
-    this.isPropChanged('y') && (this.el.style.top = this.props.y);
-    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
-    if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
-      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-      return this.h.setPrefixedStyle(this.el, 'transform', translate);
-    }
-  };
-
-  Transit.prototype.isPropChanged = function(name) {
-    var _base;
-    if ((_base = this.lastSet)[name] == null) {
-      _base[name] = {};
-    }
-    return this.lastSet[name].isChanged = this.lastSet[name].value !== this.props[name] ? (this.lastSet[name].value = this.props[name], true) : false;
-  };
-
-  Transit.prototype.calcSize = function() {
-    var dRadius, dStroke, radius, stroke;
-    if ((this.o.size != null) || this.o.ctx) {
-      return;
-    }
-    dRadius = this.deltas['radius'];
-    dStroke = this.deltas['strokeWidth'];
-    radius = dRadius != null ? Math.max(Math.abs(dRadius.start), Math.abs(dRadius.end)) : this.props.radius;
-    stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
-    this.props.size = 2 * radius + 2 * stroke;
-    this.props.size *= this.bit.ratio;
-    this.props.size += 2 * this.props.sizeGap;
-    return this.props.center = this.props.size / 2;
   };
 
   Transit.prototype.extendDefaults = function() {
@@ -1202,6 +1200,79 @@ Transit = (function(_super) {
     return _results;
   };
 
+  Transit.prototype.chain = function(options) {
+    options.type = this.o.type;
+    this.chainArr.push({
+      type: 'chain',
+      options: options
+    });
+    return this;
+  };
+
+  Transit.prototype.then = function(options) {
+    this.chainArr.push({
+      type: 'then',
+      options: options
+    });
+    return this;
+  };
+
+  Transit.prototype.runChain = function() {
+    var chain, _ref;
+    if (!this.chainArr.length) {
+      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
+    }
+    chain = this.chainArr.shift();
+    if (chain.type === 'chain') {
+      this.o = chain.options;
+    }
+    if (chain.type === 'then') {
+      this.mergeThenOptions(chain);
+    }
+    return this.init();
+  };
+
+  Transit.prototype.mergeThenOptions = function(chain) {
+    var currValue, end, key, keys, nextValue, options, opts, start, value;
+    opts = this.copyEndOptions();
+    if (!opts) {
+      return;
+    }
+    options = chain.options;
+    for (key in options) {
+      value = options[key];
+      if (typeof value === 'object') {
+        keys = Object.keys(value);
+        end = value[keys[0]];
+        start = opts[key];
+        this.h.warn("new end value expected instead of object, using end(" + end + ") value instead", value);
+        opts[key] = {};
+        opts[key][start] = end;
+      } else {
+        if (!this.h.tweenOptionMap[key]) {
+          currValue = opts[key];
+          nextValue = value;
+          opts[key] = {};
+          opts[key][currValue] = nextValue;
+        } else {
+          opts[key] = value;
+        }
+      }
+    }
+    return this.o = opts;
+  };
+
+  Transit.prototype.copyEndOptions = function() {
+    var key, opts, value, _ref;
+    opts = {};
+    _ref = this.o;
+    for (key in _ref) {
+      value = _ref[key];
+      opts[key] = typeof value === 'object' ? value[Object.keys(value)[0]] : value;
+    }
+    return opts;
+  };
+
   Transit.prototype.createTween = function() {
     var ease, easings, it;
     it = this;
@@ -1260,88 +1331,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":2,"./h":5,"./vendor/tween":11}],10:[function(require,module,exports){
-
-/* istanbul ignore next */
-var Bit, Triangle, h,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Bit = require('./bit');
-
-h = require('./h');
-
-Triangle = (function(_super) {
-  __extends(Triangle, _super);
-
-  function Triangle() {
-    return Triangle.__super__.constructor.apply(this, arguments);
-  }
-
-  Triangle.prototype.type = 'polygon';
-
-  Triangle.prototype.draw = function() {
-    !this.isDraw && this.drawShape();
-    return Triangle.__super__.draw.apply(this, arguments);
-  };
-
-  Triangle.prototype.drawShape = function() {
-    var d, i, point, step, _i, _j, _len, _ref, _ref1;
-    this.isDraw = true;
-    step = 360 / this.props.points;
-    this.radialPoints = [];
-    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      this.radialPoints.push(h.getRadialPoint({
-        radius: this.props.radius,
-        angle: (i * step) + this.props.deg,
-        center: {
-          x: this.props.x,
-          y: this.props.y
-        }
-      }));
-    }
-    d = '';
-    _ref1 = this.radialPoints;
-    for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
-      point = _ref1[i];
-      d += "" + point.x + "," + point.y + " ";
-    }
-    return this.setAttr({
-      points: d
-    });
-  };
-
-  return Triangle;
-
-})(Bit);
-
-
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Triangle", [], function() {
-    return Triangle;
-  });
-}
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Triangle;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Triangle = Triangle;
-}
-
-},{"./bit":1,"./h":5}],11:[function(require,module,exports){
+},{"./bitsMap":2,"./h":5,"./vendor/tween":11}],11:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	

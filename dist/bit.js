@@ -24,7 +24,7 @@ Bit = (function() {
     points: 3,
     x: 0,
     y: 0,
-    deg: 0
+    angle: 0
   };
 
   function Bit(o) {
@@ -50,7 +50,7 @@ Bit = (function() {
 
   Bit.prototype.calcTransform = function() {
     var rotate;
-    rotate = "rotate(" + this.props.deg + ", " + this.props.x + ", " + this.props.y + ")";
+    rotate = "rotate(" + this.props.angle + ", " + this.props.x + ", " + this.props.y + ")";
     return this.props.transform = "" + rotate;
   };
 

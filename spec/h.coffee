@@ -40,7 +40,6 @@ describe 'Helpers ->', ->
         spyOn window, 'getComputedStyle'
         h.computedStyle(document.body)
         expect(window.getComputedStyle).toHaveBeenCalled()
-
     describe 'getRemBase method', ->
       it 'should return remBase', ->
         expect(h.getRemBase()).toBeDefined()
@@ -86,7 +85,6 @@ describe 'Helpers ->', ->
           h.error 'smth'
           expect(console.error)
             .toHaveBeenCalledWith '%cmo·js%c', h.logBadgeCss, '::', 'smth'
-
     describe 'setPrefixedStyle method', ->
       it 'should set prefixed style', ->
         el = document.createElement 'div'

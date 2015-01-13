@@ -1,7 +1,7 @@
 (function() {
-  var Bit, Triangle, ns, svg;
+  var Bit, Polygon, ns, svg;
 
-  Triangle = mojs.Triangle;
+  Polygon = mojs.Polygon;
 
   Bit = mojs.Bit;
 
@@ -9,24 +9,24 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
 
-  describe('Triangle ->', function() {
+  describe('Polygon ->', function() {
     it('should extend Bit', function() {
-      var triangle;
-      triangle = new Triangle({
+      var polygon;
+      polygon = new Polygon({
         ctx: svg
       });
-      return expect(triangle instanceof Bit).toBe(true);
+      return expect(polygon instanceof Bit).toBe(true);
     });
     it('should have points prop', function() {
       var tri;
-      tri = new Triangle({
+      tri = new Polygon({
         ctx: svg
       });
       return expect(tri.props.points).toBe(3);
     });
     it('should have recieve points prop', function() {
       var tri;
-      tri = new Triangle({
+      tri = new Polygon({
         ctx: svg,
         points: 8
       });
@@ -34,7 +34,7 @@
     });
     it('should call drawShape method', function() {
       var tri;
-      tri = new Triangle({
+      tri = new Polygon({
         ctx: svg,
         points: 8
       });
@@ -45,7 +45,7 @@
     });
     it('should call drawShape only once', function() {
       var tri;
-      tri = new Triangle({
+      tri = new Polygon({
         ctx: svg,
         points: 8
       });
@@ -55,7 +55,7 @@
     });
     it('should calculate radialPoints', function() {
       var tri;
-      tri = new Triangle({
+      tri = new Polygon({
         ctx: svg
       });
       expect(tri.radialPoints).toBeDefined();
@@ -63,7 +63,7 @@
     });
     it('should calculate radialPoints', function() {
       var tri;
-      tri = new Triangle({
+      tri = new Polygon({
         ctx: svg
       });
       expect(tri.radialPoints).toBeDefined();
@@ -73,7 +73,7 @@
       it('should add properties to el', function() {
         var d, d2, tri;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
-        tri = new Triangle({
+        tri = new Polygon({
           ctx: svg,
           radius: 20
         });
@@ -82,14 +82,14 @@
         return expect(d).toBe(d2);
       });
       return it('should call super method', function() {
-        var triangle;
+        var polygon;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
-        triangle = new Triangle({
+        polygon = new Polygon({
           ctx: svg
         });
-        spyOn(Triangle.__super__, 'draw');
-        triangle.draw();
-        return expect(Triangle.__super__.draw).toHaveBeenCalled();
+        spyOn(Polygon.__super__, 'draw');
+        polygon.draw();
+        return expect(Polygon.__super__.draw).toHaveBeenCalled();
       });
     });
   });

@@ -37,7 +37,7 @@ Transit = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: 50,
-    deg: 0,
+    angle: 0,
     size: null,
     sizeGap: 0,
     onInit: null,
@@ -60,10 +60,6 @@ Transit = (function(_super) {
     this.lastSet = {};
     this.extendDefaults();
     return this.calcTransform();
-  };
-
-  Transit.prototype.calcTransform = function() {
-    return this.props.transform = "rotate(" + this.props.deg + "," + this.props.center + "," + this.props.center + ")";
   };
 
   Transit.prototype.render = function() {
@@ -101,21 +97,67 @@ Transit = (function(_super) {
     return this;
   };
 
-  Transit.prototype.chain = function(options) {
-    options.type = this.o.type;
-    this.chainArr.push({
-      type: 'chain',
-      options: options
+  Transit.prototype.draw = function() {
+    this.bit.setProp({
+      x: this.props.center,
+      y: this.props.center,
+      stroke: this.props.stroke,
+      strokeWidth: this.props.strokeWidth,
+      strokeOpacity: this.props.strokeOpacity,
+      strokeDasharray: this.props.strokeDasharray,
+      strokeDashoffset: this.props.strokeDashoffset,
+      strokeLinecap: this.props.strokeLinecap,
+      fill: this.props.fill,
+      fillOpacity: this.props.fillOpacity,
+      radius: this.props.radius,
+      points: this.props.points,
+      transform: this.calcTransform()
     });
-    return this;
+    this.bit.draw();
+    return this.drawEl();
   };
 
-  Transit.prototype.then = function(options) {
-    this.chainArr.push({
-      type: 'then',
-      options: options
-    });
-    return this;
+  Transit.prototype.drawEl = function() {
+    var translate;
+    if (!this.el) {
+      return;
+    }
+    this.isPropChanged('x') && (this.el.style.left = this.props.x);
+    this.isPropChanged('y') && (this.el.style.top = this.props.y);
+    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
+    if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
+      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+      return this.h.setPrefixedStyle(this.el, 'transform', translate);
+    }
+  };
+
+  Transit.prototype.isPropChanged = function(name) {
+    var _base;
+    if ((_base = this.lastSet)[name] == null) {
+      _base[name] = {};
+    }
+    return this.lastSet[name].isChanged = this.lastSet[name].value !== this.props[name] ? (this.lastSet[name].value = this.props[name], true) : false;
+  };
+
+  Transit.prototype.calcTransform = function() {
+    var origin;
+    origin = "" + this.props.center + "," + this.props.center + ")";
+    return this.props.transform = "rotate(" + this.props.angle + "," + origin;
+  };
+
+  Transit.prototype.calcSize = function() {
+    var dRadius, dStroke, radius, stroke;
+    if ((this.o.size != null) || this.o.ctx) {
+      return;
+    }
+    dRadius = this.deltas['radius'];
+    dStroke = this.deltas['strokeWidth'];
+    radius = dRadius != null ? Math.max(Math.abs(dRadius.start), Math.abs(dRadius.end)) : this.props.radius;
+    stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
+    this.props.size = 2 * radius + 2 * stroke;
+    this.props.size *= this.bit.ratio;
+    this.props.size += 2 * this.props.sizeGap;
+    return this.props.center = this.props.size / 2;
   };
 
   Transit.prototype.createBit = function() {
@@ -165,119 +207,6 @@ Transit = (function(_super) {
       this.runChain();
       return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;
     }
-  };
-
-  Transit.prototype.runChain = function() {
-    var chain, _ref;
-    if (!this.chainArr.length) {
-      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
-    }
-    chain = this.chainArr.shift();
-    if (chain.type === 'chain') {
-      this.o = chain.options;
-    }
-    if (chain.type === 'then') {
-      this.mergeThenOptions(chain);
-    }
-    return this.init();
-  };
-
-  Transit.prototype.mergeThenOptions = function(chain) {
-    var currValue, end, key, keys, nextValue, options, opts, start, value;
-    opts = this.copyEndOptions();
-    if (!opts) {
-      return;
-    }
-    options = chain.options;
-    for (key in options) {
-      value = options[key];
-      if (typeof value === 'object') {
-        keys = Object.keys(value);
-        end = value[keys[0]];
-        start = opts[key];
-        this.h.warn("new end value expected instead of object, using end(" + end + ") value instead", value);
-        opts[key] = {};
-        opts[key][start] = end;
-      } else {
-        if (!this.h.tweenOptionMap[key]) {
-          currValue = opts[key];
-          nextValue = value;
-          opts[key] = {};
-          opts[key][currValue] = nextValue;
-        } else {
-          opts[key] = value;
-        }
-      }
-    }
-    return this.o = opts;
-  };
-
-  Transit.prototype.copyEndOptions = function() {
-    var key, opts, value, _ref;
-    opts = {};
-    _ref = this.o;
-    for (key in _ref) {
-      value = _ref[key];
-      opts[key] = typeof value === 'object' ? value[Object.keys(value)[0]] : value;
-    }
-    return opts;
-  };
-
-  Transit.prototype.draw = function() {
-    this.bit.setProp({
-      x: this.props.center,
-      y: this.props.center,
-      stroke: this.props.stroke,
-      strokeWidth: this.props.strokeWidth,
-      strokeOpacity: this.props.strokeOpacity,
-      strokeDasharray: this.props.strokeDasharray,
-      strokeDashoffset: this.props.strokeDashoffset,
-      strokeLinecap: this.props.strokeLinecap,
-      fill: this.props.fill,
-      fillOpacity: this.props.fillOpacity,
-      radius: this.props.radius,
-      points: this.props.points,
-      transform: this.calcTransform()
-    });
-    this.bit.draw();
-    return this.drawEl();
-  };
-
-  Transit.prototype.drawEl = function() {
-    var translate;
-    if (!this.el) {
-      return;
-    }
-    this.isPropChanged('x') && (this.el.style.left = this.props.x);
-    this.isPropChanged('y') && (this.el.style.top = this.props.y);
-    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
-    if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
-      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-      return this.h.setPrefixedStyle(this.el, 'transform', translate);
-    }
-  };
-
-  Transit.prototype.isPropChanged = function(name) {
-    var _base;
-    if ((_base = this.lastSet)[name] == null) {
-      _base[name] = {};
-    }
-    return this.lastSet[name].isChanged = this.lastSet[name].value !== this.props[name] ? (this.lastSet[name].value = this.props[name], true) : false;
-  };
-
-  Transit.prototype.calcSize = function() {
-    var dRadius, dStroke, radius, stroke;
-    if ((this.o.size != null) || this.o.ctx) {
-      return;
-    }
-    dRadius = this.deltas['radius'];
-    dStroke = this.deltas['strokeWidth'];
-    radius = dRadius != null ? Math.max(Math.abs(dRadius.start), Math.abs(dRadius.end)) : this.props.radius;
-    stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
-    this.props.size = 2 * radius + 2 * stroke;
-    this.props.size *= this.bit.ratio;
-    this.props.size += 2 * this.props.sizeGap;
-    return this.props.center = this.props.size / 2;
   };
 
   Transit.prototype.extendDefaults = function() {
@@ -364,6 +293,79 @@ Transit = (function(_super) {
       }
     }
     return _results;
+  };
+
+  Transit.prototype.chain = function(options) {
+    options.type = this.o.type;
+    this.chainArr.push({
+      type: 'chain',
+      options: options
+    });
+    return this;
+  };
+
+  Transit.prototype.then = function(options) {
+    this.chainArr.push({
+      type: 'then',
+      options: options
+    });
+    return this;
+  };
+
+  Transit.prototype.runChain = function() {
+    var chain, _ref;
+    if (!this.chainArr.length) {
+      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
+    }
+    chain = this.chainArr.shift();
+    if (chain.type === 'chain') {
+      this.o = chain.options;
+    }
+    if (chain.type === 'then') {
+      this.mergeThenOptions(chain);
+    }
+    return this.init();
+  };
+
+  Transit.prototype.mergeThenOptions = function(chain) {
+    var currValue, end, key, keys, nextValue, options, opts, start, value;
+    opts = this.copyEndOptions();
+    if (!opts) {
+      return;
+    }
+    options = chain.options;
+    for (key in options) {
+      value = options[key];
+      if (typeof value === 'object') {
+        keys = Object.keys(value);
+        end = value[keys[0]];
+        start = opts[key];
+        this.h.warn("new end value expected instead of object, using end(" + end + ") value instead", value);
+        opts[key] = {};
+        opts[key][start] = end;
+      } else {
+        if (!this.h.tweenOptionMap[key]) {
+          currValue = opts[key];
+          nextValue = value;
+          opts[key] = {};
+          opts[key][currValue] = nextValue;
+        } else {
+          opts[key] = value;
+        }
+      }
+    }
+    return this.o = opts;
+  };
+
+  Transit.prototype.copyEndOptions = function() {
+    var key, opts, value, _ref;
+    opts = {};
+    _ref = this.o;
+    for (key in _ref) {
+      value = _ref[key];
+      opts[key] = typeof value === 'object' ? value[Object.keys(value)[0]] : value;
+    }
+    return opts;
   };
 
   Transit.prototype.createTween = function() {

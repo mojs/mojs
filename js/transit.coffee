@@ -27,7 +27,7 @@ class Transit extends bitsMap.map.bit
     opacity:            1
     # size props
     radius:             50
-    deg:                0
+    angle:              0
     size:               null
     sizeGap:            0
     # callbacks
@@ -46,10 +46,6 @@ class Transit extends bitsMap.map.bit
   vars:->
     @h = h; @chainArr ?= []; @lastSet = {}
     @extendDefaults(); @calcTransform()
-
-  calcTransform:->
-    @props.transform = "rotate(#{@props.deg},#{@props.center},#{@props.center})"
-
   render:->
     if !@isRendered
       if !@o.ctx?
@@ -82,85 +78,6 @@ class Transit extends bitsMap.map.bit
     @createTween()
     @
 
-  chain:(options)->
-    options.type = @o.type
-    @chainArr.push { type: 'chain', options: options }; return @
-  then:(options)->  @chainArr.push { type: 'then',  options: options }; @
-
-  createBit:->
-    bitClass = bitsMap.getBit(@o.type or @type)
-    @bit = new bitClass ctx: @ctx, isDrawLess: true
-
-  setProgress:(progress)->
-    # console.log progress
-    @props.onUpdate?.call(@, progress)
-
-    @progress = if progress < 0 or !progress then 0
-    else if progress > 1 then 1 else progress
-    for key, value of @deltas
-      switch value.type
-        when 'array' # strokeDasharray/strokeDashoffset
-          @props[key] = ''
-          for num, i in value.delta
-            @props[key] += "#{value.start[i] + num*@progress} "
-        when 'number'
-          @props[key] = value.start + value.delta*@progress
-        when 'unit'
-          units = value.end.unit
-          @props[key] = "#{value.start.value+value.delta*@progress}#{units}"
-        when 'color'
-          r = parseInt (value.start.r + value.delta.r*@progress), 10
-          g = parseInt (value.start.g + value.delta.g*@progress), 10
-          b = parseInt (value.start.b + value.delta.b*@progress), 10
-          a = parseInt (value.start.a + value.delta.a*@progress), 10
-          @props[key] = "rgba(#{r},#{g},#{b},#{a})"
-    @draw()
-    
-    if progress is 1 then @runChain(); @props.onComplete?.call @
-
-  runChain:->
-    if !@chainArr.length then return @props.onCompleteChain?.call @
-
-    chain = @chainArr.shift()
-    if chain.type is 'chain'
-      @o = chain.options
-    if chain.type is 'then'
-      @mergeThenOptions chain
-
-    @init()
-
-  mergeThenOptions:(chain)->
-    opts = @copyEndOptions()
-    return if !opts
-    options = chain.options
-    for key, value of options
-      if typeof value is 'object'
-        keys = Object.keys value
-        # get end value
-        end = value[keys[0]]
-        # write the old start value
-        start = opts[key]
-        @h.warn "new end value expected instead of object,
-         using end(#{end}) value instead", value
-        opts[key] = {}
-        opts[key][start] = end
-      else
-        if !@h.tweenOptionMap[key]
-          currValue = opts[key]
-          nextValue = value
-          opts[key] = {}
-          opts[key][currValue] = nextValue
-        else opts[key] = value
-    @o = opts
-
-  copyEndOptions:->
-    opts = {}
-    for key, value of @o
-      opts[key] = if typeof value is 'object'
-        value[Object.keys(value)[0]]
-      else value
-    opts
-
   draw:->
     @bit.setProp
       x:                  @props.center
@@ -188,13 +105,14 @@ class Transit extends bitsMap.map.bit
     if @isPropChanged('shiftX') or @isPropChanged('shiftY')
       translate = "translate(#{@props.shiftX}, #{@props.shiftY})"
       @h.setPrefixedStyle @el, 'transform', translate
-
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     @lastSet[name].isChanged = if @lastSet[name].value isnt @props[name]
       @lastSet[name].value = @props[name]; true
     else false
-
+  calcTransform:->
+    origin = "#{@props.center},#{@props.center})"
+    @props.transform = "rotate(#{@props.angle},#{origin}"
   calcSize:->
     return if @o.size? or @o.ctx
 
@@ -209,6 +127,37 @@ class Transit extends bitsMap.map.bit
     @props.size   *= @bit.ratio
     @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2
+
+  createBit:->
+    bitClass = bitsMap.getBit(@o.type or @type)
+    @bit = new bitClass ctx: @ctx, isDrawLess: true
+    
+  setProgress:(progress)->
+    # console.log progress
+    @props.onUpdate?.call(@, progress)
+
+    @progress = if progress < 0 or !progress then 0
+    else if progress > 1 then 1 else progress
+    for key, value of @deltas
+      switch value.type
+        when 'array' # strokeDasharray/strokeDashoffset
+          @props[key] = ''
+          for num, i in value.delta
+            @props[key] += "#{value.start[i] + num*@progress} "
+        when 'number'
+          @props[key] = value.start + value.delta*@progress
+        when 'unit'
+          units = value.end.unit
+          @props[key] = "#{value.start.value+value.delta*@progress}#{units}"
+        when 'color'
+          r = parseInt (value.start.r + value.delta.r*@progress), 10
+          g = parseInt (value.start.g + value.delta.g*@progress), 10
+          b = parseInt (value.start.b + value.delta.b*@progress), 10
+          a = parseInt (value.start.a + value.delta.a*@progress), 10
+          @props[key] = "rgba(#{r},#{g},#{b},#{a})"
+    @draw()
+    
+    if progress is 1 then @runChain(); @props.onComplete?.call @
 
   extendDefaults:->
     @props  ?= {}
@@ -284,6 +233,53 @@ class Transit extends bitsMap.map.bit
             @props[key] = start
         else @props[key] = start
 
+  # CHAINS
+  chain:(options)->
+    options.type = @o.type
+    @chainArr.push { type: 'chain', options: options }; return @
+  then:(options)->  @chainArr.push { type: 'then',  options: options }; @
+  runChain:->
+    if !@chainArr.length then return @props.onCompleteChain?.call @
+
+    chain = @chainArr.shift()
+    if chain.type is 'chain'
+      @o = chain.options
+    if chain.type is 'then'
+      @mergeThenOptions chain
+
+    @init()
+  mergeThenOptions:(chain)->
+    opts = @copyEndOptions()
+    return if !opts
+    options = chain.options
+    for key, value of options
+      if typeof value is 'object'
+        keys = Object.keys value
+        # get end value
+        end = value[keys[0]]
+        # write the old start value
+        start = opts[key]
+        @h.warn "new end value expected instead of object,
+         using end(#{end}) value instead", value
+        opts[key] = {}
+        opts[key][start] = end
+      else
+        if !@h.tweenOptionMap[key]
+          currValue = opts[key]
+          nextValue = value
+          opts[key] = {}
+          opts[key][currValue] = nextValue
+        else opts[key] = value
+    @o = opts
+  copyEndOptions:->
+    opts = {}
+    for key, value of @o
+      opts[key] = if typeof value is 'object'
+        value[Object.keys(value)[0]]
+      else value
+    opts
+
+  # TWEEN
   createTween:->
     it = @
     # onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
@@ -301,9 +297,7 @@ class Transit extends bitsMap.map.bit
       .yoyo @props.yoyo
       # .onComplete => @tween.isComplete = true
     !@o.isRunLess and @startTween()
-
   run:-> @startTween()
-
   startTween:->
     @props.onStart?.call @
     @h.startAnimationLoop()

@@ -3,7 +3,8 @@ Bit       = require './bit'
 Circle    = require './circle'
 Line      = require './line'
 Rect      = require './rect'
-Triangle  = require './triangle'
+Polygon   = require './polygon'
+Cross     = require './cross'
 h         = require './h'
 
 class BitsMap
@@ -13,7 +14,8 @@ class BitsMap
     circle:   Circle
     line:     Line
     rect:     Rect
-    triangle: Triangle
+    polygon:  Polygon
+    cross:    Cross
   getBit:(name)-> @map[name] or @h.error "no \"#{name}\" shape available yet,
       please choose from this list:", @map
 

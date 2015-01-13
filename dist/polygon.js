@@ -1,6 +1,6 @@
 
 /* istanbul ignore next */
-var Bit, Triangle, h,
+var Bit, Polygon, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -8,21 +8,21 @@ Bit = require('./bit');
 
 h = require('./h');
 
-Triangle = (function(_super) {
-  __extends(Triangle, _super);
+Polygon = (function(_super) {
+  __extends(Polygon, _super);
 
-  function Triangle() {
-    return Triangle.__super__.constructor.apply(this, arguments);
+  function Polygon() {
+    return Polygon.__super__.constructor.apply(this, arguments);
   }
 
-  Triangle.prototype.type = 'polygon';
+  Polygon.prototype.type = 'polygon';
 
-  Triangle.prototype.draw = function() {
+  Polygon.prototype.draw = function() {
     !this.isDraw && this.drawShape();
-    return Triangle.__super__.draw.apply(this, arguments);
+    return Polygon.__super__.draw.apply(this, arguments);
   };
 
-  Triangle.prototype.drawShape = function() {
+  Polygon.prototype.drawShape = function() {
     var d, i, point, step, _i, _j, _len, _ref, _ref1;
     this.isDraw = true;
     step = 360 / this.props.points;
@@ -30,7 +30,7 @@ Triangle = (function(_super) {
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       this.radialPoints.push(h.getRadialPoint({
         radius: this.props.radius,
-        angle: (i * step) + this.props.deg,
+        angle: i * step,
         center: {
           x: this.props.x,
           y: this.props.y
@@ -48,7 +48,7 @@ Triangle = (function(_super) {
     });
   };
 
-  return Triangle;
+  return Polygon;
 
 })(Bit);
 
@@ -56,13 +56,13 @@ Triangle = (function(_super) {
 /* istanbul ignore next */
 
 if ((typeof define === "function") && define.amd) {
-  define("Triangle", [], function() {
-    return Triangle;
+  define("Polygon", [], function() {
+    return Polygon;
   });
 }
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Triangle;
+  module.exports = Polygon;
 }
 
 
@@ -75,5 +75,5 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Triangle = Triangle;
+  window.mojs.Polygon = Polygon;
 }

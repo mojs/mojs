@@ -33,7 +33,7 @@ describe 'Byte ->', ->
     expect(byte.props.radius).toBe(45)
   it 'should calculate transform object', ->
     byte = new Byte
-      deg: 90
+      angle:        90
       radius:       25
       strokeWidth:  4
     expect(byte.props.transform).toBe('rotate(90,29,29)')

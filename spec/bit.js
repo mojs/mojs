@@ -79,7 +79,7 @@
           fill: '#0ff',
           strokeDasharray: 100,
           strokeDashoffset: 50,
-          deg: 45
+          angle: 45
         });
         stroke = bit.el.getAttribute('stroke');
         strokeWidth = bit.el.getAttribute('stroke-width');
@@ -188,7 +188,7 @@
       return it('should calculate transform object', function() {
         bit = new Bit({
           ctx: svg,
-          deg: 90
+          angle: 90
         });
         expect(bit.props.transform).toBe('rotate(90, 0, 0)');
         return expect(bit.calcTransform).toBeDefined();
