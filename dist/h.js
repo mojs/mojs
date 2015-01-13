@@ -253,6 +253,10 @@ Helpers = (function() {
     return colorObj;
   };
 
+  Helpers.prototype.computedStyle = function(el) {
+    return getComputedStyle(el);
+  };
+
   Helpers.prototype.splitEasing = function(string) {
     var firstPart, secondPart, split;
     if (typeof string === 'function') {

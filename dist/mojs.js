@@ -587,6 +587,10 @@ Helpers = (function() {
     return colorObj;
   };
 
+  Helpers.prototype.computedStyle = function(el) {
+    return getComputedStyle(el);
+  };
+
   Helpers.prototype.splitEasing = function(string) {
     var firstPart, secondPart, split;
     if (typeof string === 'function') {
@@ -743,17 +747,23 @@ div = document.getElementById('js-div');
 
 rect = new Transit({
   type: 'line',
-  x: {
+  shiftX: {
     200: 100
+  },
+  x: 0,
+  stroke: {
+    "deeppink": "orange"
   },
   y: 100,
   radius: 75,
   strokeDasharray: 2 * 75,
+  strokeWidth: 10,
   duration: 1000,
   deg: {
     0: 60
   },
   isDrawLess: true,
+  delay: 1000,
   strokeLinecap: {
     'round': 'butt'
   },
@@ -884,6 +894,7 @@ Transit = (function(_super) {
     if (this.chainArr == null) {
       this.chainArr = [];
     }
+    this.lastSet = {};
     this.extendDefaults();
     return this.calcTransform();
   };
@@ -1050,7 +1061,6 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.draw = function() {
-    var translate;
     this.bit.setProp({
       x: this.props.center,
       y: this.props.center,
@@ -1066,13 +1076,29 @@ Transit = (function(_super) {
       transform: this.calcTransform()
     });
     this.bit.draw();
-    if (this.el) {
-      this.el.style.left = this.props.x;
-      this.el.style.top = this.props.y;
-      this.el.style.opacity = this.props.opacity;
+    return this.drawEl();
+  };
+
+  Transit.prototype.drawEl = function() {
+    var translate;
+    if (!this.el) {
+      return;
+    }
+    this.isPropChanged('x') && (this.el.style.left = this.props.x);
+    this.isPropChanged('y') && (this.el.style.top = this.props.y);
+    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
+    if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
       translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
       return this.h.setPrefixedStyle(this.el, 'transform', translate);
     }
+  };
+
+  Transit.prototype.isPropChanged = function(name) {
+    var _base;
+    if ((_base = this.lastSet)[name] == null) {
+      _base[name] = {};
+    }
+    return this.lastSet[name].isChanged = this.lastSet[name].value !== this.props[name] ? (this.lastSet[name].value = this.props[name], true) : false;
   };
 
   Transit.prototype.calcSize = function() {
@@ -1116,7 +1142,7 @@ Transit = (function(_super) {
       start = Object.keys(optionsValue)[0];
       if (isNaN(parseFloat(start))) {
         if (key === 'strokeLinecap') {
-          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value insttead", optionsValue);
+          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value instead", optionsValue);
           this.props[key] = start;
           continue;
         }

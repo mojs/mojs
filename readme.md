@@ -1,13 +1,11 @@
-## mojs [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.png?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master)
-----
+## mo·js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.png?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master)
 
 #### todo
 - make refactor
-  - create animation map for props that should be animated and draw only them
-  - don't set default values on draw
   - fix triangle
-
 - add radial transition(burst)
+  - add array deltas support
+  - add sparks
 - write/fork tween
 - add movement arc
 - add more shapes(bits)

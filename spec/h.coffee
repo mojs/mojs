@@ -30,6 +30,16 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 9
   describe 'methods ->', ->
+    describe 'computedStyle method', ->
+      it 'should return computed styles',->
+        document.body.style['font-size'] = '10px'
+        expect(h.computedStyle(document.body)).toBeDefined()
+        expect(h.computedStyle(document.body).fontSize).toBe '10px'
+      it 'should call getComputedStyle under the hood',->
+        spyOn window, 'getComputedStyle'
+        h.computedStyle(document.body)
+        expect(window.getComputedStyle).toHaveBeenCalled()
+
     describe 'getRemBase method', ->
       it 'should return remBase', ->
         expect(h.getRemBase()).toBeDefined()

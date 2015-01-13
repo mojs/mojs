@@ -43,7 +43,7 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
 
   vars:->
-    @h = h; @chainArr ?= []
+    @h = h; @chainArr ?= []; @lastSet = {}
     @extendDefaults(); @calcTransform()
 
   calcTransform:->
@@ -175,14 +175,22 @@ class Transit extends bitsMap.map.bit
       radius:             @props.radius
       transform:          @calcTransform()
     @bit.draw()
+    @drawEl()
 
-    if @el
-      @el.style.left    = @props.x
-      @el.style.top     = @props.y
-      @el.style.opacity = @props.opacity
-
+  drawEl:->
+    return if !@el
+    @isPropChanged('x') and (@el.style.left = @props.x)
+    @isPropChanged('y') and (@el.style.top  = @props.y)
+    @isPropChanged('opacity') and (@el.style.opacity = @props.opacity)
+    if @isPropChanged('shiftX') or @isPropChanged('shiftY')
       translate = "translate(#{@props.shiftX}, #{@props.shiftY})"
       @h.setPrefixedStyle @el, 'transform', translate
+
+  isPropChanged:(name)->
+    @lastSet[name] ?= {}
+    @lastSet[name].isChanged = if @lastSet[name].value isnt @props[name]
+      @lastSet[name].value = @props[name]; true
+    else false
 
   calcSize:->
     return if @o.size? or @o.ctx
@@ -220,7 +228,7 @@ class Transit extends bitsMap.map.bit
       if isNaN parseFloat(start)
         if key is 'strokeLinecap'
           @h.warn "Sorry, stroke-linecap property is not animatable
-             yet, using the start(#{start}) value insttead", optionsValue
+             yet, using the start(#{start}) value instead", optionsValue
           @props[key] = start; continue
         end           = optionsValue[start]
         startColorObj = h.makeColorObj start

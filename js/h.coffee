@@ -180,6 +180,8 @@ class Helpers
           a: if alpha? and !isNaN(alpha) then alpha else 1
     colorObj
 
+  computedStyle:(el)-> getComputedStyle el
+
   splitEasing:(string)->
     return string if typeof string is 'function'
     if typeof string is 'string' and string.length

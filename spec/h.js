@@ -42,6 +42,18 @@
       });
     });
     return describe('methods ->', function() {
+      describe('computedStyle method', function() {
+        it('should return computed styles', function() {
+          document.body.style['font-size'] = '10px';
+          expect(h.computedStyle(document.body)).toBeDefined();
+          return expect(h.computedStyle(document.body).fontSize).toBe('10px');
+        });
+        return it('should call getComputedStyle under the hood', function() {
+          spyOn(window, 'getComputedStyle');
+          h.computedStyle(document.body);
+          return expect(window.getComputedStyle).toHaveBeenCalled();
+        });
+      });
       describe('getRemBase method', function() {
         it('should return remBase', function() {
           expect(h.getRemBase()).toBeDefined();

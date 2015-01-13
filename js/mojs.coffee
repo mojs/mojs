@@ -10,14 +10,18 @@ div       = document.getElementById 'js-div'
 
 rect = new Transit
   type:             'line'
-  x:                {200 : 100}
+  shiftX:           {200 : 100}
+  x:                0
+  stroke:           {"deeppink":"orange"}
+  # x:                200
   y:                100
   radius:           75
   strokeDasharray:  2*75
+  strokeWidth:      10
   duration:         1000
   deg:              {0: 60}
   isDrawLess:       true
-  # delay:            1000
+  delay:            1000
   strokeLinecap:    {'round': 'butt'}
   isRunLess:        true
   onComplete:->

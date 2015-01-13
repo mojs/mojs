@@ -570,6 +570,15 @@
         byte.draw();
         return expect(byte.bit.draw).toHaveBeenCalled();
       });
+      it('should call drawEl method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'drawEl');
+        byte.draw();
+        return expect(byte.drawEl).toHaveBeenCalled();
+      });
       return it('should call calcTransform method', function() {
         var byte;
         byte = new Byte({
@@ -578,6 +587,67 @@
         spyOn(byte, 'calcTransform');
         byte.draw();
         return expect(byte.calcTransform).toHaveBeenCalled();
+      });
+    });
+    describe('drawEl method ->', function() {
+      it('should set el positions and transforms', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          y: 10
+        });
+        byte.draw();
+        expect(byte.el.style.left).toBe('0px');
+        expect(byte.el.style.top).toBe('10px');
+        expect(byte.el.style.opacity).toBe('1');
+        return expect(byte.el.style.transform).toBe('translate(0px, 0px)');
+      });
+      it('should set new values', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          y: 10
+        });
+        byte.draw();
+        byte.props.x = '1px';
+        byte.draw();
+        expect(byte.el.style.left).toBe('1px');
+        expect(byte.lastSet.x.value).toBe('1px');
+        return expect(byte.lastSet.x.isChanged).toBe(true);
+      });
+      return it('should not set old values', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          y: 10
+        });
+        byte.draw();
+        byte.draw();
+        expect(byte.el.style.left).toBe('0px');
+        expect(byte.lastSet.x.value).toBe('0px');
+        return expect(byte.lastSet.x.isChanged).toBe(false);
+      });
+    });
+    describe('isPropChanged method ->', function() {
+      it('should return bool showing if prop was changed after the last set', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          y: 10
+        });
+        byte.props.x = '20px';
+        expect(byte.isPropChanged('x')).toBe(true);
+        byte.props.x = '20px';
+        return expect(byte.isPropChanged('x')).toBe(false);
+      });
+      return it('should add prop object to lastSet if undefined', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          y: 10
+        });
+        byte.isPropChanged('x');
+        return expect(byte.lastSet.x).toBeDefined();
       });
     });
     describe('delta calculations ->', function() {
