@@ -23,7 +23,7 @@ rect = new Transit
   deg:              {0: 360}
   isDrawLess:       true
   delay:            1000
-  # strokeLinecap:    {'round': 'butt'}
+  strokeLinecap:    {'round': 'butt'}
   isRunLess:        true
   onComplete:->
     # console.log 'complete'

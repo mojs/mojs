@@ -7,7 +7,7 @@ Helpers = (function() {
 
   Helpers.prototype.TWEEN = TWEEN;
 
-  Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 0 2px; border: 1px solid #FF512F;';
+  Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 5px 2px; border: 1px solid #FF512F;';
 
   Helpers.prototype.shortColors = {
     aqua: 'rgb(0,255,255)',
@@ -77,8 +77,9 @@ Helpers = (function() {
 
   Helpers.prototype.prepareForLog = function(args) {
     args = Array.prototype.slice.apply(args);
+    args.unshift('::');
     args.unshift(this.logBadgeCss);
-    args.unshift('%c mo·js ');
+    args.unshift('%cmo·js%c');
     return args;
   };
 

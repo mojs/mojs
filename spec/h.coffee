@@ -52,9 +52,10 @@ describe 'Helpers ->', ->
       describe 'prepareForLog method', ->
         it 'should prepare for arguments for logging', ->
           prepared = h.prepareForLog [ 'message' ]
-          expect(prepared[0]).toBe '%c mo·js '
+          expect(prepared[0]).toBe '%cmo·js%c'
           expect(prepared[1]).toBe h.logBadgeCss
-          expect(prepared[2]).toBe 'message'
+          expect(prepared[2]).toBe '::'
+          expect(prepared[3]).toBe 'message'
       describe 'log method', ->
         it 'should log to console',->
           spyOn console, 'log'
@@ -62,13 +63,9 @@ describe 'Helpers ->', ->
           expect(console.log).toHaveBeenCalled()
         it 'should prepend mojs badge to message',->
           spyOn console, 'log'
-          h.log 'something'
+          h.log 'smth'
           expect(console.log)
-            .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
-        # it 'should call @prepareForLog method',->
-        #   spyOn h, 'prepareForLog'
-        #   h.log 'something'
-        #   expect(h.prepareForLog).toHaveBeenCalled()
+            .toHaveBeenCalledWith '%cmo·js%c', h.logBadgeCss, '::', 'smth'
       describe 'warn method', ->
         it 'should warn to console',->
           spyOn console, 'warn'
@@ -76,13 +73,9 @@ describe 'Helpers ->', ->
           expect(console.warn).toHaveBeenCalled()
         it 'should prepend mojs badge to message',->
           spyOn console, 'warn'
-          h.warn 'something'
+          h.warn 'smth'
           expect(console.warn)
-            .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
-        # it 'should call @prepareForLog method',->
-        #   spyOn h, 'prepareForLog'
-        #   h.log 'something'
-        #   expect(h.prepareForLog).toHaveBeenCalled()
+            .toHaveBeenCalledWith '%cmo·js%c', h.logBadgeCss, '::', 'smth'
       describe 'error method', ->
         it 'should error to console',->
           spyOn console, 'error'
@@ -90,13 +83,9 @@ describe 'Helpers ->', ->
           expect(console.error).toHaveBeenCalled()
         it 'should prepend mojs badge to message',->
           spyOn console, 'error'
-          h.error 'something'
+          h.error 'smth'
           expect(console.error)
-            .toHaveBeenCalledWith '%c mo·js ', h.logBadgeCss, 'something'
-        # it 'should call @prepareForLog method',->
-        #   spyOn h, 'prepareForLog'
-        #   h.log 'something'
-        #   expect(h.prepareForLog).toHaveBeenCalled()
+            .toHaveBeenCalledWith '%cmo·js%c', h.logBadgeCss, '::', 'smth'
 
     describe 'setPrefixedStyle method', ->
       it 'should set prefixed style', ->

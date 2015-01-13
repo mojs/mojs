@@ -1,8 +1,12 @@
 ## mo·js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.png?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master)
 
+![mo·js](https://github.com/legomushroom/mojs/raw/master/mockups/logo-banner.png)
+
 #### todo
 - make refactor
   - fix ff logging
+  - triangle to polygon
+  - deg to angle
 - add radial transition(burst)
   - add array deltas support
   - add sparks

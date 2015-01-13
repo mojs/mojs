@@ -70,9 +70,10 @@
           return it('should prepare for arguments for logging', function() {
             var prepared;
             prepared = h.prepareForLog(['message']);
-            expect(prepared[0]).toBe('%c mo·js ');
+            expect(prepared[0]).toBe('%cmo·js%c');
             expect(prepared[1]).toBe(h.logBadgeCss);
-            return expect(prepared[2]).toBe('message');
+            expect(prepared[2]).toBe('::');
+            return expect(prepared[3]).toBe('message');
           });
         });
         describe('log method', function() {
@@ -83,8 +84,8 @@
           });
           return it('should prepend mojs badge to message', function() {
             spyOn(console, 'log');
-            h.log('something');
-            return expect(console.log).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
+            h.log('smth');
+            return expect(console.log).toHaveBeenCalledWith('%cmo·js%c', h.logBadgeCss, '::', 'smth');
           });
         });
         describe('warn method', function() {
@@ -95,8 +96,8 @@
           });
           return it('should prepend mojs badge to message', function() {
             spyOn(console, 'warn');
-            h.warn('something');
-            return expect(console.warn).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
+            h.warn('smth');
+            return expect(console.warn).toHaveBeenCalledWith('%cmo·js%c', h.logBadgeCss, '::', 'smth');
           });
         });
         return describe('error method', function() {
@@ -107,8 +108,8 @@
           });
           return it('should prepend mojs badge to message', function() {
             spyOn(console, 'error');
-            h.error('something');
-            return expect(console.error).toHaveBeenCalledWith('%c mo·js ', h.logBadgeCss, 'something');
+            h.error('smth');
+            return expect(console.error).toHaveBeenCalledWith('%cmo·js%c', h.logBadgeCss, '::', 'smth');
           });
         });
       });
