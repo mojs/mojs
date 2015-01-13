@@ -2,7 +2,7 @@
 
 #### todo
 - make refactor
-  - fix triangle
+  - fix ff logging
 - add radial transition(burst)
   - add array deltas support
   - add sparks

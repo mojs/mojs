@@ -9,20 +9,21 @@ svg       = document.getElementById 'js-svg'
 div       = document.getElementById 'js-div'
 
 rect = new Transit
-  type:             'line'
-  shiftX:           {200 : 100}
-  x:                0
+  type:             'triangle'
+  # shiftX:           {200 : 100}
+  # x:                0
   stroke:           {"deeppink":"orange"}
-  # x:                200
+  x:                200
   y:                100
-  radius:           75
-  strokeDasharray:  2*75
+  # radius:           75
+  # points:           3
+  # strokeDasharray:  2*75
   strokeWidth:      10
-  duration:         1000
-  deg:              {0: 60}
+  duration:         2000
+  deg:              {0: 360}
   isDrawLess:       true
   delay:            1000
-  strokeLinecap:    {'round': 'butt'}
+  # strokeLinecap:    {'round': 'butt'}
   isRunLess:        true
   onComplete:->
     # console.log 'complete'

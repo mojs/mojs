@@ -5,23 +5,22 @@ Bit = require './bit'
 h   = require './h'
 
 class Triangle extends Bit
-  type: 'path'
+  type:     'polygon'
   draw:->
-    cnt = 3; step = 360/(cnt); points = []
-    for i in [0...cnt]
-      points.push h.getRadialPoint
-        radius: @props.radius
-        angle:  (i*step)
-        center: x: @props.x, y: @props.y
-    d = ''; len = points.length - 1
-    for point, i in points
-      nextI = if i < len then i+1 else 0
-      space = if i is 0 then '' else ' '
-      d += "#{space}M#{points[i].x}, #{points[i].y}
-        L#{points[nextI].x}, #{points[nextI].y}"
-    @setAttr d:  d
+    !@isDraw and @drawShape()
     super
-
+  drawShape:->
+    @isDraw = true
+    step = 360/(@props.points); @radialPoints = []
+    for i in [0...@props.points]
+      @radialPoints.push h.getRadialPoint
+        radius: @props.radius
+        angle:  (i*step) + @props.deg
+        center: x: @props.x, y: @props.y
+    d = ''
+    for point, i in @radialPoints
+      d += "#{point.x},#{point.y} "
+    @setAttr points:  d
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

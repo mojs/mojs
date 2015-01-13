@@ -18,6 +18,7 @@ class Transit extends bitsMap.map.bit
     fill:               'transparent'
     fillOpacity:        'transparent'
     strokeLinecap:      ''
+    points:             3
     # position props/el props
     x:                  0
     y:                  0
@@ -173,7 +174,9 @@ class Transit extends bitsMap.map.bit
       fill:               @props.fill
       fillOpacity:        @props.fillOpacity
       radius:             @props.radius
+      points:             @props.points
       transform:          @calcTransform()
+
     @bit.draw()
     @drawEl()
 
@@ -202,7 +205,7 @@ class Transit extends bitsMap.map.bit
     stroke = if dStroke?
       Math.max Math.abs(dStroke.start), Math.abs(dStroke.end)
     else @props.strokeWidth
-    @props.size   = 2*radius + stroke
+    @props.size   = 2*radius + 2*stroke
     @props.size   *= @bit.ratio
     @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2

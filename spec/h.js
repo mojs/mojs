@@ -37,8 +37,9 @@
         expect(h.tweenOptionMap.onComplete).toBe(1);
         expect(h.tweenOptionMap.onCompleteChain).toBe(1);
         expect(h.tweenOptionMap.onUpdate).toBe(1);
+        expect(h.tweenOptionMap.points).toBe(1);
         mapLen = Object.keys(h.tweenOptionMap).length;
-        return expect(mapLen).toBe(9);
+        return expect(mapLen).toBe(10);
       });
     });
     return describe('methods ->', function() {

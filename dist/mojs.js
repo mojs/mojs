@@ -22,6 +22,7 @@ Bit = (function() {
     strokeDasharray: '',
     strokeDashoffset: '',
     strokeLinecap: '',
+    points: 3,
     x: 0,
     y: 0,
     deg: 0
@@ -372,7 +373,8 @@ Helpers = (function() {
     onStart: 1,
     onComplete: 1,
     onCompleteChain: 1,
-    onUpdate: 1
+    onUpdate: 1,
+    points: 1
   };
 
   Helpers.prototype.posPropsMap = {
@@ -746,27 +748,19 @@ svg = document.getElementById('js-svg');
 div = document.getElementById('js-div');
 
 rect = new Transit({
-  type: 'line',
-  shiftX: {
-    200: 100
-  },
-  x: 0,
+  type: 'triangle',
   stroke: {
     "deeppink": "orange"
   },
+  x: 200,
   y: 100,
-  radius: 75,
-  strokeDasharray: 2 * 75,
   strokeWidth: 10,
-  duration: 1000,
+  duration: 2000,
   deg: {
-    0: 60
+    0: 360
   },
   isDrawLess: true,
   delay: 1000,
-  strokeLinecap: {
-    'round': 'butt'
-  },
   isRunLess: true,
   onComplete: function() {}
 });
@@ -868,6 +862,7 @@ Transit = (function(_super) {
     fill: 'transparent',
     fillOpacity: 'transparent',
     strokeLinecap: '',
+    points: 3,
     x: 0,
     y: 0,
     shiftX: 0,
@@ -1073,6 +1068,7 @@ Transit = (function(_super) {
       fill: this.props.fill,
       fillOpacity: this.props.fillOpacity,
       radius: this.props.radius,
+      points: this.props.points,
       transform: this.calcTransform()
     });
     this.bit.draw();
@@ -1110,7 +1106,7 @@ Transit = (function(_super) {
     dStroke = this.deltas['strokeWidth'];
     radius = dRadius != null ? Math.max(Math.abs(dRadius.start), Math.abs(dRadius.end)) : this.props.radius;
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
-    this.props.size = 2 * radius + stroke;
+    this.props.size = 2 * radius + 2 * stroke;
     this.props.size *= this.bit.ratio;
     this.props.size += 2 * this.props.sizeGap;
     return this.props.center = this.props.size / 2;
@@ -1278,17 +1274,22 @@ Triangle = (function(_super) {
     return Triangle.__super__.constructor.apply(this, arguments);
   }
 
-  Triangle.prototype.type = 'path';
+  Triangle.prototype.type = 'polygon';
 
   Triangle.prototype.draw = function() {
-    var cnt, d, i, len, nextI, point, points, space, step, _i, _j, _len;
-    cnt = 3;
-    step = 360 / cnt;
-    points = [];
-    for (i = _i = 0; 0 <= cnt ? _i < cnt : _i > cnt; i = 0 <= cnt ? ++_i : --_i) {
-      points.push(h.getRadialPoint({
+    !this.isDraw && this.drawShape();
+    return Triangle.__super__.draw.apply(this, arguments);
+  };
+
+  Triangle.prototype.drawShape = function() {
+    var d, i, point, step, _i, _j, _len, _ref, _ref1;
+    this.isDraw = true;
+    step = 360 / this.props.points;
+    this.radialPoints = [];
+    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      this.radialPoints.push(h.getRadialPoint({
         radius: this.props.radius,
-        angle: i * step,
+        angle: (i * step) + this.props.deg,
         center: {
           x: this.props.x,
           y: this.props.y
@@ -1296,17 +1297,14 @@ Triangle = (function(_super) {
       }));
     }
     d = '';
-    len = points.length - 1;
-    for (i = _j = 0, _len = points.length; _j < _len; i = ++_j) {
-      point = points[i];
-      nextI = i < len ? i + 1 : 0;
-      space = i === 0 ? '' : ' ';
-      d += "" + space + "M" + points[i].x + ", " + points[i].y + " L" + points[nextI].x + ", " + points[nextI].y;
+    _ref1 = this.radialPoints;
+    for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
+      point = _ref1[i];
+      d += "" + point.x + "," + point.y + " ";
     }
-    this.setAttr({
-      d: d
+    return this.setAttr({
+      points: d
     });
-    return Triangle.__super__.draw.apply(this, arguments);
   };
 
   return Triangle;

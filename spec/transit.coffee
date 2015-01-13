@@ -36,20 +36,20 @@ describe 'Byte ->', ->
       deg: 90
       radius:       25
       strokeWidth:  4
-    expect(byte.props.transform).toBe('rotate(90,27,27)')
+    expect(byte.props.transform).toBe('rotate(90,29,29)')
     expect(byte.calcTransform).toBeDefined()
   describe 'size calculations ->', ->
     it 'should calculate size el size depending on largest value', ->
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 6:  4    }
-      expect(byte.props.size).toBe(206)
+      expect(byte.props.size).toBe(212)
     it 'should have sizeGap option', ->
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 6:  4    }
         sizeGap: 40
-      expect(byte.props.size).toBe(286)
+      expect(byte.props.size).toBe(292)
 
     it 'should calculate size el size depending on shape\'s ratio', ->
       byte = new Byte
@@ -58,7 +58,7 @@ describe 'Byte ->', ->
         type:         'rect'
       svg = document.createElementNS ns, 'svg'
       rect  = new Rect ctx: svg
-      expect(byte.props.size).toBe(206*rect.ratio)
+      expect(byte.props.size).toBe(212*rect.ratio)
     it 'should not calculate size el size if size was passed', ->
       byte = new Byte
         radius:       100
@@ -76,8 +76,8 @@ describe 'Byte ->', ->
       byte = new Byte
         radius:       { 25: -100 }
         strokeWidth:  { 4:  6    }
-      expect(byte.props.size)   .toBe(206)
-      expect(byte.props.center) .toBe(103)
+      expect(byte.props.size)   .toBe(212)
+      expect(byte.props.center) .toBe(106)
   describe 'el creation ->', ->
     it 'should create el', ->
       byte = new Byte radius: 25
@@ -104,10 +104,10 @@ describe 'Byte ->', ->
         x:            10
         y:            20
       expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '3.25rem'
-      expect(byte.el.style.height)                .toBe '3.25rem'
-      expect(byte.el.style['margin-left'])        .toBe '-1.625rem'
-      expect(byte.el.style['margin-top'])         .toBe '-1.625rem'
+      expect(byte.el.style.width)                 .toBe '3.375rem'
+      expect(byte.el.style.height)                .toBe '3.375rem'
+      expect(byte.el.style['margin-left'])        .toBe '-1.6875rem'
+      expect(byte.el.style['margin-top'])         .toBe '-1.6875rem'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
 
@@ -123,10 +123,10 @@ describe 'Byte ->', ->
       byte.render()
 
       expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '6.5rem'
-      expect(byte.el.style.height)                .toBe '6.5rem'
-      expect(byte.el.style['margin-left'])        .toBe '-3.25rem'
-      expect(byte.el.style['margin-top'])         .toBe '-3.25rem'
+      expect(byte.el.style.width)                 .toBe '6.75rem'
+      expect(byte.el.style.height)                .toBe '6.75rem'
+      expect(byte.el.style['margin-left'])        .toBe '-3.375rem'
+      expect(byte.el.style['margin-top'])         .toBe '-3.375rem'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
 

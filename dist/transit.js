@@ -30,6 +30,7 @@ Transit = (function(_super) {
     fill: 'transparent',
     fillOpacity: 'transparent',
     strokeLinecap: '',
+    points: 3,
     x: 0,
     y: 0,
     shiftX: 0,
@@ -235,6 +236,7 @@ Transit = (function(_super) {
       fill: this.props.fill,
       fillOpacity: this.props.fillOpacity,
       radius: this.props.radius,
+      points: this.props.points,
       transform: this.calcTransform()
     });
     this.bit.draw();
@@ -272,7 +274,7 @@ Transit = (function(_super) {
     dStroke = this.deltas['strokeWidth'];
     radius = dRadius != null ? Math.max(Math.abs(dRadius.start), Math.abs(dRadius.end)) : this.props.radius;
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
-    this.props.size = 2 * radius + stroke;
+    this.props.size = 2 * radius + 2 * stroke;
     this.props.size *= this.bit.ratio;
     this.props.size += 2 * this.props.sizeGap;
     return this.props.center = this.props.size / 2;

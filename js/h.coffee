@@ -23,6 +23,7 @@ class Helpers
     white:  'rgb(255,255,255)'
     yellow: 'rgb(255,255,0)'
     orange: 'rgb(255,128,0)'
+  # none-tweenable props
   tweenOptionMap:
     duration:         1
     delay:            1
@@ -33,6 +34,7 @@ class Helpers
     onComplete:       1
     onCompleteChain:  1
     onUpdate:         1
+    points:           1
   posPropsMap:
     x:                1
     y:                1

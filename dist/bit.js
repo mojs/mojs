@@ -21,6 +21,7 @@ Bit = (function() {
     strokeDasharray: '',
     strokeDashoffset: '',
     strokeLinecap: '',
+    points: 3,
     x: 0,
     y: 0,
     deg: 0

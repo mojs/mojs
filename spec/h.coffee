@@ -27,8 +27,9 @@ describe 'Helpers ->', ->
       expect(h.tweenOptionMap.onComplete)       .toBe 1
       expect(h.tweenOptionMap.onCompleteChain)  .toBe 1
       expect(h.tweenOptionMap.onUpdate)         .toBe 1
+      expect(h.tweenOptionMap.points)           .toBe 1
       mapLen = Object.keys(h.tweenOptionMap).length
-      expect(mapLen)                            .toBe 9
+      expect(mapLen)                            .toBe 10
   describe 'methods ->', ->
     describe 'computedStyle method', ->
       it 'should return computed styles',->

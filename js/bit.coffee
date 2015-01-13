@@ -1,4 +1,4 @@
-h = require './h'
+h       = require './h'
 
 class Bit
   ns:                   'http://www.w3.org/2000/svg'
@@ -16,6 +16,7 @@ class Bit
     strokeDasharray:    ''
     strokeDashoffset:   ''
     strokeLinecap:      ''
+    points:             3
     x:                  0
     y:                  0
     deg:                0

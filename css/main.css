@@ -1220,3 +1220,6 @@ a,
   fill: #717171;
   cursor: pointer;
 }
+svg {
+  outline: 1px solid #ff69b4;
+}
