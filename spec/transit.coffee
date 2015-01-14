@@ -121,6 +121,7 @@ describe 'Byte ->', ->
       byte.isRendered = false
       byte.h.remBase = 8
       byte.render()
+      byte.h.remBase = 16
 
       expect(byte.el.style.position)              .toBe 'absolute'
       expect(byte.el.style.width)                 .toBe '6.75rem'
@@ -697,12 +698,37 @@ describe 'Byte ->', ->
         dfr()
       , 80
   
-  describe 'run ->', ->
+  describe 'run method->', ->
     it 'should run tween', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
       spyOn byte, 'startTween'
       byte.run()
       expect(byte.startTween).toHaveBeenCalled()
+    it 'should accept new options', ->
+      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
+      byte.run strokeWidth: 25
+      expect(byte.props.strokeWidth).toBe 25
+      expect(byte.deltas.strokeWidth).not.toBeDefined()
+    it 'should not modify old options', ->
+      byte = new Byte(strokeWidth: {10: 5}, radius: 33, isRunLess: true)
+      byte.run strokeWidth: 25
+      expect(byte.props.radius).toBe 33
+    it 'should calculate new el size', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
+      byte.run radius: 50
+      expect(byte.el.style.width).toBe '6.5rem'
+    it 'should call setProgress(0) if isDrawLess is not set', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
+      spyOn byte, 'setProgress'
+      byte.run radius: 50
+      expect(byte.setProgress).toHaveBeenCalledWith 0
+
+    it 'should call not setProgress(0) if isDrawLess is set', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
+      spyOn byte, 'setProgress'
+      byte.run radius: 50, isDrawLess: true
+      expect(byte.setProgress).not.toHaveBeenCalledWith 0
+
     it 'should restart progress value tween', (dfr)->
       isOne = 0
       i = 0

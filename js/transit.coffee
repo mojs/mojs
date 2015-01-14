@@ -44,7 +44,7 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
 
   vars:->
-    @h = h; @chainArr ?= []; @lastSet = {}
+    @h ?= h; @chainArr ?= []; @lastSet ?= {}
     @extendDefaults(); @calcTransform()
   render:->
     if !@isRendered
@@ -54,20 +54,8 @@ class Transit extends bitsMap.map.bit
         @ctx.style.width     = '100%'
         @ctx.style.height    = '100%'
         @createBit(); @calcSize()
-
-        @el         = document.createElement 'div'
-        size        = "#{@props.size/@h.remBase}rem"
-        marginSize  = "#{-@props.size/(2*@h.remBase)}rem"
-        @el.style.position    = 'absolute'
-        @el.style.top         = @props.y.string
-        @el.style.left        = @props.x.string
-        @el.style.opacity     = @props.opacity
-        @el.style.width       = size
-        @el.style.height      = size
-        @el.style['margin-left'] = marginSize
-        @el.style['margin-top']  = marginSize
-        @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
-
+        @el = document.createElement 'div'
+        @setElStyles()
         @el.appendChild @ctx
         (@o.parent or document.body).appendChild @el
       else @ctx = @o.ctx; @createBit()
@@ -77,6 +65,19 @@ class Transit extends bitsMap.map.bit
     !@o.isDrawLess and @setProgress 0
     @createTween()
     @
+
+  setElStyles:->
+    size        = "#{@props.size/@h.remBase}rem"
+    marginSize  = "#{-@props.size/(2*@h.remBase)}rem"
+    @el.style.position    = 'absolute'
+    @el.style.top         = @props.y.string
+    @el.style.left        = @props.x.string
+    @el.style.opacity     = @props.opacity
+    @el.style.width       = size
+    @el.style.height      = size
+    @el.style['margin-left'] = marginSize
+    @el.style['margin-top']  = marginSize
+    @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
   draw:->
     @bit.setProp
@@ -161,7 +162,8 @@ class Transit extends bitsMap.map.bit
 
   extendDefaults:->
     @props  ?= {}
-    @deltas ?= {}
+    @deltas = {}
+    # console.time 'extend defaults'
     for key, defaultsValue of @defaults
       optionsValue = @o[key]
       # if non-object value - just save it to @props
@@ -232,6 +234,7 @@ class Transit extends bitsMap.map.bit
               type:   'number'
             @props[key] = start
         else @props[key] = start
+    # console.timeEnd 'extend defaults'
 
   # CHAINS
   chain:(options)->
@@ -297,7 +300,12 @@ class Transit extends bitsMap.map.bit
       .yoyo @props.yoyo
       # .onComplete => @tween.isComplete = true
     !@o.isRunLess and @startTween()
-  run:-> @startTween()
+  run:(o)->
+    for key, value of o
+      @o[key] = value
+    @vars(); @calcSize(); @setElStyles()
+    !@o.isDrawLess and @setProgress 0
+    @startTween()
   startTween:->
     @props.onStart?.call @
     @h.startAnimationLoop()

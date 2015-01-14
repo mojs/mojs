@@ -214,6 +214,7 @@
         byte.isRendered = false;
         byte.h.remBase = 8;
         byte.render();
+        byte.h.remBase = 16;
         expect(byte.el.style.position).toBe('absolute');
         expect(byte.el.style.width).toBe('6.75rem');
         expect(byte.el.style.height).toBe('6.75rem');
@@ -1321,7 +1322,7 @@
         }, 80);
       });
     });
-    return describe('run ->', function() {
+    return describe('run method->', function() {
       it('should run tween', function() {
         var byte;
         byte = new Byte({
@@ -1333,6 +1334,76 @@
         spyOn(byte, 'startTween');
         byte.run();
         return expect(byte.startTween).toHaveBeenCalled();
+      });
+      it('should accept new options', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        byte.run({
+          strokeWidth: 25
+        });
+        expect(byte.props.strokeWidth).toBe(25);
+        return expect(byte.deltas.strokeWidth).not.toBeDefined();
+      });
+      it('should not modify old options', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          radius: 33,
+          isRunLess: true
+        });
+        byte.run({
+          strokeWidth: 25
+        });
+        return expect(byte.props.radius).toBe(33);
+      });
+      it('should calculate new el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        byte.run({
+          radius: 50
+        });
+        return expect(byte.el.style.width).toBe('6.5rem');
+      });
+      it('should call setProgress(0) if isDrawLess is not set', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        spyOn(byte, 'setProgress');
+        byte.run({
+          radius: 50
+        });
+        return expect(byte.setProgress).toHaveBeenCalledWith(0);
+      });
+      it('should call not setProgress(0) if isDrawLess is set', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        spyOn(byte, 'setProgress');
+        byte.run({
+          radius: 50,
+          isDrawLess: true
+        });
+        return expect(byte.setProgress).not.toHaveBeenCalledWith(0);
       });
       return it('should restart progress value tween', function(dfr) {
         var byte, i, isOne;

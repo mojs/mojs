@@ -22,14 +22,19 @@ rect = new Transit
   duration:         2000
   # angle:            {0: 360}
   isDrawLess:       true
-  delay:            1000
+  # delay:            1000
   strokeLinecap:    {'round': 'butt'}
   isRunLess:        true
   onComplete:->
     # console.log 'complete'
     # @run()
 
-rect.run()
+# rect.run({ radius: { 50: 50} })
+
+
+document.body.addEventListener 'click', (e)->
+  rect.run
+    x: e.x, y: e.y, isDrawLess: false
 
 # setInterval ->
 #   rect.run()

@@ -749,7 +749,6 @@ rect = new Transit({
   strokeWidth: 10,
   duration: 2000,
   isDrawLess: true,
-  delay: 1000,
   strokeLinecap: {
     'round': 'butt'
   },
@@ -757,7 +756,13 @@ rect = new Transit({
   onComplete: function() {}
 });
 
-rect.run();
+document.body.addEventListener('click', function(e) {
+  return rect.run({
+    x: e.x,
+    y: e.y,
+    isDrawLess: false
+  });
+});
 
 },{"./transit":10}],8:[function(require,module,exports){
 
@@ -957,17 +962,20 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.vars = function() {
-    this.h = h;
+    if (this.h == null) {
+      this.h = h;
+    }
     if (this.chainArr == null) {
       this.chainArr = [];
     }
-    this.lastSet = {};
+    if (this.lastSet == null) {
+      this.lastSet = {};
+    }
     this.extendDefaults();
     return this.calcTransform();
   };
 
   Transit.prototype.render = function() {
-    var marginSize, size;
     if (!this.isRendered) {
       if (this.o.ctx == null) {
         this.ctx = document.createElementNS(this.ns, 'svg');
@@ -977,17 +985,7 @@ Transit = (function(_super) {
         this.createBit();
         this.calcSize();
         this.el = document.createElement('div');
-        size = "" + (this.props.size / this.h.remBase) + "rem";
-        marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
-        this.el.style.position = 'absolute';
-        this.el.style.top = this.props.y.string;
-        this.el.style.left = this.props.x.string;
-        this.el.style.opacity = this.props.opacity;
-        this.el.style.width = size;
-        this.el.style.height = size;
-        this.el.style['margin-left'] = marginSize;
-        this.el.style['margin-top'] = marginSize;
-        this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+        this.setElStyles();
         this.el.appendChild(this.ctx);
         (this.o.parent || document.body).appendChild(this.el);
       } else {
@@ -999,6 +997,21 @@ Transit = (function(_super) {
     !this.o.isDrawLess && this.setProgress(0);
     this.createTween();
     return this;
+  };
+
+  Transit.prototype.setElStyles = function() {
+    var marginSize, size;
+    size = "" + (this.props.size / this.h.remBase) + "rem";
+    marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
+    this.el.style.position = 'absolute';
+    this.el.style.top = this.props.y.string;
+    this.el.style.left = this.props.x.string;
+    this.el.style.opacity = this.props.opacity;
+    this.el.style.width = size;
+    this.el.style.height = size;
+    this.el.style['margin-left'] = marginSize;
+    this.el.style['margin-top'] = marginSize;
+    return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
   };
 
   Transit.prototype.draw = function() {
@@ -1118,9 +1131,7 @@ Transit = (function(_super) {
     if (this.props == null) {
       this.props = {};
     }
-    if (this.deltas == null) {
-      this.deltas = {};
-    }
+    this.deltas = {};
     _ref = this.defaults;
     _results = [];
     for (key in _ref) {
@@ -1287,7 +1298,16 @@ Transit = (function(_super) {
     return !this.o.isRunLess && this.startTween();
   };
 
-  Transit.prototype.run = function() {
+  Transit.prototype.run = function(o) {
+    var key, value;
+    for (key in o) {
+      value = o[key];
+      this.o[key] = value;
+    }
+    this.vars();
+    this.calcSize();
+    this.setElStyles();
+    !this.o.isDrawLess && this.setProgress(0);
     return this.startTween();
   };
 
