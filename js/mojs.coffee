@@ -7,34 +7,37 @@
 # svg       = document.getElementById 'js-svg'
 # div       = document.getElementById 'js-div'
 Transit   = require './transit'
+Burst     = require './burst'
 
-rect = new Transit
-  type:             'polygon'
-  # shiftX:           {200 : 100}
-  # x:                0
-  stroke:           {"deeppink":"orange"}
-  x:                200
-  y:                100
-  radius:           { 75: 5 }
-  points:           6
-  # strokeDasharray:  2*75
-  strokeWidth:      10
-  duration:         2000
-  # angle:            {0: 360}
-  isDrawLess:       true
-  # delay:            1000
-  strokeLinecap:    {'round': 'butt'}
-  isRunLess:        true
-  onComplete:->
-    # console.log 'complete'
-    # @run()
+burst = new Burst
+console.log burst.defaults
 
-# rect.run({ radius: { 50: 50} })
+#   type:             'polygon'
+#   # shiftX:           {200 : 100}
+#   # x:                0
+#   stroke:           {"deeppink":"orange"}
+#   x:                200
+#   y:                100
+#   radius:           { 75: 5 }
+#   points:           6
+#   # strokeDasharray:  2*75
+#   strokeWidth:      10
+#   duration:         2000
+#   # angle:            {0: 360}
+#   isDrawLess:       true
+#   # delay:            1000
+#   strokeLinecap:    {'round': 'butt'}
+#   isRunLess:        true
+#   onComplete:->
+#     # console.log 'complete'
+#     # @run()
+
+# # rect.run({ radius: { 50: 50} })
 
 
-document.body.addEventListener 'click', (e)->
-  rect.run
-    x: e.x, y: e.y, isDrawLess: false
+# document.body.addEventListener 'click', (e)->
+#   rect.run
+#     x: e.x, y: e.y, isDrawLess: false
 
 # setInterval ->
 #   rect.run()

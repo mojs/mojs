@@ -4,7 +4,6 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- add transit run with options
 - add radial transition(burst)
   - add array deltas support
   - add sparks

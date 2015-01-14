@@ -42,7 +42,6 @@ class Transit extends bitsMap.map.bit
     repeat:             1
     yoyo:               false
     easing:             'Linear.None'
-
   vars:->
     @h ?= h; @chainArr ?= []; @lastSet ?= {}
     @extendDefaults(); @calcTransform()

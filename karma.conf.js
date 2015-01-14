@@ -20,11 +20,24 @@ module.exports = function(config) {
       'spec/**/*.js'
     ],
 
-
     // list of files to exclude
     exclude: [
       'dist/mojs.js',
       'dist/mojs.min.js'
+      // 'dist/bit.js',
+      // 'spec/bit.js',
+      // 'dist/line.js',
+      // 'spec/line.js',
+      // 'dist/cross.js',
+      // 'spec/cross.js',
+      // 'dist/polygon.js',
+      // 'spec/polygon.js',
+      // 'dist/rect.js',
+      // 'spec/rect.js',
+      // 'dist/transit.js',
+      // 'spec/transit.js',
+      // 'dist/h.js',
+      // 'spec/h.js'
     ],
 
     // preprocess matching files before serving them to the browser

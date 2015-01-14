@@ -149,7 +149,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"./h":5}],2:[function(require,module,exports){
+},{"./h":6}],2:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
 
 Bit = require('./bit');
@@ -214,7 +214,97 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":1,"./circle":3,"./cross":4,"./h":5,"./line":6,"./polygon":8,"./rect":9}],3:[function(require,module,exports){
+},{"./bit":1,"./circle":4,"./cross":5,"./h":6,"./line":7,"./polygon":9,"./rect":10}],3:[function(require,module,exports){
+
+/* istanbul ignore next */
+var Burst, Transit, bitsMap, burst,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+bitsMap = require('./bitsMap');
+
+Transit = require('./transit');
+
+Burst = (function(_super) {
+  __extends(Burst, _super);
+
+  function Burst() {
+    return Burst.__super__.constructor.apply(this, arguments);
+  }
+
+  Burst.prototype.defaults = {
+    burstPoints: 5,
+    burstRadius: {
+      50: 75
+    },
+    burstDegree: 360,
+    strokeWidth: 2,
+    strokeOpacity: 1,
+    strokeDasharray: '',
+    strokeDashoffset: '',
+    stroke: '#ff00ff',
+    fill: 'transparent',
+    fillOpacity: 'transparent',
+    strokeLinecap: '',
+    points: 3,
+    x: 0,
+    y: 0,
+    shiftX: 0,
+    shiftY: 0,
+    opacity: 1,
+    radius: 50,
+    angle: 0,
+    size: null,
+    sizeGap: 0,
+    onInit: null,
+    onStart: null,
+    onComplete: null,
+    onCompleteChain: null,
+    onUpdate: null,
+    duration: 500,
+    delay: 0,
+    repeat: 1,
+    yoyo: false,
+    easing: 'Linear.None'
+  };
+
+  Burst.prototype.render = function() {
+    return Burst.__super__.render.apply(this, arguments);
+  };
+
+  return Burst;
+
+})(Transit);
+
+burst = new Burst;
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Burst", [], function() {
+    return Burst;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Burst;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Burst = Burst;
+}
+
+},{"./bitsMap":2,"./transit":11}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -272,7 +362,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
 }
 
-},{"./bit":1}],4:[function(require,module,exports){
+},{"./bit":1}],5:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
@@ -335,7 +425,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Cross = Cross;
 }
 
-},{"./bit":1}],5:[function(require,module,exports){
+},{"./bit":1}],6:[function(require,module,exports){
 var Helpers, TWEEN;
 
 TWEEN = require('./vendor/tween');
@@ -674,7 +764,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = new Helpers;
 }
 
-},{"./vendor/tween":11}],6:[function(require,module,exports){
+},{"./vendor/tween":12}],7:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -730,41 +820,18 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":1}],7:[function(require,module,exports){
-var Transit, rect;
+},{"./bit":1}],8:[function(require,module,exports){
+var Burst, Transit, burst;
 
 Transit = require('./transit');
 
-rect = new Transit({
-  type: 'polygon',
-  stroke: {
-    "deeppink": "orange"
-  },
-  x: 200,
-  y: 100,
-  radius: {
-    75: 5
-  },
-  points: 6,
-  strokeWidth: 10,
-  duration: 2000,
-  isDrawLess: true,
-  strokeLinecap: {
-    'round': 'butt'
-  },
-  isRunLess: true,
-  onComplete: function() {}
-});
+Burst = require('./burst');
 
-document.body.addEventListener('click', function(e) {
-  return rect.run({
-    x: e.x,
-    y: e.y,
-    isDrawLess: false
-  });
-});
+burst = new Burst;
 
-},{"./transit":10}],8:[function(require,module,exports){
+console.log(burst.defaults);
+
+},{"./burst":3,"./transit":11}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -844,7 +911,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"./bit":1,"./h":5}],9:[function(require,module,exports){
+},{"./bit":1,"./h":6}],10:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -906,7 +973,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":1}],10:[function(require,module,exports){
+},{"./bit":1}],11:[function(require,module,exports){
 
 /* istanbul ignore next */
 var TWEEN, Transit, bitsMap, h,
@@ -1350,7 +1417,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":2,"./h":5,"./vendor/tween":11}],11:[function(require,module,exports){
+},{"./bitsMap":2,"./h":6,"./vendor/tween":12}],12:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
@@ -2153,4 +2220,4 @@ if (typeof window !== "undefined" && window !== null) {
 })()
 
 
-},{}]},{},[7])
+},{}]},{},[8])
