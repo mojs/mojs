@@ -43,16 +43,6 @@
       tri.draw();
       return expect(tri.drawShape).toHaveBeenCalled();
     });
-    it('should call drawShape only once', function() {
-      var tri;
-      tri = new Polygon({
-        ctx: svg,
-        points: 8
-      });
-      spyOn(tri, 'drawShape');
-      tri.draw();
-      return expect(tri.drawShape).not.toHaveBeenCalled();
-    });
     it('should calculate radialPoints', function() {
       var tri;
       tri = new Polygon({

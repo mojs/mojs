@@ -18,13 +18,12 @@ Polygon = (function(_super) {
   Polygon.prototype.type = 'polygon';
 
   Polygon.prototype.draw = function() {
-    !this.isDraw && this.drawShape();
+    this.drawShape();
     return Polygon.__super__.draw.apply(this, arguments);
   };
 
   Polygon.prototype.drawShape = function() {
     var d, i, point, step, _i, _j, _len, _ref, _ref1;
-    this.isDraw = true;
     step = 360 / this.props.points;
     this.radialPoints = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {

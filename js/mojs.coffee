@@ -15,12 +15,12 @@ rect = new Transit
   stroke:           {"deeppink":"orange"}
   x:                200
   y:                100
-  # radius:           75
+  radius:           { 75: 5 }
   points:           6
   # strokeDasharray:  2*75
   strokeWidth:      10
   duration:         2000
-  angle:            {0: 360}
+  # angle:            {0: 360}
   isDrawLess:       true
   delay:            1000
   strokeLinecap:    {'round': 'butt'}

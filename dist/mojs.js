@@ -742,12 +742,12 @@ rect = new Transit({
   },
   x: 200,
   y: 100,
+  radius: {
+    75: 5
+  },
   points: 6,
   strokeWidth: 10,
   duration: 2000,
-  angle: {
-    0: 360
-  },
   isDrawLess: true,
   delay: 1000,
   strokeLinecap: {
@@ -780,13 +780,12 @@ Polygon = (function(_super) {
   Polygon.prototype.type = 'polygon';
 
   Polygon.prototype.draw = function() {
-    !this.isDraw && this.drawShape();
+    this.drawShape();
     return Polygon.__super__.draw.apply(this, arguments);
   };
 
   Polygon.prototype.drawShape = function() {
     var d, i, point, step, _i, _j, _len, _ref, _ref1;
-    this.isDraw = true;
     step = 360 / this.props.points;
     this.radialPoints = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {

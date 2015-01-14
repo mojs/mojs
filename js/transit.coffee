@@ -131,7 +131,7 @@ class Transit extends bitsMap.map.bit
   createBit:->
     bitClass = bitsMap.getBit(@o.type or @type)
     @bit = new bitClass ctx: @ctx, isDrawLess: true
-    
+
   setProgress:(progress)->
     # console.log progress
     @props.onUpdate?.call(@, progress)
