@@ -357,11 +357,13 @@ describe 'Helpers ->', ->
           .start()
         h.startAnimationLoop()
         setTimeout ->
+          h.TWEEN.removeAll()
           spyOn h, 'animationLoop'
           setTimeout ->
             expect(h.animationLoop).not.toHaveBeenCalled()
+            expect(h.isAnimateLoop).toBe false
             dfr()
-          , 34
+          , 84
         , 34
 
       it 'should start only 1 concurrent loop', (dfr)->

@@ -524,11 +524,13 @@
           }, 20).start();
           h.startAnimationLoop();
           return setTimeout(function() {
+            h.TWEEN.removeAll();
             spyOn(h, 'animationLoop');
             return setTimeout(function() {
               expect(h.animationLoop).not.toHaveBeenCalled();
+              expect(h.isAnimateLoop).toBe(false);
               return dfr();
-            }, 34);
+            }, 84);
           }, 34);
         });
         return it('should start only 1 concurrent loop', function(dfr) {

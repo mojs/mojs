@@ -7,6 +7,7 @@
 - add radial transition(burst)
   - add array deltas support
   - add sparks
+- refactor
 - add motion path
   - add movement arc
 - add more shapes(bits)
