@@ -63,10 +63,10 @@ describe 'Byte ->', ->
   describe 'size calculations ->', ->
     it 'should calculate size based on largest transit + self radius', ->
       burst = new Burst
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-        expect(burst.props.size)  .toBe 215
-        expect(burst.props.center).toBe 70
+        radius:      [{ 20: 50 }, 20]
+        strokeWidth: 20
+      expect(burst.props.size)  .toBe 215
+      expect(burst.props.center).toBe 70
 
 
 

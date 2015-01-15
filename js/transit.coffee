@@ -170,80 +170,29 @@ class Transit extends bitsMap.map.bit
       isObject = (optionsValue? and (typeof optionsValue is 'object'))
       # if is not an object or is array
       if !isObject or @h.isArray(optionsValue)
-        @props[key] = @o[key] or defaultsValue
 
-        if key is 'burstRadius'
-          console.log @props[key]
+        # !if defaultsValue is object - parse it!
 
+        if @o[key]?
+          @props[key] = @o[key]
+        else
+          isObject = (defaultsValue? and (typeof defaultsValue is 'object'))
+          if !isObject or @h.isArray(defaultsValue)
+            @props[key] = defaultsValue
+          else
+            # if delta object was passed: like { 20: 75 }
+            delta = @h.parseDelta key, defaultsValue
+            if delta.type? then @deltas[key] = delta
+            @props[key] = delta.start
         # position property parse with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         continue
-      @parseDelta key, optionsValue
-
-  parseDelta:(key, optionsValue)->
-    # if delta object was passed: like { 20: 75 }
-    if key is 'x' or key is 'y'
-      @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
-       as it would be much more perfomant', optionsValue
-    start = Object.keys(optionsValue)[0]
-    # color values
-    if isNaN parseFloat(start)
-      if key is 'strokeLinecap'
-        @h.warn "Sorry, stroke-linecap property is not animatable
-           yet, using the start(#{start}) value instead", optionsValue
-        @props[key] = start; continue
-      end           = optionsValue[start]
-      startColorObj = h.makeColorObj start
-      endColorObj   = h.makeColorObj end
-      @deltas[key]  =
-        start:  startColorObj
-        end:    endColorObj
-        type:   'color'
-        delta:
-          r: endColorObj.r - startColorObj.r
-          g: endColorObj.g - startColorObj.g
-          b: endColorObj.b - startColorObj.b
-          a: endColorObj.a - startColorObj.a
-    # color strokeDasharray/strokeDashoffset
-    else if key is 'strokeDasharray' or key is 'strokeDashoffset'
-      end   = optionsValue[start]
-      startArr  = h.strToArr start
-      endArr    = h.strToArr end
-      h.normDashArrays startArr, endArr
-        @deltas[key] =
-          start:  startArr
-          end:    endArr
-          delta:  h.calcArrDelta startArr, endArr
-          type:   'array'
-      ## plain numeric value ##
-      else
-        ## filter tween-related properties
-        # defined in helpers.tweenOptionMap
-        # because tween-related props shouldn't
-        ## have deltas
-        if !@h.tweenOptionMap[key]
-          # position values
-          if @h.posPropsMap[key]
-            end   = @h.parseUnit optionsValue[start]
-            start = @h.parseUnit start
-            @deltas[key] =
-              start:  start
-              end:    end
-              delta:  end.value - start.value
-              type:   'unit'
-            @props[key] = start.string
-          else
-            end   = parseFloat optionsValue[start]
-            start = parseFloat start
-            @deltas[key] =
-              start:  start
-              end:    end
-              delta:  end - start
-              type:   'number'
-            @props[key] = start
-        else @props[key] = start
-    # console.timeEnd 'extend defaults'
+      
+      # if delta object was passed: like { 20: 75 }
+      delta = @h.parseDelta key, optionsValue
+      if delta.type? then @deltas[key] = delta
+      @props[key] = delta.start
 
   # CHAINS
   chain:(options)->

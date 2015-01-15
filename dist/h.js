@@ -306,7 +306,70 @@ Helpers = (function() {
     return this;
   };
 
-  Helpers.prototype.parseDelta = function(value) {};
+  Helpers.prototype.parseDelta = function(key, value) {
+    var delta, end, endArr, endColorObj, start, startArr, startColorObj;
+    if (key === 'x' || key === 'y') {
+      this.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more perfomant', value);
+    }
+    start = Object.keys(value)[0];
+    delta = {
+      start: start
+    };
+    if (isNaN(parseFloat(start))) {
+      if (key === 'strokeLinecap') {
+        this.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value instead", value);
+        return delta;
+      }
+      end = value[start];
+      startColorObj = this.makeColorObj(start);
+      endColorObj = this.makeColorObj(end);
+      delta = {
+        start: startColorObj,
+        end: endColorObj,
+        type: 'color',
+        delta: {
+          r: endColorObj.r - startColorObj.r,
+          g: endColorObj.g - startColorObj.g,
+          b: endColorObj.b - startColorObj.b,
+          a: endColorObj.a - startColorObj.a
+        }
+      };
+    } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
+      end = value[start];
+      startArr = this.strToArr(start);
+      endArr = this.strToArr(end);
+      this.normDashArrays(startArr, endArr);
+      delta = {
+        start: startArr,
+        end: endArr,
+        delta: this.calcArrDelta(startArr, endArr),
+        type: 'array'
+      };
+    } else {
+      if (!this.tweenOptionMap[key]) {
+        if (this.posPropsMap[key]) {
+          end = this.parseUnit(value[start]);
+          start = this.parseUnit(start);
+          delta = {
+            start: start,
+            end: end,
+            delta: end.value - start.value,
+            type: 'unit'
+          };
+        } else {
+          end = parseFloat(value[start]);
+          start = parseFloat(start);
+          delta = {
+            start: start,
+            end: end,
+            delta: end - start,
+            type: 'number'
+          };
+        }
+      }
+    }
+    return delta;
+  };
 
   return Helpers;
 

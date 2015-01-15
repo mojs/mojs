@@ -43,6 +43,111 @@
       });
     });
     return describe('methods ->', function() {
+      describe('getDelta method', function() {
+        describe('numeric values ->', function() {
+          it('should calculate delta', function() {
+            var delta;
+            delta = h.parseDelta('radius', {
+              25: 75
+            });
+            expect(delta.start).toBe(25);
+            expect(delta.delta).toBe(50);
+            return expect(delta.type).toBe('number');
+          });
+          it('should calculate delta with string arguments', function() {
+            var delta;
+            delta = h.parseDelta('radius', {
+              25: 75
+            });
+            expect(delta.start).toBe(25);
+            return expect(delta.delta).toBe(50);
+          });
+          it('should calculate delta with float arguments', function() {
+            var delta;
+            delta = h.parseDelta('radius', {
+              '25.50': 75.50
+            });
+            expect(delta.start).toBe(25.5);
+            return expect(delta.delta).toBe(50);
+          });
+          it('should calculate delta with negative start arguments', function() {
+            var delta;
+            delta = h.parseDelta('radius', {
+              '-25.50': 75.50
+            });
+            expect(delta.start).toBe(-25.5);
+            return expect(delta.delta).toBe(101);
+          });
+          return it('should calculate delta with negative end arguments', function() {
+            var delta;
+            delta = h.parseDelta('radius', {
+              '25.50': -75.50
+            });
+            expect(delta.start).toBe(25.5);
+            expect(delta.end).toBe(-75.5);
+            return expect(delta.delta).toBe(-101);
+          });
+        });
+        describe('color values ->', function() {
+          it('should calculate color delta', function() {
+            var delta;
+            delta = h.parseDelta('stroke', {
+              '#000': 'rgb(255,255,255)'
+            });
+            expect(delta.start.r).toBe(0);
+            expect(delta.end.r).toBe(255);
+            expect(delta.delta.r).toBe(255);
+            return expect(delta.type).toBe('color');
+          });
+          return it('should ignore stroke-linecap prop, use start prop and warn', function() {
+            var delta;
+            spyOn(console, 'warn');
+            delta = h.parseDelta('strokeLinecap', {
+              'round': 'butt'
+            });
+            expect(function() {
+              return h.parseDelta('strokeLinecap', {
+                'round': 'butt'
+              });
+            }).not.toThrow();
+            expect(console.warn).toHaveBeenCalled();
+            return expect(delta.type).not.toBeDefined();
+          });
+        });
+        describe('array values ->', function() {
+          return it('should calculate array delta', function() {
+            var delta;
+            delta = h.parseDelta('strokeDasharray', {
+              '200 100': '300'
+            });
+            expect(delta.start.join(' ')).toBe('200 100');
+            expect(delta.end.join(' ')).toBe('300 0');
+            expect(delta.delta.join(' ')).toBe('100 -100');
+            return expect(delta.type).toBe('array');
+          });
+        });
+        describe('unit values ->', function() {
+          return it('should calculate unit delta', function() {
+            var delta;
+            delta = h.parseDelta('x', {
+              '0%': '100%'
+            });
+            expect(delta.start.string).toBe('0%');
+            expect(delta.end.string).toBe('100%');
+            expect(delta.delta).toBe(100);
+            return expect(delta.type).toBe('unit');
+          });
+        });
+        return describe('tween-related values ->', function() {
+          return it('should not calc delta for tween related props', function() {
+            var delta;
+            delta = h.parseDelta('duration', {
+              '2000': 1000
+            });
+            return expect(delta.type).not.toBeDefined();
+          });
+        });
+      });
       describe('computedStyle method', function() {
         it('should return computed styles', function() {
           document.body.style['font-size'] = '10px';

@@ -210,21 +210,71 @@ class Helpers
     requestAnimationFrame @animationLoop
     @
 
-  parseDelta:(value)->
-    
-
-  # stylePropsMap:
-  #   # width:              1
-  #   # height:             1
-  #   fill:               1
-  #   fillOpacity:        1
-  #   opacity:            1
-  #   stroke:             1
-  #   strokeWidth:        1
-  #   strokeDasharray:    1
-  #   strokeOffset:       1
-  #   strokeLinejoin:     1
-  #   strokeLinecap:      1
+  parseDelta:(key, value)->
+    # if delta object was passed: like { 20: 75 }
+    if key is 'x' or key is 'y'
+      @warn 'Consider to animate shiftX/shiftY properties instead of x/y,
+       as it would be much more perfomant', value
+    start = Object.keys(value)[0]
+    delta = start: start
+    # color values
+    if isNaN parseFloat(start)
+      if key is 'strokeLinecap'
+        @warn "Sorry, stroke-linecap property is not animatable
+           yet, using the start(#{start}) value instead", value
+        # @props[key] = start;
+        return delta
+      end           = value[start]
+      startColorObj = @makeColorObj start
+      endColorObj   = @makeColorObj end
+      delta  =
+        start:  startColorObj
+        end:    endColorObj
+        type:   'color'
+        delta:
+          r: endColorObj.r - startColorObj.r
+          g: endColorObj.g - startColorObj.g
+          b: endColorObj.b - startColorObj.b
+          a: endColorObj.a - startColorObj.a
+    # color strokeDasharray/strokeDashoffset
+    else if key is 'strokeDasharray' or key is 'strokeDashoffset'
+      end   = value[start]
+      startArr  = @strToArr start
+      endArr    = @strToArr end
+      @normDashArrays startArr, endArr
+      delta =
+        start:  startArr
+        end:    endArr
+        delta:  @calcArrDelta startArr, endArr
+        type:   'array'
+    ## plain numeric value ##
+    else
+      ## filter tween-related properties
+      # defined in helpers.tweenOptionMap
+      # because tween-related props shouldn't
+      ## have deltas
+      if !@tweenOptionMap[key]
+        # position values
+        if @posPropsMap[key]
+          end   = @parseUnit value[start]
+          start = @parseUnit start
+          delta =
+            start:  start
+            end:    end
+            delta:  end.value - start.value
+            type:   'unit'
+          # @props[key] = start.string
+        else
+          end   = parseFloat value[start]
+          start = parseFloat start
+          delta =
+            start:  start
+            end:    end
+            delta:  end - start
+            type:   'number'
+          # @props[key] = start
+      # else @props[key] = start
+    delta
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

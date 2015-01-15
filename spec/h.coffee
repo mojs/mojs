@@ -31,6 +31,63 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 10
   describe 'methods ->', ->
+    describe 'getDelta method', ->
+      describe 'numeric values ->', ->
+        it 'should calculate delta', ->
+          delta = h.parseDelta 'radius', {25: 75}
+          expect(delta.start)   .toBe   25
+          expect(delta.delta)   .toBe   50
+          expect(delta.type)    .toBe   'number'
+        it 'should calculate delta with string arguments', ->
+          delta = h.parseDelta 'radius', {25: 75}
+          expect(delta.start)   .toBe   25
+          expect(delta.delta)   .toBe   50
+        it 'should calculate delta with float arguments', ->
+          delta = h.parseDelta 'radius',  {'25.50': 75.50}
+          expect(delta.start)   .toBe   25.5
+          expect(delta.delta)   .toBe   50
+        it 'should calculate delta with negative start arguments', ->
+          delta = h.parseDelta 'radius',  {'-25.50': 75.50}
+          expect(delta.start)   .toBe   -25.5
+          expect(delta.delta)   .toBe   101
+        it 'should calculate delta with negative end arguments', ->
+          delta = h.parseDelta 'radius',  {'25.50': -75.50}
+          expect(delta.start)   .toBe   25.5
+          expect(delta.end)     .toBe   -75.5
+          expect(delta.delta)   .toBe   -101
+      describe 'color values ->', ->
+        it 'should calculate color delta', ->
+          delta = h.parseDelta 'stroke',  {'#000': 'rgb(255,255,255)'}
+          expect(delta.start.r)    .toBe   0
+          expect(delta.end.r)      .toBe   255
+          expect(delta.delta.r)    .toBe   255
+          expect(delta.type)       .toBe   'color'
+        it 'should ignore stroke-linecap prop, use start prop and warn', ->
+          spyOn console, 'warn'
+          delta = h.parseDelta 'strokeLinecap', {'round': 'butt'}
+          expect(-> h.parseDelta 'strokeLinecap', {'round': 'butt'})
+            .not.toThrow()
+          expect(console.warn).toHaveBeenCalled()
+          expect(delta.type).not.toBeDefined()
+      describe 'array values ->', ->
+        it 'should calculate array delta', ->
+          delta = h.parseDelta 'strokeDasharray', { '200 100': '300' }
+          expect(delta.start.join(' ')).toBe   '200 100'
+          expect(delta.end.join(' '))  .toBe   '300 0'
+          expect(delta.delta.join(' ')).toBe   '100 -100'
+          expect(delta.type)           .toBe   'array'
+      describe 'unit values ->', ->
+        it 'should calculate unit delta', ->
+          delta = h.parseDelta 'x', {'0%': '100%'}
+          expect(delta.start.string)    .toBe   '0%'
+          expect(delta.end.string)      .toBe   '100%'
+          expect(delta.delta)           .toBe   100
+          expect(delta.type)            .toBe   'unit'
+      describe 'tween-related values ->', ->
+        it 'should not calc delta for tween related props', ->
+          delta = h.parseDelta 'duration', {'2000': 1000}
+          expect(delta.type).not.toBeDefined()
+
     describe 'computedStyle method', ->
       it 'should return computed styles',->
         document.body.style['font-size'] = '10px'
