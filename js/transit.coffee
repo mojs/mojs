@@ -57,7 +57,8 @@ class Transit extends bitsMap.map.bit
         @setElStyles()
         @el.appendChild @ctx
         (@o.parent or document.body).appendChild @el
-      else @ctx = @o.ctx; @createBit()
+      else
+        @ctx = @o.ctx; @createBit(); @calcSize()
       
       @isRendered = true
 
@@ -114,7 +115,7 @@ class Transit extends bitsMap.map.bit
     origin = "#{@props.center},#{@props.center})"
     @props.transform = "rotate(#{@props.angle},#{origin}"
   calcSize:->
-    return if @o.size? or @o.ctx
+    return if @o.size
 
     dRadius = @deltas['radius']; dStroke = @deltas['strokeWidth']
     radius = if dRadius?
@@ -166,41 +167,50 @@ class Transit extends bitsMap.map.bit
     for key, defaultsValue of @defaults
       optionsValue = @o[key]
       # if non-object value - just save it to @props
-      if !(optionsValue and typeof optionsValue is 'object')
+      isObject = (optionsValue? and (typeof optionsValue is 'object'))
+      # if is not an object or is array
+      if !isObject or @h.isArray(optionsValue)
         @props[key] = @o[key] or defaultsValue
+
+        if key is 'burstRadius'
+          console.log @props[key]
+
         # position property parse with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         continue
-      # if delta object was passed: like { 20: 75 }
-      if key is 'x' or key is 'y'
-        @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
-         as it would be much more perfomant', optionsValue
-      start = Object.keys(optionsValue)[0]
-      # color values
-      if isNaN parseFloat(start)
-        if key is 'strokeLinecap'
-          @h.warn "Sorry, stroke-linecap property is not animatable
-             yet, using the start(#{start}) value instead", optionsValue
-          @props[key] = start; continue
-        end           = optionsValue[start]
-        startColorObj = h.makeColorObj start
-        endColorObj   = h.makeColorObj end
-        @deltas[key]  =
-          start:  startColorObj
-          end:    endColorObj
-          type:   'color'
-          delta:
-            r: endColorObj.r - startColorObj.r
-            g: endColorObj.g - startColorObj.g
-            b: endColorObj.b - startColorObj.b
-            a: endColorObj.a - startColorObj.a
-      # color strokeDasharray/strokeDashoffset
-      else if key is 'strokeDasharray' or key is 'strokeDashoffset'
-        end   = optionsValue[start]
-        startArr  = h.strToArr start
-        endArr    = h.strToArr end
-        h.normDashArrays startArr, endArr
+      @parseDelta key, optionsValue
+
+  parseDelta:(key, optionsValue)->
+    # if delta object was passed: like { 20: 75 }
+    if key is 'x' or key is 'y'
+      @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
+       as it would be much more perfomant', optionsValue
+    start = Object.keys(optionsValue)[0]
+    # color values
+    if isNaN parseFloat(start)
+      if key is 'strokeLinecap'
+        @h.warn "Sorry, stroke-linecap property is not animatable
+           yet, using the start(#{start}) value instead", optionsValue
+        @props[key] = start; continue
+      end           = optionsValue[start]
+      startColorObj = h.makeColorObj start
+      endColorObj   = h.makeColorObj end
+      @deltas[key]  =
+        start:  startColorObj
+        end:    endColorObj
+        type:   'color'
+        delta:
+          r: endColorObj.r - startColorObj.r
+          g: endColorObj.g - startColorObj.g
+          b: endColorObj.b - startColorObj.b
+          a: endColorObj.a - startColorObj.a
+    # color strokeDasharray/strokeDashoffset
+    else if key is 'strokeDasharray' or key is 'strokeDashoffset'
+      end   = optionsValue[start]
+      startArr  = h.strToArr start
+      endArr    = h.strToArr end
+      h.normDashArrays startArr, endArr
         @deltas[key] =
           start:  startArr
           end:    endArr

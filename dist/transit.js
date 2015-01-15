@@ -82,6 +82,7 @@ Transit = (function(_super) {
       } else {
         this.ctx = this.o.ctx;
         this.createBit();
+        this.calcSize();
       }
       this.isRendered = true;
     }
@@ -155,7 +156,7 @@ Transit = (function(_super) {
 
   Transit.prototype.calcSize = function() {
     var dRadius, dStroke, radius, stroke;
-    if ((this.o.size != null) || this.o.ctx) {
+    if (this.o.size) {
       return;
     }
     dRadius = this.deltas['radius'];
@@ -218,7 +219,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function() {
-    var defaultsValue, end, endArr, endColorObj, key, optionsValue, start, startArr, startColorObj, _ref, _results;
+    var defaultsValue, isObject, key, optionsValue, _ref, _results;
     if (this.props == null) {
       this.props = {};
     }
@@ -228,77 +229,86 @@ Transit = (function(_super) {
     for (key in _ref) {
       defaultsValue = _ref[key];
       optionsValue = this.o[key];
-      if (!(optionsValue && typeof optionsValue === 'object')) {
+      isObject = (optionsValue != null) && (typeof optionsValue === 'object');
+      if (!isObject || this.h.isArray(optionsValue)) {
         this.props[key] = this.o[key] || defaultsValue;
+        if (key === 'burstRadius') {
+          console.log(this.props[key]);
+        }
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
         continue;
       }
-      if (key === 'x' || key === 'y') {
-        this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more perfomant', optionsValue);
-      }
-      start = Object.keys(optionsValue)[0];
-      if (isNaN(parseFloat(start))) {
-        if (key === 'strokeLinecap') {
-          this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value instead", optionsValue);
-          this.props[key] = start;
-          continue;
-        }
-        end = optionsValue[start];
-        startColorObj = h.makeColorObj(start);
-        endColorObj = h.makeColorObj(end);
-        _results.push(this.deltas[key] = {
-          start: startColorObj,
-          end: endColorObj,
-          type: 'color',
-          delta: {
-            r: endColorObj.r - startColorObj.r,
-            g: endColorObj.g - startColorObj.g,
-            b: endColorObj.b - startColorObj.b,
-            a: endColorObj.a - startColorObj.a
-          }
-        });
-      } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
-        end = optionsValue[start];
-        startArr = h.strToArr(start);
-        endArr = h.strToArr(end);
-        h.normDashArrays(startArr, endArr);
-        _results.push(this.deltas[key] = {
-          start: startArr,
-          end: endArr,
-          delta: h.calcArrDelta(startArr, endArr),
-          type: 'array'
-        });
-      } else {
-        if (!this.h.tweenOptionMap[key]) {
-          if (this.h.posPropsMap[key]) {
-            end = this.h.parseUnit(optionsValue[start]);
-            start = this.h.parseUnit(start);
-            this.deltas[key] = {
-              start: start,
-              end: end,
-              delta: end.value - start.value,
-              type: 'unit'
-            };
-            _results.push(this.props[key] = start.string);
-          } else {
-            end = parseFloat(optionsValue[start]);
-            start = parseFloat(start);
-            this.deltas[key] = {
-              start: start,
-              end: end,
-              delta: end - start,
-              type: 'number'
-            };
-            _results.push(this.props[key] = start);
-          }
-        } else {
-          _results.push(this.props[key] = start);
-        }
-      }
+      _results.push(this.parseDelta(key, optionsValue));
     }
     return _results;
+  };
+
+  Transit.prototype.parseDelta = function(key, optionsValue) {
+    var end, endArr, endColorObj, start, startArr, startColorObj;
+    if (key === 'x' || key === 'y') {
+      this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more perfomant', optionsValue);
+    }
+    start = Object.keys(optionsValue)[0];
+    if (isNaN(parseFloat(start))) {
+      if (key === 'strokeLinecap') {
+        this.h.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value instead", optionsValue);
+        this.props[key] = start;
+        continue;
+      }
+      end = optionsValue[start];
+      startColorObj = h.makeColorObj(start);
+      endColorObj = h.makeColorObj(end);
+      return this.deltas[key] = {
+        start: startColorObj,
+        end: endColorObj,
+        type: 'color',
+        delta: {
+          r: endColorObj.r - startColorObj.r,
+          g: endColorObj.g - startColorObj.g,
+          b: endColorObj.b - startColorObj.b,
+          a: endColorObj.a - startColorObj.a
+        }
+      };
+    } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
+      end = optionsValue[start];
+      startArr = h.strToArr(start);
+      endArr = h.strToArr(end);
+      h.normDashArrays(startArr, endArr);
+      return this.deltas[key] = {
+        start: startArr,
+        end: endArr,
+        delta: h.calcArrDelta(startArr, endArr),
+        type: 'array'
+      };
+    } else {
+      if (!this.h.tweenOptionMap[key]) {
+        if (this.h.posPropsMap[key]) {
+          end = this.h.parseUnit(optionsValue[start]);
+          start = this.h.parseUnit(start);
+          this.deltas[key] = {
+            start: start,
+            end: end,
+            delta: end.value - start.value,
+            type: 'unit'
+          };
+          return this.props[key] = start.string;
+        } else {
+          end = parseFloat(optionsValue[start]);
+          start = parseFloat(start);
+          this.deltas[key] = {
+            start: start,
+            end: end,
+            delta: end - start,
+            type: 'number'
+          };
+          return this.props[key] = start;
+        }
+      } else {
+        return this.props[key] = start;
+      }
+    }
   };
 
   Transit.prototype.chain = function(options) {

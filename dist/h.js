@@ -306,6 +306,8 @@ Helpers = (function() {
     return this;
   };
 
+  Helpers.prototype.parseDelta = function(value) {};
+
   return Helpers;
 
 })();

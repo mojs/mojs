@@ -25,12 +25,16 @@ describe 'Byte ->', ->
     it 'should recieve options object', ->
       byte = new Byte option: 1
       expect(byte.o.option).toBe 1
-  it 'should extend defaults object to properties', ->
-    byte = new Byte radius: 45
-    expect(byte.props.radius).toBe(45)
-  it 'should extend defaults object to properties if object was passed', ->
-    byte = new Byte radius: {45: 55}
-    expect(byte.props.radius).toBe(45)
+  describe 'extend defaults ->', ->
+    it 'should extend defaults object to properties', ->
+      byte = new Byte radius: 45
+      expect(byte.props.radius).toBe(45)
+    it 'should extend defaults object to properties if object was passed', ->
+      byte = new Byte radius: {45: 55}
+      expect(byte.props.radius).toBe(45)
+    it 'should extend defaults object to properties if array was passed', ->
+      byte = new Byte radius: [50, 100]
+      expect(byte.props.radius.join ', ').toBe '50, 100'
   it 'should calculate transform object', ->
     byte = new Byte
       angle:        90
@@ -317,21 +321,15 @@ describe 'Byte ->', ->
     it 'should set isRendered to true method', ->
       byte = new Byte radius: 25
       expect(byte.isRendered).toBe true
-      
       byte.isRendered = false; byte.render()
       expect(byte.isRendered).toBe true
-
     it 'should call calcSize method', ->
       byte = new Byte radius: 25
       spyOn byte, 'calcSize'
       byte.isRendered = false
       byte.render()
       expect(byte.calcSize).toHaveBeenCalled()
-    it 'should not call calcSize method id context was passed', ->
-      byte = new Byte radius: 25, ctx: svg
-      spyOn byte, 'calcSize'
-      byte.render()
-      expect(byte.calcSize).not.toHaveBeenCalled()
+    
   describe 'draw method ->', ->
     it 'should call setProp method', ->
       byte = new Byte radius: 25

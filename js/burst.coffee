@@ -19,7 +19,7 @@ class Burst extends Transit
     fill:               'transparent'
     fillOpacity:        'transparent'
     strokeLinecap:      ''
-    points:             3
+    points:             5
     # position props/el props
     x:                  0
     y:                  0
@@ -44,8 +44,36 @@ class Burst extends Transit
     yoyo:               false
     easing:             'Linear.None'
 
-  render:->
-    super
+  createBit:->
+    @transits = []
+    for i in [0...@props.points]
+      bitClass = bitsMap.getBit(@o.type or @type); option = @getOption(i)
+      option.ctx = @ctx; option.isDrawLess = true
+      @transits.push new Transit option
+
+  draw:->
+
+  calcSize:->
+    largestSize = -1
+    for transit, i in @transits
+      if largestSize < transit.props.size
+        largestSize = transit.props.size
+
+    console.log @deltas
+    # if typeof @props.burstRadius is 'object'
+    #   start =
+
+    @props.size   = largestSize
+    @props.center = largestSize/2
+
+  getOption:(i)->
+    option = {}
+    for key, value of @o
+      option[key] = @getPropByMod key, i
+    option
+  getPropByMod:(name, i)->
+    prop = @o[name]
+    if @h.isArray(prop) then @o[name][i % prop.length] else prop
 
 burst = new Burst
 

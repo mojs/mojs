@@ -210,6 +210,9 @@ class Helpers
     requestAnimationFrame @animationLoop
     @
 
+  parseDelta:(value)->
+    
+
   # stylePropsMap:
   #   # width:              1
   #   # height:             1

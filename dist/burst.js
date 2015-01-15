@@ -29,7 +29,7 @@ Burst = (function(_super) {
     fill: 'transparent',
     fillOpacity: 'transparent',
     strokeLinecap: '',
-    points: 3,
+    points: 5,
     x: 0,
     y: 0,
     shiftX: 0,
@@ -51,8 +51,56 @@ Burst = (function(_super) {
     easing: 'Linear.None'
   };
 
-  Burst.prototype.render = function() {
-    return Burst.__super__.render.apply(this, arguments);
+  Burst.prototype.createBit = function() {
+    var bitClass, i, option, _i, _ref, _results;
+    this.transits = [];
+    _results = [];
+    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      bitClass = bitsMap.getBit(this.o.type || this.type);
+      option = this.getOption(i);
+      option.ctx = this.ctx;
+      option.isDrawLess = true;
+      _results.push(this.transits.push(new Transit(option)));
+    }
+    return _results;
+  };
+
+  Burst.prototype.draw = function() {};
+
+  Burst.prototype.calcSize = function() {
+    var i, largestSize, transit, _i, _len, _ref;
+    largestSize = -1;
+    _ref = this.transits;
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      transit = _ref[i];
+      if (largestSize < transit.props.size) {
+        largestSize = transit.props.size;
+      }
+    }
+    console.log(this.deltas);
+    this.props.size = largestSize;
+    return this.props.center = largestSize / 2;
+  };
+
+  Burst.prototype.getOption = function(i) {
+    var key, option, value, _ref;
+    option = {};
+    _ref = this.o;
+    for (key in _ref) {
+      value = _ref[key];
+      option[key] = this.getPropByMod(key, i);
+    }
+    return option;
+  };
+
+  Burst.prototype.getPropByMod = function(name, i) {
+    var prop;
+    prop = this.o[name];
+    if (this.h.isArray(prop)) {
+      return this.o[name][i % prop.length];
+    } else {
+      return prop;
+    }
   };
 
   return Burst;

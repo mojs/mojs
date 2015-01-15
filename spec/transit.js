@@ -50,21 +50,30 @@
         return expect(byte.o.option).toBe(1);
       });
     });
-    it('should extend defaults object to properties', function() {
-      var byte;
-      byte = new Byte({
-        radius: 45
+    describe('extend defaults ->', function() {
+      it('should extend defaults object to properties', function() {
+        var byte;
+        byte = new Byte({
+          radius: 45
+        });
+        return expect(byte.props.radius).toBe(45);
       });
-      return expect(byte.props.radius).toBe(45);
-    });
-    it('should extend defaults object to properties if object was passed', function() {
-      var byte;
-      byte = new Byte({
-        radius: {
-          45: 55
-        }
+      it('should extend defaults object to properties if object was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            45: 55
+          }
+        });
+        return expect(byte.props.radius).toBe(45);
       });
-      return expect(byte.props.radius).toBe(45);
+      return it('should extend defaults object to properties if array was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: [50, 100]
+        });
+        return expect(byte.props.radius.join(', ')).toBe('50, 100');
+      });
     });
     it('should calculate transform object', function() {
       var byte;
@@ -531,7 +540,7 @@
         byte.render();
         return expect(byte.isRendered).toBe(true);
       });
-      it('should call calcSize method', function() {
+      return it('should call calcSize method', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -540,16 +549,6 @@
         byte.isRendered = false;
         byte.render();
         return expect(byte.calcSize).toHaveBeenCalled();
-      });
-      return it('should not call calcSize method id context was passed', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25,
-          ctx: svg
-        });
-        spyOn(byte, 'calcSize');
-        byte.render();
-        return expect(byte.calcSize).not.toHaveBeenCalled();
       });
     });
     describe('draw method ->', function() {
