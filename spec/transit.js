@@ -75,6 +75,7 @@
         return expect(byte.props.radius.join(', ')).toBe('50, 100');
       });
     });
+    it('should calculate transform object', function() {});
     it('should calculate transform object', function() {
       var byte;
       byte = new Byte({
@@ -843,6 +844,28 @@
         });
         byte.setProgress(.5);
         return expect(byte.props.radius).toBe(50);
+      });
+      it('should call calcOrigin method', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        spyOn(byte, 'calcOrigin');
+        byte.setProgress(.5);
+        return expect(byte.calcOrigin).toHaveBeenCalled();
+      });
+      it('should have origin object', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        byte.setProgress(.5);
+        expect(byte.origin.x).toBeDefined();
+        return expect(byte.origin.y).toBeDefined();
       });
       it('should set color value progress and only int', function() {
         var byte, colorDelta;

@@ -21,7 +21,7 @@ class Burst extends Transit
     burstShiftY:        0
     burstAngle:         0
     burstPoints:        5
-    burstRadius:        {50:75}
+    burstRadius:        { 50: 75 }
     burstDegree:        360
     # presentation props
     strokeWidth:        2

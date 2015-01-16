@@ -36,6 +36,7 @@ describe 'Byte ->', ->
       byte = new Byte radius: [50, 100]
       expect(byte.props.radius.join ', ').toBe '50, 100'
   it 'should calculate transform object', ->
+  it 'should calculate transform object', ->
     byte = new Byte
       angle:        90
       radius:       25
@@ -482,6 +483,17 @@ describe 'Byte ->', ->
       byte = new Byte radius:  {'25': 75}
       byte.setProgress .5
       expect(byte.props.radius).toBe 50
+    it 'should call calcOrigin method', ->
+      byte = new Byte radius:  {'25': 75}
+      spyOn byte, 'calcOrigin'
+      byte.setProgress .5
+      expect(byte.calcOrigin).toHaveBeenCalled()
+    it 'should have origin object', ->
+      byte = new Byte radius:  {'25': 75}
+      byte.setProgress .5
+      expect(byte.origin.x).toBeDefined()
+      expect(byte.origin.y).toBeDefined()
+        
     it 'should set color value progress and only int', ->
       byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
       colorDelta = byte.deltas.stroke

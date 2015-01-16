@@ -13,9 +13,9 @@ burst = new Burst
   angle: { 0: 360 }
   burstX: 100
   burstY: 100
-  radius: 1
+  radius: 5
   delay:  2000
-  type: 'circle'
+  type: 'line'
 #   type:             'polygon'
 #   # shiftX:           {200 : 100}
 #   # x:                0

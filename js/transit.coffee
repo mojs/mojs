@@ -44,7 +44,7 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
   vars:->
     @h ?= h; @chainArr ?= []; @lastSet ?= {}
-    @extendDefaults(); @calcTransform()
+    @extendDefaults() #; @calcTransform()
   render:->
     if !@isRendered
       if !@o.ctx?
@@ -59,7 +59,6 @@ class Transit extends bitsMap.map.bit
         (@o.parent or document.body).appendChild @el
       else
         @ctx = @o.ctx; @createBit(); @calcSize()
-      
       @isRendered = true
 
     !@o.isDrawLess and @setProgress 0
@@ -80,11 +79,9 @@ class Transit extends bitsMap.map.bit
     @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
   draw:->
-    x = if @o.ctx then @props.x else @props.center
-    y = if @o.ctx then @props.y else @props.center
     @bit.setProp
-      x:                  x
-      y:                  y
+      x:                  @origin.x
+      y:                  @origin.y
       stroke:             @props.stroke
       strokeWidth:        @props.strokeWidth
       strokeOpacity:      @props.strokeOpacity
@@ -114,8 +111,7 @@ class Transit extends bitsMap.map.bit
       @lastSet[name].value = @props[name]; true
     else false
   calcTransform:->
-    origin = "#{@props.center},#{@props.center})"
-    @props.transform = "rotate(#{@props.angle},#{origin}"
+    @props.transform = "rotate(#{@props.angle},#{@origin.x},#{@origin.y})"
   calcSize:->
     return if @o.size
 
@@ -157,9 +153,15 @@ class Transit extends bitsMap.map.bit
           b = parseInt (value.start.b + value.delta.b*@progress), 10
           a = parseInt (value.start.a + value.delta.a*@progress), 10
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
-    @draw()
     
+    @calcOrigin()
+    @draw()
     if progress is 1 then @runChain(); @props.onComplete?.call @
+
+  calcOrigin:->
+    @origin =
+      x: if @o.ctx then @props.x else @props.center
+      y: if @o.ctx then @props.y else @props.center
 
   extendDefaults:->
     @props  ?= {}

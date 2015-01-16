@@ -1010,9 +1010,9 @@ burst = new Burst({
   },
   burstX: 100,
   burstY: 100,
-  radius: 1,
+  radius: 5,
   delay: 2000,
-  type: 'circle'
+  type: 'line'
 });
 
 },{"./burst":3}],9:[function(require,module,exports){
@@ -1222,8 +1222,7 @@ Transit = (function(_super) {
     if (this.lastSet == null) {
       this.lastSet = {};
     }
-    this.extendDefaults();
-    return this.calcTransform();
+    return this.extendDefaults();
   };
 
   Transit.prototype.render = function() {
@@ -1267,12 +1266,9 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.draw = function() {
-    var x, y;
-    x = this.o.ctx ? this.props.x : this.props.center;
-    y = this.o.ctx ? this.props.y : this.props.center;
     this.bit.setProp({
-      x: x,
-      y: y,
+      x: this.origin.x,
+      y: this.origin.y,
       stroke: this.props.stroke,
       strokeWidth: this.props.strokeWidth,
       strokeOpacity: this.props.strokeOpacity,
@@ -1312,9 +1308,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcTransform = function() {
-    var origin;
-    origin = "" + this.props.center + "," + this.props.center + ")";
-    return this.props.transform = "rotate(" + this.props.angle + "," + origin;
+    return this.props.transform = "rotate(" + this.props.angle + "," + this.origin.x + "," + this.origin.y + ")";
   };
 
   Transit.prototype.calcSize = function() {
@@ -1374,11 +1368,19 @@ Transit = (function(_super) {
           this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
       }
     }
+    this.calcOrigin();
     this.draw();
     if (progress === 1) {
       this.runChain();
       return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;
     }
+  };
+
+  Transit.prototype.calcOrigin = function() {
+    return this.origin = {
+      x: this.o.ctx ? this.props.x : this.props.center,
+      y: this.o.ctx ? this.props.y : this.props.center
+    };
   };
 
   Transit.prototype.extendDefaults = function() {
