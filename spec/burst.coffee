@@ -65,10 +65,33 @@ describe 'Byte ->', ->
       burst = new Burst
         radius:      [{ 20: 50 }, 20]
         strokeWidth: 20
-      expect(burst.props.size)  .toBe 215
-      expect(burst.props.center).toBe 70
+      expect(burst.props.size)  .toBe 220
+      expect(burst.props.center).toBe 110
+    it 'should work with numeric burstRadius', ->
+      burst = new Burst
+        burstRadius: '100'
+        radius:      [{ 20: 50 }, 20]
+        strokeWidth: 20
+      expect(burst.props.size)  .toBe 270
+      expect(burst.props.center).toBe 135
 
-
+  describe 'setProgress method ->', ->
+    it 'should setProgress on all transits', ->
+      burst = new Burst
+        radius:      [{ 20: 50 }, 20]
+        strokeWidth: 20
+      burst.setProgress .5
+      expect(burst.transits[0].progress).toBe .5
+      expect(burst.transits[1].progress).toBe .5
+      expect(burst.transits[2].progress).toBe .5
+      expect(burst.transits[3].progress).toBe .5
+      expect(burst.transits[4].progress).toBe .5
+    it 'should call super method', ->
+      isOnUpdate = false
+      burst = new Burst radius: [{ 20: 50 }, 20]
+      spyOn Burst.__super__, 'setProgress'
+      burst.setProgress .5
+      expect(Burst.__super__.setProgress).toHaveBeenCalled()
 
 
 

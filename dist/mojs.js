@@ -282,10 +282,19 @@ Burst = (function(_super) {
     return _results;
   };
 
+  Burst.prototype.setProgress = function(progress) {
+    var i;
+    i = this.transits.length;
+    while (i--) {
+      this.transits[i].setProgress(progress);
+    }
+    return Burst.__super__.setProgress.apply(this, arguments);
+  };
+
   Burst.prototype.draw = function() {};
 
   Burst.prototype.calcSize = function() {
-    var i, largestSize, transit, _i, _len, _ref;
+    var end, i, largestSize, selfSize, start, transit, _i, _len, _ref;
     largestSize = -1;
     _ref = this.transits;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -294,9 +303,9 @@ Burst = (function(_super) {
         largestSize = transit.props.size;
       }
     }
-    console.log(this.deltas);
-    this.props.size = largestSize;
-    return this.props.center = largestSize / 2;
+    selfSize = this.deltas.burstRadius ? (start = Math.abs(this.deltas.burstRadius.start), end = Math.abs(this.deltas.burstRadius.end), Math.max(start, end)) : parseFloat(this.props.burstRadius);
+    this.props.size = largestSize / 2 + 2 * selfSize;
+    return this.props.center = this.props.size / 2;
   };
 
   Burst.prototype.getOption = function(i) {
@@ -1317,23 +1326,10 @@ Transit = (function(_super) {
     _results = [];
     for (key in _ref) {
       defaultsValue = _ref[key];
-      optionsValue = this.o[key];
+      optionsValue = this.o[key] || defaultsValue;
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
       if (!isObject || this.h.isArray(optionsValue)) {
-        if (this.o[key] != null) {
-          this.props[key] = this.o[key];
-        } else {
-          isObject = (defaultsValue != null) && (typeof defaultsValue === 'object');
-          if (!isObject || this.h.isArray(defaultsValue)) {
-            this.props[key] = defaultsValue;
-          } else {
-            delta = this.h.parseDelta(key, defaultsValue);
-            if (delta.type != null) {
-              this.deltas[key] = delta;
-            }
-            this.props[key] = delta.start;
-          }
-        }
+        this.props[key] = optionsValue;
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }

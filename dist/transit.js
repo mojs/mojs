@@ -228,23 +228,10 @@ Transit = (function(_super) {
     _results = [];
     for (key in _ref) {
       defaultsValue = _ref[key];
-      optionsValue = this.o[key];
+      optionsValue = this.o[key] || defaultsValue;
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
       if (!isObject || this.h.isArray(optionsValue)) {
-        if (this.o[key] != null) {
-          this.props[key] = this.o[key];
-        } else {
-          isObject = (defaultsValue != null) && (typeof defaultsValue === 'object');
-          if (!isObject || this.h.isArray(defaultsValue)) {
-            this.props[key] = defaultsValue;
-          } else {
-            delta = this.h.parseDelta(key, defaultsValue);
-            if (delta.type != null) {
-              this.deltas[key] = delta;
-            }
-            this.props[key] = delta.start;
-          }
-        }
+        this.props[key] = optionsValue;
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }

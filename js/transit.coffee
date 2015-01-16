@@ -165,30 +165,17 @@ class Transit extends bitsMap.map.bit
     @deltas = {}
     # console.time 'extend defaults'
     for key, defaultsValue of @defaults
-      optionsValue = @o[key]
+      optionsValue = @o[key] or defaultsValue
       # if non-object value - just save it to @props
+      
       isObject = (optionsValue? and (typeof optionsValue is 'object'))
       # if is not an object or is array
       if !isObject or @h.isArray(optionsValue)
-
-        # !if defaultsValue is object - parse it!
-
-        if @o[key]?
-          @props[key] = @o[key]
-        else
-          isObject = (defaultsValue? and (typeof defaultsValue is 'object'))
-          if !isObject or @h.isArray(defaultsValue)
-            @props[key] = defaultsValue
-          else
-            # if delta object was passed: like { 20: 75 }
-            delta = @h.parseDelta key, defaultsValue
-            if delta.type? then @deltas[key] = delta
-            @props[key] = delta.start
+        @props[key] = optionsValue
         # position property parse with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         continue
-      
       # if delta object was passed: like { 20: 75 }
       delta = @h.parseDelta key, optionsValue
       if delta.type? then @deltas[key] = delta

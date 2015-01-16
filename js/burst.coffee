@@ -51,6 +51,12 @@ class Burst extends Transit
       option.ctx = @ctx; option.isDrawLess = true
       @transits.push new Transit option
 
+  setProgress:(progress)->
+    i = @transits.length
+    while(i--)
+      @transits[i].setProgress progress
+    super
+
   draw:->
 
   calcSize:->
@@ -58,13 +64,13 @@ class Burst extends Transit
     for transit, i in @transits
       if largestSize < transit.props.size
         largestSize = transit.props.size
-
-    console.log @deltas
-    # if typeof @props.burstRadius is 'object'
-    #   start =
-
-    @props.size   = largestSize
-    @props.center = largestSize/2
+    selfSize = if @deltas.burstRadius
+      start = Math.abs @deltas.burstRadius.start
+      end   = Math.abs @deltas.burstRadius.end
+      Math.max start, end
+    else parseFloat @props.burstRadius
+    @props.size   = largestSize/2 + 2*selfSize
+    @props.center = @props.size/2
 
   getOption:(i)->
     option = {}

@@ -97,8 +97,8 @@
         return expect(opt8).toBe(20);
       });
     });
-    return describe('size calculations ->', function() {
-      return it('should calculate size based on largest transit + self radius', function() {
+    describe('size calculations ->', function() {
+      it('should calculate size based on largest transit + self radius', function() {
         var burst;
         burst = new Burst({
           radius: [
@@ -108,8 +108,55 @@
           ],
           strokeWidth: 20
         });
-        expect(burst.props.size).toBe(215);
-        return expect(burst.props.center).toBe(70);
+        expect(burst.props.size).toBe(220);
+        return expect(burst.props.center).toBe(110);
+      });
+      return it('should work with numeric burstRadius', function() {
+        var burst;
+        burst = new Burst({
+          burstRadius: '100',
+          radius: [
+            {
+              20: 50
+            }, 20
+          ],
+          strokeWidth: 20
+        });
+        expect(burst.props.size).toBe(270);
+        return expect(burst.props.center).toBe(135);
+      });
+    });
+    return describe('setProgress method ->', function() {
+      it('should setProgress on all transits', function() {
+        var burst;
+        burst = new Burst({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ],
+          strokeWidth: 20
+        });
+        burst.setProgress(.5);
+        expect(burst.transits[0].progress).toBe(.5);
+        expect(burst.transits[1].progress).toBe(.5);
+        expect(burst.transits[2].progress).toBe(.5);
+        expect(burst.transits[3].progress).toBe(.5);
+        return expect(burst.transits[4].progress).toBe(.5);
+      });
+      return it('should call super method', function() {
+        var burst, isOnUpdate;
+        isOnUpdate = false;
+        burst = new Burst({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(Burst.__super__, 'setProgress');
+        burst.setProgress(.5);
+        return expect(Burst.__super__.setProgress).toHaveBeenCalled();
       });
     });
   });
