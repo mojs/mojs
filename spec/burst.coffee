@@ -1,7 +1,7 @@
 Transit = mojs.Transit
 Burst   = mojs.Burst
 
-describe 'Byte ->', ->
+describe 'Burst ->', ->
   describe 'extension ->', ->
     it 'should extend Transit class', ->
       burst = new Burst
@@ -93,7 +93,29 @@ describe 'Byte ->', ->
       burst.setProgress .5
       expect(Burst.__super__.setProgress).toHaveBeenCalled()
 
+  describe 'draw method ->', ->
+    it 'should set x/y coordinates on every transit', ->
+      burst = new Burst
+      burst.draw()
+      console.log burst.transits[0].props.x
+      expect(burst.transits[0].props.x).not.toBe '0px'
+      expect(burst.transits[1].props.x).not.toBe '0px'
+      expect(burst.transits[2].props.x).not.toBe '0px'
+      expect(burst.transits[3].props.x).not.toBe '0px'
+      expect(burst.transits[4].props.x).not.toBe '0px'
 
+
+  describe 'deltasMap ->', ->
+    it 'should describe props for delta calculations', ->
+      burst = new Burst
+      expect(burst.deltasMap.burstRadius).toBe 1
+      expect(burst.deltasMap.burstDegree).toBe 1
+      expect(burst.deltasMap.burstX)     .toBe 1
+      expect(burst.deltasMap.burstY)     .toBe 1
+      expect(burst.deltasMap.burstShiftX).toBe 1
+      expect(burst.deltasMap.burstShiftY).toBe 1
+      expect(burst.deltasMap.burstAngle) .toBe 1
+      expect(Object.keys(burst.deltasMap).length) .toBe 7
 
 
 

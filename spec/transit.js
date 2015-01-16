@@ -561,6 +561,25 @@
         byte.draw();
         return expect(byte.bit.setProp).toHaveBeenCalled();
       });
+      it('should set x/y to center', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte.draw();
+        expect(byte.bit.props.x).toBe(byte.props.center);
+        return expect(byte.bit.props.y).toBe(byte.props.center);
+      });
+      it('should set x/y to props.x/props.y if context was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          ctx: svg
+        });
+        byte.draw();
+        expect(byte.bit.props.x).toBe(byte.props.x);
+        return expect(byte.bit.props.y).toBe(byte.props.y);
+      });
       it('should call bit.draw method', function() {
         var byte;
         byte = new Byte({
@@ -651,6 +670,25 @@
       });
     });
     describe('delta calculations ->', function() {
+      describe('deltasMap ->', function() {
+        return it('should claculate deltas only from deltasMap prop if defined', function() {
+          var byte;
+          byte = new Byte({
+            radius: {
+              25: 75
+            },
+            strokeWidth: {
+              25: 75
+            }
+          });
+          byte.deltasMap = {
+            radius: 1
+          };
+          byte.init();
+          expect(byte.deltas.radius).toBeDefined();
+          return expect(byte.deltas.strokeWidth).not.toBeDefined();
+        });
+      });
       describe('numeric values ->', function() {
         it('should calculate delta', function() {
           var byte, radiusDelta;

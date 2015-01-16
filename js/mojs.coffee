@@ -6,12 +6,16 @@
 # Bit       = require './bit'
 # svg       = document.getElementById 'js-svg'
 # div       = document.getElementById 'js-div'
-Transit   = require './transit'
+# Transit   = require './transit'
 Burst     = require './burst'
 
 burst = new Burst
-console.log burst.defaults
-
+  angle: { 0: 360 }
+  burstX: 100
+  burstY: 100
+  radius: 1
+  delay:  2000
+  type: 'circle'
 #   type:             'polygon'
 #   # shiftX:           {200 : 100}
 #   # x:                0

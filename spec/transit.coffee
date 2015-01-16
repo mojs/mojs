@@ -329,13 +329,22 @@ describe 'Byte ->', ->
       byte.isRendered = false
       byte.render()
       expect(byte.calcSize).toHaveBeenCalled()
-    
   describe 'draw method ->', ->
     it 'should call setProp method', ->
       byte = new Byte radius: 25
       spyOn byte.bit, 'setProp'
       byte.draw()
       expect(byte.bit.setProp).toHaveBeenCalled()
+    it 'should set x/y to center', ->
+      byte = new Byte radius: 25
+      byte.draw()
+      expect(byte.bit.props.x).toBe byte.props.center
+      expect(byte.bit.props.y).toBe byte.props.center
+    it 'should set x/y to props.x/props.y if context was passed', ->
+      byte = new Byte radius: 25, ctx: svg
+      byte.draw()
+      expect(byte.bit.props.x).toBe byte.props.x
+      expect(byte.bit.props.y).toBe byte.props.y
     it 'should call bit.draw method', ->
       byte = new Byte radius: 25
       spyOn byte.bit, 'draw'
@@ -388,6 +397,17 @@ describe 'Byte ->', ->
 
 
   describe 'delta calculations ->', ->
+    describe 'deltasMap ->', ->
+      it 'should claculate deltas only from deltasMap prop if defined', ->
+        byte = new Byte
+          radius:      {25: 75}
+          strokeWidth: {25: 75}
+
+        byte.deltasMap = radius: 1
+        byte.init()
+        expect(byte.deltas.radius).toBeDefined()
+        expect(byte.deltas.strokeWidth).not.toBeDefined()
+
     describe 'numeric values ->', ->
       it 'should calculate delta', ->
         byte = new Byte radius:  {25: 75}

@@ -46,7 +46,11 @@ Helpers = (function() {
     x: 1,
     y: 1,
     shiftX: 1,
-    shiftY: 1
+    shiftY: 1,
+    burstX: 1,
+    burstY: 1,
+    burstShiftX: 1,
+    burstShiftY: 1
   };
 
   function Helpers() {

@@ -75,14 +75,16 @@ class Transit extends bitsMap.map.bit
     @el.style.opacity     = @props.opacity
     @el.style.width       = size
     @el.style.height      = size
-    @el.style['margin-left'] = marginSize
-    @el.style['margin-top']  = marginSize
+    @el.style['marginLeft'] = marginSize
+    @el.style['marginTop']  = marginSize
     @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
   draw:->
+    x = if @o.ctx then @props.x else @props.center
+    y = if @o.ctx then @props.y else @props.center
     @bit.setProp
-      x:                  @props.center
-      y:                  @props.center
+      x:                  x
+      y:                  y
       stroke:             @props.stroke
       strokeWidth:        @props.strokeWidth
       strokeOpacity:      @props.strokeOpacity
@@ -134,7 +136,6 @@ class Transit extends bitsMap.map.bit
     @bit = new bitClass ctx: @ctx, isDrawLess: true
 
   setProgress:(progress)->
-    # console.log progress
     @props.onUpdate?.call(@, progress)
 
     @progress = if progress < 0 or !progress then 0
@@ -176,9 +177,15 @@ class Transit extends bitsMap.map.bit
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         continue
+
       # if delta object was passed: like { 20: 75 }
+      # check if deltasMap is present and key isnt in this map
+      # skip this property
+      if @deltasMap? and !@deltasMap[key]? then continue
+      # else calculate delta
       delta = @h.parseDelta key, optionsValue
       if delta.type? then @deltas[key] = delta
+      # and set the start value to props
       @props[key] = delta.start
 
   # CHAINS

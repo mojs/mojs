@@ -5,7 +5,7 @@
 
   Burst = mojs.Burst;
 
-  describe('Byte ->', function() {
+  describe('Burst ->', function() {
     describe('extension ->', function() {
       it('should extend Transit class', function() {
         var burst;
@@ -126,7 +126,7 @@
         return expect(burst.props.center).toBe(135);
       });
     });
-    return describe('setProgress method ->', function() {
+    describe('setProgress method ->', function() {
       it('should setProgress on all transits', function() {
         var burst;
         burst = new Burst({
@@ -157,6 +157,33 @@
         spyOn(Burst.__super__, 'setProgress');
         burst.setProgress(.5);
         return expect(Burst.__super__.setProgress).toHaveBeenCalled();
+      });
+    });
+    describe('draw method ->', function() {
+      return it('should set x/y coordinates on every transit', function() {
+        var burst;
+        burst = new Burst;
+        burst.draw();
+        console.log(burst.transits[0].props.x);
+        expect(burst.transits[0].props.x).not.toBe('0px');
+        expect(burst.transits[1].props.x).not.toBe('0px');
+        expect(burst.transits[2].props.x).not.toBe('0px');
+        expect(burst.transits[3].props.x).not.toBe('0px');
+        return expect(burst.transits[4].props.x).not.toBe('0px');
+      });
+    });
+    return describe('deltasMap ->', function() {
+      return it('should describe props for delta calculations', function() {
+        var burst;
+        burst = new Burst;
+        expect(burst.deltasMap.burstRadius).toBe(1);
+        expect(burst.deltasMap.burstDegree).toBe(1);
+        expect(burst.deltasMap.burstX).toBe(1);
+        expect(burst.deltasMap.burstY).toBe(1);
+        expect(burst.deltasMap.burstShiftX).toBe(1);
+        expect(burst.deltasMap.burstShiftY).toBe(1);
+        expect(burst.deltasMap.burstAngle).toBe(1);
+        return expect(Object.keys(burst.deltasMap).length).toBe(7);
       });
     });
   });

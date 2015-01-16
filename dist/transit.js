@@ -101,15 +101,18 @@ Transit = (function(_super) {
     this.el.style.opacity = this.props.opacity;
     this.el.style.width = size;
     this.el.style.height = size;
-    this.el.style['margin-left'] = marginSize;
-    this.el.style['margin-top'] = marginSize;
+    this.el.style['marginLeft'] = marginSize;
+    this.el.style['marginTop'] = marginSize;
     return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
   };
 
   Transit.prototype.draw = function() {
+    var x, y;
+    x = this.o.ctx ? this.props.x : this.props.center;
+    y = this.o.ctx ? this.props.y : this.props.center;
     this.bit.setProp({
-      x: this.props.center,
-      y: this.props.center,
+      x: x,
+      y: y,
       stroke: this.props.stroke,
       strokeWidth: this.props.strokeWidth,
       strokeOpacity: this.props.strokeOpacity,
@@ -235,6 +238,9 @@ Transit = (function(_super) {
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
+        continue;
+      }
+      if ((this.deltasMap != null) && (this.deltasMap[key] == null)) {
         continue;
       }
       delta = this.h.parseDelta(key, optionsValue);

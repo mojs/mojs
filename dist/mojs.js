@@ -217,7 +217,7 @@ if (typeof window !== "undefined" && window !== null) {
 },{"./bit":1,"./circle":4,"./cross":5,"./h":6,"./line":7,"./polygon":9,"./rect":10}],3:[function(require,module,exports){
 
 /* istanbul ignore next */
-var Burst, Transit, bitsMap, burst,
+var Burst, Transit, bitsMap,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -232,7 +232,22 @@ Burst = (function(_super) {
     return Burst.__super__.constructor.apply(this, arguments);
   }
 
+  Burst.prototype.deltasMap = {
+    burstX: 1,
+    burstY: 1,
+    burstShiftX: 1,
+    burstShiftY: 1,
+    burstAngle: 1,
+    burstDegree: 1,
+    burstRadius: 1
+  };
+
   Burst.prototype.defaults = {
+    burstX: 0,
+    burstY: 0,
+    burstShiftX: 0,
+    burstShiftY: 0,
+    burstAngle: 0,
     burstPoints: 5,
     burstRadius: {
       50: 75
@@ -247,12 +262,13 @@ Burst = (function(_super) {
     fillOpacity: 'transparent',
     strokeLinecap: '',
     points: 5,
+    type: 'circle',
     x: 0,
     y: 0,
     shiftX: 0,
     shiftY: 0,
     opacity: 1,
-    radius: 50,
+    radius: 20,
     angle: 0,
     size: null,
     sizeGap: 0,
@@ -277,21 +293,60 @@ Burst = (function(_super) {
       option = this.getOption(i);
       option.ctx = this.ctx;
       option.isDrawLess = true;
+      option.isRunLess = true;
       _results.push(this.transits.push(new Transit(option)));
     }
     return _results;
   };
 
-  Burst.prototype.setProgress = function(progress) {
-    var i;
+  Burst.prototype.draw = function() {
+    var i, point, step, _results;
+    step = this.props.burstDegree / this.props.points;
     i = this.transits.length;
+    _results = [];
     while (i--) {
-      this.transits[i].setProgress(progress);
+      point = this.h.getRadialPoint({
+        radius: this.props.burstRadius,
+        angle: i * step,
+        center: {
+          x: this.props.center,
+          y: this.props.center
+        }
+      });
+      _results.push(this.transits[i].setProp({
+        x: point.x,
+        y: point.y
+      }));
     }
-    return Burst.__super__.setProgress.apply(this, arguments);
+    return _results;
   };
 
-  Burst.prototype.draw = function() {};
+  Burst.prototype.setElStyles = function() {
+    var marginSize, size;
+    size = "" + (this.props.size / this.h.remBase) + "rem";
+    marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
+    this.el.style.position = 'absolute';
+    this.el.style.top = this.props.burstY;
+    this.el.style.left = this.props.burstX;
+    this.el.style.opacity = this.props.opacity;
+    this.el.style.width = size;
+    this.el.style.height = size;
+    this.el.style['marginLeft'] = marginSize;
+    this.el.style['marginTop'] = marginSize;
+    return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+  };
+
+  Burst.prototype.setProgress = function(progress) {
+    var i, _results;
+    Burst.__super__.setProgress.apply(this, arguments);
+    i = this.transits.length;
+    _results = [];
+    while (i--) {
+      this.transits[i].setProgress(progress);
+      _results.push(this.transits[i].draw());
+    }
+    return _results;
+  };
 
   Burst.prototype.calcSize = function() {
     var end, i, largestSize, selfSize, start, transit, _i, _len, _ref;
@@ -332,8 +387,6 @@ Burst = (function(_super) {
   return Burst;
 
 })(Transit);
-
-burst = new Burst;
 
 
 /* istanbul ignore next */
@@ -531,7 +584,11 @@ Helpers = (function() {
     x: 1,
     y: 1,
     shiftX: 1,
-    shiftY: 1
+    shiftY: 1,
+    burstX: 1,
+    burstY: 1,
+    burstShiftX: 1,
+    burstShiftY: 1
   };
 
   function Helpers() {
@@ -943,17 +1000,22 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":1}],8:[function(require,module,exports){
-var Burst, Transit, burst;
-
-Transit = require('./transit');
+var Burst, burst;
 
 Burst = require('./burst');
 
-burst = new Burst;
+burst = new Burst({
+  angle: {
+    0: 360
+  },
+  burstX: 100,
+  burstY: 100,
+  radius: 1,
+  delay: 2000,
+  type: 'circle'
+});
 
-console.log(burst.defaults);
-
-},{"./burst":3,"./transit":11}],9:[function(require,module,exports){
+},{"./burst":3}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1199,15 +1261,18 @@ Transit = (function(_super) {
     this.el.style.opacity = this.props.opacity;
     this.el.style.width = size;
     this.el.style.height = size;
-    this.el.style['margin-left'] = marginSize;
-    this.el.style['margin-top'] = marginSize;
+    this.el.style['marginLeft'] = marginSize;
+    this.el.style['marginTop'] = marginSize;
     return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
   };
 
   Transit.prototype.draw = function() {
+    var x, y;
+    x = this.o.ctx ? this.props.x : this.props.center;
+    y = this.o.ctx ? this.props.y : this.props.center;
     this.bit.setProp({
-      x: this.props.center,
-      y: this.props.center,
+      x: x,
+      y: y,
       stroke: this.props.stroke,
       strokeWidth: this.props.strokeWidth,
       strokeOpacity: this.props.strokeOpacity,
@@ -1333,6 +1398,9 @@ Transit = (function(_super) {
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
+        continue;
+      }
+      if ((this.deltasMap != null) && (this.deltasMap[key] == null)) {
         continue;
       }
       delta = this.h.parseDelta(key, optionsValue);
