@@ -66,7 +66,7 @@ describe 'Burst ->', ->
       expect(burst.props.isRandom).toBe false
 
     it 'should calculate stepRand and radiusRand for every transit ->', ->
-      burst = new Burst isRand: true
+      burst = new Burst isRandom: true
       expect(burst.transits[0].stepRand).toBeDefined()
       expect(burst.transits[0].radiusRand).toBeDefined()
       expect(burst.transits[1].stepRand).toBeDefined()

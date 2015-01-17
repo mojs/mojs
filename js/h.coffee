@@ -53,6 +53,10 @@ class Helpers
     @isIE = @prefix.lowercase is 'ms'
     # @animationLoop = @bind @animationLoop, @
 
+  extend:(objTo, objFrom)->
+    for key, value of objFrom
+      objTo[key] ?= objFrom[key]
+
   getRemBase:->
     html = document.querySelector('html')
     style = getComputedStyle(html)

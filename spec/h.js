@@ -43,6 +43,22 @@
       });
     });
     return describe('methods ->', function() {
+      describe('extend method', function() {
+        return it('should extend object by other one', function() {
+          var obj1, obj2;
+          obj1 = {
+            a: 1
+          };
+          obj2 = {
+            b: 1
+          };
+          h.extend(obj1, obj2);
+          expect(obj1.a).toBe(1);
+          expect(obj1.b).toBe(1);
+          expect(obj2.a).not.toBeDefined();
+          return expect(obj2.b).toBe(1);
+        });
+      });
       describe('rand method', function() {
         it('should return random digit form range', function() {
           expect(h.rand(10, 20)).toBeGreaterThan(9);

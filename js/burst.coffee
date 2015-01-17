@@ -3,6 +3,7 @@
 
 bitsMap   = require './bitsMap'
 Transit   = require './transit'
+h         = require './h'
 
 class Burst extends Transit
   
@@ -75,19 +76,16 @@ class Burst extends Transit
 
   init:->
     @childOptions = @o.childOptions or {}
-    for key, value of @childDefaults
-      @childOptions[key] ?= @childDefaults[key]
-    delete @o.childOptions
+    h.extend(@childOptions, @childDefaults); delete @o.childOptions
     super
+
   run:->
     if @props.isRandom
       i = @transits.length
       while(i--)
         @generateRandom(i)
     super
-  generateRandom:(i)->
-    @transits[i].radiusRand = @h.rand(50, 100)/100
-    @transits[i].stepRand   = @h.rand(75, 125)/100 + @h.rand(0,5)*90
+
   createBit:->
     @transits = []
     for i in [0...@props.points]
@@ -111,7 +109,7 @@ class Burst extends Transit
       transit.setProp
         x: point.x
         y: point.y
-
+        angle: angle-90
 
   setProgress:(progress)->
     super
@@ -119,6 +117,7 @@ class Burst extends Transit
     while(i--)
       @transits[i].setProgress progress
       @transits[i].draw()
+
   calcSize:->
     largestSize = -1
     for transit, i in @transits
@@ -132,6 +131,7 @@ class Burst extends Transit
     else parseFloat @props.radius
     @props.size   = largestSize + 2*selfSize
     @props.center = @props.size/2
+
   getOption:(i)->
     option = {}
     for key, value of @childOptions
@@ -140,6 +140,10 @@ class Burst extends Transit
   getPropByMod:(name, i)->
     prop = @childOptions[name]
     if @h.isArray(prop) then prop[i % prop.length] else prop
+
+  generateRandom:(i)->
+    @transits[i].radiusRand = @h.rand(50, 100)/100
+    @transits[i].stepRand   = @h.rand(75, 125)/100 + @h.rand(0,5)*90
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

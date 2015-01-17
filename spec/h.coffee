@@ -31,6 +31,16 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 10
   describe 'methods ->', ->
+    describe 'extend method', ->
+      it 'should extend object by other one', ->
+        obj1 = a: 1
+        obj2 = b: 1
+        h.extend(obj1, obj2)
+        expect(obj1.a).toBe 1
+        expect(obj1.b).toBe 1
+        expect(obj2.a).not.toBeDefined()
+        expect(obj2.b).toBe 1
+
     describe 'rand method', ->
       it 'should return random digit form range', ->
         expect(h.rand(10, 20)).toBeGreaterThan      9

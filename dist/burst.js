@@ -1,12 +1,14 @@
 
 /* istanbul ignore next */
-var Burst, Transit, bitsMap,
+var Burst, Transit, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 bitsMap = require('./bitsMap');
 
 Transit = require('./transit');
+
+h = require('./h');
 
 Burst = (function(_super) {
   __extends(Burst, _super);
@@ -80,15 +82,8 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.init = function() {
-    var key, value, _base, _ref;
     this.childOptions = this.o.childOptions || {};
-    _ref = this.childDefaults;
-    for (key in _ref) {
-      value = _ref[key];
-      if ((_base = this.childOptions)[key] == null) {
-        _base[key] = this.childDefaults[key];
-      }
-    }
+    h.extend(this.childOptions, this.childDefaults);
     delete this.o.childOptions;
     return Burst.__super__.init.apply(this, arguments);
   };
@@ -102,11 +97,6 @@ Burst = (function(_super) {
       }
     }
     return Burst.__super__.run.apply(this, arguments);
-  };
-
-  Burst.prototype.generateRandom = function(i) {
-    this.transits[i].radiusRand = this.h.rand(50, 100) / 100;
-    return this.transits[i].stepRand = this.h.rand(75, 125) / 100 + this.h.rand(0, 5) * 90;
   };
 
   Burst.prototype.createBit = function() {
@@ -146,7 +136,8 @@ Burst = (function(_super) {
       });
       _results.push(transit.setProp({
         x: point.x,
-        y: point.y
+        y: point.y,
+        angle: angle - 90
       }));
     }
     return _results;
@@ -198,6 +189,11 @@ Burst = (function(_super) {
     } else {
       return prop;
     }
+  };
+
+  Burst.prototype.generateRandom = function(i) {
+    this.transits[i].radiusRand = this.h.rand(50, 100) / 100;
+    return this.transits[i].stepRand = this.h.rand(75, 125) / 100 + this.h.rand(0, 5) * 90;
   };
 
   return Burst;

@@ -64,6 +64,16 @@ Helpers = (function() {
     return this.isIE = this.prefix.lowercase === 'ms';
   };
 
+  Helpers.prototype.extend = function(objTo, objFrom) {
+    var key, value, _results;
+    _results = [];
+    for (key in objFrom) {
+      value = objFrom[key];
+      _results.push(objTo[key] != null ? objTo[key] : objTo[key] = objFrom[key]);
+    }
+    return _results;
+  };
+
   Helpers.prototype.getRemBase = function() {
     var html, style;
     html = document.querySelector('html');

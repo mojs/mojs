@@ -110,7 +110,7 @@
       return it('should calculate stepRand and radiusRand for every transit ->', function() {
         var burst;
         burst = new Burst({
-          isRand: true
+          isRandom: true
         });
         expect(burst.transits[0].stepRand).toBeDefined();
         expect(burst.transits[0].radiusRand).toBeDefined();

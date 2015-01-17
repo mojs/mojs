@@ -12,19 +12,19 @@ Burst     = require './burst'
 burst = new Burst
   x:            100
   y:            100
-  duration:     500
+  duration:     300
   degree:       30
-  points:       3
+  points:       5
   isDrawLess:   true
-  # isRandom:     true
-
+  isRandom:     true
   childOptions:
-    fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
-    # stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
-    strokeWidth:  0
+    type:         'line'
+    # fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
+    stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
+    strokeWidth:  2
+    # radius:       14
     # type:         ['cross', 'polygon', 'line', 'polygon', 'cross']
     # angle:         [{ 0:360 }, {360: 0}, {0: 360}]
-
 
 
 

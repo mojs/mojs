@@ -217,13 +217,15 @@ if (typeof window !== "undefined" && window !== null) {
 },{"./bit":1,"./circle":4,"./cross":5,"./h":6,"./line":7,"./polygon":9,"./rect":10}],3:[function(require,module,exports){
 
 /* istanbul ignore next */
-var Burst, Transit, bitsMap,
+var Burst, Transit, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 bitsMap = require('./bitsMap');
 
 Transit = require('./transit');
+
+h = require('./h');
 
 Burst = (function(_super) {
   __extends(Burst, _super);
@@ -297,15 +299,8 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.init = function() {
-    var key, value, _base, _ref;
     this.childOptions = this.o.childOptions || {};
-    _ref = this.childDefaults;
-    for (key in _ref) {
-      value = _ref[key];
-      if ((_base = this.childOptions)[key] == null) {
-        _base[key] = this.childDefaults[key];
-      }
-    }
+    h.extend(this.childOptions, this.childDefaults);
     delete this.o.childOptions;
     return Burst.__super__.init.apply(this, arguments);
   };
@@ -319,11 +314,6 @@ Burst = (function(_super) {
       }
     }
     return Burst.__super__.run.apply(this, arguments);
-  };
-
-  Burst.prototype.generateRandom = function(i) {
-    this.transits[i].radiusRand = this.h.rand(50, 100) / 100;
-    return this.transits[i].stepRand = this.h.rand(75, 125) / 100 + this.h.rand(0, 5) * 90;
   };
 
   Burst.prototype.createBit = function() {
@@ -363,7 +353,8 @@ Burst = (function(_super) {
       });
       _results.push(transit.setProp({
         x: point.x,
-        y: point.y
+        y: point.y,
+        angle: angle - 90
       }));
     }
     return _results;
@@ -417,6 +408,11 @@ Burst = (function(_super) {
     }
   };
 
+  Burst.prototype.generateRandom = function(i) {
+    this.transits[i].radiusRand = this.h.rand(50, 100) / 100;
+    return this.transits[i].stepRand = this.h.rand(75, 125) / 100 + this.h.rand(0, 5) * 90;
+  };
+
   return Burst;
 
 })(Transit);
@@ -447,7 +443,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":2,"./transit":11}],4:[function(require,module,exports){
+},{"./bitsMap":2,"./h":6,"./transit":11}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -633,6 +629,16 @@ Helpers = (function() {
     this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
     return this.isIE = this.prefix.lowercase === 'ms';
+  };
+
+  Helpers.prototype.extend = function(objTo, objFrom) {
+    var key, value, _results;
+    _results = [];
+    for (key in objFrom) {
+      value = objFrom[key];
+      _results.push(objTo[key] != null ? objTo[key] : objTo[key] = objFrom[key]);
+    }
+    return _results;
   };
 
   Helpers.prototype.getRemBase = function() {
@@ -1035,13 +1041,15 @@ Burst = require('./burst');
 burst = new Burst({
   x: 100,
   y: 100,
-  duration: 500,
+  duration: 300,
   degree: 30,
-  points: 3,
+  points: 5,
   isDrawLess: true,
+  isRandom: true,
   childOptions: {
-    fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
-    strokeWidth: 0
+    type: 'line',
+    stroke: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
+    strokeWidth: 2
   }
 });
 
