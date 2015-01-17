@@ -39,7 +39,8 @@ Burst = (function(_super) {
     delay: 0,
     repeat: 1,
     yoyo: false,
-    easing: 'Linear.None'
+    easing: 'Linear.None',
+    isRandom: false
   };
 
   Burst.prototype.childDefaults = {
@@ -92,6 +93,22 @@ Burst = (function(_super) {
     return Burst.__super__.init.apply(this, arguments);
   };
 
+  Burst.prototype.run = function() {
+    var i;
+    if (this.props.isRandom) {
+      i = this.transits.length;
+      while (i--) {
+        this.generateRandom(i);
+      }
+    }
+    return Burst.__super__.run.apply(this, arguments);
+  };
+
+  Burst.prototype.generateRandom = function(i) {
+    this.transits[i].radiusRand = this.h.rand(50, 100) / 100;
+    return this.transits[i].stepRand = this.h.rand(75, 125) / 100 + this.h.rand(0, 5) * 90;
+  };
+
   Burst.prototype.createBit = function() {
     var bitClass, i, option, _i, _ref, _results;
     this.transits = [];
@@ -102,28 +119,32 @@ Burst = (function(_super) {
       option.ctx = this.ctx;
       option.isDrawLess = true;
       option.isRunLess = true;
-      _results.push(this.transits.push(new Transit(option)));
+      this.transits.push(new Transit(option));
+      _results.push(this.props.isRandom && this.generateRandom(i));
     }
     return _results;
   };
 
   Burst.prototype.draw = function() {
-    var i, point, points, step, _results;
+    var angle, i, point, points, radius, step, transit, _results;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
     i = this.transits.length;
     _results = [];
     while (i--) {
+      transit = this.transits[i];
+      radius = this.props.radius * (transit.radiusRand || 1);
+      angle = i * step * (transit.stepRand || 1);
       point = this.h.getRadialPoint({
-        radius: this.props.radius,
-        angle: i * step,
+        radius: radius,
+        angle: angle,
         center: {
           x: this.props.center,
           y: this.props.center
         }
       });
-      _results.push(this.transits[i].setProp({
+      _results.push(transit.setProp({
         x: point.x,
         y: point.y
       }));
@@ -173,7 +194,7 @@ Burst = (function(_super) {
     var prop;
     prop = this.childOptions[name];
     if (this.h.isArray(prop)) {
-      return this.childOptions[name][i % prop.length];
+      return prop[i % prop.length];
     } else {
       return prop;
     }

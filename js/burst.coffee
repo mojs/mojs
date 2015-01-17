@@ -34,6 +34,9 @@ class Burst extends Transit
     repeat:             1
     yoyo:               false
     easing:             'Linear.None'
+    isRandom:           false
+
+
   childDefaults:
     # presentation props
     strokeWidth:        { 2 : 0 }
@@ -76,25 +79,40 @@ class Burst extends Transit
       @childOptions[key] ?= @childDefaults[key]
     delete @o.childOptions
     super
+  run:->
+    if @props.isRandom
+      i = @transits.length
+      while(i--)
+        @generateRandom(i)
+    super
+  generateRandom:(i)->
+    @transits[i].radiusRand = @h.rand(50, 100)/100
+    @transits[i].stepRand   = @h.rand(75, 125)/100 + @h.rand(0,5)*90
   createBit:->
     @transits = []
     for i in [0...@props.points]
       bitClass = bitsMap.getBit(@o.type or @type); option = @getOption(i)
       option.ctx = @ctx; option.isDrawLess = true; option.isRunLess = true
       @transits.push new Transit option
+      @props.isRandom and @generateRandom(i)
   draw:->
     points = @props.points
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
     i = @transits.length
     while(i--)
+      transit = @transits[i]
+      radius = @props.radius*(transit.radiusRand or 1)
+      angle = i*step*(transit.stepRand or 1)
       point = @h.getRadialPoint
-        radius: @props.radius
-        angle:  i*step
+        radius: radius
+        angle:  angle
         center: x: @props.center, y: @props.center
-      @transits[i].setProp
+      transit.setProp
         x: point.x
         y: point.y
+
+
   setProgress:(progress)->
     super
     i = @transits.length
@@ -121,7 +139,7 @@ class Burst extends Transit
     option
   getPropByMod:(name, i)->
     prop = @childOptions[name]
-    if @h.isArray(prop) then @childOptions[name][i % prop.length] else prop
+    if @h.isArray(prop) then prop[i % prop.length] else prop
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
