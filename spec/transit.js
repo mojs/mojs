@@ -671,25 +671,6 @@
       });
     });
     describe('delta calculations ->', function() {
-      describe('deltasMap ->', function() {
-        return it('should claculate deltas only from deltasMap prop if defined', function() {
-          var byte;
-          byte = new Byte({
-            radius: {
-              25: 75
-            },
-            strokeWidth: {
-              25: 75
-            }
-          });
-          byte.deltasMap = {
-            radius: 1
-          };
-          byte.init();
-          expect(byte.deltas.radius).toBeDefined();
-          return expect(byte.deltas.strokeWidth).not.toBeDefined();
-        });
-      });
       describe('numeric values ->', function() {
         it('should calculate delta', function() {
           var byte, radiusDelta;

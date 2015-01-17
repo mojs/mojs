@@ -242,9 +242,6 @@ Transit = (function(_super) {
         }
         continue;
       }
-      if ((this.deltasMap != null) && (this.deltasMap[key] == null)) {
-        continue;
-      }
       delta = this.h.parseDelta(key, optionsValue);
       if (delta.type != null) {
         this.deltas[key] = delta;

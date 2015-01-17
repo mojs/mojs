@@ -15,9 +15,9 @@
       return it('should have its own defaults', function() {
         var burst;
         burst = new Burst;
-        expect(burst.defaults.burstDegree).toBe(360);
-        expect(burst.defaults.burstPoints).toBe(5);
-        return expect(burst.defaults.burstRadius[50]).toBe(75);
+        expect(burst.defaults.degree).toBe(360);
+        expect(burst.defaults.points).toBe(5);
+        return expect(burst.defaults.type).toBe('circle');
       });
     });
     describe('initialization ->', function() {
@@ -30,13 +30,15 @@
       return it('should pass properties to transits', function() {
         var burst;
         burst = new Burst({
-          radius: [
-            {
-              20: 50
-            }, 20, '500'
-          ],
-          stroke: ['deeppink', 'yellow'],
-          fill: '#fff'
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20, '500'
+            ],
+            stroke: ['deeppink', 'yellow'],
+            fill: '#fff'
+          }
         });
         expect(burst.transits[0].o.radius[20]).toBe(50);
         expect(burst.transits[1].o.radius).toBe(20);
@@ -49,15 +51,46 @@
         return expect(burst.transits[2].o.fill).toBe('#fff');
       });
     });
+    describe('childOptions ->', function() {
+      it('should save childOptions from options ->', function() {
+        var burst;
+        burst = new Burst({
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20, '500'
+            ]
+          }
+        });
+        expect(burst.childOptions).toBeDefined();
+        return expect(burst.childOptions.radius[1]).toBe(20);
+      });
+      return it('should extend childDefaults ->', function() {
+        var burst;
+        burst = new Burst({
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20, '500'
+            ]
+          }
+        });
+        return expect(burst.childOptions.strokeWidth[2]).toBe(0);
+      });
+    });
     describe('getOption method ->', function() {
       return it('should return an option obj based on i ->', function() {
         var burst, option0, option1, option7;
         burst = new Burst({
-          radius: [
-            {
-              20: 50
-            }, 20, '500'
-          ]
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20, '500'
+            ]
+          }
         });
         option0 = burst.getOption(0);
         option1 = burst.getOption(1);
@@ -71,11 +104,13 @@
       it('should return the prop from @o based on i ->', function() {
         var burst, opt0, opt1, opt8;
         burst = new Burst({
-          radius: [
-            {
-              20: 50
-            }, 20, '500'
-          ]
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20, '500'
+            ]
+          }
         });
         opt0 = burst.getPropByMod('radius', 0);
         opt1 = burst.getPropByMod('radius', 1);
@@ -87,7 +122,9 @@
       return it('should the same prop if not an array ->', function() {
         var burst, opt0, opt1, opt8;
         burst = new Burst({
-          radius: 20
+          childOptions: {
+            radius: 20
+          }
         });
         opt0 = burst.getPropByMod('radius', 0);
         opt1 = burst.getPropByMod('radius', 1);
@@ -101,41 +138,47 @@
       it('should calculate size based on largest transit + self radius', function() {
         var burst;
         burst = new Burst({
-          radius: [
-            {
-              20: 50
-            }, 20
-          ],
-          strokeWidth: 20
+          radius: 50,
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20
+            ],
+            strokeWidth: 20
+          }
         });
-        expect(burst.props.size).toBe(220);
-        return expect(burst.props.center).toBe(110);
+        expect(burst.props.size).toBe(240);
+        return expect(burst.props.center).toBe(120);
       });
-      return it('should work with numeric burstRadius', function() {
+      return it('should calculate size based on largest transit + self radius #2', function() {
         var burst;
         burst = new Burst({
-          burstRadius: '100',
-          radius: [
-            {
-              20: 50
-            }, 20
-          ],
-          strokeWidth: 20
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20
+            ],
+            strokeWidth: 20
+          }
         });
-        expect(burst.props.size).toBe(270);
-        return expect(burst.props.center).toBe(135);
+        expect(burst.props.size).toBe(290);
+        return expect(burst.props.center).toBe(145);
       });
     });
     describe('setProgress method ->', function() {
       it('should setProgress on all transits', function() {
         var burst;
         burst = new Burst({
-          radius: [
-            {
-              20: 50
-            }, 20
-          ],
-          strokeWidth: 20
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20
+            ],
+            strokeWidth: 20
+          }
         });
         burst.setProgress(.5);
         expect(burst.transits[0].progress).toBe(.5);
@@ -159,31 +202,16 @@
         return expect(Burst.__super__.setProgress).toHaveBeenCalled();
       });
     });
-    describe('draw method ->', function() {
+    return describe('draw method ->', function() {
       return it('should set x/y coordinates on every transit', function() {
         var burst;
         burst = new Burst;
         burst.draw();
-        console.log(burst.transits[0].props.x);
         expect(burst.transits[0].props.x).not.toBe('0px');
         expect(burst.transits[1].props.x).not.toBe('0px');
         expect(burst.transits[2].props.x).not.toBe('0px');
         expect(burst.transits[3].props.x).not.toBe('0px');
         return expect(burst.transits[4].props.x).not.toBe('0px');
-      });
-    });
-    return describe('deltasMap ->', function() {
-      return it('should describe props for delta calculations', function() {
-        var burst;
-        burst = new Burst;
-        expect(burst.deltasMap.burstRadius).toBe(1);
-        expect(burst.deltasMap.burstDegree).toBe(1);
-        expect(burst.deltasMap.burstX).toBe(1);
-        expect(burst.deltasMap.burstY).toBe(1);
-        expect(burst.deltasMap.burstShiftX).toBe(1);
-        expect(burst.deltasMap.burstShiftY).toBe(1);
-        expect(burst.deltasMap.burstAngle).toBe(1);
-        return expect(Object.keys(burst.deltasMap).length).toBe(7);
       });
     });
   });

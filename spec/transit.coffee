@@ -396,19 +396,7 @@ describe 'Byte ->', ->
       byte.isPropChanged('x')
       expect(byte.lastSet.x).toBeDefined()
 
-
   describe 'delta calculations ->', ->
-    describe 'deltasMap ->', ->
-      it 'should claculate deltas only from deltasMap prop if defined', ->
-        byte = new Byte
-          radius:      {25: 75}
-          strokeWidth: {25: 75}
-
-        byte.deltasMap = radius: 1
-        byte.init()
-        expect(byte.deltas.radius).toBeDefined()
-        expect(byte.deltas.strokeWidth).not.toBeDefined()
-
     describe 'numeric values ->', ->
       it 'should calculate delta', ->
         byte = new Byte radius:  {25: 75}

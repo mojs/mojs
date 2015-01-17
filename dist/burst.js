@@ -15,28 +15,37 @@ Burst = (function(_super) {
     return Burst.__super__.constructor.apply(this, arguments);
   }
 
-  Burst.prototype.deltasMap = {
-    burstX: 1,
-    burstY: 1,
-    burstShiftX: 1,
-    burstShiftY: 1,
-    burstAngle: 1,
-    burstDegree: 1,
-    burstRadius: 1
-  };
-
   Burst.prototype.defaults = {
-    burstX: 0,
-    burstY: 0,
-    burstShiftX: 0,
-    burstShiftY: 0,
-    burstAngle: 0,
-    burstPoints: 5,
-    burstRadius: {
+    points: 5,
+    type: 'circle',
+    degree: 360,
+    x: 0,
+    y: 0,
+    shiftX: 0,
+    shiftY: 0,
+    opacity: 1,
+    radius: {
       50: 75
     },
-    burstDegree: 360,
-    strokeWidth: 2,
+    angle: 0,
+    size: null,
+    sizeGap: 0,
+    onInit: null,
+    onStart: null,
+    onComplete: null,
+    onCompleteChain: null,
+    onUpdate: null,
+    duration: 500,
+    delay: 0,
+    repeat: 1,
+    yoyo: false,
+    easing: 'Linear.None'
+  };
+
+  Burst.prototype.childDefaults = {
+    strokeWidth: {
+      2: 0
+    },
     strokeOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
@@ -51,7 +60,9 @@ Burst = (function(_super) {
     shiftX: 0,
     shiftY: 0,
     opacity: 1,
-    radius: 20,
+    radius: {
+      3: 0
+    },
     angle: 0,
     size: null,
     sizeGap: 0,
@@ -65,6 +76,19 @@ Burst = (function(_super) {
     repeat: 1,
     yoyo: false,
     easing: 'Linear.None'
+  };
+
+  Burst.prototype.init = function() {
+    var key, value, _base, _ref;
+    this.childOptions = this.o.childOptions || {};
+    _ref = this.childDefaults;
+    for (key in _ref) {
+      value = _ref[key];
+      if ((_base = this.childOptions)[key] == null) {
+        _base[key] = this.childDefaults[key];
+      }
+    }
+    return Burst.__super__.init.apply(this, arguments);
   };
 
   Burst.prototype.createBit = function() {
@@ -84,12 +108,12 @@ Burst = (function(_super) {
 
   Burst.prototype.draw = function() {
     var i, point, step, _results;
-    step = this.props.burstDegree / this.props.points;
+    step = this.props.degree / this.props.points;
     i = this.transits.length;
     _results = [];
     while (i--) {
       point = this.h.getRadialPoint({
-        radius: this.props.burstRadius,
+        radius: this.props.radius,
         angle: i * step,
         center: {
           x: this.props.center,
@@ -102,21 +126,6 @@ Burst = (function(_super) {
       }));
     }
     return _results;
-  };
-
-  Burst.prototype.setElStyles = function() {
-    var marginSize, size;
-    size = "" + (this.props.size / this.h.remBase) + "rem";
-    marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
-    this.el.style.position = 'absolute';
-    this.el.style.top = this.props.burstY;
-    this.el.style.left = this.props.burstX;
-    this.el.style.opacity = this.props.opacity;
-    this.el.style.width = size;
-    this.el.style.height = size;
-    this.el.style['marginLeft'] = marginSize;
-    this.el.style['marginTop'] = marginSize;
-    return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
   };
 
   Burst.prototype.setProgress = function(progress) {
@@ -141,15 +150,15 @@ Burst = (function(_super) {
         largestSize = transit.props.size;
       }
     }
-    selfSize = this.deltas.burstRadius ? (start = Math.abs(this.deltas.burstRadius.start), end = Math.abs(this.deltas.burstRadius.end), Math.max(start, end)) : parseFloat(this.props.burstRadius);
-    this.props.size = largestSize / 2 + 2 * selfSize;
+    selfSize = this.deltas.radius ? (start = Math.abs(this.deltas.radius.start), end = Math.abs(this.deltas.radius.end), Math.max(start, end)) : parseFloat(this.props.radius);
+    this.props.size = largestSize + 2 * selfSize;
     return this.props.center = this.props.size / 2;
   };
 
   Burst.prototype.getOption = function(i) {
     var key, option, value, _ref;
     option = {};
-    _ref = this.o;
+    _ref = this.childOptions;
     for (key in _ref) {
       value = _ref[key];
       option[key] = this.getPropByMod(key, i);
@@ -159,9 +168,9 @@ Burst = (function(_super) {
 
   Burst.prototype.getPropByMod = function(name, i) {
     var prop;
-    prop = this.o[name];
+    prop = this.childOptions[name];
     if (this.h.isArray(prop)) {
-      return this.o[name][i % prop.length];
+      return this.childOptions[name][i % prop.length];
     } else {
       return prop;
     }

@@ -10,12 +10,12 @@
 Burst     = require './burst'
 
 burst = new Burst
-  angle: { 0: 360 }
+  angle:  { 0: 360 }
   burstX: 100
   burstY: 100
   radius: 5
   delay:  2000
-  type: 'line'
+  type:   'line'
 #   type:             'polygon'
 #   # shiftX:           {200 : 100}
 #   # x:                0

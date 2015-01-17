@@ -181,10 +181,7 @@ class Transit extends bitsMap.map.bit
         continue
 
       # if delta object was passed: like { 20: 75 }
-      # check if deltasMap is present and key isnt in this map
-      # skip this property
-      if @deltasMap? and !@deltasMap[key]? then continue
-      # else calculate delta
+      # calculate delta
       delta = @h.parseDelta key, optionsValue
       if delta.type? then @deltas[key] = delta
       # and set the start value to props
