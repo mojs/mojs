@@ -29,6 +29,9 @@ describe 'Byte ->', ->
     it 'should extend defaults object to properties', ->
       byte = new Byte radius: 45
       expect(byte.props.radius).toBe(45)
+    it 'should extend defaults object to properties if 0', ->
+      byte = new Byte radius: 0
+      expect(byte.props.radius).toBe(0)
     it 'should extend defaults object to properties if object was passed', ->
       byte = new Byte radius: {45: 55}
       expect(byte.props.radius).toBe(45)

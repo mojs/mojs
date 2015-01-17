@@ -25,7 +25,7 @@ Burst = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: {
-      50: 75
+      25: 75
     },
     angle: 0,
     size: null,
@@ -61,7 +61,7 @@ Burst = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: {
-      3: 0
+      7: 0
     },
     angle: 0,
     size: null,
@@ -88,6 +88,7 @@ Burst = (function(_super) {
         _base[key] = this.childDefaults[key];
       }
     }
+    delete this.o.childOptions;
     return Burst.__super__.init.apply(this, arguments);
   };
 
@@ -107,8 +108,10 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.draw = function() {
-    var i, point, step, _results;
-    step = this.props.degree / this.props.points;
+    var i, point, points, step, _results;
+    points = this.props.points;
+    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
+    step = this.props.degree / this.degreeCnt;
     i = this.transits.length;
     _results = [];
     while (i--) {

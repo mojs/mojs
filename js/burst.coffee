@@ -18,7 +18,7 @@ class Burst extends Transit
     shiftY:             0
     opacity:            1
     # size props
-    radius:             { 50: 75 }
+    radius:             { 25: 75 }
     angle:              0
     size:               null
     sizeGap:            0
@@ -53,7 +53,7 @@ class Burst extends Transit
     shiftY:             0
     opacity:            1
     # size props
-    radius:             { 3 : 0 }
+    radius:             { 7 : 0 }
     angle:              0
     size:               null
     sizeGap:            0
@@ -74,18 +74,18 @@ class Burst extends Transit
     @childOptions = @o.childOptions or {}
     for key, value of @childDefaults
       @childOptions[key] ?= @childDefaults[key]
-    # delete @o.childOptions
+    delete @o.childOptions
     super
-
   createBit:->
     @transits = []
     for i in [0...@props.points]
       bitClass = bitsMap.getBit(@o.type or @type); option = @getOption(i)
       option.ctx = @ctx; option.isDrawLess = true; option.isRunLess = true
       @transits.push new Transit option
-
   draw:->
-    step = @props.degree/@props.points
+    points = @props.points
+    @degreeCnt = if @props.degree % 360 is 0 then points else points-1
+    step = @props.degree/@degreeCnt
     i = @transits.length
     while(i--)
       point = @h.getRadialPoint

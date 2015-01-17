@@ -69,8 +69,8 @@ class Transit extends bitsMap.map.bit
     size        = "#{@props.size/@h.remBase}rem"
     marginSize  = "#{-@props.size/(2*@h.remBase)}rem"
     @el.style.position    = 'absolute'
-    @el.style.top         = @props.y.string
-    @el.style.left        = @props.x.string
+    @el.style.top         = @props.y
+    @el.style.left        = @props.x
     @el.style.opacity     = @props.opacity
     @el.style.width       = size
     @el.style.height      = size
@@ -168,7 +168,7 @@ class Transit extends bitsMap.map.bit
     @deltas = {}
     # console.time 'extend defaults'
     for key, defaultsValue of @defaults
-      optionsValue = @o[key] or defaultsValue
+      optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object value - just save it to @props
       
       isObject = (optionsValue? and (typeof optionsValue is 'object'))

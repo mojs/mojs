@@ -51,7 +51,7 @@ class Helpers
     @getRemBase()
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
-    @animationLoop = @bind @animationLoop, @
+    # @animationLoop = @bind @animationLoop, @
 
   getRemBase:->
     html = document.querySelector('html')
@@ -83,13 +83,13 @@ class Helpers
         unit:     unit
         value:    amount
         string:   "#{amount}#{unit}"
-  bind:(func, context) ->
-    wrapper = ->
-      args = Array::slice.call(arguments)
-      unshiftArgs = bindArgs.concat(args)
-      func.apply context, unshiftArgs
-    bindArgs = Array::slice.call(arguments, 2)
-    wrapper
+  # bind:(func, context) ->
+  #   wrapper = ->
+  #     args = Array::slice.call(arguments)
+  #     unshiftArgs = bindArgs.concat(args)
+  #     func.apply context, unshiftArgs
+  #   bindArgs = Array::slice.call(arguments, 2)
+  #   wrapper
   getRadialPoint:(o={})->
     return if !o.radius? or !o.angle? or !o.center?
     radAngle = (o.angle-90)*(Math.PI/180)
@@ -203,16 +203,16 @@ class Helpers
       throw Error 'String expected - nothing to capitalize'
     str.charAt(0).toUpperCase() + str.substring(1)
   startAnimationLoop:->
-    return @ if @isAnimateLoop
-    @isAnimateLoop = true
-    requestAnimationFrame @animationLoop
+    return h if h.isAnimateLoop
+    h.isAnimateLoop = true
+    requestAnimationFrame h.animationLoop
     @
-  stopAnimationLoop:-> @isAnimateLoop = false
+  stopAnimationLoop:-> h.isAnimateLoop = false
   animationLoop:->
-    if !@TWEEN.getAll().length then @isAnimateLoop = false
-    return @ if !@isAnimateLoop
-    @TWEEN.update()
-    requestAnimationFrame @animationLoop
+    if !h.TWEEN.getAll().length then h.isAnimateLoop = false
+    return h if !h.isAnimateLoop
+    h.TWEEN.update()
+    requestAnimationFrame h.animationLoop
     @
 
   parseDelta:(key, value)->
@@ -281,12 +281,16 @@ class Helpers
       # else @props[key] = start
     delta
 
+  rand:(min,max)-> Math.floor((Math.random() * ((max + 1) - min)) + min)
+
+h = new Helpers
+
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
-  define "Helpers", [], -> new Helpers
+  define "Helpers", [], -> h
 if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = new Helpers
+  module.exports = h
 ### istanbul ignore next ###
 window?.mojs ?= {}
-window?.mojs.helpers = new Helpers
+window?.mojs.helpers = h
 

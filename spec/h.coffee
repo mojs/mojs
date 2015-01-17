@@ -31,6 +31,16 @@ describe 'Helpers ->', ->
       mapLen = Object.keys(h.tweenOptionMap).length
       expect(mapLen)                            .toBe 10
   describe 'methods ->', ->
+    describe 'rand method', ->
+      it 'should return random digit form range', ->
+        expect(h.rand(10, 20)).toBeGreaterThan      9
+        expect(h.rand(10, 20)).not.toBeGreaterThan  20
+      it 'should work with negative numbers', ->
+        expect(h.rand(-10, -20)).toBeGreaterThan      -20
+        expect(h.rand(-10, -20)).not.toBeGreaterThan  -11
+      it 'should work with mixed numbers', ->
+        expect(h.rand(-10, 20)).toBeGreaterThan      -11
+        expect(h.rand(-10, 20)).not.toBeGreaterThan  20
     describe 'getDelta method', ->
       describe 'numeric values ->', ->
         it 'should calculate delta', ->

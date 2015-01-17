@@ -242,7 +242,7 @@ Burst = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: {
-      50: 75
+      25: 75
     },
     angle: 0,
     size: null,
@@ -278,7 +278,7 @@ Burst = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: {
-      3: 0
+      7: 0
     },
     angle: 0,
     size: null,
@@ -305,6 +305,7 @@ Burst = (function(_super) {
         _base[key] = this.childDefaults[key];
       }
     }
+    delete this.o.childOptions;
     return Burst.__super__.init.apply(this, arguments);
   };
 
@@ -324,8 +325,10 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.draw = function() {
-    var i, point, step, _results;
-    step = this.props.degree / this.props.points;
+    var i, point, points, step, _results;
+    points = this.props.points;
+    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
+    step = this.props.degree / this.degreeCnt;
     i = this.transits.length;
     _results = [];
     while (i--) {
@@ -545,7 +548,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":1}],6:[function(require,module,exports){
-var Helpers, TWEEN;
+var Helpers, TWEEN, h;
 
 TWEEN = require('./vendor/tween');
 
@@ -608,8 +611,7 @@ Helpers = (function() {
     this.prefix = this.getPrefix();
     this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
-    this.isIE = this.prefix.lowercase === 'ms';
-    return this.animationLoop = this.bind(this.animationLoop, this);
+    return this.isIE = this.prefix.lowercase === 'ms';
   };
 
   Helpers.prototype.getRemBase = function() {
@@ -664,18 +666,6 @@ Helpers = (function() {
         string: "" + amount + unit
       };
     }
-  };
-
-  Helpers.prototype.bind = function(func, context) {
-    var bindArgs, wrapper;
-    wrapper = function() {
-      var args, unshiftArgs;
-      args = Array.prototype.slice.call(arguments);
-      unshiftArgs = bindArgs.concat(args);
-      return func.apply(context, unshiftArgs);
-    };
-    bindArgs = Array.prototype.slice.call(arguments, 2);
-    return wrapper;
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
@@ -833,27 +823,27 @@ Helpers = (function() {
   };
 
   Helpers.prototype.startAnimationLoop = function() {
-    if (this.isAnimateLoop) {
-      return this;
+    if (h.isAnimateLoop) {
+      return h;
     }
-    this.isAnimateLoop = true;
-    requestAnimationFrame(this.animationLoop);
+    h.isAnimateLoop = true;
+    requestAnimationFrame(h.animationLoop);
     return this;
   };
 
   Helpers.prototype.stopAnimationLoop = function() {
-    return this.isAnimateLoop = false;
+    return h.isAnimateLoop = false;
   };
 
   Helpers.prototype.animationLoop = function() {
-    if (!this.TWEEN.getAll().length) {
-      this.isAnimateLoop = false;
+    if (!h.TWEEN.getAll().length) {
+      h.isAnimateLoop = false;
     }
-    if (!this.isAnimateLoop) {
-      return this;
+    if (!h.isAnimateLoop) {
+      return h;
     }
-    this.TWEEN.update();
-    requestAnimationFrame(this.animationLoop);
+    h.TWEEN.update();
+    requestAnimationFrame(h.animationLoop);
     return this;
   };
 
@@ -922,21 +912,27 @@ Helpers = (function() {
     return delta;
   };
 
+  Helpers.prototype.rand = function(min, max) {
+    return Math.floor((Math.random() * ((max + 1) - min)) + min);
+  };
+
   return Helpers;
 
 })();
+
+h = new Helpers;
 
 
 /* istanbul ignore next */
 
 if ((typeof define === "function") && define.amd) {
   define("Helpers", [], function() {
-    return new Helpers;
+    return h;
   });
 }
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = new Helpers;
+  module.exports = h;
 }
 
 
@@ -949,7 +945,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 if (typeof window !== "undefined" && window !== null) {
-  window.mojs.helpers = new Helpers;
+  window.mojs.helpers = h;
 }
 
 },{"./vendor/tween":12}],7:[function(require,module,exports){
@@ -1009,22 +1005,29 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":1}],8:[function(require,module,exports){
-var Burst, burst;
+var Burst, Transit, burst;
+
+Transit = require('./transit');
 
 Burst = require('./burst');
 
 burst = new Burst({
-  angle: {
-    0: 360
-  },
-  burstX: 100,
-  burstY: 100,
-  radius: 5,
-  delay: 2000,
-  type: 'line'
+  x: 100,
+  y: 100,
+  duration: 500,
+  points: 7,
+  isDrawLess: true,
+  childOptions: {
+    fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
+    strokeWidth: 0
+  }
 });
 
-},{"./burst":3}],9:[function(require,module,exports){
+document.body.addEventListener('click', function(e) {
+  return burst.run();
+});
+
+},{"./burst":3,"./transit":11}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1264,8 +1267,8 @@ Transit = (function(_super) {
     size = "" + (this.props.size / this.h.remBase) + "rem";
     marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
     this.el.style.position = 'absolute';
-    this.el.style.top = this.props.y.string;
-    this.el.style.left = this.props.x.string;
+    this.el.style.top = this.props.y;
+    this.el.style.left = this.props.x;
     this.el.style.opacity = this.props.opacity;
     this.el.style.width = size;
     this.el.style.height = size;
@@ -1402,7 +1405,7 @@ Transit = (function(_super) {
     _results = [];
     for (key in _ref) {
       defaultsValue = _ref[key];
-      optionsValue = this.o[key] || defaultsValue;
+      optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
       if (!isObject || this.h.isArray(optionsValue)) {
         this.props[key] = optionsValue;

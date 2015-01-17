@@ -58,6 +58,13 @@
         });
         return expect(byte.props.radius).toBe(45);
       });
+      it('should extend defaults object to properties if 0', function() {
+        var byte;
+        byte = new Byte({
+          radius: 0
+        });
+        return expect(byte.props.radius).toBe(0);
+      });
       it('should extend defaults object to properties if object was passed', function() {
         var byte;
         byte = new Byte({

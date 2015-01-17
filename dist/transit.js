@@ -95,8 +95,8 @@ Transit = (function(_super) {
     size = "" + (this.props.size / this.h.remBase) + "rem";
     marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
     this.el.style.position = 'absolute';
-    this.el.style.top = this.props.y.string;
-    this.el.style.left = this.props.x.string;
+    this.el.style.top = this.props.y;
+    this.el.style.left = this.props.x;
     this.el.style.opacity = this.props.opacity;
     this.el.style.width = size;
     this.el.style.height = size;
@@ -233,7 +233,7 @@ Transit = (function(_super) {
     _results = [];
     for (key in _ref) {
       defaultsValue = _ref[key];
-      optionsValue = this.o[key] || defaultsValue;
+      optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
       if (!isObject || this.h.isArray(optionsValue)) {
         this.props[key] = optionsValue;

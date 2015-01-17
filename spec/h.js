@@ -43,6 +43,20 @@
       });
     });
     return describe('methods ->', function() {
+      describe('rand method', function() {
+        it('should return random digit form range', function() {
+          expect(h.rand(10, 20)).toBeGreaterThan(9);
+          return expect(h.rand(10, 20)).not.toBeGreaterThan(20);
+        });
+        it('should work with negative numbers', function() {
+          expect(h.rand(-10, -20)).toBeGreaterThan(-20);
+          return expect(h.rand(-10, -20)).not.toBeGreaterThan(-11);
+        });
+        return it('should work with mixed numbers', function() {
+          expect(h.rand(-10, 20)).toBeGreaterThan(-11);
+          return expect(h.rand(-10, 20)).not.toBeGreaterThan(20);
+        });
+      });
       describe('getDelta method', function() {
         describe('numeric values ->', function() {
           it('should calculate delta', function() {

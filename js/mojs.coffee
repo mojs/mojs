@@ -6,51 +6,28 @@
 # Bit       = require './bit'
 # svg       = document.getElementById 'js-svg'
 # div       = document.getElementById 'js-div'
-# Transit   = require './transit'
+Transit   = require './transit'
 Burst     = require './burst'
 
 burst = new Burst
-  angle:  { 0: 360 }
-  burstX: 100
-  burstY: 100
-  radius: 5
-  delay:  2000
-  type:   'line'
-#   type:             'polygon'
-#   # shiftX:           {200 : 100}
-#   # x:                0
-#   stroke:           {"deeppink":"orange"}
-#   x:                200
-#   y:                100
-#   radius:           { 75: 5 }
-#   points:           6
-#   # strokeDasharray:  2*75
-#   strokeWidth:      10
-#   duration:         2000
-#   # angle:            {0: 360}
-#   isDrawLess:       true
-#   # delay:            1000
-#   strokeLinecap:    {'round': 'butt'}
-#   isRunLess:        true
-#   onComplete:->
-#     # console.log 'complete'
-#     # @run()
+  x:          100
+  y:          100
+  duration:   500
+  # degree:     8900
+  points:     7
+  # delay:      1000
+  isDrawLess: true
+  childOptions:
+    fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
+    strokeWidth: 0
+  #   angle:  { 0: 360 }
 
-# # rect.run({ radius: { 50: 50} })
+document.body.addEventListener 'click', (e)->
+  burst.run()
 
-
-# document.body.addEventListener 'click', (e)->
-#   rect.run
-#     x: e.x, y: e.y, isDrawLess: false
-
-# setInterval ->
-#   rect.run()
-#   console.log rect.TWEEN.getAll()
-# , 500
-
-
-# rect
-#   .then deg: 0
-#   .then
-#     deg:    1000
-#     delay:  0
+# rec = new Transit
+#   type: 'circle'
+#   x: {10: 200}
+#   y: 100
+#   delay: 2000
+#   isDrawLess: true

@@ -1,4 +1,4 @@
-var Helpers, TWEEN;
+var Helpers, TWEEN, h;
 
 TWEEN = require('./vendor/tween');
 
@@ -61,8 +61,7 @@ Helpers = (function() {
     this.prefix = this.getPrefix();
     this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
-    this.isIE = this.prefix.lowercase === 'ms';
-    return this.animationLoop = this.bind(this.animationLoop, this);
+    return this.isIE = this.prefix.lowercase === 'ms';
   };
 
   Helpers.prototype.getRemBase = function() {
@@ -117,18 +116,6 @@ Helpers = (function() {
         string: "" + amount + unit
       };
     }
-  };
-
-  Helpers.prototype.bind = function(func, context) {
-    var bindArgs, wrapper;
-    wrapper = function() {
-      var args, unshiftArgs;
-      args = Array.prototype.slice.call(arguments);
-      unshiftArgs = bindArgs.concat(args);
-      return func.apply(context, unshiftArgs);
-    };
-    bindArgs = Array.prototype.slice.call(arguments, 2);
-    return wrapper;
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
@@ -286,27 +273,27 @@ Helpers = (function() {
   };
 
   Helpers.prototype.startAnimationLoop = function() {
-    if (this.isAnimateLoop) {
-      return this;
+    if (h.isAnimateLoop) {
+      return h;
     }
-    this.isAnimateLoop = true;
-    requestAnimationFrame(this.animationLoop);
+    h.isAnimateLoop = true;
+    requestAnimationFrame(h.animationLoop);
     return this;
   };
 
   Helpers.prototype.stopAnimationLoop = function() {
-    return this.isAnimateLoop = false;
+    return h.isAnimateLoop = false;
   };
 
   Helpers.prototype.animationLoop = function() {
-    if (!this.TWEEN.getAll().length) {
-      this.isAnimateLoop = false;
+    if (!h.TWEEN.getAll().length) {
+      h.isAnimateLoop = false;
     }
-    if (!this.isAnimateLoop) {
-      return this;
+    if (!h.isAnimateLoop) {
+      return h;
     }
-    this.TWEEN.update();
-    requestAnimationFrame(this.animationLoop);
+    h.TWEEN.update();
+    requestAnimationFrame(h.animationLoop);
     return this;
   };
 
@@ -375,21 +362,27 @@ Helpers = (function() {
     return delta;
   };
 
+  Helpers.prototype.rand = function(min, max) {
+    return Math.floor((Math.random() * ((max + 1) - min)) + min);
+  };
+
   return Helpers;
 
 })();
+
+h = new Helpers;
 
 
 /* istanbul ignore next */
 
 if ((typeof define === "function") && define.amd) {
   define("Helpers", [], function() {
-    return new Helpers;
+    return h;
   });
 }
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = new Helpers;
+  module.exports = h;
 }
 
 
@@ -402,5 +395,5 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 if (typeof window !== "undefined" && window !== null) {
-  window.mojs.helpers = new Helpers;
+  window.mojs.helpers = h;
 }
