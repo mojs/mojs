@@ -7,105 +7,148 @@ module.exports = function(config) {
   // Browsers to run on Sauce Labs
   // Check out https://saucelabs.com/platforms for all browser/OS combos
   var customLaunchers = {
-    sl_chrome_26: {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'Windows XP',
-      version: '26'
-    },
-
-    sl_chrome_35: {
+    sl_chrome: {
       base: 'SauceLabs',
       browserName: 'chrome',
       platform: 'Windows 7',
       version: '35'
     },
-
-    sl_safari_6: {
+    sl_safari: {
       base: 'SauceLabs',
       browserName: 'safari',
       platform: 'OS X 10.8',
       version: '6'
     },
-    sl_safari_7: {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      platform: 'OS X 10.9',
-      version: '7'
-    },
-    sl_safari_8: {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      platform: 'OS X 10.10',
-      version: '8'
-    },
-
-    sl_ios_safari_71: {
-      base: 'SauceLabs',
-      browserName: 'iphone',
-      platform: 'OS X 10.9',
-      version: '7.1'
-    },
-    sl_ios_safari_8: {
-      base: 'SauceLabs',
-      browserName: 'iphone',
-      platform: 'OS X 10.9',
-      version: '8'
-    },
-    sl_ios_safari_81: {
-      base: 'SauceLabs',
-      browserName: 'ipad',
-      platform: 'OS X 10.9',
-      version: '8.1'
-    },
-
-    sl_firefox_4: {
+    sl_firefox: {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '4'
-    },
-    sl_firefox_33: {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      version: '33'
-    },
-
-    sl_opera: {
-      base: 'SauceLabs',
-      browserName: 'opera',
-      platform: 'Windows 7',
-      version: '12'
-    },
-
-    sl_android: {
-      base: 'SauceLabs',
-      browserName: 'android',
-      platform: 'linux',
-      version: '4.4'
-    },
-
-    sl_ie_9: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 7',
-      version: '9'
-    },
-    sl_ie_10: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 8',
-      version: '10'
-    },
-    sl_ie_11: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 8.1',
-      version: '11'
+      version: '30'
     }
+    // sl_ios_safari: {
+    //   base: 'SauceLabs',
+    //   browserName: 'iphone',
+    //   platform: 'OS X 10.9',
+    //   version: '7.1'
+    // },
+    // sl_ie_11: {
+    //   base: 'SauceLabs',
+    //   browserName: 'internet explorer',
+    //   platform: 'Windows 8.1',
+    //   version: '11'
+    // }
+    // 
+    // 
+    // 
+    
+
+
+
+    // // sl_chrome_26: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'chrome',
+    // //   platform: 'Windows XP',
+    // //   version: '26'
+    // // },
+
+    // sl_chrome_35: {
+    //   base: 'SauceLabs',
+    //   browserName: 'chrome',
+    //   platform: 'Windows 7',
+    //   version: '35'
+    // },
+
+    // sl_safari_6: {
+    //   base: 'SauceLabs',
+    //   browserName: 'safari',
+    //   platform: 'OS X 10.8',
+    //   version: '6'
+    // },
+    // // sl_safari_7: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'safari',
+    // //   platform: 'OS X 10.9',
+    // //   version: '7'
+    // // },
+    // // sl_safari_8: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'safari',
+    // //   platform: 'OS X 10.10',
+    // //   version: '8'
+    // // },
+
+    // // sl_ios_safari_71: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'iphone',
+    // //   platform: 'OS X 10.9',
+    // //   version: '7.1'
+    // // },
+    // // sl_ios_safari_8: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'iphone',
+    // //   platform: 'OS X 10.9',
+    // //   version: '8'
+    // // },
+    // sl_ios_safari_81: {
+    //   base: 'SauceLabs',
+    //   browserName: 'ipad',
+    //   platform: 'OS X 10.9',
+    //   version: '8.1'
+    // },
+
+    // // sl_firefox_4: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'firefox',
+    // //   version: '4'
+    // // },
+    // sl_firefox_33: {
+    //   base: 'SauceLabs',
+    //   browserName: 'firefox',
+    //   version: '33'
+    // },
+
+    // // sl_opera: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'opera',
+    // //   platform: 'Windows 7',
+    // //   version: '12'
+    // // },
+
+    // // sl_android: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'android',
+    // //   platform: 'linux',
+    // //   version: '4.4'
+    // // },
+
+    // sl_ie_9: {
+    //   base: 'SauceLabs',
+    //   browserName: 'internet explorer',
+    //   platform: 'Windows 7',
+    //   version: '9'
+    // }
+    // // sl_ie_10: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'internet explorer',
+    // //   platform: 'Windows 8',
+    // //   version: '10'
+    // // },
+    // // sl_ie_11: {
+    // //   base: 'SauceLabs',
+    // //   browserName: 'internet explorer',
+    // //   platform: 'Windows 8.1',
+    // //   version: '11'
+    // // }
+
+
+
+    
   };
 
+  // process.env.SAUCE_USERNAME = 'legomushroom';
+  // process.env.SAUCE_ACCESS_KEY = '405fc371-6f38-4461-bef0-64633dd7ce33';
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-      // console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.');
+      console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.');
+      // process.exit(1);
       reporters = ['progress', 'coverage', 'clear-screen'];
       browsers = ['PhantomJS'];      
     } else {
