@@ -1,7 +1,9 @@
 TWEEN = require './vendor/tween'
 
+
+
+
 class Helpers
-  div:    document.createElement 'div'
   TWEEN:  TWEEN
   logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
     padding: 1px 5px 2px; border: 1px solid #FF512F;'
@@ -51,6 +53,10 @@ class Helpers
     @getRemBase()
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
+    @isOldOpera = navigator.userAgent.match /presto/gim
+
+    @div = document.createElement('div')
+    document.body.appendChild @div
     # @animationLoop = @bind @animationLoop, @
 
   extend:(objTo, objFrom)->
@@ -174,14 +180,18 @@ class Helpers
       if !isRgb
         rgbColor = if !@shortColors[color]
           @div.style.color = color
-          if @isFF or @isIE then @computedStyle(@div).color
+          if @isFF or @isIE or @isOldOpera
+            style = @computedStyle(@div)
+            @computedStyle(@div).color
           else @div.style.color
         else @shortColors[color]
+        # console.log @computedStyle(@div).color
 
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),'
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$'
       result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor)
       colorObj = {}
+      # console.log result, color
       alpha = parseFloat(result[4] or 1)
       if result
         colorObj =

@@ -66,16 +66,17 @@ class Transit extends bitsMap.map.bit
     @
 
   setElStyles:->
-    size        = "#{@props.size/@h.remBase}rem"
-    marginSize  = "#{-@props.size/(2*@h.remBase)}rem"
+    # size        = "#{@props.size/@h.remBase}rem"
+    size        = "#{@props.size}px"
+    marginSize  = "#{-@props.size/2}px"
     @el.style.position    = 'absolute'
     @el.style.top         = @props.y
     @el.style.left        = @props.x
     @el.style.opacity     = @props.opacity
     @el.style.width       = size
     @el.style.height      = size
-    @el.style['marginLeft'] = marginSize
-    @el.style['marginTop']  = marginSize
+    @el.style['margin-left'] = marginSize
+    @el.style['margin-top']  = marginSize
     @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
   draw:->

@@ -3,8 +3,6 @@ var Helpers, TWEEN, h;
 TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
-  Helpers.prototype.div = document.createElement('div');
-
   Helpers.prototype.TWEEN = TWEEN;
 
   Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 5px 2px; border: 1px solid #FF512F;';
@@ -61,7 +59,10 @@ Helpers = (function() {
     this.prefix = this.getPrefix();
     this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
-    return this.isIE = this.prefix.lowercase === 'ms';
+    this.isIE = this.prefix.lowercase === 'ms';
+    this.isOldOpera = navigator.userAgent.match(/presto/gim);
+    this.div = document.createElement('div');
+    return document.body.appendChild(this.div);
   };
 
   Helpers.prototype.extend = function(objTo, objFrom) {
@@ -215,7 +216,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.makeColorObj = function(color) {
-    var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor;
+    var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor, style;
     if (color[0] === '#') {
       result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
       colorObj = {};
@@ -237,7 +238,7 @@ Helpers = (function() {
         rgbColor = color;
       }
       if (!isRgb) {
-        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF || this.isIE ? this.computedStyle(this.div).color : this.div.style.color) : this.shortColors[color];
+        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF || this.isIE || this.isOldOpera ? (style = this.computedStyle(this.div), this.computedStyle(this.div).color) : this.div.style.color) : this.shortColors[color];
       }
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';

@@ -39,6 +39,8 @@ describe 'Bit', ->
       svg     = document.createElementNS?(ns, 'svg')
       bit     = new Bit
         ctx: svg
+        x: 20
+        y: 20
         stroke:               '#0f0'
         strokeWidth:          3
         fill:                 '#0ff'
@@ -56,7 +58,7 @@ describe 'Bit', ->
       expect(fill)            .toBe   '#0ff'
       expect(strokeDasharray) .toBe   '100'
       expect(strokeOffset)    .toBe   '50'
-      expect(transform)       .toBe   'rotate(45, 0, 0)'
+      expect(transform)       .toBe   'rotate(45, 20, 20)'
 
   describe 'setProp method ->', ->
     it 'should set properties ->', ->

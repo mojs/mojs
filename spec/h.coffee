@@ -16,6 +16,7 @@ describe 'Helpers ->', ->
     it 'should have browsers flag', ->
       expect(h.isFF).toBeDefined()
       expect(h.isIE).toBeDefined()
+      expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
       expect(h.tweenOptionMap.duration)         .toBe 1
@@ -140,8 +141,7 @@ describe 'Helpers ->', ->
 
     describe 'computedStyle method', ->
       it 'should return computed styles',->
-        document.body.style['font-size'] = '10px'
-        expect(h.computedStyle(document.body)).toBeDefined()
+        document.body.style['fontSize'] = '10px'
         expect(h.computedStyle(document.body).fontSize).toBe '10px'
       it 'should call getComputedStyle under the hood',->
         spyOn window, 'getComputedStyle'
@@ -196,7 +196,8 @@ describe 'Helpers ->', ->
       it 'should set prefixed style', ->
         el = document.createElement 'div'
         h.setPrefixedStyle el, 'transform', 'translate(20px, 10px)'
-        expect(el.style['-webkit-transform']).toBe 'translate(20px, 10px)'
+        prefixed = "#{h.prefix.css}transform"
+        expect(el.style[prefixed]).toBe 'translate(20px, 10px)'
         expect(el.style['transform']).toBe         'translate(20px, 10px)'
     describe 'parseUnit method', ->
       it 'should parse number to pixels', ->
@@ -441,7 +442,7 @@ describe 'Helpers ->', ->
         setTimeout ->
           expect(h.TWEEN.update).toHaveBeenCalled()
           dfr()
-        , 34
+        , 50
       it 'should start animation loop', (dfr)->
         spyOn h, 'animationLoop'
         h.startAnimationLoop()
@@ -456,8 +457,8 @@ describe 'Helpers ->', ->
           setTimeout ->
             expect(h.animationLoop).not.toHaveBeenCalled()
             dfr()
-          , 34
-        , 20
+          , 50
+        , 50
 
       it 'should stop itself if there is no tween left', (dfr)->
         tween = new h.TWEEN.Tween({p:0}).to({p:1}, 20)
@@ -470,8 +471,8 @@ describe 'Helpers ->', ->
             expect(h.animationLoop).not.toHaveBeenCalled()
             expect(h.isAnimateLoop).toBe false
             dfr()
-          , 84
-        , 34
+          , 50
+        , 50
 
       it 'should start only 1 concurrent loop', (dfr)->
         h.stopAnimationLoop()

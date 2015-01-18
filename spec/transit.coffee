@@ -117,14 +117,15 @@ describe 'Byte ->', ->
         x:            10
         y:            20
       expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '3.375rem'
-      expect(byte.el.style.height)                .toBe '3.375rem'
-      expect(byte.el.style['margin-left'])        .toBe '-1.6875rem'
-      expect(byte.el.style['margin-top'])         .toBe '-1.6875rem'
+      expect(byte.el.style.width)                 .toBe '54px'
+      expect(byte.el.style.height)                .toBe '54px'
+      expect(byte.el.style['margin-left'])         .toBe '-27px'
+      expect(byte.el.style['margin-top'])          .toBe '-27px'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
 
-    it 'should set el size based on remBase', ->
+    it 'should set el size based', ->
+    # it 'should set el size based on remBase', ->
       byte = new Byte
         radius:       25
         strokeWidth:  2
@@ -137,10 +138,10 @@ describe 'Byte ->', ->
       byte.h.remBase = 16
 
       expect(byte.el.style.position)              .toBe 'absolute'
-      expect(byte.el.style.width)                 .toBe '6.75rem'
-      expect(byte.el.style.height)                .toBe '6.75rem'
-      expect(byte.el.style['margin-left'])        .toBe '-3.375rem'
-      expect(byte.el.style['margin-top'])         .toBe '-3.375rem'
+      expect(byte.el.style.width)                 .toBe '54px'
+      expect(byte.el.style.height)                .toBe '54px'
+      expect(byte.el.style['margin-left'])        .toBe '-27px'
+      expect(byte.el.style['margin-top'])         .toBe '-27px'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
 
@@ -177,7 +178,7 @@ describe 'Byte ->', ->
           setTimeout ->
             expect(byte.el.style.opacity).toBe '0'
             dfr()
-          , 40
+          , 100
     describe 'position set ->', ->
       describe 'x/y coordinates ->', ->
         it 'should set a position with respect to units', ->
@@ -193,7 +194,7 @@ describe 'Byte ->', ->
           setTimeout ->
             expect(byte.el.style.left)   .toBe '200px'
             dfr()
-          , 40
+          , 100
         it 'should warn when x/y animated position', ->
           spyOn console, 'warn'
           byte = new Byte x: {100: '200px'}
@@ -206,7 +207,7 @@ describe 'Byte ->', ->
           setTimeout ->
             expect(byte.el.style.left)   .toBe '50%'
             dfr()
-          , 40
+          , 100
         it 'should fallback to end units if units are differnt', (dfr)->
           byte = new Byte
             x: {'20%': '50px'}
@@ -214,7 +215,7 @@ describe 'Byte ->', ->
           setTimeout ->
             expect(byte.el.style.left)   .toBe '50px'
             dfr()
-          , 40
+          , 100
       describe 'shiftX/shiftY coordinates', ->
         it 'should set a position with respect to units', ->
           byte = new Byte
@@ -230,7 +231,7 @@ describe 'Byte ->', ->
           setTimeout ->
             expect(byte.el.style.transform) .toBe 'translate(200px, 0px)'
             dfr()
-          , 40
+          , 100
         it 'should animate position with respect to units', (dfr)->
           byte = new Byte
             shiftX: {'20%': '50%'}
@@ -238,7 +239,7 @@ describe 'Byte ->', ->
           setTimeout ->
             expect(byte.el.style.transform) .toBe 'translate(50%, 0px)'
             dfr()
-          , 40
+          , 100
         it 'should fallback to end units if units are differnt', (dfr)->
           byte = new Byte
             shiftX: {'20%': '50px'}
@@ -247,7 +248,7 @@ describe 'Byte ->', ->
           setTimeout ->
             expect(byte.el.style.transform) .toBe 'translate(50px, 50%)'
             dfr()
-          , 40
+          , 100
 
   describe 'mergeThenOptions method ->', ->
     it 'should call copyEndOptions method', ->
@@ -531,7 +532,7 @@ describe 'Byte ->', ->
         setTimeout ->
           expect(isOnUpdate).toBe true
           dfr()
-        , 34
+        , 100
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -540,7 +541,7 @@ describe 'Byte ->', ->
         setTimeout ->
           expect(isRightScope).toBe true
           dfr()
-        , 34
+        , 100
       it 'should set current progress', (dfr)->
         progress = null
         byte = new Byte
@@ -551,7 +552,7 @@ describe 'Byte ->', ->
           expect(progress).toBeGreaterThan 0
           expect(progress).not.toBeGreaterThan 1
           dfr()
-        , 34
+        , 100
     describe 'onComplete callback ->', ->
       it 'should call onComplete callback',(dfr)->
         isOnComplete = null
@@ -562,7 +563,7 @@ describe 'Byte ->', ->
         setTimeout ->
           expect(isOnComplete).toBe true
           dfr()
-        , 50
+        , 100
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -572,7 +573,7 @@ describe 'Byte ->', ->
         setTimeout ->
           expect(isRightScope).toBe true
           dfr()
-        , 40
+        , 100
     describe 'onCompleteChain callback', ->
       it 'should call onCompleteChain callback when chain ends', (dfr)->
         isOnComplete = null
@@ -583,7 +584,7 @@ describe 'Byte ->', ->
         setTimeout ->
           expect(isOnComplete).toBe true
           dfr()
-        , 40
+        , 100
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -593,7 +594,7 @@ describe 'Byte ->', ->
         setTimeout ->
           expect(isRightScope).toBe true
           dfr()
-        , 40
+        , 100
   describe 'Tweens ->', ->
     it 'should have TWEEN object', ->
       byte = new Byte radius:  {'25': 75}
@@ -667,7 +668,7 @@ describe 'Byte ->', ->
       setTimeout ->
         expect(byte.props.strokeWidth).toBe 0
         dfr()
-      , 80
+      , 120
     it 'should run next chain from setProgress', ->
       byte = new Byte
         strokeWidth: {20:30}
@@ -709,7 +710,7 @@ describe 'Byte ->', ->
       setTimeout ->
         expect(byte.props.strokeWidth).toBe 0
         dfr()
-      , 80
+      , 100
     it 'should warn if new value is object and use end value', (dfr)->
       byte = new Byte(strokeWidth: {10: 5}, duration: 20)
       spyOn console, 'warn'
@@ -722,7 +723,7 @@ describe 'Byte ->', ->
         expect(delta.end).toBe              20
         expect(byte.props.strokeWidth).toBe 20
         dfr()
-      , 80
+      , 120
   
   describe 'run method->', ->
     it 'should run tween', ->
@@ -742,7 +743,7 @@ describe 'Byte ->', ->
     it 'should calculate new el size', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50
-      expect(byte.el.style.width).toBe '6.5rem'
+      expect(byte.el.style.width).toBe '104px'
     it 'should call setProgress(0) if isDrawLess is not set', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       spyOn byte, 'setProgress'

@@ -92,16 +92,16 @@ Transit = (function(_super) {
 
   Transit.prototype.setElStyles = function() {
     var marginSize, size;
-    size = "" + (this.props.size / this.h.remBase) + "rem";
-    marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
+    size = "" + this.props.size + "px";
+    marginSize = "" + (-this.props.size / 2) + "px";
     this.el.style.position = 'absolute';
     this.el.style.top = this.props.y;
     this.el.style.left = this.props.x;
     this.el.style.opacity = this.props.opacity;
     this.el.style.width = size;
     this.el.style.height = size;
-    this.el.style['marginLeft'] = marginSize;
-    this.el.style['marginTop'] = marginSize;
+    this.el.style['margin-left'] = marginSize;
+    this.el.style['margin-top'] = marginSize;
     return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
   };
 

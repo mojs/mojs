@@ -74,6 +74,8 @@
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
           ctx: svg,
+          x: 20,
+          y: 20,
           stroke: '#0f0',
           strokeWidth: 3,
           fill: '#0ff',
@@ -92,7 +94,7 @@
         expect(fill).toBe('#0ff');
         expect(strokeDasharray).toBe('100');
         expect(strokeOffset).toBe('50');
-        return expect(transform).toBe('rotate(45, 0, 0)');
+        return expect(transform).toBe('rotate(45, 20, 20)');
       });
     });
     describe('setProp method ->', function() {

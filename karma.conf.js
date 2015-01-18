@@ -23,23 +23,23 @@ module.exports = function(config) {
       base: 'SauceLabs',
       browserName: 'firefox',
       version: '30'
-    },
-    sl_ios_safari: {
-      base: 'SauceLabs',
-      browserName: 'iphone',
-      platform: 'OS X 10.9',
-      version: '7.1'
-    },
-    sl_ie_11: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 8.1',
-      version: '11'
     }
+    // sl_ios_safari: {
+    //   base: 'SauceLabs',
+    //   browserName: 'iphone',
+    //   platform: 'OS X 10.9',
+    //   version: '7.1'
+    // },
+    // sl_ie_11: {
+    //   base: 'SauceLabs',
+    //   browserName: 'internet explorer',
+    //   platform: 'Windows 8.1',
+    //   version: '11'
+    // }
   };
 
-  process.env.SAUCE_USERNAME = 'legomushroom';
-  process.env.SAUCE_ACCESS_KEY = '405fc371-6f38-4461-bef0-64633dd7ce33';
+  // process.env.SAUCE_USERNAME = 'legomushroom';
+  // process.env.SAUCE_ACCESS_KEY = '405fc371-6f38-4461-bef0-64633dd7ce33';
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
       console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.');
       // process.exit(1);

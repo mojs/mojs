@@ -221,14 +221,14 @@
           y: 20
         });
         expect(byte.el.style.position).toBe('absolute');
-        expect(byte.el.style.width).toBe('3.375rem');
-        expect(byte.el.style.height).toBe('3.375rem');
-        expect(byte.el.style['margin-left']).toBe('-1.6875rem');
-        expect(byte.el.style['margin-top']).toBe('-1.6875rem');
+        expect(byte.el.style.width).toBe('54px');
+        expect(byte.el.style.height).toBe('54px');
+        expect(byte.el.style['margin-left']).toBe('-27px');
+        expect(byte.el.style['margin-top']).toBe('-27px');
         expect(byte.el.style['backface-visibility']).toBe('hidden');
         return expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).toBe('hidden');
       });
-      it('should set el size based on remBase', function() {
+      it('should set el size based', function() {
         var byte;
         byte = new Byte({
           radius: 25,
@@ -241,10 +241,10 @@
         byte.render();
         byte.h.remBase = 16;
         expect(byte.el.style.position).toBe('absolute');
-        expect(byte.el.style.width).toBe('6.75rem');
-        expect(byte.el.style.height).toBe('6.75rem');
-        expect(byte.el.style['margin-left']).toBe('-3.375rem');
-        expect(byte.el.style['margin-top']).toBe('-3.375rem');
+        expect(byte.el.style.width).toBe('54px');
+        expect(byte.el.style.height).toBe('54px');
+        expect(byte.el.style['margin-left']).toBe('-27px');
+        expect(byte.el.style['margin-top']).toBe('-27px');
         expect(byte.el.style['backface-visibility']).toBe('hidden');
         return expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).toBe('hidden');
       });
@@ -303,7 +303,7 @@
           }, setTimeout(function() {
             expect(byte.el.style.opacity).toBe('0');
             return dfr();
-          }, 40));
+          }, 100));
         });
       });
       return describe('position set ->', function() {
@@ -328,7 +328,7 @@
             return setTimeout(function() {
               expect(byte.el.style.left).toBe('200px');
               return dfr();
-            }, 40);
+            }, 100);
           });
           it('should warn when x/y animated position', function() {
             var byte;
@@ -351,7 +351,7 @@
             return setTimeout(function() {
               expect(byte.el.style.left).toBe('50%');
               return dfr();
-            }, 40);
+            }, 100);
           });
           return it('should fallback to end units if units are differnt', function(dfr) {
             var byte;
@@ -364,7 +364,7 @@
             return setTimeout(function() {
               expect(byte.el.style.left).toBe('50px');
               return dfr();
-            }, 40);
+            }, 100);
           });
         });
         return describe('shiftX/shiftY coordinates', function() {
@@ -388,7 +388,7 @@
             return setTimeout(function() {
               expect(byte.el.style.transform).toBe('translate(200px, 0px)');
               return dfr();
-            }, 40);
+            }, 100);
           });
           it('should animate position with respect to units', function(dfr) {
             var byte;
@@ -401,7 +401,7 @@
             return setTimeout(function() {
               expect(byte.el.style.transform).toBe('translate(50%, 0px)');
               return dfr();
-            }, 40);
+            }, 100);
           });
           return it('should fallback to end units if units are differnt', function(dfr) {
             var byte;
@@ -417,7 +417,7 @@
             return setTimeout(function() {
               expect(byte.el.style.transform).toBe('translate(50px, 50%)');
               return dfr();
-            }, 40);
+            }, 100);
           });
         });
       });
@@ -960,7 +960,7 @@
           return setTimeout(function() {
             expect(isOnUpdate).toBe(true);
             return dfr();
-          }, 34);
+          }, 100);
         });
         it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -976,7 +976,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 34);
+          }, 100);
         });
         return it('should set current progress', function(dfr) {
           var byte, progress;
@@ -994,7 +994,7 @@
             expect(progress).toBeGreaterThan(0);
             expect(progress).not.toBeGreaterThan(1);
             return dfr();
-          }, 34);
+          }, 100);
         });
       });
       describe('onComplete callback ->', function() {
@@ -1013,7 +1013,7 @@
           return setTimeout(function() {
             expect(isOnComplete).toBe(true);
             return dfr();
-          }, 50);
+          }, 100);
         });
         return it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -1030,7 +1030,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 40);
+          }, 100);
         });
       });
       return describe('onCompleteChain callback', function() {
@@ -1049,7 +1049,7 @@
           return setTimeout(function() {
             expect(isOnComplete).toBe(true);
             return dfr();
-          }, 40);
+          }, 100);
         });
         return it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -1066,7 +1066,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 40);
+          }, 100);
         });
       });
     });
@@ -1255,7 +1255,7 @@
         return setTimeout(function() {
           expect(byte.props.strokeWidth).toBe(0);
           return dfr();
-        }, 80);
+        }, 120);
       });
       it('should run next chain from setProgress', function() {
         var byte;
@@ -1350,7 +1350,7 @@
         return setTimeout(function() {
           expect(byte.props.strokeWidth).toBe(0);
           return dfr();
-        }, 80);
+        }, 100);
       });
       return it('should warn if new value is object and use end value', function(dfr) {
         var byte;
@@ -1375,7 +1375,7 @@
           expect(delta.end).toBe(20);
           expect(byte.props.strokeWidth).toBe(20);
           return dfr();
-        }, 80);
+        }, 120);
       });
     });
     return describe('run method->', function() {
@@ -1430,7 +1430,7 @@
         byte.run({
           radius: 50
         });
-        return expect(byte.el.style.width).toBe('6.5rem');
+        return expect(byte.el.style.width).toBe('104px');
       });
       it('should call setProgress(0) if isDrawLess is not set', function() {
         var byte;

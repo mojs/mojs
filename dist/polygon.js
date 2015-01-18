@@ -40,7 +40,7 @@ Polygon = (function(_super) {
     _ref1 = this.radialPoints;
     for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
       point = _ref1[i];
-      d += "" + point.x + "," + point.y + " ";
+      d += "" + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
     }
     return this.setAttr({
       points: d

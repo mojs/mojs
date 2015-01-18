@@ -43,8 +43,7 @@ describe 'Polygon ->', ->
         ctx:      svg
         radius:   20
       d   = tri.el.getAttribute('points')
-      d2  = '1.2246467991473533e-15,-20 17.320508075688775,9.999999999999998
-         -17.320508075688775,9.999999999999998 '
+      d2  = '0.0000,-20.0000 17.3205,10.0000 -17.3205,10.0000 '
       expect(d).toBe d2
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")

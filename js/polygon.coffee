@@ -20,7 +20,7 @@ class Polygon extends Bit
         center: x: @props.x, y: @props.y
     d = ''
     for point, i in @radialPoints
-      d += "#{point.x},#{point.y} "
+      d += "#{point.x.toFixed(4)},#{point.y.toFixed(4)} "
     @setAttr points:  d
 
 ### istanbul ignore next ###

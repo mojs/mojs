@@ -569,8 +569,6 @@ var Helpers, TWEEN, h;
 TWEEN = require('./vendor/tween');
 
 Helpers = (function() {
-  Helpers.prototype.div = document.createElement('div');
-
   Helpers.prototype.TWEEN = TWEEN;
 
   Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 5px 2px; border: 1px solid #FF512F;';
@@ -627,7 +625,10 @@ Helpers = (function() {
     this.prefix = this.getPrefix();
     this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
-    return this.isIE = this.prefix.lowercase === 'ms';
+    this.isIE = this.prefix.lowercase === 'ms';
+    this.isOldOpera = navigator.userAgent.match(/presto/gim);
+    this.div = document.createElement('div');
+    return document.body.appendChild(this.div);
   };
 
   Helpers.prototype.extend = function(objTo, objFrom) {
@@ -781,7 +782,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.makeColorObj = function(color) {
-    var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor;
+    var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor, style;
     if (color[0] === '#') {
       result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
       colorObj = {};
@@ -803,7 +804,7 @@ Helpers = (function() {
         rgbColor = color;
       }
       if (!isRgb) {
-        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF || this.isIE ? this.computedStyle(this.div).color : this.div.style.color) : this.shortColors[color];
+        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF || this.isIE || this.isOldOpera ? (style = this.computedStyle(this.div), this.computedStyle(this.div).color) : this.div.style.color) : this.shortColors[color];
       }
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
@@ -1120,7 +1121,7 @@ Polygon = (function(_super) {
     _ref1 = this.radialPoints;
     for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
       point = _ref1[i];
-      d += "" + point.x + "," + point.y + " ";
+      d += "" + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
     }
     return this.setAttr({
       points: d
@@ -1314,16 +1315,16 @@ Transit = (function(_super) {
 
   Transit.prototype.setElStyles = function() {
     var marginSize, size;
-    size = "" + (this.props.size / this.h.remBase) + "rem";
-    marginSize = "" + (-this.props.size / (2 * this.h.remBase)) + "rem";
+    size = "" + this.props.size + "px";
+    marginSize = "" + (-this.props.size / 2) + "px";
     this.el.style.position = 'absolute';
     this.el.style.top = this.props.y;
     this.el.style.left = this.props.x;
     this.el.style.opacity = this.props.opacity;
     this.el.style.width = size;
     this.el.style.height = size;
-    this.el.style['marginLeft'] = marginSize;
-    this.el.style['marginTop'] = marginSize;
+    this.el.style['margin-left'] = marginSize;
+    this.el.style['margin-top'] = marginSize;
     return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
   };
 

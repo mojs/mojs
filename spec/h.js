@@ -22,7 +22,8 @@
     describe('browsers detection', function() {
       return it('should have browsers flag', function() {
         expect(h.isFF).toBeDefined();
-        return expect(h.isIE).toBeDefined();
+        expect(h.isIE).toBeDefined();
+        return expect(h.isOldOpera).toBeDefined();
       });
     });
     describe('tween related map ->', function() {
@@ -223,8 +224,7 @@
       });
       describe('computedStyle method', function() {
         it('should return computed styles', function() {
-          document.body.style['font-size'] = '10px';
-          expect(h.computedStyle(document.body)).toBeDefined();
+          document.body.style['fontSize'] = '10px';
           return expect(h.computedStyle(document.body).fontSize).toBe('10px');
         });
         return it('should call getComputedStyle under the hood', function() {
@@ -293,10 +293,11 @@
       });
       describe('setPrefixedStyle method', function() {
         return it('should set prefixed style', function() {
-          var el;
+          var el, prefixed;
           el = document.createElement('div');
           h.setPrefixedStyle(el, 'transform', 'translate(20px, 10px)');
-          expect(el.style['-webkit-transform']).toBe('translate(20px, 10px)');
+          prefixed = "" + h.prefix.css + "transform";
+          expect(el.style[prefixed]).toBe('translate(20px, 10px)');
           return expect(el.style['transform']).toBe('translate(20px, 10px)');
         });
       });
@@ -673,7 +674,7 @@
           return setTimeout(function() {
             expect(h.TWEEN.update).toHaveBeenCalled();
             return dfr();
-          }, 34);
+          }, 50);
         });
         it('should start animation loop', function(dfr) {
           spyOn(h, 'animationLoop');
@@ -690,8 +691,8 @@
             return setTimeout(function() {
               expect(h.animationLoop).not.toHaveBeenCalled();
               return dfr();
-            }, 34);
-          }, 20);
+            }, 50);
+          }, 50);
         });
         it('should stop itself if there is no tween left', function(dfr) {
           var tween;
@@ -708,8 +709,8 @@
               expect(h.animationLoop).not.toHaveBeenCalled();
               expect(h.isAnimateLoop).toBe(false);
               return dfr();
-            }, 84);
-          }, 34);
+            }, 50);
+          }, 50);
         });
         return it('should start only 1 concurrent loop', function(dfr) {
           h.stopAnimationLoop();

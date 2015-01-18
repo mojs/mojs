@@ -16,6 +16,7 @@ burst = new Burst
   degree:       30
   points:       5
   isDrawLess:   true
+  # onComplete: -> console.log 'complete'
   # isRandom:     true
   childOptions:
     type:         'line'
