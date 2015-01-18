@@ -170,10 +170,11 @@ class Transit extends bitsMap.map.bit
     for key, defaultsValue of @defaults
       optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object value - just save it to @props
-      
-      isObject = (optionsValue? and (typeof optionsValue is 'object'))
       # if is not an object or is array
+      isObject = (optionsValue? and (typeof optionsValue is 'object'))
       if !isObject or @h.isArray(optionsValue)
+        if typeof optionsValue is 'string' and optionsValue.match /rand/
+          optionsValue = @h.parseRand optionsValue
         @props[key] = optionsValue
         # position property parse with units
         if @h.posPropsMap[key]

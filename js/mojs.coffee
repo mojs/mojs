@@ -16,24 +16,25 @@ burst = new Burst
   degree:       30
   points:       5
   isDrawLess:   true
-  isRandom:     true
+  # isRandom:     true
   childOptions:
     type:         'line'
     # fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
-    strokeWidth:  2
-    # radius:       14
+    # strokeWidth:  {2: 0}
+    strokeWidth:  1
+    radius:       { 'rand(1, 30)': 0}
     # type:         ['cross', 'polygon', 'line', 'polygon', 'cross']
     # angle:         [{ 0:360 }, {360: 0}, {0: 360}]
 
-
+# console.log burst.deltas.x
 
 document.body.addEventListener 'click', (e)->
   burst.run()
 
-# rec = new Transit
+# rect = new Transit
 #   type: 'circle'
 #   x: {10: 200}
 #   y: 100
-#   delay: 2000
+#   # delay: 2000
 #   isDrawLess: true

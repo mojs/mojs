@@ -59,6 +59,37 @@
           return expect(obj2.b).toBe(1);
         });
       });
+      describe('parseRand method', function() {
+        it('should get random number from string', function() {
+          var rand;
+          rand = h.parseRand('rand(10,20)');
+          expect(typeof rand).toBe('number');
+          expect(rand).toBeGreaterThan(9);
+          return expect(rand).not.toBeGreaterThan(20);
+        });
+        return it('should get random number with units', function() {
+          var rand;
+          rand = h.parseRand('rand(10%,20%)');
+          expect(parseFloat(rand)).toBeGreaterThan(9);
+          expect(parseFloat(rand)).not.toBeGreaterThan(20);
+          return expect(rand.match(/\%/)).toBeTruthy();
+        });
+      });
+      describe('parseIfRand method', function() {
+        it('should get random number from string if it is rand', function() {
+          var rand;
+          rand = h.parseIfRand('rand(10,20)');
+          expect(typeof rand).toBe('number');
+          expect(rand).toBeGreaterThan(9);
+          return expect(rand).not.toBeGreaterThan(20);
+        });
+        return it('should return the value if it is not a string', function() {
+          var rand;
+          rand = h.parseIfRand(20);
+          expect(typeof rand).toBe('number');
+          return expect(rand).toBe(20);
+        });
+      });
       describe('rand method', function() {
         it('should return random digit form range', function() {
           expect(h.rand(10, 20)).toBeGreaterThan(9);
@@ -168,13 +199,25 @@
             return expect(delta.type).toBe('unit');
           });
         });
-        return describe('tween-related values ->', function() {
+        describe('tween-related values ->', function() {
           return it('should not calc delta for tween related props', function() {
             var delta;
             delta = h.parseDelta('duration', {
               '2000': 1000
             });
             return expect(delta.type).not.toBeDefined();
+          });
+        });
+        return describe('rand values ->', function() {
+          return it('should calculate unit delta', function() {
+            var delta;
+            delta = h.parseDelta('x', {
+              'rand(2, 20)': 'rand(0, 5)'
+            });
+            expect(delta.start.value).toBeGreaterThan(-1);
+            expect(delta.start.value).not.toBeGreaterThan(20);
+            expect(delta.end.value).toBeGreaterThan(-1);
+            return expect(delta.end.value).not.toBeGreaterThan(5);
           });
         });
       });

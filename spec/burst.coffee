@@ -11,8 +11,6 @@ describe 'Burst ->', ->
       expect(burst.defaults.degree).toBe       360
       expect(burst.defaults.points).toBe       5
       expect(burst.defaults.type).toBe         'circle'
-  
-
 
   describe 'initialization ->', ->
     it 'should create transits', ->
@@ -161,3 +159,12 @@ describe 'Burst ->', ->
       expect(burst.transits[2].props.x).not.toBe '0px'
       expect(burst.transits[3].props.x).not.toBe '0px'
       expect(burst.transits[4].props.x).not.toBe '0px'
+
+    it 'should not call drawEl method', ->
+      burst = new Burst
+      spyOn burst, 'drawEl'
+      burst.draw()
+      expect(burst.drawEl).toHaveBeenCalled()
+
+
+

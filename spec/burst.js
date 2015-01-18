@@ -267,7 +267,7 @@
       });
     });
     return describe('draw method ->', function() {
-      return it('should set x/y coordinates on every transit', function() {
+      it('should set x/y coordinates on every transit', function() {
         var burst;
         burst = new Burst;
         burst.draw();
@@ -276,6 +276,13 @@
         expect(burst.transits[2].props.x).not.toBe('0px');
         expect(burst.transits[3].props.x).not.toBe('0px');
         return expect(burst.transits[4].props.x).not.toBe('0px');
+      });
+      return it('should not call drawEl method', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(burst, 'drawEl');
+        burst.draw();
+        return expect(burst.drawEl).toHaveBeenCalled();
       });
     });
   });

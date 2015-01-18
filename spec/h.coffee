@@ -41,6 +41,29 @@ describe 'Helpers ->', ->
         expect(obj2.a).not.toBeDefined()
         expect(obj2.b).toBe 1
 
+    describe 'parseRand method', ->
+      it 'should get random number from string', ->
+        rand = h.parseRand 'rand(10,20)'
+        expect(typeof rand).toBe 'number'
+        expect(rand).toBeGreaterThan 9
+        expect(rand).not.toBeGreaterThan 20
+      it 'should get random number with units', ->
+        rand = h.parseRand 'rand(10%,20%)'
+        expect(parseFloat rand).toBeGreaterThan      9
+        expect(parseFloat rand).not.toBeGreaterThan  20
+        expect(rand.match(/\%/)).toBeTruthy()
+
+    describe 'parseIfRand method', ->
+      it 'should get random number from string if it is rand', ->
+        rand = h.parseIfRand 'rand(10,20)'
+        expect(typeof rand).toBe 'number'
+        expect(rand).toBeGreaterThan 9
+        expect(rand).not.toBeGreaterThan 20
+      it 'should return the value if it is not a string', ->
+        rand = h.parseIfRand 20
+        expect(typeof rand).toBe 'number'
+        expect(rand).toBe 20
+
     describe 'rand method', ->
       it 'should return random digit form range', ->
         expect(h.rand(10, 20)).toBeGreaterThan      9
@@ -107,6 +130,13 @@ describe 'Helpers ->', ->
         it 'should not calc delta for tween related props', ->
           delta = h.parseDelta 'duration', {'2000': 1000}
           expect(delta.type).not.toBeDefined()
+      describe 'rand values ->', ->
+        it 'should calculate unit delta', ->
+          delta = h.parseDelta 'x', { 'rand(2, 20)': 'rand(0, 5)' }
+          expect(delta.start.value).toBeGreaterThan     -1
+          expect(delta.start.value).not.toBeGreaterThan 20
+          expect(delta.end.value).toBeGreaterThan     -1
+          expect(delta.end.value).not.toBeGreaterThan 5
 
     describe 'computedStyle method', ->
       it 'should return computed styles',->

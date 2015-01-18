@@ -116,12 +116,11 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.draw = function() {
-    var angle, i, point, points, radius, step, transit, _results;
+    var angle, i, point, points, radius, step, transit;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
     i = this.transits.length;
-    _results = [];
     while (i--) {
       transit = this.transits[i];
       radius = this.props.radius * (transit.radiusRand || 1);
@@ -134,13 +133,13 @@ Burst = (function(_super) {
           y: this.props.center
         }
       });
-      _results.push(transit.setProp({
+      transit.setProp({
         x: point.x,
         y: point.y,
         angle: angle - 90
-      }));
+      });
     }
-    return _results;
+    return this.drawEl();
   };
 
   Burst.prototype.setProgress = function(progress) {

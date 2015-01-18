@@ -219,21 +219,32 @@ class Helpers
     requestAnimationFrame h.animationLoop
     @
 
+  parseRand:(string)->
+    randArr = string.split /rand\(|\,|\)/
+    units = @parseUnit randArr[2]
+    rand = @rand(parseFloat(randArr[1]), parseFloat(randArr[2]))
+    if units.unit and randArr[2].match(units.unit)then rand + units.unit
+    else rand
+
+  parseIfRand:(str)->
+    if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
+    else str
+  
   parseDelta:(key, value)->
     # if delta object was passed: like { 20: 75 }
     if key is 'x' or key is 'y'
       @warn 'Consider to animate shiftX/shiftY properties instead of x/y,
        as it would be much more perfomant', value
     start = Object.keys(value)[0]
+    end   = value[start]
     delta = start: start
     # color values
-    if isNaN parseFloat(start)
+    if isNaN(parseFloat(start)) and !start.match(/rand\(/)
       if key is 'strokeLinecap'
         @warn "Sorry, stroke-linecap property is not animatable
            yet, using the start(#{start}) value instead", value
         # @props[key] = start;
         return delta
-      end           = value[start]
       startColorObj = @makeColorObj start
       endColorObj   = @makeColorObj end
       delta  =
@@ -247,7 +258,6 @@ class Helpers
           a: endColorObj.a - startColorObj.a
     # color strokeDasharray/strokeDashoffset
     else if key is 'strokeDasharray' or key is 'strokeDashoffset'
-      end   = value[start]
       startArr  = @strToArr start
       endArr    = @strToArr end
       @normDashArrays startArr, endArr
@@ -265,8 +275,8 @@ class Helpers
       if !@tweenOptionMap[key]
         # position values
         if @posPropsMap[key]
-          end   = @parseUnit value[start]
-          start = @parseUnit start
+          end   = @parseUnit @parseIfRand end
+          start = @parseUnit @parseIfRand start
           delta =
             start:  start
             end:    end
@@ -274,8 +284,8 @@ class Helpers
             type:   'unit'
           # @props[key] = start.string
         else
-          end   = parseFloat value[start]
-          start = parseFloat start
+          end   = parseFloat @parseIfRand    end
+          start = parseFloat @parseIfRand  start
           delta =
             start:  start
             end:    end

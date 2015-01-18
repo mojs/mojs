@@ -74,15 +74,23 @@
         });
         return expect(byte.props.radius).toBe(45);
       });
-      return it('should extend defaults object to properties if array was passed', function() {
+      it('should extend defaults object to properties if array was passed', function() {
         var byte;
         byte = new Byte({
           radius: [50, 100]
         });
         return expect(byte.props.radius.join(', ')).toBe('50, 100');
       });
+      return it('should extend defaults object to properties if rand was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 'rand(0, 10)'
+        });
+        expect(byte.props.radius).toBeDefined();
+        expect(byte.props.radius).toBeGreaterThan(-1);
+        return expect(byte.props.radius).not.toBeGreaterThan(10);
+      });
     });
-    it('should calculate transform object', function() {});
     it('should calculate transform object', function() {
       var byte;
       byte = new Byte({

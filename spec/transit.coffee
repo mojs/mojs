@@ -35,10 +35,15 @@ describe 'Byte ->', ->
     it 'should extend defaults object to properties if object was passed', ->
       byte = new Byte radius: {45: 55}
       expect(byte.props.radius).toBe(45)
+    # for burst
     it 'should extend defaults object to properties if array was passed', ->
       byte = new Byte radius: [50, 100]
       expect(byte.props.radius.join ', ').toBe '50, 100'
-  it 'should calculate transform object', ->
+    it 'should extend defaults object to properties if rand was passed', ->
+      byte = new Byte radius: 'rand(0, 10)'
+      expect(byte.props.radius).toBeDefined()
+      expect(byte.props.radius).toBeGreaterThan -1
+      expect(byte.props.radius).not.toBeGreaterThan 10
   it 'should calculate transform object', ->
     byte = new Byte
       angle:        90

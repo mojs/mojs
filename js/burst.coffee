@@ -110,6 +110,7 @@ class Burst extends Transit
         x: point.x
         y: point.y
         angle: angle-90
+    @drawEl()
 
   setProgress:(progress)->
     super

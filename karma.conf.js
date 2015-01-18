@@ -3,9 +3,56 @@ var istanbul = require('browserify-istanbul');
 // Generated on Sun Dec 07 2014 13:58:11 GMT+0200 (EET)
 
 module.exports = function(config) {
+
+  // Browsers to run on Sauce Labs
+  // Check out https://saucelabs.com/platforms for all browser/OS combos
+  var customLaunchers = {
+    sl_chrome: {
+      base: 'SauceLabs',
+      browserName: 'chrome',
+      platform: 'Windows 7',
+      version: '35'
+    },
+    sl_safari: {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      platform: 'OS X 10.8',
+      version: '6'
+    },
+    sl_firefox: {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+      version: '30'
+    },
+    sl_ios_safari: {
+      base: 'SauceLabs',
+      browserName: 'iphone',
+      platform: 'OS X 10.9',
+      version: '7.1'
+    },
+    sl_ie_11: {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      platform: 'Windows 8.1',
+      version: '11'
+    }
+  };
+
+  process.env.SAUCE_USERNAME = 'legomushroom';
+  process.env.SAUCE_ACCESS_KEY = '405fc371-6f38-4461-bef0-64633dd7ce33';
+  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+      console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.');
+      // process.exit(1);
+      reporters = ['progress', 'coverage', 'clear-screen'];
+      browsers = ['PhantomJS'];      
+    } else {
+      reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
+      browsers = Object.keys(customLaunchers);
+    }
+
   config.set({
 
-    // base path that will be used to resolve all patterns (eg. files, exclude)
+
     basePath: '',
 
 
@@ -46,53 +93,34 @@ module.exports = function(config) {
         // 'spec/*.js': 'coverage',
         'dist/*.js': ['browserify']
     },
-
     browserify: {
       debug: true,
       transform: [ 'brfs', istanbul({
         ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
       })]
     },
-
-    coverageReporter: {
-        reporters:[
-          {type: 'html', dir:'coverage/'},
-          // {type: 'teamcity'},
-          {type: 'text-summary'},
-          // {type: 'coverage'},
-          // {type: 'growl'}
-          {type: 'lcov', subdir: 'lcov-report'}
-        ],
-      },
-
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage', 'clear-screen'],
-
-
+    reporters: reporters,
     // web server port
     port: 9876,
-
-
     // enable / disable colors in the output (reporters and logs)
     colors: true,
-
-
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
-
-
+    sauceLabs: {
+      testName: 'mo · js tests',
+    },
+    captureTimeout: 120000,
+    customLaunchers: customLaunchers,
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-
-
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-
-
+    // browsers: ['PhantomJS'],
+    browsers: browsers,
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false

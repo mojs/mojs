@@ -1,0 +1,139 @@
+20150117 171334.982 [69212] CLI warning, open file limit 2560 is too low.
+20150117 171334.982 [69212] CLI Sauce Labs recommends setting it to at least 8000.
+20150117 171334.982 [69212] CLI Starting up; pid 69212
+20150117 171334.982 [69212] CLI Sauce Connect 4.3, build 1284 8da8e67
+20150117 171334.982 [69212] CLI Command line arguments: /Applications/MAMP/htdocs/mojs/node_modules/karma-sauce-launcher/node_modules/sauce-connect-launcher/sc/sc-4.3-osx/bin/sc -u legomushroom -k **** -P 5757 -l sauce_connect.log --tunnel-identifier karma1421507615 --readyfile /var/folders/d5/v7skt1mx3nbg3r7qgbpp37jr0000gn/T/sc-launcher-readyfile
+20150117 171334.982 [69212] CLI Using no proxy for connecting to Sauce Labs REST API.
+20150117 171338.540 [69212] CLI **********************************************************
+20150117 171338.540 [69212] CLI A newer version of Sauce Connect (build 1629) is available!
+20150117 171338.540 [69212] CLI Download it here:
+20150117 171338.540 [69212] CLI https://saucelabs.com/downloads/sc-4.3.6-osx.zip
+20150117 171338.540 [69212] CLI **********************************************************
+20150117 171339.544 [69212] CLI Started scproxy on port 52162.
+20150117 171339.544 [69212] CLI Please wait for 'you may start your tests' to start your tests.
+20150117 171339.544 [69212] CLI Starting secure remote tunnel VM...
+20150117 171346.625 [69212] CLI Secure remote tunnel VM provisioned.
+20150117 171346.625 [69212] CLI Tunnel ID: 4ff5336b455749c9bb9c5b6fd496bc5a
+20150117 171349.508 [69212] CLI Secure remote tunnel VM is now: booting
+20150117 171354.957 [69212] CLI Secure remote tunnel VM is now: running
+20150117 171354.957 [69212] CLI Remote tunnel host is: maki77051.miso.saucelabs.com
+20150117 171354.957 [69212] CLI Using no proxy for connecting to tunnel VM.
+20150117 171354.957 [69212] CLI Starting Selenium listener...
+20150117 171354.957 [69212] CLI Establishing secure TLS connection to tunnel...
+20150117 171354.959 [69212] CLI Selenium listener started on port 5757.
+20150117 171400.636 [69212] CLI Sauce Connect is up, you may start your tests.
+20150117 171400.636 [69212] CLI Connection established.
+20150117 171418.320 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171418.889 [69212] CLI Disconnected - you are now offline.
+20150117 171419.324 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171420.326 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171421.331 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171422.334 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171423.335 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171424.340 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171425.341 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171427.008 [69212] CLI Connection established.
+20150117 171444.405 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171445.407 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171446.410 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171447.360 [69212] CLI Disconnected - you are now offline.
+20150117 171447.412 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171448.416 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171449.420 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171450.422 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171451.422 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171452.423 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171453.424 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171454.427 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171455.431 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171456.434 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171457.438 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171458.442 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171459.443 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171500.443 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171501.447 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171502.451 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171503.456 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171504.458 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171505.458 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171506.463 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171507.463 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171508.468 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171509.471 [69212] KGP warning: no keepalive ack for > 5s
+20150117 171512.362 [69212] CLI Connection established.
+20150117 172214.652 [69212] CLI Cleaning up.
+20150117 172214.712 [69212] CLI Finished! Deleting tunnel.
+20150117 172217.629 [69212] CLI Removing named tunnel karma1421507615 (4ff5336b455749c9bb9c5b6fd496bc5a).
+20150117 172224.976 [69212] CLI Goodbye.
+20150117 172332.628 [69601] CLI warning, open file limit 2560 is too low.
+20150117 172332.644 [69601] CLI Sauce Labs recommends setting it to at least 8000.
+20150117 172332.645 [69601] CLI Starting up; pid 69601
+20150117 172332.645 [69601] CLI Sauce Connect 4.3, build 1284 8da8e67
+20150117 172332.645 [69601] CLI Command line arguments: /Applications/MAMP/htdocs/mojs/node_modules/karma-sauce-launcher/node_modules/sauce-connect-launcher/sc/sc-4.3-osx/bin/sc -u legomushroom -k **** -P 5757 -l sauce_connect.log --tunnel-identifier karma1421508213 --readyfile /var/folders/d5/v7skt1mx3nbg3r7qgbpp37jr0000gn/T/sc-launcher-readyfile
+20150117 172332.645 [69601] CLI Using no proxy for connecting to Sauce Labs REST API.
+20150117 172335.451 [69601] CLI **********************************************************
+20150117 172335.451 [69601] CLI A newer version of Sauce Connect (build 1629) is available!
+20150117 172335.451 [69601] CLI Download it here:
+20150117 172335.451 [69601] CLI https://saucelabs.com/downloads/sc-4.3.6-osx.zip
+20150117 172335.451 [69601] CLI **********************************************************
+20150117 172336.454 [69601] CLI Started scproxy on port 52542.
+20150117 172336.454 [69601] CLI Please wait for 'you may start your tests' to start your tests.
+20150117 172336.454 [69601] CLI Starting secure remote tunnel VM...
+20150117 172343.710 [69601] CLI Secure remote tunnel VM provisioned.
+20150117 172343.711 [69601] CLI Tunnel ID: 1815f2664622464cbc327d781d16290b
+20150117 172346.292 [69601] CLI Secure remote tunnel VM is now: running
+20150117 172346.292 [69601] CLI Remote tunnel host is: maki77040.miso.saucelabs.com
+20150117 172346.292 [69601] CLI Using no proxy for connecting to tunnel VM.
+20150117 172346.292 [69601] CLI Starting Selenium listener...
+20150117 172346.292 [69601] CLI Establishing secure TLS connection to tunnel...
+20150117 172346.294 [69601] CLI Selenium listener started on port 5757.
+20150117 172353.157 [69601] CLI Sauce Connect is up, you may start your tests.
+20150117 172353.157 [69601] CLI Connection established.
+20150117 172359.282 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172359.636 [69601] CLI Disconnected - you are now offline.
+20150117 172400.640 [69601] CLI Connection established.
+20150117 172431.377 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172431.606 [69601] CLI Disconnected - you are now offline.
+20150117 172432.379 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172433.381 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172434.382 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172435.384 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172436.387 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172437.387 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172438.387 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172439.391 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172440.391 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172441.395 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172442.397 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172443.400 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172444.402 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172445.404 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172446.409 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172447.414 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172448.417 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172449.418 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172450.419 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172451.420 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172452.424 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172453.428 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172454.431 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172455.436 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172456.436 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172457.440 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172458.442 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172459.445 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172500.450 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172501.453 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172502.458 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172503.463 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172504.467 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172505.470 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172506.471 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172507.474 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172508.477 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172509.478 [69601] KGP warning: no keepalive ack for > 5s
+20150117 172513.651 [69601] CLI Connection established.
+20150117 172817.530 [69601] CLI Cleaning up.
+20150117 172817.547 [69601] CLI Finished! Deleting tunnel.
+20150117 172819.688 [69601] CLI Removing named tunnel karma1421508213 (1815f2664622464cbc327d781d16290b).
+20150117 172827.746 [69601] CLI Goodbye.

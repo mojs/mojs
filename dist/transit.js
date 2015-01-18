@@ -236,6 +236,9 @@ Transit = (function(_super) {
       optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
       if (!isObject || this.h.isArray(optionsValue)) {
+        if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
+          optionsValue = this.h.parseRand(optionsValue);
+        }
         this.props[key] = optionsValue;
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;

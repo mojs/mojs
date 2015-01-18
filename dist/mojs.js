@@ -333,12 +333,11 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.draw = function() {
-    var angle, i, point, points, radius, step, transit, _results;
+    var angle, i, point, points, radius, step, transit;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
     i = this.transits.length;
-    _results = [];
     while (i--) {
       transit = this.transits[i];
       radius = this.props.radius * (transit.radiusRand || 1);
@@ -351,13 +350,13 @@ Burst = (function(_super) {
           y: this.props.center
         }
       });
-      _results.push(transit.setProp({
+      transit.setProp({
         x: point.x,
         y: point.y,
         angle: angle - 90
-      }));
+      });
     }
-    return _results;
+    return this.drawEl();
   };
 
   Burst.prototype.setProgress = function(progress) {
@@ -874,21 +873,41 @@ Helpers = (function() {
     return this;
   };
 
+  Helpers.prototype.parseRand = function(string) {
+    var rand, randArr, units;
+    randArr = string.split(/rand\(|\,|\)/);
+    units = this.parseUnit(randArr[2]);
+    rand = this.rand(parseFloat(randArr[1]), parseFloat(randArr[2]));
+    if (units.unit && randArr[2].match(units.unit)) {
+      return rand + units.unit;
+    } else {
+      return rand;
+    }
+  };
+
+  Helpers.prototype.parseIfRand = function(str) {
+    if (typeof str === 'string' && str.match(/rand\(/)) {
+      return this.parseRand(str);
+    } else {
+      return str;
+    }
+  };
+
   Helpers.prototype.parseDelta = function(key, value) {
     var delta, end, endArr, endColorObj, start, startArr, startColorObj;
     if (key === 'x' || key === 'y') {
       this.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more perfomant', value);
     }
     start = Object.keys(value)[0];
+    end = value[start];
     delta = {
       start: start
     };
-    if (isNaN(parseFloat(start))) {
+    if (isNaN(parseFloat(start)) && !start.match(/rand\(/)) {
       if (key === 'strokeLinecap') {
         this.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value instead", value);
         return delta;
       }
-      end = value[start];
       startColorObj = this.makeColorObj(start);
       endColorObj = this.makeColorObj(end);
       delta = {
@@ -903,7 +922,6 @@ Helpers = (function() {
         }
       };
     } else if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
-      end = value[start];
       startArr = this.strToArr(start);
       endArr = this.strToArr(end);
       this.normDashArrays(startArr, endArr);
@@ -916,8 +934,8 @@ Helpers = (function() {
     } else {
       if (!this.tweenOptionMap[key]) {
         if (this.posPropsMap[key]) {
-          end = this.parseUnit(value[start]);
-          start = this.parseUnit(start);
+          end = this.parseUnit(this.parseIfRand(end));
+          start = this.parseUnit(this.parseIfRand(start));
           delta = {
             start: start,
             end: end,
@@ -925,8 +943,8 @@ Helpers = (function() {
             type: 'unit'
           };
         } else {
-          end = parseFloat(value[start]);
-          start = parseFloat(start);
+          end = parseFloat(this.parseIfRand(end));
+          start = parseFloat(this.parseIfRand(start));
           delta = {
             start: start,
             end: end,
@@ -1045,11 +1063,13 @@ burst = new Burst({
   degree: 30,
   points: 5,
   isDrawLess: true,
-  isRandom: true,
   childOptions: {
     type: 'line',
     stroke: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
-    strokeWidth: 2
+    strokeWidth: 1,
+    radius: {
+      'rand(1, 30)': 0
+    }
   }
 });
 
@@ -1438,6 +1458,9 @@ Transit = (function(_super) {
       optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
       if (!isObject || this.h.isArray(optionsValue)) {
+        if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
+          optionsValue = this.h.parseRand(optionsValue);
+        }
         this.props[key] = optionsValue;
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
