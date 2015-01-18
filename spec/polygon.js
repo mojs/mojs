@@ -61,7 +61,7 @@
     });
     return describe('draw ->', function() {
       it('should add properties to el', function() {
-        var d, d2, tri;
+        var d, d2, isD, isIE9D, tri;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         tri = new Polygon({
           ctx: svg,
@@ -69,7 +69,9 @@
         });
         d = tri.el.getAttribute('points');
         d2 = '0.0000,-20.0000 17.3205,10.0000 -17.3205,10.0000 ';
-        return expect(d).toBe(d2);
+        isD = d === d2;
+        isIE9D = d === '0,-20 17.3205,10 -17.3205,10';
+        return expect(isD || isIE9D).toBe(true);
       });
       return it('should call super method', function() {
         var polygon;

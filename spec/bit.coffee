@@ -53,12 +53,14 @@ describe 'Bit', ->
       strokeDasharray = bit.el.getAttribute 'stroke-dasharray'
       strokeOffset    = bit.el.getAttribute 'stroke-dashoffset'
       transform       = bit.el.getAttribute 'transform'
+      isTransform     = transform is 'rotate(45, 20, 20)'
+      isIE9Transform  = transform is 'rotate(45 20 20)'
       expect(stroke)          .toBe   '#0f0'
       expect(strokeWidth)     .toBe   '3'
       expect(fill)            .toBe   '#0ff'
       expect(strokeDasharray) .toBe   '100'
       expect(strokeOffset)    .toBe   '50'
-      expect(transform)       .toBe   'rotate(45, 20, 20)'
+      expect(isTransform or isIE9Transform).toBe true
 
   describe 'setProp method ->', ->
     it 'should set properties ->', ->

@@ -38,13 +38,15 @@ describe 'Polygon ->', ->
 
   describe 'draw ->', ->
     it 'should add properties to el', ->
-      svg   = document.createElementNS?(ns, "svg")
+      svg = document.createElementNS?(ns, "svg")
       tri = new Polygon
         ctx:      svg
         radius:   20
       d   = tri.el.getAttribute('points')
       d2  = '0.0000,-20.0000 17.3205,10.0000 -17.3205,10.0000 '
-      expect(d).toBe d2
+      isD = d is d2
+      isIE9D = d is '0,-20 17.3205,10 -17.3205,10' 
+      expect(isD or isIE9D).toBe true
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")
       polygon  = new Polygon ctx: svg

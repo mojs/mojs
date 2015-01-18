@@ -13,7 +13,7 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
 
-  describe('Byte ->', function() {
+  describe('Trabsite ->', function() {
     describe('extension ->', function() {
       return it('should extend Bit class', function() {
         var byte;
@@ -1178,7 +1178,7 @@
         return setTimeout(function() {
           expect(easings.one).toHaveBeenCalled();
           return dfr();
-        }, 25);
+        }, 50);
       });
     });
     describe('chain ->', function() {

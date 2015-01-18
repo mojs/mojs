@@ -5,7 +5,7 @@ h    = mojs.helpers
 ns   = 'http://www.w3.org/2000/svg'
 svg  = document.createElementNS?(ns, 'svg')
 
-describe 'Byte ->', ->
+describe 'Trabsite ->', ->
   describe 'extension ->', ->
     it 'should extend Bit class', ->
       byte = new Byte
@@ -644,7 +644,7 @@ describe 'Byte ->', ->
       setTimeout ->
         expect(easings.one).toHaveBeenCalled()
         dfr()
-      , 25
+      , 50
   describe 'chain ->', ->
     it 'should have chain array', ->
       byte = new Byte(strokeWidth: {10: 5}, duration: 20)

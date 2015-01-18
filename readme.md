@@ -9,7 +9,6 @@
 - refactor
   - perf profile
   - isDrawless = true by default
-  - add souce labs
 - add motion path
   - add movement arc
 - add more shapes(bits)

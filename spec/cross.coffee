@@ -14,7 +14,9 @@ describe 'Cross ->', ->
         ctx:    svg
         radius: 20
       d = cross.el.getAttribute('d')
-      expect(d).toBe('M-20,0 L20,0 M0,-20 L0,20')
+      isD = d is 'M-20,0 L20,0 M0,-20 L0,20'
+      isIE9D = d is 'M -20 0 L 20 0 M 0 -20 L 0 20'
+      expect(isD or isIE9D).toBe true
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")
       cross     = new Cross ctx: svg
