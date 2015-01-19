@@ -42,8 +42,8 @@ Burst = (function(_super) {
     repeat: 1,
     yoyo: false,
     easing: 'Linear.None',
-    isRandomAngle: false,
-    isRandomRadius: false,
+    randomAngle: 0,
+    randomRadius: 0,
     isSwirl: false,
     swirlFrequency: 3,
     swirlSize: 10
@@ -94,12 +94,12 @@ Burst = (function(_super) {
 
   Burst.prototype.run = function() {
     var i;
-    if (this.props.isRandomAngle || this.props.isRandomRadius || this.props.isSwirl) {
+    if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
       i = this.transits.length;
       while (i--) {
         this.props.isSwirl && this.generateSign(i);
-        this.props.isRandomAngle && this.generateRandomAngle(i);
-        this.props.isRandomRadius && this.generateRandomRadius(i);
+        this.props.randomAngle && this.generateRandomAngle(i);
+        this.props.randomRadius && this.generateRandomRadius(i);
       }
     }
     return Burst.__super__.run.apply(this, arguments);
@@ -116,8 +116,8 @@ Burst = (function(_super) {
       option.isDrawLess = true;
       option.isRunLess = true;
       this.transits.push(new Transit(option));
-      this.props.isRandomAngle && this.generateRandomAngle(i);
-      this.props.isRandomRadius && this.generateRandomRadius(i);
+      this.props.randomAngle && this.generateRandomAngle(i);
+      this.props.randomRadius && this.generateRandomRadius(i);
       _results.push(this.props.isSwirl && this.generateSign(i));
     }
     return _results;
@@ -132,7 +132,7 @@ Burst = (function(_super) {
     while (i--) {
       transit = this.transits[i];
       radius = this.props.radius * (transit.radiusRand || 1);
-      angle = i * step * (transit.angleRand || 1);
+      angle = i * step + (transit.angleRand || 1);
       if (this.props.isSwirl) {
         angle += this.getSwirl(progress, transit.signRand);
       }
@@ -202,11 +202,25 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.generateRandomAngle = function(i) {
-    return this.transits[i].angleRand = this.h.rand(75, 125) / 100 + this.h.rand(0, 5) * 90;
+    var end, randdomness, randomness, start;
+    randomness = parseFloat(this.props.randomAngle);
+    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
+    if (randomness) {
+      start = (1 - randomness) * 180;
+      end = (1 + randomness) * 180;
+    } else {
+      start = (1 - .5) * 180;
+      end = (1 + .5) * 180;
+    }
+    return this.transits[i].angleRand = this.h.rand(start, end);
   };
 
   Burst.prototype.generateRandomRadius = function(i) {
-    return this.transits[i].radiusRand = this.h.rand(50, 100) / 100;
+    var randdomness, randomness, start;
+    randomness = parseFloat(this.props.randomRadius);
+    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
+    start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
+    return this.transits[i].radiusRand = this.h.rand(start, 101) / 100;
   };
 
   Burst.prototype.generateSign = function(i) {

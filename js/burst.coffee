@@ -6,7 +6,6 @@ Transit   = require './transit'
 h         = require './h'
 
 class Burst extends Transit
-  
   defaults:
     # presentation props
     points:             5
@@ -35,8 +34,8 @@ class Burst extends Transit
     repeat:             1
     yoyo:               false
     easing:             'Linear.None'
-    isRandomAngle:      false
-    isRandomRadius:     false
+    randomAngle:        0
+    randomRadius:       0
     isSwirl:            false
     swirlFrequency:     3
     swirlSize:          10
@@ -83,12 +82,12 @@ class Burst extends Transit
     super
 
   run:->
-    if @props.isRandomAngle or @props.isRandomRadius or @props.isSwirl
+    if @props.randomAngle or @props.randomRadius or @props.isSwirl
       i = @transits.length
       while(i--)
         @props.isSwirl        and @generateSign(i)
-        @props.isRandomAngle  and @generateRandomAngle(i)
-        @props.isRandomRadius and @generateRandomRadius(i)
+        @props.randomAngle  and @generateRandomAngle(i)
+        @props.randomRadius and @generateRandomRadius(i)
     super
 
   createBit:->
@@ -97,8 +96,8 @@ class Burst extends Transit
       bitClass = bitsMap.getBit(@o.type or @type); option = @getOption(i)
       option.ctx = @ctx; option.isDrawLess = true; option.isRunLess = true
       @transits.push new Transit option
-      @props.isRandomAngle  and @generateRandomAngle(i)
-      @props.isRandomRadius and @generateRandomRadius(i)
+      @props.randomAngle  and @generateRandomAngle(i)
+      @props.randomRadius and @generateRandomRadius(i)
       @props.isSwirl        and @generateSign(i)
   draw:(progress)->
     points = @props.points
@@ -108,7 +107,7 @@ class Burst extends Transit
     while(i--)
       transit = @transits[i]
       radius  = @props.radius*(transit.radiusRand or 1)
-      angle   = i*step*(transit.angleRand or 1)
+      angle   = i*step+(transit.angleRand or 1)
       if @props.isSwirl then angle += @getSwirl progress, transit.signRand
       point   = @h.getRadialPoint
         radius: radius
@@ -119,14 +118,12 @@ class Burst extends Transit
         y: point.y
         angle: angle-90
     @drawEl()
-
   setProgress:(progress)->
     super
     i = @transits.length
     while(i--)
       @transits[i].setProgress progress
       @transits[i].draw()
-
   calcSize:->
     largestSize = -1
     for transit, i in @transits
@@ -139,7 +136,6 @@ class Burst extends Transit
     else parseFloat @props.radius
     @props.size   = largestSize + 2*selfSize
     @props.center = @props.size/2
-
   getOption:(i)->
     option = {}
     for key, value of @childOptions
@@ -149,11 +145,18 @@ class Burst extends Transit
     prop = @childOptions[name]
     if @h.isArray(prop) then prop[i % prop.length] else prop
   generateRandomAngle:(i)->
-    @transits[i].angleRand   = @h.rand(75, 125)/100 + @h.rand(0,5)*90
+    randomness = parseFloat(@props.randomAngle)
+    randdomness = if randomness > 1 then 1 else if randomness < 0 then 0
+    if randomness then start = (1-randomness)*180; end = (1+randomness)*180
+    else start = (1-.5)*180; end = (1+.5)*180
+    @transits[i].angleRand = @h.rand(start, end)# + @h.rand(0,10)*85
   generateRandomRadius:(i)->
-    @transits[i].radiusRand = @h.rand(50, 100)/100
+    randomness = parseFloat(@props.randomRadius)
+    randdomness = if randomness > 1 then 1 else if randomness < 0 then 0
+    start = if randomness then (1-randomness)*100 else (1-.5)*100
+    @transits[i].radiusRand = @h.rand(start, 101)/100
   generateSign:(i)->
-    @transits[i].signRand   = if @h.rand(0, 1) then -1 else 1
+    @transits[i].signRand = if @h.rand(0, 1) then -1 else 1
   getSwirl:(progress, sign)->
     sign * @props.swirlSize*Math.sin(@props.swirlFrequency*progress)
 

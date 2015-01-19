@@ -58,26 +58,33 @@ describe 'Burst ->', ->
       expect(option7.radius)    .toBe 20
 
   describe 'randomness ->', ->
-    it 'should have isRandomRadius option ->', ->
-      burst = new Burst
-      expect(burst.props.isRandomRadius).toBeDefined()
-      expect(burst.props.isRandomRadius).toBe false
-    it 'should calculate radiusRand for every transit ->', ->
-      burst = new Burst isRandomRadius: true
-      expect(burst.transits[0].radiusRand).toBeDefined()
-      expect(burst.transits[1].radiusRand).toBeDefined()
-    it 'should calculate angleRand for every transit ->', ->
-      burst = new Burst isRandomAngle: true
-      expect(burst.transits[0].angleRand).toBeDefined()
-      expect(burst.transits[1].angleRand).toBeDefined()
-    it 'should calculate signRand for every transit ->', ->
-      burst = new Burst isSwirl: true
-      sign = burst.transits[0].signRand
-      expect(sign).toBeDefined()
-      expect(sign is -1 or sign is 1).toBe true
-      sign = burst.transits[1].signRand
-      expect(sign).toBeDefined()
-      expect(sign is -1 or sign is 1).toBe true
+    describe 'random angle ->', ->
+      it 'should have randomAngle option ->', ->
+        burst = new Burst
+        expect(burst.props.randomAngle).toBeDefined()
+        expect(burst.props.randomAngle).toBe 0
+      it 'should calculate angleRand for every transit ->', ->
+        burst = new Burst randomAngle: true
+        expect(burst.transits[0].angleRand).toBeDefined()
+        expect(burst.transits[1].angleRand).toBeDefined()
+    describe 'random radius ->', ->
+      it 'should have randomRadius option ->', ->
+        burst = new Burst
+        expect(burst.props.randomRadius).toBeDefined()
+        expect(burst.props.randomRadius).toBe 0
+      it 'should calculate radiusRand for every transit ->', ->
+        burst = new Burst randomRadius: true
+        expect(burst.transits[0].radiusRand).toBeDefined()
+        expect(burst.transits[1].radiusRand).toBeDefined()
+    describe 'random sign ->', ->
+      it 'should calculate signRand for every transit ->', ->
+        burst = new Burst isSwirl: true
+        sign = burst.transits[0].signRand
+        expect(sign).toBeDefined()
+        expect(sign is -1 or sign is 1).toBe true
+        sign = burst.transits[1].signRand
+        expect(sign).toBeDefined()
+        expect(sign is -1 or sign is 1).toBe true
 
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->
@@ -148,28 +155,28 @@ describe 'Burst ->', ->
       spyOn Burst.__super__, 'run'
       burst.run()
       expect(Burst.__super__.run).toHaveBeenCalled()
-    it 'should call generateRandomAngle method if isRandomAngle was passed', ->
-      burst = new Burst isRandomAngle: true
+    it 'should call generateRandomAngle method if randomAngle was passed', ->
+      burst = new Burst randomAngle: true
       spyOn burst, 'generateRandomAngle'
       burst.run()
       expect(burst.generateRandomAngle).toHaveBeenCalled()
-    it 'should not call generateRandomAngle method if isRandom was not passed', ->
-      burst = new Burst isRandomAngle: false
+    it 'should not call generateRandomAngle method', ->
+      burst = new Burst randomAngle: false
       spyOn burst, 'generateRandomAngle'
       burst.run()
       expect(burst.generateRandomAngle).not.toHaveBeenCalled()
-    it 'should call generateRandomRadius method if isRandomAngle was passed', ->
-      burst = new Burst isRandomRadius: true
+    it 'should call generateRandomRadius method if randomAngle was passed', ->
+      burst = new Burst randomRadius: true
       spyOn burst, 'generateRandomRadius'
       burst.run()
       expect(burst.generateRandomRadius).toHaveBeenCalled()
-    it 'should not call generateRandomRadius method if isRandom was not passed', ->
-      burst = new Burst isRandomRadius: false
+    it 'should not call generateRandomRadius method', ->
+      burst = new Burst randomRadius: false
       spyOn burst, 'generateRandomRadius'
       burst.run()
       expect(burst.generateRandomRadius).not.toHaveBeenCalled()
     it 'should call generateSign method if isSwirl was passed', ->
-      burst = new Burst isSwirl: true, isRandom: true
+      burst = new Burst isSwirl: true
       spyOn burst, 'generateSign'
       burst.run()
       expect(burst.generateSign).toHaveBeenCalled()
@@ -178,6 +185,20 @@ describe 'Burst ->', ->
       spyOn burst, 'generateSign'
       burst.run()
       expect(burst.generateSign).not.toHaveBeenCalled()
+
+  describe 'generateRandomAngle method ->', ->
+    it 'should generate random angle based on randomness', ->
+      burst = new Burst randomAngle: .75
+      burst.generateRandomAngle 0
+      expect(burst.transits[0].angleRand).toBeGreaterThan     45
+      expect(burst.transits[0].angleRand).not.toBeGreaterThan 315
+
+  describe 'generateRandomRadius method ->', ->
+    it 'should generate random radius based on randomness', ->
+      burst = new Burst randomRadius: .75
+      burst.generateRandomRadius 0
+      expect(burst.transits[0].radiusRand).toBeGreaterThan      .24
+      expect(burst.transits[0].radiusRand).not.toBeGreaterThan 1
 
   describe 'getSwirl method ->', ->
     it 'should calc swirl based on swirlFrequency and swirlSize props', ->
