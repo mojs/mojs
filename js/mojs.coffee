@@ -1,43 +1,37 @@
-# Cross     = require './cross'
-# Circle    = require './circle'
-# Polygon   = require './polygon'
-# Rect      = require './rect'
-# Line      = require './line'
-# Bit       = require './bit'
-# svg       = document.getElementById 'js-svg'
-# div       = document.getElementById 'js-div'
-Transit   = require './transit'
+
+div = document.querySelector '#js-div'
+
+setTimeout ->
+  div.style.width = '50px'
+, 5000
+
+# Transit   = require './transit'
 Burst     = require './burst'
 
 burst = new Burst
   x:            300
   y:            150
   duration:     600
+  radius: { 0: 150 }
   # degree:       45
-  points:       5
+  points:       7
   isDrawLess:   true
   isSwirl:      true
   # onComplete: -> @run()
-  randomRadius: .75
+  randomRadius: 1
   randomAngle:  .3
+  swirlFrequency: 'rand(1,3)'
   childOptions:
     type:         'circle'
     fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     # stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     # strokeWidth:  {2: 0}
     strokeWidth:  0
-    # radius:       { 'rand(2, 12)': 0}
+    radius:       { 'rand(2, 9)': 0}
+    opacity:      { 'rand(.5, 1)': 0 }
     # type:         ['cross', 'polygon', 'line', 'polygon', 'cross']
     # angle:         [{ 0:360 }, {360: 0}, {0: 360}]
 
-# console.log burst.deltas.x
-
 document.body.addEventListener 'click', (e)->
   burst.run()
-
-# rect = new Transit
-#   type: 'circle'
-#   x: {10: 200}
-#   y: 100
-#   # delay: 2000
-#   isDrawLess: true
+  # burst.run( x: e.x, y: e.y )

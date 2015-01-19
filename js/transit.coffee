@@ -61,7 +61,7 @@ class Transit extends bitsMap.map.bit
         @ctx = @o.ctx; @createBit(); @calcSize()
       @isRendered = true
 
-    !@o.isDrawLess and @setProgress 0
+    @setProgress 0, true
     @createTween()
     @
 
@@ -78,6 +78,14 @@ class Transit extends bitsMap.map.bit
     @el.style['margin-left'] = marginSize
     @el.style['margin-top']  = marginSize
     @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
+    if @o.isShowInit then @show() else @hide()
+
+  show:->
+    return if @isShown or !@el
+    @el.style.display = 'block'; @isShown = true
+  hide:->
+    return if (@isShown is false) or !@el
+    @el.style.display = 'none'; @isShown = false
 
   draw:->
     @bit.setProp
@@ -132,7 +140,8 @@ class Transit extends bitsMap.map.bit
     bitClass = bitsMap.getBit(@o.type or @type)
     @bit = new bitClass ctx: @ctx, isDrawLess: true
 
-  setProgress:(progress)->
+  setProgress:(progress, isShow)->
+    !isShow and @show()
     @props.onUpdate?.call(@, progress)
 
     @progress = if progress < 0 or !progress then 0
@@ -195,7 +204,8 @@ class Transit extends bitsMap.map.bit
     @chainArr.push { type: 'chain', options: options }; return @
   then:(options)->  @chainArr.push { type: 'then',  options: options }; @
   runChain:->
-    if !@chainArr.length then return @props.onCompleteChain?.call @
+    if !@chainArr.length
+      !@o.isShowEnd and @hide(); return @props.onCompleteChain?.call @
 
     chain = @chainArr.shift()
     if chain.type is 'chain'

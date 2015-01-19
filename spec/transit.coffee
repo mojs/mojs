@@ -5,7 +5,7 @@ h    = mojs.helpers
 ns   = 'http://www.w3.org/2000/svg'
 svg  = document.createElementNS?(ns, 'svg')
 
-describe 'Trabsite ->', ->
+describe 'Transit ->', ->
   describe 'extension ->', ->
     it 'should extend Bit class', ->
       byte = new Byte
@@ -104,6 +104,7 @@ describe 'Trabsite ->', ->
       expect(svg.style.position)                .toBe 'absolute'
       expect(svg.style.width)                   .toBe '100%'
       expect(svg.style.height)                  .toBe '100%'
+
     it 'should not create context and el if context was passed', ->
       svg.isSvg = true
       byte = new Byte ctx: svg
@@ -119,11 +120,17 @@ describe 'Trabsite ->', ->
       expect(byte.el.style.position)              .toBe 'absolute'
       expect(byte.el.style.width)                 .toBe '54px'
       expect(byte.el.style.height)                .toBe '54px'
-      expect(byte.el.style['margin-left'])         .toBe '-27px'
-      expect(byte.el.style['margin-top'])          .toBe '-27px'
+      expect(byte.el.style.display)               .toBe 'none'
+      expect(byte.el.style['margin-left'])        .toBe '-27px'
+      expect(byte.el.style['margin-top'])         .toBe '-27px'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
+      expect(byte.isShown).toBe false
 
+    it 'should set display: block if isShowInit was passed', ->
+      byte = new Byte isShowInit: true
+      expect(byte.el.style.display).toBe 'block'
+      expect(byte.isShown).toBe true
     it 'should set el size based', ->
     # it 'should set el size based on remBase', ->
       byte = new Byte
@@ -144,8 +151,6 @@ describe 'Trabsite ->', ->
       expect(byte.el.style['margin-top'])         .toBe '-27px'
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
-
-
     it 'should create bit', ->
       byte = new Byte radius: 25
       expect(byte.bit).toBeDefined()
@@ -226,7 +231,6 @@ describe 'Trabsite ->', ->
         it 'should animate position', (dfr)->
           byte = new Byte
             shiftX: {100: '200px'}
-            isDrawLess: true
             duration: 20
           setTimeout ->
             expect(byte.el.style.transform) .toBe 'translate(200px, 0px)'
@@ -249,6 +253,23 @@ describe 'Trabsite ->', ->
             expect(byte.el.style.transform) .toBe 'translate(50px, 50%)'
             dfr()
           , 100
+
+  describe 'show method ->', ->
+    it 'should set display: block to el', ->
+      byte = new Byte
+      byte.show()
+      expect(byte.el.style.display).toBe 'block'
+    it 'should return if isShow is already true', ->
+      byte = new Byte
+      byte.show()
+      byte.el.style.display = 'inline'
+      byte.show()
+      expect(byte.el.style.display).toBe 'inline'
+  describe 'hide method ->', ->
+    it 'should set display: block to el', ->
+      byte = new Byte
+      byte.hide()
+      expect(byte.el.style.display).toBe 'none'
 
   describe 'mergeThenOptions method ->', ->
     it 'should call copyEndOptions method', ->
@@ -317,11 +338,6 @@ describe 'Trabsite ->', ->
       spyOn byte, 'draw'
       byte.render()
       expect(byte.draw).toHaveBeenCalled()
-    it 'should not call draw method if isDrawLess option is true', ->
-      byte = new Byte radius: 25, isDrawLess: true
-      spyOn byte, 'draw'
-      byte.render()
-      expect(byte.draw).not.toHaveBeenCalled()
     it 'should call createBit method', ->
       byte = new Byte radius: 25
       spyOn byte, 'createBit'
@@ -495,7 +511,21 @@ describe 'Trabsite ->', ->
       byte.setProgress .5
       expect(byte.origin.x).toBeDefined()
       expect(byte.origin.y).toBeDefined()
-        
+    it 'should show el', ->
+      byte = new Byte radius:  {'25': 75}
+      spyOn byte, 'show'
+      byte.setProgress .5
+      expect(byte.show).toHaveBeenCalled()
+    it 'should not show el if isShow passed', ->
+      byte = new Byte radius:  {'25': 75}
+      spyOn byte, 'show'
+      byte.setProgress .5, true
+      expect(byte.show).not.toHaveBeenCalled()
+
+    it 'not thow', ->
+      byte = new Byte radius:  {'25': 75}, ctx: svg
+      expect(-> byte.show()).not.toThrow()
+
     it 'should set color value progress and only int', ->
       byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
       colorDelta = byte.deltas.stroke
@@ -703,6 +733,23 @@ describe 'Trabsite ->', ->
         byte.runChain()
         expect(byte.o.strokeWidth[20]).toBe   30
         expect(byte.init).not.toHaveBeenCalled()
+      it 'should hide element at the end', ->
+        byte = new Byte
+          strokeWidth: {20:30}
+          isRunLess:   true
+          duration: 20
+        byte.chainArr = []; spyOn byte, 'hide'
+        byte.runChain()
+        expect(byte.hide).toHaveBeenCalled()
+      it 'should not hide element at the end if isShowEnd was passed', ->
+        byte = new Byte
+          strokeWidth: {20:30}
+          isShowEnd: true
+          duration:    20
+        byte.chainArr = []; spyOn byte, 'hide'
+        byte.runChain()
+        expect(byte.hide).not.toHaveBeenCalled()
+
   describe 'then ->', ->
     it 'should push to chainArr with type of then', ->
       byte = new Byte(strokeWidth: {10: 5}, duration: 20)
@@ -749,17 +796,11 @@ describe 'Trabsite ->', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50
       expect(byte.el.style.width).toBe '104px'
-    it 'should call setProgress(0) if isDrawLess is not set', ->
+    it 'should call setProgress(0)', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       spyOn byte, 'setProgress'
       byte.run radius: 50
       expect(byte.setProgress).toHaveBeenCalledWith 0
-
-    it 'should call not setProgress(0) if isDrawLess is set', ->
-      byte = new Byte(radius: {10: 5}, isRunLess: true)
-      spyOn byte, 'setProgress'
-      byte.run radius: 50, isDrawLess: true
-      expect(byte.setProgress).not.toHaveBeenCalledWith 0
 
     it 'should restart progress value tween', (dfr)->
       isOne = 0

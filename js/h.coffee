@@ -1,8 +1,5 @@
 TWEEN = require './vendor/tween'
 
-
-
-
 class Helpers
   TWEEN:  TWEEN
   logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
@@ -244,7 +241,7 @@ class Helpers
     # if delta object was passed: like { 20: 75 }
     if key is 'x' or key is 'y'
       @warn 'Consider to animate shiftX/shiftY properties instead of x/y,
-       as it would be much more perfomant', value
+       as it would be much more performant', value
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start

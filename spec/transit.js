@@ -13,7 +13,7 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
 
-  describe('Trabsite ->', function() {
+  describe('Transit ->', function() {
     describe('extension ->', function() {
       return it('should extend Bit class', function() {
         var byte;
@@ -223,10 +223,20 @@
         expect(byte.el.style.position).toBe('absolute');
         expect(byte.el.style.width).toBe('54px');
         expect(byte.el.style.height).toBe('54px');
+        expect(byte.el.style.display).toBe('none');
         expect(byte.el.style['margin-left']).toBe('-27px');
         expect(byte.el.style['margin-top']).toBe('-27px');
         expect(byte.el.style['backface-visibility']).toBe('hidden');
-        return expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).toBe('hidden');
+        expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).toBe('hidden');
+        return expect(byte.isShown).toBe(false);
+      });
+      it('should set display: block if isShowInit was passed', function() {
+        var byte;
+        byte = new Byte({
+          isShowInit: true
+        });
+        expect(byte.el.style.display).toBe('block');
+        return expect(byte.isShown).toBe(true);
       });
       it('should set el size based', function() {
         var byte;
@@ -382,7 +392,6 @@
               shiftX: {
                 100: '200px'
               },
-              isDrawLess: true,
               duration: 20
             });
             return setTimeout(function() {
@@ -420,6 +429,30 @@
             }, 100);
           });
         });
+      });
+    });
+    describe('show method ->', function() {
+      it('should set display: block to el', function() {
+        var byte;
+        byte = new Byte;
+        byte.show();
+        return expect(byte.el.style.display).toBe('block');
+      });
+      return it('should return if isShow is already true', function() {
+        var byte;
+        byte = new Byte;
+        byte.show();
+        byte.el.style.display = 'inline';
+        byte.show();
+        return expect(byte.el.style.display).toBe('inline');
+      });
+    });
+    describe('hide method ->', function() {
+      return it('should set display: block to el', function() {
+        var byte;
+        byte = new Byte;
+        byte.hide();
+        return expect(byte.el.style.display).toBe('none');
       });
     });
     describe('mergeThenOptions method ->', function() {
@@ -525,16 +558,6 @@
         spyOn(byte, 'draw');
         byte.render();
         return expect(byte.draw).toHaveBeenCalled();
-      });
-      it('should not call draw method if isDrawLess option is true', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25,
-          isDrawLess: true
-        });
-        spyOn(byte, 'draw');
-        byte.render();
-        return expect(byte.draw).not.toHaveBeenCalled();
       });
       it('should call createBit method', function() {
         var byte;
@@ -871,6 +894,40 @@
         byte.setProgress(.5);
         expect(byte.origin.x).toBeDefined();
         return expect(byte.origin.y).toBeDefined();
+      });
+      it('should show el', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        spyOn(byte, 'show');
+        byte.setProgress(.5);
+        return expect(byte.show).toHaveBeenCalled();
+      });
+      it('should not show el if isShow passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        spyOn(byte, 'show');
+        byte.setProgress(.5, true);
+        return expect(byte.show).not.toHaveBeenCalled();
+      });
+      it('not thow', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          },
+          ctx: svg
+        });
+        return expect(function() {
+          return byte.show();
+        }).not.toThrow();
       });
       it('should set color value progress and only int', function() {
         var byte, colorDelta;
@@ -1311,7 +1368,7 @@
           expect(byte.o.strokeWidth[30]).toBe(20);
           return expect(byte.init).toHaveBeenCalled();
         });
-        return it('should not run empty chain', function() {
+        it('should not run empty chain', function() {
           var byte;
           byte = new Byte({
             strokeWidth: {
@@ -1325,6 +1382,34 @@
           byte.runChain();
           expect(byte.o.strokeWidth[20]).toBe(30);
           return expect(byte.init).not.toHaveBeenCalled();
+        });
+        it('should hide element at the end', function() {
+          var byte;
+          byte = new Byte({
+            strokeWidth: {
+              20: 30
+            },
+            isRunLess: true,
+            duration: 20
+          });
+          byte.chainArr = [];
+          spyOn(byte, 'hide');
+          byte.runChain();
+          return expect(byte.hide).toHaveBeenCalled();
+        });
+        return it('should not hide element at the end if isShowEnd was passed', function() {
+          var byte;
+          byte = new Byte({
+            strokeWidth: {
+              20: 30
+            },
+            isShowEnd: true,
+            duration: 20
+          });
+          byte.chainArr = [];
+          spyOn(byte, 'hide');
+          byte.runChain();
+          return expect(byte.hide).not.toHaveBeenCalled();
         });
       });
     });
@@ -1441,7 +1526,7 @@
         });
         return expect(byte.el.style.width).toBe('104px');
       });
-      it('should call setProgress(0) if isDrawLess is not set', function() {
+      it('should call setProgress(0)', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1454,21 +1539,6 @@
           radius: 50
         });
         return expect(byte.setProgress).toHaveBeenCalledWith(0);
-      });
-      it('should call not setProgress(0) if isDrawLess is set', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        spyOn(byte, 'setProgress');
-        byte.run({
-          radius: 50,
-          isDrawLess: true
-        });
-        return expect(byte.setProgress).not.toHaveBeenCalledWith(0);
       });
       return it('should restart progress value tween', function(dfr) {
         var byte, i, isOne;

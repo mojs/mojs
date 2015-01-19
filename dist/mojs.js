@@ -933,7 +933,7 @@ Helpers = (function() {
   Helpers.prototype.parseDelta = function(key, value) {
     var delta, end, endArr, endColorObj, start, startArr, startColorObj;
     if (key === 'x' || key === 'y') {
-      this.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more perfomant', value);
+      this.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', value);
     }
     start = Object.keys(value)[0];
     end = value[start];
@@ -1087,9 +1087,13 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":1}],8:[function(require,module,exports){
-var Burst, Transit, burst;
+var Burst, burst, div;
 
-Transit = require('./transit');
+div = document.querySelector('#js-div');
+
+setTimeout(function() {
+  return div.style.width = '50px';
+}, 5000);
 
 Burst = require('./burst');
 
@@ -1097,15 +1101,25 @@ burst = new Burst({
   x: 300,
   y: 150,
   duration: 600,
-  points: 5,
+  radius: {
+    0: 150
+  },
+  points: 7,
   isDrawLess: true,
   isSwirl: true,
-  randomRadius: .75,
+  randomRadius: 1,
   randomAngle: .3,
+  swirlFrequency: 'rand(1,3)',
   childOptions: {
     type: 'circle',
     fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
-    strokeWidth: 0
+    strokeWidth: 0,
+    radius: {
+      'rand(2, 9)': 0
+    },
+    opacity: {
+      'rand(.5, 1)': 0
+    }
   }
 });
 
@@ -1113,7 +1127,7 @@ document.body.addEventListener('click', function(e) {
   return burst.run();
 });
 
-},{"./burst":3,"./transit":11}],9:[function(require,module,exports){
+},{"./burst":3}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1343,7 +1357,7 @@ Transit = (function(_super) {
       }
       this.isRendered = true;
     }
-    !this.o.isDrawLess && this.setProgress(0);
+    this.setProgress(0, true);
     this.createTween();
     return this;
   };
@@ -1360,7 +1374,28 @@ Transit = (function(_super) {
     this.el.style.height = size;
     this.el.style['margin-left'] = marginSize;
     this.el.style['margin-top'] = marginSize;
-    return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+    this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+    if (this.o.isShowInit) {
+      return this.show();
+    } else {
+      return this.hide();
+    }
+  };
+
+  Transit.prototype.show = function() {
+    if (this.isShown || !this.el) {
+      return;
+    }
+    this.el.style.display = 'block';
+    return this.isShown = true;
+  };
+
+  Transit.prototype.hide = function() {
+    if ((this.isShown === false) || !this.el) {
+      return;
+    }
+    this.el.style.display = 'none';
+    return this.isShown = false;
   };
 
   Transit.prototype.draw = function() {
@@ -1433,8 +1468,9 @@ Transit = (function(_super) {
     });
   };
 
-  Transit.prototype.setProgress = function(progress) {
+  Transit.prototype.setProgress = function(progress, isShow) {
     var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2, _ref3;
+    !isShow && this.show();
     if ((_ref = this.props.onUpdate) != null) {
       _ref.call(this, progress);
     }
@@ -1532,6 +1568,7 @@ Transit = (function(_super) {
   Transit.prototype.runChain = function() {
     var chain, _ref;
     if (!this.chainArr.length) {
+      !this.o.isShowEnd && this.hide();
       return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
     }
     chain = this.chainArr.shift();

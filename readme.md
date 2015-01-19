@@ -6,11 +6,10 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- refactor
-  - isDrawless = true by default
-  - hide on start and end
-  - perf profile
-
+- perf profile
+  - amke swirl and randoms work for every transit
+  - display inline instead of display block
+  - the whole body in ablosute
 - add motion path
   - add movement arc
 - add more shapes(bits)
@@ -27,5 +26,6 @@
 
 #### plan
 - add percent values for strokeDasharray/strokedashOffset
+
 
 [@LegoMushroom](https://twitter.com/legomushroom)(Oleg Solomka) [legomushroom@gmail.com](mailto:legomushroom@gmail.com) 2015 MIT License

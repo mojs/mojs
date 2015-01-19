@@ -118,12 +118,14 @@ class Burst extends Transit
         y: point.y
         angle: angle-90
     @drawEl()
+  
   setProgress:(progress)->
     super
     i = @transits.length
     while(i--)
       @transits[i].setProgress progress
       @transits[i].draw()
+      
   calcSize:->
     largestSize = -1
     for transit, i in @transits

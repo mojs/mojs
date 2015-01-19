@@ -8,4 +8,4 @@ after_script:
 env:
   global:
     - SAUCE_USERNAME='legomushroom'
-    - SAUCE_ACCESS_KEY='405fc371-6f38-4461-bef0-64633dd7ce33'
+    - SAUCE_ACCESS_KEY='6982f2ea-fd37-453f-9cc6-58ea67254b66'

@@ -85,7 +85,7 @@ Transit = (function(_super) {
       }
       this.isRendered = true;
     }
-    !this.o.isDrawLess && this.setProgress(0);
+    this.setProgress(0, true);
     this.createTween();
     return this;
   };
@@ -102,7 +102,28 @@ Transit = (function(_super) {
     this.el.style.height = size;
     this.el.style['margin-left'] = marginSize;
     this.el.style['margin-top'] = marginSize;
-    return this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+    this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+    if (this.o.isShowInit) {
+      return this.show();
+    } else {
+      return this.hide();
+    }
+  };
+
+  Transit.prototype.show = function() {
+    if (this.isShown || !this.el) {
+      return;
+    }
+    this.el.style.display = 'block';
+    return this.isShown = true;
+  };
+
+  Transit.prototype.hide = function() {
+    if ((this.isShown === false) || !this.el) {
+      return;
+    }
+    this.el.style.display = 'none';
+    return this.isShown = false;
   };
 
   Transit.prototype.draw = function() {
@@ -175,8 +196,9 @@ Transit = (function(_super) {
     });
   };
 
-  Transit.prototype.setProgress = function(progress) {
+  Transit.prototype.setProgress = function(progress, isShow) {
     var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2, _ref3;
+    !isShow && this.show();
     if ((_ref = this.props.onUpdate) != null) {
       _ref.call(this, progress);
     }
@@ -274,6 +296,7 @@ Transit = (function(_super) {
   Transit.prototype.runChain = function() {
     var chain, _ref;
     if (!this.chainArr.length) {
+      !this.o.isShowEnd && this.hide();
       return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
     }
     chain = this.chainArr.shift();
