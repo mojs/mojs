@@ -614,7 +614,7 @@
         byte.draw();
         return expect(byte.drawEl).toHaveBeenCalled();
       });
-      return it('should call calcTransform method', function() {
+      it('should call calcTransform method', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -622,6 +622,15 @@
         spyOn(byte, 'calcTransform');
         byte.draw();
         return expect(byte.calcTransform).toHaveBeenCalled();
+      });
+      return it('should recieve the current progress', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'draw');
+        byte.setProgress(.5);
+        return expect(byte.draw).toHaveBeenCalledWith(.5);
       });
     });
     describe('drawEl method ->', function() {

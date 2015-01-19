@@ -36,7 +36,9 @@ class Burst extends Transit
     yoyo:               false
     easing:             'Linear.None'
     isRandom:           false
-
+    isSwirl:            false
+    swirlFrequency:     3
+    swirlSize:          10
 
   childDefaults:
     # presentation props
@@ -84,6 +86,10 @@ class Burst extends Transit
       i = @transits.length
       while(i--)
         @generateRandom(i)
+    if @props.isSwirl
+      i = @transits.length
+      while(i--)
+        @generateSign(i)
     super
 
   createBit:->
@@ -93,16 +99,18 @@ class Burst extends Transit
       option.ctx = @ctx; option.isDrawLess = true; option.isRunLess = true
       @transits.push new Transit option
       @props.isRandom and @generateRandom(i)
-  draw:->
+      @props.isSwirl  and @generateSign(i)
+  draw:(progress)->
     points = @props.points
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
     i = @transits.length
     while(i--)
       transit = @transits[i]
-      radius = @props.radius*(transit.radiusRand or 1)
-      angle = i*step*(transit.stepRand or 1)
-      point = @h.getRadialPoint
+      radius  = @props.radius*(transit.radiusRand or 1)
+      angle   = i*step*(transit.stepRand or 1)
+      if @props.isSwirl then angle += @getSwirl progress, transit.signRand
+      point   = @h.getRadialPoint
         radius: radius
         angle:  angle
         center: x: @props.center, y: @props.center
@@ -141,10 +149,13 @@ class Burst extends Transit
   getPropByMod:(name, i)->
     prop = @childOptions[name]
     if @h.isArray(prop) then prop[i % prop.length] else prop
-
   generateRandom:(i)->
     @transits[i].radiusRand = @h.rand(50, 100)/100
     @transits[i].stepRand   = @h.rand(75, 125)/100 + @h.rand(0,5)*90
+  generateSign:(i)->
+    @transits[i].signRand   = if @h.rand(0, 1) then -1 else 1
+  getSwirl:(progress, sign)->
+    sign * @props.swirlSize*Math.sin(@props.swirlFrequency*progress)
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

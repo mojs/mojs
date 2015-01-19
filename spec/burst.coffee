@@ -67,8 +67,23 @@ describe 'Burst ->', ->
       burst = new Burst isRandom: true
       expect(burst.transits[0].stepRand).toBeDefined()
       expect(burst.transits[0].radiusRand).toBeDefined()
+      # sign = burst.transits[0].signRand
+      # expect(sign).toBeDefined()
+      # expect(sign is -1 or sign is 1).toBe true
+
       expect(burst.transits[1].stepRand).toBeDefined()
       expect(burst.transits[1].radiusRand).toBeDefined()
+      # sign = burst.transits[1].signRand
+      # expect(sign).toBeDefined()
+      # expect(sign is -1 or sign is 1).toBe true
+    it 'should calculate signRand for every transit ->', ->
+      burst = new Burst isSwirl: true
+      sign = burst.transits[0].signRand
+      expect(sign).toBeDefined()
+      expect(sign is -1 or sign is 1).toBe true
+      sign = burst.transits[1].signRand
+      expect(sign).toBeDefined()
+      expect(sign is -1 or sign is 1).toBe true
 
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->
@@ -149,6 +164,26 @@ describe 'Burst ->', ->
       spyOn burst, 'generateRandom'
       burst.run()
       expect(burst.generateRandom).not.toHaveBeenCalled()
+    it 'should call generateSign method if isSwirl was passed', ->
+      burst = new Burst isSwirl: true, isRandom: true
+      spyOn burst, 'generateSign'
+      burst.run()
+      expect(burst.generateSign).toHaveBeenCalled()
+    it 'should not call generateSign method if isSwirl was not passed', ->
+      burst = new Burst isSwirl: false
+      spyOn burst, 'generateSign'
+      burst.run()
+      expect(burst.generateSign).not.toHaveBeenCalled()
+
+  describe 'getSwirl method ->', ->
+    it 'should calc swirl based on swirlFrequency and swirlSize props', ->
+      burst = new Burst isSwirl: true
+      swirl1 = burst.getSwirl .5, 1
+      swirl2 = burst.getSwirl .5, -1
+      freq = Math.sin(burst.props.swirlFrequency*.5)
+      expect(swirl1).toBe 1*burst.props.swirlSize*freq
+      freq = Math.sin(burst.props.swirlFrequency*.5)
+      expect(swirl2).toBe -1*burst.props.swirlSize*freq
 
   describe 'draw method ->', ->
     it 'should set x/y coordinates on every transit', ->
@@ -159,12 +194,21 @@ describe 'Burst ->', ->
       expect(burst.transits[2].props.x).not.toBe '0px'
       expect(burst.transits[3].props.x).not.toBe '0px'
       expect(burst.transits[4].props.x).not.toBe '0px'
-
     it 'should not call drawEl method', ->
       burst = new Burst
       spyOn burst, 'drawEl'
       burst.draw()
       expect(burst.drawEl).toHaveBeenCalled()
+    it 'should call getSwirl method if isSwirl is set', ->
+      burst = new Burst isSwirl: true
+      spyOn burst, 'getSwirl'
+      burst.draw .5
+      expect(burst.getSwirl).toHaveBeenCalled()
+    it 'should pass the current progress and i to getSwirl method', ->
+      burst = new Burst isSwirl: true
+      spyOn burst, 'getSwirl'
+      burst.draw .5
+      expect(burst.getSwirl).toHaveBeenCalledWith .5, -1
 
 
 

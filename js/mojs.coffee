@@ -10,21 +10,22 @@ Transit   = require './transit'
 Burst     = require './burst'
 
 burst = new Burst
-  x:            100
-  y:            100
-  duration:     300
-  degree:       30
+  x:            300
+  y:            150
+  duration:     800
+  degree:       240
   points:       5
   isDrawLess:   true
+  isSwirl:      true
   # onComplete: -> console.log 'complete'
   # isRandom:     true
   childOptions:
-    type:         'line'
-    # fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
-    stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
+    type:         'circle'
+    fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
+    # stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     # strokeWidth:  {2: 0}
-    strokeWidth:  1
-    radius:       { 'rand(1, 30)': 0}
+    strokeWidth:  0
+    radius:       { 'rand(3, 7)': 0}
     # type:         ['cross', 'polygon', 'line', 'polygon', 'cross']
     # angle:         [{ 0:360 }, {360: 0}, {0: 360}]
 

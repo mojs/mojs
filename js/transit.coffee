@@ -156,7 +156,7 @@ class Transit extends bitsMap.map.bit
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
     
     @calcOrigin()
-    @draw()
+    @draw progress
     if progress is 1 then @runChain(); @props.onComplete?.call @
 
   calcOrigin:->

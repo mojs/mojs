@@ -370,6 +370,11 @@ describe 'Trabsite ->', ->
       spyOn byte, 'calcTransform'
       byte.draw()
       expect(byte.calcTransform).toHaveBeenCalled()
+    it 'should recieve the current progress', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'draw'
+      byte.setProgress .5
+      expect(byte.draw).toHaveBeenCalledWith .5
   describe 'drawEl method ->', ->
     it 'should set el positions and transforms', ->
       byte = new Byte radius: 25, y: 10

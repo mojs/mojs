@@ -209,7 +209,7 @@ Transit = (function(_super) {
       }
     }
     this.calcOrigin();
-    this.draw();
+    this.draw(progress);
     if (progress === 1) {
       this.runChain();
       return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;

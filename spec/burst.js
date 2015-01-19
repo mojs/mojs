@@ -107,7 +107,7 @@
         expect(burst.props.isRandom).toBeDefined();
         return expect(burst.props.isRandom).toBe(false);
       });
-      return it('should calculate stepRand and radiusRand for every transit ->', function() {
+      it('should calculate stepRand and radiusRand for every transit ->', function() {
         var burst;
         burst = new Burst({
           isRandom: true
@@ -116,6 +116,18 @@
         expect(burst.transits[0].radiusRand).toBeDefined();
         expect(burst.transits[1].stepRand).toBeDefined();
         return expect(burst.transits[1].radiusRand).toBeDefined();
+      });
+      return it('should calculate signRand for every transit ->', function() {
+        var burst, sign;
+        burst = new Burst({
+          isSwirl: true
+        });
+        sign = burst.transits[0].signRand;
+        expect(sign).toBeDefined();
+        expect(sign === -1 || sign === 1).toBe(true);
+        sign = burst.transits[1].signRand;
+        expect(sign).toBeDefined();
+        return expect(sign === -1 || sign === 1).toBe(true);
       });
     });
     describe('getPropByMod method ->', function() {
@@ -256,7 +268,7 @@
         burst.run();
         return expect(burst.generateRandom).toHaveBeenCalled();
       });
-      return it('should not call generateRandom method if isRandom was not passed', function() {
+      it('should not call generateRandom method if isRandom was not passed', function() {
         var burst;
         burst = new Burst({
           isRandom: false
@@ -264,6 +276,39 @@
         spyOn(burst, 'generateRandom');
         burst.run();
         return expect(burst.generateRandom).not.toHaveBeenCalled();
+      });
+      it('should call generateSign method if isSwirl was passed', function() {
+        var burst;
+        burst = new Burst({
+          isSwirl: true,
+          isRandom: true
+        });
+        spyOn(burst, 'generateSign');
+        burst.run();
+        return expect(burst.generateSign).toHaveBeenCalled();
+      });
+      return it('should not call generateSign method if isSwirl was not passed', function() {
+        var burst;
+        burst = new Burst({
+          isSwirl: false
+        });
+        spyOn(burst, 'generateSign');
+        burst.run();
+        return expect(burst.generateSign).not.toHaveBeenCalled();
+      });
+    });
+    describe('getSwirl method ->', function() {
+      return it('should calc swirl based on swirlFrequency and swirlSize props', function() {
+        var burst, freq, swirl1, swirl2;
+        burst = new Burst({
+          isSwirl: true
+        });
+        swirl1 = burst.getSwirl(.5, 1);
+        swirl2 = burst.getSwirl(.5, -1);
+        freq = Math.sin(burst.props.swirlFrequency * .5);
+        expect(swirl1).toBe(1 * burst.props.swirlSize * freq);
+        freq = Math.sin(burst.props.swirlFrequency * .5);
+        return expect(swirl2).toBe(-1 * burst.props.swirlSize * freq);
       });
     });
     return describe('draw method ->', function() {
@@ -277,12 +322,30 @@
         expect(burst.transits[3].props.x).not.toBe('0px');
         return expect(burst.transits[4].props.x).not.toBe('0px');
       });
-      return it('should not call drawEl method', function() {
+      it('should not call drawEl method', function() {
         var burst;
         burst = new Burst;
         spyOn(burst, 'drawEl');
         burst.draw();
         return expect(burst.drawEl).toHaveBeenCalled();
+      });
+      it('should call getSwirl method if isSwirl is set', function() {
+        var burst;
+        burst = new Burst({
+          isSwirl: true
+        });
+        spyOn(burst, 'getSwirl');
+        burst.draw(.5);
+        return expect(burst.getSwirl).toHaveBeenCalled();
+      });
+      return it('should pass the current progress and i to getSwirl method', function() {
+        var burst;
+        burst = new Burst({
+          isSwirl: true
+        });
+        spyOn(burst, 'getSwirl');
+        burst.draw(.5);
+        return expect(burst.getSwirl).toHaveBeenCalledWith(.5, -1);
       });
     });
   });

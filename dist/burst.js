@@ -42,7 +42,10 @@ Burst = (function(_super) {
     repeat: 1,
     yoyo: false,
     easing: 'Linear.None',
-    isRandom: false
+    isRandom: false,
+    isSwirl: false,
+    swirlFrequency: 3,
+    swirlSize: 10
   };
 
   Burst.prototype.childDefaults = {
@@ -96,6 +99,12 @@ Burst = (function(_super) {
         this.generateRandom(i);
       }
     }
+    if (this.props.isSwirl) {
+      i = this.transits.length;
+      while (i--) {
+        this.generateSign(i);
+      }
+    }
     return Burst.__super__.run.apply(this, arguments);
   };
 
@@ -110,12 +119,13 @@ Burst = (function(_super) {
       option.isDrawLess = true;
       option.isRunLess = true;
       this.transits.push(new Transit(option));
-      _results.push(this.props.isRandom && this.generateRandom(i));
+      this.props.isRandom && this.generateRandom(i);
+      _results.push(this.props.isSwirl && this.generateSign(i));
     }
     return _results;
   };
 
-  Burst.prototype.draw = function() {
+  Burst.prototype.draw = function(progress) {
     var angle, i, point, points, radius, step, transit;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
@@ -125,6 +135,9 @@ Burst = (function(_super) {
       transit = this.transits[i];
       radius = this.props.radius * (transit.radiusRand || 1);
       angle = i * step * (transit.stepRand || 1);
+      if (this.props.isSwirl) {
+        angle += this.getSwirl(progress, transit.signRand);
+      }
       point = this.h.getRadialPoint({
         radius: radius,
         angle: angle,
@@ -193,6 +206,14 @@ Burst = (function(_super) {
   Burst.prototype.generateRandom = function(i) {
     this.transits[i].radiusRand = this.h.rand(50, 100) / 100;
     return this.transits[i].stepRand = this.h.rand(75, 125) / 100 + this.h.rand(0, 5) * 90;
+  };
+
+  Burst.prototype.generateSign = function(i) {
+    return this.transits[i].signRand = this.h.rand(0, 1) ? -1 : 1;
+  };
+
+  Burst.prototype.getSwirl = function(progress, sign) {
+    return sign * this.props.swirlSize * Math.sin(this.props.swirlFrequency * progress);
   };
 
   return Burst;

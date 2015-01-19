@@ -45,7 +45,7 @@ describe 'Polygon ->', ->
       d   = tri.el.getAttribute('points')
       d2  = '0.0000,-20.0000 17.3205,10.0000 -17.3205,10.0000 '
       isD = d is d2
-      isIE9D = d is '0,-20 17.3205,10 -17.3205,10' 
+      isIE9D = d is '0,-20 17.3205,10 -17.3205,10'
       expect(isD or isIE9D).toBe true
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")

@@ -9,6 +9,7 @@
 - refactor
   - perf profile
   - isDrawless = true by default
+  - hide on start and end
 - add motion path
   - add movement arc
 - add more shapes(bits)
