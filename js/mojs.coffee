@@ -12,20 +12,20 @@ Burst     = require './burst'
 burst = new Burst
   x:            300
   y:            150
-  duration:     800
+  duration:     600
   degree:       240
   points:       5
   isDrawLess:   true
   isSwirl:      true
-  # onComplete: -> console.log 'complete'
-  # isRandom:     true
+  # onComplete: -> @run()
+  isRandomRadius:     true
   childOptions:
     type:         'circle'
     fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     # stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     # strokeWidth:  {2: 0}
     strokeWidth:  0
-    radius:       { 'rand(3, 7)': 0}
+    radius:       { 'rand(2, 12)': 0}
     # type:         ['cross', 'polygon', 'line', 'polygon', 'cross']
     # angle:         [{ 0:360 }, {360: 0}, {0: 360}]
 

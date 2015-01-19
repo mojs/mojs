@@ -101,21 +101,27 @@
       });
     });
     describe('randomness ->', function() {
-      it('should have isRandom option ->', function() {
+      it('should have isRandomRadius option ->', function() {
         var burst;
         burst = new Burst;
-        expect(burst.props.isRandom).toBeDefined();
-        return expect(burst.props.isRandom).toBe(false);
+        expect(burst.props.isRandomRadius).toBeDefined();
+        return expect(burst.props.isRandomRadius).toBe(false);
       });
-      it('should calculate stepRand and radiusRand for every transit ->', function() {
+      it('should calculate radiusRand for every transit ->', function() {
         var burst;
         burst = new Burst({
-          isRandom: true
+          isRandomRadius: true
         });
-        expect(burst.transits[0].stepRand).toBeDefined();
         expect(burst.transits[0].radiusRand).toBeDefined();
-        expect(burst.transits[1].stepRand).toBeDefined();
         return expect(burst.transits[1].radiusRand).toBeDefined();
+      });
+      it('should calculate angleRand for every transit ->', function() {
+        var burst;
+        burst = new Burst({
+          isRandomAngle: true
+        });
+        expect(burst.transits[0].angleRand).toBeDefined();
+        return expect(burst.transits[1].angleRand).toBeDefined();
       });
       return it('should calculate signRand for every transit ->', function() {
         var burst, sign;
@@ -259,23 +265,41 @@
         burst.run();
         return expect(Burst.__super__.run).toHaveBeenCalled();
       });
-      it('should call generateRandom method if isRandom was passed', function() {
+      it('should call generateRandomAngle method if isRandomAngle was passed', function() {
         var burst;
         burst = new Burst({
-          isRandom: true
+          isRandomAngle: true
         });
-        spyOn(burst, 'generateRandom');
+        spyOn(burst, 'generateRandomAngle');
         burst.run();
-        return expect(burst.generateRandom).toHaveBeenCalled();
+        return expect(burst.generateRandomAngle).toHaveBeenCalled();
       });
-      it('should not call generateRandom method if isRandom was not passed', function() {
+      it('should not call generateRandomAngle method if isRandom was not passed', function() {
         var burst;
         burst = new Burst({
-          isRandom: false
+          isRandomAngle: false
         });
-        spyOn(burst, 'generateRandom');
+        spyOn(burst, 'generateRandomAngle');
         burst.run();
-        return expect(burst.generateRandom).not.toHaveBeenCalled();
+        return expect(burst.generateRandomAngle).not.toHaveBeenCalled();
+      });
+      it('should call generateRandomRadius method if isRandomAngle was passed', function() {
+        var burst;
+        burst = new Burst({
+          isRandomRadius: true
+        });
+        spyOn(burst, 'generateRandomRadius');
+        burst.run();
+        return expect(burst.generateRandomRadius).toHaveBeenCalled();
+      });
+      it('should not call generateRandomRadius method if isRandom was not passed', function() {
+        var burst;
+        burst = new Burst({
+          isRandomRadius: false
+        });
+        spyOn(burst, 'generateRandomRadius');
+        burst.run();
+        return expect(burst.generateRandomRadius).not.toHaveBeenCalled();
       });
       it('should call generateSign method if isSwirl was passed', function() {
         var burst;
