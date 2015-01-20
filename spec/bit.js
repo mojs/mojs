@@ -130,7 +130,7 @@
         bit.setAttr('stroke', '#ff00ff');
         return expect(bit.el.getAttribute('stroke')).toBe('#ff00ff');
       });
-      it('should set multiple attributes on element', function() {
+      return it('should set multiple attributes on element', function() {
         bit.el = typeof document.createElementNS === "function" ? document.createElementNS(ns, "circle") : void 0;
         bit.setAttr({
           stroke: '#f0f',
@@ -138,13 +138,6 @@
         });
         expect(bit.el.getAttribute('stroke')).toBe('#f0f');
         return expect(bit.el.getAttribute('fill')).toBe('#0f0');
-      });
-      return it('should work with camelCase attribute names', function() {
-        bit.el = typeof document.createElementNS === "function" ? document.createElementNS(ns, "rect") : void 0;
-        bit.setAttr({
-          strokeWidth: 2
-        });
-        return expect(bit.el.getAttribute('stroke-width')).toBe('2');
       });
     });
     describe('defaults and options', function() {

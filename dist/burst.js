@@ -159,8 +159,7 @@ Burst = (function(_super) {
     i = this.transits.length;
     _results = [];
     while (i--) {
-      this.transits[i].setProgress(progress);
-      _results.push(this.transits[i].draw());
+      _results.push(this.transits[i].setProgress(progress).draw());
     }
     return _results;
   };

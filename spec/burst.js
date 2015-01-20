@@ -266,7 +266,7 @@
       });
     });
     describe('setProgress method ->', function() {
-      it('should setProgress on all transits', function() {
+      return it('should setProgress on all transits', function() {
         var burst;
         burst = new Burst({
           childOptions: {
@@ -284,19 +284,6 @@
         expect(burst.transits[2].progress).toBe(.5);
         expect(burst.transits[3].progress).toBe(.5);
         return expect(burst.transits[4].progress).toBe(.5);
-      });
-      return it('should call super method', function() {
-        var burst;
-        burst = new Burst({
-          radius: [
-            {
-              20: 50
-            }, 20
-          ]
-        });
-        spyOn(Burst.__super__, 'setProgress');
-        burst.setProgress(.5);
-        return expect(Burst.__super__.setProgress).toHaveBeenCalled();
       });
     });
     describe('run method ->', function() {

@@ -71,10 +71,13 @@ describe 'Helpers ->', ->
         expect(h.rand(10, 20)).not.toBeGreaterThan  20
       it 'should work with negative numbers', ->
         expect(h.rand(-10, -20)).toBeGreaterThan      -20
-        expect(h.rand(-10, -20)).not.toBeGreaterThan  -11
+        expect(h.rand(-10, -20)).not.toBeGreaterThan  -10
       it 'should work with mixed numbers', ->
-        expect(h.rand(-10, 20)).toBeGreaterThan      -11
+        expect(h.rand(-10, 20)).toBeGreaterThan      -10
         expect(h.rand(-10, 20)).not.toBeGreaterThan  20
+      it 'should work with float numbers', ->
+        expect(h.rand(.2, .9)).toBeGreaterThan      .1
+        expect(h.rand(.2, .9)).not.toBeGreaterThan  .9
     describe 'getDelta method', ->
       describe 'numeric values ->', ->
         it 'should calculate delta', ->

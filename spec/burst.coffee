@@ -148,11 +148,11 @@ describe 'Burst ->', ->
       expect(burst.transits[2].progress).toBe .5
       expect(burst.transits[3].progress).toBe .5
       expect(burst.transits[4].progress).toBe .5
-    it 'should call super method', ->
-      burst = new Burst radius: [{ 20: 50 }, 20]
-      spyOn Burst.__super__, 'setProgress'
-      burst.setProgress .5
-      expect(Burst.__super__.setProgress).toHaveBeenCalled()
+    # it 'should call super method', ->
+    #   burst = new Burst radius: [{ 20: 50 }, 20]
+    #   spyOn Burst.__super__, 'setProgress'
+    #   burst.setProgress .5
+    #   expect(Burst.__super__.setProgress).toHaveBeenCalled()
 
   describe 'run method ->', ->
     it 'should call super', ->

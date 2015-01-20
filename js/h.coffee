@@ -302,7 +302,7 @@ class Helpers
       # else @props[key] = start
     delta
 
-  rand:(min,max)-> Math.floor((Math.random() * ((max + 1) - min)) + min)
+  rand:(min,max)-> (Math.random() * ((max) - min)) + min
 
 h = new Helpers
 

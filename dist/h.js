@@ -393,7 +393,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.rand = function(min, max) {
-    return Math.floor((Math.random() * ((max + 1) - min)) + min);
+    return (Math.random() * (max - min)) + min;
   };
 
   return Helpers;

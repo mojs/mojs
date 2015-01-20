@@ -95,10 +95,10 @@ describe 'Bit', ->
         fill:             '#0f0'
       expect(bit.el.getAttribute('stroke')).toBe '#f0f'
       expect(bit.el.getAttribute('fill')).toBe   '#0f0'
-    it 'should work with camelCase attribute names', ->
-      bit.el = document.createElementNS?(ns, "rect")
-      bit.setAttr strokeWidth: 2
-      expect(bit.el.getAttribute('stroke-width')).toBe '2'
+    # it 'should work with camelCase attribute names', ->
+    #   bit.el = document.createElementNS?(ns, "rect")
+    #   bit.setAttr strokeWidth: 2
+    #   expect(bit.el.getAttribute('stroke-width')).toBe '2'
   describe 'defaults and options', ->
     it 'should have defaults object', ->
       expect(bit.defaults).toBeDefined()

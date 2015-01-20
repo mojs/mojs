@@ -69,12 +69,14 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, val, _results;
+    var key, keys, len, val, _results;
     if (typeof attr === 'object') {
+      keys = Object.keys(attr);
+      len = keys.length;
       _results = [];
-      for (key in attr) {
+      while (len--) {
+        key = keys[len];
         val = attr[key];
-        key = key.split(/(?=[A-Z])/).join('-').toLowerCase();
         _results.push((value || this.el).setAttribute(key, val));
       }
       return _results;
@@ -106,15 +108,15 @@ Bit = (function() {
 
   Bit.prototype.draw = function() {
     return this.setAttr({
-      stroke: this.props.stroke,
-      strokeWidth: this.props.strokeWidth,
-      strokeOpacity: this.props.strokeOpacity,
-      strokeDasharray: this.props.strokeDasharray,
-      strokeDashoffset: this.props.strokeDashoffset,
-      strokeLinecap: this.props.strokeLinecap,
-      fill: this.props.fill,
-      fillOpacity: this.props.fillOpacity,
-      transform: this.props.transform
+      'stroke': this.props.stroke,
+      'stroke-width': this.props.strokeWidth,
+      'stroke-opacity': this.props.strokeOpacity,
+      'stroke-dasharray': this.props.strokeDasharray,
+      'stroke-dashoffset': this.props.strokeDashoffset,
+      'stroke-linecap': this.props.strokeLinecap,
+      'fill': this.props.fill,
+      'fill-opacity': this.props.fillOpacity,
+      'transform': this.props.transform
     });
   };
 

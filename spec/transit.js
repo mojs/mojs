@@ -616,8 +616,8 @@
           ctx: svg
         });
         byte.draw();
-        expect(byte.bit.props.x).toBe(byte.props.x);
-        return expect(byte.bit.props.y).toBe(byte.props.y);
+        expect(byte.bit.props.x).toBe(parseFloat(byte.props.x));
+        return expect(byte.bit.props.y).toBe(parseFloat(byte.props.y));
       });
       it('should call bit.draw method', function() {
         var byte;
@@ -894,6 +894,41 @@
         byte.setProgress(.5);
         expect(byte.origin.x).toBeDefined();
         return expect(byte.origin.y).toBeDefined();
+      });
+      it('should have origin should be the center of the transit', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        byte.setProgress(.5);
+        expect(byte.origin.x).toBe(byte.props.center);
+        return expect(byte.origin.y).toBe(byte.props.center);
+      });
+      it('should have origin should be x/y if foreign context', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          },
+          ctx: svg
+        });
+        byte.setProgress(.5);
+        expect(byte.origin.x).toBe(parseFloat(byte.props.x));
+        return expect(byte.origin.y).toBe(parseFloat(byte.props.x));
+      });
+      it('should have origin should be number if foreign context', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          },
+          ctx: svg
+        });
+        byte.setProgress(.5);
+        expect(typeof byte.origin.x).toBe('number');
+        return expect(typeof byte.origin.y).toBe('number');
       });
       it('should show el', function() {
         var byte;

@@ -98,11 +98,15 @@
         });
         it('should work with negative numbers', function() {
           expect(h.rand(-10, -20)).toBeGreaterThan(-20);
-          return expect(h.rand(-10, -20)).not.toBeGreaterThan(-11);
+          return expect(h.rand(-10, -20)).not.toBeGreaterThan(-10);
         });
-        return it('should work with mixed numbers', function() {
-          expect(h.rand(-10, 20)).toBeGreaterThan(-11);
+        it('should work with mixed numbers', function() {
+          expect(h.rand(-10, 20)).toBeGreaterThan(-10);
           return expect(h.rand(-10, 20)).not.toBeGreaterThan(20);
+        });
+        return it('should work with float numbers', function() {
+          expect(h.rand(.2, .9)).toBeGreaterThan(.1);
+          return expect(h.rand(.2, .9)).not.toBeGreaterThan(.9);
         });
       });
       describe('getDelta method', function() {

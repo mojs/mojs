@@ -120,11 +120,14 @@ class Burst extends Transit
     @drawEl()
   
   setProgress:(progress)->
-    super
-    i = @transits.length
+    # t0 = performance.now()
+    super; i = @transits.length
     while(i--)
-      @transits[i].setProgress progress
-      @transits[i].draw()
+      @transits[i]
+        .setProgress(progress)
+        .draw()
+    # t1 = performance.now()
+    # console.log t1 - t0
 
   calcSize:->
     largestSize = -1

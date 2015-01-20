@@ -7,9 +7,10 @@
 
 #### todo
 - perf profile
-  - rand for floats
-  - display inline instead of display block
-  - the whole body in ablosute
+- refactor
+  - add arrays for childOptions or childs option
+  - make angle work on burst
+  - make run burst method to receive new options
 - add motion path
   - add movement arc
 - add more shapes(bits)

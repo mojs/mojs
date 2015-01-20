@@ -197,21 +197,21 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress, isShow) {
-    var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2, _ref3;
+    var a, b, g, i, key, keys, len, num, r, units, value, _i, _len, _ref, _ref1;
     !isShow && this.show();
-    if ((_ref = this.props.onUpdate) != null) {
-      _ref.call(this, progress);
-    }
+    this.props.onUpdate && this.props.onUpdate.call(this, progress);
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
-    _ref1 = this.deltas;
-    for (key in _ref1) {
-      value = _ref1[key];
+    keys = Object.keys(this.deltas);
+    len = keys.length;
+    while (len--) {
+      key = keys[len];
+      value = this.deltas[key];
       switch (value.type) {
         case 'array':
           this.props[key] = '';
-          _ref2 = value.delta;
-          for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
-            num = _ref2[i];
+          _ref = value.delta;
+          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+            num = _ref[i];
             this.props[key] += "" + (value.start[i] + num * this.progress) + " ";
           }
           break;
@@ -234,14 +234,20 @@ Transit = (function(_super) {
     this.draw(progress);
     if (progress === 1) {
       this.runChain();
-      return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;
+      if ((_ref1 = this.props.onComplete) != null) {
+        _ref1.call(this);
+      }
     }
+    return this;
   };
 
   Transit.prototype.calcOrigin = function() {
-    return this.origin = {
-      x: this.o.ctx ? this.props.x : this.props.center,
-      y: this.o.ctx ? this.props.y : this.props.center
+    return this.origin = this.o.ctx ? {
+      x: parseFloat(this.props.x),
+      y: parseFloat(this.props.y)
+    } : {
+      x: this.props.center,
+      y: this.props.center
     };
   };
 

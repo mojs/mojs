@@ -142,11 +142,14 @@ class Transit extends bitsMap.map.bit
 
   setProgress:(progress, isShow)->
     !isShow and @show()
-    @props.onUpdate?.call(@, progress)
+    @props.onUpdate and @props.onUpdate.call(@, progress)
 
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
-    for key, value of @deltas
+
+    keys = Object.keys(@deltas); len = keys.length
+    while(len--)
+      key = keys[len]; value = @deltas[key]
       switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
           @props[key] = ''
@@ -167,11 +170,12 @@ class Transit extends bitsMap.map.bit
     @calcOrigin()
     @draw progress
     if progress is 1 then @runChain(); @props.onComplete?.call @
+    @
 
   calcOrigin:->
-    @origin =
-      x: if @o.ctx then @props.x else @props.center
-      y: if @o.ctx then @props.y else @props.center
+    @origin = if @o.ctx
+      x: parseFloat(@props.x), y: parseFloat(@props.y)
+    else x: @props.center, y: @props.center
 
   extendDefaults:->
     @props  ?= {}

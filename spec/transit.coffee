@@ -369,8 +369,8 @@ describe 'Transit ->', ->
     it 'should set x/y to props.x/props.y if context was passed', ->
       byte = new Byte radius: 25, ctx: svg
       byte.draw()
-      expect(byte.bit.props.x).toBe byte.props.x
-      expect(byte.bit.props.y).toBe byte.props.y
+      expect(byte.bit.props.x).toBe parseFloat byte.props.x
+      expect(byte.bit.props.y).toBe parseFloat byte.props.y
     it 'should call bit.draw method', ->
       byte = new Byte radius: 25
       spyOn byte.bit, 'draw'
@@ -506,11 +506,31 @@ describe 'Transit ->', ->
       spyOn byte, 'calcOrigin'
       byte.setProgress .5
       expect(byte.calcOrigin).toHaveBeenCalled()
+    
     it 'should have origin object', ->
       byte = new Byte radius:  {'25': 75}
       byte.setProgress .5
       expect(byte.origin.x).toBeDefined()
       expect(byte.origin.y).toBeDefined()
+
+    it 'should have origin should be the center of the transit', ->
+      byte = new Byte radius:  {'25': 75}
+      byte.setProgress .5
+      expect(byte.origin.x).toBe byte.props.center
+      expect(byte.origin.y).toBe byte.props.center
+
+    it 'should have origin should be x/y if foreign context', ->
+      byte = new Byte radius:{'25': 75}, ctx: svg
+      byte.setProgress .5
+      expect(byte.origin.x).toBe parseFloat byte.props.x
+      expect(byte.origin.y).toBe parseFloat byte.props.x
+
+    it 'should have origin should be number if foreign context', ->
+      byte = new Byte radius:{'25': 75}, ctx: svg
+      byte.setProgress .5
+      expect(typeof byte.origin.x).toBe 'number'
+      expect(typeof byte.origin.y).toBe 'number'
+
     it 'should show el', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, 'show'

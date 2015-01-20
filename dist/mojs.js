@@ -70,12 +70,14 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, val, _results;
+    var key, keys, len, val, _results;
     if (typeof attr === 'object') {
+      keys = Object.keys(attr);
+      len = keys.length;
       _results = [];
-      for (key in attr) {
+      while (len--) {
+        key = keys[len];
         val = attr[key];
-        key = key.split(/(?=[A-Z])/).join('-').toLowerCase();
         _results.push((value || this.el).setAttribute(key, val));
       }
       return _results;
@@ -107,15 +109,15 @@ Bit = (function() {
 
   Bit.prototype.draw = function() {
     return this.setAttr({
-      stroke: this.props.stroke,
-      strokeWidth: this.props.strokeWidth,
-      strokeOpacity: this.props.strokeOpacity,
-      strokeDasharray: this.props.strokeDasharray,
-      strokeDashoffset: this.props.strokeDashoffset,
-      strokeLinecap: this.props.strokeLinecap,
-      fill: this.props.fill,
-      fillOpacity: this.props.fillOpacity,
-      transform: this.props.transform
+      'stroke': this.props.stroke,
+      'stroke-width': this.props.strokeWidth,
+      'stroke-opacity': this.props.strokeOpacity,
+      'stroke-dasharray': this.props.strokeDasharray,
+      'stroke-dashoffset': this.props.strokeDashoffset,
+      'stroke-linecap': this.props.strokeLinecap,
+      'fill': this.props.fill,
+      'fill-opacity': this.props.fillOpacity,
+      'transform': this.props.transform
     });
   };
 
@@ -376,8 +378,7 @@ Burst = (function(_super) {
     i = this.transits.length;
     _results = [];
     while (i--) {
-      this.transits[i].setProgress(progress);
-      _results.push(this.transits[i].draw());
+      _results.push(this.transits[i].setProgress(progress).draw());
     }
     return _results;
   };
@@ -1024,7 +1025,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.rand = function(min, max) {
-    return Math.floor((Math.random() * ((max + 1) - min)) + min);
+    return (Math.random() * (max - min)) + min;
   };
 
   return Helpers;
@@ -1130,29 +1131,27 @@ burst = new Burst({
   x: 300,
   y: 150,
   duration: 600,
-  degree: 200,
-  radius: {
-    25: 150
+  points: 500,
+  angle: {
+    0: 200
   },
-  points: 6,
-  isDrawLess: true,
-  isSwirl: true,
-  randomRadius: .5,
-  randomAngle: 1,
-  swirlSize: 'rand(3,15)',
-  swirlFrequency: ['rand(1,5)'],
   childOptions: {
-    type: 'circle',
-    fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
-    strokeWidth: 0,
-    radius: {
-      'rand(2, 6)': 0
+    type: ['circle', 'polygon', 'cross', 'rect', 'line'],
+    points: 3,
+    angle: {
+      'rand(-360,360)': 0
+    },
+    strokeWidth: {
+      10: 0
     }
   }
 });
 
 document.body.addEventListener('click', function(e) {
-  return burst.run();
+  return burst.run({
+    x: e.x,
+    y: e.y
+  });
 });
 
 },{"./burst":3}],9:[function(require,module,exports){
@@ -1497,21 +1496,21 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress, isShow) {
-    var a, b, g, i, key, num, r, units, value, _i, _len, _ref, _ref1, _ref2, _ref3;
+    var a, b, g, i, key, keys, len, num, r, units, value, _i, _len, _ref, _ref1;
     !isShow && this.show();
-    if ((_ref = this.props.onUpdate) != null) {
-      _ref.call(this, progress);
-    }
+    this.props.onUpdate && this.props.onUpdate.call(this, progress);
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
-    _ref1 = this.deltas;
-    for (key in _ref1) {
-      value = _ref1[key];
+    keys = Object.keys(this.deltas);
+    len = keys.length;
+    while (len--) {
+      key = keys[len];
+      value = this.deltas[key];
       switch (value.type) {
         case 'array':
           this.props[key] = '';
-          _ref2 = value.delta;
-          for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
-            num = _ref2[i];
+          _ref = value.delta;
+          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+            num = _ref[i];
             this.props[key] += "" + (value.start[i] + num * this.progress) + " ";
           }
           break;
@@ -1534,14 +1533,20 @@ Transit = (function(_super) {
     this.draw(progress);
     if (progress === 1) {
       this.runChain();
-      return (_ref3 = this.props.onComplete) != null ? _ref3.call(this) : void 0;
+      if ((_ref1 = this.props.onComplete) != null) {
+        _ref1.call(this);
+      }
     }
+    return this;
   };
 
   Transit.prototype.calcOrigin = function() {
-    return this.origin = {
-      x: this.o.ctx ? this.props.x : this.props.center,
-      y: this.o.ctx ? this.props.y : this.props.center
+    return this.origin = this.o.ctx ? {
+      x: parseFloat(this.props.x),
+      y: parseFloat(this.props.y)
+    } : {
+      x: this.props.center,
+      y: this.props.center
     };
   };
 

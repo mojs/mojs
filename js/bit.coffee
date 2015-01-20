@@ -36,9 +36,9 @@ class Bit
       @props[key] = @o[key] or value
   setAttr:(attr, value)->
     if typeof attr is 'object'
-      for key, val of attr
-        # handle camelCase
-        key = key.split(/(?=[A-Z])/).join('-').toLowerCase()
+      keys = Object.keys(attr); len = keys.length
+      while(len--)
+        key = keys[len]; val = attr[key]
         (value or @el).setAttribute key, val
     else @el.setAttribute attr, value
   setProp:(attr, value)->
@@ -53,15 +53,15 @@ class Bit
     @ctx.appendChild @el
   draw:->
     @setAttr
-      stroke:           @props.stroke
-      strokeWidth:      @props.strokeWidth
-      strokeOpacity:    @props.strokeOpacity
-      strokeDasharray:  @props.strokeDasharray
-      strokeDashoffset: @props.strokeDashoffset
-      strokeLinecap:    @props.strokeLinecap
-      fill:             @props.fill
-      fillOpacity:      @props.fillOpacity
-      transform:        @props.transform
+      'stroke':            @props.stroke
+      'stroke-width':      @props.strokeWidth
+      'stroke-opacity':    @props.strokeOpacity
+      'stroke-dasharray':  @props.strokeDasharray
+      'stroke-dashoffset': @props.strokeDashoffset
+      'stroke-linecap':    @props.strokeLinecap
+      'fill':              @props.fill
+      'fill-opacity':      @props.fillOpacity
+      'transform':         @props.transform
 
 
 ### istanbul ignore next ###
