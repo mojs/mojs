@@ -314,9 +314,9 @@ Burst = (function(_super) {
     if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
       i = this.transits.length;
       while (i--) {
-        this.props.isSwirl && this.generateSign(i);
         this.props.randomAngle && this.generateRandomAngle(i);
         this.props.randomRadius && this.generateRandomRadius(i);
+        this.props.isSwirl && this.generateSwirl(i);
       }
     }
     return Burst.__super__.run.apply(this, arguments);
@@ -335,7 +335,7 @@ Burst = (function(_super) {
       this.transits.push(new Transit(option));
       this.props.randomAngle && this.generateRandomAngle(i);
       this.props.randomRadius && this.generateRandomRadius(i);
-      _results.push(this.props.isSwirl && this.generateSign(i));
+      _results.push(this.props.isSwirl && this.generateSwirl(i));
     }
     return _results;
   };
@@ -351,7 +351,7 @@ Burst = (function(_super) {
       radius = this.props.radius * (transit.radiusRand || 1);
       angle = i * step + (transit.angleRand || 1);
       if (this.props.isSwirl) {
-        angle += this.getSwirl(progress, transit.signRand);
+        angle += this.getSwirl(progress, i);
       }
       point = this.h.getRadialPoint({
         radius: radius,
@@ -403,16 +403,19 @@ Burst = (function(_super) {
     _ref = this.childOptions;
     for (key in _ref) {
       value = _ref[key];
-      option[key] = this.getPropByMod(key, i);
+      option[key] = this.getPropByMod({
+        propName: key,
+        i: i
+      });
     }
     return option;
   };
 
-  Burst.prototype.getPropByMod = function(name, i) {
+  Burst.prototype.getPropByMod = function(o) {
     var prop;
-    prop = this.childOptions[name];
+    prop = this[o.from || 'childOptions'][o.propName];
     if (this.h.isArray(prop)) {
-      return prop[i % prop.length];
+      return prop[o.i % prop.length];
     } else {
       return prop;
     }
@@ -437,15 +440,41 @@ Burst = (function(_super) {
     randomness = parseFloat(this.props.randomRadius);
     randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
     start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
-    return this.transits[i].radiusRand = this.h.rand(start, 101) / 100;
+    return this.transits[i].radiusRand = this.h.rand(start, 100) / 100;
   };
 
-  Burst.prototype.generateSign = function(i) {
-    return this.transits[i].signRand = this.h.rand(0, 1) ? -1 : 1;
+  Burst.prototype.generateSwirl = function(i) {
+    var sign;
+    sign = this.h.rand(0, 1) ? -1 : 1;
+    this.transits[i].signRand = sign;
+    this.transits[i].swirlSize = this.generateSwirlProp({
+      i: i,
+      name: 'swirlSize'
+    });
+    return this.transits[i].swirlFrequency = this.generateSwirlProp({
+      i: i,
+      name: 'swirlFrequency'
+    });
   };
 
-  Burst.prototype.getSwirl = function(progress, sign) {
-    return sign * this.props.swirlSize * Math.sin(this.props.swirlFrequency * progress);
+  Burst.prototype.generateSwirlProp = function(o) {
+    var prop;
+    if (!isFinite(this.props[o.name])) {
+      prop = this.getPropByMod({
+        propName: o.name,
+        i: o.i,
+        from: 'o'
+      });
+      return prop = this.h.parseIfRand(prop || this.props[o.name]);
+    } else {
+      return this.props[o.name];
+    }
+  };
+
+  Burst.prototype.getSwirl = function(proc, i) {
+    var transit;
+    transit = this.transits[i];
+    return transit.signRand * transit.swirlSize * Math.sin(transit.swirlFrequency * proc);
   };
 
   return Burst;
@@ -1101,24 +1130,23 @@ burst = new Burst({
   x: 300,
   y: 150,
   duration: 600,
+  degree: 200,
   radius: {
-    0: 150
+    25: 150
   },
-  points: 7,
+  points: 6,
   isDrawLess: true,
   isSwirl: true,
-  randomRadius: 1,
-  randomAngle: .3,
-  swirlFrequency: 'rand(1,3)',
+  randomRadius: .5,
+  randomAngle: 1,
+  swirlSize: 'rand(3,15)',
+  swirlFrequency: ['rand(1,5)'],
   childOptions: {
     type: 'circle',
     fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
     strokeWidth: 0,
     radius: {
-      'rand(2, 9)': 0
-    },
-    opacity: {
-      'rand(.5, 1)': 0
+      'rand(2, 6)': 0
     }
   }
 });

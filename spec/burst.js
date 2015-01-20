@@ -160,40 +160,76 @@
             ]
           }
         });
-        opt0 = burst.getPropByMod('radius', 0);
-        opt1 = burst.getPropByMod('radius', 1);
-        opt2 = burst.getPropByMod('radius', 2);
-        opt8 = burst.getPropByMod('radius', 8);
+        opt0 = burst.getPropByMod({
+          propName: 'radius',
+          i: 0
+        });
+        opt1 = burst.getPropByMod({
+          propName: 'radius',
+          i: 1
+        });
+        opt2 = burst.getPropByMod({
+          propName: 'radius',
+          i: 2
+        });
+        opt8 = burst.getPropByMod({
+          propName: 'radius',
+          i: 8
+        });
         expect(opt0[20]).toBe(50);
         expect(opt1).toBe(20);
         expect(opt2).toBe('500');
         return expect(opt8).toBe('500');
       });
-      it('should return the prop from @o based on i #2->', function() {
-        var burst;
-        return burst = new Burst({
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20, '500', 10, 20
-            ]
-          }
-        });
-      });
-      return it('should the same prop if not an array ->', function() {
+      it('should the same prop if not an array ->', function() {
         var burst, opt0, opt1, opt8;
         burst = new Burst({
           childOptions: {
             radius: 20
           }
         });
-        opt0 = burst.getPropByMod('radius', 0);
-        opt1 = burst.getPropByMod('radius', 1);
-        opt8 = burst.getPropByMod('radius', 8);
+        opt0 = burst.getPropByMod({
+          propName: 'radius',
+          i: 0
+        });
+        opt1 = burst.getPropByMod({
+          propName: 'radius',
+          i: 1
+        });
+        opt8 = burst.getPropByMod({
+          propName: 'radius',
+          i: 8
+        });
         expect(opt0).toBe(20);
         expect(opt1).toBe(20);
         return expect(opt8).toBe(20);
+      });
+      return it('should work with another options object ->', function() {
+        var burst, opt0, opt1, opt8;
+        burst = new Burst({
+          radius: 40,
+          childOptions: {
+            radius: 20
+          }
+        });
+        opt0 = burst.getPropByMod({
+          propName: 'radius',
+          i: 0,
+          from: 'o'
+        });
+        opt1 = burst.getPropByMod({
+          propName: 'radius',
+          i: 1,
+          from: 'o'
+        });
+        opt8 = burst.getPropByMod({
+          propName: 'radius',
+          i: 8,
+          from: 'o'
+        });
+        expect(opt0).toBe(40);
+        expect(opt1).toBe(40);
+        return expect(opt8).toBe(40);
       });
     });
     describe('size calculations ->', function() {
@@ -313,23 +349,23 @@
         burst.run();
         return expect(burst.generateRandomRadius).not.toHaveBeenCalled();
       });
-      it('should call generateSign method if isSwirl was passed', function() {
+      it('should call generateSwirl method if isSwirl was passed', function() {
         var burst;
         burst = new Burst({
           isSwirl: true
         });
-        spyOn(burst, 'generateSign');
+        spyOn(burst, 'generateSwirl');
         burst.run();
-        return expect(burst.generateSign).toHaveBeenCalled();
+        return expect(burst.generateSwirl).toHaveBeenCalled();
       });
-      return it('should not call generateSign method if isSwirl was not passed', function() {
+      return it('should not call generateSwirl method if isSwirl was not passed', function() {
         var burst;
         burst = new Burst({
           isSwirl: false
         });
-        spyOn(burst, 'generateSign');
+        spyOn(burst, 'generateSwirl');
         burst.run();
-        return expect(burst.generateSign).not.toHaveBeenCalled();
+        return expect(burst.generateSwirl).not.toHaveBeenCalled();
       });
     });
     describe('generateRandomAngle method ->', function() {
@@ -356,16 +392,84 @@
     });
     describe('getSwirl method ->', function() {
       return it('should calc swirl based on swirlFrequency and swirlSize props', function() {
-        var burst, freq, swirl1, swirl2;
+        var burst, freq, sign, swirl1;
         burst = new Burst({
           isSwirl: true
         });
-        swirl1 = burst.getSwirl(.5, 1);
-        swirl2 = burst.getSwirl(.5, -1);
-        freq = Math.sin(burst.props.swirlFrequency * .5);
-        expect(swirl1).toBe(1 * burst.props.swirlSize * freq);
-        freq = Math.sin(burst.props.swirlFrequency * .5);
-        return expect(swirl2).toBe(-1 * burst.props.swirlSize * freq);
+        swirl1 = burst.getSwirl(.5, 0);
+        freq = Math.sin(burst.transits[0].swirlFrequency * .5);
+        sign = burst.transits[0].signRand;
+        return expect(swirl1).toBe(sign * burst.transits[0].swirlSize * freq);
+      });
+    });
+    describe('generateSwirl method ->', function() {
+      it('should generate simple swirl', function() {
+        var burst;
+        burst = new Burst({
+          swirlSize: 3,
+          swirlFrequency: 2
+        });
+        burst.generateSwirl(0);
+        expect(burst.transits[0].swirlSize).toBe(3);
+        return expect(burst.transits[0].swirlFrequency).toBe(2);
+      });
+      it('should generate rand swirl', function() {
+        var burst;
+        burst = new Burst({
+          swirlSize: 'rand(10,20)',
+          swirlFrequency: 'rand(3,7)'
+        });
+        burst.generateSwirl(0);
+        expect(burst.transits[0].swirlSize).toBeGreaterThan(9);
+        expect(burst.transits[0].swirlSize).not.toBeGreaterThan(20);
+        expect(burst.transits[0].swirlFrequency).toBeGreaterThan(2);
+        return expect(burst.transits[0].swirlFrequency).not.toBeGreaterThan(7);
+      });
+      it('should generate the same rand swirl if not array', function() {
+        var burst, isEqual;
+        burst = new Burst({
+          swirlSize: 'rand(10,20)'
+        });
+        burst.generateSwirl(0);
+        burst.generateSwirl(1);
+        isEqual = burst.transits[0].swirlSize === burst.transits[1].swirlSize;
+        return expect(isEqual).toBe(true);
+      });
+      it('should generate array swirl', function() {
+        var burst;
+        burst = new Burst({
+          swirlSize: [3, 4],
+          swirlFrequency: [5, 2, 1]
+        });
+        burst.generateSwirl(0);
+        burst.generateSwirl(1);
+        burst.generateSwirl(2);
+        expect(burst.transits[0].swirlSize).toBe(3);
+        expect(burst.transits[1].swirlSize).toBe(4);
+        expect(burst.transits[2].swirlSize).toBe(3);
+        expect(burst.transits[0].swirlFrequency).toBe(5);
+        expect(burst.transits[1].swirlFrequency).toBe(2);
+        return expect(burst.transits[2].swirlFrequency).toBe(1);
+      });
+      return it('should generate array swirl with randoms', function() {
+        var burst;
+        burst = new Burst({
+          swirlSize: ['rand(1,3)', 2, 'rand(7,9)'],
+          swirlFrequency: [1, 'rand(1,3)', 'rand(7,9)']
+        });
+        burst.generateSwirl(0);
+        burst.generateSwirl(1);
+        burst.generateSwirl(2);
+        expect(burst.transits[0].swirlSize).toBeGreaterThan(0);
+        expect(burst.transits[0].swirlSize).not.toBeGreaterThan(3);
+        expect(burst.transits[1].swirlSize).toBe(2);
+        expect(burst.transits[2].swirlSize).toBeGreaterThan(6);
+        expect(burst.transits[2].swirlSize).not.toBeGreaterThan(9);
+        expect(burst.transits[0].swirlFrequency).toBe(1);
+        expect(burst.transits[1].swirlFrequency).toBeGreaterThan(0);
+        expect(burst.transits[1].swirlFrequency).not.toBeGreaterThan(3);
+        expect(burst.transits[2].swirlFrequency).toBeGreaterThan(6);
+        return expect(burst.transits[2].swirlFrequency).not.toBeGreaterThan(9);
       });
     });
     return describe('draw method ->', function() {
@@ -386,15 +490,6 @@
         burst.draw();
         return expect(burst.drawEl).toHaveBeenCalled();
       });
-      it('should call getSwirl method if isSwirl is set', function() {
-        var burst;
-        burst = new Burst({
-          isSwirl: true
-        });
-        spyOn(burst, 'getSwirl');
-        burst.draw(.5);
-        return expect(burst.getSwirl).toHaveBeenCalled();
-      });
       return it('should pass the current progress and i to getSwirl method', function() {
         var burst;
         burst = new Burst({
@@ -402,7 +497,7 @@
         });
         spyOn(burst, 'getSwirl');
         burst.draw(.5);
-        return expect(burst.getSwirl).toHaveBeenCalledWith(.5, -1);
+        return expect(burst.getSwirl).toHaveBeenCalledWith(.5, 0);
       });
     });
   });

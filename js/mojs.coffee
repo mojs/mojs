@@ -12,23 +12,25 @@ burst = new Burst
   x:            300
   y:            150
   duration:     600
-  radius: { 0: 150 }
+  degree:       200
+  radius: { 25: 150 }
   # degree:       45
-  points:       7
+  points:       6
   isDrawLess:   true
   isSwirl:      true
   # onComplete: -> @run()
-  randomRadius: 1
-  randomAngle:  .3
-  swirlFrequency: 'rand(1,3)'
+  randomRadius: .5
+  randomAngle:  1
+  swirlSize:      'rand(3,15)'
+  swirlFrequency: ['rand(1,5)']
   childOptions:
     type:         'circle'
     fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     # stroke:       ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     # strokeWidth:  {2: 0}
     strokeWidth:  0
-    radius:       { 'rand(2, 9)': 0}
-    opacity:      { 'rand(.5, 1)': 0 }
+    radius:       { 'rand(2, 6)': 0}
+    # opacity:      { 'rand(.5, 1)': 0 }
     # type:         ['cross', 'polygon', 'line', 'polygon', 'cross']
     # angle:         [{ 0:360 }, {360: 0}, {0: 360}]
 

@@ -7,7 +7,7 @@
 
 #### todo
 - perf profile
-  - amke swirl and randoms work for every transit
+  - rand for floats
   - display inline instead of display block
   - the whole body in ablosute
 - add motion path
