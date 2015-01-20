@@ -125,7 +125,7 @@ class Burst extends Transit
     while(i--)
       @transits[i].setProgress progress
       @transits[i].draw()
-      
+
   calcSize:->
     largestSize = -1
     for transit, i in @transits
@@ -156,7 +156,7 @@ class Burst extends Transit
     randomness = parseFloat(@props.randomRadius)
     randdomness = if randomness > 1 then 1 else if randomness < 0 then 0
     start = if randomness then (1-randomness)*100 else (1-.5)*100
-    @transits[i].radiusRand = @h.rand(start, 101)/100
+    @transits[i].radiusRand = @h.rand(start, 100)/100
   generateSign:(i)->
     @transits[i].signRand = if @h.rand(0, 1) then -1 else 1
   getSwirl:(progress, sign)->
