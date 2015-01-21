@@ -12,10 +12,10 @@ burst = new Burst
   x:            300
   y:            150
   duration:     600
-  points:       50
+  points:       5
   # delay:        2000
   # degree:       120
-  radius:        { 0: 300 }
+  # radius:        { 0: 300 }
   randomRadius: .5
   childOptions:
     type:         [ 'circle', 'polygon', 'cross', 'rect', 'line' ]

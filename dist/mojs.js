@@ -1141,10 +1141,7 @@ burst = new Burst({
   x: 300,
   y: 150,
   duration: 600,
-  points: 50,
-  radius: {
-    0: 300
-  },
+  points: 5,
   randomRadius: .5,
   childOptions: {
     type: ['circle', 'polygon', 'cross', 'rect', 'line'],
