@@ -69,15 +69,16 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, keys, len, val, _results;
+    var el, key, keys, len, val, _results;
     if (typeof attr === 'object') {
       keys = Object.keys(attr);
       len = keys.length;
+      el = value || this.el;
       _results = [];
       while (len--) {
         key = keys[len];
         val = attr[key];
-        _results.push((value || this.el).setAttribute(key, val));
+        _results.push(el.setAttribute(key, val));
       }
       return _results;
     } else {

@@ -7,6 +7,8 @@
 
 #### todo
 - perf profile
+  - call vs apply
+  - parseInt vs ~~
 - refactor
   - add arrays for childOptions or childs option
   - make angle work on burst

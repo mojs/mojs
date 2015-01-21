@@ -70,15 +70,16 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var key, keys, len, val, _results;
+    var el, key, keys, len, val, _results;
     if (typeof attr === 'object') {
       keys = Object.keys(attr);
       len = keys.length;
+      el = value || this.el;
       _results = [];
       while (len--) {
         key = keys[len];
         val = attr[key];
-        _results.push((value || this.el).setAttribute(key, val));
+        _results.push(el.setAttribute(key, val));
       }
       return _results;
     } else {
@@ -1410,7 +1411,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.show = function() {
-    if (this.isShown || !this.el) {
+    if (this.isShown || (this.el == null)) {
       return;
     }
     this.el.style.display = 'block';
@@ -1418,7 +1419,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.hide = function() {
-    if ((this.isShown === false) || !this.el) {
+    if ((this.isShown === false) || (this.el == null)) {
       return;
     }
     this.el.style.display = 'none';
@@ -1496,7 +1497,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress, isShow) {
-    var a, b, g, i, key, keys, len, num, r, units, value, _i, _len, _ref, _ref1;
+    var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _ref1;
     !isShow && this.show();
     this.props.onUpdate && this.props.onUpdate.call(this, progress);
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
@@ -1507,25 +1508,26 @@ Transit = (function(_super) {
       value = this.deltas[key];
       switch (value.type) {
         case 'array':
-          this.props[key] = '';
+          str = '';
           _ref = value.delta;
           for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
             num = _ref[i];
-            this.props[key] += "" + (value.start[i] + num * this.progress) + " ";
+            str += "" + (value.start[i] + num * this.progress) + " ";
           }
+          this.props[key] = str;
           break;
         case 'number':
-          this.props[key] = value.start + value.delta * this.progress;
+          this.props[key] = value.start + value.delta * progress;
           break;
         case 'unit':
           units = value.end.unit;
-          this.props[key] = "" + (value.start.value + value.delta * this.progress) + units;
+          this.props[key] = "" + (value.start.value + value.delta * progress) + units;
           break;
         case 'color':
-          r = parseInt(value.start.r + value.delta.r * this.progress, 10);
-          g = parseInt(value.start.g + value.delta.g * this.progress, 10);
-          b = parseInt(value.start.b + value.delta.b * this.progress, 10);
-          a = parseInt(value.start.a + value.delta.a * this.progress, 10);
+          r = ~~(value.start.r + value.delta.r * progress);
+          g = ~~(value.start.g + value.delta.g * progress);
+          b = ~~(value.start.b + value.delta.b * progress);
+          a = ~~(value.start.a + value.delta.a * progress);
           this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
       }
     }

@@ -81,10 +81,10 @@ class Transit extends bitsMap.map.bit
     if @o.isShowInit then @show() else @hide()
 
   show:->
-    return if @isShown or !@el
+    return if @isShown or !@el?
     @el.style.display = 'block'; @isShown = true
   hide:->
-    return if (@isShown is false) or !@el
+    return if (@isShown is false) or !@el?
     @el.style.display = 'none'; @isShown = false
 
   draw:->
@@ -152,19 +152,20 @@ class Transit extends bitsMap.map.bit
       key = keys[len]; value = @deltas[key]
       switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
-          @props[key] = ''
+          str = ''
           for num, i in value.delta
-            @props[key] += "#{value.start[i] + num*@progress} "
+            str += "#{value.start[i] + num*@progress} "
+          @props[key] = str
         when 'number'
-          @props[key] = value.start + value.delta*@progress
+          @props[key] = value.start + value.delta*progress
         when 'unit'
           units = value.end.unit
-          @props[key] = "#{value.start.value+value.delta*@progress}#{units}"
+          @props[key] = "#{value.start.value+value.delta*progress}#{units}"
         when 'color'
-          r = parseInt (value.start.r + value.delta.r*@progress), 10
-          g = parseInt (value.start.g + value.delta.g*@progress), 10
-          b = parseInt (value.start.b + value.delta.b*@progress), 10
-          a = parseInt (value.start.a + value.delta.a*@progress), 10
+          r = ~~(value.start.r + value.delta.r*progress)#, 10
+          g = ~~(value.start.g + value.delta.g*progress)#, 10
+          b = ~~(value.start.b + value.delta.b*progress)#, 10
+          a = ~~(value.start.a + value.delta.a*progress)#, 10
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
     
     @calcOrigin()
@@ -180,7 +181,7 @@ class Transit extends bitsMap.map.bit
   extendDefaults:->
     @props  ?= {}
     @deltas = {}
-    # console.time 'extend defaults'
+
     for key, defaultsValue of @defaults
       optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object value - just save it to @props
@@ -194,7 +195,6 @@ class Transit extends bitsMap.map.bit
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         continue
-
       # if delta object was passed: like { 20: 75 }
       # calculate delta
       delta = @h.parseDelta key, optionsValue

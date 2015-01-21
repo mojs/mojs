@@ -36,10 +36,10 @@ class Bit
       @props[key] = @o[key] or value
   setAttr:(attr, value)->
     if typeof attr is 'object'
-      keys = Object.keys(attr); len = keys.length
+      keys = Object.keys(attr); len = keys.length; el = value or @el
       while(len--)
         key = keys[len]; val = attr[key]
-        (value or @el).setAttribute key, val
+        el.setAttribute key, val
     else @el.setAttribute attr, value
   setProp:(attr, value)->
     if typeof attr is 'object'
