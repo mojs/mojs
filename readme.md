@@ -6,8 +6,6 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- perf profile
-  - parseInt vs ~~
 - refactor
   - add arrays for childOptions or childs option
   - make angle work on burst

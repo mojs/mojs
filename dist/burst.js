@@ -154,15 +154,14 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.setProgress = function(progress) {
-    var i, t0, t1;
-    t0 = performance.now();
+    var i, _results;
     Burst.__super__.setProgress.apply(this, arguments);
     i = this.transits.length;
+    _results = [];
     while (i--) {
-      this.transits[i].setProgress(progress).draw();
+      _results.push(this.transits[i].setProgress(progress).draw());
     }
-    t1 = performance.now();
-    return console.log(t1 - t0);
+    return _results;
   };
 
   Burst.prototype.calcSize = function() {

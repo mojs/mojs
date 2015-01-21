@@ -383,15 +383,14 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.setProgress = function(progress) {
-    var i, t0, t1;
-    t0 = performance.now();
+    var i, _results;
     Burst.__super__.setProgress.apply(this, arguments);
     i = this.transits.length;
+    _results = [];
     while (i--) {
-      this.transits[i].setProgress(progress).draw();
+      _results.push(this.transits[i].setProgress(progress).draw());
     }
-    t1 = performance.now();
-    return console.log(t1 - t0);
+    return _results;
   };
 
   Burst.prototype.calcSize = function() {
@@ -1142,10 +1141,11 @@ burst = new Burst({
   x: 300,
   y: 150,
   duration: 600,
-  points: 500,
-  angle: {
-    0: 200
+  points: 50,
+  radius: {
+    0: 300
   },
+  randomRadius: .5,
   childOptions: {
     type: ['circle', 'polygon', 'cross', 'rect', 'line'],
     points: 3,
@@ -1509,7 +1509,9 @@ Transit = (function(_super) {
   Transit.prototype.setProgress = function(progress, isShow) {
     var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _ref1;
     !isShow && this.show();
-    this.props.onUpdate && this.props.onUpdate.apply(this, [progress]);
+    if (typeof this.onUpdate === "function") {
+      this.onUpdate(progress);
+    }
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     keys = Object.keys(this.deltas);
     len = keys.length;
@@ -1534,10 +1536,10 @@ Transit = (function(_super) {
           this.props[key] = "" + (value.start.value + value.delta * progress) + units;
           break;
         case 'color':
-          r = ~~(value.start.r + value.delta.r * progress);
-          g = ~~(value.start.g + value.delta.g * progress);
-          b = ~~(value.start.b + value.delta.b * progress);
-          a = ~~(value.start.a + value.delta.a * progress);
+          r = parseInt(value.start.r + value.delta.r * progress, 10);
+          g = parseInt(value.start.g + value.delta.g * progress, 10);
+          b = parseInt(value.start.b + value.delta.b * progress, 10);
+          a = parseInt(value.start.a + value.delta.a * progress, 10);
           this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
       }
     }
@@ -1546,7 +1548,7 @@ Transit = (function(_super) {
     if (progress === 1) {
       this.runChain();
       if ((_ref1 = this.props.onComplete) != null) {
-        _ref1.apply(this);
+        _ref1.call(this);
       }
     }
     return this;
@@ -1563,13 +1565,12 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function() {
-    var defaultsValue, delta, isObject, key, optionsValue, _ref, _results;
+    var defaultsValue, delta, isObject, key, optionsValue, _ref;
     if (this.props == null) {
       this.props = {};
     }
     this.deltas = {};
     _ref = this.defaults;
-    _results = [];
     for (key in _ref) {
       defaultsValue = _ref[key];
       optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
@@ -1588,9 +1589,9 @@ Transit = (function(_super) {
       if (delta.type != null) {
         this.deltas[key] = delta;
       }
-      _results.push(this.props[key] = delta.start);
+      this.props[key] = delta.start;
     }
-    return _results;
+    return this.onUpdate = this.props.onUpdate;
   };
 
   Transit.prototype.chain = function(options) {
@@ -1614,7 +1615,7 @@ Transit = (function(_super) {
     var chain, _ref;
     if (!this.chainArr.length) {
       !this.o.isShowEnd && this.hide();
-      return (_ref = this.props.onCompleteChain) != null ? _ref.apply(this) : void 0;
+      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
     }
     chain = this.chainArr.shift();
     if (chain.type === 'chain') {
@@ -1698,7 +1699,7 @@ Transit = (function(_super) {
   Transit.prototype.startTween = function() {
     var _ref;
     if ((_ref = this.props.onStart) != null) {
-      _ref.apply(this);
+      _ref.call(this);
     }
     this.h.startAnimationLoop();
     return this.tween.start();
