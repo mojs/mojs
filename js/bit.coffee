@@ -8,14 +8,14 @@ class Bit
     radius:             50
     radiusX:            null
     radiusY:            null
-    stroke:             'hotpink'
-    strokeWidth:        2
-    strokeOpacity:      1
-    fill:               'transparent'
-    fillOpacity:        1
-    strokeDasharray:    ''
-    strokeDashoffset:   ''
-    strokeLinecap:      ''
+    'stroke':           'hotpink'
+    'stroke-width':     2
+    'stroke-opacity':   1
+    'fill':             'transparent'
+    'fill-opacity':     1
+    'stroke-dasharray': ''
+    'stroke-dashoffset':''
+    'stroke-linecap':   ''
     points:             3
     x:                  0
     y:                  0
@@ -25,6 +25,7 @@ class Bit
   vars:->
     if @o.ctx and @o.ctx.tagName is 'svg' then @ctx = @o.ctx
     else throw Error 'You should pass a real context(ctx) to the bit'
+    @state = []; @drawMapLength = @drawMap.length
     @extendDefaults()
     @calcTransform()
   calcTransform:->
@@ -51,18 +52,20 @@ class Bit
     @el = document.createElementNS @ns, @type or 'line'
     !@o.isDrawLess and @draw()
     @ctx.appendChild @el
-  draw:->
-    @setAttr
-      'stroke':            @props.stroke
-      'stroke-width':      @props.strokeWidth
-      'stroke-opacity':    @props.strokeOpacity
-      'stroke-dasharray':  @props.strokeDasharray
-      'stroke-dashoffset': @props.strokeDashoffset
-      'stroke-linecap':    @props.strokeLinecap
-      'fill':              @props.fill
-      'fill-opacity':      @props.fillOpacity
-      'transform':         @props.transform
 
+  drawMap: [
+    'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill',
+    'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform',
+    ]
+  draw:->
+    len = @drawMapLength
+    while(len--)
+      name = @drawMap[len]
+      @setAttrIfChanged name, @props[name]
+  setAttrIfChanged:(name)->
+    if @state[name] isnt (value=@props[name])
+      @el.setAttribute name, value
+      @state[name] = value
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

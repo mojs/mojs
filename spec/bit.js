@@ -69,7 +69,7 @@
       });
     });
     describe('draw method ->', function() {
-      return it('should set presentations attributes', function() {
+      it('should set attributes', function() {
         var fill, isIE9Transform, isTransform, stroke, strokeDasharray, strokeOffset, strokeWidth, transform;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
@@ -77,10 +77,10 @@
           x: 20,
           y: 20,
           stroke: '#0f0',
-          strokeWidth: 3,
+          'stroke-width': 3,
           fill: '#0ff',
-          strokeDasharray: 100,
-          strokeDashoffset: 50,
+          'stroke-dasharray': 100,
+          'stroke-dashoffset': 50,
           angle: 45
         });
         stroke = bit.el.getAttribute('stroke');
@@ -97,6 +97,88 @@
         expect(strokeDasharray).toBe('100');
         expect(strokeOffset).toBe('50');
         return expect(isTransform || isIE9Transform).toBe(true);
+      });
+      it('should save its state', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          x: 20,
+          y: 20,
+          stroke: '#0f0',
+          'stroke-width': 3,
+          'fill': '#0ff',
+          'fill-opacity': '#f0f',
+          'stroke-dasharray': 100,
+          'stroke-dashoffset': 50,
+          'stroke-linecap': 'round',
+          'stroke-opacity': .5,
+          angle: 45
+        });
+        bit.draw();
+        expect(bit.state['stroke']).toBe('#0f0');
+        expect(bit.state['stroke-width']).toBe(3);
+        expect(bit.state['stroke-opacity']).toBe(.5);
+        expect(bit.state['stroke-dasharray']).toBe(100);
+        expect(bit.state['stroke-dashoffset']).toBe(50);
+        expect(bit.state['stroke-linecap']).toBe('round');
+        expect(bit.state['fill']).toBe('#0ff');
+        expect(bit.state['fill-opacity']).toBe('#f0f');
+        return expect(bit.state['transform']).toBe('rotate(45, 20, 20)');
+      });
+      it('should not set attribute if property not changed ->', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          'stroke-width': 3
+        });
+        spyOn(bit.el, 'setAttribute');
+        bit.draw();
+        return expect(bit.el.setAttribute).not.toHaveBeenCalled();
+      });
+      return it('should set attribute if property changed ->', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          'stroke-width': 3
+        });
+        spyOn(bit.el, 'setAttribute');
+        bit.setProp({
+          'stroke-width': 4
+        });
+        bit.draw();
+        return expect(bit.el.setAttribute).toHaveBeenCalled();
+      });
+    });
+    describe('setAttrIfChanged method ->', function() {
+      it('should not set attribute if property not changed ->', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          'stroke-width': 3
+        });
+        spyOn(bit.el, 'setAttribute');
+        bit.props['stroke-width'] = 3;
+        bit.setAttrIfChanged('stroke-width');
+        return expect(bit.el.setAttribute).not.toHaveBeenCalled();
+      });
+      it('should set attribute if property changed ->', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg
+        }, 'stroke-width', 3);
+        spyOn(bit.el, 'setAttribute');
+        bit.props['stroke-width'] = 4;
+        bit.setAttrIfChanged('stroke-width');
+        return expect(bit.el.setAttribute).toHaveBeenCalled();
+      });
+      return it('should save the current value to state if changed ->', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg
+        }, 'stroke-width', 2);
+        bit.props['stroke-width'] = 30;
+        bit.setAttrIfChanged('stroke-width');
+        return expect(bit.state['stroke-width']).toBe(30);
       });
     });
     describe('setProp method ->', function() {
@@ -144,6 +226,13 @@
       it('should have defaults object', function() {
         return expect(bit.defaults).toBeDefined();
       });
+      it('should have state object', function() {
+        return expect(bit.state).toBeDefined();
+      });
+      it('should have drawMap object', function() {
+        expect(bit.drawMap).toBeDefined();
+        return expect(bit.drawMapLength).toBeDefined();
+      });
       it('should have options object', function() {
         return expect(bit.o).toBeDefined();
       });
@@ -170,9 +259,11 @@
       it('should extend defaults object to properties', function() {
         bit = new Bit({
           ctx: svg,
-          radius: 45
+          radius: 45,
+          'stroke-width': 5
         });
-        return expect(bit.props.radius).toBe(45);
+        expect(bit.props.radius).toBe(45);
+        return expect(bit.props['stroke-width']).toBe(5);
       });
       it('should have namespace object', function() {
         return expect(bit.ns).toBe('http://www.w3.org/2000/svg');

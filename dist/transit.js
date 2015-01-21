@@ -131,13 +131,13 @@ Transit = (function(_super) {
       x: this.origin.x,
       y: this.origin.y,
       stroke: this.props.stroke,
-      strokeWidth: this.props.strokeWidth,
-      strokeOpacity: this.props.strokeOpacity,
-      strokeDasharray: this.props.strokeDasharray,
-      strokeDashoffset: this.props.strokeDashoffset,
-      strokeLinecap: this.props.strokeLinecap,
+      'stroke-width': this.props.strokeWidth,
+      'stroke-opacity': this.props.strokeOpacity,
+      'stroke-dasharray': this.props.strokeDasharray,
+      'stroke-dashoffset': this.props.strokeDashoffset,
+      'stroke-linecap': this.props.strokeLinecap,
       fill: this.props.fill,
-      fillOpacity: this.props.fillOpacity,
+      'fill-opacity': this.props.fillOpacity,
       radius: this.props.radius,
       points: this.props.points,
       transform: this.calcTransform()
@@ -199,7 +199,7 @@ Transit = (function(_super) {
   Transit.prototype.setProgress = function(progress, isShow) {
     var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _ref1;
     !isShow && this.show();
-    this.props.onUpdate && this.props.onUpdate.call(this, progress);
+    this.props.onUpdate && this.props.onUpdate.apply(this, [progress]);
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     keys = Object.keys(this.deltas);
     len = keys.length;
@@ -236,7 +236,7 @@ Transit = (function(_super) {
     if (progress === 1) {
       this.runChain();
       if ((_ref1 = this.props.onComplete) != null) {
-        _ref1.call(this);
+        _ref1.apply(this);
       }
     }
     return this;
@@ -304,7 +304,7 @@ Transit = (function(_super) {
     var chain, _ref;
     if (!this.chainArr.length) {
       !this.o.isShowEnd && this.hide();
-      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
+      return (_ref = this.props.onCompleteChain) != null ? _ref.apply(this) : void 0;
     }
     chain = this.chainArr.shift();
     if (chain.type === 'chain') {
@@ -388,7 +388,7 @@ Transit = (function(_super) {
   Transit.prototype.startTween = function() {
     var _ref;
     if ((_ref = this.props.onStart) != null) {
-      _ref.call(this);
+      _ref.apply(this);
     }
     this.h.startAnimationLoop();
     return this.tween.start();

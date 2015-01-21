@@ -92,13 +92,13 @@ class Transit extends bitsMap.map.bit
       x:                  @origin.x
       y:                  @origin.y
       stroke:             @props.stroke
-      strokeWidth:        @props.strokeWidth
-      strokeOpacity:      @props.strokeOpacity
-      strokeDasharray:    @props.strokeDasharray
-      strokeDashoffset:   @props.strokeDashoffset
-      strokeLinecap:      @props.strokeLinecap
+      'stroke-width':     @props.strokeWidth
+      'stroke-opacity':   @props.strokeOpacity
+      'stroke-dasharray': @props.strokeDasharray
+      'stroke-dashoffset':@props.strokeDashoffset
+      'stroke-linecap':   @props.strokeLinecap
       fill:               @props.fill
-      fillOpacity:        @props.fillOpacity
+      'fill-opacity':     @props.fillOpacity
       radius:             @props.radius
       points:             @props.points
       transform:          @calcTransform()
@@ -142,7 +142,7 @@ class Transit extends bitsMap.map.bit
 
   setProgress:(progress, isShow)->
     !isShow and @show()
-    @props.onUpdate and @props.onUpdate.call(@, progress)
+    @props.onUpdate and @props.onUpdate.apply(@, [progress])
 
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
@@ -170,7 +170,7 @@ class Transit extends bitsMap.map.bit
     
     @calcOrigin()
     @draw progress
-    if progress is 1 then @runChain(); @props.onComplete?.call @
+    if progress is 1 then @runChain(); @props.onComplete?.apply @
     @
 
   calcOrigin:->
@@ -209,7 +209,7 @@ class Transit extends bitsMap.map.bit
   then:(options)->  @chainArr.push { type: 'then',  options: options }; @
   runChain:->
     if !@chainArr.length
-      !@o.isShowEnd and @hide(); return @props.onCompleteChain?.call @
+      !@o.isShowEnd and @hide(); return @props.onCompleteChain?.apply @
 
     chain = @chainArr.shift()
     if chain.type is 'chain'
@@ -274,7 +274,7 @@ class Transit extends bitsMap.map.bit
     !@o.isDrawLess and @setProgress 0
     @startTween()
   startTween:->
-    @props.onStart?.call @
+    @props.onStart?.apply @
     @h.startAnimationLoop()
     @tween.start()
 

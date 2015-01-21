@@ -13,14 +13,14 @@ Bit = (function() {
     radius: 50,
     radiusX: null,
     radiusY: null,
-    stroke: 'hotpink',
-    strokeWidth: 2,
-    strokeOpacity: 1,
-    fill: 'transparent',
-    fillOpacity: 1,
-    strokeDasharray: '',
-    strokeDashoffset: '',
-    strokeLinecap: '',
+    'stroke': 'hotpink',
+    'stroke-width': 2,
+    'stroke-opacity': 1,
+    'fill': 'transparent',
+    'fill-opacity': 1,
+    'stroke-dasharray': '',
+    'stroke-dashoffset': '',
+    'stroke-linecap': '',
     points: 3,
     x: 0,
     y: 0,
@@ -44,6 +44,8 @@ Bit = (function() {
     } else {
       throw Error('You should pass a real context(ctx) to the bit');
     }
+    this.state = [];
+    this.drawMapLength = this.drawMap.length;
     this.extendDefaults();
     return this.calcTransform();
   };
@@ -107,18 +109,25 @@ Bit = (function() {
     return this.ctx.appendChild(this.el);
   };
 
+  Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
+
   Bit.prototype.draw = function() {
-    return this.setAttr({
-      'stroke': this.props.stroke,
-      'stroke-width': this.props.strokeWidth,
-      'stroke-opacity': this.props.strokeOpacity,
-      'stroke-dasharray': this.props.strokeDasharray,
-      'stroke-dashoffset': this.props.strokeDashoffset,
-      'stroke-linecap': this.props.strokeLinecap,
-      'fill': this.props.fill,
-      'fill-opacity': this.props.fillOpacity,
-      'transform': this.props.transform
-    });
+    var len, name, _results;
+    len = this.drawMapLength;
+    _results = [];
+    while (len--) {
+      name = this.drawMap[len];
+      _results.push(this.setAttrIfChanged(name, this.props[name]));
+    }
+    return _results;
+  };
+
+  Bit.prototype.setAttrIfChanged = function(name) {
+    var value;
+    if (this.state[name] !== (value = this.props[name])) {
+      this.el.setAttribute(name, value);
+      return this.state[name] = value;
+    }
   };
 
   return Bit;

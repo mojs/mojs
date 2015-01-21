@@ -35,17 +35,17 @@ describe 'Bit', ->
       bit.render()
       expect(bit.draw).not.toHaveBeenCalled()
   describe 'draw method ->', ->
-    it 'should set presentations attributes', ->
+    it 'should set attributes', ->
       svg     = document.createElementNS?(ns, 'svg')
       bit     = new Bit
         ctx: svg
         x: 20
         y: 20
         stroke:               '#0f0'
-        strokeWidth:          3
+        'stroke-width':          3
         fill:                 '#0ff'
-        strokeDasharray:      100
-        strokeDashoffset:     50
+        'stroke-dasharray':      100
+        'stroke-dashoffset':     50
         angle:                45
       stroke          = bit.el.getAttribute 'stroke'
       strokeWidth     = bit.el.getAttribute 'stroke-width'
@@ -61,6 +61,70 @@ describe 'Bit', ->
       expect(strokeDasharray) .toBe   '100'
       expect(strokeOffset)    .toBe   '50'
       expect(isTransform or isIE9Transform).toBe true
+    it 'should save its state', ->
+      svg     = document.createElementNS?(ns, 'svg')
+      bit     = new Bit
+        ctx: svg
+        x: 20
+        y: 20
+        stroke:               '#0f0'
+        'stroke-width':       3
+        'fill':               '#0ff'
+        'fill-opacity':       '#f0f'
+        'stroke-dasharray':   100
+        'stroke-dashoffset':  50
+        'stroke-linecap':     'round'
+        'stroke-opacity':     .5
+        angle:                45
+      bit.draw()
+      expect(bit.state['stroke'])           .toBe '#0f0'
+      expect(bit.state['stroke-width'])     .toBe 3
+      expect(bit.state['stroke-opacity'])   .toBe .5
+      expect(bit.state['stroke-dasharray']) .toBe 100
+      expect(bit.state['stroke-dashoffset']).toBe 50
+      expect(bit.state['stroke-linecap'])   .toBe 'round'
+      expect(bit.state['fill'])             .toBe '#0ff'
+      expect(bit.state['fill-opacity'])     .toBe '#f0f'
+      expect(bit.state['transform'])        .toBe 'rotate(45, 20, 20)'
+
+    it 'should not set attribute if property not changed ->', ->
+      svg = document.createElementNS?(ns, 'svg')
+      bit = new Bit ctx: svg, 'stroke-width': 3
+      spyOn bit.el, 'setAttribute'
+      bit.draw()
+      expect(bit.el.setAttribute).not.toHaveBeenCalled()
+
+    it 'should set attribute if property changed ->', ->
+      svg = document.createElementNS?(ns, 'svg')
+      bit = new Bit ctx: svg, 'stroke-width': 3
+      spyOn bit.el, 'setAttribute'
+      bit.setProp 'stroke-width': 4
+      bit.draw()
+      expect(bit.el.setAttribute).toHaveBeenCalled()
+
+  describe 'setAttrIfChanged method ->', ->
+    it 'should not set attribute if property not changed ->', ->
+      svg = document.createElementNS?(ns, 'svg')
+      bit = new Bit ctx: svg, 'stroke-width': 3
+      spyOn bit.el, 'setAttribute'
+      bit.props['stroke-width'] = 3
+      bit.setAttrIfChanged 'stroke-width'
+      expect(bit.el.setAttribute).not.toHaveBeenCalled()
+
+    it 'should set attribute if property changed ->', ->
+      svg = document.createElementNS?(ns, 'svg')
+      bit = new Bit ctx: svg, 'stroke-width', 3
+      spyOn bit.el, 'setAttribute'
+      bit.props['stroke-width'] = 4
+      bit.setAttrIfChanged 'stroke-width'
+      expect(bit.el.setAttribute).toHaveBeenCalled()
+
+    it 'should save the current value to state if changed ->', ->
+      svg = document.createElementNS?(ns, 'svg')
+      bit = new Bit ctx: svg, 'stroke-width', 2
+      bit.props['stroke-width'] = 30
+      bit.setAttrIfChanged 'stroke-width'
+      expect(bit.state['stroke-width']).toBe 30
 
   describe 'setProp method ->', ->
     it 'should set properties ->', ->
@@ -102,6 +166,11 @@ describe 'Bit', ->
   describe 'defaults and options', ->
     it 'should have defaults object', ->
       expect(bit.defaults).toBeDefined()
+    it 'should have state object', ->
+      expect(bit.state).toBeDefined()
+    it 'should have drawMap object', ->
+      expect(bit.drawMap).toBeDefined()
+      expect(bit.drawMapLength).toBeDefined()
     it 'should have options object', ->
       expect(bit.o).toBeDefined()
     it 'should have ratio', ->
@@ -118,9 +187,11 @@ describe 'Bit', ->
       expect(-> bit.extendDefaults()).not.toThrow()
     it 'should extend defaults object to properties', ->
       bit = new Bit
-        ctx:    svg
-        radius: 45
+        ctx:            svg
+        radius:         45
+        'stroke-width': 5
       expect(bit.props.radius).toBe(45)
+      expect(bit.props['stroke-width']).toBe(5)
     it 'should have namespace object', ->
       expect(bit.ns).toBe 'http://www.w3.org/2000/svg'
     it 'should have type object', ->

@@ -14,14 +14,14 @@ Bit = (function() {
     radius: 50,
     radiusX: null,
     radiusY: null,
-    stroke: 'hotpink',
-    strokeWidth: 2,
-    strokeOpacity: 1,
-    fill: 'transparent',
-    fillOpacity: 1,
-    strokeDasharray: '',
-    strokeDashoffset: '',
-    strokeLinecap: '',
+    'stroke': 'hotpink',
+    'stroke-width': 2,
+    'stroke-opacity': 1,
+    'fill': 'transparent',
+    'fill-opacity': 1,
+    'stroke-dasharray': '',
+    'stroke-dashoffset': '',
+    'stroke-linecap': '',
     points: 3,
     x: 0,
     y: 0,
@@ -45,6 +45,8 @@ Bit = (function() {
     } else {
       throw Error('You should pass a real context(ctx) to the bit');
     }
+    this.state = [];
+    this.drawMapLength = this.drawMap.length;
     this.extendDefaults();
     return this.calcTransform();
   };
@@ -108,18 +110,25 @@ Bit = (function() {
     return this.ctx.appendChild(this.el);
   };
 
+  Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
+
   Bit.prototype.draw = function() {
-    return this.setAttr({
-      'stroke': this.props.stroke,
-      'stroke-width': this.props.strokeWidth,
-      'stroke-opacity': this.props.strokeOpacity,
-      'stroke-dasharray': this.props.strokeDasharray,
-      'stroke-dashoffset': this.props.strokeDashoffset,
-      'stroke-linecap': this.props.strokeLinecap,
-      'fill': this.props.fill,
-      'fill-opacity': this.props.fillOpacity,
-      'transform': this.props.transform
-    });
+    var len, name, _results;
+    len = this.drawMapLength;
+    _results = [];
+    while (len--) {
+      name = this.drawMap[len];
+      _results.push(this.setAttrIfChanged(name, this.props[name]));
+    }
+    return _results;
+  };
+
+  Bit.prototype.setAttrIfChanged = function(name) {
+    var value;
+    if (this.state[name] !== (value = this.props[name])) {
+      this.el.setAttribute(name, value);
+      return this.state[name] = value;
+    }
   };
 
   return Bit;
@@ -374,14 +383,15 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.setProgress = function(progress) {
-    var i, _results;
+    var i, t0, t1;
+    t0 = performance.now();
     Burst.__super__.setProgress.apply(this, arguments);
     i = this.transits.length;
-    _results = [];
     while (i--) {
-      _results.push(this.transits[i].setProgress(progress).draw());
+      this.transits[i].setProgress(progress).draw();
     }
-    return _results;
+    t1 = performance.now();
+    return console.log(t1 - t0);
   };
 
   Burst.prototype.calcSize = function() {
@@ -1431,13 +1441,13 @@ Transit = (function(_super) {
       x: this.origin.x,
       y: this.origin.y,
       stroke: this.props.stroke,
-      strokeWidth: this.props.strokeWidth,
-      strokeOpacity: this.props.strokeOpacity,
-      strokeDasharray: this.props.strokeDasharray,
-      strokeDashoffset: this.props.strokeDashoffset,
-      strokeLinecap: this.props.strokeLinecap,
+      'stroke-width': this.props.strokeWidth,
+      'stroke-opacity': this.props.strokeOpacity,
+      'stroke-dasharray': this.props.strokeDasharray,
+      'stroke-dashoffset': this.props.strokeDashoffset,
+      'stroke-linecap': this.props.strokeLinecap,
       fill: this.props.fill,
-      fillOpacity: this.props.fillOpacity,
+      'fill-opacity': this.props.fillOpacity,
       radius: this.props.radius,
       points: this.props.points,
       transform: this.calcTransform()
@@ -1499,7 +1509,7 @@ Transit = (function(_super) {
   Transit.prototype.setProgress = function(progress, isShow) {
     var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _ref1;
     !isShow && this.show();
-    this.props.onUpdate && this.props.onUpdate.call(this, progress);
+    this.props.onUpdate && this.props.onUpdate.apply(this, [progress]);
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     keys = Object.keys(this.deltas);
     len = keys.length;
@@ -1536,7 +1546,7 @@ Transit = (function(_super) {
     if (progress === 1) {
       this.runChain();
       if ((_ref1 = this.props.onComplete) != null) {
-        _ref1.call(this);
+        _ref1.apply(this);
       }
     }
     return this;
@@ -1604,7 +1614,7 @@ Transit = (function(_super) {
     var chain, _ref;
     if (!this.chainArr.length) {
       !this.o.isShowEnd && this.hide();
-      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
+      return (_ref = this.props.onCompleteChain) != null ? _ref.apply(this) : void 0;
     }
     chain = this.chainArr.shift();
     if (chain.type === 'chain') {
@@ -1688,7 +1698,7 @@ Transit = (function(_super) {
   Transit.prototype.startTween = function() {
     var _ref;
     if ((_ref = this.props.onStart) != null) {
-      _ref.call(this);
+      _ref.apply(this);
     }
     this.h.startAnimationLoop();
     return this.tween.start();
