@@ -50,5 +50,5 @@ burst = new Burst
 
 document.body.addEventListener 'click', (e)->
   # burst.run()
-  burst.run( x: e.x, y: e.y, swirlFrequency: 20 )
+  burst.run( x: e.x, y: e.y, swirlFrequency: ['rand(0, 50)'] )
 #   # console.log burst.h.rand(10, 20)

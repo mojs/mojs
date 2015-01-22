@@ -6,10 +6,7 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- refactor
-  - add arrays for childOptions or childs option
-  - make angle work on burst
-  - make run burst method to receive new options
+- add swirl
 - add motion path
   - add movement arc
 - add more shapes(bits)

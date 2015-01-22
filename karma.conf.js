@@ -47,12 +47,12 @@ module.exports = function(config) {
       platform: 'Windows 7',
       version: '9'
     },
-    // sl_ie_10: {
-    //   base: 'SauceLabs',
-    //   browserName: 'internet explorer',
-    //   platform: 'Windows 8',
-    //   version: '10'
-    // },
+    sl_ie_10: {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      platform: 'Windows 8',
+      version: '10'
+    },
     sl_ie_11: {
       base: 'SauceLabs',
       browserName: 'internet explorer',
@@ -161,8 +161,6 @@ module.exports = function(config) {
   };
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-      console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.');
-      // process.exit(1);
       reporters = ['progress', 'coverage', 'clear-screen'];
       browsers = ['PhantomJS'];      
     } else {
@@ -190,7 +188,9 @@ module.exports = function(config) {
     // list of files to exclude
     exclude: [
       'dist/mojs.js',
-      'dist/mojs.min.js'
+      'dist/mojs.min.js',
+      'dist/burst.js',
+      'spec/burst.js'
       // 'dist/bit.js',
       // 'spec/bit.js',
       // 'dist/line.js',

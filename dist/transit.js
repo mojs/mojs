@@ -255,7 +255,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function() {
-    var defaultsValue, delta, isObject, key, optionsValue, _ref;
+    var defaultsValue, delta, isObject, key, optionsValue, _ref, _ref1;
     if (this.props == null) {
       this.props = {};
     }
@@ -277,6 +277,9 @@ Transit = (function(_super) {
       }
       if ((key === 'x' || key === 'y') && !this.o.ctx) {
         this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
+      }
+      if ((_ref1 = this.skipPropsDelta) != null ? _ref1[key] : void 0) {
+        continue;
       }
       delta = this.h.parseDelta(key, optionsValue);
       if (delta.type != null) {

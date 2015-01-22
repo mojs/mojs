@@ -50,7 +50,7 @@
         return expect(byte.o.option).toBe(1);
       });
     });
-    describe('extend defaults ->', function() {
+    describe('extendDefaults method ->', function() {
       it('should extend defaults object to properties', function() {
         var byte;
         byte = new Byte({
@@ -729,6 +729,19 @@
       });
     });
     describe('delta calculations ->', function() {
+      it('should skip delta for excludePropsDelta object', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            45: 55
+          }
+        });
+        byte.skipPropsDelta = {
+          radius: 1
+        };
+        byte.extendDefaults();
+        return expect(byte.deltas.radius).not.toBeDefined();
+      });
       describe('numeric values ->', function() {
         it('should calculate delta', function() {
           var byte, radiusDelta;

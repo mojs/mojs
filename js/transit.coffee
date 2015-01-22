@@ -199,7 +199,11 @@ class Transit extends bitsMap.map.bit
       if (key is 'x' or key is 'y') and !@o.ctx
         @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
          as it would be much more performant', optionsValue
+      # skip props defined in skipPropsDelta map
+      # needed for modules based on transit like swirl
+      if @skipPropsDelta?[key] then continue
       delta = @h.parseDelta key, optionsValue
+      # stoke-linecap filter
       if delta.type? then @deltas[key] = delta
       # and set the start value to props
       @props[key] = delta.start

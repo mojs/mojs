@@ -25,7 +25,7 @@ describe 'Transit ->', ->
     it 'should recieve options object', ->
       byte = new Byte option: 1
       expect(byte.o.option).toBe 1
-  describe 'extend defaults ->', ->
+  describe 'extendDefaults method ->', ->
     it 'should extend defaults object to properties', ->
       byte = new Byte radius: 45
       expect(byte.props.radius).toBe(45)
@@ -35,6 +35,8 @@ describe 'Transit ->', ->
     it 'should extend defaults object to properties if object was passed', ->
       byte = new Byte radius: {45: 55}
       expect(byte.props.radius).toBe(45)
+
+
     # for burst
     it 'should extend defaults object to properties if array was passed', ->
       byte = new Byte radius: [50, 100]
@@ -432,6 +434,12 @@ describe 'Transit ->', ->
       expect(byte.lastSet.x).toBeDefined()
 
   describe 'delta calculations ->', ->
+    it 'should skip delta for excludePropsDelta object', ->
+      byte = new Byte radius: {45: 55}
+      byte.skipPropsDelta = radius: 1
+      byte.extendDefaults()
+      expect(byte.deltas.radius).not.toBeDefined()
+
     describe 'numeric values ->', ->
       it 'should calculate delta', ->
         byte = new Byte radius:  {25: 75}

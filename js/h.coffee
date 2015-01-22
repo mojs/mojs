@@ -277,7 +277,7 @@ class Helpers
       # because tween-related props shouldn't
       ## have deltas
       if !@tweenOptionMap[key]
-        # position values
+        # position values defined in posPropsMap
         if @posPropsMap[key]
           end   = @parseUnit @parseIfRand end
           start = @parseUnit @parseIfRand start
@@ -288,6 +288,7 @@ class Helpers
             type:   'unit'
           # @props[key] = start.string
         else
+          # none position but numeric values
           end   = parseFloat @parseIfRand    end
           start = parseFloat @parseIfRand  start
           delta =
