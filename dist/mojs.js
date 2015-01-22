@@ -363,7 +363,7 @@ Burst = (function(_super) {
     while (i--) {
       transit = this.transits[i];
       radius = this.props.radius * (transit.radiusRand || 1);
-      angle = i * step + (transit.angleRand || 1) + this.props.angle;
+      angle = i * step + (transit.angleRand || 0) + this.props.angle;
       if (this.props.isSwirl) {
         angle += this.getSwirl(progress, i);
       }

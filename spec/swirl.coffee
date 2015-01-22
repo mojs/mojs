@@ -1,6 +1,7 @@
 Transit = mojs.Transit
 Swirl   = mojs.Swirl
 
+tr = new Transit
 describe 'Swirl ->', ->
   describe 'extension ->', ->
     it 'should extend Transit class', ->
@@ -13,7 +14,7 @@ describe 'Swirl ->', ->
   describe 'position calc ->', ->
     it 'should calc position radius', ->
       swirl = new Swirl x: {0:10}, y: {0:20}
-      expect(swirl.positionDelta.radius).toBe 20
+      expect(swirl.positionDelta.radius).toBe Math.sqrt (10*10 + 20*20)
     it 'should calc position angle', ->
       swirl = new Swirl x: {0:10}, y: {0:10}
       expect(swirl.positionDelta.angle).toBe 135
@@ -23,8 +24,8 @@ describe 'Swirl ->', ->
       expect(swirl.positionDelta.y.start).toBe 10
     it 'should set start position anyways', ->
       swirl = new Swirl x: {0:10}, y: 0, isRunLess: true
-      expect(parseInt(swirl.props.x, 10)).toBe 0
-      expect(parseInt(swirl.props.y, 10)).toBe 0
+      expect(swirl.props.x).toBe '0.0000px'
+      expect(swirl.props.y).toBe '0.0000px'
     it 'should call super extendDefaults method', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
       spyOn Swirl.__super__, 'extendDefaults'
@@ -37,8 +38,54 @@ describe 'Swirl ->', ->
       swirl.setProgress .5
       expect(Swirl.__super__.setProgress).toHaveBeenCalledWith .5
     it 'should set x/y progress', ->
-      swirl = new Swirl x: {0:10}, y: {0:10}, isRunLess: true, isIt: true
+      swirl = new Swirl x: {0:10}, y: {0:10}, isRunLess: true, isSwirlLess: true
       swirl.setProgress .5
-      expect(swirl.props.x).toBe '3.5355px'
-      expect(swirl.props.y).toBe '3.5355px'
-
+      expect(swirl.props.x).toBe '5.0000px'
+      expect(swirl.props.y).toBe '5.0000px'
+    it 'should set x/y progress', ->
+      swirl = new Swirl x: {0:10}, y: {0:10}, isRunLess: true, isSwirlLess: true
+      swirl.setProgress 1
+      expect(swirl.props.x).toBe '10.0000px'
+      expect(swirl.props.y).toBe '10.0000px'
+    it 'should respect angleShift value', ->
+      swirl = new Swirl
+        x: {0:10}, y: {0:10}, isRunLess: true,
+        isSwirlLess: true, angleShift: 90
+      swirl.setProgress .5
+      expect(swirl.props.x).toBe '-5.0000px'
+      expect(swirl.props.y).toBe '5.0000px'
+    it 'should respect radiusScale value', ->
+      swirl = new Swirl
+        x: {0:10}, y: {0:10}, isRunLess: true,
+        isSwirlLess: true, radiusScale: .5
+      swirl.setProgress 1
+      expect(swirl.props.x).toBe '5.0000px'
+      expect(swirl.props.y).toBe '5.0000px'
+    it 'should set add swirl if option was passed', ->
+      swirl = new Swirl x: {0:10}, y: {0:10}, isRunLess: true
+      swirl.setProgress .5
+      expect(swirl.props.x).not.toBe '5.0000px'
+      expect(swirl.props.y).not.toBe '5.0000px'
+  describe 'generateSwirl method ->', ->
+    it 'should generate simple swirl', ->
+      swirl = new Swirl swirlSize: 3, swirlFrequency: 2
+      swirl.generateSwirl()
+      expect(swirl.props.swirlSize).toBe      3
+      expect(swirl.props.swirlFrequency).toBe 2
+    it 'should generate rand swirl', ->
+      swirl = new Swirl swirlSize: 'rand(10,20)', swirlFrequency: 'rand(3,7)'
+      swirl.generateSwirl()
+      expect(swirl.props.swirlSize).toBeGreaterThan     9
+      expect(swirl.props.swirlSize).not.toBeGreaterThan 20
+    it 'should not generate simple swirl is isSwirlLess was passed', ->
+      swirl = new Swirl isSwirlLess: true
+      spyOn swirl, 'generateSwirl'
+      swirl.init()
+      expect(swirl.generateSwirl).not.toHaveBeenCalled()
+  describe 'getSwirl method ->', ->
+    it 'should calc swirl based on swirlFrequency and swirlSize props', ->
+      swirl = new Swirl
+      swirl1 = swirl.getSwirl(.5)
+      freq = Math.sin(swirl.props.swirlFrequency*.5)
+      sign = swirl.props.signRand
+      expect(swirl1).toBe sign*swirl.props.swirlSize*freq

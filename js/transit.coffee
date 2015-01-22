@@ -212,20 +212,18 @@ class Transit extends bitsMap.map.bit
 
   # CHAINS
   chain:(options)->
-    options.type = @o.type
-    @chainArr.push { type: 'chain', options: options }; return @
+    options.type = @o.type; @chainArr.push { type: 'chain', options: options }
+    @
   then:(options)->  @chainArr.push { type: 'then',  options: options }; @
   runChain:->
     if !@chainArr.length
       !@o.isShowEnd and @hide(); return @props.onCompleteChain?.call @
 
     chain = @chainArr.shift()
-    if chain.type is 'chain'
-      @o = chain.options
-    if chain.type is 'then'
-      @mergeThenOptions chain
-
+    if chain.type is 'chain'  then @o = chain.options
+    if chain.type is 'then'   then @mergeThenOptions chain
     @init()
+
   mergeThenOptions:(chain)->
     opts = @copyEndOptions()
     return if !opts

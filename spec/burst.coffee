@@ -148,12 +148,6 @@ describe 'Burst ->', ->
       expect(burst.transits[2].progress).toBe .5
       expect(burst.transits[3].progress).toBe .5
       expect(burst.transits[4].progress).toBe .5
-    # it 'should call super method', ->
-    #   burst = new Burst radius: [{ 20: 50 }, 20]
-    #   spyOn Burst.__super__, 'setProgress'
-    #   burst.setProgress .5
-    #   expect(Burst.__super__.setProgress).toHaveBeenCalled()
-
   describe 'run method ->', ->
     it 'should call super', ->
       burst = new Burst radius: [{ 20: 50 }, 20]
@@ -232,7 +226,6 @@ describe 'Burst ->', ->
       burst.generateSwirl 1
       isEqual = burst.transits[0].swirlSize is burst.transits[1].swirlSize
       expect(isEqual).toBe true
-      
     it 'should generate array swirl', ->
       burst = new Burst swirlSize: [ 3, 4 ], swirlFrequency: [ 5, 2, 1 ]
       burst.generateSwirl 0

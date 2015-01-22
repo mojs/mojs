@@ -18,55 +18,93 @@ Swirl = (function(_super) {
     y: 1
   };
 
+  Swirl.prototype.vars = function() {
+    Swirl.__super__.vars.apply(this, arguments);
+    return !this.o.isSwirlLess && this.generateSwirl();
+  };
+
   Swirl.prototype.extendDefaults = function() {
-    var val, x, y;
+    var ang, x, xDelta, y, yDelta, _base, _base1;
     Swirl.__super__.extendDefaults.apply(this, arguments);
-    x = this.o.x && typeof this.o.x === 'object' ? (val = this.h.parseDelta('x', this.o.x), console.log(val), {
-      start: val.start.value,
-      end: val.end.value,
-      delta: val.delta,
-      units: val.end.unit
-    }) : (x = parseFloat(this.o.x || this.defaults.x), {
-      start: x,
-      end: x,
-      delta: 0,
-      units: 'px'
-    });
-    y = this.o.y && typeof this.o.y === 'object' ? (val = this.h.parseDelta('y', this.o.y), {
-      start: val.start.value,
-      end: val.end.value,
-      delta: val.delta,
-      units: val.end.unit
-    }) : (y = parseFloat(this.o.y || this.defaults.y), {
-      start: y,
-      end: y,
-      delta: 0,
-      units: 'px'
-    });
+    x = this.getPosValue('x');
+    y = this.getPosValue('y');
+    xDelta = Math.abs(x.delta);
+    yDelta = Math.abs(y.delta);
+    ang = yDelta === 0 || xDelta === 0 ? 1 : yDelta / xDelta;
     this.positionDelta = {
-      radius: Math.max(Math.abs(x.delta), Math.abs(y.delta)),
-      angle: 90 + Math.atan(y.delta / x.delta) * (180 / Math.PI),
+      radius: Math.sqrt(xDelta * xDelta + yDelta * yDelta),
+      angle: 90 + Math.atan(ang) * (180 / Math.PI),
       x: x,
       y: y
     };
     this.props.x = "" + x.start + x.units;
-    return this.props.y = "" + y.start + y.units;
+    this.props.y = "" + y.start + y.units;
+    if ((_base = this.o).angleShift == null) {
+      _base.angleShift = 0;
+    }
+    if ((_base1 = this.o).radiusScale == null) {
+      _base1.radiusScale = 1;
+    }
+    this.props.angleShift = this.h.parseIfRand(this.o.angleShift);
+    return this.props.radiusScale = this.h.parseIfRand(this.o.radiusScale);
+  };
+
+  Swirl.prototype.getPosValue = function(name) {
+    var optVal, val;
+    optVal = this.o[name];
+    if (optVal && typeof optVal === 'object') {
+      val = this.h.parseDelta(name, optVal);
+      return {
+        start: val.start.value,
+        end: val.end.value,
+        delta: val.delta,
+        units: val.end.unit
+      };
+    } else {
+      val = parseFloat(optVal || this.defaults[name]);
+      return {
+        start: val,
+        end: val,
+        delta: 0,
+        units: 'px'
+      };
+    }
   };
 
   Swirl.prototype.setProgress = function(progress) {
-    var point;
-    Swirl.__super__.setProgress.apply(this, arguments);
+    var angle, point;
+    angle = this.positionDelta.angle + this.props.angleShift;
+    if (!this.o.isSwirlLess) {
+      angle += this.getSwirl(progress);
+    }
     point = this.h.getRadialPoint({
-      angle: this.positionDelta.angle,
-      radius: this.positionDelta.radius * progress,
+      angle: angle,
+      radius: this.positionDelta.radius * progress * this.props.radiusScale,
       center: {
         x: this.positionDelta.x.start,
         y: this.positionDelta.y.start
       }
     });
-    this.o.isIt && console.log(point);
     this.props.x = point.x.toFixed(4) + this.positionDelta.y.units;
-    return this.props.y = point.y.toFixed(4) + this.positionDelta.y.units;
+    this.props.y = point.y.toFixed(4) + this.positionDelta.y.units;
+    return Swirl.__super__.setProgress.apply(this, arguments);
+  };
+
+  Swirl.prototype.generateSwirl = function() {
+    var _base, _base1;
+    this.props.signRand = this.h.rand(0, 1) ? -1 : 1;
+    if ((_base = this.o).swirlSize == null) {
+      _base.swirlSize = 10;
+    }
+    if ((_base1 = this.o).swirlFrequency == null) {
+      _base1.swirlFrequency = 3;
+    }
+    this.props.swirlSize = this.h.parseIfRand(this.o.swirlSize);
+    return this.props.swirlFrequency = this.h.parseIfRand(this.o.swirlFrequency);
+  };
+
+  Swirl.prototype.getSwirl = function(progress) {
+    return this.props.signRand * this.props.swirlSize * Math.sin(this.props.swirlFrequency * progress);
   };
 
   return Swirl;

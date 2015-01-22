@@ -106,7 +106,7 @@ class Burst extends Transit
     while(i--)
       transit = @transits[i]
       radius  = @props.radius*(transit.radiusRand or 1)
-      angle   = i*step+(transit.angleRand or 1)+@props.angle
+      angle   = i*step+(transit.angleRand or 0)+@props.angle
       if @props.isSwirl then angle += @getSwirl progress, i
       point   = @h.getRadialPoint
         radius: radius
