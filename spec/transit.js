@@ -340,7 +340,7 @@
               return dfr();
             }, 100);
           });
-          it('should warn when x/y animated position', function() {
+          it('should warn when x/y animated position and not foreign context', function() {
             var byte;
             spyOn(console, 'warn');
             byte = new Byte({
@@ -349,6 +349,17 @@
               }
             });
             return expect(console.warn).toHaveBeenCalled();
+          });
+          it('should notwarn when x/y animated position and foreign context', function() {
+            var byte;
+            spyOn(console, 'warn');
+            byte = new Byte({
+              x: {
+                100: '200px'
+              },
+              ctx: svg
+            });
+            return expect(console.warn).not.toHaveBeenCalled();
           });
           it('should animate position with respect to units', function(dfr) {
             var byte;

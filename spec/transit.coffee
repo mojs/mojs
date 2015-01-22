@@ -200,10 +200,14 @@ describe 'Transit ->', ->
             expect(byte.el.style.left)   .toBe '200px'
             dfr()
           , 100
-        it 'should warn when x/y animated position', ->
+        it 'should warn when x/y animated position and not foreign context',->
           spyOn console, 'warn'
           byte = new Byte x: {100: '200px'}
           expect(console.warn).toHaveBeenCalled()
+        it 'should notwarn when x/y animated position and foreign context',->
+          spyOn console, 'warn'
+          byte = new Byte x: {100: '200px'}, ctx: svg
+          expect(console.warn).not.toHaveBeenCalled()
           
         it 'should animate position with respect to units', (dfr)->
           byte = new Byte
@@ -399,6 +403,7 @@ describe 'Transit ->', ->
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
       expect(byte.el.style.transform) .toBe     'translate(0px, 0px)'
+
     it 'should set new values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()

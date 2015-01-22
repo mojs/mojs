@@ -330,9 +330,6 @@ Helpers = (function() {
 
   Helpers.prototype.parseDelta = function(key, value) {
     var delta, end, endArr, endColorObj, start, startArr, startColorObj;
-    if (key === 'x' || key === 'y') {
-      this.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', value);
-    }
     start = Object.keys(value)[0];
     end = value[start];
     delta = {

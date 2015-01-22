@@ -147,16 +147,16 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.drawEl = function() {
-    var translate;
-    if (!this.el) {
+    var transform;
+    if (this.el == null) {
       return;
     }
     this.isPropChanged('x') && (this.el.style.left = this.props.x);
     this.isPropChanged('y') && (this.el.style.top = this.props.y);
     this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
     if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
-      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-      return this.h.setPrefixedStyle(this.el, 'transform', translate);
+      transform = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+      return this.h.setPrefixedStyle(this.el, 'transform', transform);
     }
   };
 
@@ -274,6 +274,9 @@ Transit = (function(_super) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
         continue;
+      }
+      if ((key === 'x' || key === 'y') && !this.o.ctx) {
+        this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
       }
       delta = this.h.parseDelta(key, optionsValue);
       if (delta.type != null) {

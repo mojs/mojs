@@ -321,17 +321,19 @@ Burst = (function(_super) {
     return Burst.__super__.init.apply(this, arguments);
   };
 
-  Burst.prototype.run = function() {
-    var i;
+  Burst.prototype.run = function(o) {
+    var i, _results;
+    Burst.__super__.run.apply(this, arguments);
     if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
       i = this.transits.length;
+      _results = [];
       while (i--) {
         this.props.randomAngle && this.generateRandomAngle(i);
         this.props.randomRadius && this.generateRandomRadius(i);
-        this.props.isSwirl && this.generateSwirl(i);
+        _results.push(this.props.isSwirl && this.generateSwirl(i));
       }
+      return _results;
     }
-    return Burst.__super__.run.apply(this, arguments);
   };
 
   Burst.prototype.createBit = function() {
@@ -361,7 +363,7 @@ Burst = (function(_super) {
     while (i--) {
       transit = this.transits[i];
       radius = this.props.radius * (transit.radiusRand || 1);
-      angle = i * step + (transit.angleRand || 1);
+      angle = i * step + (transit.angleRand || 1) + this.props.angle;
       if (this.props.isSwirl) {
         angle += this.getSwirl(progress, i);
       }
@@ -972,9 +974,6 @@ Helpers = (function() {
 
   Helpers.prototype.parseDelta = function(key, value) {
     var delta, end, endArr, endColorObj, start, startArr, startColorObj;
-    if (key === 'x' || key === 'y') {
-      this.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', value);
-    }
     start = Object.keys(value)[0];
     end = value[start];
     delta = {
@@ -1142,7 +1141,13 @@ burst = new Burst({
   y: 150,
   duration: 600,
   points: 5,
-  randomRadius: .5,
+  angle: {
+    0: 0
+  },
+  isRunLess: true,
+  isSwirl: true,
+  swirlFrequency: 'rand(2, 5)',
+  randomRadius: .75,
   childOptions: {
     type: ['circle', 'polygon', 'cross', 'rect', 'line'],
     points: 3,
@@ -1158,7 +1163,8 @@ burst = new Burst({
 document.body.addEventListener('click', function(e) {
   return burst.run({
     x: e.x,
-    y: e.y
+    y: e.y,
+    swirlFrequency: 20
   });
 });
 
@@ -1454,16 +1460,16 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.drawEl = function() {
-    var translate;
-    if (!this.el) {
+    var transform;
+    if (this.el == null) {
       return;
     }
     this.isPropChanged('x') && (this.el.style.left = this.props.x);
     this.isPropChanged('y') && (this.el.style.top = this.props.y);
     this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
     if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
-      translate = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-      return this.h.setPrefixedStyle(this.el, 'transform', translate);
+      transform = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+      return this.h.setPrefixedStyle(this.el, 'transform', transform);
     }
   };
 
@@ -1581,6 +1587,9 @@ Transit = (function(_super) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
         continue;
+      }
+      if ((key === 'x' || key === 'y') && !this.o.ctx) {
+        this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
       }
       delta = this.h.parseDelta(key, optionsValue);
       if (delta.type != null) {

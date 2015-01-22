@@ -107,13 +107,13 @@ class Transit extends bitsMap.map.bit
     @drawEl()
 
   drawEl:->
-    return if !@el
+    return if !@el?
     @isPropChanged('x') and (@el.style.left = @props.x)
     @isPropChanged('y') and (@el.style.top  = @props.y)
     @isPropChanged('opacity') and (@el.style.opacity = @props.opacity)
     if @isPropChanged('shiftX') or @isPropChanged('shiftY')
-      translate = "translate(#{@props.shiftX}, #{@props.shiftY})"
-      @h.setPrefixedStyle @el, 'transform', translate
+      transform = "translate(#{@props.shiftX}, #{@props.shiftY})"
+      @h.setPrefixedStyle @el, 'transform', transform
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     @lastSet[name].isChanged = if @lastSet[name].value isnt @props[name]
@@ -123,7 +123,6 @@ class Transit extends bitsMap.map.bit
     @props.transform = "rotate(#{@props.angle},#{@origin.x},#{@origin.y})"
   calcSize:->
     return if @o.size
-
     dRadius = @deltas['radius']; dStroke = @deltas['strokeWidth']
     radius = if dRadius?
       Math.max Math.abs(dRadius.start), Math.abs(dRadius.end)
@@ -197,6 +196,9 @@ class Transit extends bitsMap.map.bit
         continue
       # if delta object was passed: like { 20: 75 }
       # calculate delta
+      if (key is 'x' or key is 'y') and !@o.ctx
+        @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
+         as it would be much more performant', optionsValue
       delta = @h.parseDelta key, optionsValue
       if delta.type? then @deltas[key] = delta
       # and set the start value to props

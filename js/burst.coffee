@@ -80,16 +80,15 @@ class Burst extends Transit
     @childOptions = @o.childOptions or {}
     h.extend(@childOptions, @childDefaults); delete @o.childOptions
     super
-
-  run:->
+  run:(o)->
+    super
+    
     if @props.randomAngle or @props.randomRadius or @props.isSwirl
       i = @transits.length
       while(i--)
         @props.randomAngle  and @generateRandomAngle(i)
         @props.randomRadius and @generateRandomRadius(i)
         @props.isSwirl      and @generateSwirl(i)
-    super
-
   createBit:->
     @transits = []
     for i in [0...@props.points]
@@ -107,7 +106,7 @@ class Burst extends Transit
     while(i--)
       transit = @transits[i]
       radius  = @props.radius*(transit.radiusRand or 1)
-      angle   = i*step+(transit.angleRand or 1)
+      angle   = i*step+(transit.angleRand or 1)+@props.angle
       if @props.isSwirl then angle += @getSwirl progress, i
       point   = @h.getRadialPoint
         radius: radius
@@ -118,7 +117,6 @@ class Burst extends Transit
         y: point.y
         angle: angle-90
     @drawEl()
-  
   setProgress:(progress)->
     # t0 = performance.now()
     super; i = @transits.length
@@ -128,7 +126,6 @@ class Burst extends Transit
         .draw()
     # t1 = performance.now()
     # console.log t1 - t0
-
   calcSize:->
     largestSize = -1
     for transit, i in @transits

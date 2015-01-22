@@ -13,15 +13,20 @@ burst = new Burst
   y:            150
   duration:     600
   points:       5
+  angle:        {0: 0}
+  isRunLess: true
   # delay:        2000
   # degree:       120
   # radius:        { 0: 300 }
-  randomRadius: .5
+  isSwirl: true
+  swirlFrequency: 'rand(2, 5)'
+  randomRadius: .75
   childOptions:
     type:         [ 'circle', 'polygon', 'cross', 'rect', 'line' ]
     points:       3
     angle:        { 'rand(-360,360)': 0 }
     strokeWidth: {10: 0}
+    # x: {20: 40}
   # degree:       90
 #   radius: { 0: 150 }
 #   # degree:       45
@@ -45,5 +50,5 @@ burst = new Burst
 
 document.body.addEventListener 'click', (e)->
   # burst.run()
-  burst.run( x: e.x, y: e.y )
+  burst.run( x: e.x, y: e.y, swirlFrequency: 20 )
 #   # console.log burst.h.rand(10, 20)

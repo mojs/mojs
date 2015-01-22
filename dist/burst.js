@@ -92,17 +92,19 @@ Burst = (function(_super) {
     return Burst.__super__.init.apply(this, arguments);
   };
 
-  Burst.prototype.run = function() {
-    var i;
+  Burst.prototype.run = function(o) {
+    var i, _results;
+    Burst.__super__.run.apply(this, arguments);
     if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
       i = this.transits.length;
+      _results = [];
       while (i--) {
         this.props.randomAngle && this.generateRandomAngle(i);
         this.props.randomRadius && this.generateRandomRadius(i);
-        this.props.isSwirl && this.generateSwirl(i);
+        _results.push(this.props.isSwirl && this.generateSwirl(i));
       }
+      return _results;
     }
-    return Burst.__super__.run.apply(this, arguments);
   };
 
   Burst.prototype.createBit = function() {
@@ -132,7 +134,7 @@ Burst = (function(_super) {
     while (i--) {
       transit = this.transits[i];
       radius = this.props.radius * (transit.radiusRand || 1);
-      angle = i * step + (transit.angleRand || 1);
+      angle = i * step + (transit.angleRand || 1) + this.props.angle;
       if (this.props.isSwirl) {
         angle += this.getSwirl(progress, i);
       }

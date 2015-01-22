@@ -239,9 +239,6 @@ class Helpers
   
   parseDelta:(key, value)->
     # if delta object was passed: like { 20: 75 }
-    if key is 'x' or key is 'y'
-      @warn 'Consider to animate shiftX/shiftY properties instead of x/y,
-       as it would be much more performant', value
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start
