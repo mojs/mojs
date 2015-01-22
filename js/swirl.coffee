@@ -15,7 +15,6 @@ class Swirl extends Transit
       angle:  90+Math.atan(ang)*(180/Math.PI)
       x: x
       y: y
-    @props.x = "#{x.start}#{x.units}"; @props.y = "#{y.start}#{y.units}"
     @o.angleShift  ?= 0; @o.radiusScale ?= 1
     @props.angleShift   = @h.parseIfRand @o.angleShift
     @props.radiusScale  = @h.parseIfRand @o.radiusScale
@@ -37,8 +36,9 @@ class Swirl extends Transit
       angle:  angle
       radius: @positionDelta.radius*progress*@props.radiusScale
       center: x: @positionDelta.x.start, y: @positionDelta.y.start
-    @props.x = point.x.toFixed(4)+@positionDelta.y.units
-    @props.y = point.y.toFixed(4)+@positionDelta.y.units
+    x = point.x.toFixed(4); y = point.y.toFixed(4)
+    @props.x = if @o.ctx then x else x+@positionDelta.y.units
+    @props.y = if @o.ctx then y else y+@positionDelta.y.units
     super
   generateSwirl:->
     @props.signRand = if @h.rand(0, 1) then -1 else 1

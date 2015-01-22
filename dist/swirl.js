@@ -37,8 +37,6 @@ Swirl = (function(_super) {
       x: x,
       y: y
     };
-    this.props.x = "" + x.start + x.units;
-    this.props.y = "" + y.start + y.units;
     if ((_base = this.o).angleShift == null) {
       _base.angleShift = 0;
     }
@@ -72,7 +70,7 @@ Swirl = (function(_super) {
   };
 
   Swirl.prototype.setProgress = function(progress) {
-    var angle, point;
+    var angle, point, x, y;
     angle = this.positionDelta.angle + this.props.angleShift;
     if (!this.o.isSwirlLess) {
       angle += this.getSwirl(progress);
@@ -85,8 +83,10 @@ Swirl = (function(_super) {
         y: this.positionDelta.y.start
       }
     });
-    this.props.x = point.x.toFixed(4) + this.positionDelta.y.units;
-    this.props.y = point.y.toFixed(4) + this.positionDelta.y.units;
+    x = point.x.toFixed(4);
+    y = point.y.toFixed(4);
+    this.props.x = this.o.ctx ? x : x + this.positionDelta.y.units;
+    this.props.y = this.o.ctx ? y : y + this.positionDelta.y.units;
     return Swirl.__super__.setProgress.apply(this, arguments);
   };
 

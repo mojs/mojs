@@ -7,6 +7,8 @@
 
 #### todo
 - add swirl
+  - check random swirl params
+- burst to swirl
 - add motion path
   - add movement arc
 - add more shapes(bits)
