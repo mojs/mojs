@@ -1,4 +1,142 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+
+/* istanbul ignore next */
+var Swirl, Transit,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Transit = require('./transit');
+
+Swirl = (function(_super) {
+  __extends(Swirl, _super);
+
+  function Swirl() {
+    return Swirl.__super__.constructor.apply(this, arguments);
+  }
+
+  Swirl.prototype.skipPropsDelta = {
+    x: 1,
+    y: 1
+  };
+
+  Swirl.prototype.vars = function() {
+    Swirl.__super__.vars.apply(this, arguments);
+    return !this.o.isSwirlLess && this.generateSwirl();
+  };
+
+  Swirl.prototype.extendDefaults = function() {
+    var ang, x, y, _base, _base1;
+    Swirl.__super__.extendDefaults.apply(this, arguments);
+    x = this.getPosValue('x');
+    y = this.getPosValue('y');
+    ang = y.delta === 0 || x.delta === 0 ? 1 : x.delta / y.delta;
+    this.positionDelta = {
+      radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
+      angle: 90 + Math.atan(ang) * (Math.PI / 180),
+      x: x,
+      y: y
+    };
+    if ((_base = this.o).angleShift == null) {
+      _base.angleShift = 0;
+    }
+    if ((_base1 = this.o).radiusScale == null) {
+      _base1.radiusScale = 1;
+    }
+    this.props.angleShift = this.h.parseIfRand(this.o.angleShift);
+    return this.props.radiusScale = this.h.parseIfRand(this.o.radiusScale);
+  };
+
+  Swirl.prototype.getPosValue = function(name) {
+    var optVal, val;
+    optVal = this.o[name];
+    if (optVal && typeof optVal === 'object') {
+      val = this.h.parseDelta(name, optVal);
+      return {
+        start: val.start.value,
+        end: val.end.value,
+        delta: val.delta,
+        units: val.end.unit
+      };
+    } else {
+      val = parseFloat(optVal || this.defaults[name]);
+      return {
+        start: val,
+        end: val,
+        delta: 0,
+        units: 'px'
+      };
+    }
+  };
+
+  Swirl.prototype.setProgress = function(progress) {
+    var angle, point, x, y;
+    angle = this.positionDelta.angle + this.props.angleShift;
+    if (!this.o.isSwirlLess) {
+      angle += this.getSwirl(progress);
+    }
+    point = this.h.getRadialPoint({
+      angle: angle,
+      radius: this.positionDelta.radius * progress * this.props.radiusScale,
+      center: {
+        x: this.positionDelta.x.start,
+        y: this.positionDelta.y.start
+      }
+    });
+    x = point.x.toFixed(4);
+    y = point.y.toFixed(4);
+    this.props.x = this.o.ctx ? x : x + this.positionDelta.x.units;
+    this.props.y = this.o.ctx ? y : y + this.positionDelta.y.units;
+    return Swirl.__super__.setProgress.apply(this, arguments);
+  };
+
+  Swirl.prototype.generateSwirl = function() {
+    var _base, _base1;
+    this.props.signRand = this.h.rand(0, 1) ? -1 : 1;
+    if ((_base = this.o).swirlSize == null) {
+      _base.swirlSize = 10;
+    }
+    if ((_base1 = this.o).swirlFrequency == null) {
+      _base1.swirlFrequency = 3;
+    }
+    this.props.swirlSize = this.h.parseIfRand(this.o.swirlSize);
+    return this.props.swirlFrequency = this.h.parseIfRand(this.o.swirlFrequency);
+  };
+
+  Swirl.prototype.getSwirl = function(progress) {
+    return this.props.signRand * this.props.swirlSize * Math.sin(this.props.swirlFrequency * progress);
+  };
+
+  return Swirl;
+
+})(Transit);
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Swirl", [], function() {
+    return Swirl;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Swirl;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Swirl = Swirl;
+}
+
+},{"./transit":13}],2:[function(require,module,exports){
 var Bit, h;
 
 h = require('./h');
@@ -161,7 +299,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"./h":6}],2:[function(require,module,exports){
+},{"./h":7}],3:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
 
 Bit = require('./bit');
@@ -226,16 +364,18 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":1,"./circle":4,"./cross":5,"./h":6,"./line":7,"./polygon":9,"./rect":10}],3:[function(require,module,exports){
+},{"./bit":2,"./circle":5,"./cross":6,"./h":7,"./line":8,"./polygon":10,"./rect":11}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
-var Burst, Transit, bitsMap, h,
+var Burst, Swirl, Transit, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 bitsMap = require('./bitsMap');
 
 Transit = require('./transit');
+
+Swirl = require('./swirl');
 
 h = require('./h');
 
@@ -329,58 +469,67 @@ Burst = (function(_super) {
       _results = [];
       while (i--) {
         this.props.randomAngle && this.generateRandomAngle(i);
-        this.props.randomRadius && this.generateRandomRadius(i);
-        _results.push(this.props.isSwirl && this.generateSwirl(i));
+        _results.push(this.props.randomRadius && this.generateRandomRadius(i));
       }
       return _results;
     }
   };
 
   Burst.prototype.createBit = function() {
-    var bitClass, i, option, _i, _ref, _results;
+    var i, option, _i, _ref, _results;
     this.transits = [];
     _results = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      bitClass = bitsMap.getBit(this.o.type || this.type);
       option = this.getOption(i);
       option.ctx = this.ctx;
       option.isDrawLess = true;
       option.isRunLess = true;
-      this.transits.push(new Transit(option));
-      this.props.randomAngle && this.generateRandomAngle(i);
-      this.props.randomRadius && this.generateRandomRadius(i);
-      _results.push(this.props.isSwirl && this.generateSwirl(i));
+      option.isSwirlLess = !this.props.isSwirl;
+      option.swirlSize = this.o.swirlSize;
+      option.swirlFrequency = this.o.swirlFrequency;
+      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
+      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
+      _results.push(this.transits.push(new Swirl(option)));
     }
     return _results;
   };
 
-  Burst.prototype.draw = function(progress) {
-    var angle, i, point, points, radius, step, transit;
+  Burst.prototype.addBitOptions = function() {
+    var i, pointEnd, pointStart, points, radiusEnd, radiusStart, step, transit, x, y, _i, _len, _ref, _ref1, _ref2, _results;
+    radiusStart = ((_ref = this.deltas.radius) != null ? _ref.start : void 0) || this.props.radius;
+    radiusEnd = ((_ref1 = this.deltas.radius) != null ? _ref1.end : void 0) || this.props.radius;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
-    i = this.transits.length;
-    while (i--) {
-      transit = this.transits[i];
-      radius = this.props.radius * (transit.radiusRand || 1);
-      angle = i * step + (transit.angleRand || 0) + this.props.angle;
-      if (this.props.isSwirl) {
-        angle += this.getSwirl(progress, i);
-      }
-      point = this.h.getRadialPoint({
-        radius: radius,
-        angle: angle,
+    _ref2 = this.transits;
+    _results = [];
+    for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
+      transit = _ref2[i];
+      pointStart = this.h.getRadialPoint({
+        radius: radiusStart,
+        angle: i * step,
         center: {
           x: this.props.center,
           y: this.props.center
         }
       });
-      transit.setProp({
-        x: point.x,
-        y: point.y,
-        angle: angle - 90
+      pointEnd = this.h.getRadialPoint({
+        radius: radiusEnd,
+        angle: i * step,
+        center: {
+          x: this.props.center,
+          y: this.props.center
+        }
       });
+      x = {};
+      y = {};
+      x[pointStart.x] = pointEnd.x;
+      _results.push(y[pointStart.y] = pointEnd.y);
     }
+    return _results;
+  };
+
+  Burst.prototype.draw = function(progress) {
     return this.drawEl();
   };
 
@@ -407,7 +556,8 @@ Burst = (function(_super) {
     }
     selfSize = this.deltas.radius ? (start = Math.abs(this.deltas.radius.start), end = Math.abs(this.deltas.radius.end), Math.max(start, end)) : parseFloat(this.props.radius);
     this.props.size = largestSize + 2 * selfSize;
-    return this.props.center = this.props.size / 2;
+    this.props.center = this.props.size / 2;
+    return this.addBitOptions();
   };
 
   Burst.prototype.getOption = function(i) {
@@ -445,7 +595,7 @@ Burst = (function(_super) {
       start = (1 - .5) * 180;
       end = (1 + .5) * 180;
     }
-    return this.transits[i].angleRand = this.h.rand(start, end);
+    return this.h.rand(start, end);
   };
 
   Burst.prototype.generateRandomRadius = function(i) {
@@ -453,41 +603,7 @@ Burst = (function(_super) {
     randomness = parseFloat(this.props.randomRadius);
     randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
     start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
-    return this.transits[i].radiusRand = this.h.rand(start, 100) / 100;
-  };
-
-  Burst.prototype.generateSwirl = function(i) {
-    var sign;
-    sign = this.h.rand(0, 1) ? -1 : 1;
-    this.transits[i].signRand = sign;
-    this.transits[i].swirlSize = this.generateSwirlProp({
-      i: i,
-      name: 'swirlSize'
-    });
-    return this.transits[i].swirlFrequency = this.generateSwirlProp({
-      i: i,
-      name: 'swirlFrequency'
-    });
-  };
-
-  Burst.prototype.generateSwirlProp = function(o) {
-    var prop;
-    if (!isFinite(this.props[o.name])) {
-      prop = this.getPropByMod({
-        propName: o.name,
-        i: o.i,
-        from: 'o'
-      });
-      return prop = this.h.parseIfRand(prop || this.props[o.name]);
-    } else {
-      return this.props[o.name];
-    }
-  };
-
-  Burst.prototype.getSwirl = function(proc, i) {
-    var transit;
-    transit = this.transits[i];
-    return transit.signRand * transit.swirlSize * Math.sin(transit.swirlFrequency * proc);
+    return this.h.rand(start, 100) / 100;
   };
 
   return Burst;
@@ -520,7 +636,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":2,"./h":6,"./transit":11}],4:[function(require,module,exports){
+},{"./bitsMap":3,"./h":7,"./swirl":12,"./transit":13}],5:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -578,7 +694,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
 }
 
-},{"./bit":1}],5:[function(require,module,exports){
+},{"./bit":2}],6:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
@@ -641,7 +757,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Cross = Cross;
 }
 
-},{"./bit":1}],6:[function(require,module,exports){
+},{"./bit":2}],7:[function(require,module,exports){
 var Helpers, TWEEN, h;
 
 TWEEN = require('./vendor/tween');
@@ -1069,7 +1185,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = h;
 }
 
-},{"./vendor/tween":12}],7:[function(require,module,exports){
+},{"./vendor/tween":14}],8:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -1125,8 +1241,8 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":1}],8:[function(require,module,exports){
-var Burst, burst, div;
+},{"./bit":2}],9:[function(require,module,exports){
+var Burst, Swirl, div, swirl;
 
 div = document.querySelector('#js-div');
 
@@ -1136,39 +1252,30 @@ setTimeout(function() {
 
 Burst = require('./burst');
 
-burst = new Burst({
-  x: 300,
-  y: 150,
-  duration: 600,
-  points: 5,
-  angle: {
-    0: 0
+Swirl = require('./Swirl');
+
+swirl = new Swirl({
+  x: {
+    '300': '0'
   },
-  isRunLess: true,
-  isSwirl: true,
-  swirlFrequency: 'rand(2, 5)',
-  randomRadius: .75,
-  childOptions: {
-    type: ['circle', 'polygon', 'cross', 'rect', 'line'],
-    points: 3,
-    angle: {
-      'rand(-360,360)': 0
-    },
-    strokeWidth: {
-      10: 0
-    }
-  }
+  y: {
+    300: 200
+  },
+  type: 'circle',
+  radius: {
+    5: 0
+  },
+  duration: 2000,
+  swirlFrequency: 3,
+  swirlSize: 'rand(5,100)',
+  isSwirlLess: true
 });
 
 document.body.addEventListener('click', function(e) {
-  return burst.run({
-    x: e.x,
-    y: e.y,
-    swirlFrequency: ['rand(0, 50)']
-  });
+  return swirl.run();
 });
 
-},{"./burst":3}],9:[function(require,module,exports){
+},{"./Swirl":1,"./burst":4}],10:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1248,7 +1355,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"./bit":1,"./h":6}],10:[function(require,module,exports){
+},{"./bit":2,"./h":7}],11:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -1310,7 +1417,9 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":1}],11:[function(require,module,exports){
+},{"./bit":2}],12:[function(require,module,exports){
+module.exports=require(1)
+},{"./transit":13}],13:[function(require,module,exports){
 
 /* istanbul ignore next */
 var TWEEN, Transit, bitsMap, h,
@@ -1744,7 +1853,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":2,"./h":6,"./vendor/tween":12}],12:[function(require,module,exports){
+},{"./bitsMap":3,"./h":7,"./vendor/tween":14}],14:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
@@ -2547,4 +2656,4 @@ if (typeof window !== "undefined" && window !== null) {
 })()
 
 
-},{}]},{},[8])
+},{}]},{},[9])

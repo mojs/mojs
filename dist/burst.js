@@ -1,12 +1,14 @@
 
 /* istanbul ignore next */
-var Burst, Transit, bitsMap, h,
+var Burst, Swirl, Transit, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 bitsMap = require('./bitsMap');
 
 Transit = require('./transit');
+
+Swirl = require('./swirl');
 
 h = require('./h');
 
@@ -100,58 +102,67 @@ Burst = (function(_super) {
       _results = [];
       while (i--) {
         this.props.randomAngle && this.generateRandomAngle(i);
-        this.props.randomRadius && this.generateRandomRadius(i);
-        _results.push(this.props.isSwirl && this.generateSwirl(i));
+        _results.push(this.props.randomRadius && this.generateRandomRadius(i));
       }
       return _results;
     }
   };
 
   Burst.prototype.createBit = function() {
-    var bitClass, i, option, _i, _ref, _results;
+    var i, option, _i, _ref, _results;
     this.transits = [];
     _results = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      bitClass = bitsMap.getBit(this.o.type || this.type);
       option = this.getOption(i);
       option.ctx = this.ctx;
       option.isDrawLess = true;
       option.isRunLess = true;
-      this.transits.push(new Transit(option));
-      this.props.randomAngle && this.generateRandomAngle(i);
-      this.props.randomRadius && this.generateRandomRadius(i);
-      _results.push(this.props.isSwirl && this.generateSwirl(i));
+      option.isSwirlLess = !this.props.isSwirl;
+      option.swirlSize = this.o.swirlSize;
+      option.swirlFrequency = this.o.swirlFrequency;
+      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
+      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
+      _results.push(this.transits.push(new Swirl(option)));
     }
     return _results;
   };
 
-  Burst.prototype.draw = function(progress) {
-    var angle, i, point, points, radius, step, transit;
+  Burst.prototype.addBitOptions = function() {
+    var i, pointEnd, pointStart, points, radiusEnd, radiusStart, step, transit, x, y, _i, _len, _ref, _ref1, _ref2, _results;
+    radiusStart = ((_ref = this.deltas.radius) != null ? _ref.start : void 0) || this.props.radius;
+    radiusEnd = ((_ref1 = this.deltas.radius) != null ? _ref1.end : void 0) || this.props.radius;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
-    i = this.transits.length;
-    while (i--) {
-      transit = this.transits[i];
-      radius = this.props.radius * (transit.radiusRand || 1);
-      angle = i * step + (transit.angleRand || 0) + this.props.angle;
-      if (this.props.isSwirl) {
-        angle += this.getSwirl(progress, i);
-      }
-      point = this.h.getRadialPoint({
-        radius: radius,
-        angle: angle,
+    _ref2 = this.transits;
+    _results = [];
+    for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
+      transit = _ref2[i];
+      pointStart = this.h.getRadialPoint({
+        radius: radiusStart,
+        angle: i * step,
         center: {
           x: this.props.center,
           y: this.props.center
         }
       });
-      transit.setProp({
-        x: point.x,
-        y: point.y,
-        angle: angle - 90
+      pointEnd = this.h.getRadialPoint({
+        radius: radiusEnd,
+        angle: i * step,
+        center: {
+          x: this.props.center,
+          y: this.props.center
+        }
       });
+      x = {};
+      y = {};
+      x[pointStart.x] = pointEnd.x;
+      _results.push(y[pointStart.y] = pointEnd.y);
     }
+    return _results;
+  };
+
+  Burst.prototype.draw = function(progress) {
     return this.drawEl();
   };
 
@@ -178,7 +189,8 @@ Burst = (function(_super) {
     }
     selfSize = this.deltas.radius ? (start = Math.abs(this.deltas.radius.start), end = Math.abs(this.deltas.radius.end), Math.max(start, end)) : parseFloat(this.props.radius);
     this.props.size = largestSize + 2 * selfSize;
-    return this.props.center = this.props.size / 2;
+    this.props.center = this.props.size / 2;
+    return this.addBitOptions();
   };
 
   Burst.prototype.getOption = function(i) {
@@ -216,7 +228,7 @@ Burst = (function(_super) {
       start = (1 - .5) * 180;
       end = (1 + .5) * 180;
     }
-    return this.transits[i].angleRand = this.h.rand(start, end);
+    return this.h.rand(start, end);
   };
 
   Burst.prototype.generateRandomRadius = function(i) {
@@ -224,41 +236,7 @@ Burst = (function(_super) {
     randomness = parseFloat(this.props.randomRadius);
     randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
     start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
-    return this.transits[i].radiusRand = this.h.rand(start, 100) / 100;
-  };
-
-  Burst.prototype.generateSwirl = function(i) {
-    var sign;
-    sign = this.h.rand(0, 1) ? -1 : 1;
-    this.transits[i].signRand = sign;
-    this.transits[i].swirlSize = this.generateSwirlProp({
-      i: i,
-      name: 'swirlSize'
-    });
-    return this.transits[i].swirlFrequency = this.generateSwirlProp({
-      i: i,
-      name: 'swirlFrequency'
-    });
-  };
-
-  Burst.prototype.generateSwirlProp = function(o) {
-    var prop;
-    if (!isFinite(this.props[o.name])) {
-      prop = this.getPropByMod({
-        propName: o.name,
-        i: o.i,
-        from: 'o'
-      });
-      return prop = this.h.parseIfRand(prop || this.props[o.name]);
-    } else {
-      return this.props[o.name];
-    }
-  };
-
-  Burst.prototype.getSwirl = function(proc, i) {
-    var transit;
-    transit = this.transits[i];
-    return transit.signRand * transit.swirlSize * Math.sin(transit.swirlFrequency * proc);
+    return this.h.rand(start, 100) / 100;
   };
 
   return Burst;

@@ -1,4 +1,5 @@
 Transit = mojs.Transit
+Swirl   = mojs.Swirl
 Burst   = mojs.Burst
 
 describe 'Burst ->', ->
@@ -11,14 +12,14 @@ describe 'Burst ->', ->
       expect(burst.defaults.degree).toBe       360
       expect(burst.defaults.points).toBe       5
       expect(burst.defaults.type).toBe         'circle'
-
   describe 'initialization ->', ->
     it 'should create transits', ->
       burst = new Burst
       expect(burst.transits.length).toBe 5
-      expect(burst.transits[0] instanceof Transit).toBe true
+      expect(burst.transits[0] instanceof Swirl).toBe true
     it 'should pass properties to transits', ->
       burst = new Burst
+        swirlSize: 20, swirlFrequency: 'rand(10,20)'
         childOptions:
           radius: [ { 20: 50}, 20, '500' ]
           stroke: [ 'deeppink', 'yellow' ]
@@ -32,6 +33,16 @@ describe 'Burst ->', ->
       expect(burst.transits[2].o.stroke)    .toBe 'deeppink'
       expect(burst.transits[1].o.fill)      .toBe '#fff'
       expect(burst.transits[2].o.fill)      .toBe '#fff'
+      expect(burst.transits[0].o.isSwirlLess)   .toBe  true
+      expect(burst.transits[0].o.swirlSize)     .toBe  20
+      expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
+
+    # it 'should pass x/y to transits', ->
+    #   burst = new Burst
+    #     radius: { 50: 75 }
+    #     points: 2
+    #   expect(burst.transits[0].o.x).toBe 0
+    #   # expect(burst.transits[0].o.y[77]).toBe 0
 
   describe 'childOptions ->', ->
     it 'should save childOptions from options ->', ->
@@ -45,7 +56,6 @@ describe 'Burst ->', ->
         childOptions:
           radius: [ { 20: 50}, 20, '500' ]
       expect(burst.childOptions.strokeWidth[2]).toBe 0
-
   describe 'getOption method ->', ->
     it 'should return an option obj based on i ->', ->
       burst = new Burst
@@ -56,7 +66,6 @@ describe 'Burst ->', ->
       expect(option0.radius[20]).toBe 50
       expect(option1.radius)    .toBe 20
       expect(option7.radius)    .toBe 20
-
   describe 'randomness ->', ->
     describe 'random angle ->', ->
       it 'should have randomAngle option ->', ->
@@ -65,8 +74,9 @@ describe 'Burst ->', ->
         expect(burst.props.randomAngle).toBe 0
       it 'should calculate angleRand for every transit ->', ->
         burst = new Burst randomAngle: true
-        expect(burst.transits[0].angleRand).toBeDefined()
-        expect(burst.transits[1].angleRand).toBeDefined()
+        # console.log burst.transits[0].o
+        expect(burst.transits[0].o.angleShift).toBeDefined()
+        expect(burst.transits[1].o.angleShift).toBeDefined()
     describe 'random radius ->', ->
       it 'should have randomRadius option ->', ->
         burst = new Burst
@@ -74,18 +84,8 @@ describe 'Burst ->', ->
         expect(burst.props.randomRadius).toBe 0
       it 'should calculate radiusRand for every transit ->', ->
         burst = new Burst randomRadius: true
-        expect(burst.transits[0].radiusRand).toBeDefined()
-        expect(burst.transits[1].radiusRand).toBeDefined()
-    describe 'random sign ->', ->
-      it 'should calculate signRand for every transit ->', ->
-        burst = new Burst isSwirl: true
-        sign = burst.transits[0].signRand
-        expect(sign).toBeDefined()
-        expect(sign is -1 or sign is 1).toBe true
-        sign = burst.transits[1].signRand
-        expect(sign).toBeDefined()
-        expect(sign is -1 or sign is 1).toBe true
-
+        expect(burst.transits[0].o.radiusScale).toBeDefined()
+        expect(burst.transits[1].o.radiusScale).toBeDefined()
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->
       burst = new Burst
@@ -117,7 +117,6 @@ describe 'Burst ->', ->
       expect(opt1).toBe 40
       expect(opt8).toBe 40
 
-
   describe 'size calculations ->', ->
     it 'should calculate size based on largest transit + self radius', ->
       burst = new Burst
@@ -127,7 +126,6 @@ describe 'Burst ->', ->
           strokeWidth: 20
       expect(burst.props.size)  .toBe 240
       expect(burst.props.center).toBe 120
-
     it 'should calculate size based on largest transit + self radius #2', ->
       burst = new Burst
         childOptions:
@@ -135,6 +133,21 @@ describe 'Burst ->', ->
           strokeWidth: 20
       expect(burst.props.size)  .toBe 290
       expect(burst.props.center).toBe 145
+    it 'should call addBitOptions method', ->
+      burst = new Burst
+      spyOn burst, 'addBitOptions'
+      burst.calcSize()
+      expect(burst.addBitOptions).toHaveBeenCalled()
+
+  describe 'addBitOptions method ->', ->
+    it 'should set props on all transits', ->
+      burst = new Burst
+        radius: { 0: 75 }
+        points: 2
+      center = burst.props.center
+      # console.log burst.transits[0].o.x[center]
+      # console.log burst.transits[1].o.x[center]
+      expect(burst.transits[1].o.x[center]).toBe center - 75
 
   describe 'setProgress method ->', ->
     it 'should setProgress on all transits', ->
@@ -174,107 +187,39 @@ describe 'Burst ->', ->
       spyOn burst, 'generateRandomRadius'
       burst.run()
       expect(burst.generateRandomRadius).not.toHaveBeenCalled()
-    it 'should call generateSwirl method if isSwirl was passed', ->
-      burst = new Burst isSwirl: true
-      spyOn burst, 'generateSwirl'
-      burst.run()
-      expect(burst.generateSwirl).toHaveBeenCalled()
-    it 'should not call generateSwirl method if isSwirl was not passed', ->
-      burst = new Burst isSwirl: false
-      spyOn burst, 'generateSwirl'
-      burst.run()
-      expect(burst.generateSwirl).not.toHaveBeenCalled()
-
   describe 'generateRandomAngle method ->', ->
     it 'should generate random angle based on randomness', ->
       burst = new Burst randomAngle: .75
-      burst.generateRandomAngle 0
-      expect(burst.transits[0].angleRand).toBeGreaterThan     45
-      expect(burst.transits[0].angleRand).not.toBeGreaterThan 315
+      angle = burst.generateRandomAngle()
+      expect(angle).toBeGreaterThan     45
+      expect(angle).not.toBeGreaterThan 315
 
   describe 'generateRandomRadius method ->', ->
     it 'should generate random radius based on randomness', ->
       burst = new Burst randomRadius: .75
-      burst.generateRandomRadius 0
-      expect(burst.transits[0].radiusRand).toBeGreaterThan      .24
-      expect(burst.transits[0].radiusRand).not.toBeGreaterThan 1
+      radius = burst.generateRandomRadius()
+      expect(radius).toBeGreaterThan     .24
+      expect(radius).not.toBeGreaterThan 1
 
-  describe 'getSwirl method ->', ->
-    it 'should calc swirl based on swirlFrequency and swirlSize props', ->
-      burst = new Burst isSwirl: true
-      swirl1 = burst.getSwirl .5, 0
-      freq = Math.sin(burst.transits[0].swirlFrequency*.5)
-      sign = burst.transits[0].signRand
-      expect(swirl1).toBe sign*burst.transits[0].swirlSize*freq
-
-  describe 'generateSwirl method ->', ->
-    it 'should generate simple swirl', ->
-      burst = new Burst swirlSize: 3, swirlFrequency: 2
-      burst.generateSwirl 0
-      expect(burst.transits[0].swirlSize).toBe 3
-      expect(burst.transits[0].swirlFrequency).toBe 2
-    it 'should generate rand swirl', ->
-      burst = new Burst swirlSize: 'rand(10,20)', swirlFrequency: 'rand(3,7)'
-      burst.generateSwirl 0
-      expect(burst.transits[0].swirlSize).toBeGreaterThan     9
-      expect(burst.transits[0].swirlSize).not.toBeGreaterThan 20
-      expect(burst.transits[0].swirlFrequency).toBeGreaterThan     2
-      expect(burst.transits[0].swirlFrequency).not.toBeGreaterThan 7
-    it 'should generate the same rand swirl if not array', ->
-      burst = new Burst swirlSize: 'rand(10,20)'
-      burst.generateSwirl 0
-      burst.generateSwirl 1
-      isEqual = burst.transits[0].swirlSize is burst.transits[1].swirlSize
-      expect(isEqual).toBe true
-    it 'should generate array swirl', ->
-      burst = new Burst swirlSize: [ 3, 4 ], swirlFrequency: [ 5, 2, 1 ]
-      burst.generateSwirl 0
-      burst.generateSwirl 1
-      burst.generateSwirl 2
-      expect(burst.transits[0].swirlSize).toBe 3
-      expect(burst.transits[1].swirlSize).toBe 4
-      expect(burst.transits[2].swirlSize).toBe 3
-      expect(burst.transits[0].swirlFrequency).toBe 5
-      expect(burst.transits[1].swirlFrequency).toBe 2
-      expect(burst.transits[2].swirlFrequency).toBe 1
-    it 'should generate array swirl with randoms', ->
-      burst = new Burst
-        swirlSize: [ 'rand(1,3)', 2, 'rand(7,9)' ]
-        swirlFrequency: [ 1, 'rand(1,3)', 'rand(7,9)' ]
-      burst.generateSwirl 0
-      burst.generateSwirl 1
-      burst.generateSwirl 2
-      expect(burst.transits[0].swirlSize).toBeGreaterThan     0
-      expect(burst.transits[0].swirlSize).not.toBeGreaterThan 3
-      expect(burst.transits[1].swirlSize).toBe 2
-      expect(burst.transits[2].swirlSize).toBeGreaterThan     6
-      expect(burst.transits[2].swirlSize).not.toBeGreaterThan 9
-
-      expect(burst.transits[0].swirlFrequency).toBe 1
-      expect(burst.transits[1].swirlFrequency).toBeGreaterThan     0
-      expect(burst.transits[1].swirlFrequency).not.toBeGreaterThan 3
-      expect(burst.transits[2].swirlFrequency).toBeGreaterThan     6
-      expect(burst.transits[2].swirlFrequency).not.toBeGreaterThan 9
-
-  describe 'draw method ->', ->
-    it 'should set x/y coordinates on every transit', ->
-      burst = new Burst
-      burst.draw()
-      expect(burst.transits[0].props.x).not.toBe '0px'
-      expect(burst.transits[1].props.x).not.toBe '0px'
-      expect(burst.transits[2].props.x).not.toBe '0px'
-      expect(burst.transits[3].props.x).not.toBe '0px'
-      expect(burst.transits[4].props.x).not.toBe '0px'
-    it 'should not call drawEl method', ->
-      burst = new Burst
-      spyOn burst, 'drawEl'
-      burst.draw()
-      expect(burst.drawEl).toHaveBeenCalled()
-    it 'should pass the current progress and i to getSwirl method', ->
-      burst = new Burst isSwirl: true
-      spyOn burst, 'getSwirl'
-      burst.draw .5
-      expect(burst.getSwirl).toHaveBeenCalledWith .5, 0
+  # describe 'draw method ->', ->
+  #   it 'should set x/y coordinates on every transit', ->
+  #     burst = new Burst
+  #     burst.draw()
+  #     expect(burst.transits[0].props.x).not.toBe '0px'
+  #     expect(burst.transits[1].props.x).not.toBe '0px'
+  #     expect(burst.transits[2].props.x).not.toBe '0px'
+  #     expect(burst.transits[3].props.x).not.toBe '0px'
+  #     expect(burst.transits[4].props.x).not.toBe '0px'
+  #   it 'should not call drawEl method', ->
+  #     burst = new Burst
+  #     spyOn burst, 'drawEl'
+  #     burst.draw()
+  #     expect(burst.drawEl).toHaveBeenCalled()
+  #   it 'should pass the current progress and i to getSwirl method', ->
+  #     burst = new Burst isSwirl: true
+  #     spyOn burst, 'getSwirl'
+  #     burst.draw .5
+  #     expect(burst.getSwirl).toHaveBeenCalledWith .5, 0
 
 
 

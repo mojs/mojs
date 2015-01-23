@@ -131,6 +131,22 @@
         expect(swirl.props.x).toBe('10.0000px');
         return expect(swirl.props.y).toBe('10.0000px');
       });
+      it('should set negative x/y progress', function() {
+        var swirl;
+        swirl = new Swirl({
+          x: {
+            0: '-10'
+          },
+          y: {
+            0: '-10'
+          },
+          isRunLess: true,
+          isSwirlLess: true
+        });
+        swirl.setProgress(1);
+        expect(swirl.props.x).toBe('-10.0000px');
+        return expect(swirl.props.y).toBe('-10.0000px');
+      });
       it('should set plain x/y progress if foreign context', function() {
         var swirl;
         swirl = new Swirl({

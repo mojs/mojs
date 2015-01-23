@@ -24,16 +24,14 @@ Swirl = (function(_super) {
   };
 
   Swirl.prototype.extendDefaults = function() {
-    var ang, x, xDelta, y, yDelta, _base, _base1;
+    var ang, x, y, _base, _base1;
     Swirl.__super__.extendDefaults.apply(this, arguments);
     x = this.getPosValue('x');
     y = this.getPosValue('y');
-    xDelta = Math.abs(x.delta);
-    yDelta = Math.abs(y.delta);
-    ang = yDelta === 0 || xDelta === 0 ? 1 : yDelta / xDelta;
+    ang = y.delta === 0 || x.delta === 0 ? 1 : x.delta / y.delta;
     this.positionDelta = {
-      radius: Math.sqrt(xDelta * xDelta + yDelta * yDelta),
-      angle: 90 + Math.atan(ang) * (180 / Math.PI),
+      radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
+      angle: 90 + Math.atan(ang) * (Math.PI / 180),
       x: x,
       y: y
     };
@@ -85,7 +83,7 @@ Swirl = (function(_super) {
     });
     x = point.x.toFixed(4);
     y = point.y.toFixed(4);
-    this.props.x = this.o.ctx ? x : x + this.positionDelta.y.units;
+    this.props.x = this.o.ctx ? x : x + this.positionDelta.x.units;
     this.props.y = this.o.ctx ? y : y + this.positionDelta.y.units;
     return Swirl.__super__.setProgress.apply(this, arguments);
   };

@@ -3,6 +3,7 @@
 
 bitsMap   = require './bitsMap'
 Transit   = require './transit'
+Swirl     = require './swirl'
 h         = require './h'
 
 class Burst extends Transit
@@ -82,41 +83,51 @@ class Burst extends Transit
     super
   run:(o)->
     super
-    
     if @props.randomAngle or @props.randomRadius or @props.isSwirl
       i = @transits.length
       while(i--)
         @props.randomAngle  and @generateRandomAngle(i)
         @props.randomRadius and @generateRandomRadius(i)
-        @props.isSwirl      and @generateSwirl(i)
   createBit:->
     @transits = []
     for i in [0...@props.points]
-      bitClass = bitsMap.getBit(@o.type or @type); option = @getOption(i)
-      option.ctx = @ctx; option.isDrawLess = true; option.isRunLess = true
-      @transits.push new Transit option
-      @props.randomAngle  and @generateRandomAngle(i)
-      @props.randomRadius and @generateRandomRadius(i)
-      @props.isSwirl      and @generateSwirl(i)
-  draw:(progress)->
+      option = @getOption(i); option.ctx = @ctx
+      option.isDrawLess = true; option.isRunLess = true
+      option.isSwirlLess    = !@props.isSwirl
+      option.swirlSize      = @o.swirlSize
+      option.swirlFrequency = @o.swirlFrequency
+      @props.randomAngle  and (option.angleShift = @generateRandomAngle())
+      @props.randomRadius and (option.radiusScale = @generateRandomRadius())
+      @transits.push new Swirl option
+  addBitOptions:->
+    radiusStart = @deltas.radius?.start or @props.radius
+    radiusEnd   = @deltas.radius?.end or @props.radius
     points = @props.points
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
-    i = @transits.length
-    while(i--)
-      transit = @transits[i]
-      radius  = @props.radius*(transit.radiusRand or 1)
-      angle   = i*step+(transit.angleRand or 0)+@props.angle
-      if @props.isSwirl then angle += @getSwirl progress, i
-      point   = @h.getRadialPoint
-        radius: radius
-        angle:  angle
+    for transit, i in @transits
+      pointStart = @h.getRadialPoint
+        radius: radiusStart
+        angle:  i*step
         center: x: @props.center, y: @props.center
-      transit.setProp
-        x: point.x
-        y: point.y
-        angle: angle-90
-    @drawEl()
+      pointEnd = @h.getRadialPoint
+        radius: radiusEnd
+        angle:  i*step
+        center: x: @props.center, y: @props.center
+      x = {}; y = {}
+      x[pointStart.x] = pointEnd.x
+      y[pointStart.y] = pointEnd.y
+      # @transits[i].o.x = x
+      # @transits[i].o.y = y
+      # console.log  x, y
+      # transit.setProp x: x, y: y
+      # transit.extendDefaults()
+
+  draw:(progress)-> @drawEl()
+    # i = @transits.length
+    # while(i--)
+    #   @transits[i].draw()
+    
   setProgress:(progress)->
     # t0 = performance.now()
     super; i = @transits.length
@@ -138,6 +149,8 @@ class Burst extends Transit
     else parseFloat @props.radius
     @props.size   = largestSize + 2*selfSize
     @props.center = @props.size/2
+    @addBitOptions()
+
   getOption:(i)->
     option = {}
     for key, value of @childOptions
@@ -151,25 +164,12 @@ class Burst extends Transit
     randdomness = if randomness > 1 then 1 else if randomness < 0 then 0
     if randomness then start = (1-randomness)*180; end = (1+randomness)*180
     else start = (1-.5)*180; end = (1+.5)*180
-    @transits[i].angleRand = @h.rand(start, end)# + @h.rand(0,10)*85
+    @h.rand(start, end)
   generateRandomRadius:(i)->
     randomness = parseFloat(@props.randomRadius)
     randdomness = if randomness > 1 then 1 else if randomness < 0 then 0
     start = if randomness then (1-randomness)*100 else (1-.5)*100
-    @transits[i].radiusRand = @h.rand(start, 100)/100
-  generateSwirl:(i)->
-    sign = if @h.rand(0, 1) then -1 else 1
-    @transits[i].signRand = sign
-    @transits[i].swirlSize = @generateSwirlProp i: i, name: 'swirlSize'
-    @transits[i].swirlFrequency = @generateSwirlProp i:i,name:'swirlFrequency'
-  generateSwirlProp:(o)->
-    if !isFinite @props[o.name]
-      prop = @getPropByMod propName: o.name, i: o.i, from: 'o'
-      prop = @h.parseIfRand(prop or @props[o.name])
-    else @props[o.name]
-  getSwirl:(proc, i)->
-    transit = @transits[i]
-    transit.signRand*transit.swirlSize*Math.sin(transit.swirlFrequency*proc)
+    @h.rand(start, 100)/100
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
