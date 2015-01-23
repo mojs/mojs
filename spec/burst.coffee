@@ -36,13 +36,16 @@ describe 'Burst ->', ->
       expect(burst.transits[0].o.isSwirlLess)   .toBe  true
       expect(burst.transits[0].o.swirlSize)     .toBe  20
       expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
+    it 'should pass x/y to transits', ->
+      burst = new Burst
+        radius: { 50: 75 }
+        points: 2
+      center =  burst.props.center
+      expect(burst.transits[0].o.x[center]).toBe center
+      expect(burst.transits[0].o.y[center - 50]).toBe center - 75
 
-    # it 'should pass x/y to transits', ->
-    #   burst = new Burst
-    #     radius: { 50: 75 }
-    #     points: 2
-    #   expect(burst.transits[0].o.x).toBe 0
-    #   # expect(burst.transits[0].o.y[77]).toBe 0
+      expect(burst.transits[1].o.x[center]).toBe center
+      expect(burst.transits[1].o.y[center + 50]).toBe center + 75
 
   describe 'childOptions ->', ->
     it 'should save childOptions from options ->', ->
@@ -147,7 +150,7 @@ describe 'Burst ->', ->
       center = burst.props.center
       # console.log burst.transits[0].o.x[center]
       # console.log burst.transits[1].o.x[center]
-      expect(burst.transits[1].o.x[center]).toBe center - 75
+      # expect(burst.transits[1].o.x[center]).toBe center - 75
 
   describe 'setProgress method ->', ->
     it 'should setProgress on all transits', ->
@@ -163,7 +166,7 @@ describe 'Burst ->', ->
       expect(burst.transits[4].progress).toBe .5
   describe 'run method ->', ->
     it 'should call super', ->
-      burst = new Burst radius: [{ 20: 50 }, 20]
+      burst = new Burst radius: { 20: 50 }
       spyOn Burst.__super__, 'run'
       burst.run()
       expect(Burst.__super__.run).toHaveBeenCalled()

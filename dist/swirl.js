@@ -28,7 +28,7 @@ Swirl = (function(_super) {
     Swirl.__super__.extendDefaults.apply(this, arguments);
     x = this.getPosValue('x');
     y = this.getPosValue('y');
-    angle = 90 + Math.atan(y.delta / x.delta) * (180 / Math.PI);
+    angle = 90 + Math.atan((y.delta / x.delta) || 0) * (180 / Math.PI);
     if (x.delta < 0) {
       angle += 180;
     }

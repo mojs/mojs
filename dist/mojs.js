@@ -29,7 +29,7 @@ Swirl = (function(_super) {
     Swirl.__super__.extendDefaults.apply(this, arguments);
     x = this.getPosValue('x');
     y = this.getPosValue('y');
-    angle = 90 + Math.atan(y.delta / x.delta) * (180 / Math.PI);
+    angle = 90 + Math.atan((y.delta / x.delta) || 0) * (180 / Math.PI);
     if (x.delta < 0) {
       angle += 180;
     }
@@ -527,7 +527,10 @@ Burst = (function(_super) {
       x = {};
       y = {};
       x[pointStart.x] = pointEnd.x;
-      _results.push(y[pointStart.y] = pointEnd.y);
+      y[pointStart.y] = pointEnd.y;
+      this.transits[i].o.x = x;
+      this.transits[i].o.y = y;
+      _results.push(transit.extendDefaults());
     }
     return _results;
   };
@@ -1245,7 +1248,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],9:[function(require,module,exports){
-var Burst, Swirl, div, swirl;
+var Burst, Swirl, burst, div;
 
 div = document.querySelector('#js-div');
 
@@ -1257,25 +1260,26 @@ Burst = require('./burst');
 
 Swirl = require('./Swirl');
 
-swirl = new Swirl({
-  x: {
-    '300': '0'
-  },
-  y: {
-    300: 200
-  },
-  type: 'circle',
+burst = new Burst({
+  x: 300,
+  y: 150,
+  duration: 600,
+  points: 12,
   radius: {
-    5: 0
+    0: 100
   },
-  duration: 2000,
-  swirlFrequency: 3,
-  swirlSize: 'rand(5,100)',
-  isSwirlLess: true
+  isSwirl: true,
+  swirlFrequency: 'rand(3, 6)',
+  swirlSize: 'rand(5, 15)',
+  randomAngle: .75,
+  randomRadius: .75
 });
 
 document.body.addEventListener('click', function(e) {
-  return swirl.run();
+  return burst.run({
+    x: e.x,
+    y: e.y
+  });
 });
 
 },{"./Swirl":1,"./burst":4}],10:[function(require,module,exports){

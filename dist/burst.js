@@ -157,7 +157,10 @@ Burst = (function(_super) {
       x = {};
       y = {};
       x[pointStart.x] = pointEnd.x;
-      _results.push(y[pointStart.y] = pointEnd.y);
+      y[pointStart.y] = pointEnd.y;
+      this.transits[i].o.x = x;
+      this.transits[i].o.y = y;
+      _results.push(transit.extendDefaults());
     }
     return _results;
   };

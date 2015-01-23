@@ -117,16 +117,10 @@ class Burst extends Transit
       x = {}; y = {}
       x[pointStart.x] = pointEnd.x
       y[pointStart.y] = pointEnd.y
-      # @transits[i].o.x = x
-      # @transits[i].o.y = y
-      # console.log  x, y
-      # transit.setProp x: x, y: y
-      # transit.extendDefaults()
+      @transits[i].o.x = x; @transits[i].o.y = y
+      transit.extendDefaults()
 
   draw:(progress)-> @drawEl()
-    # i = @transits.length
-    # while(i--)
-    #   @transits[i].draw()
     
   setProgress:(progress)->
     # t0 = performance.now()
@@ -150,7 +144,6 @@ class Burst extends Transit
     @props.size   = largestSize + 2*selfSize
     @props.center = @props.size/2
     @addBitOptions()
-
   getOption:(i)->
     option = {}
     for key, value of @childOptions

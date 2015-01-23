@@ -29,7 +29,7 @@
         expect(burst.transits.length).toBe(5);
         return expect(burst.transits[0] instanceof Swirl).toBe(true);
       });
-      return it('should pass properties to transits', function() {
+      it('should pass properties to transits', function() {
         var burst;
         burst = new Burst({
           swirlSize: 20,
@@ -56,6 +56,20 @@
         expect(burst.transits[0].o.isSwirlLess).toBe(true);
         expect(burst.transits[0].o.swirlSize).toBe(20);
         return expect(burst.transits[0].o.swirlFrequency).toBe('rand(10,20)');
+      });
+      return it('should pass x/y to transits', function() {
+        var burst, center;
+        burst = new Burst({
+          radius: {
+            50: 75
+          },
+          points: 2
+        });
+        center = burst.props.center;
+        expect(burst.transits[0].o.x[center]).toBe(center);
+        expect(burst.transits[0].o.y[center - 50]).toBe(center - 75);
+        expect(burst.transits[1].o.x[center]).toBe(center);
+        return expect(burst.transits[1].o.y[center + 50]).toBe(center + 75);
       });
     });
     describe('childOptions ->', function() {
@@ -274,8 +288,7 @@
           },
           points: 2
         });
-        center = burst.props.center;
-        return expect(burst.transits[1].o.x[center]).toBe(center - 75);
+        return center = burst.props.center;
       });
     });
     describe('setProgress method ->', function() {
@@ -303,11 +316,9 @@
       it('should call super', function() {
         var burst;
         burst = new Burst({
-          radius: [
-            {
-              20: 50
-            }, 20
-          ]
+          radius: {
+            20: 50
+          }
         });
         spyOn(Burst.__super__, 'run');
         burst.run();
