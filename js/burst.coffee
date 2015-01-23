@@ -88,6 +88,7 @@ class Burst extends Transit
       while(i--)
         @props.randomAngle  and @generateRandomAngle(i)
         @props.randomRadius and @generateRandomRadius(i)
+        @props.isSwirl      and @transits[i].generateSwirl()
   createBit:->
     @transits = []
     for i in [0...@props.points]

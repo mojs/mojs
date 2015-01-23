@@ -142,16 +142,6 @@ describe 'Burst ->', ->
       burst.calcSize()
       expect(burst.addBitOptions).toHaveBeenCalled()
 
-  describe 'addBitOptions method ->', ->
-    it 'should set props on all transits', ->
-      burst = new Burst
-        radius: { 0: 75 }
-        points: 2
-      center = burst.props.center
-      # console.log burst.transits[0].o.x[center]
-      # console.log burst.transits[1].o.x[center]
-      # expect(burst.transits[1].o.x[center]).toBe center - 75
-
   describe 'setProgress method ->', ->
     it 'should setProgress on all transits', ->
       burst = new Burst
@@ -204,25 +194,12 @@ describe 'Burst ->', ->
       expect(radius).toBeGreaterThan     .24
       expect(radius).not.toBeGreaterThan 1
 
-  # describe 'draw method ->', ->
-  #   it 'should set x/y coordinates on every transit', ->
-  #     burst = new Burst
-  #     burst.draw()
-  #     expect(burst.transits[0].props.x).not.toBe '0px'
-  #     expect(burst.transits[1].props.x).not.toBe '0px'
-  #     expect(burst.transits[2].props.x).not.toBe '0px'
-  #     expect(burst.transits[3].props.x).not.toBe '0px'
-  #     expect(burst.transits[4].props.x).not.toBe '0px'
-  #   it 'should not call drawEl method', ->
-  #     burst = new Burst
-  #     spyOn burst, 'drawEl'
-  #     burst.draw()
-  #     expect(burst.drawEl).toHaveBeenCalled()
-  #   it 'should pass the current progress and i to getSwirl method', ->
-  #     burst = new Burst isSwirl: true
-  #     spyOn burst, 'getSwirl'
-  #     burst.draw .5
-  #     expect(burst.getSwirl).toHaveBeenCalledWith .5, 0
+  describe 'draw method ->', ->
+    it 'should not call drawEl method', ->
+      burst = new Burst
+      spyOn burst, 'drawEl'
+      burst.draw()
+      expect(burst.drawEl).toHaveBeenCalled()
 
 
 

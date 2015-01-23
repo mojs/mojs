@@ -102,7 +102,8 @@ Burst = (function(_super) {
       _results = [];
       while (i--) {
         this.props.randomAngle && this.generateRandomAngle(i);
-        _results.push(this.props.randomRadius && this.generateRandomRadius(i));
+        this.props.randomRadius && this.generateRandomRadius(i);
+        _results.push(this.props.isSwirl && this.transits[i].generateSwirl());
       }
       return _results;
     }

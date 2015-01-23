@@ -472,7 +472,8 @@ Burst = (function(_super) {
       _results = [];
       while (i--) {
         this.props.randomAngle && this.generateRandomAngle(i);
-        _results.push(this.props.randomRadius && this.generateRandomRadius(i));
+        this.props.randomRadius && this.generateRandomRadius(i);
+        _results.push(this.props.isSwirl && this.transits[i].generateSwirl());
       }
       return _results;
     }
@@ -1264,15 +1265,24 @@ burst = new Burst({
   x: 300,
   y: 150,
   duration: 600,
-  points: 12,
+  points: 7,
   radius: {
     0: 100
   },
   isSwirl: true,
-  swirlFrequency: 'rand(3, 6)',
-  swirlSize: 'rand(5, 15)',
-  randomAngle: .75,
-  randomRadius: .75
+  swirlFrequency: 'rand(3, 50)',
+  swirlSize: 'rand(10, 20)',
+  randomRadius: 1,
+  childOptions: {
+    type: ['circle', 'polygon', 'cross', 'rect', 'line'],
+    points: 3,
+    angle: {
+      'rand(-360,360)': 0
+    },
+    strokeWidth: {
+      10: 0
+    }
+  }
 });
 
 document.body.addEventListener('click', function(e) {

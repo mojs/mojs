@@ -279,18 +279,6 @@
         return expect(burst.addBitOptions).toHaveBeenCalled();
       });
     });
-    describe('addBitOptions method ->', function() {
-      return it('should set props on all transits', function() {
-        var burst, center;
-        burst = new Burst({
-          radius: {
-            0: 75
-          },
-          points: 2
-        });
-        return center = burst.props.center;
-      });
-    });
     describe('setProgress method ->', function() {
       return it('should setProgress on all transits', function() {
         var burst;
@@ -372,7 +360,7 @@
         return expect(angle).not.toBeGreaterThan(315);
       });
     });
-    return describe('generateRandomRadius method ->', function() {
+    describe('generateRandomRadius method ->', function() {
       return it('should generate random radius based on randomness', function() {
         var burst, radius;
         burst = new Burst({
@@ -381,6 +369,15 @@
         radius = burst.generateRandomRadius();
         expect(radius).toBeGreaterThan(.24);
         return expect(radius).not.toBeGreaterThan(1);
+      });
+    });
+    return describe('draw method ->', function() {
+      return it('should not call drawEl method', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(burst, 'drawEl');
+        burst.draw();
+        return expect(burst.drawEl).toHaveBeenCalled();
       });
     });
   });
