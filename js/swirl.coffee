@@ -10,11 +10,11 @@ class Swirl extends Transit
   extendDefaults:->
     super
     x = @getPosValue('x'); y = @getPosValue('y')
-    # xDelta = Math.abs(x.delta); yDelta = Math.abs(y.delta)
-    ang = if y.delta is 0 or x.delta is 0 then 1 else x.delta/y.delta
+    angle = 90 + Math.atan(y.delta/x.delta)*(180/Math.PI)
+    if x.delta < 0 then angle += 180
     @positionDelta =
       radius: Math.sqrt(x.delta*x.delta + y.delta*y.delta)
-      angle:  90+Math.atan(ang)*(Math.PI/180)
+      angle: angle
       x: x
       y: y
     @o.angleShift  ?= 0; @o.radiusScale ?= 1

@@ -24,14 +24,17 @@ Swirl = (function(_super) {
   };
 
   Swirl.prototype.extendDefaults = function() {
-    var ang, x, y, _base, _base1;
+    var angle, x, y, _base, _base1;
     Swirl.__super__.extendDefaults.apply(this, arguments);
     x = this.getPosValue('x');
     y = this.getPosValue('y');
-    ang = y.delta === 0 || x.delta === 0 ? 1 : x.delta / y.delta;
+    angle = 90 + Math.atan(y.delta / x.delta) * (180 / Math.PI);
+    if (x.delta < 0) {
+      angle += 180;
+    }
     this.positionDelta = {
       radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
-      angle: 90 + Math.atan(ang) * (Math.PI / 180),
+      angle: angle,
       x: x,
       y: y
     };
