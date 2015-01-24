@@ -40,6 +40,7 @@ describe 'Swirl ->', ->
       spyOn Swirl.__super__, 'extendDefaults'
       swirl.extendDefaults()
       expect(Swirl.__super__.extendDefaults).toHaveBeenCalled()
+
   describe 'setProgress ->', ->
     it 'should call super setProgress method', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
@@ -57,7 +58,8 @@ describe 'Swirl ->', ->
       expect(swirl.props.x).toBe '10.0000px'
       expect(swirl.props.y).toBe '10.0000px'
     it 'should set negative x/y progress', ->
-      swirl = new Swirl x: {0:'-10'}, y: {0:'-10'}, isRunLess: true, isSwirlLess: true
+      swirl = new Swirl
+        x: {0:'-10'}, y: {0:'-10'}, isRunLess: true, isSwirlLess: true
       swirl.setProgress 1
       expect(swirl.props.x).toBe '-10.0000px'
       expect(swirl.props.y).toBe '-10.0000px'

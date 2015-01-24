@@ -47,6 +47,19 @@ describe 'Burst ->', ->
       expect(burst.transits[1].o.x[center]).toBe center
       expect(burst.transits[1].o.y[center + 50]).toBe center + 75
 
+  describe 'fillTransform method ->', ->
+    it 'return tranform string of the el', ->
+      burst = new Burst
+        shiftX: 100, shiftY: 100, angle: 50
+      expect(burst.fillTransform())
+        .toBe 'rotate(50deg) translate(100px, 100px)'
+
+  describe 'isNeedsTransform method ->', ->
+    it 'return boolean if fillTransform needed', ->
+      burst = new Burst shiftX: 100, shiftY: 100, angle: 50
+      console.log burst.isNeedsTransform()
+      expect(burst.isNeedsTransform()).toBe true
+
   describe 'childOptions ->', ->
     it 'should save childOptions from options ->', ->
       burst = new Burst
@@ -200,6 +213,12 @@ describe 'Burst ->', ->
       spyOn burst, 'drawEl'
       burst.draw()
       expect(burst.drawEl).toHaveBeenCalled()
+
+    it 'should call fillTransform method', ->
+      burst = new Burst radius: 25
+      spyOn burst, 'fillTransform'
+      burst.draw()
+      expect(burst.fillTransform).toHaveBeenCalled()
 
 
 

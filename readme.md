@@ -2,13 +2,11 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
 
-<img src="https://github.com/legomushroom/mojs/raw/master/mockups/logo-banner.png" width="400" alt="mo·js">   
+<img src="https://github.com/legomushroom/mojs/raw/master/mockups/logo-banner.png" width="400" alt="mo · js">   
 **! in active development - isn't ready yet !**
 
 #### todo
-- add swirl
-  - check random swirl params
-- burst to swirl
+- perf profile
 - add motion path
   - add movement arc
 - add more shapes(bits)

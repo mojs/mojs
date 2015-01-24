@@ -95,15 +95,20 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(o) {
-    var i, _results;
+    var i, tr, _results;
     Burst.__super__.run.apply(this, arguments);
     if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
       i = this.transits.length;
       _results = [];
       while (i--) {
-        this.props.randomAngle && this.generateRandomAngle(i);
-        this.props.randomRadius && this.generateRandomRadius(i);
-        _results.push(this.props.isSwirl && this.transits[i].generateSwirl());
+        tr = this.transits[i];
+        this.props.randomAngle && tr.setProp({
+          angleShift: this.generateRandomAngle()
+        });
+        this.props.randomRadius && tr.setProp({
+          radiusScale: this.generateRandomRadius()
+        });
+        _results.push(this.props.isSwirl && tr.generateSwirl());
       }
       return _results;
     }
@@ -141,7 +146,7 @@ Burst = (function(_super) {
       transit = _ref2[i];
       pointStart = this.h.getRadialPoint({
         radius: radiusStart,
-        angle: i * step,
+        angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
           y: this.props.center
@@ -149,7 +154,7 @@ Burst = (function(_super) {
       });
       pointEnd = this.h.getRadialPoint({
         radius: radiusEnd,
-        angle: i * step,
+        angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
           y: this.props.center
@@ -168,6 +173,14 @@ Burst = (function(_super) {
 
   Burst.prototype.draw = function(progress) {
     return this.drawEl();
+  };
+
+  Burst.prototype.isNeedsTransform = function() {
+    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY') || this.isPropChanged('angle');
+  };
+
+  Burst.prototype.fillTransform = function() {
+    return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
   };
 
   Burst.prototype.setProgress = function(progress) {

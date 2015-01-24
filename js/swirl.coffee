@@ -43,7 +43,7 @@ class Swirl extends Transit
     @props.y = if @o.ctx then y else y+@positionDelta.y.units
     super
   generateSwirl:->
-    @props.signRand = if @h.rand(0, 1) then -1 else 1
+    @props.signRand = if Math.round(@h.rand(0, 1)) then -1 else 1
     @o.swirlSize ?= 10; @o.swirlFrequency ?= 3
     @props.swirlSize      = @h.parseIfRand @o.swirlSize
     @props.swirlFrequency = @h.parseIfRand @o.swirlFrequency

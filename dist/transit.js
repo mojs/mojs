@@ -147,17 +147,23 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.drawEl = function() {
-    var transform;
     if (this.el == null) {
       return;
     }
     this.isPropChanged('x') && (this.el.style.left = this.props.x);
     this.isPropChanged('y') && (this.el.style.top = this.props.y);
     this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
-    if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
-      transform = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-      return this.h.setPrefixedStyle(this.el, 'transform', transform);
+    if (this.isNeedsTransform()) {
+      return this.h.setPrefixedStyle(this.el, 'transform', this.fillTransform());
     }
+  };
+
+  Transit.prototype.fillTransform = function() {
+    return "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+  };
+
+  Transit.prototype.isNeedsTransform = function() {
+    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY');
   };
 
   Transit.prototype.isPropChanged = function(name) {

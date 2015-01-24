@@ -21,22 +21,25 @@ burst = new Burst
   x:            300
   y:            150
   duration:     600
-  points:       7
-  # angle:        {0: 0}
+  points:       10
+  # angle:        {0: 360}
   # isRunLess: true
   # delay:        2000
-  # degree:       120
+  # degree:       90
   radius:        { 0: 100 }
   isSwirl: true
-  swirlFrequency: 'rand(3, 50)'
-  swirlSize:      'rand(10, 20)'
-  # randomAngle: .75
+  swirlFrequency: 'rand(0, 5)'
+  swirlSize:      10
+  # randomAngle: 1
   randomRadius: 1
   childOptions:
-    type:         [ 'circle', 'polygon', 'cross', 'rect', 'line' ]
+    swirlFrequency: ['rand(0, 8)', 0, 0]
+    # type:         [ 'circle', 'polygon', 'cross', 'rect', 'line' ]
+    fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     points:       3
-    angle:        { 'rand(-360,360)': 0 }
-    strokeWidth:  {10: 0}
+    # angle:        { 'rand(-360,360)': 0 }
+    strokeWidth:  0
+    radius:       { 'rand(3, 6)': 0}
     # x: {20: 40}
   # degree:       90
 #   radius: { 0: 150 }

@@ -111,9 +111,11 @@ class Transit extends bitsMap.map.bit
     @isPropChanged('x') and (@el.style.left = @props.x)
     @isPropChanged('y') and (@el.style.top  = @props.y)
     @isPropChanged('opacity') and (@el.style.opacity = @props.opacity)
-    if @isPropChanged('shiftX') or @isPropChanged('shiftY')
-      transform = "translate(#{@props.shiftX}, #{@props.shiftY})"
-      @h.setPrefixedStyle @el, 'transform', transform
+    if @isNeedsTransform()
+      @h.setPrefixedStyle @el, 'transform', @fillTransform()
+  fillTransform:-> "translate(#{@props.shiftX}, #{@props.shiftY})"
+  isNeedsTransform:-> @isPropChanged('shiftX') or @isPropChanged('shiftY')
+
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     @lastSet[name].isChanged = if @lastSet[name].value isnt @props[name]

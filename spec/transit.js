@@ -442,6 +442,26 @@
         });
       });
     });
+    describe('fillTransform method ->', function() {
+      return it('return tranform string of the el', function() {
+        var byte;
+        byte = new Byte({
+          shiftX: 100,
+          shiftY: 100
+        });
+        return expect(byte.fillTransform()).toBe('translate(100px, 100px)');
+      });
+    });
+    describe('isNeedsTransform method ->', function() {
+      return it('return boolean if fillTransform needed', function() {
+        var byte;
+        byte = new Byte({
+          shiftX: 100,
+          shiftY: 100
+        });
+        return expect(byte.isNeedsTransform()).toBe(true);
+      });
+    });
     describe('show method ->', function() {
       it('should set display: block to el', function() {
         var byte;
@@ -693,7 +713,7 @@
         expect(byte.lastSet.x.value).toBe('1px');
         return expect(byte.lastSet.x.isChanged).toBe(true);
       });
-      return it('should not set old values', function() {
+      it('should not set old values', function() {
         var byte;
         byte = new Byte({
           radius: 25,
@@ -704,6 +724,15 @@
         expect(byte.el.style.left).toBe('0px');
         expect(byte.lastSet.x.value).toBe('0px');
         return expect(byte.lastSet.x.isChanged).toBe(false);
+      });
+      return it('should call fillTransform method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'fillTransform');
+        byte.draw();
+        return expect(byte.fillTransform).toHaveBeenCalled();
       });
     });
     describe('isPropChanged method ->', function() {

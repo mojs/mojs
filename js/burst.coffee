@@ -86,9 +86,10 @@ class Burst extends Transit
     if @props.randomAngle or @props.randomRadius or @props.isSwirl
       i = @transits.length
       while(i--)
-        @props.randomAngle  and @generateRandomAngle(i)
-        @props.randomRadius and @generateRandomRadius(i)
-        @props.isSwirl      and @transits[i].generateSwirl()
+        tr = @transits[i]
+        @props.randomAngle  and tr.setProp angleShift: @generateRandomAngle()
+        @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
+        @props.isSwirl      and tr.generateSwirl()
   createBit:->
     @transits = []
     for i in [0...@props.points]
@@ -109,29 +110,27 @@ class Burst extends Transit
     for transit, i in @transits
       pointStart = @h.getRadialPoint
         radius: radiusStart
-        angle:  i*step
+        angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
       pointEnd = @h.getRadialPoint
         radius: radiusEnd
-        angle:  i*step
+        angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
       x = {}; y = {}
       x[pointStart.x] = pointEnd.x
       y[pointStart.y] = pointEnd.y
       @transits[i].o.x = x; @transits[i].o.y = y
       transit.extendDefaults()
-
   draw:(progress)-> @drawEl()
-    
+
+  isNeedsTransform:->
+    @isPropChanged('shiftX')or@isPropChanged('shiftY')or@isPropChanged('angle')
+  fillTransform:->
+    "rotate(#{@props.angle}deg) translate(#{@props.shiftX}, #{@props.shiftY})"
   setProgress:(progress)->
-    # t0 = performance.now()
     super; i = @transits.length
     while(i--)
-      @transits[i]
-        .setProgress(progress)
-        .draw()
-    # t1 = performance.now()
-    # console.log t1 - t0
+      @transits[i].setProgress(progress).draw()
   calcSize:->
     largestSize = -1
     for transit, i in @transits

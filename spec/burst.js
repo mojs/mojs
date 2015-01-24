@@ -72,6 +72,29 @@
         return expect(burst.transits[1].o.y[center + 50]).toBe(center + 75);
       });
     });
+    describe('fillTransform method ->', function() {
+      return it('return tranform string of the el', function() {
+        var burst;
+        burst = new Burst({
+          shiftX: 100,
+          shiftY: 100,
+          angle: 50
+        });
+        return expect(burst.fillTransform()).toBe('rotate(50deg) translate(100px, 100px)');
+      });
+    });
+    describe('isNeedsTransform method ->', function() {
+      return it('return boolean if fillTransform needed', function() {
+        var burst;
+        burst = new Burst({
+          shiftX: 100,
+          shiftY: 100,
+          angle: 50
+        });
+        console.log(burst.isNeedsTransform());
+        return expect(burst.isNeedsTransform()).toBe(true);
+      });
+    });
     describe('childOptions ->', function() {
       it('should save childOptions from options ->', function() {
         var burst;
@@ -372,12 +395,21 @@
       });
     });
     return describe('draw method ->', function() {
-      return it('should not call drawEl method', function() {
+      it('should not call drawEl method', function() {
         var burst;
         burst = new Burst;
         spyOn(burst, 'drawEl');
         burst.draw();
         return expect(burst.drawEl).toHaveBeenCalled();
+      });
+      return it('should call fillTransform method', function() {
+        var burst;
+        burst = new Burst({
+          radius: 25
+        });
+        spyOn(burst, 'fillTransform');
+        burst.draw();
+        return expect(burst.fillTransform).toHaveBeenCalled();
       });
     });
   });

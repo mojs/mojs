@@ -93,7 +93,7 @@ Swirl = (function(_super) {
 
   Swirl.prototype.generateSwirl = function() {
     var _base, _base1;
-    this.props.signRand = this.h.rand(0, 1) ? -1 : 1;
+    this.props.signRand = Math.round(this.h.rand(0, 1)) ? -1 : 1;
     if ((_base = this.o).swirlSize == null) {
       _base.swirlSize = 10;
     }

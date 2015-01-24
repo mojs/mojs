@@ -94,7 +94,7 @@ Swirl = (function(_super) {
 
   Swirl.prototype.generateSwirl = function() {
     var _base, _base1;
-    this.props.signRand = this.h.rand(0, 1) ? -1 : 1;
+    this.props.signRand = Math.round(this.h.rand(0, 1)) ? -1 : 1;
     if ((_base = this.o).swirlSize == null) {
       _base.swirlSize = 10;
     }
@@ -465,15 +465,20 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(o) {
-    var i, _results;
+    var i, tr, _results;
     Burst.__super__.run.apply(this, arguments);
     if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
       i = this.transits.length;
       _results = [];
       while (i--) {
-        this.props.randomAngle && this.generateRandomAngle(i);
-        this.props.randomRadius && this.generateRandomRadius(i);
-        _results.push(this.props.isSwirl && this.transits[i].generateSwirl());
+        tr = this.transits[i];
+        this.props.randomAngle && tr.setProp({
+          angleShift: this.generateRandomAngle()
+        });
+        this.props.randomRadius && tr.setProp({
+          radiusScale: this.generateRandomRadius()
+        });
+        _results.push(this.props.isSwirl && tr.generateSwirl());
       }
       return _results;
     }
@@ -511,7 +516,7 @@ Burst = (function(_super) {
       transit = _ref2[i];
       pointStart = this.h.getRadialPoint({
         radius: radiusStart,
-        angle: i * step,
+        angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
           y: this.props.center
@@ -519,7 +524,7 @@ Burst = (function(_super) {
       });
       pointEnd = this.h.getRadialPoint({
         radius: radiusEnd,
-        angle: i * step,
+        angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
           y: this.props.center
@@ -538,6 +543,14 @@ Burst = (function(_super) {
 
   Burst.prototype.draw = function(progress) {
     return this.drawEl();
+  };
+
+  Burst.prototype.isNeedsTransform = function() {
+    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY') || this.isPropChanged('angle');
+  };
+
+  Burst.prototype.fillTransform = function() {
+    return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
   };
 
   Burst.prototype.setProgress = function(progress) {
@@ -1265,22 +1278,21 @@ burst = new Burst({
   x: 300,
   y: 150,
   duration: 600,
-  points: 7,
+  points: 10,
   radius: {
     0: 100
   },
   isSwirl: true,
-  swirlFrequency: 'rand(3, 50)',
-  swirlSize: 'rand(10, 20)',
+  swirlFrequency: 'rand(0, 5)',
+  swirlSize: 10,
   randomRadius: 1,
   childOptions: {
-    type: ['circle', 'polygon', 'cross', 'rect', 'line'],
+    swirlFrequency: ['rand(0, 8)', 0, 0],
+    fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
     points: 3,
-    angle: {
-      'rand(-360,360)': 0
-    },
-    strokeWidth: {
-      10: 0
+    strokeWidth: 0,
+    radius: {
+      'rand(3, 6)': 0
     }
   }
 });
@@ -1586,17 +1598,23 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.drawEl = function() {
-    var transform;
     if (this.el == null) {
       return;
     }
     this.isPropChanged('x') && (this.el.style.left = this.props.x);
     this.isPropChanged('y') && (this.el.style.top = this.props.y);
     this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
-    if (this.isPropChanged('shiftX') || this.isPropChanged('shiftY')) {
-      transform = "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-      return this.h.setPrefixedStyle(this.el, 'transform', transform);
+    if (this.isNeedsTransform()) {
+      return this.h.setPrefixedStyle(this.el, 'transform', this.fillTransform());
     }
+  };
+
+  Transit.prototype.fillTransform = function() {
+    return "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+  };
+
+  Transit.prototype.isNeedsTransform = function() {
+    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY');
   };
 
   Transit.prototype.isPropChanged = function(name) {

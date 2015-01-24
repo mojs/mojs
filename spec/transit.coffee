@@ -35,8 +35,6 @@ describe 'Transit ->', ->
     it 'should extend defaults object to properties if object was passed', ->
       byte = new Byte radius: {45: 55}
       expect(byte.props.radius).toBe(45)
-
-
     # for burst
     it 'should extend defaults object to properties if array was passed', ->
       byte = new Byte radius: [50, 100]
@@ -232,7 +230,6 @@ describe 'Transit ->', ->
           byte = new Byte
             shiftX: 100
             shiftY: 50
-
           expect(byte.el.style.transform).toBe 'translate(100px, 50px)'
         it 'should animate position', (dfr)->
           byte = new Byte
@@ -259,6 +256,16 @@ describe 'Transit ->', ->
             expect(byte.el.style.transform) .toBe 'translate(50px, 50%)'
             dfr()
           , 100
+
+  describe 'fillTransform method ->', ->
+    it 'return tranform string of the el', ->
+      byte = new Byte
+        shiftX: 100, shiftY: 100
+      expect(byte.fillTransform()).toBe 'translate(100px, 100px)'
+  describe 'isNeedsTransform method ->', ->
+    it 'return boolean if fillTransform needed', ->
+      byte = new Byte shiftX: 100, shiftY: 100
+      expect(byte.isNeedsTransform()).toBe true
 
   describe 'show method ->', ->
     it 'should set display: block to el', ->
@@ -405,7 +412,6 @@ describe 'Transit ->', ->
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
       expect(byte.el.style.transform) .toBe     'translate(0px, 0px)'
-
     it 'should set new values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()
@@ -421,6 +427,12 @@ describe 'Transit ->', ->
       expect(byte.el.style.left)      .toBe     '0px'
       expect(byte.lastSet.x.value)    .toBe     '0px'
       expect(byte.lastSet.x.isChanged).toBe     false
+    it 'should call fillTransform method', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'fillTransform'
+      byte.draw()
+      expect(byte.fillTransform).toHaveBeenCalled()
+
   describe 'isPropChanged method ->', ->
     it 'should return bool showing if prop was changed after the last set', ->
       byte = new Byte radius: 25, y: 10
