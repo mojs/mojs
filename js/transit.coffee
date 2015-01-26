@@ -1,5 +1,8 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
+console.log   = ->
+console.warn  = ->
+console.error = ->
 
 h         = require './h'
 TWEEN     = require './vendor/tween'
