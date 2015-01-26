@@ -209,6 +209,16 @@ module.exports = function(config) {
         ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
       })]
     },
+    coverageReporter: {
+      reporters:[
+        {type: 'html', dir:'coverage/'},
+        // {type: 'teamcity'},
+        {type: 'text-summary'},
+        // {type: 'coverage'},
+        // {type: 'growl'}
+        {type: 'lcov', subdir: 'lcov-report'}
+      ],
+    },
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
