@@ -8,6 +8,8 @@ setTimeout ->
 # Transit   = require './transit'
 Burst     = require './burst'
 Swirl     = require './Swirl'
+Timeline  = require './Timeline'
+
 # swirl = new Swirl
 #   x: {'0': '500'}, y: 100
 #   type:           'circle'

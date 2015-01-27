@@ -139,7 +139,138 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Swirl = Swirl;
 }
 
-},{"./transit":13}],2:[function(require,module,exports){
+},{"./transit":14}],2:[function(require,module,exports){
+var Timeline, h;
+
+h = require('./h');
+
+Timeline = (function() {
+  Timeline.prototype.defaults = {
+    duration: 600,
+    delay: 0,
+    yoyo: false,
+    durationElapsed: 0,
+    delayElapsed: 0,
+    repeat: 0,
+    onStart: null,
+    onComplete: null
+  };
+
+  function Timeline(o) {
+    this.o = o != null ? o : {};
+    this.vars();
+    this.extendDefaults();
+    this.getInitParams();
+  }
+
+  Timeline.prototype.vars = function() {
+    this.h = h;
+    this.progress = 0;
+    return this.props = {
+      totalElapsed: 0,
+      durationElapsed: 0,
+      delayElapsed: 0
+    };
+  };
+
+  Timeline.prototype.extendDefaults = function() {
+    this.h.extend(this.o, this.defaults);
+    return this.onUpdate = this.o.onUpdate;
+  };
+
+  Timeline.prototype.getInitParams = function() {
+    this.props.durationSteps = this.o.duration / 16;
+    return this.props.delaySteps = this.o.delay / 16;
+  };
+
+  Timeline.prototype.tick = function(step) {
+    var addition, _ref, _ref1;
+    if (step == null) {
+      step = 1;
+    }
+    this.props.totalElapsed += step;
+    if (this.props.totalElapsed <= this.props.delaySteps) {
+      return this.props.delayElapsed += step;
+    } else {
+      if (!this.isStarted) {
+        if ((_ref = this.o.onStart) != null) {
+          _ref.apply(this);
+        }
+        this.isStarted = true;
+      }
+      addition = this.props.delayElapsed < this.props.delaySteps ? step - (this.props.delaySteps - this.props.delayElapsed) : step;
+      this.props.delayElapsed = this.props.delaySteps;
+      this.props.durationElapsed += addition;
+      this.progress = this.getProgress();
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(this.progress);
+      }
+      if (this.props.durationElapsed >= this.props.durationSteps) {
+        this.props.durationElapsed = this.props.durationSteps;
+        if (!this.isCompleted) {
+          if (this.o.repeat) {
+            return this.handleRepeat();
+          } else {
+            if ((_ref1 = this.o.onComplete) != null) {
+              _ref1.apply(this);
+            }
+            return this.isCompleted = true;
+          }
+        }
+      }
+    }
+  };
+
+  Timeline.prototype.getProgress = function() {
+    var progress;
+    progress = Math.min(this.props.durationElapsed / this.props.durationSteps, 1);
+    if (this.isReversed) {
+      return 1 - progress;
+    } else {
+      return progress;
+    }
+  };
+
+  Timeline.prototype.handleRepeat = function() {
+    this.props.delayElapsed = 0;
+    this.props.durationElapsed = 0;
+    this.props.totalElapsed = 0;
+    this.o.yoyo && (this.isReversed = !this.isReversed);
+    this.o.repeat--;
+    return this.isCompleted = false;
+  };
+
+  return Timeline;
+
+})();
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Timeline", [], function() {
+    return Timeline;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Timeline;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Timeline = Timeline;
+}
+
+},{"./h":8}],3:[function(require,module,exports){
 var Bit, h;
 
 h = require('./h');
@@ -302,7 +433,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"./h":7}],3:[function(require,module,exports){
+},{"./h":8}],4:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
 
 Bit = require('./bit');
@@ -367,7 +498,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":2,"./circle":5,"./cross":6,"./h":7,"./line":8,"./polygon":10,"./rect":11}],4:[function(require,module,exports){
+},{"./bit":3,"./circle":6,"./cross":7,"./h":8,"./line":9,"./polygon":11,"./rect":12}],5:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, bitsMap, h,
@@ -656,7 +787,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":3,"./h":7,"./swirl":12,"./transit":13}],5:[function(require,module,exports){
+},{"./bitsMap":4,"./h":8,"./swirl":13,"./transit":14}],6:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -714,7 +845,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
 }
 
-},{"./bit":2}],6:[function(require,module,exports){
+},{"./bit":3}],7:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
@@ -777,7 +908,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Cross = Cross;
 }
 
-},{"./bit":2}],7:[function(require,module,exports){
+},{"./bit":3}],8:[function(require,module,exports){
 var Helpers, TWEEN, h;
 
 TWEEN = require('./vendor/tween');
@@ -1205,7 +1336,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = h;
 }
 
-},{"./vendor/tween":14}],8:[function(require,module,exports){
+},{"./vendor/tween":15}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -1261,8 +1392,8 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":2}],9:[function(require,module,exports){
-var Burst, Swirl, burst, div;
+},{"./bit":3}],10:[function(require,module,exports){
+var Burst, Swirl, Timeline, burst, div;
 
 div = document.querySelector('#js-div');
 
@@ -1273,6 +1404,8 @@ setTimeout(function() {
 Burst = require('./burst');
 
 Swirl = require('./Swirl');
+
+Timeline = require('./Timeline');
 
 burst = new Burst({
   x: 300,
@@ -1304,7 +1437,7 @@ document.body.addEventListener('click', function(e) {
   });
 });
 
-},{"./Swirl":1,"./burst":4}],10:[function(require,module,exports){
+},{"./Swirl":1,"./Timeline":2,"./burst":5}],11:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1384,7 +1517,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"./bit":2,"./h":7}],11:[function(require,module,exports){
+},{"./bit":3,"./h":8}],12:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -1446,20 +1579,14 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":2}],12:[function(require,module,exports){
+},{"./bit":3}],13:[function(require,module,exports){
 module.exports=require(1)
-},{"./transit":13}],13:[function(require,module,exports){
+},{"./transit":14}],14:[function(require,module,exports){
 
 /* istanbul ignore next */
 var TWEEN, Transit, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-console.log = function() {};
-
-console.warn = function() {};
-
-console.error = function() {};
 
 h = require('./h');
 
@@ -1894,7 +2021,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":3,"./h":7,"./vendor/tween":14}],14:[function(require,module,exports){
+},{"./bitsMap":4,"./h":8,"./vendor/tween":15}],15:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
@@ -2697,4 +2824,4 @@ if (typeof window !== "undefined" && window !== null) {
 })()
 
 
-},{}]},{},[9])
+},{}]},{},[10])
