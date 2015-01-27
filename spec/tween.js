@@ -78,7 +78,7 @@
         t.update(time);
         return expect(t.props.elapsed).toBe(200);
       });
-      return it('should return true if the tween was completed', function() {
+      it('should return true if the tween was completed', function() {
         var returnValue, t, time;
         t = new Tween({
           duration: 1000,
@@ -88,6 +88,69 @@
         time = t.props.startTime + 1200;
         returnValue = t.update(time);
         return expect(returnValue).toBe(true);
+      });
+      return it('should set tween to the end if tween ended', function() {
+        var t;
+        t = new Tween({
+          duration: 1000,
+          delay: 500
+        });
+        t.start();
+        t.update(t.props.startTime + 1200);
+        return expect(t.props.elapsed).toBe(1000);
+      });
+    });
+    describe('progress ->', function() {
+      return describe('getProgress ->', function() {
+        it('should calculate the current progress', function() {
+          var t;
+          t = new Tween({
+            duration: 1000
+          });
+          t.start();
+          t.update(t.props.startTime + 500);
+          return expect(t.getProgress()).toBe(.5);
+        });
+        return it('should not be bigger then 1', function() {
+          var t;
+          t = new Tween({
+            duration: 1000
+          });
+          t.start();
+          t.update(t.props.startTime + 1500);
+          return expect(t.getProgress()).toBe(1);
+        });
+      });
+    });
+    describe('onUpdate callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onUpdate: function() {}
+        });
+        return expect(t.o.onUpdate).toBeDefined();
+      });
+      it('should call onUpdate callback with the current progress', function() {
+        var t;
+        t = new Tween({
+          duration: 1000,
+          onUpdate: function() {}
+        });
+        spyOn(t, 'onUpdate');
+        t.start();
+        t.update(t.props.startTime + 500);
+        return expect(t.onUpdate).toHaveBeenCalledWith(.5);
+      });
+      return it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Tween({
+          onUpdate: function() {
+            return isRightScope = this instanceof Tween;
+          }
+        });
+        t.update(t.props.startTime + 200);
+        return expect(isRightScope).toBe(true);
       });
     });
     return describe('onStart callback ->', function() {

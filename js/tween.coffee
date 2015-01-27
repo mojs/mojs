@@ -27,10 +27,13 @@ class Tween
 
   update:(time)->
     if time > @props.endTime
+      @props.elapsed = @o.duration
       return true
-    else @props.elapsed = time - @props.startTime
+    @props.elapsed = time - @props.startTime
+    @onUpdate? @getProgress()
 
-
+  getProgress:-> progress = Math.min (@props.elapsed/@o.duration), 1
+    # if @isReversed then 1-progress else progress
 
   # tick:(step=1)->
   #   @props.totalElapsed += step
@@ -55,9 +58,7 @@ class Tween
   #         if @o.repeat then @handleRepeat()
   #         else
   #           @o.onComplete?.apply(@); @isCompleted = true
-#   getProgress:->
-#     progress = Math.min (@props.durationElapsed/@props.durationSteps), 1
-#     if @isReversed then 1-progress else progress
+
 
 #   handleRepeat:->
 #     @props.delayElapsed    = 0

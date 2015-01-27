@@ -51,10 +51,16 @@ Tween = (function() {
 
   Tween.prototype.update = function(time) {
     if (time > this.props.endTime) {
+      this.props.elapsed = this.o.duration;
       return true;
-    } else {
-      return this.props.elapsed = time - this.props.startTime;
     }
+    this.props.elapsed = time - this.props.startTime;
+    return typeof this.onUpdate === "function" ? this.onUpdate(this.getProgress()) : void 0;
+  };
+
+  Tween.prototype.getProgress = function() {
+    var progress;
+    return progress = Math.min(this.props.elapsed / this.o.duration, 1);
   };
 
   return Tween;
