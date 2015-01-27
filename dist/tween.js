@@ -18,16 +18,13 @@ Tween = (function() {
     this.o = o != null ? o : {};
     this.vars();
     this.extendDefaults();
+    this;
   }
 
   Tween.prototype.vars = function() {
     this.h = h;
-    this.progress = 0;
-    return this.props = {
-      totalElapsed: 0,
-      durationElapsed: 0,
-      delayElapsed: 0
-    };
+    this.props = {};
+    return this.progress = 0;
   };
 
   Tween.prototype.extendDefaults = function() {
@@ -50,8 +47,15 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    if (time > this.props.endTime) {
+    var _ref;
+    if (time >= this.props.endTime) {
       this.props.elapsed = this.o.duration;
+      if (!this.isCompleted) {
+        if ((_ref = this.o.onComplete) != null) {
+          _ref.apply(this);
+        }
+        this.isCompleted = true;
+      }
       return true;
     }
     this.props.elapsed = time - this.props.startTime;

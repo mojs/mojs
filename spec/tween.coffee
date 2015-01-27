@@ -53,36 +53,6 @@ describe 'Tween ->', ->
       t.start()
       t.update t.props.startTime + 1200
       expect(t.props.elapsed).toBe 1000
-  # describe 'tick ->', ->
-  #   it 'should add ticks to totalElapsed', ->
-  #     t = new Tween
-  #     t.tick()
-  #     expect(t.props.totalElapsed).toBe 1
-  #   it 'should add ticks to durationElapsed', ->
-  #     t = new Tween
-  #     t.tick()
-  #     expect(t.props.durationElapsed).toBe 1
-  #   it 'should add ticks to delayElapsed', ->
-  #     t = new Tween delay: 200
-  #     t.tick()
-  #     expect(t.props.delayElapsed)   .toBe 1
-  #     expect(t.props.durationElapsed).toBe 0
-  #   it 'should add ticks to durationElapsed only after the delayElapsed', ->
-  #     t = new Tween delay: 32
-  #     t.tick(); t.tick()
-  #     expect(t.props.delayElapsed)   .toBe 2
-  #     expect(t.props.durationElapsed).toBe 0
-  #   it 'should resolve delayElapsed -> durationElapsed border', ->
-  #     t = new Tween delay: 32
-  #     t.tick(); t.tick(2.5)
-  #     expect(t.props.delayElapsed)   .toBe 2
-  #     expect(t.props.durationElapsed).toBe 1.5
-
-  #   it 'durationElapsed should not greater than duration', ->
-  #     t = new Tween delay: 32, duration: 32
-  #     t.tick(); t.tick(5.5)
-  #     expect(t.props.delayElapsed)   .toBe 2
-  #     expect(t.props.durationElapsed).toBe 2
   describe 'progress ->', ->
     describe 'getProgress ->', ->
       it 'should calculate the current progress', ->
@@ -95,11 +65,6 @@ describe 'Tween ->', ->
         t.start()
         t.update t.props.startTime + 1500
         expect(t.getProgress()).toBe 1
-    # it 'should calculate the current progress', ->
-    #   t = new Tween duration: 32
-    #   t.tick()
-    #   expect(t.progress).toBe .5
-
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
       t = new Tween onUpdate: ->
@@ -134,28 +99,27 @@ describe 'Tween ->', ->
       t = new Tween onStart:-> isRightScope = @ instanceof Tween
       t.start()
       expect(isRightScope).toBe true
-
-  # describe 'onComplete callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onComplete: ->
-  #     expect(t.o.onComplete).toBeDefined()
-  #   it 'should call onComplete callback', ->
-  #     t = new Tween duration: 32, onComplete:->
-  #     spyOn(t.o, 'onComplete')
-  #     t.tick(); t.tick()
-  #     expect(t.o.onComplete).toHaveBeenCalled()
-  #   it 'should be called just once', ->
-  #     cnt = 0
-  #     t = new Tween duration: 32, onComplete:-> cnt++
-  #     t.tick(); t.tick(); t.tick()
-  #     expect(cnt).toBe 1
-  #   it 'should have the right scope', ->
-  #     isRightScope = false
-  #     t = new Tween
-  #       duration: 1,
-  #       onComplete:-> isRightScope = @ instanceof Tween
-  #     t.tick()
-  #     expect(isRightScope).toBe true
+  describe 'onComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onComplete: ->
+      expect(t.o.onComplete).toBeDefined()
+    it 'should call onComplete callback', ->
+      t = new Tween(duration: 100, onComplete:->).start()
+      spyOn(t.o, 'onComplete')
+      t.update t.props.startTime + 101
+      expect(t.o.onComplete).toHaveBeenCalled()
+    it 'should be called just once', ->
+      cnt = 0
+      t = new Tween(duration: 32, onComplete:-> cnt++).start()
+      t.update(t.props.startTime + 33)
+      t.update(t.props.startTime + 33)
+      expect(cnt).toBe 1
+    it 'should have the right scope', ->
+      isRightScope = false
+      t = new Tween
+        duration: 1, onComplete:-> isRightScope = @ instanceof Tween
+      t.start().update t.props.startTime + 2
+      expect(isRightScope).toBe true
   # describe 'repeat option ->', ->
   #   it 'should recieve repeat option', ->
   #     t = new Tween onComplete: ->

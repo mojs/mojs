@@ -10,13 +10,8 @@ class Tween
     repeat:           0
     onStart:          null
     onComplete:       null
-  constructor:(@o={})-> @vars(); @extendDefaults()
-  vars:->
-    @h = h; @progress = 0
-    @props =
-      totalElapsed:     0
-      durationElapsed:  0
-      delayElapsed:     0
+  constructor:(@o={})-> @vars(); @extendDefaults(); @
+  vars:-> @h = h; @props = {}; @progress = 0
   extendDefaults:-> @h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:->
     @props.startTime = Date.now() + @o.delay
@@ -26,8 +21,9 @@ class Tween
     @
 
   update:(time)->
-    if time > @props.endTime
+    if time >= @props.endTime
       @props.elapsed = @o.duration
+      if !@isCompleted then @o.onComplete?.apply(@); @isCompleted = true
       return true
     @props.elapsed = time - @props.startTime
     @onUpdate? @getProgress()

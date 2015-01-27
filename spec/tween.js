@@ -153,7 +153,7 @@
         return expect(isRightScope).toBe(true);
       });
     });
-    return describe('onStart callback ->', function() {
+    describe('onStart callback ->', function() {
       it('should be defined', function() {
         var t;
         t = new Tween({
@@ -193,6 +193,50 @@
           }
         });
         t.start();
+        return expect(isRightScope).toBe(true);
+      });
+    });
+    return describe('onComplete callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onComplete: function() {}
+        });
+        return expect(t.o.onComplete).toBeDefined();
+      });
+      it('should call onComplete callback', function() {
+        var t;
+        t = new Tween({
+          duration: 100,
+          onComplete: function() {}
+        }).start();
+        spyOn(t.o, 'onComplete');
+        t.update(t.props.startTime + 101);
+        return expect(t.o.onComplete).toHaveBeenCalled();
+      });
+      it('should be called just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Tween({
+          duration: 32,
+          onComplete: function() {
+            return cnt++;
+          }
+        }).start();
+        t.update(t.props.startTime + 33);
+        t.update(t.props.startTime + 33);
+        return expect(cnt).toBe(1);
+      });
+      return it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Tween({
+          duration: 1,
+          onComplete: function() {
+            return isRightScope = this instanceof Tween;
+          }
+        });
+        t.start().update(t.props.startTime + 2);
         return expect(isRightScope).toBe(true);
       });
     });
