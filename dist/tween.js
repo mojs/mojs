@@ -38,6 +38,7 @@ Tween = (function() {
   Tween.prototype.start = function() {
     var _ref;
     this.props.startTime = Date.now() + this.o.delay;
+    this.props.endTime = this.props.startTime + this.o.duration;
     this.isStarted = true;
     if (!this.isOnStartFired) {
       if ((_ref = this.o.onStart) != null) {
@@ -46,6 +47,14 @@ Tween = (function() {
       this.isOnStartFired = true;
     }
     return this;
+  };
+
+  Tween.prototype.update = function(time) {
+    if (time > this.props.endTime) {
+      return true;
+    } else {
+      return this.props.elapsed = time - this.props.startTime;
+    }
   };
 
   return Tween;

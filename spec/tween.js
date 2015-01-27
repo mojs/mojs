@@ -39,6 +39,14 @@
         expect(t.props.startTime).not.toBeGreaterThan(now);
         return expect(t.props.startTime).toBeGreaterThan(now - 50);
       });
+      it('calculate end time', function() {
+        var t;
+        t = new Tween({
+          duration: 1000,
+          delay: 500
+        }).start();
+        return expect(t.props.endTime).toBe(t.props.startTime + 1000);
+      });
       it('set isStarted flag', function() {
         var t;
         t = new Tween({
@@ -59,7 +67,28 @@
       });
     });
     describe('update time ->', function() {
-      return it('update elapsed time', function() {});
+      it('should update elapsed time', function() {
+        var t, time;
+        t = new Tween({
+          duration: 1000,
+          delay: 500
+        });
+        t.start();
+        time = t.props.startTime + 200;
+        t.update(time);
+        return expect(t.props.elapsed).toBe(200);
+      });
+      return it('should return true if the tween was completed', function() {
+        var returnValue, t, time;
+        t = new Tween({
+          duration: 1000,
+          delay: 500
+        });
+        t.start();
+        time = t.props.startTime + 1200;
+        returnValue = t.update(time);
+        return expect(returnValue).toBe(true);
+      });
     });
     return describe('onStart callback ->', function() {
       it('should be defined', function() {

@@ -24,6 +24,9 @@ describe 'Tween ->', ->
       now = Date.now() + 500
       expect(t.props.startTime).not.toBeGreaterThan now
       expect(t.props.startTime).toBeGreaterThan     now-50
+    it 'calculate end time', ->
+      t = new Tween(duration: 1000, delay: 500).start()
+      expect(t.props.endTime).toBe t.props.startTime + 1000
     it 'set isStarted flag', ->
       t = new Tween(duration: 1000, delay: 500).start()
       expect(t.isStarted).toBe                      true
@@ -33,7 +36,20 @@ describe 'Tween ->', ->
       t.start()
       expect(t.o.onStart).toHaveBeenCalled()
   describe 'update time ->', ->
-    it 'update elapsed time', ->
+    it 'should update elapsed time', ->
+      t = new Tween(duration: 1000, delay: 500)
+      t.start()
+      time = t.props.startTime + 200
+      t.update time
+      expect(t.props.elapsed).toBe 200
+
+    it 'should return true if the tween was completed', ->
+      t = new Tween(duration: 1000, delay: 500)
+      t.start()
+      time = t.props.startTime + 1200
+      returnValue = t.update time
+      expect(returnValue).toBe true
+
   # describe 'tick ->', ->
   #   it 'should add ticks to totalElapsed', ->
   #     t = new Tween

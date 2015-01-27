@@ -19,11 +19,19 @@ class Tween
       delayElapsed:     0
   extendDefaults:-> @h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:->
-    @props.startTime = Date.now() + @o.delay; @isStarted = true
+    @props.startTime = Date.now() + @o.delay
+    @props.endTime = @props.startTime + @o.duration
+    @isStarted = true
     if !@isOnStartFired then @o.onStart?.apply(@); @isOnStartFired = true
     @
 
-  
+  update:(time)->
+    if time > @props.endTime
+      return true
+    else @props.elapsed = time - @props.startTime
+
+
+
   # tick:(step=1)->
   #   @props.totalElapsed += step
   #   if @props.totalElapsed <= @props.delaySteps
