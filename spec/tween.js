@@ -47,7 +47,7 @@
         }).start();
         return expect(t.props.endTime).toBe(t.props.startTime + 1000);
       });
-      it('calculate end time if repeat', function() {
+      return it('calculate end time if repeat', function() {
         var t;
         t = new Tween({
           duration: 1000,
@@ -55,24 +55,6 @@
           repeat: 2
         }).start();
         return expect(t.props.endTime).toBe(t.props.startTime + (3 * (1000 + 500)) - 500);
-      });
-      it('set isStarted flag', function() {
-        var t;
-        t = new Tween({
-          duration: 1000,
-          delay: 500
-        }).start();
-        return expect(t.isStarted).toBe(true);
-      });
-      return it('set call onStart callback', function() {
-        var t;
-        t = new Tween({
-          duration: 1000,
-          delay: 500
-        });
-        spyOn(t.o, 'onStart');
-        t.start();
-        return expect(t.o.onStart).toHaveBeenCalled();
       });
     });
     describe('update time ->', function() {
@@ -102,17 +84,6 @@
         expect(t.progress).toBe(.3);
         t.update(t.props.startTime + 3400);
         return expect(t.progress).toBe(1);
-      });
-      it('should return true if the tween was completed', function() {
-        var returnValue, t, time;
-        t = new Tween({
-          duration: 1000,
-          delay: 500
-        });
-        t.start();
-        time = t.props.startTime + 1200;
-        returnValue = t.update(time);
-        return expect(returnValue).toBe(true);
       });
       return it('should set tween to the end if tween ended', function() {
         var t;
@@ -155,6 +126,53 @@
         t.update(t.props.startTime + 200);
         return expect(isRightScope).toBe(true);
       });
+    });
+  });
+
+  describe('onStart callback ->', function() {
+    it('should be defined', function() {
+      var t;
+      t = new Tween({
+        onStart: function() {}
+      });
+      t.start();
+      return expect(t.o.onStart).toBeDefined();
+    });
+    it('should call onStart callback', function() {
+      var t;
+      t = new Tween({
+        duration: 32,
+        onStart: function() {}
+      });
+      t.start();
+      spyOn(t.o, 'onStart');
+      t.update(t.props.startTime + 1);
+      return expect(t.o.onStart).toHaveBeenCalled();
+    });
+    it('should be called just once', function() {
+      var cnt, t;
+      cnt = 0;
+      t = new Tween({
+        duration: 32,
+        onStart: function() {
+          return cnt++;
+        }
+      }).start();
+      t.update(t.props.startTime + 1);
+      t.update(t.props.startTime + 1);
+      return expect(cnt).toBe(1);
+    });
+    return it('should have the right scope', function() {
+      var isRightScope, t;
+      isRightScope = false;
+      t = new Tween({
+        onStart: function() {
+          return isRightScope = this instanceof Tween;
+        }
+      });
+      t.start();
+      t.update(t.props.startTime + 1);
+      return expect(isRightScope).toBe(true);
     });
   });
 

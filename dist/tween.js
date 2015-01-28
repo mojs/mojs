@@ -33,23 +33,21 @@ Tween = (function() {
   };
 
   Tween.prototype.start = function() {
-    var _ref;
     this.props.startTime = Date.now() + this.o.delay;
     this.props.totalDuration = (this.o.repeat + 1) * (this.o.duration + this.o.delay) - this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
-    this.isStarted = true;
-    if (!this.isOnStartFired) {
-      if ((_ref = this.o.onStart) != null) {
-        _ref.apply(this);
-      }
-      this.isOnStartFired = true;
-    }
     return this;
   };
 
   Tween.prototype.update = function(time) {
-    var elapsed, isFlip, start;
-    if ((time > this.props.startTime) && (time < this.props.endTime)) {
+    var elapsed, isFlip, start, _ref;
+    if ((time >= this.props.startTime) && (time < this.props.endTime)) {
+      if (!this.isStarted) {
+        if ((_ref = this.o.onStart) != null) {
+          _ref.apply(this);
+        }
+        this.isStarted = true;
+      }
       elapsed = time - this.props.startTime;
       if (elapsed < this.o.duration) {
         this.progress = elapsed / this.o.duration;

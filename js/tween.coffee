@@ -16,13 +16,12 @@ class Tween
   start:->
     @props.startTime = Date.now() + @o.delay
     @props.totalDuration = (@o.repeat+1)*(@o.duration+@o.delay) - @o.delay
-    @props.endTime     = @props.startTime + @props.totalDuration
-    @isStarted = true
-    if !@isOnStartFired then @o.onStart?.apply(@); @isOnStartFired = true
+    @props.endTime       = @props.startTime + @props.totalDuration
     @
 
   update:(time)->
-    if (time > @props.startTime) and (time < @props.endTime)
+    if (time >= @props.startTime) and (time < @props.endTime)
+      if !@isStarted then @o.onStart?.apply(@); @isStarted = true
       elapsed = time - @props.startTime
       # in the first repeat or without any repeats
       if elapsed < @o.duration
@@ -43,7 +42,6 @@ class Tween
     else
       elapsed = @props.endTime - @props.startTime
       @progress = 1
-
     @onUpdate? @progress
 
     # if time >= @props.currEndTime and time < @props.endTime

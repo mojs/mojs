@@ -30,14 +30,6 @@ describe 'Tween ->', ->
     it 'calculate end time if repeat', ->
       t = new Tween(duration: 1000, delay: 500, repeat: 2).start()
       expect(t.props.endTime).toBe t.props.startTime+(3*(1000+500))-500
-    it 'set isStarted flag', ->
-      t = new Tween(duration: 1000, delay: 500).start()
-      expect(t.isStarted).toBe                      true
-    it 'set call onStart callback', ->
-      t = new Tween(duration: 1000, delay: 500)
-      spyOn t.o, 'onStart'
-      t.start()
-      expect(t.o.onStart).toHaveBeenCalled()
   describe 'update time ->', ->
     it 'should update progress', ->
       t = new Tween(duration: 1000, delay: 500)
@@ -54,12 +46,12 @@ describe 'Tween ->', ->
       expect(t.progress).toBe .3
       t.update t.props.startTime + 3400
       expect(t.progress).toBe 1
-    it 'should return true if the tween was completed', ->
-      t = new Tween(duration: 1000, delay: 500)
-      t.start()
-      time = t.props.startTime + 1200
-      returnValue = t.update time
-      expect(returnValue).toBe true
+    # it 'should return true if the tween was completed', ->
+    #   t = new Tween(duration: 1000, delay: 500)
+    #   t.start()
+    #   time = t.props.startTime + 1200
+    #   returnValue = t.update time
+    #   expect(returnValue).toBe true
     it 'should set tween to the end if tween ended', ->
       t = new Tween(duration: 1000, delay: 500)
       t.start()
@@ -80,25 +72,28 @@ describe 'Tween ->', ->
       t = new Tween onUpdate:-> isRightScope = @ instanceof Tween
       t.update t.props.startTime + 200
       expect(isRightScope).toBe true
-# describe 'onStart callback ->', ->
-#   it 'should be defined', ->
-#     t = new Tween onStart: ->
-#     expect(t.o.onStart).toBeDefined()
-#   it 'should call onStart callback', ->
-#     t = new Tween duration: 32, onStart:->
-#     spyOn(t.o, 'onStart')
-#     t.start()
-#     expect(t.o.onStart).toHaveBeenCalled()
-#   it 'should be called just once', ->
-#     cnt = 0
-#     t = new Tween duration: 32, onStart:-> cnt++
-#     t.start(); t.start()
-#     expect(cnt).toBe 1
-#   it 'should have the right scope', ->
-#     isRightScope = false
-#     t = new Tween onStart:-> isRightScope = @ instanceof Tween
-#     t.start()
-#     expect(isRightScope).toBe true
+describe 'onStart callback ->', ->
+  it 'should be defined', ->
+    t = new Tween(onStart: ->)
+    t.start()
+    expect(t.o.onStart).toBeDefined()
+  it 'should call onStart callback', ->
+    t = new Tween duration: 32, onStart:->
+    t.start()
+    spyOn(t.o, 'onStart')
+    t.update t.props.startTime + 1
+    expect(t.o.onStart).toHaveBeenCalled()
+  it 'should be called just once', ->
+    cnt = 0
+    t = new Tween(duration: 32, onStart:-> cnt++).start()
+    t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
+    expect(cnt).toBe 1
+  it 'should have the right scope', ->
+    isRightScope = false
+    t = new Tween(onStart:-> isRightScope = @ instanceof Tween)
+    t.start()
+    t.update t.props.startTime + 1
+    expect(isRightScope).toBe true
 # describe 'onComplete callback ->', ->
 #   it 'should be defined', ->
 #     t = new Tween onComplete: ->
