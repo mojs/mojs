@@ -6,10 +6,10 @@ Tween = (function() {
   Tween.prototype.defaults = {
     duration: 600,
     delay: 0,
+    repeat: 0,
     yoyo: false,
     durationElapsed: 0,
     delayElapsed: 0,
-    repeat: 0,
     onStart: null,
     onComplete: null
   };
@@ -35,7 +35,8 @@ Tween = (function() {
   Tween.prototype.start = function() {
     var _ref;
     this.props.startTime = Date.now() + this.o.delay;
-    this.props.endTime = this.props.startTime + this.o.duration;
+    this.props.totalDuration = (this.o.repeat + 1) * (this.o.duration + this.o.delay) - this.o.delay;
+    this.props.endTime = this.props.startTime + this.props.totalDuration;
     this.isStarted = true;
     if (!this.isOnStartFired) {
       if ((_ref = this.o.onStart) != null) {
@@ -47,24 +48,32 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var _ref;
-    if (time >= this.props.endTime) {
-      this.props.elapsed = this.o.duration;
-      if (!this.isCompleted) {
-        if ((_ref = this.o.onComplete) != null) {
-          _ref.apply(this);
+    var isFlip, start;
+    if ((time > this.props.startTime) && (time < this.props.endTime)) {
+      this.o.isIt && console.log('a');
+      this.props.elapsed = time - this.props.startTime;
+      if (this.props.elapsed < this.o.duration) {
+        return this.progress = this.props.elapsed / this.o.duration;
+      } else {
+        start = this.props.startTime;
+        isFlip = false;
+        while (start <= time) {
+          isFlip = !isFlip;
+          start += isFlip ? this.o.duration : this.o.delay;
         }
-        this.isCompleted = true;
+        if (isFlip) {
+          start = start - this.o.duration;
+          this.props.elapsed = time - start;
+          return this.progress = this.props.elapsed / this.o.duration;
+        } else {
+          return this.progress = 0;
+        }
       }
+    } else {
+      this.props.elapsed = this.props.endTime - this.props.startTime;
+      this.progress = 1;
       return true;
     }
-    this.props.elapsed = time - this.props.startTime;
-    return typeof this.onUpdate === "function" ? this.onUpdate(this.getProgress()) : void 0;
-  };
-
-  Tween.prototype.getProgress = function() {
-    var progress;
-    return progress = Math.min(this.props.elapsed / this.o.duration, 1);
   };
 
   return Tween;
