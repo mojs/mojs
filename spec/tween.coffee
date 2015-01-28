@@ -39,14 +39,13 @@ describe 'Tween ->', ->
       t.start()
       expect(t.o.onStart).toHaveBeenCalled()
   describe 'update time ->', ->
-    it 'should update elapsed time', ->
+    it 'should update progress', ->
       t = new Tween(duration: 1000, delay: 500)
       t.start()
       time = t.props.startTime + 200
       t.update time
-      expect(t.props.elapsed).toBe 200
       expect(t.progress).toBe .2
-    it 'should update elapsed time with repeat', ->
+    it 'should update progress with repeat', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2, isIt: true)
       t.start()
       t.update t.props.startTime + 1400
@@ -55,7 +54,6 @@ describe 'Tween ->', ->
       expect(t.progress).toBe .3
       t.update t.props.startTime + 3400
       expect(t.progress).toBe 1
-
     it 'should return true if the tween was completed', ->
       t = new Tween(duration: 1000, delay: 500)
       t.start()
@@ -66,39 +64,22 @@ describe 'Tween ->', ->
       t = new Tween(duration: 1000, delay: 500)
       t.start()
       t.update t.props.startTime + 1200
-      expect(t.props.elapsed).toBe 1000
-# describe 'progress ->', ->
-#   describe 'getProgress ->', ->
-#     it 'should calculate the current progress', ->
-#       t = new Tween duration: 1000
-#       t.start()
-#       t.update t.props.startTime + 500
-#       expect(t.getProgress()).toBe .5
-#     it 'should not be bigger then 1', ->
-#       t = new Tween duration: 1000
-#       t.start()
-#       t.update t.props.startTime + 1500
-#       expect(t.getProgress()).toBe 1
-#     it 'should calculate the current progress with delay', ->
-#       t = new Tween duration: 1000, delay: 100
-#       t.start()
-#       t.update t.props.startTime + 500
-#       expect(t.getProgress()).toBe .4
-# describe 'onUpdate callback ->', ->
-#   it 'should be defined', ->
-#     t = new Tween onUpdate: ->
-#     expect(t.o.onUpdate).toBeDefined()
-#   it 'should call onUpdate callback with the current progress', ->
-#     t = new Tween duration: 1000, onUpdate: ->
-#     spyOn t, 'onUpdate'
-#     t.start()
-#     t.update t.props.startTime + 500
-#     expect(t.onUpdate).toHaveBeenCalledWith .5
-#   it 'should have the right scope', ->
-#     isRightScope = false
-#     t = new Tween onUpdate:-> isRightScope = @ instanceof Tween
-#     t.update t.props.startTime + 200
-#     expect(isRightScope).toBe true
+      expect(t.progress).toBe 1
+  describe 'onUpdate callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onUpdate: ->
+      expect(t.o.onUpdate).toBeDefined()
+    it 'should call onUpdate callback with the current progress', ->
+      t = new Tween duration: 1000, onUpdate: ->
+      spyOn t, 'onUpdate'
+      t.start()
+      t.update t.props.startTime + 500
+      expect(t.onUpdate).toHaveBeenCalledWith .5
+    it 'should have the right scope', ->
+      isRightScope = false
+      t = new Tween onUpdate:-> isRightScope = @ instanceof Tween
+      t.update t.props.startTime + 200
+      expect(isRightScope).toBe true
 # describe 'onStart callback ->', ->
 #   it 'should be defined', ->
 #     t = new Tween onStart: ->

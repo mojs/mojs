@@ -48,12 +48,11 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var isFlip, start;
+    var elapsed, isFlip, start;
     if ((time > this.props.startTime) && (time < this.props.endTime)) {
-      this.o.isIt && console.log('a');
-      this.props.elapsed = time - this.props.startTime;
-      if (this.props.elapsed < this.o.duration) {
-        return this.progress = this.props.elapsed / this.o.duration;
+      elapsed = time - this.props.startTime;
+      if (elapsed < this.o.duration) {
+        this.progress = elapsed / this.o.duration;
       } else {
         start = this.props.startTime;
         isFlip = false;
@@ -63,17 +62,17 @@ Tween = (function() {
         }
         if (isFlip) {
           start = start - this.o.duration;
-          this.props.elapsed = time - start;
-          return this.progress = this.props.elapsed / this.o.duration;
+          elapsed = time - start;
+          this.progress = elapsed / this.o.duration;
         } else {
-          return this.progress = 0;
+          this.progress = 0;
         }
       }
     } else {
-      this.props.elapsed = this.props.endTime - this.props.startTime;
+      elapsed = this.props.endTime - this.props.startTime;
       this.progress = 1;
-      return true;
     }
+    return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
   };
 
   return Tween;
