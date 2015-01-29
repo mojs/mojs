@@ -100,3 +100,42 @@ describe 'Tween ->', ->
       t.startLoop()
       t.stopLoop()
       expect(t.isRunning).toBe false
+  describe 'onComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onComplete: ->
+      expect(t.o.onComplete).toBeDefined()
+    it 'should call onComplete callback', (dfr)->
+      t = new Tween(onComplete:->)
+      t.add new Timeline duration: 10
+      spyOn(t.o, 'onComplete'); t.start()
+      setTimeout ->
+        expect(t.o.onComplete).toHaveBeenCalled()
+        dfr()
+      , 100
+    it 'should be called just once', (dfr)->
+      cnt = 0
+      t = new Tween onComplete:-> cnt++
+      t.add new Timeline duration: 20
+      t.start()
+      setTimeout (-> expect(cnt).toBe(1); dfr()), 100
+    it 'should have the right scope', (dfr)->
+      isRightScope = false
+      t = new Tween onComplete:-> isRightScope = @ instanceof Tween
+      t.add new Timeline duration: 20
+      t.start()
+      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+  describe 'onStart callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onStart: ->
+      expect(t.o.onStart).toBeDefined()
+    it 'should call onStart callback', ->
+      t = new Tween(onStart:->)
+      t.add new Timeline duration: 10
+      spyOn(t.o, 'onStart'); t.start()
+      expect(t.o.onStart).toHaveBeenCalled()
+    it 'should have the right scope', ->
+      isRightScope = false
+      t = new Tween onStart:-> isRightScope = @ instanceof Tween
+      t.add new Timeline duration: 20
+      t.start()
+      expect(isRightScope).toBe(true)

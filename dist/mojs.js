@@ -290,10 +290,13 @@ Tween = (function() {
   };
 
   Tween.prototype.start = function() {
-    var i;
+    var i, _ref;
     this.startTime = Date.now();
     this.endTime = this.startTime + this.duration;
     i = this.timelines.length;
+    if ((_ref = this.o.onStart) != null) {
+      _ref.apply(this);
+    }
     while (i--) {
       this.timelines[i].start(this.startTime);
     }
@@ -301,14 +304,15 @@ Tween = (function() {
   };
 
   Tween.prototype.loop = function() {
-    var time;
+    var time, _ref;
     if (!this.isRunning) {
       return this;
     }
     time = Date.now();
     this.update(time);
-    if (time > this.endTime) {
-      return this.isRunning = false;
+    if (time >= this.endTime) {
+      this.isRunning = false;
+      return (_ref = this.o.onComplete) != null ? _ref.apply(this) : void 0;
     }
     requestAnimationFrame(this.loop);
     return this;
