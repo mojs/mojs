@@ -16,25 +16,26 @@ Timeline = (function() {
 
   function Timeline(o) {
     this.o = o != null ? o : {};
-    this.vars();
     this.extendDefaults();
+    this.vars();
     this;
   }
 
   Timeline.prototype.vars = function() {
     this.h = h;
     this.props = {};
-    return this.progress = 0;
+    this.progress = 0;
+    this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
+    return this.props.totalDuration = this.props.totalTime - this.o.delay;
   };
 
   Timeline.prototype.extendDefaults = function() {
-    this.h.extend(this.o, this.defaults);
+    h.extend(this.o, this.defaults);
     return this.onUpdate = this.o.onUpdate;
   };
 
-  Timeline.prototype.start = function() {
-    this.props.startTime = Date.now() + this.o.delay;
-    this.props.totalDuration = (this.o.repeat + 1) * (this.o.duration + this.o.delay) - this.o.delay;
+  Timeline.prototype.start = function(time) {
+    this.props.startTime = (time || Date.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };
@@ -70,16 +71,17 @@ Timeline = (function() {
           this.progress = 0;
         }
       }
+      return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
         if ((_ref1 = this.o.onComplete) != null) {
           _ref1.apply(this);
         }
         this.isCompleted = true;
+        this.progress = 1;
+        return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
       }
-      this.progress = 1;
     }
-    return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
   };
 
   return Timeline;

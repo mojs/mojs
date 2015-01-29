@@ -90,13 +90,13 @@ class Helpers
         unit:     unit
         value:    amount
         string:   "#{amount}#{unit}"
-  # bind:(func, context) ->
-  #   wrapper = ->
-  #     args = Array::slice.call(arguments)
-  #     unshiftArgs = bindArgs.concat(args)
-  #     func.apply context, unshiftArgs
-  #   bindArgs = Array::slice.call(arguments, 2)
-  #   wrapper
+  bind:(func, context) ->
+    wrapper = ->
+      args = Array::slice.call(arguments)
+      unshiftArgs = bindArgs.concat(args)
+      func.apply context, unshiftArgs
+    bindArgs = Array::slice.call(arguments, 2)
+    wrapper
   getRadialPoint:(o={})->
     return if !o.radius? or !o.angle? or !o.center?
     radAngle = (o.angle-90)*(Math.PI/180)

@@ -4,6 +4,24 @@
   Timeline = window.mojs.Timeline;
 
   describe('Timeline ->', function() {
+    describe('init ->', function() {
+      return it('calc totalDuration and totalTime', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          delay: 100
+        });
+        expect(t.props.totalDuration).toBe(1000);
+        expect(t.props.totalTime).toBe(1100);
+        t = new Timeline({
+          duration: 1000,
+          delay: 100,
+          repeat: 5
+        });
+        expect(t.props.totalDuration).toBe(6500);
+        return expect(t.props.totalTime).toBe(6600);
+      });
+    });
     describe('defaults ->', function() {
       it('should have vars', function() {
         var t;
@@ -29,7 +47,7 @@
       });
     });
     describe('start ->', function() {
-      it('calculate start time', function() {
+      it('should calculate start time', function() {
         var now, t;
         t = new Timeline({
           duration: 1000,
@@ -39,7 +57,14 @@
         expect(t.props.startTime).not.toBeGreaterThan(now);
         return expect(t.props.startTime).toBeGreaterThan(now - 50);
       });
-      it('calculate end time', function() {
+      it('should recieve the start time', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000
+        }).start(1);
+        return expect(t.props.startTime).toBe(1);
+      });
+      it('should calculate end time', function() {
         var t;
         t = new Timeline({
           duration: 1000,
@@ -74,8 +99,7 @@
         t = new Timeline({
           duration: 1000,
           delay: 200,
-          repeat: 2,
-          isIt: true
+          repeat: 2
         });
         t.start();
         t.update(t.props.startTime + 1400);
@@ -84,6 +108,30 @@
         expect(t.progress).toBe(.3);
         t.update(t.props.startTime + 3400);
         return expect(t.progress).toBe(1);
+      });
+      it('should not call update method if timeline didn\'t isnt active -', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          onUpdate: function() {}
+        });
+        spyOn(t, 'onUpdate');
+        t.start();
+        t.update(Date.now() - 500);
+        return expect(t.onUpdate).not.toHaveBeenCalled();
+      });
+      it('should not call update method if timeline didn\'t isnt active +', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 1000,
+          onUpdate: function() {
+            return cnt++;
+          }
+        });
+        t.start();
+        t.update(Date.now() + 1500);
+        return expect(cnt).toBe(1);
       });
       return it('should set Timeline to the end if Timeline ended', function() {
         var t;
@@ -123,6 +171,7 @@
             return isRightScope = this instanceof Timeline;
           }
         });
+        t.start();
         t.update(t.props.startTime + 200);
         return expect(isRightScope).toBe(true);
       });

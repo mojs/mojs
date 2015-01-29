@@ -1,6 +1,14 @@
 Timeline = window.mojs.Timeline
 
 describe 'Timeline ->', ->
+  describe 'init ->', ->
+    it 'calc totalDuration and totalTime', ->
+      t = new Timeline duration: 1000, delay: 100
+      expect(t.props.totalDuration).toBe  1000
+      expect(t.props.totalTime).toBe      1100
+      t = new Timeline duration: 1000, delay: 100, repeat: 5
+      expect(t.props.totalDuration).toBe  6500
+      expect(t.props.totalTime).toBe      6600
   describe 'defaults ->', ->
     it 'should have vars', ->
       t = new Timeline
@@ -18,13 +26,16 @@ describe 'Timeline ->', ->
       expect(t.o.duration).toBe 1000
       expect(t.o.delay).toBe    0
   describe 'start ->', ->
-    it 'calculate start time', ->
-      t = new Timeline(duration: 1000, delay: 500)
-        .start()
+    it 'should calculate start time', ->
+      t = new Timeline(duration: 1000, delay: 500).start()
       now = Date.now() + 500
       expect(t.props.startTime).not.toBeGreaterThan now
       expect(t.props.startTime).toBeGreaterThan     now-50
-    it 'calculate end time', ->
+    it 'should recieve the start time', ->
+      t = new Timeline(duration: 1000).start 1
+      expect(t.props.startTime).toBe 1
+
+    it 'should calculate end time', ->
       t = new Timeline(duration: 1000, delay: 500).start()
       expect(t.props.endTime).toBe t.props.startTime + 1000
     it 'calculate end time if repeat', ->
@@ -38,7 +49,7 @@ describe 'Timeline ->', ->
       t.update time
       expect(t.progress).toBe .2
     it 'should update progress with repeat', ->
-      t = new Timeline(duration: 1000, delay: 200, repeat: 2, isIt: true)
+      t = new Timeline(duration: 1000, delay: 200, repeat: 2)
       t.start()
       t.update t.props.startTime + 1400
       expect(t.progress).toBe .2
@@ -46,12 +57,17 @@ describe 'Timeline ->', ->
       expect(t.progress).toBe .3
       t.update t.props.startTime + 3400
       expect(t.progress).toBe 1
-    # it 'should return true if the Timeline was completed', ->
-    #   t = new Timeline(duration: 1000, delay: 500)
-    #   t.start()
-    #   time = t.props.startTime + 1200
-    #   returnValue = t.update time
-    #   expect(returnValue).toBe true
+    it 'should not call update method if timeline didn\'t isnt active -', ->
+      t = new Timeline(duration: 1000, onUpdate:->)
+      spyOn t, 'onUpdate'
+      t.start()
+      t.update(Date.now() - 500)
+      expect(t.onUpdate).not.toHaveBeenCalled()
+    it 'should not call update method if timeline didn\'t isnt active +', ->
+      cnt = 0
+      t = new Timeline(duration: 1000, onUpdate:-> cnt++ )
+      t.start(); t.update(Date.now() + 1500)
+      expect(cnt).toBe 1
     it 'should set Timeline to the end if Timeline ended', ->
       t = new Timeline(duration: 1000, delay: 500)
       t.start()
@@ -70,6 +86,7 @@ describe 'Timeline ->', ->
     it 'should have the right scope', ->
       isRightScope = false
       t = new Timeline onUpdate:-> isRightScope = @ instanceof Timeline
+      t.start()
       t.update t.props.startTime + 200
       expect(isRightScope).toBe true
 describe 'onStart callback ->', ->

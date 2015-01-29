@@ -129,6 +129,18 @@ Helpers = (function() {
     }
   };
 
+  Helpers.prototype.bind = function(func, context) {
+    var bindArgs, wrapper;
+    wrapper = function() {
+      var args, unshiftArgs;
+      args = Array.prototype.slice.call(arguments);
+      unshiftArgs = bindArgs.concat(args);
+      return func.apply(context, unshiftArgs);
+    };
+    bindArgs = Array.prototype.slice.call(arguments, 2);
+    return wrapper;
+  };
+
   Helpers.prototype.getRadialPoint = function(o) {
     var point, radAngle;
     if (o == null) {

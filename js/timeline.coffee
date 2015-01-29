@@ -1,4 +1,4 @@
-h         = require './h'
+h = require './h'
 
 class Timeline
   defaults:
@@ -10,13 +10,15 @@ class Timeline
     delayElapsed:     0
     onStart:          null
     onComplete:       null
-  constructor:(@o={})-> @vars(); @extendDefaults(); @
-  vars:-> @h = h; @props = {}; @progress = 0
-  extendDefaults:-> @h.extend(@o, @defaults); @onUpdate = @o.onUpdate
-  start:->
-    @props.startTime = Date.now() + @o.delay
-    @props.totalDuration = (@o.repeat+1)*(@o.duration+@o.delay) - @o.delay
-    @props.endTime       = @props.startTime + @props.totalDuration
+  constructor:(@o={})-> @extendDefaults(); @vars(); @
+  vars:->
+    @h = h; @props = {}; @progress = 0
+    @props.totalTime     = (@o.repeat+1)*(@o.duration+@o.delay)
+    @props.totalDuration = @props.totalTime - @o.delay
+  extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
+  start:(time)->
+    @props.startTime = (time or Date.now()) + @o.delay
+    @props.endTime   = @props.startTime + @props.totalDuration
     @
 
   update:(time)->
@@ -44,11 +46,11 @@ class Timeline
             else 1-if @progress is 0 then 1 else @progress
         # is in start point + delay
         else @progress = 0
+      @onUpdate? @progress
     else
       if time >= @props.endTime and !@isCompleted
-        @o.onComplete?.apply(@); @isCompleted = true
-      @progress = 1
-    @onUpdate? @progress
+        (@o.onComplete?.apply(@); @isCompleted = true)
+        @progress = 1; @onUpdate? @progress
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

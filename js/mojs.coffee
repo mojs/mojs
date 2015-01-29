@@ -1,14 +1,29 @@
+# div = document.querySelector '#js-div'
 
-div = document.querySelector '#js-div'
-
-setTimeout ->
-  div.style.width = '50px'
-, 5000
+# setTimeout ->
+#   div.style.width = '50px'
+# , 5000
 
 # Transit   = require './transit'
 Burst     = require './burst'
 Swirl     = require './Swirl'
 Timeline  = require './Timeline'
+Tween     = require './Tween'
+
+# t = new Tween
+# tw1 = new Timeline
+#   duration: 5000
+#   delay: 4000
+#   onUpdate:(proc)-> console.log proc
+
+# tw2 = new Timeline
+#   duration: 5000
+#   delay: 12000
+#   onUpdate:(proc)-> console.log proc
+
+# t.add tw1
+# t.add tw2
+# t.start()
 
 # swirl = new Swirl
 #   x: {'0': '500'}, y: 100

@@ -139,7 +139,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Swirl = Swirl;
 }
 
-},{"./transit":14}],2:[function(require,module,exports){
+},{"./transit":15}],2:[function(require,module,exports){
 var Timeline, h;
 
 h = require('./h');
@@ -158,25 +158,26 @@ Timeline = (function() {
 
   function Timeline(o) {
     this.o = o != null ? o : {};
-    this.vars();
     this.extendDefaults();
+    this.vars();
     this;
   }
 
   Timeline.prototype.vars = function() {
     this.h = h;
     this.props = {};
-    return this.progress = 0;
+    this.progress = 0;
+    this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
+    return this.props.totalDuration = this.props.totalTime - this.o.delay;
   };
 
   Timeline.prototype.extendDefaults = function() {
-    this.h.extend(this.o, this.defaults);
+    h.extend(this.o, this.defaults);
     return this.onUpdate = this.o.onUpdate;
   };
 
-  Timeline.prototype.start = function() {
-    this.props.startTime = Date.now() + this.o.delay;
-    this.props.totalDuration = (this.o.repeat + 1) * (this.o.duration + this.o.delay) - this.o.delay;
+  Timeline.prototype.start = function(time) {
+    this.props.startTime = (time || Date.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };
@@ -212,16 +213,17 @@ Timeline = (function() {
           this.progress = 0;
         }
       }
+      return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
         if ((_ref1 = this.o.onComplete) != null) {
           _ref1.apply(this);
         }
         this.isCompleted = true;
+        this.progress = 1;
+        return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
       }
-      this.progress = 1;
     }
-    return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
   };
 
   return Timeline;
@@ -254,7 +256,107 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Timeline = Timeline;
 }
 
-},{"./h":8}],3:[function(require,module,exports){
+},{"./h":9}],3:[function(require,module,exports){
+var Tween, h;
+
+h = require('./h');
+
+Tween = (function() {
+  function Tween(o) {
+    this.o = o != null ? o : {};
+    this.vars();
+    this;
+  }
+
+  Tween.prototype.vars = function() {
+    this.timelines = [];
+    this.duration = 0;
+    return this.loop = h.bind(this.loop, this);
+  };
+
+  Tween.prototype.add = function(timeline) {
+    this.timelines.push(timeline);
+    return this.duration = Math.max(timeline.props.totalTime, this.duration);
+  };
+
+  Tween.prototype.update = function(time) {
+    var i, _results;
+    i = this.timelines.length;
+    _results = [];
+    while (i--) {
+      _results.push(this.timelines[i].update(time));
+    }
+    return _results;
+  };
+
+  Tween.prototype.start = function() {
+    var i;
+    this.startTime = Date.now();
+    this.endTime = this.startTime + this.duration;
+    i = this.timelines.length;
+    while (i--) {
+      this.timelines[i].start(this.startTime);
+    }
+    return this.startLoop();
+  };
+
+  Tween.prototype.loop = function() {
+    var time;
+    if (!this.isRunning) {
+      return this;
+    }
+    time = Date.now();
+    this.update(time);
+    if (time > this.endTime) {
+      return this.isRunning = false;
+    }
+    requestAnimationFrame(this.loop);
+    return this;
+  };
+
+  Tween.prototype.startLoop = function() {
+    if (this.isRunning) {
+      return;
+    }
+    this.isRunning = true;
+    return requestAnimationFrame(this.loop);
+  };
+
+  Tween.prototype.stopLoop = function() {
+    return this.isRunning = false;
+  };
+
+  return Tween;
+
+})();
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Tween", [], function() {
+    return Tween;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Tween;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Tween = Tween;
+}
+
+},{"./h":9}],4:[function(require,module,exports){
 var Bit, h;
 
 h = require('./h');
@@ -417,7 +519,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"./h":8}],4:[function(require,module,exports){
+},{"./h":9}],5:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
 
 Bit = require('./bit');
@@ -482,7 +584,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":3,"./circle":6,"./cross":7,"./h":8,"./line":9,"./polygon":11,"./rect":12}],5:[function(require,module,exports){
+},{"./bit":4,"./circle":7,"./cross":8,"./h":9,"./line":10,"./polygon":12,"./rect":13}],6:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, bitsMap, h,
@@ -771,7 +873,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":4,"./h":8,"./swirl":13,"./transit":14}],6:[function(require,module,exports){
+},{"./bitsMap":5,"./h":9,"./swirl":14,"./transit":15}],7:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -829,7 +931,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
 }
 
-},{"./bit":3}],7:[function(require,module,exports){
+},{"./bit":4}],8:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
@@ -892,7 +994,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Cross = Cross;
 }
 
-},{"./bit":3}],8:[function(require,module,exports){
+},{"./bit":4}],9:[function(require,module,exports){
 var Helpers, TWEEN, h;
 
 TWEEN = require('./vendor/tween');
@@ -1022,6 +1124,18 @@ Helpers = (function() {
         string: "" + amount + unit
       };
     }
+  };
+
+  Helpers.prototype.bind = function(func, context) {
+    var bindArgs, wrapper;
+    wrapper = function() {
+      var args, unshiftArgs;
+      args = Array.prototype.slice.call(arguments);
+      unshiftArgs = bindArgs.concat(args);
+      return func.apply(context, unshiftArgs);
+    };
+    bindArgs = Array.prototype.slice.call(arguments, 2);
+    return wrapper;
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
@@ -1320,7 +1434,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = h;
 }
 
-},{"./vendor/tween":15}],9:[function(require,module,exports){
+},{"./vendor/tween":16}],10:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -1376,20 +1490,16 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":3}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, burst, div;
-
-div = document.querySelector('#js-div');
-
-setTimeout(function() {
-  return div.style.width = '50px';
-}, 5000);
+},{"./bit":4}],11:[function(require,module,exports){
+var Burst, Swirl, Timeline, Tween, burst;
 
 Burst = require('./burst');
 
 Swirl = require('./Swirl');
 
 Timeline = require('./Timeline');
+
+Tween = require('./Tween');
 
 burst = new Burst({
   x: 300,
@@ -1421,7 +1531,7 @@ document.body.addEventListener('click', function(e) {
   });
 });
 
-},{"./Swirl":1,"./Timeline":2,"./burst":5}],11:[function(require,module,exports){
+},{"./Swirl":1,"./Timeline":2,"./Tween":3,"./burst":6}],12:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1501,7 +1611,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"./bit":3,"./h":8}],12:[function(require,module,exports){
+},{"./bit":4,"./h":9}],13:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -1563,9 +1673,9 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":3}],13:[function(require,module,exports){
+},{"./bit":4}],14:[function(require,module,exports){
 module.exports=require(1)
-},{"./transit":14}],14:[function(require,module,exports){
+},{"./transit":15}],15:[function(require,module,exports){
 
 /* istanbul ignore next */
 var TWEEN, Transit, bitsMap, h,
@@ -2005,7 +2115,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":4,"./h":8,"./vendor/tween":15}],15:[function(require,module,exports){
+},{"./bitsMap":5,"./h":9,"./vendor/tween":16}],16:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
@@ -2808,4 +2918,4 @@ if (typeof window !== "undefined" && window !== null) {
 })()
 
 
-},{}]},{},[10])
+},{}]},{},[11])
