@@ -6,10 +6,10 @@ Timeline = (function() {
   Timeline.prototype.defaults = {
     duration: 600,
     delay: 0,
+    repeat: 0,
     yoyo: false,
     durationElapsed: 0,
     delayElapsed: 0,
-    repeat: 0,
     onStart: null,
     onComplete: null
   };
@@ -18,17 +18,13 @@ Timeline = (function() {
     this.o = o != null ? o : {};
     this.vars();
     this.extendDefaults();
-    this.getInitParams();
+    this;
   }
 
   Timeline.prototype.vars = function() {
     this.h = h;
-    this.progress = 0;
-    return this.props = {
-      totalElapsed: 0,
-      durationElapsed: 0,
-      delayElapsed: 0
-    };
+    this.props = {};
+    return this.progress = 0;
   };
 
   Timeline.prototype.extendDefaults = function() {
@@ -36,66 +32,54 @@ Timeline = (function() {
     return this.onUpdate = this.o.onUpdate;
   };
 
-  Timeline.prototype.getInitParams = function() {
-    this.props.durationSteps = this.o.duration / 16;
-    return this.props.delaySteps = this.o.delay / 16;
+  Timeline.prototype.start = function() {
+    this.props.startTime = Date.now() + this.o.delay;
+    this.props.totalDuration = (this.o.repeat + 1) * (this.o.duration + this.o.delay) - this.o.delay;
+    this.props.endTime = this.props.startTime + this.props.totalDuration;
+    return this;
   };
 
-  Timeline.prototype.tick = function(step) {
-    var addition, _ref, _ref1;
-    if (step == null) {
-      step = 1;
-    }
-    this.props.totalElapsed += step;
-    if (this.props.totalElapsed <= this.props.delaySteps) {
-      return this.props.delayElapsed += step;
-    } else {
+  Timeline.prototype.update = function(time) {
+    var cnt, elapsed, isFlip, start, _ref, _ref1;
+    if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
           _ref.apply(this);
         }
         this.isStarted = true;
       }
-      addition = this.props.delayElapsed < this.props.delaySteps ? step - (this.props.delaySteps - this.props.delayElapsed) : step;
-      this.props.delayElapsed = this.props.delaySteps;
-      this.props.durationElapsed += addition;
-      this.progress = this.getProgress();
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate(this.progress);
-      }
-      if (this.props.durationElapsed >= this.props.durationSteps) {
-        this.props.durationElapsed = this.props.durationSteps;
-        if (!this.isCompleted) {
-          if (this.o.repeat) {
-            return this.handleRepeat();
-          } else {
-            if ((_ref1 = this.o.onComplete) != null) {
-              _ref1.apply(this);
-            }
-            return this.isCompleted = true;
+      elapsed = time - this.props.startTime;
+      if (elapsed <= this.o.duration) {
+        this.progress = elapsed / this.o.duration;
+      } else {
+        start = this.props.startTime;
+        isFlip = false;
+        cnt = 0;
+        while (start <= time) {
+          isFlip = !isFlip;
+          start += isFlip ? (cnt++, this.o.duration) : this.o.delay;
+        }
+        if (isFlip) {
+          start = start - this.o.duration;
+          elapsed = time - start;
+          this.progress = elapsed / this.o.duration;
+          if (this.o.yoyo && this.o.repeat) {
+            this.progress = cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress);
           }
+        } else {
+          this.progress = 0;
         }
       }
-    }
-  };
-
-  Timeline.prototype.getProgress = function() {
-    var progress;
-    progress = Math.min(this.props.durationElapsed / this.props.durationSteps, 1);
-    if (this.isReversed) {
-      return 1 - progress;
     } else {
-      return progress;
+      if (time >= this.props.endTime && !this.isCompleted) {
+        if ((_ref1 = this.o.onComplete) != null) {
+          _ref1.apply(this);
+        }
+        this.isCompleted = true;
+      }
+      this.progress = 1;
     }
-  };
-
-  Timeline.prototype.handleRepeat = function() {
-    this.props.delayElapsed = 0;
-    this.props.durationElapsed = 0;
-    this.props.totalElapsed = 0;
-    this.o.yoyo && (this.isReversed = !this.isReversed);
-    this.o.repeat--;
-    return this.isCompleted = false;
+    return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
   };
 
   return Timeline;

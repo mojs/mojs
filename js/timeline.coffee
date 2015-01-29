@@ -1,6 +1,6 @@
 h         = require './h'
 
-class Tween
+class Timeline
   defaults:
     duration: 600
     delay:    0
@@ -52,11 +52,11 @@ class Tween
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
-  define "Tween", [], -> Tween
+  define "Timeline", [], -> Timeline
 if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Tween
+  module.exports = Timeline
 ### istanbul ignore next ###
 window?.mojs ?= {}
-window?.mojs.Tween = Tween
+window?.mojs.Timeline = Timeline
 
 
