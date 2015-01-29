@@ -40,7 +40,7 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var elapsed, isFlip, start, _ref;
+    var cnt, elapsed, isFlip, start, _ref, _ref1;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
@@ -49,25 +49,34 @@ Tween = (function() {
         this.isStarted = true;
       }
       elapsed = time - this.props.startTime;
-      if (elapsed < this.o.duration) {
+      if (elapsed <= this.o.duration) {
         this.progress = elapsed / this.o.duration;
       } else {
         start = this.props.startTime;
         isFlip = false;
+        cnt = 0;
         while (start <= time) {
           isFlip = !isFlip;
-          start += isFlip ? this.o.duration : this.o.delay;
+          start += isFlip ? (cnt++, this.o.duration) : this.o.delay;
         }
         if (isFlip) {
           start = start - this.o.duration;
           elapsed = time - start;
           this.progress = elapsed / this.o.duration;
+          if (this.o.yoyo && this.o.repeat) {
+            this.progress = cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress);
+          }
         } else {
           this.progress = 0;
         }
       }
     } else {
-      elapsed = this.props.endTime - this.props.startTime;
+      if (time >= this.props.endTime && !this.isCompleted) {
+        if ((_ref1 = this.o.onComplete) != null) {
+          _ref1.apply(this);
+        }
+        this.isCompleted = true;
+      }
       this.progress = 1;
     }
     return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;

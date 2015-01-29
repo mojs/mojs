@@ -162,7 +162,7 @@
       t.update(t.props.startTime + 1);
       return expect(cnt).toBe(1);
     });
-    return it('should have the right scope', function() {
+    it('should have the right scope', function() {
       var isRightScope, t;
       isRightScope = false;
       t = new Tween({
@@ -173,6 +173,91 @@
       t.start();
       t.update(t.props.startTime + 1);
       return expect(isRightScope).toBe(true);
+    });
+    describe('onComplete callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onComplete: function() {}
+        });
+        return expect(t.o.onComplete).toBeDefined();
+      });
+      it('should call onComplete callback', function() {
+        var t;
+        t = new Tween({
+          duration: 100,
+          onComplete: function() {}
+        }).start();
+        spyOn(t.o, 'onComplete');
+        t.update(t.props.startTime + 101);
+        return expect(t.o.onComplete).toHaveBeenCalled();
+      });
+      it('should be called just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Tween({
+          duration: 32,
+          onComplete: function() {
+            return cnt++;
+          }
+        }).start();
+        t.update(t.props.startTime + 33);
+        t.update(t.props.startTime + 33);
+        return expect(cnt).toBe(1);
+      });
+      return it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Tween({
+          duration: 1,
+          onComplete: function() {
+            return isRightScope = this instanceof Tween;
+          }
+        });
+        t.start().update(t.props.startTime + 2);
+        return expect(isRightScope).toBe(true);
+      });
+    });
+    return describe('yoyo option ->', function() {
+      it('should recieve yoyo option', function() {
+        var t;
+        t = new Tween({
+          yoyo: true
+        });
+        return expect(t.o.yoyo).toBe(true);
+      });
+      return it('should toggle the progress direction on repeat', function() {
+        var t, time;
+        t = new Tween({
+          repeat: 2,
+          duration: 10,
+          yoyo: true
+        }).start();
+        time = t.props.startTime;
+        t.update(time + 1);
+        expect(t.progress).toBe(.1);
+        t.update(time + 5);
+        expect(t.progress).toBe(.5);
+        t.update(time + 10);
+        expect(t.progress).toBe(1);
+        t.update(time + 11);
+        expect(t.progress).toBe(.9);
+        t.update(time + 15);
+        expect(t.progress).toBe(.5);
+        t.update(time + 19);
+        expect(parseFloat(t.progress.toFixed(1))).toBe(.1);
+        t.update(time + 20);
+        expect(t.progress).toBe(0);
+        t.update(time + 21);
+        expect(t.progress).toBe(.1);
+        t.update(time + 25);
+        expect(t.progress).toBe(.5);
+        t.update(time + 29);
+        expect(t.progress).toBe(.9);
+        t.update(time + 30);
+        expect(t.progress).toBe(1);
+        return expect(t.isCompleted).toBe(true);
+      });
     });
   });
 

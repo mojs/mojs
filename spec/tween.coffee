@@ -94,87 +94,56 @@ describe 'onStart callback ->', ->
     t.start()
     t.update t.props.startTime + 1
     expect(isRightScope).toBe true
-# describe 'onComplete callback ->', ->
-#   it 'should be defined', ->
-#     t = new Tween onComplete: ->
-#     expect(t.o.onComplete).toBeDefined()
-#   it 'should call onComplete callback', ->
-#     t = new Tween(duration: 100, onComplete:->).start()
-#     spyOn(t.o, 'onComplete')
-#     t.update t.props.startTime + 101
-#     expect(t.o.onComplete).toHaveBeenCalled()
-#   it 'should be called just once', ->
-#     cnt = 0
-#     t = new Tween(duration: 32, onComplete:-> cnt++).start()
-#     t.update(t.props.startTime + 33)
-#     t.update(t.props.startTime + 33)
-#     expect(cnt).toBe 1
-#   it 'should have the right scope', ->
-#     isRightScope = false
-#     t = new Tween
-#       duration: 1, onComplete:-> isRightScope = @ instanceof Tween
-#     t.start().update t.props.startTime + 2
-#     expect(isRightScope).toBe true
-# describe 'repeat option ->', ->
-#   it 'should recieve repeat option', ->
-#     t = new Tween onComplete: ->
-#     expect(t.o.repeat).toBeDefined()
-#   it 'should decrease the repeat option onComplete', ->
-#     t = new Tween(repeat: 5, duration: 1).start()
-#     t.update t.props.startTime + 1
-#     expect(t.o.repeat).toBe 4
-#   it 'should not decrease the repeat option less then 0', ->
-#     t = new Tween(repeat: 2, duration: 1).start()
-#     t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
-#     t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
-#     t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
-#     expect(t.o.repeat).toBe 0
-#   it 'should call onComplete after the repeat', ->
-#     t = new Tween(repeat: 2, duration: 1, isIt: true, onComplete:->).start()
-#     spyOn t.o, 'onComplete'
-#     t.update(t.props.startTime + 1); t.update(t.props.startTime + 2)
-#     expect(t.o.onComplete).not.toHaveBeenCalled()
-#     t.update(t.props.startTime + 3)
-#     expect(t.o.onComplete).toHaveBeenCalled()
-#   it 'should call onComplete after the repeat only once', ->
-#     cnt = 0
-#     t = new Tween(repeat: 2, duration: 1, onComplete:->cnt++).start()
-#     time = t.props.startTime
-#     t.update(time++); t.update(time++)
-#     expect(cnt).toBe 0
-#     t.update(time++); t.update(time++)
-#     t.update(time++); t.update(time++)
-#     t.update(time++); t.update(time++)
-#     expect(cnt).toBe 1
-#   it 'should null the isCompleted flag and completed', ->
-#     t = new Tween(repeat: 5, duration: 1).start()
-#     time = t.props.startTime
-#     t.update(time++); t.update(time++)
-#     expect(t.isCompleted).toBeFalsy()
-#   it 'should null the isCompleted flag and completed', ->
-#     t = new Tween(repeat: 1, duration: 1).start()
-#     time = t.props.startTime
-#     t.update(time++); t.update(time++)
-#     expect(t.isCompleted).toBe true
-# describe 'yoyo option ->', ->
-#   it 'should recieve yoyo option', ->
-#     t = new Tween yoyo: true
-#     expect(t.o.yoyo).toBe true
-#   it 'should toggle the progress direction on repeat', ->
-#     t = new Tween(repeat: 2, duration: 10, yoyo: true).start()
-#     time = t.props.startTime
-#     t.update(time+1);   expect(t.getProgress()).toBe .1
-#     t.update(time+5);   expect(t.getProgress()).toBe .5
-#     t.update(time+10);  expect(t.getProgress()).toBe 1
-#     t.update(time+11)
-#     expect(t.getProgress()).toBe(.9); expect(t.isReversed).toBe true
-#     # t.update(time+5)
-#     # expect(t.getProgress()).toBe(.5); expect(t.isReversed).toBe true
-#     # t.update(time+5)
-#     # expect(t.getProgress()).toBe(.5); expect(t.isReversed).toBe true
-#     # t.tick(); expect(t.progress).toBe(0);   expect(t.isReversed).toBe false
-#     # t.tick(); expect(t.progress).toBe(.25); expect(t.isReversed).toBe false
-#     # t.tick(); expect(t.progress).toBe(.5);  expect(t.isReversed).toBe false
-#     # t.tick(); expect(t.progress).toBe(.75); expect(t.isReversed).toBe false
-#     # t.tick(); expect(t.progress).toBe(1);   expect(t.isCompleted).toBe true
+  describe 'onComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onComplete: ->
+      expect(t.o.onComplete).toBeDefined()
+    it 'should call onComplete callback', ->
+      t = new Tween(duration: 100, onComplete:->).start()
+      spyOn(t.o, 'onComplete')
+      t.update t.props.startTime + 101
+      expect(t.o.onComplete).toHaveBeenCalled()
+    it 'should be called just once', ->
+      cnt = 0
+      t = new Tween(duration: 32, onComplete:-> cnt++).start()
+      t.update(t.props.startTime + 33)
+      t.update(t.props.startTime + 33)
+      expect(cnt).toBe 1
+    it 'should have the right scope', ->
+      isRightScope = false
+      t = new Tween
+        duration: 1, onComplete:-> isRightScope = @ instanceof Tween
+      t.start().update t.props.startTime + 2
+      expect(isRightScope).toBe true
+  describe 'yoyo option ->', ->
+    it 'should recieve yoyo option', ->
+      t = new Tween yoyo: true
+      expect(t.o.yoyo).toBe true
+    it 'should toggle the progress direction on repeat', ->
+      t = new Tween(repeat: 2, duration: 10, yoyo: true).start()
+      time = t.props.startTime
+      t.update(time+1);   expect(t.progress).toBe .1
+      t.update(time+5);   expect(t.progress).toBe .5
+      t.update(time+10);  expect(t.progress).toBe 1
 
+      t.update(time+11);  expect(t.progress).toBe .9
+      t.update(time+15);  expect(t.progress).toBe .5
+      t.update(time+19);  expect(parseFloat t.progress.toFixed(1)).toBe .1
+
+      t.update(time+20);  expect(t.progress).toBe 0
+      t.update(time+21);  expect(t.progress).toBe .1
+      t.update(time+25);  expect(t.progress).toBe .5
+      t.update(time+29);  expect(t.progress).toBe .9
+      t.update(time+30);  expect(t.progress).toBe 1
+      expect(t.isCompleted).toBe true
+
+
+
+
+
+
+
+
+
+
+      

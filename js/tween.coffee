@@ -24,61 +24,31 @@ class Tween
       if !@isStarted then @o.onStart?.apply(@); @isStarted = true
       elapsed = time - @props.startTime
       # in the first repeat or without any repeats
-      if elapsed < @o.duration
+      if elapsed <= @o.duration
         @progress = elapsed/@o.duration
       else # far in the repeats
         start = @props.startTime
-        isFlip = false
+        isFlip = false; cnt = 0
         while(start <= time)
           isFlip = !isFlip
-          start += if isFlip then @o.duration else @o.delay
+          start += if isFlip then cnt++; @o.duration else @o.delay
         # is in start point + duration
         if isFlip
           start = start - @o.duration
           elapsed = time - start
           @progress = elapsed/@o.duration
+          # yoyo
+          if @o.yoyo and @o.repeat
+            @progress = if cnt % 2 is 1 then @progress
+            # when reversed progress of 1 should be 0
+            else 1-if @progress is 0 then 1 else @progress
         # is in start point + delay
         else @progress = 0
     else
-      elapsed = @props.endTime - @props.startTime
+      if time >= @props.endTime and !@isCompleted
+        @o.onComplete?.apply(@); @isCompleted = true
       @progress = 1
     @onUpdate? @progress
-
-    # if time >= @props.currEndTime and time < @props.endTime
-    #   if @o.repeat
-    #     @o.repeat--; @o.yoyo and (@isReversed = !@isReversed)
-
-    # @props.elapsed = time - @props.startTime
-    # @onUpdate? @getProgress()
-    # @o.isIt and
-    # if time >= @props.endTime
-    #   @props.elapsed = @o.duration
-    #   if !@isCompleted then @o.onComplete?.apply(@); @isCompleted = true
-    #   return true
-
-  # tick:(step=1)->
-  #   @props.totalElapsed += step
-  #   if @props.totalElapsed <= @props.delaySteps
-  #     @props.delayElapsed += step
-  #   else
-  #     if !@isStarted
-  #       @o.onStart?.apply(@); @isStarted = true
-
-  #     addition = if @props.delayElapsed < @props.delaySteps
-  #       step - (@props.delaySteps - @props.delayElapsed)
-  #     else step
-  #     @props.delayElapsed = @props.delaySteps
-  #     @props.durationElapsed += addition
-      
-  #     @progress = @getProgress()
-  #     @onUpdate?(@progress)
-
-  #     if @props.durationElapsed >= @props.durationSteps
-  #       @props.durationElapsed = @props.durationSteps
-  #       if !@isCompleted
-  #         if @o.repeat then @handleRepeat()
-  #         else
-  #           @o.onComplete?.apply(@); @isCompleted = true
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
