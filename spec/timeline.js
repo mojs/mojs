@@ -109,6 +109,17 @@
         t.update(t.props.startTime + 3400);
         return expect(t.progress).toBe(1);
       });
+      it('should update progress to 0 if in delay gap', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          delay: 200,
+          repeat: 2
+        });
+        t.start();
+        t.update(t.props.startTime + 1100);
+        return expect(t.progress).toBe(0);
+      });
       it('should not call update method if timeline didn\'t isnt active -', function() {
         var t;
         t = new Timeline({

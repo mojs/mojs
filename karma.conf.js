@@ -181,8 +181,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'dist/**/*.js',
-      'spec/**/*.js'
+      // 'dist/**/*.js',
+      // 'spec/**/*.js',
+      // 'dist/h.js',
+      // 'spec/h.js',
+      // 'dist/timeline.js',
+      // 'spec/timeline.js',
+      // 'dist/tween.js',
+      // 'spec/tween.js',
+      'dist/transit.js',
+      'spec/transit.js'
     ],
 
     // list of files to exclude
@@ -193,12 +201,12 @@ module.exports = function(config) {
       // 'spec/bit.js',
       // 'dist/h.js',
       // 'spec/h.js',
-      // 'dist/transit.js',
-      // 'spec/transit.js',
       // 'dist/burst.js',
       // 'spec/burst.js',
       // 'dist/swirl.js',
-      // 'spec/swirl.js'
+      // 'spec/swirl.js',
+      // 'dist/tween.js',
+      // 'spec/tween.js'
     ],
 
     // preprocess matching files before serving them to the browser

@@ -6,6 +6,8 @@
 **! in active development - isn't ready yet !**
 
 #### todo
+- tween to global raf
+- reset tween and timeline to defaults on start
 - perf profile
 - add motion path
   - add movement arc

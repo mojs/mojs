@@ -202,7 +202,6 @@ document.addEventListener 'DOMContentLoaded', (e)->
             el: el
             duration: 300
             fill: { container: c }
-            isIt: true
             onUpdate:(proc)->
               if proc >= .1 and !isSizeChange
                 mp.container.style.width = '100px'

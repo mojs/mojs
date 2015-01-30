@@ -89,84 +89,6 @@
         return expect(t.startLoop).toHaveBeenCalled();
       });
     });
-    describe('loop ->', function() {
-      it('should loop over', function(dfr) {
-        var t;
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 500,
-          delay: 200
-        }));
-        t.startLoop();
-        spyOn(t, 'loop');
-        return setTimeout(function() {
-          expect(t.loop).toHaveBeenCalled();
-          return dfr();
-        }, 100);
-      });
-      it('should call update fun', function(dfr) {
-        var t;
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 500,
-          delay: 200
-        }));
-        t.startLoop();
-        spyOn(t, 'update');
-        return setTimeout(function() {
-          expect(t.update).toHaveBeenCalledWith(jasmine.any(Number));
-          return dfr();
-        }, 100);
-      });
-      return it('should stop at the end', function(dfr) {
-        var t;
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.start();
-        return setTimeout(function() {
-          expect(t.isRunning).toBe(false);
-          return dfr();
-        }, 100);
-      });
-    });
-    describe('startLoop method ->', function() {
-      it('should call loop method', function(dfr) {
-        var t;
-        t = new Tween;
-        spyOn(t, 'loop');
-        t.startLoop();
-        return setTimeout(function() {
-          expect(t.loop).toHaveBeenCalled();
-          return dfr();
-        }, 60);
-      });
-      it('should set isRunning flag', function() {
-        var t;
-        t = new Tween;
-        expect(t.isRunning).toBeFalsy();
-        t.startLoop();
-        return expect(t.isRunning).toBe(true);
-      });
-      return it('should call loop only once', function() {
-        var t;
-        t = new Tween;
-        t.startLoop();
-        spyOn(t, 'loop');
-        t.startLoop();
-        return expect(t.loop).not.toHaveBeenCalled();
-      });
-    });
-    describe('stopLoop method ->', function() {
-      return it('should set isRunning to false', function() {
-        var t;
-        t = new Tween;
-        t.startLoop();
-        t.stopLoop();
-        return expect(t.isRunning).toBe(false);
-      });
-    });
     describe('onComplete callback ->', function() {
       it('should be defined', function() {
         var t;
@@ -188,7 +110,7 @@
         return setTimeout(function() {
           expect(t.o.onComplete).toHaveBeenCalled();
           return dfr();
-        }, 100);
+        }, 200);
       });
       it('should be called just once', function(dfr) {
         var cnt, t;

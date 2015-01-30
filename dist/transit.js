@@ -1,14 +1,16 @@
 
 /* istanbul ignore next */
-var TWEEN, Transit, bitsMap, h,
+var Timeline, Transit, Tween, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 h = require('./h');
 
-TWEEN = require('./vendor/tween');
-
 bitsMap = require('./bitsMap');
+
+Timeline = require('./Timeline');
+
+Tween = require('./Tween');
 
 Transit = (function(_super) {
   __extends(Transit, _super);
@@ -16,8 +18,6 @@ Transit = (function(_super) {
   function Transit() {
     return Transit.__super__.constructor.apply(this, arguments);
   }
-
-  Transit.prototype.TWEEN = TWEEN;
 
   Transit.prototype.progress = 0;
 
@@ -371,17 +371,32 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.createTween = function() {
-    var ease, easings, it;
+    var easings, it, onComplete;
     it = this;
+    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
     easings = h.splitEasing(this.props.easing);
-    ease = typeof easings === 'function' ? easings : TWEEN.Easing[easings[0]][easings[1]];
-    this.tween = new this.TWEEN.Tween({
-      p: 0
-    }).to({
-      p: 1
-    }, this.props.duration).delay(this.props.delay).easing(ease).onUpdate(function() {
-      return it.setProgress(this.p);
-    }).repeat(this.props.repeat - 1).yoyo(this.props.yoyo);
+    this.timeline = new Timeline({
+      duration: this.props.duration,
+      delay: this.props.delay,
+      repeat: this.props.repeat - 1,
+      yoyo: this.props.yoyo,
+      isIt: true,
+      onUpdate: (function(_this) {
+        return function(p) {
+          return _this.setProgress(p);
+        };
+      })(this),
+      onComplete: function() {
+        var _base;
+        return typeof (_base = it.props).onComplete === "function" ? _base.onComplete() : void 0;
+      },
+      onStart: function() {
+        var _base;
+        return typeof (_base = it.props).onStart === "function" ? _base.onStart() : void 0;
+      }
+    });
+    this.tween = new Tween;
+    this.tween.add(this.timeline);
     return !this.o.isRunLess && this.startTween();
   };
 
@@ -399,11 +414,6 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.startTween = function() {
-    var _ref;
-    if ((_ref = this.props.onStart) != null) {
-      _ref.call(this);
-    }
-    this.h.startAnimationLoop();
     return this.tween.start();
   };
 

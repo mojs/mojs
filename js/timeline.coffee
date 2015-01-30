@@ -20,7 +20,6 @@ class Timeline
     @props.startTime = (time or Date.now()) + @o.delay
     @props.endTime   = @props.startTime + @props.totalDuration
     @
-
   update:(time)->
     if (time >= @props.startTime) and (time < @props.endTime)
       if !@isStarted then @o.onStart?.apply(@); @isStarted = true

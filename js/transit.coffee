@@ -5,11 +5,14 @@
 # console.error = ->
 
 h         = require './h'
-TWEEN     = require './vendor/tween'
+# TWEEN     = require './vendor/tween'
 bitsMap   = require './bitsMap'
 
+Timeline = require './Timeline'
+Tween    = require './Tween'
+
 class Transit extends bitsMap.map.bit
-  TWEEN: TWEEN
+  # TWEEN: TWEEN
   progress: 0
   defaults:
     # presentation props
@@ -85,10 +88,12 @@ class Transit extends bitsMap.map.bit
 
   show:->
     return if @isShown or !@el?
-    @el.style.display = 'block'; @isShown = true
+    @el.style.display = 'block'
+    @isShown = true
   hide:->
     return if (@isShown is false) or !@el?
-    @el.style.display = 'none'; @isShown = false
+    @el.style.display = 'none'
+    @isShown = false
 
   draw:->
     @bit.setProp
@@ -263,20 +268,22 @@ class Transit extends bitsMap.map.bit
   # TWEEN
   createTween:->
     it = @
-    # onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
-    # else null
-
+    onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
+    else null
     easings = h.splitEasing(@props.easing)
-    ease = if typeof easings is 'function' then easings
-    else TWEEN.Easing[easings[0]][easings[1]]
+    # ease = if typeof easings is 'function' then easings
+    # else TWEEN.Easing[easings[0]][easings[1]]
 
-    @tween = new @TWEEN.Tween({ p: 0 }).to({ p: 1 }, @props.duration)
-      .delay(@props.delay)
-      .easing(ease)
-      .onUpdate -> it.setProgress @p
-      .repeat @props.repeat-1
-      .yoyo @props.yoyo
-      # .onComplete => @tween.isComplete = true
+    @timeline = new Timeline
+      duration: @props.duration
+      delay:    @props.delay
+      repeat:   @props.repeat-1
+      yoyo:     @props.yoyo
+      isIt:     true
+      onUpdate:   (p)=> @setProgress p
+      onComplete: -> it.props.onComplete?()
+      onStart:    -> it.props.onStart?()
+    @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
   run:(o)->
     for key, value of o
@@ -284,10 +291,7 @@ class Transit extends bitsMap.map.bit
     @vars(); @calcSize(); @setElStyles()
     !@o.isDrawLess and @setProgress 0
     @startTween()
-  startTween:->
-    @props.onStart?.call @
-    @h.startAnimationLoop()
-    @tween.start()
+  startTween:-> @tween.start()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
