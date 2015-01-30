@@ -72,7 +72,7 @@
         }).start();
         return expect(t.props.endTime).toBe(t.props.startTime + 1000);
       });
-      return it('calculate end time if repeat', function() {
+      it('should calculate end time if repeat', function() {
         var t;
         t = new Timeline({
           duration: 1000,
@@ -80,6 +80,20 @@
           repeat: 2
         }).start();
         return expect(t.props.endTime).toBe(t.props.startTime + (3 * (1000 + 500)) - 500);
+      });
+      return it('should restart flags', function() {
+        var t;
+        t = new Timeline({
+          duration: 20,
+          repeat: 2
+        }).start();
+        t.update(t.props.startTime + 10);
+        t.update(t.props.startTime + 60);
+        expect(t.isCompleted).toBe(true);
+        expect(t.isStarted).toBe(true);
+        t.start();
+        expect(t.isCompleted).toBe(false);
+        return expect(t.isStarted).toBe(false);
       });
     });
     describe('update time ->', function() {
@@ -119,6 +133,17 @@
         t.start();
         t.update(t.props.startTime + 1100);
         return expect(t.progress).toBe(0);
+      });
+      it('should update progress to 1 on the end', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          delay: 200,
+          repeat: 2
+        });
+        t.start();
+        t.update(t.props.startTime + 1000);
+        return expect(t.progress).toBe(1);
       });
       it('should not call update method if timeline didn\'t isnt active -', function() {
         var t;

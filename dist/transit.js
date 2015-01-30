@@ -371,29 +371,32 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.createTween = function() {
-    var easings, it, onComplete;
+    var it, onComplete;
     it = this;
     onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
-    easings = h.splitEasing(this.props.easing);
     this.timeline = new Timeline({
       duration: this.props.duration,
       delay: this.props.delay,
       repeat: this.props.repeat - 1,
       yoyo: this.props.yoyo,
-      isIt: true,
+      easing: this.props.easing,
       onUpdate: (function(_this) {
         return function(p) {
           return _this.setProgress(p);
         };
       })(this),
-      onComplete: function() {
-        var _base;
-        return typeof (_base = it.props).onComplete === "function" ? _base.onComplete() : void 0;
-      },
-      onStart: function() {
-        var _base;
-        return typeof (_base = it.props).onStart === "function" ? _base.onStart() : void 0;
-      }
+      onComplete: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this),
+      onStart: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this)
     });
     this.tween = new Tween;
     this.tween.add(this.timeline);

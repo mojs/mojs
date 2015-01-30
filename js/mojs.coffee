@@ -30,7 +30,7 @@ burst = new Transit
   x:            300
   y:            150
   duration:     600
-  delay:        1000
+  # delay:        1000
   points:       10
   radius:        { 0: 100 }
   isSwirl: true

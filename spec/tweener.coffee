@@ -8,7 +8,6 @@ describe 'Twenner ->', ->
   it 'have tweens array', ->
     expect(t.tweens).toBeDefined()
     expect(t.tweens instanceof Array).toBe true
-
   describe 'loop ->', ->
     it 'should loop over', (dfr)->
       t.startLoop()

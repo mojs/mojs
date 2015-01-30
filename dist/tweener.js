@@ -2,6 +2,9 @@ var Tweener, h, t;
 
 h = require('./h');
 
+
+/* istanbul ignore next */
+
 (function() {
   var k, lastTime, vendors, x;
   lastTime = 0;
@@ -47,7 +50,7 @@ Tweener = (function() {
   Tweener.prototype.loop = function() {
     var time;
     if (!this.isRunning) {
-      return this;
+      return;
     }
     time = Date.now();
     this.update(time);

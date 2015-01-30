@@ -17,10 +17,14 @@ class Timeline
     @props.totalDuration = @props.totalTime - @o.delay
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
+    @isCompleted = false; @isStarted = false
     @props.startTime = (time or Date.now()) + @o.delay
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->
+    # easings = h.splitEasing(@props.easing)
+    # ease = if typeof easings is 'function' then easings
+    # else TWEEN.Easing[easings[0]][easings[1]]
     if (time >= @props.startTime) and (time < @props.endTime)
       if !@isStarted then @o.onStart?.apply(@); @isStarted = true
       elapsed = time - @props.startTime

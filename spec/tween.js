@@ -64,12 +64,25 @@
         expect(t.timelines[0].start).toHaveBeenCalledWith(t.startTime);
         return expect(t.timelines[1].start).toHaveBeenCalledWith(t.startTime);
       });
-      return it('should add itself to tweener', function() {
+      it('should add itself to tweener', function() {
         var t;
         t = new Tween;
         spyOn(t.t, 'add');
         t.start();
         return expect(t.t.add).toHaveBeenCalled();
+      });
+      return it('should restart flags', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 20
+        }));
+        t.start();
+        t.update(t.startTime + 5);
+        t.update(t.startTime + 60);
+        expect(t.isCompleted).toBe(true);
+        t.start();
+        return expect(t.isCompleted).toBe(false);
       });
     });
     describe('onComplete callback ->', function() {

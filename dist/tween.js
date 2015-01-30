@@ -38,6 +38,7 @@ Tween = (function() {
 
   Tween.prototype.start = function() {
     var i, _ref;
+    this.isCompleted = false;
     this.startTime = Date.now();
     this.endTime = this.startTime + this.duration;
     i = this.timelines.length;

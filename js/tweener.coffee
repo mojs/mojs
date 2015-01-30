@@ -1,4 +1,6 @@
 h = require './h'
+
+### istanbul ignore next ###
 (->
   lastTime = 0; x = 0
   vendors = ["ms", "moz", "webkit", "o" ]
@@ -29,7 +31,7 @@ class Tweener
   constructor:(@o={})-> @vars(); @
   vars:-> @tweens = []; @loop = h.bind @loop, @
   loop:->
-    return @ if !@isRunning
+    return if !@isRunning
     time  = Date.now(); @update time
     if !@tweens.length then return @isRunning = false
     # if time >= @endTime then @isRunning = false; return @o.onComplete?.apply @

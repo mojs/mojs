@@ -34,13 +34,21 @@ describe 'Timeline ->', ->
     it 'should recieve the start time', ->
       t = new Timeline(duration: 1000).start 1
       expect(t.props.startTime).toBe 1
-
     it 'should calculate end time', ->
       t = new Timeline(duration: 1000, delay: 500).start()
       expect(t.props.endTime).toBe t.props.startTime + 1000
-    it 'calculate end time if repeat', ->
+    it 'should calculate end time if repeat', ->
       t = new Timeline(duration: 1000, delay: 500, repeat: 2).start()
       expect(t.props.endTime).toBe t.props.startTime+(3*(1000+500))-500
+    it 'should restart flags', ->
+      t = new Timeline(duration: 20, repeat: 2).start()
+      t.update t.props.startTime + 10
+      t.update t.props.startTime + 60
+      expect(t.isCompleted).toBe true
+      expect(t.isStarted)  .toBe true
+      t.start()
+      expect(t.isCompleted).toBe false
+      expect(t.isStarted)  .toBe false
   describe 'update time ->', ->
     it 'should update progress', ->
       t = new Timeline(duration: 1000, delay: 500)
@@ -62,6 +70,11 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 1100
       expect(t.progress).toBe 0
+    it 'should update progress to 1 on the end', ->
+      t = new Timeline(duration: 1000, delay: 200, repeat: 2)
+      t.start()
+      t.update t.props.startTime + 1000
+      expect(t.progress).toBe 1
     it 'should not call update method if timeline didn\'t isnt active -', ->
       t = new Timeline(duration: 1000, onUpdate:->)
       spyOn t, 'onUpdate'
@@ -158,6 +171,21 @@ describe 'onStart callback ->', ->
       t.update(time+29);  expect(t.progress).toBe .9
       t.update(time+30);  expect(t.progress).toBe 1
       expect(t.isCompleted).toBe true
+
+  # describe 'easing ->', ->
+  #   it 'should work with easing function', ->
+  #     easings = one: -> a = 1
+  #     byte = new Byte easing: easings.one
+  #     expect(byte.props.easing.toString()).toBe easings.one.toString()
+  #   it 'should work with easing function', (dfr)->
+  #     easings = one: -> a = 2
+  #     spyOn easings, 'one'
+  #     byte = new Byte easing: easings.one
+  #     byte.startTween()
+  #     setTimeout ->
+  #       expect(easings.one).toHaveBeenCalled()
+  #       dfr()
+  #     , 50
 
 
 

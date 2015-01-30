@@ -18,6 +18,7 @@ class Tween
       !@isCompleted and @o.onComplete?.apply @
       return @isCompleted = true
   start:->
+    @isCompleted = false
     @startTime = Date.now(); @endTime = @startTime + @duration
     i = @timelines.length; @o.onStart?.apply @
     while(i--)

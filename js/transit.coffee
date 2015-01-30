@@ -1,9 +1,5 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
-# console.log   = ->
-# console.warn  = ->
-# console.error = ->
-
 h         = require './h'
 # TWEEN     = require './vendor/tween'
 bitsMap   = require './bitsMap'
@@ -50,7 +46,7 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
   vars:->
     @h ?= h; @chainArr ?= []; @lastSet ?= {}
-    @extendDefaults() #; @calcTransform()
+    @extendDefaults()
   render:->
     if !@isRendered
       if !@o.ctx?
@@ -270,19 +266,17 @@ class Transit extends bitsMap.map.bit
     it = @
     onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
     else null
-    easings = h.splitEasing(@props.easing)
-    # ease = if typeof easings is 'function' then easings
-    # else TWEEN.Easing[easings[0]][easings[1]]
 
     @timeline = new Timeline
       duration: @props.duration
       delay:    @props.delay
       repeat:   @props.repeat-1
       yoyo:     @props.yoyo
-      isIt:     true
+      easing:   @props.easing
       onUpdate:   (p)=> @setProgress p
-      onComplete: -> it.props.onComplete?()
-      onStart:    -> it.props.onStart?()
+      onComplete: => @props.onComplete?.apply @
+      onStart:    => @props.onStart?.apply @
+
     @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
   run:(o)->

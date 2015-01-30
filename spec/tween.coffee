@@ -40,6 +40,15 @@ describe 'Tween ->', ->
       spyOn t.t, 'add'
       t.start()
       expect(t.t.add).toHaveBeenCalled()
+    it 'should restart flags', ->
+      t = new Tween
+      t.add new Timeline duration: 20
+      t.start()
+      t.update t.startTime + 5
+      t.update t.startTime + 60
+      expect(t.isCompleted).toBe true
+      t.start()
+      expect(t.isCompleted).toBe false
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
       t = new Tween onComplete: ->
