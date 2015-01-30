@@ -12,22 +12,13 @@ class Tween
     i = @timelines.length
     while(i--)
       @timelines[i].update time
+    false
   start:->
     @startTime = Date.now(); @endTime = @startTime + @duration
     i = @timelines.length; @o.onStart?.apply @
     while(i--)
       @timelines[i].start @startTime
     @startLoop()
-  loop:->
-    return @ if !@isRunning
-    time  = Date.now(); @update time
-    if time >= @endTime then @isRunning = false; return @o.onComplete?.apply @
-    requestAnimationFrame @loop
-    @
-  startLoop:->
-    return if @isRunning; @isRunning = true
-    requestAnimationFrame @loop
-  stopLoop:-> @isRunning = false
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

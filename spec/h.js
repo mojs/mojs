@@ -600,7 +600,7 @@
           return expect(h.splitEasing(easing) + '').toBe(easing + '');
         });
       });
-      describe('color parsing - makeColorObj method', function() {
+      return describe('color parsing - makeColorObj method', function() {
         it('should have shortColors map', function() {
           return expect(h.shortColors).toBeDefined();
         });
@@ -660,74 +660,6 @@
           expect(colorObj.g).toBe(200);
           expect(colorObj.b).toBe(100);
           return expect(colorObj.a).toBe(.5);
-        });
-      });
-      return describe('animation loop ->', function() {
-        it('should have TWEEN object', function() {
-          return expect(h.TWEEN).toBeDefined();
-        });
-        it('update Tweens on loop', function(dfr) {
-          var tween;
-          spyOn(h.TWEEN, 'update');
-          tween = new h.TWEEN.Tween({
-            p: 0
-          }).to({
-            p: 1
-          }, 120).start();
-          h.startAnimationLoop();
-          return setTimeout(function() {
-            expect(h.TWEEN.update).toHaveBeenCalled();
-            return dfr();
-          }, 50);
-        });
-        it('should start animation loop', function(dfr) {
-          spyOn(h, 'animationLoop');
-          h.startAnimationLoop();
-          return setTimeout(function() {
-            expect(h.animationLoop).toHaveBeenCalled();
-            return dfr();
-          }, 160);
-        });
-        it('should stop animation loop', function(dfr) {
-          h.stopAnimationLoop();
-          return setTimeout(function() {
-            spyOn(h, 'animationLoop');
-            return setTimeout(function() {
-              expect(h.animationLoop).not.toHaveBeenCalled();
-              return dfr();
-            }, 50);
-          }, 50);
-        });
-        it('should stop itself if there is no tween left', function(dfr) {
-          var tween;
-          tween = new h.TWEEN.Tween({
-            p: 0
-          }).to({
-            p: 1
-          }, 20).start();
-          h.startAnimationLoop();
-          return setTimeout(function() {
-            h.TWEEN.removeAll();
-            spyOn(h, 'animationLoop');
-            return setTimeout(function() {
-              expect(h.animationLoop).not.toHaveBeenCalled();
-              expect(h.isAnimateLoop).toBe(false);
-              return dfr();
-            }, 50);
-          }, 50);
-        });
-        return it('should start only 1 concurrent loop', function(dfr) {
-          h.stopAnimationLoop();
-          return setTimeout(function() {
-            spyOn(h, 'animationLoop');
-            h.isAnimateLoop = true;
-            h.startAnimationLoop();
-            return setTimeout(function() {
-              expect(h.animationLoop).not.toHaveBeenCalled();
-              h.isAnimateLoop = false;
-              return dfr();
-            }, 34);
-          }, 34);
         });
       });
     });

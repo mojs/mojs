@@ -208,35 +208,19 @@ class Helpers
       secondPart  = @capitalize   split[1] or 'None'
       [ firstPart, secondPart ]
     else ['Linear', 'None']
-
   capitalize:(str)->
     if typeof str isnt 'string'
       throw Error 'String expected - nothing to capitalize'
     str.charAt(0).toUpperCase() + str.substring(1)
-  startAnimationLoop:->
-    return h if h.isAnimateLoop
-    h.isAnimateLoop = true
-    requestAnimationFrame h.animationLoop
-    @
-  stopAnimationLoop:-> h.isAnimateLoop = false
-  animationLoop:->
-    if !h.TWEEN.getAll().length then h.isAnimateLoop = false
-    return h if !h.isAnimateLoop
-    h.TWEEN.update()
-    requestAnimationFrame h.animationLoop
-    @
-
   parseRand:(string)->
     randArr = string.split /rand\(|\,|\)/
     units = @parseUnit randArr[2]
     rand = @rand(parseFloat(randArr[1]), parseFloat(randArr[2]))
     if units.unit and randArr[2].match(units.unit)then rand + units.unit
     else rand
-
   parseIfRand:(str)->
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
     else str
-  
   parseDelta:(key, value)->
     # if delta object was passed: like { 20: 75 }
     start = Object.keys(value)[0]

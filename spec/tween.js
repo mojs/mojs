@@ -36,25 +36,6 @@
         return expect(t.duration).toBe(1400);
       });
     });
-    describe('update method ->', function() {
-      return it('should update the current time on every timeline', function() {
-        var t, time;
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 500,
-          delay: 200
-        }));
-        t.add(new Timeline({
-          duration: 500,
-          delay: 100
-        }));
-        spyOn(t.timelines[0], 'update');
-        spyOn(t.timelines[1], 'update');
-        t.update(time = Date.now() + 200);
-        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
-        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
-      });
-    });
     describe('start method ->', function() {
       it('should get the start time', function() {
         var t;

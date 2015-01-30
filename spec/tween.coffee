@@ -18,16 +18,6 @@ describe 'Tween ->', ->
       expect(t.duration).toBe 700
       t.add new Timeline duration: 500, delay: 200, repeat: 1
       expect(t.duration).toBe 1400
-  describe 'update method ->', ->
-    it 'should update the current time on every timeline',->
-      t = new Tween
-      t.add new Timeline duration: 500, delay: 200
-      t.add new Timeline duration: 500, delay: 100
-      spyOn t.timelines[0], 'update'
-      spyOn t.timelines[1], 'update'
-      t.update time = Date.now() + 200
-      expect(t.timelines[0].update).toHaveBeenCalledWith time
-      expect(t.timelines[1].update).toHaveBeenCalledWith time
   describe 'start method ->', ->
     it 'should get the start time',->
       t = new Tween

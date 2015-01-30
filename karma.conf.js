@@ -59,105 +59,7 @@ module.exports = function(config) {
       platform: 'Windows 8.1',
       version: '11'
     }
-    // // sl_chrome_26: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'chrome',
-    // //   platform: 'Windows XP',
-    // //   version: '26'
-    // // },
-
-    // sl_chrome_35: {
-    //   base: 'SauceLabs',
-    //   browserName: 'chrome',
-    //   platform: 'Windows 7',
-    //   version: '35'
-    // },
-
-    // sl_safari_6: {
-    //   base: 'SauceLabs',
-    //   browserName: 'safari',
-    //   platform: 'OS X 10.8',
-    //   version: '6'
-    // },
-    // // sl_safari_7: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'safari',
-    // //   platform: 'OS X 10.9',
-    // //   version: '7'
-    // // },
-    // // sl_safari_8: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'safari',
-    // //   platform: 'OS X 10.10',
-    // //   version: '8'
-    // // },
-
-    // // sl_ios_safari_71: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'iphone',
-    // //   platform: 'OS X 10.9',
-    // //   version: '7.1'
-    // // },
-    // // sl_ios_safari_8: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'iphone',
-    // //   platform: 'OS X 10.9',
-    // //   version: '8'
-    // // },
-    // sl_ios_safari_81: {
-    //   base: 'SauceLabs',
-    //   browserName: 'ipad',
-    //   platform: 'OS X 10.9',
-    //   version: '8.1'
-    // },
-
-    // // sl_firefox_4: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'firefox',
-    // //   version: '4'
-    // // },
-    // sl_firefox_33: {
-    //   base: 'SauceLabs',
-    //   browserName: 'firefox',
-    //   version: '33'
-    // },
-
-    // // sl_opera: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'opera',
-    // //   platform: 'Windows 7',
-    // //   version: '12'
-    // // },
-
-    // // sl_android: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'android',
-    // //   platform: 'linux',
-    // //   version: '4.4'
-    // // },
-
-    // sl_ie_9: {
-    //   base: 'SauceLabs',
-    //   browserName: 'internet explorer',
-    //   platform: 'Windows 7',
-    //   version: '9'
-    // }
-    // // sl_ie_10: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'internet explorer',
-    // //   platform: 'Windows 8',
-    // //   version: '10'
-    // // },
-    // // sl_ie_11: {
-    // //   base: 'SauceLabs',
-    // //   browserName: 'internet explorer',
-    // //   platform: 'Windows 8.1',
-    // //   version: '11'
-    // // }
-
-
-
-    
+   
   };
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
@@ -183,14 +85,14 @@ module.exports = function(config) {
     files: [
       // 'dist/**/*.js',
       // 'spec/**/*.js',
-      // 'dist/h.js',
-      // 'spec/h.js',
+      'dist/h.js',
+      'spec/h.js',
       // 'dist/timeline.js',
       // 'spec/timeline.js',
-      // 'dist/tween.js',
+      'dist/tween.js',
       // 'spec/tween.js',
-      'dist/transit.js',
-      'spec/transit.js'
+      'dist/tweener.js',
+      'spec/tweener.js'
     ],
 
     // list of files to exclude

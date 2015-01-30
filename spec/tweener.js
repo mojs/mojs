@@ -1,26 +1,126 @@
 (function() {
   var Timeline, Tween, t;
 
-  t = window.mojs.tweenner;
+  t = window.mojs.tweener;
 
   Tween = window.mojs.Tween;
 
   Timeline = window.mojs.Timeline;
 
   describe('Twenner ->', function() {
-    return describe('loop ->', function() {
-      return it('should loop over', function(dfr) {
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 500,
-          delay: 200
-        }));
+    afterEach(function() {
+      t.stopLoop();
+      return t.tweens.length = 0;
+    });
+    beforeEach(function() {
+      t.stopLoop();
+      return t.tweens.length = 0;
+    });
+    it('have tweens array', function() {
+      expect(t.tweens).toBeDefined();
+      return expect(t.tweens instanceof Array).toBe(true);
+    });
+    describe('loop ->', function() {
+      it('should loop over', function(dfr) {
         t.startLoop();
+        t.add(new Tween);
         spyOn(t, 'loop');
         return setTimeout(function() {
           expect(t.loop).toHaveBeenCalled();
           return dfr();
+        }, 100);
+      });
+      it('should call update fun', function(dfr) {
+        t.startLoop();
+        spyOn(t, 'update');
+        return setTimeout(function() {
+          expect(t.update).toHaveBeenCalledWith(jasmine.any(Number));
+          return dfr();
+        }, 100);
+      });
+      return it('should stop at the end', function(dfr) {
+        t.add(new Tween);
+        t.startLoop();
+        setTimeout((function() {
+          return t.tweens[0].update = function() {
+            return true;
+          };
+        }), 100);
+        return setTimeout(function() {
+          expect(t.isRunning).toBe(false);
+          return dfr();
         }, 200);
+      });
+    });
+    describe('startLoop method ->', function() {
+      it('should call loop method', function(dfr) {
+        spyOn(t, 'loop');
+        t.startLoop();
+        return setTimeout(function() {
+          expect(t.loop).toHaveBeenCalled();
+          return dfr();
+        }, 60);
+      });
+      it('should set isRunning flag', function() {
+        expect(t.isRunning).toBeFalsy();
+        t.startLoop();
+        return expect(t.isRunning).toBe(true);
+      });
+      it('should call loop only once', function() {
+        t.startLoop();
+        spyOn(t, 'loop');
+        t.startLoop();
+        return expect(t.loop).not.toHaveBeenCalled();
+      });
+      return it('should start only 1 concurrent loop', function() {
+        t.startLoop();
+        expect(t.isRunning).toBe(true);
+        spyOn(window, 'requestAnimationFrame');
+        t.startLoop();
+        return expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+      });
+    });
+    describe('stopLoop method ->', function() {
+      return it('should set isRunning to false', function() {
+        t.startLoop();
+        t.stopLoop();
+        return expect(t.isRunning).toBe(false);
+      });
+    });
+    describe('add ->', function() {
+      it('should add to tweens', function() {
+        t.add(new Tween);
+        expect(t.tweens.length).toBe(1);
+        return expect(t.tweens[0] instanceof Tween).toBe(true);
+      });
+      return it('should call startLoop method', function() {
+        spyOn(t, 'startLoop');
+        t.add(new Tween);
+        return expect(t.startLoop).toHaveBeenCalled();
+      });
+    });
+    describe('remove ->', function() {
+      return it('should remove a tween', function() {
+        var t1, t2;
+        t1 = new Tween;
+        t2 = new Tween;
+        t.add(t1);
+        t.add(t2);
+        expect(t.tweens.length).toBe(2);
+        t.remove(t2);
+        return expect(t.tweens.length).toBe(1);
+      });
+    });
+    return describe('update method ->', function() {
+      return it('should update the current time on every timeline', function() {
+        var time;
+        t.add(new Tween);
+        t.add(new Tween);
+        spyOn(t.tweens[0], 'update');
+        spyOn(t.tweens[1], 'update');
+        t.update(time = Date.now() + 200);
+        expect(t.tweens[0].update).toHaveBeenCalledWith(time);
+        return expect(t.tweens[1].update).toHaveBeenCalledWith(time);
       });
     });
   });

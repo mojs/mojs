@@ -295,31 +295,6 @@ Helpers = (function() {
     return str.charAt(0).toUpperCase() + str.substring(1);
   };
 
-  Helpers.prototype.startAnimationLoop = function() {
-    if (h.isAnimateLoop) {
-      return h;
-    }
-    h.isAnimateLoop = true;
-    requestAnimationFrame(h.animationLoop);
-    return this;
-  };
-
-  Helpers.prototype.stopAnimationLoop = function() {
-    return h.isAnimateLoop = false;
-  };
-
-  Helpers.prototype.animationLoop = function() {
-    if (!h.TWEEN.getAll().length) {
-      h.isAnimateLoop = false;
-    }
-    if (!h.isAnimateLoop) {
-      return h;
-    }
-    h.TWEEN.update();
-    requestAnimationFrame(h.animationLoop);
-    return this;
-  };
-
   Helpers.prototype.parseRand = function(string) {
     var rand, randArr, units;
     randArr = string.split(/rand\(|\,|\)/);

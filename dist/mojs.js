@@ -730,13 +730,12 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var i, _results;
+    var i;
     i = this.timelines.length;
-    _results = [];
     while (i--) {
-      _results.push(this.timelines[i].update(time));
+      this.timelines[i].update(time);
     }
-    return _results;
+    return false;
   };
 
   Tween.prototype.start = function() {
@@ -751,33 +750,6 @@ Tween = (function() {
       this.timelines[i].start(this.startTime);
     }
     return this.startLoop();
-  };
-
-  Tween.prototype.loop = function() {
-    var time, _ref;
-    if (!this.isRunning) {
-      return this;
-    }
-    time = Date.now();
-    this.update(time);
-    if (time >= this.endTime) {
-      this.isRunning = false;
-      return (_ref = this.o.onComplete) != null ? _ref.apply(this) : void 0;
-    }
-    requestAnimationFrame(this.loop);
-    return this;
-  };
-
-  Tween.prototype.startLoop = function() {
-    if (this.isRunning) {
-      return;
-    }
-    this.isRunning = true;
-    return requestAnimationFrame(this.loop);
-  };
-
-  Tween.prototype.stopLoop = function() {
-    return this.isRunning = false;
   };
 
   return Tween;
@@ -1744,31 +1716,6 @@ Helpers = (function() {
       throw Error('String expected - nothing to capitalize');
     }
     return str.charAt(0).toUpperCase() + str.substring(1);
-  };
-
-  Helpers.prototype.startAnimationLoop = function() {
-    if (h.isAnimateLoop) {
-      return h;
-    }
-    h.isAnimateLoop = true;
-    requestAnimationFrame(h.animationLoop);
-    return this;
-  };
-
-  Helpers.prototype.stopAnimationLoop = function() {
-    return h.isAnimateLoop = false;
-  };
-
-  Helpers.prototype.animationLoop = function() {
-    if (!h.TWEEN.getAll().length) {
-      h.isAnimateLoop = false;
-    }
-    if (!h.isAnimateLoop) {
-      return h;
-    }
-    h.TWEEN.update();
-    requestAnimationFrame(h.animationLoop);
-    return this;
   };
 
   Helpers.prototype.parseRand = function(string) {

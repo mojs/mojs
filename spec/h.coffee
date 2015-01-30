@@ -434,62 +434,6 @@ describe 'Helpers ->', ->
         expect(colorObj.g)  .toBe 200
         expect(colorObj.b)  .toBe 100
         expect(colorObj.a)  .toBe .5
-    describe 'animation loop ->', ->
-      it 'should have TWEEN object', ->
-        expect(h.TWEEN).toBeDefined()
-      it 'update Tweens on loop', (dfr)->
-        spyOn h.TWEEN, 'update'
-        tween = new h.TWEEN.Tween({p:0}).to({p:1}, 120)
-          .start()
-        h.startAnimationLoop()
-        setTimeout ->
-          expect(h.TWEEN.update).toHaveBeenCalled()
-          dfr()
-        , 50
-      it 'should start animation loop', (dfr)->
-        spyOn h, 'animationLoop'
-        h.startAnimationLoop()
-        setTimeout ->
-          expect(h.animationLoop).toHaveBeenCalled()
-          dfr()
-        , 160
-      it 'should stop animation loop', (dfr)->
-        h.stopAnimationLoop()
-        setTimeout ->
-          spyOn h, 'animationLoop'
-          setTimeout ->
-            expect(h.animationLoop).not.toHaveBeenCalled()
-            dfr()
-          , 50
-        , 50
-
-      it 'should stop itself if there is no tween left', (dfr)->
-        tween = new h.TWEEN.Tween({p:0}).to({p:1}, 20)
-          .start()
-        h.startAnimationLoop()
-        setTimeout ->
-          h.TWEEN.removeAll()
-          spyOn h, 'animationLoop'
-          setTimeout ->
-            expect(h.animationLoop).not.toHaveBeenCalled()
-            expect(h.isAnimateLoop).toBe false
-            dfr()
-          , 50
-        , 50
-
-      it 'should start only 1 concurrent loop', (dfr)->
-        h.stopAnimationLoop()
-        setTimeout ->
-          spyOn h, 'animationLoop'
-          h.isAnimateLoop = true
-          h.startAnimationLoop()
-          setTimeout ->
-            expect(h.animationLoop).not.toHaveBeenCalled()
-            h.isAnimateLoop = false
-            dfr()
-          , 34
-        , 34
-
 
 
 
