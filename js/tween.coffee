@@ -1,6 +1,8 @@
 h = require './h'
+t = require './tweener'
 
 class Tween
+  t: t
   constructor:(@o={})-> @vars(); @
   vars:->
     @timelines = []; @duration = 0
@@ -12,13 +14,15 @@ class Tween
     i = @timelines.length
     while(i--)
       @timelines[i].update time
-    false
+    if time >= @endTime
+      !@isCompleted and @o.onComplete?.apply @
+      return @isCompleted = true
   start:->
     @startTime = Date.now(); @endTime = @startTime + @duration
     i = @timelines.length; @o.onStart?.apply @
     while(i--)
       @timelines[i].start @startTime
-    @startLoop()
+    @t.add @
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
@@ -28,5 +32,4 @@ if (typeof module is "object") and (typeof module.exports is "object")
 ### istanbul ignore next ###
 window?.mojs ?= {}
 window?.mojs.Tween = Tween
-
 

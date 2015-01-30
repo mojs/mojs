@@ -1,5 +1,6 @@
 Tween    = window.mojs.Tween
 Timeline = window.mojs.Timeline
+tweener  = window.mojs.tweener
 
 describe 'Tween ->', ->
   it 'should have timelines var', ->
@@ -34,11 +35,11 @@ describe 'Tween ->', ->
       t.start()
       expect(t.timelines[0].start).toHaveBeenCalledWith t.startTime
       expect(t.timelines[1].start).toHaveBeenCalledWith t.startTime
-    it 'should call the startLoop method',->
+    it 'should add itself to tweener',->
       t = new Tween
-      spyOn t, 'startLoop'
+      spyOn t.t, 'add'
       t.start()
-      expect(t.startLoop).toHaveBeenCalled()
+      expect(t.t.add).toHaveBeenCalled()
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
       t = new Tween onComplete: ->
@@ -78,3 +79,19 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 20
       t.start()
       expect(isRightScope).toBe(true)
+  describe 'update method ->', ->
+    it 'should update the current time on every timeline',->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      t.update time = Date.now() + 200
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
+    it 'should return true is ended',->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.start()
+      expect(t.update(Date.now() + 2000)).toBe true

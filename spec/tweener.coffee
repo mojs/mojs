@@ -27,7 +27,7 @@ describe 'Twenner ->', ->
       t.add new Tween
       t.startLoop()
       setTimeout (-> t.tweens[0].update = -> true), 100
-      setTimeout -> expect(t.isRunning).toBe(false); dfr() , 200
+      setTimeout (-> expect(t.isRunning).toBe(false); dfr()), 200
   describe 'startLoop method ->', ->
     it 'should call loop method', (dfr)->
       spyOn t, 'loop'

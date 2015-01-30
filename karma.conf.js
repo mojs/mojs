@@ -85,14 +85,14 @@ module.exports = function(config) {
     files: [
       // 'dist/**/*.js',
       // 'spec/**/*.js',
+      'dist/tweener.js',
+      // 'spec/tweener.js',
       'dist/h.js',
       'spec/h.js',
-      // 'dist/timeline.js',
-      // 'spec/timeline.js',
+      'dist/timeline.js',
+      'spec/timeline.js',
       'dist/tween.js',
-      // 'spec/tween.js',
-      'dist/tweener.js',
-      'spec/tweener.js'
+      'spec/tween.js'
     ],
 
     // list of files to exclude

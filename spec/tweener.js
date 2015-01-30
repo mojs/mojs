@@ -46,10 +46,10 @@
             return true;
           };
         }), 100);
-        return setTimeout(function() {
+        return setTimeout((function() {
           expect(t.isRunning).toBe(false);
           return dfr();
-        }, 200);
+        }), 200);
       });
     });
     describe('startLoop method ->', function() {

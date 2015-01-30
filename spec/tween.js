@@ -1,9 +1,11 @@
 (function() {
-  var Timeline, Tween;
+  var Timeline, Tween, tweener;
 
   Tween = window.mojs.Tween;
 
   Timeline = window.mojs.Timeline;
+
+  tweener = window.mojs.tweener;
 
   describe('Tween ->', function() {
     it('should have timelines var', function() {
@@ -62,12 +64,12 @@
         expect(t.timelines[0].start).toHaveBeenCalledWith(t.startTime);
         return expect(t.timelines[1].start).toHaveBeenCalledWith(t.startTime);
       });
-      return it('should call the startLoop method', function() {
+      return it('should add itself to tweener', function() {
         var t;
         t = new Tween;
-        spyOn(t, 'startLoop');
+        spyOn(t.t, 'add');
         t.start();
-        return expect(t.startLoop).toHaveBeenCalled();
+        return expect(t.t.add).toHaveBeenCalled();
       });
     });
     describe('onComplete callback ->', function() {
@@ -128,7 +130,7 @@
         }), 100);
       });
     });
-    return describe('onStart callback ->', function() {
+    describe('onStart callback ->', function() {
       it('should be defined', function() {
         var t;
         t = new Tween({
@@ -161,6 +163,39 @@
         }));
         t.start();
         return expect(isRightScope).toBe(true);
+      });
+    });
+    return describe('update method ->', function() {
+      it('should update the current time on every timeline', function() {
+        var t, time;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(new Timeline({
+          duration: 500,
+          delay: 100
+        }));
+        spyOn(t.timelines[0], 'update');
+        spyOn(t.timelines[1], 'update');
+        t.update(time = Date.now() + 200);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
+        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+      });
+      return it('should return true is ended', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(new Timeline({
+          duration: 500,
+          delay: 100
+        }));
+        t.start();
+        return expect(t.update(Date.now() + 2000)).toBe(true);
       });
     });
   });

@@ -1,8 +1,12 @@
-var Tween, h;
+var Tween, h, t;
 
 h = require('./h');
 
+t = require('./tweener');
+
 Tween = (function() {
+  Tween.prototype.t = t;
+
   function Tween(o) {
     this.o = o != null ? o : {};
     this.vars();
@@ -21,12 +25,15 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var i;
+    var i, _ref;
     i = this.timelines.length;
     while (i--) {
       this.timelines[i].update(time);
     }
-    return false;
+    if (time >= this.endTime) {
+      !this.isCompleted && ((_ref = this.o.onComplete) != null ? _ref.apply(this) : void 0);
+      return this.isCompleted = true;
+    }
   };
 
   Tween.prototype.start = function() {
@@ -40,7 +47,7 @@ Tween = (function() {
     while (i--) {
       this.timelines[i].start(this.startTime);
     }
-    return this.startLoop();
+    return this.t.add(this);
   };
 
   return Tween;

@@ -707,11 +707,15 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./Timeline":2,"./Tween":4,"./bitsMap":6,"./h":10}],4:[function(require,module,exports){
-var Tween, h;
+var Tween, h, t;
 
 h = require('./h');
 
+t = require('./tweener');
+
 Tween = (function() {
+  Tween.prototype.t = t;
+
   function Tween(o) {
     this.o = o != null ? o : {};
     this.vars();
@@ -730,12 +734,15 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var i;
+    var i, _ref;
     i = this.timelines.length;
     while (i--) {
       this.timelines[i].update(time);
     }
-    return false;
+    if (time >= this.endTime) {
+      !this.isCompleted && ((_ref = this.o.onComplete) != null ? _ref.apply(this) : void 0);
+      return this.isCompleted = true;
+    }
   };
 
   Tween.prototype.start = function() {
@@ -749,7 +756,7 @@ Tween = (function() {
     while (i--) {
       this.timelines[i].start(this.startTime);
     }
-    return this.startLoop();
+    return this.t.add(this);
   };
 
   return Tween;
@@ -782,7 +789,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;
 }
 
-},{"./h":10}],5:[function(require,module,exports){
+},{"./h":10,"./tweener":17}],5:[function(require,module,exports){
 var Bit, h;
 
 h = require('./h');
@@ -1835,7 +1842,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = h;
 }
 
-},{"./vendor/tween":17}],11:[function(require,module,exports){
+},{"./vendor/tween":18}],11:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -2073,6 +2080,138 @@ module.exports=require(1)
 },{"./transit":16}],16:[function(require,module,exports){
 module.exports=require(3)
 },{"./Timeline":2,"./Tween":4,"./bitsMap":6,"./h":10}],17:[function(require,module,exports){
+var Tweener, h, t;
+
+h = require('./h');
+
+(function() {
+  var k, lastTime, vendors, x;
+  lastTime = 0;
+  x = 0;
+  vendors = ["ms", "moz", "webkit", "o"];
+  while (x < vendors.length && !window.requestAnimationFrame) {
+    window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
+    k = window[vendors[x] + "CancelRequestAnimationFrame"];
+    window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || k;
+    ++x;
+  }
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = function(callback, element) {
+      var currTime, id, timeToCall;
+      currTime = new Date().getTime();
+      timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      id = window.setTimeout(function() {
+        callback(currTime + timeToCall);
+      }, timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
+  }
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function(id) {
+      clearTimeout(id);
+    };
+  }
+})();
+
+Tweener = (function() {
+  function Tweener(o) {
+    this.o = o != null ? o : {};
+    this.vars();
+    this;
+  }
+
+  Tweener.prototype.vars = function() {
+    this.tweens = [];
+    return this.loop = h.bind(this.loop, this);
+  };
+
+  Tweener.prototype.loop = function() {
+    var time;
+    if (!this.isRunning) {
+      return this;
+    }
+    time = Date.now();
+    this.update(time);
+    if (!this.tweens.length) {
+      return this.isRunning = false;
+    }
+    requestAnimationFrame(this.loop);
+    return this;
+  };
+
+  Tweener.prototype.startLoop = function() {
+    if (this.isRunning) {
+      return;
+    }
+    this.isRunning = true;
+    return requestAnimationFrame(this.loop);
+  };
+
+  Tweener.prototype.stopLoop = function() {
+    return this.isRunning = false;
+  };
+
+  Tweener.prototype.update = function(time) {
+    var i, _results;
+    i = this.tweens.length;
+    _results = [];
+    while (i--) {
+      if (this.tweens[i].update(time) === true) {
+        _results.push(this.remove(this.tweens[i]));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
+  Tweener.prototype.add = function(tween) {
+    this.tweens.push(tween);
+    return this.startLoop();
+  };
+
+  Tweener.prototype.remove = function(tween) {
+    var index;
+    index = this.tweens.indexOf(tween);
+    if (index !== -1) {
+      return this.tweens.splice(index, 1);
+    }
+  };
+
+  return Tweener;
+
+})();
+
+t = new Tweener;
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("tweener", [], function() {
+    return t;
+  });
+}
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = t;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.tweener = t;
+}
+
+},{"./h":10}],18:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
