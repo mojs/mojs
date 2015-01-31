@@ -8,9 +8,9 @@ h = require('./h');
 
 bitsMap = require('./bitsMap');
 
-Timeline = require('./Timeline');
+Timeline = require('./timeline');
 
-Tween = require('./Tween');
+Tween = require('./tween');
 
 Transit = (function(_super) {
   __extends(Transit, _super);

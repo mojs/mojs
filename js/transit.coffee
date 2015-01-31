@@ -4,8 +4,8 @@ h         = require './h'
 # TWEEN     = require './vendor/tween'
 bitsMap   = require './bitsMap'
 
-Timeline = require './Timeline'
-Tween    = require './Tween'
+Timeline = require './timeline'
+Tween    = require './tween'
 
 class Transit extends bitsMap.map.bit
   # TWEEN: TWEEN

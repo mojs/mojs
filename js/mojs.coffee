@@ -7,9 +7,9 @@
 # Transit   = require './transit'
 Burst     = require './burst'
 Swirl     = require './Swirl'
-Timeline  = require './Timeline'
-Tween     = require './Tween'
-Transit   = require './Transit'
+Timeline  = require './timeline'
+Tween     = require './tween'
+Transit   = require './transit'
 
 # t = new Tween
 # tw1 = new Timeline

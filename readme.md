@@ -7,6 +7,7 @@
 
 #### todo
 - add easing to timeline
+- cover raf polyfill
 - perf profile
 - add motion path
   - add movement arc
