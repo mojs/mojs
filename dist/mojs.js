@@ -139,7 +139,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Swirl = Swirl;
 }
 
-},{"./transit":14}],2:[function(require,module,exports){
+},{"./transit":15}],2:[function(require,module,exports){
 var Bit, h;
 
 h = require('./h');
@@ -302,7 +302,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"./h":7}],3:[function(require,module,exports){
+},{"./h":8}],3:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
 
 Bit = require('./bit');
@@ -367,7 +367,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":2,"./circle":5,"./cross":6,"./h":7,"./line":8,"./polygon":10,"./rect":11}],4:[function(require,module,exports){
+},{"./bit":2,"./circle":5,"./cross":6,"./h":8,"./line":9,"./polygon":11,"./rect":12}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, bitsMap, h,
@@ -656,7 +656,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":3,"./h":7,"./swirl":12,"./transit":14}],5:[function(require,module,exports){
+},{"./bitsMap":3,"./h":8,"./swirl":13,"./transit":15}],5:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -778,6 +778,264 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],7:[function(require,module,exports){
+var Easing, easing;
+
+Easing = (function() {
+  function Easing() {}
+
+  Easing.prototype.Linear = {
+    None: function(k) {
+      return k;
+    }
+  };
+
+  Easing.prototype.Quadratic = {
+    In: function(k) {
+      return k * k;
+    },
+    Out: function(k) {
+      return k * (2 - k);
+    },
+    InOut: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k;
+      }
+      return -0.5 * (--k * (k - 2) - 1);
+    }
+  };
+
+  Easing.prototype.Cubic = {
+    In: function(k) {
+      return k * k * k;
+    },
+    Out: function(k) {
+      return --k * k * k + 1;
+    },
+    InOut: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k * k;
+      }
+      return 0.5 * ((k -= 2) * k * k + 2);
+    }
+  };
+
+  Easing.prototype.Quartic = {
+    In: function(k) {
+      return k * k * k * k;
+    },
+    Out: function(k) {
+      return 1 - (--k * k * k * k);
+    },
+    InOut: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k * k * k;
+      }
+      return -0.5 * ((k -= 2) * k * k * k - 2);
+    }
+  };
+
+  Easing.prototype.Quintic = {
+    In: function(k) {
+      return k * k * k * k * k;
+    },
+    Out: function(k) {
+      return --k * k * k * k * k + 1;
+    },
+    InOut: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k * k * k * k;
+      }
+      return 0.5 * ((k -= 2) * k * k * k * k + 2);
+    }
+  };
+
+  Easing.prototype.Sinusoidal = {
+    In: function(k) {
+      return 1 - Math.cos(k * Math.PI / 2);
+    },
+    Out: function(k) {
+      return Math.sin(k * Math.PI / 2);
+    },
+    InOut: function(k) {
+      return 0.5 * (1 - Math.cos(Math.PI * k));
+    }
+  };
+
+  Easing.prototype.Exponential = {
+    In: function(k) {
+      if (k === 0) {
+        return 0;
+      } else {
+        return Math.pow(1024, k - 1);
+      }
+    },
+    Out: function(k) {
+      if (k === 1) {
+        return 1;
+      } else {
+        return 1 - Math.pow(2, -10 * k);
+      }
+    },
+    InOut: function(k) {
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      if ((k *= 2) < 1) {
+        return 0.5 * Math.pow(1024, k - 1);
+      }
+      return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+    }
+  };
+
+  Easing.prototype.Circular = {
+    In: function(k) {
+      return 1 - Math.sqrt(1 - k * k);
+    },
+    Out: function(k) {
+      return Math.sqrt(1 - (--k * k));
+    },
+    InOut: function(k) {
+      if ((k *= 2) < 1) {
+        return -0.5 * (Math.sqrt(1 - k * k) - 1);
+      }
+      return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+    }
+  };
+
+  Easing.prototype.Elastic = {
+    In: function(k) {
+      var a, p, s;
+      s = void 0;
+      p = 0.4;
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      a = 1;
+      s = p / 4;
+      return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+    },
+    Out: function(k) {
+      var a, p, s;
+      s = void 0;
+      p = 0.4;
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      a = 1;
+      s = p / 4;
+      return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
+    },
+    InOut: function(k) {
+      var a, p, s;
+      s = void 0;
+      p = 0.4;
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      a = 1;
+      s = p / 4;
+      if ((k *= 2) < 1) {
+        return -0.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+      }
+      return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+    }
+  };
+
+  Easing.prototype.Back = {
+    In: function(k) {
+      var s;
+      s = 1.70158;
+      return k * k * ((s + 1) * k - s);
+    },
+    Out: function(k) {
+      var s;
+      s = 1.70158;
+      return --k * k * ((s + 1) * k + s) + 1;
+    },
+    InOut: function(k) {
+      var s;
+      s = 1.70158 * 1.525;
+      if ((k *= 2) < 1) {
+        return 0.5 * (k * k * ((s + 1) * k - s));
+      }
+      return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+    }
+  };
+
+  Easing.prototype.Bounce = {
+    In: function(k) {
+      return 1 - easing.Bounce.Out(1 - k);
+    },
+    Out: function(k) {
+      if (k < (1 / 2.75)) {
+        return 7.5625 * k * k;
+      } else if (k < (2 / 2.75)) {
+        return 7.5625 * (k -= 1.5 / 2.75) * k + 0.75;
+      } else if (k < (2.5 / 2.75)) {
+        return 7.5625 * (k -= 2.25 / 2.75) * k + 0.9375;
+      } else {
+        return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
+      }
+    },
+    InOut: function(k) {
+      if (k < 0.5) {
+        return easing.Bounce.In(k * 2) * 0.5;
+      }
+      return easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+    }
+  };
+
+  return Easing;
+
+})();
+
+easing = new Easing;
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("easing", [], function() {
+    return easing;
+  });
+}
+
+
+/* istanbul ignore next */
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = easing;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.easing = easing;
+}
+
+},{}],8:[function(require,module,exports){
 var Helpers, TWEEN, h;
 
 TWEEN = require('./vendor/tween');
@@ -1192,7 +1450,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = h;
 }
 
-},{"./vendor/tween":17}],8:[function(require,module,exports){
+},{"./vendor/tween":18}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -1248,7 +1506,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":2}],9:[function(require,module,exports){
+},{"./bit":2}],10:[function(require,module,exports){
 var Burst, Swirl, Timeline, Transit, Tween, burst;
 
 Burst = require('./burst');
@@ -1264,7 +1522,7 @@ Transit = require('./transit');
 burst = new Transit({
   x: 300,
   y: 150,
-  duration: 600,
+  duration: 6000,
   points: 10,
   radius: {
     0: 100
@@ -1272,7 +1530,9 @@ burst = new Transit({
   isSwirl: true,
   swirlFrequency: 'rand(0, 5)',
   swirlSize: 10,
-  randomRadius: 1
+  randomRadius: 1,
+  easing: 'Bounce.Out',
+  isShowEnd: true
 });
 
 document.body.addEventListener('click', function(e) {
@@ -1282,7 +1542,7 @@ document.body.addEventListener('click', function(e) {
   });
 });
 
-},{"./Swirl":1,"./burst":4,"./timeline":13,"./transit":14,"./tween":15}],10:[function(require,module,exports){
+},{"./Swirl":1,"./burst":4,"./timeline":14,"./transit":15,"./tween":16}],11:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1362,7 +1622,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"./bit":2,"./h":7}],11:[function(require,module,exports){
+},{"./bit":2,"./h":8}],12:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -1424,12 +1684,14 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":2}],12:[function(require,module,exports){
+},{"./bit":2}],13:[function(require,module,exports){
 module.exports=require(1)
-},{"./transit":14}],13:[function(require,module,exports){
-var Timeline, h;
+},{"./transit":15}],14:[function(require,module,exports){
+var Easing, Timeline, h;
 
 h = require('./h');
+
+Easing = require('./easing');
 
 Timeline = (function() {
   Timeline.prototype.defaults = {
@@ -1437,6 +1699,7 @@ Timeline = (function() {
     delay: 0,
     repeat: 0,
     yoyo: false,
+    easing: 'Linear.None',
     durationElapsed: 0,
     delayElapsed: 0,
     onStart: null,
@@ -1451,11 +1714,14 @@ Timeline = (function() {
   }
 
   Timeline.prototype.vars = function() {
+    var easing;
     this.h = h;
     this.props = {};
     this.progress = 0;
     this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
-    return this.props.totalDuration = this.props.totalTime - this.o.delay;
+    this.props.totalDuration = this.props.totalTime - this.o.delay;
+    easing = h.splitEasing(this.o.easing);
+    return this.props.easing = typeof easing === 'function' ? easing : Easing[easing[0]][easing[1]];
   };
 
   Timeline.prototype.extendDefaults = function() {
@@ -1482,7 +1748,7 @@ Timeline = (function() {
       }
       elapsed = time - this.props.startTime;
       if (elapsed <= this.o.duration) {
-        this.progress = elapsed / this.o.duration;
+        this.setProc(elapsed / this.o.duration);
       } else {
         start = this.props.startTime;
         isFlip = false;
@@ -1494,25 +1760,30 @@ Timeline = (function() {
         if (isFlip) {
           start = start - this.o.duration;
           elapsed = time - start;
-          this.progress = elapsed / this.o.duration;
+          this.setProc(elapsed / this.o.duration);
           if (this.o.yoyo && this.o.repeat) {
-            this.progress = cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress);
+            this.setProc(cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress));
           }
         } else {
-          this.progress = 0;
+          this.setProc(0);
         }
       }
-      return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
+      return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
         if ((_ref1 = this.o.onComplete) != null) {
           _ref1.apply(this);
         }
         this.isCompleted = true;
-        this.progress = 1;
-        return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
+        this.setProc(1);
+        return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
       }
     }
+  };
+
+  Timeline.prototype.setProc = function(p) {
+    this.progress = p;
+    return this.easedProgress = this.props.easing(this.progress);
   };
 
   return Timeline;
@@ -1528,6 +1799,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Timeline;
 }
@@ -1541,11 +1815,14 @@ if (typeof window !== "undefined" && window !== null) {
   }
 }
 
+
+/* istanbul ignore next */
+
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Timeline = Timeline;
 }
 
-},{"./h":7}],14:[function(require,module,exports){
+},{"./easing":7,"./h":8}],15:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -1998,7 +2275,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":3,"./h":7,"./timeline":13,"./tween":15}],15:[function(require,module,exports){
+},{"./bitsMap":3,"./h":8,"./timeline":14,"./tween":16}],16:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('./h');
@@ -2082,7 +2359,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;
 }
 
-},{"./h":7,"./tweener":16}],16:[function(require,module,exports){
+},{"./h":8,"./tweener":17}],17:[function(require,module,exports){
 var Tweener, h, t;
 
 h = require('./h');
@@ -2121,8 +2398,7 @@ h = require('./h');
 })();
 
 Tweener = (function() {
-  function Tweener(o) {
-    this.o = o != null ? o : {};
+  function Tweener() {
     this.vars();
     this;
   }
@@ -2200,6 +2476,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = t;
 }
@@ -2213,11 +2492,14 @@ if (typeof window !== "undefined" && window !== null) {
   }
 }
 
+
+/* istanbul ignore next */
+
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.tweener = t;
 }
 
-},{"./h":7}],17:[function(require,module,exports){
+},{"./h":8}],18:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
@@ -3020,4 +3302,4 @@ if (typeof window !== "undefined" && window !== null) {
 })()
 
 
-},{}]},{},[9])
+},{}]},{},[10])

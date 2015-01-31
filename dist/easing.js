@@ -1,12 +1,15 @@
-var Easing;
+var Easing, easing;
 
-Easing = {
-  Linear: {
+Easing = (function() {
+  function Easing() {}
+
+  Easing.prototype.Linear = {
     None: function(k) {
       return k;
     }
-  },
-  Quadratic: {
+  };
+
+  Easing.prototype.Quadratic = {
     In: function(k) {
       return k * k;
     },
@@ -19,8 +22,9 @@ Easing = {
       }
       return -0.5 * (--k * (k - 2) - 1);
     }
-  },
-  Cubic: {
+  };
+
+  Easing.prototype.Cubic = {
     In: function(k) {
       return k * k * k;
     },
@@ -33,8 +37,9 @@ Easing = {
       }
       return 0.5 * ((k -= 2) * k * k + 2);
     }
-  },
-  Quartic: {
+  };
+
+  Easing.prototype.Quartic = {
     In: function(k) {
       return k * k * k * k;
     },
@@ -47,8 +52,9 @@ Easing = {
       }
       return -0.5 * ((k -= 2) * k * k * k - 2);
     }
-  },
-  Quintic: {
+  };
+
+  Easing.prototype.Quintic = {
     In: function(k) {
       return k * k * k * k * k;
     },
@@ -61,8 +67,9 @@ Easing = {
       }
       return 0.5 * ((k -= 2) * k * k * k * k + 2);
     }
-  },
-  Sinusoidal: {
+  };
+
+  Easing.prototype.Sinusoidal = {
     In: function(k) {
       return 1 - Math.cos(k * Math.PI / 2);
     },
@@ -72,8 +79,9 @@ Easing = {
     InOut: function(k) {
       return 0.5 * (1 - Math.cos(Math.PI * k));
     }
-  },
-  Exponential: {
+  };
+
+  Easing.prototype.Exponential = {
     In: function(k) {
       if (k === 0) {
         return 0;
@@ -100,8 +108,9 @@ Easing = {
       }
       return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
     }
-  },
-  Circular: {
+  };
+
+  Easing.prototype.Circular = {
     In: function(k) {
       return 1 - Math.sqrt(1 - k * k);
     },
@@ -114,8 +123,9 @@ Easing = {
       }
       return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
     }
-  },
-  Elastic: {
+  };
+
+  Easing.prototype.Elastic = {
     In: function(k) {
       var a, p, s;
       s = void 0;
@@ -161,8 +171,9 @@ Easing = {
       }
       return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
     }
-  },
-  Back: {
+  };
+
+  Easing.prototype.Back = {
     In: function(k) {
       var s;
       s = 1.70158;
@@ -181,10 +192,11 @@ Easing = {
       }
       return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
     }
-  },
-  Bounce: {
+  };
+
+  Easing.prototype.Bounce = {
     In: function(k) {
-      return 1 - Easing.Bounce.Out(1 - k);
+      return 1 - easing.Bounce.Out(1 - k);
     },
     Out: function(k) {
       if (k < (1 / 2.75)) {
@@ -199,19 +211,24 @@ Easing = {
     },
     InOut: function(k) {
       if (k < 0.5) {
-        return Easing.Bounce.In(k * 2) * 0.5;
+        return easing.Bounce.In(k * 2) * 0.5;
       }
-      return Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+      return easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
     }
-  }
-};
+  };
+
+  return Easing;
+
+})();
+
+easing = new Easing;
 
 
 /* istanbul ignore next */
 
 if ((typeof define === "function") && define.amd) {
-  define("Easing", [], function() {
-    return Easing;
+  define("easing", [], function() {
+    return easing;
   });
 }
 
@@ -219,7 +236,7 @@ if ((typeof define === "function") && define.amd) {
 /* istanbul ignore next */
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Easing;
+  module.exports = easing;
 }
 
 
@@ -235,5 +252,5 @@ if (typeof window !== "undefined" && window !== null) {
 /* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Easing = Easing;
+  window.mojs.easing = easing;
 }

@@ -266,7 +266,6 @@ class Transit extends bitsMap.map.bit
     it = @
     onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
     else null
-
     @timeline = new Timeline
       duration: @props.duration
       delay:    @props.delay

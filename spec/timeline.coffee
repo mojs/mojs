@@ -1,5 +1,6 @@
 Timeline = window.mojs.Timeline
-
+easing   = window.mojs.easing
+    
 describe 'Timeline ->', ->
   describe 'init ->', ->
     it 'calc totalDuration and totalTime', ->
@@ -75,13 +76,13 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 1000
       expect(t.progress).toBe 1
-    it 'should not call update method if timeline didn\'t isnt active -', ->
+    it 'should not call update method if timeline isnt active -', ->
       t = new Timeline(duration: 1000, onUpdate:->)
       spyOn t, 'onUpdate'
       t.start()
       t.update(Date.now() - 500)
       expect(t.onUpdate).not.toHaveBeenCalled()
-    it 'should not call update method if timeline didn\'t isnt active +', ->
+    it 'should not call update method if timeline isnt active +', ->
       cnt = 0
       t = new Timeline(duration: 1000, onUpdate:-> cnt++ )
       t.start(); t.update(Date.now() + 1500)
@@ -96,39 +97,39 @@ describe 'Timeline ->', ->
       t = new Timeline onUpdate: ->
       expect(t.o.onUpdate).toBeDefined()
     it 'should call onUpdate callback with the current progress', ->
-      t = new Timeline duration: 1000, onUpdate: ->
+      t = new Timeline duration: 1000, easing: 'bounce.out', onUpdate: ->
       spyOn t, 'onUpdate'
       t.start()
       t.update t.props.startTime + 500
-      expect(t.onUpdate).toHaveBeenCalledWith .5
+      expect(t.onUpdate).toHaveBeenCalledWith t.easedProgress
     it 'should have the right scope', ->
       isRightScope = false
       t = new Timeline onUpdate:-> isRightScope = @ instanceof Timeline
       t.start()
       t.update t.props.startTime + 200
       expect(isRightScope).toBe true
-describe 'onStart callback ->', ->
-  it 'should be defined', ->
-    t = new Timeline(onStart: ->)
-    t.start()
-    expect(t.o.onStart).toBeDefined()
-  it 'should call onStart callback', ->
-    t = new Timeline duration: 32, onStart:->
-    t.start()
-    spyOn(t.o, 'onStart')
-    t.update t.props.startTime + 1
-    expect(t.o.onStart).toHaveBeenCalled()
-  it 'should be called just once', ->
-    cnt = 0
-    t = new Timeline(duration: 32, onStart:-> cnt++).start()
-    t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
-    expect(cnt).toBe 1
-  it 'should have the right scope', ->
-    isRightScope = false
-    t = new Timeline(onStart:-> isRightScope = @ instanceof Timeline)
-    t.start()
-    t.update t.props.startTime + 1
-    expect(isRightScope).toBe true
+  describe 'onStart callback ->', ->
+    it 'should be defined', ->
+      t = new Timeline(onStart: ->)
+      t.start()
+      expect(t.o.onStart).toBeDefined()
+    it 'should call onStart callback', ->
+      t = new Timeline duration: 32, onStart:->
+      t.start()
+      spyOn(t.o, 'onStart')
+      t.update t.props.startTime + 1
+      expect(t.o.onStart).toHaveBeenCalled()
+    it 'should be called just once', ->
+      cnt = 0
+      t = new Timeline(duration: 32, onStart:-> cnt++).start()
+      t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
+      expect(cnt).toBe 1
+    it 'should have the right scope', ->
+      isRightScope = false
+      t = new Timeline(onStart:-> isRightScope = @ instanceof Timeline)
+      t.start()
+      t.update t.props.startTime + 1
+      expect(isRightScope).toBe true
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
       t = new Timeline onComplete: ->
@@ -172,22 +173,34 @@ describe 'onStart callback ->', ->
       t.update(time+30);  expect(t.progress).toBe 1
       expect(t.isCompleted).toBe true
 
-  # describe 'easing ->', ->
-  #   it 'should work with easing function', ->
-  #     easings = one: -> a = 1
-  #     byte = new Byte easing: easings.one
-  #     expect(byte.props.easing.toString()).toBe easings.one.toString()
-  #   it 'should work with easing function', (dfr)->
-  #     easings = one: -> a = 2
-  #     spyOn easings, 'one'
-  #     byte = new Byte easing: easings.one
-  #     byte.startTween()
-  #     setTimeout ->
-  #       expect(easings.one).toHaveBeenCalled()
-  #       dfr()
-  #     , 50
-
-
+  describe 'easing ->', ->
+    it 'should parse easing string', ->
+      t = new Timeline(easing: 'Linear.None')
+      expect(typeof t.props.easing).toBe 'function'
+    it 'should parse standart easing', ->
+      t = new Timeline(easing: 'Sinusoidal.Out', duration: 100)
+      t.start(); t.update(t.props.startTime + 50)
+      expect(t.easedProgress).toBe easing.Sinusoidal.Out t.progress
+    it 'should work with easing function', ->
+      easings = one: -> a = 1
+      t = new Timeline(easing: easings.one)
+      expect(t.props.easing.toString()).toBe easings.one.toString()
+    it 'should work with easing function', (dfr)->
+      easings = one:(k)-> k
+      spyOn easings, 'one'
+      t = new Timeline(easing: easings.one)
+      t.start(); t.update t.props.startTime + 40
+      setTimeout ->
+        expect(easings.one).toHaveBeenCalled()
+        dfr()
+      , 50
+  describe 'setProc method->', ->
+    it 'should set the current progress', ->
+      t = new Timeline(easing: 'Bounce.Out')
+      t.setProc .75
+      expect(t.progress).toBe .75
+      expect(t.easedProgress.toFixed(2)).toBe '0.97'
+      
 
 
 

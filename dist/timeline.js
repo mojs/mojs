@@ -1,6 +1,8 @@
-var Timeline, h;
+var Easing, Timeline, h;
 
 h = require('./h');
+
+Easing = require('./easing');
 
 Timeline = (function() {
   Timeline.prototype.defaults = {
@@ -8,6 +10,7 @@ Timeline = (function() {
     delay: 0,
     repeat: 0,
     yoyo: false,
+    easing: 'Linear.None',
     durationElapsed: 0,
     delayElapsed: 0,
     onStart: null,
@@ -22,11 +25,14 @@ Timeline = (function() {
   }
 
   Timeline.prototype.vars = function() {
+    var easing;
     this.h = h;
     this.props = {};
     this.progress = 0;
     this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
-    return this.props.totalDuration = this.props.totalTime - this.o.delay;
+    this.props.totalDuration = this.props.totalTime - this.o.delay;
+    easing = h.splitEasing(this.o.easing);
+    return this.props.easing = typeof easing === 'function' ? easing : Easing[easing[0]][easing[1]];
   };
 
   Timeline.prototype.extendDefaults = function() {
@@ -53,7 +59,7 @@ Timeline = (function() {
       }
       elapsed = time - this.props.startTime;
       if (elapsed <= this.o.duration) {
-        this.progress = elapsed / this.o.duration;
+        this.setProc(elapsed / this.o.duration);
       } else {
         start = this.props.startTime;
         isFlip = false;
@@ -65,25 +71,30 @@ Timeline = (function() {
         if (isFlip) {
           start = start - this.o.duration;
           elapsed = time - start;
-          this.progress = elapsed / this.o.duration;
+          this.setProc(elapsed / this.o.duration);
           if (this.o.yoyo && this.o.repeat) {
-            this.progress = cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress);
+            this.setProc(cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress));
           }
         } else {
-          this.progress = 0;
+          this.setProc(0);
         }
       }
-      return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
+      return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
         if ((_ref1 = this.o.onComplete) != null) {
           _ref1.apply(this);
         }
         this.isCompleted = true;
-        this.progress = 1;
-        return typeof this.onUpdate === "function" ? this.onUpdate(this.progress) : void 0;
+        this.setProc(1);
+        return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
       }
     }
+  };
+
+  Timeline.prototype.setProc = function(p) {
+    this.progress = p;
+    return this.easedProgress = this.props.easing(this.progress);
   };
 
   return Timeline;
@@ -99,6 +110,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Timeline;
 }
@@ -111,6 +125,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Timeline = Timeline;

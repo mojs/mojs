@@ -28,7 +28,7 @@ h = require './h'
 )()
 
 class Tweener
-  constructor:(@o={})-> @vars(); @
+  constructor:-> @vars(); @
   vars:-> @tweens = []; @loop = h.bind @loop, @
   loop:->
     return if !@isRunning
@@ -52,12 +52,13 @@ class Tweener
       @tweens.splice index, 1
 
 t = new Tweener
-
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "tweener", [], -> t
+### istanbul ignore next ###
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = t
 ### istanbul ignore next ###
 window?.mojs ?= {}
+### istanbul ignore next ###
 window?.mojs.tweener = t

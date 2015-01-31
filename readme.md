@@ -6,7 +6,6 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- add easing to timeline
 - cover raf polyfill
 - burst to timeline
 - perf profile

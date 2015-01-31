@@ -83,10 +83,10 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // 'dist/**/*.js',
-      // 'spec/**/*.js'
-      'dist/easing.js',
-      'spec/easing.js'
+      'dist/**/*.js',
+      'spec/**/*.js'
+      // 'dist/easing.js',
+      // 'spec/easing.js'
     ],
 
     // list of files to exclude

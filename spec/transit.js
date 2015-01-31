@@ -13,8 +13,6 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
 
-  console.log = function() {};
-
   console.warn = function() {};
 
   console.error = function() {};

@@ -1,47 +1,45 @@
-Easing =
+class Easing
   Linear: None: (k) -> k
   Quadratic:
-    In: (k) -> k * k
-    Out: (k) -> k * (2 - k)
-    InOut: (k) ->
+    In:     (k) -> k * k
+    Out:    (k) -> k * (2 - k)
+    InOut:  (k) ->
       return 0.5 * k * k  if (k *= 2) < 1
       -0.5 * (--k * (k - 2) - 1)
   Cubic:
-    In: (k) -> k * k * k
-    Out: (k) -> --k * k * k + 1
-    InOut: (k) ->
+    In:     (k) -> k * k * k
+    Out:    (k) -> --k * k * k + 1
+    InOut:  (k) ->
       return 0.5 * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k + 2)
   Quartic:
-    In: (k) -> k * k * k * k
-    Out: (k) -> 1 - (--k * k * k * k)
-    InOut: (k) ->
+    In:     (k) -> k * k * k * k
+    Out:    (k) -> 1 - (--k * k * k * k)
+    InOut:  (k) ->
       return 0.5 * k * k * k * k  if (k *= 2) < 1
       -0.5 * ((k -= 2) * k * k * k - 2)
   Quintic:
-    In: (k) ->
-      k * k * k * k * k
-    Out: (k) ->
-      --k * k * k * k * k + 1
-    InOut: (k) ->
+    In:     (k) -> k * k * k * k * k
+    Out:    (k) -> --k * k * k * k * k + 1
+    InOut:  (k) ->
       return 0.5 * k * k * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k * k * k + 2)
   Sinusoidal:
-    In: (k) -> 1 - Math.cos(k * Math.PI / 2)
-    Out: (k) -> Math.sin k * Math.PI / 2
-    InOut: (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
+    In:     (k) -> 1 - Math.cos(k * Math.PI / 2)
+    Out:    (k) -> Math.sin k * Math.PI / 2
+    InOut:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
   Exponential:
-    In: (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
-    Out: (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
-    InOut: (k) ->
+    In:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
+    Out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
+    InOut:  (k) ->
       return 0  if k is 0
       return 1  if k is 1
       return 0.5 * Math.pow(1024, k - 1)  if (k *= 2) < 1
       0.5 * (-Math.pow(2, -10 * (k - 1)) + 2)
   Circular:
-    In: (k) ->    1 - Math.sqrt(1 - k * k)
-    Out: (k) ->   Math.sqrt 1 - (--k * k)
-    InOut: (k) ->
+    In:     (k) ->    1 - Math.sqrt(1 - k * k)
+    Out:    (k) ->   Math.sqrt 1 - (--k * k)
+    InOut:  (k) ->
       return -0.5 * (Math.sqrt(1 - k * k) - 1) if (k *= 2) < 1
       0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1)
   Elastic:
@@ -96,7 +94,7 @@ Easing =
       0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2)
   Bounce:
     In: (k) ->
-      1 - Easing.Bounce.Out(1 - k)
+      1 - easing.Bounce.Out(1 - k)
     Out: (k) ->
       if k < (1 / 2.75)
         7.5625 * k * k
@@ -107,19 +105,20 @@ Easing =
       else
         7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375
     InOut: (k) ->
-      return Easing.Bounce.In(k * 2) * 0.5  if k < 0.5
-      Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5
+      return easing.Bounce.In(k * 2) * 0.5  if k < 0.5
+      easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5
 
+easing = new Easing
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
-  define "Easing", [], -> Easing
+  define "easing", [], -> easing
 ### istanbul ignore next ###
 if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Easing
+  module.exports = easing
 ### istanbul ignore next ###
 window?.mojs ?= {}
 ### istanbul ignore next ###
-window?.mojs.Easing = Easing
+window?.mojs.easing = easing
 
 
 

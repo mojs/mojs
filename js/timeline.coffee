@@ -1,4 +1,5 @@
 h = require './h'
+Easing = require './easing'
 
 class Timeline
   defaults:
@@ -6,6 +7,7 @@ class Timeline
     delay:    0
     repeat:   0
     yoyo:     false
+    easing:   'Linear.None'
     durationElapsed:  0
     delayElapsed:     0
     onStart:          null
@@ -15,6 +17,10 @@ class Timeline
     @h = h; @props = {}; @progress = 0
     @props.totalTime     = (@o.repeat+1)*(@o.duration+@o.delay)
     @props.totalDuration = @props.totalTime - @o.delay
+    easing = h.splitEasing @o.easing
+    @props.easing = if typeof easing is 'function' then easing
+    else Easing[easing[0]][easing[1]]# or (k)-> k
+
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
@@ -22,15 +28,13 @@ class Timeline
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->
-    # easings = h.splitEasing(@props.easing)
-    # ease = if typeof easings is 'function' then easings
-    # else TWEEN.Easing[easings[0]][easings[1]]
+    # time = @props.easing(time)
     if (time >= @props.startTime) and (time < @props.endTime)
       if !@isStarted then @o.onStart?.apply(@); @isStarted = true
       elapsed = time - @props.startTime
       # in the first repeat or without any repeats
       if elapsed <= @o.duration
-        @progress = elapsed/@o.duration
+        @setProc elapsed/@o.duration
       else # far in the repeats
         start = @props.startTime
         isFlip = false; cnt = 0
@@ -41,27 +45,31 @@ class Timeline
         if isFlip
           start = start - @o.duration
           elapsed = time - start
-          @progress = elapsed/@o.duration
+          @setProc elapsed/@o.duration
           # yoyo
           if @o.yoyo and @o.repeat
-            @progress = if cnt % 2 is 1 then @progress
+            @setProc if cnt % 2 is 1 then @progress
             # when reversed progress of 1 should be 0
             else 1-if @progress is 0 then 1 else @progress
         # is in start point + delay
-        else @progress = 0
-      @onUpdate? @progress
+        else @setProc 0
+      @onUpdate? @easedProgress
     else
       if time >= @props.endTime and !@isCompleted
         (@o.onComplete?.apply(@); @isCompleted = true)
-        @progress = 1; @onUpdate? @progress
+        @setProc 1; @onUpdate? @easedProgress
+
+  setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "Timeline", [], -> Timeline
+### istanbul ignore next ###
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = Timeline
 ### istanbul ignore next ###
 window?.mojs ?= {}
+### istanbul ignore next ###
 window?.mojs.Timeline = Timeline
 
 

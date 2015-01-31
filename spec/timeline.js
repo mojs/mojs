@@ -1,7 +1,9 @@
 (function() {
-  var Timeline;
+  var Timeline, easing;
 
   Timeline = window.mojs.Timeline;
+
+  easing = window.mojs.easing;
 
   describe('Timeline ->', function() {
     describe('init ->', function() {
@@ -145,7 +147,7 @@
         t.update(t.props.startTime + 1000);
         return expect(t.progress).toBe(1);
       });
-      it('should not call update method if timeline didn\'t isnt active -', function() {
+      it('should not call update method if timeline isnt active -', function() {
         var t;
         t = new Timeline({
           duration: 1000,
@@ -156,7 +158,7 @@
         t.update(Date.now() - 500);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
-      it('should not call update method if timeline didn\'t isnt active +', function() {
+      it('should not call update method if timeline isnt active +', function() {
         var cnt, t;
         cnt = 0;
         t = new Timeline({
@@ -180,7 +182,7 @@
         return expect(t.progress).toBe(1);
       });
     });
-    return describe('onUpdate callback ->', function() {
+    describe('onUpdate callback ->', function() {
       it('should be defined', function() {
         var t;
         t = new Timeline({
@@ -192,12 +194,13 @@
         var t;
         t = new Timeline({
           duration: 1000,
+          easing: 'bounce.out',
           onUpdate: function() {}
         });
         spyOn(t, 'onUpdate');
         t.start();
         t.update(t.props.startTime + 500);
-        return expect(t.onUpdate).toHaveBeenCalledWith(.5);
+        return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress);
       });
       return it('should have the right scope', function() {
         var isRightScope, t;
@@ -212,52 +215,51 @@
         return expect(isRightScope).toBe(true);
       });
     });
-  });
-
-  describe('onStart callback ->', function() {
-    it('should be defined', function() {
-      var t;
-      t = new Timeline({
-        onStart: function() {}
+    describe('onStart callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Timeline({
+          onStart: function() {}
+        });
+        t.start();
+        return expect(t.o.onStart).toBeDefined();
       });
-      t.start();
-      return expect(t.o.onStart).toBeDefined();
-    });
-    it('should call onStart callback', function() {
-      var t;
-      t = new Timeline({
-        duration: 32,
-        onStart: function() {}
+      it('should call onStart callback', function() {
+        var t;
+        t = new Timeline({
+          duration: 32,
+          onStart: function() {}
+        });
+        t.start();
+        spyOn(t.o, 'onStart');
+        t.update(t.props.startTime + 1);
+        return expect(t.o.onStart).toHaveBeenCalled();
       });
-      t.start();
-      spyOn(t.o, 'onStart');
-      t.update(t.props.startTime + 1);
-      return expect(t.o.onStart).toHaveBeenCalled();
-    });
-    it('should be called just once', function() {
-      var cnt, t;
-      cnt = 0;
-      t = new Timeline({
-        duration: 32,
-        onStart: function() {
-          return cnt++;
-        }
-      }).start();
-      t.update(t.props.startTime + 1);
-      t.update(t.props.startTime + 1);
-      return expect(cnt).toBe(1);
-    });
-    it('should have the right scope', function() {
-      var isRightScope, t;
-      isRightScope = false;
-      t = new Timeline({
-        onStart: function() {
-          return isRightScope = this instanceof Timeline;
-        }
+      it('should be called just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 32,
+          onStart: function() {
+            return cnt++;
+          }
+        }).start();
+        t.update(t.props.startTime + 1);
+        t.update(t.props.startTime + 1);
+        return expect(cnt).toBe(1);
       });
-      t.start();
-      t.update(t.props.startTime + 1);
-      return expect(isRightScope).toBe(true);
+      return it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Timeline({
+          onStart: function() {
+            return isRightScope = this instanceof Timeline;
+          }
+        });
+        t.start();
+        t.update(t.props.startTime + 1);
+        return expect(isRightScope).toBe(true);
+      });
     });
     describe('onComplete callback ->', function() {
       it('should be defined', function() {
@@ -303,7 +305,7 @@
         return expect(isRightScope).toBe(true);
       });
     });
-    return describe('yoyo option ->', function() {
+    describe('yoyo option ->', function() {
       it('should recieve yoyo option', function() {
         var t;
         t = new Timeline({
@@ -342,6 +344,67 @@
         t.update(time + 30);
         expect(t.progress).toBe(1);
         return expect(t.isCompleted).toBe(true);
+      });
+    });
+    describe('easing ->', function() {
+      it('should parse easing string', function() {
+        var t;
+        t = new Timeline({
+          easing: 'Linear.None'
+        });
+        return expect(typeof t.props.easing).toBe('function');
+      });
+      it('should parse standart easing', function() {
+        var t;
+        t = new Timeline({
+          easing: 'Sinusoidal.Out',
+          duration: 100
+        });
+        t.start();
+        t.update(t.props.startTime + 50);
+        return expect(t.easedProgress).toBe(easing.Sinusoidal.Out(t.progress));
+      });
+      it('should work with easing function', function() {
+        var easings, t;
+        easings = {
+          one: function() {
+            var a;
+            return a = 1;
+          }
+        };
+        t = new Timeline({
+          easing: easings.one
+        });
+        return expect(t.props.easing.toString()).toBe(easings.one.toString());
+      });
+      return it('should work with easing function', function(dfr) {
+        var easings, t;
+        easings = {
+          one: function(k) {
+            return k;
+          }
+        };
+        spyOn(easings, 'one');
+        t = new Timeline({
+          easing: easings.one
+        });
+        t.start();
+        t.update(t.props.startTime + 40);
+        return setTimeout(function() {
+          expect(easings.one).toHaveBeenCalled();
+          return dfr();
+        }, 50);
+      });
+    });
+    return describe('setProc method->', function() {
+      return it('should set the current progress', function() {
+        var t;
+        t = new Timeline({
+          easing: 'Bounce.Out'
+        });
+        t.setProc(.75);
+        expect(t.progress).toBe(.75);
+        return expect(t.easedProgress.toFixed(2)).toBe('0.97');
       });
     });
   });

@@ -19,7 +19,6 @@ class Polygon extends Bit
         angle:  (i*step)
         center: x: @props.x, y: @props.y
     d = ''
-    # console.log @radialPoints
     for point, i in @radialPoints
       d += "#{point.x.toFixed(4)},#{point.y.toFixed(4)} "
     @setAttr points:  d

@@ -5,7 +5,7 @@ h    = mojs.helpers
 ns   = 'http://www.w3.org/2000/svg'
 svg  = document.createElementNS?(ns, 'svg')
 
-console.log   = ->
+# console.log   = ->
 console.warn  = ->
 console.error = ->
 

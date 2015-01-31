@@ -36,8 +36,7 @@ h = require('./h');
 })();
 
 Tweener = (function() {
-  function Tweener(o) {
-    this.o = o != null ? o : {};
+  function Tweener() {
     this.vars();
     this;
   }
@@ -115,6 +114,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = t;
 }
@@ -127,6 +129,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.tweener = t;
