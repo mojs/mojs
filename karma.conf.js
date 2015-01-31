@@ -83,24 +83,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'dist/**/*.js',
-      'spec/**/*.js'
-      // 'dist/tween.js',
-      // 'spec/tween.js',
-      // 'dist/tweener.js',
-      // 'spec/tweener.js',
-      // 'dist/h.js',
-      // 'spec/h.js',
-      // 'dist/timeline.js',
-      // 'spec/timeline.js'
+      // 'dist/**/*.js',
+      // 'spec/**/*.js'
+      'dist/easing.js',
+      'spec/easing.js'
     ],
 
     // list of files to exclude
     exclude: [
       'dist/mojs.js',
       'dist/mojs.min.js'
-      // 'dist/bit.js',
-      // 'spec/bit.js',
       // 'dist/h.js',
       // 'spec/h.js',
       // 'dist/burst.js',
