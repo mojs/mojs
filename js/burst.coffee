@@ -5,6 +5,7 @@ bitsMap   = require './bitsMap'
 Transit   = require './transit'
 Swirl     = require './swirl'
 h         = require './h'
+Tween     = require './tween'
 
 class Burst extends Transit
   defaults:
@@ -98,6 +99,7 @@ class Burst extends Transit
       option.isSwirlLess    = !@props.isSwirl
       option.swirlSize      = @o.swirlSize
       option.swirlFrequency = @o.swirlFrequency
+      option.isTweenLess = true
       @props.randomAngle  and (option.angleShift = @generateRandomAngle())
       @props.randomRadius and (option.radiusScale = @generateRandomRadius())
       @transits.push new Swirl option
@@ -127,10 +129,30 @@ class Burst extends Transit
     @isPropChanged('shiftX')or@isPropChanged('shiftY')or@isPropChanged('angle')
   fillTransform:->
     "rotate(#{@props.angle}deg) translate(#{@props.shiftX}, #{@props.shiftY})"
-  setProgress:(progress)->
-    super; i = @transits.length
+  createTween:->
+    # if !@o.isTweenLess
+    @tween = new Tween
+    i = @transits.length
     while(i--)
-      @transits[i].setProgress(progress).draw()
+      @tween.add @transits[i].timeline
+    !@o.isRunLess and @startTween()
+    # it = @
+    # onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
+    # else null
+    # @timeline = new Timeline
+    #   duration: @props.duration
+    #   delay:    @props.delay
+    #   repeat:   @props.repeat-1
+    #   yoyo:     @props.yoyo
+    #   easing:   @props.easing
+    #   onUpdate:   (p)=> @setProgress p
+    #   onComplete: => @props.onComplete?.apply @
+    #   onStart:    => @props.onStart?.apply @
+    # !@o.isRunLess and @startTween()
+  # setProgress:(progress)->
+  #   super; i = @transits.length
+  #   # while(i--)
+  #   #   @transits[i].setProgress(progress).draw()
   calcSize:->
     largestSize = -1
     for transit, i in @transits

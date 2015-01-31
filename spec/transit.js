@@ -1246,6 +1246,16 @@
         });
         return expect(byte.tween).toBeDefined();
       });
+      it('should not create tween object if isTweenLess', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          },
+          isTweenLess: true
+        });
+        return expect(byte.tween).not.toBeDefined();
+      });
       it('should start tween after init', function(dfr) {
         var byte, isStarted;
         isStarted = false;

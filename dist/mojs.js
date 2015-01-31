@@ -370,7 +370,7 @@ if (typeof window !== "undefined" && window !== null) {
 },{"./bit":2,"./circle":5,"./cross":6,"./h":8,"./line":9,"./polygon":11,"./rect":12}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
-var Burst, Swirl, Transit, bitsMap, h,
+var Burst, Swirl, Transit, Tween, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -381,6 +381,8 @@ Transit = require('./transit');
 Swirl = require('./swirl');
 
 h = require('./h');
+
+Tween = require('./tween');
 
 Burst = (function(_super) {
   __extends(Burst, _super);
@@ -496,6 +498,7 @@ Burst = (function(_super) {
       option.isSwirlLess = !this.props.isSwirl;
       option.swirlSize = this.o.swirlSize;
       option.swirlFrequency = this.o.swirlFrequency;
+      option.isTweenLess = true;
       this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
       this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
       _results.push(this.transits.push(new Swirl(option)));
@@ -553,15 +556,14 @@ Burst = (function(_super) {
     return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
   };
 
-  Burst.prototype.setProgress = function(progress) {
-    var i, _results;
-    Burst.__super__.setProgress.apply(this, arguments);
+  Burst.prototype.createTween = function() {
+    var i;
+    this.tween = new Tween;
     i = this.transits.length;
-    _results = [];
     while (i--) {
-      _results.push(this.transits[i].setProgress(progress).draw());
+      this.tween.add(this.transits[i].timeline);
     }
-    return _results;
+    return !this.o.isRunLess && this.startTween();
   };
 
   Burst.prototype.calcSize = function() {
@@ -656,7 +658,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":3,"./h":8,"./swirl":13,"./transit":15}],5:[function(require,module,exports){
+},{"./bitsMap":3,"./h":8,"./swirl":13,"./transit":15,"./tween":16}],5:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -1519,20 +1521,31 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Transit({
+burst = new Burst({
   x: 300,
   y: 150,
-  duration: 6000,
-  points: 10,
+  duration: 1000,
   radius: {
     0: 100
   },
-  isSwirl: true,
   swirlFrequency: 'rand(0, 5)',
   swirlSize: 10,
-  randomRadius: 1,
-  easing: 'Bounce.Out',
-  isShowEnd: true
+  type: 'line',
+  points: 5,
+  stroke: {
+    'deeppink': 'orange'
+  },
+  childOptions: {
+    swirlFrequency: 'rand(0, 12)',
+    fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
+    points: 3,
+    type: ['rect', 'circle', 'polygon', 'circle'],
+    strokeWidth: 0,
+    radius: {
+      5: 0
+    },
+    duration: 800
+  }
 });
 
 document.body.addEventListener('click', function(e) {
@@ -2223,8 +2236,10 @@ Transit = (function(_super) {
         };
       })(this)
     });
-    this.tween = new Tween;
-    this.tween.add(this.timeline);
+    if (!this.o.isTweenLess) {
+      this.tween = new Tween;
+      this.tween.add(this.timeline);
+    }
     return !this.o.isRunLess && this.startTween();
   };
 
@@ -2242,7 +2257,8 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.startTween = function() {
-    return this.tween.start();
+    var _ref;
+    return (_ref = this.tween) != null ? _ref.start() : void 0;
   };
 
   return Transit;

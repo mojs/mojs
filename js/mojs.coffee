@@ -24,25 +24,31 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Transit
+burst = new Burst
   x:            300
   y:            150
-  duration:     6000
+  duration:     1000
+  # angle: {10:200}
   # delay:        1000
-  points:       10
+  # points:       10
   radius:        { 0: 100 }
-  isSwirl: true
+  # isSwirl: true
   swirlFrequency: 'rand(0, 5)'
   swirlSize:      10
-  randomRadius: 1
-  easing: 'Bounce.Out'
-  isShowEnd: true
-  # childOptions:
-  #   swirlFrequency: ['rand(0, 8)', 0, 0]
-  #   fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
-  #   points:       3
-  #   strokeWidth:  0
-  #   radius:       { 'rand(3, 6)': 0}
-  
+  # randomRadius: 0
+  # isShowEnd: true
+  type: 'line'
+  points: 5
+  stroke: {'deeppink': 'orange'}
+  childOptions:
+    swirlFrequency: 'rand(0, 12)'
+    fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
+    points:       3
+    type:         ['rect', 'circle', 'polygon', 'circle']
+    strokeWidth:  0
+    radius:       {5:0}
+    duration: 800
+    # duration:     'rand(400,1200)'
+
 document.body.addEventListener 'click', (e)->
   burst.run(x: e.x, y: e.y)

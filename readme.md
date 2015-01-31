@@ -6,15 +6,22 @@
 **! in active development - isn't ready yet !**
 
 #### todo
+- burst
+  - fix duration/tween props to all bits
+  - fix size calculation fix static bit radius
+  - add callbacks to burst tween itself
 - cover raf polyfill
-- burst to timeline
-- perf profile
+- perf profile + refactor
+  - check run reset values
+  - check burst run
+  - elastic easing detection + add to size
 - add motion path
   - add movement arc
 - add more shapes(bits)
 - add line animator
 - add custom easing handler
-- write/fork tween
+  - add path handler
+  - add spring
 - add spriter
 - add glare (is transition shorthand)
 - add stagger
@@ -22,9 +29,7 @@
 - add backgrounds
 - add line trails
 - add text tricks
-
-#### plan
 - add percent values for strokeDasharray/strokedashOffset
-
+- add stagger values for burst
 
 [@LegoMushroom](https://twitter.com/legomushroom)(Oleg Solomka) [legomushroom@gmail.com](mailto:legomushroom@gmail.com) 2015 MIT License

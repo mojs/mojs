@@ -1,6 +1,6 @@
 
 /* istanbul ignore next */
-var Burst, Swirl, Transit, bitsMap, h,
+var Burst, Swirl, Transit, Tween, bitsMap, h,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -11,6 +11,8 @@ Transit = require('./transit');
 Swirl = require('./swirl');
 
 h = require('./h');
+
+Tween = require('./tween');
 
 Burst = (function(_super) {
   __extends(Burst, _super);
@@ -126,6 +128,7 @@ Burst = (function(_super) {
       option.isSwirlLess = !this.props.isSwirl;
       option.swirlSize = this.o.swirlSize;
       option.swirlFrequency = this.o.swirlFrequency;
+      option.isTweenLess = true;
       this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
       this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
       _results.push(this.transits.push(new Swirl(option)));
@@ -183,15 +186,14 @@ Burst = (function(_super) {
     return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
   };
 
-  Burst.prototype.setProgress = function(progress) {
-    var i, _results;
-    Burst.__super__.setProgress.apply(this, arguments);
+  Burst.prototype.createTween = function() {
+    var i;
+    this.tween = new Tween;
     i = this.transits.length;
-    _results = [];
     while (i--) {
-      _results.push(this.transits[i].setProgress(progress).draw());
+      this.tween.add(this.transits[i].timeline);
     }
-    return _results;
+    return !this.o.isRunLess && this.startTween();
   };
 
   Burst.prototype.calcSize = function() {

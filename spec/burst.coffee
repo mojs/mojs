@@ -154,19 +154,35 @@ describe 'Burst ->', ->
       spyOn burst, 'addBitOptions'
       burst.calcSize()
       expect(burst.addBitOptions).toHaveBeenCalled()
-
-  describe 'setProgress method ->', ->
-    it 'should setProgress on all transits', ->
+  describe 'createTween method ->', ->
+    it 'should create tween', ->
       burst = new Burst
-        childOptions:
-          radius:      [{ 20: 50 }, 20]
-          strokeWidth: 20
-      burst.setProgress .5
-      expect(burst.transits[0].progress).toBe .5
-      expect(burst.transits[1].progress).toBe .5
-      expect(burst.transits[2].progress).toBe .5
-      expect(burst.transits[3].progress).toBe .5
-      expect(burst.transits[4].progress).toBe .5
+      expect(burst.tween).toBeDefined()
+    it 'should add timelines to tween', ->
+      burst = new Burst
+      expect(burst.tween.timelines.length).toBe 5
+    it 'should call startTween method', ->
+      burst = new Burst
+      spyOn burst, 'startTween'
+      burst.createTween()
+      expect(burst.startTween).toHaveBeenCalled()
+    it 'should not call startTween method if isRunLess', ->
+      burst = new Burst isRunLess: true
+      spyOn burst, 'startTween'
+      burst.createTween()
+      expect(burst.startTween).not.toHaveBeenCalled()
+  # describe 'setProgress method ->', ->
+  #   it 'should setProgress on all transits', ->
+  #     burst = new Burst
+  #       childOptions:
+  #         radius:      [{ 20: 50 }, 20]
+  #         strokeWidth: 20
+  #     burst.setProgress .5
+  #     expect(burst.transits[0].progress).toBe .5
+  #     expect(burst.transits[1].progress).toBe .5
+  #     expect(burst.transits[2].progress).toBe .5
+  #     expect(burst.transits[3].progress).toBe .5
+  #     expect(burst.transits[4].progress).toBe .5
   describe 'run method ->', ->
     it 'should call super', ->
       burst = new Burst radius: { 20: 50 }

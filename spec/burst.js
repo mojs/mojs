@@ -302,25 +302,32 @@
         return expect(burst.addBitOptions).toHaveBeenCalled();
       });
     });
-    describe('setProgress method ->', function() {
-      return it('should setProgress on all transits', function() {
+    describe('createTween method ->', function() {
+      it('should create tween', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst.tween).toBeDefined();
+      });
+      it('should add timelines to tween', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst.tween.timelines.length).toBe(5);
+      });
+      it('should call startTween method', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(burst, 'startTween');
+        burst.createTween();
+        return expect(burst.startTween).toHaveBeenCalled();
+      });
+      return it('should not call startTween method if isRunLess', function() {
         var burst;
         burst = new Burst({
-          childOptions: {
-            radius: [
-              {
-                20: 50
-              }, 20
-            ],
-            strokeWidth: 20
-          }
+          isRunLess: true
         });
-        burst.setProgress(.5);
-        expect(burst.transits[0].progress).toBe(.5);
-        expect(burst.transits[1].progress).toBe(.5);
-        expect(burst.transits[2].progress).toBe(.5);
-        expect(burst.transits[3].progress).toBe(.5);
-        return expect(burst.transits[4].progress).toBe(.5);
+        spyOn(burst, 'startTween');
+        burst.createTween();
+        return expect(burst.startTween).not.toHaveBeenCalled();
       });
     });
     describe('run method ->', function() {

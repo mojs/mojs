@@ -148,7 +148,6 @@ class Transit extends bitsMap.map.bit
   setProgress:(progress, isShow)->
     !isShow and @show()
     @onUpdate?(progress)
-
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
 
@@ -275,8 +274,8 @@ class Transit extends bitsMap.map.bit
       onUpdate:   (p)=> @setProgress p
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
-
-    @tween = new Tween; @tween.add @timeline
+    if !@o.isTweenLess
+      @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
   run:(o)->
     for key, value of o
@@ -284,7 +283,7 @@ class Transit extends bitsMap.map.bit
     @vars(); @calcSize(); @setElStyles()
     !@o.isDrawLess and @setProgress 0
     @startTween()
-  startTween:-> @tween.start()
+  startTween:-> @tween?.start()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

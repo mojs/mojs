@@ -687,6 +687,9 @@ describe 'Transit ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}
       expect(byte.tween).toBeDefined()
+    it 'should not create tween object if isTweenLess', ->
+      byte = new Byte radius:  {'25': 75}, isTweenLess: true
+      expect(byte.tween).not.toBeDefined()
     it 'should start tween after init', (dfr)->
       isStarted = false
       byte = new Byte

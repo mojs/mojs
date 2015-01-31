@@ -398,8 +398,10 @@ Transit = (function(_super) {
         };
       })(this)
     });
-    this.tween = new Tween;
-    this.tween.add(this.timeline);
+    if (!this.o.isTweenLess) {
+      this.tween = new Tween;
+      this.tween.add(this.timeline);
+    }
     return !this.o.isRunLess && this.startTween();
   };
 
@@ -417,7 +419,8 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.startTween = function() {
-    return this.tween.start();
+    var _ref;
+    return (_ref = this.tween) != null ? _ref.start() : void 0;
   };
 
   return Transit;
