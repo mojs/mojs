@@ -1528,23 +1528,25 @@ burst = new Burst({
   radius: {
     0: 100
   },
+  isSwirl: true,
   swirlFrequency: 'rand(0, 5)',
-  swirlSize: 10,
-  type: 'line',
-  points: 5,
+  swirlSize: 'rand(3,20)',
+  randomAngle: .2,
+  degree: 180,
+  angle: -45,
+  points: 15,
   stroke: {
     'deeppink': 'orange'
   },
   childOptions: {
-    swirlFrequency: 'rand(0, 12)',
     fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
     points: 3,
-    type: ['rect', 'circle', 'polygon', 'circle'],
     strokeWidth: 0,
     radius: {
-      5: 0
+      'rand(3,6)': 0
     },
-    duration: 800
+    duration: 'rand(500,1000)',
+    delay: 'rand(0,2000)'
   }
 });
 
