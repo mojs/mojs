@@ -87,6 +87,7 @@ class Burst extends Transit
     yoyo:             1
     swirlSize:        1
     swirlFrequency:   1
+    isSwirl:          1
   init:->
     @childOptions = @o.childOptions or {}
     h.extend(@childOptions, @childDefaults); delete @o.childOptions
@@ -105,13 +106,12 @@ class Burst extends Transit
     for i in [0...@props.points]
       option = @getOption(i); option.ctx = @ctx
       option.isDrawLess = option.isRunLess = option.isTweenLess = true
-      option.isSwirlLess    = !@props.isSwirl
       # prioritize the child option
       # over parent's one but use the latest
       # as a default value
       for key, value of @priorityOptionMap
-        option[key] ?= @o[key]
-
+        if key isnt 'isSwirl' then option[key] ?= @o[key]
+        else option['isSwirlLess'] ?= !@props.isSwirl
       @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
       @props.randomRadius and (option.radiusScale = @generateRandomRadius())
       @transits.push new Swirl option

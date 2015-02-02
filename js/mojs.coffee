@@ -45,6 +45,7 @@ burst = new Burst
   points: 5
   stroke: {'deeppink': 'orange'}
   childOptions:
+    isSwirl:      false
     # swirlFrequency: [1200, null, null]
     fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     points:       3

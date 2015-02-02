@@ -85,7 +85,7 @@ describe 'Swirl ->', ->
       swirl.setProgress 1
       expect(swirl.props.x).toBe '5.0000px'
       expect(swirl.props.y).toBe '5.0000px'
-    it 'should set add swirl if option was passed', ->
+    it 'should add swirl', ->
       swirl = new Swirl x: {0:10}, y: {0:10}, isRunLess: true
       swirl.setProgress .5
       expect(swirl.props.x).not.toBe '5.0000px'

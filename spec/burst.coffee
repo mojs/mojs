@@ -12,6 +12,20 @@ describe 'Burst ->', ->
       expect(burst.defaults.degree).toBe       360
       expect(burst.defaults.points).toBe       5
       expect(burst.defaults.type).toBe         'circle'
+
+  describe 'pure tween props ->', ->
+    it 'should be a map of tween related options ->', ->
+      burst = new Burst
+      expect(burst.priorityOptionMap.duration)           .toBe 1
+      expect(burst.priorityOptionMap.delay)              .toBe 1
+      expect(burst.priorityOptionMap.repeat)             .toBe 1
+      expect(burst.priorityOptionMap.easing)             .toBe 1
+      expect(burst.priorityOptionMap.yoyo)               .toBe 1
+      expect(burst.priorityOptionMap.swirlSize)          .toBe 1
+      expect(burst.priorityOptionMap.swirlFrequency)     .toBe 1
+      expect(burst.priorityOptionMap.isSwirl)            .toBe 1
+      expect(Object.keys(burst.priorityOptionMap).length).toBe 8
+
   describe 'initialization ->', ->
     it 'should create transits', ->
       burst = new Burst
@@ -36,6 +50,21 @@ describe 'Burst ->', ->
       expect(burst.transits[0].o.isSwirlLess)   .toBe  true
       expect(burst.transits[0].o.swirlSize)     .toBe  20
       expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
+    it 'should pass properties to transits #2: priorityOptionMap', ->
+      burst = new Burst
+        duration: 1000
+        swirlSize: 20, swirlFrequency: 'rand(10,20)'
+        childOptions:
+          swirlSize: [5, 10, null, 7]
+          fill:   '#fff'
+          duration: [100, null, null]
+      expect(burst.transits[0].o.swirlSize).toBe 5
+      expect(burst.transits[2].o.swirlSize).toBe 20
+      expect(burst.transits[0].o.duration).toBe 100
+      expect(burst.transits[1].o.duration).toBe 1000
+      expect(burst.transits[2].o.duration).toBe 1000
+      expect(burst.transits[3].o.duration).toBe 100
+
     it 'should pass x/y to transits', ->
       burst = new Burst
         radius: { 50: 75 }

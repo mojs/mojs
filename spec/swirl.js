@@ -234,7 +234,7 @@
         expect(swirl.props.x).toBe('5.0000px');
         return expect(swirl.props.y).toBe('5.0000px');
       });
-      return it('should set add swirl if option was passed', function() {
+      return it('should add swirl', function() {
         var swirl;
         swirl = new Swirl({
           x: {

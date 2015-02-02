@@ -466,7 +466,8 @@ Burst = (function(_super) {
     easing: 1,
     yoyo: 1,
     swirlSize: 1,
-    swirlFrequency: 1
+    swirlFrequency: 1,
+    isSwirl: 1
   };
 
   Burst.prototype.init = function() {
@@ -504,12 +505,17 @@ Burst = (function(_super) {
       option = this.getOption(i);
       option.ctx = this.ctx;
       option.isDrawLess = option.isRunLess = option.isTweenLess = true;
-      option.isSwirlLess = !this.props.isSwirl;
       _ref1 = this.priorityOptionMap;
       for (key in _ref1) {
         value = _ref1[key];
-        if (option[key] == null) {
-          option[key] = this.o[key];
+        if (key !== 'isSwirl') {
+          if (option[key] == null) {
+            option[key] = this.o[key];
+          }
+        } else {
+          if (option['isSwirlLess'] == null) {
+            option['isSwirlLess'] = !this.props.isSwirl;
+          }
         }
       }
       this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
@@ -1554,6 +1560,7 @@ burst = new Burst({
     'deeppink': 'orange'
   },
   childOptions: {
+    isSwirl: false,
     fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
     points: 3,
     strokeWidth: 0,
