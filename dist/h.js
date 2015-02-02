@@ -27,7 +27,7 @@ Helpers = (function() {
     orange: 'rgb(255,128,0)'
   };
 
-  Helpers.prototype.tweenOptionMap = {
+  Helpers.prototype.chainOptionMap = {
     duration: 1,
     delay: 1,
     repeat: 1,
@@ -38,6 +38,14 @@ Helpers = (function() {
     onCompleteChain: 1,
     onUpdate: 1,
     points: 1
+  };
+
+  Helpers.prototype.tweenOptionMap = {
+    duration: 1,
+    delay: 1,
+    repeat: 1,
+    easing: 1,
+    yoyo: 1
   };
 
   Helpers.prototype.posPropsMap = {
@@ -351,7 +359,7 @@ Helpers = (function() {
         type: 'array'
       };
     } else {
-      if (!this.tweenOptionMap[key]) {
+      if (!this.chainOptionMap[key]) {
         if (this.posPropsMap[key]) {
           end = this.parseUnit(this.parseIfRand(end));
           start = this.parseUnit(this.parseIfRand(start));

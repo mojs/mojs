@@ -452,11 +452,21 @@ Burst = (function(_super) {
     onComplete: null,
     onCompleteChain: null,
     onUpdate: null,
-    duration: 500,
-    delay: 0,
+    duration: null,
+    delay: null,
+    repeat: null,
+    yoyo: null,
+    easing: null
+  };
+
+  Burst.prototype.priorityOptionMap = {
+    duration: 1,
+    delay: 1,
     repeat: 1,
-    yoyo: false,
-    easing: 'Linear.None'
+    easing: 1,
+    yoyo: 1,
+    swirlSize: 1,
+    swirlFrequency: 1
   };
 
   Burst.prototype.init = function() {
@@ -487,18 +497,21 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.createBit = function() {
-    var i, option, _i, _ref, _results;
+    var i, key, option, value, _i, _ref, _ref1, _results;
     this.transits = [];
     _results = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       option = this.getOption(i);
       option.ctx = this.ctx;
-      option.isDrawLess = true;
-      option.isRunLess = true;
+      option.isDrawLess = option.isRunLess = option.isTweenLess = true;
       option.isSwirlLess = !this.props.isSwirl;
-      option.swirlSize = this.o.swirlSize;
-      option.swirlFrequency = this.o.swirlFrequency;
-      option.isTweenLess = true;
+      _ref1 = this.priorityOptionMap;
+      for (key in _ref1) {
+        value = _ref1[key];
+        if (option[key] == null) {
+          option[key] = this.o[key];
+        }
+      }
       this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
       this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
       _results.push(this.transits.push(new Swirl(option)));
@@ -507,18 +520,16 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var i, pointEnd, pointStart, points, radiusEnd, radiusStart, step, transit, x, y, _i, _len, _ref, _ref1, _ref2, _results;
-    radiusStart = ((_ref = this.deltas.radius) != null ? _ref.start : void 0) || this.props.radius;
-    radiusEnd = ((_ref1 = this.deltas.radius) != null ? _ref1.end : void 0) || this.props.radius;
+    var i, pointEnd, pointStart, points, step, transit, x, y, _i, _len, _ref, _ref1, _ref2, _results;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
-    _ref2 = this.transits;
+    _ref = this.transits;
     _results = [];
-    for (i = _i = 0, _len = _ref2.length; _i < _len; i = ++_i) {
-      transit = _ref2[i];
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      transit = _ref[i];
       pointStart = this.h.getRadialPoint({
-        radius: radiusStart,
+        radius: ((_ref1 = this.deltas.radius) != null ? _ref1.start : void 0) || this.props.radius,
         angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
@@ -526,7 +537,7 @@ Burst = (function(_super) {
         }
       });
       pointEnd = this.h.getRadialPoint({
-        radius: radiusEnd,
+        radius: ((_ref2 = this.deltas.radius) != null ? _ref2.end : void 0) || this.props.radius,
         angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
@@ -1067,7 +1078,7 @@ Helpers = (function() {
     orange: 'rgb(255,128,0)'
   };
 
-  Helpers.prototype.tweenOptionMap = {
+  Helpers.prototype.chainOptionMap = {
     duration: 1,
     delay: 1,
     repeat: 1,
@@ -1078,6 +1089,14 @@ Helpers = (function() {
     onCompleteChain: 1,
     onUpdate: 1,
     points: 1
+  };
+
+  Helpers.prototype.tweenOptionMap = {
+    duration: 1,
+    delay: 1,
+    repeat: 1,
+    easing: 1,
+    yoyo: 1
   };
 
   Helpers.prototype.posPropsMap = {
@@ -1391,7 +1410,7 @@ Helpers = (function() {
         type: 'array'
       };
     } else {
-      if (!this.tweenOptionMap[key]) {
+      if (!this.chainOptionMap[key]) {
         if (this.posPropsMap[key]) {
           end = this.parseUnit(this.parseIfRand(end));
           start = this.parseUnit(this.parseIfRand(start));
@@ -1529,12 +1548,8 @@ burst = new Burst({
     0: 100
   },
   isSwirl: true,
-  swirlFrequency: 'rand(0, 5)',
-  swirlSize: 'rand(3,20)',
-  randomAngle: .2,
-  degree: 180,
-  angle: -45,
-  points: 15,
+  angle: 'rand(0,360)',
+  points: 5,
   stroke: {
     'deeppink': 'orange'
   },
@@ -1544,9 +1559,7 @@ burst = new Burst({
     strokeWidth: 0,
     radius: {
       'rand(3,6)': 0
-    },
-    duration: 'rand(500,1000)',
-    delay: 'rand(0,2000)'
+    }
   }
 });
 
@@ -2186,7 +2199,7 @@ Transit = (function(_super) {
         opts[key] = {};
         opts[key][start] = end;
       } else {
-        if (!this.h.tweenOptionMap[key]) {
+        if (!this.h.chainOptionMap[key]) {
           currValue = opts[key];
           nextValue = value;
           opts[key] = {};

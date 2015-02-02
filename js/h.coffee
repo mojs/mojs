@@ -23,7 +23,7 @@ class Helpers
     yellow: 'rgb(255,255,0)'
     orange: 'rgb(255,128,0)'
   # none-tweenable props
-  tweenOptionMap:
+  chainOptionMap:
     duration:         1
     delay:            1
     repeat:           1
@@ -34,6 +34,12 @@ class Helpers
     onCompleteChain:  1
     onUpdate:         1
     points:           1
+  tweenOptionMap:
+    duration:         1
+    delay:            1
+    repeat:           1
+    easing:           1
+    yoyo:             1
   posPropsMap:
     x:                1
     y:                1
@@ -59,7 +65,6 @@ class Helpers
   extend:(objTo, objFrom)->
     for key, value of objFrom
       objTo[key] ?= objFrom[key]
-
   getRemBase:->
     html = document.querySelector('html')
     style = getComputedStyle(html)
@@ -255,10 +260,10 @@ class Helpers
     ## plain numeric value ##
     else
       ## filter tween-related properties
-      # defined in helpers.tweenOptionMap
+      # defined in helpers.chainOptionMap
       # because tween-related props shouldn't
       ## have deltas
-      if !@tweenOptionMap[key]
+      if !@chainOptionMap[key]
         # position values defined in posPropsMap
         if @posPropsMap[key]
           end   = @parseUnit @parseIfRand end

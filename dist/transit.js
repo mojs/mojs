@@ -346,7 +346,7 @@ Transit = (function(_super) {
         opts[key] = {};
         opts[key][start] = end;
       } else {
-        if (!this.h.tweenOptionMap[key]) {
+        if (!this.h.chainOptionMap[key]) {
           currValue = opts[key];
           nextValue = value;
           opts[key] = {};

@@ -19,18 +19,26 @@ describe 'Helpers ->', ->
       expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
-      expect(h.tweenOptionMap.duration)         .toBe 1
-      expect(h.tweenOptionMap.delay)            .toBe 1
-      expect(h.tweenOptionMap.repeat)           .toBe 1
-      expect(h.tweenOptionMap.easing)           .toBe 1
-      expect(h.tweenOptionMap.yoyo)             .toBe 1
-      expect(h.tweenOptionMap.onStart)          .toBe 1
-      expect(h.tweenOptionMap.onComplete)       .toBe 1
-      expect(h.tweenOptionMap.onCompleteChain)  .toBe 1
-      expect(h.tweenOptionMap.onUpdate)         .toBe 1
-      expect(h.tweenOptionMap.points)           .toBe 1
-      mapLen = Object.keys(h.tweenOptionMap).length
+      expect(h.chainOptionMap.duration)         .toBe 1
+      expect(h.chainOptionMap.delay)            .toBe 1
+      expect(h.chainOptionMap.repeat)           .toBe 1
+      expect(h.chainOptionMap.easing)           .toBe 1
+      expect(h.chainOptionMap.yoyo)             .toBe 1
+      expect(h.chainOptionMap.onStart)          .toBe 1
+      expect(h.chainOptionMap.onComplete)       .toBe 1
+      expect(h.chainOptionMap.onCompleteChain)  .toBe 1
+      expect(h.chainOptionMap.onUpdate)         .toBe 1
+      expect(h.chainOptionMap.points)           .toBe 1
+      mapLen = Object.keys(h.chainOptionMap).length
       expect(mapLen)                            .toBe 10
+  describe 'pure tween props ->', ->
+    it 'should be a map of tween related options ->', ->
+      expect(h.tweenOptionMap.duration)           .toBe 1
+      expect(h.tweenOptionMap.delay)              .toBe 1
+      expect(h.tweenOptionMap.repeat)             .toBe 1
+      expect(h.tweenOptionMap.easing)             .toBe 1
+      expect(h.tweenOptionMap.yoyo)               .toBe 1
+      expect(Object.keys(h.tweenOptionMap).length).toBe 5
   describe 'methods ->', ->
     describe 'extend method', ->
       it 'should extend object by other one', ->

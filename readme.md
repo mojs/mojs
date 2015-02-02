@@ -8,8 +8,11 @@
 #### todo
 - burst
   - fix duration/tween props to all bits
-  - fix size calculation fix static bit radius
+  - fix size calculation
+  - fix static bit radius
   - add callbacks to burst tween itself
+  - add radiusX radiusY options
+  - ad stagger values
 - cover raf polyfill
 - perf profile + refactor
   - check run reset values

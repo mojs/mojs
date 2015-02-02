@@ -33,26 +33,25 @@ burst = new Burst
   # points:       10
   radius:        { 0: 100 }
   isSwirl:       true
-  swirlFrequency: 'rand(0, 5)'
-  swirlSize:      'rand(3,20)'
+  # swirlFrequency: 'rand(0, 5)'
+  # swirlSize:      'rand(3,20)'
   # randomRadius: .5
-  randomAngle:  .2
-  degree: 180
-  angle: -45
+  # randomAngle:  .2
+  # degree: 180
+  angle: 'rand(0,360)'
   # isShowEnd: true
   # type: 'line'
-  points: 15
+  # easing: 'Bounce.Out'
+  points: 5
   stroke: {'deeppink': 'orange'}
   childOptions:
-    # swirlFrequency: 'rand(0, 12)'
+    # swirlFrequency: [1200, null, null]
     fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
     points:       3
     # type:         ['rect', 'circle', 'polygon', 'circle']
     strokeWidth:  0
     radius:       {'rand(3,6)':0}
-    duration:     'rand(500,1000)'
-    delay:        'rand(0,2000)'
-    # duration:     'rand(400,1200)'
+    # easing:       ['Elastic.In', null ]
 
 document.body.addEventListener 'click', (e)->
   burst.run(x: e.x, y: e.y)

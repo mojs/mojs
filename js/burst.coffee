@@ -30,12 +30,13 @@ class Burst extends Transit
     onComplete:         null
     onCompleteChain:    null
     onUpdate:           null
-    # tween props
+    # tween props = defaults for children
     duration:           500
     delay:              0
     repeat:             1
     yoyo:               false
     easing:             'Linear.None'
+    # burst specific options
     randomAngle:        0
     randomRadius:       0
     isSwirl:            false
@@ -72,12 +73,20 @@ class Burst extends Transit
     onCompleteChain:    null
     onUpdate:           null
     # tween props
-    duration:           500
-    delay:              0
-    repeat:             1
-    yoyo:               false
-    easing:             'Linear.None'
+    duration:           null
+    delay:              null
+    repeat:             null
+    yoyo:               null
+    easing:             null
 
+  priorityOptionMap:
+    duration:         1
+    delay:            1
+    repeat:           1
+    easing:           1
+    yoyo:             1
+    swirlSize:        1
+    swirlFrequency:   1
   init:->
     @childOptions = @o.childOptions or {}
     h.extend(@childOptions, @childDefaults); delete @o.childOptions
@@ -95,32 +104,32 @@ class Burst extends Transit
     @transits = []
     for i in [0...@props.points]
       option = @getOption(i); option.ctx = @ctx
-      option.isDrawLess = true; option.isRunLess = true
+      option.isDrawLess = option.isRunLess = option.isTweenLess = true
       option.isSwirlLess    = !@props.isSwirl
-      option.swirlSize      = @o.swirlSize
-      option.swirlFrequency = @o.swirlFrequency
-      option.isTweenLess = true
-      @props.randomAngle  and (option.angleShift = @generateRandomAngle())
+      # prioritize the child option
+      # over parent's one but use the latest
+      # as a default value
+      for key, value of @priorityOptionMap
+        option[key] ?= @o[key]
+
+      @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
       @props.randomRadius and (option.radiusScale = @generateRandomRadius())
       @transits.push new Swirl option
   addBitOptions:->
-    radiusStart = @deltas.radius?.start or @props.radius
-    radiusEnd   = @deltas.radius?.end or @props.radius
     points = @props.points
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
     for transit, i in @transits
       pointStart = @h.getRadialPoint
-        radius: radiusStart
+        radius: @deltas.radius?.start or @props.radius
         angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
       pointEnd = @h.getRadialPoint
-        radius: radiusEnd
+        radius: @deltas.radius?.end or @props.radius
         angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
       x = {}; y = {}
-      x[pointStart.x] = pointEnd.x
-      y[pointStart.y] = pointEnd.y
+      x[pointStart.x] = pointEnd.x; y[pointStart.y] = pointEnd.y
       @transits[i].o.x = x; @transits[i].o.y = y
       transit.extendDefaults()
   draw:(progress)-> @drawEl()

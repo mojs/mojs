@@ -245,7 +245,9 @@ class Transit extends bitsMap.map.bit
         opts[key] = {}
         opts[key][start] = end
       else
-        if !@h.tweenOptionMap[key]
+        # copy the options from
+        # the previous chain
+        if !@h.chainOptionMap[key]
           currValue = opts[key]
           nextValue = value
           opts[key] = {}
