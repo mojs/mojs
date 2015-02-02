@@ -445,7 +445,6 @@ Burst = (function(_super) {
       7: 0
     },
     angle: 0,
-    size: null,
     sizeGap: 0,
     onInit: null,
     onStart: null,
@@ -575,7 +574,26 @@ Burst = (function(_super) {
 
   Burst.prototype.createTween = function() {
     var i;
-    this.tween = new Tween;
+    this.tween = new Tween({
+      onUpdate: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onUpdate) != null ? _ref.apply(_this, arguments) : void 0;
+        };
+      })(this),
+      onComplete: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this),
+      onStart: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this)
+    });
     i = this.transits.length;
     while (i--) {
       this.tween.add(this.transits[i].timeline);
@@ -589,6 +607,7 @@ Burst = (function(_super) {
     _ref = this.transits;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       transit = _ref[i];
+      transit.calcSize();
       if (largestSize < transit.props.size) {
         largestSize = transit.props.size;
       }
@@ -1555,6 +1574,7 @@ burst = new Burst({
   },
   isSwirl: true,
   angle: 'rand(0,360)',
+  isShowEnd: true,
   points: 5,
   stroke: {
     'deeppink': 'orange'
@@ -1564,9 +1584,7 @@ burst = new Burst({
     fill: ['deeppink', 'orange', 'cyan', 'lime', 'hotpink'],
     points: 3,
     strokeWidth: 0,
-    radius: {
-      'rand(3,6)': 0
-    }
+    radius: 2
   }
 });
 
@@ -2064,9 +2082,11 @@ Transit = (function(_super) {
 
   Transit.prototype.setProgress = function(progress, isShow) {
     var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _ref1;
-    !isShow && this.show();
-    if (typeof this.onUpdate === "function") {
-      this.onUpdate(progress);
+    if (!isShow) {
+      this.show();
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(progress);
+      }
     }
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     keys = Object.keys(this.deltas);
@@ -2274,7 +2294,7 @@ Transit = (function(_super) {
     this.vars();
     this.calcSize();
     this.setElStyles();
-    !this.o.isDrawLess && this.setProgress(0);
+    !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
   };
 
@@ -2332,7 +2352,9 @@ Tween = (function() {
   Tween.prototype.vars = function() {
     this.timelines = [];
     this.duration = 0;
-    return this.loop = h.bind(this.loop, this);
+    this.props = {};
+    this.loop = h.bind(this.loop, this);
+    return this.onUpdate = this.o.onUpdate;
   };
 
   Tween.prototype.add = function(timeline) {
@@ -2342,21 +2364,31 @@ Tween = (function() {
 
   Tween.prototype.update = function(time) {
     var i, _ref;
+    if (this.isCompleted) {
+      return;
+    }
     i = this.timelines.length;
     while (i--) {
       this.timelines[i].update(time);
     }
     if (time >= this.endTime) {
-      !this.isCompleted && ((_ref = this.o.onComplete) != null ? _ref.apply(this) : void 0);
+      if ((_ref = this.o.onComplete) != null) {
+        _ref.apply(this);
+      }
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(1);
+      }
       return this.isCompleted = true;
+    }
+    if (time >= this.startTime) {
+      return typeof this.onUpdate === "function" ? this.onUpdate((time - this.startTime) / this.duration) : void 0;
     }
   };
 
   Tween.prototype.start = function() {
     var i, _ref;
     this.isCompleted = false;
-    this.startTime = Date.now();
-    this.endTime = this.startTime + this.duration;
+    this.getDimentions();
     i = this.timelines.length;
     if ((_ref = this.o.onStart) != null) {
       _ref.apply(this);
@@ -2365,6 +2397,11 @@ Tween = (function() {
       this.timelines[i].start(this.startTime);
     }
     return this.t.add(this);
+  };
+
+  Tween.prototype.getDimentions = function() {
+    this.startTime = Date.now();
+    return this.endTime = this.startTime + this.duration;
   };
 
   return Tween;

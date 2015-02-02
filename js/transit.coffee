@@ -146,8 +146,8 @@ class Transit extends bitsMap.map.bit
     @bit = new bitClass ctx: @ctx, isDrawLess: true
 
   setProgress:(progress, isShow)->
-    !isShow and @show()
-    @onUpdate?(progress)
+    if !isShow then @show(); @onUpdate?(progress)
+
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
 
@@ -283,7 +283,7 @@ class Transit extends bitsMap.map.bit
     for key, value of o
       @o[key] = value
     @vars(); @calcSize(); @setElStyles()
-    !@o.isDrawLess and @setProgress 0
+    !@o.isDrawLess and @setProgress 0, true
     @startTween()
   startTween:-> @tween?.start()
 

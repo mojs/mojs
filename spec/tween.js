@@ -143,6 +143,104 @@
         }), 100);
       });
     });
+    describe('onUpdate callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onUpdate: function() {}
+        });
+        return expect(t.onUpdate).toBeDefined();
+      });
+      it('should call onUpdate callback', function(dfr) {
+        var t;
+        t = new Tween({
+          onUpdate: function() {}
+        });
+        t.add(new Timeline({
+          duration: 20
+        }));
+        spyOn(t, 'onUpdate');
+        t.start();
+        return setTimeout(function() {
+          expect(t.onUpdate).toHaveBeenCalled();
+          return dfr();
+        }, 100);
+      });
+      it('should have the right scope', function(dfr) {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Tween({
+          onUpdate: function() {
+            return isRightScope = this instanceof Tween;
+          }
+        });
+        t.add(new Timeline({
+          duration: 20
+        }));
+        t.start();
+        return setTimeout((function() {
+          expect(isRightScope).toBe(true);
+          return dfr();
+        }), 100);
+      });
+      it('should pass the current progress', function() {
+        var t;
+        t = new Tween({
+          onUpdate: function() {}
+        });
+        t.add(new Timeline({
+          duration: 20
+        }));
+        spyOn(t, 'onUpdate');
+        t.start();
+        t.update(t.startTime + 10);
+        return expect(t.onUpdate).toHaveBeenCalledWith(.5);
+      });
+      it('should not run if time is less then startTime', function() {
+        var t;
+        t = new Tween({
+          onUpdate: function() {}
+        });
+        t.add(new Timeline({
+          duration: 20
+        }));
+        spyOn(t, 'onUpdate');
+        t.start();
+        t.update(t.startTime - 10);
+        return expect(t.onUpdate).not.toHaveBeenCalled();
+      });
+      it('should run if time is greater then endTime', function() {
+        var t;
+        t = new Tween({
+          onUpdate: function() {}
+        });
+        t.add(new Timeline({
+          duration: 20
+        }));
+        spyOn(t, 'onUpdate');
+        t.start();
+        t.update(t.startTime + 25);
+        return expect(t.onUpdate).toHaveBeenCalledWith(1);
+      });
+      return it('should run if time is greater then endTime just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Tween({
+          isIt: true,
+          onUpdate: function() {
+            return cnt++;
+          }
+        });
+        t.add(new Timeline({
+          duration: 20
+        }));
+        t.getDimentions();
+        t.update(t.startTime + 25);
+        t.update(t.startTime + 26);
+        t.update(t.startTime + 27);
+        return expect(cnt).toBe(1);
+      });
+    });
     describe('onStart callback ->', function() {
       it('should be defined', function() {
         var t;
@@ -195,6 +293,25 @@
         t.update(time = Date.now() + 200);
         expect(t.timelines[0].update).toHaveBeenCalledWith(time);
         return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+      });
+      it('should not update the current time on every timeline if isCompleted', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(new Timeline({
+          duration: 500,
+          delay: 100
+        }));
+        t.getDimentions();
+        t.update(t.startTime + 2000);
+        spyOn(t.timelines[0], 'update');
+        spyOn(t.timelines[1], 'update');
+        t.update(t.startTime + 2000);
+        expect(t.timelines[0].update).not.toHaveBeenCalled();
+        return expect(t.timelines[1].update).not.toHaveBeenCalled();
       });
       return it('should return true is ended', function() {
         var t;

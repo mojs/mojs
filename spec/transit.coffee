@@ -535,31 +535,26 @@ describe 'Transit ->', ->
       spyOn byte, 'calcOrigin'
       byte.setProgress .5
       expect(byte.calcOrigin).toHaveBeenCalled()
-    
     it 'should have origin object', ->
       byte = new Byte radius:  {'25': 75}
       byte.setProgress .5
       expect(byte.origin.x).toBeDefined()
       expect(byte.origin.y).toBeDefined()
-
     it 'should have origin should be the center of the transit', ->
       byte = new Byte radius:  {'25': 75}
       byte.setProgress .5
       expect(byte.origin.x).toBe byte.props.center
       expect(byte.origin.y).toBe byte.props.center
-
     it 'should have origin should be x/y if foreign context', ->
       byte = new Byte radius:{'25': 75}, ctx: svg
       byte.setProgress .5
       expect(byte.origin.x).toBe parseFloat byte.props.x
       expect(byte.origin.y).toBe parseFloat byte.props.x
-
     it 'should have origin should be number if foreign context', ->
       byte = new Byte radius:{'25': 75}, ctx: svg
       byte.setProgress .5
       expect(typeof byte.origin.x).toBe 'number'
       expect(typeof byte.origin.y).toBe 'number'
-
     it 'should show el', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, 'show'
@@ -570,6 +565,11 @@ describe 'Transit ->', ->
       spyOn byte, 'show'
       byte.setProgress .5, true
       expect(byte.show).not.toHaveBeenCalled()
+    it 'should not call onUpdate if isShow was passed', ->
+      byte = new Byte radius:  {'25': 75}
+      spyOn byte, 'onUpdate'
+      byte.setProgress .5, true
+      expect(byte.onUpdate).not.toHaveBeenCalled()
 
     it 'not thow', ->
       byte = new Byte radius:  {'25': 75}, ctx: svg
@@ -813,7 +813,6 @@ describe 'Transit ->', ->
         expect(byte.props.strokeWidth).toBe 20
         dfr()
       , 120
-
   describe 'run method->', ->
     it 'should run tween', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
@@ -833,14 +832,11 @@ describe 'Transit ->', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50
       expect(byte.el.style.width).toBe '104px'
-    it 'should call setProgress(0)', ->
+    it 'should call setProgress(0, true)', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       spyOn byte, 'setProgress'
       byte.run radius: 50
-      expect(byte.setProgress).toHaveBeenCalledWith 0
-
-
-
+      expect(byte.setProgress).toHaveBeenCalledWith 0, true
 
 
 

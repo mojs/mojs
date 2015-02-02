@@ -1011,6 +1011,17 @@
         byte.setProgress(.5, true);
         return expect(byte.show).not.toHaveBeenCalled();
       });
+      it('should not call onUpdate if isShow was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        spyOn(byte, 'onUpdate');
+        byte.setProgress(.5, true);
+        return expect(byte.onUpdate).not.toHaveBeenCalled();
+      });
       it('not thow', function() {
         var byte;
         byte = new Byte({
@@ -1591,7 +1602,7 @@
         });
         return expect(byte.el.style.width).toBe('104px');
       });
-      return it('should call setProgress(0)', function() {
+      return it('should call setProgress(0, true)', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1603,7 +1614,7 @@
         byte.run({
           radius: 50
         });
-        return expect(byte.setProgress).toHaveBeenCalledWith(0);
+        return expect(byte.setProgress).toHaveBeenCalledWith(0, true);
       });
     });
   });

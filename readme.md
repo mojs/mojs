@@ -7,16 +7,14 @@
 
 #### todo
 - burst
-  - fix duration/tween props to all bits
-  - fix size calculation
-  - fix static bit radius
+  - add onUpdate callback to tween
   - add callbacks to burst tween itself
+  - fix isRunLess
   - add radiusX radiusY options
-  - ad stagger values
+  - add stagger values
+  - add chains and thens
 - cover raf polyfill
 - perf profile + refactor
-  - check run reset values
-  - check burst run
   - elastic easing detection + add to size
 - add motion path
   - add movement arc

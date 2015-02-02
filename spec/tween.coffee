@@ -73,6 +73,52 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 20
       t.start()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+  
+  describe 'onUpdate callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onUpdate: ->
+      expect(t.onUpdate).toBeDefined()
+    it 'should call onUpdate callback', (dfr)->
+      t = new Tween(onUpdate:->)
+      t.add new Timeline duration: 20
+      spyOn(t, 'onUpdate'); t.start()
+      setTimeout ->
+        expect(t.onUpdate).toHaveBeenCalled()
+        dfr()
+      , 100
+    it 'should have the right scope', (dfr)->
+      isRightScope = false
+      t = new Tween onUpdate:-> isRightScope = @ instanceof Tween
+      t.add new Timeline duration: 20
+      t.start()
+      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+    it 'should pass the current progress', ->
+      t = new Tween onUpdate:->
+      t.add new Timeline duration: 20
+      spyOn(t, 'onUpdate'); t.start()
+      t.update t.startTime + 10
+      expect(t.onUpdate).toHaveBeenCalledWith .5
+    it 'should not run if time is less then startTime', ->
+      t = new Tween onUpdate:->
+      t.add new Timeline duration: 20
+      spyOn(t, 'onUpdate'); t.start()
+      t.update t.startTime - 10
+      expect(t.onUpdate).not.toHaveBeenCalled()
+    it 'should run if time is greater then endTime', ->
+      t = new Tween onUpdate:->
+      t.add new Timeline duration: 20
+      spyOn(t, 'onUpdate'); t.start()
+      t.update t.startTime + 25
+      expect(t.onUpdate).toHaveBeenCalledWith 1
+    it 'should run if time is greater then endTime just once', ->
+      cnt = 0
+      t = new Tween isIt: true, onUpdate:-> cnt++
+      t.add new Timeline duration: 20
+      t.getDimentions()
+      t.update t.startTime + 25
+      t.update t.startTime + 26
+      t.update t.startTime + 27
+      expect(cnt).toBe 1
   describe 'onStart callback ->', ->
     it 'should be defined', ->
       t = new Tween onStart: ->
@@ -98,6 +144,17 @@ describe 'Tween ->', ->
       t.update time = Date.now() + 200
       expect(t.timelines[0].update).toHaveBeenCalledWith time
       expect(t.timelines[1].update).toHaveBeenCalledWith time
+    it 'should not update the current time on every timeline if isCompleted',->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.getDimentions()
+      t.update t.startTime + 2000
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      t.update t.startTime + 2000
+      expect(t.timelines[0].update).not.toHaveBeenCalled()
+      expect(t.timelines[1].update).not.toHaveBeenCalled()
     it 'should return true is ended',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200

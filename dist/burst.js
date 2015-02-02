@@ -75,7 +75,6 @@ Burst = (function(_super) {
       7: 0
     },
     angle: 0,
-    size: null,
     sizeGap: 0,
     onInit: null,
     onStart: null,
@@ -205,7 +204,26 @@ Burst = (function(_super) {
 
   Burst.prototype.createTween = function() {
     var i;
-    this.tween = new Tween;
+    this.tween = new Tween({
+      onUpdate: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onUpdate) != null ? _ref.apply(_this, arguments) : void 0;
+        };
+      })(this),
+      onComplete: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this),
+      onStart: (function(_this) {
+        return function() {
+          var _ref;
+          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this)
+    });
     i = this.transits.length;
     while (i--) {
       this.tween.add(this.transits[i].timeline);
@@ -219,6 +237,7 @@ Burst = (function(_super) {
     _ref = this.transits;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       transit = _ref[i];
+      transit.calcSize();
       if (largestSize < transit.props.size) {
         largestSize = transit.props.size;
       }

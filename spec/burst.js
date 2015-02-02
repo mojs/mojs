@@ -296,7 +296,7 @@
         return expect(opt8).toBe(40);
       });
     });
-    describe('size calculations ->', function() {
+    describe('size calculations calcSize method ->', function() {
       it('should calculate size based on largest transit + self radius', function() {
         var burst;
         burst = new Burst({
@@ -327,6 +327,24 @@
         });
         expect(burst.props.size).toBe(290);
         return expect(burst.props.center).toBe(145);
+      });
+      it('should call the calcSize of every transit', function() {
+        var burst;
+        burst = new Burst({
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20
+            ],
+            strokeWidth: 20
+          }
+        });
+        spyOn(burst.transits[0], 'calcSize');
+        spyOn(burst.transits[1], 'calcSize');
+        burst.calcSize();
+        expect(burst.transits[0].calcSize).toHaveBeenCalled();
+        return expect(burst.transits[1].calcSize).toHaveBeenCalled();
       });
       return it('should call addBitOptions method', function() {
         var burst;
@@ -362,6 +380,59 @@
         spyOn(burst, 'startTween');
         burst.createTween();
         return expect(burst.startTween).not.toHaveBeenCalled();
+      });
+    });
+    describe('onStart callback ->', function() {
+      it('should run onStart callback', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true,
+          onStart: function() {}
+        });
+        spyOn(burst.o, 'onStart');
+        burst.run();
+        return expect(burst.o.onStart).toHaveBeenCalled();
+      });
+      return it('should have the scope of burst', function() {
+        var burst, isRightScope;
+        isRightScope = false;
+        burst = new Burst({
+          onStart: function() {
+            return isRightScope = this instanceof Burst;
+          }
+        });
+        return expect(isRightScope).toBe(true);
+      });
+    });
+    describe('onComplete callback ->', function() {
+      it('should run onComplete callback', function(dfr) {
+        var burst;
+        burst = new Burst({
+          isRunLess: true,
+          duration: 20,
+          onComplete: function() {}
+        });
+        spyOn(burst.o, 'onComplete');
+        burst.run();
+        return setTimeout(function() {
+          expect(burst.o.onComplete).toHaveBeenCalled();
+          return dfr();
+        }, 100);
+      });
+      return it('should have the scope of burst', function(dfr) {
+        var burst, isRightScope;
+        isRightScope = false;
+        burst = new Burst({
+          duration: 20,
+          onComplete: function() {
+            return isRightScope = this instanceof Burst;
+          }
+        });
+        burst.run();
+        return setTimeout((function() {
+          expect(isRightScope).toBe(true);
+          return dfr();
+        }), 100);
       });
     });
     describe('run method ->', function() {

@@ -204,9 +204,11 @@ Transit = (function(_super) {
 
   Transit.prototype.setProgress = function(progress, isShow) {
     var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _ref1;
-    !isShow && this.show();
-    if (typeof this.onUpdate === "function") {
-      this.onUpdate(progress);
+    if (!isShow) {
+      this.show();
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(progress);
+      }
     }
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
     keys = Object.keys(this.deltas);
@@ -414,7 +416,7 @@ Transit = (function(_super) {
     this.vars();
     this.calcSize();
     this.setElStyles();
-    !this.o.isDrawLess && this.setProgress(0);
+    !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
   };
 

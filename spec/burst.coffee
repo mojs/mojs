@@ -162,7 +162,7 @@ describe 'Burst ->', ->
       expect(opt1).toBe 40
       expect(opt8).toBe 40
 
-  describe 'size calculations ->', ->
+  describe 'size calculations calcSize method ->', ->
     it 'should calculate size based on largest transit + self radius', ->
       burst = new Burst
         radius: 50
@@ -178,11 +178,23 @@ describe 'Burst ->', ->
           strokeWidth: 20
       expect(burst.props.size)  .toBe 290
       expect(burst.props.center).toBe 145
+    it 'should call the calcSize of every transit', ->
+      burst = new Burst
+        childOptions:
+          radius:      [{ 20: 50 }, 20]
+          strokeWidth: 20
+      spyOn burst.transits[0], 'calcSize'
+      spyOn burst.transits[1], 'calcSize'
+      burst.calcSize()
+      expect(burst.transits[0].calcSize).toHaveBeenCalled()
+      expect(burst.transits[1].calcSize).toHaveBeenCalled()
+
     it 'should call addBitOptions method', ->
       burst = new Burst
       spyOn burst, 'addBitOptions'
       burst.calcSize()
       expect(burst.addBitOptions).toHaveBeenCalled()
+  
   describe 'createTween method ->', ->
     it 'should create tween', ->
       burst = new Burst
@@ -200,18 +212,50 @@ describe 'Burst ->', ->
       spyOn burst, 'startTween'
       burst.createTween()
       expect(burst.startTween).not.toHaveBeenCalled()
-  # describe 'setProgress method ->', ->
-  #   it 'should setProgress on all transits', ->
+  describe 'onStart callback ->', ->
+    it 'should run onStart callback',->
+      burst = new Burst isRunLess: true, onStart:->
+      spyOn burst.o, 'onStart'
+      burst.run()
+      expect(burst.o.onStart).toHaveBeenCalled()
+    it 'should have the scope of burst',->
+      isRightScope = false
+      burst = new Burst onStart:-> isRightScope = @ instanceof Burst
+      expect(isRightScope).toBe true
+  describe 'onComplete callback ->', ->
+    it 'should run onComplete callback', (dfr)->
+      burst = new Burst isRunLess: true, duration: 20, onComplete:->
+      spyOn burst.o, 'onComplete'
+      burst.run()
+      setTimeout ->
+        expect(burst.o.onComplete).toHaveBeenCalled(); dfr()
+      , 100
+    it 'should have the scope of burst', (dfr)->
+      isRightScope = false
+      burst = new Burst
+        duration: 20, onComplete:-> isRightScope = @ instanceof Burst
+      burst.run()
+      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+
+  # describe 'onUpdate callback ->', ->
+  #   it 'should run onUpdate callback', (dfr)->
   #     burst = new Burst
-  #       childOptions:
-  #         radius:      [{ 20: 50 }, 20]
-  #         strokeWidth: 20
-  #     burst.setProgress .5
-  #     expect(burst.transits[0].progress).toBe .5
-  #     expect(burst.transits[1].progress).toBe .5
-  #     expect(burst.transits[2].progress).toBe .5
-  #     expect(burst.transits[3].progress).toBe .5
-  #     expect(burst.transits[4].progress).toBe .5
+  #       isRunLess: true
+  #       duration: 20
+  #       isIt: true
+  #       onUpdate:-> console.log 'a'
+  #     spyOn burst.o, 'onUpdate'
+  #     burst.run()
+  #     setTimeout ->
+  #       expect(burst.o.onUpdate).toHaveBeenCalledWith .5; dfr()
+  #     , 100
+  #   it 'should have the scope of burst', (dfr)->
+  #     isRightScope = false
+  #     burst = new Burst
+  #       duration: 20, onUpdate:-> isRightScope = @ instanceof Burst
+  #     burst.run()
+  #     setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+
   describe 'run method ->', ->
     it 'should call super', ->
       burst = new Burst radius: { 20: 50 }

@@ -64,7 +64,6 @@ class Burst extends Transit
     # size props
     radius:             { 7 : 0 }
     angle:              0
-    size:               null
     sizeGap:            0
     # callbacks
     onInit:             null
@@ -78,7 +77,6 @@ class Burst extends Transit
     repeat:             null
     yoyo:               null
     easing:             null
-
   priorityOptionMap:
     duration:         1
     delay:            1
@@ -132,8 +130,9 @@ class Burst extends Transit
       x[pointStart.x] = pointEnd.x; y[pointStart.y] = pointEnd.y
       @transits[i].o.x = x; @transits[i].o.y = y
       transit.extendDefaults()
+      # transit.calcSize()
   draw:(progress)-> @drawEl()
-
+  # setProgress:(p)-> console.log p
   isNeedsTransform:->
     @isPropChanged('shiftX')or@isPropChanged('shiftY')or@isPropChanged('angle')
   fillTransform:->
@@ -141,30 +140,17 @@ class Burst extends Transit
   createTween:->
     # if !@o.isTweenLess
     @tween = new Tween
+      onUpdate:   => @props.onUpdate?.apply @, arguments
+      onComplete: => @props.onComplete?.apply @
+      onStart:    => @props.onStart?.apply @
     i = @transits.length
     while(i--)
       @tween.add @transits[i].timeline
     !@o.isRunLess and @startTween()
-    # it = @
-    # onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
-    # else null
-    # @timeline = new Timeline
-    #   duration: @props.duration
-    #   delay:    @props.delay
-    #   repeat:   @props.repeat-1
-    #   yoyo:     @props.yoyo
-    #   easing:   @props.easing
-    #   onUpdate:   (p)=> @setProgress p
-    #   onComplete: => @props.onComplete?.apply @
-    #   onStart:    => @props.onStart?.apply @
-    # !@o.isRunLess and @startTween()
-  # setProgress:(progress)->
-  #   super; i = @transits.length
-  #   # while(i--)
-  #   #   @transits[i].setProgress(progress).draw()
   calcSize:->
     largestSize = -1
     for transit, i in @transits
+      transit.calcSize()
       if largestSize < transit.props.size
         largestSize = transit.props.size
     selfSize = if @deltas.radius
