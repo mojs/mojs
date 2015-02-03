@@ -427,9 +427,9 @@ Burst = (function(_super) {
     strokeWidth: {
       2: 0
     },
-    strokeOpacity: 1,
-    strokeDasharray: '',
-    strokeDashoffset: '',
+    strokeOpacity: null,
+    strokeDasharray: null,
+    strokeDashoffset: null,
     stroke: null,
     fill: 'transparent',
     fillOpacity: 'transparent',
@@ -468,9 +468,14 @@ Burst = (function(_super) {
     swirlFrequency: 1,
     isSwirl: 1,
     fill: 1,
+    fillOpacity: 1,
     stroke: 1,
     strokeWidth: 1,
-    type: 1
+    strokeOpacity: 1,
+    type: 1,
+    strokeDasharray: 1,
+    strokeDashoffset: 1,
+    strokeLinecap: 1
   };
 
   Burst.prototype.init = function() {

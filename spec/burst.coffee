@@ -24,10 +24,12 @@ describe 'Burst ->', ->
       expect(burst.priorityOptionMap.swirlFrequency)     .toBe 1
       expect(burst.priorityOptionMap.isSwirl)            .toBe 1
       expect(burst.priorityOptionMap.fill)               .toBe 1
+      expect(burst.priorityOptionMap.fillOpacity)        .toBe 1
       expect(burst.priorityOptionMap.stroke)             .toBe 1
       expect(burst.priorityOptionMap.strokeWidth)        .toBe 1
+      expect(burst.priorityOptionMap.strokeLinecap)      .toBe 1
       expect(burst.priorityOptionMap.type)               .toBe 1
-      expect(Object.keys(burst.priorityOptionMap).length).toBe 12
+      expect(Object.keys(burst.priorityOptionMap).length).toBe 17
 
   describe 'initialization ->', ->
     it 'should create transits', ->
@@ -36,17 +38,32 @@ describe 'Burst ->', ->
       expect(burst.transits[0] instanceof Swirl).toBe true
     it 'should pass properties to transits', ->
       burst = new Burst
-        swirlSize: 20, swirlFrequency: 'rand(10,20)'
-        type: 'rect', stroke: 'red', strokeWidth: {10:0}
+        stroke: 'red'
+        strokeWidth:    {10:0}
+        strokeOpacity:  {1:0}
+        strokeDasharray:  '200 10 0'
+        strokeDashoffset: '50'
+        strokeLinecap:    'round'
         fill: 'deeppink'
+        fillOpacity: .5
+        type: 'rect'
+        swirlSize: 20
+        swirlFrequency: 'rand(10,20)'
+        points: 6
         childOptions:
-          radius: [ { 20: 50}, 20, '500' ]
           stroke: [ 'deeppink', 'yellow', null ]
           strokeWidth: [null, null, 20]
+          strokeOpacity: [null, 1 ,null]
           fill:   ['#fff', null]
-          type: ['circle', null, 'polygon']
+          type:   ['circle', null, 'polygon']
           swirlSize: [10, null]
           swirlFrequency: [null, 3]
+          radius: [ { 20: 50}, 20, '500' ]
+          strokeDasharray: ['10 20', null, { '40': '10' }]
+          strokeDashoffset: ['200', null, null]
+          fillOpacity:  [null, 1]
+          strokeLinecap: ['butt', null]
+          points: [10, null, 10]
 
       expect(burst.transits[0].o.radius[20]).toBe 50
       expect(burst.transits[1].o.radius)    .toBe 20
@@ -65,15 +82,42 @@ describe 'Burst ->', ->
       expect(burst.transits[0].o.fill)      .toBe '#fff'
       expect(burst.transits[1].o.fill)      .toBe 'deeppink'
 
+      expect(burst.transits[0].o.fillOpacity).toBe .5
+      expect(burst.transits[1].o.fillOpacity).toBe 1
+
       expect(burst.transits[0].o.isSwirlLess)   .toBe  true
       expect(burst.transits[0].o.swirlSize)     .toBe  10
       expect(burst.transits[1].o.swirlSize)     .toBe  20
+      
       expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
       expect(burst.transits[1].o.swirlFrequency).toBe  3
       
       expect(burst.transits[0].o.type).toBe     'circle'
       expect(burst.transits[1].o.type).toBe     'rect'
       expect(burst.transits[2].o.type).toBe     'polygon'
+
+      expect(burst.transits[0].o.strokeOpacity[1]).toBe     0
+      expect(burst.transits[1].o.strokeOpacity)   .toBe     1
+      expect(burst.transits[2].o.strokeOpacity[1]).toBe     0
+
+      expect(burst.transits[0].o.strokeDasharray).toBe        '10 20'
+      expect(burst.transits[1].o.strokeDasharray).toBe        '200 10 0'
+      expect(burst.transits[2].o.strokeDasharray['40']).toBe  '10'
+
+      expect(burst.transits[0].o.strokeDashoffset).toBe  '200'
+      expect(burst.transits[1].o.strokeDashoffset).toBe  '50'
+      expect(burst.transits[2].o.strokeDashoffset).toBe  '50'
+
+      expect(burst.transits[0].o.strokeLinecap).toBe  'butt'
+      expect(burst.transits[1].o.strokeLinecap).toBe  'round'
+      expect(burst.transits[2].o.strokeLinecap).toBe  'butt'
+
+      expect(burst.transits[0].o.points).toBe  10
+      expect(burst.transits[1].o.points).toBe  null
+      expect(burst.transits[2].o.points).toBe  10
+
+      
+
     it 'should pass properties to transits #2: priorityOptionMap', ->
       burst = new Burst
         duration: 1000
