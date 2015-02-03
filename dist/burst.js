@@ -21,8 +21,6 @@ Burst = (function(_super) {
     return Burst.__super__.constructor.apply(this, arguments);
   }
 
-  Burst.prototype.isPropsCalcLess = true;
-
   Burst.prototype.defaults = {
     points: 5,
     type: 'circle',
@@ -62,12 +60,12 @@ Burst = (function(_super) {
     strokeOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
-    stroke: '#ff00ff',
+    stroke: null,
     fill: 'transparent',
     fillOpacity: 'transparent',
     strokeLinecap: '',
     points: 5,
-    type: 'circle',
+    type: null,
     x: 0,
     y: 0,
     shiftX: 0,
@@ -98,7 +96,11 @@ Burst = (function(_super) {
     yoyo: 1,
     swirlSize: 1,
     swirlFrequency: 1,
-    isSwirl: 1
+    isSwirl: 1,
+    fill: 1,
+    stroke: 1,
+    strokeWidth: 1,
+    type: 1
   };
 
   Burst.prototype.init = function() {
@@ -109,7 +111,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(o) {
-    var i, tr, _results;
+    var i, option, tr, _results;
     Burst.__super__.run.apply(this, arguments);
     if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
       i = this.transits.length;
@@ -122,7 +124,10 @@ Burst = (function(_super) {
         this.props.randomRadius && tr.setProp({
           radiusScale: this.generateRandomRadius()
         });
-        _results.push(this.props.isSwirl && tr.generateSwirl());
+        this.props.isSwirl && tr.generateSwirl();
+        option = this.getOption(i);
+        option.ctx = this.ctx;
+        _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
       }
       return _results;
     }
@@ -157,7 +162,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var i, pointEnd, pointStart, points, step, transit, x, y, _i, _len, _ref, _ref1, _ref2, _results;
+    var i, pointEnd, pointStart, points, step, transit, x, y, _i, _len, _ref, _results;
     points = this.props.points;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
@@ -166,7 +171,7 @@ Burst = (function(_super) {
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       transit = _ref[i];
       pointStart = this.h.getRadialPoint({
-        radius: ((_ref1 = this.deltas.radius) != null ? _ref1.start : void 0) || this.props.radius,
+        radius: this.deltas.radius != null ? this.deltas.radius.start : this.props.radius,
         angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
@@ -174,7 +179,7 @@ Burst = (function(_super) {
         }
       });
       pointEnd = this.h.getRadialPoint({
-        radius: ((_ref2 = this.deltas.radius) != null ? _ref2.end : void 0) || this.props.radius,
+        radius: this.deltas.radius != null ? this.deltas.radius.end : this.props.radius,
         angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
@@ -185,8 +190,8 @@ Burst = (function(_super) {
       y = {};
       x[pointStart.x] = pointEnd.x;
       y[pointStart.y] = pointEnd.y;
-      this.transits[i].o.x = x;
-      this.transits[i].o.y = y;
+      transit.o.x = x;
+      transit.o.y = y;
       _results.push(transit.extendDefaults());
     }
     return _results;

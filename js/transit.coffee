@@ -150,12 +150,9 @@ class Transit extends bitsMap.map.bit
 
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
-
     # calc the curent value from deltas
-    !@isPropsCalcLess and @calcCurrentProps(progress)
-
-    @calcOrigin()
-    @draw progress
+    @calcCurrentProps(progress); @calcOrigin()
+    @draw(progress)
     if progress is 1 then @runChain(); @props.onComplete?.call @
     @
 
@@ -244,16 +241,13 @@ class Transit extends bitsMap.map.bit
         start = opts[key]
         @h.warn "new end value expected instead of object,
          using end(#{end}) value instead", value
-        opts[key] = {}
-        opts[key][start] = end
+        opts[key] = {}; opts[key][start] = end
       else
         # copy the options from
         # the previous chain
         if !@h.chainOptionMap[key]
-          currValue = opts[key]
-          nextValue = value
-          opts[key] = {}
-          opts[key][currValue] = nextValue
+          currValue = opts[key]; nextValue = value
+          opts[key] = {}; opts[key][currValue] = nextValue
         else opts[key] = value
     @o = opts
   copyEndOptions:->
@@ -278,8 +272,7 @@ class Transit extends bitsMap.map.bit
       onUpdate:   (p)=> @setProgress p
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
-    if !@o.isTweenLess
-      @tween = new Tween; @tween.add @timeline
+    if !@o.isTweenLess then @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
   run:(o)->
     for key, value of o
@@ -292,9 +285,11 @@ class Transit extends bitsMap.map.bit
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "Transit", [], -> Transit
+### istanbul ignore next ###
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = Transit
 ### istanbul ignore next ###
 window?.mojs ?= {}
+### istanbul ignore next ###
 window?.mojs.Transit = Transit
 

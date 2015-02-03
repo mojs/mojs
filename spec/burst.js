@@ -14,11 +14,6 @@
         burst = new Burst;
         return expect(burst instanceof Transit).toBe(true);
       });
-      it('should be isPropsCalcLess', function() {
-        var burst;
-        burst = new Burst;
-        return expect(burst.isPropsCalcLess).toBe(true);
-      });
       return it('should have its own defaults', function() {
         var burst;
         burst = new Burst;
@@ -39,7 +34,11 @@
         expect(burst.priorityOptionMap.swirlSize).toBe(1);
         expect(burst.priorityOptionMap.swirlFrequency).toBe(1);
         expect(burst.priorityOptionMap.isSwirl).toBe(1);
-        return expect(Object.keys(burst.priorityOptionMap).length).toBe(8);
+        expect(burst.priorityOptionMap.fill).toBe(1);
+        expect(burst.priorityOptionMap.stroke).toBe(1);
+        expect(burst.priorityOptionMap.strokeWidth).toBe(1);
+        expect(burst.priorityOptionMap.type).toBe(1);
+        return expect(Object.keys(burst.priorityOptionMap).length).toBe(12);
       });
     });
     describe('initialization ->', function() {
@@ -54,14 +53,24 @@
         burst = new Burst({
           swirlSize: 20,
           swirlFrequency: 'rand(10,20)',
+          type: 'rect',
+          stroke: 'red',
+          strokeWidth: {
+            10: 0
+          },
+          fill: 'deeppink',
           childOptions: {
             radius: [
               {
                 20: 50
               }, 20, '500'
             ],
-            stroke: ['deeppink', 'yellow'],
-            fill: '#fff'
+            stroke: ['deeppink', 'yellow', null],
+            strokeWidth: [null, null, 20],
+            fill: ['#fff', null],
+            type: ['circle', null, 'polygon'],
+            swirlSize: [10, null],
+            swirlFrequency: [null, 3]
           }
         });
         expect(burst.transits[0].o.radius[20]).toBe(50);
@@ -70,12 +79,21 @@
         expect(burst.transits[3].o.radius[20]).toBe(50);
         expect(burst.transits[4].o.radius).toBe(20);
         expect(burst.transits[1].o.stroke).toBe('yellow');
-        expect(burst.transits[2].o.stroke).toBe('deeppink');
-        expect(burst.transits[1].o.fill).toBe('#fff');
-        expect(burst.transits[2].o.fill).toBe('#fff');
+        expect(burst.transits[2].o.stroke).toBe('red');
+        expect(burst.transits[3].o.stroke).toBe('deeppink');
+        expect(burst.transits[3].o.strokeWidth[10]).toBe(0);
+        expect(burst.transits[1].o.strokeWidth[10]).toBe(0);
+        expect(burst.transits[2].o.strokeWidth).toBe(20);
+        expect(burst.transits[0].o.fill).toBe('#fff');
+        expect(burst.transits[1].o.fill).toBe('deeppink');
         expect(burst.transits[0].o.isSwirlLess).toBe(true);
-        expect(burst.transits[0].o.swirlSize).toBe(20);
-        return expect(burst.transits[0].o.swirlFrequency).toBe('rand(10,20)');
+        expect(burst.transits[0].o.swirlSize).toBe(10);
+        expect(burst.transits[1].o.swirlSize).toBe(20);
+        expect(burst.transits[0].o.swirlFrequency).toBe('rand(10,20)');
+        expect(burst.transits[1].o.swirlFrequency).toBe(3);
+        expect(burst.transits[0].o.type).toBe('circle');
+        expect(burst.transits[1].o.type).toBe('rect');
+        return expect(burst.transits[2].o.type).toBe('polygon');
       });
       it('should pass properties to transits #2: priorityOptionMap', function() {
         var burst;
@@ -130,7 +148,6 @@
           shiftY: 100,
           angle: 50
         });
-        console.log(burst.isNeedsTransform());
         return expect(burst.isNeedsTransform()).toBe(true);
       });
     });
@@ -357,6 +374,28 @@
         spyOn(burst, 'addBitOptions');
         burst.calcSize();
         return expect(burst.addBitOptions).toHaveBeenCalled();
+      });
+    });
+    describe('addBitOptions ->', function() {
+      it('should set x/y on every transit', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            0: 120
+          }
+        });
+        return expect(burst.transits[1].o.x[129].toFixed(2)).toBe('243.13');
+      });
+      return it('should work if end radius is 0', function() {
+        var burst, keys, x;
+        burst = new Burst({
+          radius: {
+            120: 0
+          }
+        });
+        x = burst.transits[1].o.x;
+        keys = Object.keys(x);
+        return expect(x[keys[0]] + '').not.toBe(keys[0]);
       });
     });
     describe('createTween method ->', function() {

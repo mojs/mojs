@@ -7,15 +7,11 @@ describe 'Burst ->', ->
     it 'should extend Transit class', ->
       burst = new Burst
       expect(burst instanceof Transit).toBe true
-    it 'should be isPropsCalcLess', ->
-      burst = new Burst
-      expect(burst.isPropsCalcLess).toBe true
     it 'should have its own defaults', ->
       burst = new Burst
       expect(burst.defaults.degree).toBe       360
       expect(burst.defaults.points).toBe       5
       expect(burst.defaults.type).toBe         'circle'
-
   describe 'pure tween props ->', ->
     it 'should be a map of tween related options ->', ->
       burst = new Burst
@@ -27,7 +23,11 @@ describe 'Burst ->', ->
       expect(burst.priorityOptionMap.swirlSize)          .toBe 1
       expect(burst.priorityOptionMap.swirlFrequency)     .toBe 1
       expect(burst.priorityOptionMap.isSwirl)            .toBe 1
-      expect(Object.keys(burst.priorityOptionMap).length).toBe 8
+      expect(burst.priorityOptionMap.fill)               .toBe 1
+      expect(burst.priorityOptionMap.stroke)             .toBe 1
+      expect(burst.priorityOptionMap.strokeWidth)        .toBe 1
+      expect(burst.priorityOptionMap.type)               .toBe 1
+      expect(Object.keys(burst.priorityOptionMap).length).toBe 12
 
   describe 'initialization ->', ->
     it 'should create transits', ->
@@ -37,22 +37,43 @@ describe 'Burst ->', ->
     it 'should pass properties to transits', ->
       burst = new Burst
         swirlSize: 20, swirlFrequency: 'rand(10,20)'
+        type: 'rect', stroke: 'red', strokeWidth: {10:0}
+        fill: 'deeppink'
         childOptions:
           radius: [ { 20: 50}, 20, '500' ]
-          stroke: [ 'deeppink', 'yellow' ]
-          fill:   '#fff'
+          stroke: [ 'deeppink', 'yellow', null ]
+          strokeWidth: [null, null, 20]
+          fill:   ['#fff', null]
+          type: ['circle', null, 'polygon']
+          swirlSize: [10, null]
+          swirlFrequency: [null, 3]
+
       expect(burst.transits[0].o.radius[20]).toBe 50
       expect(burst.transits[1].o.radius)    .toBe 20
       expect(burst.transits[2].o.radius)    .toBe '500'
       expect(burst.transits[3].o.radius[20]).toBe 50
       expect(burst.transits[4].o.radius)    .toBe 20
+      
       expect(burst.transits[1].o.stroke)    .toBe 'yellow'
-      expect(burst.transits[2].o.stroke)    .toBe 'deeppink'
-      expect(burst.transits[1].o.fill)      .toBe '#fff'
-      expect(burst.transits[2].o.fill)      .toBe '#fff'
+      expect(burst.transits[2].o.stroke)    .toBe 'red'
+      expect(burst.transits[3].o.stroke)    .toBe 'deeppink'
+
+      expect(burst.transits[3].o.strokeWidth[10]).toBe 0
+      expect(burst.transits[1].o.strokeWidth[10]).toBe 0
+      expect(burst.transits[2].o.strokeWidth).toBe 20
+
+      expect(burst.transits[0].o.fill)      .toBe '#fff'
+      expect(burst.transits[1].o.fill)      .toBe 'deeppink'
+
       expect(burst.transits[0].o.isSwirlLess)   .toBe  true
-      expect(burst.transits[0].o.swirlSize)     .toBe  20
+      expect(burst.transits[0].o.swirlSize)     .toBe  10
+      expect(burst.transits[1].o.swirlSize)     .toBe  20
       expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
+      expect(burst.transits[1].o.swirlFrequency).toBe  3
+      
+      expect(burst.transits[0].o.type).toBe     'circle'
+      expect(burst.transits[1].o.type).toBe     'rect'
+      expect(burst.transits[2].o.type).toBe     'polygon'
     it 'should pass properties to transits #2: priorityOptionMap', ->
       burst = new Burst
         duration: 1000
@@ -89,7 +110,6 @@ describe 'Burst ->', ->
   describe 'isNeedsTransform method ->', ->
     it 'return boolean if fillTransform needed', ->
       burst = new Burst shiftX: 100, shiftY: 100, angle: 50
-      console.log burst.isNeedsTransform()
       expect(burst.isNeedsTransform()).toBe true
 
   describe 'childOptions ->', ->
@@ -191,13 +211,21 @@ describe 'Burst ->', ->
       burst.calcSize()
       expect(burst.transits[0].calcSize).toHaveBeenCalled()
       expect(burst.transits[1].calcSize).toHaveBeenCalled()
-
     it 'should call addBitOptions method', ->
       burst = new Burst
       spyOn burst, 'addBitOptions'
       burst.calcSize()
       expect(burst.addBitOptions).toHaveBeenCalled()
   
+  describe 'addBitOptions ->', ->
+    it 'should set x/y on every transit', ->
+      burst = new Burst radius: {0: 120}
+      expect(burst.transits[1].o.x[129].toFixed(2)).toBe '243.13'
+    it 'should work if end radius is 0', ->
+      burst = new Burst radius: {120: 0}
+      x = burst.transits[1].o.x; keys = Object.keys x
+      expect(x[keys[0]]+'').not.toBe keys[0]
+
   describe 'createTween method ->', ->
     it 'should create tween', ->
       burst = new Burst

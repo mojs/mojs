@@ -13,7 +13,6 @@ class Tween
     @duration = Math.max timeline.props.totalTime, @duration
   update:(time)->
     return if @isCompleted
-
     i = @timelines.length
     while(i--)
       @timelines[i].update time
@@ -22,7 +21,6 @@ class Tween
       return @isCompleted = true
     if time >= @startTime
       @onUpdate? (time - @startTime)/@duration
-
   start:->
     @isCompleted = false; @getDimentions()
     i = @timelines.length; @o.onStart?.apply @

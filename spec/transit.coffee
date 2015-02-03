@@ -570,12 +570,13 @@ describe 'Transit ->', ->
       spyOn byte, 'calcCurrentProps'
       byte.setProgress .5
       expect(byte.calcCurrentProps).toHaveBeenCalledWith .5
-    it 'should not call calcCurrentProps if isPropsCalcLess', ->
-      byte = new Byte radius:  {'25': 75}
-      spyOn byte, 'calcCurrentProps'
-      byte.isPropsCalcLess = true
-      byte.setProgress .5
-      expect(byte.calcCurrentProps).not.toHaveBeenCalledWith .5
+    # ----- removed ----- #
+    # it 'should not call calcCurrentProps if isPropsCalcLess', ->
+    #   byte = new Byte radius:  {'25': 75}
+    #   spyOn byte, 'calcCurrentProps'
+    #   byte.isPropsCalcLess = true
+    #   byte.setProgress .5
+    #   expect(byte.calcCurrentProps).not.toHaveBeenCalledWith .5
     it 'should not call onUpdate if isShow was passed', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, 'onUpdate'

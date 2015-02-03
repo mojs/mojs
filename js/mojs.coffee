@@ -34,15 +34,24 @@ burst = new Burst(
   isShowEnd: true
   points: 5
   stroke: {'deeppink': 'orange'}
+  fill: 'green'
+  swirlFrequency: 1
+  strokeWidth: 2
+  type: 'rect'
   # onUpdate:(p)-> console.log p
   childOptions:
     isSwirl:      false
-    fill:         ['deeppink', 'orange', 'cyan', 'lime', 'hotpink']
+    fill:         ['deeppink', null, 'cyan', 'lime', 'hotpink']
     points:       3
     strokeWidth:  0
-    radius:       2
+    radius:       6
 )
 
 document.body.addEventListener 'click', (e)->
-  console.log 'run'
-  burst.run(x: e.x, y: e.y)
+  burst.run
+    x: e.x
+    y: e.y
+    radius: { 'rand(10,200)': 0}
+    swirlFrequency: 50
+    # angle: {360: 0}
+    # childOptions: fill: 'green'

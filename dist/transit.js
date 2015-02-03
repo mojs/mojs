@@ -212,7 +212,7 @@ Transit = (function(_super) {
       }
     }
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
-    !this.isPropsCalcLess && this.calcCurrentProps(progress);
+    this.calcCurrentProps(progress);
     this.calcOrigin();
     this.draw(progress);
     if (progress === 1) {
@@ -450,6 +450,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Transit;
 }
@@ -462,6 +465,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;

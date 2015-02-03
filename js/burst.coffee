@@ -8,7 +8,6 @@ h         = require './h'
 Tween     = require './tween'
 
 class Burst extends Transit
-  isPropsCalcLess: true
   defaults:
     # presentation props
     points:             5
@@ -50,12 +49,12 @@ class Burst extends Transit
     strokeOpacity:      1
     strokeDasharray:    ''
     strokeDashoffset:   ''
-    stroke:             '#ff00ff'
+    stroke:             null
     fill:               'transparent'
     fillOpacity:        'transparent'
     strokeLinecap:      ''
     points:             5
-    type:               'circle'
+    type:               null
     # position props/el props
     x:                  0
     y:                  0
@@ -87,6 +86,10 @@ class Burst extends Transit
     swirlSize:        1
     swirlFrequency:   1
     isSwirl:          1
+    fill:             1
+    stroke:           1
+    strokeWidth:      1
+    type:             1
   init:->
     @childOptions = @o.childOptions or {}
     h.extend(@childOptions, @childDefaults); delete @o.childOptions
@@ -100,6 +103,9 @@ class Burst extends Transit
         @props.randomAngle  and tr.setProp angleShift: @generateRandomAngle()
         @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
         @props.isSwirl      and tr.generateSwirl()
+        option = @getOption(i); option.ctx = @ctx
+        option.isDrawLess = option.isRunLess = option.isTweenLess = true
+
   createBit:->
     @transits = []
     for i in [0...@props.points]
@@ -109,7 +115,8 @@ class Burst extends Transit
       # over parent's one but use the latest
       # as a default value
       for key, value of @priorityOptionMap
-        if key isnt 'isSwirl' then option[key] ?= @o[key]
+        if key isnt 'isSwirl'
+          option[key] ?= @o[key]
         else option['isSwirlLess'] ?= !@props.isSwirl
       @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
       @props.randomRadius and (option.radiusScale = @generateRandomRadius())
@@ -118,20 +125,21 @@ class Burst extends Transit
     points = @props.points
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
+    # console.clear()
     for transit, i in @transits
       pointStart = @h.getRadialPoint
-        radius: @deltas.radius?.start or @props.radius
+        radius: if @deltas.radius? then @deltas.radius.start else @props.radius
         angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
       pointEnd = @h.getRadialPoint
-        radius: @deltas.radius?.end or @props.radius
+        radius: if @deltas.radius? then @deltas.radius.end else @props.radius
         angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
       x = {}; y = {}
       x[pointStart.x] = pointEnd.x; y[pointStart.y] = pointEnd.y
-      @transits[i].o.x = x; @transits[i].o.y = y
+      transit.o.x = x; transit.o.y = y
       transit.extendDefaults()
-      # transit.calcSize()
+
   draw:(progress)-> @drawEl()
   # setProgress:(p)-> console.log p
   isNeedsTransform:->
@@ -148,8 +156,6 @@ class Burst extends Transit
     while(i--)
       @tween.add @transits[i].timeline
     !@o.isRunLess and @startTween()
-
-  # setProgress:(p, isShow)-> @show()
 
   calcSize:->
     largestSize = -1

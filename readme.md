@@ -7,11 +7,13 @@
 
 #### todo
 - burst
+  - fix run params
+  - fix tween isComplete onUpdate
   - add chains and thens
-  - add radiusX radiusY options
   - add stagger values
-  - tween initialization with params to dedicated fun for burst and transit
   - set initial progress for the childrens
+  - add radiusX radiusY options
+
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size
@@ -31,5 +33,6 @@
 - add text tricks
 - add percent values for strokeDasharray/strokedashOffset
 - add stagger values for burst
+- add cloud
 
 [@LegoMushroom](https://twitter.com/legomushroom)(Oleg Solomka) [legomushroom@gmail.com](mailto:legomushroom@gmail.com) 2015 MIT License
