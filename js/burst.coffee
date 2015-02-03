@@ -8,6 +8,7 @@ h         = require './h'
 Tween     = require './tween'
 
 class Burst extends Transit
+  isPropsCalcLess: true
   defaults:
     # presentation props
     points:             5
@@ -140,13 +141,16 @@ class Burst extends Transit
   createTween:->
     # if !@o.isTweenLess
     @tween = new Tween
-      onUpdate:   => @props.onUpdate?.apply @, arguments
+      onUpdate:   (p)=> @setProgress(p); @props.onUpdate?.apply @, arguments
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
     i = @transits.length
     while(i--)
       @tween.add @transits[i].timeline
     !@o.isRunLess and @startTween()
+
+  # setProgress:(p, isShow)-> @show()
+
   calcSize:->
     largestSize = -1
     for transit, i in @transits

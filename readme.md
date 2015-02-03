@@ -7,12 +7,11 @@
 
 #### todo
 - burst
-  - add onUpdate callback to tween
-  - add callbacks to burst tween itself
-  - fix isRunLess
+  - add chains and thens
   - add radiusX radiusY options
   - add stagger values
-  - add chains and thens
+  - tween initialization with params to dedicated fun for burst and transit
+  - set initial progress for the childrens
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size

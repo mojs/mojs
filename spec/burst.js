@@ -14,6 +14,11 @@
         burst = new Burst;
         return expect(burst instanceof Transit).toBe(true);
       });
+      it('should be isPropsCalcLess', function() {
+        var burst;
+        burst = new Burst;
+        return expect(burst.isPropsCalcLess).toBe(true);
+      });
       return it('should have its own defaults', function() {
         var burst;
         burst = new Burst;
@@ -425,6 +430,38 @@
         burst = new Burst({
           duration: 20,
           onComplete: function() {
+            return isRightScope = this instanceof Burst;
+          }
+        });
+        burst.run();
+        return setTimeout((function() {
+          expect(isRightScope).toBe(true);
+          return dfr();
+        }), 100);
+      });
+    });
+    describe('onUpdate callback ->', function() {
+      it('should run onUpdate callback', function(dfr) {
+        var burst;
+        burst = new Burst({
+          isRunLess: true,
+          duration: 20,
+          isIt: true,
+          onUpdate: function() {}
+        });
+        spyOn(burst.o, 'onUpdate');
+        burst.run();
+        return setTimeout(function() {
+          expect(burst.o.onUpdate).toHaveBeenCalledWith(1);
+          return dfr();
+        }, 100);
+      });
+      return it('should have the scope of burst', function(dfr) {
+        var burst, isRightScope;
+        isRightScope = false;
+        burst = new Burst({
+          duration: 20,
+          onUpdate: function() {
             return isRightScope = this instanceof Burst;
           }
         });

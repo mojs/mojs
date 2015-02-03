@@ -46,7 +46,7 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
   vars:->
     @h ?= h; @chainArr ?= []; @lastSet ?= {}
-    @extendDefaults()
+    @extendDefaults(); @onUpdate = @props.onUpdate
   render:->
     if !@isRendered
       if !@o.ctx?
@@ -151,6 +151,15 @@ class Transit extends bitsMap.map.bit
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
 
+    # calc the curent value from deltas
+    !@isPropsCalcLess and @calcCurrentProps(progress)
+
+    @calcOrigin()
+    @draw progress
+    if progress is 1 then @runChain(); @props.onComplete?.call @
+    @
+
+  calcCurrentProps:(progress)->
     keys = Object.keys(@deltas); len = keys.length
     while(len--)
       key = keys[len]; value = @deltas[key]
@@ -171,11 +180,6 @@ class Transit extends bitsMap.map.bit
           b = parseInt (value.start.b + value.delta.b*progress), 10
           a = parseInt (value.start.a + value.delta.a*progress), 10
           @props[key] = "rgba(#{r},#{g},#{b},#{a})"
-    
-    @calcOrigin()
-    @draw progress
-    if progress is 1 then @runChain(); @props.onComplete?.call @
-    @
 
   calcOrigin:->
     @origin = if @o.ctx
@@ -185,7 +189,6 @@ class Transit extends bitsMap.map.bit
   extendDefaults:->
     @props  ?= {}
     @deltas = {}
-
     for key, defaultsValue of @defaults
       optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object value - just save it to @props
@@ -199,6 +202,7 @@ class Transit extends bitsMap.map.bit
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         continue
+
       # if delta object was passed: like { 20: 75 }
       # calculate delta
       if (key is 'x' or key is 'y') and !@o.ctx
@@ -212,8 +216,6 @@ class Transit extends bitsMap.map.bit
       if delta.type? then @deltas[key] = delta
       # and set the start value to props
       @props[key] = delta.start
-
-    @onUpdate = @props.onUpdate
 
   # CHAINS
   chain:(options)->

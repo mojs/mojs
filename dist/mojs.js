@@ -391,6 +391,8 @@ Burst = (function(_super) {
     return Burst.__super__.constructor.apply(this, arguments);
   }
 
+  Burst.prototype.isPropsCalcLess = true;
+
   Burst.prototype.defaults = {
     points: 5,
     type: 'circle',
@@ -576,8 +578,9 @@ Burst = (function(_super) {
     var i;
     this.tween = new Tween({
       onUpdate: (function(_this) {
-        return function() {
+        return function(p) {
           var _ref;
+          _this.setProgress(p);
           return (_ref = _this.props.onUpdate) != null ? _ref.apply(_this, arguments) : void 0;
         };
       })(this),
@@ -1940,7 +1943,8 @@ Transit = (function(_super) {
     if (this.lastSet == null) {
       this.lastSet = {};
     }
-    return this.extendDefaults();
+    this.extendDefaults();
+    return this.onUpdate = this.props.onUpdate;
   };
 
   Transit.prototype.render = function() {
@@ -2081,7 +2085,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress, isShow) {
-    var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _ref1;
+    var _ref;
     if (!isShow) {
       this.show();
       if (typeof this.onUpdate === "function") {
@@ -2089,8 +2093,23 @@ Transit = (function(_super) {
       }
     }
     this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
+    !this.isPropsCalcLess && this.calcCurrentProps(progress);
+    this.calcOrigin();
+    this.draw(progress);
+    if (progress === 1) {
+      this.runChain();
+      if ((_ref = this.props.onComplete) != null) {
+        _ref.call(this);
+      }
+    }
+    return this;
+  };
+
+  Transit.prototype.calcCurrentProps = function(progress) {
+    var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
+    _results = [];
     while (len--) {
       key = keys[len];
       value = this.deltas[key];
@@ -2102,32 +2121,27 @@ Transit = (function(_super) {
             num = _ref[i];
             str += "" + (value.start[i] + num * this.progress) + " ";
           }
-          this.props[key] = str;
+          _results.push(this.props[key] = str);
           break;
         case 'number':
-          this.props[key] = value.start + value.delta * progress;
+          _results.push(this.props[key] = value.start + value.delta * progress);
           break;
         case 'unit':
           units = value.end.unit;
-          this.props[key] = "" + (value.start.value + value.delta * progress) + units;
+          _results.push(this.props[key] = "" + (value.start.value + value.delta * progress) + units);
           break;
         case 'color':
           r = parseInt(value.start.r + value.delta.r * progress, 10);
           g = parseInt(value.start.g + value.delta.g * progress, 10);
           b = parseInt(value.start.b + value.delta.b * progress, 10);
           a = parseInt(value.start.a + value.delta.a * progress, 10);
-          this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+          _results.push(this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")");
+          break;
+        default:
+          _results.push(void 0);
       }
     }
-    this.calcOrigin();
-    this.draw(progress);
-    if (progress === 1) {
-      this.runChain();
-      if ((_ref1 = this.props.onComplete) != null) {
-        _ref1.call(this);
-      }
-    }
-    return this;
+    return _results;
   };
 
   Transit.prototype.calcOrigin = function() {
@@ -2141,12 +2155,13 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function() {
-    var defaultsValue, delta, isObject, key, optionsValue, _ref, _ref1;
+    var defaultsValue, delta, isObject, key, optionsValue, _ref, _ref1, _results;
     if (this.props == null) {
       this.props = {};
     }
     this.deltas = {};
     _ref = this.defaults;
+    _results = [];
     for (key in _ref) {
       defaultsValue = _ref[key];
       optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
@@ -2171,9 +2186,9 @@ Transit = (function(_super) {
       if (delta.type != null) {
         this.deltas[key] = delta;
       }
-      this.props[key] = delta.start;
+      _results.push(this.props[key] = delta.start);
     }
-    return this.onUpdate = this.props.onUpdate;
+    return _results;
   };
 
   Transit.prototype.chain = function(options) {

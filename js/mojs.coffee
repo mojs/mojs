@@ -24,7 +24,7 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Burst
+burst = new Burst(
   x:            300
   y:            150
   duration:     1000
@@ -41,6 +41,8 @@ burst = new Burst
     points:       3
     strokeWidth:  0
     radius:       2
+)
 
 document.body.addEventListener 'click', (e)->
+  console.log 'run'
   burst.run(x: e.x, y: e.y)

@@ -21,6 +21,8 @@ Burst = (function(_super) {
     return Burst.__super__.constructor.apply(this, arguments);
   }
 
+  Burst.prototype.isPropsCalcLess = true;
+
   Burst.prototype.defaults = {
     points: 5,
     type: 'circle',
@@ -206,8 +208,9 @@ Burst = (function(_super) {
     var i;
     this.tween = new Tween({
       onUpdate: (function(_this) {
-        return function() {
+        return function(p) {
           var _ref;
+          _this.setProgress(p);
           return (_ref = _this.props.onUpdate) != null ? _ref.apply(_this, arguments) : void 0;
         };
       })(this),

@@ -7,6 +7,9 @@ describe 'Burst ->', ->
     it 'should extend Transit class', ->
       burst = new Burst
       expect(burst instanceof Transit).toBe true
+    it 'should be isPropsCalcLess', ->
+      burst = new Burst
+      expect(burst.isPropsCalcLess).toBe true
     it 'should have its own defaults', ->
       burst = new Burst
       expect(burst.defaults.degree).toBe       360
@@ -237,24 +240,24 @@ describe 'Burst ->', ->
       burst.run()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
 
-  # describe 'onUpdate callback ->', ->
-  #   it 'should run onUpdate callback', (dfr)->
-  #     burst = new Burst
-  #       isRunLess: true
-  #       duration: 20
-  #       isIt: true
-  #       onUpdate:-> console.log 'a'
-  #     spyOn burst.o, 'onUpdate'
-  #     burst.run()
-  #     setTimeout ->
-  #       expect(burst.o.onUpdate).toHaveBeenCalledWith .5; dfr()
-  #     , 100
-  #   it 'should have the scope of burst', (dfr)->
-  #     isRightScope = false
-  #     burst = new Burst
-  #       duration: 20, onUpdate:-> isRightScope = @ instanceof Burst
-  #     burst.run()
-  #     setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+  describe 'onUpdate callback ->', ->
+    it 'should run onUpdate callback', (dfr)->
+      burst = new Burst
+        isRunLess: true
+        duration: 20
+        isIt: true
+        onUpdate:->
+      spyOn burst.o, 'onUpdate'
+      burst.run()
+      setTimeout ->
+        expect(burst.o.onUpdate).toHaveBeenCalledWith(1); dfr()
+      , 100
+    it 'should have the scope of burst', (dfr)->
+      isRightScope = false
+      burst = new Burst
+        duration: 20, onUpdate:-> isRightScope = @ instanceof Burst
+      burst.run()
+      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
 
   describe 'run method ->', ->
     it 'should call super', ->

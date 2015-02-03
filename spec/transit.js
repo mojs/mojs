@@ -1011,6 +1011,29 @@
         byte.setProgress(.5, true);
         return expect(byte.show).not.toHaveBeenCalled();
       });
+      it('should call calcCurrentProps', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        spyOn(byte, 'calcCurrentProps');
+        byte.setProgress(.5);
+        return expect(byte.calcCurrentProps).toHaveBeenCalledWith(.5);
+      });
+      it('should not call calcCurrentProps if isPropsCalcLess', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        spyOn(byte, 'calcCurrentProps');
+        byte.isPropsCalcLess = true;
+        byte.setProgress(.5);
+        return expect(byte.calcCurrentProps).not.toHaveBeenCalledWith(.5);
+      });
       it('should not call onUpdate if isShow was passed', function() {
         var byte;
         byte = new Byte({

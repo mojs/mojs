@@ -565,16 +565,25 @@ describe 'Transit ->', ->
       spyOn byte, 'show'
       byte.setProgress .5, true
       expect(byte.show).not.toHaveBeenCalled()
+    it 'should call calcCurrentProps', ->
+      byte = new Byte radius:  {'25': 75}
+      spyOn byte, 'calcCurrentProps'
+      byte.setProgress .5
+      expect(byte.calcCurrentProps).toHaveBeenCalledWith .5
+    it 'should not call calcCurrentProps if isPropsCalcLess', ->
+      byte = new Byte radius:  {'25': 75}
+      spyOn byte, 'calcCurrentProps'
+      byte.isPropsCalcLess = true
+      byte.setProgress .5
+      expect(byte.calcCurrentProps).not.toHaveBeenCalledWith .5
     it 'should not call onUpdate if isShow was passed', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, 'onUpdate'
       byte.setProgress .5, true
       expect(byte.onUpdate).not.toHaveBeenCalled()
-
     it 'not thow', ->
       byte = new Byte radius:  {'25': 75}, ctx: svg
       expect(-> byte.show()).not.toThrow()
-
     it 'should set color value progress and only int', ->
       byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
       colorDelta = byte.deltas.stroke
