@@ -65,85 +65,85 @@ describe 'Burst ->', ->
       burst = new Burst
       expect(burst.transits.length).toBe 5
       expect(burst.transits[0] instanceof Swirl).toBe true
-  #   it 'should pass properties to transits', ->
-  #     burst = new Burst
-  #       stroke: 'red'
-  #       strokeWidth:    {10:0}
-  #       strokeOpacity:  {1:0}
-  #       strokeDasharray:  '200 10 0'
-  #       strokeDashoffset: '50'
-  #       strokeLinecap:    'round'
-  #       fill: 'deeppink'
-  #       fillOpacity: .5
-  #       type: 'rect'
-  #       swirlSize: 20
-  #       swirlFrequency: 'rand(10,20)'
-  #       points: 6
-  #       childOptions:
-  #         stroke: [ 'deeppink', 'yellow', null ]
-  #         strokeWidth: [null, null, 20]
-  #         strokeOpacity: [null, 1 ,null]
-  #         fill:   ['#fff', null]
-  #         type:   ['circle', null, 'polygon']
-  #         swirlSize: [10, null]
-  #         swirlFrequency: [null, 3]
-  #         radius: [ { 20: 50}, 20, '500' ]
-  #         strokeDasharray: ['10 20', null, { '40': '10' }]
-  #         strokeDashoffset: ['200', null, null]
-  #         fillOpacity:  [null, 1]
-  #         strokeLinecap: ['butt', null]
-  #         points: [10, null, 10]
+    # it 'should pass properties to transits', ->
+    #   burst = new Burst
+    #     stroke: 'red'
+    #     strokeWidth:    {10:0}
+    #     strokeOpacity:  {1:0}
+    #     strokeDasharray:  '200 10 0'
+    #     strokeDashoffset: '50'
+    #     strokeLinecap:    'round'
+    #     fill: 'deeppink'
+    #     fillOpacity: .5
+    #     type: 'rect'
+    #     swirlSize: 20
+    #     swirlFrequency: 'rand(10,20)'
+    #     points: 6
+    #     childOptions:
+    #       stroke: [ 'deeppink', 'yellow', null ]
+    #       strokeWidth: [null, null, 20]
+    #       strokeOpacity: [null, 1 ,null]
+    #       fill:   ['#fff', null]
+    #       type:   ['circle', null, 'polygon']
+    #       swirlSize: [10, null]
+    #       swirlFrequency: [null, 3]
+    #       radius: [ { 20: 50}, 20, '500' ]
+    #       strokeDasharray: ['10 20', null, { '40': '10' }]
+    #       strokeDashoffset: ['200', null, null]
+    #       fillOpacity:  [null, 1]
+    #       strokeLinecap: ['butt', null]
+    #       points: [10, null, 10]
 
-  #     expect(burst.transits[0].o.radius[20]).toBe 50
-  #     expect(burst.transits[1].o.radius)    .toBe 20
-  #     expect(burst.transits[2].o.radius)    .toBe '500'
-  #     expect(burst.transits[3].o.radius[20]).toBe 50
-  #     expect(burst.transits[4].o.radius)    .toBe 20
+    #   expect(burst.transits[0].o.radius[20]).toBe 50
+    #   expect(burst.transits[1].o.radius)    .toBe 20
+    #   expect(burst.transits[2].o.radius)    .toBe '500'
+    #   expect(burst.transits[3].o.radius[20]).toBe 50
+    #   expect(burst.transits[4].o.radius)    .toBe 20
       
-  #     expect(burst.transits[1].o.stroke)    .toBe 'yellow'
-  #     expect(burst.transits[2].o.stroke)    .toBe 'red'
-  #     expect(burst.transits[3].o.stroke)    .toBe 'deeppink'
+    #   expect(burst.transits[1].o.stroke)    .toBe 'yellow'
+    #   expect(burst.transits[2].o.stroke)    .toBe 'red'
+    #   expect(burst.transits[3].o.stroke)    .toBe 'deeppink'
 
-  #     expect(burst.transits[3].o.strokeWidth[10]).toBe 0
-  #     expect(burst.transits[1].o.strokeWidth[10]).toBe 0
-  #     expect(burst.transits[2].o.strokeWidth).toBe 20
+    #   expect(burst.transits[3].o.strokeWidth[10]).toBe 0
+    #   expect(burst.transits[1].o.strokeWidth[10]).toBe 0
+    #   expect(burst.transits[2].o.strokeWidth).toBe 20
 
-  #     expect(burst.transits[0].o.fill)      .toBe '#fff'
-  #     expect(burst.transits[1].o.fill)      .toBe 'deeppink'
+    #   expect(burst.transits[0].o.fill)      .toBe '#fff'
+    #   expect(burst.transits[1].o.fill)      .toBe 'deeppink'
 
-  #     expect(burst.transits[0].o.fillOpacity).toBe .5
-  #     expect(burst.transits[1].o.fillOpacity).toBe 1
+    #   expect(burst.transits[0].o.fillOpacity).toBe .5
+    #   expect(burst.transits[1].o.fillOpacity).toBe 1
 
-  #     expect(burst.transits[0].o.isSwirlLess)   .toBe  true
-  #     expect(burst.transits[0].o.swirlSize)     .toBe  10
-  #     expect(burst.transits[1].o.swirlSize)     .toBe  20
+    #   expect(burst.transits[0].o.isSwirlLess)   .toBe  true
+    #   expect(burst.transits[0].o.swirlSize)     .toBe  10
+    #   expect(burst.transits[1].o.swirlSize)     .toBe  20
       
-  #     expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
-  #     expect(burst.transits[1].o.swirlFrequency).toBe  3
+    #   expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
+    #   expect(burst.transits[1].o.swirlFrequency).toBe  3
       
-  #     expect(burst.transits[0].o.type).toBe     'circle'
-  #     expect(burst.transits[1].o.type).toBe     'rect'
-  #     expect(burst.transits[2].o.type).toBe     'polygon'
+    #   expect(burst.transits[0].o.type).toBe     'circle'
+    #   expect(burst.transits[1].o.type).toBe     'rect'
+    #   expect(burst.transits[2].o.type).toBe     'polygon'
 
-  #     expect(burst.transits[0].o.strokeOpacity[1]).toBe     0
-  #     expect(burst.transits[1].o.strokeOpacity)   .toBe     1
-  #     expect(burst.transits[2].o.strokeOpacity[1]).toBe     0
+    #   expect(burst.transits[0].o.strokeOpacity[1]).toBe     0
+    #   expect(burst.transits[1].o.strokeOpacity)   .toBe     1
+    #   expect(burst.transits[2].o.strokeOpacity[1]).toBe     0
 
-  #     expect(burst.transits[0].o.strokeDasharray).toBe        '10 20'
-  #     expect(burst.transits[1].o.strokeDasharray).toBe        '200 10 0'
-  #     expect(burst.transits[2].o.strokeDasharray['40']).toBe  '10'
+    #   expect(burst.transits[0].o.strokeDasharray).toBe        '10 20'
+    #   expect(burst.transits[1].o.strokeDasharray).toBe        '200 10 0'
+    #   expect(burst.transits[2].o.strokeDasharray['40']).toBe  '10'
 
-  #     expect(burst.transits[0].o.strokeDashoffset).toBe  '200'
-  #     expect(burst.transits[1].o.strokeDashoffset).toBe  '50'
-  #     expect(burst.transits[2].o.strokeDashoffset).toBe  '50'
+    #   expect(burst.transits[0].o.strokeDashoffset).toBe  '200'
+    #   expect(burst.transits[1].o.strokeDashoffset).toBe  '50'
+    #   expect(burst.transits[2].o.strokeDashoffset).toBe  '50'
 
-  #     expect(burst.transits[0].o.strokeLinecap).toBe  'butt'
-  #     expect(burst.transits[1].o.strokeLinecap).toBe  'round'
-  #     expect(burst.transits[2].o.strokeLinecap).toBe  'butt'
+    #   expect(burst.transits[0].o.strokeLinecap).toBe  'butt'
+    #   expect(burst.transits[1].o.strokeLinecap).toBe  'round'
+    #   expect(burst.transits[2].o.strokeLinecap).toBe  'butt'
 
-  #     expect(burst.transits[0].o.points).toBe  10
-  #     expect(burst.transits[1].o.points).toBe  null
-  #     expect(burst.transits[2].o.points).toBe  10
+    #   expect(burst.transits[0].o.points).toBe  10
+    #   expect(burst.transits[1].o.points).toBe  null
+    #   expect(burst.transits[2].o.points).toBe  10
 
   #   it 'should fallback to childDefaults and override it', ->
   #     burst = new Burst stroke: 'red', type: 'rect', isIt: true
@@ -188,18 +188,6 @@ describe 'Burst ->', ->
       burst = new Burst shiftX: 100, shiftY: 100, angle: 50
       expect(burst.isNeedsTransform()).toBe true
 
-  # describe 'childOptions ->', ->
-  #   it 'should save childOptions from options ->', ->
-  #     burst = new Burst
-  #       childOptions:
-  #         radius: [ { 20: 50}, 20, '500' ]
-  #     expect(burst.childOptions).toBeDefined()
-  #     expect(burst.childOptions.radius[1]).toBe 20
-  #   # it 'should extend childDefaults ->', ->
-  #   #   burst = new Burst
-  #   #     childOptions:
-  #   #       radius: [ { 20: 50}, 20, '500' ]
-  #   #   expect(burst.childOptions.strokeWidth[2]).toBe 0
   # describe 'getOption method ->', ->
   #   it 'should return an option obj based on i ->', ->
   #     burst = new Burst
@@ -210,36 +198,46 @@ describe 'Burst ->', ->
   #     expect(option0.radius[20]).toBe 50
   #     expect(option1.radius)    .toBe 20
   #     expect(option7.radius)    .toBe 20
-  # describe 'getPropByMod method ->', ->
-  #   it 'should return the prop from @o based on i ->', ->
+  #   it 'should return fallback to parent prop if defined  ->', ->
   #     burst = new Burst
-  #       childOptions: radius: [ { 20: 50}, 20, '500' ]
-  #     opt0 = burst.getPropByMod propName: 'radius', i: 0
-  #     opt1 = burst.getPropByMod propName: 'radius', i: 1
-  #     opt2 = burst.getPropByMod propName: 'radius', i: 2
-  #     opt8 = burst.getPropByMod propName: 'radius', i: 8
-  #     expect(opt0[20]).toBe 50
-  #     expect(opt1)    .toBe 20
-  #     expect(opt2)    .toBe '500'
-  #     expect(opt8)    .toBe '500'
-  #   it 'should the same prop if not an array ->', ->
-  #     burst = new Burst childOptions: radius: 20
-  #     opt0 = burst.getPropByMod propName: 'radius', i: 0
-  #     opt1 = burst.getPropByMod propName: 'radius', i: 1
-  #     opt8 = burst.getPropByMod propName: 'radius', i: 8
-  #     expect(opt0).toBe 20
-  #     expect(opt1).toBe 20
-  #     expect(opt8).toBe 20
-  #   it 'should work with another options object ->', ->
-  #     burst = new Burst
-  #       radius: 40
-  #       childOptions: radius: 20
-  #     opt0 = burst.getPropByMod propName: 'radius', i: 0, from: 'o'
-  #     opt1 = burst.getPropByMod propName: 'radius', i: 1, from: 'o'
-  #     opt8 = burst.getPropByMod propName: 'radius', i: 8, from: 'o'
-  #     expect(opt0).toBe 40
-  #     expect(opt1).toBe 40
-  #     expect(opt8).toBe 40
+  #       childOptions: duration: [ 200, 20, '500' ]
+  #     option0 = burst.getOption 0
+  #     option1 = burst.getOption 1
+  #     option7 = burst.getOption 7
+  #     expect(option0.radius).toBe 200
+  #     expect(option1.radius).toBe 20
+  #     expect(option7.radius).toBe '500'
+  describe 'getPropByMod method ->', ->
+    it 'should return the prop from @o based on i ->', ->
+      burst = new Burst
+        childOptions: radius: [ { 20: 50}, 20, '500' ]
+      opt0 = burst.getPropByMod propName: 'radius', i: 0
+      opt1 = burst.getPropByMod propName: 'radius', i: 1
+      opt2 = burst.getPropByMod propName: 'radius', i: 2
+      opt8 = burst.getPropByMod propName: 'radius', i: 8
+      expect(opt0[20]).toBe 50
+      expect(opt1)    .toBe 20
+      expect(opt2)    .toBe '500'
+      expect(opt8)    .toBe '500'
+    it 'should the same prop if not an array ->', ->
+      burst = new Burst childOptions: radius: 20
+      opt0 = burst.getPropByMod propName: 'radius', i: 0
+      opt1 = burst.getPropByMod propName: 'radius', i: 1
+      opt8 = burst.getPropByMod propName: 'radius', i: 8
+      expect(opt0).toBe 20
+      expect(opt1).toBe 20
+      expect(opt8).toBe 20
+    it 'should work with another options object ->', ->
+      burst = new Burst
+        radius: 40
+        childOptions: radius: 20
+      from = burst.o
+      opt0 = burst.getPropByMod propName: 'radius', i: 0, from: from
+      opt1 = burst.getPropByMod propName: 'radius', i: 1, from: from
+      opt8 = burst.getPropByMod propName: 'radius', i: 8, from: from
+      expect(opt0).toBe 40
+      expect(opt1).toBe 40
+      expect(opt8).toBe 40
 
   describe 'randomness ->', ->
     describe 'random angle ->', ->
@@ -261,7 +259,7 @@ describe 'Burst ->', ->
         burst = new Burst randomRadius: true
         expect(burst.transits[0].o.radiusScale).toBeDefined()
         expect(burst.transits[1].o.radiusScale).toBeDefined()
-  
+
   # describe 'size calculations calcSize method ->', ->
   #   it 'should calculate size based on largest transit + self radius', ->
   #     burst = new Burst

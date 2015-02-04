@@ -71,21 +71,13 @@ class Burst extends Transit
   #       option.isDrawLess = option.isRunLess = option.isTweenLess = true
 
   createBit:->
-    console.log 'create'
     @transits = []
     for i in [0...@props.points]
-      # option = @getOption(i); option.ctx = @ctx
-      # option.isDrawLess = option.isRunLess = option.isTweenLess = true
-      # # prioritize the child option
-      # # over parent's one but use the latest
-      # # as a default value
-      # for key, value of @priorityOptionMap
-      #   if key isnt 'isSwirl'
-      #     option[key] ?= @o[key]
-      #   else option['isSwirlLess'] ?= !@props.isSwirl
-      # @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
-      # @props.randomRadius and (option.radiusScale = @generateRandomRadius())
-      @transits.push new Swirl# option
+      option = @getOption(i); option.ctx = @ctx
+      option.isDrawLess = option.isRunLess = option.isTweenLess = true
+      @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
+      @props.randomRadius and (option.radiusScale = @generateRandomRadius())
+      @transits.push new Swirl option
   addBitOptions:->
     # points = @props.points
     # @degreeCnt = if @props.degree % 360 is 0 then points else points-1
@@ -106,7 +98,7 @@ class Burst extends Transit
     #   transit.extendDefaults()
 
   draw:(progress)-> @drawEl()
-  
+
   isNeedsTransform:->
     @isPropChanged('shiftX')or@isPropChanged('shiftY')or@isPropChanged('angle')
   fillTransform:->
@@ -135,15 +127,15 @@ class Burst extends Transit
     @props.size   = largestSize + 2*selfSize
     @props.center = @props.size/2
     @addBitOptions()
-  # getOption:(i)->
-  #   option = {}
-  #   for key, value of @childOptions
-  #     option[key] = @getPropByMod propName: key, i: i
-  #   option
-  # getPropByMod:(o)->
-  #   prop = @[o.from or 'childOptions'][o.propName]
-  #   @o.isIt and console.log prop, @o[o.propName]
-  #   if @h.isArray(prop) then prop[o.i % prop.length] else prop
+  getOption:(i)->
+    option = {}
+    for key, value of @childOptions
+      option[key] = @getPropByMod propName: key, i: i
+    option
+  getPropByMod:(o)->
+    prop = (o.from or @o.childOptions)[o.propName]
+    @o.isIt and console.log prop, @o[o.propName]
+    if @h.isArray(prop) then prop[o.i % prop.length] else prop
   generateRandomAngle:(i)->
     randomness = parseFloat(@props.randomAngle)
     randdomness = if randomness > 1 then 1 else if randomness < 0 then 0

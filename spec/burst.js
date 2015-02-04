@@ -92,6 +92,91 @@
         return expect(burst.isNeedsTransform()).toBe(true);
       });
     });
+    describe('getPropByMod method ->', function() {
+      it('should return the prop from @o based on i ->', function() {
+        var burst, opt0, opt1, opt2, opt8;
+        burst = new Burst({
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20, '500'
+            ]
+          }
+        });
+        opt0 = burst.getPropByMod({
+          propName: 'radius',
+          i: 0
+        });
+        opt1 = burst.getPropByMod({
+          propName: 'radius',
+          i: 1
+        });
+        opt2 = burst.getPropByMod({
+          propName: 'radius',
+          i: 2
+        });
+        opt8 = burst.getPropByMod({
+          propName: 'radius',
+          i: 8
+        });
+        expect(opt0[20]).toBe(50);
+        expect(opt1).toBe(20);
+        expect(opt2).toBe('500');
+        return expect(opt8).toBe('500');
+      });
+      it('should the same prop if not an array ->', function() {
+        var burst, opt0, opt1, opt8;
+        burst = new Burst({
+          childOptions: {
+            radius: 20
+          }
+        });
+        opt0 = burst.getPropByMod({
+          propName: 'radius',
+          i: 0
+        });
+        opt1 = burst.getPropByMod({
+          propName: 'radius',
+          i: 1
+        });
+        opt8 = burst.getPropByMod({
+          propName: 'radius',
+          i: 8
+        });
+        expect(opt0).toBe(20);
+        expect(opt1).toBe(20);
+        return expect(opt8).toBe(20);
+      });
+      return it('should work with another options object ->', function() {
+        var burst, from, opt0, opt1, opt8;
+        burst = new Burst({
+          radius: 40,
+          childOptions: {
+            radius: 20
+          }
+        });
+        from = burst.o;
+        opt0 = burst.getPropByMod({
+          propName: 'radius',
+          i: 0,
+          from: from
+        });
+        opt1 = burst.getPropByMod({
+          propName: 'radius',
+          i: 1,
+          from: from
+        });
+        opt8 = burst.getPropByMod({
+          propName: 'radius',
+          i: 8,
+          from: from
+        });
+        expect(opt0).toBe(40);
+        expect(opt1).toBe(40);
+        return expect(opt8).toBe(40);
+      });
+    });
     describe('randomness ->', function() {
       describe('random angle ->', function() {
         it('should have randomAngle option ->', function() {

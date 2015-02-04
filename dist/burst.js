@@ -72,12 +72,16 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.createBit = function() {
-    var i, _i, _ref, _results;
-    console.log('create');
+    var i, option, _i, _ref, _results;
     this.transits = [];
     _results = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      _results.push(this.transits.push(new Swirl));
+      option = this.getOption(i);
+      option.ctx = this.ctx;
+      option.isDrawLess = option.isRunLess = option.isTweenLess = true;
+      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
+      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
+      _results.push(this.transits.push(new Swirl(option)));
     }
     return _results;
   };
@@ -141,6 +145,31 @@ Burst = (function(_super) {
     this.props.size = largestSize + 2 * selfSize;
     this.props.center = this.props.size / 2;
     return this.addBitOptions();
+  };
+
+  Burst.prototype.getOption = function(i) {
+    var key, option, value, _ref;
+    option = {};
+    _ref = this.childOptions;
+    for (key in _ref) {
+      value = _ref[key];
+      option[key] = this.getPropByMod({
+        propName: key,
+        i: i
+      });
+    }
+    return option;
+  };
+
+  Burst.prototype.getPropByMod = function(o) {
+    var prop;
+    prop = (o.from || this.o.childOptions)[o.propName];
+    this.o.isIt && console.log(prop, this.o[o.propName]);
+    if (this.h.isArray(prop)) {
+      return prop[o.i % prop.length];
+    } else {
+      return prop;
+    }
   };
 
   Burst.prototype.generateRandomAngle = function(i) {
