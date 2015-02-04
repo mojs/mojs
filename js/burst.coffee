@@ -11,142 +11,102 @@ class Burst extends Transit
   defaults:
     # presentation props
     points:             5
-    type:               'circle'
     degree:             360
+    opacity:            1
+    randomAngle:        0
+    randomRadius:       0
     # position props/el props
-    x:                  0
-    y:                  0
+    x:                  100
+    y:                  100
     shiftX:             0
     shiftY:             0
-    opacity:            1
     # size props
     radius:             { 25: 75 }
     angle:              0
     size:               null
     sizeGap:            0
     # callbacks
-    onInit:             null
     onStart:            null
     onComplete:         null
     onCompleteChain:    null
     onUpdate:           null
-    # tween props = defaults for children
+    # tween props = share with children
     duration:           500
     delay:              0
     repeat:             1
     yoyo:               false
     easing:             'Linear.None'
-    # burst specific options
-    randomAngle:        0
-    randomRadius:       0
+    type:               'circle'
+    fill:               'deeppink'
+    fillOpacity:        1
     isSwirl:            false
-    swirlFrequency:     3
     swirlSize:          10
+    swirlFrequency:     3
+    stroke:             'transparent'
+    strokeWidth:        0
+    strokeOpacity:      1
+    strokeDasharray:    ''
+    strokeDashoffset:   ''
+    strokeLinecap:      null
 
   childDefaults:
-    # presentation props
-    strokeWidth:        { 2 : 0 }
-    strokeOpacity:      null
-    strokeDasharray:    null
-    strokeDashoffset:   null
-    stroke:             null
-    fill:               'transparent'
-    fillOpacity:        'transparent'
-    strokeLinecap:      ''
-    points:             5
-    type:               null
-    # position props/el props
-    x:                  0
-    y:                  0
-    shiftX:             0
-    shiftY:             0
-    opacity:            1
-    # size props
     radius:             { 7 : 0 }
+    points:             3
     angle:              0
-    sizeGap:            0
     # callbacks
-    onInit:             null
     onStart:            null
     onComplete:         null
-    onCompleteChain:    null
     onUpdate:           null
-    # tween props
-    duration:           null
-    delay:              null
-    repeat:             null
-    yoyo:               null
-    easing:             null
-  priorityOptionMap:
-    duration:         1
-    delay:            1
-    repeat:           1
-    easing:           1
-    yoyo:             1
-    swirlSize:        1
-    swirlFrequency:   1
-    isSwirl:          1
-    fill:             1
-    fillOpacity:      1
-    stroke:           1
-    strokeWidth:      1
-    strokeOpacity:    1
-    type:             1
-    strokeDasharray:  1
-    strokeDashoffset: 1
-    strokeLinecap:    1
-  init:->
-    @childOptions = @o.childOptions or {}
-    h.extend(@childOptions, @childDefaults); delete @o.childOptions
-    super
-  run:(o)->
-    super
-    if @props.randomAngle or @props.randomRadius or @props.isSwirl
-      i = @transits.length
-      while(i--)
-        tr = @transits[i]
-        @props.randomAngle  and tr.setProp angleShift: @generateRandomAngle()
-        @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
-        @props.isSwirl      and tr.generateSwirl()
-        option = @getOption(i); option.ctx = @ctx
-        option.isDrawLess = option.isRunLess = option.isTweenLess = true
+
+  # run:(o)->
+  #   super
+  #   if @props.randomAngle or @props.randomRadius or @props.isSwirl
+  #     i = @transits.length
+  #     while(i--)
+  #       tr = @transits[i]
+  #       @props.randomAngle  and tr.setProp angleShift: @generateRandomAngle()
+  #       @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
+  #       @props.isSwirl      and tr.generateSwirl()
+  #       option = @getOption(i); option.ctx = @ctx
+  #       option.isDrawLess = option.isRunLess = option.isTweenLess = true
 
   createBit:->
+    console.log 'create'
     @transits = []
     for i in [0...@props.points]
-      option = @getOption(i); option.ctx = @ctx
-      option.isDrawLess = option.isRunLess = option.isTweenLess = true
-      # prioritize the child option
-      # over parent's one but use the latest
-      # as a default value
-      for key, value of @priorityOptionMap
-        if key isnt 'isSwirl'
-          option[key] ?= @o[key]
-        else option['isSwirlLess'] ?= !@props.isSwirl
-      @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
-      @props.randomRadius and (option.radiusScale = @generateRandomRadius())
-      @transits.push new Swirl option
+      # option = @getOption(i); option.ctx = @ctx
+      # option.isDrawLess = option.isRunLess = option.isTweenLess = true
+      # # prioritize the child option
+      # # over parent's one but use the latest
+      # # as a default value
+      # for key, value of @priorityOptionMap
+      #   if key isnt 'isSwirl'
+      #     option[key] ?= @o[key]
+      #   else option['isSwirlLess'] ?= !@props.isSwirl
+      # @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
+      # @props.randomRadius and (option.radiusScale = @generateRandomRadius())
+      @transits.push new Swirl# option
   addBitOptions:->
-    points = @props.points
-    @degreeCnt = if @props.degree % 360 is 0 then points else points-1
-    step = @props.degree/@degreeCnt
-    # console.clear()
-    for transit, i in @transits
-      pointStart = @h.getRadialPoint
-        radius: if @deltas.radius? then @deltas.radius.start else @props.radius
-        angle:  i*step + @props.angle
-        center: x: @props.center, y: @props.center
-      pointEnd = @h.getRadialPoint
-        radius: if @deltas.radius? then @deltas.radius.end else @props.radius
-        angle:  i*step + @props.angle
-        center: x: @props.center, y: @props.center
-      x = {}; y = {}
-      x[pointStart.x] = pointEnd.x; y[pointStart.y] = pointEnd.y
-      transit.o.x = x; transit.o.y = y
-      transit.extendDefaults()
+    # points = @props.points
+    # @degreeCnt = if @props.degree % 360 is 0 then points else points-1
+    # step = @props.degree/@degreeCnt
+    # # console.clear()
+    # for transit, i in @transits
+    #   pointStart = @h.getRadialPoint
+    #     radius: if @deltas.radius? then @deltas.radius.start else @props.radius
+    #     angle:  i*step + @props.angle
+    #     center: x: @props.center, y: @props.center
+    #   pointEnd = @h.getRadialPoint
+    #     radius: if @deltas.radius? then @deltas.radius.end else @props.radius
+    #     angle:  i*step + @props.angle
+    #     center: x: @props.center, y: @props.center
+    #   x = {}; y = {}
+    #   x[pointStart.x] = pointEnd.x; y[pointStart.y] = pointEnd.y
+    #   transit.o.x = x; transit.o.y = y
+    #   transit.extendDefaults()
 
   draw:(progress)-> @drawEl()
-  # setProgress:(p)-> console.log p
+  
   isNeedsTransform:->
     @isPropChanged('shiftX')or@isPropChanged('shiftY')or@isPropChanged('angle')
   fillTransform:->
@@ -161,7 +121,6 @@ class Burst extends Transit
     while(i--)
       @tween.add @transits[i].timeline
     !@o.isRunLess and @startTween()
-
   calcSize:->
     largestSize = -1
     for transit, i in @transits
@@ -176,14 +135,15 @@ class Burst extends Transit
     @props.size   = largestSize + 2*selfSize
     @props.center = @props.size/2
     @addBitOptions()
-  getOption:(i)->
-    option = {}
-    for key, value of @childOptions
-      option[key] = @getPropByMod propName: key, i: i
-    option
-  getPropByMod:(o)->
-    prop = @[o.from or 'childOptions'][o.propName]
-    if @h.isArray(prop) then prop[o.i % prop.length] else prop
+  # getOption:(i)->
+  #   option = {}
+  #   for key, value of @childOptions
+  #     option[key] = @getPropByMod propName: key, i: i
+  #   option
+  # getPropByMod:(o)->
+  #   prop = @[o.from or 'childOptions'][o.propName]
+  #   @o.isIt and console.log prop, @o[o.propName]
+  #   if @h.isArray(prop) then prop[o.i % prop.length] else prop
   generateRandomAngle:(i)->
     randomness = parseFloat(@props.randomAngle)
     randdomness = if randomness > 1 then 1 else if randomness < 0 then 0
@@ -199,9 +159,11 @@ class Burst extends Transit
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "Burst", [], -> Burst
+### istanbul ignore next ###
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = Burst
 ### istanbul ignore next ###
 window?.mojs ?= {}
+### istanbul ignore next ###
 window?.mojs.Burst = Burst
 

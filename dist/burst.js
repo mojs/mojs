@@ -23,20 +23,20 @@ Burst = (function(_super) {
 
   Burst.prototype.defaults = {
     points: 5,
-    type: 'circle',
     degree: 360,
-    x: 0,
-    y: 0,
+    opacity: 1,
+    randomAngle: 0,
+    randomRadius: 0,
+    x: 100,
+    y: 100,
     shiftX: 0,
     shiftY: 0,
-    opacity: 1,
     radius: {
       25: 75
     },
     angle: 0,
     size: null,
     sizeGap: 0,
-    onInit: null,
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
@@ -46,161 +46,43 @@ Burst = (function(_super) {
     repeat: 1,
     yoyo: false,
     easing: 'Linear.None',
-    randomAngle: 0,
-    randomRadius: 0,
+    type: 'circle',
+    fill: 'deeppink',
+    fillOpacity: 1,
     isSwirl: false,
+    swirlSize: 10,
     swirlFrequency: 3,
-    swirlSize: 10
+    stroke: 'transparent',
+    strokeWidth: 0,
+    strokeOpacity: 1,
+    strokeDasharray: '',
+    strokeDashoffset: '',
+    strokeLinecap: null
   };
 
   Burst.prototype.childDefaults = {
-    strokeWidth: {
-      2: 0
-    },
-    strokeOpacity: null,
-    strokeDasharray: null,
-    strokeDashoffset: null,
-    stroke: null,
-    fill: 'transparent',
-    fillOpacity: 'transparent',
-    strokeLinecap: '',
-    points: 5,
-    type: null,
-    x: 0,
-    y: 0,
-    shiftX: 0,
-    shiftY: 0,
-    opacity: 1,
     radius: {
       7: 0
     },
+    points: 3,
     angle: 0,
-    sizeGap: 0,
-    onInit: null,
     onStart: null,
     onComplete: null,
-    onCompleteChain: null,
-    onUpdate: null,
-    duration: null,
-    delay: null,
-    repeat: null,
-    yoyo: null,
-    easing: null
-  };
-
-  Burst.prototype.priorityOptionMap = {
-    duration: 1,
-    delay: 1,
-    repeat: 1,
-    easing: 1,
-    yoyo: 1,
-    swirlSize: 1,
-    swirlFrequency: 1,
-    isSwirl: 1,
-    fill: 1,
-    fillOpacity: 1,
-    stroke: 1,
-    strokeWidth: 1,
-    strokeOpacity: 1,
-    type: 1,
-    strokeDasharray: 1,
-    strokeDashoffset: 1,
-    strokeLinecap: 1
-  };
-
-  Burst.prototype.init = function() {
-    this.childOptions = this.o.childOptions || {};
-    h.extend(this.childOptions, this.childDefaults);
-    delete this.o.childOptions;
-    return Burst.__super__.init.apply(this, arguments);
-  };
-
-  Burst.prototype.run = function(o) {
-    var i, option, tr, _results;
-    Burst.__super__.run.apply(this, arguments);
-    if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
-      i = this.transits.length;
-      _results = [];
-      while (i--) {
-        tr = this.transits[i];
-        this.props.randomAngle && tr.setProp({
-          angleShift: this.generateRandomAngle()
-        });
-        this.props.randomRadius && tr.setProp({
-          radiusScale: this.generateRandomRadius()
-        });
-        this.props.isSwirl && tr.generateSwirl();
-        option = this.getOption(i);
-        option.ctx = this.ctx;
-        _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
-      }
-      return _results;
-    }
+    onUpdate: null
   };
 
   Burst.prototype.createBit = function() {
-    var i, key, option, value, _i, _ref, _ref1, _results;
+    var i, _i, _ref, _results;
+    console.log('create');
     this.transits = [];
     _results = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      option = this.getOption(i);
-      option.ctx = this.ctx;
-      option.isDrawLess = option.isRunLess = option.isTweenLess = true;
-      _ref1 = this.priorityOptionMap;
-      for (key in _ref1) {
-        value = _ref1[key];
-        if (key !== 'isSwirl') {
-          if (option[key] == null) {
-            option[key] = this.o[key];
-          }
-        } else {
-          if (option['isSwirlLess'] == null) {
-            option['isSwirlLess'] = !this.props.isSwirl;
-          }
-        }
-      }
-      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
-      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
-      _results.push(this.transits.push(new Swirl(option)));
+      _results.push(this.transits.push(new Swirl));
     }
     return _results;
   };
 
-  Burst.prototype.addBitOptions = function() {
-    var i, pointEnd, pointStart, points, step, transit, x, y, _i, _len, _ref, _results;
-    points = this.props.points;
-    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
-    step = this.props.degree / this.degreeCnt;
-    _ref = this.transits;
-    _results = [];
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      transit = _ref[i];
-      pointStart = this.h.getRadialPoint({
-        radius: this.deltas.radius != null ? this.deltas.radius.start : this.props.radius,
-        angle: i * step + this.props.angle,
-        center: {
-          x: this.props.center,
-          y: this.props.center
-        }
-      });
-      pointEnd = this.h.getRadialPoint({
-        radius: this.deltas.radius != null ? this.deltas.radius.end : this.props.radius,
-        angle: i * step + this.props.angle,
-        center: {
-          x: this.props.center,
-          y: this.props.center
-        }
-      });
-      x = {};
-      y = {};
-      x[pointStart.x] = pointEnd.x;
-      y[pointStart.y] = pointEnd.y;
-      transit.o.x = x;
-      transit.o.y = y;
-      _results.push(transit.extendDefaults());
-    }
-    return _results;
-  };
+  Burst.prototype.addBitOptions = function() {};
 
   Burst.prototype.draw = function(progress) {
     return this.drawEl();
@@ -261,30 +143,6 @@ Burst = (function(_super) {
     return this.addBitOptions();
   };
 
-  Burst.prototype.getOption = function(i) {
-    var key, option, value, _ref;
-    option = {};
-    _ref = this.childOptions;
-    for (key in _ref) {
-      value = _ref[key];
-      option[key] = this.getPropByMod({
-        propName: key,
-        i: i
-      });
-    }
-    return option;
-  };
-
-  Burst.prototype.getPropByMod = function(o) {
-    var prop;
-    prop = this[o.from || 'childOptions'][o.propName];
-    if (this.h.isArray(prop)) {
-      return prop[o.i % prop.length];
-    } else {
-      return prop;
-    }
-  };
-
   Burst.prototype.generateRandomAngle = function(i) {
     var end, randdomness, randomness, start;
     randomness = parseFloat(this.props.randomAngle);
@@ -320,6 +178,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Burst;
 }
@@ -332,6 +193,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;

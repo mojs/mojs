@@ -33,7 +33,6 @@ class Transit extends bitsMap.map.bit
     size:               null
     sizeGap:            0
     # callbacks
-    onInit:             null
     onStart:            null
     onComplete:         null
     onCompleteChain:    null

@@ -40,7 +40,6 @@ Transit = (function(_super) {
     angle: 0,
     size: null,
     sizeGap: 0,
-    onInit: null,
     onStart: null,
     onComplete: null,
     onCompleteChain: null,

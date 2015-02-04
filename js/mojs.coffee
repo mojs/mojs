@@ -35,7 +35,7 @@ burst = new Burst(
   points: 5
   stroke: {'deeppink': 'orange'}
   fill: 'green'
-  swirlFrequency: 1
+  swirlFrequency: 50
   strokeWidth: 2
   type: 'rect'
   # onUpdate:(p)-> console.log p
