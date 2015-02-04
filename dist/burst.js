@@ -22,7 +22,7 @@ Burst = (function(_super) {
   }
 
   Burst.prototype.defaults = {
-    points: 5,
+    count: 5,
     degree: 360,
     opacity: 1,
     randomAngle: 0,
@@ -40,6 +40,17 @@ Burst = (function(_super) {
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
+    onUpdate: null
+  };
+
+  Burst.prototype.childDefaults = {
+    radius: {
+      7: 0
+    },
+    points: 3,
+    angle: 0,
+    onStart: null,
+    onComplete: null,
     onUpdate: null,
     duration: 500,
     delay: 0,
@@ -60,22 +71,34 @@ Burst = (function(_super) {
     strokeLinecap: null
   };
 
-  Burst.prototype.childDefaults = {
-    radius: {
-      7: 0
-    },
-    points: 3,
-    angle: 0,
-    onStart: null,
-    onComplete: null,
-    onUpdate: null
+  Burst.prototype.run = function(o) {
+    var i, option, tr, _results;
+    Burst.__super__.run.apply(this, arguments);
+    if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
+      i = this.transits.length;
+      _results = [];
+      while (i--) {
+        tr = this.transits[i];
+        this.props.randomAngle && tr.setProp({
+          angleShift: this.generateRandomAngle()
+        });
+        this.props.randomRadius && tr.setProp({
+          radiusScale: this.generateRandomRadius()
+        });
+        this.props.isSwirl && tr.generateSwirl();
+        option = this.getOption(i);
+        option.ctx = this.ctx;
+        _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
+      }
+      return _results;
+    }
   };
 
   Burst.prototype.createBit = function() {
     var i, option, _i, _ref, _results;
     this.transits = [];
     _results = [];
-    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+    for (i = _i = 0, _ref = this.props.count; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       option = this.getOption(i);
       option.ctx = this.ctx;
       option.isDrawLess = option.isRunLess = option.isTweenLess = true;
@@ -86,7 +109,41 @@ Burst = (function(_super) {
     return _results;
   };
 
-  Burst.prototype.addBitOptions = function() {};
+  Burst.prototype.addBitOptions = function() {
+    var i, pointEnd, pointStart, points, step, transit, x, y, _i, _len, _ref, _results;
+    points = this.props.count;
+    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
+    step = this.props.degree / this.degreeCnt;
+    _ref = this.transits;
+    _results = [];
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      transit = _ref[i];
+      pointStart = this.h.getRadialPoint({
+        radius: this.deltas.radius != null ? this.deltas.radius.start : this.props.radius,
+        angle: i * step + this.props.angle,
+        center: {
+          x: this.props.center,
+          y: this.props.center
+        }
+      });
+      pointEnd = this.h.getRadialPoint({
+        radius: this.deltas.radius != null ? this.deltas.radius.end : this.props.radius,
+        angle: i * step + this.props.angle,
+        center: {
+          x: this.props.center,
+          y: this.props.center
+        }
+      });
+      x = {};
+      y = {};
+      x[pointStart.x] = pointEnd.x;
+      y[pointStart.y] = pointEnd.y;
+      transit.o.x = x;
+      transit.o.y = y;
+      _results.push(transit.extendDefaults());
+    }
+    return _results;
+  };
 
   Burst.prototype.draw = function(progress) {
     return this.drawEl();
@@ -150,20 +207,13 @@ Burst = (function(_super) {
   Burst.prototype.getOption = function(i) {
     var key, option, value, _ref;
     option = {};
-    _ref = this.o.childOptions;
+    _ref = this.childDefaults;
     for (key in _ref) {
       value = _ref[key];
       option[key] = this.getPropByMod({
         key: key,
         i: i
       });
-      if (option[key] == null) {
-        option[key] = this.getPropByMod({
-          key: key,
-          i: i,
-          from: this.childDefaults
-        });
-      }
       if (option[key] == null) {
         option[key] = this.getPropByMod({
           key: key,
@@ -175,7 +225,7 @@ Burst = (function(_super) {
         option[key] = this.getPropByMod({
           key: key,
           i: i,
-          from: this.defaults
+          from: this.childDefaults
         });
       }
     }
