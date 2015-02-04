@@ -146,7 +146,7 @@ describe 'Burst ->', ->
     #   expect(burst.transits[2].o.points).toBe  10
 
   #   it 'should fallback to childDefaults and override it', ->
-  #     burst = new Burst stroke: 'red', type: 'rect', isIt: true
+  #     burst = new Burst stroke: 'red', type: 'rect'
   #     expect(burst.transits[0].o.fill).toBe 'deeppink'
   #     expect(burst.transits[0].o.type).toBe 'rect'
 
@@ -188,42 +188,69 @@ describe 'Burst ->', ->
       burst = new Burst shiftX: 100, shiftY: 100, angle: 50
       expect(burst.isNeedsTransform()).toBe true
 
-  # describe 'getOption method ->', ->
-  #   it 'should return an option obj based on i ->', ->
-  #     burst = new Burst
-  #       childOptions: radius: [ { 20: 50}, 20, '500' ]
-  #     option0 = burst.getOption 0
-  #     option1 = burst.getOption 1
-  #     option7 = burst.getOption 7
-  #     expect(option0.radius[20]).toBe 50
-  #     expect(option1.radius)    .toBe 20
-  #     expect(option7.radius)    .toBe 20
-  #   it 'should return fallback to parent prop if defined  ->', ->
-  #     burst = new Burst
-  #       childOptions: duration: [ 200, 20, '500' ]
-  #     option0 = burst.getOption 0
-  #     option1 = burst.getOption 1
-  #     option7 = burst.getOption 7
-  #     expect(option0.radius).toBe 200
-  #     expect(option1.radius).toBe 20
-  #     expect(option7.radius).toBe '500'
+  describe 'getOption method ->', ->
+    it 'should return an option obj based on i ->', ->
+      burst = new Burst
+        childOptions: radius: [ { 20: 50}, 20, '500' ]
+      option0 = burst.getOption 0
+      option1 = burst.getOption 1
+      option7 = burst.getOption 7
+      expect(option0.radius[20]).toBe 50
+      expect(option1.radius)    .toBe 20
+      expect(option7.radius)    .toBe 20
+    it 'should try to fallback to childDefaiults first ->', ->
+      burst = new Burst
+        duration: 2000
+        childOptions: radius: [ 200, null, '500' ]
+      option0 = burst.getOption 0
+      option1 = burst.getOption 1
+      option7 = burst.getOption 7
+      option8 = burst.getOption 8
+      expect(option0.radius)   .toBe 200
+      expect(option1.radius[7]).toBe 0
+      expect(option7.radius[7]).toBe 0
+      expect(option8.radius)   .toBe '500'
+    it 'should fallback to parent prop if defined  ->', ->
+      burst = new Burst
+        duration: 2000
+        childOptions: duration: [ 200, null, '500' ]
+      option0 = burst.getOption 0
+      option1 = burst.getOption 1
+      option7 = burst.getOption 7
+      option8 = burst.getOption 8
+      expect(option0.duration).toBe 200
+      expect(option1.duration).toBe 2000
+      expect(option7.duration).toBe 2000
+      expect(option8.duration).toBe '500'
+    it 'should fallback to parent default ->', ->
+      burst = new Burst
+        childOptions: duration: [ 200, null, '500' ]
+      option0 = burst.getOption 0
+      option1 = burst.getOption 1
+      option7 = burst.getOption 7
+      option8 = burst.getOption 8
+      expect(option0.duration).toBe 200
+      expect(option1.duration).toBe 500
+      expect(option7.duration).toBe 500
+      expect(option8.duration).toBe '500'
+
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->
       burst = new Burst
         childOptions: radius: [ { 20: 50}, 20, '500' ]
-      opt0 = burst.getPropByMod propName: 'radius', i: 0
-      opt1 = burst.getPropByMod propName: 'radius', i: 1
-      opt2 = burst.getPropByMod propName: 'radius', i: 2
-      opt8 = burst.getPropByMod propName: 'radius', i: 8
+      opt0 = burst.getPropByMod key: 'radius', i: 0
+      opt1 = burst.getPropByMod key: 'radius', i: 1
+      opt2 = burst.getPropByMod key: 'radius', i: 2
+      opt8 = burst.getPropByMod key: 'radius', i: 8
       expect(opt0[20]).toBe 50
       expect(opt1)    .toBe 20
       expect(opt2)    .toBe '500'
       expect(opt8)    .toBe '500'
     it 'should the same prop if not an array ->', ->
       burst = new Burst childOptions: radius: 20
-      opt0 = burst.getPropByMod propName: 'radius', i: 0
-      opt1 = burst.getPropByMod propName: 'radius', i: 1
-      opt8 = burst.getPropByMod propName: 'radius', i: 8
+      opt0 = burst.getPropByMod key: 'radius', i: 0
+      opt1 = burst.getPropByMod key: 'radius', i: 1
+      opt8 = burst.getPropByMod key: 'radius', i: 8
       expect(opt0).toBe 20
       expect(opt1).toBe 20
       expect(opt8).toBe 20
@@ -232,9 +259,9 @@ describe 'Burst ->', ->
         radius: 40
         childOptions: radius: 20
       from = burst.o
-      opt0 = burst.getPropByMod propName: 'radius', i: 0, from: from
-      opt1 = burst.getPropByMod propName: 'radius', i: 1, from: from
-      opt8 = burst.getPropByMod propName: 'radius', i: 8, from: from
+      opt0 = burst.getPropByMod key: 'radius', i: 0, from: from
+      opt1 = burst.getPropByMod key: 'radius', i: 1, from: from
+      opt8 = burst.getPropByMod key: 'radius', i: 8, from: from
       expect(opt0).toBe 40
       expect(opt1).toBe 40
       expect(opt8).toBe 40
@@ -346,7 +373,6 @@ describe 'Burst ->', ->
   #     burst = new Burst
   #       isRunLess: true
   #       duration: 20
-  #       isIt: true
   #       onUpdate:->
   #     spyOn burst.o, 'onUpdate'
   #     burst.run()

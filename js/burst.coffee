@@ -129,12 +129,16 @@ class Burst extends Transit
     @addBitOptions()
   getOption:(i)->
     option = {}
-    for key, value of @childOptions
-      option[key] = @getPropByMod propName: key, i: i
+    for key, value of @o.childOptions
+      # firstly try to find the prop in @o.childOptions
+      option[key]  = @getPropByMod key: key, i: i
+      # if fail - continue to this objects
+      option[key] ?= @getPropByMod key: key, i: i, from: @childDefaults
+      option[key] ?= @getPropByMod key: key, i: i, from: @o
+      option[key] ?= @getPropByMod key: key, i: i, from: @defaults
     option
   getPropByMod:(o)->
-    prop = (o.from or @o.childOptions)[o.propName]
-    @o.isIt and console.log prop, @o[o.propName]
+    prop = (o.from or @o.childOptions)?[o.key]
     if @h.isArray(prop) then prop[o.i % prop.length] else prop
   generateRandomAngle:(i)->
     randomness = parseFloat(@props.randomAngle)

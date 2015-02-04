@@ -92,6 +92,76 @@
         return expect(burst.isNeedsTransform()).toBe(true);
       });
     });
+    describe('getOption method ->', function() {
+      it('should return an option obj based on i ->', function() {
+        var burst, option0, option1, option7;
+        burst = new Burst({
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20, '500'
+            ]
+          }
+        });
+        option0 = burst.getOption(0);
+        option1 = burst.getOption(1);
+        option7 = burst.getOption(7);
+        expect(option0.radius[20]).toBe(50);
+        expect(option1.radius).toBe(20);
+        return expect(option7.radius).toBe(20);
+      });
+      it('should try to fallback to childDefaiults first ->', function() {
+        var burst, option0, option1, option7, option8;
+        burst = new Burst({
+          duration: 2000,
+          childOptions: {
+            radius: [200, null, '500']
+          }
+        });
+        option0 = burst.getOption(0);
+        option1 = burst.getOption(1);
+        option7 = burst.getOption(7);
+        option8 = burst.getOption(8);
+        expect(option0.radius).toBe(200);
+        expect(option1.radius[7]).toBe(0);
+        expect(option7.radius[7]).toBe(0);
+        return expect(option8.radius).toBe('500');
+      });
+      it('should fallback to parent prop if defined  ->', function() {
+        var burst, option0, option1, option7, option8;
+        burst = new Burst({
+          duration: 2000,
+          childOptions: {
+            duration: [200, null, '500']
+          }
+        });
+        option0 = burst.getOption(0);
+        option1 = burst.getOption(1);
+        option7 = burst.getOption(7);
+        option8 = burst.getOption(8);
+        expect(option0.duration).toBe(200);
+        expect(option1.duration).toBe(2000);
+        expect(option7.duration).toBe(2000);
+        return expect(option8.duration).toBe('500');
+      });
+      return it('should fallback to parent default ->', function() {
+        var burst, option0, option1, option7, option8;
+        burst = new Burst({
+          childOptions: {
+            duration: [200, null, '500']
+          }
+        });
+        option0 = burst.getOption(0);
+        option1 = burst.getOption(1);
+        option7 = burst.getOption(7);
+        option8 = burst.getOption(8);
+        expect(option0.duration).toBe(200);
+        expect(option1.duration).toBe(500);
+        expect(option7.duration).toBe(500);
+        return expect(option8.duration).toBe('500');
+      });
+    });
     describe('getPropByMod method ->', function() {
       it('should return the prop from @o based on i ->', function() {
         var burst, opt0, opt1, opt2, opt8;
@@ -105,19 +175,19 @@
           }
         });
         opt0 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 0
         });
         opt1 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 1
         });
         opt2 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 2
         });
         opt8 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 8
         });
         expect(opt0[20]).toBe(50);
@@ -133,15 +203,15 @@
           }
         });
         opt0 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 0
         });
         opt1 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 1
         });
         opt8 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 8
         });
         expect(opt0).toBe(20);
@@ -158,17 +228,17 @@
         });
         from = burst.o;
         opt0 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 0,
           from: from
         });
         opt1 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 1,
           from: from
         });
         opt8 = burst.getPropByMod({
-          propName: 'radius',
+          key: 'radius',
           i: 8,
           from: from
         });

@@ -150,21 +150,41 @@ Burst = (function(_super) {
   Burst.prototype.getOption = function(i) {
     var key, option, value, _ref;
     option = {};
-    _ref = this.childOptions;
+    _ref = this.o.childOptions;
     for (key in _ref) {
       value = _ref[key];
       option[key] = this.getPropByMod({
-        propName: key,
+        key: key,
         i: i
       });
+      if (option[key] == null) {
+        option[key] = this.getPropByMod({
+          key: key,
+          i: i,
+          from: this.childDefaults
+        });
+      }
+      if (option[key] == null) {
+        option[key] = this.getPropByMod({
+          key: key,
+          i: i,
+          from: this.o
+        });
+      }
+      if (option[key] == null) {
+        option[key] = this.getPropByMod({
+          key: key,
+          i: i,
+          from: this.defaults
+        });
+      }
     }
     return option;
   };
 
   Burst.prototype.getPropByMod = function(o) {
-    var prop;
-    prop = (o.from || this.o.childOptions)[o.propName];
-    this.o.isIt && console.log(prop, this.o[o.propName]);
+    var prop, _ref;
+    prop = (_ref = o.from || this.o.childOptions) != null ? _ref[o.key] : void 0;
     if (this.h.isArray(prop)) {
       return prop[o.i % prop.length];
     } else {
