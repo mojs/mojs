@@ -242,17 +242,10 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.generateRandomAngle = function(i) {
-    var end, randdomness, randomness, start;
+    var randdomness, randomness;
     randomness = parseFloat(this.props.randomAngle);
     randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
-    if (randomness) {
-      start = (1 - randomness) * 180;
-      end = (1 + randomness) * 180;
-    } else {
-      start = (1 - .5) * 180;
-      end = (1 + .5) * 180;
-    }
-    return this.h.rand(start, end);
+    return this.h.rand(0, randomness ? randomness * 360 : 180);
   };
 
   Burst.prototype.generateRandomRadius = function(i) {

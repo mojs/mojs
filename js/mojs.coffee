@@ -25,30 +25,14 @@ Transit   = require './transit'
 # t.start()
 
 burst = new Burst(
-  # x:            300
-  # y:            150
   isRunLess: true
-  isSwirl: false
   duration: 400
-  # duration:     1000
-  # radius:        { 0: 100 }
-  # isSwirl:       true
-  # angle: 'rand(0,360)'
-  # isShowEnd: true
-  # count: 5
-  # stroke: {'deeppink': 'orange'}
-  # fill: 'green'
-  # # swirlFrequency: 50
-  # # strokeWidth: 2
-  # type: 'rect'
-  # isIt: true
-  # # onUpdate:(p)-> console.log p
-  # childOptions:
-  #   isSwirl:      false
-  #   fill:         ['deeppink', null, 'cyan', 'lime', 'hotpink']
-  #   points:       3
-  #   strokeWidth:  0
-    # radius:       6
+  count: 2
+  randomAngle: .3
+  degree:      20
+  radius:      {0: 75}
+  childOptions:
+    radius: {7:0}
 )
 
 document.body.addEventListener 'click', (e)->

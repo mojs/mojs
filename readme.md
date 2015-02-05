@@ -7,8 +7,10 @@
 
 #### todo
 - burst
+  - fix radius option for burst and childOptions
   - implement run method
   - fix tween isComplete onUpdate
+  - add deltas for swirl params
   - add stagger values
   - set initial progress for the childrens or hide them
   - add radiusX radiusY options

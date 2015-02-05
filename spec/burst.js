@@ -601,7 +601,7 @@
       it('should call generateRandomAngle method if randomAngle was passed', function() {
         var burst;
         burst = new Burst({
-          randomAngle: true
+          randomAngle: .1
         });
         spyOn(burst, 'generateRandomAngle');
         burst.run();
@@ -609,9 +609,7 @@
       });
       it('should not call generateRandomAngle method', function() {
         var burst;
-        burst = new Burst({
-          randomAngle: false
-        });
+        burst = new Burst;
         spyOn(burst, 'generateRandomAngle');
         burst.run();
         return expect(burst.generateRandomAngle).not.toHaveBeenCalled();
@@ -619,7 +617,7 @@
       it('should call generateRandomRadius method if randomAngle was passed', function() {
         var burst;
         burst = new Burst({
-          randomRadius: true
+          randomRadius: .1
         });
         spyOn(burst, 'generateRandomRadius');
         burst.run();
@@ -627,23 +625,30 @@
       });
       return it('should not call generateRandomRadius method', function() {
         var burst;
-        burst = new Burst({
-          randomRadius: false
-        });
+        burst = new Burst;
         spyOn(burst, 'generateRandomRadius');
         burst.run();
         return expect(burst.generateRandomRadius).not.toHaveBeenCalled();
       });
     });
     describe('generateRandomAngle method ->', function() {
-      return it('should generate random angle based on randomness', function() {
+      it('should generate random angle based on randomness', function() {
+        var angle, burst;
+        burst = new Burst({
+          randomAngle: .5
+        });
+        angle = burst.generateRandomAngle();
+        expect(angle).toBeGreaterThan(-1);
+        return expect(angle).not.toBeGreaterThan(180);
+      });
+      return it('should generate random angle based on randomness #2', function() {
         var angle, burst;
         burst = new Burst({
           randomAngle: .75
         });
         angle = burst.generateRandomAngle();
-        expect(angle).toBeGreaterThan(45);
-        return expect(angle).not.toBeGreaterThan(315);
+        expect(angle).toBeGreaterThan(-1);
+        return expect(angle).not.toBeGreaterThan(270);
       });
     });
     describe('generateRandomRadius method ->', function() {

@@ -158,9 +158,7 @@ class Burst extends Transit
   generateRandomAngle:(i)->
     randomness = parseFloat(@props.randomAngle)
     randdomness = if randomness > 1 then 1 else if randomness < 0 then 0
-    if randomness then start = (1-randomness)*180; end = (1+randomness)*180
-    else start = (1-.5)*180; end = (1+.5)*180
-    @h.rand(start, end)
+    @h.rand(0, if randomness then randomness*360 else 180)
   generateRandomRadius:(i)->
     randomness = parseFloat(@props.randomRadius)
     randdomness = if randomness > 1 then 1 else if randomness < 0 then 0

@@ -380,32 +380,36 @@ describe 'Burst ->', ->
       burst.run()
       expect(Burst.__super__.run).toHaveBeenCalled()
     it 'should call generateRandomAngle method if randomAngle was passed', ->
-      burst = new Burst randomAngle: true
+      burst = new Burst randomAngle: .1
       spyOn burst, 'generateRandomAngle'
       burst.run()
       expect(burst.generateRandomAngle).toHaveBeenCalled()
     it 'should not call generateRandomAngle method', ->
-      burst = new Burst randomAngle: false
+      burst = new Burst
       spyOn burst, 'generateRandomAngle'
       burst.run()
       expect(burst.generateRandomAngle).not.toHaveBeenCalled()
     it 'should call generateRandomRadius method if randomAngle was passed', ->
-      burst = new Burst randomRadius: true
+      burst = new Burst randomRadius: .1
       spyOn burst, 'generateRandomRadius'
       burst.run()
       expect(burst.generateRandomRadius).toHaveBeenCalled()
     it 'should not call generateRandomRadius method', ->
-      burst = new Burst randomRadius: false
+      burst = new Burst
       spyOn burst, 'generateRandomRadius'
       burst.run()
       expect(burst.generateRandomRadius).not.toHaveBeenCalled()
   describe 'generateRandomAngle method ->', ->
     it 'should generate random angle based on randomness', ->
+      burst = new Burst randomAngle: .5
+      angle = burst.generateRandomAngle()
+      expect(angle).toBeGreaterThan     -1
+      expect(angle).not.toBeGreaterThan 180
+    it 'should generate random angle based on randomness #2', ->
       burst = new Burst randomAngle: .75
       angle = burst.generateRandomAngle()
-      expect(angle).toBeGreaterThan     45
-      expect(angle).not.toBeGreaterThan 315
-
+      expect(angle).toBeGreaterThan     -1
+      expect(angle).not.toBeGreaterThan 270
   describe 'generateRandomRadius method ->', ->
     it 'should generate random radius based on randomness', ->
       burst = new Burst randomRadius: .75
