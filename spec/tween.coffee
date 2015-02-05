@@ -37,9 +37,9 @@ describe 'Tween ->', ->
       expect(t.timelines[1].start).toHaveBeenCalledWith t.startTime
     it 'should add itself to tweener',->
       t = new Tween
-      spyOn t.t, 'add'
+      spyOn tweener, 'add'
       t.start()
-      expect(t.t.add).toHaveBeenCalled()
+      expect(tweener.add).toHaveBeenCalled()
     it 'should restart flags', ->
       t = new Tween
       t.add new Timeline duration: 20
@@ -49,6 +49,18 @@ describe 'Tween ->', ->
       expect(t.isCompleted).toBe true
       t.start()
       expect(t.isCompleted).toBe false
+  describe 'stop method ->', ->
+    it 'should call t.remove method with self',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add timeline
+      t.start()
+      # spyOn tweener, 'remove'
+      t.stop()
+      # expect(tweener.remove).toHaveBeenCalledWith t
+      expect(tweener.tweens.length).toBe 0
+
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
       t = new Tween onComplete: ->
@@ -112,7 +124,7 @@ describe 'Tween ->', ->
       expect(t.onUpdate).toHaveBeenCalledWith 1
     it 'should run if time is greater then endTime just once', ->
       cnt = 0
-      t = new Tween isIt: true, onUpdate:-> cnt++
+      t = new Tween onUpdate:-> cnt++
       t.add new Timeline duration: 20
       t.getDimentions()
       t.update t.startTime + 25

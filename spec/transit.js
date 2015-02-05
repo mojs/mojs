@@ -616,7 +616,7 @@
         byte.render();
         return expect(byte.isRendered).toBe(true);
       });
-      return it('should call calcSize method', function() {
+      it('should call calcSize method', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -625,6 +625,24 @@
         byte.isRendered = false;
         byte.render();
         return expect(byte.calcSize).toHaveBeenCalled();
+      });
+      it('should have option for force render', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'calcSize');
+        byte.render(true);
+        return expect(byte.calcSize).toHaveBeenCalled();
+      });
+      return it('should not create new el', function() {
+        var byte, cnt;
+        byte = new Byte({
+          radius: 25
+        });
+        cnt = document.body.children.length;
+        byte.render(true);
+        return expect(cnt).toBe(document.body.children.length);
       });
     });
     describe('draw method ->', function() {
@@ -1319,9 +1337,9 @@
               '25': 75
             }
           });
-          spyOn(byte, 'startTween');
+          spyOn(byte.tween, 'start');
           byte.startTween();
-          return expect(byte.startTween).toHaveBeenCalled();
+          return expect(byte.tween.start).toHaveBeenCalled();
         });
       });
     });
@@ -1559,8 +1577,9 @@
         }, 120);
       });
     });
+    describe('createTween method ->', function() {});
     return describe('run method->', function() {
-      it('should run tween', function() {
+      it('should create tween', function() {
         var byte;
         byte = new Byte({
           strokeWidth: {
@@ -1568,9 +1587,21 @@
           },
           isRunLess: true
         });
-        spyOn(byte, 'startTween');
+        spyOn(byte, 'createTween');
         byte.run();
-        return expect(byte.startTween).toHaveBeenCalled();
+        return expect(byte.createTween).toHaveBeenCalled();
+      });
+      it('should call render method', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        spyOn(byte, 'render');
+        byte.run();
+        return expect(byte.render).toHaveBeenCalledWith(true);
       });
       it('should accept new options', function() {
         var byte;

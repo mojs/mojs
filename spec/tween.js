@@ -67,9 +67,9 @@
       it('should add itself to tweener', function() {
         var t;
         t = new Tween;
-        spyOn(t.t, 'add');
+        spyOn(tweener, 'add');
         t.start();
-        return expect(t.t.add).toHaveBeenCalled();
+        return expect(tweener.add).toHaveBeenCalled();
       });
       return it('should restart flags', function() {
         var t;
@@ -83,6 +83,20 @@
         expect(t.isCompleted).toBe(true);
         t.start();
         return expect(t.isCompleted).toBe(false);
+      });
+    });
+    describe('stop method ->', function() {
+      return it('should call t.remove method with self', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        t.stop();
+        return expect(tweener.tweens.length).toBe(0);
       });
     });
     describe('onComplete callback ->', function() {
@@ -226,7 +240,6 @@
         var cnt, t;
         cnt = 0;
         t = new Tween({
-          isIt: true,
           onUpdate: function() {
             return cnt++;
           }

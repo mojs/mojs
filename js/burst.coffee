@@ -72,9 +72,9 @@ class Burst extends Transit
       if @props.randomAngle or @props.randomRadius
         @props.randomAngle  and tr.setProp angleShift: @generateRandomAngle()
         @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
-      option = @getOption(i); option.ctx = @ctx
-      option.isDrawLess = option.isRunLess = option.isTweenLess = true
-      # tr.o = option
+    #   option = @getOption(i); option.ctx = @ctx
+    #   option.isDrawLess = option.isRunLess = option.isTweenLess = true
+    #   tr.o = option
   createBit:->
     @transits = []
     for i in [0...@props.count]

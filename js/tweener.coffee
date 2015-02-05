@@ -49,7 +49,9 @@ class Tweener
   remove:(tween)->
     index = @tweens.indexOf tween
     if index isnt -1
+      before = @tweens.length
       @tweens.splice index, 1
+    # console.log index, before, @tweens.length
 
 t = new Tweener
 ### istanbul ignore next ###

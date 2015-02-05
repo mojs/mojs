@@ -65,19 +65,23 @@ Transit = (function(_super) {
     return this.onUpdate = this.props.onUpdate;
   };
 
-  Transit.prototype.render = function() {
-    if (!this.isRendered) {
+  Transit.prototype.render = function(isForce) {
+    if (!this.isRendered || isForce) {
       if (this.o.ctx == null) {
-        this.ctx = document.createElementNS(this.ns, 'svg');
-        this.ctx.style.position = 'absolute';
-        this.ctx.style.width = '100%';
-        this.ctx.style.height = '100%';
+        if (this.ctx == null) {
+          this.ctx = document.createElementNS(this.ns, 'svg');
+          this.ctx.style.position = 'absolute';
+          this.ctx.style.width = '100%';
+          this.ctx.style.height = '100%';
+        }
         this.createBit();
         this.calcSize();
-        this.el = document.createElement('div');
+        if (this.el == null) {
+          this.el = document.createElement('div');
+          this.el.appendChild(this.ctx);
+          (this.o.parent || document.body).appendChild(this.el);
+        }
         this.setElStyles();
-        this.el.appendChild(this.ctx);
-        (this.o.parent || document.body).appendChild(this.el);
       } else {
         this.ctx = this.o.ctx;
         this.createBit();
@@ -224,40 +228,37 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, g, i, key, keys, len, num, r, str, units, value, _i, _len, _ref, _results;
+    var a, b, g, i, key, keys, len, num, r, str, units, value, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
     _results = [];
     while (len--) {
       key = keys[len];
       value = this.deltas[key];
-      switch (value.type) {
-        case 'array':
-          str = '';
-          _ref = value.delta;
-          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-            num = _ref[i];
-            str += "" + (value.start[i] + num * this.progress) + " ";
-          }
-          _results.push(this.props[key] = str);
-          break;
-        case 'number':
-          _results.push(this.props[key] = value.start + value.delta * progress);
-          break;
-        case 'unit':
-          units = value.end.unit;
-          _results.push(this.props[key] = "" + (value.start.value + value.delta * progress) + units);
-          break;
-        case 'color':
-          r = parseInt(value.start.r + value.delta.r * progress, 10);
-          g = parseInt(value.start.g + value.delta.g * progress, 10);
-          b = parseInt(value.start.b + value.delta.b * progress, 10);
-          a = parseInt(value.start.a + value.delta.a * progress, 10);
-          _results.push(this.props[key] = "rgba(" + r + "," + g + "," + b + "," + a + ")");
-          break;
-        default:
-          _results.push(void 0);
-      }
+      _results.push(this.props[key] = (function() {
+        var _i, _len, _ref;
+        switch (value.type) {
+          case 'array':
+            str = '';
+            _ref = value.delta;
+            for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+              num = _ref[i];
+              str += "" + (value.start[i] + num * this.progress) + " ";
+            }
+            return str;
+          case 'number':
+            return value.start + value.delta * progress;
+          case 'unit':
+            units = value.end.unit;
+            return "" + (value.start.value + value.delta * progress) + units;
+          case 'color':
+            r = parseInt(value.start.r + value.delta.r * progress, 10);
+            g = parseInt(value.start.g + value.delta.g * progress, 10);
+            b = parseInt(value.start.b + value.delta.b * progress, 10);
+            a = parseInt(value.start.a + value.delta.a * progress, 10);
+            return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+        }
+      }).call(this));
     }
     return _results;
   };
@@ -428,6 +429,7 @@ Transit = (function(_super) {
     this.calcSize();
     this.setElStyles();
     !this.o.isDrawLess && this.setProgress(0, true);
+    this.render(true);
     return this.startTween();
   };
 

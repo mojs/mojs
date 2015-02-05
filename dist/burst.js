@@ -80,7 +80,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(o) {
-    var i, option, tr, _results;
+    var i, tr, _results;
     Burst.__super__.run.apply(this, arguments);
     i = this.transits.length;
     _results = [];
@@ -90,13 +90,12 @@ Burst = (function(_super) {
         this.props.randomAngle && tr.setProp({
           angleShift: this.generateRandomAngle()
         });
-        this.props.randomRadius && tr.setProp({
+        _results.push(this.props.randomRadius && tr.setProp({
           radiusScale: this.generateRandomRadius()
-        });
+        }));
+      } else {
+        _results.push(void 0);
       }
-      option = this.getOption(i);
-      option.ctx = this.ctx;
-      _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
     }
     return _results;
   };

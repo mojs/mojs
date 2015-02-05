@@ -92,9 +92,10 @@ Tweener = (function() {
   };
 
   Tweener.prototype.remove = function(tween) {
-    var index;
+    var before, index;
     index = this.tweens.indexOf(tween);
     if (index !== -1) {
+      before = this.tweens.length;
       return this.tweens.splice(index, 1);
     }
   };

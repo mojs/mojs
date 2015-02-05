@@ -372,6 +372,17 @@ describe 'Transit ->', ->
       byte.isRendered = false
       byte.render()
       expect(byte.calcSize).toHaveBeenCalled()
+    it 'should have option for force render', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'calcSize'
+      byte.render true
+      expect(byte.calcSize).toHaveBeenCalled()
+
+    it 'should not create new el', ->
+      byte = new Byte radius: 25
+      cnt = document.body.children.length
+      byte.render true
+      expect(cnt).toBe document.body.children.length
   describe 'draw method ->', ->
     it 'should call setProp method', ->
       byte = new Byte radius: 25
@@ -720,9 +731,9 @@ describe 'Transit ->', ->
     describe 'startTween method', ->
       it 'should start tween', ()->
         byte = new Byte radius:  {'25': 75}
-        spyOn byte, 'startTween'
+        spyOn byte.tween, 'start'
         byte.startTween()
-        expect(byte.startTween).toHaveBeenCalled()
+        expect(byte.tween.start).toHaveBeenCalled()
   describe 'easing ->', ->
     it 'should set easing option to props', ->
       byte = new Byte easing: 'Linear.None'
@@ -823,12 +834,29 @@ describe 'Transit ->', ->
         expect(byte.props.strokeWidth).toBe 20
         dfr()
       , 120
+  describe 'createTween method ->', ->
+    # it 'should stop the old tween', ()->
+    #   byte = new Byte radius:  {'25': 75}, isIt: true
+    #   spyOn byte.tween, 'stop'
+    #   byte.createTween()
+    #   expect(byte.tween.stop).toHaveBeenCalled()
+
   describe 'run method->', ->
-    it 'should run tween', ->
+    it 'should create tween', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
-      spyOn byte, 'startTween'
+      spyOn byte, 'createTween'
       byte.run()
-      expect(byte.startTween).toHaveBeenCalled()
+      expect(byte.createTween).toHaveBeenCalled()
+    # it 'should run tween', ->
+    #   byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
+    #   spyOn byte, 'startTween'
+    #   byte.run()
+    #   expect(byte.startTween).toHaveBeenCalled()
+    it 'should call render method', ->
+      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
+      spyOn byte, 'render'
+      byte.run()
+      expect(byte.render).toHaveBeenCalledWith true
     it 'should accept new options', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
       byte.run strokeWidth: 25

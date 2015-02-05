@@ -7,8 +7,8 @@
 
 #### todo
 - burst
-  - fix radius option for burst and childOptions
   - implement run method
+  - opacity childOPtions to burst
   - fix tween add method with parallel tweens
   - fix tween isComplete onUpdate
   - add deltas for swirl params

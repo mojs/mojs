@@ -46,18 +46,20 @@ class Transit extends bitsMap.map.bit
   vars:->
     @h ?= h; @chainArr ?= []; @lastSet ?= {}
     @extendDefaults(); @onUpdate = @props.onUpdate
-  render:->
-    if !@isRendered
+  render:(isForce)->
+    if !@isRendered or isForce
       if !@o.ctx?
-        @ctx = document.createElementNS @ns, 'svg'
-        @ctx.style.position  = 'absolute'
-        @ctx.style.width     = '100%'
-        @ctx.style.height    = '100%'
+        if !@ctx?
+          @ctx = document.createElementNS @ns, 'svg'
+          @ctx.style.position  = 'absolute'
+          @ctx.style.width     = '100%'
+          @ctx.style.height    = '100%'
         @createBit(); @calcSize()
-        @el = document.createElement 'div'
+        if !@el?
+          @el = document.createElement 'div'
+          @el.appendChild @ctx
+          (@o.parent or document.body).appendChild @el
         @setElStyles()
-        @el.appendChild @ctx
-        (@o.parent or document.body).appendChild @el
       else
         @ctx = @o.ctx; @createBit(); @calcSize()
       @isRendered = true
@@ -159,23 +161,23 @@ class Transit extends bitsMap.map.bit
     keys = Object.keys(@deltas); len = keys.length
     while(len--)
       key = keys[len]; value = @deltas[key]
-      switch value.type
+      @props[key] = switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
           str = ''
           for num, i in value.delta
             str += "#{value.start[i] + num*@progress} "
-          @props[key] = str
+          str
         when 'number'
-          @props[key] = value.start + value.delta*progress
+          value.start + value.delta*progress
         when 'unit'
           units = value.end.unit
-          @props[key] = "#{value.start.value+value.delta*progress}#{units}"
+          "#{value.start.value+value.delta*progress}#{units}"
         when 'color'
           r = parseInt (value.start.r + value.delta.r*progress), 10
           g = parseInt (value.start.g + value.delta.g*progress), 10
           b = parseInt (value.start.b + value.delta.b*progress), 10
           a = parseInt (value.start.a + value.delta.a*progress), 10
-          @props[key] = "rgba(#{r},#{g},#{b},#{a})"
+          "rgba(#{r},#{g},#{b},#{a})"
 
   calcOrigin:->
     @origin = if @o.ctx
@@ -271,13 +273,19 @@ class Transit extends bitsMap.map.bit
       onUpdate:   (p)=> @setProgress p
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
-    if !@o.isTweenLess then @tween = new Tween; @tween.add @timeline
+
+    if !@o.isTweenLess
+      # @o.isIt and console.log @tween?
+      # @tween?.stop()
+      @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
+
   run:(o)->
     for key, value of o
       @o[key] = value
     @vars(); @calcSize(); @setElStyles()
     !@o.isDrawLess and @setProgress 0, true
+    @render true
     @startTween()
   startTween:-> @tween?.start()
 

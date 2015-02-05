@@ -5,8 +5,6 @@ h = require('./h');
 t = require('./tweener');
 
 Tween = (function() {
-  Tween.prototype.t = t;
-
   function Tween(o) {
     this.o = o != null ? o : {};
     this.vars();
@@ -60,7 +58,13 @@ Tween = (function() {
     while (i--) {
       this.timelines[i].start(this.startTime);
     }
-    return this.t.add(this);
+    t.add(this);
+    return this;
+  };
+
+  Tween.prototype.stop = function() {
+    t.remove(this);
+    return this;
   };
 
   Tween.prototype.getDimentions = function() {
@@ -80,6 +84,9 @@ if ((typeof define === "function") && define.amd) {
     return Tween;
   });
 }
+
+
+/* istanbul ignore next */
 
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Tween;

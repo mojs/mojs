@@ -2,7 +2,6 @@ h = require './h'
 t = require './tweener'
 
 class Tween
-  t: t
   constructor:(@o={})-> @vars(); @
   vars:->
     @timelines = []; @duration = 0; @props = {}
@@ -22,17 +21,20 @@ class Tween
     if time >= @startTime
       @onUpdate? (time - @startTime)/@duration
   start:->
+    # @o.isIt and console.log 'start'
     @isCompleted = false; @getDimentions()
     i = @timelines.length; @o.onStart?.apply @
     while(i--)
       @timelines[i].start @startTime
-    @t.add @
-
+    t.add @
+    @
+  stop:-> t.remove(@); @
   getDimentions:-> @startTime = Date.now(); @endTime = @startTime + @duration
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "Tween", [], -> Tween
+### istanbul ignore next ###
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = Tween
 ### istanbul ignore next ###
