@@ -9,6 +9,7 @@
 - burst
   - fix radius option for burst and childOptions
   - implement run method
+  - fix tween add method with parallel tweens
   - fix tween isComplete onUpdate
   - add deltas for swirl params
   - add stagger values

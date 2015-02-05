@@ -58,6 +58,15 @@ describe 'Burst ->', ->
       expect(burst.childDefaults.isSwirl)          .toBe  false
       expect(burst.childDefaults.swirlSize)        .toBe  10
       expect(burst.childDefaults.swirlFrequency)   .toBe  3
+    
+    it 'should have optionsIntersection object', ->
+      burst = new Burst
+      expect(burst.optionsIntersection.radius)    .toBe 1
+      expect(burst.optionsIntersection.angle)     .toBe 1
+      expect(burst.optionsIntersection.onUpdate)  .toBe 1
+      expect(burst.optionsIntersection.onStart)   .toBe 1
+      expect(burst.optionsIntersection.onComplete).toBe 1
+      expect(Object.keys(burst.optionsIntersection).length).toBe 5
 
   describe 'initialization ->', ->
     it 'should create transits', ->
@@ -79,6 +88,7 @@ describe 'Burst ->', ->
         swirlFrequency: 'rand(10,20)'
         count: 6
         isSwirl: true
+        radius: {'rand(10,20)': 100}
         childOptions:
           stroke: [ 'deeppink', 'yellow', null ]
           strokeWidth: [null, null, 20]
@@ -223,6 +233,19 @@ describe 'Burst ->', ->
       expect(option7.radius[7]).toBe 0
       expect(option8.radius[7]).toBe 0
 
+    it 'should have parent only options ->', ->
+      burst = new Burst
+        radius: { 'rand(10,20)': 100 }
+        angle: {50: 0}
+        onUpdate:->
+        onStart:->
+        onComplete:->
+      option0 = burst.getOption 0
+      expect(option0.radius[7]) .toBe 0
+      expect(option0.angle)     .toBe 0
+      expect(option0.onUpdate)  .toBe null
+      expect(option0.onStart)   .toBe null
+      expect(option0.onComplete).toBe null
 
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->

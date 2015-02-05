@@ -25,14 +25,15 @@ Transit   = require './transit'
 # t.start()
 
 burst = new Burst(
-  isRunLess: true
-  duration: 400
+  # isRunLess: true
+  duration: 4000
   count: 2
   randomAngle: .3
   degree:      20
   radius:      {0: 75}
-  childOptions:
-    radius: {7:0}
+  points: 5
+  type:       'polygon'
+  # childOptions: radius: {1:0}
 )
 
 document.body.addEventListener 'click', (e)->

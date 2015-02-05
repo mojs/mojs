@@ -47,11 +47,11 @@ Burst = (function(_super) {
     radius: {
       7: 0
     },
-    points: 3,
     angle: 0,
     onStart: null,
     onComplete: null,
     onUpdate: null,
+    points: 3,
     duration: 500,
     delay: 0,
     repeat: 1,
@@ -69,6 +69,14 @@ Burst = (function(_super) {
     strokeDasharray: '',
     strokeDashoffset: '',
     strokeLinecap: null
+  };
+
+  Burst.prototype.optionsIntersection = {
+    radius: 1,
+    angle: 1,
+    onStart: 1,
+    onComplete: 1,
+    onUpdate: 1
   };
 
   Burst.prototype.run = function(o) {
@@ -213,6 +221,16 @@ Burst = (function(_super) {
         key: key,
         i: i
       });
+      if (this.optionsIntersection[key]) {
+        if (option[key] == null) {
+          option[key] = this.getPropByMod({
+            key: key,
+            i: i,
+            from: this.childDefaults
+          });
+        }
+        continue;
+      }
       if (option[key] == null) {
         option[key] = this.getPropByMod({
           key: key,

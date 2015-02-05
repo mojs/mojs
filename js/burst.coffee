@@ -30,33 +30,17 @@ class Burst extends Transit
     onComplete:         null
     onCompleteChain:    null
     onUpdate:           null
-    # # tween props = share with children
-    # duration:           500
-    # delay:              0
-    # repeat:             1
-    # yoyo:               false
-    # easing:             'Linear.None'
-    # type:               'circle'
-    # fill:               'deeppink'
-    # fillOpacity:        1
-    # isSwirl:            false
-    # swirlSize:          10
-    # swirlFrequency:     3
-    # stroke:             'transparent'
-    # strokeWidth:        0
-    # strokeOpacity:      1
-    # strokeDasharray:    ''
-    # strokeDashoffset:   ''
-    # strokeLinecap:      null
 
   childDefaults:
+    #-- intersection starts
     radius:             { 7 : 0 }
-    points:             3
     angle:              0
     # callbacks
     onStart:            null
     onComplete:         null
     onUpdate:           null
+    #-- intersection ends
+    points:             3
     duration:           500
     delay:              0
     repeat:             1
@@ -74,7 +58,12 @@ class Burst extends Transit
     strokeDasharray:    ''
     strokeDashoffset:   ''
     strokeLinecap:      null
-
+  optionsIntersection:
+    radius:     1
+    angle:      1
+    onStart:    1
+    onComplete: 1
+    onUpdate:   1
   run:(o)->
     super
     i = @transits.length
@@ -86,7 +75,6 @@ class Burst extends Transit
       option = @getOption(i); option.ctx = @ctx
       option.isDrawLess = option.isRunLess = option.isTweenLess = true
       # tr.o = option
-
   createBit:->
     @transits = []
     for i in [0...@props.count]
@@ -149,6 +137,12 @@ class Burst extends Transit
       # firstly try to find the prop in @o.childOptions
       option[key]  = @getPropByMod key: key, i: i
       # if fail - continue to this objects
+      # if the same option could be defined for parent and child
+      # get the option from childDefaults and continue
+      if @optionsIntersection[key]
+        option[key] ?= @getPropByMod key: key, i: i, from: @childDefaults
+        continue
+      # else check the option on parent
       option[key] ?= @getPropByMod key: key, i: i, from: @o
       option[key] ?= @getPropByMod key: key, i: i, from: @childDefaults
     option
