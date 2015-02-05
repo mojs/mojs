@@ -7,11 +7,10 @@
 
 #### todo
 - burst
-  - fix run params
+  - implement run method
   - fix tween isComplete onUpdate
-  - add chains and thens
   - add stagger values
-  - set initial progress for the childrens
+  - set initial progress for the childrens or hide them
   - add radiusX radiusY options
 
 - cover raf polyfill

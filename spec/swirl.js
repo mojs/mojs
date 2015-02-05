@@ -234,7 +234,7 @@
         expect(swirl.props.x).toBe('5.0000px');
         return expect(swirl.props.y).toBe('5.0000px');
       });
-      return it('should add swirl', function() {
+      it('should not add swirl', function() {
         var swirl;
         swirl = new Swirl({
           x: {
@@ -244,6 +244,22 @@
             0: 10
           },
           isRunLess: true
+        });
+        swirl.setProgress(.5);
+        expect(swirl.props.x).toBe('5.0000px');
+        return expect(swirl.props.y).toBe('5.0000px');
+      });
+      return it('should add swirl if isSwirl', function() {
+        var swirl;
+        swirl = new Swirl({
+          x: {
+            0: 10
+          },
+          y: {
+            0: 10
+          },
+          isRunLess: true,
+          isSwirl: true
         });
         swirl.setProgress(.5);
         expect(swirl.props.x).not.toBe('5.0000px');

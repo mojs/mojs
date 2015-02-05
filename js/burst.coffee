@@ -77,15 +77,15 @@ class Burst extends Transit
 
   run:(o)->
     super
-    if @props.randomAngle or @props.randomRadius or @props.isSwirl
-      i = @transits.length
-      while(i--)
-        tr = @transits[i]
+    i = @transits.length
+    while(i--)
+      tr = @transits[i]
+      if @props.randomAngle or @props.randomRadius
         @props.randomAngle  and tr.setProp angleShift: @generateRandomAngle()
         @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
-        @props.isSwirl      and tr.generateSwirl()
-        option = @getOption(i); option.ctx = @ctx
-        option.isDrawLess = option.isRunLess = option.isTweenLess = true
+      option = @getOption(i); option.ctx = @ctx
+      option.isDrawLess = option.isRunLess = option.isTweenLess = true
+      # tr.o = option
 
   createBit:->
     @transits = []

@@ -73,7 +73,7 @@ Swirl = (function(_super) {
   Swirl.prototype.setProgress = function(progress) {
     var angle, point, x, y;
     angle = this.positionDelta.angle + this.props.angleShift;
-    if (!this.o.isSwirlLess) {
+    if (this.o.isSwirl) {
       angle += this.getSwirl(progress);
     }
     point = this.h.getRadialPoint({

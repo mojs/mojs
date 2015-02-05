@@ -74,7 +74,7 @@ Swirl = (function(_super) {
   Swirl.prototype.setProgress = function(progress) {
     var angle, point, x, y;
     angle = this.positionDelta.angle + this.props.angleShift;
-    if (!this.o.isSwirlLess) {
+    if (this.o.isSwirl) {
       angle += this.getSwirl(progress);
     }
     point = this.h.getRadialPoint({
@@ -450,24 +450,23 @@ Burst = (function(_super) {
   Burst.prototype.run = function(o) {
     var i, option, tr, _results;
     Burst.__super__.run.apply(this, arguments);
-    if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
-      i = this.transits.length;
-      _results = [];
-      while (i--) {
-        tr = this.transits[i];
+    i = this.transits.length;
+    _results = [];
+    while (i--) {
+      tr = this.transits[i];
+      if (this.props.randomAngle || this.props.randomRadius) {
         this.props.randomAngle && tr.setProp({
           angleShift: this.generateRandomAngle()
         });
         this.props.randomRadius && tr.setProp({
           radiusScale: this.generateRandomRadius()
         });
-        this.props.isSwirl && tr.generateSwirl();
-        option = this.getOption(i);
-        option.ctx = this.ctx;
-        _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
       }
-      return _results;
+      option = this.getOption(i);
+      option.ctx = this.ctx;
+      _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
     }
+    return _results;
   };
 
   Burst.prototype.createBit = function() {
@@ -1548,43 +1547,22 @@ Tween = require('./tween');
 Transit = require('./transit');
 
 burst = new Burst({
-  x: 300,
-  y: 150,
-  duration: 1000,
-  radius: {
-    0: 100
-  },
-  isSwirl: true,
-  angle: 'rand(0,360)',
-  isShowEnd: true,
-  count: 5,
-  stroke: {
-    'deeppink': 'orange'
-  },
-  fill: 'green',
-  type: 'rect',
-  childOptions: {
-    isSwirl: false,
-    fill: ['deeppink', null, 'cyan', 'lime', 'hotpink'],
-    points: 3,
-    strokeWidth: 0,
-    radius: 6
-  }
+  isRunLess: true,
+  isSwirl: false,
+  duration: 400
 });
 
 document.body.addEventListener('click', function(e) {
   return burst.run({
     x: e.x,
-    y: e.y,
-    radius: {
-      'rand(10,400)': 0
-    },
-    angle: {
-      360: 0
-    },
-    childOptions: {
-      fill: 'green'
-    }
+    y: e.y
+  });
+});
+
+document.body.addEventListener('touchstart', function(e) {
+  return burst.run({
+    x: e.touches[0].pageX,
+    y: e.touches[0].pageY
   });
 });
 

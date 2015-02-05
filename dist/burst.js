@@ -74,24 +74,23 @@ Burst = (function(_super) {
   Burst.prototype.run = function(o) {
     var i, option, tr, _results;
     Burst.__super__.run.apply(this, arguments);
-    if (this.props.randomAngle || this.props.randomRadius || this.props.isSwirl) {
-      i = this.transits.length;
-      _results = [];
-      while (i--) {
-        tr = this.transits[i];
+    i = this.transits.length;
+    _results = [];
+    while (i--) {
+      tr = this.transits[i];
+      if (this.props.randomAngle || this.props.randomRadius) {
         this.props.randomAngle && tr.setProp({
           angleShift: this.generateRandomAngle()
         });
         this.props.randomRadius && tr.setProp({
           radiusScale: this.generateRandomRadius()
         });
-        this.props.isSwirl && tr.generateSwirl();
-        option = this.getOption(i);
-        option.ctx = this.ctx;
-        _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
       }
-      return _results;
+      option = this.getOption(i);
+      option.ctx = this.ctx;
+      _results.push(option.isDrawLess = option.isRunLess = option.isTweenLess = true);
     }
+    return _results;
   };
 
   Burst.prototype.createBit = function() {

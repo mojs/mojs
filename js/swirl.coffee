@@ -1,8 +1,6 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-# TODO
-#   - add shift swirl
 Transit   = require './transit'
 class Swirl extends Transit
   skipPropsDelta: x: 1, y: 1
@@ -33,7 +31,7 @@ class Swirl extends Transit
       { start: val, end: val, delta: 0, units: 'px' }
   setProgress:(progress)->
     angle = @positionDelta.angle + @props.angleShift
-    if !@o.isSwirlLess then angle += @getSwirl(progress)
+    if @o.isSwirl then angle += @getSwirl(progress)
     point = @h.getRadialPoint
       angle:  angle
       radius: @positionDelta.radius*progress*@props.radiusScale
