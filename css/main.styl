@@ -1,13 +1,43 @@
 @import 'assets/imports.styl'
-@import 'css-assets/normalize.styl'
+// @import 'css-assets/normalize.styl'
 
-@import 'css-assets/general'
-@import 'css-assets/blocks'
-@import 'css-assets/layouts'
-@import 'css-assets/effects'
-@import 'css-assets/icons'
+// @import 'css-assets/general'
+// @import 'css-assets/blocks'
+// @import 'css-assets/layouts'
+// @import 'css-assets/effects'
+// @import 'css-assets/icons'
 
 use('assets/nesting-tree-traversal.js')
+
+html, body
+  padding 0
+  margin 0
+gap = 100px
+.page
+  background deeppink
+  rect 100%
+  position absolute
+  nw 0
+  overflow hidden
+  &__inner
+    overflow hidden
+    position absolute
+    rect 200*PX
+    // nw 50%
+    background orange
+    border-radius 50%
+    scale = 20
+    backface-visibility hidden
+    &.is-scaled
+      .page__inner__inner
+        transform scale(1/scale)
+      transform scale(scale)
+      transition all .5s linear
+      
+    &__inner
+      transform-origin center top
+      backface-visibility hidden
+      transition all .5s linear
 
 // // chrome:
 //   position absolute
@@ -27,8 +57,8 @@ use('assets/nesting-tree-traversal.js')
 // svg
 //   hl hotpink
   
-body
-  height 600px
+// body
+//   height 600px
 
 // iframe
 //   display none !important
