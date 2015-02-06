@@ -24,36 +24,53 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Transit(
-  # isRunLess: true
-  type: 'polygon'
-  duration: 2000
-  count: 3
-  isIt: true
-  # randomAngle: .3
-  # degree:      20
-  radius:      {0: 75}
-  points: 5
-)
+# burst = new Transit(
+#   # isRunLess: true
+#   type: 'polygon'
+#   duration: 2000
+#   count: 3
+#   isIt: true
+#   isRunLess: true
+#   # randomAngle: .3
+#   # degree:      20
+#   radius:      {0: 75}
+#   points: 5
+# )
 
-document.body.addEventListener 'click', (e)->
-  burst.run
-    x: e.x
-    y: e.y
-    duration: 4000
-    type: 'circle'
-    # angle: 'rand(0,400)'
-    # radius: { 'rand(10,20)': 0}
-    # # swirlFrequency: 50
-    # angle: {360: 0}
-    # isIt: true
-    # childOptions:
-    #   fill: 'green'
+# document.body.addEventListener 'click', (e)->
+#   burst.run
+#     x: e.x
+#     y: e.y
+#     duration: 4000
+#     type: 'circle'
+#     # angle: 'rand(0,400)'
+#     # radius: { 'rand(10,20)': 0}
+#     # # swirlFrequency: 50
+#     # angle: {360: 0}
+#     # isIt: true
+#     # childOptions:
+#     #   fill: 'green'
 
-document.body.addEventListener 'touchstart', (e)->
-  burst.run
-    x: e.touches[0].pageX
-    y: e.touches[0].pageY
+# document.body.addEventListener 'touchstart', (e)->
+#   burst.run
+#     x: e.touches[0].pageX
+#     y: e.touches[0].pageY
 
+pupil = document.querySelector '#js-pupil'
+eye = document.querySelector '#js-eye'
 
-
+setTimeout ->
+  eye.setAttribute 'class', 'page__inner is-scaled'
+, 1500
+# scale = 40; eye = document.querySelector '#js-eye'
+# pupil = document.querySelector '#js-pupil'
+# timeline = new Timeline
+#   duration: 1000, delay: 1500, onUpdate:(p)->
+#     eye.style['-webkit-transform'] = "scale(#{(p*scale)})"
+#     eye.style['transform'] = "scale(#{(p*scale)})"
+#     pupil.style['-webkit-transform'] = "scale(#{1/(p*scale)})"
+#     pupil.style['transform'] = "scale(#{1/(p*scale)})"
+#     # console.log p
+# t = new Tween
+# t.add timeline
+# t.start()

@@ -1544,7 +1544,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, burst;
+var Burst, Swirl, Timeline, Transit, Tween, eye, pupil;
 
 Burst = require('./burst');
 
@@ -1556,32 +1556,13 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Transit({
-  type: 'polygon',
-  duration: 2000,
-  count: 3,
-  isIt: true,
-  radius: {
-    0: 75
-  },
-  points: 5
-});
+pupil = document.querySelector('#js-pupil');
 
-document.body.addEventListener('click', function(e) {
-  return burst.run({
-    x: e.x,
-    y: e.y,
-    duration: 4000,
-    type: 'circle'
-  });
-});
+eye = document.querySelector('#js-eye');
 
-document.body.addEventListener('touchstart', function(e) {
-  return burst.run({
-    x: e.touches[0].pageX,
-    y: e.touches[0].pageY
-  });
-});
+setTimeout(function() {
+  return eye.setAttribute('class', 'page__inner is-scaled');
+}, 1500);
 
 },{"./Swirl":1,"./burst":4,"./timeline":14,"./transit":15,"./tween":16}],11:[function(require,module,exports){
 
