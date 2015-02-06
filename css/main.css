@@ -17,6 +17,7 @@ body {
   position: absolute;
   width: 12.5em;
   height: 12.5em;
+  left: 50%;
   background: #ffa500;
   border-radius: 50%;
   -webkit-backface-visibility: hidden;
@@ -24,18 +25,19 @@ body {
   backface-visibility: hidden;
 }
 .page__inner.is-scaled {
-  -webkit-transform: scale(20);
-  -ms-transform: scale(20);
-  transform: scale(20);
+  -webkit-transform: scale(200);
+  -ms-transform: scale(200);
+  transform: scale(200);
   -webkit-transition: all 0.5s linear;
   transition: all 0.5s linear;
 }
 .page__inner.is-scaled .page__inner__inner {
-  -webkit-transform: scale(0.05);
-  -ms-transform: scale(0.05);
-  transform: scale(0.05);
+  -webkit-transform: scale(0.005);
+  -ms-transform: scale(0.005);
+  transform: scale(0.005);
 }
 .page__inner__inner {
+  width: 800px;
   -webkit-transform-origin: center top;
   -ms-transform-origin: center top;
   transform-origin: center top;

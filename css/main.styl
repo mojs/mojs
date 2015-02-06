@@ -23,18 +23,19 @@ gap = 100px
     overflow hidden
     position absolute
     rect 200*PX
+    left 50%
     // nw 50%
     background orange
     border-radius 50%
-    scale = 20
+    scale = 200
     backface-visibility hidden
     &.is-scaled
       .page__inner__inner
         transform scale(1/scale)
       transform scale(scale)
       transition all .5s linear
-      
     &__inner
+      width 800px
       transform-origin center top
       backface-visibility hidden
       transition all .5s linear
