@@ -8,16 +8,15 @@ body {
   width: 100%;
   height: 100%;
   position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
 }
 .page__inner {
   overflow: hidden;
   position: absolute;
   width: 12.5em;
   height: 12.5em;
+  top: 50%;
   left: 50%;
+  top: 0;
   background: #ffa500;
   border-radius: 50%;
   -webkit-backface-visibility: hidden;
@@ -25,25 +24,20 @@ body {
   backface-visibility: hidden;
 }
 .page__inner.is-scaled {
-  -webkit-transform: scale(200);
-  -ms-transform: scale(200);
-  transform: scale(200);
-  -webkit-transition: all 0.5s linear;
-  transition: all 0.5s linear;
+  -webkit-transform: scale(40);
+  -ms-transform: scale(40);
+  transform: scale(40);
 }
 .page__inner.is-scaled .page__inner__inner {
-  -webkit-transform: scale(0.005);
-  -ms-transform: scale(0.005);
-  transform: scale(0.005);
+  -webkit-transform: scale(0.025);
+  -ms-transform: scale(0.025);
+  transform: scale(0.025);
 }
 .page__inner__inner {
-  width: 800px;
-  -webkit-transform-origin: center top;
-  -ms-transform-origin: center top;
-  transform-origin: center top;
   -webkit-backface-visibility: hidden;
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
-  -webkit-transition: all 0.5s linear;
-  transition: all 0.5s linear;
+  -webkit-transform-origin: center top;
+  -ms-transform-origin: center top;
+  transform-origin: center top;
 }

@@ -1544,7 +1544,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, eye, pupil;
+var Burst, Swirl, Timeline, Transit, Tween, eye, pupil, pupilInner, scale, t, timeline;
 
 Burst = require('./burst');
 
@@ -1560,9 +1560,31 @@ pupil = document.querySelector('#js-pupil');
 
 eye = document.querySelector('#js-eye');
 
-setTimeout(function() {
-  return eye.setAttribute('class', 'page__inner is-scaled');
-}, 1500);
+scale = 20;
+
+eye = document.querySelector('#js-eye');
+
+pupil = document.querySelector('#js-pupil');
+
+pupilInner = document.querySelector('#js-pupil-inner');
+
+timeline = new Timeline({
+  duration: 5000,
+  delay: 5000,
+  onStart: function() {
+    return pupil.style.opacity = 1;
+  },
+  onUpdate: function(p) {
+    eye.style['-webkit-transform'] = "scale(" + (p * scale) + ")";
+    return pupil.style['-webkit-transform'] = "scale(" + (1 / (p * scale)) + ")";
+  }
+});
+
+t = new Tween;
+
+t.add(timeline);
+
+t.start();
 
 },{"./Swirl":1,"./burst":4,"./timeline":14,"./transit":15,"./tween":16}],11:[function(require,module,exports){
 

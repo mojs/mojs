@@ -17,28 +17,27 @@ gap = 100px
   background deeppink
   rect 100%
   position absolute
-  nw 0
-  overflow hidden
+  // nw 0
+  // overflow hidden
   &__inner
     overflow hidden
     position absolute
     rect 200*PX
-    left 50%
-    // nw 50%
+    nw 50%
+    top 0
     background orange
     border-radius 50%
-    scale = 200
+    scale = 40
     backface-visibility hidden
     &.is-scaled
+      transform scale(scale)
+      // transition all 1s linear
       .page__inner__inner
         transform scale(1/scale)
-      transform scale(scale)
-      transition all .5s linear
     &__inner
-      width 800px
-      transform-origin center top
       backface-visibility hidden
-      transition all .5s linear
+      // transition all 1s linear
+      transform-origin center top
 
 // // chrome:
 //   position absolute
