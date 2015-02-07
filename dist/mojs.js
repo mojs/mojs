@@ -1560,7 +1560,7 @@ pupil = document.querySelector('#js-pupil');
 
 eye = document.querySelector('#js-eye');
 
-scale = 20;
+scale = 10;
 
 eye = document.querySelector('#js-eye');
 
@@ -1569,10 +1569,10 @@ pupil = document.querySelector('#js-pupil');
 pupilInner = document.querySelector('#js-pupil-inner');
 
 timeline = new Timeline({
-  duration: 5000,
+  duration: 2000,
   delay: 5000,
   onStart: function() {
-    return pupil.style.opacity = 1;
+    return eye.style.opacity = 1;
   },
   onUpdate: function(p) {
     eye.style['-webkit-transform'] = "scale(" + (p * scale) + ")";

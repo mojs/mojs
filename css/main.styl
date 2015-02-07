@@ -18,26 +18,34 @@ gap = 100px
   rect 100%
   position absolute
   // nw 0
-  // overflow hidden
+  overflow hidden
+  startSize = 256px
   &__inner
     overflow hidden
     position absolute
-    rect 200*PX
+    rect startSize
     nw 50%
     top 0
     background orange
     border-radius 50%
     scale = 40
     backface-visibility hidden
+    opacity 0
     &.is-scaled
       transform scale(scale)
       // transition all 1s linear
       .page__inner__inner
         transform scale(1/scale)
     &__inner
+      rect startSize
       backface-visibility hidden
       // transition all 1s linear
-      transform-origin center top
+      // transform-origin center top
+      &__inner
+        padding 0 640px
+        margin-left -640px
+        background purple
+      //   width 1280px
 
 // // chrome:
 //   position absolute
