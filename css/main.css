@@ -11,39 +11,35 @@ body {
   overflow: hidden;
 }
 .page__inner {
-  overflow: hidden;
+  clip: rect(0, 3px, 3px, 0);
   position: absolute;
-  width: 256px;
-  height: 256px;
-  top: 50%;
-  left: 50%;
+  width: 4px;
+  height: 4px;
   top: 0;
+  left: 0;
   background: #ffa500;
   border-radius: 50%;
   -webkit-backface-visibility: hidden;
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
-  opacity: 0;
-}
-.page__inner.is-scaled {
-  -webkit-transform: scale(40);
-  -ms-transform: scale(40);
-  transform: scale(40);
-}
-.page__inner.is-scaled .page__inner__inner {
-  -webkit-transform: scale(0.025);
-  -ms-transform: scale(0.025);
-  transform: scale(0.025);
 }
 .page__inner__inner {
-  width: 256px;
-  height: 256px;
+  width: 4px;
+  height: 4px;
   -webkit-backface-visibility: hidden;
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
 }
 .page__inner__inner__inner {
-  padding: 0 640px;
-  margin-left: -640px;
+  padding: 450px 640px;
+  position: relative;
+}
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   background: #800080;
+  position: absolute;
 }

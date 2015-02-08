@@ -63,19 +63,20 @@ eye = document.querySelector '#js-eye'
 #   eye.setAttribute 'class', 'page__inner is-scaled'
 # , 1500
 
-scale = 10; eye = document.querySelector '#js-eye'
+scale = 1280; eye = document.querySelector '#js-eye'
 pupil = document.querySelector '#js-pupil'
 pupilInner = document.querySelector '#js-pupil-inner'
 # TweenMax.to pupil, 1, scale: (1/scale), delay: 5
 # TweenMax.to eye,   1, scale: scale,     delay: 5
+
 timeline = new Timeline
-  duration: 2000
-  delay: 5000
+  duration: 1000
+  delay: 3000
   onStart:-> eye.style.opacity = 1
   onUpdate:(p)->
     eye.style['-webkit-transform'] = "scale(#{(p*scale)})"
-    # eye.style['transform'] = "scale(#{(p*scale)})"
     pupil.style['-webkit-transform'] = "scale(#{1/(p*scale)})"
+    # eye.style['transform'] = "scale(#{(p*scale)})"
     # pupil.style['transform'] = "scale(#{1/(p*scale)})"
     # console.log p
 t = new Tween

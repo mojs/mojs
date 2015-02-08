@@ -15,37 +15,53 @@ html, body
 gap = 100px
 .page
   background deeppink
-  rect 100%
+  width 100%
+  height 100%
   position absolute
   // nw 0
   overflow hidden
-  startSize = 256px
+  startSize = 4px
   &__inner
-    overflow hidden
+    clip rect(0,3px,3px,0)
+    // overflow hidden
     position absolute
-    rect startSize
-    nw 50%
-    top 0
+    width startSize
+    height startSize
+    nw 0
+    // top 0
     background orange
     border-radius 50%
     scale = 40
     backface-visibility hidden
-    opacity 0
-    &.is-scaled
-      transform scale(scale)
-      // transition all 1s linear
-      .page__inner__inner
-        transform scale(1/scale)
+    // opacity 0
+    // &.is-scaled
+    //   transform scale(scale)
+    //   // transition all 1s linear
+    //   .page__inner__inner
+    //     transform scale(1/scale)
     &__inner
-      rect startSize
+      width startSize
+      height startSize
+      // margin-left 1px
+      // margin-top 1px
       backface-visibility hidden
       // transition all 1s linear
       // transform-origin center top
       &__inner
-        padding 0 640px
-        margin-left -640px
-        background purple
-      //   width 1280px
+        padding 450px 640px
+        // margin-left -640px
+        position relative
+    //     // background purple
+.content
+  position absolute
+  nw 0
+  se 0
+  // min-width 1280px
+  // min-height 900px
+  background purple
+  // margin-left -640px
+  // margin-top  -450px
+  position absolute
 
 // // chrome:
 //   position absolute
