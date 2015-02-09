@@ -11,17 +11,35 @@ body {
   overflow: hidden;
 }
 .page__inner {
-  clip: rect(0, 3px, 3px, 0);
+  overflow: hidden;
   position: absolute;
   width: 4px;
   height: 4px;
   top: 0;
   left: 0;
-  background: #ffa500;
-  border-radius: 50%;
   -webkit-backface-visibility: hidden;
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
+  -webkit-perspective-origin: 2px 2px;
+  -ms-perspective-origin: 2px 2px;
+  perspective-origin: 2px 2px;
+  -webkit-perspective: 1280px;
+  -ms-perspective: 1280px;
+  perspective: 1280px;
+}
+.page__inner.is-scaled {
+  -webkit-transform: scale(1280);
+  -ms-transform: scale(1280);
+  transform: scale(1280);
+  -webkit-transition: -webkit-transform 10s linear;
+  transition: transform 10s linear;
+}
+.page__inner.is-scaled .page__inner__inner {
+  -webkit-transform: translateZ(-1635000px);
+  -ms-transform: translateZ(-1635000px);
+  transform: translateZ(-1635000px);
+  -webkit-transition: -webkit-transform 10s linear;
+  transition: transform 10s linear;
 }
 .page__inner__inner {
   width: 4px;

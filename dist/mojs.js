@@ -1544,7 +1544,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, eye, pupil, pupilInner, scale, t, timeline;
+var Burst, Swirl, Timeline, Transit, Tween, eye, page, pupil;
 
 Burst = require('./burst');
 
@@ -1556,35 +1556,15 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-pupil = document.querySelector('#js-pupil');
-
-eye = document.querySelector('#js-eye');
-
-scale = 1280;
-
 eye = document.querySelector('#js-eye');
 
 pupil = document.querySelector('#js-pupil');
 
-pupilInner = document.querySelector('#js-pupil-inner');
+page = document.querySelector('#js-page');
 
-timeline = new Timeline({
-  duration: 1000,
-  delay: 3000,
-  onStart: function() {
-    return eye.style.opacity = 1;
-  },
-  onUpdate: function(p) {
-    eye.style['-webkit-transform'] = "scale(" + (p * scale) + ")";
-    return pupil.style['-webkit-transform'] = "scale(" + (1 / (p * scale)) + ")";
-  }
-});
-
-t = new Tween;
-
-t.add(timeline);
-
-t.start();
+setTimeout(function() {
+  return eye.classList.add('is-scaled');
+}, 1500);
 
 },{"./Swirl":1,"./burst":4,"./timeline":14,"./transit":15,"./tween":16}],11:[function(require,module,exports){
 
@@ -1776,7 +1756,7 @@ Timeline = (function() {
   Timeline.prototype.start = function(time) {
     this.isCompleted = false;
     this.isStarted = false;
-    this.props.startTime = (time || Date.now()) + this.o.delay;
+    this.props.startTime = (time || performance.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };

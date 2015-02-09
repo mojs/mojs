@@ -43,7 +43,7 @@ Timeline = (function() {
   Timeline.prototype.start = function(time) {
     this.isCompleted = false;
     this.isStarted = false;
-    this.props.startTime = (time || Date.now()) + this.o.delay;
+    this.props.startTime = (time || performance.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };

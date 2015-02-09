@@ -56,29 +56,29 @@ Transit   = require './transit'
 #     x: e.touches[0].pageX
 #     y: e.touches[0].pageY
 
+eye   = document.querySelector '#js-eye'
 pupil = document.querySelector '#js-pupil'
-eye = document.querySelector '#js-eye'
+page  = document.querySelector '#js-page'
 
-# setTimeout ->
-#   eye.setAttribute 'class', 'page__inner is-scaled'
-# , 1500
+setTimeout ->
+  eye.classList.add 'is-scaled'
+, 1500
 
-scale = 1280; eye = document.querySelector '#js-eye'
-pupil = document.querySelector '#js-pupil'
-pupilInner = document.querySelector '#js-pupil-inner'
-# TweenMax.to pupil, 1, scale: (1/scale), delay: 5
-# TweenMax.to eye,   1, scale: scale,     delay: 5
+# scale = 1280
+# TweenMax.to pupil, 1, scale: (1/scale), delay: 1
+# TweenMax.to eye, 1,   scale: scale,     delay: 1
 
-timeline = new Timeline
-  duration: 1000
-  delay: 3000
-  onStart:-> eye.style.opacity = 1
-  onUpdate:(p)->
-    eye.style['-webkit-transform'] = "scale(#{(p*scale)})"
-    pupil.style['-webkit-transform'] = "scale(#{1/(p*scale)})"
-    # eye.style['transform'] = "scale(#{(p*scale)})"
-    # pupil.style['transform'] = "scale(#{1/(p*scale)})"
-    # console.log p
-t = new Tween
-t.add timeline
-t.start()
+# timeline = new Timeline
+#   duration: 10000
+#   delay: 1000
+#   # onStart:-> eye.classList.add 'is-scaled'
+#   onUpdate:(p)->
+#     eye.style['-webkit-transform'] = "scale(#{(p*scale)})"
+#     pupil.style['-webkit-transform'] = "scale(#{1/(p*scale)})"
+#     # pupil.style.width = "#{40+(10*p)}px"
+#     # eye.style['transform'] = "scale(#{(p*scale)})"
+#     # pupil.style['transform'] = "scale(#{1/(p*scale)})"
+#     # console.log p
+# t = new Tween
+# t.add timeline
+# t.start()

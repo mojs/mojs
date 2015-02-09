@@ -22,36 +22,31 @@ gap = 100px
   overflow hidden
   startSize = 4px
   &__inner
-    clip rect(0,3px,3px,0)
-    // overflow hidden
+    // clip rect(0,3px,3px,0)
+    overflow hidden
+    // border-radius 50%
     position absolute
     width startSize
     height startSize
     nw 0
-    // top 0
-    background orange
-    border-radius 50%
-    scale = 40
+    scale = 1280
     backface-visibility hidden
-    // opacity 0
-    // &.is-scaled
-    //   transform scale(scale)
-    //   // transition all 1s linear
-    //   .page__inner__inner
-    //     transform scale(1/scale)
+    perspective-origin 2px 2px
+    perspective 1280px
+    &.is-scaled
+      transform scale(1*scale)
+      transition transform 10s linear
+      .page__inner__inner
+        transform translateZ(-1635000px)
+        // transform scale(1/scale)
+        transition transform 10s linear
     &__inner
       width startSize
       height startSize
-      // margin-left 1px
-      // margin-top 1px
       backface-visibility hidden
-      // transition all 1s linear
-      // transform-origin center top
       &__inner
         padding 450px 640px
-        // margin-left -640px
         position relative
-    //     // background purple
 .content
   position absolute
   nw 0
