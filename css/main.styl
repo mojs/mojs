@@ -13,10 +13,12 @@ html, body
   padding 0
   margin 0
 gap = 100px
+originX = 1000px
+originY = 40px
 .page
   background deeppink
   width 100%
-  height 100%
+  height 1888px
   position absolute
   // nw 0
   overflow hidden
@@ -24,39 +26,43 @@ gap = 100px
   &__inner
     // clip rect(0,3px,3px,0)
     overflow hidden
-    // border-radius 50%
     position absolute
     width startSize
     height startSize
-    nw 0
+    left originX
+    top  originY
+    background orange
     scale = 1280
     backface-visibility hidden
+    // perspective-origin 1.996875px 50%
     perspective-origin 2px 2px
     perspective 1280px
     &.is-scaled
       transform scale(1*scale)
-      transition transform 10s linear
+      transition transform 7s cubic-bezier(0.19, 1, 0.22, 1)
       .page__inner__inner
-        transform translateZ(-1635000px)
+        transform translateZ(-1637000px)
         // transform scale(1/scale)
-        transition transform 10s linear
+        transition transform 7s cubic-bezier(0.19, 1, 0.22, 1)
     &__inner
-      width startSize
-      height startSize
+      width 1280px
+      left - originX
+      top  - originY
+      position absolute
+      // height 1280px
       backface-visibility hidden
-      &__inner
-        padding 450px 640px
-        position relative
-.content
-  position absolute
-  nw 0
-  se 0
-  // min-width 1280px
-  // min-height 900px
-  background purple
-  // margin-left -640px
-  // margin-top  -450px
-  position absolute
+      background orange
+// .content
+//   position absolute
+//   nw 0
+//   se 0
+//   padding-left 4*gs
+//   // min-width 1280px
+//   // min-height 900px
+//   background purple
+//   // margin-left -640px
+//   // margin-top  -450px
+//   position absolute
 
 // // chrome:
 //   position absolute
