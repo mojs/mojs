@@ -62,6 +62,10 @@ page  = document.querySelector '#js-page'
 
 setTimeout ->
   eye.classList.add 'is-scaled'
+  setTimeout ->
+    eye.classList.remove('is-scaled')
+    eye.classList.add('is-normal')
+  , 7000
 , 1500
 
 # scale = 1280

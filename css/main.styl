@@ -37,6 +37,17 @@ originY = 40px
     // perspective-origin 1.996875px 50%
     perspective-origin 2px 2px
     perspective 1280px
+    &.is-normal
+      width 100%
+      height auto
+      transition none
+      overflow visible
+      position static
+      .page__inner__inner
+        width 100%
+        transition none
+        transform none
+        position static
     &.is-scaled
       transform scale(1*scale)
       transition transform 7s cubic-bezier(0.19, 1, 0.22, 1)

@@ -1563,7 +1563,11 @@ pupil = document.querySelector('#js-pupil');
 page = document.querySelector('#js-page');
 
 setTimeout(function() {
-  return eye.classList.add('is-scaled');
+  eye.classList.add('is-scaled');
+  return setTimeout(function() {
+    eye.classList.remove('is-scaled');
+    return eye.classList.add('is-normal');
+  }, 7000);
 }, 1500);
 
 },{"./Swirl":1,"./burst":4,"./timeline":14,"./transit":15,"./tween":16}],11:[function(require,module,exports){

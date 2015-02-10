@@ -28,6 +28,23 @@ body {
   -ms-perspective: 1280px;
   perspective: 1280px;
 }
+.page__inner.is-normal {
+  width: 100%;
+  height: auto;
+  -webkit-transition: none;
+  transition: none;
+  overflow: visible;
+  position: static;
+}
+.page__inner.is-normal .page__inner__inner {
+  width: 100%;
+  -webkit-transition: none;
+  transition: none;
+  -webkit-transform: none;
+  -ms-transform: none;
+  transform: none;
+  position: static;
+}
 .page__inner.is-scaled {
   -webkit-transform: scale(1280);
   -ms-transform: scale(1280);
