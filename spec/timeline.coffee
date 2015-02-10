@@ -200,6 +200,26 @@ describe 'Timeline ->', ->
       t.setProc .75
       expect(t.progress).toBe .75
       expect(t.easedProgress.toFixed(2)).toBe '0.97'
+
+  describe 'setProp method->', ->
+    it 'should set new timeline options', ->
+      t = new Timeline duration: 100, delay: 0
+      t.setProp duration: 1000, delay: 200
+      expect(t.o.duration).toBe 1000
+      expect(t.o.delay).toBe    200
+    it 'should work with arguments', ->
+      t = new Timeline duration: 100
+      t.setProp 'duration', 1000
+      expect(t.o.duration).toBe 1000
+    it 'should call calcDimentions method', ->
+      t = new Timeline duration: 100
+      spyOn t, 'calcDimentions'
+      t.setProp 'duration', 1000
+      expect(t.calcDimentions).toHaveBeenCalled()
+    it 'should update the totalTime', ->
+      t = new Timeline duration: 100
+      t.setProp 'duration', 1000
+      expect(t.props.totalTime).toBe 1000
       
 
 

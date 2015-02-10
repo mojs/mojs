@@ -6,6 +6,8 @@
 **! in active development - isn't ready yet !**
 
 #### todo
+- transit
+  - then to timelines
 - burst
   - implement run method
   - opacity childOPtions to burst

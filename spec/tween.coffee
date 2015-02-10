@@ -19,6 +19,34 @@ describe 'Tween ->', ->
       expect(t.duration).toBe 700
       t.add new Timeline duration: 500, delay: 200, repeat: 1
       expect(t.duration).toBe 1400
+  describe 'remove method ->', ->
+    it 'should remove timeline',->
+      t = new Tween
+      timeline = new Timeline
+      t.add timeline
+      t.remove timeline
+      expect(t.timelines.length).toBe 0
+  describe 'reset method ->', ->
+    it 'should remove timeline',->
+      t = new Tween
+      timeline = new Timeline
+      t.add timeline
+      spyOn t, 'remove'
+      spyOn t, 'add'
+      t.reset timeline
+      expect(t.remove).toHaveBeenCalledWith timeline
+      expect(t.add)   .toHaveBeenCalledWith timeline
+
+  describe 'recalcDuration method ->', ->
+    it 'should recalculate duration', ->
+      t = new Tween
+      timeline = new Timeline  duration: 100
+      timeline2 = new Timeline duration: 1000
+      t.add timeline
+      t.timelines.push timeline2
+      t.recalcDuration()
+      expect(t.duration).toBe 1000
+    
   describe 'start method ->', ->
     it 'should get the start time',->
       t = new Tween

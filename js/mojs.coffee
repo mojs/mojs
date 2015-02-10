@@ -24,23 +24,22 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-# burst = new Transit(
-#   # isRunLess: true
-#   type: 'polygon'
-#   duration: 2000
-#   count: 3
-#   isIt: true
-#   isRunLess: true
-#   # randomAngle: .3
-#   # degree:      20
-#   radius:      {0: 75}
-#   points: 5
-# )
+burst = new Transit(
+  # isRunLess: true
+  type: 'polygon'
+  duration: 500
+  count: 3
+  isIt: true
+  isRunLess: true
+  # randomAngle: .3
+  # degree:      20
+  radius:      {0: 75}
+  points: 5
+)
 
-# document.body.addEventListener 'click', (e)->
-#   burst.run
-#     x: e.x
-#     y: e.y
+document.addEventListener 'click', (e)->
+  burst.run
+    x: e.x, y: e.y, duration: 4000
 #     duration: 4000
 #     type: 'circle'
 #     # angle: 'rand(0,400)'
@@ -60,13 +59,13 @@ eye   = document.querySelector '#js-eye'
 pupil = document.querySelector '#js-pupil'
 page  = document.querySelector '#js-page'
 
-setTimeout ->
-  eye.classList.add 'is-scaled'
-  setTimeout ->
-    eye.classList.remove('is-scaled')
-    eye.classList.add('is-normal')
-  , 7000
-, 1500
+# setTimeout ->
+#   eye.classList.add 'is-scaled'
+#   setTimeout ->
+#     eye.classList.remove('is-scaled')
+#     eye.classList.add('is-normal')
+#   , 3000
+# , 1500
 
 # scale = 1280
 # TweenMax.to pupil, 1, scale: (1/scale), delay: 1

@@ -396,7 +396,7 @@
         }, 50);
       });
     });
-    return describe('setProc method->', function() {
+    describe('setProc method->', function() {
       return it('should set the current progress', function() {
         var t;
         t = new Timeline({
@@ -405,6 +405,46 @@
         t.setProc(.75);
         expect(t.progress).toBe(.75);
         return expect(t.easedProgress.toFixed(2)).toBe('0.97');
+      });
+    });
+    return describe('setProp method->', function() {
+      it('should set new timeline options', function() {
+        var t;
+        t = new Timeline({
+          duration: 100,
+          delay: 0
+        });
+        t.setProp({
+          duration: 1000,
+          delay: 200
+        });
+        expect(t.o.duration).toBe(1000);
+        return expect(t.o.delay).toBe(200);
+      });
+      it('should work with arguments', function() {
+        var t;
+        t = new Timeline({
+          duration: 100
+        });
+        t.setProp('duration', 1000);
+        return expect(t.o.duration).toBe(1000);
+      });
+      it('should call calcDimentions method', function() {
+        var t;
+        t = new Timeline({
+          duration: 100
+        });
+        spyOn(t, 'calcDimentions');
+        t.setProp('duration', 1000);
+        return expect(t.calcDimentions).toHaveBeenCalled();
+      });
+      return it('should update the totalTime', function() {
+        var t;
+        t = new Timeline({
+          duration: 100
+        });
+        t.setProp('duration', 1000);
+        return expect(t.props.totalTime).toBe(1000);
       });
     });
   });

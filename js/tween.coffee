@@ -10,6 +10,16 @@ class Tween
   add:(timeline)->
     @timelines.push timeline
     @duration = Math.max timeline.props.totalTime, @duration
+  remove:(timeline)->
+    index = @timelines.indexOf timeline
+    if index isnt -1 then @timelines.splice index, 1
+  reset:(timeline)-> @remove(timeline); @add timeline
+  recalcDuration:->
+    len = @timelines.length; @duration = 0
+    while(len--)
+      timeline  = @timelines[len]
+      @duration = Math.max timeline.props.totalTime, @duration
+
   update:(time)->
     return if @isCompleted
     i = @timelines.length

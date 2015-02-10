@@ -15,6 +15,9 @@ class Timeline
   constructor:(@o={})-> @extendDefaults(); @vars(); @
   vars:->
     @h = h; @props = {}; @progress = 0
+    @calcDimentions()
+
+  calcDimentions:->
     @props.totalTime     = (@o.repeat+1)*(@o.duration+@o.delay)
     @props.totalDuration = @props.totalTime - @o.delay
     easing = h.splitEasing @o.easing
@@ -60,6 +63,13 @@ class Timeline
         @setProc 1; @onUpdate? @easedProgress
 
   setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress
+
+  setProp:(obj, value)->
+    if typeof obj is 'object'
+      for key, val of obj
+        @o[key] = val
+    else if typeof obj is 'string' then @o[obj] = value
+    @calcDimentions()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

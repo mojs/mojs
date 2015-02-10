@@ -25,10 +25,14 @@ Timeline = (function() {
   }
 
   Timeline.prototype.vars = function() {
-    var easing;
     this.h = h;
     this.props = {};
     this.progress = 0;
+    return this.calcDimentions();
+  };
+
+  Timeline.prototype.calcDimentions = function() {
+    var easing;
     this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
     this.props.totalDuration = this.props.totalTime - this.o.delay;
     easing = h.splitEasing(this.o.easing);
@@ -95,6 +99,19 @@ Timeline = (function() {
   Timeline.prototype.setProc = function(p) {
     this.progress = p;
     return this.easedProgress = this.props.easing(this.progress);
+  };
+
+  Timeline.prototype.setProp = function(obj, value) {
+    var key, val;
+    if (typeof obj === 'object') {
+      for (key in obj) {
+        val = obj[key];
+        this.o[key] = val;
+      }
+    } else if (typeof obj === 'string') {
+      this.o[obj] = value;
+    }
+    return this.calcDimentions();
   };
 
   return Timeline;

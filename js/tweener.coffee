@@ -48,10 +48,7 @@ class Tweener
   add:(tween)-> @tweens.push(tween); @startLoop()
   remove:(tween)->
     index = @tweens.indexOf tween
-    if index isnt -1
-      before = @tweens.length
-      @tweens.splice index, 1
-    # console.log index, before, @tweens.length
+    if index isnt -1 then @tweens.splice index, 1
 
 t = new Tweener
 ### istanbul ignore next ###

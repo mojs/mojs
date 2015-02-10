@@ -24,6 +24,31 @@ Tween = (function() {
     return this.duration = Math.max(timeline.props.totalTime, this.duration);
   };
 
+  Tween.prototype.remove = function(timeline) {
+    var index;
+    index = this.timelines.indexOf(timeline);
+    if (index !== -1) {
+      return this.timelines.splice(index, 1);
+    }
+  };
+
+  Tween.prototype.reset = function(timeline) {
+    this.remove(timeline);
+    return this.add(timeline);
+  };
+
+  Tween.prototype.recalcDuration = function() {
+    var len, timeline, _results;
+    len = this.timelines.length;
+    this.duration = 0;
+    _results = [];
+    while (len--) {
+      timeline = this.timelines[len];
+      _results.push(this.duration = Math.max(timeline.props.totalTime, this.duration));
+    }
+    return _results;
+  };
+
   Tween.prototype.update = function(time) {
     var i, _ref;
     if (this.isCompleted) {

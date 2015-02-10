@@ -46,8 +46,8 @@ class Transit extends bitsMap.map.bit
   vars:->
     @h ?= h; @chainArr ?= []; @lastSet ?= {}
     @extendDefaults(); @onUpdate = @props.onUpdate
-  render:(isForce)->
-    if !@isRendered or isForce
+  render:()->
+    if !@isRendered# or isForce
       if !@o.ctx?
         if !@ctx?
           @ctx = document.createElementNS @ns, 'svg'
@@ -184,11 +184,18 @@ class Transit extends bitsMap.map.bit
       x: parseFloat(@props.x), y: parseFloat(@props.y)
     else x: @props.center, y: @props.center
 
-  extendDefaults:->
-    @props  ?= {}
-    @deltas = {}
-    for key, defaultsValue of @defaults
-      optionsValue = if @o[key]? then @o[key] else defaultsValue
+  extendDefaults:(o)->
+    @props ?= {}; fromObject = o or @defaults
+    # override deltas only if options obj wasnt passed
+    !o? and (@deltas = {})
+    for key, defaultsValue of fromObject
+      # if options object was passed = save the value to
+      # options object and delete the old delta value
+      if o
+        @o[key] = defaultsValue; optionsValue = defaultsValue
+        delete @deltas[key]
+      # else get the value from options or fallback to defaults
+      else optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object value - just save it to @props
       # if is not an object or is array
       isObject = (optionsValue? and (typeof optionsValue is 'object'))
@@ -281,13 +288,25 @@ class Transit extends bitsMap.map.bit
     !@o.isRunLess and @startTween()
 
   run:(o)->
-    for key, value of o
-      @o[key] = value
-    @vars(); @calcSize(); @setElStyles()
-    !@o.isDrawLess and @setProgress 0, true
-    @render true
+    # if type is defined and it's different
+    # than the current type - warn and delete
+    if o? and o.type? and o.type isnt (@o.type or @type)
+      @h.warn 'Sorry, type can not be changed on run'
+      delete o.type
+    # extend defaults only if options obj was passed
+    if o? and Object.keys(o).length
+      @extendDefaults(o); @resetTimeline(); @tween.recalcDuration()
+      @calcSize(); @setElStyles()
+    !@o.isDrawLess and @setProgress(0, true)
     @startTween()
   startTween:-> @tween?.start()
+  resetTimeline:->
+    timelineOptions = {}
+    for key, i in Object.keys @h.tweenOptionMap
+      timelineOptions[key] = @props[key]
+    timelineOptions.onStart    = @props.onStart
+    timelineOptions.onComplete = @props.onComplete
+    @timeline.setProp timelineOptions
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

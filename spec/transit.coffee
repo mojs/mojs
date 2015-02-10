@@ -48,6 +48,16 @@ describe 'Transit ->', ->
       expect(byte.props.radius).toBeDefined()
       expect(byte.props.radius).toBeGreaterThan -1
       expect(byte.props.radius).not.toBeGreaterThan 10
+    it 'should recieve object to iterate from', ->
+      byte = new Byte
+        radius: 'rand(0, 10)'
+        isRunLess: true
+        fill: 'deeppink'
+      # byte.props = {}
+      fillBefore = byte.props.fill
+      byte.extendDefaults {radius: 10}
+      expect(byte.props.radius).toBe 10
+      expect(byte.props.fill).toBe fillBefore
   it 'should calculate transform object', ->
     byte = new Byte
       angle:        90
@@ -372,11 +382,12 @@ describe 'Transit ->', ->
       byte.isRendered = false
       byte.render()
       expect(byte.calcSize).toHaveBeenCalled()
-    it 'should have option for force render', ->
-      byte = new Byte radius: 25
-      spyOn byte, 'calcSize'
-      byte.render true
-      expect(byte.calcSize).toHaveBeenCalled()
+    # doesnt needed yet
+    # it 'should have option to force render', ->
+    #   byte = new Byte radius: 25
+    #   spyOn byte, 'calcSize'
+    #   byte.render true
+    #   expect(byte.calcSize).toHaveBeenCalled()
 
     it 'should not create new el', ->
       byte = new Byte radius: 25
@@ -581,13 +592,7 @@ describe 'Transit ->', ->
       spyOn byte, 'calcCurrentProps'
       byte.setProgress .5
       expect(byte.calcCurrentProps).toHaveBeenCalledWith .5
-    # ----- removed ----- #
-    # it 'should not call calcCurrentProps if isPropsCalcLess', ->
-    #   byte = new Byte radius:  {'25': 75}
-    #   spyOn byte, 'calcCurrentProps'
-    #   byte.isPropsCalcLess = true
-    #   byte.setProgress .5
-    #   expect(byte.calcCurrentProps).not.toHaveBeenCalledWith .5
+    
     it 'should not call onUpdate if isShow was passed', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, 'onUpdate'
@@ -842,23 +847,43 @@ describe 'Transit ->', ->
     #   expect(byte.tween.stop).toHaveBeenCalled()
 
   describe 'run method->', ->
-    it 'should create tween', ->
+    it 'should extend defaults with passed object', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
-      spyOn byte, 'createTween'
-      byte.run()
-      expect(byte.createTween).toHaveBeenCalled()
-    # it 'should run tween', ->
-    #   byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
-    #   spyOn byte, 'startTween'
-    #   byte.run()
-    #   expect(byte.startTween).toHaveBeenCalled()
-    it 'should call render method', ->
+      spyOn byte, 'extendDefaults'
+      o = { strokeWidth: 20 }
+      byte.run(o)
+      expect(byte.extendDefaults).toHaveBeenCalledWith o
+    it 'should not extend defaults if object was not passed', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
-      spyOn byte, 'render'
+      spyOn byte, 'extendDefaults'
       byte.run()
-      expect(byte.render).toHaveBeenCalledWith true
+      expect(byte.extendDefaults).not.toHaveBeenCalled()
+    it 'should not override deltas', ->
+      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
+      byte.run stroke: 'green'
+      expect(byte.deltas.strokeWidth).toBeDefined()
+
+    it 'should set calculate el size', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
+      spyOn byte, 'calcSize'
+      byte.run radius: 50
+      expect(byte.calcSize).toHaveBeenCalled()
+    it 'should set new el size', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true, isIt: true)
+      spyOn byte, 'setElStyles'
+      byte.run radius: 50
+      expect(byte.setElStyles).toHaveBeenCalled()
+    it 'should set new el size #2', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true, isIt: true)
+      byte.run radius: 50
+      expect(byte.el.style.width).toBe '104px'
+    it 'should start tween', ->
+      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
+      spyOn byte, 'startTween'
+      byte.run()
+      expect(byte.startTween).toHaveBeenCalled()
     it 'should accept new options', ->
-      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
+      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true, isIt: true)
       byte.run strokeWidth: 25
       expect(byte.props.strokeWidth).toBe 25
       expect(byte.deltas.strokeWidth).not.toBeDefined()
@@ -866,15 +891,44 @@ describe 'Transit ->', ->
       byte = new Byte(strokeWidth: {10: 5}, radius: 33, isRunLess: true)
       byte.run strokeWidth: 25
       expect(byte.props.radius).toBe 33
-    it 'should calculate new el size', ->
-      byte = new Byte(radius: {10: 5}, isRunLess: true)
-      byte.run radius: 50
-      expect(byte.el.style.width).toBe '104px'
     it 'should call setProgress(0, true)', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       spyOn byte, 'setProgress'
       byte.run radius: 50
       expect(byte.setProgress).toHaveBeenCalledWith 0, true
+    it 'should warn if type was passed', ->
+      byte = new Byte(type: 'polygon', isRunLess: true)
+      spyOn byte.h, 'warn'
+      byte.run type: 'circle'
+      expect(byte.h.warn).toHaveBeenCalled()
+      expect(byte.o.type).toBe 'polygon'
+    it 'should set new options on timeline', ->
+      byte = new Byte
+        isRunLess: true
+        duration: 500, delay: 200, repeat: 1, easing: 'cubic.in'
+        yoyo: true
+        onStart:    ->
+        onComplete: ->
+      onStart = (->); onComplete = (->)
+      byte.run
+        duration: 2000, delay: 0, repeat: 2, easing: 'linear.none'
+        onStart: onStart, onComplete: onComplete, yoyo: false
+      expect(byte.timeline.o.duration).toBe     2000
+      expect(byte.timeline.o.delay).toBe        0
+      expect(byte.timeline.o.repeat).toBe       2
+      expect(byte.timeline.o.easing).toBe       'linear.none'
+      expect(byte.timeline.o.onStart).toBe      onStart
+      expect(byte.timeline.o.onComplete).toBe   onComplete
+      expect(byte.timeline.o.yoyo).toBe         false
+    it 'should call recalcDuration on tween', ->
+      byte = new Byte
+      spyOn byte.tween, 'recalcDuration'
+      byte.run duration: 2000
+      expect(byte.tween.recalcDuration).toHaveBeenCalled()
+
+
+
+
 
 
 

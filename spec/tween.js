@@ -38,6 +38,45 @@
         return expect(t.duration).toBe(1400);
       });
     });
+    describe('remove method ->', function() {
+      return it('should remove timeline', function() {
+        var t, timeline;
+        t = new Tween;
+        timeline = new Timeline;
+        t.add(timeline);
+        t.remove(timeline);
+        return expect(t.timelines.length).toBe(0);
+      });
+    });
+    describe('reset method ->', function() {
+      return it('should remove timeline', function() {
+        var t, timeline;
+        t = new Tween;
+        timeline = new Timeline;
+        t.add(timeline);
+        spyOn(t, 'remove');
+        spyOn(t, 'add');
+        t.reset(timeline);
+        expect(t.remove).toHaveBeenCalledWith(timeline);
+        return expect(t.add).toHaveBeenCalledWith(timeline);
+      });
+    });
+    describe('recalcDuration method ->', function() {
+      return it('should recalculate duration', function() {
+        var t, timeline, timeline2;
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 100
+        });
+        timeline2 = new Timeline({
+          duration: 1000
+        });
+        t.add(timeline);
+        t.timelines.push(timeline2);
+        t.recalcDuration();
+        return expect(t.duration).toBe(1000);
+      });
+    });
     describe('start method ->', function() {
       it('should get the start time', function() {
         var t;

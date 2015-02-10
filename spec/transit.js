@@ -85,7 +85,7 @@
         });
         return expect(byte.props.radius.join(', ')).toBe('50, 100');
       });
-      return it('should extend defaults object to properties if rand was passed', function() {
+      it('should extend defaults object to properties if rand was passed', function() {
         var byte;
         byte = new Byte({
           radius: 'rand(0, 10)'
@@ -93,6 +93,20 @@
         expect(byte.props.radius).toBeDefined();
         expect(byte.props.radius).toBeGreaterThan(-1);
         return expect(byte.props.radius).not.toBeGreaterThan(10);
+      });
+      return it('should recieve object to iterate from', function() {
+        var byte, fillBefore;
+        byte = new Byte({
+          radius: 'rand(0, 10)',
+          isRunLess: true,
+          fill: 'deeppink'
+        });
+        fillBefore = byte.props.fill;
+        byte.extendDefaults({
+          radius: 10
+        });
+        expect(byte.props.radius).toBe(10);
+        return expect(byte.props.fill).toBe(fillBefore);
       });
     });
     it('should calculate transform object', function() {
@@ -624,15 +638,6 @@
         spyOn(byte, 'calcSize');
         byte.isRendered = false;
         byte.render();
-        return expect(byte.calcSize).toHaveBeenCalled();
-      });
-      it('should have option for force render', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        spyOn(byte, 'calcSize');
-        byte.render(true);
         return expect(byte.calcSize).toHaveBeenCalled();
       });
       return it('should not create new el', function() {
@@ -1579,19 +1584,22 @@
     });
     describe('createTween method ->', function() {});
     return describe('run method->', function() {
-      it('should create tween', function() {
-        var byte;
+      it('should extend defaults with passed object', function() {
+        var byte, o;
         byte = new Byte({
           strokeWidth: {
             10: 5
           },
           isRunLess: true
         });
-        spyOn(byte, 'createTween');
-        byte.run();
-        return expect(byte.createTween).toHaveBeenCalled();
+        spyOn(byte, 'extendDefaults');
+        o = {
+          strokeWidth: 20
+        };
+        byte.run(o);
+        return expect(byte.extendDefaults).toHaveBeenCalledWith(o);
       });
-      it('should call render method', function() {
+      it('should not extend defaults if object was not passed', function() {
         var byte;
         byte = new Byte({
           strokeWidth: {
@@ -1599,9 +1607,77 @@
           },
           isRunLess: true
         });
-        spyOn(byte, 'render');
+        spyOn(byte, 'extendDefaults');
         byte.run();
-        return expect(byte.render).toHaveBeenCalledWith(true);
+        return expect(byte.extendDefaults).not.toHaveBeenCalled();
+      });
+      it('should not override deltas', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        byte.run({
+          stroke: 'green'
+        });
+        return expect(byte.deltas.strokeWidth).toBeDefined();
+      });
+      it('should set calculate el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        spyOn(byte, 'calcSize');
+        byte.run({
+          radius: 50
+        });
+        return expect(byte.calcSize).toHaveBeenCalled();
+      });
+      it('should set new el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          },
+          isRunLess: true,
+          isIt: true
+        });
+        spyOn(byte, 'setElStyles');
+        byte.run({
+          radius: 50
+        });
+        return expect(byte.setElStyles).toHaveBeenCalled();
+      });
+      it('should set new el size #2', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          },
+          isRunLess: true,
+          isIt: true
+        });
+        byte.run({
+          radius: 50
+        });
+        return expect(byte.el.style.width).toBe('104px');
+      });
+      it('should start tween', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          isRunLess: true
+        });
+        spyOn(byte, 'startTween');
+        byte.run();
+        return expect(byte.startTween).toHaveBeenCalled();
       });
       it('should accept new options', function() {
         var byte;
@@ -1609,7 +1685,8 @@
           strokeWidth: {
             10: 5
           },
-          isRunLess: true
+          isRunLess: true,
+          isIt: true
         });
         byte.run({
           strokeWidth: 25
@@ -1631,20 +1708,7 @@
         });
         return expect(byte.props.radius).toBe(33);
       });
-      it('should calculate new el size', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        byte.run({
-          radius: 50
-        });
-        return expect(byte.el.style.width).toBe('104px');
-      });
-      return it('should call setProgress(0, true)', function() {
+      it('should call setProgress(0, true)', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1657,6 +1721,59 @@
           radius: 50
         });
         return expect(byte.setProgress).toHaveBeenCalledWith(0, true);
+      });
+      it('should warn if type was passed', function() {
+        var byte;
+        byte = new Byte({
+          type: 'polygon',
+          isRunLess: true
+        });
+        spyOn(byte.h, 'warn');
+        byte.run({
+          type: 'circle'
+        });
+        expect(byte.h.warn).toHaveBeenCalled();
+        return expect(byte.o.type).toBe('polygon');
+      });
+      it('should set new options on timeline', function() {
+        var byte, onComplete, onStart;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 500,
+          delay: 200,
+          repeat: 1,
+          easing: 'cubic.in',
+          yoyo: true,
+          onStart: function() {},
+          onComplete: function() {}
+        });
+        onStart = (function() {});
+        onComplete = (function() {});
+        byte.run({
+          duration: 2000,
+          delay: 0,
+          repeat: 2,
+          easing: 'linear.none',
+          onStart: onStart,
+          onComplete: onComplete,
+          yoyo: false
+        });
+        expect(byte.timeline.o.duration).toBe(2000);
+        expect(byte.timeline.o.delay).toBe(0);
+        expect(byte.timeline.o.repeat).toBe(2);
+        expect(byte.timeline.o.easing).toBe('linear.none');
+        expect(byte.timeline.o.onStart).toBe(onStart);
+        expect(byte.timeline.o.onComplete).toBe(onComplete);
+        return expect(byte.timeline.o.yoyo).toBe(false);
+      });
+      return it('should call recalcDuration on tween', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte.tween, 'recalcDuration');
+        byte.run({
+          duration: 2000
+        });
+        return expect(byte.tween.recalcDuration).toHaveBeenCalled();
       });
     });
   });

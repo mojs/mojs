@@ -15,16 +15,16 @@ html, body
 gap = 100px
 originX = 1000px
 originY = 40px
+windowSize = 1280
 .page
   background deeppink
   width 100%
   height 1888px
   position absolute
-  // nw 0
   overflow hidden
   startSize = 4px
+  // z-index 0
   &__inner
-    // clip rect(0,3px,3px,0)
     overflow hidden
     position absolute
     width startSize
@@ -32,11 +32,8 @@ originY = 40px
     left originX
     top  originY
     background orange
-    scale = 1280
     backface-visibility hidden
-    // perspective-origin 1.996875px 50%
-    perspective-origin 2px 2px
-    perspective 1280px
+    perspective (windowSize)px
     &.is-normal
       width 100%
       height auto
@@ -49,18 +46,16 @@ originY = 40px
         transform none
         position static
     &.is-scaled
-      transform scale(1*scale)
+      transform scale(1*windowSize)
       transition transform 7s cubic-bezier(0.19, 1, 0.22, 1)
       .page__inner__inner
-        transform translateZ(-1637000px)
-        // transform scale(1/scale)
+        transform translateZ(-(windowSize*windowSize)px)
         transition transform 7s cubic-bezier(0.19, 1, 0.22, 1)
     &__inner
-      width 1280px
+      width (windowSize)px
       left - originX
       top  - originY
       position absolute
-      // height 1280px
       backface-visibility hidden
       background orange
 // .content

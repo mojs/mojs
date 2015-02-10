@@ -1544,7 +1544,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, eye, page, pupil;
+var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
 
 Burst = require('./burst');
 
@@ -1556,19 +1556,31 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
+burst = new Transit({
+  type: 'polygon',
+  duration: 500,
+  count: 3,
+  isIt: true,
+  isRunLess: true,
+  radius: {
+    0: 75
+  },
+  points: 5
+});
+
+document.addEventListener('click', function(e) {
+  return burst.run({
+    x: e.x,
+    y: e.y,
+    duration: 4000
+  });
+});
+
 eye = document.querySelector('#js-eye');
 
 pupil = document.querySelector('#js-pupil');
 
 page = document.querySelector('#js-page');
-
-setTimeout(function() {
-  eye.classList.add('is-scaled');
-  return setTimeout(function() {
-    eye.classList.remove('is-scaled');
-    return eye.classList.add('is-normal');
-  }, 7000);
-}, 1500);
 
 },{"./Swirl":1,"./burst":4,"./timeline":14,"./transit":15,"./tween":16}],11:[function(require,module,exports){
 
@@ -1742,10 +1754,14 @@ Timeline = (function() {
   }
 
   Timeline.prototype.vars = function() {
-    var easing;
     this.h = h;
     this.props = {};
     this.progress = 0;
+    return this.calcDimentions();
+  };
+
+  Timeline.prototype.calcDimentions = function() {
+    var easing;
     this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
     this.props.totalDuration = this.props.totalTime - this.o.delay;
     easing = h.splitEasing(this.o.easing);
@@ -1812,6 +1828,19 @@ Timeline = (function() {
   Timeline.prototype.setProc = function(p) {
     this.progress = p;
     return this.easedProgress = this.props.easing(this.progress);
+  };
+
+  Timeline.prototype.setProp = function(obj, value) {
+    var key, val;
+    if (typeof obj === 'object') {
+      for (key in obj) {
+        val = obj[key];
+        this.o[key] = val;
+      }
+    } else if (typeof obj === 'string') {
+      this.o[obj] = value;
+    }
+    return this.calcDimentions();
   };
 
   return Timeline;
@@ -1918,8 +1947,8 @@ Transit = (function(_super) {
     return this.onUpdate = this.props.onUpdate;
   };
 
-  Transit.prototype.render = function(isForce) {
-    if (!this.isRendered || isForce) {
+  Transit.prototype.render = function() {
+    if (!this.isRendered) {
       if (this.o.ctx == null) {
         if (this.ctx == null) {
           this.ctx = document.createElementNS(this.ns, 'svg');
@@ -2126,17 +2155,23 @@ Transit = (function(_super) {
     };
   };
 
-  Transit.prototype.extendDefaults = function() {
-    var defaultsValue, delta, isObject, key, optionsValue, _ref, _ref1, _results;
+  Transit.prototype.extendDefaults = function(o) {
+    var defaultsValue, delta, fromObject, isObject, key, optionsValue, _ref, _results;
     if (this.props == null) {
       this.props = {};
     }
-    this.deltas = {};
-    _ref = this.defaults;
+    fromObject = o || this.defaults;
+    (o == null) && (this.deltas = {});
     _results = [];
-    for (key in _ref) {
-      defaultsValue = _ref[key];
-      optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
+    for (key in fromObject) {
+      defaultsValue = fromObject[key];
+      if (o) {
+        this.o[key] = defaultsValue;
+        optionsValue = defaultsValue;
+        delete this.deltas[key];
+      } else {
+        optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
+      }
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
       if (!isObject || this.h.isArray(optionsValue)) {
         if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
@@ -2151,7 +2186,7 @@ Transit = (function(_super) {
       if ((key === 'x' || key === 'y') && !this.o.ctx) {
         this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
       }
-      if ((_ref1 = this.skipPropsDelta) != null ? _ref1[key] : void 0) {
+      if ((_ref = this.skipPropsDelta) != null ? _ref[key] : void 0) {
         continue;
       }
       delta = this.h.parseDelta(key, optionsValue);
@@ -2273,22 +2308,37 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.run = function(o) {
-    var key, value;
-    for (key in o) {
-      value = o[key];
-      this.o[key] = value;
+    if ((o != null) && (o.type != null) && o.type !== (this.o.type || this.type)) {
+      this.h.warn('Sorry, type can not be changed on run');
+      delete o.type;
     }
-    this.vars();
-    this.calcSize();
-    this.setElStyles();
+    if ((o != null) && Object.keys(o).length) {
+      this.extendDefaults(o);
+      this.resetTimeline();
+      this.tween.recalcDuration();
+      this.calcSize();
+      this.setElStyles();
+    }
     !this.o.isDrawLess && this.setProgress(0, true);
-    this.render(true);
     return this.startTween();
   };
 
   Transit.prototype.startTween = function() {
     var _ref;
     return (_ref = this.tween) != null ? _ref.start() : void 0;
+  };
+
+  Transit.prototype.resetTimeline = function() {
+    var i, key, timelineOptions, _i, _len, _ref;
+    timelineOptions = {};
+    _ref = Object.keys(this.h.tweenOptionMap);
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      key = _ref[i];
+      timelineOptions[key] = this.props[key];
+    }
+    timelineOptions.onStart = this.props.onStart;
+    timelineOptions.onComplete = this.props.onComplete;
+    return this.timeline.setProp(timelineOptions);
   };
 
   return Transit;
@@ -2352,6 +2402,31 @@ Tween = (function() {
   Tween.prototype.add = function(timeline) {
     this.timelines.push(timeline);
     return this.duration = Math.max(timeline.props.totalTime, this.duration);
+  };
+
+  Tween.prototype.remove = function(timeline) {
+    var index;
+    index = this.timelines.indexOf(timeline);
+    if (index !== -1) {
+      return this.timelines.splice(index, 1);
+    }
+  };
+
+  Tween.prototype.reset = function(timeline) {
+    this.remove(timeline);
+    return this.add(timeline);
+  };
+
+  Tween.prototype.recalcDuration = function() {
+    var len, timeline, _results;
+    len = this.timelines.length;
+    this.duration = 0;
+    _results = [];
+    while (len--) {
+      timeline = this.timelines[len];
+      _results.push(this.duration = Math.max(timeline.props.totalTime, this.duration));
+    }
+    return _results;
   };
 
   Tween.prototype.update = function(time) {
@@ -2530,10 +2605,9 @@ Tweener = (function() {
   };
 
   Tweener.prototype.remove = function(tween) {
-    var before, index;
+    var index;
     index = this.tweens.indexOf(tween);
     if (index !== -1) {
-      before = this.tweens.length;
       return this.tweens.splice(index, 1);
     }
   };
