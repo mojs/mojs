@@ -24,22 +24,27 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Transit(
+burst = new Burst(
   # isRunLess: true
   type: 'polygon'
   duration: 500
   count: 3
   isIt: true
-  isRunLess: true
-  # randomAngle: .3
+  # isRunLess: true
+  # randomAngle: 1
   # degree:      20
   radius:      {0: 75}
   points: 5
+  isSwirl: true
+  swirlFrequency: 'rand(0,10)'
+  swirlSize:      'rand(0,10)'
 )
 
 document.addEventListener 'click', (e)->
   burst.run
-    x: e.x, y: e.y, duration: 4000
+    x: e.x, y: e.y,
+    duration: 1000
+    # angle: {360: 0}
 #     duration: 4000
 #     type: 'circle'
 #     # angle: 'rand(0,400)'

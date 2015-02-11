@@ -4,16 +4,16 @@ Burst   = mojs.Burst
 
 describe 'Burst ->', ->
   describe 'extension ->', ->
-    
     it 'should extend Transit class', ->
       burst = new Burst
       expect(burst instanceof Transit).toBe true
-    
     it 'should have its own defaults', ->
       burst = new Burst
+      # skip childOptions from extendDefaults
+      expect(burst.skipProps.childOptions).toBe 1
       # presentation props
       expect(burst.defaults.degree) .toBe       360
-      expect(burst.defaults.count) .toBe       5
+      expect(burst.defaults.count) .toBe        5
       expect(burst.defaults.opacity).toBe       1
       expect(burst.defaults.randomAngle) .toBe  0
       expect(burst.defaults.randomRadius).toBe  0
@@ -44,7 +44,7 @@ describe 'Burst ->', ->
       expect(burst.childDefaults.onUpdate)  .toBe null
       expect(burst.childDefaults.duration)         .toBe  500
       expect(burst.childDefaults.delay)            .toBe  0
-      expect(burst.childDefaults.repeat)           .toBe  1
+      expect(burst.childDefaults.repeat)           .toBe  0
       expect(burst.childDefaults.yoyo)             .toBe  false
       expect(burst.childDefaults.easing)           .toBe  'Linear.None'
       expect(burst.childDefaults.type)             .toBe  'circle'
@@ -397,11 +397,51 @@ describe 'Burst ->', ->
   #     burst.run()
   #     setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
   describe 'run method ->', ->
-    it 'should call super', ->
+    it 'should call extendDefaults', ->
       burst = new Burst radius: { 20: 50 }
-      spyOn Burst.__super__, 'run'
+      spyOn burst, 'extendDefaults'
+      o = { radius: 10}
+      burst.run o
+      expect(burst.extendDefaults).toHaveBeenCalledWith o
+    it 'should not call extendDefaults if no obj passed', ->
+      burst = new Burst radius: { 20: 50 }
+      spyOn burst, 'extendDefaults'
       burst.run()
-      expect(Burst.__super__.run).toHaveBeenCalled()
+      expect(burst.extendDefaults).not.toHaveBeenCalled()
+    it 'should recieve new options', ->
+      burst = new Burst radius: { 20: 50 }
+      burst.run radius: 10
+      expect(burst.props.radius).toBe  10
+      expect(burst.deltas.radius).not.toBeDefined()
+    it 'should recieve new child options', ->
+      burst = new Burst radius: { 20: 50 }, duration: 400
+      burst.run duration: 500, childOptions: duration: [null, 1000, null]
+      
+      expect(burst.o.childOptions).toBeDefined()
+      expect(burst.transits[0].o.duration).toBe 500
+      expect(burst.transits[1].o.duration).toBe 1000
+      expect(burst.transits[2].o.duration).toBe 500
+
+    it 'should recieve extend old childOptions', ->
+      burst = new Burst
+        duration: 400, childOptions: fill: 'deeppink'
+      newDuration = [null, 1000, null]
+      burst.run duration: 500, childOptions: duration: newDuration
+      expect(burst.o.childOptions.fill)    .toBe 'deeppink'
+      expect(burst.o.childOptions.duration).toBe newDuration
+
+    it 'should call recalcDuration on tween', ->
+      burst = new Burst
+        duration: 400, childOptions: fill: 'deeppink'
+      newDuration = [null, 1000, null]
+      spyOn burst.tween, 'recalcDuration'
+      burst.run duration: 500, childOptions: duration: newDuration
+      expect(burst.tween.recalcDuration).toHaveBeenCalled()
+    it 'should start tween', ->
+      burst = new Burst
+      spyOn burst, 'startTween'
+      burst.run duration: 500
+      expect(burst.startTween).toHaveBeenCalled()
     it 'should call generateRandomAngle method if randomAngle was passed', ->
       burst = new Burst randomAngle: .1
       spyOn burst, 'generateRandomAngle'
@@ -422,6 +462,11 @@ describe 'Burst ->', ->
       spyOn burst, 'generateRandomRadius'
       burst.run()
       expect(burst.generateRandomRadius).not.toHaveBeenCalled()
+    it 'should warn if count was passed', ->
+      burst = new Burst
+      spyOn burst.h, 'warn'
+      burst.run count: 10
+      expect(burst.h.warn).toHaveBeenCalled()
   describe 'generateRandomAngle method ->', ->
     it 'should generate random angle based on randomness', ->
       burst = new Burst randomAngle: .5

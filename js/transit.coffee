@@ -189,6 +189,8 @@ class Transit extends bitsMap.map.bit
     # override deltas only if options obj wasnt passed
     !o? and (@deltas = {})
     for key, defaultsValue of fromObject
+      # skip props from skipProps object
+      continue if @skipProps?[key]
       # if options object was passed = save the value to
       # options object and delete the old delta value
       if o
@@ -288,6 +290,10 @@ class Transit extends bitsMap.map.bit
     !@o.isRunLess and @startTween()
 
   run:(o)->
+    @tuneNewOption o
+    !@o.isDrawLess and @setProgress(0, true)
+    @startTween()
+  tuneNewOption:(o, isForeign)->
     # if type is defined and it's different
     # than the current type - warn and delete
     if o? and o.type? and o.type isnt (@o.type or @type)
@@ -295,10 +301,10 @@ class Transit extends bitsMap.map.bit
       delete o.type
     # extend defaults only if options obj was passed
     if o? and Object.keys(o).length
-      @extendDefaults(o); @resetTimeline(); @tween.recalcDuration()
-      @calcSize(); @setElStyles()
-    !@o.isDrawLess and @setProgress(0, true)
-    @startTween()
+      @extendDefaults(o); @resetTimeline()
+      !isForeign and @tween.recalcDuration()
+      @calcSize()
+      !isForeign and @setElStyles()
   startTween:-> @tween?.start()
   resetTimeline:->
     timelineOptions = {}

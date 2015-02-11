@@ -17,6 +17,7 @@
       it('should have its own defaults', function() {
         var burst;
         burst = new Burst;
+        expect(burst.skipProps.childOptions).toBe(1);
         expect(burst.defaults.degree).toBe(360);
         expect(burst.defaults.count).toBe(5);
         expect(burst.defaults.opacity).toBe(1);
@@ -46,7 +47,7 @@
         expect(burst.childDefaults.onUpdate).toBe(null);
         expect(burst.childDefaults.duration).toBe(500);
         expect(burst.childDefaults.delay).toBe(0);
-        expect(burst.childDefaults.repeat).toBe(1);
+        expect(burst.childDefaults.repeat).toBe(0);
         expect(burst.childDefaults.yoyo).toBe(false);
         expect(burst.childDefaults.easing).toBe('Linear.None');
         expect(burst.childDefaults.type).toBe('circle');
@@ -536,16 +537,107 @@
       });
     });
     describe('run method ->', function() {
-      it('should call super', function() {
+      it('should call extendDefaults', function() {
+        var burst, o;
+        burst = new Burst({
+          radius: {
+            20: 50
+          }
+        });
+        spyOn(burst, 'extendDefaults');
+        o = {
+          radius: 10
+        };
+        burst.run(o);
+        return expect(burst.extendDefaults).toHaveBeenCalledWith(o);
+      });
+      it('should not call extendDefaults if no obj passed', function() {
         var burst;
         burst = new Burst({
           radius: {
             20: 50
           }
         });
-        spyOn(Burst.__super__, 'run');
+        spyOn(burst, 'extendDefaults');
         burst.run();
-        return expect(Burst.__super__.run).toHaveBeenCalled();
+        return expect(burst.extendDefaults).not.toHaveBeenCalled();
+      });
+      it('should recieve new options', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            20: 50
+          }
+        });
+        burst.run({
+          radius: 10
+        });
+        expect(burst.props.radius).toBe(10);
+        return expect(burst.deltas.radius).not.toBeDefined();
+      });
+      it('should recieve new child options', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            20: 50
+          },
+          duration: 400
+        });
+        burst.run({
+          duration: 500,
+          childOptions: {
+            duration: [null, 1000, null]
+          }
+        });
+        expect(burst.o.childOptions).toBeDefined();
+        expect(burst.transits[0].o.duration).toBe(500);
+        expect(burst.transits[1].o.duration).toBe(1000);
+        return expect(burst.transits[2].o.duration).toBe(500);
+      });
+      it('should recieve extend old childOptions', function() {
+        var burst, newDuration;
+        burst = new Burst({
+          duration: 400,
+          childOptions: {
+            fill: 'deeppink'
+          }
+        });
+        newDuration = [null, 1000, null];
+        burst.run({
+          duration: 500,
+          childOptions: {
+            duration: newDuration
+          }
+        });
+        expect(burst.o.childOptions.fill).toBe('deeppink');
+        return expect(burst.o.childOptions.duration).toBe(newDuration);
+      });
+      it('should call recalcDuration on tween', function() {
+        var burst, newDuration;
+        burst = new Burst({
+          duration: 400,
+          childOptions: {
+            fill: 'deeppink'
+          }
+        });
+        newDuration = [null, 1000, null];
+        spyOn(burst.tween, 'recalcDuration');
+        burst.run({
+          duration: 500,
+          childOptions: {
+            duration: newDuration
+          }
+        });
+        return expect(burst.tween.recalcDuration).toHaveBeenCalled();
+      });
+      it('should start tween', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(burst, 'startTween');
+        burst.run({
+          duration: 500
+        });
+        return expect(burst.startTween).toHaveBeenCalled();
       });
       it('should call generateRandomAngle method if randomAngle was passed', function() {
         var burst;
@@ -572,12 +664,21 @@
         burst.run();
         return expect(burst.generateRandomRadius).toHaveBeenCalled();
       });
-      return it('should not call generateRandomRadius method', function() {
+      it('should not call generateRandomRadius method', function() {
         var burst;
         burst = new Burst;
         spyOn(burst, 'generateRandomRadius');
         burst.run();
         return expect(burst.generateRandomRadius).not.toHaveBeenCalled();
+      });
+      return it('should warn if count was passed', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(burst.h, 'warn');
+        burst.run({
+          count: 10
+        });
+        return expect(burst.h.warn).toHaveBeenCalled();
       });
     });
     describe('generateRandomAngle method ->', function() {

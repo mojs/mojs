@@ -39,6 +39,12 @@ describe 'Transit ->', ->
     it 'should extend defaults object to properties if object was passed', ->
       byte = new Byte radius: {45: 55}
       expect(byte.props.radius).toBe(45)
+    it 'should ignore properties defined in skipProps object', ->
+      byte = new Byte radius: 45
+      byte.skipProps = radius: 1
+      byte.o.radius = 50
+      byte.extendDefaults()
+      expect(byte.props.radius).toBe(45)
     # for burst
     it 'should extend defaults object to properties if array was passed', ->
       byte = new Byte radius: [50, 100]

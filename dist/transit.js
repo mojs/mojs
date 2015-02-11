@@ -274,7 +274,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var defaultsValue, delta, fromObject, isObject, key, optionsValue, _ref, _results;
+    var defaultsValue, delta, fromObject, isObject, key, optionsValue, _ref, _ref1, _results;
     if (this.props == null) {
       this.props = {};
     }
@@ -283,6 +283,9 @@ Transit = (function(_super) {
     _results = [];
     for (key in fromObject) {
       defaultsValue = fromObject[key];
+      if ((_ref = this.skipProps) != null ? _ref[key] : void 0) {
+        continue;
+      }
       if (o) {
         this.o[key] = defaultsValue;
         optionsValue = defaultsValue;
@@ -304,7 +307,7 @@ Transit = (function(_super) {
       if ((key === 'x' || key === 'y') && !this.o.ctx) {
         this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
       }
-      if ((_ref = this.skipPropsDelta) != null ? _ref[key] : void 0) {
+      if ((_ref1 = this.skipPropsDelta) != null ? _ref1[key] : void 0) {
         continue;
       }
       delta = this.h.parseDelta(key, optionsValue);
@@ -426,6 +429,12 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.run = function(o) {
+    this.tuneNewOption(o);
+    !this.o.isDrawLess && this.setProgress(0, true);
+    return this.startTween();
+  };
+
+  Transit.prototype.tuneNewOption = function(o, isForeign) {
     if ((o != null) && (o.type != null) && o.type !== (this.o.type || this.type)) {
       this.h.warn('Sorry, type can not be changed on run');
       delete o.type;
@@ -433,12 +442,10 @@ Transit = (function(_super) {
     if ((o != null) && Object.keys(o).length) {
       this.extendDefaults(o);
       this.resetTimeline();
-      this.tween.recalcDuration();
+      !isForeign && this.tween.recalcDuration();
       this.calcSize();
-      this.setElStyles();
+      return !isForeign && this.setElStyles();
     }
-    !this.o.isDrawLess && this.setProgress(0, true);
-    return this.startTween();
   };
 
   Transit.prototype.startTween = function() {

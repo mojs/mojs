@@ -8,6 +8,7 @@ h         = require './h'
 Tween     = require './tween'
 
 class Burst extends Transit
+  skipProps: childOptions: 1
   defaults:
     # presentation props
     count:              5
@@ -43,7 +44,7 @@ class Burst extends Transit
     points:             3
     duration:           500
     delay:              0
-    repeat:             1
+    repeat:             0
     yoyo:               false
     easing:             'Linear.None'
     type:               'circle'
@@ -65,16 +66,29 @@ class Burst extends Transit
     onComplete: 1
     onUpdate:   1
   run:(o)->
-    super
-    i = @transits.length
-    while(i--)
-      tr = @transits[i]
-      if @props.randomAngle or @props.randomRadius
-        @props.randomAngle  and tr.setProp angleShift: @generateRandomAngle()
+    if o? and Object.keys(o).length
+      if o.count or o.childOptions?.count
+        @h.warn 'Sorry, count can not be changed on run'
+      @extendDefaults(o)
+      # copy child options to options
+      keys = Object.keys(o.childOptions or {})
+      @o.childOptions ?= {}
+      for key, i in keys
+        @o.childOptions[key] = o.childOptions[key]
+      # tune transits
+      len = @transits.length
+      while(len--)
+        transit = @transits[len]
+        transit.tuneNewOption @getOption(len), true
+      @tween.recalcDuration()
+    if @props.randomAngle or @props.randomRadius
+      len = @transits.length
+      while(len--)
+        tr = @transits[len]
+        @props.randomAngle  and tr.setProp angleShift:  @generateRandomAngle()
         @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
-    #   option = @getOption(i); option.ctx = @ctx
-    #   option.isDrawLess = option.isRunLess = option.isTweenLess = true
-    #   tr.o = option
+    @startTween()
+    
   createBit:->
     @transits = []
     for i in [0...@props.count]
@@ -136,7 +150,7 @@ class Burst extends Transit
     for key, value of @childDefaults
       # firstly try to find the prop in @o.childOptions
       option[key]  = @getPropByMod key: key, i: i
-      # if fail - continue to this objects
+      # if fail
       # if the same option could be defined for parent and child
       # get the option from childDefaults and continue
       if @optionsIntersection[key]

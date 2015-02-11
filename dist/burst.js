@@ -21,6 +21,10 @@ Burst = (function(_super) {
     return Burst.__super__.constructor.apply(this, arguments);
   }
 
+  Burst.prototype.skipProps = {
+    childOptions: 1
+  };
+
   Burst.prototype.defaults = {
     count: 5,
     degree: 360,
@@ -54,7 +58,7 @@ Burst = (function(_super) {
     points: 3,
     duration: 500,
     delay: 0,
-    repeat: 1,
+    repeat: 0,
     yoyo: false,
     easing: 'Linear.None',
     type: 'circle',
@@ -80,24 +84,40 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(o) {
-    var i, tr, _results;
-    Burst.__super__.run.apply(this, arguments);
-    i = this.transits.length;
-    _results = [];
-    while (i--) {
-      tr = this.transits[i];
-      if (this.props.randomAngle || this.props.randomRadius) {
+    var i, key, keys, len, tr, transit, _base, _i, _len, _ref;
+    if ((o != null) && Object.keys(o).length) {
+      if (o.count || ((_ref = o.childOptions) != null ? _ref.count : void 0)) {
+        this.h.warn('Sorry, count can not be changed on run');
+      }
+      this.extendDefaults(o);
+      keys = Object.keys(o.childOptions || {});
+      if ((_base = this.o).childOptions == null) {
+        _base.childOptions = {};
+      }
+      for (i = _i = 0, _len = keys.length; _i < _len; i = ++_i) {
+        key = keys[i];
+        this.o.childOptions[key] = o.childOptions[key];
+      }
+      len = this.transits.length;
+      while (len--) {
+        transit = this.transits[len];
+        transit.tuneNewOption(this.getOption(len), true);
+      }
+      this.tween.recalcDuration();
+    }
+    if (this.props.randomAngle || this.props.randomRadius) {
+      len = this.transits.length;
+      while (len--) {
+        tr = this.transits[len];
         this.props.randomAngle && tr.setProp({
           angleShift: this.generateRandomAngle()
         });
-        _results.push(this.props.randomRadius && tr.setProp({
+        this.props.randomRadius && tr.setProp({
           radiusScale: this.generateRandomRadius()
-        }));
-      } else {
-        _results.push(void 0);
+        });
       }
     }
-    return _results;
+    return this.startTween();
   };
 
   Burst.prototype.createBit = function() {

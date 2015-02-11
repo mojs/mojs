@@ -78,6 +78,18 @@
         });
         return expect(byte.props.radius).toBe(45);
       });
+      it('should ignore properties defined in skipProps object', function() {
+        var byte;
+        byte = new Byte({
+          radius: 45
+        });
+        byte.skipProps = {
+          radius: 1
+        };
+        byte.o.radius = 50;
+        byte.extendDefaults();
+        return expect(byte.props.radius).toBe(45);
+      });
       it('should extend defaults object to properties if array was passed', function() {
         var byte;
         byte = new Byte({

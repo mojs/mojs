@@ -9,11 +9,10 @@
 - transit
   - then to timelines
 - burst
-  - implement run method
-  - opacity childOPtions to burst
+  - opacity childOptions to burst
   - fix tween add method with parallel tweens
   - fix tween isComplete onUpdate
-  - add deltas for swirl params
+  - add deltas for swirl swirlFrequency and swirlSize
   - add stagger values
   - set initial progress for the childrens or hide them
   - add radiusX radiusY options
@@ -25,6 +24,8 @@
   - add movement arc
 - add more shapes(bits)
 - add line animator
+- :: demo
+
 - add custom easing handler
   - add path handler
   - add spring
