@@ -18,20 +18,20 @@
   console.error = function() {};
 
   describe('Transit ->', function() {
-    describe('extension ->', function() {
-      return it('should extend Bit class', function() {
-        var byte;
-        byte = new Byte;
-        return expect(byte instanceof Bit).toBe(true);
-      });
-    });
-    it('should have vars function', function() {
+    it('should have ownvars function', function() {
       var byte;
       byte = new Byte;
       expect(byte.vars).toBeDefined();
       return expect(function() {
         return byte.vars();
       }).not.toThrow();
+    });
+    describe('extension ->', function() {
+      return it('should extend Bit class', function() {
+        var byte;
+        byte = new Byte;
+        return expect(byte instanceof Bit).toBe(true);
+      });
     });
     describe('defaults object ->', function() {
       return it('should have defaults object', function() {
@@ -121,15 +121,58 @@
         return expect(byte.props.fill).toBe(fillBefore);
       });
     });
-    it('should calculate transform object', function() {
-      var byte;
-      byte = new Byte({
-        angle: 90,
-        radius: 25,
-        strokeWidth: 4
+    describe('options history ->', function() {
+      it('should have history array', function() {
+        var byte;
+        byte = new Byte;
+        return expect(byte.h.isArray(byte.history)).toBe(true);
       });
-      expect(byte.props.transform).toBe('rotate(90,29,29)');
-      return expect(byte.calcTransform).toBeDefined();
+      it('should save options to history array', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20
+        });
+        return expect(byte.history.length).toBe(1);
+      });
+      return it('should rewrite the first history item on run', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20
+        });
+        byte.run({
+          radius: 10
+        });
+        return expect(byte.history[0].radius).toBe(10);
+      });
+    });
+    describe('then ->', function() {
+      it('should add new timeline with options', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radius: 5
+        });
+        return expect(byte.tween.timelines.length).toBe(2);
+      });
+      return it('should add new timeline with options', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        expect(byte.tween.timelines[1].o.duration).toBe(1000);
+        expect(byte.tween.timelines[1].o.yoyo).toBe(true);
+        return expect(byte.tween.timelines[1].o.delay).toBe(100);
+      });
     });
     describe('size calculations ->', function() {
       it('should calculate size el size depending on largest value', function() {
@@ -519,97 +562,36 @@
       });
     });
     describe('mergeThenOptions method ->', function() {
-      it('should call copyEndOptions method', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            40: 20
-          },
-          radius: 25,
-          duration: 500,
-          isRunLess: true
-        });
-        byte.chainArr = [
-          {
-            options: {
-              strokeWidth: 0
-            },
-            type: 'then'
-          }
-        ];
-        spyOn(byte, 'copyEndOptions');
-        byte.mergeThenOptions(byte.chainArr[0]);
-        return expect(byte.copyEndOptions).toHaveBeenCalled();
+      it('should merge 2 objects', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10,
+          duration: 1000,
+          stroke: '#ff00ff'
+        };
+        end = {
+          radius: 20,
+          duration: 500
+        };
+        mergedOpton = byte.mergeThenOptions(start, end);
+        expect(mergedOpton.radius[10]).toBe(20);
+        expect(mergedOpton.duration).toBe(500);
+        return expect(mergedOpton.stroke).not.toBeDefined();
       });
-      it('should call merge options values with old ones', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            40: 20
-          },
-          radius: 25,
-          duration: 500,
-          isRunLess: true
-        });
-        byte.chainArr = [
-          {
-            options: {
-              strokeWidth: 0
-            },
-            type: 'then'
+      return it('should merge 2 objects if the first was an object', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: {
+            10: 0
           }
-        ];
-        byte.mergeThenOptions(byte.chainArr[0]);
-        return expect(byte.o.strokeWidth[20]).toBe(0);
-      });
-      return it('should set new values', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            40: 20
-          },
-          radius: 25,
-          duration: 500,
-          isRunLess: true,
-          strokeDasharray: '100'
-        });
-        byte.chainArr = [
-          {
-            options: {
-              strokeWidth: 0,
-              duration: 1500
-            },
-            type: 'then'
-          }
-        ];
-        byte.mergeThenOptions(byte.chainArr[0]);
-        return expect(byte.o.duration).toBe(1500);
-      });
-    });
-    describe('copyEndOptions method ->', function() {
-      return it('should copy end value of options', function() {
-        var byte, opt;
-        byte = new Byte({
-          strokeWidth: {
-            40: 20
-          },
-          radius: 25,
-          duration: 500,
-          isRunLess: true
-        });
-        byte.chainArr = [
-          {
-            options: {
-              strokeWidth: 0
-            },
-            type: 'then'
-          }
-        ];
-        opt = byte.copyEndOptions();
-        expect(opt.strokeWidth).toBe(20);
-        expect(opt.radius).toBe(25);
-        expect(opt.duration).toBe(500);
-        return expect(opt.isRunLess).toBe(true);
+        };
+        end = {
+          radius: 20
+        };
+        mergedOpton = byte.mergeThenOptions(start, end);
+        return expect(mergedOpton.radius[0]).toBe(20);
       });
     });
     describe('render method ->', function() {
@@ -718,7 +700,7 @@
         byte.draw();
         return expect(byte.calcTransform).toHaveBeenCalled();
       });
-      return it('should recieve the current progress', function() {
+      it('should recieve the current progress', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -726,6 +708,16 @@
         spyOn(byte, 'draw');
         byte.setProgress(.5);
         return expect(byte.draw).toHaveBeenCalledWith(.5);
+      });
+      return it('should calculate transform object', function() {
+        var byte;
+        byte = new Byte({
+          angle: 90,
+          radius: 25,
+          strokeWidth: 4
+        });
+        expect(byte.props.transform).toBe('rotate(90,29,29)');
+        return expect(byte.calcTransform).toBeDefined();
       });
     });
     describe('drawEl method ->', function() {
@@ -1220,7 +1212,7 @@
           }, 100);
         });
       });
-      describe('onComplete callback ->', function() {
+      return describe('onComplete callback ->', function() {
         it('should call onComplete callback', function(dfr) {
           var byte, isOnComplete;
           isOnComplete = null;
@@ -1249,42 +1241,6 @@
               return isRightScope = this instanceof Byte;
             },
             duration: 20
-          });
-          return setTimeout(function() {
-            expect(isRightScope).toBe(true);
-            return dfr();
-          }, 100);
-        });
-      });
-      return describe('onCompleteChain callback', function() {
-        it('should call onCompleteChain callback when chain ends', function(dfr) {
-          var byte, isOnComplete;
-          isOnComplete = null;
-          byte = new Byte({
-            radius: {
-              '25': 75
-            },
-            onCompleteChain: function() {
-              return isOnComplete = true;
-            },
-            duration: 20
-          });
-          return setTimeout(function() {
-            expect(isOnComplete).toBe(true);
-            return dfr();
-          }, 100);
-        });
-        return it('should have scope of byte', function(dfr) {
-          var byte, isRightScope;
-          isRightScope = null;
-          byte = new Byte({
-            radius: {
-              '25': 75
-            },
-            duration: 20,
-            onCompleteChain: function() {
-              return isRightScope = this instanceof Byte;
-            }
           });
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
@@ -1369,232 +1325,6 @@
         return expect(byte.props.easing).toBe('Linear.None');
       });
     });
-    describe('chain ->', function() {
-      it('should have chain array', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        });
-        return expect(byte.chainArr).toBeDefined();
-      });
-      it('should push to chainArr', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        }).chain({
-          strokeWidth: {
-            5: 0
-          },
-          duration: 20
-        });
-        return expect(byte.chainArr.length).toBe(1);
-      });
-      it('should inherit type', function() {
-        var byte;
-        byte = new Byte({
-          type: 'circle',
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        }).chain({
-          strokeWidth: {
-            5: 0
-          },
-          duration: 20
-        });
-        return expect(byte.chainArr[0].options.type).toBe('circle');
-      });
-      it('should wrap options to object with chain type', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        }).chain({
-          strokeWidth: {
-            5: 0
-          },
-          duration: 20
-        });
-        expect(byte.chainArr[0].type).toBe('chain');
-        return expect(byte.chainArr[0].options.strokeWidth[5]).toBe(0);
-      });
-      it('should run next chain', function(dfr) {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        }).chain({
-          strokeWidth: {
-            5: 0
-          },
-          duration: 20
-        });
-        return setTimeout(function() {
-          expect(byte.props.strokeWidth).toBe(0);
-          return dfr();
-        }, 120);
-      });
-      it('should run next chain from setProgress', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            20: 30
-          },
-          duration: 20
-        });
-        byte.chainArr = [
-          {
-            strokeWidth: {
-              30: 20
-            }
-          }
-        ];
-        spyOn(byte, 'runChain');
-        byte.setProgress(1);
-        return expect(byte.runChain).toHaveBeenCalled();
-      });
-      return describe('runChain method ->', function() {
-        it('should run chain', function() {
-          var byte;
-          byte = new Byte({
-            strokeWidth: {
-              20: 30
-            },
-            isRunLess: true,
-            duration: 20
-          });
-          byte.chainArr = [
-            {
-              options: {
-                strokeWidth: {
-                  30: 20
-                }
-              },
-              type: 'chain'
-            }
-          ];
-          spyOn(byte, 'init');
-          byte.runChain();
-          expect(byte.chainArr.length).toBe(0);
-          expect(byte.o.strokeWidth[30]).toBe(20);
-          return expect(byte.init).toHaveBeenCalled();
-        });
-        it('should not run empty chain', function() {
-          var byte;
-          byte = new Byte({
-            strokeWidth: {
-              20: 30
-            },
-            isRunLess: true,
-            duration: 20
-          });
-          byte.chainArr = [];
-          spyOn(byte, 'init');
-          byte.runChain();
-          expect(byte.o.strokeWidth[20]).toBe(30);
-          return expect(byte.init).not.toHaveBeenCalled();
-        });
-        it('should hide element at the end', function() {
-          var byte;
-          byte = new Byte({
-            strokeWidth: {
-              20: 30
-            },
-            isRunLess: true,
-            duration: 20
-          });
-          byte.chainArr = [];
-          spyOn(byte, 'hide');
-          byte.runChain();
-          return expect(byte.hide).toHaveBeenCalled();
-        });
-        return it('should not hide element at the end if isShowEnd was passed', function() {
-          var byte;
-          byte = new Byte({
-            strokeWidth: {
-              20: 30
-            },
-            isShowEnd: true,
-            duration: 20
-          });
-          byte.chainArr = [];
-          spyOn(byte, 'hide');
-          byte.runChain();
-          return expect(byte.hide).not.toHaveBeenCalled();
-        });
-      });
-    });
-    describe('then ->', function() {
-      it('should push to chainArr with type of then', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        }).then({
-          strokeWidth: {
-            5: 0
-          },
-          duration: 20
-        });
-        expect(byte.chainArr[0].type).toBe('then');
-        return expect(byte.chainArr[0].options.strokeWidth[5]).toBe(0);
-      });
-      it('should continue the current prop', function(dfr) {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        }).then({
-          strokeWidth: 0,
-          duration: 20
-        });
-        return setTimeout(function() {
-          expect(byte.props.strokeWidth).toBe(0);
-          return dfr();
-        }, 100);
-      });
-      return it('should warn if new value is object and use end value', function(dfr) {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          duration: 20
-        });
-        spyOn(console, 'warn');
-        byte.then({
-          strokeWidth: {
-            7: 20
-          },
-          duration: 20
-        });
-        return setTimeout(function() {
-          var delta;
-          expect(console.warn).toHaveBeenCalled();
-          delta = byte.deltas.strokeWidth;
-          expect(delta.start).toBe(5);
-          expect(delta.end).toBe(20);
-          expect(byte.props.strokeWidth).toBe(20);
-          return dfr();
-        }, 120);
-      });
-    });
-    describe('createTween method ->', function() {});
     return describe('run method->', function() {
       it('should extend defaults with passed object', function() {
         var byte, o;
@@ -1656,8 +1386,7 @@
           radius: {
             10: 5
           },
-          isRunLess: true,
-          isIt: true
+          isRunLess: true
         });
         spyOn(byte, 'setElStyles');
         byte.run({
@@ -1671,8 +1400,7 @@
           radius: {
             10: 5
           },
-          isRunLess: true,
-          isIt: true
+          isRunLess: true
         });
         byte.run({
           radius: 50
@@ -1697,8 +1425,7 @@
           strokeWidth: {
             10: 5
           },
-          isRunLess: true,
-          isIt: true
+          isRunLess: true
         });
         byte.run({
           strokeWidth: 25

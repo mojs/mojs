@@ -35,7 +35,7 @@ class Transit extends bitsMap.map.bit
     # callbacks
     onStart:            null
     onComplete:         null
-    onCompleteChain:    null
+    # onCompleteChain:    null
     onUpdate:           null
     # tween props
     duration:           500
@@ -44,8 +44,11 @@ class Transit extends bitsMap.map.bit
     yoyo:               false
     easing:             'Linear.None'
   vars:->
-    @h ?= h; @chainArr ?= []; @lastSet ?= {}
-    @extendDefaults(); @onUpdate = @props.onUpdate
+    @h ?= h; @lastSet ?= {}
+    @extendDefaults()#; @chainArr ?= [];
+    @history = []; @history.push @o
+    @timelines = []
+
   render:()->
     if !@isRendered# or isForce
       if !@o.ctx?
@@ -154,7 +157,7 @@ class Transit extends bitsMap.map.bit
     # calc the curent value from deltas
     @calcCurrentProps(progress); @calcOrigin()
     @draw(progress)
-    if progress is 1 then @runChain(); @props.onComplete?.call @
+    if progress is 1 then @props.onComplete?.call(@)#;  @runChain();
     @
 
   calcCurrentProps:(progress)->
@@ -223,50 +226,43 @@ class Transit extends bitsMap.map.bit
       if delta.type? then @deltas[key] = delta
       # and set the start value to props
       @props[key] = delta.start
+    @onUpdate = @props.onUpdate
 
   # CHAINS
-  chain:(options)->
-    options.type = @o.type; @chainArr.push { type: 'chain', options: options }
-    @
-  then:(options)->  @chainArr.push { type: 'then',  options: options }; @
-  runChain:->
-    if !@chainArr.length
-      !@o.isShowEnd and @hide(); return @props.onCompleteChain?.call @
+  # chain:(options)->
+  #   options.type = @o.type; @chainArr.push { type: 'chain', options: options }
+  #   @
+  # then:(options)->  @chainArr.push { type: 'then',  options: options }; @
+  # runChain:->
+  #   if !@chainArr.length
+  #     !@o.isShowEnd and @hide(); return @props.onCompleteChain?.call @
 
-    chain = @chainArr.shift()
-    if chain.type is 'chain'  then @o = chain.options
-    if chain.type is 'then'   then @mergeThenOptions chain
-    @init()
+  #   chain = @chainArr.shift()
+  #   if chain.type is 'chain'  then @o = chain.options
+  #   if chain.type is 'then'   then @mergeThenOptions chain
+  #   @init()
 
-  mergeThenOptions:(chain)->
-    opts = @copyEndOptions()
-    return if !opts
-    options = chain.options
-    for key, value of options
-      if typeof value is 'object'
-        keys = Object.keys value
-        # get end value
-        end = value[keys[0]]
-        # write the old start value
-        start = opts[key]
-        @h.warn "new end value expected instead of object,
-         using end(#{end}) value instead", value
-        opts[key] = {}; opts[key][start] = end
-      else
-        # copy the options from
-        # the previous chain
-        if !@h.chainOptionMap[key]
-          currValue = opts[key]; nextValue = value
-          opts[key] = {}; opts[key][currValue] = nextValue
-        else opts[key] = value
-    @o = opts
-  copyEndOptions:->
-    opts = {}
-    for key, value of @o
-      opts[key] = if typeof value is 'object'
-        value[Object.keys(value)[0]]
-      else value
-    opts
+  mergeThenOptions:(start, end)->
+    o = {}
+    keys = Object.keys(end); i = keys.length
+    while(i--)
+      key = keys[i]
+      # if this is a tween value - just save it
+      if @h.tweenOptionMap[key] then o[key] = end[key]; continue
+      endKey   = end[key]
+      startKey = start[key]
+      # if start value is object - use the end value
+      if typeof startKey is 'object'
+        startKeys = Object.keys(startKey); startKey = startKey[startKeys[0]]
+      o[key] = {}; o[key][startKey] = endKey
+    o
+    
+
+  then:(o)->
+    # copy the tween options from passed o or current props
+    keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
+    opts[keys[i]] = o?[keys[i]] or @props[keys[i]] while(i--)
+    @tween.add new Timeline opts
 
   # TWEEN
   createTween:->
@@ -290,7 +286,7 @@ class Transit extends bitsMap.map.bit
     !@o.isRunLess and @startTween()
 
   run:(o)->
-    @tuneNewOption o
+    @tuneNewOption(o); @history[0] = @o
     !@o.isDrawLess and @setProgress(0, true)
     @startTween()
   tuneNewOption:(o, isForeign)->

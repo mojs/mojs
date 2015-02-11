@@ -19,6 +19,44 @@ describe 'Tween ->', ->
       expect(t.duration).toBe 700
       t.add new Timeline duration: 500, delay: 200, repeat: 1
       expect(t.duration).toBe 1400
+  describe 'append method ->', ->
+    it 'should add timeline',->
+      t = new Tween
+      t.append new Timeline
+      expect(t.timelines.length).toBe 1
+      expect(t.timelines[0] instanceof Timeline).toBe true
+    it 'should delay the timeline to duration',->
+      t = new Tween
+      t.add new Timeline duration: 1000, delay: 200
+      t.append new Timeline duration: 500, delay: 500
+      expect(t.timelines[1].o.delay).toBe 1700
+    it 'should recalc duration',->
+      t = new Tween
+      t.add new Timeline duration: 1000, delay: 200
+      t.append new Timeline duration: 500, delay: 500
+      expect(t.duration).toBe 2200
+    it 'should work with array',->
+      t = new Tween
+      t.add new Timeline duration: 1000, delay: 200
+      tm1 = new Timeline(duration: 500, delay: 500)
+      tm2 = new Timeline(duration: 500, delay: 700)
+      t.append [tm1, tm2]
+      expect(t.timelines.length).toBe 3
+      expect(t.duration).toBe 2400
+    it 'should work with array #2',->
+      t = new Tween
+      t.add new Timeline duration: 1000, delay: 200
+      tm1 = new Timeline(duration: 500, delay: 500)
+      tm2 = new Timeline(duration: 500, delay: 700)
+      spyOn t, 'recalcDuration'
+      t.append [tm1, tm2]
+      expect(t.recalcDuration).toHaveBeenCalled()
+
+    it 'should work with array #2',->
+      t = new Tween
+      t.append new Timeline duration: 1000, delay: 200
+      expect(t.timelines.length).toBe 1
+
   describe 'remove method ->', ->
     it 'should remove timeline',->
       t = new Tween
@@ -26,17 +64,16 @@ describe 'Tween ->', ->
       t.add timeline
       t.remove timeline
       expect(t.timelines.length).toBe 0
-  describe 'reset method ->', ->
-    it 'should remove timeline',->
-      t = new Tween
-      timeline = new Timeline
-      t.add timeline
-      spyOn t, 'remove'
-      spyOn t, 'add'
-      t.reset timeline
-      expect(t.remove).toHaveBeenCalledWith timeline
-      expect(t.add)   .toHaveBeenCalledWith timeline
-
+  # describe 'reset method ->', ->
+  #   it 'should remove timeline',->
+  #     t = new Tween
+  #     timeline = new Timeline
+  #     t.add timeline
+  #     spyOn t, 'remove'
+  #     spyOn t, 'add'
+  #     t.reset timeline
+  #     expect(t.remove).toHaveBeenCalledWith timeline
+  #     expect(t.add)   .toHaveBeenCalledWith timeline
   describe 'recalcDuration method ->', ->
     it 'should recalculate duration', ->
       t = new Tween

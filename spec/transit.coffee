@@ -10,14 +10,14 @@ console.warn  = ->
 console.error = ->
 
 describe 'Transit ->', ->
+  it 'should have ownvars function', ->
+    byte = new Byte
+    expect(byte.vars).toBeDefined()
+    expect(-> byte.vars()).not.toThrow()
   describe 'extension ->', ->
     it 'should extend Bit class', ->
       byte = new Byte
       expect(byte instanceof Bit).toBe(true)
-  it 'should have vars function', ->
-    byte = new Byte
-    expect(byte.vars).toBeDefined()
-    expect(-> byte.vars()).not.toThrow()
   describe 'defaults object ->', ->
     it 'should have defaults object', ->
       byte = new Byte
@@ -64,13 +64,32 @@ describe 'Transit ->', ->
       byte.extendDefaults {radius: 10}
       expect(byte.props.radius).toBe 10
       expect(byte.props.fill).toBe fillBefore
-  it 'should calculate transform object', ->
-    byte = new Byte
-      angle:        90
-      radius:       25
-      strokeWidth:  4
-    expect(byte.props.transform).toBe('rotate(90,29,29)')
-    expect(byte.calcTransform).toBeDefined()
+
+  describe 'options history ->', ->
+    it 'should have history array', ->
+      byte = new Byte
+      expect(byte.h.isArray(byte.history)).toBe true
+    it 'should save options to history array', ->
+      byte = new Byte radius: 20
+      expect(byte.history.length).toBe 1
+    it 'should rewrite the first history item on run', ->
+      byte = new Byte radius: 20
+      byte.run radius: 10
+      expect(byte.history[0].radius).toBe 10
+
+  describe 'then ->', ->
+    it 'should add new timeline with options', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radius: 5
+      expect(byte.tween.timelines.length).toBe 2
+
+    it 'should add new timeline with options', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      expect(byte.tween.timelines[1].o.duration).toBe 1000
+      expect(byte.tween.timelines[1].o.yoyo).toBe true
+      expect(byte.tween.timelines[1].o.delay).toBe 100
+
   describe 'size calculations ->', ->
     it 'should calculate size el size depending on largest value', ->
       byte = new Byte
@@ -305,65 +324,20 @@ describe 'Transit ->', ->
       expect(byte.el.style.display).toBe 'none'
 
   describe 'mergeThenOptions method ->', ->
-    it 'should call copyEndOptions method', ->
+    it 'should merge 2 objects', ->
       byte = new Byte
-        strokeWidth:  { 40: 20 }
-        radius:       25
-        duration:     500
-        isRunLess:    true
-      byte.chainArr = [{
-        options: {strokeWidth: 0}
-        type: 'then'
-      }]
-
-      spyOn byte, 'copyEndOptions'
-      byte.mergeThenOptions byte.chainArr[0]
-      expect(byte.copyEndOptions).toHaveBeenCalled()
-    it 'should call merge options values with old ones', ->
+      start = radius: 10, duration: 1000, stroke: '#ff00ff'
+      end   = radius: 20, duration: 500
+      mergedOpton = byte.mergeThenOptions start, end
+      expect(mergedOpton.radius[10]).toBe 20
+      expect(mergedOpton.duration).toBe 500
+      expect(mergedOpton.stroke).not.toBeDefined()
+    it 'should merge 2 objects if the first was an object', ->
       byte = new Byte
-        strokeWidth:  { 40: 20 }
-        radius:       25
-        duration:     500
-        isRunLess:    true
-      
-      byte.chainArr = [{
-        options: {strokeWidth: 0}
-        type: 'then'
-      }]
-      byte.mergeThenOptions byte.chainArr[0]
-      expect(byte.o.strokeWidth[20]).toBe 0
-    it 'should set new values', ->
-      byte = new Byte
-        strokeWidth:      { 40: 20 }
-        radius:           25
-        duration:         500
-        isRunLess:        true
-        strokeDasharray:  '100'
-      byte.chainArr = [{
-        options: {strokeWidth: 0, duration: 1500}
-        type: 'then'
-      }]
-      byte.mergeThenOptions byte.chainArr[0]
-      expect(byte.o.duration).toBe 1500
-
-  describe 'copyEndOptions method ->', ->
-    it 'should copy end value of options', ->
-      byte = new Byte
-        strokeWidth:  { 40: 20 }
-        radius:       25
-        duration:     500
-        isRunLess:    true
-      
-      byte.chainArr = [{
-        options: {strokeWidth: 0}
-        type: 'then'
-      }]
-
-      opt = byte.copyEndOptions()
-      expect(opt.strokeWidth).toBe  20
-      expect(opt.radius).toBe       25
-      expect(opt.duration).toBe     500
-      expect(opt.isRunLess).toBe    true
+      start = radius: {10: 0}
+      end   = radius: 20
+      mergedOpton = byte.mergeThenOptions start, end
+      expect(mergedOpton.radius[0]).toBe 20
 
   describe 'render method ->', ->
     it 'should call draw method', ->
@@ -436,6 +410,13 @@ describe 'Transit ->', ->
       spyOn byte, 'draw'
       byte.setProgress .5
       expect(byte.draw).toHaveBeenCalledWith .5
+    it 'should calculate transform object', ->
+      byte = new Byte
+        angle:        90
+        radius:       25
+        strokeWidth:  4
+      expect(byte.props.transform).toBe('rotate(90,29,29)')
+      expect(byte.calcTransform).toBeDefined()
   describe 'drawEl method ->', ->
     it 'should set el positions and transforms', ->
       byte = new Byte radius: 25, y: 10
@@ -694,27 +675,27 @@ describe 'Transit ->', ->
           expect(isRightScope).toBe true
           dfr()
         , 100
-    describe 'onCompleteChain callback', ->
-      it 'should call onCompleteChain callback when chain ends', (dfr)->
-        isOnComplete = null
-        byte = new Byte
-          radius:   {'25': 75}
-          onCompleteChain:-> isOnComplete = true
-          duration: 20
-        setTimeout ->
-          expect(isOnComplete).toBe true
-          dfr()
-        , 100
-      it 'should have scope of byte', (dfr)->
-        isRightScope = null
-        byte = new Byte
-          radius: {'25': 75}
-          duration: 20
-          onCompleteChain:-> isRightScope = @ instanceof Byte
-        setTimeout ->
-          expect(isRightScope).toBe true
-          dfr()
-        , 100
+    # describe 'onCompleteChain callback', ->
+    #   it 'should call onCompleteChain callback when chain ends', (dfr)->
+    #     isOnComplete = null
+    #     byte = new Byte
+    #       radius:   {'25': 75}
+    #       onCompleteChain:-> isOnComplete = true
+    #       duration: 20
+    #     setTimeout ->
+    #       expect(isOnComplete).toBe true
+    #       dfr()
+    #     , 100
+    #   it 'should have scope of byte', (dfr)->
+    #     isRightScope = null
+    #     byte = new Byte
+    #       radius: {'25': 75}
+    #       duration: 20
+    #       onCompleteChain:-> isRightScope = @ instanceof Byte
+    #     setTimeout ->
+    #       expect(isRightScope).toBe true
+    #       dfr()
+    #     , 100
   describe 'Tweens ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}
@@ -749,108 +730,102 @@ describe 'Transit ->', ->
     it 'should set easing option to props', ->
       byte = new Byte easing: 'Linear.None'
       expect(byte.props.easing).toBe 'Linear.None'
-  describe 'chain ->', ->
-    it 'should have chain array', ->
-      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
-      expect(byte.chainArr).toBeDefined()
-    it 'should push to chainArr', ->
-      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
-        .chain(strokeWidth: {5: 0}, duration: 20)
-      expect(byte.chainArr.length).toBe 1
-    it 'should inherit type', ->
-      byte = new Byte(type: 'circle', strokeWidth: {10: 5}, duration: 20)
-        .chain(strokeWidth: {5: 0}, duration: 20)
-      expect(byte.chainArr[0].options.type).toBe 'circle'
-    it 'should wrap options to object with chain type', ->
-      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
-        .chain(strokeWidth: {5: 0}, duration: 20)
-      expect(byte.chainArr[0].type)                    .toBe 'chain'
-      expect(byte.chainArr[0].options.strokeWidth[5])  .toBe 0
-    it 'should run next chain', (dfr)->
-      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
-        .chain(strokeWidth: {5: 0}, duration: 20)
-      setTimeout ->
-        expect(byte.props.strokeWidth).toBe 0
-        dfr()
-      , 120
-    it 'should run next chain from setProgress', ->
-      byte = new Byte
-        strokeWidth: {20:30}
-        duration: 20
-      byte.chainArr = [{strokeWidth: {30:20}}]
-      spyOn byte, 'runChain'
-      byte.setProgress 1
-      expect(byte.runChain).toHaveBeenCalled()
-    describe 'runChain method ->', ->
-      it 'should run chain', ->
-        byte = new Byte
-          strokeWidth: {20:30}
-          isRunLess:   true
-          duration: 20
-        byte.chainArr = [{options: {strokeWidth: {30:20}}, type: 'chain'}]
-        spyOn byte, 'init'
-        byte.runChain()
-        expect(byte.chainArr.length).toBe     0
-        expect(byte.o.strokeWidth[30]).toBe   20
-        expect(byte.init).toHaveBeenCalled()
-      it 'should not run empty chain', ->
-        byte = new Byte
-          strokeWidth: {20:30}
-          isRunLess:   true
-          duration: 20
-        byte.chainArr = []; spyOn byte, 'init'
-        byte.runChain()
-        expect(byte.o.strokeWidth[20]).toBe   30
-        expect(byte.init).not.toHaveBeenCalled()
-      it 'should hide element at the end', ->
-        byte = new Byte
-          strokeWidth: {20:30}
-          isRunLess:   true
-          duration: 20
-        byte.chainArr = []; spyOn byte, 'hide'
-        byte.runChain()
-        expect(byte.hide).toHaveBeenCalled()
-      it 'should not hide element at the end if isShowEnd was passed', ->
-        byte = new Byte
-          strokeWidth: {20:30}
-          isShowEnd: true
-          duration:    20
-        byte.chainArr = []; spyOn byte, 'hide'
-        byte.runChain()
-        expect(byte.hide).not.toHaveBeenCalled()
+  # describe 'chain ->', ->
+  #   it 'should have chain array', ->
+  #     byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+  #     expect(byte.chainArr).toBeDefined()
+  #   it 'should push to chainArr', ->
+  #     byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+  #       .chain(strokeWidth: {5: 0}, duration: 20)
+  #     expect(byte.chainArr.length).toBe 1
+  #   it 'should inherit type', ->
+  #     byte = new Byte(type: 'circle', strokeWidth: {10: 5}, duration: 20)
+  #       .chain(strokeWidth: {5: 0}, duration: 20)
+  #     expect(byte.chainArr[0].options.type).toBe 'circle'
+  #   it 'should wrap options to object with chain type', ->
+  #     byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+  #       .chain(strokeWidth: {5: 0}, duration: 20)
+  #     expect(byte.chainArr[0].type)                    .toBe 'chain'
+  #     expect(byte.chainArr[0].options.strokeWidth[5])  .toBe 0
+  #   it 'should run next chain', (dfr)->
+  #     byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+  #       .chain(strokeWidth: {5: 0}, duration: 20)
+  #     setTimeout ->
+  #       expect(byte.props.strokeWidth).toBe 0
+  #       dfr()
+  #     , 120
+  #   it 'should run next chain from setProgress', ->
+  #     byte = new Byte
+  #       strokeWidth: {20:30}
+  #       duration: 20
+  #     byte.chainArr = [{strokeWidth: {30:20}}]
+  #     spyOn byte, 'runChain'
+  #     byte.setProgress 1
+  #     expect(byte.runChain).toHaveBeenCalled()
+    # describe 'runChain method ->', ->
+    #   it 'should run chain', ->
+    #     byte = new Byte
+    #       strokeWidth: {20:30}
+    #       isRunLess:   true
+    #       duration: 20
+    #     byte.chainArr = [{options: {strokeWidth: {30:20}}, type: 'chain'}]
+    #     spyOn byte, 'init'
+    #     byte.runChain()
+    #     expect(byte.chainArr.length).toBe     0
+    #     expect(byte.o.strokeWidth[30]).toBe   20
+    #     expect(byte.init).toHaveBeenCalled()
+    #   it 'should not run empty chain', ->
+    #     byte = new Byte
+    #       strokeWidth: {20:30}
+    #       isRunLess:   true
+    #       duration: 20
+    #     byte.chainArr = []; spyOn byte, 'init'
+    #     byte.runChain()
+    #     expect(byte.o.strokeWidth[20]).toBe   30
+    #     expect(byte.init).not.toHaveBeenCalled()
+    #   it 'should hide element at the end', ->
+    #     byte = new Byte
+    #       strokeWidth: {20:30}
+    #       isRunLess:   true
+    #       duration: 20
+    #     byte.chainArr = []; spyOn byte, 'hide'
+    #     byte.runChain()
+    #     expect(byte.hide).toHaveBeenCalled()
+    #   it 'should not hide element at the end if isShowEnd was passed', ->
+    #     byte = new Byte
+    #       strokeWidth: {20:30}
+    #       isShowEnd: true
+    #       duration:    20
+    #     byte.chainArr = []; spyOn byte, 'hide'
+    #     byte.runChain()
+    #     expect(byte.hide).not.toHaveBeenCalled()
 
-  describe 'then ->', ->
-    it 'should push to chainArr with type of then', ->
-      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
-        .then(strokeWidth: {5: 0}, duration: 20)
-      expect(byte.chainArr[0].type)                    .toBe 'then'
-      expect(byte.chainArr[0].options.strokeWidth[5])  .toBe 0
-    it 'should continue the current prop', (dfr)->
-      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
-        .then(strokeWidth: 0, duration: 20)
-      setTimeout ->
-        expect(byte.props.strokeWidth).toBe 0
-        dfr()
-      , 100
-    it 'should warn if new value is object and use end value', (dfr)->
-      byte = new Byte(strokeWidth: {10: 5}, duration: 20)
-      spyOn console, 'warn'
-      byte.then strokeWidth: { 7: 20 }, duration: 20
-      setTimeout ->
-        expect(console.warn).toHaveBeenCalled()
-        delta = byte.deltas.strokeWidth
-        # OLD DELTA
-        expect(delta.start).toBe            5
-        expect(delta.end).toBe              20
-        expect(byte.props.strokeWidth).toBe 20
-        dfr()
-      , 120
-  describe 'createTween method ->', ->
-    # it 'should stop the old tween', ()->
-    #   byte = new Byte radius:  {'25': 75}, isIt: true
-    #   spyOn byte.tween, 'stop'
-    #   byte.createTween()
-    #   expect(byte.tween.stop).toHaveBeenCalled()
+  # describe 'then ->', ->
+  #   it 'should push to chainArr with type of then', ->
+  #     byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+  #       .then(strokeWidth: {5: 0}, duration: 20)
+  #     expect(byte.chainArr[0].type)                    .toBe 'then'
+  #     expect(byte.chainArr[0].options.strokeWidth[5])  .toBe 0
+  #   it 'should continue the current prop', (dfr)->
+  #     byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+  #       .then(strokeWidth: 0, duration: 20)
+  #     setTimeout ->
+  #       expect(byte.props.strokeWidth).toBe 0
+  #       dfr()
+  #     , 100
+  #   it 'should warn if new value is object and use end value', (dfr)->
+  #     byte = new Byte(strokeWidth: {10: 5}, duration: 20)
+  #     spyOn console, 'warn'
+  #     byte.then strokeWidth: { 7: 20 }, duration: 20
+  #     setTimeout ->
+  #       expect(console.warn).toHaveBeenCalled()
+  #       delta = byte.deltas.strokeWidth
+  #       # OLD DELTA
+  #       expect(delta.start).toBe            5
+  #       expect(delta.end).toBe              20
+  #       expect(byte.props.strokeWidth).toBe 20
+  #       dfr()
+  #     , 120
 
   describe 'run method->', ->
     it 'should extend defaults with passed object', ->
@@ -875,12 +850,12 @@ describe 'Transit ->', ->
       byte.run radius: 50
       expect(byte.calcSize).toHaveBeenCalled()
     it 'should set new el size', ->
-      byte = new Byte(radius: {10: 5}, isRunLess: true, isIt: true)
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
       spyOn byte, 'setElStyles'
       byte.run radius: 50
       expect(byte.setElStyles).toHaveBeenCalled()
     it 'should set new el size #2', ->
-      byte = new Byte(radius: {10: 5}, isRunLess: true, isIt: true)
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50
       expect(byte.el.style.width).toBe '104px'
     it 'should start tween', ->
@@ -889,7 +864,7 @@ describe 'Transit ->', ->
       byte.run()
       expect(byte.startTween).toHaveBeenCalled()
     it 'should accept new options', ->
-      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true, isIt: true)
+      byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
       byte.run strokeWidth: 25
       expect(byte.props.strokeWidth).toBe 25
       expect(byte.deltas.strokeWidth).not.toBeDefined()

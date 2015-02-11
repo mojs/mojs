@@ -13,13 +13,23 @@ class Tween
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
-  reset:(timeline)-> @remove(timeline); @add timeline
+  append:(timeline)->
+    if !h.isArray(timeline)
+      @appendTimeline timeline
+      @duration = Math.max timeline.props.totalTime, @duration
+    else
+      i = timeline.length; @appendTimeline(timeline[i]) while(i--)
+      @recalcDuration()
+  appendTimeline:(timeline)->
+    timeline.setProp(delay: timeline.o.delay + @duration)
+    @timelines.push timeline
+
+  # reset:(timeline)-> @remove(timeline); @add timeline
   recalcDuration:->
     len = @timelines.length; @duration = 0
     while(len--)
       timeline  = @timelines[len]
       @duration = Math.max timeline.props.totalTime, @duration
-
   update:(time)->
     return if @isCompleted
     i = @timelines.length

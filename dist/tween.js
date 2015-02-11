@@ -32,9 +32,25 @@ Tween = (function() {
     }
   };
 
-  Tween.prototype.reset = function(timeline) {
-    this.remove(timeline);
-    return this.add(timeline);
+  Tween.prototype.append = function(timeline) {
+    var i;
+    if (!h.isArray(timeline)) {
+      this.appendTimeline(timeline);
+      return this.duration = Math.max(timeline.props.totalTime, this.duration);
+    } else {
+      i = timeline.length;
+      while (i--) {
+        this.appendTimeline(timeline[i]);
+      }
+      return this.recalcDuration();
+    }
+  };
+
+  Tween.prototype.appendTimeline = function(timeline) {
+    timeline.setProp({
+      delay: timeline.o.delay + this.duration
+    });
+    return this.timelines.push(timeline);
   };
 
   Tween.prototype.recalcDuration = function() {

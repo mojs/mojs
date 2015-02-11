@@ -38,6 +38,88 @@
         return expect(t.duration).toBe(1400);
       });
     });
+    describe('append method ->', function() {
+      it('should add timeline', function() {
+        var t;
+        t = new Tween;
+        t.append(new Timeline);
+        expect(t.timelines.length).toBe(1);
+        return expect(t.timelines[0] instanceof Timeline).toBe(true);
+      });
+      it('should delay the timeline to duration', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        t.append(new Timeline({
+          duration: 500,
+          delay: 500
+        }));
+        return expect(t.timelines[1].o.delay).toBe(1700);
+      });
+      it('should recalc duration', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        t.append(new Timeline({
+          duration: 500,
+          delay: 500
+        }));
+        return expect(t.duration).toBe(2200);
+      });
+      it('should work with array', function() {
+        var t, tm1, tm2;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        tm1 = new Timeline({
+          duration: 500,
+          delay: 500
+        });
+        tm2 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        t.append([tm1, tm2]);
+        expect(t.timelines.length).toBe(3);
+        return expect(t.duration).toBe(2400);
+      });
+      it('should work with array #2', function() {
+        var t, tm1, tm2;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        tm1 = new Timeline({
+          duration: 500,
+          delay: 500
+        });
+        tm2 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        spyOn(t, 'recalcDuration');
+        t.append([tm1, tm2]);
+        return expect(t.recalcDuration).toHaveBeenCalled();
+      });
+      return it('should work with array #2', function() {
+        var t;
+        t = new Tween;
+        t.append(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        return expect(t.timelines.length).toBe(1);
+      });
+    });
     describe('remove method ->', function() {
       return it('should remove timeline', function() {
         var t, timeline;
@@ -46,19 +128,6 @@
         t.add(timeline);
         t.remove(timeline);
         return expect(t.timelines.length).toBe(0);
-      });
-    });
-    describe('reset method ->', function() {
-      return it('should remove timeline', function() {
-        var t, timeline;
-        t = new Tween;
-        timeline = new Timeline;
-        t.add(timeline);
-        spyOn(t, 'remove');
-        spyOn(t, 'add');
-        t.reset(timeline);
-        expect(t.remove).toHaveBeenCalledWith(timeline);
-        return expect(t.add).toHaveBeenCalledWith(timeline);
       });
     });
     describe('recalcDuration method ->', function() {

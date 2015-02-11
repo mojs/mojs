@@ -42,7 +42,6 @@ Transit = (function(_super) {
     sizeGap: 0,
     onStart: null,
     onComplete: null,
-    onCompleteChain: null,
     onUpdate: null,
     duration: 500,
     delay: 0,
@@ -55,14 +54,13 @@ Transit = (function(_super) {
     if (this.h == null) {
       this.h = h;
     }
-    if (this.chainArr == null) {
-      this.chainArr = [];
-    }
     if (this.lastSet == null) {
       this.lastSet = {};
     }
     this.extendDefaults();
-    return this.onUpdate = this.props.onUpdate;
+    this.history = [];
+    this.history.push(this.o);
+    return this.timelines = [];
   };
 
   Transit.prototype.render = function() {
@@ -219,7 +217,6 @@ Transit = (function(_super) {
     this.calcOrigin();
     this.draw(progress);
     if (progress === 1) {
-      this.runChain();
       if ((_ref = this.props.onComplete) != null) {
         _ref.call(this);
       }
@@ -274,13 +271,12 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var defaultsValue, delta, fromObject, isObject, key, optionsValue, _ref, _ref1, _results;
+    var defaultsValue, delta, fromObject, isObject, key, optionsValue, _ref, _ref1;
     if (this.props == null) {
       this.props = {};
     }
     fromObject = o || this.defaults;
     (o == null) && (this.deltas = {});
-    _results = [];
     for (key in fromObject) {
       defaultsValue = fromObject[key];
       if ((_ref = this.skipProps) != null ? _ref[key] : void 0) {
@@ -314,83 +310,43 @@ Transit = (function(_super) {
       if (delta.type != null) {
         this.deltas[key] = delta;
       }
-      _results.push(this.props[key] = delta.start);
+      this.props[key] = delta.start;
     }
-    return _results;
+    return this.onUpdate = this.props.onUpdate;
   };
 
-  Transit.prototype.chain = function(options) {
-    options.type = this.o.type;
-    this.chainArr.push({
-      type: 'chain',
-      options: options
-    });
-    return this;
-  };
-
-  Transit.prototype.then = function(options) {
-    this.chainArr.push({
-      type: 'then',
-      options: options
-    });
-    return this;
-  };
-
-  Transit.prototype.runChain = function() {
-    var chain, _ref;
-    if (!this.chainArr.length) {
-      !this.o.isShowEnd && this.hide();
-      return (_ref = this.props.onCompleteChain) != null ? _ref.call(this) : void 0;
-    }
-    chain = this.chainArr.shift();
-    if (chain.type === 'chain') {
-      this.o = chain.options;
-    }
-    if (chain.type === 'then') {
-      this.mergeThenOptions(chain);
-    }
-    return this.init();
-  };
-
-  Transit.prototype.mergeThenOptions = function(chain) {
-    var currValue, end, key, keys, nextValue, options, opts, start, value;
-    opts = this.copyEndOptions();
-    if (!opts) {
-      return;
-    }
-    options = chain.options;
-    for (key in options) {
-      value = options[key];
-      if (typeof value === 'object') {
-        keys = Object.keys(value);
-        end = value[keys[0]];
-        start = opts[key];
-        this.h.warn("new end value expected instead of object, using end(" + end + ") value instead", value);
-        opts[key] = {};
-        opts[key][start] = end;
-      } else {
-        if (!this.h.chainOptionMap[key]) {
-          currValue = opts[key];
-          nextValue = value;
-          opts[key] = {};
-          opts[key][currValue] = nextValue;
-        } else {
-          opts[key] = value;
-        }
+  Transit.prototype.mergeThenOptions = function(start, end) {
+    var endKey, i, key, keys, o, startKey, startKeys;
+    o = {};
+    keys = Object.keys(end);
+    i = keys.length;
+    while (i--) {
+      key = keys[i];
+      if (this.h.tweenOptionMap[key]) {
+        o[key] = end[key];
+        continue;
       }
+      endKey = end[key];
+      startKey = start[key];
+      if (typeof startKey === 'object') {
+        startKeys = Object.keys(startKey);
+        startKey = startKey[startKeys[0]];
+      }
+      o[key] = {};
+      o[key][startKey] = endKey;
     }
-    return this.o = opts;
+    return o;
   };
 
-  Transit.prototype.copyEndOptions = function() {
-    var key, opts, value, _ref;
+  Transit.prototype.then = function(o) {
+    var i, keys, opts;
+    keys = Object.keys(this.h.tweenOptionMap);
+    i = keys.length;
     opts = {};
-    _ref = this.o;
-    for (key in _ref) {
-      value = _ref[key];
-      opts[key] = typeof value === 'object' ? value[Object.keys(value)[0]] : value;
+    while (i--) {
+      opts[keys[i]] = (o != null ? o[keys[i]] : void 0) || this.props[keys[i]];
     }
-    return opts;
+    return this.tween.add(new Timeline(opts));
   };
 
   Transit.prototype.createTween = function() {
@@ -430,6 +386,7 @@ Transit = (function(_super) {
 
   Transit.prototype.run = function(o) {
     this.tuneNewOption(o);
+    this.history[0] = this.o;
     !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
   };
