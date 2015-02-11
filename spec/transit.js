@@ -173,7 +173,7 @@
         expect(byte.tween.timelines[1].o.yoyo).toBe(true);
         return expect(byte.tween.timelines[1].o.delay).toBe(100);
       });
-      return it('should merge then options and add them to the history', function() {
+      it('should merge then options and add them to the history', function() {
         var byte;
         byte = new Byte({
           radius: 20,
@@ -190,6 +190,32 @@
         expect(byte.history[1].duration).toBe(1000);
         expect(byte.history[1].delay).toBe(100);
         return expect(byte.history[1].yoyo).toBe(true);
+      });
+      return it('should always merge then options with the last history item', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        byte.then({
+          radius: {
+            100: 10
+          },
+          delay: 200,
+          stroke: 'green'
+        });
+        expect(byte.history.length).toBe(3);
+        expect(byte.history[2].radius[100]).toBe(10);
+        expect(byte.history[2].duration).toBe(1000);
+        expect(byte.history[2].delay).toBe(200);
+        expect(byte.history[2].yoyo).toBe(true);
+        return expect(byte.history[2].stroke['deeppink']).toBe('green');
       });
     });
     describe('size calculations ->', function() {

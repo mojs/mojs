@@ -26,7 +26,7 @@ Transit = (function(_super) {
     strokeOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
-    stroke: '#ff00ff',
+    stroke: 'deeppink',
     fill: 'transparent',
     fillOpacity: 'transparent',
     strokeLinecap: '',
@@ -59,7 +59,7 @@ Transit = (function(_super) {
     }
     this.extendDefaults();
     this.history = [];
-    this.history.push(this.o);
+    this.history.push(this.props);
     return this.timelines = [];
   };
 
@@ -344,16 +344,16 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.then = function(o) {
-    var i, keys, merged, opts;
-    merged = this.mergeThenOptions(this.o, o);
+    var i, keys, merged, opts, tm;
+    merged = this.mergeThenOptions(this.history[this.history.length - 1], o);
     this.history.push(merged);
     keys = Object.keys(this.h.tweenOptionMap);
     i = keys.length;
     opts = {};
     while (i--) {
-      opts[keys[i]] = (o != null ? o[keys[i]] : void 0) || this.props[keys[i]];
+      opts[keys[i]] = merged[keys[i]];
     }
-    return this.tween.add(new Timeline(opts));
+    return this.tween.add(tm = new Timeline(opts));
   };
 
   Transit.prototype.createTween = function() {

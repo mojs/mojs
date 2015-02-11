@@ -16,7 +16,7 @@ class Transit extends bitsMap.map.bit
     strokeOpacity:      1
     strokeDasharray:    ''
     strokeDashoffset:   ''
-    stroke:             '#ff00ff'
+    stroke:             'deeppink'
     fill:               'transparent'
     fillOpacity:        'transparent'
     strokeLinecap:      ''
@@ -46,7 +46,7 @@ class Transit extends bitsMap.map.bit
   vars:->
     @h ?= h; @lastSet ?= {}
     @extendDefaults()#; @chainArr ?= [];
-    @history = []; @history.push @o
+    @history = []; @history.push @props
     @timelines = []
 
   render:()->
@@ -228,20 +228,6 @@ class Transit extends bitsMap.map.bit
       @props[key] = delta.start
     @onUpdate = @props.onUpdate
 
-  # CHAINS
-  # chain:(options)->
-  #   options.type = @o.type; @chainArr.push { type: 'chain', options: options }
-  #   @
-  # then:(options)->  @chainArr.push { type: 'then',  options: options }; @
-  # runChain:->
-  #   if !@chainArr.length
-  #     !@o.isShowEnd and @hide(); return @props.onCompleteChain?.call @
-
-  #   chain = @chainArr.shift()
-  #   if chain.type is 'chain'  then @o = chain.options
-  #   if chain.type is 'then'   then @mergeThenOptions chain
-  #   @init()
-
   mergeThenOptions:(start, end)->
     o = {}; @h.extend o, start
     keys = Object.keys(end); i = keys.length
@@ -258,15 +244,14 @@ class Transit extends bitsMap.map.bit
       if endKey? then o[key] = {}; o[key][startKey] = endKey
       else o[key] = startKey
     o
-    
 
   then:(o)->
-    merged = @mergeThenOptions @o, o
+    merged = @mergeThenOptions @history[@history.length-1], o
     @history.push merged
     # copy the tween options from passed o or current props
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
-    opts[keys[i]] = o?[keys[i]] or @props[keys[i]] while(i--)
-    @tween.add new Timeline opts
+    opts[keys[i]] = merged[keys[i]] while(i--)
+    @tween.add tm = new Timeline opts
 
   # TWEEN
   createTween:->
