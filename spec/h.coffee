@@ -50,6 +50,7 @@ describe 'Helpers ->', ->
         expect(obj2.a).not.toBeDefined()
         expect(obj2.b).toBe 1
 
+
     describe 'parseRand method', ->
       it 'should get random number from string', ->
         rand = h.parseRand 'rand(10,20)'

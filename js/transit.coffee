@@ -243,22 +243,26 @@ class Transit extends bitsMap.map.bit
   #   @init()
 
   mergeThenOptions:(start, end)->
-    o = {}
+    o = {}; @h.extend o, start
     keys = Object.keys(end); i = keys.length
     while(i--)
-      key = keys[i]
-      # if this is a tween value - just save it
-      if @h.tweenOptionMap[key] then o[key] = end[key]; continue
-      endKey   = end[key]
+      key = keys[i]; endKey = end[key]
+      # if this is a tween value or new value is an obect
+      # then just save it
+      if @h.tweenOptionMap[key] or typeof endKey is 'object'
+        o[key] = endKey or start[key]; continue
       startKey = start[key]
       # if start value is object - use the end value
       if typeof startKey is 'object'
         startKeys = Object.keys(startKey); startKey = startKey[startKeys[0]]
-      o[key] = {}; o[key][startKey] = endKey
+      if endKey? then o[key] = {}; o[key][startKey] = endKey
+      else o[key] = startKey
     o
     
 
   then:(o)->
+    merged = @mergeThenOptions @o, o
+    @history.push merged
     # copy the tween options from passed o or current props
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
     opts[keys[i]] = o?[keys[i]] or @props[keys[i]] while(i--)

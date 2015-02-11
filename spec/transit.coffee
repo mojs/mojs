@@ -77,7 +77,7 @@ describe 'Transit ->', ->
       byte.run radius: 10
       expect(byte.history[0].radius).toBe 10
 
-  describe 'then ->', ->
+  describe 'then method ->', ->
     it 'should add new timeline with options', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radius: 5
@@ -89,6 +89,15 @@ describe 'Transit ->', ->
       expect(byte.tween.timelines[1].o.duration).toBe 1000
       expect(byte.tween.timelines[1].o.yoyo).toBe true
       expect(byte.tween.timelines[1].o.delay).toBe 100
+
+    it 'should merge then options and add them to the history', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      expect(byte.history.length)       .toBe 2
+      expect(byte.history[1].radius[20]).toBe 5
+      expect(byte.history[1].duration).toBe 1000
+      expect(byte.history[1].delay)   .toBe 100
+      expect(byte.history[1].yoyo)    .toBe true
 
   describe 'size calculations ->', ->
     it 'should calculate size el size depending on largest value', ->
@@ -331,13 +340,25 @@ describe 'Transit ->', ->
       mergedOpton = byte.mergeThenOptions start, end
       expect(mergedOpton.radius[10]).toBe 20
       expect(mergedOpton.duration).toBe 500
-      expect(mergedOpton.stroke).not.toBeDefined()
+      expect(mergedOpton.stroke).toBe '#ff00ff'
     it 'should merge 2 objects if the first was an object', ->
       byte = new Byte
       start = radius: {10: 0}
       end   = radius: 20
       mergedOpton = byte.mergeThenOptions start, end
       expect(mergedOpton.radius[0]).toBe 20
+    it 'should use the second value if it is an object', ->
+      byte = new Byte
+      start = radius: 10
+      end   = radius: {20: 0}
+      mergedOpton = byte.mergeThenOptions start, end
+      expect(mergedOpton.radius[20]).toBe 0
+    it 'should save the old tween values', ->
+      byte = new Byte
+      start = duration: 10
+      end   = radius: {20: 0}
+      mergedOpton = byte.mergeThenOptions start, end
+      expect(mergedOpton.duration).toBe 10
 
   describe 'render method ->', ->
     it 'should call draw method', ->

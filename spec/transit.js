@@ -145,7 +145,7 @@
         return expect(byte.history[0].radius).toBe(10);
       });
     });
-    describe('then ->', function() {
+    describe('then method ->', function() {
       it('should add new timeline with options', function() {
         var byte;
         byte = new Byte({
@@ -157,7 +157,7 @@
         });
         return expect(byte.tween.timelines.length).toBe(2);
       });
-      return it('should add new timeline with options', function() {
+      it('should add new timeline with options', function() {
         var byte;
         byte = new Byte({
           radius: 20,
@@ -172,6 +172,24 @@
         expect(byte.tween.timelines[1].o.duration).toBe(1000);
         expect(byte.tween.timelines[1].o.yoyo).toBe(true);
         return expect(byte.tween.timelines[1].o.delay).toBe(100);
+      });
+      return it('should merge then options and add them to the history', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        expect(byte.history.length).toBe(2);
+        expect(byte.history[1].radius[20]).toBe(5);
+        expect(byte.history[1].duration).toBe(1000);
+        expect(byte.history[1].delay).toBe(100);
+        return expect(byte.history[1].yoyo).toBe(true);
       });
     });
     describe('size calculations ->', function() {
@@ -577,9 +595,9 @@
         mergedOpton = byte.mergeThenOptions(start, end);
         expect(mergedOpton.radius[10]).toBe(20);
         expect(mergedOpton.duration).toBe(500);
-        return expect(mergedOpton.stroke).not.toBeDefined();
+        return expect(mergedOpton.stroke).toBe('#ff00ff');
       });
-      return it('should merge 2 objects if the first was an object', function() {
+      it('should merge 2 objects if the first was an object', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
         start = {
@@ -592,6 +610,34 @@
         };
         mergedOpton = byte.mergeThenOptions(start, end);
         return expect(mergedOpton.radius[0]).toBe(20);
+      });
+      it('should use the second value if it is an object', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10
+        };
+        end = {
+          radius: {
+            20: 0
+          }
+        };
+        mergedOpton = byte.mergeThenOptions(start, end);
+        return expect(mergedOpton.radius[20]).toBe(0);
+      });
+      return it('should save the old tween values', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          duration: 10
+        };
+        end = {
+          radius: {
+            20: 0
+          }
+        };
+        mergedOpton = byte.mergeThenOptions(start, end);
+        return expect(mergedOpton.duration).toBe(10);
       });
     });
     describe('render method ->', function() {

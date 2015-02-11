@@ -2222,28 +2222,35 @@ Transit = (function(_super) {
   Transit.prototype.mergeThenOptions = function(start, end) {
     var endKey, i, key, keys, o, startKey, startKeys;
     o = {};
+    this.h.extend(o, start);
     keys = Object.keys(end);
     i = keys.length;
     while (i--) {
       key = keys[i];
-      if (this.h.tweenOptionMap[key]) {
-        o[key] = end[key];
+      endKey = end[key];
+      if (this.h.tweenOptionMap[key] || typeof endKey === 'object') {
+        o[key] = endKey || start[key];
         continue;
       }
-      endKey = end[key];
       startKey = start[key];
       if (typeof startKey === 'object') {
         startKeys = Object.keys(startKey);
         startKey = startKey[startKeys[0]];
       }
-      o[key] = {};
-      o[key][startKey] = endKey;
+      if (endKey != null) {
+        o[key] = {};
+        o[key][startKey] = endKey;
+      } else {
+        o[key] = startKey;
+      }
     }
     return o;
   };
 
   Transit.prototype.then = function(o) {
-    var i, keys, opts;
+    var i, keys, merged, opts;
+    merged = this.mergeThenOptions(this.o, o);
+    this.history.push(merged);
     keys = Object.keys(this.h.tweenOptionMap);
     i = keys.length;
     opts = {};
