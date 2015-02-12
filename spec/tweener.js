@@ -87,7 +87,7 @@
         return expect(t.isRunning).toBe(false);
       });
     });
-    describe('add ->', function() {
+    describe('add method ->', function() {
       it('should add to tweens', function() {
         t.add(new Tween);
         expect(t.tweens.length).toBe(1);
@@ -99,7 +99,7 @@
         return expect(t.startLoop).toHaveBeenCalled();
       });
     });
-    describe('remove ->', function() {
+    describe('remove method ->', function() {
       return it('should remove a tween', function() {
         var t1, t2;
         t1 = new Tween;
@@ -109,6 +109,18 @@
         expect(t.tweens.length).toBe(2);
         t.remove(t2);
         return expect(t.tweens.length).toBe(1);
+      });
+    });
+    describe('removeAll method ->', function() {
+      return it('should remove all tweens', function() {
+        var t1, t2;
+        t1 = new Tween;
+        t2 = new Tween;
+        t.add(t1);
+        t.add(t2);
+        expect(t.tweens.length).toBe(2);
+        t.removeAll();
+        return expect(t.tweens.length).toBe(0);
       });
     });
     return describe('update method ->', function() {

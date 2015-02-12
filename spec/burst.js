@@ -1,11 +1,13 @@
 (function() {
-  var Burst, Swirl, Transit;
+  var Burst, Swirl, Transit, t;
 
   Transit = mojs.Transit;
 
   Swirl = mojs.Swirl;
 
   Burst = mojs.Burst;
+
+  t = mojs.tweener;
 
   describe('Burst ->', function() {
     describe('extension ->', function() {
@@ -534,6 +536,99 @@
         spyOn(burst, 'startTween');
         burst.createTween();
         return expect(burst.startTween).not.toHaveBeenCalled();
+      });
+    });
+    describe('onStart callback ->', function() {
+      it('should run onStart callback', function(dfr) {
+        var burst;
+        burst = new Burst({
+          isRunLess: true,
+          onStart: function() {}
+        });
+        spyOn(burst.props, 'onStart');
+        burst.run();
+        return setTimeout(function() {
+          expect(burst.props.onStart).toHaveBeenCalled();
+          return dfr();
+        }, 10);
+      });
+      return it('should have the scope of burst', function(dfr) {
+        var burst, isRightScope;
+        isRightScope = false;
+        burst = new Burst({
+          onStart: function() {
+            return isRightScope = this instanceof Burst;
+          }
+        });
+        return setTimeout(function() {
+          expect(isRightScope).toBe(true);
+          return dfr();
+        }, 10);
+      });
+    });
+    describe('onComplete callback ->', function() {
+      it('should run onComplete callback', function(dfr) {
+        var burst;
+        t.removeAll();
+        burst = new Burst({
+          isRunLess: true,
+          duration: 20,
+          onComplete: function() {}
+        });
+        spyOn(burst.props, 'onComplete');
+        burst.run();
+        return setTimeout(function() {
+          expect(burst.props.onComplete).toHaveBeenCalled();
+          return dfr();
+        }, 100);
+      });
+      return it('should have the scope of burst', function(dfr) {
+        var burst, isRightScope;
+        t.removeAll();
+        isRightScope = false;
+        burst = new Burst({
+          duration: 20,
+          onComplete: function() {
+            return isRightScope = this instanceof Burst;
+          }
+        });
+        return setTimeout(function() {
+          expect(isRightScope).toBe(true);
+          return dfr();
+        }, 100);
+      });
+    });
+    describe('onUpdate callback ->', function() {
+      t.removeAll();
+      it('should run onUpdate callback', function(dfr) {
+        var burst;
+        burst = new Burst({
+          isRunLess: true,
+          duration: 20,
+          onUpdate: function() {}
+        });
+        spyOn(burst.props, 'onUpdate');
+        burst.run();
+        return setTimeout(function() {
+          expect(burst.props.onUpdate).toHaveBeenCalledWith(1);
+          return dfr();
+        }, 100);
+      });
+      return it('should have the scope of burst', function(dfr) {
+        var burst, isRightScope;
+        t.removeAll();
+        isRightScope = false;
+        burst = new Burst({
+          duration: 20,
+          onUpdate: function() {
+            return isRightScope = this instanceof Burst;
+          }
+        });
+        burst.run();
+        return setTimeout((function() {
+          expect(isRightScope).toBe(true);
+          return dfr();
+        }), 100);
       });
     });
     describe('run method ->', function() {

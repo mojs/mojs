@@ -6,8 +6,11 @@
 **! in active development - isn't ready yet !**
 
 #### todo
+- transit
+  - then chain transform on run
 - burst
   - then implementation
+  - then chain transform on run
   - opacity childOptions to burst
   - fix tween add method with parallel tweens
   - fix tween isComplete onUpdate

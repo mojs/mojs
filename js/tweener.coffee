@@ -46,6 +46,8 @@ class Tweener
     while(i--)
       @remove(@tweens[i]) if @tweens[i].update(time) is true
   add:(tween)-> @tweens.push(tween); @startLoop()
+  # cover
+  removeAll:-> @tweens.length = 0
   remove:(tween)->
     index = @tweens.indexOf tween
     if index isnt -1 then @tweens.splice index, 1

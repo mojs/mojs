@@ -91,6 +91,10 @@ Tweener = (function() {
     return this.startLoop();
   };
 
+  Tweener.prototype.removeAll = function() {
+    return this.tweens.length = 0;
+  };
+
   Tweener.prototype.remove = function(tween) {
     var index;
     index = this.tweens.indexOf(tween);

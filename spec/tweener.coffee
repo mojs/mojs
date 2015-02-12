@@ -55,7 +55,7 @@ describe 'Twenner ->', ->
       t.startLoop()
       t.stopLoop()
       expect(t.isRunning).toBe false
-  describe 'add ->', ->
+  describe 'add method ->', ->
     it 'should add to tweens', ->
       t.add new Tween
       expect(t.tweens.length).toBe 1
@@ -64,13 +64,21 @@ describe 'Twenner ->', ->
       spyOn t, 'startLoop'
       t.add new Tween
       expect(t.startLoop).toHaveBeenCalled()
-  describe 'remove ->', ->
+  describe 'remove method ->', ->
     it 'should remove a tween', ->
       t1 = new Tween; t2 = new Tween
       t.add t1; t.add t2
       expect(t.tweens.length).toBe 2
       t.remove t2
       expect(t.tweens.length).toBe 1
+  describe 'removeAll method ->', ->
+    it 'should remove all tweens', ->
+      t1 = new Tween; t2 = new Tween
+      t.add t1; t.add t2
+      expect(t.tweens.length).toBe 2
+      t.removeAll()
+      expect(t.tweens.length).toBe 0
+
   describe 'update method ->', ->
     it 'should update the current time on every timeline',->
       t.add new Tween

@@ -24,7 +24,7 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Transit(
+burst = new Burst(
   # isRunLess: true
   x: 300, y: 300
   type: 'polygon'

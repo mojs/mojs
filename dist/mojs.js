@@ -1576,7 +1576,7 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Transit({
+burst = new Burst({
   x: 300,
   y: 300,
   type: 'polygon',
@@ -2659,6 +2659,10 @@ Tweener = (function() {
   Tweener.prototype.add = function(tween) {
     this.tweens.push(tween);
     return this.startLoop();
+  };
+
+  Tweener.prototype.removeAll = function() {
+    return this.tweens.length = 0;
   };
 
   Tweener.prototype.remove = function(tween) {

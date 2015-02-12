@@ -173,6 +173,9 @@ class Burst extends Transit
     start = if randomness then (1-randomness)*100 else (1-.5)*100
     @h.rand(start, 100)/100
 
+  # then:(o)->
+    
+
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "Burst", [], -> Burst
