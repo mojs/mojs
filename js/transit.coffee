@@ -49,7 +49,7 @@ class Transit extends bitsMap.map.bit
     @history = []; @history.push @o
     @timelines = []
 
-  render:()->
+  render:->
     if !@isRendered# or isForce
       if !@o.ctx?
         if !@ctx?
@@ -254,8 +254,10 @@ class Transit extends bitsMap.map.bit
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
     opts[keys[i]] = merged[keys[i]] while(i--)
     it = @
-    opts.onUpdate = (p)=> @setProgress p
-    opts.onStart  = -> it.tuneOptions it.history[@index]
+    opts.onUpdate      = (p)=> @setProgress p
+    opts.onStart       = => @props.onStart?.apply @
+    opts.onComplete    = => @props.onComplete?.apply @
+    opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     @tween.append new Timeline(opts)
     @
 

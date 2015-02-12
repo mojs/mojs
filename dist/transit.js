@@ -365,7 +365,19 @@ Transit = (function(_super) {
         return _this.setProgress(p);
       };
     })(this);
-    opts.onStart = function() {
+    opts.onStart = (function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+      };
+    })(this);
+    opts.onComplete = (function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+      };
+    })(this);
+    opts.onFirstUpdate = function() {
       return it.tuneOptions(it.history[this.index]);
     };
     this.tween.append(new Timeline(opts));

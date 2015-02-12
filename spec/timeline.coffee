@@ -151,6 +151,42 @@ describe 'Timeline ->', ->
         duration: 1, onComplete:-> isRightScope = @ instanceof Timeline
       t.start().update t.props.startTime + 2
       expect(isRightScope).toBe true
+
+  describe 'onFirstUpdate callback ->', ->
+    it 'should be defined', ->
+      t = new Timeline onFirstUpdate: ->
+      expect(t.o.onFirstUpdate).toBeDefined()
+    it 'should call onFirstUpdate callback', ->
+      t = new Timeline(duration: 100, onFirstUpdate:->).start()
+      spyOn(t.o, 'onFirstUpdate')
+      t.update t.props.startTime + 3
+      expect(t.o.onFirstUpdate).toHaveBeenCalled()
+    it 'should be called just once', ->
+      cnt = 0
+      t = new Timeline(duration: 100, onFirstUpdate:-> cnt++ ).start()
+      t.update t.props.startTime + 3
+      t.update t.props.startTime + 3
+      t.update t.props.startTime + 3
+      expect(cnt).toBe 1
+    it 'should have the right scope', ->
+      isRightScope = false
+      t = new Timeline
+        duration: 10, onFirstUpdate:-> isRightScope = @ instanceof Timeline
+      t.start().update t.props.startTime + 2
+      expect(isRightScope).toBe true
+    it 'should be called after progress went further or before the timeline', ->
+      isRightScope = false
+      t = new Timeline
+        duration: 10
+        isIt: true
+        onFirstUpdate:-> isRightScope = @ instanceof Timeline
+      .start()
+      t.update t.props.startTime + 1
+      t.update t.props.startTime + 12
+      spyOn(t.o, 'onFirstUpdate')
+      t.update t.props.startTime + 9
+      expect(t.o.onFirstUpdate).toHaveBeenCalled()
+
   describe 'yoyo option ->', ->
     it 'should recieve yoyo option', ->
       t = new Timeline yoyo: true

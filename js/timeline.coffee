@@ -24,7 +24,8 @@ class Timeline
     @props.easing = if typeof easing is 'function' then easing
     else Easing[easing[0]][easing[1]]# or (k)-> k
 
-  extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
+  extendDefaults:->
+    h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
     @props.startTime = (time or Date.now()) + @o.delay
@@ -56,11 +57,13 @@ class Timeline
             else 1-if @progress is 0 then 1 else @progress
         # is in start point + delay
         else @setProc 0
+      if !@isFirstUpdate then @o.onFirstUpdate?.apply(@); @isFirstUpdate = true
       @onUpdate? @easedProgress
     else
       if time >= @props.endTime and !@isCompleted
         (@o.onComplete?.apply(@); @isCompleted = true)
         @setProc 1; @onUpdate? @easedProgress
+      @isFirstUpdate = false
 
   setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress
 

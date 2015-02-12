@@ -305,6 +305,67 @@
         return expect(isRightScope).toBe(true);
       });
     });
+    describe('onFirstUpdate callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Timeline({
+          onFirstUpdate: function() {}
+        });
+        return expect(t.o.onFirstUpdate).toBeDefined();
+      });
+      it('should call onFirstUpdate callback', function() {
+        var t;
+        t = new Timeline({
+          duration: 100,
+          onFirstUpdate: function() {}
+        }).start();
+        spyOn(t.o, 'onFirstUpdate');
+        t.update(t.props.startTime + 3);
+        return expect(t.o.onFirstUpdate).toHaveBeenCalled();
+      });
+      it('should be called just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 100,
+          onFirstUpdate: function() {
+            return cnt++;
+          }
+        }).start();
+        t.update(t.props.startTime + 3);
+        t.update(t.props.startTime + 3);
+        t.update(t.props.startTime + 3);
+        return expect(cnt).toBe(1);
+      });
+      it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Timeline({
+          duration: 10,
+          onFirstUpdate: function() {
+            return isRightScope = this instanceof Timeline;
+          }
+        });
+        t.start().update(t.props.startTime + 2);
+        return expect(isRightScope).toBe(true);
+      });
+      return it('should be called after progress went further or before the timeline', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Timeline({
+          duration: 10,
+          isIt: true,
+          onFirstUpdate: function() {
+            return isRightScope = this instanceof Timeline;
+          }
+        }).start();
+        t.update(t.props.startTime + 1);
+        t.update(t.props.startTime + 12);
+        spyOn(t.o, 'onFirstUpdate');
+        t.update(t.props.startTime + 9);
+        return expect(t.o.onFirstUpdate).toHaveBeenCalled();
+      });
+    });
     describe('yoyo option ->', function() {
       it('should recieve yoyo option', function() {
         var t;

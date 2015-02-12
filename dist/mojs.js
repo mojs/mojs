@@ -1803,7 +1803,7 @@ Timeline = (function() {
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, start, _ref, _ref1;
+    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
@@ -1833,16 +1833,25 @@ Timeline = (function() {
           this.setProc(0);
         }
       }
+      if (!this.isFirstUpdate) {
+        if ((_ref1 = this.o.onFirstUpdate) != null) {
+          _ref1.apply(this);
+        }
+        this.isFirstUpdate = true;
+      }
       return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
-        if ((_ref1 = this.o.onComplete) != null) {
-          _ref1.apply(this);
+        if ((_ref2 = this.o.onComplete) != null) {
+          _ref2.apply(this);
         }
         this.isCompleted = true;
         this.setProc(1);
-        return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
+        if (typeof this.onUpdate === "function") {
+          this.onUpdate(this.easedProgress);
+        }
       }
+      return this.isFirstUpdate = false;
     }
   };
 
@@ -2268,7 +2277,19 @@ Transit = (function(_super) {
         return _this.setProgress(p);
       };
     })(this);
-    opts.onStart = function() {
+    opts.onStart = (function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+      };
+    })(this);
+    opts.onComplete = (function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+      };
+    })(this);
+    opts.onFirstUpdate = function() {
       return it.tuneOptions(it.history[this.index]);
     };
     this.tween.append(new Timeline(opts));

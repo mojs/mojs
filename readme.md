@@ -6,10 +6,8 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- transit
-  - then to timelines
-    - tune options on timeline change - onFirstUpdate
 - burst
+  - then implementation
   - opacity childOptions to burst
   - fix tween add method with parallel tweens
   - fix tween isComplete onUpdate

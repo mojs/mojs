@@ -239,7 +239,7 @@
         expect(typeof byte.tween.timelines[1].o.onUpdate).toBe('function');
         return expect(typeof byte.tween.timelines[2].o.onUpdate).toBe('function');
       });
-      return it('should bind onStart function', function() {
+      it('should bind onStart function', function() {
         var byte;
         byte = new Byte({
           radius: 20,
@@ -260,6 +260,28 @@
         });
         expect(typeof byte.tween.timelines[1].o.onStart).toBe('function');
         return expect(typeof byte.tween.timelines[2].o.onStart).toBe('function');
+      });
+      return it('should bind onFirstUpdate function', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        byte.then({
+          radius: {
+            100: 10
+          },
+          delay: 200,
+          stroke: 'green'
+        });
+        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
+        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
       });
     });
     describe('tuneOptions method ->', function() {
