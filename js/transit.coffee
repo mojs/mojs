@@ -295,7 +295,8 @@ class Transit extends bitsMap.map.bit
       !isForeign and @tween.recalcDuration()
       @calcSize()
       !isForeign and @setElStyles()
-  startTween:-> @tween?.start()
+  # defer tween start to wait for "then" functions
+  startTween:-> setTimeout (=> @tween?.start()), 1
   resetTimeline:->
     timelineOptions = {}
     for key, i in Object.keys @h.tweenOptionMap

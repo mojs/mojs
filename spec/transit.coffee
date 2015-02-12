@@ -788,12 +788,15 @@ describe 'Transit ->', ->
       setTimeout ->
         expect(isStarted).toBeFalsy(); dfr()
       , 100
-    describe 'startTween method', ->
-      it 'should start tween', ()->
+    describe 'startTween method ->', ->
+      it 'should start tween', (dfr)->
         byte = new Byte radius:  {'25': 75}
         spyOn byte.tween, 'start'
         byte.startTween()
-        expect(byte.tween.start).toHaveBeenCalled()
+        setTimeout ->
+          expect(byte.tween.start).toHaveBeenCalled(); dfr()
+        , 10
+
   describe 'easing ->', ->
     it 'should set easing option to props', ->
       byte = new Byte easing: 'Linear.None'

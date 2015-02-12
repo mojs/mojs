@@ -8,8 +8,7 @@
 #### todo
 - transit
   - then to timelines
-    - could tween start after all the then calls?
-    - tune options on timeline change
+    - tune options on timeline change - onFirstUpdate
 - burst
   - opacity childOptions to burst
   - fix tween add method with parallel tweens

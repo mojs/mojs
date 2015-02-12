@@ -435,8 +435,12 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.startTween = function() {
-    var _ref;
-    return (_ref = this.tween) != null ? _ref.start() : void 0;
+    return setTimeout(((function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.tween) != null ? _ref.start() : void 0;
+      };
+    })(this)), 1);
   };
 
   Transit.prototype.resetTimeline = function() {

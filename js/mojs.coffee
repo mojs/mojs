@@ -31,16 +31,16 @@ burst = new Transit(
   duration: 500
   count: 3
   isIt: true
-  isRunLess: true
+  # isRunLess: true
   radius:      {0: 75}
   points: 5
   isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
   # delay: 2000
-).then radius: 0, duration: 1000, fill: 'orange'
+).then(opacity: 0, radius: '75', duration: 1000, fill: 'orange')
+# .run()
 
-burst.run()
 
 # document.addEventListener 'click', (e)->
 #   burst.run x: e.x, y: e.y,

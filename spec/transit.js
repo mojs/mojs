@@ -1460,8 +1460,8 @@
           return dfr();
         }, 100);
       });
-      return describe('startTween method', function() {
-        return it('should start tween', function() {
+      return describe('startTween method ->', function() {
+        return it('should start tween', function(dfr) {
           var byte;
           byte = new Byte({
             radius: {
@@ -1470,7 +1470,10 @@
           });
           spyOn(byte.tween, 'start');
           byte.startTween();
-          return expect(byte.tween.start).toHaveBeenCalled();
+          return setTimeout(function() {
+            expect(byte.tween.start).toHaveBeenCalled();
+            return dfr();
+          }, 10);
         });
       });
     });

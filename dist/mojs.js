@@ -1583,7 +1583,6 @@ burst = new Transit({
   duration: 500,
   count: 3,
   isIt: true,
-  isRunLess: true,
   radius: {
     0: 75
   },
@@ -1592,12 +1591,11 @@ burst = new Transit({
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
 }).then({
-  radius: 0,
+  opacity: 0,
+  radius: '75',
   duration: 1000,
   fill: 'orange'
 });
-
-burst.run();
 
 eye = document.querySelector('#js-eye');
 
@@ -2340,8 +2338,12 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.startTween = function() {
-    var _ref;
-    return (_ref = this.tween) != null ? _ref.start() : void 0;
+    return setTimeout(((function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.tween) != null ? _ref.start() : void 0;
+      };
+    })(this)), 1);
   };
 
   Transit.prototype.resetTimeline = function() {
