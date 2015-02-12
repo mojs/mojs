@@ -154,8 +154,6 @@ class Helpers
         arr1.push 0
 
     [ arr1, arr2 ]
-
-
   makeColorObj:(color)->
     # HEX
     if color[0] is '#'

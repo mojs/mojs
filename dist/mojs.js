@@ -1576,11 +1576,14 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Burst({
+burst = new Transit({
+  x: 300,
+  y: 300,
   type: 'polygon',
   duration: 500,
   count: 3,
   isIt: true,
+  isRunLess: true,
   radius: {
     0: 75
   },
@@ -1588,15 +1591,13 @@ burst = new Burst({
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
+}).then({
+  radius: 0,
+  duration: 1000,
+  fill: 'orange'
 });
 
-document.addEventListener('click', function(e) {
-  return burst.run({
-    x: e.x,
-    y: e.y,
-    duration: 1000
-  });
-});
+burst.run();
 
 eye = document.querySelector('#js-eye');
 
@@ -1930,8 +1931,8 @@ Transit = (function(_super) {
     strokeOpacity: 1,
     strokeDasharray: '',
     strokeDashoffset: '',
-    stroke: 'deeppink',
-    fill: 'transparent',
+    stroke: 'transparent',
+    fill: 'deeppink',
     fillOpacity: 'transparent',
     strokeLinecap: '',
     points: 3,
@@ -1949,7 +1950,7 @@ Transit = (function(_super) {
     onUpdate: null,
     duration: 500,
     delay: 0,
-    repeat: 1,
+    repeat: 0,
     yoyo: false,
     easing: 'Linear.None'
   };
@@ -1963,7 +1964,7 @@ Transit = (function(_super) {
     }
     this.extendDefaults();
     this.history = [];
-    this.history.push(this.props);
+    this.history.push(this.o);
     return this.timelines = [];
   };
 
@@ -2210,7 +2211,7 @@ Transit = (function(_super) {
       if ((_ref1 = this.skipPropsDelta) != null ? _ref1[key] : void 0) {
         continue;
       }
-      delta = this.h.parseDelta(key, optionsValue);
+      delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
       if (delta.type != null) {
         this.deltas[key] = delta;
       }
@@ -2229,10 +2230,13 @@ Transit = (function(_super) {
       key = keys[i];
       endKey = end[key];
       if (this.h.tweenOptionMap[key] || typeof endKey === 'object') {
-        o[key] = endKey || start[key];
+        o[key] = endKey != null ? endKey : start[key];
         continue;
       }
       startKey = start[key];
+      if (startKey == null) {
+        startKey = this.defaults[key];
+      }
       if (typeof startKey === 'object') {
         startKeys = Object.keys(startKey);
         startKey = startKey[startKeys[0]];
@@ -2248,7 +2252,10 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.then = function(o) {
-    var i, keys, merged, opts, tm;
+    var i, it, keys, merged, opts;
+    if (o == null) {
+      o = {};
+    }
     merged = this.mergeThenOptions(this.history[this.history.length - 1], o);
     this.history.push(merged);
     keys = Object.keys(this.h.tweenOptionMap);
@@ -2257,7 +2264,23 @@ Transit = (function(_super) {
     while (i--) {
       opts[keys[i]] = merged[keys[i]];
     }
-    return this.tween.add(tm = new Timeline(opts));
+    it = this;
+    opts.onUpdate = (function(_this) {
+      return function(p) {
+        return _this.setProgress(p);
+      };
+    })(this);
+    opts.onStart = function() {
+      return it.tuneOptions(it.history[this.index]);
+    };
+    this.tween.append(new Timeline(opts));
+    return this;
+  };
+
+  Transit.prototype.tuneOptions = function(o) {
+    this.extendDefaults(o);
+    this.calcSize();
+    return this.setElStyles();
   };
 
   Transit.prototype.createTween = function() {
@@ -2267,7 +2290,7 @@ Transit = (function(_super) {
     this.timeline = new Timeline({
       duration: this.props.duration,
       delay: this.props.delay,
-      repeat: this.props.repeat - 1,
+      repeat: this.props.repeat,
       yoyo: this.props.yoyo,
       easing: this.props.easing,
       onUpdate: (function(_this) {
@@ -2408,6 +2431,7 @@ Tween = (function() {
   Tween.prototype.append = function(timeline) {
     var i;
     if (!h.isArray(timeline)) {
+      timeline.index = this.timelines.length;
       this.appendTimeline(timeline);
       return this.duration = Math.max(timeline.props.totalTime, this.duration);
     } else {
@@ -2439,12 +2463,13 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var i, _ref;
+    var i, len, _ref;
     if (this.isCompleted) {
       return;
     }
-    i = this.timelines.length;
-    while (i--) {
+    i = -1;
+    len = this.timelines.length - 1;
+    while (i++ < len) {
       this.timelines[i].update(time);
     }
     if (time >= this.endTime) {

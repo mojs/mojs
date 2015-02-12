@@ -15,15 +15,16 @@ class Tween
     if index isnt -1 then @timelines.splice index, 1
   append:(timeline)->
     if !h.isArray(timeline)
+      timeline.index = @timelines.length
       @appendTimeline timeline
       @duration = Math.max timeline.props.totalTime, @duration
     else
-      i = timeline.length; @appendTimeline(timeline[i]) while(i--)
+      i = timeline.length
+      @appendTimeline(timeline[i]) while(i--)
       @recalcDuration()
   appendTimeline:(timeline)->
     timeline.setProp(delay: timeline.o.delay + @duration)
     @timelines.push timeline
-
   # reset:(timeline)-> @remove(timeline); @add timeline
   recalcDuration:->
     len = @timelines.length; @duration = 0
@@ -32,8 +33,8 @@ class Tween
       @duration = Math.max timeline.props.totalTime, @duration
   update:(time)->
     return if @isCompleted
-    i = @timelines.length
-    while(i--)
+    i = -1; len = @timelines.length-1
+    while(i++ < len)
       @timelines[i].update time
     if (time >= @endTime)
       @o.onComplete?.apply(@); @onUpdate?(1)
@@ -41,7 +42,6 @@ class Tween
     if time >= @startTime
       @onUpdate? (time - @startTime)/@duration
   start:->
-    # @o.isIt and console.log 'start'
     @isCompleted = false; @getDimentions()
     i = @timelines.length; @o.onStart?.apply @
     while(i--)

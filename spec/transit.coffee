@@ -88,7 +88,7 @@ describe 'Transit ->', ->
       byte.then radius: 5, yoyo: true, delay: 100
       expect(byte.tween.timelines[1].o.duration).toBe 1000
       expect(byte.tween.timelines[1].o.yoyo).toBe true
-      expect(byte.tween.timelines[1].o.delay).toBe 100
+      expect(byte.tween.timelines[1].o.delay).toBe 1110
 
     it 'should merge then options and add them to the history', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -102,13 +102,43 @@ describe 'Transit ->', ->
     it 'should always merge then options with the last history item', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
-      byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      byte.then radius: {100:10}, delay: 0, stroke: 'green'
       expect(byte.history.length)       .toBe 3
       expect(byte.history[2].radius[100]).toBe 10
       expect(byte.history[2].duration).toBe 1000
-      expect(byte.history[2].delay)   .toBe 200
+      expect(byte.history[2].delay)   .toBe 0
       expect(byte.history[2].yoyo)    .toBe true
-      expect(byte.history[2].stroke['deeppink']).toBe 'green'
+      expect(byte.history[2].stroke['transparent']).toBe 'green'
+
+    it 'should bind onUpdate function', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      expect(typeof byte.tween.timelines[1].o.onUpdate).toBe 'function'
+      expect(typeof byte.tween.timelines[2].o.onUpdate).toBe 'function'
+
+    it 'should bind onStart function', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      expect(typeof byte.tween.timelines[1].o.onStart).toBe 'function'
+      expect(typeof byte.tween.timelines[2].o.onStart).toBe 'function'
+
+  describe 'tuneOptions method ->', ->
+    it 'should call extendDefaults with options', ->
+      byte = new Byte
+      o = radius: 50
+      spyOn byte, 'tuneOptions'
+      byte.tuneOptions o
+      expect(byte.tuneOptions).toHaveBeenCalled()
+    it 'should call calcSize and setElStyles methods', ->
+      byte = new Byte
+      spyOn byte, 'calcSize'
+      spyOn byte, 'setElStyles'
+      byte.tuneOptions radius: 50
+      expect(byte.calcSize).toHaveBeenCalled()
+      expect(byte.setElStyles).toHaveBeenCalled()
+
 
   describe 'size calculations ->', ->
     it 'should calculate size el size depending on largest value', ->
@@ -353,7 +383,7 @@ describe 'Transit ->', ->
       expect(mergedOpton.duration).toBe 500
       expect(mergedOpton.stroke).toBe '#ff00ff'
     it 'should merge 2 objects if the first was an object', ->
-      byte = new Byte
+      byte = new Byte isRunLess: true
       start = radius: {10: 0}
       end   = radius: 20
       mergedOpton = byte.mergeThenOptions start, end
@@ -370,6 +400,12 @@ describe 'Transit ->', ->
       end   = radius: {20: 0}
       mergedOpton = byte.mergeThenOptions start, end
       expect(mergedOpton.duration).toBe 10
+    it 'should fallback to default value is start is undefined', ->
+      byte = new Byte isIt: true
+      start = radius: 10, duration: 1000
+      end   = radius: 20, duration: 500, stroke: '#ff00ff'
+      mergedOpton = byte.mergeThenOptions start, end
+      expect(mergedOpton.stroke['transparent']).toBe '#ff00ff'
 
   describe 'render method ->', ->
     it 'should call draw method', ->

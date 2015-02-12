@@ -35,6 +35,7 @@ Tween = (function() {
   Tween.prototype.append = function(timeline) {
     var i;
     if (!h.isArray(timeline)) {
+      timeline.index = this.timelines.length;
       this.appendTimeline(timeline);
       return this.duration = Math.max(timeline.props.totalTime, this.duration);
     } else {
@@ -66,12 +67,13 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var i, _ref;
+    var i, len, _ref;
     if (this.isCompleted) {
       return;
     }
-    i = this.timelines.length;
-    while (i--) {
+    i = -1;
+    len = this.timelines.length - 1;
+    while (i++ < len) {
       this.timelines[i].update(time);
     }
     if (time >= this.endTime) {

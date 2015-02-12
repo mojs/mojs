@@ -110,7 +110,7 @@
         t.append([tm1, tm2]);
         return expect(t.recalcDuration).toHaveBeenCalled();
       });
-      return it('should work with array #2', function() {
+      it('should work with array #2', function() {
         var t;
         t = new Tween;
         t.append(new Timeline({
@@ -118,6 +118,20 @@
           delay: 200
         }));
         return expect(t.timelines.length).toBe(1);
+      });
+      return it('should add element index', function() {
+        var t;
+        t = new Tween;
+        t.append(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        t.append(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        expect(t.timelines[0].index).toBe(0);
+        return expect(t.timelines[1].index).toBe(1);
       });
     });
     describe('remove method ->', function() {

@@ -51,11 +51,16 @@ describe 'Tween ->', ->
       spyOn t, 'recalcDuration'
       t.append [tm1, tm2]
       expect(t.recalcDuration).toHaveBeenCalled()
-
     it 'should work with array #2',->
       t = new Tween
       t.append new Timeline duration: 1000, delay: 200
       expect(t.timelines.length).toBe 1
+    it 'should add element index',->
+      t = new Tween
+      t.append new Timeline duration: 1000, delay: 200
+      t.append new Timeline duration: 1000, delay: 200
+      expect(t.timelines[0].index).toBe 0
+      expect(t.timelines[1].index).toBe 1
 
   describe 'remove method ->', ->
     it 'should remove timeline',->

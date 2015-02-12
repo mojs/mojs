@@ -16,8 +16,8 @@ class Transit extends bitsMap.map.bit
     strokeOpacity:      1
     strokeDasharray:    ''
     strokeDashoffset:   ''
-    stroke:             'deeppink'
-    fill:               'transparent'
+    stroke:             'transparent'
+    fill:               'deeppink'
     fillOpacity:        'transparent'
     strokeLinecap:      ''
     points:             3
@@ -40,13 +40,13 @@ class Transit extends bitsMap.map.bit
     # tween props
     duration:           500
     delay:              0
-    repeat:             1
+    repeat:             0
     yoyo:               false
     easing:             'Linear.None'
   vars:->
     @h ?= h; @lastSet ?= {}
     @extendDefaults()#; @chainArr ?= [];
-    @history = []; @history.push @props
+    @history = []; @history.push @o
     @timelines = []
 
   render:()->
@@ -221,7 +221,7 @@ class Transit extends bitsMap.map.bit
       # skip props defined in skipPropsDelta map
       # needed for modules based on transit like swirl
       if @skipPropsDelta?[key] then continue
-      delta = @h.parseDelta key, optionsValue
+      delta = @h.parseDelta key, optionsValue, @defaults[key]
       # stoke-linecap filter
       if delta.type? then @deltas[key] = delta
       # and set the start value to props
@@ -236,8 +236,10 @@ class Transit extends bitsMap.map.bit
       # if this is a tween value or new value is an obect
       # then just save it
       if @h.tweenOptionMap[key] or typeof endKey is 'object'
-        o[key] = endKey or start[key]; continue
+        o[key] = if endKey? then endKey else start[key]
+        continue
       startKey = start[key]
+      startKey ?= @defaults[key]
       # if start value is object - use the end value
       if typeof startKey is 'object'
         startKeys = Object.keys(startKey); startKey = startKey[startKeys[0]]
@@ -245,13 +247,19 @@ class Transit extends bitsMap.map.bit
       else o[key] = startKey
     o
 
-  then:(o)->
+  then:(o={})->
     merged = @mergeThenOptions @history[@history.length-1], o
     @history.push merged
     # copy the tween options from passed o or current props
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
     opts[keys[i]] = merged[keys[i]] while(i--)
-    @tween.add tm = new Timeline opts
+    it = @
+    opts.onUpdate = (p)=> @setProgress p
+    opts.onStart  = -> it.tuneOptions it.history[@index]
+    @tween.append new Timeline(opts)
+    @
+
+  tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
 
   # TWEEN
   createTween:->
@@ -261,17 +269,14 @@ class Transit extends bitsMap.map.bit
     @timeline = new Timeline
       duration: @props.duration
       delay:    @props.delay
-      repeat:   @props.repeat-1
+      repeat:   @props.repeat
       yoyo:     @props.yoyo
       easing:   @props.easing
       onUpdate:   (p)=> @setProgress p
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
 
-    if !@o.isTweenLess
-      # @o.isIt and console.log @tween?
-      # @tween?.stop()
-      @tween = new Tween; @tween.add @timeline
+    if !@o.isTweenLess then @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
 
   run:(o)->
