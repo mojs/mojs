@@ -415,9 +415,10 @@ Burst = (function(_super) {
       25: 75
     },
     angle: 0,
-    duration: 600,
     size: null,
     sizeGap: 0,
+    duration: 600,
+    delay: 0,
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
@@ -562,27 +563,7 @@ Burst = (function(_super) {
 
   Burst.prototype.createTween = function() {
     var i;
-    this.tween = new Tween({
-      onUpdate: (function(_this) {
-        return function(p) {
-          var _ref;
-          _this.setProgress(p);
-          return (_ref = _this.props.onUpdate) != null ? _ref.apply(_this, arguments) : void 0;
-        };
-      })(this),
-      onComplete: (function(_this) {
-        return function() {
-          var _ref;
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this),
-      onStart: (function(_this) {
-        return function() {
-          var _ref;
-          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this)
-    });
+    Burst.__super__.createTween.apply(this, arguments);
     i = this.transits.length;
     while (i--) {
       this.tween.add(this.transits[i].timeline);
@@ -1584,8 +1565,8 @@ burst = new Burst({
   x: 300,
   y: 300,
   type: 'polygon',
-  duration: 500,
-  count: 3,
+  duration: 5000,
+  count: 30,
   isIt: true,
   radius: {
     0: 75
@@ -1594,12 +1575,7 @@ burst = new Burst({
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)',
-  angle: {
-    360: 0
-  },
-  childOptions: {
-    duration: 5000
-  }
+  delay: 2000
 });
 
 eye = document.querySelector('#js-eye');
@@ -2335,10 +2311,8 @@ Transit = (function(_super) {
         };
       })(this)
     });
-    if (!this.o.isTweenLess) {
-      this.tween = new Tween;
-      this.tween.add(this.timeline);
-    }
+    this.tween = new Tween;
+    this.tween.add(this.timeline);
     return !this.o.isRunLess && this.startTween();
   };
 
@@ -2522,14 +2496,14 @@ Tween = (function() {
     return (_ref = this.o.onStart) != null ? _ref.apply(this) : void 0;
   };
 
-  Tween.prototype.start = function(isTweenChild) {
+  Tween.prototype.start = function(time) {
     var i;
     this.prepareStart();
     i = this.timelines.length;
     while (i--) {
-      this.timelines[i].start(this.props.startTime);
+      this.timelines[i].start(time || this.props.startTime);
     }
-    !isTweenChild && t.add(this);
+    !time && t.add(this);
     return this;
   };
 

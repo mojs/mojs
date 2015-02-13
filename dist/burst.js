@@ -39,9 +39,10 @@ Burst = (function(_super) {
       25: 75
     },
     angle: 0,
-    duration: 600,
     size: null,
     sizeGap: 0,
+    duration: 600,
+    delay: 0,
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
@@ -186,27 +187,7 @@ Burst = (function(_super) {
 
   Burst.prototype.createTween = function() {
     var i;
-    this.tween = new Tween({
-      onUpdate: (function(_this) {
-        return function(p) {
-          var _ref;
-          _this.setProgress(p);
-          return (_ref = _this.props.onUpdate) != null ? _ref.apply(_this, arguments) : void 0;
-        };
-      })(this),
-      onComplete: (function(_this) {
-        return function() {
-          var _ref;
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this),
-      onStart: (function(_this) {
-        return function() {
-          var _ref;
-          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this)
-    });
+    Burst.__super__.createTween.apply(this, arguments);
     i = this.transits.length;
     while (i--) {
       this.tween.add(this.transits[i].timeline);

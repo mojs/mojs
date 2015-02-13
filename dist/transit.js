@@ -418,10 +418,8 @@ Transit = (function(_super) {
         };
       })(this)
     });
-    if (!this.o.isTweenLess) {
-      this.tween = new Tween;
-      this.tween.add(this.timeline);
-    }
+    this.tween = new Tween;
+    this.tween.add(this.timeline);
     return !this.o.isRunLess && this.startTween();
   };
 

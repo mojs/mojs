@@ -241,11 +241,11 @@
         t.start();
         return expect(tweener.add).toHaveBeenCalled();
       });
-      return it('should not add itself to tweener if isTweenChild was passed', function() {
+      return it('should not add itself to tweener if time was passed', function() {
         var t;
         t = new Tween;
         spyOn(tweener, 'add');
-        t.start(true);
+        t.start(10239123);
         return expect(tweener.add).not.toHaveBeenCalled();
       });
     });

@@ -131,10 +131,10 @@ describe 'Tween ->', ->
       spyOn tweener, 'add'
       t.start()
       expect(tweener.add).toHaveBeenCalled()
-    it 'should not add itself to tweener if isTweenChild was passed',->
+    it 'should not add itself to tweener if time was passed',->
       t = new Tween
       spyOn tweener, 'add'
-      t.start true
+      t.start 10239123
       expect(tweener.add).not.toHaveBeenCalled()
     
   describe 'stop method ->', ->

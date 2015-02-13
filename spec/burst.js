@@ -516,16 +516,10 @@
         burst = new Burst;
         return expect(burst.tween).toBeDefined();
       });
-      it('should create self timeline', function() {
-        var burst;
-        return burst = new Burst({
-          isIt: true
-        });
-      });
       it('should add timelines to tween', function() {
         var burst;
         burst = new Burst;
-        return expect(burst.tween.timelines.length).toBe(5);
+        return expect(burst.tween.timelines.length).toBe(6);
       });
       it('should call startTween method', function() {
         var burst;
@@ -556,7 +550,7 @@
         return setTimeout(function() {
           expect(burst.props.onStart).toHaveBeenCalled();
           return dfr();
-        }, 10);
+        }, 100);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
@@ -569,7 +563,7 @@
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }, 10);
+        }, 100);
       });
     });
     describe('onComplete callback ->', function() {
@@ -613,10 +607,10 @@
           duration: 20,
           onUpdate: function() {}
         });
-        spyOn(burst.props, 'onUpdate');
+        spyOn(burst, 'onUpdate');
         burst.run();
         return setTimeout(function() {
-          expect(burst.props.onUpdate).toHaveBeenCalledWith(1);
+          expect(burst.onUpdate).toHaveBeenCalledWith(1);
           return dfr();
         }, 100);
       });

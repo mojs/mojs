@@ -408,7 +408,7 @@ describe 'Transit ->', ->
       mergedOpton = byte.mergeThenOptions start, end
       expect(mergedOpton.duration).toBe 10
     it 'should fallback to default value is start is undefined', ->
-      byte = new Byte isIt: true
+      byte = new Byte
       start = radius: 10, duration: 1000
       end   = radius: 20, duration: 500, stroke: '#ff00ff'
       mergedOpton = byte.mergeThenOptions start, end
@@ -769,9 +769,9 @@ describe 'Transit ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}
       expect(byte.tween).toBeDefined()
-    it 'should not create tween object if isTweenLess', ->
-      byte = new Byte radius:  {'25': 75}, isTweenLess: true
-      expect(byte.tween).not.toBeDefined()
+    # it 'should not create tween object if isTweenLess', ->
+    #   byte = new Byte radius:  {'25': 75}, isTweenLess: true
+    #   expect(byte.tween).not.toBeDefined()
     it 'should start tween after init', (dfr)->
       isStarted = false
       byte = new Byte

@@ -28,8 +28,8 @@ burst = new Burst(
   # isRunLess: true
   x: 300, y: 300
   type: 'polygon'
-  duration: 500
-  count: 3
+  duration: 5000
+  count: 30
   isIt: true
   # isRunLess: true
   radius:      {0: 75}
@@ -37,10 +37,10 @@ burst = new Burst(
   isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
-  angle: {360: 0}
-  # delay: 2000
-  childOptions:
-    duration: 5000
+  # angle: {360: 0}
+  delay: 2000
+  # isShowInit: true
+  # childOptions: duration: 500, delay: 500
 )
 # .then(opacity: 0, radius: '75', duration: 1000, fill: 'orange')
 # .run()

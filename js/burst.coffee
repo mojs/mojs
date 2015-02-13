@@ -24,10 +24,11 @@ class Burst extends Transit
     # size props
     radius:             { 25: 75 }
     angle:              0
-    duration:           600
     size:               null
     sizeGap:            0
     # callbacks
+    duration:           600
+    delay:              0
     onStart:            null
     onComplete:         null
     onCompleteChain:    null
@@ -123,15 +124,12 @@ class Burst extends Transit
   fillTransform:->
     "rotate(#{@props.angle}deg) translate(#{@props.shiftX}, #{@props.shiftY})"
   createTween:->
-    # if !@o.isTweenLess
-    @tween = new Tween
-      onUpdate:   (p)=> @setProgress(p); @props.onUpdate?.apply @, arguments
-      onComplete: => @props.onComplete?.apply @
-      onStart:    => @props.onStart?.apply @
+    super
     i = @transits.length
     while(i--)
       @tween.add @transits[i].timeline
     !@o.isRunLess and @startTween()
+    
   calcSize:->
     largestSize = -1
     for transit, i in @transits

@@ -98,14 +98,14 @@ Tween = (function() {
     return (_ref = this.o.onStart) != null ? _ref.apply(this) : void 0;
   };
 
-  Tween.prototype.start = function(isTweenChild) {
+  Tween.prototype.start = function(time) {
     var i;
     this.prepareStart();
     i = this.timelines.length;
     while (i--) {
-      this.timelines[i].start(this.props.startTime);
+      this.timelines[i].start(time || this.props.startTime);
     }
-    !isTweenChild && t.add(this);
+    !time && t.add(this);
     return this;
   };
 

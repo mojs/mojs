@@ -43,12 +43,12 @@ class Tween
       @onUpdate? (time - @props.startTime)/@props.totalTime
   
   prepareStart:-> @isCompleted = false; @getDimentions(); @o.onStart?.apply @
-  start:(isTweenChild)->
+  start:(time)->
     @prepareStart()
     i = @timelines.length
     while(i--)
-      @timelines[i].start @props.startTime
-    !isTweenChild and t.add @
+      @timelines[i].start time or @props.startTime
+    !time and t.add @
     @
   stop:-> t.remove(@); @
   getDimentions:->

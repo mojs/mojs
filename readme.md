@@ -19,8 +19,6 @@
   - then implementation
   - then chain transform on run
 - cover raf polyfill
-- tween
-  - should accept another tweens
 - perf profile + refactor
   - elastic easing detection + add to size
 - add motion path
