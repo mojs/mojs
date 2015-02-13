@@ -98,9 +98,9 @@ module.exports = function(config) {
       'dist/transit.js',
       'spec/transit.js',
       'dist/swirl.js',
-      'spec/swirl.js',
-      'dist/tween.js',
-      'spec/tween.js'
+      'spec/swirl.js'
+      // 'dist/tween.js',
+      // 'spec/tween.js'
     ],
 
     // preprocess matching files before serving them to the browser

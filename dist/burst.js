@@ -39,6 +39,7 @@ Burst = (function(_super) {
       25: 75
     },
     angle: 0,
+    duration: 600,
     size: null,
     sizeGap: 0,
     onStart: null,

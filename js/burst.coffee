@@ -24,6 +24,7 @@ class Burst extends Transit
     # size props
     radius:             { 25: 75 }
     angle:              0
+    duration:           600
     size:               null
     sizeGap:            0
     # callbacks

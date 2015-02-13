@@ -37,8 +37,12 @@ burst = new Burst(
   isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
+  angle: {360: 0}
   # delay: 2000
-).then(opacity: 0, radius: '75', duration: 1000, fill: 'orange')
+  childOptions:
+    duration: 5000
+)
+# .then(opacity: 0, radius: '75', duration: 1000, fill: 'orange')
 # .run()
 
 

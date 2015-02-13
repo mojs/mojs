@@ -4,12 +4,12 @@ t = require './tweener'
 class Tween
   constructor:(@o={})-> @vars(); @
   vars:->
-    @timelines = []; @duration = 0; @props = {}
+    @timelines = []; @props = totalTime: 0
     @loop = h.bind @loop, @
     @onUpdate = @o.onUpdate
   add:(timeline)->
     @timelines.push timeline
-    @duration = Math.max timeline.props.totalTime, @duration
+    @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
@@ -17,39 +17,43 @@ class Tween
     if !h.isArray(timeline)
       timeline.index = @timelines.length
       @appendTimeline timeline
-      @duration = Math.max timeline.props.totalTime, @duration
+      @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
     else
       i = timeline.length
       @appendTimeline(timeline[i]) while(i--)
       @recalcDuration()
   appendTimeline:(timeline)->
-    timeline.setProp(delay: timeline.o.delay + @duration)
+    timeline.setProp(delay: timeline.o.delay + @props.totalTime)
     @timelines.push timeline
   # reset:(timeline)-> @remove(timeline); @add timeline
   recalcDuration:->
-    len = @timelines.length; @duration = 0
+    len = @timelines.length; @props.totalTime = 0
     while(len--)
       timeline  = @timelines[len]
-      @duration = Math.max timeline.props.totalTime, @duration
+      @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
   update:(time)->
     return if @isCompleted
     i = -1; len = @timelines.length-1
     while(i++ < len)
       @timelines[i].update time
-    if (time >= @endTime)
+    if (time >= @props.endTime)
       @o.onComplete?.apply(@); @onUpdate?(1)
       return @isCompleted = true
-    if time >= @startTime
-      @onUpdate? (time - @startTime)/@duration
-  start:->
-    @isCompleted = false; @getDimentions()
-    i = @timelines.length; @o.onStart?.apply @
+    if time >= @props.startTime
+      @onUpdate? (time - @props.startTime)/@props.totalTime
+  
+  prepareStart:-> @isCompleted = false; @getDimentions(); @o.onStart?.apply @
+  start:(isTweenChild)->
+    @prepareStart()
+    i = @timelines.length
     while(i--)
-      @timelines[i].start @startTime
-    t.add @
+      @timelines[i].start @props.startTime
+    !isTweenChild and t.add @
     @
   stop:-> t.remove(@); @
-  getDimentions:-> @startTime = Date.now(); @endTime = @startTime + @duration
+  getDimentions:->
+    @props.startTime = Date.now()
+    @props.endTime = @props.startTime + @props.totalTime
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

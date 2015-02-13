@@ -9,8 +9,6 @@
 - transit
   - then chain transform on run
 - burst
-  - then implementation
-  - then chain transform on run
   - opacity childOptions to burst
   - fix tween add method with parallel tweens
   - fix tween isComplete onUpdate
@@ -18,8 +16,11 @@
   - add stagger values
   - set initial progress for the childrens or hide them
   - add radiusX radiusY options
-
+  - then implementation
+  - then chain transform on run
 - cover raf polyfill
+- tween
+  - should accept another tweens
 - perf profile + refactor
   - elastic easing detection + add to size
 - add motion path

@@ -12,7 +12,7 @@
       var t;
       t = new Tween;
       expect(t.timelines.length).toBe(0);
-      return expect(t.duration).toBe(0);
+      return expect(t.props.totalTime).toBe(0);
     });
     describe('add method ->', function() {
       it('should add timeline', function() {
@@ -22,20 +22,38 @@
         expect(t.timelines.length).toBe(1);
         return expect(t.timelines[0] instanceof Timeline).toBe(true);
       });
-      return it('should calc self duration', function() {
+      it('should calc self duration', function() {
         var t;
         t = new Tween;
         t.add(new Timeline({
           duration: 500,
           delay: 200
         }));
-        expect(t.duration).toBe(700);
+        expect(t.props.totalTime).toBe(700);
         t.add(new Timeline({
           duration: 500,
           delay: 200,
           repeat: 1
         }));
-        return expect(t.duration).toBe(1400);
+        return expect(t.props.totalTime).toBe(1400);
+      });
+      return it('should work with another tweens', function() {
+        var t, t1;
+        t1 = new Tween({
+          isIt: true
+        });
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200,
+          repeat: 1
+        }));
+        t1.add(t);
+        return expect(t1.props.totalTime).toBe(1400);
       });
     });
     describe('append method ->', function() {
@@ -70,7 +88,7 @@
           duration: 500,
           delay: 500
         }));
-        return expect(t.duration).toBe(2200);
+        return expect(t.props.totalTime).toBe(2200);
       });
       it('should work with array', function() {
         var t, tm1, tm2;
@@ -89,7 +107,7 @@
         });
         t.append([tm1, tm2]);
         expect(t.timelines.length).toBe(3);
-        return expect(t.duration).toBe(2400);
+        return expect(t.props.totalTime).toBe(2400);
       });
       it('should work with array #2', function() {
         var t, tm1, tm2;
@@ -135,13 +153,23 @@
       });
     });
     describe('remove method ->', function() {
-      return it('should remove timeline', function() {
+      it('should remove timeline', function() {
         var t, timeline;
         t = new Tween;
         timeline = new Timeline;
         t.add(timeline);
         t.remove(timeline);
         return expect(t.timelines.length).toBe(0);
+      });
+      return it('should remove tween', function() {
+        var t, t1, timeline;
+        t1 = new Tween;
+        t = new Tween;
+        timeline = new Timeline;
+        t.add(timeline);
+        t1.add(t);
+        t1.remove(t);
+        return expect(t1.timelines.length).toBe(0);
       });
     });
     describe('recalcDuration method ->', function() {
@@ -157,7 +185,7 @@
         t.add(timeline);
         t.timelines.push(timeline2);
         t.recalcDuration();
-        return expect(t.duration).toBe(1000);
+        return expect(t.props.totalTime).toBe(1000);
       });
     });
     describe('start method ->', function() {
@@ -165,8 +193,28 @@
         var t;
         t = new Tween;
         t.start();
-        expect(t.startTime).toBeDefined();
-        return expect(t.endTime).toBe(t.startTime + t.duration);
+        expect(t.props.startTime).toBeDefined();
+        return expect(t.props.endTime).toBe(t.props.startTime + t.props.totalTime);
+      });
+      it('should call the prepareStart method', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, 'prepareStart');
+        t.start();
+        return expect(t.prepareStart).toHaveBeenCalled();
+      });
+      it('should restart flags', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 20
+        }));
+        t.start();
+        t.update(t.props.startTime + 5);
+        t.update(t.props.startTime + 60);
+        expect(t.isCompleted).toBe(true);
+        t.start();
+        return expect(t.isCompleted).toBe(false);
       });
       it('should start every timeline', function() {
         var t;
@@ -183,8 +231,8 @@
         spyOn(t.timelines[0], 'start');
         spyOn(t.timelines[1], 'start');
         t.start();
-        expect(t.timelines[0].start).toHaveBeenCalledWith(t.startTime);
-        return expect(t.timelines[1].start).toHaveBeenCalledWith(t.startTime);
+        expect(t.timelines[0].start).toHaveBeenCalledWith(t.props.startTime);
+        return expect(t.timelines[1].start).toHaveBeenCalledWith(t.props.startTime);
       });
       it('should add itself to tweener', function() {
         var t;
@@ -193,18 +241,12 @@
         t.start();
         return expect(tweener.add).toHaveBeenCalled();
       });
-      return it('should restart flags', function() {
+      return it('should not add itself to tweener if isTweenChild was passed', function() {
         var t;
         t = new Tween;
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.start();
-        t.update(t.startTime + 5);
-        t.update(t.startTime + 60);
-        expect(t.isCompleted).toBe(true);
-        t.start();
-        return expect(t.isCompleted).toBe(false);
+        spyOn(tweener, 'add');
+        t.start(true);
+        return expect(tweener.add).not.toHaveBeenCalled();
       });
     });
     describe('stop method ->', function() {
@@ -329,7 +371,7 @@
         }));
         spyOn(t, 'onUpdate');
         t.start();
-        t.update(t.startTime + 10);
+        t.update(t.props.startTime + 10);
         return expect(t.onUpdate).toHaveBeenCalledWith(.5);
       });
       it('should not run if time is less then startTime', function() {
@@ -342,7 +384,7 @@
         }));
         spyOn(t, 'onUpdate');
         t.start();
-        t.update(t.startTime - 10);
+        t.update(t.props.startTime - 10);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
       it('should run if time is greater then endTime', function() {
@@ -355,7 +397,7 @@
         }));
         spyOn(t, 'onUpdate');
         t.start();
-        t.update(t.startTime + 25);
+        t.update(t.props.startTime + 25);
         return expect(t.onUpdate).toHaveBeenCalledWith(1);
       });
       return it('should run if time is greater then endTime just once', function() {
@@ -370,9 +412,9 @@
           duration: 20
         }));
         t.getDimentions();
-        t.update(t.startTime + 25);
-        t.update(t.startTime + 26);
-        t.update(t.startTime + 27);
+        t.update(t.props.startTime + 25);
+        t.update(t.props.startTime + 26);
+        t.update(t.props.startTime + 27);
         return expect(cnt).toBe(1);
       });
     });
@@ -441,14 +483,14 @@
           delay: 100
         }));
         t.getDimentions();
-        t.update(t.startTime + 2000);
+        t.update(t.props.startTime + 2000);
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
-        t.update(t.startTime + 2000);
+        t.update(t.props.startTime + 2000);
         expect(t.timelines[0].update).not.toHaveBeenCalled();
         return expect(t.timelines[1].update).not.toHaveBeenCalled();
       });
-      return it('should return true is ended', function() {
+      it('should return true is ended', function() {
         var t;
         t = new Tween;
         t.add(new Timeline({
@@ -461,6 +503,44 @@
         }));
         t.start();
         return expect(t.update(Date.now() + 2000)).toBe(true);
+      });
+      return it('should work with tweens', function() {
+        var t, t1, t2, ti1, ti2, ti3, ti4, time;
+        t = new Tween;
+        t1 = new Tween;
+        t2 = new Tween;
+        ti1 = new Timeline({
+          duration: 500,
+          delay: 200
+        });
+        spyOn(ti1, 'update');
+        ti2 = new Timeline({
+          duration: 500,
+          delay: 100
+        });
+        spyOn(ti2, 'update');
+        ti3 = new Timeline({
+          duration: 100,
+          delay: 0
+        });
+        spyOn(ti3, 'update');
+        ti4 = new Timeline({
+          duration: 800,
+          delay: 500
+        });
+        spyOn(ti4, 'update');
+        t1.add(ti1);
+        t1.add(ti2);
+        t2.add(ti3);
+        t2.add(ti4);
+        t.add(t1);
+        t.add(t2);
+        t.start();
+        t.update(time = t.props.startTime + 300);
+        expect(ti1.update).toHaveBeenCalledWith(time);
+        expect(ti2.update).toHaveBeenCalledWith(time);
+        expect(ti3.update).toHaveBeenCalledWith(time);
+        return expect(ti4.update).toHaveBeenCalledWith(time);
       });
     });
   });
