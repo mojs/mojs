@@ -23,6 +23,10 @@
   - elastic easing detection + add to size
 - add motion path
   - add movement arc
+
+- tween
+  - add setProgress function
+
 - add more shapes(bits)
 - add line animator
 - :: demo
