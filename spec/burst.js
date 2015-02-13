@@ -631,6 +631,32 @@
         }), 100);
       });
     });
+    describe('then method ->', function() {
+      return it('should call then method on every transit', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            20: 50
+          },
+          count: 2,
+          duration: 10,
+          childOptions: {
+            duration: [null, 200]
+          }
+        });
+        spyOn(burst.transits[0], 'then');
+        spyOn(burst.transits[1], 'then');
+        burst.then({
+          radius: 0
+        });
+        expect(burst.transits[0].then).toHaveBeenCalledWith({
+          duration: 10
+        });
+        return expect(burst.transits[1].then).toHaveBeenCalledwith({
+          duration: 200
+        });
+      });
+    });
     describe('run method ->', function() {
       it('should call extendDefaults', function() {
         var burst, o;

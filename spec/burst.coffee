@@ -233,7 +233,6 @@ describe 'Burst ->', ->
       expect(option1.radius[7]).toBe 0
       expect(option7.radius[7]).toBe 0
       expect(option8.radius[7]).toBe 0
-
     it 'should have parent only options ->', ->
       burst = new Burst
         radius: { 'rand(10,20)': 100 }
@@ -247,6 +246,16 @@ describe 'Burst ->', ->
       expect(option0.onUpdate)  .toBe null
       expect(option0.onStart)   .toBe null
       expect(option0.onComplete).toBe null
+    # it 'should recieve options object ->', ->
+    #   burst = new Burst
+    #     childOptions: radius: [ { 20: 50}, 20, '500' ]
+    #   o = childOptions: radius: [ { 20: 51}, 21, '501' ]
+    #   option0 = burst.getOption 0, o
+    #   option1 = burst.getOption 1, o
+    #   option7 = burst.getOption 7, o
+    #   expect(option0.radius[20]).toBe 51
+    #   expect(option1.radius)    .toBe 21
+    #   expect(option7.radius)    .toBe 21
 
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->
@@ -409,12 +418,20 @@ describe 'Burst ->', ->
       burst.run()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
   
-  # describe 'then method ->', ->
-  #   it 'should call then method on every transit', ->
-  #     burst = new Burst radius: { 20: 50 }
-  #     spyOn burst.transits[0], 'then'
-  #     burst.then radius: 0
-  #     expect(burst.transits[0].then).toHaveBeenCalled()
+  describe 'then method ->', ->
+    it 'should call then method on every transit', ->
+      burst = new Burst
+        radius: { 20: 50 }, count: 2
+        duration: 10
+        childOptions:
+          duration: [null, 200]
+      spyOn burst.transits[0], 'then'
+      spyOn burst.transits[1], 'then'
+      burst.then radius: 0
+      expect(burst.transits[0].then).toHaveBeenCalledWith duration: 10
+      expect(burst.transits[1].then).toHaveBeenCalledwith duration: 200
+
+
 
   describe 'run method ->', ->
     it 'should call extendDefaults', ->

@@ -149,7 +149,7 @@ class Burst extends Transit
     option = {}
     for key, value of @childDefaults
       # firstly try to find the prop in @o.childOptions
-      option[key]  = @getPropByMod key: key, i: i
+      option[key]  = @getPropByMod key: key, i: i, from: @o.childOptions
       # if fail
       # if the same option could be defined for parent and child
       # get the option from childDefaults and continue
@@ -173,7 +173,14 @@ class Burst extends Transit
     start = if randomness then (1-randomness)*100 else (1-.5)*100
     @h.rand(start, 100)/100
 
-  # then:(o)->
+  then:(o)->
+    # 1. merge @o and o
+    # 2. get i option from merged object
+    # 3. pass the object to transit then
+    # i = @transits.length
+    # while(i--)
+    #   @transits[i].then(o)
+
     
 
 ### istanbul ignore next ###

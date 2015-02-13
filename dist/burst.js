@@ -238,7 +238,8 @@ Burst = (function(_super) {
       value = _ref[key];
       option[key] = this.getPropByMod({
         key: key,
-        i: i
+        i: i,
+        from: this.o.childOptions
       });
       if (this.optionsIntersection[key]) {
         if (option[key] == null) {
@@ -292,6 +293,8 @@ Burst = (function(_super) {
     start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
     return this.h.rand(start, 100) / 100;
   };
+
+  Burst.prototype.then = function(o) {};
 
   return Burst;
 
