@@ -453,7 +453,7 @@
         return expect(isRightScope).toBe(true);
       });
     });
-    return describe('update method ->', function() {
+    describe('update method ->', function() {
       it('should update the current time on every timeline', function() {
         var t, time;
         t = new Tween;
@@ -541,6 +541,111 @@
         expect(ti2.update).toHaveBeenCalledWith(time);
         expect(ti3.update).toHaveBeenCalledWith(time);
         return expect(ti4.update).toHaveBeenCalledWith(time);
+      });
+    });
+    return describe('setProgress method ->', function() {
+      it('should call the update on every child with progress time', function() {
+        var t, t1, t2, ti1, ti2, ti3, ti4, time;
+        t = new Tween;
+        t1 = new Tween;
+        t2 = new Tween;
+        ti1 = new Timeline({
+          duration: 500,
+          delay: 200
+        });
+        spyOn(ti1, 'update');
+        ti2 = new Timeline({
+          duration: 500,
+          delay: 100
+        });
+        spyOn(ti2, 'update');
+        ti3 = new Timeline({
+          duration: 100,
+          delay: 0
+        });
+        spyOn(ti3, 'update');
+        ti4 = new Timeline({
+          duration: 800,
+          delay: 500
+        });
+        spyOn(ti4, 'update');
+        t1.add(ti1);
+        t1.add(ti2);
+        t2.add(ti3);
+        t2.add(ti4);
+        t.add(t1);
+        t.add(t2);
+        t.prepareStart();
+        t.startTimelines();
+        t.setProgress(.5);
+        time = t.props.startTime + 650;
+        expect(ti1.update).toHaveBeenCalledWith(time);
+        expect(ti2.update).toHaveBeenCalledWith(time);
+        expect(ti3.update).toHaveBeenCalledWith(time);
+        return expect(ti4.update).toHaveBeenCalledWith(time);
+      });
+      it('should call self update', function() {
+        var t, t1, t2, ti1, ti2, ti3, ti4;
+        t = new Tween;
+        t1 = new Tween;
+        t2 = new Tween;
+        ti1 = new Timeline({
+          duration: 500,
+          delay: 200
+        });
+        ti2 = new Timeline({
+          duration: 500,
+          delay: 100
+        });
+        ti3 = new Timeline({
+          duration: 100,
+          delay: 0
+        });
+        ti4 = new Timeline({
+          duration: 800,
+          delay: 500
+        });
+        t1.add(ti1);
+        t1.add(ti2);
+        t2.add(ti3);
+        t2.add(ti4);
+        t.add(t1);
+        t.add(t2);
+        t.prepareStart();
+        t.startTimelines();
+        spyOn(t, 'update');
+        t.setProgress(.5);
+        return expect(t.update).toHaveBeenCalledWith(t.props.startTime + 650);
+      });
+      it('should not set the progress more then 1', function() {
+        var t, t1;
+        t = new Tween;
+        t1 = new Tween;
+        t1.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(t1);
+        t.prepareStart();
+        t.startTimelines();
+        spyOn(t, 'update');
+        t.setProgress(1.5);
+        return expect(t.update).toHaveBeenCalledWith(t.props.startTime + t.props.totalTime);
+      });
+      return it('should not set the progress less then 0', function() {
+        var t, t1;
+        t = new Tween;
+        t1 = new Tween;
+        t1.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(t1);
+        t.prepareStart();
+        t.startTimelines();
+        spyOn(t, 'update');
+        t.setProgress(-1.5);
+        return expect(t.update).toHaveBeenCalledWith(t.props.startTime);
       });
     });
   });

@@ -43,17 +43,24 @@ class Tween
       @onUpdate? (time - @props.startTime)/@props.totalTime
   
   prepareStart:-> @isCompleted = false; @getDimentions(); @o.onStart?.apply @
-  start:(time)->
-    @prepareStart()
+  startTimelines:(time)->
     i = @timelines.length
     while(i--)
       @timelines[i].start time or @props.startTime
+  start:(time)->
+    @prepareStart()
+    @startTimelines time
     !time and t.add @
     @
   stop:-> t.remove(@); @
   getDimentions:->
     @props.startTime = Date.now()
     @props.endTime = @props.startTime + @props.totalTime
+
+  setProgress:(progress)->
+    progress = Math.max progress, 0
+    progress = Math.min progress, 1
+    @update @props.startTime + progress*@props.totalTime
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
@@ -63,5 +70,6 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = Tween
 ### istanbul ignore next ###
 window?.mojs ?= {}
+### istanbul ignore next ###
 window?.mojs.Tween = Tween
 

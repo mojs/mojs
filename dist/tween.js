@@ -98,13 +98,19 @@ Tween = (function() {
     return (_ref = this.o.onStart) != null ? _ref.apply(this) : void 0;
   };
 
-  Tween.prototype.start = function(time) {
-    var i;
-    this.prepareStart();
+  Tween.prototype.startTimelines = function(time) {
+    var i, _results;
     i = this.timelines.length;
+    _results = [];
     while (i--) {
-      this.timelines[i].start(time || this.props.startTime);
+      _results.push(this.timelines[i].start(time || this.props.startTime));
     }
+    return _results;
+  };
+
+  Tween.prototype.start = function(time) {
+    this.prepareStart();
+    this.startTimelines(time);
     !time && t.add(this);
     return this;
   };
@@ -117,6 +123,12 @@ Tween = (function() {
   Tween.prototype.getDimentions = function() {
     this.props.startTime = Date.now();
     return this.props.endTime = this.props.startTime + this.props.totalTime;
+  };
+
+  Tween.prototype.setProgress = function(progress) {
+    progress = Math.max(progress, 0);
+    progress = Math.min(progress, 1);
+    return this.update(this.props.startTime + progress * this.props.totalTime);
   };
 
   return Tween;
@@ -147,6 +159,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;

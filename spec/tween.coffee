@@ -283,3 +283,60 @@ describe 'Tween ->', ->
       expect(ti3.update).toHaveBeenCalledWith time
       expect(ti4.update).toHaveBeenCalledWith time
 
+  describe 'setProgress method ->', ->
+    it 'should call the update on every child with progress time', ->
+      t   = new Tween
+      t1  = new Tween
+      t2  = new Tween
+      ti1 = new Timeline duration: 500, delay: 200
+      spyOn ti1, 'update'
+      ti2 = new Timeline duration: 500, delay: 100
+      spyOn ti2, 'update'
+      ti3 = new Timeline duration: 100, delay: 0
+      spyOn ti3, 'update'
+      ti4 = new Timeline duration: 800, delay: 500
+      spyOn ti4, 'update'
+      t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
+      t.add(t1); t.add(t2)
+      t.prepareStart(); t.startTimelines()
+      t.setProgress .5
+      time = t.props.startTime + 650
+      expect(ti1.update).toHaveBeenCalledWith time
+      expect(ti2.update).toHaveBeenCalledWith time
+      expect(ti3.update).toHaveBeenCalledWith time
+      expect(ti4.update).toHaveBeenCalledWith time
+    it 'should call self update', ->
+      t   = new Tween
+      t1  = new Tween
+      t2  = new Tween
+      ti1 = new Timeline duration: 500, delay: 200
+      ti2 = new Timeline duration: 500, delay: 100
+      ti3 = new Timeline duration: 100, delay: 0
+      ti4 = new Timeline duration: 800, delay: 500
+      t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
+      t.add(t1); t.add(t2)
+      t.prepareStart(); t.startTimelines()
+      spyOn t, 'update'
+      t.setProgress .5
+      expect(t.update).toHaveBeenCalledWith t.props.startTime + 650
+    it 'should not set the progress more then 1', ->
+      t   = new Tween; t1  = new Tween
+      t1.add new Timeline duration: 500, delay: 200
+      t.add(t1); t.prepareStart(); t.startTimelines()
+      spyOn t, 'update'
+      t.setProgress 1.5
+      expect(t.update).toHaveBeenCalledWith t.props.startTime + t.props.totalTime
+    it 'should not set the progress less then 0', ->
+      t   = new Tween; t1  = new Tween
+      t1.add new Timeline duration: 500, delay: 200
+      t.add(t1); t.prepareStart(); t.startTimelines()
+      spyOn t, 'update'
+      t.setProgress -1.5
+      expect(t.update).toHaveBeenCalledWith t.props.startTime
+      
+
+
+
+      
+
+

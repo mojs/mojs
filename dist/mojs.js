@@ -1549,7 +1549,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
+var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil, slider;
 
 Burst = require('./burst');
 
@@ -1566,16 +1566,26 @@ burst = new Burst({
   y: 300,
   type: 'polygon',
   duration: 5000,
-  count: 30,
+  count: 3,
   isIt: true,
+  isRunLess: true,
   radius: {
     0: 75
   },
   points: 5,
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)',
-  delay: 2000
+  swirlSize: 'rand(0,10)'
+});
+
+burst.tween.prepareStart();
+
+burst.tween.startTimelines();
+
+slider = document.getElementById('js-slider');
+
+slider.addEventListener('input', function(e) {
+  return burst.tween.setProgress(this.value / 1000);
 });
 
 eye = document.querySelector('#js-eye');
@@ -2496,13 +2506,19 @@ Tween = (function() {
     return (_ref = this.o.onStart) != null ? _ref.apply(this) : void 0;
   };
 
-  Tween.prototype.start = function(time) {
-    var i;
-    this.prepareStart();
+  Tween.prototype.startTimelines = function(time) {
+    var i, _results;
     i = this.timelines.length;
+    _results = [];
     while (i--) {
-      this.timelines[i].start(time || this.props.startTime);
+      _results.push(this.timelines[i].start(time || this.props.startTime));
     }
+    return _results;
+  };
+
+  Tween.prototype.start = function(time) {
+    this.prepareStart();
+    this.startTimelines(time);
     !time && t.add(this);
     return this;
   };
@@ -2515,6 +2531,12 @@ Tween = (function() {
   Tween.prototype.getDimentions = function() {
     this.props.startTime = Date.now();
     return this.props.endTime = this.props.startTime + this.props.totalTime;
+  };
+
+  Tween.prototype.setProgress = function(progress) {
+    progress = Math.max(progress, 0);
+    progress = Math.min(progress, 1);
+    return this.update(this.props.startTime + progress * this.props.totalTime);
   };
 
   return Tween;
@@ -2545,6 +2567,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;
