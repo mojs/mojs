@@ -110,8 +110,7 @@
 	              "Calendar"
 	            )
 	          )
-	        ),
-	        "Logged in as Jane"
+	        )
 	      ),
 	      React.createElement(RouteHandler, null)
 	    );

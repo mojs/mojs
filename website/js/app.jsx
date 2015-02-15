@@ -6,7 +6,13 @@ var Link = Router.Link;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
+var MyRouterHandler = React.createClass({
+  render: function () {
+    return this.createChildRouteHandler();
+  }
+});
 
+console.log(<MyRouterHandler/>)
 // require('../css/main.styl');
 React.initializeTouchEvents(true);
 
@@ -20,11 +26,8 @@ let App = React.createClass({
             <li><Link to="inbox">Inbox</Link></li>
             <li><Link to="calendar">Calendar</Link></li>
           </ul>
-          Logged in as Jane
         </header>
-
-        {/* this is the important part */}
-        <RouteHandler/>
+        <MyRouterHandler/>
       </div>
     );
   }
@@ -33,12 +36,18 @@ let App = React.createClass({
 let Inbox = React.createClass({
   render: function() {
     return <div>Inbox</div>
-  }
+  },
+  componentWillUnmount: function () {
+    console.log('inbox: unmount')  
+  },
 });
 
 let Calendar = React.createClass({
   render: function() {
-    return <div>Calendar</div>
+    return <div>Calendar</div>;
+  },
+  componentWillUnmount: function () {
+    console.log('calendar: unmount')  
   }
 });
 
@@ -49,10 +58,10 @@ let Dashboard = React.createClass({
 });
 
 var routes = (
-  <Route name="app" path="/" handler={App}>
+  <Route name="app" path="/app" handler={App}>
     <Route name="inbox" handler={Inbox}/>
     <Route name="calendar" handler={Calendar}/>
-    <Route name="dashboard" path="/dashboard" handler={Dashboard}></Route>
+    // <Route name="dashboard" path="/dashboard" handler={Dashboard}></Route>
     <DefaultRoute handler={Dashboard}/>
   </Route>
 );
