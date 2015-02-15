@@ -23,5 +23,8 @@
     "stylus-loader": "^0.5.0",
     "webpack": "^1.4.15",
     "webpack-dev-server": "^1.6.5"
+  },
+  "dependencies": {
+    "react-router": "^0.12.0"
   }
 }
