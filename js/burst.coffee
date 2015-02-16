@@ -176,6 +176,7 @@ class Burst extends Transit
     # 1. merge @o and o
     # 2. get i option from merged object
     # 3. pass the object to transit then
+    # 4. transform self chain on run
     # i = @transits.length
     # while(i--)
     #   @transits[i].then(o)

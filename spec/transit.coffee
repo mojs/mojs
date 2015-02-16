@@ -77,6 +77,46 @@ describe 'Transit ->', ->
       byte.run radius: 10
       expect(byte.history[0].radius).toBe 10
 
+  describe 'transformHistory method->', ->
+    it 'should add new options to the history', ->
+      byte = new Byte isRunLess: true
+      byte.then radius: 0
+      byte.transformHistory x: 20
+      expect(byte.history[1].x).toBe 20
+
+    it 'should rewrite options in the history', ->
+      byte = new Byte isRunLess: true, x: 200
+      byte.then radius: 0
+      byte.transformHistory x: 100
+      expect(byte.history[1].x).toBe 100
+
+    it 'should stop rewriting if further option is defined', ->
+      byte = new Byte isRunLess: true, x: 200
+        .then radius: 0
+        .then radius: 0, x: 20
+
+      byte.transformHistory x: 100
+      expect(byte.history[1].x)     .toBe 100
+      expect(byte.history[2].x[100]).toBe 20
+      expect(byte.history[2].x[200]).not.toBeDefined()
+
+    it 'should stop rewriting if further option is defined', ->
+      byte = new Byte isRunLess: true, x: 200
+        .then radius: 0
+        .then radius: 0, x: 20
+        .then radius: 0, x: 10
+
+      byte.transformHistory x: 100
+      expect(byte.history[3].x[20]).toBe 10
+    it 'should rewrite until defined if object was passed', ->
+      byte = new Byte isRunLess: true, x: 200
+        .then radius: 0
+        .then radius: 0, x: 20
+
+      byte.transformHistory x: {100: 50}
+      expect(byte.history[1].x[100]).toBe 50
+      expect(byte.history[2].x[50]).toBe 20
+
   describe 'then method ->', ->
     it 'should add new timeline with options', ->
       byte = new Byte radius: 20, duration: 1000
@@ -883,16 +923,18 @@ describe 'Transit ->', ->
       byte.run duration: 2000
       expect(byte.tween.recalcDuration).toHaveBeenCalled()
 
+    it 'should call transformHistory', ->
+      byte = new Byte
+      spyOn byte, 'transformHistory'
+      o = duration: 2000
+      byte.run o
+      expect(byte.transformHistory).toHaveBeenCalledWith o
 
-
-
-
-
-
-
-
-
-
+    it 'should not call transformHistory if optionless', ->
+      byte = new Byte
+      spyOn byte, 'transformHistory'
+      byte.run()
+      expect(byte.transformHistory).not.toHaveBeenCalled()
 
 
 

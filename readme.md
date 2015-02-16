@@ -6,8 +6,6 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- transit
-  - then chain transform on run
 - burst
   - opacity childOptions to burst
   - fix tween add method with parallel tweens
@@ -17,16 +15,11 @@
   - set initial progress for the childrens or hide them
   - add radiusX radiusY options
   - then implementation
-  - then chain transform on run
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size
 - add motion path
   - add movement arc
-
-- tween
-  - add setProgress function
-
 - add more shapes(bits)
 - add line animator
 - :: demo

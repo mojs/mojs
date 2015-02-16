@@ -260,9 +260,7 @@ class Transit extends bitsMap.map.bit
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     @tween.append new Timeline(opts)
     @
-
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
-
   # TWEEN
   createTween:->
     it = @
@@ -281,9 +279,40 @@ class Transit extends bitsMap.map.bit
     !@o.isRunLess and @startTween()
 
   run:(o)->
+    o and @transformHistory(o)
     @tuneNewOption(o); @history[0] = @o
     !@o.isDrawLess and @setProgress(0, true)
     @startTween()
+
+  # add new options to history on run call
+  transformHistory:(o)->
+    keys = Object.keys(o); i = -1
+    len = keys.length; historyLen = @history.length
+    # loop over the passed options
+    while(++i < len)
+      key = keys[i]; j = 0
+      # loop over the history skipping the firts item
+      while(++j < historyLen)
+        optionRecord = @history[j][key]
+        if optionRecord?
+          # if history record is object
+          if typeof optionRecord is 'object'
+            # get the end value and delete the record
+            valueKeys = Object.keys(optionRecord)
+            value = optionRecord[valueKeys[0]]
+            delete @history[j][key][valueKeys[0]]
+            # if delta in history and object in passed value
+            # :: new {100: 50} was {200: 40}
+            if typeof o[key] is 'object'
+              valueKeys2 = Object.keys(o[key])
+              value2 = o[key][valueKeys2[0]]
+              @history[j][key][value2] = value
+            # :: new 20 was {200: 40}
+            else @history[j][key][o[key]] = value
+            break
+          else @history[j][key] = o[key]
+        else @history[j][key] = o[key]
+
   tuneNewOption:(o, isForeign)->
     # if type is defined and it's different
     # than the current type - warn and delete

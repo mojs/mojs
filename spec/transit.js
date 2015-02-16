@@ -145,6 +145,91 @@
         return expect(byte.history[0].radius).toBe(10);
       });
     });
+    describe('transformHistory method->', function() {
+      it('should add new options to the history', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true
+        });
+        byte.then({
+          radius: 0
+        });
+        byte.transformHistory({
+          x: 20
+        });
+        return expect(byte.history[1].x).toBe(20);
+      });
+      it('should rewrite options in the history', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          x: 200
+        });
+        byte.then({
+          radius: 0
+        });
+        byte.transformHistory({
+          x: 100
+        });
+        return expect(byte.history[1].x).toBe(100);
+      });
+      it('should stop rewriting if further option is defined', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          x: 200
+        }).then({
+          radius: 0
+        }).then({
+          radius: 0,
+          x: 20
+        });
+        byte.transformHistory({
+          x: 100
+        });
+        expect(byte.history[1].x).toBe(100);
+        expect(byte.history[2].x[100]).toBe(20);
+        return expect(byte.history[2].x[200]).not.toBeDefined();
+      });
+      it('should stop rewriting if further option is defined', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          x: 200
+        }).then({
+          radius: 0
+        }).then({
+          radius: 0,
+          x: 20
+        }).then({
+          radius: 0,
+          x: 10
+        });
+        byte.transformHistory({
+          x: 100
+        });
+        return expect(byte.history[3].x[20]).toBe(10);
+      });
+      return it('should rewrite until defined if object was passed', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          x: 200
+        }).then({
+          radius: 0
+        }).then({
+          radius: 0,
+          x: 20
+        });
+        byte.transformHistory({
+          x: {
+            100: 50
+          }
+        });
+        expect(byte.history[1].x[100]).toBe(50);
+        return expect(byte.history[2].x[50]).toBe(20);
+      });
+    });
     describe('then method ->', function() {
       it('should add new timeline with options', function() {
         var byte;
@@ -1676,7 +1761,7 @@
         expect(byte.timeline.o.onComplete).toBe(onComplete);
         return expect(byte.timeline.o.yoyo).toBe(false);
       });
-      return it('should call recalcDuration on tween', function() {
+      it('should call recalcDuration on tween', function() {
         var byte;
         byte = new Byte;
         spyOn(byte.tween, 'recalcDuration');
@@ -1684,6 +1769,23 @@
           duration: 2000
         });
         return expect(byte.tween.recalcDuration).toHaveBeenCalled();
+      });
+      it('should call transformHistory', function() {
+        var byte, o;
+        byte = new Byte;
+        spyOn(byte, 'transformHistory');
+        o = {
+          duration: 2000
+        };
+        byte.run(o);
+        return expect(byte.transformHistory).toHaveBeenCalledWith(o);
+      });
+      return it('should not call transformHistory if optionless', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, 'transformHistory');
+        byte.run();
+        return expect(byte.transformHistory).not.toHaveBeenCalled();
       });
     });
   });

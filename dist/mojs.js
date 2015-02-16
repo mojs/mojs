@@ -1550,7 +1550,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil, slider;
+var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
 
 Burst = require('./burst');
 
@@ -1562,13 +1562,14 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Burst({
+burst = new Transit({
   x: 300,
   y: 300,
-  type: 'polygon',
+  type: 'circle',
   duration: 500,
   count: 3,
   isIt: true,
+  isRunLess: true,
   radius: {
     0: 75
   },
@@ -1576,19 +1577,14 @@ burst = new Burst({
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)',
-  onComplete: function() {
-    return console.log('onComplete');
-  }
+  delay: 2000
+}).then({
+  radius: 0,
+  delay: 0
 });
 
-burst.tween.prepareStart();
-
-burst.tween.startTimelines();
-
-slider = document.getElementById('js-slider');
-
-slider.addEventListener('input', function(e) {
-  return burst.tween.setProgress(this.value / 1000);
+burst.run({
+  x: 100
 });
 
 eye = document.querySelector('#js-eye');
@@ -2324,10 +2320,52 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.run = function(o) {
+    o && this.transformHistory(o);
     this.tuneNewOption(o);
     this.history[0] = this.o;
     !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
+  };
+
+  Transit.prototype.transformHistory = function(o) {
+    var historyLen, i, j, key, keys, len, optionRecord, value, value2, valueKeys, valueKeys2, _results;
+    keys = Object.keys(o);
+    i = -1;
+    len = keys.length;
+    historyLen = this.history.length;
+    _results = [];
+    while (++i < len) {
+      key = keys[i];
+      j = 0;
+      _results.push((function() {
+        var _results1;
+        _results1 = [];
+        while (++j < historyLen) {
+          optionRecord = this.history[j][key];
+          if (optionRecord != null) {
+            if (typeof optionRecord === 'object') {
+              valueKeys = Object.keys(optionRecord);
+              value = optionRecord[valueKeys[0]];
+              delete this.history[j][key][valueKeys[0]];
+              if (typeof o[key] === 'object') {
+                valueKeys2 = Object.keys(o[key]);
+                value2 = o[key][valueKeys2[0]];
+                this.history[j][key][value2] = value;
+              } else {
+                this.history[j][key][o[key]] = value;
+              }
+              break;
+            } else {
+              _results1.push(this.history[j][key] = o[key]);
+            }
+          } else {
+            _results1.push(this.history[j][key] = o[key]);
+          }
+        }
+        return _results1;
+      }).call(this));
+    }
+    return _results;
   };
 
   Transit.prototype.tuneNewOption = function(o, isForeign) {
