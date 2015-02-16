@@ -32,7 +32,6 @@ class Tween
       timeline  = @timelines[len]
       @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
   update:(time)->
-    console.log time
     # react only on endTime max
     if time > @props.endTime then time = @props.endTime
     # if isn't complete

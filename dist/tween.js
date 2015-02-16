@@ -69,7 +69,6 @@ Tween = (function() {
 
   Tween.prototype.update = function(time) {
     var i, len, _ref;
-    console.log(time);
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }

@@ -78,10 +78,7 @@ Tweener = (function() {
     _results = [];
     while (i--) {
       if (this.tweens[i].update(time) === true) {
-        console.log('remove');
-      }
-      if (this.tweens[i].update(time) === true) {
-        _results.push(this.remove(this.tweens[i]));
+        _results.push(this.remove(i));
       } else {
         _results.push(void 0);
       }
@@ -100,7 +97,7 @@ Tweener = (function() {
 
   Tweener.prototype.remove = function(tween) {
     var index;
-    index = this.tweens.indexOf(tween);
+    index = typeof tween === 'number' ? tween : this.tweens.indexOf(tween);
     if (index !== -1) {
       return this.tweens.splice(index, 1);
     }

@@ -71,6 +71,13 @@ describe 'Twenner ->', ->
       expect(t.tweens.length).toBe 2
       t.remove t2
       expect(t.tweens.length).toBe 1
+    it 'should be able to remove by i', ->
+      t1 = new Tween; t2 = new Tween
+      t.add t1; t.add t2
+      expect(t.tweens.length).toBe 2
+      t.remove 1
+      expect(t.tweens.length).toBe 1
+      expect(t.tweens[0])    .toBe t1
   describe 'removeAll method ->', ->
     it 'should remove all tweens', ->
       t1 = new Tween; t2 = new Tween

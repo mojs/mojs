@@ -100,7 +100,7 @@
       });
     });
     describe('remove method ->', function() {
-      return it('should remove a tween', function() {
+      it('should remove a tween', function() {
         var t1, t2;
         t1 = new Tween;
         t2 = new Tween;
@@ -109,6 +109,17 @@
         expect(t.tweens.length).toBe(2);
         t.remove(t2);
         return expect(t.tweens.length).toBe(1);
+      });
+      return it('should be able to remove by i', function() {
+        var t1, t2;
+        t1 = new Tween;
+        t2 = new Tween;
+        t.add(t1);
+        t.add(t2);
+        expect(t.tweens.length).toBe(2);
+        t.remove(1);
+        expect(t.tweens.length).toBe(1);
+        return expect(t.tweens[0]).toBe(t1);
       });
     });
     describe('removeAll method ->', function() {
