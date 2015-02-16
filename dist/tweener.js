@@ -78,6 +78,9 @@ Tweener = (function() {
     _results = [];
     while (i--) {
       if (this.tweens[i].update(time) === true) {
+        console.log('remove');
+      }
+      if (this.tweens[i].update(time) === true) {
         _results.push(this.remove(this.tweens[i]));
       } else {
         _results.push(void 0);

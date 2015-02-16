@@ -32,17 +32,20 @@ class Tween
       timeline  = @timelines[len]
       @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
   update:(time)->
-    return if @isCompleted
-    i = -1; len = @timelines.length-1
-    while(i++ < len)
-      @timelines[i].update time
-    if (time >= @props.endTime)
-      @o.onComplete?.apply(@); @onUpdate?(1)
-      return @isCompleted = true
-    if time >= @props.startTime
+    console.log time
+    # react only on endTime max
+    if time > @props.endTime then time = @props.endTime
+    # if isn't complete
+    if time >= @props.startTime and time < @props.endTime
       @onUpdate? (time - @props.startTime)/@props.totalTime
+    # update self timelines
+    i = -1; len = @timelines.length-1
+    @timelines[i].update(time) while(i++ < len)
+    # if completed
+    if time is @props.endTime
+      @o.onComplete?.apply(@); @onUpdate?(1); return true
   
-  prepareStart:-> @isCompleted = false; @getDimentions(); @o.onStart?.apply @
+  prepareStart:-> @getDimentions(); @o.onStart?.apply @
   startTimelines:(time)->
     i = @timelines.length
     while(i--)

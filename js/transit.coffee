@@ -157,7 +157,7 @@ class Transit extends bitsMap.map.bit
     # calc the curent value from deltas
     @calcCurrentProps(progress); @calcOrigin()
     @draw(progress)
-    if progress is 1 then @props.onComplete?.call(@)#;  @runChain();
+    # if progress is 1 then @props.onComplete?.call(@)#;  @runChain();
     @
 
   calcCurrentProps:(progress)->

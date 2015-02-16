@@ -69,31 +69,33 @@ Tween = (function() {
 
   Tween.prototype.update = function(time) {
     var i, len, _ref;
-    if (this.isCompleted) {
-      return;
+    console.log(time);
+    if (time > this.props.endTime) {
+      time = this.props.endTime;
+    }
+    if (time >= this.props.startTime && time < this.props.endTime) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
+      }
     }
     i = -1;
     len = this.timelines.length - 1;
     while (i++ < len) {
       this.timelines[i].update(time);
     }
-    if (time >= this.props.endTime) {
+    if (time === this.props.endTime) {
       if ((_ref = this.o.onComplete) != null) {
         _ref.apply(this);
       }
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);
       }
-      return this.isCompleted = true;
-    }
-    if (time >= this.props.startTime) {
-      return typeof this.onUpdate === "function" ? this.onUpdate((time - this.props.startTime) / this.props.totalTime) : void 0;
+      return true;
     }
   };
 
   Tween.prototype.prepareStart = function() {
     var _ref;
-    this.isCompleted = false;
     this.getDimentions();
     return (_ref = this.o.onStart) != null ? _ref.apply(this) : void 0;
   };

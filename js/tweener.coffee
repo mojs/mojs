@@ -34,7 +34,6 @@ class Tweener
     return if !@isRunning
     time  = Date.now(); @update time
     if !@tweens.length then return @isRunning = false
-    # if time >= @endTime then @isRunning = false; return @o.onComplete?.apply @
     requestAnimationFrame @loop
     @
   startLoop:->
@@ -44,6 +43,7 @@ class Tweener
   update:(time)->
     i = @tweens.length
     while(i--)
+      if @tweens[i].update(time) is true then console.log 'remove'
       @remove(@tweens[i]) if @tweens[i].update(time) is true
   add:(tween)-> @tweens.push(tween); @startLoop()
   # cover

@@ -562,13 +562,14 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.createTween = function() {
-    var i;
+    var i, _results;
     Burst.__super__.createTween.apply(this, arguments);
     i = this.transits.length;
+    _results = [];
     while (i--) {
-      this.tween.add(this.transits[i].timeline);
+      _results.push(this.tween.add(this.transits[i].timeline));
     }
-    return !this.o.isRunLess && this.startTween();
+    return _results;
   };
 
   Burst.prototype.calcSize = function() {
@@ -1565,17 +1566,19 @@ burst = new Burst({
   x: 300,
   y: 300,
   type: 'polygon',
-  duration: 5000,
+  duration: 500,
   count: 3,
   isIt: true,
-  isRunLess: true,
   radius: {
     0: 75
   },
   points: 5,
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)'
+  swirlSize: 'rand(0,10)',
+  onComplete: function() {
+    return console.log('onComplete');
+  }
 });
 
 burst.tween.prepareStart();
@@ -2108,7 +2111,6 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress, isShow) {
-    var _ref;
     if (!isShow) {
       this.show();
       if (typeof this.onUpdate === "function") {
@@ -2119,11 +2121,6 @@ Transit = (function(_super) {
     this.calcCurrentProps(progress);
     this.calcOrigin();
     this.draw(progress);
-    if (progress === 1) {
-      if ((_ref = this.props.onComplete) != null) {
-        _ref.call(this);
-      }
-    }
     return this;
   };
 
@@ -2477,31 +2474,33 @@ Tween = (function() {
 
   Tween.prototype.update = function(time) {
     var i, len, _ref;
-    if (this.isCompleted) {
-      return;
+    console.log(time);
+    if (time > this.props.endTime) {
+      time = this.props.endTime;
+    }
+    if (time >= this.props.startTime && time < this.props.endTime) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
+      }
     }
     i = -1;
     len = this.timelines.length - 1;
     while (i++ < len) {
       this.timelines[i].update(time);
     }
-    if (time >= this.props.endTime) {
+    if (time === this.props.endTime) {
       if ((_ref = this.o.onComplete) != null) {
         _ref.apply(this);
       }
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);
       }
-      return this.isCompleted = true;
-    }
-    if (time >= this.props.startTime) {
-      return typeof this.onUpdate === "function" ? this.onUpdate((time - this.props.startTime) / this.props.totalTime) : void 0;
+      return true;
     }
   };
 
   Tween.prototype.prepareStart = function() {
     var _ref;
-    this.isCompleted = false;
     this.getDimentions();
     return (_ref = this.o.onStart) != null ? _ref.apply(this) : void 0;
   };
@@ -2655,6 +2654,9 @@ Tweener = (function() {
     i = this.tweens.length;
     _results = [];
     while (i--) {
+      if (this.tweens[i].update(time) === true) {
+        console.log('remove');
+      }
       if (this.tweens[i].update(time) === true) {
         _results.push(this.remove(this.tweens[i]));
       } else {

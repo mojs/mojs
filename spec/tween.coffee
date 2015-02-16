@@ -106,15 +106,15 @@ describe 'Tween ->', ->
       spyOn t, 'prepareStart'
       t.start()
       expect(t.prepareStart).toHaveBeenCalled()
-    it 'should restart flags', ->
-      t = new Tween
-      t.add new Timeline duration: 20
-      t.start()
-      t.update t.props.startTime + 5
-      t.update t.props.startTime + 60
-      expect(t.isCompleted).toBe true
-      t.start()
-      expect(t.isCompleted).toBe false
+    # it 'should restart flags', ->
+    #   t = new Tween
+    #   t.add new Timeline duration: 20
+    #   t.start()
+    #   t.update t.props.startTime + 5
+    #   t.update t.props.startTime + 60
+    #   expect(t.isCompleted).toBe true
+    #   t.start()
+    #   expect(t.isCompleted).toBe false
 
     it 'should start every timeline',->
       it 'should update the current time on every timeline',->
@@ -161,12 +161,12 @@ describe 'Tween ->', ->
         expect(t.o.onComplete).toHaveBeenCalled()
         dfr()
       , 200
-    it 'should be called just once', (dfr)->
-      cnt = 0
-      t = new Tween onComplete:-> cnt++
-      t.add new Timeline duration: 20
-      t.start()
-      setTimeout (-> expect(cnt).toBe(1); dfr()), 100
+    # it 'should be called just once', (dfr)->
+    #   cnt = 0
+    #   t = new Tween onComplete:-> cnt++
+    #   t.add new Timeline duration: 20
+    #   t.start()
+    #   setTimeout (-> expect(cnt).toBe(1); dfr()), 100
     it 'should have the right scope', (dfr)->
       isRightScope = false
       t = new Tween onComplete:-> isRightScope = @ instanceof Tween
@@ -210,15 +210,16 @@ describe 'Tween ->', ->
       spyOn(t, 'onUpdate'); t.start()
       t.update t.props.startTime + 25
       expect(t.onUpdate).toHaveBeenCalledWith 1
-    it 'should run if time is greater then endTime just once', ->
-      cnt = 0
-      t = new Tween onUpdate:-> cnt++
-      t.add new Timeline duration: 20
-      t.getDimentions()
-      t.update t.props.startTime + 25
-      t.update t.props.startTime + 26
-      t.update t.props.startTime + 27
-      expect(cnt).toBe 1
+    #--- removed ---#
+    # it 'should run if time is greater then endTime just once', ->
+    #   cnt = 0
+    #   t = new Tween onUpdate:-> cnt++
+    #   t.add new Timeline duration: 20
+    #   t.getDimentions()
+    #   t.update t.props.startTime + 25
+    #   t.update t.props.startTime + 26
+    #   t.update t.props.startTime + 27
+    #   expect(cnt).toBe 1
   describe 'onStart callback ->', ->
     it 'should be defined', ->
       t = new Tween onStart: ->
@@ -244,17 +245,18 @@ describe 'Tween ->', ->
       t.update time = Date.now() + 200
       expect(t.timelines[0].update).toHaveBeenCalledWith time
       expect(t.timelines[1].update).toHaveBeenCalledWith time
-    it 'should not update the current time on every timeline if isCompleted',->
-      t = new Tween
-      t.add new Timeline duration: 500, delay: 200
-      t.add new Timeline duration: 500, delay: 100
-      t.getDimentions()
-      t.update t.props.startTime + 2000
-      spyOn t.timelines[0], 'update'
-      spyOn t.timelines[1], 'update'
-      t.update t.props.startTime + 2000
-      expect(t.timelines[0].update).not.toHaveBeenCalled()
-      expect(t.timelines[1].update).not.toHaveBeenCalled()
+#--- removed ---#
+# it 'should not update the current time on every timeline if isCompleted',->
+#   t = new Tween
+#   t.add new Timeline duration: 500, delay: 200
+#   t.add new Timeline duration: 500, delay: 100
+#   t.getDimentions()
+#   t.update t.props.startTime + 2000
+#   spyOn t.timelines[0], 'update'
+#   spyOn t.timelines[1], 'update'
+#   t.update t.props.startTime + 2000
+#   expect(t.timelines[0].update).not.toHaveBeenCalled()
+#   expect(t.timelines[1].update).not.toHaveBeenCalled()
     it 'should return true is ended',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200
@@ -325,7 +327,7 @@ describe 'Tween ->', ->
       t.add(t1); t.prepareStart(); t.startTimelines()
       spyOn t, 'update'
       t.setProgress 1.5
-      expect(t.update).toHaveBeenCalledWith t.props.startTime + t.props.totalTime
+      expect(t.update).toHaveBeenCalledWith t.props.startTime+t.props.totalTime
     it 'should not set the progress less then 0', ->
       t   = new Tween; t1  = new Tween
       t1.add new Timeline duration: 500, delay: 200

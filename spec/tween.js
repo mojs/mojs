@@ -203,19 +203,6 @@
         t.start();
         return expect(t.prepareStart).toHaveBeenCalled();
       });
-      it('should restart flags', function() {
-        var t;
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.start();
-        t.update(t.props.startTime + 5);
-        t.update(t.props.startTime + 60);
-        expect(t.isCompleted).toBe(true);
-        t.start();
-        return expect(t.isCompleted).toBe(false);
-      });
       it('should start every timeline', function() {
         var t;
         it('should update the current time on every timeline', function() {});
@@ -285,23 +272,6 @@
           expect(t.o.onComplete).toHaveBeenCalled();
           return dfr();
         }, 200);
-      });
-      it('should be called just once', function(dfr) {
-        var cnt, t;
-        cnt = 0;
-        t = new Tween({
-          onComplete: function() {
-            return cnt++;
-          }
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.start();
-        return setTimeout((function() {
-          expect(cnt).toBe(1);
-          return dfr();
-        }), 100);
       });
       return it('should have the right scope', function(dfr) {
         var isRightScope, t;
@@ -387,7 +357,7 @@
         t.update(t.props.startTime - 10);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
-      it('should run if time is greater then endTime', function() {
+      return it('should run if time is greater then endTime', function() {
         var t;
         t = new Tween({
           onUpdate: function() {}
@@ -399,23 +369,6 @@
         t.start();
         t.update(t.props.startTime + 25);
         return expect(t.onUpdate).toHaveBeenCalledWith(1);
-      });
-      return it('should run if time is greater then endTime just once', function() {
-        var cnt, t;
-        cnt = 0;
-        t = new Tween({
-          onUpdate: function() {
-            return cnt++;
-          }
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.getDimentions();
-        t.update(t.props.startTime + 25);
-        t.update(t.props.startTime + 26);
-        t.update(t.props.startTime + 27);
-        return expect(cnt).toBe(1);
       });
     });
     describe('onStart callback ->', function() {
@@ -470,25 +423,6 @@
         t.update(time = Date.now() + 200);
         expect(t.timelines[0].update).toHaveBeenCalledWith(time);
         return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
-      });
-      it('should not update the current time on every timeline if isCompleted', function() {
-        var t;
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 500,
-          delay: 200
-        }));
-        t.add(new Timeline({
-          duration: 500,
-          delay: 100
-        }));
-        t.getDimentions();
-        t.update(t.props.startTime + 2000);
-        spyOn(t.timelines[0], 'update');
-        spyOn(t.timelines[1], 'update');
-        t.update(t.props.startTime + 2000);
-        expect(t.timelines[0].update).not.toHaveBeenCalled();
-        return expect(t.timelines[1].update).not.toHaveBeenCalled();
       });
       it('should return true is ended', function() {
         var t;

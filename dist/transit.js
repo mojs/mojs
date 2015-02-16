@@ -205,7 +205,6 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setProgress = function(progress, isShow) {
-    var _ref;
     if (!isShow) {
       this.show();
       if (typeof this.onUpdate === "function") {
@@ -216,11 +215,6 @@ Transit = (function(_super) {
     this.calcCurrentProps(progress);
     this.calcOrigin();
     this.draw(progress);
-    if (progress === 1) {
-      if ((_ref = this.props.onComplete) != null) {
-        _ref.call(this);
-      }
-    }
     return this;
   };
 

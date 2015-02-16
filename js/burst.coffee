@@ -128,7 +128,7 @@ class Burst extends Transit
     i = @transits.length
     while(i--)
       @tween.add @transits[i].timeline
-    !@o.isRunLess and @startTween()
+    # !@o.isRunLess and @startTween()
     
   calcSize:->
     largestSize = -1

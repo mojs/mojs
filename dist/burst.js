@@ -186,13 +186,14 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.createTween = function() {
-    var i;
+    var i, _results;
     Burst.__super__.createTween.apply(this, arguments);
     i = this.transits.length;
+    _results = [];
     while (i--) {
-      this.tween.add(this.transits[i].timeline);
+      _results.push(this.tween.add(this.transits[i].timeline));
     }
-    return !this.o.isRunLess && this.startTween();
+    return _results;
   };
 
   Burst.prototype.calcSize = function() {
