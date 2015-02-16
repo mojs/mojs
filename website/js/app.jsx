@@ -5,19 +5,25 @@ var DefaultRoute = Router.DefaultRoute;
 var Link = Router.Link;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
+var RouteHandlerMixin = Router.RouteHandlerMixin;
 
 var MyRouterHandler = React.createClass({
-  render: function () {
-    return this.createChildRouteHandler();
-  }
+  mixins: [RouteHandlerMixin],
+  shouldComponentUpdate: function () {
+    return this.props.isFlip;
+  },
+  render: function () { return this.createChildRouteHandler(); }
 });
 
-console.log(<MyRouterHandler/>)
-// require('../css/main.styl');
 React.initializeTouchEvents(true);
 
 let App = React.createClass({
+  setInitialState: function () {
+    this.isFlip = false;
+    return {};
+  },
   render(){
+    this.isFlip = !this.isFlip
     return (
       <div>
         <header>
@@ -27,7 +33,10 @@ let App = React.createClass({
             <li><Link to="calendar">Calendar</Link></li>
           </ul>
         </header>
-        <MyRouterHandler/>
+
+        <MyRouterHandler isFlip={this.isFlip} />
+        <MyRouterHandler isFlip={!this.isFlip} />
+
       </div>
     );
   }
@@ -36,18 +45,12 @@ let App = React.createClass({
 let Inbox = React.createClass({
   render: function() {
     return <div>Inbox</div>
-  },
-  componentWillUnmount: function () {
-    console.log('inbox: unmount')  
-  },
+  }
 });
 
 let Calendar = React.createClass({
   render: function() {
     return <div>Calendar</div>;
-  },
-  componentWillUnmount: function () {
-    console.log('calendar: unmount')  
   }
 });
 
