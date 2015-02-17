@@ -137,10 +137,19 @@ class Transit extends bitsMap.map.bit
     @props.transform = "rotate(#{@props.angle},#{@origin.x},#{@origin.y})"
   calcSize:->
     return if @o.size
-    dRadius = @deltas['radius']; dStroke = @deltas['strokeWidth']
-    radius = if dRadius?
-      Math.max Math.abs(dRadius.start), Math.abs(dRadius.end)
-    else @props.radius
+    
+    dRadiusX = @deltas['radiusX'] or @deltas['radius']
+    dRadiusY = @deltas['radiusY'] or @deltas['radius']
+
+    radiusX = if dRadiusX?
+      Math.max Math.abs(dRadiusX.start), Math.abs(dRadiusX.end)
+    else if @props.radiusX? then @props.radiusX else @props.radius
+    radiusY = if dRadiusY?
+      Math.max Math.abs(dRadiusY.start), Math.abs(dRadiusY.end)
+    else if @props.radiusY? then @props.radiusY else @props.radius
+    radius = Math.max radiusX, radiusY
+
+    dStroke = @deltas['strokeWidth']
     stroke = if dStroke?
       Math.max Math.abs(dStroke.start), Math.abs(dStroke.end)
     else @props.strokeWidth

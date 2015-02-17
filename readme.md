@@ -7,7 +7,6 @@
 
 #### todo
 - transit
-  - add radiusX radiusY
   - fix the size calc
 - burst
   - opacity childOptions to burst

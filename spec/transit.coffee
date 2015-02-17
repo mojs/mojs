@@ -863,7 +863,7 @@ describe 'Transit ->', ->
       byte.run stroke: 'green'
       expect(byte.deltas.strokeWidth).toBeDefined()
 
-    it 'should set calculate el size', ->
+    it 'should calculate el size', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       spyOn byte, 'calcSize'
       byte.run radius: 50
@@ -877,6 +877,22 @@ describe 'Transit ->', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50
       expect(byte.el.style.width).toBe '104px'
+
+    it 'should set new el size with respect to radiusX/radiusY', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
+      byte.run radius: 50, radiusX: {100: 0}
+      expect(byte.el.style.width).toBe '204px'
+
+    it 'should set new el size with respect to radiusX/radiusY', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
+      byte.run radius: 50, radiusY: 110
+      expect(byte.el.style.width).toBe '224px'
+
+    it 'should set new el size with respect to radiusX/radiusY', ->
+      byte = new Byte(radius: {10: 5}, isRunLess: true)
+      byte.run radius: 450, radiusY: 110, radiusX: {200:0}
+      expect(byte.el.style.width).toBe '404px'
+
     it 'should start tween', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
       spyOn byte, 'startTween'
