@@ -196,6 +196,7 @@ describe 'Bit', ->
       expect(bit.ns).toBe 'http://www.w3.org/2000/svg'
     it 'should have type object', ->
       expect(bit.type).toBeDefined()
+
   describe 'calculations', ->
     it 'should calculate transform object', ->
       bit = new Bit

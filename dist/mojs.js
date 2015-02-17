@@ -159,8 +159,8 @@ Bit = (function() {
 
   Bit.prototype.defaults = {
     radius: 50,
-    radiusX: null,
-    radiusY: null,
+    radiusX: void 0,
+    radiusY: void 0,
     'stroke': 'hotpink',
     'stroke-width': 2,
     'stroke-opacity': 1,
@@ -712,8 +712,8 @@ Circle = (function(_super) {
   Circle.prototype.draw = function() {
     Circle.__super__.draw.apply(this, arguments);
     return this.setAttr({
-      rx: this.props.radiusX || this.props.radius,
-      ry: this.props.radiusY || this.props.radius,
+      rx: this.props.radiusX != null ? this.props.radiusX : this.props.radius,
+      ry: this.props.radiusY != null ? this.props.radiusY : this.props.radius,
       cx: this.props.x,
       cy: this.props.y
     });
@@ -768,13 +768,15 @@ Cross = (function(_super) {
   Cross.prototype.type = 'path';
 
   Cross.prototype.draw = function() {
-    var d, line1, line2, x1, x2, y1, y2;
+    var d, line1, line2, radiusX, radiusY, x1, x2, y1, y2;
     Cross.__super__.draw.apply(this, arguments);
-    x1 = this.props.x - this.props.radius;
-    x2 = this.props.x + this.props.radius;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    x1 = this.props.x - radiusX;
+    x2 = this.props.x + radiusX;
     line1 = "M" + x1 + "," + this.props.y + " L" + x2 + "," + this.props.y;
-    y1 = this.props.y - this.props.radius;
-    y2 = this.props.y + this.props.radius;
+    y1 = this.props.y - radiusY;
+    y2 = this.props.y + radiusY;
     line2 = "M" + this.props.x + "," + y1 + " L" + this.props.x + "," + y2;
     d = "" + line1 + " " + line2;
     return this.setAttr({
@@ -1241,7 +1243,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
-    var point, radAngle;
+    var point, radAngle, radiusX, radiusY;
     if (o == null) {
       o = {};
     }
@@ -1249,9 +1251,11 @@ Helpers = (function() {
       return;
     }
     radAngle = (o.angle - 90) * (Math.PI / 180);
+    radiusX = o.radiusX != null ? o.radiusX : o.radius;
+    radiusY = o.radiusY != null ? o.radiusY : o.radius;
     return point = {
-      x: o.center.x + (Math.cos(radAngle) * o.radius),
-      y: o.center.y + (Math.sin(radAngle) * o.radius)
+      x: o.center.x + (Math.cos(radAngle) * radiusX),
+      y: o.center.y + (Math.sin(radAngle) * radiusY)
     };
   };
 
@@ -1528,10 +1532,12 @@ Line = (function(_super) {
   }
 
   Line.prototype.draw = function() {
+    var radiusX;
     Line.__super__.draw.apply(this, arguments);
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
     return this.setAttr({
-      x1: this.props.x - this.props.radius,
-      x2: this.props.x + this.props.radius,
+      x1: this.props.x - radiusX,
+      x2: this.props.x + radiusX,
       y1: this.props.y,
       y2: this.props.y
     });
@@ -1550,6 +1556,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Line;
 }
@@ -1562,6 +1571,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
@@ -1583,22 +1595,21 @@ Transit = require('./transit');
 burst = new Transit({
   x: 300,
   y: 300,
-  type: 'circle',
+  type: 'polygon',
   duration: 500,
   count: 3,
   isIt: true,
   isRunLess: true,
-  radius: {
-    0: 75
-  },
   points: 5,
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)'
-}).then({
-  radius: 0
-}).then({
-  radius: 75
+  swirlSize: 'rand(0,10)',
+  radiusX: {
+    50: 1
+  },
+  radiusY: {
+    0: 100
+  }
 });
 
 burst.run({
@@ -1653,6 +1664,8 @@ Polygon = (function(_super) {
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       this.radialPoints.push(h.getRadialPoint({
         radius: this.props.radius,
+        radiusX: this.props.radiusX,
+        radiusY: this.props.radiusY,
         angle: i * step,
         center: {
           x: this.props.x,
@@ -1722,14 +1735,15 @@ Rect = (function(_super) {
   Rect.prototype.ratio = 1.43;
 
   Rect.prototype.draw = function() {
-    var rad2;
+    var radiusX, radiusY;
     Rect.__super__.draw.apply(this, arguments);
-    rad2 = 2 * this.props.radius;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
     return this.setAttr({
-      width: rad2,
-      height: rad2,
-      x: this.props.x - this.props.radius,
-      y: this.props.y - this.props.radius
+      width: 2 * radiusX,
+      height: 2 * radiusY,
+      x: this.props.x - radiusX,
+      y: this.props.y - radiusY
     });
   };
 
@@ -1980,6 +1994,8 @@ Transit = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: 50,
+    radiusX: void 0,
+    radiusY: void 0,
     angle: 0,
     size: null,
     sizeGap: 0,
@@ -2086,6 +2102,8 @@ Transit = (function(_super) {
       fill: this.props.fill,
       'fill-opacity': this.props.fillOpacity,
       radius: this.props.radius,
+      radiusX: this.props.radiusX,
+      radiusY: this.props.radiusY,
       points: this.props.points,
       transform: this.calcTransform()
     });
@@ -2317,7 +2335,6 @@ Transit = (function(_super) {
       };
     })(this);
     opts.onFirstUpdate = function() {
-      console.log('first');
       return it.tuneOptions(it.history[this.index]);
     };
     this.tween.append(new Timeline(opts));
@@ -2359,7 +2376,6 @@ Transit = (function(_super) {
       })(this),
       onFirstUpdateBackward: (function(_this) {
         return function() {
-          console.log('backward');
           return _this.tuneOptions(_this.history[0]);
         };
       })(this)

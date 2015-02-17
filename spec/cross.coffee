@@ -17,6 +17,26 @@ describe 'Cross ->', ->
       isD = d is 'M-20,0 L20,0 M0,-20 L0,20'
       isIE9D = d is 'M -20 0 L 20 0 M 0 -20 L 0 20'
       expect(isD or isIE9D).toBe true
+    it 'should work with radiusX and fallback to radius', ->
+      svg     = document.createElementNS?(ns, "svg")
+      cross     = new Cross
+        ctx:    svg
+        radius:  20
+        radiusX: 40
+      d = cross.el.getAttribute('d')
+      isD = d is 'M-40,0 L40,0 M0,-20 L0,20'
+      isIE9D = d is 'M -40 0 L 40 0 M 0 -20 L 0 20'
+      expect(isD or isIE9D).toBe true
+    it 'should work with radiusY and fallback to radius', ->
+      svg     = document.createElementNS?(ns, "svg")
+      cross     = new Cross
+        ctx:    svg
+        radius:  20
+        radiusY: 40
+      d = cross.el.getAttribute('d')
+      isD = d is 'M-20,0 L20,0 M0,-40 L0,40'
+      isIE9D = d is 'M -20 0 L 20 0 M 0 -40 L 0 40'
+      expect(isD or isIE9D).toBe true
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")
       cross     = new Cross ctx: svg

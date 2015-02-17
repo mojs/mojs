@@ -8,12 +8,13 @@ class Rect extends Bit
   ratio:  1.43
   draw:->
     super
-    rad2 = 2*@props.radius
+    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
+    radiusY = if @props.radiusY? then @props.radiusY else @props.radius
     @setAttr
-      width:  rad2
-      height: rad2
-      x:      @props.x - @props.radius
-      y:      @props.y - @props.radius
+      width:  2*radiusX
+      height: 2*radiusY
+      x:      @props.x - radiusX
+      y:      @props.y - radiusY
 
 
 ### istanbul ignore next ###

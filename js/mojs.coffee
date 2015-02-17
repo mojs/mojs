@@ -27,23 +27,25 @@ Transit   = require './transit'
 burst = new Transit(
   # isRunLess: true
   x: 300, y: 300
-  type: 'circle'
+  type: 'polygon'
   duration: 500
   count: 3
   isIt: true
   isRunLess: true
-  radius:      {0: 75}
+  # radius:      {0: 75}
   points: 5
   isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
+  radiusX: { 50: 1}
+  radiusY: { 0: 100}
   # onComplete: -> console.log 'onComplete'
   # angle: {360: 0}
   # delay: 2000
   # isShowInit: true
 )
-.then radius: 0#, delay: 0
-.then radius: 75#, delay: 0
+# .then radius: 0#, delay: 0
+# .then radius: 75#, delay: 0
 
 burst.run x: 100
 

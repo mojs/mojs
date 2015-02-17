@@ -18,14 +18,15 @@ Rect = (function(_super) {
   Rect.prototype.ratio = 1.43;
 
   Rect.prototype.draw = function() {
-    var rad2;
+    var radiusX, radiusY;
     Rect.__super__.draw.apply(this, arguments);
-    rad2 = 2 * this.props.radius;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
     return this.setAttr({
-      width: rad2,
-      height: rad2,
-      x: this.props.x - this.props.radius,
-      y: this.props.y - this.props.radius
+      width: 2 * radiusX,
+      height: 2 * radiusY,
+      x: this.props.x - radiusX,
+      y: this.props.y - radiusY
     });
   };
 

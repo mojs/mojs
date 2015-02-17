@@ -24,6 +24,17 @@ describe 'Rect ->', ->
       expect(height).toBe   '40'
       expect(x).toBe        '30'
       expect(y).toBe        '80'
+    it 'should work with radiusX/radiusY props', ->
+      svg     = document.createElementNS?(ns, "svg")
+      rect    = new Rect ctx: svg, radiusY: 50, radiusX: 40, x: 100, y: 200
+      width   = rect.el.getAttribute 'width'
+      height  = rect.el.getAttribute 'height'
+      expect(width) .toBe   '80'
+      expect(height).toBe   '100'
+      x       = rect.el.getAttribute 'x'
+      y       = rect.el.getAttribute 'y'
+      expect(x).toBe        '60'
+      expect(y).toBe        '150'
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")
       rect  = new Rect ctx: svg

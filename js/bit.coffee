@@ -6,8 +6,8 @@ class Bit
   ratio:                1
   defaults:
     radius:             50
-    radiusX:            null
-    radiusY:            null
+    radiusX:            undefined
+    radiusY:            undefined
     'stroke':           'hotpink'
     'stroke-width':     2
     'stroke-opacity':   1

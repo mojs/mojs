@@ -115,9 +115,11 @@ class Helpers
   getRadialPoint:(o={})->
     return if !o.radius? or !o.angle? or !o.center?
     radAngle = (o.angle-90)*(Math.PI/180)
+    radiusX = if o.radiusX? then o.radiusX else o.radius
+    radiusY = if o.radiusY? then o.radiusY else o.radius
     point =
-      x: o.center.x + (Math.cos(radAngle)*o.radius)
-      y: o.center.y + (Math.sin(radAngle)*o.radius)
+      x: o.center.x + (Math.cos(radAngle)*radiusX)
+      y: o.center.y + (Math.sin(radAngle)*radiusY)
   getPrefix:->
     styles = window.getComputedStyle(document.documentElement, "")
     v = Array::slice.call(styles).join("").match(/-(moz|webkit|ms)-/)

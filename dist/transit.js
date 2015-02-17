@@ -37,6 +37,8 @@ Transit = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: 50,
+    radiusX: void 0,
+    radiusY: void 0,
     angle: 0,
     size: null,
     sizeGap: 0,
@@ -143,6 +145,8 @@ Transit = (function(_super) {
       fill: this.props.fill,
       'fill-opacity': this.props.fillOpacity,
       radius: this.props.radius,
+      radiusX: this.props.radiusX,
+      radiusY: this.props.radiusY,
       points: this.props.points,
       transform: this.calcTransform()
     });
@@ -374,7 +378,6 @@ Transit = (function(_super) {
       };
     })(this);
     opts.onFirstUpdate = function() {
-      console.log('first');
       return it.tuneOptions(it.history[this.index]);
     };
     this.tween.append(new Timeline(opts));
@@ -416,7 +419,6 @@ Transit = (function(_super) {
       })(this),
       onFirstUpdateBackward: (function(_this) {
         return function() {
-          console.log('backward');
           return _this.tuneOptions(_this.history[0]);
         };
       })(this)

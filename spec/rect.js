@@ -44,6 +44,25 @@
         expect(x).toBe('30');
         return expect(y).toBe('80');
       });
+      it('should work with radiusX/radiusY props', function() {
+        var height, width, x, y;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
+        rect = new Rect({
+          ctx: svg,
+          radiusY: 50,
+          radiusX: 40,
+          x: 100,
+          y: 200
+        });
+        width = rect.el.getAttribute('width');
+        height = rect.el.getAttribute('height');
+        expect(width).toBe('80');
+        expect(height).toBe('100');
+        x = rect.el.getAttribute('x');
+        y = rect.el.getAttribute('y');
+        expect(x).toBe('60');
+        return expect(y).toBe('150');
+      });
       return it('should call super method', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         rect = new Rect({

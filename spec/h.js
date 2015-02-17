@@ -539,6 +539,34 @@
           expect(point.x).toBe(100);
           return expect(point.y).toBe(50);
         });
+        it('should with radiusX and fallback to radius', function() {
+          var point;
+          point = h.getRadialPoint({
+            radius: 50,
+            radiusX: 100,
+            angle: 90,
+            center: {
+              x: 50,
+              y: 50
+            }
+          });
+          expect(point.x).toBe(150);
+          return expect(point.y).toBe(50);
+        });
+        it('should with radiusY and fallback to radius', function() {
+          var point;
+          point = h.getRadialPoint({
+            radius: 50,
+            radiusY: 100,
+            angle: 0,
+            center: {
+              x: 50,
+              y: 50
+            }
+          });
+          expect(point.x).toBe(50);
+          return expect(point.y).toBe(-50);
+        });
         it('should return false if 1 of 3 options missed', function() {
           var point;
           point = h.getRadialPoint({

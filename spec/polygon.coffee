@@ -47,6 +47,28 @@ describe 'Polygon ->', ->
       isD = d is d2
       isIE9D = d is '0,-20 17.3205,10 -17.3205,10'
       expect(isD or isIE9D).toBe true
+    it 'should work with radiusX and fallback to radius', ->
+      svg = document.createElementNS?(ns, "svg")
+      tri = new Polygon
+        ctx:      svg
+        radius:   20
+        radiusX:  40
+      d   = tri.el.getAttribute('points')
+      d2  = '0.0000,-20.0000 34.6410,10.0000 -34.6410,10.0000 '
+      isD = d is d2
+      isIE9D = d is '0,-20 34.6410,10 -34.6410,10'
+      expect(isD or isIE9D).toBe true
+    it 'should work with radiusY and fallback to radius', ->
+      svg = document.createElementNS?(ns, "svg")
+      tri = new Polygon
+        ctx:      svg
+        radius:   20
+        radiusY:  40
+      d   = tri.el.getAttribute('points')
+      d2  = '0.0000,-40.0000 17.3205,20.0000 -17.3205,20.0000 '
+      isD = d is d2
+      isIE9D = d is '0,-40 17.3205,20 -17.3205,20'
+      expect(isD or isIE9D).toBe true
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")
       polygon  = new Polygon ctx: svg

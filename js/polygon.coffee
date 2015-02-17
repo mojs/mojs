@@ -11,11 +11,12 @@ class Polygon extends Bit
     @drawShape()
     super
   drawShape:->
-    # @isDraw = true
     step = 360/(@props.points); @radialPoints = []
     for i in [0...@props.points]
       @radialPoints.push h.getRadialPoint
         radius: @props.radius
+        radiusX: @props.radiusX
+        radiusY: @props.radiusY
         angle:  (i*step)
         center: x: @props.x, y: @props.y
     d = ''

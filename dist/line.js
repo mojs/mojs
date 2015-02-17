@@ -14,10 +14,12 @@ Line = (function(_super) {
   }
 
   Line.prototype.draw = function() {
+    var radiusX;
     Line.__super__.draw.apply(this, arguments);
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
     return this.setAttr({
-      x1: this.props.x - this.props.radius,
-      x2: this.props.x + this.props.radius,
+      x1: this.props.x - radiusX,
+      x2: this.props.x + radiusX,
       y1: this.props.y,
       y2: this.props.y
     });
@@ -36,6 +38,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Line;
 }
@@ -48,6 +53,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;

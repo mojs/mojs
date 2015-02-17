@@ -29,6 +29,8 @@ class Transit extends bitsMap.map.bit
     opacity:            1
     # size props
     radius:             50
+    radiusX:            undefined
+    radiusY:            undefined
     angle:              0
     size:               null
     sizeGap:            0
@@ -108,6 +110,8 @@ class Transit extends bitsMap.map.bit
       fill:               @props.fill
       'fill-opacity':     @props.fillOpacity
       radius:             @props.radius
+      radiusX:            @props.radiusX
+      radiusY:            @props.radiusY
       points:             @props.points
       transform:          @calcTransform()
 
@@ -257,9 +261,7 @@ class Transit extends bitsMap.map.bit
     opts.onUpdate      = (p)=> @setProgress p#; @onUpdate?()
     opts.onStart       = => @props.onStart?.apply @
     opts.onComplete    = => @props.onComplete?.apply @
-    opts.onFirstUpdate = ->
-      console.log 'first'
-      it.tuneOptions it.history[@index]
+    opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     @tween.append new Timeline(opts)
     @
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
@@ -277,9 +279,7 @@ class Transit extends bitsMap.map.bit
       onUpdate:   (p)=> @setProgress p
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
-      onFirstUpdateBackward:=>
-        console.log 'backward'
-        @tuneOptions @history[0]
+      onFirstUpdateBackward:=> @tuneOptions @history[0]
     @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
 

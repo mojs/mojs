@@ -29,6 +29,8 @@ Polygon = (function(_super) {
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       this.radialPoints.push(h.getRadialPoint({
         radius: this.props.radius,
+        radiusX: this.props.radiusX,
+        radiusY: this.props.radiusY,
         angle: i * step,
         center: {
           x: this.props.x,

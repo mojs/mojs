@@ -168,7 +168,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.getRadialPoint = function(o) {
-    var point, radAngle;
+    var point, radAngle, radiusX, radiusY;
     if (o == null) {
       o = {};
     }
@@ -176,9 +176,11 @@ Helpers = (function() {
       return;
     }
     radAngle = (o.angle - 90) * (Math.PI / 180);
+    radiusX = o.radiusX != null ? o.radiusX : o.radius;
+    radiusY = o.radiusY != null ? o.radiusY : o.radius;
     return point = {
-      x: o.center.x + (Math.cos(radAngle) * o.radius),
-      y: o.center.y + (Math.sin(radAngle) * o.radius)
+      x: o.center.x + (Math.cos(radAngle) * radiusX),
+      y: o.center.y + (Math.sin(radAngle) * radiusY)
     };
   };
 

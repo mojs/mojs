@@ -8,8 +8,8 @@ class Circle extends Bit
   draw:->
     super
     @setAttr
-      rx:  @props.radiusX or @props.radius
-      ry:  @props.radiusY or @props.radius
+      rx:  if @props.radiusX? then @props.radiusX else @props.radius
+      ry:  if @props.radiusY? then @props.radiusY else @props.radius
       cx:  @props.x
       cy:  @props.y
 

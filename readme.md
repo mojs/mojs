@@ -6,11 +6,11 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- normalize setProgress for transit, burst, then
+- transit
+  - add radiusX radiusY
+  - fix the size calc
 - burst
   - opacity childOptions to burst
-  - fix tween add method with parallel tweens
-  - fix tween isComplete onUpdate
   - add deltas for swirl swirlFrequency and swirlSize
   - add stagger values
   - set initial progress for the childrens or hide them

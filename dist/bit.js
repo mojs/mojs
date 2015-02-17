@@ -11,8 +11,8 @@ Bit = (function() {
 
   Bit.prototype.defaults = {
     radius: 50,
-    radiusX: null,
-    radiusY: null,
+    radiusX: void 0,
+    radiusY: void 0,
     'stroke': 'hotpink',
     'stroke-width': 2,
     'stroke-opacity': 1,
