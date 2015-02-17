@@ -45,10 +45,8 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
   vars:->
     @h ?= h; @lastSet ?= {}
-    @extendDefaults()#; @chainArr ?= [];
-    o = {}; @h.extend o, @o
-    # delete o.ctx
-    @history = []; @history.push o
+    @extendDefaults()
+    o = {}; @h.extend(o, @o); @history = [o]
     @timelines = []
 
   render:->
@@ -260,6 +258,7 @@ class Transit extends bitsMap.map.bit
     opts.onStart       = => @props.onStart?.apply @
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = ->
+      console.log 'first'
       it.tuneOptions it.history[@index]
     @tween.append new Timeline(opts)
     @
@@ -278,13 +277,17 @@ class Transit extends bitsMap.map.bit
       onUpdate:   (p)=> @setProgress p
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
-      onFirstUpdateBackward:=> @tuneOptions @history[0]
+      onFirstUpdateBackward:=>
+        console.log 'backward'
+        @tuneOptions @history[0]
     @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
 
   run:(o)->
     o and @transformHistory(o)
-    @tuneNewOption(o); @history[0] = @o
+    @tuneNewOption(o)
+    o = {}; @h.extend(o, @o)#; @history.push o
+    @history[0] = o
     !@o.isDrawLess and @setProgress(0, true)
     @startTween()
 

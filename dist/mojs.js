@@ -1146,6 +1146,24 @@ Helpers = (function() {
     return document.body.appendChild(this.div);
   };
 
+  Helpers.prototype.cloneObj = function(obj, exclude) {
+    var i, key, keys, newObj;
+    keys = Object.keys(obj);
+    newObj = {};
+    i = keys.length;
+    while (i--) {
+      key = keys[i];
+      if (exclude != null) {
+        if (exclude[key]) {
+          newObj[key] = obj[key];
+        }
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+    return newObj;
+  };
+
   Helpers.prototype.extend = function(objTo, objFrom) {
     var key, value, _results;
     _results = [];
@@ -1583,6 +1601,10 @@ burst = new Transit({
   radius: 75
 });
 
+burst.run({
+  x: 100
+});
+
 burst.tween.prepareStart();
 
 burst.tween.startTimelines();
@@ -1982,8 +2004,7 @@ Transit = (function(_super) {
     this.extendDefaults();
     o = {};
     this.h.extend(o, this.o);
-    this.history = [];
-    this.history.push(o);
+    this.history = [o];
     return this.timelines = [];
   };
 
@@ -2296,6 +2317,7 @@ Transit = (function(_super) {
       };
     })(this);
     opts.onFirstUpdate = function() {
+      console.log('first');
       return it.tuneOptions(it.history[this.index]);
     };
     this.tween.append(new Timeline(opts));
@@ -2337,6 +2359,7 @@ Transit = (function(_super) {
       })(this),
       onFirstUpdateBackward: (function(_this) {
         return function() {
+          console.log('backward');
           return _this.tuneOptions(_this.history[0]);
         };
       })(this)
@@ -2349,7 +2372,9 @@ Transit = (function(_super) {
   Transit.prototype.run = function(o) {
     o && this.transformHistory(o);
     this.tuneNewOption(o);
-    this.history[0] = this.o;
+    o = {};
+    this.h.extend(o, this.o);
+    this.history[0] = o;
     !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
   };

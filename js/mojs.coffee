@@ -45,7 +45,7 @@ burst = new Transit(
 .then radius: 0#, delay: 0
 .then radius: 75#, delay: 0
 
-# burst.run x: 100
+burst.run x: 100
 
 burst.tween.prepareStart()
 burst.tween.startTimelines()

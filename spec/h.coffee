@@ -371,6 +371,21 @@ describe 'Helpers ->', ->
         expect(point).toBeFalsy()
         expect(h.getRadialPoint).not.toThrow()
 
+    describe 'cloneObj method', ->
+      it 'should clone object', ->
+        obj = { a: 2, b: 3 }
+        clonedObj = h.cloneObj(obj)
+        expect(clonedObj.a).toBe 2
+        expect(clonedObj.b).toBe 3
+        expect(Object.keys(clonedObj).length).toBe 2
+      it 'should exclude defined keys', ->
+        obj = { a: 2, b: 3 }
+        exclude = { a: 1 }
+        clonedObj = h.cloneObj(obj, exclude)
+        expect(clonedObj.a).toBe 2
+        expect(clonedObj.b).not.toBeDefined()
+        expect(Object.keys(clonedObj).length).toBe 1
+
     describe 'capitalize method', ->
       it 'should capitalize strings', ->
         expect(h.capitalize 'hello there').toBe 'Hello there'

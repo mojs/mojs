@@ -62,6 +62,16 @@ class Helpers
     document.body.appendChild @div
     # @animationLoop = @bind @animationLoop, @
 
+  cloneObj:(obj, exclude)->
+    keys = Object.keys(obj); newObj = {}; i = keys.length
+    while(i--)
+      key = keys[i]
+      # skip the keys defined in exclude object
+      if exclude? then newObj[key] = obj[key] if exclude[key]
+      else newObj[key] = obj[key]
+    newObj
+
+
   extend:(objTo, objFrom)->
     for key, value of objFrom
       objTo[key] ?= objFrom[key]
@@ -153,7 +163,7 @@ class Helpers
       for i in [0...arr2Len-arr1Len]
         arr1.push 0
     [ arr1, arr2 ]
-    
+
   makeColorObj:(color)->
     # HEX
     if color[0] is '#'

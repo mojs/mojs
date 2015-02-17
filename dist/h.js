@@ -73,6 +73,24 @@ Helpers = (function() {
     return document.body.appendChild(this.div);
   };
 
+  Helpers.prototype.cloneObj = function(obj, exclude) {
+    var i, key, keys, newObj;
+    keys = Object.keys(obj);
+    newObj = {};
+    i = keys.length;
+    while (i--) {
+      key = keys[i];
+      if (exclude != null) {
+        if (exclude[key]) {
+          newObj[key] = obj[key];
+        }
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+    return newObj;
+  };
+
   Helpers.prototype.extend = function(objTo, objFrom) {
     var key, value, _results;
     _results = [];

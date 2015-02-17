@@ -61,8 +61,7 @@ Transit = (function(_super) {
     this.extendDefaults();
     o = {};
     this.h.extend(o, this.o);
-    this.history = [];
-    this.history.push(o);
+    this.history = [o];
     return this.timelines = [];
   };
 
@@ -375,6 +374,7 @@ Transit = (function(_super) {
       };
     })(this);
     opts.onFirstUpdate = function() {
+      console.log('first');
       return it.tuneOptions(it.history[this.index]);
     };
     this.tween.append(new Timeline(opts));
@@ -416,6 +416,7 @@ Transit = (function(_super) {
       })(this),
       onFirstUpdateBackward: (function(_this) {
         return function() {
+          console.log('backward');
           return _this.tuneOptions(_this.history[0]);
         };
       })(this)
@@ -428,7 +429,9 @@ Transit = (function(_super) {
   Transit.prototype.run = function(o) {
     o && this.transformHistory(o);
     this.tuneNewOption(o);
-    this.history[0] = this.o;
+    o = {};
+    this.h.extend(o, this.o);
+    this.history[0] = o;
     !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
   };

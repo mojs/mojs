@@ -566,6 +566,33 @@
           return expect(h.getRadialPoint).not.toThrow();
         });
       });
+      describe('cloneObj method', function() {
+        it('should clone object', function() {
+          var clonedObj, obj;
+          obj = {
+            a: 2,
+            b: 3
+          };
+          clonedObj = h.cloneObj(obj);
+          expect(clonedObj.a).toBe(2);
+          expect(clonedObj.b).toBe(3);
+          return expect(Object.keys(clonedObj).length).toBe(2);
+        });
+        return it('should exclude defined keys', function() {
+          var clonedObj, exclude, obj;
+          obj = {
+            a: 2,
+            b: 3
+          };
+          exclude = {
+            a: 1
+          };
+          clonedObj = h.cloneObj(obj, exclude);
+          expect(clonedObj.a).toBe(2);
+          expect(clonedObj.b).not.toBeDefined();
+          return expect(Object.keys(clonedObj).length).toBe(1);
+        });
+      });
       describe('capitalize method', function() {
         it('should capitalize strings', function() {
           return expect(h.capitalize('hello there')).toBe('Hello there');
