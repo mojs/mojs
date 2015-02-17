@@ -349,21 +349,105 @@
         t.start().update(t.props.startTime + 2);
         return expect(isRightScope).toBe(true);
       });
-      return it('should be called after progress went further or before the timeline', function() {
+      it('should be called after progress went further the timeline', function() {
         var isRightScope, t;
         isRightScope = false;
         t = new Timeline({
           duration: 10,
-          isIt: true,
-          onFirstUpdate: function() {
-            return isRightScope = this instanceof Timeline;
-          }
+          onFirstUpdate: function() {}
         }).start();
         t.update(t.props.startTime + 1);
         t.update(t.props.startTime + 12);
         spyOn(t.o, 'onFirstUpdate');
         t.update(t.props.startTime + 9);
         return expect(t.o.onFirstUpdate).toHaveBeenCalled();
+      });
+      return it('should be called after progress went before the timeline', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Timeline({
+          duration: 10,
+          onFirstUpdate: function() {}
+        }).start();
+        t.update(t.props.startTime + 1);
+        t.update(t.props.startTime + -1);
+        spyOn(t.o, 'onFirstUpdate');
+        t.update(t.props.startTime + 2);
+        return expect(t.o.onFirstUpdate).toHaveBeenCalled();
+      });
+    });
+    describe('onFirstUpdateBackward callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Timeline({
+          onFirstUpdateBackward: function() {}
+        });
+        return expect(t.o.onFirstUpdateBackward).toBeDefined();
+      });
+      it('should be called only on backward progress', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Timeline({
+          duration: 100,
+          onFirstUpdateBackward: function() {}
+        }).start();
+        t.update(t.props.startTime + 500);
+        spyOn(t.o, 'onFirstUpdateBackward');
+        t.update(t.props.startTime + 40);
+        return expect(t.o.onFirstUpdateBackward).toHaveBeenCalled();
+      });
+      it('should be called just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 100,
+          onFirstUpdateBackward: function() {
+            return cnt++;
+          }
+        }).start();
+        t.prevTime = t.props.startTime + 103;
+        t.update(t.props.startTime + 90);
+        t.update(t.props.startTime + 80);
+        t.update(t.props.startTime + 70);
+        return expect(cnt).toBe(1);
+      });
+      it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Timeline({
+          duration: 10,
+          onFirstUpdateBackward: function() {
+            return isRightScope = this instanceof Timeline;
+          }
+        });
+        t.start();
+        t.update(t.props.startTime + 12);
+        t.update(t.props.startTime + 9);
+        return expect(isRightScope).toBe(true);
+      });
+      it('should be called after progress went further or before the timeline', function() {
+        var isRightScope, t;
+        isRightScope = false;
+        t = new Timeline({
+          duration: 10,
+          onFirstUpdateBackward: function() {}
+        }).start();
+        t.prevTime = t.props.startTime + 11;
+        t.update(t.props.startTime + 9);
+        t.update(t.props.startTime + 12);
+        spyOn(t.o, 'onFirstUpdateBackward');
+        t.update(t.props.startTime + 9);
+        return expect(t.o.onFirstUpdateBackward).toHaveBeenCalled();
+      });
+      return it('should not be called at the start', function() {
+        var t;
+        t = new Timeline({
+          duration: 10,
+          onFirstUpdateBackward: function() {}
+        }).start();
+        spyOn(t.o, 'onFirstUpdateBackward');
+        t.update(t.props.startTime + 1);
+        return expect(t.o.onFirstUpdateBackward).not.toHaveBeenCalled();
       });
     });
     describe('yoyo option ->', function() {

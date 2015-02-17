@@ -152,8 +152,8 @@ class Helpers
     else if arr2Len > arr1Len
       for i in [0...arr2Len-arr1Len]
         arr1.push 0
-
     [ arr1, arr2 ]
+    
   makeColorObj:(color)->
     # HEX
     if color[0] is '#'

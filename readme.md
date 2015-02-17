@@ -6,6 +6,7 @@
 **! in active development - isn't ready yet !**
 
 #### todo
+- normalize setProgress for transit, burst, then
 - burst
   - opacity childOptions to burst
   - fix tween add method with parallel tweens

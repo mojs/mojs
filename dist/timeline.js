@@ -28,6 +28,7 @@ Timeline = (function() {
     this.h = h;
     this.props = {};
     this.progress = 0;
+    this.prevTime = 0;
     return this.calcDimentions();
   };
 
@@ -53,7 +54,7 @@ Timeline = (function() {
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2;
+    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
@@ -89,11 +90,19 @@ Timeline = (function() {
         }
         this.isFirstUpdate = true;
       }
-      return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
+      if (time < this.prevTime && !this.isFirstUpdateBackward) {
+        if ((_ref2 = this.o.onFirstUpdateBackward) != null) {
+          _ref2.apply(this);
+        }
+        this.isFirstUpdateBackward = true;
+      }
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(this.easedProgress);
+      }
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
-        if ((_ref2 = this.o.onComplete) != null) {
-          _ref2.apply(this);
+        if ((_ref3 = this.o.onComplete) != null) {
+          _ref3.apply(this);
         }
         this.isCompleted = true;
         this.setProc(1);
@@ -101,8 +110,12 @@ Timeline = (function() {
           this.onUpdate(this.easedProgress);
         }
       }
-      return this.isFirstUpdate = false;
+      if (time > this.props.endTime || time < this.props.startTime) {
+        this.isFirstUpdate = false;
+      }
+      this.isFirstUpdateBackward = false;
     }
+    return this.prevTime = time;
   };
 
   Timeline.prototype.setProc = function(p) {

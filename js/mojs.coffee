@@ -39,19 +39,21 @@ burst = new Transit(
   swirlSize:      'rand(0,10)'
   # onComplete: -> console.log 'onComplete'
   # angle: {360: 0}
-  delay: 2000
+  # delay: 2000
   # isShowInit: true
-).then radius: 0, delay: 0
+)
+.then radius: 0#, delay: 0
+.then radius: 75#, delay: 0
 
-burst.run x: 100
+# burst.run x: 100
 
-# burst.tween.prepareStart()
-# burst.tween.startTimelines()
+burst.tween.prepareStart()
+burst.tween.startTimelines()
 
-# slider = document.getElementById 'js-slider'
+slider = document.getElementById 'js-slider'
+slider.addEventListener 'input', (e)->
+  burst.tween.setProgress (@value/1000)
 
-# slider.addEventListener 'input', (e)->
-#   burst.tween.setProgress (@value/1000)
 # i = 0
 # setInterval ->
 #   if i is 100 then i = 0

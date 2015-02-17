@@ -174,18 +174,77 @@ describe 'Timeline ->', ->
         duration: 10, onFirstUpdate:-> isRightScope = @ instanceof Timeline
       t.start().update t.props.startTime + 2
       expect(isRightScope).toBe true
-    it 'should be called after progress went further or before the timeline', ->
+    it 'should be called after progress went further the timeline', ->
       isRightScope = false
       t = new Timeline
         duration: 10
-        isIt: true
-        onFirstUpdate:-> isRightScope = @ instanceof Timeline
+        onFirstUpdate:->
       .start()
       t.update t.props.startTime + 1
       t.update t.props.startTime + 12
       spyOn(t.o, 'onFirstUpdate')
       t.update t.props.startTime + 9
       expect(t.o.onFirstUpdate).toHaveBeenCalled()
+
+    it 'should be called after progress went before the timeline', ->
+      isRightScope = false
+      t = new Timeline
+        duration: 10
+        onFirstUpdate:->
+      .start()
+      t.update t.props.startTime + 1
+      t.update t.props.startTime + -1
+      spyOn(t.o, 'onFirstUpdate')
+      t.update t.props.startTime + 2
+      expect(t.o.onFirstUpdate).toHaveBeenCalled()
+
+  describe 'onFirstUpdateBackward callback ->', ->
+    it 'should be defined', ->
+      t = new Timeline onFirstUpdateBackward: ->
+      expect(t.o.onFirstUpdateBackward).toBeDefined()
+    it 'should be called only on backward progress', ->
+      isRightScope = false
+      t = new Timeline
+        duration: 100
+        onFirstUpdateBackward:->
+      .start()
+      t.update t.props.startTime + 500
+      spyOn(t.o, 'onFirstUpdateBackward')
+      t.update t.props.startTime + 40
+      expect(t.o.onFirstUpdateBackward).toHaveBeenCalled()
+    it 'should be called just once', ->
+      cnt = 0
+      t = new Timeline(duration: 100, onFirstUpdateBackward:-> cnt++ ).start()
+      t.prevTime = t.props.startTime + 103
+      t.update t.props.startTime + 90
+      t.update t.props.startTime + 80
+      t.update t.props.startTime + 70
+      expect(cnt).toBe 1
+    it 'should have the right scope', ->
+      isRightScope = false
+      t = new Timeline
+        duration: 10
+        onFirstUpdateBackward:-> isRightScope = @ instanceof Timeline
+      t.start()
+      t.update t.props.startTime + 12
+      t.update t.props.startTime + 9
+      expect(isRightScope).toBe true
+    it 'should be called after progress went further or before the timeline', ->
+      isRightScope = false
+      t = new Timeline(duration: 10, onFirstUpdateBackward: ->)
+        .start()
+      t.prevTime = t.props.startTime + 11
+      t.update t.props.startTime + 9
+      t.update t.props.startTime + 12
+      spyOn(t.o, 'onFirstUpdateBackward')
+      t.update t.props.startTime + 9
+      expect(t.o.onFirstUpdateBackward).toHaveBeenCalled()
+    it 'should not be called at the start', ->
+      t = new Timeline(duration: 10, onFirstUpdateBackward: ->)
+        .start()
+      spyOn(t.o, 'onFirstUpdateBackward')
+      t.update t.props.startTime + 1
+      expect(t.o.onFirstUpdateBackward).not.toHaveBeenCalled()
 
   describe 'yoyo option ->', ->
     it 'should recieve yoyo option', ->
@@ -236,7 +295,6 @@ describe 'Timeline ->', ->
       t.setProc .75
       expect(t.progress).toBe .75
       expect(t.easedProgress.toFixed(2)).toBe '0.97'
-
   describe 'setProp method->', ->
     it 'should set new timeline options', ->
       t = new Timeline duration: 100, delay: 0

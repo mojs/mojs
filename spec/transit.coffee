@@ -274,7 +274,6 @@ describe 'Transit ->', ->
         strokeWidth:  2
         x:            10
         y:            20
-      
       byte.isRendered = false
       byte.h.remBase = 8
       byte.render()
@@ -805,10 +804,14 @@ describe 'Transit ->', ->
     #       expect(isRightScope).toBe true
     #       dfr()
     #     , 100
-  describe 'Tweens ->', ->
+  describe 'createTween method ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}
       expect(byte.tween).toBeDefined()
+    it 'should bind the onFirstUpdateBackward metod', ->
+      byte = new Byte radius:  {'25': 75}
+      expect(typeof byte.timeline.o.onFirstUpdateBackward)
+        .toBe 'function'
     # it 'should not create tween object if isTweenLess', ->
     #   byte = new Byte radius:  {'25': 75}, isTweenLess: true
     #   expect(byte.tween).not.toBeDefined()

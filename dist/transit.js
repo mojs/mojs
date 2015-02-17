@@ -51,6 +51,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.vars = function() {
+    var o;
     if (this.h == null) {
       this.h = h;
     }
@@ -58,8 +59,10 @@ Transit = (function(_super) {
       this.lastSet = {};
     }
     this.extendDefaults();
+    o = {};
+    this.h.extend(o, this.o);
     this.history = [];
-    this.history.push(this.o);
+    this.history.push(o);
     return this.timelines = [];
   };
 
@@ -409,6 +412,11 @@ Transit = (function(_super) {
         return function() {
           var _ref;
           return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this),
+      onFirstUpdateBackward: (function(_this) {
+        return function() {
+          return _this.tuneOptions(_this.history[0]);
         };
       })(this)
     });

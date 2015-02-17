@@ -1512,7 +1512,7 @@
         });
       });
     });
-    describe('Tweens ->', function() {
+    describe('createTween method ->', function() {
       it('should create tween object', function() {
         var byte;
         byte = new Byte({
@@ -1521,6 +1521,15 @@
           }
         });
         return expect(byte.tween).toBeDefined();
+      });
+      it('should bind the onFirstUpdateBackward metod', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        return expect(typeof byte.timeline.o.onFirstUpdateBackward).toBe('function');
       });
       it('should start tween after init', function(dfr) {
         var byte, isStarted;

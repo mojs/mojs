@@ -14,7 +14,7 @@ class Timeline
     onComplete:       null
   constructor:(@o={})-> @extendDefaults(); @vars(); @
   vars:->
-    @h = h; @props = {}; @progress = 0
+    @h = h; @props = {}; @progress = 0; @prevTime = 0
     @calcDimentions()
 
   calcDimentions:->
@@ -24,21 +24,18 @@ class Timeline
     @props.easing = if typeof easing is 'function' then easing
     else Easing[easing[0]][easing[1]]# or (k)-> k
 
-  extendDefaults:->
-    h.extend(@o, @defaults); @onUpdate = @o.onUpdate
+  extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
     @props.startTime = (time or Date.now()) + @o.delay
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->
-    # time = @props.easing(time)
     if (time >= @props.startTime) and (time < @props.endTime)
       if !@isStarted then @o.onStart?.apply(@); @isStarted = true
       elapsed = time - @props.startTime
       # in the first repeat or without any repeats
-      if elapsed <= @o.duration
-        @setProc elapsed/@o.duration
+      if elapsed <= @o.duration then @setProc elapsed/@o.duration
       else # far in the repeats
         start = @props.startTime
         isFlip = false; cnt = 0
@@ -58,12 +55,18 @@ class Timeline
         # is in start point + delay
         else @setProc 0
       if !@isFirstUpdate then @o.onFirstUpdate?.apply(@); @isFirstUpdate = true
+      # if time < @prevTime and
+      if time < @prevTime and !@isFirstUpdateBackward
+        @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       @onUpdate? @easedProgress
     else
       if time >= @props.endTime and !@isCompleted
         (@o.onComplete?.apply(@); @isCompleted = true)
         @setProc 1; @onUpdate? @easedProgress
-      @isFirstUpdate = false
+      if time > @props.endTime or time < @props.startTime
+        @isFirstUpdate = false
+      @isFirstUpdateBackward = false
+    @prevTime = time
 
   setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress
 

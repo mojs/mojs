@@ -1550,7 +1550,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
+var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil, slider;
 
 Burst = require('./burst');
 
@@ -1576,15 +1576,21 @@ burst = new Transit({
   points: 5,
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)',
-  delay: 2000
+  swirlSize: 'rand(0,10)'
 }).then({
-  radius: 0,
-  delay: 0
+  radius: 0
+}).then({
+  radius: 75
 });
 
-burst.run({
-  x: 100
+burst.tween.prepareStart();
+
+burst.tween.startTimelines();
+
+slider = document.getElementById('js-slider');
+
+slider.addEventListener('input', function(e) {
+  return burst.tween.setProgress(this.value / 1000);
 });
 
 eye = document.querySelector('#js-eye');
@@ -1768,6 +1774,7 @@ Timeline = (function() {
     this.h = h;
     this.props = {};
     this.progress = 0;
+    this.prevTime = 0;
     return this.calcDimentions();
   };
 
@@ -1793,7 +1800,7 @@ Timeline = (function() {
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2;
+    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
@@ -1829,11 +1836,19 @@ Timeline = (function() {
         }
         this.isFirstUpdate = true;
       }
-      return typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0;
+      if (time < this.prevTime && !this.isFirstUpdateBackward) {
+        if ((_ref2 = this.o.onFirstUpdateBackward) != null) {
+          _ref2.apply(this);
+        }
+        this.isFirstUpdateBackward = true;
+      }
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(this.easedProgress);
+      }
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
-        if ((_ref2 = this.o.onComplete) != null) {
-          _ref2.apply(this);
+        if ((_ref3 = this.o.onComplete) != null) {
+          _ref3.apply(this);
         }
         this.isCompleted = true;
         this.setProc(1);
@@ -1841,8 +1856,12 @@ Timeline = (function() {
           this.onUpdate(this.easedProgress);
         }
       }
-      return this.isFirstUpdate = false;
+      if (time > this.props.endTime || time < this.props.startTime) {
+        this.isFirstUpdate = false;
+      }
+      this.isFirstUpdateBackward = false;
     }
+    return this.prevTime = time;
   };
 
   Timeline.prototype.setProc = function(p) {
@@ -1953,6 +1972,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.vars = function() {
+    var o;
     if (this.h == null) {
       this.h = h;
     }
@@ -1960,8 +1980,10 @@ Transit = (function(_super) {
       this.lastSet = {};
     }
     this.extendDefaults();
+    o = {};
+    this.h.extend(o, this.o);
     this.history = [];
-    this.history.push(this.o);
+    this.history.push(o);
     return this.timelines = [];
   };
 
@@ -2311,6 +2333,11 @@ Transit = (function(_super) {
         return function() {
           var _ref;
           return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this),
+      onFirstUpdateBackward: (function(_this) {
+        return function() {
+          return _this.tuneOptions(_this.history[0]);
         };
       })(this)
     });
