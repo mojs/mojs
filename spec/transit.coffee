@@ -813,27 +813,23 @@ describe 'Transit ->', ->
           expect(isRightScope).toBe true
           dfr()
         , 100
-    # describe 'onCompleteChain callback', ->
-    #   it 'should call onCompleteChain callback when chain ends', (dfr)->
-    #     isOnComplete = null
-    #     byte = new Byte
-    #       radius:   {'25': 75}
-    #       onCompleteChain:-> isOnComplete = true
-    #       duration: 20
-    #     setTimeout ->
-    #       expect(isOnComplete).toBe true
-    #       dfr()
-    #     , 100
-    #   it 'should have scope of byte', (dfr)->
-    #     isRightScope = null
-    #     byte = new Byte
-    #       radius: {'25': 75}
-    #       duration: 20
-    #       onCompleteChain:-> isRightScope = @ instanceof Byte
-    #     setTimeout ->
-    #       expect(isRightScope).toBe true
-    #       dfr()
-    #     , 100
+    
+  describe 'onFirstUpdateBackward callback ->', ->
+    it 'should call tuneOptions method when the tween goes backward', ->
+      byte = new Byte radius:  {'25': 75}
+        .then { radius: 20 }
+      spyOn byte, 'tuneOptions'
+      byte.tween.setProgress .99
+      byte.tween.setProgress 0
+      expect(byte.tuneOptions).toHaveBeenCalled()
+
+    it 'should call not tuneOptions if history length is one record', ->
+      byte = new Byte radius:  {'25': 75}
+      spyOn byte, 'tuneOptions'
+      byte.tween.setProgress .99
+      byte.tween.setProgress 0
+      expect(byte.tuneOptions).not.toHaveBeenCalled()
+
   describe 'createTween method ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}

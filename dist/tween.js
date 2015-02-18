@@ -110,8 +110,7 @@ Tween = (function() {
   };
 
   Tween.prototype.start = function(time) {
-    this.prepareStart();
-    this.startTimelines(time);
+    this.setStartTime(time);
     !time && t.add(this);
     return this;
   };
@@ -126,7 +125,15 @@ Tween = (function() {
     return this.props.endTime = this.props.startTime + this.props.totalTime;
   };
 
+  Tween.prototype.setStartTime = function(time) {
+    this.prepareStart(time);
+    return this.startTimelines(time);
+  };
+
   Tween.prototype.setProgress = function(progress) {
+    if (this.props.startTime == null) {
+      this.setStartTime();
+    }
     progress = Math.max(progress, 0);
     progress = Math.min(progress, 1);
     return this.update(this.props.startTime + progress * this.props.totalTime);

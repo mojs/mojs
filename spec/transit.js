@@ -1563,6 +1563,34 @@
         });
       });
     });
+    describe('onFirstUpdateBackward callback ->', function() {
+      it('should call tuneOptions method when the tween goes backward', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        }).then({
+          radius: 20
+        });
+        spyOn(byte, 'tuneOptions');
+        byte.tween.setProgress(.99);
+        byte.tween.setProgress(0);
+        return expect(byte.tuneOptions).toHaveBeenCalled();
+      });
+      return it('should call not tuneOptions if history length is one record', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25': 75
+          }
+        });
+        spyOn(byte, 'tuneOptions');
+        byte.tween.setProgress(.99);
+        byte.tween.setProgress(0);
+        return expect(byte.tuneOptions).not.toHaveBeenCalled();
+      });
+    });
     describe('createTween method ->', function() {
       it('should create tween object', function() {
         var byte;

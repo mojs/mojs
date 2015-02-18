@@ -99,8 +99,8 @@ module.exports = function(config) {
       // 'spec/transit.js',
       'dist/swirl.js',
       'spec/swirl.js',
-      'dist/tween.js',
-      'spec/tween.js',
+      // 'dist/tween.js',
+      // 'spec/tween.js',
       // 'dist/burst.js',
       // 'spec/burst.js'
     ],

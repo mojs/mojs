@@ -196,12 +196,13 @@
         expect(t.props.startTime).toBeDefined();
         return expect(t.props.endTime).toBe(t.props.startTime + t.props.totalTime);
       });
-      it('should call the prepareStart method', function() {
-        var t;
+      it('should call the setStartTime method', function() {
+        var t, time;
         t = new Tween;
-        spyOn(t, 'prepareStart');
-        t.start();
-        return expect(t.prepareStart).toHaveBeenCalled();
+        spyOn(t, 'setStartTime');
+        time = 0;
+        t.start(time);
+        return expect(t.setStartTime).toHaveBeenCalledWith(time);
       });
       it('should start every timeline', function() {
         var t;
@@ -477,7 +478,7 @@
         return expect(ti4.update).toHaveBeenCalledWith(time);
       });
     });
-    return describe('setProgress method ->', function() {
+    describe('setProgress method ->', function() {
       it('should call the update on every child with progress time', function() {
         var t, t1, t2, ti1, ti2, ti3, ti4, time;
         t = new Tween;
@@ -517,6 +518,13 @@
         expect(ti2.update).toHaveBeenCalledWith(time);
         expect(ti3.update).toHaveBeenCalledWith(time);
         return expect(ti4.update).toHaveBeenCalledWith(time);
+      });
+      it('should call setStartTime if there is no @props.startTime', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, 'setStartTime');
+        t.setProgress(.5);
+        return expect(t.setStartTime).toHaveBeenCalled();
       });
       it('should call self update', function() {
         var t, t1, t2, ti1, ti2, ti3, ti4;
@@ -580,6 +588,23 @@
         spyOn(t, 'update');
         t.setProgress(-1.5);
         return expect(t.update).toHaveBeenCalledWith(t.props.startTime);
+      });
+    });
+    return describe('setStartTime method', function() {
+      return it('should call prepareStart and startTimelines methods', function() {
+        var t, t1, time;
+        t = new Tween;
+        t1 = new Tween;
+        t1.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        spyOn(t, 'prepareStart');
+        spyOn(t, 'startTimelines');
+        time = 0;
+        t.setStartTime(time);
+        expect(t.prepareStart).toHaveBeenCalledWith(time);
+        return expect(t.startTimelines).toHaveBeenCalledWith(time);
       });
     });
   });

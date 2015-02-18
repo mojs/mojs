@@ -1604,7 +1604,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
+var Burst, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil, slider;
 
 Burst = require('./burst');
 
@@ -1616,7 +1616,7 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Burst({
+burst = new Transit({
   x: 300,
   y: 300,
   type: 'polygon',
@@ -1624,6 +1624,7 @@ burst = new Burst({
   count: 7,
   isIt: true,
   isRunLess: true,
+  isShowInit: true,
   points: 5,
   isSwirl: true,
   swirlFrequency: 'rand(0,10)',
@@ -1636,6 +1637,12 @@ burst = new Burst({
 
 burst.run({
   x: 100
+});
+
+slider = document.getElementById('js-slider');
+
+slider.addEventListener('input', function(e) {
+  return burst.tween.setProgress(this.value / 1000);
 });
 
 eye = document.querySelector('#js-eye');
@@ -2395,7 +2402,7 @@ Transit = (function(_super) {
       })(this),
       onFirstUpdateBackward: (function(_this) {
         return function() {
-          return _this.tuneOptions(_this.history[0]);
+          return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
         };
       })(this)
     });
@@ -2640,8 +2647,7 @@ Tween = (function() {
   };
 
   Tween.prototype.start = function(time) {
-    this.prepareStart();
-    this.startTimelines(time);
+    this.setStartTime(time);
     !time && t.add(this);
     return this;
   };
@@ -2656,7 +2662,15 @@ Tween = (function() {
     return this.props.endTime = this.props.startTime + this.props.totalTime;
   };
 
+  Tween.prototype.setStartTime = function(time) {
+    this.prepareStart(time);
+    return this.startTimelines(time);
+  };
+
   Tween.prototype.setProgress = function(progress) {
+    if (this.props.startTime == null) {
+      this.setStartTime();
+    }
     progress = Math.max(progress, 0);
     progress = Math.min(progress, 1);
     return this.update(this.props.startTime + progress * this.props.totalTime);

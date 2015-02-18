@@ -50,8 +50,7 @@ class Tween
     while(i--)
       @timelines[i].start time or @props.startTime
   start:(time)->
-    @prepareStart()
-    @startTimelines time
+    @setStartTime time
     !time and t.add @
     @
   stop:-> t.remove(@); @
@@ -59,7 +58,10 @@ class Tween
     @props.startTime = Date.now()
     @props.endTime = @props.startTime + @props.totalTime
 
+  setStartTime:(time)-> @prepareStart(time); @startTimelines(time)
+
   setProgress:(progress)->
+    if !@props.startTime? then @setStartTime()
     progress = Math.max progress, 0
     progress = Math.min progress, 1
     @update @props.startTime + progress*@props.totalTime

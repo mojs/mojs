@@ -101,11 +101,12 @@ describe 'Tween ->', ->
       t.start()
       expect(t.props.startTime).toBeDefined()
       expect(t.props.endTime).toBe t.props.startTime + t.props.totalTime
-    it 'should call the prepareStart method',->
+    it 'should call the setStartTime method',->
       t = new Tween
-      spyOn t, 'prepareStart'
-      t.start()
-      expect(t.prepareStart).toHaveBeenCalled()
+      spyOn t, 'setStartTime'
+      time = 0
+      t.start time
+      expect(t.setStartTime).toHaveBeenCalledWith time
     # it 'should restart flags', ->
     #   t = new Tween
     #   t.add new Timeline duration: 20
@@ -307,6 +308,12 @@ describe 'Tween ->', ->
       expect(ti2.update).toHaveBeenCalledWith time
       expect(ti3.update).toHaveBeenCalledWith time
       expect(ti4.update).toHaveBeenCalledWith time
+    it 'should call setStartTime if there is no @props.startTime', ->
+      t = new Tween
+      spyOn t, 'setStartTime'
+      t.setProgress .5
+      expect(t.setStartTime).toHaveBeenCalled()
+
     it 'should call self update', ->
       t   = new Tween
       t1  = new Tween
@@ -335,6 +342,19 @@ describe 'Tween ->', ->
       spyOn t, 'update'
       t.setProgress -1.5
       expect(t.update).toHaveBeenCalledWith t.props.startTime
+
+  describe 'setStartTime method', ->
+    it 'should call prepareStart and startTimelines methods', ->
+      t   = new Tween; t1  = new Tween
+      t1.add new Timeline duration: 500, delay: 200
+      spyOn t, 'prepareStart'
+      spyOn t, 'startTimelines'
+      time = 0
+      t.setStartTime time
+      expect(t.prepareStart)  .toHaveBeenCalledWith time
+      expect(t.startTimelines).toHaveBeenCalledWith time
+
+
       
 
 

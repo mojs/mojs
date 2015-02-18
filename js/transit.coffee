@@ -290,7 +290,7 @@ class Transit extends bitsMap.map.bit
       onUpdate:   (p)=> @setProgress p
       onComplete: => @props.onComplete?.apply @
       onStart:    => @props.onStart?.apply @
-      onFirstUpdateBackward:=> @tuneOptions @history[0]
+      onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
     @tween = new Tween; @tween.add @timeline
     !@o.isRunLess and @startTween()
 

@@ -7,15 +7,13 @@
 
 #### todo
 - burst
-  - fix setProgress
+  - set initial progress for the childrens or hide them
   - opacity childOptions to burst
   - add deltas for swirl swirlFrequency and swirlSize
   - add stagger values
-  - set initial progress for the childrens or hide them
   - then implementation
 - transit
   - fix show hide on setProgress
-  - fix size calculation based on radiusX/radiusY
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size

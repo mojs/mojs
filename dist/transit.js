@@ -426,7 +426,7 @@ Transit = (function(_super) {
       })(this),
       onFirstUpdateBackward: (function(_this) {
         return function() {
-          return _this.tuneOptions(_this.history[0]);
+          return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
         };
       })(this)
     });
