@@ -14,6 +14,8 @@
   - add stagger values
   - set initial progress for the childrens or hide them
   - then implementation
+- transit
+  - fix show hide on setProgress
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size

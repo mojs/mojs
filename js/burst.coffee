@@ -168,11 +168,20 @@ class Burst extends Transit
       transit.calcSize()
       if largestSize < transit.props.size
         largestSize = transit.props.size
-    selfSize = if @deltas.radius
-      start = Math.abs @deltas.radius.start
-      end   = Math.abs @deltas.radius.end
-      Math.max start, end
-    else parseFloat @props.radius
+
+    selfSize = if @deltas.radius?
+      Math.max Math.abs(@deltas.radius.end), Math.abs(@deltas.radius.start)
+    else if @props.radius? then parseFloat(@props.radius) else 0
+    selfSizeX = if @deltas.radiusX?
+      Math.max Math.abs(@deltas.radiusX.end), Math.abs(@deltas.radiusX.start)
+    else if @props.radiusX? then parseFloat(@props.radiusX) else 0
+    selfSizeY = if @deltas.radiusY?
+      Math.max Math.abs(@deltas.radiusY.end), Math.abs(@deltas.radiusY.start)
+    else if @props.radiusY? then parseFloat(@props.radiusY) else 0
+
+    selfSize = Math.max selfSize, selfSizeX, selfSizeY
+
+    
     @props.size   = largestSize + 2*selfSize
     @props.center = @props.size/2
     @addBitOptions()
