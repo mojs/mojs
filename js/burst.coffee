@@ -23,6 +23,8 @@ class Burst extends Transit
     shiftY:             0
     # size props
     radius:             { 25: 75 }
+    radiusX:            undefined
+    radiusY:            undefined
     angle:              0
     size:               null
     sizeGap:            0
@@ -37,6 +39,8 @@ class Burst extends Transit
   childDefaults:
     #-- intersection starts
     radius:             { 7 : 0 }
+    radiusX:            undefined
+    radiusY:            undefined
     angle:              0
     # callbacks
     onStart:            null
@@ -63,6 +67,8 @@ class Burst extends Transit
     strokeLinecap:      null
   optionsIntersection:
     radius:     1
+    radiusX:    1
+    radiusY:    1
     angle:      1
     onStart:    1
     onComplete: 1
@@ -104,16 +110,42 @@ class Burst extends Transit
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
     for transit, i in @transits
+
+      rStart = if @deltas.radius? then @deltas.radius.start else @props.radius
+      
+      rXStart = if @deltas.radiusX? then @deltas.radiusX.start
+      else if @props.radiusX? then @props.radiusX
+
+      rYStart = if @deltas.radiusY? then @deltas.radiusY.start
+      else if @props.radiusY? then @props.radiusY
+      
       pointStart = @h.getRadialPoint
-        radius: if @deltas.radius? then @deltas.radius.start else @props.radius
+        radius:  rStart
+        radiusX: rXStart
+        radiusY: rYStart
         angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
+
+      rEnd = if @deltas.radius? then @deltas.radius.end else @props.radius
+      
+      rXEnd = if @deltas.radiusX? then @deltas.radiusX.end
+      else if @props.radiusX? then @props.radiusX
+
+      rYEnd = if @deltas.radiusY? then @deltas.radiusY.end
+      else if @props.radiusY? then @props.radiusY
+      
       pointEnd = @h.getRadialPoint
-        radius: if @deltas.radius? then @deltas.radius.end else @props.radius
+        radius:  rEnd
+        radiusX: rXEnd
+        radiusY: rEnd
         angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
+
       x = {}; y = {}
-      x[pointStart.x] = pointEnd.x; y[pointStart.y] = pointEnd.y
+      if pointStart.x is pointEnd.x then x = pointStart.x
+      else x[pointStart.x] = pointEnd.x
+      if pointStart.y is pointEnd.y then y = pointStart.y
+      else y[pointStart.y] = pointEnd.y
       transit.o.x = x; transit.o.y = y
       transit.extendDefaults()
 

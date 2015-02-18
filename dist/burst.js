@@ -38,6 +38,8 @@ Burst = (function(_super) {
     radius: {
       25: 75
     },
+    radiusX: void 0,
+    radiusY: void 0,
     angle: 0,
     size: null,
     sizeGap: 0,
@@ -53,6 +55,8 @@ Burst = (function(_super) {
     radius: {
       7: 0
     },
+    radiusX: void 0,
+    radiusY: void 0,
     angle: 0,
     onStart: null,
     onComplete: null,
@@ -79,6 +83,8 @@ Burst = (function(_super) {
 
   Burst.prototype.optionsIntersection = {
     radius: 1,
+    radiusX: 1,
+    radiusY: 1,
     angle: 1,
     onStart: 1,
     onComplete: 1,
@@ -138,7 +144,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var i, pointEnd, pointStart, points, step, transit, x, y, _i, _len, _ref, _results;
+    var i, pointEnd, pointStart, points, rEnd, rStart, rXEnd, rXStart, rYEnd, rYStart, step, transit, x, y, _i, _len, _ref, _results;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
@@ -146,16 +152,26 @@ Burst = (function(_super) {
     _results = [];
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       transit = _ref[i];
+      rStart = this.deltas.radius != null ? this.deltas.radius.start : this.props.radius;
+      rXStart = this.deltas.radiusX != null ? this.deltas.radiusX.start : this.props.radiusX != null ? this.props.radiusX : void 0;
+      rYStart = this.deltas.radiusY != null ? this.deltas.radiusY.start : this.props.radiusY != null ? this.props.radiusY : void 0;
       pointStart = this.h.getRadialPoint({
-        radius: this.deltas.radius != null ? this.deltas.radius.start : this.props.radius,
+        radius: rStart,
+        radiusX: rXStart,
+        radiusY: rYStart,
         angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
           y: this.props.center
         }
       });
+      rEnd = this.deltas.radius != null ? this.deltas.radius.end : this.props.radius;
+      rXEnd = this.deltas.radiusX != null ? this.deltas.radiusX.end : this.props.radiusX != null ? this.props.radiusX : void 0;
+      rYEnd = this.deltas.radiusY != null ? this.deltas.radiusY.end : this.props.radiusY != null ? this.props.radiusY : void 0;
       pointEnd = this.h.getRadialPoint({
-        radius: this.deltas.radius != null ? this.deltas.radius.end : this.props.radius,
+        radius: rEnd,
+        radiusX: rXEnd,
+        radiusY: rEnd,
         angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
@@ -164,8 +180,16 @@ Burst = (function(_super) {
       });
       x = {};
       y = {};
-      x[pointStart.x] = pointEnd.x;
-      y[pointStart.y] = pointEnd.y;
+      if (pointStart.x === pointEnd.x) {
+        x = pointStart.x;
+      } else {
+        x[pointStart.x] = pointEnd.x;
+      }
+      if (pointStart.y === pointEnd.y) {
+        y = pointStart.y;
+      } else {
+        y[pointStart.y] = pointEnd.y;
+      }
       transit.o.x = x;
       transit.o.y = y;
       _results.push(transit.extendDefaults());

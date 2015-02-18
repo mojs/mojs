@@ -68,11 +68,13 @@
         var burst;
         burst = new Burst;
         expect(burst.optionsIntersection.radius).toBe(1);
+        expect(burst.optionsIntersection.radiusX).toBe(1);
+        expect(burst.optionsIntersection.radiusY).toBe(1);
         expect(burst.optionsIntersection.angle).toBe(1);
         expect(burst.optionsIntersection.onUpdate).toBe(1);
         expect(burst.optionsIntersection.onStart).toBe(1);
         expect(burst.optionsIntersection.onComplete).toBe(1);
-        return expect(Object.keys(burst.optionsIntersection).length).toBe(5);
+        return expect(Object.keys(burst.optionsIntersection).length).toBe(7);
       });
     });
     describe('initialization ->', function() {
@@ -177,9 +179,9 @@
           count: 2
         });
         center = burst.props.center;
-        expect(burst.transits[0].o.x[center]).toBe(center);
+        expect(burst.transits[0].o.x).toBe(center);
         expect(burst.transits[0].o.y[center - 50]).toBe(center - 75);
-        expect(burst.transits[1].o.x[center]).toBe(center);
+        expect(burst.transits[1].o.x).toBe(center);
         return expect(burst.transits[1].o.y[center + 50]).toBe(center + 75);
       });
     });
@@ -498,7 +500,7 @@
         });
         return expect(typeof burst.transits[1].o.x).toBe('object');
       });
-      return it('should work if end radius is 0', function() {
+      it('should work if end radius is 0', function() {
         var burst, keys, x;
         burst = new Burst({
           radius: {
@@ -508,6 +510,30 @@
         x = burst.transits[1].o.x;
         keys = Object.keys(x);
         return expect(x[keys[0]] + '').not.toBe(keys[0]);
+      });
+      it('should work with radiusX', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            120: 0
+          },
+          radiusX: 30
+        });
+        return expect(parseInt(burst.transits[1].o.x, 10)).toBe(155);
+      });
+      return it('should work with radiusY', function() {
+        var burst, center, keys;
+        burst = new Burst({
+          radius: {
+            120: 0
+          },
+          radiusY: {
+            30: 0
+          }
+        });
+        keys = Object.keys(burst.transits[1].o.y);
+        center = burst.props.center;
+        return expect(burst.transits[1].o.y[keys[0]]).toBe(center);
       });
     });
     describe('createTween method ->', function() {

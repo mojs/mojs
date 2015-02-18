@@ -6,14 +6,13 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- transit
-  - fix the size calc
 - burst
+  - fix size calculation based on radiusX/radiusY
+  - fix setProgress
   - opacity childOptions to burst
   - add deltas for swirl swirlFrequency and swirlSize
   - add stagger values
   - set initial progress for the childrens or hide them
-  - add radiusX radiusY options
   - then implementation
 - cover raf polyfill
 - perf profile + refactor

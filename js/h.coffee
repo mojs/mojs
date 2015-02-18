@@ -117,6 +117,7 @@ class Helpers
     radAngle = (o.angle-90)*(Math.PI/180)
     radiusX = if o.radiusX? then o.radiusX else o.radius
     radiusY = if o.radiusY? then o.radiusY else o.radius
+    # console.log radiusX, radiusY
     point =
       x: o.center.x + (Math.cos(radAngle)*radiusX)
       y: o.center.y + (Math.sin(radAngle)*radiusY)

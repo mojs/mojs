@@ -63,11 +63,13 @@ describe 'Burst ->', ->
     it 'should have optionsIntersection object', ->
       burst = new Burst
       expect(burst.optionsIntersection.radius)    .toBe 1
+      expect(burst.optionsIntersection.radiusX)   .toBe 1
+      expect(burst.optionsIntersection.radiusY)   .toBe 1
       expect(burst.optionsIntersection.angle)     .toBe 1
       expect(burst.optionsIntersection.onUpdate)  .toBe 1
       expect(burst.optionsIntersection.onStart)   .toBe 1
       expect(burst.optionsIntersection.onComplete).toBe 1
-      expect(Object.keys(burst.optionsIntersection).length).toBe 5
+      expect(Object.keys(burst.optionsIntersection).length).toBe 7
 
   describe 'initialization ->', ->
     it 'should create transits', ->
@@ -159,10 +161,10 @@ describe 'Burst ->', ->
       burst = new Burst
         radius: { 50: 75 }
         count: 2
-      center =  burst.props.center
-      expect(burst.transits[0].o.x[center]).toBe center
+      center = burst.props.center
+      expect(burst.transits[0].o.x).toBe center
       expect(burst.transits[0].o.y[center - 50]).toBe center - 75
-      expect(burst.transits[1].o.x[center]).toBe center
+      expect(burst.transits[1].o.x).toBe center
       expect(burst.transits[1].o.y[center + 50]).toBe center + 75
 
   describe 'fillTransform method ->', ->
@@ -347,6 +349,19 @@ describe 'Burst ->', ->
       burst = new Burst radius: {120: 0}
       x = burst.transits[1].o.x; keys = Object.keys x
       expect(x[keys[0]]+'').not.toBe keys[0]
+
+    it 'should work with radiusX', ->
+      burst = new Burst
+        radius: {120: 0}, radiusX: 30
+      expect(parseInt(burst.transits[1].o.x,10)).toBe 155
+
+    it 'should work with radiusY', ->
+      burst = new Burst
+        radius: {120: 0}, radiusY: {30: 0}
+
+      keys = Object.keys(burst.transits[1].o.y)
+      center = burst.props.center
+      expect(burst.transits[1].o.y[keys[0]]).toBe center
 
   describe 'createTween method ->', ->
     it 'should create tween', ->

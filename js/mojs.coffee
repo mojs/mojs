@@ -24,21 +24,22 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Transit(
+burst = new Burst(
   # isRunLess: true
   x: 300, y: 300
   type: 'polygon'
   duration: 500
-  count: 3
+  count: 7
   isIt: true
   isRunLess: true
+  # isShowInit: true
   # radius:      {0: 75}
   points: 5
   isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
-  radiusX: { 50: 1}
-  radiusY: { 0: 100}
+  radiusX: { 0: 50}
+  radiusY: 175
   # onComplete: -> console.log 'onComplete'
   # angle: {360: 0}
   # delay: 2000
@@ -49,12 +50,12 @@ burst = new Transit(
 
 burst.run x: 100
 
-burst.tween.prepareStart()
-burst.tween.startTimelines()
+# burst.tween.prepareStart()
+# burst.tween.startTimelines()
 
-slider = document.getElementById 'js-slider'
-slider.addEventListener 'input', (e)->
-  burst.tween.setProgress (@value/1000)
+# slider = document.getElementById 'js-slider'
+# slider.addEventListener 'input', (e)->
+#   burst.tween.setProgress (@value/1000)
 
 # i = 0
 # setInterval ->
