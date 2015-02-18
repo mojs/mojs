@@ -469,7 +469,9 @@
       it('should calculate size based on largest transit + self radius #3', function() {
         var burst;
         burst = new Burst({
-          radius: 50,
+          radius: {
+            20: 50
+          },
           radiusX: 20,
           childOptions: {
             radius: [
@@ -487,7 +489,9 @@
         var burst;
         burst = new Burst({
           radius: 50,
-          radiusY: 100,
+          radiusY: {
+            20: 100
+          },
           childOptions: {
             radius: [
               {

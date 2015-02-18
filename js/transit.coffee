@@ -137,17 +137,7 @@ class Transit extends bitsMap.map.bit
     @props.transform = "rotate(#{@props.angle},#{@origin.x},#{@origin.y})"
   calcSize:->
     return if @o.size
-    
-    dRadiusX = @deltas['radiusX'] or @deltas['radius']
-    dRadiusY = @deltas['radiusY'] or @deltas['radius']
-
-    radiusX = if dRadiusX?
-      Math.max Math.abs(dRadiusX.start), Math.abs(dRadiusX.end)
-    else if @props.radiusX? then @props.radiusX else @props.radius
-    radiusY = if dRadiusY?
-      Math.max Math.abs(dRadiusY.start), Math.abs(dRadiusY.end)
-    else if @props.radiusY? then @props.radiusY else @props.radius
-    radius = Math.max radiusX, radiusY
+    radius = @calcMaxRadius()
 
     dStroke = @deltas['strokeWidth']
     stroke = if dStroke?
@@ -157,6 +147,18 @@ class Transit extends bitsMap.map.bit
     @props.size   *= @bit.ratio
     @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2
+
+  calcMaxRadius:->
+    selfSize = if @deltas.radius?
+      Math.max Math.abs(@deltas.radius.end), Math.abs(@deltas.radius.start)
+    else if @props.radius? then parseFloat(@props.radius) else 0
+    selfSizeX = if @deltas.radiusX?
+      Math.max Math.abs(@deltas.radiusX.end), Math.abs(@deltas.radiusX.start)
+    else if @props.radiusX? then @props.radiusX else selfSize
+    selfSizeY = if @deltas.radiusY?
+      Math.max Math.abs(@deltas.radiusY.end), Math.abs(@deltas.radiusY.start)
+    else if @props.radiusY? then @props.radiusY else selfSize
+    Math.max selfSizeX, selfSizeY
 
   createBit:->
     bitClass = bitsMap.getBit(@o.type or @type)

@@ -405,6 +405,57 @@
         });
         return expect(byte.props.size).toBe(212);
       });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          radiusX: 200,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte.props.size).toBe(412);
+      });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          radiusX: 200,
+          radiusY: 300,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte.props.size).toBe(612);
+      });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          radiusY: 30,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte.props.size).toBe(212);
+      });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: 50,
+          radiusY: 30,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte.props.size).toBe(112);
+      });
       it('should have sizeGap option', function() {
         var byte;
         byte = new Byte({

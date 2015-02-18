@@ -7,7 +7,6 @@
 
 #### todo
 - burst
-  - fix size calculation based on radiusX/radiusY
   - fix setProgress
   - opacity childOptions to burst
   - add deltas for swirl swirlFrequency and swirlSize
@@ -16,6 +15,7 @@
   - then implementation
 - transit
   - fix show hide on setProgress
+  - fix size calculation based on radiusX/radiusY
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size

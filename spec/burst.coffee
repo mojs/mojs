@@ -329,7 +329,7 @@ describe 'Burst ->', ->
       expect(burst.props.center).toBe 170
     it 'should calculate size based on largest transit + self radius #3', ->
       burst = new Burst
-        radius: 50, radiusX: 20
+        radius: {20: 50}, radiusX: 20
         childOptions:
           radius:      [{ 20: 50 }, 20]
           strokeWidth: 20
@@ -337,7 +337,7 @@ describe 'Burst ->', ->
       expect(burst.props.center).toBe 120
     it 'should calculate size based on largest transit + self radius #4', ->
       burst = new Burst
-        radius: 50, radiusY: 100
+        radius: 50, radiusY: {20: 100}
         childOptions:
           radius:      [{ 20: 50 }, 20]
           strokeWidth: 20

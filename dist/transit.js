@@ -187,21 +187,25 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcSize = function() {
-    var dRadiusX, dRadiusY, dStroke, radius, radiusX, radiusY, stroke;
+    var dStroke, radius, stroke;
     if (this.o.size) {
       return;
     }
-    dRadiusX = this.deltas['radiusX'] || this.deltas['radius'];
-    dRadiusY = this.deltas['radiusY'] || this.deltas['radius'];
-    radiusX = dRadiusX != null ? Math.max(Math.abs(dRadiusX.start), Math.abs(dRadiusX.end)) : this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-    radiusY = dRadiusY != null ? Math.max(Math.abs(dRadiusY.start), Math.abs(dRadiusY.end)) : this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-    radius = Math.max(radiusX, radiusY);
+    radius = this.calcMaxRadius();
     dStroke = this.deltas['strokeWidth'];
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
     this.props.size = 2 * radius + 2 * stroke;
     this.props.size *= this.bit.ratio;
     this.props.size += 2 * this.props.sizeGap;
     return this.props.center = this.props.size / 2;
+  };
+
+  Transit.prototype.calcMaxRadius = function() {
+    var selfSize, selfSizeX, selfSizeY;
+    selfSize = this.deltas.radius != null ? Math.max(Math.abs(this.deltas.radius.end), Math.abs(this.deltas.radius.start)) : this.props.radius != null ? parseFloat(this.props.radius) : 0;
+    selfSizeX = this.deltas.radiusX != null ? Math.max(Math.abs(this.deltas.radiusX.end), Math.abs(this.deltas.radiusX.start)) : this.props.radiusX != null ? this.props.radiusX : selfSize;
+    selfSizeY = this.deltas.radiusY != null ? Math.max(Math.abs(this.deltas.radiusY.end), Math.abs(this.deltas.radiusY.start)) : this.props.radiusY != null ? this.props.radiusY : selfSize;
+    return Math.max(selfSizeX, selfSizeY);
   };
 
   Transit.prototype.createBit = function() {
