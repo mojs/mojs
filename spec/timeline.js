@@ -261,6 +261,41 @@
         return expect(isRightScope).toBe(true);
       });
     });
+    describe('onReverseComplete callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Timeline({
+          onReverseComplete: function() {}
+        });
+        return expect(t.o.onReverseComplete).toBeDefined();
+      });
+      it('should call onReverseComplete callback', function() {
+        var t;
+        t = new Timeline({
+          duration: 100,
+          onReverseComplete: function() {},
+          isIt: true
+        }).start();
+        spyOn(t.o, 'onReverseComplete');
+        t.update(t.props.startTime + 55);
+        t.update(t.props.startTime);
+        return expect(t.o.onReverseComplete).toHaveBeenCalled();
+      });
+      return it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = null;
+        t = new Timeline({
+          duration: 100,
+          onReverseComplete: function() {
+            return isRightScope = this instanceof Timeline;
+          },
+          isIt: true
+        }).start();
+        t.update(t.props.startTime + 55);
+        t.update(t.props.startTime);
+        return expect(isRightScope).toBe(true);
+      });
+    });
     describe('onComplete callback ->', function() {
       it('should be defined', function() {
         var t;

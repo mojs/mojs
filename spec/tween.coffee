@@ -107,15 +107,6 @@ describe 'Tween ->', ->
       time = 0
       t.start time
       expect(t.setStartTime).toHaveBeenCalledWith time
-    # it 'should restart flags', ->
-    #   t = new Tween
-    #   t.add new Timeline duration: 20
-    #   t.start()
-    #   t.update t.props.startTime + 5
-    #   t.update t.props.startTime + 60
-    #   expect(t.isCompleted).toBe true
-    #   t.start()
-    #   expect(t.isCompleted).toBe false
 
     it 'should start every timeline',->
       it 'should update the current time on every timeline',->
@@ -145,10 +136,28 @@ describe 'Tween ->', ->
       timeline = new Timeline duration: 2000
       t.add timeline
       t.start()
-      # spyOn tweener, 'remove'
       t.stop()
-      # expect(tweener.remove).toHaveBeenCalledWith t
       expect(tweener.tweens.length).toBe 0
+
+  describe 'onReverseComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onReverseComplete: ->
+      expect(t.o.onReverseComplete).toBeDefined()
+
+    it 'should call onReverseComplete callback', ()->
+      t = new Tween(onReverseComplete:->)
+      t.add new Timeline duration: 10
+      spyOn(t.o, 'onReverseComplete'); t.start()
+      t.setProgress .5
+      t.setProgress 0
+      expect(t.o.onReverseComplete).toHaveBeenCalled()
+
+    it 'should not be called on start', ()->
+      t = new Tween(onReverseComplete:->)
+      t.add new Timeline duration: 10
+      spyOn(t.o, 'onReverseComplete'); t.start()
+      t.setProgress 0
+      expect(t.o.onReverseComplete).not.toHaveBeenCalled()
 
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
@@ -162,12 +171,7 @@ describe 'Tween ->', ->
         expect(t.o.onComplete).toHaveBeenCalled()
         dfr()
       , 200
-    # it 'should be called just once', (dfr)->
-    #   cnt = 0
-    #   t = new Tween onComplete:-> cnt++
-    #   t.add new Timeline duration: 20
-    #   t.start()
-    #   setTimeout (-> expect(cnt).toBe(1); dfr()), 100
+    
     it 'should have the right scope', (dfr)->
       isRightScope = false
       t = new Tween onComplete:-> isRightScope = @ instanceof Tween
@@ -211,16 +215,7 @@ describe 'Tween ->', ->
       spyOn(t, 'onUpdate'); t.start()
       t.update t.props.startTime + 25
       expect(t.onUpdate).toHaveBeenCalledWith 1
-    #--- removed ---#
-    # it 'should run if time is greater then endTime just once', ->
-    #   cnt = 0
-    #   t = new Tween onUpdate:-> cnt++
-    #   t.add new Timeline duration: 20
-    #   t.getDimentions()
-    #   t.update t.props.startTime + 25
-    #   t.update t.props.startTime + 26
-    #   t.update t.props.startTime + 27
-    #   expect(cnt).toBe 1
+
   describe 'onStart callback ->', ->
     it 'should be defined', ->
       t = new Tween onStart: ->
@@ -246,24 +241,20 @@ describe 'Tween ->', ->
       t.update time = Date.now() + 200
       expect(t.timelines[0].update).toHaveBeenCalledWith time
       expect(t.timelines[1].update).toHaveBeenCalledWith time
-#--- removed ---#
-# it 'should not update the current time on every timeline if isCompleted',->
-#   t = new Tween
-#   t.add new Timeline duration: 500, delay: 200
-#   t.add new Timeline duration: 500, delay: 100
-#   t.getDimentions()
-#   t.update t.props.startTime + 2000
-#   spyOn t.timelines[0], 'update'
-#   spyOn t.timelines[1], 'update'
-#   t.update t.props.startTime + 2000
-#   expect(t.timelines[0].update).not.toHaveBeenCalled()
-#   expect(t.timelines[1].update).not.toHaveBeenCalled()
+
     it 'should return true is ended',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200
       t.add new Timeline duration: 500, delay: 100
       t.start()
       expect(t.update(Date.now() + 2000)).toBe true
+
+    it 'should not go further then endTime',->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.start()
+      t.update t.props.startTime + 1000
+      expect(t.prevTime).toBe t.props.endTime
 
     it 'should work with tweens',->
       t = new Tween
@@ -353,6 +344,13 @@ describe 'Tween ->', ->
       t.setStartTime time
       expect(t.prepareStart)  .toHaveBeenCalledWith time
       expect(t.startTimelines).toHaveBeenCalledWith time
+
+  describe 'time track', ->
+    it 'should save the current time track', ->
+      t   = new Tween
+      t.add new Timeline duration: 500
+      t.setProgress .5
+      expect(t.prevTime).toBe t.props.startTime + 250
 
 
       

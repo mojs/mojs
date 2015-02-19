@@ -311,7 +311,8 @@ describe 'Transit ->', ->
       expect(byte.el.style['margin-left'])        .not.toBe '-27px'
       expect(byte.el.style['margin-top'])         .not.toBe '-27px'
       expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
-      expect(byte.el.style["#{h.prefix.css}backface-visibility"]).not.toBe 'hidden'
+      prefixedProp = "#{h.prefix.css}backface-visibility"
+      expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
       expect(byte.isShown).toBe false
 
     it 'should set display: block if isShowInit was passed', ->
@@ -735,16 +736,13 @@ describe 'Transit ->', ->
       byte.setProgress .5
       expect(typeof byte.origin.x).toBe 'number'
       expect(typeof byte.origin.y).toBe 'number'
-    it 'should show el', ->
-      byte = new Byte radius:  {'25': 75}
-      spyOn byte, 'show'
-      byte.setProgress .5
-      expect(byte.show).toHaveBeenCalled()
-    it 'should not show el if isShow passed', ->
-      byte = new Byte radius:  {'25': 75}
-      spyOn byte, 'show'
-      byte.setProgress .5, true
-      expect(byte.show).not.toHaveBeenCalled()
+
+    # it 'should not show el if isShow passed', ->
+    #   byte = new Byte radius:  {'25': 75}
+    #   spyOn byte, 'show'
+    #   byte.setProgress .5, true
+    #   expect(byte.show).not.toHaveBeenCalled()
+
     it 'should call calcCurrentProps', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, 'calcCurrentProps'
@@ -797,6 +795,13 @@ describe 'Transit ->', ->
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
         , 100
+
+      it 'should show el', ->
+        byte = new Byte radius:  {'25': 75}
+        spyOn byte, 'show'
+        byte.tween.setProgress .5
+        expect(byte.show).toHaveBeenCalled()
+
     describe 'onUpdate callback', ->
       it 'should call onUpdate callback', (dfr)->
         isOnUpdate = null
@@ -1024,6 +1029,43 @@ describe 'Transit ->', ->
     it 'if context passed el should be bit\'s el', ->
       byte = new Byte ctx: svg
       expect(byte.el).toBe byte.bit.el
+
+  describe 'show/hide on start/end ->', ->
+    it 'should show the el on start', ->
+      byte = new Byte ctx: svg
+      byte.tween.setProgress .5
+      expect(byte.el.style.display).toBe 'block'
+
+    it 'should hide the el on end', ->
+      byte = new Byte ctx: svg
+      byte.tween.setProgress 1
+      expect(byte.el.style.display).toBe 'none'
+
+    it 'should not hide the el on end if isShowEnd was passed', ->
+      byte = new Byte ctx: svg, isShowEnd: true
+      byte.tween.setProgress 1
+      expect(byte.el.style.display).toBe 'block'
+
+    it 'should not hide the el on end if isShowEnd was passed #2 - chain', ->
+      byte = new Byte ctx: svg, isShowEnd: true, isRunLess: true
+        .then radius: 10
+        .then radius: 20
+      byte.tween.setProgress 1
+      expect(byte.el.style.display).toBe 'block'
+
+    it 'should hide the el on reverse end', ->
+      byte = new Byte ctx: svg
+      byte.tween.setProgress .5
+      byte.tween.setProgress 0
+      expect(byte.el.style.display).toBe 'none'
+
+    it 'should not hide the el on reverse end if isShowInit passed', ->
+      byte = new Byte ctx: svg, isShowInit: true
+      byte.tween.setProgress .5
+      byte.tween.setProgress 0
+      expect(byte.el.style.display).toBe 'block'
+
+
 
 
 

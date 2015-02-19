@@ -1619,23 +1619,22 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Burst({
+burst = new Transit({
   x: 300,
   y: 300,
   type: 'polygon',
   duration: 500,
   count: 70,
-  isIt: true,
   isRunLess: true,
   isShowInit: true,
+  isShowEnd: true,
   points: 5,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)',
-  radiusY: {
-    100: 20
-  },
-  radiusX: 100,
-  delay: 2000
+  swirlSize: 'rand(0,10)'
+}).then({
+  radius: 75
+}).then({
+  radius: 0
 });
 
 slider = document.getElementById('js-slider');
@@ -1854,7 +1853,7 @@ Timeline = (function() {
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3;
+    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3, _ref4;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
@@ -1914,6 +1913,11 @@ Timeline = (function() {
         this.isFirstUpdate = false;
       }
       this.isFirstUpdateBackward = false;
+    }
+    if (time < this.prevTime && time <= this.props.startTime) {
+      if ((_ref4 = this.o.onReverseComplete) != null) {
+        _ref4.apply(this);
+      }
     }
     return this.prevTime = time;
   };
@@ -2011,7 +2015,9 @@ Transit = (function(_super) {
     shiftX: 0,
     shiftY: 0,
     opacity: 1,
-    radius: 50,
+    radius: {
+      50: 0
+    },
     radiusX: void 0,
     radiusY: void 0,
     angle: 0,
@@ -2028,6 +2034,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.vars = function() {
+    var o;
     if (this.h == null) {
       this.h = h;
     }
@@ -2035,7 +2042,8 @@ Transit = (function(_super) {
       this.lastSet = {};
     }
     this.extendDefaults();
-    this.history = [this.h.cloneObj(this.o)];
+    o = this.h.cloneObj(this.o);
+    this.history = [o];
     this.isForeign = !!this.o.ctx;
     return this.timelines = [];
   };
@@ -2388,15 +2396,10 @@ Transit = (function(_super) {
           return _this.setProgress(p);
         };
       })(this),
-      onComplete: (function(_this) {
-        return function() {
-          var _ref;
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this),
       onStart: (function(_this) {
         return function() {
           var _ref;
+          _this.show();
           return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
         };
       })(this),
@@ -2404,9 +2407,24 @@ Transit = (function(_super) {
         return function() {
           return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
         };
+      })(this),
+      onReverseComplete: (function(_this) {
+        return function() {
+          var _ref;
+          !_this.o.isShowInit && _this.hide();
+          return (_ref = _this.props.onReverseComplete) != null ? _ref.apply(_this) : void 0;
+        };
       })(this)
     });
-    this.tween = new Tween;
+    this.tween = new Tween({
+      onComplete: (function(_this) {
+        return function() {
+          var _ref;
+          !_this.o.isShowEnd && _this.hide();
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this)
+    });
     this.tween.add(this.timeline);
     return !this.o.isRunLess && this.startTween();
   };
@@ -2603,7 +2621,7 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var i, len, _ref;
+    var i, len, _ref, _ref1;
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
@@ -2617,9 +2635,15 @@ Tween = (function() {
     while (i++ < len) {
       this.timelines[i].update(time);
     }
-    if (time === this.props.endTime) {
-      if ((_ref = this.o.onComplete) != null) {
+    if (this.prevTime > time && time <= this.props.startTime) {
+      if ((_ref = this.o.onReverseComplete) != null) {
         _ref.apply(this);
+      }
+    }
+    this.prevTime = time;
+    if (time === this.props.endTime) {
+      if ((_ref1 = this.o.onComplete) != null) {
+        _ref1.apply(this);
       }
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);

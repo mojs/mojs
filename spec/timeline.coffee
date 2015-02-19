@@ -130,6 +130,34 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 1
       expect(isRightScope).toBe true
+
+  describe 'onReverseComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Timeline onReverseComplete: ->
+      expect(t.o.onReverseComplete).toBeDefined()
+
+    it 'should call onReverseComplete callback', ->
+      t = new Timeline(
+        duration: 100
+        onReverseComplete:->
+        isIt: true
+      ).start()
+      spyOn(t.o, 'onReverseComplete')
+      t.update t.props.startTime + 55
+      t.update t.props.startTime
+      expect(t.o.onReverseComplete).toHaveBeenCalled()
+
+    it 'should have the right scope', ->
+      isRightScope = null
+      t = new Timeline(
+        duration: 100
+        onReverseComplete:-> isRightScope = @ instanceof Timeline
+        isIt: true
+      ).start()
+      t.update t.props.startTime + 55
+      t.update t.props.startTime
+      expect(isRightScope).toBe true
+
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
       t = new Timeline onComplete: ->

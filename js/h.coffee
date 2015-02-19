@@ -71,7 +71,6 @@ class Helpers
       else newObj[key] = obj[key]
     newObj
 
-
   extend:(objTo, objFrom)->
     for key, value of objFrom
       objTo[key] ?= objFrom[key]

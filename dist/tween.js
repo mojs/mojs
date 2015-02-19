@@ -68,7 +68,7 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var i, len, _ref;
+    var i, len, _ref, _ref1;
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
@@ -82,9 +82,15 @@ Tween = (function() {
     while (i++ < len) {
       this.timelines[i].update(time);
     }
-    if (time === this.props.endTime) {
-      if ((_ref = this.o.onComplete) != null) {
+    if (this.prevTime > time && time <= this.props.startTime) {
+      if ((_ref = this.o.onReverseComplete) != null) {
         _ref.apply(this);
+      }
+    }
+    this.prevTime = time;
+    if (time === this.props.endTime) {
+      if ((_ref1 = this.o.onComplete) != null) {
+        _ref1.apply(this);
       }
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);

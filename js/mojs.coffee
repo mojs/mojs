@@ -25,30 +25,29 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Burst(
+burst = new Transit(
   # isRunLess: true
   x: 300, y: 300
   type: 'polygon'
   duration: 500
   count: 70
-  isIt: true
   isRunLess: true
   isShowInit: true
-  # radius:      {0: 75}
+  isShowEnd: true
   points: 5
   # isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
   # radiusX: { 0: 50}
-  radiusY: 100: 20
-  radiusX: 100
+  # radiusY: 100: 20
+  # radiusX: 100
   # onComplete: -> console.log 'onComplete'
   # angle: {360: 0}
-  delay: 2000
+  # delay: 2000
   # isShowInit: true
 )
-# .then radius: 0#, delay: 0
-# .then radius: 75#, delay: 0
+.then radius: 75#, delay: 0
+.then radius: 0#, delay: 0
 
 # burst.run x: 100
 

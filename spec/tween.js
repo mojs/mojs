@@ -251,6 +251,42 @@
         return expect(tweener.tweens.length).toBe(0);
       });
     });
+    describe('onReverseComplete callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onReverseComplete: function() {}
+        });
+        return expect(t.o.onReverseComplete).toBeDefined();
+      });
+      it('should call onReverseComplete callback', function() {
+        var t;
+        t = new Tween({
+          onReverseComplete: function() {}
+        });
+        t.add(new Timeline({
+          duration: 10
+        }));
+        spyOn(t.o, 'onReverseComplete');
+        t.start();
+        t.setProgress(.5);
+        t.setProgress(0);
+        return expect(t.o.onReverseComplete).toHaveBeenCalled();
+      });
+      return it('should not be called on start', function() {
+        var t;
+        t = new Tween({
+          onReverseComplete: function() {}
+        });
+        t.add(new Timeline({
+          duration: 10
+        }));
+        spyOn(t.o, 'onReverseComplete');
+        t.start();
+        t.setProgress(0);
+        return expect(t.o.onReverseComplete).not.toHaveBeenCalled();
+      });
+    });
     describe('onComplete callback ->', function() {
       it('should be defined', function() {
         var t;
@@ -439,6 +475,17 @@
         t.start();
         return expect(t.update(Date.now() + 2000)).toBe(true);
       });
+      it('should not go further then endTime', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.start();
+        t.update(t.props.startTime + 1000);
+        return expect(t.prevTime).toBe(t.props.endTime);
+      });
       return it('should work with tweens', function() {
         var t, t1, t2, ti1, ti2, ti3, ti4, time;
         t = new Tween;
@@ -590,7 +637,7 @@
         return expect(t.update).toHaveBeenCalledWith(t.props.startTime);
       });
     });
-    return describe('setStartTime method', function() {
+    describe('setStartTime method', function() {
       return it('should call prepareStart and startTimelines methods', function() {
         var t, t1, time;
         t = new Tween;
@@ -605,6 +652,17 @@
         t.setStartTime(time);
         expect(t.prepareStart).toHaveBeenCalledWith(time);
         return expect(t.startTimelines).toHaveBeenCalledWith(time);
+      });
+    });
+    return describe('time track', function() {
+      return it('should save the current time track', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500
+        }));
+        t.setProgress(.5);
+        return expect(t.prevTime).toBe(t.props.startTime + 250);
       });
     });
   });

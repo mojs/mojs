@@ -574,7 +574,7 @@
         return expect(byte.isShown).toBe(false);
       });
       it('should skip props if foreign context', function() {
-        var byte;
+        var byte, prefixedProp;
         byte = new Byte({
           radius: 25,
           strokeWidth: 2,
@@ -591,7 +591,8 @@
         expect(byte.el.style['margin-left']).not.toBe('-27px');
         expect(byte.el.style['margin-top']).not.toBe('-27px');
         expect(byte.el.style['backface-visibility']).not.toBe('hidden');
-        expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).not.toBe('hidden');
+        prefixedProp = "" + h.prefix.css + "backface-visibility";
+        expect(byte.el.style[prefixedProp]).not.toBe('hidden');
         return expect(byte.isShown).toBe(false);
       });
       it('should set display: block if isShowInit was passed', function() {
@@ -1373,28 +1374,6 @@
         expect(typeof byte.origin.x).toBe('number');
         return expect(typeof byte.origin.y).toBe('number');
       });
-      it('should show el', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        });
-        spyOn(byte, 'show');
-        byte.setProgress(.5);
-        return expect(byte.show).toHaveBeenCalled();
-      });
-      it('should not show el if isShow passed', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        });
-        spyOn(byte, 'show');
-        byte.setProgress(.5, true);
-        return expect(byte.show).not.toHaveBeenCalled();
-      });
       it('should call calcCurrentProps', function() {
         var byte;
         byte = new Byte({
@@ -1500,7 +1479,7 @@
             return dfr();
           }, 100);
         });
-        return it('should have scope of byte', function(dfr) {
+        it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
           isRightScope = null;
           byte = new Byte({
@@ -1515,6 +1494,17 @@
             expect(isRightScope).toBe(true);
             return dfr();
           }, 100);
+        });
+        return it('should show el', function() {
+          var byte;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            }
+          });
+          spyOn(byte, 'show');
+          byte.tween.setProgress(.5);
+          return expect(byte.show).toHaveBeenCalled();
         });
       });
       describe('onUpdate callback', function() {
@@ -1966,7 +1956,7 @@
         return expect(byte.transformHistory).not.toHaveBeenCalled();
       });
     });
-    return describe('isForeign flag ->', function() {
+    describe('isForeign flag ->', function() {
       it('should not be set by default', function() {
         var byte;
         byte = new Byte;
@@ -1985,6 +1975,66 @@
           ctx: svg
         });
         return expect(byte.el).toBe(byte.bit.el);
+      });
+    });
+    return describe('show/hide on start/end ->', function() {
+      it('should show the el on start', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.tween.setProgress(.5);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should hide the el on end', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.tween.setProgress(1);
+        return expect(byte.el.style.display).toBe('none');
+      });
+      it('should not hide the el on end if isShowEnd was passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowEnd: true
+        });
+        byte.tween.setProgress(1);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should not hide the el on end if isShowEnd was passed #2 - chain', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowEnd: true,
+          isRunLess: true
+        }).then({
+          radius: 10
+        }).then({
+          radius: 20
+        });
+        byte.tween.setProgress(1);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should hide the el on reverse end', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.tween.setProgress(.5);
+        byte.tween.setProgress(0);
+        return expect(byte.el.style.display).toBe('none');
+      });
+      return it('should not hide the el on reverse end if isShowInit passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowInit: true
+        });
+        byte.tween.setProgress(.5);
+        byte.tween.setProgress(0);
+        return expect(byte.el.style.display).toBe('block');
       });
     });
   });

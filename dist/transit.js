@@ -36,7 +36,9 @@ Transit = (function(_super) {
     shiftX: 0,
     shiftY: 0,
     opacity: 1,
-    radius: 50,
+    radius: {
+      50: 0
+    },
     radiusX: void 0,
     radiusY: void 0,
     angle: 0,
@@ -53,6 +55,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.vars = function() {
+    var o;
     if (this.h == null) {
       this.h = h;
     }
@@ -60,7 +63,8 @@ Transit = (function(_super) {
       this.lastSet = {};
     }
     this.extendDefaults();
-    this.history = [this.h.cloneObj(this.o)];
+    o = this.h.cloneObj(this.o);
+    this.history = [o];
     this.isForeign = !!this.o.ctx;
     return this.timelines = [];
   };
@@ -413,15 +417,10 @@ Transit = (function(_super) {
           return _this.setProgress(p);
         };
       })(this),
-      onComplete: (function(_this) {
-        return function() {
-          var _ref;
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this),
       onStart: (function(_this) {
         return function() {
           var _ref;
+          _this.show();
           return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
         };
       })(this),
@@ -429,9 +428,24 @@ Transit = (function(_super) {
         return function() {
           return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
         };
+      })(this),
+      onReverseComplete: (function(_this) {
+        return function() {
+          var _ref;
+          !_this.o.isShowInit && _this.hide();
+          return (_ref = _this.props.onReverseComplete) != null ? _ref.apply(_this) : void 0;
+        };
       })(this)
     });
-    this.tween = new Tween;
+    this.tween = new Tween({
+      onComplete: (function(_this) {
+        return function() {
+          var _ref;
+          !_this.o.isShowEnd && _this.hide();
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this)
+    });
     this.tween.add(this.timeline);
     return !this.o.isRunLess && this.startTween();
   };

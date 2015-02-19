@@ -7,13 +7,10 @@
 
 #### todo
 - burst
-  - show and hide on start/complete
   - opacity childOptions to burst
   - add deltas for swirl swirlFrequency and swirlSize
   - add stagger values
   - then implementation
-- transit
-  - fix show hide on setProgress
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size

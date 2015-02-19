@@ -66,6 +66,10 @@ class Timeline
       if time > @props.endTime or time < @props.startTime
         @isFirstUpdate = false
       @isFirstUpdateBackward = false
+
+    
+    if time < @prevTime and time <= @props.startTime
+      @o.onReverseComplete?.apply(@)
     @prevTime = time
 
   setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress

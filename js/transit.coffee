@@ -28,7 +28,7 @@ class Transit extends bitsMap.map.bit
     shiftY:             0
     opacity:            1
     # size props
-    radius:             50
+    radius:             50: 0
     radiusX:            undefined
     radiusY:            undefined
     angle:              0
@@ -47,7 +47,10 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
   vars:->
     @h ?= h; @lastSet ?= {}
-    @extendDefaults(); @history = [@h.cloneObj(@o)]
+    @extendDefaults()
+    o = @h.cloneObj(@o)
+    # @h.extend(o, @defaults)
+    @history = [o]
     @isForeign = !!@o.ctx
     @timelines = []
 
@@ -289,10 +292,13 @@ class Transit extends bitsMap.map.bit
       yoyo:     @props.yoyo
       easing:   @props.easing
       onUpdate:   (p)=> @setProgress p
-      onComplete: => @props.onComplete?.apply @
-      onStart:    => @props.onStart?.apply @
+      onStart:=>  @show(); @props.onStart?.apply @
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
-    @tween = new Tween; @tween.add @timeline
+      onReverseComplete:=>
+        !@o.isShowInit and @hide(); @props.onReverseComplete?.apply @
+    @tween = new Tween
+      onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
+    @tween.add @timeline
     !@o.isRunLess and @startTween()
 
   run:(o)->
