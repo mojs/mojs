@@ -712,7 +712,15 @@
         }), 100);
       });
     });
-    describe('then method ->', function() {});
+    describe('then method ->', function() {
+      return it('should call the h.error method', function() {
+        var burst;
+        burst = new Burst;
+        spyOn(burst.h, 'error');
+        burst.then();
+        return expect(burst.h.error).toHaveBeenCalled();
+      });
+    });
     describe('run method ->', function() {
       it('should call extendDefaults', function() {
         var burst, o;

@@ -459,6 +459,12 @@ describe 'Burst ->', ->
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
   
   describe 'then method ->', ->
+    it 'should call the h.error method', ->
+      burst = new Burst
+      spyOn burst.h, 'error'
+      burst.then()
+      expect(burst.h.error).toHaveBeenCalled()
+
     # it 'should call then method on every transit', ->
     #   burst = new Burst
     #     radius: { 20: 50 }, count: 2

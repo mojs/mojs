@@ -53,7 +53,6 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.vars = function() {
-    var o;
     if (this.h == null) {
       this.h = h;
     }
@@ -61,29 +60,23 @@ Transit = (function(_super) {
       this.lastSet = {};
     }
     this.extendDefaults();
-    o = {};
-    this.h.extend(o, this.o);
-    this.history = [o];
+    this.history = [this.h.cloneObj(this.o)];
+    this.isForeign = !!this.o.ctx;
     return this.timelines = [];
   };
 
   Transit.prototype.render = function() {
     if (!this.isRendered) {
-      if (this.o.ctx == null) {
-        if (this.ctx == null) {
-          this.ctx = document.createElementNS(this.ns, 'svg');
-          this.ctx.style.position = 'absolute';
-          this.ctx.style.width = '100%';
-          this.ctx.style.height = '100%';
-        }
+      if (!this.isForeign) {
+        this.ctx = document.createElementNS(this.ns, 'svg');
+        this.ctx.style.position = 'absolute';
+        this.ctx.style.width = '100%';
+        this.ctx.style.height = '100%';
         this.createBit();
         this.calcSize();
-        if (this.el == null) {
-          this.el = document.createElement('div');
-          this.el.appendChild(this.ctx);
-          (this.o.parent || document.body).appendChild(this.el);
-        }
-        this.setElStyles();
+        this.el = document.createElement('div');
+        this.el.appendChild(this.ctx);
+        (this.o.parent || document.body).appendChild(this.el);
       } else {
         this.ctx = this.o.ctx;
         this.createBit();
@@ -91,6 +84,7 @@ Transit = (function(_super) {
       }
       this.isRendered = true;
     }
+    this.setElStyles();
     this.setProgress(0, true);
     this.createTween();
     return this;
@@ -98,17 +92,19 @@ Transit = (function(_super) {
 
   Transit.prototype.setElStyles = function() {
     var marginSize, size;
-    size = "" + this.props.size + "px";
-    marginSize = "" + (-this.props.size / 2) + "px";
-    this.el.style.position = 'absolute';
-    this.el.style.top = this.props.y;
-    this.el.style.left = this.props.x;
+    if (!this.isForeign) {
+      size = "" + this.props.size + "px";
+      marginSize = "" + (-this.props.size / 2) + "px";
+      this.el.style.position = 'absolute';
+      this.el.style.top = this.props.y;
+      this.el.style.left = this.props.x;
+      this.el.style.width = size;
+      this.el.style.height = size;
+      this.el.style['margin-left'] = marginSize;
+      this.el.style['margin-top'] = marginSize;
+      this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
+    }
     this.el.style.opacity = this.props.opacity;
-    this.el.style.width = size;
-    this.el.style.height = size;
-    this.el.style['margin-left'] = marginSize;
-    this.el.style['margin-top'] = marginSize;
-    this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
     if (this.o.isShowInit) {
       return this.show();
     } else {
@@ -158,11 +154,13 @@ Transit = (function(_super) {
     if (this.el == null) {
       return;
     }
-    this.isPropChanged('x') && (this.el.style.left = this.props.x);
-    this.isPropChanged('y') && (this.el.style.top = this.props.y);
     this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
-    if (this.isNeedsTransform()) {
-      return this.h.setPrefixedStyle(this.el, 'transform', this.fillTransform());
+    if (!this.isForeign) {
+      this.isPropChanged('x') && (this.el.style.left = this.props.x);
+      this.isPropChanged('y') && (this.el.style.top = this.props.y);
+      if (this.isNeedsTransform()) {
+        return this.h.setPrefixedStyle(this.el, 'transform', this.fillTransform());
+      }
     }
   };
 
@@ -211,10 +209,13 @@ Transit = (function(_super) {
   Transit.prototype.createBit = function() {
     var bitClass;
     bitClass = bitsMap.getBit(this.o.type || this.type);
-    return this.bit = new bitClass({
+    this.bit = new bitClass({
       ctx: this.ctx,
       isDrawLess: true
     });
+    if (this.isForeign) {
+      return this.el = this.bit.el;
+    }
   };
 
   Transit.prototype.setProgress = function(progress, isShow) {
@@ -438,9 +439,7 @@ Transit = (function(_super) {
   Transit.prototype.run = function(o) {
     o && this.transformHistory(o);
     this.tuneNewOption(o);
-    o = {};
-    this.h.extend(o, this.o);
-    this.history[0] = o;
+    this.history[0] = this.h.cloneObj(this.o);
     !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
   };

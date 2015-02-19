@@ -1,3 +1,4 @@
+
 # div = document.querySelector '#js-div'
 
 # setTimeout ->
@@ -24,31 +25,32 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Transit(
+burst = new Burst(
   # isRunLess: true
   x: 300, y: 300
   type: 'polygon'
   duration: 500
-  count: 7
+  count: 70
   isIt: true
   isRunLess: true
   isShowInit: true
   # radius:      {0: 75}
   points: 5
-  isSwirl: true
+  # isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
-  radiusX: { 0: 50}
-  radiusY: 175
+  # radiusX: { 0: 50}
+  radiusY: 100: 20
+  radiusX: 100
   # onComplete: -> console.log 'onComplete'
   # angle: {360: 0}
-  # delay: 2000
+  delay: 2000
   # isShowInit: true
 )
 # .then radius: 0#, delay: 0
 # .then radius: 75#, delay: 0
 
-burst.run x: 100
+# burst.run x: 100
 
 slider = document.getElementById 'js-slider'
 slider.addEventListener 'input', (e)->
@@ -114,3 +116,18 @@ page  = document.querySelector '#js-page'
 # t = new Tween
 # t.add timeline
 # t.start()
+
+
+# getArea = (radius)-> Math.PI*radius*radius
+
+# bigCircle   = 200000000
+# smallCircle = 0
+# for i in [0..bigCircle]
+#   smallCircleArea = parseInt getArea(smallCircle++)
+#   bigCircleArea   = parseInt getArea(bigCircle--) - smallCircleArea
+#   # isLessPI = (bigCircleArea/smallCircleArea) < Math.PI - .01
+#   # isMorePI = (bigCircleArea/smallCircleArea) > Math.PI + .01
+#   # if isLessPI or isMorePI
+#   if bigCircleArea/smallCircleArea < Math.PI then break
+#   if bigCircleArea/smallCircleArea < Math.PI + .0005
+#     console.log bigCircleArea/smallCircleArea, bigCircle, smallCircle

@@ -550,7 +550,7 @@
         byte = new Byte({
           ctx: svg
         });
-        expect(byte.el).not.toBeDefined();
+        expect(byte.el).toBe(byte.bit.el);
         expect(byte.ctx).toBeDefined();
         return expect(byte.ctx.isSvg).toBe(true);
       });
@@ -571,6 +571,27 @@
         expect(byte.el.style['margin-top']).toBe('-27px');
         expect(byte.el.style['backface-visibility']).toBe('hidden');
         expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).toBe('hidden');
+        return expect(byte.isShown).toBe(false);
+      });
+      it('should skip props if foreign context', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          strokeWidth: 2,
+          x: 10,
+          y: 20,
+          isRunLess: true,
+          ctx: svg
+        });
+        expect(byte.el.style.display).toBe('none');
+        expect(byte.el.style.opacity).toBe('1');
+        expect(byte.el.style.position).not.toBe('absolute');
+        expect(byte.el.style.width).not.toBe('54px');
+        expect(byte.el.style.height).not.toBe('54px');
+        expect(byte.el.style['margin-left']).not.toBe('-27px');
+        expect(byte.el.style['margin-top']).not.toBe('-27px');
+        expect(byte.el.style['backface-visibility']).not.toBe('hidden');
+        expect(byte.el.style["" + h.prefix.css + "backface-visibility"]).not.toBe('hidden');
         return expect(byte.isShown).toBe(false);
       });
       it('should set display: block if isShowInit was passed', function() {
@@ -918,6 +939,15 @@
         byte.render();
         return expect(byte.draw).toHaveBeenCalled();
       });
+      it('should call setElStyles method', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        spyOn(byte, 'setElStyles');
+        byte.render();
+        return expect(byte.setElStyles).toHaveBeenCalled();
+      });
       it('should call createBit method', function() {
         var byte;
         byte = new Byte({
@@ -1046,6 +1076,19 @@
         expect(byte.el.style.top).toBe('10px');
         expect(byte.el.style.opacity).toBe('1');
         return expect(byte.el.style.transform).toBe('translate(0px, 0px)');
+      });
+      it('should set only opacity if foreign context', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          y: 10,
+          ctx: svg
+        });
+        byte.draw();
+        expect(byte.el.style.opacity).toBe('1');
+        expect(byte.el.style.left).not.toBe('0px');
+        expect(byte.el.style.top).not.toBe('10px');
+        return expect(byte.el.style.transform).not.toBe('translate(0px, 0px)');
       });
       it('should set new values', function() {
         var byte;
@@ -1669,7 +1712,7 @@
         return expect(byte.props.easing).toBe('Linear.None');
       });
     });
-    return describe('run method->', function() {
+    describe('run method->', function() {
       it('should extend defaults with passed object', function() {
         var byte, o;
         byte = new Byte({
@@ -1921,6 +1964,27 @@
         spyOn(byte, 'transformHistory');
         byte.run();
         return expect(byte.transformHistory).not.toHaveBeenCalled();
+      });
+    });
+    return describe('isForeign flag ->', function() {
+      it('should not be set by default', function() {
+        var byte;
+        byte = new Byte;
+        return expect(byte.isForeign).toBe(false);
+      });
+      it('should be set if context was passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        return expect(byte.isForeign).toBe(true);
+      });
+      return it('if context passed el should be bit\'s el', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        return expect(byte.el).toBe(byte.bit.el);
       });
     });
   });

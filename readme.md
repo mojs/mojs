@@ -7,7 +7,7 @@
 
 #### todo
 - burst
-  - set initial progress for the childrens or hide them
+  - show and hide on start/complete
   - opacity childOptions to burst
   - add deltas for swirl swirlFrequency and swirlSize
   - add stagger values

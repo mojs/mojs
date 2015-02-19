@@ -137,7 +137,7 @@ class Burst extends Transit
       pointEnd = @h.getRadialPoint
         radius:  rEnd
         radiusX: rXEnd
-        radiusY: rEnd
+        radiusY: rYEnd
         angle:  i*step + @props.angle
         center: x: @props.center, y: @props.center
 
@@ -201,6 +201,8 @@ class Burst extends Transit
     @h.rand(start, 100)/100
 
   then:(o)->
+    @h.error "Burst's \"then\" method is under consideration,
+      you can vote for it in github repo issues"
     # 1. merge @o and o
     # 2. get i option from merged object
     # 3. pass the object to transit then
@@ -208,6 +210,7 @@ class Burst extends Transit
     # i = @transits.length
     # while(i--)
     #   @transits[i].then(o)
+    @
 
     
 

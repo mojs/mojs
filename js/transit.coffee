@@ -47,45 +47,44 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
   vars:->
     @h ?= h; @lastSet ?= {}
-    @extendDefaults()
-    o = {}; @h.extend(o, @o); @history = [o]
+    @extendDefaults(); @history = [@h.cloneObj(@o)]
+    @isForeign = !!@o.ctx
     @timelines = []
 
   render:->
     if !@isRendered# or isForce
-      if !@o.ctx?
-        if !@ctx?
-          @ctx = document.createElementNS @ns, 'svg'
-          @ctx.style.position  = 'absolute'
-          @ctx.style.width     = '100%'
-          @ctx.style.height    = '100%'
+      if !@isForeign
+        @ctx = document.createElementNS @ns, 'svg'
+        @ctx.style.position  = 'absolute'
+        @ctx.style.width     = '100%'
+        @ctx.style.height    = '100%'
         @createBit(); @calcSize()
-        if !@el?
-          @el = document.createElement 'div'
-          @el.appendChild @ctx
-          (@o.parent or document.body).appendChild @el
-        @setElStyles()
+        @el = document.createElement 'div'
+        @el.appendChild @ctx
+        (@o.parent or document.body).appendChild @el
       else
         @ctx = @o.ctx; @createBit(); @calcSize()
       @isRendered = true
-
+    @setElStyles()
     @setProgress 0, true
     @createTween()
     @
 
   setElStyles:->
     # size        = "#{@props.size/@h.remBase}rem"
-    size        = "#{@props.size}px"
-    marginSize  = "#{-@props.size/2}px"
-    @el.style.position    = 'absolute'
-    @el.style.top         = @props.y
-    @el.style.left        = @props.x
+    if !@isForeign
+      size        = "#{@props.size}px"
+      marginSize  = "#{-@props.size/2}px"
+      @el.style.position    = 'absolute'
+      @el.style.top         = @props.y
+      @el.style.left        = @props.x
+      @el.style.width       = size
+      @el.style.height      = size
+      @el.style['margin-left'] = marginSize
+      @el.style['margin-top']  = marginSize
+      @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
+
     @el.style.opacity     = @props.opacity
-    @el.style.width       = size
-    @el.style.height      = size
-    @el.style['margin-left'] = marginSize
-    @el.style['margin-top']  = marginSize
-    @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
     if @o.isShowInit then @show() else @hide()
 
   show:->
@@ -120,11 +119,12 @@ class Transit extends bitsMap.map.bit
 
   drawEl:->
     return if !@el?
-    @isPropChanged('x') and (@el.style.left = @props.x)
-    @isPropChanged('y') and (@el.style.top  = @props.y)
     @isPropChanged('opacity') and (@el.style.opacity = @props.opacity)
-    if @isNeedsTransform()
-      @h.setPrefixedStyle @el, 'transform', @fillTransform()
+    if !@isForeign
+      @isPropChanged('x') and (@el.style.left = @props.x)
+      @isPropChanged('y') and (@el.style.top  = @props.y)
+      if @isNeedsTransform()
+        @h.setPrefixedStyle @el, 'transform', @fillTransform()
   fillTransform:-> "translate(#{@props.shiftX}, #{@props.shiftY})"
   isNeedsTransform:-> @isPropChanged('shiftX') or @isPropChanged('shiftY')
 
@@ -163,6 +163,7 @@ class Transit extends bitsMap.map.bit
   createBit:->
     bitClass = bitsMap.getBit(@o.type or @type)
     @bit = new bitClass ctx: @ctx, isDrawLess: true
+    if @isForeign then @el = @bit.el
 
   setProgress:(progress, isShow)->
     if !isShow then @show(); @onUpdate?(progress)
@@ -296,9 +297,7 @@ class Transit extends bitsMap.map.bit
 
   run:(o)->
     o and @transformHistory(o)
-    @tuneNewOption(o)
-    o = {}; @h.extend(o, @o)#; @history.push o
-    @history[0] = o
+    @tuneNewOption(o); @history[0] = @h.cloneObj(@o)
     !@o.isDrawLess and @setProgress(0, true)
     @startTween()
 

@@ -274,7 +274,7 @@ describe 'Transit ->', ->
     it 'should not create context and el if context was passed', ->
       svg.isSvg = true
       byte = new Byte ctx: svg
-      expect(byte.el)           .not.toBeDefined()
+      expect(byte.el)           .toBe byte.bit.el
       expect(byte.ctx)          .toBeDefined()
       expect(byte.ctx.isSvg)    .toBe true
     it 'should set el size', ->
@@ -293,6 +293,27 @@ describe 'Transit ->', ->
       expect(byte.el.style['backface-visibility']).toBe 'hidden'
       expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
       expect(byte.isShown).toBe false
+    
+    it 'should skip props if foreign context', ->
+      byte = new Byte
+        radius:       25
+        strokeWidth:  2
+        x:            10
+        y:            20
+        isRunLess:    true
+        ctx: svg
+      expect(byte.el.style.display)               .toBe 'none'
+      expect(byte.el.style.opacity)               .toBe '1'
+
+      expect(byte.el.style.position)              .not.toBe 'absolute'
+      expect(byte.el.style.width)                 .not.toBe '54px'
+      expect(byte.el.style.height)                .not.toBe '54px'
+      expect(byte.el.style['margin-left'])        .not.toBe '-27px'
+      expect(byte.el.style['margin-top'])         .not.toBe '-27px'
+      expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
+      expect(byte.el.style["#{h.prefix.css}backface-visibility"]).not.toBe 'hidden'
+      expect(byte.isShown).toBe false
+
     it 'should set display: block if isShowInit was passed', ->
       byte = new Byte isShowInit: true
       expect(byte.el.style.display).toBe 'block'
@@ -489,6 +510,11 @@ describe 'Transit ->', ->
       spyOn byte, 'draw'
       byte.render()
       expect(byte.draw).toHaveBeenCalled()
+    it 'should call setElStyles method', ->
+      byte = new Byte radius: 25
+      spyOn byte, 'setElStyles'
+      byte.render()
+      expect(byte.setElStyles).toHaveBeenCalled()
     it 'should call createBit method', ->
       byte = new Byte radius: 25
       spyOn byte, 'createBit'
@@ -563,6 +589,13 @@ describe 'Transit ->', ->
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
       expect(byte.el.style.transform) .toBe     'translate(0px, 0px)'
+    it 'should set only opacity if foreign context', ->
+      byte = new Byte radius: 25, y: 10, ctx: svg
+      byte.draw()
+      expect(byte.el.style.opacity)   .toBe         '1'
+      expect(byte.el.style.left)      .not.toBe     '0px'
+      expect(byte.el.style.top)       .not.toBe     '10px'
+      expect(byte.el.style.transform) .not.toBe     'translate(0px, 0px)'
     it 'should set new values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()
@@ -981,6 +1014,16 @@ describe 'Transit ->', ->
       byte.run()
       expect(byte.transformHistory).not.toHaveBeenCalled()
 
+  describe 'isForeign flag ->', ->
+    it 'should not be set by default', ->
+      byte = new Byte
+      expect(byte.isForeign).toBe false
+    it 'should be set if context was passed', ->
+      byte = new Byte ctx: svg
+      expect(byte.isForeign).toBe true
+    it 'if context passed el should be bit\'s el', ->
+      byte = new Byte ctx: svg
+      expect(byte.el).toBe byte.bit.el
 
 
 

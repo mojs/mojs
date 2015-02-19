@@ -171,7 +171,7 @@ Burst = (function(_super) {
       pointEnd = this.h.getRadialPoint({
         radius: rEnd,
         radiusX: rXEnd,
-        radiusY: rEnd,
+        radiusY: rYEnd,
         angle: i * step + this.props.angle,
         center: {
           x: this.props.center,
@@ -301,7 +301,10 @@ Burst = (function(_super) {
     return this.h.rand(start, 100) / 100;
   };
 
-  Burst.prototype.then = function(o) {};
+  Burst.prototype.then = function(o) {
+    this.h.error("Burst's \"then\" method is under consideration, you can vote for it in github repo issues");
+    return this;
+  };
 
   return Burst;
 
