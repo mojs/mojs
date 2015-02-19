@@ -25,12 +25,12 @@ Transit   = require './transit'
 # t.add tw2
 # t.start()
 
-burst = new Transit(
+burst = new Burst(
   # isRunLess: true
   x: 300, y: 300
   type: 'polygon'
   duration: 500
-  count: 70
+  count: 5
   isRunLess: true
   isShowInit: true
   isShowEnd: true
@@ -43,11 +43,15 @@ burst = new Transit(
   # radiusX: 100
   # onComplete: -> console.log 'onComplete'
   # angle: {360: 0}
-  # delay: 2000
+  delay: 1000
+  opacity: 1:0
+  childOptions:
+    radius: 5
+    opacity: [1:0, 1, 1: .5]
   # isShowInit: true
 )
-.then radius: 0#, delay: 0
-.then radius: 75#, delay: 0
+# .then radius: 0#, delay: 0
+# .then radius: 75#, delay: 0
 
 burst.run()
 

@@ -42,6 +42,7 @@ class Burst extends Transit
     radiusX:            undefined
     radiusY:            undefined
     angle:              0
+    opacity:            1
     # callbacks
     onStart:            null
     onComplete:         null
@@ -70,6 +71,7 @@ class Burst extends Transit
     radiusX:    1
     radiusY:    1
     angle:      1
+    opacity:    1
     onStart:    1
     onComplete: 1
     onUpdate:   1

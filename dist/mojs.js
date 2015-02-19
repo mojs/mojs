@@ -434,6 +434,7 @@ Burst = (function(_super) {
     radiusX: void 0,
     radiusY: void 0,
     angle: 0,
+    opacity: 1,
     onStart: null,
     onComplete: null,
     onUpdate: null,
@@ -462,6 +463,7 @@ Burst = (function(_super) {
     radiusX: 1,
     radiusY: 1,
     angle: 1,
+    opacity: 1,
     onStart: 1,
     onComplete: 1,
     onUpdate: 1
@@ -1619,22 +1621,32 @@ Tween = require('./tween');
 
 Transit = require('./transit');
 
-burst = new Transit({
+burst = new Burst({
   x: 300,
   y: 300,
   type: 'polygon',
   duration: 500,
-  count: 70,
+  count: 5,
   isRunLess: true,
   isShowInit: true,
   isShowEnd: true,
   points: 5,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)'
-}).then({
-  radius: 0
-}).then({
-  radius: 75
+  swirlSize: 'rand(0,10)',
+  delay: 1000,
+  opacity: {
+    1: 0
+  },
+  childOptions: {
+    radius: 5,
+    opacity: [
+      {
+        1: 0
+      }, 1, {
+        1: .5
+      }
+    ]
+  }
 });
 
 burst.run();

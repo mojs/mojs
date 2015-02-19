@@ -58,6 +58,7 @@ Burst = (function(_super) {
     radiusX: void 0,
     radiusY: void 0,
     angle: 0,
+    opacity: 1,
     onStart: null,
     onComplete: null,
     onUpdate: null,
@@ -86,6 +87,7 @@ Burst = (function(_super) {
     radiusX: 1,
     radiusY: 1,
     angle: 1,
+    opacity: 1,
     onStart: 1,
     onComplete: 1,
     onUpdate: 1

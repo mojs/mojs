@@ -6,11 +6,6 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- burst
-  - opacity childOptions to burst
-  - add deltas for swirl swirlFrequency and swirlSize
-  - add stagger values
-  - then implementation
 - cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size
@@ -19,6 +14,11 @@
 - add more shapes(bits)
 - add line animator
 - :: demo
+
+- burst
+  - add deltas for swirl swirlFrequency and swirlSize
+  - add stagger values
+  - then implementation
 
 - add custom easing handler
   - add path handler
