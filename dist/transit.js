@@ -37,7 +37,7 @@ Transit = (function(_super) {
     shiftY: 0,
     opacity: 1,
     radius: {
-      50: 0
+      0: 50
     },
     radiusX: void 0,
     radiusY: void 0,
@@ -64,6 +64,7 @@ Transit = (function(_super) {
     }
     this.extendDefaults();
     o = this.h.cloneObj(this.o);
+    this.h.extend(o, this.defaults);
     this.history = [o];
     this.isForeign = !!this.o.ctx;
     return this.timelines = [];
@@ -453,7 +454,9 @@ Transit = (function(_super) {
   Transit.prototype.run = function(o) {
     o && this.transformHistory(o);
     this.tuneNewOption(o);
-    this.history[0] = this.h.cloneObj(this.o);
+    o = this.h.cloneObj(this.o);
+    this.h.extend(o, this.defaults);
+    this.history[0] = o;
     !this.o.isDrawLess && this.setProgress(0, true);
     return this.startTween();
   };

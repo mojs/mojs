@@ -46,10 +46,10 @@ burst = new Transit(
   # delay: 2000
   # isShowInit: true
 )
-.then radius: 75#, delay: 0
 .then radius: 0#, delay: 0
+.then radius: 75#, delay: 0
 
-# burst.run x: 100
+burst.run()
 
 slider = document.getElementById 'js-slider'
 slider.addEventListener 'input', (e)->

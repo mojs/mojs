@@ -134,7 +134,7 @@
         });
         return expect(byte.history.length).toBe(1);
       });
-      return it('should rewrite the first history item on run', function() {
+      it('should rewrite the first history item on run', function() {
         var byte;
         byte = new Byte({
           radius: 20
@@ -143,6 +143,21 @@
           radius: 10
         });
         return expect(byte.history[0].radius).toBe(10);
+      });
+      it('should extend options by defaults on the first add', function() {
+        var byte;
+        byte = new Byte({
+          opacity: .5
+        });
+        return expect(byte.history[0].radius[0]).toBe(50);
+      });
+      return it('should extend options by defaults on run first add', function() {
+        var byte;
+        byte = new Byte({
+          opacity: .5
+        });
+        byte.run();
+        return expect(byte.history[0].radius[0]).toBe(50);
       });
     });
     describe('transformHistory method->', function() {

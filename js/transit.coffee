@@ -28,7 +28,7 @@ class Transit extends bitsMap.map.bit
     shiftY:             0
     opacity:            1
     # size props
-    radius:             50: 0
+    radius:             0: 50
     radiusX:            undefined
     radiusY:            undefined
     angle:              0
@@ -48,9 +48,7 @@ class Transit extends bitsMap.map.bit
   vars:->
     @h ?= h; @lastSet ?= {}
     @extendDefaults()
-    o = @h.cloneObj(@o)
-    # @h.extend(o, @defaults)
-    @history = [o]
+    o = @h.cloneObj(@o); @h.extend(o, @defaults); @history = [o]
     @isForeign = !!@o.ctx
     @timelines = []
 
@@ -303,7 +301,8 @@ class Transit extends bitsMap.map.bit
 
   run:(o)->
     o and @transformHistory(o)
-    @tuneNewOption(o); @history[0] = @h.cloneObj(@o)
+    @tuneNewOption(o)
+    o = @h.cloneObj(@o); @h.extend(o, @defaults); @history[0] = o
     !@o.isDrawLess and @setProgress(0, true)
     @startTween()
 

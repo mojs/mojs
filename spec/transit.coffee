@@ -76,6 +76,14 @@ describe 'Transit ->', ->
       byte = new Byte radius: 20
       byte.run radius: 10
       expect(byte.history[0].radius).toBe 10
+    it 'should extend options by defaults on the first add', ->
+      byte = new Byte opacity: .5
+      expect(byte.history[0].radius[0]).toBe 50
+
+    it 'should extend options by defaults on run first add', ->
+      byte = new Byte opacity: .5
+      byte.run()
+      expect(byte.history[0].radius[0]).toBe 50
 
   describe 'transformHistory method->', ->
     it 'should add new options to the history', ->
@@ -736,12 +744,6 @@ describe 'Transit ->', ->
       byte.setProgress .5
       expect(typeof byte.origin.x).toBe 'number'
       expect(typeof byte.origin.y).toBe 'number'
-
-    # it 'should not show el if isShow passed', ->
-    #   byte = new Byte radius:  {'25': 75}
-    #   spyOn byte, 'show'
-    #   byte.setProgress .5, true
-    #   expect(byte.show).not.toHaveBeenCalled()
 
     it 'should call calcCurrentProps', ->
       byte = new Byte radius:  {'25': 75}
