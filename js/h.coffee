@@ -60,14 +60,13 @@ class Helpers
 
     @div = document.createElement('div')
     document.body.appendChild @div
-    # @animationLoop = @bind @animationLoop, @
 
   cloneObj:(obj, exclude)->
     keys = Object.keys(obj); newObj = {}; i = keys.length
     while(i--)
       key = keys[i]
       # skip the keys defined in exclude object
-      if exclude? then newObj[key] = obj[key] if exclude[key]
+      if exclude? then newObj[key] = obj[key] if !exclude[key]
       else newObj[key] = obj[key]
     newObj
 

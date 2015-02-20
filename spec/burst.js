@@ -70,11 +70,12 @@
         expect(burst.optionsIntersection.radius).toBe(1);
         expect(burst.optionsIntersection.radiusX).toBe(1);
         expect(burst.optionsIntersection.radiusY).toBe(1);
+        expect(burst.optionsIntersection.opacity).toBe(1);
         expect(burst.optionsIntersection.angle).toBe(1);
         expect(burst.optionsIntersection.onUpdate).toBe(1);
         expect(burst.optionsIntersection.onStart).toBe(1);
         expect(burst.optionsIntersection.onComplete).toBe(1);
-        return expect(Object.keys(burst.optionsIntersection).length).toBe(7);
+        return expect(Object.keys(burst.optionsIntersection).length).toBe(8);
       });
     });
     describe('initialization ->', function() {

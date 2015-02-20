@@ -616,8 +616,8 @@
             a: 1
           };
           clonedObj = h.cloneObj(obj, exclude);
-          expect(clonedObj.a).toBe(2);
-          expect(clonedObj.b).not.toBeDefined();
+          expect(clonedObj.b).toBe(3);
+          expect(clonedObj.a).not.toBeDefined();
           return expect(Object.keys(clonedObj).length).toBe(1);
         });
       });

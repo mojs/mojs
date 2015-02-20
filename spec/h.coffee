@@ -398,8 +398,8 @@ describe 'Helpers ->', ->
         obj = { a: 2, b: 3 }
         exclude = { a: 1 }
         clonedObj = h.cloneObj(obj, exclude)
-        expect(clonedObj.a).toBe 2
-        expect(clonedObj.b).not.toBeDefined()
+        expect(clonedObj.b).toBe 3
+        expect(clonedObj.a).not.toBeDefined()
         expect(Object.keys(clonedObj).length).toBe 1
 
     describe 'capitalize method', ->

@@ -145,7 +145,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Swirl = Swirl;
 }
 
-},{"./transit":15}],2:[function(require,module,exports){
+},{"./transit":16}],2:[function(require,module,exports){
 var Bit, h;
 
 h = require('./h');
@@ -373,7 +373,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":2,"./circle":5,"./cross":6,"./h":8,"./line":9,"./polygon":11,"./rect":12}],4:[function(require,module,exports){
+},{"./bit":2,"./circle":5,"./cross":6,"./h":8,"./line":9,"./polygon":12,"./rect":13}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, Tween, bitsMap, h,
@@ -720,7 +720,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":3,"./h":8,"./swirl":13,"./transit":15,"./tween":16}],5:[function(require,module,exports){
+},{"./bitsMap":3,"./h":8,"./swirl":14,"./transit":16,"./tween":17}],5:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -1185,7 +1185,7 @@ Helpers = (function() {
     while (i--) {
       key = keys[i];
       if (exclude != null) {
-        if (exclude[key]) {
+        if (!exclude[key]) {
           newObj[key] = obj[key];
         }
       } else {
@@ -1544,7 +1544,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = h;
 }
 
-},{"./vendor/tween":18}],9:[function(require,module,exports){
+},{"./vendor/tween":19}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -1663,7 +1663,38 @@ pupil = document.querySelector('#js-pupil');
 
 page = document.querySelector('#js-page');
 
-},{"./Swirl":1,"./burst":4,"./timeline":14,"./transit":15,"./tween":16}],11:[function(require,module,exports){
+},{"./Swirl":1,"./burst":4,"./timeline":15,"./transit":16,"./tween":17}],11:[function(require,module,exports){
+(function() {
+  var k, lastTime, vendors, x;
+  lastTime = 0;
+  x = 0;
+  vendors = ["ms", "moz", "webkit", "o"];
+  while (x < vendors.length && !window.requestAnimationFrame) {
+    window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
+    k = window[vendors[x] + "CancelRequestAnimationFrame"];
+    window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || k;
+    ++x;
+  }
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = function(callback, element) {
+      var currTime, id, timeToCall;
+      currTime = new Date().getTime();
+      timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      id = window.setTimeout(function() {
+        callback(currTime + timeToCall);
+      }, timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
+  }
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function(id) {
+      clearTimeout(id);
+    };
+  }
+})();
+
+},{}],12:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -1745,7 +1776,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"./bit":2,"./h":8}],12:[function(require,module,exports){
+},{"./bit":2,"./h":8}],13:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -1808,9 +1839,9 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":2}],13:[function(require,module,exports){
+},{"./bit":2}],14:[function(require,module,exports){
 module.exports=require(1)
-},{"./transit":15}],14:[function(require,module,exports){
+},{"./transit":16}],15:[function(require,module,exports){
 var Easing, Timeline, h;
 
 h = require('./h');
@@ -1990,7 +2021,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Timeline = Timeline;
 }
 
-},{"./easing":7,"./h":8}],15:[function(require,module,exports){
+},{"./easing":7,"./h":8}],16:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -2567,7 +2598,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":3,"./h":8,"./timeline":14,"./tween":16}],16:[function(require,module,exports){
+},{"./bitsMap":3,"./h":8,"./timeline":15,"./tween":17}],17:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('./h');
@@ -2751,43 +2782,12 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;
 }
 
-},{"./h":8,"./tweener":17}],17:[function(require,module,exports){
+},{"./h":8,"./tweener":18}],18:[function(require,module,exports){
 var Tweener, h, t;
 
 h = require('./h');
 
-
-/* istanbul ignore next */
-
-(function() {
-  var k, lastTime, vendors, x;
-  lastTime = 0;
-  x = 0;
-  vendors = ["ms", "moz", "webkit", "o"];
-  while (x < vendors.length && !window.requestAnimationFrame) {
-    window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
-    k = window[vendors[x] + "CancelRequestAnimationFrame"];
-    window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || k;
-    ++x;
-  }
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function(callback, element) {
-      var currTime, id, timeToCall;
-      currTime = new Date().getTime();
-      timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      id = window.setTimeout(function() {
-        callback(currTime + timeToCall);
-      }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-  }
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function(id) {
-      clearTimeout(id);
-    };
-  }
-})();
+require('./polyfills/raf');
 
 Tweener = (function() {
   function Tweener() {
@@ -2895,7 +2895,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.tweener = t;
 }
 
-},{"./h":8}],18:[function(require,module,exports){
+},{"./h":8,"./polyfills/raf":11}],19:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	

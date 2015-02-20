@@ -81,7 +81,7 @@ Helpers = (function() {
     while (i--) {
       key = keys[i];
       if (exclude != null) {
-        if (exclude[key]) {
+        if (!exclude[key]) {
           newObj[key] = obj[key];
         }
       } else {
