@@ -93,16 +93,18 @@ module.exports = function(config) {
     exclude: [
       'dist/mojs.js',
       'dist/mojs.min.js',
-      // 'dist/h.js',
-      // 'spec/h.js',
-      // 'dist/transit.js',
-      // 'spec/transit.js',
+      'dist/h.js',
+      'spec/h.js',
+      'dist/transit.js',
+      'spec/transit.js',
       'dist/swirl.js',
       'spec/swirl.js',
-      // 'dist/tween.js',
-      // 'spec/tween.js',
-      // 'dist/burst.js',
-      // 'spec/burst.js'
+      'dist/tween.js',
+      'spec/tween.js',
+      'dist/burst.js',
+      'spec/burst.js',
+      'dist/tweener.js',
+      'spec/tweener.js'
     ],
 
     // preprocess matching files before serving them to the browser

@@ -13,7 +13,6 @@ class MotionPath
     @vars()
     if !@isRunLess then @run()
     else if @isPresetPosition then @presetPosition()
-
     @
 
   vars:->

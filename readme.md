@@ -6,17 +6,16 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- cover raf polyfill
 - perf profile + refactor
   - elastic easing detection + add to size
   - add burst and transit radiusX/Y calculation refactor
+  - perf
 - add motion path
   - add movement arc
 - perf profile + refactor
   - clear the old code
 - add more shapes(bits)
-  - line to 1px path  ?
-  - crose to 1px path ?
+  - line and cross to 1px path  ?
 - add line animator
 - :: demo
 

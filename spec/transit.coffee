@@ -79,7 +79,6 @@ describe 'Transit ->', ->
     it 'should extend options by defaults on the first add', ->
       byte = new Byte opacity: .5
       expect(byte.history[0].radius[0]).toBe 50
-
     it 'should extend options by defaults on run first add', ->
       byte = new Byte opacity: .5
       byte.run()
