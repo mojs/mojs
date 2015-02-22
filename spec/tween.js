@@ -8,6 +8,9 @@
   tweener = window.mojs.tweener;
 
   describe('Tween ->', function() {
+    beforeEach(function() {
+      return tweener.removeAll();
+    });
     it('should have timelines var', function() {
       var t;
       t = new Tween;
@@ -39,9 +42,7 @@
       });
       return it('should work with another tweens', function() {
         var t, t1;
-        t1 = new Tween({
-          isIt: true
-        });
+        t1 = new Tween;
         t = new Tween;
         t.add(new Timeline({
           duration: 500,
@@ -310,7 +311,7 @@
           return dfr();
         }, 200);
       });
-      return it('should have the right scope', function(dfr) {
+      it('should have the right scope', function(dfr) {
         var isRightScope, t;
         isRightScope = false;
         t = new Tween({
@@ -326,6 +327,25 @@
           expect(isRightScope).toBe(true);
           return dfr();
         }), 100);
+      });
+      return it('should fire after the last onUpdate', function(dfr) {
+        var proc, tween;
+        proc = 0;
+        tween = new Tween({
+          isIt: true,
+          onUpdate: function(p) {
+            return proc = p;
+          },
+          onComplete: function() {
+            expect(proc).toBe(1);
+            return dfr();
+          }
+        });
+        tween.add(new Timeline({
+          duration: 20
+        }));
+        tween.start();
+        return tween.update(tween.props.startTime + 22);
       });
     });
     describe('onUpdate callback ->', function() {

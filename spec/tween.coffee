@@ -3,6 +3,8 @@ Timeline = window.mojs.Timeline
 tweener  = window.mojs.tweener
 
 describe 'Tween ->', ->
+  beforeEach -> tweener.removeAll()
+  
   it 'should have timelines var', ->
     t = new Tween
     expect(t.timelines.length).toBe 0
@@ -20,7 +22,7 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 500, delay: 200, repeat: 1
       expect(t.props.totalTime).toBe 1400
     it 'should work with another tweens',->
-      t1 = new Tween isIt: true
+      t1 = new Tween
       t = new Tween
       t.add new Timeline duration: 500, delay: 200
       t.add new Timeline duration: 500, delay: 200, repeat: 1
@@ -168,16 +170,25 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 10
       spyOn(t.o, 'onComplete'); t.start()
       setTimeout ->
-        expect(t.o.onComplete).toHaveBeenCalled()
-        dfr()
+        expect(t.o.onComplete).toHaveBeenCalled(); dfr()
       , 200
-    
     it 'should have the right scope', (dfr)->
       isRightScope = false
       t = new Tween onComplete:-> isRightScope = @ instanceof Tween
       t.add new Timeline duration: 20
       t.start()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+
+    it 'should fire after the last onUpdate', (dfr)->
+      proc = 0
+      tween = new Tween
+        isIt: true
+        onUpdate:(p)-> proc = p
+        onComplete:-> expect(proc).toBe(1); dfr()
+      tween.add new Timeline duration: 20
+      tween.start()
+      tween.update tween.props.startTime + 22
+
   
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->

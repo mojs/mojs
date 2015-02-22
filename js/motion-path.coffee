@@ -123,6 +123,7 @@ class MotionPath
     if o?.fill then @o.fill = o.fill
     o and @extendDefaults o
     o and @postVars(); it = @
+
     @timeline = new Timeline
       duration:   @duration
       delay:      @delay
@@ -132,8 +133,7 @@ class MotionPath
       onStart:    => @onStart?()
       onComplete: => @onComplete?()
       onUpdate:   (p)=> @setProgress p
-    @tween = new Tween; @tween.add @timeline
-    @tween.start()
+    @tween = new Tween; @tween.add(@timeline); @tween.start()
 
   setProgress:(p)->
     # o and @extendDefaults o

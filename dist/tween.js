@@ -89,11 +89,11 @@ Tween = (function() {
     }
     this.prevTime = time;
     if (time === this.props.endTime) {
-      if ((_ref1 = this.o.onComplete) != null) {
-        _ref1.apply(this);
-      }
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);
+      }
+      if ((_ref1 = this.o.onComplete) != null) {
+        _ref1.apply(this);
       }
       return true;
     }

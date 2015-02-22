@@ -48,7 +48,7 @@ class Tween
     @prevTime = time
     # if completed
     if time is @props.endTime
-      @o.onComplete?.apply(@); @onUpdate?(1); return true
+      @onUpdate?(1); @o.onComplete?.apply(@); return true
   
   prepareStart:-> @getDimentions(); @o.onStart?.apply @
   startTimelines:(time)->
@@ -56,6 +56,7 @@ class Tween
     while(i--)
       @timelines[i].start time or @props.startTime
   start:(time)->
+
     @setStartTime(time); !time and t.add @
     @
   stop:-> t.remove(@); @

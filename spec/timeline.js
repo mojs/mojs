@@ -327,7 +327,7 @@
         t.update(t.props.startTime + 33);
         return expect(cnt).toBe(1);
       });
-      return it('should have the right scope', function() {
+      it('should have the right scope', function() {
         var isRightScope, t;
         isRightScope = false;
         t = new Timeline({
@@ -338,6 +338,21 @@
         });
         t.start().update(t.props.startTime + 2);
         return expect(isRightScope).toBe(true);
+      });
+      return it('should fire after the last onUpdate', function(dfr) {
+        var proc, t;
+        proc = 0;
+        t = new Timeline({
+          duration: 1,
+          onUpdate: function(p) {
+            return proc = p;
+          },
+          onComplete: function() {
+            expect(proc).toBe(1);
+            return dfr();
+          }
+        });
+        return t.start().update(t.props.startTime + 2);
       });
     });
     describe('onFirstUpdate callback ->', function() {

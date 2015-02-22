@@ -61,13 +61,11 @@ class Timeline
       @onUpdate? @easedProgress
     else
       if time >= @props.endTime and !@isCompleted
-        (@o.onComplete?.apply(@); @isCompleted = true)
         @setProc 1; @onUpdate? @easedProgress
+        @o.onComplete?.apply(@); @isCompleted = true
       if time > @props.endTime or time < @props.startTime
         @isFirstUpdate = false
       @isFirstUpdateBackward = false
-
-    
     if time < @prevTime and time <= @props.startTime
       @o.onReverseComplete?.apply(@)
     @prevTime = time

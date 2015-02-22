@@ -426,27 +426,27 @@ describe 'MotionPath ->', ->
           duration: 20
           onStart:-> isStarted = true
         setTimeout (-> expect(isStarted).toBe(false)), 100
+      it 'run call should extend defaults', (dfr)->
+        div = document.createElement 'div'
+        coords = 'M0,0 L500,00'
+        isComplete = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          isRunLess: true
+          duration: 50
+          r: true
+        mp.run
+          onComplete:-> isComplete = true
+          path: 'M0,0 L600,00'
 
-  #     it 'run call should extend defaults', ->
-  #       div = document.createElement 'div'
-  #       coords = 'M0,0 L500,00'
-  #       isComplete = false
-  #       mp = new MotionPath
-  #         path: coords
-  #         el: div
-  #         isRunLess: true
-  #         duration: 50
-  #         r: true
+        setTimeout ->
+          pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
+          pos = parseInt pos, 10
+          expect(pos).toBe(600)
+          dfr()
+        , 100
 
-  #       mp.run
-  #         onComplete:-> isComplete = true
-  #         path: 'M0,0 L600,00'
-
-  #       waitsFor((-> isComplete), 'isComplete should be true', 100)
-  #       runs ->
-  #         pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
-  #         pos = parseInt pos, 10
-  #         expect(pos).toBe(600)
   describe 'callbacks ->', ->
     div = document.createElement 'div'
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -524,118 +524,122 @@ describe 'MotionPath ->', ->
           expect(isRightScope).toBe(true); dfr()
         , 100
 
-# describe 'fill ->', ->
-#   container = document.createElement 'div'
-#   div = document.createElement 'div'
-#   size = 200
-#   container.style.width  = "#{size}px"
-#   container.style.height = "#{size}px"
-#   container.style.position = 'absolute'
-#   container.style.top = '-100%'
-#   container.setAttribute 'id', 'js-container'
-#   document.body.appendChild container
-#   it 'container could be specified by selector or DOM node', ->
-#     mp = new MotionPath
-#       path: 'M0,0 L500,0'
-#       el: div
-#       fill: { container: '#js-container' }
-#     expect(mp.container instanceof HTMLElement).toBe(true)
+  describe 'fill ->', ->
+    div = container = null
+    beforeEach ->
+      container = document.createElement 'div'
+      div = document.createElement 'div'
+      size = 200
+      container.style.width  = "#{size}px"
+      container.style.height = "#{size}px"
+      container.style.position = 'absolute'
+      container.style.top = '-100%'
+      container.setAttribute 'id', 'js-container'
+      document.body.appendChild container
 
-#   it 'if fill is specified it should have container, fillRule, cSize', ->
-#     mp = new MotionPath
-#       path: 'M0,0 L500,0'
-#       el: div
-#       fill: { container: container }
+    it 'container could be specified by selector or DOM node', ->
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: div
+        fill: { container: '#js-container' }
+      expect(mp.container instanceof HTMLElement).toBe(true)
 
-#     expect(mp.container).toBeDefined()
-#     expect(mp.fillRule).toBeDefined()
-#     expect(mp.cSize).toBeDefined()
+    it 'if fill is specified it should have container, fillRule, cSize', ->
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: div
+        fill: { container: container }
 
-#   # it 'if fillRule is "all" it should keep container\'s size', (dfr)->
-#   #   isFilled = false
-#   #   mp = new MotionPath
-#   #     path: 'M0,0 L500,500'
-#   #     el: div
-#   #     duration: 50
-#   #     fill: { container: container }
-#   #     all: true
-#   #     onComplete:->
-#   #       args = mp.el.style.transform.split /(translate\()|\,|\)/
-#   #       width  = parseInt(args[2], 10)
-#   #       height = parseInt(args[4], 10)
-#   #       isWidth  = width  is container.offsetWidth
-#   #       isHeight = height is container.offsetHeight
-#   #       isFilled = isWidth and isHeight
+      expect(mp.container).toBeDefined()
+      expect(mp.fillRule).toBeDefined()
+      expect(mp.cSize).toBeDefined()
 
-#   #   setTimeout (-> expect(isFilled).toBe(true); dfr()), 100
+    it 'if fillRule is "all" it should keep container\'s size', (dfr)->
+      isFilled = false
+      motionPath = new MotionPath
+        path: 'M0,0 L500,500'
+        el: div
+        duration: 64
+        fill: { container: container }
+        all: true
+        isIt: true
+        onComplete:->
+          args = motionPath.el.style.transform.split /(translate\()|\,|\)/
+          width  = parseInt(args[2], 10)
+          height = parseInt(args[4], 10)
+          isWidth  = width  is container.offsetWidth
+          isHeight = height is container.offsetHeight
+          isFilled = isWidth and isHeight
+      setTimeout (-> expect(isFilled).toBe(true); dfr()), 100
 
-#   # it "if fillRule is \"width\" it should keep container\'s width
-#   # and set \"height\" with aspect ratio", ->
-#   #   isFilled = false; isCompleted = false
-#   #   mp = new MotionPath
-#   #     path: 'M0,0 L500,250'
-#   #     el: div
-#   #     duration: 50
-#   #     fill: { container: container, fillRule: 'width' }
-#   #     all: true
-#   #     onComplete:->
-#   #       args = mp.el.style.transform.split /(translate\()|\,|\)/
-#   #       width  = parseInt(args[2], 10)
-#   #       height = parseInt(args[4], 10)
-#   #       isWidth  = width  is container.offsetWidth
-#   #       isHeight = height is (width/2)
-#   #       isFilled = isWidth and isHeight
-#   #       isCompleted = true
-#   #   waitsFor((-> isCompleted), '', 100)
-#   #   runs -> expect(isFilled).toBe(true)
+    it "if fillRule is \"width\" it should keep container\'s width
+    and set \"height\" with aspect ratio", (dfr)->
+      isFilled = false
+      mp = new MotionPath
+        path: 'M0,0 L500,250'
+        el: div
+        duration: 50
+        fill: { container: container, fillRule: 'width' }
+        all: true
+        onComplete:->
+          args = mp.el.style.transform.split /(translate\()|\,|\)/
+          width  = parseInt(args[2], 10)
+          height = parseInt(args[4], 10)
+          isWidth  = width  is container.offsetWidth
+          isHeight = height is (width/2)
+          isFilled = isWidth and isHeight
 
-#   # it "if fillRule is \"height\" it should keep container\'s height
-#   # and set \"width\" with aspect ratio", ->
-#   #   isFilled = false; isCompleted = false
-#   #   mp = new MotionPath
-#   #     path: 'M0,0 L250,500'
-#   #     el: div
-#   #     duration: 50
-#   #     fill: { container: container, fillRule: 'height' }
-#   #     onComplete:->
-#   #       args = mp.el.style.transform.split /(translate\()|\,|\)/
-#   #       width  = parseInt(args[2], 10)
-#   #       height = parseInt(args[4], 10)
-#   #       isWidth  = width  is (height/2)
-#   #       isHeight = height is container.offsetHeight
-#   #       isFilled = isWidth and isHeight
-#   #       isCompleted = true
-#   #   waitsFor((-> isCompleted), '', 100)
-#   #   runs -> expect(isFilled).toBe(true)
+      setTimeout ->
+        expect(isFilled).toBe(true); dfr()
+      , 100
 
-#   # it 'if container size was changed should recalc scaler', ->
-#   #   isCompleted = false; isSizeChange = false
-#   #   el = document.createElement 'div'
-#   #   c = document.createElement 'div'
-#   #   size = 200
-#   #   c.style.width  = "#{size}px"
-#   #   c.style.height = "#{size}px"
-#   #   c.style.position = 'absolute'
-#   #   c.style.top = '-100%'
-#   #   c.setAttribute 'id', 'js-container2'
-#   #   document.body.appendChild c
-#   #   x = -1
-#   #   mp = new MotionPath
-#   #     path: 'M0,0 L500,0'
-#   #     el: el
-#   #     duration: 300
-#   #     fill: { container: c }
-#   #     onUpdate:(proc)->
-#   #       if proc >= .1 and !isSizeChange
-#   #         mp.container.style.width = '100px'
-#   #         isSizeChange = true
+    it "if fillRule is \"height\" it should keep container\'s height
+    and set \"width\" with aspect ratio", (dfr)->
+      isFilled = false
+      mp = new MotionPath
+        path: 'M0,0 L250,500'
+        el: div
+        duration: 50
+        fill: { container: container, fillRule: 'height' }
+        onComplete:->
+          args = mp.el.style.transform.split /(translate\()|\,|\)/
+          width  = parseInt(args[2], 10)
+          height = parseInt(args[4], 10)
+          isWidth  = width  is (height/2)
+          isHeight = height is container.offsetHeight
+          isFilled = isWidth and isHeight
+      setTimeout ->
+        expect(isFilled).toBe(true); dfr()
+      , 100
 
-#   #     onComplete:->
-#   #       x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
-#   #       isCompleted = true
+    it 'if container size was changed should recalc scaler', ->
+      isSizeChange = false
+      el = document.createElement 'div'
+      c = document.createElement 'div'
+      size = 200
+      c.style.width  = "#{size}px"
+      c.style.height = "#{size}px"
+      c.style.position = 'absolute'
+      c.style.top = '-100%'
+      c.setAttribute 'id', 'js-container2'
+      document.body.appendChild c
+      x = -1
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: el
+        duration: 50
+        fill: { container: c }
+        onUpdate:(proc)->
+          if proc >= .1 and !isSizeChange
+            mp.container.style.width = '100px'
+            isSizeChange = true
 
-#   #   waitsFor((-> isCompleted), '', 400)
-#   #   runs -> expect(parseInt(x, 10)).toBe(100)
+        onComplete:-> x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
+
+      setTimeout ->
+        expect(parseInt(x, 10)).toBe(100)
+      , 100
+
 
 
 

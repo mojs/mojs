@@ -105,7 +105,7 @@
       div = document.createElement('div');
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       return describe('run ability ->', function() {
-        return it('should not run with isRunLess option passed', function() {
+        it('should not run with isRunLess option passed', function() {
           var isDelayed, isStarted, mp;
           isStarted = false;
           isDelayed = false;
@@ -122,9 +122,35 @@
             return expect(isStarted).toBe(false);
           }), 100);
         });
+        return it('run call should extend defaults', function(dfr) {
+          var isComplete, mp;
+          div = document.createElement('div');
+          coords = 'M0,0 L500,00';
+          isComplete = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            isRunLess: true,
+            duration: 50,
+            r: true
+          });
+          mp.run({
+            onComplete: function() {
+              return isComplete = true;
+            },
+            path: 'M0,0 L600,00'
+          });
+          return setTimeout(function() {
+            var pos;
+            pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
+            pos = parseInt(pos, 10);
+            expect(pos).toBe(600);
+            return dfr();
+          }, 100);
+        });
       });
     });
-    return describe('callbacks ->', function() {
+    describe('callbacks ->', function() {
       var coords, div;
       div = document.createElement('div');
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
@@ -245,6 +271,160 @@
             return dfr();
           }, 100);
         });
+      });
+    });
+    return describe('fill ->', function() {
+      var container, div;
+      div = container = null;
+      beforeEach(function() {
+        var size;
+        container = document.createElement('div');
+        div = document.createElement('div');
+        size = 200;
+        container.style.width = "" + size + "px";
+        container.style.height = "" + size + "px";
+        container.style.position = 'absolute';
+        container.style.top = '-100%';
+        container.setAttribute('id', 'js-container');
+        return document.body.appendChild(container);
+      });
+      it('container could be specified by selector or DOM node', function() {
+        var mp;
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: div,
+          fill: {
+            container: '#js-container'
+          }
+        });
+        return expect(mp.container instanceof HTMLElement).toBe(true);
+      });
+      it('if fill is specified it should have container, fillRule, cSize', function() {
+        var mp;
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: div,
+          fill: {
+            container: container
+          }
+        });
+        expect(mp.container).toBeDefined();
+        expect(mp.fillRule).toBeDefined();
+        return expect(mp.cSize).toBeDefined();
+      });
+      it('if fillRule is "all" it should keep container\'s size', function(dfr) {
+        var isFilled, motionPath;
+        isFilled = false;
+        motionPath = new MotionPath({
+          path: 'M0,0 L500,500',
+          el: div,
+          duration: 64,
+          fill: {
+            container: container
+          },
+          all: true,
+          isIt: true,
+          onComplete: function() {
+            var args, height, isHeight, isWidth, width;
+            args = motionPath.el.style.transform.split(/(translate\()|\,|\)/);
+            width = parseInt(args[2], 10);
+            height = parseInt(args[4], 10);
+            isWidth = width === container.offsetWidth;
+            isHeight = height === container.offsetHeight;
+            return isFilled = isWidth && isHeight;
+          }
+        });
+        return setTimeout((function() {
+          expect(isFilled).toBe(true);
+          return dfr();
+        }), 100);
+      });
+      it("if fillRule is \"width\" it should keep container\'s width and set \"height\" with aspect ratio", function(dfr) {
+        var isFilled, mp;
+        isFilled = false;
+        mp = new MotionPath({
+          path: 'M0,0 L500,250',
+          el: div,
+          duration: 50,
+          fill: {
+            container: container,
+            fillRule: 'width'
+          },
+          all: true,
+          onComplete: function() {
+            var args, height, isHeight, isWidth, width;
+            args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+            width = parseInt(args[2], 10);
+            height = parseInt(args[4], 10);
+            isWidth = width === container.offsetWidth;
+            isHeight = height === (width / 2);
+            return isFilled = isWidth && isHeight;
+          }
+        });
+        return setTimeout(function() {
+          expect(isFilled).toBe(true);
+          return dfr();
+        }, 100);
+      });
+      it("if fillRule is \"height\" it should keep container\'s height and set \"width\" with aspect ratio", function(dfr) {
+        var isFilled, mp;
+        isFilled = false;
+        mp = new MotionPath({
+          path: 'M0,0 L250,500',
+          el: div,
+          duration: 50,
+          fill: {
+            container: container,
+            fillRule: 'height'
+          },
+          onComplete: function() {
+            var args, height, isHeight, isWidth, width;
+            args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+            width = parseInt(args[2], 10);
+            height = parseInt(args[4], 10);
+            isWidth = width === (height / 2);
+            isHeight = height === container.offsetHeight;
+            return isFilled = isWidth && isHeight;
+          }
+        });
+        return setTimeout(function() {
+          expect(isFilled).toBe(true);
+          return dfr();
+        }, 100);
+      });
+      return it('if container size was changed should recalc scaler', function() {
+        var c, el, isSizeChange, mp, size, x;
+        isSizeChange = false;
+        el = document.createElement('div');
+        c = document.createElement('div');
+        size = 200;
+        c.style.width = "" + size + "px";
+        c.style.height = "" + size + "px";
+        c.style.position = 'absolute';
+        c.style.top = '-100%';
+        c.setAttribute('id', 'js-container2');
+        document.body.appendChild(c);
+        x = -1;
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: el,
+          duration: 50,
+          fill: {
+            container: c
+          },
+          onUpdate: function(proc) {
+            if (proc >= .1 && !isSizeChange) {
+              mp.container.style.width = '100px';
+              return isSizeChange = true;
+            }
+          },
+          onComplete: function() {
+            return x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
+          }
+        });
+        return setTimeout(function() {
+          return expect(parseInt(x, 10)).toBe(100);
+        }, 100);
       });
     });
   });

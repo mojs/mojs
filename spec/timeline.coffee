@@ -180,6 +180,15 @@ describe 'Timeline ->', ->
       t.start().update t.props.startTime + 2
       expect(isRightScope).toBe true
 
+    it 'should fire after the last onUpdate', (dfr)->
+      proc = 0
+      t = new Timeline
+        duration: 1,
+        onUpdate:(p)->  proc = p
+        onComplete:-> expect(proc).toBe(1); dfr()
+      t.start().update t.props.startTime + 2
+      
+
   describe 'onFirstUpdate callback ->', ->
     it 'should be defined', ->
       t = new Timeline onFirstUpdate: ->

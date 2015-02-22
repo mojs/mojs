@@ -101,14 +101,14 @@ Timeline = (function() {
       }
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
-        if ((_ref3 = this.o.onComplete) != null) {
-          _ref3.apply(this);
-        }
-        this.isCompleted = true;
         this.setProc(1);
         if (typeof this.onUpdate === "function") {
           this.onUpdate(this.easedProgress);
         }
+        if ((_ref3 = this.o.onComplete) != null) {
+          _ref3.apply(this);
+        }
+        this.isCompleted = true;
       }
       if (time > this.props.endTime || time < this.props.startTime) {
         this.isFirstUpdate = false;
