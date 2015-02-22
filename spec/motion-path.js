@@ -58,7 +58,7 @@
         return expect(div.offsetHeight).toBeDefined();
       });
     });
-    return describe('defaults ::', function() {
+    describe('defaults ->', function() {
       var el, mp;
       el = document.createElement('div');
       mp = new MotionPath({
@@ -98,6 +98,47 @@
       });
       return it('repeat should be defined', function() {
         return expect(mp.repeat).toBeDefined();
+      });
+    });
+    return describe('functionality ->', function() {
+      var coords, div;
+      div = document.createElement('div');
+      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
+      return describe('run ability ->', function() {
+        it('should not run with isRunLess option passed', function() {
+          var isDelayed, isStarted, mp;
+          isStarted = false;
+          isDelayed = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            isRunLess: true,
+            duration: 20,
+            onStart: function() {
+              return isStarted = true;
+            }
+          });
+          return setTimeout((function() {
+            return expect(isStarted).toBe(false);
+          }), 100);
+        });
+        return describe('callbacks ->', function() {
+          return it('onStart callback should work', function(dfr) {
+            var isStarted, mp;
+            isStarted = false;
+            mp = new MotionPath({
+              path: coords,
+              el: div,
+              onStart: function() {
+                return isStarted = true;
+              }
+            });
+            return setTimeout((function() {
+              expect(isStarted).toBe(true);
+              return dfr();
+            }), 100);
+          });
+        });
       });
     });
   });
