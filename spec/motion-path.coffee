@@ -1,96 +1,78 @@
-document.addEventListener 'DOMContentLoaded', (e)->
-  MotionPath = window.mojs.MotionPath
-  describe 'MotionPath ->', ->
-    ns = 'http://www.w3.org/2000/svg'
-    describe 'enviroment ->', ->
-      it 'SVG should be supported', ->
-        isSVG = !!document.createElementNS?(ns, "svg").createSVGRect
-        expect(isSVG).toBeTruthy()
-      it 'SVG path should have getTotalLength method', ->
-        path = document.createElementNS(ns, "path")
-        expect(path.getTotalLength).toBeDefined()
+MotionPath = window.mojs.MotionPath
+describe 'MotionPath ->', ->
+  ns = 'http://www.w3.org/2000/svg'
 
-#   it 'SVG path should have getPointAtLength method', ->
-#     path = document.createElementNS(ns, "path")
-#     expect(path.getPointAtLength).toBeDefined()
+  # move to general env
+  describe 'enviroment ->', ->
+    it 'SVG should be supported', ->
+      isSVG = !!document.createElementNS?(ns, "svg").createSVGRect
+      expect(isSVG).toBeTruthy()
+    it 'SVG path should have getTotalLength method', ->
+      path = document.createElementNS(ns, "path")
+      expect(path.getTotalLength).toBeDefined()
+    it 'SVG path should have getPointAtLength method', ->
+      path = document.createElementNS(ns, "path")
+      expect(path.getPointAtLength).toBeDefined()
+    it 'document.querySelector should be defined', ->
+      expect(document.querySelector).toBeDefined()
+    it 'style propety should be defined on DOM node', ->
+      path = document.createElementNS(ns, "path")
+      div  = document.createElement 'div'
+      expect(path.style).toBeDefined()
+      expect(div.style).toBeDefined()
 
-#   it 'document.querySelector should be defined', ->
-#     expect(document.querySelector).toBeDefined()
+    it 'transforms should be supported', ->
+      isTransforms = ->
+        trS = "transform WebkitTransform MozTransform OTransform msTransform"
+        prefixes = trS.split(" ")
+        i = 0
+        while i < prefixes.length
+          div = document.createElement("div")
+          isProp = div.style[prefixes[i]] isnt 'undefined'
+          return prefixes[i] if isProp
+          i++
+        false
+      expect(isTransforms()).toBeTruthy()
 
-#   it 'style propety should be defined on DOM node', ->
-#     path = document.createElementNS(ns, "path")
-#     div  = document.createElement 'div'
-#     expect(path.style).toBeDefined()
-#     expect(div.style).toBeDefined()
+    it 'HTML el should have offsetWidth/offsetHeight propety', ->
+      div = document.createElement('div')
+      expect(div.offsetWidth).toBeDefined()
+      expect(div.offsetHeight).toBeDefined()
 
-#   it 'have Function::bind defined', ->
-#     expect(typeof Function::bind is 'function').toBe(true)
-
-#   it 'transforms should be supported', ->
-#     isTransforms = ->
-#       trS = "transform WebkitTransform MozTransform OTransform msTransform"
-#       prefixes = trS.split(" ")
-#       i = 0
-#       while i < prefixes.length
-#         div = document.createElement("div")
-#         isProp = div.style[prefixes[i]] isnt 'undefined'
-#         return prefixes[i] if isProp
-#         i++
-#       false
-#     expect(isTransforms()).toBeTruthy()
-
-#   it 'HTML el should have offsetWidth/offsetHeight propety', ->
-#     div = document.createElement('div')
-#     expect(div.offsetWidth).toBeDefined()
-#     expect(div.offsetHeight).toBeDefined()
-
-# describe 'defaults ::', ->
-#   el = document.createElement 'div'
-#   mp = new MotionPath
-#     path: 'M0.55859375,593.527344L0.55859375,593.527344'
-#     el: el
-#   it 'delay should be defined', ->
-#     expect(mp.delay).toBeDefined()
-
-#   it 'TWEEN should be defined', ->
-#     expect(mp.T).toBeDefined()
-
-#   it 'helpers should be defined', ->
-#     expect(mp.h).toBeDefined()
-
-#   it 'resize should be defined', ->
-#     expect(mp.resize).toBeDefined()
-
-#   it 'duration should be defined', ->
-#     expect(mp.duration).toBeDefined()
-
-#   it 'offsetX should be defined', ->
-#     expect(mp.offsetX).toBeDefined()
-
-#   it 'isReverse should be defined', ->
-#     expect(mp.isReverse).toBeDefined()
-
-#   it 'offsetY should be defined', ->
-#     expect(mp.offsetY).toBeDefined()
-
-#   it 'isAngle should be defined', ->
-#     expect(mp.isAngle).toBeDefined()
-
-#   # it 'angleOffset should be defined', ->
-#   #   expect(mp.angleOffset).toBeDefined()
-
-#   it 'isRunLess should be defined', ->
-#     expect(mp.isRunLess).toBeDefined()
-
-#   it 'easing should be defined', ->
-#     expect(mp.easing).toBeDefined()
-#     expect(mp.easings).toBeDefined()
-
-#   it 'yoyo should be defined', ->
-#     expect(mp.yoyo).toBeDefined()
-
-#   it 'repeat should be defined', ->
-#     expect(mp.repeat).toBeDefined()
+  describe 'defaults ::', ->
+    el = document.createElement 'div'
+    mp = new MotionPath
+      path: 'M0.55859375,593.527344L0.55859375,593.527344'
+      el: el
+    it 'delay should be defined', ->
+      expect(mp.delay).toBeDefined()
+    # it 'TWEEN should be defined', ->
+    #   expect(mp.T).toBeDefined()
+    # it 'helpers should be defined', ->
+    #   expect(mp.h).toBeDefined()
+    it 'resize should be defined', ->
+      expect(mp.resize).toBeDefined()
+    it 'duration should be defined', ->
+      expect(mp.duration).toBeDefined()
+    it 'offsetX should be defined', ->
+      expect(mp.offsetX).toBeDefined()
+    it 'isReverse should be defined', ->
+      expect(mp.isReverse).toBeDefined()
+    it 'offsetY should be defined', ->
+      expect(mp.offsetY).toBeDefined()
+    it 'isAngle should be defined', ->
+      expect(mp.isAngle).toBeDefined()
+    # it 'angleOffset should be defined', ->
+    #   expect(mp.angleOffset).toBeDefined()
+    it 'isRunLess should be defined', ->
+      expect(mp.isRunLess).toBeDefined()
+    it 'easing should be defined', ->
+      expect(mp.easing).toBeDefined()
+      expect(mp.easings).toBeDefined()
+    it 'yoyo should be defined', ->
+      expect(mp.yoyo).toBeDefined()
+    it 'repeat should be defined', ->
+      expect(mp.repeat).toBeDefined()
 
 # describe 'functionality ::', ->
 #   div = document.createElement 'div'
@@ -486,7 +468,7 @@ document.addEventListener 'DOMContentLoaded', (e)->
 #           pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
 #           pos = parseInt pos, 10
 #           isComplete = true
-      
+    
 #       waitsFor((-> isComplete), '', 100)
 #       runs -> expect(pos).toBe(250)
 
@@ -585,7 +567,7 @@ document.addEventListener 'DOMContentLoaded', (e)->
 #       runs ->
 #         pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
 #         expect(pos).toBe(600)
-      
+    
 
 #   describe 'callbacks ::', ->
 #     it 'onStart callback should work', ->

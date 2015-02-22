@@ -1,38 +1,37 @@
-# h = require '../helpers'
-# require '../polyfills'
-# TWEEN  = require '../vendor/tween'
-# resize = require '../vendor/resize'
+h         = require './h'
+tween     = require './tween'
+timeline  = require './timeline'
+resize    = require './vendor/resize'
+
 # TODO
 #   switch to jasmine 2.0 + add travis ci
 #   fix ff callbacks
 #   junk?
 
-# class MotionPath
-#   NS: 'http://www.w3.org/2000/svg'
-#   constructor:(@o={})->
-#     @vars()
-#     if !@isRunLess then @run()
-#     else if @isPresetPosition then @presetPosition()
-#     @
+class MotionPath
+  NS: 'http://www.w3.org/2000/svg'
+  constructor:(@o={})->
+    @vars()
+    # if !@isRunLess then @run()
+    # else if @isPresetPosition then @presetPosition()
+    @
 
-#   vars:->
-#     @T = TWEEN
-#     @h = h
-#     @getScaler = @getScaler.bind(@)
-#     @resize = resize
-#     @duration = @o.duration or 1000
-#     @delay    = @o.delay or 0
-#     @yoyo     = @o.yoyo or false
-#     @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
-#     @repeat   = @o.repeat or 0
-#     @offsetX    = @o.offsetX or 0
-#     @offsetY    = @o.offsetY or 0
-#     @angleOffset= @o.angleOffset
-#     @isAngle    = @o.isAngle or false
-#     @isReverse  = @o.isReverse or false
-#     @isRunLess  = @o.isRunLess or false
-#     @pathStart  = @o.pathStart or 0
-#     @pathEnd    = @o.pathEnd or 1
+  vars:->
+    @getScaler = h.bind @getScaler, @
+    @resize = resize
+    @duration = @o.duration or 1000
+    @delay    = @o.delay or 0
+    @yoyo     = @o.yoyo or false
+    @easing   = @o.easing or 'Linear.None'; @easings = @easing.split('.')
+    @repeat   = @o.repeat or 0
+    @offsetX    = @o.offsetX or 0
+    @offsetY    = @o.offsetY or 0
+    @angleOffset= @o.angleOffset
+    @isAngle    = @o.isAngle or false
+    @isReverse  = @o.isReverse or false
+    @isRunLess  = @o.isRunLess or false
+    @pathStart  = @o.pathStart or 0
+    @pathEnd    = @o.pathEnd or 1
 #     if pathStart < 0 then pathStart = 0
 #     if pathStart > 1 then pathStart = 1
 #     if pathEnd   < 0 then pathEnd   = 0
@@ -65,7 +64,8 @@
 #     else if el.attachEvent then @container.attachEvent type, handler
 
 #   removeEvent:(el, type, handler)->
-#     if el.removeEventListener then @container.removeEventListener type, handler
+#     if el.removeEventListener
+#       @container.removeEventListener type, handler
 #     else if el.detachEvent then @container.detachEvent type, handler
 
 #   parseEl:(el)->
@@ -170,6 +170,14 @@
 #     for key, value of o
 #       @[key] = value
 
-# MotionPath
+### istanbul ignore next ###
+if (typeof define is "function") and define.amd
+  define "motion-path", [], -> MotionPath
+### istanbul ignore next ###
+if (typeof module is "object") and (typeof module.exports is "object")
+  module.exports = MotionPath
+### istanbul ignore next ###
+window?.mojs ?= {}
+### istanbul ignore next ###
+window?.mojs.MotionPath = MotionPath
 
-# module.exports = MotionPath

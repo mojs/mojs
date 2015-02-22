@@ -6,11 +6,12 @@
 # , 5000
 
 # Transit   = require './transit'
-Burst     = require './burst'
-Swirl     = require './Swirl'
-Timeline  = require './timeline'
-Tween     = require './tween'
-Transit   = require './transit'
+Burst       = require './burst'
+Swirl       = require './Swirl'
+Timeline    = require './timeline'
+Tween       = require './tween'
+Transit     = require './transit'
+MotionPath  = require './motion-path'
 
 # t = new Tween
 # tw1 = new Timeline
