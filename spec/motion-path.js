@@ -100,12 +100,12 @@
         return expect(mp.repeat).toBeDefined();
       });
     });
-    return describe('functionality ->', function() {
+    describe('functionality ->', function() {
       var coords, div;
       div = document.createElement('div');
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       return describe('run ability ->', function() {
-        it('should not run with isRunLess option passed', function() {
+        return it('should not run with isRunLess option passed', function() {
           var isDelayed, isStarted, mp;
           isStarted = false;
           isDelayed = false;
@@ -122,22 +122,128 @@
             return expect(isStarted).toBe(false);
           }), 100);
         });
-        return describe('callbacks ->', function() {
-          return it('onStart callback should work', function(dfr) {
-            var isStarted, mp;
-            isStarted = false;
-            mp = new MotionPath({
-              path: coords,
-              el: div,
-              onStart: function() {
-                return isStarted = true;
-              }
-            });
-            return setTimeout((function() {
-              expect(isStarted).toBe(true);
-              return dfr();
-            }), 100);
+      });
+    });
+    return describe('callbacks ->', function() {
+      var coords, div;
+      div = document.createElement('div');
+      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
+      describe('onStart callback ->', function() {
+        it('onStart callback should work', function(dfr) {
+          var isStarted, mp;
+          isStarted = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            onStart: function() {
+              return isStarted = true;
+            }
           });
+          return setTimeout((function() {
+            expect(isStarted).toBe(true);
+            return dfr();
+          }), 100);
+        });
+        return it('should have the scope of MotionPath', function(dfr) {
+          var isRightScope, mp;
+          isRightScope = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            onStart: function() {
+              return isRightScope = this instanceof MotionPath;
+            }
+          });
+          return setTimeout((function() {
+            expect(isRightScope).toBe(true);
+            return dfr();
+          }), 100);
+        });
+      });
+      describe('onComplete callback ->', function() {
+        it('onComplete callback should work', function(dfr) {
+          var isCompleted, mp;
+          isCompleted = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 5,
+            onComplete: function() {
+              return isCompleted = true;
+            }
+          });
+          return setTimeout(function() {
+            expect(isCompleted).toBe(true);
+            return dfr();
+          }, 100);
+        });
+        return it('should have the scope of MotionPath', function(dfr) {
+          var isRightScope, mp;
+          isRightScope = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 5,
+            onComplete: function() {
+              return isRightScope = this instanceof MotionPath;
+            }
+          });
+          return setTimeout(function() {
+            expect(isRightScope).toBe(true);
+            return dfr();
+          }, 100);
+        });
+      });
+      return describe('onUpdate callback ->', function() {
+        it('onUpdate callback should work', function(dfr) {
+          var isOnUpdate, mp;
+          isOnUpdate = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 5,
+            onUpdate: function() {
+              return isOnUpdate = true;
+            }
+          });
+          return setTimeout(function() {
+            expect(isOnUpdate).toBe(true);
+            return dfr();
+          }, 100);
+        });
+        it('onUpdate callback should have "progress" argument', function(dfr) {
+          var isOnUpdate, mp;
+          isOnUpdate = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 5,
+            onUpdate: function(progress) {
+              if (progress != null) {
+                return isOnUpdate = true;
+              }
+            }
+          });
+          return setTimeout(function() {
+            expect(isOnUpdate).toBe(true);
+            return dfr();
+          }, 100);
+        });
+        return it('should have the scope of MotionPath', function(dfr) {
+          var isRightScope, mp;
+          isRightScope = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 5,
+            onUpdate: function() {
+              return isRightScope = this instanceof MotionPath;
+            }
+          });
+          return setTimeout(function() {
+            expect(isRightScope).toBe(true);
+            return dfr();
+          }, 100);
         });
       });
     });

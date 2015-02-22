@@ -447,46 +447,82 @@ describe 'MotionPath ->', ->
   #         pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
   #         pos = parseInt pos, 10
   #         expect(pos).toBe(600)
-      describe 'callbacks ->', ->
-        it 'onStart callback should work', (dfr)->
-          isStarted = false
-          mp = new MotionPath
-            path: coords
-            el: div
-            onStart:-> isStarted = true
-          setTimeout (-> expect(isStarted).toBe(true); dfr()), 100
+  describe 'callbacks ->', ->
+    div = document.createElement 'div'
+    coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 
-    #     it 'onComplete callback should work', ->
-    #       isOnComplete = false
-    #       mp = new MotionPath
-    #         path: coords
-    #         el: div
-    #         duration: 5
-    #         onComplete:-> isOnComplete = true
+    describe 'onStart callback ->', ->
+      it 'onStart callback should work', (dfr)->
+        isStarted = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          onStart:-> isStarted = true
+        setTimeout (-> expect(isStarted).toBe(true); dfr()), 100
+      it 'should have the scope of MotionPath', (dfr)->
+        isRightScope = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          onStart:-> isRightScope = @ instanceof MotionPath
+        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+    
+    describe 'onComplete callback ->', ->
+      it 'onComplete callback should work', (dfr)->
+        isCompleted = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 5
+          onComplete:-> isCompleted = true
+        setTimeout ->
+          expect(isCompleted).toBe(true); dfr()
+        , 100
 
-    #       waitsFor((-> isOnComplete), 'isOnComplete should be true', 100)
-    #       runs -> expect(isOnComplete).toBe(true)
+      it 'should have the scope of MotionPath', (dfr)->
+        isRightScope = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 5
+          onComplete:-> isRightScope = @ instanceof MotionPath
+        setTimeout ->
+          expect(isRightScope).toBe(true); dfr()
+        , 100
+    
+    describe 'onUpdate callback ->', ->
+      it 'onUpdate callback should work', (dfr)->
+        isOnUpdate = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 5
+          onUpdate:-> isOnUpdate = true
 
-    #     it 'onUpdate callback should work', ->
-    #       isOnUpdate = false
-    #       mp = new MotionPath
-    #         path: coords
-    #         el: div
-    #         duration: 5
-    #         onUpdate:-> isOnUpdate = true
-    #       waitsFor((-> isOnUpdate), '', 100)
-    #       runs -> expect(isOnUpdate).toBe(true)
-    #     it 'onUpdate callback should have "progress" argument', ->
-    #       isOnUpdate = false
-    #       mp = new MotionPath
-    #         path: coords
-    #         el: div
-    #         duration: 5
-    #         onUpdate:(progress)-> isOnUpdate = true if progress?
+        setTimeout ->
+          expect(isOnUpdate).toBe(true); dfr()
+        , 100
+      it 'onUpdate callback should have "progress" argument', (dfr)->
+        isOnUpdate = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 5
+          onUpdate:(progress)-> isOnUpdate = true if progress?
+        setTimeout ->
+          expect(isOnUpdate).toBe(true); dfr()
+        , 100
 
-    #       waitsFor((-> isOnUpdate), '', 100)
-    #       runs -> expect(isOnUpdate).toBe(true)
-
+      it 'should have the scope of MotionPath', (dfr)->
+        isRightScope = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 5
+          onUpdate:-> isRightScope = @ instanceof MotionPath
+        setTimeout ->
+          expect(isRightScope).toBe(true); dfr()
+        , 100
 
 # describe 'fill ->', ->
 #   container = document.createElement 'div'
