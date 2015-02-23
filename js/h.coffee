@@ -71,7 +71,6 @@ class Helpers
       if exclude? then newObj[key] = obj[key] if !exclude[key]
       else newObj[key] = obj[key]
     newObj
-
   extend:(objTo, objFrom)->
     for key, value of objFrom
       objTo[key] ?= objFrom[key]
@@ -79,6 +78,8 @@ class Helpers
     html = document.querySelector('html')
     style = getComputedStyle(html)
     @remBase = parseFloat style.fontSize
+
+  clamp:(value, min, max)-> Math.min Math.max(value, min), max
 
   setPrefixedStyle:(el, name, value)->
     prefixedName            = "#{@prefix.css}#{name}"

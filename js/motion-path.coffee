@@ -10,49 +10,57 @@ resize    = require './vendor/resize'
 
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
+  defaults:
+    delay:    0
+    duration:         1000
+    easing:           null
+    repeat:           0
+    yoyo:             false
+    offsetX:          0
+    offsetY:          0
+    angleOffset:      null
+    pathStart:        0
+    pathEnd:          1
+    transformOrigin:  null
+
+    isAngle:          false
+    isReverse:        false
+    isRunLess:        false
+    isPresetPosition: true
+
+    onStart:          null
+    onComplete:       null
+    onUpdate:         null
+
   constructor:(@o={})->
     @vars()
-    if !@isRunLess then @run()
-    else if @isPresetPosition then @presetPosition()
+    if !@props.isRunLess then @run()
+    else if @props.isPresetPosition then @setProgress(@props.pathStart)
     @
 
   vars:->
     @getScaler = h.bind @getScaler, @
     @resize = resize
-    @duration   = @o.duration or 1000
-    @delay      = @o.delay or 0
-    @yoyo       = @o.yoyo or false
-    @easing     = @o.easing or 'Linear.None'; @easings = @easing.split('.')
-    @repeat     = @o.repeat or 0
-    @offsetX    = @o.offsetX or 0
-    @offsetY    = @o.offsetY or 0
-    @angleOffset= @o.angleOffset
-    @isAngle    = @o.isAngle or false
-    @isReverse  = @o.isReverse or false
-    @isRunLess  = @o.isRunLess or false
-    @pathStart  = @o.pathStart or 0
-    @pathEnd    = @o.pathEnd or 1
-    if pathStart < 0 then pathStart = 0
-    if pathStart > 1 then pathStart = 1
-    if pathEnd   < 0 then pathEnd   = 0
-    if pathEnd   > 1 then pathEnd   = 1
-    @isPresetPosition = @o.isPresetPosition or true
-    @transformOrigin = @o.transformOrigin
-    # callbacks
-    @onStart    = @o.onStart
-    @onComplete = @o.onComplete
-    @onUpdate   = @o.onUpdate
+    @props = h.cloneObj @defaults
+
+    @extendOptions @o
+    @props.pathStart = h.clamp @props.pathStart, 0, 1
+    @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
+
+    # cache the onUpdate method for perf reasons
+    @onUpdate = @props.onUpdate
+
     @postVars()
 
   postVars:->
-    @el         = @parseEl @o.el
+    @el         = @parseEl @props.el
     @path       = @getPath()
-    @len        = @path.getTotalLength()*@pathEnd
+    @len        = @path.getTotalLength()*@props.pathEnd
 
     @fill       = @o.fill
     if @fill?
-      @container  = @parseEl @fill.container
-      @fillRule   = @fill.fillRule or 'all'
+      @container  = @parseEl @props.fill.container
+      @fillRule   = @props.fill.fillRule or 'all'
       @getScaler()
       return if !@container
       @removeEvent @container, 'onresize', @getScaler
@@ -72,14 +80,14 @@ class MotionPath
     return el if el instanceof HTMLElement
 
   getPath:->
-    if typeof @o.path is 'string'
-      return if @o.path.charAt(0).toLowerCase() is 'm'
+    if typeof @props.path is 'string'
+      return if @props.path.charAt(0).toLowerCase() is 'm'
         path = document.createElementNS @NS, 'path'
         path.setAttributeNS(null, 'd', @o.path); path
-      else document.querySelector @o.path
+      else document.querySelector @props.path
     # DOM node
-    if @o.path.style
-      return @o.path
+    if @props.path.style
+      return @props.path
 
   getScaler:()->
     @cSize =
@@ -113,8 +121,6 @@ class MotionPath
       else
         calcBoth()
 
-  presetPosition:-> @setProgress(@pathStart)
-
   run:(o)->
     if o?.path then @o.path = o.path
     if o?.el then @o.el = o.el
@@ -123,50 +129,53 @@ class MotionPath
     o and @postVars(); it = @
 
     @timeline = new Timeline
-      duration:   @duration
-      delay:      @delay
-      yoyo:       @yoyo
-      repeat:     @repeat
-      easing:     'linear.none'
-      onStart:    => @onStart?()
-      onComplete: => @onComplete?()
-      onUpdate:   (p)=> @setProgress p
+      duration:   @props.duration
+      delay:      @props.delay
+      yoyo:       @props.yoyo
+      repeat:     @props.repeat
+      easing:     @props.easing
+      onStart:    => @props.onStart?.apply @
+      onComplete: => @props.onComplete?.apply @
+      onUpdate:   (p)=> @setProgress(p); @onUpdate?(p)
     @tween = new Tween; @tween.add(@timeline); @tween.start()
 
   setProgress:(p)->
-    # o and @extendDefaults o
-    len = if !@isReverse then p*@len else (1-p)*@len
+    len = if !@props.isReverse then p*@len else (1-p)*@len
     point = @path.getPointAtLength len
-    if @isAngle or @angleOffset?
+    if @props.isAngle or @props.angleOffset?
       prevPoint = @path.getPointAtLength len - 1
       x1 = point.y - prevPoint.y
       x2 = point.x - prevPoint.x
       atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
       @angle = atan*h.RAD_TO_DEG
-      if (typeof @angleOffset) isnt 'function'
-        @angle += @angleOffset or 0
-      else @angle = @angleOffset(@angle, p)
+      if (typeof @props.angleOffset) isnt 'function'
+        @angle += @props.angleOffset or 0
+      else @angle = @props.angleOffset(@angle, p)
     else @angle = 0
     
-    x = point.x + @offsetX; y = point.y + @offsetY
+    x = point.x + @props.offsetX; y = point.y + @props.offsetY
     if @scaler then x *= @scaler.x; y *= @scaler.y
 
     rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
     transform = "translate(#{x}px,#{y}px) #{rotate} translateZ(0)"
-    @el.style["#{h.prefix.js}Transform"] = transform
+    @el.style["#{h.prefix.css}transform"] = transform
     @el.style['transform'] = transform
-    if @transformOrigin
+
+    if @props.transformOrigin
       # transform origin could be a function
-      tOrigin = if typeof @transformOrigin is 'function'
-        @transformOrigin(@angle, p)
-      else @transformOrigin
-      @el.style["#{h.prefix.js}TransformOrigin"] = tOrigin
-      @el.style['transformOrigin'] = tOrigin
-    @onUpdate?(p)
+      tOrigin = if typeof @props.transformOrigin is 'function'
+        @props.transformOrigin(@angle, p)
+      else @props.transformOrigin
+      @el.style["#{h.prefix.css}transform-origin"] = tOrigin
+      @el.style['transform-origin'] = tOrigin
 
   extendDefaults:(o)->
     for key, value of o
       @[key] = value
+
+  extendOptions:(o)->
+    for key, value of o
+      @props[key] = value
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

@@ -42,6 +42,12 @@ describe 'Helpers ->', ->
       expect(h.tweenOptionMap.yoyo)               .toBe 1
       expect(Object.keys(h.tweenOptionMap).length).toBe 5
   describe 'methods ->', ->
+    describe 'clamp method', ->
+      it 'should clamp value to max and min', ->
+        expect(h.clamp(10, 0, 5)) .toBe  5
+        expect(h.clamp(-10, 0, 5)).toBe 0
+        expect(h.clamp(2, 0, 5))  .toBe 2
+
     describe 'extend method', ->
       it 'should extend object by other one', ->
         obj1 = a: 1
@@ -51,8 +57,6 @@ describe 'Helpers ->', ->
         expect(obj1.b).toBe 1
         expect(obj2.a).not.toBeDefined()
         expect(obj2.b).toBe 1
-
-
     describe 'parseRand method', ->
       it 'should get random number from string', ->
         rand = h.parseRand 'rand(10,20)'

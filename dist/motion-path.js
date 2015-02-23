@@ -11,63 +11,57 @@ resize = require('./vendor/resize');
 MotionPath = (function() {
   MotionPath.prototype.NS = 'http://www.w3.org/2000/svg';
 
+  MotionPath.prototype.defaults = {
+    delay: 0,
+    duration: 1000,
+    easing: null,
+    repeat: 0,
+    yoyo: false,
+    offsetX: 0,
+    offsetY: 0,
+    angleOffset: null,
+    pathStart: 0,
+    pathEnd: 1,
+    transformOrigin: null,
+    isAngle: false,
+    isReverse: false,
+    isRunLess: false,
+    isPresetPosition: true,
+    onStart: null,
+    onComplete: null,
+    onUpdate: null
+  };
+
   function MotionPath(o) {
     this.o = o != null ? o : {};
     this.vars();
-    if (!this.isRunLess) {
+    if (!this.props.isRunLess) {
       this.run();
-    } else if (this.isPresetPosition) {
-      this.presetPosition();
+    } else if (this.props.isPresetPosition) {
+      this.setProgress(this.props.pathStart);
     }
     this;
   }
 
   MotionPath.prototype.vars = function() {
-    var pathEnd, pathStart;
     this.getScaler = h.bind(this.getScaler, this);
     this.resize = resize;
-    this.duration = this.o.duration || 1000;
-    this.delay = this.o.delay || 0;
-    this.yoyo = this.o.yoyo || false;
-    this.easing = this.o.easing || 'Linear.None';
-    this.easings = this.easing.split('.');
-    this.repeat = this.o.repeat || 0;
-    this.offsetX = this.o.offsetX || 0;
-    this.offsetY = this.o.offsetY || 0;
-    this.angleOffset = this.o.angleOffset;
-    this.isAngle = this.o.isAngle || false;
-    this.isReverse = this.o.isReverse || false;
-    this.isRunLess = this.o.isRunLess || false;
-    this.pathStart = this.o.pathStart || 0;
-    this.pathEnd = this.o.pathEnd || 1;
-    if (pathStart < 0) {
-      pathStart = 0;
-    }
-    if (pathStart > 1) {
-      pathStart = 1;
-    }
-    if (pathEnd < 0) {
-      pathEnd = 0;
-    }
-    if (pathEnd > 1) {
-      pathEnd = 1;
-    }
-    this.isPresetPosition = this.o.isPresetPosition || true;
-    this.transformOrigin = this.o.transformOrigin;
-    this.onStart = this.o.onStart;
-    this.onComplete = this.o.onComplete;
-    this.onUpdate = this.o.onUpdate;
+    this.props = h.cloneObj(this.defaults);
+    this.extendOptions(this.o);
+    this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
+    this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
+    this.onUpdate = this.props.onUpdate;
     return this.postVars();
   };
 
   MotionPath.prototype.postVars = function() {
-    this.el = this.parseEl(this.o.el);
+    this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
-    this.len = this.path.getTotalLength() * this.pathEnd;
+    this.len = this.path.getTotalLength() * this.props.pathEnd;
     this.fill = this.o.fill;
     if (this.fill != null) {
-      this.container = this.parseEl(this.fill.container);
-      this.fillRule = this.fill.fillRule || 'all';
+      this.container = this.parseEl(this.props.fill.container);
+      this.fillRule = this.props.fill.fillRule || 'all';
       this.getScaler();
       if (!this.container) {
         return;
@@ -104,17 +98,17 @@ MotionPath = (function() {
 
   MotionPath.prototype.getPath = function() {
     var path;
-    if (typeof this.o.path === 'string') {
-      if (this.o.path.charAt(0).toLowerCase() === 'm') {
+    if (typeof this.props.path === 'string') {
+      if (this.props.path.charAt(0).toLowerCase() === 'm') {
         path = document.createElementNS(this.NS, 'path');
         path.setAttributeNS(null, 'd', this.o.path);
         return path;
       } else {
-        return document.querySelector(this.o.path);
+        return document.querySelector(this.props.path);
       }
     }
-    if (this.o.path.style) {
-      return this.o.path;
+    if (this.props.path.style) {
+      return this.props.path;
     }
   };
 
@@ -164,10 +158,6 @@ MotionPath = (function() {
     }
   };
 
-  MotionPath.prototype.presetPosition = function() {
-    return this.setProgress(this.pathStart);
-  };
-
   MotionPath.prototype.run = function(o) {
     var it;
     if (o != null ? o.path : void 0) {
@@ -183,24 +173,27 @@ MotionPath = (function() {
     o && this.postVars();
     it = this;
     this.timeline = new Timeline({
-      duration: this.duration,
-      delay: this.delay,
-      yoyo: this.yoyo,
-      repeat: this.repeat,
-      easing: 'linear.none',
+      duration: this.props.duration,
+      delay: this.props.delay,
+      yoyo: this.props.yoyo,
+      repeat: this.props.repeat,
+      easing: this.props.easing,
       onStart: (function(_this) {
         return function() {
-          return typeof _this.onStart === "function" ? _this.onStart() : void 0;
+          var _ref;
+          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
         };
       })(this),
       onComplete: (function(_this) {
         return function() {
-          return typeof _this.onComplete === "function" ? _this.onComplete() : void 0;
+          var _ref;
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
         };
       })(this),
       onUpdate: (function(_this) {
         return function(p) {
-          return _this.setProgress(p);
+          _this.setProgress(p);
+          return typeof _this.onUpdate === "function" ? _this.onUpdate(p) : void 0;
         };
       })(this)
     });
@@ -211,39 +204,38 @@ MotionPath = (function() {
 
   MotionPath.prototype.setProgress = function(p) {
     var atan, len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
-    len = !this.isReverse ? p * this.len : (1 - p) * this.len;
+    len = !this.props.isReverse ? p * this.len : (1 - p) * this.len;
     point = this.path.getPointAtLength(len);
-    if (this.isAngle || (this.angleOffset != null)) {
+    if (this.props.isAngle || (this.props.angleOffset != null)) {
       prevPoint = this.path.getPointAtLength(len - 1);
       x1 = point.y - prevPoint.y;
       x2 = point.x - prevPoint.x;
       atan = Math.atan(x1 / x2);
       !isFinite(atan) && (atan = 0);
       this.angle = atan * h.RAD_TO_DEG;
-      if ((typeof this.angleOffset) !== 'function') {
-        this.angle += this.angleOffset || 0;
+      if ((typeof this.props.angleOffset) !== 'function') {
+        this.angle += this.props.angleOffset || 0;
       } else {
-        this.angle = this.angleOffset(this.angle, p);
+        this.angle = this.props.angleOffset(this.angle, p);
       }
     } else {
       this.angle = 0;
     }
-    x = point.x + this.offsetX;
-    y = point.y + this.offsetY;
+    x = point.x + this.props.offsetX;
+    y = point.y + this.props.offsetY;
     if (this.scaler) {
       x *= this.scaler.x;
       y *= this.scaler.y;
     }
     rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
     transform = "translate(" + x + "px," + y + "px) " + rotate + " translateZ(0)";
-    this.el.style["" + h.prefix.js + "Transform"] = transform;
+    this.el.style["" + h.prefix.css + "transform"] = transform;
     this.el.style['transform'] = transform;
-    if (this.transformOrigin) {
-      tOrigin = typeof this.transformOrigin === 'function' ? this.transformOrigin(this.angle, p) : this.transformOrigin;
-      this.el.style["" + h.prefix.js + "TransformOrigin"] = tOrigin;
-      this.el.style['transformOrigin'] = tOrigin;
+    if (this.props.transformOrigin) {
+      tOrigin = typeof this.props.transformOrigin === 'function' ? this.props.transformOrigin(this.angle, p) : this.props.transformOrigin;
+      this.el.style["" + h.prefix.css + "transform-origin"] = tOrigin;
+      return this.el.style['transform-origin'] = tOrigin;
     }
-    return typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0;
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
@@ -252,6 +244,16 @@ MotionPath = (function() {
     for (key in o) {
       value = o[key];
       _results.push(this[key] = value);
+    }
+    return _results;
+  };
+
+  MotionPath.prototype.extendOptions = function(o) {
+    var key, value, _results;
+    _results = [];
+    for (key in o) {
+      value = o[key];
+      _results.push(this.props[key] = value);
     }
     return _results;
   };

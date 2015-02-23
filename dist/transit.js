@@ -159,7 +159,14 @@ Transit = (function(_super) {
     if (this.el == null) {
       return;
     }
-    return this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
+    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
+    if (!this.isForeign) {
+      this.isPropChanged('x') && (this.el.style.left = this.props.x);
+      this.isPropChanged('y') && (this.el.style.top = this.props.y);
+      if (this.isNeedsTransform()) {
+        return this.h.setPrefixedStyle(this.el, 'transform', this.fillTransform());
+      }
+    }
   };
 
   Transit.prototype.fillTransform = function() {

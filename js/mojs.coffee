@@ -49,12 +49,13 @@ burst = new Transit(
   # delay: 1000
   opacity: 1:0
   # easing: 'Elastic.In'
-  childOptions:
-    # radius: 5
-    opacity: [1:0, 1, 1: .5]
+  # childOptions:
+  #   # radius: 5
+  #   opacity: [1:0, 1, 1: .5]
     # easing: [null, 'linear.none', null]
   # isShowInit: true
-).then radius: 0
+)
+.then radius: 0
 
 # .then radius: 75#, delay: 0
 

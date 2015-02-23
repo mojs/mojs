@@ -3,6 +3,7 @@ MotionPath = window.mojs.MotionPath
 coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 describe 'MotionPath ->', ->
   ns = 'http://www.w3.org/2000/svg'
+  
   # move to general env
   describe 'enviroment ->', ->
     it 'SVG should be supported', ->
@@ -37,35 +38,77 @@ describe 'MotionPath ->', ->
       div = document.createElement('div')
       expect(div.offsetWidth).toBeDefined()
       expect(div.offsetHeight).toBeDefined()
-
   describe 'defaults ->', ->
     el = document.createElement 'div'
     mp = new MotionPath
       path: 'M0.55859375,593.527344L0.55859375,593.527344'
       el: el
+
     it 'delay should be defined', ->
-      expect(mp.delay).toBeDefined()
-    it 'resize should be defined', ->
-      expect(mp.resize).toBeDefined()
-    it 'duration should be defined', ->
-      expect(mp.duration).toBeDefined()
-    it 'offsetX should be defined', ->
-      expect(mp.offsetX).toBeDefined()
-    it 'isReverse should be defined', ->
-      expect(mp.isReverse).toBeDefined()
-    it 'offsetY should be defined', ->
-      expect(mp.offsetY).toBeDefined()
-    it 'isAngle should be defined', ->
-      expect(mp.isAngle).toBeDefined()
-    it 'isRunLess should be defined', ->
-      expect(mp.isRunLess).toBeDefined()
-    it 'easing should be defined', ->
-      expect(mp.easing).toBeDefined()
-      expect(mp.easings).toBeDefined()
-    it 'yoyo should be defined', ->
-      expect(mp.yoyo).toBeDefined()
-    it 'repeat should be defined', ->
-      expect(mp.repeat).toBeDefined()
+      expect(mp.defaults.delay)           .toBe 0
+      expect(mp.defaults.duration)        .toBe 1000
+      expect(mp.defaults.easing)          .toBe null
+      expect(mp.defaults.repeat)          .toBe 0
+      expect(mp.defaults.yoyo)            .toBe false
+      expect(mp.defaults.offsetX)         .toBe 0
+      expect(mp.defaults.offsetY)         .toBe 0
+      expect(mp.defaults.angleOffset)     .toBe null
+      expect(mp.defaults.pathStart)       .toBe 0
+      expect(mp.defaults.pathEnd)         .toBe 1
+      expect(mp.defaults.transformOrigin) .toBe null
+      
+      expect(mp.defaults.isAngle)         .toBe false
+      expect(mp.defaults.isReverse)       .toBe false
+      expect(mp.defaults.isRunLess)       .toBe false
+      expect(mp.defaults.isPresetPosition).toBe true
+      
+      expect(mp.defaults.onStart)         .toBe null
+      expect(mp.defaults.onComplete)      .toBe null
+      expect(mp.defaults.onUpdate)        .toBe null
+
+    it 'should extend defaults to props', ->
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el:   document.createElement 'div'
+        duration: 2000
+
+      expect(mp.props.duration).toBe 2000
+      expect(mp.props.delay)   .toBe 0
+
+    it 'should clamp pathStart and pathEnd further', ->
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el:   document.createElement 'div'
+        duration: 2000
+        pathStart: 2
+        pathEnd:   2
+
+      expect(mp.props.pathStart).toBe 1
+      expect(mp.props.pathEnd)  .toBe 1
+
+    it 'should clamp pathStart and pathEnd further', ->
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el:   document.createElement 'div'
+        duration: 2000
+        pathStart: -2
+        pathEnd:   -2
+
+      expect(mp.props.pathStart).toBe 0
+      expect(mp.props.pathEnd)  .toBe 0
+
+    it 'pathEnd should not be smaller then pathStart', ->
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el:   document.createElement 'div'
+        duration: 2000
+        pathStart: .5
+        pathEnd:   -2
+
+      expect(mp.props.pathStart).toBe .5
+      expect(mp.props.pathEnd)  .toBe .5
+
+
   describe 'run ability ->', ->
     div = document.createElement 'div'
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -471,7 +514,7 @@ describe 'MotionPath ->', ->
         onComplete: -> isComplete = true
 
       setTimeout ->
-        expect(mp.el.style.transformOrigin.length >= 1).toBe(true); dfr()
+        expect(mp.el.style['transform-origin'].length >= 1).toBe(true); dfr()
       , 100
 
     it 'transform-origin could be a function', (dfr)->
@@ -516,8 +559,7 @@ describe 'MotionPath ->', ->
         el: div
         isRunLess: true
         isPresetPosition: false
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
-      expect(pos).toBe(50)
+      expect(div.style.transform).not.toBeDefined()
 
   describe 'progress bounds ->', ->
     it 'should start from pathStart position', ->

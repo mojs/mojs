@@ -6,16 +6,18 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- perf profile + refactor
-  - elastic easing detection + add to size
-  - add burst and transit radiusX/Y calculation refactor
-  - perf
 - add motion path
+  - refactor
   - add then
   - add easings
   - add movement arc
+- transit
+  - if childOptions then error colors[0]
 - perf profile + refactor
   - clear the old code
+  - elastic easing detection + add to size
+  - add burst and transit radiusX/Y calculation refactor
+  - perf
 - add more shapes(bits)
   - line and cross to 1px path  ?
 - add line animator

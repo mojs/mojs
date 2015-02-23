@@ -68,38 +68,66 @@
         el: el
       });
       it('delay should be defined', function() {
-        return expect(mp.delay).toBeDefined();
+        expect(mp.defaults.delay).toBe(0);
+        expect(mp.defaults.duration).toBe(1000);
+        expect(mp.defaults.easing).toBe(null);
+        expect(mp.defaults.repeat).toBe(0);
+        expect(mp.defaults.yoyo).toBe(false);
+        expect(mp.defaults.offsetX).toBe(0);
+        expect(mp.defaults.offsetY).toBe(0);
+        expect(mp.defaults.angleOffset).toBe(null);
+        expect(mp.defaults.pathStart).toBe(0);
+        expect(mp.defaults.pathEnd).toBe(1);
+        expect(mp.defaults.transformOrigin).toBe(null);
+        expect(mp.defaults.isAngle).toBe(false);
+        expect(mp.defaults.isReverse).toBe(false);
+        expect(mp.defaults.isRunLess).toBe(false);
+        expect(mp.defaults.isPresetPosition).toBe(true);
+        expect(mp.defaults.onStart).toBe(null);
+        expect(mp.defaults.onComplete).toBe(null);
+        return expect(mp.defaults.onUpdate).toBe(null);
       });
-      it('resize should be defined', function() {
-        return expect(mp.resize).toBeDefined();
+      it('should extend defaults to props', function() {
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: document.createElement('div'),
+          duration: 2000
+        });
+        expect(mp.props.duration).toBe(2000);
+        return expect(mp.props.delay).toBe(0);
       });
-      it('duration should be defined', function() {
-        return expect(mp.duration).toBeDefined();
+      it('should clamp pathStart and pathEnd further', function() {
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: document.createElement('div'),
+          duration: 2000,
+          pathStart: 2,
+          pathEnd: 2
+        });
+        expect(mp.props.pathStart).toBe(1);
+        return expect(mp.props.pathEnd).toBe(1);
       });
-      it('offsetX should be defined', function() {
-        return expect(mp.offsetX).toBeDefined();
+      it('should clamp pathStart and pathEnd further', function() {
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: document.createElement('div'),
+          duration: 2000,
+          pathStart: -2,
+          pathEnd: -2
+        });
+        expect(mp.props.pathStart).toBe(0);
+        return expect(mp.props.pathEnd).toBe(0);
       });
-      it('isReverse should be defined', function() {
-        return expect(mp.isReverse).toBeDefined();
-      });
-      it('offsetY should be defined', function() {
-        return expect(mp.offsetY).toBeDefined();
-      });
-      it('isAngle should be defined', function() {
-        return expect(mp.isAngle).toBeDefined();
-      });
-      it('isRunLess should be defined', function() {
-        return expect(mp.isRunLess).toBeDefined();
-      });
-      it('easing should be defined', function() {
-        expect(mp.easing).toBeDefined();
-        return expect(mp.easings).toBeDefined();
-      });
-      it('yoyo should be defined', function() {
-        return expect(mp.yoyo).toBeDefined();
-      });
-      return it('repeat should be defined', function() {
-        return expect(mp.repeat).toBeDefined();
+      return it('pathEnd should not be smaller then pathStart', function() {
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: document.createElement('div'),
+          duration: 2000,
+          pathStart: .5,
+          pathEnd: -2
+        });
+        expect(mp.props.pathStart).toBe(.5);
+        return expect(mp.props.pathEnd).toBe(.5);
       });
     });
     describe('run ability ->', function() {
@@ -722,7 +750,7 @@
           }
         });
         return setTimeout(function() {
-          expect(mp.el.style.transformOrigin.length >= 1).toBe(true);
+          expect(mp.el.style['transform-origin'].length >= 1).toBe(true);
           return dfr();
         }, 100);
       });
@@ -776,7 +804,7 @@
         return expect(pos).toBe(50);
       });
       return it('should not set initial position if isPresetPosition is false', function() {
-        var div, mp, pos;
+        var div, mp;
         div = document.createElement('div');
         mp = new MotionPath({
           path: 'M50,0 L500,0',
@@ -784,8 +812,7 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
-        return expect(pos).toBe(50);
+        return expect(div.style.transform).not.toBeDefined();
       });
     });
     describe('progress bounds ->', function() {

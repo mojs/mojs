@@ -110,6 +110,10 @@ Helpers = (function() {
     return this.remBase = parseFloat(style.fontSize);
   };
 
+  Helpers.prototype.clamp = function(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  };
+
   Helpers.prototype.setPrefixedStyle = function(el, name, value) {
     var prefixedName;
     prefixedName = "" + this.prefix.css + name;

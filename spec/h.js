@@ -57,6 +57,13 @@
       });
     });
     return describe('methods ->', function() {
+      describe('clamp method', function() {
+        return it('should clamp value to max and min', function() {
+          expect(h.clamp(10, 0, 5)).toBe(5);
+          expect(h.clamp(-10, 0, 5)).toBe(0);
+          return expect(h.clamp(2, 0, 5)).toBe(2);
+        });
+      });
       describe('extend method', function() {
         return it('should extend object by other one', function() {
           var obj1, obj2;
