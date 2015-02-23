@@ -7,6 +7,9 @@
     it('should have logBadgeCss', function() {
       return expect(h.logBadgeCss).toBeDefined();
     });
+    it('should have RAD_TO_DEG CONSTANT', function() {
+      return expect(h.RAD_TO_DEG).toBe(180 / Math.PI);
+    });
     it('should have remBase', function() {
       return expect(typeof h.remBase).toBe('number');
     });

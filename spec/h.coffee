@@ -3,6 +3,8 @@ h  = mojs.helpers
 describe 'Helpers ->', ->
   it 'should have logBadgeCss', ->
     expect(h.logBadgeCss).toBeDefined()
+  it 'should have RAD_TO_DEG CONSTANT', ->
+    expect(h.RAD_TO_DEG).toBe 180/Math.PI
   it 'should have remBase', ->
     expect(typeof h.remBase).toBe 'number'
   describe 'prefix', ->

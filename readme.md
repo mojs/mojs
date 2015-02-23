@@ -11,6 +11,8 @@
   - add burst and transit radiusX/Y calculation refactor
   - perf
 - add motion path
+  - add then
+  - add easings
   - add movement arc
 - perf profile + refactor
   - clear the old code

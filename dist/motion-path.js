@@ -63,7 +63,7 @@ MotionPath = (function() {
   MotionPath.prototype.postVars = function() {
     this.el = this.parseEl(this.o.el);
     this.path = this.getPath();
-    this.len = this.path.getTotalLength();
+    this.len = this.path.getTotalLength() * this.pathEnd;
     this.fill = this.o.fill;
     if (this.fill != null) {
       this.container = this.parseEl(this.fill.container);
@@ -210,14 +210,16 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p) {
-    var len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
+    var atan, len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
     len = !this.isReverse ? p * this.len : (1 - p) * this.len;
     point = this.path.getPointAtLength(len);
     if (this.isAngle || (this.angleOffset != null)) {
       prevPoint = this.path.getPointAtLength(len - 1);
       x1 = point.y - prevPoint.y;
       x2 = point.x - prevPoint.x;
-      this.angle = Math.atan(x1 / x2) * h.DEG2;
+      atan = Math.atan(x1 / x2);
+      !isFinite(atan) && (atan = 0);
+      this.angle = atan * h.RAD_TO_DEG;
       if ((typeof this.angleOffset) !== 'function') {
         this.angle += this.angleOffset || 0;
       } else {

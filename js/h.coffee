@@ -50,6 +50,8 @@ class Helpers
     burstY:           1
     burstShiftX:      1
     burstShiftY:      1
+
+  RAD_TO_DEG: 180/Math.PI
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()

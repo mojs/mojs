@@ -59,6 +59,8 @@ Helpers = (function() {
     burstShiftY: 1
   };
 
+  Helpers.prototype.RAD_TO_DEG = 180 / Math.PI;
+
   function Helpers() {
     this.vars();
   }

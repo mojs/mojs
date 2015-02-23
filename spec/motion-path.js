@@ -1,7 +1,9 @@
 (function() {
-  var MotionPath;
+  var MotionPath, coords;
 
   MotionPath = window.mojs.MotionPath;
+
+  coords = 'M0.55859375,593.527344L0.55859375,593.527344';
 
   describe('MotionPath ->', function() {
     var ns;
@@ -100,67 +102,62 @@
         return expect(mp.repeat).toBeDefined();
       });
     });
-    describe('functionality ->', function() {
-      var coords, div;
+    describe('run ability ->', function() {
+      var div;
       div = document.createElement('div');
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
-      return describe('run ability ->', function() {
-        it('should not run with isRunLess option passed', function() {
-          var isDelayed, isStarted, mp;
-          isStarted = false;
-          isDelayed = false;
-          mp = new MotionPath({
-            path: coords,
-            el: div,
-            isRunLess: true,
-            duration: 20,
-            onStart: function() {
-              return isStarted = true;
-            }
-          });
-          return setTimeout((function() {
-            return expect(isStarted).toBe(false);
-          }), 100);
+      it('should not run with isRunLess option passed', function(dfr) {
+        var isDelayed, isStarted, mp;
+        isStarted = false;
+        isDelayed = false;
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          isRunLess: true,
+          duration: 20,
+          onStart: function() {
+            return isStarted = true;
+          }
         });
-        return it('run call should extend defaults', function(dfr) {
-          var isComplete, mp;
-          div = document.createElement('div');
-          coords = 'M0,0 L500,00';
-          isComplete = false;
-          mp = new MotionPath({
-            path: coords,
-            el: div,
-            isRunLess: true,
-            duration: 50,
-            r: true
-          });
-          mp.run({
-            onComplete: function() {
-              return isComplete = true;
-            },
-            path: 'M0,0 L600,00'
-          });
-          return setTimeout(function() {
-            var pos;
-            pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
-            pos = parseInt(pos, 10);
-            expect(pos).toBe(600);
-            return dfr();
-          }, 100);
+        return setTimeout((function() {
+          expect(isStarted).toBe(false);
+          return dfr();
+        }), 100);
+      });
+      return it('should extend defaults', function(dfr) {
+        var mp;
+        div = document.createElement('div');
+        coords = 'M0,0 L500,00';
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          isRunLess: true,
+          duration: 50
         });
+        mp.run({
+          path: 'M0,0 L600,00'
+        });
+        return setTimeout(function() {
+          var pos;
+          pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
+          pos = parseInt(pos, 10);
+          expect(pos).toBe(600);
+          return dfr();
+        }, 100);
       });
     });
     describe('callbacks ->', function() {
-      var coords, div;
+      var div;
       div = document.createElement('div');
       coords = 'M0.55859375,593.527344L0.55859375,593.527344';
       describe('onStart callback ->', function() {
-        it('onStart callback should work', function(dfr) {
+        it('should run on start', function(dfr) {
           var isStarted, mp;
           isStarted = false;
           mp = new MotionPath({
             path: coords,
             el: div,
+            duration: 64,
             onStart: function() {
               return isStarted = true;
             }
@@ -273,9 +270,10 @@
         });
       });
     });
-    return describe('fill ->', function() {
+    describe('fill ->', function() {
       var container, div;
-      div = container = null;
+      div = null;
+      container = null;
       beforeEach(function() {
         var size;
         container = document.createElement('div');
@@ -392,7 +390,7 @@
           return dfr();
         }, 100);
       });
-      return it('if container size was changed should recalc scaler', function() {
+      return it('if container size was changed should recalc scaler', function(dfr) {
         var c, el, isSizeChange, mp, size, x;
         isSizeChange = false;
         el = document.createElement('div');
@@ -423,8 +421,484 @@
           }
         });
         return setTimeout(function() {
-          return expect(parseInt(x, 10)).toBe(100);
+          expect(parseInt(x, 10)).toBe(100);
+          return dfr();
         }, 100);
+      });
+    });
+    describe('functionality ->', function() {
+      var div;
+      div = document.createElement('div');
+      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
+      describe('angleOffset ->', function() {
+        it('angleOffset should work with positive angles', function(dfr) {
+          var isEqual, mp;
+          coords = 'M0,0 L10,0 L10,10';
+          isEqual = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            angleOffset: 90,
+            isAngle: true,
+            onComplete: function() {
+              return isEqual = mp.angle === 180;
+            }
+          });
+          return setTimeout((function() {
+            expect(isEqual).toBe(true);
+            return dfr();
+          }), 100);
+        });
+        it('angleOffset should work with negative angles', function(dfr) {
+          var isEqual, mp;
+          coords = 'M0,0 L10,0 L10,10';
+          isEqual = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            angleOffset: -90,
+            isAngle: true,
+            onComplete: function() {
+              return isEqual = mp.angle === 0;
+            }
+          });
+          return setTimeout((function() {
+            expect(isEqual).toBe(true);
+            return dfr();
+          }), 100);
+        });
+        it('should be evaluated if a function', function(dfr) {
+          var isFunction, mp;
+          coords = 'M0,0 L10,0 L10,10';
+          isFunction = false;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            angleOffset: function(angle) {
+              isFunction = true;
+              return angle;
+            }
+          });
+          return setTimeout((function() {
+            expect(isFunction).toBe(true);
+            return dfr();
+          }), 100);
+        });
+        it('should get current angle', function(dfr) {
+          var angleSum1, angleSum2, isOnAngle, mp;
+          coords = 'M0,0 L10,0 L10,10';
+          isOnAngle = false;
+          angleSum1 = 0;
+          angleSum2 = 0;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            isAngle: true,
+            angleOffset: function(angle) {
+              angleSum1 += angle;
+              angleSum2 += mp.angle;
+              return angle;
+            },
+            onComplete: function() {
+              return isOnAngle = angleSum1 === angleSum2;
+            }
+          });
+          return setTimeout((function() {
+            expect(isOnAngle).toBe(true);
+            return dfr();
+          }), 100);
+        });
+        it('should set current angle', function(dfr) {
+          var angleShift, currAngle, isAnglesArray, isSet, mp;
+          coords = 'M0,0 L10,0 L10,10';
+          isSet = false;
+          currAngle = 0;
+          isAnglesArray = [];
+          angleShift = 5;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            angleOffset: function(angle) {
+              currAngle = angle;
+              return angle + angleShift;
+            },
+            onUpdate: function() {
+              return isAnglesArray.push(currAngle + angleShift === mp.angle);
+            },
+            onComplete: function() {
+              var i, isSetItem, _i, _len, _results;
+              _results = [];
+              for (i = _i = 0, _len = isAnglesArray.length; _i < _len; i = ++_i) {
+                isSetItem = isAnglesArray[i];
+                if (!isSetItem) {
+                  _results.push(isSet = true);
+                } else {
+                  _results.push(void 0);
+                }
+              }
+              return _results;
+            }
+          });
+          return setTimeout((function() {
+            expect(isSet).toBe(false);
+            return dfr();
+          }), 100);
+        });
+        it('angleOffset should get current progress as second parameter', function(dfr) {
+          var isProgress, mp, proc;
+          coords = 'M0,0 L10,0 L10,10';
+          isProgress = false;
+          proc = -1;
+          mp = new MotionPath({
+            path: coords,
+            el: div,
+            duration: 50,
+            angleOffset: function(angle, progress) {
+              proc = progress;
+              return angle;
+            },
+            onComplete: function() {
+              return isProgress = proc === 1;
+            }
+          });
+          return setTimeout((function() {
+            expect(isProgress).toBe(true);
+            return dfr();
+          }), 100);
+        });
+        return it('should work with positive offsetX', function(dfr) {
+          var isEqual, mp, x;
+          coords = 'M0,0 L0,10';
+          x = 0;
+          isEqual = false;
+          return mp = new MotionPath({
+            path: coords,
+            el: div,
+            offsetX: 10,
+            duration: 50,
+            isAngle: true,
+            onComplete: function() {
+              x = div.style.transform.split(/(translate\()|,|\)/)[2];
+              return isEqual = parseInt(x, 10) === 10;
+            }
+          }, setTimeout((function() {
+            expect(isEqual).toBe(true);
+            return dfr();
+          }), 100));
+        });
+      });
+      it('should work with negative offsetX', function(dfr) {
+        var isEqual, mp, x;
+        coords = 'M0,0 L0,10';
+        x = 0;
+        isEqual = false;
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          offsetX: -10,
+          duration: 50,
+          onComplete: function() {
+            x = div.style.transform.split(/(translate\()|,|\)/)[2];
+            x = parseInt(x, 10);
+            return isEqual = x === -10;
+          }
+        });
+        return setTimeout((function() {
+          expect(isEqual).toBe(true);
+          return dfr();
+        }), 100);
+      });
+      it('should work with positive offsetY', function(dfr) {
+        var isEqual, mp, y;
+        coords = 'M0,0 L10,0';
+        y = 0;
+        isEqual = false;
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          offsetY: 10,
+          duration: 50,
+          onComplete: function() {
+            y = div.style.transform.split(/(translate\()|,|\)/)[4];
+            y = parseInt(y, 10);
+            return isEqual = y === 10;
+          }
+        });
+        return setTimeout((function() {
+          expect(isEqual).toBe(true);
+          return dfr();
+        }), 100);
+      });
+      it('should work with negative offsetY', function(dfr) {
+        var isEqual, mp, y;
+        coords = 'M0,0 L10,0';
+        y = 0;
+        isEqual = false;
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          offsetY: -10,
+          duration: 50,
+          onComplete: function() {
+            y = div.style.transform.split(/(translate\()|,|\)/)[4];
+            return isEqual = parseInt(y, 10) === -10;
+          }
+        });
+        return setTimeout((function() {
+          expect(isEqual).toBe(true);
+          return dfr();
+        }), 100);
+      });
+      it('should calculate current angle', function(dfr) {
+        var angle, detect, isEqual, isEquial2, mp;
+        coords = 'M0,0 L10,0 L10,10';
+        angle = 0;
+        isEqual = false;
+        isEquial2 = false;
+        detect = {};
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          duration: 50,
+          isAngle: true,
+          onUpdate: function() {
+            if (detect.firstAngle == null) {
+              detect.firstAngle = mp.angle;
+            }
+            return isEquial2 = detect.firstAngle === 0;
+          },
+          onComplete: function() {
+            return isEqual = mp.angle === 90;
+          }
+        });
+        return setTimeout((function() {
+          expect(isEqual).toBe(true);
+          return dfr();
+        }), 100);
+      });
+      it('should calculate current angle with isReverse', function(dfr) {
+        var angle, detect, isEqual, isEquial2, mp;
+        coords = 'M0,0 L10,0 L10,10';
+        angle = 0;
+        isEqual = false;
+        isEquial2 = false;
+        detect = {};
+        return mp = new MotionPath({
+          path: coords,
+          el: div,
+          duration: 50,
+          isAngle: true,
+          isReverse: true,
+          onUpdate: function() {
+            if (detect.firstAngle == null) {
+              detect.firstAngle = mp.angle;
+            }
+            return isEquial2 = detect.firstAngle === 90;
+          },
+          onComplete: function() {
+            return isEqual = mp.angle === 0;
+          }
+        }, setTimeout((function() {
+          expect(isEqual).toBe(true);
+          return dfr();
+        }), 100));
+      });
+      it('should have transform-origin', function(dfr) {
+        var isComplete, mp;
+        coords = 'M0,0 L10,0 L10,10';
+        isComplete = false;
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          duration: 50,
+          transformOrigin: '50% 50%',
+          onComplete: function() {
+            return isComplete = true;
+          }
+        });
+        return setTimeout(function() {
+          expect(mp.el.style.transformOrigin.length >= 1).toBe(true);
+          return dfr();
+        }, 100);
+      });
+      return it('transform-origin could be a function', function(dfr) {
+        var isAngle, isProgress, mp;
+        coords = 'M0,0 L10,0 L10,10';
+        isAngle = false;
+        isProgress = false;
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          duration: 50,
+          transformOrigin: function(angle, proc) {
+            var isFunction;
+            isFunction = true;
+            isAngle = angle != null;
+            isProgress = proc != null;
+            return '50% 50%';
+          }
+        });
+        return setTimeout((function() {
+          expect(isAngle && isProgress).toBe(true);
+          return dfr();
+        }), 100);
+      });
+    });
+    describe('setProgress function ->', function(dfr) {
+      return it('should have own function for setting up current progress', function() {
+        var div, mp, pos;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: div,
+          isRunLess: true
+        });
+        mp.setProgress(.5);
+        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        return expect(pos).toBe(250);
+      });
+    });
+    describe('preset position ->', function() {
+      it('should preset initial position by default if isRunLess', function() {
+        var div, mp, pos;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M50,0 L500,0',
+          el: div,
+          isRunLess: true
+        });
+        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        return expect(pos).toBe(50);
+      });
+      return it('should not set initial position if isPresetPosition is false', function() {
+        var div, mp, pos;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M50,0 L500,0',
+          el: div,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        return expect(pos).toBe(50);
+      });
+    });
+    describe('progress bounds ->', function() {
+      it('should start from pathStart position', function() {
+        var div, mp, pos;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: div,
+          isRunLess: true,
+          pathStart: .5
+        });
+        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        return expect(pos).toBe(250);
+      });
+      return it('should end at pathEnd position', function(dfr) {
+        var div, mp, pos;
+        div = document.createElement('div');
+        pos = -1;
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: div,
+          duration: 50,
+          pathEnd: .5,
+          onComplete: function() {
+            pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
+            return pos = parseInt(pos, 10);
+          }
+        });
+        return setTimeout((function() {
+          expect(pos).toBe(250);
+          return dfr();
+        }), 100);
+      });
+    });
+    describe('path option ->', function() {
+      it('should have a getPath method', function() {
+        var div, mp;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: coords,
+          el: div
+        });
+        return expect(mp.getPath).toBeDefined();
+      });
+      it('getPath should return a path when was specified by coordinates', function() {
+        var div, mp;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: coords,
+          el: div
+        });
+        return expect(mp.getPath() instanceof SVGElement).toBe(true);
+      });
+      it('getPath should return a path when it was specified by SVG path', function() {
+        var div, mp, path;
+        path = document.createElementNS(ns, 'path');
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: path,
+          el: div
+        });
+        return expect(mp.getPath() instanceof SVGElement).toBe(true);
+      });
+      return it('getPath should return a path when it was specified selector', function() {
+        var div, id, mp, path, svg;
+        id = 'js-path';
+        div = document.createElement('div');
+        svg = document.createElementNS(ns, 'svg');
+        path = document.createElementNS(ns, 'path');
+        path.setAttribute('id', id);
+        path.setAttribute('class', id);
+        svg.appendChild(path);
+        document.body.appendChild(svg);
+        mp = new MotionPath({
+          path: "#" + id,
+          el: div
+        });
+        expect(mp.getPath() instanceof SVGElement).toBe(true);
+        mp = new MotionPath({
+          path: "." + id,
+          el: div
+        });
+        return expect(mp.getPath() instanceof SVGElement).toBe(true);
+      });
+    });
+    return describe('el option ->', function() {
+      it('should return an el when it was specified by selector', function() {
+        var div, id, mp;
+        id = 'js-el';
+        div = document.createElement('div');
+        div.setAttribute('id', id);
+        div.setAttribute('class', id);
+        document.body.appendChild(div);
+        mp = new MotionPath({
+          path: coords,
+          el: "#" + id
+        });
+        expect(mp.el instanceof HTMLElement).toBe(true);
+        mp = new MotionPath({
+          path: coords,
+          el: "." + id
+        });
+        return expect(mp.el instanceof HTMLElement).toBe(true);
+      });
+      return it('getPath should return an el when an element was passed', function() {
+        var div, mp;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: coords,
+          el: div
+        });
+        return expect(mp.el instanceof HTMLElement).toBe(true);
       });
     });
   });

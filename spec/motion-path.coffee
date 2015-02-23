@@ -1,7 +1,8 @@
 MotionPath = window.mojs.MotionPath
+
+coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 describe 'MotionPath ->', ->
   ns = 'http://www.w3.org/2000/svg'
-
   # move to general env
   describe 'enviroment ->', ->
     it 'SVG should be supported', ->
@@ -20,7 +21,6 @@ describe 'MotionPath ->', ->
       div  = document.createElement 'div'
       expect(path.style).toBeDefined()
       expect(div.style).toBeDefined()
-
     it 'transforms should be supported', ->
       isTransforms = ->
         trS = "transform WebkitTransform MozTransform OTransform msTransform"
@@ -33,7 +33,6 @@ describe 'MotionPath ->', ->
           i++
         false
       expect(isTransforms()).toBeTruthy()
-
     it 'HTML el should have offsetWidth/offsetHeight propety', ->
       div = document.createElement('div')
       expect(div.offsetWidth).toBeDefined()
@@ -46,10 +45,6 @@ describe 'MotionPath ->', ->
       el: el
     it 'delay should be defined', ->
       expect(mp.delay).toBeDefined()
-    # it 'TWEEN should be defined', ->
-    #   expect(mp.T).toBeDefined()
-    # it 'helpers should be defined', ->
-    #   expect(mp.h).toBeDefined()
     it 'resize should be defined', ->
       expect(mp.resize).toBeDefined()
     it 'duration should be defined', ->
@@ -62,8 +57,6 @@ describe 'MotionPath ->', ->
       expect(mp.offsetY).toBeDefined()
     it 'isAngle should be defined', ->
       expect(mp.isAngle).toBeDefined()
-    # it 'angleOffset should be defined', ->
-    #   expect(mp.angleOffset).toBeDefined()
     it 'isRunLess should be defined', ->
       expect(mp.isRunLess).toBeDefined()
     it 'easing should be defined', ->
@@ -73,392 +66,48 @@ describe 'MotionPath ->', ->
       expect(mp.yoyo).toBeDefined()
     it 'repeat should be defined', ->
       expect(mp.repeat).toBeDefined()
-
-  describe 'functionality ->', ->
+  describe 'run ability ->', ->
     div = document.createElement 'div'
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
-#   describe 'offsets ->', ->
-#     describe 'angleOffset ->', ->
-#       it 'angleOffset should work with positive angles', ->
-#         coords = 'M0,0 L10,0 L10,10'
-#         isEqual = false
-#         mp = new MotionPath
-#           path: coords
-#           el: div
-#           duration: 50
-#           angleOffset: 90
-#           isAngle: true
-#           onComplete:-> isEqual = mp.angle is 180
+    it 'should not run with isRunLess option passed', (dfr)->
+      isStarted = false; isDelayed = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        isRunLess: true
+        duration: 20
+        onStart:-> isStarted = true
+      setTimeout (-> expect(isStarted).toBe(false); dfr()), 100
 
-#         waitsFor((-> isEqual), 'isEqual should be true', 100)
-#         runs -> expect(isEqual).toBe(true)
-
-#       it 'angleOffset should work with negative angles', ->
-#         coords = 'M0,0 L10,0 L10,10'
-#         isEqual = false
-#         mp = new MotionPath
-#           path: coords
-#           el: div
-#           duration: 50
-#           angleOffset: -90
-#           isAngle: true
-#           onComplete:-> isEqual = mp.angle is 0
-
-#         waitsFor((-> isEqual), 'isEqual should be true', 100)
-#         runs -> expect(isEqual).toBe(true)
-
-#       it 'angleOffset should be evaluated if a function', ->
-#         coords = 'M0,0 L10,0 L10,10'
-#         isFunction = false
-#         mp = new MotionPath
-#           path: coords
-#           el: div
-#           duration: 50
-#           angleOffset:(angle)->
-#             isFunction = true
-#             angle
-
-#         waitsFor((-> isFunction), 'isFunction should be true', 100)
-#         runs -> expect(isFunction).toBe(true)
-
-#       it 'angleOffset should get current angle', ->
-#         coords = 'M0,0 L10,0 L10,10'
-#         isOnAngle = false
-#         angleSum1 = 0; angleSum2 = 0
-#         mp = new MotionPath
-#           path: coords
-#           el: div
-#           duration: 50
-#           isAngle: true
-#           angleOffset:(angle)->
-#             angleSum1 += angle; angleSum2 += mp.angle
-#             angle
-#           onComplete:-> isOnAngle = angleSum1 is angleSum2
-
-#         waitsFor((-> isOnAngle), '', 100)
-#         runs -> expect(isOnAngle).toBe(true)
-
-#       it 'angleOffset should set current angle', ->
-#         coords = 'M0,0 L10,0 L10,10'
-#         isSet = false; isCompleted = false
-#         currAngle = 0; isAnglesArray = []
-#         angleShift = 5
-#         mp = new MotionPath
-#           path: coords
-#           el: div
-#           duration: 50
-#           angleOffset:(angle)->
-#             currAngle = angle; angle+angleShift
-#           onUpdate:-> isAnglesArray.push currAngle+angleShift is mp.angle
-#           onComplete:->
-#             for isSetItem, i in isAnglesArray
-#               if !isSetItem then isSet = true
-#               isCompleted = true; return
-#             isCompleted = true
-
-#         waitsFor((-> isCompleted), '', 100)
-#         runs -> expect(isSet).toBe(false)
-
-#       it 'angleOffset should get current progress as second parameter', ->
-#         coords = 'M0,0 L10,0 L10,10'
-#         isProgress = false; proc = -1
-#         mp = new MotionPath
-#           path: coords
-#           el: div
-#           duration: 50
-#           angleOffset:(angle, progress)-> proc = progress; angle
-#           onComplete:-> isProgress = proc is 1
-
-#         waitsFor((-> isProgress), '', 100)
-#         runs -> expect(isProgress).toBe(true)
-
-#     it 'should work with positive offsetX', ->
-#       coords = 'M0,0 L0,10'
-#       x = 0; isEquial = false
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         offsetX: 10
-#         duration: 50
-#         isAngle: true
-#         onComplete: ->
-#           x = div.style.transform.split(/(translate\()|,|\)/)[2]
-#           isEquial = parseInt(x, 10) is 10
-
-#       waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 100)
-#       runs -> expect(isEquial).toBe(true)
-
-#     it 'should work with negative offsetX', ->
-#       coords = 'M0,0 L0,10'
-#       x = 0; isEquial = false
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         offsetX: -10
-#         duration: 50
-#         onComplete: ->
-#           x = div.style.transform.split(/(translate\()|,|\)/)[2]
-#           x = parseInt(x, 10)
-#           isEquial = x is -10
-
-#       waitsFor((-> isEquial), 'isOnUpdate should be changed to true', 100)
-#       runs -> expect(isEquial).toBe(true)
-
-#     it 'should work with positive offsetY', ->
-#       coords = 'M0,0 L10,0'
-#       y = 0; isEquial = false
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         offsetY: 10
-#         duration: 50
-#         onComplete: ->
-#           y = div.style.transform.split(/(translate\()|,|\)/)[4]
-#           y = parseInt(y, 10)
-#           isEquial = y is 10
-
-#       waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
-#       runs -> expect(isEquial).toBe(true)
-
-#     it 'should work with negative offsetY', ->
-#       coords = 'M0,0 L10,0'
-#       y = 0; isEquial = false
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         offsetY: -10
-#         duration: 50
-#         onComplete: ->
-#           y = div.style.transform.split(/(translate\()|,|\)/)[4]
-#           isEquial = parseInt(y, 10) is -10
-
-#       waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
-#       runs -> expect(isEquial).toBe(true)
-
-#     it 'should calculate current angle', ->
-#       coords = 'M0,0 L10,0 L10,10'
-#       angle = 0; isEquial = false; isEquial2 = false; detect = {}
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         duration: 50
-#         isAngle: true
-#         onUpdate:->
-#           detect.firstAngle ?= mp.angle
-#           isEquial2 = detect.firstAngle is 0
-#         onComplete:-> isEquial = mp.angle is 90
-#       waitsFor((-> isEquial), 'isEquial should be changed to true', 100)
-#       runs -> expect(isEquial).toBe(true)
-
-#     it 'should calculate current angle with isReverse', ->
-#       coords = 'M0,0 L10,0 L10,10'
-#       angle = 0; isEquial = false; isEquial2 = false; detect = {}
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         duration: 50
-#         isAngle: true
-#         isReverse: true
-#         onUpdate:->
-#           detect.firstAngle ?= mp.angle
-#           isEquial2 = detect.firstAngle is 90
-#         onComplete: -> isEquial = mp.angle is 0
-#       waitsFor((-> isEquial and isEquial2), '', 100)
-#       runs -> expect(isEquial).toBe(true)
-
-#     it 'should have transform-origin', ->
-#       coords = 'M0,0 L10,0 L10,10'
-#       isComplete = false
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         duration: 50
-#         transformOrigin: '50% 50%'
-#         onComplete: -> isComplete = true
-
-#       waitsFor((-> isComplete), '', 100)
-#       runs -> expect(mp.el.style.transformOrigin.length >= 1).toBe(true)
-
-#     it 'transform-origin could be a function', ->
-#       coords = 'M0,0 L10,0 L10,10'
-#       isComplete = false; isAngle = false; isProgress = false
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#         duration: 50
-#         transformOrigin:(angle, proc)->
-#           isFunction = true
-#           isAngle = angle?; isProgress = proc?
-#           '50% 50%'
-#         onComplete: -> isComplete = true
-
-#       waitsFor((-> isComplete), '', 100)
-#       runs -> expect(isAngle and isProgress).toBe(true)
-
-#   describe 'setProgress function ->', ->
-#     it 'should have own function for setting up current progress', ->
-#       div = document.createElement 'div'
-#       mp = new MotionPath
-#         path: 'M0,0 L500,0'
-#         el: div
-#         isRunLess: true
-
-#       mp.setProgress(.5)
-#       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
-#       expect(pos).toBe(250)
-
-#   describe 'preset position ->', ->
-#     it 'should preset initial position by default if isRunLess', ->
-#       div = document.createElement 'div'
-#       mp = new MotionPath
-#         path: 'M50,0 L500,0'
-#         el: div
-#         isRunLess: true
-#       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
-#       expect(pos).toBe(50)
-
-#     it 'should not set initial position if isPresetPosition is false', ->
-#       div = document.createElement 'div'
-#       mp = new MotionPath
-#         path: 'M50,0 L500,0'
-#         el: div
-#         isRunLess: true
-#         isPresetPosition: false
-#       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
-#       expect(pos).toBe(50)
-
-#   describe 'progress bounds ->', ->
-#     it 'should start from pathStart position', ->
-#       div = document.createElement 'div'
-#       mp = new MotionPath
-#         path: 'M0,0 L500,0'
-#         el: div
-#         isRunLess: true
-#         pathStart: .5
-
-#       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
-#       expect(pos).toBe(250)
-
-#     it 'should start from pathEnd position', ->
-#       div = document.createElement 'div'
-#       pos = -1; isComplete = false
-#       mp = new MotionPath
-#         path: 'M0,0 L500,0'
-#         el: div
-#         duration:   50
-#         pathEnd:    .5
-#         onComplete:->
-#           pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
-#           pos = parseInt pos, 10
-#           isComplete = true
-    
-#       waitsFor((-> isComplete), '', 100)
-#       runs -> expect(pos).toBe(250)
-
-#   describe 'path option ->', ->
-#     it 'should have a getPath method', ->
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#       expect(mp.getPath).toBeDefined()
-
-#     it 'getPath should return a path when was specified by coordinates', ->
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#       expect(mp.getPath() instanceof SVGElement).toBe(true)
-
-#     it 'getPath should return a path when it was specified by SVG path', ->
-#       path = document.createElementNS ns, 'path'
-#       mp = new MotionPath
-#         path: path
-#         el: div
-#       expect(mp.getPath() instanceof SVGElement).toBe(true)
-
-#     it 'getPath should return a path when it was specified selector', ->
-#       id = 'js-path'
-#       svg = document.createElementNS ns, 'svg'
-#       path = document.createElementNS ns, 'path'
-#       path.setAttribute 'id', id
-#       path.setAttribute 'class', id
-#       svg.appendChild path
-#       document.body.appendChild svg
-#       mp = new MotionPath
-#         path: "##{id}"
-#         el: div
-#       expect(mp.getPath() instanceof SVGElement).toBe(true)
-
-#       mp = new MotionPath
-#         path: ".#{id}"
-#         el: div
-#       expect(mp.getPath() instanceof SVGElement).toBe(true)
-
-#   describe 'el option ->', ->
-#     it 'should return an el when it was specified by selector', ->
-#       id = 'js-el'
-#       div = document.createElement 'div'
-#       div.setAttribute 'id', id
-#       div.setAttribute 'class', id
-#       document.body.appendChild div
-#       mp = new MotionPath
-#         path: coords
-#         el: "##{id}"
-#       expect(mp.el instanceof HTMLElement).toBe(true)
-#       mp = new MotionPath
-#         path: coords
-#         el: ".#{id}"
-#       expect(mp.el instanceof HTMLElement).toBe(true)
-
-#     it 'getPath should return an el when an element was passed', ->
-#       div = document.createElement 'div'
-#       mp = new MotionPath
-#         path: coords
-#         el: div
-#       expect(mp.el instanceof HTMLElement).toBe(true)
-
-    describe 'run ability ->', ->
-      it 'should not run with isRunLess option passed', ->
-        isStarted = false; isDelayed = false
-        mp = new MotionPath
-          path: coords
-          el: div
-          isRunLess: true
-          duration: 20
-          onStart:-> isStarted = true
-        setTimeout (-> expect(isStarted).toBe(false)), 100
-      it 'run call should extend defaults', (dfr)->
-        div = document.createElement 'div'
-        coords = 'M0,0 L500,00'
-        isComplete = false
-        mp = new MotionPath
-          path: coords
-          el: div
-          isRunLess: true
-          duration: 50
-          r: true
-        mp.run
-          onComplete:-> isComplete = true
-          path: 'M0,0 L600,00'
-
-        setTimeout ->
-          pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
-          pos = parseInt pos, 10
-          expect(pos).toBe(600)
-          dfr()
-        , 100
+    it 'should extend defaults', (dfr)->
+      div = document.createElement 'div'
+      coords = 'M0,0 L500,00'
+      mp = new MotionPath
+        path: coords, el: div, isRunLess: true, duration: 50
+      mp.run path: 'M0,0 L600,00'
+      setTimeout ->
+        pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
+        pos = parseInt pos, 10
+        expect(pos).toBe(600)
+        dfr()
+      , 100
 
   describe 'callbacks ->', ->
     div = document.createElement 'div'
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 
     describe 'onStart callback ->', ->
-      it 'onStart callback should work', (dfr)->
+      it 'should run on start', (dfr)->
         isStarted = false
         mp = new MotionPath
           path: coords
           el: div
+          duration: 64
           onStart:-> isStarted = true
-        setTimeout (-> expect(isStarted).toBe(true); dfr()), 100
+
+        setTimeout (->
+          expect(isStarted).toBe(true); dfr()
+          ), 100
       it 'should have the scope of MotionPath', (dfr)->
         isRightScope = false
         mp = new MotionPath
@@ -525,7 +174,7 @@ describe 'MotionPath ->', ->
         , 100
 
   describe 'fill ->', ->
-    div = container = null
+    div = null; container = null
     beforeEach ->
       container = document.createElement 'div'
       div = document.createElement 'div'
@@ -594,7 +243,8 @@ describe 'MotionPath ->', ->
       , 100
 
     it "if fillRule is \"height\" it should keep container\'s height
-    and set \"width\" with aspect ratio", (dfr)->
+      and set \"width\" with aspect ratio", (dfr)->
+
       isFilled = false
       mp = new MotionPath
         path: 'M0,0 L250,500'
@@ -612,7 +262,7 @@ describe 'MotionPath ->', ->
         expect(isFilled).toBe(true); dfr()
       , 100
 
-    it 'if container size was changed should recalc scaler', ->
+    it 'if container size was changed should recalc scaler', (dfr)->
       isSizeChange = false
       el = document.createElement 'div'
       c = document.createElement 'div'
@@ -633,16 +283,330 @@ describe 'MotionPath ->', ->
           if proc >= .1 and !isSizeChange
             mp.container.style.width = '100px'
             isSizeChange = true
-
         onComplete:-> x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
 
       setTimeout ->
-        expect(parseInt(x, 10)).toBe(100)
+        expect(parseInt(x, 10)).toBe(100); dfr()
       , 100
 
+  describe 'functionality ->', ->
+    div = document.createElement 'div'
+    coords = 'M0.55859375,593.527344L0.55859375,593.527344'
+    # describe 'offsets ->', ->
+    describe 'angleOffset ->', ->
+      it 'angleOffset should work with positive angles', (dfr)->
+        coords = 'M0,0 L10,0 L10,10'
+        isEqual = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          angleOffset: 90
+          isAngle: true
+          onComplete:-> isEqual = mp.angle is 180
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
 
+      it 'angleOffset should work with negative angles', (dfr)->
+        coords = 'M0,0 L10,0 L10,10'
+        isEqual = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          angleOffset: -90
+          isAngle: true
+          onComplete:-> isEqual = mp.angle is 0
 
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
 
+      it 'should be evaluated if a function', (dfr)->
+        coords = 'M0,0 L10,0 L10,10'
+        isFunction = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          angleOffset:(angle)->
+            isFunction = true
+            angle
 
+        setTimeout (-> expect(isFunction).toBe(true); dfr()), 100
 
+      it 'should get current angle', (dfr)->
+        coords = 'M0,0 L10,0 L10,10'
+        isOnAngle = false
+        angleSum1 = 0; angleSum2 = 0
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          isAngle: true
+          angleOffset:(angle)->
+            angleSum1 += angle; angleSum2 += mp.angle
+            angle
+          onComplete:->
+            isOnAngle = angleSum1 is angleSum2
+        setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 100
+
+      it 'should set current angle', (dfr)->
+        coords = 'M0,0 L10,0 L10,10'
+        isSet = false
+        currAngle = 0; isAnglesArray = []
+        angleShift = 5
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          angleOffset:(angle)-> currAngle = angle; angle+angleShift
+          onUpdate:-> isAnglesArray.push currAngle+angleShift is mp.angle
+          onComplete:->
+            for isSetItem, i in isAnglesArray
+              if !isSetItem then isSet = true
+        setTimeout (-> expect(isSet).toBe(false); dfr()), 100
+
+      it 'angleOffset should get current progress as second parameter', (dfr)->
+        coords = 'M0,0 L10,0 L10,10'
+        isProgress = false; proc = -1
+        mp = new MotionPath
+          path: coords
+          el: div
+          duration: 50
+          angleOffset:(angle, progress)-> proc = progress; angle
+          onComplete:-> isProgress = proc is 1
+        setTimeout (-> expect(isProgress).toBe(true); dfr()), 100
+
+      it 'should work with positive offsetX', (dfr)->
+        coords = 'M0,0 L0,10'
+        x = 0; isEqual = false
+        mp = new MotionPath
+          path: coords
+          el: div
+          offsetX: 10
+          duration: 50
+          isAngle: true
+          onComplete: ->
+            x = div.style.transform.split(/(translate\()|,|\)/)[2]
+            isEqual = parseInt(x, 10) is 10
+          setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+    it 'should work with negative offsetX', (dfr)->
+      coords = 'M0,0 L0,10'
+      x = 0; isEqual = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        offsetX: -10
+        duration: 50
+        onComplete: ->
+          x = div.style.transform.split(/(translate\()|,|\)/)[2]
+          x = parseInt(x, 10)
+          isEqual = x is -10
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+
+    it 'should work with positive offsetY', (dfr)->
+      coords = 'M0,0 L10,0'
+      y = 0; isEqual = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        offsetY: 10
+        duration: 50
+        onComplete: ->
+          y = div.style.transform.split(/(translate\()|,|\)/)[4]
+          y = parseInt(y, 10)
+          isEqual = y is 10
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+
+    it 'should work with negative offsetY', (dfr)->
+      coords = 'M0,0 L10,0'
+      y = 0; isEqual = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        offsetY: -10
+        duration: 50
+        onComplete: ->
+          y = div.style.transform.split(/(translate\()|,|\)/)[4]
+          isEqual = parseInt(y, 10) is -10
+
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+
+    it 'should calculate current angle', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      angle = 0; isEqual = false; isEquial2 = false; detect = {}
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        isAngle: true
+        onUpdate:->
+          detect.firstAngle ?= mp.angle
+          isEquial2 = detect.firstAngle is 0
+        onComplete:-> isEqual = mp.angle is 90
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+
+    it 'should calculate current angle with isReverse', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      angle = 0; isEqual = false; isEquial2 = false; detect = {}
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        isAngle: true
+        isReverse: true
+        onUpdate:->
+          detect.firstAngle ?= mp.angle
+          isEquial2 = detect.firstAngle is 90
+        onComplete: -> isEqual = mp.angle is 0
+
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+
+    it 'should have transform-origin', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isComplete = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        transformOrigin: '50% 50%'
+        onComplete: -> isComplete = true
+
+      setTimeout ->
+        expect(mp.el.style.transformOrigin.length >= 1).toBe(true); dfr()
+      , 100
+
+    it 'transform-origin could be a function', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isAngle = false; isProgress = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        transformOrigin:(angle, proc)->
+          isFunction = true
+          isAngle = angle?; isProgress = proc?
+          '50% 50%'
+      setTimeout (-> expect(isAngle and isProgress).toBe(true); dfr()), 100
+
+  describe 'setProgress function ->', (dfr)->
+    it 'should have own function for setting up current progress', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: div
+        isRunLess: true
+
+      mp.setProgress(.5)
+      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      expect(pos).toBe(250)
+
+  describe 'preset position ->', ->
+    it 'should preset initial position by default if isRunLess', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M50,0 L500,0'
+        el: div
+        isRunLess: true
+      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      expect(pos).toBe(50)
+
+    it 'should not set initial position if isPresetPosition is false', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M50,0 L500,0'
+        el: div
+        isRunLess: true
+        isPresetPosition: false
+      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      expect(pos).toBe(50)
+
+  describe 'progress bounds ->', ->
+    it 'should start from pathStart position', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: div
+        isRunLess: true
+        pathStart: .5
+
+      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      expect(pos).toBe(250)
+
+    it 'should end at pathEnd position', (dfr)->
+      div = document.createElement 'div'
+      pos = -1
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: div
+        duration:   50
+        pathEnd:    .5
+        onComplete:->
+          pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
+          pos = parseInt pos, 10
+    
+      setTimeout (-> expect(pos).toBe(250); dfr()), 100
+
+  describe 'path option ->', ->
+    it 'should have a getPath method', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: coords
+        el: div
+      expect(mp.getPath).toBeDefined()
+
+    it 'getPath should return a path when was specified by coordinates', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: coords
+        el: div
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+    it 'getPath should return a path when it was specified by SVG path', ->
+      path = document.createElementNS ns, 'path'
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: path
+        el: div
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+    it 'getPath should return a path when it was specified selector', ->
+      id = 'js-path'
+      div = document.createElement 'div'
+      svg = document.createElementNS ns, 'svg'
+      path = document.createElementNS ns, 'path'
+      path.setAttribute 'id', id
+      path.setAttribute 'class', id
+      svg.appendChild path
+      document.body.appendChild svg
+      mp = new MotionPath
+        path: "##{id}"
+        el: div
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+      mp = new MotionPath
+        path: ".#{id}"
+        el: div
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+  describe 'el option ->', ->
+    it 'should return an el when it was specified by selector', ->
+      id = 'js-el'
+      div = document.createElement 'div'
+      div.setAttribute 'id', id
+      div.setAttribute 'class', id
+      document.body.appendChild div
+      mp = new MotionPath
+        path: coords
+        el: "##{id}"
+      expect(mp.el instanceof HTMLElement).toBe(true)
+      mp = new MotionPath
+        path: coords
+        el: ".#{id}"
+      expect(mp.el instanceof HTMLElement).toBe(true)
+
+    it 'getPath should return an el when an element was passed', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: coords
+        el: div
+      expect(mp.el instanceof HTMLElement).toBe(true)
 

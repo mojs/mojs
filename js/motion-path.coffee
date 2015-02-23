@@ -47,19 +47,18 @@ class MotionPath
   postVars:->
     @el         = @parseEl @o.el
     @path       = @getPath()
-    @len        = @path.getTotalLength()
+    @len        = @path.getTotalLength()*@pathEnd
+
     @fill       = @o.fill
     if @fill?
       @container  = @parseEl @fill.container
       @fillRule   = @fill.fillRule or 'all'
       @getScaler()
       return if !@container
-      
       @removeEvent @container, 'onresize', @getScaler
       @addEvent    @container, 'onresize', @getScaler
 
   addEvent:(el, type, handler)->
-    # @o.isIt and console.log 'add'
     if el.addEventListener then @container.addEventListener type, handler
     else if el.attachEvent then @container.attachEvent type, handler
 
@@ -83,7 +82,6 @@ class MotionPath
       return @o.path
 
   getScaler:()->
-    # @o.isIt and console.log 'get'
     @cSize =
       width:  @container.offsetWidth  or 0
       height: @container.offsetHeight or 0
@@ -143,11 +141,11 @@ class MotionPath
       prevPoint = @path.getPointAtLength len - 1
       x1 = point.y - prevPoint.y
       x2 = point.x - prevPoint.x
-      @angle = Math.atan(x1/x2)*h.DEG2
+      atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
+      @angle = atan*h.RAD_TO_DEG
       if (typeof @angleOffset) isnt 'function'
         @angle += @angleOffset or 0
-      else
-        @angle = @angleOffset(@angle, p)
+      else @angle = @angleOffset(@angle, p)
     else @angle = 0
     
     x = point.x + @offsetX; y = point.y + @offsetY

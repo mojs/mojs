@@ -1163,6 +1163,8 @@ Helpers = (function() {
     burstShiftY: 1
   };
 
+  Helpers.prototype.RAD_TO_DEG = 180 / Math.PI;
+
   function Helpers() {
     this.vars();
   }
@@ -1615,7 +1617,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil, slider;
+var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, eye, mp, page, pupil, slider;
 
 Burst = require('./burst');
 
@@ -1629,24 +1631,23 @@ Transit = require('./transit');
 
 MotionPath = require('./motion-path');
 
-burst = new Burst({
-  x: 300,
-  y: 300,
+burst = new Transit({
   type: 'polygon',
-  duration: 500,
+  duration: 1000,
   count: 5,
   isRunLess: true,
   isShowInit: true,
   isShowEnd: true,
   points: 5,
+  angle: {
+    0: 360
+  },
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)',
-  delay: 1000,
   opacity: {
     1: 0
   },
   childOptions: {
-    radius: 5,
     opacity: [
       {
         1: 0
@@ -1655,9 +1656,21 @@ burst = new Burst({
       }
     ]
   }
+}).then({
+  radius: 0
 });
 
-burst.run();
+mp = new MotionPath({
+  path: 'M0,0 L500,500 L1000, 0',
+  el: burst.el,
+  duration: 2000,
+  delay: 1000,
+  onUpdate: function(p) {
+    return burst.tween.setProgress(p);
+  }
+});
+
+mp.run();
 
 slider = document.getElementById('js-slider');
 
@@ -1737,7 +1750,7 @@ MotionPath = (function() {
   MotionPath.prototype.postVars = function() {
     this.el = this.parseEl(this.o.el);
     this.path = this.getPath();
-    this.len = this.path.getTotalLength();
+    this.len = this.path.getTotalLength() * this.pathEnd;
     this.fill = this.o.fill;
     if (this.fill != null) {
       this.container = this.parseEl(this.fill.container);
@@ -1884,14 +1897,16 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p) {
-    var len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
+    var atan, len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
     len = !this.isReverse ? p * this.len : (1 - p) * this.len;
     point = this.path.getPointAtLength(len);
     if (this.isAngle || (this.angleOffset != null)) {
       prevPoint = this.path.getPointAtLength(len - 1);
       x1 = point.y - prevPoint.y;
       x2 = point.x - prevPoint.x;
-      this.angle = Math.atan(x1 / x2) * h.DEG2;
+      atan = Math.atan(x1 / x2);
+      !isFinite(atan) && (atan = 0);
+      this.angle = atan * h.RAD_TO_DEG;
       if ((typeof this.angleOffset) !== 'function') {
         this.angle += this.angleOffset || 0;
       } else {
@@ -2484,14 +2499,7 @@ Transit = (function(_super) {
     if (this.el == null) {
       return;
     }
-    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
-    if (!this.isForeign) {
-      this.isPropChanged('x') && (this.el.style.left = this.props.x);
-      this.isPropChanged('y') && (this.el.style.top = this.props.y);
-      if (this.isNeedsTransform()) {
-        return this.h.setPrefixedStyle(this.el, 'transform', this.fillTransform());
-      }
-    }
+    return this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
   };
 
   Transit.prototype.fillTransform = function() {
