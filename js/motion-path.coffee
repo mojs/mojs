@@ -3,11 +3,6 @@ Tween     = require './tween'
 Timeline  = require './timeline'
 resize    = require './vendor/resize'
 
-# TODO
-#   switch to jasmine 2.0 + add travis ci
-#   fix ff callbacks
-#   junk?
-
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
   defaults:
@@ -32,32 +27,22 @@ class MotionPath
     onComplete:       null
     onUpdate:         null
 
-  constructor:(@o={})->
-    @vars()
-    if !@props.isRunLess then @run()
-    else if @props.isPresetPosition then @setProgress(@props.pathStart)
-    @
+  constructor:(@o={})-> @vars(); @createTween(); @
 
   vars:->
-    @getScaler = h.bind @getScaler, @
-    @resize = resize
-    @props = h.cloneObj @defaults
-
+    @getScaler = h.bind(@getScaler, @); @resize = resize
+    @props = h.cloneObj(@defaults); @history = [h.cloneObj(@o)]
     @extendOptions @o
-    @props.pathStart = h.clamp @props.pathStart, 0, 1
-    @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
-
-    # cache the onUpdate method for perf reasons
-    @onUpdate = @props.onUpdate
-
     @postVars()
 
   postVars:->
+    @props.pathStart = h.clamp @props.pathStart, 0, 1
+    @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
+    @onUpdate = @props.onUpdate
     @el         = @parseEl @props.el
     @path       = @getPath()
     @len        = @path.getTotalLength()*@props.pathEnd
-
-    @fill       = @o.fill
+    @fill       = @props.fill
     if @fill?
       @container  = @parseEl @props.fill.container
       @fillRule   = @props.fill.fillRule or 'all'
@@ -83,7 +68,7 @@ class MotionPath
     if typeof @props.path is 'string'
       return if @props.path.charAt(0).toLowerCase() is 'm'
         path = document.createElementNS @NS, 'path'
-        path.setAttributeNS(null, 'd', @o.path); path
+        path.setAttributeNS(null, 'd', @props.path); path
       else document.querySelector @props.path
     # DOM node
     if @props.path.style
@@ -127,7 +112,9 @@ class MotionPath
     if o?.fill then @o.fill = o.fill
     o and @extendDefaults o
     o and @postVars(); it = @
+    @createTween()
 
+  createTween:->
     @timeline = new Timeline
       duration:   @props.duration
       delay:      @props.delay
@@ -136,8 +123,14 @@ class MotionPath
       easing:     @props.easing
       onStart:    => @props.onStart?.apply @
       onComplete: => @props.onComplete?.apply @
-      onUpdate:   (p)=> @setProgress(p); @onUpdate?(p)
-    @tween = new Tween; @tween.add(@timeline); @tween.start()
+      onUpdate:  (p)=> @setProgress(p)
+    @tween = new Tween onUpdate:(p)=> @onUpdate?(p)
+    @tween.add(@timeline); @tween.start()
+
+    if !@props.isRunLess then @startTween()
+    else if @props.isPresetPosition then @setProgress(@props.pathStart)
+
+  startTween:-> setTimeout (=> @tween?.start()), 1
 
   setProgress:(p)->
     len = if !@props.isReverse then p*@len else (1-p)*@len
@@ -176,6 +169,24 @@ class MotionPath
   extendOptions:(o)->
     for key, value of o
       @props[key] = value
+
+  then:(o)->
+    prevOptions = @history[@history.length-1]
+    @history.push o
+    
+    # get tween timing values
+    keys = Object.keys(h.tweenOptionMap); i = keys.length; opts = {}
+    while(i--)
+      key = keys[i]; opts[key] = o[key] or prevOptions[key]
+    it = @
+    opts.onUpdate      = (p)=> @setProgress p
+    opts.onStart       = => @props.onStart?.apply @
+    opts.onComplete    = => @props.onComplete?.apply @
+    opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
+    @tween.append new Timeline opts
+    @
+
+  tuneOptions:(o)-> @extendOptions(o); @postVars()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

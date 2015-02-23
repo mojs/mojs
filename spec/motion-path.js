@@ -130,50 +130,6 @@
         return expect(mp.props.pathEnd).toBe(.5);
       });
     });
-    describe('run ability ->', function() {
-      var div;
-      div = document.createElement('div');
-      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
-      it('should not run with isRunLess option passed', function(dfr) {
-        var isDelayed, isStarted, mp;
-        isStarted = false;
-        isDelayed = false;
-        mp = new MotionPath({
-          path: coords,
-          el: div,
-          isRunLess: true,
-          duration: 20,
-          onStart: function() {
-            return isStarted = true;
-          }
-        });
-        return setTimeout((function() {
-          expect(isStarted).toBe(false);
-          return dfr();
-        }), 100);
-      });
-      return it('should extend defaults', function(dfr) {
-        var mp;
-        div = document.createElement('div');
-        coords = 'M0,0 L500,00';
-        mp = new MotionPath({
-          path: coords,
-          el: div,
-          isRunLess: true,
-          duration: 50
-        });
-        mp.run({
-          path: 'M0,0 L600,00'
-        });
-        return setTimeout(function() {
-          var pos;
-          pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
-          pos = parseInt(pos, 10);
-          expect(pos).toBe(600);
-          return dfr();
-        }, 100);
-      });
-    });
     describe('callbacks ->', function() {
       var div;
       div = document.createElement('div');
@@ -348,8 +304,6 @@
           fill: {
             container: container
           },
-          all: true,
-          isIt: true,
           onComplete: function() {
             var args, height, isHeight, isWidth, width;
             args = motionPath.el.style.transform.split(/(translate\()|\,|\)/);
@@ -899,7 +853,7 @@
         return expect(mp.getPath() instanceof SVGElement).toBe(true);
       });
     });
-    return describe('el option ->', function() {
+    describe('el option ->', function() {
       it('should return an el when it was specified by selector', function() {
         var div, id, mp;
         id = 'js-el';
@@ -926,6 +880,82 @@
           el: div
         });
         return expect(mp.el instanceof HTMLElement).toBe(true);
+      });
+    });
+    describe('then method ->', function() {
+      it('should contribute to history on init', function() {
+        var mp, options;
+        options = {
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000
+        };
+        mp = new MotionPath(options);
+        expect(mp.history.length).toBe(1);
+        return expect(mp.history[0].duration).toBe(2000);
+      });
+      it('should contribute to history on then', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5
+        }).then({
+          pathStart: .5,
+          pathEnd: 1
+        });
+        expect(mp.history.length).toBe(2);
+        expect(mp.history[1].pathStart).toBe(.5);
+        return expect(mp.history[1].pathEnd).toBe(1);
+      });
+      return it('should add new timeline', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5
+        }).then({
+          pathStart: .5,
+          pathEnd: 1
+        });
+        expect(mp.tween.timelines.length).toBe(2);
+        expect(mp.tween.timelines[1].o.duration).toBe(2000);
+        return expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined();
+      });
+    });
+    return describe('tuneOptions ->', function() {
+      it('should tune options', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5
+        });
+        mp.tuneOptions({
+          duration: 5000
+        });
+        expect(mp.props.duration).toBe(5000);
+        return expect(mp.props.pathEnd).toBe(.5);
+      });
+      return it('should recal el, path, len, fill, container if defined', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5,
+          isRunLess: true,
+          isIt: true
+        });
+        coords = 'M0,0 L 105,105';
+        mp.tuneOptions({
+          duration: 5000,
+          path: coords
+        });
+        return expect(mp.path.getAttribute('d')).toBe(coords);
       });
     });
   });

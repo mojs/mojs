@@ -108,32 +108,31 @@ describe 'MotionPath ->', ->
       expect(mp.props.pathStart).toBe .5
       expect(mp.props.pathEnd)  .toBe .5
 
+  # describe 'run ability ->', ->
+  #   div = document.createElement 'div'
+  #   coords = 'M0.55859375,593.527344L0.55859375,593.527344'
+  #   it 'should not run with isRunLess option passed', (dfr)->
+  #     isStarted = false; isDelayed = false
+  #     mp = new MotionPath
+  #       path: coords
+  #       el: div
+  #       isRunLess: true
+  #       duration: 20
+  #       onStart:-> isStarted = true
+  #     setTimeout (-> expect(isStarted).toBe(false); dfr()), 100
 
-  describe 'run ability ->', ->
-    div = document.createElement 'div'
-    coords = 'M0.55859375,593.527344L0.55859375,593.527344'
-    it 'should not run with isRunLess option passed', (dfr)->
-      isStarted = false; isDelayed = false
-      mp = new MotionPath
-        path: coords
-        el: div
-        isRunLess: true
-        duration: 20
-        onStart:-> isStarted = true
-      setTimeout (-> expect(isStarted).toBe(false); dfr()), 100
-
-    it 'should extend defaults', (dfr)->
-      div = document.createElement 'div'
-      coords = 'M0,0 L500,00'
-      mp = new MotionPath
-        path: coords, el: div, isRunLess: true, duration: 50
-      mp.run path: 'M0,0 L600,00'
-      setTimeout ->
-        pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
-        pos = parseInt pos, 10
-        expect(pos).toBe(600)
-        dfr()
-      , 100
+  #   it 'should extend defaults', (dfr)->
+  #     div = document.createElement 'div'
+  #     coords = 'M0,0 L500,00'
+  #     mp = new MotionPath
+  #       path: coords, el: div, isRunLess: true, duration: 50
+  #     mp.run path: 'M0,0 L600,00'
+  #     setTimeout ->
+  #       pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
+  #       pos = parseInt pos, 10
+  #       expect(pos).toBe(600)
+  #       dfr()
+  #     , 100
 
   describe 'callbacks ->', ->
     div = document.createElement 'div'
@@ -253,8 +252,7 @@ describe 'MotionPath ->', ->
         el: div
         duration: 64
         fill: { container: container }
-        all: true
-        isIt: true
+        # all: true
         onComplete:->
           args = motionPath.el.style.transform.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
@@ -651,4 +649,74 @@ describe 'MotionPath ->', ->
         path: coords
         el: div
       expect(mp.el instanceof HTMLElement).toBe(true)
+
+  describe 'then method ->', ->
+    it 'should contribute to history on init', ->
+      options =
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+      mp = new MotionPath options
+      expect(mp.history.length).toBe(1)
+      expect(mp.history[0].duration).toBe 2000
+
+    it 'should contribute to history on then', ->
+      mp = new MotionPath(
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+        pathEnd:  .5
+      
+      ).then pathStart: .5, pathEnd: 1
+
+      expect(mp.history.length)       .toBe   2
+      expect(mp.history[1].pathStart) .toBe   .5
+      expect(mp.history[1].pathEnd)   .toBe   1
+
+    it 'should add new timeline', ->
+      mp = new MotionPath(
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+        pathEnd:  .5
+      
+      ).then pathStart: .5, pathEnd: 1
+      expect(mp.tween.timelines.length)             .toBe 2
+      expect(mp.tween.timelines[1].o.duration)     .toBe 2000
+      expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined()
+
+  describe 'tuneOptions ->', ->
+    it 'should tune options', ->
+      mp = new MotionPath(
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+        pathEnd:  .5
+      )
+
+      mp.tuneOptions duration: 5000
+
+      expect(mp.props.duration).toBe 5000
+      expect(mp.props.pathEnd) .toBe .5
+
+    it 'should recal el, path, len, fill, container if defined', ->
+      mp = new MotionPath(
+        path:       coords
+        el:         document.createElement 'div'
+        duration:   2000
+        pathEnd:    .5
+        isRunLess:  true
+        isIt:       true
+      )
+      coords = 'M0,0 L 105,105'
+      mp.tuneOptions duration: 5000, path: coords
+      expect(mp.path.getAttribute('d')).toBe coords
+
+
+
+
+
+
+
+
 

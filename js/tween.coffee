@@ -34,12 +34,13 @@ class Tween
   update:(time)->
     # react only on endTime max
     if time > @props.endTime   then time = @props.endTime
-    # if isn't complete
-    if time >= @props.startTime and time < @props.endTime
-      @onUpdate? (time - @props.startTime)/@props.totalTime
     # update self timelines
     i = -1; len = @timelines.length-1
     @timelines[i].update(time) while(i++ < len)
+
+    # if isn't complete
+    if time >= @props.startTime and time < @props.endTime
+      @onUpdate? (time - @props.startTime)/@props.totalTime
 
     # if reverse completed
     if @prevTime > time and time <= @props.startTime

@@ -28,16 +28,16 @@ MotionPath  = require './motion-path'
 
 burst = new Transit(
   # isRunLess: true
-  # x: 300, y: 300
+  x: 300, y: 300
   type: 'polygon'
-  duration: 1000
+  duration: 5000
   count: 5
-  isRunLess: true
+  # isRunLess: true
   isShowInit: true
   isShowEnd:  true
   points: 5
   angle: {0: 360}
-  # radius: 20
+  radius: 50
   # isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
@@ -47,7 +47,7 @@ burst = new Transit(
   # onComplete: -> console.log 'onComplete'
   # angle: {360: 0}
   # delay: 1000
-  opacity: 1:0
+  # opacity: 1:0
   # easing: 'Elastic.In'
   # childOptions:
   #   # radius: 5
@@ -55,22 +55,24 @@ burst = new Transit(
     # easing: [null, 'linear.none', null]
   # isShowInit: true
 )
-.then radius: 0
+# .then radius: 0, duration: 000
 
 # .then radius: 75#, delay: 0
 
-mp = new MotionPath
+mp = new MotionPath(
   path:     'M0,0 L500,500 L1000, 0'
   el:       burst.el
   duration: 2000
   delay:    1000
+  pathEnd:   1
+  pathStart: .5
   onUpdate:(p)-> burst.tween.setProgress p
 
-mp.run()
+).then duration: 2000, pathStart: .5, pathEnd: 1
 
 slider = document.getElementById 'js-slider'
 slider.addEventListener 'input', (e)->
-  burst.tween.setProgress (@value/1000)
+  mp.tween.setProgress (@value/1000)
 
 # i = 0
 # setInterval ->

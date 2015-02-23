@@ -7,17 +7,16 @@
 
 #### todo
 - add motion path
-  - refactor
   - add then
-  - add easings
   - add movement arc
 - transit
-  - if childOptions then error colors[0]
+  - timeline tween options history transform
 - perf profile + refactor
   - clear the old code
   - elastic easing detection + add to size
   - add burst and transit radiusX/Y calculation refactor
   - perf
+  - mojs.js to mo.js
 - add more shapes(bits)
   - line and cross to 1px path  ?
 - add line animator

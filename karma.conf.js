@@ -93,8 +93,8 @@ module.exports = function(config) {
     exclude: [
       'dist/mojs.js',
       'dist/mojs.min.js',
-      // 'dist/h.js',
-      // 'spec/h.js',
+      'dist/h.js',
+      'spec/h.js',
       'dist/transit.js',
       'spec/transit.js',
       'dist/swirl.js',
@@ -103,6 +103,8 @@ module.exports = function(config) {
       'spec/tween.js',
       'dist/burst.js',
       'spec/burst.js',
+      'dist/timeline.js',
+      'spec/timeline.js',
       'dist/tweener.js',
       'spec/tweener.js'
     ],

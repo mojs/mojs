@@ -72,15 +72,15 @@ Tween = (function() {
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
-    if (time >= this.props.startTime && time < this.props.endTime) {
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
-      }
-    }
     i = -1;
     len = this.timelines.length - 1;
     while (i++ < len) {
       this.timelines[i].update(time);
+    }
+    if (time >= this.props.startTime && time < this.props.endTime) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
+      }
     }
     if (this.prevTime > time && time <= this.props.startTime) {
       if ((_ref = this.o.onReverseComplete) != null) {

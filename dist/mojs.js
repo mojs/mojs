@@ -1636,23 +1636,20 @@ Transit = require('./transit');
 MotionPath = require('./motion-path');
 
 burst = new Transit({
+  x: 300,
+  y: 300,
   type: 'polygon',
-  duration: 1000,
+  duration: 5000,
   count: 5,
-  isRunLess: true,
   isShowInit: true,
   isShowEnd: true,
   points: 5,
   angle: {
     0: 360
   },
+  radius: 50,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)',
-  opacity: {
-    1: 0
-  }
-}).then({
-  radius: 0
+  swirlSize: 'rand(0,10)'
 });
 
 mp = new MotionPath({
@@ -1660,17 +1657,21 @@ mp = new MotionPath({
   el: burst.el,
   duration: 2000,
   delay: 1000,
+  pathEnd: 1,
+  pathStart: .5,
   onUpdate: function(p) {
     return burst.tween.setProgress(p);
   }
+}).then({
+  duration: 2000,
+  pathStart: .5,
+  pathEnd: 1
 });
-
-mp.run();
 
 slider = document.getElementById('js-slider');
 
 slider.addEventListener('input', function(e) {
-  return burst.tween.setProgress(this.value / 1000);
+  return mp.tween.setProgress(this.value / 1000);
 });
 
 eye = document.querySelector('#js-eye');
@@ -1717,11 +1718,7 @@ MotionPath = (function() {
   function MotionPath(o) {
     this.o = o != null ? o : {};
     this.vars();
-    if (!this.props.isRunLess) {
-      this.run();
-    } else if (this.props.isPresetPosition) {
-      this.setProgress(this.props.pathStart);
-    }
+    this.createTween();
     this;
   }
 
@@ -1729,18 +1726,19 @@ MotionPath = (function() {
     this.getScaler = h.bind(this.getScaler, this);
     this.resize = resize;
     this.props = h.cloneObj(this.defaults);
+    this.history = [h.cloneObj(this.o)];
     this.extendOptions(this.o);
-    this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
-    this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
-    this.onUpdate = this.props.onUpdate;
     return this.postVars();
   };
 
   MotionPath.prototype.postVars = function() {
+    this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
+    this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
+    this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
     this.len = this.path.getTotalLength() * this.props.pathEnd;
-    this.fill = this.o.fill;
+    this.fill = this.props.fill;
     if (this.fill != null) {
       this.container = this.parseEl(this.props.fill.container);
       this.fillRule = this.props.fill.fillRule || 'all';
@@ -1783,7 +1781,7 @@ MotionPath = (function() {
     if (typeof this.props.path === 'string') {
       if (this.props.path.charAt(0).toLowerCase() === 'm') {
         path = document.createElementNS(this.NS, 'path');
-        path.setAttributeNS(null, 'd', this.o.path);
+        path.setAttributeNS(null, 'd', this.props.path);
         return path;
       } else {
         return document.querySelector(this.props.path);
@@ -1854,6 +1852,10 @@ MotionPath = (function() {
     o && this.extendDefaults(o);
     o && this.postVars();
     it = this;
+    return this.createTween();
+  };
+
+  MotionPath.prototype.createTween = function() {
     this.timeline = new Timeline({
       duration: this.props.duration,
       delay: this.props.delay,
@@ -1874,14 +1876,33 @@ MotionPath = (function() {
       })(this),
       onUpdate: (function(_this) {
         return function(p) {
-          _this.setProgress(p);
+          return _this.setProgress(p);
+        };
+      })(this)
+    });
+    this.tween = new Tween({
+      onUpdate: (function(_this) {
+        return function(p) {
           return typeof _this.onUpdate === "function" ? _this.onUpdate(p) : void 0;
         };
       })(this)
     });
-    this.tween = new Tween;
     this.tween.add(this.timeline);
-    return this.tween.start();
+    this.tween.start();
+    if (!this.props.isRunLess) {
+      return this.startTween();
+    } else if (this.props.isPresetPosition) {
+      return this.setProgress(this.props.pathStart);
+    }
+  };
+
+  MotionPath.prototype.startTween = function() {
+    return setTimeout(((function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.tween) != null ? _ref.start() : void 0;
+      };
+    })(this)), 1);
   };
 
   MotionPath.prototype.setProgress = function(p) {
@@ -1938,6 +1959,47 @@ MotionPath = (function() {
       _results.push(this.props[key] = value);
     }
     return _results;
+  };
+
+  MotionPath.prototype.then = function(o) {
+    var i, it, key, keys, opts, prevOptions;
+    prevOptions = this.history[this.history.length - 1];
+    this.history.push(o);
+    keys = Object.keys(h.tweenOptionMap);
+    i = keys.length;
+    opts = {};
+    while (i--) {
+      key = keys[i];
+      opts[key] = o[key] || prevOptions[key];
+    }
+    it = this;
+    opts.onUpdate = (function(_this) {
+      return function(p) {
+        return _this.setProgress(p);
+      };
+    })(this);
+    opts.onStart = (function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+      };
+    })(this);
+    opts.onComplete = (function(_this) {
+      return function() {
+        var _ref;
+        return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+      };
+    })(this);
+    opts.onFirstUpdate = function() {
+      return it.tuneOptions(it.history[this.index]);
+    };
+    this.tween.append(new Timeline(opts));
+    return this;
+  };
+
+  MotionPath.prototype.tuneOptions = function(o) {
+    this.extendOptions(o);
+    return this.postVars();
   };
 
   return MotionPath;
@@ -2986,15 +3048,15 @@ Tween = (function() {
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
-    if (time >= this.props.startTime && time < this.props.endTime) {
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
-      }
-    }
     i = -1;
     len = this.timelines.length - 1;
     while (i++ < len) {
       this.timelines[i].update(time);
+    }
+    if (time >= this.props.startTime && time < this.props.endTime) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
+      }
     }
     if (this.prevTime > time && time <= this.props.startTime) {
       if ((_ref = this.o.onReverseComplete) != null) {
