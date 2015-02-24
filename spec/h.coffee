@@ -41,6 +41,13 @@ describe 'Helpers ->', ->
       expect(h.tweenOptionMap.easing)             .toBe 1
       expect(h.tweenOptionMap.yoyo)               .toBe 1
       expect(Object.keys(h.tweenOptionMap).length).toBe 5
+  describe 'pure callbacks props ->', ->
+    it 'should be a map of callback related options ->', ->
+      expect(h.tweenOptionMap.onStart)           .toBe 1
+      expect(h.tweenOptionMap.onUpdate)          .toBe 1
+      expect(h.tweenOptionMap.onComplete)        .toBe 1
+      expect(h.tweenOptionMap.onCompleteChain)   .toBe 1
+      expect(Object.keys(h.tweenOptionMap).length).toBe 4
   describe 'methods ->', ->
     describe 'clamp method', ->
       it 'should clamp value to max and min', ->

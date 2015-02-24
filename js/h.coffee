@@ -34,6 +34,11 @@ class Helpers
     onCompleteChain:  1
     onUpdate:         1
     points:           1
+  callbacksMap:
+    onStart:          1
+    onComplete:       1
+    onCompleteChain:  1
+    onUpdate:         1
   tweenOptionMap:
     duration:         1
     delay:            1

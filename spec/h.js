@@ -56,6 +56,15 @@
         return expect(Object.keys(h.tweenOptionMap).length).toBe(5);
       });
     });
+    describe('pure callbacks props ->', function() {
+      return it('should be a map of callback related options ->', function() {
+        expect(h.tweenOptionMap.onStart).toBe(1);
+        expect(h.tweenOptionMap.onUpdate).toBe(1);
+        expect(h.tweenOptionMap.onComplete).toBe(1);
+        expect(h.tweenOptionMap.onCompleteChain).toBe(1);
+        return expect(Object.keys(h.tweenOptionMap).length).toBe(4);
+      });
+    });
     return describe('methods ->', function() {
       describe('clamp method', function() {
         return it('should clamp value to max and min', function() {

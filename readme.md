@@ -7,16 +7,14 @@
 
 #### todo
 - add motion path
-  - add then
   - add movement arc
 - transit
-  - timeline tween options history transform
+  - timeline tween options history transform :: just warn for now
 - perf profile + refactor
-  - clear the old code
+  - clear the old code + mojs.js to mo.js
   - elastic easing detection + add to size
-  - add burst and transit radiusX/Y calculation refactor
+  - burst and transit radiusX/Y calculation refactor
   - perf
-  - mojs.js to mo.js
 - add more shapes(bits)
   - line and cross to 1px path  ?
 - add line animator

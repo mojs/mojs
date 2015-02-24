@@ -1,7 +1,9 @@
 (function() {
-  var MotionPath, coords;
+  var MotionPath, coords, h;
 
   MotionPath = window.mojs.MotionPath;
+
+  h = window.mojs.helpers;
 
   coords = 'M0.55859375,593.527344L0.55859375,593.527344';
 
@@ -128,6 +130,99 @@
         });
         expect(mp.props.pathStart).toBe(.5);
         return expect(mp.props.pathEnd).toBe(.5);
+      });
+    });
+    describe('run method ->', function() {
+      var div;
+      div = document.createElement('div');
+      coords = 'M0.55859375,593.527344L0.55859375,593.527344';
+      it('should extend the old options', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true,
+          pathEnd: .75,
+          pathStart: .25
+        });
+        mp.run({
+          pathStart: .5
+        });
+        expect(mp.props.pathStart).toBe(.5);
+        return expect(mp.props.pathEnd).toBe(.75);
+      });
+      it('shoud call tuneOptions if options passed', function() {
+        var mp, o;
+        o = {
+          duration: 500
+        };
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true
+        }).then({
+          pathEnd: .5
+        });
+        spyOn(mp, 'tuneOptions');
+        mp.run(o);
+        return expect(mp.tuneOptions).toHaveBeenCalledWith(o);
+      });
+      it('shoud not call tuneOptions if options wasn\'t passed', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true
+        }).then({
+          pathEnd: .5
+        });
+        spyOn(mp, 'tuneOptions');
+        mp.run();
+        return expect(mp.tuneOptions).not.toHaveBeenCalled();
+      });
+      it('shoud override the first history item', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true,
+          pathStart: .25,
+          pathEnd: .5
+        }).then({
+          pathEnd: .5
+        });
+        mp.run({
+          pathStart: .35
+        });
+        return expect(mp.history[0].pathStart).toBe(.35);
+      });
+      return it('shoud warn if tweenValues changed on run', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true,
+          pathStart: .25,
+          pathEnd: .5,
+          duration: 2000
+        }).then({
+          pathEnd: .5
+        });
+        spyOn(h, 'warn');
+        mp.run({
+          pathStart: .35,
+          duration: 100,
+          delay: 100,
+          repeat: 1,
+          yoyo: false,
+          easing: 'Linear.None',
+          onStart: function() {},
+          onUpdate: function() {},
+          onComplete: function() {}
+        });
+        expect(h.warn).toHaveBeenCalled();
+        expect(mp.history[0].duration).toBe(2000);
+        return expect(mp.props.duration).toBe(2000);
       });
     });
     describe('callbacks ->', function() {
@@ -770,6 +865,18 @@
       });
     });
     describe('progress bounds ->', function() {
+      it('should calc the @slicedLen and @startLen properties', function() {
+        var mp;
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: document.createElement('div'),
+          isRunLess: true,
+          pathStart: .5,
+          pathEnd: .75
+        });
+        expect(mp.slicedLen).toBe(125);
+        return expect(mp.startLen).toBe(250);
+      });
       it('should start from pathStart position', function() {
         var div, mp, pos;
         div = document.createElement('div');
@@ -777,8 +884,11 @@
           path: 'M0,0 L500,0',
           el: div,
           isRunLess: true,
-          pathStart: .5
+          pathStart: .5,
+          pathEnd: .75,
+          isIt: true
         });
+        mp.tween.setProgress(0);
         pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(250);
       });
@@ -790,6 +900,7 @@
           path: 'M0,0 L500,0',
           el: div,
           duration: 50,
+          pathStart: .25,
           pathEnd: .5,
           onComplete: function() {
             pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
@@ -925,7 +1036,7 @@
         return expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined();
       });
     });
-    return describe('tuneOptions ->', function() {
+    describe('tuneOptions ->', function() {
       it('should tune options', function() {
         var mp;
         mp = new MotionPath({
@@ -947,8 +1058,7 @@
           el: document.createElement('div'),
           duration: 2000,
           pathEnd: .5,
-          isRunLess: true,
-          isIt: true
+          isRunLess: true
         });
         coords = 'M0,0 L 105,105';
         mp.tuneOptions({
@@ -956,6 +1066,16 @@
           path: coords
         });
         return expect(mp.path.getAttribute('d')).toBe(coords);
+      });
+    });
+    return describe('createTween method', function() {
+      return it('should bind the onFirstUpdateBackward metod', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div')
+        });
+        return expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe('function');
       });
     });
   });

@@ -1,4 +1,5 @@
 MotionPath = window.mojs.MotionPath
+h          = window.mojs.helpers
 
 coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 describe 'MotionPath ->', ->
@@ -108,31 +109,114 @@ describe 'MotionPath ->', ->
       expect(mp.props.pathStart).toBe .5
       expect(mp.props.pathEnd)  .toBe .5
 
-  # describe 'run ability ->', ->
-  #   div = document.createElement 'div'
-  #   coords = 'M0.55859375,593.527344L0.55859375,593.527344'
-  #   it 'should not run with isRunLess option passed', (dfr)->
-  #     isStarted = false; isDelayed = false
-  #     mp = new MotionPath
-  #       path: coords
-  #       el: div
-  #       isRunLess: true
-  #       duration: 20
-  #       onStart:-> isStarted = true
-  #     setTimeout (-> expect(isStarted).toBe(false); dfr()), 100
+  describe 'run method ->', ->
+    div = document.createElement 'div'
+    coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 
-  #   it 'should extend defaults', (dfr)->
-  #     div = document.createElement 'div'
-  #     coords = 'M0,0 L500,00'
-  #     mp = new MotionPath
-  #       path: coords, el: div, isRunLess: true, duration: 50
-  #     mp.run path: 'M0,0 L600,00'
-  #     setTimeout ->
-  #       pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
-  #       pos = parseInt pos, 10
-  #       expect(pos).toBe(600)
-  #       dfr()
-  #     , 100
+    # it 'shoud call transformHistory if options passed', ->
+    #   o = duration: 500
+    #   mp = new MotionPath(
+    #     path:       coords
+    #     el:         document.createElement 'div'
+    #     isRunLess:  true
+    #   ).then pathEnd: .5
+    #   spyOn mp, 'transformHistory'
+    #   mp.run o
+    #   expect(mp.transformHistory).toHaveBeenCalledWith o
+
+    # it 'shoud not call transformHistory if options wasn\'t passed', ->
+    #   mp = new MotionPath(
+    #     path:       coords
+    #     el:         document.createElement 'div'
+    #     isRunLess:  true
+    #   ).then pathEnd: .5
+    #   spyOn mp, 'transformHistory'
+    #   mp.run()
+    #   expect(mp.transformHistory).not.toHaveBeenCalled()
+
+    it 'should extend the old options', ->
+      mp = new MotionPath(
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+        pathEnd:   .75
+        pathStart: .25
+      )
+
+      mp.run pathStart: .5
+      expect(mp.props.pathStart).toBe .5
+      expect(mp.props.pathEnd)  .toBe .75
+
+    it 'shoud call tuneOptions if options passed', ->
+      o = duration: 500
+      mp = new MotionPath(
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+      ).then pathEnd: .5
+      spyOn mp, 'tuneOptions'
+      mp.run o
+      expect(mp.tuneOptions).toHaveBeenCalledWith o
+
+    it 'shoud not call tuneOptions if options wasn\'t passed', ->
+      mp = new MotionPath(
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+      ).then pathEnd: .5
+      spyOn mp, 'tuneOptions'
+      mp.run()
+      expect(mp.tuneOptions).not.toHaveBeenCalled()
+
+    it 'shoud override the first history item', ->
+      mp = new MotionPath(
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+        pathStart: .25
+        pathEnd:   .5
+      ).then pathEnd: .5
+      mp.run pathStart: .35
+      expect(mp.history[0].pathStart).toBe .35
+
+    it 'shoud warn if tweenValues changed on run', ->
+      mp = new MotionPath(
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+        pathStart: .25
+        pathEnd:   .5
+        duration:  2000
+      ).then pathEnd: .5
+      spyOn h, 'warn'
+      mp.run
+        pathStart: .35
+        duration: 100
+        delay:    100
+        repeat:   1
+        yoyo:     false
+        easing:   'Linear.None'
+        onStart:    ->
+        onUpdate:   ->
+        onComplete: ->
+      expect(h.warn).toHaveBeenCalled()
+      expect(mp.history[0].duration).toBe 2000
+      expect(mp.props.duration)     .toBe 2000
+
+  # describe 'transformHistory method ->', ->
+  #   it 'should transform the options chain', ->
+  #     mp = new MotionPath(
+  #       path:       coords
+  #       el:         document.createElement 'div'
+  #       isRunLess:  true
+  #       pathStart: .25
+  #       pathEnd:   .5
+  #     )
+  #     .then pathEnd: .5
+  #     .then pathEnd: .75
+
+  #     mp.transfornHistory pathStart: .35
+
 
   describe 'callbacks ->', ->
     div = document.createElement 'div'
@@ -560,6 +644,16 @@ describe 'MotionPath ->', ->
       expect(div.style.transform).not.toBeDefined()
 
   describe 'progress bounds ->', ->
+    it 'should calc the @slicedLen and @startLen properties', ->
+      mp = new MotionPath
+        path:       'M0,0 L500,0'
+        el:         document.createElement 'div'
+        isRunLess:  true
+        pathStart: .5
+        pathEnd:   .75
+      expect(mp.slicedLen).toBe 125
+      expect(mp.startLen) .toBe 250
+
     it 'should start from pathStart position', ->
       div = document.createElement 'div'
       mp = new MotionPath
@@ -567,7 +661,10 @@ describe 'MotionPath ->', ->
         el: div
         isRunLess: true
         pathStart: .5
+        pathEnd:   .75
+        isIt: true
 
+      mp.tween.setProgress 0
       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
 
@@ -578,6 +675,7 @@ describe 'MotionPath ->', ->
         path: 'M0,0 L500,0'
         el: div
         duration:   50
+        pathStart:  .25
         pathEnd:    .5
         onComplete:->
           pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
@@ -706,14 +804,17 @@ describe 'MotionPath ->', ->
         duration:   2000
         pathEnd:    .5
         isRunLess:  true
-        isIt:       true
       )
       coords = 'M0,0 L 105,105'
       mp.tuneOptions duration: 5000, path: coords
       expect(mp.path.getAttribute('d')).toBe coords
 
-
-
+  describe 'createTween method', ->
+    it 'should bind the onFirstUpdateBackward metod', ->
+      mp = new MotionPath
+        path:       coords
+        el:         document.createElement 'div'
+      expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe 'function'
 
 
 

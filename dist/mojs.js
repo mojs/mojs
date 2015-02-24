@@ -1144,6 +1144,13 @@ Helpers = (function() {
     points: 1
   };
 
+  Helpers.prototype.callbacksMap = {
+    onStart: 1,
+    onComplete: 1,
+    onCompleteChain: 1,
+    onUpdate: 1
+  };
+
   Helpers.prototype.tweenOptionMap = {
     duration: 1,
     delay: 1,
@@ -1636,37 +1643,47 @@ Transit = require('./transit');
 MotionPath = require('./motion-path');
 
 burst = new Transit({
-  x: 300,
-  y: 300,
   type: 'polygon',
-  duration: 5000,
+  duration: 2000,
   count: 5,
-  isShowInit: true,
-  isShowEnd: true,
   points: 5,
-  angle: {
-    0: 360
+  radius: {
+    0: 50
   },
-  radius: 50,
+  isRunLess: true,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
+}).then({
+  radius: 0,
+  duration: 2000
 });
+
+burst.hide();
 
 mp = new MotionPath({
   path: 'M0,0 L500,500 L1000, 0',
   el: burst.el,
   duration: 2000,
-  delay: 1000,
-  pathEnd: 1,
-  pathStart: .5,
+  isRunLess: true,
+  pathEnd: .25,
   onUpdate: function(p) {
     return burst.tween.setProgress(p);
   }
 }).then({
   duration: 2000,
+  pathStart: .25,
+  pathEnd: .5
+}).then({
+  duration: 2000,
   pathStart: .5,
+  pathEnd: .75
+}).then({
+  duration: 2000,
+  pathStart: .75,
   pathEnd: 1
 });
+
+mp.run();
 
 slider = document.getElementById('js-slider');
 
@@ -1726,8 +1743,8 @@ MotionPath = (function() {
     this.getScaler = h.bind(this.getScaler, this);
     this.resize = resize;
     this.props = h.cloneObj(this.defaults);
-    this.history = [h.cloneObj(this.o)];
     this.extendOptions(this.o);
+    this.history = [h.cloneObj(this.props)];
     return this.postVars();
   };
 
@@ -1737,7 +1754,9 @@ MotionPath = (function() {
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
-    this.len = this.path.getTotalLength() * this.props.pathEnd;
+    this.len = this.path.getTotalLength();
+    this.slicedLen = this.len * (this.props.pathEnd - this.props.pathStart);
+    this.startLen = this.props.pathStart * this.len;
     this.fill = this.props.fill;
     if (this.fill != null) {
       this.container = this.parseEl(this.props.fill.container);
@@ -1839,20 +1858,21 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.run = function(o) {
-    var it;
-    if (o != null ? o.path : void 0) {
-      this.o.path = o.path;
+    var fistItem, key, value;
+    if (o) {
+      fistItem = this.history[0];
+      for (key in o) {
+        value = o[key];
+        if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+          h.warn("the property \"" + key + "\" property can not be overridden on run yet");
+          delete o[key];
+        } else {
+          this.history[0][key] = value;
+        }
+      }
+      this.tuneOptions(o);
     }
-    if (o != null ? o.el : void 0) {
-      this.o.el = o.el;
-    }
-    if (o != null ? o.fill : void 0) {
-      this.o.fill = o.fill;
-    }
-    o && this.extendDefaults(o);
-    o && this.postVars();
-    it = this;
-    return this.createTween();
+    return this.startTween();
   };
 
   MotionPath.prototype.createTween = function() {
@@ -1878,6 +1898,11 @@ MotionPath = (function() {
         return function(p) {
           return _this.setProgress(p);
         };
+      })(this),
+      onFirstUpdateBackward: (function(_this) {
+        return function() {
+          return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
+        };
       })(this)
     });
     this.tween = new Tween({
@@ -1888,11 +1913,10 @@ MotionPath = (function() {
       })(this)
     });
     this.tween.add(this.timeline);
-    this.tween.start();
     if (!this.props.isRunLess) {
       return this.startTween();
     } else if (this.props.isPresetPosition) {
-      return this.setProgress(this.props.pathStart);
+      return this.setProgress(0);
     }
   };
 
@@ -1907,7 +1931,7 @@ MotionPath = (function() {
 
   MotionPath.prototype.setProgress = function(p) {
     var atan, len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
-    len = !this.props.isReverse ? p * this.len : (1 - p) * this.len;
+    len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
     if (this.props.isAngle || (this.props.angleOffset != null)) {
       prevPoint = this.path.getPointAtLength(len - 1);

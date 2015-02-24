@@ -31,8 +31,9 @@ class MotionPath
 
   vars:->
     @getScaler = h.bind(@getScaler, @); @resize = resize
-    @props = h.cloneObj(@defaults); @history = [h.cloneObj(@o)]
+    @props = h.cloneObj(@defaults)
     @extendOptions @o
+    @history = [h.cloneObj(@props)]
     @postVars()
 
   postVars:->
@@ -41,7 +42,9 @@ class MotionPath
     @onUpdate = @props.onUpdate
     @el         = @parseEl @props.el
     @path       = @getPath()
-    @len        = @path.getTotalLength()*@props.pathEnd
+    @len        = @path.getTotalLength()
+    @slicedLen  = @len*(@props.pathEnd - @props.pathStart)
+    @startLen   = @props.pathStart*@len
     @fill       = @props.fill
     if @fill?
       @container  = @parseEl @props.fill.container
@@ -107,12 +110,16 @@ class MotionPath
         calcBoth()
 
   run:(o)->
-    if o?.path then @o.path = o.path
-    if o?.el then @o.el = o.el
-    if o?.fill then @o.fill = o.fill
-    o and @extendDefaults o
-    o and @postVars(); it = @
-    @createTween()
+    if o
+      fistItem = @history[0]
+      for key, value of o
+        if h.callbacksMap[key] or h.tweenOptionMap[key]
+          h.warn "the property \"#{key}\" property can not
+            be overridden on run yet"
+          delete o[key]
+        else @history[0][key] = value
+      @tuneOptions o
+    @startTween()
 
   createTween:->
     @timeline = new Timeline
@@ -124,16 +131,17 @@ class MotionPath
       onStart:    => @props.onStart?.apply @
       onComplete: => @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
+      onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
     @tween = new Tween onUpdate:(p)=> @onUpdate?(p)
-    @tween.add(@timeline); @tween.start()
-
+    @tween.add(@timeline)
     if !@props.isRunLess then @startTween()
-    else if @props.isPresetPosition then @setProgress(@props.pathStart)
+    else if @props.isPresetPosition then @setProgress(0)
 
   startTween:-> setTimeout (=> @tween?.start()), 1
 
   setProgress:(p)->
-    len = if !@props.isReverse then p*@len else (1-p)*@len
+    len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
+
     point = @path.getPointAtLength len
     if @props.isAngle or @props.angleOffset?
       prevPoint = @path.getPointAtLength len - 1
@@ -173,7 +181,6 @@ class MotionPath
   then:(o)->
     prevOptions = @history[@history.length-1]
     @history.push o
-    
     # get tween timing values
     keys = Object.keys(h.tweenOptionMap); i = keys.length; opts = {}
     while(i--)
@@ -183,7 +190,7 @@ class MotionPath
     opts.onStart       = => @props.onStart?.apply @
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
-    @tween.append new Timeline opts
+    @tween.append new Timeline(opts)
     @
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()

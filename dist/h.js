@@ -40,6 +40,13 @@ Helpers = (function() {
     points: 1
   };
 
+  Helpers.prototype.callbacksMap = {
+    onStart: 1,
+    onComplete: 1,
+    onCompleteChain: 1,
+    onUpdate: 1
+  };
+
   Helpers.prototype.tweenOptionMap = {
     duration: 1,
     delay: 1,
