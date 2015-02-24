@@ -28,10 +28,10 @@ MotionPath  = require './motion-path'
 
 burst = new Burst(
   x: 300, y: 300
-  type:         'circle'
+  type:         'line'
   delay:        1000
   duration:     2000
-  count:        5
+  count:        3
   strokeWidth:  1
   stroke:       'deeppink'
   # isRunLess: true
@@ -39,11 +39,13 @@ burst = new Burst(
   isShowEnd:  true
   points: 5
   # angle: {0: 360}
-  radius: 50
+  # radius: 50
   # isRunLess: true
   # isSwirl: true
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
+  childOptions: angle: [{360:0}, null, null]
+  # angle: {200:0}
   # radiusX: { 0: 50}
   # radiusY: 100: 20
   # radiusX: 100
@@ -81,7 +83,7 @@ mp = new MotionPath(
 
 slider = document.getElementById 'js-slider'
 slider.addEventListener 'input', (e)->
-  mp.tween.setProgress (@value/100000)
+  burst.tween.setProgress (@value/100000)
 
 # i = 0
 # setInterval ->

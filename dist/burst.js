@@ -146,7 +146,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var i, pointEnd, pointStart, points, step, transit, _i, _len, _ref, _results;
+    var angleAddition, delta, end, i, keys, newEnd, newStart, pointEnd, pointStart, points, start, step, transit, _i, _len, _ref, _results;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
@@ -158,6 +158,9 @@ Burst = (function(_super) {
       pointEnd = this.getSidePoint('end', i * step);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
+      angleAddition = i * step + 90;
+      transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
+      console.log(transit.o.angle);
       _results.push(transit.extendDefaults());
     }
     return _results;

@@ -117,6 +117,20 @@ class Burst extends Transit
       pointEnd   = @getSidePoint 'end',   i*step
       transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
       transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
+      
+      
+      angleAddition = i*step + 90
+      transit.o.angle = if typeof transit.o.angle isnt 'object'
+        transit.o.angle + angleAddition
+      else
+        keys = Object.keys(transit.o.angle); start = keys[0]
+        end   = transit.o.angle[start]
+        newStart = parseFloat(start) + angleAddition
+        newEnd   = parseFloat(end)   + angleAddition
+        delta = {}; delta[newStart] = newEnd
+        delta
+      console.log transit.o.angle
+      # console.log transit.o.angle
       transit.extendDefaults()
   getSidePoint:(side, angle)->
     sideRadius = @getSideRadius side

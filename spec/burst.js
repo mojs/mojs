@@ -171,6 +171,32 @@
         expect(burst.transits[1].o.points).toBe(3);
         return expect(burst.transits[2].o.points).toBe(10);
       });
+      it('should keep the bit angle', function() {
+        var burst;
+        burst = new Burst({
+          cound: 2,
+          childOptions: {
+            angle: [10, null]
+          }
+        });
+        expect(burst.transits[0].o.angle).toBe(100);
+        return expect(burst.transits[1].o.angle).toBe(162);
+      });
+      it('should keep the bit if delta passed', function() {
+        var burst;
+        burst = new Burst({
+          cound: 2,
+          childOptions: {
+            angle: [
+              {
+                200: 10
+              }, null
+            ]
+          }
+        });
+        expect(burst.transits[0].o.angle[290]).toBe(100);
+        return expect(burst.transits[1].o.angle).toBe(162);
+      });
       return it('should pass x/y to transits', function() {
         var burst, center;
         burst = new Burst({

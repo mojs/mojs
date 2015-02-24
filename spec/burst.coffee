@@ -158,6 +158,21 @@ describe 'Burst ->', ->
       expect(burst.transits[0].o.points).toBe  10
       expect(burst.transits[1].o.points).toBe  3
       expect(burst.transits[2].o.points).toBe  10
+
+    it 'should keep the bit angle', ->
+      burst = new Burst
+        cound: 2
+        childOptions: angle: [10, null]
+      expect(burst.transits[0].o.angle).toBe 100
+      expect(burst.transits[1].o.angle).toBe 162
+
+    it 'should keep the bit if delta passed', ->
+      burst = new Burst
+        cound: 2
+        childOptions: angle: [{200: 10}, null]
+      expect(burst.transits[0].o.angle[290]).toBe 100
+      expect(burst.transits[1].o.angle)     .toBe 162
+
     it 'should pass x/y to transits', ->
       burst = new Burst
         radius: { 50: 75 }
@@ -613,7 +628,11 @@ describe 'Burst ->', ->
       burst = new Burst
       delta  = burst.getDeltaFromPoints('x', {x: 10, y: 20}, {x: 10, y: 40})
       expect(delta).toBe 10
-      
+
+
+
+
+
 
 
 

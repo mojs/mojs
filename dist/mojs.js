@@ -522,7 +522,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var i, pointEnd, pointStart, points, step, transit, _i, _len, _ref, _results;
+    var angleAddition, delta, end, i, keys, newEnd, newStart, pointEnd, pointStart, points, start, step, transit, _i, _len, _ref, _results;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
@@ -534,6 +534,9 @@ Burst = (function(_super) {
       pointEnd = this.getSidePoint('end', i * step);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
+      angleAddition = i * step + 90;
+      transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
+      console.log(transit.o.angle);
       _results.push(transit.extendDefaults());
     }
     return _results;
@@ -1651,18 +1654,24 @@ MotionPath = require('./motion-path');
 burst = new Burst({
   x: 300,
   y: 300,
-  type: 'circle',
+  type: 'line',
   delay: 1000,
   duration: 2000,
-  count: 5,
+  count: 3,
   strokeWidth: 1,
   stroke: 'deeppink',
   isShowInit: true,
   isShowEnd: true,
   points: 5,
-  radius: 50,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)'
+  swirlSize: 'rand(0,10)',
+  childOptions: {
+    angle: [
+      {
+        360: 0
+      }, null, null
+    ]
+  }
 });
 
 mp = new MotionPath({
@@ -1677,7 +1686,7 @@ mp = new MotionPath({
 slider = document.getElementById('js-slider');
 
 slider.addEventListener('input', function(e) {
-  return mp.tween.setProgress(this.value / 100000);
+  return burst.tween.setProgress(this.value / 100000);
 });
 
 eye = document.querySelector('#js-eye');
