@@ -573,12 +573,55 @@ describe 'Burst ->', ->
       spyOn burst, 'drawEl'
       burst.draw()
       expect(burst.drawEl).toHaveBeenCalled()
-
     it 'should call fillTransform method', ->
       burst = new Burst radius: 25
       spyOn burst, 'fillTransform'
       burst.draw()
       expect(burst.fillTransform).toHaveBeenCalled()
+
+  describe 'getSideRadius method ->', ->
+    it 'should return the side\'s radius, radiusX and radiusY', ->
+      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
+      sides = burst.getSideRadius('start')
+      expect(sides.radius) .toBe 5
+      expect(sides.radiusX).toBe 10
+      expect(sides.radiusY).toBe 30
+
+  describe 'getSidePoint method ->', ->
+    it 'should return the side\'s point', ->
+      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
+      point = burst.getSidePoint('start', 0)
+      expect(point.x).toBeDefined()
+      expect(point.y).toBeDefined()
+
+  describe 'getRadiusByKey method ->', ->
+    it 'should return the key\'s radius', ->
+      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:20}
+      radius  = burst.getRadiusByKey('radius',  'start')
+      radiusX = burst.getRadiusByKey('radiusX', 'start')
+      radiusY = burst.getRadiusByKey('radiusX', 'end')
+      expect(radius).toBe   5
+      expect(radiusX).toBe 10
+      expect(radiusY).toBe 20
+
+  describe 'getDeltaFromPoints method ->', ->
+    it 'should return the delta', ->
+      burst = new Burst
+      delta  = burst.getDeltaFromPoints('x', {x: 10, y: 20}, {x: 20, y: 40})
+      expect(delta[10]).toBe 20
+    it 'should return one value if start and end positions are equal', ->
+      burst = new Burst
+      delta  = burst.getDeltaFromPoints('x', {x: 10, y: 20}, {x: 10, y: 40})
+      expect(delta).toBe 10
+      
+
+
+
+
+
+
+
+
 
 
 

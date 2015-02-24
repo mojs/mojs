@@ -107,49 +107,36 @@ class Burst extends Transit
       @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
       @props.randomRadius and (option.radiusScale = @generateRandomRadius())
       @transits.push new Swirl option
+
   addBitOptions:->
     points = @props.count
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
     for transit, i in @transits
-
-      rStart = if @deltas.radius? then @deltas.radius.start else @props.radius
-      
-      rXStart = if @deltas.radiusX? then @deltas.radiusX.start
-      else if @props.radiusX? then @props.radiusX
-
-      rYStart = if @deltas.radiusY? then @deltas.radiusY.start
-      else if @props.radiusY? then @props.radiusY
-      
-      pointStart = @h.getRadialPoint
-        radius:  rStart
-        radiusX: rXStart
-        radiusY: rYStart
-        angle:  i*step + @props.angle
-        center: x: @props.center, y: @props.center
-
-      rEnd = if @deltas.radius? then @deltas.radius.end else @props.radius
-      
-      rXEnd = if @deltas.radiusX? then @deltas.radiusX.end
-      else if @props.radiusX? then @props.radiusX
-
-      rYEnd = if @deltas.radiusY? then @deltas.radiusY.end
-      else if @props.radiusY? then @props.radiusY
-      
-      pointEnd = @h.getRadialPoint
-        radius:  rEnd
-        radiusX: rXEnd
-        radiusY: rYEnd
-        angle:  i*step + @props.angle
-        center: x: @props.center, y: @props.center
-
-      x = {}; y = {}
-      if pointStart.x is pointEnd.x then x = pointStart.x
-      else x[pointStart.x] = pointEnd.x
-      if pointStart.y is pointEnd.y then y = pointStart.y
-      else y[pointStart.y] = pointEnd.y
-      transit.o.x = x; transit.o.y = y
+      pointStart = @getSidePoint 'start', i*step
+      pointEnd   = @getSidePoint 'end',   i*step
+      transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
+      transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
       transit.extendDefaults()
+  getSidePoint:(side, angle)->
+    sideRadius = @getSideRadius side
+    pointStart = @h.getRadialPoint
+      radius:  sideRadius.radius
+      radiusX: sideRadius.radiusX
+      radiusY: sideRadius.radiusY
+      angle:  angle + @props.angle
+      center: x: @props.center, y: @props.center
+  getSideRadius:(side)->
+    radius:  @getRadiusByKey 'radius',  side
+    radiusX: @getRadiusByKey 'radiusX', side
+    radiusY: @getRadiusByKey 'radiusY', side
+  getRadiusByKey:(key, side)->
+    if @deltas[key]? then @deltas[key][side]
+    else if @props[key]? then @props[key]
+  getDeltaFromPoints:(key, pointStart, pointEnd)->
+    delta = {}
+    if pointStart[key] is pointEnd[key] then delta = pointStart[key]
+    else delta[pointStart[key]] = pointEnd[key]; delta
 
   draw:(progress)-> @drawEl()
 
@@ -158,11 +145,7 @@ class Burst extends Transit
   fillTransform:->
     "rotate(#{@props.angle}deg) translate(#{@props.shiftX}, #{@props.shiftY})"
   createTween:->
-    super
-    i = @transits.length
-    while(i--)
-      @tween.add @transits[i].timeline
-    # !@o.isRunLess and @startTween()
+    super; i = @transits.length; @tween.add(@transits[i].timeline) while(i--)
     
   calcSize:->
     largestSize = -1
@@ -213,8 +196,6 @@ class Burst extends Transit
     # while(i--)
     #   @transits[i].then(o)
     @
-
-    
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

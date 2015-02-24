@@ -8,7 +8,6 @@ Timeline = require './timeline'
 Tween    = require './tween'
 
 class Transit extends bitsMap.map.bit
-  # TWEEN: TWEEN
   progress: 0
   defaults:
     # presentation props
@@ -167,13 +166,11 @@ class Transit extends bitsMap.map.bit
 
   setProgress:(progress, isShow)->
     if !isShow then @show(); @onUpdate?(progress)
-
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
     # calc the curent value from deltas
     @calcCurrentProps(progress); @calcOrigin()
     @draw(progress)
-    # if progress is 1 then @props.onComplete?.call(@)#;  @runChain();
     @
 
   calcCurrentProps:(progress)->
@@ -199,8 +196,7 @@ class Transit extends bitsMap.map.bit
           "rgba(#{r},#{g},#{b},#{a})"
 
   calcOrigin:->
-    @origin = if @o.ctx
-      x: parseFloat(@props.x), y: parseFloat(@props.y)
+    @origin = if @o.ctx then x: parseFloat(@props.x), y: parseFloat(@props.y)
     else x: @props.center, y: @props.center
 
   extendDefaults:(o)->
@@ -299,17 +295,25 @@ class Transit extends bitsMap.map.bit
     !@o.isRunLess and @startTween()
 
   run:(o)->
-    for key, value of o
-      if @history.length is 1 then break
-      if h.callbacksMap[key] or h.tweenOptionMap[key]
-        h.warn "the property \"#{key}\" property can not
-          be overridden on run with \"then\" chain yet"
-        delete o[key]
+    # if then chain is present and the user tries to
+    # change the start timing - warn him and delete the
+    # props to prevent the timing change
+    if @history.length > 1
+      keys = Object.keys(o); len = keys.length
+      while(len--)
+        key = keys[len]
+        if h.callbacksMap[key] or h.tweenOptionMap[key]
+          h.warn "the property \"#{key}\" property can not
+            be overridden on run with \"then\" chain yet"
+          delete o[key]
 
-    o and @transformHistory(o)
-    @tuneNewOption(o)
-    o = @h.cloneObj(@o); @h.extend(o, @defaults); @history[0] = o
-    !@o.isDrawLess and @setProgress(0, true)
+    # transform the history, tune current option and save to
+    # the history but only if actual options were passed
+    if o and Object.keys(o).length
+      @transformHistory(o)
+      @tuneNewOption(o)
+      o = @h.cloneObj(@o); @h.extend(o, @defaults); @history[0] = o
+      !@o.isDrawLess and @setProgress(0, true)
     @startTween()
 
   # add new options to history on run call
@@ -356,6 +360,9 @@ class Transit extends bitsMap.map.bit
   # defer tween start to wait for "then" functions
   startTween:-> setTimeout (=> @tween?.start()), 1
   resetTimeline:->
+    # if you reset the timeline options -
+    # you should reset the whole "then" chain
+    # if one is present
     timelineOptions = {}
     for key, i in Object.keys @h.tweenOptionMap
       timelineOptions[key] = @props[key]

@@ -898,7 +898,7 @@
         return expect(radius).not.toBeGreaterThan(1);
       });
     });
-    return describe('draw method ->', function() {
+    describe('draw method ->', function() {
       it('should not call drawEl method', function() {
         var burst;
         burst = new Burst;
@@ -914,6 +914,93 @@
         spyOn(burst, 'fillTransform');
         burst.draw();
         return expect(burst.fillTransform).toHaveBeenCalled();
+      });
+    });
+    describe('getSideRadius method ->', function() {
+      return it('should return the side\'s radius, radiusX and radiusY', function() {
+        var burst, sides;
+        burst = new Burst({
+          radius: {
+            5: 25
+          },
+          radiusX: {
+            10: 20
+          },
+          radiusY: {
+            30: 10
+          }
+        });
+        sides = burst.getSideRadius('start');
+        expect(sides.radius).toBe(5);
+        expect(sides.radiusX).toBe(10);
+        return expect(sides.radiusY).toBe(30);
+      });
+    });
+    describe('getSidePoint method ->', function() {
+      return it('should return the side\'s point', function() {
+        var burst, point;
+        burst = new Burst({
+          radius: {
+            5: 25
+          },
+          radiusX: {
+            10: 20
+          },
+          radiusY: {
+            30: 10
+          }
+        });
+        point = burst.getSidePoint('start', 0);
+        expect(point.x).toBeDefined();
+        return expect(point.y).toBeDefined();
+      });
+    });
+    describe('getRadiusByKey method ->', function() {
+      return it('should return the key\'s radius', function() {
+        var burst, radius, radiusX, radiusY;
+        burst = new Burst({
+          radius: {
+            5: 25
+          },
+          radiusX: {
+            10: 20
+          },
+          radiusY: {
+            30: 20
+          }
+        });
+        radius = burst.getRadiusByKey('radius', 'start');
+        radiusX = burst.getRadiusByKey('radiusX', 'start');
+        radiusY = burst.getRadiusByKey('radiusX', 'end');
+        expect(radius).toBe(5);
+        expect(radiusX).toBe(10);
+        return expect(radiusY).toBe(20);
+      });
+    });
+    return describe('getDeltaFromPoints method ->', function() {
+      it('should return the delta', function() {
+        var burst, delta;
+        burst = new Burst;
+        delta = burst.getDeltaFromPoints('x', {
+          x: 10,
+          y: 20
+        }, {
+          x: 20,
+          y: 40
+        });
+        return expect(delta[10]).toBe(20);
+      });
+      return it('should return one value if start and end positions are equal', function() {
+        var burst, delta;
+        burst = new Burst;
+        delta = burst.getDeltaFromPoints('x', {
+          x: 10,
+          y: 20
+        }, {
+          x: 10,
+          y: 40
+        });
+        return expect(delta).toBe(10);
       });
     });
   });

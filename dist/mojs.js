@@ -522,7 +522,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var i, pointEnd, pointStart, points, rEnd, rStart, rXEnd, rXStart, rYEnd, rYStart, step, transit, x, y, _i, _len, _ref, _results;
+    var i, pointEnd, pointStart, points, step, transit, _i, _len, _ref, _results;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
@@ -530,49 +530,55 @@ Burst = (function(_super) {
     _results = [];
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       transit = _ref[i];
-      rStart = this.deltas.radius != null ? this.deltas.radius.start : this.props.radius;
-      rXStart = this.deltas.radiusX != null ? this.deltas.radiusX.start : this.props.radiusX != null ? this.props.radiusX : void 0;
-      rYStart = this.deltas.radiusY != null ? this.deltas.radiusY.start : this.props.radiusY != null ? this.props.radiusY : void 0;
-      pointStart = this.h.getRadialPoint({
-        radius: rStart,
-        radiusX: rXStart,
-        radiusY: rYStart,
-        angle: i * step + this.props.angle,
-        center: {
-          x: this.props.center,
-          y: this.props.center
-        }
-      });
-      rEnd = this.deltas.radius != null ? this.deltas.radius.end : this.props.radius;
-      rXEnd = this.deltas.radiusX != null ? this.deltas.radiusX.end : this.props.radiusX != null ? this.props.radiusX : void 0;
-      rYEnd = this.deltas.radiusY != null ? this.deltas.radiusY.end : this.props.radiusY != null ? this.props.radiusY : void 0;
-      pointEnd = this.h.getRadialPoint({
-        radius: rEnd,
-        radiusX: rXEnd,
-        radiusY: rYEnd,
-        angle: i * step + this.props.angle,
-        center: {
-          x: this.props.center,
-          y: this.props.center
-        }
-      });
-      x = {};
-      y = {};
-      if (pointStart.x === pointEnd.x) {
-        x = pointStart.x;
-      } else {
-        x[pointStart.x] = pointEnd.x;
-      }
-      if (pointStart.y === pointEnd.y) {
-        y = pointStart.y;
-      } else {
-        y[pointStart.y] = pointEnd.y;
-      }
-      transit.o.x = x;
-      transit.o.y = y;
+      pointStart = this.getSidePoint('start', i * step);
+      pointEnd = this.getSidePoint('end', i * step);
+      transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
+      transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
       _results.push(transit.extendDefaults());
     }
     return _results;
+  };
+
+  Burst.prototype.getSidePoint = function(side, angle) {
+    var pointStart, sideRadius;
+    sideRadius = this.getSideRadius(side);
+    return pointStart = this.h.getRadialPoint({
+      radius: sideRadius.radius,
+      radiusX: sideRadius.radiusX,
+      radiusY: sideRadius.radiusY,
+      angle: angle + this.props.angle,
+      center: {
+        x: this.props.center,
+        y: this.props.center
+      }
+    });
+  };
+
+  Burst.prototype.getSideRadius = function(side) {
+    return {
+      radius: this.getRadiusByKey('radius', side),
+      radiusX: this.getRadiusByKey('radiusX', side),
+      radiusY: this.getRadiusByKey('radiusY', side)
+    };
+  };
+
+  Burst.prototype.getRadiusByKey = function(key, side) {
+    if (this.deltas[key] != null) {
+      return this.deltas[key][side];
+    } else if (this.props[key] != null) {
+      return this.props[key];
+    }
+  };
+
+  Burst.prototype.getDeltaFromPoints = function(key, pointStart, pointEnd) {
+    var delta;
+    delta = {};
+    if (pointStart[key] === pointEnd[key]) {
+      return delta = pointStart[key];
+    } else {
+      delta[pointStart[key]] = pointEnd[key];
+      return delta;
+    }
   };
 
   Burst.prototype.draw = function(progress) {
@@ -2876,23 +2882,26 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.run = function(o) {
-    var key, value;
-    for (key in o) {
-      value = o[key];
-      if (this.history.length === 1) {
-        break;
-      }
-      if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-        h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
-        delete o[key];
+    var key, keys, len;
+    if (this.history.length > 1) {
+      keys = Object.keys(o);
+      len = keys.length;
+      while (len--) {
+        key = keys[len];
+        if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+          h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
+          delete o[key];
+        }
       }
     }
-    o && this.transformHistory(o);
-    this.tuneNewOption(o);
-    o = this.h.cloneObj(this.o);
-    this.h.extend(o, this.defaults);
-    this.history[0] = o;
-    !this.o.isDrawLess && this.setProgress(0, true);
+    if (o && Object.keys(o).length) {
+      this.transformHistory(o);
+      this.tuneNewOption(o);
+      o = this.h.cloneObj(this.o);
+      this.h.extend(o, this.defaults);
+      this.history[0] = o;
+      !this.o.isDrawLess && this.setProgress(0, true);
+    }
     return this.startTween();
   };
 

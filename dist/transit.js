@@ -470,23 +470,26 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.run = function(o) {
-    var key, value;
-    for (key in o) {
-      value = o[key];
-      if (this.history.length === 1) {
-        break;
-      }
-      if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-        h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
-        delete o[key];
+    var key, keys, len;
+    if (this.history.length > 1) {
+      keys = Object.keys(o);
+      len = keys.length;
+      while (len--) {
+        key = keys[len];
+        if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+          h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
+          delete o[key];
+        }
       }
     }
-    o && this.transformHistory(o);
-    this.tuneNewOption(o);
-    o = this.h.cloneObj(this.o);
-    this.h.extend(o, this.defaults);
-    this.history[0] = o;
-    !this.o.isDrawLess && this.setProgress(0, true);
+    if (o && Object.keys(o).length) {
+      this.transformHistory(o);
+      this.tuneNewOption(o);
+      o = this.h.cloneObj(this.o);
+      this.h.extend(o, this.defaults);
+      this.history[0] = o;
+      !this.o.isDrawLess && this.setProgress(0, true);
+    }
     return this.startTween();
   };
 
