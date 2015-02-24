@@ -205,10 +205,28 @@ Transit = (function(_super) {
 
   Transit.prototype.calcMaxRadius = function() {
     var selfSize, selfSizeX, selfSizeY;
-    selfSize = this.deltas.radius != null ? Math.max(Math.abs(this.deltas.radius.end), Math.abs(this.deltas.radius.start)) : this.props.radius != null ? parseFloat(this.props.radius) : 0;
-    selfSizeX = this.deltas.radiusX != null ? Math.max(Math.abs(this.deltas.radiusX.end), Math.abs(this.deltas.radiusX.start)) : this.props.radiusX != null ? this.props.radiusX : selfSize;
-    selfSizeY = this.deltas.radiusY != null ? Math.max(Math.abs(this.deltas.radiusY.end), Math.abs(this.deltas.radiusY.start)) : this.props.radiusY != null ? this.props.radiusY : selfSize;
+    selfSize = this.getRadiusSize({
+      key: 'radius'
+    });
+    selfSizeX = this.getRadiusSize({
+      key: 'radiusX',
+      fallback: selfSize
+    });
+    selfSizeY = this.getRadiusSize({
+      key: 'radiusY',
+      fallback: selfSize
+    });
     return Math.max(selfSizeX, selfSizeY);
+  };
+
+  Transit.prototype.getRadiusSize = function(o) {
+    if (this.deltas[o.key] != null) {
+      return Math.max(Math.abs(this.deltas[o.key].end), Math.abs(this.deltas[o.key].start));
+    } else if (this.props[o.key] != null) {
+      return parseFloat(this.props[o.key]);
+    } else {
+      return o.fallback || 0;
+    }
   };
 
   Transit.prototype.createBit = function() {
@@ -452,6 +470,17 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.run = function(o) {
+    var key, value;
+    for (key in o) {
+      value = o[key];
+      if (this.history.length === 1) {
+        break;
+      }
+      if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+        h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
+        delete o[key];
+      }
+    }
     o && this.transformHistory(o);
     this.tuneNewOption(o);
     o = this.h.cloneObj(this.o);

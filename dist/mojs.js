@@ -1642,53 +1642,36 @@ Transit = require('./transit');
 
 MotionPath = require('./motion-path');
 
-burst = new Transit({
-  type: 'polygon',
+burst = new Burst({
+  x: 300,
+  y: 300,
+  type: 'circle',
+  delay: 1000,
   duration: 2000,
   count: 5,
+  strokeWidth: 1,
+  stroke: 'deeppink',
+  isShowInit: true,
+  isShowEnd: true,
   points: 5,
-  radius: {
-    0: 50
-  },
-  isRunLess: true,
+  radius: 50,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
-}).then({
-  radius: 0,
-  duration: 2000
 });
-
-burst.hide();
 
 mp = new MotionPath({
   path: 'M0,0 L500,500 L1000, 0',
   el: burst.el,
   duration: 2000,
+  delay: 1000,
   isRunLess: true,
-  pathEnd: .25,
-  onUpdate: function(p) {
-    return burst.tween.setProgress(p);
-  }
-}).then({
-  duration: 2000,
-  pathStart: .25,
-  pathEnd: .5
-}).then({
-  duration: 2000,
-  pathStart: .5,
-  pathEnd: .75
-}).then({
-  duration: 2000,
-  pathStart: .75,
-  pathEnd: 1
+  pathEnd: .25
 });
-
-mp.run();
 
 slider = document.getElementById('js-slider');
 
 slider.addEventListener('input', function(e) {
-  return mp.tween.setProgress(this.value / 1000);
+  return mp.tween.setProgress(this.value / 100000);
 });
 
 eye = document.querySelector('#js-eye');
@@ -2628,10 +2611,28 @@ Transit = (function(_super) {
 
   Transit.prototype.calcMaxRadius = function() {
     var selfSize, selfSizeX, selfSizeY;
-    selfSize = this.deltas.radius != null ? Math.max(Math.abs(this.deltas.radius.end), Math.abs(this.deltas.radius.start)) : this.props.radius != null ? parseFloat(this.props.radius) : 0;
-    selfSizeX = this.deltas.radiusX != null ? Math.max(Math.abs(this.deltas.radiusX.end), Math.abs(this.deltas.radiusX.start)) : this.props.radiusX != null ? this.props.radiusX : selfSize;
-    selfSizeY = this.deltas.radiusY != null ? Math.max(Math.abs(this.deltas.radiusY.end), Math.abs(this.deltas.radiusY.start)) : this.props.radiusY != null ? this.props.radiusY : selfSize;
+    selfSize = this.getRadiusSize({
+      key: 'radius'
+    });
+    selfSizeX = this.getRadiusSize({
+      key: 'radiusX',
+      fallback: selfSize
+    });
+    selfSizeY = this.getRadiusSize({
+      key: 'radiusY',
+      fallback: selfSize
+    });
     return Math.max(selfSizeX, selfSizeY);
+  };
+
+  Transit.prototype.getRadiusSize = function(o) {
+    if (this.deltas[o.key] != null) {
+      return Math.max(Math.abs(this.deltas[o.key].end), Math.abs(this.deltas[o.key].start));
+    } else if (this.props[o.key] != null) {
+      return parseFloat(this.props[o.key]);
+    } else {
+      return o.fallback || 0;
+    }
   };
 
   Transit.prototype.createBit = function() {
@@ -2875,6 +2876,17 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.run = function(o) {
+    var key, value;
+    for (key in o) {
+      value = o[key];
+      if (this.history.length === 1) {
+        break;
+      }
+      if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+        h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
+        delete o[key];
+      }
+    }
     o && this.transformHistory(o);
     this.tuneNewOption(o);
     o = this.h.cloneObj(this.o);

@@ -150,16 +150,15 @@ class Transit extends bitsMap.map.bit
     @props.center = @props.size/2
 
   calcMaxRadius:->
-    selfSize = if @deltas.radius?
-      Math.max Math.abs(@deltas.radius.end), Math.abs(@deltas.radius.start)
-    else if @props.radius? then parseFloat(@props.radius) else 0
-    selfSizeX = if @deltas.radiusX?
-      Math.max Math.abs(@deltas.radiusX.end), Math.abs(@deltas.radiusX.start)
-    else if @props.radiusX? then @props.radiusX else selfSize
-    selfSizeY = if @deltas.radiusY?
-      Math.max Math.abs(@deltas.radiusY.end), Math.abs(@deltas.radiusY.start)
-    else if @props.radiusY? then @props.radiusY else selfSize
+    selfSize  = @getRadiusSize key: 'radius'
+    selfSizeX = @getRadiusSize key: 'radiusX', fallback: selfSize
+    selfSizeY = @getRadiusSize key: 'radiusY', fallback: selfSize
     Math.max selfSizeX, selfSizeY
+
+  getRadiusSize:(o)->
+    if @deltas[o.key]?
+      Math.max Math.abs(@deltas[o.key].end), Math.abs(@deltas[o.key].start)
+    else if @props[o.key]? then parseFloat(@props[o.key]) else o.fallback or 0
 
   createBit:->
     bitClass = bitsMap.getBit(@o.type or @type)
@@ -300,6 +299,13 @@ class Transit extends bitsMap.map.bit
     !@o.isRunLess and @startTween()
 
   run:(o)->
+    for key, value of o
+      if @history.length is 1 then break
+      if h.callbacksMap[key] or h.tweenOptionMap[key]
+        h.warn "the property \"#{key}\" property can not
+          be overridden on run with \"then\" chain yet"
+        delete o[key]
+
     o and @transformHistory(o)
     @tuneNewOption(o)
     o = @h.cloneObj(@o); @h.extend(o, @defaults); @history[0] = o

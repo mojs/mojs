@@ -71,16 +71,10 @@ module.exports = function(config) {
     }
 
   config.set({
-
-
     basePath: '',
-
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine', 'browserify'],
-
-
     // list of files / patterns to load in the browser
     files: [
       'dist/**/*.js',
@@ -88,15 +82,14 @@ module.exports = function(config) {
       // 'dist/easing.js',
       // 'spec/easing.js'
     ],
-
     // list of files to exclude
     exclude: [
       'dist/mojs.js',
       'dist/mojs.min.js',
       'dist/h.js',
       'spec/h.js',
-      'dist/transit.js',
-      'spec/transit.js',
+      // 'dist/transit.js',
+      // 'spec/transit.js',
       'dist/swirl.js',
       'spec/swirl.js',
       'dist/tween.js',

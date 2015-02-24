@@ -6,19 +6,23 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- add motion path
-  - add movement arc
-- transit
-  - timeline tween options history transform :: just warn for now
 - perf profile + refactor
   - clear the old code + mojs.js to mo.js
   - elastic easing detection + add to size
   - burst and transit radiusX/Y calculation refactor
   - perf
+- burst
+  - keep angle option for lines
+- tween onUpdate without delay
 - add more shapes(bits)
   - line and cross to 1px path  ?
 - add line animator
 - :: demo
+
+- add motion path
+  - add movement arc
+- transit
+  - fix timeline tween options history transform
 
 - burst
   - add deltas for swirl swirlFrequency and swirlSize
@@ -28,6 +32,7 @@
 - add custom easing handler
   - add path handler
   - add spring
+- add shaker
 - add spriter
 - add glare (is transition shorthand)
 - add stagger

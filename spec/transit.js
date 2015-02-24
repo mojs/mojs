@@ -1963,12 +1963,56 @@
         byte.run(o);
         return expect(byte.transformHistory).toHaveBeenCalledWith(o);
       });
-      return it('should not call transformHistory if optionless', function() {
+      it('should not call transformHistory if optionless', function() {
         var byte;
         byte = new Byte;
         spyOn(byte, 'transformHistory');
         byte.run();
         return expect(byte.transformHistory).not.toHaveBeenCalled();
+      });
+      it('shoud warn if tweenValues changed on run', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 40
+        });
+        spyOn(h, 'warn');
+        byte.run({
+          duration: 100,
+          delay: 100,
+          repeat: 1,
+          yoyo: false,
+          easing: 'Linear.None',
+          onStart: function() {},
+          onUpdate: function() {},
+          onComplete: function() {}
+        });
+        expect(h.warn).toHaveBeenCalled();
+        expect(byte.history[0].duration).toBe(2000);
+        return expect(byte.props.duration).toBe(2000);
+      });
+      return it('shoud not warn if history is 1 record long', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        });
+        spyOn(h, 'warn');
+        byte.run({
+          duration: 100,
+          delay: 100,
+          repeat: 1,
+          yoyo: false,
+          easing: 'Linear.None',
+          onStart: function() {},
+          onUpdate: function() {},
+          onComplete: function() {}
+        });
+        expect(h.warn).not.toHaveBeenCalled();
+        expect(byte.history[0].duration).toBe(100);
+        return expect(byte.props.duration).toBe(100);
       });
     });
     describe('isForeign flag ->', function() {
@@ -1992,7 +2036,7 @@
         return expect(byte.el).toBe(byte.bit.el);
       });
     });
-    return describe('show/hide on start/end ->', function() {
+    describe('show/hide on start/end ->', function() {
       it('should show the el on start', function() {
         var byte;
         byte = new Byte({
@@ -2050,6 +2094,49 @@
         byte.tween.setProgress(.5);
         byte.tween.setProgress(0);
         return expect(byte.el.style.display).toBe('block');
+      });
+    });
+    return describe('getRadiusSize method ->', function() {
+      it('should return max from delatas if key is defined', function() {
+        var byte, size;
+        byte = new Byte({
+          radiusX: {
+            20: 30
+          }
+        });
+        size = byte.getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(30);
+      });
+      it('should return props\' value if delats\' one is not defined ', function() {
+        var byte, size;
+        byte = new Byte({
+          radiusX: 20
+        });
+        size = byte.getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(20);
+      });
+      it('should fallback to passed fallback option', function() {
+        var byte, size;
+        byte = new Byte;
+        size = byte.getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(0);
+      });
+      return it('should fallback to 0 by default', function() {
+        var byte, size;
+        byte = new Byte;
+        size = byte.getRadiusSize({
+          key: 'radiusX'
+        });
+        return expect(size).toBe(0);
       });
     });
   });

@@ -112,28 +112,6 @@ describe 'MotionPath ->', ->
   describe 'run method ->', ->
     div = document.createElement 'div'
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
-
-    # it 'shoud call transformHistory if options passed', ->
-    #   o = duration: 500
-    #   mp = new MotionPath(
-    #     path:       coords
-    #     el:         document.createElement 'div'
-    #     isRunLess:  true
-    #   ).then pathEnd: .5
-    #   spyOn mp, 'transformHistory'
-    #   mp.run o
-    #   expect(mp.transformHistory).toHaveBeenCalledWith o
-
-    # it 'shoud not call transformHistory if options wasn\'t passed', ->
-    #   mp = new MotionPath(
-    #     path:       coords
-    #     el:         document.createElement 'div'
-    #     isRunLess:  true
-    #   ).then pathEnd: .5
-    #   spyOn mp, 'transformHistory'
-    #   mp.run()
-    #   expect(mp.transformHistory).not.toHaveBeenCalled()
-
     it 'should extend the old options', ->
       mp = new MotionPath(
         path:       coords
@@ -202,20 +180,6 @@ describe 'MotionPath ->', ->
       expect(h.warn).toHaveBeenCalled()
       expect(mp.history[0].duration).toBe 2000
       expect(mp.props.duration)     .toBe 2000
-
-  # describe 'transformHistory method ->', ->
-  #   it 'should transform the options chain', ->
-  #     mp = new MotionPath(
-  #       path:       coords
-  #       el:         document.createElement 'div'
-  #       isRunLess:  true
-  #       pathStart: .25
-  #       pathEnd:   .5
-  #     )
-  #     .then pathEnd: .5
-  #     .then pathEnd: .75
-
-  #     mp.transfornHistory pathStart: .35
 
 
   describe 'callbacks ->', ->

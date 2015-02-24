@@ -1020,6 +1020,40 @@ describe 'Transit ->', ->
       byte.run()
       expect(byte.transformHistory).not.toHaveBeenCalled()
 
+    it 'shoud warn if tweenValues changed on run', ->
+      byte = new Byte(
+        isRunLess:  true, duration:  2000
+      ).then radius: 40
+      spyOn h, 'warn'
+      byte.run
+        duration: 100
+        delay:    100
+        repeat:   1
+        yoyo:     false
+        easing:   'Linear.None'
+        onStart:    ->
+        onUpdate:   ->
+        onComplete: ->
+      expect(h.warn).toHaveBeenCalled()
+      expect(byte.history[0].duration).toBe 2000
+      expect(byte.props.duration)     .toBe 2000
+
+    it 'shoud not warn if history is 1 record long', ->
+      byte = new Byte(isRunLess:  true, duration:  2000)
+      spyOn h, 'warn'
+      byte.run
+        duration: 100
+        delay:    100
+        repeat:   1
+        yoyo:     false
+        easing:   'Linear.None'
+        onStart:    ->
+        onUpdate:   ->
+        onComplete: ->
+      expect(h.warn).not.toHaveBeenCalled()
+      expect(byte.history[0].duration).toBe 100
+      expect(byte.props.duration)     .toBe 100
+
   describe 'isForeign flag ->', ->
     it 'should not be set by default', ->
       byte = new Byte
@@ -1066,6 +1100,28 @@ describe 'Transit ->', ->
       byte.tween.setProgress 0
       expect(byte.el.style.display).toBe 'block'
 
+  describe 'getRadiusSize method ->', ->
+    it 'should return max from delatas if key is defined', ->
+      byte = new Byte radiusX: 20: 30
+      size = byte.getRadiusSize key: 'radiusX', fallback: 0
+      expect(size).toBe 30
+
+    it 'should return props\' value if delats\' one is not defined ', ->
+      byte = new Byte radiusX: 20
+      size = byte.getRadiusSize key: 'radiusX', fallback: 0
+      expect(size).toBe 20
+
+    it 'should fallback to passed fallback option', ->
+      byte = new Byte
+      size = byte.getRadiusSize key: 'radiusX', fallback: 0
+      expect(size).toBe 0
+
+    it 'should fallback to 0 by default', ->
+      byte = new Byte
+      size = byte.getRadiusSize key: 'radiusX'
+      expect(size).toBe 0
+
+      
 
 
 
