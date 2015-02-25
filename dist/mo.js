@@ -411,6 +411,7 @@ Burst = (function(_super) {
     y: 100,
     shiftX: 0,
     shiftY: 0,
+    easing: 'Linear.None',
     radius: {
       25: 75
     },
@@ -424,7 +425,8 @@ Burst = (function(_super) {
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
-    onUpdate: null
+    onUpdate: null,
+    isResetAngles: false
   };
 
   Burst.prototype.childDefaults = {
@@ -534,9 +536,10 @@ Burst = (function(_super) {
       pointEnd = this.getSidePoint('end', i * step);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
-      angleAddition = i * step + 90;
-      transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
-      console.log(transit.o.angle);
+      if (!this.props.isResetAngles) {
+        angleAddition = i * step + 90;
+        transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
+      }
       _results.push(transit.extendDefaults());
     }
     return _results;
@@ -620,16 +623,18 @@ Burst = (function(_super) {
     }
     radius = this.calcMaxRadius();
     this.props.size = largestSize + 2 * radius;
+    this.props.size += 2 * this.props.sizeGap;
     this.props.center = this.props.size / 2;
     return this.addBitOptions();
   };
 
   Burst.prototype.getOption = function(i) {
-    var key, option, value, _ref;
+    var key, keys, len, option;
     option = {};
-    _ref = this.childDefaults;
-    for (key in _ref) {
-      value = _ref[key];
+    keys = Object.keys(this.childDefaults);
+    len = keys.length;
+    while (len--) {
+      key = keys[len];
       option[key] = this.getPropByMod({
         key: key,
         i: i,
@@ -1651,37 +1656,50 @@ Transit = require('./transit');
 
 MotionPath = require('./motion-path');
 
-burst = new Burst({
+burst = new Transit({
   x: 300,
   y: 300,
-  type: 'line',
-  delay: 1000,
+  type: 'circle',
+  delay: 3000,
   duration: 2000,
   count: 3,
-  strokeWidth: 1,
-  stroke: 'deeppink',
   isShowInit: true,
   isShowEnd: true,
+  isRunLess: true,
   points: 5,
+  radius: 50,
   swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)',
-  childOptions: {
-    angle: [
-      {
-        360: 0
-      }, null, null
-    ]
-  }
+  swirlSize: 'rand(0,10)'
+}).then({
+  radius: 0,
+  duration: 2000
 });
 
 mp = new MotionPath({
   path: 'M0,0 L500,500 L1000, 0',
   el: burst.el,
   duration: 2000,
-  delay: 1000,
+  delay: 3000,
   isRunLess: true,
-  pathEnd: .25
+  pathEnd: .25,
+  onChainUpdate: function(p) {
+    return burst.tween.setProgress(p);
+  }
+}).then({
+  duration: 2000,
+  pathStart: .25,
+  pathEnd: .5
+}).then({
+  duration: 2000,
+  pathStart: .5,
+  pathEnd: .75
+}).then({
+  duration: 2000,
+  pathStart: .75,
+  pathEnd: 1
 });
+
+mp.run();
 
 slider = document.getElementById('js-slider');
 
@@ -1906,7 +1924,8 @@ MotionPath = (function() {
     this.tween = new Tween({
       onUpdate: (function(_this) {
         return function(p) {
-          return typeof _this.onUpdate === "function" ? _this.onUpdate(p) : void 0;
+          var _base;
+          return typeof (_base = _this.o).onChainUpdate === "function" ? _base.onChainUpdate(p) : void 0;
         };
       })(this)
     });
@@ -1914,7 +1933,7 @@ MotionPath = (function() {
     if (!this.props.isRunLess) {
       return this.startTween();
     } else if (this.props.isPresetPosition) {
-      return this.setProgress(0);
+      return this.setProgress(0, true);
     }
   };
 
@@ -1927,7 +1946,7 @@ MotionPath = (function() {
     })(this)), 1);
   };
 
-  MotionPath.prototype.setProgress = function(p) {
+  MotionPath.prototype.setProgress = function(p, isInit) {
     var atan, len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
     len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
@@ -1959,8 +1978,9 @@ MotionPath = (function() {
     if (this.props.transformOrigin) {
       tOrigin = typeof this.props.transformOrigin === 'function' ? this.props.transformOrigin(this.angle, p) : this.props.transformOrigin;
       this.el.style["" + h.prefix.css + "transform-origin"] = tOrigin;
-      return this.el.style['transform-origin'] = tOrigin;
+      this.el.style['transform-origin'] = tOrigin;
     }
+    return !isInit && (typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0);
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
@@ -1984,8 +2004,14 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.then = function(o) {
-    var i, it, key, keys, opts, prevOptions;
+    var i, it, key, keys, opts, prevOptions, value;
     prevOptions = this.history[this.history.length - 1];
+    for (key in prevOptions) {
+      value = prevOptions[key];
+      if (o[key] == null) {
+        o[key] = value;
+      }
+    }
     this.history.push(o);
     keys = Object.keys(h.tweenOptionMap);
     i = keys.length;
@@ -2611,7 +2637,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcSize = function() {
-    var dStroke, radius, stroke;
+    var dStroke, radius, stroke, _base;
     if (this.o.size) {
       return;
     }
@@ -2619,6 +2645,15 @@ Transit = (function(_super) {
     dStroke = this.deltas['strokeWidth'];
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
     this.props.size = 2 * radius + 2 * stroke;
+    switch (typeof (_base = this.props.easing).toLowerCase === "function" ? _base.toLowerCase() : void 0) {
+      case 'elastic.out':
+      case 'elastic.inout':
+        this.props.size *= 1.25;
+        break;
+      case 'back.out':
+      case 'back.inout':
+        this.props.size *= 1.1;
+    }
     this.props.size *= this.bit.ratio;
     this.props.size += 2 * this.props.sizeGap;
     return this.props.center = this.props.size / 2;
@@ -2723,13 +2758,16 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var defaultsValue, delta, fromObject, isObject, key, optionsValue, _ref, _ref1;
+    var defaultsValue, delta, fromObject, isObject, key, keys, len, optionsValue, _ref, _ref1;
     if (this.props == null) {
       this.props = {};
     }
     fromObject = o || this.defaults;
     (o == null) && (this.deltas = {});
-    for (key in fromObject) {
+    keys = Object.keys(fromObject);
+    len = keys.length;
+    while (len--) {
+      key = keys[len];
       defaultsValue = fromObject[key];
       if ((_ref = this.skipProps) != null ? _ref[key] : void 0) {
         continue;

@@ -132,14 +132,14 @@ class MotionPath
       onComplete: => @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
-    @tween = new Tween onUpdate:(p)=> @onUpdate?(p)
+    @tween = new Tween onUpdate:(p)=> @o.onChainUpdate?(p)
     @tween.add(@timeline)
     if !@props.isRunLess then @startTween()
-    else if @props.isPresetPosition then @setProgress(0)
+    else if @props.isPresetPosition then @setProgress(0, true)
 
   startTween:-> setTimeout (=> @tween?.start()), 1
 
-  setProgress:(p)->
+  setProgress:(p, isInit)->
     len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
 
     point = @path.getPointAtLength len
@@ -169,6 +169,7 @@ class MotionPath
       else @props.transformOrigin
       @el.style["#{h.prefix.css}transform-origin"] = tOrigin
       @el.style['transform-origin'] = tOrigin
+    !isInit and @onUpdate?(p)
 
   extendDefaults:(o)->
     for key, value of o
@@ -180,6 +181,8 @@ class MotionPath
 
   then:(o)->
     prevOptions = @history[@history.length-1]
+    for key, value of prevOptions
+      o[key] ?= value
     @history.push o
     # get tween timing values
     keys = Object.keys(h.tweenOptionMap); i = keys.length; opts = {}

@@ -520,7 +520,7 @@
         });
         return expect(byte.props.size).toBe(400);
       });
-      return it('should calculate center based on el size', function() {
+      it('should calculate center based on el size', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -532,6 +532,56 @@
         });
         expect(byte.props.size).toBe(212);
         return expect(byte.props.center).toBe(106);
+      });
+      it('should increase size if elastic.out/inout easing', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'Elastic.Out'
+        });
+        expect(byte.props.size).toBe(212 * 1.25);
+        expect(byte.props.center).toBe(byte.props.size / 2);
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'Elastic.InOut'
+        });
+        expect(byte.props.size).toBe(212 * 1.25);
+        return expect(byte.props.center).toBe(byte.props.size / 2);
+      });
+      return it('should increase size if back.out/inout easing', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'back.Out'
+        });
+        expect(byte.props.size).toBe(212 * 1.1);
+        expect(byte.props.center).toBe(byte.props.size / 2);
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'Back.InOut'
+        });
+        expect(byte.props.size).toBe(212 * 1.1);
+        return expect(byte.props.center).toBe(byte.props.size / 2);
       });
     });
     describe('el creation ->', function() {

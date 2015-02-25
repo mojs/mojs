@@ -17,6 +17,7 @@ var browserify    = require('gulp-browserify');
 var rename        = require('gulp-rename');
 var uglify        = require('gulp-uglify');
 var sequence      = require('run-sequence');
+var rimraf         = require('gulp-rimraf');
 
 var devFolder   = '';
 var distFolder  = '';
@@ -53,9 +54,6 @@ gulp.task('stylus', function(){
           .pipe(plumber())
           .pipe(stylus())
           .pipe(autoprefixer('last 4 version'))
-          // .pipe(csslint())
-          // .pipe(csslint.reporter())
-          // .pipe(minifycss())
           .pipe(gulp.dest(paths.dist.css))
           .pipe(livereload())
 });
@@ -68,11 +66,12 @@ gulp.task('coffee:mojs', function(e){
   return gulp.src('dist/mojs.js', { read: false })
     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
     .pipe(browserify())
-    .pipe(rename('mojs.js'))
+    .pipe(rename('mo.js'))
     .pipe(gulp.dest('dist/'))
     .pipe(uglify())
-    .pipe(rename('mojs.min.js'))
+    .pipe(rename('mo.min.js'))
     .pipe(gulp.dest('dist/'))
+    .pipe(rimraf())
     .pipe(livereload())
 });
 
@@ -127,7 +126,6 @@ gulp.task('default', function(){
     gulp.run('stylus');
   });
 
-  // gulp.watch(paths.src.js, ['coffee',     'coffee-lint']);
   gulp.watch(paths.src.js, ['coffee-all + cofee:mojs', 'coffee-lint']);
 
   gulp.watch(paths.src.tests, function(e){

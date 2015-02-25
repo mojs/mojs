@@ -1,7 +1,7 @@
 {
   "name": "mojs",
   "description": "motion graphics for the web",
-  "version": "0.78.0",
+  "version": "0.79.3",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -53,6 +53,7 @@
     "gulp-notify": "~0.5.1",
     "gulp-plumber": "*",
     "gulp-rename": "latest",
+    "gulp-rimraf": "^0.1.1",
     "gulp-stylus": "latest",
     "gulp-uglify": "latest",
     "gulp-watch": "*",

@@ -6,13 +6,8 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- burst
-  - keep angle option for lines
-- perf profile + refactor
-  - clear the old code + mojs.js to mo.js
-  - elastic easing detection + add to size
-  - perf
-- tween onUpdate without delay
+- motion-path
+ - add onChainUpdate
 - add more shapes(bits)
   - line and cross to 1px path  ?
 - add line animator

@@ -21,6 +21,7 @@ class Burst extends Transit
     y:                  100
     shiftX:             0
     shiftY:             0
+    easing:             'Linear.None'
     # size props
     radius:             { 25: 75 }
     radiusX:            undefined
@@ -35,6 +36,7 @@ class Burst extends Transit
     onComplete:         null
     onCompleteChain:    null
     onUpdate:           null
+    isResetAngles:      false
 
   childDefaults:
     #-- intersection starts
@@ -117,20 +119,18 @@ class Burst extends Transit
       pointEnd   = @getSidePoint 'end',   i*step
       transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
       transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
-      
-      
-      angleAddition = i*step + 90
-      transit.o.angle = if typeof transit.o.angle isnt 'object'
-        transit.o.angle + angleAddition
-      else
-        keys = Object.keys(transit.o.angle); start = keys[0]
-        end   = transit.o.angle[start]
-        newStart = parseFloat(start) + angleAddition
-        newEnd   = parseFloat(end)   + angleAddition
-        delta = {}; delta[newStart] = newEnd
-        delta
-      console.log transit.o.angle
-      # console.log transit.o.angle
+
+      if !@props.isResetAngles
+        angleAddition = i*step + 90
+        transit.o.angle = if typeof transit.o.angle isnt 'object'
+          transit.o.angle + angleAddition
+        else
+          keys = Object.keys(transit.o.angle); start = keys[0]
+          end   = transit.o.angle[start]
+          newStart = parseFloat(start) + angleAddition
+          newEnd   = parseFloat(end)   + angleAddition
+          delta = {}; delta[newStart] = newEnd
+          delta
       transit.extendDefaults()
   getSidePoint:(side, angle)->
     sideRadius = @getSideRadius side
@@ -169,11 +169,14 @@ class Burst extends Transit
         largestSize = transit.props.size
     radius = @calcMaxRadius()
     @props.size   = largestSize + 2*radius
+    
+    @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2
     @addBitOptions()
   getOption:(i)->
-    option = {}
-    for key, value of @childDefaults
+    option = {}; keys = Object.keys(@childDefaults); len = keys.length
+    while(len--)
+      key = keys[len]
       # firstly try to find the prop in @o.childOptions
       option[key]  = @getPropByMod key: key, i: i, from: @o.childOptions
       # if fail

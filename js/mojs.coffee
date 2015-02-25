@@ -1,10 +1,3 @@
-
-# div = document.querySelector '#js-div'
-
-# setTimeout ->
-#   div.style.width = '50px'
-# , 5000
-
 # Transit   = require './transit'
 Burst       = require './burst'
 Swirl       = require './Swirl'
@@ -13,73 +6,42 @@ Tween       = require './tween'
 Transit     = require './transit'
 MotionPath  = require './motion-path'
 
-# t = new Tween
-# tw1 = new Timeline
-#   duration: 5000
-#   delay: 4000
-
-# tw2 = new Timeline
-#   duration: 5000
-#   delay: 12000
-
-# t.add tw1
-# t.add tw2
-# t.start()
-
-burst = new Burst(
+burst = new Transit(
   x: 300, y: 300
-  type:         'line'
-  delay:        1000
+  type:         'circle'
+  delay:        3000
   duration:     2000
   count:        3
-  strokeWidth:  1
-  stroke:       'deeppink'
-  # isRunLess: true
   isShowInit: true
   isShowEnd:  true
+  isRunLess:  true
   points: 5
-  # angle: {0: 360}
-  # radius: 50
-  # isRunLess: true
-  # isSwirl: true
+  radius: 50
+  # radius: {0: 40}
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
-  childOptions: angle: [{360:0}, null, null]
-  # angle: {200:0}
-  # radiusX: { 0: 50}
-  # radiusY: 100: 20
-  # radiusX: 100
-  # onComplete: -> console.log 'onComplete'
-  # angle: {360: 0}
-  # delay: 1000
-  # opacity: 1:0
-  # easing: 'Elastic.In'
-  # childOptions:
-  #   # radius: 5
-  #   opacity: [1:0, 1, 1: .5]
-    # easing: [null, 'linear.none', null]
-  # isShowInit: true
-)#.then radius: 0, duration: 2000
-
+  # childOptions: radius: 10
+  # onUpdate:(p)-> console.log p
+).then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0
 
 mp = new MotionPath(
   path:     'M0,0 L500,500 L1000, 0'
   el:       burst.el
   duration: 2000
-  delay:    1000
+  delay:    3000
   # isReverse: true
   isRunLess: true
   # pathStart: 0
   pathEnd:   .25
   # onStart:-> burst.show()
-  # onUpdate:(p)-> burst.tween.setProgress p
+  onChainUpdate:(p)-> burst.tween.setProgress(p)
 )
-# .then duration: 2000, pathStart: .25, pathEnd:  .5
-# .then duration: 2000, pathStart: .5,  pathEnd:  .75
-# .then duration: 2000, pathStart: .75, pathEnd:  1
+.then duration: 2000, pathStart: .25, pathEnd:  .5
+.then duration: 2000, pathStart: .5,  pathEnd:  .75
+.then duration: 2000, pathStart: .75, pathEnd:  1
 
-# mp.run()
+mp.run()
 
 slider = document.getElementById 'js-slider'
 slider.addEventListener 'input', (e)->

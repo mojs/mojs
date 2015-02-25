@@ -190,7 +190,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcSize = function() {
-    var dStroke, radius, stroke;
+    var dStroke, radius, stroke, _base;
     if (this.o.size) {
       return;
     }
@@ -198,6 +198,15 @@ Transit = (function(_super) {
     dStroke = this.deltas['strokeWidth'];
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
     this.props.size = 2 * radius + 2 * stroke;
+    switch (typeof (_base = this.props.easing).toLowerCase === "function" ? _base.toLowerCase() : void 0) {
+      case 'elastic.out':
+      case 'elastic.inout':
+        this.props.size *= 1.25;
+        break;
+      case 'back.out':
+      case 'back.inout':
+        this.props.size *= 1.1;
+    }
     this.props.size *= this.bit.ratio;
     this.props.size += 2 * this.props.sizeGap;
     return this.props.center = this.props.size / 2;
@@ -302,13 +311,16 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var defaultsValue, delta, fromObject, isObject, key, optionsValue, _ref, _ref1;
+    var defaultsValue, delta, fromObject, isObject, key, keys, len, optionsValue, _ref, _ref1;
     if (this.props == null) {
       this.props = {};
     }
     fromObject = o || this.defaults;
     (o == null) && (this.deltas = {});
-    for (key in fromObject) {
+    keys = Object.keys(fromObject);
+    len = keys.length;
+    while (len--) {
+      key = keys[len];
       defaultsValue = fromObject[key];
       if ((_ref = this.skipProps) != null ? _ref[key] : void 0) {
         continue;

@@ -208,7 +208,8 @@ MotionPath = (function() {
     this.tween = new Tween({
       onUpdate: (function(_this) {
         return function(p) {
-          return typeof _this.onUpdate === "function" ? _this.onUpdate(p) : void 0;
+          var _base;
+          return typeof (_base = _this.o).onChainUpdate === "function" ? _base.onChainUpdate(p) : void 0;
         };
       })(this)
     });
@@ -216,7 +217,7 @@ MotionPath = (function() {
     if (!this.props.isRunLess) {
       return this.startTween();
     } else if (this.props.isPresetPosition) {
-      return this.setProgress(0);
+      return this.setProgress(0, true);
     }
   };
 
@@ -229,7 +230,7 @@ MotionPath = (function() {
     })(this)), 1);
   };
 
-  MotionPath.prototype.setProgress = function(p) {
+  MotionPath.prototype.setProgress = function(p, isInit) {
     var atan, len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
     len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
@@ -261,8 +262,9 @@ MotionPath = (function() {
     if (this.props.transformOrigin) {
       tOrigin = typeof this.props.transformOrigin === 'function' ? this.props.transformOrigin(this.angle, p) : this.props.transformOrigin;
       this.el.style["" + h.prefix.css + "transform-origin"] = tOrigin;
-      return this.el.style['transform-origin'] = tOrigin;
+      this.el.style['transform-origin'] = tOrigin;
     }
+    return !isInit && (typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0);
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
@@ -286,8 +288,14 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.then = function(o) {
-    var i, it, key, keys, opts, prevOptions;
+    var i, it, key, keys, opts, prevOptions, value;
     prevOptions = this.history[this.history.length - 1];
+    for (key in prevOptions) {
+      value = prevOptions[key];
+      if (o[key] == null) {
+        o[key] = value;
+      }
+    }
     this.history.push(o);
     keys = Object.keys(h.tweenOptionMap);
     i = keys.length;

@@ -827,7 +827,7 @@
       });
     });
     describe('setProgress function ->', function(dfr) {
-      return it('should have own function for setting up current progress', function() {
+      it('should have own function for setting up current progress', function() {
         var div, mp, pos;
         div = document.createElement('div');
         mp = new MotionPath({
@@ -838,6 +838,32 @@
         mp.setProgress(.5);
         pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(250);
+      });
+      it('should call the onUpdate callback', function() {
+        var div, mp;
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: div,
+          isRunLess: true,
+          onUpdate: function() {}
+        });
+        spyOn(mp, 'onUpdate');
+        mp.setProgress(.5);
+        return expect(mp.onUpdate).toHaveBeenCalledWith(.5);
+      });
+      return it('should not call the onUpdate callback on start', function() {
+        var isCalled, mp;
+        isCalled = false;
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: document.createElement('div'),
+          isRunLess: true,
+          onUpdate: function() {
+            return isCalled = true;
+          }
+        });
+        return expect(isCalled).toBe(false);
       });
     });
     describe('preset position ->', function() {
@@ -861,7 +887,7 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        return expect(div.style.transform).not.toBeDefined();
+        return expect(div.style.transform).toBeFalsy();
       });
     });
     describe('progress bounds ->', function() {
@@ -1019,6 +1045,20 @@
         expect(mp.history.length).toBe(2);
         expect(mp.history[1].pathStart).toBe(.5);
         return expect(mp.history[1].pathEnd).toBe(1);
+      });
+      it('should save previous options to the current history record', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5,
+          delay: 100
+        }).then({
+          pathStart: .5,
+          pathEnd: 1
+        });
+        return expect(mp.history[1].delay).toBe(100);
       });
       return it('should add new timeline', function() {
         var mp;

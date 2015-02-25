@@ -182,7 +182,7 @@
         expect(burst.transits[0].o.angle).toBe(100);
         return expect(burst.transits[1].o.angle).toBe(162);
       });
-      it('should keep the bit if delta passed', function() {
+      it('should keep the bit angle if delta passed', function() {
         var burst;
         burst = new Burst({
           cound: 2,
@@ -196,6 +196,22 @@
         });
         expect(burst.transits[0].o.angle[290]).toBe(100);
         return expect(burst.transits[1].o.angle).toBe(162);
+      });
+      it('should not keep the bit angle if isResetAngles is passed', function() {
+        var burst;
+        burst = new Burst({
+          cound: 2,
+          isResetAngles: true,
+          childOptions: {
+            angle: [
+              {
+                200: 10
+              }, null
+            ]
+          }
+        });
+        expect(burst.transits[0].o.angle[200]).toBe(10);
+        return expect(burst.transits[1].o.angle).toBe(0);
       });
       return it('should pass x/y to transits', function() {
         var burst, center;
@@ -564,12 +580,28 @@
         expect(burst.transits[0].calcSize).toHaveBeenCalled();
         return expect(burst.transits[1].calcSize).toHaveBeenCalled();
       });
-      return it('should call addBitOptions method', function() {
+      it('should call addBitOptions method', function() {
         var burst;
         burst = new Burst;
         spyOn(burst, 'addBitOptions');
         burst.calcSize();
         return expect(burst.addBitOptions).toHaveBeenCalled();
+      });
+      return it('should work with sizeGap', function() {
+        var burst;
+        burst = new Burst({
+          sizeGap: 20,
+          childOptions: {
+            radius: [
+              {
+                20: 50
+              }, 20
+            ],
+            strokeWidth: 20
+          }
+        });
+        expect(burst.props.size).toBe(330);
+        return expect(burst.props.center).toBe(burst.props.size / 2);
       });
     });
     describe('addBitOptions ->', function() {

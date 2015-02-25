@@ -451,6 +451,7 @@ describe 'MotionPath ->', ->
           onComplete:->
             for isSetItem, i in isAnglesArray
               if !isSetItem then isSet = true
+        
         setTimeout (-> expect(isSet).toBe(false); dfr()), 100
 
       it 'angleOffset should get current progress as second parameter', (dfr)->
@@ -583,10 +584,29 @@ describe 'MotionPath ->', ->
         path: 'M0,0 L500,0'
         el: div
         isRunLess: true
-
       mp.setProgress(.5)
       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
+
+    it 'should call the onUpdate callback', ->
+      div = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: div
+        isRunLess: true
+        onUpdate:->
+      spyOn mp, 'onUpdate'
+      mp.setProgress(.5)
+      expect(mp.onUpdate).toHaveBeenCalledWith .5
+
+    it 'should not call the onUpdate callback on start', ->
+      isCalled = false
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: document.createElement 'div'
+        isRunLess: true
+        onUpdate:-> isCalled = true
+      expect(isCalled).toBe false
 
   describe 'preset position ->', ->
     it 'should preset initial position by default if isRunLess', ->
@@ -605,7 +625,7 @@ describe 'MotionPath ->', ->
         el: div
         isRunLess: true
         isPresetPosition: false
-      expect(div.style.transform).not.toBeDefined()
+      expect(div.style.transform).toBeFalsy()
 
   describe 'progress bounds ->', ->
     it 'should calc the @slicedLen and @startLen properties', ->
@@ -734,6 +754,16 @@ describe 'MotionPath ->', ->
       expect(mp.history.length)       .toBe   2
       expect(mp.history[1].pathStart) .toBe   .5
       expect(mp.history[1].pathEnd)   .toBe   1
+
+    it 'should save previous options to the current history record', ->
+      mp = new MotionPath(
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+        pathEnd:  .5
+        delay:    100
+      ).then pathStart: .5, pathEnd: 1
+      expect(mp.history[1].delay)     .toBe   100
 
     it 'should add new timeline', ->
       mp = new MotionPath(

@@ -144,6 +144,15 @@ class Transit extends bitsMap.map.bit
       Math.max Math.abs(dStroke.start), Math.abs(dStroke.end)
     else @props.strokeWidth
     @props.size   = 2*radius + 2*stroke
+    
+    # increase el's size on elastic
+    # and back easings
+    switch @props.easing.toLowerCase?()
+      when 'elastic.out', 'elastic.inout'
+        @props.size *= 1.25
+      when 'back.out', 'back.inout'
+        @props.size *= 1.1
+
     @props.size   *= @bit.ratio
     @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2
@@ -203,7 +212,11 @@ class Transit extends bitsMap.map.bit
     @props ?= {}; fromObject = o or @defaults
     # override deltas only if options obj wasnt passed
     !o? and (@deltas = {})
-    for key, defaultsValue of fromObject
+
+    keys = Object.keys(fromObject); len = keys.length
+    while(len--)
+      key = keys[len]; defaultsValue = fromObject[key]
+    # for key, defaultsValue of fromObject
       # skip props from skipProps object
       continue if @skipProps?[key]
       # if options object was passed = save the value to

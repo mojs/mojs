@@ -166,12 +166,20 @@ describe 'Burst ->', ->
       expect(burst.transits[0].o.angle).toBe 100
       expect(burst.transits[1].o.angle).toBe 162
 
-    it 'should keep the bit if delta passed', ->
+    it 'should keep the bit angle if delta passed', ->
       burst = new Burst
         cound: 2
         childOptions: angle: [{200: 10}, null]
       expect(burst.transits[0].o.angle[290]).toBe 100
       expect(burst.transits[1].o.angle)     .toBe 162
+
+    it 'should not keep the bit angle if isResetAngles is passed', ->
+      burst = new Burst
+        cound: 2
+        isResetAngles: true
+        childOptions: angle: [{200: 10}, null]
+      expect(burst.transits[0].o.angle[200]).toBe 10
+      expect(burst.transits[1].o.angle)     .toBe 0
 
     it 'should pass x/y to transits', ->
       burst = new Burst
@@ -381,6 +389,18 @@ describe 'Burst ->', ->
       spyOn burst, 'addBitOptions'
       burst.calcSize()
       expect(burst.addBitOptions).toHaveBeenCalled()
+
+    it 'should work with sizeGap', ->
+      burst = new Burst
+        sizeGap: 20
+        childOptions:
+          radius:      [{ 20: 50 }, 20]
+          strokeWidth: 20
+      expect(burst.props.size)  .toBe 330
+      expect(burst.props.center).toBe burst.props.size/2
+
+    
+
   describe 'addBitOptions ->', ->
     it 'should set x/y on every transit', ->
       burst = new Burst radius: {0: 120}

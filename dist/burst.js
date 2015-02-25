@@ -35,6 +35,7 @@ Burst = (function(_super) {
     y: 100,
     shiftX: 0,
     shiftY: 0,
+    easing: 'Linear.None',
     radius: {
       25: 75
     },
@@ -48,7 +49,8 @@ Burst = (function(_super) {
     onStart: null,
     onComplete: null,
     onCompleteChain: null,
-    onUpdate: null
+    onUpdate: null,
+    isResetAngles: false
   };
 
   Burst.prototype.childDefaults = {
@@ -158,9 +160,10 @@ Burst = (function(_super) {
       pointEnd = this.getSidePoint('end', i * step);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
-      angleAddition = i * step + 90;
-      transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
-      console.log(transit.o.angle);
+      if (!this.props.isResetAngles) {
+        angleAddition = i * step + 90;
+        transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
+      }
       _results.push(transit.extendDefaults());
     }
     return _results;
@@ -244,16 +247,18 @@ Burst = (function(_super) {
     }
     radius = this.calcMaxRadius();
     this.props.size = largestSize + 2 * radius;
+    this.props.size += 2 * this.props.sizeGap;
     this.props.center = this.props.size / 2;
     return this.addBitOptions();
   };
 
   Burst.prototype.getOption = function(i) {
-    var key, option, value, _ref;
+    var key, keys, len, option;
     option = {};
-    _ref = this.childDefaults;
-    for (key in _ref) {
-      value = _ref[key];
+    keys = Object.keys(this.childDefaults);
+    len = keys.length;
+    while (len--) {
+      key = keys[len];
       option[key] = this.getPropByMod({
         key: key,
         i: i,

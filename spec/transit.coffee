@@ -264,6 +264,39 @@ describe 'Transit ->', ->
         strokeWidth:  { 4:  6    }
       expect(byte.props.size)   .toBe(212)
       expect(byte.props.center) .toBe(106)
+
+    it 'should increase size if elastic.out/inout easing', ->
+      byte = new Byte
+        radius:       { 25: -100 }
+        strokeWidth:  { 4:  6    }
+        easing: 'Elastic.Out'
+      expect(byte.props.size)   .toBe(212*1.25)
+      expect(byte.props.center) .toBe(byte.props.size/2)
+
+      byte = new Byte
+        radius:       { 25: -100 }
+        strokeWidth:  { 4:  6    }
+        easing: 'Elastic.InOut'
+      expect(byte.props.size)   .toBe(212*1.25)
+      expect(byte.props.center) .toBe(byte.props.size/2)
+
+
+    it 'should increase size if back.out/inout easing', ->
+      byte = new Byte
+        radius:       { 25: -100 }
+        strokeWidth:  { 4:  6    }
+        easing: 'back.Out'
+      expect(byte.props.size)   .toBe(212*1.1)
+      expect(byte.props.center) .toBe(byte.props.size/2)
+
+      byte = new Byte
+        radius:       { 25: -100 }
+        strokeWidth:  { 4:  6    }
+        easing: 'Back.InOut'
+      expect(byte.props.size)   .toBe(212*1.1)
+      expect(byte.props.center) .toBe(byte.props.size/2)
+
+
   describe 'el creation ->', ->
     it 'should create el', ->
       byte = new Byte radius: 25
