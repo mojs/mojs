@@ -490,9 +490,17 @@ describe 'Transit ->', ->
         shiftX: 100, shiftY: 100
       expect(byte.fillTransform()).toBe 'translate(100px, 100px)'
   describe 'isNeedsTransform method ->', ->
-    it 'return boolean if fillTransform needed', ->
-      byte = new Byte shiftX: 100, shiftY: 100
+    it 'should return boolean if fillTransform needed', ->
+      byte = new Byte shiftX: 100, shiftY: 100, isRunLess: true
+      byte.setProp shiftX: 101
       expect(byte.isNeedsTransform()).toBe true
+
+    it 'should execute for both x and y ', ->
+      byte = new Byte shiftX: 100, shiftY: 100
+      spyOn byte, 'isPropChanged'
+      byte.isNeedsTransform()
+      expect(byte.isPropChanged).toHaveBeenCalledWith 'shiftX'
+      expect(byte.isPropChanged).toHaveBeenCalledWith 'shiftY'
 
   describe 'show method ->', ->
     it 'should set display: block to el', ->
@@ -644,17 +652,16 @@ describe 'Transit ->', ->
       byte.draw()
       expect(byte.el.style.left)      .toBe     '1px'
       expect(byte.lastSet.x.value)    .toBe     '1px'
-      expect(byte.lastSet.x.isChanged).toBe     true
     it 'should not set old values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()
       byte.draw()
       expect(byte.el.style.left)      .toBe     '0px'
       expect(byte.lastSet.x.value)    .toBe     '0px'
-      expect(byte.lastSet.x.isChanged).toBe     false
     it 'should call fillTransform method', ->
       byte = new Byte radius: 25
       spyOn byte, 'fillTransform'
+      byte.setProp shiftX: 20
       byte.draw()
       expect(byte.fillTransform).toHaveBeenCalled()
 

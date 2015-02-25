@@ -884,13 +884,28 @@
       });
     });
     describe('isNeedsTransform method ->', function() {
-      return it('return boolean if fillTransform needed', function() {
+      it('should return boolean if fillTransform needed', function() {
+        var byte;
+        byte = new Byte({
+          shiftX: 100,
+          shiftY: 100,
+          isRunLess: true
+        });
+        byte.setProp({
+          shiftX: 101
+        });
+        return expect(byte.isNeedsTransform()).toBe(true);
+      });
+      return it('should execute for both x and y ', function() {
         var byte;
         byte = new Byte({
           shiftX: 100,
           shiftY: 100
         });
-        return expect(byte.isNeedsTransform()).toBe(true);
+        spyOn(byte, 'isPropChanged');
+        byte.isNeedsTransform();
+        expect(byte.isPropChanged).toHaveBeenCalledWith('shiftX');
+        return expect(byte.isPropChanged).toHaveBeenCalledWith('shiftY');
       });
     });
     describe('show method ->', function() {
@@ -1166,8 +1181,7 @@
         byte.props.x = '1px';
         byte.draw();
         expect(byte.el.style.left).toBe('1px');
-        expect(byte.lastSet.x.value).toBe('1px');
-        return expect(byte.lastSet.x.isChanged).toBe(true);
+        return expect(byte.lastSet.x.value).toBe('1px');
       });
       it('should not set old values', function() {
         var byte;
@@ -1178,8 +1192,7 @@
         byte.draw();
         byte.draw();
         expect(byte.el.style.left).toBe('0px');
-        expect(byte.lastSet.x.value).toBe('0px');
-        return expect(byte.lastSet.x.isChanged).toBe(false);
+        return expect(byte.lastSet.x.value).toBe('0px');
       });
       return it('should call fillTransform method', function() {
         var byte;
@@ -1187,6 +1200,9 @@
           radius: 25
         });
         spyOn(byte, 'fillTransform');
+        byte.setProp({
+          shiftX: 20
+        });
         byte.draw();
         return expect(byte.fillTransform).toHaveBeenCalled();
       });

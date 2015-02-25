@@ -126,13 +126,16 @@ class Transit extends bitsMap.map.bit
       if @isNeedsTransform()
         @h.setPrefixedStyle @el, 'transform', @fillTransform()
   fillTransform:-> "translate(#{@props.shiftX}, #{@props.shiftY})"
-  isNeedsTransform:-> @isPropChanged('shiftX') or @isPropChanged('shiftY')
+  isNeedsTransform:->
+    isX = @isPropChanged('shiftX'); isY = @isPropChanged('shiftY'); isX or isY
 
   isPropChanged:(name)->
     @lastSet[name] ?= {}
-    @lastSet[name].isChanged = if @lastSet[name].value isnt @props[name]
+    if @lastSet[name].value isnt @props[name]
       @lastSet[name].value = @props[name]; true
     else false
+
+
   calcTransform:->
     @props.transform = "rotate(#{@props.angle},#{@origin.x},#{@origin.y})"
   calcSize:->

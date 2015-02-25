@@ -174,7 +174,10 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.isNeedsTransform = function() {
-    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY');
+    var isX, isY;
+    isX = this.isPropChanged('shiftX');
+    isY = this.isPropChanged('shiftY');
+    return isX || isY;
   };
 
   Transit.prototype.isPropChanged = function(name) {
@@ -182,7 +185,12 @@ Transit = (function(_super) {
     if ((_base = this.lastSet)[name] == null) {
       _base[name] = {};
     }
-    return this.lastSet[name].isChanged = this.lastSet[name].value !== this.props[name] ? (this.lastSet[name].value = this.props[name], true) : false;
+    if (this.lastSet[name].value !== this.props[name]) {
+      this.lastSet[name].value = this.props[name];
+      return true;
+    } else {
+      return false;
+    }
   };
 
   Transit.prototype.calcTransform = function() {

@@ -16,13 +16,14 @@ burst = new Transit(
   isShowEnd:  true
   isRunLess:  true
   points: 5
-  radius: 50
-  # radius: {0: 40}
+  # radius: 50
+  radius: {100: 1}
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
   # childOptions: radius: 10
   # onUpdate:(p)-> console.log p
-).then radius: 0, duration: 2000
+)
+# .then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0
 
 mp = new MotionPath(
