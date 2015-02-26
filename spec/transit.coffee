@@ -389,6 +389,7 @@ describe 'Transit ->', ->
       byte2 = new Byte radius: 25
       expect(byte.bit.type).toBe  'rect'
       expect(byte2.bit.type).toBe 'line'
+
     it 'should add itself to body', ->
       byte = new Byte radius: 25
       expect(byte.el.parentNode.tagName.toLowerCase()).toBe('body')

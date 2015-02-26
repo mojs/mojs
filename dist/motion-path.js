@@ -205,14 +205,7 @@ MotionPath = (function() {
         };
       })(this)
     });
-    this.tween = new Tween({
-      onUpdate: (function(_this) {
-        return function(p) {
-          var _base;
-          return typeof (_base = _this.o).onChainUpdate === "function" ? _base.onChainUpdate(p) : void 0;
-        };
-      })(this)
-    });
+    this.tween = new Tween;
     this.tween.add(this.timeline);
     if (!this.props.isRunLess) {
       return this.startTween();

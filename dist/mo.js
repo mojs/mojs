@@ -213,7 +213,7 @@ Bit = (function() {
     _results = [];
     for (key in _ref) {
       value = _ref[key];
-      _results.push(this.props[key] = this.o[key] || value);
+      _results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
     }
     return _results;
   };
@@ -309,13 +309,15 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./h":8}],3:[function(require,module,exports){
-var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
+var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
 
 Circle = require('./circle');
 
 Line = require('./line');
+
+Zigzag = require('./zigzag');
 
 Rect = require('./rect');
 
@@ -334,6 +336,7 @@ BitsMap = (function() {
     bit: Bit,
     circle: Circle,
     line: Line,
+    zigzag: Zigzag,
     rect: Rect,
     polygon: Polygon,
     cross: Cross
@@ -373,7 +376,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":2,"./circle":5,"./cross":6,"./h":8,"./line":9,"./polygon":13,"./rect":14}],4:[function(require,module,exports){
+},{"./bit":2,"./circle":5,"./cross":6,"./h":8,"./line":9,"./polygon":13,"./rect":14,"./zigzag":22}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, Tween, bitsMap, h,
@@ -840,6 +843,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Cross;
 }
@@ -852,6 +858,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Cross = Cross;
@@ -1642,7 +1651,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":2}],10:[function(require,module,exports){
-var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, eye, mp, page, pupil, slider;
+var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
 
 Burst = require('./burst');
 
@@ -1659,51 +1668,19 @@ MotionPath = require('./motion-path');
 burst = new Transit({
   x: 300,
   y: 300,
-  type: 'circle',
-  delay: 3000,
+  type: 'zigzag',
+  delay: 1000,
   duration: 2000,
   count: 3,
   isShowInit: true,
   isShowEnd: true,
-  isRunLess: true,
+  strokeWidth: 1,
+  stroke: 'deeppink',
+  fill: 'transparent',
   points: 5,
-  radius: {
-    100: 1
-  },
+  radius: 50,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
-});
-
-mp = new MotionPath({
-  path: 'M0,0 L500,500 L1000, 0',
-  el: burst.el,
-  duration: 2000,
-  delay: 3000,
-  isRunLess: true,
-  pathEnd: .25,
-  onChainUpdate: function(p) {
-    return burst.tween.setProgress(p);
-  }
-}).then({
-  duration: 2000,
-  pathStart: .25,
-  pathEnd: .5
-}).then({
-  duration: 2000,
-  pathStart: .5,
-  pathEnd: .75
-}).then({
-  duration: 2000,
-  pathStart: .75,
-  pathEnd: 1
-});
-
-mp.run();
-
-slider = document.getElementById('js-slider');
-
-slider.addEventListener('input', function(e) {
-  return burst.tween.setProgress(this.value / 100000);
 });
 
 eye = document.querySelector('#js-eye');
@@ -1920,14 +1897,7 @@ MotionPath = (function() {
         };
       })(this)
     });
-    this.tween = new Tween({
-      onUpdate: (function(_this) {
-        return function(p) {
-          var _base;
-          return typeof (_base = _this.o).onChainUpdate === "function" ? _base.onChainUpdate(p) : void 0;
-        };
-      })(this)
-    });
+    this.tween = new Tween;
     this.tween.add(this.timeline);
     if (!this.props.isRunLess) {
       return this.startTween();
@@ -4388,4 +4358,81 @@ if ((typeof define === "function") && define.amd) {
 })()
 
 
-},{}]},{},[10])
+},{}],22:[function(require,module,exports){
+
+/* istanbul ignore next */
+var Bit, Zigzag,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Bit = require('./bit');
+
+Zigzag = (function(_super) {
+  __extends(Zigzag, _super);
+
+  function Zigzag() {
+    return Zigzag.__super__.constructor.apply(this, arguments);
+  }
+
+  Zigzag.prototype.type = 'polyline';
+
+  Zigzag.prototype.draw = function() {
+    var i, iX, iY, points, radiusX, radiusY, startPoints, stepX, stepY, strokeWidth, _i, _ref;
+    Zigzag.__super__.draw.apply(this, arguments);
+    if (!this.props.points) {
+      return;
+    }
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    points = '';
+    stepX = 2 * radiusX / this.props.points;
+    stepY = 2 * radiusY / this.props.points;
+    strokeWidth = this.props['stroke-width'];
+    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      iX = i * stepX + strokeWidth;
+      iY = i * stepY + strokeWidth;
+      startPoints = "" + iX + ", " + iY;
+      points += i === this.props.points ? startPoints : "" + startPoints + " " + ((i + 1) * stepX + strokeWidth) + ", " + iY + " ";
+    }
+    return this.setAttr({
+      points: points
+    });
+  };
+
+  return Zigzag;
+
+})(Bit);
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Zigzag", [], function() {
+    return Zigzag;
+  });
+}
+
+
+/* istanbul ignore next */
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Zigzag;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Zigzag = Zigzag;
+}
+
+},{"./bit":2}]},{},[10])

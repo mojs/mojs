@@ -132,7 +132,7 @@ class MotionPath
       onComplete: => @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
-    @tween = new Tween onUpdate:(p)=> @o.onChainUpdate?(p)
+    @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
     @tween.add(@timeline)
     if !@props.isRunLess then @startTween()
     else if @props.isPresetPosition then @setProgress(0, true)

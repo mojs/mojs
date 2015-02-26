@@ -65,7 +65,7 @@ Bit = (function() {
     _results = [];
     for (key in _ref) {
       value = _ref[key];
-      _results.push(this.props[key] = this.o[key] || value);
+      _results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
     }
     return _results;
   };

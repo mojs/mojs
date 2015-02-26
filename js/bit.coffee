@@ -34,7 +34,7 @@ class Bit
   extendDefaults:->
     @props ?= {}
     for key, value of @defaults
-      @props[key] = @o[key] or value
+      @props[key] = if @o[key]? then @o[key] else value
   setAttr:(attr, value)->
     if typeof attr is 'object'
       keys = Object.keys(attr); len = keys.length; el = value or @el

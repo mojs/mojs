@@ -6,12 +6,13 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- motion-path
- - add onChainUpdate
 - add more shapes(bits)
   - line and cross to 1px path  ?
 - add line animator
 - :: demo
+
+- layout boundaries
+- add onChainUpdate to all the bits
 
 - add motion path
   - add movement arc

@@ -192,6 +192,14 @@ describe 'Bit', ->
         'stroke-width': 5
       expect(bit.props.radius).toBe(45)
       expect(bit.props['stroke-width']).toBe(5)
+    it 'should work with 0 values', ->
+      bit = new Bit
+        ctx:            svg
+        radius:         45
+        'stroke-width': 5
+        points:         0
+      expect(bit.props.points).toBe 0
+
     it 'should have namespace object', ->
       expect(bit.ns).toBe 'http://www.w3.org/2000/svg'
     it 'should have type object', ->

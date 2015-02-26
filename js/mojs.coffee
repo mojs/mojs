@@ -8,16 +8,21 @@ MotionPath  = require './motion-path'
 
 burst = new Transit(
   x: 300, y: 300
-  type:         'circle'
-  delay:        3000
+  type:         'zigzag'
+  delay:        1000
   duration:     2000
   count:        3
   isShowInit: true
   isShowEnd:  true
-  isRunLess:  true
+  strokeWidth: 1
+  stroke: 'deeppink'
+  fill: 'transparent'
+
+  # isRunLess:  true
   points: 5
-  # radius: 50
-  radius: {100: 1}
+  radius: 50
+  # radius: 100
+  # radiusY: { 10: 0 }
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
   # childOptions: radius: 10
@@ -26,27 +31,27 @@ burst = new Transit(
 # .then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0
 
-mp = new MotionPath(
-  path:     'M0,0 L500,500 L1000, 0'
-  el:       burst.el
-  duration: 2000
-  delay:    3000
-  # isReverse: true
-  isRunLess: true
-  # pathStart: 0
-  pathEnd:   .25
-  # onStart:-> burst.show()
-  onChainUpdate:(p)-> burst.tween.setProgress(p)
-)
-.then duration: 2000, pathStart: .25, pathEnd:  .5
-.then duration: 2000, pathStart: .5,  pathEnd:  .75
-.then duration: 2000, pathStart: .75, pathEnd:  1
+# mp = new MotionPath(
+#   path:     'M0,0 L500,500 L1000, 0'
+#   el:       burst.el
+#   duration: 2000
+#   delay:    3000
+#   # isReverse: true
+#   isRunLess: true
+#   # pathStart: 0
+#   pathEnd:   .25
+#   # onStart:-> burst.show()
+#   onChainUpdate:(p)-> burst.tween.setProgress(p)
+# )
+# .then duration: 2000, pathStart: .25, pathEnd:  .5
+# .then duration: 2000, pathStart: .5,  pathEnd:  .75
+# .then duration: 2000, pathStart: .75, pathEnd:  1
 
-mp.run()
+# mp.run()
 
-slider = document.getElementById 'js-slider'
-slider.addEventListener 'input', (e)->
-  burst.tween.setProgress (@value/100000)
+# slider = document.getElementById 'js-slider'
+# slider.addEventListener 'input', (e)->
+#   burst.tween.setProgress (@value/100000)
 
 # i = 0
 # setInterval ->

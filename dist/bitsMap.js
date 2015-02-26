@@ -1,10 +1,12 @@
-var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, h;
+var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
 
 Circle = require('./circle');
 
 Line = require('./line');
+
+Zigzag = require('./zigzag');
 
 Rect = require('./rect');
 
@@ -23,6 +25,7 @@ BitsMap = (function() {
     bit: Bit,
     circle: Circle,
     line: Line,
+    zigzag: Zigzag,
     rect: Rect,
     polygon: Polygon,
     cross: Cross
