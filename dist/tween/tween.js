@@ -1,6 +1,6 @@
 var Tween, h, t;
 
-h = require('./h');
+h = require('../h');
 
 t = require('./tweener');
 

@@ -1,5 +1,4 @@
-h       = require './h'
-
+h       = require '../h'
 class Bit
   ns:                   'http://www.w3.org/2000/svg'
   type:                 'line'

@@ -1,8 +1,8 @@
 var Tweener, h, t;
 
-h = require('./h');
+require('../polyfills/raf');
 
-require('./polyfills/raf');
+h = require('../h');
 
 Tweener = (function() {
   function Tweener() {

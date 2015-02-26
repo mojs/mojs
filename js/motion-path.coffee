@@ -1,7 +1,7 @@
 h         = require './h'
-Tween     = require './tween'
-Timeline  = require './timeline'
 resize    = require './vendor/resize'
+Timeline  = require './tween/timeline'
+Tween     = require './tween/tween'
 
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'

@@ -3,9 +3,6 @@
   MIT License 2014
 ###
 
-# TODO
-#   travis ci tests as at https://github.com/larrymyers/react-mini-router
-
 class Main
   constructor:(@o={})->
     return if window.isAnyResizeEventInited

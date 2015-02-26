@@ -6,7 +6,7 @@ var Bit, Polygon, h,
 
 Bit = require('./bit');
 
-h = require('./h');
+h = require('../h');
 
 Polygon = (function(_super) {
   __extends(Polygon, _super);

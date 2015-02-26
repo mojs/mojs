@@ -1,10 +1,10 @@
 # Transit   = require './transit'
 Burst       = require './burst'
 Swirl       = require './Swirl'
-Timeline    = require './timeline'
-Tween       = require './tween'
 Transit     = require './transit'
 MotionPath  = require './motion-path'
+Timeline    = require './tween/timeline'
+Tween       = require './tween/tween'
 
 burst = new Transit(
   x: 300, y: 300
@@ -16,7 +16,7 @@ burst = new Transit(
   isShowEnd:  true
   strokeWidth: 2
   stroke: 'deeppink'
-  fill: 'transparent'
+  # fill: 'transparent'
   angle: {0: 180}
 
   # isRunLess:  true

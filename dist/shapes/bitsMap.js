@@ -16,7 +16,7 @@ Cross = require('./cross');
 
 Equal = require('./equal');
 
-h = require('./h');
+h = require('../h');
 
 BitsMap = (function() {
   function BitsMap() {}

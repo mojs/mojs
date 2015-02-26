@@ -1,6 +1,6 @@
 var Bit, h;
 
-h = require('./h');
+h = require('../h');
 
 Bit = (function() {
   Bit.prototype.ns = 'http://www.w3.org/2000/svg';

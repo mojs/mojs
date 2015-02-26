@@ -1,11 +1,11 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-bitsMap   = require './bitsMap'
+bitsMap   = require './shapes/bitsMap'
+Tween     = require './tween/tween'
 Transit   = require './transit'
 Swirl     = require './swirl'
 h         = require './h'
-Tween     = require './tween'
 
 class Burst extends Transit
   skipProps: childOptions: 1

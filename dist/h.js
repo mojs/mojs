@@ -1,10 +1,6 @@
-var Helpers, TWEEN, h;
-
-TWEEN = require('./vendor/tween');
+var Helpers, h;
 
 Helpers = (function() {
-  Helpers.prototype.TWEEN = TWEEN;
-
   Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 5px 2px; border: 1px solid #FF512F;';
 
   Helpers.prototype.shortColors = {
@@ -296,6 +292,7 @@ Helpers = (function() {
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
       result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor);
+      console.log(result);
       colorObj = {};
       alpha = parseFloat(result[4] || 1);
       if (result) {

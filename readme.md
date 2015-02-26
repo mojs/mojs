@@ -6,8 +6,6 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- add more shapes(bits)
-- move shapes to folder
 - add line animator
 - :: demo
 

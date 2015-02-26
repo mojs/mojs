@@ -20,7 +20,6 @@ describe 'Equal', ->
           ctx:    document.createElementNS?(ns, "svg")
           radius: 20
         expect(equal.el.getAttribute('d')).toBeTruthy()
-
       it 'should not work with 0 points', ->
         equal = new Equal
           ctx:    document.createElementNS?(ns, "svg")

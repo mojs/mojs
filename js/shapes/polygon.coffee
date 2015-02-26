@@ -2,7 +2,7 @@
 ### istanbul ignore next ###
 
 Bit = require './bit'
-h   = require './h'
+h   = require '../h'
 
 class Polygon extends Bit
   type:     'polygon'

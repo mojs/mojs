@@ -1,5 +1,5 @@
-h = require './h'
-require './polyfills/raf'
+require '../polyfills/raf'
+h = require '../h'
 
 class Tweener
   constructor:-> @vars(); @

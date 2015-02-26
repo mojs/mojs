@@ -1,7 +1,4 @@
-TWEEN = require './vendor/tween'
-
 class Helpers
-  TWEEN:  TWEEN
   logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
     padding: 1px 5px 2px; border: 1px solid #FF512F;'
   shortColors:
@@ -208,6 +205,7 @@ class Helpers
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),'
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$'
       result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor)
+      console.log result
       colorObj = {}
       alpha = parseFloat(result[4] or 1)
       if result

@@ -1,8 +1,8 @@
 var Easing, Timeline, h;
 
-h = require('./h');
+Easing = require('../easing');
 
-Easing = require('./easing');
+h = require('../h');
 
 Timeline = (function() {
   Timeline.prototype.defaults = {

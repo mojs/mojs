@@ -1,11 +1,9 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 h         = require './h'
-# TWEEN     = require './vendor/tween'
-bitsMap   = require './bitsMap'
-
-Timeline = require './timeline'
-Tween    = require './tween'
+bitsMap   = require './shapes/bitsMap'
+Timeline = require './tween/timeline'
+Tween    = require './tween/tween'
 
 class Transit extends bitsMap.map.bit
   progress: 0

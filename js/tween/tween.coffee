@@ -1,4 +1,4 @@
-h = require './h'
+h = require '../h'
 t = require './tweener'
 
 class Tween

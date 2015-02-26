@@ -1,5 +1,5 @@
-h = require './h'
-Easing = require './easing'
+Easing = require '../easing'
+h      = require '../h'
 
 class Timeline
   defaults:

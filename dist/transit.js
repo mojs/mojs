@@ -6,11 +6,11 @@ var Timeline, Transit, Tween, bitsMap, h,
 
 h = require('./h');
 
-bitsMap = require('./bitsMap');
+bitsMap = require('./shapes/bitsMap');
 
-Timeline = require('./timeline');
+Timeline = require('./tween/timeline');
 
-Tween = require('./tween');
+Tween = require('./tween/tween');
 
 Transit = (function(_super) {
   __extends(Transit, _super);

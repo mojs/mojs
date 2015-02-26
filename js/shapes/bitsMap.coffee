@@ -7,7 +7,7 @@ Rect      = require './rect'
 Polygon   = require './polygon'
 Cross     = require './cross'
 Equal     = require './equal'
-h         = require './h'
+h         = require '../h'
 
 class BitsMap
   h: h

@@ -2,11 +2,11 @@ var MotionPath, Timeline, Tween, h, resize;
 
 h = require('./h');
 
-Tween = require('./tween');
-
-Timeline = require('./timeline');
-
 resize = require('./vendor/resize');
+
+Timeline = require('./tween/timeline');
+
+Tween = require('./tween/tween');
 
 MotionPath = (function() {
   MotionPath.prototype.NS = 'http://www.w3.org/2000/svg';
