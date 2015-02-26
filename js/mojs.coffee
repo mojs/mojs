@@ -8,21 +8,22 @@ MotionPath  = require './motion-path'
 
 burst = new Transit(
   x: 300, y: 300
-  type:         'zigzag'
+  type:         'equal'
   delay:        1000
   duration:     2000
   count:        3
   isShowInit: true
   isShowEnd:  true
-  strokeWidth: 1
+  strokeWidth: 2
   stroke: 'deeppink'
   fill: 'transparent'
+  angle: {0: 180}
 
   # isRunLess:  true
-  points: 5
+  points: 2
   radius: 50
   # radius: 100
-  # radiusY: { 10: 0 }
+  # radiusY:  25
   swirlFrequency: 'rand(0,10)'
   swirlSize:      'rand(0,10)'
   # childOptions: radius: 10

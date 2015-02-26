@@ -1,7 +1,7 @@
 (function() {
-  var Bit, Zigzag, ns, svg;
+  var Bit, Equal, ns, svg;
 
-  Zigzag = mojs.Zigzag;
+  Equal = mojs.Equal;
 
   Bit = mojs.Bit;
 
@@ -9,46 +9,46 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
 
-  describe('Zigzag', function() {
+  describe('Equal', function() {
     it('should extend Bit', function() {
-      var line;
-      line = new Zigzag({
+      var equal;
+      equal = new Equal({
         ctx: svg
       });
-      return expect(line instanceof Bit).toBe(true);
+      return expect(equal instanceof Bit).toBe(true);
     });
-    it('should add itself to context', function() {
-      var line;
-      line = new Zigzag({
+    it('have type of path', function() {
+      var equal;
+      equal = new Equal({
         ctx: svg
       });
-      return expect(svg.firstChild).toBeDefined();
+      return expect(equal.type).toBe('path');
+    });
+    it('have ratio of 1.43', function() {
+      var equal;
+      equal = new Equal({
+        ctx: svg
+      });
+      return expect(equal.ratio).toBe(1.43);
     });
     return describe('methods ->', function() {
       return describe('draw method ->', function() {
-        it('should add properties to el', function() {
-          var zigzag;
-          return zigzag = new Zigzag({
-            ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
-            radius: 20
-          });
-        });
         it('should define points', function() {
-          var zigzag;
-          zigzag = new Zigzag({
+          var equal;
+          equal = new Equal({
             ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20
           });
-          return expect(zigzag.el.getAttribute('points')).toBeTruthy();
+          return expect(equal.el.getAttribute('d')).toBeTruthy();
         });
         return it('should not work with 0 points', function() {
-          var zigzag;
-          zigzag = new Zigzag({
+          var equal;
+          equal = new Equal({
             ctx: typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0,
             radius: 20,
             points: 0
           });
-          return expect(zigzag.el.getAttribute('points')).toBeFalsy();
+          return expect(equal.el.getAttribute('points')).toBeFalsy();
         });
       });
     });

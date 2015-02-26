@@ -7,7 +7,7 @@
 
 #### todo
 - add more shapes(bits)
-  - line and cross to 1px path  ?
+- move shapes to folder
 - add line animator
 - :: demo
 

@@ -1,4 +1,4 @@
-var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, Zigzag, h;
+var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
 
@@ -14,6 +14,8 @@ Polygon = require('./polygon');
 
 Cross = require('./cross');
 
+Equal = require('./equal');
+
 h = require('./h');
 
 BitsMap = (function() {
@@ -28,7 +30,8 @@ BitsMap = (function() {
     zigzag: Zigzag,
     rect: Rect,
     polygon: Polygon,
-    cross: Cross
+    cross: Cross,
+    equal: Equal
   };
 
   BitsMap.prototype.getBit = function(name) {
@@ -48,6 +51,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = new BitsMap;
 }
@@ -60,6 +66,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;

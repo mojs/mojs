@@ -6,9 +6,11 @@ describe 'bitsMap ->', ->
     expect(bitsMap.map.bit)       .toBeDefined()
     expect(bitsMap.map.circle)    .toBeDefined()
     expect(bitsMap.map.line)      .toBeDefined()
+    expect(bitsMap.map.zigzag)    .toBeDefined()
     expect(bitsMap.map.rect)      .toBeDefined()
     expect(bitsMap.map.polygon)   .toBeDefined()
     expect(bitsMap.map.cross)     .toBeDefined()
+    expect(bitsMap.map.equal)     .toBeDefined()
   describe 'getBit', ->
     it 'should get bit by string', ->
       expect(bitsMap.getBit('bit')).toBeDefined()

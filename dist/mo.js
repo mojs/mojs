@@ -145,7 +145,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Swirl = Swirl;
 }
 
-},{"./transit":17}],2:[function(require,module,exports){
+},{"./transit":18}],2:[function(require,module,exports){
 var Bit, h;
 
 h = require('./h');
@@ -308,8 +308,8 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"./h":8}],3:[function(require,module,exports){
-var Bit, BitsMap, Circle, Cross, Line, Polygon, Rect, Zigzag, h;
+},{"./h":9}],3:[function(require,module,exports){
+var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
 
@@ -325,6 +325,8 @@ Polygon = require('./polygon');
 
 Cross = require('./cross');
 
+Equal = require('./equal');
+
 h = require('./h');
 
 BitsMap = (function() {
@@ -339,7 +341,8 @@ BitsMap = (function() {
     zigzag: Zigzag,
     rect: Rect,
     polygon: Polygon,
-    cross: Cross
+    cross: Cross,
+    equal: Equal
   };
 
   BitsMap.prototype.getBit = function(name) {
@@ -359,6 +362,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = new BitsMap;
 }
@@ -372,11 +378,14 @@ if (typeof window !== "undefined" && window !== null) {
   }
 }
 
+
+/* istanbul ignore next */
+
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"./bit":2,"./circle":5,"./cross":6,"./h":8,"./line":9,"./polygon":13,"./rect":14,"./zigzag":22}],4:[function(require,module,exports){
+},{"./bit":2,"./circle":5,"./cross":6,"./equal":8,"./h":9,"./line":10,"./polygon":14,"./rect":15,"./zigzag":23}],4:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, Tween, bitsMap, h,
@@ -737,7 +746,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./bitsMap":3,"./h":8,"./swirl":15,"./transit":17,"./tween":18}],5:[function(require,module,exports){
+},{"./bitsMap":3,"./h":9,"./swirl":16,"./transit":18,"./tween":19}],5:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -1125,6 +1134,84 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],8:[function(require,module,exports){
+
+/* istanbul ignore next */
+var Bit, Equal,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Bit = require('./bit');
+
+Equal = (function(_super) {
+  __extends(Equal, _super);
+
+  function Equal() {
+    return Equal.__super__.constructor.apply(this, arguments);
+  }
+
+  Equal.prototype.type = 'path';
+
+  Equal.prototype.ratio = 1.43;
+
+  Equal.prototype.draw = function() {
+    var d, i, radiusX, radiusY, x1, x2, y, yStart, yStep, _i, _ref;
+    Equal.__super__.draw.apply(this, arguments);
+    if (!this.props.points) {
+      return;
+    }
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    x1 = this.props.x - radiusX;
+    x2 = this.props.x + radiusX;
+    d = '';
+    yStep = 2 * radiusY / (this.props.points - 1);
+    yStart = this.props.y - radiusY;
+    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      y = "" + (i * yStep + yStart);
+      d += "M" + x1 + ", " + y + " L" + x2 + ", " + y + " ";
+    }
+    return this.setAttr({
+      d: d
+    });
+  };
+
+  return Equal;
+
+})(Bit);
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Equal", [], function() {
+    return Equal;
+  });
+}
+
+
+/* istanbul ignore next */
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Equal;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Equal = Equal;
+}
+
+},{"./bit":2}],9:[function(require,module,exports){
 var Helpers, TWEEN, h;
 
 TWEEN = require('./vendor/tween');
@@ -1586,7 +1673,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.helpers = h;
 }
 
-},{"./vendor/tween":21}],9:[function(require,module,exports){
+},{"./vendor/tween":22}],10:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -1650,7 +1737,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":2}],10:[function(require,module,exports){
+},{"./bit":2}],11:[function(require,module,exports){
 var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
 
 Burst = require('./burst');
@@ -1668,16 +1755,19 @@ MotionPath = require('./motion-path');
 burst = new Transit({
   x: 300,
   y: 300,
-  type: 'zigzag',
+  type: 'equal',
   delay: 1000,
   duration: 2000,
   count: 3,
   isShowInit: true,
   isShowEnd: true,
-  strokeWidth: 1,
+  strokeWidth: 2,
   stroke: 'deeppink',
   fill: 'transparent',
-  points: 5,
+  angle: {
+    0: 180
+  },
+  points: 2,
   radius: 50,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
@@ -1689,7 +1779,7 @@ pupil = document.querySelector('#js-pupil');
 
 page = document.querySelector('#js-page');
 
-},{"./Swirl":1,"./burst":4,"./motion-path":11,"./timeline":16,"./transit":17,"./tween":18}],11:[function(require,module,exports){
+},{"./Swirl":1,"./burst":4,"./motion-path":12,"./timeline":17,"./transit":18,"./tween":19}],12:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
 
 h = require('./h');
@@ -2055,7 +2145,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.MotionPath = MotionPath;
 }
 
-},{"./h":8,"./timeline":16,"./tween":18,"./vendor/resize":20}],12:[function(require,module,exports){
+},{"./h":9,"./timeline":17,"./tween":19,"./vendor/resize":21}],13:[function(require,module,exports){
 (function() {
   var k, lastTime, vendors, x;
   lastTime = 0;
@@ -2086,7 +2176,7 @@ if (typeof window !== "undefined" && window !== null) {
   }
 })();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -2168,7 +2258,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"./bit":2,"./h":8}],14:[function(require,module,exports){
+},{"./bit":2,"./h":9}],15:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -2231,9 +2321,9 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":2}],15:[function(require,module,exports){
+},{"./bit":2}],16:[function(require,module,exports){
 module.exports=require(1)
-},{"./transit":17}],16:[function(require,module,exports){
+},{"./transit":18}],17:[function(require,module,exports){
 var Easing, Timeline, h;
 
 h = require('./h');
@@ -2413,7 +2503,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Timeline = Timeline;
 }
 
-},{"./easing":7,"./h":8}],17:[function(require,module,exports){
+},{"./easing":7,"./h":9}],18:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -3042,7 +3132,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./bitsMap":3,"./h":8,"./timeline":16,"./tween":18}],18:[function(require,module,exports){
+},{"./bitsMap":3,"./h":9,"./timeline":17,"./tween":19}],19:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('./h');
@@ -3226,7 +3316,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;
 }
 
-},{"./h":8,"./tweener":19}],19:[function(require,module,exports){
+},{"./h":9,"./tweener":20}],20:[function(require,module,exports){
 var Tweener, h, t;
 
 h = require('./h');
@@ -3339,7 +3429,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.tweener = t;
 }
 
-},{"./h":8,"./polyfills/raf":12}],20:[function(require,module,exports){
+},{"./h":9,"./polyfills/raf":13}],21:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com
@@ -3555,7 +3645,7 @@ if ((typeof define === "function") && define.amd) {
   }
 }
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /* istanbul ignore next */
 ;(function(undefined){
 	
@@ -4358,7 +4448,7 @@ if ((typeof define === "function") && define.amd) {
 })()
 
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Zigzag,
@@ -4435,4 +4525,4 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Zigzag = Zigzag;
 }
 
-},{"./bit":2}]},{},[10])
+},{"./bit":2}]},{},[11])

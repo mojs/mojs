@@ -3,7 +3,7 @@ Bit    = mojs.Bit
 ns     = 'http://www.w3.org/2000/svg'
 svg    = document.createElementNS?(ns, "svg")
 
-describe 'Line', ->
+describe 'Zigzag', ->
   it 'should extend Bit', ->
     line = new Zigzag ctx: svg
     expect(line instanceof Bit).toBe(true)

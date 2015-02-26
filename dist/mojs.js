@@ -15,16 +15,19 @@ MotionPath = require('./motion-path');
 burst = new Transit({
   x: 300,
   y: 300,
-  type: 'zigzag',
+  type: 'equal',
   delay: 1000,
   duration: 2000,
   count: 3,
   isShowInit: true,
   isShowEnd: true,
-  strokeWidth: 1,
+  strokeWidth: 2,
   stroke: 'deeppink',
   fill: 'transparent',
-  points: 5,
+  angle: {
+    0: 180
+  },
+  points: 2,
   radius: 50,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
