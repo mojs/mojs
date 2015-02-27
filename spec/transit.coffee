@@ -407,11 +407,8 @@ describe 'Transit ->', ->
     it 'should animate opacity', (dfr)->
       byte = new Byte
         opacity: { 1: 0}
-        duration: 50
-      setTimeout ->
-        expect(byte.el.style.opacity).toBe '0'
-        dfr()
-      , 200
+        duration: 32
+        onComplete:-> expect(byte.el.style.opacity).toBe('0'); dfr()
   describe 'position set ->', ->
     describe 'x/y coordinates ->', ->
       it 'should set a position with respect to units', ->
@@ -424,10 +421,7 @@ describe 'Transit ->', ->
         byte = new Byte
           x: {100: '200px'}
           duration: 20
-        setTimeout ->
-          expect(byte.el.style.left)   .toBe '200px'
-          dfr()
-        , 100
+          onComplete:-> expect(byte.el.style.left).toBe('200px'); dfr()
       it 'should warn when x/y animated position and not foreign context',->
         spyOn console, 'warn'
         byte = new Byte x: {100: '200px'}

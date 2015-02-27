@@ -736,16 +736,16 @@
       });
       return it('should animate opacity', function(dfr) {
         var byte;
-        byte = new Byte({
+        return byte = new Byte({
           opacity: {
             1: 0
           },
-          duration: 50
+          duration: 32,
+          onComplete: function() {
+            expect(byte.el.style.opacity).toBe('0');
+            return dfr();
+          }
         });
-        return setTimeout(function() {
-          expect(byte.el.style.opacity).toBe('0');
-          return dfr();
-        }, 200);
       });
     });
     describe('position set ->', function() {
@@ -761,16 +761,16 @@
         });
         it('should animate position', function(dfr) {
           var byte;
-          byte = new Byte({
+          return byte = new Byte({
             x: {
               100: '200px'
             },
-            duration: 20
+            duration: 20,
+            onComplete: function() {
+              expect(byte.el.style.left).toBe('200px');
+              return dfr();
+            }
           });
-          return setTimeout(function() {
-            expect(byte.el.style.left).toBe('200px');
-            return dfr();
-          }, 100);
         });
         it('should warn when x/y animated position and not foreign context', function() {
           var byte;
