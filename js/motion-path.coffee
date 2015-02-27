@@ -59,12 +59,12 @@ class MotionPath
       @addEvent    @container, 'onresize', @getScaler
 
   addEvent:(el, type, handler)->
-    if el.addEventListener then @container.addEventListener type, handler
+    if el.addEventListener then @container.addEventListener type, handler, false
     else if el.attachEvent then @container.attachEvent type, handler
 
   removeEvent:(el, type, handler)->
     if el.removeEventListener
-      @container.removeEventListener type, handler
+      @container.removeEventListener type, handler, false
     else if el.detachEvent then @container.detachEvent type, handler
 
   parseEl:(el)->

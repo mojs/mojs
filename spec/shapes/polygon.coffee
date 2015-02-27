@@ -56,7 +56,7 @@ describe 'Polygon ->', ->
       d   = tri.el.getAttribute('points')
       d2  = '0.0000,-20.0000 34.6410,10.0000 -34.6410,10.0000 '
       isD = d is d2
-      isIE9D = d is '0,-20 34.6410,10 -34.6410,10'
+      isIE9D = d is '0,-20 34.641,10 -34.641,10'
       expect(isD or isIE9D).toBe true
     it 'should work with radiusY and fallback to radius', ->
       svg = document.createElementNS?(ns, "svg")

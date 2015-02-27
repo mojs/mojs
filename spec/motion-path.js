@@ -1103,8 +1103,8 @@
         expect(mp.props.duration).toBe(5000);
         return expect(mp.props.pathEnd).toBe(.5);
       });
-      return it('should recal el, path, len, fill, container if defined', function() {
-        var mp;
+      return it('should recalc el, path, len, fill, container if defined', function() {
+        var coordsIE, mp, pathCoords;
         mp = new MotionPath({
           path: coords,
           el: document.createElement('div'),
@@ -1113,11 +1113,13 @@
           isRunLess: true
         });
         coords = 'M0,0 L 105,105';
+        coordsIE = 'M 0 0 L 105 105';
         mp.tuneOptions({
           duration: 5000,
           path: coords
         });
-        return expect(mp.path.getAttribute('d')).toBe(coords);
+        pathCoords = mp.path.getAttribute('d');
+        return expect(pathCoords === coords || pathCoords === coordsIE).toBe(true);
       });
     });
     return describe('createTween method', function() {

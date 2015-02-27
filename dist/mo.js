@@ -1375,7 +1375,7 @@ MotionPath = (function() {
 
   MotionPath.prototype.addEvent = function(el, type, handler) {
     if (el.addEventListener) {
-      return this.container.addEventListener(type, handler);
+      return this.container.addEventListener(type, handler, false);
     } else if (el.attachEvent) {
       return this.container.attachEvent(type, handler);
     }
@@ -1383,7 +1383,7 @@ MotionPath = (function() {
 
   MotionPath.prototype.removeEvent = function(el, type, handler) {
     if (el.removeEventListener) {
-      return this.container.removeEventListener(type, handler);
+      return this.container.removeEventListener(type, handler, false);
     } else if (el.detachEvent) {
       return this.container.detachEvent(type, handler);
     }

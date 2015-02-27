@@ -803,7 +803,7 @@ describe 'MotionPath ->', ->
       expect(mp.props.duration).toBe 5000
       expect(mp.props.pathEnd) .toBe .5
 
-    it 'should recal el, path, len, fill, container if defined', ->
+    it 'should recalc el, path, len, fill, container if defined', ->
       mp = new MotionPath(
         path:       coords
         el:         document.createElement 'div'
@@ -812,8 +812,10 @@ describe 'MotionPath ->', ->
         isRunLess:  true
       )
       coords = 'M0,0 L 105,105'
+      coordsIE = 'M 0 0 L 105 105'
       mp.tuneOptions duration: 5000, path: coords
-      expect(mp.path.getAttribute('d')).toBe coords
+      pathCoords = mp.path.getAttribute('d')
+      expect(pathCoords is coords or pathCoords is coordsIE).toBe true
 
   describe 'createTween method', ->
     it 'should bind the onFirstUpdateBackward metod', ->
