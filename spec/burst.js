@@ -690,11 +690,11 @@
         return setTimeout(function() {
           expect(burst.props.onStart).toHaveBeenCalled();
           return dfr();
-        }, 100);
+        }, 200);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
-        isRightScope = false;
+        isRightScope = null;
         burst = new Burst({
           onStart: function() {
             return isRightScope = this instanceof Burst;
@@ -703,7 +703,7 @@
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }, 100);
+        }, 200);
       });
     });
     describe('onComplete callback ->', function() {

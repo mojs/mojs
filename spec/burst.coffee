@@ -448,13 +448,13 @@ describe 'Burst ->', ->
       burst.run()
       setTimeout ->
         expect(burst.props.onStart).toHaveBeenCalled(); dfr()
-      , 100
+      , 200
     it 'should have the scope of burst', (dfr)->
-      isRightScope = false
+      isRightScope = null
       burst = new Burst onStart:-> isRightScope = @ instanceof Burst
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
-      , 100
+      , 200
 
   describe 'onComplete callback ->', ->
     it 'should run onComplete callback', (dfr)->

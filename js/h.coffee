@@ -2,6 +2,7 @@ class Helpers
   logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
     padding: 1px 5px 2px; border: 1px solid #FF512F;'
   shortColors:
+    transparent: 'rgba(0,0,0,0)'
     aqua:   'rgb(0,255,255)'
     black:  'rgb(0,0,0)'
     blue:   'rgb(0,0,255)'

@@ -734,7 +734,7 @@
         });
         return expect(byte.el.style.opacity).toBe('0.5');
       });
-      it('should animate opacity', function(dfr) {
+      return it('should animate opacity', function(dfr) {
         var byte;
         byte = new Byte({
           opacity: {
@@ -745,79 +745,79 @@
         return setTimeout(function() {
           expect(byte.el.style.opacity).toBe('0');
           return dfr();
-        }, 100);
+        }, 200);
       });
-      return describe('position set ->', function() {
-        describe('x/y coordinates ->', function() {
-          it('should set a position with respect to units', function() {
-            var byte;
-            byte = new Byte({
-              x: 100,
-              y: 50
-            });
-            expect(byte.el.style.left).toBe('100px');
-            return expect(byte.el.style.top).toBe('50px');
+    });
+    describe('position set ->', function() {
+      return describe('x/y coordinates ->', function() {
+        it('should set a position with respect to units', function() {
+          var byte;
+          byte = new Byte({
+            x: 100,
+            y: 50
           });
-          it('should animate position', function(dfr) {
-            var byte;
-            byte = new Byte({
-              x: {
-                100: '200px'
-              },
-              duration: 20
-            });
-            return setTimeout(function() {
-              expect(byte.el.style.left).toBe('200px');
-              return dfr();
-            }, 100);
+          expect(byte.el.style.left).toBe('100px');
+          return expect(byte.el.style.top).toBe('50px');
+        });
+        it('should animate position', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              100: '200px'
+            },
+            duration: 20
           });
-          it('should warn when x/y animated position and not foreign context', function() {
-            var byte;
-            spyOn(console, 'warn');
-            byte = new Byte({
-              x: {
-                100: '200px'
-              }
-            });
-            return expect(console.warn).toHaveBeenCalled();
+          return setTimeout(function() {
+            expect(byte.el.style.left).toBe('200px');
+            return dfr();
+          }, 100);
+        });
+        it('should warn when x/y animated position and not foreign context', function() {
+          var byte;
+          spyOn(console, 'warn');
+          byte = new Byte({
+            x: {
+              100: '200px'
+            }
           });
-          it('should notwarn when x/y animated position and foreign context', function() {
-            var byte;
-            spyOn(console, 'warn');
-            byte = new Byte({
-              x: {
-                100: '200px'
-              },
-              ctx: svg
-            });
-            return expect(console.warn).not.toHaveBeenCalled();
+          return expect(console.warn).toHaveBeenCalled();
+        });
+        it('should notwarn when x/y animated position and foreign context', function() {
+          var byte;
+          spyOn(console, 'warn');
+          byte = new Byte({
+            x: {
+              100: '200px'
+            },
+            ctx: svg
           });
-          it('should animate position with respect to units', function(dfr) {
-            var byte;
-            byte = new Byte({
-              x: {
-                '20%': '50%'
-              },
-              duration: 20
-            });
-            return setTimeout(function() {
-              expect(byte.el.style.left).toBe('50%');
-              return dfr();
-            }, 100);
+          return expect(console.warn).not.toHaveBeenCalled();
+        });
+        it('should animate position with respect to units', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              '20%': '50%'
+            },
+            duration: 20
           });
-          return it('should fallback to end units if units are differnt', function(dfr) {
-            var byte;
-            byte = new Byte({
-              x: {
-                '20%': '50px'
-              },
-              duration: 20
-            });
-            return setTimeout(function() {
-              expect(byte.el.style.left).toBe('50px');
-              return dfr();
-            }, 100);
+          return setTimeout(function() {
+            expect(byte.el.style.left).toBe('50%');
+            return dfr();
+          }, 100);
+        });
+        it('should fallback to end units if units are differnt', function(dfr) {
+          var byte;
+          byte = new Byte({
+            x: {
+              '20%': '50px'
+            },
+            duration: 20
           });
+          return setTimeout(function() {
+            expect(byte.el.style.left).toBe('50px');
+            return dfr();
+          }, 100);
         });
         return describe('shiftX/shiftY coordinates', function() {
           it('should set a position with respect to units', function() {
@@ -1542,7 +1542,7 @@
         return expect(byte.progress).toBe(1);
       });
     });
-    describe('Callbacks ->', function() {
+    return describe('Callbacks ->', function() {
       describe('onStart callback ->', function() {
         it('should call onStart callback', function(dfr) {
           var byte, isOnStart;
@@ -1558,7 +1558,7 @@
           return setTimeout(function() {
             expect(isOnStart).toBe(true);
             return dfr();
-          }, 100);
+          }, 200);
         });
         it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -1574,7 +1574,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 100);
+          }, 200);
         });
         return it('should show el', function() {
           var byte;
@@ -1641,7 +1641,7 @@
         });
       });
       return describe('onComplete callback ->', function() {
-        it('should call onComplete callback', function(dfr) {
+        return it('should call onComplete callback', function(dfr) {
           var byte, isOnComplete;
           isOnComplete = null;
           byte = new Byte({
@@ -1658,551 +1658,6 @@
             return dfr();
           }, 100);
         });
-        return it('should have scope of byte', function(dfr) {
-          var byte, isRightScope;
-          isRightScope = null;
-          byte = new Byte({
-            radius: {
-              '25': 75
-            },
-            onComplete: function() {
-              return isRightScope = this instanceof Byte;
-            },
-            duration: 20
-          });
-          return setTimeout(function() {
-            expect(isRightScope).toBe(true);
-            return dfr();
-          }, 100);
-        });
-      });
-    });
-    describe('onFirstUpdateBackward callback ->', function() {
-      it('should call tuneOptions method when the tween goes backward', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        }).then({
-          radius: 20
-        });
-        spyOn(byte, 'tuneOptions');
-        byte.tween.setProgress(.99);
-        byte.tween.setProgress(0);
-        return expect(byte.tuneOptions).toHaveBeenCalled();
-      });
-      return it('should call not tuneOptions if history length is one record', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        });
-        spyOn(byte, 'tuneOptions');
-        byte.tween.setProgress(.99);
-        byte.tween.setProgress(0);
-        return expect(byte.tuneOptions).not.toHaveBeenCalled();
-      });
-    });
-    describe('createTween method ->', function() {
-      it('should create tween object', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        });
-        return expect(byte.tween).toBeDefined();
-      });
-      it('should bind the onFirstUpdateBackward metod', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        });
-        return expect(typeof byte.timeline.o.onFirstUpdateBackward).toBe('function');
-      });
-      it('should start tween after init', function(dfr) {
-        var byte, isStarted;
-        isStarted = false;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          },
-          onStart: function() {
-            return isStarted = true;
-          }
-        });
-        return setTimeout(function() {
-          expect(isStarted).toBe(true);
-          return dfr();
-        }, 100);
-      });
-      it('should not start tween after init is isRunLess was passed', function(dfr) {
-        var byte, isStarted;
-        isStarted = null;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          },
-          isRunLess: true,
-          onStart: function() {
-            return isStarted = true;
-          }
-        });
-        return setTimeout(function() {
-          expect(isStarted).toBeFalsy();
-          return dfr();
-        }, 100);
-      });
-      return describe('startTween method ->', function() {
-        return it('should start tween', function(dfr) {
-          var byte;
-          byte = new Byte({
-            radius: {
-              '25': 75
-            }
-          });
-          spyOn(byte.tween, 'start');
-          byte.startTween();
-          return setTimeout(function() {
-            expect(byte.tween.start).toHaveBeenCalled();
-            return dfr();
-          }, 10);
-        });
-      });
-    });
-    describe('easing ->', function() {
-      return it('should set easing option to props', function() {
-        var byte;
-        byte = new Byte({
-          easing: 'Linear.None'
-        });
-        return expect(byte.props.easing).toBe('Linear.None');
-      });
-    });
-    describe('run method->', function() {
-      it('should extend defaults with passed object', function() {
-        var byte, o;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        spyOn(byte, 'extendDefaults');
-        o = {
-          strokeWidth: 20
-        };
-        byte.run(o);
-        return expect(byte.extendDefaults).toHaveBeenCalledWith(o);
-      });
-      it('should not extend defaults if object was not passed', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        spyOn(byte, 'extendDefaults');
-        byte.run();
-        return expect(byte.extendDefaults).not.toHaveBeenCalled();
-      });
-      it('should not override deltas', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        byte.run({
-          stroke: 'green'
-        });
-        return expect(byte.deltas.strokeWidth).toBeDefined();
-      });
-      it('should calculate el size', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        spyOn(byte, 'calcSize');
-        byte.run({
-          radius: 50
-        });
-        return expect(byte.calcSize).toHaveBeenCalled();
-      });
-      it('should set new el size', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        spyOn(byte, 'setElStyles');
-        byte.run({
-          radius: 50
-        });
-        return expect(byte.setElStyles).toHaveBeenCalled();
-      });
-      it('should set new el size #2', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        byte.run({
-          radius: 50
-        });
-        return expect(byte.el.style.width).toBe('104px');
-      });
-      it('should set new el size with respect to radiusX/radiusY', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        byte.run({
-          radius: 50,
-          radiusX: {
-            100: 0
-          }
-        });
-        return expect(byte.el.style.width).toBe('204px');
-      });
-      it('should set new el size with respect to radiusX/radiusY', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        byte.run({
-          radius: 50,
-          radiusY: 110
-        });
-        return expect(byte.el.style.width).toBe('224px');
-      });
-      it('should set new el size with respect to radiusX/radiusY', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        byte.run({
-          radius: 450,
-          radiusY: 110,
-          radiusX: {
-            200: 0
-          }
-        });
-        return expect(byte.el.style.width).toBe('404px');
-      });
-      it('should start tween', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        spyOn(byte, 'startTween');
-        byte.run();
-        return expect(byte.startTween).toHaveBeenCalled();
-      });
-      it('should accept new options', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        byte.run({
-          strokeWidth: 25
-        });
-        expect(byte.props.strokeWidth).toBe(25);
-        return expect(byte.deltas.strokeWidth).not.toBeDefined();
-      });
-      it('should not modify old options', function() {
-        var byte;
-        byte = new Byte({
-          strokeWidth: {
-            10: 5
-          },
-          radius: 33,
-          isRunLess: true
-        });
-        byte.run({
-          strokeWidth: 25
-        });
-        return expect(byte.props.radius).toBe(33);
-      });
-      it('should call setProgress(0, true)', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            10: 5
-          },
-          isRunLess: true
-        });
-        spyOn(byte, 'setProgress');
-        byte.run({
-          radius: 50
-        });
-        return expect(byte.setProgress).toHaveBeenCalledWith(0, true);
-      });
-      it('should warn if type was passed', function() {
-        var byte;
-        byte = new Byte({
-          type: 'polygon',
-          isRunLess: true
-        });
-        spyOn(byte.h, 'warn');
-        byte.run({
-          type: 'circle'
-        });
-        expect(byte.h.warn).toHaveBeenCalled();
-        return expect(byte.o.type).toBe('polygon');
-      });
-      it('should set new options on timeline', function() {
-        var byte, onComplete, onStart;
-        byte = new Byte({
-          isRunLess: true,
-          duration: 500,
-          delay: 200,
-          repeat: 1,
-          easing: 'cubic.in',
-          yoyo: true,
-          onStart: function() {},
-          onComplete: function() {}
-        });
-        onStart = (function() {});
-        onComplete = (function() {});
-        byte.run({
-          duration: 2000,
-          delay: 0,
-          repeat: 2,
-          easing: 'linear.none',
-          onStart: onStart,
-          onComplete: onComplete,
-          yoyo: false
-        });
-        expect(byte.timeline.o.duration).toBe(2000);
-        expect(byte.timeline.o.delay).toBe(0);
-        expect(byte.timeline.o.repeat).toBe(2);
-        expect(byte.timeline.o.easing).toBe('linear.none');
-        expect(byte.timeline.o.onStart).toBe(onStart);
-        expect(byte.timeline.o.onComplete).toBe(onComplete);
-        return expect(byte.timeline.o.yoyo).toBe(false);
-      });
-      it('should call recalcDuration on tween', function() {
-        var byte;
-        byte = new Byte;
-        spyOn(byte.tween, 'recalcDuration');
-        byte.run({
-          duration: 2000
-        });
-        return expect(byte.tween.recalcDuration).toHaveBeenCalled();
-      });
-      it('should call transformHistory', function() {
-        var byte, o;
-        byte = new Byte;
-        spyOn(byte, 'transformHistory');
-        o = {
-          duration: 2000
-        };
-        byte.run(o);
-        return expect(byte.transformHistory).toHaveBeenCalledWith(o);
-      });
-      it('should not call transformHistory if optionless', function() {
-        var byte;
-        byte = new Byte;
-        spyOn(byte, 'transformHistory');
-        byte.run();
-        return expect(byte.transformHistory).not.toHaveBeenCalled();
-      });
-      it('shoud warn if tweenValues changed on run', function() {
-        var byte;
-        byte = new Byte({
-          isRunLess: true,
-          duration: 2000
-        }).then({
-          radius: 40
-        });
-        spyOn(h, 'warn');
-        byte.run({
-          duration: 100,
-          delay: 100,
-          repeat: 1,
-          yoyo: false,
-          easing: 'Linear.None',
-          onStart: function() {},
-          onUpdate: function() {},
-          onComplete: function() {}
-        });
-        expect(h.warn).toHaveBeenCalled();
-        expect(byte.history[0].duration).toBe(2000);
-        return expect(byte.props.duration).toBe(2000);
-      });
-      return it('shoud not warn if history is 1 record long', function() {
-        var byte;
-        byte = new Byte({
-          isRunLess: true,
-          duration: 2000
-        });
-        spyOn(h, 'warn');
-        byte.run({
-          duration: 100,
-          delay: 100,
-          repeat: 1,
-          yoyo: false,
-          easing: 'Linear.None',
-          onStart: function() {},
-          onUpdate: function() {},
-          onComplete: function() {}
-        });
-        expect(h.warn).not.toHaveBeenCalled();
-        expect(byte.history[0].duration).toBe(100);
-        return expect(byte.props.duration).toBe(100);
-      });
-    });
-    describe('isForeign flag ->', function() {
-      it('should not be set by default', function() {
-        var byte;
-        byte = new Byte;
-        return expect(byte.isForeign).toBe(false);
-      });
-      it('should be set if context was passed', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg
-        });
-        return expect(byte.isForeign).toBe(true);
-      });
-      return it('if context passed el should be bit\'s el', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg
-        });
-        return expect(byte.el).toBe(byte.bit.el);
-      });
-    });
-    describe('show/hide on start/end ->', function() {
-      it('should show the el on start', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg
-        });
-        byte.tween.setProgress(.5);
-        return expect(byte.el.style.display).toBe('block');
-      });
-      it('should hide the el on end', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg
-        });
-        byte.tween.setProgress(1);
-        return expect(byte.el.style.display).toBe('none');
-      });
-      it('should not hide the el on end if isShowEnd was passed', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg,
-          isShowEnd: true
-        });
-        byte.tween.setProgress(1);
-        return expect(byte.el.style.display).toBe('block');
-      });
-      it('should not hide the el on end if isShowEnd was passed #2 - chain', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg,
-          isShowEnd: true,
-          isRunLess: true
-        }).then({
-          radius: 10
-        }).then({
-          radius: 20
-        });
-        byte.tween.setProgress(1);
-        return expect(byte.el.style.display).toBe('block');
-      });
-      it('should hide the el on reverse end', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg
-        });
-        byte.tween.setProgress(.5);
-        byte.tween.setProgress(0);
-        return expect(byte.el.style.display).toBe('none');
-      });
-      return it('should not hide the el on reverse end if isShowInit passed', function() {
-        var byte;
-        byte = new Byte({
-          ctx: svg,
-          isShowInit: true
-        });
-        byte.tween.setProgress(.5);
-        byte.tween.setProgress(0);
-        return expect(byte.el.style.display).toBe('block');
-      });
-    });
-    return describe('getRadiusSize method ->', function() {
-      it('should return max from delatas if key is defined', function() {
-        var byte, size;
-        byte = new Byte({
-          radiusX: {
-            20: 30
-          }
-        });
-        size = byte.getRadiusSize({
-          key: 'radiusX',
-          fallback: 0
-        });
-        return expect(size).toBe(30);
-      });
-      it('should return props\' value if delats\' one is not defined ', function() {
-        var byte, size;
-        byte = new Byte({
-          radiusX: 20
-        });
-        size = byte.getRadiusSize({
-          key: 'radiusX',
-          fallback: 0
-        });
-        return expect(size).toBe(20);
-      });
-      it('should fallback to passed fallback option', function() {
-        var byte, size;
-        byte = new Byte;
-        size = byte.getRadiusSize({
-          key: 'radiusX',
-          fallback: 0
-        });
-        return expect(size).toBe(0);
-      });
-      return it('should fallback to 0 by default', function() {
-        var byte, size;
-        byte = new Byte;
-        size = byte.getRadiusSize({
-          key: 'radiusX'
-        });
-        return expect(size).toBe(0);
       });
     });
   });
