@@ -292,7 +292,6 @@ Helpers = (function() {
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
       result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor);
-      console.log(result);
       colorObj = {};
       alpha = parseFloat(result[4] || 1);
       if (result) {

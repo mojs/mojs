@@ -248,7 +248,7 @@
         });
         return it('should have the scope of MotionPath', function(dfr) {
           var isRightScope, mp;
-          isRightScope = false;
+          isRightScope = null;
           mp = new MotionPath({
             path: coords,
             el: div,
@@ -961,12 +961,24 @@
       it('getPath should return a path when it was specified by SVG path', function() {
         var div, mp, path;
         path = document.createElementNS(ns, 'path');
+        path.setAttribute('d', 'M0,0 L500,500 L1000, 0');
         div = document.createElement('div');
         mp = new MotionPath({
           path: path,
           el: div
         });
         return expect(mp.getPath() instanceof SVGElement).toBe(true);
+      });
+      it('should error if path has no d attribute', function() {
+        var div, mp, path;
+        path = document.createElementNS(ns, 'path');
+        div = document.createElement('div');
+        spyOn(h, 'error');
+        mp = new MotionPath({
+          path: path,
+          el: div
+        });
+        return expect(h.error).toHaveBeenCalled();
       });
       return it('getPath should return a path when it was specified selector', function() {
         var div, id, mp, path, svg;

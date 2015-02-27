@@ -1059,7 +1059,6 @@ Helpers = (function() {
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
       result = new RegExp(regexString1 + regexString2, 'gi').exec(rgbColor);
-      console.log(result);
       colorObj = {};
       alpha = parseFloat(result[4] || 1);
       if (result) {
@@ -1224,7 +1223,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, eye, page, pupil;
+var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, mp, slider;
 
 Burst = require('./burst');
 
@@ -1247,22 +1246,52 @@ burst = new Transit({
   count: 3,
   isShowInit: true,
   isShowEnd: true,
-  strokeWidth: 2,
+  strokeWidth: 1,
   stroke: 'deeppink',
   angle: {
     0: 180
   },
   points: 2,
   radius: 50,
+  radiusY: 10,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
 });
 
-eye = document.querySelector('#js-eye');
+mp = new MotionPath({
+  path: 'M0,0 L500,500 L1000, 0',
+  el: burst.el,
+  duration: 2000,
+  delay: 3000,
+  isRunLess: true,
+  pathEnd: .25,
+  fill: {
+    container: 'body'
+  },
+  onChainUpdate: function(p) {
+    return burst.tween.setProgress(p);
+  }
+}).then({
+  duration: 2000,
+  pathStart: .25,
+  pathEnd: .5
+}).then({
+  duration: 2000,
+  pathStart: .5,
+  pathEnd: .75
+}).then({
+  duration: 2000,
+  pathStart: .75,
+  pathEnd: 1
+});
 
-pupil = document.querySelector('#js-pupil');
+mp.run();
 
-page = document.querySelector('#js-page');
+slider = document.getElementById('js-slider');
+
+slider.addEventListener('input', function(e) {
+  return burst.tween.setProgress(this.value / 100000);
+});
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./transit":18,"./tween/timeline":19,"./tween/tween":20}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
@@ -1301,7 +1330,9 @@ MotionPath = (function() {
 
   function MotionPath(o) {
     this.o = o != null ? o : {};
-    this.vars();
+    if (this.vars()) {
+      return;
+    }
     this.createTween();
     this;
   }
@@ -1321,6 +1352,10 @@ MotionPath = (function() {
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
+    if (!this.path.getAttribute('d')) {
+      h.error('Path has no coordinates to work with, aborting');
+      return true;
+    }
     this.len = this.path.getTotalLength();
     this.slicedLen = this.len * (this.props.pathEnd - this.props.pathStart);
     this.startLen = this.props.pathStart * this.len;
@@ -1476,8 +1511,10 @@ MotionPath = (function() {
     this.tween.add(this.timeline);
     if (!this.props.isRunLess) {
       return this.startTween();
-    } else if (this.props.isPresetPosition) {
-      return this.setProgress(0, true);
+    } else {
+      if (this.props.isPresetPosition) {
+        return this.setProgress(0, true);
+      }
     }
   };
 

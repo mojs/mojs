@@ -34,7 +34,9 @@ MotionPath = (function() {
 
   function MotionPath(o) {
     this.o = o != null ? o : {};
-    this.vars();
+    if (this.vars()) {
+      return;
+    }
     this.createTween();
     this;
   }
@@ -54,6 +56,10 @@ MotionPath = (function() {
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
+    if (!this.path.getAttribute('d')) {
+      h.error('Path has no coordinates to work with, aborting');
+      return true;
+    }
     this.len = this.path.getTotalLength();
     this.slicedLen = this.len * (this.props.pathEnd - this.props.pathStart);
     this.startLen = this.props.pathStart * this.len;
@@ -209,8 +215,10 @@ MotionPath = (function() {
     this.tween.add(this.timeline);
     if (!this.props.isRunLess) {
       return this.startTween();
-    } else if (this.props.isPresetPosition) {
-      return this.setProgress(0, true);
+    } else {
+      if (this.props.isPresetPosition) {
+        return this.setProgress(0, true);
+      }
     }
   };
 

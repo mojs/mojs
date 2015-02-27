@@ -281,7 +281,7 @@ class Transit extends bitsMap.map.bit
     opts[keys[i]] = merged[keys[i]] while(i--)
     it = @
     opts.onUpdate      = (p)=> @setProgress p#; @onUpdate?()
-    opts.onStart       = => @props.onStart?.apply @
+    opts.onStart       = => @props.onStart?.apply(@)
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     @tween.append new Timeline(opts)

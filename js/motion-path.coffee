@@ -27,7 +27,8 @@ class MotionPath
     onComplete:       null
     onUpdate:         null
 
-  constructor:(@o={})-> @vars(); @createTween(); @
+  constructor:(@o={})->
+    return if @vars(); @createTween(); @
 
   vars:->
     @getScaler = h.bind(@getScaler, @); @resize = resize
@@ -42,6 +43,9 @@ class MotionPath
     @onUpdate = @props.onUpdate
     @el         = @parseEl @props.el
     @path       = @getPath()
+    if !@path.getAttribute('d')
+      h.error('Path has no coordinates to work with, aborting'); return true
+
     @len        = @path.getTotalLength()
     @slicedLen  = @len*(@props.pathEnd - @props.pathStart)
     @startLen   = @props.pathStart*@len
@@ -135,13 +139,13 @@ class MotionPath
     @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
     @tween.add(@timeline)
     if !@props.isRunLess then @startTween()
-    else if @props.isPresetPosition then @setProgress(0, true)
+    else
+      if @props.isPresetPosition then @setProgress(0, true)
 
   startTween:-> setTimeout (=> @tween?.start()), 1
 
   setProgress:(p, isInit)->
     len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
-
     point = @path.getPointAtLength len
     if @props.isAngle or @props.angleOffset?
       prevPoint = @path.getPointAtLength len - 1

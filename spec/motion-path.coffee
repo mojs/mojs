@@ -199,11 +199,12 @@ describe 'MotionPath ->', ->
           expect(isStarted).toBe(true); dfr()
           ), 100
       it 'should have the scope of MotionPath', (dfr)->
-        isRightScope = false
+        isRightScope = null
         mp = new MotionPath
           path: coords
           el: div
-          onStart:-> isRightScope = @ instanceof MotionPath
+          onStart:->
+            isRightScope = @ instanceof MotionPath
         setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
     
     describe 'onComplete callback ->', ->
@@ -684,11 +685,22 @@ describe 'MotionPath ->', ->
 
     it 'getPath should return a path when it was specified by SVG path', ->
       path = document.createElementNS ns, 'path'
+      path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
       div = document.createElement 'div'
       mp = new MotionPath
         path: path
         el: div
       expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+    it 'should error if path has no d attribute', ->
+      path = document.createElementNS ns, 'path'
+      # path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
+      div = document.createElement 'div'
+      spyOn h, 'error'
+      mp = new MotionPath
+        path: path
+        el: div
+      expect(h.error).toHaveBeenCalled()
 
     it 'getPath should return a path when it was specified selector', ->
       id = 'js-path'
