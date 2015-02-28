@@ -2162,7 +2162,7 @@
         return expect(byte.el.style.display).toBe('block');
       });
     });
-    return describe('getRadiusSize method ->', function() {
+    describe('getRadiusSize method ->', function() {
       it('should return max from delatas if key is defined', function() {
         var byte, size;
         byte = new Byte({
@@ -2203,6 +2203,29 @@
           key: 'radiusX'
         });
         return expect(size).toBe(0);
+      });
+    });
+    return describe('foreign bit option ->', function() {
+      it('should recieve a foreign bit to work with', function() {
+        var bit, byte;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
+        svg.appendChild(bit);
+        byte = new Byte({
+          bit: bit
+        });
+        return expect(byte.bit.el).toBe(bit);
+      });
+      return it('should set isForeignBit flag', function() {
+        var bit, byte;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
+        svg.appendChild(bit);
+        byte = new Byte({
+          bit: bit,
+          isIt: true
+        });
+        return expect(byte.isForeignBit).toBe(true);
       });
     });
   });

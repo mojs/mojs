@@ -212,17 +212,14 @@ Helpers = (function() {
     var arr;
     arr = [];
     if (typeof string === 'number' && !isNaN(string)) {
-      arr.push(string);
+      arr.push(this.parseUnit(string));
       return arr;
     }
-    string.trim().split(/\s+/gim).forEach(function(str) {
-      var number;
-      number = parseFloat(str);
-      if (isNaN(number)) {
-        throw Error('Fail to parse strokeDasharray/strokeDashoffset value, check the syntax please');
-      }
-      return arr.push(number);
-    });
+    string.trim().split(/\s+/gim).forEach((function(_this) {
+      return function(str) {
+        return arr.push(_this.parseUnit(str));
+      };
+    })(this));
     return arr;
   };
 

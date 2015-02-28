@@ -979,17 +979,14 @@ Helpers = (function() {
     var arr;
     arr = [];
     if (typeof string === 'number' && !isNaN(string)) {
-      arr.push(string);
+      arr.push(this.parseUnit(string));
       return arr;
     }
-    string.trim().split(/\s+/gim).forEach(function(str) {
-      var number;
-      number = parseFloat(str);
-      if (isNaN(number)) {
-        throw Error('Fail to parse strokeDasharray/strokeDashoffset value, check the syntax please');
-      }
-      return arr.push(number);
-    });
+    string.trim().split(/\s+/gim).forEach((function(_this) {
+      return function(str) {
+        return arr.push(_this.parseUnit(str));
+      };
+    })(this));
     return arr;
   };
 
@@ -1242,18 +1239,19 @@ burst = new Transit({
   x: 400,
   y: 400,
   type: 'circle',
-  el: document.getElementById('js-ellipse'),
+  bit: document.getElementById('js-ellipse'),
   duration: 2000,
   count: 3,
   isShowInit: true,
   isShowEnd: true,
-  strokeWidth: 1,
   repeat: 99999,
   stroke: 'deeppink',
-  radius: 20,
-  radiusY: {
-    10: 40
+  strokeWidth: 2,
+  strokeDasharray: {
+    '100% 60%': '10%'
   },
+  fill: 'transparent',
+  radius: 40,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
 });
@@ -2479,12 +2477,13 @@ Transit = (function(_super) {
     this.h.extend(o, this.defaults);
     this.history = [o];
     this.isForeign = !!this.o.ctx;
+    this.isForeignBit = !!this.o.bit;
     return this.timelines = [];
   };
 
   Transit.prototype.render = function() {
     if (!this.isRendered) {
-      if (!this.isForeign) {
+      if (!this.isForeign && !this.isForeignBit) {
         this.ctx = document.createElementNS(this.ns, 'svg');
         this.ctx.style.position = 'absolute';
         this.ctx.style.width = '100%';
@@ -2492,6 +2491,7 @@ Transit = (function(_super) {
         this.createBit();
         this.calcSize();
         this.el = document.createElement('div');
+        this.o.isIt && console.log('append');
         this.el.appendChild(this.ctx);
         (this.o.parent || document.body).appendChild(this.el);
       } else {
@@ -2663,9 +2663,10 @@ Transit = (function(_super) {
     bitClass = bitsMap.getBit(this.o.type || this.type);
     this.bit = new bitClass({
       ctx: this.ctx,
+      el: this.o.bit,
       isDrawLess: true
     });
-    if (this.isForeign) {
+    if (this.isForeign || this.isForeignBit) {
       return this.el = this.bit.el;
     }
   };

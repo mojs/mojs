@@ -450,24 +450,40 @@
       });
       describe('strToArr method', function() {
         it('should parse string to array', function() {
-          return expect(h.strToArr('200 100').join(' ')).toBe('200 100');
+          var array;
+          array = h.strToArr('200 100');
+          expect(array[0].value).toBe(200);
+          return expect(array[0].unit).toBe('px');
+        });
+        it('should parse % string to array', function() {
+          var array;
+          array = h.strToArr('200% 100');
+          expect(array[0].value).toBe(200);
+          expect(array[0].unit).toBe('%');
+          expect(array[1].value).toBe(100);
+          return expect(array[1].unit).toBe('px');
         });
         it('should parse number to array', function() {
-          return expect(h.strToArr(200).join(' ')).toBe('200');
+          var array;
+          array = h.strToArr(200);
+          expect(array[0].value).toBe(200);
+          return expect(array[0].unit).toBe('px');
         });
         it('should parse string with multiple spaces to array', function() {
-          return expect(h.strToArr('200   100').join(' ')).toBe('200 100');
+          var array;
+          array = h.strToArr('200   100%');
+          expect(array[0].value).toBe(200);
+          expect(array[0].unit).toBe('px');
+          expect(array[1].value).toBe(100);
+          return expect(array[1].unit).toBe('%');
         });
-        it('should trim string before parse', function() {
-          return expect(h.strToArr(' 200   100 ').join(' ')).toBe('200 100');
-        });
-        it('should return array of numbers', function() {
-          return expect(h.strToArr(' 200.5   100 ')[0]).toBe(200.5);
-        });
-        return it('should throw if parsing fails', function() {
-          return expect(function() {
-            return h.strToArr(' 200.5 ,  100 ');
-          }).toThrow();
+        return it('should trim string before parse', function() {
+          var array;
+          array = h.strToArr('  200   100% ');
+          expect(array[0].value).toBe(200);
+          expect(array[0].unit).toBe('px');
+          expect(array[1].value).toBe(100);
+          return expect(array[1].unit).toBe('%');
         });
       });
       describe('normDashArrays method', function() {

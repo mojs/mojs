@@ -139,15 +139,12 @@ class Helpers
     js: pre[0].toUpperCase() + pre.substr(1)
   strToArr:(string)->
     arr = []
+    # plain number
     if typeof string is 'number' and !isNaN(string)
-      arr.push string
+      arr.push @parseUnit string
       return arr
-    string.trim().split(/\s+/gim).forEach (str)->
-      number = parseFloat str
-      if isNaN(number)
-        throw Error 'Fail to parse strokeDasharray/strokeDashoffset value,
-         check the syntax please'
-      arr.push number
+    # string array
+    string.trim().split(/\s+/gim).forEach (str)=> arr.push @parseUnit str
     arr
   calcArrDelta:(arr1, arr2)->
     if !arr1? or !arr2? then throw Error 'Two arrays should be passed'

@@ -1157,13 +1157,20 @@ describe 'Transit ->', ->
       size = byte.getRadiusSize key: 'radiusX'
       expect(size).toBe 0
 
-  # describe 'foreign el option ->', ->
-  #   it 'should recieve a foreign bit to work with', ->
-  #     svg  = document.createElementNS?(ns, 'svg')
-  #     bit  = document.createElementNS?(ns, 'rect')
-  #     svg.appendChild bit
-  #     byte = new Byte bit:  bit
-  #     expect(size).toBe 0
+  describe 'foreign bit option ->', ->
+    it 'should recieve a foreign bit to work with', ->
+      svg  = document.createElementNS?(ns, 'svg')
+      bit  = document.createElementNS?(ns, 'rect')
+      svg.appendChild bit
+      byte = new Byte bit: bit
+      expect(byte.bit.el).toBe bit
+
+    it 'should set isForeignBit flag', ->
+      svg  = document.createElementNS?(ns, 'svg')
+      bit  = document.createElementNS?(ns, 'rect')
+      svg.appendChild bit
+      byte = new Byte bit: bit, isIt: true
+      expect(byte.isForeignBit).toBe true
 
 
 

@@ -71,3 +71,6 @@ body {
   backface-visibility: hidden;
   background: #ffa500;
 }
+svg {
+  outline: 1px solid #ff69b4;
+}

@@ -46,18 +46,19 @@ class Transit extends bitsMap.map.bit
     @h ?= h; @lastSet ?= {}
     @extendDefaults()
     o = @h.cloneObj(@o); @h.extend(o, @defaults); @history = [o]
-    @isForeign = !!@o.ctx
+    @isForeign = !!@o.ctx; @isForeignBit = !!@o.bit
     @timelines = []
 
   render:->
     if !@isRendered# or isForce
-      if !@isForeign
+      if !@isForeign and !@isForeignBit
         @ctx = document.createElementNS @ns, 'svg'
         @ctx.style.position  = 'absolute'
         @ctx.style.width     = '100%'
         @ctx.style.height    = '100%'
         @createBit(); @calcSize()
         @el = document.createElement 'div'
+        @o.isIt and console.log 'append'
         @el.appendChild @ctx
         (@o.parent or document.body).appendChild @el
       else
@@ -171,8 +172,8 @@ class Transit extends bitsMap.map.bit
 
   createBit:->
     bitClass = bitsMap.getBit(@o.type or @type)
-    @bit = new bitClass ctx: @ctx, isDrawLess: true
-    if @isForeign then @el = @bit.el
+    @bit = new bitClass ctx: @ctx, el: @o.bit, isDrawLess: true
+    if @isForeign or @isForeignBit then @el = @bit.el
 
   setProgress:(progress, isShow)->
     if !isShow then @show(); @onUpdate?(progress)
@@ -190,6 +191,7 @@ class Transit extends bitsMap.map.bit
       @props[key] = switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
           str = ''
+          # console.log value.delta, value.start
           for num, i in value.delta
             str += "#{value.start[i] + num*@progress} "
           str

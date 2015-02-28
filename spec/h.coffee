@@ -307,17 +307,32 @@ describe 'Helpers ->', ->
         expect(unit.string)   .toBe '100vmin'
     describe 'strToArr method', ->
       it 'should parse string to array',->
-        expect(h.strToArr('200 100').join ' ').toBe '200 100'
+        array = h.strToArr('200 100')
+        expect(array[0].value).toBe 200
+        expect(array[0].unit).toBe  'px'
+      it 'should parse % string to array',->
+        array = h.strToArr('200% 100')
+        expect(array[0].value).toBe 200
+        expect(array[0].unit).toBe  '%'
+        expect(array[1].value).toBe 100
+        expect(array[1].unit).toBe  'px'
       it 'should parse number to array',->
-        expect(h.strToArr(200).join ' ').toBe '200'
+        array = h.strToArr(200)
+        expect(array[0].value).toBe 200
+        expect(array[0].unit).toBe  'px'
       it 'should parse string with multiple spaces to array',->
-        expect(h.strToArr('200   100').join ' ').toBe '200 100'
+        array = h.strToArr('200   100%')
+        expect(array[0].value).toBe 200
+        expect(array[0].unit).toBe  'px'
+        expect(array[1].value).toBe 100
+        expect(array[1].unit).toBe  '%'
       it 'should trim string before parse',->
-        expect(h.strToArr(' 200   100 ').join ' ').toBe '200 100'
-      it 'should return array of numbers',->
-        expect(h.strToArr(' 200.5   100 ')[0]).toBe 200.5
-      it 'should throw if parsing fails',->
-        expect(-> h.strToArr(' 200.5 ,  100 ')).toThrow()
+        array = h.strToArr('  200   100% ')
+        expect(array[0].value).toBe 200
+        expect(array[0].unit).toBe  'px'
+        expect(array[1].value).toBe 100
+        expect(array[1].unit).toBe  '%'
+        
     describe 'normDashArrays method', ->
       it 'should normalize two inconsistent dash arrays', ->
         arr1 = [100, 500]; arr2 = [150, 200, 300.7]
