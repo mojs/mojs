@@ -1011,19 +1011,18 @@ Helpers = (function() {
   };
 
   Helpers.prototype.normDashArrays = function(arr1, arr2) {
-    var arr1Len, arr2Len, i, _i, _j, _ref, _ref1;
-    if ((arr1 == null) || (arr2 == null)) {
-      throw Error('Two arrays should be passed');
-    }
+    var arr1Len, arr2Len, currItem, i, _i, _j, _ref, _ref1;
     arr1Len = arr1.length;
     arr2Len = arr2.length;
     if (arr1Len > arr2Len) {
       for (i = _i = 0, _ref = arr1Len - arr2Len; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        arr2.push(0);
+        currItem = i + arr2.length - 1;
+        arr2.push(this.parseUnit("0" + arr1[currItem].unit));
       }
     } else if (arr2Len > arr1Len) {
       for (i = _j = 0, _ref1 = arr2Len - arr1Len; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        arr1.push(0);
+        currItem = i + arr1.length;
+        arr1.push(this.parseUnit("0" + arr2[currItem].unit));
       }
     }
     return [arr1, arr2];

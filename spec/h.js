@@ -138,7 +138,7 @@
           return expect(h.rand(.2, .9)).not.toBeGreaterThan(.9);
         });
       });
-      describe('getDelta method', function() {
+      describe('getDelta method ->', function() {
         describe('numeric values ->', function() {
           it('should calculate delta', function() {
             var delta;
@@ -489,39 +489,61 @@
       describe('normDashArrays method', function() {
         it('should normalize two inconsistent dash arrays', function() {
           var arr1, arr2;
-          arr1 = [100, 500];
-          arr2 = [150, 200, 300.7];
+          arr1 = [h.parseUnit(100), h.parseUnit(500)];
+          arr2 = [h.parseUnit(150), h.parseUnit(200), h.parseUnit(307)];
           h.normDashArrays(arr1, arr2);
-          return expect(arr1.join(' ')).toBe('100 500 0');
+          expect(arr1[0].value).toBe(100);
+          expect(arr1[0].unit).toBe('px');
+          expect(arr1[1].value).toBe(500);
+          expect(arr1[1].unit).toBe('px');
+          expect(arr1[2].value).toBe(0);
+          expect(arr1[2].unit).toBe('px');
+          expect(arr2[0].value).toBe(150);
+          expect(arr2[0].unit).toBe('px');
+          expect(arr2[1].value).toBe(200);
+          expect(arr2[1].unit).toBe('px');
+          expect(arr2[2].value).toBe(307);
+          return expect(arr2[2].unit).toBe('px');
         });
-        it('should normalize MODIFY passed arrays', function() {
+        it('should copy units from the another array', function() {
           var arr1, arr2;
-          arr1 = [100];
-          arr2 = [150, 200, 25];
+          arr1 = [h.parseUnit(100), h.parseUnit(500)];
+          arr2 = [h.parseUnit(150), h.parseUnit(200), h.parseUnit('307%')];
           h.normDashArrays(arr1, arr2);
-          return expect(arr1.join(' ')).toBe('100 0 0');
+          expect(arr1[0].value).toBe(100);
+          expect(arr1[0].unit).toBe('px');
+          expect(arr1[1].value).toBe(500);
+          expect(arr1[1].unit).toBe('px');
+          expect(arr1[2].value).toBe(0);
+          expect(arr1[2].unit).toBe('%');
+          expect(arr1.length).toBe(3);
+          expect(arr2[0].value).toBe(150);
+          expect(arr1[0].unit).toBe('px');
+          expect(arr2[1].value).toBe(200);
+          expect(arr1[1].unit).toBe('px');
+          expect(arr2[2].value).toBe(307);
+          expect(arr2[2].unit).toBe('%');
+          return expect(arr2.length).toBe(3);
         });
-        it('should normalize two inconsistent dash arrays #2', function() {
+        return it('should normalize two inconsistent dash arrays #2', function() {
           var arr1, arr2;
-          arr1 = [100, 500];
-          arr2 = [150];
+          arr1 = [h.parseUnit(100), h.parseUnit(500), h.parseUnit('500%')];
+          arr2 = [h.parseUnit('150%')];
           h.normDashArrays(arr1, arr2);
-          return expect(arr1.join(' ')).toBe('100 500');
-        });
-        it('should normalize two inconsistent dash arrays #3', function() {
-          var arr1, arr2;
-          arr1 = [100];
-          arr2 = [150, 200, 17.5];
-          h.normDashArrays(arr1, arr2);
-          return expect(arr2.join(' ')).toBe('150 200 17.5');
-        });
-        return it('should should throw if one arg or nothing was passed', function() {
-          expect(function() {
-            return h.normDashArrays([100, 500]);
-          }).toThrow();
-          return expect(function() {
-            return h.normDashArrays();
-          }).toThrow();
+          expect(arr1[0].value).toBe(100);
+          expect(arr1[0].unit).toBe('px');
+          expect(arr1[1].value).toBe(500);
+          expect(arr1[1].unit).toBe('px');
+          expect(arr1[2].value).toBe(500);
+          expect(arr1[2].unit).toBe('%');
+          expect(arr1.length).toBe(3);
+          expect(arr2[0].value).toBe(150);
+          expect(arr2[0].unit).toBe('%');
+          expect(arr2[1].value).toBe(0);
+          expect(arr2[1].unit).toBe('px');
+          expect(arr2[2].value).toBe(0);
+          expect(arr2[2].unit).toBe('%');
+          return expect(arr2.length).toBe(3);
         });
       });
       describe('isArray method', function() {

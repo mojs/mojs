@@ -157,15 +157,16 @@ class Helpers
   isArray:(variable)-> variable instanceof Array
 
   normDashArrays:(arr1, arr2)->
-    if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
-    # newArr1 = arr1.slice(0); newArr2 = arr2.slice(0)
+    # if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
     arr1Len = arr1.length; arr2Len = arr2.length
     if arr1Len > arr2Len
       for i in [0...arr1Len-arr2Len]
-        arr2.push 0
+        currItem = i + arr2.length - 1
+        arr2.push @parseUnit "0#{arr1[currItem].unit}"
     else if arr2Len > arr1Len
       for i in [0...arr2Len-arr1Len]
-        arr1.push 0
+        currItem = i + arr1.length
+        arr1.push @parseUnit "0#{arr2[currItem].unit}"
     [ arr1, arr2 ]
 
   makeColorObj:(color)->
