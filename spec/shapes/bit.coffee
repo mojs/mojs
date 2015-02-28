@@ -2,6 +2,7 @@ Bit   = mojs.Bit
 ns    = 'http://www.w3.org/2000/svg'
 svg   = document.createElementNS?(ns, 'svg')
 bit   = new Bit ctx: svg
+
 describe 'Bit', ->
   describe 'context', ->
     it 'context passed should be real svg node', ->
@@ -199,12 +200,10 @@ describe 'Bit', ->
         'stroke-width': 5
         points:         0
       expect(bit.props.points).toBe 0
-
     it 'should have namespace object', ->
       expect(bit.ns).toBe 'http://www.w3.org/2000/svg'
     it 'should have type object', ->
       expect(bit.type).toBeDefined()
-
   describe 'calculations', ->
     it 'should calculate transform object', ->
       bit = new Bit
@@ -212,5 +211,26 @@ describe 'Bit', ->
         angle: 90
       expect(bit.props.transform).toBe('rotate(90, 0, 0)')
       expect(bit.calcTransform).toBeDefined()
+
+  describe 'foreign el', ->
+    it 'should recieve foreign el', ->
+      el = document.createElementNS ns, 'rect'
+      svg.appendChild el
+      bit = new Bit el: el
+      expect(bit.el).toBe el
+
+    it 'should set isForeign flag', ->
+      el = document.createElementNS ns, 'rect'
+      svg.appendChild el
+      bit = new Bit el: el
+      expect(bit.isForeign).toBe true
+
+
+
+
+
+
+
+
 
 

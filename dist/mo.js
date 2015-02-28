@@ -1224,7 +1224,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, mp, slider;
+var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst;
 
 Burst = require('./burst');
 
@@ -1239,59 +1239,23 @@ Timeline = require('./tween/timeline');
 Tween = require('./tween/tween');
 
 burst = new Transit({
-  x: 300,
-  y: 300,
-  type: 'equal',
-  delay: 1000,
+  x: 400,
+  y: 400,
+  type: 'circle',
+  el: document.getElementById('js-ellipse'),
   duration: 2000,
   count: 3,
   isShowInit: true,
   isShowEnd: true,
   strokeWidth: 1,
+  repeat: 99999,
   stroke: 'deeppink',
-  angle: {
-    0: 180
+  radius: 20,
+  radiusY: {
+    10: 40
   },
-  points: 2,
-  radius: 50,
-  radiusY: 10,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
-});
-
-mp = new MotionPath({
-  path: 'M0,0 L500,500 L1000, 0',
-  el: burst.el,
-  duration: 2000,
-  delay: 3000,
-  isRunLess: true,
-  pathEnd: .25,
-  fill: {
-    container: 'body'
-  },
-  onChainUpdate: function(p) {
-    return burst.tween.setProgress(p);
-  }
-}).then({
-  duration: 2000,
-  pathStart: .25,
-  pathEnd: .5
-}).then({
-  duration: 2000,
-  pathStart: .5,
-  pathEnd: .75
-}).then({
-  duration: 2000,
-  pathStart: .75,
-  pathEnd: 1
-});
-
-mp.run();
-
-slider = document.getElementById('js-slider');
-
-slider.addEventListener('input', function(e) {
-  return burst.tween.setProgress(this.value / 100000);
 });
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./transit":18,"./tween/timeline":19,"./tween/tween":20}],6:[function(require,module,exports){
@@ -1715,6 +1679,10 @@ Bit = (function() {
     radius: 50,
     radiusX: void 0,
     radiusY: void 0,
+    points: 3,
+    x: 0,
+    y: 0,
+    angle: 0,
     'stroke': 'hotpink',
     'stroke-width': 2,
     'stroke-opacity': 1,
@@ -1722,11 +1690,7 @@ Bit = (function() {
     'fill-opacity': 1,
     'stroke-dasharray': '',
     'stroke-dashoffset': '',
-    'stroke-linecap': '',
-    points: 3,
-    x: 0,
-    y: 0,
-    angle: 0
+    'stroke-linecap': ''
   };
 
   function Bit(o) {
@@ -1743,8 +1707,8 @@ Bit = (function() {
   Bit.prototype.vars = function() {
     if (this.o.ctx && this.o.ctx.tagName === 'svg') {
       this.ctx = this.o.ctx;
-    } else {
-      throw Error('You should pass a real context(ctx) to the bit');
+    } else if (!this.o.el) {
+      h.error('You should pass a real context(ctx) to the bit');
     }
     this.state = [];
     this.drawMapLength = this.drawMap.length;
@@ -1806,9 +1770,14 @@ Bit = (function() {
 
   Bit.prototype.render = function() {
     this.isRendered = true;
-    this.el = document.createElementNS(this.ns, this.type || 'line');
-    !this.o.isDrawLess && this.draw();
-    return this.ctx.appendChild(this.el);
+    if (this.o.el != null) {
+      this.el = this.o.el;
+      return this.isForeign = true;
+    } else {
+      this.el = document.createElementNS(this.ns, this.type || 'line');
+      !this.o.isDrawLess && this.draw();
+      return this.ctx.appendChild(this.el);
+    }
   };
 
   Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
@@ -1845,6 +1814,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Bit;
 }
@@ -1857,6 +1829,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;

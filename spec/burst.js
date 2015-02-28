@@ -710,17 +710,13 @@
       it('should run onComplete callback', function(dfr) {
         var burst;
         t.removeAll();
-        burst = new Burst({
-          isRunLess: true,
+        return burst = new Burst({
           duration: 20,
-          onComplete: function() {}
+          onComplete: function() {
+            expect(true).toBe(true);
+            return dfr();
+          }
         });
-        spyOn(burst.props, 'onComplete');
-        burst.run();
-        return setTimeout(function() {
-          expect(burst.props.onComplete).toHaveBeenCalled();
-          return dfr();
-        }, 100);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;

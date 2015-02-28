@@ -7,6 +7,10 @@ class Bit
     radius:             50
     radiusX:            undefined
     radiusY:            undefined
+    points:             3
+    x:                  0
+    y:                  0
+    angle:              0
     'stroke':           'hotpink'
     'stroke-width':     2
     'stroke-opacity':   1
@@ -15,15 +19,14 @@ class Bit
     'stroke-dasharray': ''
     'stroke-dashoffset':''
     'stroke-linecap':   ''
-    points:             3
-    x:                  0
-    y:                  0
-    angle:              0
   constructor:(@o={})-> @init()
   init:-> @vars(); @render(); @
   vars:->
     if @o.ctx and @o.ctx.tagName is 'svg' then @ctx = @o.ctx
-    else throw Error 'You should pass a real context(ctx) to the bit'
+    else if !@o.el
+      h.error 'You should pass a real context(ctx) to the bit'
+      # --> COVER return if not ctx and not el
+      # return true
     @state = []; @drawMapLength = @drawMap.length
     @extendDefaults()
     @calcTransform()
@@ -48,9 +51,10 @@ class Bit
     else @props[attr] = value
   render:->
     @isRendered = true
-    @el = document.createElementNS @ns, @type or 'line'
-    !@o.isDrawLess and @draw()
-    @ctx.appendChild @el
+    if @o.el? then @el = @o.el; @isForeign = true
+    else
+      @el = document.createElementNS @ns, @type or 'line'
+      !@o.isDrawLess and @draw(); @ctx.appendChild @el
 
   drawMap: [
     'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill',
@@ -62,17 +66,19 @@ class Bit
       name = @drawMap[len]
       @setAttrIfChanged name, @props[name]
   setAttrIfChanged:(name)->
-    if @state[name] isnt (value=@props[name])
+    if @state[name] isnt (value = @props[name])
       @el.setAttribute name, value
       @state[name] = value
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "Bit", [], -> Bit
+### istanbul ignore next ###
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = Bit
 ### istanbul ignore next ###
 window?.mojs ?= {}
+### istanbul ignore next ###
 window?.mojs.Bit = Bit
 
 

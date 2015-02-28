@@ -459,12 +459,9 @@ describe 'Burst ->', ->
   describe 'onComplete callback ->', ->
     it 'should run onComplete callback', (dfr)->
       t.removeAll()
-      burst = new Burst isRunLess: true, duration: 20, onComplete:->
-      spyOn burst.props, 'onComplete'
-      burst.run()
-      setTimeout ->
-        expect(burst.props.onComplete).toHaveBeenCalled(); dfr()
-      , 100
+      burst = new Burst
+        duration: 20, onComplete:-> expect(true).toBe(true); dfr()
+
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
       isRightScope = false

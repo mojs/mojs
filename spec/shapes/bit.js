@@ -281,7 +281,7 @@
         return expect(bit.type).toBeDefined();
       });
     });
-    return describe('calculations', function() {
+    describe('calculations', function() {
       return it('should calculate transform object', function() {
         bit = new Bit({
           ctx: svg,
@@ -289,6 +289,26 @@
         });
         expect(bit.props.transform).toBe('rotate(90, 0, 0)');
         return expect(bit.calcTransform).toBeDefined();
+      });
+    });
+    return describe('foreign el', function() {
+      it('should recieve foreign el', function() {
+        var el;
+        el = document.createElementNS(ns, 'rect');
+        svg.appendChild(el);
+        bit = new Bit({
+          el: el
+        });
+        return expect(bit.el).toBe(el);
+      });
+      return it('should set isForeign flag', function() {
+        var el;
+        el = document.createElementNS(ns, 'rect');
+        svg.appendChild(el);
+        bit = new Bit({
+          el: el
+        });
+        return expect(bit.isForeign).toBe(true);
       });
     });
   });

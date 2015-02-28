@@ -13,6 +13,10 @@ Bit = (function() {
     radius: 50,
     radiusX: void 0,
     radiusY: void 0,
+    points: 3,
+    x: 0,
+    y: 0,
+    angle: 0,
     'stroke': 'hotpink',
     'stroke-width': 2,
     'stroke-opacity': 1,
@@ -20,11 +24,7 @@ Bit = (function() {
     'fill-opacity': 1,
     'stroke-dasharray': '',
     'stroke-dashoffset': '',
-    'stroke-linecap': '',
-    points: 3,
-    x: 0,
-    y: 0,
-    angle: 0
+    'stroke-linecap': ''
   };
 
   function Bit(o) {
@@ -41,8 +41,8 @@ Bit = (function() {
   Bit.prototype.vars = function() {
     if (this.o.ctx && this.o.ctx.tagName === 'svg') {
       this.ctx = this.o.ctx;
-    } else {
-      throw Error('You should pass a real context(ctx) to the bit');
+    } else if (!this.o.el) {
+      h.error('You should pass a real context(ctx) to the bit');
     }
     this.state = [];
     this.drawMapLength = this.drawMap.length;
@@ -104,9 +104,14 @@ Bit = (function() {
 
   Bit.prototype.render = function() {
     this.isRendered = true;
-    this.el = document.createElementNS(this.ns, this.type || 'line');
-    !this.o.isDrawLess && this.draw();
-    return this.ctx.appendChild(this.el);
+    if (this.o.el != null) {
+      this.el = this.o.el;
+      return this.isForeign = true;
+    } else {
+      this.el = document.createElementNS(this.ns, this.type || 'line');
+      !this.o.isDrawLess && this.draw();
+      return this.ctx.appendChild(this.el);
+    }
   };
 
   Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
@@ -143,6 +148,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Bit;
 }
@@ -155,6 +163,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
