@@ -558,28 +558,17 @@
         });
       });
       describe('calcArrDelta method', function() {
-        it('should should throw if on of the args are not arrays', function() {
-          expect(function() {
-            return h.calcArrDelta([200, 300, 100], 'a');
-          }).toThrow();
-          return expect(function() {
-            return h.calcArrDelta('a', [200, 300, 100]);
-          }).toThrow();
-        });
-        it('should should throw if less then 2 arrays passed', function() {
-          expect(function() {
-            return h.calcArrDelta([200, 300, 100]);
-          }).toThrow();
-          return expect(function() {
-            return h.calcArrDelta();
-          }).toThrow();
-        });
         return it('should calculate delta of two arrays', function() {
           var arr1, arr2, delta;
-          arr1 = [200, 300, 100];
-          arr2 = [250, 150, 0];
+          arr1 = [h.parseUnit(200), h.parseUnit(300), h.parseUnit('100%')];
+          arr2 = [h.parseUnit(250), h.parseUnit(150), h.parseUnit('0%')];
           delta = h.calcArrDelta(arr1, arr2);
-          return expect(delta.join(' ')).toBe('50 -150 -100');
+          expect(delta[0].value).toBe(50);
+          expect(delta[0].unit).toBe('px');
+          expect(delta[1].value).toBe(-150);
+          expect(delta[1].unit).toBe('px');
+          expect(delta[2].value).toBe(-100);
+          return expect(delta[2].unit).toBe('%');
         });
       });
       describe('getRadialPoint', function() {

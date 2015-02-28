@@ -225,16 +225,10 @@ Helpers = (function() {
 
   Helpers.prototype.calcArrDelta = function(arr1, arr2) {
     var delta, i, num, _i, _len;
-    if ((arr1 == null) || (arr2 == null)) {
-      throw Error('Two arrays should be passed');
-    }
-    if (!this.isArray(arr1) || !this.isArray(arr2)) {
-      throw Error('Two arrays expected');
-    }
     delta = [];
     for (i = _i = 0, _len = arr1.length; _i < _len; i = ++_i) {
       num = arr1[i];
-      delta[i] = arr2[i] - arr1[i];
+      delta[i] = this.parseUnit("" + (arr2[i].value - arr1[i].value) + arr2[i].unit);
     }
     return delta;
   };

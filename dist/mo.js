@@ -1118,6 +1118,7 @@ Helpers = (function() {
 
   Helpers.prototype.parseDelta = function(key, value) {
     var delta, end, endArr, endColorObj, start, startArr, startColorObj;
+    console.log(key, value);
     start = Object.keys(value)[0];
     end = value[start];
     delta = {

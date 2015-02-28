@@ -398,17 +398,26 @@ describe 'Helpers ->', ->
         expect(h.isArray()).toBe false
 
     describe 'calcArrDelta method', ->
-      it 'should should throw if on of the args are not arrays', ->
-        expect(-> h.calcArrDelta([200, 300, 100], 'a')).toThrow()
-        expect(-> h.calcArrDelta('a', [200, 300, 100])).toThrow()
-
-      it 'should should throw if less then 2 arrays passed', ->
-        expect(-> h.calcArrDelta [200, 300, 100]).toThrow()
-        expect(-> h.calcArrDelta()).toThrow()
       it 'should calculate delta of two arrays', ->
-        arr1 = [200, 300, 100]; arr2 = [250, 150, 0]
+        arr1 = [h.parseUnit(200), h.parseUnit(300), h.parseUnit('100%')]
+        arr2 = [h.parseUnit(250), h.parseUnit(150), h.parseUnit('0%')]
         delta = h.calcArrDelta arr1, arr2
-        expect(delta.join ' ').toBe '50 -150 -100'
+        expect(delta[0].value).toBe 50
+        expect(delta[0].unit) .toBe 'px'
+
+        expect(delta[1].value).toBe -150
+        expect(delta[1].unit) .toBe 'px'
+
+        expect(delta[2].value).toBe -100
+        expect(delta[2].unit) .toBe '%'
+      # NOT SURE IF NEEDED
+      # it 'should should throw if on of the args are not arrays', ->
+      #   expect(-> h.calcArrDelta([200, 300, 100], 'a')).toThrow()
+      #   expect(-> h.calcArrDelta('a', [200, 300, 100])).toThrow()
+      # it 'should should throw if less then 2 arrays passed', ->
+      #   expect(-> h.calcArrDelta [200, 300, 100]).toThrow()
+      #   expect(-> h.calcArrDelta()).toThrow()
+      
     describe 'getRadialPoint', ->
       it 'should calculate radial point', ->
         point = h.getRadialPoint

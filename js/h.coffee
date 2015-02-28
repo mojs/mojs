@@ -121,7 +121,6 @@ class Helpers
     radAngle = (o.angle-90)*(Math.PI/180)
     radiusX = if o.radiusX? then o.radiusX else o.radius
     radiusY = if o.radiusY? then o.radiusY else o.radius
-    # console.log radiusX, radiusY
     point =
       x: o.center.x + (Math.cos(radAngle)*radiusX)
       y: o.center.y + (Math.sin(radAngle)*radiusY)
@@ -146,12 +145,13 @@ class Helpers
     # string array
     string.trim().split(/\s+/gim).forEach (str)=> arr.push @parseUnit str
     arr
+  
   calcArrDelta:(arr1, arr2)->
-    if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
-    if !@isArray(arr1) or !@isArray(arr2) then throw Error 'Two arrays expected'
+    # if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
+    # if !@isArray(arr1) or !@isArray(arr2) then throw Error 'Two arrays expected'
     delta = []
     for num, i in arr1
-      delta[i] = arr2[i] - arr1[i]
+      delta[i] = @parseUnit "#{arr2[i].value - arr1[i].value}#{arr2[i].unit}"
     delta
 
   isArray:(variable)-> variable instanceof Array
@@ -237,8 +237,9 @@ class Helpers
   parseIfRand:(str)->
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
     else str
+  # if delta object was passed: like { 20: 75 }
   parseDelta:(key, value)->
-    # if delta object was passed: like { 20: 75 }
+    # console.log key, value
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start
