@@ -160,12 +160,14 @@ class Helpers
     # if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
     arr1Len = arr1.length; arr2Len = arr2.length
     if arr1Len > arr2Len
-      for i in [0...arr1Len-arr2Len]
-        currItem = i + arr2.length - 1
+      lenDiff = arr1Len-arr2Len; startI = arr2.length
+      for i in [0...lenDiff]
+        currItem = i + startI
         arr2.push @parseUnit "0#{arr1[currItem].unit}"
     else if arr2Len > arr1Len
-      for i in [0...arr2Len-arr1Len]
-        currItem = i + arr1.length
+      lenDiff = arr2Len-arr1Len; startI = arr1.length
+      for i in [0...lenDiff]
+        currItem = i + startI
         arr1.push @parseUnit "0#{arr2[currItem].unit}"
     [ arr1, arr2 ]
 

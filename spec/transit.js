@@ -1334,21 +1334,6 @@
           return expect(byte.deltas.strokeLinecap).not.toBeDefined();
         });
       });
-      describe('array values ->', function() {
-        return it('should calculate array delta', function() {
-          var arrayDelta, byte;
-          byte = new Byte({
-            strokeDasharray: {
-              '200 100': '300'
-            }
-          });
-          arrayDelta = byte.deltas.strokeDasharray;
-          expect(arrayDelta.start.join(' ')).toBe('200 100');
-          expect(arrayDelta.end.join(' ')).toBe('300 0');
-          expect(arrayDelta.delta.join(' ')).toBe('100 -100');
-          return expect(arrayDelta.type).toBe('array');
-        });
-      });
       describe('unit values ->', function() {
         return it('should calculate unit delta', function() {
           var byte, xDelta;
@@ -1511,16 +1496,6 @@
         byte.setProgress(.5);
         return expect(byte.props.stroke).toBe('rgba(0,127,127,1)');
       });
-      it('should set strokeDasharray/strokeDashoffset value progress', function() {
-        var byte;
-        byte = new Byte({
-          strokeDasharray: {
-            '200 100': '400'
-          }
-        });
-        byte.setProgress(.5);
-        return expect(byte.props.strokeDasharray).toBe('300 50 ');
-      });
       it('should set 0 if progress is less then 0', function() {
         var byte;
         byte = new Byte({
@@ -1531,7 +1506,7 @@
         byte.setProgress(-1);
         return expect(byte.progress).toBe(0);
       });
-      return it('should set 1 if progress is greater then 1', function() {
+      it('should set 1 if progress is greater then 1', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1540,6 +1515,31 @@
         });
         byte.setProgress(2);
         return expect(byte.progress).toBe(1);
+      });
+      return describe('strokeDash.. values', function() {
+        it('should set strokeDasharray/strokeDashoffset value progress', function() {
+          var byte;
+          byte = new Byte({
+            strokeDasharray: {
+              '200 100': '400'
+            }
+          });
+          byte.setProgress(.5);
+          return expect(byte.props.strokeDasharray).toBe('300 50 ');
+        });
+        return it('should set strokeDasharray/strokeDashoffset with percents', function() {
+          var byte;
+          byte = new Byte({
+            type: 'cross',
+            strokeDasharray: {
+              '0% 100': '100%'
+            },
+            radius: 100
+          });
+          byte.setProgress(.5);
+          console.log(byte.bit.el.getTotalLength());
+          return expect(byte.props.strokeDasharray).toBe('200 50 ');
+        });
       });
     });
     describe('Callbacks ->', function() {

@@ -722,14 +722,14 @@ describe 'Transit ->', ->
         expect(-> fun()).not.toThrow()
         expect(console.warn).toHaveBeenCalled()
         expect(byte.deltas.strokeLinecap).not.toBeDefined()
-    describe 'array values ->', ->
-      it 'should calculate array delta', ->
-        byte = new Byte strokeDasharray:  { '200 100': '300' }
-        arrayDelta = byte.deltas.strokeDasharray
-        expect(arrayDelta.start.join(' '))        .toBe   '200 100'
-        expect(arrayDelta.end.join(' '))          .toBe   '300 0'
-        expect(arrayDelta.delta.join(' '))        .toBe   '100 -100'
-        expect(arrayDelta.type)                   .toBe   'array'
+    # describe 'array values ->', ->
+    #   it 'should calculate array delta', ->
+    #     byte = new Byte strokeDasharray:  { '200 100': '300' }
+    #     arrayDelta = byte.deltas.strokeDasharray
+    #     expect(arrayDelta.start.join(' '))        .toBe   '200 100'
+    #     expect(arrayDelta.end.join(' '))          .toBe   '300 0'
+    #     expect(arrayDelta.delta.join(' '))        .toBe   '100 -100'
+    #     expect(arrayDelta.type)                   .toBe   'array'
     describe 'unit values ->', ->
       it 'should calculate unit delta', ->
         byte = new Byte x:  {'0%': '100%'}
@@ -803,10 +803,6 @@ describe 'Transit ->', ->
       colorDelta = byte.deltas.stroke
       byte.setProgress .5
       expect(byte.props.stroke).toBe 'rgba(0,127,127,1)'
-    it 'should set strokeDasharray/strokeDashoffset value progress', ->
-      byte = new Byte strokeDasharray:  {'200 100': '400'}
-      byte.setProgress .5
-      expect(byte.props.strokeDasharray).toBe '300 50 '
     it 'should set 0 if progress is less then 0', ->
       byte = new Byte radius:  {'25': 75}
       byte.setProgress -1
@@ -815,6 +811,22 @@ describe 'Transit ->', ->
       byte = new Byte radius:  {'25': 75}
       byte.setProgress 2
       expect(byte.progress).toBe 1
+
+    describe 'strokeDash.. values', ->
+      it 'should set strokeDasharray/strokeDashoffset value progress', ->
+        byte = new Byte strokeDasharray:  {'200 100': '400'}
+        byte.setProgress .5
+        expect(byte.props.strokeDasharray).toBe '300 50 '
+
+      it 'should set strokeDasharray/strokeDashoffset with percents', ->
+        byte = new Byte
+          type: 'cross'
+          strokeDasharray:  {'0% 100': '100%'}
+          radius: 100
+        byte.setProgress .5
+        console.log byte.bit.el.getTotalLength()
+        expect(byte.props.strokeDasharray).toBe '200 50 '
+
   describe 'Callbacks ->', ->
     describe 'onStart callback ->', ->
       it 'should call onStart callback', (dfr)->

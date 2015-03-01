@@ -276,7 +276,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, g, i, key, keys, len, num, r, str, units, value, _results;
+    var a, b, currentValue, g, i, item, key, keys, len, r, str, units, value, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
     _results = [];
@@ -290,8 +290,9 @@ Transit = (function(_super) {
             str = '';
             _ref = value.delta;
             for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-              num = _ref[i];
-              str += "" + (value.start[i] + num * this.progress) + " ";
+              item = _ref[i];
+              currentValue = value.start[i].value + item.value * this.progress;
+              str += "" + currentValue + " ";
             }
             return str;
           case 'number':

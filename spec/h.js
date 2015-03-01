@@ -213,12 +213,17 @@
           return it('should calculate array delta', function() {
             var delta;
             delta = h.parseDelta('strokeDasharray', {
-              '200 100': '300'
+              '200 100%': '300'
             });
-            expect(delta.start.join(' ')).toBe('200 100');
-            expect(delta.end.join(' ')).toBe('300 0');
-            expect(delta.delta.join(' ')).toBe('100 -100');
-            return expect(delta.type).toBe('array');
+            expect(delta.type).toBe('array');
+            expect(delta.start[0].value).toBe(200);
+            expect(delta.start[0].unit).toBe('px');
+            expect(delta.end[0].value).toBe(300);
+            expect(delta.end[0].unit).toBe('px');
+            expect(delta.start[1].value).toBe(100);
+            expect(delta.start[1].unit).toBe('%');
+            expect(delta.end[1].value).toBe(0);
+            return expect(delta.end[1].unit).toBe('%');
           });
         });
         describe('unit values ->', function() {
@@ -525,7 +530,7 @@
           expect(arr2[2].unit).toBe('%');
           return expect(arr2.length).toBe(3);
         });
-        return it('should normalize two inconsistent dash arrays #2', function() {
+        return it('should copy units from the another array #2', function() {
           var arr1, arr2;
           arr1 = [h.parseUnit(100), h.parseUnit(500), h.parseUnit('500%')];
           arr2 = [h.parseUnit('150%')];

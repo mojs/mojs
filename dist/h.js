@@ -238,17 +238,21 @@ Helpers = (function() {
   };
 
   Helpers.prototype.normDashArrays = function(arr1, arr2) {
-    var arr1Len, arr2Len, currItem, i, _i, _j, _ref, _ref1;
+    var arr1Len, arr2Len, currItem, i, lenDiff, startI, _i, _j;
     arr1Len = arr1.length;
     arr2Len = arr2.length;
     if (arr1Len > arr2Len) {
-      for (i = _i = 0, _ref = arr1Len - arr2Len; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        currItem = i + arr2.length - 1;
+      lenDiff = arr1Len - arr2Len;
+      startI = arr2.length;
+      for (i = _i = 0; 0 <= lenDiff ? _i < lenDiff : _i > lenDiff; i = 0 <= lenDiff ? ++_i : --_i) {
+        currItem = i + startI;
         arr2.push(this.parseUnit("0" + arr1[currItem].unit));
       }
     } else if (arr2Len > arr1Len) {
-      for (i = _j = 0, _ref1 = arr2Len - arr1Len; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        currItem = i + arr1.length;
+      lenDiff = arr2Len - arr1Len;
+      startI = arr1.length;
+      for (i = _j = 0; 0 <= lenDiff ? _j < lenDiff : _j > lenDiff; i = 0 <= lenDiff ? ++_j : --_j) {
+        currItem = i + startI;
         arr1.push(this.parseUnit("0" + arr2[currItem].unit));
       }
     }

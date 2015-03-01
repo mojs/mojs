@@ -191,9 +191,12 @@ class Transit extends bitsMap.map.bit
       @props[key] = switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
           str = ''
-          # console.log value.delta, value.start
-          for num, i in value.delta
-            str += "#{value.start[i] + num*@progress} "
+          for item, i in value.delta
+            currentValue = value.start[i].value+item.value*@progress
+            # cast the % values to pixels
+            # if item.unit is '%'
+            #   currentValue = (@bit.el.getTotalLength()/100)*currentValue
+            str += "#{currentValue} "
           str
         when 'number'
           value.start + value.delta*progress
