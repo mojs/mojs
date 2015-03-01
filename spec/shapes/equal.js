@@ -31,7 +31,7 @@
       });
       return expect(equal.ratio).toBe(1.43);
     });
-    return describe('methods ->', function() {
+    describe('methods ->', function() {
       return describe('draw method ->', function() {
         it('should define points', function() {
           var equal;
@@ -50,6 +50,28 @@
           });
           return expect(equal.el.getAttribute('points')).toBeFalsy();
         });
+      });
+    });
+    return describe('getLength method', function() {
+      it('should calculate total length of the path', function() {
+        var bit, radius;
+        radius = 100;
+        bit = new Equal({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: radius
+        });
+        return expect(bit.getLength()).toBe(2 * radius);
+      });
+      return it('should calculate total length of the with different radiusX/Y', function() {
+        var bit, radiusX, radiusY;
+        radiusX = 100;
+        radiusY = 50;
+        bit = new Equal({
+          ctx: document.createElementNS(ns, 'svg'),
+          radiusX: radiusX,
+          radiusY: radiusY
+        });
+        return expect(bit.getLength()).toBe(2 * radiusX);
       });
     });
   });

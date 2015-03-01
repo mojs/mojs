@@ -17,7 +17,7 @@
     it('should extend Bit', function() {
       return expect(circle instanceof Bit).toBe(true);
     });
-    return describe('draw ->', function() {
+    describe('draw ->', function() {
       it('should add properties to el', function() {
         var cross, cx, cy, rx, ry;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
@@ -58,6 +58,29 @@
         spyOn(Circle.__super__, 'draw');
         circle.draw();
         return expect(Circle.__super__.draw).toHaveBeenCalled();
+      });
+    });
+    return describe('getLength method', function() {
+      it('should calculate total length of the path', function() {
+        var bit, radius;
+        radius = 100;
+        bit = new Circle({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: radius
+        });
+        return expect(bit.getLength()).toBe(2 * Math.PI * radius);
+      });
+      return it('should calculate total length of the with different radiusX/Y', function() {
+        var bit, radiusX, radiusY, sqrt;
+        radiusX = 100;
+        radiusY = 50;
+        bit = new Circle({
+          ctx: document.createElementNS(ns, 'svg'),
+          radiusX: radiusX,
+          radiusY: radiusY
+        });
+        sqrt = Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
+        return expect(bit.getLength()).toBe(2 * Math.PI * sqrt);
       });
     });
   });

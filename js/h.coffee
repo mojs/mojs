@@ -148,7 +148,7 @@ class Helpers
   
   calcArrDelta:(arr1, arr2)->
     # if !arr1? or !arr2? then throw Error 'Two arrays should be passed'
-    # if !@isArray(arr1) or !@isArray(arr2) then throw Error 'Two arrays expected'
+    # if !@isArray(arr1)or!@isArray(arr2) then throw Error 'Two arrays expected'
     delta = []
     for num, i in arr1
       delta[i] = @parseUnit "#{arr2[i].value - arr1[i].value}#{arr2[i].unit}"

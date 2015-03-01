@@ -225,10 +225,12 @@ describe 'Bit', ->
       bit = new Bit el: el
       expect(bit.isForeign).toBe true
 
-
-
-
-
+  describe 'getLength method', ->
+    it 'should calculate total length of the path', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      expect(bit.getLength()).toBe 200
 
 
 

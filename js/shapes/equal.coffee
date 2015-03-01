@@ -19,6 +19,7 @@ class Equal extends Bit
       d += "M#{x1}, #{y} L#{x2}, #{y} "
 
     @setAttr d: d
+  
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

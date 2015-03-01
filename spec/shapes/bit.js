@@ -291,7 +291,7 @@
         return expect(bit.calcTransform).toBeDefined();
       });
     });
-    return describe('foreign el', function() {
+    describe('foreign el', function() {
       it('should recieve foreign el', function() {
         var el;
         el = document.createElementNS(ns, 'rect');
@@ -309,6 +309,15 @@
           el: el
         });
         return expect(bit.isForeign).toBe(true);
+      });
+    });
+    return describe('getLength method', function() {
+      return it('should calculate total length of the path', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        return expect(bit.getLength()).toBe(200);
       });
     });
   });

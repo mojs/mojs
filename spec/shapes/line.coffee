@@ -39,4 +39,14 @@ describe 'Line', ->
         line.draw()
         expect(Line.__super__.draw).toHaveBeenCalled()
 
+  describe 'getLength method', ->
+    it 'should calculate total length of the path', ->
+      bit = new Line
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      expect(bit.getLength()).toBe 200
+
+
+
+
 

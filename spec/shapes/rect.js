@@ -25,7 +25,7 @@
         return expect(rect.ratio).toBe(1.43);
       });
     });
-    return describe('draw ->', function() {
+    describe('draw ->', function() {
       it('should add properties to el', function() {
         var height, width, x, y;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
@@ -71,6 +71,28 @@
         spyOn(Rect.__super__, 'draw');
         rect.draw();
         return expect(Rect.__super__.draw).toHaveBeenCalled();
+      });
+    });
+    return describe('getLength method', function() {
+      it('should calculate total length of the path', function() {
+        var bit, radius;
+        radius = 100;
+        bit = new Rect({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: radius
+        });
+        return expect(bit.getLength()).toBe(400);
+      });
+      return it('should calculate total length of the with different radiusX/Y', function() {
+        var bit, radiusX, radiusY;
+        radiusX = 100;
+        radiusY = 50;
+        bit = new Rect({
+          ctx: document.createElementNS(ns, 'svg'),
+          radiusX: radiusX,
+          radiusY: radiusY
+        });
+        return expect(bit.getLength()).toBe(2 * radiusX + 2 * radiusY);
       });
     });
   });

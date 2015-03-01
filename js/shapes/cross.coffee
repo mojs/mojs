@@ -15,6 +15,10 @@ class Cross extends Bit
     line2 = "M#{@props.x},#{y1} L#{@props.x},#{y2}"
     d = "#{line1} #{line2}"
     @setAttr d: d
+  getLength:->
+    radiusX = if @props.radiusX? then @props.radiusX else @props.radius
+    radiusY = if @props.radiusY? then @props.radiusY else @props.radius
+    2*(radiusX+radiusY)
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

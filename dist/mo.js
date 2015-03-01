@@ -992,16 +992,10 @@ Helpers = (function() {
 
   Helpers.prototype.calcArrDelta = function(arr1, arr2) {
     var delta, i, num, _i, _len;
-    if ((arr1 == null) || (arr2 == null)) {
-      throw Error('Two arrays should be passed');
-    }
-    if (!this.isArray(arr1) || !this.isArray(arr2)) {
-      throw Error('Two arrays expected');
-    }
     delta = [];
     for (i = _i = 0, _len = arr1.length; _i < _len; i = ++_i) {
       num = arr1[i];
-      delta[i] = arr2[i] - arr1[i];
+      delta[i] = this.parseUnit("" + (arr2[i].value - arr1[i].value) + arr2[i].unit);
     }
     return delta;
   };
@@ -1011,17 +1005,21 @@ Helpers = (function() {
   };
 
   Helpers.prototype.normDashArrays = function(arr1, arr2) {
-    var arr1Len, arr2Len, currItem, i, _i, _j, _ref, _ref1;
+    var arr1Len, arr2Len, currItem, i, lenDiff, startI, _i, _j;
     arr1Len = arr1.length;
     arr2Len = arr2.length;
     if (arr1Len > arr2Len) {
-      for (i = _i = 0, _ref = arr1Len - arr2Len; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        currItem = i + arr2.length - 1;
+      lenDiff = arr1Len - arr2Len;
+      startI = arr2.length;
+      for (i = _i = 0; 0 <= lenDiff ? _i < lenDiff : _i > lenDiff; i = 0 <= lenDiff ? ++_i : --_i) {
+        currItem = i + startI;
         arr2.push(this.parseUnit("0" + arr1[currItem].unit));
       }
     } else if (arr2Len > arr1Len) {
-      for (i = _j = 0, _ref1 = arr2Len - arr1Len; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        currItem = i + arr1.length;
+      lenDiff = arr2Len - arr1Len;
+      startI = arr1.length;
+      for (i = _j = 0; 0 <= lenDiff ? _j < lenDiff : _j > lenDiff; i = 0 <= lenDiff ? ++_j : --_j) {
+        currItem = i + startI;
         arr1.push(this.parseUnit("0" + arr2[currItem].unit));
       }
     }
@@ -1118,7 +1116,6 @@ Helpers = (function() {
 
   Helpers.prototype.parseDelta = function(key, value) {
     var delta, end, endArr, endColorObj, start, startArr, startColorObj;
-    console.log(key, value);
     start = Object.keys(value)[0];
     end = value[start];
     delta = {
@@ -1236,25 +1233,24 @@ Timeline = require('./tween/timeline');
 Tween = require('./tween/tween');
 
 burst = new Transit({
-  x: 400,
-  y: 400,
-  type: 'circle',
-  bit: document.getElementById('js-ellipse'),
+  x: 100,
+  y: 100,
+  type: 'zigzag',
   duration: 2000,
   count: 3,
+  points: 5,
   isShowInit: true,
   isShowEnd: true,
   repeat: 99999,
   stroke: 'deeppink',
   strokeWidth: 2,
-  strokeDasharray: {
-    '100% 60%': '10%'
-  },
   fill: 'transparent',
-  radius: 40,
+  radius: 75,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
 });
+
+console.log(burst.el);
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./transit":18,"./tween/timeline":19,"./tween/tween":20}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
@@ -1799,6 +1795,10 @@ Bit = (function() {
     }
   };
 
+  Bit.prototype.getLength = function() {
+    return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
+  };
+
   return Bit;
 
 })();
@@ -1940,6 +1940,13 @@ Circle = (function(_super) {
     });
   };
 
+  Circle.prototype.getLength = function() {
+    var radiusX, radiusY;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    return 2 * Math.PI * Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
+  };
+
   return Circle;
 
 })(Bit);
@@ -1953,6 +1960,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Circle;
 }
@@ -1965,6 +1975,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
@@ -2003,6 +2016,13 @@ Cross = (function(_super) {
     return this.setAttr({
       d: d
     });
+  };
+
+  Cross.prototype.getLength = function() {
+    var radiusX, radiusY;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    return 2 * (radiusX + radiusY);
   };
 
   return Cross;
@@ -2201,7 +2221,7 @@ Polygon = (function(_super) {
     return Polygon.__super__.constructor.apply(this, arguments);
   }
 
-  Polygon.prototype.type = 'polygon';
+  Polygon.prototype.type = 'path';
 
   Polygon.prototype.draw = function() {
     this.drawShape();
@@ -2209,7 +2229,7 @@ Polygon = (function(_super) {
   };
 
   Polygon.prototype.drawShape = function() {
-    var d, i, point, step, _i, _j, _len, _ref, _ref1;
+    var char, d, i, point, step, _i, _j, _len, _ref, _ref1;
     step = 360 / this.props.points;
     this.radialPoints = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -2228,11 +2248,16 @@ Polygon = (function(_super) {
     _ref1 = this.radialPoints;
     for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
       point = _ref1[i];
-      d += "" + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
+      char = i === 0 ? 'M' : 'L';
+      d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
     }
     return this.setAttr({
-      points: d
+      d: d += 'z'
     });
+  };
+
+  Polygon.prototype.getLength = function() {
+    return this.el.getTotalLength();
   };
 
   return Polygon;
@@ -2248,6 +2273,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Polygon;
 }
@@ -2260,6 +2288,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
@@ -2298,6 +2329,13 @@ Rect = (function(_super) {
     });
   };
 
+  Rect.prototype.getLength = function() {
+    var radiusX, radiusY;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    return 2 * radiusX + 2 * radiusY;
+  };
+
   return Rect;
 
 })(Bit);
@@ -2311,6 +2349,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Rect;
 }
@@ -2323,6 +2364,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
@@ -2344,10 +2388,10 @@ Zigzag = (function(_super) {
     return Zigzag.__super__.constructor.apply(this, arguments);
   }
 
-  Zigzag.prototype.type = 'polyline';
+  Zigzag.prototype.type = 'path';
 
   Zigzag.prototype.draw = function() {
-    var i, iX, iY, points, radiusX, radiusY, startPoints, stepX, stepY, strokeWidth, _i, _ref;
+    var char, i, iX, iX2, iY, iY2, points, radiusX, radiusY, stepX, stepY, strokeWidth, _i, _ref;
     Zigzag.__super__.draw.apply(this, arguments);
     if (!this.props.points) {
       return;
@@ -2358,15 +2402,21 @@ Zigzag = (function(_super) {
     stepX = 2 * radiusX / this.props.points;
     stepY = 2 * radiusY / this.props.points;
     strokeWidth = this.props['stroke-width'];
-    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+    for (i = _i = _ref = this.props.points; _ref <= 0 ? _i < 0 : _i > 0; i = _ref <= 0 ? ++_i : --_i) {
       iX = i * stepX + strokeWidth;
       iY = i * stepY + strokeWidth;
-      startPoints = "" + iX + ", " + iY;
-      points += i === this.props.points ? startPoints : "" + startPoints + " " + ((i + 1) * stepX + strokeWidth) + ", " + iY + " ";
+      iX2 = (i - 1) * stepX + strokeWidth;
+      iY2 = (i - 1) * stepY + strokeWidth;
+      char = i === this.props.points ? 'M' : 'L';
+      points += "" + char + iX + "," + iY + " l0, -" + stepY + " l-" + stepX + ", 0";
     }
     return this.setAttr({
-      points: points
+      d: points
     });
+  };
+
+  Zigzag.prototype.getLength = function() {
+    return this.el.getTotalLength();
   };
 
   return Zigzag;
@@ -2686,7 +2736,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, g, i, key, keys, len, num, r, str, units, value, _results;
+    var a, b, currentValue, g, i, item, key, keys, len, r, str, units, value, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
     _results = [];
@@ -2700,8 +2750,9 @@ Transit = (function(_super) {
             str = '';
             _ref = value.delta;
             for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-              num = _ref[i];
-              str += "" + (value.start[i] + num * this.progress) + " ";
+              item = _ref[i];
+              currentValue = value.start[i].value + item.value * this.progress;
+              str += "" + currentValue + " ";
             }
             return str;
           case 'number':

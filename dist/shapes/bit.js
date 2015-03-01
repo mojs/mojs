@@ -135,6 +135,10 @@ Bit = (function() {
     }
   };
 
+  Bit.prototype.getLength = function() {
+    return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
+  };
+
   return Bit;
 
 })();

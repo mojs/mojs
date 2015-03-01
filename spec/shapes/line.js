@@ -23,7 +23,7 @@
       });
       return expect(svg.firstChild).toBeDefined();
     });
-    return describe('methods ->', function() {
+    describe('methods ->', function() {
       return describe('draw method ->', function() {
         it('should add properties to el', function() {
           var attr1, attr2, delta;
@@ -59,6 +59,16 @@
           line.draw();
           return expect(Line.__super__.draw).toHaveBeenCalled();
         });
+      });
+    });
+    return describe('getLength method', function() {
+      return it('should calculate total length of the path', function() {
+        var bit;
+        bit = new Line({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        return expect(bit.getLength()).toBe(200);
       });
     });
   });

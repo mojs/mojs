@@ -44,3 +44,16 @@ describe 'Cross ->', ->
       cross.draw()
       expect(Cross.__super__.draw).toHaveBeenCalled()
 
+  describe 'getLength method', ->
+    it 'should calculate total length of the path', ->
+      bit = new Cross
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      expect(bit.getLength()).toBe 400
+
+    it 'should calculate total length of the with different radiusX/Y', ->
+      bit = new Cross
+        ctx:    document.createElementNS ns, 'svg'
+        radiusX: 100
+        radiusY: 50
+      expect(bit.getLength()).toBe 300

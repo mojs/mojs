@@ -69,6 +69,7 @@ class Bit
     if @state[name] isnt (value = @props[name])
       @el.setAttribute name, value
       @state[name] = value
+  getLength:-> 2*if @props.radiusX? then @props.radiusX else @props.radius
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

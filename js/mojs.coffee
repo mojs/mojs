@@ -7,17 +7,18 @@ Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
 burst = new Transit(
-  x: 400, y: 400
-  type:         'circle'
-  bit:           document.getElementById 'js-ellipse'
+  x: 100, y: 100
+  type:         'zigzag'
+  # bit:           document.getElementById 'js-ellipse'
   duration:     2000
   count:        3
+  points: 5
   isShowInit: true
   isShowEnd:  true
   repeat: 99999
   stroke: 'deeppink'
   strokeWidth: 2
-  strokeDasharray:  {'100% 60%': '10%'}
+  # strokeDasharray:  {'100% 60%': '10%'}
   # strokeDasharray:  '50%'
   # strokeDashoffset: {0: 165}
   fill: 'transparent'
@@ -26,7 +27,7 @@ burst = new Transit(
 
   # isRunLess:  true
   # points: 2
-  radius: 40
+  radius: 75
   # radius: 100
   # radiusY:  {10:40}
   swirlFrequency: 'rand(0,10)'
@@ -34,6 +35,9 @@ burst = new Transit(
   # childOptions: radius: 10
   # onUpdate:(p)-> console.log p
 )
+
+console.log burst.el
+
 # .then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0
 

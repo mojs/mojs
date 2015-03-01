@@ -17,7 +17,7 @@
     it('should extend Bit', function() {
       return expect(cross instanceof Bit).toBe(true);
     });
-    return describe('draw ->', function() {
+    describe('draw ->', function() {
       it('should add properties to el', function() {
         var d, isD, isIE9D;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
@@ -64,6 +64,25 @@
         spyOn(Cross.__super__, 'draw');
         cross.draw();
         return expect(Cross.__super__.draw).toHaveBeenCalled();
+      });
+    });
+    return describe('getLength method', function() {
+      it('should calculate total length of the path', function() {
+        var bit;
+        bit = new Cross({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        return expect(bit.getLength()).toBe(400);
+      });
+      return it('should calculate total length of the with different radiusX/Y', function() {
+        var bit;
+        bit = new Cross({
+          ctx: document.createElementNS(ns, 'svg'),
+          radiusX: 100,
+          radiusY: 50
+        });
+        return expect(bit.getLength()).toBe(300);
       });
     });
   });

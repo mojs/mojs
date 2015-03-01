@@ -4,7 +4,7 @@
 Bit = require './bit'
 
 class Zigzag extends Bit
-  type: 'polyline'
+  type: 'path'
   draw:->
     super
     return if !@props.points
@@ -13,14 +13,14 @@ class Zigzag extends Bit
     points = ''; stepX = 2*radiusX/@props.points
     stepY  = 2*radiusY/@props.points; strokeWidth = @props['stroke-width']
     
-    for i in [0..@props.points]
+    for i in [@props.points...0]
       iX = i*stepX + strokeWidth; iY = i*stepY + strokeWidth
-      startPoints = "#{iX}, #{iY}"
-      
-      points += if i is @props.points then startPoints
-      else "#{startPoints} #{(i+1)*stepX + strokeWidth}, #{iY} "
+      iX2 = (i-1)*stepX + strokeWidth; iY2 = (i-1)*stepY + strokeWidth
+      char = if i is @props.points then 'M' else 'L'
+      points += "#{char}#{iX},#{iY} l0, -#{stepY} l-#{stepX}, 0"
+    @setAttr d: points
 
-    @setAttr points: points
+  getLength:-> @el.getTotalLength()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

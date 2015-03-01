@@ -30,6 +30,13 @@ Rect = (function(_super) {
     });
   };
 
+  Rect.prototype.getLength = function() {
+    var radiusX, radiusY;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    return 2 * radiusX + 2 * radiusY;
+  };
+
   return Rect;
 
 })(Bit);
@@ -43,6 +50,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Rect;
 }
@@ -55,6 +65,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;

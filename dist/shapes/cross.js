@@ -32,6 +32,13 @@ Cross = (function(_super) {
     });
   };
 
+  Cross.prototype.getLength = function() {
+    var radiusX, radiusY;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    return 2 * (radiusX + radiusY);
+  };
+
   return Cross;
 
 })(Bit);

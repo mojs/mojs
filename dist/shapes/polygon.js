@@ -15,7 +15,7 @@ Polygon = (function(_super) {
     return Polygon.__super__.constructor.apply(this, arguments);
   }
 
-  Polygon.prototype.type = 'polygon';
+  Polygon.prototype.type = 'path';
 
   Polygon.prototype.draw = function() {
     this.drawShape();
@@ -23,7 +23,7 @@ Polygon = (function(_super) {
   };
 
   Polygon.prototype.drawShape = function() {
-    var d, i, point, step, _i, _j, _len, _ref, _ref1;
+    var char, d, i, point, step, _i, _j, _len, _ref, _ref1;
     step = 360 / this.props.points;
     this.radialPoints = [];
     for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -42,11 +42,16 @@ Polygon = (function(_super) {
     _ref1 = this.radialPoints;
     for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
       point = _ref1[i];
-      d += "" + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
+      char = i === 0 ? 'M' : 'L';
+      d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
     }
     return this.setAttr({
-      points: d
+      d: d += 'z'
     });
+  };
+
+  Polygon.prototype.getLength = function() {
+    return this.el.getTotalLength();
   };
 
   return Polygon;
@@ -62,6 +67,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Polygon;
 }
@@ -74,6 +82,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;

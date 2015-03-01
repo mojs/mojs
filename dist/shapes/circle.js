@@ -25,6 +25,13 @@ Circle = (function(_super) {
     });
   };
 
+  Circle.prototype.getLength = function() {
+    var radiusX, radiusY;
+    radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    return 2 * Math.PI * Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
+  };
+
   return Circle;
 
 })(Bit);
@@ -38,6 +45,9 @@ if ((typeof define === "function") && define.amd) {
   });
 }
 
+
+/* istanbul ignore next */
+
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = Circle;
 }
@@ -50,6 +60,9 @@ if (typeof window !== "undefined" && window !== null) {
     window.mojs = {};
   }
 }
+
+
+/* istanbul ignore next */
 
 if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
