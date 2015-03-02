@@ -29,5 +29,3 @@ burst = new Transit({
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
 });
-
-console.log(burst.el);

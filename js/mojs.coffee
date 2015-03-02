@@ -36,8 +36,6 @@ burst = new Transit(
   # onUpdate:(p)-> console.log p
 )
 
-console.log burst.el
-
 # .then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0
 

@@ -1250,8 +1250,6 @@ burst = new Transit({
   swirlSize: 'rand(0,10)'
 });
 
-console.log(burst.el);
-
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./transit":18,"./tween/timeline":19,"./tween/tween":20}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
 
