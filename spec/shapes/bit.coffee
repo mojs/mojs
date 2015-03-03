@@ -232,6 +232,21 @@ describe 'Bit', ->
         radius: 100
       expect(bit.getLength()).toBe 200
 
+  describe 'length tracking', ->
+    it 'should track self length', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      expect(bit.props.length).toBe 200
+
+  # describe 'stroke-dash.. % cast', ->
+  #   it 'should track self length', ->
+  #     bit = new Bit
+  #       ctx:    document.createElementNS ns, 'svg'
+  #       radius: 100
+  #     bit.setProp 'stroke-dasharray', '50%'
+  #     expect(bit.props['stroke-dasharray']).toBe 100
+
 
 
 

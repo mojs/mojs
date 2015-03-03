@@ -1528,17 +1528,18 @@
           return expect(byte.props.strokeDasharray).toBe('300 50 ');
         });
         return it('should set strokeDasharray/strokeDashoffset with percents', function() {
-          var byte;
+          var byte, dash, radius;
+          radius = 100;
           byte = new Byte({
-            type: 'cross',
+            type: 'circle',
             strokeDasharray: {
               '0% 100': '100%'
             },
-            radius: 100
+            radius: radius
           });
           byte.setProgress(.5);
-          console.log(byte.bit.el.getTotalLength());
-          return expect(byte.props.strokeDasharray).toBe('200 50 ');
+          dash = (byte.getBitLength() / 100) * 50;
+          return expect(byte.props.strokeDasharray).toBe("" + dash + " 50 ");
         });
       });
     });
@@ -2222,8 +2223,7 @@
         bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
         svg.appendChild(bit);
         byte = new Byte({
-          bit: bit,
-          isIt: true
+          bit: bit
         });
         return expect(byte.isForeignBit).toBe(true);
       });

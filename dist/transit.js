@@ -81,7 +81,6 @@ Transit = (function(_super) {
         this.createBit();
         this.calcSize();
         this.el = document.createElement('div');
-        this.o.isIt && console.log('append');
         this.el.appendChild(this.ctx);
         (this.o.parent || document.body).appendChild(this.el);
       } else {
@@ -276,7 +275,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, currentValue, g, i, item, key, keys, len, r, str, units, value, _results;
+    var a, b, dash, g, i, item, key, keys, len, r, str, units, value, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
     _results = [];
@@ -291,8 +290,11 @@ Transit = (function(_super) {
             _ref = value.delta;
             for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
               item = _ref[i];
-              currentValue = value.start[i].value + item.value * this.progress;
-              str += "" + currentValue + " ";
+              dash = value.start[i].value + item.value * this.progress;
+              if (item.unit === '%') {
+                dash = (this.getBitLength() / 100) * dash;
+              }
+              str += "" + dash + " ";
             }
             return str;
           case 'number':
@@ -592,6 +594,16 @@ Transit = (function(_super) {
     timelineOptions.onStart = this.props.onStart;
     timelineOptions.onComplete = this.props.onComplete;
     return this.timeline.setProp(timelineOptions);
+  };
+
+  Transit.prototype.getBitLength = function() {
+    var isChanged, isChangedXY;
+    isChangedXY = this.isPropChanged('radiusX') || this.isPropChanged('radiusY');
+    isChanged = this.isPropChanged('radius');
+    if (isChangedXY || isChanged) {
+      this.props.bitLength = this.bit.getLength();
+    }
+    return this.props.bitLength;
   };
 
   return Transit;

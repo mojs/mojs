@@ -16,13 +16,13 @@ Circle = (function(_super) {
   Circle.prototype.type = 'ellipse';
 
   Circle.prototype.draw = function() {
-    Circle.__super__.draw.apply(this, arguments);
-    return this.setAttr({
+    this.setAttr({
       rx: this.props.radiusX != null ? this.props.radiusX : this.props.radius,
       ry: this.props.radiusY != null ? this.props.radiusY : this.props.radius,
       cx: this.props.x,
       cy: this.props.y
     });
+    return Circle.__super__.draw.apply(this, arguments);
   };
 
   Circle.prototype.getLength = function() {

@@ -1235,7 +1235,7 @@ Tween = require('./tween/tween');
 burst = new Transit({
   x: 200,
   y: 200,
-  type: 'zigzag',
+  type: 'circle',
   duration: 2000,
   count: 3,
   points: 5,
@@ -1244,8 +1244,11 @@ burst = new Transit({
   repeat: 99999,
   stroke: 'deeppink',
   strokeWidth: 2,
+  strokeDasharray: {
+    '50%': '50%'
+  },
   fill: 'transparent',
-  radius: 75,
+  radius: 100,
   swirlFrequency: 'rand(0,10)',
   swirlSize: 'rand(0,10)'
 });
@@ -1776,6 +1779,7 @@ Bit = (function() {
 
   Bit.prototype.draw = function() {
     var len, name, _results;
+    this.props.length = this.getLength();
     len = this.drawMapLength;
     _results = [];
     while (len--) {
@@ -1929,13 +1933,13 @@ Circle = (function(_super) {
   Circle.prototype.type = 'ellipse';
 
   Circle.prototype.draw = function() {
-    Circle.__super__.draw.apply(this, arguments);
-    return this.setAttr({
+    this.setAttr({
       rx: this.props.radiusX != null ? this.props.radiusX : this.props.radius,
       ry: this.props.radiusY != null ? this.props.radiusY : this.props.radius,
       cx: this.props.x,
       cy: this.props.y
     });
+    return Circle.__super__.draw.apply(this, arguments);
   };
 
   Circle.prototype.getLength = function() {
@@ -2543,7 +2547,6 @@ Transit = (function(_super) {
         this.createBit();
         this.calcSize();
         this.el = document.createElement('div');
-        this.o.isIt && console.log('append');
         this.el.appendChild(this.ctx);
         (this.o.parent || document.body).appendChild(this.el);
       } else {
@@ -2738,7 +2741,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, currentValue, g, i, item, key, keys, len, r, str, units, value, _results;
+    var a, b, dash, g, i, item, key, keys, len, r, str, units, value, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
     _results = [];
@@ -2753,8 +2756,11 @@ Transit = (function(_super) {
             _ref = value.delta;
             for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
               item = _ref[i];
-              currentValue = value.start[i].value + item.value * this.progress;
-              str += "" + currentValue + " ";
+              dash = value.start[i].value + item.value * this.progress;
+              if (item.unit === '%') {
+                dash = (this.getBitLength() / 100) * dash;
+              }
+              str += "" + dash + " ";
             }
             return str;
           case 'number':
@@ -3054,6 +3060,16 @@ Transit = (function(_super) {
     timelineOptions.onStart = this.props.onStart;
     timelineOptions.onComplete = this.props.onComplete;
     return this.timeline.setProp(timelineOptions);
+  };
+
+  Transit.prototype.getBitLength = function() {
+    var isChanged, isChangedXY;
+    isChangedXY = this.isPropChanged('radiusX') || this.isPropChanged('radiusY');
+    isChanged = this.isPropChanged('radius');
+    if (isChangedXY || isChanged) {
+      this.props.bitLength = this.bit.getLength();
+    }
+    return this.props.bitLength;
   };
 
   return Transit;

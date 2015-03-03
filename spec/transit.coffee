@@ -819,13 +819,14 @@ describe 'Transit ->', ->
         expect(byte.props.strokeDasharray).toBe '300 50 '
 
       it 'should set strokeDasharray/strokeDashoffset with percents', ->
+        radius = 100
         byte = new Byte
-          type: 'cross'
+          type: 'circle'
           strokeDasharray:  {'0% 100': '100%'}
-          radius: 100
+          radius: radius
         byte.setProgress .5
-        console.log byte.bit.el.getTotalLength()
-        expect(byte.props.strokeDasharray).toBe '200 50 '
+        dash = (byte.getBitLength()/100)*50
+        expect(byte.props.strokeDasharray).toBe "#{dash} 50 "
 
   describe 'Callbacks ->', ->
     describe 'onStart callback ->', ->
@@ -1181,10 +1182,35 @@ describe 'Transit ->', ->
       svg  = document.createElementNS?(ns, 'svg')
       bit  = document.createElementNS?(ns, 'rect')
       svg.appendChild bit
-      byte = new Byte bit: bit, isIt: true
+      byte = new Byte bit: bit
       expect(byte.isForeignBit).toBe true
 
+  # describe 'getBitLength function', ->
+  #   it 'should set props.bitLength', ->
+  #     byte = new Byte
+  #       ctx: svg, isShowEnd: true, isRunLess: true
+  #       type: 'circle'
+  #       radius: 50
+  #     byte.getBitLength()
+  #     expect(byte.props.bitLength).toBe 2*Math.PI*50
 
+  #   it 'should call the bit.getLength only if radiusX/Y changed', ->
+  #     byte = new Byte
+  #       ctx: svg, isShowEnd: true, isRunLess: true
+  #       type: 'circle'
+  #       radius: 50
+  #     byte.getBitLength()
+  #     spyOn byte.bit, 'getLength'
+  #     byte.getBitLength()
+  #     expect(byte.bit.getLength).not.toHaveBeenCalled()
+
+  #   it 'should always return the cached value', ->
+  #     byte = new Byte
+  #       ctx: svg, isShowEnd: true, isRunLess: true
+  #       type: 'circle'
+  #       radius: 50
+  #     byte.getBitLength()
+  #     expect(byte.getBitLength()).toBe byte.props.bitLength
 
       
 

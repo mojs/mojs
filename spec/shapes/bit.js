@@ -311,13 +311,22 @@
         return expect(bit.isForeign).toBe(true);
       });
     });
-    return describe('getLength method', function() {
+    describe('getLength method', function() {
       return it('should calculate total length of the path', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
         return expect(bit.getLength()).toBe(200);
+      });
+    });
+    return describe('length tracking', function() {
+      return it('should track self length', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        return expect(bit.props.length).toBe(200);
       });
     });
   });

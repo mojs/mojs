@@ -58,7 +58,6 @@ class Transit extends bitsMap.map.bit
         @ctx.style.height    = '100%'
         @createBit(); @calcSize()
         @el = document.createElement 'div'
-        @o.isIt and console.log 'append'
         @el.appendChild @ctx
         (@o.parent or document.body).appendChild @el
       else
@@ -130,10 +129,10 @@ class Transit extends bitsMap.map.bit
 
   isPropChanged:(name)->
     @lastSet[name] ?= {}
+    # name.match('radius') and console.log 'yep', @lastSet[name].value, name
     if @lastSet[name].value isnt @props[name]
       @lastSet[name].value = @props[name]; true
     else false
-
 
   calcTransform:->
     @props.transform = "rotate(#{@props.angle},#{@origin.x},#{@origin.y})"
@@ -192,11 +191,12 @@ class Transit extends bitsMap.map.bit
         when 'array' # strokeDasharray/strokeDashoffset
           str = ''
           for item, i in value.delta
-            currentValue = value.start[i].value+item.value*@progress
+            dash = value.start[i].value+item.value*@progress
             # cast the % values to pixels
-            # if item.unit is '%'
-            #   currentValue = (@bit.el.getTotalLength()/100)*currentValue
-            str += "#{currentValue} "
+            if item.unit is '%'
+              # console.log dash, @getBitLength()/100
+              dash = (@getBitLength()/100)*dash
+            str += "#{dash} "
           str
         when 'number'
           value.start + value.delta*progress
@@ -388,6 +388,11 @@ class Transit extends bitsMap.map.bit
     timelineOptions.onStart    = @props.onStart
     timelineOptions.onComplete = @props.onComplete
     @timeline.setProp timelineOptions
+  getBitLength:->
+    isChangedXY = @isPropChanged('radiusX') or @isPropChanged('radiusY')
+    isChanged   = @isPropChanged('radius')
+    if isChangedXY or isChanged then @props.bitLength = @bit.getLength()
+    @props.bitLength
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

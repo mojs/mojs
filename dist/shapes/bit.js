@@ -118,6 +118,7 @@ Bit = (function() {
 
   Bit.prototype.draw = function() {
     var len, name, _results;
+    this.props.length = this.getLength();
     len = this.drawMapLength;
     _results = [];
     while (len--) {

@@ -61,6 +61,7 @@ class Bit
     'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform',
     ]
   draw:->
+    @props.length = @getLength()
     len = @drawMapLength
     while(len--)
       name = @drawMap[len]
