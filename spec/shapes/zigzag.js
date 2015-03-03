@@ -24,6 +24,13 @@
       });
       return expect(svg.firstChild).toBeDefined();
     });
+    it('should have ratio of 1.43', function() {
+      var line;
+      line = new Zigzag({
+        ctx: svg
+      });
+      return expect(line.ratio).toBe(1.43);
+    });
     describe('methods ->', function() {
       return describe('draw method ->', function() {
         it('should add properties to el', function() {

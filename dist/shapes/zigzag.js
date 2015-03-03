@@ -15,8 +15,10 @@ Zigzag = (function(_super) {
 
   Zigzag.prototype.type = 'path';
 
+  Zigzag.prototype.ratio = 1.43;
+
   Zigzag.prototype.draw = function() {
-    var char, i, iX, iX2, iY, iY2, points, radiusX, radiusY, stepX, stepY, strokeWidth, _i, _ref;
+    var char, i, iX, iX2, iY, iY2, points, radiusX, radiusY, stepX, stepY, strokeWidth, xStart, yStart, _i, _ref;
     Zigzag.__super__.draw.apply(this, arguments);
     if (!this.props.points) {
       return;
@@ -27,11 +29,13 @@ Zigzag = (function(_super) {
     stepX = 2 * radiusX / this.props.points;
     stepY = 2 * radiusY / this.props.points;
     strokeWidth = this.props['stroke-width'];
+    xStart = this.props.x - radiusX;
+    yStart = this.props.y - radiusY;
     for (i = _i = _ref = this.props.points; _ref <= 0 ? _i < 0 : _i > 0; i = _ref <= 0 ? ++_i : --_i) {
-      iX = i * stepX + strokeWidth;
-      iY = i * stepY + strokeWidth;
-      iX2 = (i - 1) * stepX + strokeWidth;
-      iY2 = (i - 1) * stepY + strokeWidth;
+      iX = xStart + i * stepX + strokeWidth;
+      iY = yStart + i * stepY + strokeWidth;
+      iX2 = xStart + (i - 1) * stepX + strokeWidth;
+      iY2 = yStart + (i - 1) * stepY + strokeWidth;
       char = i === this.props.points ? 'M' : 'L';
       points += "" + char + iX + "," + iY + " l0, -" + stepY + " l-" + stepX + ", 0";
     }
