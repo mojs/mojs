@@ -816,17 +816,23 @@ describe 'Transit ->', ->
       it 'should set strokeDasharray/strokeDashoffset value progress', ->
         byte = new Byte strokeDasharray:  {'200 100': '400'}
         byte.setProgress .5
-        expect(byte.props.strokeDasharray).toBe '300 50 '
+        expect(byte.props.strokeDasharray[0].value).toBe 300
+        expect(byte.props.strokeDasharray[0].units).toBe 'px'
+        expect(byte.props.strokeDasharray[1].value).toBe 50
+        expect(byte.props.strokeDasharray[1].units).toBe 'px'
 
       it 'should set strokeDasharray/strokeDashoffset with percents', ->
-        radius = 100
         byte = new Byte
           type: 'circle'
-          strokeDasharray:  {'0% 100': '100%'}
-          radius: radius
+          strokeDasharray:  {'0% 200': '100%'}
+          radius: 100
+          isRunLess: true
+          isIt: true
         byte.setProgress .5
-        dash = (byte.getBitLength()/100)*50
-        expect(byte.props.strokeDasharray).toBe "#{dash} 50 "
+        expect(byte.props.strokeDasharray[0].value).toBe 50
+        expect(byte.props.strokeDasharray[0].units).toBe '%'
+        expect(byte.props.strokeDasharray[1].value).toBe 100
+        expect(byte.props.strokeDasharray[1].units).toBe 'px'
 
   describe 'Callbacks ->', ->
     describe 'onStart callback ->', ->
@@ -1191,9 +1197,10 @@ describe 'Transit ->', ->
   #       ctx: svg, isShowEnd: true, isRunLess: true
   #       type: 'circle'
   #       radius: 50
-  #     byte.getBitLength()
-  #     expect(byte.props.bitLength).toBe 2*Math.PI*50
+  #       strokeDasharray: { '200 100': '100 50' }
+  #       isIt: true
 
+  #     byte.tween.setProgress .5
   #   it 'should call the bit.getLength only if radiusX/Y changed', ->
   #     byte = new Byte
   #       ctx: svg, isShowEnd: true, isRunLess: true

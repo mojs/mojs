@@ -189,15 +189,12 @@ class Transit extends bitsMap.map.bit
       key = keys[len]; value = @deltas[key]
       @props[key] = switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
-          str = ''
+          stroke = []
           for item, i in value.delta
-            dash = value.start[i].value+item.value*@progress
-            # cast the % values to pixels
-            if item.unit is '%'
-              # console.log dash, @getBitLength()/100
-              dash = (@getBitLength()/100)*dash
-            str += "#{dash} "
-          str
+            dash = value.start[i].value + item.value*@progress
+            console.log dash
+            stroke.push { value: dash, units: item.unit }
+          stroke
         when 'number'
           value.start + value.delta*progress
         when 'unit'

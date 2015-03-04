@@ -1525,21 +1525,27 @@
             }
           });
           byte.setProgress(.5);
-          return expect(byte.props.strokeDasharray).toBe('300 50 ');
+          expect(byte.props.strokeDasharray[0].value).toBe(300);
+          expect(byte.props.strokeDasharray[0].units).toBe('px');
+          expect(byte.props.strokeDasharray[1].value).toBe(50);
+          return expect(byte.props.strokeDasharray[1].units).toBe('px');
         });
         return it('should set strokeDasharray/strokeDashoffset with percents', function() {
-          var byte, dash, radius;
-          radius = 100;
+          var byte;
           byte = new Byte({
             type: 'circle',
             strokeDasharray: {
-              '0% 100': '100%'
+              '0% 200': '100%'
             },
-            radius: radius
+            radius: 100,
+            isRunLess: true,
+            isIt: true
           });
           byte.setProgress(.5);
-          dash = (byte.getBitLength() / 100) * 50;
-          return expect(byte.props.strokeDasharray).toBe("" + dash + " 50 ");
+          expect(byte.props.strokeDasharray[0].value).toBe(50);
+          expect(byte.props.strokeDasharray[0].units).toBe('%');
+          expect(byte.props.strokeDasharray[1].value).toBe(100);
+          return expect(byte.props.strokeDasharray[1].units).toBe('px');
         });
       });
     });

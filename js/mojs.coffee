@@ -14,10 +14,10 @@ burst = new Transit(
   points: 5
   isShowInit: true
   isShowEnd:  true
-  repeat: 99999
+  # repeat: 99999
   stroke: 'deeppink'
   strokeWidth: 2
-  strokeDasharray: {'50%':'50%'}
+  strokeDasharray: { '0%': '100%' }
   # strokeDasharray:  '50%'
   # strokeDashoffset: {0: 165}
   fill: 'transparent'

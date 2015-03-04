@@ -320,13 +320,48 @@
         return expect(bit.getLength()).toBe(200);
       });
     });
-    return describe('length tracking', function() {
+    describe('length tracking', function() {
       return it('should track self length', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
         return expect(bit.props.length).toBe(200);
+      });
+    });
+    return describe('stroke-dash value setting ->', function() {
+      it('should set the property from an array', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit.setProp('stroke-dasharray', [
+          {
+            value: 100,
+            units: 'px'
+          }
+        ]);
+        bit.draw();
+        return expect(bit.props['stroke-dasharray']).toBe('100 ');
+      });
+      return it('should cast % values', function() {
+        var dash;
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit.setProp('stroke-dasharray', [
+          {
+            value: 100,
+            units: 'px'
+          }, {
+            value: 50,
+            units: '%'
+          }
+        ]);
+        bit.draw();
+        dash = (bit.props.length / 100) * 50;
+        return expect(bit.props['stroke-dasharray']).toBe("100 " + dash + " ");
       });
     });
   });

@@ -65,6 +65,14 @@ class Bit
     len = @drawMapLength
     while(len--)
       name = @drawMap[len]
+      if name is 'stroke-dasharray' or name is 'stroke-dashoffset'
+        if h.isArray(@props[name])
+          stroke = ''
+          for dash, i in @props[name]
+            cast = if dash.units is '%' then dash.value * (@props.length/100)
+            else dash.value
+            stroke += "#{cast} "
+            @props[name] = stroke
       @setAttrIfChanged name, @props[name]
   setAttrIfChanged:(name)->
     if @state[name] isnt (value = @props[name])

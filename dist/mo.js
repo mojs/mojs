@@ -1241,11 +1241,10 @@ burst = new Transit({
   points: 5,
   isShowInit: true,
   isShowEnd: true,
-  repeat: 99999,
   stroke: 'deeppink',
   strokeWidth: 2,
   strokeDasharray: {
-    '50%': '50%'
+    '0%': '100%'
   },
   fill: 'transparent',
   radius: 100,
@@ -1778,12 +1777,24 @@ Bit = (function() {
   Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
 
   Bit.prototype.draw = function() {
-    var len, name, _results;
+    var cast, dash, i, len, name, stroke, _i, _len, _ref, _results;
     this.props.length = this.getLength();
     len = this.drawMapLength;
     _results = [];
     while (len--) {
       name = this.drawMap[len];
+      if (name === 'stroke-dasharray' || name === 'stroke-dashoffset') {
+        if (h.isArray(this.props[name])) {
+          stroke = '';
+          _ref = this.props[name];
+          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+            dash = _ref[i];
+            cast = dash.units === '%' ? dash.value * (this.props.length / 100) : dash.value;
+            stroke += "" + cast + " ";
+            this.props[name] = stroke;
+          }
+        }
+      }
       _results.push(this.setAttrIfChanged(name, this.props[name]));
     }
     return _results;
@@ -2741,7 +2752,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, dash, g, i, item, key, keys, len, r, str, units, value, _results;
+    var a, b, dash, g, i, item, key, keys, len, r, stroke, units, value, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
     _results = [];
@@ -2752,17 +2763,18 @@ Transit = (function(_super) {
         var _i, _len, _ref;
         switch (value.type) {
           case 'array':
-            str = '';
+            stroke = [];
             _ref = value.delta;
             for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
               item = _ref[i];
               dash = value.start[i].value + item.value * this.progress;
-              if (item.unit === '%') {
-                dash = (this.getBitLength() / 100) * dash;
-              }
-              str += "" + dash + " ";
+              console.log(dash);
+              stroke.push({
+                value: dash,
+                units: item.unit
+              });
             }
-            return str;
+            return stroke;
           case 'number':
             return value.start + value.delta * progress;
           case 'unit':

@@ -247,7 +247,25 @@ describe 'Bit', ->
   #     bit.setProp 'stroke-dasharray', '50%'
   #     expect(bit.props['stroke-dasharray']).toBe 100
 
+  describe 'stroke-dash value setting ->', ->
+    it 'should set the property from an array', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      bit.setProp 'stroke-dasharray', [{ value: 100, units: 'px' }]
+      bit.draw()
+      expect(bit.props['stroke-dasharray']).toBe '100 '
 
+    it 'should cast % values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius:  100
+      bit.setProp 'stroke-dasharray', [
+        { value: 100, units: 'px' }, { value: 50, units: '%' }
+      ]
+      bit.draw()
+      dash = (bit.props.length/100)*50
+      expect(bit.props['stroke-dasharray']).toBe "100 #{dash} "
 
 
 

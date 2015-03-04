@@ -117,12 +117,24 @@ Bit = (function() {
   Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
 
   Bit.prototype.draw = function() {
-    var len, name, _results;
+    var cast, dash, i, len, name, stroke, _i, _len, _ref, _results;
     this.props.length = this.getLength();
     len = this.drawMapLength;
     _results = [];
     while (len--) {
       name = this.drawMap[len];
+      if (name === 'stroke-dasharray' || name === 'stroke-dashoffset') {
+        if (h.isArray(this.props[name])) {
+          stroke = '';
+          _ref = this.props[name];
+          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+            dash = _ref[i];
+            cast = dash.units === '%' ? dash.value * (this.props.length / 100) : dash.value;
+            stroke += "" + cast + " ";
+            this.props[name] = stroke;
+          }
+        }
+      }
       _results.push(this.setAttrIfChanged(name, this.props[name]));
     }
     return _results;

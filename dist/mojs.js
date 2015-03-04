@@ -21,11 +21,10 @@ burst = new Transit({
   points: 5,
   isShowInit: true,
   isShowEnd: true,
-  repeat: 99999,
   stroke: 'deeppink',
   strokeWidth: 2,
   strokeDasharray: {
-    '50%': '50%'
+    '0%': '100%'
   },
   fill: 'transparent',
   radius: 100,

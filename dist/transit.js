@@ -275,7 +275,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, dash, g, i, item, key, keys, len, r, str, units, value, _results;
+    var a, b, dash, g, i, item, key, keys, len, r, stroke, units, value, _results;
     keys = Object.keys(this.deltas);
     len = keys.length;
     _results = [];
@@ -286,17 +286,18 @@ Transit = (function(_super) {
         var _i, _len, _ref;
         switch (value.type) {
           case 'array':
-            str = '';
+            stroke = [];
             _ref = value.delta;
             for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
               item = _ref[i];
               dash = value.start[i].value + item.value * this.progress;
-              if (item.unit === '%') {
-                dash = (this.getBitLength() / 100) * dash;
-              }
-              str += "" + dash + " ";
+              console.log(dash);
+              stroke.push({
+                value: dash,
+                units: item.unit
+              });
             }
-            return str;
+            return stroke;
           case 'number':
             return value.start + value.delta * progress;
           case 'unit':
