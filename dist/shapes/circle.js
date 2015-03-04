@@ -19,10 +19,12 @@ Circle = (function(_super) {
     var rx, ry;
     rx = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
     ry = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-    this.setAttrsIfChanged('rx', rx);
-    this.setAttrsIfChanged('ry', ry);
-    this.setAttrsIfChanged('cx', this.props.x);
-    this.setAttrsIfChanged('cy', this.props.y);
+    this.setAttrsIfChanged({
+      rx: rx,
+      ry: ry,
+      cx: this.props.x,
+      cy: this.props.y
+    });
     return Circle.__super__.draw.apply(this, arguments);
   };
 

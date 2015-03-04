@@ -247,6 +247,15 @@ describe 'Bit', ->
         radius: 100
       expect(bit.getLength()).toBe 200
 
+    it 'should el has getTotalLength method, it should use it', ->
+      path = document.createElementNS ns, 'path'
+      path.setAttribute 'd', 'M0,0 L100,100'
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+        el: path
+      expect(bit.getLength()).toBe path.getTotalLength()
+
   describe 'length tracking ->', ->
     it 'should track self length', ->
       bit = new Bit

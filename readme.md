@@ -8,20 +8,19 @@
 #### todo
 - add line animator
 - :: demo
-
+- refactor
+  - setAttrsIfChanged to every shape
+  - transit custom shape length calculations
 - layout boundaries
 - add onChainUpdate to all the bits
-
 - add motion path
   - add movement arc
 - transit
   - fix timeline tween options history transform
-
 - burst
   - add deltas for swirl swirlFrequency and swirlSize
   - add stagger values
   - then implementation
-
 - add custom easing handler
   - add path handler
   - add spring
@@ -33,8 +32,5 @@
 - add backgrounds
 - add line trails
 - add text tricks
-- add percent values for strokeDasharray/strokedashOffset
-- add stagger values for burst
-- add cloud
 
 [@LegoMushroom](https://twitter.com/legomushroom)(Oleg Solomka) [legomushroom@gmail.com](mailto:legomushroom@gmail.com) 2015 MIT License

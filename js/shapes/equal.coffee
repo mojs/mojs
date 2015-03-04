@@ -17,8 +17,8 @@ class Equal extends Bit
     for i in [0...@props.points]
       y = "#{i*yStep + yStart}"
       d += "M#{x1}, #{y} L#{x2}, #{y} "
-
     @setAttr d: d
+  getLength:-> 2*if @props.radiusX? then @props.radiusX else @props.radius
   
 
 ### istanbul ignore next ###

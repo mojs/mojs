@@ -90,7 +90,9 @@ class Bit
     if @isChanged(name, value)
       @el.setAttribute(name, value); @state[name] = value
   isChanged:(name, value)-> value ?= @props[name]; @state[name] isnt value
-  getLength:-> 2*if @props.radiusX? then @props.radiusX else @props.radius
+  getLength:->
+    if @el?.getTotalLength? then @el.getTotalLength()
+    else 2*if @props.radiusX? then @props.radiusX else @props.radius
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

@@ -1,4 +1,4 @@
-var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst;
+var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, path1, path2, path3;
 
 Burst = require('./burst');
 
@@ -12,24 +12,59 @@ Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
 
+path1 = document.getElementById('js-path1');
+
+path2 = document.getElementById('js-path2');
+
+path3 = document.getElementById('js-path3');
+
 burst = new Transit({
-  x: 200,
-  y: 200,
-  type: 'circle',
+  x: 600,
+  y: 600,
+  bit: path1,
   duration: 2000,
-  count: 3,
-  points: 5,
-  isShowInit: true,
+  delay: 1000,
+  isShowEnd: true,
+  stroke: 'cyan',
+  fill: 'transparent',
+  easing: 'Sinusoidal.Out',
+  strokeDasharray: '100%',
+  strokeWidth: 15,
+  strokeDashoffset: {
+    '100%': '0%'
+  }
+});
+
+burst = new Transit({
+  x: 600,
+  y: 600,
+  bit: path2,
+  duration: 2000,
+  delay: 1100,
+  isShowEnd: true,
+  stroke: 'yellow',
+  fill: 'transparent',
+  easing: 'Sinusoidal.Out',
+  strokeDasharray: '100%',
+  strokeWidth: 15,
+  strokeDashoffset: {
+    '100%': '0%'
+  }
+});
+
+burst = new Transit({
+  x: 600,
+  y: 600,
+  bit: path3,
+  duration: 2000,
+  delay: 1200,
   isShowEnd: true,
   stroke: 'deeppink',
-  delay: 1000,
-  strokeWidth: 2,
-  strokeDasharray: '50%',
-  strokeDashoffset: {
-    '0': '300%'
-  },
   fill: 'transparent',
-  radius: 100,
-  swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)'
+  easing: 'Sinusoidal.Out',
+  strokeDasharray: '100%',
+  strokeWidth: 15,
+  strokeDashoffset: {
+    '100%': '0%'
+  }
 });

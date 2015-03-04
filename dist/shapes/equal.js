@@ -39,6 +39,10 @@ Equal = (function(_super) {
     });
   };
 
+  Equal.prototype.getLength = function() {
+    return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
+  };
+
   return Equal;
 
 })(Bit);

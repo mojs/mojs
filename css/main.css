@@ -3,6 +3,10 @@
   top: 400px;
   left: 0;
 }
+.svg-path {
+  position: absolute;
+  top: 160px;
+}
 html,
 body {
   padding: 0;
@@ -70,7 +74,4 @@ body {
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
   background: #ffa500;
-}
-svg {
-  outline: 1px solid #ff69b4;
 }

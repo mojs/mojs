@@ -334,12 +334,23 @@
       });
     });
     describe('getLength method ->', function() {
-      return it('should calculate total length of the path', function() {
+      it('should calculate total length of the path', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
         return expect(bit.getLength()).toBe(200);
+      });
+      return it('should el has getTotalLength method, it should use it', function() {
+        var path;
+        path = document.createElementNS(ns, 'path');
+        path.setAttribute('d', 'M0,0 L100,100');
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100,
+          el: path
+        });
+        return expect(bit.getLength()).toBe(path.getTotalLength());
       });
     });
     describe('length tracking ->', function() {

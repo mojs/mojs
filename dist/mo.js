@@ -1223,7 +1223,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst;
+var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, path1, path2, path3;
 
 Burst = require('./burst');
 
@@ -1237,26 +1237,61 @@ Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
 
+path1 = document.getElementById('js-path1');
+
+path2 = document.getElementById('js-path2');
+
+path3 = document.getElementById('js-path3');
+
 burst = new Transit({
-  x: 200,
-  y: 200,
-  type: 'circle',
+  x: 600,
+  y: 600,
+  bit: path1,
   duration: 2000,
-  count: 3,
-  points: 5,
-  isShowInit: true,
+  delay: 1000,
+  isShowEnd: true,
+  stroke: 'cyan',
+  fill: 'transparent',
+  easing: 'Sinusoidal.Out',
+  strokeDasharray: '100%',
+  strokeWidth: 15,
+  strokeDashoffset: {
+    '100%': '0%'
+  }
+});
+
+burst = new Transit({
+  x: 600,
+  y: 600,
+  bit: path2,
+  duration: 2000,
+  delay: 1100,
+  isShowEnd: true,
+  stroke: 'yellow',
+  fill: 'transparent',
+  easing: 'Sinusoidal.Out',
+  strokeDasharray: '100%',
+  strokeWidth: 15,
+  strokeDashoffset: {
+    '100%': '0%'
+  }
+});
+
+burst = new Transit({
+  x: 600,
+  y: 600,
+  bit: path3,
+  duration: 2000,
+  delay: 1200,
   isShowEnd: true,
   stroke: 'deeppink',
-  delay: 1000,
-  strokeWidth: 2,
-  strokeDasharray: '50%',
-  strokeDashoffset: {
-    '0': '300%'
-  },
   fill: 'transparent',
-  radius: 100,
-  swirlFrequency: 'rand(0,10)',
-  swirlSize: 'rand(0,10)'
+  easing: 'Sinusoidal.Out',
+  strokeDasharray: '100%',
+  strokeWidth: 15,
+  strokeDashoffset: {
+    '100%': '0%'
+  }
 });
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./transit":18,"./tween/timeline":19,"./tween/tween":20}],6:[function(require,module,exports){
@@ -1858,7 +1893,12 @@ Bit = (function() {
   };
 
   Bit.prototype.getLength = function() {
-    return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
+    var _ref;
+    if (((_ref = this.el) != null ? _ref.getTotalLength : void 0) != null) {
+      return this.el.getTotalLength();
+    } else {
+      return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
+    }
   };
 
   return Bit;
@@ -1996,10 +2036,12 @@ Circle = (function(_super) {
     var rx, ry;
     rx = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
     ry = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-    this.setAttrsIfChanged('rx', rx);
-    this.setAttrsIfChanged('ry', ry);
-    this.setAttrsIfChanged('cx', this.props.x);
-    this.setAttrsIfChanged('cy', this.props.y);
+    this.setAttrsIfChanged({
+      rx: rx,
+      ry: ry,
+      cx: this.props.x,
+      cy: this.props.y
+    });
     return Circle.__super__.draw.apply(this, arguments);
   };
 
@@ -2164,6 +2206,10 @@ Equal = (function(_super) {
     return this.setAttr({
       d: d
     });
+  };
+
+  Equal.prototype.getLength = function() {
+    return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
   };
 
   return Equal;
