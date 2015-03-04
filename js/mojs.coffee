@@ -16,10 +16,10 @@ burst = new Transit(
   isShowEnd:  true
   # repeat: 99999
   stroke: 'deeppink'
-  delay: 2000
+  delay: 1000
   strokeWidth: 2
   strokeDasharray: '50%'
-  strokeDashoffset: {'0': '50%'}
+  strokeDashoffset: {'0': '300%'}
   fill: 'transparent'
   radius: 100
   swirlFrequency: 'rand(0,10)'

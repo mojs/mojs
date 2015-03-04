@@ -130,7 +130,7 @@ Bit = (function() {
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
       }
-      _results.push(this.setAttrIfChanged(name, this.props[name]));
+      _results.push(this.setAttrsIfChanged(name, this.props[name]));
     }
     return _results;
   };
@@ -156,11 +156,28 @@ Bit = (function() {
     return percent * (this.props.length / 100);
   };
 
-  Bit.prototype.setAttrIfChanged = function(name, value) {
-    if (this.isChanged(name, value)) {
+  Bit.prototype.setAttrsIfChanged = function(name, value) {
+    var key, keys, len, _results;
+    if (typeof name === 'object') {
+      keys = Object.keys(name);
+      len = keys.length;
+      _results = [];
+      while (len--) {
+        key = keys[len];
+        value = name[key];
+        _results.push(this.setAttrIfChanged(key, value));
+      }
+      return _results;
+    } else {
       if (value == null) {
         value = this.props[name];
       }
+      return this.setAttrIfChanged(name, value);
+    }
+  };
+
+  Bit.prototype.setAttrIfChanged = function(name, value) {
+    if (this.isChanged(name, value)) {
       this.el.setAttribute(name, value);
       return this.state[name] = value;
     }

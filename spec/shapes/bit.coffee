@@ -103,13 +103,13 @@ describe 'Bit', ->
       bit.draw()
       expect(bit.el.setAttribute).toHaveBeenCalled()
 
-  describe 'setAttrIfChanged method ->', ->
+  describe 'setAttrsIfChanged method ->', ->
     it 'should not set attribute if property not changed ->', ->
       svg = document.createElementNS?(ns, 'svg')
       bit = new Bit ctx: svg, 'stroke-width': 3
       spyOn bit.el, 'setAttribute'
       bit.props['stroke-width'] = 3
-      bit.setAttrIfChanged 'stroke-width'
+      bit.setAttrsIfChanged 'stroke-width'
       expect(bit.el.setAttribute).not.toHaveBeenCalled()
 
     it 'should set attribute if property changed ->', ->
@@ -117,22 +117,31 @@ describe 'Bit', ->
       bit = new Bit ctx: svg, 'stroke-width', 3
       spyOn bit.el, 'setAttribute'
       bit.props['stroke-width'] = 4
-      bit.setAttrIfChanged 'stroke-width'
+      bit.setAttrsIfChanged 'stroke-width'
       expect(bit.el.setAttribute).toHaveBeenCalled()
 
     it 'should save the current value to state if changed ->', ->
       svg = document.createElementNS?(ns, 'svg')
       bit = new Bit ctx: svg, 'stroke-width', 2
       bit.props['stroke-width'] = 30
-      bit.setAttrIfChanged 'stroke-width'
+      bit.setAttrsIfChanged 'stroke-width'
       expect(bit.state['stroke-width']).toBe 30
 
     it 'should recieve value to set ->', ->
       svg = document.createElementNS?(ns, 'svg')
       bit = new Bit ctx: svg, radius: 20
-      bit.setAttrIfChanged 'radius', 30
+      bit.setAttrsIfChanged 'radius', 30
       expect(bit.state['radius']).toBe 30
 
+    it 'should work with values hash ->', ->
+      svg = document.createElementNS?(ns, 'svg')
+      bit = new Bit ctx: svg, radius: 20
+      bit.setAttrsIfChanged radius: 30, stroke: 'orange'
+      expect(bit.state['radius']).toBe 30
+      expect(bit.state['stroke']).toBe 'orange'
+      # expect(bit.el.getAttribute('rx'))    .toBe 30
+      # expect(bit.el.getAttribute('stroke')).toBe 'orange'
+      
   describe 'setProp method ->', ->
     it 'should set properties ->', ->
       bit     = new Bit
@@ -259,10 +268,10 @@ describe 'Bit', ->
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
         isIt: true
-      bit.setAttrIfChanged 'radius', 100
+      bit.setAttrsIfChanged 'radius', 100
       bit.draw()
       spyOn bit, 'getLength'
-      bit.setAttrIfChanged 'radius', 100
+      bit.setAttrsIfChanged 'radius', 100
       bit.draw()
       expect(bit.getLength).not.toHaveBeenCalled()
 

@@ -22,11 +22,11 @@ burst = new Transit({
   isShowInit: true,
   isShowEnd: true,
   stroke: 'deeppink',
-  delay: 2000,
+  delay: 1000,
   strokeWidth: 2,
   strokeDasharray: '50%',
   strokeDashoffset: {
-    '0': '50%'
+    '0': '300%'
   },
   fill: 'transparent',
   radius: 100,

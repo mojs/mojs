@@ -1247,11 +1247,11 @@ burst = new Transit({
   isShowInit: true,
   isShowEnd: true,
   stroke: 'deeppink',
-  delay: 2000,
+  delay: 1000,
   strokeWidth: 2,
   strokeDasharray: '50%',
   strokeDashoffset: {
-    '0': '50%'
+    '0': '300%'
   },
   fill: 'transparent',
   radius: 100,
@@ -1797,7 +1797,7 @@ Bit = (function() {
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
       }
-      _results.push(this.setAttrIfChanged(name, this.props[name]));
+      _results.push(this.setAttrsIfChanged(name, this.props[name]));
     }
     return _results;
   };
@@ -1823,11 +1823,28 @@ Bit = (function() {
     return percent * (this.props.length / 100);
   };
 
-  Bit.prototype.setAttrIfChanged = function(name, value) {
-    if (this.isChanged(name, value)) {
+  Bit.prototype.setAttrsIfChanged = function(name, value) {
+    var key, keys, len, _results;
+    if (typeof name === 'object') {
+      keys = Object.keys(name);
+      len = keys.length;
+      _results = [];
+      while (len--) {
+        key = keys[len];
+        value = name[key];
+        _results.push(this.setAttrIfChanged(key, value));
+      }
+      return _results;
+    } else {
       if (value == null) {
         value = this.props[name];
       }
+      return this.setAttrIfChanged(name, value);
+    }
+  };
+
+  Bit.prototype.setAttrIfChanged = function(name, value) {
+    if (this.isChanged(name, value)) {
       this.el.setAttribute(name, value);
       return this.state[name] = value;
     }
@@ -1976,12 +1993,13 @@ Circle = (function(_super) {
   Circle.prototype.type = 'ellipse';
 
   Circle.prototype.draw = function() {
-    this.setAttr({
-      rx: this.props.radiusX != null ? this.props.radiusX : this.props.radius,
-      ry: this.props.radiusY != null ? this.props.radiusY : this.props.radius,
-      cx: this.props.x,
-      cy: this.props.y
-    });
+    var rx, ry;
+    rx = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
+    ry = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
+    this.setAttrsIfChanged('rx', rx);
+    this.setAttrsIfChanged('ry', ry);
+    this.setAttrsIfChanged('cx', this.props.x);
+    this.setAttrsIfChanged('cy', this.props.y);
     return Circle.__super__.draw.apply(this, arguments);
   };
 

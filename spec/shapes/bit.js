@@ -149,7 +149,7 @@
         return expect(bit.el.setAttribute).toHaveBeenCalled();
       });
     });
-    describe('setAttrIfChanged method ->', function() {
+    describe('setAttrsIfChanged method ->', function() {
       it('should not set attribute if property not changed ->', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
@@ -158,7 +158,7 @@
         });
         spyOn(bit.el, 'setAttribute');
         bit.props['stroke-width'] = 3;
-        bit.setAttrIfChanged('stroke-width');
+        bit.setAttrsIfChanged('stroke-width');
         return expect(bit.el.setAttribute).not.toHaveBeenCalled();
       });
       it('should set attribute if property changed ->', function() {
@@ -168,7 +168,7 @@
         }, 'stroke-width', 3);
         spyOn(bit.el, 'setAttribute');
         bit.props['stroke-width'] = 4;
-        bit.setAttrIfChanged('stroke-width');
+        bit.setAttrsIfChanged('stroke-width');
         return expect(bit.el.setAttribute).toHaveBeenCalled();
       });
       it('should save the current value to state if changed ->', function() {
@@ -177,17 +177,30 @@
           ctx: svg
         }, 'stroke-width', 2);
         bit.props['stroke-width'] = 30;
-        bit.setAttrIfChanged('stroke-width');
+        bit.setAttrsIfChanged('stroke-width');
         return expect(bit.state['stroke-width']).toBe(30);
       });
-      return it('should recieve value to set ->', function() {
+      it('should recieve value to set ->', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
           ctx: svg,
           radius: 20
         });
-        bit.setAttrIfChanged('radius', 30);
+        bit.setAttrsIfChanged('radius', 30);
         return expect(bit.state['radius']).toBe(30);
+      });
+      return it('should work with values hash ->', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          radius: 20
+        });
+        bit.setAttrsIfChanged({
+          radius: 30,
+          stroke: 'orange'
+        });
+        expect(bit.state['radius']).toBe(30);
+        return expect(bit.state['stroke']).toBe('orange');
       });
     });
     describe('setProp method ->', function() {
@@ -353,10 +366,10 @@
           radius: 100,
           isIt: true
         });
-        bit.setAttrIfChanged('radius', 100);
+        bit.setAttrsIfChanged('radius', 100);
         bit.draw();
         spyOn(bit, 'getLength');
-        bit.setAttrIfChanged('radius', 100);
+        bit.setAttrsIfChanged('radius', 100);
         bit.draw();
         return expect(bit.getLength).not.toHaveBeenCalled();
       });

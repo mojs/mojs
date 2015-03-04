@@ -67,7 +67,7 @@ class Bit
       name = @drawMap[len]
       switch name
         when 'stroke-dasharray', 'stroke-dashoffset' then @castStrokeDash name
-      @setAttrIfChanged name, @props[name]
+      @setAttrsIfChanged name, @props[name]
   castStrokeDash:(name)->
     if h.isArray(@props[name])
       stroke = ''
@@ -78,9 +78,16 @@ class Bit
     if typeof @props[name] is 'object'
       @props[name] = @castPercent(@props[name].value)
   castPercent:(percent)-> percent * (@props.length/100)
+  setAttrsIfChanged:(name, value)->
+    if typeof name is 'object'
+      keys = Object.keys(name); len = keys.length
+      while(len--)
+        key = keys[len]; value = name[key]; @setAttrIfChanged key, value
+    else
+      value ?= @props[name]
+      @setAttrIfChanged name, value
   setAttrIfChanged:(name, value)->
     if @isChanged(name, value)
-      value ?= @props[name]
       @el.setAttribute(name, value); @state[name] = value
   isChanged:(name, value)-> value ?= @props[name]; @state[name] isnt value
   getLength:-> 2*if @props.radiusX? then @props.radiusX else @props.radius

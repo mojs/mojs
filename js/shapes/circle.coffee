@@ -6,10 +6,12 @@ Bit = require './bit'
 class Circle extends Bit
   type: 'ellipse'
   draw:->
-    @setAttrIfChanged 'rx', if @props.radiusX? then @props.radiusX else @props.radius
-    @setAttrIfChanged 'ry', if @props.radiusY? then @props.radiusY else @props.radius
-    @setAttrIfChanged 'cx', @props.x
-    @setAttrIfChanged 'cy', @props.y
+    rx = if @props.radiusX? then @props.radiusX else @props.radius
+    ry = if @props.radiusY? then @props.radiusY else @props.radius
+    @setAttrsIfChanged 'rx', rx
+    @setAttrsIfChanged 'ry', ry
+    @setAttrsIfChanged 'cx', @props.x
+    @setAttrsIfChanged 'cy', @props.y
     super
   getLength:->
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius
