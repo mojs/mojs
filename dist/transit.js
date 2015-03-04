@@ -291,10 +291,9 @@ Transit = (function(_super) {
             for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
               item = _ref[i];
               dash = value.start[i].value + item.value * this.progress;
-              console.log(dash);
               stroke.push({
                 value: dash,
-                units: item.unit
+                unit: item.unit
               });
             }
             return stroke;
@@ -355,6 +354,9 @@ Transit = (function(_super) {
         this.props[key] = optionsValue;
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
+        }
+        if (this.h.strokeDashPropsMap[key]) {
+          this.props[key] = this.h.parseUnit(this.props[key]);
         }
         continue;
       }

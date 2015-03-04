@@ -27,7 +27,7 @@ class Bit
       h.error 'You should pass a real context(ctx) to the bit'
       # --> COVER return if not ctx and not el
       # return true
-    @state = []; @drawMapLength = @drawMap.length
+    @state = {}; @drawMapLength = @drawMap.length
     @extendDefaults()
     @calcTransform()
   calcTransform:->
@@ -61,23 +61,28 @@ class Bit
     'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform',
     ]
   draw:->
-    @props.length = @getLength()
+    if @isChanged('radius') then @props.length = @getLength()
     len = @drawMapLength
     while(len--)
       name = @drawMap[len]
-      if name is 'stroke-dasharray' or name is 'stroke-dashoffset'
-        if h.isArray(@props[name])
-          stroke = ''
-          for dash, i in @props[name]
-            cast = if dash.units is '%' then dash.value * (@props.length/100)
-            else dash.value
-            stroke += "#{cast} "
-            @props[name] = stroke
+      switch name
+        when 'stroke-dasharray', 'stroke-dashoffset' then @castStrokeDash name
       @setAttrIfChanged name, @props[name]
-  setAttrIfChanged:(name)->
-    if @state[name] isnt (value = @props[name])
-      @el.setAttribute name, value
-      @state[name] = value
+  castStrokeDash:(name)->
+    if h.isArray(@props[name])
+      stroke = ''
+      for dash, i in @props[name]
+        cast = if dash.unit is '%' then @castPercent(dash.value) else dash.value
+        stroke += "#{cast} "
+      return @props[name] = stroke
+    if typeof @props[name] is 'object'
+      @props[name] = @castPercent(@props[name].value)
+  castPercent:(percent)-> percent * (@props.length/100)
+  setAttrIfChanged:(name, value)->
+    if @isChanged(name, value)
+      value ?= @props[name]
+      @el.setAttribute(name, value); @state[name] = value
+  isChanged:(name, value)-> value ?= @props[name]; @state[name] isnt value
   getLength:-> 2*if @props.radiusX? then @props.radiusX else @props.radius
 
 ### istanbul ignore next ###
@@ -90,15 +95,6 @@ if (typeof module is "object") and (typeof module.exports is "object")
 window?.mojs ?= {}
 ### istanbul ignore next ###
 window?.mojs.Bit = Bit
-
-
-
-
-
-
-
-
-
 
 
 

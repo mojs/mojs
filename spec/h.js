@@ -13,6 +13,17 @@
     it('should have remBase', function() {
       return expect(typeof h.remBase).toBe('number');
     });
+    it('should have posPropsMap map', function() {
+      expect(h.posPropsMap.x).toBe(1);
+      expect(h.posPropsMap.y).toBe(1);
+      expect(h.posPropsMap.shiftX).toBe(1);
+      return expect(h.posPropsMap.shiftY).toBe(1);
+    });
+    it('should have strokeDashPropsMap map', function() {
+      expect(h.strokeDashPropsMap.strokeDasharray).toBe(1);
+      expect(h.strokeDashPropsMap.strokeDashoffset).toBe(1);
+      return expect(Object.keys(h.strokeDashPropsMap)).length.toBe(2);
+    });
     describe('prefix', function() {
       return it('should have prefix', function() {
         expect(h.prefix).toBeDefined();
@@ -719,12 +730,6 @@
       return describe('color parsing - makeColorObj method', function() {
         it('should have shortColors map', function() {
           return expect(h.shortColors).toBeDefined();
-        });
-        it('should have posPropsMap map', function() {
-          expect(h.posPropsMap.x).toBe(1);
-          expect(h.posPropsMap.y).toBe(1);
-          expect(h.posPropsMap.shiftX).toBe(1);
-          return expect(h.posPropsMap.shiftY).toBe(1);
         });
         it('should have div node', function() {
           return expect(h.div.tagName.toLowerCase()).toBe('div');

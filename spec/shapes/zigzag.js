@@ -9,7 +9,7 @@
 
   svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
 
-  describe('Zigzag', function() {
+  describe('Zigzag ->', function() {
     it('should extend Bit', function() {
       var line;
       line = new Zigzag({
@@ -59,7 +59,7 @@
         });
       });
     });
-    return describe('getLength method', function() {
+    return describe('getLength method ->', function() {
       it('should calculate total length of the path', function() {
         var bit, radius;
         radius = 100;
@@ -67,7 +67,7 @@
           ctx: document.createElementNS(ns, 'svg'),
           radius: radius
         });
-        return expect(bit.getLength()).toBe(400);
+        return expect(Math.round(bit.getLength())).toBe(400);
       });
       return it('should calculate total length of the with different radiusX/Y', function() {
         var bit, radiusX, radiusY;

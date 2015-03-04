@@ -7,6 +7,17 @@ describe 'Helpers ->', ->
     expect(h.RAD_TO_DEG).toBe 180/Math.PI
   it 'should have remBase', ->
     expect(typeof h.remBase).toBe 'number'
+  it 'should have posPropsMap map', ->
+    expect(h.posPropsMap.x).toBe      1
+    expect(h.posPropsMap.y).toBe      1
+    expect(h.posPropsMap.shiftX).toBe 1
+    expect(h.posPropsMap.shiftY).toBe 1
+
+  it 'should have strokeDashPropsMap map', ->
+    expect(h.strokeDashPropsMap.strokeDasharray) .toBe    1
+    expect(h.strokeDashPropsMap.strokeDashoffset).toBe    1
+    expect(Object.keys(h.strokeDashPropsMap)).length.toBe  2
+
   describe 'prefix', ->
     it 'should have prefix', ->
       expect(h.prefix).toBeDefined()
@@ -508,11 +519,6 @@ describe 'Helpers ->', ->
     describe 'color parsing - makeColorObj method', ->
       it 'should have shortColors map', ->
         expect(h.shortColors).toBeDefined()
-      it 'should have posPropsMap map', ->
-        expect(h.posPropsMap.x).toBe      1
-        expect(h.posPropsMap.y).toBe      1
-        expect(h.posPropsMap.shiftX).toBe 1
-        expect(h.posPropsMap.shiftY).toBe 1
       it 'should have div node', ->
         expect(h.div.tagName.toLowerCase()).toBe 'div'
       it 'should parse 3 hex color', ->

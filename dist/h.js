@@ -63,6 +63,11 @@ Helpers = (function() {
     burstShiftY: 1
   };
 
+  Helpers.prototype.strokeDashPropsMap = {
+    strokeDasharray: 1,
+    strokeDashoffset: 1
+  };
+
   Helpers.prototype.RAD_TO_DEG = 180 / Math.PI;
 
   function Helpers() {

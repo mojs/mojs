@@ -171,7 +171,7 @@
         bit.setAttrIfChanged('stroke-width');
         return expect(bit.el.setAttribute).toHaveBeenCalled();
       });
-      return it('should save the current value to state if changed ->', function() {
+      it('should save the current value to state if changed ->', function() {
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
         bit = new Bit({
           ctx: svg
@@ -179,6 +179,15 @@
         bit.props['stroke-width'] = 30;
         bit.setAttrIfChanged('stroke-width');
         return expect(bit.state['stroke-width']).toBe(30);
+      });
+      return it('should recieve value to set ->', function() {
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = new Bit({
+          ctx: svg,
+          radius: 20
+        });
+        bit.setAttrIfChanged('radius', 30);
+        return expect(bit.state['radius']).toBe(30);
       });
     });
     describe('setProp method ->', function() {
@@ -291,7 +300,7 @@
         return expect(bit.calcTransform).toBeDefined();
       });
     });
-    describe('foreign el', function() {
+    describe('foreign el ->', function() {
       it('should recieve foreign el', function() {
         var el;
         el = document.createElementNS(ns, 'rect');
@@ -311,7 +320,7 @@
         return expect(bit.isForeign).toBe(true);
       });
     });
-    describe('getLength method', function() {
+    describe('getLength method ->', function() {
       return it('should calculate total length of the path', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
@@ -320,13 +329,65 @@
         return expect(bit.getLength()).toBe(200);
       });
     });
-    describe('length tracking', function() {
-      return it('should track self length', function() {
+    describe('length tracking ->', function() {
+      it('should track self length', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
         });
         return expect(bit.props.length).toBe(200);
+      });
+      it('should call getLength method', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        spyOn(bit, 'getLength');
+        bit.setProp('radius', 200);
+        bit.draw();
+        return expect(bit.getLength).toHaveBeenCalled();
+      });
+      return it('should not call getLength method if radius didnt change', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100,
+          isIt: true
+        });
+        bit.setAttrIfChanged('radius', 100);
+        bit.draw();
+        spyOn(bit, 'getLength');
+        bit.setAttrIfChanged('radius', 100);
+        bit.draw();
+        return expect(bit.getLength).not.toHaveBeenCalled();
+      });
+    });
+    describe('castPercent method ->', function() {
+      return it('should cast % values to pixels', function() {
+        var pixels;
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        pixels = bit.castPercent(50);
+        return expect(pixels).toBe((bit.props.length / 100) * 50);
+      });
+    });
+    describe('isChanged method ->', function() {
+      it('should check if attribute was changed', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          stroke: 'deeppink'
+        });
+        expect(bit.isChanged('stroke')).toBe(false);
+        bit.setProp('stroke', 'green');
+        return expect(bit.isChanged('stroke')).toBe(true);
+      });
+      return it('should recieve value to set', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 20
+        });
+        return expect(bit.isChanged('radius', 30)).toBe(true);
       });
     });
     return describe('stroke-dash value setting ->', function() {
@@ -338,13 +399,13 @@
         bit.setProp('stroke-dasharray', [
           {
             value: 100,
-            units: 'px'
+            unit: 'px'
           }
         ]);
         bit.draw();
         return expect(bit.props['stroke-dasharray']).toBe('100 ');
       });
-      return it('should cast % values', function() {
+      it('should cast % values', function() {
         var dash;
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
@@ -353,15 +414,29 @@
         bit.setProp('stroke-dasharray', [
           {
             value: 100,
-            units: 'px'
+            unit: 'px'
           }, {
             value: 50,
-            units: '%'
+            unit: '%'
           }
         ]);
         bit.draw();
         dash = (bit.props.length / 100) * 50;
         return expect(bit.props['stroke-dasharray']).toBe("100 " + dash + " ");
+      });
+      return it('should cast % single values', function() {
+        var dash;
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit.setProp('stroke-dasharray', {
+          value: 25,
+          unit: '%'
+        });
+        bit.draw();
+        dash = (bit.props.length / 100) * 25;
+        return expect(bit.props['stroke-dasharray']).toBe(dash);
       });
     });
   });

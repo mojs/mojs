@@ -1526,11 +1526,11 @@
           });
           byte.setProgress(.5);
           expect(byte.props.strokeDasharray[0].value).toBe(300);
-          expect(byte.props.strokeDasharray[0].units).toBe('px');
+          expect(byte.props.strokeDasharray[0].unit).toBe('px');
           expect(byte.props.strokeDasharray[1].value).toBe(50);
-          return expect(byte.props.strokeDasharray[1].units).toBe('px');
+          return expect(byte.props.strokeDasharray[1].unit).toBe('px');
         });
-        return it('should set strokeDasharray/strokeDashoffset with percents', function() {
+        it('should set strokeDasharray/strokeDashoffset with percents', function() {
           var byte;
           byte = new Byte({
             type: 'circle',
@@ -1538,14 +1538,25 @@
               '0% 200': '100%'
             },
             radius: 100,
-            isRunLess: true,
-            isIt: true
+            isRunLess: true
           });
           byte.setProgress(.5);
           expect(byte.props.strokeDasharray[0].value).toBe(50);
-          expect(byte.props.strokeDasharray[0].units).toBe('%');
+          expect(byte.props.strokeDasharray[0].unit).toBe('%');
           expect(byte.props.strokeDasharray[1].value).toBe(100);
-          return expect(byte.props.strokeDasharray[1].units).toBe('px');
+          return expect(byte.props.strokeDasharray[1].unit).toBe('px');
+        });
+        return it('should parse non-deltas strokeDasharray/strokeDashoffset values', function() {
+          var byte;
+          byte = new Byte({
+            type: 'circle',
+            strokeDasharray: '100%',
+            radius: 100,
+            isRunLess: true,
+            isIt: true
+          });
+          expect(byte.props.strokeDasharray.value).toBe(100);
+          return expect(byte.props.strokeDasharray.unit).toBe('%');
         });
       });
     });

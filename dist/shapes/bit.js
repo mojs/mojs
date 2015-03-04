@@ -44,7 +44,7 @@ Bit = (function() {
     } else if (!this.o.el) {
       h.error('You should pass a real context(ctx) to the bit');
     }
-    this.state = [];
+    this.state = {};
     this.drawMapLength = this.drawMap.length;
     this.extendDefaults();
     return this.calcTransform();
@@ -117,35 +117,60 @@ Bit = (function() {
   Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
 
   Bit.prototype.draw = function() {
-    var cast, dash, i, len, name, stroke, _i, _len, _ref, _results;
-    this.props.length = this.getLength();
+    var len, name, _results;
+    if (this.isChanged('radius')) {
+      this.props.length = this.getLength();
+    }
     len = this.drawMapLength;
     _results = [];
     while (len--) {
       name = this.drawMap[len];
-      if (name === 'stroke-dasharray' || name === 'stroke-dashoffset') {
-        if (h.isArray(this.props[name])) {
-          stroke = '';
-          _ref = this.props[name];
-          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-            dash = _ref[i];
-            cast = dash.units === '%' ? dash.value * (this.props.length / 100) : dash.value;
-            stroke += "" + cast + " ";
-            this.props[name] = stroke;
-          }
-        }
+      switch (name) {
+        case 'stroke-dasharray':
+        case 'stroke-dashoffset':
+          this.castStrokeDash(name);
       }
       _results.push(this.setAttrIfChanged(name, this.props[name]));
     }
     return _results;
   };
 
-  Bit.prototype.setAttrIfChanged = function(name) {
-    var value;
-    if (this.state[name] !== (value = this.props[name])) {
+  Bit.prototype.castStrokeDash = function(name) {
+    var cast, dash, i, stroke, _i, _len, _ref;
+    if (h.isArray(this.props[name])) {
+      stroke = '';
+      _ref = this.props[name];
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        dash = _ref[i];
+        cast = dash.unit === '%' ? this.castPercent(dash.value) : dash.value;
+        stroke += "" + cast + " ";
+      }
+      return this.props[name] = stroke;
+    }
+    if (typeof this.props[name] === 'object') {
+      return this.props[name] = this.castPercent(this.props[name].value);
+    }
+  };
+
+  Bit.prototype.castPercent = function(percent) {
+    return percent * (this.props.length / 100);
+  };
+
+  Bit.prototype.setAttrIfChanged = function(name, value) {
+    if (this.isChanged(name, value)) {
+      if (value == null) {
+        value = this.props[name];
+      }
       this.el.setAttribute(name, value);
       return this.state[name] = value;
     }
+  };
+
+  Bit.prototype.isChanged = function(name, value) {
+    if (value == null) {
+      value = this.props[name];
+    }
+    return this.state[name] !== value;
   };
 
   Bit.prototype.getLength = function() {

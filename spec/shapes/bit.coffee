@@ -127,6 +127,12 @@ describe 'Bit', ->
       bit.setAttrIfChanged 'stroke-width'
       expect(bit.state['stroke-width']).toBe 30
 
+    it 'should recieve value to set ->', ->
+      svg = document.createElementNS?(ns, 'svg')
+      bit = new Bit ctx: svg, radius: 20
+      bit.setAttrIfChanged 'radius', 30
+      expect(bit.state['radius']).toBe 30
+
   describe 'setProp method ->', ->
     it 'should set properties ->', ->
       bit     = new Bit
@@ -212,7 +218,7 @@ describe 'Bit', ->
       expect(bit.props.transform).toBe('rotate(90, 0, 0)')
       expect(bit.calcTransform).toBeDefined()
 
-  describe 'foreign el', ->
+  describe 'foreign el ->', ->
     it 'should recieve foreign el', ->
       el = document.createElementNS ns, 'rect'
       svg.appendChild el
@@ -225,34 +231,71 @@ describe 'Bit', ->
       bit = new Bit el: el
       expect(bit.isForeign).toBe true
 
-  describe 'getLength method', ->
+  describe 'getLength method ->', ->
     it 'should calculate total length of the path', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
       expect(bit.getLength()).toBe 200
 
-  describe 'length tracking', ->
+  describe 'length tracking ->', ->
     it 'should track self length', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
       expect(bit.props.length).toBe 200
 
-  # describe 'stroke-dash.. % cast', ->
-  #   it 'should track self length', ->
-  #     bit = new Bit
-  #       ctx:    document.createElementNS ns, 'svg'
-  #       radius: 100
-  #     bit.setProp 'stroke-dasharray', '50%'
-  #     expect(bit.props['stroke-dasharray']).toBe 100
+    it 'should call getLength method', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      spyOn bit, 'getLength'
+      bit.setProp 'radius', 200
+      bit.draw()
+      expect(bit.getLength).toHaveBeenCalled()
+
+    it 'should not call getLength method if radius didnt change', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+        isIt: true
+      bit.setAttrIfChanged 'radius', 100
+      bit.draw()
+      spyOn bit, 'getLength'
+      bit.setAttrIfChanged 'radius', 100
+      bit.draw()
+      expect(bit.getLength).not.toHaveBeenCalled()
+
+
+  describe 'castPercent method ->', ->
+    it 'should cast % values to pixels', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      pixels = bit.castPercent 50
+      expect(pixels).toBe (bit.props.length/100) * 50
+
+  describe 'isChanged method ->', ->
+    it 'should check if attribute was changed', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        stroke: 'deeppink'
+      expect(bit.isChanged('stroke')).toBe false
+      bit.setProp 'stroke', 'green'
+      expect(bit.isChanged('stroke')).toBe true
+
+    it 'should recieve value to set', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 20
+      expect(bit.isChanged('radius', 30)).toBe true
 
   describe 'stroke-dash value setting ->', ->
     it 'should set the property from an array', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
-      bit.setProp 'stroke-dasharray', [{ value: 100, units: 'px' }]
+      bit.setProp 'stroke-dasharray', [{ value: 100, unit: 'px' }]
       bit.draw()
       expect(bit.props['stroke-dasharray']).toBe '100 '
 
@@ -261,11 +304,20 @@ describe 'Bit', ->
         ctx:    document.createElementNS ns, 'svg'
         radius:  100
       bit.setProp 'stroke-dasharray', [
-        { value: 100, units: 'px' }, { value: 50, units: '%' }
+        { value: 100, unit: 'px' }, { value: 50, unit: '%' }
       ]
       bit.draw()
       dash = (bit.props.length/100)*50
       expect(bit.props['stroke-dasharray']).toBe "100 #{dash} "
+
+    it 'should cast % single values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius:  100
+      bit.setProp 'stroke-dasharray', { value: 25, unit: '%' }
+      bit.draw()
+      dash = (bit.props.length/100)*25
+      expect(bit.props['stroke-dasharray']).toBe dash
 
 
 

@@ -817,9 +817,9 @@ describe 'Transit ->', ->
         byte = new Byte strokeDasharray:  {'200 100': '400'}
         byte.setProgress .5
         expect(byte.props.strokeDasharray[0].value).toBe 300
-        expect(byte.props.strokeDasharray[0].units).toBe 'px'
+        expect(byte.props.strokeDasharray[0].unit) .toBe 'px'
         expect(byte.props.strokeDasharray[1].value).toBe 50
-        expect(byte.props.strokeDasharray[1].units).toBe 'px'
+        expect(byte.props.strokeDasharray[1].unit) .toBe 'px'
 
       it 'should set strokeDasharray/strokeDashoffset with percents', ->
         byte = new Byte
@@ -827,12 +827,22 @@ describe 'Transit ->', ->
           strokeDasharray:  {'0% 200': '100%'}
           radius: 100
           isRunLess: true
-          isIt: true
+          
         byte.setProgress .5
         expect(byte.props.strokeDasharray[0].value).toBe 50
-        expect(byte.props.strokeDasharray[0].units).toBe '%'
+        expect(byte.props.strokeDasharray[0].unit) .toBe '%'
         expect(byte.props.strokeDasharray[1].value).toBe 100
-        expect(byte.props.strokeDasharray[1].units).toBe 'px'
+        expect(byte.props.strokeDasharray[1].unit) .toBe 'px'
+
+      it 'should parse non-deltas strokeDasharray/strokeDashoffset values', ->
+        byte = new Byte
+          type: 'circle'
+          strokeDasharray:  '100%'
+          radius: 100
+          isRunLess: true
+          isIt: true
+        expect(byte.props.strokeDasharray.value).toBe 100
+        expect(byte.props.strokeDasharray.unit).toBe '%'
 
   describe 'Callbacks ->', ->
     describe 'onStart callback ->', ->

@@ -129,7 +129,6 @@ class Transit extends bitsMap.map.bit
 
   isPropChanged:(name)->
     @lastSet[name] ?= {}
-    # name.match('radius') and console.log 'yep', @lastSet[name].value, name
     if @lastSet[name].value isnt @props[name]
       @lastSet[name].value = @props[name]; true
     else false
@@ -192,8 +191,7 @@ class Transit extends bitsMap.map.bit
           stroke = []
           for item, i in value.delta
             dash = value.start[i].value + item.value*@progress
-            console.log dash
-            stroke.push { value: dash, units: item.unit }
+            stroke.push { value: dash, unit: item.unit }
           stroke
         when 'number'
           value.start + value.delta*progress
@@ -229,16 +227,20 @@ class Transit extends bitsMap.map.bit
         delete @deltas[key]
       # else get the value from options or fallback to defaults
       else optionsValue = if @o[key]? then @o[key] else defaultsValue
-      # if non-object value - just save it to @props
-      # if is not an object or is array
+      # if non-object and non-array value - just save it to @props
       isObject = (optionsValue? and (typeof optionsValue is 'object'))
       if !isObject or @h.isArray(optionsValue)
+        # parse random values
         if typeof optionsValue is 'string' and optionsValue.match /rand/
           optionsValue = @h.parseRand optionsValue
+        # save to props
         @props[key] = optionsValue
-        # position property parse with units
+        # position properties should be parsed with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
+        # strokeDash properties should be parsed with units
+        if @h.strokeDashPropsMap[key]
+          @props[key] = @h.parseUnit(@props[key])
         continue
 
       # if delta object was passed: like { 20: 75 }
