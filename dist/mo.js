@@ -2590,11 +2590,22 @@ Stagger = (function(_super) {
     len = this.props.els.length;
     _results = [];
     for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
-      _results.push(this.transits.push(new Transit({
-        bit: this.getPropByMod('els', i)
-      })));
+      _results.push(this.transits.push(new Transit(this.getOption(i))));
     }
     return _results;
+  };
+
+  Stagger.prototype.getOption = function(i) {
+    var key, option, value, _ref;
+    option = {};
+    _ref = this.props;
+    for (key in _ref) {
+      value = _ref[key];
+      option[key] = this.getPropByMod(key, i);
+    }
+    option.bit = this.getPropByMod('els', i);
+    delete option.els;
+    return option;
   };
 
   Stagger.prototype.getPropByMod = function(name, i) {

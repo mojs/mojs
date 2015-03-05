@@ -56,14 +56,14 @@
         els.appendChild(path2);
         s = new Stagger({
           els: els,
-          stroke: ['deeppink', 'cyan', 'yellow']
+          stroke: ['deeppink', 'cyan', 'yellow'],
+          isIt: true
         });
-        console.log(s.transits + '');
         expect(s.transits.length).toBe(2);
         expect(s.transits[0].o.bit).toBe(path1);
         expect(s.transits[1].o.bit).toBe(path2);
-        expect(s.transits[0].stroke).toBe('deeppink');
-        return expect(s.transits[1].stroke).toBe('cyan');
+        expect(s.transits[0].o.stroke).toBe('deeppink');
+        return expect(s.transits[1].o.stroke).toBe('cyan');
       });
     });
     describe('parseEls method ->', function() {
@@ -114,7 +114,7 @@
         return expect(h.isArray(s.props.els)).toBe(true);
       });
     });
-    return describe('getPropByMod method ->', function() {
+    describe('getPropByMod method ->', function() {
       it('should return property by mod', function() {
         var s;
         s = new Stagger({
@@ -131,6 +131,21 @@
           stroke: 'deeppink'
         });
         return expect(s.getPropByMod('stroke', 2)).toBe('deeppink');
+      });
+    });
+    return describe('getOption method ->', function() {
+      return it('should get options for a transit', function() {
+        var s;
+        s = new Stagger({
+          els: els,
+          stroke: ['deeppink', 'cyan', 'yellow']
+        });
+        expect(s.getOption(0).stroke).toBe('deeppink');
+        expect(s.getOption(0).bit).toBe(path1);
+        expect(s.getOption(0).duration).toBe(500);
+        expect(s.getOption(1).stroke).toBe('cyan');
+        expect(s.getOption(1).bit).toBe(path2);
+        return expect(s.getOption(1).duration).toBe(500);
       });
     });
   });

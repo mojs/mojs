@@ -26,12 +26,16 @@ class Stagger extends Transit
 
   createBit:->
     @transits = []; len = @props.els.length
-    for i in [0...len]
-      # option = @getOption(i); option.ctx = @ctx
-      # option.isDrawLess = option.isRunLess = option.isTweenLess = true
-      # @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
-      # @props.randomRadius and (option.radiusScale = @generateRandomRadius())
-      @transits.push new Transit bit: @getPropByMod 'els', i
+    @transits.push(new Transit @getOption(i)) for i in [0...len]
+
+  getOption:(i)->
+    option = {}
+    for key, value of @props
+      option[key] = @getPropByMod(key, i)
+    option.bit = @getPropByMod('els', i); delete option.els
+    option
+
+
 
   getPropByMod:(name, i)->
     prop = @props[name]; if h.isArray(prop) then prop[i % prop.length] else prop

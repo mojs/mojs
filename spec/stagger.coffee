@@ -31,14 +31,17 @@ describe 'Stagger ->', ->
       path1 = document.createElementNS ns, 'path'
       path2 = document.createElementNS ns, 'path'
       els.appendChild(path1); els.appendChild path2
-      s = new Stagger els: els, stroke: ['deeppink', 'cyan', 'yellow']
-      console.log s.transits+''
+      
+      s = new Stagger
+        els: els
+        stroke: ['deeppink', 'cyan', 'yellow']
+        isIt: true
+      
       expect(s.transits.length)   .toBe 2
       expect(s.transits[0].o.bit).toBe path1
       expect(s.transits[1].o.bit).toBe path2
-      
-      expect(s.transits[0].stroke).toBe 'deeppink'
-      expect(s.transits[1].stroke).toBe 'cyan'
+      expect(s.transits[0].o.stroke).toBe 'deeppink'
+      expect(s.transits[1].o.stroke).toBe 'cyan'
 
   describe 'parseEls method ->', ->
     it 'should recieve els as a DOM node', ->
@@ -76,6 +79,17 @@ describe 'Stagger ->', ->
     it 'should return property if single property was passed', ->
       s = new Stagger els: els, stroke: 'deeppink'
       expect(s.getPropByMod('stroke', 2)).toBe 'deeppink'
+
+  describe 'getOption method ->', ->
+    it 'should get options for a transit', ->
+      s = new Stagger els: els, stroke: ['deeppink', 'cyan', 'yellow']
+      expect(s.getOption(0).stroke)   .toBe 'deeppink'
+      expect(s.getOption(0).bit)      .toBe path1
+      expect(s.getOption(0).duration) .toBe 500
+      expect(s.getOption(1).stroke)   .toBe 'cyan'
+      expect(s.getOption(1).bit)      .toBe path2
+      expect(s.getOption(1).duration) .toBe 500
+
 
 
 
