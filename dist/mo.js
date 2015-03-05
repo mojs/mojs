@@ -145,7 +145,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Swirl = Swirl;
 }
 
-},{"./transit":18}],2:[function(require,module,exports){
+},{"./transit":19}],2:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, Tween, bitsMap, h,
@@ -506,7 +506,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./h":4,"./shapes/bitsMap":9,"./swirl":17,"./transit":18,"./tween/tween":20}],3:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":9,"./swirl":18,"./transit":19,"./tween/tween":21}],3:[function(require,module,exports){
 var Easing, easing;
 
 Easing = (function() {
@@ -1234,7 +1234,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Swirl, Timeline, Transit, Tween, burst, path1, path2, path3;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, burst, path1, path2, path3, paths;
 
 Burst = require('./burst');
 
@@ -1242,11 +1242,15 @@ Swirl = require('./Swirl');
 
 Transit = require('./transit');
 
+Stagger = require('./stagger');
+
 MotionPath = require('./motion-path');
 
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
+
+paths = document.getElementById('js-svg');
 
 path1 = document.getElementById('js-path1');
 
@@ -1254,58 +1258,11 @@ path2 = document.getElementById('js-path2');
 
 path3 = document.getElementById('js-path3');
 
-burst = new Transit({
-  x: 600,
-  y: 600,
-  bit: path1,
-  duration: 2000,
-  delay: 1000,
-  isShowEnd: true,
-  stroke: 'cyan',
-  fill: 'transparent',
-  easing: 'Sinusoidal.Out',
-  strokeDasharray: '100%',
-  strokeWidth: 5,
-  strokeDashoffset: {
-    '100%': '0%'
-  }
+burst = new Stagger({
+  els: paths
 });
 
-burst = new Transit({
-  x: 600,
-  y: 600,
-  bit: path2,
-  duration: 2000,
-  delay: 1100,
-  isShowEnd: true,
-  stroke: 'yellow',
-  fill: 'transparent',
-  easing: 'Sinusoidal.Out',
-  strokeDasharray: '100%',
-  strokeWidth: 5,
-  strokeDashoffset: {
-    '100%': '0%'
-  }
-});
-
-burst = new Transit({
-  x: 600,
-  y: 600,
-  bit: path3,
-  duration: 2000,
-  delay: 1200,
-  isShowEnd: true,
-  stroke: 'deeppink',
-  fill: 'transparent',
-  easing: 'Sinusoidal.Out',
-  strokeDasharray: '100%',
-  strokeWidth: 5,
-  strokeDashoffset: {
-    '100%': '0%'
-  }
-});
-
-},{"./Swirl":1,"./burst":2,"./motion-path":6,"./transit":18,"./tween/timeline":19,"./tween/tween":20}],6:[function(require,module,exports){
+},{"./Swirl":1,"./burst":2,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
 
 h = require('./h');
@@ -1679,7 +1636,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.MotionPath = MotionPath;
 }
 
-},{"./h":4,"./tween/timeline":19,"./tween/tween":20,"./vendor/resize":22}],7:[function(require,module,exports){
+},{"./h":4,"./tween/timeline":20,"./tween/tween":21,"./vendor/resize":23}],7:[function(require,module,exports){
 (function() {
   var k, lastTime, vendors, x;
   lastTime = 0;
@@ -2580,8 +2537,119 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{"./bit":8}],17:[function(require,module,exports){
+
+/* istanbul ignore next */
+var Stagger, Timeline, Transit, Tween, h,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+h = require('./h');
+
+Timeline = require('./tween/timeline');
+
+Tween = require('./tween/tween');
+
+Transit = require('./transit');
+
+Stagger = (function(_super) {
+  __extends(Stagger, _super);
+
+  function Stagger() {
+    return Stagger.__super__.constructor.apply(this, arguments);
+  }
+
+  Stagger.prototype.ownDefaults = {
+    delay: 'stagger(200)',
+    els: null
+  };
+
+  Stagger.prototype.vars = function() {
+    h.extend(this.ownDefaults, this.defaults);
+    this.defaults = this.ownDefaults;
+    Stagger.__super__.vars.apply(this, arguments);
+    return this.parseEls();
+  };
+
+  Stagger.prototype.parseEls = function() {
+    var els;
+    if (h.isDOM(this.props.els)) {
+      if (this.props.els.childNodes) {
+        return this.props.els = Array.prototype.slice.call(this.props.els.childNodes, 0);
+      }
+    } else if (this.props.els + '' === '[object NodeList]') {
+      return this.props.els = Array.prototype.slice.call(this.props.els, 0);
+    } else if (typeof this.props.els === 'string') {
+      els = document.querySelector(this.props.els);
+      return this.props.els = Array.prototype.slice.call(els.childNodes, 0);
+    }
+  };
+
+  Stagger.prototype.createBit = function() {
+    var i, len, _i, _results;
+    this.transits = [];
+    len = this.props.els.length;
+    _results = [];
+    for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
+      _results.push(this.transits.push(new Transit({
+        bit: this.getPropByMod('els', i)
+      })));
+    }
+    return _results;
+  };
+
+  Stagger.prototype.getPropByMod = function(name, i) {
+    var prop;
+    prop = this.props[name];
+    if (h.isArray(prop)) {
+      return prop[i % prop.length];
+    } else {
+      return prop;
+    }
+  };
+
+  Stagger.prototype.calcSize = function() {};
+
+  Stagger.prototype.draw = function() {};
+
+  return Stagger;
+
+})(Transit);
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("Stagger", [], function() {
+    return Stagger;
+  });
+}
+
+
+/* istanbul ignore next */
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = Stagger;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  if (window.mojs == null) {
+    window.mojs = {};
+  }
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs.Stagger = Stagger;
+}
+
+},{"./h":4,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],18:[function(require,module,exports){
 module.exports=require(1)
-},{"./transit":18}],18:[function(require,module,exports){
+},{"./transit":19}],19:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -3229,7 +3297,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./h":4,"./shapes/bitsMap":9,"./tween/timeline":19,"./tween/tween":20}],19:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":9,"./tween/timeline":20,"./tween/tween":21}],20:[function(require,module,exports){
 var Easing, Timeline, h;
 
 Easing = require('../easing');
@@ -3409,7 +3477,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Timeline = Timeline;
 }
 
-},{"../easing":3,"../h":4}],20:[function(require,module,exports){
+},{"../easing":3,"../h":4}],21:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3593,7 +3661,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;
 }
 
-},{"../h":4,"./tweener":21}],21:[function(require,module,exports){
+},{"../h":4,"./tweener":22}],22:[function(require,module,exports){
 var Tweener, h, t;
 
 require('../polyfills/raf');
@@ -3706,7 +3774,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.tweener = t;
 }
 
-},{"../h":4,"../polyfills/raf":7}],22:[function(require,module,exports){
+},{"../h":4,"../polyfills/raf":7}],23:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com

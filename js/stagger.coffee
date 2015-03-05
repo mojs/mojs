@@ -10,17 +10,34 @@ class Stagger extends Transit
     delay: 'stagger(200)'
     els:   null
 
-  constructor:(@o={})-> @vars()
-
   vars:->
     h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults
-    super
+    super; @parseEls()
+
+  parseEls:->
     if h.isDOM(@props.els)
-      if @props.els.childNodes then @props.els = @props.els.childNodes
+      if @props.els.childNodes
+        @props.els = Array::slice.call @props.els.childNodes, 0
+    else if @props.els + '' is '[object NodeList]'
+      @props.els = Array::slice.call @props.els, 0
+    else if typeof @props.els is 'string'
+      els = document.querySelector @props.els
+      @props.els = Array::slice.call els.childNodes, 0
 
   createBit:->
-    super
-  
+    @transits = []; len = @props.els.length
+    for i in [0...len]
+      # option = @getOption(i); option.ctx = @ctx
+      # option.isDrawLess = option.isRunLess = option.isTweenLess = true
+      # @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
+      # @props.randomRadius and (option.radiusScale = @generateRandomRadius())
+      @transits.push new Transit bit: @getPropByMod 'els', i
+
+  getPropByMod:(name, i)->
+    prop = @props[name]; if h.isArray(prop) then prop[i % prop.length] else prop
+
+  calcSize:->
+  draw:->
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

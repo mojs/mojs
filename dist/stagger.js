@@ -15,30 +15,62 @@ Transit = require('./transit');
 Stagger = (function(_super) {
   __extends(Stagger, _super);
 
+  function Stagger() {
+    return Stagger.__super__.constructor.apply(this, arguments);
+  }
+
   Stagger.prototype.ownDefaults = {
     delay: 'stagger(200)',
     els: null
   };
 
-  function Stagger(o) {
-    this.o = o != null ? o : {};
-    this.vars();
-  }
-
   Stagger.prototype.vars = function() {
     h.extend(this.ownDefaults, this.defaults);
     this.defaults = this.ownDefaults;
     Stagger.__super__.vars.apply(this, arguments);
+    return this.parseEls();
+  };
+
+  Stagger.prototype.parseEls = function() {
+    var els;
     if (h.isDOM(this.props.els)) {
       if (this.props.els.childNodes) {
-        return this.props.els = this.props.els.childNodes;
+        return this.props.els = Array.prototype.slice.call(this.props.els.childNodes, 0);
       }
+    } else if (this.props.els + '' === '[object NodeList]') {
+      return this.props.els = Array.prototype.slice.call(this.props.els, 0);
+    } else if (typeof this.props.els === 'string') {
+      els = document.querySelector(this.props.els);
+      return this.props.els = Array.prototype.slice.call(els.childNodes, 0);
     }
   };
 
   Stagger.prototype.createBit = function() {
-    return Stagger.__super__.createBit.apply(this, arguments);
+    var i, len, _i, _results;
+    this.transits = [];
+    len = this.props.els.length;
+    _results = [];
+    for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
+      _results.push(this.transits.push(new Transit({
+        bit: this.getPropByMod('els', i)
+      })));
+    }
+    return _results;
   };
+
+  Stagger.prototype.getPropByMod = function(name, i) {
+    var prop;
+    prop = this.props[name];
+    if (h.isArray(prop)) {
+      return prop[i % prop.length];
+    } else {
+      return prop;
+    }
+  };
+
+  Stagger.prototype.calcSize = function() {};
+
+  Stagger.prototype.draw = function() {};
 
   return Stagger;
 
