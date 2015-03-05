@@ -217,7 +217,6 @@ class Transit extends bitsMap.map.bit
     keys = Object.keys(fromObject); len = keys.length
     while(len--)
       key = keys[len]; defaultsValue = fromObject[key]
-    # for key, defaultsValue of fromObject
       # skip props from skipProps object
       continue if @skipProps?[key]
       # if options object was passed = save the value to
@@ -229,7 +228,7 @@ class Transit extends bitsMap.map.bit
       else optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object and non-array value - just save it to @props
       isObject = (optionsValue? and (typeof optionsValue is 'object'))
-      if !isObject or @h.isArray(optionsValue)
+      if !isObject or @h.isArray(optionsValue) or h.isDOM(optionsValue)
         # parse random values
         if typeof optionsValue is 'string' and optionsValue.match /rand/
           optionsValue = @h.parseRand optionsValue

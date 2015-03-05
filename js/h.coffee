@@ -246,7 +246,6 @@ class Helpers
     else str
   # if delta object was passed: like { 20: 75 }
   parseDelta:(key, value)->
-    # console.log key, value
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start
@@ -307,8 +306,14 @@ class Helpers
           # @props[key] = start
       # else @props[key] = start
     delta
-
   rand:(min,max)-> (Math.random() * ((max) - min)) + min
+  isDOM:(o)->
+    if typeof Node == 'object' then o instanceof Node
+    else
+      isObject = o and typeof o is 'object'
+      isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
+      isObject and isNode
+
 
 h = new Helpers
 

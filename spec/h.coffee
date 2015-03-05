@@ -16,7 +16,7 @@ describe 'Helpers ->', ->
   it 'should have strokeDashPropsMap map', ->
     expect(h.strokeDashPropsMap.strokeDasharray) .toBe    1
     expect(h.strokeDashPropsMap.strokeDashoffset).toBe    1
-    expect(Object.keys(h.strokeDashPropsMap)).length.toBe  2
+    expect(Object.keys(h.strokeDashPropsMap).length).toBe  2
 
   describe 'prefix', ->
     it 'should have prefix', ->
@@ -557,6 +557,22 @@ describe 'Helpers ->', ->
         expect(colorObj.g)  .toBe 200
         expect(colorObj.b)  .toBe 100
         expect(colorObj.a)  .toBe .5
+    describe 'isDOM method ->', ->
+      it 'should detect if object is DOM node #1', ->
+        expect(h.isDOM('string')).toBe false
+      it 'should detect if object is DOM node #2', ->
+        expect(h.isDOM({})).toBe false
+      it 'should detect if object is DOM node #3', ->
+        expect(h.isDOM([])).toBe false
+      it 'should detect if object is DOM node #4', ->
+        expect(h.isDOM({})).toBe false
+      it 'should detect if object is DOM node #5', ->
+        expect(h.isDOM(null)).toBe false
+      it 'should detect if object is DOM node #6', ->
+        expect(h.isDOM(document.createElement 'div')).toBe true
+      it 'should detect if object is DOM node #7', ->
+        expect(h.isDOM(document.createElementNS 'g')).toBe true
+
 
 
 

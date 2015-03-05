@@ -29,7 +29,7 @@ burst = new Transit({
   fill: 'transparent',
   easing: 'Sinusoidal.Out',
   strokeDasharray: '100%',
-  strokeWidth: 15,
+  strokeWidth: 5,
   strokeDashoffset: {
     '100%': '0%'
   }
@@ -46,7 +46,7 @@ burst = new Transit({
   fill: 'transparent',
   easing: 'Sinusoidal.Out',
   strokeDasharray: '100%',
-  strokeWidth: 15,
+  strokeWidth: 5,
   strokeDashoffset: {
     '100%': '0%'
   }
@@ -63,7 +63,7 @@ burst = new Transit({
   fill: 'transparent',
   easing: 'Sinusoidal.Out',
   strokeDasharray: '100%',
-  strokeWidth: 15,
+  strokeWidth: 5,
   strokeDashoffset: {
     '100%': '0%'
   }

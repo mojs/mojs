@@ -15,9 +15,30 @@ Transit = require('./transit');
 Stagger = (function(_super) {
   __extends(Stagger, _super);
 
-  function Stagger() {
-    return Stagger.__super__.constructor.apply(this, arguments);
+  Stagger.prototype.ownDefaults = {
+    delay: 'stagger(200)',
+    els: null
+  };
+
+  function Stagger(o) {
+    this.o = o != null ? o : {};
+    this.vars();
   }
+
+  Stagger.prototype.vars = function() {
+    h.extend(this.ownDefaults, this.defaults);
+    this.defaults = this.ownDefaults;
+    Stagger.__super__.vars.apply(this, arguments);
+    if (h.isDOM(this.props.els)) {
+      if (this.props.els.childNodes) {
+        return this.props.els = this.props.els.childNodes;
+      }
+    }
+  };
+
+  Stagger.prototype.createBit = function() {
+    return Stagger.__super__.createBit.apply(this, arguments);
+  };
 
   return Stagger;
 

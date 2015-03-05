@@ -86,8 +86,8 @@ module.exports = function(config) {
     exclude: [
       'dist/mo.js',
       'dist/mojs.js',
-      'dist/h.js',
-      'spec/h.js',
+      // 'dist/h.js',
+      // 'spec/h.js',
       // 'dist/transit.js',
       // 'spec/transit.js',
       'dist/swirl.js',

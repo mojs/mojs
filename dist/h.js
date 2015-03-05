@@ -417,6 +417,17 @@ Helpers = (function() {
     return (Math.random() * (max - min)) + min;
   };
 
+  Helpers.prototype.isDOM = function(o) {
+    var isNode, isObject;
+    if (typeof Node === 'object') {
+      return o instanceof Node;
+    } else {
+      isObject = o && typeof o === 'object';
+      isNode = typeof o.nodeType === 'number' && typeof o.nodeName === 'string';
+      return isObject && isNode;
+    }
+  };
+
   return Helpers;
 
 })();

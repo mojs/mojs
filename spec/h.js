@@ -22,7 +22,7 @@
     it('should have strokeDashPropsMap map', function() {
       expect(h.strokeDashPropsMap.strokeDasharray).toBe(1);
       expect(h.strokeDashPropsMap.strokeDashoffset).toBe(1);
-      return expect(Object.keys(h.strokeDashPropsMap)).length.toBe(2);
+      return expect(Object.keys(h.strokeDashPropsMap).length).toBe(2);
     });
     describe('prefix', function() {
       return it('should have prefix', function() {
@@ -727,7 +727,7 @@
           return expect(h.splitEasing(easing) + '').toBe(easing + '');
         });
       });
-      return describe('color parsing - makeColorObj method', function() {
+      describe('color parsing - makeColorObj method', function() {
         it('should have shortColors map', function() {
           return expect(h.shortColors).toBeDefined();
         });
@@ -781,6 +781,29 @@
           expect(colorObj.g).toBe(200);
           expect(colorObj.b).toBe(100);
           return expect(colorObj.a).toBe(.5);
+        });
+      });
+      return describe('isDOM method ->', function() {
+        it('should detect if object is DOM node #1', function() {
+          return expect(h.isDOM('string')).toBe(false);
+        });
+        it('should detect if object is DOM node #2', function() {
+          return expect(h.isDOM({})).toBe(false);
+        });
+        it('should detect if object is DOM node #3', function() {
+          return expect(h.isDOM([])).toBe(false);
+        });
+        it('should detect if object is DOM node #4', function() {
+          return expect(h.isDOM({})).toBe(false);
+        });
+        it('should detect if object is DOM node #5', function() {
+          return expect(h.isDOM(null)).toBe(false);
+        });
+        it('should detect if object is DOM node #6', function() {
+          return expect(h.isDOM(document.createElement('div'))).toBe(true);
+        });
+        return it('should detect if object is DOM node #7', function() {
+          return expect(h.isDOM(document.createElementNS('g'))).toBe(true);
         });
       });
     });

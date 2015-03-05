@@ -1184,6 +1184,17 @@ Helpers = (function() {
     return (Math.random() * (max - min)) + min;
   };
 
+  Helpers.prototype.isDOM = function(o) {
+    var isNode, isObject;
+    if (typeof Node === 'object') {
+      return o instanceof Node;
+    } else {
+      isObject = o && typeof o === 'object';
+      isNode = typeof o.nodeType === 'number' && typeof o.nodeName === 'string';
+      return isObject && isNode;
+    }
+  };
+
   return Helpers;
 
 })();
@@ -1254,7 +1265,7 @@ burst = new Transit({
   fill: 'transparent',
   easing: 'Sinusoidal.Out',
   strokeDasharray: '100%',
-  strokeWidth: 15,
+  strokeWidth: 5,
   strokeDashoffset: {
     '100%': '0%'
   }
@@ -1271,7 +1282,7 @@ burst = new Transit({
   fill: 'transparent',
   easing: 'Sinusoidal.Out',
   strokeDasharray: '100%',
-  strokeWidth: 15,
+  strokeWidth: 5,
   strokeDashoffset: {
     '100%': '0%'
   }
@@ -1288,7 +1299,7 @@ burst = new Transit({
   fill: 'transparent',
   easing: 'Sinusoidal.Out',
   strokeDasharray: '100%',
-  strokeWidth: 15,
+  strokeWidth: 5,
   strokeDashoffset: {
     '100%': '0%'
   }
@@ -2920,7 +2931,7 @@ Transit = (function(_super) {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
-      if (!isObject || this.h.isArray(optionsValue)) {
+      if (!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue)) {
         if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
           optionsValue = this.h.parseRand(optionsValue);
         }

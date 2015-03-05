@@ -347,7 +347,7 @@ Transit = (function(_super) {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
-      if (!isObject || this.h.isArray(optionsValue)) {
+      if (!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue)) {
         if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
           optionsValue = this.h.parseRand(optionsValue);
         }

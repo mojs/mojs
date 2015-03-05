@@ -6,6 +6,20 @@ Tween    = require './tween/tween'
 Transit  = require './transit'
 
 class Stagger extends Transit
+  ownDefaults:
+    delay: 'stagger(200)'
+    els:   null
+
+  constructor:(@o={})-> @vars()
+
+  vars:->
+    h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults
+    super
+    if h.isDOM(@props.els)
+      if @props.els.childNodes then @props.els = @props.els.childNodes
+
+  createBit:->
+    super
   
 
 ### istanbul ignore next ###
