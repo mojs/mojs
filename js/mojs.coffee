@@ -12,6 +12,18 @@ path1 = document.getElementById 'js-path1'
 path2 = document.getElementById 'js-path2'
 path3 = document.getElementById 'js-path3'
 
+# burst = new Transit
+#   bit:         path1
+#   stroke:      'deeppink'
+#   strokeWidth: 10
+#   fill:        'transparent'
+#   strokeDasharray: '100%'
+#   strokeDashoffset: '-1000': 0
+#   duration:         2000
+#   delay:            1000
+
+
+console.log paths
 burst = new Stagger els: paths
 
 # .then radius: 0, duration: 2000

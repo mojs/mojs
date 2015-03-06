@@ -34,14 +34,14 @@ Stagger = (function(_super) {
   Stagger.prototype.parseEls = function() {
     var els;
     if (h.isDOM(this.props.els)) {
-      if (this.props.els.childNodes) {
-        return this.props.els = Array.prototype.slice.call(this.props.els.childNodes, 0);
+      if (this.props.els.children) {
+        return this.props.els = Array.prototype.slice.call(this.props.els.children, 0);
       }
     } else if (this.props.els + '' === '[object NodeList]') {
       return this.props.els = Array.prototype.slice.call(this.props.els, 0);
     } else if (typeof this.props.els === 'string') {
       els = document.querySelector(this.props.els);
-      return this.props.els = Array.prototype.slice.call(els.childNodes, 0);
+      return this.props.els = Array.prototype.slice.call(els.children, 0);
     }
   };
 

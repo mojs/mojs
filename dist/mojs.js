@@ -22,6 +22,8 @@ path2 = document.getElementById('js-path2');
 
 path3 = document.getElementById('js-path3');
 
+console.log(paths);
+
 burst = new Stagger({
   els: paths
 });

@@ -573,7 +573,19 @@ describe 'Helpers ->', ->
       it 'should detect if object is DOM node #7', ->
         expect(h.isDOM(document.createElementNS 'g')).toBe true
 
-
+  describe 'getChildElements method', ->
+    ns    = 'http://www.w3.org/2000/svg'
+    els   = document.createElementNS ns, 'g'
+    path1 = document.createElementNS ns, 'path'
+    path2 = document.createElementNS ns, 'path'
+    els.appendChild(path1); els.appendChild path2
+    it 'should return els children', ->
+      expect(h.getChildElements(els).length).toBe 2
+    it 'should return an array', ->
+      expect(h.isArray(h.getChildElements(els))).toBe true
+    it 'should filter text nodes', ->
+      els.appendChild document.createTextNode 'hey'
+      expect(h.getChildElements(els).length).toBe 2
 
 
 

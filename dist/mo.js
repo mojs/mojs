@@ -1195,6 +1195,27 @@ Helpers = (function() {
     }
   };
 
+
+  /**
+   * Return direct children elements.
+   *
+   * @param {HTMLElement}
+   * @return {Array}
+   */
+
+  Helpers.prototype.getChildElements = function(element) {
+    var childNodes, children, i;
+    childNodes = element.childNodes;
+    children = [];
+    i = childNodes.length;
+    while (i--) {
+      if (childNodes[i].nodeType === 1) {
+        children.unshift(childNodes[i]);
+      }
+    }
+    return children;
+  };
+
   return Helpers;
 
 })();
@@ -1257,6 +1278,8 @@ path1 = document.getElementById('js-path1');
 path2 = document.getElementById('js-path2');
 
 path3 = document.getElementById('js-path3');
+
+console.log(paths);
 
 burst = new Stagger({
   els: paths
@@ -2573,14 +2596,14 @@ Stagger = (function(_super) {
   Stagger.prototype.parseEls = function() {
     var els;
     if (h.isDOM(this.props.els)) {
-      if (this.props.els.childNodes) {
-        return this.props.els = Array.prototype.slice.call(this.props.els.childNodes, 0);
+      if (this.props.els.children) {
+        return this.props.els = Array.prototype.slice.call(this.props.els.children, 0);
       }
     } else if (this.props.els + '' === '[object NodeList]') {
       return this.props.els = Array.prototype.slice.call(this.props.els, 0);
     } else if (typeof this.props.els === 'string') {
       els = document.querySelector(this.props.els);
-      return this.props.els = Array.prototype.slice.call(els.childNodes, 0);
+      return this.props.els = Array.prototype.slice.call(els.children, 0);
     }
   };
 

@@ -76,7 +76,7 @@
         return expect(Object.keys(h.callbacksMap).length).toBe(4);
       });
     });
-    return describe('methods ->', function() {
+    describe('methods ->', function() {
       describe('clamp method', function() {
         return it('should clamp value to max and min', function() {
           expect(h.clamp(10, 0, 5)).toBe(5);
@@ -805,6 +805,25 @@
         return it('should detect if object is DOM node #7', function() {
           return expect(h.isDOM(document.createElementNS('g'))).toBe(true);
         });
+      });
+    });
+    return describe('getChildElements method', function() {
+      var els, ns, path1, path2;
+      ns = 'http://www.w3.org/2000/svg';
+      els = document.createElementNS(ns, 'g');
+      path1 = document.createElementNS(ns, 'path');
+      path2 = document.createElementNS(ns, 'path');
+      els.appendChild(path1);
+      els.appendChild(path2);
+      it('should return els children', function() {
+        return expect(h.getChildElements(els).length).toBe(2);
+      });
+      it('should return an array', function() {
+        return expect(h.isArray(h.getChildElements(els))).toBe(true);
+      });
+      return it('should filter text nodes', function() {
+        els.appendChild(document.createTextNode('hey'));
+        return expect(h.getChildElements(els).length).toBe(2);
       });
     });
   });

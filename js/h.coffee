@@ -313,7 +313,20 @@ class Helpers
       isObject = o and typeof o is 'object'
       isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
       isObject and isNode
-
+  ###*
+  # Return direct children elements.
+  #
+  # @param {HTMLElement}
+  # @return {Array}
+  ###
+  getChildElements:(element)->
+    childNodes = element.childNodes
+    children = []
+    i = childNodes.length
+    while i--
+      if childNodes[i].nodeType == 1
+        children.unshift childNodes[i]
+    children
 
 h = new Helpers
 
