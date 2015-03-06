@@ -2619,12 +2619,21 @@ Stagger = (function(_super) {
 
   Stagger.prototype.render = function() {
     this.createBit();
-    return this.setProgress(0, true);
+    this.setProgress(0, true);
+    this.createTween();
+    return this;
   };
 
-  Stagger.prototype.setProgress = function() {};
-
-  Stagger.prototype.calcSize = function() {};
+  Stagger.prototype.createTween = function() {
+    var i, _results;
+    Stagger.__super__.createTween.apply(this, arguments);
+    i = this.transits.length;
+    _results = [];
+    while (i--) {
+      _results.push(this.tween.add(this.transits[i].timeline));
+    }
+    return _results;
+  };
 
   Stagger.prototype.draw = function() {};
 

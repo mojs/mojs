@@ -38,10 +38,15 @@ class Stagger extends Transit
   getPropByMod:(name, i)->
     prop = @props[name]; if h.isArray(prop) then prop[i % prop.length] else prop
 
-  render:-> @createBit(); @setProgress 0, true
+  render:-> @createBit(); @setProgress(0, true); @createTween(); @
 
-  setProgress:->
-  calcSize:->
+  createTween:->
+    # optimization TODO:
+    # the stagger doesnt need the self timeline
+    super; i = @transits.length; @tween.add(@transits[i].timeline) while(i--)
+
+  # setProgress:->
+  # calcSize:->
   draw:->
 
 ### istanbul ignore next ###

@@ -83,23 +83,58 @@
         s.render();
         return expect(s.createBit).toHaveBeenCalled();
       });
-      return it('should setProgress method', function() {
+      it('should call setProgress method', function() {
         var s;
         s = new Stagger({
-          els: els
+          els: els,
+          isRunLess: true
         });
         spyOn(s, 'setProgress');
         s.render();
         return expect(s.setProgress).toHaveBeenCalledWith(0, true);
       });
-    });
-    describe('setProgress method ->', function() {
-      return it('should override setProgress method', function() {
+      return it('should call createTween method', function() {
         var s;
         s = new Stagger({
           els: els
         });
-        return expect(s.setProgress).not.toBe(Stagger.__super__.setProgress);
+        spyOn(s, 'createTween');
+        s.render();
+        return expect(s.createTween).toHaveBeenCalled();
+      });
+    });
+    describe('createTween method ->', function() {
+      it('should override createTween method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        return expect(s.createTween).not.toBe(Stagger.__super__.createTween);
+      });
+      it('should call super createTween method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        spyOn(Stagger.__super__, 'createTween');
+        s.createTween();
+        return expect(Stagger.__super__.createTween).toHaveBeenCalled();
+      });
+      return it('should add timelines to the tween', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        return expect(s.tween.timelines.length).toBe(3);
+      });
+    });
+    describe('draw method ->', function() {
+      return it('should override draw method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        return expect(s.draw).not.toBe(Stagger.__super__.draw);
       });
     });
     describe('parseEls method ->', function() {

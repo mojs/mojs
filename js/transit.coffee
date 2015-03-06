@@ -82,7 +82,7 @@ class Transit extends bitsMap.map.bit
       @el.style['margin-top']  = marginSize
       @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
-    @el.style.opacity = @props.opacity
+    @el.style.opacity     = @props.opacity
     if @o.isShowInit then @show() else @hide()
 
   show:->

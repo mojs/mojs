@@ -52,16 +52,37 @@ describe 'Stagger ->', ->
       s.render()
       expect(s.createBit).toHaveBeenCalled()
 
-    it 'should setProgress method', ->
-      s = new Stagger els: els
+    it 'should call setProgress method', ->
+      s = new Stagger els: els, isRunLess: true
       spyOn s, 'setProgress'
       s.render()
       expect(s.setProgress).toHaveBeenCalledWith 0, true
 
-  describe 'setProgress method ->', ->
-    it 'should override setProgress method', ->
+    it 'should call createTween method', ->
       s = new Stagger els: els
-      expect(s.setProgress).not.toBe Stagger.__super__.setProgress
+      spyOn s, 'createTween'
+      s.render()
+      expect(s.createTween).toHaveBeenCalled()
+
+  describe 'createTween method ->', ->
+    it 'should override createTween method', ->
+      s = new Stagger els: els
+      expect(s.createTween).not.toBe Stagger.__super__.createTween
+
+    it 'should call super createTween method', ->
+      s = new Stagger els: els
+      spyOn Stagger.__super__, 'createTween'
+      s.createTween()
+      expect(Stagger.__super__.createTween).toHaveBeenCalled()
+
+    it 'should add timelines to the tween', ->
+      s = new Stagger els: els
+      expect(s.tween.timelines.length).toBe 3
+
+  describe 'draw method ->', ->
+    it 'should override draw method', ->
+      s = new Stagger els: els
+      expect(s.draw).not.toBe Stagger.__super__.draw
 
   describe 'parseEls method ->', ->
     it 'should recieve els as a DOM node', ->
