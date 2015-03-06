@@ -456,12 +456,20 @@
           expect(unit.unit).toBe('vw');
           return expect(unit.string).toBe('100vw');
         });
-        return it('should parse vmin string', function() {
+        it('should parse vmin string', function() {
           var unit;
           unit = h.parseUnit('100vmin');
           expect(unit.value).toBe(100);
           expect(unit.unit).toBe('vmin');
           return expect(unit.string).toBe('100vmin');
+        });
+        return it('should return value if is not string nor number', function() {
+          var obj, unit;
+          obj = {
+            20: 30
+          };
+          unit = h.parseUnit(obj);
+          return expect(unit).toBe(obj);
         });
       });
       describe('strToArr method', function() {

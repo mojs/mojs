@@ -22,9 +22,17 @@ path3 = document.getElementById 'js-path3'
 #   duration:         2000
 #   delay:            1000
 
-
-console.log paths
-burst = new Stagger els: paths
+burst = new Stagger
+  els:              paths
+  stroke:           'deeppink'
+  strokeWidth:      10
+  delay:            4000
+  duration:         2000
+  fill:             'transparent'
+  strokeDasharray:  '100%'
+  strokeDashoffset: {'1000': 0}
+  isShowEnd:        true
+  isShowInit:       true
 
 # .then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0

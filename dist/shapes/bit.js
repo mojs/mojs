@@ -30,6 +30,7 @@ Bit = (function() {
   function Bit(o) {
     this.o = o != null ? o : {};
     this.init();
+    this;
   }
 
   Bit.prototype.init = function() {

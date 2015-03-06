@@ -114,6 +114,7 @@ class Helpers
         unit:     unit
         value:    amount
         string:   "#{amount}#{unit}"
+    value
   bind:(func, context) ->
     wrapper = ->
       args = Array::slice.call(arguments)

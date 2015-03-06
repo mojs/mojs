@@ -184,6 +184,7 @@ class Transit extends bitsMap.map.bit
 
   calcCurrentProps:(progress)->
     keys = Object.keys(@deltas); len = keys.length
+    # console.log @props.strokeDashoffset?[0]
     while(len--)
       key = keys[len]; value = @deltas[key]
       @props[key] = switch value.type
@@ -227,36 +228,45 @@ class Transit extends bitsMap.map.bit
       # else get the value from options or fallback to defaults
       else optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object and non-array value - just save it to @props
-      isObject = (optionsValue? and (typeof optionsValue is 'object'))
-      isObject = isObject and !optionsValue.unit
-      if !isObject or @h.isArray(optionsValue) or h.isDOM(optionsValue)
+      if !@isDelta(optionsValue)
         # parse random values
         if typeof optionsValue is 'string' and optionsValue.match /rand/
           optionsValue = @h.parseRand optionsValue
         # save to props
         @props[key] = optionsValue
+        # key is 'strokeDashoffset' and console.log key, optionsValue
         # position properties should be parsed with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         # strokeDash properties should be parsed with units
         if @h.strokeDashPropsMap[key]
+          # isIt = key is 'strokeDashoffset'
+          # isIt and console.log @props[key]
+          # key is 'strokeDashoffset' and console.log @h.parseUnit(@props[key])
           @props[key] = @h.parseUnit(@props[key])
         continue
-
       # if delta object was passed: like { 20: 75 }
       # calculate delta
-      if (key is 'x' or key is 'y') and !@o.ctx
-        @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
-         as it would be much more performant', optionsValue
-      # skip props defined in skipPropsDelta map
-      # needed for modules based on transit like swirl
-      if @skipPropsDelta?[key] then continue
-      delta = @h.parseDelta key, optionsValue, @defaults[key]
-      # stoke-linecap filter
-      if delta.type? then @deltas[key] = delta
-      # and set the start value to props
-      @props[key] = delta.start
+      @isSkipDelta or @getDelta key, optionsValue
     @onUpdate = @props.onUpdate
+
+  isDelta:(optionsValue)->
+    isObject = (optionsValue? and (typeof optionsValue is 'object'))
+    isObject = isObject and !optionsValue.unit
+    not (!isObject or @h.isArray(optionsValue) or h.isDOM(optionsValue))
+
+  getDelta:(key, optionsValue)->
+    if (key is 'x' or key is 'y') and !@o.ctx
+      @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
+       as it would be much more performant', optionsValue
+    # skip props defined in skipPropsDelta map
+    # needed for modules based on transit like swirl
+    return if @skipPropsDelta?[key]
+    delta = @h.parseDelta key, optionsValue, @defaults[key]
+    # stoke-linecap filter
+    if delta.type? then @deltas[key] = delta
+    # and set the start value to props
+    @props[key] = delta.start
 
   mergeThenOptions:(start, end)->
     o = {}; @h.extend o, start

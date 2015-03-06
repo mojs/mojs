@@ -54,6 +54,27 @@
         return expect(byte.o.option).toBe(1);
       });
     });
+    describe('isDelta method ->', function() {
+      return it('should detect if value is not a delta value', function() {
+        var byte;
+        byte = new Byte({
+          radius: 45,
+          stroke: {
+            'deeppink': 'pink'
+          }
+        });
+        expect(byte.isDelta(45)).toBe(false);
+        expect(byte.isDelta('45')).toBe(false);
+        expect(byte.isDelta(['45'])).toBe(false);
+        expect(byte.isDelta({
+          unit: 'px',
+          value: 20
+        })).toBe(false);
+        return expect(byte.isDelta({
+          20: 30
+        })).toBe(true);
+      });
+    });
     describe('extendDefaults method ->', function() {
       it('should extend defaults object to properties', function() {
         var byte;
@@ -119,6 +140,21 @@
         });
         expect(byte.props.radius).toBe(10);
         return expect(byte.props.fill).toBe(fillBefore);
+      });
+    });
+    describe('skipDelta flag', function() {
+      return it('should skip delta calcultaions on module', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          radius: {
+            20: 30
+          }
+        });
+        byte.isSkipDelta = true;
+        spyOn(byte, 'getDelta');
+        byte.extendDefaults(byte.o);
+        return expect(byte.getDelta).not.toHaveBeenCalled();
       });
     });
     describe('options history ->', function() {

@@ -168,6 +168,7 @@ Helpers = (function() {
         string: "" + amount + unit
       };
     }
+    return value;
   };
 
   Helpers.prototype.bind = function(func, context) {

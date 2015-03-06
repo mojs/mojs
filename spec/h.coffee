@@ -322,6 +322,10 @@ describe 'Helpers ->', ->
         expect(unit.value)    .toBe 100
         expect(unit.unit)     .toBe 'vmin'
         expect(unit.string)   .toBe '100vmin'
+      it 'should return value if is not string nor number', ->
+        obj = {20:30}
+        unit = h.parseUnit(obj)
+        expect(unit).toBe obj
     describe 'strToArr method', ->
       it 'should parse string to array',->
         array = h.strToArr('200 100')

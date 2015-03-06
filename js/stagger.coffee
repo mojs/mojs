@@ -6,6 +6,7 @@ Tween    = require './tween/tween'
 Transit  = require './transit'
 
 class Stagger extends Transit
+  isSkipDelta: true
   ownDefaults:
     delay: 'stagger(200)'
     els:   null
@@ -15,14 +16,13 @@ class Stagger extends Transit
     super; @parseEls()
 
   parseEls:->
-    if h.isDOM(@props.els)
-      if @props.els.children
-        @props.els = Array::slice.call @props.els.children, 0
-    else if @props.els + '' is '[object NodeList]'
+    if @props.els + '' is '[object NodeList]'
       @props.els = Array::slice.call @props.els, 0
     else if typeof @props.els is 'string'
       els = document.querySelector @props.els
-      @props.els = Array::slice.call els.children, 0
+      @props.els = h.getChildElements els
+    else if h.isDOM(@props.els)
+      @props.els = h.getChildElements @props.els
 
   createBit:->
     @transits = []; len = @props.els.length
@@ -33,14 +33,13 @@ class Stagger extends Transit
     for key, value of @props
       option[key] = @getPropByMod(key, i)
     option.bit = @getPropByMod('els', i)
-    # console.log option.bit
     option
 
   getPropByMod:(name, i)->
     prop = @props[name]; if h.isArray(prop) then prop[i % prop.length] else prop
 
   render:-> @createBit(); @setProgress(0, true); @createTween(); @
-
+  isDelta:-> false
   createTween:->
     # optimization TODO:
     # the stagger doesnt need the self timeline

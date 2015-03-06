@@ -19,6 +19,8 @@ Stagger = (function(_super) {
     return Stagger.__super__.constructor.apply(this, arguments);
   }
 
+  Stagger.prototype.isSkipDelta = true;
+
   Stagger.prototype.ownDefaults = {
     delay: 'stagger(200)',
     els: null
@@ -33,15 +35,13 @@ Stagger = (function(_super) {
 
   Stagger.prototype.parseEls = function() {
     var els;
-    if (h.isDOM(this.props.els)) {
-      if (this.props.els.children) {
-        return this.props.els = Array.prototype.slice.call(this.props.els.children, 0);
-      }
-    } else if (this.props.els + '' === '[object NodeList]') {
+    if (this.props.els + '' === '[object NodeList]') {
       return this.props.els = Array.prototype.slice.call(this.props.els, 0);
     } else if (typeof this.props.els === 'string') {
       els = document.querySelector(this.props.els);
-      return this.props.els = Array.prototype.slice.call(els.children, 0);
+      return this.props.els = h.getChildElements(els);
+    } else if (h.isDOM(this.props.els)) {
+      return this.props.els = h.getChildElements(this.props.els);
     }
   };
 
@@ -83,6 +83,10 @@ Stagger = (function(_super) {
     this.setProgress(0, true);
     this.createTween();
     return this;
+  };
+
+  Stagger.prototype.isDelta = function() {
+    return false;
   };
 
   Stagger.prototype.createTween = function() {

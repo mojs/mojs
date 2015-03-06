@@ -19,7 +19,7 @@ class Bit
     'stroke-dasharray': ''
     'stroke-dashoffset':''
     'stroke-linecap':   ''
-  constructor:(@o={})-> @init()
+  constructor:(@o={})-> @init(); @
   init:-> @vars(); @render(); @
   vars:->
     if @o.ctx and @o.ctx.tagName is 'svg' then @ctx = @o.ctx

@@ -935,6 +935,7 @@ Helpers = (function() {
         string: "" + amount + unit
       };
     }
+    return value;
   };
 
   Helpers.prototype.bind = function(func, context) {
@@ -1279,10 +1280,19 @@ path2 = document.getElementById('js-path2');
 
 path3 = document.getElementById('js-path3');
 
-console.log(paths);
-
 burst = new Stagger({
-  els: paths
+  els: paths,
+  stroke: 'deeppink',
+  strokeWidth: 10,
+  delay: 4000,
+  duration: 2000,
+  fill: 'transparent',
+  strokeDasharray: '100%',
+  strokeDashoffset: {
+    '1000': 0
+  },
+  isShowEnd: true,
+  isShowInit: true
 });
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
@@ -1723,6 +1733,7 @@ Bit = (function() {
   function Bit(o) {
     this.o = o != null ? o : {};
     this.init();
+    this;
   }
 
   Bit.prototype.init = function() {
@@ -2581,6 +2592,8 @@ Stagger = (function(_super) {
     return Stagger.__super__.constructor.apply(this, arguments);
   }
 
+  Stagger.prototype.isSkipDelta = true;
+
   Stagger.prototype.ownDefaults = {
     delay: 'stagger(200)',
     els: null
@@ -2595,15 +2608,13 @@ Stagger = (function(_super) {
 
   Stagger.prototype.parseEls = function() {
     var els;
-    if (h.isDOM(this.props.els)) {
-      if (this.props.els.children) {
-        return this.props.els = Array.prototype.slice.call(this.props.els.children, 0);
-      }
-    } else if (this.props.els + '' === '[object NodeList]') {
+    if (this.props.els + '' === '[object NodeList]') {
       return this.props.els = Array.prototype.slice.call(this.props.els, 0);
     } else if (typeof this.props.els === 'string') {
       els = document.querySelector(this.props.els);
-      return this.props.els = Array.prototype.slice.call(els.children, 0);
+      return this.props.els = h.getChildElements(els);
+    } else if (h.isDOM(this.props.els)) {
+      return this.props.els = h.getChildElements(this.props.els);
     }
   };
 
@@ -2645,6 +2656,10 @@ Stagger = (function(_super) {
     this.setProgress(0, true);
     this.createTween();
     return this;
+  };
+
+  Stagger.prototype.isDelta = function() {
+    return false;
   };
 
   Stagger.prototype.createTween = function() {
@@ -3026,7 +3041,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var defaultsValue, delta, fromObject, isObject, key, keys, len, optionsValue, _ref, _ref1;
+    var defaultsValue, fromObject, key, keys, len, optionsValue, _ref;
     if (this.props == null) {
       this.props = {};
     }
@@ -3047,9 +3062,7 @@ Transit = (function(_super) {
       } else {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
-      isObject = (optionsValue != null) && (typeof optionsValue === 'object');
-      isObject = isObject && !optionsValue.unit;
-      if (!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue)) {
+      if (!this.isDelta(optionsValue)) {
         if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
           optionsValue = this.h.parseRand(optionsValue);
         }
@@ -3062,19 +3075,31 @@ Transit = (function(_super) {
         }
         continue;
       }
-      if ((key === 'x' || key === 'y') && !this.o.ctx) {
-        this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
-      }
-      if ((_ref1 = this.skipPropsDelta) != null ? _ref1[key] : void 0) {
-        continue;
-      }
-      delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
-      if (delta.type != null) {
-        this.deltas[key] = delta;
-      }
-      this.props[key] = delta.start;
+      this.isSkipDelta || this.getDelta(key, optionsValue);
     }
     return this.onUpdate = this.props.onUpdate;
+  };
+
+  Transit.prototype.isDelta = function(optionsValue) {
+    var isObject;
+    isObject = (optionsValue != null) && (typeof optionsValue === 'object');
+    isObject = isObject && !optionsValue.unit;
+    return !(!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue));
+  };
+
+  Transit.prototype.getDelta = function(key, optionsValue) {
+    var delta, _ref;
+    if ((key === 'x' || key === 'y') && !this.o.ctx) {
+      this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
+    }
+    if ((_ref = this.skipPropsDelta) != null ? _ref[key] : void 0) {
+      return;
+    }
+    delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
+    if (delta.type != null) {
+      this.deltas[key] = delta;
+    }
+    return this.props[key] = delta.start;
   };
 
   Transit.prototype.mergeThenOptions = function(start, end) {

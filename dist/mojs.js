@@ -22,8 +22,17 @@ path2 = document.getElementById('js-path2');
 
 path3 = document.getElementById('js-path3');
 
-console.log(paths);
-
 burst = new Stagger({
-  els: paths
+  els: paths,
+  stroke: 'deeppink',
+  strokeWidth: 10,
+  delay: 4000,
+  duration: 2000,
+  fill: 'transparent',
+  strokeDasharray: '100%',
+  strokeDashoffset: {
+    '1000': 0
+  },
+  isShowEnd: true,
+  isShowInit: true
 });

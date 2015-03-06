@@ -325,7 +325,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var defaultsValue, delta, fromObject, isObject, key, keys, len, optionsValue, _ref, _ref1;
+    var defaultsValue, fromObject, key, keys, len, optionsValue, _ref;
     if (this.props == null) {
       this.props = {};
     }
@@ -346,9 +346,7 @@ Transit = (function(_super) {
       } else {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
-      isObject = (optionsValue != null) && (typeof optionsValue === 'object');
-      isObject = isObject && !optionsValue.unit;
-      if (!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue)) {
+      if (!this.isDelta(optionsValue)) {
         if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
           optionsValue = this.h.parseRand(optionsValue);
         }
@@ -361,19 +359,31 @@ Transit = (function(_super) {
         }
         continue;
       }
-      if ((key === 'x' || key === 'y') && !this.o.ctx) {
-        this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
-      }
-      if ((_ref1 = this.skipPropsDelta) != null ? _ref1[key] : void 0) {
-        continue;
-      }
-      delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
-      if (delta.type != null) {
-        this.deltas[key] = delta;
-      }
-      this.props[key] = delta.start;
+      this.isSkipDelta || this.getDelta(key, optionsValue);
     }
     return this.onUpdate = this.props.onUpdate;
+  };
+
+  Transit.prototype.isDelta = function(optionsValue) {
+    var isObject;
+    isObject = (optionsValue != null) && (typeof optionsValue === 'object');
+    isObject = isObject && !optionsValue.unit;
+    return !(!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue));
+  };
+
+  Transit.prototype.getDelta = function(key, optionsValue) {
+    var delta, _ref;
+    if ((key === 'x' || key === 'y') && !this.o.ctx) {
+      this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
+    }
+    if ((_ref = this.skipPropsDelta) != null ? _ref[key] : void 0) {
+      return;
+    }
+    delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
+    if (delta.type != null) {
+      this.deltas[key] = delta;
+    }
+    return this.props[key] = delta.start;
   };
 
   Transit.prototype.mergeThenOptions = function(start, end) {

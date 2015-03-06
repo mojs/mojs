@@ -29,6 +29,16 @@ describe 'Transit ->', ->
     it 'should recieve options object', ->
       byte = new Byte option: 1
       expect(byte.o.option).toBe 1
+
+  describe 'isDelta method ->', ->
+    it 'should detect if value is not a delta value', ->
+      byte = new Byte radius: 45, stroke: 'deeppink': 'pink'
+      expect(byte.isDelta(45))    .toBe false
+      expect(byte.isDelta('45'))  .toBe false
+      expect(byte.isDelta(['45'])).toBe false
+      expect(byte.isDelta({ unit: 'px', value: 20 })).toBe false
+      expect(byte.isDelta({ 20: 30 })).toBe true
+
   describe 'extendDefaults method ->', ->
     it 'should extend defaults object to properties', ->
       byte = new Byte radius: 45
@@ -64,6 +74,14 @@ describe 'Transit ->', ->
       byte.extendDefaults {radius: 10}
       expect(byte.props.radius).toBe 10
       expect(byte.props.fill).toBe fillBefore
+
+  describe 'skipDelta flag', ->
+    it 'should skip delta calcultaions on module', ->
+      byte = new Byte ctx: svg, radius: {20:30}
+      byte.isSkipDelta = true
+      spyOn byte, 'getDelta'
+      byte.extendDefaults byte.o
+      expect(byte.getDelta).not.toHaveBeenCalled()
 
   describe 'options history ->', ->
     it 'should have history array', ->
@@ -1200,37 +1218,4 @@ describe 'Transit ->', ->
       svg.appendChild bit
       byte = new Byte bit: bit
       expect(byte.isForeignBit).toBe true
-
-  # describe 'getBitLength function', ->
-  #   it 'should set props.bitLength', ->
-  #     byte = new Byte
-  #       ctx: svg, isShowEnd: true, isRunLess: true
-  #       type: 'circle'
-  #       radius: 50
-  #       strokeDasharray: { '200 100': '100 50' }
-  #       isIt: true
-
-  #     byte.tween.setProgress .5
-  #   it 'should call the bit.getLength only if radiusX/Y changed', ->
-  #     byte = new Byte
-  #       ctx: svg, isShowEnd: true, isRunLess: true
-  #       type: 'circle'
-  #       radius: 50
-  #     byte.getBitLength()
-  #     spyOn byte.bit, 'getLength'
-  #     byte.getBitLength()
-  #     expect(byte.bit.getLength).not.toHaveBeenCalled()
-
-  #   it 'should always return the cached value', ->
-  #     byte = new Byte
-  #       ctx: svg, isShowEnd: true, isRunLess: true
-  #       type: 'circle'
-  #       radius: 50
-  #     byte.getBitLength()
-  #     expect(byte.getBitLength()).toBe byte.props.bitLength
-
-      
-
-
-
 
