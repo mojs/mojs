@@ -65,7 +65,6 @@ Stagger = (function(_super) {
       option[key] = this.getPropByMod(key, i);
     }
     option.bit = this.getPropByMod('els', i);
-    delete option.els;
     return option;
   };
 
@@ -78,6 +77,13 @@ Stagger = (function(_super) {
       return prop;
     }
   };
+
+  Stagger.prototype.render = function() {
+    this.createBit();
+    return this.setProgress(0, true);
+  };
+
+  Stagger.prototype.setProgress = function() {};
 
   Stagger.prototype.calcSize = function() {};
 

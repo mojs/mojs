@@ -2604,7 +2604,6 @@ Stagger = (function(_super) {
       option[key] = this.getPropByMod(key, i);
     }
     option.bit = this.getPropByMod('els', i);
-    delete option.els;
     return option;
   };
 
@@ -2617,6 +2616,13 @@ Stagger = (function(_super) {
       return prop;
     }
   };
+
+  Stagger.prototype.render = function() {
+    this.createBit();
+    return this.setProgress(0, true);
+  };
+
+  Stagger.prototype.setProgress = function() {};
 
   Stagger.prototype.calcSize = function() {};
 
@@ -2687,8 +2693,8 @@ Transit = (function(_super) {
   Transit.prototype.defaults = {
     strokeWidth: 2,
     strokeOpacity: 1,
-    strokeDasharray: '',
-    strokeDashoffset: '',
+    strokeDasharray: 0,
+    strokeDashoffset: 0,
     stroke: 'transparent',
     fill: 'deeppink',
     fillOpacity: 'transparent',
@@ -3010,6 +3016,7 @@ Transit = (function(_super) {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
+      isObject = isObject && !optionsValue.unit;
       if (!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue)) {
         if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
           optionsValue = this.h.parseRand(optionsValue);

@@ -66,6 +66,42 @@
         return expect(s.transits[1].o.stroke).toBe('cyan');
       });
     });
+    describe('render method ->', function() {
+      it('should override render method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        return expect(s.render).not.toBe(Stagger.__super__.render);
+      });
+      it('should call createBit method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        spyOn(s, 'createBit');
+        s.render();
+        return expect(s.createBit).toHaveBeenCalled();
+      });
+      return it('should setProgress method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        spyOn(s, 'setProgress');
+        s.render();
+        return expect(s.setProgress).toHaveBeenCalledWith(0, true);
+      });
+    });
+    describe('setProgress method ->', function() {
+      return it('should override setProgress method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        return expect(s.setProgress).not.toBe(Stagger.__super__.setProgress);
+      });
+    });
     describe('parseEls method ->', function() {
       it('should recieve els as a DOM node', function() {
         var s;
@@ -134,7 +170,7 @@
       });
     });
     return describe('getOption method ->', function() {
-      return it('should get options for a transit', function() {
+      return it('should get options for a transit by its index', function() {
         var s;
         s = new Stagger({
           els: els,

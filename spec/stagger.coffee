@@ -31,17 +31,37 @@ describe 'Stagger ->', ->
       path1 = document.createElementNS ns, 'path'
       path2 = document.createElementNS ns, 'path'
       els.appendChild(path1); els.appendChild path2
-      
       s = new Stagger
         els: els
         stroke: ['deeppink', 'cyan', 'yellow']
         isIt: true
-      
       expect(s.transits.length)   .toBe 2
       expect(s.transits[0].o.bit).toBe path1
       expect(s.transits[1].o.bit).toBe path2
       expect(s.transits[0].o.stroke).toBe 'deeppink'
       expect(s.transits[1].o.stroke).toBe 'cyan'
+
+  describe 'render method ->', ->
+    it 'should override render method', ->
+      s = new Stagger els: els
+      expect(s.render).not.toBe Stagger.__super__.render
+
+    it 'should call createBit method', ->
+      s = new Stagger els: els
+      spyOn s, 'createBit'
+      s.render()
+      expect(s.createBit).toHaveBeenCalled()
+
+    it 'should setProgress method', ->
+      s = new Stagger els: els
+      spyOn s, 'setProgress'
+      s.render()
+      expect(s.setProgress).toHaveBeenCalledWith 0, true
+
+  describe 'setProgress method ->', ->
+    it 'should override setProgress method', ->
+      s = new Stagger els: els
+      expect(s.setProgress).not.toBe Stagger.__super__.setProgress
 
   describe 'parseEls method ->', ->
     it 'should recieve els as a DOM node', ->
@@ -81,7 +101,7 @@ describe 'Stagger ->', ->
       expect(s.getPropByMod('stroke', 2)).toBe 'deeppink'
 
   describe 'getOption method ->', ->
-    it 'should get options for a transit', ->
+    it 'should get options for a transit by its index', ->
       s = new Stagger els: els, stroke: ['deeppink', 'cyan', 'yellow']
       expect(s.getOption(0).stroke)   .toBe 'deeppink'
       expect(s.getOption(0).bit)      .toBe path1

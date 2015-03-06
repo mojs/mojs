@@ -24,8 +24,8 @@ Transit = (function(_super) {
   Transit.prototype.defaults = {
     strokeWidth: 2,
     strokeOpacity: 1,
-    strokeDasharray: '',
-    strokeDashoffset: '',
+    strokeDasharray: 0,
+    strokeDashoffset: 0,
     stroke: 'transparent',
     fill: 'deeppink',
     fillOpacity: 'transparent',
@@ -347,6 +347,7 @@ Transit = (function(_super) {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
       isObject = (optionsValue != null) && (typeof optionsValue === 'object');
+      isObject = isObject && !optionsValue.unit;
       if (!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue)) {
         if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
           optionsValue = this.h.parseRand(optionsValue);

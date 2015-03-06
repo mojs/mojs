@@ -6,7 +6,7 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- add line animator
+- add stagger module
 - :: demo
 - refactor
   - setAttrsIfChanged to every shape

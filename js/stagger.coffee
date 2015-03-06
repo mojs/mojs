@@ -32,14 +32,15 @@ class Stagger extends Transit
     option = {}
     for key, value of @props
       option[key] = @getPropByMod(key, i)
-    option.bit = @getPropByMod('els', i); delete option.els
+    option.bit = @getPropByMod('els', i)
     option
-
-
 
   getPropByMod:(name, i)->
     prop = @props[name]; if h.isArray(prop) then prop[i % prop.length] else prop
 
+  render:-> @createBit(); @setProgress 0, true
+
+  setProgress:->
   calcSize:->
   draw:->
 

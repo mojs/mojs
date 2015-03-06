@@ -11,8 +11,8 @@ class Transit extends bitsMap.map.bit
     # presentation props
     strokeWidth:        2
     strokeOpacity:      1
-    strokeDasharray:    ''
-    strokeDashoffset:   ''
+    strokeDasharray:    0
+    strokeDashoffset:   0
     stroke:             'transparent'
     fill:               'deeppink'
     fillOpacity:        'transparent'
@@ -82,7 +82,7 @@ class Transit extends bitsMap.map.bit
       @el.style['margin-top']  = marginSize
       @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
-    @el.style.opacity     = @props.opacity
+    @el.style.opacity = @props.opacity
     if @o.isShowInit then @show() else @hide()
 
   show:->
@@ -228,6 +228,7 @@ class Transit extends bitsMap.map.bit
       else optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object and non-array value - just save it to @props
       isObject = (optionsValue? and (typeof optionsValue is 'object'))
+      isObject = isObject and !optionsValue.unit
       if !isObject or @h.isArray(optionsValue) or h.isDOM(optionsValue)
         # parse random values
         if typeof optionsValue is 'string' and optionsValue.match /rand/
