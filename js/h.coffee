@@ -247,14 +247,26 @@ class Helpers
     if units.unit and randArr[2].match(units.unit)then rand + units.unit
     else rand
   parseStagger:(string, index=0)->
-    value = string.split(/stagger\(|\)$/)[1]
-    # if not a 'rand()' values
-    stagger = if parseInt(value, 10)
-      unitValue = @parseUnit(value)
-      number = index*unitValue.value
-      # add units only if option had a unit before
-      if unitValue.isStrict then "#{number}#{unitValue.unit}" else number
-    else value
+    value = string.split(/stagger\(|\)$/)[1].toLowerCase()
+    # split the value in case it contains base
+    # the regex splits 0,0 0,1 1,0 1,1 combos
+    # if num taken as 1, rand() taken as 0
+    splittedValue = value.split(/(rand\(.*?\)|[^\(,\s]+)(?=\s*,|\s*$)/gim)
+    # if contains the base value
+    value = if splittedValue.length > 3
+      base = @parseUnit(@parseIfRand(splittedValue[1])); splittedValue[3]
+    # if just a plain value
+    else base = @parseUnit(0); splittedValue[1]
+    
+    value = @parseIfRand(value)
+    # parse with units
+    unitValue = @parseUnit(value)
+    number = index*unitValue.value + base.value
+    # add units only if option had a unit before
+    unit = if base.isStrict then base.unit
+    else if unitValue.isStrict then unitValue.unit else ''
+    
+    if unit then "#{number}#{unit}" else number
 
   parseIfRand:(str)->
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)

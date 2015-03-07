@@ -98,10 +98,40 @@ describe 'Helpers ->', ->
         expect(value).toBe 0
       it 'should get random if was passed', ->
         value = h.parseStagger 'stagger(rand(10%,20%))'
-        expect(value).toBe 'rand(10%,20%)'
+        expect(value).toBe '0%'
+        
+        value = parseInt(h.parseStagger('stagger(rand(10%,20%))', 3), 10)
+        expect(value).toBeGreaterThan     29
+        expect(value).not.toBeGreaterThan 60
+
       it 'should get string of unit value', ->
         value = h.parseStagger 'stagger(20%)', 2
         expect(value).toBe '40%'
+      it 'should parse stagger with base', ->
+        value = h.parseStagger 'stagger(1000, 20)', 2
+        expect(value).toBe 1040
+      it 'should parse stagger with unit base', ->
+        value = h.parseStagger 'stagger(1000%, 20)', 2
+        expect(value).toBe '1040%'
+      it 'should parse stagger with unit value', ->
+        value = h.parseStagger 'stagger(1000, 20%)', 2
+        expect(value).toBe '1040%'
+      it 'should prefer base units over the value ones', ->
+        value = h.parseStagger 'stagger(1000px, 20%)', 2
+        expect(value).toBe '1040px'
+      it 'should parse value rand values', ->
+        value = h.parseStagger 'stagger(500, rand(10,20))', 2
+        expect(value).toBeGreaterThan     520
+        expect(value).not.toBeGreaterThan 540
+      it 'should parse base rand values', ->
+        value = h.parseStagger 'stagger(rand(500,600), 20)', 2
+        expect(value).toBeGreaterThan     539
+        expect(value).not.toBeGreaterThan 639
+      it 'should respect units in rands', ->
+        value = h.parseStagger 'stagger(rand(500%,600%), 20)', 2
+        expect(parseInt(value),10).toBeGreaterThan     539
+        expect(parseInt(value),10).not.toBeGreaterThan 639
+        expect(value.match /\%/ ).toBeTruthy()
 
     describe 'parseIfRand method', ->
       it 'should get random number from string if it is rand', ->

@@ -132,12 +132,54 @@
         it('should get random if was passed', function() {
           var value;
           value = h.parseStagger('stagger(rand(10%,20%))');
-          return expect(value).toBe('rand(10%,20%)');
+          expect(value).toBe('0%');
+          value = parseInt(h.parseStagger('stagger(rand(10%,20%))', 3), 10);
+          expect(value).toBeGreaterThan(29);
+          return expect(value).not.toBeGreaterThan(60);
         });
-        return it('should get string of unit value', function() {
+        it('should get string of unit value', function() {
           var value;
           value = h.parseStagger('stagger(20%)', 2);
           return expect(value).toBe('40%');
+        });
+        it('should parse stagger with base', function() {
+          var value;
+          value = h.parseStagger('stagger(1000, 20)', 2);
+          return expect(value).toBe(1040);
+        });
+        it('should parse stagger with unit base', function() {
+          var value;
+          value = h.parseStagger('stagger(1000%, 20)', 2);
+          return expect(value).toBe('1040%');
+        });
+        it('should parse stagger with unit value', function() {
+          var value;
+          value = h.parseStagger('stagger(1000, 20%)', 2);
+          return expect(value).toBe('1040%');
+        });
+        it('should prefer base units over the value ones', function() {
+          var value;
+          value = h.parseStagger('stagger(1000px, 20%)', 2);
+          return expect(value).toBe('1040px');
+        });
+        it('should parse value rand values', function() {
+          var value;
+          value = h.parseStagger('stagger(500, rand(10,20))', 2);
+          expect(value).toBeGreaterThan(520);
+          return expect(value).not.toBeGreaterThan(540);
+        });
+        it('should parse base rand values', function() {
+          var value;
+          value = h.parseStagger('stagger(rand(500,600), 20)', 2);
+          expect(value).toBeGreaterThan(539);
+          return expect(value).not.toBeGreaterThan(639);
+        });
+        return it('should respect units in rands', function() {
+          var value;
+          value = h.parseStagger('stagger(rand(500%,600%), 20)', 2);
+          expect(parseInt(value), 10).toBeGreaterThan(539);
+          expect(parseInt(value), 10).not.toBeGreaterThan(639);
+          return expect(value.match(/\%/)).toBeTruthy();
         });
       });
       describe('parseIfRand method', function() {
