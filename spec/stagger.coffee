@@ -26,11 +26,27 @@ describe 'Stagger ->', ->
       expect(s.defaults.delay)      .toBe 'stagger(200)'
       expect(s.ownDefaults.els)     .toBeDefined()
 
+  describe 'extendDefaults method ->', ->
+    it 'should override extendDefaults method', ->
+      s = new Stagger els: els
+      expect(s.extendDefaults).not.toBe Stagger.__super__.extendDefaults
+    it 'should define props object', ->
+      s = new Stagger els: els
+      s.props = undefined; s.extendDefaults()
+      expect(s.props).toBeDefined()
+    it 'should define deltas object', ->
+      s = new Stagger els: els
+      s.deltas = undefined; s.extendDefaults()
+      expect(s.deltas).toBeDefined()
+    it 'should just copy options to props and fallback to defaults', ->
+      s = new Stagger els: els, stroke: 'deeppink'
+      expect(s.props.stroke).toBe 'deeppink'
+      expect(s.props.delay) .toBe s.defaults.delay
+
   describe 'isDelta method ->', ->
     it 'should override isDelta method', ->
       s = new Stagger els: els
       expect(s.isDelta).not.toBe Stagger.__super__.isDelta
-
     it 'should always return false', ->
       s = new Stagger els: els
       expect(s.isDelta()).toBe false

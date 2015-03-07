@@ -1309,7 +1309,7 @@ path3 = document.getElementById('js-path3');
 burst = new Stagger({
   els: paths,
   strokeWidth: 5,
-  delay: 1000,
+  delay: 'stagger(1000, 200)',
   duration: 2000,
   fill: 'transparent',
   strokeDasharray: '200%',
@@ -2634,6 +2634,20 @@ Stagger = (function(_super) {
     this.defaults = this.ownDefaults;
     Stagger.__super__.vars.apply(this, arguments);
     return this.parseEls();
+  };
+
+  Stagger.prototype.extendDefaults = function(o) {
+    var fromObj, key, value, _ref, _results;
+    this.props = {};
+    this.deltas = {};
+    fromObj = o || this.o;
+    _ref = this.defaults;
+    _results = [];
+    for (key in _ref) {
+      value = _ref[key];
+      _results.push(this.props[key] = fromObj[key] != null ? fromObj[key] : this.defaults[key]);
+    }
+    return _results;
   };
 
   Stagger.prototype.parseEls = function() {

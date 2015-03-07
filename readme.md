@@ -7,7 +7,7 @@
 
 #### todo
 - add stagger module
-  - parse stagger values
+  - add indexes to multiple transits modules
   - add isShowInit and isShowEnd to props
   - add angle delta to stagger module
   - { '50%': 0 } should fallback to %

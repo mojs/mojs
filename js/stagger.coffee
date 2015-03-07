@@ -16,6 +16,11 @@ class Stagger extends Transit
     h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults
     super; @parseEls()
 
+  extendDefaults:(o)->
+    @props = {}; @deltas = {}; fromObj = o or @o
+    for key, value of @defaults
+      @props[key] = if fromObj[key]? then fromObj[key] else @defaults[key]
+
   parseEls:->
     if @props.els + '' is '[object NodeList]'
       @props.els = Array::slice.call @props.els, 0
@@ -31,14 +36,14 @@ class Stagger extends Transit
       transit = new Transit @getOption(i)
       transit.index = i
       @transits.push(transit)
+      # console.log transit.props.delay, i
 
   getOption:(i)->
     option = {}
     for key, value of @props
       option[key] = @getPropByMod(key, i)
     option.bit = @getPropByMod('els', i)
-    # console.log option.strokeDashoffset
-    # option.delay += i*100
+    # console.log option.delay
     option
 
   getPropByMod:(name, i)->

@@ -46,6 +46,42 @@
         return expect(s.ownDefaults.els).toBeDefined();
       });
     });
+    describe('extendDefaults method ->', function() {
+      it('should override extendDefaults method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        return expect(s.extendDefaults).not.toBe(Stagger.__super__.extendDefaults);
+      });
+      it('should define props object', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        s.props = void 0;
+        s.extendDefaults();
+        return expect(s.props).toBeDefined();
+      });
+      it('should define deltas object', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        s.deltas = void 0;
+        s.extendDefaults();
+        return expect(s.deltas).toBeDefined();
+      });
+      return it('should just copy options to props and fallback to defaults', function() {
+        var s;
+        s = new Stagger({
+          els: els,
+          stroke: 'deeppink'
+        });
+        expect(s.props.stroke).toBe('deeppink');
+        return expect(s.props.delay).toBe(s.defaults.delay);
+      });
+    });
     describe('isDelta method ->', function() {
       it('should override isDelta method', function() {
         var s;

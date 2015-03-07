@@ -34,6 +34,20 @@ Stagger = (function(_super) {
     return this.parseEls();
   };
 
+  Stagger.prototype.extendDefaults = function(o) {
+    var fromObj, key, value, _ref, _results;
+    this.props = {};
+    this.deltas = {};
+    fromObj = o || this.o;
+    _ref = this.defaults;
+    _results = [];
+    for (key in _ref) {
+      value = _ref[key];
+      _results.push(this.props[key] = fromObj[key] != null ? fromObj[key] : this.defaults[key]);
+    }
+    return _results;
+  };
+
   Stagger.prototype.parseEls = function() {
     var els;
     if (this.props.els + '' === '[object NodeList]') {
