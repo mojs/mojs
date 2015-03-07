@@ -87,6 +87,22 @@ describe 'Helpers ->', ->
         expect(parseFloat rand).not.toBeGreaterThan  20
         expect(rand.match(/\%/)).toBeTruthy()
 
+    describe 'parseStagger method', ->
+      it 'should get random number from string', ->
+        value = h.parseStagger 'stagger(150)', 3
+        expect(typeof value).toBe 'number'
+        expect(value).toBe 450
+      it 'should have index of 0 by default', ->
+        value = h.parseStagger 'stagger(150)'
+        expect(typeof value).toBe 'number'
+        expect(value).toBe 0
+      it 'should get random if was passed', ->
+        value = h.parseStagger 'stagger(rand(10%,20%))'
+        expect(value).toBe 'rand(10%,20%)'
+      it 'should get string of unit value', ->
+        value = h.parseStagger 'stagger(20%)', 2
+        expect(value).toBe '40%'
+
     describe 'parseIfRand method', ->
       it 'should get random number from string if it is rand', ->
         rand = h.parseIfRand 'rand(10,20)'
@@ -326,6 +342,12 @@ describe 'Helpers ->', ->
         obj = {20:30}
         unit = h.parseUnit(obj)
         expect(unit).toBe obj
+      it 'should detect if unit if strict', ->
+        unit = h.parseUnit(100)
+        expect(unit.isStrict).toBe false
+        unit = h.parseUnit('100px')
+        expect(unit.isStrict).toBe true
+
     describe 'strToArr method', ->
       it 'should parse string to array',->
         array = h.strToArr('200 100')

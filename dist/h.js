@@ -151,19 +151,26 @@ Helpers = (function() {
   };
 
   Helpers.prototype.parseUnit = function(value) {
-    var amount, regex, returnVal, unit, _ref;
+    var amount, isStrict, regex, returnVal, unit, _ref;
     if (typeof value === 'number') {
       return returnVal = {
         unit: 'px',
+        isStrict: false,
         value: value,
         string: "" + value + "px"
       };
     } else if (typeof value === 'string') {
       regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
-      unit = ((_ref = value.match(regex)) != null ? _ref[0] : void 0) || 'px';
+      unit = (_ref = value.match(regex)) != null ? _ref[0] : void 0;
+      isStrict = true;
+      if (!unit) {
+        unit = 'px';
+        isStrict = false;
+      }
       amount = parseFloat(value);
       return returnVal = {
         unit: unit,
+        isStrict: isStrict,
         value: amount,
         string: "" + amount + unit
       };
@@ -343,6 +350,15 @@ Helpers = (function() {
     } else {
       return rand;
     }
+  };
+
+  Helpers.prototype.parseStagger = function(string, index) {
+    var number, stagger, unitValue, value;
+    if (index == null) {
+      index = 0;
+    }
+    value = string.split(/stagger\(|\)$/)[1];
+    return stagger = parseInt(value, 10) ? (unitValue = this.parseUnit(value), number = index * unitValue.value, unitValue.isStrict ? "" + number + unitValue.unit : number) : value;
   };
 
   Helpers.prototype.parseIfRand = function(str) {

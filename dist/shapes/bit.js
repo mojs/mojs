@@ -149,7 +149,7 @@ Bit = (function() {
       return this.props[name] = stroke;
     }
     if (typeof this.props[name] === 'object') {
-      return this.props[name] = this.castPercent(this.props[name].value);
+      return this.props[name] = this.props[name].unit === '%' ? this.castPercent(this.props[name].value) : this.props[name].value;
     }
   };
 

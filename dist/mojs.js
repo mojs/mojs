@@ -24,15 +24,18 @@ path3 = document.getElementById('js-path3');
 
 burst = new Stagger({
   els: paths,
-  stroke: 'deeppink',
-  strokeWidth: 10,
-  delay: 4000,
+  strokeWidth: 5,
+  delay: 1000,
   duration: 2000,
   fill: 'transparent',
-  strokeDasharray: '100%',
+  strokeDasharray: '200%',
   strokeDashoffset: {
-    '1000': 0
+    '200%': '100%'
   },
   isShowEnd: true,
-  isShowInit: true
+  isShowInit: true,
+  angle: {
+    0: 360
+  },
+  easing: 'Sinusoidal.Out'
 });

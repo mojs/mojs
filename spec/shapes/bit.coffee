@@ -293,6 +293,23 @@ describe 'Bit', ->
       pixels = bit.castPercent 50
       expect(pixels).toBe (bit.props.length/100) * 50
 
+  describe 'castStrokeDash method ->', ->
+    it 'should not cast pixel values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      bit.props['stroke-dashoffset'] = { unit: 'px', value: 100 }
+      bit.castStrokeDash 'stroke-dashoffset'
+      expect(bit.props['stroke-dashoffset']).toBe 100
+
+    it 'should cast % values', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+      bit.props['stroke-dashoffset'] = { unit: '%', value: 100 }
+      bit.castStrokeDash 'stroke-dashoffset'
+      expect(bit.props['stroke-dashoffset']).toBe bit.props.length
+
   describe 'isChanged method ->', ->
     it 'should check if attribute was changed', ->
       bit = new Bit

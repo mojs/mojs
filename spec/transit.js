@@ -142,6 +142,17 @@
         return expect(byte.props.fill).toBe(fillBefore);
       });
     });
+    describe('stagger values', function() {
+      return it('should extend defaults object to properties if stagger was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 'stagger(200)'
+        });
+        byte.index = 2;
+        byte.extendDefaults();
+        return expect(byte.props.radius).toBe(400);
+      });
+    });
     describe('skipDelta flag', function() {
       return it('should skip delta calcultaions on module', function() {
         var byte;

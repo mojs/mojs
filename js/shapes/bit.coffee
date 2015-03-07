@@ -66,7 +66,10 @@ class Bit
     while(len--)
       name = @drawMap[len]
       switch name
-        when 'stroke-dasharray', 'stroke-dashoffset' then @castStrokeDash name
+        when 'stroke-dasharray', 'stroke-dashoffset'
+          # name is 'stroke-dashoffset' and console.log 'before: ', @props[name]
+          @castStrokeDash name
+          # name is 'stroke-dashoffset' and console.log 'after: ', @props[name]
       @setAttrsIfChanged name, @props[name]
   castStrokeDash:(name)->
     if h.isArray(@props[name])
@@ -76,7 +79,9 @@ class Bit
         stroke += "#{cast} "
       return @props[name] = stroke
     if typeof @props[name] is 'object'
-      @props[name] = @castPercent(@props[name].value)
+      @props[name] = if @props[name].unit is '%'
+        @castPercent(@props[name].value)
+      else @props[name].value
   castPercent:(percent)-> percent * (@props.length/100)
   setAttrsIfChanged:(name, value)->
     if typeof name is 'object'

@@ -7,6 +7,10 @@
 
 #### todo
 - add stagger module
+  - parse stagger values
+  - add isShowInit and isShowEnd to props
+  - add angle delta to stagger module
+  - { '50%': 0 } should fallback to %
 - :: demo
 - refactor
   - setAttrsIfChanged to every shape

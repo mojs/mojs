@@ -396,6 +396,32 @@
         return expect(pixels).toBe((bit.props.length / 100) * 50);
       });
     });
+    describe('castStrokeDash method ->', function() {
+      it('should not cast pixel values', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit.props['stroke-dashoffset'] = {
+          unit: 'px',
+          value: 100
+        };
+        bit.castStrokeDash('stroke-dashoffset');
+        return expect(bit.props['stroke-dashoffset']).toBe(100);
+      });
+      return it('should cast % values', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100
+        });
+        bit.props['stroke-dashoffset'] = {
+          unit: '%',
+          value: 100
+        };
+        bit.castStrokeDash('stroke-dashoffset');
+        return expect(bit.props['stroke-dashoffset']).toBe(bit.props.length);
+      });
+    });
     describe('isChanged method ->', function() {
       it('should check if attribute was changed', function() {
         bit = new Bit({

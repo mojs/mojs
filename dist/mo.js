@@ -918,19 +918,26 @@ Helpers = (function() {
   };
 
   Helpers.prototype.parseUnit = function(value) {
-    var amount, regex, returnVal, unit, _ref;
+    var amount, isStrict, regex, returnVal, unit, _ref;
     if (typeof value === 'number') {
       return returnVal = {
         unit: 'px',
+        isStrict: false,
         value: value,
         string: "" + value + "px"
       };
     } else if (typeof value === 'string') {
       regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
-      unit = ((_ref = value.match(regex)) != null ? _ref[0] : void 0) || 'px';
+      unit = (_ref = value.match(regex)) != null ? _ref[0] : void 0;
+      isStrict = true;
+      if (!unit) {
+        unit = 'px';
+        isStrict = false;
+      }
       amount = parseFloat(value);
       return returnVal = {
         unit: unit,
+        isStrict: isStrict,
         value: amount,
         string: "" + amount + unit
       };
@@ -1112,6 +1119,15 @@ Helpers = (function() {
     }
   };
 
+  Helpers.prototype.parseStagger = function(string, index) {
+    var number, stagger, unitValue, value;
+    if (index == null) {
+      index = 0;
+    }
+    value = string.split(/stagger\(|\)$/)[1];
+    return stagger = parseInt(value, 10) ? (unitValue = this.parseUnit(value), number = index * unitValue.value, unitValue.isStrict ? "" + number + unitValue.unit : number) : value;
+  };
+
   Helpers.prototype.parseIfRand = function(str) {
     if (typeof str === 'string' && str.match(/rand\(/)) {
       return this.parseRand(str);
@@ -1282,17 +1298,20 @@ path3 = document.getElementById('js-path3');
 
 burst = new Stagger({
   els: paths,
-  stroke: 'deeppink',
-  strokeWidth: 10,
-  delay: 4000,
+  strokeWidth: 5,
+  delay: 1000,
   duration: 2000,
   fill: 'transparent',
-  strokeDasharray: '100%',
+  strokeDasharray: '200%',
   strokeDashoffset: {
-    '1000': 0
+    '200%': '100%'
   },
   isShowEnd: true,
-  isShowInit: true
+  isShowInit: true,
+  angle: {
+    0: 360
+  },
+  easing: 'Sinusoidal.Out'
 });
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
@@ -1852,7 +1871,7 @@ Bit = (function() {
       return this.props[name] = stroke;
     }
     if (typeof this.props[name] === 'object') {
-      return this.props[name] = this.castPercent(this.props[name].value);
+      return this.props[name] = this.props[name].unit === '%' ? this.castPercent(this.props[name].value) : this.props[name].value;
     }
   };
 
@@ -2596,7 +2615,8 @@ Stagger = (function(_super) {
 
   Stagger.prototype.ownDefaults = {
     delay: 'stagger(200)',
-    els: null
+    els: null,
+    stroke: ['yellow', 'cyan', 'deeppink']
   };
 
   Stagger.prototype.vars = function() {
@@ -2619,12 +2639,14 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.createBit = function() {
-    var i, len, _i, _results;
+    var i, len, transit, _i, _results;
     this.transits = [];
     len = this.props.els.length;
     _results = [];
     for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
-      _results.push(this.transits.push(new Transit(this.getOption(i))));
+      transit = new Transit(this.getOption(i));
+      transit.index = i;
+      _results.push(this.transits.push(transit));
     }
     return _results;
   };
@@ -3063,8 +3085,15 @@ Transit = (function(_super) {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
       if (!this.isDelta(optionsValue)) {
-        if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
-          optionsValue = this.h.parseRand(optionsValue);
+        if (typeof optionsValue === 'string') {
+          if (optionsValue.match(/stagger/)) {
+            optionsValue = this.h.parseStagger(optionsValue, this.index);
+          }
+        }
+        if (typeof optionsValue === 'string') {
+          if (optionsValue.match(/rand/)) {
+            optionsValue = this.h.parseRand(optionsValue);
+          }
         }
         this.props[key] = optionsValue;
         if (this.h.posPropsMap[key]) {

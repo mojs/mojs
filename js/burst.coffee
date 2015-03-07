@@ -119,7 +119,6 @@ class Burst extends Transit
       pointEnd   = @getSidePoint 'end',   i*step
       transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
       transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
-
       if !@props.isResetAngles
         angleAddition = i*step + 90
         transit.o.angle = if typeof transit.o.angle isnt 'object'

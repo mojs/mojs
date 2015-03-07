@@ -116,6 +116,30 @@
           return expect(rand.match(/\%/)).toBeTruthy();
         });
       });
+      describe('parseStagger method', function() {
+        it('should get random number from string', function() {
+          var value;
+          value = h.parseStagger('stagger(150)', 3);
+          expect(typeof value).toBe('number');
+          return expect(value).toBe(450);
+        });
+        it('should have index of 0 by default', function() {
+          var value;
+          value = h.parseStagger('stagger(150)');
+          expect(typeof value).toBe('number');
+          return expect(value).toBe(0);
+        });
+        it('should get random if was passed', function() {
+          var value;
+          value = h.parseStagger('stagger(rand(10%,20%))');
+          return expect(value).toBe('rand(10%,20%)');
+        });
+        return it('should get string of unit value', function() {
+          var value;
+          value = h.parseStagger('stagger(20%)', 2);
+          return expect(value).toBe('40%');
+        });
+      });
       describe('parseIfRand method', function() {
         it('should get random number from string if it is rand', function() {
           var rand;
@@ -463,13 +487,20 @@
           expect(unit.unit).toBe('vmin');
           return expect(unit.string).toBe('100vmin');
         });
-        return it('should return value if is not string nor number', function() {
+        it('should return value if is not string nor number', function() {
           var obj, unit;
           obj = {
             20: 30
           };
           unit = h.parseUnit(obj);
           return expect(unit).toBe(obj);
+        });
+        return it('should detect if unit if strict', function() {
+          var unit;
+          unit = h.parseUnit(100);
+          expect(unit.isStrict).toBe(false);
+          unit = h.parseUnit('100px');
+          return expect(unit.isStrict).toBe(true);
         });
       });
       describe('strToArr method', function() {

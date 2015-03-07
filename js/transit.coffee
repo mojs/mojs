@@ -184,7 +184,6 @@ class Transit extends bitsMap.map.bit
 
   calcCurrentProps:(progress)->
     keys = Object.keys(@deltas); len = keys.length
-    # console.log @props.strokeDashoffset?[0]
     while(len--)
       key = keys[len]; value = @deltas[key]
       @props[key] = switch value.type
@@ -224,25 +223,28 @@ class Transit extends bitsMap.map.bit
       # options object and delete the old delta value
       if o
         @o[key] = defaultsValue; optionsValue = defaultsValue
+        # delete the old delta
         delete @deltas[key]
       # else get the value from options or fallback to defaults
       else optionsValue = if @o[key]? then @o[key] else defaultsValue
       # if non-object and non-array value - just save it to @props
       if !@isDelta(optionsValue)
         # parse random values
-        if typeof optionsValue is 'string' and optionsValue.match /rand/
-          optionsValue = @h.parseRand optionsValue
+        if typeof optionsValue is 'string'
+          if optionsValue.match /stagger/
+            optionsValue = @h.parseStagger optionsValue, @index
+        # console.log optionsValue
+        if typeof optionsValue is 'string'
+          if optionsValue.match /rand/
+            optionsValue = @h.parseRand optionsValue
+
         # save to props
         @props[key] = optionsValue
-        # key is 'strokeDashoffset' and console.log key, optionsValue
         # position properties should be parsed with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
         # strokeDash properties should be parsed with units
         if @h.strokeDashPropsMap[key]
-          # isIt = key is 'strokeDashoffset'
-          # isIt and console.log @props[key]
-          # key is 'strokeDashoffset' and console.log @h.parseUnit(@props[key])
           @props[key] = @h.parseUnit(@props[key])
         continue
       # if delta object was passed: like { 20: 75 }
@@ -397,6 +399,7 @@ class Transit extends bitsMap.map.bit
     timelineOptions.onStart    = @props.onStart
     timelineOptions.onComplete = @props.onComplete
     @timeline.setProp timelineOptions
+  
   getBitLength:->
     isChangedXY = @isPropChanged('radiusX') or @isPropChanged('radiusY')
     isChanged   = @isPropChanged('radius')

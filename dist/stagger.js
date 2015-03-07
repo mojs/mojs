@@ -23,7 +23,8 @@ Stagger = (function(_super) {
 
   Stagger.prototype.ownDefaults = {
     delay: 'stagger(200)',
-    els: null
+    els: null,
+    stroke: ['yellow', 'cyan', 'deeppink']
   };
 
   Stagger.prototype.vars = function() {
@@ -46,12 +47,14 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.createBit = function() {
-    var i, len, _i, _results;
+    var i, len, transit, _i, _results;
     this.transits = [];
     len = this.props.els.length;
     _results = [];
     for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
-      _results.push(this.transits.push(new Transit(this.getOption(i))));
+      transit = new Transit(this.getOption(i));
+      transit.index = i;
+      _results.push(this.transits.push(transit));
     }
     return _results;
   };

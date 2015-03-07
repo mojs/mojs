@@ -104,14 +104,18 @@ class Helpers
     if typeof value is 'number'
       return returnVal =
         unit:     'px'
-        value:   value
+        isStrict:   false
+        value:    value
         string:   "#{value}px"
     else if typeof value is 'string'
       regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim
-      unit = value.match(regex)?[0] or 'px'
+      unit = value.match(regex)?[0]; isStrict = true
+      # if a plain number was passed set isStrict to false and add px
+      if !unit then unit = 'px'; isStrict = false
       amount = parseFloat value
       return returnVal =
         unit:     unit
+        isStrict: isStrict
         value:    amount
         string:   "#{amount}#{unit}"
     value
@@ -242,6 +246,16 @@ class Helpers
     rand = @rand(parseFloat(randArr[1]), parseFloat(randArr[2]))
     if units.unit and randArr[2].match(units.unit)then rand + units.unit
     else rand
+  parseStagger:(string, index=0)->
+    value = string.split(/stagger\(|\)$/)[1]
+    # if not a 'rand()' values
+    stagger = if parseInt(value, 10)
+      unitValue = @parseUnit(value)
+      number = index*unitValue.value
+      # add units only if option had a unit before
+      if unitValue.isStrict then "#{number}#{unitValue.unit}" else number
+    else value
+
   parseIfRand:(str)->
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
     else str

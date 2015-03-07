@@ -347,8 +347,15 @@ Transit = (function(_super) {
         optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
       }
       if (!this.isDelta(optionsValue)) {
-        if (typeof optionsValue === 'string' && optionsValue.match(/rand/)) {
-          optionsValue = this.h.parseRand(optionsValue);
+        if (typeof optionsValue === 'string') {
+          if (optionsValue.match(/stagger/)) {
+            optionsValue = this.h.parseStagger(optionsValue, this.index);
+          }
+        }
+        if (typeof optionsValue === 'string') {
+          if (optionsValue.match(/rand/)) {
+            optionsValue = this.h.parseRand(optionsValue);
+          }
         }
         this.props[key] = optionsValue;
         if (this.h.posPropsMap[key]) {

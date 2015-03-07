@@ -75,6 +75,13 @@ describe 'Transit ->', ->
       expect(byte.props.radius).toBe 10
       expect(byte.props.fill).toBe fillBefore
 
+  describe 'stagger values', ->
+    it 'should extend defaults object to properties if stagger was passed', ->
+      byte = new Byte radius: 'stagger(200)'
+      byte.index = 2
+      byte.extendDefaults()
+      expect(byte.props.radius).toBe 400
+
   describe 'skipDelta flag', ->
     it 'should skip delta calcultaions on module', ->
       byte = new Byte ctx: svg, radius: {20:30}

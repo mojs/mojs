@@ -10,6 +10,7 @@ class Stagger extends Transit
   ownDefaults:
     delay: 'stagger(200)'
     els:   null
+    stroke: ['yellow', 'cyan', 'deeppink']
 
   vars:->
     h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults
@@ -26,13 +27,18 @@ class Stagger extends Transit
 
   createBit:->
     @transits = []; len = @props.els.length
-    @transits.push(new Transit @getOption(i)) for i in [0...len]
+    for i in [0...len]
+      transit = new Transit @getOption(i)
+      transit.index = i
+      @transits.push(transit)
 
   getOption:(i)->
     option = {}
     for key, value of @props
       option[key] = @getPropByMod(key, i)
     option.bit = @getPropByMod('els', i)
+    # console.log option.strokeDashoffset
+    # option.delay += i*100
     option
 
   getPropByMod:(name, i)->
