@@ -61,14 +61,14 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.createBit = function() {
-    var i, len, transit, _i, _results;
+    var i, len, option, _i, _results;
     this.transits = [];
     len = this.props.els.length;
     _results = [];
     for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
-      transit = new Transit(this.getOption(i));
-      transit.index = i;
-      _results.push(this.transits.push(transit));
+      option = this.getOption(i);
+      option.index = i;
+      _results.push(this.transits.push(new Transit(option)));
     }
     return _results;
   };

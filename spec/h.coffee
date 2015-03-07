@@ -92,12 +92,8 @@ describe 'Helpers ->', ->
         value = h.parseStagger 'stagger(150)', 3
         expect(typeof value).toBe 'number'
         expect(value).toBe 450
-      it 'should have index of 0 by default', ->
-        value = h.parseStagger 'stagger(150)'
-        expect(typeof value).toBe 'number'
-        expect(value).toBe 0
       it 'should get random if was passed', ->
-        value = h.parseStagger 'stagger(rand(10%,20%))'
+        value = h.parseStagger 'stagger(rand(10%,20%))', 0
         expect(value).toBe '0%'
         
         value = parseInt(h.parseStagger('stagger(rand(10%,20%))', 3), 10)

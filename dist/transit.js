@@ -62,6 +62,7 @@ Transit = (function(_super) {
     if (this.lastSet == null) {
       this.lastSet = {};
     }
+    this.index = this.o.index || 0;
     this.extendDefaults();
     o = this.h.cloneObj(this.o);
     this.h.extend(o, this.defaults);

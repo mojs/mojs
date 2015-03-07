@@ -30,6 +30,14 @@ describe 'Transit ->', ->
       byte = new Byte option: 1
       expect(byte.o.option).toBe 1
 
+  describe 'index option ->', ->
+    it 'should recieve index option', ->
+      byte = new Byte index: 5
+      expect(byte.index).toBe 5
+    it 'should fallback to 0', ->
+      byte = new Byte
+      expect(byte.index).toBe 0
+
   describe 'isDelta method ->', ->
     it 'should detect if value is not a delta value', ->
       byte = new Byte radius: 45, stroke: 'deeppink': 'pink'

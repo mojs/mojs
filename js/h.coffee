@@ -246,7 +246,7 @@ class Helpers
     rand = @rand(parseFloat(randArr[1]), parseFloat(randArr[2]))
     if units.unit and randArr[2].match(units.unit)then rand + units.unit
     else rand
-  parseStagger:(string, index=0)->
+  parseStagger:(string, index)->
     value = string.split(/stagger\(|\)$/)[1].toLowerCase()
     # split the value in case it contains base
     # the regex splits 0,0 0,1 1,0 1,1 combos

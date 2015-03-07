@@ -33,10 +33,9 @@ class Stagger extends Transit
   createBit:->
     @transits = []; len = @props.els.length
     for i in [0...len]
-      transit = new Transit @getOption(i)
-      transit.index = i
-      @transits.push(transit)
-      # console.log transit.props.delay, i
+      # cover the index set
+      option = @getOption(i); option.index = i
+      @transits.push new Transit option
 
   getOption:(i)->
     option = {}

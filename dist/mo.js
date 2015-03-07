@@ -1121,9 +1121,6 @@ Helpers = (function() {
 
   Helpers.prototype.parseStagger = function(string, index) {
     var base, number, splittedValue, unit, unitValue, value;
-    if (index == null) {
-      index = 0;
-    }
     value = string.split(/stagger\(|\)$/)[1].toLowerCase();
     splittedValue = value.split(/(rand\(.*?\)|[^\(,\s]+)(?=\s*,|\s*$)/gim);
     value = splittedValue.length > 3 ? (base = this.parseUnit(this.parseIfRand(splittedValue[1])), splittedValue[3]) : (base = this.parseUnit(0), splittedValue[1]);
@@ -2663,14 +2660,14 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.createBit = function() {
-    var i, len, transit, _i, _results;
+    var i, len, option, _i, _results;
     this.transits = [];
     len = this.props.els.length;
     _results = [];
     for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
-      transit = new Transit(this.getOption(i));
-      transit.index = i;
-      _results.push(this.transits.push(transit));
+      option = this.getOption(i);
+      option.index = i;
+      _results.push(this.transits.push(new Transit(option)));
     }
     return _results;
   };
@@ -2824,6 +2821,7 @@ Transit = (function(_super) {
     if (this.lastSet == null) {
       this.lastSet = {};
     }
+    this.index = this.o.index || 0;
     this.extendDefaults();
     o = this.h.cloneObj(this.o);
     this.h.extend(o, this.defaults);

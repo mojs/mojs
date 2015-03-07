@@ -354,9 +354,6 @@ Helpers = (function() {
 
   Helpers.prototype.parseStagger = function(string, index) {
     var base, number, splittedValue, unit, unitValue, value;
-    if (index == null) {
-      index = 0;
-    }
     value = string.split(/stagger\(|\)$/)[1].toLowerCase();
     splittedValue = value.split(/(rand\(.*?\)|[^\(,\s]+)(?=\s*,|\s*$)/gim);
     value = splittedValue.length > 3 ? (base = this.parseUnit(this.parseIfRand(splittedValue[1])), splittedValue[3]) : (base = this.parseUnit(0), splittedValue[1]);

@@ -54,6 +54,20 @@
         return expect(byte.o.option).toBe(1);
       });
     });
+    describe('index option ->', function() {
+      it('should recieve index option', function() {
+        var byte;
+        byte = new Byte({
+          index: 5
+        });
+        return expect(byte.index).toBe(5);
+      });
+      return it('should fallback to 0', function() {
+        var byte;
+        byte = new Byte;
+        return expect(byte.index).toBe(0);
+      });
+    });
     describe('isDelta method ->', function() {
       return it('should detect if value is not a delta value', function() {
         var byte;

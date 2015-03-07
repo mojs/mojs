@@ -43,7 +43,7 @@ class Transit extends bitsMap.map.bit
     yoyo:               false
     easing:             'Linear.None'
   vars:->
-    @h ?= h; @lastSet ?= {}
+    @h ?= h; @lastSet ?= {}; @index = @o.index or 0
     @extendDefaults()
     o = @h.cloneObj(@o); @h.extend(o, @defaults); @history = [o]
     @isForeign = !!@o.ctx; @isForeignBit = !!@o.bit
@@ -233,7 +233,6 @@ class Transit extends bitsMap.map.bit
         if typeof optionsValue is 'string'
           if optionsValue.match /stagger/
             optionsValue = @h.parseStagger optionsValue, @index
-        # console.log optionsValue
         if typeof optionsValue is 'string'
           if optionsValue.match /rand/
             optionsValue = @h.parseRand optionsValue
