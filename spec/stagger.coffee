@@ -12,7 +12,7 @@ describe 'Stagger ->', ->
   describe 'defaults ->', ->
     it 'should have its own defaults', ->
       s = new Stagger els: els
-      expect(s.ownDefaults.delay).toBe 'stagger(200)'
+      expect(s.ownDefaults.delay).toBe 'stagger(100)'
       expect(s.ownDefaults.els)  .toBeDefined()
 
     it 'should have isSkipDelta flag', ->
@@ -23,7 +23,7 @@ describe 'Stagger ->', ->
     it 'defaults should extend ownDefaults', ->
       s = new Stagger els: els
       expect(s.defaults.strokeWidth).toBe 2
-      expect(s.defaults.delay)      .toBe 'stagger(200)'
+      expect(s.defaults.delay)      .toBe 'stagger(100)'
       expect(s.ownDefaults.els)     .toBeDefined()
 
   describe 'extendDefaults method ->', ->

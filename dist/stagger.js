@@ -22,7 +22,7 @@ Stagger = (function(_super) {
   Stagger.prototype.isSkipDelta = true;
 
   Stagger.prototype.ownDefaults = {
-    delay: 'stagger(200)',
+    delay: 'stagger(100)',
     els: null,
     stroke: ['yellow', 'cyan', 'deeppink']
   };

@@ -25,7 +25,7 @@ path3 = document.getElementById('js-path3');
 burst = new Stagger({
   els: paths,
   strokeWidth: 5,
-  delay: 'stagger(1000, 200)',
+  delay: 'stagger(2000, 50)',
   duration: 2000,
   fill: 'transparent',
   strokeDasharray: '200%',

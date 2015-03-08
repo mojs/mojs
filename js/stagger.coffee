@@ -8,7 +8,7 @@ Transit  = require './transit'
 class Stagger extends Transit
   isSkipDelta: true
   ownDefaults:
-    delay: 'stagger(200)'
+    delay: 'stagger(100)'
     els:   null
     stroke: ['yellow', 'cyan', 'deeppink']
 

@@ -24,7 +24,7 @@
         s = new Stagger({
           els: els
         });
-        expect(s.ownDefaults.delay).toBe('stagger(200)');
+        expect(s.ownDefaults.delay).toBe('stagger(100)');
         return expect(s.ownDefaults.els).toBeDefined();
       });
       return it('should have isSkipDelta flag', function() {
@@ -42,7 +42,7 @@
           els: els
         });
         expect(s.defaults.strokeWidth).toBe(2);
-        expect(s.defaults.delay).toBe('stagger(200)');
+        expect(s.defaults.delay).toBe('stagger(100)');
         return expect(s.ownDefaults.els).toBeDefined();
       });
     });
