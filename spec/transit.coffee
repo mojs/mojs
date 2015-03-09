@@ -472,6 +472,14 @@ describe 'Transit ->', ->
           expect(byte.el.style.left)   .toBe '50%'
           dfr()
         , 100
+
+      # it 'should end units were not specified fallback to start units', ()->
+      #   byte = new Byte
+      #     x: {'20%': 50}
+      #     duration: 20
+      #   expect(byte.deltas.x.start.unit).toBe '%'
+      #   expect(byte.deltas.x.end.unit)  .toBe '%'
+
       it 'should fallback to end units if units are differnt', (dfr)->
         byte = new Byte
           x: {'20%': '50px'}
@@ -755,6 +763,7 @@ describe 'Transit ->', ->
         expect(-> fun()).not.toThrow()
         expect(console.warn).toHaveBeenCalled()
         expect(byte.deltas.strokeLinecap).not.toBeDefined()
+    # deprecated
     # describe 'array values ->', ->
     #   it 'should calculate array delta', ->
     #     byte = new Byte strokeDasharray:  { '200 100': '300' }

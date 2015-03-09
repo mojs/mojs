@@ -246,7 +246,7 @@
             expect(delta.start).toBe(-25.5);
             return expect(delta.delta).toBe(101);
           });
-          return it('should calculate delta with negative end arguments', function() {
+          it('should calculate delta with negative end arguments', function() {
             var delta;
             delta = h.parseDelta('radius', {
               '25.50': -75.50
@@ -254,6 +254,80 @@
             expect(delta.start).toBe(25.5);
             expect(delta.end).toBe(-75.5);
             return expect(delta.delta).toBe(-101);
+          });
+          it('should fallback to declared units if one of them is not defined', function() {
+            var delta;
+            delta = h.parseDelta('x', {
+              '25.50%': -75.50
+            });
+            expect(delta.start.unit).toBe('%');
+            expect(delta.start.value).toBe(25.5);
+            expect(delta.start.string).toBe('25.5%');
+            expect(delta.end.unit).toBe('%');
+            expect(delta.end.value).toBe(-75.5);
+            return expect(delta.end.string).toBe('-75.5%');
+          });
+          it('should fallback to declared units if one of theem defined #2', function() {
+            var delta;
+            delta = h.parseDelta('x', {
+              '25.50': '-75.50%'
+            });
+            expect(delta.start.unit).toBe('%');
+            expect(delta.start.value).toBe(25.5);
+            expect(delta.start.string).toBe('25.5%');
+            expect(delta.end.unit).toBe('%');
+            expect(delta.end.value).toBe(-75.5);
+            return expect(delta.end.string).toBe('-75.5%');
+          });
+          it('should fallback to end units if two units undefined and warn', function() {
+            var delta;
+            spyOn(h, 'warn');
+            delta = h.parseDelta('x', {
+              '25.50%': '-75.50px'
+            });
+            expect(h.warn).toHaveBeenCalled();
+            expect(delta.start.unit).toBe('px');
+            expect(delta.start.value).toBe(25.5);
+            expect(delta.start.string).toBe('25.5px');
+            expect(delta.end.unit).toBe('px');
+            expect(delta.end.value).toBe(-75.5);
+            return expect(delta.end.string).toBe('-75.5px');
+          });
+          it('should work with strokeDash.. properties', function() {
+            var delta;
+            delta = h.parseDelta('strokeDashoffset', {
+              '25.50': '-75.50%'
+            });
+            expect(delta.start[0].unit).toBe('%');
+            expect(delta.start[0].value).toBe(25.5);
+            expect(delta.start[0].string).toBe('25.5%');
+            expect(delta.end[0].unit).toBe('%');
+            expect(delta.end[0].value).toBe(-75.5);
+            return expect(delta.end[0].string).toBe('-75.5%');
+          });
+          it('should work with strokeDash.. properties #2', function() {
+            var delta;
+            delta = h.parseDelta('strokeDashoffset', {
+              '25.50%': '-75.50'
+            });
+            expect(delta.start[0].unit).toBe('%');
+            expect(delta.start[0].value).toBe(25.5);
+            expect(delta.start[0].string).toBe('25.5%');
+            expect(delta.end[0].unit).toBe('%');
+            expect(delta.end[0].value).toBe(-75.5);
+            return expect(delta.end[0].string).toBe('-75.5%');
+          });
+          return it('should work with strokeDash.. properties #3', function() {
+            var delta;
+            delta = h.parseDelta('strokeDashoffset', {
+              '25.50%': '-75.50px'
+            });
+            expect(delta.start[0].unit).toBe('px');
+            expect(delta.start[0].value).toBe(25.5);
+            expect(delta.start[0].string).toBe('25.5px');
+            expect(delta.end[0].unit).toBe('px');
+            expect(delta.end[0].value).toBe(-75.5);
+            return expect(delta.end[0].string).toBe('-75.5px');
           });
         });
         describe('color values ->', function() {
@@ -884,7 +958,7 @@
         });
       });
     });
-    return describe('getChildElements method', function() {
+    describe('getChildElements method', function() {
       var els, path1, path2;
       ns = 'http://www.w3.org/2000/svg';
       els = document.createElementNS(ns, 'g');
@@ -901,6 +975,64 @@
       return it('should filter text nodes', function() {
         els.appendChild(document.createTextNode('hey'));
         return expect(h.getChildElements(els).length).toBe(2);
+      });
+    });
+    return describe('mergeUnits method', function() {
+      it('should merge units if end one was not defined', function() {
+        var end, start;
+        start = {
+          unit: '%',
+          value: 25,
+          string: '25%',
+          isStrict: true
+        };
+        end = {
+          unit: 'px',
+          value: 50,
+          string: '50px',
+          isStrict: false
+        };
+        h.mergeUnits(start, end, 'key');
+        expect(end.unit).toBe('%');
+        return expect(end.string).toBe('50%');
+      });
+      it('should merge units if start one was not defined', function() {
+        var end, start;
+        start = {
+          unit: '%',
+          value: 25,
+          string: '25%',
+          isStrict: false
+        };
+        end = {
+          unit: 'px',
+          value: 50,
+          string: '50px',
+          isStrict: true
+        };
+        h.mergeUnits(start, end, 'key');
+        expect(start.unit).toBe('px');
+        return expect(start.string).toBe('25px');
+      });
+      return it('should fallback to end unit if two were defined and warn', function() {
+        var end, start;
+        start = {
+          unit: 'px',
+          value: 25,
+          string: '25px',
+          isStrict: true
+        };
+        end = {
+          unit: '%',
+          value: 50,
+          string: '50%',
+          isStrict: true
+        };
+        spyOn(h, 'warn');
+        h.mergeUnits(start, end, 'key');
+        expect(start.unit).toBe('%');
+        expect(start.string).toBe('25%');
+        return expect(h.warn).toHaveBeenCalled();
       });
     });
   });

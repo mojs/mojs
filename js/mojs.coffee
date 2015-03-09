@@ -35,6 +35,7 @@ stagger = new Stagger
   isShowEnd:        true
   isShowInit:       true
   easing:           'Sinusoidal.Out'
+  strokeDashoffset:  { '100%': 0 }
   # opacity:          0: 3
 
 # .then radius: 0, duration: 2000

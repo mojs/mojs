@@ -179,6 +179,74 @@ describe 'Helpers ->', ->
           expect(delta.start)   .toBe   25.5
           expect(delta.end)     .toBe   -75.5
           expect(delta.delta)   .toBe   -101
+
+        it 'should fallback to declared units if one of them is not defined', ->
+          delta = h.parseDelta 'x',  {'25.50%': -75.50}
+
+          expect(delta.start.unit)    .toBe   '%'
+          expect(delta.start.value)   .toBe   25.5
+          expect(delta.start.string)  .toBe   '25.5%'
+
+          expect(delta.end.unit)    .toBe   '%'
+          expect(delta.end.value)   .toBe   -75.5
+          expect(delta.end.string)  .toBe   '-75.5%'
+
+        it 'should fallback to declared units if one of them defined #2', ->
+          delta = h.parseDelta 'x',  {'25.50': '-75.50%'}
+
+          expect(delta.start.unit)    .toBe   '%'
+          expect(delta.start.value)   .toBe   25.5
+          expect(delta.start.string)  .toBe   '25.5%'
+
+          expect(delta.end.unit)    .toBe   '%'
+          expect(delta.end.value)   .toBe   -75.5
+          expect(delta.end.string)  .toBe   '-75.5%'
+
+        it 'should fallback to end units if two units undefined and warn', ->
+          spyOn h, 'warn'
+          delta = h.parseDelta 'x',  {'25.50%': '-75.50px'}
+          expect(h.warn).toHaveBeenCalled()
+
+          expect(delta.start.unit)    .toBe   'px'
+          expect(delta.start.value)   .toBe   25.5
+          expect(delta.start.string)  .toBe   '25.5px'
+
+          expect(delta.end.unit)    .toBe   'px'
+          expect(delta.end.value)   .toBe   -75.5
+          expect(delta.end.string)  .toBe   '-75.5px'
+
+        it 'should work with strokeDash.. properties', ->
+          delta = h.parseDelta 'strokeDashoffset',  {'25.50': '-75.50%'}
+
+          expect(delta.start[0].unit)    .toBe   '%'
+          expect(delta.start[0].value)   .toBe   25.5
+          expect(delta.start[0].string)  .toBe   '25.5%'
+
+          expect(delta.end[0].unit)    .toBe   '%'
+          expect(delta.end[0].value)   .toBe   -75.5
+          expect(delta.end[0].string)  .toBe   '-75.5%'
+
+        it 'should work with strokeDash.. properties #2', ->
+          delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50'}
+          expect(delta.start[0].unit)    .toBe   '%'
+          expect(delta.start[0].value)   .toBe   25.5
+          expect(delta.start[0].string)  .toBe   '25.5%'
+
+          expect(delta.end[0].unit)    .toBe   '%'
+          expect(delta.end[0].value)   .toBe   -75.5
+          expect(delta.end[0].string)  .toBe   '-75.5%'
+        
+        it 'should work with strokeDash.. properties #3', ->
+          delta = h.parseDelta 'strokeDashoffset',  {'25.50%': '-75.50px'}
+
+          expect(delta.start[0].unit)    .toBe   'px'
+          expect(delta.start[0].value)   .toBe   25.5
+          expect(delta.start[0].string)  .toBe   '25.5px'
+
+          expect(delta.end[0].unit)    .toBe   'px'
+          expect(delta.end[0].value)   .toBe   -75.5
+          expect(delta.end[0].string)  .toBe   '-75.5px'
+
       describe 'color values ->', ->
         it 'should calculate color delta', ->
           delta = h.parseDelta 'stroke',  {'#000': 'rgb(255,255,255)'}
@@ -642,5 +710,28 @@ describe 'Helpers ->', ->
       expect(h.getChildElements(els).length).toBe 2
 
 
+  describe 'mergeUnits method', ->
+    it 'should merge units if end one was not defined', ->
+      start = { unit: '%',  value: 25, string: '25%', isStrict: true }
+      end   = { unit: 'px', value: 50, string:'50px', isStrict: false }
+      h.mergeUnits start, end, 'key'
+      expect(end.unit)  .toBe '%'
+      expect(end.string).toBe '50%'
+
+    it 'should merge units if start one was not defined', ->
+      start = { unit: '%',  value: 25, string: '25%', isStrict: false }
+      end   = { unit: 'px', value: 50, string:'50px', isStrict: true }
+      h.mergeUnits start, end, 'key'
+      expect(start.unit)  .toBe 'px'
+      expect(start.string).toBe '25px'
+
+    it 'should fallback to end unit if two were defined and warn', ->
+      start = { unit: 'px', value: 25, string: '25px', isStrict: true }
+      end   = { unit: '%',  value: 50, string:'50%',   isStrict: true }
+      spyOn h, 'warn'
+      h.mergeUnits start, end, 'key'
+      expect(start.unit)  .toBe '%'
+      expect(start.string).toBe '25%'
+      expect(h.warn).toHaveBeenCalled()
 
 

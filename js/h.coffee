@@ -299,6 +299,11 @@ class Helpers
       startArr  = @strToArr start
       endArr    = @strToArr end
       @normDashArrays startArr, endArr
+
+      for start, i in startArr
+        end = endArr[i]
+        @mergeUnits start, end, key
+
       delta =
         start:  startArr
         end:    endArr
@@ -315,12 +320,12 @@ class Helpers
         if @posPropsMap[key]
           end   = @parseUnit @parseIfRand end
           start = @parseUnit @parseIfRand start
+          @mergeUnits start, end, key
           delta =
             start:  start
             end:    end
             delta:  end.value - start.value
             type:   'unit'
-          # @props[key] = start.string
         else
           # none position but numeric values
           end   = parseFloat @parseIfRand    end
@@ -330,9 +335,22 @@ class Helpers
             end:    end
             delta:  end - start
             type:   'number'
-          # @props[key] = start
-      # else @props[key] = start
     delta
+
+  mergeUnits:(start, end, key)->
+    if !end.isStrict and start.isStrict
+      end.unit = start.unit
+      end.string = "#{end.value}#{end.unit}"
+    else if end.isStrict and !start.isStrict
+      start.unit = end.unit
+      start.string = "#{start.value}#{start.unit}"
+    else if end.isStrict and start.isStrict
+      if end.units isnt start.unit
+        start.unit = end.unit
+        start.string = "#{start.value}#{start.unit}"
+        @warn "Two different units were specified on \"#{key}\" delta
+           property, mo · js will fallback to end \"#{end.unit}\" unit "
+
   rand:(min,max)-> (Math.random() * ((max) - min)) + min
   isDOM:(o)->
     return false if !o?

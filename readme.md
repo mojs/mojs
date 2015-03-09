@@ -7,8 +7,6 @@
 
 #### todo
 - add stagger module
-  - add isShowInit and isShowEnd to props
-  - add angle delta to stagger module
   - { '50%': 0 } should fallback to %
 - :: demo
 - refactor

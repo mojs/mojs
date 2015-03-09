@@ -29,5 +29,8 @@ stagger = new Stagger({
   duration: 2000,
   isShowEnd: true,
   isShowInit: true,
-  easing: 'Sinusoidal.Out'
+  easing: 'Sinusoidal.Out',
+  strokeDashoffset: {
+    '100%': 0
+  }
 });

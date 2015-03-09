@@ -1145,7 +1145,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.parseDelta = function(key, value) {
-    var delta, end, endArr, endColorObj, start, startArr, startColorObj;
+    var delta, end, endArr, endColorObj, i, start, startArr, startColorObj, _i, _len;
     start = Object.keys(value)[0];
     end = value[start];
     delta = {
@@ -1173,6 +1173,11 @@ Helpers = (function() {
       startArr = this.strToArr(start);
       endArr = this.strToArr(end);
       this.normDashArrays(startArr, endArr);
+      for (i = _i = 0, _len = startArr.length; _i < _len; i = ++_i) {
+        start = startArr[i];
+        end = endArr[i];
+        this.mergeUnits(start, end, key);
+      }
       delta = {
         start: startArr,
         end: endArr,
@@ -1184,6 +1189,7 @@ Helpers = (function() {
         if (this.posPropsMap[key]) {
           end = this.parseUnit(this.parseIfRand(end));
           start = this.parseUnit(this.parseIfRand(start));
+          this.mergeUnits(start, end, key);
           delta = {
             start: start,
             end: end,
@@ -1203,6 +1209,22 @@ Helpers = (function() {
       }
     }
     return delta;
+  };
+
+  Helpers.prototype.mergeUnits = function(start, end, key) {
+    if (!end.isStrict && start.isStrict) {
+      end.unit = start.unit;
+      return end.string = "" + end.value + end.unit;
+    } else if (end.isStrict && !start.isStrict) {
+      start.unit = end.unit;
+      return start.string = "" + start.value + start.unit;
+    } else if (end.isStrict && start.isStrict) {
+      if (end.units !== start.unit) {
+        start.unit = end.unit;
+        start.string = "" + start.value + start.unit;
+        return this.warn("Two different units were specified on \"" + key + "\" delta property, mo · js will fallback to end \"" + end.unit + "\" unit ");
+      }
+    }
   };
 
   Helpers.prototype.rand = function(min, max) {
@@ -1314,7 +1336,10 @@ stagger = new Stagger({
   duration: 2000,
   isShowEnd: true,
   isShowInit: true,
-  easing: 'Sinusoidal.Out'
+  easing: 'Sinusoidal.Out',
+  strokeDashoffset: {
+    '100%': 0
+  }
 });
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
