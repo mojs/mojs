@@ -168,7 +168,7 @@
           var value;
           value = h.parseStagger('stagger(rand(500,600), 20)', 2);
           expect(value).toBeGreaterThan(539);
-          return expect(value).not.toBeGreaterThan(639);
+          return expect(value).not.toBeGreaterThan(640);
         });
         return it('should respect units in rands', function() {
           var value;

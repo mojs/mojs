@@ -14,6 +14,18 @@ describe 'Stagger ->', ->
       s = new Stagger els: els
       expect(s.ownDefaults.delay).toBe 'stagger(100)'
       expect(s.ownDefaults.els)  .toBeDefined()
+      
+      expect(s.ownDefaults.strokeDasharray)         .toBe '100%'
+      expect(s.ownDefaults.strokeDashoffset['100%']).toBe '0%'
+      
+      expect(s.ownDefaults.stroke[0]).toBe 'yellow'
+      expect(s.ownDefaults.stroke[1]).toBe 'cyan'
+      expect(s.ownDefaults.stroke[2]).toBe 'deeppink'
+
+      expect(s.ownDefaults.fill).toBe 'transparent'
+
+      expect(s.ownDefaults.isShowInit).toBe false
+      expect(s.ownDefaults.isShowEnd) .toBe false
 
     it 'should have isSkipDelta flag', ->
       s = new Stagger els: els
@@ -123,6 +135,12 @@ describe 'Stagger ->', ->
     it 'should override draw method', ->
       s = new Stagger els: els
       expect(s.draw).not.toBe Stagger.__super__.draw
+
+    it 'should call drawEl method', ->
+      s = new Stagger els: els
+      spyOn s, 'drawEl'
+      s.draw()
+      expect(s.drawEl).toHaveBeenCalled()
 
   describe 'parseEls method ->', ->
     it 'should recieve els as a DOM node', ->

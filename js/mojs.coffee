@@ -12,49 +12,44 @@ path1 = document.getElementById 'js-path1'
 path2 = document.getElementById 'js-path2'
 path3 = document.getElementById 'js-path3'
 
-burst = new Burst
-  fill:      ['deeppink', 'cyan', 'yellow']
-  # strokeWidth: 'rand(1,3)': 0
-  # fill:        'transparent'
-  count:       50
-  degree:      140
-  radius:      0: 75
-  isSwirl:     true
-  # fill:        'transparent'
-  # strokeDasharray: '100%'
-  # strokeDashoffset: '-1000': 0
-  duration:         800
-  delay:            'stagger(1000, rand(0,150))'
-  
-  childOptions: radius: 'rand(2,6)': 0
+# burst = new Burst
+#   fill:      ['deeppink', 'cyan', 'yellow']
+#   # strokeWidth: 'rand(1,3)': 0
+#   # fill:        'transparent'
+#   count:       50
+#   degree:      140
+#   radius:      0: 75
+#   isSwirl:     true
+#   # fill:        'transparent'
+#   # strokeDasharray: '100%'
+#   # strokeDashoffset: '-1000': 0
+#   duration:         800
+#   delay:            'stagger(2000, rand(0,150))'
+#   childOptions: radius: 'rand(2,6)': 0
 
-burst = new Stagger
+stagger = new Stagger
   els:              paths
-  # stroke:           'deeppink'
-  strokeWidth:      5
-  delay:            'stagger(2000, 50)'
+  strokeWidth:      3
+  delay:            'stagger(2000, 100)'
   duration:         2000
-  fill:             'transparent'
-  strokeDasharray:  '200%'
-  strokeDashoffset: { '200%': '100%' }
   isShowEnd:        true
   isShowInit:       true
-  angle:            {0:360}
   easing:           'Sinusoidal.Out'
+  # opacity:          0: 3
 
 # .then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0
 
 # mp = new MotionPath(
-#   path:     'M0,0 L500,500 L1000, 0'
+#   path:     '#js-path1'
 #   el:       burst.el
 #   duration: 2000
-#   repeat: 99999
+#   # repeat: 99999
 #   # isReverse: true
-#   isRunLess: true
-#   # pathStart: 0
+#   # isRunLess: true
+#   pathStart: 0
 #   pathEnd:   1
-#   fill: { container: 'body' }
+#   # fill: { container: 'body' }
 #   # onStart:-> burst.show()
 #   # onChainUpdate:(p)-> burst.tween.setProgress(p)
 # )

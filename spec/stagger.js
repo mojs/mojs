@@ -25,7 +25,15 @@
           els: els
         });
         expect(s.ownDefaults.delay).toBe('stagger(100)');
-        return expect(s.ownDefaults.els).toBeDefined();
+        expect(s.ownDefaults.els).toBeDefined();
+        expect(s.ownDefaults.strokeDasharray).toBe('100%');
+        expect(s.ownDefaults.strokeDashoffset['100%']).toBe('0%');
+        expect(s.ownDefaults.stroke[0]).toBe('yellow');
+        expect(s.ownDefaults.stroke[1]).toBe('cyan');
+        expect(s.ownDefaults.stroke[2]).toBe('deeppink');
+        expect(s.ownDefaults.fill).toBe('transparent');
+        expect(s.ownDefaults.isShowInit).toBe(false);
+        return expect(s.ownDefaults.isShowEnd).toBe(false);
       });
       return it('should have isSkipDelta flag', function() {
         var s;
@@ -202,12 +210,21 @@
       });
     });
     describe('draw method ->', function() {
-      return it('should override draw method', function() {
+      it('should override draw method', function() {
         var s;
         s = new Stagger({
           els: els
         });
         return expect(s.draw).not.toBe(Stagger.__super__.draw);
+      });
+      return it('should call drawEl method', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        spyOn(s, 'drawEl');
+        s.draw();
+        return expect(s.drawEl).toHaveBeenCalled();
       });
     });
     describe('parseEls method ->', function() {

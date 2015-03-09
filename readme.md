@@ -7,7 +7,6 @@
 
 #### todo
 - add stagger module
-  - add indexes to burst and ?
   - add isShowInit and isShowEnd to props
   - add angle delta to stagger module
   - { '50%': 0 } should fallback to %

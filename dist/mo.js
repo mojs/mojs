@@ -1283,7 +1283,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, burst, path1, path2, path3, paths;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, path1, path2, path3, paths, stagger;
 
 Burst = require('./burst');
 
@@ -1307,38 +1307,13 @@ path2 = document.getElementById('js-path2');
 
 path3 = document.getElementById('js-path3');
 
-burst = new Burst({
-  fill: ['deeppink', 'cyan', 'yellow'],
-  count: 50,
-  degree: 140,
-  radius: {
-    0: 75
-  },
-  isSwirl: true,
-  duration: 800,
-  delay: 'stagger(1000, rand(0,150))',
-  childOptions: {
-    radius: {
-      'rand(2,6)': 0
-    }
-  }
-});
-
-burst = new Stagger({
+stagger = new Stagger({
   els: paths,
-  strokeWidth: 5,
-  delay: 'stagger(2000, 50)',
+  strokeWidth: 3,
+  delay: 'stagger(2000, 100)',
   duration: 2000,
-  fill: 'transparent',
-  strokeDasharray: '200%',
-  strokeDashoffset: {
-    '200%': '100%'
-  },
   isShowEnd: true,
   isShowInit: true,
-  angle: {
-    0: 360
-  },
   easing: 'Sinusoidal.Out'
 });
 
@@ -2644,7 +2619,14 @@ Stagger = (function(_super) {
   Stagger.prototype.ownDefaults = {
     delay: 'stagger(100)',
     els: null,
-    stroke: ['yellow', 'cyan', 'deeppink']
+    fill: 'transparent',
+    stroke: ['yellow', 'cyan', 'deeppink'],
+    strokeDasharray: '100%',
+    strokeDashoffset: {
+      '100%': '0%'
+    },
+    isShowInit: false,
+    isShowEnd: false
   };
 
   Stagger.prototype.vars = function() {
@@ -2737,7 +2719,9 @@ Stagger = (function(_super) {
     return _results;
   };
 
-  Stagger.prototype.draw = function() {};
+  Stagger.prototype.draw = function() {
+    return this.drawEl();
+  };
 
   return Stagger;
 

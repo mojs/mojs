@@ -8,9 +8,14 @@ Transit  = require './transit'
 class Stagger extends Transit
   isSkipDelta: true
   ownDefaults:
-    delay: 'stagger(100)'
-    els:   null
-    stroke: ['yellow', 'cyan', 'deeppink']
+    delay:            'stagger(100)'
+    els:              null
+    fill:             'transparent'
+    stroke:           ['yellow', 'cyan', 'deeppink']
+    strokeDasharray:  '100%'
+    strokeDashoffset: '100%': '0%'
+    isShowInit:       false
+    isShowEnd:        false
 
   vars:->
     h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults
@@ -57,7 +62,7 @@ class Stagger extends Transit
 
   # setProgress:->
   # calcSize:->
-  draw:->
+  draw:-> @drawEl()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

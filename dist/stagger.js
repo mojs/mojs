@@ -24,7 +24,14 @@ Stagger = (function(_super) {
   Stagger.prototype.ownDefaults = {
     delay: 'stagger(100)',
     els: null,
-    stroke: ['yellow', 'cyan', 'deeppink']
+    fill: 'transparent',
+    stroke: ['yellow', 'cyan', 'deeppink'],
+    strokeDasharray: '100%',
+    strokeDashoffset: {
+      '100%': '0%'
+    },
+    isShowInit: false,
+    isShowEnd: false
   };
 
   Stagger.prototype.vars = function() {
@@ -117,7 +124,9 @@ Stagger = (function(_super) {
     return _results;
   };
 
-  Stagger.prototype.draw = function() {};
+  Stagger.prototype.draw = function() {
+    return this.drawEl();
+  };
 
   return Stagger;
 

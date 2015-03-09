@@ -124,7 +124,7 @@ describe 'Helpers ->', ->
       it 'should parse base rand values', ->
         value = h.parseStagger 'stagger(rand(500,600), 20)', 2
         expect(value).toBeGreaterThan     539
-        expect(value).not.toBeGreaterThan 639
+        expect(value).not.toBeGreaterThan 640
       it 'should respect units in rands', ->
         value = h.parseStagger 'stagger(rand(500%,600%), 20)', 2
         expect(parseInt(value),10).toBeGreaterThan     539

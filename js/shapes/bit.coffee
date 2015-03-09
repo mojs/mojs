@@ -33,6 +33,7 @@ class Bit
   calcTransform:->
     rotate    = "rotate(#{@props.angle}, #{@props.x}, #{@props.y})"
     @props.transform = "#{rotate}"
+
   extendDefaults:->
     @props ?= {}
     for key, value of @defaults
@@ -66,10 +67,7 @@ class Bit
     while(len--)
       name = @drawMap[len]
       switch name
-        when 'stroke-dasharray', 'stroke-dashoffset'
-          # name is 'stroke-dashoffset' and console.log 'before: ', @props[name]
-          @castStrokeDash name
-          # name is 'stroke-dashoffset' and console.log 'after: ', @props[name]
+        when 'stroke-dasharray', 'stroke-dashoffset' then @castStrokeDash name
       @setAttrsIfChanged name, @props[name]
   castStrokeDash:(name)->
     if h.isArray(@props[name])
