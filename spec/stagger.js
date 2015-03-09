@@ -106,7 +106,7 @@
         });
         return expect(s.createBit).not.toBe(Stagger.__super__.createBit);
       });
-      return it('should create transit for every el', function() {
+      it('should create transit for every el', function() {
         var s;
         els = document.createElementNS(ns, 'g');
         path1 = document.createElementNS(ns, 'path');
@@ -115,14 +115,28 @@
         els.appendChild(path2);
         s = new Stagger({
           els: els,
-          stroke: ['deeppink', 'cyan', 'yellow'],
-          isIt: true
+          stroke: ['deeppink', 'cyan', 'yellow']
         });
         expect(s.transits.length).toBe(2);
         expect(s.transits[0].o.bit).toBe(path1);
         expect(s.transits[1].o.bit).toBe(path2);
         expect(s.transits[0].o.stroke).toBe('deeppink');
         return expect(s.transits[1].o.stroke).toBe('cyan');
+      });
+      return it('should pass index to every transit', function() {
+        var s;
+        els = document.createElementNS(ns, 'g');
+        path1 = document.createElementNS(ns, 'path');
+        path2 = document.createElementNS(ns, 'path');
+        els.appendChild(path1);
+        els.appendChild(path2);
+        s = new Stagger({
+          els: els,
+          stroke: ['deeppink', 'cyan', 'yellow']
+        });
+        expect(s.transits.length).toBe(2);
+        expect(s.transits[0].o.index).toBe(0);
+        return expect(s.transits[1].o.index).toBe(1);
       });
     });
     describe('render method ->', function() {

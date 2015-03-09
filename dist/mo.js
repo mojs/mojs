@@ -287,6 +287,7 @@ Burst = (function(_super) {
     for (i = _i = 0, _ref = this.props.count; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       option = this.getOption(i);
       option.ctx = this.ctx;
+      option.index = i;
       option.isDrawLess = option.isRunLess = option.isTweenLess = true;
       this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
       this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
@@ -1210,6 +1211,9 @@ Helpers = (function() {
 
   Helpers.prototype.isDOM = function(o) {
     var isNode, isObject;
+    if (o == null) {
+      return false;
+    }
     if (typeof Node === 'object') {
       return o instanceof Node;
     } else {

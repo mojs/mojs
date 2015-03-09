@@ -10,6 +10,9 @@
   t = mojs.tweener;
 
   describe('Burst ->', function() {
+    beforeEach(function() {
+      return t.removeAll();
+    });
     describe('extension ->', function() {
       it('should extend Transit class', function() {
         var burst;
@@ -84,6 +87,16 @@
         burst = new Burst;
         expect(burst.transits.length).toBe(5);
         return expect(burst.transits[0] instanceof Swirl).toBe(true);
+      });
+      it('should pass indexes to transits', function() {
+        var burst;
+        burst = new Burst;
+        expect(burst.transits.length).toBe(5);
+        expect(burst.transits[0].o.index).toBe(0);
+        expect(burst.transits[1].o.index).toBe(1);
+        expect(burst.transits[2].o.index).toBe(2);
+        expect(burst.transits[3].o.index).toBe(3);
+        return expect(burst.transits[4].o.index).toBe(4);
       });
       it('should pass properties to transits', function() {
         var burst;

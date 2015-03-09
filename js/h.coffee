@@ -335,6 +335,7 @@ class Helpers
     delta
   rand:(min,max)-> (Math.random() * ((max) - min)) + min
   isDOM:(o)->
+    return false if !o?
     if typeof Node == 'object' then o instanceof Node
     else
       isObject = o and typeof o is 'object'

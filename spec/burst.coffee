@@ -4,6 +4,9 @@ Burst   = mojs.Burst
 t       = mojs.tweener
 
 describe 'Burst ->', ->
+  
+  beforeEach -> t.removeAll()
+  
   describe 'extension ->', ->
     it 'should extend Transit class', ->
       burst = new Burst
@@ -77,6 +80,16 @@ describe 'Burst ->', ->
       burst = new Burst
       expect(burst.transits.length).toBe 5
       expect(burst.transits[0] instanceof Swirl).toBe true
+
+    it 'should pass indexes to transits', ->
+      burst = new Burst
+      expect(burst.transits.length).toBe 5
+      expect(burst.transits[0].o.index).toBe 0
+      expect(burst.transits[1].o.index).toBe 1
+      expect(burst.transits[2].o.index).toBe 2
+      expect(burst.transits[3].o.index).toBe 3
+      expect(burst.transits[4].o.index).toBe 4
+
     it 'should pass properties to transits', ->
       burst = new Burst
         stroke: 'red'

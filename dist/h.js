@@ -443,6 +443,9 @@ Helpers = (function() {
 
   Helpers.prototype.isDOM = function(o) {
     var isNode, isObject;
+    if (o == null) {
+      return false;
+    }
     if (typeof Node === 'object') {
       return o instanceof Node;
     } else {

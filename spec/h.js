@@ -1,7 +1,9 @@
 (function() {
-  var h;
+  var h, ns;
 
   h = mojs.helpers;
+
+  ns = 'http://www.w3.org/2000/svg';
 
   describe('Helpers ->', function() {
     it('should have logBadgeCss', function() {
@@ -878,12 +880,12 @@
           return expect(h.isDOM(document.createElement('div'))).toBe(true);
         });
         return it('should detect if object is DOM node #7', function() {
-          return expect(h.isDOM(document.createElementNS('g'))).toBe(true);
+          return expect(h.isDOM(document.createElementNS(ns, 'g'))).toBe(true);
         });
       });
     });
     return describe('getChildElements method', function() {
-      var els, ns, path1, path2;
+      var els, path1, path2;
       ns = 'http://www.w3.org/2000/svg';
       els = document.createElementNS(ns, 'g');
       path1 = document.createElementNS(ns, 'path');
