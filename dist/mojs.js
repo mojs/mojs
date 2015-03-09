@@ -22,6 +22,23 @@ path2 = document.getElementById('js-path2');
 
 path3 = document.getElementById('js-path3');
 
+burst = new Burst({
+  fill: ['deeppink', 'cyan', 'yellow'],
+  count: 50,
+  degree: 140,
+  radius: {
+    0: 75
+  },
+  isSwirl: true,
+  duration: 800,
+  delay: 'stagger(1000, rand(0,150))',
+  childOptions: {
+    radius: {
+      'rand(2,6)': 0
+    }
+  }
+});
+
 burst = new Stagger({
   els: paths,
   strokeWidth: 5,

@@ -12,15 +12,21 @@ path1 = document.getElementById 'js-path1'
 path2 = document.getElementById 'js-path2'
 path3 = document.getElementById 'js-path3'
 
-# burst = new Transit
-#   bit:         path1
-#   stroke:      'deeppink'
-#   strokeWidth: 10
-#   fill:        'transparent'
-#   strokeDasharray: '100%'
-#   strokeDashoffset: '-1000': 0
-#   duration:         2000
-#   delay:            1000
+burst = new Burst
+  fill:      ['deeppink', 'cyan', 'yellow']
+  # strokeWidth: 'rand(1,3)': 0
+  # fill:        'transparent'
+  count:       50
+  degree:      140
+  radius:      0: 75
+  isSwirl:     true
+  # fill:        'transparent'
+  # strokeDasharray: '100%'
+  # strokeDashoffset: '-1000': 0
+  duration:         800
+  delay:            'stagger(1000, rand(0,150))'
+  
+  childOptions: radius: 'rand(2,6)': 0
 
 burst = new Stagger
   els:              paths
