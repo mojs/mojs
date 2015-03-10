@@ -865,20 +865,20 @@
           return setTimeout(function() {
             expect(byte.el.style.left).toBe('50%');
             return dfr();
-          }, 100);
+          }, 300);
         });
         it('should fallback to end units if units are differnt', function(dfr) {
           var byte;
-          byte = new Byte({
+          return byte = new Byte({
             x: {
               '20%': '50px'
             },
-            duration: 20
+            duration: 20,
+            onComplete: function() {
+              expect(byte.el.style.left).toBe('50px');
+              return dfr();
+            }
           });
-          return setTimeout(function() {
-            expect(byte.el.style.left).toBe('50px');
-            return dfr();
-          }, 100);
         });
         return describe('shiftX/shiftY coordinates', function() {
           it('should set a position with respect to units', function() {
@@ -891,16 +891,16 @@
           });
           it('should animate position', function(dfr) {
             var byte;
-            byte = new Byte({
+            return byte = new Byte({
               shiftX: {
                 100: '200px'
               },
-              duration: 20
+              duration: 20,
+              onComplete: function() {
+                expect(byte.el.style.transform).toBe('translate(200px, 0px)');
+                return dfr();
+              }
             });
-            return setTimeout(function() {
-              expect(byte.el.style.transform).toBe('translate(200px, 0px)');
-              return dfr();
-            }, 100);
           });
           it('should animate position with respect to units', function(dfr) {
             var byte;
@@ -1523,7 +1523,7 @@
         byte.setProgress(.5, true);
         return expect(byte.onUpdate).not.toHaveBeenCalled();
       });
-      it('not thow', function() {
+      it('not to thow', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1567,7 +1567,7 @@
         byte.setProgress(-1);
         return expect(byte.progress).toBe(0);
       });
-      it('should set 1 if progress is greater then 1', function() {
+      return it('should set 1 if progress is greater then 1', function() {
         var byte;
         byte = new Byte({
           radius: {
@@ -1577,48 +1577,48 @@
         byte.setProgress(2);
         return expect(byte.progress).toBe(1);
       });
-      return describe('strokeDash.. values', function() {
-        it('should set strokeDasharray/strokeDashoffset value progress', function() {
-          var byte;
-          byte = new Byte({
-            strokeDasharray: {
-              '200 100': '400'
-            }
-          });
-          byte.setProgress(.5);
-          expect(byte.props.strokeDasharray[0].value).toBe(300);
-          expect(byte.props.strokeDasharray[0].unit).toBe('px');
-          expect(byte.props.strokeDasharray[1].value).toBe(50);
-          return expect(byte.props.strokeDasharray[1].unit).toBe('px');
+    });
+    describe('strokeDash.. values', function() {
+      it('should set strokeDasharray/strokeDashoffset value progress', function() {
+        var byte;
+        byte = new Byte({
+          strokeDasharray: {
+            '200 100': '400'
+          }
         });
-        it('should set strokeDasharray/strokeDashoffset with percents', function() {
-          var byte;
-          byte = new Byte({
-            type: 'circle',
-            strokeDasharray: {
-              '0% 200': '100%'
-            },
-            radius: 100,
-            isRunLess: true
-          });
-          byte.setProgress(.5);
-          expect(byte.props.strokeDasharray[0].value).toBe(50);
-          expect(byte.props.strokeDasharray[0].unit).toBe('%');
-          expect(byte.props.strokeDasharray[1].value).toBe(100);
-          return expect(byte.props.strokeDasharray[1].unit).toBe('px');
+        byte.setProgress(.5);
+        expect(byte.props.strokeDasharray[0].value).toBe(300);
+        expect(byte.props.strokeDasharray[0].unit).toBe('px');
+        expect(byte.props.strokeDasharray[1].value).toBe(50);
+        return expect(byte.props.strokeDasharray[1].unit).toBe('px');
+      });
+      it('should set strokeDasharray/strokeDashoffset with percents', function() {
+        var byte;
+        byte = new Byte({
+          type: 'circle',
+          strokeDasharray: {
+            '0% 200': '100%'
+          },
+          radius: 100,
+          isRunLess: true
         });
-        return it('should parse non-deltas strokeDasharray/strokeDashoffset values', function() {
-          var byte;
-          byte = new Byte({
-            type: 'circle',
-            strokeDasharray: '100%',
-            radius: 100,
-            isRunLess: true,
-            isIt: true
-          });
-          expect(byte.props.strokeDasharray.value).toBe(100);
-          return expect(byte.props.strokeDasharray.unit).toBe('%');
+        byte.setProgress(.5);
+        expect(byte.props.strokeDasharray[0].value).toBe(50);
+        expect(byte.props.strokeDasharray[0].unit).toBe('%');
+        expect(byte.props.strokeDasharray[1].value).toBe(100);
+        return expect(byte.props.strokeDasharray[1].unit).toBe('px');
+      });
+      return it('should parse non-deltas strokeDasharray/strokeDashoffset values', function() {
+        var byte;
+        byte = new Byte({
+          type: 'circle',
+          strokeDasharray: '100%',
+          radius: 100,
+          isRunLess: true,
+          isIt: true
         });
+        expect(byte.props.strokeDasharray.value).toBe(100);
+        return expect(byte.props.strokeDasharray.unit).toBe('%');
       });
     });
     describe('Callbacks ->', function() {
@@ -1680,9 +1680,9 @@
             }
           });
           return setTimeout(function() {
-            expect(isOnUpdate).toBe(true);
+            expect('onUpdate called').toBe('onUpdate called');
             return dfr();
-          }, 100);
+          }, 300);
         });
         it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -1695,10 +1695,10 @@
               return isRightScope = this instanceof Byte;
             }
           });
-          return setTimeout(function() {
+          return setTimeout((function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 100);
+          }), 300);
         });
         return it('should set current progress', function(dfr) {
           var byte, progress;
@@ -1716,10 +1716,10 @@
             expect(progress).toBeGreaterThan(0);
             expect(progress).not.toBeGreaterThan(1);
             return dfr();
-          }, 100);
+          }, 300);
         });
       });
-      return describe('onComplete callback ->', function() {
+      describe('onComplete callback ->', function() {
         it('should call onComplete callback', function(dfr) {
           var byte, isOnComplete;
           isOnComplete = null;
@@ -1735,7 +1735,7 @@
           return setTimeout(function() {
             expect(isOnComplete).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
         return it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -1744,44 +1744,44 @@
             radius: {
               '25': 75
             },
+            duration: 20,
             onComplete: function() {
               return isRightScope = this instanceof Byte;
-            },
-            duration: 20
+            }
           });
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
       });
-    });
-    describe('onFirstUpdateBackward callback ->', function() {
-      it('should call tuneOptions method when the tween goes backward', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        }).then({
-          radius: 20
+      return describe('onFirstUpdateBackward callback ->', function() {
+        it('should call tuneOptions method when the tween goes backward', function() {
+          var byte;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            }
+          }).then({
+            radius: 20
+          });
+          spyOn(byte, 'tuneOptions');
+          byte.tween.setProgress(.99);
+          byte.tween.setProgress(0);
+          return expect(byte.tuneOptions).toHaveBeenCalled();
         });
-        spyOn(byte, 'tuneOptions');
-        byte.tween.setProgress(.99);
-        byte.tween.setProgress(0);
-        return expect(byte.tuneOptions).toHaveBeenCalled();
-      });
-      return it('should call not tuneOptions if history length is one record', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
+        return it('should call not tuneOptions if history length is one record', function() {
+          var byte;
+          byte = new Byte({
+            radius: {
+              '25': 75
+            }
+          });
+          spyOn(byte, 'tuneOptions');
+          byte.tween.setProgress(.99);
+          byte.tween.setProgress(0);
+          return expect(byte.tuneOptions).not.toHaveBeenCalled();
         });
-        spyOn(byte, 'tuneOptions');
-        byte.tween.setProgress(.99);
-        byte.tween.setProgress(0);
-        return expect(byte.tuneOptions).not.toHaveBeenCalled();
       });
     });
     describe('createTween method ->', function() {

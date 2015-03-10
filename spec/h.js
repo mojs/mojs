@@ -267,7 +267,7 @@
             expect(delta.end.value).toBe(-75.5);
             return expect(delta.end.string).toBe('-75.5%');
           });
-          it('should fallback to declared units if one of theem defined #2', function() {
+          it('should fallback to declared units if one of them defined #2', function() {
             var delta;
             delta = h.parseDelta('x', {
               '25.50': '-75.50%'

@@ -6,9 +6,10 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- add stagger module
-  - { '50%': 0 } should fallback to %
+- fix tests
+- should control el's center
 - :: demo
+
 - refactor
   - setAttrsIfChanged to every shape
   - transit custom shape length calculations

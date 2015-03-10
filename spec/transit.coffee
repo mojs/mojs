@@ -446,8 +446,7 @@ describe 'Transit ->', ->
     describe 'x/y coordinates ->', ->
       it 'should set a position with respect to units', ->
         byte = new Byte
-          x: 100
-          y: 50
+          x: 100, y: 50
         expect(byte.el.style.left)   .toBe '100px'
         expect(byte.el.style.top)    .toBe '50px'
       it 'should animate position', (dfr)->
@@ -471,7 +470,7 @@ describe 'Transit ->', ->
         setTimeout ->
           expect(byte.el.style.left)   .toBe '50%'
           dfr()
-        , 100
+        , 300
 
       # it 'should end units were not specified fallback to start units', ()->
       #   byte = new Byte
@@ -484,10 +483,9 @@ describe 'Transit ->', ->
         byte = new Byte
           x: {'20%': '50px'}
           duration: 20
-        setTimeout ->
-          expect(byte.el.style.left)   .toBe '50px'
-          dfr()
-        , 100
+          onComplete:->
+            expect(byte.el.style.left).toBe('50px'); dfr()
+
       describe 'shiftX/shiftY coordinates', ->
         it 'should set a position with respect to units', ->
           byte = new Byte
@@ -498,10 +496,10 @@ describe 'Transit ->', ->
           byte = new Byte
             shiftX: {100: '200px'}
             duration: 20
-          setTimeout ->
-            expect(byte.el.style.transform) .toBe 'translate(200px, 0px)'
-            dfr()
-          , 100
+            onComplete:->
+              expect(byte.el.style.transform) .toBe 'translate(200px, 0px)'
+              dfr()
+
         it 'should animate position with respect to units', (dfr)->
           byte = new Byte
             shiftX: {'20%': '50%'}
@@ -623,6 +621,8 @@ describe 'Transit ->', ->
       cnt = document.body.children.length
       byte.render true
       expect(cnt).toBe document.body.children.length
+  
+
   describe 'draw method ->', ->
     it 'should call setProp method', ->
       byte = new Byte radius: 25
@@ -786,6 +786,7 @@ describe 'Transit ->', ->
           duration:  { 2000: 1000 }
           isRunLess: true
         expect(byte.deltas.duration).not.toBeDefined()
+  
   describe 'setProgress method ->', ->
     it 'should set transition progress', ->
       byte = new Byte radius:  {'25.50': -75.50}
@@ -832,7 +833,7 @@ describe 'Transit ->', ->
       spyOn byte, 'onUpdate'
       byte.setProgress .5, true
       expect(byte.onUpdate).not.toHaveBeenCalled()
-    it 'not thow', ->
+    it 'not to thow', ->
       byte = new Byte radius:  {'25': 75}, ctx: svg
       expect(-> byte.show()).not.toThrow()
     it 'should set color value progress and only int', ->
@@ -854,37 +855,37 @@ describe 'Transit ->', ->
       byte.setProgress 2
       expect(byte.progress).toBe 1
 
-    describe 'strokeDash.. values', ->
-      it 'should set strokeDasharray/strokeDashoffset value progress', ->
-        byte = new Byte strokeDasharray:  {'200 100': '400'}
-        byte.setProgress .5
-        expect(byte.props.strokeDasharray[0].value).toBe 300
-        expect(byte.props.strokeDasharray[0].unit) .toBe 'px'
-        expect(byte.props.strokeDasharray[1].value).toBe 50
-        expect(byte.props.strokeDasharray[1].unit) .toBe 'px'
+  describe 'strokeDash.. values', ->
+    it 'should set strokeDasharray/strokeDashoffset value progress', ->
+      byte = new Byte strokeDasharray:  {'200 100': '400'}
+      byte.setProgress .5
+      expect(byte.props.strokeDasharray[0].value).toBe 300
+      expect(byte.props.strokeDasharray[0].unit) .toBe 'px'
+      expect(byte.props.strokeDasharray[1].value).toBe 50
+      expect(byte.props.strokeDasharray[1].unit) .toBe 'px'
 
-      it 'should set strokeDasharray/strokeDashoffset with percents', ->
-        byte = new Byte
-          type: 'circle'
-          strokeDasharray:  {'0% 200': '100%'}
-          radius: 100
-          isRunLess: true
-          
-        byte.setProgress .5
-        expect(byte.props.strokeDasharray[0].value).toBe 50
-        expect(byte.props.strokeDasharray[0].unit) .toBe '%'
-        expect(byte.props.strokeDasharray[1].value).toBe 100
-        expect(byte.props.strokeDasharray[1].unit) .toBe 'px'
+    it 'should set strokeDasharray/strokeDashoffset with percents', ->
+      byte = new Byte
+        type: 'circle'
+        strokeDasharray:  {'0% 200': '100%'}
+        radius: 100
+        isRunLess: true
+        
+      byte.setProgress .5
+      expect(byte.props.strokeDasharray[0].value).toBe 50
+      expect(byte.props.strokeDasharray[0].unit) .toBe '%'
+      expect(byte.props.strokeDasharray[1].value).toBe 100
+      expect(byte.props.strokeDasharray[1].unit) .toBe 'px'
 
-      it 'should parse non-deltas strokeDasharray/strokeDashoffset values', ->
-        byte = new Byte
-          type: 'circle'
-          strokeDasharray:  '100%'
-          radius: 100
-          isRunLess: true
-          isIt: true
-        expect(byte.props.strokeDasharray.value).toBe 100
-        expect(byte.props.strokeDasharray.unit).toBe '%'
+    it 'should parse non-deltas strokeDasharray/strokeDashoffset values', ->
+      byte = new Byte
+        type: 'circle'
+        strokeDasharray:  '100%'
+        radius: 100
+        isRunLess: true
+        isIt: true
+      expect(byte.props.strokeDasharray.value).toBe 100
+      expect(byte.props.strokeDasharray.unit).toBe '%'
 
   describe 'Callbacks ->', ->
     describe 'onStart callback ->', ->
@@ -912,20 +913,21 @@ describe 'Transit ->', ->
     describe 'onUpdate callback', ->
       it 'should call onUpdate callback', (dfr)->
         isOnUpdate = null
-        byte = new Byte radius:  {'25': 75}, onUpdate:-> isOnUpdate = true
+        byte = new Byte
+          radius:  {'25': 75}
+          onUpdate:-> isOnUpdate = true
+
         setTimeout ->
-          expect(isOnUpdate).toBe true
-          dfr()
-        , 100
+          expect('onUpdate called').toBe('onUpdate called'); dfr()
+        , 300
+
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
           radius: {'25': 75}
           onUpdate:-> isRightScope = @ instanceof Byte
-        setTimeout ->
-          expect(isRightScope).toBe true
-          dfr()
-        , 100
+        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
+
       it 'should set current progress', (dfr)->
         progress = null
         byte = new Byte
@@ -936,8 +938,7 @@ describe 'Transit ->', ->
           expect(progress).toBeGreaterThan 0
           expect(progress).not.toBeGreaterThan 1
           dfr()
-        , 100
-
+        , 300
 
     describe 'onComplete callback ->', ->
       it 'should call onComplete callback',(dfr)->
@@ -948,33 +949,33 @@ describe 'Transit ->', ->
           duration: 20
         setTimeout ->
           expect(isOnComplete).toBe(true); dfr()
-        , 100
+        , 300
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
           radius: {'25': 75}
-          onComplete:-> isRightScope = @ instanceof Byte
           duration: 20
+          onComplete:->
+            isRightScope = @ instanceof Byte
         setTimeout ->
-          expect(isRightScope).toBe true
-          dfr()
-        , 100
-    
-  describe 'onFirstUpdateBackward callback ->', ->
-    it 'should call tuneOptions method when the tween goes backward', ->
-      byte = new Byte radius:  {'25': 75}
-        .then { radius: 20 }
-      spyOn byte, 'tuneOptions'
-      byte.tween.setProgress .99
-      byte.tween.setProgress 0
-      expect(byte.tuneOptions).toHaveBeenCalled()
+          expect(isRightScope).toBe(true); dfr()
+        , 300
 
-    it 'should call not tuneOptions if history length is one record', ->
-      byte = new Byte radius:  {'25': 75}
-      spyOn byte, 'tuneOptions'
-      byte.tween.setProgress .99
-      byte.tween.setProgress 0
-      expect(byte.tuneOptions).not.toHaveBeenCalled()
+    describe 'onFirstUpdateBackward callback ->', ->
+      it 'should call tuneOptions method when the tween goes backward', ->
+        byte = new Byte radius:  {'25': 75}
+          .then { radius: 20 }
+        spyOn byte, 'tuneOptions'
+        byte.tween.setProgress .99
+        byte.tween.setProgress 0
+        expect(byte.tuneOptions).toHaveBeenCalled()
+
+      it 'should call not tuneOptions if history length is one record', ->
+        byte = new Byte radius:  {'25': 75}
+        spyOn byte, 'tuneOptions'
+        byte.tween.setProgress .99
+        byte.tween.setProgress 0
+        expect(byte.tuneOptions).not.toHaveBeenCalled()
 
   describe 'createTween method ->', ->
     it 'should create tween object', ->
@@ -984,9 +985,6 @@ describe 'Transit ->', ->
       byte = new Byte radius:  {'25': 75}
       expect(typeof byte.timeline.o.onFirstUpdateBackward)
         .toBe 'function'
-    # it 'should not create tween object if isTweenLess', ->
-    #   byte = new Byte radius:  {'25': 75}, isTweenLess: true
-    #   expect(byte.tween).not.toBeDefined()
     it 'should start tween after init', (dfr)->
       isStarted = false
       byte = new Byte

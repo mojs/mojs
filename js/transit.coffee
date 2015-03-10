@@ -314,7 +314,7 @@ class Transit extends bitsMap.map.bit
       yoyo:     @props.yoyo
       easing:   @props.easing
       onUpdate:   (p)=> @setProgress p
-      onStart:=> @show(); @props.onStart?.apply @
+      onStart:  => @show(); @props.onStart?.apply @
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
       onReverseComplete:=>
         !@o.isShowInit and @hide(); @props.onReverseComplete?.apply @

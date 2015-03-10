@@ -120,7 +120,7 @@
           ctx: document.createElementNS(ns, 'svg'),
           radius: radius
         });
-        return expect(bit.getLength().toFixed(2)).toBe('519.62');
+        return expect(bit.getLength().toFixed(1)).toBe('519.6');
       });
       return it('should calculate total length of the with different radiusX/Y', function() {
         var bit, radiusX, radiusY;

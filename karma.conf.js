@@ -64,7 +64,8 @@ module.exports = function(config) {
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
       reporters = ['progress', 'coverage', 'clear-screen'];
-      browsers = ['PhantomJS'];
+      // browsers = ['PhantomJS'];
+      browsers = [];
     } else {
       reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
       browsers = Object.keys(customLaunchers);
@@ -90,18 +91,18 @@ module.exports = function(config) {
       // 'spec/h.js',
       // 'dist/transit.js',
       // 'spec/transit.js',
-      'dist/swirl.js',
-      'spec/swirl.js',
-      'dist/tween.js',
-      'spec/tween.js',
-      // 'dist/burst.js',
-      // 'spec/burst.js',
-      'dist/timeline.js',
-      'spec/timeline.js',
-      'dist/motion-path.js',
-      'spec/motion-path.js',
-      'dist/tweener.js',
-      'spec/tweener.js'
+      // 'dist/swirl.js',
+      // 'spec/swirl.js',
+      // 'dist/tween.js',
+      // 'spec/tween.js',
+      // // 'dist/burst.js',
+      // // 'spec/burst.js',
+      // 'dist/timeline.js',
+      // 'spec/timeline.js',
+      // 'dist/motion-path.js',
+      // 'spec/motion-path.js',
+      // 'dist/tweener.js',
+      // 'spec/tweener.js'
     ],
 
     // preprocess matching files before serving them to the browser

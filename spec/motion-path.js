@@ -392,7 +392,7 @@
       it('if fillRule is "all" it should keep container\'s size', function(dfr) {
         var isFilled, motionPath;
         isFilled = false;
-        motionPath = new MotionPath({
+        return motionPath = new MotionPath({
           path: 'M0,0 L500,500',
           el: div,
           duration: 64,
@@ -406,18 +406,16 @@
             height = parseInt(args[4], 10);
             isWidth = width === container.offsetWidth;
             isHeight = height === container.offsetHeight;
-            return isFilled = isWidth && isHeight;
+            isFilled = isWidth && isHeight;
+            expect(isFilled).toBe(true);
+            return dfr();
           }
         });
-        return setTimeout((function() {
-          expect(isFilled).toBe(true);
-          return dfr();
-        }), 100);
       });
       it("if fillRule is \"width\" it should keep container\'s width and set \"height\" with aspect ratio", function(dfr) {
         var isFilled, mp;
         isFilled = false;
-        mp = new MotionPath({
+        return mp = new MotionPath({
           path: 'M0,0 L500,250',
           el: div,
           duration: 50,
@@ -433,18 +431,16 @@
             height = parseInt(args[4], 10);
             isWidth = width === container.offsetWidth;
             isHeight = height === (width / 2);
-            return isFilled = isWidth && isHeight;
+            isFilled = isWidth && isHeight;
+            expect(isFilled).toBe(true);
+            return dfr();
           }
         });
-        return setTimeout(function() {
-          expect(isFilled).toBe(true);
-          return dfr();
-        }, 100);
       });
       it("if fillRule is \"height\" it should keep container\'s height and set \"width\" with aspect ratio", function(dfr) {
         var isFilled, mp;
         isFilled = false;
-        mp = new MotionPath({
+        return mp = new MotionPath({
           path: 'M0,0 L250,500',
           el: div,
           duration: 50,
@@ -459,13 +455,11 @@
             height = parseInt(args[4], 10);
             isWidth = width === (height / 2);
             isHeight = height === container.offsetHeight;
-            return isFilled = isWidth && isHeight;
+            isFilled = isWidth && isHeight;
+            expect(isFilled).toBe(true);
+            return dfr();
           }
         });
-        return setTimeout(function() {
-          expect(isFilled).toBe(true);
-          return dfr();
-        }, 100);
       });
       return it('if container size was changed should recalc scaler', function(dfr) {
         var c, el, isSizeChange, mp, size, x;
@@ -480,7 +474,7 @@
         c.setAttribute('id', 'js-container2');
         document.body.appendChild(c);
         x = -1;
-        mp = new MotionPath({
+        return mp = new MotionPath({
           path: 'M0,0 L500,0',
           el: el,
           duration: 50,
@@ -494,13 +488,11 @@
             }
           },
           onComplete: function() {
-            return x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
+            x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
+            expect(parseInt(x, 10)).toBe(100);
+            return dfr();
           }
         });
-        return setTimeout(function() {
-          expect(parseInt(x, 10)).toBe(100);
-          return dfr();
-        }, 100);
       });
     });
     describe('functionality ->', function() {

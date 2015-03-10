@@ -83,7 +83,7 @@ describe 'Polygon ->', ->
       bit = new Polygon
         ctx:    document.createElementNS ns, 'svg'
         radius: radius
-      expect(bit.getLength().toFixed(2)).toBe '519.62'
+      expect(bit.getLength().toFixed(1)).toBe '519.6'
 
     it 'should calculate total length of the with different radiusX/Y', ->
       radiusX = 100

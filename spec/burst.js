@@ -703,7 +703,7 @@
         return setTimeout(function() {
           expect(burst.props.onStart).toHaveBeenCalled();
           return dfr();
-        }, 200);
+        }, 300);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
@@ -716,7 +716,7 @@
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }, 200);
+        }, 300);
       });
     });
     describe('onComplete callback ->', function() {
@@ -744,7 +744,7 @@
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }, 100);
+        }, 300);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -761,7 +761,7 @@
         return setTimeout(function() {
           expect(burst.onUpdate).toHaveBeenCalledWith(1);
           return dfr();
-        }, 100);
+        }, 300);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
@@ -777,7 +777,7 @@
         return setTimeout((function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
     });
     describe('then method ->', function() {

@@ -309,7 +309,7 @@ describe 'MotionPath ->', ->
           isWidth  = width  is container.offsetWidth
           isHeight = height is container.offsetHeight
           isFilled = isWidth and isHeight
-      setTimeout (-> expect(isFilled).toBe(true); dfr()), 100
+          expect(isFilled).toBe(true); dfr()
 
     it "if fillRule is \"width\" it should keep container\'s width
     and set \"height\" with aspect ratio", (dfr)->
@@ -327,10 +327,7 @@ describe 'MotionPath ->', ->
           isWidth  = width  is container.offsetWidth
           isHeight = height is (width/2)
           isFilled = isWidth and isHeight
-
-      setTimeout ->
-        expect(isFilled).toBe(true); dfr()
-      , 100
+          expect(isFilled).toBe(true); dfr()
 
     it "if fillRule is \"height\" it should keep container\'s height
       and set \"width\" with aspect ratio", (dfr)->
@@ -348,9 +345,7 @@ describe 'MotionPath ->', ->
           isWidth  = width  is (height/2)
           isHeight = height is container.offsetHeight
           isFilled = isWidth and isHeight
-      setTimeout ->
-        expect(isFilled).toBe(true); dfr()
-      , 100
+          expect(isFilled).toBe(true); dfr()
 
     it 'if container size was changed should recalc scaler', (dfr)->
       isSizeChange = false
@@ -373,11 +368,9 @@ describe 'MotionPath ->', ->
           if proc >= .1 and !isSizeChange
             mp.container.style.width = '100px'
             isSizeChange = true
-        onComplete:-> x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
-
-      setTimeout ->
-        expect(parseInt(x, 10)).toBe(100); dfr()
-      , 100
+        onComplete:->
+          x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
+          expect(parseInt(x, 10)).toBe(100); dfr()
 
   describe 'functionality ->', ->
     div = document.createElement 'div'

@@ -461,13 +461,13 @@ describe 'Burst ->', ->
       burst.run()
       setTimeout ->
         expect(burst.props.onStart).toHaveBeenCalled(); dfr()
-      , 200
+      , 300
     it 'should have the scope of burst', (dfr)->
       isRightScope = null
       burst = new Burst onStart:-> isRightScope = @ instanceof Burst
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
-      , 200
+      , 300
 
   describe 'onComplete callback ->', ->
     it 'should run onComplete callback', (dfr)->
@@ -482,7 +482,7 @@ describe 'Burst ->', ->
         duration: 20, onComplete:-> isRightScope = @ instanceof Burst
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
-      , 100
+      , 300
 
   describe 'onUpdate callback ->', ->
     t.removeAll()
@@ -495,14 +495,14 @@ describe 'Burst ->', ->
       burst.run()
       setTimeout ->
         expect(burst.onUpdate).toHaveBeenCalledWith(1); dfr()
-      , 100
+      , 300
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
       isRightScope = false
       burst = new Burst
         duration: 20, onUpdate:-> isRightScope = @ instanceof Burst
       burst.run()
-      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
   
   describe 'then method ->', ->
     it 'should call the h.error method', ->
