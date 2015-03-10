@@ -305,8 +305,13 @@ class Transit extends bitsMap.map.bit
   # TWEEN
   createTween:->
     it = @
-    onComplete = if @props.onComplete then @h.bind(@props.onComplete, @)
-    else null
+    @createTimeline()
+    @tween = new Tween
+      onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
+    @tween.add @timeline
+    !@o.isRunLess and @startTween()
+
+  createTimeline:->
     @timeline = new Timeline
       duration: @props.duration
       delay:    @props.delay
@@ -314,14 +319,10 @@ class Transit extends bitsMap.map.bit
       yoyo:     @props.yoyo
       easing:   @props.easing
       onUpdate:   (p)=> @setProgress p
-      onStart:  => @show(); @props.onStart?.apply @
+      onStart:=> @show(); @props.onStart?.apply @
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
       onReverseComplete:=>
         !@o.isShowInit and @hide(); @props.onReverseComplete?.apply @
-    @tween = new Tween
-      onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
-    @tween.add @timeline
-    !@o.isRunLess and @startTween()
 
   run:(o)->
     # if then chain is present and the user tries to

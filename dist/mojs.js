@@ -1,4 +1,4 @@
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, path1, path2, path3, paths, stagger;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, paths, slider, stagger;
 
 Burst = require('./burst');
 
@@ -16,12 +16,6 @@ Tween = require('./tween/tween');
 
 paths = document.getElementById('js-svg');
 
-path1 = document.getElementById('js-path1');
-
-path2 = document.getElementById('js-path2');
-
-path3 = document.getElementById('js-path3');
-
 stagger = new Stagger({
   els: paths,
   strokeWidth: 3,
@@ -32,5 +26,13 @@ stagger = new Stagger({
   easing: 'Sinusoidal.Out',
   strokeDashoffset: {
     '100%': 0
-  }
+  },
+  isRunLess: true
+});
+
+slider = document.getElementById('js-slider');
+
+slider.addEventListener('input', function(e) {
+  console.log(this.value / 100000);
+  return stagger.tween.setProgress(this.value / 100000);
 });

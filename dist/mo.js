@@ -1305,7 +1305,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, path1, path2, path3, paths, stagger;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, paths, slider, stagger;
 
 Burst = require('./burst');
 
@@ -1323,12 +1323,6 @@ Tween = require('./tween/tween');
 
 paths = document.getElementById('js-svg');
 
-path1 = document.getElementById('js-path1');
-
-path2 = document.getElementById('js-path2');
-
-path3 = document.getElementById('js-path3');
-
 stagger = new Stagger({
   els: paths,
   strokeWidth: 3,
@@ -1339,7 +1333,15 @@ stagger = new Stagger({
   easing: 'Sinusoidal.Out',
   strokeDashoffset: {
     '100%': 0
-  }
+  },
+  isRunLess: true
+});
+
+slider = document.getElementById('js-slider');
+
+slider.addEventListener('input', function(e) {
+  console.log(this.value / 100000);
+  return stagger.tween.setProgress(this.value / 100000);
 });
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
@@ -2691,6 +2693,7 @@ Stagger = (function(_super) {
     for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
       option = this.getOption(i);
       option.index = i;
+      option.isRunLess = true;
       _results.push(this.transits.push(new Transit(option)));
     }
     return _results;
@@ -2731,11 +2734,11 @@ Stagger = (function(_super) {
 
   Stagger.prototype.createTween = function() {
     var i, _results;
-    Stagger.__super__.createTween.apply(this, arguments);
+    this.tween = new Tween;
     i = this.transits.length;
     _results = [];
     while (i--) {
-      _results.push(this.tween.add(this.transits[i].timeline));
+      _results.push(this.tween.add(this.transits[i].tween));
     }
     return _results;
   };
@@ -3255,10 +3258,24 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.createTween = function() {
-    var it, onComplete;
+    var it;
     it = this;
-    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
-    this.timeline = new Timeline({
+    this.createTimeline();
+    this.tween = new Tween({
+      onComplete: (function(_this) {
+        return function() {
+          var _ref;
+          !_this.o.isShowEnd && _this.hide();
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this)
+    });
+    this.tween.add(this.timeline);
+    return !this.o.isRunLess && this.startTween();
+  };
+
+  Transit.prototype.createTimeline = function() {
+    return this.timeline = new Timeline({
       duration: this.props.duration,
       delay: this.props.delay,
       repeat: this.props.repeat,
@@ -3289,17 +3306,6 @@ Transit = (function(_super) {
         };
       })(this)
     });
-    this.tween = new Tween({
-      onComplete: (function(_this) {
-        return function() {
-          var _ref;
-          !_this.o.isShowEnd && _this.hide();
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this)
-    });
-    this.tween.add(this.timeline);
-    return !this.o.isRunLess && this.startTween();
   };
 
   Transit.prototype.run = function(o) {

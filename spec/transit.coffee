@@ -507,7 +507,7 @@ describe 'Transit ->', ->
           setTimeout ->
             expect(byte.el.style.transform) .toBe 'translate(50%, 0px)'
             dfr()
-          , 100
+          , 300
         it 'should fallback to end units if units are differnt', (dfr)->
           byte = new Byte
             shiftX: {'20%': '50px'}
@@ -516,7 +516,7 @@ describe 'Transit ->', ->
           setTimeout ->
             expect(byte.el.style.transform) .toBe 'translate(50px, 50%)'
             dfr()
-          , 100
+          , 300
 
   describe 'fillTransform method ->', ->
     it 'return tranform string of the el', ->

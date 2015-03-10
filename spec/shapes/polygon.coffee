@@ -45,7 +45,7 @@ describe 'Polygon ->', ->
       d   = tri.el.getAttribute('d')
       d2  = 'M0.0000,-20.0000 L17.3205,10.0000 L-17.3205,10.0000 z'
       isD = d is d2
-      isIE9D = d is 'M 0 -20 L 17.3205 10 L -17.3205 10 z'
+      isIE9D = d is 'M 0 -20 L 17.3205 10 L -17.3205 10 Z'
       expect(isD or isIE9D).toBe true
     it 'should work with radiusX and fallback to radius', ->
       svg = document.createElementNS?(ns, "svg")
@@ -56,7 +56,7 @@ describe 'Polygon ->', ->
       d   = tri.el.getAttribute('d')
       d2  = 'M0.0000,-20.0000 L34.6410,10.0000 L-34.6410,10.0000 z'
       isD = d is d2
-      isIE9D = d is 'M 0 -20 L 34.641 10 L -34.641 10 z'
+      isIE9D = d is 'M 0 -20 L 34.641 10 L -34.641 10 Z'
       expect(isD or isIE9D).toBe true
 
     it 'should work with radiusY and fallback to radius', ->
@@ -68,7 +68,7 @@ describe 'Polygon ->', ->
       d   = tri.el.getAttribute('d')
       d2  = 'M0.0000,-40.0000 L17.3205,20.0000 L-17.3205,20.0000 z'
       isD = d is d2
-      isIE9D = d is 'M 0 -40 L 17.3205 20 L -17.3205 20 z'
+      isIE9D = d is 'M 0 -40 L 17.3205 20 L -17.3205 20 Z'
       expect(isD or isIE9D).toBe true
     it 'should call super method', ->
       svg     = document.createElementNS?(ns, "svg")

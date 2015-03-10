@@ -192,21 +192,19 @@
         });
         return expect(s.createTween).not.toBe(Stagger.__super__.createTween);
       });
-      it('should call super createTween method', function() {
+      it('should parse delay and duration', function() {
         var s;
         s = new Stagger({
           els: els
         });
-        spyOn(Stagger.__super__, 'createTween');
-        s.createTween();
-        return expect(Stagger.__super__.createTween).toHaveBeenCalled();
+        return expect(s.tween).toBeDefined();
       });
       return it('should add timelines to the tween', function() {
         var s;
         s = new Stagger({
           els: els
         });
-        return expect(s.tween.timelines.length).toBe(3);
+        return expect(s.tween.timelines.length).toBe(2);
       });
     });
     describe('draw method ->', function() {

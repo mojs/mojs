@@ -362,7 +362,7 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path: 'M0,0 L500,0'
         el: el
-        duration: 50
+        duration: 100
         fill: { container: c }
         onUpdate:(proc)->
           if proc >= .1 and !isSizeChange
@@ -387,7 +387,7 @@ describe 'MotionPath ->', ->
           angleOffset: 90
           isAngle: true
           onComplete:-> isEqual = mp.angle is 180
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
       it 'angleOffset should work with negative angles', (dfr)->
         coords = 'M0,0 L10,0 L10,10'
@@ -400,7 +400,7 @@ describe 'MotionPath ->', ->
           isAngle: true
           onComplete:-> isEqual = mp.angle is 0
 
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
       it 'should be evaluated if a function', (dfr)->
         coords = 'M0,0 L10,0 L10,10'
@@ -413,7 +413,7 @@ describe 'MotionPath ->', ->
             isFunction = true
             angle
 
-        setTimeout (-> expect(isFunction).toBe(true); dfr()), 100
+        setTimeout (-> expect(isFunction).toBe(true); dfr()), 300
 
       it 'should get current angle', (dfr)->
         coords = 'M0,0 L10,0 L10,10'

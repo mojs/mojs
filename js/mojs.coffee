@@ -8,9 +8,9 @@ Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
 paths = document.getElementById 'js-svg'
-path1 = document.getElementById 'js-path1'
-path2 = document.getElementById 'js-path2'
-path3 = document.getElementById 'js-path3'
+# path1 = document.getElementById 'js-path1'
+# path2 = document.getElementById 'js-path2'
+# path3 = document.getElementById 'js-path3'
 
 # burst = new Burst
 #   fill:      ['deeppink', 'cyan', 'yellow']
@@ -36,7 +36,10 @@ stagger = new Stagger
   isShowInit:       true
   easing:           'Sinusoidal.Out'
   strokeDashoffset:  { '100%': 0 }
+  isRunLess:        true
   # opacity:          0: 3
+
+# stagger.tween.setProgress .65
 
 # .then radius: 0, duration: 2000
 # .then radius: 75#, delay: 0
@@ -60,9 +63,10 @@ stagger = new Stagger
 
 # mp.run()
 
-# slider = document.getElementById 'js-slider'
-# slider.addEventListener 'input', (e)->
-#   burst.tween.setProgress (@value/100000)
+slider = document.getElementById 'js-slider'
+slider.addEventListener 'input', (e)->
+  console.log (@value/100000)
+  stagger.tween.setProgress (@value/100000)
 
 
 # # lines = document.querySelectorAll '#js-line'

@@ -64,7 +64,7 @@ module.exports = function(config) {
 
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
       reporters = ['progress', 'coverage', 'clear-screen'];
-      // browsers = ['PhantomJS'];
+      browsers = ['PhantomJS'];
       browsers = [];
     } else {
       reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];

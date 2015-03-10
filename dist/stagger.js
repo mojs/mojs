@@ -75,6 +75,7 @@ Stagger = (function(_super) {
     for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
       option = this.getOption(i);
       option.index = i;
+      option.isRunLess = true;
       _results.push(this.transits.push(new Transit(option)));
     }
     return _results;
@@ -115,11 +116,11 @@ Stagger = (function(_super) {
 
   Stagger.prototype.createTween = function() {
     var i, _results;
-    Stagger.__super__.createTween.apply(this, arguments);
+    this.tween = new Tween;
     i = this.transits.length;
     _results = [];
     while (i--) {
-      _results.push(this.tween.add(this.transits[i].timeline));
+      _results.push(this.tween.add(this.transits[i].tween));
     }
     return _results;
   };

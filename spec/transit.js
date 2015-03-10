@@ -913,7 +913,7 @@
             return setTimeout(function() {
               expect(byte.el.style.transform).toBe('translate(50%, 0px)');
               return dfr();
-            }, 100);
+            }, 300);
           });
           return it('should fallback to end units if units are differnt', function(dfr) {
             var byte;
@@ -929,7 +929,7 @@
             return setTimeout(function() {
               expect(byte.el.style.transform).toBe('translate(50px, 50%)');
               return dfr();
-            }, 100);
+            }, 300);
           });
         });
       });

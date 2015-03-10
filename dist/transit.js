@@ -470,10 +470,24 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.createTween = function() {
-    var it, onComplete;
+    var it;
     it = this;
-    onComplete = this.props.onComplete ? this.h.bind(this.props.onComplete, this) : null;
-    this.timeline = new Timeline({
+    this.createTimeline();
+    this.tween = new Tween({
+      onComplete: (function(_this) {
+        return function() {
+          var _ref;
+          !_this.o.isShowEnd && _this.hide();
+          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        };
+      })(this)
+    });
+    this.tween.add(this.timeline);
+    return !this.o.isRunLess && this.startTween();
+  };
+
+  Transit.prototype.createTimeline = function() {
+    return this.timeline = new Timeline({
       duration: this.props.duration,
       delay: this.props.delay,
       repeat: this.props.repeat,
@@ -504,17 +518,6 @@ Transit = (function(_super) {
         };
       })(this)
     });
-    this.tween = new Tween({
-      onComplete: (function(_this) {
-        return function() {
-          var _ref;
-          !_this.o.isShowEnd && _this.hide();
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
-        };
-      })(this)
-    });
-    this.tween.add(this.timeline);
-    return !this.o.isRunLess && this.startTween();
   };
 
   Transit.prototype.run = function(o) {

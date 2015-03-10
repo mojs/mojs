@@ -477,7 +477,7 @@
         return mp = new MotionPath({
           path: 'M0,0 L500,0',
           el: el,
-          duration: 50,
+          duration: 100,
           fill: {
             container: c
           },
@@ -517,7 +517,7 @@
           return setTimeout((function() {
             expect(isEqual).toBe(true);
             return dfr();
-          }), 100);
+          }), 300);
         });
         it('angleOffset should work with negative angles', function(dfr) {
           var isEqual, mp;
@@ -536,7 +536,7 @@
           return setTimeout((function() {
             expect(isEqual).toBe(true);
             return dfr();
-          }), 100);
+          }), 300);
         });
         it('should be evaluated if a function', function(dfr) {
           var isFunction, mp;
@@ -554,7 +554,7 @@
           return setTimeout((function() {
             expect(isFunction).toBe(true);
             return dfr();
-          }), 100);
+          }), 300);
         });
         it('should get current angle', function(dfr) {
           var angleSum1, angleSum2, isOnAngle, mp;

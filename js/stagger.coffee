@@ -40,6 +40,7 @@ class Stagger extends Transit
     for i in [0...len]
       # cover the index set
       option = @getOption(i); option.index = i
+      option.isRunLess = true
       @transits.push new Transit option
 
   getOption:(i)->
@@ -58,7 +59,8 @@ class Stagger extends Transit
   createTween:->
     # optimization TODO:
     # the stagger doesnt need the self timeline
-    super; i = @transits.length; @tween.add(@transits[i].timeline) while(i--)
+    @tween = new Tween
+    i = @transits.length; @tween.add(@transits[i].tween) while(i--)
 
   # setProgress:->
   # calcSize:->
