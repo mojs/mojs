@@ -193,7 +193,7 @@ Bit = (function() {
 
   Bit.prototype.getLength = function() {
     var _ref;
-    if (((_ref = this.el) != null ? _ref.getTotalLength : void 0) != null) {
+    if ((((_ref = this.el) != null ? _ref.getTotalLength : void 0) != null) && this.el.getAttribute('d')) {
       return this.el.getTotalLength();
     } else {
       return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);

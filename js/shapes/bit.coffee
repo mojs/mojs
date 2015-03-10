@@ -94,7 +94,7 @@ class Bit
       @el.setAttribute(name, value); @state[name] = value
   isChanged:(name, value)-> value ?= @props[name]; @state[name] isnt value
   getLength:->
-    if @el?.getTotalLength? then @el.getTotalLength()
+    if @el?.getTotalLength? and @el.getAttribute('d') then @el.getTotalLength()
     else 2*if @props.radiusX? then @props.radiusX else @props.radius
 
 ### istanbul ignore next ###

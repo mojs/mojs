@@ -7,7 +7,9 @@
 
   ns = 'http://www.w3.org/2000/svg';
 
-  svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
+  svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+
+  document.body.appendChild(svg);
 
   describe('Zigzag ->', function() {
     it('should extend Bit', function() {

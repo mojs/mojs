@@ -341,7 +341,7 @@
         });
         return expect(bit.getLength()).toBe(200);
       });
-      return it('should el has getTotalLength method, it should use it', function() {
+      it('should if el has getTotalLength method, it should use it', function() {
         var path;
         path = document.createElementNS(ns, 'path');
         path.setAttribute('d', 'M0,0 L100,100');
@@ -351,6 +351,18 @@
           el: path
         });
         return expect(bit.getLength()).toBe(path.getTotalLength());
+      });
+      return it('should should call getTotalLength on path only if d attr was set', function() {
+        var path;
+        path = document.createElementNS(ns, 'path');
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100,
+          el: path
+        });
+        spyOn(path, 'getTotalLength');
+        bit.getLength();
+        return expect(path.getTotalLength).not.toHaveBeenCalled();
       });
     });
     describe('length tracking ->', function() {

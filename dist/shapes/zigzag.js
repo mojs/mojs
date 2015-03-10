@@ -19,7 +19,6 @@ Zigzag = (function(_super) {
 
   Zigzag.prototype.draw = function() {
     var char, i, iX, iX2, iY, iY2, points, radiusX, radiusY, stepX, stepY, strokeWidth, xStart, yStart, _i, _ref;
-    Zigzag.__super__.draw.apply(this, arguments);
     if (!this.props.points) {
       return;
     }
@@ -39,13 +38,10 @@ Zigzag = (function(_super) {
       char = i === this.props.points ? 'M' : 'L';
       points += "" + char + iX + "," + iY + " l0, -" + stepY + " l-" + stepX + ", 0";
     }
-    return this.setAttr({
+    this.setAttr({
       d: points
     });
-  };
-
-  Zigzag.prototype.getLength = function() {
-    return this.el.getTotalLength();
+    return Zigzag.__super__.draw.apply(this, arguments);
   };
 
   return Zigzag;

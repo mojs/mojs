@@ -1,7 +1,8 @@
 Zigzag = mojs.Zigzag
 Bit    = mojs.Bit
 ns     = 'http://www.w3.org/2000/svg'
-svg    = document.createElementNS?(ns, "svg")
+svg    = document.createElementNS?(ns, 'svg')
+document.body.appendChild svg
 
 describe 'Zigzag ->', ->
   it 'should extend Bit', ->

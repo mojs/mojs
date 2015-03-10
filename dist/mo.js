@@ -1943,7 +1943,7 @@ Bit = (function() {
 
   Bit.prototype.getLength = function() {
     var _ref;
-    if (((_ref = this.el) != null ? _ref.getTotalLength : void 0) != null) {
+    if ((((_ref = this.el) != null ? _ref.getTotalLength : void 0) != null) && this.el.getAttribute('d')) {
       return this.el.getTotalLength();
     } else {
       return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
@@ -2552,7 +2552,6 @@ Zigzag = (function(_super) {
 
   Zigzag.prototype.draw = function() {
     var char, i, iX, iX2, iY, iY2, points, radiusX, radiusY, stepX, stepY, strokeWidth, xStart, yStart, _i, _ref;
-    Zigzag.__super__.draw.apply(this, arguments);
     if (!this.props.points) {
       return;
     }
@@ -2572,13 +2571,10 @@ Zigzag = (function(_super) {
       char = i === this.props.points ? 'M' : 'L';
       points += "" + char + iX + "," + iY + " l0, -" + stepY + " l-" + stepX + ", 0";
     }
-    return this.setAttr({
+    this.setAttr({
       d: points
     });
-  };
-
-  Zigzag.prototype.getLength = function() {
-    return this.el.getTotalLength();
+    return Zigzag.__super__.draw.apply(this, arguments);
   };
 
   return Zigzag;

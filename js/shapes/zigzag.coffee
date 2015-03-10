@@ -7,7 +7,6 @@ class Zigzag extends Bit
   type: 'path'
   ratio: 1.43
   draw:->
-    super
     return if !@props.points
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius
     radiusY = if @props.radiusY? then @props.radiusY else @props.radius
@@ -21,8 +20,8 @@ class Zigzag extends Bit
       char = if i is @props.points then 'M' else 'L'
       points += "#{char}#{iX},#{iY} l0, -#{stepY} l-#{stepX}, 0"
     @setAttr d: points
-
-  getLength:-> @el.getTotalLength()
+    super
+  # getLength:-> @el.getTotalLength()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
