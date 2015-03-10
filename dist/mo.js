@@ -1326,7 +1326,7 @@ paths = document.getElementById('js-svg');
 stagger = new Stagger({
   els: paths,
   strokeWidth: 3,
-  delay: 'stagger(2000, 100)',
+  delay: 'stagger(100)',
   duration: 2000,
   isShowEnd: true,
   isShowInit: true,
@@ -1340,7 +1340,6 @@ stagger = new Stagger({
 slider = document.getElementById('js-slider');
 
 slider.addEventListener('input', function(e) {
-  console.log(this.value / 100000);
   return stagger.tween.setProgress(this.value / 100000);
 });
 
@@ -2317,14 +2316,14 @@ Line = (function(_super) {
 
   Line.prototype.draw = function() {
     var radiusX;
-    Line.__super__.draw.apply(this, arguments);
     radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-    return this.setAttr({
+    this.setAttr({
       x1: this.props.x - radiusX,
       x2: this.props.x + radiusX,
       y1: this.props.y,
       y2: this.props.y
     });
+    return Line.__super__.draw.apply(this, arguments);
   };
 
   return Line;
@@ -2649,7 +2648,8 @@ Stagger = (function(_super) {
       '100%': '0%'
     },
     isShowInit: false,
-    isShowEnd: false
+    isShowEnd: false,
+    radius: 0
   };
 
   Stagger.prototype.vars = function() {
@@ -2733,14 +2733,13 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.createTween = function() {
-    var i, _results;
+    var i;
     this.tween = new Tween;
-    i = this.transits.length;
-    _results = [];
-    while (i--) {
-      _results.push(this.tween.add(this.transits[i].tween));
+    i = -1;
+    while (i++ < this.transits.length - 1) {
+      this.tween.add(this.transits[i].tween);
     }
-    return _results;
+    return !this.o.isRunLess && this.startTween();
   };
 
   Stagger.prototype.draw = function() {
@@ -3514,6 +3513,8 @@ Timeline = (function() {
   Timeline.prototype.update = function(time) {
     var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3, _ref4;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
+      this.isOnReverseComplete = false;
+      this.isCompleted = false;
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
           _ref.apply(this);
@@ -3567,6 +3568,7 @@ Timeline = (function() {
           _ref3.apply(this);
         }
         this.isCompleted = true;
+        this.isOnReverseComplete = false;
       }
       if (time > this.props.endTime || time < this.props.startTime) {
         this.isFirstUpdate = false;
@@ -3574,8 +3576,15 @@ Timeline = (function() {
       this.isFirstUpdateBackward = false;
     }
     if (time < this.prevTime && time <= this.props.startTime) {
-      if ((_ref4 = this.o.onReverseComplete) != null) {
-        _ref4.apply(this);
+      if (!this.isOnReverseComplete) {
+        this.isOnReverseComplete = true;
+        this.setProc(0);
+        if (typeof this.onUpdate === "function") {
+          this.onUpdate(this.easedProgress);
+        }
+        if ((_ref4 = this.o.onReverseComplete) != null) {
+          _ref4.apply(this);
+        }
       }
     }
     return this.prevTime = time;

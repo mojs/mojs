@@ -16,6 +16,7 @@ class Stagger extends Transit
     strokeDashoffset: '100%': '0%'
     isShowInit:       false
     isShowEnd:        false
+    radius:           0
 
   vars:->
     h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults
@@ -39,8 +40,7 @@ class Stagger extends Transit
     @transits = []; len = @props.els.length
     for i in [0...len]
       # cover the index set
-      option = @getOption(i); option.index = i
-      option.isRunLess = true
+      option = @getOption(i); option.index = i; option.isRunLess = true
       @transits.push new Transit option
 
   getOption:(i)->
@@ -48,7 +48,6 @@ class Stagger extends Transit
     for key, value of @props
       option[key] = @getPropByMod(key, i)
     option.bit = @getPropByMod('els', i)
-    # console.log option.delay
     option
 
   getPropByMod:(name, i)->
@@ -60,7 +59,10 @@ class Stagger extends Transit
     # optimization TODO:
     # the stagger doesnt need the self timeline
     @tween = new Tween
-    i = @transits.length; @tween.add(@transits[i].tween) while(i--)
+    i = -1
+    while(i++ < @transits.length-1)
+      @tween.add(@transits[i].tween)
+    !@o.isRunLess and @startTween()
 
   # setProgress:->
   # calcSize:->

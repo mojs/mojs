@@ -67,7 +67,9 @@ class Bit
     while(len--)
       name = @drawMap[len]
       switch name
-        when 'stroke-dasharray', 'stroke-dashoffset' then @castStrokeDash name
+        when 'stroke-dasharray', 'stroke-dashoffset'
+          @castStrokeDash name
+          # name is 'stroke-dashoffset' and console.log @props[name]
       @setAttrsIfChanged name, @props[name]
   castStrokeDash:(name)->
     if h.isArray(@props[name])

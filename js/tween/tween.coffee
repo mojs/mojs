@@ -36,8 +36,8 @@ class Tween
     if time > @props.endTime   then time = @props.endTime
     # update self timelines
     i = -1; len = @timelines.length-1
-    @timelines[i].update(time) while(i++ < len)
-
+    while(i++ < len)
+      @timelines[i].update(time)
     # if isn't complete
     if time >= @props.startTime and time < @props.endTime
       @onUpdate? (time - @props.startTime)/@props.totalTime

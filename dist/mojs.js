@@ -19,7 +19,7 @@ paths = document.getElementById('js-svg');
 stagger = new Stagger({
   els: paths,
   strokeWidth: 3,
-  delay: 'stagger(2000, 100)',
+  delay: 'stagger(100)',
   duration: 2000,
   isShowEnd: true,
   isShowInit: true,
@@ -33,6 +33,5 @@ stagger = new Stagger({
 slider = document.getElementById('js-slider');
 
 slider.addEventListener('input', function(e) {
-  console.log(this.value / 100000);
   return stagger.tween.setProgress(this.value / 100000);
 });

@@ -188,6 +188,7 @@ class Transit extends bitsMap.map.bit
       key = keys[len]; value = @deltas[key]
       @props[key] = switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
+          # key is 'strokeDashoffset' and console.log progress
           stroke = []
           for item, i in value.delta
             dash = value.start[i].value + item.value*@progress

@@ -32,6 +32,7 @@ class Timeline
     @
   update:(time)->
     if (time >= @props.startTime) and (time < @props.endTime)
+      @isOnReverseComplete = false; @isCompleted = false
       if !@isStarted then @o.onStart?.apply(@); @isStarted = true
       elapsed = time - @props.startTime
       # in the first repeat or without any repeats
@@ -63,11 +64,15 @@ class Timeline
       if time >= @props.endTime and !@isCompleted
         @setProc 1; @onUpdate? @easedProgress
         @o.onComplete?.apply(@); @isCompleted = true
+        @isOnReverseComplete = false
       if time > @props.endTime or time < @props.startTime
         @isFirstUpdate = false
       @isFirstUpdateBackward = false
     if time < @prevTime and time <= @props.startTime
-      @o.onReverseComplete?.apply(@)
+      if !@isOnReverseComplete
+        @isOnReverseComplete = true
+        @setProc(0); @onUpdate? @easedProgress
+        @o.onReverseComplete?.apply(@)
     @prevTime = time
 
   setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress

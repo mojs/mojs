@@ -16,21 +16,22 @@ paths = document.getElementById 'js-svg'
 #   fill:      ['deeppink', 'cyan', 'yellow']
 #   # strokeWidth: 'rand(1,3)': 0
 #   # fill:        'transparent'
-#   count:       50
-#   degree:      140
+#   count:       5
+#   # degree:      140
 #   radius:      0: 75
 #   isSwirl:     true
+#   isRunLess:   true
 #   # fill:        'transparent'
 #   # strokeDasharray: '100%'
 #   # strokeDashoffset: '-1000': 0
 #   duration:         800
-#   delay:            'stagger(2000, rand(0,150))'
+#   delay:            'stagger(100)'
 #   childOptions: radius: 'rand(2,6)': 0
 
 stagger = new Stagger
   els:              paths
   strokeWidth:      3
-  delay:            'stagger(2000, 100)'
+  delay:            'stagger(100)'
   duration:         2000
   isShowEnd:        true
   isShowInit:       true
@@ -65,8 +66,9 @@ stagger = new Stagger
 
 slider = document.getElementById 'js-slider'
 slider.addEventListener 'input', (e)->
-  console.log (@value/100000)
+  # console.log 'progress:', (@value/100000)
   stagger.tween.setProgress (@value/100000)
+  # burst.tween.setProgress (@value/100000)
 
 
 # # lines = document.querySelectorAll '#js-line'

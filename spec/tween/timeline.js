@@ -273,27 +273,86 @@
         var t;
         t = new Timeline({
           duration: 100,
-          onReverseComplete: function() {},
-          isIt: true
+          onReverseComplete: function() {}
         }).start();
         spyOn(t.o, 'onReverseComplete');
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime);
         return expect(t.o.onReverseComplete).toHaveBeenCalled();
       });
-      return it('should have the right scope', function() {
+      it('should onReverseComplete only once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 100,
+          onReverseComplete: function() {
+            return cnt++;
+          }
+        }).start();
+        t.update(t.props.startTime + 55);
+        t.update(t.props.startTime);
+        t.update(t.props.startTime - 20);
+        t.update(t.props.startTime - 30);
+        expect(cnt).toBe(1);
+        return expect(t.isOnReverseComplete).toBe(true);
+      });
+      it('should reset isOnReverseComplete flag', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 100,
+          onReverseComplete: function() {
+            return cnt++;
+          }
+        }).start();
+        t.update(t.props.startTime + 55);
+        t.update(t.props.startTime);
+        t.update(t.props.startTime - 20);
+        t.update(t.props.startTime - 30);
+        t.update(t.props.startTime + 1);
+        return expect(t.isOnReverseComplete).toBe(false);
+      });
+      it('should reset isOnReverseComplete flag #2', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 100,
+          onReverseComplete: function() {
+            return cnt++;
+          }
+        }).start();
+        t.update(t.props.startTime + 55);
+        t.update(t.props.startTime);
+        t.update(t.props.startTime - 20);
+        t.update(t.props.startTime - 30);
+        t.update(t.props.endTime);
+        return expect(t.isOnReverseComplete).toBe(false);
+      });
+      it('should have the right scope', function() {
         var isRightScope, t;
         isRightScope = null;
         t = new Timeline({
           duration: 100,
           onReverseComplete: function() {
             return isRightScope = this instanceof Timeline;
-          },
-          isIt: true
+          }
         }).start();
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime);
         return expect(isRightScope).toBe(true);
+      });
+      return it('should setProgress to 0', function() {
+        var t;
+        t = new Timeline({
+          duration: 100,
+          onReverseComplete: function() {},
+          onUpdate: function() {}
+        }).start();
+        spyOn(t, 'onUpdate');
+        t.update(t.props.startTime + 55);
+        t.update(t.props.startTime - 20);
+        expect(t.onUpdate).toHaveBeenCalledWith(0);
+        return expect(t.progress).toBe(0);
       });
     });
     describe('onComplete callback ->', function() {
@@ -326,6 +385,18 @@
         t.update(t.props.startTime + 33);
         t.update(t.props.startTime + 33);
         return expect(cnt).toBe(1);
+      });
+      it('should reset isCompleted flag', function() {
+        var t;
+        t = new Timeline({
+          duration: 32,
+          onComplete: function() {}
+        }).start();
+        t.update(t.props.startTime + 10);
+        t.update(t.props.endTime);
+        expect(t.isCompleted).toBe(true);
+        t.update(t.props.startTime + 10);
+        return expect(t.isCompleted).toBe(false);
       });
       it('should have the right scope', function() {
         var isRightScope, t;

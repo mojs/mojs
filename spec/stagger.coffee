@@ -81,7 +81,7 @@ describe 'Stagger ->', ->
       expect(s.transits[0].o.stroke).toBe 'deeppink'
       expect(s.transits[1].o.stroke).toBe 'cyan'
 
-    it 'should pass index to every transit', ->
+    it 'should pass index and isRunLess to every transit', ->
       els   = document.createElementNS ns, 'g'
       path1 = document.createElementNS ns, 'path'
       path2 = document.createElementNS ns, 'path'
@@ -92,6 +92,8 @@ describe 'Stagger ->', ->
       expect(s.transits.length)   .toBe 2
       expect(s.transits[0].o.index).toBe 0
       expect(s.transits[1].o.index).toBe 1
+      expect(s.transits[0].o.isRunLess).toBe true
+      expect(s.transits[1].o.isRunLess).toBe true
 
   describe 'render method ->', ->
     it 'should override render method', ->
@@ -134,6 +136,18 @@ describe 'Stagger ->', ->
     it 'should add timelines to the tween', ->
       s = new Stagger els: els
       expect(s.tween.timelines.length).toBe 2
+
+    it 'should call startTween', ->
+      s = new Stagger els: els
+      spyOn s, 'startTween'
+      s.createTween()
+      expect(s.startTween).toHaveBeenCalled()
+
+    it 'should not call startTween if isRunLess was passed', ->
+      s = new Stagger els: els, isRunLess: true
+      spyOn s, 'startTween'
+      s.createTween()
+      expect(s.startTween).not.toHaveBeenCalled()
 
   describe 'draw method ->', ->
     it 'should override draw method', ->

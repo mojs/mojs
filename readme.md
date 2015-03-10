@@ -6,10 +6,10 @@
 **! in active development - isn't ready yet !**
 
 #### todo
-- fix tests
-- should control el's center
+- mp should control el's center
+- fix getLength on every draw
+- fix stagger progress set
 - :: demo
-
 - refactor
   - setAttrsIfChanged to every shape
   - transit custom shape length calculations

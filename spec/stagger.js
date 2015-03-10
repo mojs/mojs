@@ -131,7 +131,7 @@
         expect(s.transits[0].o.stroke).toBe('deeppink');
         return expect(s.transits[1].o.stroke).toBe('cyan');
       });
-      return it('should pass index to every transit', function() {
+      return it('should pass index and isRunLess to every transit', function() {
         var s;
         els = document.createElementNS(ns, 'g');
         path1 = document.createElementNS(ns, 'path');
@@ -144,7 +144,9 @@
         });
         expect(s.transits.length).toBe(2);
         expect(s.transits[0].o.index).toBe(0);
-        return expect(s.transits[1].o.index).toBe(1);
+        expect(s.transits[1].o.index).toBe(1);
+        expect(s.transits[0].o.isRunLess).toBe(true);
+        return expect(s.transits[1].o.isRunLess).toBe(true);
       });
     });
     describe('render method ->', function() {
@@ -199,12 +201,31 @@
         });
         return expect(s.tween).toBeDefined();
       });
-      return it('should add timelines to the tween', function() {
+      it('should add timelines to the tween', function() {
         var s;
         s = new Stagger({
           els: els
         });
         return expect(s.tween.timelines.length).toBe(2);
+      });
+      it('should call startTween', function() {
+        var s;
+        s = new Stagger({
+          els: els
+        });
+        spyOn(s, 'startTween');
+        s.createTween();
+        return expect(s.startTween).toHaveBeenCalled();
+      });
+      return it('should not call startTween if isRunLess was passed', function() {
+        var s;
+        s = new Stagger({
+          els: els,
+          isRunLess: true
+        });
+        spyOn(s, 'startTween');
+        s.createTween();
+        return expect(s.startTween).not.toHaveBeenCalled();
       });
     });
     describe('draw method ->', function() {

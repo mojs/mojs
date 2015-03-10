@@ -31,7 +31,8 @@ Stagger = (function(_super) {
       '100%': '0%'
     },
     isShowInit: false,
-    isShowEnd: false
+    isShowEnd: false,
+    radius: 0
   };
 
   Stagger.prototype.vars = function() {
@@ -115,14 +116,13 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.createTween = function() {
-    var i, _results;
+    var i;
     this.tween = new Tween;
-    i = this.transits.length;
-    _results = [];
-    while (i--) {
-      _results.push(this.tween.add(this.transits[i].tween));
+    i = -1;
+    while (i++ < this.transits.length - 1) {
+      this.tween.add(this.transits[i].tween);
     }
-    return _results;
+    return !this.o.isRunLess && this.startTween();
   };
 
   Stagger.prototype.draw = function() {

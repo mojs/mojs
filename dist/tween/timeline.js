@@ -56,6 +56,8 @@ Timeline = (function() {
   Timeline.prototype.update = function(time) {
     var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3, _ref4;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
+      this.isOnReverseComplete = false;
+      this.isCompleted = false;
       if (!this.isStarted) {
         if ((_ref = this.o.onStart) != null) {
           _ref.apply(this);
@@ -109,6 +111,7 @@ Timeline = (function() {
           _ref3.apply(this);
         }
         this.isCompleted = true;
+        this.isOnReverseComplete = false;
       }
       if (time > this.props.endTime || time < this.props.startTime) {
         this.isFirstUpdate = false;
@@ -116,8 +119,15 @@ Timeline = (function() {
       this.isFirstUpdateBackward = false;
     }
     if (time < this.prevTime && time <= this.props.startTime) {
-      if ((_ref4 = this.o.onReverseComplete) != null) {
-        _ref4.apply(this);
+      if (!this.isOnReverseComplete) {
+        this.isOnReverseComplete = true;
+        this.setProc(0);
+        if (typeof this.onUpdate === "function") {
+          this.onUpdate(this.easedProgress);
+        }
+        if ((_ref4 = this.o.onReverseComplete) != null) {
+          _ref4.apply(this);
+        }
       }
     }
     return this.prevTime = time;

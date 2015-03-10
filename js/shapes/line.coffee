@@ -5,13 +5,13 @@ Bit = require './bit'
 
 class Line extends Bit
   draw:->
-    super
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius
     @setAttr
       x1:  @props.x - radiusX
       x2:  @props.x + radiusX
       y1:  @props.y
       y2:  @props.y
+    super
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

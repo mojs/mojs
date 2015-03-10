@@ -140,23 +140,72 @@ describe 'Timeline ->', ->
       t = new Timeline(
         duration: 100
         onReverseComplete:->
-        isIt: true
       ).start()
       spyOn(t.o, 'onReverseComplete')
       t.update t.props.startTime + 55
       t.update t.props.startTime
       expect(t.o.onReverseComplete).toHaveBeenCalled()
 
+    it 'should onReverseComplete only once', ->
+      cnt = 0
+      t = new Timeline(
+        duration: 100
+        onReverseComplete:-> cnt++
+      ).start()
+      t.update t.props.startTime + 55
+      t.update t.props.startTime
+      t.update t.props.startTime - 20
+      t.update t.props.startTime - 30
+      expect(cnt).toBe 1
+      expect(t.isOnReverseComplete).toBe true
+
+    it 'should reset isOnReverseComplete flag', ->
+      cnt = 0
+      t = new Timeline(
+        duration: 100
+        onReverseComplete:-> cnt++
+      ).start()
+      t.update t.props.startTime + 55
+      t.update t.props.startTime
+      t.update t.props.startTime - 20
+      t.update t.props.startTime - 30
+      t.update t.props.startTime + 1
+      expect(t.isOnReverseComplete).toBe false
+
+    it 'should reset isOnReverseComplete flag #2', ->
+      cnt = 0
+      t = new Timeline(
+        duration: 100
+        onReverseComplete:-> cnt++
+      ).start()
+      t.update t.props.startTime + 55
+      t.update t.props.startTime
+      t.update t.props.startTime - 20
+      t.update t.props.startTime - 30
+      t.update t.props.endTime 
+      expect(t.isOnReverseComplete).toBe false
+
     it 'should have the right scope', ->
       isRightScope = null
       t = new Timeline(
         duration: 100
         onReverseComplete:-> isRightScope = @ instanceof Timeline
-        isIt: true
       ).start()
       t.update t.props.startTime + 55
       t.update t.props.startTime
       expect(isRightScope).toBe true
+
+    it 'should setProgress to 0', ->
+      t = new Timeline(
+        duration: 100
+        onReverseComplete:->
+        onUpdate:->
+      ).start()
+      spyOn(t, 'onUpdate')
+      t.update t.props.startTime + 55
+      t.update t.props.startTime - 20
+      expect(t.onUpdate).toHaveBeenCalledWith 0
+      expect(t.progress).toBe 0
 
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
@@ -173,6 +222,15 @@ describe 'Timeline ->', ->
       t.update(t.props.startTime + 33)
       t.update(t.props.startTime + 33)
       expect(cnt).toBe 1
+
+    it 'should reset isCompleted flag', ->
+      t = new Timeline(duration: 32, onComplete:->).start()
+      t.update(t.props.startTime + 10)
+      t.update(t.props.endTime)
+      expect(t.isCompleted).toBe true
+      t.update(t.props.startTime + 10)
+      expect(t.isCompleted).toBe false
+
     it 'should have the right scope', ->
       isRightScope = false
       t = new Timeline
