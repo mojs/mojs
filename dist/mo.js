@@ -310,7 +310,7 @@ Burst = (function(_super) {
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
       if (!this.props.isResetAngles) {
-        angleAddition = i * step + 90;
+        angleAddition = i * step + 135;
         transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
       }
       _results.push(transit.extendDefaults());
@@ -906,17 +906,11 @@ Helpers = (function() {
     return args;
   };
 
-  Helpers.prototype.log = function() {
-    return console.log.apply(console, this.prepareForLog(arguments));
-  };
+  Helpers.prototype.log = function() {};
 
-  Helpers.prototype.warn = function() {
-    return console.warn.apply(console, this.prepareForLog(arguments));
-  };
+  Helpers.prototype.warn = function() {};
 
-  Helpers.prototype.error = function() {
-    return console.error.apply(console, this.prepareForLog(arguments));
-  };
+  Helpers.prototype.error = function() {};
 
   Helpers.prototype.parseUnit = function(value) {
     var amount, isStrict, regex, returnVal, unit, _ref;
@@ -1305,7 +1299,7 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, paths, slider, stagger;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, ball, burst, burst2, circle, circleRadius, cyan, delayStart, isRunLess, mainTween, s, slider, yellow;
 
 Burst = require('./burst');
 
@@ -1321,26 +1315,148 @@ Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
 
-paths = document.getElementById('js-svg');
+isRunLess = false;
 
-stagger = new Stagger({
-  els: paths,
-  strokeWidth: 3,
-  delay: 'stagger(100)',
-  duration: 2000,
-  isShowEnd: true,
-  isShowInit: true,
-  easing: 'Sinusoidal.Out',
-  strokeDashoffset: {
-    '100%': 0
+delayStart = 0;
+
+mainTween = new Tween;
+
+yellow = '#F9DD5E';
+
+cyan = '#11CDC5';
+
+circleRadius = 8;
+
+s = 1;
+
+burst = new Burst({
+  x: 100,
+  y: 300,
+  degree: 180,
+  angle: 45,
+  radius: {
+    10: 25
   },
-  isRunLess: true
+  type: 'line',
+  stroke: yellow,
+  strokeWidth: 2,
+  delay: (delayStart + 650) * s,
+  isRunLess: isRunLess,
+  childOptions: {
+    radius: {
+      7: 0
+    }
+  }
 });
+
+burst2 = new Burst({
+  x: 100,
+  y: 300,
+  degree: 180,
+  angle: 45,
+  radius: {
+    10: 25
+  },
+  type: 'line',
+  stroke: cyan,
+  strokeWidth: 2,
+  delay: (delayStart + 1950) * s,
+  isRunLess: isRunLess,
+  childOptions: {
+    radius: {
+      7: 0
+    }
+  }
+});
+
+circle = new Transit({
+  x: 100,
+  y: 80,
+  type: 'circle',
+  radius: 3 * circleRadius,
+  fill: 'transparent',
+  strokeWidth: 2,
+  stroke: '#FC2D79',
+  isShowInit: true,
+  isShowEnd: true,
+  strokeDasharray: '100% 200%',
+  strokeDashoffset: {
+    '100%': '50%'
+  },
+  angle: 180,
+  delay: (delayStart + 900) * s,
+  duration: 300 * s,
+  isRunLess: isRunLess
+}).then({
+  strokeDashoffset: '100%',
+  angle: 360,
+  delay: 0
+});
+
+ball = new Transit({
+  type: 'circle',
+  stroke: 'white',
+  strokeWidth: 2,
+  fill: 'transparent',
+  radius: circleRadius,
+  radiusX: circleRadius / 2,
+  radiusY: circleRadius,
+  x: 100,
+  y: -20,
+  isShowInit: true,
+  isShowEnd: true,
+  shiftY: {
+    0: 300
+  },
+  duration: 600 * s,
+  easing: 'Cubic.In',
+  delay: delayStart * s,
+  isRunLess: isRunLess
+}).then({
+  shiftY: 305,
+  radiusX: 1.5 * circleRadius,
+  radiusY: circleRadius / 2,
+  easing: 'Cubic.Out',
+  duration: 150 * s,
+  delay: 0
+}).then({
+  shiftY: 100,
+  radiusX: circleRadius,
+  radiusY: circleRadius,
+  easing: 'Cubic.Out',
+  duration: 600 * s
+}).then({
+  shiftY: 300,
+  radiusX: circleRadius / 2,
+  radiusY: circleRadius,
+  easing: 'Cubic.In',
+  duration: 600 * s,
+  delay: 0
+}).then({
+  shiftY: 305,
+  radiusX: 1.5 * circleRadius,
+  radiusY: circleRadius / 2,
+  easing: 'Cubic.Out',
+  duration: 150 * s,
+  delay: 0
+}).then({
+  shiftY: 150,
+  radiusX: circleRadius,
+  radiusY: circleRadius,
+  easing: 'Cubic.Out',
+  duration: 600 * s
+});
+
+mainTween.add(ball.tween);
+
+mainTween.add(burst.tween);
+
+mainTween.add(circle.tween);
 
 slider = document.getElementById('js-slider');
 
 slider.addEventListener('input', function(e) {
-  return stagger.tween.setProgress(this.value / 100000);
+  return mainTween.setProgress(this.value / 100000);
 });
 
 },{"./Swirl":1,"./burst":2,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
@@ -2896,7 +3012,6 @@ Transit = (function(_super) {
       this.el.style.height = size;
       this.el.style['margin-left'] = marginSize;
       this.el.style['margin-top'] = marginSize;
-      this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
     }
     this.el.style.opacity = this.props.opacity;
     if (this.o.isShowInit) {

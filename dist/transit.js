@@ -109,7 +109,6 @@ Transit = (function(_super) {
       this.el.style.height = size;
       this.el.style['margin-left'] = marginSize;
       this.el.style['margin-top'] = marginSize;
-      this.h.setPrefixedStyle(this.el, 'backface-visibility', 'hidden');
     }
     this.el.style.opacity = this.props.opacity;
     if (this.o.isShowInit) {

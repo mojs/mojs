@@ -97,9 +97,9 @@ class Helpers
     args = Array::slice.apply args
     args.unshift('::'); args.unshift(@logBadgeCss); args.unshift('%cmo·js%c')
     args
-  log:->    console.log.apply   console, @prepareForLog arguments
-  warn:->   console.warn.apply  console, @prepareForLog arguments
-  error:->  console.error.apply console, @prepareForLog arguments
+  log:->    # console.log.apply   console, @prepareForLog arguments
+  warn:->   # console.warn.apply  console, @prepareForLog arguments
+  error:->  # console.error.apply console, @prepareForLog arguments
   parseUnit:(value)->
     if typeof value is 'number'
       return returnVal =

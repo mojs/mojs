@@ -80,7 +80,7 @@ class Transit extends bitsMap.map.bit
       @el.style.height      = size
       @el.style['margin-left'] = marginSize
       @el.style['margin-top']  = marginSize
-      @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
+      # @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
     @el.style.opacity     = @props.opacity
     if @o.isShowInit then @show() else @hide()
@@ -302,6 +302,7 @@ class Transit extends bitsMap.map.bit
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     @tween.append new Timeline(opts)
     @
+    
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
   # TWEEN
   createTween:->
