@@ -293,6 +293,14 @@
             expect(delta.end.value).toBe(-75.5);
             return expect(delta.end.string).toBe('-75.5px');
           });
+          it('should not warn with the same units', function() {
+            var delta;
+            spyOn(h, 'warn');
+            delta = h.parseDelta('x', {
+              '25.50%': '-75.50%'
+            });
+            return expect(h.warn).not.toHaveBeenCalled();
+          });
           it('should work with strokeDash.. properties', function() {
             var delta;
             delta = h.parseDelta('strokeDashoffset', {
@@ -445,6 +453,13 @@
             h.log('something');
             return expect(console.log).toHaveBeenCalled();
           });
+          it('should not log to console if !isDebug', function() {
+            mojs.isDebug = false;
+            spyOn(console, 'log');
+            h.log('something');
+            expect(console.log).not.toHaveBeenCalled();
+            return mojs.isDebug = true;
+          });
           return it('should prepend mojs badge to message', function() {
             spyOn(console, 'log');
             h.log('smth');
@@ -457,6 +472,13 @@
             h.warn('something');
             return expect(console.warn).toHaveBeenCalled();
           });
+          it('should not warn to console if !isDebug', function() {
+            mojs.isDebug = false;
+            spyOn(console, 'warn');
+            h.warn('something');
+            expect(console.warn).not.toHaveBeenCalled();
+            return mojs.isDebug = true;
+          });
           return it('should prepend mojs badge to message', function() {
             spyOn(console, 'warn');
             h.warn('smth');
@@ -468,6 +490,13 @@
             spyOn(console, 'error');
             h.error('something');
             return expect(console.error).toHaveBeenCalled();
+          });
+          it('should not error to console if !isDebug', function() {
+            mojs.isDebug = false;
+            spyOn(console, 'error');
+            h.error('something');
+            expect(console.error).not.toHaveBeenCalled();
+            return mojs.isDebug = true;
           });
           return it('should prepend mojs badge to message', function() {
             spyOn(console, 'error');

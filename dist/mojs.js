@@ -1,10 +1,17 @@
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, ball, burst, burst2, circle, circleRadius, cyan, delayStart, isRunLess, mainTween, s, slider, yellow;
 
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs = {
-    revision: '0.98.2'
-  };
-}
+/*
+  :: mo · js :: motion graphics toolbelt for the web
+  LegoMushroom - Oleg Solomka 2015 MIT
+  v0.98.3 unstable
+ */
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, ball, burst, burst2, circle, circleRadius, cyan, delayStart, h, isRunLess, mainTween, s, slider, yellow;
+
+window.mojs = {
+  revision: '0.99.0',
+  isDebug: true
+};
+
+h = require('./h');
 
 Burst = require('./burst');
 
@@ -163,3 +170,26 @@ slider = document.getElementById('js-slider');
 slider.addEventListener('input', function(e) {
   return mainTween.setProgress(this.value / 100000);
 });
+
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("mojs", [], function() {
+    return mojs;
+  });
+}
+
+
+/* istanbul ignore next */
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = mojs;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs = mojs;
+}

@@ -363,8 +363,8 @@ describe 'Transit ->', ->
       expect(byte.el.style.display)               .toBe 'none'
       expect(byte.el.style['margin-left'])        .toBe '-27px'
       expect(byte.el.style['margin-top'])         .toBe '-27px'
-      # expect(byte.el.style['backface-visibility']).toBe 'hidden'
-      # expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
+      #expect(byte.el.style['backface-visibility']).toBe 'hidden'
+      #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
       expect(byte.isShown).toBe false
     
     it 'should skip props if foreign context', ->

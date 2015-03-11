@@ -907,14 +907,23 @@ Helpers = (function() {
   };
 
   Helpers.prototype.log = function() {
+    if (mojs.isDebug === false) {
+      return;
+    }
     return console.log.apply(console, this.prepareForLog(arguments));
   };
 
   Helpers.prototype.warn = function() {
+    if (mojs.isDebug === false) {
+      return;
+    }
     return console.warn.apply(console, this.prepareForLog(arguments));
   };
 
   Helpers.prototype.error = function() {
+    if (mojs.isDebug === false) {
+      return;
+    }
     return console.error.apply(console, this.prepareForLog(arguments));
   };
 
@@ -1219,7 +1228,7 @@ Helpers = (function() {
       start.unit = end.unit;
       return start.string = "" + start.value + start.unit;
     } else if (end.isStrict && start.isStrict) {
-      if (end.units !== start.unit) {
+      if (end.unit !== start.unit) {
         start.unit = end.unit;
         start.string = "" + start.value + start.unit;
         return this.warn("Two different units were specified on \"" + key + "\" delta property, mo · js will fallback to end \"" + end.unit + "\" unit ");
@@ -1246,7 +1255,7 @@ Helpers = (function() {
   };
 
 
-  /**
+  /*
    * Return direct children elements.
    *
    * @param {HTMLElement}
@@ -1305,13 +1314,20 @@ if (typeof window !== "undefined" && window !== null) {
 }
 
 },{}],5:[function(require,module,exports){
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, ball, burst, burst2, circle, circleRadius, cyan, delayStart, isRunLess, mainTween, s, slider, yellow;
 
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs = {
-    revision: '0.98.2'
-  };
-}
+/*
+  :: mo · js :: motion graphics toolbelt for the web
+  LegoMushroom - Oleg Solomka 2015 MIT
+  v0.98.3 unstable
+ */
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, ball, burst, burst2, circle, circleRadius, cyan, delayStart, h, isRunLess, mainTween, s, slider, yellow;
+
+window.mojs = {
+  revision: '0.99.0',
+  isDebug: true
+};
+
+h = require('./h');
 
 Burst = require('./burst');
 
@@ -1471,7 +1487,30 @@ slider.addEventListener('input', function(e) {
   return mainTween.setProgress(this.value / 100000);
 });
 
-},{"./Swirl":1,"./burst":2,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
+
+/* istanbul ignore next */
+
+if ((typeof define === "function") && define.amd) {
+  define("mojs", [], function() {
+    return mojs;
+  });
+}
+
+
+/* istanbul ignore next */
+
+if ((typeof module === "object") && (typeof module.exports === "object")) {
+  module.exports = mojs;
+}
+
+
+/* istanbul ignore next */
+
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs = mojs;
+}
+
+},{"./Swirl":1,"./burst":2,"./h":4,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
 
 h = require('./h');

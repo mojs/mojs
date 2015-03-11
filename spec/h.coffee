@@ -215,6 +215,11 @@ describe 'Helpers ->', ->
           expect(delta.end.value)   .toBe   -75.5
           expect(delta.end.string)  .toBe   '-75.5px'
 
+        it 'should not warn with the same units', ->
+          spyOn h, 'warn'
+          delta = h.parseDelta 'x',  {'25.50%': '-75.50%'}
+          expect(h.warn).not.toHaveBeenCalled()
+
         it 'should work with strokeDash.. properties', ->
           delta = h.parseDelta 'strokeDashoffset',  {'25.50': '-75.50%'}
 
@@ -321,6 +326,12 @@ describe 'Helpers ->', ->
           spyOn console, 'log'
           h.log 'something'
           expect(console.log).toHaveBeenCalled()
+        it 'should not log to console if !isDebug',->
+          mojs.isDebug = false
+          spyOn console, 'log'
+          h.log 'something'
+          expect(console.log).not.toHaveBeenCalled()
+          mojs.isDebug = true
         it 'should prepend mojs badge to message',->
           spyOn console, 'log'
           h.log 'smth'
@@ -331,6 +342,12 @@ describe 'Helpers ->', ->
           spyOn console, 'warn'
           h.warn 'something'
           expect(console.warn).toHaveBeenCalled()
+        it 'should not warn to console if !isDebug',->
+          mojs.isDebug = false
+          spyOn console, 'warn'
+          h.warn 'something'
+          expect(console.warn).not.toHaveBeenCalled()
+          mojs.isDebug = true
         it 'should prepend mojs badge to message',->
           spyOn console, 'warn'
           h.warn 'smth'
@@ -341,6 +358,12 @@ describe 'Helpers ->', ->
           spyOn console, 'error'
           h.error 'something'
           expect(console.error).toHaveBeenCalled()
+        it 'should not error to console if !isDebug',->
+          mojs.isDebug = false
+          spyOn console, 'error'
+          h.error 'something'
+          expect(console.error).not.toHaveBeenCalled()
+          mojs.isDebug = true
         it 'should prepend mojs badge to message',->
           spyOn console, 'error'
           h.error 'smth'

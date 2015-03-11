@@ -97,9 +97,15 @@ class Helpers
     args = Array::slice.apply args
     args.unshift('::'); args.unshift(@logBadgeCss); args.unshift('%cmo·js%c')
     args
-  log:->    console.log.apply   console, @prepareForLog arguments
-  warn:->   console.warn.apply  console, @prepareForLog arguments
-  error:->  console.error.apply console, @prepareForLog arguments
+  log:->
+    return if mojs.isDebug is false
+    console.log.apply console, @prepareForLog arguments
+  warn:->
+    return if mojs.isDebug is false
+    console.warn.apply console, @prepareForLog arguments
+  error:->
+    return if mojs.isDebug is false
+    console.error.apply console, @prepareForLog arguments
   parseUnit:(value)->
     if typeof value is 'number'
       return returnVal =
@@ -345,7 +351,7 @@ class Helpers
       start.unit = end.unit
       start.string = "#{start.value}#{start.unit}"
     else if end.isStrict and start.isStrict
-      if end.units isnt start.unit
+      if end.unit isnt start.unit
         start.unit = end.unit
         start.string = "#{start.value}#{start.unit}"
         @warn "Two different units were specified on \"#{key}\" delta
@@ -359,7 +365,8 @@ class Helpers
       isObject = o and typeof o is 'object'
       isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
       isObject and isNode
-  ###*
+  
+  ###
   # Return direct children elements.
   #
   # @param {HTMLElement}

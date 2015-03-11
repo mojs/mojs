@@ -139,14 +139,23 @@ Helpers = (function() {
   };
 
   Helpers.prototype.log = function() {
+    if (mojs.isDebug === false) {
+      return;
+    }
     return console.log.apply(console, this.prepareForLog(arguments));
   };
 
   Helpers.prototype.warn = function() {
+    if (mojs.isDebug === false) {
+      return;
+    }
     return console.warn.apply(console, this.prepareForLog(arguments));
   };
 
   Helpers.prototype.error = function() {
+    if (mojs.isDebug === false) {
+      return;
+    }
     return console.error.apply(console, this.prepareForLog(arguments));
   };
 
@@ -451,7 +460,7 @@ Helpers = (function() {
       start.unit = end.unit;
       return start.string = "" + start.value + start.unit;
     } else if (end.isStrict && start.isStrict) {
-      if (end.units !== start.unit) {
+      if (end.unit !== start.unit) {
         start.unit = end.unit;
         start.string = "" + start.value + start.unit;
         return this.warn("Two different units were specified on \"" + key + "\" delta property, mo · js will fallback to end \"" + end.unit + "\" unit ");
@@ -478,7 +487,7 @@ Helpers = (function() {
   };
 
 
-  /**
+  /*
    * Return direct children elements.
    *
    * @param {HTMLElement}

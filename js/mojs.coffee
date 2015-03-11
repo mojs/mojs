@@ -1,6 +1,11 @@
-# Transit   = require './transit'
-window?.mojs = revision: '0.98.2'
+###
+  :: mo · js :: motion graphics toolbelt for the web
+  LegoMushroom - Oleg Solomka 2015 MIT
+  v0.98.3 unstable
+###
+window.mojs = revision: '0.99.0', isDebug: true
 
+h           = require './h'
 Burst       = require './burst'
 Swirl       = require './Swirl'
 Transit     = require './transit'
@@ -8,6 +13,7 @@ Stagger     = require './stagger'
 MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
+
 
 isRunLess = false
 delayStart = 0
@@ -52,7 +58,7 @@ circle = new Transit
   isShowInit: true
   isShowEnd:  true
   strokeDasharray:  '100% 200%'
-  strokeDashoffset: '100%' : '50%'
+  strokeDashoffset: {'100%': '50%'}
   angle: 180
   delay: (delayStart+900)*s
   duration: 300*s
@@ -194,3 +200,11 @@ slider.addEventListener 'input', (e)->
 
 # # mp.run()
 
+### istanbul ignore next ###
+if (typeof define is "function") and define.amd
+  define "mojs", [], -> mojs
+### istanbul ignore next ###
+if (typeof module is "object") and (typeof module.exports is "object")
+  module.exports = mojs
+### istanbul ignore next ###
+window?.mojs = mojs
