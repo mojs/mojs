@@ -162,7 +162,7 @@ Burst = (function(_super) {
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
       if (!this.props.isResetAngles) {
-        angleAddition = i * step + 135;
+        angleAddition = i * step + 90;
         transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
       }
       _results.push(transit.extendDefaults());
@@ -177,7 +177,7 @@ Burst = (function(_super) {
       radius: sideRadius.radius,
       radiusX: sideRadius.radiusX,
       radiusY: sideRadius.radiusY,
-      angle: angle + this.props.angle,
+      angle: angle,
       center: {
         x: this.props.center,
         y: this.props.center

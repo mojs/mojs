@@ -310,7 +310,7 @@ Burst = (function(_super) {
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
       if (!this.props.isResetAngles) {
-        angleAddition = i * step + 135;
+        angleAddition = i * step + 90;
         transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
       }
       _results.push(transit.extendDefaults());
@@ -325,7 +325,7 @@ Burst = (function(_super) {
       radius: sideRadius.radius,
       radiusX: sideRadius.radiusX,
       radiusY: sideRadius.radiusY,
-      angle: angle + this.props.angle,
+      angle: angle,
       center: {
         x: this.props.center,
         y: this.props.center
@@ -906,11 +906,17 @@ Helpers = (function() {
     return args;
   };
 
-  Helpers.prototype.log = function() {};
+  Helpers.prototype.log = function() {
+    return console.log.apply(console, this.prepareForLog(arguments));
+  };
 
-  Helpers.prototype.warn = function() {};
+  Helpers.prototype.warn = function() {
+    return console.warn.apply(console, this.prepareForLog(arguments));
+  };
 
-  Helpers.prototype.error = function() {};
+  Helpers.prototype.error = function() {
+    return console.error.apply(console, this.prepareForLog(arguments));
+  };
 
   Helpers.prototype.parseUnit = function(value) {
     var amount, isStrict, regex, returnVal, unit, _ref;
@@ -1301,6 +1307,12 @@ if (typeof window !== "undefined" && window !== null) {
 },{}],5:[function(require,module,exports){
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, ball, burst, burst2, circle, circleRadius, cyan, delayStart, isRunLess, mainTween, s, slider, yellow;
 
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs = {
+    revision: '0.98.2'
+  };
+}
+
 Burst = require('./burst');
 
 Swirl = require('./Swirl');
@@ -1333,7 +1345,7 @@ burst = new Burst({
   x: 100,
   y: 300,
   degree: 180,
-  angle: 45,
+  angle: 90,
   radius: {
     10: 25
   },
@@ -1353,7 +1365,7 @@ burst2 = new Burst({
   x: 100,
   y: 300,
   degree: 180,
-  angle: 45,
+  angle: 90,
   radius: {
     10: 25
   },

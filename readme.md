@@ -10,7 +10,6 @@
 - fix getLength on every draw
 - Two different units were specified on "strokeDashoffset" delta property, mo · js will fallback to end "%" unit on both %
 - add console flag to mojs
-- fix burst errors
 
 - :: demo
 - refactor

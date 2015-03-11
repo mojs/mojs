@@ -363,8 +363,8 @@ describe 'Transit ->', ->
       expect(byte.el.style.display)               .toBe 'none'
       expect(byte.el.style['margin-left'])        .toBe '-27px'
       expect(byte.el.style['margin-top'])         .toBe '-27px'
-      expect(byte.el.style['backface-visibility']).toBe 'hidden'
-      expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
+      # expect(byte.el.style['backface-visibility']).toBe 'hidden'
+      # expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
       expect(byte.isShown).toBe false
     
     it 'should skip props if foreign context', ->
@@ -383,16 +383,16 @@ describe 'Transit ->', ->
       expect(byte.el.style.height)                .not.toBe '54px'
       expect(byte.el.style['margin-left'])        .not.toBe '-27px'
       expect(byte.el.style['margin-top'])         .not.toBe '-27px'
-      expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
-      prefixedProp = "#{h.prefix.css}backface-visibility"
-      expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
+      # expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
+      # prefixedProp = "#{h.prefix.css}backface-visibility"
+      # expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
       expect(byte.isShown).toBe false
 
     it 'should set display: block if isShowInit was passed', ->
       byte = new Byte isShowInit: true
       expect(byte.el.style.display).toBe 'block'
       expect(byte.isShown).toBe true
-    it 'should set el size based', ->
+    it 'should set el size', ->
     # it 'should set el size based on remBase', ->
       byte = new Byte
         radius:       25
@@ -409,8 +409,8 @@ describe 'Transit ->', ->
       expect(byte.el.style.height)                .toBe '54px'
       expect(byte.el.style['margin-left'])        .toBe '-27px'
       expect(byte.el.style['margin-top'])         .toBe '-27px'
-      expect(byte.el.style['backface-visibility']).toBe 'hidden'
-      expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
+      #expect(byte.el.style['backface-visibility']).toBe 'hidden'
+      #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
     it 'should create bit', ->
       byte = new Byte radius: 25
       expect(byte.bit).toBeDefined()

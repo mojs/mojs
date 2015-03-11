@@ -4,9 +4,8 @@ Burst   = mojs.Burst
 t       = mojs.tweener
 
 describe 'Burst ->', ->
-  
   beforeEach -> t.removeAll()
-  
+
   describe 'extension ->', ->
     it 'should extend Transit class', ->
       burst = new Burst

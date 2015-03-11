@@ -182,7 +182,7 @@ describe 'Timeline ->', ->
       t.update t.props.startTime
       t.update t.props.startTime - 20
       t.update t.props.startTime - 30
-      t.update t.props.endTime 
+      t.update t.props.endTime
       expect(t.isOnReverseComplete).toBe false
 
     it 'should have the right scope', ->

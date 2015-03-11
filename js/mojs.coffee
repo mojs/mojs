@@ -1,4 +1,6 @@
 # Transit   = require './transit'
+window?.mojs = revision: '0.98.2'
+
 Burst       = require './burst'
 Swirl       = require './Swirl'
 Transit     = require './transit'
@@ -17,7 +19,7 @@ s = 1
 burst = new Burst
   x: 100, y: 300
   degree: 180
-  angle:  45
+  angle:  90
   radius: { 10: 25 }
   # radiusY: { 5: 15 }
   type: 'line'
@@ -25,12 +27,12 @@ burst = new Burst
   strokeWidth: 2
   delay: (delayStart+650)*s
   isRunLess: isRunLess
-  childOptions: radius: { 7: 0 }
+  childOptions: radius: { 7: 0 }#, angle: 0
 
 burst2 = new Burst
   x: 100, y: 300
   degree: 180
-  angle:  45
+  angle:  90
   radius: { 10: 25 }
   # radiusY: { 5: 15 }
   type: 'line'

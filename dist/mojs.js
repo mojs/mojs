@@ -1,5 +1,11 @@
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, ball, burst, burst2, circle, circleRadius, cyan, delayStart, isRunLess, mainTween, s, slider, yellow;
 
+if (typeof window !== "undefined" && window !== null) {
+  window.mojs = {
+    revision: '0.98.2'
+  };
+}
+
 Burst = require('./burst');
 
 Swirl = require('./Swirl');
@@ -32,7 +38,7 @@ burst = new Burst({
   x: 100,
   y: 300,
   degree: 180,
-  angle: 45,
+  angle: 90,
   radius: {
     10: 25
   },
@@ -52,7 +58,7 @@ burst2 = new Burst({
   x: 100,
   y: 300,
   degree: 180,
-  angle: 45,
+  angle: 90,
   radius: {
     10: 25
   },

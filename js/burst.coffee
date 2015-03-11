@@ -117,10 +117,12 @@ class Burst extends Transit
     for transit, i in @transits
       pointStart = @getSidePoint 'start', i*step
       pointEnd   = @getSidePoint 'end',   i*step
+
       transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
       transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
+      
       if !@props.isResetAngles
-        angleAddition = i*step + 135
+        angleAddition = i*step + 90
         transit.o.angle = if typeof transit.o.angle isnt 'object'
           transit.o.angle + angleAddition
         else
@@ -137,7 +139,7 @@ class Burst extends Transit
       radius:  sideRadius.radius
       radiusX: sideRadius.radiusX
       radiusY: sideRadius.radiusY
-      angle:  angle + @props.angle
+      angle:  angle# + @props.angle
       center: x: @props.center, y: @props.center
   getSideRadius:(side)->
     radius:  @getRadiusByKey 'radius',  side

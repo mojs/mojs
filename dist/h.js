@@ -138,11 +138,17 @@ Helpers = (function() {
     return args;
   };
 
-  Helpers.prototype.log = function() {};
+  Helpers.prototype.log = function() {
+    return console.log.apply(console, this.prepareForLog(arguments));
+  };
 
-  Helpers.prototype.warn = function() {};
+  Helpers.prototype.warn = function() {
+    return console.warn.apply(console, this.prepareForLog(arguments));
+  };
 
-  Helpers.prototype.error = function() {};
+  Helpers.prototype.error = function() {
+    return console.error.apply(console, this.prepareForLog(arguments));
+  };
 
   Helpers.prototype.parseUnit = function(value) {
     var amount, isStrict, regex, returnVal, unit, _ref;
