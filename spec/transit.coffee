@@ -894,7 +894,7 @@ describe 'Transit ->', ->
         byte = new Byte radius:  {'25': 75}, onStart:-> isOnStart = true
         setTimeout ->
           expect(isOnStart).toBe(true); dfr()
-        , 200
+        , 300
       it 'should have scope of byte', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -902,8 +902,7 @@ describe 'Transit ->', ->
           onStart:-> isRightScope = @ instanceof Byte
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
-        , 200
-
+        , 300
       it 'should show el', ->
         byte = new Byte radius:  {'25': 75}
         spyOn byte, 'show'

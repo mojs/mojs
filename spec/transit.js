@@ -1630,7 +1630,7 @@
           return setTimeout(function() {
             expect(isOnStart).toBe(true);
             return dfr();
-          }, 200);
+          }, 300);
         });
         it('should have scope of byte', function(dfr) {
           var byte, isRightScope;
@@ -1646,7 +1646,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 200);
+          }, 300);
         });
         return it('should show el', function() {
           var byte;

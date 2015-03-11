@@ -13,6 +13,7 @@
 - refactor
   - setAttrsIfChanged to every shape
   - transit custom shape length calculations
+  - radius to radiusX/Y on then
 - layout boundaries
 - add onChainUpdate to all the bits
 - add motion path

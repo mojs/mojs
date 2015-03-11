@@ -14,7 +14,6 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-
 isRunLess = false
 delayStart = 0
 mainTween = new Tween
