@@ -283,17 +283,20 @@ describe 'Bit', ->
       bit.draw()
       expect(bit.getLength).toHaveBeenCalled()
 
-    it 'should not call getLength method if radius didnt change', ->
-      bit = new Bit
-        ctx:    document.createElementNS ns, 'svg'
-        radius: 100
-        isIt: true
-      bit.setAttrsIfChanged 'radius', 100
-      bit.draw()
-      spyOn bit, 'getLength'
-      bit.setAttrsIfChanged 'radius', 100
-      bit.draw()
-      expect(bit.getLength).not.toHaveBeenCalled()
+    # probably not needed http://jsperf.com/gettotallength-vs-3-functions
+    # as getTotalLength is faster then 3 function calls for webkits
+    # and longer for ff and ies, but anyways it is too fast to care about
+    # it 'should not call getLength method if radius didnt change', ->
+    #   bit = new Bit
+    #     ctx:    document.createElementNS ns, 'svg'
+    #     radius: 100
+    #     isIt: true
+    #   bit.setAttrsIfChanged 'radius', 100
+    #   bit.draw()
+    #   spyOn bit, 'getLength'
+    #   bit.setAttrsIfChanged 'radius', 100
+    #   bit.draw()
+    #   expect(bit.getLength).not.toHaveBeenCalled()
 
 
   describe 'castPercent method ->', ->

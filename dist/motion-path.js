@@ -53,6 +53,7 @@ MotionPath = (function() {
   MotionPath.prototype.postVars = function() {
     this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
     this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
+    this.angle = 0;
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
@@ -217,13 +218,8 @@ MotionPath = (function() {
     });
     this.tween = new Tween;
     this.tween.add(this.timeline);
-    if (!this.props.isRunLess) {
-      return this.startTween();
-    } else {
-      if (this.props.isPresetPosition) {
-        return this.setProgress(0, true);
-      }
-    }
+    !this.props.isRunLess && this.startTween();
+    return this.props.isPresetPosition && this.setProgress(0, true);
   };
 
   MotionPath.prototype.startTween = function() {
@@ -249,7 +245,7 @@ MotionPath = (function() {
       if ((typeof this.props.angleOffset) !== 'function') {
         this.angle += this.props.angleOffset || 0;
       } else {
-        this.angle = this.props.angleOffset(this.angle, p);
+        this.angle = this.props.angleOffset.call(this, this.angle, p);
       }
     } else {
       this.angle = 0;

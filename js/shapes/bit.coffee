@@ -62,7 +62,8 @@ class Bit
     'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform',
     ]
   draw:->
-    if @isChanged('radius') then @props.length = @getLength()
+    @props.length = @getLength()
+
     len = @drawMapLength
     while(len--)
       name = @drawMap[len]
@@ -71,6 +72,9 @@ class Bit
           @castStrokeDash name
           # name is 'stroke-dashoffset' and console.log @props[name]
       @setAttrsIfChanged name, @props[name]
+
+    @state.radius = @props.radius
+
   castStrokeDash:(name)->
     if h.isArray(@props[name])
       stroke = ''

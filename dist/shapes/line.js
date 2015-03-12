@@ -16,7 +16,7 @@ Line = (function(_super) {
   Line.prototype.draw = function() {
     var radiusX;
     radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-    this.setAttr({
+    this.setAttrsIfChanged({
       x1: this.props.x - radiusX,
       x2: this.props.x + radiusX,
       y1: this.props.y,

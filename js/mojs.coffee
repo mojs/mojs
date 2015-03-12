@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.100.2 unstable
+  v0.101.1 unstable
 ###
-window.mojs = revision: '0.100.2', isDebug: true
+window.mojs = revision: '0.101.1', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'
@@ -14,20 +14,23 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-tr = new Transit
-  type: 'cross'
-  radius: 20, strokeWidth: 2, stroke: 'deeppink'
-  isShowInit: true
-  isShowEnd: true
 
-mp = new MotionPath
-  delay:    2000
-  duration: 2000
-  # isAngle:  true
-  path: 'M0.55859375,164.449219 L39.8046875,12.4257812 L136.691406,166.269531
-     L221.34375,2.3984375 L306.511719,164.144531 L378.007812,2.05078125
-     L456.144531,157.15625'
-  el: tr
+paths = document.getElementById 'js-svg'
+# path1 = document.getElementById 'js-path1'
+# path2 = document.getElementById 'js-path2'
+# path3 = document.getElementById 'js-path3'
+
+stagger = new Stagger
+  els:              paths
+  strokeWidth:      3
+  delay:            'stagger(100)'
+  duration:         2000
+  isShowEnd:        true
+  isShowInit:       true
+  # easing:           'Sinusoidal.Out'
+  strokeDashoffset:  { '100%': 0 }
+  # isRunLess:        true
+  # opacity:          0: 3
 
 # isRunLess = false
 # delayStart = 0
@@ -147,12 +150,6 @@ mp = new MotionPath
 #   mainTween.setProgress (@value/100000)
 #   # burst.tween.setProgress (@value/100000)
 
-
-# # paths = document.getElementById 'js-svg'
-# # # path1 = document.getElementById 'js-path1'
-# # # path2 = document.getElementById 'js-path2'
-# # # path3 = document.getElementById 'js-path3'
-
 # # burst = new Burst
 # #   fill:      ['deeppink', 'cyan', 'yellow']
 # #   # strokeWidth: 'rand(1,3)': 0
@@ -168,18 +165,6 @@ mp = new MotionPath
 # #   duration:         800
 # #   delay:            'stagger(2000, rand(0,150))'
 # #   childOptions:     radius: 'rand(2,6)': 0
-
-# # stagger = new Stagger
-# #   els:              paths
-# #   strokeWidth:      3
-# #   delay:            'stagger(100)'
-# #   duration:         2000
-# #   isShowEnd:        true
-# #   isShowInit:       true
-# #   # easing:           'Sinusoidal.Out'
-# #   strokeDashoffset:  { '100%': 0 }
-# #   isRunLess:        true
-# #   # opacity:          0: 3
 
 # # tw = new Tween
 

@@ -40,6 +40,7 @@ class MotionPath
   postVars:->
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
+    @angle = 0
     @onUpdate = @props.onUpdate
     @el         = @parseEl @props.el
     @path       = @getPath()
@@ -139,9 +140,8 @@ class MotionPath
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
     @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
     @tween.add(@timeline)
-    if !@props.isRunLess then @startTween()
-    else
-      if @props.isPresetPosition then @setProgress(0, true)
+    !@props.isRunLess and @startTween()
+    @props.isPresetPosition and @setProgress(0, true)
 
   startTween:-> setTimeout (=> @tween?.start()), 1
 
@@ -158,7 +158,7 @@ class MotionPath
       @angle = atan*h.RAD_TO_DEG
       if (typeof @props.angleOffset) isnt 'function'
         @angle += @props.angleOffset or 0
-      else @angle = @props.angleOffset(@angle, p)
+      else @angle = @props.angleOffset.call @, @angle, p
     else @angle = 0
     # get x and y coordinates
     x = point.x + @props.offsetX; y = point.y + @props.offsetY

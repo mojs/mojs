@@ -1,7 +1,5 @@
 ## To Do
 
-- mp should control el's center
-- fix getLength on every draw
 - :: demo
 - refactor
   - setAttrsIfChanged to every shape
@@ -11,6 +9,7 @@
 - release
   - bower component
   - cdn
+  - website
 - branch
 - add onChainUpdate to all the bits
 - add movement arc

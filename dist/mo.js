@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.100.2 unstable
+  v0.101.1 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, mp, tr;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, paths, stagger;
 
 window.mojs = {
-  revision: '0.100.2',
+  revision: '0.101.1',
   isDebug: true
 };
 
@@ -1343,20 +1343,18 @@ Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
 
-tr = new Transit({
-  type: 'cross',
-  radius: 20,
-  strokeWidth: 2,
-  stroke: 'deeppink',
-  isShowInit: true,
-  isShowEnd: true
-});
+paths = document.getElementById('js-svg');
 
-mp = new MotionPath({
-  delay: 2000,
+stagger = new Stagger({
+  els: paths,
+  strokeWidth: 3,
+  delay: 'stagger(100)',
   duration: 2000,
-  path: 'M0.55859375,164.449219 L39.8046875,12.4257812 L136.691406,166.269531 L221.34375,2.3984375 L306.511719,164.144531 L378.007812,2.05078125 L456.144531,157.15625',
-  el: tr
+  isShowEnd: true,
+  isShowInit: true,
+  strokeDashoffset: {
+    '100%': 0
+  }
 });
 
 
@@ -1438,6 +1436,7 @@ MotionPath = (function() {
   MotionPath.prototype.postVars = function() {
     this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
     this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
+    this.angle = 0;
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
@@ -1602,13 +1601,8 @@ MotionPath = (function() {
     });
     this.tween = new Tween;
     this.tween.add(this.timeline);
-    if (!this.props.isRunLess) {
-      return this.startTween();
-    } else {
-      if (this.props.isPresetPosition) {
-        return this.setProgress(0, true);
-      }
-    }
+    !this.props.isRunLess && this.startTween();
+    return this.props.isPresetPosition && this.setProgress(0, true);
   };
 
   MotionPath.prototype.startTween = function() {
@@ -1634,7 +1628,7 @@ MotionPath = (function() {
       if ((typeof this.props.angleOffset) !== 'function') {
         this.angle += this.props.angleOffset || 0;
       } else {
-        this.angle = this.props.angleOffset(this.angle, p);
+        this.angle = this.props.angleOffset.call(this, this.angle, p);
       }
     } else {
       this.angle = 0;
@@ -1930,12 +1924,9 @@ Bit = (function() {
   Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
 
   Bit.prototype.draw = function() {
-    var len, name, _results;
-    if (this.isChanged('radius')) {
-      this.props.length = this.getLength();
-    }
+    var len, name;
+    this.props.length = this.getLength();
     len = this.drawMapLength;
-    _results = [];
     while (len--) {
       name = this.drawMap[len];
       switch (name) {
@@ -1943,9 +1934,9 @@ Bit = (function() {
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
       }
-      _results.push(this.setAttrsIfChanged(name, this.props[name]));
+      this.setAttrsIfChanged(name, this.props[name]);
     }
-    return _results;
+    return this.state.radius = this.props.radius;
   };
 
   Bit.prototype.castStrokeDash = function(name) {
@@ -2378,7 +2369,7 @@ Line = (function(_super) {
   Line.prototype.draw = function() {
     var radiusX;
     radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
-    this.setAttr({
+    this.setAttrsIfChanged({
       x1: this.props.x - radiusX,
       x2: this.props.x + radiusX,
       y1: this.props.y,

@@ -45,6 +45,15 @@ describe 'MotionPath ->', ->
     mp = new MotionPath
       path: 'M0.55859375,593.527344L0.55859375,593.527344'
       el: el
+    
+    it 'have angleof 0', ->
+      el = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el: el
+        isRunLess: true
+        isPresetPosition: false
+      expect(mp.angle).toBe 0
 
     it 'delay should be defined', ->
       expect(mp.defaults.delay)           .toBe 0
@@ -377,102 +386,20 @@ describe 'MotionPath ->', ->
     div = document.createElement 'div'
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
     # describe 'offsets ->', ->
-    describe 'angleOffset ->', ->
-      it 'angleOffset should work with positive angles', (dfr)->
-        coords = 'M0,0 L10,0 L10,10'
-        isEqual = false
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          angleOffset: 90
-          isAngle: true
-          onComplete:-> isEqual = mp.angle is 180
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
+    it 'should work with positive offsetX', (dfr)->
+      coords = 'M0,0 L0,10'
+      x = 0; isEqual = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        offsetX: 10
+        duration: 50
+        isAngle: true
+        onComplete: ->
+          x = div.style.transform.split(/(translate\()|,|\)/)[2]
+          isEqual = parseInt(x, 10) is 10
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
 
-      it 'angleOffset should work with negative angles', (dfr)->
-        coords = 'M0,0 L10,0 L10,10'
-        isEqual = false
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          angleOffset: -90
-          isAngle: true
-          onComplete:-> isEqual = mp.angle is 0
-
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
-
-      it 'should be evaluated if a function', (dfr)->
-        coords = 'M0,0 L10,0 L10,10'
-        isFunction = false
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          angleOffset:(angle)->
-            isFunction = true
-            angle
-
-        setTimeout (-> expect(isFunction).toBe(true); dfr()), 300
-
-      it 'should get current angle', (dfr)->
-        coords = 'M0,0 L10,0 L10,10'
-        isOnAngle = false
-        angleSum1 = 0; angleSum2 = 0
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          isAngle: true
-          angleOffset:(angle)->
-            angleSum1 += angle; angleSum2 += mp.angle
-            angle
-          onComplete:->
-            isOnAngle = angleSum1 is angleSum2
-        setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 100
-
-      it 'should set current angle', (dfr)->
-        coords = 'M0,0 L10,0 L10,10'
-        isSet = false
-        currAngle = 0; isAnglesArray = []
-        angleShift = 5
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          angleOffset:(angle)-> currAngle = angle; angle+angleShift
-          onUpdate:-> isAnglesArray.push currAngle+angleShift is mp.angle
-          onComplete:->
-            for isSetItem, i in isAnglesArray
-              if !isSetItem then isSet = true
-        
-        setTimeout (-> expect(isSet).toBe(false); dfr()), 100
-
-      it 'angleOffset should get current progress as second parameter', (dfr)->
-        coords = 'M0,0 L10,0 L10,10'
-        isProgress = false; proc = -1
-        mp = new MotionPath
-          path: coords
-          el: div
-          duration: 50
-          angleOffset:(angle, progress)-> proc = progress; angle
-          onComplete:-> isProgress = proc is 1
-        setTimeout (-> expect(isProgress).toBe(true); dfr()), 100
-
-      it 'should work with positive offsetX', (dfr)->
-        coords = 'M0,0 L0,10'
-        x = 0; isEqual = false
-        mp = new MotionPath
-          path: coords
-          el: div
-          offsetX: 10
-          duration: 50
-          isAngle: true
-          onComplete: ->
-            x = div.style.transform.split(/(translate\()|,|\)/)[2]
-            isEqual = parseInt(x, 10) is 10
-          setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
     it 'should work with negative offsetX', (dfr)->
       coords = 'M0,0 L0,10'
       x = 0; isEqual = false
@@ -572,6 +499,105 @@ describe 'MotionPath ->', ->
           '50% 50%'
       setTimeout (-> expect(isAngle and isProgress).toBe(true); dfr()), 100
 
+  describe 'angleOffset ->', ->
+    div = document.createElement 'div'
+    it 'angleOffset should work with positive angles', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isEqual = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        angleOffset: 90
+        isAngle: true
+        onComplete:-> isEqual = mp.angle is 180
+
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
+
+    it 'angleOffset should work with negative angles', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isEqual = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        angleOffset: -90
+        isAngle: true
+        onComplete:-> isEqual = mp.angle is 0
+
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
+
+    it 'should be evaluated if a function', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isFunction = false
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        angleOffset:(angle)->
+          isFunction = true
+          angle
+
+      setTimeout (-> expect(isFunction).toBe(true); dfr()), 300
+
+    it 'should get current angle', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isOnAngle = false
+      angleSum1 = 0; angleSum2 = 0
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        isAngle: true
+        isRunLess: true
+        isPresetPosition: false
+        angleOffset:(angle)->
+          angleSum1 += angle; angleSum2 += mp.angle
+          angle
+        onComplete:-> isOnAngle = angleSum1 is angleSum2
+      mp.run()
+      setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 100
+
+    it 'should set current angle', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isSet = false
+      currAngle = 0; isAnglesArray = []
+      angleShift = 5
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        angleOffset:(angle)-> currAngle = angle; angle+angleShift
+        onUpdate:-> isAnglesArray.push currAngle+angleShift is mp.angle
+        onComplete:->
+          for isSetItem, i in isAnglesArray
+            if !isSetItem then isSet = true
+      
+      setTimeout (-> expect(isSet).toBe(false); dfr()), 100
+
+    it 'angleOffset should get current progress as second parameter', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      isProgress = false; proc = -1
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        angleOffset:(angle, progress)-> proc = progress; angle
+        onComplete:-> isProgress = proc is 1
+      setTimeout (-> expect(isProgress).toBe(true); dfr()), 100
+
+    it 'should have scope of motion path', ->
+      coords = 'M0,0 L10,0 L10,10'
+      isRightScope = false
+      angleSum1 = 0; angleSum2 = 0
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        isAngle: true
+        angleOffset:-> isRightScope = @ instanceof MotionPath
+      expect(isRightScope).toBe(true)
+
   describe 'setProgress function ->', (dfr)->
     it 'should have own function for setting up current progress', ->
       div = document.createElement 'div'
@@ -604,12 +630,11 @@ describe 'MotionPath ->', ->
       expect(isCalled).toBe false
 
   describe 'preset position ->', ->
-    it 'should preset initial position by default if isRunLess', ->
+    it 'should preset initial position by default', ->
       div = document.createElement 'div'
       mp = new MotionPath
         path: 'M50,0 L500,0'
-        el: div
-        isRunLess: true
+        el:   div
       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(50)
 
@@ -622,265 +647,265 @@ describe 'MotionPath ->', ->
         isPresetPosition: false
       expect(div.style.transform).toBeFalsy()
 
-  describe 'progress bounds ->', ->
-    it 'should calc the @slicedLen and @startLen properties', ->
-      mp = new MotionPath
-        path:       'M0,0 L500,0'
-        el:         document.createElement 'div'
-        isRunLess:  true
-        pathStart: .5
-        pathEnd:   .75
-      expect(mp.slicedLen).toBe 125
-      expect(mp.startLen) .toBe 250
+  # describe 'progress bounds ->', ->
+  #   it 'should calc the @slicedLen and @startLen properties', ->
+  #     mp = new MotionPath
+  #       path:       'M0,0 L500,0'
+  #       el:         document.createElement 'div'
+  #       isRunLess:  true
+  #       pathStart: .5
+  #       pathEnd:   .75
+  #     expect(mp.slicedLen).toBe 125
+  #     expect(mp.startLen) .toBe 250
 
-    it 'should start from pathStart position', ->
-      div = document.createElement 'div'
-      mp = new MotionPath
-        path: 'M0,0 L500,0'
-        el: div
-        isRunLess: true
-        pathStart: .5
-        pathEnd:   .75
-        isIt: true
+  #   it 'should start from pathStart position', ->
+  #     div = document.createElement 'div'
+  #     mp = new MotionPath
+  #       path: 'M0,0 L500,0'
+  #       el: div
+  #       isRunLess: true
+  #       pathStart: .5
+  #       pathEnd:   .75
+  #       isIt: true
 
-      mp.tween.setProgress 0
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
-      expect(pos).toBe(250)
+  #     mp.tween.setProgress 0
+  #     pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+  #     expect(pos).toBe(250)
 
-    it 'should end at pathEnd position', (dfr)->
-      div = document.createElement 'div'
-      pos = -1
-      mp = new MotionPath
-        path: 'M0,0 L500,0'
-        el: div
-        duration:   50
-        pathStart:  .25
-        pathEnd:    .5
-        onComplete:->
-          pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
-          pos = parseInt pos, 10
+  #   it 'should end at pathEnd position', (dfr)->
+  #     div = document.createElement 'div'
+  #     pos = -1
+  #     mp = new MotionPath
+  #       path: 'M0,0 L500,0'
+  #       el: div
+  #       duration:   50
+  #       pathStart:  .25
+  #       pathEnd:    .5
+  #       onComplete:->
+  #         pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
+  #         pos = parseInt pos, 10
     
-      setTimeout (-> expect(pos).toBe(250); dfr()), 100
+  #     setTimeout (-> expect(pos).toBe(250); dfr()), 100
 
-  describe 'path option ->', ->
-    it 'should have a getPath method', ->
-      div = document.createElement 'div'
-      mp = new MotionPath
-        path: coords
-        el: div
-      expect(mp.getPath).toBeDefined()
+  # describe 'path option ->', ->
+  #   it 'should have a getPath method', ->
+  #     div = document.createElement 'div'
+  #     mp = new MotionPath
+  #       path: coords
+  #       el: div
+  #     expect(mp.getPath).toBeDefined()
 
-    it 'getPath should return a path when was specified by coordinates', ->
-      div = document.createElement 'div'
-      mp = new MotionPath
-        path: coords
-        el: div
-      expect(mp.getPath() instanceof SVGElement).toBe(true)
+  #   it 'getPath should return a path when was specified by coordinates', ->
+  #     div = document.createElement 'div'
+  #     mp = new MotionPath
+  #       path: coords
+  #       el: div
+  #     expect(mp.getPath() instanceof SVGElement).toBe(true)
 
-    it 'getPath should return a path when it was specified by SVG path', ->
-      path = document.createElementNS ns, 'path'
-      path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
-      div = document.createElement 'div'
-      mp = new MotionPath
-        path: path
-        el: div
-      expect(mp.getPath() instanceof SVGElement).toBe(true)
+  #   it 'getPath should return a path when it was specified by SVG path', ->
+  #     path = document.createElementNS ns, 'path'
+  #     path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
+  #     div = document.createElement 'div'
+  #     mp = new MotionPath
+  #       path: path
+  #       el: div
+  #     expect(mp.getPath() instanceof SVGElement).toBe(true)
 
-    it 'should error if path has no d attribute', ->
-      path = document.createElementNS ns, 'path'
-      # path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
-      div = document.createElement 'div'
-      spyOn h, 'error'
-      mp = new MotionPath
-        path: path
-        el: div
-      expect(h.error).toHaveBeenCalled()
+  #   it 'should error if path has no d attribute', ->
+  #     path = document.createElementNS ns, 'path'
+  #     # path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
+  #     div = document.createElement 'div'
+  #     spyOn h, 'error'
+  #     mp = new MotionPath
+  #       path: path
+  #       el: div
+  #     expect(h.error).toHaveBeenCalled()
 
-    it 'getPath should return a path when it was specified selector', ->
-      id = 'js-path'
-      div = document.createElement 'div'
-      svg = document.createElementNS ns, 'svg'
-      path = document.createElementNS ns, 'path'
-      path.setAttribute 'id', id
-      path.setAttribute 'class', id
-      svg.appendChild path
-      document.body.appendChild svg
-      mp = new MotionPath
-        path: "##{id}"
-        el: div
-      expect(mp.getPath() instanceof SVGElement).toBe(true)
+  #   it 'getPath should return a path when it was specified selector', ->
+  #     id = 'js-path'
+  #     div = document.createElement 'div'
+  #     svg = document.createElementNS ns, 'svg'
+  #     path = document.createElementNS ns, 'path'
+  #     path.setAttribute 'id', id
+  #     path.setAttribute 'class', id
+  #     svg.appendChild path
+  #     document.body.appendChild svg
+  #     mp = new MotionPath
+  #       path: "##{id}"
+  #       el: div
+  #     expect(mp.getPath() instanceof SVGElement).toBe(true)
 
-      mp = new MotionPath
-        path: ".#{id}"
-        el: div
-      expect(mp.getPath() instanceof SVGElement).toBe(true)
+  #     mp = new MotionPath
+  #       path: ".#{id}"
+  #       el: div
+  #     expect(mp.getPath() instanceof SVGElement).toBe(true)
 
-  describe 'el option (parseEl method) ->', ->
-    it 'should return an el when it was specified by selector', ->
-      id = 'js-el'
-      div = document.createElement 'div'
-      div.setAttribute 'id', id
-      div.setAttribute 'class', id
-      document.body.appendChild div
-      mp = new MotionPath
-        path: coords
-        el: "##{id}"
-      expect(mp.el instanceof HTMLElement).toBe(true)
-      mp = new MotionPath
-        path: coords
-        el: ".#{id}"
-      expect(mp.el instanceof HTMLElement).toBe(true)
+  # describe 'el option (parseEl method) ->', ->
+  #   it 'should return an el when it was specified by selector', ->
+  #     id = 'js-el'
+  #     div = document.createElement 'div'
+  #     div.setAttribute 'id', id
+  #     div.setAttribute 'class', id
+  #     document.body.appendChild div
+  #     mp = new MotionPath
+  #       path: coords
+  #       el: "##{id}"
+  #     expect(mp.el instanceof HTMLElement).toBe(true)
+  #     mp = new MotionPath
+  #       path: coords
+  #       el: ".#{id}"
+  #     expect(mp.el instanceof HTMLElement).toBe(true)
 
-    it 'should return the el when the element was passed', ->
-      div = document.createElement 'div'
-      mp = new MotionPath
-        path: coords
-        el: div
-      expect(mp.el instanceof HTMLElement).toBe(true)
+  #   it 'should return the el when the element was passed', ->
+  #     div = document.createElement 'div'
+  #     mp = new MotionPath
+  #       path: coords
+  #       el: div
+  #     expect(mp.el instanceof HTMLElement).toBe(true)
 
-    it 'should return the module when module was passed', ->
-      tr = new Transit isRunLess: true
-      mp = new MotionPath
-        path: coords
-        el:   tr
-        isRunLess: true
-        isPresetPosition: false
-      expect(mp.el).toBe tr
+  #   it 'should return the module when module was passed', ->
+  #     tr = new Transit isRunLess: true
+  #     mp = new MotionPath
+  #       path: coords
+  #       el:   tr
+  #       isRunLess: true
+  #       isPresetPosition: false
+  #     expect(mp.el).toBe tr
 
-  describe 'then method ->', ->
-    it 'should contribute to history on init', ->
-      options =
-        path:     coords
-        el:       document.createElement 'div'
-        duration: 2000
-      mp = new MotionPath options
-      expect(mp.history.length).toBe(1)
-      expect(mp.history[0].duration).toBe 2000
+  # describe 'then method ->', ->
+  #   it 'should contribute to history on init', ->
+  #     options =
+  #       path:     coords
+  #       el:       document.createElement 'div'
+  #       duration: 2000
+  #     mp = new MotionPath options
+  #     expect(mp.history.length).toBe(1)
+  #     expect(mp.history[0].duration).toBe 2000
 
-    it 'should contribute to history on then', ->
-      mp = new MotionPath(
-        path:     coords
-        el:       document.createElement 'div'
-        duration: 2000
-        pathEnd:  .5
+  #   it 'should contribute to history on then', ->
+  #     mp = new MotionPath(
+  #       path:     coords
+  #       el:       document.createElement 'div'
+  #       duration: 2000
+  #       pathEnd:  .5
       
-      ).then pathStart: .5, pathEnd: 1
+  #     ).then pathStart: .5, pathEnd: 1
 
-      expect(mp.history.length)       .toBe   2
-      expect(mp.history[1].pathStart) .toBe   .5
-      expect(mp.history[1].pathEnd)   .toBe   1
+  #     expect(mp.history.length)       .toBe   2
+  #     expect(mp.history[1].pathStart) .toBe   .5
+  #     expect(mp.history[1].pathEnd)   .toBe   1
 
-    it 'should save previous options to the current history record', ->
-      mp = new MotionPath(
-        path:     coords
-        el:       document.createElement 'div'
-        duration: 2000
-        pathEnd:  .5
-        delay:    100
-      ).then pathStart: .5, pathEnd: 1
-      expect(mp.history[1].delay)     .toBe   100
+  #   it 'should save previous options to the current history record', ->
+  #     mp = new MotionPath(
+  #       path:     coords
+  #       el:       document.createElement 'div'
+  #       duration: 2000
+  #       pathEnd:  .5
+  #       delay:    100
+  #     ).then pathStart: .5, pathEnd: 1
+  #     expect(mp.history[1].delay)     .toBe   100
 
-    it 'should add new timeline', ->
-      mp = new MotionPath(
-        path:     coords
-        el:       document.createElement 'div'
-        duration: 2000
-        pathEnd:  .5
+  #   it 'should add new timeline', ->
+  #     mp = new MotionPath(
+  #       path:     coords
+  #       el:       document.createElement 'div'
+  #       duration: 2000
+  #       pathEnd:  .5
       
-      ).then pathStart: .5, pathEnd: 1
-      expect(mp.tween.timelines.length)             .toBe 2
-      expect(mp.tween.timelines[1].o.duration)     .toBe 2000
-      expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined()
+  #     ).then pathStart: .5, pathEnd: 1
+  #     expect(mp.tween.timelines.length)             .toBe 2
+  #     expect(mp.tween.timelines[1].o.duration)     .toBe 2000
+  #     expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined()
 
-  describe 'tuneOptions ->', ->
-    it 'should tune options', ->
-      mp = new MotionPath(
-        path:     coords
-        el:       document.createElement 'div'
-        duration: 2000
-        pathEnd:  .5
-      )
+  # describe 'tuneOptions ->', ->
+  #   it 'should tune options', ->
+  #     mp = new MotionPath(
+  #       path:     coords
+  #       el:       document.createElement 'div'
+  #       duration: 2000
+  #       pathEnd:  .5
+  #     )
 
-      mp.tuneOptions duration: 5000
+  #     mp.tuneOptions duration: 5000
 
-      expect(mp.props.duration).toBe 5000
-      expect(mp.props.pathEnd) .toBe .5
+  #     expect(mp.props.duration).toBe 5000
+  #     expect(mp.props.pathEnd) .toBe .5
 
-    it 'should recalc el, path, len, fill, container if defined', ->
-      mp = new MotionPath(
-        path:       coords
-        el:         document.createElement 'div'
-        duration:   2000
-        pathEnd:    .5
-        isRunLess:  true
-      )
-      coords = 'M0,0 L 105,105'
-      coordsIE = 'M 0 0 L 105 105'
-      mp.tuneOptions duration: 5000, path: coords
-      pathCoords = mp.path.getAttribute('d')
-      expect(pathCoords is coords or pathCoords is coordsIE).toBe true
+  #   it 'should recalc el, path, len, fill, container if defined', ->
+  #     mp = new MotionPath(
+  #       path:       coords
+  #       el:         document.createElement 'div'
+  #       duration:   2000
+  #       pathEnd:    .5
+  #       isRunLess:  true
+  #     )
+  #     coords = 'M0,0 L 105,105'
+  #     coordsIE = 'M 0 0 L 105 105'
+  #     mp.tuneOptions duration: 5000, path: coords
+  #     pathCoords = mp.path.getAttribute('d')
+  #     expect(pathCoords is coords or pathCoords is coordsIE).toBe true
 
-  describe 'createTween method', ->
-    it 'should bind the onFirstUpdateBackward metod', ->
-      mp = new MotionPath
-        path:       coords
-        el:         document.createElement 'div'
-      expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe 'function'
+  # describe 'createTween method', ->
+  #   it 'should bind the onFirstUpdateBackward metod', ->
+  #     mp = new MotionPath
+  #       path:       coords
+  #       el:         document.createElement 'div'
+  #     expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe 'function'
 
-  describe 'isModule flag ->', ->
-    it 'should be set if module was passed', ->
-      mp = new MotionPath
-        path:       coords
-        el:         (new Transit isRunLess: true)
-        isRunLess: true
-        isPresetPosition: false
-      expect(mp.isModule).toBe true
+  # describe 'isModule flag ->', ->
+  #   it 'should be set if module was passed', ->
+  #     mp = new MotionPath
+  #       path:       coords
+  #       el:         (new Transit isRunLess: true)
+  #       isRunLess: true
+  #       isPresetPosition: false
+  #     expect(mp.isModule).toBe true
 
-  describe 'setModulePosition method ->', ->
-    it 'should use setProp of the module to set position', ->
-      module = (new Transit isRunLess: true)
-      mp = new MotionPath
-        path:       coords
-        el:         module
-        isRunLess:  true
-        isPresetPosition: false
-      spyOn module, 'setProp'
-      mp.angle = 0
-      mp.setModulePosition 100, 200
-      expect(module.setProp).toHaveBeenCalledWith
-        shiftX: '100px', shiftY: '200px', angle: 0
+  # describe 'setModulePosition method ->', ->
+  #   it 'should use setProp of the module to set position', ->
+  #     module = (new Transit isRunLess: true)
+  #     mp = new MotionPath
+  #       path:       coords
+  #       el:         module
+  #       isRunLess:  true
+  #       isPresetPosition: false
+  #     spyOn module, 'setProp'
+  #     mp.angle = 0
+  #     mp.setModulePosition 100, 200
+  #     expect(module.setProp).toHaveBeenCalledWith
+  #       shiftX: '100px', shiftY: '200px', angle: 0
 
-    it 'should call module.draw method', ->
-      module = (new Transit isRunLess: true)
-      mp = new MotionPath
-        path:       coords
-        el:         module
-        isRunLess:  true
-        isPresetPosition: false
-      spyOn mp.el, 'draw'
-      mp.setProgress 0, true
-      expect(mp.el.draw).toHaveBeenCalled()
+  #   it 'should call module.draw method', ->
+  #     module = (new Transit isRunLess: true)
+  #     mp = new MotionPath
+  #       path:       coords
+  #       el:         module
+  #       isRunLess:  true
+  #       isPresetPosition: false
+  #     spyOn mp.el, 'draw'
+  #     mp.setProgress 0, true
+  #     expect(mp.el.draw).toHaveBeenCalled()
 
-    it 'should be called if isModule', ->
-      module = (new Transit isRunLess: true)
-      mp = new MotionPath
-        path:       coords
-        el:         module
-        isRunLess:  true
-        isPresetPosition: false
-      spyOn mp, 'setModulePosition'
-      mp.setProgress 0, true
-      expect(mp.setModulePosition).toHaveBeenCalled()
+  #   it 'should be called if isModule', ->
+  #     module = (new Transit isRunLess: true)
+  #     mp = new MotionPath
+  #       path:       coords
+  #       el:         module
+  #       isRunLess:  true
+  #       isPresetPosition: false
+  #     spyOn mp, 'setModulePosition'
+  #     mp.setProgress 0, true
+  #     expect(mp.setModulePosition).toHaveBeenCalled()
 
-    it 'should not be called if !isModule', ->
-      mp = new MotionPath
-        path:       coords
-        el:         document.createElement 'div'
-        isRunLess:  true
-        isPresetPosition: false
-      spyOn mp, 'setModulePosition'
-      mp.setProgress 0, true
-      expect(mp.setModulePosition).not.toHaveBeenCalled()
+  #   it 'should not be called if !isModule', ->
+  #     mp = new MotionPath
+  #       path:       coords
+  #       el:         document.createElement 'div'
+  #       isRunLess:  true
+  #       isPresetPosition: false
+  #     spyOn mp, 'setModulePosition'
+  #     mp.setProgress 0, true
+  #     expect(mp.setModulePosition).not.toHaveBeenCalled()
 
 
 

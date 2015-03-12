@@ -373,7 +373,7 @@
         });
         return expect(bit.props.length).toBe(200);
       });
-      it('should call getLength method', function() {
+      return it('should call getLength method', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
@@ -382,19 +382,6 @@
         bit.setProp('radius', 200);
         bit.draw();
         return expect(bit.getLength).toHaveBeenCalled();
-      });
-      return it('should not call getLength method if radius didnt change', function() {
-        bit = new Bit({
-          ctx: document.createElementNS(ns, 'svg'),
-          radius: 100,
-          isIt: true
-        });
-        bit.setAttrsIfChanged('radius', 100);
-        bit.draw();
-        spyOn(bit, 'getLength');
-        bit.setAttrsIfChanged('radius', 100);
-        bit.draw();
-        return expect(bit.getLength).not.toHaveBeenCalled();
       });
     });
     describe('castPercent method ->', function() {

@@ -41,6 +41,7 @@ class Stagger extends Transit
     for i in [0...len]
       # cover the index set
       option = @getOption(i); option.index = i; option.isRunLess = true
+      # option.radius = 0
       @transits.push new Transit option
 
   getOption:(i)->

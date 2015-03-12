@@ -118,12 +118,9 @@ Bit = (function() {
   Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
 
   Bit.prototype.draw = function() {
-    var len, name, _results;
-    if (this.isChanged('radius')) {
-      this.props.length = this.getLength();
-    }
+    var len, name;
+    this.props.length = this.getLength();
     len = this.drawMapLength;
-    _results = [];
     while (len--) {
       name = this.drawMap[len];
       switch (name) {
@@ -131,9 +128,9 @@ Bit = (function() {
         case 'stroke-dashoffset':
           this.castStrokeDash(name);
       }
-      _results.push(this.setAttrsIfChanged(name, this.props[name]));
+      this.setAttrsIfChanged(name, this.props[name]);
     }
-    return _results;
+    return this.state.radius = this.props.radius;
   };
 
   Bit.prototype.castStrokeDash = function(name) {
