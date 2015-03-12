@@ -5,35 +5,6 @@
 <img src="https://github.com/legomushroom/mojs/raw/master/mockups/logo-banner.png" width="400" alt="mo · js">   
 **! in active development - isn't ready yet !**
 
-#### todo
-- mp should control el's center
-- fix getLength on every draw
-
-- :: demo
-- refactor
-  - setAttrsIfChanged to every shape
-  - transit custom shape length calculations
-  - radius to radiusX/Y on then
-- layout boundaries
-- add onChainUpdate to all the bits
-- add motion path
-  - add movement arc
-- transit
-  - fix timeline tween options history transform
-- burst
-  - add deltas for swirl swirlFrequency and swirlSize
-  - add stagger values
-  - then implementation
-- add custom easing handler
-  - add path handler
-  - add spring
-- add shaker
-- add spriter
-- add glare (is transition shorthand)
-- add stagger
-- add camera glare
-- add backgrounds
-- add line trails
-- add text tricks
+[To Do](mojs/blob/master/todo.md)
 
 [@LegoMushroom](https://twitter.com/legomushroom)(Oleg Solomka) [legomushroom@gmail.com](mailto:legomushroom@gmail.com) 2015 MIT License

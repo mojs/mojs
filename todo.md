@@ -1,0 +1,31 @@
+## To Do
+
+- mp should control el's center
+- fix getLength on every draw
+- :: demo
+- refactor
+  - setAttrsIfChanged to every shape
+  - transit custom shape length calculations
+  - radius to radiusX/Y on then
+  - tests coverage fix
+- release
+  - bower component
+  - cdn
+- branch
+- add onChainUpdate to all the bits
+- add movement arc
+- transit
+  - fix timeline tween options history transform
+- burst
+  - add deltas for swirl swirlFrequency and swirlSize
+  - then implementation
+- add custom easing handler
+  - add path handler
+  - add spring
+- add shaker
+- add spriter
+- add glare (is transition shorthand)
+- add camera glare
+- add backgrounds
+- add line trails
+- add text tricks
