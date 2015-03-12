@@ -1,4 +1,5 @@
 MotionPath = window.mojs.MotionPath
+Transit    = window.mojs.Transit
 h          = window.mojs.helpers
 
 coords = 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -714,7 +715,7 @@ describe 'MotionPath ->', ->
         el: div
       expect(mp.getPath() instanceof SVGElement).toBe(true)
 
-  describe 'el option ->', ->
+  describe 'el option (parseEl method) ->', ->
     it 'should return an el when it was specified by selector', ->
       id = 'js-el'
       div = document.createElement 'div'
@@ -730,12 +731,21 @@ describe 'MotionPath ->', ->
         el: ".#{id}"
       expect(mp.el instanceof HTMLElement).toBe(true)
 
-    it 'getPath should return an el when an element was passed', ->
+    it 'should return the el when the element was passed', ->
       div = document.createElement 'div'
       mp = new MotionPath
         path: coords
         el: div
       expect(mp.el instanceof HTMLElement).toBe(true)
+
+    it 'should return the module when module was passed', ->
+      tr = new Transit isRunLess: true
+      mp = new MotionPath
+        path: coords
+        el:   tr
+        isRunLess: true
+        isPresetPosition: false
+      expect(mp.el).toBe tr
 
   describe 'then method ->', ->
     it 'should contribute to history on init', ->
@@ -817,7 +827,60 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
       expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe 'function'
 
+  describe 'isModule flag ->', ->
+    it 'should be set if module was passed', ->
+      mp = new MotionPath
+        path:       coords
+        el:         (new Transit isRunLess: true)
+        isRunLess: true
+        isPresetPosition: false
+      expect(mp.isModule).toBe true
 
+  describe 'setModulePosition method ->', ->
+    it 'should use setProp of the module to set position', ->
+      module = (new Transit isRunLess: true)
+      mp = new MotionPath
+        path:       coords
+        el:         module
+        isRunLess:  true
+        isPresetPosition: false
+      spyOn module, 'setProp'
+      mp.angle = 0
+      mp.setModulePosition 100, 200
+      expect(module.setProp).toHaveBeenCalledWith
+        shiftX: '100px', shiftY: '200px', angle: 0
+
+    it 'should call module.draw method', ->
+      module = (new Transit isRunLess: true)
+      mp = new MotionPath
+        path:       coords
+        el:         module
+        isRunLess:  true
+        isPresetPosition: false
+      spyOn mp.el, 'draw'
+      mp.setProgress 0, true
+      expect(mp.el.draw).toHaveBeenCalled()
+
+    it 'should be called if isModule', ->
+      module = (new Transit isRunLess: true)
+      mp = new MotionPath
+        path:       coords
+        el:         module
+        isRunLess:  true
+        isPresetPosition: false
+      spyOn mp, 'setModulePosition'
+      mp.setProgress 0, true
+      expect(mp.setModulePosition).toHaveBeenCalled()
+
+    it 'should not be called if !isModule', ->
+      mp = new MotionPath
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+        isPresetPosition: false
+      spyOn mp, 'setModulePosition'
+      mp.setProgress 0, true
+      expect(mp.setModulePosition).not.toHaveBeenCalled()
 
 
 

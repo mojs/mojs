@@ -70,6 +70,7 @@ class MotionPath
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
     return el if el instanceof HTMLElement
+    if el.setProp? then @isModule = true; return el
 
   getPath:->
     if typeof @props.path is 'string'
@@ -147,6 +148,8 @@ class MotionPath
   setProgress:(p, isInit)->
     len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
     point = @path.getPointAtLength len
+
+    # get current angle
     if @props.isAngle or @props.angleOffset?
       prevPoint = @path.getPointAtLength len - 1
       x1 = point.y - prevPoint.y
@@ -157,15 +160,12 @@ class MotionPath
         @angle += @props.angleOffset or 0
       else @angle = @props.angleOffset(@angle, p)
     else @angle = 0
-    
+    # get x and y coordinates
     x = point.x + @props.offsetX; y = point.y + @props.offsetY
     if @scaler then x *= @scaler.x; y *= @scaler.y
-
-    rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
-    transform = "translate(#{x}px,#{y}px) #{rotate} translateZ(0)"
-    @el.style["#{h.prefix.css}transform"] = transform
-    @el.style['transform'] = transform
-
+    # set position and angle
+    if @isModule then @setModulePosition(x,y) else @setElPosition(x,y)
+    # set transform origin
     if @props.transformOrigin
       # transform origin could be a function
       tOrigin = if typeof @props.transformOrigin is 'function'
@@ -173,12 +173,22 @@ class MotionPath
       else @props.transformOrigin
       @el.style["#{h.prefix.css}transform-origin"] = tOrigin
       @el.style['transform-origin'] = tOrigin
+
+    # call onUpdate but not on the very first(0 progress) call
     !isInit and @onUpdate?(p)
+
+  setElPosition:(x,y)->
+    rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+    transform = "translate(#{x}px,#{y}px) #{rotate}"
+    @el.style["#{h.prefix.css}transform"] = transform
+    @el.style['transform'] = transform
+  setModulePosition:(x, y)->
+    @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
+    @el.draw()
 
   extendDefaults:(o)->
     for key, value of o
       @[key] = value
-
   extendOptions:(o)->
     for key, value of o
       @props[key] = value

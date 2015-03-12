@@ -126,7 +126,6 @@ class Transit extends bitsMap.map.bit
   fillTransform:-> "translate(#{@props.shiftX}, #{@props.shiftY})"
   isNeedsTransform:->
     isX = @isPropChanged('shiftX'); isY = @isPropChanged('shiftY'); isX or isY
-
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     if @lastSet[name].value isnt @props[name]
@@ -135,6 +134,7 @@ class Transit extends bitsMap.map.bit
 
   calcTransform:->
     @props.transform = "rotate(#{@props.angle},#{@origin.x},#{@origin.y})"
+    
   calcSize:->
     return if @o.size
     radius = @calcMaxRadius()

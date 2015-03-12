@@ -99,6 +99,10 @@ MotionPath = (function() {
     if (el instanceof HTMLElement) {
       return el;
     }
+    if (el.setProp != null) {
+      this.isModule = true;
+      return el;
+    }
   };
 
   MotionPath.prototype.getPath = function() {
@@ -232,7 +236,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p, isInit) {
-    var atan, len, point, prevPoint, rotate, tOrigin, transform, x, x1, x2, y;
+    var atan, len, point, prevPoint, tOrigin, x, x1, x2, y;
     len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
     if (this.props.isAngle || (this.props.angleOffset != null)) {
@@ -256,16 +260,34 @@ MotionPath = (function() {
       x *= this.scaler.x;
       y *= this.scaler.y;
     }
-    rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
-    transform = "translate(" + x + "px," + y + "px) " + rotate + " translateZ(0)";
-    this.el.style["" + h.prefix.css + "transform"] = transform;
-    this.el.style['transform'] = transform;
+    if (this.isModule) {
+      this.setModulePosition(x, y);
+    } else {
+      this.setElPosition(x, y);
+    }
     if (this.props.transformOrigin) {
       tOrigin = typeof this.props.transformOrigin === 'function' ? this.props.transformOrigin(this.angle, p) : this.props.transformOrigin;
       this.el.style["" + h.prefix.css + "transform-origin"] = tOrigin;
       this.el.style['transform-origin'] = tOrigin;
     }
     return !isInit && (typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0);
+  };
+
+  MotionPath.prototype.setElPosition = function(x, y) {
+    var rotate, transform;
+    rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
+    transform = "translate(" + x + "px," + y + "px) " + rotate;
+    this.el.style["" + h.prefix.css + "transform"] = transform;
+    return this.el.style['transform'] = transform;
+  };
+
+  MotionPath.prototype.setModulePosition = function(x, y) {
+    this.el.setProp({
+      shiftX: "" + x + "px",
+      shiftY: "" + y + "px",
+      angle: this.angle
+    });
+    return this.el.draw();
   };
 
   MotionPath.prototype.extendDefaults = function(o) {

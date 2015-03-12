@@ -1,7 +1,9 @@
 (function() {
-  var MotionPath, coords, h;
+  var MotionPath, Transit, coords, h;
 
   MotionPath = window.mojs.MotionPath;
+
+  Transit = window.mojs.Transit;
 
   h = window.mojs.helpers;
 
@@ -994,7 +996,7 @@
         return expect(mp.getPath() instanceof SVGElement).toBe(true);
       });
     });
-    describe('el option ->', function() {
+    describe('el option (parseEl method) ->', function() {
       it('should return an el when it was specified by selector', function() {
         var div, id, mp;
         id = 'js-el';
@@ -1013,7 +1015,7 @@
         });
         return expect(mp.el instanceof HTMLElement).toBe(true);
       });
-      return it('getPath should return an el when an element was passed', function() {
+      it('should return the el when the element was passed', function() {
         var div, mp;
         div = document.createElement('div');
         mp = new MotionPath({
@@ -1021,6 +1023,19 @@
           el: div
         });
         return expect(mp.el instanceof HTMLElement).toBe(true);
+      });
+      return it('should return the module when module was passed', function() {
+        var mp, tr;
+        tr = new Transit({
+          isRunLess: true
+        });
+        mp = new MotionPath({
+          path: coords,
+          el: tr,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        return expect(mp.el).toBe(tr);
       });
     });
     describe('then method ->', function() {
@@ -1114,7 +1129,7 @@
         return expect(pathCoords === coords || pathCoords === coordsIE).toBe(true);
       });
     });
-    return describe('createTween method', function() {
+    describe('createTween method', function() {
       return it('should bind the onFirstUpdateBackward metod', function() {
         var mp;
         mp = new MotionPath({
@@ -1122,6 +1137,84 @@
           el: document.createElement('div')
         });
         return expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe('function');
+      });
+    });
+    describe('isModule flag ->', function() {
+      return it('should be set if module was passed', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: new Transit({
+            isRunLess: true
+          }),
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        return expect(mp.isModule).toBe(true);
+      });
+    });
+    return describe('setModulePosition method ->', function() {
+      it('should use setProp of the module to set position', function() {
+        var module, mp;
+        module = new Transit({
+          isRunLess: true
+        });
+        mp = new MotionPath({
+          path: coords,
+          el: module,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        spyOn(module, 'setProp');
+        mp.angle = 0;
+        mp.setModulePosition(100, 200);
+        return expect(module.setProp).toHaveBeenCalledWith({
+          shiftX: '100px',
+          shiftY: '200px',
+          angle: 0
+        });
+      });
+      it('should call module.draw method', function() {
+        var module, mp;
+        module = new Transit({
+          isRunLess: true
+        });
+        mp = new MotionPath({
+          path: coords,
+          el: module,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        spyOn(mp.el, 'draw');
+        mp.setProgress(0, true);
+        return expect(mp.el.draw).toHaveBeenCalled();
+      });
+      it('should be called if isModule', function() {
+        var module, mp;
+        module = new Transit({
+          isRunLess: true
+        });
+        mp = new MotionPath({
+          path: coords,
+          el: module,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        spyOn(mp, 'setModulePosition');
+        mp.setProgress(0, true);
+        return expect(mp.setModulePosition).toHaveBeenCalled();
+      });
+      return it('should not be called if !isModule', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        spyOn(mp, 'setModulePosition');
+        mp.setProgress(0, true);
+        return expect(mp.setModulePosition).not.toHaveBeenCalled();
       });
     });
   });
