@@ -4,7 +4,7 @@
   LegoMushroom - Oleg Solomka 2015 MIT
   v0.103.0 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, mp, paths, tr;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
 
 window.mojs = {
   revision: '0.103.0',
@@ -26,28 +26,6 @@ MotionPath = require('./motion-path');
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
-
-paths = document.getElementById('js-svg');
-
-tr = new Transit({
-  radius: 200,
-  isShowInit: true,
-  isShowEnd: true,
-  x: 300,
-  y: 300,
-  strokeWidth: 2,
-  stroke: 'deeppink',
-  duration: 2000
-});
-
-mp = new MotionPath({
-  path: '#js-path1',
-  el: tr.el,
-  duration: 2000,
-  delay: 2000
-}).then({
-  delay: 0
-});
 
 
 /* istanbul ignore next */

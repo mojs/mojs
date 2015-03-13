@@ -14,29 +14,29 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-paths = document.getElementById 'js-svg'
+# paths = document.getElementById 'js-svg'
 # # path1 = document.getElementById 'js-path1'
 # # path2 = document.getElementById 'js-path2'
 # # path3 = document.getElementById 'js-path3'
 
-tr = new Transit
-  radius: 200
-  isShowInit: true
-  isShowEnd: true
-  x: 300, y: 300
-  strokeWidth: 2
-  stroke: 'deeppink'
-  # angle: 360: 0
-  duration: 2000
-  # delay: 1000
+# tr = new Transit
+#   radius: 200
+#   isShowInit: true
+#   isShowEnd: true
+#   x: 300, y: 300
+#   strokeWidth: 2
+#   stroke: 'deeppink'
+#   # angle: 360: 0
+#   duration: 2000
+#   # delay: 1000
 
-mp = new MotionPath(
-  path:     '#js-path1'
-  el:       tr.el
-  duration: 2000
-  delay: 2000
-  # onUpdate:-> console.log 'aa'
-).then delay: 0
+# mp = new MotionPath(
+#   path:     '#js-path1'
+#   el:       tr.el
+#   duration: 2000
+#   delay: 2000
+#   # onUpdate:-> console.log 'aa'
+# ).then delay: 0
 
 # delta = {}
 

@@ -1,11 +1,9 @@
 ## To Do
 
 - :: demo
-  - then should not copy callbacks
-- refactor
+  - then should not copy callbacks for transit
   - setAttrsIfChanged to every shape
   - radius to radiusX/Y on then
-  - mp then delay 0 fix
   - tests coverage fix
   - foreign context coordinates in burst
   
