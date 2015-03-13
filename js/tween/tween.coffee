@@ -8,8 +8,13 @@ class Tween
     @loop = h.bind @loop, @
     @onUpdate = @o.onUpdate
   add:(timeline)->
+    if h.isArray timeline
+      for tm, i in timeline
+        @pushTimeline tm
+    else @pushTimeline timeline
+  pushTimeline:(timeline)->
     @timelines.push timeline
-    @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
+    @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime  
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1

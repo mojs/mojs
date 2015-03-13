@@ -21,6 +21,20 @@ Tween = (function() {
   };
 
   Tween.prototype.add = function(timeline) {
+    var i, tm, _i, _len, _results;
+    if (h.isArray(timeline)) {
+      _results = [];
+      for (i = _i = 0, _len = timeline.length; _i < _len; i = ++_i) {
+        tm = timeline[i];
+        _results.push(this.pushTimeline(tm));
+      }
+      return _results;
+    } else {
+      return this.pushTimeline(timeline);
+    }
+  };
+
+  Tween.prototype.pushTimeline = function(timeline) {
     this.timelines.push(timeline);
     return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
   };

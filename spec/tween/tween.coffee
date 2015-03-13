@@ -4,7 +4,6 @@ tweener  = window.mojs.tweener
 
 describe 'Tween ->', ->
   beforeEach -> tweener.removeAll()
-  
   it 'should have timelines var', ->
     t = new Tween
     expect(t.timelines.length).toBe 0
@@ -15,6 +14,13 @@ describe 'Tween ->', ->
       t.add new Timeline
       expect(t.timelines.length).toBe 1
       expect(t.timelines[0] instanceof Timeline).toBe true
+    it 'should work with arrays of tweens',->
+      t = new Tween
+      t.add [new Timeline, new Timeline, new Tween]
+      expect(t.timelines.length).toBe 3
+      expect(t.timelines[0] instanceof Timeline).toBe true
+      expect(t.timelines[1] instanceof Timeline).toBe true
+      expect(t.timelines[2] instanceof Tween)   .toBe true
     it 'should calc self duration',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200
@@ -28,6 +34,14 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 500, delay: 200, repeat: 1
       t1.add t
       expect(t1.props.totalTime).toBe 1400
+  describe 'pushTimeline method ->', ->
+    it 'should push timeline to timelines and calc totalTime',->
+      t = new Tween
+      t.pushTimeline new Timeline duration: 4000
+      expect(t.timelines.length).toBe 1
+      expect(t.timelines[0] instanceof Timeline).toBe true
+      expect(t.props.totalTime).toBe 4000
+
   describe 'append method ->', ->
     it 'should add timeline',->
       t = new Tween
@@ -189,7 +203,6 @@ describe 'Tween ->', ->
       tween.start()
       tween.update tween.props.startTime + 22
 
-  
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
       t = new Tween onUpdate: ->

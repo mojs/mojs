@@ -25,6 +25,15 @@
         expect(t.timelines.length).toBe(1);
         return expect(t.timelines[0] instanceof Timeline).toBe(true);
       });
+      it('should work with arrays of tweens', function() {
+        var t;
+        t = new Tween;
+        t.add([new Timeline, new Timeline, new Tween]);
+        expect(t.timelines.length).toBe(3);
+        expect(t.timelines[0] instanceof Timeline).toBe(true);
+        expect(t.timelines[1] instanceof Timeline).toBe(true);
+        return expect(t.timelines[2] instanceof Tween).toBe(true);
+      });
       it('should calc self duration', function() {
         var t;
         t = new Tween;
@@ -55,6 +64,18 @@
         }));
         t1.add(t);
         return expect(t1.props.totalTime).toBe(1400);
+      });
+    });
+    describe('pushTimeline method ->', function() {
+      return it('should push timeline to timelines and calc totalTime', function() {
+        var t;
+        t = new Tween;
+        t.pushTimeline(new Timeline({
+          duration: 4000
+        }));
+        expect(t.timelines.length).toBe(1);
+        expect(t.timelines[0] instanceof Timeline).toBe(true);
+        return expect(t.props.totalTime).toBe(4000);
       });
     });
     describe('append method ->', function() {

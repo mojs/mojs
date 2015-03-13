@@ -1,16 +1,14 @@
 ## To Do
 
 - :: demo
-  - fix strokeDasharray 1+ prop
-  - tween should recieve arrays on add
   - then should not copy callbacks
 - refactor
   - setAttrsIfChanged to every shape
-  - transit custom shape length calculations
   - radius to radiusX/Y on then
+  - mp then delay 0 fix
   - tests coverage fix
   - foreign context coordinates in burst
-  - mp then delay 0 fix
+  
 - release
   - bower component
   - cdn

@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.101.2 unstable
+  v0.102.0 unstable
 ###
-window.mojs = revision: '0.101.2', isDebug: true
+window.mojs = revision: '0.102.0', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'
@@ -14,13 +14,15 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-
 paths = document.getElementById 'js-svg'
 # # path1 = document.getElementById 'js-path1'
 # # path2 = document.getElementById 'js-path2'
 # # path3 = document.getElementById 'js-path3'
 
-
+dash = "7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7"
+delta = {}
+delta["0 100% #{dash} #{dash} #{dash}"] = "0 0% #{dash} #{dash} #{dash}"
+console.log delta
 new Transit
   radius: 200
   isShowInit: true
@@ -28,9 +30,9 @@ new Transit
   x: 300, y: 300
   strokeWidth: 2
   stroke: 'deeppink'
-  strokeDasharray:  '7 7 7 7 7 7 7 7 7 100%'
-  strokeDashoffset: '100%': 0
-
+  strokeDasharray: delta
+  # strokeDashoffset: '0': '100%'
+  duration: 2000
 # stagger = new Stagger
 #   els:              paths
 #   strokeWidth:      3

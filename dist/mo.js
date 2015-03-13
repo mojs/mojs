@@ -1320,7 +1320,7 @@ if (typeof window !== "undefined" && window !== null) {
   LegoMushroom - Oleg Solomka 2015 MIT
   v0.101.2 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, paths;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, dash, delta, h, paths;
 
 window.mojs = {
   revision: '0.101.2',
@@ -1345,6 +1345,14 @@ Tween = require('./tween/tween');
 
 paths = document.getElementById('js-svg');
 
+dash = "7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7";
+
+delta = {};
+
+delta["0 100% " + dash + " " + dash + " " + dash] = "0 0% " + dash + " " + dash + " " + dash;
+
+console.log(delta);
+
 new Transit({
   radius: 200,
   isShowInit: true,
@@ -1353,10 +1361,8 @@ new Transit({
   y: 300,
   strokeWidth: 2,
   stroke: 'deeppink',
-  strokeDasharray: '7 7 7 7 7 7 7 7 7 100%',
-  strokeDashoffset: {
-    '100%': 0
-  }
+  strokeDasharray: delta,
+  duration: 2000
 });
 
 
