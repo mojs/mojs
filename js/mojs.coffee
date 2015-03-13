@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.101.1 unstable
+  v0.101.2 unstable
 ###
-window.mojs = revision: '0.101.1', isDebug: true
+window.mojs = revision: '0.101.2', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'
@@ -16,21 +16,32 @@ Tween       = require './tween/tween'
 
 
 paths = document.getElementById 'js-svg'
-# path1 = document.getElementById 'js-path1'
-# path2 = document.getElementById 'js-path2'
-# path3 = document.getElementById 'js-path3'
+# # path1 = document.getElementById 'js-path1'
+# # path2 = document.getElementById 'js-path2'
+# # path3 = document.getElementById 'js-path3'
 
-stagger = new Stagger
-  els:              paths
-  strokeWidth:      3
-  delay:            'stagger(100)'
-  duration:         2000
-  isShowEnd:        true
-  isShowInit:       true
-  # easing:           'Sinusoidal.Out'
-  strokeDashoffset:  { '100%': 0 }
-  # isRunLess:        true
-  # opacity:          0: 3
+
+new Transit
+  radius: 200
+  isShowInit: true
+  isShowEnd: true
+  x: 300, y: 300
+  strokeWidth: 2
+  stroke: 'deeppink'
+  strokeDasharray:  '7 7 7 7 7 7 7 7 7 100%'
+  strokeDashoffset: '100%': 0
+
+# stagger = new Stagger
+#   els:              paths
+#   strokeWidth:      3
+#   delay:            'stagger(100)'
+#   duration:         2000
+#   isShowEnd:        true
+#   isShowInit:       true
+#   # easing:           'Sinusoidal.Out'
+#   strokeDashoffset:  { '100%': 0 }
+#   # isRunLess:        true
+#   # opacity:          0: 3
 
 # isRunLess = false
 # delayStart = 0
@@ -44,6 +55,7 @@ stagger = new Stagger
 #   degree: 180
 #   angle:  90
 #   radius: { 10: 25 }
+#   ctx: paths
 #   # radiusY: { 5: 15 }
 #   type: 'line'
 #   stroke: yellow

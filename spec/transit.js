@@ -1601,7 +1601,7 @@
         expect(byte.props.strokeDasharray[1].value).toBe(100);
         return expect(byte.props.strokeDasharray[1].unit).toBe('px');
       });
-      return it('should parse non-deltas strokeDasharray/strokeDashoffset values', function() {
+      it('should parse non-deltas strokeDasharray/strokeDashoffset values', function() {
         var byte;
         byte = new Byte({
           type: 'circle',
@@ -1610,8 +1610,29 @@
           isRunLess: true,
           isIt: true
         });
-        expect(byte.props.strokeDasharray.value).toBe(100);
-        return expect(byte.props.strokeDasharray.unit).toBe('%');
+        expect(byte.props.strokeDasharray[0].value).toBe(100);
+        return expect(byte.props.strokeDasharray[0].unit).toBe('%');
+      });
+      it('should parse multiple strokeDash.. values', function() {
+        var byte;
+        byte = new Byte({
+          strokeDasharray: '7 100 7',
+          isRunLess: true
+        });
+        expect(h.isArray(byte.props.strokeDasharray)).toBe(true);
+        expect(byte.props.strokeDasharray.length).toBe(3);
+        expect(byte.props.strokeDasharray[0].value).toBe(7);
+        expect(byte.props.strokeDasharray[1].value).toBe(100);
+        return expect(byte.props.strokeDasharray[2].value).toBe(7);
+      });
+      return it('should parse num values', function() {
+        var byte;
+        byte = new Byte({
+          strokeDasharray: 7,
+          isRunLess: true
+        });
+        expect(h.isArray(byte.props.strokeDasharray)).toBe(true);
+        return expect(byte.props.strokeDasharray.length).toBe(1);
       });
     });
     describe('Callbacks ->', function() {

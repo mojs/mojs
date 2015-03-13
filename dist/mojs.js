@@ -2,12 +2,12 @@
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.101.1 unstable
+  v0.101.2 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, paths, stagger;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, paths;
 
 window.mojs = {
-  revision: '0.101.1',
+  revision: '0.101.2',
   isDebug: true
 };
 
@@ -29,13 +29,15 @@ Tween = require('./tween/tween');
 
 paths = document.getElementById('js-svg');
 
-stagger = new Stagger({
-  els: paths,
-  strokeWidth: 3,
-  delay: 'stagger(100)',
-  duration: 2000,
-  isShowEnd: true,
+new Transit({
+  radius: 200,
   isShowInit: true,
+  isShowEnd: true,
+  x: 300,
+  y: 300,
+  strokeWidth: 2,
+  stroke: 'deeppink',
+  strokeDasharray: '7 7 7 7 7 7 7 7 7 100%',
   strokeDashoffset: {
     '100%': 0
   }

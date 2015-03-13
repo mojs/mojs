@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.101.1 unstable
+  v0.101.2 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, paths, stagger;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, paths;
 
 window.mojs = {
-  revision: '0.101.1',
+  revision: '0.101.2',
   isDebug: true
 };
 
@@ -1345,13 +1345,15 @@ Tween = require('./tween/tween');
 
 paths = document.getElementById('js-svg');
 
-stagger = new Stagger({
-  els: paths,
-  strokeWidth: 3,
-  delay: 'stagger(100)',
-  duration: 2000,
-  isShowEnd: true,
+new Transit({
+  radius: 200,
   isShowInit: true,
+  isShowEnd: true,
+  x: 300,
+  y: 300,
+  strokeWidth: 2,
+  stroke: 'deeppink',
+  strokeDasharray: '7 7 7 7 7 7 7 7 7 100%',
   strokeDashoffset: {
     '100%': 0
   }
@@ -2937,7 +2939,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setElStyles = function() {
-    var marginSize, size;
+    var marginSize, size, _ref;
     if (!this.isForeign) {
       size = "" + this.props.size + "px";
       marginSize = "" + (-this.props.size / 2) + "px";
@@ -2949,7 +2951,9 @@ Transit = (function(_super) {
       this.el.style['margin-left'] = marginSize;
       this.el.style['margin-top'] = marginSize;
     }
-    this.el.style.opacity = this.props.opacity;
+    if ((_ref = this.el) != null) {
+      _ref.style.opacity = this.props.opacity;
+    }
     if (this.o.isShowInit) {
       return this.show();
     } else {
@@ -3164,7 +3168,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var defaultsValue, fromObject, key, keys, len, optionsValue, _ref;
+    var array, defaultsValue, fromObject, i, key, keys, len, optionsValue, property, unit, value, _i, _len, _ref;
     if (this.props == null) {
       this.props = {};
     }
@@ -3201,7 +3205,20 @@ Transit = (function(_super) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
         if (this.h.strokeDashPropsMap[key]) {
-          this.props[key] = this.h.parseUnit(this.props[key]);
+          property = this.props[key];
+          value = [];
+          switch (typeof property) {
+            case 'number':
+              value.push(this.h.parseUnit(property));
+              break;
+            case 'string':
+              array = this.props[key].split(' ');
+              for (i = _i = 0, _len = array.length; _i < _len; i = ++_i) {
+                unit = array[i];
+                value.push(this.h.parseUnit(unit));
+              }
+          }
+          this.props[key] = value;
         }
         continue;
       }

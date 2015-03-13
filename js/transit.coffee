@@ -62,6 +62,7 @@ class Transit extends bitsMap.map.bit
         (@o.parent or document.body).appendChild @el
       else
         @ctx = @o.ctx; @createBit(); @calcSize()
+        # console.log  'yep', @ctx, @el
       @isRendered = true
     @setElStyles()
     @setProgress 0, true
@@ -82,7 +83,7 @@ class Transit extends bitsMap.map.bit
       @el.style['margin-top']  = marginSize
       # @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
-    @el.style.opacity     = @props.opacity
+    @el?.style.opacity     = @props.opacity
     if @o.isShowInit then @show() else @hide()
 
   show:->
@@ -245,7 +246,16 @@ class Transit extends bitsMap.map.bit
           @props[key] = @h.parseUnit(@props[key]).string
         # strokeDash properties should be parsed with units
         if @h.strokeDashPropsMap[key]
-          @props[key] = @h.parseUnit(@props[key])
+          property = @props[key]; value = []
+          switch typeof property
+            when 'number'
+              value.push @h.parseUnit(property)
+            when 'string'
+              array = @props[key].split ' '
+              for unit, i in array
+                value.push @h.parseUnit(unit)
+          @props[key] = value
+          # console.log @props[key], key
         continue
       # if delta object was passed: like { 20: 75 }
       # calculate delta

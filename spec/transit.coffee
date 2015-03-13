@@ -77,7 +77,6 @@ describe 'Transit ->', ->
         radius: 'rand(0, 10)'
         isRunLess: true
         fill: 'deeppink'
-      # byte.props = {}
       fillBefore = byte.props.fill
       byte.extendDefaults {radius: 10}
       expect(byte.props.radius).toBe 10
@@ -884,8 +883,27 @@ describe 'Transit ->', ->
         radius: 100
         isRunLess: true
         isIt: true
-      expect(byte.props.strokeDasharray.value).toBe 100
-      expect(byte.props.strokeDasharray.unit).toBe '%'
+      expect(byte.props.strokeDasharray[0].value).toBe 100
+      expect(byte.props.strokeDasharray[0].unit).toBe '%'
+
+    it 'should parse multiple strokeDash.. values', ->
+      byte = new Byte
+        strokeDasharray: '7 100 7'
+        isRunLess: true
+      
+      expect(h.isArray(byte.props.strokeDasharray)).toBe true
+      expect(byte.props.strokeDasharray.length).toBe 3
+      expect(byte.props.strokeDasharray[0].value).toBe 7
+      expect(byte.props.strokeDasharray[1].value).toBe 100
+      expect(byte.props.strokeDasharray[2].value).toBe 7
+
+    it 'should parse num values', ->
+      byte = new Byte
+        strokeDasharray: 7
+        isRunLess: true
+      
+      expect(h.isArray(byte.props.strokeDasharray)).toBe true
+      expect(byte.props.strokeDasharray.length)    .toBe 1
 
   describe 'Callbacks ->', ->
     describe 'onStart callback ->', ->
