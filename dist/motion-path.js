@@ -311,8 +311,12 @@ MotionPath = (function() {
     prevOptions = this.history[this.history.length - 1];
     for (key in prevOptions) {
       value = prevOptions[key];
-      if (o[key] == null) {
-        o[key] = value;
+      if (!h.callbacksMap[key]) {
+        if (o[key] == null) {
+          o[key] = value;
+        }
+      } else {
+        o[key] = void 0;
       }
     }
     this.history.push(o);
@@ -321,7 +325,7 @@ MotionPath = (function() {
     opts = {};
     while (i--) {
       key = keys[i];
-      opts[key] = o[key] || prevOptions[key];
+      opts[key] = o[key] != null ? o[key] : prevOptions[key];
     }
     it = this;
     opts.onUpdate = (function(_this) {

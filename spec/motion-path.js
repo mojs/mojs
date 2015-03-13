@@ -1122,13 +1122,27 @@
           pathStart: .5,
           pathEnd: 1,
           delay: 0
+        });
+        return expect(mp.tween.timelines[1].o.delay).toBe(2100);
+      });
+      it('should not copy previous callbacks', function() {
+        var mp, onUpdate;
+        onUpdate = function() {};
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5,
+          delay: 100,
+          onUpdate: onUpdate
         }).then({
           pathStart: .5,
           pathEnd: 1,
           delay: 0
         });
-        console.log(mp.history[2].delay);
-        return expect(mp.history[1].delay).toBe(0);
+        mp.tween.setProgress(.75);
+        expect(mp.history[1].onUpdate).not.toBeDefined();
+        return expect(mp.props.onUpdate).not.toBeDefined();
       });
       return it('should add new timeline', function() {
         var mp;
@@ -1136,7 +1150,8 @@
           path: coords,
           el: document.createElement('div'),
           duration: 2000,
-          pathEnd: .5
+          pathEnd: .5,
+          onUpdate: function() {}
         }).then({
           pathStart: .5,
           pathEnd: 1

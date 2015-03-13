@@ -41,12 +41,12 @@ class MotionPath
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
     @angle = 0
-    @onUpdate = @props.onUpdate
+    
+    @onUpdate   = @props.onUpdate
     @el         = @parseEl @props.el
     @path       = @getPath()
     if !@path.getAttribute('d')
       h.error('Path has no coordinates to work with, aborting'); return true
-
     @len        = @path.getTotalLength()
     @slicedLen  = @len*(@props.pathEnd - @props.pathStart)
     @startLen   = @props.pathStart*@len
@@ -189,6 +189,7 @@ class MotionPath
   extendDefaults:(o)->
     for key, value of o
       @[key] = value
+
   extendOptions:(o)->
     for key, value of o
       @props[key] = value
@@ -196,12 +197,14 @@ class MotionPath
   then:(o)->
     prevOptions = @history[@history.length-1]
     for key, value of prevOptions
-      o[key] ?= value
+      if !h.callbacksMap[key] then o[key] ?= value else o[key] = undefined
     @history.push o
-    # get tween timing values
+    # get tween timing valuese
+    # callbacksMap
     keys = Object.keys(h.tweenOptionMap); i = keys.length; opts = {}
     while(i--)
-      key = keys[i]; opts[key] = o[key] or prevOptions[key]
+      key = keys[i]
+      opts[key] = if o[key]? then o[key] else prevOptions[key]
     it = @
     opts.onUpdate      = (p)=> @setProgress p
     opts.onStart       = => @props.onStart?.apply @

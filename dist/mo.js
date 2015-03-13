@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.101.2 unstable
+  v0.103.0 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, dash, delta, h, paths;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, mp, paths, tr;
 
 window.mojs = {
-  revision: '0.101.2',
+  revision: '0.103.0',
   isDebug: true
 };
 
@@ -1345,15 +1345,7 @@ Tween = require('./tween/tween');
 
 paths = document.getElementById('js-svg');
 
-dash = "7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7";
-
-delta = {};
-
-delta["0 100% " + dash + " " + dash + " " + dash] = "0 0% " + dash + " " + dash + " " + dash;
-
-console.log(delta);
-
-new Transit({
+tr = new Transit({
   radius: 200,
   isShowInit: true,
   isShowEnd: true,
@@ -1361,8 +1353,16 @@ new Transit({
   y: 300,
   strokeWidth: 2,
   stroke: 'deeppink',
-  strokeDasharray: delta,
   duration: 2000
+});
+
+mp = new MotionPath({
+  path: '#js-path1',
+  el: tr.el,
+  duration: 2000,
+  delay: 2000
+}).then({
+  delay: 0
 });
 
 
@@ -1702,8 +1702,12 @@ MotionPath = (function() {
     prevOptions = this.history[this.history.length - 1];
     for (key in prevOptions) {
       value = prevOptions[key];
-      if (o[key] == null) {
-        o[key] = value;
+      if (!h.callbacksMap[key]) {
+        if (o[key] == null) {
+          o[key] = value;
+        }
+      } else {
+        o[key] = void 0;
       }
     }
     this.history.push(o);
@@ -1712,7 +1716,7 @@ MotionPath = (function() {
     opts = {};
     while (i--) {
       key = keys[i];
-      opts[key] = o[key] || prevOptions[key];
+      opts[key] = o[key] != null ? o[key] : prevOptions[key];
     }
     it = this;
     opts.onUpdate = (function(_this) {
@@ -3742,6 +3746,20 @@ Tween = (function() {
   };
 
   Tween.prototype.add = function(timeline) {
+    var i, tm, _i, _len, _results;
+    if (h.isArray(timeline)) {
+      _results = [];
+      for (i = _i = 0, _len = timeline.length; _i < _len; i = ++_i) {
+        tm = timeline[i];
+        _results.push(this.pushTimeline(tm));
+      }
+      return _results;
+    } else {
+      return this.pushTimeline(timeline);
+    }
+  };
+
+  Tween.prototype.pushTimeline = function(timeline) {
     this.timelines.push(timeline);
     return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
   };

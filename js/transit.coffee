@@ -255,7 +255,6 @@ class Transit extends bitsMap.map.bit
               for unit, i in array
                 value.push @h.parseUnit(unit)
           @props[key] = value
-          # console.log @props[key], key
         continue
       # if delta object was passed: like { 20: 75 }
       # calculate delta
