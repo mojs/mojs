@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.106.0 unstable
+  v0.106.1 unstable
 ###
-window.mojs = revision: '0.106.0', isDebug: true
+window.mojs = revision: '0.106.1', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'

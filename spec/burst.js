@@ -510,6 +510,7 @@
         burst = new Burst({
           radius: 50,
           radiusX: 100,
+          isIt: true,
           childOptions: {
             radius: [
               {

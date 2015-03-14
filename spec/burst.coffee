@@ -347,17 +347,21 @@ describe 'Burst ->', ->
         expect(burst.transits[0].o.radiusScale).toBeDefined()
         expect(burst.transits[1].o.radiusScale).toBeDefined()
   describe 'size calculations calcSize method ->', ->
+    
     it 'should calculate size based on largest transit + self radius', ->
       burst = new Burst
         radius: 50
         childOptions:
           radius:      [{ 20: 50 }, 20]
           strokeWidth: 20
+      
       expect(burst.props.size)  .toBe 240
       expect(burst.props.center).toBe 120
+
+
     it 'should calculate size based on largest transit + self radius #2', ->
       burst = new Burst
-        radius: 50, radiusX: 100
+        radius: 50, radiusX: 100, isIt: true
         childOptions:
           radius:      [{ 20: 50 }, 20]
           strokeWidth: 20

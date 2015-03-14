@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.106.0 unstable
+  v0.106.1 unstable
  */
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, tr;
 
 window.mojs = {
-  revision: '0.106.0',
+  revision: '0.106.1',
   isDebug: true
 };
 
@@ -3212,10 +3212,10 @@ Transit = (function(_super) {
         }
         this.props[key] = optionsValue;
         if (key === 'radius') {
-          if (fromObject.radiusX == null) {
+          if (this.o.radiusX == null) {
             this.props.radiusX = optionsValue;
           }
-          if (fromObject.radiusY == null) {
+          if (this.o.radiusY == null) {
             this.props.radiusY = optionsValue;
           }
         }

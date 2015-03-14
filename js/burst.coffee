@@ -170,10 +170,10 @@ class Burst extends Transit
         largestSize = transit.props.size
     radius = @calcMaxRadius()
     @props.size   = largestSize + 2*radius
-    
     @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2
     @addBitOptions()
+
   getOption:(i)->
     option = {}; keys = Object.keys(@childDefaults); len = keys.length
     while(len--)

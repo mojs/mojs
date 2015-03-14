@@ -93,9 +93,12 @@
       it('should extend defaults object to properties', function() {
         var byte;
         byte = new Byte({
-          radius: 45
+          radius: 45,
+          radiusX: 50
         });
-        return expect(byte.props.radius).toBe(45);
+        expect(byte.props.radius).toBe(45);
+        expect(byte.props.radiusX).toBe(50);
+        return expect(byte.props.radiusY).toBe(45);
       });
       it('should extend defaults object to properties if 0', function() {
         var byte;
@@ -1091,9 +1094,7 @@
     describe('mergeThenOptions method ->', function() {
       it('should merge 2 objects', function() {
         var byte, end, mergedOpton, start;
-        byte = new Byte({
-          isIt: true
-        });
+        byte = new Byte;
         start = {
           radius: 10,
           duration: 1000,

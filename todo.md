@@ -1,8 +1,6 @@
 ## To Do
 
 - :: demo
-  - transit:
-    - radius to radiusX/Y on then
   - setAttrsIfChanged to every shape
   - foreign context coordinates in burst
   - transit then -> when startKey is null it gets to Object.keys()

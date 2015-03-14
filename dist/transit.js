@@ -361,10 +361,10 @@ Transit = (function(_super) {
         }
         this.props[key] = optionsValue;
         if (key === 'radius') {
-          if (fromObject.radiusX == null) {
+          if (this.o.radiusX == null) {
             this.props.radiusX = optionsValue;
           }
-          if (fromObject.radiusY == null) {
+          if (this.o.radiusY == null) {
             this.props.radiusY = optionsValue;
           }
         }

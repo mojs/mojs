@@ -65,7 +65,6 @@ class Transit extends bitsMap.map.bit
         (@o.parent or document.body).appendChild @el
       else
         @ctx = @o.ctx; @createBit(); @calcSize()
-        # console.log  'yep', @ctx, @el
       @isRendered = true
     @setElStyles()
     @setProgress 0, true
@@ -192,7 +191,6 @@ class Transit extends bitsMap.map.bit
       key = keys[len]; value = @deltas[key]
       @props[key] = switch value.type
         when 'array' # strokeDasharray/strokeDashoffset
-          # key is 'strokeDashoffset' and console.log progress
           stroke = []
           for item, i in value.delta
             dash = value.start[i].value + item.value*@progress
@@ -242,14 +240,11 @@ class Transit extends bitsMap.map.bit
         if typeof optionsValue is 'string'
           if optionsValue.match /rand/
             optionsValue = @h.parseRand optionsValue
-
         # save to props
         @props[key] = optionsValue
         if key is 'radius'
-          if !fromObject.radiusX? then @props.radiusX = optionsValue
-          if !fromObject.radiusY? then @props.radiusY = optionsValue
-          # @o.isIt and console.log
-
+          if !@o.radiusX? then @props.radiusX = optionsValue
+          if !@o.radiusY? then @props.radiusY = optionsValue
         # position properties should be parsed with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
@@ -327,7 +322,6 @@ class Transit extends bitsMap.map.bit
     # copy the tween options from passed o or current props
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
     opts[keys[i]] = merged[keys[i]] while(i--)
-    # console.log merged.onStart
     it = @
     opts.onUpdate      = (p)=> @setProgress p#; @onUpdate?()
     opts.onStart       = => @props.onStart?.apply(@)

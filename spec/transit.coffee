@@ -49,8 +49,10 @@ describe 'Transit ->', ->
 
   describe 'extendDefaults method ->', ->
     it 'should extend defaults object to properties', ->
-      byte = new Byte radius: 45
-      expect(byte.props.radius).toBe(45)
+      byte = new Byte radius: 45, radiusX: 50
+      expect(byte.props.radius) .toBe(45)
+      expect(byte.props.radiusX).toBe(50)
+      expect(byte.props.radiusY).toBe(45)
     it 'should extend defaults object to properties if 0', ->
       byte = new Byte radius: 0
       expect(byte.props.radius).toBe(0)
@@ -627,7 +629,7 @@ describe 'Transit ->', ->
 
   describe 'mergeThenOptions method ->', ->
     it 'should merge 2 objects', ->
-      byte = new Byte isIt: true
+      byte = new Byte
       start = radius: 10, duration: 1000, stroke: '#ff00ff'
       end   = radius: 20, duration: 500
       mergedOpton = byte.mergeThenOptions start, end
