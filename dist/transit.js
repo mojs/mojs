@@ -360,6 +360,14 @@ Transit = (function(_super) {
           }
         }
         this.props[key] = optionsValue;
+        if (key === 'radius') {
+          if (fromObject.radiusX == null) {
+            this.props.radiusX = optionsValue;
+          }
+          if (fromObject.radiusY == null) {
+            this.props.radiusY = optionsValue;
+          }
+        }
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
@@ -409,7 +417,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.mergeThenOptions = function(start, end) {
-    var endKey, endValue, i, key, keys, o, startKey, startKeys, value;
+    var endValue, i, key, keys, o, startKey, startKeys, value;
     o = {};
     for (key in start) {
       value = start[key];
@@ -422,25 +430,28 @@ Transit = (function(_super) {
     keys = Object.keys(end);
     i = keys.length;
     while (i--) {
-      endKey = keys[i];
-      endValue = end[endKey];
-      if (this.h.tweenOptionMap[endKey] || typeof endValue === 'object') {
-        o[endKey] = endValue != null ? endValue : start[endKey];
+      key = keys[i];
+      endValue = end[key];
+      if (this.h.tweenOptionMap[key] || typeof endValue === 'object') {
+        o[key] = endValue != null ? endValue : start[key];
         continue;
       }
-      startKey = start[endKey];
+      startKey = start[key];
       if (startKey == null) {
-        startKey = this.defaults[endKey];
+        startKey = this.defaults[key];
+      }
+      if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
+        startKey = start.radius;
       }
       if (typeof startKey === 'object') {
         startKeys = Object.keys(startKey);
         startKey = startKey[startKeys[0]];
       }
       if (endValue != null) {
-        o[endKey] = {};
-        o[endKey][startKey] = endValue;
+        o[key] = {};
+        o[key][startKey] = endValue;
       } else {
-        o[endKey] = startKey;
+        o[key] = startKey;
       }
     }
     return o;

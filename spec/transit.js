@@ -141,7 +141,7 @@
         expect(byte.props.radius).toBeGreaterThan(-1);
         return expect(byte.props.radius).not.toBeGreaterThan(10);
       });
-      return it('should recieve object to iterate from', function() {
+      it('should recieve object to iterate from', function() {
         var byte, fillBefore;
         byte = new Byte({
           radius: 'rand(0, 10)',
@@ -154,6 +154,18 @@
         });
         expect(byte.props.radius).toBe(10);
         return expect(byte.props.fill).toBe(fillBefore);
+      });
+      return it('should allways inherit radiusX/Y from radius', function() {
+        var byte;
+        byte = new Byte({
+          radius: 10
+        });
+        byte.extendDefaults({
+          radius: 100
+        });
+        expect(byte.props.radius).toBe(100);
+        expect(byte.props.radiusX).toBe(100);
+        return expect(byte.props.radiusY).toBe(100);
       });
     });
     describe('stagger values', function() {
@@ -318,6 +330,48 @@
         });
         return expect(byte.tween.timelines.length).toBe(2);
       });
+      it('should inherit radius for radiusX/Y options', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        return expect(byte.history[1].radiusX[20]).toBe(5);
+      });
+      it('should inherit radius for radiusX/Y options in further chain', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        byte.then({
+          radiusY: 40
+        });
+        expect(byte.history[2].radiusX[20]).toBe(5);
+        return expect(byte.history[2].radiusY[20]).toBe(40);
+      });
+      it('should inherit radius for radiusX/Y options in further chain #2', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        byte.then({
+          radiusY: 40,
+          radiusX: 50
+        });
+        expect(byte.history[2].radiusX[5]).toBe(50);
+        return expect(byte.history[2].radiusY[20]).toBe(40);
+      });
       it('should add new timeline with options #2', function() {
         var byte;
         byte = new Byte({
@@ -447,6 +501,28 @@
         });
         expect(typeof byte.tween.timelines[1].o.onStart).toBe('function');
         return expect(typeof byte.tween.timelines[2].o.onStart).toBe('function');
+      });
+      it('should bind onFirstUpdate function', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        byte.then({
+          radius: {
+            100: 10
+          },
+          delay: 200,
+          stroke: 'green'
+        });
+        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
+        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
       });
       return it('should bind onFirstUpdate function', function() {
         var byte;

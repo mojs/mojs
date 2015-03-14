@@ -491,11 +491,9 @@
           onStart: function() {
             return isOnStart = true;
           },
-          onFirstUpdate: (function(_this) {
-            return function() {
-              return expect(isOnStart).toBe(false);
-            };
-          })(this)
+          onFirstUpdate: function() {
+            return expect(isOnStart).toBe(false);
+          }
         }).start();
         return t.update(t.props.startTime + 1);
       });

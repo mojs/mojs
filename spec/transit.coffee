@@ -82,6 +82,14 @@ describe 'Transit ->', ->
       expect(byte.props.radius).toBe 10
       expect(byte.props.fill).toBe fillBefore
 
+    it 'should allways inherit radiusX/Y from radius', ->
+      byte = new Byte radius: 10
+      byte.extendDefaults {radius: 100}
+      
+      expect(byte.props.radius) .toBe 100
+      expect(byte.props.radiusX).toBe 100
+      expect(byte.props.radiusY).toBe 100
+
   describe 'stagger values', ->
     it 'should extend defaults object to properties if stagger was passed', ->
       byte = new Byte radius: 'stagger(200)'
@@ -104,6 +112,19 @@ describe 'Transit ->', ->
     it 'should save options to history array', ->
       byte = new Byte radius: 20
       expect(byte.history.length).toBe 1
+    
+    # it 'should inherit radius for radiusX/Y if werent defined', ->
+    #   byte = new Byte radius: 20
+    #   expect(byte.history[0].radius) .toBe 20
+    #   expect(byte.history[0].radiusX).toBe 20
+    #   expect(byte.history[0].radiusY).toBe 20
+
+    # it 'should inherit radius for radiusX/Y if werent defined #2', ->
+    #   byte = new Byte radius: 20, radiusY: 30, radiusX: 40
+    #   expect(byte.history[0].radius) .toBe 20
+    #   expect(byte.history[0].radiusX).toBe 40
+    #   expect(byte.history[0].radiusY).toBe 30
+
     it 'should rewrite the first history item on run', ->
       byte = new Byte radius: 20
       byte.run radius: 10
@@ -162,6 +183,27 @@ describe 'Transit ->', ->
       byte.then radius: 5
       expect(byte.tween.timelines.length).toBe 2
 
+    it 'should inherit radius for radiusX/Y options', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      expect(byte.history[1].radiusX[20]).toBe 5
+
+    it 'should inherit radius for radiusX/Y options in further chain', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      byte.then radiusY: 40
+      
+      expect(byte.history[2].radiusX[20]).toBe  5
+      expect(byte.history[2].radiusY[20]).toBe 40
+
+    it 'should inherit radius for radiusX/Y options in further chain #2', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      byte.then radiusY: 40, radiusX: 50
+      
+      expect(byte.history[2].radiusX[5]) .toBe 50
+      expect(byte.history[2].radiusY[20]).toBe 40
+
     it 'should add new timeline with options #2', ->
       byte = new Byte
         radius: 20, duration: 1000, delay: 10, yoyo: true
@@ -170,15 +212,6 @@ describe 'Transit ->', ->
       expect(byte.tween.timelines[1].o.duration).toBe 1000
       expect(byte.tween.timelines[1].o.yoyo)    .toBe false
       expect(byte.tween.timelines[1].o.delay)   .toBe 1010
-
-
-
-
-
-
-
-
-
 
     it 'should merge then options and add them to the history', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -243,14 +276,12 @@ describe 'Transit ->', ->
       expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe 'function'
       expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe 'function'
 
-
-
-
-
-
-
-
-
+    it 'should bind onFirstUpdate function', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe 'function'
+      expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe 'function'
 
   describe 'tuneOptions method ->', ->
     it 'should call extendDefaults with options', ->

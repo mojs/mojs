@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.105.0 unstable
+  v0.106.0 unstable
 ###
-window.mojs = revision: '0.105.0', isDebug: true
+window.mojs = revision: '0.106.0', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'
@@ -20,6 +20,7 @@ Tween       = require './tween/tween'
 # # path3 = document.getElementById 'js-path3'
 
 tr = new Transit
+  type: 'cross'
   x: 300, y: 300
   radius: 50: 75
   isShowInit: true
@@ -28,12 +29,18 @@ tr = new Transit
   stroke: 'cyan'
   duration: 1000
   delay: 1000
-  onStart:-> console.log '------------->>>'
-  onUpdate:(p)-> console.log 'aaa'
-
 .then
-  radius: 50
+  radiusX: 50
+  fill: 'green'
   stroke: 'deeppink'
+.then
+  radiusY: 50
+  fill: 'green'
+  stroke: 'deeppink'
+# for item, i in tr.history
+#   console.log item.radius, item.radiusX, item.radiusY
+
+# console.log tr.history
 
 # mp = new MotionPath(
 #   path:     '#js-path1'

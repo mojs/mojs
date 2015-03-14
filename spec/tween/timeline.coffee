@@ -286,7 +286,7 @@ describe 'Timeline ->', ->
       t = new Timeline
         duration: 10
         onStart:-> isOnStart = true
-        onFirstUpdate:=>
+        onFirstUpdate:->
           expect(isOnStart).toBe false
       .start()
       t.update t.props.startTime + 1

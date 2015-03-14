@@ -45,7 +45,10 @@ class Transit extends bitsMap.map.bit
   vars:->
     @h ?= h; @lastSet ?= {}; @index = @o.index or 0
     @extendDefaults()
-    o = @h.cloneObj(@o); @h.extend(o, @defaults); @history = [o]
+    o = @h.cloneObj(@o); @h.extend(o, @defaults)
+    # inherit the radiusX/Y from radius if werent defined
+    # o.radiusX ?= o.radius; o.radiusY ?= o.radius
+    @history = [o]
     @isForeign = !!@o.ctx; @isForeignBit = !!@o.bit
     @timelines = []
 
@@ -223,6 +226,7 @@ class Transit extends bitsMap.map.bit
       continue if @skipProps?[key]
       # if options object was passed = save the value to
       # options object and delete the old delta value
+      # is used for new run options
       if o
         @o[key] = defaultsValue; optionsValue = defaultsValue
         # delete the old delta
@@ -241,6 +245,11 @@ class Transit extends bitsMap.map.bit
 
         # save to props
         @props[key] = optionsValue
+        if key is 'radius'
+          if !fromObject.radiusX? then @props.radiusX = optionsValue
+          if !fromObject.radiusY? then @props.radiusY = optionsValue
+          # @o.isIt and console.log
+
         # position properties should be parsed with units
         if @h.posPropsMap[key]
           @props[key] = @h.parseUnit(@props[key]).string
@@ -293,20 +302,23 @@ class Transit extends bitsMap.map.bit
     # loop thru result object
     keys = Object.keys(end); i = keys.length
     while(i--)
-      endKey = keys[i]; endValue = end[endKey]
+      key = keys[i]; endValue = end[key]
       # if new value is a tween value or new value is an obect
       # then just save it
-      if @h.tweenOptionMap[endKey] or typeof endValue is 'object'
-        o[endKey] = if endValue? then endValue else start[endKey]
+      if @h.tweenOptionMap[key] or typeof endValue is 'object'
+        o[key] = if endValue? then endValue else start[key]
         continue
 
-      startKey = start[endKey]; startKey ?= @defaults[endKey]
+      startKey = start[key]; startKey ?= @defaults[key]
+      # inherit radius value for radiusX/Y
+      if (key is 'radiusX' or key is 'radiusY') and !startKey?
+        startKey = start.radius
       # if start value is object - rewrite the start value
       if typeof startKey is 'object'
         startKeys = Object.keys(startKey); startKey = startKey[startKeys[0]]
-      #use the end value
-      if endValue? then o[endKey] = {}; o[endKey][startKey] = endValue
-      else o[endKey] = startKey
+      # use the end value
+      if endValue? then o[key] = {}; o[key][startKey] = endValue
+      else o[key] = startKey
     o
 
   then:(o={})->

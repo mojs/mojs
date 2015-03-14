@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.105.0 unstable
+  v0.106.0 unstable
  */
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, tr;
 
 window.mojs = {
-  revision: '0.105.0',
+  revision: '0.106.0',
   isDebug: true
 };
 
@@ -1344,6 +1344,7 @@ Timeline = require('./tween/timeline');
 Tween = require('./tween/tween');
 
 tr = new Transit({
+  type: 'cross',
   x: 300,
   y: 300,
   radius: {
@@ -1354,15 +1355,14 @@ tr = new Transit({
   strokeWidth: 2,
   stroke: 'cyan',
   duration: 1000,
-  delay: 1000,
-  onStart: function() {
-    return console.log('------------->>>');
-  },
-  onUpdate: function(p) {
-    return console.log('aaa');
-  }
+  delay: 1000
 }).then({
-  radius: 50,
+  radiusX: 50,
+  fill: 'green',
+  stroke: 'deeppink'
+}).then({
+  radiusY: 50,
+  fill: 'green',
   stroke: 'deeppink'
 });
 
@@ -3211,6 +3211,14 @@ Transit = (function(_super) {
           }
         }
         this.props[key] = optionsValue;
+        if (key === 'radius') {
+          if (fromObject.radiusX == null) {
+            this.props.radiusX = optionsValue;
+          }
+          if (fromObject.radiusY == null) {
+            this.props.radiusY = optionsValue;
+          }
+        }
         if (this.h.posPropsMap[key]) {
           this.props[key] = this.h.parseUnit(this.props[key]).string;
         }
@@ -3260,7 +3268,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.mergeThenOptions = function(start, end) {
-    var endKey, endValue, i, key, keys, o, startKey, startKeys, value;
+    var endValue, i, key, keys, o, startKey, startKeys, value;
     o = {};
     for (key in start) {
       value = start[key];
@@ -3273,25 +3281,28 @@ Transit = (function(_super) {
     keys = Object.keys(end);
     i = keys.length;
     while (i--) {
-      endKey = keys[i];
-      endValue = end[endKey];
-      if (this.h.tweenOptionMap[endKey] || typeof endValue === 'object') {
-        o[endKey] = endValue != null ? endValue : start[endKey];
+      key = keys[i];
+      endValue = end[key];
+      if (this.h.tweenOptionMap[key] || typeof endValue === 'object') {
+        o[key] = endValue != null ? endValue : start[key];
         continue;
       }
-      startKey = start[endKey];
+      startKey = start[key];
       if (startKey == null) {
-        startKey = this.defaults[endKey];
+        startKey = this.defaults[key];
+      }
+      if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
+        startKey = start.radius;
       }
       if (typeof startKey === 'object') {
         startKeys = Object.keys(startKey);
         startKey = startKey[startKeys[0]];
       }
       if (endValue != null) {
-        o[endKey] = {};
-        o[endKey][startKey] = endValue;
+        o[key] = {};
+        o[key][startKey] = endValue;
       } else {
-        o[endKey] = startKey;
+        o[key] = startKey;
       }
     }
     return o;
