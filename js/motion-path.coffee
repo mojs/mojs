@@ -195,17 +195,23 @@ class MotionPath
       @props[key] = value
 
   then:(o)->
-    prevOptions = @history[@history.length-1]
+    prevOptions = @history[@history.length-1]; opts = {}
     for key, value of prevOptions
-      if !h.callbacksMap[key] then o[key] ?= value else o[key] = undefined
-    @history.push o
-    # get tween timing valuese
-    # callbacksMap
-    keys = Object.keys(h.tweenOptionMap); i = keys.length; opts = {}
-    while(i--)
-      key = keys[i]
-      opts[key] = if o[key]? then o[key] else prevOptions[key]
-    it = @
+      # don't copy callbacks and tween options(only duration)
+      # get prev options if not defined
+      if !h.callbacksMap[key] and !h.tweenOptionMap[key] or key is 'duration'
+        o[key] ?= value
+      # if property is callback and not defined in then options -
+      # define it as undefined :) to override old callback,
+      # because we are inside the prevOptions hash and it means
+      # the callback was previously defined
+      else o[key] ?= undefined
+      # get tween timing values to feed the timeline
+      if h.tweenOptionMap[key]
+        # copy all props, if prop is duration - fallback to previous value
+        opts[key] = if key isnt 'duration' then o[key]
+        else if o[key]? then o[key] else prevOptions[key]
+    @history.push(o); it = @
     opts.onUpdate      = (p)=> @setProgress p
     opts.onStart       = => @props.onStart?.apply @
     opts.onComplete    = => @props.onComplete?.apply @

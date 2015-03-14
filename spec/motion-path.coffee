@@ -814,7 +814,7 @@ describe 'MotionPath ->', ->
       expect(mp.history[1].pathStart) .toBe   .5
       expect(mp.history[1].pathEnd)   .toBe   1
 
-    it 'should save previous options to the current history record', ->
+    it 'should copy duration from previous record', ->
       mp = new MotionPath(
         path:     coords
         el:       document.createElement 'div'
@@ -822,7 +822,8 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         delay:    100
       ).then pathStart: .5, pathEnd: 1
-      expect(mp.history[1].delay)     .toBe   100
+      expect(mp.history[1].delay)   .toBe   undefined
+      expect(mp.history[1].duration).toBe   2000
 
     it 'should save previous options to the current history record #2', ->
       mp = new MotionPath(
@@ -832,7 +833,7 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         delay:    100
       )
-      .then pathStart: .5, pathEnd: 1, delay: 0
+      .then pathStart: .5, pathEnd: 1
       expect(mp.tween.timelines[1].o.delay).toBe 2100
 
     it 'should not copy previous callbacks', ->
@@ -848,6 +849,20 @@ describe 'MotionPath ->', ->
       mp.tween.setProgress .75
       expect(mp.history[1].onUpdate).not.toBeDefined()
       expect(mp.props.onUpdate)     .not.toBeDefined()
+
+    it 'should add new callbacks if specified', ->
+      onUpdate = ->
+      mp = new MotionPath(
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+        pathEnd:  .5
+        delay:    100
+        onUpdate: onUpdate
+      ).then pathStart: .5, pathEnd: 1, delay: 0, onUpdate: ->
+      mp.tween.setProgress .75
+      expect(mp.history[1].onUpdate).toBeDefined()
+      expect(mp.props.onUpdate)     .toBeDefined()
 
     it 'should add new timeline', ->
       mp = new MotionPath(

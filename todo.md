@@ -1,11 +1,14 @@
 ## To Do
 
 - :: demo
-  - then should not copy callbacks for transit
+  - transit:
+    - then should not copy callbacks and copy only the duration
+    - radius to radiusX/Y on then
   - setAttrsIfChanged to every shape
-  - radius to radiusX/Y on then
-  - tests coverage fix
   - foreign context coordinates in burst
+  - transit then -> when startKey is null it gets to Object.keys()
+  - lowercase inout easing cause an error
+  - tests coverage fix
   
 - release
   - bower component
@@ -22,10 +25,14 @@
 - add custom easing handler
   - add path handler
   - add spring
+  - add bezier handler
 - add shaker
+- radial spings
 - add spriter
 - add glare (is transition shorthand)
 - add camera glare
 - add backgrounds
 - add line trails
 - add text tricks
+
+

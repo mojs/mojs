@@ -1096,7 +1096,7 @@
         expect(mp.history[1].pathStart).toBe(.5);
         return expect(mp.history[1].pathEnd).toBe(1);
       });
-      it('should save previous options to the current history record', function() {
+      it('should copy duration from previous record', function() {
         var mp;
         mp = new MotionPath({
           path: coords,
@@ -1108,7 +1108,8 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.history[1].delay).toBe(100);
+        expect(mp.history[1].delay).toBe(void 0);
+        return expect(mp.history[1].duration).toBe(2000);
       });
       it('should save previous options to the current history record #2', function() {
         var mp;
@@ -1120,8 +1121,7 @@
           delay: 100
         }).then({
           pathStart: .5,
-          pathEnd: 1,
-          delay: 0
+          pathEnd: 1
         });
         return expect(mp.tween.timelines[1].o.delay).toBe(2100);
       });
@@ -1143,6 +1143,26 @@
         mp.tween.setProgress(.75);
         expect(mp.history[1].onUpdate).not.toBeDefined();
         return expect(mp.props.onUpdate).not.toBeDefined();
+      });
+      it('should add new callbacks if specified', function() {
+        var mp, onUpdate;
+        onUpdate = function() {};
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5,
+          delay: 100,
+          onUpdate: onUpdate
+        }).then({
+          pathStart: .5,
+          pathEnd: 1,
+          delay: 0,
+          onUpdate: function() {}
+        });
+        mp.tween.setProgress(.75);
+        expect(mp.history[1].onUpdate).toBeDefined();
+        return expect(mp.props.onUpdate).toBeDefined();
       });
       return it('should add new timeline', function() {
         var mp;

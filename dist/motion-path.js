@@ -307,26 +307,25 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.then = function(o) {
-    var i, it, key, keys, opts, prevOptions, value;
+    var it, key, opts, prevOptions, value;
     prevOptions = this.history[this.history.length - 1];
+    opts = {};
     for (key in prevOptions) {
       value = prevOptions[key];
-      if (!h.callbacksMap[key]) {
+      if (!h.callbacksMap[key] && !h.tweenOptionMap[key] || key === 'duration') {
         if (o[key] == null) {
           o[key] = value;
         }
       } else {
-        o[key] = void 0;
+        if (o[key] == null) {
+          o[key] = void 0;
+        }
+      }
+      if (h.tweenOptionMap[key]) {
+        opts[key] = key !== 'duration' ? o[key] : o[key] != null ? o[key] : prevOptions[key];
       }
     }
     this.history.push(o);
-    keys = Object.keys(h.tweenOptionMap);
-    i = keys.length;
-    opts = {};
-    while (i--) {
-      key = keys[i];
-      opts[key] = o[key] != null ? o[key] : prevOptions[key];
-    }
     it = this;
     opts.onUpdate = (function(_this) {
       return function(p) {

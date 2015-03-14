@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.103.0 unstable
+  v0.104.0 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, mp, tr;
 
 window.mojs = {
-  revision: '0.103.0',
+  revision: '0.104.0',
   isDebug: true
 };
 
@@ -1342,6 +1342,29 @@ MotionPath = require('./motion-path');
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
+
+tr = new Transit({
+  x: 300,
+  y: 300,
+  radius: 50,
+  isShowInit: true,
+  isShowEnd: true,
+  strokeWidth: 2,
+  stroke: 'deeppink',
+  duration: 2000
+});
+
+mp = new MotionPath({
+  path: '#js-path1',
+  el: tr.el,
+  duration: 2000,
+  delay: 2000,
+  onUpdate: function() {
+    return console.log('aa');
+  }
+}).then({
+  isReverse: true
+});
 
 
 /* istanbul ignore next */
@@ -1676,26 +1699,25 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.then = function(o) {
-    var i, it, key, keys, opts, prevOptions, value;
+    var it, key, opts, prevOptions, value;
     prevOptions = this.history[this.history.length - 1];
+    opts = {};
     for (key in prevOptions) {
       value = prevOptions[key];
-      if (!h.callbacksMap[key]) {
+      if (!h.callbacksMap[key] && !h.tweenOptionMap[key] || key === 'duration') {
         if (o[key] == null) {
           o[key] = value;
         }
       } else {
-        o[key] = void 0;
+        if (o[key] == null) {
+          o[key] = void 0;
+        }
+      }
+      if (h.tweenOptionMap[key]) {
+        opts[key] = key !== 'duration' ? o[key] : o[key] != null ? o[key] : prevOptions[key];
       }
     }
     this.history.push(o);
-    keys = Object.keys(h.tweenOptionMap);
-    i = keys.length;
-    opts = {};
-    while (i--) {
-      key = keys[i];
-      opts[key] = o[key] != null ? o[key] : prevOptions[key];
-    }
     it = this;
     opts.onUpdate = (function(_this) {
       return function(p) {
