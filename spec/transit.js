@@ -318,21 +318,20 @@
         });
         return expect(byte.tween.timelines.length).toBe(2);
       });
-      it('should add new timeline with options', function() {
+      it('should add new timeline with options #2', function() {
         var byte;
         byte = new Byte({
           radius: 20,
           duration: 1000,
-          delay: 10
+          delay: 10,
+          yoyo: true
         });
         byte.then({
-          radius: 5,
-          yoyo: true,
-          delay: 100
+          radius: 5
         });
         expect(byte.tween.timelines[1].o.duration).toBe(1000);
-        expect(byte.tween.timelines[1].o.yoyo).toBe(true);
-        return expect(byte.tween.timelines[1].o.delay).toBe(1110);
+        expect(byte.tween.timelines[1].o.yoyo).toBe(false);
+        return expect(byte.tween.timelines[1].o.delay).toBe(1010);
       });
       it('should merge then options and add them to the history', function() {
         var byte;
@@ -375,8 +374,35 @@
         expect(byte.history[2].radius[100]).toBe(10);
         expect(byte.history[2].duration).toBe(1000);
         expect(byte.history[2].delay).toBe(0);
-        expect(byte.history[2].yoyo).toBe(true);
+        expect(byte.history[2].yoyo).toBe(void 0);
         return expect(byte.history[2].stroke['transparent']).toBe('green');
+      });
+      it('should not copy callbacks', function() {
+        var byte, onStart, onUpdate;
+        onUpdate = function() {};
+        onStart = function() {};
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10,
+          onUpdate: onUpdate,
+          onStart: onStart,
+          isRunLess: true
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        expect(byte.history.length).toBe(2);
+        expect(byte.history[1].radius[20]).toBe(5);
+        expect(byte.history[1].duration).toBe(1000);
+        expect(byte.history[1].delay).toBe(100);
+        expect(byte.history[1].yoyo).toBe(true);
+        expect(byte.history[1].onUpdate).toBe(void 0);
+        byte.tween.setProgress(.75);
+        expect(byte.props.onUpdate).not.toBeDefined();
+        return expect(byte.props.onStart).not.toBeDefined();
       });
       it('should bind onUpdate function', function() {
         var byte;
@@ -989,7 +1015,9 @@
     describe('mergeThenOptions method ->', function() {
       it('should merge 2 objects', function() {
         var byte, end, mergedOpton, start;
-        byte = new Byte;
+        byte = new Byte({
+          isIt: true
+        });
         start = {
           radius: 10,
           duration: 1000,
@@ -1607,8 +1635,7 @@
           type: 'circle',
           strokeDasharray: '100%',
           radius: 100,
-          isRunLess: true,
-          isIt: true
+          isRunLess: true
         });
         expect(byte.props.strokeDasharray[0].value).toBe(100);
         return expect(byte.props.strokeDasharray[0].unit).toBe('%');

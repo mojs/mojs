@@ -2,12 +2,12 @@
 
 - :: demo
   - transit:
-    - then should not copy callbacks and copy only the duration
     - radius to radiusX/Y on then
   - setAttrsIfChanged to every shape
   - foreign context coordinates in burst
   - transit then -> when startKey is null it gets to Object.keys()
   - lowercase inout easing cause an error
+  - add mirrors?
   - tests coverage fix
   
 - release

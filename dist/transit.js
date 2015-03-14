@@ -409,31 +409,38 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.mergeThenOptions = function(start, end) {
-    var endKey, i, key, keys, o, startKey, startKeys;
+    var endKey, endValue, i, key, keys, o, startKey, startKeys, value;
     o = {};
-    this.h.extend(o, start);
+    for (key in start) {
+      value = start[key];
+      if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
+        o[key] = value;
+      } else {
+        o[key] = key === 'easing' ? '' : void 0;
+      }
+    }
     keys = Object.keys(end);
     i = keys.length;
     while (i--) {
-      key = keys[i];
-      endKey = end[key];
-      if (this.h.tweenOptionMap[key] || typeof endKey === 'object') {
-        o[key] = endKey != null ? endKey : start[key];
+      endKey = keys[i];
+      endValue = end[endKey];
+      if (this.h.tweenOptionMap[endKey] || typeof endValue === 'object') {
+        o[endKey] = endValue != null ? endValue : start[endKey];
         continue;
       }
-      startKey = start[key];
+      startKey = start[endKey];
       if (startKey == null) {
-        startKey = this.defaults[key];
+        startKey = this.defaults[endKey];
       }
       if (typeof startKey === 'object') {
         startKeys = Object.keys(startKey);
         startKey = startKey[startKeys[0]];
       }
-      if (endKey != null) {
-        o[key] = {};
-        o[key][startKey] = endKey;
+      if (endValue != null) {
+        o[endKey] = {};
+        o[endKey][startKey] = endValue;
       } else {
-        o[key] = startKey;
+        o[endKey] = startKey;
       }
     }
     return o;

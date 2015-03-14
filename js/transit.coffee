@@ -280,22 +280,33 @@ class Transit extends bitsMap.map.bit
     @props[key] = delta.start
 
   mergeThenOptions:(start, end)->
-    o = {}; @h.extend o, start
+    o = {}
+    # copy start values to o exclude tween options and callbacks
+    # inherit duration
+    for key, value of start
+      if !@h.tweenOptionMap[key] and !@h.callbacksMap[key] or key is 'duration'
+        o[key] = value
+      else
+        # if tween option or callback
+        # reset it
+        o[key] = if key is 'easing' then '' else undefined
+    # loop thru result object
     keys = Object.keys(end); i = keys.length
     while(i--)
-      key = keys[i]; endKey = end[key]
-      # if this is a tween value or new value is an obect
+      endKey = keys[i]; endValue = end[endKey]
+      # if new value is a tween value or new value is an obect
       # then just save it
-      if @h.tweenOptionMap[key] or typeof endKey is 'object'
-        o[key] = if endKey? then endKey else start[key]
+      if @h.tweenOptionMap[endKey] or typeof endValue is 'object'
+        o[endKey] = if endValue? then endValue else start[endKey]
         continue
-      startKey = start[key]
-      startKey ?= @defaults[key]
-      # if start value is object - use the end value
+
+      startKey = start[endKey]; startKey ?= @defaults[endKey]
+      # if start value is object - rewrite the start value
       if typeof startKey is 'object'
         startKeys = Object.keys(startKey); startKey = startKey[startKeys[0]]
-      if endKey? then o[key] = {}; o[key][startKey] = endKey
-      else o[key] = startKey
+      #use the end value
+      if endValue? then o[endKey] = {}; o[endKey][startKey] = endValue
+      else o[endKey] = startKey
     o
 
   then:(o={})->
@@ -304,6 +315,7 @@ class Transit extends bitsMap.map.bit
     # copy the tween options from passed o or current props
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
     opts[keys[i]] = merged[keys[i]] while(i--)
+    # console.log merged.onStart
     it = @
     opts.onUpdate      = (p)=> @setProgress p#; @onUpdate?()
     opts.onStart       = => @props.onStart?.apply(@)

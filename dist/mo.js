@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.104.0 unstable
+  v0.105.0 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, mp, tr;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, tr;
 
 window.mojs = {
-  revision: '0.104.0',
+  revision: '0.105.0',
   isDebug: true
 };
 
@@ -1346,24 +1346,24 @@ Tween = require('./tween/tween');
 tr = new Transit({
   x: 300,
   y: 300,
-  radius: 50,
+  radius: {
+    50: 75
+  },
   isShowInit: true,
   isShowEnd: true,
   strokeWidth: 2,
-  stroke: 'deeppink',
-  duration: 2000
-});
-
-mp = new MotionPath({
-  path: '#js-path1',
-  el: tr.el,
-  duration: 2000,
-  delay: 2000,
-  onUpdate: function() {
-    return console.log('aa');
+  stroke: 'cyan',
+  duration: 1000,
+  delay: 1000,
+  onStart: function() {
+    return console.log('------------->>>');
+  },
+  onUpdate: function(p) {
+    return console.log('aaa');
   }
 }).then({
-  isReverse: true
+  radius: 50,
+  stroke: 'deeppink'
 });
 
 
@@ -3260,31 +3260,38 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.mergeThenOptions = function(start, end) {
-    var endKey, i, key, keys, o, startKey, startKeys;
+    var endKey, endValue, i, key, keys, o, startKey, startKeys, value;
     o = {};
-    this.h.extend(o, start);
+    for (key in start) {
+      value = start[key];
+      if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
+        o[key] = value;
+      } else {
+        o[key] = key === 'easing' ? '' : void 0;
+      }
+    }
     keys = Object.keys(end);
     i = keys.length;
     while (i--) {
-      key = keys[i];
-      endKey = end[key];
-      if (this.h.tweenOptionMap[key] || typeof endKey === 'object') {
-        o[key] = endKey != null ? endKey : start[key];
+      endKey = keys[i];
+      endValue = end[endKey];
+      if (this.h.tweenOptionMap[endKey] || typeof endValue === 'object') {
+        o[endKey] = endValue != null ? endValue : start[endKey];
         continue;
       }
-      startKey = start[key];
+      startKey = start[endKey];
       if (startKey == null) {
-        startKey = this.defaults[key];
+        startKey = this.defaults[endKey];
       }
       if (typeof startKey === 'object') {
         startKeys = Object.keys(startKey);
         startKey = startKey[startKeys[0]];
       }
-      if (endKey != null) {
-        o[key] = {};
-        o[key][startKey] = endKey;
+      if (endValue != null) {
+        o[endKey] = {};
+        o[endKey][startKey] = endValue;
       } else {
-        o[key] = startKey;
+        o[endKey] = startKey;
       }
     }
     return o;
@@ -3593,9 +3600,15 @@ Timeline = (function() {
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
-      if (!this.isStarted) {
-        if ((_ref = this.o.onStart) != null) {
+      if (!this.isFirstUpdate) {
+        if ((_ref = this.o.onFirstUpdate) != null) {
           _ref.apply(this);
+        }
+        this.isFirstUpdate = true;
+      }
+      if (!this.isStarted) {
+        if ((_ref1 = this.o.onStart) != null) {
+          _ref1.apply(this);
         }
         this.isStarted = true;
       }
@@ -3620,12 +3633,6 @@ Timeline = (function() {
         } else {
           this.setProc(0);
         }
-      }
-      if (!this.isFirstUpdate) {
-        if ((_ref1 = this.o.onFirstUpdate) != null) {
-          _ref1.apply(this);
-        }
-        this.isFirstUpdate = true;
       }
       if (time < this.prevTime && !this.isFirstUpdateBackward) {
         if ((_ref2 = this.o.onFirstUpdateBackward) != null) {

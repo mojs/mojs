@@ -162,12 +162,23 @@ describe 'Transit ->', ->
       byte.then radius: 5
       expect(byte.tween.timelines.length).toBe 2
 
-    it 'should add new timeline with options', ->
-      byte = new Byte radius: 20, duration: 1000, delay: 10
-      byte.then radius: 5, yoyo: true, delay: 100
+    it 'should add new timeline with options #2', ->
+      byte = new Byte
+        radius: 20, duration: 1000, delay: 10, yoyo: true
+      byte.then radius: 5
+      
       expect(byte.tween.timelines[1].o.duration).toBe 1000
-      expect(byte.tween.timelines[1].o.yoyo).toBe true
-      expect(byte.tween.timelines[1].o.delay).toBe 1110
+      expect(byte.tween.timelines[1].o.yoyo)    .toBe false
+      expect(byte.tween.timelines[1].o.delay)   .toBe 1010
+
+
+
+
+
+
+
+
+
 
     it 'should merge then options and add them to the history', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -186,8 +197,30 @@ describe 'Transit ->', ->
       expect(byte.history[2].radius[100]).toBe 10
       expect(byte.history[2].duration).toBe 1000
       expect(byte.history[2].delay)   .toBe 0
-      expect(byte.history[2].yoyo)    .toBe true
+      expect(byte.history[2].yoyo)    .toBe undefined
       expect(byte.history[2].stroke['transparent']).toBe 'green'
+
+    it 'should not copy callbacks', ->
+      onUpdate = ->
+      onStart  = ->
+      byte = new Byte
+        radius: 20, duration: 1000, delay: 10
+        onUpdate:  onUpdate, onStart: onStart
+        isRunLess: true
+      byte.then radius: 5, yoyo: true, delay: 100
+
+      expect(byte.history.length)       .toBe 2
+      expect(byte.history[1].radius[20]).toBe 5
+      expect(byte.history[1].duration)  .toBe 1000
+      expect(byte.history[1].delay)     .toBe 100
+      expect(byte.history[1].yoyo)      .toBe true
+      expect(byte.history[1].onUpdate)  .toBe undefined
+
+      byte.tween.setProgress .75
+
+      expect(byte.props.onUpdate).not.toBeDefined()
+      expect(byte.props.onStart) .not.toBeDefined()
+
 
     it 'should bind onUpdate function', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -209,6 +242,15 @@ describe 'Transit ->', ->
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
       expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe 'function'
       expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe 'function'
+
+
+
+
+
+
+
+
+
 
   describe 'tuneOptions method ->', ->
     it 'should call extendDefaults with options', ->
@@ -554,13 +596,15 @@ describe 'Transit ->', ->
 
   describe 'mergeThenOptions method ->', ->
     it 'should merge 2 objects', ->
-      byte = new Byte
+      byte = new Byte isIt: true
       start = radius: 10, duration: 1000, stroke: '#ff00ff'
       end   = radius: 20, duration: 500
       mergedOpton = byte.mergeThenOptions start, end
       expect(mergedOpton.radius[10]).toBe 20
       expect(mergedOpton.duration).toBe 500
       expect(mergedOpton.stroke).toBe '#ff00ff'
+
+
     it 'should merge 2 objects if the first was an object', ->
       byte = new Byte isRunLess: true
       start = radius: {10: 0}
@@ -882,7 +926,6 @@ describe 'Transit ->', ->
         strokeDasharray:  '100%'
         radius: 100
         isRunLess: true
-        isIt: true
       expect(byte.props.strokeDasharray[0].value).toBe 100
       expect(byte.props.strokeDasharray[0].unit).toBe '%'
 

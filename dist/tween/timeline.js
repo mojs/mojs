@@ -58,9 +58,15 @@ Timeline = (function() {
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
-      if (!this.isStarted) {
-        if ((_ref = this.o.onStart) != null) {
+      if (!this.isFirstUpdate) {
+        if ((_ref = this.o.onFirstUpdate) != null) {
           _ref.apply(this);
+        }
+        this.isFirstUpdate = true;
+      }
+      if (!this.isStarted) {
+        if ((_ref1 = this.o.onStart) != null) {
+          _ref1.apply(this);
         }
         this.isStarted = true;
       }
@@ -85,12 +91,6 @@ Timeline = (function() {
         } else {
           this.setProc(0);
         }
-      }
-      if (!this.isFirstUpdate) {
-        if ((_ref1 = this.o.onFirstUpdate) != null) {
-          _ref1.apply(this);
-        }
-        this.isFirstUpdate = true;
       }
       if (time < this.prevTime && !this.isFirstUpdateBackward) {
         if ((_ref2 = this.o.onFirstUpdateBackward) != null) {
