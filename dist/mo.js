@@ -3271,7 +3271,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.mergeThenOptions = function(start, end) {
-    var endValue, i, key, keys, o, startKey, startKeys, value;
+    var endValue, i, isFunction, key, keys, o, startKey, startKeys, value;
     o = {};
     for (key in start) {
       value = start[key];
@@ -3286,7 +3286,8 @@ Transit = (function(_super) {
     while (i--) {
       key = keys[i];
       endValue = end[key];
-      if (this.h.tweenOptionMap[key] || typeof endValue === 'object') {
+      isFunction = typeof endValue === 'function';
+      if (this.h.tweenOptionMap[key] || typeof endValue === 'object' || isFunction) {
         o[key] = endValue != null ? endValue : start[key];
         continue;
       }
@@ -3297,7 +3298,7 @@ Transit = (function(_super) {
       if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
         startKey = start.radius;
       }
-      if (typeof startKey === 'object') {
+      if (typeof startKey === 'object' && (startKey != null)) {
         startKeys = Object.keys(startKey);
         startKey = startKey[startKeys[0]];
       }

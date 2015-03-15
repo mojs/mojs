@@ -2,7 +2,6 @@
 
 - :: demo
   - foreign context coordinates in burst
-  - transit then -> when startKey is null it gets to Object.keys()
   - lowercase inout easing cause an error
   - add mirrors?
   - tests coverage fix

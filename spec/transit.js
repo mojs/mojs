@@ -158,7 +158,7 @@
         expect(byte.props.radius).toBe(10);
         return expect(byte.props.fill).toBe(fillBefore);
       });
-      return it('should allways inherit radiusX/Y from radius', function() {
+      it('should allways inherit radiusX/Y from radius', function() {
         var byte;
         byte = new Byte({
           radius: 10
@@ -169,6 +169,16 @@
         expect(byte.props.radius).toBe(100);
         expect(byte.props.radiusX).toBe(100);
         return expect(byte.props.radiusY).toBe(100);
+      });
+      return it('should work with new values', function() {
+        var byte, onStart;
+        onStart = function() {};
+        byte = new Byte({
+          radius: 10
+        }).then({
+          onStart: onStart
+        });
+        return expect(byte.history[1].onStart).toBe(onStart);
       });
     });
     describe('stagger values', function() {

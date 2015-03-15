@@ -92,6 +92,12 @@ describe 'Transit ->', ->
       expect(byte.props.radiusX).toBe 100
       expect(byte.props.radiusY).toBe 100
 
+    it 'should work with new values', ->
+      onStart = ->
+      byte = new Byte radius: 10
+      .then onStart: onStart
+      expect(byte.history[1].onStart).toBe onStart
+
   describe 'stagger values', ->
     it 'should extend defaults object to properties if stagger was passed', ->
       byte = new Byte radius: 'stagger(200)'

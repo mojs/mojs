@@ -298,9 +298,11 @@ class Transit extends bitsMap.map.bit
     keys = Object.keys(end); i = keys.length
     while(i--)
       key = keys[i]; endValue = end[key]
-      # if new value is a tween value or new value is an obect
+      
+      # if new value is a tween value or new value is an object/ function
       # then just save it
-      if @h.tweenOptionMap[key] or typeof endValue is 'object'
+      isFunction = typeof endValue is 'function'
+      if @h.tweenOptionMap[key] or typeof endValue is 'object' or isFunction
         o[key] = if endValue? then endValue else start[key]
         continue
 
@@ -309,7 +311,7 @@ class Transit extends bitsMap.map.bit
       if (key is 'radiusX' or key is 'radiusY') and !startKey?
         startKey = start.radius
       # if start value is object - rewrite the start value
-      if typeof startKey is 'object'
+      if typeof startKey is 'object' and startKey?
         startKeys = Object.keys(startKey); startKey = startKey[startKeys[0]]
       # use the end value
       if endValue? then o[key] = {}; o[key][startKey] = endValue
