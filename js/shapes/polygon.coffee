@@ -24,7 +24,7 @@ class Polygon extends Bit
       char = if i is 0 then 'M' else 'L'
       d += "#{char}#{point.x.toFixed(4)},#{point.y.toFixed(4)} "
 
-    @setAttr d:  d += 'z'
+    @setAttr d: d += 'z'
 
   getLength:-> @el.getTotalLength()
 

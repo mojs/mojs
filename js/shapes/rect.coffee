@@ -10,7 +10,7 @@ class Rect extends Bit
     super
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius
     radiusY = if @props.radiusY? then @props.radiusY else @props.radius
-    @setAttr
+    @setAttrsIfChanged
       width:  2*radiusX
       height: 2*radiusY
       x:      @props.x - radiusX

@@ -22,7 +22,7 @@ Rect = (function(_super) {
     Rect.__super__.draw.apply(this, arguments);
     radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
     radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-    return this.setAttr({
+    return this.setAttrsIfChanged({
       width: 2 * radiusX,
       height: 2 * radiusY,
       x: this.props.x - radiusX,
