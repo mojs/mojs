@@ -282,16 +282,14 @@ describe 'Timeline ->', ->
       expect(t.o.onFirstUpdate).toHaveBeenCalled()
 
     it 'should be called before onStart callback', ->
-      isOnStart = false
+      isOnStart = false; isOnStartCalled = true
       t = new Timeline
         duration: 10
         onStart:-> isOnStart = true
-        onFirstUpdate:->
-          expect(isOnStart).toBe false
+        onFirstUpdate:-> isOnStartCalled = isOnStart
       .start()
       t.update t.props.startTime + 1
-      # t.update t.props.startTime + 9
-      # expect(t.o.onFirstUpdate).toHaveBeenCalled()
+      expect(isOnStartCalled).toBe false
 
     it 'should be called after progress went before the timeline', ->
       isRightScope = false

@@ -484,18 +484,20 @@
         return expect(t.o.onFirstUpdate).toHaveBeenCalled();
       });
       it('should be called before onStart callback', function() {
-        var isOnStart, t;
+        var isOnStart, isOnStartCalled, t;
         isOnStart = false;
+        isOnStartCalled = true;
         t = new Timeline({
           duration: 10,
           onStart: function() {
             return isOnStart = true;
           },
           onFirstUpdate: function() {
-            return expect(isOnStart).toBe(false);
+            return isOnStartCalled = isOnStart;
           }
         }).start();
-        return t.update(t.props.startTime + 1);
+        t.update(t.props.startTime + 1);
+        return expect(isOnStartCalled).toBe(false);
       });
       return it('should be called after progress went before the timeline', function() {
         var isRightScope, t;

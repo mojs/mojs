@@ -1359,7 +1359,10 @@ tr = new Transit({
 }).then({
   radiusX: 50,
   fill: 'green',
-  stroke: 'deeppink'
+  stroke: 'deeppink',
+  onStart: function() {
+    return console.log('a');
+  }
 }).then({
   radiusY: 50,
   fill: 'green',

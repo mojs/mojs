@@ -115,18 +115,6 @@ describe 'Transit ->', ->
       byte = new Byte radius: 20
       expect(byte.history.length).toBe 1
     
-    # it 'should inherit radius for radiusX/Y if werent defined', ->
-    #   byte = new Byte radius: 20
-    #   expect(byte.history[0].radius) .toBe 20
-    #   expect(byte.history[0].radiusX).toBe 20
-    #   expect(byte.history[0].radiusY).toBe 20
-
-    # it 'should inherit radius for radiusX/Y if werent defined #2', ->
-    #   byte = new Byte radius: 20, radiusY: 30, radiusX: 40
-    #   expect(byte.history[0].radius) .toBe 20
-    #   expect(byte.history[0].radiusX).toBe 40
-    #   expect(byte.history[0].radiusY).toBe 30
-
     it 'should rewrite the first history item on run', ->
       byte = new Byte radius: 20
       byte.run radius: 10
@@ -255,7 +243,6 @@ describe 'Transit ->', ->
 
       expect(byte.props.onUpdate).not.toBeDefined()
       expect(byte.props.onStart) .not.toBeDefined()
-
 
     it 'should bind onUpdate function', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10

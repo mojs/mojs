@@ -33,6 +33,7 @@ tr = new Transit
   radiusX: 50
   fill: 'green'
   stroke: 'deeppink'
+  onStart: -> console.log 'a'
 .then
   radiusY: 50
   fill: 'green'
