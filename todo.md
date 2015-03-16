@@ -1,7 +1,6 @@
 ## To Do
 
 - :: demo
-  - easigns names to lowercase
   - foreign context coordinates in burst
   - add mirrors?
   - tests coverage fix
