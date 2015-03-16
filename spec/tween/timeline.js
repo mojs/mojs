@@ -644,7 +644,7 @@
         });
         t.start();
         t.update(t.props.startTime + 50);
-        return expect(t.easedProgress).toBe(easing.Sinusoidal.Out(t.progress));
+        return expect(t.easedProgress).toBe(easing.sinusoidal.out(t.progress));
       });
       it('should work with easing function', function() {
         var easings, t;
@@ -672,10 +672,10 @@
         });
         t.start();
         t.update(t.props.startTime + 40);
-        return setTimeout(function() {
+        return setTimeout((function() {
           expect(easings.one).toHaveBeenCalled();
           return dfr();
-        }, 50);
+        }), 50);
       });
     });
     describe('setProc method->', function() {

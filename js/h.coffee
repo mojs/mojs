@@ -238,10 +238,10 @@ class Helpers
     return string if typeof string is 'function'
     if typeof string is 'string' and string.length
       split = string.split '.'
-      firstPart   = @capitalize   split[0] or 'Linear'
-      secondPart  = @capitalize   split[1] or 'None'
+      firstPart   = split[0].toLowerCase() or 'linear'
+      secondPart  = split[1].toLowerCase() or 'none'
       [ firstPart, secondPart ]
-    else ['Linear', 'None']
+    else ['linear', 'none']
   capitalize:(str)->
     if typeof str isnt 'string'
       throw Error 'String expected - nothing to capitalize'

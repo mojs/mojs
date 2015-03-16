@@ -1,49 +1,49 @@
 class Easing
-  Linear: None: (k) -> k
-  Quadratic:
-    In:     (k) -> k * k
-    Out:    (k) -> k * (2 - k)
-    InOut:  (k) ->
+  linear: none: (k) -> k
+  quadratic:
+    in:     (k) -> k * k
+    out:    (k) -> k * (2 - k)
+    inout:  (k) ->
       return 0.5 * k * k  if (k *= 2) < 1
       -0.5 * (--k * (k - 2) - 1)
-  Cubic:
-    In:     (k) -> k * k * k
-    Out:    (k) -> --k * k * k + 1
-    InOut:  (k) ->
+  cubic:
+    in:     (k) -> k * k * k
+    out:    (k) -> --k * k * k + 1
+    inout:  (k) ->
       return 0.5 * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k + 2)
-  Quartic:
-    In:     (k) -> k * k * k * k
-    Out:    (k) -> 1 - (--k * k * k * k)
-    InOut:  (k) ->
+  quartic:
+    in:     (k) -> k * k * k * k
+    out:    (k) -> 1 - (--k * k * k * k)
+    inout:  (k) ->
       return 0.5 * k * k * k * k  if (k *= 2) < 1
       -0.5 * ((k -= 2) * k * k * k - 2)
-  Quintic:
-    In:     (k) -> k * k * k * k * k
-    Out:    (k) -> --k * k * k * k * k + 1
-    InOut:  (k) ->
+  quintic:
+    in:     (k) -> k * k * k * k * k
+    out:    (k) -> --k * k * k * k * k + 1
+    inout:  (k) ->
       return 0.5 * k * k * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k * k * k + 2)
-  Sinusoidal:
-    In:     (k) -> 1 - Math.cos(k * Math.PI / 2)
-    Out:    (k) -> Math.sin k * Math.PI / 2
-    InOut:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
-  Exponential:
-    In:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
-    Out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
-    InOut:  (k) ->
+  sinusoidal:
+    in:     (k) -> 1 - Math.cos(k * Math.PI / 2)
+    out:    (k) -> Math.sin k * Math.PI / 2
+    inout:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
+  exponential:
+    in:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
+    out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
+    inout:  (k) ->
       return 0  if k is 0
       return 1  if k is 1
       return 0.5 * Math.pow(1024, k - 1)  if (k *= 2) < 1
       0.5 * (-Math.pow(2, -10 * (k - 1)) + 2)
-  Circular:
-    In:     (k) ->    1 - Math.sqrt(1 - k * k)
-    Out:    (k) ->   Math.sqrt 1 - (--k * k)
-    InOut:  (k) ->
+  circular:
+    in:     (k) ->    1 - Math.sqrt(1 - k * k)
+    out:    (k) ->   Math.sqrt 1 - (--k * k)
+    inout:  (k) ->
       return -0.5 * (Math.sqrt(1 - k * k) - 1) if (k *= 2) < 1
       0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1)
-  Elastic:
-    In: (k) ->
+  elastic:
+    in: (k) ->
       s = undefined
       # a = 0.1
       p = 0.4
@@ -55,7 +55,7 @@ class Easing
       # else
       #   s = p * Math.asin(1 / a) / (2 * Math.PI)
       -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p))
-    Out: (k) ->
+    out: (k) ->
       s = undefined
       # a = 0.1
       p = 0.4
@@ -67,7 +67,7 @@ class Easing
       # else
       #   s = p * Math.asin(1 / a) / (2 * Math.PI)
       a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1
-    InOut: (k) ->
+    inout: (k) ->
       s = undefined
       # a = 0.1
       p = 0.4
@@ -81,21 +81,20 @@ class Easing
       if (k *= 2) < 1
         return -0.5*(a*Math.pow(2, 10*(k -= 1))*Math.sin((k-s)*(2*Math.PI)/p))
       a*Math.pow(2, -10*(k -= 1))*Math.sin((k - s)*(2 * Math.PI) / p)*0.5+1
-  Back:
-    In: (k) ->
+  back:
+    in: (k) ->
       s = 1.70158
       k * k * ((s + 1) * k - s)
-    Out: (k) ->
+    out: (k) ->
       s = 1.70158
       --k * k * ((s + 1) * k + s) + 1
-    InOut: (k) ->
+    inout: (k) ->
       s = 1.70158 * 1.525
       return 0.5 * (k * k * ((s + 1) * k - s))  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2)
-  Bounce:
-    In: (k) ->
-      1 - easing.Bounce.Out(1 - k)
-    Out: (k) ->
+  bounce:
+    in: (k) -> 1 - easing.bounce.out(1 - k)
+    out: (k) ->
       if k < (1 / 2.75)
         7.5625 * k * k
       else if k < (2 / 2.75)
@@ -104,11 +103,12 @@ class Easing
         7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375
       else
         7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375
-    InOut: (k) ->
-      return easing.Bounce.In(k * 2) * 0.5  if k < 0.5
-      easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5
+    inout: (k) ->
+      return easing.bounce.in(k * 2) * 0.5  if k < 0.5
+      easing.bounce.out(k * 2 - 1) * 0.5 + 0.5
 
 easing = new Easing
+
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "easing", [], -> easing

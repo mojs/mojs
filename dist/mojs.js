@@ -39,18 +39,8 @@ tr = new Transit({
   strokeWidth: 2,
   stroke: 'cyan',
   duration: 1000,
-  delay: 1000
-}).then({
-  radiusX: 50,
-  fill: 'green',
-  stroke: 'deeppink',
-  onStart: function() {
-    return console.log('a');
-  }
-}).then({
-  radiusY: 50,
-  fill: 'green',
-  stroke: 'deeppink'
+  delay: 1000,
+  easing: 'Cubic.inout'
 });
 
 

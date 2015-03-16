@@ -1,8 +1,8 @@
 ## To Do
 
 - :: demo
+  - easigns names to lowercase
   - foreign context coordinates in burst
-  - lowercase inout easing cause an error
   - add mirrors?
   - tests coverage fix
   

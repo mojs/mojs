@@ -880,24 +880,24 @@
       });
       describe('splitEasing method', function() {
         it('should split easing string to array', function() {
-          expect(h.splitEasing('Linear.None')[0]).toBe('Linear');
-          return expect(h.splitEasing('Linear.None')[1]).toBe('None');
+          expect(h.splitEasing('Linear.None')[0]).toBe('linear');
+          return expect(h.splitEasing('Linear.None')[1]).toBe('none');
         });
         it('should return default easing Linear.None if argument is bad', function() {
-          expect(h.splitEasing(4)[0]).toBe('Linear');
-          return expect(h.splitEasing(4)[1]).toBe('None');
+          expect(h.splitEasing(4)[0]).toBe('linear');
+          return expect(h.splitEasing(4)[1]).toBe('none');
         });
         it('should return default easing Linear.None if argument is bad #2', function() {
-          expect(h.splitEasing('')[0]).toBe('Linear');
-          return expect(h.splitEasing('')[1]).toBe('None');
+          expect(h.splitEasing('')[0]).toBe('linear');
+          return expect(h.splitEasing('')[1]).toBe('none');
         });
         it('should return default easing Linear.None if argument is bad #3', function() {
-          expect(h.splitEasing('Linear..None')[0]).toBe('Linear');
-          return expect(h.splitEasing('Linear..None')[1]).toBe('None');
+          expect(h.splitEasing('Linear..None')[0]).toBe('linear');
+          return expect(h.splitEasing('Linear..None')[1]).toBe('none');
         });
         it('should work with lovercase easing', function() {
-          expect(h.splitEasing('linear..none')[0]).toBe('Linear');
-          return expect(h.splitEasing('linear..none')[1]).toBe('None');
+          expect(h.splitEasing('linear..none')[0]).toBe('linear');
+          return expect(h.splitEasing('linear..none')[1]).toBe('none');
         });
         return it('should work with function easing', function() {
           var easing;

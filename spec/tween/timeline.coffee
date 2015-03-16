@@ -380,7 +380,7 @@ describe 'Timeline ->', ->
     it 'should parse standart easing', ->
       t = new Timeline(easing: 'Sinusoidal.Out', duration: 100)
       t.start(); t.update(t.props.startTime + 50)
-      expect(t.easedProgress).toBe easing.Sinusoidal.Out t.progress
+      expect(t.easedProgress).toBe easing.sinusoidal.out t.progress
     it 'should work with easing function', ->
       easings = one: -> a = 1
       t = new Timeline(easing: easings.one)
@@ -390,10 +390,7 @@ describe 'Timeline ->', ->
       spyOn easings, 'one'
       t = new Timeline(easing: easings.one)
       t.start(); t.update t.props.startTime + 40
-      setTimeout ->
-        expect(easings.one).toHaveBeenCalled()
-        dfr()
-      , 50
+      setTimeout (-> expect(easings.one).toHaveBeenCalled(); dfr()), 50
   describe 'setProc method->', ->
     it 'should set the current progress', ->
       t = new Timeline(easing: 'Bounce.Out')

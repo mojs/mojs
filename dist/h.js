@@ -334,11 +334,11 @@ Helpers = (function() {
     }
     if (typeof string === 'string' && string.length) {
       split = string.split('.');
-      firstPart = this.capitalize(split[0] || 'Linear');
-      secondPart = this.capitalize(split[1] || 'None');
+      firstPart = split[0].toLowerCase() || 'linear';
+      secondPart = split[1].toLowerCase() || 'none';
       return [firstPart, secondPart];
     } else {
-      return ['Linear', 'None'];
+      return ['linear', 'none'];
     }
   };
 

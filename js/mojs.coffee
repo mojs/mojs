@@ -29,15 +29,7 @@ tr = new Transit
   stroke: 'cyan'
   duration: 1000
   delay: 1000
-.then
-  radiusX: 50
-  fill: 'green'
-  stroke: 'deeppink'
-  onStart: -> console.log 'a'
-.then
-  radiusY: 50
-  fill: 'green'
-  stroke: 'deeppink'
+  easing: 'Cubic.inout'
 # for item, i in tr.history
 #   console.log item.radius, item.radiusX, item.radiusY
 

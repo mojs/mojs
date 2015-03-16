@@ -3,20 +3,20 @@ var Easing, easing;
 Easing = (function() {
   function Easing() {}
 
-  Easing.prototype.Linear = {
-    None: function(k) {
+  Easing.prototype.linear = {
+    none: function(k) {
       return k;
     }
   };
 
-  Easing.prototype.Quadratic = {
-    In: function(k) {
+  Easing.prototype.quadratic = {
+    "in": function(k) {
       return k * k;
     },
-    Out: function(k) {
+    out: function(k) {
       return k * (2 - k);
     },
-    InOut: function(k) {
+    inout: function(k) {
       if ((k *= 2) < 1) {
         return 0.5 * k * k;
       }
@@ -24,14 +24,14 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Cubic = {
-    In: function(k) {
+  Easing.prototype.cubic = {
+    "in": function(k) {
       return k * k * k;
     },
-    Out: function(k) {
+    out: function(k) {
       return --k * k * k + 1;
     },
-    InOut: function(k) {
+    inout: function(k) {
       if ((k *= 2) < 1) {
         return 0.5 * k * k * k;
       }
@@ -39,14 +39,14 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Quartic = {
-    In: function(k) {
+  Easing.prototype.quartic = {
+    "in": function(k) {
       return k * k * k * k;
     },
-    Out: function(k) {
+    out: function(k) {
       return 1 - (--k * k * k * k);
     },
-    InOut: function(k) {
+    inout: function(k) {
       if ((k *= 2) < 1) {
         return 0.5 * k * k * k * k;
       }
@@ -54,14 +54,14 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Quintic = {
-    In: function(k) {
+  Easing.prototype.quintic = {
+    "in": function(k) {
       return k * k * k * k * k;
     },
-    Out: function(k) {
+    out: function(k) {
       return --k * k * k * k * k + 1;
     },
-    InOut: function(k) {
+    inout: function(k) {
       if ((k *= 2) < 1) {
         return 0.5 * k * k * k * k * k;
       }
@@ -69,34 +69,34 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Sinusoidal = {
-    In: function(k) {
+  Easing.prototype.sinusoidal = {
+    "in": function(k) {
       return 1 - Math.cos(k * Math.PI / 2);
     },
-    Out: function(k) {
+    out: function(k) {
       return Math.sin(k * Math.PI / 2);
     },
-    InOut: function(k) {
+    inout: function(k) {
       return 0.5 * (1 - Math.cos(Math.PI * k));
     }
   };
 
-  Easing.prototype.Exponential = {
-    In: function(k) {
+  Easing.prototype.exponential = {
+    "in": function(k) {
       if (k === 0) {
         return 0;
       } else {
         return Math.pow(1024, k - 1);
       }
     },
-    Out: function(k) {
+    out: function(k) {
       if (k === 1) {
         return 1;
       } else {
         return 1 - Math.pow(2, -10 * k);
       }
     },
-    InOut: function(k) {
+    inout: function(k) {
       if (k === 0) {
         return 0;
       }
@@ -110,14 +110,14 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Circular = {
-    In: function(k) {
+  Easing.prototype.circular = {
+    "in": function(k) {
       return 1 - Math.sqrt(1 - k * k);
     },
-    Out: function(k) {
+    out: function(k) {
       return Math.sqrt(1 - (--k * k));
     },
-    InOut: function(k) {
+    inout: function(k) {
       if ((k *= 2) < 1) {
         return -0.5 * (Math.sqrt(1 - k * k) - 1);
       }
@@ -125,8 +125,8 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Elastic = {
-    In: function(k) {
+  Easing.prototype.elastic = {
+    "in": function(k) {
       var a, p, s;
       s = void 0;
       p = 0.4;
@@ -140,7 +140,7 @@ Easing = (function() {
       s = p / 4;
       return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
     },
-    Out: function(k) {
+    out: function(k) {
       var a, p, s;
       s = void 0;
       p = 0.4;
@@ -154,7 +154,7 @@ Easing = (function() {
       s = p / 4;
       return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
     },
-    InOut: function(k) {
+    inout: function(k) {
       var a, p, s;
       s = void 0;
       p = 0.4;
@@ -173,18 +173,18 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Back = {
-    In: function(k) {
+  Easing.prototype.back = {
+    "in": function(k) {
       var s;
       s = 1.70158;
       return k * k * ((s + 1) * k - s);
     },
-    Out: function(k) {
+    out: function(k) {
       var s;
       s = 1.70158;
       return --k * k * ((s + 1) * k + s) + 1;
     },
-    InOut: function(k) {
+    inout: function(k) {
       var s;
       s = 1.70158 * 1.525;
       if ((k *= 2) < 1) {
@@ -194,11 +194,11 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.Bounce = {
-    In: function(k) {
-      return 1 - easing.Bounce.Out(1 - k);
+  Easing.prototype.bounce = {
+    "in": function(k) {
+      return 1 - easing.bounce.out(1 - k);
     },
-    Out: function(k) {
+    out: function(k) {
       if (k < (1 / 2.75)) {
         return 7.5625 * k * k;
       } else if (k < (2 / 2.75)) {
@@ -209,11 +209,11 @@ Easing = (function() {
         return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
       }
     },
-    InOut: function(k) {
+    inout: function(k) {
       if (k < 0.5) {
-        return easing.Bounce.In(k * 2) * 0.5;
+        return easing.bounce["in"](k * 2) * 0.5;
       }
-      return easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+      return easing.bounce.out(k * 2 - 1) * 0.5 + 0.5;
     }
   };
 

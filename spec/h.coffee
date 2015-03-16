@@ -644,20 +644,20 @@ describe 'Helpers ->', ->
         expect(-> h.capitalize('')).not.toThrow()
     describe 'splitEasing method', ->
       it 'should split easing string to array',->
-        expect(h.splitEasing('Linear.None')[0]).toBe 'Linear'
-        expect(h.splitEasing('Linear.None')[1]).toBe 'None'
+        expect(h.splitEasing('Linear.None')[0]).toBe 'linear'
+        expect(h.splitEasing('Linear.None')[1]).toBe 'none'
       it 'should return default easing Linear.None if argument is bad', ->
-        expect(h.splitEasing(4)[0]).toBe 'Linear'
-        expect(h.splitEasing(4)[1]).toBe 'None'
+        expect(h.splitEasing(4)[0]).toBe 'linear'
+        expect(h.splitEasing(4)[1]).toBe 'none'
       it 'should return default easing Linear.None if argument is bad #2', ->
-        expect(h.splitEasing('')[0]).toBe 'Linear'
-        expect(h.splitEasing('')[1]).toBe 'None'
+        expect(h.splitEasing('')[0]).toBe 'linear'
+        expect(h.splitEasing('')[1]).toBe 'none'
       it 'should return default easing Linear.None if argument is bad #3', ->
-        expect(h.splitEasing('Linear..None')[0]).toBe 'Linear'
-        expect(h.splitEasing('Linear..None')[1]).toBe 'None'
+        expect(h.splitEasing('Linear..None')[0]).toBe 'linear'
+        expect(h.splitEasing('Linear..None')[1]).toBe 'none'
       it 'should work with lovercase easing', ->
-        expect(h.splitEasing('linear..none')[0]).toBe 'Linear'
-        expect(h.splitEasing('linear..none')[1]).toBe 'None'
+        expect(h.splitEasing('linear..none')[0]).toBe 'linear'
+        expect(h.splitEasing('linear..none')[1]).toBe 'none'
       it 'should work with function easing', ->
         easing = -> console.log 'function'
         expect(h.splitEasing(easing)+'').toBe easing+''
