@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.106.3 unstable
+  v0.106.4 unstable
 ###
-window.mojs = revision: '0.106.3', isDebug: true
+window.mojs = revision: '0.106.4', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'
@@ -19,17 +19,29 @@ Tween       = require './tween/tween'
 # # path2 = document.getElementById 'js-path2'
 # # path3 = document.getElementById 'js-path3'
 
-tr = new Transit
-  type: 'cross'
-  x: 300, y: 300
-  radius: 50: 75
-  isShowInit: true
-  isShowEnd: true
-  strokeWidth: 2
-  stroke: 'cyan'
-  duration: 1000
-  delay: 1000
-  easing: 'Cubic.inout'
+# oStagger = new mojs.Stagger
+#   # type:         'circle'
+#   els:          document.querySelector '#js-svg'
+#   duration:     2000
+#   # isRunLess:    @o.IS_RUNLESS
+#   isShowEnd:    true
+#   delay:        "stagger(#{100}, 100)"
+#   # easing:       oEasing
+#   # stroke:       @o.STAGGER_COLORS
+#   radius:       0: 70
+
+# tr = new Transit
+#   type: 'cross'
+#   x: 300, y: 300
+#   radius: 50: 75
+#   isShowInit: true
+#   isShowEnd: true
+#   strokeWidth: 2
+#   stroke: 'cyan'
+#   duration: 1000
+#   delay: 1000
+#   easing: 'Cubic.inout'
+
 # for item, i in tr.history
 #   console.log item.radius, item.radiusX, item.radiusY
 

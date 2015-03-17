@@ -655,12 +655,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.getBitLength = function() {
-    var isChanged, isChangedXY;
-    isChangedXY = this.isPropChanged('radiusX') || this.isPropChanged('radiusY');
-    isChanged = this.isPropChanged('radius');
-    if (isChangedXY || isChanged) {
-      this.props.bitLength = this.bit.getLength();
-    }
+    this.props.bitLength = this.bit.getLength();
     return this.props.bitLength;
   };
 

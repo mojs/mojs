@@ -3,6 +3,8 @@
 - :: demo
   - foreign context coordinates in burst
   - add mirrors?
+  - fallbax to x/y if tranlate isnt dupported
+  - stagger callbacks should run only once
   - tests coverage fix
   
 - release

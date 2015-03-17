@@ -32,6 +32,7 @@
         expect(s.ownDefaults.stroke[1]).toBe('cyan');
         expect(s.ownDefaults.stroke[2]).toBe('deeppink');
         expect(s.ownDefaults.fill).toBe('transparent');
+        expect(s.ownDefaults.type).toBe('line');
         expect(s.ownDefaults.isShowInit).toBe(false);
         return expect(s.ownDefaults.isShowEnd).toBe(false);
       });

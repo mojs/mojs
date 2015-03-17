@@ -17,6 +17,7 @@ class Stagger extends Transit
     isShowInit:       false
     isShowEnd:        false
     radius:           0
+    type:             'line'
 
   vars:->
     h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults

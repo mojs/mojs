@@ -79,9 +79,9 @@ MotionPath = (function() {
 
   MotionPath.prototype.addEvent = function(el, type, handler) {
     if (el.addEventListener) {
-      return this.container.addEventListener(type, handler, false);
+      return el.addEventListener(type, handler, false);
     } else if (el.attachEvent) {
-      return this.container.attachEvent(type, handler);
+      return el.attachEvent(type, handler);
     }
   };
 

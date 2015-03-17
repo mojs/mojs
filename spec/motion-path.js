@@ -1239,7 +1239,7 @@
         return expect(mp.isModule).toBe(true);
       });
     });
-    return describe('setModulePosition method ->', function() {
+    describe('setModulePosition method ->', function() {
       it('should use setProp of the module to set position', function() {
         var module, mp;
         module = new Transit({
@@ -1301,6 +1301,29 @@
         spyOn(mp, 'setModulePosition');
         mp.setProgress(0, true);
         return expect(mp.setModulePosition).not.toHaveBeenCalled();
+      });
+    });
+    return describe('addEvent method ->', function() {
+      return it('should add event listener', function() {
+        var div, handler, isHandler, mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div')
+        });
+        isHandler = false;
+        div = document.createElement('div');
+        handler = function() {
+          return isHandler = true;
+        };
+        if (div.addEventListener != null) {
+          spyOn(div, 'addEventListener');
+          mp.addEvent(div, 'click', handler);
+          return expect(div.addEventListener).toHaveBeenCalledWith('click', handler, false);
+        } else if (div.attachEvent) {
+          spyOn(div, 'attachEvent');
+          mp.addEvent(div, 'click', handler);
+          return expect(div.attachEvent).toHaveBeenCalledWith('click', handler);
+        }
       });
     });
   });

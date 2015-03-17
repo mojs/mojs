@@ -32,7 +32,8 @@ Stagger = (function(_super) {
     },
     isShowInit: false,
     isShowEnd: false,
-    radius: 0
+    radius: 0,
+    type: 'line'
   };
 
   Stagger.prototype.vars = function() {

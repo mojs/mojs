@@ -539,12 +539,12 @@ describe 'Transit ->', ->
           dfr()
         , 300
 
-      # it 'should end units were not specified fallback to start units', ()->
-      #   byte = new Byte
-      #     x: {'20%': 50}
-      #     duration: 20
-      #   expect(byte.deltas.x.start.unit).toBe '%'
-      #   expect(byte.deltas.x.end.unit)  .toBe '%'
+      it 'end unit that were not specified should fallback to start unit', ()->
+        byte = new Byte
+          x: {'20%': 50}
+          duration: 20
+        expect(byte.deltas.x.start.unit).toBe '%'
+        expect(byte.deltas.x.end.unit)  .toBe '%'
 
       it 'should fallback to end units if units are differnt', (dfr)->
         byte = new Byte
@@ -553,7 +553,7 @@ describe 'Transit ->', ->
           onComplete:->
             expect(byte.el.style.left).toBe('50px'); dfr()
 
-      describe 'shiftX/shiftY coordinates', ->
+      describe 'shiftX/shiftY coordinates ->', ->
         it 'should set a position with respect to units', ->
           byte = new Byte
             shiftX: 100
@@ -572,16 +572,17 @@ describe 'Transit ->', ->
             shiftX: {'20%': '50%'}
             duration: 20
           setTimeout ->
-            expect(byte.el.style.transform) .toBe 'translate(50%, 0px)'
+            expect(byte.el.style.transform).toBe 'translate(50%, 0px)'
             dfr()
           , 300
+        
         it 'should fallback to end units if units are differnt', (dfr)->
           byte = new Byte
             shiftX: {'20%': '50px'}
             shiftY: { 0: '50%'}
             duration: 20
           setTimeout ->
-            expect(byte.el.style.transform) .toBe 'translate(50px, 50%)'
+            expect(byte.el.style.transform).toBe 'translate(50px, 50%)'
             dfr()
           , 300
 
@@ -832,15 +833,7 @@ describe 'Transit ->', ->
         expect(-> fun()).not.toThrow()
         expect(console.warn).toHaveBeenCalled()
         expect(byte.deltas.strokeLinecap).not.toBeDefined()
-    # deprecated
-    # describe 'array values ->', ->
-    #   it 'should calculate array delta', ->
-    #     byte = new Byte strokeDasharray:  { '200 100': '300' }
-    #     arrayDelta = byte.deltas.strokeDasharray
-    #     expect(arrayDelta.start.join(' '))        .toBe   '200 100'
-    #     expect(arrayDelta.end.join(' '))          .toBe   '300 0'
-    #     expect(arrayDelta.delta.join(' '))        .toBe   '100 -100'
-    #     expect(arrayDelta.type)                   .toBe   'array'
+    
     describe 'unit values ->', ->
       it 'should calculate unit delta', ->
         byte = new Byte x:  {'0%': '100%'}

@@ -975,6 +975,17 @@
             return dfr();
           }, 300);
         });
+        it('end unit that were not specified should fallback to start unit', function() {
+          var byte;
+          byte = new Byte({
+            x: {
+              '20%': 50
+            },
+            duration: 20
+          });
+          expect(byte.deltas.x.start.unit).toBe('%');
+          return expect(byte.deltas.x.end.unit).toBe('%');
+        });
         it('should fallback to end units if units are differnt', function(dfr) {
           var byte;
           return byte = new Byte({
@@ -988,7 +999,7 @@
             }
           });
         });
-        return describe('shiftX/shiftY coordinates', function() {
+        return describe('shiftX/shiftY coordinates ->', function() {
           it('should set a position with respect to units', function() {
             var byte;
             byte = new Byte({

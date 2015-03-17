@@ -432,9 +432,7 @@ class Transit extends bitsMap.map.bit
     @timeline.setProp timelineOptions
   
   getBitLength:->
-    isChangedXY = @isPropChanged('radiusX') or @isPropChanged('radiusY')
-    isChanged   = @isPropChanged('radius')
-    if isChangedXY or isChanged then @props.bitLength = @bit.getLength()
+    @props.bitLength = @bit.getLength()
     @props.bitLength
 
 ### istanbul ignore next ###

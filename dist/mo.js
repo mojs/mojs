@@ -1318,12 +1318,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.106.3 unstable
+  v0.106.4 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h, tr;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
 
 window.mojs = {
-  revision: '0.106.3',
+  revision: '0.106.4',
   isDebug: true
 };
 
@@ -1342,22 +1342,6 @@ MotionPath = require('./motion-path');
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
-
-tr = new Transit({
-  type: 'cross',
-  x: 300,
-  y: 300,
-  radius: {
-    50: 75
-  },
-  isShowInit: true,
-  isShowEnd: true,
-  strokeWidth: 2,
-  stroke: 'cyan',
-  duration: 1000,
-  delay: 1000,
-  easing: 'Cubic.inout'
-});
 
 
 /* istanbul ignore next */
@@ -1464,9 +1448,9 @@ MotionPath = (function() {
 
   MotionPath.prototype.addEvent = function(el, type, handler) {
     if (el.addEventListener) {
-      return this.container.addEventListener(type, handler, false);
+      return el.addEventListener(type, handler, false);
     } else if (el.attachEvent) {
-      return this.container.attachEvent(type, handler);
+      return el.attachEvent(type, handler);
     }
   };
 
@@ -2706,7 +2690,8 @@ Stagger = (function(_super) {
     },
     isShowInit: false,
     isShowEnd: false,
-    radius: 0
+    radius: 0,
+    type: 'line'
   };
 
   Stagger.prototype.vars = function() {
@@ -3499,12 +3484,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.getBitLength = function() {
-    var isChanged, isChangedXY;
-    isChangedXY = this.isPropChanged('radiusX') || this.isPropChanged('radiusY');
-    isChanged = this.isPropChanged('radius');
-    if (isChangedXY || isChanged) {
-      this.props.bitLength = this.bit.getLength();
-    }
+    this.props.bitLength = this.bit.getLength();
     return this.props.bitLength;
   };
 

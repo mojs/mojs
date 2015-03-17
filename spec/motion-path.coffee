@@ -1,22 +1,3 @@
-# mp = new MP
-#   path: "M#{@centerX},-40 L#{@centerX}, #{@bottomLine-@CIRCLE_RADIUS}"
-#   el: ball.el
-#   duration: 600*@S
-#   easing: 'Cubic.In'
-#   delay: @DELAY_START*@S
-# .then
-#   path: "M#{@centerX}, #{@bottomLine-@CIRCLE_RADIUS}
-#      L#{@centerX}, #{@bottomLine-2*@CIRCLE_RADIUS}"
-#   duration: 100*@S
-#   delay: 0
-# .then
-#   path: "M#{@centerX},20 L#{@centerX}, #{@bottomLine-@CIRCLE_RADIUS}"
-#   isReverse: true
-#   easing: 'Cubic.Out'
-#   delay: 1
-#   duration: 600*@S
-
-
 MotionPath = window.mojs.MotionPath
 Transit    = window.mojs.Transit
 h          = window.mojs.helpers
@@ -966,6 +947,24 @@ describe 'MotionPath ->', ->
       mp.setProgress 0, true
       expect(mp.setModulePosition).not.toHaveBeenCalled()
 
+  describe 'addEvent method ->', ->
+    it 'should add event listener', ->
+      mp = new MotionPath
+        path:       coords
+        el:         document.createElement 'div'
 
+      isHandler = false
+      div = document.createElement('div')
+      handler = -> isHandler = true
+      if div.addEventListener?
+        spyOn div, 'addEventListener'
+        mp.addEvent div, 'click', handler
+        expect(div.addEventListener)
+          .toHaveBeenCalledWith 'click', handler, false
+      else if div.attachEvent
+        spyOn div, 'attachEvent'
+        mp.addEvent div, 'click', handler
+        expect(div.attachEvent)
+          .toHaveBeenCalledWith 'click', handler
 
 
