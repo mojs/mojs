@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.106.4 unstable
+  v0.106.6 unstable
 ###
-window.mojs = revision: '0.106.4', isDebug: true
+window.mojs = revision: '0.106.6', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'
@@ -14,18 +14,18 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-burst = new mojs.Burst
-  x: 300, y: 300
-  delay:    1500
-  duration: 3000
-  type:     'line'
-  strokeWidth: 2
-  stroke:   'white'
-  # angle:  20
-  randomAngle: 1
-  # isResetAngles: true
-  radius:   10: 100
-  childOptions: radius: 10
+# burst = new mojs.Burst
+#   x: 300, y: 300
+#   delay:    1500
+#   duration: 3000
+#   type:     'line'
+#   strokeWidth: 2
+#   stroke:   'white'
+#   # angle:  20
+#   randomAngle: 1
+#   # isResetAngles: true
+#   radius:   10: 100
+#   childOptions: radius: 10
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
