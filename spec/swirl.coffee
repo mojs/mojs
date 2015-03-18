@@ -11,6 +11,11 @@ describe 'Swirl ->', ->
       swirl = new Swirl
       expect(swirl.skipPropsDelta.x).toBe 1
       expect(swirl.skipPropsDelta.y).toBe 1
+    it 'should have angleShift value', ->
+      swirl = new Swirl
+        x: {0:10}, y: {0:10}, isRunLess: true,
+        isSwirlLess: true, angleShift: 90
+      expect(swirl.angleShift).toBe 90
   describe 'position calc ->', ->
     it 'should calc position radius', ->
       swirl = new Swirl x: {0:10}, y: {0:20}
@@ -71,6 +76,7 @@ describe 'Swirl ->', ->
       swirl.setProgress 1
       expect(swirl.props.x+'').toBe '10.0000'
       expect(swirl.props.y+'').toBe '10.0000'
+    
     it 'should respect radiusScale value', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}, isRunLess: true,

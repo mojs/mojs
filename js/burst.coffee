@@ -117,6 +117,7 @@ class Burst extends Transit
     for transit, i in @transits
 
       aShift = transit.props.angleShift
+      # console.log aShift
       pointStart = @getSidePoint 'start', i*step# + aShift
       pointEnd   = @getSidePoint 'end',   i*step# + aShift
 

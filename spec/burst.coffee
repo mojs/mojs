@@ -425,19 +425,30 @@ describe 'Burst ->', ->
       burst = new Burst radius: {120: 0}
       x = burst.transits[1].o.x; keys = Object.keys x
       expect(x[keys[0]]+'').not.toBe keys[0]
-
     it 'should work with radiusX', ->
       burst = new Burst
         radius: {120: 0}, radiusX: 30
       expect(parseInt(burst.transits[1].o.x,10)).toBe 155
-
     it 'should work with radiusY', ->
       burst = new Burst
         radius: {120: 0}, radiusY: {30: 0}
-
       keys = Object.keys(burst.transits[1].o.y)
       center = burst.props.center
       expect(burst.transits[1].o.y[keys[0]]).toBe center
+
+    it 'should increase angle and position delta on angleShift', ->
+      burst1 = new Burst radius: {120: 0}, count: 2
+      burst2 = new Burst radius: {120: 0}, count: 2, randomAngle: .5
+
+      console.log burst2.transits[1].props.angleShift
+      expect(burst2.transits[1].o.angle)
+        .toBe burst1.transits[1].o.angle+burst2.transits[1].props.angleShift
+      
+      # center = burst.props.center
+      # console.log burst.transits[1].o.y
+      # console.log burst.transits[2].o.y
+      # expect(burst.transits[1].o.y[keys[0]]).toBe center
+      # expect(burst.transits[1].o.x[keys[0]]).toBe center
 
   describe 'createTween method ->', ->
     it 'should create tween', ->

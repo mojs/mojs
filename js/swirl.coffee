@@ -17,6 +17,7 @@ class Swirl extends Transit
       x: x
       y: y
     @o.radiusScale ?= 1
+    @props.angleShift   = @h.parseIfRand(@o.angleShift or 0)
     @props.radiusScale  = @h.parseIfRand @o.radiusScale
 
   getPosValue:(name)->

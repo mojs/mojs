@@ -42,6 +42,7 @@ Swirl = (function(_super) {
     if ((_base = this.o).radiusScale == null) {
       _base.radiusScale = 1;
     }
+    this.props.angleShift = this.h.parseIfRand(this.o.angleShift || 0);
     return this.props.radiusScale = this.h.parseIfRand(this.o.radiusScale);
   };
 

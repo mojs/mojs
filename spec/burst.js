@@ -649,7 +649,7 @@
         });
         return expect(parseInt(burst.transits[1].o.x, 10)).toBe(155);
       });
-      return it('should work with radiusY', function() {
+      it('should work with radiusY', function() {
         var burst, center, keys;
         burst = new Burst({
           radius: {
@@ -662,6 +662,24 @@
         keys = Object.keys(burst.transits[1].o.y);
         center = burst.props.center;
         return expect(burst.transits[1].o.y[keys[0]]).toBe(center);
+      });
+      return it('should increase angle and position delta on angleShift', function() {
+        var burst1, burst2;
+        burst1 = new Burst({
+          radius: {
+            120: 0
+          },
+          count: 2
+        });
+        burst2 = new Burst({
+          radius: {
+            120: 0
+          },
+          count: 2,
+          randomAngle: .5
+        });
+        console.log(burst2.transits[1].props.angleShift);
+        return expect(burst2.transits[1].o.angle).toBe(burst1.transits[1].o.angle + burst2.transits[1].props.angleShift);
       });
     });
     describe('createTween method ->', function() {

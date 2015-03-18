@@ -14,11 +14,26 @@
         swirl = new Swirl;
         return expect(swirl instanceof Transit).toBe(true);
       });
-      return it('should have skipPropsDelta', function() {
+      it('should have skipPropsDelta', function() {
         var swirl;
         swirl = new Swirl;
         expect(swirl.skipPropsDelta.x).toBe(1);
         return expect(swirl.skipPropsDelta.y).toBe(1);
+      });
+      return it('should have angleShift value', function() {
+        var swirl;
+        swirl = new Swirl({
+          x: {
+            0: 10
+          },
+          y: {
+            0: 10
+          },
+          isRunLess: true,
+          isSwirlLess: true,
+          angleShift: 90
+        });
+        return expect(swirl.angleShift).toBe(90);
       });
     });
     describe('position calc ->', function() {
