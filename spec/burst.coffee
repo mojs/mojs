@@ -361,7 +361,7 @@ describe 'Burst ->', ->
 
     it 'should calculate size based on largest transit + self radius #2', ->
       burst = new Burst
-        radius: 50, radiusX: 100, isIt: true
+        radius: 50, radiusX: 100
         childOptions:
           radius:      [{ 20: 50 }, 20]
           strokeWidth: 20
@@ -440,15 +440,34 @@ describe 'Burst ->', ->
       burst1 = new Burst radius: {120: 0}, count: 2
       burst2 = new Burst radius: {120: 0}, count: 2, randomAngle: .5
 
-      console.log burst2.transits[1].props.angleShift
       expect(burst2.transits[1].o.angle)
         .toBe burst1.transits[1].o.angle+burst2.transits[1].props.angleShift
-      
-      # center = burst.props.center
-      # console.log burst.transits[1].o.y
-      # console.log burst.transits[2].o.y
-      # expect(burst.transits[1].o.y[keys[0]]).toBe center
-      # expect(burst.transits[1].o.x[keys[0]]).toBe center
+
+    it 'should increase angle and position delta on angleShift for deltas', ->
+      burst1 = new Burst
+        radius: {120: 0}, count: 2, childOptions: angle: {25: 50}
+      burst2 = new Burst
+        isIt: true
+        radius: {120: 0}, count: 2, randomAngle: 1
+        childOptions: angle: {25: 50}
+
+      start2 = burst2.transits[1].deltas.angle.start
+      end2   = burst2.transits[1].deltas.angle.start
+      start1 = burst1.transits[1].deltas.angle.start
+      end1   = burst1.transits[1].deltas.angle.start
+      expect(start2)
+        .toBe start1+burst2.transits[1].props.angleShift
+      expect(end2)
+        .toBe end1+burst2.transits[1].props.angleShift
+
+    it 'should increaseposition', ->
+      burst1 = new Burst radius: 50, count: 2
+      burst2 = new Burst radius: 50, count: 2, randomAngle: .5
+
+      expect(burst2.transits[1].o.x)
+        .not.toBe burst1.transits[1].o.x
+      expect(burst2.transits[1].o.y)
+        .not.toBe burst1.transits[1].o.y
 
   describe 'createTween method ->', ->
     it 'should create tween', ->

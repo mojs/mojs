@@ -510,7 +510,6 @@
         burst = new Burst({
           radius: 50,
           radiusX: 100,
-          isIt: true,
           childOptions: {
             radius: [
               {
@@ -663,7 +662,7 @@
         center = burst.props.center;
         return expect(burst.transits[1].o.y[keys[0]]).toBe(center);
       });
-      return it('should increase angle and position delta on angleShift', function() {
+      it('should increase angle and position delta on angleShift', function() {
         var burst1, burst2;
         burst1 = new Burst({
           radius: {
@@ -678,8 +677,54 @@
           count: 2,
           randomAngle: .5
         });
-        console.log(burst2.transits[1].props.angleShift);
         return expect(burst2.transits[1].o.angle).toBe(burst1.transits[1].o.angle + burst2.transits[1].props.angleShift);
+      });
+      it('should increase angle and position delta on angleShift for deltas', function() {
+        var burst1, burst2, end1, end2, start1, start2;
+        burst1 = new Burst({
+          radius: {
+            120: 0
+          },
+          count: 2,
+          childOptions: {
+            angle: {
+              25: 50
+            }
+          }
+        });
+        burst2 = new Burst({
+          isIt: true,
+          radius: {
+            120: 0
+          },
+          count: 2,
+          randomAngle: 1,
+          childOptions: {
+            angle: {
+              25: 50
+            }
+          }
+        });
+        start2 = burst2.transits[1].deltas.angle.start;
+        end2 = burst2.transits[1].deltas.angle.start;
+        start1 = burst1.transits[1].deltas.angle.start;
+        end1 = burst1.transits[1].deltas.angle.start;
+        expect(start2).toBe(start1 + burst2.transits[1].props.angleShift);
+        return expect(end2).toBe(end1 + burst2.transits[1].props.angleShift);
+      });
+      return it('should increaseposition', function() {
+        var burst1, burst2;
+        burst1 = new Burst({
+          radius: 50,
+          count: 2
+        });
+        burst2 = new Burst({
+          radius: 50,
+          count: 2,
+          randomAngle: .5
+        });
+        expect(burst2.transits[1].o.x).not.toBe(burst1.transits[1].o.x);
+        return expect(burst2.transits[1].o.y).not.toBe(burst1.transits[1].o.y);
       });
     });
     describe('createTween method ->', function() {

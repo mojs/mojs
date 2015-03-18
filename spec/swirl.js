@@ -33,7 +33,7 @@
           isSwirlLess: true,
           angleShift: 90
         });
-        return expect(swirl.angleShift).toBe(90);
+        return expect(swirl.props.angleShift).toBe(90);
       });
     });
     describe('position calc ->', function() {

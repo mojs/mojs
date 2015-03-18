@@ -15,7 +15,7 @@ describe 'Swirl ->', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}, isRunLess: true,
         isSwirlLess: true, angleShift: 90
-      expect(swirl.angleShift).toBe 90
+      expect(swirl.props.angleShift).toBe 90
   describe 'position calc ->', ->
     it 'should calc position radius', ->
       swirl = new Swirl x: {0:10}, y: {0:20}

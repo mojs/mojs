@@ -158,13 +158,13 @@ Burst = (function(_super) {
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       transit = _ref[i];
       aShift = transit.props.angleShift;
-      pointStart = this.getSidePoint('start', i * step);
-      pointEnd = this.getSidePoint('end', i * step);
+      pointStart = this.getSidePoint('start', i * step + aShift);
+      pointEnd = this.getSidePoint('end', i * step + aShift);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
       if (!this.props.isResetAngles) {
         angleAddition = i * step + 90;
-        transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition, newEnd = parseFloat(end) + angleAddition, delta = {}, delta[newStart] = newEnd, delta);
+        transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition + aShift : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition + aShift, newEnd = parseFloat(end) + angleAddition + aShift, delta = {}, delta[newStart] = newEnd, delta);
       }
       _results.push(transit.extendDefaults());
     }

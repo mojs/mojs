@@ -117,9 +117,8 @@ class Burst extends Transit
     for transit, i in @transits
 
       aShift = transit.props.angleShift
-      # console.log aShift
-      pointStart = @getSidePoint 'start', i*step# + aShift
-      pointEnd   = @getSidePoint 'end',   i*step# + aShift
+      pointStart = @getSidePoint 'start', i*step + aShift
+      pointEnd   = @getSidePoint 'end',   i*step + aShift
 
       transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
       transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
@@ -127,15 +126,16 @@ class Burst extends Transit
       if !@props.isResetAngles
         angleAddition = i*step + 90
         transit.o.angle = if typeof transit.o.angle isnt 'object'
-          transit.o.angle + angleAddition# + aShift
+          transit.o.angle + angleAddition + aShift
         else
           keys = Object.keys(transit.o.angle); start = keys[0]
           end   = transit.o.angle[start]
-          newStart = parseFloat(start) + angleAddition# + aShift
-          newEnd   = parseFloat(end)   + angleAddition# + aShift
+          newStart = parseFloat(start) + angleAddition + aShift
+          newEnd   = parseFloat(end)   + angleAddition + aShift
           delta = {}; delta[newStart] = newEnd
           delta
       transit.extendDefaults()
+
   getSidePoint:(side, angle)->
     sideRadius = @getSideRadius side
     pointStart = @h.getRadialPoint
