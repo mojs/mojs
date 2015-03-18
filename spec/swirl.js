@@ -200,23 +200,6 @@
         expect(swirl.props.x + '').toBe('10.0000');
         return expect(swirl.props.y + '').toBe('10.0000');
       });
-      it('should respect angleShift value', function() {
-        var swirl;
-        swirl = new Swirl({
-          x: {
-            0: 10
-          },
-          y: {
-            0: 10
-          },
-          isRunLess: true,
-          isSwirlLess: true,
-          angleShift: 90
-        });
-        swirl.setProgress(.5);
-        expect(swirl.props.x).toBe('-5.0000px');
-        return expect(swirl.props.y).toBe('5.0000px');
-      });
       it('should respect radiusScale value', function() {
         var swirl;
         swirl = new Swirl({

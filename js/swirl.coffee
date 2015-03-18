@@ -10,14 +10,15 @@ class Swirl extends Transit
     x = @getPosValue('x'); y = @getPosValue('y')
     angle = 90 + Math.atan((y.delta/x.delta) or 0)*(180/Math.PI)
     if x.delta < 0 then angle += 180
+    # angle += 65
     @positionDelta =
       radius: Math.sqrt(x.delta*x.delta + y.delta*y.delta)
-      angle: angle
+      angle:  angle
       x: x
       y: y
-    @o.angleShift  ?= 0; @o.radiusScale ?= 1
-    @props.angleShift   = @h.parseIfRand @o.angleShift
+    @o.radiusScale ?= 1
     @props.radiusScale  = @h.parseIfRand @o.radiusScale
+
   getPosValue:(name)->
     optVal = @o[name]
     if optVal and typeof optVal is 'object'
@@ -30,7 +31,7 @@ class Swirl extends Transit
       val = parseFloat(optVal or @defaults[name])
       { start: val, end: val, delta: 0, units: 'px' }
   setProgress:(progress)->
-    angle = @positionDelta.angle + @props.angleShift
+    angle = @positionDelta.angle# + @props.angleShift
     if @o.isSwirl then angle += @getSwirl(progress)
     point = @h.getRadialPoint
       angle:  angle

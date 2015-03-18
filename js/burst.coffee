@@ -115,8 +115,10 @@ class Burst extends Transit
     @degreeCnt = if @props.degree % 360 is 0 then points else points-1
     step = @props.degree/@degreeCnt
     for transit, i in @transits
-      pointStart = @getSidePoint 'start', i*step
-      pointEnd   = @getSidePoint 'end',   i*step
+
+      aShift = transit.props.angleShift
+      pointStart = @getSidePoint 'start', i*step# + aShift
+      pointEnd   = @getSidePoint 'end',   i*step# + aShift
 
       transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
       transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
@@ -124,12 +126,12 @@ class Burst extends Transit
       if !@props.isResetAngles
         angleAddition = i*step + 90
         transit.o.angle = if typeof transit.o.angle isnt 'object'
-          transit.o.angle + angleAddition
+          transit.o.angle + angleAddition# + aShift
         else
           keys = Object.keys(transit.o.angle); start = keys[0]
           end   = transit.o.angle[start]
-          newStart = parseFloat(start) + angleAddition
-          newEnd   = parseFloat(end)   + angleAddition
+          newStart = parseFloat(start) + angleAddition# + aShift
+          newEnd   = parseFloat(end)   + angleAddition# + aShift
           delta = {}; delta[newStart] = newEnd
           delta
       transit.extendDefaults()
@@ -139,8 +141,8 @@ class Burst extends Transit
       radius:  sideRadius.radius
       radiusX: sideRadius.radiusX
       radiusY: sideRadius.radiusY
-      angle:  angle# + @props.angle
-      center: x: @props.center, y: @props.center
+      angle:   angle
+      center:  x: @props.center, y: @props.center
   getSideRadius:(side)->
     radius:  @getRadiusByKey 'radius',  side
     radiusX: @getRadiusByKey 'radiusX', side
@@ -152,7 +154,6 @@ class Burst extends Transit
     delta = {}
     if pointStart[key] is pointEnd[key] then delta = pointStart[key]
     else delta[pointStart[key]] = pointEnd[key]; delta
-
   draw:(progress)-> @drawEl()
 
   isNeedsTransform:->

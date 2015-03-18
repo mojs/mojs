@@ -25,7 +25,7 @@ Swirl = (function(_super) {
   };
 
   Swirl.prototype.extendDefaults = function() {
-    var angle, x, y, _base, _base1;
+    var angle, x, y, _base;
     Swirl.__super__.extendDefaults.apply(this, arguments);
     x = this.getPosValue('x');
     y = this.getPosValue('y');
@@ -39,13 +39,9 @@ Swirl = (function(_super) {
       x: x,
       y: y
     };
-    if ((_base = this.o).angleShift == null) {
-      _base.angleShift = 0;
+    if ((_base = this.o).radiusScale == null) {
+      _base.radiusScale = 1;
     }
-    if ((_base1 = this.o).radiusScale == null) {
-      _base1.radiusScale = 1;
-    }
-    this.props.angleShift = this.h.parseIfRand(this.o.angleShift);
     return this.props.radiusScale = this.h.parseIfRand(this.o.radiusScale);
   };
 
@@ -73,7 +69,7 @@ Swirl = (function(_super) {
 
   Swirl.prototype.setProgress = function(progress) {
     var angle, point, x, y;
-    angle = this.positionDelta.angle + this.props.angleShift;
+    angle = this.positionDelta.angle;
     if (this.o.isSwirl) {
       angle += this.getSwirl(progress);
     }
@@ -297,7 +293,7 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var angleAddition, delta, end, i, keys, newEnd, newStart, pointEnd, pointStart, points, start, step, transit, _i, _len, _ref, _results;
+    var aShift, angleAddition, delta, end, i, keys, newEnd, newStart, pointEnd, pointStart, points, start, step, transit, _i, _len, _ref, _results;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
     step = this.props.degree / this.degreeCnt;
@@ -305,6 +301,7 @@ Burst = (function(_super) {
     _results = [];
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       transit = _ref[i];
+      aShift = transit.props.angleShift;
       pointStart = this.getSidePoint('start', i * step);
       pointEnd = this.getSidePoint('end', i * step);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
@@ -1320,7 +1317,7 @@ if (typeof window !== "undefined" && window !== null) {
   LegoMushroom - Oleg Solomka 2015 MIT
   v0.106.4 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, burst, h;
 
 window.mojs = {
   revision: '0.106.4',
@@ -1342,6 +1339,23 @@ MotionPath = require('./motion-path');
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
+
+burst = new mojs.Burst({
+  x: 300,
+  y: 300,
+  delay: 1500,
+  duration: 3000,
+  type: 'line',
+  strokeWidth: 2,
+  stroke: 'white',
+  randomAngle: 1,
+  radius: {
+    10: 100
+  },
+  childOptions: {
+    radius: 10
+  }
+});
 
 
 /* istanbul ignore next */

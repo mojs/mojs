@@ -5,7 +5,11 @@
   - add mirrors?
   - fallbax to x/y if tranlate isnt dupported
   - stagger callbacks should run only once
+  - stagger should set x/y on svg
+  - stagger self generation
+  - mp: bad curve path(d="M208.222656,234.470827 C109.003906,-17.0190966 89,234.470827 89,234.470827", fill="none")#js-curve-4
   - tests coverage fix
+  - check randomAngle
   
 - release
   - bower component
