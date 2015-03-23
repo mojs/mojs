@@ -3589,9 +3589,15 @@ Timeline = (function() {
         }
         this.isFirstUpdate = true;
       }
-      if (!this.isStarted) {
-        if ((_ref1 = this.o.onStart) != null) {
+      if (time < this.prevTime && !this.isFirstUpdateBackward) {
+        if ((_ref1 = this.o.onFirstUpdateBackward) != null) {
           _ref1.apply(this);
+        }
+        this.isFirstUpdateBackward = true;
+      }
+      if (!this.isStarted) {
+        if ((_ref2 = this.o.onStart) != null) {
+          _ref2.apply(this);
         }
         this.isStarted = true;
       }
@@ -3616,12 +3622,6 @@ Timeline = (function() {
         } else {
           this.setProc(0);
         }
-      }
-      if (time < this.prevTime && !this.isFirstUpdateBackward) {
-        if ((_ref2 = this.o.onFirstUpdateBackward) != null) {
-          _ref2.apply(this);
-        }
-        this.isFirstUpdateBackward = true;
       }
       if (typeof this.onUpdate === "function") {
         this.onUpdate(this.easedProgress);

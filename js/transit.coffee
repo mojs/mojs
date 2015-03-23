@@ -351,7 +351,8 @@ class Transit extends bitsMap.map.bit
       easing:   @props.easing
       onUpdate:   (p)=> @setProgress p
       onStart:=> @show(); @props.onStart?.apply @
-      onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
+      onFirstUpdateBackward:=>
+        @history.length > 1 and @tuneOptions @history[0]
       onReverseComplete:=>
         !@o.isShowInit and @hide(); @props.onReverseComplete?.apply @
 

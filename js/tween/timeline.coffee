@@ -56,7 +56,6 @@ class Timeline
             else 1-if @progress is 0 then 1 else @progress
         # is in start point + delay
         else @setProc 0
-      # if time < @prevTime and
       if time < @prevTime and !@isFirstUpdateBackward
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       @onUpdate? @easedProgress

@@ -14,18 +14,24 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-# burst = new mojs.Burst
+# burst = new mojs.Transit
 #   x: 300, y: 300
-#   delay:    1500
+#   delay:    1000
 #   duration: 3000
 #   type:     'line'
 #   strokeWidth: 2
 #   stroke:   'white'
 #   # angle:  20
 #   randomAngle: 1
+#   isShowInit: true
+#   isShowEnd:  true
 #   # isResetAngles: true
 #   radius:   10: 100
 #   childOptions: radius: 10
+
+# @slider = document.querySelector 'input'
+# @slider.addEventListener 'input', (e)-> burst.tween.setProgress (@value/100000)
+
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
