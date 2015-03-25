@@ -5,6 +5,8 @@ h = require('../h');
 t = require('./tweener');
 
 Tween = (function() {
+  Tween.prototype.state = 'stop';
+
   function Tween(o) {
     this.o = o != null ? o : {};
     this.vars();
@@ -138,10 +140,23 @@ Tween = (function() {
   Tween.prototype.start = function(time) {
     this.setStartTime(time);
     !time && t.add(this);
+    this.state = 'play';
     return this;
   };
 
   Tween.prototype.stop = function() {
+    this.removeFromTweener();
+    this.state = 'stop';
+    return this;
+  };
+
+  Tween.prototype.restart = function() {
+    this.stop();
+    this.setProgress(0);
+    return this.start();
+  };
+
+  Tween.prototype.removeFromTweener = function() {
     t.remove(this);
     return this;
   };
@@ -152,7 +167,7 @@ Tween = (function() {
   };
 
   Tween.prototype.setStartTime = function(time) {
-    this.prepareStart(time);
+    this.prepareStart();
     return this.startTimelines(time);
   };
 

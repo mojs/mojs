@@ -17,6 +17,11 @@
       expect(t.timelines.length).toBe(0);
       return expect(t.props.totalTime).toBe(0);
     });
+    it('should have initial state flags', function() {
+      var t;
+      t = new Tween;
+      return expect(t.state).toBe('stop');
+    });
     describe('add method ->', function() {
       it('should add timeline', function() {
         var t;
@@ -292,15 +297,26 @@
         t.start();
         return expect(tweener.add).toHaveBeenCalled();
       });
-      return it('should not add itself to tweener if time was passed', function() {
+      it('should not add itself to tweener if time was passed', function() {
         var t;
         t = new Tween;
         spyOn(tweener, 'add');
         t.start(10239123);
         return expect(tweener.add).not.toHaveBeenCalled();
       });
+      return it('should set state to "play"', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        return expect(t.state).toBe('play');
+      });
     });
-    describe('stop method ->', function() {
+    describe('removeFromTweener method ->', function() {
       return it('should call t.remove method with self', function() {
         var t, timeline;
         tweener.tweens = [];
@@ -310,8 +326,76 @@
         });
         t.add(timeline);
         t.start();
-        t.stop();
+        t.removeFromTweener();
         return expect(tweener.tweens.length).toBe(0);
+      });
+    });
+    describe('stop method ->', function() {
+      it('should call t.remove method with self', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        spyOn(t, 'removeFromTweener');
+        t.stop();
+        return expect(t.removeFromTweener).toHaveBeenCalled();
+      });
+      return it('should set state to "stop"', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        t.stop();
+        return expect(t.state).toBe('stop');
+      });
+    });
+    describe('restart method ->', function() {
+      it('should call stop method', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        spyOn(t, 'stop');
+        t.restart();
+        return expect(t.stop).toHaveBeenCalled();
+      });
+      it('should call setProgress method', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        spyOn(t, 'setProgress');
+        t.restart();
+        return expect(t.setProgress).toHaveBeenCalledWith(0);
+      });
+      return it('should call start method', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        spyOn(t, 'start');
+        t.restart();
+        return expect(t.start).toHaveBeenCalled();
       });
     });
     describe('onReverseComplete callback ->', function() {
@@ -732,7 +816,7 @@
         spyOn(t, 'startTimelines');
         time = 0;
         t.setStartTime(time);
-        expect(t.prepareStart).toHaveBeenCalledWith(time);
+        expect(t.prepareStart).toHaveBeenCalled();
         return expect(t.startTimelines).toHaveBeenCalledWith(time);
       });
     });

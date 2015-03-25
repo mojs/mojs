@@ -1,8 +1,6 @@
 ## To Do
 
 - :: demo
-  - tween.add tw1, tw2
-  - tween stop
   - tween reset
   - check rand and stagger in strokedash..
   - check delta objects on then

@@ -2,12 +2,12 @@
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.107.0 unstable
+  v0.108.0 unstable
  */
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
 
 window.mojs = {
-  revision: '0.107.0',
+  revision: '0.108.0',
   isDebug: true
 };
 

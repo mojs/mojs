@@ -2,6 +2,7 @@ h = require '../h'
 t = require './tweener'
 
 class Tween
+  state: 'stop'
   constructor:(@o={})-> @vars(); @
   vars:->
     @timelines = []; @props = totalTime: 0
@@ -42,7 +43,7 @@ class Tween
       @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
   update:(time)->
     # react only on endTime max
-    if time > @props.endTime   then time = @props.endTime
+    if time > @props.endTime then time = @props.endTime
     # update self timelines
     i = -1; len = @timelines.length-1
     while(i++ < len)
@@ -50,7 +51,6 @@ class Tween
     # if isn't complete
     if time >= @props.startTime and time < @props.endTime
       @onUpdate? (time - @props.startTime)/@props.totalTime
-
     # if reverse completed
     if @prevTime > time and time <= @props.startTime
       @o.onReverseComplete?.apply(@)
@@ -66,15 +66,27 @@ class Tween
     while(i--)
       @timelines[i].start time or @props.startTime
   start:(time)->
-
-    @setStartTime(time); !time and t.add @
+    @setStartTime(time); !time and t.add(@); @state = 'play'
     @
-  stop:-> t.remove(@); @
+  stop:-> @removeFromTweener(); @state = 'stop'; @
+  restart:-> @stop(); @setProgress(0); @start()
+  removeFromTweener:-> t.remove(@); @
+
   getDimentions:->
     @props.startTime = Date.now()
     @props.endTime = @props.startTime + @props.totalTime
 
-  setStartTime:(time)-> @prepareStart(time); @startTimelines(time)
+  setStartTime:(time)-> @prepareStart(); @startTimelines(time)
+
+  # resetProgress:->
+  #   @setProgress 0
+  #   # update every timeline to its start time
+  #   # i = -1; len = @timelines.length-1
+  #   # while(i++ < len)
+  #   #   timeline = @timelines[i]
+  #   #   # if timeline is actually a tween then reset progress there
+  #   #   if timeline.resetProgress? then timeline.resetProgress()
+  #   #   else timeline.update(timeline.props.startTime)
 
   setProgress:(progress)->
     if !@props.startTime? then @setStartTime()

@@ -8,6 +8,9 @@ describe 'Tween ->', ->
     t = new Tween
     expect(t.timelines.length).toBe 0
     expect(t.props.totalTime) .toBe 0
+  it 'should have initial state flags', ->
+    t = new Tween
+    expect(t.state).toBe 'stop'
   describe 'add method ->', ->
     it 'should add timeline',->
       t = new Tween
@@ -166,7 +169,23 @@ describe 'Tween ->', ->
       spyOn tweener, 'add'
       t.start 10239123
       expect(tweener.add).not.toHaveBeenCalled()
+    it 'should set state to "play"',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add(timeline); t.start()
+      expect(t.state).toBe 'play'
     
+  describe 'removeFromTweener method ->', ->
+    it 'should call t.remove method with self',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add timeline
+      t.start()
+      t.removeFromTweener()
+      expect(tweener.tweens.length).toBe 0
+
   describe 'stop method ->', ->
     it 'should call t.remove method with self',->
       tweener.tweens = []
@@ -174,8 +193,78 @@ describe 'Tween ->', ->
       timeline = new Timeline duration: 2000
       t.add timeline
       t.start()
+      spyOn t, 'removeFromTweener'
       t.stop()
-      expect(tweener.tweens.length).toBe 0
+      expect(t.removeFromTweener).toHaveBeenCalled()
+
+    it 'should set state to "stop"',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add(timeline); t.start(); t.stop()
+      expect(t.state).toBe 'stop'
+
+  describe 'restart method ->', ->
+    it 'should call stop method',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add(timeline); t.start()
+      spyOn t, 'stop'
+      t.restart()
+      expect(t.stop).toHaveBeenCalled()
+    it 'should call setProgress method',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add(timeline); t.start()
+      spyOn t, 'setProgress'
+      t.restart()
+      expect(t.setProgress).toHaveBeenCalledWith 0
+    it 'should call start method',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add(timeline); t.start()
+      spyOn t, 'start'
+      t.restart()
+      expect(t.start).toHaveBeenCalled()
+
+  # describe 'resetProgress method ->', ->
+  #   it 'should call setProgress with 0', ->
+  #     t = new Tween
+  #     timeline1 = new Timeline duration: 2000
+  #     timeline2 = new Timeline duration: 2000
+  #     t.add(timeline1, timeline2)
+  #     t.setStartTime()
+  #     spyOn t, 'setProgress'
+  #     t.resetProgress()
+  #     expect(t.setProgress).toHaveBeenCalledWith 0
+  #   it 'should update every timeline with its initial time', ->
+  #     t = new Tween
+  #     tm1 = new Timeline duration: 2000, delay: 500
+  #     tm2 = new Timeline duration: 2000, delay: 100
+  #     t.add(tm1, tm2)
+  #     t.setStartTime()
+  #     spyOn tm1, 'update'
+  #     spyOn tm2, 'update'
+  #     t.resetProgress()
+  #     expect(tm1.update).toHaveBeenCalledWith tm1.props.startTime
+  #     expect(tm2.update).toHaveBeenCalledWith tm2.props.startTime
+
+  #   it 'should call resetProgress on every tween', ->
+  #     t = new Tween
+  #     tm1 = new Timeline duration: 2000, delay: 500
+  #     tw1 = new Tween
+  #     tw1.add tm1
+  #     tm2 = new Timeline duration: 2000, delay: 100
+  #     t.add(tw1, tm2)
+  #     t.setStartTime()
+  #     spyOn tw1, 'resetProgress'
+  #     spyOn tm2, 'update'
+  #     t.resetProgress()
+  #     expect(tw1.resetProgress).toHaveBeenCalled()
+  #     expect(tm2.update).toHaveBeenCalledWith tm2.props.startTime
 
   describe 'onReverseComplete callback ->', ->
     it 'should be defined', ->
@@ -388,7 +477,7 @@ describe 'Tween ->', ->
       spyOn t, 'startTimelines'
       time = 0
       t.setStartTime time
-      expect(t.prepareStart)  .toHaveBeenCalledWith time
+      expect(t.prepareStart)  .toHaveBeenCalled()
       expect(t.startTimelines).toHaveBeenCalledWith time
 
   describe 'time track', ->

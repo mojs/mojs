@@ -1316,12 +1316,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.107.0 unstable
+  v0.108.0 unstable
  */
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
 
 window.mojs = {
-  revision: '0.107.0',
+  revision: '0.108.0',
   isDebug: true
 };
 
@@ -3720,6 +3720,8 @@ h = require('../h');
 t = require('./tweener');
 
 Tween = (function() {
+  Tween.prototype.state = 'stop';
+
   function Tween(o) {
     this.o = o != null ? o : {};
     this.vars();
@@ -3853,10 +3855,23 @@ Tween = (function() {
   Tween.prototype.start = function(time) {
     this.setStartTime(time);
     !time && t.add(this);
+    this.state = 'play';
     return this;
   };
 
   Tween.prototype.stop = function() {
+    this.removeFromTweener();
+    this.state = 'stop';
+    return this;
+  };
+
+  Tween.prototype.restart = function() {
+    this.stop();
+    this.setProgress(0);
+    return this.start();
+  };
+
+  Tween.prototype.removeFromTweener = function() {
     t.remove(this);
     return this;
   };
@@ -3867,7 +3882,7 @@ Tween = (function() {
   };
 
   Tween.prototype.setStartTime = function(time) {
-    this.prepareStart(time);
+    this.prepareStart();
     return this.startTimelines(time);
   };
 
