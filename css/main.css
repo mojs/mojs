@@ -1,3 +1,6 @@
+svg {
+  outline: 1px solid #ff1493;
+}
 .svg {
   position: absolute;
   top: 400px;

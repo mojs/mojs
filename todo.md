@@ -4,28 +4,26 @@
   - tween.add tw1, tw2
   - tween stop
   - tween reset
-  - made delta method
-  - check burst center position set
   - check rand and stagger in strokedash..
   - check delta objects on then
   - date.now to perf.now
-
-  - fallback to x/y if translate isnt supported
-  - stagger callbacks should run only once
   - tests coverage fix
-
-plans
-  - stagger self generation
-  - foreign context coordinates in burst
-  - stagger should set x/y on svg
-  - add mirrors?
-  - add bezier and sping easings
-  
 - release
   - bower component
   - cdn
   - website
 - branch
+- plans
+  - fallback to x/y if translate isnt supported
+  - make delta method
+  - stagger callbacks should run only once
+  - stagger self generation
+  - foreign context coordinates in burst
+  - stagger should set x/y on svg
+  - add mirrors?
+  - add bezier and sping easings
+  - debug state
+  - make delta method
 - add onChainUpdate to all the bits
 - add movement arc
 - transit

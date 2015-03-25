@@ -7,11 +7,15 @@ class Tween
     @timelines = []; @props = totalTime: 0
     @loop = h.bind @loop, @
     @onUpdate = @o.onUpdate
-  add:(timeline)->
-    if h.isArray timeline
-      for tm, i in timeline
-        @pushTimeline tm
-    else @pushTimeline timeline
+  add:->
+    timeline = Array::slice.apply(arguments)
+    @pushTimelineArray timeline
+  pushTimelineArray:(array)->
+    for tm, i in array
+      # recursive push to handle arrays of arrays
+      if h.isArray tm then @pushTimelineArray tm
+      # simple push
+      else @pushTimeline tm
   pushTimeline:(timeline)->
     @timelines.push timeline
     @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime

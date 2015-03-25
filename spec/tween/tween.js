@@ -26,13 +26,54 @@
         return expect(t.timelines[0] instanceof Timeline).toBe(true);
       });
       it('should work with arrays of tweens', function() {
-        var t;
+        var t, t1, t2;
         t = new Tween;
-        t.add([new Timeline, new Timeline, new Tween]);
+        t1 = new Timeline({
+          duration: 1000
+        });
+        t2 = new Timeline({
+          duration: 1500
+        });
+        t.add([t1, t2, new Tween]);
         expect(t.timelines.length).toBe(3);
+        expect(t.props.totalTime).toBe(1500);
         expect(t.timelines[0] instanceof Timeline).toBe(true);
         expect(t.timelines[1] instanceof Timeline).toBe(true);
         return expect(t.timelines[2] instanceof Tween).toBe(true);
+      });
+      it('should work with arguments', function() {
+        var t1, t2, tween;
+        tween = new Tween({
+          isIt: true
+        });
+        t1 = new Timeline({
+          duration: 500,
+          delay: 200
+        });
+        t2 = new Timeline({
+          duration: 500,
+          delay: 500
+        });
+        tween.add(t1, t2);
+        expect(tween.props.totalTime).toBe(1000);
+        return expect(tween.timelines.length).toBe(2);
+      });
+      it('should work with mixed arguments', function() {
+        var t, t1, t2;
+        t = new Tween;
+        t1 = new Timeline({
+          duration: 1000
+        });
+        t2 = new Timeline({
+          duration: 1500
+        });
+        t.add([t1, new Timeline, new Tween], t2);
+        expect(t.timelines.length).toBe(4);
+        expect(t.props.totalTime).toBe(1500);
+        expect(t.timelines[0] instanceof Timeline).toBe(true);
+        expect(t.timelines[1] instanceof Timeline).toBe(true);
+        expect(t.timelines[2] instanceof Tween).toBe(true);
+        return expect(t.timelines[3] instanceof Timeline).toBe(true);
       });
       it('should calc self duration', function() {
         var t;

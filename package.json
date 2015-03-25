@@ -1,7 +1,7 @@
 {
   "name": "mojs",
   "description": "motion graphics for the web",
-  "version": "0.106.7",
+  "version": "0.107.0",
   "license": "MIT",
   "private": false,
   "scripts": {

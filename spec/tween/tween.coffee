@@ -16,11 +16,32 @@ describe 'Tween ->', ->
       expect(t.timelines[0] instanceof Timeline).toBe true
     it 'should work with arrays of tweens',->
       t = new Tween
-      t.add [new Timeline, new Timeline, new Tween]
+      t1 = new Timeline duration: 1000
+      t2 = new Timeline duration: 1500
+      t.add [t1, t2, new Tween]
       expect(t.timelines.length).toBe 3
+      expect(t.props.totalTime).toBe 1500
       expect(t.timelines[0] instanceof Timeline).toBe true
       expect(t.timelines[1] instanceof Timeline).toBe true
       expect(t.timelines[2] instanceof Tween)   .toBe true
+    it 'should work with arguments',->
+      tween = new Tween isIt: true
+      t1 = new Timeline duration: 500, delay: 200
+      t2 = new Timeline duration: 500, delay: 500
+      tween.add t1, t2
+      expect(tween.props.totalTime) .toBe 1000
+      expect(tween.timelines.length).toBe 2
+    it 'should work with mixed arguments',->
+      t = new Tween
+      t1 = new Timeline duration: 1000
+      t2 = new Timeline duration: 1500
+      t.add [t1, new Timeline, new Tween], t2
+      expect(t.timelines.length).toBe 4
+      expect(t.props.totalTime).toBe 1500
+      expect(t.timelines[0] instanceof Timeline).toBe true
+      expect(t.timelines[1] instanceof Timeline).toBe true
+      expect(t.timelines[2] instanceof Tween)   .toBe true
+      expect(t.timelines[3] instanceof Timeline).toBe true
     it 'should calc self duration',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200
@@ -34,6 +55,7 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 500, delay: 200, repeat: 1
       t1.add t
       expect(t1.props.totalTime).toBe 1400
+
   describe 'pushTimeline method ->', ->
     it 'should push timeline to timelines and calc totalTime',->
       t = new Tween
