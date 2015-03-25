@@ -296,7 +296,7 @@ Burst = (function(_super) {
   Burst.prototype.addBitOptions = function() {
     var aShift, angleAddition, delta, end, i, keys, newEnd, newStart, pointEnd, pointStart, points, start, step, transit, _i, _len, _ref, _results;
     points = this.props.count;
-    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1;
+    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
     step = this.props.degree / this.degreeCnt;
     _ref = this.transits;
     _results = [];
@@ -1316,12 +1316,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.106.6 unstable
+  v0.106.7 unstable
  */
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
 
 window.mojs = {
-  revision: '0.106.6',
+  revision: '0.106.7',
   isDebug: true
 };
 
@@ -3589,15 +3589,9 @@ Timeline = (function() {
         }
         this.isFirstUpdate = true;
       }
-      if (time < this.prevTime && !this.isFirstUpdateBackward) {
-        if ((_ref1 = this.o.onFirstUpdateBackward) != null) {
-          _ref1.apply(this);
-        }
-        this.isFirstUpdateBackward = true;
-      }
       if (!this.isStarted) {
-        if ((_ref2 = this.o.onStart) != null) {
-          _ref2.apply(this);
+        if ((_ref1 = this.o.onStart) != null) {
+          _ref1.apply(this);
         }
         this.isStarted = true;
       }
@@ -3622,6 +3616,12 @@ Timeline = (function() {
         } else {
           this.setProc(0);
         }
+      }
+      if (time < this.prevTime && !this.isFirstUpdateBackward) {
+        if ((_ref2 = this.o.onFirstUpdateBackward) != null) {
+          _ref2.apply(this);
+        }
+        this.isFirstUpdateBackward = true;
       }
       if (typeof this.onUpdate === "function") {
         this.onUpdate(this.easedProgress);

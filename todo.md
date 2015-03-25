@@ -1,19 +1,25 @@
 ## To Do
 
 - :: demo
-  - foreign context coordinates in burst
-  - add mirrors?
-  - fallback to x/y if tranlate isnt supported
-  - stagger callbacks should run only once
-  - stagger should set x/y on svg
-  - stagger self generation
-  - mp: bad curve path(d="M208.222656,234.470827 C109.003906,-17.0190966 89,234.470827 89,234.470827", fill="none")#js-curve-4
-  - made delta method
   - tween.add tw1, tw2
+  - tween stop
+  - tween reset
+  - made delta method
   - check burst center position set
   - check rand and stagger in strokedash..
+  - check delta objects on then
   - date.now to perf.now
+
+  - fallback to x/y if translate isnt supported
+  - stagger callbacks should run only once
   - tests coverage fix
+
+plans
+  - stagger self generation
+  - foreign context coordinates in burst
+  - stagger should set x/y on svg
+  - add mirrors?
+  - add bezier and sping easings
   
 - release
   - bower component

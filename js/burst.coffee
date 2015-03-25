@@ -112,10 +112,10 @@ class Burst extends Transit
 
   addBitOptions:->
     points = @props.count
-    @degreeCnt = if @props.degree % 360 is 0 then points else points-1
+    @degreeCnt = if @props.degree % 360 is 0 then points else points-1 or 1
+    
     step = @props.degree/@degreeCnt
     for transit, i in @transits
-
       aShift = transit.props.angleShift
       pointStart = @getSidePoint 'start', i*step + aShift
       pointEnd   = @getSidePoint 'end',   i*step + aShift

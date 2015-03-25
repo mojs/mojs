@@ -617,7 +617,7 @@
         return expect(burst.props.center).toBe(burst.props.size / 2);
       });
     });
-    describe('addBitOptions ->', function() {
+    describe('addBitOptions method ->', function() {
       it('should set x/y on every transit', function() {
         var burst;
         burst = new Burst({
@@ -712,7 +712,7 @@
         expect(start2).toBe(start1 + burst2.transits[1].props.angleShift);
         return expect(end2).toBe(end1 + burst2.transits[1].props.angleShift);
       });
-      return it('should increaseposition', function() {
+      it('should increase position', function() {
         var burst1, burst2;
         burst1 = new Burst({
           radius: 50,
@@ -725,6 +725,17 @@
         });
         expect(burst2.transits[1].o.x).not.toBe(burst1.transits[1].o.x);
         return expect(burst2.transits[1].o.y).not.toBe(burst1.transits[1].o.y);
+      });
+      return it('should keep degreeCnt not less than 1', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            0: 120
+          },
+          degree: 270,
+          count: 1
+        });
+        return expect(burst.degreeCnt).toBe(1);
       });
     });
     describe('createTween method ->', function() {

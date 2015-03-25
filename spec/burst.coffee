@@ -415,9 +415,7 @@ describe 'Burst ->', ->
       expect(burst.props.size)  .toBe 330
       expect(burst.props.center).toBe burst.props.size/2
 
-    
-
-  describe 'addBitOptions ->', ->
+  describe 'addBitOptions method ->', ->
     it 'should set x/y on every transit', ->
       burst = new Burst radius: {0: 120}
       expect(typeof burst.transits[1].o.x).toBe 'object'
@@ -435,11 +433,9 @@ describe 'Burst ->', ->
       keys = Object.keys(burst.transits[1].o.y)
       center = burst.props.center
       expect(burst.transits[1].o.y[keys[0]]).toBe center
-
     it 'should increase angle and position delta on angleShift', ->
       burst1 = new Burst radius: {120: 0}, count: 2
       burst2 = new Burst radius: {120: 0}, count: 2, randomAngle: .5
-
       expect(burst2.transits[1].o.angle)
         .toBe burst1.transits[1].o.angle+burst2.transits[1].props.angleShift
 
@@ -450,7 +446,6 @@ describe 'Burst ->', ->
         isIt: true
         radius: {120: 0}, count: 2, randomAngle: 1
         childOptions: angle: {25: 50}
-
       start2 = burst2.transits[1].deltas.angle.start
       end2   = burst2.transits[1].deltas.angle.start
       start1 = burst1.transits[1].deltas.angle.start
@@ -459,15 +454,17 @@ describe 'Burst ->', ->
         .toBe start1+burst2.transits[1].props.angleShift
       expect(end2)
         .toBe end1+burst2.transits[1].props.angleShift
-
-    it 'should increaseposition', ->
+    it 'should increase position', ->
       burst1 = new Burst radius: 50, count: 2
       burst2 = new Burst radius: 50, count: 2, randomAngle: .5
-
       expect(burst2.transits[1].o.x)
         .not.toBe burst1.transits[1].o.x
       expect(burst2.transits[1].o.y)
         .not.toBe burst1.transits[1].o.y
+
+    it 'should keep degreeCnt not less than 1', ->
+      burst = new Burst radius: {0: 120}, degree: 270, count:  1
+      expect(burst.degreeCnt).toBe 1
 
   describe 'createTween method ->', ->
     it 'should create tween', ->
