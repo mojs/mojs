@@ -1,9 +1,7 @@
 ## To Do
 
 - :: demo
-  - date.now to perf.now
   - tests coverage fix
-
 - release
   - bower component
   - cdn
