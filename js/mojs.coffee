@@ -1,9 +1,9 @@
 ###
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.108.1 unstable
+  v0.109.0 unstable
 ###
-window.mojs = revision: '0.108.1', isDebug: true
+window.mojs = revision: '0.109.0', isDebug: true
 
 h           = require './h'
 Burst       = require './burst'
@@ -14,19 +14,19 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-circle = new mojs.Transit
-  x: 155,           y: 155
-  type:             'rect'
-  radius:           3*20
-  fill:             'transparent'
-  strokeWidth:      2
-  stroke:           'hotpink'
-  strokeDasharray:  '0 100': '100 rand(10%,50%)'
-  delay:            1500
-  duration:         1500
-  angle:            45: 100
-  isShowInit:       true
-  isShowEnd:        true
+# circle = new mojs.Transit
+#   x: 155,           y: 155
+#   type:             'rect'
+#   radius:           3*20
+#   fill:             'transparent'
+#   strokeWidth:      2
+#   stroke:           'hotpink'
+#   strokeDasharray:  '0 100': '100 rand(10%,50%)'
+#   delay:            1500
+#   duration:         1500
+#   angle:            45: 100
+#   isShowInit:       true
+#   isShowEnd:        true
 
 #@slider = document.querySelector 'input'
 #@slider.addEventListener 'input', (e)->

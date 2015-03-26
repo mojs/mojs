@@ -623,7 +623,7 @@
         }));
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
-        t.update(time = Date.now() + 200);
+        t.update(time = performance.now() + 200);
         expect(t.timelines[0].update).toHaveBeenCalledWith(time);
         return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
       });
@@ -639,7 +639,7 @@
           delay: 100
         }));
         t.start();
-        return expect(t.update(Date.now() + 2000)).toBe(true);
+        return expect(t.update(performance.now() + 2000)).toBe(true);
       });
       it('should not go further then endTime', function() {
         var t;

@@ -99,7 +99,7 @@ describe 'Twenner ->', ->
       t.add new Tween
       spyOn t.tweens[0], 'update'
       spyOn t.tweens[1], 'update'
-      t.update time = Date.now() + 200
+      t.update time = performance.now() + 200
       expect(t.tweens[0].update).toHaveBeenCalledWith time
       expect(t.tweens[1].update).toHaveBeenCalledWith time
 

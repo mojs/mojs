@@ -8,7 +8,7 @@ class Tweener
   vars:-> @tweens = []; @loop = h.bind @loop, @
   loop:->
     return if !@isRunning
-    time  = Date.now(); @update time
+    time  = performance.now(); @update time
     if !@tweens.length then return @isRunning = false
     requestAnimationFrame @loop
     @

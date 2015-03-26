@@ -373,7 +373,7 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 500, delay: 100
       spyOn t.timelines[0], 'update'
       spyOn t.timelines[1], 'update'
-      t.update time = Date.now() + 200
+      t.update time = performance.now() + 200
       expect(t.timelines[0].update).toHaveBeenCalledWith time
       expect(t.timelines[1].update).toHaveBeenCalledWith time
 
@@ -382,7 +382,7 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 500, delay: 200
       t.add new Timeline duration: 500, delay: 100
       t.start()
-      expect(t.update(Date.now() + 2000)).toBe true
+      expect(t.update(performance.now() + 2000)).toBe true
 
     it 'should not go further then endTime',->
       t = new Tween

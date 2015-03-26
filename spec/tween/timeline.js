@@ -55,7 +55,7 @@
           duration: 1000,
           delay: 500
         }).start();
-        now = Date.now() + 500;
+        now = performance.now() + 500;
         expect(t.props.startTime).not.toBeGreaterThan(now);
         return expect(t.props.startTime).toBeGreaterThan(now - 50);
       });
@@ -155,7 +155,7 @@
         });
         spyOn(t, 'onUpdate');
         t.start();
-        t.update(Date.now() - 500);
+        t.update(performance.now() - 500);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
       it('should not call update method if timeline isnt active +', function() {
@@ -168,7 +168,7 @@
           }
         });
         t.start();
-        t.update(Date.now() + 1500);
+        t.update(performance.now() + 1500);
         return expect(cnt).toBe(1);
       });
       return it('should set Timeline to the end if Timeline ended', function() {

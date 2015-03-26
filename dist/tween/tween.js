@@ -162,7 +162,7 @@ Tween = (function() {
   };
 
   Tween.prototype.getDimentions = function() {
-    this.props.startTime = Date.now();
+    this.props.startTime = performance.now();
     return this.props.endTime = this.props.startTime + this.props.totalTime;
   };
 

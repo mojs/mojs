@@ -1316,12 +1316,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.108.1 unstable
+  v0.109.0 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, circle, h;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
 
 window.mojs = {
-  revision: '0.108.1',
+  revision: '0.109.0',
   isDebug: true
 };
 
@@ -1340,26 +1340,6 @@ MotionPath = require('./motion-path');
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
-
-circle = new mojs.Transit({
-  x: 155,
-  y: 155,
-  type: 'rect',
-  radius: 3 * 20,
-  fill: 'transparent',
-  strokeWidth: 2,
-  stroke: 'hotpink',
-  strokeDasharray: {
-    '0 100': '100 rand(10%,50%)'
-  },
-  delay: 1500,
-  duration: 1500,
-  angle: {
-    45: 100
-  },
-  isShowInit: true,
-  isShowEnd: true
-});
 
 
 /* istanbul ignore next */
@@ -3612,7 +3592,7 @@ Timeline = (function() {
   Timeline.prototype.start = function(time) {
     this.isCompleted = false;
     this.isStarted = false;
-    this.props.startTime = (time || Date.now()) + this.o.delay;
+    this.props.startTime = (time || performance.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };
@@ -3924,7 +3904,7 @@ Tween = (function() {
   };
 
   Tween.prototype.getDimentions = function() {
-    this.props.startTime = Date.now();
+    this.props.startTime = performance.now();
     return this.props.endTime = this.props.startTime + this.props.totalTime;
   };
 
@@ -4003,7 +3983,7 @@ Tweener = (function() {
     if (!this.isRunning) {
       return;
     }
-    time = Date.now();
+    time = performance.now();
     this.update(time);
     if (!this.tweens.length) {
       return this.isRunning = false;

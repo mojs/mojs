@@ -73,7 +73,7 @@ class Tween
   removeFromTweener:-> t.remove(@); @
 
   getDimentions:->
-    @props.startTime = Date.now()
+    @props.startTime = performance.now()
     @props.endTime = @props.startTime + @props.totalTime
 
   setStartTime:(time)-> @prepareStart(); @startTimelines(time)

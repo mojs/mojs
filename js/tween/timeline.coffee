@@ -27,7 +27,7 @@ class Timeline
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
-    @props.startTime = (time or Date.now()) + @o.delay
+    @props.startTime = (time or performance.now()) + @o.delay
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->

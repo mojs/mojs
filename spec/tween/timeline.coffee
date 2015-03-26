@@ -29,7 +29,7 @@ describe 'Timeline ->', ->
   describe 'start ->', ->
     it 'should calculate start time', ->
       t = new Timeline(duration: 1000, delay: 500).start()
-      now = Date.now() + 500
+      now = performance.now() + 500
       expect(t.props.startTime).not.toBeGreaterThan now
       expect(t.props.startTime).toBeGreaterThan     now-50
     it 'should recieve the start time', ->
@@ -80,12 +80,12 @@ describe 'Timeline ->', ->
       t = new Timeline(duration: 1000, onUpdate:->)
       spyOn t, 'onUpdate'
       t.start()
-      t.update(Date.now() - 500)
+      t.update(performance.now() - 500)
       expect(t.onUpdate).not.toHaveBeenCalled()
     it 'should not call update method if timeline isnt active +', ->
       cnt = 0
       t = new Timeline(duration: 1000, onUpdate:-> cnt++ )
-      t.start(); t.update(Date.now() + 1500)
+      t.start(); t.update(performance.now() + 1500)
       expect(cnt).toBe 1
     it 'should set Timeline to the end if Timeline ended', ->
       t = new Timeline(duration: 1000, delay: 500)

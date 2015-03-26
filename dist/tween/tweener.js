@@ -22,7 +22,7 @@ Tweener = (function() {
     if (!this.isRunning) {
       return;
     }
-    time = Date.now();
+    time = performance.now();
     this.update(time);
     if (!this.tweens.length) {
       return this.isRunning = false;
