@@ -334,8 +334,7 @@ describe 'Timeline ->', ->
       t.update t.props.startTime + 12
       t.update t.props.startTime + 9
       expect(isRightScope).toBe true
-    it 'should be called after progress went further or before the timeline', ->
-      isRightScope = false
+    it 'should be called after progress went further the timeline', ->
       t = new Timeline(duration: 10, onFirstUpdateBackward: ->)
         .start()
       t.prevTime = t.props.startTime + 11
@@ -350,6 +349,26 @@ describe 'Timeline ->', ->
       spyOn(t.o, 'onFirstUpdateBackward')
       t.update t.props.startTime + 1
       expect(t.o.onFirstUpdateBackward).not.toHaveBeenCalled()
+    it 'should be called even if new time is less then start time', ->
+      t = new Timeline
+        duration: 100
+        onFirstUpdateBackward:->
+      .start()
+      t.update t.props.startTime + 500
+      spyOn(t.o, 'onFirstUpdateBackward')
+      t.update t.props.startTime - 40
+      expect(t.o.onFirstUpdateBackward).toHaveBeenCalled()
+    it 'should be called ONCE if new time is less then start time', ->
+      cnt = 0
+      t = new Timeline
+        duration: 100
+        onFirstUpdateBackward:-> cnt++
+        isIt: true
+      .start()
+      t.update t.props.startTime + 500
+      t.update t.props.startTime - 40
+      t.update t.props.startTime - 100
+      expect(cnt).toBe 1
 
   describe 'yoyo option ->', ->
     it 'should recieve yoyo option', ->

@@ -1316,12 +1316,12 @@ if (typeof window !== "undefined" && window !== null) {
 /*
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.108.0 unstable
+  v0.108.1 unstable
  */
 var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
 
 window.mojs = {
-  revision: '0.108.0',
+  revision: '0.108.1',
   isDebug: true
 };
 
@@ -3579,7 +3579,7 @@ Timeline = (function() {
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3, _ref4;
+    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
@@ -3641,17 +3641,27 @@ Timeline = (function() {
       if (time > this.props.endTime || time < this.props.startTime) {
         this.isFirstUpdate = false;
       }
-      this.isFirstUpdateBackward = false;
+      if (time > this.props.endTime) {
+        this.isFirstUpdateBackward = false;
+      }
     }
     if (time < this.prevTime && time <= this.props.startTime) {
+      this.o.isIt && console.log(this.isFirstUpdateBackward);
+      if (!this.isFirstUpdateBackward) {
+        this.o.isIt && console.log('yup');
+        if ((_ref4 = this.o.onFirstUpdateBackward) != null) {
+          _ref4.apply(this);
+        }
+        this.isFirstUpdateBackward = true;
+      }
       if (!this.isOnReverseComplete) {
         this.isOnReverseComplete = true;
         this.setProc(0);
         if (typeof this.onUpdate === "function") {
           this.onUpdate(this.easedProgress);
         }
-        if ((_ref4 = this.o.onReverseComplete) != null) {
-          _ref4.apply(this);
+        if ((_ref5 = this.o.onReverseComplete) != null) {
+          _ref5.apply(this);
         }
       }
     }

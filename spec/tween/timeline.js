@@ -562,9 +562,8 @@
         t.update(t.props.startTime + 9);
         return expect(isRightScope).toBe(true);
       });
-      it('should be called after progress went further or before the timeline', function() {
-        var isRightScope, t;
-        isRightScope = false;
+      it('should be called after progress went further the timeline', function() {
+        var t;
         t = new Timeline({
           duration: 10,
           onFirstUpdateBackward: function() {}
@@ -576,7 +575,7 @@
         t.update(t.props.startTime + 9);
         return expect(t.o.onFirstUpdateBackward).toHaveBeenCalled();
       });
-      return it('should not be called at the start', function() {
+      it('should not be called at the start', function() {
         var t;
         t = new Timeline({
           duration: 10,
@@ -585,6 +584,32 @@
         spyOn(t.o, 'onFirstUpdateBackward');
         t.update(t.props.startTime + 1);
         return expect(t.o.onFirstUpdateBackward).not.toHaveBeenCalled();
+      });
+      it('should be called even if new time is less then start time', function() {
+        var t;
+        t = new Timeline({
+          duration: 100,
+          onFirstUpdateBackward: function() {}
+        }).start();
+        t.update(t.props.startTime + 500);
+        spyOn(t.o, 'onFirstUpdateBackward');
+        t.update(t.props.startTime - 40);
+        return expect(t.o.onFirstUpdateBackward).toHaveBeenCalled();
+      });
+      return it('should be called ONCE if new time is less then start time', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Timeline({
+          duration: 100,
+          onFirstUpdateBackward: function() {
+            return cnt++;
+          },
+          isIt: true
+        }).start();
+        t.update(t.props.startTime + 500);
+        t.update(t.props.startTime - 40);
+        t.update(t.props.startTime - 100);
+        return expect(cnt).toBe(1);
       });
     });
     describe('yoyo option ->', function() {

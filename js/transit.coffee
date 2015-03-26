@@ -325,7 +325,7 @@ class Transit extends bitsMap.map.bit
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
     opts[keys[i]] = merged[keys[i]] while(i--)
     it = @
-    opts.onUpdate      = (p)=> @setProgress p#; @onUpdate?()
+    opts.onUpdate      = (p)=> @setProgress p
     opts.onStart       = => @props.onStart?.apply(@)
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
@@ -349,7 +349,7 @@ class Transit extends bitsMap.map.bit
       repeat:   @props.repeat
       yoyo:     @props.yoyo
       easing:   @props.easing
-      onUpdate:   (p)=> @setProgress p
+      onUpdate: (p)=> @setProgress p
       onStart:=> @show(); @props.onStart?.apply @
       onFirstUpdateBackward:=>
         @history.length > 1 and @tuneOptions @history[0]
