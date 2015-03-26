@@ -2,6 +2,8 @@ var Tweener, h, t;
 
 require('../polyfills/raf');
 
+require('../polyfills/performance');
+
 h = require('../h');
 
 Tweener = (function() {

@@ -239,7 +239,7 @@ Helpers = (function() {
     }
     string.trim().split(/\s+/gim).forEach((function(_this) {
       return function(str) {
-        return arr.push(_this.parseUnit(str));
+        return arr.push(_this.parseUnit(_this.parseIfRand(str)));
       };
     })(this));
     return arr;

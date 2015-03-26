@@ -121,9 +121,7 @@ Timeline = (function() {
       }
     }
     if (time < this.prevTime && time <= this.props.startTime) {
-      this.o.isIt && console.log(this.isFirstUpdateBackward);
       if (!this.isFirstUpdateBackward) {
-        this.o.isIt && console.log('yup');
         if ((_ref4 = this.o.onFirstUpdateBackward) != null) {
           _ref4.apply(this);
         }

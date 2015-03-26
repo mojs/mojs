@@ -673,13 +673,22 @@
           expect(array[1].value).toBe(100);
           return expect(array[1].unit).toBe('%');
         });
-        return it('should trim string before parse', function() {
+        it('should trim string before parse', function() {
           var array;
           array = h.strToArr('  200   100% ');
           expect(array[0].value).toBe(200);
           expect(array[0].unit).toBe('px');
           expect(array[1].value).toBe(100);
           return expect(array[1].unit).toBe('%');
+        });
+        return it('should parse rand values', function() {
+          var array;
+          array = h.strToArr('  200   rand(10,20) ');
+          expect(array[0].value).toBe(200);
+          expect(array[0].unit).toBe('px');
+          expect(array[1].value).toBeGreaterThan(10);
+          expect(array[1].value).not.toBeGreaterThan(20);
+          return expect(array[1].unit).toBe('px');
         });
       });
       describe('normDashArrays method', function() {

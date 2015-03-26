@@ -159,7 +159,8 @@ class Helpers
       arr.push @parseUnit string
       return arr
     # string array
-    string.trim().split(/\s+/gim).forEach (str)=> arr.push @parseUnit str
+    string.trim().split(/\s+/gim).forEach (str)=>
+      arr.push @parseUnit @parseIfRand str
     arr
   
   calcArrDelta:(arr1, arr2)->
@@ -274,6 +275,7 @@ class Helpers
     
     if unit then "#{number}#{unit}" else number
 
+  # if passed string has rand function then get the rand value
   parseIfRand:(str)->
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
     else str
@@ -304,7 +306,10 @@ class Helpers
     else if key is 'strokeDasharray' or key is 'strokeDashoffset'
       startArr  = @strToArr start
       endArr    = @strToArr end
+
+      # console.log startArr, endArr
       @normDashArrays startArr, endArr
+      # console.log startArr, endArr
 
       for start, i in startArr
         end = endArr[i]

@@ -8,6 +8,13 @@ describe 'Twenner ->', ->
   it 'have tweens array', ->
     expect(t.tweens).toBeDefined()
     expect(t.tweens instanceof Array).toBe true
+
+  describe 'polyfills ->', ->
+    it 'should have performance now defined', ->
+      expect(window.performance.now).toBeDefined()
+    it 'should have requestAnimationFrame defined', ->
+      expect(window.requestAnimationFrame).toBeDefined()
+
   describe 'loop ->', ->
     it 'should loop over', (dfr)->
       t.startLoop()

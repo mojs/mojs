@@ -357,21 +357,20 @@ class Transit extends bitsMap.map.bit
         !@o.isShowInit and @hide(); @props.onReverseComplete?.apply @
 
   run:(o)->
-    # if then chain is present and the user tries to
-    # change the start timing - warn him and delete the
-    # props to prevent the timing change
-    if @history.length > 1
-      keys = Object.keys(o); len = keys.length
-      while(len--)
-        key = keys[len]
-        if h.callbacksMap[key] or h.tweenOptionMap[key]
-          h.warn "the property \"#{key}\" property can not
-            be overridden on run with \"then\" chain yet"
-          delete o[key]
-
-    # transform the history, tune current option and save to
-    # the history but only if actual options were passed
     if o and Object.keys(o).length
+      # if then chain is present and the user tries to
+      # change the start timing - warn him and delete the
+      # props to prevent the timing change
+      if @history.length > 1
+        keys = Object.keys(o); len = keys.length
+        while(len--)
+          key = keys[len]
+          if h.callbacksMap[key] or h.tweenOptionMap[key]
+            h.warn "the property \"#{key}\" property can not
+              be overridden on run with \"then\" chain yet"
+            delete o[key]
+      # transform the history, tune current option and save to
+      # the history but only if actual options were passed
       @transformHistory(o)
       @tuneNewOption(o)
       o = @h.cloneObj(@o); @h.extend(o, @defaults); @history[0] = o

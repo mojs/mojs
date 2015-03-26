@@ -20,6 +20,14 @@
       expect(t.tweens).toBeDefined();
       return expect(t.tweens instanceof Array).toBe(true);
     });
+    describe('polyfills ->', function() {
+      it('should have performance now defined', function() {
+        return expect(window.performance.now).toBeDefined();
+      });
+      return it('should have requestAnimationFrame defined', function() {
+        return expect(window.requestAnimationFrame).toBeDefined();
+      });
+    });
     describe('loop ->', function() {
       it('should loop over', function(dfr) {
         t.startLoop();

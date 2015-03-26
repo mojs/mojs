@@ -2277,7 +2277,7 @@
         expect(byte.history[0].duration).toBe(2000);
         return expect(byte.props.duration).toBe(2000);
       });
-      return it('shoud not warn if history is 1 record long', function() {
+      it('shoud not warn if history is 1 record long', function() {
         var byte;
         byte = new Byte({
           isRunLess: true,
@@ -2297,6 +2297,18 @@
         expect(h.warn).not.toHaveBeenCalled();
         expect(byte.history[0].duration).toBe(100);
         return expect(byte.props.duration).toBe(100);
+      });
+      return it('shoud work with no arguments passed', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 500
+        });
+        return expect(function() {
+          return byte.run();
+        }).not.toThrow();
       });
     });
     describe('isForeign flag ->', function() {

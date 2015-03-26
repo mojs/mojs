@@ -142,7 +142,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Swirl = Swirl;
 }
 
-},{"./transit":19}],2:[function(require,module,exports){
+},{"./transit":20}],2:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, Tween, bitsMap, h,
@@ -505,7 +505,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Burst = Burst;
 }
 
-},{"./h":4,"./shapes/bitsMap":9,"./swirl":18,"./transit":19,"./tween/tween":21}],3:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":10,"./swirl":19,"./transit":20,"./tween/tween":22}],3:[function(require,module,exports){
 var Easing, easing;
 
 Easing = (function() {
@@ -1005,7 +1005,7 @@ Helpers = (function() {
     }
     string.trim().split(/\s+/gim).forEach((function(_this) {
       return function(str) {
-        return arr.push(_this.parseUnit(str));
+        return arr.push(_this.parseUnit(_this.parseIfRand(str)));
       };
     })(this));
     return arr;
@@ -1318,7 +1318,7 @@ if (typeof window !== "undefined" && window !== null) {
   LegoMushroom - Oleg Solomka 2015 MIT
   v0.108.1 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, circle, h;
 
 window.mojs = {
   revision: '0.108.1',
@@ -1340,6 +1340,26 @@ MotionPath = require('./motion-path');
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
+
+circle = new mojs.Transit({
+  x: 155,
+  y: 155,
+  type: 'rect',
+  radius: 3 * 20,
+  fill: 'transparent',
+  strokeWidth: 2,
+  stroke: 'hotpink',
+  strokeDasharray: {
+    '0 100': '100 rand(10%,50%)'
+  },
+  delay: 1500,
+  duration: 1500,
+  angle: {
+    45: 100
+  },
+  isShowInit: true,
+  isShowEnd: true
+});
 
 
 /* istanbul ignore next */
@@ -1364,7 +1384,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
 
-},{"./Swirl":1,"./burst":2,"./h":4,"./motion-path":6,"./stagger":17,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],6:[function(require,module,exports){
+},{"./Swirl":1,"./burst":2,"./h":4,"./motion-path":6,"./stagger":18,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
 
 h = require('./h');
@@ -1759,7 +1779,26 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.MotionPath = MotionPath;
 }
 
-},{"./h":4,"./tween/timeline":20,"./tween/tween":21,"./vendor/resize":23}],7:[function(require,module,exports){
+},{"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+(function(root) {
+  var offset, _ref, _ref1;
+  if (__indexOf.call(root, 'performance') >= 0 === false) {
+    root.performance = {};
+  }
+  Date.now = Date.now || function() {
+    return (new Date).getTime();
+  };
+  if (__indexOf.call(root.performance, 'now') >= 0 === false) {
+    offset = ((_ref = root.performance) != null ? (_ref1 = _ref.timing) != null ? _ref1.navigationStart : void 0 : void 0) ? performance.timing.navigationStart : Date.now();
+    return root.performance.now = function() {
+      return Date.now() - offset;
+    };
+  }
+})(window);
+
+},{}],8:[function(require,module,exports){
 (function() {
   var k, lastTime, vendors, x;
   lastTime = 0;
@@ -1790,7 +1829,7 @@ if (typeof window !== "undefined" && window !== null) {
   }
 })();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var Bit, h;
 
 h = require('../h');
@@ -2026,7 +2065,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Bit = Bit;
 }
 
-},{"../h":4}],9:[function(require,module,exports){
+},{"../h":4}],10:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -2103,7 +2142,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.bitsMap = new BitsMap;
 }
 
-},{"../h":4,"./bit":8,"./circle":10,"./cross":11,"./equal":12,"./line":13,"./polygon":14,"./rect":15,"./zigzag":16}],10:[function(require,module,exports){
+},{"../h":4,"./bit":9,"./circle":11,"./cross":12,"./equal":13,"./line":14,"./polygon":15,"./rect":16,"./zigzag":17}],11:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -2177,7 +2216,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Circle = Circle;
 }
 
-},{"./bit":8}],11:[function(require,module,exports){
+},{"./bit":9}],12:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
@@ -2255,7 +2294,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Cross = Cross;
 }
 
-},{"./bit":8}],12:[function(require,module,exports){
+},{"./bit":9}],13:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Equal,
@@ -2337,7 +2376,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Equal = Equal;
 }
 
-},{"./bit":8}],13:[function(require,module,exports){
+},{"./bit":9}],14:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -2401,7 +2440,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Line = Line;
 }
 
-},{"./bit":8}],14:[function(require,module,exports){
+},{"./bit":9}],15:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -2494,7 +2533,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Polygon = Polygon;
 }
 
-},{"../h":4,"./bit":8}],15:[function(require,module,exports){
+},{"../h":4,"./bit":9}],16:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -2570,7 +2609,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Rect = Rect;
 }
 
-},{"./bit":8}],16:[function(require,module,exports){
+},{"./bit":9}],17:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Zigzag,
@@ -2653,7 +2692,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Zigzag = Zigzag;
 }
 
-},{"./bit":8}],17:[function(require,module,exports){
+},{"./bit":9}],18:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Stagger, Timeline, Transit, Tween, h,
@@ -2822,9 +2861,9 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Stagger = Stagger;
 }
 
-},{"./h":4,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],18:[function(require,module,exports){
+},{"./h":4,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],19:[function(require,module,exports){
 module.exports=require(1)
-},{"./transit":19}],19:[function(require,module,exports){
+},{"./transit":20}],20:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -3382,18 +3421,18 @@ Transit = (function(_super) {
 
   Transit.prototype.run = function(o) {
     var key, keys, len;
-    if (this.history.length > 1) {
-      keys = Object.keys(o);
-      len = keys.length;
-      while (len--) {
-        key = keys[len];
-        if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-          h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
-          delete o[key];
+    if (o && Object.keys(o).length) {
+      if (this.history.length > 1) {
+        keys = Object.keys(o);
+        len = keys.length;
+        while (len--) {
+          key = keys[len];
+          if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+            h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
+            delete o[key];
+          }
         }
       }
-    }
-    if (o && Object.keys(o).length) {
       this.transformHistory(o);
       this.tuneNewOption(o);
       o = this.h.cloneObj(this.o);
@@ -3522,7 +3561,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Transit = Transit;
 }
 
-},{"./h":4,"./shapes/bitsMap":9,"./tween/timeline":20,"./tween/tween":21}],20:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":10,"./tween/timeline":21,"./tween/tween":22}],21:[function(require,module,exports){
 var Easing, Timeline, h;
 
 Easing = require('../easing');
@@ -3646,9 +3685,7 @@ Timeline = (function() {
       }
     }
     if (time < this.prevTime && time <= this.props.startTime) {
-      this.o.isIt && console.log(this.isFirstUpdateBackward);
       if (!this.isFirstUpdateBackward) {
-        this.o.isIt && console.log('yup');
         if ((_ref4 = this.o.onFirstUpdateBackward) != null) {
           _ref4.apply(this);
         }
@@ -3722,7 +3759,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Timeline = Timeline;
 }
 
-},{"../easing":3,"../h":4}],21:[function(require,module,exports){
+},{"../easing":3,"../h":4}],22:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3941,10 +3978,12 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.Tween = Tween;
 }
 
-},{"../h":4,"./tweener":22}],22:[function(require,module,exports){
+},{"../h":4,"./tweener":23}],23:[function(require,module,exports){
 var Tweener, h, t;
 
 require('../polyfills/raf');
+
+require('../polyfills/performance');
 
 h = require('../h');
 
@@ -4054,7 +4093,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs.tweener = t;
 }
 
-},{"../h":4,"../polyfills/raf":7}],23:[function(require,module,exports){
+},{"../h":4,"../polyfills/performance":7,"../polyfills/raf":8}],24:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com

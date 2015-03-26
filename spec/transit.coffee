@@ -1237,6 +1237,10 @@ describe 'Transit ->', ->
       expect(h.warn).not.toHaveBeenCalled()
       expect(byte.history[0].duration).toBe 100
       expect(byte.props.duration)     .toBe 100
+    it 'shoud work with no arguments passed', ->
+      byte = new Byte(isRunLess:  true, duration:  2000)
+        .then radius: 500
+      expect(-> byte.run()).not.toThrow()
 
   describe 'isForeign flag ->', ->
     it 'should not be set by default', ->

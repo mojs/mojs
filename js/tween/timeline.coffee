@@ -69,9 +69,7 @@ class Timeline
       # reset isFirstUpdateBackward flag if progress went further the end time
       @isFirstUpdateBackward = false if time > @props.endTime
     if time < @prevTime and time <= @props.startTime# and @isIt
-      @o.isIt and console.log @isFirstUpdateBackward
       if !@isFirstUpdateBackward
-        @o.isIt and console.log 'yup'
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       if !@isOnReverseComplete
         @isOnReverseComplete = true

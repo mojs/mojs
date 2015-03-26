@@ -1,4 +1,6 @@
 require '../polyfills/raf'
+require '../polyfills/performance'
+
 h = require '../h'
 
 class Tweener

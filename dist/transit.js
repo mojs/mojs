@@ -555,18 +555,18 @@ Transit = (function(_super) {
 
   Transit.prototype.run = function(o) {
     var key, keys, len;
-    if (this.history.length > 1) {
-      keys = Object.keys(o);
-      len = keys.length;
-      while (len--) {
-        key = keys[len];
-        if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-          h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
-          delete o[key];
+    if (o && Object.keys(o).length) {
+      if (this.history.length > 1) {
+        keys = Object.keys(o);
+        len = keys.length;
+        while (len--) {
+          key = keys[len];
+          if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+            h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
+            delete o[key];
+          }
         }
       }
-    }
-    if (o && Object.keys(o).length) {
       this.transformHistory(o);
       this.tuneNewOption(o);
       o = this.h.cloneObj(this.o);

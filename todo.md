@@ -1,11 +1,9 @@
 ## To Do
 
 - :: demo
-  - tween reset
-  - check rand and stagger in strokedash..
-  - check delta objects on then
   - date.now to perf.now
   - tests coverage fix
+
 - release
   - bower component
   - cdn
