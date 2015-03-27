@@ -179,6 +179,12 @@ describe 'Transit ->', ->
       byte.then radius: 5
       expect(byte.tween.timelines.length).toBe 2
 
+    it 'should return if no options passed or options are empty', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      spyOn byte, 'mergeThenOptions'
+      byte.then()
+      expect(byte.mergeThenOptions).not.toHaveBeenCalled()
+
     it 'should inherit radius for radiusX/Y options', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5
@@ -1328,4 +1334,24 @@ describe 'Transit ->', ->
       svg.appendChild bit
       byte = new Byte bit: bit
       expect(byte.isForeignBit).toBe true
+
+  describe 'getBitLength method', ->
+    it 'should call getLength method on bit', ->
+      byte = new Byte()
+      spyOn byte.bit, 'getLength'
+      byte.getBitLength()
+      expect(byte.bit.getLength).toHaveBeenCalled()
+
+    it 'should cache the value to props', ->
+      byte = new Byte()
+      byte.props.bitLength = null
+      byte.getBitLength()
+      expect(byte.props.bitLength).not.toBe null
+
+
+
+
+
+
+
 

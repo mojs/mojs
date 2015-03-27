@@ -1,3 +1,4 @@
+
 Circle  = mojs.Circle
 Bit     = mojs.Bit
 ns      = 'http://www.w3.org/2000/svg'

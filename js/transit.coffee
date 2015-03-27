@@ -320,7 +320,8 @@ class Transit extends bitsMap.map.bit
       else o[key] = startKey
     o
 
-  then:(o={})->
+  then:(o)->
+    return if !o? or !Object.keys(o)
     merged = @mergeThenOptions @history[@history.length-1], o
     @history.push merged
     # copy the tween options from passed o or current props
@@ -437,14 +438,5 @@ class Transit extends bitsMap.map.bit
     @props.bitLength = @bit.getLength()
     @props.bitLength
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Transit", [], -> Transit
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Transit
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Transit = Transit
+module.exports = Transit
 

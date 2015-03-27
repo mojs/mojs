@@ -1,153 +1,9 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-/* istanbul ignore next */
-var Swirl, Transit,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Transit = require('./transit');
-
-Swirl = (function(_super) {
-  __extends(Swirl, _super);
-
-  function Swirl() {
-    return Swirl.__super__.constructor.apply(this, arguments);
-  }
-
-  Swirl.prototype.skipPropsDelta = {
-    x: 1,
-    y: 1
-  };
-
-  Swirl.prototype.vars = function() {
-    Swirl.__super__.vars.apply(this, arguments);
-    return !this.o.isSwirlLess && this.generateSwirl();
-  };
-
-  Swirl.prototype.extendDefaults = function() {
-    var angle, x, y, _base;
-    Swirl.__super__.extendDefaults.apply(this, arguments);
-    x = this.getPosValue('x');
-    y = this.getPosValue('y');
-    angle = 90 + Math.atan((y.delta / x.delta) || 0) * (180 / Math.PI);
-    if (x.delta < 0) {
-      angle += 180;
-    }
-    this.positionDelta = {
-      radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
-      angle: angle,
-      x: x,
-      y: y
-    };
-    if ((_base = this.o).radiusScale == null) {
-      _base.radiusScale = 1;
-    }
-    this.props.angleShift = this.h.parseIfRand(this.o.angleShift || 0);
-    return this.props.radiusScale = this.h.parseIfRand(this.o.radiusScale);
-  };
-
-  Swirl.prototype.getPosValue = function(name) {
-    var optVal, val;
-    optVal = this.o[name];
-    if (optVal && typeof optVal === 'object') {
-      val = this.h.parseDelta(name, optVal);
-      return {
-        start: val.start.value,
-        end: val.end.value,
-        delta: val.delta,
-        units: val.end.unit
-      };
-    } else {
-      val = parseFloat(optVal || this.defaults[name]);
-      return {
-        start: val,
-        end: val,
-        delta: 0,
-        units: 'px'
-      };
-    }
-  };
-
-  Swirl.prototype.setProgress = function(progress) {
-    var angle, point, x, y;
-    angle = this.positionDelta.angle;
-    if (this.o.isSwirl) {
-      angle += this.getSwirl(progress);
-    }
-    point = this.h.getRadialPoint({
-      angle: angle,
-      radius: this.positionDelta.radius * progress * this.props.radiusScale,
-      center: {
-        x: this.positionDelta.x.start,
-        y: this.positionDelta.y.start
-      }
-    });
-    x = point.x.toFixed(4);
-    y = point.y.toFixed(4);
-    this.props.x = this.o.ctx ? x : x + this.positionDelta.x.units;
-    this.props.y = this.o.ctx ? y : y + this.positionDelta.y.units;
-    return Swirl.__super__.setProgress.apply(this, arguments);
-  };
-
-  Swirl.prototype.generateSwirl = function() {
-    var _base, _base1;
-    this.props.signRand = Math.round(this.h.rand(0, 1)) ? -1 : 1;
-    if ((_base = this.o).swirlSize == null) {
-      _base.swirlSize = 10;
-    }
-    if ((_base1 = this.o).swirlFrequency == null) {
-      _base1.swirlFrequency = 3;
-    }
-    this.props.swirlSize = this.h.parseIfRand(this.o.swirlSize);
-    return this.props.swirlFrequency = this.h.parseIfRand(this.o.swirlFrequency);
-  };
-
-  Swirl.prototype.getSwirl = function(progress) {
-    return this.props.signRand * this.props.swirlSize * Math.sin(this.props.swirlFrequency * progress);
-  };
-
-  return Swirl;
-
-})(Transit);
-
-
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Swirl", [], function() {
-    return Swirl;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Swirl;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Swirl = Swirl;
-}
-
-},{"./transit":20}],2:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Burst, Swirl, Transit, Tween, bitsMap, h,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 bitsMap = require('./shapes/bitsMap');
 
@@ -159,8 +15,8 @@ Swirl = require('./swirl');
 
 h = require('./h');
 
-Burst = (function(_super) {
-  __extends(Burst, _super);
+Burst = (function(superClass) {
+  extend(Burst, superClass);
 
   function Burst() {
     return Burst.__super__.constructor.apply(this, arguments);
@@ -241,17 +97,17 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.run = function(o) {
-    var i, key, keys, len, tr, transit, _base, _i, _len, _ref;
+    var base, i, j, key, keys, len, len1, ref, tr, transit;
     if ((o != null) && Object.keys(o).length) {
-      if (o.count || ((_ref = o.childOptions) != null ? _ref.count : void 0)) {
+      if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
         this.h.warn('Sorry, count can not be changed on run');
       }
       this.extendDefaults(o);
       keys = Object.keys(o.childOptions || {});
-      if ((_base = this.o).childOptions == null) {
-        _base.childOptions = {};
+      if ((base = this.o).childOptions == null) {
+        base.childOptions = {};
       }
-      for (i = _i = 0, _len = keys.length; _i < _len; i = ++_i) {
+      for (i = j = 0, len1 = keys.length; j < len1; i = ++j) {
         key = keys[i];
         this.o.childOptions[key] = o.childOptions[key];
       }
@@ -278,30 +134,30 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.createBit = function() {
-    var i, option, _i, _ref, _results;
+    var i, j, option, ref, results;
     this.transits = [];
-    _results = [];
-    for (i = _i = 0, _ref = this.props.count; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+    results = [];
+    for (i = j = 0, ref = this.props.count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
       option = this.getOption(i);
       option.ctx = this.ctx;
       option.index = i;
       option.isDrawLess = option.isRunLess = option.isTweenLess = true;
       this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
       this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
-      _results.push(this.transits.push(new Swirl(option)));
+      results.push(this.transits.push(new Swirl(option)));
     }
-    return _results;
+    return results;
   };
 
   Burst.prototype.addBitOptions = function() {
-    var aShift, angleAddition, delta, end, i, keys, newEnd, newStart, pointEnd, pointStart, points, start, step, transit, _i, _len, _ref, _results;
+    var aShift, angleAddition, delta, end, i, j, keys, len1, newEnd, newStart, pointEnd, pointStart, points, ref, results, start, step, transit;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
     step = this.props.degree / this.degreeCnt;
-    _ref = this.transits;
-    _results = [];
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      transit = _ref[i];
+    ref = this.transits;
+    results = [];
+    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+      transit = ref[i];
       aShift = transit.props.angleShift;
       pointStart = this.getSidePoint('start', i * step + aShift);
       pointEnd = this.getSidePoint('end', i * step + aShift);
@@ -311,9 +167,9 @@ Burst = (function(_super) {
         angleAddition = i * step + 90;
         transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition + aShift : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition + aShift, newEnd = parseFloat(end) + angleAddition + aShift, delta = {}, delta[newStart] = newEnd, delta);
       }
-      _results.push(transit.extendDefaults());
+      results.push(transit.extendDefaults());
     }
-    return _results;
+    return results;
   };
 
   Burst.prototype.getSidePoint = function(side, angle) {
@@ -371,22 +227,22 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.createTween = function() {
-    var i, _results;
+    var i, results;
     Burst.__super__.createTween.apply(this, arguments);
     i = this.transits.length;
-    _results = [];
+    results = [];
     while (i--) {
-      _results.push(this.tween.add(this.transits[i].timeline));
+      results.push(this.tween.add(this.transits[i].timeline));
     }
-    return _results;
+    return results;
   };
 
   Burst.prototype.calcSize = function() {
-    var i, largestSize, radius, transit, _i, _len, _ref;
+    var i, j, largestSize, len1, radius, ref, transit;
     largestSize = -1;
-    _ref = this.transits;
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      transit = _ref[i];
+    ref = this.transits;
+    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+      transit = ref[i];
       transit.calcSize();
       if (largestSize < transit.props.size) {
         largestSize = transit.props.size;
@@ -440,8 +296,8 @@ Burst = (function(_super) {
   };
 
   Burst.prototype.getPropByMod = function(o) {
-    var prop, _ref;
-    prop = (_ref = o.from || this.o.childOptions) != null ? _ref[o.key] : void 0;
+    var prop, ref;
+    prop = (ref = o.from || this.o.childOptions) != null ? ref[o.key] : void 0;
     if (this.h.isArray(prop)) {
       return prop[o.i % prop.length];
     } else {
@@ -473,39 +329,9 @@ Burst = (function(_super) {
 
 })(Transit);
 
+module.exports = Burst;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Burst", [], function() {
-    return Burst;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Burst;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Burst = Burst;
-}
-
-},{"./h":4,"./shapes/bitsMap":10,"./swirl":19,"./transit":20,"./tween/tween":22}],3:[function(require,module,exports){
+},{"./h":3,"./shapes/bitsMap":9,"./swirl":18,"./transit":19,"./tween/tween":21}],2:[function(require,module,exports){
 var Easing, easing;
 
 Easing = (function() {
@@ -731,39 +557,9 @@ Easing = (function() {
 
 easing = new Easing;
 
+module.exports = easing;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("easing", [], function() {
-    return easing;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = easing;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.easing = easing;
-}
-
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var Helpers, h;
 
 Helpers = (function() {
@@ -869,13 +665,13 @@ Helpers = (function() {
   };
 
   Helpers.prototype.extend = function(objTo, objFrom) {
-    var key, value, _results;
-    _results = [];
+    var key, results, value;
+    results = [];
     for (key in objFrom) {
       value = objFrom[key];
-      _results.push(objTo[key] != null ? objTo[key] : objTo[key] = objFrom[key]);
+      results.push(objTo[key] != null ? objTo[key] : objTo[key] = objFrom[key]);
     }
-    return _results;
+    return results;
   };
 
   Helpers.prototype.getRemBase = function() {
@@ -926,17 +722,17 @@ Helpers = (function() {
   };
 
   Helpers.prototype.parseUnit = function(value) {
-    var amount, isStrict, regex, returnVal, unit, _ref;
+    var amount, isStrict, ref, regex, returnVal, unit;
     if (typeof value === 'number') {
       return returnVal = {
         unit: 'px',
         isStrict: false,
         value: value,
-        string: "" + value + "px"
+        string: value + "px"
       };
     } else if (typeof value === 'string') {
       regex = /px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim;
-      unit = (_ref = value.match(regex)) != null ? _ref[0] : void 0;
+      unit = (ref = value.match(regex)) != null ? ref[0] : void 0;
       isStrict = true;
       if (!unit) {
         unit = 'px';
@@ -1012,9 +808,9 @@ Helpers = (function() {
   };
 
   Helpers.prototype.calcArrDelta = function(arr1, arr2) {
-    var delta, i, num, _i, _len;
+    var delta, i, j, len, num;
     delta = [];
-    for (i = _i = 0, _len = arr1.length; _i < _len; i = ++_i) {
+    for (i = j = 0, len = arr1.length; j < len; i = ++j) {
       num = arr1[i];
       delta[i] = this.parseUnit("" + (arr2[i].value - arr1[i].value) + arr2[i].unit);
     }
@@ -1026,20 +822,20 @@ Helpers = (function() {
   };
 
   Helpers.prototype.normDashArrays = function(arr1, arr2) {
-    var arr1Len, arr2Len, currItem, i, lenDiff, startI, _i, _j;
+    var arr1Len, arr2Len, currItem, i, j, k, lenDiff, ref, ref1, startI;
     arr1Len = arr1.length;
     arr2Len = arr2.length;
     if (arr1Len > arr2Len) {
       lenDiff = arr1Len - arr2Len;
       startI = arr2.length;
-      for (i = _i = 0; 0 <= lenDiff ? _i < lenDiff : _i > lenDiff; i = 0 <= lenDiff ? ++_i : --_i) {
+      for (i = j = 0, ref = lenDiff; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
         currItem = i + startI;
         arr2.push(this.parseUnit("0" + arr1[currItem].unit));
       }
     } else if (arr2Len > arr1Len) {
       lenDiff = arr2Len - arr1Len;
       startI = arr1.length;
-      for (i = _j = 0; 0 <= lenDiff ? _j < lenDiff : _j > lenDiff; i = 0 <= lenDiff ? ++_j : --_j) {
+      for (i = k = 0, ref1 = lenDiff; 0 <= ref1 ? k < ref1 : k > ref1; i = 0 <= ref1 ? ++k : --k) {
         currItem = i + startI;
         arr1.push(this.parseUnit("0" + arr2[currItem].unit));
       }
@@ -1152,7 +948,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.parseDelta = function(key, value) {
-    var delta, end, endArr, endColorObj, i, start, startArr, startColorObj, _i, _len;
+    var delta, end, endArr, endColorObj, i, j, len, start, startArr, startColorObj;
     start = Object.keys(value)[0];
     end = value[start];
     delta = {
@@ -1180,7 +976,7 @@ Helpers = (function() {
       startArr = this.strToArr(start);
       endArr = this.strToArr(end);
       this.normDashArrays(startArr, endArr);
-      for (i = _i = 0, _len = startArr.length; _i < _len; i = ++_i) {
+      for (i = j = 0, len = startArr.length; j < len; i = ++j) {
         start = startArr[i];
         end = endArr[i];
         this.mergeUnits(start, end, key);
@@ -1239,23 +1035,22 @@ Helpers = (function() {
   };
 
   Helpers.prototype.isDOM = function(o) {
-    var isNode, isObject;
+    var isNode;
     if (o == null) {
       return false;
     }
-    if (typeof Node === 'object') {
+    if (typeof Node === 'function') {
       return o instanceof Node;
     } else {
-      isObject = o && typeof o === 'object';
       isNode = typeof o.nodeType === 'number' && typeof o.nodeName === 'string';
-      return isObject && isNode;
+      return typeof o === 'object' && isNode;
     }
   };
 
 
   /*
    * Return direct children elements.
-   *
+  #
    * @param {HTMLElement}
    * @return {Array}
    */
@@ -1279,87 +1074,39 @@ Helpers = (function() {
 
 h = new Helpers;
 
+module.exports = h;
 
-/* istanbul ignore next */
+},{}],4:[function(require,module,exports){
 
-if ((typeof define === "function") && define.amd) {
-  define("Helpers", [], function() {
-    return h;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = h;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.helpers = h;
-}
-
-},{}],5:[function(require,module,exports){
-
-/*
+/*!
   :: mo · js :: motion graphics toolbelt for the web
   LegoMushroom - Oleg Solomka 2015 MIT
-  v0.109.0 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, circle, h;
+var mojs;
 
-window.mojs = {
+mojs = {
   revision: '0.109.0',
-  isDebug: true
+  isDebug: true,
+  helpers: require('./h'),
+  Bit: require('./shapes/bit'),
+  bitsMap: require('./shapes/bitsMap'),
+  Circle: require('./shapes/circle'),
+  Cross: require('./shapes/cross'),
+  Line: require('./shapes/line'),
+  Rect: require('./shapes/rect'),
+  Polygon: require('./shapes/polygon'),
+  Equal: require('./shapes/equal'),
+  Zigzag: require('./shapes/zigzag'),
+  Burst: require('./burst'),
+  Transit: require('./transit'),
+  Swirl: require('./swirl'),
+  Stagger: require('./stagger'),
+  MotionPath: require('./motion-path'),
+  Timeline: require('./tween/timeline'),
+  Tween: require('./tween/tween'),
+  tweener: require('./tween/tweener'),
+  easing: require('./easing')
 };
-
-h = require('./h');
-
-Burst = require('./burst');
-
-Swirl = require('./Swirl');
-
-Transit = require('./transit');
-
-Stagger = require('./stagger');
-
-MotionPath = require('./motion-path');
-
-Timeline = require('./tween/timeline');
-
-Tween = require('./tween/tween');
-
-circle = new mojs.Transit({
-  x: 75,
-  y: 75,
-  type: 'rect',
-  radius: 50,
-  fill: 'transparent',
-  strokeWidth: 0,
-  stroke: 'hotpink',
-  strokeDasharray: {
-    '0 100': '100 rand(10%,50%)'
-  },
-  delay: 1500,
-  duration: 1500,
-  angle: {
-    45: 100
-  },
-  isShowInit: true,
-  isShowEnd: true
-});
 
 
 /* istanbul ignore next */
@@ -1384,7 +1131,7 @@ if (typeof window !== "undefined" && window !== null) {
   window.mojs = mojs;
 }
 
-},{"./Swirl":1,"./burst":2,"./h":4,"./motion-path":6,"./stagger":18,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],6:[function(require,module,exports){
+},{"./burst":1,"./easing":2,"./h":3,"./motion-path":5,"./shapes/bit":8,"./shapes/bitsMap":9,"./shapes/circle":10,"./shapes/cross":11,"./shapes/equal":12,"./shapes/line":13,"./shapes/polygon":14,"./shapes/rect":15,"./shapes/zigzag":16,"./stagger":17,"./swirl":18,"./transit":19,"./tween/timeline":20,"./tween/tween":21,"./tween/tweener":22}],5:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize;
 
 h = require('./h');
@@ -1419,8 +1166,8 @@ MotionPath = (function() {
     onUpdate: null
   };
 
-  function MotionPath(o) {
-    this.o = o != null ? o : {};
+  function MotionPath(o1) {
+    this.o = o1 != null ? o1 : {};
     if (this.vars()) {
       return;
     }
@@ -1582,14 +1329,14 @@ MotionPath = (function() {
       easing: this.props.easing,
       onStart: (function(_this) {
         return function() {
-          var _ref;
-          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+          var ref;
+          return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
         };
       })(this),
       onComplete: (function(_this) {
         return function() {
-          var _ref;
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+          var ref;
+          return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
         };
       })(this),
       onUpdate: (function(_this) {
@@ -1612,8 +1359,8 @@ MotionPath = (function() {
   MotionPath.prototype.startTween = function() {
     return setTimeout(((function(_this) {
       return function() {
-        var _ref;
-        return (_ref = _this.tween) != null ? _ref.start() : void 0;
+        var ref;
+        return (ref = _this.tween) != null ? ref.start() : void 0;
       };
     })(this)), 1);
   };
@@ -1650,7 +1397,7 @@ MotionPath = (function() {
     }
     if (this.props.transformOrigin) {
       tOrigin = typeof this.props.transformOrigin === 'function' ? this.props.transformOrigin(this.angle, p) : this.props.transformOrigin;
-      this.el.style["" + h.prefix.css + "transform-origin"] = tOrigin;
+      this.el.style[h.prefix.css + "transform-origin"] = tOrigin;
       this.el.style['transform-origin'] = tOrigin;
     }
     return !isInit && (typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0);
@@ -1660,37 +1407,37 @@ MotionPath = (function() {
     var rotate, transform;
     rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
     transform = "translate(" + x + "px," + y + "px) " + rotate;
-    this.el.style["" + h.prefix.css + "transform"] = transform;
+    this.el.style[h.prefix.css + "transform"] = transform;
     return this.el.style['transform'] = transform;
   };
 
   MotionPath.prototype.setModulePosition = function(x, y) {
     this.el.setProp({
-      shiftX: "" + x + "px",
-      shiftY: "" + y + "px",
+      shiftX: x + "px",
+      shiftY: y + "px",
       angle: this.angle
     });
     return this.el.draw();
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
-    var key, value, _results;
-    _results = [];
+    var key, results, value;
+    results = [];
     for (key in o) {
       value = o[key];
-      _results.push(this[key] = value);
+      results.push(this[key] = value);
     }
-    return _results;
+    return results;
   };
 
   MotionPath.prototype.extendOptions = function(o) {
-    var key, value, _results;
-    _results = [];
+    var key, results, value;
+    results = [];
     for (key in o) {
       value = o[key];
-      _results.push(this.props[key] = value);
+      results.push(this.props[key] = value);
     }
-    return _results;
+    return results;
   };
 
   MotionPath.prototype.then = function(o) {
@@ -1721,14 +1468,14 @@ MotionPath = (function() {
     })(this);
     opts.onStart = (function(_this) {
       return function() {
-        var _ref;
-        return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+        var ref;
+        return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
       };
     })(this);
     opts.onComplete = (function(_this) {
       return function() {
-        var _ref;
-        return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        var ref;
+        return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
       };
     })(this);
     opts.onFirstUpdate = function() {
@@ -1747,58 +1494,32 @@ MotionPath = (function() {
 
 })();
 
+module.exports = MotionPath;
+
+},{"./h":3,"./tween/timeline":20,"./tween/tween":21,"./vendor/resize":23}],6:[function(require,module,exports){
 
 /* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("motion-path", [], function() {
-    return MotionPath;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = MotionPath;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.MotionPath = MotionPath;
-}
-
-},{"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
-var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function(root) {
-  var offset, _ref, _ref1;
-  if (__indexOf.call(root, 'performance') >= 0 === false) {
+  var offset, ref, ref1;
+  if (indexOf.call(root, 'performance') >= 0 === false) {
     root.performance = {};
   }
   Date.now = Date.now || function() {
     return (new Date).getTime();
   };
-  if (__indexOf.call(root.performance, 'now') >= 0 === false) {
-    offset = ((_ref = root.performance) != null ? (_ref1 = _ref.timing) != null ? _ref1.navigationStart : void 0 : void 0) ? performance.timing.navigationStart : Date.now();
+  if (indexOf.call(root.performance, 'now') >= 0 === false) {
+    offset = ((ref = root.performance) != null ? (ref1 = ref.timing) != null ? ref1.navigationStart : void 0 : void 0) ? performance.timing.navigationStart : Date.now();
     return root.performance.now = function() {
       return Date.now() - offset;
     };
   }
 })(window);
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+
+/* istanbul ignore next */
 (function() {
   var k, lastTime, vendors, x;
   lastTime = 0;
@@ -1829,7 +1550,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
   }
 })();
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var Bit, h;
 
 h = require('../h');
@@ -1890,46 +1611,46 @@ Bit = (function() {
   };
 
   Bit.prototype.extendDefaults = function() {
-    var key, value, _ref, _results;
+    var key, ref, results, value;
     if (this.props == null) {
       this.props = {};
     }
-    _ref = this.defaults;
-    _results = [];
-    for (key in _ref) {
-      value = _ref[key];
-      _results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
+    ref = this.defaults;
+    results = [];
+    for (key in ref) {
+      value = ref[key];
+      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
     }
-    return _results;
+    return results;
   };
 
   Bit.prototype.setAttr = function(attr, value) {
-    var el, key, keys, len, val, _results;
+    var el, key, keys, len, results, val;
     if (typeof attr === 'object') {
       keys = Object.keys(attr);
       len = keys.length;
       el = value || this.el;
-      _results = [];
+      results = [];
       while (len--) {
         key = keys[len];
         val = attr[key];
-        _results.push(el.setAttribute(key, val));
+        results.push(el.setAttribute(key, val));
       }
-      return _results;
+      return results;
     } else {
       return this.el.setAttribute(attr, value);
     }
   };
 
   Bit.prototype.setProp = function(attr, value) {
-    var key, val, _results;
+    var key, results, val;
     if (typeof attr === 'object') {
-      _results = [];
+      results = [];
       for (key in attr) {
         val = attr[key];
-        _results.push(this.props[key] = val);
+        results.push(this.props[key] = val);
       }
-      return _results;
+      return results;
     } else {
       return this.props[attr] = value;
     }
@@ -1966,14 +1687,14 @@ Bit = (function() {
   };
 
   Bit.prototype.castStrokeDash = function(name) {
-    var cast, dash, i, stroke, _i, _len, _ref;
+    var cast, dash, i, j, len1, ref, stroke;
     if (h.isArray(this.props[name])) {
       stroke = '';
-      _ref = this.props[name];
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        dash = _ref[i];
+      ref = this.props[name];
+      for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+        dash = ref[i];
         cast = dash.unit === '%' ? this.castPercent(dash.value) : dash.value;
-        stroke += "" + cast + " ";
+        stroke += cast + " ";
       }
       return this.props[name] = stroke;
     }
@@ -1987,17 +1708,17 @@ Bit = (function() {
   };
 
   Bit.prototype.setAttrsIfChanged = function(name, value) {
-    var key, keys, len, _results;
+    var key, keys, len, results;
     if (typeof name === 'object') {
       keys = Object.keys(name);
       len = keys.length;
-      _results = [];
+      results = [];
       while (len--) {
         key = keys[len];
         value = name[key];
-        _results.push(this.setAttrIfChanged(key, value));
+        results.push(this.setAttrIfChanged(key, value));
       }
-      return _results;
+      return results;
     } else {
       if (value == null) {
         value = this.props[name];
@@ -2021,8 +1742,8 @@ Bit = (function() {
   };
 
   Bit.prototype.getLength = function() {
-    var _ref;
-    if ((((_ref = this.el) != null ? _ref.getTotalLength : void 0) != null) && this.el.getAttribute('d')) {
+    var ref;
+    if ((((ref = this.el) != null ? ref.getTotalLength : void 0) != null) && this.el.getAttribute('d')) {
       return this.el.getTotalLength();
     } else {
       return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
@@ -2033,39 +1754,9 @@ Bit = (function() {
 
 })();
 
+module.exports = Bit;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Bit", [], function() {
-    return Bit;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Bit;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Bit = Bit;
-}
-
-},{"../h":4}],10:[function(require,module,exports){
+},{"../h":3}],9:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -2110,49 +1801,19 @@ BitsMap = (function() {
 
 })();
 
+module.exports = new BitsMap;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("bitsMap", [], function() {
-    return new BitsMap;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = new BitsMap;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.bitsMap = new BitsMap;
-}
-
-},{"../h":4,"./bit":9,"./circle":11,"./cross":12,"./equal":13,"./line":14,"./polygon":15,"./rect":16,"./zigzag":17}],11:[function(require,module,exports){
+},{"../h":3,"./bit":8,"./circle":10,"./cross":11,"./equal":12,"./line":13,"./polygon":14,"./rect":15,"./zigzag":16}],10:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Bit = require('./bit');
 
-Circle = (function(_super) {
-  __extends(Circle, _super);
+Circle = (function(superClass) {
+  extend(Circle, superClass);
 
   function Circle() {
     return Circle.__super__.constructor.apply(this, arguments);
@@ -2184,49 +1845,19 @@ Circle = (function(_super) {
 
 })(Bit);
 
+module.exports = Circle;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Circle", [], function() {
-    return Circle;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Circle;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Circle = Circle;
-}
-
-},{"./bit":9}],12:[function(require,module,exports){
+},{"./bit":8}],11:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Bit = require('./bit');
 
-Cross = (function(_super) {
-  __extends(Cross, _super);
+Cross = (function(superClass) {
+  extend(Cross, superClass);
 
   function Cross() {
     return Cross.__super__.constructor.apply(this, arguments);
@@ -2245,7 +1876,7 @@ Cross = (function(_super) {
     y1 = this.props.y - radiusY;
     y2 = this.props.y + radiusY;
     line2 = "M" + this.props.x + "," + y1 + " L" + this.props.x + "," + y2;
-    d = "" + line1 + " " + line2;
+    d = line1 + " " + line2;
     return this.setAttr({
       d: d
     });
@@ -2262,49 +1893,19 @@ Cross = (function(_super) {
 
 })(Bit);
 
+module.exports = Cross;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Cross", [], function() {
-    return Cross;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Cross;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Cross = Cross;
-}
-
-},{"./bit":9}],13:[function(require,module,exports){
+},{"./bit":8}],12:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Equal,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Bit = require('./bit');
 
-Equal = (function(_super) {
-  __extends(Equal, _super);
+Equal = (function(superClass) {
+  extend(Equal, superClass);
 
   function Equal() {
     return Equal.__super__.constructor.apply(this, arguments);
@@ -2315,7 +1916,7 @@ Equal = (function(_super) {
   Equal.prototype.ratio = 1.43;
 
   Equal.prototype.draw = function() {
-    var d, i, radiusX, radiusY, x1, x2, y, yStart, yStep, _i, _ref;
+    var d, i, j, radiusX, radiusY, ref, x1, x2, y, yStart, yStep;
     Equal.__super__.draw.apply(this, arguments);
     if (!this.props.points) {
       return;
@@ -2327,7 +1928,7 @@ Equal = (function(_super) {
     d = '';
     yStep = 2 * radiusY / (this.props.points - 1);
     yStart = this.props.y - radiusY;
-    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+    for (i = j = 0, ref = this.props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
       y = "" + (i * yStep + yStart);
       d += "M" + x1 + ", " + y + " L" + x2 + ", " + y + " ";
     }
@@ -2344,49 +1945,19 @@ Equal = (function(_super) {
 
 })(Bit);
 
+module.exports = Equal;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Equal", [], function() {
-    return Equal;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Equal;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Equal = Equal;
-}
-
-},{"./bit":9}],14:[function(require,module,exports){
+},{"./bit":8}],13:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Bit = require('./bit');
 
-Line = (function(_super) {
-  __extends(Line, _super);
+Line = (function(superClass) {
+  extend(Line, superClass);
 
   function Line() {
     return Line.__super__.constructor.apply(this, arguments);
@@ -2408,51 +1979,21 @@ Line = (function(_super) {
 
 })(Bit);
 
+module.exports = Line;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Line", [], function() {
-    return Line;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Line;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Line = Line;
-}
-
-},{"./bit":9}],15:[function(require,module,exports){
+},{"./bit":8}],14:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Bit = require('./bit');
 
 h = require('../h');
 
-Polygon = (function(_super) {
-  __extends(Polygon, _super);
+Polygon = (function(superClass) {
+  extend(Polygon, superClass);
 
   function Polygon() {
     return Polygon.__super__.constructor.apply(this, arguments);
@@ -2466,10 +2007,10 @@ Polygon = (function(_super) {
   };
 
   Polygon.prototype.drawShape = function() {
-    var char, d, i, point, step, _i, _j, _len, _ref, _ref1;
+    var char, d, i, j, k, len, point, ref, ref1, step;
     step = 360 / this.props.points;
     this.radialPoints = [];
-    for (i = _i = 0, _ref = this.props.points; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+    for (i = j = 0, ref = this.props.points; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
       this.radialPoints.push(h.getRadialPoint({
         radius: this.props.radius,
         radiusX: this.props.radiusX,
@@ -2482,9 +2023,9 @@ Polygon = (function(_super) {
       }));
     }
     d = '';
-    _ref1 = this.radialPoints;
-    for (i = _j = 0, _len = _ref1.length; _j < _len; i = ++_j) {
-      point = _ref1[i];
+    ref1 = this.radialPoints;
+    for (i = k = 0, len = ref1.length; k < len; i = ++k) {
+      point = ref1[i];
       char = i === 0 ? 'M' : 'L';
       d += "" + char + (point.x.toFixed(4)) + "," + (point.y.toFixed(4)) + " ";
     }
@@ -2501,49 +2042,19 @@ Polygon = (function(_super) {
 
 })(Bit);
 
+module.exports = Polygon;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Polygon", [], function() {
-    return Polygon;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Polygon;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Polygon = Polygon;
-}
-
-},{"../h":4,"./bit":9}],16:[function(require,module,exports){
+},{"../h":3,"./bit":8}],15:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Bit = require('./bit');
 
-Rect = (function(_super) {
-  __extends(Rect, _super);
+Rect = (function(superClass) {
+  extend(Rect, superClass);
 
   function Rect() {
     return Rect.__super__.constructor.apply(this, arguments);
@@ -2577,49 +2088,19 @@ Rect = (function(_super) {
 
 })(Bit);
 
+module.exports = Rect;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Rect", [], function() {
-    return Rect;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Rect;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Rect = Rect;
-}
-
-},{"./bit":9}],17:[function(require,module,exports){
+},{"./bit":8}],16:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Zigzag,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 Bit = require('./bit');
 
-Zigzag = (function(_super) {
-  __extends(Zigzag, _super);
+Zigzag = (function(superClass) {
+  extend(Zigzag, superClass);
 
   function Zigzag() {
     return Zigzag.__super__.constructor.apply(this, arguments);
@@ -2630,7 +2111,7 @@ Zigzag = (function(_super) {
   Zigzag.prototype.ratio = 1.43;
 
   Zigzag.prototype.draw = function() {
-    var char, i, iX, iX2, iY, iY2, points, radiusX, radiusY, stepX, stepY, strokeWidth, xStart, yStart, _i, _ref;
+    var char, i, iX, iX2, iY, iY2, j, points, radiusX, radiusY, ref, stepX, stepY, strokeWidth, xStart, yStart;
     if (!this.props.points) {
       return;
     }
@@ -2642,7 +2123,7 @@ Zigzag = (function(_super) {
     strokeWidth = this.props['stroke-width'];
     xStart = this.props.x - radiusX;
     yStart = this.props.y - radiusY;
-    for (i = _i = _ref = this.props.points; _ref <= 0 ? _i < 0 : _i > 0; i = _ref <= 0 ? ++_i : --_i) {
+    for (i = j = ref = this.props.points; ref <= 0 ? j < 0 : j > 0; i = ref <= 0 ? ++j : --j) {
       iX = xStart + i * stepX + strokeWidth;
       iY = yStart + i * stepY + strokeWidth;
       iX2 = xStart + (i - 1) * stepX + strokeWidth;
@@ -2660,44 +2141,14 @@ Zigzag = (function(_super) {
 
 })(Bit);
 
+module.exports = Zigzag;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Zigzag", [], function() {
-    return Zigzag;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Zigzag;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Zigzag = Zigzag;
-}
-
-},{"./bit":9}],18:[function(require,module,exports){
+},{"./bit":8}],17:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Stagger, Timeline, Transit, Tween, h,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 h = require('./h');
 
@@ -2707,8 +2158,8 @@ Tween = require('./tween/tween');
 
 Transit = require('./transit');
 
-Stagger = (function(_super) {
-  __extends(Stagger, _super);
+Stagger = (function(superClass) {
+  extend(Stagger, superClass);
 
   function Stagger() {
     return Stagger.__super__.constructor.apply(this, arguments);
@@ -2739,17 +2190,17 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.extendDefaults = function(o) {
-    var fromObj, key, value, _ref, _results;
+    var fromObj, key, ref, results, value;
     this.props = {};
     this.deltas = {};
     fromObj = o || this.o;
-    _ref = this.defaults;
-    _results = [];
-    for (key in _ref) {
-      value = _ref[key];
-      _results.push(this.props[key] = fromObj[key] != null ? fromObj[key] : this.defaults[key]);
+    ref = this.defaults;
+    results = [];
+    for (key in ref) {
+      value = ref[key];
+      results.push(this.props[key] = fromObj[key] != null ? fromObj[key] : this.defaults[key]);
     }
-    return _results;
+    return results;
   };
 
   Stagger.prototype.parseEls = function() {
@@ -2765,25 +2216,25 @@ Stagger = (function(_super) {
   };
 
   Stagger.prototype.createBit = function() {
-    var i, len, option, _i, _results;
+    var i, j, len, option, ref, results;
     this.transits = [];
     len = this.props.els.length;
-    _results = [];
-    for (i = _i = 0; 0 <= len ? _i < len : _i > len; i = 0 <= len ? ++_i : --_i) {
+    results = [];
+    for (i = j = 0, ref = len; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
       option = this.getOption(i);
       option.index = i;
       option.isRunLess = true;
-      _results.push(this.transits.push(new Transit(option)));
+      results.push(this.transits.push(new Transit(option)));
     }
-    return _results;
+    return results;
   };
 
   Stagger.prototype.getOption = function(i) {
-    var key, option, value, _ref;
+    var key, option, ref, value;
     option = {};
-    _ref = this.props;
-    for (key in _ref) {
-      value = _ref[key];
+    ref = this.props;
+    for (key in ref) {
+      value = ref[key];
       option[key] = this.getPropByMod(key, i);
     }
     option.bit = this.getPropByMod('els', i);
@@ -2829,46 +2280,128 @@ Stagger = (function(_super) {
 
 })(Transit);
 
+module.exports = Stagger;
+
+},{"./h":3,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],18:[function(require,module,exports){
 
 /* istanbul ignore next */
+var Swirl, Transit,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-if ((typeof define === "function") && define.amd) {
-  define("Stagger", [], function() {
-    return Stagger;
-  });
-}
+Transit = require('./transit');
 
+Swirl = (function(superClass) {
+  extend(Swirl, superClass);
 
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Stagger;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
+  function Swirl() {
+    return Swirl.__super__.constructor.apply(this, arguments);
   }
-}
 
+  Swirl.prototype.skipPropsDelta = {
+    x: 1,
+    y: 1
+  };
 
-/* istanbul ignore next */
+  Swirl.prototype.vars = function() {
+    Swirl.__super__.vars.apply(this, arguments);
+    return !this.o.isSwirlLess && this.generateSwirl();
+  };
 
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Stagger = Stagger;
-}
+  Swirl.prototype.extendDefaults = function() {
+    var angle, base, x, y;
+    Swirl.__super__.extendDefaults.apply(this, arguments);
+    x = this.getPosValue('x');
+    y = this.getPosValue('y');
+    angle = 90 + Math.atan((y.delta / x.delta) || 0) * (180 / Math.PI);
+    if (x.delta < 0) {
+      angle += 180;
+    }
+    this.positionDelta = {
+      radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
+      angle: angle,
+      x: x,
+      y: y
+    };
+    if ((base = this.o).radiusScale == null) {
+      base.radiusScale = 1;
+    }
+    this.props.angleShift = this.h.parseIfRand(this.o.angleShift || 0);
+    return this.props.radiusScale = this.h.parseIfRand(this.o.radiusScale);
+  };
 
-},{"./h":4,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],19:[function(require,module,exports){
-module.exports=require(1)
-},{"./transit":20}],20:[function(require,module,exports){
+  Swirl.prototype.getPosValue = function(name) {
+    var optVal, val;
+    optVal = this.o[name];
+    if (optVal && typeof optVal === 'object') {
+      val = this.h.parseDelta(name, optVal);
+      return {
+        start: val.start.value,
+        end: val.end.value,
+        delta: val.delta,
+        units: val.end.unit
+      };
+    } else {
+      val = parseFloat(optVal || this.defaults[name]);
+      return {
+        start: val,
+        end: val,
+        delta: 0,
+        units: 'px'
+      };
+    }
+  };
+
+  Swirl.prototype.setProgress = function(progress) {
+    var angle, point, x, y;
+    angle = this.positionDelta.angle;
+    if (this.o.isSwirl) {
+      angle += this.getSwirl(progress);
+    }
+    point = this.h.getRadialPoint({
+      angle: angle,
+      radius: this.positionDelta.radius * progress * this.props.radiusScale,
+      center: {
+        x: this.positionDelta.x.start,
+        y: this.positionDelta.y.start
+      }
+    });
+    x = point.x.toFixed(4);
+    y = point.y.toFixed(4);
+    this.props.x = this.o.ctx ? x : x + this.positionDelta.x.units;
+    this.props.y = this.o.ctx ? y : y + this.positionDelta.y.units;
+    return Swirl.__super__.setProgress.apply(this, arguments);
+  };
+
+  Swirl.prototype.generateSwirl = function() {
+    var base, base1;
+    this.props.signRand = Math.round(this.h.rand(0, 1)) ? -1 : 1;
+    if ((base = this.o).swirlSize == null) {
+      base.swirlSize = 10;
+    }
+    if ((base1 = this.o).swirlFrequency == null) {
+      base1.swirlFrequency = 3;
+    }
+    this.props.swirlSize = this.h.parseIfRand(this.o.swirlSize);
+    return this.props.swirlFrequency = this.h.parseIfRand(this.o.swirlFrequency);
+  };
+
+  Swirl.prototype.getSwirl = function(progress) {
+    return this.props.signRand * this.props.swirlSize * Math.sin(this.props.swirlFrequency * progress);
+  };
+
+  return Swirl;
+
+})(Transit);
+
+module.exports = Swirl;
+
+},{"./transit":19}],19:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 h = require('./h');
 
@@ -2878,8 +2411,8 @@ Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
 
-Transit = (function(_super) {
-  __extends(Transit, _super);
+Transit = (function(superClass) {
+  extend(Transit, superClass);
 
   function Transit() {
     return Transit.__super__.constructor.apply(this, arguments);
@@ -2964,10 +2497,10 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.setElStyles = function() {
-    var marginSize, size, _ref;
+    var marginSize, ref, size;
     if (!this.isForeign) {
-      size = "" + this.props.size + "px";
-      marginSize = "" + (-this.props.size / 2) + "px";
+      size = this.props.size + "px";
+      marginSize = (-this.props.size / 2) + "px";
       this.el.style.position = 'absolute';
       this.el.style.top = this.props.y;
       this.el.style.left = this.props.x;
@@ -2978,8 +2511,8 @@ Transit = (function(_super) {
       this.el.style['marginLeft'] = marginSize;
       this.el.style['marginTop'] = marginSize;
     }
-    if ((_ref = this.el) != null) {
-      _ref.style.opacity = this.props.opacity;
+    if ((ref = this.el) != null) {
+      ref.style.opacity = this.props.opacity;
     }
     if (this.o.isShowInit) {
       return this.show();
@@ -3052,9 +2585,9 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.isPropChanged = function(name) {
-    var _base;
-    if ((_base = this.lastSet)[name] == null) {
-      _base[name] = {};
+    var base;
+    if ((base = this.lastSet)[name] == null) {
+      base[name] = {};
     }
     if (this.lastSet[name].value !== this.props[name]) {
       this.lastSet[name].value = this.props[name];
@@ -3069,7 +2602,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcSize = function() {
-    var dStroke, radius, stroke, _base;
+    var base, dStroke, radius, stroke;
     if (this.o.size) {
       return;
     }
@@ -3077,7 +2610,7 @@ Transit = (function(_super) {
     dStroke = this.deltas['strokeWidth'];
     stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
     this.props.size = 2 * radius + 2 * stroke;
-    switch (typeof (_base = this.props.easing).toLowerCase === "function" ? _base.toLowerCase() : void 0) {
+    switch (typeof (base = this.props.easing).toLowerCase === "function" ? base.toLowerCase() : void 0) {
       case 'elastic.out':
       case 'elastic.inout':
         this.props.size *= 1.25;
@@ -3145,21 +2678,21 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.calcCurrentProps = function(progress) {
-    var a, b, dash, g, i, item, key, keys, len, r, stroke, units, value, _results;
+    var a, b, dash, g, i, item, key, keys, len, r, results, stroke, units, value;
     keys = Object.keys(this.deltas);
     len = keys.length;
-    _results = [];
+    results = [];
     while (len--) {
       key = keys[len];
       value = this.deltas[key];
-      _results.push(this.props[key] = (function() {
-        var _i, _len, _ref;
+      results.push(this.props[key] = (function() {
+        var k, len1, ref;
         switch (value.type) {
           case 'array':
             stroke = [];
-            _ref = value.delta;
-            for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-              item = _ref[i];
+            ref = value.delta;
+            for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
+              item = ref[i];
               dash = value.start[i].value + item.value * this.progress;
               stroke.push({
                 value: dash,
@@ -3181,7 +2714,7 @@ Transit = (function(_super) {
         }
       }).call(this));
     }
-    return _results;
+    return results;
   };
 
   Transit.prototype.calcOrigin = function() {
@@ -3195,7 +2728,7 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.extendDefaults = function(o) {
-    var array, defaultsValue, fromObject, i, key, keys, len, optionsValue, property, unit, value, _i, _len, _ref;
+    var array, defaultsValue, fromObject, i, k, key, keys, len, len1, optionsValue, property, ref, unit, value;
     if (this.props == null) {
       this.props = {};
     }
@@ -3206,7 +2739,7 @@ Transit = (function(_super) {
     while (len--) {
       key = keys[len];
       defaultsValue = fromObject[key];
-      if ((_ref = this.skipProps) != null ? _ref[key] : void 0) {
+      if ((ref = this.skipProps) != null ? ref[key] : void 0) {
         continue;
       }
       if (o) {
@@ -3248,7 +2781,7 @@ Transit = (function(_super) {
               break;
             case 'string':
               array = this.props[key].split(' ');
-              for (i = _i = 0, _len = array.length; _i < _len; i = ++_i) {
+              for (i = k = 0, len1 = array.length; k < len1; i = ++k) {
                 unit = array[i];
                 value.push(this.h.parseUnit(unit));
               }
@@ -3270,11 +2803,11 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.getDelta = function(key, optionsValue) {
-    var delta, _ref;
+    var delta, ref;
     if ((key === 'x' || key === 'y') && !this.o.ctx) {
       this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
     }
-    if ((_ref = this.skipPropsDelta) != null ? _ref[key] : void 0) {
+    if ((ref = this.skipPropsDelta) != null ? ref[key] : void 0) {
       return;
     }
     delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
@@ -3328,8 +2861,8 @@ Transit = (function(_super) {
 
   Transit.prototype.then = function(o) {
     var i, it, keys, merged, opts;
-    if (o == null) {
-      o = {};
+    if ((o == null) || !Object.keys(o)) {
+      return;
     }
     merged = this.mergeThenOptions(this.history[this.history.length - 1], o);
     this.history.push(merged);
@@ -3347,14 +2880,14 @@ Transit = (function(_super) {
     })(this);
     opts.onStart = (function(_this) {
       return function() {
-        var _ref;
-        return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+        var ref;
+        return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
       };
     })(this);
     opts.onComplete = (function(_this) {
       return function() {
-        var _ref;
-        return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+        var ref;
+        return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
       };
     })(this);
     opts.onFirstUpdate = function() {
@@ -3377,9 +2910,9 @@ Transit = (function(_super) {
     this.tween = new Tween({
       onComplete: (function(_this) {
         return function() {
-          var _ref;
+          var ref;
           !_this.o.isShowEnd && _this.hide();
-          return (_ref = _this.props.onComplete) != null ? _ref.apply(_this) : void 0;
+          return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
         };
       })(this)
     });
@@ -3401,9 +2934,9 @@ Transit = (function(_super) {
       })(this),
       onStart: (function(_this) {
         return function() {
-          var _ref;
+          var ref;
           _this.show();
-          return (_ref = _this.props.onStart) != null ? _ref.apply(_this) : void 0;
+          return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
         };
       })(this),
       onFirstUpdateBackward: (function(_this) {
@@ -3413,9 +2946,9 @@ Transit = (function(_super) {
       })(this),
       onReverseComplete: (function(_this) {
         return function() {
-          var _ref;
+          var ref;
           !_this.o.isShowInit && _this.hide();
-          return (_ref = _this.props.onReverseComplete) != null ? _ref.apply(_this) : void 0;
+          return (ref = _this.props.onReverseComplete) != null ? ref.apply(_this) : void 0;
         };
       })(this)
     });
@@ -3446,18 +2979,18 @@ Transit = (function(_super) {
   };
 
   Transit.prototype.transformHistory = function(o) {
-    var historyLen, i, j, key, keys, len, optionRecord, value, value2, valueKeys, valueKeys2, _results;
+    var historyLen, i, j, key, keys, len, optionRecord, results, value, value2, valueKeys, valueKeys2;
     keys = Object.keys(o);
     i = -1;
     len = keys.length;
     historyLen = this.history.length;
-    _results = [];
+    results = [];
     while (++i < len) {
       key = keys[i];
       j = 0;
-      _results.push((function() {
-        var _results1;
-        _results1 = [];
+      results.push((function() {
+        var results1;
+        results1 = [];
         while (++j < historyLen) {
           optionRecord = this.history[j][key];
           if (optionRecord != null) {
@@ -3474,16 +3007,16 @@ Transit = (function(_super) {
               }
               break;
             } else {
-              _results1.push(this.history[j][key] = o[key]);
+              results1.push(this.history[j][key] = o[key]);
             }
           } else {
-            _results1.push(this.history[j][key] = o[key]);
+            results1.push(this.history[j][key] = o[key]);
           }
         }
-        return _results1;
+        return results1;
       }).call(this));
     }
-    return _results;
+    return results;
   };
 
   Transit.prototype.tuneNewOption = function(o, isForeign) {
@@ -3503,18 +3036,18 @@ Transit = (function(_super) {
   Transit.prototype.startTween = function() {
     return setTimeout(((function(_this) {
       return function() {
-        var _ref;
-        return (_ref = _this.tween) != null ? _ref.start() : void 0;
+        var ref;
+        return (ref = _this.tween) != null ? ref.start() : void 0;
       };
     })(this)), 1);
   };
 
   Transit.prototype.resetTimeline = function() {
-    var i, key, timelineOptions, _i, _len, _ref;
+    var i, k, key, len1, ref, timelineOptions;
     timelineOptions = {};
-    _ref = Object.keys(this.h.tweenOptionMap);
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      key = _ref[i];
+    ref = Object.keys(this.h.tweenOptionMap);
+    for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
+      key = ref[i];
       timelineOptions[key] = this.props[key];
     }
     timelineOptions.onStart = this.props.onStart;
@@ -3531,39 +3064,9 @@ Transit = (function(_super) {
 
 })(bitsMap.map.bit);
 
+module.exports = Transit;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Transit", [], function() {
-    return Transit;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Transit;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Transit = Transit;
-}
-
-},{"./h":4,"./shapes/bitsMap":10,"./tween/timeline":21,"./tween/tween":22}],21:[function(require,module,exports){
+},{"./h":3,"./shapes/bitsMap":9,"./tween/timeline":20,"./tween/tween":21}],20:[function(require,module,exports){
 var Easing, Timeline, h;
 
 Easing = require('../easing');
@@ -3620,19 +3123,19 @@ Timeline = (function() {
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, start, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+    var cnt, elapsed, isFlip, ref, ref1, ref2, ref3, ref4, ref5, start;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
       if (!this.isFirstUpdate) {
-        if ((_ref = this.o.onFirstUpdate) != null) {
-          _ref.apply(this);
+        if ((ref = this.o.onFirstUpdate) != null) {
+          ref.apply(this);
         }
         this.isFirstUpdate = true;
       }
       if (!this.isStarted) {
-        if ((_ref1 = this.o.onStart) != null) {
-          _ref1.apply(this);
+        if ((ref1 = this.o.onStart) != null) {
+          ref1.apply(this);
         }
         this.isStarted = true;
       }
@@ -3659,8 +3162,8 @@ Timeline = (function() {
         }
       }
       if (time < this.prevTime && !this.isFirstUpdateBackward) {
-        if ((_ref2 = this.o.onFirstUpdateBackward) != null) {
-          _ref2.apply(this);
+        if ((ref2 = this.o.onFirstUpdateBackward) != null) {
+          ref2.apply(this);
         }
         this.isFirstUpdateBackward = true;
       }
@@ -3673,8 +3176,8 @@ Timeline = (function() {
         if (typeof this.onUpdate === "function") {
           this.onUpdate(this.easedProgress);
         }
-        if ((_ref3 = this.o.onComplete) != null) {
-          _ref3.apply(this);
+        if ((ref3 = this.o.onComplete) != null) {
+          ref3.apply(this);
         }
         this.isCompleted = true;
         this.isOnReverseComplete = false;
@@ -3688,8 +3191,8 @@ Timeline = (function() {
     }
     if (time < this.prevTime && time <= this.props.startTime) {
       if (!this.isFirstUpdateBackward) {
-        if ((_ref4 = this.o.onFirstUpdateBackward) != null) {
-          _ref4.apply(this);
+        if ((ref4 = this.o.onFirstUpdateBackward) != null) {
+          ref4.apply(this);
         }
         this.isFirstUpdateBackward = true;
       }
@@ -3699,8 +3202,8 @@ Timeline = (function() {
         if (typeof this.onUpdate === "function") {
           this.onUpdate(this.easedProgress);
         }
-        if ((_ref5 = this.o.onReverseComplete) != null) {
-          _ref5.apply(this);
+        if ((ref5 = this.o.onReverseComplete) != null) {
+          ref5.apply(this);
         }
       }
     }
@@ -3729,39 +3232,9 @@ Timeline = (function() {
 
 })();
 
+module.exports = Timeline;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Timeline", [], function() {
-    return Timeline;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Timeline;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Timeline = Timeline;
-}
-
-},{"../easing":3,"../h":4}],22:[function(require,module,exports){
+},{"../easing":2,"../h":3}],21:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3793,17 +3266,17 @@ Tween = (function() {
   };
 
   Tween.prototype.pushTimelineArray = function(array) {
-    var i, tm, _i, _len, _results;
-    _results = [];
-    for (i = _i = 0, _len = array.length; _i < _len; i = ++_i) {
+    var i, j, len1, results, tm;
+    results = [];
+    for (i = j = 0, len1 = array.length; j < len1; i = ++j) {
       tm = array[i];
       if (h.isArray(tm)) {
-        _results.push(this.pushTimelineArray(tm));
+        results.push(this.pushTimelineArray(tm));
       } else {
-        _results.push(this.pushTimeline(tm));
+        results.push(this.pushTimeline(tm));
       }
     }
-    return _results;
+    return results;
   };
 
   Tween.prototype.pushTimeline = function(timeline) {
@@ -3842,19 +3315,19 @@ Tween = (function() {
   };
 
   Tween.prototype.recalcDuration = function() {
-    var len, timeline, _results;
+    var len, results, timeline;
     len = this.timelines.length;
     this.props.totalTime = 0;
-    _results = [];
+    results = [];
     while (len--) {
       timeline = this.timelines[len];
-      _results.push(this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime));
+      results.push(this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime));
     }
-    return _results;
+    return results;
   };
 
   Tween.prototype.update = function(time) {
-    var i, len, _ref, _ref1;
+    var i, len, ref, ref1;
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
@@ -3869,8 +3342,8 @@ Tween = (function() {
       }
     }
     if (this.prevTime > time && time <= this.props.startTime) {
-      if ((_ref = this.o.onReverseComplete) != null) {
-        _ref.apply(this);
+      if ((ref = this.o.onReverseComplete) != null) {
+        ref.apply(this);
       }
     }
     this.prevTime = time;
@@ -3878,27 +3351,27 @@ Tween = (function() {
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);
       }
-      if ((_ref1 = this.o.onComplete) != null) {
-        _ref1.apply(this);
+      if ((ref1 = this.o.onComplete) != null) {
+        ref1.apply(this);
       }
       return true;
     }
   };
 
   Tween.prototype.prepareStart = function() {
-    var _ref;
+    var ref;
     this.getDimentions();
-    return (_ref = this.o.onStart) != null ? _ref.apply(this) : void 0;
+    return (ref = this.o.onStart) != null ? ref.apply(this) : void 0;
   };
 
   Tween.prototype.startTimelines = function(time) {
-    var i, _results;
+    var i, results;
     i = this.timelines.length;
-    _results = [];
+    results = [];
     while (i--) {
-      _results.push(this.timelines[i].start(time || this.props.startTime));
+      results.push(this.timelines[i].start(time || this.props.startTime));
     }
-    return _results;
+    return results;
   };
 
   Tween.prototype.start = function(time) {
@@ -3948,39 +3421,9 @@ Tween = (function() {
 
 })();
 
+module.exports = Tween;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("Tween", [], function() {
-    return Tween;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = Tween;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.Tween = Tween;
-}
-
-},{"../h":4,"./tweener":23}],23:[function(require,module,exports){
+},{"../h":3,"./tweener":22}],22:[function(require,module,exports){
 var Tweener, h, t;
 
 require('../polyfills/raf');
@@ -4027,17 +3470,17 @@ Tweener = (function() {
   };
 
   Tweener.prototype.update = function(time) {
-    var i, _results;
+    var i, results;
     i = this.tweens.length;
-    _results = [];
+    results = [];
     while (i--) {
       if (this.tweens[i].update(time) === true) {
-        _results.push(this.remove(i));
+        results.push(this.remove(i));
       } else {
-        _results.push(void 0);
+        results.push(void 0);
       }
     }
-    return _results;
+    return results;
   };
 
   Tweener.prototype.add = function(tween) {
@@ -4063,252 +3506,222 @@ Tweener = (function() {
 
 t = new Tweener;
 
+module.exports = t;
 
-/* istanbul ignore next */
-
-if ((typeof define === "function") && define.amd) {
-  define("tweener", [], function() {
-    return t;
-  });
-}
-
-
-/* istanbul ignore next */
-
-if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = t;
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  if (window.mojs == null) {
-    window.mojs = {};
-  }
-}
-
-
-/* istanbul ignore next */
-
-if (typeof window !== "undefined" && window !== null) {
-  window.mojs.tweener = t;
-}
-
-},{"../h":4,"../polyfills/performance":7,"../polyfills/raf":8}],24:[function(require,module,exports){
+},{"../h":3,"../polyfills/performance":6,"../polyfills/raf":7}],23:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com
   MIT License 2014
  */
-var Main;
 
-Main = (function() {
-  function Main(o) {
-    this.o = o != null ? o : {};
-    if (window.isAnyResizeEventInited) {
-      return;
+/* istanbul ignore next */
+(function() {
+  var Main;
+  Main = (function() {
+    function Main(o) {
+      this.o = o != null ? o : {};
+      if (window.isAnyResizeEventInited) {
+        return;
+      }
+      this.vars();
+      this.redefineProto();
     }
-    this.vars();
-    this.redefineProto();
-  }
 
-  Main.prototype.vars = function() {
-    window.isAnyResizeEventInited = true;
-    this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
-    return this.timerElements = {
-      img: 1,
-      textarea: 1,
-      input: 1,
-      embed: 1,
-      object: 1,
-      svg: 1,
-      canvas: 1,
-      tr: 1,
-      tbody: 1,
-      thead: 1,
-      tfoot: 1,
-      a: 1,
-      select: 1,
-      option: 1,
-      optgroup: 1,
-      dl: 1,
-      dt: 1,
-      br: 1,
-      basefont: 1,
-      font: 1,
-      col: 1,
-      iframe: 1
+    Main.prototype.vars = function() {
+      window.isAnyResizeEventInited = true;
+      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
+      return this.timerElements = {
+        img: 1,
+        textarea: 1,
+        input: 1,
+        embed: 1,
+        object: 1,
+        svg: 1,
+        canvas: 1,
+        tr: 1,
+        tbody: 1,
+        thead: 1,
+        tfoot: 1,
+        a: 1,
+        select: 1,
+        option: 1,
+        optgroup: 1,
+        dl: 1,
+        dt: 1,
+        br: 1,
+        basefont: 1,
+        font: 1,
+        col: 1,
+        iframe: 1
+      };
     };
-  };
 
-  Main.prototype.redefineProto = function() {
-    var i, it, proto, t;
-    it = this;
-    return t = (function() {
-      var _i, _len, _ref, _results;
-      _ref = this.allowedProtos;
-      _results = [];
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        proto = _ref[i];
+    Main.prototype.redefineProto = function() {
+      var i, it, proto, t;
+      it = this;
+      return t = (function() {
+        var j, len, ref, results;
+        ref = this.allowedProtos;
+        results = [];
+        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+          proto = ref[i];
+          if (proto.prototype == null) {
+            continue;
+          }
+          results.push((function(proto) {
+            var listener, remover;
+            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+            (function(listener) {
+              var wrappedListener;
+              wrappedListener = function() {
+                var option;
+                if (this !== window || this !== document) {
+                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
+                  option && it.handleResize({
+                    args: arguments,
+                    that: this
+                  });
+                }
+                return listener.apply(this, arguments);
+              };
+              if (proto.prototype.addEventListener) {
+                return proto.prototype.addEventListener = wrappedListener;
+              } else if (proto.prototype.attachEvent) {
+                return proto.prototype.attachEvent = wrappedListener;
+              }
+            })(listener);
+            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
+            return (function(remover) {
+              var wrappedRemover;
+              wrappedRemover = function() {
+                this.isAnyResizeEventInited = false;
+                this.iframe && this.removeChild(this.iframe);
+                return remover.apply(this, arguments);
+              };
+              if (proto.prototype.removeEventListener) {
+                return proto.prototype.removeEventListener = wrappedRemover;
+              } else if (proto.prototype.detachEvent) {
+                return proto.prototype.detachEvent = wrappedListener;
+              }
+            })(remover);
+          })(proto));
+        }
+        return results;
+      }).call(this);
+    };
+
+    Main.prototype.handleResize = function(args) {
+      var computedStyle, el, iframe, isEmpty, isStatic, ref;
+      el = args.that;
+      if (!this.timerElements[el.tagName.toLowerCase()]) {
+        iframe = document.createElement('iframe');
+        el.appendChild(iframe);
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.position = 'absolute';
+        iframe.style.zIndex = -999;
+        iframe.style.opacity = 0;
+        iframe.style.top = 0;
+        iframe.style.left = 0;
+        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
+        isStatic = computedStyle.position === 'static' && el.style.position === '';
+        isEmpty = computedStyle.position === '' && el.style.position === '';
+        if (isStatic || isEmpty) {
+          el.style.position = 'relative';
+        }
+        if ((ref = iframe.contentWindow) != null) {
+          ref.onresize = (function(_this) {
+            return function(e) {
+              return _this.dispatchEvent(el);
+            };
+          })(this);
+        }
+        el.iframe = iframe;
+      } else {
+        this.initTimer(el);
+      }
+      return el.isAnyResizeEventInited = true;
+    };
+
+    Main.prototype.initTimer = function(el) {
+      var height, width;
+      width = 0;
+      height = 0;
+      return this.interval = setInterval((function(_this) {
+        return function() {
+          var newHeight, newWidth;
+          newWidth = el.offsetWidth;
+          newHeight = el.offsetHeight;
+          if (newWidth !== width || newHeight !== height) {
+            _this.dispatchEvent(el);
+            width = newWidth;
+            return height = newHeight;
+          }
+        };
+      })(this), this.o.interval || 62.5);
+    };
+
+    Main.prototype.dispatchEvent = function(el) {
+      var e;
+      if (document.createEvent) {
+        e = document.createEvent('HTMLEvents');
+        e.initEvent('onresize', false, false);
+        return el.dispatchEvent(e);
+      } else if (document.createEventObject) {
+        e = document.createEventObject();
+        return el.fireEvent('onresize', e);
+      } else {
+        return false;
+      }
+    };
+
+    Main.prototype.destroy = function() {
+      var i, it, j, len, proto, ref, results;
+      clearInterval(this.interval);
+      this.interval = null;
+      window.isAnyResizeEventInited = false;
+      it = this;
+      ref = this.allowedProtos;
+      results = [];
+      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+        proto = ref[i];
         if (proto.prototype == null) {
           continue;
         }
-        _results.push((function(proto) {
-          var listener, remover;
+        results.push((function(proto) {
+          var listener;
           listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-          (function(listener) {
-            var wrappedListener;
-            wrappedListener = function() {
-              var option;
-              if (this !== window || this !== document) {
-                option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
-                option && it.handleResize({
-                  args: arguments,
-                  that: this
-                });
-              }
-              return listener.apply(this, arguments);
-            };
-            if (proto.prototype.addEventListener) {
-              return proto.prototype.addEventListener = wrappedListener;
-            } else if (proto.prototype.attachEvent) {
-              return proto.prototype.attachEvent = wrappedListener;
-            }
-          })(listener);
-          remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
-          return (function(remover) {
-            var wrappedRemover;
-            wrappedRemover = function() {
-              this.isAnyResizeEventInited = false;
-              this.iframe && this.removeChild(this.iframe);
-              return remover.apply(this, arguments);
-            };
-            if (proto.prototype.removeEventListener) {
-              return proto.prototype.removeEventListener = wrappedRemover;
-            } else if (proto.prototype.detachEvent) {
-              return proto.prototype.detachEvent = wrappedListener;
-            }
-          })(remover);
+          if (proto.prototype.addEventListener) {
+            proto.prototype.addEventListener = Element.prototype.addEventListener;
+          } else if (proto.prototype.attachEvent) {
+            proto.prototype.attachEvent = Element.prototype.attachEvent;
+          }
+          if (proto.prototype.removeEventListener) {
+            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
+          } else if (proto.prototype.detachEvent) {
+            return proto.prototype.detachEvent = Element.prototype.detachEvent;
+          }
         })(proto));
       }
-      return _results;
-    }).call(this);
-  };
+      return results;
+    };
 
-  Main.prototype.handleResize = function(args) {
-    var computedStyle, el, iframe, isEmpty, isStatic, _ref;
-    el = args.that;
-    if (!this.timerElements[el.tagName.toLowerCase()]) {
-      iframe = document.createElement('iframe');
-      el.appendChild(iframe);
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.position = 'absolute';
-      iframe.style.zIndex = -999;
-      iframe.style.opacity = 0;
-      iframe.style.top = 0;
-      iframe.style.left = 0;
-      computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
-      isStatic = computedStyle.position === 'static' && el.style.position === '';
-      isEmpty = computedStyle.position === '' && el.style.position === '';
-      if (isStatic || isEmpty) {
-        el.style.position = 'relative';
-      }
-      if ((_ref = iframe.contentWindow) != null) {
-        _ref.onresize = (function(_this) {
-          return function(e) {
-            return _this.dispatchEvent(el);
-          };
-        })(this);
-      }
-      el.iframe = iframe;
-    } else {
-      this.initTimer(el);
+    return Main;
+
+  })();
+  if ((typeof define === "function") && define.amd) {
+    return define("any-resize-event", [], function() {
+      return new Main;
+    });
+  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
+    return module.exports = new Main;
+  } else {
+    if (typeof window !== "undefined" && window !== null) {
+      window.AnyResizeEvent = Main;
     }
-    return el.isAnyResizeEventInited = true;
-  };
-
-  Main.prototype.initTimer = function(el) {
-    var height, width;
-    width = 0;
-    height = 0;
-    return this.interval = setInterval((function(_this) {
-      return function() {
-        var newHeight, newWidth;
-        newWidth = el.offsetWidth;
-        newHeight = el.offsetHeight;
-        if (newWidth !== width || newHeight !== height) {
-          _this.dispatchEvent(el);
-          width = newWidth;
-          return height = newHeight;
-        }
-      };
-    })(this), this.o.interval || 62.5);
-  };
-
-  Main.prototype.dispatchEvent = function(el) {
-    var e;
-    if (document.createEvent) {
-      e = document.createEvent('HTMLEvents');
-      e.initEvent('onresize', false, false);
-      return el.dispatchEvent(e);
-    } else if (document.createEventObject) {
-      e = document.createEventObject();
-      return el.fireEvent('onresize', e);
-    } else {
-      return false;
-    }
-  };
-
-  Main.prototype.destroy = function() {
-    var i, it, proto, _i, _len, _ref, _results;
-    clearInterval(this.interval);
-    this.interval = null;
-    window.isAnyResizeEventInited = false;
-    it = this;
-    _ref = this.allowedProtos;
-    _results = [];
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      proto = _ref[i];
-      if (proto.prototype == null) {
-        continue;
-      }
-      _results.push((function(proto) {
-        var listener;
-        listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-        if (proto.prototype.addEventListener) {
-          proto.prototype.addEventListener = Element.prototype.addEventListener;
-        } else if (proto.prototype.attachEvent) {
-          proto.prototype.attachEvent = Element.prototype.attachEvent;
-        }
-        if (proto.prototype.removeEventListener) {
-          return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
-        } else if (proto.prototype.detachEvent) {
-          return proto.prototype.detachEvent = Element.prototype.detachEvent;
-        }
-      })(proto));
-    }
-    return _results;
-  };
-
-  return Main;
-
+    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
+  }
 })();
 
-if ((typeof define === "function") && define.amd) {
-  define("any-resize-event", [], function() {
-    return new Main;
-  });
-} else if ((typeof module === "object") && (typeof module.exports === "object")) {
-  module.exports = new Main;
-} else {
-  if (typeof window !== "undefined" && window !== null) {
-    window.AnyResizeEvent = Main;
-  }
-  if (typeof window !== "undefined" && window !== null) {
-    window.anyResizeEvent = new Main;
-  }
-}
-
-},{}]},{},[5])
+},{}]},{},[4]);

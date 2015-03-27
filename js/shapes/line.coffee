@@ -13,14 +13,4 @@ class Line extends Bit
       y2:  @props.y
     super
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Line", [], -> Line
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Line
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Line = Line
-
+module.exports = Line

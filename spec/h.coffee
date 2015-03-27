@@ -1,7 +1,6 @@
 h  = mojs.helpers
 ns = 'http://www.w3.org/2000/svg'
 
-
 describe 'Helpers ->', ->
   it 'should have logBadgeCss', ->
     expect(h.logBadgeCss).toBeDefined()
@@ -724,6 +723,8 @@ describe 'Helpers ->', ->
         expect(h.isDOM(document.createElement 'div')).toBe true
       it 'should detect if object is DOM node #7', ->
         expect(h.isDOM(document.createElementNS ns, 'g')).toBe true
+      # it 'should Node is function it should check if object is instance', ->
+      #   expect(h.isDOM(document.body)).toBe document.body instanceof Node
 
   describe 'getChildElements method', ->
     ns    = 'http://www.w3.org/2000/svg'

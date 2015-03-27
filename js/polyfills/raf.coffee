@@ -1,3 +1,5 @@
+### istanbul ignore next ###
+# raf polyfill
 (->
   lastTime = 0; x = 0
   vendors = ["ms", "moz", "webkit", "o" ]

@@ -28,14 +28,4 @@ class Polygon extends Bit
 
   getLength:-> @el.getTotalLength()
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Polygon", [], -> Polygon
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Polygon
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Polygon = Polygon
-
+module.exports = Polygon

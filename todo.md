@@ -8,6 +8,7 @@
   - website
 - branch
 - plans
+  - cover polyfills
   - fallback to x/y if translate isnt supported
   - make delta method
   - stagger callbacks should run only once

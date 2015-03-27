@@ -29,7 +29,8 @@
   "homepage": "https://github.com/legomushroom/mojs",
   "main": "dis/mojs.min.js",
   "dependencies": {
-    "coveralls": "^2.11.2"
+    "coveralls": "^2.11.2",
+    "gulp-coffeeify": "^0.1.8"
   },
   "devDependencies": {
     "brfs": "^1.2.0",
@@ -53,7 +54,6 @@
     "gulp-notify": "~0.5.1",
     "gulp-plumber": "*",
     "gulp-rename": "latest",
-    "gulp-rimraf": "^0.1.1",
     "gulp-stylus": "latest",
     "gulp-uglify": "latest",
     "gulp-watch": "*",

@@ -1303,7 +1303,7 @@
         return expect(mp.setModulePosition).not.toHaveBeenCalled();
       });
     });
-    return describe('addEvent method ->', function() {
+    describe('addEvent method ->', function() {
       return it('should add event listener', function() {
         var div, handler, isHandler, mp;
         mp = new MotionPath({
@@ -1324,6 +1324,49 @@
           mp.addEvent(div, 'click', handler);
           return expect(div.attachEvent).toHaveBeenCalledWith('click', handler);
         }
+      });
+    });
+    return describe('extendDefaults method ->', function() {
+      it('should copy options to self', function() {
+        var div, mp, path;
+        path = 'M10,10 L100,100';
+        div = document.createElement('div');
+        mp = new MotionPath({
+          path: path,
+          el: div,
+          isRunLess: true
+        });
+        mp.extendDefaults({
+          path: path,
+          el: div
+        });
+        expect(mp.path).toBe(path);
+        return expect(mp.el).toBe(div);
+      });
+      return it('should not copy prototypes', function() {
+        var Options, div, mp, options, path;
+        path = 'M10,10 L100,100';
+        div = document.createElement('div');
+        Options = (function() {
+          function Options() {}
+
+          Options.prototype.prop = 'some value';
+
+          return Options;
+
+        })();
+        options = new Options;
+        options.path = 'M10,10 L100,100';
+        options.el = div;
+        mp = new MotionPath({
+          path: path,
+          el: div,
+          isRunLess: true
+        });
+        mp.extendDefaults(options);
+        expect(mp.path).toBe(options.path);
+        expect(mp.el).toBe(options.el);
+        return expect(mp.props).not.toBe(options.props);
       });
     });
   });

@@ -190,6 +190,10 @@ class MotionPath
     for key, value of o
       @[key] = value
 
+    # keys = Object.keys(o); len = keys.length
+    # while(len--)
+    #   @[keys[len]] = o[keys[len]]
+
   extendOptions:(o)->
     for key, value of o
       @props[key] = value
@@ -221,14 +225,5 @@ class MotionPath
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "motion-path", [], -> MotionPath
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = MotionPath
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.MotionPath = MotionPath
+module.exports = MotionPath
 

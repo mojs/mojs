@@ -1,10 +1,10 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'node', '/usr/local/bin/npm', 'i', 'gulp-del', '--save-dev' ]
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'i', 'gulp-cofeeify', '--save' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.33
 4 verbose readDependencies using package.json deps
-5 verbose cache add [ 'gulp-del', null ]
-6 verbose cache add name=undefined spec="gulp-del" args=["gulp-del",null]
+5 verbose cache add [ 'gulp-cofeeify', null ]
+6 verbose cache add name=undefined spec="gulp-cofeeify" args=["gulp-cofeeify",null]
 7 verbose parsed url { protocol: null,
 7 verbose parsed url   slashes: null,
 7 verbose parsed url   auth: null,
@@ -14,69 +14,69 @@
 7 verbose parsed url   hash: null,
 7 verbose parsed url   search: null,
 7 verbose parsed url   query: null,
-7 verbose parsed url   pathname: 'gulp-del',
-7 verbose parsed url   path: 'gulp-del',
-7 verbose parsed url   href: 'gulp-del' }
-8 silly lockFile 65afcfc8-gulp-del gulp-del
-9 verbose lock gulp-del /Users/mac/.npm/65afcfc8-gulp-del.lock
-10 silly lockFile 65afcfc8-gulp-del gulp-del
-11 silly lockFile 65afcfc8-gulp-del gulp-del
-12 verbose addNamed [ 'gulp-del', '' ]
+7 verbose parsed url   pathname: 'gulp-cofeeify',
+7 verbose parsed url   path: 'gulp-cofeeify',
+7 verbose parsed url   href: 'gulp-cofeeify' }
+8 silly lockFile 219f86d2-gulp-cofeeify gulp-cofeeify
+9 verbose lock gulp-cofeeify /Users/mac/.npm/219f86d2-gulp-cofeeify.lock
+10 silly lockFile 219f86d2-gulp-cofeeify gulp-cofeeify
+11 silly lockFile 219f86d2-gulp-cofeeify gulp-cofeeify
+12 verbose addNamed [ 'gulp-cofeeify', '' ]
 13 verbose addNamed [ null, '*' ]
-14 silly lockFile 3d7a6f36-gulp-del gulp-del@
-15 verbose lock gulp-del@ /Users/mac/.npm/3d7a6f36-gulp-del.lock
-16 silly addNameRange { name: 'gulp-del', range: '*', hasData: false }
-17 verbose request where is /gulp-del
+14 silly lockFile 8497fb2a-gulp-cofeeify gulp-cofeeify@
+15 verbose lock gulp-cofeeify@ /Users/mac/.npm/8497fb2a-gulp-cofeeify.lock
+16 silly addNameRange { name: 'gulp-cofeeify', range: '*', hasData: false }
+17 verbose request where is /gulp-cofeeify
 18 verbose request registry https://registry.npmjs.org/
-19 verbose request id f9c448fd7aa9cc90
-20 verbose url raw /gulp-del
-21 verbose url resolving [ 'https://registry.npmjs.org/', './gulp-del' ]
-22 verbose url resolved https://registry.npmjs.org/gulp-del
-23 verbose request where is https://registry.npmjs.org/gulp-del
-24 info trying registry request attempt 1 at 16:40:09
-25 http GET https://registry.npmjs.org/gulp-del
-26 http 404 https://registry.npmjs.org/gulp-del
-27 verbose headers { date: 'Tue, 24 Feb 2015 14:40:11 GMT',
+19 verbose request id 4240f0157dfa2323
+20 verbose url raw /gulp-cofeeify
+21 verbose url resolving [ 'https://registry.npmjs.org/', './gulp-cofeeify' ]
+22 verbose url resolved https://registry.npmjs.org/gulp-cofeeify
+23 verbose request where is https://registry.npmjs.org/gulp-cofeeify
+24 info trying registry request attempt 1 at 13:37:11
+25 http GET https://registry.npmjs.org/gulp-cofeeify
+26 http 404 https://registry.npmjs.org/gulp-cofeeify
+27 verbose headers { date: 'Fri, 27 Mar 2015 11:37:14 GMT',
 27 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
 27 verbose headers   'content-type': 'application/json',
 27 verbose headers   'cache-control': 'max-age=0',
-27 verbose headers   'content-length': '52',
+27 verbose headers   'content-length': '51',
 27 verbose headers   'accept-ranges': 'bytes',
 27 verbose headers   via: '1.1 varnish',
 27 verbose headers   age: '0',
-27 verbose headers   'x-served-by': 'cache-ams4145-AMS',
+27 verbose headers   'x-served-by': 'cache-fra1224-FRA',
 27 verbose headers   'x-cache': 'MISS',
 27 verbose headers   'x-cache-hits': '0',
-27 verbose headers   'x-timer': 'S1424788811.007341,VS0,VE382',
+27 verbose headers   'x-timer': 'S1427456233.765712,VS0,VE704',
 27 verbose headers   'keep-alive': 'timeout=10, max=50',
 27 verbose headers   connection: 'Keep-Alive' }
 28 silly registry.get cb [ 404,
-28 silly registry.get   { date: 'Tue, 24 Feb 2015 14:40:11 GMT',
+28 silly registry.get   { date: 'Fri, 27 Mar 2015 11:37:14 GMT',
 28 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
 28 silly registry.get     'content-type': 'application/json',
 28 silly registry.get     'cache-control': 'max-age=0',
-28 silly registry.get     'content-length': '52',
+28 silly registry.get     'content-length': '51',
 28 silly registry.get     'accept-ranges': 'bytes',
 28 silly registry.get     via: '1.1 varnish',
 28 silly registry.get     age: '0',
-28 silly registry.get     'x-served-by': 'cache-ams4145-AMS',
+28 silly registry.get     'x-served-by': 'cache-fra1224-FRA',
 28 silly registry.get     'x-cache': 'MISS',
 28 silly registry.get     'x-cache-hits': '0',
-28 silly registry.get     'x-timer': 'S1424788811.007341,VS0,VE382',
+28 silly registry.get     'x-timer': 'S1427456233.765712,VS0,VE704',
 28 silly registry.get     'keep-alive': 'timeout=10, max=50',
 28 silly registry.get     connection: 'Keep-Alive' } ]
-29 silly lockFile 3d7a6f36-gulp-del gulp-del@
-30 silly lockFile 3d7a6f36-gulp-del gulp-del@
-31 error 404 404 Not Found: gulp-del
+29 silly lockFile 8497fb2a-gulp-cofeeify gulp-cofeeify@
+30 silly lockFile 8497fb2a-gulp-cofeeify gulp-cofeeify@
+31 error 404 404 Not Found: gulp-cofeeify
 31 error 404
-31 error 404 'gulp-del' is not in the npm registry.
+31 error 404 'gulp-cofeeify' is not in the npm registry.
 31 error 404 You should bug the author to publish it
 31 error 404 It was specified as a dependency of 'mojs'
 31 error 404
 31 error 404 Note that you can also install from a
 31 error 404 tarball, folder, or http url, or git url.
 32 error System Darwin 14.1.0
-33 error command "node" "/usr/local/bin/npm" "i" "gulp-del" "--save-dev"
+33 error command "node" "/usr/local/bin/npm" "i" "gulp-cofeeify" "--save"
 34 error cwd /Applications/MAMP/htdocs/mojs
 35 error node -v v0.10.33
 36 error npm -v 1.4.28

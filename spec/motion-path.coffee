@@ -967,4 +967,31 @@ describe 'MotionPath ->', ->
         expect(div.attachEvent)
           .toHaveBeenCalledWith 'click', handler
 
+  describe 'extendDefaults method ->', ->
+    it 'should copy options to self', ->
+      path = 'M10,10 L100,100'; div = document.createElement 'div'
+      mp = new MotionPath
+        path:      path
+        el:        div
+        isRunLess: true
+      mp.extendDefaults path: path, el:   div
+      expect(mp.path).toBe path
+      expect(mp.el)  .toBe  div
+    it 'should not copy prototypes', ->
+      path = 'M10,10 L100,100'; div = document.createElement 'div'
+      class Options
+        prop: 'some value'
+      options = new Options
+      options.path = 'M10,10 L100,100'
+      options.el   = div
+      mp = new MotionPath
+        path:      path
+        el:        div
+        isRunLess: true
+      mp.extendDefaults options
+      expect(mp.path) .toBe      options.path
+      expect(mp.el)   .toBe      options.el
+      expect(mp.props).not.toBe  options.props
+
+
 

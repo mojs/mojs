@@ -15,15 +15,4 @@ class Circle extends Bit
     radiusY = if @props.radiusY? then @props.radiusY else @props.radius
     2*Math.PI*Math.sqrt((radiusX*radiusX + radiusY*radiusY)/2)
 
-
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Circle", [], -> Circle
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Circle
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Circle = Circle
-
+module.exports = Circle

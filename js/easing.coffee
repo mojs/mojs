@@ -108,17 +108,7 @@ class Easing
       easing.bounce.out(k * 2 - 1) * 0.5 + 0.5
 
 easing = new Easing
-
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "easing", [], -> easing
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = easing
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.easing = easing
+module.exports = easing
 
 
 

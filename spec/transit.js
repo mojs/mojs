@@ -343,6 +343,17 @@
         });
         return expect(byte.tween.timelines.length).toBe(2);
       });
+      it('should return if no options passed or options are empty', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        spyOn(byte, 'mergeThenOptions');
+        byte.then();
+        return expect(byte.mergeThenOptions).not.toHaveBeenCalled();
+      });
       it('should inherit radius for radiusX/Y options', function() {
         var byte;
         byte = new Byte({
@@ -2441,7 +2452,7 @@
         return expect(size).toBe(0);
       });
     });
-    return describe('foreign bit option ->', function() {
+    describe('foreign bit option ->', function() {
       it('should recieve a foreign bit to work with', function() {
         var bit, byte;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
@@ -2461,6 +2472,22 @@
           bit: bit
         });
         return expect(byte.isForeignBit).toBe(true);
+      });
+    });
+    return describe('getBitLength method', function() {
+      it('should call getLength method on bit', function() {
+        var byte;
+        byte = new Byte();
+        spyOn(byte.bit, 'getLength');
+        byte.getBitLength();
+        return expect(byte.bit.getLength).toHaveBeenCalled();
+      });
+      return it('should cache the value to props', function() {
+        var byte;
+        byte = new Byte();
+        byte.props.bitLength = null;
+        byte.getBitLength();
+        return expect(byte.props.bitLength).not.toBe(null);
       });
     });
   });

@@ -23,14 +23,4 @@ class Zigzag extends Bit
     super
   # getLength:-> @el.getTotalLength()
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Zigzag", [], -> Zigzag
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Zigzag
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Zigzag = Zigzag
-
+module.exports = Zigzag

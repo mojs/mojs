@@ -94,14 +94,5 @@ class Tween
     progress = Math.min progress, 1
     @update @props.startTime + progress*@props.totalTime
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Tween", [], -> Tween
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Tween
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Tween = Tween
+module.exports = Tween
 

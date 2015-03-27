@@ -50,14 +50,5 @@ class Swirl extends Transit
   getSwirl:(progress)->
     @props.signRand*@props.swirlSize*Math.sin(@props.swirlFrequency*progress)
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Swirl", [], -> Swirl
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Swirl
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Swirl = Swirl
+module.exports = Swirl
 

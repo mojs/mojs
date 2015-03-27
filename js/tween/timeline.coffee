@@ -86,15 +86,6 @@ class Timeline
     else if typeof obj is 'string' then @o[obj] = value
     @calcDimentions()
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Timeline", [], -> Timeline
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Timeline
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Timeline = Timeline
+module.exports = Timeline
 
 

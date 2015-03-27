@@ -217,14 +217,4 @@ class Burst extends Transit
     #   @transits[i].then(o)
     @
 
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Burst", [], -> Burst
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Burst
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Burst = Burst
-
+module.exports = Burst

@@ -78,38 +78,41 @@ module.exports = function(config) {
     frameworks: ['jasmine', 'browserify'],
     // list of files / patterns to load in the browser
     files: [
-      'dist/**/*.js',
+      'build/mo.js',
+      // 'dist/**/*.js',
       'spec/**/*.js'
-      // 'dist/easing.js',
-      // 'spec/easing.js'
+      // 'dist/mo.js',
+      // 'dist/transit.js',
+      // 'spec/transit.js',
     ],
     // list of files to exclude
     exclude: [
-      'dist/mo.js',
-      'dist/mojs.js',
-      'dist/h.js',
-      'spec/h.js',
-      // 'dist/transit.js',
-      // 'spec/transit.js',
-      'dist/swirl.js',
-      'spec/swirl.js',
-      'dist/tween.js',
-      'spec/tween.js',
-      'dist/burst.js',
-      'spec/burst.js',
-      'dist/timeline.js',
-      'spec/timeline.js',
-      'dist/motion-path.js',
-      'spec/motion-path.js',
-      'dist/tweener.js',
-      'spec/tweener.js'
+      // 'js/mo.js',
+      // 'dist/mo.js',
+      // 'dist/mojs.js',
+      // 'dist/h.js',
+      // 'spec/h.js',
+      // // 'dist/transit.js',
+      // // 'spec/transit.js',
+      // 'dist/swirl.js',
+      // 'spec/swirl.js',
+      // 'dist/tween.js',
+      // 'spec/tween.js',
+      // 'dist/burst.js',
+      // 'spec/burst.js',
+      // 'dist/timeline.js',
+      // 'spec/timeline.js',
+      // 'dist/motion-path.js',
+      // 'spec/motion-path.js',
+      // 'dist/tweener.js',
+      // 'spec/tweener.js'
     ],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        // 'spec/*.js': 'coverage',
-        'dist/**/*.js': ['browserify']
+        'build/mo.js': 'coverage',
+        // 'dist/**/*.js': ['browserify']
     },
     browserify: {
       debug: true,

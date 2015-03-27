@@ -20,15 +20,4 @@ class Equal extends Bit
     @setAttr d: d
   getLength:-> 2*if @props.radiusX? then @props.radiusX else @props.radius
   
-
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Equal", [], -> Equal
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = Equal
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.Equal = Equal
-
+module.exports = Equal

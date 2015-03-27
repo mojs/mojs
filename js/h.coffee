@@ -365,11 +365,10 @@ class Helpers
   rand:(min,max)-> (Math.random() * ((max) - min)) + min
   isDOM:(o)->
     return false if !o?
-    if typeof Node == 'object' then o instanceof Node
+    if typeof Node is 'function' then o instanceof Node
     else
-      isObject = o and typeof o is 'object'
       isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
-      isObject and isNode
+      typeof o is 'object' and isNode
   
   ###
   # Return direct children elements.
@@ -387,14 +386,4 @@ class Helpers
     children
 
 h = new Helpers
-
-### istanbul ignore next ###
-if (typeof define is "function") and define.amd
-  define "Helpers", [], -> h
-### istanbul ignore next ###
-if (typeof module is "object") and (typeof module.exports is "object")
-  module.exports = h
-### istanbul ignore next ###
-window?.mojs ?= {}
-### istanbul ignore next ###
-window?.mojs.helpers = h
+module.exports = h
