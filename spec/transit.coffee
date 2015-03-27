@@ -430,6 +430,8 @@ describe 'Transit ->', ->
       expect(byte.el.style.display)               .toBe 'none'
       expect(byte.el.style['margin-left'])        .toBe '-27px'
       expect(byte.el.style['margin-top'])         .toBe '-27px'
+      expect(byte.el.style['marginLeft'])         .toBe '-27px'
+      expect(byte.el.style['marginTop'])          .toBe '-27px'
       #expect(byte.el.style['backface-visibility']).toBe 'hidden'
       #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
       expect(byte.isShown).toBe false
@@ -450,6 +452,8 @@ describe 'Transit ->', ->
       expect(byte.el.style.height)                .not.toBe '54px'
       expect(byte.el.style['margin-left'])        .not.toBe '-27px'
       expect(byte.el.style['margin-top'])         .not.toBe '-27px'
+      expect(byte.el.style['marginLeft'])         .not.toBe '-27px'
+      expect(byte.el.style['marginTop'])          .not.toBe '-27px'
       # expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
       # prefixedProp = "#{h.prefix.css}backface-visibility"
       # expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
@@ -476,6 +480,8 @@ describe 'Transit ->', ->
       expect(byte.el.style.height)                .toBe '54px'
       expect(byte.el.style['margin-left'])        .toBe '-27px'
       expect(byte.el.style['margin-top'])         .toBe '-27px'
+      expect(byte.el.style['marginLeft'])         .toBe '-27px'
+      expect(byte.el.style['marginTop'])          .toBe '-27px'
       #expect(byte.el.style['backface-visibility']).toBe 'hidden'
       #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
     it 'should create bit', ->
@@ -559,6 +565,7 @@ describe 'Transit ->', ->
             shiftX: 100
             shiftY: 50
           expect(byte.el.style.transform).toBe 'translate(100px, 50px)'
+        
         it 'should animate position', (dfr)->
           byte = new Byte
             shiftX: {100: '200px'}
@@ -571,20 +578,18 @@ describe 'Transit ->', ->
           byte = new Byte
             shiftX: {'20%': '50%'}
             duration: 20
-          setTimeout ->
-            expect(byte.el.style.transform).toBe 'translate(50%, 0px)'
-            dfr()
-          , 300
+            onComplete:->
+              expect(byte.el.style.transform).toBe 'translate(50%, 0px)'
+              dfr()
         
         it 'should fallback to end units if units are differnt', (dfr)->
           byte = new Byte
             shiftX: {'20%': '50px'}
             shiftY: { 0: '50%'}
             duration: 20
-          setTimeout ->
-            expect(byte.el.style.transform).toBe 'translate(50px, 50%)'
-            dfr()
-          , 300
+            onComplete:->
+              expect(byte.el.style.transform).toBe 'translate(50px, 50%)'
+              dfr()
 
   describe 'fillTransform method ->', ->
     it 'return tranform string of the el', ->

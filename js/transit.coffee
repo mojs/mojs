@@ -83,6 +83,10 @@ class Transit extends bitsMap.map.bit
       @el.style.height      = size
       @el.style['margin-left'] = marginSize
       @el.style['margin-top']  = marginSize
+      @el.style['marginLeft']  = marginSize
+      @el.style['marginTop']   = marginSize
+      # console.log @el.style['margin-left']
+      # console.log @el.style['marginLeft']
       # @h.setPrefixedStyle @el, 'backface-visibility', 'hidden'
 
     @el?.style.opacity     = @props.opacity

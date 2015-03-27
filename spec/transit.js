@@ -810,6 +810,8 @@
         expect(byte.el.style.display).toBe('none');
         expect(byte.el.style['margin-left']).toBe('-27px');
         expect(byte.el.style['margin-top']).toBe('-27px');
+        expect(byte.el.style['marginLeft']).toBe('-27px');
+        expect(byte.el.style['marginTop']).toBe('-27px');
         return expect(byte.isShown).toBe(false);
       });
       it('should skip props if foreign context', function() {
@@ -829,6 +831,8 @@
         expect(byte.el.style.height).not.toBe('54px');
         expect(byte.el.style['margin-left']).not.toBe('-27px');
         expect(byte.el.style['margin-top']).not.toBe('-27px');
+        expect(byte.el.style['marginLeft']).not.toBe('-27px');
+        expect(byte.el.style['marginTop']).not.toBe('-27px');
         return expect(byte.isShown).toBe(false);
       });
       it('should set display: block if isShowInit was passed', function() {
@@ -855,7 +859,9 @@
         expect(byte.el.style.width).toBe('54px');
         expect(byte.el.style.height).toBe('54px');
         expect(byte.el.style['margin-left']).toBe('-27px');
-        return expect(byte.el.style['margin-top']).toBe('-27px');
+        expect(byte.el.style['margin-top']).toBe('-27px');
+        expect(byte.el.style['marginLeft']).toBe('-27px');
+        return expect(byte.el.style['marginTop']).toBe('-27px');
       });
       it('should create bit', function() {
         var byte;
@@ -1023,32 +1029,32 @@
           });
           it('should animate position with respect to units', function(dfr) {
             var byte;
-            byte = new Byte({
+            return byte = new Byte({
               shiftX: {
                 '20%': '50%'
               },
-              duration: 20
+              duration: 20,
+              onComplete: function() {
+                expect(byte.el.style.transform).toBe('translate(50%, 0px)');
+                return dfr();
+              }
             });
-            return setTimeout(function() {
-              expect(byte.el.style.transform).toBe('translate(50%, 0px)');
-              return dfr();
-            }, 300);
           });
           return it('should fallback to end units if units are differnt', function(dfr) {
             var byte;
-            byte = new Byte({
+            return byte = new Byte({
               shiftX: {
                 '20%': '50px'
               },
               shiftY: {
                 0: '50%'
               },
-              duration: 20
+              duration: 20,
+              onComplete: function() {
+                expect(byte.el.style.transform).toBe('translate(50px, 50%)');
+                return dfr();
+              }
             });
-            return setTimeout(function() {
-              expect(byte.el.style.transform).toBe('translate(50px, 50%)');
-              return dfr();
-            }, 300);
           });
         });
       });

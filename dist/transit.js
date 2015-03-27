@@ -109,6 +109,8 @@ Transit = (function(_super) {
       this.el.style.height = size;
       this.el.style['margin-left'] = marginSize;
       this.el.style['margin-top'] = marginSize;
+      this.el.style['marginLeft'] = marginSize;
+      this.el.style['marginTop'] = marginSize;
     }
     if ((_ref = this.el) != null) {
       _ref.style.opacity = this.props.opacity;

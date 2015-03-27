@@ -14,19 +14,19 @@ MotionPath  = require './motion-path'
 Timeline    = require './tween/timeline'
 Tween       = require './tween/tween'
 
-# circle = new mojs.Transit
-#   x: 155,           y: 155
-#   type:             'rect'
-#   radius:           3*20
-#   fill:             'transparent'
-#   strokeWidth:      2
-#   stroke:           'hotpink'
-#   strokeDasharray:  '0 100': '100 rand(10%,50%)'
-#   delay:            1500
-#   duration:         1500
-#   angle:            45: 100
-#   isShowInit:       true
-#   isShowEnd:        true
+circle = new mojs.Transit
+  x: 75,           y: 75
+  type:             'rect'
+  radius:           50
+  fill:             'transparent'
+  strokeWidth:      0
+  stroke:           'hotpink'
+  strokeDasharray:  '0 100': '100 rand(10%,50%)'
+  delay:            1500
+  duration:         1500
+  angle:            45: 100
+  isShowInit:       true
+  isShowEnd:        true
 
 #@slider = document.querySelector 'input'
 #@slider.addEventListener 'input', (e)->

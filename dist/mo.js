@@ -1318,7 +1318,7 @@ if (typeof window !== "undefined" && window !== null) {
   LegoMushroom - Oleg Solomka 2015 MIT
   v0.109.0 unstable
  */
-var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, h;
+var Burst, MotionPath, Stagger, Swirl, Timeline, Transit, Tween, circle, h;
 
 window.mojs = {
   revision: '0.109.0',
@@ -1340,6 +1340,26 @@ MotionPath = require('./motion-path');
 Timeline = require('./tween/timeline');
 
 Tween = require('./tween/tween');
+
+circle = new mojs.Transit({
+  x: 75,
+  y: 75,
+  type: 'rect',
+  radius: 50,
+  fill: 'transparent',
+  strokeWidth: 0,
+  stroke: 'hotpink',
+  strokeDasharray: {
+    '0 100': '100 rand(10%,50%)'
+  },
+  delay: 1500,
+  duration: 1500,
+  angle: {
+    45: 100
+  },
+  isShowInit: true,
+  isShowEnd: true
+});
 
 
 /* istanbul ignore next */
@@ -2955,6 +2975,8 @@ Transit = (function(_super) {
       this.el.style.height = size;
       this.el.style['margin-left'] = marginSize;
       this.el.style['margin-top'] = marginSize;
+      this.el.style['marginLeft'] = marginSize;
+      this.el.style['marginTop'] = marginSize;
     }
     if ((_ref = this.el) != null) {
       _ref.style.opacity = this.props.opacity;
