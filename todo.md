@@ -1,11 +1,13 @@
 ## To Do
 
-- :: demo
-  - tests coverage fix
 - release
   - bower component
   - cdn
+  - version from one place
   - website
+  - demo
+    - fix trails
+    - fix rewind jump
 - branch
 - plans
   - cover polyfills

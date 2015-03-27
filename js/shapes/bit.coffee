@@ -34,7 +34,6 @@ class Bit
   calcTransform:->
     rotate    = "rotate(#{@props.angle}, #{@props.x}, #{@props.y})"
     @props.transform = "#{rotate}"
-
   extendDefaults:->
     @props ?= {}
     for key, value of @defaults

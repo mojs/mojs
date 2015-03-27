@@ -552,7 +552,7 @@ describe 'MotionPath ->', ->
         isRunLess: true
         isPresetPosition: false
         angleOffset:(angle)->
-          angleSum1 += angle; angleSum2 += mp.angle
+          angleSum1 += angle; angleSum2 += @angle
           angle
         onComplete:-> isOnAngle = angleSum1 is angleSum2
       mp.run()
@@ -956,16 +956,16 @@ describe 'MotionPath ->', ->
       isHandler = false
       div = document.createElement('div')
       handler = -> isHandler = true
-      if div.addEventListener?
-        spyOn div, 'addEventListener'
-        mp.addEvent div, 'click', handler
-        expect(div.addEventListener)
-          .toHaveBeenCalledWith 'click', handler, false
-      else if div.attachEvent
-        spyOn div, 'attachEvent'
-        mp.addEvent div, 'click', handler
-        expect(div.attachEvent)
-          .toHaveBeenCalledWith 'click', handler
+      # if div.addEventListener?
+      spyOn div, 'addEventListener'
+      mp.addEvent div, 'click', handler
+      expect(div.addEventListener)
+        .toHaveBeenCalledWith 'click', handler, false
+      # else if div.attachEvent
+      #   spyOn div, 'attachEvent'
+      #   mp.addEvent div, 'click', handler
+      #   expect(div.attachEvent)
+      #     .toHaveBeenCalledWith 'click', handler
 
   describe 'extendDefaults method ->', ->
     it 'should copy options to self', ->
@@ -993,5 +993,46 @@ describe 'MotionPath ->', ->
       expect(mp.el)   .toBe      options.el
       expect(mp.props).not.toBe  options.props
 
+  describe 'calcWidth method', ->
+    it 'should calc scaler.x based on passed size',->
+      mp = new MotionPath
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+
+      size = width: 200; mp.cSize = width: 200; mp.scaler = {}
+      mp.calcWidth(size)
+      expect(mp.scaler.x).toBe mp.cSize.width/size.width
+
+    it 'if result scaler.x is not finite, then should be set to 1',->
+      mp = new MotionPath
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+
+      size = width: 0; mp.cSize = width: 200; mp.scaler = {}
+      mp.calcWidth(size)
+      expect(mp.scaler.x).toBe 1
+
+  describe 'calcHeight method', ->
+    it 'should calc scaler.y based on passed size',->
+      mp = new MotionPath
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+
+      size = height: 200; mp.cSize = height: 200; mp.scaler = {}
+      mp.calcHeight(size)
+      expect(mp.scaler.y).toBe mp.cSize.height/size.height
+
+    it 'if result scaler.x is not finite, then should be set to 1',->
+      mp = new MotionPath
+        path:       coords
+        el:         document.createElement 'div'
+        isRunLess:  true
+
+      size = height: 0; mp.cSize = height: 200; mp.scaler = {}
+      mp.calcHeight(size)
+      expect(mp.scaler.y).toBe 1
 
 

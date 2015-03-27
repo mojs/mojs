@@ -287,14 +287,13 @@ class Transit extends bitsMap.map.bit
 
   mergeThenOptions:(start, end)->
     o = {}
-    # copy start values to o exclude tween options and callbacks
-    # inherit duration
+    # copy start values to o to exclude tween options and callbacks
+    # but inherit duration
     for key, value of start
       if !@h.tweenOptionMap[key] and !@h.callbacksMap[key] or key is 'duration'
         o[key] = value
       else
-        # if tween option or callback
-        # reset it
+        # if tween option or callback reset it
         o[key] = if key is 'easing' then '' else undefined
     # loop thru result object
     keys = Object.keys(end); i = keys.length
@@ -314,10 +313,14 @@ class Transit extends bitsMap.map.bit
         startKey = start.radius
       # if start value is object - rewrite the start value
       if typeof startKey is 'object' and startKey?
+        # set startKey to delta object's start valeu
         startKeys = Object.keys(startKey); startKey = startKey[startKeys[0]]
-      # use the end value
-      if endValue? then o[key] = {}; o[key][startKey] = endValue
-      else o[key] = startKey
+
+      if endValue?
+        # make delta object
+        o[key] = {}; o[key][startKey] = endValue
+      # if endValue is null or undefined save start value to options
+      # else o[key] = startKey
     o
 
   then:(o)->
@@ -380,34 +383,35 @@ class Transit extends bitsMap.map.bit
       !@o.isDrawLess and @setProgress(0, true)
     @startTween()
 
-  # add new options to history on run call
+  # adds new options to history chain
+  # on run call
   transformHistory:(o)->
     keys = Object.keys(o); i = -1
     len = keys.length; historyLen = @history.length
-    # loop over the passed options
+    # loop over the past options
     while(++i < len)
       key = keys[i]; j = 0
-      # loop over the history skipping the firts item
+      # loop over the history skipping the first item
       while(++j < historyLen)
         optionRecord = @history[j][key]
-        if optionRecord?
-          # if history record is object
-          if typeof optionRecord is 'object'
-            # get the end value and delete the record
-            valueKeys = Object.keys(optionRecord)
-            value = optionRecord[valueKeys[0]]
-            delete @history[j][key][valueKeys[0]]
-            # if delta in history and object in passed value
-            # :: new {100: 50} was {200: 40}
-            if typeof o[key] is 'object'
-              valueKeys2 = Object.keys(o[key])
-              value2 = o[key][valueKeys2[0]]
-              @history[j][key][value2] = value
-            # :: new 20 was {200: 40}
-            else @history[j][key][o[key]] = value
-            break
-          else @history[j][key] = o[key]
+        # if optionRecord?
+        # if history record is object
+        if typeof optionRecord is 'object'
+          # get the end value and delete the record
+          valueKeys = Object.keys(optionRecord)
+          value = optionRecord[valueKeys[0]]
+          delete @history[j][key][valueKeys[0]]
+          # if delta in history and object in passed value
+          # :: new {100: 50} was {200: 40}
+          if typeof o[key] is 'object'
+            valueKeys2 = Object.keys(o[key])
+            value2 = o[key][valueKeys2[0]]
+            @history[j][key][value2] = value
+          # :: new 20 was {200: 40}
+          else @history[j][key][o[key]] = value
+          break
         else @history[j][key] = o[key]
+        # else @history[j][key] = o[key]
 
   tuneNewOption:(o, isForeign)->
     # if type is defined and it's different

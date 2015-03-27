@@ -365,10 +365,10 @@ class Helpers
   rand:(min,max)-> (Math.random() * ((max) - min)) + min
   isDOM:(o)->
     return false if !o?
-    if typeof Node is 'function' then o instanceof Node
-    else
-      isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
-      typeof o is 'object' and isNode
+    # if typeof Node is 'function' then o instanceof Node
+    # else
+    isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
+    typeof o is 'object' and isNode
   
   ###
   # Return direct children elements.

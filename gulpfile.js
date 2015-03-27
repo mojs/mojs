@@ -16,6 +16,7 @@ var rename        = require('gulp-rename');
 var uglify        = require('gulp-uglify');
 var sequence      = require('run-sequence');
 var coffeeify     = require('gulp-coffeeify');
+var insert        = require('gulp-insert');
 
 var devFolder   = '', distFolder  = '';
 
@@ -58,14 +59,36 @@ gulp.task('coffee-all + cofee:mojs', function() {
   sequence('coffee-all', 'coffee:mojs');
 });
 
+var startString = 'function s(o,u){if(!n[o]){if(!t[o]){var a',
+    istanbulIgnore = '/* istanbul ignore next */\n',
+    regex = new RegExp('\/\* istanbul ignore next \*\/', 'gm');
+
+var credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\tv0.109.1 \n*/\n\n'
 gulp.task('coffeeify', function(e){
   return gulp.src(['js/mojs.coffee'])
     .pipe(plumber())
     .pipe(coffeeify())
+
+    // remove browserfy sudo code
+    .pipe(rename('mo.spec.js'))
+    .pipe(insert.transform(function(contents) {
+      return contents.replace(startString, istanbulIgnore+startString);
+    }))
+    .pipe(gulp.dest('./spec'))
+
     .pipe(rename('mo.js'))
+    .pipe(insert.transform(function(contents) {
+      var str = contents.replace(/\/\* istanbul ignore next \*\//gm, '\r\r');
+      str = str.replace(/^\s*[\r\n]/gm, '\n');
+      return credits + str;
+    }))
     .pipe(gulp.dest('./build'))
     .pipe(livereload())
+
     .pipe(uglify())
+    .pipe(insert.transform(function(contents) {
+      return credits + contents;
+    }))
     .pipe(rename('mo.min.js'))
     .pipe(gulp.dest('./build'))
 });

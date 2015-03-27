@@ -762,7 +762,7 @@
           isPresetPosition: false,
           angleOffset: function(angle) {
             angleSum1 += angle;
-            angleSum2 += mp.angle;
+            angleSum2 += this.angle;
             return angle;
           },
           onComplete: function() {
@@ -1315,18 +1315,12 @@
         handler = function() {
           return isHandler = true;
         };
-        if (div.addEventListener != null) {
-          spyOn(div, 'addEventListener');
-          mp.addEvent(div, 'click', handler);
-          return expect(div.addEventListener).toHaveBeenCalledWith('click', handler, false);
-        } else if (div.attachEvent) {
-          spyOn(div, 'attachEvent');
-          mp.addEvent(div, 'click', handler);
-          return expect(div.attachEvent).toHaveBeenCalledWith('click', handler);
-        }
+        spyOn(div, 'addEventListener');
+        mp.addEvent(div, 'click', handler);
+        return expect(div.addEventListener).toHaveBeenCalledWith('click', handler, false);
       });
     });
-    return describe('extendDefaults method ->', function() {
+    describe('extendDefaults method ->', function() {
       it('should copy options to self', function() {
         var div, mp, path;
         path = 'M10,10 L100,100';
@@ -1367,6 +1361,78 @@
         expect(mp.path).toBe(options.path);
         expect(mp.el).toBe(options.el);
         return expect(mp.props).not.toBe(options.props);
+      });
+    });
+    describe('calcWidth method', function() {
+      it('should calc scaler.x based on passed size', function() {
+        var mp, size;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true
+        });
+        size = {
+          width: 200
+        };
+        mp.cSize = {
+          width: 200
+        };
+        mp.scaler = {};
+        mp.calcWidth(size);
+        return expect(mp.scaler.x).toBe(mp.cSize.width / size.width);
+      });
+      return it('if result scaler.x is not finite, then should be set to 1', function() {
+        var mp, size;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true
+        });
+        size = {
+          width: 0
+        };
+        mp.cSize = {
+          width: 200
+        };
+        mp.scaler = {};
+        mp.calcWidth(size);
+        return expect(mp.scaler.x).toBe(1);
+      });
+    });
+    return describe('calcHeight method', function() {
+      it('should calc scaler.y based on passed size', function() {
+        var mp, size;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true
+        });
+        size = {
+          height: 200
+        };
+        mp.cSize = {
+          height: 200
+        };
+        mp.scaler = {};
+        mp.calcHeight(size);
+        return expect(mp.scaler.y).toBe(mp.cSize.height / size.height);
+      });
+      return it('if result scaler.x is not finite, then should be set to 1', function() {
+        var mp, size;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          isRunLess: true
+        });
+        size = {
+          height: 0
+        };
+        mp.cSize = {
+          height: 200
+        };
+        mp.scaler = {};
+        mp.calcHeight(size);
+        return expect(mp.scaler.y).toBe(1);
       });
     });
   });

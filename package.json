@@ -1,7 +1,7 @@
 {
   "name": "mojs",
   "description": "motion graphics for the web",
-  "version": "0.109.0",
+  "version": "0.109.1",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -30,7 +30,8 @@
   "main": "dis/mojs.min.js",
   "dependencies": {
     "coveralls": "^2.11.2",
-    "gulp-coffeeify": "^0.1.8"
+    "gulp-coffeeify": "^0.1.8",
+    "gulp-insert": "^0.4.0"
   },
   "devDependencies": {
     "brfs": "^1.2.0",

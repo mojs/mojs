@@ -1,10 +1,6 @@
-###!
-  :: mo · js :: motion graphics toolbelt for the web
-  LegoMushroom - Oleg Solomka 2015 MIT
-###
 
 mojs =
-  revision: '0.109.0', isDebug: true
+  revision: '0.109.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -42,7 +38,6 @@ mojs =
 # @slider = document.querySelector 'input'
 # @slider.addEventListener 'input', (e)->
 #  circle.tween.setProgress (@value/100000)
-
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

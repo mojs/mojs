@@ -55,18 +55,18 @@ class MotionPath
       @container  = @parseEl @props.fill.container
       @fillRule   = @props.fill.fillRule or 'all'
       @getScaler()
-      return if !@container
-      @removeEvent @container, 'onresize', @getScaler
-      @addEvent    @container, 'onresize', @getScaler
+      if @container?
+        @removeEvent @container, 'onresize', @getScaler
+        @addEvent    @container, 'onresize', @getScaler
 
-  addEvent:(el, type, handler)->
-    if el.addEventListener then el.addEventListener type, handler, false
-    else if el.attachEvent then el.attachEvent type, handler
+  addEvent:(el, type, handler)-> el.addEventListener type, handler, false
+    # if el.addEventListener then el.addEventListener type, handler, false
+    # else if el.attachEvent then el.attachEvent type, handler
 
-  removeEvent:(el, type, handler)->
-    if el.removeEventListener
-      @container.removeEventListener type, handler, false
-    else if el.detachEvent then @container.detachEvent type, handler
+  removeEvent:(el, type, handler)-> el.removeEventListener type, handler, false
+    # if el.removeEventListener
+    #   el.removeEventListener type, handler, false
+    # else if el.detachEvent then @container.detachEvent type, handler
 
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
@@ -87,33 +87,28 @@ class MotionPath
     @cSize =
       width:  @container.offsetWidth  or 0
       height: @container.offsetHeight or 0
-
     start = @path.getPointAtLength 0
     end   = @path.getPointAtLength @len
-
-    size = {}
+    
+    size = {}; @scaler = {}
     size.width  = if end.x >= start.x then end.x-start.x else start.x-end.x
     size.height = if end.y >= start.y then end.y-start.y else start.y-end.y
 
-    @scaler = {}
-
-    calcWidth  = =>
-      @scaler.x = @cSize.width/size.width
-      if !isFinite(@scaler.x) then @scaler.x = 1
-    calcHeight = =>
-      @scaler.y = @cSize.height/size.height
-      if !isFinite(@scaler.y) then @scaler.y = 1
-    calcBoth   = -> calcWidth(); calcHeight()
-
     switch @fillRule
       when 'all'
-        calcBoth()
+        @calcWidth(size); @calcHeight(size)
       when 'width'
-        calcWidth();  @scaler.y = @scaler.x
+        @calcWidth(size);  @scaler.y = @scaler.x
       when 'height'
-        calcHeight(); @scaler.x = @scaler.y
-      else
-        calcBoth()
+        @calcHeight(size); @scaler.x = @scaler.y
+      # else @calcBoth(size)
+
+  calcWidth:(size)->
+    @scaler.x = @cSize.width/size.width
+    !isFinite(@scaler.x) and (@scaler.x = 1)
+  calcHeight:(size)=>
+    @scaler.y = @cSize.height/size.height
+    !isFinite(@scaler.y) and (@scaler.y = 1)
 
   run:(o)->
     if o

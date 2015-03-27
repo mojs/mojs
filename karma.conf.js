@@ -78,7 +78,7 @@ module.exports = function(config) {
     frameworks: ['jasmine', 'browserify'],
     // list of files / patterns to load in the browser
     files: [
-      'build/mo.js',
+      'spec/mo.spec.js',
       // 'dist/**/*.js',
       'spec/**/*.js'
       // 'dist/mo.js',
@@ -111,7 +111,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'build/mo.js': 'coverage',
+        'spec/mo.spec.js': 'coverage',
         // 'dist/**/*.js': ['browserify']
     },
     browserify: {

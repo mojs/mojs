@@ -1191,7 +1191,7 @@
         mergedOpton = byte.mergeThenOptions(start, end);
         return expect(mergedOpton.duration).toBe(10);
       });
-      return it('should fallback to default value is start is undefined', function() {
+      it('should fallback to default value is start is undefined', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
         start = {
@@ -1205,6 +1205,27 @@
         };
         mergedOpton = byte.mergeThenOptions(start, end);
         return expect(mergedOpton.stroke['transparent']).toBe('#ff00ff');
+      });
+      return it('should use start value if end value is null or undefined', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10,
+          duration: 1000,
+          fill: 'orange',
+          points: 5
+        };
+        end = {
+          radius: 20,
+          duration: null,
+          points: void 0,
+          fill: null,
+          stroke: '#ff00ff'
+        };
+        mergedOpton = byte.mergeThenOptions(start, end);
+        expect(mergedOpton.duration).toBe(1000);
+        expect(mergedOpton.fill).toBe('orange');
+        return expect(mergedOpton.points).toBe(5);
       });
     });
     describe('render method ->', function() {

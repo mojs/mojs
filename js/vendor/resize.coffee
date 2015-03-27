@@ -121,7 +121,8 @@ do ->
           getComputedStyle(el)
         else el.currentStyle
 
-        isStatic = computedStyle.position is 'static' and el.style.position is ''
+        isNoPos = el.style.position is ''
+        isStatic = computedStyle.position is 'static' and isNoPos
         isEmpty  = computedStyle.position is '' and el.style.position is ''
         if isStatic or isEmpty
           el.style.position = 'relative'

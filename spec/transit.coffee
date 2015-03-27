@@ -642,7 +642,6 @@ describe 'Transit ->', ->
       expect(mergedOpton.duration).toBe 500
       expect(mergedOpton.stroke).toBe '#ff00ff'
 
-
     it 'should merge 2 objects if the first was an object', ->
       byte = new Byte isRunLess: true
       start = radius: {10: 0}
@@ -667,6 +666,17 @@ describe 'Transit ->', ->
       end   = radius: 20, duration: 500, stroke: '#ff00ff'
       mergedOpton = byte.mergeThenOptions start, end
       expect(mergedOpton.stroke['transparent']).toBe '#ff00ff'
+
+    it 'should use start value if end value is null or undefined', ->
+      byte = new Byte
+      start = radius: 10, duration: 1000, fill: 'orange', points: 5
+      end   =
+        radius: 20, duration: null, points: undefined
+        fill: null, stroke: '#ff00ff'
+      mergedOpton = byte.mergeThenOptions start, end
+      expect(mergedOpton.duration).toBe 1000
+      expect(mergedOpton.fill)    .toBe 'orange'
+      expect(mergedOpton.points)  .toBe 5
 
   describe 'render method ->', ->
     it 'should call draw method', ->
@@ -1347,10 +1357,6 @@ describe 'Transit ->', ->
       byte.props.bitLength = null
       byte.getBitLength()
       expect(byte.props.bitLength).not.toBe null
-
-
-
-
 
 
 
