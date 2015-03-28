@@ -1,6 +1,7 @@
 ## To Do
 
 - release
+  - safari 6 test bug fix
   - bower component
   - cdn
   - version from one place

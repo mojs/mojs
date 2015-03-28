@@ -307,6 +307,7 @@ describe 'Burst ->', ->
       expect(opt1)    .toBe 20
       expect(opt2)    .toBe '500'
       expect(opt8)    .toBe '500'
+
     it 'should the same prop if not an array ->', ->
       burst = new Burst childOptions: radius: 20
       opt0 = burst.getPropByMod key: 'radius', i: 0
