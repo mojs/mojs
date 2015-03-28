@@ -22,7 +22,7 @@ module.exports = function(config) {
     sl_safari: {
       base: 'SauceLabs',
       browserName: 'safari',
-      platform: 'OS X 10.7',
+      platform: 'OS X 10.6',
       version: '5'
     },
     sl_firefox_30: {
