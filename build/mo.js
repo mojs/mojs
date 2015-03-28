@@ -1802,7 +1802,7 @@ Circle = (function(superClass) {
     var radiusX, radiusY;
     radiusX = this.props.radiusX != null ? this.props.radiusX : this.props.radius;
     radiusY = this.props.radiusY != null ? this.props.radiusY : this.props.radius;
-    return 2 * Math.PI * Math.sqrt((radiusX * radiusX + radiusY * radiusY) / 2);
+    return 2 * Math.PI * Math.sqrt((Math.pow(radiusX, 2) + Math.pow(radiusY, 2)) / 2);
   };
 
   return Circle;

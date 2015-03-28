@@ -13,6 +13,7 @@ class Circle extends Bit
   getLength:->
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius
     radiusY = if @props.radiusY? then @props.radiusY else @props.radius
-    2*Math.PI*Math.sqrt((radiusX*radiusX + radiusY*radiusY)/2)
+    # Math.pow is needed for safari's 6.0.5 odd bug
+    2*Math.PI*Math.sqrt((Math.pow(radiusX,2) + Math.pow(radiusY,2))/2)
 
 module.exports = Circle
