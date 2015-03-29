@@ -190,11 +190,20 @@ describe 'Transit ->', ->
       byte.then radiusX: 5
       expect(byte.history[1].radiusX[20]).toBe 5
 
+    it 'should pass isChained to timeline', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      expect(byte.tween.timelines[1].o.isChained).toBe true
+
+    it 'should not pass isChained to timeline if delay', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5, delay: 100
+      expect(byte.tween.timelines[1].o.isChained).toBe false
+
     it 'should inherit radius for radiusX/Y options in further chain', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5
       byte.then radiusY: 40
-      
       expect(byte.history[2].radiusX[20]).toBe  5
       expect(byte.history[2].radiusY[20]).toBe 40
 
@@ -202,7 +211,6 @@ describe 'Transit ->', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5
       byte.then radiusY: 40, radiusX: 50
-      
       expect(byte.history[2].radiusX[5]) .toBe 50
       expect(byte.history[2].radiusY[20]).toBe 40
 
@@ -210,7 +218,6 @@ describe 'Transit ->', ->
       byte = new Byte
         radius: 20, duration: 1000, delay: 10, yoyo: true
       byte.then radius: 5
-      
       expect(byte.tween.timelines[1].o.duration).toBe 1000
       expect(byte.tween.timelines[1].o.yoyo)    .toBe false
       expect(byte.tween.timelines[1].o.delay)   .toBe 1010
@@ -252,7 +259,6 @@ describe 'Transit ->', ->
       expect(byte.history[1].onUpdate)  .toBe undefined
 
       byte.tween.setProgress .75
-
       expect(byte.props.onUpdate).not.toBeDefined()
       expect(byte.props.onStart) .not.toBeDefined()
 

@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	v0.109.1 
+	v0.109.2 
 */
 
 (function e(t,n,r){
@@ -1081,7 +1081,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.109.1',
+  revision: '0.109.2',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1450,6 +1450,7 @@ MotionPath = (function() {
     opts.onFirstUpdate = function() {
       return it.tuneOptions(it.history[this.index]);
     };
+    opts.isChained = !o.delay;
     this.tween.append(new Timeline(opts));
     return this;
   };
@@ -2813,7 +2814,7 @@ Transit = (function(superClass) {
   };
 
   Transit.prototype.then = function(o) {
-    var i, it, keys, merged, opts;
+    var i, it, keys, len, merged, opts;
     if ((o == null) || !Object.keys(o)) {
       return;
     }
@@ -2826,27 +2827,27 @@ Transit = (function(superClass) {
       opts[keys[i]] = merged[keys[i]];
     }
     it = this;
-    opts.onUpdate = (function(_this) {
-      return function(p) {
-        return _this.setProgress(p);
-      };
-    })(this);
-    opts.onStart = (function(_this) {
-      return function() {
-        var ref;
-        return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
-      };
-    })(this);
-    opts.onComplete = (function(_this) {
-      return function() {
-        var ref;
-        return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
-      };
-    })(this);
-    opts.onFirstUpdate = function() {
-      return it.tuneOptions(it.history[this.index]);
-    };
-    this.tween.append(new Timeline(opts));
+    len = it.history.length;
+    (function(_this) {
+      return (function(len) {
+        opts.onUpdate = function(p) {
+          return _this.setProgress(p);
+        };
+        opts.onStart = function() {
+          var ref;
+          return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
+        };
+        opts.onComplete = function() {
+          var ref;
+          return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
+        };
+        opts.onFirstUpdate = function() {
+          return it.tuneOptions(it.history[this.index]);
+        };
+        opts.isChained = !o.delay;
+        return _this.tween.append(new Timeline(opts));
+      });
+    })(this)(len);
     return this;
   };
 
@@ -3032,7 +3033,8 @@ Timeline = (function() {
     durationElapsed: 0,
     delayElapsed: 0,
     onStart: null,
-    onComplete: null
+    onComplete: null,
+    isChained: false
   };
 
   function Timeline(o) {
@@ -3148,9 +3150,7 @@ Timeline = (function() {
       if (!this.isOnReverseComplete) {
         this.isOnReverseComplete = true;
         this.setProc(0);
-        if (typeof this.onUpdate === "function") {
-          this.onUpdate(this.easedProgress);
-        }
+        !this.o.isChained && (typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0);
         if ((ref5 = this.o.onReverseComplete) != null) {
           ref5.apply(this);
         }

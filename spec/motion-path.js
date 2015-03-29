@@ -1164,7 +1164,7 @@
         expect(mp.history[1].onUpdate).toBeDefined();
         return expect(mp.props.onUpdate).toBeDefined();
       });
-      return it('should add new timeline', function() {
+      it('should add new timeline', function() {
         var mp;
         mp = new MotionPath({
           path: coords,
@@ -1179,6 +1179,35 @@
         expect(mp.tween.timelines.length).toBe(2);
         expect(mp.tween.timelines[1].o.duration).toBe(2000);
         return expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined();
+      });
+      it('should add isChained option to the new timeline', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5,
+          onUpdate: function() {}
+        }).then({
+          pathStart: .5,
+          pathEnd: 1
+        });
+        return expect(mp.tween.timelines[1].o.isChained).toBe(true);
+      });
+      return it('should not add isChained option if delay', function() {
+        var mp;
+        mp = new MotionPath({
+          path: coords,
+          el: document.createElement('div'),
+          duration: 2000,
+          pathEnd: .5,
+          onUpdate: function() {}
+        }).then({
+          pathStart: .5,
+          pathEnd: 1,
+          delay: 100
+        });
+        return expect(mp.tween.timelines[1].o.isChained).toBe(false);
       });
     });
     describe('tuneOptions ->', function() {

@@ -330,12 +330,16 @@ class Transit extends bitsMap.map.bit
     # copy the tween options from passed o or current props
     keys = Object.keys(@h.tweenOptionMap); i = keys.length; opts = {}
     opts[keys[i]] = merged[keys[i]] while(i--)
-    it = @
-    opts.onUpdate      = (p)=> @setProgress p
-    opts.onStart       = => @props.onStart?.apply(@)
-    opts.onComplete    = => @props.onComplete?.apply @
-    opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
-    @tween.append new Timeline(opts)
+    it = @; len = it.history.length
+    do (len)=>
+      opts.onUpdate      = (p)=>
+        @setProgress p
+        # console.log 'update', p, len
+      opts.onStart       = => @props.onStart?.apply(@)
+      opts.onComplete    = => @props.onComplete?.apply @
+      opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
+      opts.isChained = !o.delay
+      @tween.append new Timeline(opts)
     @
     
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()

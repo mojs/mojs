@@ -37,7 +37,8 @@
         t = new Timeline;
         expect(t.defaults.duration).toBe(600);
         expect(t.defaults.delay).toBe(0);
-        return expect(t.defaults.yoyo).toBe(false);
+        expect(t.defaults.yoyo).toBe(false);
+        return expect(t.defaults.isChained).toBe(false);
       });
       return it('should extend defaults to options', function() {
         var t;
@@ -46,6 +47,23 @@
         });
         expect(t.o.duration).toBe(1000);
         return expect(t.o.delay).toBe(0);
+      });
+    });
+    describe('isChained option ->', function() {
+      it('should recieve isChained option', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          isChained: true
+        });
+        return expect(t.o.isChained).toBe(true);
+      });
+      return it('should fallback to default isChained option', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000
+        });
+        return expect(t.o.isChained).toBe(false);
       });
     });
     describe('start ->', function() {
@@ -341,7 +359,7 @@
         t.update(t.props.startTime);
         return expect(isRightScope).toBe(true);
       });
-      return it('should setProgress to 0', function() {
+      it('should setProgress to 0 if progress went before startTime', function() {
         var t;
         t = new Timeline({
           duration: 100,
@@ -353,6 +371,19 @@
         t.update(t.props.startTime - 20);
         expect(t.onUpdate).toHaveBeenCalledWith(0);
         return expect(t.progress).toBe(0);
+      });
+      return it('should not setProgress to 0 if timeline isChained', function() {
+        var t;
+        t = new Timeline({
+          duration: 100,
+          isChained: true,
+          onReverseComplete: function() {},
+          onUpdate: function() {}
+        }).start();
+        spyOn(t, 'onUpdate');
+        t.update(t.props.startTime + 55);
+        t.update(t.props.startTime - 20);
+        return expect(t.onUpdate).not.toHaveBeenCalledWith(0);
       });
     });
     describe('onComplete callback ->', function() {
@@ -703,8 +734,8 @@
         }), 50);
       });
     });
-    describe('setProc method->', function() {
-      return it('should set the current progress', function() {
+    return describe('setProc method ->', function() {
+      it('should set the current progress', function() {
         var t;
         t = new Timeline({
           easing: 'Bounce.Out'
@@ -713,8 +744,6 @@
         expect(t.progress).toBe(.75);
         return expect(t.easedProgress.toFixed(2)).toBe('0.97');
       });
-    });
-    return describe('setProp method->', function() {
       it('should set new timeline options', function() {
         var t;
         t = new Timeline({

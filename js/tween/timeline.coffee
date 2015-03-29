@@ -3,27 +3,26 @@ h      = require '../h'
 
 class Timeline
   defaults:
-    duration: 600
-    delay:    0
-    repeat:   0
-    yoyo:     false
-    easing:   'Linear.None'
+    duration:         600
+    delay:            0
+    repeat:           0
+    yoyo:             false
+    easing:           'Linear.None'
     durationElapsed:  0
     delayElapsed:     0
     onStart:          null
     onComplete:       null
+    isChained:        false
   constructor:(@o={})-> @extendDefaults(); @vars(); @
   vars:->
     @h = h; @props = {}; @progress = 0; @prevTime = 0
     @calcDimentions()
-
   calcDimentions:->
     @props.totalTime     = (@o.repeat+1)*(@o.duration+@o.delay)
     @props.totalDuration = @props.totalTime - @o.delay
     easing = h.splitEasing @o.easing
     @props.easing = if typeof easing is 'function' then easing
     else Easing[easing[0]][easing[1]]# or (k)-> k
-
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
@@ -73,12 +72,10 @@ class Timeline
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       if !@isOnReverseComplete
         @isOnReverseComplete = true
-        @setProc(0); @onUpdate? @easedProgress
+        @setProc(0); !@o.isChained and @onUpdate? @easedProgress
         @o.onReverseComplete?.apply(@)
     @prevTime = time
-
   setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress
-
   setProp:(obj, value)->
     if typeof obj is 'object'
       for key, val of obj

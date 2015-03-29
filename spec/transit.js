@@ -365,6 +365,29 @@
         });
         return expect(byte.history[1].radiusX[20]).toBe(5);
       });
+      it('should pass isChained to timeline', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        return expect(byte.tween.timelines[1].o.isChained).toBe(true);
+      });
+      it('should not pass isChained to timeline if delay', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5,
+          delay: 100
+        });
+        return expect(byte.tween.timelines[1].o.isChained).toBe(false);
+      });
       it('should inherit radius for radiusX/Y options in further chain', function() {
         var byte;
         byte = new Byte({

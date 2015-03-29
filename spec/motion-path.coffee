@@ -5,7 +5,7 @@ h          = window.mojs.helpers
 coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 describe 'MotionPath ->', ->
   ns = 'http://www.w3.org/2000/svg'
-  
+
   # move to general env
   describe 'enviroment ->', ->
     it 'SVG should be supported', ->
@@ -856,6 +856,28 @@ describe 'MotionPath ->', ->
       expect(mp.tween.timelines.length)             .toBe 2
       expect(mp.tween.timelines[1].o.duration)     .toBe 2000
       expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined()
+
+    it 'should add isChained option to the new timeline', ->
+      mp = new MotionPath(
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+        pathEnd:  .5
+        onUpdate: ->
+      ).then pathStart: .5, pathEnd: 1
+      
+      expect(mp.tween.timelines[1].o.isChained).toBe true
+
+    it 'should not add isChained option if delay', ->
+      mp = new MotionPath(
+        path:     coords
+        el:       document.createElement 'div'
+        duration: 2000
+        pathEnd:  .5
+        onUpdate: ->
+      ).then pathStart: .5, pathEnd: 1, delay: 100
+      
+      expect(mp.tween.timelines[1].o.isChained).toBe false
 
   describe 'tuneOptions ->', ->
     it 'should tune options', ->

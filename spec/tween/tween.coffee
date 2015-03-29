@@ -230,6 +230,7 @@ describe 'Tween ->', ->
       t.restart()
       expect(t.start).toHaveBeenCalled()
 
+  # probaly no needed for this
   # describe 'resetProgress method ->', ->
   #   it 'should call setProgress with 0', ->
   #     t = new Tween

@@ -18,14 +18,25 @@ describe 'Timeline ->', ->
       expect(t.progress).toBe 0
     it 'should have defaults', ->
       t = new Timeline
-      expect(t.defaults.duration).toBe 600
-      expect(t.defaults.delay).toBe    0
-      expect(t.defaults.yoyo).toBe     false
+      expect(t.defaults.duration).toBe  600
+      expect(t.defaults.delay).toBe     0
+      expect(t.defaults.yoyo).toBe      false
+      expect(t.defaults.isChained).toBe false
     it 'should extend defaults to options', ->
+      t = new Timeline duration: 1000
+      expect(t.o.duration).toBe   1000
+      expect(t.o.delay).toBe      0
+
+  describe 'isChained option ->', ->
+    it 'should recieve isChained option', ->
+      t = new Timeline
+        duration: 1000, isChained: true
+      expect(t.o.isChained).toBe  true
+    it 'should fallback to default isChained option', ->
       t = new Timeline
         duration: 1000
-      expect(t.o.duration).toBe 1000
-      expect(t.o.delay).toBe    0
+      expect(t.o.isChained).toBe false
+
   describe 'start ->', ->
     it 'should calculate start time', ->
       t = new Timeline(duration: 1000, delay: 500).start()
@@ -195,7 +206,7 @@ describe 'Timeline ->', ->
       t.update t.props.startTime
       expect(isRightScope).toBe true
 
-    it 'should setProgress to 0', ->
+    it 'should setProgress to 0 if progress went before startTime', ->
       t = new Timeline(
         duration: 100
         onReverseComplete:->
@@ -206,6 +217,18 @@ describe 'Timeline ->', ->
       t.update t.props.startTime - 20
       expect(t.onUpdate).toHaveBeenCalledWith 0
       expect(t.progress).toBe 0
+
+    it 'should not setProgress to 0 if timeline isChained', ->
+      t = new Timeline(
+        duration: 100, isChained: true
+        onReverseComplete:->
+        onUpdate:->
+      ).start()
+      spyOn(t, 'onUpdate')
+      t.update t.props.startTime + 55
+      t.update t.props.startTime - 20
+      expect(t.onUpdate).not.toHaveBeenCalledWith 0
+      # expect(t.progress).toBe 0
 
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
@@ -410,13 +433,12 @@ describe 'Timeline ->', ->
       t = new Timeline(easing: easings.one)
       t.start(); t.update t.props.startTime + 40
       setTimeout (-> expect(easings.one).toHaveBeenCalled(); dfr()), 50
-  describe 'setProc method->', ->
+  describe 'setProc method ->', ->
     it 'should set the current progress', ->
       t = new Timeline(easing: 'Bounce.Out')
       t.setProc .75
       expect(t.progress).toBe .75
       expect(t.easedProgress.toFixed(2)).toBe '0.97'
-  describe 'setProp method->', ->
     it 'should set new timeline options', ->
       t = new Timeline duration: 100, delay: 0
       t.setProp duration: 1000, delay: 200
