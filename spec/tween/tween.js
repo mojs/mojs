@@ -330,8 +330,35 @@
         return expect(tweener.tweens.length).toBe(0);
       });
     });
-    describe('stop method ->', function() {
+    describe('pause method ->', function() {
       it('should call t.remove method with self', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        spyOn(t, 'removeFromTweener');
+        t.pause();
+        return expect(t.removeFromTweener).toHaveBeenCalled();
+      });
+      return it('should set state to "pause"', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        t.pause();
+        return expect(t.state).toBe('pause');
+      });
+    });
+    describe('stop method ->', function() {
+      it('should call t.removeFromTweener method with self', function() {
         var t, timeline;
         tweener.tweens = [];
         t = new Tween;
@@ -343,6 +370,19 @@
         spyOn(t, 'removeFromTweener');
         t.stop();
         return expect(t.removeFromTweener).toHaveBeenCalled();
+      });
+      it('should reset progress to 0', function() {
+        var t, timeline;
+        tweener.tweens = [];
+        t = new Tween;
+        timeline = new Timeline({
+          duration: 2000
+        });
+        t.add(timeline);
+        t.start();
+        spyOn(t, 'setProgress');
+        t.stop();
+        return expect(t.setProgress).toHaveBeenCalledWith(0);
       });
       return it('should set state to "stop"', function() {
         var t, timeline;
@@ -370,19 +410,6 @@
         spyOn(t, 'stop');
         t.restart();
         return expect(t.stop).toHaveBeenCalled();
-      });
-      it('should call setProgress method', function() {
-        var t, timeline;
-        tweener.tweens = [];
-        t = new Tween;
-        timeline = new Timeline({
-          duration: 2000
-        });
-        t.add(timeline);
-        t.start();
-        spyOn(t, 'setProgress');
-        t.restart();
-        return expect(t.setProgress).toHaveBeenCalledWith(0);
       });
       return it('should call start method', function() {
         var t, timeline;

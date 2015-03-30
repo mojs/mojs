@@ -3330,15 +3330,21 @@ Tween = (function() {
     return this;
   };
 
+  Tween.prototype.pause = function() {
+    this.removeFromTweener();
+    this.state = 'pause';
+    return this;
+  };
+
   Tween.prototype.stop = function() {
     this.removeFromTweener();
+    this.setProgress(0);
     this.state = 'stop';
     return this;
   };
 
   Tween.prototype.restart = function() {
     this.stop();
-    this.setProgress(0);
     return this.start();
   };
 

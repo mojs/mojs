@@ -68,8 +68,10 @@ class Tween
   start:(time)->
     @setStartTime(time); !time and t.add(@); @state = 'play'
     @
-  stop:-> @removeFromTweener(); @state = 'stop'; @
-  restart:-> @stop(); @setProgress(0); @start()
+  
+  pause:-> @removeFromTweener(); @state = 'pause'; @
+  stop:->  @removeFromTweener(); @setProgress(0); @state = 'stop'; @
+  restart:-> @stop(); @start()
   removeFromTweener:-> t.remove(@); @
 
   getDimentions:->

@@ -186,7 +186,7 @@ describe 'Tween ->', ->
       t.removeFromTweener()
       expect(tweener.tweens.length).toBe 0
 
-  describe 'stop method ->', ->
+  describe 'pause method ->', ->
     it 'should call t.remove method with self',->
       tweener.tweens = []
       t = new Tween
@@ -194,8 +194,34 @@ describe 'Tween ->', ->
       t.add timeline
       t.start()
       spyOn t, 'removeFromTweener'
+      t.pause()
+      expect(t.removeFromTweener).toHaveBeenCalled()
+
+    it 'should set state to "pause"',->
+      tweener.tweens = []
+      t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add(timeline); t.start(); t.pause()
+      expect(t.state).toBe 'pause'
+  
+  describe 'stop method ->', ->
+    it 'should call t.removeFromTweener method with self',->
+      tweener.tweens = []; t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add timeline
+      t.start()
+      spyOn t, 'removeFromTweener'
       t.stop()
       expect(t.removeFromTweener).toHaveBeenCalled()
+
+    it 'should reset progress to 0',->
+      tweener.tweens = []; t = new Tween
+      timeline = new Timeline duration: 2000
+      t.add timeline
+      t.start()
+      spyOn t, 'setProgress'
+      t.stop()
+      expect(t.setProgress).toHaveBeenCalledWith 0
 
     it 'should set state to "stop"',->
       tweener.tweens = []
@@ -213,14 +239,14 @@ describe 'Tween ->', ->
       spyOn t, 'stop'
       t.restart()
       expect(t.stop).toHaveBeenCalled()
-    it 'should call setProgress method',->
-      tweener.tweens = []
-      t = new Tween
-      timeline = new Timeline duration: 2000
-      t.add(timeline); t.start()
-      spyOn t, 'setProgress'
-      t.restart()
-      expect(t.setProgress).toHaveBeenCalledWith 0
+    # it 'should call setProgress method',->
+    #   tweener.tweens = []
+    #   t = new Tween
+    #   timeline = new Timeline duration: 2000
+    #   t.add(timeline); t.start()
+    #   spyOn t, 'setProgress'
+    #   t.restart()
+    #   expect(t.setProgress).toHaveBeenCalledWith 0
     it 'should call start method',->
       tweener.tweens = []
       t = new Tween
