@@ -63,11 +63,14 @@ var startString = 'function s(o,u){if(!n[o]){if(!t[o]){var a',
     istanbulIgnore = '/* istanbul ignore next */\n',
     regex = new RegExp('\/\* istanbul ignore next \*\/', 'gm');
 
-var credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\tv0.109.2 \n*/\n\n'
+var credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\tv0.110.0 \n*/\n\n'
 gulp.task('coffeeify', function(e){
   return gulp.src(['js/mojs.coffee'])
     .pipe(plumber())
-    .pipe(coffeeify())
+    .pipe(coffeeify({options: {
+      standalone: 'yes'
+      // debug: true
+    }}))
 
     // remove browserfy sudo code
     .pipe(rename('mo.spec.js'))

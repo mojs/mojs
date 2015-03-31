@@ -239,14 +239,6 @@ describe 'Tween ->', ->
       spyOn t, 'stop'
       t.restart()
       expect(t.stop).toHaveBeenCalled()
-    # it 'should call setProgress method',->
-    #   tweener.tweens = []
-    #   t = new Tween
-    #   timeline = new Timeline duration: 2000
-    #   t.add(timeline); t.start()
-    #   spyOn t, 'setProgress'
-    #   t.restart()
-    #   expect(t.setProgress).toHaveBeenCalledWith 0
     it 'should call start method',->
       tweener.tweens = []
       t = new Tween
