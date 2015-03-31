@@ -25,7 +25,6 @@
   ],
   "moduleType": [
     "amd",
-    "es6",
     "globals",
     "node"
   ]
