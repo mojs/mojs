@@ -5,10 +5,10 @@
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
 
 ## Demos
-[[motion graphics for the web]()]
+[[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]
 
 ## Important note
-The library is in active development. APIs should be considered `[unstable]` and can be changed drastically.
+The library is under active development. APIs should be considered `[unstable]` and can be changed drastically.
 
 ## Installation
 ### CDN(pending)
