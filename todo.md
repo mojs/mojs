@@ -1,14 +1,10 @@
 ## To Do
 
 - release
-  - safari 6 test bug fix
   - bower component
   - cdn
   - version from one place
   - website
-  - demo
-    - fix trails
-    - fix rewind jump
 - branch
 - plans
   - cover polyfills

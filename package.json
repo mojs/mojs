@@ -1,6 +1,6 @@
 {
-  "name": "mojs",
-  "description": "motion graphics for the web",
+  "name": "mo-js",
+  "description": "motion graphics toolbelt for the web",
   "version": "0.110.0",
   "license": "MIT",
   "private": false,
@@ -27,7 +27,7 @@
     "url": "https://github.com/legomushroom/mojs/issues"
   },
   "homepage": "https://github.com/legomushroom/mojs",
-  "main": "dis/mojs.min.js",
+  "main": "dis/mo.min.js",
   "dependencies": {
   },
   "devDependencies": {

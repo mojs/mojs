@@ -12,11 +12,11 @@ The library is in active development. APIs should be considered `[unstable]` and
 
 ## Installation
 ### CDN(pending)
-`<script src="//cdn.jsdelivr.net/mojs/latest/mojs.min.js"></script>`  
-### Bower
+`<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>`  
+### Bower(pending)
 `bower install mojs`
 ### NPM
-`npm install mojs`
+`npm install mo-js`
 
 ## Docs
 Working hard on `docs`, `tutorials` and `website`. Follow [@legomushroom](https://twitter.com/legomushroom) for updates. Star and flattr to show your interest.
