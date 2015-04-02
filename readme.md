@@ -11,9 +11,9 @@
 The library is under active development. APIs should be considered `[unstable]` and can be changed drastically.
 
 ## Installation
-### CDN(pending)
+### CDN
 `<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>`  
-### Bower(pending)
+### Bower
 `bower install mojs`
 ### NPM
 `npm install mo-js`
