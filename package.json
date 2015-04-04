@@ -27,7 +27,7 @@
     "url": "https://github.com/legomushroom/mojs/issues"
   },
   "homepage": "https://github.com/legomushroom/mojs",
-  "main": "dis/mo.min.js",
+  "main": "build/mo.min.js",
   "dependencies": {
   },
   "devDependencies": {
