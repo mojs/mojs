@@ -1,12 +1,12 @@
 {
   "name": "mojs",
+  "description": "motion graphics toolbelt for the web",
   "version": "0.110.1",
+  "license": "MIT",
   "homepage": "https://github.com/legomushroom/mojs",
   "authors": [
     "Oleg Solomka @legomushroom <legomushroom@gmail.com>"
   ],
-  "description": "motion graphics toolbelt for the web",
-  "license": "MIT",
   "main": "build/mo.min.js",
   "keywords": [
     "motion",

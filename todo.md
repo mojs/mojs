@@ -1,8 +1,6 @@
 ## To Do
 
 - release
-  - bower component
-  - cdn
   - version from one place
   - website
 - branch
@@ -15,9 +13,6 @@
   - foreign context coordinates in burst
   - stagger should set x/y on svg
   - add mirrors?
-  - add bezier and sping easings
-  - debug state
-  - make delta method
 - add onChainUpdate to all the bits
 - add movement arc
 - transit

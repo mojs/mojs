@@ -17,8 +17,9 @@ var uglify        = require('gulp-uglify');
 var sequence      = require('run-sequence');
 var coffeeify     = require('gulp-coffeeify');
 var insert        = require('gulp-insert');
+var jeditor       = require("gulp-json-editor");
 
-var devFolder   = '', distFolder  = '';
+var devFolder   = '', distFolder  = '', currentVersion = 0;
 
 var paths = {
   src: {
@@ -43,7 +44,7 @@ gulp.task('coffee:tests', function(e){
           .pipe(coffeelint.reporter())
           .pipe(coffee())
           .pipe(gulp.dest(paths.dist.tests))
-          .pipe(livereload())
+          // .pipe(livereload())
 });
 
 gulp.task('stylus', function(){
@@ -63,7 +64,7 @@ var startString = 'function s(o,u){if(!n[o]){if(!t[o]){var a',
     istanbulIgnore = '/* istanbul ignore next */\n',
     regex = new RegExp('\/\* istanbul ignore next \*\/', 'gm');
 
-var credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\tv0.110.1 \n*/\n\n'
+var credits = ''
 gulp.task('coffeeify', function(e){
   return gulp.src(['js/mojs.coffee'])
     .pipe(plumber())
@@ -71,7 +72,6 @@ gulp.task('coffeeify', function(e){
       standalone: 'yes'
       // debug: true
     }}))
-
     // remove browserfy sudo code
     .pipe(rename('mo.spec.js'))
     .pipe(insert.transform(function(contents) {
@@ -96,26 +96,26 @@ gulp.task('coffeeify', function(e){
     .pipe(gulp.dest('./build'))
 });
 
-gulp.task('coffee:mojs', function(e){
-  return gulp.src('dist/mojs.js', { read: false })
-    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-    .pipe(browserify())
-    .pipe(rename('mo.js'))
-    .pipe(gulp.dest('./build/'))
-    .pipe(gulp.src('./build/mo.js'))
-    .pipe(uglify())
-    .pipe(rename('mo.min.js'))
-    .pipe(gulp.dest('./build/'))
-    .pipe(livereload())
-});
+// gulp.task('coffee:mojs', function(e){
+//   return gulp.src('dist/mojs.js', { read: false })
+//     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+//     .pipe(browserify())
+//     .pipe(rename('mo.js'))
+//     .pipe(gulp.dest('./build/'))
+//     .pipe(gulp.src('./build/mo.js'))
+//     .pipe(uglify())
+//     .pipe(rename('mo.min.js'))
+//     .pipe(gulp.dest('./build/'))
+//     .pipe(livereload())
+// });
 
-gulp.task('coffee-all', function(e){
-  return gulp.src(['js/**/*.coffee'])
-    .pipe(plumber())
-    .pipe(coffee({ bare: true }))
-    .pipe(gulp.dest('dist/'))
-    // .pipe(livereload())
-});
+// gulp.task('coffee-all', function(e){
+//   return gulp.src(['js/**/*.coffee'])
+//     .pipe(plumber())
+//     .pipe(coffee({ bare: true }))
+//     .pipe(gulp.dest('dist/'))
+//     // .pipe(livereload())
+// });
 
 gulp.task('coffee-lint', function(e){
   return gulp.src(paths.src.js)
@@ -134,12 +134,38 @@ gulp.task('index:jade', function(e){
           .pipe(livereload())
 });
 
+gulp.task('update-version', function() {
+  sequence('get-current-version', 'update-bower-version', 'coffeeify');
+});
+
+gulp.task('get-current-version', function(e){
+  return gulp.src('package.json')
+          .pipe(plumber())
+          .pipe(jeditor(function (json) {
+            currentVersion = json.version;
+            credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\t' + currentVersion + ' \n*/\n\n'
+            return json;
+          }))
+});
+
+gulp.task('update-bower-version', function(e){
+  return gulp.src('bower.json')
+          .pipe(plumber())
+          .pipe(jeditor(function (json) {
+            json.version = currentVersion;
+            return json;
+          }))
+          .pipe(gulp.dest(''))
+});
+
 gulp.task('default', function(){
   var server = livereload();
+  gulp.run('get-current-version');
   gulp.watch(paths.src.tests,['coffee:tests']);
   gulp.watch(paths.src.css,  ['stylus']);
   gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint']);
   gulp.watch(paths.src.index,['index:jade']);
+  gulp.watch('package.json', ['update-version']);
 });
 
 

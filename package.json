@@ -7,6 +7,13 @@
   "scripts": {
     "test": "karma start --single-run"
   },
+  "main": "build/mo.min.js",
+  "keywords": [
+    "motion",
+    "effects",
+    "animation",
+    "motion graphics"
+  ],
   "author": {
     "name": "LegoMushroom",
     "email": "legomushroom@gmail.com",
@@ -17,38 +24,31 @@
     "type": "git",
     "url": "https://github.com/legomushroom/mojs.git"
   },
-  "keywords": [
-    "motion",
-    "effects",
-    "animation",
-    "motion graphics"
-  ],
   "bugs": {
     "url": "https://github.com/legomushroom/mojs/issues"
   },
   "homepage": "https://github.com/legomushroom/mojs",
-  "main": "build/mo.min.js",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "coveralls": "^2.11.2",
-    "gulp-coffeeify": "^0.1.8",
-    "gulp-insert": "^0.4.0",
     "brfs": "^1.2.0",
     "browserify": "^6.2.0",
     "browserify-istanbul": "^0.1.2",
     "browserify-shim": "~3.8.0",
     "chalk": "^0.5.1",
     "coffeeify": "latest",
+    "coveralls": "^2.11.2",
     "gulp": "latest",
     "gulp-autoprefixer": "0.0.6",
     "gulp-browserify": "latest",
     "gulp-changed": "~0.2.0",
     "gulp-coffee": "~1.4.1",
+    "gulp-coffeeify": "^0.1.8",
     "gulp-coffeelint": "*",
     "gulp-concat": "*",
     "gulp-csslint": "*",
+    "gulp-insert": "^0.4.0",
     "gulp-jade": "~0.4.2",
+    "gulp-json-editor": "^2.2.1",
     "gulp-karma": "*",
     "gulp-livereload": "~1.2.0",
     "gulp-minify-css": "~0.3.0",
