@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.110.0', isDebug: true
+  revision:   '0.111.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -20,6 +20,9 @@ mojs =
   Tween       : require './tween/tween'
   tweener     : require './tween/tweener'
   easing      : require './easing'
+
+mojs.h     = mojs.helpers
+mojs.delta = mojs.h.delta
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

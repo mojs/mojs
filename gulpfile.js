@@ -56,7 +56,9 @@ gulp.task('stylus', function(){
           .pipe(livereload())
 });
 
-var startString = 'function s(o,u){if(!n[o]){if(!t[o]){var a',
+// function s(o,u){if(!n[o]){if(!t[o]
+var startString    = 'function s(o,u){if(!n[o])',
+    startString2   = 'if(typeof exports==="object"&&typeof module!=="undefined")'
     istanbulIgnore = '/* istanbul ignore next */\n',
     regex = new RegExp('\/\* istanbul ignore next \*\/', 'gm');
 
@@ -71,6 +73,7 @@ gulp.task('coffeeify', function(e){
     // remove browserfy sudo code
     .pipe(rename('mo.spec.js'))
     .pipe(insert.transform(function(contents) {
+      contents = contents.replace(startString2, istanbulIgnore+startString2);
       return contents.replace(startString, istanbulIgnore+startString);
     }))
     .pipe(gulp.dest('./spec'))

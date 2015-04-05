@@ -165,18 +165,18 @@
         t.update(t.props.startTime + 1000);
         return expect(t.progress).toBe(1);
       });
-      it('should not call update method if timeline isnt active -', function() {
+      it('should not call update method if timeline isnt active "-"', function() {
         var t;
         t = new Timeline({
           duration: 1000,
           onUpdate: function() {}
         });
-        spyOn(t, 'onUpdate');
         t.start();
+        spyOn(t, 'onUpdate');
         t.update(performance.now() - 500);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
-      it('should not call update method if timeline isnt active +', function() {
+      it('should not call update method if timeline isnt active "+"', function() {
         var cnt, t;
         cnt = 0;
         t = new Timeline({

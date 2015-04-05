@@ -87,13 +87,13 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 1000
       expect(t.progress).toBe 1
-    it 'should not call update method if timeline isnt active -', ->
+    it 'should not call update method if timeline isnt active "-"', ->
       t = new Timeline(duration: 1000, onUpdate:->)
-      spyOn t, 'onUpdate'
       t.start()
+      spyOn t, 'onUpdate'
       t.update(performance.now() - 500)
       expect(t.onUpdate).not.toHaveBeenCalled()
-    it 'should not call update method if timeline isnt active +', ->
+    it 'should not call update method if timeline isnt active "+"', ->
       cnt = 0
       t = new Timeline(duration: 1000, onUpdate:-> cnt++ )
       t.start(); t.update(performance.now() + 1500)

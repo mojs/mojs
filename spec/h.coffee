@@ -765,4 +765,52 @@ describe 'Helpers ->', ->
       expect(start.string).toBe '25%'
       expect(h.warn).toHaveBeenCalled()
 
+  describe 'delta method', ->
+    it 'should create object from variables', ->
+      start = 0; end = 1
+      delta = h.delta(start, end)
+      expect(delta[0]).toBe 1
+    it 'should work with strings', ->
+      start = '0'; end = 1
+      delta = h.delta(start, end)
+      expect(delta['0']).toBe 1
+    it 'should error if unexpected types', ->
+      start = (->); end = 1
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should error if unexpected types #2', ->
+      start = 2; end = (->)
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should error if unexpected types #3', ->
+      start = 2; end = {}
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should error if unexpected types #4', ->
+      start = {}; end = 2
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should not work with NaN arguments', ->
+      start = NaN; end = 2
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should not work with NaN arguments #2', ->
+      start = '2'; end = NaN
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+
+
+
 

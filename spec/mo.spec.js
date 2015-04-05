@@ -1,4 +1,5 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.yes = f()}})(function(){var define,module,exports;return (function e(t,n,r){/* istanbul ignore next */
+(function(f){/* istanbul ignore next */
+if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.yes = f()}})(function(){var define,module,exports;return (function e(t,n,r){/* istanbul ignore next */
 function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
 /* istanbul ignore next */
@@ -1048,7 +1049,7 @@ Helpers = (function() {
   /*
    * Return direct children elements.
   #
-   * @param {HTMLElement}
+   * @param  {HTMLElement}
    * @return {Array}
    */
 
@@ -1065,6 +1066,30 @@ Helpers = (function() {
     return children;
   };
 
+
+  /*
+   * create delta object from variables
+  #
+   * @param  {String, Number}
+   * @param  {String, Number}
+   * @return {Object}
+   */
+
+  Helpers.prototype.delta = function(start, end) {
+    var isType1, isType2, obj, type1, type2;
+    type1 = typeof start;
+    type2 = typeof end;
+    isType1 = type1 === 'string' || type1 === 'number' && !isNaN(start);
+    isType2 = type2 === 'string' || type2 === 'number' && !isNaN(end);
+    if (!isType1 || !isType2) {
+      this.error("delta method expects Strings or Numbers at input but got - " + start + ", " + end);
+      return;
+    }
+    obj = {};
+    obj[start] = end;
+    return obj;
+  };
+
   return Helpers;
 
 })();
@@ -1077,7 +1102,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.110.0',
+  revision: '0.111.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1099,6 +1124,10 @@ mojs = {
   tweener: require('./tween/tweener'),
   easing: require('./easing')
 };
+
+mojs.h = mojs.helpers;
+
+mojs.delta = mojs.h.delta;
 
 
 /* istanbul ignore next */

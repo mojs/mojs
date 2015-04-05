@@ -1,18 +1,21 @@
 ## To Do
 
 - release
-  - version from one place
   - website
-- branch
-- plans
-  - cover polyfills
-  - fallback to x/y if translate isnt supported
-  - make delta method
-  - stagger callbacks should run only once
-  - stagger self generation
-  - foreign context coordinates in burst
-  - stagger should set x/y on svg
-  - add mirrors?
+  - css
+  - page transitions
+  - docs
+  - tuts
+- cover mojs file
+- auto version to mojs file
+- cover polyfills
+- fallback to x/y if translate isnt supported
+- make delta method
+- stagger callbacks should run only once
+- stagger self generation
+- foreign context coordinates in burst
+- stagger should set x/y on svg
+- add mirrors?
 - add onChainUpdate to all the bits
 - add movement arc
 - transit
@@ -25,12 +28,14 @@
   - add spring
   - add bezier handler
 - add shaker
-- radial spings
-- add spriter
-- add glare (is transition shorthand)
-- add camera glare
-- add backgrounds
 - add line trails
+- radial spings
 - add text tricks
+- add backgrounds
+- add layer
+
+- add spriter?
+- add glare (is transition shorthand)?
+- add camera glare?
 
 

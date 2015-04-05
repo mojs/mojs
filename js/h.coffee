@@ -373,7 +373,7 @@ class Helpers
   ###
   # Return direct children elements.
   #
-  # @param {HTMLElement}
+  # @param  {HTMLElement}
   # @return {Array}
   ###
   getChildElements:(element)->
@@ -384,6 +384,24 @@ class Helpers
       if childNodes[i].nodeType == 1
         children.unshift childNodes[i]
     children
+
+  ###
+  # create delta object from variables
+  #
+  # @param  {String, Number}
+  # @param  {String, Number}
+  # @return {Object}
+  ###
+  delta:(start, end)->
+    type1 = typeof start; type2 = typeof end
+    isType1 = type1 is 'string' or type1 is 'number' and !isNaN(start)
+    isType2 = type2 is 'string' or type2 is 'number' and !isNaN(end)
+    if !isType1 or !isType2
+      @error "delta method expects Strings or Numbers at input
+         but got - #{start}, #{end}"
+      return
+    obj = {}; obj[start] = end; obj
+
 
 h = new Helpers
 module.exports = h
