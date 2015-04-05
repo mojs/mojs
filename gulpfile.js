@@ -39,7 +39,7 @@ var paths = {
 gulp.task('coffee:tests', function(e){
   return gulp.src(paths.src.tests)
           .pipe(plumber())
-          .pipe(changed(paths.src.tests))
+          .pipe(changed(paths.dist.tests, { extension: '.js'}))
           .pipe(coffeelint())
           .pipe(coffeelint.reporter())
           .pipe(coffee())
@@ -54,10 +54,6 @@ gulp.task('stylus', function(){
           .pipe(autoprefixer('last 4 version'))
           .pipe(gulp.dest(paths.dist.css))
           .pipe(livereload())
-});
-
-gulp.task('coffee-all + cofee:mojs', function() {
-  sequence('coffee-all', 'coffee:mojs');
 });
 
 var startString = 'function s(o,u){if(!n[o]){if(!t[o]){var a',
@@ -95,6 +91,10 @@ gulp.task('coffeeify', function(e){
     .pipe(rename('mo.min.js'))
     .pipe(gulp.dest('./build'))
 });
+
+// gulp.task('coffee-all + cofee:mojs', function() {
+//   sequence('coffee-all', 'coffee:mojs');
+// });
 
 // gulp.task('coffee:mojs', function(e){
 //   return gulp.src('dist/mojs.js', { read: false })
