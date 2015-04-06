@@ -8,5 +8,5 @@ after_script:
 env:
   global:
     - SAUCE_USERNAME='legomushroom'
-    [ "${TRAVIS_BRANCH}" == "dev" ] && SAUCE_ACCESS_KEY='abb1e109-1def-45c5-bb30-53e256d9f889'
-    [ "${TRAVIS_BRANCH}" == "dev" ] || SAUCE_ACCESS_KEY='6982f2ea-fd37-453f-9cc6-58ea67254b66'
+    - if [[ "${TRAVIS_BRANCH}" == "dev" ]]; then $SAUCE_ACCESS_KEY="abb1e109-1def-45c5-bb30-53e256d9f889"; fi
+    - if [[ "${TRAVIS_BRANCH}" != "dev" ]]; then $SAUCE_ACCESS_KEY="6982f2ea-fd37-453f-9cc6-58ea67254b66"; fi
