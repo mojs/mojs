@@ -161,6 +161,16 @@ gulp.task('update-bower-version', function(e){
           .pipe(gulp.dest(''))
 });
 
+gulp.task('update-main-file-version', function(e){
+  return gulp.src('js/mojs.coffee')
+          .pipe(plumber())
+          .pipe(insert.transform(function(contents) {
+            return contents.replace(/revision\:\s+?'(\d+\.\d+\.\d+)'/i,);
+          }))
+          .pipe(rename('mo.min.js'))
+          .pipe(gulp.dest('./build'))
+});
+
 gulp.task('default', function(){
   var server = livereload();
   gulp.run('get-current-version');
