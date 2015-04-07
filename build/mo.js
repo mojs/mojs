@@ -7,6 +7,32 @@
 (function(f){
 if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.yes = f()}})(function(){var define,module,exports;return (function e(t,n,r){
 function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var BezierEasing, bezierEasing, h;
+
+h = require('./h');
+
+BezierEasing = (function() {
+  function BezierEasing(o) {
+    return this.generate;
+  }
+
+  BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
+    if (arguments.length < 4) {
+      h.error('Bezier function expects 4 arguments');
+      return;
+    }
+    return function() {};
+  };
+
+  return BezierEasing;
+
+})();
+
+bezierEasing = new BezierEasing;
+
+module.exports = bezierEasing;
+
+},{"./h":4}],2:[function(require,module,exports){
 
 var Burst, Swirl, Transit, Tween, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -338,7 +364,7 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":3,"./shapes/bitsMap":9,"./swirl":18,"./transit":19,"./tween/tween":21}],2:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":10,"./swirl":19,"./transit":20,"./tween/tween":22}],3:[function(require,module,exports){
 var Easing, easing;
 
 Easing = (function() {
@@ -566,7 +592,7 @@ easing = new Easing;
 
 module.exports = easing;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var Helpers, h;
 
 Helpers = (function() {
@@ -1101,7 +1127,7 @@ h = new Helpers;
 
 module.exports = h;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var mojs;
 
 mojs = {
@@ -1128,6 +1154,8 @@ mojs = {
   easing: require('./easing')
 };
 
+mojs.easing.bezier = require('./bezier-easing');
+
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
@@ -1144,7 +1172,7 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":1,"./easing":2,"./h":3,"./motion-path":5,"./shapes/bit":8,"./shapes/bitsMap":9,"./shapes/circle":10,"./shapes/cross":11,"./shapes/equal":12,"./shapes/line":13,"./shapes/polygon":14,"./shapes/rect":15,"./shapes/zigzag":16,"./stagger":17,"./swirl":18,"./transit":19,"./tween/timeline":20,"./tween/tween":21,"./tween/tweener":22}],5:[function(require,module,exports){
+},{"./bezier-easing":1,"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":9,"./shapes/bitsMap":10,"./shapes/circle":11,"./shapes/cross":12,"./shapes/equal":13,"./shapes/line":14,"./shapes/polygon":15,"./shapes/rect":16,"./shapes/zigzag":17,"./stagger":18,"./swirl":19,"./transit":20,"./tween/timeline":21,"./tween/tween":22,"./tween/tweener":23}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -1492,7 +1520,7 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./h":3,"./tween/timeline":20,"./tween/tween":21,"./vendor/resize":23}],6:[function(require,module,exports){
+},{"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
 
 (function(root) {
   var offset, ref, ref1;
@@ -1510,7 +1538,7 @@ module.exports = MotionPath;
   }
 })(window);
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 
 (function() {
   var k, lastTime, vendors, x;
@@ -1542,7 +1570,7 @@ module.exports = MotionPath;
   }
 })();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var Bit, h;
 
 h = require('../h');
@@ -1748,7 +1776,7 @@ Bit = (function() {
 
 module.exports = Bit;
 
-},{"../h":3}],9:[function(require,module,exports){
+},{"../h":4}],10:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -1795,7 +1823,7 @@ BitsMap = (function() {
 
 module.exports = new BitsMap;
 
-},{"../h":3,"./bit":8,"./circle":10,"./cross":11,"./equal":12,"./line":13,"./polygon":14,"./rect":15,"./zigzag":16}],10:[function(require,module,exports){
+},{"../h":4,"./bit":9,"./circle":11,"./cross":12,"./equal":13,"./line":14,"./polygon":15,"./rect":16,"./zigzag":17}],11:[function(require,module,exports){
 
 var Bit, Circle,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1838,7 +1866,7 @@ Circle = (function(superClass) {
 
 module.exports = Circle;
 
-},{"./bit":8}],11:[function(require,module,exports){
+},{"./bit":9}],12:[function(require,module,exports){
 
 var Bit, Cross,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1885,7 +1913,7 @@ Cross = (function(superClass) {
 
 module.exports = Cross;
 
-},{"./bit":8}],12:[function(require,module,exports){
+},{"./bit":9}],13:[function(require,module,exports){
 
 var Bit, Equal,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1936,7 +1964,7 @@ Equal = (function(superClass) {
 
 module.exports = Equal;
 
-},{"./bit":8}],13:[function(require,module,exports){
+},{"./bit":9}],14:[function(require,module,exports){
 
 var Bit, Line,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1969,7 +1997,7 @@ Line = (function(superClass) {
 
 module.exports = Line;
 
-},{"./bit":8}],14:[function(require,module,exports){
+},{"./bit":9}],15:[function(require,module,exports){
 
 var Bit, Polygon, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2031,7 +2059,7 @@ Polygon = (function(superClass) {
 
 module.exports = Polygon;
 
-},{"../h":3,"./bit":8}],15:[function(require,module,exports){
+},{"../h":4,"./bit":9}],16:[function(require,module,exports){
 
 var Bit, Rect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2076,7 +2104,7 @@ Rect = (function(superClass) {
 
 module.exports = Rect;
 
-},{"./bit":8}],16:[function(require,module,exports){
+},{"./bit":9}],17:[function(require,module,exports){
 
 var Bit, Zigzag,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2128,7 +2156,7 @@ Zigzag = (function(superClass) {
 
 module.exports = Zigzag;
 
-},{"./bit":8}],17:[function(require,module,exports){
+},{"./bit":9}],18:[function(require,module,exports){
 
 var Stagger, Timeline, Transit, Tween, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2266,7 +2294,7 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":3,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],18:[function(require,module,exports){
+},{"./h":4,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],19:[function(require,module,exports){
 
 var Swirl, Transit,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2379,7 +2407,7 @@ Swirl = (function(superClass) {
 
 module.exports = Swirl;
 
-},{"./transit":19}],19:[function(require,module,exports){
+},{"./transit":20}],20:[function(require,module,exports){
 
 var Timeline, Transit, Tween, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -3042,7 +3070,7 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":3,"./shapes/bitsMap":9,"./tween/timeline":20,"./tween/tween":21}],20:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":10,"./tween/timeline":21,"./tween/tween":22}],21:[function(require,module,exports){
 var Easing, Timeline, h;
 
 Easing = require('../easing');
@@ -3209,7 +3237,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../easing":2,"../h":3}],21:[function(require,module,exports){
+},{"../easing":3,"../h":4}],22:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3404,7 +3432,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../h":3,"./tweener":22}],22:[function(require,module,exports){
+},{"../h":4,"./tweener":23}],23:[function(require,module,exports){
 var Tweener, h, t;
 
 require('../polyfills/raf');
@@ -3489,7 +3517,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":3,"../polyfills/performance":6,"../polyfills/raf":7}],23:[function(require,module,exports){
+},{"../h":4,"../polyfills/performance":7,"../polyfills/raf":8}],24:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com
@@ -3705,5 +3733,5 @@ module.exports = t;
   }
 })();
 
-},{}]},{},[4])(4)
+},{}]},{},[5])(5)
 });

@@ -21,6 +21,10 @@ mojs =
   tweener     : require './tween/tweener'
   easing      : require './easing'
 
+# cover
+mojs.easing.bezier = require './bezier-easing'
+# cover
+
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
