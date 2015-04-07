@@ -11,8 +11,20 @@ BezierEasing = (function() {
   }
 
   BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
+    var arg, i, j;
     if (arguments.length < 4) {
       h.error('Bezier function expects 4 arguments');
+      return;
+    }
+    for (i = j = 0; j < 4; i = ++j) {
+      arg = arguments[i];
+      if (typeof arg !== "number" || isNaN(arg) || !isFinite(arg)) {
+        h.error('Bezier function expects 4 arguments');
+        return;
+      }
+    }
+    if (mX1 < 0 || mX1 > 1 || mX2 < 0 || mX2 > 1) {
+      h.error('Bezier x values should be > 0 and < 1');
       return;
     }
     return function() {};

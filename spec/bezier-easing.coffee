@@ -28,15 +28,43 @@ describe 'bezier easing ->', ->
       spyOn mojs.h, 'error'
       expect(bezier(2, 1, 3)).toBe undefined
       expect(mojs.h.error).toHaveBeenCalled()
-
-    # assert.throws(function () { BezierEasing(1); });
-    # assert.throws(function () { BezierEasing(1, 0, 1); });
-    # assert.throws(function () { BezierEasing(1, 0, 1, "a"); });
-    # assert.throws(function () { BezierEasing(1, 0, 1, NaN); });
-    # assert.throws(function () { BezierEasing(1, 0, 1, Infinity); });
-    # assert.throws(function () { BezierEasing(0.5, 0.5, -5, 0.5); });
-    # assert.throws(function () { BezierEasing(0.5, 0.5, 5, 0.5); });
-    # assert.throws(function () { BezierEasing(-2, 0.5, 0.5, 0.5); });
-    # assert.throws(function () { BezierEasing(2, 0.5, 0.5, 0.5); });
-    # assert.throws(function () { BezierEasing(-Math.random()-0.000001, 0.5, 0.5, 0.5); });
-    # assert.throws(function () { BezierEasing(0.5, 0.5, 1.000001+Math.random(), 0.5); });
+    it 'should error if string argument', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(2, 1, 3, 'a')).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if NaN argument', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(2, 1, 3, NaN)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if Infinity argument', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(2, 1, 3, Infinity)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if Infinity argument', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(2, 1, 3, Infinity)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if x < 0', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(0.5, 0.5, -5, 0.5)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if x < 0 #2', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(-2, 0.5, 1, 0.5)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if x < 0 #3', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(-Math.random()-0.000001, 0.5, 0.5, 0.5)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if x > 1', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(0.5, 0.5, 5, 0.5)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if x > 1 #2', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(2, 0.5, 1, 0.5)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
+    it 'should error if x > 1 #3', ->
+      spyOn mojs.h, 'error'
+      expect(bezier(0.5, 0.5, 1.000001+Math.random(), 0.5)).toBe undefined
+      expect(mojs.h.error).toHaveBeenCalled()
