@@ -135,7 +135,6 @@ class Burst extends Transit
           delta = {}; delta[newStart] = newEnd
           delta
       transit.extendDefaults()
-
   getSidePoint:(side, angle)->
     sideRadius = @getSideRadius side
     pointStart = @h.getRadialPoint

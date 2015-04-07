@@ -2,7 +2,7 @@
 
 #### motion graphics toolbelt for the web
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom-dev.svg)](https://saucelabs.com/u/legomushroom-dev)
 
 ## Demos
 [[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]

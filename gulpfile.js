@@ -138,7 +138,7 @@ gulp.task('index:jade', function(e){
 });
 
 gulp.task('update-version', function() {
-  sequence('get-current-version', 'update-bower-version', 'coffeeify');
+  sequence('get-current-version', 'update-bower-version', 'update-main-file-version', 'coffeeify');
 });
 
 gulp.task('get-current-version', function(e){
@@ -165,7 +165,7 @@ gulp.task('update-main-file-version', function(e){
   return gulp.src('js/mojs.coffee')
           .pipe(plumber())
           .pipe(insert.transform(function(contents) {
-            return contents.replace(/revision\:\s+?'(\d+\.\d+\.\d+)'/i,);
+            return contents.replace(/revision\:\s+?'(\d+\.\d+\.\d+)\''/i, 'revision:   \''+currentVersion+'\'');
           }))
           .pipe(rename('mo.min.js'))
           .pipe(gulp.dest('./build'))
