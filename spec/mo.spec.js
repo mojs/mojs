@@ -7,6 +7,12 @@ var BezierEasing, bezierEasing, h,
 
 h = require('./h');
 
+
+/**
+ * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
+ * Adopted from https://github.com/gre/bezier-easing
+ */
+
 BezierEasing = (function() {
   function BezierEasing(o) {
     this.vars();
@@ -18,7 +24,7 @@ BezierEasing = (function() {
   };
 
   BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
-    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, binarySubdivide, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute;
+    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute;
     if (arguments.length < 4) {
       return this.error('Bezier function expects 4 arguments');
     }
@@ -53,30 +59,13 @@ BezierEasing = (function() {
     getSlope = function(aT, aA1, aA2) {
       return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
     };
-    binarySubdivide = function(aX, aA, aB) {
-      var currentT, currentX;
-      currentX = void 0;
-      currentT = void 0;
-      i = 0;
-      while (true) {
-        currentT = aA + (aB - aA) / 2.0;
-        currentX = calcBezier(currentT, mX1, mX2) - aX;
-        if (currentX > 0.0) {
-          aB = currentT;
-        } else {
-          aA = currentT;
-        }
-        if (!(Math.abs(currentX) > SUBDIVISION_PRECISION && ++i < SUBDIVISION_MAX_ITERATIONS)) {
-          break;
-        }
-      }
-      return currentT;
-    };
     newtonRaphsonIterate = function(aX, aGuessT) {
       var currentSlope, currentX;
       i = 0;
       while (i < NEWTON_ITERATIONS) {
         currentSlope = getSlope(aGuessT, mX1, mX2);
+
+        /* istanbul ignore if */
         if (currentSlope === 0.0) {
           return aGuessT;
         }
@@ -94,7 +83,7 @@ BezierEasing = (function() {
       }
     };
     getTForX = function(aX) {
-      var currentSample, dist, guessForT, initialSlope, intervalStart, lastSample;
+      var currentSample, delta, dist, guessForT, initialSlope, intervalStart, lastSample;
       intervalStart = 0.0;
       currentSample = 1;
       lastSample = kSplineTableSize - 1;
@@ -103,15 +92,20 @@ BezierEasing = (function() {
         ++currentSample;
       }
       --currentSample;
-      dist = (aX - mSampleValues[currentSample]) / (mSampleValues[currentSample + 1] - mSampleValues[currentSample]);
+      delta = mSampleValues[currentSample + 1] - mSampleValues[currentSample];
+      dist = (aX - mSampleValues[currentSample]) / delta;
       guessForT = intervalStart + dist * kSampleStepSize;
       initialSlope = getSlope(guessForT, mX1, mX2);
       if (initialSlope >= NEWTON_MIN_SLOPE) {
         return newtonRaphsonIterate(aX, guessForT);
-      } else if (initialSlope === 0.0) {
-        return guessForT;
       } else {
-        return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize);
+
+        /* istanbul ignore next */
+        if (initialSlope === 0.0) {
+          return guessForT;
+        } else {
+          return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize);
+        }
       }
     };
     precompute = function() {
@@ -121,19 +115,6 @@ BezierEasing = (function() {
         calcSampleValues();
       }
     };
-    if (arguments.length !== 4) {
-      throw new Error('BezierEasing requires 4 arguments.');
-    }
-    i = 0;
-    while (i < 4) {
-      if (typeof arguments[i] !== 'number' || isNaN(arguments[i]) || !isFinite(arguments[i])) {
-        throw new Error('BezierEasing arguments should be integers.');
-      }
-      ++i;
-    }
-    if (mX1 < 0 || mX1 > 1 || mX2 < 0 || mX2 > 1) {
-      throw new Error('BezierEasing x values must be in [0, 1] range.');
-    }
     mSampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
     _precomputed = false;
     f = function(aX) {
@@ -150,17 +131,6 @@ BezierEasing = (function() {
         return 1;
       }
       return calcBezier(getTForX(aX), mY1, mY2);
-    };
-    f.getControlPoints = function() {
-      return [
-        {
-          x: mX1,
-          y: mY1
-        }, {
-          x: mX2,
-          y: mY2
-        }
-      ];
     };
     return f;
   };

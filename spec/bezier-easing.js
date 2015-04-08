@@ -77,6 +77,40 @@
         return _results;
       });
     });
+    describe('symetric curves ->', function() {
+      it('should have a central value y~=0.5 at x=0.5', function() {
+        var a, b, c, d, easing, i, samples, _i, _results;
+        samples = 100;
+        _results = [];
+        for (i = _i = 0; 0 <= samples ? _i <= samples : _i >= samples; i = 0 <= samples ? ++_i : --_i) {
+          a = Math.random();
+          b = 2 * Math.random() - 0.5;
+          c = 1 - a;
+          d = 1 - b;
+          easing = bezier(a, b, c, d);
+          _results.push(expect(easing(.5)).toBeCloseTo(.5, .000001));
+        }
+        return _results;
+      });
+      return it('should be symetrical', function() {
+        var a, b, c, d, easing, i, samples, sym, x, _i, _results;
+        samples = 100;
+        _results = [];
+        for (i = _i = 0; 0 <= samples ? _i <= samples : _i >= samples; i = 0 <= samples ? ++_i : --_i) {
+          a = Math.random();
+          b = 2 * Math.random() - 0.5;
+          c = 1 - a;
+          d = 1 - b;
+          easing = bezier(a, b, c, d);
+          sym = function(x) {
+            return 1 - easing(1 - x);
+          };
+          x = i / samples;
+          _results.push(expect(easing(x)).toBeCloseTo(sym(x), .0000000001));
+        }
+        return _results;
+      });
+    });
     return describe('arguments parsing ->', function() {
       it('should error if no arguments', function() {
         spyOn(mojs.h, 'error');

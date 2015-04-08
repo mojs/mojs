@@ -42,6 +42,24 @@ describe 'bezier easing ->', ->
         x = i/samples
         expect(bezier(a,b,c,d)(x)).toBe bezier(a,b,c,d)(x)
 
+  describe 'symetric curves ->', ->
+    it 'should have a central value y~=0.5 at x=0.5', ->
+      samples = 100
+      for i in [0..samples]
+        a = Math.random(); b = 2*Math.random()-0.5
+        c = 1-a; d = 1-b; easing = bezier(a,b,c,d)
+        expect(easing(.5)).toBeCloseTo .5, .000001
+
+    it 'should be symetrical', ->
+      samples = 100
+      for i in [0..samples]
+        a = Math.random(); b = 2*Math.random()-0.5
+        c = 1-a; d = 1-b; easing = bezier(a,b,c,d)
+        sym = (x)-> 1 - easing(1-x)
+        x = i/samples
+        expect(easing(x)).toBeCloseTo sym(x), .0000000001
+
+
   describe 'arguments parsing ->', ->
     it 'should error if no arguments', ->
       spyOn mojs.h, 'error'
