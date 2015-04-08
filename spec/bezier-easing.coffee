@@ -1,4 +1,3 @@
-
 bezier = mojs.easing.bezier
 
 describe 'bezier easing ->', ->

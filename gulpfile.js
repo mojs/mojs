@@ -59,6 +59,7 @@ gulp.task('stylus', function(){
 // function s(o,u){if(!n[o]){if(!t[o]
 var startString    = 'function s(o,u){if(!n[o])',
     startString2   = 'if(typeof exports==="object"&&typeof module!=="undefined")'
+    startString3   = 'function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; }'
     istanbulIgnore = '/* istanbul ignore next */\n',
     regex = new RegExp('\/\* istanbul ignore next \*\/', 'gm');
 
@@ -73,6 +74,7 @@ gulp.task('coffeeify', function(e){
     // remove browserfy sudo code
     .pipe(rename('mo.spec.js'))
     .pipe(insert.transform(function(contents) {
+      contents = contents.replace(startString3, istanbulIgnore+startString3);
       contents = contents.replace(startString2, istanbulIgnore+startString2);
       return contents.replace(startString, istanbulIgnore+startString);
     }))
