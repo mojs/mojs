@@ -10,6 +10,73 @@
     it('should return a function', function() {
       return expect(typeof bezier(0, 0, 1, 1)).toBe('function');
     });
+    describe('linear curves ->', function() {
+      return it('shoud be linear', function() {
+        var bezier1, bezier2, i, samples, x, _i, _results;
+        bezier1 = bezier(0, 0, 1, 1);
+        bezier2 = bezier(1, 1, 0, 0);
+        samples = 100;
+        _results = [];
+        for (i = _i = 0; 0 <= samples ? _i <= samples : _i >= samples; i = 0 <= samples ? ++_i : --_i) {
+          x = i / samples;
+          expect(bezier1(x)).toBe(bezier2(x));
+          expect(bezier1(x)).toBe(x);
+          _results.push(expect(bezier1(x)).toBeDefined());
+        }
+        return _results;
+      });
+    });
+    describe('common props ->', function() {
+      it('should be the right value at extremes', function() {
+        var a, b, c, d, easing, i, _i, _results;
+        _results = [];
+        for (i = _i = 0; _i < 1000; i = ++_i) {
+          a = Math.random();
+          b = 2 * Math.random() - 0.5;
+          c = Math.random();
+          d = 2 * Math.random() - 0.5;
+          easing = bezier(a, b, c, d);
+          expect(easing(0)).toBe(0);
+          _results.push(expect(easing(1)).toBe(1));
+        }
+        return _results;
+      });
+      return it('should approach the projected value of its x=y projected curve', function() {
+        var a, b, c, composed, d, easing, i, projected, samples, x, _i, _results;
+        samples = 1000;
+        _results = [];
+        for (i = _i = 0; 0 <= samples ? _i < samples : _i > samples; i = 0 <= samples ? ++_i : --_i) {
+          x = i / samples;
+          a = Math.random();
+          b = Math.random();
+          c = Math.random();
+          d = Math.random();
+          easing = bezier(a, b, c, d);
+          projected = bezier(b, a, d, c);
+          composed = function(x) {
+            return projected(easing(x));
+          };
+          _results.push(expect(x).toBeCloseTo(composed(x), .05));
+        }
+        return _results;
+      });
+    });
+    describe('two same instances ->', function() {
+      return it('should be strictly equal', function() {
+        var a, b, c, d, i, samples, x, _i, _results;
+        samples = 100;
+        _results = [];
+        for (i = _i = 0; 0 <= samples ? _i <= samples : _i >= samples; i = 0 <= samples ? ++_i : --_i) {
+          a = Math.random();
+          b = 2 * Math.random() - 0.5;
+          c = Math.random();
+          d = 2 * Math.random() - 0.5;
+          x = i / samples;
+          _results.push(expect(bezier(a, b, c, d)(x)).toBe(bezier(a, b, c, d)(x)));
+        }
+        return _results;
+      });
+    });
     return describe('arguments parsing ->', function() {
       it('should error if no arguments', function() {
         spyOn(mojs.h, 'error');

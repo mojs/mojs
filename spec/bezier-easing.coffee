@@ -6,6 +6,41 @@ describe 'bezier easing ->', ->
     expect(typeof bezier).toBe 'function'
   it 'should return a function', ->
     expect(typeof bezier(0, 0, 1, 1)).toBe 'function'
+  describe 'linear curves ->', ->
+    it 'shoud be linear', ->
+      bezier1 = bezier(0,0,1,1); bezier2 = bezier 1,1,0,0
+      samples = 100
+      for i in [0..samples]
+        x = i / samples
+        expect(bezier1(x)).toBe bezier2(x)
+        expect(bezier1(x)).toBe x
+        expect(bezier1(x)).toBeDefined()
+  describe 'common props ->', ->
+    it 'should be the right value at extremes', ->
+      for i in [0...1000]
+        a = Math.random(); b = 2*Math.random()-0.5
+        c = Math.random(); d = 2*Math.random()-0.5
+        easing = bezier(a,b,c,d)
+        expect(easing(0)).toBe 0
+        expect(easing(1)).toBe 1
+    it 'should approach the projected value of its x=y projected curve', ->
+      samples = 1000
+      for i in [0...samples]
+        x = i / samples
+        a = Math.random(); b = Math.random()
+        c = Math.random(); d = Math.random()
+        easing    = bezier(a,b,c,d)
+        projected = bezier(b,a,d,c)
+        composed  = (x)-> projected easing x
+        expect(x).toBeCloseTo composed(x), .05
+  describe 'two same instances ->', ->
+    it 'should be strictly equal', ->
+      samples = 100
+      for i in [0..samples]
+        a = Math.random(); b = 2*Math.random()-0.5
+        c = Math.random(); d = 2*Math.random()-0.5
+        x = i/samples
+        expect(bezier(a,b,c,d)(x)).toBe bezier(a,b,c,d)(x)
 
   describe 'arguments parsing ->', ->
     it 'should error if no arguments', ->
