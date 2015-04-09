@@ -20,7 +20,6 @@ class BezierEasing
         return @error 'Bezier function expects 4 arguments'
     if (mX1 < 0 or mX1 > 1 or mX2 < 0 or mX2 > 1)
       return @error 'Bezier x values should be > 0 and < 1'
-
     # These values are established by empiricism with
     # tests (tradeoff: performance VS precision)
     NEWTON_ITERATIONS = 4
@@ -104,7 +103,6 @@ class BezierEasing
       return 0 if aX == 0
       return 1 if aX == 1
       calcBezier getTForX(aX), mY1, mY2
-
     f
 
   error:(msg)-> h.error msg
