@@ -548,6 +548,101 @@ Easing = (function() {
     inout: bezier.apply(Easing, [0.77, 0, 0.175, 1])
   };
 
+  Easing.prototype.sin = {
+    "in": bezier.apply(Easing, [0.47, 0, 0.745, 0.715]),
+    out: bezier.apply(Easing, [0.39, 0.575, 0.565, 1]),
+    inout: bezier.apply(Easing, [0.445, 0.05, 0.55, 0.95])
+  };
+
+  Easing.prototype.exp = {
+    "in": bezier.apply(Easing, [0.95, 0.05, 0.795, 0.035]),
+    out: bezier.apply(Easing, [0.19, 1, 0.22, 1]),
+    inout: bezier.apply(Easing, [1, 0, 0, 1])
+  };
+
+  Easing.prototype.circ = {
+    "in": bezier.apply(Easing, [0.6, 0.04, 0.98, 0.335]),
+    out: bezier.apply(Easing, [0.075, 0.82, 0.165, 1]),
+    inout: bezier.apply(Easing, [0.785, 0.135, 0.15, 0.86])
+  };
+
+  Easing.prototype.back = {
+    "in": bezier.apply(Easing, [0.6, 0, 0.735, 0.045]),
+    out: bezier.apply(Easing, [0.175, 0.885, 0.32, 1]),
+    inout: bezier.apply(Easing, [0.68, 0, 0.265, 1])
+  };
+
+  Easing.prototype.elastic = {
+    "in": function(k) {
+      var a, p, s;
+      s = void 0;
+      p = 0.4;
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      a = 1;
+      s = p / 4;
+      return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+    },
+    out: function(k) {
+      var a, p, s;
+      s = void 0;
+      p = 0.4;
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      a = 1;
+      s = p / 4;
+      return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
+    },
+    inout: function(k) {
+      var a, p, s;
+      s = void 0;
+      p = 0.4;
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      a = 1;
+      s = p / 4;
+      if ((k *= 2) < 1) {
+        return -0.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+      }
+      return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+    }
+  };
+
+  Easing.prototype.bounce = {
+    "in": function(k) {
+      return 1 - easing.bounce.out(1 - k);
+    },
+    out: function(k) {
+      if (k < (1 / 2.75)) {
+        return 7.5625 * k * k;
+      } else if (k < (2 / 2.75)) {
+        return 7.5625 * (k -= 1.5 / 2.75) * k + 0.75;
+      } else if (k < (2.5 / 2.75)) {
+        return 7.5625 * (k -= 2.25 / 2.75) * k + 0.9375;
+      } else {
+        return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
+      }
+    },
+    inout: function(k) {
+      if (k < 0.5) {
+        return easing.bounce["in"](k * 2) * 0.5;
+      }
+      return easing.bounce.out(k * 2 - 1) * 0.5 + 0.5;
+    }
+  };
+
   return Easing;
 
 })();
