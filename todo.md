@@ -10,6 +10,8 @@
   - add path handler
   - add bezier handler
   - add spring
+- tween
+  -add and append multiple timelines
 - add movement arc
 - add states
 - cover polyfills

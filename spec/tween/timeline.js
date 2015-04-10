@@ -695,12 +695,12 @@
       it('should parse standart easing', function() {
         var t;
         t = new Timeline({
-          easing: 'Sinusoidal.Out',
+          easing: 'Sin.Out',
           duration: 100
         });
         t.start();
         t.update(t.props.startTime + 50);
-        return expect(t.easedProgress).toBe(easing.sinusoidal.out(t.progress));
+        return expect(t.easedProgress).toBe(easing.sin.out(t.progress));
       });
       it('should work with easing function', function() {
         var easings, t;

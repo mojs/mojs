@@ -420,9 +420,9 @@ describe 'Timeline ->', ->
       t = new Timeline(easing: 'Linear.None')
       expect(typeof t.props.easing).toBe 'function'
     it 'should parse standart easing', ->
-      t = new Timeline(easing: 'Sinusoidal.Out', duration: 100)
+      t = new Timeline(easing: 'Sin.Out', duration: 100)
       t.start(); t.update(t.props.startTime + 50)
-      expect(t.easedProgress).toBe easing.sinusoidal.out t.progress
+      expect(t.easedProgress).toBe easing.sin.out t.progress
     it 'should work with easing function', ->
       easings = one: -> a = 1
       t = new Timeline(easing: easings.one)

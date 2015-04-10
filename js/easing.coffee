@@ -1,6 +1,6 @@
 class Easing
   linear: none: (k) -> k
-  quadratic:
+  quad:
     in:     (k) -> k * k
     out:    (k) -> k * (2 - k)
     inout:  (k) ->
@@ -12,23 +12,23 @@ class Easing
     inout:  (k) ->
       return 0.5 * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k + 2)
-  quartic:
+  quart:
     in:     (k) -> k * k * k * k
     out:    (k) -> 1 - (--k * k * k * k)
     inout:  (k) ->
       return 0.5 * k * k * k * k  if (k *= 2) < 1
       -0.5 * ((k -= 2) * k * k * k - 2)
-  quintic:
+  quint:
     in:     (k) -> k * k * k * k * k
     out:    (k) -> --k * k * k * k * k + 1
     inout:  (k) ->
       return 0.5 * k * k * k * k * k  if (k *= 2) < 1
       0.5 * ((k -= 2) * k * k * k * k + 2)
-  sinusoidal:
+  sin:
     in:     (k) -> 1 - Math.cos(k * Math.PI / 2)
     out:    (k) -> Math.sin k * Math.PI / 2
     inout:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
-  exponential:
+  exp:
     in:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
     out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
     inout:  (k) ->
@@ -36,7 +36,7 @@ class Easing
       return 1  if k is 1
       return 0.5 * Math.pow(1024, k - 1)  if (k *= 2) < 1
       0.5 * (-Math.pow(2, -10 * (k - 1)) + 2)
-  circular:
+  circ:
     in:     (k) ->    1 - Math.sqrt(1 - k * k)
     out:    (k) ->   Math.sqrt 1 - (--k * k)
     inout:  (k) ->

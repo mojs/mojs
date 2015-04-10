@@ -3,14 +3,14 @@ describe 'easing ->', ->
   describe 'Linear ->', ->
     it 'should have None', ->
       expect(easing.linear.none(.5)).toBe .5
-  describe 'quadratic ->', ->
+  describe 'quad ->', ->
     it 'should have In', ->
-      expect(easing.quadratic.in(.5)).toBe .5*.5
+      expect(easing.quad.in(.5)).toBe .5*.5
     it 'should have Out', ->
-      expect(easing.quadratic.out(.5)).toBe .5*(2-.5)
+      expect(easing.quad.out(.5)).toBe .5*(2-.5)
     it 'should have InOut', ->
-      expect(easing.quadratic.inout(.5)).toBe .5
-      expect(easing.quadratic.inout(.25)).toBe .125
+      expect(easing.quad.inout(.5)).toBe .5
+      expect(easing.quad.inout(.25)).toBe .125
   describe 'cubic ->', ->
     it 'should have In', ->
       expect(easing.cubic.in(.5)).toBe .5*.5*.5
@@ -19,51 +19,51 @@ describe 'easing ->', ->
     it 'should have InOut', ->
       expect(easing.cubic.inout(.5)).toBe .5
       expect(easing.cubic.inout(.25)).toBe .0625
-  describe 'quartic ->', ->
+  describe 'quart ->', ->
     it 'should have In', ->
-      expect(easing.quartic.in(.5)).toBe .5*.5*.5*.5
+      expect(easing.quart.in(.5)).toBe .5*.5*.5*.5
     it 'should have Out', ->
-      expect(easing.quartic.out(.5)).toBe .9375
+      expect(easing.quart.out(.5)).toBe .9375
     it 'should have InOut', ->
-      expect(easing.quartic.inout(.5)).toBe .5
-      expect(easing.quartic.inout(.25)).toBe .03125
-  describe 'quintic ->', ->
+      expect(easing.quart.inout(.5)).toBe .5
+      expect(easing.quart.inout(.25)).toBe .03125
+  describe 'quint ->', ->
     it 'should have In', ->
-      expect(easing.quintic.in(.5)).toBe .5*.5*.5*.5*.5
+      expect(easing.quint.in(.5)).toBe .5*.5*.5*.5*.5
     it 'should have Out', ->
-      expect(easing.quintic.out(.5)).toBe .96875
+      expect(easing.quint.out(.5)).toBe .96875
     it 'should have InOut', ->
-      expect(easing.quintic.inout(.5)).toBe .5
-      expect(easing.quintic.inout(.25)).toBe .015625
-  describe 'sinusoidal ->', ->
+      expect(easing.quint.inout(.5)).toBe .5
+      expect(easing.quint.inout(.25)).toBe .015625
+  describe 'sin ->', ->
     it 'should have In', ->
-      expect(easing.sinusoidal.in(.5)).toBe 1 - Math.cos(.5 * Math.PI / 2)
+      expect(easing.sin.in(.5)).toBe 1 - Math.cos(.5 * Math.PI / 2)
     it 'should have Out', ->
-      expect(easing.sinusoidal.out(.5)).toBe Math.sin(.5 * Math.PI / 2)
+      expect(easing.sin.out(.5)).toBe Math.sin(.5 * Math.PI / 2)
     it 'should have InOut', ->
       result = 0.5 * (1 - Math.cos(Math.PI * .5))
-      expect(easing.sinusoidal.inout(.5)).toBe result
-  describe 'exponential ->', ->
+      expect(easing.sin.inout(.5)).toBe result
+  describe 'exp ->', ->
     it 'should have In', ->
-      expect(easing.exponential.in(0)).toBe 0
-      expect(easing.exponential.in(.5)).toBe Math.pow(1024, .5 - 1)
+      expect(easing.exp.in(0)).toBe 0
+      expect(easing.exp.in(.5)).toBe Math.pow(1024, .5 - 1)
     it 'should have Out', ->
-      expect(easing.exponential.out(1)).toBe 1
-      expect(easing.exponential.out(.5)).toBe 1 - Math.pow(2, -10 * .5)
+      expect(easing.exp.out(1)).toBe 1
+      expect(easing.exp.out(.5)).toBe 1 - Math.pow(2, -10 * .5)
     it 'should have InOut', ->
-      expect(easing.exponential.inout(0)).toBe 0
-      expect(easing.exponential.inout(1)).toBe 1
-      expect(easing.exponential.inout(.25)).toBe 0.5 * Math.pow(1024, .5 - 1)
-      expect(easing.exponential.inout(.5)).toBe  .5
-  describe 'circular ->', ->
+      expect(easing.exp.inout(0)).toBe 0
+      expect(easing.exp.inout(1)).toBe 1
+      expect(easing.exp.inout(.25)).toBe 0.5 * Math.pow(1024, .5 - 1)
+      expect(easing.exp.inout(.5)).toBe  .5
+  describe 'circ ->', ->
     it 'should have In', ->
-      expect(easing.circular.in(.5)).toBe 1 - Math.sqrt(1 - .5 * .5)
+      expect(easing.circ.in(.5)).toBe 1 - Math.sqrt(1 - .5 * .5)
     it 'should have Out', ->
       k = .5
-      expect(easing.circular.out(k)).toBe Math.sqrt 1 - (--k * k)
+      expect(easing.circ.out(k)).toBe Math.sqrt 1 - (--k * k)
     it 'should have InOut', ->
-      expect(easing.circular.inout(.25).toFixed(2)).toBe '0.07'
-      expect(easing.circular.inout(.6).toFixed(2)).toBe  '0.80'
+      expect(easing.circ.inout(.25).toFixed(2)).toBe '0.07'
+      expect(easing.circ.inout(.6).toFixed(2)).toBe  '0.80'
   describe 'elastic ->', ->
     it 'should have In', ->
       expect(easing.elastic.in(0)).toBe 0

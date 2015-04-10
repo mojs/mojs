@@ -494,7 +494,7 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.quadratic = {
+  Easing.prototype.quad = {
     "in": function(k) {
       return k * k;
     },
@@ -524,7 +524,7 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.quartic = {
+  Easing.prototype.quart = {
     "in": function(k) {
       return k * k * k * k;
     },
@@ -539,7 +539,7 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.quintic = {
+  Easing.prototype.quint = {
     "in": function(k) {
       return k * k * k * k * k;
     },
@@ -554,7 +554,7 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.sinusoidal = {
+  Easing.prototype.sin = {
     "in": function(k) {
       return 1 - Math.cos(k * Math.PI / 2);
     },
@@ -566,7 +566,7 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.exponential = {
+  Easing.prototype.exp = {
     "in": function(k) {
       if (k === 0) {
         return 0;
@@ -595,7 +595,7 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.circular = {
+  Easing.prototype.circ = {
     "in": function(k) {
       return 1 - Math.sqrt(1 - k * k);
     },
