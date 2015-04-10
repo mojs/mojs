@@ -9,6 +9,17 @@
         return expect(easing.linear.none(.5)).toBe(.5);
       });
     });
+    describe('ease ->', function() {
+      it('should have In', function() {
+        return expect(easing.ease["in"].toStr()).toBe('bezier(0.42,0,1,1)');
+      });
+      it('should have Out', function() {
+        return expect(easing.ease.out.toStr()).toBe('bezier(0,0,0.58,1)');
+      });
+      return it('should have InOut', function() {
+        return expect(easing.ease.inout.toStr()).toBe('bezier(0.42,0,0.58,1)');
+      });
+    });
     describe('quad ->', function() {
       it('should have In', function() {
         return expect(easing.quad["in"].toStr()).toBe('bezier(0.55,0.085,0.68,0.53)');

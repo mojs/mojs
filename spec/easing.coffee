@@ -3,6 +3,13 @@ describe 'easing ->', ->
   describe 'Linear ->', ->
     it 'should have None', ->
       expect(easing.linear.none(.5)).toBe .5
+  describe 'ease ->', ->
+    it 'should have In', ->
+      expect(easing.ease.in.toStr()).toBe     'bezier(0.42,0,1,1)'
+    it 'should have Out', ->
+      expect(easing.ease.out.toStr()).toBe    'bezier(0,0,0.58,1)'
+    it 'should have InOut', ->
+      expect(easing.ease.inout.toStr()).toBe  'bezier(0.42,0,0.58,1)'
   describe 'quad ->', ->
     it 'should have In', ->
       expect(easing.quad.in.toStr()).toBe     'bezier(0.55,0.085,0.68,0.53)'

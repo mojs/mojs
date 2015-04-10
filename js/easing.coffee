@@ -3,6 +3,10 @@ bezier = require './bezier-easing'
 class Easing
   bezier: bezier
   linear: none: (k) -> k
+  ease:
+    in:     bezier.apply @, [ 0.42,   0,     1,      1   ]
+    out:    bezier.apply @, [ 0,      0,    0.58,    1   ]
+    inout:  bezier.apply @, [ 0.42,   0,    0.58,    1   ]
   quad:
     in:     bezier.apply @, [ 0.55,  0.085, 0.68,   0.53 ]
     out:    bezier.apply @, [ 0.25,  0.46,  0.45,   0.94 ]

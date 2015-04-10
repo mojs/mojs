@@ -521,6 +521,12 @@ Easing = (function() {
     }
   };
 
+  Easing.prototype.ease = {
+    "in": bezier.apply(Easing, [0.42, 0, 1, 1]),
+    out: bezier.apply(Easing, [0, 0, 0.58, 1]),
+    inout: bezier.apply(Easing, [0.42, 0, 0.58, 1])
+  };
+
   Easing.prototype.quad = {
     "in": bezier.apply(Easing, [0.55, 0.085, 0.68, 0.53]),
     out: bezier.apply(Easing, [0.25, 0.46, 0.45, 0.94]),
