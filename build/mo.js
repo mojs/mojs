@@ -30,7 +30,7 @@ BezierEasing = (function() {
   };
 
   BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
-    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute;
+    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, binarySubdivide, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute, str;
     if (arguments.length < 4) {
       return this.error('Bezier function expects 4 arguments');
     }
@@ -88,6 +88,25 @@ BezierEasing = (function() {
         ++i;
       }
     };
+    binarySubdivide = function(aX, aA, aB) {
+      var currentT, currentX;
+      currentX = void 0;
+      currentT = void 0;
+      i = 0;
+      while (true) {
+        currentT = aA + (aB - aA) / 2.0;
+        currentX = calcBezier(currentT, mX1, mX2) - aX;
+        if (currentX > 0.0) {
+          aB = currentT;
+        } else {
+          aA = currentT;
+        }
+        if (!(Math.abs(currentX) > SUBDIVISION_PRECISION && ++i < SUBDIVISION_MAX_ITERATIONS)) {
+          break;
+        }
+      }
+      return currentT;
+    };
     getTForX = function(aX) {
       var currentSample, delta, dist, guessForT, initialSlope, intervalStart, lastSample;
       intervalStart = 0.0;
@@ -136,6 +155,10 @@ BezierEasing = (function() {
         return 1;
       }
       return calcBezier(getTForX(aX), mY1, mY2);
+    };
+    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
+    f.toStr = function() {
+      return str;
     };
     return f;
   };
@@ -486,10 +509,14 @@ Burst = (function(superClass) {
 module.exports = Burst;
 
 },{"./h":4,"./shapes/bitsMap":10,"./swirl":19,"./transit":20,"./tween/tween":22}],3:[function(require,module,exports){
-var Easing, easing;
+var Easing, bezier, easing;
+
+bezier = require('./bezier-easing');
 
 Easing = (function() {
   function Easing() {}
+
+  Easing.prototype.bezier = bezier;
 
   Easing.prototype.linear = {
     none: function(k) {
@@ -498,211 +525,27 @@ Easing = (function() {
   };
 
   Easing.prototype.quad = {
-    "in": function(k) {
-      return k * k;
-    },
-    out: function(k) {
-      return k * (2 - k);
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k;
-      }
-      return -0.5 * (--k * (k - 2) - 1);
-    }
+    "in": bezier.apply(Easing, [0.55, 0.085, 0.68, 0.53]),
+    out: bezier.apply(Easing, [0.25, 0.46, 0.45, 0.94]),
+    inout: bezier.apply(Easing, [0.455, 0.03, 0.515, 0.955])
   };
 
   Easing.prototype.cubic = {
-    "in": function(k) {
-      return k * k * k;
-    },
-    out: function(k) {
-      return --k * k * k + 1;
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k * k;
-      }
-      return 0.5 * ((k -= 2) * k * k + 2);
-    }
+    "in": bezier.apply(Easing, [0.55, 0.055, 0.675, 0.19]),
+    out: bezier.apply(Easing, [0.215, 0.61, 0.355, 1]),
+    inout: bezier.apply(Easing, [0.645, 0.045, 0.355, 1])
   };
 
   Easing.prototype.quart = {
-    "in": function(k) {
-      return k * k * k * k;
-    },
-    out: function(k) {
-      return 1 - (--k * k * k * k);
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k * k * k;
-      }
-      return -0.5 * ((k -= 2) * k * k * k - 2);
-    }
+    "in": bezier.apply(Easing, [0.895, 0.03, 0.685, 0.22]),
+    out: bezier.apply(Easing, [0.165, 0.84, 0.44, 1]),
+    inout: bezier.apply(Easing, [0.77, 0, 0.175, 1])
   };
 
   Easing.prototype.quint = {
-    "in": function(k) {
-      return k * k * k * k * k;
-    },
-    out: function(k) {
-      return --k * k * k * k * k + 1;
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k * k * k * k;
-      }
-      return 0.5 * ((k -= 2) * k * k * k * k + 2);
-    }
-  };
-
-  Easing.prototype.sin = {
-    "in": function(k) {
-      return 1 - Math.cos(k * Math.PI / 2);
-    },
-    out: function(k) {
-      return Math.sin(k * Math.PI / 2);
-    },
-    inout: function(k) {
-      return 0.5 * (1 - Math.cos(Math.PI * k));
-    }
-  };
-
-  Easing.prototype.exp = {
-    "in": function(k) {
-      if (k === 0) {
-        return 0;
-      } else {
-        return Math.pow(1024, k - 1);
-      }
-    },
-    out: function(k) {
-      if (k === 1) {
-        return 1;
-      } else {
-        return 1 - Math.pow(2, -10 * k);
-      }
-    },
-    inout: function(k) {
-      if (k === 0) {
-        return 0;
-      }
-      if (k === 1) {
-        return 1;
-      }
-      if ((k *= 2) < 1) {
-        return 0.5 * Math.pow(1024, k - 1);
-      }
-      return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
-    }
-  };
-
-  Easing.prototype.circ = {
-    "in": function(k) {
-      return 1 - Math.sqrt(1 - k * k);
-    },
-    out: function(k) {
-      return Math.sqrt(1 - (--k * k));
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return -0.5 * (Math.sqrt(1 - k * k) - 1);
-      }
-      return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
-    }
-  };
-
-  Easing.prototype.elastic = {
-    "in": function(k) {
-      var a, p, s;
-      s = void 0;
-      p = 0.4;
-      if (k === 0) {
-        return 0;
-      }
-      if (k === 1) {
-        return 1;
-      }
-      a = 1;
-      s = p / 4;
-      return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
-    },
-    out: function(k) {
-      var a, p, s;
-      s = void 0;
-      p = 0.4;
-      if (k === 0) {
-        return 0;
-      }
-      if (k === 1) {
-        return 1;
-      }
-      a = 1;
-      s = p / 4;
-      return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
-    },
-    inout: function(k) {
-      var a, p, s;
-      s = void 0;
-      p = 0.4;
-      if (k === 0) {
-        return 0;
-      }
-      if (k === 1) {
-        return 1;
-      }
-      a = 1;
-      s = p / 4;
-      if ((k *= 2) < 1) {
-        return -0.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
-      }
-      return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
-    }
-  };
-
-  Easing.prototype.back = {
-    "in": function(k) {
-      var s;
-      s = 1.70158;
-      return k * k * ((s + 1) * k - s);
-    },
-    out: function(k) {
-      var s;
-      s = 1.70158;
-      return --k * k * ((s + 1) * k + s) + 1;
-    },
-    inout: function(k) {
-      var s;
-      s = 1.70158 * 1.525;
-      if ((k *= 2) < 1) {
-        return 0.5 * (k * k * ((s + 1) * k - s));
-      }
-      return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
-    }
-  };
-
-  Easing.prototype.bounce = {
-    "in": function(k) {
-      return 1 - easing.bounce.out(1 - k);
-    },
-    out: function(k) {
-      if (k < (1 / 2.75)) {
-        return 7.5625 * k * k;
-      } else if (k < (2 / 2.75)) {
-        return 7.5625 * (k -= 1.5 / 2.75) * k + 0.75;
-      } else if (k < (2.5 / 2.75)) {
-        return 7.5625 * (k -= 2.25 / 2.75) * k + 0.9375;
-      } else {
-        return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
-      }
-    },
-    inout: function(k) {
-      if (k < 0.5) {
-        return easing.bounce["in"](k * 2) * 0.5;
-      }
-      return easing.bounce.out(k * 2 - 1) * 0.5 + 0.5;
-    }
+    "in": bezier.apply(Easing, [0.895, 0.03, 0.685, 0.22]),
+    out: bezier.apply(Easing, [0.165, 0.84, 0.44, 1]),
+    inout: bezier.apply(Easing, [0.77, 0, 0.175, 1])
   };
 
   return Easing;
@@ -713,8 +556,10 @@ easing = new Easing;
 
 module.exports = easing;
 
-},{}],4:[function(require,module,exports){
-var Helpers, h;
+},{"./bezier-easing":1}],4:[function(require,module,exports){
+var Helpers, h, mojs;
+
+mojs = './mojs';
 
 Helpers = (function() {
   Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 5px 2px; border: 1px solid #FF512F;';
@@ -1275,8 +1120,6 @@ mojs = {
   easing: require('./easing')
 };
 
-mojs.easing.bezier = require('./bezier-easing');
-
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
@@ -1293,7 +1136,7 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./bezier-easing":1,"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":9,"./shapes/bitsMap":10,"./shapes/circle":11,"./shapes/cross":12,"./shapes/equal":13,"./shapes/line":14,"./shapes/polygon":15,"./shapes/rect":16,"./shapes/zigzag":17,"./stagger":18,"./swirl":19,"./transit":20,"./tween/timeline":21,"./tween/tween":22,"./tween/tweener":23}],6:[function(require,module,exports){
+},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":9,"./shapes/bitsMap":10,"./shapes/circle":11,"./shapes/cross":12,"./shapes/equal":13,"./shapes/line":14,"./shapes/polygon":15,"./shapes/rect":16,"./shapes/zigzag":17,"./stagger":18,"./swirl":19,"./transit":20,"./tween/timeline":21,"./tween/tween":22,"./tween/tweener":23}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 

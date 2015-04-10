@@ -58,6 +58,10 @@ describe 'bezier easing ->', ->
         x = i/samples
         expect(easing(x)).toBeCloseTo sym(x), .0000000001
 
+  describe 'toStr method ->', ->
+    it 'should return params, the function was called with', ->
+      expect(bezier(0,1,0,1).toStr()).toBe 'bezier(0,1,0,1)'
+
 
   describe 'arguments parsing ->', ->
     it 'should error if no arguments', ->

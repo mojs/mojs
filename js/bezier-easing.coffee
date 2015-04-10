@@ -59,6 +59,16 @@ class BezierEasing
         mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2)
         ++i
       return
+    binarySubdivide = (aX, aA, aB) ->
+      currentX = undefined; currentT = undefined; i = 0
+      loop
+        currentT = aA + (aB - aA) / 2.0
+        currentX = calcBezier(currentT, mX1, mX2) - aX
+        if currentX > 0.0 then aB = currentT
+        else aA = currentT
+        unless Math.abs(currentX) > SUBDIVISION_PRECISION and ++i < SUBDIVISION_MAX_ITERATIONS
+          break
+      currentT
 
     getTForX = (aX) ->
       intervalStart = 0.0
@@ -103,6 +113,9 @@ class BezierEasing
       return 0 if aX == 0
       return 1 if aX == 1
       calcBezier getTForX(aX), mY1, mY2
+
+    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
+    f.toStr = -> str
     f
 
   error:(msg)-> h.error msg

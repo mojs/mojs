@@ -111,6 +111,11 @@
         return _results;
       });
     });
+    describe('toStr method ->', function() {
+      return it('should return params, the function was called with', function() {
+        return expect(bezier(0, 1, 0, 1).toStr()).toBe('bezier(0,1,0,1)');
+      });
+    });
     return describe('arguments parsing ->', function() {
       it('should error if no arguments', function() {
         spyOn(mojs.h, 'error');

@@ -1,4 +1,3 @@
-
 mojs =
   revision:   '0.111.0', isDebug: true
   helpers     : require './h'
@@ -22,7 +21,7 @@ mojs =
   easing      : require './easing'
 
 # cover
-mojs.easing.bezier = require './bezier-easing'
+# mojs.easing.bezier = require './bezier-easing'
 # cover
 
 mojs.h     = mojs.helpers
