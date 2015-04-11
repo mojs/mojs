@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>bitsMap.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>bitsMap.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre>
+Bit       = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+Circle    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./circle'</span>
+Line      = <span class="hljs-built_in">require</span> <span class="hljs-string">'./line'</span>
+Zigzag    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./zigzag'</span>
+Rect      = <span class="hljs-built_in">require</span> <span class="hljs-string">'./rect'</span>
+Polygon   = <span class="hljs-built_in">require</span> <span class="hljs-string">'./polygon'</span>
+Cross     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./cross'</span>
+Equal     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./equal'</span>
+h         = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BitsMap</span></span>
+  <span class="hljs-attribute">h</span>: h
+  <span class="hljs-attribute">map</span>:
+    <span class="hljs-attribute">bit</span>:      Bit
+    <span class="hljs-attribute">circle</span>:   Circle
+    <span class="hljs-attribute">line</span>:     Line
+    <span class="hljs-attribute">zigzag</span>:   Zigzag
+    <span class="hljs-attribute">rect</span>:     Rect
+    <span class="hljs-attribute">polygon</span>:  Polygon
+    <span class="hljs-attribute">cross</span>:    Cross
+    <span class="hljs-attribute">equal</span>:    Equal
+  <span class="hljs-attribute">getBit</span>:<span class="hljs-function"><span class="hljs-params">(name)</span>-&gt;</span> <span class="hljs-property">@map</span>[name] <span class="hljs-keyword">or</span> <span class="hljs-property">@h</span>.error <span class="hljs-string">"no \"<span class="hljs-subst">#{name}</span>\" shape available yet,
+      please choose from this list:"</span>, <span class="hljs-property">@map</span>
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">new</span> BitsMap</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

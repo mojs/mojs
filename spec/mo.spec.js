@@ -83,8 +83,10 @@ BezierEasing = (function() {
         ++i;
       }
     };
+
+    /* istanbul ignore next */
     binarySubdivide = function(aX, aA, aB) {
-      var currentT, currentX;
+      var currentT, currentX, isBig;
       currentX = void 0;
       currentT = void 0;
       i = 0;
@@ -96,7 +98,8 @@ BezierEasing = (function() {
         } else {
           aA = currentT;
         }
-        if (!(Math.abs(currentX) > SUBDIVISION_PRECISION && ++i < SUBDIVISION_MAX_ITERATIONS)) {
+        isBig = Math.abs(currentX) > SUBDIVISION_PRECISION;
+        if (!(isBig && ++i < SUBDIVISION_MAX_ITERATIONS)) {
           break;
         }
       }
@@ -655,9 +658,7 @@ easing = new Easing;
 module.exports = easing;
 
 },{"./bezier-easing":1}],4:[function(require,module,exports){
-var Helpers, h, mojs;
-
-mojs = './mojs';
+var Helpers, h;
 
 Helpers = (function() {
   Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 5px 2px; border: 1px solid #FF512F;';

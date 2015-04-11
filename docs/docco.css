@@ -1,0 +1,337 @@
+/*--------------------- Typography ----------------------------*/
+
+@font-face {
+    font-family: 'aller-light';
+    src: url('public/fonts/aller-light.eot');
+    src: url('public/fonts/aller-light.eot?#iefix') format('embedded-opentype'),
+         url('public/fonts/aller-light.woff') format('woff'),
+         url('public/fonts/aller-light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'aller-bold';
+    src: url('public/fonts/aller-bold.eot');
+    src: url('public/fonts/aller-bold.eot?#iefix') format('embedded-opentype'),
+         url('public/fonts/aller-bold.woff') format('woff'),
+         url('public/fonts/aller-bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'novecento-bold';
+    src: url('public/fonts/novecento-bold.eot');
+    src: url('public/fonts/novecento-bold.eot?#iefix') format('embedded-opentype'),
+         url('public/fonts/novecento-bold.woff') format('woff'),
+         url('public/fonts/novecento-bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fleurons';
+    src: url('public/fonts/fleurons.eot');
+    src: url('public/fonts/fleurons.eot?#iefix') format('embedded-opentype'),
+         url('public/fonts/fleurons.woff') format('woff'),
+         url('public/fonts/fleurons.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*--------------------- Base Styles ----------------------------*/
+
+body {
+  font-family: "aller-light";
+  background: url('public/images/gray.png') #fff;
+  background-size: 322px;
+  margin: 0;
+}
+
+hr {
+  height: 1px;
+  background: #ddd;
+  border: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #112233;
+  font-weight: normal;
+  font-family: "novecento-bold";
+  text-transform: uppercase;
+  line-height: 1em;
+  margin-top: 50px;
+}
+  h1 {
+    margin: 0;
+    text-align: center;
+  }
+  h2 {
+    font-size: 1.3em;
+  }
+  h1:after {
+    content: "8";
+    display: block;
+    font-family: "fleurons";
+    color: #999;
+    font-size: 80px;
+    padding: 10px 0 25px;
+  }
+
+a {
+  color: #000;
+}
+
+b, strong {
+  font-weight: normal;
+  font-family: "aller-bold";
+}
+
+blockquote {
+  border-left: 5px solid #ccc;
+  margin-left: 0;
+  padding: 1px 0 1px 1em;
+}
+  .page blockquote p {
+    font-family: Menlo, Consolas, Monaco, monospace;
+    font-size: 14px; line-height: 19px;
+    color: #999;
+    margin: 10px 0 0;
+    white-space: pre-wrap;
+  }
+
+pre, tt, code {
+  font-family: Menlo, Consolas, Monaco, monospace;
+  font-size: 12px;
+  display: inline-block;
+  border: 1px solid #EAEAEA;
+  background: #f8f8f8;
+  color: #555;
+  padding: 0 5px;
+  line-height: 20px;
+}
+  .page pre {
+    margin: 0;
+    width: 608px;
+    padding: 10px 15px;
+    background: #fcfcfc;
+    -moz-box-shadow:    inset 0 0 10px rgba(0,0,0,0.1);
+    -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    box-shadow:         inset 0 0 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+  }
+    .page pre code {
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+.fleur {
+  font-family: "fleurons";
+  font-size: 100px;
+  text-align: center;
+  margin: 40px 0;
+  color: #ccc;
+}
+
+/*--------------------- Layout ----------------------------*/
+
+.container {
+  width: 760px;
+  margin: 0 auto;
+  background: #fff;
+  background: rgba(255,255,255, 0.4);
+  overflow: hidden;
+}
+  .page {
+    width: 640px;
+    padding: 30px;
+    margin: 30px;
+    background: #fff;
+    font-size: 17px;
+    line-height: 26px;
+  }
+    .page p {
+      color: #30404f;
+      margin: 26px 0;
+    }
+
+ul.sections {
+  list-style: none;
+  padding:0 0 5px 0;;
+  margin:0;
+}
+
+.page li p {
+  margin: 12px 0;
+}
+
+.toc {
+  max-height: 0;
+  overflow: hidden;
+  text-align: center;
+  font-size: 13px;
+  line-height: 20px;
+  -moz-transition: max-height 1s;
+  -webkit-transition: max-height 1s;
+  transition: max-height 1s;
+}
+  .header:hover .toc {
+    max-height: 500px;
+  }
+  .toc h3 {
+    margin-top: 20px;
+  }
+  .toc ol {
+    margin: 0 0 20px 0;
+    display: inline-block;
+    text-align: left;
+    list-style-type: upper-roman;
+  }
+    .toc li {
+      font-family: 'novecento-bold';
+    }
+      .toc li a {
+        font-family: 'aller-light';
+      }
+
+
+/*---------------------- Syntax Highlighting -----------------------------*/
+
+td.linenos { background-color: #f0f0f0; padding-right: 10px; }
+span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+pre code {
+  display: block; padding: 0.5em;
+  color: #000;
+  background: #f8f8ff
+}
+
+pre .hljs-comment,
+pre .hljs-template_comment,
+pre .hljs-diff .hljs-header,
+pre .hljs-javadoc {
+  color: #408080;
+  font-style: italic
+}
+
+pre .hljs-keyword,
+pre .hljs-assignment,
+pre .hljs-literal,
+pre .hljs-css .hljs-rule .hljs-keyword,
+pre .hljs-winutils,
+pre .hljs-javascript .hljs-title,
+pre .hljs-lisp .hljs-title,
+pre .hljs-subst {
+  color: #954121;
+  /*font-weight: bold*/
+}
+
+pre .hljs-number,
+pre .hljs-hexcolor {
+  color: #40a070
+}
+
+pre .hljs-string,
+pre .hljs-tag .hljs-value,
+pre .hljs-phpdoc,
+pre .hljs-tex .hljs-formula {
+  color: #219161;
+}
+
+pre .hljs-title,
+pre .hljs-id {
+  color: #19469D;
+}
+pre .hljs-params {
+  color: #00F;
+}
+
+pre .hljs-javascript .hljs-title,
+pre .hljs-lisp .hljs-title,
+pre .hljs-subst {
+  font-weight: normal
+}
+
+pre .hljs-class .hljs-title,
+pre .hljs-haskell .hljs-label,
+pre .hljs-tex .hljs-command {
+  color: #458;
+  font-weight: bold
+}
+
+pre .hljs-tag,
+pre .hljs-tag .hljs-title,
+pre .hljs-rules .hljs-property,
+pre .hljs-django .hljs-tag .hljs-keyword {
+  color: #000080;
+  font-weight: normal
+}
+
+pre .hljs-attribute,
+pre .hljs-variable,
+pre .hljs-instancevar,
+pre .hljs-lisp .hljs-body {
+  color: #008080
+}
+
+pre .hljs-regexp {
+  color: #B68
+}
+
+pre .hljs-class {
+  color: #458;
+  font-weight: bold
+}
+
+pre .hljs-symbol,
+pre .hljs-ruby .hljs-symbol .hljs-string,
+pre .hljs-ruby .hljs-symbol .hljs-keyword,
+pre .hljs-ruby .hljs-symbol .hljs-keymethods,
+pre .hljs-lisp .hljs-keyword,
+pre .hljs-tex .hljs-special,
+pre .hljs-input_number {
+  color: #990073
+}
+
+pre .hljs-builtin,
+pre .hljs-constructor,
+pre .hljs-built_in,
+pre .hljs-lisp .hljs-title {
+  color: #0086b3
+}
+
+pre .hljs-preprocessor,
+pre .hljs-pi,
+pre .hljs-doctype,
+pre .hljs-shebang,
+pre .hljs-cdata {
+  color: #999;
+  font-weight: bold
+}
+
+pre .hljs-deletion {
+  background: #fdd
+}
+
+pre .hljs-addition {
+  background: #dfd
+}
+
+pre .hljs-diff .hljs-change {
+  background: #0086b3
+}
+
+pre .hljs-chunk {
+  color: #aaa
+}
+
+pre .hljs-tex .hljs-formula {
+  opacity: 0.5;
+}

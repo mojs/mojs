@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>circle.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>circle.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        <p>ignore coffescript sudo code</p>
+<h2 id="istanbul-ignore-next">istanbul ignore next</h2>
+
+        
+          <div class='highlight'><pre>
+Bit = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Bit</span></span>
+  <span class="hljs-attribute">type</span>: <span class="hljs-string">'ellipse'</span>
+  <span class="hljs-attribute">draw</span>:<span class="hljs-function">-&gt;</span>
+    rx = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    ry = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusY? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusY <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    <span class="hljs-property">@setAttrsIfChanged</span> <span class="hljs-attribute">rx</span>: rx, <span class="hljs-attribute">ry</span>: ry, <span class="hljs-attribute">cx</span>: <span class="hljs-property">@props</span>.x, <span class="hljs-attribute">cy</span>: <span class="hljs-property">@props</span>.y
+    <span class="hljs-keyword">super</span>
+  <span class="hljs-attribute">getLength</span>:<span class="hljs-function">-&gt;</span>
+    radiusX = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    radiusY = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusY? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusY <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius</pre></div>
+        
+      
+        
+        <p>Math.pow is needed for safari’s 6.0.5 odd bug</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-number">2</span>*Math.PI*Math.sqrt((Math.pow(radiusX,<span class="hljs-number">2</span>) + Math.pow(radiusY,<span class="hljs-number">2</span>))/<span class="hljs-number">2</span>)
+
+<span class="hljs-built_in">module</span>.exports = Circle</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

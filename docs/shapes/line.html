@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>line.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>line.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        <p>ignore coffescript sudo code</p>
+<h2 id="istanbul-ignore-next">istanbul ignore next</h2>
+
+        
+          <div class='highlight'><pre>
+Bit = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Line</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Bit</span></span>
+  <span class="hljs-attribute">draw</span>:<span class="hljs-function">-&gt;</span>
+    radiusX = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    <span class="hljs-property">@setAttrsIfChanged</span>
+      <span class="hljs-attribute">x1</span>:  <span class="hljs-property">@props</span>.x - radiusX
+      <span class="hljs-attribute">x2</span>:  <span class="hljs-property">@props</span>.x + radiusX
+      <span class="hljs-attribute">y1</span>:  <span class="hljs-property">@props</span>.y
+      <span class="hljs-attribute">y2</span>:  <span class="hljs-property">@props</span>.y
+    <span class="hljs-keyword">super</span>
+
+<span class="hljs-built_in">module</span>.exports = Line</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

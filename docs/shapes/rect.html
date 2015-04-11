@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>rect.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>rect.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        <p>ignore coffescript sudo code</p>
+<h2 id="istanbul-ignore-next">istanbul ignore next</h2>
+
+        
+          <div class='highlight'><pre>
+Bit = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rect</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Bit</span></span>
+  <span class="hljs-attribute">type</span>:   <span class="hljs-string">'rect'</span>
+  <span class="hljs-attribute">ratio</span>:  <span class="hljs-number">1.43</span>
+  <span class="hljs-attribute">draw</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    radiusX = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    radiusY = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusY? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusY <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    <span class="hljs-property">@setAttrsIfChanged</span>
+      <span class="hljs-attribute">width</span>:  <span class="hljs-number">2</span>*radiusX
+      <span class="hljs-attribute">height</span>: <span class="hljs-number">2</span>*radiusY
+      <span class="hljs-attribute">x</span>:      <span class="hljs-property">@props</span>.x - radiusX
+      <span class="hljs-attribute">y</span>:      <span class="hljs-property">@props</span>.y - radiusY
+
+  <span class="hljs-attribute">getLength</span>:<span class="hljs-function">-&gt;</span>
+    radiusX = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    radiusY = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusY? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusY <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    <span class="hljs-number">2</span>*radiusX + <span class="hljs-number">2</span>*radiusY
+
+<span class="hljs-built_in">module</span>.exports = Rect</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

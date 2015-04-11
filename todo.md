@@ -8,7 +8,6 @@
     - tuts
 - add custom easing handler
   - add path handler
-  - add bezier handler
   - add spring
 - tween
   -add and append multiple timelines

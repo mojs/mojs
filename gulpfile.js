@@ -18,9 +18,9 @@ var sequence      = require('run-sequence');
 var coffeeify     = require('gulp-coffeeify');
 var insert        = require('gulp-insert');
 var jeditor       = require("gulp-json-editor");
+var docco         = require("gulp-docco");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
-
 var paths = {
   src: {
     js:       devFolder + 'js/**/*.coffee',
@@ -45,7 +45,7 @@ gulp.task('coffee:tests', function(e){
           .pipe(coffee())
           .pipe(gulp.dest(paths.dist.tests))
           // .pipe(livereload())
-});
+  });
 
 gulp.task('stylus', function(){
   return gulp.src(devFolder + 'css/main.styl')
@@ -54,7 +54,7 @@ gulp.task('stylus', function(){
           .pipe(autoprefixer('last 4 version'))
           .pipe(gulp.dest(paths.dist.css))
           .pipe(livereload())
-});
+  });
 
 // function s(o,u){if(!n[o]){if(!t[o]
 var startString    = 'function s(o,u){if(!n[o])',
@@ -95,32 +95,15 @@ gulp.task('coffeeify', function(e){
     }))
     .pipe(rename('mo.min.js'))
     .pipe(gulp.dest('./build'))
-});
+  });
 
-// gulp.task('coffee-all + cofee:mojs', function() {
-//   sequence('coffee-all', 'coffee:mojs');
-// });
+gulp.task('docco', function(e){
+  return gulp.src(paths.src.js)
+    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+    .pipe(docco({layout: 'linear'}))
+    .pipe(gulp.dest('./docs'))
+  });
 
-// gulp.task('coffee:mojs', function(e){
-//   return gulp.src('dist/mojs.js', { read: false })
-//     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-//     .pipe(browserify())
-//     .pipe(rename('mo.js'))
-//     .pipe(gulp.dest('./build/'))
-//     .pipe(gulp.src('./build/mo.js'))
-//     .pipe(uglify())
-//     .pipe(rename('mo.min.js'))
-//     .pipe(gulp.dest('./build/'))
-//     .pipe(livereload())
-// });
-
-// gulp.task('coffee-all', function(e){
-//   return gulp.src(['js/**/*.coffee'])
-//     .pipe(plumber())
-//     .pipe(coffee({ bare: true }))
-//     .pipe(gulp.dest('dist/'))
-//     // .pipe(livereload())
-// });
 
 gulp.task('coffee-lint', function(e){
   return gulp.src(paths.src.js)
@@ -128,8 +111,8 @@ gulp.task('coffee-lint', function(e){
     .pipe(changed(paths.src.js), { extension: '.js'} )
     .pipe(coffeelint())
     .pipe(coffeelint.reporter())
-    .pipe(coffeelint.reporter('fail'))
-});
+    // .pipe(coffeelint.reporter('fail'))
+  });
 
 gulp.task('index:jade', function(e){
   return gulp.src(paths.src.index)
@@ -137,11 +120,11 @@ gulp.task('index:jade', function(e){
           .pipe(jade({pretty:true}))
           .pipe(gulp.dest(paths.dist.index))
           .pipe(livereload())
-});
+  });
 
 gulp.task('update-version', function() {
   sequence('get-current-version', 'update-bower-version', 'update-main-file-version', 'coffeeify');
-});
+  });
 
 gulp.task('get-current-version', function(e){
   return gulp.src('package.json')
@@ -151,7 +134,7 @@ gulp.task('get-current-version', function(e){
             credits = '/*! \n\t:: mo · js :: motion graphics toolbelt for the web\n\tOleg Solomka @LegoMushroom 2015 MIT\n\t' + currentVersion + ' \n*/\n\n'
             return json;
           }))
-});
+  });
 
 gulp.task('update-bower-version', function(e){
   return gulp.src('bower.json')
@@ -161,7 +144,7 @@ gulp.task('update-bower-version', function(e){
             return json;
           }))
           .pipe(gulp.dest(''))
-});
+  });
 
 gulp.task('update-main-file-version', function(e){
   return gulp.src('js/mojs.coffee')
@@ -171,17 +154,17 @@ gulp.task('update-main-file-version', function(e){
           }))
           .pipe(rename('mo.min.js'))
           .pipe(gulp.dest('./build'))
-});
+  });
 
 gulp.task('default', function(){
   var server = livereload();
   gulp.run('get-current-version');
   gulp.watch(paths.src.tests,['coffee:tests']);
   gulp.watch(paths.src.css,  ['stylus']);
-  gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint']);
+  gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docco']);
   gulp.watch(paths.src.index,['index:jade']);
   gulp.watch('package.json', ['update-version']);
-});
+  });
 
 
 

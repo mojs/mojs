@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>mojs.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>mojs.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre>mojs =
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.111.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
+  Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
+  bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
+  Circle      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/circle'</span>
+  Cross       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/cross'</span>
+  Line        : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/line'</span>
+  Rect        : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/rect'</span>
+  Polygon     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/polygon'</span>
+  Equal       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/equal'</span>
+  Zigzag      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/zigzag'</span>
+  Burst       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./burst'</span>
+  Transit     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./transit'</span>
+  Swirl       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./swirl'</span>
+  Stagger     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./stagger'</span>
+  MotionPath  : <span class="hljs-built_in">require</span> <span class="hljs-string">'./motion-path'</span>
+  Timeline    : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/timeline'</span>
+  Tween       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
+  tweener     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tweener'</span>
+  easing      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./easing'</span></pre></div>
+        
+      
+        
+        <p>cover
+mojs.easing.bezier = require ‘./bezier-easing’
+cover</p>
+
+        
+          <div class='highlight'><pre>
+mojs.h     = mojs.helpers
+mojs.delta = mojs.h.delta</pre></div>
+        
+      
+        
+        <h2 id="istanbul-ignore-next">istanbul ignore next</h2>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">"function"</span>) <span class="hljs-keyword">and</span> define.amd
+  define <span class="hljs-string">"mojs"</span>, [], <span class="hljs-function">-&gt;</span> mojs</pre></div>
+        
+      
+        
+        <h2 id="istanbul-ignore-next">istanbul ignore next</h2>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> <span class="hljs-keyword">is</span> <span class="hljs-string">"object"</span>) <span class="hljs-keyword">and</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span>.exports <span class="hljs-keyword">is</span> <span class="hljs-string">"object"</span>)
+  <span class="hljs-built_in">module</span>.exports = mojs</pre></div>
+        
+      
+        
+        <h2 id="istanbul-ignore-next">istanbul ignore next</h2>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">return</span> <span class="hljs-built_in">window</span>?.mojs = mojs</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

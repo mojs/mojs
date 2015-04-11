@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>tween.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>tween.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre>h = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
+t = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tweener'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Tween</span></span>
+  <span class="hljs-attribute">state</span>: <span class="hljs-string">'stop'</span>
+  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-property">@vars</span>(); @
+  <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@timelines</span> = []; <span class="hljs-property">@props</span> = <span class="hljs-attribute">totalTime</span>: <span class="hljs-number">0</span>
+    <span class="hljs-property">@loop</span> = h.bind <span class="hljs-property">@loop</span>, @
+    <span class="hljs-property">@onUpdate</span> = <span class="hljs-property">@o</span>.onUpdate
+  <span class="hljs-attribute">add</span>:<span class="hljs-function">-&gt;</span>
+    timeline = <span class="hljs-attribute">Array</span>::slice.apply(arguments)
+    <span class="hljs-property">@pushTimelineArray</span> timeline
+  <span class="hljs-attribute">pushTimelineArray</span>:<span class="hljs-function"><span class="hljs-params">(array)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> tm, i <span class="hljs-keyword">in</span> array</pre></div>
+        
+      
+        
+        <p>recursive push to handle arrays of arrays</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span> h.isArray tm <span class="hljs-keyword">then</span> <span class="hljs-property">@pushTimelineArray</span> tm</pre></div>
+        
+      
+        
+        <p>simple push</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">else</span> <span class="hljs-property">@pushTimeline</span> tm
+  <span class="hljs-attribute">pushTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
+    <span class="hljs-property">@timelines</span>.push timeline
+    <span class="hljs-property">@props</span>.totalTime = Math.max timeline.props.totalTime, <span class="hljs-property">@props</span>.totalTime
+  <span class="hljs-attribute">remove</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
+    index = <span class="hljs-property">@timelines</span>.indexOf timeline
+    <span class="hljs-keyword">if</span> index <span class="hljs-keyword">isnt</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@timelines</span>.splice index, <span class="hljs-number">1</span>
+  <span class="hljs-attribute">append</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> !h.isArray(timeline)
+      timeline.index = <span class="hljs-property">@timelines</span>.length
+      <span class="hljs-property">@appendTimeline</span> timeline
+      <span class="hljs-property">@props</span>.totalTime = Math.max timeline.props.totalTime, <span class="hljs-property">@props</span>.totalTime
+    <span class="hljs-keyword">else</span>
+      i = timeline.length
+      <span class="hljs-property">@appendTimeline</span>(timeline[i]) <span class="hljs-keyword">while</span>(i--)
+      <span class="hljs-property">@recalcDuration</span>()
+  <span class="hljs-attribute">appendTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
+    timeline.setProp(<span class="hljs-attribute">delay</span>: timeline.o.delay + <span class="hljs-property">@props</span>.totalTime)
+    <span class="hljs-property">@timelines</span>.push timeline</pre></div>
+        
+      
+        
+        <p>reset:(timeline)-&gt; @remove(timeline); @add timeline</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-attribute">recalcDuration</span>:<span class="hljs-function">-&gt;</span>
+    len = <span class="hljs-property">@timelines</span>.length; <span class="hljs-property">@props</span>.totalTime = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">while</span>(len--)
+      timeline  = <span class="hljs-property">@timelines</span>[len]
+      <span class="hljs-property">@props</span>.totalTime = Math.max timeline.props.totalTime, <span class="hljs-property">@props</span>.totalTime
+  <span class="hljs-attribute">update</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span></pre></div>
+        
+      
+        
+        <p>react only on endTime max</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">then</span> time = <span class="hljs-property">@props</span>.endTime</pre></div>
+        
+      
+        
+        <p>update self timelines</p>
+
+        
+          <div class='highlight'><pre>    i = -<span class="hljs-number">1</span>; len = <span class="hljs-property">@timelines</span>.length-<span class="hljs-number">1</span>
+    <span class="hljs-keyword">while</span>(i++ &lt; len)
+      <span class="hljs-property">@timelines</span>[i].update(time)</pre></div>
+        
+      
+        
+        <p>if isn’t complete</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> time &gt;= <span class="hljs-property">@props</span>.startTime <span class="hljs-keyword">and</span> time &lt; <span class="hljs-property">@props</span>.endTime
+      <span class="hljs-property">@onUpdate</span>? (time - <span class="hljs-property">@props</span>.startTime)/<span class="hljs-property">@props</span>.totalTime</pre></div>
+        
+      
+        
+        <p>if reverse completed</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-property">@prevTime</span> &gt; time <span class="hljs-keyword">and</span> time &lt;= <span class="hljs-property">@props</span>.startTime
+      <span class="hljs-property">@o</span>.onReverseComplete?.apply(@)
+
+    <span class="hljs-property">@prevTime</span> = time</pre></div>
+        
+      
+        
+        <p>if completed</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> time <span class="hljs-keyword">is</span> <span class="hljs-property">@props</span>.endTime
+      <span class="hljs-property">@onUpdate</span>?(<span class="hljs-number">1</span>); <span class="hljs-property">@o</span>.onComplete?.apply(@); <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+  
+  <span class="hljs-attribute">prepareStart</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@getDimentions</span>(); <span class="hljs-property">@o</span>.onStart?.apply @
+  <span class="hljs-attribute">startTimelines</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
+    i = <span class="hljs-property">@timelines</span>.length
+    <span class="hljs-keyword">while</span>(i--)
+      <span class="hljs-property">@timelines</span>[i].start time <span class="hljs-keyword">or</span> <span class="hljs-property">@props</span>.startTime
+  <span class="hljs-attribute">start</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
+    <span class="hljs-property">@setStartTime</span>(time); !time <span class="hljs-keyword">and</span> t.add(@); <span class="hljs-property">@state</span> = <span class="hljs-string">'play'</span>
+    @
+  
+  <span class="hljs-attribute">pause</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@removeFromTweener</span>(); <span class="hljs-property">@state</span> = <span class="hljs-string">'pause'</span>; @
+  <span class="hljs-attribute">stop</span>:<span class="hljs-function">-&gt;</span>  <span class="hljs-property">@removeFromTweener</span>(); <span class="hljs-property">@setProgress</span>(<span class="hljs-number">0</span>); <span class="hljs-property">@state</span> = <span class="hljs-string">'stop'</span>; @
+  <span class="hljs-attribute">restart</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@stop</span>(); <span class="hljs-property">@start</span>()
+  <span class="hljs-attribute">removeFromTweener</span>:<span class="hljs-function">-&gt;</span> t.remove(@); @
+
+  <span class="hljs-attribute">getDimentions</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@props</span>.startTime = performance.now()
+    <span class="hljs-property">@props</span>.endTime = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.totalTime
+
+  <span class="hljs-attribute">setStartTime</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span> <span class="hljs-property">@prepareStart</span>(); <span class="hljs-property">@startTimelines</span>(time)</pre></div>
+        
+      
+        
+        <p>resetProgress:-&gt;
+  @setProgress 0</p>
+<h1 id="update-every-timeline-to-its-start-time">update every timeline to its start time</h1>
+<h1 id="i-1-len-timelines-length-1">i = -1; len = @timelines.length-1</h1>
+<h1 id="while-i-len-">while(i++ &lt; len)</h1>
+<h1 id="timeline-timelines-i-">timeline = @timelines[i]</h1>
+<h1 id="-if-timeline-is-actually-a-tween-then-reset-progress-there"># if timeline is actually a tween then reset progress there</h1>
+<h1 id="if-timeline-resetprogress-then-timeline-resetprogress-">if timeline.resetProgress? then timeline.resetProgress()</h1>
+<h1 id="else-timeline-update-timeline-props-starttime-">else timeline.update(timeline.props.startTime)</h1>
+
+        
+          <div class='highlight'><pre>
+  <span class="hljs-attribute">setProgress</span>:<span class="hljs-function"><span class="hljs-params">(progress)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@props</span>.startTime? <span class="hljs-keyword">then</span> <span class="hljs-property">@setStartTime</span>()
+    progress = Math.max progress, <span class="hljs-number">0</span>
+    progress = Math.min progress, <span class="hljs-number">1</span>
+    <span class="hljs-property">@update</span> <span class="hljs-property">@props</span>.startTime + progress*<span class="hljs-property">@props</span>.totalTime
+
+<span class="hljs-built_in">module</span>.exports = Tween</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,5 +1,3 @@
-mojs = './mojs'
-
 class Helpers
   logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
     padding: 1px 5px 2px; border: 1px solid #FF512F;'

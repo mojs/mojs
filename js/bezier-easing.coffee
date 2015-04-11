@@ -4,7 +4,7 @@ h = require './h'
  * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
  * Adopted from https://github.com/gre/bezier-easing
 ###
-#  TODO: remove 2 ### istanbul ignore next ### statements
+#  TODO: remove 3 ### istanbul ignore next ### statements
 #        and cover the gaps
 
 class BezierEasing
@@ -59,6 +59,7 @@ class BezierEasing
         mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2)
         ++i
       return
+    ### istanbul ignore next ###
     binarySubdivide = (aX, aA, aB) ->
       currentX = undefined; currentT = undefined; i = 0
       loop
@@ -66,7 +67,8 @@ class BezierEasing
         currentX = calcBezier(currentT, mX1, mX2) - aX
         if currentX > 0.0 then aB = currentT
         else aA = currentT
-        unless Math.abs(currentX) > SUBDIVISION_PRECISION and ++i < SUBDIVISION_MAX_ITERATIONS
+        isBig = Math.abs(currentX) > SUBDIVISION_PRECISION
+        unless isBig and ++i < SUBDIVISION_MAX_ITERATIONS
           break
       currentT
 
@@ -114,7 +116,7 @@ class BezierEasing
       return 1 if aX == 1
       calcBezier getTForX(aX), mY1, mY2
 
-    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
+    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")"
     f.toStr = -> str
     f
 

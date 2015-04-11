@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>polygon.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>polygon.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        <p>ignore coffescript sudo code</p>
+<h2 id="istanbul-ignore-next">istanbul ignore next</h2>
+
+        
+          <div class='highlight'><pre>
+Bit = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+h   = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Polygon</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Bit</span></span>
+  <span class="hljs-attribute">type</span>: <span class="hljs-string">'path'</span>
+  <span class="hljs-attribute">draw</span>:<span class="hljs-function">-&gt;</span></pre></div>
+        
+      
+        
+        <p>!@isDraw and @drawShape()</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-property">@drawShape</span>()
+    <span class="hljs-keyword">super</span>
+  <span class="hljs-attribute">drawShape</span>:<span class="hljs-function">-&gt;</span>
+    step = <span class="hljs-number">360</span>/(<span class="hljs-property">@props</span>.points); <span class="hljs-property">@radialPoints</span> = []
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..<span class="hljs-property">@props</span>.points]
+      <span class="hljs-property">@radialPoints</span>.push h.getRadialPoint
+        <span class="hljs-attribute">radius</span>: <span class="hljs-property">@props</span>.radius
+        <span class="hljs-attribute">radiusX</span>: <span class="hljs-property">@props</span>.radiusX
+        <span class="hljs-attribute">radiusY</span>: <span class="hljs-property">@props</span>.radiusY
+        <span class="hljs-attribute">angle</span>:  (i*step)
+        <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: <span class="hljs-property">@props</span>.x, <span class="hljs-attribute">y</span>: <span class="hljs-property">@props</span>.y
+    d = <span class="hljs-string">''</span>
+    <span class="hljs-keyword">for</span> point, i <span class="hljs-keyword">in</span> <span class="hljs-property">@radialPoints</span>
+      char = <span class="hljs-keyword">if</span> i <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-string">'M'</span> <span class="hljs-keyword">else</span> <span class="hljs-string">'L'</span>
+      d += <span class="hljs-string">"<span class="hljs-subst">#{char}</span><span class="hljs-subst">#{point.x.toFixed(<span class="hljs-number">4</span>)}</span>,<span class="hljs-subst">#{point.y.toFixed(<span class="hljs-number">4</span>)}</span> "</span>
+
+    <span class="hljs-property">@setAttr</span> <span class="hljs-attribute">d</span>: d += <span class="hljs-string">'z'</span>
+
+  <span class="hljs-attribute">getLength</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@el</span>.getTotalLength()
+
+<span class="hljs-built_in">module</span>.exports = Polygon</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>h.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>h.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Helpers</span></span>
+  <span class="hljs-attribute">logBadgeCss</span>: <span class="hljs-string">'background:#3A0839;color:#FF512F;border-radius:5px;
+    padding: 1px 5px 2px; border: 1px solid #FF512F;'</span>
+  <span class="hljs-attribute">shortColors</span>:
+    <span class="hljs-attribute">transparent</span>: <span class="hljs-string">'rgba(0,0,0,0)'</span>
+    <span class="hljs-attribute">aqua</span>:   <span class="hljs-string">'rgb(0,255,255)'</span>
+    <span class="hljs-attribute">black</span>:  <span class="hljs-string">'rgb(0,0,0)'</span>
+    <span class="hljs-attribute">blue</span>:   <span class="hljs-string">'rgb(0,0,255)'</span>
+    <span class="hljs-attribute">fuchsia</span>:<span class="hljs-string">'rgb(255,0,255)'</span>
+    <span class="hljs-attribute">gray</span>:   <span class="hljs-string">'rgb(128,128,128)'</span>
+    <span class="hljs-attribute">green</span>:  <span class="hljs-string">'rgb(0,128,0)'</span>
+    <span class="hljs-attribute">lime</span>:   <span class="hljs-string">'rgb(0,255,0)'</span>
+    <span class="hljs-attribute">maroon</span>: <span class="hljs-string">'rgb(128,0,0)'</span>
+    <span class="hljs-attribute">navy</span>:   <span class="hljs-string">'rgb(0,0,128)'</span>
+    <span class="hljs-attribute">olive</span>:  <span class="hljs-string">'rgb(128,128,0)'</span>
+    <span class="hljs-attribute">purple</span>: <span class="hljs-string">'rgb(128,0,128)'</span>
+    <span class="hljs-attribute">red</span>:    <span class="hljs-string">'rgb(255,0,0)'</span>
+    <span class="hljs-attribute">silver</span>: <span class="hljs-string">'rgb(192,192,192)'</span>
+    <span class="hljs-attribute">teal</span>:   <span class="hljs-string">'rgb(0,128,128)'</span>
+    <span class="hljs-attribute">white</span>:  <span class="hljs-string">'rgb(255,255,255)'</span>
+    <span class="hljs-attribute">yellow</span>: <span class="hljs-string">'rgb(255,255,0)'</span>
+    <span class="hljs-attribute">orange</span>: <span class="hljs-string">'rgb(255,128,0)'</span></pre></div>
+        
+      
+        
+        <p>none-tweenable props</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-attribute">chainOptionMap</span>:
+    <span class="hljs-attribute">duration</span>:         <span class="hljs-number">1</span>
+    <span class="hljs-attribute">delay</span>:            <span class="hljs-number">1</span>
+    <span class="hljs-attribute">repeat</span>:           <span class="hljs-number">1</span>
+    <span class="hljs-attribute">easing</span>:           <span class="hljs-number">1</span>
+    <span class="hljs-attribute">yoyo</span>:             <span class="hljs-number">1</span>
+    <span class="hljs-attribute">onStart</span>:          <span class="hljs-number">1</span>
+    <span class="hljs-attribute">onComplete</span>:       <span class="hljs-number">1</span>
+    <span class="hljs-attribute">onCompleteChain</span>:  <span class="hljs-number">1</span>
+    <span class="hljs-attribute">onUpdate</span>:         <span class="hljs-number">1</span>
+    <span class="hljs-attribute">points</span>:           <span class="hljs-number">1</span>
+  <span class="hljs-attribute">callbacksMap</span>:
+    <span class="hljs-attribute">onStart</span>:          <span class="hljs-number">1</span>
+    <span class="hljs-attribute">onComplete</span>:       <span class="hljs-number">1</span>
+    <span class="hljs-attribute">onCompleteChain</span>:  <span class="hljs-number">1</span>
+    <span class="hljs-attribute">onUpdate</span>:         <span class="hljs-number">1</span>
+  <span class="hljs-attribute">tweenOptionMap</span>:
+    <span class="hljs-attribute">duration</span>:         <span class="hljs-number">1</span>
+    <span class="hljs-attribute">delay</span>:            <span class="hljs-number">1</span>
+    <span class="hljs-attribute">repeat</span>:           <span class="hljs-number">1</span>
+    <span class="hljs-attribute">easing</span>:           <span class="hljs-number">1</span>
+    <span class="hljs-attribute">yoyo</span>:             <span class="hljs-number">1</span>
+  <span class="hljs-attribute">posPropsMap</span>:
+    <span class="hljs-attribute">x</span>:                <span class="hljs-number">1</span>
+    <span class="hljs-attribute">y</span>:                <span class="hljs-number">1</span>
+    <span class="hljs-attribute">shiftX</span>:           <span class="hljs-number">1</span>
+    <span class="hljs-attribute">shiftY</span>:           <span class="hljs-number">1</span>
+
+    <span class="hljs-attribute">burstX</span>:           <span class="hljs-number">1</span>
+    <span class="hljs-attribute">burstY</span>:           <span class="hljs-number">1</span>
+    <span class="hljs-attribute">burstShiftX</span>:      <span class="hljs-number">1</span>
+    <span class="hljs-attribute">burstShiftY</span>:      <span class="hljs-number">1</span>
+
+  <span class="hljs-attribute">strokeDashPropsMap</span>:
+    <span class="hljs-attribute">strokeDasharray</span>:  <span class="hljs-number">1</span>
+    <span class="hljs-attribute">strokeDashoffset</span>: <span class="hljs-number">1</span>
+
+
+  <span class="hljs-attribute">RAD_TO_DEG</span>: <span class="hljs-number">180</span>/Math.PI
+  <span class="hljs-attribute">constructor</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@vars</span>()
+  <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@prefix</span> = <span class="hljs-property">@getPrefix</span>()
+    <span class="hljs-property">@getRemBase</span>()
+    <span class="hljs-property">@isFF</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'moz'</span>
+    <span class="hljs-property">@isIE</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'ms'</span>
+    <span class="hljs-property">@isOldOpera</span> = navigator.userAgent.match <span class="hljs-regexp">/presto/gim</span>
+
+    <span class="hljs-property">@div</span> = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>)
+    <span class="hljs-built_in">document</span>.body.appendChild <span class="hljs-property">@div</span>
+
+  <span class="hljs-attribute">cloneObj</span>:<span class="hljs-function"><span class="hljs-params">(obj, exclude)</span>-&gt;</span>
+    keys = Object.keys(obj); newObj = {}; i = keys.length
+    <span class="hljs-keyword">while</span>(i--)
+      key = keys[i]</pre></div>
+        
+      
+        
+        <p>skip the keys defined in exclude object</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span> exclude? <span class="hljs-keyword">then</span> newObj[key] = obj[key] <span class="hljs-keyword">if</span> !exclude[key]
+      <span class="hljs-keyword">else</span> newObj[key] = obj[key]
+    newObj
+  <span class="hljs-attribute">extend</span>:<span class="hljs-function"><span class="hljs-params">(objTo, objFrom)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> objFrom
+      objTo[key] ?= objFrom[key]
+  <span class="hljs-attribute">getRemBase</span>:<span class="hljs-function">-&gt;</span>
+    html = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'html'</span>)
+    style = getComputedStyle(html)
+    <span class="hljs-property">@remBase</span> = parseFloat style.fontSize
+
+  <span class="hljs-attribute">clamp</span>:<span class="hljs-function"><span class="hljs-params">(value, min, max)</span>-&gt;</span> Math.min Math.max(value, min), max
+
+  <span class="hljs-attribute">setPrefixedStyle</span>:<span class="hljs-function"><span class="hljs-params">(el, name, value)</span>-&gt;</span>
+    prefixedName            = <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@prefix</span>.css}</span><span class="hljs-subst">#{name}</span>"</span>
+    el.style[name]          = value
+    el.style[prefixedName]  = value
+  <span class="hljs-attribute">prepareForLog</span>:<span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    args = <span class="hljs-attribute">Array</span>::slice.apply args
+    args.unshift(<span class="hljs-string">'::'</span>); args.unshift(<span class="hljs-property">@logBadgeCss</span>); args.unshift(<span class="hljs-string">'%cmo·js%c'</span>)
+    args
+  <span class="hljs-attribute">log</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> mojs.isDebug <span class="hljs-keyword">is</span> <span class="hljs-literal">false</span>
+    <span class="hljs-built_in">console</span>.log.apply <span class="hljs-built_in">console</span>, <span class="hljs-property">@prepareForLog</span> arguments
+  <span class="hljs-attribute">warn</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> mojs.isDebug <span class="hljs-keyword">is</span> <span class="hljs-literal">false</span>
+    <span class="hljs-built_in">console</span>.warn.apply <span class="hljs-built_in">console</span>, <span class="hljs-property">@prepareForLog</span> arguments
+  <span class="hljs-attribute">error</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> mojs.isDebug <span class="hljs-keyword">is</span> <span class="hljs-literal">false</span>
+    <span class="hljs-built_in">console</span>.error.apply <span class="hljs-built_in">console</span>, <span class="hljs-property">@prepareForLog</span> arguments
+  <span class="hljs-attribute">parseUnit</span>:<span class="hljs-function"><span class="hljs-params">(value)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span>
+      <span class="hljs-keyword">return</span> returnVal =
+        <span class="hljs-attribute">unit</span>:     <span class="hljs-string">'px'</span>
+        <span class="hljs-attribute">isStrict</span>:   <span class="hljs-literal">false</span>
+        <span class="hljs-attribute">value</span>:    value
+        <span class="hljs-attribute">string</span>:   <span class="hljs-string">"<span class="hljs-subst">#{value}</span>px"</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+      regex = <span class="hljs-regexp">/px|%|rem|em|ex|cm|ch|mm|in|pt|pc|vh|vw|vmin/gim</span>
+      unit = value.match(regex)?[<span class="hljs-number">0</span>]; isStrict = <span class="hljs-literal">true</span></pre></div>
+        
+      
+        
+        <p>if a plain number was passed set isStrict to false and add px</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span> !unit <span class="hljs-keyword">then</span> unit = <span class="hljs-string">'px'</span>; isStrict = <span class="hljs-literal">false</span>
+      amount = parseFloat value
+      <span class="hljs-keyword">return</span> returnVal =
+        <span class="hljs-attribute">unit</span>:     unit
+        <span class="hljs-attribute">isStrict</span>: isStrict
+        <span class="hljs-attribute">value</span>:    amount
+        <span class="hljs-attribute">string</span>:   <span class="hljs-string">"<span class="hljs-subst">#{amount}</span><span class="hljs-subst">#{unit}</span>"</span>
+    value
+  <span class="hljs-attribute">bind</span>:<span class="hljs-function"><span class="hljs-params">(func, context)</span> -&gt;</span>
+<span class="hljs-function">    <span class="hljs-title">wrapper</span> = -&gt;</span>
+      args = <span class="hljs-attribute">Array</span>::slice.call(arguments)
+      unshiftArgs = bindArgs.concat(args)
+      func.apply context, unshiftArgs
+    bindArgs = <span class="hljs-attribute">Array</span>::slice.call(arguments, <span class="hljs-number">2</span>)
+    wrapper
+  <span class="hljs-attribute">getRadialPoint</span>:<span class="hljs-function"><span class="hljs-params">(o={})</span>-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> !o.radius? <span class="hljs-keyword">or</span> !o.angle? <span class="hljs-keyword">or</span> !o.center?
+    radAngle = (o.angle-<span class="hljs-number">90</span>)*(Math.PI/<span class="hljs-number">180</span>)
+    radiusX = <span class="hljs-keyword">if</span> o.radiusX? <span class="hljs-keyword">then</span> o.radiusX <span class="hljs-keyword">else</span> o.radius
+    radiusY = <span class="hljs-keyword">if</span> o.radiusY? <span class="hljs-keyword">then</span> o.radiusY <span class="hljs-keyword">else</span> o.radius
+    point =
+      <span class="hljs-attribute">x</span>: o.center.x + (Math.cos(radAngle)*radiusX)
+      <span class="hljs-attribute">y</span>: o.center.y + (Math.sin(radAngle)*radiusY)
+  <span class="hljs-attribute">getPrefix</span>:<span class="hljs-function">-&gt;</span>
+    styles = <span class="hljs-built_in">window</span>.getComputedStyle(<span class="hljs-built_in">document</span>.documentElement, <span class="hljs-string">""</span>)
+    v = <span class="hljs-attribute">Array</span>::slice.call(styles).join(<span class="hljs-string">""</span>).match(<span class="hljs-regexp">/-(moz|webkit|ms)-/</span>)
+    pre = (v <span class="hljs-keyword">or</span> (styles.OLink <span class="hljs-keyword">is</span> <span class="hljs-string">""</span> <span class="hljs-keyword">and</span> [
+      <span class="hljs-string">""</span>
+      <span class="hljs-string">"o"</span>
+    ]))[<span class="hljs-number">1</span>]
+    dom = (<span class="hljs-string">"WebKit|Moz|MS|O"</span>).match(<span class="hljs-keyword">new</span> RegExp(<span class="hljs-string">"("</span> + pre + <span class="hljs-string">")"</span>, <span class="hljs-string">"i"</span>))[<span class="hljs-number">1</span>]
+    <span class="hljs-attribute">dom</span>: dom
+    <span class="hljs-attribute">lowercase</span>: pre
+    <span class="hljs-attribute">css</span>: <span class="hljs-string">"-"</span> + pre + <span class="hljs-string">"-"</span>
+    <span class="hljs-attribute">js</span>: pre[<span class="hljs-number">0</span>].toUpperCase() + pre.substr(<span class="hljs-number">1</span>)
+  <span class="hljs-attribute">strToArr</span>:<span class="hljs-function"><span class="hljs-params">(string)</span>-&gt;</span>
+    arr = []</pre></div>
+        
+      
+        
+        <p>plain number</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> string <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">and</span> !isNaN(string)
+      arr.push <span class="hljs-property">@parseUnit</span> string
+      <span class="hljs-keyword">return</span> arr</pre></div>
+        
+      
+        
+        <p>string array</p>
+
+        
+          <div class='highlight'><pre>    string.trim().split(<span class="hljs-regexp">/\s+/gim</span>).forEach (str)=&gt;
+      arr.push <span class="hljs-property">@parseUnit</span> <span class="hljs-property">@parseIfRand</span> str
+    arr
+  
+  <span class="hljs-attribute">calcArrDelta</span>:<span class="hljs-function"><span class="hljs-params">(arr1, arr2)</span>-&gt;</span></pre></div>
+        
+      
+        
+        <p>if !arr1? or !arr2? then throw Error ‘Two arrays should be passed’
+if !@isArray(arr1)or!@isArray(arr2) then throw Error ‘Two arrays expected’</p>
+
+        
+          <div class='highlight'><pre>    delta = []
+    <span class="hljs-keyword">for</span> num, i <span class="hljs-keyword">in</span> arr1
+      delta[i] = <span class="hljs-property">@parseUnit</span> <span class="hljs-string">"<span class="hljs-subst">#{arr2[i].value - arr1[i].value}</span><span class="hljs-subst">#{arr2[i].unit}</span>"</span>
+    delta
+
+  <span class="hljs-attribute">isArray</span>:<span class="hljs-function"><span class="hljs-params">(variable)</span>-&gt;</span> variable <span class="hljs-keyword">instanceof</span> Array
+
+  <span class="hljs-attribute">normDashArrays</span>:<span class="hljs-function"><span class="hljs-params">(arr1, arr2)</span>-&gt;</span></pre></div>
+        
+      
+        
+        <p>if !arr1? or !arr2? then throw Error ‘Two arrays should be passed’</p>
+
+        
+          <div class='highlight'><pre>    arr1Len = arr1.length; arr2Len = arr2.length
+    <span class="hljs-keyword">if</span> arr1Len &gt; arr2Len
+      lenDiff = arr1Len-arr2Len; startI = arr2.length
+      <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..lenDiff]
+        currItem = i + startI
+        arr2.push <span class="hljs-property">@parseUnit</span> <span class="hljs-string">"0<span class="hljs-subst">#{arr1[currItem].unit}</span>"</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> arr2Len &gt; arr1Len
+      lenDiff = arr2Len-arr1Len; startI = arr1.length
+      <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..lenDiff]
+        currItem = i + startI
+        arr1.push <span class="hljs-property">@parseUnit</span> <span class="hljs-string">"0<span class="hljs-subst">#{arr2[currItem].unit}</span>"</span>
+    [ arr1, arr2 ]
+
+  <span class="hljs-attribute">makeColorObj</span>:<span class="hljs-function"><span class="hljs-params">(color)</span>-&gt;</span></pre></div>
+        
+      
+        
+        <p>HEX</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> color[<span class="hljs-number">0</span>] <span class="hljs-keyword">is</span> <span class="hljs-string">'#'</span>
+      result = <span class="hljs-regexp">/^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i</span>.exec(color)
+      colorObj = {}
+      <span class="hljs-keyword">if</span> result
+        r = <span class="hljs-keyword">if</span> result[<span class="hljs-number">1</span>].length <span class="hljs-keyword">is</span> <span class="hljs-number">2</span> <span class="hljs-keyword">then</span> result[<span class="hljs-number">1</span>] <span class="hljs-keyword">else</span> result[<span class="hljs-number">1</span>]+result[<span class="hljs-number">1</span>]
+        g = <span class="hljs-keyword">if</span> result[<span class="hljs-number">2</span>].length <span class="hljs-keyword">is</span> <span class="hljs-number">2</span> <span class="hljs-keyword">then</span> result[<span class="hljs-number">2</span>] <span class="hljs-keyword">else</span> result[<span class="hljs-number">2</span>]+result[<span class="hljs-number">2</span>]
+        b = <span class="hljs-keyword">if</span> result[<span class="hljs-number">3</span>].length <span class="hljs-keyword">is</span> <span class="hljs-number">2</span> <span class="hljs-keyword">then</span> result[<span class="hljs-number">3</span>] <span class="hljs-keyword">else</span> result[<span class="hljs-number">3</span>]+result[<span class="hljs-number">3</span>]
+        colorObj =
+          <span class="hljs-attribute">r</span>: parseInt(r, <span class="hljs-number">16</span>)
+          <span class="hljs-attribute">g</span>: parseInt(g, <span class="hljs-number">16</span>)
+          <span class="hljs-attribute">b</span>: parseInt(b, <span class="hljs-number">16</span>)
+          <span class="hljs-attribute">a</span>: <span class="hljs-number">1</span></pre></div>
+        
+      
+        
+        <p>not HEX
+shorthand color and rgb()</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> color[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'#'</span>
+      isRgb = color[<span class="hljs-number">0</span>] <span class="hljs-keyword">is</span> <span class="hljs-string">'r'</span> <span class="hljs-keyword">and</span> color[<span class="hljs-number">1</span>] <span class="hljs-keyword">is</span> <span class="hljs-string">'g'</span> <span class="hljs-keyword">and</span> color[<span class="hljs-number">2</span>] <span class="hljs-keyword">is</span> <span class="hljs-string">'b'</span></pre></div>
+        
+      
+        
+        <p>rgb color</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span> isRgb
+        rgbColor = color</pre></div>
+        
+      
+        
+        <p>shorthand color name</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span> !isRgb
+        rgbColor = <span class="hljs-keyword">if</span> !<span class="hljs-property">@shortColors</span>[color]
+          <span class="hljs-property">@div</span>.style.color = color
+          <span class="hljs-keyword">if</span> <span class="hljs-property">@isFF</span> <span class="hljs-keyword">or</span> <span class="hljs-property">@isIE</span> <span class="hljs-keyword">or</span> <span class="hljs-property">@isOldOpera</span>
+            style = <span class="hljs-property">@computedStyle</span>(<span class="hljs-property">@div</span>)
+            <span class="hljs-property">@computedStyle</span>(<span class="hljs-property">@div</span>).color
+          <span class="hljs-keyword">else</span> <span class="hljs-property">@div</span>.style.color
+        <span class="hljs-keyword">else</span> <span class="hljs-property">@shortColors</span>[color]
+
+      regexString1 = <span class="hljs-string">'^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),'</span>
+      regexString2 = <span class="hljs-string">'\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$'</span>
+      result = <span class="hljs-keyword">new</span> RegExp(regexString1 + regexString2, <span class="hljs-string">'gi'</span>).exec(rgbColor)
+      colorObj = {}
+      alpha = parseFloat(result[<span class="hljs-number">4</span>] <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>)
+      <span class="hljs-keyword">if</span> result
+        colorObj =
+          <span class="hljs-attribute">r</span>: parseInt(result[<span class="hljs-number">1</span>],<span class="hljs-number">10</span>)
+          <span class="hljs-attribute">g</span>: parseInt(result[<span class="hljs-number">2</span>],<span class="hljs-number">10</span>)
+          <span class="hljs-attribute">b</span>: parseInt(result[<span class="hljs-number">3</span>],<span class="hljs-number">10</span>)
+          <span class="hljs-attribute">a</span>: <span class="hljs-keyword">if</span> alpha? <span class="hljs-keyword">and</span> !isNaN(alpha) <span class="hljs-keyword">then</span> alpha <span class="hljs-keyword">else</span> <span class="hljs-number">1</span>
+    colorObj
+
+  <span class="hljs-attribute">computedStyle</span>:<span class="hljs-function"><span class="hljs-params">(el)</span>-&gt;</span> getComputedStyle el
+
+  <span class="hljs-attribute">splitEasing</span>:<span class="hljs-function"><span class="hljs-params">(string)</span>-&gt;</span>
+    <span class="hljs-keyword">return</span> string <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> string <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> string <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">and</span> string.length
+      split = string.split <span class="hljs-string">'.'</span>
+      firstPart   = split[<span class="hljs-number">0</span>].toLowerCase() <span class="hljs-keyword">or</span> <span class="hljs-string">'linear'</span>
+      secondPart  = split[<span class="hljs-number">1</span>].toLowerCase() <span class="hljs-keyword">or</span> <span class="hljs-string">'none'</span>
+      [ firstPart, secondPart ]
+    <span class="hljs-keyword">else</span> [<span class="hljs-string">'linear'</span>, <span class="hljs-string">'none'</span>]
+  <span class="hljs-attribute">capitalize</span>:<span class="hljs-function"><span class="hljs-params">(str)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> str <span class="hljs-keyword">isnt</span> <span class="hljs-string">'string'</span>
+      <span class="hljs-keyword">throw</span> Error <span class="hljs-string">'String expected - nothing to capitalize'</span>
+    str.charAt(<span class="hljs-number">0</span>).toUpperCase() + str.substring(<span class="hljs-number">1</span>)
+  <span class="hljs-attribute">parseRand</span>:<span class="hljs-function"><span class="hljs-params">(string)</span>-&gt;</span>
+    randArr = string.split <span class="hljs-regexp">/rand\(|\,|\)/</span>
+    units = <span class="hljs-property">@parseUnit</span> randArr[<span class="hljs-number">2</span>]
+    rand = <span class="hljs-property">@rand</span>(parseFloat(randArr[<span class="hljs-number">1</span>]), parseFloat(randArr[<span class="hljs-number">2</span>]))
+    <span class="hljs-keyword">if</span> units.unit <span class="hljs-keyword">and</span> randArr[<span class="hljs-number">2</span>].match(units.unit)<span class="hljs-keyword">then</span> rand + units.unit
+    <span class="hljs-keyword">else</span> rand
+  <span class="hljs-attribute">parseStagger</span>:<span class="hljs-function"><span class="hljs-params">(string, index)</span>-&gt;</span>
+    value = string.split(<span class="hljs-regexp">/stagger\(|\)$/</span>)[<span class="hljs-number">1</span>].toLowerCase()</pre></div>
+        
+      
+        
+        <p>split the value in case it contains base
+the regex splits 0,0 0,1 1,0 1,1 combos
+if num taken as 1, rand() taken as 0</p>
+
+        
+          <div class='highlight'><pre>    splittedValue = value.split(<span class="hljs-regexp">/(rand\(.*?\)|[^\(,\s]+)(?=\s*,|\s*$)/gim</span>)</pre></div>
+        
+      
+        
+        <p>if contains the base value</p>
+
+        
+          <div class='highlight'><pre>    value = <span class="hljs-keyword">if</span> splittedValue.length &gt; <span class="hljs-number">3</span>
+      base = <span class="hljs-property">@parseUnit</span>(<span class="hljs-property">@parseIfRand</span>(splittedValue[<span class="hljs-number">1</span>])); splittedValue[<span class="hljs-number">3</span>]</pre></div>
+        
+      
+        
+        <p>if just a plain value</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">else</span> base = <span class="hljs-property">@parseUnit</span>(<span class="hljs-number">0</span>); splittedValue[<span class="hljs-number">1</span>]
+    
+    value = <span class="hljs-property">@parseIfRand</span>(value)</pre></div>
+        
+      
+        
+        <p>parse with units</p>
+
+        
+          <div class='highlight'><pre>    unitValue = <span class="hljs-property">@parseUnit</span>(value)
+    number = index*unitValue.value + base.value</pre></div>
+        
+      
+        
+        <p>add units only if option had a unit before</p>
+
+        
+          <div class='highlight'><pre>    unit = <span class="hljs-keyword">if</span> base.isStrict <span class="hljs-keyword">then</span> base.unit
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> unitValue.isStrict <span class="hljs-keyword">then</span> unitValue.unit <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+    
+    <span class="hljs-keyword">if</span> unit <span class="hljs-keyword">then</span> <span class="hljs-string">"<span class="hljs-subst">#{number}</span><span class="hljs-subst">#{unit}</span>"</span> <span class="hljs-keyword">else</span> number</pre></div>
+        
+      
+        
+        <p>if passed string has rand function then get the rand value</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-attribute">parseIfRand</span>:<span class="hljs-function"><span class="hljs-params">(str)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> str <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">and</span> str.match(<span class="hljs-regexp">/rand\(/</span>) <span class="hljs-keyword">then</span> <span class="hljs-property">@parseRand</span>(str)
+    <span class="hljs-keyword">else</span> str</pre></div>
+        
+      
+        
+        <p>if delta object was passed: like { 20: 75 }</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-attribute">parseDelta</span>:<span class="hljs-function"><span class="hljs-params">(key, value)</span>-&gt;</span>
+    start = Object.keys(value)[<span class="hljs-number">0</span>]
+    end   = value[start]
+    delta = <span class="hljs-attribute">start</span>: start</pre></div>
+        
+      
+        
+        <p>color values</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span> isNaN(parseFloat(start)) <span class="hljs-keyword">and</span> !start.match(<span class="hljs-regexp">/rand\(/</span>)
+      <span class="hljs-keyword">if</span> key <span class="hljs-keyword">is</span> <span class="hljs-string">'strokeLinecap'</span>
+        <span class="hljs-property">@warn</span> <span class="hljs-string">"Sorry, stroke-linecap property is not animatable
+           yet, using the start(<span class="hljs-subst">#{start}</span>) value instead"</span>, value</pre></div>
+        
+      
+        
+        <p>@props[key] = start;</p>
+
+        
+          <div class='highlight'><pre>        <span class="hljs-keyword">return</span> delta
+      startColorObj = <span class="hljs-property">@makeColorObj</span> start
+      endColorObj   = <span class="hljs-property">@makeColorObj</span> end
+      delta  =
+        <span class="hljs-attribute">start</span>:  startColorObj
+        <span class="hljs-attribute">end</span>:    endColorObj
+        <span class="hljs-attribute">type</span>:   <span class="hljs-string">'color'</span>
+        <span class="hljs-attribute">delta</span>:
+          <span class="hljs-attribute">r</span>: endColorObj.r - startColorObj.r
+          <span class="hljs-attribute">g</span>: endColorObj.g - startColorObj.g
+          <span class="hljs-attribute">b</span>: endColorObj.b - startColorObj.b
+          <span class="hljs-attribute">a</span>: endColorObj.a - startColorObj.a</pre></div>
+        
+      
+        
+        <p>color strokeDasharray/strokeDashoffset</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> key <span class="hljs-keyword">is</span> <span class="hljs-string">'strokeDasharray'</span> <span class="hljs-keyword">or</span> key <span class="hljs-keyword">is</span> <span class="hljs-string">'strokeDashoffset'</span>
+      startArr  = <span class="hljs-property">@strToArr</span> start
+      endArr    = <span class="hljs-property">@strToArr</span> end</pre></div>
+        
+      
+        
+        <p>console.log startArr, endArr</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-property">@normDashArrays</span> startArr, endArr</pre></div>
+        
+      
+        
+        <p>console.log startArr, endArr</p>
+
+        
+          <div class='highlight'><pre>
+      <span class="hljs-keyword">for</span> start, i <span class="hljs-keyword">in</span> startArr
+        end = endArr[i]
+        <span class="hljs-property">@mergeUnits</span> start, end, key
+
+      delta =
+        <span class="hljs-attribute">start</span>:  startArr
+        <span class="hljs-attribute">end</span>:    endArr
+        <span class="hljs-attribute">delta</span>:  <span class="hljs-property">@calcArrDelta</span> startArr, endArr
+        <span class="hljs-attribute">type</span>:   <span class="hljs-string">'array'</span></pre></div>
+        
+      
+        
+        <h1 id="plain-numeric-value">plain numeric value</h1>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">else</span></pre></div>
+        
+      
+        
+        <h1 id="filter-tween-related-properties">filter tween-related properties</h1>
+<p>defined in helpers.chainOptionMap
+because tween-related props shouldn’t</p>
+<h1 id="have-deltas">have deltas</h1>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span> !<span class="hljs-property">@chainOptionMap</span>[key]</pre></div>
+        
+      
+        
+        <p>position values defined in posPropsMap</p>
+
+        
+          <div class='highlight'><pre>        <span class="hljs-keyword">if</span> <span class="hljs-property">@posPropsMap</span>[key]
+          end   = <span class="hljs-property">@parseUnit</span> <span class="hljs-property">@parseIfRand</span> end
+          start = <span class="hljs-property">@parseUnit</span> <span class="hljs-property">@parseIfRand</span> start
+          <span class="hljs-property">@mergeUnits</span> start, end, key
+          delta =
+            <span class="hljs-attribute">start</span>:  start
+            <span class="hljs-attribute">end</span>:    end
+            <span class="hljs-attribute">delta</span>:  end.value - start.value
+            <span class="hljs-attribute">type</span>:   <span class="hljs-string">'unit'</span>
+        <span class="hljs-keyword">else</span></pre></div>
+        
+      
+        
+        <p>none position but numeric values</p>
+
+        
+          <div class='highlight'><pre>          end   = parseFloat <span class="hljs-property">@parseIfRand</span>    end
+          start = parseFloat <span class="hljs-property">@parseIfRand</span>  start
+          delta =
+            <span class="hljs-attribute">start</span>:  start
+            <span class="hljs-attribute">end</span>:    end
+            <span class="hljs-attribute">delta</span>:  end - start
+            <span class="hljs-attribute">type</span>:   <span class="hljs-string">'number'</span>
+    delta
+
+  <span class="hljs-attribute">mergeUnits</span>:<span class="hljs-function"><span class="hljs-params">(start, end, key)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> !end.isStrict <span class="hljs-keyword">and</span> start.isStrict
+      end.unit = start.unit
+      end.string = <span class="hljs-string">"<span class="hljs-subst">#{end.value}</span><span class="hljs-subst">#{end.unit}</span>"</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> end.isStrict <span class="hljs-keyword">and</span> !start.isStrict
+      start.unit = end.unit
+      start.string = <span class="hljs-string">"<span class="hljs-subst">#{start.value}</span><span class="hljs-subst">#{start.unit}</span>"</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> end.isStrict <span class="hljs-keyword">and</span> start.isStrict
+      <span class="hljs-keyword">if</span> end.unit <span class="hljs-keyword">isnt</span> start.unit
+        start.unit = end.unit
+        start.string = <span class="hljs-string">"<span class="hljs-subst">#{start.value}</span><span class="hljs-subst">#{start.unit}</span>"</span>
+        <span class="hljs-property">@warn</span> <span class="hljs-string">"Two different units were specified on \"<span class="hljs-subst">#{key}</span>\" delta
+           property, mo · js will fallback to end \"<span class="hljs-subst">#{end.unit}</span>\" unit "</span>
+
+  <span class="hljs-attribute">rand</span>:<span class="hljs-function"><span class="hljs-params">(min,max)</span>-&gt;</span> (Math.random() * ((max) - min)) + min
+  <span class="hljs-attribute">isDOM</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> !o?</pre></div>
+        
+      
+        
+        <p>if typeof Node is ‘function’ then o instanceof Node
+else</p>
+
+        
+          <div class='highlight'><pre>    isNode = <span class="hljs-keyword">typeof</span> o.nodeType <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">typeof</span> o.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+    <span class="hljs-keyword">typeof</span> o <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span> <span class="hljs-keyword">and</span> isNode</pre></div>
+        
+      
+        
+        <h1 id="-">#</h1>
+<p>Return direct children elements.</p>
+<p>@param  {HTMLElement}
+@return {Array}</p>
+<h1 id="-">#</h1>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-attribute">getChildElements</span>:<span class="hljs-function"><span class="hljs-params">(element)</span>-&gt;</span>
+    childNodes = element.childNodes
+    children = []
+    i = childNodes.length
+    <span class="hljs-keyword">while</span> i--
+      <span class="hljs-keyword">if</span> childNodes[i].nodeType == <span class="hljs-number">1</span>
+        children.unshift childNodes[i]
+    children</pre></div>
+        
+      
+        
+        <h1 id="-">#</h1>
+<p>create delta object from variables</p>
+<p>@param  {String, Number}
+@param  {String, Number}
+@return {Object}</p>
+<h1 id="-">#</h1>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-attribute">delta</span>:<span class="hljs-function"><span class="hljs-params">(start, end)</span>-&gt;</span>
+    type1 = <span class="hljs-keyword">typeof</span> start; type2 = <span class="hljs-keyword">typeof</span> end
+    isType1 = type1 <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">or</span> type1 <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">and</span> !isNaN(start)
+    isType2 = type2 <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">or</span> type2 <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">and</span> !isNaN(end)
+    <span class="hljs-keyword">if</span> !isType1 <span class="hljs-keyword">or</span> !isType2
+      <span class="hljs-property">@error</span> <span class="hljs-string">"delta method expects Strings or Numbers at input
+         but got - <span class="hljs-subst">#{start}</span>, <span class="hljs-subst">#{end}</span>"</span>
+      <span class="hljs-keyword">return</span>
+    obj = {}; obj[start] = end; obj
+
+
+h = <span class="hljs-keyword">new</span> Helpers
+<span class="hljs-built_in">module</span>.exports = h</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

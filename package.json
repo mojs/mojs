@@ -46,6 +46,7 @@
     "gulp-coffeelint": "*",
     "gulp-concat": "*",
     "gulp-csslint": "*",
+    "gulp-docco": "0.0.4",
     "gulp-insert": "^0.4.0",
     "gulp-jade": "~0.4.2",
     "gulp-json-editor": "^2.2.1",
