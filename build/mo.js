@@ -1143,13 +1143,6 @@ Helpers = (function() {
     return typeof o === 'object' && isNode;
   };
 
-  /*
-   * Return direct children elements.
-  #
-   * @param  {HTMLElement}
-   * @return {Array}
-   */
-
   Helpers.prototype.getChildElements = function(element) {
     var childNodes, children, i;
     childNodes = element.childNodes;
@@ -1162,14 +1155,6 @@ Helpers = (function() {
     }
     return children;
   };
-
-  /*
-   * create delta object from variables
-  #
-   * @param  {String, Number}
-   * @param  {String, Number}
-   * @return {Object}
-   */
 
   Helpers.prototype.delta = function(start, end) {
     var isType1, isType2, obj, type1, type2;

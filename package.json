@@ -46,7 +46,7 @@
     "gulp-coffeelint": "*",
     "gulp-concat": "*",
     "gulp-csslint": "*",
-    "gulp-docco": "0.0.4",
+    "gulp-groc": "^0.4.1",
     "gulp-insert": "^0.4.0",
     "gulp-jade": "~0.4.2",
     "gulp-json-editor": "^2.2.1",
@@ -69,6 +69,7 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-sauce-launcher": "^0.2.10",
     "nodemon": "*",
+    "pygments": "^0.2.0",
     "run-sequence": "^1.0.2"
   }
 }

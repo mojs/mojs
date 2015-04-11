@@ -370,12 +370,7 @@ class Helpers
     isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
     typeof o is 'object' and isNode
   
-  ###
-  # Return direct children elements.
-  #
-  # @param  {HTMLElement}
-  # @return {Array}
-  ###
+  
   getChildElements:(element)->
     childNodes = element.childNodes
     children = []
@@ -385,13 +380,7 @@ class Helpers
         children.unshift childNodes[i]
     children
 
-  ###
-  # create delta object from variables
-  #
-  # @param  {String, Number}
-  # @param  {String, Number}
-  # @return {Object}
-  ###
+  
   delta:(start, end)->
     type1 = typeof start; type2 = typeof end
     isType1 = type1 is 'string' or type1 is 'number' and !isNaN(start)
