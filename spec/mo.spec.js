@@ -763,13 +763,14 @@ Helpers = (function() {
   };
 
   Helpers.prototype.extend = function(objTo, objFrom) {
-    var key, results, value;
-    results = [];
+    var key, value;
     for (key in objFrom) {
       value = objFrom[key];
-      results.push(objTo[key] != null ? objTo[key] : objTo[key] = objFrom[key]);
+      if (objTo[key] == null) {
+        objTo[key] = objFrom[key];
+      }
     }
-    return results;
+    return objTo;
   };
 
   Helpers.prototype.getRemBase = function() {

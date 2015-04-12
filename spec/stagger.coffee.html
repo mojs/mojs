@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - stagger.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="../spec/stagger.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/../spec/stagger.coffee">../spec/stagger.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">Stagger = mojs.Stagger
+h       = mojs.helpers
+ns      = <span class="hljs-string">'http://www.w3.org/2000/svg'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>svg  = document.createElementNS?(ns, &#39;svg&#39;)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">els   = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>
+path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+els.appendChild(path1); els.appendChild path2
+
+describe <span class="hljs-string">'Stagger -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+  describe <span class="hljs-string">'defaults -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should have its own defaults'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.ownDefaults.delay).toBe <span class="hljs-string">'stagger(100)'</span>
+      expect(s.ownDefaults.els)  .toBeDefined()
+      
+      expect(s.ownDefaults.strokeDasharray)         .toBe <span class="hljs-string">'100%'</span>
+      expect(s.ownDefaults.strokeDashoffset[<span class="hljs-string">'100%'</span>]).toBe <span class="hljs-string">'0%'</span>
+      
+      expect(s.ownDefaults.stroke[<span class="hljs-number">0</span>]).toBe <span class="hljs-string">'yellow'</span>
+      expect(s.ownDefaults.stroke[<span class="hljs-number">1</span>]).toBe <span class="hljs-string">'cyan'</span>
+      expect(s.ownDefaults.stroke[<span class="hljs-number">2</span>]).toBe <span class="hljs-string">'deeppink'</span>
+
+      expect(s.ownDefaults.fill).toBe <span class="hljs-string">'transparent'</span>
+      expect(s.ownDefaults.type).toBe <span class="hljs-string">'line'</span>
+
+      expect(s.ownDefaults.isShowInit).toBe <span class="hljs-literal">false</span>
+      expect(s.ownDefaults.isShowEnd) .toBe <span class="hljs-literal">false</span>
+
+    it <span class="hljs-string">'should have isSkipDelta flag'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.isSkipDelta).toBe <span class="hljs-literal">true</span>
+
+  describe <span class="hljs-string">'defaults extend -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'defaults should extend ownDefaults'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.defaults.strokeWidth).toBe <span class="hljs-number">2</span>
+      expect(s.defaults.delay)      .toBe <span class="hljs-string">'stagger(100)'</span>
+      expect(s.ownDefaults.els)     .toBeDefined()
+
+  describe <span class="hljs-string">'extendDefaults method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should override extendDefaults method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.extendDefaults).<span class="hljs-keyword">not</span>.toBe Stagger.__super__.extendDefaults
+    it <span class="hljs-string">'should define props object'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      s.props = <span class="hljs-literal">undefined</span>; s.extendDefaults()
+      expect(s.props).toBeDefined()
+    it <span class="hljs-string">'should define deltas object'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      s.deltas = <span class="hljs-literal">undefined</span>; s.extendDefaults()
+      expect(s.deltas).toBeDefined()
+    it <span class="hljs-string">'should just copy options to props and fallback to defaults'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els, <span class="hljs-attribute">stroke</span>: <span class="hljs-string">'deeppink'</span>
+      expect(s.props.stroke).toBe <span class="hljs-string">'deeppink'</span>
+      expect(s.props.delay) .toBe s.defaults.delay
+
+  describe <span class="hljs-string">'isDelta method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should override isDelta method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.isDelta).<span class="hljs-keyword">not</span>.toBe Stagger.__super__.isDelta
+    it <span class="hljs-string">'should always return false'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.isDelta()).toBe <span class="hljs-literal">false</span>
+
+  describe <span class="hljs-string">'createBit method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should override createBit method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.createBit).<span class="hljs-keyword">not</span>.toBe Stagger.__super__.createBit
+    it <span class="hljs-string">'should create transit for every el'</span>, <span class="hljs-function">-&gt;</span>
+      els   = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>
+      path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      els.appendChild(path1); els.appendChild path2
+      s = <span class="hljs-keyword">new</span> Stagger
+        <span class="hljs-attribute">els</span>: els
+        <span class="hljs-attribute">stroke</span>: [<span class="hljs-string">'deeppink'</span>, <span class="hljs-string">'cyan'</span>, <span class="hljs-string">'yellow'</span>]
+      expect(s.transits.length)   .toBe <span class="hljs-number">2</span>
+      expect(s.transits[<span class="hljs-number">0</span>].o.bit).toBe path1
+      expect(s.transits[<span class="hljs-number">1</span>].o.bit).toBe path2
+      expect(s.transits[<span class="hljs-number">0</span>].o.stroke).toBe <span class="hljs-string">'deeppink'</span>
+      expect(s.transits[<span class="hljs-number">1</span>].o.stroke).toBe <span class="hljs-string">'cyan'</span>
+
+    it <span class="hljs-string">'should pass index and isRunLess to every transit'</span>, <span class="hljs-function">-&gt;</span>
+      els   = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>
+      path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      els.appendChild(path1); els.appendChild path2
+      s = <span class="hljs-keyword">new</span> Stagger
+        <span class="hljs-attribute">els</span>: els
+        <span class="hljs-attribute">stroke</span>: [<span class="hljs-string">'deeppink'</span>, <span class="hljs-string">'cyan'</span>, <span class="hljs-string">'yellow'</span>]
+      expect(s.transits.length)   .toBe <span class="hljs-number">2</span>
+      expect(s.transits[<span class="hljs-number">0</span>].o.index).toBe <span class="hljs-number">0</span>
+      expect(s.transits[<span class="hljs-number">1</span>].o.index).toBe <span class="hljs-number">1</span>
+      expect(s.transits[<span class="hljs-number">0</span>].o.isRunLess).toBe <span class="hljs-literal">true</span>
+      expect(s.transits[<span class="hljs-number">1</span>].o.isRunLess).toBe <span class="hljs-literal">true</span>
+
+  describe <span class="hljs-string">'render method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should override render method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.render).<span class="hljs-keyword">not</span>.toBe Stagger.__super__.render
+
+    it <span class="hljs-string">'should call createBit method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      spyOn s, <span class="hljs-string">'createBit'</span>
+      s.render()
+      expect(s.createBit).toHaveBeenCalled()
+
+    it <span class="hljs-string">'should call setProgress method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      spyOn s, <span class="hljs-string">'setProgress'</span>
+      s.render()
+      expect(s.setProgress).toHaveBeenCalledWith <span class="hljs-number">0</span>, <span class="hljs-literal">true</span>
+
+    it <span class="hljs-string">'should call createTween method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      spyOn s, <span class="hljs-string">'createTween'</span>
+      s.render()
+      expect(s.createTween).toHaveBeenCalled()
+
+  describe <span class="hljs-string">'createTween method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should override createTween method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.createTween).<span class="hljs-keyword">not</span>.toBe Stagger.__super__.createTween
+
+    it <span class="hljs-string">'should parse delay and duration'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.tween).toBeDefined()
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>it &#39;should call super createTween method&#39;, -&gt;
+  s = new Stagger els: els
+  spyOn Stagger.<strong>super</strong>, &#39;createTween&#39;
+  s.createTween()
+  expect(Stagger.<strong>super</strong>.createTween).toHaveBeenCalled()</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    it <span class="hljs-string">'should add timelines to the tween'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.tween.timelines.length).toBe <span class="hljs-number">2</span>
+
+    it <span class="hljs-string">'should call startTween'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      spyOn s, <span class="hljs-string">'startTween'</span>
+      s.createTween()
+      expect(s.startTween).toHaveBeenCalled()
+
+    it <span class="hljs-string">'should not call startTween if isRunLess was passed'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      spyOn s, <span class="hljs-string">'startTween'</span>
+      s.createTween()
+      expect(s.startTween).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+
+  describe <span class="hljs-string">'draw method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should override draw method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(s.draw).<span class="hljs-keyword">not</span>.toBe Stagger.__super__.draw
+
+    it <span class="hljs-string">'should call drawEl method'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      spyOn s, <span class="hljs-string">'drawEl'</span>
+      s.draw()
+      expect(s.drawEl).toHaveBeenCalled()
+
+  describe <span class="hljs-string">'parseEls method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should recieve els as a DOM node'</span>, <span class="hljs-function">-&gt;</span>
+      els   = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>
+      path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      els.appendChild(path1); els.appendChild path2
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els
+      expect(h.isArray(s.props.els)).toBe <span class="hljs-literal">true</span>
+    it <span class="hljs-string">'should recieve els as an Array of nodes'</span>, <span class="hljs-function">-&gt;</span>
+      path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: [path1, path2]
+      expect(h.isArray(s.props.els)).toBe <span class="hljs-literal">true</span>
+    it <span class="hljs-string">'should recieve els as children'</span>, <span class="hljs-function">-&gt;</span>
+      els   = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>
+      path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      els.appendChild(path1); els.appendChild path2
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els.childNodes
+      expect(h.isArray(s.props.els)).toBe <span class="hljs-literal">true</span>
+    it <span class="hljs-string">'should recieve as a selector of parent'</span>, <span class="hljs-function">-&gt;</span>
+      els   = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>
+      path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      els.appendChild(path1); els.appendChild path2
+      <span class="hljs-built_in">document</span>.body.appendChild els
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: <span class="hljs-string">'g'</span>
+      expect(h.isArray(s.props.els)).toBe <span class="hljs-literal">true</span>
+  describe <span class="hljs-string">'getPropByMod method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should return property by mod'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els, <span class="hljs-attribute">stroke</span>: [<span class="hljs-string">'deeppink'</span>, <span class="hljs-string">'cyan'</span>, <span class="hljs-string">'white'</span>, <span class="hljs-string">'orange'</span>]
+      expect(s.getPropByMod(<span class="hljs-string">'stroke'</span>, <span class="hljs-number">2</span>)).toBe <span class="hljs-string">'white'</span>
+      expect(s.getPropByMod(<span class="hljs-string">'stroke'</span>, <span class="hljs-number">5</span>)).toBe <span class="hljs-string">'cyan'</span>
+    it <span class="hljs-string">'should return property if single property was passed'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els, <span class="hljs-attribute">stroke</span>: <span class="hljs-string">'deeppink'</span>
+      expect(s.getPropByMod(<span class="hljs-string">'stroke'</span>, <span class="hljs-number">2</span>)).toBe <span class="hljs-string">'deeppink'</span>
+
+  describe <span class="hljs-string">'getOption method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should get options for a transit by its index'</span>, <span class="hljs-function">-&gt;</span>
+      s = <span class="hljs-keyword">new</span> Stagger <span class="hljs-attribute">els</span>: els, <span class="hljs-attribute">stroke</span>: [<span class="hljs-string">'deeppink'</span>, <span class="hljs-string">'cyan'</span>, <span class="hljs-string">'yellow'</span>]
+      expect(s.getOption(<span class="hljs-number">0</span>).stroke)   .toBe <span class="hljs-string">'deeppink'</span>
+      expect(s.getOption(<span class="hljs-number">0</span>).bit)      .toBe path1
+      expect(s.getOption(<span class="hljs-number">0</span>).duration) .toBe <span class="hljs-number">500</span>
+      expect(s.getOption(<span class="hljs-number">1</span>).stroke)   .toBe <span class="hljs-string">'cyan'</span>
+      expect(s.getOption(<span class="hljs-number">1</span>).bit)      .toBe path2
+      expect(s.getOption(<span class="hljs-number">1</span>).duration) .toBe <span class="hljs-number">500</span>
+
+
+
+
+
+
+
+
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>

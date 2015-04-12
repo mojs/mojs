@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - h.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="../spec/h.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/../spec/h.coffee">../spec/h.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">h  = mojs.helpers
+ns = <span class="hljs-string">'http://www.w3.org/2000/svg'</span>
+
+describe <span class="hljs-string">'Helpers -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+  it <span class="hljs-string">'should have logBadgeCss'</span>, <span class="hljs-function">-&gt;</span>
+    expect(h.logBadgeCss).toBeDefined()
+  it <span class="hljs-string">'should have RAD_TO_DEG CONSTANT'</span>, <span class="hljs-function">-&gt;</span>
+    expect(h.RAD_TO_DEG).toBe <span class="hljs-number">180</span>/Math.PI
+  it <span class="hljs-string">'should have remBase'</span>, <span class="hljs-function">-&gt;</span>
+    expect(<span class="hljs-keyword">typeof</span> h.remBase).toBe <span class="hljs-string">'number'</span>
+  it <span class="hljs-string">'should have posPropsMap map'</span>, <span class="hljs-function">-&gt;</span>
+    expect(h.posPropsMap.x).toBe      <span class="hljs-number">1</span>
+    expect(h.posPropsMap.y).toBe      <span class="hljs-number">1</span>
+    expect(h.posPropsMap.shiftX).toBe <span class="hljs-number">1</span>
+    expect(h.posPropsMap.shiftY).toBe <span class="hljs-number">1</span>
+
+  it <span class="hljs-string">'should have strokeDashPropsMap map'</span>, <span class="hljs-function">-&gt;</span>
+    expect(h.strokeDashPropsMap.strokeDasharray) .toBe    <span class="hljs-number">1</span>
+    expect(h.strokeDashPropsMap.strokeDashoffset).toBe    <span class="hljs-number">1</span>
+    expect(Object.keys(h.strokeDashPropsMap).length).toBe  <span class="hljs-number">2</span>
+
+  describe <span class="hljs-string">'prefix'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should have prefix'</span>, <span class="hljs-function">-&gt;</span>
+      expect(h.prefix).toBeDefined()
+      expect(h.prefix.js).toBeDefined()
+      expect(h.prefix.css).toBeDefined()
+      expect(h.prefix.lowercase).toBeDefined()
+      expect(h.prefix.dom).toBeDefined()
+  describe <span class="hljs-string">'browsers detection'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should have browsers flag'</span>, <span class="hljs-function">-&gt;</span>
+      expect(h.isFF).toBeDefined()
+      expect(h.isIE).toBeDefined()
+      expect(h.isOldOpera).toBeDefined()
+  describe <span class="hljs-string">'tween related map -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should be a map of tween related options -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      expect(h.chainOptionMap.duration)         .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.delay)            .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.repeat)           .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.easing)           .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.yoyo)             .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.onStart)          .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.onComplete)       .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.onCompleteChain)  .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.onUpdate)         .toBe <span class="hljs-number">1</span>
+      expect(h.chainOptionMap.points)           .toBe <span class="hljs-number">1</span>
+      mapLen = Object.keys(h.chainOptionMap).length
+      expect(mapLen)                            .toBe <span class="hljs-number">10</span>
+  describe <span class="hljs-string">'pure tween props -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should be a map of tween related options -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      expect(h.tweenOptionMap.duration)           .toBe <span class="hljs-number">1</span>
+      expect(h.tweenOptionMap.delay)              .toBe <span class="hljs-number">1</span>
+      expect(h.tweenOptionMap.repeat)             .toBe <span class="hljs-number">1</span>
+      expect(h.tweenOptionMap.easing)             .toBe <span class="hljs-number">1</span>
+      expect(h.tweenOptionMap.yoyo)               .toBe <span class="hljs-number">1</span>
+      expect(Object.keys(h.tweenOptionMap).length).toBe <span class="hljs-number">5</span>
+  describe <span class="hljs-string">'pure callbacks props -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should be a map of callback related options -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      expect(h.callbacksMap.onStart)            .toBe <span class="hljs-number">1</span>
+      expect(h.callbacksMap.onUpdate)           .toBe <span class="hljs-number">1</span>
+      expect(h.callbacksMap.onComplete)         .toBe <span class="hljs-number">1</span>
+      expect(h.callbacksMap.onCompleteChain)    .toBe <span class="hljs-number">1</span>
+      expect(Object.keys(h.callbacksMap).length).toBe <span class="hljs-number">4</span>
+  describe <span class="hljs-string">'methods -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    describe <span class="hljs-string">'clamp method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should clamp value to max and min'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.clamp(<span class="hljs-number">10</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>)) .toBe  <span class="hljs-number">5</span>
+        expect(h.clamp(-<span class="hljs-number">10</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>)).toBe <span class="hljs-number">0</span>
+        expect(h.clamp(<span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>))  .toBe <span class="hljs-number">2</span>
+
+    describe <span class="hljs-string">'extend method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should extend object by other one'</span>, <span class="hljs-function">-&gt;</span>
+        obj1 = <span class="hljs-attribute">a</span>: <span class="hljs-number">1</span>
+        obj2 = <span class="hljs-attribute">b</span>: <span class="hljs-number">1</span>
+        h.extend(obj1, obj2)
+        expect(obj1.a).toBe <span class="hljs-number">1</span>
+        expect(obj1.b).toBe <span class="hljs-number">1</span>
+        expect(obj2.a).<span class="hljs-keyword">not</span>.toBeDefined()
+        expect(obj2.b).toBe <span class="hljs-number">1</span>
+    describe <span class="hljs-string">'parseRand method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should get random number from string'</span>, <span class="hljs-function">-&gt;</span>
+        rand = h.parseRand <span class="hljs-string">'rand(10,20)'</span>
+        expect(<span class="hljs-keyword">typeof</span> rand).toBe <span class="hljs-string">'number'</span>
+        expect(rand).toBeGreaterThan <span class="hljs-number">9</span>
+        expect(rand).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">20</span>
+      it <span class="hljs-string">'should get random number with units'</span>, <span class="hljs-function">-&gt;</span>
+        rand = h.parseRand <span class="hljs-string">'rand(10%,20%)'</span>
+        expect(parseFloat rand).toBeGreaterThan      <span class="hljs-number">9</span>
+        expect(parseFloat rand).<span class="hljs-keyword">not</span>.toBeGreaterThan  <span class="hljs-number">20</span>
+        expect(rand.match(<span class="hljs-regexp">/\%/</span>)).toBeTruthy()
+
+    describe <span class="hljs-string">'parseStagger method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should get random number from string'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(150)'</span>, <span class="hljs-number">3</span>
+        expect(<span class="hljs-keyword">typeof</span> value).toBe <span class="hljs-string">'number'</span>
+        expect(value).toBe <span class="hljs-number">450</span>
+      it <span class="hljs-string">'should get random if was passed'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(rand(10%,20%))'</span>, <span class="hljs-number">0</span>
+        expect(value).toBe <span class="hljs-string">'0%'</span>
+        
+        value = parseInt(h.parseStagger(<span class="hljs-string">'stagger(rand(10%,20%))'</span>, <span class="hljs-number">3</span>), <span class="hljs-number">10</span>)
+        expect(value).toBeGreaterThan     <span class="hljs-number">29</span>
+        expect(value).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">60</span>
+
+      it <span class="hljs-string">'should get string of unit value'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(20%)'</span>, <span class="hljs-number">2</span>
+        expect(value).toBe <span class="hljs-string">'40%'</span>
+      it <span class="hljs-string">'should parse stagger with base'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(1000, 20)'</span>, <span class="hljs-number">2</span>
+        expect(value).toBe <span class="hljs-number">1040</span>
+      it <span class="hljs-string">'should parse stagger with unit base'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(1000%, 20)'</span>, <span class="hljs-number">2</span>
+        expect(value).toBe <span class="hljs-string">'1040%'</span>
+      it <span class="hljs-string">'should parse stagger with unit value'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(1000, 20%)'</span>, <span class="hljs-number">2</span>
+        expect(value).toBe <span class="hljs-string">'1040%'</span>
+      it <span class="hljs-string">'should prefer base units over the value ones'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(1000px, 20%)'</span>, <span class="hljs-number">2</span>
+        expect(value).toBe <span class="hljs-string">'1040px'</span>
+      it <span class="hljs-string">'should parse value rand values'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(500, rand(10,20))'</span>, <span class="hljs-number">2</span>
+        expect(value).toBeGreaterThan     <span class="hljs-number">520</span>
+        expect(value).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">540</span>
+      it <span class="hljs-string">'should parse base rand values'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(rand(500,600), 20)'</span>, <span class="hljs-number">2</span>
+        expect(value).toBeGreaterThan     <span class="hljs-number">539</span>
+        expect(value).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">640</span>
+      it <span class="hljs-string">'should respect units in rands'</span>, <span class="hljs-function">-&gt;</span>
+        value = h.parseStagger <span class="hljs-string">'stagger(rand(500%,600%), 20)'</span>, <span class="hljs-number">2</span>
+        expect(parseInt(value),<span class="hljs-number">10</span>).toBeGreaterThan     <span class="hljs-number">539</span>
+        expect(parseInt(value),<span class="hljs-number">10</span>).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">639</span>
+        expect(value.match <span class="hljs-regexp">/\%/</span> ).toBeTruthy()
+
+    describe <span class="hljs-string">'parseIfRand method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should get random number from string if it is rand'</span>, <span class="hljs-function">-&gt;</span>
+        rand = h.parseIfRand <span class="hljs-string">'rand(10,20)'</span>
+        expect(<span class="hljs-keyword">typeof</span> rand).toBe <span class="hljs-string">'number'</span>
+        expect(rand).toBeGreaterThan <span class="hljs-number">9</span>
+        expect(rand).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">20</span>
+      it <span class="hljs-string">'should return the value if it is not a string'</span>, <span class="hljs-function">-&gt;</span>
+        rand = h.parseIfRand <span class="hljs-number">20</span>
+        expect(<span class="hljs-keyword">typeof</span> rand).toBe <span class="hljs-string">'number'</span>
+        expect(rand).toBe <span class="hljs-number">20</span>
+
+    describe <span class="hljs-string">'rand method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should return random digit form range'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.rand(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)).toBeGreaterThan      <span class="hljs-number">9</span>
+        expect(h.rand(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)).<span class="hljs-keyword">not</span>.toBeGreaterThan  <span class="hljs-number">20</span>
+      it <span class="hljs-string">'should work with negative numbers'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.rand(-<span class="hljs-number">10</span>, -<span class="hljs-number">20</span>)).toBeGreaterThan      -<span class="hljs-number">20</span>
+        expect(h.rand(-<span class="hljs-number">10</span>, -<span class="hljs-number">20</span>)).<span class="hljs-keyword">not</span>.toBeGreaterThan  -<span class="hljs-number">10</span>
+      it <span class="hljs-string">'should work with mixed numbers'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.rand(-<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)).toBeGreaterThan      -<span class="hljs-number">10</span>
+        expect(h.rand(-<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)).<span class="hljs-keyword">not</span>.toBeGreaterThan  <span class="hljs-number">20</span>
+      it <span class="hljs-string">'should work with float numbers'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.rand(.<span class="hljs-number">2</span>, .<span class="hljs-number">9</span>)).toBeGreaterThan      .<span class="hljs-number">1</span>
+        expect(h.rand(.<span class="hljs-number">2</span>, .<span class="hljs-number">9</span>)).<span class="hljs-keyword">not</span>.toBeGreaterThan  .<span class="hljs-number">9</span>
+    describe <span class="hljs-string">'getDelta method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      describe <span class="hljs-string">'numeric values -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should calculate delta'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'radius'</span>, {<span class="hljs-number">25</span>: <span class="hljs-number">75</span>}
+          expect(delta.start)   .toBe   <span class="hljs-number">25</span>
+          expect(delta.delta)   .toBe   <span class="hljs-number">50</span>
+          expect(delta.type)    .toBe   <span class="hljs-string">'number'</span>
+        it <span class="hljs-string">'should calculate delta with string arguments'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'radius'</span>, {<span class="hljs-number">25</span>: <span class="hljs-number">75</span>}
+          expect(delta.start)   .toBe   <span class="hljs-number">25</span>
+          expect(delta.delta)   .toBe   <span class="hljs-number">50</span>
+        it <span class="hljs-string">'should calculate delta with float arguments'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'radius'</span>,  {<span class="hljs-string">'25.50'</span>: <span class="hljs-number">75.50</span>}
+          expect(delta.start)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.delta)   .toBe   <span class="hljs-number">50</span>
+        it <span class="hljs-string">'should calculate delta with negative start arguments'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'radius'</span>,  {<span class="hljs-string">'-25.50'</span>: <span class="hljs-number">75.50</span>}
+          expect(delta.start)   .toBe   -<span class="hljs-number">25.5</span>
+          expect(delta.delta)   .toBe   <span class="hljs-number">101</span>
+        it <span class="hljs-string">'should calculate delta with negative end arguments'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'radius'</span>,  {<span class="hljs-string">'25.50'</span>: -<span class="hljs-number">75.50</span>}
+          expect(delta.start)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.end)     .toBe   -<span class="hljs-number">75.5</span>
+          expect(delta.delta)   .toBe   -<span class="hljs-number">101</span>
+
+        it <span class="hljs-string">'should fallback to declared units if one of them is not defined'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'x'</span>,  {<span class="hljs-string">'25.50%'</span>: -<span class="hljs-number">75.50</span>}
+
+          expect(delta.start.unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.start.value)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.start.string)  .toBe   <span class="hljs-string">'25.5%'</span>
+
+          expect(delta.end.unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.end.value)   .toBe   -<span class="hljs-number">75.5</span>
+          expect(delta.end.string)  .toBe   <span class="hljs-string">'-75.5%'</span>
+
+        it <span class="hljs-string">'should fallback to declared units if one of them defined #2'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'x'</span>,  {<span class="hljs-string">'25.50'</span>: <span class="hljs-string">'-75.50%'</span>}
+
+          expect(delta.start.unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.start.value)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.start.string)  .toBe   <span class="hljs-string">'25.5%'</span>
+
+          expect(delta.end.unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.end.value)   .toBe   -<span class="hljs-number">75.5</span>
+          expect(delta.end.string)  .toBe   <span class="hljs-string">'-75.5%'</span>
+
+        it <span class="hljs-string">'should fallback to end units if two units undefined and warn'</span>, <span class="hljs-function">-&gt;</span>
+          spyOn h, <span class="hljs-string">'warn'</span>
+          delta = h.parseDelta <span class="hljs-string">'x'</span>,  {<span class="hljs-string">'25.50%'</span>: <span class="hljs-string">'-75.50px'</span>}
+          expect(h.warn).toHaveBeenCalled()
+
+          expect(delta.start.unit)    .toBe   <span class="hljs-string">'px'</span>
+          expect(delta.start.value)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.start.string)  .toBe   <span class="hljs-string">'25.5px'</span>
+
+          expect(delta.end.unit)    .toBe   <span class="hljs-string">'px'</span>
+          expect(delta.end.value)   .toBe   -<span class="hljs-number">75.5</span>
+          expect(delta.end.string)  .toBe   <span class="hljs-string">'-75.5px'</span>
+
+        it <span class="hljs-string">'should not warn with the same units'</span>, <span class="hljs-function">-&gt;</span>
+          spyOn h, <span class="hljs-string">'warn'</span>
+          delta = h.parseDelta <span class="hljs-string">'x'</span>,  {<span class="hljs-string">'25.50%'</span>: <span class="hljs-string">'-75.50%'</span>}
+          expect(h.warn).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+
+        it <span class="hljs-string">'should work with strokeDash.. properties'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'strokeDashoffset'</span>,  {<span class="hljs-string">'25.50'</span>: <span class="hljs-string">'-75.50%'</span>}
+
+          expect(delta.start[<span class="hljs-number">0</span>].unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.start[<span class="hljs-number">0</span>].value)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.start[<span class="hljs-number">0</span>].string)  .toBe   <span class="hljs-string">'25.5%'</span>
+
+          expect(delta.end[<span class="hljs-number">0</span>].unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.end[<span class="hljs-number">0</span>].value)   .toBe   -<span class="hljs-number">75.5</span>
+          expect(delta.end[<span class="hljs-number">0</span>].string)  .toBe   <span class="hljs-string">'-75.5%'</span>
+
+        it <span class="hljs-string">'should work with strokeDash.. properties #2'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'strokeDashoffset'</span>,  {<span class="hljs-string">'25.50%'</span>: <span class="hljs-string">'-75.50'</span>}
+          expect(delta.start[<span class="hljs-number">0</span>].unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.start[<span class="hljs-number">0</span>].value)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.start[<span class="hljs-number">0</span>].string)  .toBe   <span class="hljs-string">'25.5%'</span>
+
+          expect(delta.end[<span class="hljs-number">0</span>].unit)    .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.end[<span class="hljs-number">0</span>].value)   .toBe   -<span class="hljs-number">75.5</span>
+          expect(delta.end[<span class="hljs-number">0</span>].string)  .toBe   <span class="hljs-string">'-75.5%'</span>
+        
+        it <span class="hljs-string">'should work with strokeDash.. properties #3'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'strokeDashoffset'</span>,  {<span class="hljs-string">'25.50%'</span>: <span class="hljs-string">'-75.50px'</span>}
+
+          expect(delta.start[<span class="hljs-number">0</span>].unit)    .toBe   <span class="hljs-string">'px'</span>
+          expect(delta.start[<span class="hljs-number">0</span>].value)   .toBe   <span class="hljs-number">25.5</span>
+          expect(delta.start[<span class="hljs-number">0</span>].string)  .toBe   <span class="hljs-string">'25.5px'</span>
+
+          expect(delta.end[<span class="hljs-number">0</span>].unit)    .toBe   <span class="hljs-string">'px'</span>
+          expect(delta.end[<span class="hljs-number">0</span>].value)   .toBe   -<span class="hljs-number">75.5</span>
+          expect(delta.end[<span class="hljs-number">0</span>].string)  .toBe   <span class="hljs-string">'-75.5px'</span>
+
+      describe <span class="hljs-string">'color values -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should calculate color delta'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'stroke'</span>,  {<span class="hljs-string">'#000'</span>: <span class="hljs-string">'rgb(255,255,255)'</span>}
+          expect(delta.start.r)    .toBe   <span class="hljs-number">0</span>
+          expect(delta.end.r)      .toBe   <span class="hljs-number">255</span>
+          expect(delta.delta.r)    .toBe   <span class="hljs-number">255</span>
+          expect(delta.type)       .toBe   <span class="hljs-string">'color'</span>
+        it <span class="hljs-string">'should ignore stroke-linecap prop, use start prop and warn'</span>, <span class="hljs-function">-&gt;</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'warn'</span>
+          delta = h.parseDelta <span class="hljs-string">'strokeLinecap'</span>, {<span class="hljs-string">'round'</span>: <span class="hljs-string">'butt'</span>}
+          expect(<span class="hljs-function">-&gt;</span> h.parseDelta <span class="hljs-string">'strokeLinecap'</span>, {<span class="hljs-string">'round'</span>: <span class="hljs-string">'butt'</span>})
+            .<span class="hljs-keyword">not</span>.toThrow()
+          expect(<span class="hljs-built_in">console</span>.warn).toHaveBeenCalled()
+          expect(delta.type).<span class="hljs-keyword">not</span>.toBeDefined()
+      describe <span class="hljs-string">'array values -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should calculate array delta'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'strokeDasharray'</span>, { <span class="hljs-string">'200 100%'</span>: <span class="hljs-string">'300'</span> }
+          expect(delta.type)           .toBe   <span class="hljs-string">'array'</span>
+          expect(delta.start[<span class="hljs-number">0</span>].value) .toBe   <span class="hljs-number">200</span>
+          expect(delta.start[<span class="hljs-number">0</span>].unit)  .toBe   <span class="hljs-string">'px'</span>
+          expect(delta.end[<span class="hljs-number">0</span>].value)   .toBe   <span class="hljs-number">300</span>
+          expect(delta.end[<span class="hljs-number">0</span>].unit)    .toBe   <span class="hljs-string">'px'</span>
+          expect(delta.start[<span class="hljs-number">1</span>].value) .toBe   <span class="hljs-number">100</span>
+          expect(delta.start[<span class="hljs-number">1</span>].unit)  .toBe   <span class="hljs-string">'%'</span>
+          expect(delta.end[<span class="hljs-number">1</span>].value)   .toBe   <span class="hljs-number">0</span>
+          expect(delta.end[<span class="hljs-number">1</span>].unit)    .toBe   <span class="hljs-string">'%'</span>
+
+      describe <span class="hljs-string">'unit values -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should calculate unit delta'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'x'</span>, {<span class="hljs-string">'0%'</span>: <span class="hljs-string">'100%'</span>}
+          expect(delta.start.string)    .toBe   <span class="hljs-string">'0%'</span>
+          expect(delta.end.string)      .toBe   <span class="hljs-string">'100%'</span>
+          expect(delta.delta)           .toBe   <span class="hljs-number">100</span>
+          expect(delta.type)            .toBe   <span class="hljs-string">'unit'</span>
+      describe <span class="hljs-string">'tween-related values -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should not calc delta for tween related props'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'duration'</span>, {<span class="hljs-string">'2000'</span>: <span class="hljs-number">1000</span>}
+          expect(delta.type).<span class="hljs-keyword">not</span>.toBeDefined()
+      describe <span class="hljs-string">'rand values -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should calculate unit delta'</span>, <span class="hljs-function">-&gt;</span>
+          delta = h.parseDelta <span class="hljs-string">'x'</span>, { <span class="hljs-string">'rand(2, 20)'</span>: <span class="hljs-string">'rand(0, 5)'</span> }
+          expect(delta.start.value).toBeGreaterThan     -<span class="hljs-number">1</span>
+          expect(delta.start.value).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">20</span>
+          expect(delta.end.value).toBeGreaterThan     -<span class="hljs-number">1</span>
+          expect(delta.end.value).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">5</span>
+
+    describe <span class="hljs-string">'computedStyle method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should return computed styles'</span>,<span class="hljs-function">-&gt;</span>
+        <span class="hljs-built_in">document</span>.body.style[<span class="hljs-string">'fontSize'</span>] = <span class="hljs-string">'10px'</span>
+        expect(h.computedStyle(<span class="hljs-built_in">document</span>.body).fontSize).toBe <span class="hljs-string">'10px'</span>
+      it <span class="hljs-string">'should call getComputedStyle under the hood'</span>,<span class="hljs-function">-&gt;</span>
+        spyOn <span class="hljs-built_in">window</span>, <span class="hljs-string">'getComputedStyle'</span>
+        h.computedStyle(<span class="hljs-built_in">document</span>.body)
+        expect(<span class="hljs-built_in">window</span>.getComputedStyle).toHaveBeenCalled()
+    describe <span class="hljs-string">'getRemBase method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should return remBase'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.getRemBase()).toBeDefined()
+        expect(<span class="hljs-keyword">typeof</span> h.getRemBase()).toBe <span class="hljs-string">'number'</span>
+      it <span class="hljs-string">'should set remBase to h'</span>, <span class="hljs-function">-&gt;</span>
+        h.getRemBase()
+        expect(h.remBase).toBe <span class="hljs-number">16</span>
+    describe <span class="hljs-string">'logging methods'</span>, <span class="hljs-function">-&gt;</span>
+      describe <span class="hljs-string">'prepareForLog method'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should prepare for arguments for logging'</span>, <span class="hljs-function">-&gt;</span>
+          prepared = h.prepareForLog [ <span class="hljs-string">'message'</span> ]
+          expect(prepared[<span class="hljs-number">0</span>]).toBe <span class="hljs-string">'%cmo·js%c'</span>
+          expect(prepared[<span class="hljs-number">1</span>]).toBe h.logBadgeCss
+          expect(prepared[<span class="hljs-number">2</span>]).toBe <span class="hljs-string">'::'</span>
+          expect(prepared[<span class="hljs-number">3</span>]).toBe <span class="hljs-string">'message'</span>
+      describe <span class="hljs-string">'log method'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should log to console'</span>,<span class="hljs-function">-&gt;</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'log'</span>
+          h.log <span class="hljs-string">'something'</span>
+          expect(<span class="hljs-built_in">console</span>.log).toHaveBeenCalled()
+        it <span class="hljs-string">'should not log to console if !isDebug'</span>,<span class="hljs-function">-&gt;</span>
+          mojs.isDebug = <span class="hljs-literal">false</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'log'</span>
+          h.log <span class="hljs-string">'something'</span>
+          expect(<span class="hljs-built_in">console</span>.log).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+          mojs.isDebug = <span class="hljs-literal">true</span>
+        it <span class="hljs-string">'should prepend mojs badge to message'</span>,<span class="hljs-function">-&gt;</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'log'</span>
+          h.log <span class="hljs-string">'smth'</span>
+          expect(<span class="hljs-built_in">console</span>.log)
+            .toHaveBeenCalledWith <span class="hljs-string">'%cmo·js%c'</span>, h.logBadgeCss, <span class="hljs-string">'::'</span>, <span class="hljs-string">'smth'</span>
+      describe <span class="hljs-string">'warn method'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should warn to console'</span>,<span class="hljs-function">-&gt;</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'warn'</span>
+          h.warn <span class="hljs-string">'something'</span>
+          expect(<span class="hljs-built_in">console</span>.warn).toHaveBeenCalled()
+        it <span class="hljs-string">'should not warn to console if !isDebug'</span>,<span class="hljs-function">-&gt;</span>
+          mojs.isDebug = <span class="hljs-literal">false</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'warn'</span>
+          h.warn <span class="hljs-string">'something'</span>
+          expect(<span class="hljs-built_in">console</span>.warn).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+          mojs.isDebug = <span class="hljs-literal">true</span>
+        it <span class="hljs-string">'should prepend mojs badge to message'</span>,<span class="hljs-function">-&gt;</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'warn'</span>
+          h.warn <span class="hljs-string">'smth'</span>
+          expect(<span class="hljs-built_in">console</span>.warn)
+            .toHaveBeenCalledWith <span class="hljs-string">'%cmo·js%c'</span>, h.logBadgeCss, <span class="hljs-string">'::'</span>, <span class="hljs-string">'smth'</span>
+      describe <span class="hljs-string">'error method'</span>, <span class="hljs-function">-&gt;</span>
+        it <span class="hljs-string">'should error to console'</span>,<span class="hljs-function">-&gt;</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'error'</span>
+          h.error <span class="hljs-string">'something'</span>
+          expect(<span class="hljs-built_in">console</span>.error).toHaveBeenCalled()
+        it <span class="hljs-string">'should not error to console if !isDebug'</span>,<span class="hljs-function">-&gt;</span>
+          mojs.isDebug = <span class="hljs-literal">false</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'error'</span>
+          h.error <span class="hljs-string">'something'</span>
+          expect(<span class="hljs-built_in">console</span>.error).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+          mojs.isDebug = <span class="hljs-literal">true</span>
+        it <span class="hljs-string">'should prepend mojs badge to message'</span>,<span class="hljs-function">-&gt;</span>
+          spyOn <span class="hljs-built_in">console</span>, <span class="hljs-string">'error'</span>
+          h.error <span class="hljs-string">'smth'</span>
+          expect(<span class="hljs-built_in">console</span>.error)
+            .toHaveBeenCalledWith <span class="hljs-string">'%cmo·js%c'</span>, h.logBadgeCss, <span class="hljs-string">'::'</span>, <span class="hljs-string">'smth'</span>
+    describe <span class="hljs-string">'setPrefixedStyle method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should set prefixed style'</span>, <span class="hljs-function">-&gt;</span>
+        el = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        h.setPrefixedStyle el, <span class="hljs-string">'transform'</span>, <span class="hljs-string">'translate(20px, 10px)'</span>
+        prefixed = <span class="hljs-string">"<span class="hljs-subst">#{h.prefix.css}</span>transform"</span>
+        expect(el.style[prefixed]).toBe <span class="hljs-string">'translate(20px, 10px)'</span>
+        expect(el.style[<span class="hljs-string">'transform'</span>]).toBe         <span class="hljs-string">'translate(20px, 10px)'</span>
+    describe <span class="hljs-string">'parseUnit method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should parse number to pixels'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-number">100</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'px'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100px'</span>
+      it <span class="hljs-string">'should parse unitless string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'px'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100px'</span>
+      it <span class="hljs-string">'should parse pixel string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100px'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'px'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100px'</span>
+      it <span class="hljs-string">'should parse percent string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100%'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'%'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100%'</span>
+      it <span class="hljs-string">'should parse rem string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100rem'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'rem'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100rem'</span>
+      it <span class="hljs-string">'should parse em string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100em'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'em'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100em'</span>
+      it <span class="hljs-string">'should parse ex string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100ex'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'ex'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100ex'</span>
+      it <span class="hljs-string">'should parse cm string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100cm'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'cm'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100cm'</span>
+      it <span class="hljs-string">'should parse mm string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100mm'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'mm'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100mm'</span>
+      it <span class="hljs-string">'should parse in string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100in'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'in'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100in'</span>
+      it <span class="hljs-string">'should parse pt string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100pt'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'pt'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100pt'</span>
+      it <span class="hljs-string">'should parse pc string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100pc'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'pc'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100pc'</span>
+      it <span class="hljs-string">'should parse ch string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100ch'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'ch'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100ch'</span>
+      it <span class="hljs-string">'should parse vh string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100vh'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'vh'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100vh'</span>
+      it <span class="hljs-string">'should parse vw string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100vw'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'vw'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100vw'</span>
+      it <span class="hljs-string">'should parse vmin string'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-string">'100vmin'</span>)
+        expect(unit.value)    .toBe <span class="hljs-number">100</span>
+        expect(unit.unit)     .toBe <span class="hljs-string">'vmin'</span>
+        expect(unit.string)   .toBe <span class="hljs-string">'100vmin'</span>
+      it <span class="hljs-string">'should return value if is not string nor number'</span>, <span class="hljs-function">-&gt;</span>
+        obj = {<span class="hljs-number">20</span>:<span class="hljs-number">30</span>}
+        unit = h.parseUnit(obj)
+        expect(unit).toBe obj
+      it <span class="hljs-string">'should detect if unit if strict'</span>, <span class="hljs-function">-&gt;</span>
+        unit = h.parseUnit(<span class="hljs-number">100</span>)
+        expect(unit.isStrict).toBe <span class="hljs-literal">false</span>
+        unit = h.parseUnit(<span class="hljs-string">'100px'</span>)
+        expect(unit.isStrict).toBe <span class="hljs-literal">true</span>
+
+    describe <span class="hljs-string">'strToArr method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should parse string to array'</span>,<span class="hljs-function">-&gt;</span>
+        array = h.strToArr(<span class="hljs-string">'200 100'</span>)
+        expect(array[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">200</span>
+        expect(array[<span class="hljs-number">0</span>].unit).toBe  <span class="hljs-string">'px'</span>
+      it <span class="hljs-string">'should parse % string to array'</span>,<span class="hljs-function">-&gt;</span>
+        array = h.strToArr(<span class="hljs-string">'200% 100'</span>)
+        expect(array[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">200</span>
+        expect(array[<span class="hljs-number">0</span>].unit).toBe  <span class="hljs-string">'%'</span>
+        expect(array[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">100</span>
+        expect(array[<span class="hljs-number">1</span>].unit).toBe  <span class="hljs-string">'px'</span>
+      it <span class="hljs-string">'should parse number to array'</span>,<span class="hljs-function">-&gt;</span>
+        array = h.strToArr(<span class="hljs-number">200</span>)
+        expect(array[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">200</span>
+        expect(array[<span class="hljs-number">0</span>].unit).toBe  <span class="hljs-string">'px'</span>
+      it <span class="hljs-string">'should parse string with multiple spaces to array'</span>,<span class="hljs-function">-&gt;</span>
+        array = h.strToArr(<span class="hljs-string">'200   100%'</span>)
+        expect(array[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">200</span>
+        expect(array[<span class="hljs-number">0</span>].unit).toBe  <span class="hljs-string">'px'</span>
+        expect(array[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">100</span>
+        expect(array[<span class="hljs-number">1</span>].unit).toBe  <span class="hljs-string">'%'</span>
+      it <span class="hljs-string">'should trim string before parse'</span>,<span class="hljs-function">-&gt;</span>
+        array = h.strToArr(<span class="hljs-string">'  200   100% '</span>)
+        expect(array[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">200</span>
+        expect(array[<span class="hljs-number">0</span>].unit).toBe  <span class="hljs-string">'px'</span>
+        expect(array[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">100</span>
+        expect(array[<span class="hljs-number">1</span>].unit).toBe  <span class="hljs-string">'%'</span>
+      it <span class="hljs-string">'should parse rand values'</span>,<span class="hljs-function">-&gt;</span>
+        array = h.strToArr(<span class="hljs-string">'  200   rand(10,20) '</span>)
+        expect(array[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">200</span>
+        expect(array[<span class="hljs-number">0</span>].unit).toBe  <span class="hljs-string">'px'</span>
+        expect(array[<span class="hljs-number">1</span>].value).toBeGreaterThan     <span class="hljs-number">10</span>
+        expect(array[<span class="hljs-number">1</span>].value).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">20</span>
+        expect(array[<span class="hljs-number">1</span>].unit).toBe  <span class="hljs-string">'px'</span>
+
+    describe <span class="hljs-string">'normDashArrays method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should normalize two inconsistent dash arrays'</span>, <span class="hljs-function">-&gt;</span>
+        arr1 = [h.parseUnit(<span class="hljs-number">100</span>), h.parseUnit(<span class="hljs-number">500</span>)]
+        arr2 = [h.parseUnit(<span class="hljs-number">150</span>), h.parseUnit(<span class="hljs-number">200</span>), h.parseUnit(<span class="hljs-number">307</span>)]
+        h.normDashArrays(arr1, arr2)
+        expect(arr1[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">100</span>
+        expect(arr1[<span class="hljs-number">0</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr1[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">500</span>
+        expect(arr1[<span class="hljs-number">1</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr1[<span class="hljs-number">2</span>].value).toBe <span class="hljs-number">0</span>
+        expect(arr1[<span class="hljs-number">2</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr2[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">150</span>
+        expect(arr2[<span class="hljs-number">0</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr2[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">200</span>
+        expect(arr2[<span class="hljs-number">1</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr2[<span class="hljs-number">2</span>].value).toBe <span class="hljs-number">307</span>
+        expect(arr2[<span class="hljs-number">2</span>].unit) .toBe <span class="hljs-string">'px'</span>
+      it <span class="hljs-string">'should copy units from the another array'</span>, <span class="hljs-function">-&gt;</span>
+        arr1 = [h.parseUnit(<span class="hljs-number">100</span>), h.parseUnit(<span class="hljs-number">500</span>)]
+        arr2 = [h.parseUnit(<span class="hljs-number">150</span>), h.parseUnit(<span class="hljs-number">200</span>), h.parseUnit(<span class="hljs-string">'307%'</span>)]
+        h.normDashArrays(arr1, arr2)
+        expect(arr1[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">100</span>
+        expect(arr1[<span class="hljs-number">0</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr1[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">500</span>
+        expect(arr1[<span class="hljs-number">1</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr1[<span class="hljs-number">2</span>].value).toBe <span class="hljs-number">0</span>
+        expect(arr1[<span class="hljs-number">2</span>].unit) .toBe <span class="hljs-string">'%'</span>
+        expect(arr1.length)  .toBe <span class="hljs-number">3</span>
+        expect(arr2[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">150</span>
+        expect(arr1[<span class="hljs-number">0</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr2[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">200</span>
+        expect(arr1[<span class="hljs-number">1</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr2[<span class="hljs-number">2</span>].value).toBe <span class="hljs-number">307</span>
+        expect(arr2[<span class="hljs-number">2</span>].unit) .toBe <span class="hljs-string">'%'</span>
+        expect(arr2.length)  .toBe <span class="hljs-number">3</span>
+      it <span class="hljs-string">'should copy units from the another array #2'</span>, <span class="hljs-function">-&gt;</span>
+        arr1 = [h.parseUnit(<span class="hljs-number">100</span>), h.parseUnit(<span class="hljs-number">500</span>), h.parseUnit(<span class="hljs-string">'500%'</span>)]
+        arr2 = [h.parseUnit(<span class="hljs-string">'150%'</span>)]
+        h.normDashArrays(arr1, arr2)
+        expect(arr1[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">100</span>
+        expect(arr1[<span class="hljs-number">0</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr1[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">500</span>
+        expect(arr1[<span class="hljs-number">1</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr1[<span class="hljs-number">2</span>].value).toBe <span class="hljs-number">500</span>
+        expect(arr1[<span class="hljs-number">2</span>].unit) .toBe <span class="hljs-string">'%'</span>
+        expect(arr1.length)  .toBe <span class="hljs-number">3</span>
+        expect(arr2[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">150</span>
+        expect(arr2[<span class="hljs-number">0</span>].unit) .toBe <span class="hljs-string">'%'</span>
+        expect(arr2[<span class="hljs-number">1</span>].value).toBe <span class="hljs-number">0</span>
+        expect(arr2[<span class="hljs-number">1</span>].unit) .toBe <span class="hljs-string">'px'</span>
+        expect(arr2[<span class="hljs-number">2</span>].value).toBe <span class="hljs-number">0</span>
+        expect(arr2[<span class="hljs-number">2</span>].unit) .toBe <span class="hljs-string">'%'</span>
+        expect(arr2.length)  .toBe <span class="hljs-number">3</span>
+      
+    describe <span class="hljs-string">'isArray method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should check if variable is array'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isArray []).toBe <span class="hljs-literal">true</span>
+        expect(h.isArray {}).toBe <span class="hljs-literal">false</span>
+        expect(h.isArray <span class="hljs-string">''</span>).toBe <span class="hljs-literal">false</span>
+        expect(h.isArray <span class="hljs-number">2</span>).toBe <span class="hljs-literal">false</span>
+        expect(h.isArray NaN).toBe <span class="hljs-literal">false</span>
+        expect(h.isArray <span class="hljs-literal">null</span>).toBe <span class="hljs-literal">false</span>
+        expect(h.isArray()).toBe <span class="hljs-literal">false</span>
+
+    describe <span class="hljs-string">'calcArrDelta method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should calculate delta of two arrays'</span>, <span class="hljs-function">-&gt;</span>
+        arr1 = [h.parseUnit(<span class="hljs-number">200</span>), h.parseUnit(<span class="hljs-number">300</span>), h.parseUnit(<span class="hljs-string">'100%'</span>)]
+        arr2 = [h.parseUnit(<span class="hljs-number">250</span>), h.parseUnit(<span class="hljs-number">150</span>), h.parseUnit(<span class="hljs-string">'0%'</span>)]
+        delta = h.calcArrDelta arr1, arr2
+        expect(delta[<span class="hljs-number">0</span>].value).toBe <span class="hljs-number">50</span>
+        expect(delta[<span class="hljs-number">0</span>].unit) .toBe <span class="hljs-string">'px'</span>
+
+        expect(delta[<span class="hljs-number">1</span>].value).toBe -<span class="hljs-number">150</span>
+        expect(delta[<span class="hljs-number">1</span>].unit) .toBe <span class="hljs-string">'px'</span>
+
+        expect(delta[<span class="hljs-number">2</span>].value).toBe -<span class="hljs-number">100</span>
+        expect(delta[<span class="hljs-number">2</span>].unit) .toBe <span class="hljs-string">'%'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>NOT SURE IF NEEDED
+it &#39;should should throw if on of the args are not arrays&#39;, -&gt;
+  expect(-&gt; h.calcArrDelta([200, 300, 100], &#39;a&#39;)).toThrow()
+  expect(-&gt; h.calcArrDelta(&#39;a&#39;, [200, 300, 100])).toThrow()
+it &#39;should should throw if less then 2 arrays passed&#39;, -&gt;
+  expect(-&gt; h.calcArrDelta [200, 300, 100]).toThrow()
+  expect(-&gt; h.calcArrDelta()).toThrow()</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      
+    describe <span class="hljs-string">'getRadialPoint'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should calculate radial point'</span>, <span class="hljs-function">-&gt;</span>
+        point = h.getRadialPoint
+          <span class="hljs-attribute">radius</span>: <span class="hljs-number">50</span>
+          <span class="hljs-attribute">angle</span>:  <span class="hljs-number">90</span>
+          <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">50</span>
+        expect(point.x).toBe <span class="hljs-number">100</span>
+        expect(point.y).toBe <span class="hljs-number">50</span>
+      it <span class="hljs-string">'should with radiusX and fallback to radius'</span>, <span class="hljs-function">-&gt;</span>
+        point = h.getRadialPoint
+          <span class="hljs-attribute">radius</span>: <span class="hljs-number">50</span>
+          <span class="hljs-attribute">radiusX</span>:<span class="hljs-number">100</span>
+          <span class="hljs-attribute">angle</span>:  <span class="hljs-number">90</span>
+          <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">50</span>
+        expect(point.x).toBe <span class="hljs-number">150</span>
+        expect(point.y).toBe <span class="hljs-number">50</span>
+      it <span class="hljs-string">'should with radiusY and fallback to radius'</span>, <span class="hljs-function">-&gt;</span>
+        point = h.getRadialPoint
+          <span class="hljs-attribute">radius</span>: <span class="hljs-number">50</span>
+          <span class="hljs-attribute">radiusY</span>:<span class="hljs-number">100</span>
+          <span class="hljs-attribute">angle</span>:  <span class="hljs-number">0</span>
+          <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">50</span>
+        expect(point.x).toBe <span class="hljs-number">50</span>
+        expect(point.y).toBe -<span class="hljs-number">50</span>
+      it <span class="hljs-string">'should return false if 1 of 3 options missed'</span>, <span class="hljs-function">-&gt;</span>
+        point = h.getRadialPoint
+          <span class="hljs-attribute">radius</span>: <span class="hljs-number">50</span>
+          <span class="hljs-attribute">angle</span>:  <span class="hljs-number">90</span>
+        expect(point).toBeFalsy()
+      it <span class="hljs-string">'should return false only if 1 of 3 options missed but not falsy'</span>, <span class="hljs-function">-&gt;</span>
+        point = h.getRadialPoint
+          <span class="hljs-attribute">radius</span>: <span class="hljs-number">0</span>
+          <span class="hljs-attribute">angle</span>:  <span class="hljs-number">90</span>
+          <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>
+        expect(point).toBeTruthy()
+      it <span class="hljs-string">'options should have default empty object'</span>, <span class="hljs-function">-&gt;</span>
+        point = h.getRadialPoint()
+        expect(point).toBeFalsy()
+        expect(h.getRadialPoint).<span class="hljs-keyword">not</span>.toThrow()
+
+    describe <span class="hljs-string">'cloneObj method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should clone object'</span>, <span class="hljs-function">-&gt;</span>
+        obj = { <span class="hljs-attribute">a</span>: <span class="hljs-number">2</span>, <span class="hljs-attribute">b</span>: <span class="hljs-number">3</span> }
+        clonedObj = h.cloneObj(obj)
+        expect(clonedObj.a).toBe <span class="hljs-number">2</span>
+        expect(clonedObj.b).toBe <span class="hljs-number">3</span>
+        expect(Object.keys(clonedObj).length).toBe <span class="hljs-number">2</span>
+      it <span class="hljs-string">'should exclude defined keys'</span>, <span class="hljs-function">-&gt;</span>
+        obj = { <span class="hljs-attribute">a</span>: <span class="hljs-number">2</span>, <span class="hljs-attribute">b</span>: <span class="hljs-number">3</span> }
+        exclude = { <span class="hljs-attribute">a</span>: <span class="hljs-number">1</span> }
+        clonedObj = h.cloneObj(obj, exclude)
+        expect(clonedObj.b).toBe <span class="hljs-number">3</span>
+        expect(clonedObj.a).<span class="hljs-keyword">not</span>.toBeDefined()
+        expect(Object.keys(clonedObj).length).toBe <span class="hljs-number">1</span>
+
+    describe <span class="hljs-string">'capitalize method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should capitalize strings'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.capitalize <span class="hljs-string">'hello there'</span>).toBe <span class="hljs-string">'Hello there'</span>
+      it <span class="hljs-string">'should should throw if bad string was passed'</span>, <span class="hljs-function">-&gt;</span>
+        expect(<span class="hljs-function">-&gt;</span> h.capitalize()).toThrow()
+      it <span class="hljs-string">'should should not throw with empty strings'</span>, <span class="hljs-function">-&gt;</span>
+        expect(<span class="hljs-function">-&gt;</span> h.capitalize(<span class="hljs-string">''</span>)).<span class="hljs-keyword">not</span>.toThrow()
+    describe <span class="hljs-string">'splitEasing method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should split easing string to array'</span>,<span class="hljs-function">-&gt;</span>
+        expect(h.splitEasing(<span class="hljs-string">'Linear.None'</span>)[<span class="hljs-number">0</span>]).toBe <span class="hljs-string">'linear'</span>
+        expect(h.splitEasing(<span class="hljs-string">'Linear.None'</span>)[<span class="hljs-number">1</span>]).toBe <span class="hljs-string">'none'</span>
+      it <span class="hljs-string">'should return default easing Linear.None if argument is bad'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.splitEasing(<span class="hljs-number">4</span>)[<span class="hljs-number">0</span>]).toBe <span class="hljs-string">'linear'</span>
+        expect(h.splitEasing(<span class="hljs-number">4</span>)[<span class="hljs-number">1</span>]).toBe <span class="hljs-string">'none'</span>
+      it <span class="hljs-string">'should return default easing Linear.None if argument is bad #2'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.splitEasing(<span class="hljs-string">''</span>)[<span class="hljs-number">0</span>]).toBe <span class="hljs-string">'linear'</span>
+        expect(h.splitEasing(<span class="hljs-string">''</span>)[<span class="hljs-number">1</span>]).toBe <span class="hljs-string">'none'</span>
+      it <span class="hljs-string">'should return default easing Linear.None if argument is bad #3'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.splitEasing(<span class="hljs-string">'Linear..None'</span>)[<span class="hljs-number">0</span>]).toBe <span class="hljs-string">'linear'</span>
+        expect(h.splitEasing(<span class="hljs-string">'Linear..None'</span>)[<span class="hljs-number">1</span>]).toBe <span class="hljs-string">'none'</span>
+      it <span class="hljs-string">'should work with lovercase easing'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.splitEasing(<span class="hljs-string">'linear..none'</span>)[<span class="hljs-number">0</span>]).toBe <span class="hljs-string">'linear'</span>
+        expect(h.splitEasing(<span class="hljs-string">'linear..none'</span>)[<span class="hljs-number">1</span>]).toBe <span class="hljs-string">'none'</span>
+      it <span class="hljs-string">'should work with function easing'</span>, <span class="hljs-function">-&gt;</span>
+<span class="hljs-function">        <span class="hljs-title">easing</span> = -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">'function'</span>
+        expect(h.splitEasing(easing)+<span class="hljs-string">''</span>).toBe easing+<span class="hljs-string">''</span>
+    describe <span class="hljs-string">'color parsing - makeColorObj method'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should have shortColors map'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.shortColors).toBeDefined()
+      it <span class="hljs-string">'should have div node'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.div.tagName.toLowerCase()).toBe <span class="hljs-string">'div'</span>
+      it <span class="hljs-string">'should parse 3 hex color'</span>, <span class="hljs-function">-&gt;</span>
+        colorObj = h.makeColorObj <span class="hljs-string">'#f0f'</span>
+        expect(colorObj.r)  .toBe <span class="hljs-number">255</span>
+        expect(colorObj.g)  .toBe <span class="hljs-number">0</span>
+        expect(colorObj.b)  .toBe <span class="hljs-number">255</span>
+        expect(colorObj.a)  .toBe <span class="hljs-number">1</span>
+      it <span class="hljs-string">'should parse 6 hex color'</span>, <span class="hljs-function">-&gt;</span>
+        colorObj = h.makeColorObj <span class="hljs-string">'#0000ff'</span>
+        expect(colorObj.r)  .toBe <span class="hljs-number">0</span>
+        expect(colorObj.g)  .toBe <span class="hljs-number">0</span>
+        expect(colorObj.b)  .toBe <span class="hljs-number">255</span>
+        expect(colorObj.a)  .toBe <span class="hljs-number">1</span>
+      it <span class="hljs-string">'should parse color shorthand'</span>, <span class="hljs-function">-&gt;</span>
+        colorObj = h.makeColorObj <span class="hljs-string">'deeppink'</span>
+        expect(colorObj.r)  .toBe <span class="hljs-number">255</span>
+        expect(colorObj.g)  .toBe <span class="hljs-number">20</span>
+        expect(colorObj.b)  .toBe <span class="hljs-number">147</span>
+        expect(colorObj.a)  .toBe <span class="hljs-number">1</span>
+      it <span class="hljs-string">'should parse rgb color'</span>, <span class="hljs-function">-&gt;</span>
+        colorObj = h.makeColorObj <span class="hljs-string">'rgb(200,100,0)'</span>
+        expect(colorObj.r)  .toBe <span class="hljs-number">200</span>
+        expect(colorObj.g)  .toBe <span class="hljs-number">100</span>
+        expect(colorObj.b)  .toBe <span class="hljs-number">0</span>
+        expect(colorObj.a)  .toBe <span class="hljs-number">1</span>
+      it <span class="hljs-string">'should parse rgba color'</span>, <span class="hljs-function">-&gt;</span>
+        colorObj  = h.makeColorObj <span class="hljs-string">'rgba(0,200,100,.1)'</span>
+        expect(colorObj.r)  .toBe <span class="hljs-number">0</span>
+        expect(colorObj.g)  .toBe <span class="hljs-number">200</span>
+        expect(colorObj.b)  .toBe <span class="hljs-number">100</span>
+        expect(colorObj.a)  .toBe .<span class="hljs-number">1</span>
+      it <span class="hljs-string">'should parse rgba color with float starting by 0'</span>, <span class="hljs-function">-&gt;</span>
+        colorObj = h.makeColorObj <span class="hljs-string">'rgba(0,200,100,0.5)'</span>
+        expect(colorObj.r)  .toBe <span class="hljs-number">0</span>
+        expect(colorObj.g)  .toBe <span class="hljs-number">200</span>
+        expect(colorObj.b)  .toBe <span class="hljs-number">100</span>
+        expect(colorObj.a)  .toBe .<span class="hljs-number">5</span>
+    describe <span class="hljs-string">'isDOM method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should detect if object is DOM node #1'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isDOM(<span class="hljs-string">'string'</span>)).toBe <span class="hljs-literal">false</span>
+      it <span class="hljs-string">'should detect if object is DOM node #2'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isDOM({})).toBe <span class="hljs-literal">false</span>
+      it <span class="hljs-string">'should detect if object is DOM node #3'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isDOM([])).toBe <span class="hljs-literal">false</span>
+      it <span class="hljs-string">'should detect if object is DOM node #4'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isDOM({})).toBe <span class="hljs-literal">false</span>
+      it <span class="hljs-string">'should detect if object is DOM node #5'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isDOM(<span class="hljs-literal">null</span>)).toBe <span class="hljs-literal">false</span>
+      it <span class="hljs-string">'should detect if object is DOM node #6'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isDOM(<span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>)).toBe <span class="hljs-literal">true</span>
+      it <span class="hljs-string">'should detect if object is DOM node #7'</span>, <span class="hljs-function">-&gt;</span>
+        expect(h.isDOM(<span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>)).toBe <span class="hljs-literal">true</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>it &#39;should Node is function it should check if object is instance&#39;, -&gt;
+  expect(h.isDOM(document.body)).toBe document.body instanceof Node</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  describe <span class="hljs-string">'getChildElements method'</span>, <span class="hljs-function">-&gt;</span>
+    ns    = <span class="hljs-string">'http://www.w3.org/2000/svg'</span>
+    els   = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'g'</span>
+    path1 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+    path2 = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+    els.appendChild(path1); els.appendChild path2
+    it <span class="hljs-string">'should return els children'</span>, <span class="hljs-function">-&gt;</span>
+      expect(h.getChildElements(els).length).toBe <span class="hljs-number">2</span>
+    it <span class="hljs-string">'should return an array'</span>, <span class="hljs-function">-&gt;</span>
+      expect(h.isArray(h.getChildElements(els))).toBe <span class="hljs-literal">true</span>
+    it <span class="hljs-string">'should filter text nodes'</span>, <span class="hljs-function">-&gt;</span>
+      els.appendChild <span class="hljs-built_in">document</span>.createTextNode <span class="hljs-string">'hey'</span>
+      expect(h.getChildElements(els).length).toBe <span class="hljs-number">2</span>
+
+
+  describe <span class="hljs-string">'mergeUnits method'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should merge units if end one was not defined'</span>, <span class="hljs-function">-&gt;</span>
+      start = { <span class="hljs-attribute">unit</span>: <span class="hljs-string">'%'</span>,  <span class="hljs-attribute">value</span>: <span class="hljs-number">25</span>, <span class="hljs-attribute">string</span>: <span class="hljs-string">'25%'</span>, <span class="hljs-attribute">isStrict</span>: <span class="hljs-literal">true</span> }
+      end   = { <span class="hljs-attribute">unit</span>: <span class="hljs-string">'px'</span>, <span class="hljs-attribute">value</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">string</span>:<span class="hljs-string">'50px'</span>, <span class="hljs-attribute">isStrict</span>: <span class="hljs-literal">false</span> }
+      h.mergeUnits start, end, <span class="hljs-string">'key'</span>
+      expect(end.unit)  .toBe <span class="hljs-string">'%'</span>
+      expect(end.string).toBe <span class="hljs-string">'50%'</span>
+
+    it <span class="hljs-string">'should merge units if start one was not defined'</span>, <span class="hljs-function">-&gt;</span>
+      start = { <span class="hljs-attribute">unit</span>: <span class="hljs-string">'%'</span>,  <span class="hljs-attribute">value</span>: <span class="hljs-number">25</span>, <span class="hljs-attribute">string</span>: <span class="hljs-string">'25%'</span>, <span class="hljs-attribute">isStrict</span>: <span class="hljs-literal">false</span> }
+      end   = { <span class="hljs-attribute">unit</span>: <span class="hljs-string">'px'</span>, <span class="hljs-attribute">value</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">string</span>:<span class="hljs-string">'50px'</span>, <span class="hljs-attribute">isStrict</span>: <span class="hljs-literal">true</span> }
+      h.mergeUnits start, end, <span class="hljs-string">'key'</span>
+      expect(start.unit)  .toBe <span class="hljs-string">'px'</span>
+      expect(start.string).toBe <span class="hljs-string">'25px'</span>
+
+    it <span class="hljs-string">'should fallback to end unit if two were defined and warn'</span>, <span class="hljs-function">-&gt;</span>
+      start = { <span class="hljs-attribute">unit</span>: <span class="hljs-string">'px'</span>, <span class="hljs-attribute">value</span>: <span class="hljs-number">25</span>, <span class="hljs-attribute">string</span>: <span class="hljs-string">'25px'</span>, <span class="hljs-attribute">isStrict</span>: <span class="hljs-literal">true</span> }
+      end   = { <span class="hljs-attribute">unit</span>: <span class="hljs-string">'%'</span>,  <span class="hljs-attribute">value</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">string</span>:<span class="hljs-string">'50%'</span>,   <span class="hljs-attribute">isStrict</span>: <span class="hljs-literal">true</span> }
+      spyOn h, <span class="hljs-string">'warn'</span>
+      h.mergeUnits start, end, <span class="hljs-string">'key'</span>
+      expect(start.unit)  .toBe <span class="hljs-string">'%'</span>
+      expect(start.string).toBe <span class="hljs-string">'25%'</span>
+      expect(h.warn).toHaveBeenCalled()
+
+  describe <span class="hljs-string">'delta method'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should create object from variables'</span>, <span class="hljs-function">-&gt;</span>
+      start = <span class="hljs-number">0</span>; end = <span class="hljs-number">1</span>
+      delta = h.delta(start, end)
+      expect(delta[<span class="hljs-number">0</span>]).toBe <span class="hljs-number">1</span>
+    it <span class="hljs-string">'should work with strings'</span>, <span class="hljs-function">-&gt;</span>
+      start = <span class="hljs-string">'0'</span>; end = <span class="hljs-number">1</span>
+      delta = h.delta(start, end)
+      expect(delta[<span class="hljs-string">'0'</span>]).toBe <span class="hljs-number">1</span>
+    it <span class="hljs-string">'should error if unexpected types'</span>, <span class="hljs-function">-&gt;</span>
+      start = (<span class="hljs-function">-&gt;</span>); end = <span class="hljs-number">1</span>
+      spyOn mojs.helpers, <span class="hljs-string">'error'</span>
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe <span class="hljs-literal">undefined</span>
+    it <span class="hljs-string">'should error if unexpected types #2'</span>, <span class="hljs-function">-&gt;</span>
+      start = <span class="hljs-number">2</span>; end = (<span class="hljs-function">-&gt;</span>)
+      spyOn mojs.helpers, <span class="hljs-string">'error'</span>
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe <span class="hljs-literal">undefined</span>
+    it <span class="hljs-string">'should error if unexpected types #3'</span>, <span class="hljs-function">-&gt;</span>
+      start = <span class="hljs-number">2</span>; end = {}
+      spyOn mojs.helpers, <span class="hljs-string">'error'</span>
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe <span class="hljs-literal">undefined</span>
+    it <span class="hljs-string">'should error if unexpected types #4'</span>, <span class="hljs-function">-&gt;</span>
+      start = {}; end = <span class="hljs-number">2</span>
+      spyOn mojs.helpers, <span class="hljs-string">'error'</span>
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe <span class="hljs-literal">undefined</span>
+    it <span class="hljs-string">'should not work with NaN arguments'</span>, <span class="hljs-function">-&gt;</span>
+      start = NaN; end = <span class="hljs-number">2</span>
+      spyOn mojs.helpers, <span class="hljs-string">'error'</span>
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe <span class="hljs-literal">undefined</span>
+    it <span class="hljs-string">'should not work with NaN arguments #2'</span>, <span class="hljs-function">-&gt;</span>
+      start = <span class="hljs-string">'2'</span>; end = NaN
+      spyOn mojs.helpers, <span class="hljs-string">'error'</span>
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe <span class="hljs-literal">undefined</span>
+
+
+
+
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>

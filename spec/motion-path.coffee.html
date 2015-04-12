@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - motion-path.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="../spec/motion-path.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/../spec/motion-path.coffee">../spec/motion-path.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">MotionPath = <span class="hljs-built_in">window</span>.mojs.MotionPath
+Transit    = <span class="hljs-built_in">window</span>.mojs.Transit
+h          = <span class="hljs-built_in">window</span>.mojs.helpers
+
+coords = <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+describe <span class="hljs-string">'MotionPath -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+  ns = <span class="hljs-string">'http://www.w3.org/2000/svg'</span>
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>move to general env</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  describe <span class="hljs-string">'enviroment -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'SVG should be supported'</span>, <span class="hljs-function">-&gt;</span>
+      isSVG = !!<span class="hljs-built_in">document</span>.createElementNS?(ns, <span class="hljs-string">"svg"</span>).createSVGRect
+      expect(isSVG).toBeTruthy()
+    it <span class="hljs-string">'SVG path should have getTotalLength method'</span>, <span class="hljs-function">-&gt;</span>
+      path = <span class="hljs-built_in">document</span>.createElementNS(ns, <span class="hljs-string">"path"</span>)
+      expect(path.getTotalLength).toBeDefined()
+    it <span class="hljs-string">'SVG path should have getPointAtLength method'</span>, <span class="hljs-function">-&gt;</span>
+      path = <span class="hljs-built_in">document</span>.createElementNS(ns, <span class="hljs-string">"path"</span>)
+      expect(path.getPointAtLength).toBeDefined()
+    it <span class="hljs-string">'document.querySelector should be defined'</span>, <span class="hljs-function">-&gt;</span>
+      expect(<span class="hljs-built_in">document</span>.querySelector).toBeDefined()
+    it <span class="hljs-string">'style propety should be defined on DOM node'</span>, <span class="hljs-function">-&gt;</span>
+      path = <span class="hljs-built_in">document</span>.createElementNS(ns, <span class="hljs-string">"path"</span>)
+      div  = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      expect(path.style).toBeDefined()
+      expect(div.style).toBeDefined()
+    it <span class="hljs-string">'transforms should be supported'</span>, <span class="hljs-function">-&gt;</span>
+<span class="hljs-function">      <span class="hljs-title">isTransforms</span> = -&gt;</span>
+        trS = <span class="hljs-string">"transform WebkitTransform MozTransform OTransform msTransform"</span>
+        prefixes = trS.split(<span class="hljs-string">" "</span>)
+        i = <span class="hljs-number">0</span>
+        <span class="hljs-keyword">while</span> i &lt; prefixes.length
+          div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"div"</span>)
+          isProp = div.style[prefixes[i]] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'undefined'</span>
+          <span class="hljs-keyword">return</span> prefixes[i] <span class="hljs-keyword">if</span> isProp
+          i++
+        <span class="hljs-literal">false</span>
+      expect(isTransforms()).toBeTruthy()
+    it <span class="hljs-string">'HTML el should have offsetWidth/offsetHeight propety'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>)
+      expect(div.offsetWidth).toBeDefined()
+      expect(div.offsetHeight).toBeDefined()
+  describe <span class="hljs-string">'defaults -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    el = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+    mp = <span class="hljs-keyword">new</span> MotionPath
+      <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+      <span class="hljs-attribute">el</span>: el
+    
+    it <span class="hljs-string">'have angleof 0'</span>, <span class="hljs-function">-&gt;</span>
+      el = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+        <span class="hljs-attribute">el</span>: el
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      expect(mp.angle).toBe <span class="hljs-number">0</span>
+
+    it <span class="hljs-string">'delay should be defined'</span>, <span class="hljs-function">-&gt;</span>
+      expect(mp.defaults.delay)           .toBe <span class="hljs-number">0</span>
+      expect(mp.defaults.duration)        .toBe <span class="hljs-number">1000</span>
+      expect(mp.defaults.easing)          .toBe <span class="hljs-literal">null</span>
+      expect(mp.defaults.repeat)          .toBe <span class="hljs-number">0</span>
+      expect(mp.defaults.yoyo)            .toBe <span class="hljs-literal">false</span>
+      expect(mp.defaults.offsetX)         .toBe <span class="hljs-number">0</span>
+      expect(mp.defaults.offsetY)         .toBe <span class="hljs-number">0</span>
+      expect(mp.defaults.angleOffset)     .toBe <span class="hljs-literal">null</span>
+      expect(mp.defaults.pathStart)       .toBe <span class="hljs-number">0</span>
+      expect(mp.defaults.pathEnd)         .toBe <span class="hljs-number">1</span>
+      expect(mp.defaults.transformOrigin) .toBe <span class="hljs-literal">null</span>
+      
+      expect(mp.defaults.isAngle)         .toBe <span class="hljs-literal">false</span>
+      expect(mp.defaults.isReverse)       .toBe <span class="hljs-literal">false</span>
+      expect(mp.defaults.isRunLess)       .toBe <span class="hljs-literal">false</span>
+      expect(mp.defaults.isPresetPosition).toBe <span class="hljs-literal">true</span>
+      
+      expect(mp.defaults.onStart)         .toBe <span class="hljs-literal">null</span>
+      expect(mp.defaults.onComplete)      .toBe <span class="hljs-literal">null</span>
+      expect(mp.defaults.onUpdate)        .toBe <span class="hljs-literal">null</span>
+
+    it <span class="hljs-string">'should extend defaults to props'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+        <span class="hljs-attribute">el</span>:   <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+
+      expect(mp.props.duration).toBe <span class="hljs-number">2000</span>
+      expect(mp.props.delay)   .toBe <span class="hljs-number">0</span>
+
+    it <span class="hljs-string">'should clamp pathStart and pathEnd further'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+        <span class="hljs-attribute">el</span>:   <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathStart</span>: <span class="hljs-number">2</span>
+        <span class="hljs-attribute">pathEnd</span>:   <span class="hljs-number">2</span>
+
+      expect(mp.props.pathStart).toBe <span class="hljs-number">1</span>
+      expect(mp.props.pathEnd)  .toBe <span class="hljs-number">1</span>
+
+    it <span class="hljs-string">'should clamp pathStart and pathEnd further'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+        <span class="hljs-attribute">el</span>:   <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathStart</span>: -<span class="hljs-number">2</span>
+        <span class="hljs-attribute">pathEnd</span>:   -<span class="hljs-number">2</span>
+
+      expect(mp.props.pathStart).toBe <span class="hljs-number">0</span>
+      expect(mp.props.pathEnd)  .toBe <span class="hljs-number">0</span>
+
+    it <span class="hljs-string">'pathEnd should not be smaller then pathStart'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+        <span class="hljs-attribute">el</span>:   <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">pathEnd</span>:   -<span class="hljs-number">2</span>
+
+      expect(mp.props.pathStart).toBe .<span class="hljs-number">5</span>
+      expect(mp.props.pathEnd)  .toBe .<span class="hljs-number">5</span>
+
+  describe <span class="hljs-string">'run method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+    coords = <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+    it <span class="hljs-string">'should extend the old options'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">pathEnd</span>:   .<span class="hljs-number">75</span>
+        <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">25</span>
+      )
+
+      mp.run <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>
+      expect(mp.props.pathStart).toBe .<span class="hljs-number">5</span>
+      expect(mp.props.pathEnd)  .toBe .<span class="hljs-number">75</span>
+
+    it <span class="hljs-string">'shoud call tuneOptions if options passed'</span>, <span class="hljs-function">-&gt;</span>
+      o = <span class="hljs-attribute">duration</span>: <span class="hljs-number">500</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathEnd</span>: .<span class="hljs-number">5</span>
+      spyOn mp, <span class="hljs-string">'tuneOptions'</span>
+      mp.run o
+      expect(mp.tuneOptions).toHaveBeenCalledWith o
+
+    it <span class="hljs-string">'shoud not call tuneOptions if options wasn\'t passed'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathEnd</span>: .<span class="hljs-number">5</span>
+      spyOn mp, <span class="hljs-string">'tuneOptions'</span>
+      mp.run()
+      expect(mp.tuneOptions).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+
+    it <span class="hljs-string">'shoud override the first history item'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">25</span>
+        <span class="hljs-attribute">pathEnd</span>:   .<span class="hljs-number">5</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathEnd</span>: .<span class="hljs-number">5</span>
+      mp.run <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">35</span>
+      expect(mp.history[<span class="hljs-number">0</span>].pathStart).toBe .<span class="hljs-number">35</span>
+
+    it <span class="hljs-string">'shoud warn if tweenValues changed on run'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">25</span>
+        <span class="hljs-attribute">pathEnd</span>:   .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">duration</span>:  <span class="hljs-number">2000</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathEnd</span>: .<span class="hljs-number">5</span>
+      spyOn h, <span class="hljs-string">'warn'</span>
+      mp.run
+        <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">35</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">100</span>
+        <span class="hljs-attribute">delay</span>:    <span class="hljs-number">100</span>
+        <span class="hljs-attribute">repeat</span>:   <span class="hljs-number">1</span>
+        <span class="hljs-attribute">yoyo</span>:     <span class="hljs-literal">false</span>
+        <span class="hljs-attribute">easing</span>:   <span class="hljs-string">'Linear.None'</span>
+        <span class="hljs-attribute">onStart</span>:    <span class="hljs-function">-&gt;</span>
+        <span class="hljs-attribute">onUpdate</span>:   <span class="hljs-function">-&gt;</span>
+        <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span>
+      expect(h.warn).toHaveBeenCalled()
+      expect(mp.history[<span class="hljs-number">0</span>].duration).toBe <span class="hljs-number">2000</span>
+      expect(mp.props.duration)     .toBe <span class="hljs-number">2000</span>
+
+
+  describe <span class="hljs-string">'callbacks -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+    coords = <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span>
+
+    describe <span class="hljs-string">'onStart callback -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'should run on start'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+        isStarted = <span class="hljs-literal">false</span>
+        mp = <span class="hljs-keyword">new</span> MotionPath
+          <span class="hljs-attribute">path</span>: coords
+          <span class="hljs-attribute">el</span>: div
+          <span class="hljs-attribute">duration</span>: <span class="hljs-number">64</span>
+          <span class="hljs-attribute">onStart</span>:<span class="hljs-function">-&gt;</span> isStarted = <span class="hljs-literal">true</span>
+
+        setTimeout (<span class="hljs-function">-&gt;</span>
+          expect(isStarted).toBe(<span class="hljs-literal">true</span>); dfr()
+          ), <span class="hljs-number">100</span>
+      it <span class="hljs-string">'should have the scope of MotionPath'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+        isRightScope = <span class="hljs-literal">null</span>
+        mp = <span class="hljs-keyword">new</span> MotionPath
+          <span class="hljs-attribute">path</span>: coords
+          <span class="hljs-attribute">el</span>: div
+          <span class="hljs-attribute">onStart</span>:<span class="hljs-function">-&gt;</span>
+            isRightScope = @ <span class="hljs-keyword">instanceof</span> MotionPath
+        setTimeout (<span class="hljs-function">-&gt;</span> expect(isRightScope).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+    
+    describe <span class="hljs-string">'onComplete callback -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'onComplete callback should work'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+        isCompleted = <span class="hljs-literal">false</span>
+        mp = <span class="hljs-keyword">new</span> MotionPath
+          <span class="hljs-attribute">path</span>: coords
+          <span class="hljs-attribute">el</span>: div
+          <span class="hljs-attribute">duration</span>: <span class="hljs-number">5</span>
+          <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span> isCompleted = <span class="hljs-literal">true</span>
+        setTimeout -&gt;
+          expect(isCompleted).toBe(<span class="hljs-literal">true</span>); dfr()
+        , <span class="hljs-number">100</span>
+
+      it <span class="hljs-string">'should have the scope of MotionPath'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+        isRightScope = <span class="hljs-literal">false</span>
+        mp = <span class="hljs-keyword">new</span> MotionPath
+          <span class="hljs-attribute">path</span>: coords
+          <span class="hljs-attribute">el</span>: div
+          <span class="hljs-attribute">duration</span>: <span class="hljs-number">5</span>
+          <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span> isRightScope = @ <span class="hljs-keyword">instanceof</span> MotionPath
+        setTimeout -&gt;
+          expect(isRightScope).toBe(<span class="hljs-literal">true</span>); dfr()
+        , <span class="hljs-number">100</span>
+    
+    describe <span class="hljs-string">'onUpdate callback -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+      it <span class="hljs-string">'onUpdate callback should work'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+        isOnUpdate = <span class="hljs-literal">false</span>
+        mp = <span class="hljs-keyword">new</span> MotionPath
+          <span class="hljs-attribute">path</span>: coords
+          <span class="hljs-attribute">el</span>: div
+          <span class="hljs-attribute">duration</span>: <span class="hljs-number">5</span>
+          <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function">-&gt;</span> isOnUpdate = <span class="hljs-literal">true</span>
+
+        setTimeout -&gt;
+          expect(isOnUpdate).toBe(<span class="hljs-literal">true</span>); dfr()
+        , <span class="hljs-number">100</span>
+      it <span class="hljs-string">'onUpdate callback should have "progress" argument'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+        isOnUpdate = <span class="hljs-literal">false</span>
+        mp = <span class="hljs-keyword">new</span> MotionPath
+          <span class="hljs-attribute">path</span>: coords
+          <span class="hljs-attribute">el</span>: div
+          <span class="hljs-attribute">duration</span>: <span class="hljs-number">5</span>
+          <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function"><span class="hljs-params">(progress)</span>-&gt;</span> isOnUpdate = <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> progress?
+        setTimeout -&gt;
+          expect(isOnUpdate).toBe(<span class="hljs-literal">true</span>); dfr()
+        , <span class="hljs-number">100</span>
+
+      it <span class="hljs-string">'should have the scope of MotionPath'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+        isRightScope = <span class="hljs-literal">false</span>
+        mp = <span class="hljs-keyword">new</span> MotionPath
+          <span class="hljs-attribute">path</span>: coords
+          <span class="hljs-attribute">el</span>: div
+          <span class="hljs-attribute">duration</span>: <span class="hljs-number">5</span>
+          <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function">-&gt;</span> isRightScope = @ <span class="hljs-keyword">instanceof</span> MotionPath
+        setTimeout -&gt;
+          expect(isRightScope).toBe(<span class="hljs-literal">true</span>); dfr()
+        , <span class="hljs-number">100</span>
+
+  describe <span class="hljs-string">'fill -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    div = <span class="hljs-literal">null</span>; container = <span class="hljs-literal">null</span>
+    beforeEach -&gt;
+      container = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      size = <span class="hljs-number">200</span>
+      container.style.width  = <span class="hljs-string">"<span class="hljs-subst">#{size}</span>px"</span>
+      container.style.height = <span class="hljs-string">"<span class="hljs-subst">#{size}</span>px"</span>
+      container.style.position = <span class="hljs-string">'absolute'</span>
+      container.style.top = <span class="hljs-string">'-100%'</span>
+      container.setAttribute <span class="hljs-string">'id'</span>, <span class="hljs-string">'js-container'</span>
+      <span class="hljs-built_in">document</span>.body.appendChild container
+
+    it <span class="hljs-string">'container could be specified by selector or DOM node'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">fill</span>: { <span class="hljs-attribute">container</span>: <span class="hljs-string">'#js-container'</span> }
+      expect(mp.container <span class="hljs-keyword">instanceof</span> HTMLElement).toBe(<span class="hljs-literal">true</span>)
+
+    it <span class="hljs-string">'if fill is specified it should have container, fillRule, cSize'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">fill</span>: { <span class="hljs-attribute">container</span>: container }
+
+      expect(mp.container).toBeDefined()
+      expect(mp.fillRule).toBeDefined()
+      expect(mp.cSize).toBeDefined()
+
+    it <span class="hljs-string">'if fillRule is "all" it should keep container\'s size'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      isFilled = <span class="hljs-literal">false</span>
+      motionPath = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,500'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">64</span>
+        <span class="hljs-attribute">fill</span>: { <span class="hljs-attribute">container</span>: container }</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>all: true</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span>
+          args = motionPath.el.style.transform.split <span class="hljs-regexp">/(translate\()|\,|\)/</span>
+          width  = parseInt(args[<span class="hljs-number">2</span>], <span class="hljs-number">10</span>)
+          height = parseInt(args[<span class="hljs-number">4</span>], <span class="hljs-number">10</span>)
+          isWidth  = width  <span class="hljs-keyword">is</span> container.offsetWidth
+          isHeight = height <span class="hljs-keyword">is</span> container.offsetHeight
+          isFilled = isWidth <span class="hljs-keyword">and</span> isHeight
+          expect(isFilled).toBe(<span class="hljs-literal">true</span>); dfr()
+
+    it <span class="hljs-string">"if fillRule is \"width\" it should keep container\'s width
+    and set \"height\" with aspect ratio"</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      isFilled = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,250'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">fill</span>: { <span class="hljs-attribute">container</span>: container, <span class="hljs-attribute">fillRule</span>: <span class="hljs-string">'width'</span> }
+        <span class="hljs-attribute">all</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span>
+          args = mp.el.style.transform.split <span class="hljs-regexp">/(translate\()|\,|\)/</span>
+          width  = parseInt(args[<span class="hljs-number">2</span>], <span class="hljs-number">10</span>)
+          height = parseInt(args[<span class="hljs-number">4</span>], <span class="hljs-number">10</span>)
+          isWidth  = width  <span class="hljs-keyword">is</span> container.offsetWidth
+          isHeight = height <span class="hljs-keyword">is</span> (width/<span class="hljs-number">2</span>)
+          isFilled = isWidth <span class="hljs-keyword">and</span> isHeight
+          expect(isFilled).toBe(<span class="hljs-literal">true</span>); dfr()
+
+    it <span class="hljs-string">"if fillRule is \"height\" it should keep container\'s height
+      and set \"width\" with aspect ratio"</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+
+      isFilled = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L250,500'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">fill</span>: { <span class="hljs-attribute">container</span>: container, <span class="hljs-attribute">fillRule</span>: <span class="hljs-string">'height'</span> }
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span>
+          args = mp.el.style.transform.split <span class="hljs-regexp">/(translate\()|\,|\)/</span>
+          width  = parseInt(args[<span class="hljs-number">2</span>], <span class="hljs-number">10</span>)
+          height = parseInt(args[<span class="hljs-number">4</span>], <span class="hljs-number">10</span>)
+          isWidth  = width  <span class="hljs-keyword">is</span> (height/<span class="hljs-number">2</span>)
+          isHeight = height <span class="hljs-keyword">is</span> container.offsetHeight
+          isFilled = isWidth <span class="hljs-keyword">and</span> isHeight
+          expect(isFilled).toBe(<span class="hljs-literal">true</span>); dfr()
+
+    it <span class="hljs-string">'if container size was changed should recalc scaler'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      isSizeChange = <span class="hljs-literal">false</span>
+      el = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      c = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      size = <span class="hljs-number">200</span>
+      c.style.width  = <span class="hljs-string">"<span class="hljs-subst">#{size}</span>px"</span>
+      c.style.height = <span class="hljs-string">"<span class="hljs-subst">#{size}</span>px"</span>
+      c.style.position = <span class="hljs-string">'absolute'</span>
+      c.style.top = <span class="hljs-string">'-100%'</span>
+      c.setAttribute <span class="hljs-string">'id'</span>, <span class="hljs-string">'js-container2'</span>
+      <span class="hljs-built_in">document</span>.body.appendChild c
+      x = -<span class="hljs-number">1</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: el
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">100</span>
+        <span class="hljs-attribute">fill</span>: { <span class="hljs-attribute">container</span>: c }
+        <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function"><span class="hljs-params">(proc)</span>-&gt;</span>
+          <span class="hljs-keyword">if</span> proc &gt;= .<span class="hljs-number">1</span> <span class="hljs-keyword">and</span> !isSizeChange
+            mp.container.style.width = <span class="hljs-string">'100px'</span>
+            isSizeChange = <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span>
+          x = mp.el.style.transform.split(<span class="hljs-regexp">/(translate\()|\,|\)/</span>)[<span class="hljs-number">2</span>]
+          expect(parseInt(x, <span class="hljs-number">10</span>)).toBe(<span class="hljs-number">100</span>); dfr()
+
+  describe <span class="hljs-string">'functionality -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+    coords = <span class="hljs-string">'M0.55859375,593.527344L0.55859375,593.527344'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>describe &#39;offsets -&gt;&#39;, -&gt;</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    it <span class="hljs-string">'should work with positive offsetX'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L0,10'</span>
+      x = <span class="hljs-number">0</span>; isEqual = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">offsetX</span>: <span class="hljs-number">10</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">isAngle</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span>
+          x = div.style.transform.split(<span class="hljs-regexp">/(translate\()|,|\)/</span>)[<span class="hljs-number">2</span>]
+          isEqual = parseInt(x, <span class="hljs-number">10</span>) <span class="hljs-keyword">is</span> <span class="hljs-number">10</span>
+        setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should work with negative offsetX'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L0,10'</span>
+      x = <span class="hljs-number">0</span>; isEqual = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">offsetX</span>: -<span class="hljs-number">10</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span>
+          x = div.style.transform.split(<span class="hljs-regexp">/(translate\()|,|\)/</span>)[<span class="hljs-number">2</span>]
+          x = parseInt(x, <span class="hljs-number">10</span>)
+          isEqual = x <span class="hljs-keyword">is</span> -<span class="hljs-number">10</span>
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should work with positive offsetY'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0'</span>
+      y = <span class="hljs-number">0</span>; isEqual = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">offsetY</span>: <span class="hljs-number">10</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span>
+          y = div.style.transform.split(<span class="hljs-regexp">/(translate\()|,|\)/</span>)[<span class="hljs-number">4</span>]
+          y = parseInt(y, <span class="hljs-number">10</span>)
+          isEqual = y <span class="hljs-keyword">is</span> <span class="hljs-number">10</span>
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should work with negative offsetY'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0'</span>
+      y = <span class="hljs-number">0</span>; isEqual = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">offsetY</span>: -<span class="hljs-number">10</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span>
+          y = div.style.transform.split(<span class="hljs-regexp">/(translate\()|,|\)/</span>)[<span class="hljs-number">4</span>]
+          isEqual = parseInt(y, <span class="hljs-number">10</span>) <span class="hljs-keyword">is</span> -<span class="hljs-number">10</span>
+
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should calculate current angle'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      angle = <span class="hljs-number">0</span>; isEqual = <span class="hljs-literal">false</span>; isEquial2 = <span class="hljs-literal">false</span>; detect = {}
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">isAngle</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function">-&gt;</span>
+          detect.firstAngle ?= mp.angle
+          isEquial2 = detect.firstAngle <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span> isEqual = mp.angle <span class="hljs-keyword">is</span> <span class="hljs-number">90</span>
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should calculate current angle with isReverse'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      angle = <span class="hljs-number">0</span>; isEqual = <span class="hljs-literal">false</span>; isEquial2 = <span class="hljs-literal">false</span>; detect = {}
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">isAngle</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isReverse</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function">-&gt;</span>
+          detect.firstAngle ?= mp.angle
+          isEquial2 = detect.firstAngle <span class="hljs-keyword">is</span> <span class="hljs-number">90</span>
+        <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span> isEqual = mp.angle <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+
+        setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should have transform-origin'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isComplete = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">transformOrigin</span>: <span class="hljs-string">'50% 50%'</span>
+        <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span> isComplete = <span class="hljs-literal">true</span>
+
+      setTimeout -&gt;
+        expect(mp.el.style[<span class="hljs-string">'transform-origin'</span>].length &gt;= <span class="hljs-number">1</span>).toBe(<span class="hljs-literal">true</span>); dfr()
+      , <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'transform-origin could be a function'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isAngle = <span class="hljs-literal">false</span>; isProgress = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">transformOrigin</span>:<span class="hljs-function"><span class="hljs-params">(angle, proc)</span>-&gt;</span>
+          isFunction = <span class="hljs-literal">true</span>
+          isAngle = angle?; isProgress = proc?
+          <span class="hljs-string">'50% 50%'</span>
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isAngle <span class="hljs-keyword">and</span> isProgress).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+  describe <span class="hljs-string">'angleOffset -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+    it <span class="hljs-string">'angleOffset should work with positive angles'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isEqual = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">angleOffset</span>: <span class="hljs-number">90</span>
+        <span class="hljs-attribute">isAngle</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span> isEqual = mp.angle <span class="hljs-keyword">is</span> <span class="hljs-number">180</span>
+
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">300</span>
+
+    it <span class="hljs-string">'angleOffset should work with negative angles'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isEqual = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">angleOffset</span>: -<span class="hljs-number">90</span>
+        <span class="hljs-attribute">isAngle</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span> isEqual = mp.angle <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isEqual).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">300</span>
+
+    it <span class="hljs-string">'should be evaluated if a function'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isFunction = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">angleOffset</span>:<span class="hljs-function"><span class="hljs-params">(angle)</span>-&gt;</span>
+          isFunction = <span class="hljs-literal">true</span>
+          angle
+
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isFunction).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">300</span>
+
+    it <span class="hljs-string">'should get current angle'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isOnAngle = <span class="hljs-literal">false</span>
+      angleSum1 = <span class="hljs-number">0</span>; angleSum2 = <span class="hljs-number">0</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">isAngle</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+        <span class="hljs-attribute">angleOffset</span>:<span class="hljs-function"><span class="hljs-params">(angle)</span>-&gt;</span>
+          angleSum1 += angle; angleSum2 += <span class="hljs-property">@angle</span>
+          angle
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span> isOnAngle = angleSum1 <span class="hljs-keyword">is</span> angleSum2
+      mp.run()
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isOnAngle).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should set current angle'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isSet = <span class="hljs-literal">false</span>
+      currAngle = <span class="hljs-number">0</span>; isAnglesArray = []
+      angleShift = <span class="hljs-number">5</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">angleOffset</span>:<span class="hljs-function"><span class="hljs-params">(angle)</span>-&gt;</span> currAngle = angle; angle+angleShift
+        <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function">-&gt;</span> isAnglesArray.push currAngle+angleShift <span class="hljs-keyword">is</span> mp.angle
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span>
+          <span class="hljs-keyword">for</span> isSetItem, i <span class="hljs-keyword">in</span> isAnglesArray
+            <span class="hljs-keyword">if</span> !isSetItem <span class="hljs-keyword">then</span> isSet = <span class="hljs-literal">true</span>
+      
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isSet).toBe(<span class="hljs-literal">false</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'angleOffset should get current progress as second parameter'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isProgress = <span class="hljs-literal">false</span>; proc = -<span class="hljs-number">1</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">angleOffset</span>:<span class="hljs-function"><span class="hljs-params">(angle, progress)</span>-&gt;</span> proc = progress; angle
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span> isProgress = proc <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(isProgress).toBe(<span class="hljs-literal">true</span>); dfr()), <span class="hljs-number">100</span>
+
+    it <span class="hljs-string">'should have scope of motion path'</span>, <span class="hljs-function">-&gt;</span>
+      coords = <span class="hljs-string">'M0,0 L10,0 L10,10'</span>
+      isRightScope = <span class="hljs-literal">false</span>
+      angleSum1 = <span class="hljs-number">0</span>; angleSum2 = <span class="hljs-number">0</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">50</span>
+        <span class="hljs-attribute">isAngle</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">angleOffset</span>:<span class="hljs-function">-&gt;</span> isRightScope = @ <span class="hljs-keyword">instanceof</span> MotionPath
+      expect(isRightScope).toBe(<span class="hljs-literal">true</span>)
+
+  describe <span class="hljs-string">'setProgress function -&gt;'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+    it <span class="hljs-string">'should have own function for setting up current progress'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      mp.setProgress(.<span class="hljs-number">5</span>)
+      pos = parseInt div.style.transform.split(<span class="hljs-regexp">/(translate\()|\,|\)/</span>)[<span class="hljs-number">2</span>], <span class="hljs-number">10</span>
+      expect(pos).toBe(<span class="hljs-number">250</span>)
+
+    it <span class="hljs-string">'should call the onUpdate callback'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function">-&gt;</span>
+      spyOn mp, <span class="hljs-string">'onUpdate'</span>
+      mp.setProgress(.<span class="hljs-number">5</span>)
+      expect(mp.onUpdate).toHaveBeenCalledWith .<span class="hljs-number">5</span>
+
+    it <span class="hljs-string">'should not call the onUpdate callback on start'</span>, <span class="hljs-function">-&gt;</span>
+      isCalled = <span class="hljs-literal">false</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function">-&gt;</span> isCalled = <span class="hljs-literal">true</span>
+      expect(isCalled).toBe <span class="hljs-literal">false</span>
+
+  describe <span class="hljs-string">'preset position -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should preset initial position by default'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M50,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>:   div
+      pos = parseInt div.style.transform.split(<span class="hljs-regexp">/(translate\()|\,|\)/</span>)[<span class="hljs-number">2</span>], <span class="hljs-number">10</span>
+      expect(pos).toBe(<span class="hljs-number">50</span>)
+
+    it <span class="hljs-string">'should not set initial position if isPresetPosition is false'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M50,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      expect(div.style.transform).toBeFalsy()
+
+  describe <span class="hljs-string">'progress bounds -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should calc the @slicedLen and @startLen properties'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">pathEnd</span>:   .<span class="hljs-number">75</span>
+      expect(mp.slicedLen).toBe <span class="hljs-number">125</span>
+      expect(mp.startLen) .toBe <span class="hljs-number">250</span>
+
+    it <span class="hljs-string">'should start from pathStart position'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">pathEnd</span>:   .<span class="hljs-number">75</span>
+        <span class="hljs-attribute">isIt</span>: <span class="hljs-literal">true</span>
+
+      mp.tween.setProgress <span class="hljs-number">0</span>
+      pos = parseInt div.style.transform.split(<span class="hljs-regexp">/(translate\()|\,|\)/</span>)[<span class="hljs-number">2</span>], <span class="hljs-number">10</span>
+      expect(pos).toBe(<span class="hljs-number">250</span>)
+
+    it <span class="hljs-string">'should end at pathEnd position'</span>, <span class="hljs-function"><span class="hljs-params">(dfr)</span>-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      pos = -<span class="hljs-number">1</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">'M0,0 L500,0'</span>
+        <span class="hljs-attribute">el</span>: div
+        <span class="hljs-attribute">duration</span>:   <span class="hljs-number">50</span>
+        <span class="hljs-attribute">pathStart</span>:  .<span class="hljs-number">25</span>
+        <span class="hljs-attribute">pathEnd</span>:    .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span>
+          pos = div.style.transform.split(<span class="hljs-regexp">/(translate\()|\,|\)/</span>)[<span class="hljs-number">2</span>]
+          pos = parseInt pos, <span class="hljs-number">10</span>
+    
+      setTimeout (<span class="hljs-function">-&gt;</span> expect(pos).toBe(<span class="hljs-number">250</span>); dfr()), <span class="hljs-number">100</span>
+
+  describe <span class="hljs-string">'path option -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should have a getPath method'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+      expect(mp.getPath).toBeDefined()
+
+    it <span class="hljs-string">'getPath should return a path when was specified by coordinates'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+      expect(mp.getPath() <span class="hljs-keyword">instanceof</span> SVGElement).toBe(<span class="hljs-literal">true</span>)
+
+    it <span class="hljs-string">'getPath should return a path when it was specified by SVG path'</span>, <span class="hljs-function">-&gt;</span>
+      path = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path.setAttribute <span class="hljs-string">'d'</span>, <span class="hljs-string">'M0,0 L500,500 L1000, 0'</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: path
+        <span class="hljs-attribute">el</span>: div
+      expect(mp.getPath() <span class="hljs-keyword">instanceof</span> SVGElement).toBe(<span class="hljs-literal">true</span>)
+
+    it <span class="hljs-string">'should error if path has no d attribute'</span>, <span class="hljs-function">-&gt;</span>
+      path = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>path.setAttribute &#39;d&#39;, &#39;M0,0 L500,500 L1000, 0&#39;</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      spyOn h, <span class="hljs-string">'error'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: path
+        <span class="hljs-attribute">el</span>: div
+      expect(h.error).toHaveBeenCalled()
+
+    it <span class="hljs-string">'getPath should return a path when it was specified selector'</span>, <span class="hljs-function">-&gt;</span>
+      id = <span class="hljs-string">'js-path'</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      svg = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'svg'</span>
+      path = <span class="hljs-built_in">document</span>.createElementNS ns, <span class="hljs-string">'path'</span>
+      path.setAttribute <span class="hljs-string">'id'</span>, id
+      path.setAttribute <span class="hljs-string">'class'</span>, id
+      svg.appendChild path
+      <span class="hljs-built_in">document</span>.body.appendChild svg
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">"#<span class="hljs-subst">#{id}</span>"</span>
+        <span class="hljs-attribute">el</span>: div
+      expect(mp.getPath() <span class="hljs-keyword">instanceof</span> SVGElement).toBe(<span class="hljs-literal">true</span>)
+
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: <span class="hljs-string">".<span class="hljs-subst">#{id}</span>"</span>
+        <span class="hljs-attribute">el</span>: div
+      expect(mp.getPath() <span class="hljs-keyword">instanceof</span> SVGElement).toBe(<span class="hljs-literal">true</span>)
+
+  describe <span class="hljs-string">'el option (parseEl method) -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should return an el when it was specified by selector'</span>, <span class="hljs-function">-&gt;</span>
+      id = <span class="hljs-string">'js-el'</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      div.setAttribute <span class="hljs-string">'id'</span>, id
+      div.setAttribute <span class="hljs-string">'class'</span>, id
+      <span class="hljs-built_in">document</span>.body.appendChild div
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: <span class="hljs-string">"#<span class="hljs-subst">#{id}</span>"</span>
+      expect(mp.el <span class="hljs-keyword">instanceof</span> HTMLElement).toBe(<span class="hljs-literal">true</span>)
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: <span class="hljs-string">".<span class="hljs-subst">#{id}</span>"</span>
+      expect(mp.el <span class="hljs-keyword">instanceof</span> HTMLElement).toBe(<span class="hljs-literal">true</span>)
+
+    it <span class="hljs-string">'should return the el when the element was passed'</span>, <span class="hljs-function">-&gt;</span>
+      div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>: div
+      expect(mp.el <span class="hljs-keyword">instanceof</span> HTMLElement).toBe(<span class="hljs-literal">true</span>)
+
+    it <span class="hljs-string">'should return the module when module was passed'</span>, <span class="hljs-function">-&gt;</span>
+      tr = <span class="hljs-keyword">new</span> Transit <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>: coords
+        <span class="hljs-attribute">el</span>:   tr
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      expect(mp.el).toBe tr
+
+  describe <span class="hljs-string">'then method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should contribute to history on init'</span>, <span class="hljs-function">-&gt;</span>
+      options =
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath options
+      expect(mp.history.length).toBe(<span class="hljs-number">1</span>)
+      expect(mp.history[<span class="hljs-number">0</span>].duration).toBe <span class="hljs-number">2000</span>
+
+    it <span class="hljs-string">'should contribute to history on then'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+      
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>
+
+      expect(mp.history.length)       .toBe   <span class="hljs-number">2</span>
+      expect(mp.history[<span class="hljs-number">1</span>].pathStart) .toBe   .<span class="hljs-number">5</span>
+      expect(mp.history[<span class="hljs-number">1</span>].pathEnd)   .toBe   <span class="hljs-number">1</span>
+
+    it <span class="hljs-string">'should copy duration from previous record'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">delay</span>:    <span class="hljs-number">100</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>
+      expect(mp.history[<span class="hljs-number">1</span>].delay)   .toBe   <span class="hljs-literal">undefined</span>
+      expect(mp.history[<span class="hljs-number">1</span>].duration).toBe   <span class="hljs-number">2000</span>
+
+    it <span class="hljs-string">'should save previous options to the current history record #2'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">delay</span>:    <span class="hljs-number">100</span>
+      )
+      .<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>
+      expect(mp.tween.timelines[<span class="hljs-number">1</span>].o.delay).toBe <span class="hljs-number">2100</span>
+
+    it <span class="hljs-string">'should not copy previous callbacks'</span>, <span class="hljs-function">-&gt;</span>
+<span class="hljs-function">      <span class="hljs-title">onUpdate</span> = -&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">delay</span>:    <span class="hljs-number">100</span>
+        <span class="hljs-attribute">onUpdate</span>: onUpdate
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">delay</span>: <span class="hljs-number">0</span>
+      mp.tween.setProgress .<span class="hljs-number">75</span>
+      expect(mp.history[<span class="hljs-number">1</span>].onUpdate).<span class="hljs-keyword">not</span>.toBeDefined()
+      expect(mp.props.onUpdate)     .<span class="hljs-keyword">not</span>.toBeDefined()
+
+    it <span class="hljs-string">'should add new callbacks if specified'</span>, <span class="hljs-function">-&gt;</span>
+<span class="hljs-function">      <span class="hljs-title">onUpdate</span> = -&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">delay</span>:    <span class="hljs-number">100</span>
+        <span class="hljs-attribute">onUpdate</span>: onUpdate
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">delay</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">onUpdate</span>: <span class="hljs-function">-&gt;</span>
+      mp.tween.setProgress .<span class="hljs-number">75</span>
+      expect(mp.history[<span class="hljs-number">1</span>].onUpdate).toBeDefined()
+      expect(mp.props.onUpdate)     .toBeDefined()
+
+    it <span class="hljs-string">'should add new timeline'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">onUpdate</span>: <span class="hljs-function">-&gt;</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>
+      expect(mp.tween.timelines.length)             .toBe <span class="hljs-number">2</span>
+      expect(mp.tween.timelines[<span class="hljs-number">1</span>].o.duration)     .toBe <span class="hljs-number">2000</span>
+      expect(mp.tween.timelines[<span class="hljs-number">1</span>].o.onFirstUpdate).toBeDefined()
+
+    it <span class="hljs-string">'should add isChained option to the new timeline'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">onUpdate</span>: <span class="hljs-function">-&gt;</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>
+      
+      expect(mp.tween.timelines[<span class="hljs-number">1</span>].o.isChained).toBe <span class="hljs-literal">true</span>
+
+    it <span class="hljs-string">'should not add isChained option if delay'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">onUpdate</span>: <span class="hljs-function">-&gt;</span>
+      ).<span class="hljs-keyword">then</span> <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>, <span class="hljs-attribute">pathEnd</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">delay</span>: <span class="hljs-number">100</span>
+      
+      expect(mp.tween.timelines[<span class="hljs-number">1</span>].o.isChained).toBe <span class="hljs-literal">false</span>
+
+  describe <span class="hljs-string">'tuneOptions -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should tune options'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:     coords
+        <span class="hljs-attribute">el</span>:       <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:  .<span class="hljs-number">5</span>
+      )
+
+      mp.tuneOptions <span class="hljs-attribute">duration</span>: <span class="hljs-number">5000</span>
+
+      expect(mp.props.duration).toBe <span class="hljs-number">5000</span>
+      expect(mp.props.pathEnd) .toBe .<span class="hljs-number">5</span>
+
+    it <span class="hljs-string">'should recalc el, path, len, fill, container if defined'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath(
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">duration</span>:   <span class="hljs-number">2000</span>
+        <span class="hljs-attribute">pathEnd</span>:    .<span class="hljs-number">5</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+      )
+      coords = <span class="hljs-string">'M0,0 L 105,105'</span>
+      coordsIE = <span class="hljs-string">'M 0 0 L 105 105'</span>
+      mp.tuneOptions <span class="hljs-attribute">duration</span>: <span class="hljs-number">5000</span>, <span class="hljs-attribute">path</span>: coords
+      pathCoords = mp.path.getAttribute(<span class="hljs-string">'d'</span>)
+      expect(pathCoords <span class="hljs-keyword">is</span> coords <span class="hljs-keyword">or</span> pathCoords <span class="hljs-keyword">is</span> coordsIE).toBe <span class="hljs-literal">true</span>
+
+  describe <span class="hljs-string">'createTween method'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should bind the onFirstUpdateBackward metod'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      expect(<span class="hljs-keyword">typeof</span> mp.timeline.o.onFirstUpdateBackward).toBe <span class="hljs-string">'function'</span>
+
+  describe <span class="hljs-string">'isModule flag -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should be set if module was passed'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         (<span class="hljs-keyword">new</span> Transit <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>)
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      expect(mp.isModule).toBe <span class="hljs-literal">true</span>
+
+  describe <span class="hljs-string">'setModulePosition method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should use setProp of the module to set position'</span>, <span class="hljs-function">-&gt;</span>
+      <span class="hljs-built_in">module</span> = (<span class="hljs-keyword">new</span> Transit <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>)
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">module</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      spyOn <span class="hljs-built_in">module</span>, <span class="hljs-string">'setProp'</span>
+      mp.angle = <span class="hljs-number">0</span>
+      mp.setModulePosition <span class="hljs-number">100</span>, <span class="hljs-number">200</span>
+      expect(<span class="hljs-built_in">module</span>.setProp).toHaveBeenCalledWith
+        <span class="hljs-attribute">shiftX</span>: <span class="hljs-string">'100px'</span>, <span class="hljs-attribute">shiftY</span>: <span class="hljs-string">'200px'</span>, <span class="hljs-attribute">angle</span>: <span class="hljs-number">0</span>
+
+    it <span class="hljs-string">'should call module.draw method'</span>, <span class="hljs-function">-&gt;</span>
+      <span class="hljs-built_in">module</span> = (<span class="hljs-keyword">new</span> Transit <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>)
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">module</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      spyOn mp.el, <span class="hljs-string">'draw'</span>
+      mp.setProgress <span class="hljs-number">0</span>, <span class="hljs-literal">true</span>
+      expect(mp.el.draw).toHaveBeenCalled()
+
+    it <span class="hljs-string">'should be called if isModule'</span>, <span class="hljs-function">-&gt;</span>
+      <span class="hljs-built_in">module</span> = (<span class="hljs-keyword">new</span> Transit <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>)
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">module</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      spyOn mp, <span class="hljs-string">'setModulePosition'</span>
+      mp.setProgress <span class="hljs-number">0</span>, <span class="hljs-literal">true</span>
+      expect(mp.setModulePosition).toHaveBeenCalled()
+
+    it <span class="hljs-string">'should not be called if !isModule'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+        <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">false</span>
+      spyOn mp, <span class="hljs-string">'setModulePosition'</span>
+      mp.setProgress <span class="hljs-number">0</span>, <span class="hljs-literal">true</span>
+      expect(mp.setModulePosition).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+
+  describe <span class="hljs-string">'addEvent method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should add event listener'</span>, <span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+
+      isHandler = <span class="hljs-literal">false</span>
+      div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>)
+<span class="hljs-function">      <span class="hljs-title">handler</span> = -&gt;</span> isHandler = <span class="hljs-literal">true</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if div.addEventListener?</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      spyOn div, <span class="hljs-string">'addEventListener'</span>
+      mp.addEvent div, <span class="hljs-string">'click'</span>, handler
+      expect(div.addEventListener)
+        .toHaveBeenCalledWith <span class="hljs-string">'click'</span>, handler, <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>else if div.attachEvent
+  spyOn div, &#39;attachEvent&#39;
+  mp.addEvent div, &#39;click&#39;, handler
+  expect(div.attachEvent)
+    .toHaveBeenCalledWith &#39;click&#39;, handler</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  describe <span class="hljs-string">'extendDefaults method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should copy options to self'</span>, <span class="hljs-function">-&gt;</span>
+      path = <span class="hljs-string">'M10,10 L100,100'</span>; div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:      path
+        <span class="hljs-attribute">el</span>:        div
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      mp.extendDefaults <span class="hljs-attribute">path</span>: path, <span class="hljs-attribute">el</span>:   div
+      expect(mp.path).toBe path
+      expect(mp.el)  .toBe  div
+    it <span class="hljs-string">'should not copy prototypes'</span>, <span class="hljs-function">-&gt;</span>
+      path = <span class="hljs-string">'M10,10 L100,100'</span>; div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+      <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Options</span></span>
+        <span class="hljs-attribute">prop</span>: <span class="hljs-string">'some value'</span>
+      options = <span class="hljs-keyword">new</span> Options
+      options.path = <span class="hljs-string">'M10,10 L100,100'</span>
+      options.el   = div
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:      path
+        <span class="hljs-attribute">el</span>:        div
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      mp.extendDefaults options
+      expect(mp.path) .toBe      options.path
+      expect(mp.el)   .toBe      options.el
+      expect(mp.props).<span class="hljs-keyword">not</span>.toBe  options.props
+
+  describe <span class="hljs-string">'calcWidth method'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should calc scaler.x based on passed size'</span>,<span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+
+      size = <span class="hljs-attribute">width</span>: <span class="hljs-number">200</span>; mp.cSize = <span class="hljs-attribute">width</span>: <span class="hljs-number">200</span>; mp.scaler = {}
+      mp.calcWidth(size)
+      expect(mp.scaler.x).toBe mp.cSize.width/size.width
+
+    it <span class="hljs-string">'if result scaler.x is not finite, then should be set to 1'</span>,<span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+
+      size = <span class="hljs-attribute">width</span>: <span class="hljs-number">0</span>; mp.cSize = <span class="hljs-attribute">width</span>: <span class="hljs-number">200</span>; mp.scaler = {}
+      mp.calcWidth(size)
+      expect(mp.scaler.x).toBe <span class="hljs-number">1</span>
+
+  describe <span class="hljs-string">'calcHeight method'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should calc scaler.y based on passed size'</span>,<span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+
+      size = <span class="hljs-attribute">height</span>: <span class="hljs-number">200</span>; mp.cSize = <span class="hljs-attribute">height</span>: <span class="hljs-number">200</span>; mp.scaler = {}
+      mp.calcHeight(size)
+      expect(mp.scaler.y).toBe mp.cSize.height/size.height
+
+    it <span class="hljs-string">'if result scaler.x is not finite, then should be set to 1'</span>,<span class="hljs-function">-&gt;</span>
+      mp = <span class="hljs-keyword">new</span> MotionPath
+        <span class="hljs-attribute">path</span>:       coords
+        <span class="hljs-attribute">el</span>:         <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+        <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">true</span>
+
+      size = <span class="hljs-attribute">height</span>: <span class="hljs-number">0</span>; mp.cSize = <span class="hljs-attribute">height</span>: <span class="hljs-number">200</span>; mp.scaler = {}
+      mp.calcHeight(size)
+      expect(mp.scaler.y).toBe <span class="hljs-number">1</span>
+
+
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>

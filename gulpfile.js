@@ -1,4 +1,5 @@
 var gulp          = require('gulp');
+var fs            = require('fs');
 var stylus        = require('gulp-stylus');
 var autoprefixer  = require('gulp-autoprefixer');
 var notify        = require('gulp-notify');
@@ -102,7 +103,6 @@ gulp.task('coffeeify', function(e){
 gulp.task('docs', function(e){
   return gulp.src('').pipe(shell('grock'));
   });
-
 
 gulp.task('coffee-lint', function(e){
   return gulp.src(paths.src.js)

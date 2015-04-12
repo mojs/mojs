@@ -1,6 +1,22 @@
+# Utils methods and map objects
+#
+# @class Helpers
 class Helpers
+  # ---
+
+  # CSS styles for console.log/warn/error ::mojs:: badge styling
+  #
+  # @property   logBadgeCss
+  # @type       {String}
   logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
     padding: 1px 5px 2px; border: 1px solid #FF512F;'
+  # ---
+
+  # Shortcut map for the 16 standart web colors
+  # used to coerce literal name to rgb
+  #
+  # @property   shortColors
+  # @type       {Object}
   shortColors:
     transparent: 'rgba(0,0,0,0)'
     aqua:   'rgb(0,255,255)'
@@ -20,6 +36,7 @@ class Helpers
     white:  'rgb(255,255,255)'
     yellow: 'rgb(255,255,0)'
     orange: 'rgb(255,128,0)'
+  # ---
   # none-tweenable props
   chainOptionMap:
     duration:         1
@@ -53,12 +70,9 @@ class Helpers
     burstY:           1
     burstShiftX:      1
     burstShiftY:      1
-
   strokeDashPropsMap:
     strokeDasharray:  1
     strokeDashoffset: 1
-
-
   RAD_TO_DEG: 180/Math.PI
   constructor:-> @vars()
   vars:->
@@ -71,17 +85,48 @@ class Helpers
     @div = document.createElement('div')
     document.body.appendChild @div
 
+  # ---
+
+  # Clones object by iterating thru object properties
+  #
+  # @method cloneObj
+  # @param {Object} to clone
+  # @param {Object} with key names that will be excluded
+  #                 from the new object, key value should
+  #                 be truthy
+  # @example
+  #   h.cloneObj({ foo: 'bar', baz: 'bar' }, { baz: 1 })
+  #   // result: { foo: 'bar' }
+  # @return {Object} new object
   cloneObj:(obj, exclude)->
     keys = Object.keys(obj); newObj = {}; i = keys.length
     while(i--)
       key = keys[i]
-      # skip the keys defined in exclude object
       if exclude? then newObj[key] = obj[key] if !exclude[key]
       else newObj[key] = obj[key]
     newObj
+
+  # ---
+
+  # Copies keys and values from the second object to the first if
+  # key was not defined on the first object
+  #
+  # @method extend
+  # 
+  # @param {Object} to copy values to
+  # @param {Object} from copy values from
+  # 
+  # @example
+  #   var objA = { foo: 'bar' }, objB = { baz: 'bax' };
+  #   h.extend(objA, objB)
+  #   // result: objA{ foo: 'bar', baz: 'bax' }
+  #   
+  # @return {Object} the first modified object
   extend:(objTo, objFrom)->
     for key, value of objFrom
       objTo[key] ?= objFrom[key]
+    objTo
+
   getRemBase:->
     html = document.querySelector('html')
     style = getComputedStyle(html)

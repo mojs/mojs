@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - swirl.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="../spec/swirl.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/../spec/swirl.coffee">../spec/swirl.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">Transit = mojs.Transit
+Swirl   = mojs.Swirl
+
+tr = <span class="hljs-keyword">new</span> Transit
+describe <span class="hljs-string">'Swirl -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+  describe <span class="hljs-string">'extension -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should extend Transit class'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl
+      expect(swirl <span class="hljs-keyword">instanceof</span> Transit).toBe <span class="hljs-literal">true</span>
+    it <span class="hljs-string">'should have skipPropsDelta'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl
+      expect(swirl.skipPropsDelta.x).toBe <span class="hljs-number">1</span>
+      expect(swirl.skipPropsDelta.y).toBe <span class="hljs-number">1</span>
+    it <span class="hljs-string">'should have angleShift value'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl
+        <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attribute">isSwirlLess</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">angleShift</span>: <span class="hljs-number">90</span>
+      expect(swirl.props.angleShift).toBe <span class="hljs-number">90</span>
+  describe <span class="hljs-string">'position calc -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should calc position radius'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">20</span>}
+      expect(swirl.positionDelta.radius).toBe Math.sqrt (<span class="hljs-number">10</span>*<span class="hljs-number">10</span> + <span class="hljs-number">20</span>*<span class="hljs-number">20</span>)
+    it <span class="hljs-string">'should calc position angle'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}
+      expect(swirl.positionDelta.angle).toBe <span class="hljs-number">135</span>
+    it <span class="hljs-string">'should calc position angle'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:-<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:-<span class="hljs-number">10</span>}
+      expect(swirl.positionDelta.angle).toBe - <span class="hljs-number">45</span>
+    it <span class="hljs-string">'should calc position angle'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">0</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:-<span class="hljs-number">10</span>}
+      expect(swirl.positionDelta.angle).toBe <span class="hljs-number">0</span>
+    it <span class="hljs-string">'should calc position angle'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:-<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">0</span>}
+      expect(swirl.positionDelta.angle).toBe <span class="hljs-number">270</span>
+    it <span class="hljs-string">'should save startX and StartY values'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">10</span>:<span class="hljs-number">10</span>}
+      expect(swirl.positionDelta.x.start).toBe <span class="hljs-number">0</span>
+      expect(swirl.positionDelta.y.start).toBe <span class="hljs-number">10</span>
+    it <span class="hljs-string">'should set start position anyways'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      expect(swirl.props.x).toBe <span class="hljs-string">'0.0000px'</span>
+      expect(swirl.props.y).toBe <span class="hljs-string">'0.0000px'</span>
+    it <span class="hljs-string">'should call super extendDefaults method'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">radius</span>: [{ <span class="hljs-number">20</span>: <span class="hljs-number">50</span> }, <span class="hljs-number">20</span>]
+      spyOn Swirl.__super__, <span class="hljs-string">'extendDefaults'</span>
+      swirl.extendDefaults()
+      expect(Swirl.__super__.extendDefaults).toHaveBeenCalled()
+
+  describe <span class="hljs-string">'setProgress -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should call super setProgress method'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">radius</span>: [{ <span class="hljs-number">20</span>: <span class="hljs-number">50</span> }, <span class="hljs-number">20</span>]
+      spyOn Swirl.__super__, <span class="hljs-string">'setProgress'</span>
+      swirl.setProgress .<span class="hljs-number">5</span>
+      expect(Swirl.__super__.setProgress).toHaveBeenCalledWith .<span class="hljs-number">5</span>
+    it <span class="hljs-string">'should set x/y progress'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">isSwirlLess</span>: <span class="hljs-literal">true</span>
+      swirl.setProgress .<span class="hljs-number">5</span>
+      expect(swirl.props.x).toBe <span class="hljs-string">'5.0000px'</span>
+      expect(swirl.props.y).toBe <span class="hljs-string">'5.0000px'</span>
+    it <span class="hljs-string">'should set x/y progress'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">isSwirlLess</span>: <span class="hljs-literal">true</span>
+      swirl.setProgress <span class="hljs-number">1</span>
+      expect(swirl.props.x).toBe <span class="hljs-string">'10.0000px'</span>
+      expect(swirl.props.y).toBe <span class="hljs-string">'10.0000px'</span>
+    it <span class="hljs-string">'should set negative x/y progress'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl
+        <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-string">'-10'</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-string">'-10'</span>}, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">isSwirlLess</span>: <span class="hljs-literal">true</span>
+      swirl.setProgress <span class="hljs-number">1</span>
+      expect(swirl.props.x).toBe <span class="hljs-string">'-10.0000px'</span>
+      expect(swirl.props.y).toBe <span class="hljs-string">'-10.0000px'</span>
+
+    it <span class="hljs-string">'should set plain x/y progress if foreign context'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl
+        <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">ctx</span>: tr.ctx,
+        <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">isSwirlLess</span>: <span class="hljs-literal">true</span>
+      swirl.setProgress <span class="hljs-number">1</span>
+      expect(swirl.props.x+<span class="hljs-string">''</span>).toBe <span class="hljs-string">'10.0000'</span>
+      expect(swirl.props.y+<span class="hljs-string">''</span>).toBe <span class="hljs-string">'10.0000'</span>
+    
+    it <span class="hljs-string">'should respect radiusScale value'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl
+        <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attribute">isSwirlLess</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">radiusScale</span>: .<span class="hljs-number">5</span>
+      swirl.setProgress <span class="hljs-number">1</span>
+      expect(swirl.props.x).toBe <span class="hljs-string">'5.0000px'</span>
+      expect(swirl.props.y).toBe <span class="hljs-string">'5.0000px'</span>
+    it <span class="hljs-string">'should not add swirl'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>
+      swirl.setProgress .<span class="hljs-number">5</span>
+      expect(swirl.props.x).toBe <span class="hljs-string">'5.0000px'</span>
+      expect(swirl.props.y).toBe <span class="hljs-string">'5.0000px'</span>
+    it <span class="hljs-string">'should add swirl if isSwirl'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">x</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">y</span>: {<span class="hljs-number">0</span>:<span class="hljs-number">10</span>}, <span class="hljs-attribute">isRunLess</span>: <span class="hljs-literal">true</span>, <span class="hljs-attribute">isSwirl</span>: <span class="hljs-literal">true</span>
+      swirl.setProgress .<span class="hljs-number">5</span>
+      expect(swirl.props.x).<span class="hljs-keyword">not</span>.toBe <span class="hljs-string">'5.0000px'</span>
+      expect(swirl.props.y).<span class="hljs-keyword">not</span>.toBe <span class="hljs-string">'5.0000px'</span>
+  describe <span class="hljs-string">'generateSwirl method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should generate simple swirl'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">swirlSize</span>: <span class="hljs-number">3</span>, <span class="hljs-attribute">swirlFrequency</span>: <span class="hljs-number">2</span>
+      swirl.generateSwirl()
+      expect(swirl.props.swirlSize).toBe      <span class="hljs-number">3</span>
+      expect(swirl.props.swirlFrequency).toBe <span class="hljs-number">2</span>
+    it <span class="hljs-string">'should generate rand swirl'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">swirlSize</span>: <span class="hljs-string">'rand(10,20)'</span>, <span class="hljs-attribute">swirlFrequency</span>: <span class="hljs-string">'rand(3,7)'</span>
+      swirl.generateSwirl()
+      expect(swirl.props.swirlSize).toBeGreaterThan     <span class="hljs-number">9</span>
+      expect(swirl.props.swirlSize).<span class="hljs-keyword">not</span>.toBeGreaterThan <span class="hljs-number">20</span>
+    it <span class="hljs-string">'should not generate simple swirl is isSwirlLess was passed'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl <span class="hljs-attribute">isSwirlLess</span>: <span class="hljs-literal">true</span>
+      spyOn swirl, <span class="hljs-string">'generateSwirl'</span>
+      swirl.init()
+      expect(swirl.generateSwirl).<span class="hljs-keyword">not</span>.toHaveBeenCalled()
+  describe <span class="hljs-string">'getSwirl method -&gt;'</span>, <span class="hljs-function">-&gt;</span>
+    it <span class="hljs-string">'should calc swirl based on swirlFrequency and swirlSize props'</span>, <span class="hljs-function">-&gt;</span>
+      swirl = <span class="hljs-keyword">new</span> Swirl
+      swirl1 = swirl.getSwirl(.<span class="hljs-number">5</span>)
+      freq = Math.sin(swirl.props.swirlFrequency*.<span class="hljs-number">5</span>)
+      sign = swirl.props.signRand
+      expect(swirl1).toBe sign*swirl.props.swirlSize*freq
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>
