@@ -18,8 +18,8 @@ var sequence      = require('run-sequence');
 var coffeeify     = require('gulp-coffeeify');
 var insert        = require('gulp-insert');
 var jeditor       = require("gulp-json-editor");
-// var docco         = require("gulp-docco");
-var groc          = require("gulp-groc");
+var shell         = require("gulp-shell");
+var grock         = require("grock");
 // var pygments      = require("pygments");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
@@ -99,11 +99,8 @@ gulp.task('coffeeify', function(e){
     .pipe(gulp.dest('./build'))
   });
 
-gulp.task('groc', function(e){
-  return gulp.src(paths.src.js)
-    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-    .pipe(groc({out: 'docs'}))
-    // .pipe(gulp.dest('./docs'))
+gulp.task('docs', function(e){
+  return gulp.src('').pipe(shell('grock'));
   });
 
 
@@ -163,7 +160,7 @@ gulp.task('default', function(){
   gulp.run('get-current-version');
   gulp.watch(paths.src.tests,['coffee:tests']);
   gulp.watch(paths.src.css,  ['stylus']);
-  gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'groc']);
+  gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs']);
   gulp.watch(paths.src.index,['index:jade']);
   gulp.watch('package.json', ['update-version']);
   });

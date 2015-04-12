@@ -57,6 +57,7 @@
     "gulp-notify": "~0.5.1",
     "gulp-plumber": "*",
     "gulp-rename": "latest",
+    "gulp-shell": "^0.4.0",
     "gulp-stylus": "latest",
     "gulp-uglify": "latest",
     "gulp-watch": "*",
