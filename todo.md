@@ -1,18 +1,25 @@
-## To Do
-
+## TODO
+- add movement arc
+  - add motion blur
+- add layers
 - release
   - website
     - css
     - page transitions
     - docs
     - tuts
+- add meta balls
+- add states
 - add custom easing handler
   - add path handler
   - add spring
+- add shaker
+- add line trails
+- radial springs
+
+# FIXES
 - tween
-  -add and append multiple timelines
-- add movement arc
-- add states
+  - add and append multiple timelines
 - cover polyfills
 - stagger callbacks should run only once
 - stagger self generation
@@ -24,15 +31,11 @@
 - burst
   - add deltas for swirl swirlFrequency and swirlSize
   - then implementation
-- add shaker
-- add line trails
-- radial springs
+
+# UNDER CONSIDERATION
 - add text tricks
 - add backgrounds
-- add layer
-
 - add spriter?
-- add glare (is transition shorthand)?
 - add camera glare?
 
 
