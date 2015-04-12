@@ -1,0 +1,6 @@
+{
+  "glob": ["js/**/*.coffee", "readme.md"],
+  "out": "docs",
+  "github": false,
+  "index": "readme.md"
+}

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - bitsMap.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="js/shapes/bitsMap.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/shapes/bitsMap.coffee">js/shapes/bitsMap.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">Bit       = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+Circle    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./circle'</span>
+Line      = <span class="hljs-built_in">require</span> <span class="hljs-string">'./line'</span>
+Zigzag    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./zigzag'</span>
+Rect      = <span class="hljs-built_in">require</span> <span class="hljs-string">'./rect'</span>
+Polygon   = <span class="hljs-built_in">require</span> <span class="hljs-string">'./polygon'</span>
+Cross     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./cross'</span>
+Equal     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./equal'</span>
+h         = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BitsMap</span></span>
+  <span class="hljs-attribute">h</span>: h
+  <span class="hljs-attribute">map</span>:
+    <span class="hljs-attribute">bit</span>:      Bit
+    <span class="hljs-attribute">circle</span>:   Circle
+    <span class="hljs-attribute">line</span>:     Line
+    <span class="hljs-attribute">zigzag</span>:   Zigzag
+    <span class="hljs-attribute">rect</span>:     Rect
+    <span class="hljs-attribute">polygon</span>:  Polygon
+    <span class="hljs-attribute">cross</span>:    Cross
+    <span class="hljs-attribute">equal</span>:    Equal
+  <span class="hljs-attribute">getBit</span>:<span class="hljs-function"><span class="hljs-params">(name)</span>-&gt;</span> <span class="hljs-property">@map</span>[name] <span class="hljs-keyword">or</span> <span class="hljs-property">@h</span>.error <span class="hljs-string">"no \"<span class="hljs-subst">#{name}</span>\" shape available yet,
+      please choose from this list:"</span>, <span class="hljs-property">@map</span>
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">new</span> BitsMap
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>

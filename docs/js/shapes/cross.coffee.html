@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - cross.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="js/shapes/cross.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/shapes/cross.coffee">js/shapes/cross.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>ignore coffescript sudo code
+istanbul ignore next</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">Bit = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cross</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Bit</span></span>
+  <span class="hljs-attribute">type</span>: <span class="hljs-string">'path'</span>
+  <span class="hljs-attribute">draw</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    radiusX = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    radiusY = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusY? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusY <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    x1 = <span class="hljs-property">@props</span>.x-radiusX; x2 = <span class="hljs-property">@props</span>.x+radiusX
+    line1 = <span class="hljs-string">"M<span class="hljs-subst">#{x1}</span>,<span class="hljs-subst">#{<span class="hljs-property">@props</span>.y}</span> L<span class="hljs-subst">#{x2}</span>,<span class="hljs-subst">#{<span class="hljs-property">@props</span>.y}</span>"</span>
+    y1 = <span class="hljs-property">@props</span>.y-radiusY; y2 = <span class="hljs-property">@props</span>.y+radiusY
+    line2 = <span class="hljs-string">"M<span class="hljs-subst">#{<span class="hljs-property">@props</span>.x}</span>,<span class="hljs-subst">#{y1}</span> L<span class="hljs-subst">#{<span class="hljs-property">@props</span>.x}</span>,<span class="hljs-subst">#{y2}</span>"</span>
+    d = <span class="hljs-string">"<span class="hljs-subst">#{line1}</span> <span class="hljs-subst">#{line2}</span>"</span>
+    <span class="hljs-property">@setAttr</span> <span class="hljs-attribute">d</span>: d
+  <span class="hljs-attribute">getLength</span>:<span class="hljs-function">-&gt;</span>
+    radiusX = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    radiusY = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusY? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusY <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    <span class="hljs-number">2</span>*(radiusX+radiusY)
+
+<span class="hljs-built_in">module</span>.exports = Cross
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>

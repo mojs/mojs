@@ -37,7 +37,7 @@
     "chalk": "^0.5.1",
     "coffeeify": "latest",
     "coveralls": "^2.11.2",
-    "groc": "git+https://github.com/gilt/groc.git",
+    "grock": "https://registry.npmjs.org/grock/-/grock-0.3.8.tgz",
     "gulp": "latest",
     "gulp-autoprefixer": "0.0.6",
     "gulp-browserify": "latest",

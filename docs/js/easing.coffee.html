@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - easing.coffee</title>
+
+  <link rel="stylesheet" href="../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../"/>
+  <meta name="groc-document-path" content="js/easing.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/easing.coffee">js/easing.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">bezier = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bezier-easing'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Easing</span></span>
+  <span class="hljs-attribute">bezier</span>: bezier
+  <span class="hljs-attribute">linear</span>: <span class="hljs-attribute">none</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> k
+  <span class="hljs-attribute">ease</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.42</span>,   <span class="hljs-number">0</span>,     <span class="hljs-number">1</span>,      <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0</span>,      <span class="hljs-number">0</span>,    <span class="hljs-number">0.58</span>,    <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.42</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.58</span>,    <span class="hljs-number">1</span>   ]
+  <span class="hljs-attribute">quad</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.55</span>,  <span class="hljs-number">0.085</span>, <span class="hljs-number">0.68</span>,   <span class="hljs-number">0.53</span> ]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.25</span>,  <span class="hljs-number">0.46</span>,  <span class="hljs-number">0.45</span>,   <span class="hljs-number">0.94</span> ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.455</span>, <span class="hljs-number">0.03</span>,  <span class="hljs-number">0.515</span>, <span class="hljs-number">0.955</span> ]
+  <span class="hljs-attribute">cubic</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.55</span>,  <span class="hljs-number">0.055</span>, <span class="hljs-number">0.675</span>,  <span class="hljs-number">0.19</span> ]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.215</span>, <span class="hljs-number">0.61</span>,  <span class="hljs-number">0.355</span>,   <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.645</span>, <span class="hljs-number">0.045</span>, <span class="hljs-number">0.355</span>,   <span class="hljs-number">1</span>   ]
+  <span class="hljs-attribute">quart</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.895</span>, <span class="hljs-number">0.03</span>,  <span class="hljs-number">0.685</span>,  <span class="hljs-number">0.22</span> ]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.165</span>, <span class="hljs-number">0.84</span>,  <span class="hljs-number">0.44</span>,    <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.77</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.175</span>,   <span class="hljs-number">1</span>   ]
+  <span class="hljs-attribute">quint</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.895</span>, <span class="hljs-number">0.03</span>,  <span class="hljs-number">0.685</span>,  <span class="hljs-number">0.22</span> ]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.165</span>, <span class="hljs-number">0.84</span>,  <span class="hljs-number">0.44</span>,    <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.77</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.175</span>,   <span class="hljs-number">1</span>   ]
+  <span class="hljs-attribute">sin</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.47</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.745</span>,  <span class="hljs-number">0.715</span>]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.39</span>,  <span class="hljs-number">0.575</span>, <span class="hljs-number">0.565</span>,   <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.445</span>, <span class="hljs-number">0.05</span>,  <span class="hljs-number">0.55</span>,   <span class="hljs-number">0.95</span> ]
+  <span class="hljs-attribute">exp</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.95</span>,  <span class="hljs-number">0.05</span>,  <span class="hljs-number">0.795</span>,  <span class="hljs-number">0.035</span>]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.19</span>,   <span class="hljs-number">1</span>,     <span class="hljs-number">0.22</span>,    <span class="hljs-number">1</span>  ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">1</span>,      <span class="hljs-number">0</span>,      <span class="hljs-number">0</span>,      <span class="hljs-number">1</span>  ]
+  <span class="hljs-attribute">circ</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.6</span>,   <span class="hljs-number">0.04</span>,  <span class="hljs-number">0.98</span>,   <span class="hljs-number">0.335</span>]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.075</span>, <span class="hljs-number">0.82</span>,  <span class="hljs-number">0.165</span>,    <span class="hljs-number">1</span>  ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.785</span>, <span class="hljs-number">0.135</span>, <span class="hljs-number">0.15</span>,   <span class="hljs-number">0.86</span> ]
+  <span class="hljs-attribute">back</span>:
+    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.6</span>,    <span class="hljs-number">0</span>,    <span class="hljs-number">0.735</span>,  <span class="hljs-number">0.045</span>]
+    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.175</span>, <span class="hljs-number">0.885</span>, <span class="hljs-number">0.32</span>,     <span class="hljs-number">1</span>  ]
+    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.68</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.265</span>,    <span class="hljs-number">1</span>  ]
+  <span class="hljs-attribute">elastic</span>:
+    <span class="hljs-attribute">in</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      s = <span class="hljs-literal">undefined</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>a = 0.1</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      p = <span class="hljs-number">0.4</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if a &lt; 1</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      a = <span class="hljs-number">1</span>
+      s = p / <span class="hljs-number">4</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>else
+  s = p <em> Math.asin(1 / a) / (2 </em> Math.PI)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      -(a * Math.pow(<span class="hljs-number">2</span>, <span class="hljs-number">10</span> * (k -= <span class="hljs-number">1</span>)) * Math.sin((k - s) * (<span class="hljs-number">2</span> * Math.PI)/p))
+    <span class="hljs-attribute">out</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      s = <span class="hljs-literal">undefined</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>a = 0.1</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      p = <span class="hljs-number">0.4</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if not a or a &lt; 1</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      a = <span class="hljs-number">1</span>
+      s = p / <span class="hljs-number">4</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>else
+  s = p <em> Math.asin(1 / a) / (2 </em> Math.PI)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      a * Math.pow(<span class="hljs-number">2</span>, -<span class="hljs-number">10</span> * k) * Math.sin((k - s) * (<span class="hljs-number">2</span> * Math.PI) / p) + <span class="hljs-number">1</span>
+    <span class="hljs-attribute">inout</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      s = <span class="hljs-literal">undefined</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>a = 0.1</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      p = <span class="hljs-number">0.4</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if not a or a &lt; 1</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      a = <span class="hljs-number">1</span>
+      s = p / <span class="hljs-number">4</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>else
+  s = p <em> Math.asin(1 / a) / (2 </em> Math.PI)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+        <span class="hljs-keyword">return</span> -<span class="hljs-number">0.5</span>*(a*Math.pow(<span class="hljs-number">2</span>, <span class="hljs-number">10</span>*(k -= <span class="hljs-number">1</span>))*Math.sin((k-s)*(<span class="hljs-number">2</span>*Math.PI)/p))
+      a*Math.pow(<span class="hljs-number">2</span>, -<span class="hljs-number">10</span>*(k -= <span class="hljs-number">1</span>))*Math.sin((k - s)*(<span class="hljs-number">2</span> * Math.PI) / p)*<span class="hljs-number">0.5</span>+<span class="hljs-number">1</span>
+  <span class="hljs-attribute">bounce</span>:
+    <span class="hljs-attribute">in</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> <span class="hljs-number">1</span> - easing.bounce.out(<span class="hljs-number">1</span> - k)
+    <span class="hljs-attribute">out</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> k &lt; (<span class="hljs-number">1</span> / <span class="hljs-number">2.75</span>)
+        <span class="hljs-number">7.5625</span> * k * k
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> k &lt; (<span class="hljs-number">2</span> / <span class="hljs-number">2.75</span>)
+        <span class="hljs-number">7.5625</span> * (k -= (<span class="hljs-number">1.5</span> / <span class="hljs-number">2.75</span>)) * k + <span class="hljs-number">0.75</span>
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> k &lt; (<span class="hljs-number">2.5</span> / <span class="hljs-number">2.75</span>)
+        <span class="hljs-number">7.5625</span> * (k -= (<span class="hljs-number">2.25</span> / <span class="hljs-number">2.75</span>)) * k + <span class="hljs-number">0.9375</span>
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-number">7.5625</span> * (k -= (<span class="hljs-number">2.625</span> / <span class="hljs-number">2.75</span>)) * k + <span class="hljs-number">0.984375</span>
+    <span class="hljs-attribute">inout</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> easing.bounce.<span class="hljs-keyword">in</span>(k * <span class="hljs-number">2</span>) * <span class="hljs-number">0.5</span>  <span class="hljs-keyword">if</span> k &lt; <span class="hljs-number">0.5</span>
+      easing.bounce.out(k * <span class="hljs-number">2</span> - <span class="hljs-number">1</span>) * <span class="hljs-number">0.5</span> + <span class="hljs-number">0.5</span>
+
+easing = <span class="hljs-keyword">new</span> Easing
+<span class="hljs-built_in">module</span>.exports = easing
+
+
+
+
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../toc.js"></script>
+  <script src="../assets/libs.js"></script>
+  <script src="../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>

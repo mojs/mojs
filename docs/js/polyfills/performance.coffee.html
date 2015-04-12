@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - performance.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="js/polyfills/performance.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/polyfills/performance.coffee">js/polyfills/performance.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>istanbul ignore next
+performance.now polyfill</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(root)</span>-&gt;</span>
+  <span class="hljs-keyword">if</span> !root.performance? <span class="hljs-keyword">then</span> root.performance = {}</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>IE 8</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  Date.now = Date.now <span class="hljs-keyword">or</span> -&gt; (<span class="hljs-keyword">new</span> Date).getTime()
+  <span class="hljs-keyword">if</span> !root.performance.now?
+    offset = <span class="hljs-keyword">if</span> root.performance?.timing?.navigationStart
+      performance.timing.navigationStart
+    <span class="hljs-keyword">else</span> Date.now()
+    root.performance.now = <span class="hljs-function">-&gt;</span> Date.now() - offset
+)(<span class="hljs-built_in">window</span>)</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>

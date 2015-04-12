@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - zigzag.coffee</title>
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../../"/>
+  <meta name="groc-document-path" content="js/shapes/zigzag.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/shapes/zigzag.coffee">js/shapes/zigzag.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>ignore coffescript sudo code
+istanbul ignore next</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">Bit = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bit'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Zigzag</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Bit</span></span>
+  <span class="hljs-attribute">type</span>: <span class="hljs-string">'path'</span>
+  <span class="hljs-attribute">ratio</span>: <span class="hljs-number">1.43</span>
+  <span class="hljs-attribute">draw</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@props</span>.points
+    radiusX = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusX? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusX <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    radiusY = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.radiusY? <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.radiusY <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.radius
+    points = <span class="hljs-string">''</span>; stepX = <span class="hljs-number">2</span>*radiusX/<span class="hljs-property">@props</span>.points
+    stepY  = <span class="hljs-number">2</span>*radiusY/<span class="hljs-property">@props</span>.points; strokeWidth = <span class="hljs-property">@props</span>[<span class="hljs-string">'stroke-width'</span>]
+    xStart = <span class="hljs-property">@props</span>.x - radiusX; yStart = <span class="hljs-property">@props</span>.y - radiusY
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-property">@props</span>.points...<span class="hljs-number">0</span>]
+      iX = xStart + i*stepX + strokeWidth; iY = yStart + i*stepY + strokeWidth
+      iX2 = xStart + (i-<span class="hljs-number">1</span>)*stepX + strokeWidth
+      iY2 = yStart + (i-<span class="hljs-number">1</span>)*stepY + strokeWidth
+      char = <span class="hljs-keyword">if</span> i <span class="hljs-keyword">is</span> <span class="hljs-property">@props</span>.points <span class="hljs-keyword">then</span> <span class="hljs-string">'M'</span> <span class="hljs-keyword">else</span> <span class="hljs-string">'L'</span>
+      points += <span class="hljs-string">"<span class="hljs-subst">#{char}</span><span class="hljs-subst">#{iX}</span>,<span class="hljs-subst">#{iY}</span> l0, -<span class="hljs-subst">#{stepY}</span> l-<span class="hljs-subst">#{stepX}</span>, 0"</span>
+    <span class="hljs-property">@setAttr</span> <span class="hljs-attribute">d</span>: points
+    <span class="hljs-keyword">super</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-built_in">module</span>.exports = Zigzag
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../../toc.js"></script>
+  <script src="../../assets/libs.js"></script>
+  <script src="../../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        
+      </script>
+    
+  
+</body>
+</html>
