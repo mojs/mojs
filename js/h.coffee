@@ -112,15 +112,15 @@ class Helpers
   # key was not defined on the first object
   #
   # @method extend
-  # 
+  #
   # @param {Object} to copy values to
   # @param {Object} from copy values from
-  # 
+  #
   # @example
   #   var objA = { foo: 'bar' }, objB = { baz: 'bax' };
   #   h.extend(objA, objB)
   #   // result: objA{ foo: 'bar', baz: 'bax' }
-  #   
+  #
   # @return {Object} the first modified object
   extend:(objTo, objFrom)->
     for key, value of objFrom

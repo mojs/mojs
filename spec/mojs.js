@@ -54,6 +54,10 @@
     it('should have MotionPath', function() {
       return expect(mojs.MotionPath).toBeDefined();
     });
+    it('should have MotionArc', function() {
+      expect(mojs.MotionArc).toBeDefined();
+      return expect(mojs.MotionArc.prototype instanceof mojs.MotionPath).toBe(true);
+    });
     it('should have Timeline', function() {
       return expect(mojs.Timeline).toBeDefined();
     });

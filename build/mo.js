@@ -510,7 +510,7 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":4,"./shapes/bitsMap":10,"./swirl":19,"./transit":20,"./tween/tween":22}],3:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":11,"./swirl":20,"./transit":21,"./tween/tween":23}],3:[function(require,module,exports){
 var Easing, bezier, easing;
 
 bezier = require('./bezier-easing');
@@ -1201,6 +1201,7 @@ mojs = {
   Swirl: require('./swirl'),
   Stagger: require('./stagger'),
   MotionPath: require('./motion-path'),
+  MotionArc: require('./motion-arc'),
   Timeline: require('./tween/timeline'),
   Tween: require('./tween/tween'),
   tweener: require('./tween/tweener'),
@@ -1223,7 +1224,27 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":9,"./shapes/bitsMap":10,"./shapes/circle":11,"./shapes/cross":12,"./shapes/equal":13,"./shapes/line":14,"./shapes/polygon":15,"./shapes/rect":16,"./shapes/zigzag":17,"./stagger":18,"./swirl":19,"./transit":20,"./tween/timeline":21,"./tween/tween":22,"./tween/tweener":23}],6:[function(require,module,exports){
+},{"./burst":2,"./easing":3,"./h":4,"./motion-arc":6,"./motion-path":7,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./stagger":19,"./swirl":20,"./transit":21,"./tween/timeline":22,"./tween/tween":23,"./tween/tweener":24}],6:[function(require,module,exports){
+var MotionArc, MotionPath,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+MotionPath = require('./motion-path');
+
+MotionArc = (function(superClass) {
+  extend(MotionArc, superClass);
+
+  function MotionArc() {
+    return MotionArc.__super__.constructor.apply(this, arguments);
+  }
+
+  return MotionArc;
+
+})(MotionPath);
+
+module.exports = MotionArc;
+
+},{"./motion-path":7}],7:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -1571,7 +1592,7 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
+},{"./h":4,"./tween/timeline":22,"./tween/tween":23,"./vendor/resize":25}],8:[function(require,module,exports){
 
 (function(root) {
   var offset, ref, ref1;
@@ -1589,7 +1610,7 @@ module.exports = MotionPath;
   }
 })(window);
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 
 (function() {
   var k, lastTime, vendors, x;
@@ -1621,7 +1642,7 @@ module.exports = MotionPath;
   }
 })();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var Bit, h;
 
 h = require('../h');
@@ -1827,7 +1848,7 @@ Bit = (function() {
 
 module.exports = Bit;
 
-},{"../h":4}],10:[function(require,module,exports){
+},{"../h":4}],11:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -1874,7 +1895,7 @@ BitsMap = (function() {
 
 module.exports = new BitsMap;
 
-},{"../h":4,"./bit":9,"./circle":11,"./cross":12,"./equal":13,"./line":14,"./polygon":15,"./rect":16,"./zigzag":17}],11:[function(require,module,exports){
+},{"../h":4,"./bit":10,"./circle":12,"./cross":13,"./equal":14,"./line":15,"./polygon":16,"./rect":17,"./zigzag":18}],12:[function(require,module,exports){
 
 var Bit, Circle,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1917,7 +1938,7 @@ Circle = (function(superClass) {
 
 module.exports = Circle;
 
-},{"./bit":9}],12:[function(require,module,exports){
+},{"./bit":10}],13:[function(require,module,exports){
 
 var Bit, Cross,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1964,7 +1985,7 @@ Cross = (function(superClass) {
 
 module.exports = Cross;
 
-},{"./bit":9}],13:[function(require,module,exports){
+},{"./bit":10}],14:[function(require,module,exports){
 
 var Bit, Equal,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2015,7 +2036,7 @@ Equal = (function(superClass) {
 
 module.exports = Equal;
 
-},{"./bit":9}],14:[function(require,module,exports){
+},{"./bit":10}],15:[function(require,module,exports){
 
 var Bit, Line,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2048,7 +2069,7 @@ Line = (function(superClass) {
 
 module.exports = Line;
 
-},{"./bit":9}],15:[function(require,module,exports){
+},{"./bit":10}],16:[function(require,module,exports){
 
 var Bit, Polygon, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2110,7 +2131,7 @@ Polygon = (function(superClass) {
 
 module.exports = Polygon;
 
-},{"../h":4,"./bit":9}],16:[function(require,module,exports){
+},{"../h":4,"./bit":10}],17:[function(require,module,exports){
 
 var Bit, Rect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2155,7 +2176,7 @@ Rect = (function(superClass) {
 
 module.exports = Rect;
 
-},{"./bit":9}],17:[function(require,module,exports){
+},{"./bit":10}],18:[function(require,module,exports){
 
 var Bit, Zigzag,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2207,7 +2228,7 @@ Zigzag = (function(superClass) {
 
 module.exports = Zigzag;
 
-},{"./bit":9}],18:[function(require,module,exports){
+},{"./bit":10}],19:[function(require,module,exports){
 
 var Stagger, Timeline, Transit, Tween, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2345,7 +2366,7 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":4,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],19:[function(require,module,exports){
+},{"./h":4,"./transit":21,"./tween/timeline":22,"./tween/tween":23}],20:[function(require,module,exports){
 
 var Swirl, Transit,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2458,7 +2479,7 @@ Swirl = (function(superClass) {
 
 module.exports = Swirl;
 
-},{"./transit":20}],20:[function(require,module,exports){
+},{"./transit":21}],21:[function(require,module,exports){
 
 var Timeline, Transit, Tween, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -3121,7 +3142,7 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":4,"./shapes/bitsMap":10,"./tween/timeline":21,"./tween/tween":22}],21:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":22,"./tween/tween":23}],22:[function(require,module,exports){
 var Easing, Timeline, h;
 
 Easing = require('../easing');
@@ -3288,7 +3309,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../easing":3,"../h":4}],22:[function(require,module,exports){
+},{"../easing":3,"../h":4}],23:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3483,7 +3504,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../h":4,"./tweener":23}],23:[function(require,module,exports){
+},{"../h":4,"./tweener":24}],24:[function(require,module,exports){
 var Tweener, h, t;
 
 require('../polyfills/raf');
@@ -3568,7 +3589,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":4,"../polyfills/performance":7,"../polyfills/raf":8}],24:[function(require,module,exports){
+},{"../h":4,"../polyfills/performance":8,"../polyfills/raf":9}],25:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com

@@ -40,6 +40,14 @@ window.files = [
   "toc": []
 },
 {
+  "path": "js/motion-arc.coffee.html",
+  "originalName": "motion-arc.coffee",
+  "originalPath": "js/motion-arc.coffee",
+  "name": "motion-arc.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/motion-path.coffee.html",
   "originalName": "motion-path.coffee",
   "originalPath": "js/motion-path.coffee",
