@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.111.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.113.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -57,6 +57,78 @@
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>path = document.querySelector &#39;#js-path&#39;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>moPath = new mojs.MotionPath
+  path: &#39;M 0,0&#39;
+  el: document.createElement &#39;div&#39;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>points = [
+  {x: 0,    y: -100}
+  {x: 100,  y: -100}
+  {x: 100,  y: 0}
+  {x: 100,  y: 100}
+  {x: 0,    y: 100}
+  {x: -100, y: 100}
+  {x: -100, y: 0}
+  {x: -100, y: -100}
+  {x: -100, y: -100}
+]
+radiuses = [100, 4<em>141.42]
+ys = [20, 2</em>28.84]
+i = -1
+setInterval =&gt;
+  i++
+  path2 = moPath.curveToPath
+    start:     x: 200,  y: 200
+    shift:     points[i%(points.length-1)]
+    curvature: x: &#39;50%&#39;, y: &#39;100%&#39;
+    isIt: true</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>  path.setAttribute &#39;d&#39;, path2.getAttribute &#39;d&#39;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>, 1000</p>
+</div>
+        </div>
+      
       
       </div>
     

@@ -771,7 +771,7 @@ describe 'MotionPath ->', ->
         el: document.createElement 'div'
       path = mp.curveToPath
         start:     x: 0, y: 0
-        end:       x:100, y:-200
+        shift:     x:100, y:-200
         curvature: x: 20, y: 20
       expect(path instanceof SVGElement).toBe true
 
@@ -781,8 +781,8 @@ describe 'MotionPath ->', ->
         el: document.createElement 'div'
       path = mp.curveToPath
         start:     x: 200, y: 200
-        end:       x: 100, y:-200
-        curvature: x:  20, y: 20
+        shift:     x: 100, y:-200
+        curvature: x: 223, y: 200
 
       d = path.getAttribute 'd'
       points = parseQadraticCurve d
@@ -790,8 +790,44 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 200
       expect(points.end.x).toBe 300
       expect(points.end.y).toBe 0
-      # expect(points.control.x).toBe 0
-      # expect(points.control.y).toBe 0
+      expect(points.control.x).toBeCloseTo 478.6, .1
+      expect(points.control.y).toBeCloseTo 89.9,  .1
+
+    it 'should calculate curvature based on curve direction',->
+      mp = new MotionPath
+        path: "M100, 299"
+        el: document.createElement 'div'
+      path = mp.curveToPath
+        start:     x: 200,  y: 200
+        shift:     x: -100,  y: 100
+        curvature: x: 141,  y: 50
+      d = path.getAttribute 'd'
+
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 200
+      expect(points.start.y).toBe 200
+      expect(points.end.x).toBe 100
+      expect(points.end.y).toBe 300
+      expect(points.control.x).toBeCloseTo 64.94, .1
+      expect(points.control.y).toBeCloseTo 264.34,  .1
+
+    it 'should calculate percent curvature',->
+      mp = new MotionPath
+        path: "M100, 299"
+        el: document.createElement 'div'
+      path = mp.curveToPath
+        start:     x: 200,   y: 200
+        shift:     x: -100,  y: 100
+        curvature: x: '50%', y: '25%'
+      d = path.getAttribute 'd'
+
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 200
+      expect(points.start.y).toBe 200
+      expect(points.end.x).toBe 100
+      expect(points.end.y).toBe 300
+      expect(points.control.x).toBeCloseTo 125, .1
+      expect(points.control.y).toBeCloseTo 225,  .1
 
   describe 'el option (parseEl method) ->', ->
     it 'should return an el when it was specified by selector', ->

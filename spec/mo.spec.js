@@ -1182,7 +1182,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.111.0',
+  revision: '0.113.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1290,16 +1290,43 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.curveToPath = function(o) {
-    var curvature, end, finalEnd, path, start;
+    var angle, curvature, curvatureX, curvatureY, curvePoint, curveXPoint, dX, dY, endPoint, path, percent, radius, start;
     path = document.createElementNS(this.NS, 'path');
-    end = o.end;
     start = o.start;
-    finalEnd = {
-      x: start.x + end.x,
-      y: start.x + end.y
+    endPoint = {
+      x: start.x + o.shift.x,
+      y: start.x + o.shift.y
     };
     curvature = o.curvature;
-    path.setAttribute('d', "M" + start.x + "," + start.y + " Q0,0 " + finalEnd.x + "," + finalEnd.y);
+    dX = o.shift.x;
+    dY = o.shift.y;
+    radius = Math.sqrt(dX * dX + dY * dY);
+    percent = radius / 100;
+    angle = Math.atan(dY / dX) * (180 / Math.PI) + 90;
+    if (o.shift.x < 0) {
+      angle = angle + 180;
+    }
+    curvatureX = h.parseUnit(curvature.x);
+    curvatureX = curvatureX.unit === '%' ? curvatureX.value * percent : curvatureX.value;
+    curveXPoint = h.getRadialPoint({
+      center: {
+        x: start.x,
+        y: start.y
+      },
+      radius: curvatureX,
+      angle: angle
+    });
+    curvatureY = h.parseUnit(curvature.y);
+    curvatureY = curvatureY.unit === '%' ? curvatureY.value * percent : curvatureY.value;
+    curvePoint = h.getRadialPoint({
+      center: {
+        x: curveXPoint.x,
+        y: curveXPoint.y
+      },
+      radius: curvatureY,
+      angle: angle + 90
+    });
+    path.setAttribute('d', "M" + start.x + "," + start.y + " Q" + curvePoint.x + "," + curvePoint.y + " " + endPoint.x + "," + endPoint.y);
     return path;
   };
 

@@ -52,15 +52,36 @@ class MotionPath
   # @return {SVGElement} svg path
   curveToPath:(o)->
     path = document.createElementNS @NS , 'path'
-
-    # start = x: 0, y: 0
-    end       = o.end
-    start     = o.start
-    finalEnd  = x: start.x + end.x, y: start.x + end.y
+    start = o.start
+    endPoint  = x: start.x + o.shift.x, y: start.x + o.shift.y
     curvature = o.curvature
 
-    path.setAttribute 'd', "M#{start.x},#{start.y} Q0,0
-       #{finalEnd.x},#{finalEnd.y}"
+    dX = o.shift.x; dY = o.shift.y
+    radius = Math.sqrt(dX*dX + dY*dY); percent = radius/100
+    angle  = Math.atan(dY/dX)*(180/Math.PI) + 90
+    if o.shift.x < 0 then angle = angle + 180
+
+    # get point on line between start end end
+    curvatureX = h.parseUnit curvature.x
+    curvatureX = if curvatureX.unit is '%' then curvatureX.value*percent
+    else curvatureX.value
+    curveXPoint = h.getRadialPoint
+      center: x: start.x, y: start.y
+      radius: curvatureX
+      angle:  angle
+    # get control point with center in curveXPoint
+    curvatureY = h.parseUnit curvature.y
+    curvatureY = if curvatureY.unit is '%' then curvatureY.value*percent
+    else curvatureY.value
+    curvePoint = h.getRadialPoint
+      center: x: curveXPoint.x, y: curveXPoint.y
+      radius: curvatureY
+      angle:  angle+90
+
+    path.setAttribute 'd', "M#{start.x},#{start.y}
+       Q#{curvePoint.x},#{curvePoint.y}
+       #{endPoint.x},#{endPoint.y}"
+
     path
 
   postVars:->

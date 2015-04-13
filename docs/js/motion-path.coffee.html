@@ -96,6 +96,14 @@ to svg path</p>
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">curveToPath</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
     path = <span class="hljs-built_in">document</span>.createElementNS <span class="hljs-property">@NS</span> , <span class="hljs-string">'path'</span>
+    start = o.start
+    endPoint  = <span class="hljs-attribute">x</span>: start.x + o.shift.x, <span class="hljs-attribute">y</span>: start.x + o.shift.y
+    curvature = o.curvature
+
+    dX = o.shift.x; dY = o.shift.y
+    radius = Math.sqrt(dX*dX + dY*dY); percent = radius/<span class="hljs-number">100</span>
+    angle  = Math.atan(dY/dX)*(<span class="hljs-number">180</span>/Math.PI) + <span class="hljs-number">90</span>
+    <span class="hljs-keyword">if</span> o.shift.x &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> angle = angle + <span class="hljs-number">180</span>
 </div></div>
       
       </div>
@@ -103,18 +111,41 @@ to svg path</p>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>start = x: 0, y: 0</p>
+          <div class="wrapper"><p>get point on line between start end end</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    end       = o.end
-    start     = o.start
-    finalEnd  = <span class="hljs-attribute">x</span>: start.x + end.x, <span class="hljs-attribute">y</span>: start.x + end.y
-    curvature = o.curvature
+        <div class="code"><div class="wrapper">    curvatureX = h.parseUnit curvature.x
+    curvatureX = <span class="hljs-keyword">if</span> curvatureX.unit <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span> <span class="hljs-keyword">then</span> curvatureX.value*percent
+    <span class="hljs-keyword">else</span> curvatureX.value
+    curveXPoint = h.getRadialPoint
+      <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: start.x, <span class="hljs-attribute">y</span>: start.y
+      <span class="hljs-attribute">radius</span>: curvatureX
+      <span class="hljs-attribute">angle</span>:  angle</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get control point with center in curveXPoint</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    curvatureY = h.parseUnit curvature.y
+    curvatureY = <span class="hljs-keyword">if</span> curvatureY.unit <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span> <span class="hljs-keyword">then</span> curvatureY.value*percent
+    <span class="hljs-keyword">else</span> curvatureY.value
+    curvePoint = h.getRadialPoint
+      <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: curveXPoint.x, <span class="hljs-attribute">y</span>: curveXPoint.y
+      <span class="hljs-attribute">radius</span>: curvatureY
+      <span class="hljs-attribute">angle</span>:  angle+<span class="hljs-number">90</span>
 
-    path.setAttribute <span class="hljs-string">'d'</span>, <span class="hljs-string">"M<span class="hljs-subst">#{start.x}</span>,<span class="hljs-subst">#{start.y}</span> Q0,0
-       <span class="hljs-subst">#{finalEnd.x}</span>,<span class="hljs-subst">#{finalEnd.y}</span>"</span>
+    path.setAttribute <span class="hljs-string">'d'</span>, <span class="hljs-string">"M<span class="hljs-subst">#{start.x}</span>,<span class="hljs-subst">#{start.y}</span>
+       Q<span class="hljs-subst">#{curvePoint.x}</span>,<span class="hljs-subst">#{curvePoint.y}</span>
+       <span class="hljs-subst">#{endPoint.x}</span>,<span class="hljs-subst">#{endPoint.y}</span>"</span>
+
     path
 
   <span class="hljs-attribute">postVars</span>:<span class="hljs-function">-&gt;</span>
