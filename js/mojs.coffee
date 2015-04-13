@@ -16,15 +16,10 @@ mojs =
   Swirl       : require './swirl'
   Stagger     : require './stagger'
   MotionPath  : require './motion-path'
-  MotionArc   : require './motion-arc'
   Timeline    : require './tween/timeline'
   Tween       : require './tween/tween'
   tweener     : require './tween/tweener'
   easing      : require './easing'
-
-# cover
-# mojs.easing.bezier = require './bezier-easing'
-# cover
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta

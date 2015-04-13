@@ -81,7 +81,7 @@
         });
         return expect(mp.angle).toBe(0);
       });
-      it('delay should be defined', function() {
+      it('defaults should be defined', function() {
         expect(mp.defaults.delay).toBe(0);
         expect(mp.defaults.duration).toBe(1000);
         expect(mp.defaults.easing).toBe(null);
@@ -99,7 +99,9 @@
         expect(mp.defaults.isPresetPosition).toBe(true);
         expect(mp.defaults.onStart).toBe(null);
         expect(mp.defaults.onComplete).toBe(null);
-        return expect(mp.defaults.onUpdate).toBe(null);
+        expect(mp.defaults.onUpdate).toBe(null);
+        expect(mp.defaults.curvature.y).toBe('50%');
+        return expect(mp.defaults.curvature.x).toBe('50%');
       });
       it('should extend defaults to props', function() {
         mp = new MotionPath({
@@ -965,6 +967,19 @@
       });
     });
     describe('path option ->', function() {
+      return it('should error if path has no d attribute', function() {
+        var div, mp, path;
+        path = document.createElementNS(ns, 'path');
+        div = document.createElement('div');
+        spyOn(h, 'error');
+        mp = new MotionPath({
+          path: path,
+          el: div
+        });
+        return expect(h.error).toHaveBeenCalled();
+      });
+    });
+    describe('getPath method ->', function() {
       it('should have a getPath method', function() {
         var div, mp;
         div = document.createElement('div');
@@ -994,18 +1009,7 @@
         });
         return expect(mp.getPath() instanceof SVGElement).toBe(true);
       });
-      it('should error if path has no d attribute', function() {
-        var div, mp, path;
-        path = document.createElementNS(ns, 'path');
-        div = document.createElement('div');
-        spyOn(h, 'error');
-        mp = new MotionPath({
-          path: path,
-          el: div
-        });
-        return expect(h.error).toHaveBeenCalled();
-      });
-      return it('getPath should return a path when it was specified selector', function() {
+      return it('getPath should return a path when it was specified by a selector', function() {
         var div, id, mp, path, svg;
         id = 'js-path';
         div = document.createElement('div');
@@ -1025,6 +1029,81 @@
           el: div
         });
         return expect(mp.getPath() instanceof SVGElement).toBe(true);
+      });
+    });
+    describe('curveToPath method', function() {
+      var parseQadraticCurve;
+      parseQadraticCurve = function(d) {
+        var control, end, m, q, returnObject, shapes, start;
+        shapes = d.split(/M|Q/);
+        m = shapes[1].split(/\s|\,/);
+        start = {
+          x: parseFloat(m[0]),
+          y: parseFloat(m[1])
+        };
+        q = shapes[2].split(/\s|\,/);
+        end = {
+          x: parseFloat(q[2]),
+          y: parseFloat(q[3])
+        };
+        control = {
+          x: parseFloat(q[0]),
+          y: parseFloat(q[1])
+        };
+        return returnObject = {
+          start: start,
+          end: end,
+          control: control
+        };
+      };
+      it('should return a path', function() {
+        var mp, path;
+        mp = new MotionPath({
+          path: "M100, 299",
+          el: document.createElement('div')
+        });
+        path = mp.curveToPath({
+          start: {
+            x: 0,
+            y: 0
+          },
+          end: {
+            x: 100,
+            y: -200
+          },
+          curvature: {
+            x: 20,
+            y: 20
+          }
+        });
+        return expect(path instanceof SVGElement).toBe(true);
+      });
+      return it('should calculate end coordinates relative to start ones', function() {
+        var d, mp, path, points;
+        mp = new MotionPath({
+          path: "M100, 299",
+          el: document.createElement('div')
+        });
+        path = mp.curveToPath({
+          start: {
+            x: 200,
+            y: 200
+          },
+          end: {
+            x: 100,
+            y: -200
+          },
+          curvature: {
+            x: 20,
+            y: 20
+          }
+        });
+        d = path.getAttribute('d');
+        points = parseQadraticCurve(d);
+        expect(points.start.x).toBe(200);
+        expect(points.start.y).toBe(200);
+        expect(points.end.x).toBe(300);
+        return expect(points.end.y).toBe(0);
       });
     });
     describe('el option (parseEl method) ->', function() {

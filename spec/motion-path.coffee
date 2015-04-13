@@ -5,7 +5,6 @@ h          = window.mojs.helpers
 coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 describe 'MotionPath ->', ->
   ns = 'http://www.w3.org/2000/svg'
-
   # move to general env
   describe 'enviroment ->', ->
     it 'SVG should be supported', ->
@@ -55,7 +54,7 @@ describe 'MotionPath ->', ->
         isPresetPosition: false
       expect(mp.angle).toBe 0
 
-    it 'delay should be defined', ->
+    it 'defaults should be defined', ->
       expect(mp.defaults.delay)           .toBe 0
       expect(mp.defaults.duration)        .toBe 1000
       expect(mp.defaults.easing)          .toBe null
@@ -76,6 +75,9 @@ describe 'MotionPath ->', ->
       expect(mp.defaults.onStart)         .toBe null
       expect(mp.defaults.onComplete)      .toBe null
       expect(mp.defaults.onUpdate)        .toBe null
+      
+      expect(mp.defaults.curvature.y)     .toBe '50%'
+      expect(mp.defaults.curvature.x)     .toBe '50%'
 
     it 'should extend defaults to props', ->
       mp = new MotionPath
@@ -688,6 +690,17 @@ describe 'MotionPath ->', ->
       setTimeout (-> expect(pos).toBe(250); dfr()), 100
 
   describe 'path option ->', ->
+    it 'should error if path has no d attribute', ->
+      path = document.createElementNS ns, 'path'
+      # path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
+      div = document.createElement 'div'
+      spyOn h, 'error'
+      mp = new MotionPath
+        path: path
+        el: div
+      expect(h.error).toHaveBeenCalled()
+
+  describe 'getPath method ->', ->
     it 'should have a getPath method', ->
       div = document.createElement 'div'
       mp = new MotionPath
@@ -711,17 +724,7 @@ describe 'MotionPath ->', ->
         el: div
       expect(mp.getPath() instanceof SVGElement).toBe(true)
 
-    it 'should error if path has no d attribute', ->
-      path = document.createElementNS ns, 'path'
-      # path.setAttribute 'd', 'M0,0 L500,500 L1000, 0'
-      div = document.createElement 'div'
-      spyOn h, 'error'
-      mp = new MotionPath
-        path: path
-        el: div
-      expect(h.error).toHaveBeenCalled()
-
-    it 'getPath should return a path when it was specified selector', ->
+    it 'getPath should return a path when it was specified by a selector', ->
       id = 'js-path'
       div = document.createElement 'div'
       svg = document.createElementNS ns, 'svg'
@@ -739,6 +742,56 @@ describe 'MotionPath ->', ->
         path: ".#{id}"
         el: div
       expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+    # it 'getPath should return a path when it was specified by coords', ->
+    #   mp = new MotionPath
+    #     path:   {x: 100, y: -100}
+    #     el:     document.createElement 'div'
+
+    #   expect(mp.getPath() instanceof SVGElement).toBe(true)
+  
+
+  describe 'curveToPath method', ->
+    parseQadraticCurve = (d)->
+      shapes = d.split /M|Q/
+      m = shapes[1].split /\s|\,/
+      start = x: parseFloat(m[0]), y: parseFloat(m[1])
+      q = shapes[2].split /\s|\,/
+      end = x: parseFloat(q[2]), y: parseFloat(q[3])
+      control = x: parseFloat(q[0]), y: parseFloat(q[1])
+
+      returnObject =
+        start:    start
+        end:      end
+        control:  control
+
+    it 'should return a path',->
+      mp = new MotionPath
+        path: "M100, 299"
+        el: document.createElement 'div'
+      path = mp.curveToPath
+        start:     x: 0, y: 0
+        end:       x:100, y:-200
+        curvature: x: 20, y: 20
+      expect(path instanceof SVGElement).toBe true
+
+    it 'should calculate end coordinates relative to start ones',->
+      mp = new MotionPath
+        path: "M100, 299"
+        el: document.createElement 'div'
+      path = mp.curveToPath
+        start:     x: 200, y: 200
+        end:       x: 100, y:-200
+        curvature: x:  20, y: 20
+
+      d = path.getAttribute 'd'
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 200
+      expect(points.start.y).toBe 200
+      expect(points.end.x).toBe 300
+      expect(points.end.y).toBe 0
+      # expect(points.control.x).toBe 0
+      # expect(points.control.y).toBe 0
 
   describe 'el option (parseEl method) ->', ->
     it 'should return an el when it was specified by selector', ->
@@ -1057,4 +1110,5 @@ describe 'MotionPath ->', ->
       mp.calcHeight(size)
       expect(mp.scaler.y).toBe 1
 
-
+  # describe 'Arcs ->', ->
+  #   it 'should'

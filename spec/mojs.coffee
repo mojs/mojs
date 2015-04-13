@@ -35,9 +35,6 @@ describe 'mojs ->', ->
     expect(mojs.Stagger).toBeDefined()
   it 'should have MotionPath', ->
     expect(mojs.MotionPath).toBeDefined()
-  it 'should have MotionArc', ->
-    expect(mojs.MotionArc).toBeDefined()
-    expect((mojs.MotionArc::) instanceof mojs.MotionPath).toBe true
   it 'should have Timeline', ->
     expect(mojs.Timeline).toBeDefined()
   it 'should have Tween', ->

@@ -18,6 +18,8 @@ class MotionPath
     pathEnd:          1
     transformOrigin:  null
 
+    curvature:        y: '50%', x: '50%'
+
     isAngle:          false
     isReverse:        false
     isRunLess:        false
@@ -36,6 +38,30 @@ class MotionPath
     @extendOptions @o
     @history = [h.cloneObj(@props)]
     @postVars()
+
+  # Method to transform coordinates and curvature
+  # to svg path
+  #
+  # @method curveToPath
+  #
+  # @param {Object} coordinates of end point **x** and **y**
+  # @param {Object} coordinates of the control point
+  #                 of the quadratic bezier curve, relative to
+  #                 start and end coordinates **x** and **y**
+  #
+  # @return {SVGElement} svg path
+  curveToPath:(o)->
+    path = document.createElementNS @NS , 'path'
+
+    # start = x: 0, y: 0
+    end       = o.end
+    start     = o.start
+    finalEnd  = x: start.x + end.x, y: start.x + end.y
+    curvature = o.curvature
+
+    path.setAttribute 'd', "M#{start.x},#{start.y} Q0,0
+       #{finalEnd.x},#{finalEnd.y}"
+    path
 
   postVars:->
     @props.pathStart = h.clamp @props.pathStart, 0, 1
@@ -82,6 +108,8 @@ class MotionPath
     # DOM node
     if @props.path.style
       return @props.path
+    if @props.path.x
+      console.log 'a'
 
   getScaler:()->
     @cSize =
