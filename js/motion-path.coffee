@@ -18,7 +18,7 @@ class MotionPath
     pathEnd:          1
     transformOrigin:  null
 
-    curvature:        y: '50%', x: '50%'
+    curvature:        x: '100%', y: '50%'
 
     isAngle:          false
     isReverse:        false
@@ -129,8 +129,13 @@ class MotionPath
     # DOM node
     if @props.path.style
       return @props.path
-    if @props.path.x
-      console.log 'a'
+    if @props.path.x or @props.path.y
+      @curveToPath
+        start: x: 0, y: 0
+        shift: {x: (@props.path.x or 0), y: (@props.path.y or 0)}
+        curvature:
+          x: @props.curvature.x or @defaults.curvature.x
+          y: @props.curvature.y or @defaults.curvature.y
 
   getScaler:()->
     @cSize =

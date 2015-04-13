@@ -1,11 +1,35 @@
 (function() {
-  var MotionPath, Transit, coords, h;
+  var MotionPath, Transit, coords, h, parseQadraticCurve;
 
   MotionPath = window.mojs.MotionPath;
 
   Transit = window.mojs.Transit;
 
   h = window.mojs.helpers;
+
+  parseQadraticCurve = function(d) {
+    var control, end, m, q, returnObject, shapes, start;
+    shapes = d.split(/M|Q/);
+    m = shapes[1].split(/\s|\,/);
+    start = {
+      x: parseFloat(m[0]),
+      y: parseFloat(m[1])
+    };
+    q = shapes[2].split(/\s|\,/);
+    end = {
+      x: parseFloat(q[2]),
+      y: parseFloat(q[3])
+    };
+    control = {
+      x: parseFloat(q[0]),
+      y: parseFloat(q[1])
+    };
+    return returnObject = {
+      start: start,
+      end: end,
+      control: control
+    };
+  };
 
   coords = 'M0.55859375,593.527344L0.55859375,593.527344';
 
@@ -100,8 +124,8 @@
         expect(mp.defaults.onStart).toBe(null);
         expect(mp.defaults.onComplete).toBe(null);
         expect(mp.defaults.onUpdate).toBe(null);
-        expect(mp.defaults.curvature.y).toBe('50%');
-        return expect(mp.defaults.curvature.x).toBe('50%');
+        expect(mp.defaults.curvature.x).toBe('100%');
+        return expect(mp.defaults.curvature.y).toBe('50%');
       });
       it('should extend defaults to props', function() {
         mp = new MotionPath({
@@ -1009,7 +1033,7 @@
         });
         return expect(mp.getPath() instanceof SVGElement).toBe(true);
       });
-      return it('getPath should return a path when it was specified by a selector', function() {
+      it('getPath should return a path when it was specified by a selector', function() {
         var div, id, mp, path, svg;
         id = 'js-path';
         div = document.createElement('div');
@@ -1030,32 +1054,117 @@
         });
         return expect(mp.getPath() instanceof SVGElement).toBe(true);
       });
+      it('getPath should return a path when it was specified by coords', function() {
+        var d, mp, points;
+        mp = new MotionPath({
+          path: {
+            x: -100,
+            y: 100
+          },
+          curvature: {
+            x: '50%',
+            y: '25%'
+          },
+          el: document.createElement('div')
+        });
+        d = mp.path.getAttribute('d');
+        expect(mp.getPath() instanceof SVGElement).toBe(true);
+        points = parseQadraticCurve(d);
+        expect(points.start.x).toBe(0);
+        expect(points.start.y).toBe(0);
+        expect(points.end.x).toBe(-100);
+        expect(points.end.y).toBe(100);
+        expect(points.control.x).toBeCloseTo(-75, .1);
+        return expect(points.control.y).toBeCloseTo(25, .1);
+      });
+      it('fallback to defaults if only 1 curvature coord set', function() {
+        var d, mp, points;
+        mp = new MotionPath({
+          path: {
+            x: -100,
+            y: 100
+          },
+          curvature: {
+            x: '50%'
+          },
+          el: document.createElement('div')
+        });
+        d = mp.path.getAttribute('d');
+        expect(mp.getPath() instanceof SVGElement).toBe(true);
+        points = parseQadraticCurve(d);
+        expect(points.start.x).toBe(0);
+        expect(points.start.y).toBe(0);
+        expect(points.end.x).toBe(-100);
+        expect(points.end.y).toBe(100);
+        expect(points.control.x).toBeCloseTo(-100, .1);
+        return expect(points.control.y).toBeCloseTo(0, .1);
+      });
+      it('should fallback to defaults if only 1 curve coord set #2', function() {
+        var d, mp, points;
+        mp = new MotionPath({
+          path: {
+            x: -100,
+            y: 100
+          },
+          curvature: {
+            y: '50%'
+          },
+          el: document.createElement('div')
+        });
+        d = mp.path.getAttribute('d');
+        expect(mp.getPath() instanceof SVGElement).toBe(true);
+        points = parseQadraticCurve(d);
+        expect(points.start.x).toBe(0);
+        expect(points.start.y).toBe(0);
+        expect(points.end.x).toBe(-100);
+        expect(points.end.y).toBe(100);
+        expect(points.control.x).toBeCloseTo(-150, .1);
+        return expect(points.control.y).toBeCloseTo(50, .1);
+      });
+      it('should fallback to 0 if only 1 path coord set', function() {
+        var d, mp, points;
+        mp = new MotionPath({
+          path: {
+            x: -100
+          },
+          curvature: {
+            y: '50%'
+          },
+          el: document.createElement('div')
+        });
+        d = mp.path.getAttribute('d');
+        expect(mp.getPath() instanceof SVGElement).toBe(true);
+        points = parseQadraticCurve(d);
+        expect(points.start.x).toBe(0);
+        expect(points.start.y).toBe(0);
+        expect(points.end.x).toBe(-100);
+        expect(points.end.y).toBe(0);
+        expect(points.control.x).toBeCloseTo(-100, .1);
+        return expect(points.control.y).toBeCloseTo(-50, .1);
+      });
+      return it('should fallback to 0 if only 1 path coord set #2', function() {
+        var d, mp, points;
+        mp = new MotionPath({
+          path: {
+            y: -100
+          },
+          curvature: {
+            y: '50%'
+          },
+          el: document.createElement('div')
+        });
+        d = mp.path.getAttribute('d');
+        expect(mp.getPath() instanceof SVGElement).toBe(true);
+        points = parseQadraticCurve(d);
+        expect(points.start.x).toBe(0);
+        expect(points.start.y).toBe(0);
+        expect(points.end.x).toBe(0);
+        expect(points.end.y).toBe(-100);
+        expect(points.control.x).toBeCloseTo(50, .1);
+        return expect(points.control.y).toBeCloseTo(-100, .1);
+      });
     });
     describe('curveToPath method', function() {
-      var parseQadraticCurve;
-      parseQadraticCurve = function(d) {
-        var control, end, m, q, returnObject, shapes, start;
-        shapes = d.split(/M|Q/);
-        m = shapes[1].split(/\s|\,/);
-        start = {
-          x: parseFloat(m[0]),
-          y: parseFloat(m[1])
-        };
-        q = shapes[2].split(/\s|\,/);
-        end = {
-          x: parseFloat(q[2]),
-          y: parseFloat(q[3])
-        };
-        control = {
-          x: parseFloat(q[0]),
-          y: parseFloat(q[1])
-        };
-        return returnObject = {
-          start: start,
-          end: end,
-          control: control
-        };
-      };
       it('should return a path', function() {
         var mp, path;
         mp = new MotionPath({

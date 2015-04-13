@@ -2,6 +2,20 @@ MotionPath = window.mojs.MotionPath
 Transit    = window.mojs.Transit
 h          = window.mojs.helpers
 
+parseQadraticCurve = (d)->
+  shapes = d.split /M|Q/
+  m = shapes[1].split /\s|\,/
+  start = x: parseFloat(m[0]), y: parseFloat(m[1])
+  q = shapes[2].split /\s|\,/
+  end = x: parseFloat(q[2]), y: parseFloat(q[3])
+  control = x: parseFloat(q[0]), y: parseFloat(q[1])
+
+  returnObject =
+    start:    start
+    end:      end
+    control:  control
+
+
 coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 describe 'MotionPath ->', ->
   ns = 'http://www.w3.org/2000/svg'
@@ -76,8 +90,8 @@ describe 'MotionPath ->', ->
       expect(mp.defaults.onComplete)      .toBe null
       expect(mp.defaults.onUpdate)        .toBe null
       
+      expect(mp.defaults.curvature.x)     .toBe '100%'
       expect(mp.defaults.curvature.y)     .toBe '50%'
-      expect(mp.defaults.curvature.x)     .toBe '50%'
 
     it 'should extend defaults to props', ->
       mp = new MotionPath
@@ -743,28 +757,92 @@ describe 'MotionPath ->', ->
         el: div
       expect(mp.getPath() instanceof SVGElement).toBe(true)
 
-    # it 'getPath should return a path when it was specified by coords', ->
-    #   mp = new MotionPath
-    #     path:   {x: 100, y: -100}
-    #     el:     document.createElement 'div'
+    it 'getPath should return a path when it was specified by coords', ->
+      mp = new MotionPath
+        path:     x: -100,  y: 100
+        curvature: x: '50%', y: '25%'
+        el:     document.createElement 'div'
 
-    #   expect(mp.getPath() instanceof SVGElement).toBe(true)
-  
+      d = mp.path.getAttribute 'd'
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 0
+      expect(points.start.y).toBe 0
+      expect(points.end.x).toBe -100
+      expect(points.end.y).toBe 100
+      expect(points.control.x).toBeCloseTo -75, .1
+      expect(points.control.y).toBeCloseTo  25, .1
+
+    it 'fallback to defaults if only 1 curvature coord set', ->
+      mp = new MotionPath
+        path:     x: -100,  y: 100
+        curvature: x: '50%'
+        el:     document.createElement 'div'
+
+      d = mp.path.getAttribute 'd'
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 0
+      expect(points.start.y).toBe 0
+      expect(points.end.x).toBe -100
+      expect(points.end.y).toBe 100
+      expect(points.control.x).toBeCloseTo -100, .1
+      expect(points.control.y).toBeCloseTo  0, .1
+
+    it 'should fallback to defaults if only 1 curve coord set #2', ->
+      mp = new MotionPath
+        path:     x: -100,  y: 100
+        curvature: y: '50%'
+        el:     document.createElement 'div'
+
+      d = mp.path.getAttribute 'd'
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 0
+      expect(points.start.y).toBe 0
+      expect(points.end.x).toBe -100
+      expect(points.end.y).toBe 100
+      expect(points.control.x).toBeCloseTo -150, .1
+      expect(points.control.y).toBeCloseTo  50, .1
+
+    it 'should fallback to 0 if only 1 path coord set', ->
+      mp = new MotionPath
+        path:     x: -100
+        curvature: y: '50%'
+        el:     document.createElement 'div'
+
+      d = mp.path.getAttribute 'd'
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 0
+      expect(points.start.y).toBe 0
+      expect(points.end.x).toBe -100
+      expect(points.end.y).toBe 0
+      expect(points.control.x).toBeCloseTo -100, .1
+      expect(points.control.y).toBeCloseTo  -50, .1
+
+    it 'should fallback to 0 if only 1 path coord set #2', ->
+      mp = new MotionPath
+        path:      {y: -100}
+        curvature: {y: '50%'}
+        el:     document.createElement 'div'
+
+      d = mp.path.getAttribute 'd'
+      expect(mp.getPath() instanceof SVGElement).toBe(true)
+
+      points = parseQadraticCurve d
+      expect(points.start.x).toBe 0
+      expect(points.start.y).toBe 0
+      expect(points.end.x).toBe 0
+      expect(points.end.y).toBe -100
+      expect(points.control.x).toBeCloseTo  50,  .1
+      expect(points.control.y).toBeCloseTo -100, .1
 
   describe 'curveToPath method', ->
-    parseQadraticCurve = (d)->
-      shapes = d.split /M|Q/
-      m = shapes[1].split /\s|\,/
-      start = x: parseFloat(m[0]), y: parseFloat(m[1])
-      q = shapes[2].split /\s|\,/
-      end = x: parseFloat(q[2]), y: parseFloat(q[3])
-      control = x: parseFloat(q[0]), y: parseFloat(q[1])
-
-      returnObject =
-        start:    start
-        end:      end
-        control:  control
-
     it 'should return a path',->
       mp = new MotionPath
         path: "M100, 299"
@@ -808,8 +886,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 200
       expect(points.end.x).toBe 100
       expect(points.end.y).toBe 300
-      expect(points.control.x).toBeCloseTo 64.94, .1
-      expect(points.control.y).toBeCloseTo 264.34,  .1
+      expect(points.control.x).toBeCloseTo 64.94,  .1
+      expect(points.control.y).toBeCloseTo 264.34, .1
 
     it 'should calculate percent curvature',->
       mp = new MotionPath
@@ -819,15 +897,16 @@ describe 'MotionPath ->', ->
         start:     x: 200,   y: 200
         shift:     x: -100,  y: 100
         curvature: x: '50%', y: '25%'
+      
       d = path.getAttribute 'd'
-
       points = parseQadraticCurve d
+
       expect(points.start.x).toBe 200
       expect(points.start.y).toBe 200
       expect(points.end.x).toBe 100
       expect(points.end.y).toBe 300
       expect(points.control.x).toBeCloseTo 125, .1
-      expect(points.control.y).toBeCloseTo 225,  .1
+      expect(points.control.y).toBeCloseTo 225, .1
 
   describe 'el option (parseEl method) ->', ->
     it 'should return an el when it was specified by selector', ->

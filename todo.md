@@ -1,6 +1,7 @@
 ## TODO
-- add movement arc
-  - add motion blur
+
+- add motion blur
+
 - add layers
 - release
   - website

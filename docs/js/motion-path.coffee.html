@@ -52,7 +52,7 @@ Tween     = <span class="hljs-built_in">require</span> <span class="hljs-string"
     <span class="hljs-attribute">pathEnd</span>:          <span class="hljs-number">1</span>
     <span class="hljs-attribute">transformOrigin</span>:  <span class="hljs-literal">null</span>
 
-    <span class="hljs-attribute">curvature</span>:        <span class="hljs-attribute">y</span>: <span class="hljs-string">'50%'</span>, <span class="hljs-attribute">x</span>: <span class="hljs-string">'50%'</span>
+    <span class="hljs-attribute">curvature</span>:        <span class="hljs-attribute">x</span>: <span class="hljs-string">'100%'</span>, <span class="hljs-attribute">y</span>: <span class="hljs-string">'50%'</span>
 
     <span class="hljs-attribute">isAngle</span>:          <span class="hljs-literal">false</span>
     <span class="hljs-attribute">isReverse</span>:        <span class="hljs-literal">false</span>
@@ -220,8 +220,13 @@ else if el.attachEvent then el.attachEvent type, handler</p>
       
         <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.path.style
       <span class="hljs-keyword">return</span> <span class="hljs-property">@props</span>.path
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.path.x
-      <span class="hljs-built_in">console</span>.log <span class="hljs-string">'a'</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.path.x <span class="hljs-keyword">or</span> <span class="hljs-property">@props</span>.path.y
+      <span class="hljs-property">@curveToPath</span>
+        <span class="hljs-attribute">start</span>: <span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>
+        <span class="hljs-attribute">shift</span>: {<span class="hljs-attribute">x</span>: (<span class="hljs-property">@props</span>.path.x <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>), <span class="hljs-attribute">y</span>: (<span class="hljs-property">@props</span>.path.y <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)}
+        <span class="hljs-attribute">curvature</span>:
+          <span class="hljs-attribute">x</span>: <span class="hljs-property">@props</span>.curvature.x <span class="hljs-keyword">or</span> <span class="hljs-property">@defaults</span>.curvature.x
+          <span class="hljs-attribute">y</span>: <span class="hljs-property">@props</span>.curvature.y <span class="hljs-keyword">or</span> <span class="hljs-property">@defaults</span>.curvature.y
 
   <span class="hljs-attribute">getScaler</span>:<span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
     <span class="hljs-property">@cSize</span> =

@@ -1182,7 +1182,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.113.0',
+  revision: '0.113.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1258,8 +1258,8 @@ MotionPath = (function() {
     pathEnd: 1,
     transformOrigin: null,
     curvature: {
-      y: '50%',
-      x: '50%'
+      x: '100%',
+      y: '50%'
     },
     isAngle: false,
     isReverse: false,
@@ -1391,8 +1391,21 @@ MotionPath = (function() {
     if (this.props.path.style) {
       return this.props.path;
     }
-    if (this.props.path.x) {
-      return console.log('a');
+    if (this.props.path.x || this.props.path.y) {
+      return this.curveToPath({
+        start: {
+          x: 0,
+          y: 0
+        },
+        shift: {
+          x: this.props.path.x || 0,
+          y: this.props.path.y || 0
+        },
+        curvature: {
+          x: this.props.curvature.x || this.defaults.curvature.x,
+          y: this.props.curvature.y || this.defaults.curvature.y
+        }
+      });
     }
   };
 

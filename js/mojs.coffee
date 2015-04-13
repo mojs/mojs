@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.113.0', isDebug: true
+  revision:   '0.113.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -49,7 +49,7 @@ mojs.delta = mojs.h.delta
 #   path2 = moPath.curveToPath
 #     start:     x: 200,  y: 200
 #     shift:     points[i%(points.length-1)]
-#     curvature: x: '50%', y: '100%'
+#     curvature: x: '100%', y: '50%'
 #     isIt: true
 
 #   path.setAttribute 'd', path2.getAttribute 'd'
