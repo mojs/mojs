@@ -149,10 +149,12 @@ gulp.task('update-main-file-version', function(e){
   return gulp.src('js/mojs.coffee')
           .pipe(plumber())
           .pipe(insert.transform(function(contents) {
-            return contents.replace(/revision\:\s+?'(\d+\.\d+\.\d+)\''/i, 'revision:   \''+currentVersion+'\'');
+            var newString =  'revision:   \''+currentVersion+'\'';
+            return contents
+              .replace(/revision\:\s+?(\'|\")\d+\.\d+\.+\d+(\'|\")/i, newString);
           }))
-          .pipe(rename('mo.min.js'))
-          .pipe(gulp.dest('./build'))
+          // .pipe(rename('mojs.coffee'))
+          .pipe(gulp.dest('js/'))
   });
 
 gulp.task('default', function(){

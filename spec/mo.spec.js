@@ -3586,7 +3586,7 @@ Tweener = (function() {
   Tweener.prototype.loop = function() {
     var time;
     if (!this.isRunning) {
-      return;
+      return false;
     }
     time = performance.now();
     this.update(time);
