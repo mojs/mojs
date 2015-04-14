@@ -5,8 +5,10 @@ h          = window.mojs.helpers
 parseQadraticCurve = (d)->
   shapes = d.split /M|Q/
   m = shapes[1].split /\s|\,/
+  m = m.filter (e)-> !!e
   start = x: parseFloat(m[0]), y: parseFloat(m[1])
   q = shapes[2].split /\s|\,/
+  q = q.filter (e)-> !!e
   end = x: parseFloat(q[2]), y: parseFloat(q[3])
   control = x: parseFloat(q[0]), y: parseFloat(q[1])
 
@@ -14,7 +16,6 @@ parseQadraticCurve = (d)->
     start:    start
     end:      end
     control:  control
-
 
 coords = 'M0.55859375,593.527344L0.55859375,593.527344'
 describe 'MotionPath ->', ->

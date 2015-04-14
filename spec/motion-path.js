@@ -11,11 +11,17 @@
     var control, end, m, q, returnObject, shapes, start;
     shapes = d.split(/M|Q/);
     m = shapes[1].split(/\s|\,/);
+    m = m.filter(function(e) {
+      return !!e;
+    });
     start = {
       x: parseFloat(m[0]),
       y: parseFloat(m[1])
     };
     q = shapes[2].split(/\s|\,/);
+    q = q.filter(function(e) {
+      return !!e;
+    });
     end = {
       x: parseFloat(q[2]),
       y: parseFloat(q[3])
