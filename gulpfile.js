@@ -101,8 +101,12 @@ gulp.task('coffeeify', function(e){
   });
 
 gulp.task('docs', function(e){
+  // gulp.src('js/**/*.coffee')
+  //   .pipe(insert.transform(function(contents) {
+  //     contents.replace(/\/\* istanbul ignore next \*\//gm, '\r\r');
+  //   });
   return gulp.src('').pipe(shell('grock'));
-  });
+});
 
 gulp.task('coffee-lint', function(e){
   return gulp.src(paths.src.js)

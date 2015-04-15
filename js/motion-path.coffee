@@ -1,3 +1,8 @@
+# ## MotionPath
+# Class for moving object along path or curve
+# 
+# @class MotionPath
+
 h         = require './h'
 resize    = require './vendor/resize'
 Timeline  = require './tween/timeline'
@@ -5,22 +10,110 @@ Tween     = require './tween/tween'
 
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
+  # ---
+
+  # ### Defaults/APIs
+
+  # Default props
+  #
+  # @property   defaults
+  # @property   defaults
+  # @type       {Object}
   defaults:
+    # Delay before animation starts, *ms*
+    # @property   delay
+    # @type       {Number}
     delay:            0
+    # Duration of animation, *ms*
+    # @property   delay
+    # @type       {Number}
     duration:         1000
+    # Easing function. Can be a string, bezier() curve or function
+    #
+    # @property   easing
+    # @type       {String, Function}
+    #
+    # @example
+    #   // string
+    #   new MotionPath({
+    #     //...
+    #     easing: 'cubic.out'
+    #   });
+    # @example
+    #   // bezier
+    #   new MotionPath({
+    #     //...
+    #     easing: mojs.easing.bezier(0.45, 0.03, 0.5, 0.9)
+    #   });
+    # @example
+    #   // bezier
+    #   new MotionPath({
+    #     //...
+    #     easing: function(k) { return k*k }
+    #   });
     easing:           null
+    # Animation repeat count
+    # @property   repeat
+    # @type       {Integer}
     repeat:           0
+    # Defines if animation should be alternated,
+    # works with repeat property
+    # @property   yoyo
+    # @type       {Boolean}
     yoyo:             false
+    # Defines additional horizontal offset from center of path, *px*
+    # @property   offsetX
+    # @type       {Number}
+    # @codepen    JogvNK
     offsetX:          0
+    # Defines additional vertical offset from center of path, *px*
+    # @property   offsetY
+    # @type       {Number}
+    # @codepen    JogvNK
     offsetY:          0
+    # Defines angle offset for path curves
+    # @property   angleOffset
+    # @type       {Number, Function}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     angleOffset: function(currentAngle) {
+    #       return if (currentAngle < 0) { 90 } else {-90}
+    #     }
+    #   });
+    # @codepen    JogvNK
     angleOffset:      null
+    # Defines lower bound for path coordinates in rangle *[0,1]*
+    # @property   pathStart
+    # @type       {Float}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     pathStart: .5
+    #   });
+    # @codepen    JogvNK
     pathStart:        0
+    # Defines upper bound for path coordinates in rangle *[0,1]*
+    # @property   pathStart
+    # @type       {Float}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     pathEnd: .5
+    #   });
+    # @codepen    JogvNK
     pathEnd:          1
+
     transformOrigin:  null
 
+    # curvature size for path defined by shift coordinates
     curvature:        x: '75%', y: '50%'
-
+    # keep curves path angle
     isAngle:          false
+    # keep curves path angle
     isReverse:        false
     isRunLess:        false
     isPresetPosition: true
@@ -28,9 +121,10 @@ class MotionPath
     onStart:          null
     onComplete:       null
     onUpdate:         null
-
-  constructor:(@o={})->
-    return if @vars(); @createTween(); @
+  # ---
+  # ### Class body docs
+  # ---
+  constructor:(@o={})-> return if @vars(); @createTween(); @
 
   vars:->
     @getScaler = h.bind(@getScaler, @); @resize = resize

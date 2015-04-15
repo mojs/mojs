@@ -45,7 +45,23 @@ window.files = [
   "originalPath": "js/motion-path.coffee",
   "name": "motion-path.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "toc": [
+    {
+      "level": 2,
+      "slug": "motionpath",
+      "title": "MotionPath"
+    },
+    {
+      "level": 3,
+      "slug": "defaults-apis",
+      "title": "Defaults/APIs"
+    },
+    {
+      "level": 3,
+      "slug": "class-body-docs",
+      "title": "Class body docs"
+    }
+  ]
 },
 {
   "path": "js/stagger.coffee.html",
