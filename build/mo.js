@@ -1251,7 +1251,7 @@ MotionPath = (function() {
     pathEnd: 1,
     transformOrigin: null,
     curvature: {
-      x: '100%',
+      x: '75%',
       y: '50%'
     },
     isAngle: false,

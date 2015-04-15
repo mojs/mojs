@@ -91,7 +91,7 @@ describe 'MotionPath ->', ->
       expect(mp.defaults.onComplete)      .toBe null
       expect(mp.defaults.onUpdate)        .toBe null
       
-      expect(mp.defaults.curvature.x)     .toBe '100%'
+      expect(mp.defaults.curvature.x)     .toBe '75%'
       expect(mp.defaults.curvature.y)     .toBe '50%'
 
     it 'should extend defaults to props', ->
@@ -806,8 +806,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 0
       expect(points.end.x).toBe -100
       expect(points.end.y).toBe 100
-      expect(points.control.x).toBeCloseTo -150, .1
-      expect(points.control.y).toBeCloseTo  50, .1
+      expect(points.control.x).toBeCloseTo -125, .1
+      expect(points.control.y).toBeCloseTo  25, .1
 
     it 'should fallback to 0 if only 1 path coord set', ->
       mp = new MotionPath
@@ -823,7 +823,7 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 0
       expect(points.end.x).toBe -100
       expect(points.end.y).toBe 0
-      expect(points.control.x).toBeCloseTo -100, .1
+      expect(points.control.x).toBeCloseTo  -75, .1
       expect(points.control.y).toBeCloseTo  -50, .1
 
     it 'should fallback to 0 if only 1 path coord set #2', ->
@@ -841,7 +841,7 @@ describe 'MotionPath ->', ->
       expect(points.end.x).toBe 0
       expect(points.end.y).toBe -100
       expect(points.control.x).toBeCloseTo  50,  .1
-      expect(points.control.y).toBeCloseTo -100, .1
+      expect(points.control.y).toBeCloseTo -75, .1
 
   describe 'curveToPath method', ->
     it 'should return a path',->

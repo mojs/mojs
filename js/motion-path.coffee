@@ -6,7 +6,7 @@ Tween     = require './tween/tween'
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
   defaults:
-    delay:    0
+    delay:            0
     duration:         1000
     easing:           null
     repeat:           0
@@ -18,7 +18,7 @@ class MotionPath
     pathEnd:          1
     transformOrigin:  null
 
-    curvature:        x: '100%', y: '50%'
+    curvature:        x: '75%', y: '50%'
 
     isAngle:          false
     isReverse:        false

@@ -130,7 +130,7 @@
         expect(mp.defaults.onStart).toBe(null);
         expect(mp.defaults.onComplete).toBe(null);
         expect(mp.defaults.onUpdate).toBe(null);
-        expect(mp.defaults.curvature.x).toBe('100%');
+        expect(mp.defaults.curvature.x).toBe('75%');
         return expect(mp.defaults.curvature.y).toBe('50%');
       });
       it('should extend defaults to props', function() {
@@ -1124,8 +1124,8 @@
         expect(points.start.y).toBe(0);
         expect(points.end.x).toBe(-100);
         expect(points.end.y).toBe(100);
-        expect(points.control.x).toBeCloseTo(-150, .1);
-        return expect(points.control.y).toBeCloseTo(50, .1);
+        expect(points.control.x).toBeCloseTo(-125, .1);
+        return expect(points.control.y).toBeCloseTo(25, .1);
       });
       it('should fallback to 0 if only 1 path coord set', function() {
         var d, mp, points;
@@ -1145,7 +1145,7 @@
         expect(points.start.y).toBe(0);
         expect(points.end.x).toBe(-100);
         expect(points.end.y).toBe(0);
-        expect(points.control.x).toBeCloseTo(-100, .1);
+        expect(points.control.x).toBeCloseTo(-75, .1);
         return expect(points.control.y).toBeCloseTo(-50, .1);
       });
       return it('should fallback to 0 if only 1 path coord set #2', function() {
@@ -1167,7 +1167,7 @@
         expect(points.end.x).toBe(0);
         expect(points.end.y).toBe(-100);
         expect(points.control.x).toBeCloseTo(50, .1);
-        return expect(points.control.y).toBeCloseTo(-100, .1);
+        return expect(points.control.y).toBeCloseTo(-75, .1);
       });
     });
     describe('curveToPath method', function() {

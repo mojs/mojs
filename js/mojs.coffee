@@ -24,37 +24,14 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# path = document.querySelector '#js-path'
-
-# moPath = new mojs.MotionPath
-#   path: 'M 0,0'
-#   el: document.createElement 'div'
-
-# points = [
-#   {x: 0,    y: -100}
-#   {x: 100,  y: -100}
-#   {x: 100,  y: 0}
-#   {x: 100,  y: 100}
-#   {x: 0,    y: 100}
-#   {x: -100, y: 100}
-#   {x: -100, y: 0}
-#   {x: -100, y: -100}
-#   {x: -100, y: -100}
-# ]
-# radiuses = [100, 4*141.42]
-# ys = [20, 2*28.84]
-# i = -1
-# setInterval =>
-#   i++
-#   path2 = moPath.curveToPath
-#     start:     x: 200,  y: 200
-#     shift:     points[i%(points.length-1)]
-#     curvature: x: '100%', y: '50%'
-#     isIt: true
-
-#   path.setAttribute 'd', path2.getAttribute 'd'
-
-# , 1000
+# mp = new mojs.MotionPath
+#   el:       document.querySelector '#js-el'
+#   path:     {x: 200}
+#   delay:    1000
+#   duration: 3000
+#   easing:   'elastic.out'
+#   pathEnd:  .75
+#   curvature: x: '75%', y: '-50%'
 
 
 ### istanbul ignore next ###
