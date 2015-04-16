@@ -54,28 +54,7 @@ Tween     = <span class="hljs-built_in">require</span> <span class="hljs-string"
       
         <div class="comments ">
           <div class="wrapper"><hr>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><h3 id="defaults-apis"><a href="#defaults-apis" class="anchor"></a>Defaults/APIs</h3></div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments doc-section">
-          <div class="wrapper"><p><span class='doc-section-header'>
-Property defaults property defaults of type <em>Object</em>
-</span></p>
-<p>Default props</p>
+<h3 id="defaults-apis"><a href="#defaults-apis" class="anchor"></a>Defaults/APIs</h3><hr>
 </div>
         </div>
       
@@ -88,10 +67,91 @@ Property defaults property defaults of type <em>Object</em>
       
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property delay of type <em>Number</em>
+Propery <span id="property-path"><strong>path</strong></span> of type <strong>String, SVGPathElement, Object</strong>
+</span></p>
+<p>Defines motion path or arc to animate <strong>el&#39;s</strong> position.<br>Can be defined</p>
+<ul>
+<li>by <strong>String</strong>:<ul>
+<li><strong>CSS selector</strong> e.g. &#39;#js-path&#39;, &#39;.path&#39; etc</li>
+<li><strong>SVG path</strong> <a href="http://goo.gl/LzvV6P">line commands</a>
+e.g &#39;M0,0 L100, 300&#39;</li>
+</ul>
+</li>
+<li>by <strong>SVGPathElement</strong> e.g document.getElementById(&#39;#js-path&#39;)</li>
+<li>by <strong>Arc shift</strong> e.g { x: 200, y: 100 }. If motion path was defined by
+arc shift, <a href="#property-curvature">curvature option</a>
+defines arc curvature.</li>
+</ul>
+<p>CSS selector:</p><p data-height="300" data-theme-id="14132" data-slug-hash="emqbLN" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>SVG line commands:</p><p data-height="300" data-theme-id="14132" data-slug-hash="dPxaMm" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>SVGPathElement:</p><p data-height="300" data-theme-id="14132" data-slug-hash="xbvMyj" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Arc shift:</p><p data-height="300" data-theme-id="14132" data-slug-hash="QweYKW" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">path</span>:             <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-curvature"><strong>curvature</strong></span> of type <strong>Object</strong>
+</span></p>
+<p>Defines curve size for path defined by arc shift.<br>Curvature amount can be defined by number representing <em>px</em>
+or percents(string) representing amount relative to shift length.</p>
+<p>Example:</p>
+<pre><code>{ <span class="hljs-string">x:</span> <span class="hljs-number">200</span>, <span class="hljs-string">y:</span> <span class="hljs-number">100</span> } or { <span class="hljs-string">x:</span> <span class="hljs-string">'50%'</span>, <span class="hljs-string">y:</span> <span class="hljs-string">'20%'</span> } or mix
+</code></pre><p>Example:</p>
+<pre><code><span class="hljs-comment">// will fallback to defaults for omitted axes</span>
+{ <span class="hljs-string">x:</span> <span class="hljs-number">200</span> }   <span class="hljs-comment">// fallbacks to { x: 200, y: '50%' }</span>
+{ <span class="hljs-string">y:</span> <span class="hljs-string">'25%'</span> } <span class="hljs-comment">// fallbacks to { x: '75%', y: '25%' }</span>
+</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="vEobbM" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">curvature</span>:        <span class="hljs-attribute">x</span>: <span class="hljs-string">'75%'</span>, <span class="hljs-attribute">y</span>: <span class="hljs-string">'50%'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-delay"><strong>delay</strong></span> of type <strong>Number</strong>
 </span></p>
 <p>Delay before animation starts, <em>ms</em></p>
-</div>
+<p data-height="300" data-theme-id="14132" data-slug-hash="wBVNLM" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -101,9 +161,19 @@ Property delay of type <em>Number</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property delay of type <em>Number</em>
+Propery <span id="property-duration"><strong>duration</strong></span> of type <strong>Number</strong>
 </span></p>
 <p>Duration of animation, <em>ms</em></p>
 </div>
@@ -116,30 +186,31 @@ Property delay of type <em>Number</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property easing of type <em>String, Function</em>
+Propery <span id="property-easing"><strong>easing</strong></span> of type <strong>String, Function</strong>
 </span></p>
-<p>Easing function. Can be a string, bezier() curve or function</p>
-<p>Example:</p>
-<pre><code><span class="hljs-comment">// string</span>
-<span class="hljs-tag">new</span> <span class="hljs-tag">MotionPath</span>({
-  <span class="hljs-comment">//...</span>
-  <span class="hljs-attribute">easing</span>: <span class="hljs-string">'cubic.out'</span>
-});
-</code></pre><p>Example:</p>
-<pre><code><span class="hljs-comment">// bezier</span>
-<span class="hljs-tag">new</span> <span class="hljs-tag">MotionPath</span>({
-  <span class="hljs-comment">//...</span>
-  <span class="hljs-attribute">easing</span>: mojs.easing.<span class="hljs-function">bezier</span>(<span class="hljs-number">0.45</span>, <span class="hljs-number">0.03</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.9</span>)
-});
-</code></pre><p>Example:</p>
-<pre><code><span class="hljs-comment">// bezier</span>
-<span class="hljs-keyword">new</span> MotionPath({
-  <span class="hljs-comment">//...</span>
-  easing: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> </span>{ <span class="hljs-keyword">return</span> k*k }
-});
-</code></pre></div>
+<p>Easing function. Can be a string, a bezier() curve or a function
+String options can be found in <a href="easing.coffee.html">easing module</a>.</p>
+<p>String:</p><p data-height="300" data-theme-id="14132" data-slug-hash="GgVeKR" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Bezier cubic curve:</p><p data-height="300" data-theme-id="14132" data-slug-hash="WbVmeo" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Custom function:</p><p data-height="300" data-theme-id="14132" data-slug-hash="XJvGrE" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -149,12 +220,22 @@ Property easing of type <em>String, Function</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property repeat of type <em>Integer</em>
+Propery <span id="property-repeat"><strong>repeat</strong></span> of type <strong>Integer</strong>
 </span></p>
 <p>Animation repeat count</p>
-</div>
+<p data-height="300" data-theme-id="14132" data-slug-hash="emqbLN" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -164,13 +245,22 @@ Property repeat of type <em>Integer</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property yoyo of type <em>Boolean</em>
+Propery <span id="property-yoyo"><strong>yoyo</strong></span> of type <strong>Boolean</strong>
 </span></p>
-<p>Defines if animation should be alternated,
-works with repeat property</p>
-</div>
+<p>Defines if animation should be alternated on repeat.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="gbVEbb" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -180,12 +270,22 @@ works with repeat property</p>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property offsetX of type <em>Number</em>
+Propery <span id="property-offsetX"><strong>offsetX</strong></span> of type <strong>Number</strong>
 </span></p>
 <p>Defines additional horizontal offset from center of path, <em>px</em></p>
-<p data-height="300" data-theme-id="14132" data-slug-hash="JogvNK" data-default-tab="result" data-user="sol0mka" class='codepen'> <a href='http://codepen.io/sol0mka/pen/JogvNK/'>See on Codepen</a> </p></div>
+<p data-height="300" data-theme-id="14132" data-slug-hash="gbVEbb" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -195,12 +295,22 @@ Property offsetX of type <em>Number</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property offsetY of type <em>Number</em>
+Propery <span id="property-offsetY"><strong>offsetY</strong></span> of type <strong>Number</strong>
 </span></p>
 <p>Defines additional vertical offset from center of path, <em>px</em></p>
-<p data-height="300" data-theme-id="14132" data-slug-hash="JogvNK" data-default-tab="result" data-user="sol0mka" class='codepen'> <a href='http://codepen.io/sol0mka/pen/JogvNK/'>See on Codepen</a> </p></div>
+<p data-height="300" data-theme-id="14132" data-slug-hash="OPKqNN" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -210,9 +320,19 @@ Property offsetY of type <em>Number</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property angleOffset of type <em>Number, Function</em>
+Propery <span id="property-angleOffset"><strong>angleOffset</strong></span> of type <strong>Number, Function</strong>
 </span></p>
 <p>Defines angle offset for path curves</p>
 <p>Example:</p>
@@ -223,7 +343,11 @@ Property angleOffset of type <em>Number, Function</em>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> (currentAngle &lt; <span class="hljs-number">0</span>) { <span class="hljs-number">90</span> } <span class="hljs-keyword">else</span> {-<span class="hljs-number">90</span>}
   }
 });
-</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="JogvNK" data-default-tab="result" data-user="sol0mka" class='codepen'> <a href='http://codepen.io/sol0mka/pen/JogvNK/'>See on Codepen</a> </p></div>
+</code></pre><p>Number:</p><p data-height="300" data-theme-id="14132" data-slug-hash="JogzXw" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Function:</p><p data-height="300" data-theme-id="14132" data-slug-hash="MYNxer" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -233,18 +357,30 @@ Property angleOffset of type <em>Number, Function</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property pathStart of type <em>Float</em>
+Propery <span id="property-pathStart"><strong>pathStart</strong></span> of type <strong>Number</strong>
 </span></p>
-<p>Defines lower bound for path coordinates in rangle <em>[0,1]</em></p>
+<p>Defines lower bound for path coordinates in rangle <em>[0,1]</em>
+So specifying pathStart of .5 will start animation
+form the 50% progress of your path.</p>
 <p>Example:</p>
 <pre><code><span class="hljs-comment">// function</span>
 <span class="hljs-tag">new</span> <span class="hljs-tag">MotionPath</span>({
   <span class="hljs-comment">//...</span>
   <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>
 });
-</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="JogvNK" data-default-tab="result" data-user="sol0mka" class='codepen'> <a href='http://codepen.io/sol0mka/pen/JogvNK/'>See on Codepen</a> </p></div>
+</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="azeMBQ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -254,45 +390,55 @@ Property pathStart of type <em>Float</em>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Property pathStart of type <em>Float</em>
+Propery <span id="property-pathEnd"><strong>pathEnd</strong></span> of type <strong>Number</strong>
 </span></p>
-<p>Defines upper bound for path coordinates in rangle <em>[0,1]</em></p>
+<p>Defines upper bound for path coordinates in rangle <em>[0,1]</em>
+So specifying pathEnd of .5 will end animation
+at the 50% progress of your path.</p>
 <p>Example:</p>
 <pre><code><span class="hljs-comment">// function</span>
 <span class="hljs-tag">new</span> <span class="hljs-tag">MotionPath</span>({
   <span class="hljs-comment">//...</span>
   <span class="hljs-attribute">pathEnd</span>: .<span class="hljs-number">5</span>
 });
-</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="JogvNK" data-default-tab="result" data-user="sol0mka" class='codepen'> <a href='http://codepen.io/sol0mka/pen/JogvNK/'>See on Codepen</a> </p></div>
+</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="wBVOJo" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-attribute">pathEnd</span>:          <span class="hljs-number">1</span>
-
-    <span class="hljs-attribute">transformOrigin</span>:  <span class="hljs-literal">null</span>
-</div></div>
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">pathEnd</span>:          <span class="hljs-number">1</span></div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>curvature size for path defined by shift coordinates</p>
+          <div class="wrapper"><hr>
 </div>
         </div>
       
-      
-        <div class="code"><div class="wrapper">    <span class="hljs-attribute">curvature</span>:        <span class="hljs-attribute">x</span>: <span class="hljs-string">'75%'</span>, <span class="hljs-attribute">y</span>: <span class="hljs-string">'50%'</span></div></div>
       
       </div>
     
       <div class="segment">
       
-        <div class="comments ">
-          <div class="wrapper"><p>keep curves path angle</p>
-</div>
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isAngle"><strong>isAngle</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines if path curves angle should be set to el.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="GgVexq" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
         </div>
       
       
@@ -303,18 +449,192 @@ Property pathStart of type <em>Float</em>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>keep curves path angle</p>
+          <div class="wrapper"><hr>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isReverse</span>:        <span class="hljs-literal">false</span>
-    <span class="hljs-attribute">isRunLess</span>:        <span class="hljs-literal">false</span>
-    <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">true</span>
-
-    <span class="hljs-attribute">onStart</span>:          <span class="hljs-literal">null</span>
-    <span class="hljs-attribute">onComplete</span>:       <span class="hljs-literal">null</span>
-    <span class="hljs-attribute">onUpdate</span>:         <span class="hljs-literal">null</span></div></div>
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-transformOrigin"><strong>transformOrigin</strong></span> of type <strong>String, Function</strong>
+</span></p>
+<p>Defines transform-origin CSS property for <strong>el</strong>.
+Can be defined by <strong>string</strong> or <strong>function</strong>.
+Function recieves current angle as agrumnet and
+should return transform-origin value as a strin.</p>
+<p>Example:</p>
+<pre><code><span class="hljs-comment">// function</span>
+<span class="hljs-keyword">new</span> MotionPath({
+  <span class="hljs-comment">//...</span>
+  isAngle: <span class="hljs-literal">true</span>,
+  transformOrigin: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(currentAngle)</span> </span>{
+    <span class="hljs-keyword">return</span>  <span class="hljs-number">6</span>*currentAngle + <span class="hljs-string">'% 0'</span>;
+  }
+});
+</code></pre><p>Function:</p><p data-height="300" data-theme-id="14132" data-slug-hash="pvMYwp" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">transformOrigin</span>:  <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isReverse"><strong>isReverse</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines motion path direction.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="KwOERQ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isReverse</span>:        <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isRunLess"><strong>isRunLess</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines if animation should not start after init.
+Animation can be then started with calling <a href="">run</a> method.</p>
+<p><em>Please see at codepen for proper results</em>:</p><p data-height="300" data-theme-id="14132" data-slug-hash="raXRKQ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isRunLess</span>:        <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isPresetPosition"><strong>isPresetPosition</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines if <strong>el&#39;s</strong> position should be preset immediately after init.
+If set to false <strong>el</strong> will remain at it&#39;s position until
+actual animation started on delay end or <a href="">run</a> method call.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="EaqMOJ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">true</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-onStart"><strong>onStart</strong></span> of type <strong>Function</strong>
+</span></p>
+<p>Callback <strong>onStart</strong> fires once if animation was started.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="VYoRRe" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">onStart</span>:          <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-onComplete"><strong>onComplete</strong></span> of type <strong>Function</strong>
+</span></p>
+<p>Callback <strong>onComplete</strong> fires once if animation was completed.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="ZYgPPm" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">onComplete</span>:       <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-onUpdate"><strong>onUpdate</strong></span> of type <strong>Function</strong>
+</span></p>
+<p>Callback <strong>onUpdate</strong> fires every raf frame on motion
+path update. Recieves <strong>progress</strong> of type <strong>Number</strong>
+in range <em>[0,1]</em> as argument.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="YPmgMq" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">onUpdate</span>:         <span class="hljs-literal">null</span></div></div>
       
       </div>
     
@@ -334,8 +654,17 @@ Property pathStart of type <em>Float</em>
     <span class="hljs-property">@props</span> = h.cloneObj(<span class="hljs-property">@defaults</span>)
     <span class="hljs-property">@extendOptions</span> <span class="hljs-property">@o</span>
     <span class="hljs-property">@history</span> = [h.cloneObj(<span class="hljs-property">@props</span>)]
-    <span class="hljs-property">@postVars</span>()
-</div></div>
+    <span class="hljs-property">@postVars</span>()</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
       
       </div>
     

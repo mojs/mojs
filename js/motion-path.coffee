@@ -1,6 +1,6 @@
 # ## MotionPath
 # Class for moving object along path or curve
-# 
+#
 # @class MotionPath
 
 h         = require './h'
@@ -11,66 +11,107 @@ Tween     = require './tween/tween'
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
   # ---
-
   # ### Defaults/APIs
-
-  # Default props
-  #
-  # @property   defaults
-  # @property   defaults
-  # @type       {Object}
+  # ---
   defaults:
+    # Defines motion path or arc to animate **el's** position.  
+    # 
+    # Can be defined
+    #   - by **String**:
+    #     - **CSS selector** e.g. '#js-path', '.path' etc
+    #     - **SVG path** [line commands](http://goo.gl/LzvV6P)
+    #       e.g 'M0,0 L100, 300'
+    #   - by **SVGPathElement** e.g document.getElementById('#js-path')
+    #   - by **Arc shift** e.g { x: 200, y: 100 }. If motion path was defined by
+    #     arc shift, [curvature option](#property-curvature)
+    #     defines arc curvature.
+    #     
+    # @property   path
+    # @type       {String, SVGPathElement, Object}
+    # 
+    # @codepen CSS selector:      http://codepen.io/sol0mka/pen/emqbLN/
+    # @codepen SVG line commands: http://codepen.io/sol0mka/pen/dPxaMm/
+    # @codepen SVGPathElement:    http://codepen.io/sol0mka/pen/xbvMyj/
+    # @codepen Arc shift:         http://codepen.io/sol0mka/pen/QweYKW/
+    path:             null
+    # ---
+
+    # Defines curve size for path defined by arc shift.  
+    # Curvature amount can be defined by number representing *px*
+    # or percents(string) representing amount relative to shift length.
+    # @example
+    #   { x: 200, y: 100 } or { x: '50%', y: '20%' } or mix
+    # @example
+    #   // will fallback to defaults for omitted axes
+    #   { x: 200 }   // fallbacks to { x: 200, y: '50%' }
+    #   { y: '25%' } // fallbacks to { x: '75%', y: '25%' }
+    # 
+    # @property   curvature
+    # @type       {Object}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/vEobbM/
+    curvature:        x: '75%', y: '50%'
+    # ---
+
     # Delay before animation starts, *ms*
     # @property   delay
     # @type       {Number}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/wBVNLM/
     delay:            0
+    # ---
+
     # Duration of animation, *ms*
-    # @property   delay
+    # @property   duration
     # @type       {Number}
     duration:         1000
-    # Easing function. Can be a string, bezier() curve or function
+    # ---
+
+    # Easing function. Can be a string, a bezier() curve or a function
+    # String options can be found in [easing module](easing.coffee.html).
     #
     # @property   easing
     # @type       {String, Function}
     #
-    # @example
-    #   // string
-    #   new MotionPath({
-    #     //...
-    #     easing: 'cubic.out'
-    #   });
-    # @example
-    #   // bezier
-    #   new MotionPath({
-    #     //...
-    #     easing: mojs.easing.bezier(0.45, 0.03, 0.5, 0.9)
-    #   });
-    # @example
-    #   // bezier
-    #   new MotionPath({
-    #     //...
-    #     easing: function(k) { return k*k }
-    #   });
+    # @codepen String:              http://codepen.io/sol0mka/pen/GgVeKR/
+    # @codepen Bezier cubic curve:  http://codepen.io/sol0mka/pen/WbVmeo/
+    # @codepen Custom function:     http://codepen.io/sol0mka/pen/XJvGrE/
     easing:           null
+    # ---
+
     # Animation repeat count
     # @property   repeat
     # @type       {Integer}
+    #
+    # @codepen http://codepen.io/sol0mka/pen/emqbLN/
     repeat:           0
-    # Defines if animation should be alternated,
-    # works with repeat property
+    # ---
+
+    # Defines if animation should be alternated on repeat.
+    # 
     # @property   yoyo
     # @type       {Boolean}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
     yoyo:             false
+    # ---
+
     # Defines additional horizontal offset from center of path, *px*
     # @property   offsetX
     # @type       {Number}
-    # @codepen    JogvNK
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
     offsetX:          0
+    # ---
+
     # Defines additional vertical offset from center of path, *px*
     # @property   offsetY
     # @type       {Number}
-    # @codepen    JogvNK
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/OPKqNN/
     offsetY:          0
+    # ---
+
     # Defines angle offset for path curves
     # @property   angleOffset
     # @type       {Number, Function}
@@ -82,44 +123,129 @@ class MotionPath
     #       return if (currentAngle < 0) { 90 } else {-90}
     #     }
     #   });
-    # @codepen    JogvNK
+    #   
+    # @codepen Number:    http://codepen.io/sol0mka/pen/JogzXw
+    # @codepen Function:  http://codepen.io/sol0mka/pen/MYNxer
     angleOffset:      null
+    # ---
+
     # Defines lower bound for path coordinates in rangle *[0,1]*
+    # So specifying pathStart of .5 will start animation
+    # form the 50% progress of your path.
     # @property   pathStart
-    # @type       {Float}
+    # @type       {Number}
     # @example
     #   // function
     #   new MotionPath({
     #     //...
     #     pathStart: .5
     #   });
-    # @codepen    JogvNK
+    #
+    # @codepen http://codepen.io/sol0mka/pen/azeMBQ/
     pathStart:        0
+    # ---
+
     # Defines upper bound for path coordinates in rangle *[0,1]*
-    # @property   pathStart
-    # @type       {Float}
+    # So specifying pathEnd of .5 will end animation
+    # at the 50% progress of your path.
+    # @property   pathEnd
+    # @type       {Number}
     # @example
     #   // function
     #   new MotionPath({
     #     //...
     #     pathEnd: .5
     #   });
-    # @codepen    JogvNK
+    #   
+    # @codepen http://codepen.io/sol0mka/pen/wBVOJo/
     pathEnd:          1
+    # ---
 
-    transformOrigin:  null
-
-    # curvature size for path defined by shift coordinates
-    curvature:        x: '75%', y: '50%'
-    # keep curves path angle
+    # Defines if path curves angle should be set to el.
+    # 
+    # @property   isAngle
+    # @type       {Boolean}
+    # @codepen http://codepen.io/sol0mka/pen/GgVexq/
     isAngle:          false
-    # keep curves path angle
-    isReverse:        false
-    isRunLess:        false
-    isPresetPosition: true
+    # ---
 
+    # Defines transform-origin CSS property for **el**.
+    # Can be defined by **string** or **function**.
+    # Function recieves current angle as agrumnet and
+    # should return transform-origin value as a strin.
+    # 
+    # @property   transformOrigin
+    # @type       {String, Function}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     isAngle: true,
+    #     transformOrigin: function (currentAngle) {
+    #       return  6*currentAngle + '% 0';
+    #     }
+    #   });
+    #   
+    # @codepen Function:  http://codepen.io/sol0mka/pen/pvMYwp
+    transformOrigin:  null
+    # ---
+
+    # Defines motion path direction.
+    # 
+    # @property   isReverse
+    # @type       {Boolean}
+    # @codepen http://codepen.io/sol0mka/pen/KwOERQ/
+    isReverse:        false
+    # ---
+
+    # Defines if animation should not start after init.
+    # Animation can be then started with calling [run]() method.
+    # 
+    # @property   isRunLess
+    # @type       {Boolean}
+    # 
+    # @codepen *Please see at codepen for proper results*: http://
+    # codepen.io/sol0mka/pen/raXRKQ/
+    isRunLess:        false
+    # ---
+
+    # Defines if **el's** position should be preset immediately after init.
+    # If set to false **el** will remain at it's position until
+    # actual animation started on delay end or [run]() method call.
+    # 
+    # @property   isPresetPosition
+    # @type       {Boolean}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/EaqMOJ/
+    isPresetPosition: true
+    # ---
+
+    # Callback **onStart** fires once if animation was started.
+    # 
+    # @property   onStart
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
     onStart:          null
+    # ---
+
+    # Callback **onComplete** fires once if animation was completed.
+    # 
+    # @property   onComplete
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
     onComplete:       null
+    # ---
+
+    # Callback **onUpdate** fires every raf frame on motion
+    # path update. Recieves **progress** of type **Number**
+    # in range *[0,1]* as argument.
+    # 
+    # @property   onUpdate
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
     onUpdate:         null
   # ---
   # ### Class body docs
@@ -132,6 +258,7 @@ class MotionPath
     @extendOptions @o
     @history = [h.cloneObj(@props)]
     @postVars()
+  # ---
 
   # Method to transform coordinates and curvature
   # to svg path

@@ -1246,6 +1246,11 @@ MotionPath = (function() {
   MotionPath.prototype.NS = 'http://www.w3.org/2000/svg';
 
   MotionPath.prototype.defaults = {
+    path: null,
+    curvature: {
+      x: '75%',
+      y: '50%'
+    },
     delay: 0,
     duration: 1000,
     easing: null,
@@ -1256,12 +1261,8 @@ MotionPath = (function() {
     angleOffset: null,
     pathStart: 0,
     pathEnd: 1,
-    transformOrigin: null,
-    curvature: {
-      x: '75%',
-      y: '50%'
-    },
     isAngle: false,
+    transformOrigin: null,
     isReverse: false,
     isRunLess: false,
     isPresetPosition: true,
