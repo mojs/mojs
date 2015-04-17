@@ -2,7 +2,6 @@
 # Class for moving object along path or curve
 #
 # @class MotionPath
-
 h         = require './h'
 resize    = require './vendor/resize'
 Timeline  = require './tween/timeline'
@@ -161,12 +160,11 @@ class MotionPath
     pathEnd:          1
     # ---
 
-    # Defines if path curves angle should be set to el.
+    # Defines motion blur on element in range of *[0,1]*
     # 
-    # @property   isAngle
-    # @type       {Boolean}
-    # @codepen http://codepen.io/sol0mka/pen/GgVexq/
-    isAngle:          false
+    # @property   motionBlur
+    # @type       {Number}
+    motionBlur:       0
     # ---
 
     # Defines transform-origin CSS property for **el**.
@@ -188,6 +186,14 @@ class MotionPath
     #   
     # @codepen Function:  http://codepen.io/sol0mka/pen/pvMYwp
     transformOrigin:  null
+    # ---
+
+    # Defines if path curves angle should be set to el.
+    # 
+    # @property   isAngle
+    # @type       {Boolean}
+    # @codepen http://codepen.io/sol0mka/pen/GgVexq/
+    isAngle:          false
     # ---
 
     # Defines motion path direction.
@@ -308,7 +314,9 @@ class MotionPath
   postVars:->
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
-    @angle = 0
+    @angle = 0; @speed = 0; @blur = 0; @prevCoords = {}
+    # clamp motionBlur in range of [0,1]
+    @props.motionBlur = h.clamp @props.motionBlur, 0, 1
     
     @onUpdate   = @props.onUpdate
     @el         = @parseEl @props.el
@@ -327,14 +335,8 @@ class MotionPath
         @removeEvent @container, 'onresize', @getScaler
         @addEvent    @container, 'onresize', @getScaler
 
-  addEvent:(el, type, handler)-> el.addEventListener type, handler, false
-    # if el.addEventListener then el.addEventListener type, handler, false
-    # else if el.attachEvent then el.attachEvent type, handler
-
+  addEvent:   (el, type, handler)-> el.addEventListener    type, handler, false
   removeEvent:(el, type, handler)-> el.removeEventListener type, handler, false
-    # if el.removeEventListener
-    #   el.removeEventListener type, handler, false
-    # else if el.detachEvent then @container.detachEvent type, handler
 
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
@@ -416,34 +418,46 @@ class MotionPath
   startTween:-> setTimeout (=> @tween?.start()), 1
 
   setProgress:(p, isInit)->
-    len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
+    props = @props
+    len = @startLen+if !props.isReverse then p*@slicedLen else (1-p)*@slicedLen
     point = @path.getPointAtLength len
 
+    isTransformFunOrigin = typeof props.transformOrigin is 'function'
     # get current angle
-    if @props.isAngle or @props.angleOffset?
+    if props.isAngle or props.angleOffset? or isTransformFunOrigin
       prevPoint = @path.getPointAtLength len - 1
       x1 = point.y - prevPoint.y
       x2 = point.x - prevPoint.x
       atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
       @angle = atan*h.RAD_TO_DEG
-      if (typeof @props.angleOffset) isnt 'function'
-        @angle += @props.angleOffset or 0
-      else @angle = @props.angleOffset.call @, @angle, p
+      if (typeof props.angleOffset) isnt 'function'
+        @angle += props.angleOffset or 0
+      else @angle = props.angleOffset.call @, @angle, p
     else @angle = 0
     # get x and y coordinates
     x = point.x + @props.offsetX; y = point.y + @props.offsetY
+
+    # get motion blur
+    if @props.motionBlur
+      deltaX = Math.abs x - @prevCoords.x
+      deltaY = Math.abs y - @prevCoords.y
+      @speed = Math.max deltaX, deltaY
+      # 1px per 1ms is very fast
+      @blur  = (@speed/16)*@props.motionBlur
+      # save previous coords
+      @prevCoords.x = x; @prevCoords.y = y
+
+    # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
     # set position and angle
     if @isModule then @setModulePosition(x,y) else @setElPosition(x,y)
     # set transform origin
     if @props.transformOrigin
       # transform origin could be a function
-      tOrigin = if typeof @props.transformOrigin is 'function'
-        @props.transformOrigin(@angle, p)
-      else @props.transformOrigin
+      tOrigin = if !isTransformFunOrigin then @props.transformOrigin
+      else @props.transformOrigin(@angle, p)
       @el.style["#{h.prefix.css}transform-origin"] = tOrigin
       @el.style['transform-origin'] = tOrigin
-
     # call onUpdate but not on the very first(0 progress) call
     !isInit and @onUpdate?(p)
 
@@ -459,10 +473,6 @@ class MotionPath
   extendDefaults:(o)->
     for key, value of o
       @[key] = value
-
-    # keys = Object.keys(o); len = keys.length
-    # while(len--)
-    #   @[keys[len]] = o[keys[len]]
 
   extendOptions:(o)->
     for key, value of o

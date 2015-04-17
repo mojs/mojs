@@ -72,9 +72,9 @@ describe 'Timeline ->', ->
       t = new Timeline(duration: 1000, delay: 200, repeat: 2)
       t.start()
       t.update t.props.startTime + 1400
-      expect(t.progress).toBe .2
+      expect(t.progress).toBeCloseTo .2, .01
       t.update t.props.startTime + 2700
-      expect(t.progress).toBe .3
+      expect(t.progress).toBeCloseTo .3, .01
       t.update t.props.startTime + 3400
       expect(t.progress).toBe 1
     it 'should update progress to 0 if in delay gap', ->

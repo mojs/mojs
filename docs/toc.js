@@ -37,7 +37,14 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "title": "easing:   &#39;elastic.out&#39;",
+  "toc": [
+    {
+      "level": 1,
+      "slug": "easing-39-elastic-out-39-",
+      "title": "easing:   &#39;elastic.out&#39;"
+    }
+  ]
 },
 {
   "path": "js/motion-path.coffee.html",

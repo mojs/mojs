@@ -59,8 +59,7 @@ describe 'MotionPath ->', ->
     mp = new MotionPath
       path: 'M0.55859375,593.527344L0.55859375,593.527344'
       el: el
-    
-    it 'have angleof 0', ->
+    it 'have angle of 0', ->
       el = document.createElement 'div'
       mp = new MotionPath
         path: 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -68,7 +67,30 @@ describe 'MotionPath ->', ->
         isRunLess: true
         isPresetPosition: false
       expect(mp.angle).toBe 0
-
+    it 'have speed of 0', ->
+      el = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el: el
+        isRunLess: true
+        isPresetPosition: false
+      expect(mp.speed).toBe 0
+    it 'have blur of 0', ->
+      el = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el: el
+        isRunLess: true
+        isPresetPosition: false
+      expect(mp.blur).toBe 0
+    it 'have prevCoords object', ->
+      el = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el: el
+        isRunLess: true
+        isPresetPosition: false
+      expect(mp.prevCoords).toBeDefined()
     it 'defaults should be defined', ->
       expect(mp.defaults.delay)           .toBe 0
       expect(mp.defaults.duration)        .toBe 1000
@@ -81,6 +103,8 @@ describe 'MotionPath ->', ->
       expect(mp.defaults.pathStart)       .toBe 0
       expect(mp.defaults.pathEnd)         .toBe 1
       expect(mp.defaults.transformOrigin) .toBe null
+      
+      expect(mp.defaults.motionBlur)      .toBe 0
       
       expect(mp.defaults.isAngle)         .toBe false
       expect(mp.defaults.isReverse)       .toBe false
@@ -467,6 +491,20 @@ describe 'MotionPath ->', ->
         el: div
         duration: 50
         isAngle: true
+        onUpdate:->
+          detect.firstAngle ?= mp.angle
+          isEquial2 = detect.firstAngle is 0
+        onComplete:-> isEqual = mp.angle is 90
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+
+    it 'should calculate current angle if transformOrigin is a fun', (dfr)->
+      coords = 'M0,0 L10,0 L10,10'
+      angle = 0; isEqual = false; isEquial2 = false; detect = {}
+      mp = new MotionPath
+        path: coords
+        el: div
+        duration: 50
+        transformOrigin: ->
         onUpdate:->
           detect.firstAngle ?= mp.angle
           isEquial2 = detect.firstAngle is 0
@@ -1226,5 +1264,59 @@ describe 'MotionPath ->', ->
       mp.calcHeight(size)
       expect(mp.scaler.y).toBe 1
 
-  # describe 'Arcs ->', ->
-  #   it 'should'
+  describe 'speed calculation ->', ->
+    path = "M0,20 L100,150 L200,100"
+    it 'save previous coordinates if motionBlur is defined', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: .5
+
+      mp.setProgress(.1)
+      expect(mp.prevCoords.x).toBeCloseTo 16.81, .001
+      expect(mp.prevCoords.y).toBeCloseTo 41.86, .001
+
+    it 'calculate speed and blur based on prevCoords', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1
+
+      mp.setProgress(.1)
+      mp.setProgress(.11)
+      expect(mp.speed).toBeCloseTo 2.18, .001
+      expect(mp.blur).toBe mp.speed/16
+
+    it 'should multiply blur on motionBlur', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: .5
+
+      mp.setProgress(.1)
+      mp.setProgress(.11)
+      expect(mp.speed).toBeCloseTo 2.18, .001
+      expect(mp.blur).toBe (mp.speed/16)*mp.props.motionBlur
+
+    it 'motionBlur should be in a range of [0,1]', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: -.5
+        isIt:       true
+      expect(mp.props.motionBlur).toBe 0
+
+    it 'motionBlur should be in a range of [0,1] #2', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+        isIt:       true
+      expect(mp.props.motionBlur).toBe 1
+
+

@@ -1,7 +1,8 @@
 ## TODO
 
 - add motion blur
-
+  - calculate browser support
+  - add to el
 - add layers
 - release
   - website
@@ -36,7 +37,7 @@
 # UNDER CONSIDERATION
 - add text tricks
 - add backgrounds
-- add spriter?
-- add camera glare?
+- add spriter
+- add camera glare
 
 

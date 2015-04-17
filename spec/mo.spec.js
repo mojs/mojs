@@ -1261,8 +1261,9 @@ MotionPath = (function() {
     angleOffset: null,
     pathStart: 0,
     pathEnd: 1,
-    isAngle: false,
+    motionBlur: 0,
     transformOrigin: null,
+    isAngle: false,
     isReverse: false,
     isRunLess: false,
     isPresetPosition: true,
@@ -1335,6 +1336,10 @@ MotionPath = (function() {
     this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
     this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
     this.angle = 0;
+    this.speed = 0;
+    this.blur = 0;
+    this.prevCoords = {};
+    this.props.motionBlur = h.clamp(this.props.motionBlur, 0, 1);
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
     this.path = this.getPath();
@@ -1509,26 +1514,36 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p, isInit) {
-    var atan, len, point, prevPoint, tOrigin, x, x1, x2, y;
-    len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
+    var atan, deltaX, deltaY, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
+    props = this.props;
+    len = this.startLen + (!props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
-    if (this.props.isAngle || (this.props.angleOffset != null)) {
+    isTransformFunOrigin = typeof props.transformOrigin === 'function';
+    if (props.isAngle || (props.angleOffset != null) || isTransformFunOrigin) {
       prevPoint = this.path.getPointAtLength(len - 1);
       x1 = point.y - prevPoint.y;
       x2 = point.x - prevPoint.x;
       atan = Math.atan(x1 / x2);
       !isFinite(atan) && (atan = 0);
       this.angle = atan * h.RAD_TO_DEG;
-      if ((typeof this.props.angleOffset) !== 'function') {
-        this.angle += this.props.angleOffset || 0;
+      if ((typeof props.angleOffset) !== 'function') {
+        this.angle += props.angleOffset || 0;
       } else {
-        this.angle = this.props.angleOffset.call(this, this.angle, p);
+        this.angle = props.angleOffset.call(this, this.angle, p);
       }
     } else {
       this.angle = 0;
     }
     x = point.x + this.props.offsetX;
     y = point.y + this.props.offsetY;
+    if (this.props.motionBlur) {
+      deltaX = Math.abs(x - this.prevCoords.x);
+      deltaY = Math.abs(y - this.prevCoords.y);
+      this.speed = Math.max(deltaX, deltaY);
+      this.blur = (this.speed / 16) * this.props.motionBlur;
+      this.prevCoords.x = x;
+      this.prevCoords.y = y;
+    }
     if (this.scaler) {
       x *= this.scaler.x;
       y *= this.scaler.y;
@@ -1539,7 +1554,7 @@ MotionPath = (function() {
       this.setElPosition(x, y);
     }
     if (this.props.transformOrigin) {
-      tOrigin = typeof this.props.transformOrigin === 'function' ? this.props.transformOrigin(this.angle, p) : this.props.transformOrigin;
+      tOrigin = !isTransformFunOrigin ? this.props.transformOrigin : this.props.transformOrigin(this.angle, p);
       this.el.style[h.prefix.css + "transform-origin"] = tOrigin;
       this.el.style['transform-origin'] = tOrigin;
     }

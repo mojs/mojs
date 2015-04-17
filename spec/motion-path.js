@@ -101,7 +101,7 @@
         path: 'M0.55859375,593.527344L0.55859375,593.527344',
         el: el
       });
-      it('have angleof 0', function() {
+      it('have angle of 0', function() {
         el = document.createElement('div');
         mp = new MotionPath({
           path: 'M0.55859375,593.527344L0.55859375,593.527344',
@@ -110,6 +110,36 @@
           isPresetPosition: false
         });
         return expect(mp.angle).toBe(0);
+      });
+      it('have speed of 0', function() {
+        el = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: el,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        return expect(mp.speed).toBe(0);
+      });
+      it('have blur of 0', function() {
+        el = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: el,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        return expect(mp.blur).toBe(0);
+      });
+      it('have prevCoords object', function() {
+        el = document.createElement('div');
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: el,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        return expect(mp.prevCoords).toBeDefined();
       });
       it('defaults should be defined', function() {
         expect(mp.defaults.delay).toBe(0);
@@ -123,6 +153,7 @@
         expect(mp.defaults.pathStart).toBe(0);
         expect(mp.defaults.pathEnd).toBe(1);
         expect(mp.defaults.transformOrigin).toBe(null);
+        expect(mp.defaults.motionBlur).toBe(0);
         expect(mp.defaults.isAngle).toBe(false);
         expect(mp.defaults.isReverse).toBe(false);
         expect(mp.defaults.isRunLess).toBe(false);
@@ -637,6 +668,33 @@
           el: div,
           duration: 50,
           isAngle: true,
+          onUpdate: function() {
+            if (detect.firstAngle == null) {
+              detect.firstAngle = mp.angle;
+            }
+            return isEquial2 = detect.firstAngle === 0;
+          },
+          onComplete: function() {
+            return isEqual = mp.angle === 90;
+          }
+        });
+        return setTimeout((function() {
+          expect(isEqual).toBe(true);
+          return dfr();
+        }), 100);
+      });
+      it('should calculate current angle if transformOrigin is a fun', function(dfr) {
+        var angle, detect, isEqual, isEquial2, mp;
+        coords = 'M0,0 L10,0 L10,10';
+        angle = 0;
+        isEqual = false;
+        isEquial2 = false;
+        detect = {};
+        mp = new MotionPath({
+          path: coords,
+          el: div,
+          duration: 50,
+          transformOrigin: function() {},
           onUpdate: function() {
             if (detect.firstAngle == null) {
               detect.firstAngle = mp.angle;
@@ -1682,7 +1740,7 @@
         return expect(mp.scaler.x).toBe(1);
       });
     });
-    return describe('calcHeight method', function() {
+    describe('calcHeight method', function() {
       it('should calc scaler.y based on passed size', function() {
         var mp, size;
         mp = new MotionPath({
@@ -1716,6 +1774,70 @@
         mp.scaler = {};
         mp.calcHeight(size);
         return expect(mp.scaler.y).toBe(1);
+      });
+    });
+    return describe('speed calculation ->', function() {
+      var path;
+      path = "M0,20 L100,150 L200,100";
+      it('save previous coordinates if motionBlur is defined', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: .5
+        });
+        mp.setProgress(.1);
+        expect(mp.prevCoords.x).toBeCloseTo(16.81, .001);
+        return expect(mp.prevCoords.y).toBeCloseTo(41.86, .001);
+      });
+      it('calculate speed and blur based on prevCoords', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1
+        });
+        mp.setProgress(.1);
+        mp.setProgress(.11);
+        expect(mp.speed).toBeCloseTo(2.18, .001);
+        return expect(mp.blur).toBe(mp.speed / 16);
+      });
+      it('should multiply blur on motionBlur', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: .5
+        });
+        mp.setProgress(.1);
+        mp.setProgress(.11);
+        expect(mp.speed).toBeCloseTo(2.18, .001);
+        return expect(mp.blur).toBe((mp.speed / 16) * mp.props.motionBlur);
+      });
+      it('motionBlur should be in a range of [0,1]', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: -.5,
+          isIt: true
+        });
+        return expect(mp.props.motionBlur).toBe(0);
+      });
+      return it('motionBlur should be in a range of [0,1] #2', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5,
+          isIt: true
+        });
+        return expect(mp.props.motionBlur).toBe(1);
       });
     });
   });

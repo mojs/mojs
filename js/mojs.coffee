@@ -26,13 +26,12 @@ mojs.delta = mojs.h.delta
 
 # mp = new mojs.MotionPath
 #   el:       document.querySelector '#js-el'
-#   path:     {x: 200}
+#   path:     "M0,100 L1000, 100"
 #   delay:    1000
-#   duration: 3000
-#   easing:   'elastic.out'
+#   duration: 1000
+#   # easing:   'elastic.out'
 #   pathEnd:  .75
-#   curvature: x: '75%', y: '-50%'
-
+#   curvature: x: '75%', y: '50%'
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
