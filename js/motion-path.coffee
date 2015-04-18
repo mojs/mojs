@@ -3,6 +3,7 @@
 #
 # @class MotionPath
 h         = require './h'
+easing    = require './easing'
 resize    = require './vendor/resize'
 Timeline  = require './tween/timeline'
 Tween     = require './tween/tween'
@@ -315,6 +316,7 @@ class MotionPath
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
     @angle = 0; @speed = 0; @blur = 0; @prevCoords = {}
+    @blurAmount = 20
     # clamp motionBlur in range of [0,1]
     @props.motionBlur = h.clamp @props.motionBlur, 0, 1
     
@@ -426,8 +428,7 @@ class MotionPath
     # get current angle
     if props.isAngle or props.angleOffset? or isTransformFunOrigin
       prevPoint = @path.getPointAtLength len - 1
-      x1 = point.y - prevPoint.y
-      x2 = point.x - prevPoint.x
+      x1 = point.y - prevPoint.y; x2 = point.x - prevPoint.x
       atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
       @angle = atan*h.RAD_TO_DEG
       if (typeof props.angleOffset) isnt 'function'
@@ -439,11 +440,17 @@ class MotionPath
 
     # get motion blur
     if @props.motionBlur
-      deltaX = Math.abs x - @prevCoords.x
-      deltaY = Math.abs y - @prevCoords.y
-      @speed = Math.max deltaX, deltaY
-      # 1px per 1ms is very fast
-      @blur  = (@speed/16)*@props.motionBlur
+      # if previous coords are not defined yet -- set speed to 0
+      @speed = if not (@prevCoords.x? and @prevCoords.y?) then 0
+      # else calculate speed based on the largest axes delta
+      else Math.max Math.abs(x - @prevCoords.x), Math.abs(y - @prevCoords.y)
+      # get blur based on speed where 1px per 1ms is very fast
+      # and motionBlur coefficient
+      @blur = h.clamp (@speed/16)*@props.motionBlur, 0, 1
+      @blur = easing.quart.in @blur
+      blurPX = "blur(#{@blurAmount*@blur}px)"
+      @el.style["#{h.prefix.css}filter"] = blurPX
+      @el.style['filter'] = blurPX
       # save previous coords
       @prevCoords.x = x; @prevCoords.y = y
 

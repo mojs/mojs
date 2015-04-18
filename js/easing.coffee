@@ -27,7 +27,7 @@ class Easing
     in:     bezier.apply @, [ 0.47,   0,    0.745,  0.715]
     out:    bezier.apply @, [ 0.39,  0.575, 0.565,   1   ]
     inout:  bezier.apply @, [ 0.445, 0.05,  0.55,   0.95 ]
-  exp:
+  expo:
     in:     bezier.apply @, [ 0.95,  0.05,  0.795,  0.035]
     out:    bezier.apply @, [ 0.19,   1,     0.22,    1  ]
     inout:  bezier.apply @, [ 1,      0,      0,      1  ]

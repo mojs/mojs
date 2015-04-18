@@ -45,13 +45,13 @@ describe 'easing ->', ->
       expect(easing.sin.out.toStr()).toBe     'bezier(0.39,0.575,0.565,1)'
     it 'should have InOut', ->
       expect(easing.sin.inout.toStr()).toBe   'bezier(0.445,0.05,0.55,0.95)'
-  describe 'exp ->', ->
+  describe 'expo ->', ->
     it 'should have In', ->
-      expect(easing.exp.in.toStr()).toBe      'bezier(0.95,0.05,0.795,0.035)'
+      expect(easing.expo.in.toStr()).toBe      'bezier(0.95,0.05,0.795,0.035)'
     it 'should have Out', ->
-      expect(easing.exp.out.toStr()).toBe     'bezier(0.19,1,0.22,1)'
+      expect(easing.expo.out.toStr()).toBe     'bezier(0.19,1,0.22,1)'
     it 'should have InOut', ->
-      expect(easing.exp.inout.toStr()).toBe   'bezier(1,0,0,1)'
+      expect(easing.expo.inout.toStr()).toBe   'bezier(1,0,0,1)'
   describe 'circ ->', ->
     it 'should have In', ->
       expect(easing.circ.in.toStr()).toBe      'bezier(0.6,0.04,0.98,0.335)'

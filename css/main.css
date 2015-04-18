@@ -1,9 +1,9 @@
 .el {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   background: #ff1493;
   position: absolute;
+  top: 50%;
 }
 .svg {
   position: absolute;

@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.113.1', isDebug: true
+  revision:   '0.114.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -26,12 +26,13 @@ mojs.delta = mojs.h.delta
 
 # mp = new mojs.MotionPath
 #   el:       document.querySelector '#js-el'
-#   path:     "M0,100 L1000, 100"
-#   delay:    1000
-#   duration: 1000
-#   # easing:   'elastic.out'
-#   pathEnd:  .75
-#   curvature: x: '75%', y: '50%'
+#   path:     {x: 1000}
+#   duration: 2000
+#   yoyo:     true
+#   repeat:   200
+#   easing:   'cubic.out'
+#   curvature: x: '75%', y: '0%'
+#   motionBlur: .5
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

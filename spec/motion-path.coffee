@@ -83,6 +83,15 @@ describe 'MotionPath ->', ->
         isRunLess: true
         isPresetPosition: false
       expect(mp.blur).toBe 0
+
+    it 'have blurAmount of 20', ->
+      el = document.createElement 'div'
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el: el
+        isRunLess: true
+        isPresetPosition: false
+      expect(mp.blurAmount).toBe 20
     it 'have prevCoords object', ->
       el = document.createElement 'div'
       mp = new MotionPath
@@ -1287,9 +1296,32 @@ describe 'MotionPath ->', ->
       mp.setProgress(.1)
       mp.setProgress(.11)
       expect(mp.speed).toBeCloseTo 2.18, .001
-      expect(mp.blur).toBe mp.speed/16
+      expect(mp.blur).toBeCloseTo .00639, .000001
 
-    it 'should multiply blur on motionBlur', ->
+    it 'should set speed to 0 if prevCoords are undefined yet', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1
+        isPresetPosition: false
+
+      mp.setProgress(.1)
+      expect(mp.speed).toBe 0
+
+    it 'should have blur in range of [0,1]', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1
+        isPresetPosition: false
+
+      mp.setProgress(.1)
+      mp.setProgress(.9)
+      expect(mp.blur).toBe 1
+
+    it 'should multiply blur based on on motionBlur', ->
       mp = new MotionPath
         path:       path
         el:         document.createElement 'div'
@@ -1299,7 +1331,7 @@ describe 'MotionPath ->', ->
       mp.setProgress(.1)
       mp.setProgress(.11)
       expect(mp.speed).toBeCloseTo 2.18, .001
-      expect(mp.blur).toBe (mp.speed/16)*mp.props.motionBlur
+      expect(mp.blur).toBeCloseTo .0027, .00001
 
     it 'motionBlur should be in a range of [0,1]', ->
       mp = new MotionPath
@@ -1318,5 +1350,19 @@ describe 'MotionPath ->', ->
         motionBlur: 1.5
         isIt:       true
       expect(mp.props.motionBlur).toBe 1
+
+    it 'should apply blur on element', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: .5
+
+      mp.setProgress(.1)
+      mp.setProgress(.11)
+      blurPX = "blur(#{mp.blur*mp.blurAmount}px)"
+      style = mp.el.style.filter
+      prefixedStyle = mp.el.style[h.prefix.css+'filter']
+      expect(style or prefixedStyle).toBe blurPX
 
 

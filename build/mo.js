@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.113.1 
+	0.114.0 
 */
 
 (function(f){
@@ -562,7 +562,7 @@ Easing = (function() {
     inout: bezier.apply(Easing, [0.445, 0.05, 0.55, 0.95])
   };
 
-  Easing.prototype.exp = {
+  Easing.prototype.expo = {
     "in": bezier.apply(Easing, [0.95, 0.05, 0.795, 0.035]),
     out: bezier.apply(Easing, [0.19, 1, 0.22, 1]),
     inout: bezier.apply(Easing, [1, 0, 0, 1])
@@ -1184,7 +1184,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.113.1',
+  revision: '0.114.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1224,10 +1224,12 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
 },{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":9,"./shapes/bitsMap":10,"./shapes/circle":11,"./shapes/cross":12,"./shapes/equal":13,"./shapes/line":14,"./shapes/polygon":15,"./shapes/rect":16,"./shapes/zigzag":17,"./stagger":18,"./swirl":19,"./transit":20,"./tween/timeline":21,"./tween/tween":22,"./tween/tweener":23}],6:[function(require,module,exports){
-var MotionPath, Timeline, Tween, h, resize,
+var MotionPath, Timeline, Tween, easing, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 h = require('./h');
+
+easing = require('./easing');
 
 resize = require('./vendor/resize');
 
@@ -1332,6 +1334,7 @@ MotionPath = (function() {
     this.speed = 0;
     this.blur = 0;
     this.prevCoords = {};
+    this.blurAmount = 20;
     this.props.motionBlur = h.clamp(this.props.motionBlur, 0, 1);
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
@@ -1507,7 +1510,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p, isInit) {
-    var atan, deltaX, deltaY, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
+    var atan, blurPX, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
     props = this.props;
     len = this.startLen + (!props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
@@ -1530,10 +1533,12 @@ MotionPath = (function() {
     x = point.x + this.props.offsetX;
     y = point.y + this.props.offsetY;
     if (this.props.motionBlur) {
-      deltaX = Math.abs(x - this.prevCoords.x);
-      deltaY = Math.abs(y - this.prevCoords.y);
-      this.speed = Math.max(deltaX, deltaY);
-      this.blur = (this.speed / 16) * this.props.motionBlur;
+      this.speed = !((this.prevCoords.x != null) && (this.prevCoords.y != null)) ? 0 : Math.max(Math.abs(x - this.prevCoords.x), Math.abs(y - this.prevCoords.y));
+      this.blur = h.clamp((this.speed / 16) * this.props.motionBlur, 0, 1);
+      this.blur = easing.quart["in"](this.blur);
+      blurPX = "blur(" + (this.blurAmount * this.blur) + "px)";
+      this.el.style[h.prefix.css + "filter"] = blurPX;
+      this.el.style['filter'] = blurPX;
       this.prevCoords.x = x;
       this.prevCoords.y = y;
     }
@@ -1648,7 +1653,7 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
+},{"./easing":3,"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
 
 (function(root) {
   var offset, ref, ref1;

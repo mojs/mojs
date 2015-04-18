@@ -1,8 +1,8 @@
 ## TODO
 
 - add motion blur
-  - calculate browser support
-  - add to el
+  - force 3d
+  - blur for y and x axes
 - add layers
 - release
   - website

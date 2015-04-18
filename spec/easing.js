@@ -75,15 +75,15 @@
         return expect(easing.sin.inout.toStr()).toBe('bezier(0.445,0.05,0.55,0.95)');
       });
     });
-    describe('exp ->', function() {
+    describe('expo ->', function() {
       it('should have In', function() {
-        return expect(easing.exp["in"].toStr()).toBe('bezier(0.95,0.05,0.795,0.035)');
+        return expect(easing.expo["in"].toStr()).toBe('bezier(0.95,0.05,0.795,0.035)');
       });
       it('should have Out', function() {
-        return expect(easing.exp.out.toStr()).toBe('bezier(0.19,1,0.22,1)');
+        return expect(easing.expo.out.toStr()).toBe('bezier(0.19,1,0.22,1)');
       });
       return it('should have InOut', function() {
-        return expect(easing.exp.inout.toStr()).toBe('bezier(1,0,0,1)');
+        return expect(easing.expo.inout.toStr()).toBe('bezier(1,0,0,1)');
       });
     });
     describe('circ ->', function() {
