@@ -26,6 +26,9 @@
       expect(h.strokeDashPropsMap.strokeDashoffset).toBe(1);
       return expect(Object.keys(h.strokeDashPropsMap).length).toBe(2);
     });
+    it('should have initial uniqIDs props', function() {
+      return expect(h.uniqIDs).toBe(-1);
+    });
     describe('prefix', function() {
       return it('should have prefix', function() {
         expect(h.prefix).toBeDefined();
@@ -1073,7 +1076,7 @@
         return expect(h.warn).toHaveBeenCalled();
       });
     });
-    return describe('delta method', function() {
+    describe('delta method', function() {
       it('should create object from variables', function() {
         var delta, end, start;
         start = 0;
@@ -1141,6 +1144,14 @@
         delta = h.delta(start, end);
         expect(mojs.helpers.error).toHaveBeenCalled();
         return expect(delta).toBe(void 0);
+      });
+    });
+    return describe('getUniqID method', function() {
+      return it('should return uniq id', function() {
+        expect(h.getUniqID()).toBe(0);
+        expect(h.getUniqID()).toBe(1);
+        expect(h.getUniqID()).toBe(2);
+        return expect(h.uniqIDs).toBe(2);
       });
     });
   });

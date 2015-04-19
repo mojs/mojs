@@ -3,7 +3,8 @@
   height: 50px;
   background: #ff1493;
   position: absolute;
-  top: 50%;
+  top: 20%;
+  margin-left: 500px;
 }
 .svg {
   position: absolute;
@@ -82,4 +83,11 @@ body {
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
   background: #ffa500;
+}
+.elem {
+  width: 50px;
+  height: 50px;
+  margin-left: 200px;
+  background: #ff1493;
+  border-radius: 50%;
 }

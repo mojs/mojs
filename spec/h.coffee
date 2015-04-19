@@ -13,12 +13,12 @@ describe 'Helpers ->', ->
     expect(h.posPropsMap.y).toBe      1
     expect(h.posPropsMap.shiftX).toBe 1
     expect(h.posPropsMap.shiftY).toBe 1
-
   it 'should have strokeDashPropsMap map', ->
     expect(h.strokeDashPropsMap.strokeDasharray) .toBe    1
     expect(h.strokeDashPropsMap.strokeDashoffset).toBe    1
     expect(Object.keys(h.strokeDashPropsMap).length).toBe  2
-
+  it 'should have initial uniqIDs props', ->
+    expect(h.uniqIDs).toBe -1
   describe 'prefix', ->
     it 'should have prefix', ->
       expect(h.prefix).toBeDefined()
@@ -725,7 +725,6 @@ describe 'Helpers ->', ->
         expect(h.isDOM(document.createElementNS ns, 'g')).toBe true
       # it 'should Node is function it should check if object is instance', ->
       #   expect(h.isDOM(document.body)).toBe document.body instanceof Node
-
   describe 'getChildElements method', ->
     ns    = 'http://www.w3.org/2000/svg'
     els   = document.createElementNS ns, 'g'
@@ -739,8 +738,6 @@ describe 'Helpers ->', ->
     it 'should filter text nodes', ->
       els.appendChild document.createTextNode 'hey'
       expect(h.getChildElements(els).length).toBe 2
-
-
   describe 'mergeUnits method', ->
     it 'should merge units if end one was not defined', ->
       start = { unit: '%',  value: 25, string: '25%', isStrict: true }
@@ -810,6 +807,12 @@ describe 'Helpers ->', ->
       delta = h.delta(start, end)
       expect(mojs.helpers.error).toHaveBeenCalled()
       expect(delta).toBe undefined
+  describe 'getUniqID method', ->
+    it 'should return uniq id', ->
+      expect(h.getUniqID()).toBe 0
+      expect(h.getUniqID()).toBe 1
+      expect(h.getUniqID()).toBe 2
+      expect(h.uniqIDs)    .toBe 2
 
 
 

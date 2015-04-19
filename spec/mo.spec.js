@@ -740,6 +740,7 @@ Helpers = (function() {
     this.isFF = this.prefix.lowercase === 'moz';
     this.isIE = this.prefix.lowercase === 'ms';
     this.isOldOpera = navigator.userAgent.match(/presto/gim);
+    this.uniqIDs = -1;
     this.div = document.createElement('div');
     return document.body.appendChild(this.div);
   };
@@ -1170,6 +1171,10 @@ Helpers = (function() {
     return obj;
   };
 
+  Helpers.prototype.getUniqID = function() {
+    return ++this.uniqIDs;
+  };
+
   return Helpers;
 
 })();
@@ -1179,7 +1184,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs;
+var mojs, mp;
 
 mojs = {
   revision: '0.114.0',
@@ -1208,6 +1213,21 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+mp = new mojs.MotionPath({
+  el: document.querySelector('#js-el'),
+  path: {
+    x: 500
+  },
+  duration: 1500,
+  yoyo: true,
+  repeat: 200,
+  curvature: {
+    x: '75%',
+    y: '150%'
+  },
+  motionBlur: 1
+});
 
 
 /* istanbul ignore next */
@@ -1338,13 +1358,16 @@ MotionPath = (function() {
     this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
     this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
     this.angle = 0;
-    this.speed = 0;
-    this.blur = 0;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.blurX = 0;
+    this.blurY = 0;
     this.prevCoords = {};
-    this.blurAmount = 20;
+    this.blurAmount = 25;
     this.props.motionBlur = h.clamp(this.props.motionBlur, 0, 1);
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
+    this.props.motionBlur > 0 && this.createFilter();
     this.path = this.getPath();
     if (!this.path.getAttribute('d')) {
       h.error('Path has no coordinates to work with, aborting');
@@ -1371,6 +1394,19 @@ MotionPath = (function() {
 
   MotionPath.prototype.removeEvent = function(el, type, handler) {
     return el.removeEventListener(type, handler, false);
+  };
+
+  MotionPath.prototype.createFilter = function() {
+    var div, svg;
+    div = document.createElement('div');
+    this.filterID = "filter-" + (h.getUniqID());
+    div.innerHTML = "<svg id=\"svg-" + this.filterID + "\" style=\"display:none\">\n  <filter id=\"" + this.filterID + "\" y=\"-20\" x=\"-20\" width=\"40\" height=\"40\">\n    <feOffset\n      id=\"blur-offset\" in=\"SourceGraphic\"\n      dx=\"0\" dy=\"0\" result=\"offset2\"></feOffset>\n    <feGaussianblur\n      id=\"blur\" in=\"offset2\"\n      stdDeviation=\"0,0\" result=\"blur2\"></feGaussianblur>\n    <feMerge>\n      <feMergeNode in=\"SourceGraphic\"></feMergeNode>\n      <feMergeNode in=\"blur2\"></feMergeNode>\n    </feMerge>\n  </filter>\n</svg>";
+    svg = div.querySelector("#svg-" + this.filterID);
+    this.filter = svg.querySelector('#blur');
+    this.filterOffset = svg.querySelector('#blur-offset');
+    document.body.insertBefore(svg, document.body.firstChild);
+    this.el.style['filter'] = "url(#" + this.filterID + ")";
+    return this.el.style[h.prefix.css + "filter"] = "url(#" + this.filterID + ")";
   };
 
   MotionPath.prototype.parseEl = function(el) {
@@ -1517,7 +1553,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p, isInit) {
-    var atan, blurPX, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
+    var atan, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
     props = this.props;
     len = this.startLen + (!props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
@@ -1540,14 +1576,7 @@ MotionPath = (function() {
     x = point.x + this.props.offsetX;
     y = point.y + this.props.offsetY;
     if (this.props.motionBlur) {
-      this.speed = !((this.prevCoords.x != null) && (this.prevCoords.y != null)) ? 0 : Math.max(Math.abs(x - this.prevCoords.x), Math.abs(y - this.prevCoords.y));
-      this.blur = h.clamp((this.speed / 16) * this.props.motionBlur, 0, 1);
-      this.blur = easing.quart["in"](this.blur);
-      blurPX = "blur(" + (this.blurAmount * this.blur) + "px)";
-      this.el.style[h.prefix.css + "filter"] = blurPX;
-      this.el.style['filter'] = blurPX;
-      this.prevCoords.x = x;
-      this.prevCoords.y = y;
+      this.makeMotionBlur(x, y);
     }
     if (this.scaler) {
       x *= this.scaler.x;
@@ -1581,6 +1610,41 @@ MotionPath = (function() {
       angle: this.angle
     });
     return this.el.draw();
+  };
+
+  MotionPath.prototype.makeMotionBlur = function(x, y) {
+    var absoluteAngle, coords, dX, dY, devX, devY, deviation, signX, signY, tailAngle;
+    tailAngle = 0;
+    signX = 1;
+    signY = 1;
+    if (this.prevCoords.x == null) {
+      this.speedX = 0;
+      this.speedY = 0;
+    } else {
+      dX = x - this.prevCoords.x;
+      dY = y - this.prevCoords.y;
+      if (dX > 0) {
+        signX = -1;
+      }
+      if (dY < 0) {
+        signY = -1;
+      }
+      this.speedX = Math.abs(dX);
+      this.speedY = Math.abs(dY);
+      tailAngle = Math.atan(dY / dX) * (180 / Math.PI) + 90;
+    }
+    absoluteAngle = tailAngle - this.angle;
+    coords = this.angToCoords(absoluteAngle);
+    this.blurX = easing.quart["in"](h.clamp((this.speedX / 5) * this.props.motionBlur, 0, 1));
+    this.blurY = easing.quart["in"](h.clamp((this.speedY / 5) * this.props.motionBlur, 0, 1));
+    devX = this.blurX * this.blurAmount * Math.abs(coords.x);
+    devY = this.blurY * this.blurAmount * Math.abs(coords.y);
+    deviation = devX + "," + devY;
+    this.filter.setAttribute('stdDeviation', deviation);
+    this.filterOffset.setAttribute('dx', signX * this.blurX * coords.x * this.blurAmount);
+    this.filterOffset.setAttribute('dy', signY * this.blurY * coords.y * this.blurAmount);
+    this.prevCoords.x = x;
+    return this.prevCoords.y = y;
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
@@ -1652,6 +1716,16 @@ MotionPath = (function() {
   MotionPath.prototype.tuneOptions = function(o) {
     this.extendOptions(o);
     return this.postVars();
+  };
+
+  MotionPath.prototype.angToCoords = function(angle) {
+    var radAngle;
+    angle = angle % 360;
+    radAngle = ((angle - 90) * Math.PI) / 180;
+    return {
+      x: Math.cos(radAngle),
+      y: Math.sin(radAngle)
+    };
   };
 
   return MotionPath;

@@ -7,7 +7,18 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
   </head>
   <body>
-    <div id="js-el" class="el"></div>
+    <div id="js-el" class="el">text some text</div>
+    <svg>
+      <filter id="filter-1" y="-20" x="-20" width="40" height="40">
+        <feOffset in="SourceGraphic" dx="15" dy="0" result="offset2"></feOffset>
+        <feGaussianblur in="offset2" stdDeviation="15,0" result="blur2"></feGaussianblur>
+        <feMerge>
+          <feMergeNode in="SourceGraphic"></feMergeNode>
+          <feMergeNode in="blur2"></feMergeNode>
+        </feMerge>
+      </filter>
+    </svg>
+    <div style="filter: url(#filter-1); -webkit-filter: url(#filter-1);" class="elem">text some text</div>
     <script src="build/mo.js"></script>
   </body>
 </html>

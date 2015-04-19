@@ -166,6 +166,7 @@ used to coerce literal name to rgb</p>
     <span class="hljs-property">@isFF</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'moz'</span>
     <span class="hljs-property">@isIE</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'ms'</span>
     <span class="hljs-property">@isOldOpera</span> = navigator.userAgent.match <span class="hljs-regexp">/presto/gim</span>
+    <span class="hljs-property">@uniqIDs</span> = -<span class="hljs-number">1</span>
 
     <span class="hljs-property">@div</span> = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>)
     <span class="hljs-built_in">document</span>.body.appendChild <span class="hljs-property">@div</span>
@@ -782,8 +783,6 @@ else</p>
       
         <div class="code"><div class="wrapper">    isNode = <span class="hljs-keyword">typeof</span> o.nodeType <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">typeof</span> o.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
     <span class="hljs-keyword">typeof</span> o <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span> <span class="hljs-keyword">and</span> isNode
-  
-  
   <span class="hljs-attribute">getChildElements</span>:<span class="hljs-function"><span class="hljs-params">(element)</span>-&gt;</span>
     childNodes = element.childNodes
     children = []
@@ -792,8 +791,6 @@ else</p>
       <span class="hljs-keyword">if</span> childNodes[i].nodeType == <span class="hljs-number">1</span>
         children.unshift childNodes[i]
     children
-
-  
   <span class="hljs-attribute">delta</span>:<span class="hljs-function"><span class="hljs-params">(start, end)</span>-&gt;</span>
     type1 = <span class="hljs-keyword">typeof</span> start; type2 = <span class="hljs-keyword">typeof</span> end
     isType1 = type1 <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">or</span> type1 <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">and</span> !isNaN(start)
@@ -802,7 +799,33 @@ else</p>
       <span class="hljs-property">@error</span> <span class="hljs-string">"delta method expects Strings or Numbers at input
          but got - <span class="hljs-subst">#{start}</span>, <span class="hljs-subst">#{end}</span>"</span>
       <span class="hljs-keyword">return</span>
-    obj = {}; obj[start] = end; obj
+    obj = {}; obj[start] = end; obj</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>getUniqID</strong>
+</span></p>
+<p>Returns uniq id</p>
+<p><strong>Returns a Number</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">getUniqID</span>:<span class="hljs-function">-&gt;</span> ++<span class="hljs-property">@uniqIDs</span>
 
 
 h = <span class="hljs-keyword">new</span> Helpers

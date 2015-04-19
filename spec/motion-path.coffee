@@ -74,7 +74,8 @@ describe 'MotionPath ->', ->
         el: el
         isRunLess: true
         isPresetPosition: false
-      expect(mp.speed).toBe 0
+      expect(mp.speedX).toBe 0
+      expect(mp.speedY).toBe 0
     it 'have blur of 0', ->
       el = document.createElement 'div'
       mp = new MotionPath
@@ -82,16 +83,17 @@ describe 'MotionPath ->', ->
         el: el
         isRunLess: true
         isPresetPosition: false
-      expect(mp.blur).toBe 0
+      expect(mp.blurX).toBe 0
+      expect(mp.blurY).toBe 0
 
-    it 'have blurAmount of 20', ->
+    it 'have blurAmount of 12', ->
       el = document.createElement 'div'
       mp = new MotionPath
         path: 'M0.55859375,593.527344L0.55859375,593.527344'
         el: el
         isRunLess: true
         isPresetPosition: false
-      expect(mp.blurAmount).toBe 20
+      expect(mp.blurAmount).toBe 12
     it 'have prevCoords object', ->
       el = document.createElement 'div'
       mp = new MotionPath
@@ -1194,16 +1196,10 @@ describe 'MotionPath ->', ->
       isHandler = false
       div = document.createElement('div')
       handler = -> isHandler = true
-      # if div.addEventListener?
       spyOn div, 'addEventListener'
       mp.addEvent div, 'click', handler
       expect(div.addEventListener)
         .toHaveBeenCalledWith 'click', handler, false
-      # else if div.attachEvent
-      #   spyOn div, 'attachEvent'
-      #   mp.addEvent div, 'click', handler
-      #   expect(div.attachEvent)
-      #     .toHaveBeenCalledWith 'click', handler
 
   describe 'extendDefaults method ->', ->
     it 'should copy options to self', ->
@@ -1273,83 +1269,45 @@ describe 'MotionPath ->', ->
       mp.calcHeight(size)
       expect(mp.scaler.y).toBe 1
 
-  describe 'speed calculation ->', ->
+  describe 'createFilter method ->', ->
     path = "M0,20 L100,150 L200,100"
-    it 'save previous coordinates if motionBlur is defined', ->
-      mp = new MotionPath
-        path:       path
-        el:         document.createElement 'div'
-        isRunLess:  true
-        motionBlur: .5
-
-      mp.setProgress(.1)
-      expect(mp.prevCoords.x).toBeCloseTo 16.81, .001
-      expect(mp.prevCoords.y).toBeCloseTo 41.86, .001
-
-    it 'calculate speed and blur based on prevCoords', ->
-      mp = new MotionPath
-        path:       path
-        el:         document.createElement 'div'
-        isRunLess:  true
-        motionBlur: 1
-
-      mp.setProgress(.1)
-      mp.setProgress(.11)
-      expect(mp.speed).toBeCloseTo 2.18, .001
-      expect(mp.blur).toBeCloseTo .00639, .000001
-
-    it 'should set speed to 0 if prevCoords are undefined yet', ->
-      mp = new MotionPath
-        path:       path
-        el:         document.createElement 'div'
-        isRunLess:  true
-        motionBlur: 1
-        isPresetPosition: false
-
-      mp.setProgress(.1)
-      expect(mp.speed).toBe 0
-
-    it 'should have blur in range of [0,1]', ->
-      mp = new MotionPath
-        path:       path
-        el:         document.createElement 'div'
-        isRunLess:  true
-        motionBlur: 1
-        isPresetPosition: false
-
-      mp.setProgress(.1)
-      mp.setProgress(.9)
-      expect(mp.blur).toBe 1
-
-    it 'should multiply blur based on on motionBlur', ->
-      mp = new MotionPath
-        path:       path
-        el:         document.createElement 'div'
-        isRunLess:  true
-        motionBlur: .5
-
-      mp.setProgress(.1)
-      mp.setProgress(.11)
-      expect(mp.speed).toBeCloseTo 2.18, .001
-      expect(mp.blur).toBeCloseTo .0027, .00001
-
-    it 'motionBlur should be in a range of [0,1]', ->
-      mp = new MotionPath
-        path:       path
-        el:         document.createElement 'div'
-        isRunLess:  true
-        motionBlur: -.5
-        isIt:       true
-      expect(mp.props.motionBlur).toBe 0
-
-    it 'motionBlur should be in a range of [0,1] #2', ->
+    it 'should get svg id', ->
       mp = new MotionPath
         path:       path
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-        isIt:       true
-      expect(mp.props.motionBlur).toBe 1
+      expect(mp.filterID).toBeDefined()
+
+    it 'should add svg element to body', ->
+      spyOn h, 'getUniqID'
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      expect(document.querySelector("##{mp.filterID}")).toBeTruthy()
+      expect(document.querySelector("##{mp.filterID}").tagName).toBe 'filter'
+      expect(h.getUniqID).toHaveBeenCalled()
+
+    it 'should add hidden svg element', ->
+      spyOn h, 'getUniqID'
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      el = document.querySelector("##{mp.filterID}")
+      expect(el.parentNode.style.display).toBe 'none'
+
+    it 'should add filter', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      expect(mp.filter.tagName).toBe 'feGaussianBlur'
+      expect(mp.filterOffset.tagName).toBe 'feOffset'
 
     it 'should apply blur on element', ->
       mp = new MotionPath
@@ -1357,12 +1315,151 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: .5
-
       mp.setProgress(.1)
-      mp.setProgress(.11)
-      blurPX = "blur(#{mp.blur*mp.blurAmount}px)"
       style = mp.el.style.filter
       prefixedStyle = mp.el.style[h.prefix.css+'filter']
-      expect(style or prefixedStyle).toBe blurPX
+      expect(style or prefixedStyle).toBe "url(##{mp.filterID})"
 
+  describe 'motionBlur method ->', ->
+    path = "M0,20 L100,150 L200,100"
+    it 'should be called if motionBlur passed', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: .5
+      spyOn mp, 'makeMotionBlur'
+      mp.setProgress(.1)
+      expect(mp.makeMotionBlur).toHaveBeenCalled()
+    it 'should not be called if motionBlur was not passed', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+      spyOn mp, 'makeMotionBlur'
+      mp.setProgress(.1)
+      expect(mp.makeMotionBlur).not.toHaveBeenCalled()
 
+    it 'save previous coordinates if motionBlur is defined', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: .5
+      mp.setProgress(.1)
+      expect(mp.prevCoords.x).toBeCloseTo 16.81, 1
+      expect(mp.prevCoords.y).toBeCloseTo 41.86, 1
+    it 'calculate speed and blur based on prevCoords', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1
+      mp.setProgress(.1)
+      mp.setProgress(.11)
+      expect(mp.speedX).toBeCloseTo 1.68, 1
+      expect(mp.speedY).toBeCloseTo 2.18, 1
+      expect(mp.blurX).toBeCloseTo .00455, 5
+      expect(mp.blurY).toBeCloseTo .00639, 5
+    it 'should set speed to 0 if prevCoords are undefined yet', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1
+        isPresetPosition: false
+      mp.setProgress(.1)
+      expect(mp.speedX).toBe 0
+      expect(mp.speedY).toBe 0
+    it 'should have blur in range of [0,1]', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1
+        isPresetPosition: false
+      mp.setProgress(.1)
+      mp.setProgress(.9)
+      expect(mp.blurX).toBe 1
+      expect(mp.blurY).toBe 1
+    it 'motionBlur should be in a range of [0,1]', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: -.5
+      expect(mp.props.motionBlur).toBe 0
+    it 'motionBlur should be in a range of [0,1] #2', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      expect(mp.props.motionBlur).toBe 1
+    it 'motionBlur should be in a range of [0,1] #2', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      expect(mp.props.motionBlur).toBe 1
+    it 'should set blur to filter', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      mp.setProgress .1
+      mp.setProgress .5
+      attr = mp.filter.getAttribute('stdDeviation')
+      expect(attr).toBe "#{mp.blurX*mp.blurAmount},#{mp.blurY*mp.blurAmount}"
+
+    it 'should set blur to filterOffset', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      mp.setProgress .1
+      mp.setProgress .5
+      dx = mp.filterOffset.getAttribute('dx')
+      dy = mp.filterOffset.getAttribute('dy')
+      expect(dx).toBe '1'
+      expect(dy).toBe '1'
+
+  describe 'angToCoords method ->', ->
+    path = "M0,20 L100,150 L200,100"
+    it 'should translate angle to coordinates *y*', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      expect(mp.angToCoords(0).y)   .toBe        -1
+      expect(mp.angToCoords(45).y)  .toBeCloseTo -0.7, 1
+      expect(mp.angToCoords(90).y)  .toBe         0
+      expect(mp.angToCoords(135).y) .toBeCloseTo  0.7, 1
+      expect(mp.angToCoords(180).y) .toBe         1
+      expect(mp.angToCoords(225).y) .toBeCloseTo  0.7, 1
+      expect(mp.angToCoords(270).y) .toBeCloseTo  0, 1
+      expect(mp.angToCoords(315).y) .toBeCloseTo -0.7, 1
+      expect(mp.angToCoords(-45).y) .toBeCloseTo -0.7, 1
+      expect(mp.angToCoords(360).y) .toBe        -1
+    it 'should translate angle to coordinates *x*', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1.5
+      expect(mp.angToCoords(0).x)   .toBeCloseTo  0, 1
+      expect(mp.angToCoords(45).x)  .toBeCloseTo  0.7, 1
+      expect(mp.angToCoords(90).x)  .toBeCloseTo  1, 1
+      expect(mp.angToCoords(135).x) .toBeCloseTo  0.7, 1
+      expect(mp.angToCoords(180).x) .toBeCloseTo  0, 1
+      expect(mp.angToCoords(225).x) .toBeCloseTo -0.7, 1
+      expect(mp.angToCoords(270).x) .toBeCloseTo -1, 1
+      expect(mp.angToCoords(315).x) .toBeCloseTo -0.7, 1
+      expect(mp.angToCoords(-45).x) .toBeCloseTo -0.7, 1
+      expect(mp.angToCoords(360).x) .toBeCloseTo  0, 1
+
+    

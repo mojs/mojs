@@ -315,13 +315,15 @@ class MotionPath
   postVars:->
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
-    @angle = 0; @speed = 0; @blur = 0; @prevCoords = {}
-    @blurAmount = 20
+    @angle = 0; @speedX = 0; @speedY = 0; @blurX = 0; @blurY = 0
+    @prevCoords = {}; @blurAmount = 25
     # clamp motionBlur in range of [0,1]
     @props.motionBlur = h.clamp @props.motionBlur, 0, 1
     
     @onUpdate   = @props.onUpdate
     @el         = @parseEl @props.el
+    @props.motionBlur > 0 and @createFilter()
+
     @path       = @getPath()
     if !@path.getAttribute('d')
       h.error('Path has no coordinates to work with, aborting'); return true
@@ -339,12 +341,34 @@ class MotionPath
 
   addEvent:   (el, type, handler)-> el.addEventListener    type, handler, false
   removeEvent:(el, type, handler)-> el.removeEventListener type, handler, false
+  createFilter:->
+    div = document.createElement 'div'
+    @filterID = "filter-#{h.getUniqID()}"
+    div.innerHTML = """<svg id="svg-#{@filterID}" style="display:none">
+        <filter id="#{@filterID}" y="-20" x="-20" width="40" height="40">
+          <feOffset
+            id="blur-offset" in="SourceGraphic"
+            dx="0" dy="0" result="offset2"></feOffset>
+          <feGaussianblur
+            id="blur" in="offset2"
+            stdDeviation="0,0" result="blur2"></feGaussianblur>
+          <feMerge>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+            <feMergeNode in="blur2"></feMergeNode>
+          </feMerge>
+        </filter>
+      </svg>"""
+    svg = div.querySelector "#svg-#{@filterID}"
+    @filter       = svg.querySelector '#blur'
+    @filterOffset = svg.querySelector '#blur-offset'
+    document.body.insertBefore svg, document.body.firstChild
+    @el.style['filter'] = "url(##{@filterID})"
+    @el.style["#{h.prefix.css}filter"] = "url(##{@filterID})"
 
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
     return el if el instanceof HTMLElement
     if el.setProp? then @isModule = true; return el
-
   getPath:->
     if typeof @props.path is 'string'
       return if @props.path.charAt(0).toLowerCase() is 'm'
@@ -438,21 +462,7 @@ class MotionPath
     # get x and y coordinates
     x = point.x + @props.offsetX; y = point.y + @props.offsetY
 
-    # get motion blur
-    if @props.motionBlur
-      # if previous coords are not defined yet -- set speed to 0
-      @speed = if not (@prevCoords.x? and @prevCoords.y?) then 0
-      # else calculate speed based on the largest axes delta
-      else Math.max Math.abs(x - @prevCoords.x), Math.abs(y - @prevCoords.y)
-      # get blur based on speed where 1px per 1ms is very fast
-      # and motionBlur coefficient
-      @blur = h.clamp (@speed/16)*@props.motionBlur, 0, 1
-      @blur = easing.quart.in @blur
-      blurPX = "blur(#{@blurAmount*@blur}px)"
-      @el.style["#{h.prefix.css}filter"] = blurPX
-      @el.style['filter'] = blurPX
-      # save previous coords
-      @prevCoords.x = x; @prevCoords.y = y
+    @makeMotionBlur(x, y) if @props.motionBlur
 
     # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
@@ -476,6 +486,37 @@ class MotionPath
   setModulePosition:(x, y)->
     @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
     @el.draw()
+  makeMotionBlur:(x, y)->
+    # if previous coords are not defined yet -- set speed to 0
+    tailAngle = 0; signX = 1; signY = 1
+    if !@prevCoords.x? then @speedX = 0; @speedY = 0
+    # else calculate speed based on the largest axes delta
+    else
+      dX = x-@prevCoords.x; dY = y-@prevCoords.y
+      if dX > 0 then signX = -1
+      if dY < 0 then signY = -1
+      @speedX = Math.abs(dX); @speedY = Math.abs(dY)
+      tailAngle = Math.atan(dY/dX)*(180/Math.PI) + 90
+    absoluteAngle = tailAngle - @angle
+    coords = @angToCoords absoluteAngle
+    # console.log absoluteAngle
+    # console.log dX
+    # console.log absoluteAngle
+
+    # get blur based on speed where 1px per 1ms is very fast
+    # and motionBlur coefficient
+    @blurX = easing.quart.in h.clamp (@speedX/5)*@props.motionBlur, 0, 1
+    @blurY = easing.quart.in h.clamp (@speedY/5)*@props.motionBlur, 0, 1
+    devX = @blurX*@blurAmount*Math.abs(coords.x)
+    devY = @blurY*@blurAmount*Math.abs(coords.y)
+    deviation = "#{devX},#{devY}"
+    @filter.setAttribute 'stdDeviation', deviation
+    @filterOffset.setAttribute 'dx', signX*@blurX*coords.x*@blurAmount
+    @filterOffset.setAttribute 'dy', signY*@blurY*coords.y*@blurAmount
+    # console.log @blurX*coords.x*@blurAmount, @blurY*coords.y*@blurAmount
+    
+    # save previous coords
+    @prevCoords.x = x; @prevCoords.y = y
 
   extendDefaults:(o)->
     for key, value of o
@@ -512,6 +553,16 @@ class MotionPath
     @
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()
+
+  angToCoords:(angle)->
+    angle = angle % 360
+    radAngle = ((angle-90)*Math.PI)/180
+    # x = Math.cos(radAngle); y = Math.sin(radAngle)
+    # x = if x < 0 then Math.max(x, -0.7) else Math.min(x, .7)
+    # y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
+    # x: x
+    # y: y
+    x: Math.cos(radAngle), y: Math.sin(radAngle)
 
 module.exports = MotionPath
 

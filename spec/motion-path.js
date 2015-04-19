@@ -119,7 +119,8 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        return expect(mp.speed).toBe(0);
+        expect(mp.speedX).toBe(0);
+        return expect(mp.speedY).toBe(0);
       });
       it('have blur of 0', function() {
         el = document.createElement('div');
@@ -129,9 +130,10 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        return expect(mp.blur).toBe(0);
+        expect(mp.blurX).toBe(0);
+        return expect(mp.blurY).toBe(0);
       });
-      it('have blurAmount of 20', function() {
+      it('have blurAmount of 12', function() {
         el = document.createElement('div');
         mp = new MotionPath({
           path: 'M0.55859375,593.527344L0.55859375,593.527344',
@@ -139,7 +141,7 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        return expect(mp.blurAmount).toBe(20);
+        return expect(mp.blurAmount).toBe(12);
       });
       it('have prevCoords object', function() {
         el = document.createElement('div');
@@ -1786,9 +1788,95 @@
         return expect(mp.scaler.y).toBe(1);
       });
     });
-    return describe('speed calculation ->', function() {
+    describe('createFilter method ->', function() {
       var path;
       path = "M0,20 L100,150 L200,100";
+      it('should get svg id', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
+        });
+        return expect(mp.filterID).toBeDefined();
+      });
+      it('should add svg element to body', function() {
+        var mp;
+        spyOn(h, 'getUniqID');
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
+        });
+        expect(document.querySelector("#" + mp.filterID)).toBeTruthy();
+        expect(document.querySelector("#" + mp.filterID).tagName).toBe('filter');
+        return expect(h.getUniqID).toHaveBeenCalled();
+      });
+      it('should add hidden svg element', function() {
+        var el, mp;
+        spyOn(h, 'getUniqID');
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
+        });
+        el = document.querySelector("#" + mp.filterID);
+        return expect(el.parentNode.style.display).toBe('none');
+      });
+      it('should add filter', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
+        });
+        expect(mp.filter.tagName).toBe('feGaussianBlur');
+        return expect(mp.filterOffset.tagName).toBe('feOffset');
+      });
+      return it('should apply blur on element', function() {
+        var mp, prefixedStyle, style;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: .5
+        });
+        mp.setProgress(.1);
+        style = mp.el.style.filter;
+        prefixedStyle = mp.el.style[h.prefix.css + 'filter'];
+        return expect(style || prefixedStyle).toBe("url(#" + mp.filterID + ")");
+      });
+    });
+    describe('motionBlur method ->', function() {
+      var path;
+      path = "M0,20 L100,150 L200,100";
+      it('should be called if motionBlur passed', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: .5
+        });
+        spyOn(mp, 'makeMotionBlur');
+        mp.setProgress(.1);
+        return expect(mp.makeMotionBlur).toHaveBeenCalled();
+      });
+      it('should not be called if motionBlur was not passed', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true
+        });
+        spyOn(mp, 'makeMotionBlur');
+        mp.setProgress(.1);
+        return expect(mp.makeMotionBlur).not.toHaveBeenCalled();
+      });
       it('save previous coordinates if motionBlur is defined', function() {
         var mp;
         mp = new MotionPath({
@@ -1798,8 +1886,8 @@
           motionBlur: .5
         });
         mp.setProgress(.1);
-        expect(mp.prevCoords.x).toBeCloseTo(16.81, .001);
-        return expect(mp.prevCoords.y).toBeCloseTo(41.86, .001);
+        expect(mp.prevCoords.x).toBeCloseTo(16.81, 1);
+        return expect(mp.prevCoords.y).toBeCloseTo(41.86, 1);
       });
       it('calculate speed and blur based on prevCoords', function() {
         var mp;
@@ -1811,8 +1899,10 @@
         });
         mp.setProgress(.1);
         mp.setProgress(.11);
-        expect(mp.speed).toBeCloseTo(2.18, .001);
-        return expect(mp.blur).toBeCloseTo(.00639, .000001);
+        expect(mp.speedX).toBeCloseTo(1.68, 1);
+        expect(mp.speedY).toBeCloseTo(2.18, 1);
+        expect(mp.blurX).toBeCloseTo(.00455, 5);
+        return expect(mp.blurY).toBeCloseTo(.00639, 5);
       });
       it('should set speed to 0 if prevCoords are undefined yet', function() {
         var mp;
@@ -1824,7 +1914,8 @@
           isPresetPosition: false
         });
         mp.setProgress(.1);
-        return expect(mp.speed).toBe(0);
+        expect(mp.speedX).toBe(0);
+        return expect(mp.speedY).toBe(0);
       });
       it('should have blur in range of [0,1]', function() {
         var mp;
@@ -1837,20 +1928,8 @@
         });
         mp.setProgress(.1);
         mp.setProgress(.9);
-        return expect(mp.blur).toBe(1);
-      });
-      it('should multiply blur based on on motionBlur', function() {
-        var mp;
-        mp = new MotionPath({
-          path: path,
-          el: document.createElement('div'),
-          isRunLess: true,
-          motionBlur: .5
-        });
-        mp.setProgress(.1);
-        mp.setProgress(.11);
-        expect(mp.speed).toBeCloseTo(2.18, .001);
-        return expect(mp.blur).toBeCloseTo(.0027, .00001);
+        expect(mp.blurX).toBe(1);
+        return expect(mp.blurY).toBe(1);
       });
       it('motionBlur should be in a range of [0,1]', function() {
         var mp;
@@ -1858,8 +1937,7 @@
           path: path,
           el: document.createElement('div'),
           isRunLess: true,
-          motionBlur: -.5,
-          isIt: true
+          motionBlur: -.5
         });
         return expect(mp.props.motionBlur).toBe(0);
       });
@@ -1869,25 +1947,89 @@
           path: path,
           el: document.createElement('div'),
           isRunLess: true,
-          motionBlur: 1.5,
-          isIt: true
+          motionBlur: 1.5
         });
         return expect(mp.props.motionBlur).toBe(1);
       });
-      return it('should apply blur on element', function() {
-        var blurPX, mp, prefixedStyle, style;
+      it('motionBlur should be in a range of [0,1] #2', function() {
+        var mp;
         mp = new MotionPath({
           path: path,
           el: document.createElement('div'),
           isRunLess: true,
-          motionBlur: .5
+          motionBlur: 1.5
+        });
+        return expect(mp.props.motionBlur).toBe(1);
+      });
+      it('should set blur to filter', function() {
+        var attr, mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
         });
         mp.setProgress(.1);
-        mp.setProgress(.11);
-        blurPX = "blur(" + (mp.blur * mp.blurAmount) + "px)";
-        style = mp.el.style.filter;
-        prefixedStyle = mp.el.style[h.prefix.css + 'filter'];
-        return expect(style || prefixedStyle).toBe(blurPX);
+        mp.setProgress(.5);
+        attr = mp.filter.getAttribute('stdDeviation');
+        return expect(attr).toBe("" + (mp.blurX * mp.blurAmount) + "," + (mp.blurY * mp.blurAmount));
+      });
+      return it('should set blur to filterOffset', function() {
+        var dx, dy, mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
+        });
+        mp.setProgress(.1);
+        mp.setProgress(.5);
+        dx = mp.filterOffset.getAttribute('dx');
+        dy = mp.filterOffset.getAttribute('dy');
+        expect(dx).toBe('1');
+        return expect(dy).toBe('1');
+      });
+    });
+    return describe('angToCoords method ->', function() {
+      var path;
+      path = "M0,20 L100,150 L200,100";
+      it('should translate angle to coordinates *y*', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
+        });
+        expect(mp.angToCoords(0).y).toBe(-1);
+        expect(mp.angToCoords(45).y).toBeCloseTo(-0.7, 1);
+        expect(mp.angToCoords(90).y).toBe(0);
+        expect(mp.angToCoords(135).y).toBeCloseTo(0.7, 1);
+        expect(mp.angToCoords(180).y).toBe(1);
+        expect(mp.angToCoords(225).y).toBeCloseTo(0.7, 1);
+        expect(mp.angToCoords(270).y).toBeCloseTo(0, 1);
+        expect(mp.angToCoords(315).y).toBeCloseTo(-0.7, 1);
+        expect(mp.angToCoords(-45).y).toBeCloseTo(-0.7, 1);
+        return expect(mp.angToCoords(360).y).toBe(-1);
+      });
+      return it('should translate angle to coordinates *x*', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1.5
+        });
+        expect(mp.angToCoords(0).x).toBeCloseTo(0, 1);
+        expect(mp.angToCoords(45).x).toBeCloseTo(0.7, 1);
+        expect(mp.angToCoords(90).x).toBeCloseTo(1, 1);
+        expect(mp.angToCoords(135).x).toBeCloseTo(0.7, 1);
+        expect(mp.angToCoords(180).x).toBeCloseTo(0, 1);
+        expect(mp.angToCoords(225).x).toBeCloseTo(-0.7, 1);
+        expect(mp.angToCoords(270).x).toBeCloseTo(-1, 1);
+        expect(mp.angToCoords(315).x).toBeCloseTo(-0.7, 1);
+        expect(mp.angToCoords(-45).x).toBeCloseTo(-0.7, 1);
+        return expect(mp.angToCoords(360).x).toBeCloseTo(0, 1);
       });
     });
   });

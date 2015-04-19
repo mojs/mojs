@@ -81,6 +81,7 @@ class Helpers
     @isFF = @prefix.lowercase is 'moz'
     @isIE = @prefix.lowercase is 'ms'
     @isOldOpera = navigator.userAgent.match /presto/gim
+    @uniqIDs = -1
 
     @div = document.createElement('div')
     document.body.appendChild @div
@@ -414,8 +415,6 @@ class Helpers
     # else
     isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
     typeof o is 'object' and isNode
-  
-  
   getChildElements:(element)->
     childNodes = element.childNodes
     children = []
@@ -424,8 +423,6 @@ class Helpers
       if childNodes[i].nodeType == 1
         children.unshift childNodes[i]
     children
-
-  
   delta:(start, end)->
     type1 = typeof start; type2 = typeof end
     isType1 = type1 is 'string' or type1 is 'number' and !isNaN(start)
@@ -435,6 +432,13 @@ class Helpers
          but got - #{start}, #{end}"
       return
     obj = {}; obj[start] = end; obj
+  # ---
+
+  # Returns uniq id
+  #
+  # @method getUniqID
+  # @return {Number}
+  getUniqID:-> ++@uniqIDs
 
 
 h = new Helpers

@@ -24,15 +24,28 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# mp = new mojs.MotionPath
-#   el:       document.querySelector '#js-el'
-#   path:     {x: 1000}
-#   duration: 2000
-#   yoyo:     true
-#   repeat:   200
-#   easing:   'cubic.out'
-#   curvature: x: '75%', y: '0%'
-#   motionBlur: .5
+mp = new mojs.MotionPath
+  el:       document.querySelector('#js-el')
+  path:     {x: 500}
+  duration: 1500
+  yoyo:     true
+  repeat:   200
+  # easing:   'cubic.out'
+  curvature: x: '75%', y: '150%'
+  motionBlur: 1
+  # isAngle: true
+  # isRunLess: true
+
+# mp.setProgress .75
+# mp.setProgress .5
+
+# angle = 0
+# setInterval ->
+#   point = mp.angToCoords(angle)
+#   mp.el.style['box-shadow'] = "#{point.x*10}px #{point.y*10}px 0 black"
+#   angle = (angle+1) % 360
+# , 10
+
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

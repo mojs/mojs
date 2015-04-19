@@ -1,8 +1,11 @@
 ## TODO
 
 - add motion blur
-  - force 3d
   - blur for y and x axes
+    - recalc angle with respect to @angle
+    - set blur amount
+  - force 3d
+  - fix toBeCloseTo asserts
 - add layers
 - release
   - website
