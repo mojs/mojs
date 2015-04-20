@@ -2,7 +2,9 @@ MotionPath = window.mojs.MotionPath
 Transit    = window.mojs.Transit
 h          = window.mojs.helpers
 
-isSafariIE = h.isSafari or h.isIE
+mp = new MotionPath path: 'M0,0 L10,10', el: document.createElement 'div'
+isMotionReset = mp.isMotionBlurReset
+
 parseQadraticCurve = (d)->
   shapes = d.split /M|Q/
   m = shapes[1].split /\s|\,/
@@ -822,8 +824,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 0
       expect(points.end.x).toBe -100
       expect(points.end.y).toBe 100
-      expect(points.control.x).toBeCloseTo -75, .1
-      expect(points.control.y).toBeCloseTo  25, .1
+      expect(points.control.x).toBeCloseTo -75
+      expect(points.control.y).toBeCloseTo  25
 
     it 'fallback to defaults if only 1 curvature coord set', ->
       mp = new MotionPath
@@ -839,8 +841,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 0
       expect(points.end.x).toBe -100
       expect(points.end.y).toBe 100
-      expect(points.control.x).toBeCloseTo -100, .1
-      expect(points.control.y).toBeCloseTo  0, .1
+      expect(points.control.x).toBeCloseTo -100
+      expect(points.control.y).toBeCloseTo  0
 
     it 'should fallback to defaults if only 1 curve coord set #2', ->
       mp = new MotionPath
@@ -856,8 +858,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 0
       expect(points.end.x).toBe -100
       expect(points.end.y).toBe 100
-      expect(points.control.x).toBeCloseTo -125, .1
-      expect(points.control.y).toBeCloseTo  25, .1
+      expect(points.control.x).toBeCloseTo -125
+      expect(points.control.y).toBeCloseTo  25
 
     it 'should fallback to 0 if only 1 path coord set', ->
       mp = new MotionPath
@@ -873,8 +875,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 0
       expect(points.end.x).toBe -100
       expect(points.end.y).toBe 0
-      expect(points.control.x).toBeCloseTo  -75, .1
-      expect(points.control.y).toBeCloseTo  -50, .1
+      expect(points.control.x).toBeCloseTo  -75
+      expect(points.control.y).toBeCloseTo  -50
 
     it 'should fallback to 0 if only 1 path coord set #2', ->
       mp = new MotionPath
@@ -890,8 +892,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 0
       expect(points.end.x).toBe 0
       expect(points.end.y).toBe -100
-      expect(points.control.x).toBeCloseTo  50,  .1
-      expect(points.control.y).toBeCloseTo -75, .1
+      expect(points.control.x).toBeCloseTo  50
+      expect(points.control.y).toBeCloseTo -75
 
   describe 'curveToPath method', ->
     it 'should return a path',->
@@ -919,8 +921,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 200
       expect(points.end.x).toBe 300
       expect(points.end.y).toBe 0
-      expect(points.control.x).toBeCloseTo 478.6, .1
-      expect(points.control.y).toBeCloseTo 89.9,  .1
+      expect(points.control.x).toBeCloseTo 478.61
+      expect(points.control.y).toBeCloseTo 89.985
 
     it 'should calculate curvature based on curve direction',->
       mp = new MotionPath
@@ -937,13 +939,11 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 200
       expect(points.end.x).toBe 100
       expect(points.end.y).toBe 300
-      expect(points.control.x).toBeCloseTo 64.94,  .1
-      expect(points.control.y).toBeCloseTo 264.34, .1
+      expect(points.control.x).toBeCloseTo 64.94
+      expect(points.control.y).toBeCloseTo 264.346
 
     it 'should calculate percent curvature',->
-      mp = new MotionPath
-        path: "M100, 299"
-        el: document.createElement 'div'
+      mp = new MotionPath path: "M100, 299", el: document.createElement 'div'
       path = mp.curveToPath
         start:     x: 200,   y: 200
         shift:     x: -100,  y: 100
@@ -956,8 +956,8 @@ describe 'MotionPath ->', ->
       expect(points.start.y).toBe 200
       expect(points.end.x).toBe 100
       expect(points.end.y).toBe 300
-      expect(points.control.x).toBeCloseTo 125, .1
-      expect(points.control.y).toBeCloseTo 225, .1
+      expect(points.control.x).toBeCloseTo 125
+      expect(points.control.y).toBeCloseTo 225
 
   describe 'el option (parseEl method) ->', ->
     it 'should return an el when it was specified by selector', ->
@@ -1278,7 +1278,7 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      if !isSafariIE
+      if !isMotionReset
         expect(mp.filterID).toBeDefined()
 
     it 'should add svg element to body', ->
@@ -1288,7 +1288,7 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      if !isSafariIE
+      if !isMotionReset
         expect(document.querySelector("##{mp.filterID}")).toBeTruthy()
         expect(document.querySelector("##{mp.filterID}").tagName).toBe 'filter'
         expect(h.getUniqID).toHaveBeenCalled()
@@ -1300,7 +1300,7 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      if !isSafariIE
+      if !isMotionReset
         el = document.querySelector("##{mp.filterID}")
         expect(el.parentNode.style.visibility).toBe   'hidden'
         expect(el.parentNode.style.width)     .toBe   '0px'
@@ -1312,7 +1312,7 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      if !isSafariIE
+      if !isMotionReset
         expect(mp.filter.tagName).toBe 'feGaussianBlur'
         expect(mp.filterOffset.tagName).toBe 'feOffset'
 
@@ -1323,7 +1323,7 @@ describe 'MotionPath ->', ->
         isRunLess:  true
         motionBlur: .5
       mp.setProgress(.1)
-      if !isSafariIE
+      if !isMotionReset
         style = mp.el.style.filter
         prefixedStyle = mp.el.style[h.prefix.css+'filter']
         expect((style or prefixedStyle).replace /\"/gim, '')
@@ -1345,7 +1345,7 @@ describe 'MotionPath ->', ->
       #   blur:   x: 0, y:0
       #   offset: x: 0, y:0
       setTimeout ->
-        return dfr() if isSafariIE
+        return dfr() if isMotionReset
         expect(mp.filter.getAttribute('stdDeviation')).toBe '0,0'
         expect(mp.filterOffset.getAttribute('dx')).toBe '0'
         expect(mp.filterOffset.getAttribute('dy')).toBe '0'
@@ -1360,14 +1360,13 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: .5
-      if isSafariIE
+      if isMotionReset
         expect(mp.props.motionBlur is 0).toBe true
       else
         expect(mp.props.motionBlur is .5).toBe true
 
-
-  describe 'motionBlur method ->', ->
-    return if isSafariIE
+  describe 'motionBlur, makeMotionBlur method ->', ->
+    return if isMotionReset
     path = "M0,20 L100,150 L200,100"
     it 'should be called if motionBlur passed', ->
       mp = new MotionPath
@@ -1378,6 +1377,7 @@ describe 'MotionPath ->', ->
       spyOn mp, 'makeMotionBlur'
       mp.setProgress(.1)
       expect(mp.makeMotionBlur).toHaveBeenCalled()
+    
     it 'should not be called if motionBlur was not passed', ->
       mp = new MotionPath
         path:       path
@@ -1510,8 +1510,9 @@ describe 'MotionPath ->', ->
       expect(mp.angToCoords(315).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(-45).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(360).x) .toBeCloseTo  0, 1
+  
   describe 'setBlur method ->',->
-    return if isSafariIE
+    return if isMotionReset
     path = "M0,20 L100,150 L200,100"
     it 'should set blur and blurOffset to filter', ->
       mp = new MotionPath
@@ -1519,7 +1520,6 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1
-
       mp.setBlur
         blur:   x: 5, y: 10
         offset: x: 6, y: 9

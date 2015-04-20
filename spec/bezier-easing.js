@@ -56,7 +56,7 @@
           composed = function(x) {
             return projected(easing(x));
           };
-          _results.push(expect(x).toBeCloseTo(composed(x), .05));
+          _results.push(expect(x).toBeCloseTo(composed(x)));
         }
         return _results;
       });
@@ -88,7 +88,7 @@
           c = 1 - a;
           d = 1 - b;
           easing = bezier(a, b, c, d);
-          _results.push(expect(easing(.5)).toBeCloseTo(.5, .000001));
+          _results.push(expect(easing(.5)).toBeCloseTo(.5));
         }
         return _results;
       });
@@ -106,7 +106,7 @@
             return 1 - easing(1 - x);
           };
           x = i / samples;
-          _results.push(expect(easing(x)).toBeCloseTo(sym(x), .0000000001));
+          _results.push(expect(easing(x)).toBeCloseTo(sym(x)));
         }
         return _results;
       });

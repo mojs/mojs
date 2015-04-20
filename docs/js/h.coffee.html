@@ -168,8 +168,8 @@ used to coerce literal name to rgb</p>
     <span class="hljs-property">@isSafari</span> = navigator.userAgent.indexOf(<span class="hljs-string">'Safari'</span>) &gt; -<span class="hljs-number">1</span>
     <span class="hljs-property">@isChrome</span> = navigator.userAgent.indexOf(<span class="hljs-string">'Chrome'</span>) &gt; -<span class="hljs-number">1</span>
     <span class="hljs-property">@isOpera</span>  = navigator.userAgent.toLowerCase().indexOf(<span class="hljs-string">"op"</span>) &gt; -<span class="hljs-number">1</span>
-    <span class="hljs-property">@isSafari</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@isChrome</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isSafari</span>
-    <span class="hljs-property">@isChrome</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@isChrome</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isOpera</span>
+    <span class="hljs-property">@isChrome</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isSafari</span> <span class="hljs-keyword">and</span> (<span class="hljs-property">@isSafari</span> = <span class="hljs-literal">false</span>)
+    <span class="hljs-property">@isChrome</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isOpera</span>  <span class="hljs-keyword">and</span> (<span class="hljs-property">@isChrome</span> = <span class="hljs-literal">false</span>)
 
     <span class="hljs-property">@uniqIDs</span> = -<span class="hljs-number">1</span>
 

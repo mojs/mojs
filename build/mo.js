@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.114.1 
+	0.114.2 
 */
 
 (function(f){
@@ -745,12 +745,8 @@ Helpers = (function() {
     this.isSafari = navigator.userAgent.indexOf('Safari') > -1;
     this.isChrome = navigator.userAgent.indexOf('Chrome') > -1;
     this.isOpera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
-    if (this.isChrome && this.isSafari) {
-      this.isSafari = false;
-    }
-    if (this.isChrome && this.isOpera) {
-      this.isChrome = false;
-    }
+    this.isChrome && this.isSafari && (this.isSafari = false);
+    this.isChrome && this.isOpera && (this.isChrome = false);
     this.uniqIDs = -1;
     this.div = document.createElement('div');
     return document.body.appendChild(this.div);
@@ -1198,7 +1194,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.114.1',
+  revision: '0.114.2',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1297,9 +1293,7 @@ MotionPath = (function() {
     this.props = h.cloneObj(this.defaults);
     this.extendOptions(this.o);
     this.isMotionBlurReset = h.isSafari || h.isIE;
-    if (this.isMotionBlurReset) {
-      this.props.motionBlur = 0;
-    }
+    this.isMotionBlurReset && (this.props.motionBlur = 0);
     this.history = [h.cloneObj(this.props)];
     return this.postVars();
   };
@@ -1576,9 +1570,7 @@ MotionPath = (function() {
     }
     x = point.x + this.props.offsetX;
     y = point.y + this.props.offsetY;
-    if (this.props.motionBlur) {
-      this.makeMotionBlur(x, y);
-    }
+    this.props.motionBlur && this.makeMotionBlur(x, y);
     if (this.scaler) {
       x *= this.scaler.x;
       y *= this.scaler.y;
@@ -1644,8 +1636,8 @@ MotionPath = (function() {
         y: 3 * this.blurY * this.blurAmount * Math.abs(coords.y)
       },
       offset: {
-        x: 2 * signX * this.blurX * coords.x * this.blurAmount,
-        y: 2 * signY * this.blurY * coords.y * this.blurAmount
+        x: 3 * signX * this.blurX * coords.x * this.blurAmount,
+        y: 3 * signY * this.blurY * coords.y * this.blurAmount
       }
     });
     this.prevCoords.x = x;
@@ -1653,12 +1645,11 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setBlur = function(o) {
-    if (this.isMotionBlurReset) {
-      return;
+    if (!this.isMotionBlurReset) {
+      this.filter.setAttribute('stdDeviation', o.blur.x + "," + o.blur.y);
+      this.filterOffset.setAttribute('dx', o.offset.x);
+      return this.filterOffset.setAttribute('dy', o.offset.y);
     }
-    this.filter.setAttribute('stdDeviation', o.blur.x + "," + o.blur.y);
-    this.filterOffset.setAttribute('dx', o.offset.x);
-    return this.filterOffset.setAttribute('dy', o.offset.y);
   };
 
   MotionPath.prototype.extendDefaults = function(o) {

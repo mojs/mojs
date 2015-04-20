@@ -83,8 +83,8 @@ class Helpers
     @isSafari = navigator.userAgent.indexOf('Safari') > -1
     @isChrome = navigator.userAgent.indexOf('Chrome') > -1
     @isOpera  = navigator.userAgent.toLowerCase().indexOf("op") > -1
-    @isSafari = false if @isChrome and @isSafari
-    @isChrome = false if @isChrome and @isOpera
+    @isChrome and @isSafari and (@isSafari = false)
+    @isChrome and @isOpera  and (@isChrome = false)
 
     @uniqIDs = -1
 

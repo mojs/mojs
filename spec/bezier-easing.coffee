@@ -31,7 +31,7 @@ describe 'bezier easing ->', ->
         easing    = bezier(a,b,c,d)
         projected = bezier(b,a,d,c)
         composed  = (x)-> projected easing x
-        expect(x).toBeCloseTo composed(x), .05
+        expect(x).toBeCloseTo composed(x)
   describe 'two same instances ->', ->
     it 'should be strictly equal', ->
       samples = 100
@@ -47,7 +47,7 @@ describe 'bezier easing ->', ->
       for i in [0..samples]
         a = Math.random(); b = 2*Math.random()-0.5
         c = 1-a; d = 1-b; easing = bezier(a,b,c,d)
-        expect(easing(.5)).toBeCloseTo .5, .000001
+        expect(easing(.5)).toBeCloseTo .5
 
     it 'should be symetrical', ->
       samples = 100
@@ -56,7 +56,7 @@ describe 'bezier easing ->', ->
         c = 1-a; d = 1-b; easing = bezier(a,b,c,d)
         sym = (x)-> 1 - easing(1-x)
         x = i/samples
-        expect(easing(x)).toBeCloseTo sym(x), .0000000001
+        expect(easing(x)).toBeCloseTo sym(x)
 
   describe 'toStr method ->', ->
     it 'should return params, the function was called with', ->

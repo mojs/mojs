@@ -265,7 +265,7 @@ class MotionPath
     @extendOptions @o
     # reset motionBlur for safari and IE
     @isMotionBlurReset = h.isSafari or h.isIE
-    @props.motionBlur = 0 if @isMotionBlurReset
+    @isMotionBlurReset and (@props.motionBlur = 0)
     @history = [h.cloneObj(@props)]
     @postVars()
   # ---
@@ -470,7 +470,7 @@ class MotionPath
     # get x and y coordinates
     x = point.x + @props.offsetX; y = point.y + @props.offsetY
 
-    @makeMotionBlur(x, y) if @props.motionBlur
+    @props.motionBlur and @makeMotionBlur(x, y)
 
     # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
@@ -516,16 +516,16 @@ class MotionPath
         x: 3*@blurX*@blurAmount*Math.abs(coords.x)
         y: 3*@blurY*@blurAmount*Math.abs(coords.y)
       offset:
-        x: 2*signX*@blurX*coords.x*@blurAmount
-        y: 2*signY*@blurY*coords.y*@blurAmount
+        x: 3*signX*@blurX*coords.x*@blurAmount
+        y: 3*signY*@blurY*coords.y*@blurAmount
     # save previous coords
     @prevCoords.x = x; @prevCoords.y = y
 
   setBlur:(o)->
-    return if @isMotionBlurReset
-    @filter.setAttribute 'stdDeviation', "#{o.blur.x},#{o.blur.y}"
-    @filterOffset.setAttribute 'dx', o.offset.x
-    @filterOffset.setAttribute 'dy', o.offset.y
+    if !@isMotionBlurReset
+      @filter.setAttribute 'stdDeviation', "#{o.blur.x},#{o.blur.y}"
+      @filterOffset.setAttribute 'dx', o.offset.x
+      @filterOffset.setAttribute 'dy', o.offset.y
 
   extendDefaults:(o)->
     for key, value of o

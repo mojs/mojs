@@ -137,9 +137,9 @@
         });
         t.start();
         t.update(t.props.startTime + 1400);
-        expect(t.progress).toBeCloseTo(.2, .01);
+        expect(t.progress).toBeCloseTo(.2);
         t.update(t.props.startTime + 2700);
-        expect(t.progress).toBeCloseTo(.3, .01);
+        expect(t.progress).toBeCloseTo(.3);
         t.update(t.props.startTime + 3400);
         return expect(t.progress).toBe(1);
       });

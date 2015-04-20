@@ -1,9 +1,6 @@
 ## TODO
 
 - add motion blur
-  - blur for y and x axes
-    - cross browers' support
-    - add force3d option
   - fix toBeCloseTo asserts
 - add layers
 - release
