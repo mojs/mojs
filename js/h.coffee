@@ -78,9 +78,14 @@ class Helpers
   vars:->
     @prefix = @getPrefix()
     @getRemBase()
-    @isFF = @prefix.lowercase is 'moz'
-    @isIE = @prefix.lowercase is 'ms'
+    @isFF = @prefix.lowercase is 'moz'; @isIE = @prefix.lowercase is 'ms'
     @isOldOpera = navigator.userAgent.match /presto/gim
+    @isSafari = navigator.userAgent.indexOf('Safari') > -1
+    @isChrome = navigator.userAgent.indexOf('Chrome') > -1
+    @isOpera  = navigator.userAgent.toLowerCase().indexOf("op") > -1
+    @isSafari = false if @isChrome and @isSafari
+    @isChrome = false if @isChrome and @isOpera
+
     @uniqIDs = -1
 
     @div = document.createElement('div')

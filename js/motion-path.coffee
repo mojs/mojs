@@ -263,6 +263,9 @@ class MotionPath
     @getScaler = h.bind(@getScaler, @); @resize = resize
     @props = h.cloneObj(@defaults)
     @extendOptions @o
+    # reset motionBlur for safari and IE
+    @isMotionBlurReset = h.isSafari or h.isIE
+    @props.motionBlur = 0 if @isMotionBlurReset
     @history = [h.cloneObj(@props)]
     @postVars()
   # ---
@@ -344,7 +347,8 @@ class MotionPath
   createFilter:->
     div = document.createElement 'div'
     @filterID = "filter-#{h.getUniqID()}"
-    div.innerHTML = """<svg id="svg-#{@filterID}" style="display:none">
+    div.innerHTML = """<svg id="svg-#{@filterID}"
+          style="visibility:hidden; width:0; height:0">
         <filter id="#{@filterID}" y="-20" x="-20" width="40" height="40">
           <feOffset
             id="blur-offset" in="SourceGraphic"
@@ -358,6 +362,7 @@ class MotionPath
           </feMerge>
         </filter>
       </svg>"""
+
     svg = div.querySelector "#svg-#{@filterID}"
     @filter       = svg.querySelector '#blur'
     @filterOffset = svg.querySelector '#blur-offset'
@@ -492,7 +497,7 @@ class MotionPath
   makeMotionBlur:(x, y)->
     # if previous coords are not defined yet -- set speed to 0
     tailAngle = 0; signX = 1; signY = 1
-    if !@prevCoords.x? or !@prevCoords.y then @speedX = 0; @speedY = 0
+    if !@prevCoords.x? or !@prevCoords.y? then @speedX = 0; @speedY = 0
     # else calculate speed based on the largest axes delta
     else
       dX = x-@prevCoords.x; dY = y-@prevCoords.y
@@ -517,6 +522,7 @@ class MotionPath
     @prevCoords.x = x; @prevCoords.y = y
 
   setBlur:(o)->
+    return if @isMotionBlurReset
     @filter.setAttribute 'stdDeviation', "#{o.blur.x},#{o.blur.y}"
     @filterOffset.setAttribute 'dx', o.offset.x
     @filterOffset.setAttribute 'dy', o.offset.y

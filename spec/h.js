@@ -42,6 +42,9 @@
       return it('should have browsers flag', function() {
         expect(h.isFF).toBeDefined();
         expect(h.isIE).toBeDefined();
+        expect(h.isSafari).toBeDefined();
+        expect(h.isChrome).toBeDefined();
+        expect(h.isOpera).toBeDefined();
         return expect(h.isOldOpera).toBeDefined();
       });
     });

@@ -2,6 +2,7 @@ MotionPath = window.mojs.MotionPath
 Transit    = window.mojs.Transit
 h          = window.mojs.helpers
 
+isSafariIE = h.isSafari or h.isIE
 parseQadraticCurve = (d)->
   shapes = d.split /M|Q/
   m = shapes[1].split /\s|\,/
@@ -1277,7 +1278,8 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      expect(mp.filterID).toBeDefined()
+      if !isSafariIE
+        expect(mp.filterID).toBeDefined()
 
     it 'should add svg element to body', ->
       spyOn h, 'getUniqID'
@@ -1286,9 +1288,10 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      expect(document.querySelector("##{mp.filterID}")).toBeTruthy()
-      expect(document.querySelector("##{mp.filterID}").tagName).toBe 'filter'
-      expect(h.getUniqID).toHaveBeenCalled()
+      if !isSafariIE
+        expect(document.querySelector("##{mp.filterID}")).toBeTruthy()
+        expect(document.querySelector("##{mp.filterID}").tagName).toBe 'filter'
+        expect(h.getUniqID).toHaveBeenCalled()
 
     it 'should add hidden svg element', ->
       spyOn h, 'getUniqID'
@@ -1297,8 +1300,11 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      el = document.querySelector("##{mp.filterID}")
-      expect(el.parentNode.style.display).toBe 'none'
+      if !isSafariIE
+        el = document.querySelector("##{mp.filterID}")
+        expect(el.parentNode.style.visibility).toBe   'hidden'
+        expect(el.parentNode.style.width)     .toBe   '0px'
+        expect(el.parentNode.style.height)    .toBe   '0px'
 
     it 'should add filter', ->
       mp = new MotionPath
@@ -1306,8 +1312,9 @@ describe 'MotionPath ->', ->
         el:         document.createElement 'div'
         isRunLess:  true
         motionBlur: 1.5
-      expect(mp.filter.tagName).toBe 'feGaussianBlur'
-      expect(mp.filterOffset.tagName).toBe 'feOffset'
+      if !isSafariIE
+        expect(mp.filter.tagName).toBe 'feGaussianBlur'
+        expect(mp.filterOffset.tagName).toBe 'feOffset'
 
     it 'should apply blur on element', ->
       mp = new MotionPath
@@ -1316,9 +1323,11 @@ describe 'MotionPath ->', ->
         isRunLess:  true
         motionBlur: .5
       mp.setProgress(.1)
-      style = mp.el.style.filter
-      prefixedStyle = mp.el.style[h.prefix.css+'filter']
-      expect(style or prefixedStyle).toBe "url(##{mp.filterID})"
+      if !isSafariIE
+        style = mp.el.style.filter
+        prefixedStyle = mp.el.style[h.prefix.css+'filter']
+        expect((style or prefixedStyle).replace /\"/gim, '')
+          .toBe "url(##{mp.filterID})"
 
   describe 'motionBlur at the end ->', ->
     path = "M0,20 L100,150 L200,100"
@@ -1336,14 +1345,29 @@ describe 'MotionPath ->', ->
       #   blur:   x: 0, y:0
       #   offset: x: 0, y:0
       setTimeout ->
+        return dfr() if isSafariIE
         expect(mp.filter.getAttribute('stdDeviation')).toBe '0,0'
         expect(mp.filterOffset.getAttribute('dx')).toBe '0'
         expect(mp.filterOffset.getAttribute('dy')).toBe '0'
         dfr()
       , 200
 
+  describe 'motionBlur reset ->', ->
+    path = "M0,20 L100,150 L200,100"
+    it 'should reset motionBlur to 0 if in Safari or IE', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: .5
+      if isSafariIE
+        expect(mp.props.motionBlur is 0).toBe true
+      else
+        expect(mp.props.motionBlur is .5).toBe true
+
 
   describe 'motionBlur method ->', ->
+    return if isSafariIE
     path = "M0,20 L100,150 L200,100"
     it 'should be called if motionBlur passed', ->
       mp = new MotionPath
@@ -1486,7 +1510,8 @@ describe 'MotionPath ->', ->
       expect(mp.angToCoords(315).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(-45).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(360).x) .toBeCloseTo  0, 1
-  describe 'setBlur method',->
+  describe 'setBlur method ->',->
+    return if isSafariIE
     path = "M0,20 L100,150 L200,100"
     it 'should set blur and blurOffset to filter', ->
       mp = new MotionPath

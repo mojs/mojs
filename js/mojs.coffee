@@ -24,18 +24,17 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-angle = 0
-mp = new mojs.MotionPath
-  el:       document.querySelector('#js-el')
-  path:     {x: 700}
-  duration: 1600
-  delay: 2000
-  # yoyo:     true
-  # repeat:   1
-  # easing:   'cubic.out'
-  curvature: x: '50%', y: '5%'
-  motionBlur: .4
-
+# angle = 0
+# mp = new mojs.MotionPath
+#   el:       document.querySelector('#js-el')
+#   path:     {x: 1000}
+#   duration: 1600
+#   # delay:  2000
+#   yoyo:     true
+#   repeat:   10
+#   easing:   'cubic.out'
+#   curvature: x: '50%', y: '0%'
+#   motionBlur: 1
 
 # angle = 0
 # setInterval ->

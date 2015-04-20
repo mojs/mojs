@@ -1,11 +1,13 @@
 (function() {
-  var MotionPath, Transit, coords, h, parseQadraticCurve;
+  var MotionPath, Transit, coords, h, isSafariIE, parseQadraticCurve;
 
   MotionPath = window.mojs.MotionPath;
 
   Transit = window.mojs.Transit;
 
   h = window.mojs.helpers;
+
+  isSafariIE = h.isSafari || h.isIE;
 
   parseQadraticCurve = function(d) {
     var control, end, m, q, returnObject, shapes, start;
@@ -1799,7 +1801,9 @@
           isRunLess: true,
           motionBlur: 1.5
         });
-        return expect(mp.filterID).toBeDefined();
+        if (!isSafariIE) {
+          return expect(mp.filterID).toBeDefined();
+        }
       });
       it('should add svg element to body', function() {
         var mp;
@@ -1810,9 +1814,11 @@
           isRunLess: true,
           motionBlur: 1.5
         });
-        expect(document.querySelector("#" + mp.filterID)).toBeTruthy();
-        expect(document.querySelector("#" + mp.filterID).tagName).toBe('filter');
-        return expect(h.getUniqID).toHaveBeenCalled();
+        if (!isSafariIE) {
+          expect(document.querySelector("#" + mp.filterID)).toBeTruthy();
+          expect(document.querySelector("#" + mp.filterID).tagName).toBe('filter');
+          return expect(h.getUniqID).toHaveBeenCalled();
+        }
       });
       it('should add hidden svg element', function() {
         var el, mp;
@@ -1823,8 +1829,12 @@
           isRunLess: true,
           motionBlur: 1.5
         });
-        el = document.querySelector("#" + mp.filterID);
-        return expect(el.parentNode.style.display).toBe('none');
+        if (!isSafariIE) {
+          el = document.querySelector("#" + mp.filterID);
+          expect(el.parentNode.style.visibility).toBe('hidden');
+          expect(el.parentNode.style.width).toBe('0px');
+          return expect(el.parentNode.style.height).toBe('0px');
+        }
       });
       it('should add filter', function() {
         var mp;
@@ -1834,8 +1844,10 @@
           isRunLess: true,
           motionBlur: 1.5
         });
-        expect(mp.filter.tagName).toBe('feGaussianBlur');
-        return expect(mp.filterOffset.tagName).toBe('feOffset');
+        if (!isSafariIE) {
+          expect(mp.filter.tagName).toBe('feGaussianBlur');
+          return expect(mp.filterOffset.tagName).toBe('feOffset');
+        }
       });
       return it('should apply blur on element', function() {
         var mp, prefixedStyle, style;
@@ -1846,9 +1858,11 @@
           motionBlur: .5
         });
         mp.setProgress(.1);
-        style = mp.el.style.filter;
-        prefixedStyle = mp.el.style[h.prefix.css + 'filter'];
-        return expect(style || prefixedStyle).toBe("url(#" + mp.filterID + ")");
+        if (!isSafariIE) {
+          style = mp.el.style.filter;
+          prefixedStyle = mp.el.style[h.prefix.css + 'filter'];
+          return expect((style || prefixedStyle).replace(/\"/gim, '')).toBe("url(#" + mp.filterID + ")");
+        }
       });
     });
     describe('motionBlur at the end ->', function() {
@@ -1863,6 +1877,9 @@
           duration: 50
         });
         return setTimeout(function() {
+          if (isSafariIE) {
+            return dfr();
+          }
           expect(mp.filter.getAttribute('stdDeviation')).toBe('0,0');
           expect(mp.filterOffset.getAttribute('dx')).toBe('0');
           expect(mp.filterOffset.getAttribute('dy')).toBe('0');
@@ -1870,8 +1887,29 @@
         }, 200);
       });
     });
+    describe('motionBlur reset ->', function() {
+      var path;
+      path = "M0,20 L100,150 L200,100";
+      return it('should reset motionBlur to 0 if in Safari or IE', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: .5
+        });
+        if (isSafariIE) {
+          return expect(mp.props.motionBlur === 0).toBe(true);
+        } else {
+          return expect(mp.props.motionBlur === .5).toBe(true);
+        }
+      });
+    });
     describe('motionBlur method ->', function() {
       var path;
+      if (isSafariIE) {
+        return;
+      }
       path = "M0,20 L100,150 L200,100";
       it('should be called if motionBlur passed', function() {
         var mp;
@@ -2053,8 +2091,11 @@
         return expect(mp.angToCoords(360).x).toBeCloseTo(0, 1);
       });
     });
-    return describe('setBlur method', function() {
+    return describe('setBlur method ->', function() {
       var path;
+      if (isSafariIE) {
+        return;
+      }
       path = "M0,20 L100,150 L200,100";
       return it('should set blur and blurOffset to filter', function() {
         var mp;

@@ -30,6 +30,9 @@ describe 'Helpers ->', ->
     it 'should have browsers flag', ->
       expect(h.isFF).toBeDefined()
       expect(h.isIE).toBeDefined()
+      expect(h.isSafari).toBeDefined()
+      expect(h.isChrome).toBeDefined()
+      expect(h.isOpera).toBeDefined()
       expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->

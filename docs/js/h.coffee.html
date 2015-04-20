@@ -163,9 +163,14 @@ used to coerce literal name to rgb</p>
   <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@prefix</span> = <span class="hljs-property">@getPrefix</span>()
     <span class="hljs-property">@getRemBase</span>()
-    <span class="hljs-property">@isFF</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'moz'</span>
-    <span class="hljs-property">@isIE</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'ms'</span>
+    <span class="hljs-property">@isFF</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'moz'</span>; <span class="hljs-property">@isIE</span> = <span class="hljs-property">@prefix</span>.lowercase <span class="hljs-keyword">is</span> <span class="hljs-string">'ms'</span>
     <span class="hljs-property">@isOldOpera</span> = navigator.userAgent.match <span class="hljs-regexp">/presto/gim</span>
+    <span class="hljs-property">@isSafari</span> = navigator.userAgent.indexOf(<span class="hljs-string">'Safari'</span>) &gt; -<span class="hljs-number">1</span>
+    <span class="hljs-property">@isChrome</span> = navigator.userAgent.indexOf(<span class="hljs-string">'Chrome'</span>) &gt; -<span class="hljs-number">1</span>
+    <span class="hljs-property">@isOpera</span>  = navigator.userAgent.toLowerCase().indexOf(<span class="hljs-string">"op"</span>) &gt; -<span class="hljs-number">1</span>
+    <span class="hljs-property">@isSafari</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@isChrome</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isSafari</span>
+    <span class="hljs-property">@isChrome</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@isChrome</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isOpera</span>
+
     <span class="hljs-property">@uniqIDs</span> = -<span class="hljs-number">1</span>
 
     <span class="hljs-property">@div</span> = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>)

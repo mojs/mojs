@@ -740,6 +740,15 @@ Helpers = (function() {
     this.isFF = this.prefix.lowercase === 'moz';
     this.isIE = this.prefix.lowercase === 'ms';
     this.isOldOpera = navigator.userAgent.match(/presto/gim);
+    this.isSafari = navigator.userAgent.indexOf('Safari') > -1;
+    this.isChrome = navigator.userAgent.indexOf('Chrome') > -1;
+    this.isOpera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+    if (this.isChrome && this.isSafari) {
+      this.isSafari = false;
+    }
+    if (this.isChrome && this.isOpera) {
+      this.isChrome = false;
+    }
     this.uniqIDs = -1;
     this.div = document.createElement('div');
     return document.body.appendChild(this.div);
@@ -1184,7 +1193,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var angle, mojs, mp;
+var mojs;
 
 mojs = {
   revision: '0.114.1',
@@ -1213,22 +1222,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-angle = 0;
-
-mp = new mojs.MotionPath({
-  el: document.querySelector('#js-el'),
-  path: {
-    x: 700
-  },
-  duration: 1600,
-  delay: 2000,
-  curvature: {
-    x: '50%',
-    y: '5%'
-  },
-  motionBlur: .4
-});
 
 
 /* istanbul ignore next */
@@ -1310,6 +1303,10 @@ MotionPath = (function() {
     this.resize = resize;
     this.props = h.cloneObj(this.defaults);
     this.extendOptions(this.o);
+    this.isMotionBlurReset = h.isSafari || h.isIE;
+    if (this.isMotionBlurReset) {
+      this.props.motionBlur = 0;
+    }
     this.history = [h.cloneObj(this.props)];
     return this.postVars();
   };
@@ -1401,7 +1398,7 @@ MotionPath = (function() {
     var div, svg;
     div = document.createElement('div');
     this.filterID = "filter-" + (h.getUniqID());
-    div.innerHTML = "<svg id=\"svg-" + this.filterID + "\" style=\"display:none\">\n  <filter id=\"" + this.filterID + "\" y=\"-20\" x=\"-20\" width=\"40\" height=\"40\">\n    <feOffset\n      id=\"blur-offset\" in=\"SourceGraphic\"\n      dx=\"0\" dy=\"0\" result=\"offset2\"></feOffset>\n    <feGaussianblur\n      id=\"blur\" in=\"offset2\"\n      stdDeviation=\"0,0\" result=\"blur2\"></feGaussianblur>\n    <feMerge>\n      <feMergeNode in=\"SourceGraphic\"></feMergeNode>\n      <feMergeNode in=\"blur2\"></feMergeNode>\n    </feMerge>\n  </filter>\n</svg>";
+    div.innerHTML = "<svg id=\"svg-" + this.filterID + "\"\n    style=\"visibility:hidden; width:0; height:0\">\n  <filter id=\"" + this.filterID + "\" y=\"-20\" x=\"-20\" width=\"40\" height=\"40\">\n    <feOffset\n      id=\"blur-offset\" in=\"SourceGraphic\"\n      dx=\"0\" dy=\"0\" result=\"offset2\"></feOffset>\n    <feGaussianblur\n      id=\"blur\" in=\"offset2\"\n      stdDeviation=\"0,0\" result=\"blur2\"></feGaussianblur>\n    <feMerge>\n      <feMergeNode in=\"SourceGraphic\"></feMergeNode>\n      <feMergeNode in=\"blur2\"></feMergeNode>\n    </feMerge>\n  </filter>\n</svg>";
     svg = div.querySelector("#svg-" + this.filterID);
     this.filter = svg.querySelector('#blur');
     this.filterOffset = svg.querySelector('#blur-offset');
@@ -1628,7 +1625,7 @@ MotionPath = (function() {
     tailAngle = 0;
     signX = 1;
     signY = 1;
-    if ((this.prevCoords.x == null) || !this.prevCoords.y) {
+    if ((this.prevCoords.x == null) || (this.prevCoords.y == null)) {
       this.speedX = 0;
       this.speedY = 0;
     } else {
@@ -1663,6 +1660,9 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setBlur = function(o) {
+    if (this.isMotionBlurReset) {
+      return;
+    }
     this.filter.setAttribute('stdDeviation', o.blur.x + "," + o.blur.y);
     this.filterOffset.setAttribute('dx', o.offset.x);
     return this.filterOffset.setAttribute('dy', o.offset.y);
