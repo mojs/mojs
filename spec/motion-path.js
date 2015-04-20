@@ -1851,6 +1851,25 @@
         return expect(style || prefixedStyle).toBe("url(#" + mp.filterID + ")");
       });
     });
+    describe('motionBlur at the end ->', function() {
+      var path;
+      path = "M0,20 L100,150 L200,100";
+      return it('should set motion blur and offset to 0 at the end', function(dfr) {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          motionBlur: 1,
+          duration: 50
+        });
+        return setTimeout(function() {
+          expect(mp.filter.getAttribute('stdDeviation')).toBe('0,0');
+          expect(mp.filterOffset.getAttribute('dx')).toBe('0');
+          expect(mp.filterOffset.getAttribute('dy')).toBe('0');
+          return dfr();
+        }, 200);
+      });
+    });
     describe('motionBlur method ->', function() {
       var path;
       path = "M0,20 L100,150 L200,100";
@@ -1991,7 +2010,7 @@
         return expect(parseInt(dy, 10)).toBeCloseTo(-40);
       });
     });
-    return describe('angToCoords method ->', function() {
+    describe('angToCoords method ->', function() {
       var degree45, path;
       path = "M0,20 L100,150 L200,100";
       degree45 = 1;
@@ -2032,6 +2051,32 @@
         expect(mp.angToCoords(315).x).toBeCloseTo(-degree45, 1);
         expect(mp.angToCoords(-45).x).toBeCloseTo(-degree45, 1);
         return expect(mp.angToCoords(360).x).toBeCloseTo(0, 1);
+      });
+    });
+    return describe('setBlur method', function() {
+      var path;
+      path = "M0,20 L100,150 L200,100";
+      return it('should set blur and blurOffset to filter', function() {
+        var mp;
+        mp = new MotionPath({
+          path: path,
+          el: document.createElement('div'),
+          isRunLess: true,
+          motionBlur: 1
+        });
+        mp.setBlur({
+          blur: {
+            x: 5,
+            y: 10
+          },
+          offset: {
+            x: 6,
+            y: 9
+          }
+        });
+        expect(mp.filter.getAttribute('stdDeviation')).toBe('5,10');
+        expect(mp.filterOffset.getAttribute('dx')).toBe('6');
+        return expect(mp.filterOffset.getAttribute('dy')).toBe('9');
       });
     });
   });

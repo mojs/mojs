@@ -112,7 +112,7 @@ gulp.task('coffee-lint', function(e){
   return gulp.src(paths.src.js)
     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
     .pipe(changed(paths.src.js), { extension: '.js'} )
-    .pipe(coffeelint())
+    .pipe(coffeelint({no_trailing_whitespace:{ allowed_in_comments: true } }))
     .pipe(coffeelint.reporter())
     // .pipe(coffeelint.reporter('fail'))
   });

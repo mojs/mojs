@@ -4,6 +4,7 @@
   - blur for y and x axes
     - cross browers' support
     - blur to 0 on end
+    - add force3d option
   - force 3d
   - fix toBeCloseTo asserts
 - add layers
@@ -37,7 +38,7 @@
   - add deltas for swirl swirlFrequency and swirlSize
   - then implementation
 - motion path
-  - delay + repeat issue
+  - delay + repeat issue  
 
 # UNDER CONSIDERATION
 - add text tricks

@@ -37,19 +37,7 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "delay: 2000",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "delay-2000",
-      "title": "delay: 2000"
-    },
-    {
-      "level": 1,
-      "slug": "easing-39-cubic-out-39-",
-      "title": "easing:   &#39;cubic.out&#39;"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/motion-path.coffee.html",

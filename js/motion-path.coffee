@@ -433,7 +433,10 @@ class MotionPath
       repeat:     @props.repeat
       easing:     @props.easing
       onStart:    => @props.onStart?.apply @
-      onComplete: => @props.onComplete?.apply @
+      onComplete: =>
+        @props.motionBlur and @setBlur
+          blur: {x: 0, y: 0}, offset: {x: 0, y: 0}
+        @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
     @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
@@ -503,24 +506,27 @@ class MotionPath
     # and motionBlur coefficient
     @blurX = h.clamp (@speedX/16)*@props.motionBlur, 0, 1
     @blurY = h.clamp (@speedY/16)*@props.motionBlur, 0, 1
-    devX = 3*@blurX*@blurAmount*Math.abs(coords.x)
-    devY = 3*@blurY*@blurAmount*Math.abs(coords.y)
-    deviation = "#{devX},#{devY}"
-    @filter.setAttribute 'stdDeviation', deviation
-    @filterOffset.setAttribute 'dx', 2*signX*@blurX*coords.x*@blurAmount
-    @filterOffset.setAttribute 'dy', 2*signY*@blurY*coords.y*@blurAmount
-    
+    @setBlur
+      blur:
+        x: 3*@blurX*@blurAmount*Math.abs(coords.x)
+        y: 3*@blurY*@blurAmount*Math.abs(coords.y)
+      offset:
+        x: 2*signX*@blurX*coords.x*@blurAmount
+        y: 2*signY*@blurY*coords.y*@blurAmount
     # save previous coords
     @prevCoords.x = x; @prevCoords.y = y
+
+  setBlur:(o)->
+    @filter.setAttribute 'stdDeviation', "#{o.blur.x},#{o.blur.y}"
+    @filterOffset.setAttribute 'dx', o.offset.x
+    @filterOffset.setAttribute 'dy', o.offset.y
 
   extendDefaults:(o)->
     for key, value of o
       @[key] = value
-
   extendOptions:(o)->
     for key, value of o
       @props[key] = value
-
   then:(o)->
     prevOptions = @history[@history.length-1]; opts = {}
     for key, value of prevOptions
@@ -557,7 +563,7 @@ class MotionPath
     y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
     x: x*1.428571429
     y: y*1.428571429
-    # x: Math.cos(radAngle), y: Math.sin(radAngle)
+    # x: Math.cos(radAngle), y: Math.sin(radAngle)    
 
 module.exports = MotionPath
 

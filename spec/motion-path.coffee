@@ -1320,6 +1320,29 @@ describe 'MotionPath ->', ->
       prefixedStyle = mp.el.style[h.prefix.css+'filter']
       expect(style or prefixedStyle).toBe "url(##{mp.filterID})"
 
+  describe 'motionBlur at the end ->', ->
+    path = "M0,20 L100,150 L200,100"
+    it 'should set motion blur and offset to 0 at the end', (dfr)->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        # isRunLess:  true
+        motionBlur: 1
+        duration:   50
+      # mp.setProgress .5
+      # spyOn mp, 'setBlur'
+      # mp.setProgress 1
+      # expect(mp.setBlur).toHaveBeenCalledWith
+      #   blur:   x: 0, y:0
+      #   offset: x: 0, y:0
+      setTimeout ->
+        expect(mp.filter.getAttribute('stdDeviation')).toBe '0,0'
+        expect(mp.filterOffset.getAttribute('dx')).toBe '0'
+        expect(mp.filterOffset.getAttribute('dy')).toBe '0'
+        dfr()
+      , 200
+
+
   describe 'motionBlur method ->', ->
     path = "M0,20 L100,150 L200,100"
     it 'should be called if motionBlur passed', ->
@@ -1463,5 +1486,21 @@ describe 'MotionPath ->', ->
       expect(mp.angToCoords(315).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(-45).x) .toBeCloseTo -degree45, 1
       expect(mp.angToCoords(360).x) .toBeCloseTo  0, 1
+  describe 'setBlur method',->
+    path = "M0,20 L100,150 L200,100"
+    it 'should set blur and blurOffset to filter', ->
+      mp = new MotionPath
+        path:       path
+        el:         document.createElement 'div'
+        isRunLess:  true
+        motionBlur: 1
 
-    
+      mp.setBlur
+        blur:   x: 5, y: 10
+        offset: x: 6, y: 9
+      expect(mp.filter.getAttribute('stdDeviation')).toBe '5,10'
+      expect(mp.filterOffset.getAttribute('dx')).toBe '6'
+      expect(mp.filterOffset.getAttribute('dy')).toBe '9'
+  
+
+

@@ -911,7 +911,10 @@ to svg path</p>
       <span class="hljs-attribute">repeat</span>:     <span class="hljs-property">@props</span>.repeat
       <span class="hljs-attribute">easing</span>:     <span class="hljs-property">@props</span>.easing
       <span class="hljs-attribute">onStart</span>:    <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onStart?.apply @
-      <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onComplete?.apply @
+      <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">=&gt;</span>
+        <span class="hljs-property">@props</span>.motionBlur <span class="hljs-keyword">and</span> <span class="hljs-property">@setBlur</span>
+          <span class="hljs-attribute">blur</span>: {<span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>}, <span class="hljs-attribute">offset</span>: {<span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>}
+        <span class="hljs-property">@props</span>.onComplete?.apply @
       <span class="hljs-attribute">onUpdate</span>:  <span class="hljs-function"><span class="hljs-params">(p)</span>=&gt;</span> <span class="hljs-property">@setProgress</span>(p)
       <span class="hljs-attribute">onFirstUpdateBackward</span>:<span class="hljs-function">=&gt;</span> <span class="hljs-property">@history</span>.length &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@tuneOptions</span> <span class="hljs-property">@history</span>[<span class="hljs-number">0</span>]
     <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Tween<span class="hljs-comment"># onUpdate:(p)=&gt; @o.onChainUpdate?(p)</span>
@@ -1081,13 +1084,13 @@ and motionBlur coefficient</p>
       
         <div class="code"><div class="wrapper">    <span class="hljs-property">@blurX</span> = h.clamp (<span class="hljs-property">@speedX</span>/<span class="hljs-number">16</span>)*<span class="hljs-property">@props</span>.motionBlur, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
     <span class="hljs-property">@blurY</span> = h.clamp (<span class="hljs-property">@speedY</span>/<span class="hljs-number">16</span>)*<span class="hljs-property">@props</span>.motionBlur, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
-    devX = <span class="hljs-number">3</span>*<span class="hljs-property">@blurX</span>*<span class="hljs-property">@blurAmount</span>*Math.abs(coords.x)
-    devY = <span class="hljs-number">3</span>*<span class="hljs-property">@blurY</span>*<span class="hljs-property">@blurAmount</span>*Math.abs(coords.y)
-    deviation = <span class="hljs-string">"<span class="hljs-subst">#{devX}</span>,<span class="hljs-subst">#{devY}</span>"</span>
-    <span class="hljs-property">@filter</span>.setAttribute <span class="hljs-string">'stdDeviation'</span>, deviation
-    <span class="hljs-property">@filterOffset</span>.setAttribute <span class="hljs-string">'dx'</span>, <span class="hljs-number">2</span>*signX*<span class="hljs-property">@blurX</span>*coords.x*<span class="hljs-property">@blurAmount</span>
-    <span class="hljs-property">@filterOffset</span>.setAttribute <span class="hljs-string">'dy'</span>, <span class="hljs-number">2</span>*signY*<span class="hljs-property">@blurY</span>*coords.y*<span class="hljs-property">@blurAmount</span>
-    </div></div>
+    <span class="hljs-property">@setBlur</span>
+      <span class="hljs-attribute">blur</span>:
+        <span class="hljs-attribute">x</span>: <span class="hljs-number">3</span>*<span class="hljs-property">@blurX</span>*<span class="hljs-property">@blurAmount</span>*Math.abs(coords.x)
+        <span class="hljs-attribute">y</span>: <span class="hljs-number">3</span>*<span class="hljs-property">@blurY</span>*<span class="hljs-property">@blurAmount</span>*Math.abs(coords.y)
+      <span class="hljs-attribute">offset</span>:
+        <span class="hljs-attribute">x</span>: <span class="hljs-number">2</span>*signX*<span class="hljs-property">@blurX</span>*coords.x*<span class="hljs-property">@blurAmount</span>
+        <span class="hljs-attribute">y</span>: <span class="hljs-number">2</span>*signY*<span class="hljs-property">@blurY</span>*coords.y*<span class="hljs-property">@blurAmount</span></div></div>
       
       </div>
     
@@ -1101,14 +1104,17 @@ and motionBlur coefficient</p>
       
         <div class="code"><div class="wrapper">    <span class="hljs-property">@prevCoords</span>.x = x; <span class="hljs-property">@prevCoords</span>.y = y
 
+  <span class="hljs-attribute">setBlur</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    <span class="hljs-property">@filter</span>.setAttribute <span class="hljs-string">'stdDeviation'</span>, <span class="hljs-string">"<span class="hljs-subst">#{o.blur.x}</span>,<span class="hljs-subst">#{o.blur.y}</span>"</span>
+    <span class="hljs-property">@filterOffset</span>.setAttribute <span class="hljs-string">'dx'</span>, o.offset.x
+    <span class="hljs-property">@filterOffset</span>.setAttribute <span class="hljs-string">'dy'</span>, o.offset.y
+
   <span class="hljs-attribute">extendDefaults</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
     <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> o
       @[key] = value
-
   <span class="hljs-attribute">extendOptions</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
     <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> o
       <span class="hljs-property">@props</span>[key] = value
-
   <span class="hljs-attribute">then</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
     prevOptions = <span class="hljs-property">@history</span>[<span class="hljs-property">@history</span>.length-<span class="hljs-number">1</span>]; opts = {}
     <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> prevOptions</div></div>
@@ -1191,7 +1197,7 @@ the callback was previously defined</p>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>x: Math.cos(radAngle), y: Math.sin(radAngle)</p>
+          <div class="wrapper"><p>x: Math.cos(radAngle), y: Math.sin(radAngle)    </p>
 </div>
         </div>
       

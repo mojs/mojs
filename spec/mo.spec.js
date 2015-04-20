@@ -1184,7 +1184,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs;
+var angle, mojs, mp;
 
 mojs = {
   revision: '0.114.1',
@@ -1213,6 +1213,22 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+angle = 0;
+
+mp = new mojs.MotionPath({
+  el: document.querySelector('#js-el'),
+  path: {
+    x: 700
+  },
+  duration: 1600,
+  delay: 2000,
+  curvature: {
+    x: '50%',
+    y: '5%'
+  },
+  motionBlur: .4
+});
 
 
 /* istanbul ignore next */
@@ -1508,6 +1524,16 @@ MotionPath = (function() {
       onComplete: (function(_this) {
         return function() {
           var ref;
+          _this.props.motionBlur && _this.setBlur({
+            blur: {
+              x: 0,
+              y: 0
+            },
+            offset: {
+              x: 0,
+              y: 0
+            }
+          });
           return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
         };
       })(this),
@@ -1598,7 +1624,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.makeMotionBlur = function(x, y) {
-    var absoluteAngle, coords, dX, dY, devX, devY, deviation, signX, signY, tailAngle;
+    var absoluteAngle, coords, dX, dY, signX, signY, tailAngle;
     tailAngle = 0;
     signX = 1;
     signY = 1;
@@ -1622,14 +1648,24 @@ MotionPath = (function() {
     coords = this.angToCoords(absoluteAngle);
     this.blurX = h.clamp((this.speedX / 16) * this.props.motionBlur, 0, 1);
     this.blurY = h.clamp((this.speedY / 16) * this.props.motionBlur, 0, 1);
-    devX = 3 * this.blurX * this.blurAmount * Math.abs(coords.x);
-    devY = 3 * this.blurY * this.blurAmount * Math.abs(coords.y);
-    deviation = devX + "," + devY;
-    this.filter.setAttribute('stdDeviation', deviation);
-    this.filterOffset.setAttribute('dx', 2 * signX * this.blurX * coords.x * this.blurAmount);
-    this.filterOffset.setAttribute('dy', 2 * signY * this.blurY * coords.y * this.blurAmount);
+    this.setBlur({
+      blur: {
+        x: 3 * this.blurX * this.blurAmount * Math.abs(coords.x),
+        y: 3 * this.blurY * this.blurAmount * Math.abs(coords.y)
+      },
+      offset: {
+        x: 2 * signX * this.blurX * coords.x * this.blurAmount,
+        y: 2 * signY * this.blurY * coords.y * this.blurAmount
+      }
+    });
     this.prevCoords.x = x;
     return this.prevCoords.y = y;
+  };
+
+  MotionPath.prototype.setBlur = function(o) {
+    this.filter.setAttribute('stdDeviation', o.blur.x + "," + o.blur.y);
+    this.filterOffset.setAttribute('dx', o.offset.x);
+    return this.filterOffset.setAttribute('dy', o.offset.y);
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
