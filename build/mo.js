@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.114.0 
+	0.114.1 
 */
 
 (function(f){
@@ -1186,10 +1186,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs, mp;
+var mojs;
 
 mojs = {
-  revision: '0.114.0',
+  revision: '0.114.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1215,21 +1215,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-mp = new mojs.MotionPath({
-  el: document.querySelector('#js-el'),
-  path: {
-    x: 500
-  },
-  duration: 1500,
-  yoyo: true,
-  repeat: 200,
-  curvature: {
-    x: '75%',
-    y: '150%'
-  },
-  motionBlur: 1
-});
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -1356,7 +1341,7 @@ MotionPath = (function() {
     this.blurX = 0;
     this.blurY = 0;
     this.prevCoords = {};
-    this.blurAmount = 25;
+    this.blurAmount = 20;
     this.props.motionBlur = h.clamp(this.props.motionBlur, 0, 1);
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
@@ -1610,7 +1595,7 @@ MotionPath = (function() {
     tailAngle = 0;
     signX = 1;
     signY = 1;
-    if (this.prevCoords.x == null) {
+    if ((this.prevCoords.x == null) || !this.prevCoords.y) {
       this.speedX = 0;
       this.speedY = 0;
     } else {
@@ -1619,7 +1604,7 @@ MotionPath = (function() {
       if (dX > 0) {
         signX = -1;
       }
-      if (dY < 0) {
+      if (signX < 0) {
         signY = -1;
       }
       this.speedX = Math.abs(dX);
@@ -1628,14 +1613,14 @@ MotionPath = (function() {
     }
     absoluteAngle = tailAngle - this.angle;
     coords = this.angToCoords(absoluteAngle);
-    this.blurX = easing.quart["in"](h.clamp((this.speedX / 5) * this.props.motionBlur, 0, 1));
-    this.blurY = easing.quart["in"](h.clamp((this.speedY / 5) * this.props.motionBlur, 0, 1));
-    devX = this.blurX * this.blurAmount * Math.abs(coords.x);
-    devY = this.blurY * this.blurAmount * Math.abs(coords.y);
+    this.blurX = h.clamp((this.speedX / 16) * this.props.motionBlur, 0, 1);
+    this.blurY = h.clamp((this.speedY / 16) * this.props.motionBlur, 0, 1);
+    devX = 3 * this.blurX * this.blurAmount * Math.abs(coords.x);
+    devY = 3 * this.blurY * this.blurAmount * Math.abs(coords.y);
     deviation = devX + "," + devY;
     this.filter.setAttribute('stdDeviation', deviation);
-    this.filterOffset.setAttribute('dx', signX * this.blurX * coords.x * this.blurAmount);
-    this.filterOffset.setAttribute('dy', signY * this.blurY * coords.y * this.blurAmount);
+    this.filterOffset.setAttribute('dx', 2 * signX * this.blurX * coords.x * this.blurAmount);
+    this.filterOffset.setAttribute('dy', 2 * signY * this.blurY * coords.y * this.blurAmount);
     this.prevCoords.x = x;
     return this.prevCoords.y = y;
   };
@@ -1712,12 +1697,16 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.angToCoords = function(angle) {
-    var radAngle;
+    var radAngle, x, y;
     angle = angle % 360;
     radAngle = ((angle - 90) * Math.PI) / 180;
+    x = Math.cos(radAngle);
+    y = Math.sin(radAngle);
+    x = x < 0 ? Math.max(x, -0.7) : Math.min(x, .7);
+    y = y < 0 ? Math.max(y, -0.7) : Math.min(y, .7);
     return {
-      x: Math.cos(radAngle),
-      y: Math.sin(radAngle)
+      x: x * 1.428571429,
+      y: y * 1.428571429
     };
   };
 
@@ -3640,13 +3629,15 @@ Tween = (function() {
 module.exports = Tween;
 
 },{"../h":4,"./tweener":23}],23:[function(require,module,exports){
-var Tweener, h, t;
+var Tweener, h, i, t;
 
 require('../polyfills/raf');
 
 require('../polyfills/performance');
 
 h = require('../h');
+
+i = 0;
 
 Tweener = (function() {
   function Tweener() {
@@ -3686,7 +3677,7 @@ Tweener = (function() {
   };
 
   Tweener.prototype.update = function(time) {
-    var i, results;
+    var results;
     i = this.tweens.length;
     results = [];
     while (i--) {

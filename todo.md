@@ -2,8 +2,8 @@
 
 - add motion blur
   - blur for y and x axes
-    - recalc angle with respect to @angle
-    - set blur amount
+    - cross browers' support
+    - blur to 0 on end
   - force 3d
   - fix toBeCloseTo asserts
 - add layers
@@ -36,6 +36,8 @@
 - burst
   - add deltas for swirl swirlFrequency and swirlSize
   - then implementation
+- motion path
+  - delay + repeat issue
 
 # UNDER CONSIDERATION
 - add text tricks

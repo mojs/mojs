@@ -10,13 +10,13 @@ html
     //- input(type="range", min="0", max="100000", value="0")#js-slider
 
     #js-el.el text some text
-    svg
-      filter#filter-1(y='-20', x='-20', width='40', height='40')
-        feOffset(in='SourceGraphic', dx='15', dy='0', result='offset2')
-        feGaussianblur(in='offset2', stdDeviation='15,0', result='blur2')
-        feMerge
-          feMergeNode(in='SourceGraphic')
-          feMergeNode(in='blur2')
+    //- svg
+    //-   filter#filter-1(y='-20', x='-20', width='40', height='40')
+    //-     feOffset(in='SourceGraphic', dx='15', dy='0', result='offset2')
+    //-     feGaussianblur(in='offset2', stdDeviation='15,0', result='blur2')
+    //-     feMerge
+    //-       feMergeNode(in='SourceGraphic')
+    //-       feMergeNode(in='blur2')
 
     .elem(style="filter: url(#filter-1); -webkit-filter: url(#filter-1);") text some text
 

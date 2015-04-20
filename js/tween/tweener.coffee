@@ -3,6 +3,7 @@ require '../polyfills/performance'
 
 h = require '../h'
 
+i = 0
 class Tweener
   constructor:-> @vars(); @
   vars:-> @tweens = []; @loop = h.bind @loop, @

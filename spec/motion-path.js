@@ -141,7 +141,7 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        return expect(mp.blurAmount).toBe(12);
+        return expect(mp.blurAmount).toBe(20);
       });
       it('have prevCoords object', function() {
         el = document.createElement('div');
@@ -1901,8 +1901,8 @@
         mp.setProgress(.11);
         expect(mp.speedX).toBeCloseTo(1.68, 1);
         expect(mp.speedY).toBeCloseTo(2.18, 1);
-        expect(mp.blurX).toBeCloseTo(.00455, 5);
-        return expect(mp.blurY).toBeCloseTo(.00639, 5);
+        expect(mp.blurX).toBeCloseTo(.1051, 5);
+        return expect(mp.blurY).toBeCloseTo(.1366, 4);
       });
       it('should set speed to 0 if prevCoords are undefined yet', function() {
         var mp;
@@ -1962,7 +1962,7 @@
         return expect(mp.props.motionBlur).toBe(1);
       });
       it('should set blur to filter', function() {
-        var attr, mp;
+        var attrs, mp;
         mp = new MotionPath({
           path: path,
           el: document.createElement('div'),
@@ -1971,8 +1971,9 @@
         });
         mp.setProgress(.1);
         mp.setProgress(.5);
-        attr = mp.filter.getAttribute('stdDeviation');
-        return expect(attr).toBe("" + (mp.blurX * mp.blurAmount) + "," + (mp.blurY * mp.blurAmount));
+        attrs = mp.filter.getAttribute('stdDeviation').split(',');
+        expect(parseInt(attrs[0], 10)).toBeCloseTo(52);
+        return expect(parseInt(attrs[1], 10)).toBeCloseTo(60);
       });
       return it('should set blur to filterOffset', function() {
         var dx, dy, mp;
@@ -1986,13 +1987,14 @@
         mp.setProgress(.5);
         dx = mp.filterOffset.getAttribute('dx');
         dy = mp.filterOffset.getAttribute('dy');
-        expect(dx).toBe('1');
-        return expect(dy).toBe('1');
+        expect(parseInt(dx, 10)).toBeCloseTo(-34);
+        return expect(parseInt(dy, 10)).toBeCloseTo(-40);
       });
     });
     return describe('angToCoords method ->', function() {
-      var path;
+      var degree45, path;
       path = "M0,20 L100,150 L200,100";
+      degree45 = 1;
       it('should translate angle to coordinates *y*', function() {
         var mp;
         mp = new MotionPath({
@@ -2001,16 +2003,16 @@
           isRunLess: true,
           motionBlur: 1.5
         });
-        expect(mp.angToCoords(0).y).toBe(-1);
-        expect(mp.angToCoords(45).y).toBeCloseTo(-0.7, 1);
+        expect(mp.angToCoords(0).y).toBeCloseTo(-1);
+        expect(mp.angToCoords(45).y).toBeCloseTo(-degree45, 1);
         expect(mp.angToCoords(90).y).toBe(0);
-        expect(mp.angToCoords(135).y).toBeCloseTo(0.7, 1);
-        expect(mp.angToCoords(180).y).toBe(1);
-        expect(mp.angToCoords(225).y).toBeCloseTo(0.7, 1);
+        expect(mp.angToCoords(135).y).toBeCloseTo(degree45, 1);
+        expect(mp.angToCoords(180).y).toBeCloseTo(1);
+        expect(mp.angToCoords(225).y).toBeCloseTo(degree45, 1);
         expect(mp.angToCoords(270).y).toBeCloseTo(0, 1);
-        expect(mp.angToCoords(315).y).toBeCloseTo(-0.7, 1);
-        expect(mp.angToCoords(-45).y).toBeCloseTo(-0.7, 1);
-        return expect(mp.angToCoords(360).y).toBe(-1);
+        expect(mp.angToCoords(315).y).toBeCloseTo(-degree45, 1);
+        expect(mp.angToCoords(-45).y).toBeCloseTo(-degree45, 1);
+        return expect(mp.angToCoords(360).y).toBeCloseTo(-1);
       });
       return it('should translate angle to coordinates *x*', function() {
         var mp;
@@ -2021,14 +2023,14 @@
           motionBlur: 1.5
         });
         expect(mp.angToCoords(0).x).toBeCloseTo(0, 1);
-        expect(mp.angToCoords(45).x).toBeCloseTo(0.7, 1);
+        expect(mp.angToCoords(45).x).toBeCloseTo(degree45, 1);
         expect(mp.angToCoords(90).x).toBeCloseTo(1, 1);
-        expect(mp.angToCoords(135).x).toBeCloseTo(0.7, 1);
+        expect(mp.angToCoords(135).x).toBeCloseTo(degree45, 1);
         expect(mp.angToCoords(180).x).toBeCloseTo(0, 1);
-        expect(mp.angToCoords(225).x).toBeCloseTo(-0.7, 1);
+        expect(mp.angToCoords(225).x).toBeCloseTo(-degree45, 1);
         expect(mp.angToCoords(270).x).toBeCloseTo(-1, 1);
-        expect(mp.angToCoords(315).x).toBeCloseTo(-0.7, 1);
-        expect(mp.angToCoords(-45).x).toBeCloseTo(-0.7, 1);
+        expect(mp.angToCoords(315).x).toBeCloseTo(-degree45, 1);
+        expect(mp.angToCoords(-45).x).toBeCloseTo(-degree45, 1);
         return expect(mp.angToCoords(360).x).toBeCloseTo(0, 1);
       });
     });

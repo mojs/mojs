@@ -316,7 +316,7 @@ class MotionPath
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
     @angle = 0; @speedX = 0; @speedY = 0; @blurX = 0; @blurY = 0
-    @prevCoords = {}; @blurAmount = 25
+    @prevCoords = {}; @blurAmount = 20
     # clamp motionBlur in range of [0,1]
     @props.motionBlur = h.clamp @props.motionBlur, 0, 1
     
@@ -489,31 +489,26 @@ class MotionPath
   makeMotionBlur:(x, y)->
     # if previous coords are not defined yet -- set speed to 0
     tailAngle = 0; signX = 1; signY = 1
-    if !@prevCoords.x? then @speedX = 0; @speedY = 0
+    if !@prevCoords.x? or !@prevCoords.y then @speedX = 0; @speedY = 0
     # else calculate speed based on the largest axes delta
     else
       dX = x-@prevCoords.x; dY = y-@prevCoords.y
       if dX > 0 then signX = -1
-      if dY < 0 then signY = -1
+      if signX < 0 then signY = -1
       @speedX = Math.abs(dX); @speedY = Math.abs(dY)
       tailAngle = Math.atan(dY/dX)*(180/Math.PI) + 90
     absoluteAngle = tailAngle - @angle
     coords = @angToCoords absoluteAngle
-    # console.log absoluteAngle
-    # console.log dX
-    # console.log absoluteAngle
-
     # get blur based on speed where 1px per 1ms is very fast
     # and motionBlur coefficient
-    @blurX = easing.quart.in h.clamp (@speedX/5)*@props.motionBlur, 0, 1
-    @blurY = easing.quart.in h.clamp (@speedY/5)*@props.motionBlur, 0, 1
-    devX = @blurX*@blurAmount*Math.abs(coords.x)
-    devY = @blurY*@blurAmount*Math.abs(coords.y)
+    @blurX = h.clamp (@speedX/16)*@props.motionBlur, 0, 1
+    @blurY = h.clamp (@speedY/16)*@props.motionBlur, 0, 1
+    devX = 3*@blurX*@blurAmount*Math.abs(coords.x)
+    devY = 3*@blurY*@blurAmount*Math.abs(coords.y)
     deviation = "#{devX},#{devY}"
     @filter.setAttribute 'stdDeviation', deviation
-    @filterOffset.setAttribute 'dx', signX*@blurX*coords.x*@blurAmount
-    @filterOffset.setAttribute 'dy', signY*@blurY*coords.y*@blurAmount
-    # console.log @blurX*coords.x*@blurAmount, @blurY*coords.y*@blurAmount
+    @filterOffset.setAttribute 'dx', 2*signX*@blurX*coords.x*@blurAmount
+    @filterOffset.setAttribute 'dy', 2*signY*@blurY*coords.y*@blurAmount
     
     # save previous coords
     @prevCoords.x = x; @prevCoords.y = y
@@ -557,12 +552,12 @@ class MotionPath
   angToCoords:(angle)->
     angle = angle % 360
     radAngle = ((angle-90)*Math.PI)/180
-    # x = Math.cos(radAngle); y = Math.sin(radAngle)
-    # x = if x < 0 then Math.max(x, -0.7) else Math.min(x, .7)
-    # y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
-    # x: x
-    # y: y
-    x: Math.cos(radAngle), y: Math.sin(radAngle)
+    x = Math.cos(radAngle); y = Math.sin(radAngle)
+    x = if x < 0 then Math.max(x, -0.7) else Math.min(x, .7)
+    y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
+    x: x*1.428571429
+    y: y*1.428571429
+    # x: Math.cos(radAngle), y: Math.sin(radAngle)
 
 module.exports = MotionPath
 

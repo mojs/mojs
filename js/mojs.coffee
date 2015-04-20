@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.114.0', isDebug: true
+  revision:   '0.114.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -24,20 +24,18 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-mp = new mojs.MotionPath
-  el:       document.querySelector('#js-el')
-  path:     {x: 500}
-  duration: 1500
-  yoyo:     true
-  repeat:   200
-  # easing:   'cubic.out'
-  curvature: x: '75%', y: '150%'
-  motionBlur: 1
-  # isAngle: true
-  # isRunLess: true
+# angle = 0
+# mp = new mojs.MotionPath
+#   el:       document.querySelector('#js-el')
+#   path:     {x: 700}
+#   duration: 1600
+#   # delay: 2000
+#   yoyo:     true
+#   repeat:   200
+#   # easing:   'cubic.out'
+#   curvature: x: '50%', y: '125%'
+#   motionBlur: 1
 
-# mp.setProgress .75
-# mp.setProgress .5
 
 # angle = 0
 # setInterval ->
