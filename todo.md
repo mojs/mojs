@@ -1,7 +1,5 @@
 ## TODO
 
-- add motion blur
-  - fix toBeCloseTo asserts
 - add layers
 - release
   - website
@@ -21,6 +19,7 @@
 # FIXES
 - tween
   - add and append multiple timelines
+  - tween + timeline?
 - cover polyfills
 - stagger callbacks should run only once
 - stagger self generation

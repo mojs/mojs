@@ -822,7 +822,7 @@ to svg path</p>
     div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
     <span class="hljs-property">@filterID</span> = <span class="hljs-string">"filter-<span class="hljs-subst">#{h.getUniqID()}</span>"</span>
     div.innerHTML = <span class="hljs-string">"""&lt;svg id="svg-<span class="hljs-subst">#{<span class="hljs-property">@filterID</span>}</span>"
-          style="visibility:hidden; width:0; height:0"&gt;
+          style="visibility:hidden; width:0px; height:0px"&gt;
         &lt;filter id="<span class="hljs-subst">#{<span class="hljs-property">@filterID</span>}</span>" y="-20" x="-20" width="40" height="40"&gt;
           &lt;feOffset
             id="blur-offset" in="SourceGraphic"

@@ -348,7 +348,7 @@ class MotionPath
     div = document.createElement 'div'
     @filterID = "filter-#{h.getUniqID()}"
     div.innerHTML = """<svg id="svg-#{@filterID}"
-          style="visibility:hidden; width:0; height:0">
+          style="visibility:hidden; width:0px; height:0px">
         <filter id="#{@filterID}" y="-20" x="-20" width="40" height="40">
           <feOffset
             id="blur-offset" in="SourceGraphic"
