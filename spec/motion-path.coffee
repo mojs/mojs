@@ -1472,8 +1472,8 @@ describe 'MotionPath ->', ->
       mp.setProgress .5
       dx = mp.filterOffset.getAttribute('dx')
       dy = mp.filterOffset.getAttribute('dy')
-      expect(parseInt(dx,10)).toBeCloseTo -34
-      expect(parseInt(dy,10)).toBeCloseTo -40
+      expect(parseInt(dx,10)).toBeCloseTo -52
+      expect(parseInt(dy,10)).toBeCloseTo -60
 
   describe 'angToCoords method ->', ->
     path = "M0,20 L100,150 L200,100"

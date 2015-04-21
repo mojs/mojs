@@ -2018,8 +2018,8 @@
         mp.setProgress(.5);
         dx = mp.filterOffset.getAttribute('dx');
         dy = mp.filterOffset.getAttribute('dy');
-        expect(parseInt(dx, 10)).toBeCloseTo(-34);
-        return expect(parseInt(dy, 10)).toBeCloseTo(-40);
+        expect(parseInt(dx, 10)).toBeCloseTo(-52);
+        return expect(parseInt(dy, 10)).toBeCloseTo(-60);
       });
     });
     describe('angToCoords method ->', function() {
