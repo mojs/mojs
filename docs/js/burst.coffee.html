@@ -114,7 +114,6 @@ h         = <span class="hljs-built_in">require</span> <span class="hljs-string"
     <span class="hljs-attribute">onCompleteChain</span>:    <span class="hljs-literal">null</span>
     <span class="hljs-attribute">onUpdate</span>:           <span class="hljs-literal">null</span>
     <span class="hljs-attribute">isResetAngles</span>:      <span class="hljs-literal">false</span>
-
   <span class="hljs-attribute">childDefaults</span>:
     <span class="hljs-comment">#-- intersection starts</span>
     <span class="hljs-attribute">radius</span>:             { <span class="hljs-number">7</span> : <span class="hljs-number">0</span> }
@@ -240,8 +239,20 @@ h         = <span class="hljs-built_in">require</span> <span class="hljs-string"
           newStart = parseFloat(start) + angleAddition + aShift
           newEnd   = parseFloat(end)   + angleAddition + aShift
           delta = {}; delta[newStart] = newEnd
-          delta
-      transit.extendDefaults()
+          delta</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log transit.o.angle</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      transit.extendDefaults()
+
   <span class="hljs-attribute">getSidePoint</span>:<span class="hljs-function"><span class="hljs-params">(side, angle)</span>-&gt;</span>
     sideRadius = <span class="hljs-property">@getSideRadius</span> side
     pointStart = <span class="hljs-property">@h</span>.getRadialPoint

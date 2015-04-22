@@ -1191,7 +1191,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs;
+var burst, mojs;
 
 mojs = {
   revision: '0.114.2',
@@ -1220,6 +1220,23 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+burst = new mojs.Burst({
+  isRunLess: true,
+  isShowEnd: true,
+  type: 'line',
+  stroke: 'deeppink',
+  strokeWidth: {
+    2: 0
+  }
+});
+
+document.body.addEventListener('click', function(e) {
+  return burst.run({
+    x: e.x,
+    y: e.y
+  });
+});
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {

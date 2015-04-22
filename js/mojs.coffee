@@ -24,6 +24,19 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
+
+burst = new mojs.Burst
+  isRunLess: true
+  isShowEnd: true
+  type: 'line'
+  stroke: 'deeppink'
+  strokeWidth: 2:0
+  # delay: 'stagger(100)'
+  # childOptions: angle: 45: 0
+
+document.body.addEventListener 'click', (e)->
+  burst.run(x: e.x, y: e.y)
+
 # angle = 0
 # mp = new mojs.MotionPath
 #   el:       document.querySelector('#js-el')

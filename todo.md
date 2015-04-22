@@ -1,6 +1,9 @@
 ## TODO
 
-- add layers
+
+- fix burst angles
+- fix coverage
+
 - release
   - website
     - css
@@ -8,6 +11,7 @@
     - docs
     - tuts
 - add meta balls
+- add layers
 - add states
 - add custom easing handler
   - add path handler

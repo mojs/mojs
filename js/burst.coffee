@@ -37,7 +37,6 @@ class Burst extends Transit
     onCompleteChain:    null
     onUpdate:           null
     isResetAngles:      false
-
   childDefaults:
     #-- intersection starts
     radius:             { 7 : 0 }
@@ -134,7 +133,9 @@ class Burst extends Transit
           newEnd   = parseFloat(end)   + angleAddition + aShift
           delta = {}; delta[newStart] = newEnd
           delta
+        # console.log transit.o.angle
       transit.extendDefaults()
+
   getSidePoint:(side, angle)->
     sideRadius = @getSideRadius side
     pointStart = @h.getRadialPoint
