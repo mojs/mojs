@@ -79,11 +79,13 @@ class Helpers
     @prefix = @getPrefix()
     @getRemBase()
     @isFF = @prefix.lowercase is 'moz'; @isIE = @prefix.lowercase is 'ms'
-    @isOldOpera = navigator.userAgent.match /presto/gim
-    @isSafari = navigator.userAgent.indexOf('Safari') > -1
-    @isChrome = navigator.userAgent.indexOf('Chrome') > -1
-    @isOpera  = navigator.userAgent.toLowerCase().indexOf("op") > -1
-    @isChrome and @isSafari and (@isSafari = false)
+    ua = navigator.userAgent
+    @isOldOpera = ua.match /presto/gim
+    @isSafari   = ua.indexOf('Safari') > -1
+    @isChrome   = ua.indexOf('Chrome') > -1
+    @isOpera    = ua.toLowerCase().indexOf("op") > -1
+    @isChrome and @isSafari   and (@isSafari = false)
+    (ua.match /PhantomJS/gim) and (@isSafari = false)
     @isChrome and @isOpera  and (@isChrome = false)
 
     @uniqIDs = -1

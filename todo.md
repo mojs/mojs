@@ -1,9 +1,6 @@
 ## TODO
 
-
-- fix burst angles
 - fix coverage
-
 - release
   - website
     - css

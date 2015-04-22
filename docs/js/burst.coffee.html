@@ -208,55 +208,21 @@ it will fallback to default 0 value</p>
       
         <div class="code"><div class="wrapper">        option = <span class="hljs-property">@getOption</span>(len)
         <span class="hljs-keyword">if</span> !o.childOptions?.angle? <span class="hljs-keyword">and</span> !o.angleShift?
-          option.angle = <span class="hljs-property">@transits</span>[len].o.angle
-        <span class="hljs-keyword">else</span></div></div>
+          option.angle = <span class="hljs-property">@transits</span>[len].o.angle</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>calculate new angle</p>
+          <div class="wrapper"><p>calculate bit angle if new angle related option passed
+and not isResetAngles</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">          points = <span class="hljs-property">@props</span>.count
-          <span class="hljs-property">@degCnt</span> = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.degree % <span class="hljs-number">360</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> points <span class="hljs-keyword">else</span> points-<span class="hljs-number">1</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>
-          step = <span class="hljs-property">@props</span>.degree/<span class="hljs-property">@degCnt</span>; angleAddition = len*step + <span class="hljs-number">90</span>
-          angleShift = <span class="hljs-property">@transits</span>[len].angleShift <span class="hljs-keyword">or</span> <span class="hljs-number">0</span></div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>if not delta option</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">          option.angle = <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> option.angle <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
-            option.angle + angleAddition + angleShift</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>if delta option calculate delta based on
-angle in burst for each transit and angleShift</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">          <span class="hljs-keyword">else</span>
-            keys = Object.keys(option.angle); start = keys[<span class="hljs-number">0</span>]
-            end = option.angle[start]; curAngleShift = angleAddition+angleShift
-            newStart = parseFloat(start) + curAngleShift
-            newEnd   = parseFloat(end)   + curAngleShift
-            delta = {}; delta[newStart] = newEnd
-            delta
+        <div class="code"><div class="wrapper">        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> !o.isResetAngles
+          option.angle = <span class="hljs-property">@getBitAngle</span> option.angle, len
 
         <span class="hljs-property">@transits</span>[len].tuneNewOption option, <span class="hljs-literal">true</span>
       <span class="hljs-property">@tween</span>.recalcDuration()
@@ -290,29 +256,77 @@ angle in burst for each transit and angleShift</p>
       transit.o.x = <span class="hljs-property">@getDeltaFromPoints</span> <span class="hljs-string">'x'</span>, pointStart, pointEnd
       transit.o.y = <span class="hljs-property">@getDeltaFromPoints</span> <span class="hljs-string">'y'</span>, pointStart, pointEnd
 
-      <span class="hljs-keyword">if</span> !<span class="hljs-property">@props</span>.isResetAngles
-        angleAddition = i*step + <span class="hljs-number">90</span>
-        transit.o.angle = <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> transit.o.angle <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
-          transit.o.angle + angleAddition + aShift
-        <span class="hljs-keyword">else</span>
-          keys = Object.keys(transit.o.angle); start = keys[<span class="hljs-number">0</span>]
-          end   = transit.o.angle[start]
-          newStart = parseFloat(start) + angleAddition + aShift
-          newEnd   = parseFloat(end)   + angleAddition + aShift
-          delta = {}; delta[newStart] = newEnd
-          delta</div></div>
+      transit.o.angle = <span class="hljs-property">@getBitAngle</span> transit.o.angle, i <span class="hljs-keyword">if</span> !<span class="hljs-property">@props</span>.isResetAngles
+      transit.extendDefaults()</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>console.log transit.o.angle</p>
+          <div class="wrapper"><hr>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">      transit.extendDefaults()
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>getBitAngle</strong>
+</span></p>
+<p>Method to get transits angle in burst so
+it will follow circular shape</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>base</code> must be a Number, Object.</strong><br/>(angle)</li>
+<li><strong><code>transit</code> must be an Integer.</strong><br/>(&#39;s index in burst)</li>
+</ul>
+<p><strong>Returns a Numebr</strong><br/>(angle in burst)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">getBitAngle</span>:<span class="hljs-function"><span class="hljs-params">(angle, i)</span>-&gt;</span>
+    points = <span class="hljs-property">@props</span>.count
+    degCnt = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.degree % <span class="hljs-number">360</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> points <span class="hljs-keyword">else</span> points-<span class="hljs-number">1</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>
+    step = <span class="hljs-property">@props</span>.degree/degCnt; angleAddition = i*step + <span class="hljs-number">90</span>
+    angleShift = <span class="hljs-property">@transits</span>[i].props.angleShift <span class="hljs-keyword">or</span> <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if not delta option</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    angle = <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> angle <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+      angle + angleAddition + angleShift</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if delta option calculate delta based on
+angle in burst for each transit and angleShift</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">else</span>
+      keys = Object.keys(angle); start = keys[<span class="hljs-number">0</span>]
+      end = angle[start]; curAngleShift = angleAddition+angleShift
+      newStart = parseFloat(start) + curAngleShift
+      newEnd   = parseFloat(end)   + curAngleShift
+      delta = {}; delta[newStart] = newEnd
+      delta
+    angle
 
   <span class="hljs-attribute">getSidePoint</span>:<span class="hljs-function"><span class="hljs-params">(side, angle)</span>-&gt;</span>
     sideRadius = <span class="hljs-property">@getSideRadius</span> side

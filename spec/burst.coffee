@@ -295,16 +295,22 @@ describe 'Burst ->', ->
     #   expect(option1.radius)    .toBe 21
     #   expect(option7.radius)    .toBe 21
   
-  # remove
-  # describe 'getAngleByMod method ->', ->
-  #   it 'should get angle by i', ->
-  #     burst = new Burst
-  #       radius: { 'rand(10,20)': 100 }
-  #     expect(burst.getAngleByMod(0)).toBe 90
-  #     expect(burst.getAngleByMod(1)).toBe 162
-  #     expect(burst.getAngleByMod(2)).toBe 234
-  #     expect(burst.getAngleByMod(3)).toBe 306
-  #     expect(burst.getAngleByMod(4)).toBe 378
+  describe 'getBitAngle method ->', ->
+    it 'should get angle by i', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst.getBitAngle(0, 0)).toBe 90
+      expect(burst.getBitAngle(0, 1)).toBe 162
+      expect(burst.getBitAngle(0, 2)).toBe 234
+      expect(burst.getBitAngle(90, 2)).toBe 234 + 90
+      expect(burst.getBitAngle(0, 3)).toBe 306
+      expect(burst.getBitAngle(90, 3)).toBe 306 + 90
+      expect(burst.getBitAngle(0, 4)).toBe 378
+      expect(burst.getBitAngle(50, 4)).toBe 378 + 50
+    it 'should get delta angle by i', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst.getBitAngle({180:0}, 0)[270]).toBe 90
+      expect(burst.getBitAngle({50:20}, 3)[356]).toBe 326
+      expect(burst.getBitAngle({50:20}, 4)[428]).toBe 398
 
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->
@@ -455,7 +461,6 @@ describe 'Burst ->', ->
       burst1 = new Burst
         radius: {120: 0}, count: 2, childOptions: angle: {25: 50}
       burst2 = new Burst
-        isIt: true
         radius: {120: 0}, count: 2, randomAngle: 1
         childOptions: angle: {25: 50}
       start2 = burst2.transits[1].deltas.angle.start
@@ -638,16 +643,21 @@ describe 'Burst ->', ->
       burst = new Burst isRunLess: true
       burst.run count: 10
       expect(burst.transits[3].o.angle).toBe 306
-    it 'recieve new angle options', ->
+    it 'should recieve new angle options', ->
       burst = new Burst isRunLess: true
       burst.run childOptions: angle: 90
       expect(burst.transits[3].o.angle).toBe 396
       expect(burst.transits[4].o.angle).toBe 468
-    it 'recieve new angle delta options', ->
+    it 'should recieve new angle delta options', ->
       burst = new Burst isRunLess: true
       burst.run childOptions: angle: 90: 0
       expect(burst.transits[3].o.angle[396]).toBe 306
       expect(burst.transits[4].o.angle[468]).toBe 378
+    it 'should skip circular shape angle on isResetAngles', ->
+      burst = new Burst isRunLess: true
+      burst.run isResetAngles: true, childOptions: angle: 90: 0
+      expect(burst.transits[3].o.angle[90]).toBe 0
+      expect(burst.transits[4].o.angle[90]).toBe 0
 
   describe 'generateRandomAngle method ->', ->
     it 'should generate random angle based on randomness', ->

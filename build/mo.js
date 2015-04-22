@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.114.2 
+	0.114.4 
 */
 
 (function(f){
@@ -276,7 +276,7 @@ Burst = (function(superClass) {
   };
 
   Burst.prototype.run = function(o) {
-    var angleAddition, angleShift, base, curAngleShift, delta, end, i, j, key, keys, len, len1, newEnd, newStart, option, points, ref, ref1, start, step, tr;
+    var base, i, j, key, keys, len, len1, option, ref, ref1, tr;
     if ((o != null) && Object.keys(o).length) {
       if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
         this.h.warn('Sorry, count can not be changed on run');
@@ -295,13 +295,8 @@ Burst = (function(superClass) {
         option = this.getOption(len);
         if ((((ref1 = o.childOptions) != null ? ref1.angle : void 0) == null) && (o.angleShift == null)) {
           option.angle = this.transits[len].o.angle;
-        } else {
-          points = this.props.count;
-          this.degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
-          step = this.props.degree / this.degCnt;
-          angleAddition = len * step + 90;
-          angleShift = this.transits[len].angleShift || 0;
-          option.angle = typeof option.angle !== 'object' ? option.angle + angleAddition + angleShift : (keys = Object.keys(option.angle), start = keys[0], end = option.angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
+        } else if (!o.isResetAngles) {
+          option.angle = this.getBitAngle(option.angle, len);
         }
         this.transits[len].tuneNewOption(option, true);
       }
@@ -339,7 +334,7 @@ Burst = (function(superClass) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var aShift, angleAddition, delta, end, i, j, keys, len1, newEnd, newStart, pointEnd, pointStart, points, ref, results, start, step, transit;
+    var aShift, i, j, len1, pointEnd, pointStart, points, ref, results, step, transit;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
     step = this.props.degree / this.degreeCnt;
@@ -353,12 +348,22 @@ Burst = (function(superClass) {
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
       if (!this.props.isResetAngles) {
-        angleAddition = i * step + 90;
-        transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition + aShift : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition + aShift, newEnd = parseFloat(end) + angleAddition + aShift, delta = {}, delta[newStart] = newEnd, delta);
+        transit.o.angle = this.getBitAngle(transit.o.angle, i);
       }
       results.push(transit.extendDefaults());
     }
     return results;
+  };
+
+  Burst.prototype.getBitAngle = function(angle, i) {
+    var angleAddition, angleShift, curAngleShift, degCnt, delta, end, keys, newEnd, newStart, points, start, step;
+    points = this.props.count;
+    degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
+    step = this.props.degree / degCnt;
+    angleAddition = i * step + 90;
+    angleShift = this.transits[i].props.angleShift || 0;
+    angle = typeof angle !== 'object' ? angle + angleAddition + angleShift : (keys = Object.keys(angle), start = keys[0], end = angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
+    return angle;
   };
 
   Burst.prototype.getSidePoint = function(side, angle) {
@@ -747,15 +752,18 @@ Helpers = (function() {
   }
 
   Helpers.prototype.vars = function() {
+    var ua;
     this.prefix = this.getPrefix();
     this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
     this.isIE = this.prefix.lowercase === 'ms';
-    this.isOldOpera = navigator.userAgent.match(/presto/gim);
-    this.isSafari = navigator.userAgent.indexOf('Safari') > -1;
-    this.isChrome = navigator.userAgent.indexOf('Chrome') > -1;
-    this.isOpera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+    ua = navigator.userAgent;
+    this.isOldOpera = ua.match(/presto/gim);
+    this.isSafari = ua.indexOf('Safari') > -1;
+    this.isChrome = ua.indexOf('Chrome') > -1;
+    this.isOpera = ua.toLowerCase().indexOf("op") > -1;
     this.isChrome && this.isSafari && (this.isSafari = false);
+    (ua.match(/PhantomJS/gim)) && (this.isSafari = false);
     this.isChrome && this.isOpera && (this.isChrome = false);
     this.uniqIDs = -1;
     this.div = document.createElement('div');
@@ -1204,7 +1212,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.114.2',
+  revision: '0.114.4',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

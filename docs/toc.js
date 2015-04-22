@@ -37,8 +37,23 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "delay:  2000",
+  "title": "isRunLess: true",
   "toc": [
+    {
+      "level": 1,
+      "slug": "isrunless-true",
+      "title": "isRunLess: true"
+    },
+    {
+      "level": 1,
+      "slug": "delay-39-stagger-100-39-",
+      "title": "delay: &#39;stagger(100)&#39;"
+    },
+    {
+      "level": 1,
+      "slug": "childoptions-angle-45-0",
+      "title": "childOptions: angle: 45: 0"
+    },
     {
       "level": 1,
       "slug": "delay-2000",
@@ -111,6 +126,47 @@ window.files = [
   "toc": []
 },
 {
+  "path": "js/tween/timeline.coffee.html",
+  "originalName": "timeline.coffee",
+  "originalPath": "js/tween/timeline.coffee",
+  "name": "timeline.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/tween/tween.coffee.html",
+  "originalName": "tween.coffee",
+  "originalPath": "js/tween/tween.coffee",
+  "name": "tween.coffee.html",
+  "lang": "coffeescript",
+  "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there",
+  "toc": [
+    {
+      "level": 1,
+      "slug": "update-every-timeline-to-its-start-time-timelines-while-i-lt-len-and-timelines-if-timeline-is-actually-a-tween-then-reset-progress-there",
+      "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there"
+    },
+    {
+      "level": 1,
+      "slug": "if-timeline-resetprogress-then-timeline-resetprogress-",
+      "title": "if timeline.resetProgress? then timeline.resetProgress()"
+    },
+    {
+      "level": 1,
+      "slug": "else-timeline-update-timeline-props-starttime-",
+      "title": "else timeline.update(timeline.props.startTime)"
+    }
+  ]
+},
+{
+  "path": "js/tween/tweener.coffee.html",
+  "originalName": "tweener.coffee",
+  "originalPath": "js/tween/tweener.coffee",
+  "name": "tweener.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/shapes/bit.coffee.html",
   "originalName": "bit.coffee",
   "originalPath": "js/shapes/bit.coffee",
@@ -179,47 +235,6 @@ window.files = [
   "originalName": "zigzag.coffee",
   "originalPath": "js/shapes/zigzag.coffee",
   "name": "zigzag.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/tween/timeline.coffee.html",
-  "originalName": "timeline.coffee",
-  "originalPath": "js/tween/timeline.coffee",
-  "name": "timeline.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/tween/tween.coffee.html",
-  "originalName": "tween.coffee",
-  "originalPath": "js/tween/tween.coffee",
-  "name": "tween.coffee.html",
-  "lang": "coffeescript",
-  "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "update-every-timeline-to-its-start-time-timelines-while-i-lt-len-and-timelines-if-timeline-is-actually-a-tween-then-reset-progress-there",
-      "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there"
-    },
-    {
-      "level": 1,
-      "slug": "if-timeline-resetprogress-then-timeline-resetprogress-",
-      "title": "if timeline.resetProgress? then timeline.resetProgress()"
-    },
-    {
-      "level": 1,
-      "slug": "else-timeline-update-timeline-props-starttime-",
-      "title": "else timeline.update(timeline.props.startTime)"
-    }
-  ]
-},
-{
-  "path": "js/tween/tweener.coffee.html",
-  "originalName": "tweener.coffee",
-  "originalPath": "js/tween/tweener.coffee",
-  "name": "tweener.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },

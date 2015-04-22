@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.114.2'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.114.4'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -68,7 +68,8 @@ mojs.delta = mojs.h.delta
   isShowEnd: true
   type: &#39;line&#39;
   stroke: &#39;deeppink&#39;
-  strokeWidth: 2:0</p>
+  strokeWidth: 2:0
+  count: 5</p>
 <h1 id="delay-39-stagger-100-39-"><a href="#delay-39-stagger-100-39-" class="anchor"></a>delay: &#39;stagger(100)&#39;</h1><h1 id="childoptions-angle-45-0"><a href="#childoptions-angle-45-0" class="anchor"></a>childOptions: angle: 45: 0</h1></div>
         </div>
       
@@ -79,7 +80,7 @@ mojs.delta = mojs.h.delta
       
         <div class="comments ">
           <div class="wrapper"><p>document.body.addEventListener &#39;click&#39;, (e)-&gt;
-  burst.run(x: e.x, y: e.y, childOptions: angle: [null, {0:90}])</p>
+  burst.run(x: e.x, y: e.y, isResetAngles: true, childOptions: angle: {0:90})</p>
 </div>
         </div>
       

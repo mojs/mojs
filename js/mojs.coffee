@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.114.2', isDebug: true
+  revision:   '0.114.4', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -31,11 +31,12 @@ mojs.delta = mojs.h.delta
 #   type: 'line'
 #   stroke: 'deeppink'
 #   strokeWidth: 2:0
+#   count: 5
 #   # delay: 'stagger(100)'
 #   # childOptions: angle: 45: 0
 
 # document.body.addEventListener 'click', (e)->
-#   burst.run(x: e.x, y: e.y, childOptions: angle: [null, {0:90}])
+#   burst.run(x: e.x, y: e.y, isResetAngles: true, childOptions: angle: {0:90})
 
 # angle = 0
 # mp = new mojs.MotionPath
@@ -55,7 +56,6 @@ mojs.delta = mojs.h.delta
 #   mp.el.style['box-shadow'] = "#{point.x*10}px #{point.y*10}px 0 black"
 #   angle = (angle+1) % 360
 # , 10
-
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
