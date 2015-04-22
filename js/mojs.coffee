@@ -26,7 +26,8 @@ mojs.delta = mojs.h.delta
 
 
 burst = new mojs.Burst
-  isRunLess: true
+  # isRunLess: true
+  x: 200, y: 200
   isShowEnd: true
   type: 'line'
   stroke: 'deeppink'

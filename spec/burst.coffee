@@ -294,6 +294,17 @@ describe 'Burst ->', ->
     #   expect(option0.radius[20]).toBe 51
     #   expect(option1.radius)    .toBe 21
     #   expect(option7.radius)    .toBe 21
+  
+  # remove
+  # describe 'getAngleByMod method ->', ->
+  #   it 'should get angle by i', ->
+  #     burst = new Burst
+  #       radius: { 'rand(10,20)': 100 }
+  #     expect(burst.getAngleByMod(0)).toBe 90
+  #     expect(burst.getAngleByMod(1)).toBe 162
+  #     expect(burst.getAngleByMod(2)).toBe 234
+  #     expect(burst.getAngleByMod(3)).toBe 306
+  #     expect(burst.getAngleByMod(4)).toBe 378
 
   describe 'getPropByMod method ->', ->
     it 'should return the prop from @o based on i ->', ->
@@ -579,15 +590,13 @@ describe 'Burst ->', ->
       expect(burst.transits[0].o.duration).toBe 500
       expect(burst.transits[1].o.duration).toBe 1000
       expect(burst.transits[2].o.duration).toBe 500
-
-    it 'should recieve extend old childOptions', ->
+    it 'should extend old childOptions', ->
       burst = new Burst
         duration: 400, childOptions: fill: 'deeppink'
       newDuration = [null, 1000, null]
       burst.run duration: 500, childOptions: duration: newDuration
       expect(burst.o.childOptions.fill)    .toBe 'deeppink'
       expect(burst.o.childOptions.duration).toBe newDuration
-
     it 'should call recalcDuration on tween', ->
       burst = new Burst
         duration: 400, childOptions: fill: 'deeppink'
@@ -625,6 +634,21 @@ describe 'Burst ->', ->
       spyOn burst.h, 'warn'
       burst.run count: 10
       expect(burst.h.warn).toHaveBeenCalled()
+    it 'should keep angles on run', ->
+      burst = new Burst isRunLess: true
+      burst.run count: 10
+      expect(burst.transits[3].o.angle).toBe 306
+    it 'recieve new angle options', ->
+      burst = new Burst isRunLess: true
+      burst.run childOptions: angle: 90
+      expect(burst.transits[3].o.angle).toBe 396
+      expect(burst.transits[4].o.angle).toBe 468
+    # it 'recieve new angle delta options', ->
+    #   burst = new Burst isRunLess: true
+    #   burst.run childOptions: angle: 90: 0
+    #   expect(burst.transits[3].o.angle[396]).toBe 0
+    #   expect(burst.transits[4].o.angle[468]).toBe 0
+
   describe 'generateRandomAngle method ->', ->
     it 'should generate random angle based on randomness', ->
       burst = new Burst randomAngle: .5

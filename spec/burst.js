@@ -922,7 +922,7 @@
         expect(burst.transits[1].o.duration).toBe(1000);
         return expect(burst.transits[2].o.duration).toBe(500);
       });
-      it('should recieve extend old childOptions', function() {
+      it('should extend old childOptions', function() {
         var burst, newDuration;
         burst = new Burst({
           duration: 400,
@@ -999,7 +999,7 @@
         burst.run();
         return expect(burst.generateRandomRadius).not.toHaveBeenCalled();
       });
-      return it('should warn if count was passed', function() {
+      it('should warn if count was passed', function() {
         var burst;
         burst = new Burst;
         spyOn(burst.h, 'warn');
@@ -1007,6 +1007,29 @@
           count: 10
         });
         return expect(burst.h.warn).toHaveBeenCalled();
+      });
+      it('should keep angles on run', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true
+        });
+        burst.run({
+          count: 10
+        });
+        return expect(burst.transits[3].o.angle).toBe(306);
+      });
+      return it('recieve new angle options', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true
+        });
+        burst.run({
+          childOptions: {
+            angle: 90
+          }
+        });
+        expect(burst.transits[3].o.angle).toBe(396);
+        return expect(burst.transits[4].o.angle).toBe(468);
       });
     });
     describe('generateRandomAngle method ->', function() {

@@ -179,10 +179,8 @@ h         = <span class="hljs-built_in">require</span> <span class="hljs-string"
         </div>
       
       
-        <div class="code"><div class="wrapper">      keys = Object.keys(o.childOptions <span class="hljs-keyword">or</span> {})
-      <span class="hljs-property">@o</span>.childOptions ?= {}
-      <span class="hljs-keyword">for</span> key, i <span class="hljs-keyword">in</span> keys
-        <span class="hljs-property">@o</span>.childOptions[key] = o.childOptions[key]</div></div>
+        <div class="code"><div class="wrapper">      keys = Object.keys(o.childOptions <span class="hljs-keyword">or</span> {}); <span class="hljs-property">@o</span>.childOptions ?= {}
+      <span class="hljs-property">@o</span>.childOptions[key] = o.childOptions[key] <span class="hljs-keyword">for</span> key, i <span class="hljs-keyword">in</span> keys</div></div>
       
       </div>
     
@@ -195,9 +193,41 @@ h         = <span class="hljs-built_in">require</span> <span class="hljs-string"
       
       
         <div class="code"><div class="wrapper">      len = <span class="hljs-property">@transits</span>.length
-      <span class="hljs-keyword">while</span>(len--)
-        transit = <span class="hljs-property">@transits</span>[len]
-        transit.tuneNewOption <span class="hljs-property">@getOption</span>(len), <span class="hljs-literal">true</span>
+      <span class="hljs-keyword">while</span>(len--)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>we should keep transit&#39;s angle otherwise
+it will fallback to default 0 value</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">        option = <span class="hljs-property">@getOption</span>(len)
+        <span class="hljs-keyword">if</span> !o.childOptions?.angle? <span class="hljs-keyword">and</span> !o.angleShift?
+          option.angle = <span class="hljs-property">@transits</span>[len].o.angle
+        <span class="hljs-keyword">else</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>calculate new angle</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">          points = <span class="hljs-property">@props</span>.count
+          <span class="hljs-property">@degCnt</span> = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.degree % <span class="hljs-number">360</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> points <span class="hljs-keyword">else</span> points-<span class="hljs-number">1</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>
+          step = <span class="hljs-property">@props</span>.degree/<span class="hljs-property">@degCnt</span>
+          angleAddition = len*step + <span class="hljs-number">90</span>; angleShift = <span class="hljs-property">@transits</span>[len].angleShift <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
+          option.angle = option.angle + angleAddition + angleShift
+
+        <span class="hljs-property">@transits</span>[len].tuneNewOption option, <span class="hljs-literal">true</span>
       <span class="hljs-property">@tween</span>.recalcDuration()
     <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.randomAngle <span class="hljs-keyword">or</span> <span class="hljs-property">@props</span>.randomRadius
       len = <span class="hljs-property">@transits</span>.length
@@ -222,7 +252,7 @@ h         = <span class="hljs-built_in">require</span> <span class="hljs-string"
     
     step = <span class="hljs-property">@props</span>.degree/<span class="hljs-property">@degreeCnt</span>
     <span class="hljs-keyword">for</span> transit, i <span class="hljs-keyword">in</span> <span class="hljs-property">@transits</span>
-      aShift = transit.props.angleShift
+      aShift = transit.props.angleShift <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
       pointStart = <span class="hljs-property">@getSidePoint</span> <span class="hljs-string">'start'</span>, i*step + aShift
       pointEnd   = <span class="hljs-property">@getSidePoint</span> <span class="hljs-string">'end'</span>,   i*step + aShift
 
@@ -334,6 +364,7 @@ get the option from childDefaults and continue</p>
         <div class="code"><div class="wrapper">      option[key] ?= <span class="hljs-property">@getPropByMod</span> <span class="hljs-attribute">key</span>: key, <span class="hljs-attribute">i</span>: i, <span class="hljs-attribute">from</span>: <span class="hljs-property">@o</span>
       option[key] ?= <span class="hljs-property">@getPropByMod</span> <span class="hljs-attribute">key</span>: key, <span class="hljs-attribute">i</span>: i, <span class="hljs-attribute">from</span>: <span class="hljs-property">@childDefaults</span>
     option
+
   <span class="hljs-attribute">getPropByMod</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
     prop = (o.from <span class="hljs-keyword">or</span> <span class="hljs-property">@o</span>.childOptions)?[o.key]
     <span class="hljs-keyword">if</span> <span class="hljs-property">@h</span>.isArray(prop) <span class="hljs-keyword">then</span> prop[o.i % prop.length] <span class="hljs-keyword">else</span> prop

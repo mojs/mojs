@@ -274,7 +274,7 @@ Burst = (function(superClass) {
   };
 
   Burst.prototype.run = function(o) {
-    var base, i, j, key, keys, len, len1, ref, tr, transit;
+    var angleAddition, angleShift, base, i, j, key, keys, len, len1, option, points, ref, ref1, step, tr;
     if ((o != null) && Object.keys(o).length) {
       if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
         this.h.warn('Sorry, count can not be changed on run');
@@ -290,8 +290,18 @@ Burst = (function(superClass) {
       }
       len = this.transits.length;
       while (len--) {
-        transit = this.transits[len];
-        transit.tuneNewOption(this.getOption(len), true);
+        option = this.getOption(len);
+        if ((((ref1 = o.childOptions) != null ? ref1.angle : void 0) == null) && (o.angleShift == null)) {
+          option.angle = this.transits[len].o.angle;
+        } else {
+          points = this.props.count;
+          this.degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
+          step = this.props.degree / this.degCnt;
+          angleAddition = len * step + 90;
+          angleShift = this.transits[len].angleShift || 0;
+          option.angle = option.angle + angleAddition + angleShift;
+        }
+        this.transits[len].tuneNewOption(option, true);
       }
       this.tween.recalcDuration();
     }
@@ -335,7 +345,7 @@ Burst = (function(superClass) {
     results = [];
     for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
       transit = ref[i];
-      aShift = transit.props.angleShift;
+      aShift = transit.props.angleShift || 0;
       pointStart = this.getSidePoint('start', i * step + aShift);
       pointEnd = this.getSidePoint('end', i * step + aShift);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
@@ -1220,7 +1230,8 @@ mojs.h = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
 burst = new mojs.Burst({
-  isRunLess: true,
+  x: 200,
+  y: 200,
   isShowEnd: true,
   type: 'line',
   stroke: 'deeppink',

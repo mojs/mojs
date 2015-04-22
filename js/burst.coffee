@@ -82,15 +82,25 @@ class Burst extends Transit
         @h.warn 'Sorry, count can not be changed on run'
       @extendDefaults(o)
       # copy child options to options
-      keys = Object.keys(o.childOptions or {})
-      @o.childOptions ?= {}
-      for key, i in keys
-        @o.childOptions[key] = o.childOptions[key]
+      keys = Object.keys(o.childOptions or {}); @o.childOptions ?= {}
+      @o.childOptions[key] = o.childOptions[key] for key, i in keys
       # tune transits
       len = @transits.length
       while(len--)
-        transit = @transits[len]
-        transit.tuneNewOption @getOption(len), true
+        # we should keep transit's angle otherwise
+        # it will fallback to default 0 value
+        option = @getOption(len)
+        if !o.childOptions?.angle? and !o.angleShift?
+          option.angle = @transits[len].o.angle
+        else
+          # calculate new angle
+          points = @props.count
+          @degCnt = if @props.degree % 360 is 0 then points else points-1 or 1
+          step = @props.degree/@degCnt
+          angleAddition = len*step + 90; angleShift = @transits[len].angleShift or 0
+          option.angle = option.angle + angleAddition + angleShift
+
+        @transits[len].tuneNewOption option, true
       @tween.recalcDuration()
     if @props.randomAngle or @props.randomRadius
       len = @transits.length
@@ -115,7 +125,7 @@ class Burst extends Transit
     
     step = @props.degree/@degreeCnt
     for transit, i in @transits
-      aShift = transit.props.angleShift
+      aShift = transit.props.angleShift or 0
       pointStart = @getSidePoint 'start', i*step + aShift
       pointEnd   = @getSidePoint 'end',   i*step + aShift
 
@@ -192,6 +202,7 @@ class Burst extends Transit
       option[key] ?= @getPropByMod key: key, i: i, from: @o
       option[key] ?= @getPropByMod key: key, i: i, from: @childDefaults
     option
+
   getPropByMod:(o)->
     prop = (o.from or @o.childOptions)?[o.key]
     if @h.isArray(prop) then prop[o.i % prop.length] else prop
