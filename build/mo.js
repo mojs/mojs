@@ -276,7 +276,7 @@ Burst = (function(superClass) {
   };
 
   Burst.prototype.run = function(o) {
-    var angleAddition, angleShift, base, i, j, key, keys, len, len1, option, points, ref, ref1, step, tr;
+    var angleAddition, angleShift, base, curAngleShift, delta, end, i, j, key, keys, len, len1, newEnd, newStart, option, points, ref, ref1, start, step, tr;
     if ((o != null) && Object.keys(o).length) {
       if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
         this.h.warn('Sorry, count can not be changed on run');
@@ -301,7 +301,7 @@ Burst = (function(superClass) {
           step = this.props.degree / this.degCnt;
           angleAddition = len * step + 90;
           angleShift = this.transits[len].angleShift || 0;
-          option.angle = option.angle + angleAddition + angleShift;
+          option.angle = typeof option.angle !== 'object' ? option.angle + angleAddition + angleShift : (keys = Object.keys(option.angle), start = keys[0], end = option.angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
         }
         this.transits[len].tuneNewOption(option, true);
       }
@@ -1201,7 +1201,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var burst, mojs;
+var mojs;
 
 mojs = {
   revision: '0.114.2',
@@ -1230,24 +1230,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-burst = new mojs.Burst({
-  x: 200,
-  y: 200,
-  isShowEnd: true,
-  type: 'line',
-  stroke: 'deeppink',
-  strokeWidth: {
-    2: 0
-  }
-});
-
-document.body.addEventListener('click', function(e) {
-  return burst.run({
-    x: e.x,
-    y: e.y
-  });
-});
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {

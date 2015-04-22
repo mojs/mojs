@@ -223,9 +223,40 @@ it will fallback to default 0 value</p>
       
         <div class="code"><div class="wrapper">          points = <span class="hljs-property">@props</span>.count
           <span class="hljs-property">@degCnt</span> = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.degree % <span class="hljs-number">360</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> points <span class="hljs-keyword">else</span> points-<span class="hljs-number">1</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>
-          step = <span class="hljs-property">@props</span>.degree/<span class="hljs-property">@degCnt</span>
-          angleAddition = len*step + <span class="hljs-number">90</span>; angleShift = <span class="hljs-property">@transits</span>[len].angleShift <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
-          option.angle = option.angle + angleAddition + angleShift
+          step = <span class="hljs-property">@props</span>.degree/<span class="hljs-property">@degCnt</span>; angleAddition = len*step + <span class="hljs-number">90</span>
+          angleShift = <span class="hljs-property">@transits</span>[len].angleShift <span class="hljs-keyword">or</span> <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if not delta option</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">          option.angle = <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> option.angle <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+            option.angle + angleAddition + angleShift</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if delta option calculate delta based on
+angle in burst for each transit and angleShift</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">          <span class="hljs-keyword">else</span>
+            keys = Object.keys(option.angle); start = keys[<span class="hljs-number">0</span>]
+            end = option.angle[start]; curAngleShift = angleAddition+angleShift
+            newStart = parseFloat(start) + curAngleShift
+            newEnd   = parseFloat(end)   + curAngleShift
+            delta = {}; delta[newStart] = newEnd
+            delta
 
         <span class="hljs-property">@transits</span>[len].tuneNewOption option, <span class="hljs-literal">true</span>
       <span class="hljs-property">@tween</span>.recalcDuration()

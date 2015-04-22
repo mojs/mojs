@@ -643,11 +643,11 @@ describe 'Burst ->', ->
       burst.run childOptions: angle: 90
       expect(burst.transits[3].o.angle).toBe 396
       expect(burst.transits[4].o.angle).toBe 468
-    # it 'recieve new angle delta options', ->
-    #   burst = new Burst isRunLess: true
-    #   burst.run childOptions: angle: 90: 0
-    #   expect(burst.transits[3].o.angle[396]).toBe 0
-    #   expect(burst.transits[4].o.angle[468]).toBe 0
+    it 'recieve new angle delta options', ->
+      burst = new Burst isRunLess: true
+      burst.run childOptions: angle: 90: 0
+      expect(burst.transits[3].o.angle[396]).toBe 306
+      expect(burst.transits[4].o.angle[468]).toBe 378
 
   describe 'generateRandomAngle method ->', ->
     it 'should generate random angle based on randomness', ->

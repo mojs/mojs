@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>delay:  2000 - mojs.coffee</title>
+  <title>isRunLess: true - mojs.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -56,40 +56,33 @@
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-
-
-burst = <span class="hljs-keyword">new</span> mojs.Burst</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>isRunLess: true</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">x</span>: <span class="hljs-number">200</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">200</span>
-  <span class="hljs-attribute">isShowEnd</span>: <span class="hljs-literal">true</span>
-  <span class="hljs-attribute">type</span>: <span class="hljs-string">'line'</span>
-  <span class="hljs-attribute">stroke</span>: <span class="hljs-string">'deeppink'</span>
-  <span class="hljs-attribute">strokeWidth</span>: <span class="hljs-number">2</span>:<span class="hljs-number">0</span></div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>delay: &#39;stagger(100)&#39;
-childOptions: angle: 45: 0</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper"><span class="hljs-built_in">document</span>.body.addEventListener <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span>-&gt;</span>
-  burst.run(<span class="hljs-attribute">x</span>: e.x, <span class="hljs-attribute">y</span>: e.y)
 </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>burst = new mojs.Burst</p>
+<h1 id="isrunless-true"><a href="#isrunless-true" class="anchor"></a>isRunLess: true</h1><p>  x: 200, y: 200
+  isShowEnd: true
+  type: &#39;line&#39;
+  stroke: &#39;deeppink&#39;
+  strokeWidth: 2:0</p>
+<h1 id="delay-39-stagger-100-39-"><a href="#delay-39-stagger-100-39-" class="anchor"></a>delay: &#39;stagger(100)&#39;</h1><h1 id="childoptions-angle-45-0"><a href="#childoptions-angle-45-0" class="anchor"></a>childOptions: angle: 45: 0</h1></div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>document.body.addEventListener &#39;click&#39;, (e)-&gt;
+  burst.run(x: e.x, y: e.y, childOptions: angle: [null, {0:90}])</p>
+</div>
+        </div>
+      
       
       </div>
     

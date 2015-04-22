@@ -96,9 +96,20 @@ class Burst extends Transit
           # calculate new angle
           points = @props.count
           @degCnt = if @props.degree % 360 is 0 then points else points-1 or 1
-          step = @props.degree/@degCnt
-          angleAddition = len*step + 90; angleShift = @transits[len].angleShift or 0
-          option.angle = option.angle + angleAddition + angleShift
+          step = @props.degree/@degCnt; angleAddition = len*step + 90
+          angleShift = @transits[len].angleShift or 0
+          # if not delta option
+          option.angle = if typeof option.angle isnt 'object'
+            option.angle + angleAddition + angleShift
+          # if delta option calculate delta based on
+          # angle in burst for each transit and angleShift
+          else
+            keys = Object.keys(option.angle); start = keys[0]
+            end = option.angle[start]; curAngleShift = angleAddition+angleShift
+            newStart = parseFloat(start) + curAngleShift
+            newEnd   = parseFloat(end)   + curAngleShift
+            delta = {}; delta[newStart] = newEnd
+            delta
 
         @transits[len].tuneNewOption option, true
       @tween.recalcDuration()

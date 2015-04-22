@@ -1018,7 +1018,7 @@
         });
         return expect(burst.transits[3].o.angle).toBe(306);
       });
-      return it('recieve new angle options', function() {
+      it('recieve new angle options', function() {
         var burst;
         burst = new Burst({
           isRunLess: true
@@ -1030,6 +1030,21 @@
         });
         expect(burst.transits[3].o.angle).toBe(396);
         return expect(burst.transits[4].o.angle).toBe(468);
+      });
+      return it('recieve new angle delta options', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true
+        });
+        burst.run({
+          childOptions: {
+            angle: {
+              90: 0
+            }
+          }
+        });
+        expect(burst.transits[3].o.angle[396]).toBe(306);
+        return expect(burst.transits[4].o.angle[468]).toBe(378);
       });
     });
     describe('generateRandomAngle method ->', function() {
