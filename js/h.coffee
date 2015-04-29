@@ -1,6 +1,22 @@
+# Utils methods and map objects
+#
+# @class Helpers
 class Helpers
+  # ---
+
+  # CSS styles for console.log/warn/error ::mojs:: badge styling
+  #
+  # @property   logBadgeCss
+  # @type       {String}
   logBadgeCss: 'background:#3A0839;color:#FF512F;border-radius:5px;
     padding: 1px 5px 2px; border: 1px solid #FF512F;'
+  # ---
+
+  # Shortcut map for the 16 standart web colors
+  # used to coerce literal name to rgb
+  #
+  # @property   shortColors
+  # @type       {Object}
   shortColors:
     transparent: 'rgba(0,0,0,0)'
     aqua:   'rgb(0,255,255)'
@@ -20,6 +36,7 @@ class Helpers
     white:  'rgb(255,255,255)'
     yellow: 'rgb(255,255,0)'
     orange: 'rgb(255,128,0)'
+  # ---
   # none-tweenable props
   chainOptionMap:
     duration:         1
@@ -53,35 +70,71 @@ class Helpers
     burstY:           1
     burstShiftX:      1
     burstShiftY:      1
-
   strokeDashPropsMap:
     strokeDasharray:  1
     strokeDashoffset: 1
-
-
   RAD_TO_DEG: 180/Math.PI
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()
     @getRemBase()
-    @isFF = @prefix.lowercase is 'moz'
-    @isIE = @prefix.lowercase is 'ms'
-    @isOldOpera = navigator.userAgent.match /presto/gim
+    @isFF = @prefix.lowercase is 'moz'; @isIE = @prefix.lowercase is 'ms'
+    ua = navigator.userAgent
+    @isOldOpera = ua.match /presto/gim
+    @isSafari   = ua.indexOf('Safari') > -1
+    @isChrome   = ua.indexOf('Chrome') > -1
+    @isOpera    = ua.toLowerCase().indexOf("op") > -1
+    @isChrome and @isSafari   and (@isSafari = false)
+    (ua.match /PhantomJS/gim) and (@isSafari = false)
+    @isChrome and @isOpera  and (@isChrome = false)
+
+    @uniqIDs = -1
 
     @div = document.createElement('div')
     document.body.appendChild @div
 
+  # ---
+
+  # Clones object by iterating thru object properties
+  #
+  # @method cloneObj
+  # @param {Object} to clone
+  # @param {Object} with key names that will be excluded
+  #                 from the new object, key value should
+  #                 be truthy
+  # @example
+  #   h.cloneObj({ foo: 'bar', baz: 'bar' }, { baz: 1 })
+  #   // result: { foo: 'bar' }
+  # @return {Object} new object
   cloneObj:(obj, exclude)->
     keys = Object.keys(obj); newObj = {}; i = keys.length
     while(i--)
       key = keys[i]
-      # skip the keys defined in exclude object
       if exclude? then newObj[key] = obj[key] if !exclude[key]
       else newObj[key] = obj[key]
     newObj
+
+  # ---
+
+  # Copies keys and values from the second object to the first if
+  # key was not defined on the first object
+  #
+  # @method extend
+  #
+  # @param {Object} to copy values to
+  # @param {Object} from copy values from
+  #
+  # @example
+  #   var objA = { foo: 'bar' }, objB = { baz: 'bax' };
+  #   h.extend(objA, objB)
+  #   // result: objA{ foo: 'bar', baz: 'bax' }
+  #
+  # @return {Object} the first modified object
   extend:(objTo, objFrom)->
     for key, value of objFrom
       objTo[key] ?= objFrom[key]
+    objTo
+
   getRemBase:->
     html = document.querySelector('html')
     style = getComputedStyle(html)
@@ -369,13 +422,6 @@ class Helpers
     # else
     isNode = typeof o.nodeType is 'number' and typeof o.nodeName is 'string'
     typeof o is 'object' and isNode
-  
-  ###
-  # Return direct children elements.
-  #
-  # @param {HTMLElement}
-  # @return {Array}
-  ###
   getChildElements:(element)->
     childNodes = element.childNodes
     children = []
@@ -384,6 +430,23 @@ class Helpers
       if childNodes[i].nodeType == 1
         children.unshift childNodes[i]
     children
+  delta:(start, end)->
+    type1 = typeof start; type2 = typeof end
+    isType1 = type1 is 'string' or type1 is 'number' and !isNaN(start)
+    isType2 = type2 is 'string' or type2 is 'number' and !isNaN(end)
+    if !isType1 or !isType2
+      @error "delta method expects Strings or Numbers at input
+         but got - #{start}, #{end}"
+      return
+    obj = {}; obj[start] = end; obj
+  # ---
+
+  # Returns uniq id
+  #
+  # @method getUniqID
+  # @return {Number}
+  getUniqID:-> ++@uniqIDs
+
 
 h = new Helpers
 module.exports = h

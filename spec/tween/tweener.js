@@ -46,7 +46,7 @@
           return dfr();
         }, 100);
       });
-      return it('should stop at the end', function(dfr) {
+      it('should stop at the end', function(dfr) {
         t.add(new Tween);
         t.startLoop();
         setTimeout((function() {
@@ -58,6 +58,14 @@
           expect(t.isRunning).toBe(false);
           return dfr();
         }), 200);
+      });
+      return it('should stop if !@isRunning', function() {
+        t.isRunning = false;
+        spyOn(window, 'requestAnimationFrame');
+        spyOn(t, 'update');
+        t.loop();
+        expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+        return expect(t.update).not.toHaveBeenCalled();
       });
     });
     describe('startLoop method ->', function() {

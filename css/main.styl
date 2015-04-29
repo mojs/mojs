@@ -9,6 +9,20 @@
 
 use('assets/nesting-tree-traversal.js')
 
+html, body
+  height 1000px
+
+.el
+  width  50px
+  height 50px
+  border-radius 50%
+  background deeppink
+  position absolute
+  top 20%
+  left 10%
+  // margin-left 500px
+  // nw 50%
+
 // svg
 //   hl deeppink
 
@@ -125,3 +139,17 @@ windowSize = 1280
 //   nw 0
 //   // backface-visibility hidden
 //   // transform translateZ(0)
+
+
+.elem {
+  width: 50px;
+  height: 50px;
+  margin-left: 200px;
+  background: deeppink;
+  border-radius: 50%;
+  // -webkit-mask-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC');
+  // -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+  // -webkit-filter: url(#filter-1);
+  // -moz-filter: url(#filter-1);
+  // filter: url(#filter-1);
+}

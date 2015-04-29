@@ -13,12 +13,12 @@ describe 'Helpers ->', ->
     expect(h.posPropsMap.y).toBe      1
     expect(h.posPropsMap.shiftX).toBe 1
     expect(h.posPropsMap.shiftY).toBe 1
-
   it 'should have strokeDashPropsMap map', ->
     expect(h.strokeDashPropsMap.strokeDasharray) .toBe    1
     expect(h.strokeDashPropsMap.strokeDashoffset).toBe    1
     expect(Object.keys(h.strokeDashPropsMap).length).toBe  2
-
+  it 'should have initial uniqIDs props', ->
+    expect(h.uniqIDs).toBe -1
   describe 'prefix', ->
     it 'should have prefix', ->
       expect(h.prefix).toBeDefined()
@@ -30,6 +30,9 @@ describe 'Helpers ->', ->
     it 'should have browsers flag', ->
       expect(h.isFF).toBeDefined()
       expect(h.isIE).toBeDefined()
+      expect(h.isSafari).toBeDefined()
+      expect(h.isChrome).toBeDefined()
+      expect(h.isOpera).toBeDefined()
       expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
@@ -725,7 +728,6 @@ describe 'Helpers ->', ->
         expect(h.isDOM(document.createElementNS ns, 'g')).toBe true
       # it 'should Node is function it should check if object is instance', ->
       #   expect(h.isDOM(document.body)).toBe document.body instanceof Node
-
   describe 'getChildElements method', ->
     ns    = 'http://www.w3.org/2000/svg'
     els   = document.createElementNS ns, 'g'
@@ -739,8 +741,6 @@ describe 'Helpers ->', ->
     it 'should filter text nodes', ->
       els.appendChild document.createTextNode 'hey'
       expect(h.getChildElements(els).length).toBe 2
-
-
   describe 'mergeUnits method', ->
     it 'should merge units if end one was not defined', ->
       start = { unit: '%',  value: 25, string: '25%', isStrict: true }
@@ -764,5 +764,59 @@ describe 'Helpers ->', ->
       expect(start.unit)  .toBe '%'
       expect(start.string).toBe '25%'
       expect(h.warn).toHaveBeenCalled()
+
+  describe 'delta method', ->
+    it 'should create object from variables', ->
+      start = 0; end = 1
+      delta = h.delta(start, end)
+      expect(delta[0]).toBe 1
+    it 'should work with strings', ->
+      start = '0'; end = 1
+      delta = h.delta(start, end)
+      expect(delta['0']).toBe 1
+    it 'should error if unexpected types', ->
+      start = (->); end = 1
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should error if unexpected types #2', ->
+      start = 2; end = (->)
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should error if unexpected types #3', ->
+      start = 2; end = {}
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should error if unexpected types #4', ->
+      start = {}; end = 2
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should not work with NaN arguments', ->
+      start = NaN; end = 2
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+    it 'should not work with NaN arguments #2', ->
+      start = '2'; end = NaN
+      spyOn mojs.helpers, 'error'
+      delta = h.delta(start, end)
+      expect(mojs.helpers.error).toHaveBeenCalled()
+      expect(delta).toBe undefined
+  describe 'getUniqID method', ->
+    it 'should return uniq id', ->
+      expect(h.getUniqID()).toBe 0
+      expect(h.getUniqID()).toBe 1
+      expect(h.getUniqID()).toBe 2
+      expect(h.uniqIDs)    .toBe 2
+
+
 
 

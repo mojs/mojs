@@ -1,49 +1,332 @@
+# ## MotionPath
+# Class for moving object along path or curve
+#
+# @class MotionPath
 h         = require './h'
+easing    = require './easing'
 resize    = require './vendor/resize'
 Timeline  = require './tween/timeline'
 Tween     = require './tween/tween'
 
 class MotionPath
   NS: 'http://www.w3.org/2000/svg'
+  # ---
+  # ### Defaults/APIs
+  # ---
   defaults:
-    delay:    0
+    # Defines motion path or arc to animate **el's** position.  
+    # 
+    # Can be defined
+    #   - by **String**:
+    #     - **CSS selector** e.g. '#js-path', '.path' etc
+    #     - **SVG path** [line commands](http://goo.gl/LzvV6P)
+    #       e.g 'M0,0 L100, 300'
+    #   - by **SVGPathElement** e.g document.getElementById('#js-path')
+    #   - by **Arc shift** e.g { x: 200, y: 100 }. If motion path was defined by
+    #     arc shift, [curvature option](#property-curvature)
+    #     defines arc curvature.
+    #     
+    # @property   path
+    # @type       {String, SVGPathElement, Object}
+    # 
+    # @codepen CSS selector:      http://codepen.io/sol0mka/pen/emqbLN/
+    # @codepen SVG line commands: http://codepen.io/sol0mka/pen/dPxaMm/
+    # @codepen SVGPathElement:    http://codepen.io/sol0mka/pen/xbvMyj/
+    # @codepen Arc shift:         http://codepen.io/sol0mka/pen/QweYKW/
+    path:             null
+    # ---
+
+    # Defines curve size for path defined by arc shift.  
+    # Curvature amount can be defined by number representing *px*
+    # or percents(string) representing amount relative to shift length.
+    # @example
+    #   { x: 200, y: 100 } or { x: '50%', y: '20%' } or mix
+    # @example
+    #   // will fallback to defaults for omitted axes
+    #   { x: 200 }   // fallbacks to { x: 200, y: '50%' }
+    #   { y: '25%' } // fallbacks to { x: '75%', y: '25%' }
+    # 
+    # @property   curvature
+    # @type       {Object}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/vEobbM/
+    curvature:        x: '75%', y: '50%'
+    # ---
+
+    # Delay before animation starts, *ms*
+    # @property   delay
+    # @type       {Number}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/wBVNLM/
+    delay:            0
+    # ---
+
+    # Duration of animation, *ms*
+    # @property   duration
+    # @type       {Number}
     duration:         1000
+    # ---
+
+    # Easing function. Can be a string, a bezier() curve or a function
+    # String options can be found in [easing module](easing.coffee.html).
+    #
+    # @property   easing
+    # @type       {String, Function}
+    #
+    # @codepen String:              http://codepen.io/sol0mka/pen/GgVeKR/
+    # @codepen Bezier cubic curve:  http://codepen.io/sol0mka/pen/WbVmeo/
+    # @codepen Custom function:     http://codepen.io/sol0mka/pen/XJvGrE/
     easing:           null
+    # ---
+
+    # Animation repeat count
+    # @property   repeat
+    # @type       {Integer}
+    #
+    # @codepen http://codepen.io/sol0mka/pen/emqbLN/
     repeat:           0
+    # ---
+
+    # Defines if animation should be alternated on repeat.
+    # 
+    # @property   yoyo
+    # @type       {Boolean}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
     yoyo:             false
+    # ---
+
+    # Defines additional horizontal offset from center of path, *px*
+    # @property   offsetX
+    # @type       {Number}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/gbVEbb/
     offsetX:          0
+    # ---
+
+    # Defines additional vertical offset from center of path, *px*
+    # @property   offsetY
+    # @type       {Number}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/OPKqNN/
     offsetY:          0
+    # ---
+
+    # Defines angle offset for path curves
+    # @property   angleOffset
+    # @type       {Number, Function}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     angleOffset: function(currentAngle) {
+    #       return if (currentAngle < 0) { 90 } else {-90}
+    #     }
+    #   });
+    #   
+    # @codepen Number:    http://codepen.io/sol0mka/pen/JogzXw
+    # @codepen Function:  http://codepen.io/sol0mka/pen/MYNxer
     angleOffset:      null
+    # ---
+
+    # Defines lower bound for path coordinates in rangle *[0,1]*
+    # So specifying pathStart of .5 will start animation
+    # form the 50% progress of your path.
+    # @property   pathStart
+    # @type       {Number}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     pathStart: .5
+    #   });
+    #
+    # @codepen http://codepen.io/sol0mka/pen/azeMBQ/
     pathStart:        0
+    # ---
+
+    # Defines upper bound for path coordinates in rangle *[0,1]*
+    # So specifying pathEnd of .5 will end animation
+    # at the 50% progress of your path.
+    # @property   pathEnd
+    # @type       {Number}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     pathEnd: .5
+    #   });
+    #   
+    # @codepen http://codepen.io/sol0mka/pen/wBVOJo/
     pathEnd:          1
+    # ---
+
+    # Defines motion blur on element in range of *[0,1]*
+    # 
+    # @property   motionBlur
+    # @type       {Number}
+    motionBlur:       0
+    # ---
+
+    # Defines transform-origin CSS property for **el**.
+    # Can be defined by **string** or **function**.
+    # Function recieves current angle as agrumnet and
+    # should return transform-origin value as a strin.
+    # 
+    # @property   transformOrigin
+    # @type       {String, Function}
+    # @example
+    #   // function
+    #   new MotionPath({
+    #     //...
+    #     isAngle: true,
+    #     transformOrigin: function (currentAngle) {
+    #       return  6*currentAngle + '% 0';
+    #     }
+    #   });
+    #   
+    # @codepen Function:  http://codepen.io/sol0mka/pen/pvMYwp
     transformOrigin:  null
+    # ---
 
+    # Defines if path curves angle should be set to el.
+    # 
+    # @property   isAngle
+    # @type       {Boolean}
+    # @codepen http://codepen.io/sol0mka/pen/GgVexq/
     isAngle:          false
+    # ---
+
+    # Defines motion path direction.
+    # 
+    # @property   isReverse
+    # @type       {Boolean}
+    # @codepen http://codepen.io/sol0mka/pen/KwOERQ/
     isReverse:        false
+    # ---
+
+    # Defines if animation should not start after init.
+    # Animation can be then started with calling [run]() method.
+    # 
+    # @property   isRunLess
+    # @type       {Boolean}
+    # 
+    # @codepen *Please see at codepen for proper results*: http://
+    # codepen.io/sol0mka/pen/raXRKQ/
     isRunLess:        false
+    # ---
+
+    # Defines if **el's** position should be preset immediately after init.
+    # If set to false **el** will remain at it's position until
+    # actual animation started on delay end or [run]() method call.
+    # 
+    # @property   isPresetPosition
+    # @type       {Boolean}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/EaqMOJ/
     isPresetPosition: true
+    # ---
 
+    # Callback **onStart** fires once if animation was started.
+    # 
+    # @property   onStart
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
     onStart:          null
-    onComplete:       null
-    onUpdate:         null
+    # ---
 
-  constructor:(@o={})->
-    return if @vars(); @createTween(); @
+    # Callback **onComplete** fires once if animation was completed.
+    # 
+    # @property   onComplete
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
+    onComplete:       null
+    # ---
+
+    # Callback **onUpdate** fires every raf frame on motion
+    # path update. Recieves **progress** of type **Number**
+    # in range *[0,1]* as argument.
+    # 
+    # @property   onUpdate
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
+    onUpdate:         null
+  # ---
+  # ### Class body docs
+  # ---
+  constructor:(@o={})-> return if @vars(); @createTween(); @
 
   vars:->
     @getScaler = h.bind(@getScaler, @); @resize = resize
     @props = h.cloneObj(@defaults)
     @extendOptions @o
+    # reset motionBlur for safari and IE
+    @isMotionBlurReset = h.isSafari or h.isIE
+    @isMotionBlurReset and (@props.motionBlur = 0)
     @history = [h.cloneObj(@props)]
     @postVars()
+  # ---
+
+  # Method to transform coordinates and curvature
+  # to svg path
+  #
+  # @method curveToPath
+  #
+  # @param {Object} coordinates of end point **x** and **y**
+  # @param {Object} coordinates of the control point
+  #                 of the quadratic bezier curve, relative to
+  #                 start and end coordinates **x** and **y**
+  #
+  # @return {SVGElement} svg path
+  curveToPath:(o)->
+    path = document.createElementNS @NS , 'path'
+    start = o.start
+    endPoint  = x: start.x + o.shift.x, y: start.x + o.shift.y
+    curvature = o.curvature
+
+    dX = o.shift.x; dY = o.shift.y
+    radius = Math.sqrt(dX*dX + dY*dY); percent = radius/100
+    angle  = Math.atan(dY/dX)*(180/Math.PI) + 90
+    if o.shift.x < 0 then angle = angle + 180
+
+    # get point on line between start end end
+    curvatureX = h.parseUnit curvature.x
+    curvatureX = if curvatureX.unit is '%' then curvatureX.value*percent
+    else curvatureX.value
+    curveXPoint = h.getRadialPoint
+      center: x: start.x, y: start.y
+      radius: curvatureX
+      angle:  angle
+    # get control point with center in curveXPoint
+    curvatureY = h.parseUnit curvature.y
+    curvatureY = if curvatureY.unit is '%' then curvatureY.value*percent
+    else curvatureY.value
+    curvePoint = h.getRadialPoint
+      center: x: curveXPoint.x, y: curveXPoint.y
+      radius: curvatureY
+      angle:  angle+90
+
+    path.setAttribute 'd', "M#{start.x},#{start.y}
+       Q#{curvePoint.x},#{curvePoint.y}
+       #{endPoint.x},#{endPoint.y}"
+
+    path
 
   postVars:->
     @props.pathStart = h.clamp @props.pathStart, 0, 1
     @props.pathEnd   = h.clamp @props.pathEnd, @props.pathStart, 1
-    @angle = 0
+    @angle = 0; @speedX = 0; @speedY = 0; @blurX = 0; @blurY = 0
+    @prevCoords = {}; @blurAmount = 20
+    # clamp motionBlur in range of [0,1]
+    @props.motionBlur = h.clamp @props.motionBlur, 0, 1
     
     @onUpdate   = @props.onUpdate
     @el         = @parseEl @props.el
+    @props.motionBlur > 0 and @createFilter()
+
     @path       = @getPath()
     if !@path.getAttribute('d')
       h.error('Path has no coordinates to work with, aborting'); return true
@@ -59,20 +342,38 @@ class MotionPath
         @removeEvent @container, 'onresize', @getScaler
         @addEvent    @container, 'onresize', @getScaler
 
-  addEvent:(el, type, handler)-> el.addEventListener type, handler, false
-    # if el.addEventListener then el.addEventListener type, handler, false
-    # else if el.attachEvent then el.attachEvent type, handler
-
+  addEvent:   (el, type, handler)-> el.addEventListener    type, handler, false
   removeEvent:(el, type, handler)-> el.removeEventListener type, handler, false
-    # if el.removeEventListener
-    #   el.removeEventListener type, handler, false
-    # else if el.detachEvent then @container.detachEvent type, handler
+  createFilter:->
+    div = document.createElement 'div'
+    @filterID = "filter-#{h.getUniqID()}"
+    div.innerHTML = """<svg id="svg-#{@filterID}"
+          style="visibility:hidden; width:0px; height:0px">
+        <filter id="#{@filterID}" y="-20" x="-20" width="40" height="40">
+          <feOffset
+            id="blur-offset" in="SourceGraphic"
+            dx="0" dy="0" result="offset2"></feOffset>
+          <feGaussianblur
+            id="blur" in="offset2"
+            stdDeviation="0,0" result="blur2"></feGaussianblur>
+          <feMerge>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+            <feMergeNode in="blur2"></feMergeNode>
+          </feMerge>
+        </filter>
+      </svg>"""
+
+    svg = div.querySelector "#svg-#{@filterID}"
+    @filter       = svg.querySelector '#blur'
+    @filterOffset = svg.querySelector '#blur-offset'
+    document.body.insertBefore svg, document.body.firstChild
+    @el.style['filter'] = "url(##{@filterID})"
+    @el.style["#{h.prefix.css}filter"] = "url(##{@filterID})"
 
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
     return el if el instanceof HTMLElement
     if el.setProp? then @isModule = true; return el
-
   getPath:->
     if typeof @props.path is 'string'
       return if @props.path.charAt(0).toLowerCase() is 'm'
@@ -82,6 +383,13 @@ class MotionPath
     # DOM node
     if @props.path.style
       return @props.path
+    if @props.path.x or @props.path.y
+      @curveToPath
+        start: x: 0, y: 0
+        shift: {x: (@props.path.x or 0), y: (@props.path.y or 0)}
+        curvature:
+          x: @props.curvature.x or @defaults.curvature.x
+          y: @props.curvature.y or @defaults.curvature.y
 
   getScaler:()->
     @cSize =
@@ -130,7 +438,10 @@ class MotionPath
       repeat:     @props.repeat
       easing:     @props.easing
       onStart:    => @props.onStart?.apply @
-      onComplete: => @props.onComplete?.apply @
+      onComplete: =>
+        @props.motionBlur and @setBlur
+          blur: {x: 0, y: 0}, offset: {x: 0, y: 0}
+        @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
     @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
@@ -141,34 +452,37 @@ class MotionPath
   startTween:-> setTimeout (=> @tween?.start()), 1
 
   setProgress:(p, isInit)->
-    len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
+    props = @props
+    len = @startLen+if !props.isReverse then p*@slicedLen else (1-p)*@slicedLen
     point = @path.getPointAtLength len
 
+    isTransformFunOrigin = typeof props.transformOrigin is 'function'
     # get current angle
-    if @props.isAngle or @props.angleOffset?
+    if props.isAngle or props.angleOffset? or isTransformFunOrigin
       prevPoint = @path.getPointAtLength len - 1
-      x1 = point.y - prevPoint.y
-      x2 = point.x - prevPoint.x
+      x1 = point.y - prevPoint.y; x2 = point.x - prevPoint.x
       atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
       @angle = atan*h.RAD_TO_DEG
-      if (typeof @props.angleOffset) isnt 'function'
-        @angle += @props.angleOffset or 0
-      else @angle = @props.angleOffset.call @, @angle, p
+      if (typeof props.angleOffset) isnt 'function'
+        @angle += props.angleOffset or 0
+      else @angle = props.angleOffset.call @, @angle, p
     else @angle = 0
     # get x and y coordinates
     x = point.x + @props.offsetX; y = point.y + @props.offsetY
+
+    @props.motionBlur and @makeMotionBlur(x, y)
+
+    # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
     # set position and angle
     if @isModule then @setModulePosition(x,y) else @setElPosition(x,y)
     # set transform origin
     if @props.transformOrigin
       # transform origin could be a function
-      tOrigin = if typeof @props.transformOrigin is 'function'
-        @props.transformOrigin(@angle, p)
-      else @props.transformOrigin
+      tOrigin = if !isTransformFunOrigin then @props.transformOrigin
+      else @props.transformOrigin(@angle, p)
       @el.style["#{h.prefix.css}transform-origin"] = tOrigin
       @el.style['transform-origin'] = tOrigin
-
     # call onUpdate but not on the very first(0 progress) call
     !isInit and @onUpdate?(p)
 
@@ -180,19 +494,45 @@ class MotionPath
   setModulePosition:(x, y)->
     @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
     @el.draw()
+  makeMotionBlur:(x, y)->
+    # if previous coords are not defined yet -- set speed to 0
+    tailAngle = 0; signX = 1; signY = 1
+    if !@prevCoords.x? or !@prevCoords.y? then @speedX = 0; @speedY = 0
+    # else calculate speed based on the largest axes delta
+    else
+      dX = x-@prevCoords.x; dY = y-@prevCoords.y
+      if dX > 0 then signX = -1
+      if signX < 0 then signY = -1
+      @speedX = Math.abs(dX); @speedY = Math.abs(dY)
+      tailAngle = Math.atan(dY/dX)*(180/Math.PI) + 90
+    absoluteAngle = tailAngle - @angle
+    coords = @angToCoords absoluteAngle
+    # get blur based on speed where 1px per 1ms is very fast
+    # and motionBlur coefficient
+    @blurX = h.clamp (@speedX/16)*@props.motionBlur, 0, 1
+    @blurY = h.clamp (@speedY/16)*@props.motionBlur, 0, 1
+    @setBlur
+      blur:
+        x: 3*@blurX*@blurAmount*Math.abs(coords.x)
+        y: 3*@blurY*@blurAmount*Math.abs(coords.y)
+      offset:
+        x: 3*signX*@blurX*coords.x*@blurAmount
+        y: 3*signY*@blurY*coords.y*@blurAmount
+    # save previous coords
+    @prevCoords.x = x; @prevCoords.y = y
+
+  setBlur:(o)->
+    if !@isMotionBlurReset
+      @filter.setAttribute 'stdDeviation', "#{o.blur.x},#{o.blur.y}"
+      @filterOffset.setAttribute 'dx', o.offset.x
+      @filterOffset.setAttribute 'dy', o.offset.y
 
   extendDefaults:(o)->
     for key, value of o
       @[key] = value
-
-    # keys = Object.keys(o); len = keys.length
-    # while(len--)
-    #   @[keys[len]] = o[keys[len]]
-
   extendOptions:(o)->
     for key, value of o
       @props[key] = value
-
   then:(o)->
     prevOptions = @history[@history.length-1]; opts = {}
     for key, value of prevOptions
@@ -220,6 +560,16 @@ class MotionPath
     @
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()
+
+  angToCoords:(angle)->
+    angle = angle % 360
+    radAngle = ((angle-90)*Math.PI)/180
+    x = Math.cos(radAngle); y = Math.sin(radAngle)
+    x = if x < 0 then Math.max(x, -0.7) else Math.min(x, .7)
+    y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
+    x: x*1.428571429
+    y: y*1.428571429
+    # x: Math.cos(radAngle), y: Math.sin(radAngle)    
 
 module.exports = MotionPath
 

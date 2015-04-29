@@ -34,6 +34,15 @@ describe 'Twenner ->', ->
       t.startLoop()
       setTimeout (-> t.tweens[0].update = -> true), 100
       setTimeout (-> expect(t.isRunning).toBe(false); dfr()), 200
+
+    it 'should stop if !@isRunning', ()->
+      t.isRunning = false
+      spyOn window, 'requestAnimationFrame'
+      spyOn t, 'update'
+      t.loop()
+      expect(window.requestAnimationFrame).not.toHaveBeenCalled()
+      expect(t.update).not.toHaveBeenCalled()
+
   describe 'startLoop method ->', ->
     it 'should call loop method', (dfr)->
       spyOn t, 'loop'

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>isRunLess: true - mojs.coffee</title>
+
+  <link rel="stylesheet" href="../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../"/>
+  <meta name="groc-document-path" content="js/mojs.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/mojs.coffee">js/mojs.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">mojs =
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.114.4'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
+  Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
+  bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
+  Circle      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/circle'</span>
+  Cross       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/cross'</span>
+  Line        : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/line'</span>
+  Rect        : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/rect'</span>
+  Polygon     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/polygon'</span>
+  Equal       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/equal'</span>
+  Zigzag      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/zigzag'</span>
+  Burst       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./burst'</span>
+  Transit     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./transit'</span>
+  Swirl       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./swirl'</span>
+  Stagger     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./stagger'</span>
+  MotionPath  : <span class="hljs-built_in">require</span> <span class="hljs-string">'./motion-path'</span>
+  Timeline    : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/timeline'</span>
+  Tween       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
+  tweener     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tweener'</span>
+  easing      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./easing'</span>
+
+mojs.h     = mojs.helpers
+mojs.delta = mojs.h.delta
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>burst = new mojs.Burst</p>
+<h1 id="isrunless-true"><a href="#isrunless-true" class="anchor"></a>isRunLess: true</h1><p>  x: 200, y: 200
+  isShowEnd: true
+  type: &#39;line&#39;
+  stroke: &#39;deeppink&#39;
+  strokeWidth: 2:0
+  count: 5</p>
+<h1 id="delay-39-stagger-100-39-"><a href="#delay-39-stagger-100-39-" class="anchor"></a>delay: &#39;stagger(100)&#39;</h1><h1 id="childoptions-angle-45-0"><a href="#childoptions-angle-45-0" class="anchor"></a>childOptions: angle: 45: 0</h1></div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>document.body.addEventListener &#39;click&#39;, (e)-&gt;
+  burst.run(x: e.x, y: e.y, isResetAngles: true, childOptions: angle: {0:90})</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>angle = 0
+mp = new mojs.MotionPath
+  el:       document.querySelector(&#39;#js-el&#39;)
+  path:     {x: 1000}
+  duration: 1600</p>
+<h1 id="delay-2000"><a href="#delay-2000" class="anchor"></a>delay:  2000</h1><p>  yoyo:     true
+  repeat:   10
+  easing:   &#39;cubic.out&#39;
+  curvature: x: &#39;50%&#39;, y: &#39;0%&#39;
+  motionBlur: 1</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>angle = 0
+setInterval -&gt;
+  point = mp.angToCoords(angle)
+  mp.el.style[&#39;box-shadow&#39;] = &quot;#{point.x<em>10}px #{point.y</em>10}px 0 black&quot;
+  angle = (angle+1) % 360
+, 10</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>istanbul ignore next</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">"function"</span>) <span class="hljs-keyword">and</span> define.amd
+  define <span class="hljs-string">"mojs"</span>, [], <span class="hljs-function">-&gt;</span> mojs</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>istanbul ignore next</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> <span class="hljs-keyword">is</span> <span class="hljs-string">"object"</span>) <span class="hljs-keyword">and</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span>.exports <span class="hljs-keyword">is</span> <span class="hljs-string">"object"</span>)
+  <span class="hljs-built_in">module</span>.exports = mojs</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>istanbul ignore next</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-keyword">return</span> <span class="hljs-built_in">window</span>?.mojs = mojs
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../toc.js"></script>
+  <script src="../assets/libs.js"></script>
+  <script src="../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        function __cp_domReady(e){/in/.test(document.readyState)?setTimeout("__cp_domReady("+e+")",9):e()}document.getElementsByClassName||(document.getElementsByClassName=function(e){var t,n,a,r=document,s=[];if(r.querySelectorAll)return r.querySelectorAll("."+e);if(r.evaluate)for(n=".//*[contains(concat(' ', @class, ' '), ' "+e+" ')]",t=r.evaluate(n,r,null,0,null);a=t.iterateNext();)s.push(a);else for(t=r.getElementsByTagName("*"),n=new RegExp("(^|\\s)"+e+"(\\s|$)"),a=0;a<t.length;a++)n.test(t[a].className)&&s.push(t[a]);return s});var CodePenEmbed={width:"100%",init:function(){return window.__cp_embed_script_ran?0:(window.__cp_embed_script_ran=!0,this.showCodePenEmbeds(),void this.listenToParentPostMessages())},showCodePenEmbeds:function(){for(var e=document.getElementsByClassName("codepen"),t=e.length-1;t>-1;t--){var n=this._getParamsFromAttributes(e[t]);if(n=this._convertOldDataAttributesToNewDataAttributes(n),n.user=this._findUsernameForURL(n,e[t]),this._paramsHasRequiredAttributes(n)){var a=this._buildURL(n),r=this._buildIFrame(n,a);this._addIFrameToPage(e[t],r)}}},_findUsernameForURL:function(e,t){if("string"==typeof e.user)return e.user;for(var n=0,a=t.children.length;a>n;n++){var r=t.children[n],s=r.href||"",i=s.match(/codepen\.(io|dev)\/(\w+)\/pen\//i);if(i)return i[2]}return"anon"},_paramsHasRequiredAttributes:function(e){return e["slug-hash"]},_getParamsFromAttributes:function(e){for(var t={},n=e.attributes,a=0,r=n.length;r>a;a++){var s=n[a].name;0===s.indexOf("data-")&&(t[s.replace("data-","")]=n[a].value)}return t},_convertOldDataAttributesToNewDataAttributes:function(e){return e.href&&(e["slug-hash"]=e.href),e.type&&(e["default-tab"]=e.type),e.safe&&(e.animations="true"===e.safe?"run":"stop-after-5"),e},_buildURL:function(e){var t=this._getHost(e),n=e.user?e.user:"anon",a="?"+this._getGetParams(e),r=[t,n,"embed",e["slug-hash"]+a].join("/");return r.replace(/\/\//g,"//")},_getHost:function(e){return e.host?this._getSafeHost(e.host):"file:"===document.location.protocol?"http://codepen.io":"//codepen.io"},_getSafeHost:function(e){return e.match(/^\/\//)||!e.match(/http:/)?document.location.protocol+"//"+e:e},_getGetParams:function(e){var t="";for(var n in e)""!==t&&(t+="&"),t+=n+"="+encodeURIComponent(e[n]);return t},_buildIFrame:function(e,t){var n="";""!==e["class"]&&(n=e["class"]);var a={id:"cp_embed_"+e["slug-hash"].replace("/","_"),src:t,scrolling:"no",frameborder:"0",height:this._getHeight(e),allowTransparency:"true",allowfullscreen:"true","class":"cp_embed_iframe "+n,style:"width: "+this.width+"; overflow: hidden;"},r="<iframe ";for(var s in a)r+=s+'="'+a[s]+'" ';return r+="></iframe>"},_getHeight:function(e){return e.height?"auto"===e.height?300:e.height:300},_addIFrameToPage:function(e,t){if(e.parentNode){var n=document.createElement("div");n.innerHTML=t,e.parentNode.replaceChild(n,e)}else e.innerHTML=t},listenToParentPostMessages:function(){var eventMethod=window.addEventListener?"addEventListener":"attachEvent",eventListener=window[eventMethod],messageEvent="attachEvent"===eventMethod?"onmessage":"message";eventListener(messageEvent,function(e){try{var dataObj=eval("("+e.data+")"),iframe=document.getElementById("cp_embed_"+dataObj.hash);iframe&&(iframe.height=dataObj.height)}catch(err){}},!1)}};__cp_domReady(function(){CodePenEmbed.init()});
+      </script>
+    
+  
+</body>
+</html>

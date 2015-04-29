@@ -9,95 +9,103 @@
         return expect(easing.linear.none(.5)).toBe(.5);
       });
     });
-    describe('quadratic ->', function() {
+    describe('ease ->', function() {
       it('should have In', function() {
-        return expect(easing.quadratic["in"](.5)).toBe(.5 * .5);
+        return expect(easing.ease["in"].toStr()).toBe('bezier(0.42,0,1,1)');
       });
       it('should have Out', function() {
-        return expect(easing.quadratic.out(.5)).toBe(.5 * (2 - .5));
+        return expect(easing.ease.out.toStr()).toBe('bezier(0,0,0.58,1)');
       });
       return it('should have InOut', function() {
-        expect(easing.quadratic.inout(.5)).toBe(.5);
-        return expect(easing.quadratic.inout(.25)).toBe(.125);
+        return expect(easing.ease.inout.toStr()).toBe('bezier(0.42,0,0.58,1)');
+      });
+    });
+    describe('quad ->', function() {
+      it('should have In', function() {
+        return expect(easing.quad["in"].toStr()).toBe('bezier(0.55,0.085,0.68,0.53)');
+      });
+      it('should have Out', function() {
+        return expect(easing.quad.out.toStr()).toBe('bezier(0.25,0.46,0.45,0.94)');
+      });
+      return it('should have InOut', function() {
+        return expect(easing.quad.inout.toStr()).toBe('bezier(0.455,0.03,0.515,0.955)');
       });
     });
     describe('cubic ->', function() {
       it('should have In', function() {
-        return expect(easing.cubic["in"](.5)).toBe(.5 * .5 * .5);
+        return expect(easing.cubic["in"].toStr()).toBe('bezier(0.55,0.055,0.675,0.19)');
       });
       it('should have Out', function() {
-        return expect(easing.cubic.out(.5)).toBe(.875);
+        return expect(easing.cubic.out.toStr()).toBe('bezier(0.215,0.61,0.355,1)');
       });
       return it('should have InOut', function() {
-        expect(easing.cubic.inout(.5)).toBe(.5);
-        return expect(easing.cubic.inout(.25)).toBe(.0625);
+        return expect(easing.cubic.inout.toStr()).toBe('bezier(0.645,0.045,0.355,1)');
       });
     });
-    describe('quartic ->', function() {
+    describe('quart ->', function() {
       it('should have In', function() {
-        return expect(easing.quartic["in"](.5)).toBe(.5 * .5 * .5 * .5);
+        return expect(easing.quart["in"].toStr()).toBe('bezier(0.895,0.03,0.685,0.22)');
       });
       it('should have Out', function() {
-        return expect(easing.quartic.out(.5)).toBe(.9375);
+        return expect(easing.quart.out.toStr()).toBe('bezier(0.165,0.84,0.44,1)');
       });
       return it('should have InOut', function() {
-        expect(easing.quartic.inout(.5)).toBe(.5);
-        return expect(easing.quartic.inout(.25)).toBe(.03125);
+        return expect(easing.quart.inout.toStr()).toBe('bezier(0.77,0,0.175,1)');
       });
     });
-    describe('quintic ->', function() {
+    describe('quint ->', function() {
       it('should have In', function() {
-        return expect(easing.quintic["in"](.5)).toBe(.5 * .5 * .5 * .5 * .5);
+        return expect(easing.quint["in"].toStr()).toBe('bezier(0.895,0.03,0.685,0.22)');
       });
       it('should have Out', function() {
-        return expect(easing.quintic.out(.5)).toBe(.96875);
+        return expect(easing.quint.out.toStr()).toBe('bezier(0.165,0.84,0.44,1)');
       });
       return it('should have InOut', function() {
-        expect(easing.quintic.inout(.5)).toBe(.5);
-        return expect(easing.quintic.inout(.25)).toBe(.015625);
+        return expect(easing.quint.inout.toStr()).toBe('bezier(0.77,0,0.175,1)');
       });
     });
-    describe('sinusoidal ->', function() {
+    describe('sin ->', function() {
       it('should have In', function() {
-        return expect(easing.sinusoidal["in"](.5)).toBe(1 - Math.cos(.5 * Math.PI / 2));
+        return expect(easing.sin["in"].toStr()).toBe('bezier(0.47,0,0.745,0.715)');
       });
       it('should have Out', function() {
-        return expect(easing.sinusoidal.out(.5)).toBe(Math.sin(.5 * Math.PI / 2));
+        return expect(easing.sin.out.toStr()).toBe('bezier(0.39,0.575,0.565,1)');
       });
       return it('should have InOut', function() {
-        var result;
-        result = 0.5 * (1 - Math.cos(Math.PI * .5));
-        return expect(easing.sinusoidal.inout(.5)).toBe(result);
+        return expect(easing.sin.inout.toStr()).toBe('bezier(0.445,0.05,0.55,0.95)');
       });
     });
-    describe('exponential ->', function() {
+    describe('expo ->', function() {
       it('should have In', function() {
-        expect(easing.exponential["in"](0)).toBe(0);
-        return expect(easing.exponential["in"](.5)).toBe(Math.pow(1024, .5 - 1));
+        return expect(easing.expo["in"].toStr()).toBe('bezier(0.95,0.05,0.795,0.035)');
       });
       it('should have Out', function() {
-        expect(easing.exponential.out(1)).toBe(1);
-        return expect(easing.exponential.out(.5)).toBe(1 - Math.pow(2, -10 * .5));
+        return expect(easing.expo.out.toStr()).toBe('bezier(0.19,1,0.22,1)');
       });
       return it('should have InOut', function() {
-        expect(easing.exponential.inout(0)).toBe(0);
-        expect(easing.exponential.inout(1)).toBe(1);
-        expect(easing.exponential.inout(.25)).toBe(0.5 * Math.pow(1024, .5 - 1));
-        return expect(easing.exponential.inout(.5)).toBe(.5);
+        return expect(easing.expo.inout.toStr()).toBe('bezier(1,0,0,1)');
       });
     });
-    describe('circular ->', function() {
+    describe('circ ->', function() {
       it('should have In', function() {
-        return expect(easing.circular["in"](.5)).toBe(1 - Math.sqrt(1 - .5 * .5));
+        return expect(easing.circ["in"].toStr()).toBe('bezier(0.6,0.04,0.98,0.335)');
       });
       it('should have Out', function() {
-        var k;
-        k = .5;
-        return expect(easing.circular.out(k)).toBe(Math.sqrt(1 - (--k * k)));
+        return expect(easing.circ.out.toStr()).toBe('bezier(0.075,0.82,0.165,1)');
       });
       return it('should have InOut', function() {
-        expect(easing.circular.inout(.25).toFixed(2)).toBe('0.07');
-        return expect(easing.circular.inout(.6).toFixed(2)).toBe('0.80');
+        return expect(easing.circ.inout.toStr()).toBe('bezier(0.785,0.135,0.15,0.86)');
+      });
+    });
+    describe('back ->', function() {
+      it('should have In', function() {
+        return expect(easing.back["in"].toStr()).toBe('bezier(0.6,0,0.735,0.045)');
+      });
+      it('should have Out', function() {
+        return expect(easing.back.out.toStr()).toBe('bezier(0.175,0.885,0.32,1)');
+      });
+      return it('should have InOut', function() {
+        return expect(easing.back.inout.toStr()).toBe('bezier(0.68,0,0.265,1)');
       });
     });
     describe('elastic ->', function() {
@@ -117,18 +125,6 @@
         expect(easing.elastic.inout(1)).toBe(1);
         expect(easing.elastic.inout(.25).toFixed(2)).toBe('0.00');
         return expect(easing.elastic.inout(.75).toFixed(2)).toBe('1.00');
-      });
-    });
-    describe('back ->', function() {
-      it('should have In', function() {
-        return expect(easing.back["in"](.75).toFixed(2)).toBe('0.18');
-      });
-      it('should have Out', function() {
-        return expect(easing.back.out(.75).toFixed(2)).toBe('1.06');
-      });
-      return it('should have InOut', function() {
-        expect(easing.back.inout(.25).toFixed(2)).toBe('-0.10');
-        return expect(easing.back.inout(.75).toFixed(2)).toBe('1.10');
       });
     });
     return describe('bounce ->', function() {

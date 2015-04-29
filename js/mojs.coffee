@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.110.0', isDebug: true
+  revision:   '0.114.4', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -20,6 +20,42 @@ mojs =
   Tween       : require './tween/tween'
   tweener     : require './tween/tweener'
   easing      : require './easing'
+
+mojs.h     = mojs.helpers
+mojs.delta = mojs.h.delta
+
+# burst = new mojs.Burst
+#   # isRunLess: true
+#   x: 200, y: 200
+#   isShowEnd: true
+#   type: 'line'
+#   stroke: 'deeppink'
+#   strokeWidth: 2:0
+#   count: 5
+#   # delay: 'stagger(100)'
+#   # childOptions: angle: 45: 0
+
+# document.body.addEventListener 'click', (e)->
+#   burst.run(x: e.x, y: e.y, isResetAngles: true, childOptions: angle: {0:90})
+
+# angle = 0
+# mp = new mojs.MotionPath
+#   el:       document.querySelector('#js-el')
+#   path:     {x: 1000}
+#   duration: 1600
+#   # delay:  2000
+#   yoyo:     true
+#   repeat:   10
+#   easing:   'cubic.out'
+#   curvature: x: '50%', y: '0%'
+#   motionBlur: 1
+
+# angle = 0
+# setInterval ->
+#   point = mp.angToCoords(angle)
+#   mp.el.style['box-shadow'] = "#{point.x*10}px #{point.y*10}px 0 black"
+#   angle = (angle+1) % 360
+# , 10
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

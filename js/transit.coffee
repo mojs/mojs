@@ -1,5 +1,5 @@
-# ignore coffescript sudo code
 ### istanbul ignore next ###
+
 h         = require './h'
 bitsMap   = require './shapes/bitsMap'
 Timeline = require './tween/timeline'

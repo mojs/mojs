@@ -26,6 +26,9 @@
       expect(h.strokeDashPropsMap.strokeDashoffset).toBe(1);
       return expect(Object.keys(h.strokeDashPropsMap).length).toBe(2);
     });
+    it('should have initial uniqIDs props', function() {
+      return expect(h.uniqIDs).toBe(-1);
+    });
     describe('prefix', function() {
       return it('should have prefix', function() {
         expect(h.prefix).toBeDefined();
@@ -39,6 +42,9 @@
       return it('should have browsers flag', function() {
         expect(h.isFF).toBeDefined();
         expect(h.isIE).toBeDefined();
+        expect(h.isSafari).toBeDefined();
+        expect(h.isChrome).toBeDefined();
+        expect(h.isOpera).toBeDefined();
         return expect(h.isOldOpera).toBeDefined();
       });
     });
@@ -1015,7 +1021,7 @@
         return expect(h.getChildElements(els).length).toBe(2);
       });
     });
-    return describe('mergeUnits method', function() {
+    describe('mergeUnits method', function() {
       it('should merge units if end one was not defined', function() {
         var end, start;
         start = {
@@ -1071,6 +1077,84 @@
         expect(start.unit).toBe('%');
         expect(start.string).toBe('25%');
         return expect(h.warn).toHaveBeenCalled();
+      });
+    });
+    describe('delta method', function() {
+      it('should create object from variables', function() {
+        var delta, end, start;
+        start = 0;
+        end = 1;
+        delta = h.delta(start, end);
+        return expect(delta[0]).toBe(1);
+      });
+      it('should work with strings', function() {
+        var delta, end, start;
+        start = '0';
+        end = 1;
+        delta = h.delta(start, end);
+        return expect(delta['0']).toBe(1);
+      });
+      it('should error if unexpected types', function() {
+        var delta, end, start;
+        start = (function() {});
+        end = 1;
+        spyOn(mojs.helpers, 'error');
+        delta = h.delta(start, end);
+        expect(mojs.helpers.error).toHaveBeenCalled();
+        return expect(delta).toBe(void 0);
+      });
+      it('should error if unexpected types #2', function() {
+        var delta, end, start;
+        start = 2;
+        end = (function() {});
+        spyOn(mojs.helpers, 'error');
+        delta = h.delta(start, end);
+        expect(mojs.helpers.error).toHaveBeenCalled();
+        return expect(delta).toBe(void 0);
+      });
+      it('should error if unexpected types #3', function() {
+        var delta, end, start;
+        start = 2;
+        end = {};
+        spyOn(mojs.helpers, 'error');
+        delta = h.delta(start, end);
+        expect(mojs.helpers.error).toHaveBeenCalled();
+        return expect(delta).toBe(void 0);
+      });
+      it('should error if unexpected types #4', function() {
+        var delta, end, start;
+        start = {};
+        end = 2;
+        spyOn(mojs.helpers, 'error');
+        delta = h.delta(start, end);
+        expect(mojs.helpers.error).toHaveBeenCalled();
+        return expect(delta).toBe(void 0);
+      });
+      it('should not work with NaN arguments', function() {
+        var delta, end, start;
+        start = NaN;
+        end = 2;
+        spyOn(mojs.helpers, 'error');
+        delta = h.delta(start, end);
+        expect(mojs.helpers.error).toHaveBeenCalled();
+        return expect(delta).toBe(void 0);
+      });
+      return it('should not work with NaN arguments #2', function() {
+        var delta, end, start;
+        start = '2';
+        end = NaN;
+        spyOn(mojs.helpers, 'error');
+        delta = h.delta(start, end);
+        expect(mojs.helpers.error).toHaveBeenCalled();
+        return expect(delta).toBe(void 0);
+      });
+    });
+    return describe('getUniqID method', function() {
+      return it('should return uniq id', function() {
+        expect(h.getUniqID()).toBe(0);
+        expect(h.getUniqID()).toBe(1);
+        expect(h.getUniqID()).toBe(2);
+        return expect(h.uniqIDs).toBe(2);
       });
     });
   });

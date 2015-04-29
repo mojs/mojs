@@ -137,9 +137,9 @@
         });
         t.start();
         t.update(t.props.startTime + 1400);
-        expect(t.progress).toBe(.2);
+        expect(t.progress).toBeCloseTo(.2);
         t.update(t.props.startTime + 2700);
-        expect(t.progress).toBe(.3);
+        expect(t.progress).toBeCloseTo(.3);
         t.update(t.props.startTime + 3400);
         return expect(t.progress).toBe(1);
       });
@@ -165,18 +165,18 @@
         t.update(t.props.startTime + 1000);
         return expect(t.progress).toBe(1);
       });
-      it('should not call update method if timeline isnt active -', function() {
+      it('should not call update method if timeline isnt active "-"', function() {
         var t;
         t = new Timeline({
           duration: 1000,
           onUpdate: function() {}
         });
-        spyOn(t, 'onUpdate');
         t.start();
+        spyOn(t, 'onUpdate');
         t.update(performance.now() - 500);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
-      it('should not call update method if timeline isnt active +', function() {
+      it('should not call update method if timeline isnt active "+"', function() {
         var cnt, t;
         cnt = 0;
         t = new Timeline({
@@ -695,12 +695,12 @@
       it('should parse standart easing', function() {
         var t;
         t = new Timeline({
-          easing: 'Sinusoidal.Out',
+          easing: 'Sin.Out',
           duration: 100
         });
         t.start();
         t.update(t.props.startTime + 50);
-        return expect(t.easedProgress).toBe(easing.sinusoidal.out(t.progress));
+        return expect(t.easedProgress).toBe(easing.sin.out(t.progress));
       });
       it('should work with easing function', function() {
         var easings, t;

@@ -1,41 +1,44 @@
-## To Do
+## TODO
 
+- fix coverage
 - release
-  - bower component
-  - cdn
-  - version from one place
   - website
-- branch
-- plans
-  - cover polyfills
-  - fallback to x/y if translate isnt supported
-  - make delta method
-  - stagger callbacks should run only once
-  - stagger self generation
-  - foreign context coordinates in burst
-  - stagger should set x/y on svg
-  - add mirrors?
-  - add bezier and sping easings
-  - debug state
-  - make delta method
-- add onChainUpdate to all the bits
-- add movement arc
-- transit
-  - fix timeline tween options history transform
-- burst
-  - add deltas for swirl swirlFrequency and swirlSize
-  - then implementation
+    - css
+    - page transitions
+    - docs
+    - tuts
+- add meta balls
+- add layers
+- add states
 - add custom easing handler
   - add path handler
   - add spring
-  - add bezier handler
 - add shaker
-- radial spings
-- add spriter
-- add glare (is transition shorthand)
-- add camera glare
-- add backgrounds
 - add line trails
+- radial springs
+
+# FIXES
+- tween
+  - add and append multiple timelines
+  - tween + timeline?
+- cover polyfills
+- stagger callbacks should run only once
+- stagger self generation
+- foreign context coordinates in burst
+- add onChainUpdate to all the bits
+- transit
+  - fix timeline tween options history transform
+  - fallback to x/y if translate isnt supported (transit should set x/y on svg)
+- burst
+  - add deltas for swirl swirlFrequency and swirlSize
+  - then implementation
+- motion path
+  - delay + repeat issue  
+
+# UNDER CONSIDERATION
 - add text tricks
+- add backgrounds
+- add spriter
+- add camera glare
 
 

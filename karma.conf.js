@@ -1,6 +1,5 @@
 var istanbul = require('browserify-istanbul');
 // Karma configuration
-// Generated on Sun Dec 07 2014 13:58:11 GMT+0200 (EET)
 
 module.exports = function(config) {
 
@@ -92,8 +91,8 @@ module.exports = function(config) {
       // 'dist/mojs.js',
       // 'dist/h.js',
       // 'spec/h.js',
-      // // 'dist/transit.js',
-      // // 'spec/transit.js',
+      // 'dist/transit.js',
+      // 'spec/transit.js',
       // 'dist/swirl.js',
       // 'spec/swirl.js',
       // 'dist/tween.js',

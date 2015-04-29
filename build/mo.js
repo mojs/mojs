@@ -1,11 +1,184 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	v0.110.1 
+	0.114.4 
 */
 
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.yes = f()}})(function(){var define,module,exports;return (function e(t,n,r){
+(function(f){
+if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.yes = f()}})(function(){var define,module,exports;return (function e(t,n,r){
 function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+var BezierEasing, bezierEasing, h,
+  indexOf = [].indexOf || 
+function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+h = require('./h');
+
+/**
+ * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
+ * Adopted from https://github.com/gre/bezier-easing
+ */
+
+BezierEasing = (function() {
+  function BezierEasing(o) {
+    this.vars();
+    return this.generate;
+  }
+
+  BezierEasing.prototype.vars = function() {
+    return this.generate = h.bind(this.generate, this);
+  };
+
+  BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
+    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, binarySubdivide, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute, str;
+    if (arguments.length < 4) {
+      return this.error('Bezier function expects 4 arguments');
+    }
+    for (i = j = 0; j < 4; i = ++j) {
+      arg = arguments[i];
+      if (typeof arg !== "number" || isNaN(arg) || !isFinite(arg)) {
+        return this.error('Bezier function expects 4 arguments');
+      }
+    }
+    if (mX1 < 0 || mX1 > 1 || mX2 < 0 || mX2 > 1) {
+      return this.error('Bezier x values should be > 0 and < 1');
+    }
+    NEWTON_ITERATIONS = 4;
+    NEWTON_MIN_SLOPE = 0.001;
+    SUBDIVISION_PRECISION = 0.0000001;
+    SUBDIVISION_MAX_ITERATIONS = 10;
+    kSplineTableSize = 11;
+    kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
+    float32ArraySupported = indexOf.call(global, 'Float32Array') >= 0;
+    A = function(aA1, aA2) {
+      return 1.0 - 3.0 * aA2 + 3.0 * aA1;
+    };
+    B = function(aA1, aA2) {
+      return 3.0 * aA2 - 6.0 * aA1;
+    };
+    C = function(aA1) {
+      return 3.0 * aA1;
+    };
+    calcBezier = function(aT, aA1, aA2) {
+      return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
+    };
+    getSlope = function(aT, aA1, aA2) {
+      return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
+    };
+    newtonRaphsonIterate = function(aX, aGuessT) {
+      var currentSlope, currentX;
+      i = 0;
+      while (i < NEWTON_ITERATIONS) {
+        currentSlope = getSlope(aGuessT, mX1, mX2);
+
+        /* istanbul ignore if */
+        if (currentSlope === 0.0) {
+          return aGuessT;
+        }
+        currentX = calcBezier(aGuessT, mX1, mX2) - aX;
+        aGuessT -= currentX / currentSlope;
+        ++i;
+      }
+      return aGuessT;
+    };
+    calcSampleValues = function() {
+      i = 0;
+      while (i < kSplineTableSize) {
+        mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
+        ++i;
+      }
+    };
+
+    binarySubdivide = function(aX, aA, aB) {
+      var currentT, currentX, isBig;
+      currentX = void 0;
+      currentT = void 0;
+      i = 0;
+      while (true) {
+        currentT = aA + (aB - aA) / 2.0;
+        currentX = calcBezier(currentT, mX1, mX2) - aX;
+        if (currentX > 0.0) {
+          aB = currentT;
+        } else {
+          aA = currentT;
+        }
+        isBig = Math.abs(currentX) > SUBDIVISION_PRECISION;
+        if (!(isBig && ++i < SUBDIVISION_MAX_ITERATIONS)) {
+          break;
+        }
+      }
+      return currentT;
+    };
+    getTForX = function(aX) {
+      var currentSample, delta, dist, guessForT, initialSlope, intervalStart, lastSample;
+      intervalStart = 0.0;
+      currentSample = 1;
+      lastSample = kSplineTableSize - 1;
+      while (currentSample !== lastSample && mSampleValues[currentSample] <= aX) {
+        intervalStart += kSampleStepSize;
+        ++currentSample;
+      }
+      --currentSample;
+      delta = mSampleValues[currentSample + 1] - mSampleValues[currentSample];
+      dist = (aX - mSampleValues[currentSample]) / delta;
+      guessForT = intervalStart + dist * kSampleStepSize;
+      initialSlope = getSlope(guessForT, mX1, mX2);
+      if (initialSlope >= NEWTON_MIN_SLOPE) {
+        return newtonRaphsonIterate(aX, guessForT);
+      } else {
+
+        if (initialSlope === 0.0) {
+          return guessForT;
+        } else {
+          return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize);
+        }
+      }
+    };
+    precompute = function() {
+      var _precomputed;
+      _precomputed = true;
+      if (mX1 !== mY1 || mX2 !== mY2) {
+        calcSampleValues();
+      }
+    };
+    mSampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
+    _precomputed = false;
+    f = function(aX) {
+      if (!_precomputed) {
+        precompute();
+      }
+      if (mX1 === mY1 && mX2 === mY2) {
+        return aX;
+      }
+      if (aX === 0) {
+        return 0;
+      }
+      if (aX === 1) {
+        return 1;
+      }
+      return calcBezier(getTForX(aX), mY1, mY2);
+    };
+    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
+    f.toStr = function() {
+      return str;
+    };
+    return f;
+  };
+
+  BezierEasing.prototype.error = function(msg) {
+    return h.error(msg);
+  };
+
+  return BezierEasing;
+
+})();
+
+bezierEasing = new BezierEasing;
+
+module.exports = bezierEasing;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./h":4}],2:[function(require,module,exports){
 
 var Burst, Swirl, Transit, Tween, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -103,7 +276,7 @@ Burst = (function(superClass) {
   };
 
   Burst.prototype.run = function(o) {
-    var base, i, j, key, keys, len, len1, ref, tr, transit;
+    var base, i, j, key, keys, len, len1, option, ref, ref1, tr;
     if ((o != null) && Object.keys(o).length) {
       if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
         this.h.warn('Sorry, count can not be changed on run');
@@ -119,8 +292,13 @@ Burst = (function(superClass) {
       }
       len = this.transits.length;
       while (len--) {
-        transit = this.transits[len];
-        transit.tuneNewOption(this.getOption(len), true);
+        option = this.getOption(len);
+        if ((((ref1 = o.childOptions) != null ? ref1.angle : void 0) == null) && (o.angleShift == null)) {
+          option.angle = this.transits[len].o.angle;
+        } else if (!o.isResetAngles) {
+          option.angle = this.getBitAngle(option.angle, len);
+        }
+        this.transits[len].tuneNewOption(option, true);
       }
       this.tween.recalcDuration();
     }
@@ -156,7 +334,7 @@ Burst = (function(superClass) {
   };
 
   Burst.prototype.addBitOptions = function() {
-    var aShift, angleAddition, delta, end, i, j, keys, len1, newEnd, newStart, pointEnd, pointStart, points, ref, results, start, step, transit;
+    var aShift, i, j, len1, pointEnd, pointStart, points, ref, results, step, transit;
     points = this.props.count;
     this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
     step = this.props.degree / this.degreeCnt;
@@ -164,18 +342,28 @@ Burst = (function(superClass) {
     results = [];
     for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
       transit = ref[i];
-      aShift = transit.props.angleShift;
+      aShift = transit.props.angleShift || 0;
       pointStart = this.getSidePoint('start', i * step + aShift);
       pointEnd = this.getSidePoint('end', i * step + aShift);
       transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
       transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
       if (!this.props.isResetAngles) {
-        angleAddition = i * step + 90;
-        transit.o.angle = typeof transit.o.angle !== 'object' ? transit.o.angle + angleAddition + aShift : (keys = Object.keys(transit.o.angle), start = keys[0], end = transit.o.angle[start], newStart = parseFloat(start) + angleAddition + aShift, newEnd = parseFloat(end) + angleAddition + aShift, delta = {}, delta[newStart] = newEnd, delta);
+        transit.o.angle = this.getBitAngle(transit.o.angle, i);
       }
       results.push(transit.extendDefaults());
     }
     return results;
+  };
+
+  Burst.prototype.getBitAngle = function(angle, i) {
+    var angleAddition, angleShift, curAngleShift, degCnt, delta, end, keys, newEnd, newStart, points, start, step;
+    points = this.props.count;
+    degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
+    step = this.props.degree / degCnt;
+    angleAddition = i * step + 90;
+    angleShift = this.transits[i].props.angleShift || 0;
+    angle = typeof angle !== 'object' ? angle + angleAddition + angleShift : (keys = Object.keys(angle), start = keys[0], end = angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
+    return angle;
   };
 
   Burst.prototype.getSidePoint = function(side, angle) {
@@ -337,11 +525,15 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":3,"./shapes/bitsMap":9,"./swirl":18,"./transit":19,"./tween/tween":21}],2:[function(require,module,exports){
-var Easing, easing;
+},{"./h":4,"./shapes/bitsMap":10,"./swirl":19,"./transit":20,"./tween/tween":22}],3:[function(require,module,exports){
+var Easing, bezier, easing;
+
+bezier = require('./bezier-easing');
 
 Easing = (function() {
   function Easing() {}
+
+  Easing.prototype.bezier = bezier;
 
   Easing.prototype.linear = {
     none: function(k) {
@@ -349,120 +541,58 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.quadratic = {
-    "in": function(k) {
-      return k * k;
-    },
-    out: function(k) {
-      return k * (2 - k);
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k;
-      }
-      return -0.5 * (--k * (k - 2) - 1);
-    }
+  Easing.prototype.ease = {
+    "in": bezier.apply(Easing, [0.42, 0, 1, 1]),
+    out: bezier.apply(Easing, [0, 0, 0.58, 1]),
+    inout: bezier.apply(Easing, [0.42, 0, 0.58, 1])
+  };
+
+  Easing.prototype.quad = {
+    "in": bezier.apply(Easing, [0.55, 0.085, 0.68, 0.53]),
+    out: bezier.apply(Easing, [0.25, 0.46, 0.45, 0.94]),
+    inout: bezier.apply(Easing, [0.455, 0.03, 0.515, 0.955])
   };
 
   Easing.prototype.cubic = {
-    "in": function(k) {
-      return k * k * k;
-    },
-    out: function(k) {
-      return --k * k * k + 1;
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k * k;
-      }
-      return 0.5 * ((k -= 2) * k * k + 2);
-    }
+    "in": bezier.apply(Easing, [0.55, 0.055, 0.675, 0.19]),
+    out: bezier.apply(Easing, [0.215, 0.61, 0.355, 1]),
+    inout: bezier.apply(Easing, [0.645, 0.045, 0.355, 1])
   };
 
-  Easing.prototype.quartic = {
-    "in": function(k) {
-      return k * k * k * k;
-    },
-    out: function(k) {
-      return 1 - (--k * k * k * k);
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k * k * k;
-      }
-      return -0.5 * ((k -= 2) * k * k * k - 2);
-    }
+  Easing.prototype.quart = {
+    "in": bezier.apply(Easing, [0.895, 0.03, 0.685, 0.22]),
+    out: bezier.apply(Easing, [0.165, 0.84, 0.44, 1]),
+    inout: bezier.apply(Easing, [0.77, 0, 0.175, 1])
   };
 
-  Easing.prototype.quintic = {
-    "in": function(k) {
-      return k * k * k * k * k;
-    },
-    out: function(k) {
-      return --k * k * k * k * k + 1;
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return 0.5 * k * k * k * k * k;
-      }
-      return 0.5 * ((k -= 2) * k * k * k * k + 2);
-    }
+  Easing.prototype.quint = {
+    "in": bezier.apply(Easing, [0.895, 0.03, 0.685, 0.22]),
+    out: bezier.apply(Easing, [0.165, 0.84, 0.44, 1]),
+    inout: bezier.apply(Easing, [0.77, 0, 0.175, 1])
   };
 
-  Easing.prototype.sinusoidal = {
-    "in": function(k) {
-      return 1 - Math.cos(k * Math.PI / 2);
-    },
-    out: function(k) {
-      return Math.sin(k * Math.PI / 2);
-    },
-    inout: function(k) {
-      return 0.5 * (1 - Math.cos(Math.PI * k));
-    }
+  Easing.prototype.sin = {
+    "in": bezier.apply(Easing, [0.47, 0, 0.745, 0.715]),
+    out: bezier.apply(Easing, [0.39, 0.575, 0.565, 1]),
+    inout: bezier.apply(Easing, [0.445, 0.05, 0.55, 0.95])
   };
 
-  Easing.prototype.exponential = {
-    "in": function(k) {
-      if (k === 0) {
-        return 0;
-      } else {
-        return Math.pow(1024, k - 1);
-      }
-    },
-    out: function(k) {
-      if (k === 1) {
-        return 1;
-      } else {
-        return 1 - Math.pow(2, -10 * k);
-      }
-    },
-    inout: function(k) {
-      if (k === 0) {
-        return 0;
-      }
-      if (k === 1) {
-        return 1;
-      }
-      if ((k *= 2) < 1) {
-        return 0.5 * Math.pow(1024, k - 1);
-      }
-      return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
-    }
+  Easing.prototype.expo = {
+    "in": bezier.apply(Easing, [0.95, 0.05, 0.795, 0.035]),
+    out: bezier.apply(Easing, [0.19, 1, 0.22, 1]),
+    inout: bezier.apply(Easing, [1, 0, 0, 1])
   };
 
-  Easing.prototype.circular = {
-    "in": function(k) {
-      return 1 - Math.sqrt(1 - k * k);
-    },
-    out: function(k) {
-      return Math.sqrt(1 - (--k * k));
-    },
-    inout: function(k) {
-      if ((k *= 2) < 1) {
-        return -0.5 * (Math.sqrt(1 - k * k) - 1);
-      }
-      return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
-    }
+  Easing.prototype.circ = {
+    "in": bezier.apply(Easing, [0.6, 0.04, 0.98, 0.335]),
+    out: bezier.apply(Easing, [0.075, 0.82, 0.165, 1]),
+    inout: bezier.apply(Easing, [0.785, 0.135, 0.15, 0.86])
+  };
+
+  Easing.prototype.back = {
+    "in": bezier.apply(Easing, [0.6, 0, 0.735, 0.045]),
+    out: bezier.apply(Easing, [0.175, 0.885, 0.32, 1]),
+    inout: bezier.apply(Easing, [0.68, 0, 0.265, 1])
   };
 
   Easing.prototype.elastic = {
@@ -513,27 +643,6 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.back = {
-    "in": function(k) {
-      var s;
-      s = 1.70158;
-      return k * k * ((s + 1) * k - s);
-    },
-    out: function(k) {
-      var s;
-      s = 1.70158;
-      return --k * k * ((s + 1) * k + s) + 1;
-    },
-    inout: function(k) {
-      var s;
-      s = 1.70158 * 1.525;
-      if ((k *= 2) < 1) {
-        return 0.5 * (k * k * ((s + 1) * k - s));
-      }
-      return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
-    }
-  };
-
   Easing.prototype.bounce = {
     "in": function(k) {
       return 1 - easing.bounce.out(1 - k);
@@ -565,7 +674,7 @@ easing = new Easing;
 
 module.exports = easing;
 
-},{}],3:[function(require,module,exports){
+},{"./bezier-easing":1}],4:[function(require,module,exports){
 var Helpers, h;
 
 Helpers = (function() {
@@ -643,11 +752,20 @@ Helpers = (function() {
   }
 
   Helpers.prototype.vars = function() {
+    var ua;
     this.prefix = this.getPrefix();
     this.getRemBase();
     this.isFF = this.prefix.lowercase === 'moz';
     this.isIE = this.prefix.lowercase === 'ms';
-    this.isOldOpera = navigator.userAgent.match(/presto/gim);
+    ua = navigator.userAgent;
+    this.isOldOpera = ua.match(/presto/gim);
+    this.isSafari = ua.indexOf('Safari') > -1;
+    this.isChrome = ua.indexOf('Chrome') > -1;
+    this.isOpera = ua.toLowerCase().indexOf("op") > -1;
+    this.isChrome && this.isSafari && (this.isSafari = false);
+    (ua.match(/PhantomJS/gim)) && (this.isSafari = false);
+    this.isChrome && this.isOpera && (this.isChrome = false);
+    this.uniqIDs = -1;
     this.div = document.createElement('div');
     return document.body.appendChild(this.div);
   };
@@ -671,13 +789,14 @@ Helpers = (function() {
   };
 
   Helpers.prototype.extend = function(objTo, objFrom) {
-    var key, results, value;
-    results = [];
+    var key, value;
     for (key in objFrom) {
       value = objFrom[key];
-      results.push(objTo[key] != null ? objTo[key] : objTo[key] = objFrom[key]);
+      if (objTo[key] == null) {
+        objTo[key] = objFrom[key];
+      }
     }
-    return results;
+    return objTo;
   };
 
   Helpers.prototype.getRemBase = function() {
@@ -1049,13 +1168,6 @@ Helpers = (function() {
     return typeof o === 'object' && isNode;
   };
 
-  /*
-   * Return direct children elements.
-  #
-   * @param {HTMLElement}
-   * @return {Array}
-   */
-
   Helpers.prototype.getChildElements = function(element) {
     var childNodes, children, i;
     childNodes = element.childNodes;
@@ -1069,6 +1181,25 @@ Helpers = (function() {
     return children;
   };
 
+  Helpers.prototype.delta = function(start, end) {
+    var isType1, isType2, obj, type1, type2;
+    type1 = typeof start;
+    type2 = typeof end;
+    isType1 = type1 === 'string' || type1 === 'number' && !isNaN(start);
+    isType2 = type2 === 'string' || type2 === 'number' && !isNaN(end);
+    if (!isType1 || !isType2) {
+      this.error("delta method expects Strings or Numbers at input but got - " + start + ", " + end);
+      return;
+    }
+    obj = {};
+    obj[start] = end;
+    return obj;
+  };
+
+  Helpers.prototype.getUniqID = function() {
+    return ++this.uniqIDs;
+  };
+
   return Helpers;
 
 })();
@@ -1077,11 +1208,11 @@ h = new Helpers;
 
 module.exports = h;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var mojs;
 
 mojs = {
-  revision: '0.110.0',
+  revision: '0.114.4',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1104,6 +1235,10 @@ mojs = {
   easing: require('./easing')
 };
 
+mojs.h = mojs.helpers;
+
+mojs.delta = mojs.h.delta;
+
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
     return mojs;
@@ -1116,11 +1251,13 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":1,"./easing":2,"./h":3,"./motion-path":5,"./shapes/bit":8,"./shapes/bitsMap":9,"./shapes/circle":10,"./shapes/cross":11,"./shapes/equal":12,"./shapes/line":13,"./shapes/polygon":14,"./shapes/rect":15,"./shapes/zigzag":16,"./stagger":17,"./swirl":18,"./transit":19,"./tween/timeline":20,"./tween/tween":21,"./tween/tweener":22}],5:[function(require,module,exports){
-var MotionPath, Timeline, Tween, h, resize,
+},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":9,"./shapes/bitsMap":10,"./shapes/circle":11,"./shapes/cross":12,"./shapes/equal":13,"./shapes/line":14,"./shapes/polygon":15,"./shapes/rect":16,"./shapes/zigzag":17,"./stagger":18,"./swirl":19,"./transit":20,"./tween/timeline":21,"./tween/tween":22,"./tween/tweener":23}],6:[function(require,module,exports){
+var MotionPath, Timeline, Tween, easing, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 h = require('./h');
+
+easing = require('./easing');
 
 resize = require('./vendor/resize');
 
@@ -1132,6 +1269,11 @@ MotionPath = (function() {
   MotionPath.prototype.NS = 'http://www.w3.org/2000/svg';
 
   MotionPath.prototype.defaults = {
+    path: null,
+    curvature: {
+      x: '75%',
+      y: '50%'
+    },
     delay: 0,
     duration: 1000,
     easing: null,
@@ -1142,6 +1284,7 @@ MotionPath = (function() {
     angleOffset: null,
     pathStart: 0,
     pathEnd: 1,
+    motionBlur: 0,
     transformOrigin: null,
     isAngle: false,
     isReverse: false,
@@ -1167,16 +1310,67 @@ MotionPath = (function() {
     this.resize = resize;
     this.props = h.cloneObj(this.defaults);
     this.extendOptions(this.o);
+    this.isMotionBlurReset = h.isSafari || h.isIE;
+    this.isMotionBlurReset && (this.props.motionBlur = 0);
     this.history = [h.cloneObj(this.props)];
     return this.postVars();
+  };
+
+  MotionPath.prototype.curveToPath = function(o) {
+    var angle, curvature, curvatureX, curvatureY, curvePoint, curveXPoint, dX, dY, endPoint, path, percent, radius, start;
+    path = document.createElementNS(this.NS, 'path');
+    start = o.start;
+    endPoint = {
+      x: start.x + o.shift.x,
+      y: start.x + o.shift.y
+    };
+    curvature = o.curvature;
+    dX = o.shift.x;
+    dY = o.shift.y;
+    radius = Math.sqrt(dX * dX + dY * dY);
+    percent = radius / 100;
+    angle = Math.atan(dY / dX) * (180 / Math.PI) + 90;
+    if (o.shift.x < 0) {
+      angle = angle + 180;
+    }
+    curvatureX = h.parseUnit(curvature.x);
+    curvatureX = curvatureX.unit === '%' ? curvatureX.value * percent : curvatureX.value;
+    curveXPoint = h.getRadialPoint({
+      center: {
+        x: start.x,
+        y: start.y
+      },
+      radius: curvatureX,
+      angle: angle
+    });
+    curvatureY = h.parseUnit(curvature.y);
+    curvatureY = curvatureY.unit === '%' ? curvatureY.value * percent : curvatureY.value;
+    curvePoint = h.getRadialPoint({
+      center: {
+        x: curveXPoint.x,
+        y: curveXPoint.y
+      },
+      radius: curvatureY,
+      angle: angle + 90
+    });
+    path.setAttribute('d', "M" + start.x + "," + start.y + " Q" + curvePoint.x + "," + curvePoint.y + " " + endPoint.x + "," + endPoint.y);
+    return path;
   };
 
   MotionPath.prototype.postVars = function() {
     this.props.pathStart = h.clamp(this.props.pathStart, 0, 1);
     this.props.pathEnd = h.clamp(this.props.pathEnd, this.props.pathStart, 1);
     this.angle = 0;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.blurX = 0;
+    this.blurY = 0;
+    this.prevCoords = {};
+    this.blurAmount = 20;
+    this.props.motionBlur = h.clamp(this.props.motionBlur, 0, 1);
     this.onUpdate = this.props.onUpdate;
     this.el = this.parseEl(this.props.el);
+    this.props.motionBlur > 0 && this.createFilter();
     this.path = this.getPath();
     if (!this.path.getAttribute('d')) {
       h.error('Path has no coordinates to work with, aborting');
@@ -1205,6 +1399,19 @@ MotionPath = (function() {
     return el.removeEventListener(type, handler, false);
   };
 
+  MotionPath.prototype.createFilter = function() {
+    var div, svg;
+    div = document.createElement('div');
+    this.filterID = "filter-" + (h.getUniqID());
+    div.innerHTML = "<svg id=\"svg-" + this.filterID + "\"\n    style=\"visibility:hidden; width:0px; height:0px\">\n  <filter id=\"" + this.filterID + "\" y=\"-20\" x=\"-20\" width=\"40\" height=\"40\">\n    <feOffset\n      id=\"blur-offset\" in=\"SourceGraphic\"\n      dx=\"0\" dy=\"0\" result=\"offset2\"></feOffset>\n    <feGaussianblur\n      id=\"blur\" in=\"offset2\"\n      stdDeviation=\"0,0\" result=\"blur2\"></feGaussianblur>\n    <feMerge>\n      <feMergeNode in=\"SourceGraphic\"></feMergeNode>\n      <feMergeNode in=\"blur2\"></feMergeNode>\n    </feMerge>\n  </filter>\n</svg>";
+    svg = div.querySelector("#svg-" + this.filterID);
+    this.filter = svg.querySelector('#blur');
+    this.filterOffset = svg.querySelector('#blur-offset');
+    document.body.insertBefore(svg, document.body.firstChild);
+    this.el.style['filter'] = "url(#" + this.filterID + ")";
+    return this.el.style[h.prefix.css + "filter"] = "url(#" + this.filterID + ")";
+  };
+
   MotionPath.prototype.parseEl = function(el) {
     if (typeof el === 'string') {
       return document.querySelector(el);
@@ -1231,6 +1438,22 @@ MotionPath = (function() {
     }
     if (this.props.path.style) {
       return this.props.path;
+    }
+    if (this.props.path.x || this.props.path.y) {
+      return this.curveToPath({
+        start: {
+          x: 0,
+          y: 0
+        },
+        shift: {
+          x: this.props.path.x || 0,
+          y: this.props.path.y || 0
+        },
+        curvature: {
+          x: this.props.curvature.x || this.defaults.curvature.x,
+          y: this.props.curvature.y || this.defaults.curvature.y
+        }
+      });
     }
   };
 
@@ -1303,6 +1526,16 @@ MotionPath = (function() {
       onComplete: (function(_this) {
         return function() {
           var ref;
+          _this.props.motionBlur && _this.setBlur({
+            blur: {
+              x: 0,
+              y: 0
+            },
+            offset: {
+              x: 0,
+              y: 0
+            }
+          });
           return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
         };
       })(this),
@@ -1333,26 +1566,29 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p, isInit) {
-    var atan, len, point, prevPoint, tOrigin, x, x1, x2, y;
-    len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
+    var atan, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
+    props = this.props;
+    len = this.startLen + (!props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
-    if (this.props.isAngle || (this.props.angleOffset != null)) {
+    isTransformFunOrigin = typeof props.transformOrigin === 'function';
+    if (props.isAngle || (props.angleOffset != null) || isTransformFunOrigin) {
       prevPoint = this.path.getPointAtLength(len - 1);
       x1 = point.y - prevPoint.y;
       x2 = point.x - prevPoint.x;
       atan = Math.atan(x1 / x2);
       !isFinite(atan) && (atan = 0);
       this.angle = atan * h.RAD_TO_DEG;
-      if ((typeof this.props.angleOffset) !== 'function') {
-        this.angle += this.props.angleOffset || 0;
+      if ((typeof props.angleOffset) !== 'function') {
+        this.angle += props.angleOffset || 0;
       } else {
-        this.angle = this.props.angleOffset.call(this, this.angle, p);
+        this.angle = props.angleOffset.call(this, this.angle, p);
       }
     } else {
       this.angle = 0;
     }
     x = point.x + this.props.offsetX;
     y = point.y + this.props.offsetY;
+    this.props.motionBlur && this.makeMotionBlur(x, y);
     if (this.scaler) {
       x *= this.scaler.x;
       y *= this.scaler.y;
@@ -1363,7 +1599,7 @@ MotionPath = (function() {
       this.setElPosition(x, y);
     }
     if (this.props.transformOrigin) {
-      tOrigin = typeof this.props.transformOrigin === 'function' ? this.props.transformOrigin(this.angle, p) : this.props.transformOrigin;
+      tOrigin = !isTransformFunOrigin ? this.props.transformOrigin : this.props.transformOrigin(this.angle, p);
       this.el.style[h.prefix.css + "transform-origin"] = tOrigin;
       this.el.style['transform-origin'] = tOrigin;
     }
@@ -1385,6 +1621,53 @@ MotionPath = (function() {
       angle: this.angle
     });
     return this.el.draw();
+  };
+
+  MotionPath.prototype.makeMotionBlur = function(x, y) {
+    var absoluteAngle, coords, dX, dY, signX, signY, tailAngle;
+    tailAngle = 0;
+    signX = 1;
+    signY = 1;
+    if ((this.prevCoords.x == null) || (this.prevCoords.y == null)) {
+      this.speedX = 0;
+      this.speedY = 0;
+    } else {
+      dX = x - this.prevCoords.x;
+      dY = y - this.prevCoords.y;
+      if (dX > 0) {
+        signX = -1;
+      }
+      if (signX < 0) {
+        signY = -1;
+      }
+      this.speedX = Math.abs(dX);
+      this.speedY = Math.abs(dY);
+      tailAngle = Math.atan(dY / dX) * (180 / Math.PI) + 90;
+    }
+    absoluteAngle = tailAngle - this.angle;
+    coords = this.angToCoords(absoluteAngle);
+    this.blurX = h.clamp((this.speedX / 16) * this.props.motionBlur, 0, 1);
+    this.blurY = h.clamp((this.speedY / 16) * this.props.motionBlur, 0, 1);
+    this.setBlur({
+      blur: {
+        x: 3 * this.blurX * this.blurAmount * Math.abs(coords.x),
+        y: 3 * this.blurY * this.blurAmount * Math.abs(coords.y)
+      },
+      offset: {
+        x: 3 * signX * this.blurX * coords.x * this.blurAmount,
+        y: 3 * signY * this.blurY * coords.y * this.blurAmount
+      }
+    });
+    this.prevCoords.x = x;
+    return this.prevCoords.y = y;
+  };
+
+  MotionPath.prototype.setBlur = function(o) {
+    if (!this.isMotionBlurReset) {
+      this.filter.setAttribute('stdDeviation', o.blur.x + "," + o.blur.y);
+      this.filterOffset.setAttribute('dx', o.offset.x);
+      return this.filterOffset.setAttribute('dy', o.offset.y);
+    }
   };
 
   MotionPath.prototype.extendDefaults = function(o) {
@@ -1458,13 +1741,27 @@ MotionPath = (function() {
     return this.postVars();
   };
 
+  MotionPath.prototype.angToCoords = function(angle) {
+    var radAngle, x, y;
+    angle = angle % 360;
+    radAngle = ((angle - 90) * Math.PI) / 180;
+    x = Math.cos(radAngle);
+    y = Math.sin(radAngle);
+    x = x < 0 ? Math.max(x, -0.7) : Math.min(x, .7);
+    y = y < 0 ? Math.max(y, -0.7) : Math.min(y, .7);
+    return {
+      x: x * 1.428571429,
+      y: y * 1.428571429
+    };
+  };
+
   return MotionPath;
 
 })();
 
 module.exports = MotionPath;
 
-},{"./h":3,"./tween/timeline":20,"./tween/tween":21,"./vendor/resize":23}],6:[function(require,module,exports){
+},{"./easing":3,"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
 
 (function(root) {
   var offset, ref, ref1;
@@ -1482,7 +1779,7 @@ module.exports = MotionPath;
   }
 })(window);
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 
 (function() {
   var k, lastTime, vendors, x;
@@ -1514,7 +1811,7 @@ module.exports = MotionPath;
   }
 })();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var Bit, h;
 
 h = require('../h');
@@ -1720,7 +2017,7 @@ Bit = (function() {
 
 module.exports = Bit;
 
-},{"../h":3}],9:[function(require,module,exports){
+},{"../h":4}],10:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -1767,7 +2064,7 @@ BitsMap = (function() {
 
 module.exports = new BitsMap;
 
-},{"../h":3,"./bit":8,"./circle":10,"./cross":11,"./equal":12,"./line":13,"./polygon":14,"./rect":15,"./zigzag":16}],10:[function(require,module,exports){
+},{"../h":4,"./bit":9,"./circle":11,"./cross":12,"./equal":13,"./line":14,"./polygon":15,"./rect":16,"./zigzag":17}],11:[function(require,module,exports){
 
 var Bit, Circle,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1810,7 +2107,7 @@ Circle = (function(superClass) {
 
 module.exports = Circle;
 
-},{"./bit":8}],11:[function(require,module,exports){
+},{"./bit":9}],12:[function(require,module,exports){
 
 var Bit, Cross,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1857,7 +2154,7 @@ Cross = (function(superClass) {
 
 module.exports = Cross;
 
-},{"./bit":8}],12:[function(require,module,exports){
+},{"./bit":9}],13:[function(require,module,exports){
 
 var Bit, Equal,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1908,7 +2205,7 @@ Equal = (function(superClass) {
 
 module.exports = Equal;
 
-},{"./bit":8}],13:[function(require,module,exports){
+},{"./bit":9}],14:[function(require,module,exports){
 
 var Bit, Line,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -1941,7 +2238,7 @@ Line = (function(superClass) {
 
 module.exports = Line;
 
-},{"./bit":8}],14:[function(require,module,exports){
+},{"./bit":9}],15:[function(require,module,exports){
 
 var Bit, Polygon, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2003,7 +2300,7 @@ Polygon = (function(superClass) {
 
 module.exports = Polygon;
 
-},{"../h":3,"./bit":8}],15:[function(require,module,exports){
+},{"../h":4,"./bit":9}],16:[function(require,module,exports){
 
 var Bit, Rect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2048,7 +2345,7 @@ Rect = (function(superClass) {
 
 module.exports = Rect;
 
-},{"./bit":8}],16:[function(require,module,exports){
+},{"./bit":9}],17:[function(require,module,exports){
 
 var Bit, Zigzag,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2100,7 +2397,7 @@ Zigzag = (function(superClass) {
 
 module.exports = Zigzag;
 
-},{"./bit":8}],17:[function(require,module,exports){
+},{"./bit":9}],18:[function(require,module,exports){
 
 var Stagger, Timeline, Transit, Tween, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2238,7 +2535,7 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":3,"./transit":19,"./tween/timeline":20,"./tween/tween":21}],18:[function(require,module,exports){
+},{"./h":4,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],19:[function(require,module,exports){
 
 var Swirl, Transit,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2351,7 +2648,7 @@ Swirl = (function(superClass) {
 
 module.exports = Swirl;
 
-},{"./transit":19}],19:[function(require,module,exports){
+},{"./transit":20}],20:[function(require,module,exports){
 
 var Timeline, Transit, Tween, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -3014,7 +3311,7 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":3,"./shapes/bitsMap":9,"./tween/timeline":20,"./tween/tween":21}],20:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":10,"./tween/timeline":21,"./tween/tween":22}],21:[function(require,module,exports){
 var Easing, Timeline, h;
 
 Easing = require('../easing');
@@ -3181,7 +3478,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../easing":2,"../h":3}],21:[function(require,module,exports){
+},{"../easing":3,"../h":4}],22:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3376,14 +3673,16 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../h":3,"./tweener":22}],22:[function(require,module,exports){
-var Tweener, h, t;
+},{"../h":4,"./tweener":23}],23:[function(require,module,exports){
+var Tweener, h, i, t;
 
 require('../polyfills/raf');
 
 require('../polyfills/performance');
 
 h = require('../h');
+
+i = 0;
 
 Tweener = (function() {
   function Tweener() {
@@ -3399,7 +3698,7 @@ Tweener = (function() {
   Tweener.prototype.loop = function() {
     var time;
     if (!this.isRunning) {
-      return;
+      return false;
     }
     time = performance.now();
     this.update(time);
@@ -3423,7 +3722,7 @@ Tweener = (function() {
   };
 
   Tweener.prototype.update = function(time) {
-    var i, results;
+    var results;
     i = this.tweens.length;
     results = [];
     while (i--) {
@@ -3461,7 +3760,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":3,"../polyfills/performance":6,"../polyfills/raf":7}],23:[function(require,module,exports){
+},{"../h":4,"../polyfills/performance":7,"../polyfills/raf":8}],24:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com
@@ -3677,5 +3976,5 @@ module.exports = t;
   }
 })();
 
-},{}]},{},[4])(4)
+},{}]},{},[5])(5)
 });

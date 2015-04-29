@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> - motion-path.coffee</title>
+
+  <link rel="stylesheet" href="../assets/style.css">
+  
+    
+      <style>
+        
+      </style>
+    
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="groc-relative-root" content="../"/>
+  <meta name="groc-document-path" content="js/motion-path.coffee"/>
+  
+</head>
+<body>
+  <div id="file-area">
+    <div id="meta">
+      <code class="file-path">
+      
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/motion-path.coffee">js/motion-path.coffee</a>
+      
+      </code>
+    </div>
+    <div id="document">
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+ class MotionPath
+</span></p>
+<h2 id="motionpath"><a href="#motionpath" class="anchor"></a>MotionPath</h2><p>Class for moving object along path or curve</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">h         = <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
+easing    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./easing'</span>
+resize    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./vendor/resize'</span>
+Timeline  = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/timeline'</span>
+Tween     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MotionPath</span></span>
+  <span class="hljs-attribute">NS</span>: <span class="hljs-string">'http://www.w3.org/2000/svg'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+<h3 id="defaults-apis"><a href="#defaults-apis" class="anchor"></a>Defaults/APIs</h3><hr>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">defaults</span>:</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-path"><strong>path</strong></span> of type <strong>String, SVGPathElement, Object</strong>
+</span></p>
+<p>Defines motion path or arc to animate <strong>el&#39;s</strong> position.<br>Can be defined</p>
+<ul>
+<li>by <strong>String</strong>:<ul>
+<li><strong>CSS selector</strong> e.g. &#39;#js-path&#39;, &#39;.path&#39; etc</li>
+<li><strong>SVG path</strong> <a href="http://goo.gl/LzvV6P">line commands</a>
+e.g &#39;M0,0 L100, 300&#39;</li>
+</ul>
+</li>
+<li>by <strong>SVGPathElement</strong> e.g document.getElementById(&#39;#js-path&#39;)</li>
+<li>by <strong>Arc shift</strong> e.g { x: 200, y: 100 }. If motion path was defined by
+arc shift, <a href="#property-curvature">curvature option</a>
+defines arc curvature.</li>
+</ul>
+<p>CSS selector:</p><p data-height="300" data-theme-id="14132" data-slug-hash="emqbLN" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>SVG line commands:</p><p data-height="300" data-theme-id="14132" data-slug-hash="dPxaMm" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>SVGPathElement:</p><p data-height="300" data-theme-id="14132" data-slug-hash="xbvMyj" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Arc shift:</p><p data-height="300" data-theme-id="14132" data-slug-hash="QweYKW" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">path</span>:             <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-curvature"><strong>curvature</strong></span> of type <strong>Object</strong>
+</span></p>
+<p>Defines curve size for path defined by arc shift.<br>Curvature amount can be defined by number representing <em>px</em>
+or percents(string) representing amount relative to shift length.</p>
+<p>Example:</p>
+<pre><code>{ <span class="hljs-string">x:</span> <span class="hljs-number">200</span>, <span class="hljs-string">y:</span> <span class="hljs-number">100</span> } or { <span class="hljs-string">x:</span> <span class="hljs-string">'50%'</span>, <span class="hljs-string">y:</span> <span class="hljs-string">'20%'</span> } or mix
+</code></pre><p>Example:</p>
+<pre><code><span class="hljs-comment">// will fallback to defaults for omitted axes</span>
+{ <span class="hljs-string">x:</span> <span class="hljs-number">200</span> }   <span class="hljs-comment">// fallbacks to { x: 200, y: '50%' }</span>
+{ <span class="hljs-string">y:</span> <span class="hljs-string">'25%'</span> } <span class="hljs-comment">// fallbacks to { x: '75%', y: '25%' }</span>
+</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="vEobbM" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">curvature</span>:        <span class="hljs-attribute">x</span>: <span class="hljs-string">'75%'</span>, <span class="hljs-attribute">y</span>: <span class="hljs-string">'50%'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-delay"><strong>delay</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Delay before animation starts, <em>ms</em></p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="wBVNLM" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">delay</span>:            <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-duration"><strong>duration</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Duration of animation, <em>ms</em></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">duration</span>:         <span class="hljs-number">1000</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-easing"><strong>easing</strong></span> of type <strong>String, Function</strong>
+</span></p>
+<p>Easing function. Can be a string, a bezier() curve or a function
+String options can be found in <a href="easing.coffee.html">easing module</a>.</p>
+<p>String:</p><p data-height="300" data-theme-id="14132" data-slug-hash="GgVeKR" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Bezier cubic curve:</p><p data-height="300" data-theme-id="14132" data-slug-hash="WbVmeo" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Custom function:</p><p data-height="300" data-theme-id="14132" data-slug-hash="XJvGrE" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">easing</span>:           <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-repeat"><strong>repeat</strong></span> of type <strong>Integer</strong>
+</span></p>
+<p>Animation repeat count</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="emqbLN" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">repeat</span>:           <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-yoyo"><strong>yoyo</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines if animation should be alternated on repeat.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="gbVEbb" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">yoyo</span>:             <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-offsetX"><strong>offsetX</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Defines additional horizontal offset from center of path, <em>px</em></p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="gbVEbb" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">offsetX</span>:          <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-offsetY"><strong>offsetY</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Defines additional vertical offset from center of path, <em>px</em></p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="OPKqNN" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">offsetY</span>:          <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-angleOffset"><strong>angleOffset</strong></span> of type <strong>Number, Function</strong>
+</span></p>
+<p>Defines angle offset for path curves</p>
+<p>Example:</p>
+<pre><code><span class="hljs-comment">// function</span>
+<span class="hljs-keyword">new</span> MotionPath({
+  <span class="hljs-comment">//...</span>
+  angleOffset: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(currentAngle)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> (currentAngle &lt; <span class="hljs-number">0</span>) { <span class="hljs-number">90</span> } <span class="hljs-keyword">else</span> {-<span class="hljs-number">90</span>}
+  }
+});
+</code></pre><p>Number:</p><p data-height="300" data-theme-id="14132" data-slug-hash="JogzXw" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
+
+
+
+<p>Function:</p><p data-height="300" data-theme-id="14132" data-slug-hash="MYNxer" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">angleOffset</span>:      <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-pathStart"><strong>pathStart</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Defines lower bound for path coordinates in rangle <em>[0,1]</em>
+So specifying pathStart of .5 will start animation
+form the 50% progress of your path.</p>
+<p>Example:</p>
+<pre><code><span class="hljs-comment">// function</span>
+<span class="hljs-tag">new</span> <span class="hljs-tag">MotionPath</span>({
+  <span class="hljs-comment">//...</span>
+  <span class="hljs-attribute">pathStart</span>: .<span class="hljs-number">5</span>
+});
+</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="azeMBQ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">pathStart</span>:        <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-pathEnd"><strong>pathEnd</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Defines upper bound for path coordinates in rangle <em>[0,1]</em>
+So specifying pathEnd of .5 will end animation
+at the 50% progress of your path.</p>
+<p>Example:</p>
+<pre><code><span class="hljs-comment">// function</span>
+<span class="hljs-tag">new</span> <span class="hljs-tag">MotionPath</span>({
+  <span class="hljs-comment">//...</span>
+  <span class="hljs-attribute">pathEnd</span>: .<span class="hljs-number">5</span>
+});
+</code></pre><p data-height="300" data-theme-id="14132" data-slug-hash="wBVOJo" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">pathEnd</span>:          <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-motionBlur"><strong>motionBlur</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Defines motion blur on element in range of <em>[0,1]</em></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">motionBlur</span>:       <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-transformOrigin"><strong>transformOrigin</strong></span> of type <strong>String, Function</strong>
+</span></p>
+<p>Defines transform-origin CSS property for <strong>el</strong>.
+Can be defined by <strong>string</strong> or <strong>function</strong>.
+Function recieves current angle as agrumnet and
+should return transform-origin value as a strin.</p>
+<p>Example:</p>
+<pre><code><span class="hljs-comment">// function</span>
+<span class="hljs-keyword">new</span> MotionPath({
+  <span class="hljs-comment">//...</span>
+  isAngle: <span class="hljs-literal">true</span>,
+  transformOrigin: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(currentAngle)</span> </span>{
+    <span class="hljs-keyword">return</span>  <span class="hljs-number">6</span>*currentAngle + <span class="hljs-string">'% 0'</span>;
+  }
+});
+</code></pre><p>Function:</p><p data-height="300" data-theme-id="14132" data-slug-hash="pvMYwp" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">transformOrigin</span>:  <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isAngle"><strong>isAngle</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines if path curves angle should be set to el.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="GgVexq" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isAngle</span>:          <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isReverse"><strong>isReverse</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines motion path direction.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="KwOERQ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isReverse</span>:        <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isRunLess"><strong>isRunLess</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines if animation should not start after init.
+Animation can be then started with calling <a href="">run</a> method.</p>
+<p><em>Please see at codepen for proper results</em>:</p><p data-height="300" data-theme-id="14132" data-slug-hash="raXRKQ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isRunLess</span>:        <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isPresetPosition"><strong>isPresetPosition</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>Defines if <strong>el&#39;s</strong> position should be preset immediately after init.
+If set to false <strong>el</strong> will remain at it&#39;s position until
+actual animation started on delay end or <a href="">run</a> method call.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="EaqMOJ" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isPresetPosition</span>: <span class="hljs-literal">true</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-onStart"><strong>onStart</strong></span> of type <strong>Function</strong>
+</span></p>
+<p>Callback <strong>onStart</strong> fires once if animation was started.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="VYoRRe" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">onStart</span>:          <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-onComplete"><strong>onComplete</strong></span> of type <strong>Function</strong>
+</span></p>
+<p>Callback <strong>onComplete</strong> fires once if animation was completed.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="ZYgPPm" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">onComplete</span>:       <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-onUpdate"><strong>onUpdate</strong></span> of type <strong>Function</strong>
+</span></p>
+<p>Callback <strong>onUpdate</strong> fires every raf frame on motion
+path update. Recieves <strong>progress</strong> of type <strong>Number</strong>
+in range <em>[0,1]</em> as argument.</p>
+<p data-height="300" data-theme-id="14132" data-slug-hash="YPmgMq" data-default-tab="result" data-user="sol0mka" class='codepen'> </p></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">onUpdate</span>:         <span class="hljs-literal">null</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+<h3 id="class-body-docs"><a href="#class-body-docs" class="anchor"></a>Class body docs</h3><hr>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@vars</span>(); <span class="hljs-property">@createTween</span>(); @
+
+  <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@getScaler</span> = h.bind(<span class="hljs-property">@getScaler</span>, @); <span class="hljs-property">@resize</span> = resize
+    <span class="hljs-property">@props</span> = h.cloneObj(<span class="hljs-property">@defaults</span>)
+    <span class="hljs-property">@extendOptions</span> <span class="hljs-property">@o</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>reset motionBlur for safari and IE</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@isMotionBlurReset</span> = h.isSafari <span class="hljs-keyword">or</span> h.isIE
+    <span class="hljs-property">@isMotionBlurReset</span> <span class="hljs-keyword">and</span> (<span class="hljs-property">@props</span>.motionBlur = <span class="hljs-number">0</span>)
+    <span class="hljs-property">@history</span> = [h.cloneObj(<span class="hljs-property">@props</span>)]
+    <span class="hljs-property">@postVars</span>()</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>curveToPath</strong>
+</span></p>
+<p>Method to transform coordinates and curvature
+to svg path</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>coordinates</code> must be an Object.</strong><br/>(of end point <strong>x</strong> and <strong>y</strong>)</li>
+<li><strong><code>coordinates</code> must be an Object.</strong><br/>(of the control point of the quadratic bezier curve, relative to start and end coordinates <strong>x</strong> and <strong>y</strong>)</li>
+</ul>
+<p><strong>Returns a SVGElement</strong><br/>(svg path)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">curveToPath</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    path = <span class="hljs-built_in">document</span>.createElementNS <span class="hljs-property">@NS</span> , <span class="hljs-string">'path'</span>
+    start = o.start
+    endPoint  = <span class="hljs-attribute">x</span>: start.x + o.shift.x, <span class="hljs-attribute">y</span>: start.x + o.shift.y
+    curvature = o.curvature
+
+    dX = o.shift.x; dY = o.shift.y
+    radius = Math.sqrt(dX*dX + dY*dY); percent = radius/<span class="hljs-number">100</span>
+    angle  = Math.atan(dY/dX)*(<span class="hljs-number">180</span>/Math.PI) + <span class="hljs-number">90</span>
+    <span class="hljs-keyword">if</span> o.shift.x &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> angle = angle + <span class="hljs-number">180</span>
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get point on line between start end end</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    curvatureX = h.parseUnit curvature.x
+    curvatureX = <span class="hljs-keyword">if</span> curvatureX.unit <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span> <span class="hljs-keyword">then</span> curvatureX.value*percent
+    <span class="hljs-keyword">else</span> curvatureX.value
+    curveXPoint = h.getRadialPoint
+      <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: start.x, <span class="hljs-attribute">y</span>: start.y
+      <span class="hljs-attribute">radius</span>: curvatureX
+      <span class="hljs-attribute">angle</span>:  angle</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get control point with center in curveXPoint</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    curvatureY = h.parseUnit curvature.y
+    curvatureY = <span class="hljs-keyword">if</span> curvatureY.unit <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span> <span class="hljs-keyword">then</span> curvatureY.value*percent
+    <span class="hljs-keyword">else</span> curvatureY.value
+    curvePoint = h.getRadialPoint
+      <span class="hljs-attribute">center</span>: <span class="hljs-attribute">x</span>: curveXPoint.x, <span class="hljs-attribute">y</span>: curveXPoint.y
+      <span class="hljs-attribute">radius</span>: curvatureY
+      <span class="hljs-attribute">angle</span>:  angle+<span class="hljs-number">90</span>
+
+    path.setAttribute <span class="hljs-string">'d'</span>, <span class="hljs-string">"M<span class="hljs-subst">#{start.x}</span>,<span class="hljs-subst">#{start.y}</span>
+       Q<span class="hljs-subst">#{curvePoint.x}</span>,<span class="hljs-subst">#{curvePoint.y}</span>
+       <span class="hljs-subst">#{endPoint.x}</span>,<span class="hljs-subst">#{endPoint.y}</span>"</span>
+
+    path
+
+  <span class="hljs-attribute">postVars</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@props</span>.pathStart = h.clamp <span class="hljs-property">@props</span>.pathStart, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
+    <span class="hljs-property">@props</span>.pathEnd   = h.clamp <span class="hljs-property">@props</span>.pathEnd, <span class="hljs-property">@props</span>.pathStart, <span class="hljs-number">1</span>
+    <span class="hljs-property">@angle</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@speedX</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@speedY</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@blurX</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@blurY</span> = <span class="hljs-number">0</span>
+    <span class="hljs-property">@prevCoords</span> = {}; <span class="hljs-property">@blurAmount</span> = <span class="hljs-number">20</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>clamp motionBlur in range of [0,1]</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@props</span>.motionBlur = h.clamp <span class="hljs-property">@props</span>.motionBlur, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
+    
+    <span class="hljs-property">@onUpdate</span>   = <span class="hljs-property">@props</span>.onUpdate
+    <span class="hljs-property">@el</span>         = <span class="hljs-property">@parseEl</span> <span class="hljs-property">@props</span>.el
+    <span class="hljs-property">@props</span>.motionBlur &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@createFilter</span>()
+
+    <span class="hljs-property">@path</span>       = <span class="hljs-property">@getPath</span>()
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@path</span>.getAttribute(<span class="hljs-string">'d'</span>)
+      h.error(<span class="hljs-string">'Path has no coordinates to work with, aborting'</span>); <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    <span class="hljs-property">@len</span>        = <span class="hljs-property">@path</span>.getTotalLength()
+    <span class="hljs-property">@slicedLen</span>  = <span class="hljs-property">@len</span>*(<span class="hljs-property">@props</span>.pathEnd - <span class="hljs-property">@props</span>.pathStart)
+    <span class="hljs-property">@startLen</span>   = <span class="hljs-property">@props</span>.pathStart*<span class="hljs-property">@len</span>
+    <span class="hljs-property">@fill</span>       = <span class="hljs-property">@props</span>.fill
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@fill</span>?
+      <span class="hljs-property">@container</span>  = <span class="hljs-property">@parseEl</span> <span class="hljs-property">@props</span>.fill.container
+      <span class="hljs-property">@fillRule</span>   = <span class="hljs-property">@props</span>.fill.fillRule <span class="hljs-keyword">or</span> <span class="hljs-string">'all'</span>
+      <span class="hljs-property">@getScaler</span>()
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@container</span>?
+        <span class="hljs-property">@removeEvent</span> <span class="hljs-property">@container</span>, <span class="hljs-string">'onresize'</span>, <span class="hljs-property">@getScaler</span>
+        <span class="hljs-property">@addEvent</span>    <span class="hljs-property">@container</span>, <span class="hljs-string">'onresize'</span>, <span class="hljs-property">@getScaler</span>
+
+  <span class="hljs-attribute">addEvent</span>:   <span class="hljs-function"><span class="hljs-params">(el, type, handler)</span>-&gt;</span> el.addEventListener    type, handler, <span class="hljs-literal">false</span>
+  <span class="hljs-attribute">removeEvent</span>:<span class="hljs-function"><span class="hljs-params">(el, type, handler)</span>-&gt;</span> el.removeEventListener type, handler, <span class="hljs-literal">false</span>
+  <span class="hljs-attribute">createFilter</span>:<span class="hljs-function">-&gt;</span>
+    div = <span class="hljs-built_in">document</span>.createElement <span class="hljs-string">'div'</span>
+    <span class="hljs-property">@filterID</span> = <span class="hljs-string">"filter-<span class="hljs-subst">#{h.getUniqID()}</span>"</span>
+    div.innerHTML = <span class="hljs-string">"""&lt;svg id="svg-<span class="hljs-subst">#{<span class="hljs-property">@filterID</span>}</span>"
+          style="visibility:hidden; width:0px; height:0px"&gt;
+        &lt;filter id="<span class="hljs-subst">#{<span class="hljs-property">@filterID</span>}</span>" y="-20" x="-20" width="40" height="40"&gt;
+          &lt;feOffset
+            id="blur-offset" in="SourceGraphic"
+            dx="0" dy="0" result="offset2"&gt;&lt;/feOffset&gt;
+          &lt;feGaussianblur
+            id="blur" in="offset2"
+            stdDeviation="0,0" result="blur2"&gt;&lt;/feGaussianblur&gt;
+          &lt;feMerge&gt;
+            &lt;feMergeNode in="SourceGraphic"&gt;&lt;/feMergeNode&gt;
+            &lt;feMergeNode in="blur2"&gt;&lt;/feMergeNode&gt;
+          &lt;/feMerge&gt;
+        &lt;/filter&gt;
+      &lt;/svg&gt;"""</span>
+
+    svg = div.querySelector <span class="hljs-string">"#svg-<span class="hljs-subst">#{<span class="hljs-property">@filterID</span>}</span>"</span>
+    <span class="hljs-property">@filter</span>       = svg.querySelector <span class="hljs-string">'#blur'</span>
+    <span class="hljs-property">@filterOffset</span> = svg.querySelector <span class="hljs-string">'#blur-offset'</span>
+    <span class="hljs-built_in">document</span>.body.insertBefore svg, <span class="hljs-built_in">document</span>.body.firstChild
+    <span class="hljs-property">@el</span>.style[<span class="hljs-string">'filter'</span>] = <span class="hljs-string">"url(#<span class="hljs-subst">#{<span class="hljs-property">@filterID</span>}</span>)"</span>
+    <span class="hljs-property">@el</span>.style[<span class="hljs-string">"<span class="hljs-subst">#{h.prefix.css}</span>filter"</span>] = <span class="hljs-string">"url(#<span class="hljs-subst">#{<span class="hljs-property">@filterID</span>}</span>)"</span>
+
+  <span class="hljs-attribute">parseEl</span>:<span class="hljs-function"><span class="hljs-params">(el)</span>-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.querySelector el <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> el <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+    <span class="hljs-keyword">return</span> el <span class="hljs-keyword">if</span> el <span class="hljs-keyword">instanceof</span> HTMLElement
+    <span class="hljs-keyword">if</span> el.setProp? <span class="hljs-keyword">then</span> <span class="hljs-property">@isModule</span> = <span class="hljs-literal">true</span>; <span class="hljs-keyword">return</span> el
+  <span class="hljs-attribute">getPath</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> <span class="hljs-property">@props</span>.path <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.path.charAt(<span class="hljs-number">0</span>).toLowerCase() <span class="hljs-keyword">is</span> <span class="hljs-string">'m'</span>
+        path = <span class="hljs-built_in">document</span>.createElementNS <span class="hljs-property">@NS</span>, <span class="hljs-string">'path'</span>
+        path.setAttributeNS(<span class="hljs-literal">null</span>, <span class="hljs-string">'d'</span>, <span class="hljs-property">@props</span>.path); path
+      <span class="hljs-keyword">else</span> <span class="hljs-built_in">document</span>.querySelector <span class="hljs-property">@props</span>.path</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>DOM node</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.path.style
+      <span class="hljs-keyword">return</span> <span class="hljs-property">@props</span>.path
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.path.x <span class="hljs-keyword">or</span> <span class="hljs-property">@props</span>.path.y
+      <span class="hljs-property">@curveToPath</span>
+        <span class="hljs-attribute">start</span>: <span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>
+        <span class="hljs-attribute">shift</span>: {<span class="hljs-attribute">x</span>: (<span class="hljs-property">@props</span>.path.x <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>), <span class="hljs-attribute">y</span>: (<span class="hljs-property">@props</span>.path.y <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)}
+        <span class="hljs-attribute">curvature</span>:
+          <span class="hljs-attribute">x</span>: <span class="hljs-property">@props</span>.curvature.x <span class="hljs-keyword">or</span> <span class="hljs-property">@defaults</span>.curvature.x
+          <span class="hljs-attribute">y</span>: <span class="hljs-property">@props</span>.curvature.y <span class="hljs-keyword">or</span> <span class="hljs-property">@defaults</span>.curvature.y
+
+  <span class="hljs-attribute">getScaler</span>:<span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    <span class="hljs-property">@cSize</span> =
+      <span class="hljs-attribute">width</span>:  <span class="hljs-property">@container</span>.offsetWidth  <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
+      <span class="hljs-attribute">height</span>: <span class="hljs-property">@container</span>.offsetHeight <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
+    start = <span class="hljs-property">@path</span>.getPointAtLength <span class="hljs-number">0</span>
+    end   = <span class="hljs-property">@path</span>.getPointAtLength <span class="hljs-property">@len</span>
+    
+    size = {}; <span class="hljs-property">@scaler</span> = {}
+    size.width  = <span class="hljs-keyword">if</span> end.x &gt;= start.x <span class="hljs-keyword">then</span> end.x-start.x <span class="hljs-keyword">else</span> start.x-end.x
+    size.height = <span class="hljs-keyword">if</span> end.y &gt;= start.y <span class="hljs-keyword">then</span> end.y-start.y <span class="hljs-keyword">else</span> start.y-end.y
+
+    <span class="hljs-keyword">switch</span> <span class="hljs-property">@fillRule</span>
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'all'</span>
+        <span class="hljs-property">@calcWidth</span>(size); <span class="hljs-property">@calcHeight</span>(size)
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'width'</span>
+        <span class="hljs-property">@calcWidth</span>(size);  <span class="hljs-property">@scaler</span>.y = <span class="hljs-property">@scaler</span>.x
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'height'</span>
+        <span class="hljs-property">@calcHeight</span>(size); <span class="hljs-property">@scaler</span>.x = <span class="hljs-property">@scaler</span>.y</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">calcWidth</span>:<span class="hljs-function"><span class="hljs-params">(size)</span>-&gt;</span>
+    <span class="hljs-property">@scaler</span>.x = <span class="hljs-property">@cSize</span>.width/size.width
+    !isFinite(<span class="hljs-property">@scaler</span>.x) <span class="hljs-keyword">and</span> (<span class="hljs-property">@scaler</span>.x = <span class="hljs-number">1</span>)
+  <span class="hljs-attribute">calcHeight</span>:<span class="hljs-function"><span class="hljs-params">(size)</span>=&gt;</span>
+    <span class="hljs-property">@scaler</span>.y = <span class="hljs-property">@cSize</span>.height/size.height
+    !isFinite(<span class="hljs-property">@scaler</span>.y) <span class="hljs-keyword">and</span> (<span class="hljs-property">@scaler</span>.y = <span class="hljs-number">1</span>)
+
+  <span class="hljs-attribute">run</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> o
+      fistItem = <span class="hljs-property">@history</span>[<span class="hljs-number">0</span>]
+      <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> o
+        <span class="hljs-keyword">if</span> h.callbacksMap[key] <span class="hljs-keyword">or</span> h.tweenOptionMap[key]
+          h.warn <span class="hljs-string">"the property \"<span class="hljs-subst">#{key}</span>\" property can not
+            be overridden on run yet"</span>
+          <span class="hljs-keyword">delete</span> o[key]
+        <span class="hljs-keyword">else</span> <span class="hljs-property">@history</span>[<span class="hljs-number">0</span>][key] = value
+      <span class="hljs-property">@tuneOptions</span> o
+    <span class="hljs-property">@startTween</span>()
+
+  <span class="hljs-attribute">createTween</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@timeline</span> = <span class="hljs-keyword">new</span> Timeline
+      <span class="hljs-attribute">duration</span>:   <span class="hljs-property">@props</span>.duration
+      <span class="hljs-attribute">delay</span>:      <span class="hljs-property">@props</span>.delay
+      <span class="hljs-attribute">yoyo</span>:       <span class="hljs-property">@props</span>.yoyo
+      <span class="hljs-attribute">repeat</span>:     <span class="hljs-property">@props</span>.repeat
+      <span class="hljs-attribute">easing</span>:     <span class="hljs-property">@props</span>.easing
+      <span class="hljs-attribute">onStart</span>:    <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onStart?.apply @
+      <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">=&gt;</span>
+        <span class="hljs-property">@props</span>.motionBlur <span class="hljs-keyword">and</span> <span class="hljs-property">@setBlur</span>
+          <span class="hljs-attribute">blur</span>: {<span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>}, <span class="hljs-attribute">offset</span>: {<span class="hljs-attribute">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>}
+        <span class="hljs-property">@props</span>.onComplete?.apply @
+      <span class="hljs-attribute">onUpdate</span>:  <span class="hljs-function"><span class="hljs-params">(p)</span>=&gt;</span> <span class="hljs-property">@setProgress</span>(p)
+      <span class="hljs-attribute">onFirstUpdateBackward</span>:<span class="hljs-function">=&gt;</span> <span class="hljs-property">@history</span>.length &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@tuneOptions</span> <span class="hljs-property">@history</span>[<span class="hljs-number">0</span>]
+    <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Tween<span class="hljs-comment"># onUpdate:(p)=&gt; @o.onChainUpdate?(p)</span>
+    <span class="hljs-property">@tween</span>.add(<span class="hljs-property">@timeline</span>)
+    !<span class="hljs-property">@props</span>.isRunLess <span class="hljs-keyword">and</span> <span class="hljs-property">@startTween</span>()
+    <span class="hljs-property">@props</span>.isPresetPosition <span class="hljs-keyword">and</span> <span class="hljs-property">@setProgress</span>(<span class="hljs-number">0</span>, <span class="hljs-literal">true</span>)
+
+  <span class="hljs-attribute">startTween</span>:<span class="hljs-function">-&gt;</span> setTimeout (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@tween</span>?.start()), <span class="hljs-number">1</span>
+
+  <span class="hljs-attribute">setProgress</span>:<span class="hljs-function"><span class="hljs-params">(p, isInit)</span>-&gt;</span>
+    props = <span class="hljs-property">@props</span>
+    len = <span class="hljs-property">@startLen</span>+<span class="hljs-keyword">if</span> !props.isReverse <span class="hljs-keyword">then</span> p*<span class="hljs-property">@slicedLen</span> <span class="hljs-keyword">else</span> (<span class="hljs-number">1</span>-p)*<span class="hljs-property">@slicedLen</span>
+    point = <span class="hljs-property">@path</span>.getPointAtLength len
+
+    isTransformFunOrigin = <span class="hljs-keyword">typeof</span> props.transformOrigin <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get current angle</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> props.isAngle <span class="hljs-keyword">or</span> props.angleOffset? <span class="hljs-keyword">or</span> isTransformFunOrigin
+      prevPoint = <span class="hljs-property">@path</span>.getPointAtLength len - <span class="hljs-number">1</span>
+      x1 = point.y - prevPoint.y; x2 = point.x - prevPoint.x
+      atan = Math.atan(x1/x2); !isFinite(atan) <span class="hljs-keyword">and</span> (atan = <span class="hljs-number">0</span>)
+      <span class="hljs-property">@angle</span> = atan*h.RAD_TO_DEG
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> props.angleOffset) <span class="hljs-keyword">isnt</span> <span class="hljs-string">'function'</span>
+        <span class="hljs-property">@angle</span> += props.angleOffset <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
+      <span class="hljs-keyword">else</span> <span class="hljs-property">@angle</span> = props.angleOffset.call @, <span class="hljs-property">@angle</span>, p
+    <span class="hljs-keyword">else</span> <span class="hljs-property">@angle</span> = <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get x and y coordinates</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    x = point.x + <span class="hljs-property">@props</span>.offsetX; y = point.y + <span class="hljs-property">@props</span>.offsetY
+
+    <span class="hljs-property">@props</span>.motionBlur <span class="hljs-keyword">and</span> <span class="hljs-property">@makeMotionBlur</span>(x, y)
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get real coordinates relative to container size</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-property">@scaler</span> <span class="hljs-keyword">then</span> x *= <span class="hljs-property">@scaler</span>.x; y *= <span class="hljs-property">@scaler</span>.y</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>set position and angle</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-property">@isModule</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@setModulePosition</span>(x,y) <span class="hljs-keyword">else</span> <span class="hljs-property">@setElPosition</span>(x,y)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>set transform origin</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.transformOrigin</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>transform origin could be a function</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      tOrigin = <span class="hljs-keyword">if</span> !isTransformFunOrigin <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.transformOrigin
+      <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.transformOrigin(<span class="hljs-property">@angle</span>, p)
+      <span class="hljs-property">@el</span>.style[<span class="hljs-string">"<span class="hljs-subst">#{h.prefix.css}</span>transform-origin"</span>] = tOrigin
+      <span class="hljs-property">@el</span>.style[<span class="hljs-string">'transform-origin'</span>] = tOrigin</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>call onUpdate but not on the very first(0 progress) call</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    !isInit <span class="hljs-keyword">and</span> <span class="hljs-property">@onUpdate</span>?(p)
+
+  <span class="hljs-attribute">setElPosition</span>:<span class="hljs-function"><span class="hljs-params">(x,y)</span>-&gt;</span>
+    rotate = <span class="hljs-keyword">if</span> <span class="hljs-property">@angle</span> <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-string">"rotate(<span class="hljs-subst">#{<span class="hljs-property">@angle</span>}</span>deg)"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+    transform = <span class="hljs-string">"translate(<span class="hljs-subst">#{x}</span>px,<span class="hljs-subst">#{y}</span>px) <span class="hljs-subst">#{rotate}</span>"</span>
+    <span class="hljs-property">@el</span>.style[<span class="hljs-string">"<span class="hljs-subst">#{h.prefix.css}</span>transform"</span>] = transform
+    <span class="hljs-property">@el</span>.style[<span class="hljs-string">'transform'</span>] = transform
+  <span class="hljs-attribute">setModulePosition</span>:<span class="hljs-function"><span class="hljs-params">(x, y)</span>-&gt;</span>
+    <span class="hljs-property">@el</span>.setProp <span class="hljs-attribute">shiftX</span>: <span class="hljs-string">"<span class="hljs-subst">#{x}</span>px"</span>, <span class="hljs-attribute">shiftY</span>: <span class="hljs-string">"<span class="hljs-subst">#{y}</span>px"</span>, <span class="hljs-attribute">angle</span>: <span class="hljs-property">@angle</span>
+    <span class="hljs-property">@el</span>.draw()
+  <span class="hljs-attribute">makeMotionBlur</span>:<span class="hljs-function"><span class="hljs-params">(x, y)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if previous coords are not defined yet -- set speed to 0</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    tailAngle = <span class="hljs-number">0</span>; signX = <span class="hljs-number">1</span>; signY = <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@prevCoords</span>.x? <span class="hljs-keyword">or</span> !<span class="hljs-property">@prevCoords</span>.y? <span class="hljs-keyword">then</span> <span class="hljs-property">@speedX</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@speedY</span> = <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>else calculate speed based on the largest axes delta</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">else</span>
+      dX = x-<span class="hljs-property">@prevCoords</span>.x; dY = y-<span class="hljs-property">@prevCoords</span>.y
+      <span class="hljs-keyword">if</span> dX &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> signX = -<span class="hljs-number">1</span>
+      <span class="hljs-keyword">if</span> signX &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> signY = -<span class="hljs-number">1</span>
+      <span class="hljs-property">@speedX</span> = Math.abs(dX); <span class="hljs-property">@speedY</span> = Math.abs(dY)
+      tailAngle = Math.atan(dY/dX)*(<span class="hljs-number">180</span>/Math.PI) + <span class="hljs-number">90</span>
+    absoluteAngle = tailAngle - <span class="hljs-property">@angle</span>
+    coords = <span class="hljs-property">@angToCoords</span> absoluteAngle</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get blur based on speed where 1px per 1ms is very fast
+and motionBlur coefficient</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@blurX</span> = h.clamp (<span class="hljs-property">@speedX</span>/<span class="hljs-number">16</span>)*<span class="hljs-property">@props</span>.motionBlur, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
+    <span class="hljs-property">@blurY</span> = h.clamp (<span class="hljs-property">@speedY</span>/<span class="hljs-number">16</span>)*<span class="hljs-property">@props</span>.motionBlur, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
+    <span class="hljs-property">@setBlur</span>
+      <span class="hljs-attribute">blur</span>:
+        <span class="hljs-attribute">x</span>: <span class="hljs-number">3</span>*<span class="hljs-property">@blurX</span>*<span class="hljs-property">@blurAmount</span>*Math.abs(coords.x)
+        <span class="hljs-attribute">y</span>: <span class="hljs-number">3</span>*<span class="hljs-property">@blurY</span>*<span class="hljs-property">@blurAmount</span>*Math.abs(coords.y)
+      <span class="hljs-attribute">offset</span>:
+        <span class="hljs-attribute">x</span>: <span class="hljs-number">3</span>*signX*<span class="hljs-property">@blurX</span>*coords.x*<span class="hljs-property">@blurAmount</span>
+        <span class="hljs-attribute">y</span>: <span class="hljs-number">3</span>*signY*<span class="hljs-property">@blurY</span>*coords.y*<span class="hljs-property">@blurAmount</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>save previous coords</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@prevCoords</span>.x = x; <span class="hljs-property">@prevCoords</span>.y = y
+
+  <span class="hljs-attribute">setBlur</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@isMotionBlurReset</span>
+      <span class="hljs-property">@filter</span>.setAttribute <span class="hljs-string">'stdDeviation'</span>, <span class="hljs-string">"<span class="hljs-subst">#{o.blur.x}</span>,<span class="hljs-subst">#{o.blur.y}</span>"</span>
+      <span class="hljs-property">@filterOffset</span>.setAttribute <span class="hljs-string">'dx'</span>, o.offset.x
+      <span class="hljs-property">@filterOffset</span>.setAttribute <span class="hljs-string">'dy'</span>, o.offset.y
+
+  <span class="hljs-attribute">extendDefaults</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> o
+      @[key] = value
+  <span class="hljs-attribute">extendOptions</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> o
+      <span class="hljs-property">@props</span>[key] = value
+  <span class="hljs-attribute">then</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
+    prevOptions = <span class="hljs-property">@history</span>[<span class="hljs-property">@history</span>.length-<span class="hljs-number">1</span>]; opts = {}
+    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> prevOptions</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>don&#39;t copy callbacks and tween options(only duration)
+get prev options if not defined</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> !h.callbacksMap[key] <span class="hljs-keyword">and</span> !h.tweenOptionMap[key] <span class="hljs-keyword">or</span> key <span class="hljs-keyword">is</span> <span class="hljs-string">'duration'</span>
+        o[key] ?= value</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if property is callback and not defined in then options -
+define it as undefined :) to override old callback,
+because we are inside the prevOptions hash and it means
+the callback was previously defined</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span> o[key] ?= <span class="hljs-literal">undefined</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get tween timing values to feed the timeline</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> h.tweenOptionMap[key]</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>copy all props, if prop is duration - fallback to previous value</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">        opts[key] = <span class="hljs-keyword">if</span> key <span class="hljs-keyword">isnt</span> <span class="hljs-string">'duration'</span> <span class="hljs-keyword">then</span> o[key]
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> o[key]? <span class="hljs-keyword">then</span> o[key] <span class="hljs-keyword">else</span> prevOptions[key]
+    <span class="hljs-property">@history</span>.push(o); it = @
+    opts.onUpdate      = <span class="hljs-function"><span class="hljs-params">(p)</span>=&gt;</span> <span class="hljs-property">@setProgress</span> p
+    opts.onStart       = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onStart?.apply @
+    opts.onComplete    = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onComplete?.apply @
+    opts.onFirstUpdate = <span class="hljs-function">-&gt;</span> it.tuneOptions it.history[<span class="hljs-property">@index</span>]
+    opts.isChained = !o.delay
+    <span class="hljs-property">@tween</span>.append <span class="hljs-keyword">new</span> Timeline(opts)
+    @
+
+  <span class="hljs-attribute">tuneOptions</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span> <span class="hljs-property">@extendOptions</span>(o); <span class="hljs-property">@postVars</span>()
+
+  <span class="hljs-attribute">angToCoords</span>:<span class="hljs-function"><span class="hljs-params">(angle)</span>-&gt;</span>
+    angle = angle % <span class="hljs-number">360</span>
+    radAngle = ((angle-<span class="hljs-number">90</span>)*Math.PI)/<span class="hljs-number">180</span>
+    x = Math.cos(radAngle); y = Math.sin(radAngle)
+    x = <span class="hljs-keyword">if</span> x &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> Math.max(x, -<span class="hljs-number">0.7</span>) <span class="hljs-keyword">else</span> Math.min(x, .<span class="hljs-number">7</span>)
+    y = <span class="hljs-keyword">if</span> y &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> Math.max(y, -<span class="hljs-number">0.7</span>) <span class="hljs-keyword">else</span> Math.min(y, .<span class="hljs-number">7</span>)
+    <span class="hljs-attribute">x</span>: x*<span class="hljs-number">1.428571429</span>
+    <span class="hljs-attribute">y</span>: y*<span class="hljs-number">1.428571429</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>x: Math.cos(radAngle), y: Math.sin(radAngle)    </p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-built_in">module</span>.exports = MotionPath
+
+</div></div>
+      
+      </div>
+    
+    </div>
+  </div>
+
+  <script src="../toc.js"></script>
+  <script src="../assets/libs.js"></script>
+  <script src="../assets/behavior.js"></script>
+
+  
+    
+      <script>
+        function __cp_domReady(e){/in/.test(document.readyState)?setTimeout("__cp_domReady("+e+")",9):e()}document.getElementsByClassName||(document.getElementsByClassName=function(e){var t,n,a,r=document,s=[];if(r.querySelectorAll)return r.querySelectorAll("."+e);if(r.evaluate)for(n=".//*[contains(concat(' ', @class, ' '), ' "+e+" ')]",t=r.evaluate(n,r,null,0,null);a=t.iterateNext();)s.push(a);else for(t=r.getElementsByTagName("*"),n=new RegExp("(^|\\s)"+e+"(\\s|$)"),a=0;a<t.length;a++)n.test(t[a].className)&&s.push(t[a]);return s});var CodePenEmbed={width:"100%",init:function(){return window.__cp_embed_script_ran?0:(window.__cp_embed_script_ran=!0,this.showCodePenEmbeds(),void this.listenToParentPostMessages())},showCodePenEmbeds:function(){for(var e=document.getElementsByClassName("codepen"),t=e.length-1;t>-1;t--){var n=this._getParamsFromAttributes(e[t]);if(n=this._convertOldDataAttributesToNewDataAttributes(n),n.user=this._findUsernameForURL(n,e[t]),this._paramsHasRequiredAttributes(n)){var a=this._buildURL(n),r=this._buildIFrame(n,a);this._addIFrameToPage(e[t],r)}}},_findUsernameForURL:function(e,t){if("string"==typeof e.user)return e.user;for(var n=0,a=t.children.length;a>n;n++){var r=t.children[n],s=r.href||"",i=s.match(/codepen\.(io|dev)\/(\w+)\/pen\//i);if(i)return i[2]}return"anon"},_paramsHasRequiredAttributes:function(e){return e["slug-hash"]},_getParamsFromAttributes:function(e){for(var t={},n=e.attributes,a=0,r=n.length;r>a;a++){var s=n[a].name;0===s.indexOf("data-")&&(t[s.replace("data-","")]=n[a].value)}return t},_convertOldDataAttributesToNewDataAttributes:function(e){return e.href&&(e["slug-hash"]=e.href),e.type&&(e["default-tab"]=e.type),e.safe&&(e.animations="true"===e.safe?"run":"stop-after-5"),e},_buildURL:function(e){var t=this._getHost(e),n=e.user?e.user:"anon",a="?"+this._getGetParams(e),r=[t,n,"embed",e["slug-hash"]+a].join("/");return r.replace(/\/\//g,"//")},_getHost:function(e){return e.host?this._getSafeHost(e.host):"file:"===document.location.protocol?"http://codepen.io":"//codepen.io"},_getSafeHost:function(e){return e.match(/^\/\//)||!e.match(/http:/)?document.location.protocol+"//"+e:e},_getGetParams:function(e){var t="";for(var n in e)""!==t&&(t+="&"),t+=n+"="+encodeURIComponent(e[n]);return t},_buildIFrame:function(e,t){var n="";""!==e["class"]&&(n=e["class"]);var a={id:"cp_embed_"+e["slug-hash"].replace("/","_"),src:t,scrolling:"no",frameborder:"0",height:this._getHeight(e),allowTransparency:"true",allowfullscreen:"true","class":"cp_embed_iframe "+n,style:"width: "+this.width+"; overflow: hidden;"},r="<iframe ";for(var s in a)r+=s+'="'+a[s]+'" ';return r+="></iframe>"},_getHeight:function(e){return e.height?"auto"===e.height?300:e.height:300},_addIFrameToPage:function(e,t){if(e.parentNode){var n=document.createElement("div");n.innerHTML=t,e.parentNode.replaceChild(n,e)}else e.innerHTML=t},listenToParentPostMessages:function(){var eventMethod=window.addEventListener?"addEventListener":"attachEvent",eventListener=window[eventMethod],messageEvent="attachEvent"===eventMethod?"onmessage":"message";eventListener(messageEvent,function(e){try{var dataObj=eval("("+e.data+")"),iframe=document.getElementById("cp_embed_"+dataObj.hash);iframe&&(iframe.height=dataObj.height)}catch(err){}},!1)}};__cp_domReady(function(){CodePenEmbed.init()});
+      </script>
+    
+  
+</body>
+</html>

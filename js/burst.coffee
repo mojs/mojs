@@ -37,7 +37,6 @@ class Burst extends Transit
     onCompleteChain:    null
     onUpdate:           null
     isResetAngles:      false
-
   childDefaults:
     #-- intersection starts
     radius:             { 7 : 0 }
@@ -83,15 +82,22 @@ class Burst extends Transit
         @h.warn 'Sorry, count can not be changed on run'
       @extendDefaults(o)
       # copy child options to options
-      keys = Object.keys(o.childOptions or {})
-      @o.childOptions ?= {}
-      for key, i in keys
-        @o.childOptions[key] = o.childOptions[key]
+      keys = Object.keys(o.childOptions or {}); @o.childOptions ?= {}
+      @o.childOptions[key] = o.childOptions[key] for key, i in keys
       # tune transits
       len = @transits.length
       while(len--)
-        transit = @transits[len]
-        transit.tuneNewOption @getOption(len), true
+        # we should keep transit's angle otherwise
+        # it will fallback to default 0 value
+        option = @getOption(len)
+        if !o.childOptions?.angle? and !o.angleShift?
+          option.angle = @transits[len].o.angle
+        # calculate bit angle if new angle related option passed
+        # and not isResetAngles
+        else if !o.isResetAngles
+          option.angle = @getBitAngle option.angle, len
+
+        @transits[len].tuneNewOption option, true
       @tween.recalcDuration()
     if @props.randomAngle or @props.randomRadius
       len = @transits.length
@@ -116,25 +122,42 @@ class Burst extends Transit
     
     step = @props.degree/@degreeCnt
     for transit, i in @transits
-      aShift = transit.props.angleShift
+      aShift = transit.props.angleShift or 0
       pointStart = @getSidePoint 'start', i*step + aShift
       pointEnd   = @getSidePoint 'end',   i*step + aShift
 
       transit.o.x = @getDeltaFromPoints 'x', pointStart, pointEnd
       transit.o.y = @getDeltaFromPoints 'y', pointStart, pointEnd
 
-      if !@props.isResetAngles
-        angleAddition = i*step + 90
-        transit.o.angle = if typeof transit.o.angle isnt 'object'
-          transit.o.angle + angleAddition + aShift
-        else
-          keys = Object.keys(transit.o.angle); start = keys[0]
-          end   = transit.o.angle[start]
-          newStart = parseFloat(start) + angleAddition + aShift
-          newEnd   = parseFloat(end)   + angleAddition + aShift
-          delta = {}; delta[newStart] = newEnd
-          delta
+      transit.o.angle = @getBitAngle transit.o.angle, i if !@props.isResetAngles
       transit.extendDefaults()
+  # ---
+
+  # Method to get transits angle in burst so
+  # it will follow circular shape
+  # 
+  # @method   getBitAngle
+  # @param    {Number, Object} base angle
+  # @param    {Integer} transit's index in burst
+  # @return   {Numebr} angle in burst
+  getBitAngle:(angle, i)->
+    points = @props.count
+    degCnt = if @props.degree % 360 is 0 then points else points-1 or 1
+    step = @props.degree/degCnt; angleAddition = i*step + 90
+    angleShift = @transits[i].props.angleShift or 0
+    # if not delta option
+    angle = if typeof angle isnt 'object'
+      angle + angleAddition + angleShift
+    # if delta option calculate delta based on
+    # angle in burst for each transit and angleShift
+    else
+      keys = Object.keys(angle); start = keys[0]
+      end = angle[start]; curAngleShift = angleAddition+angleShift
+      newStart = parseFloat(start) + curAngleShift
+      newEnd   = parseFloat(end)   + curAngleShift
+      delta = {}; delta[newStart] = newEnd
+      delta
+    angle
 
   getSidePoint:(side, angle)->
     sideRadius = @getSideRadius side
@@ -192,6 +215,7 @@ class Burst extends Transit
       option[key] ?= @getPropByMod key: key, i: i, from: @o
       option[key] ?= @getPropByMod key: key, i: i, from: @childDefaults
     option
+
   getPropByMod:(o)->
     prop = (o.from or @o.childOptions)?[o.key]
     if @h.isArray(prop) then prop[o.i % prop.length] else prop

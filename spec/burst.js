@@ -369,6 +369,41 @@
         return expect(option0.onComplete).toBe(null);
       });
     });
+    describe('getBitAngle method ->', function() {
+      it('should get angle by i', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst.getBitAngle(0, 0)).toBe(90);
+        expect(burst.getBitAngle(0, 1)).toBe(162);
+        expect(burst.getBitAngle(0, 2)).toBe(234);
+        expect(burst.getBitAngle(90, 2)).toBe(234 + 90);
+        expect(burst.getBitAngle(0, 3)).toBe(306);
+        expect(burst.getBitAngle(90, 3)).toBe(306 + 90);
+        expect(burst.getBitAngle(0, 4)).toBe(378);
+        return expect(burst.getBitAngle(50, 4)).toBe(378 + 50);
+      });
+      return it('should get delta angle by i', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst.getBitAngle({
+          180: 0
+        }, 0)[270]).toBe(90);
+        expect(burst.getBitAngle({
+          50: 20
+        }, 3)[356]).toBe(326);
+        return expect(burst.getBitAngle({
+          50: 20
+        }, 4)[428]).toBe(398);
+      });
+    });
     describe('getPropByMod method ->', function() {
       it('should return the prop from @o based on i ->', function() {
         var burst, opt0, opt1, opt2, opt8;
@@ -693,7 +728,6 @@
           }
         });
         burst2 = new Burst({
-          isIt: true,
           radius: {
             120: 0
           },
@@ -922,7 +956,7 @@
         expect(burst.transits[1].o.duration).toBe(1000);
         return expect(burst.transits[2].o.duration).toBe(500);
       });
-      it('should recieve extend old childOptions', function() {
+      it('should extend old childOptions', function() {
         var burst, newDuration;
         burst = new Burst({
           duration: 400,
@@ -999,7 +1033,7 @@
         burst.run();
         return expect(burst.generateRandomRadius).not.toHaveBeenCalled();
       });
-      return it('should warn if count was passed', function() {
+      it('should warn if count was passed', function() {
         var burst;
         burst = new Burst;
         spyOn(burst.h, 'warn');
@@ -1007,6 +1041,60 @@
           count: 10
         });
         return expect(burst.h.warn).toHaveBeenCalled();
+      });
+      it('should keep angles on run', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true
+        });
+        burst.run({
+          count: 10
+        });
+        return expect(burst.transits[3].o.angle).toBe(306);
+      });
+      it('should recieve new angle options', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true
+        });
+        burst.run({
+          childOptions: {
+            angle: 90
+          }
+        });
+        expect(burst.transits[3].o.angle).toBe(396);
+        return expect(burst.transits[4].o.angle).toBe(468);
+      });
+      it('should recieve new angle delta options', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true
+        });
+        burst.run({
+          childOptions: {
+            angle: {
+              90: 0
+            }
+          }
+        });
+        expect(burst.transits[3].o.angle[396]).toBe(306);
+        return expect(burst.transits[4].o.angle[468]).toBe(378);
+      });
+      return it('should skip circular shape angle on isResetAngles', function() {
+        var burst;
+        burst = new Burst({
+          isRunLess: true
+        });
+        burst.run({
+          isResetAngles: true,
+          childOptions: {
+            angle: {
+              90: 0
+            }
+          }
+        });
+        expect(burst.transits[3].o.angle[90]).toBe(0);
+        return expect(burst.transits[4].o.angle[90]).toBe(0);
       });
     });
     describe('generateRandomAngle method ->', function() {

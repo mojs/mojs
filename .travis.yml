@@ -9,3 +9,6 @@ env:
   global:
     - SAUCE_USERNAME='legomushroom'
     - SAUCE_ACCESS_KEY='6982f2ea-fd37-453f-9cc6-58ea67254b66'
+
+notifications:
+  slack: mojs:n6WXx45anfQn03fJu5Yw0Btt

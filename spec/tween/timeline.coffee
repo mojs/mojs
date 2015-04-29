@@ -72,9 +72,9 @@ describe 'Timeline ->', ->
       t = new Timeline(duration: 1000, delay: 200, repeat: 2)
       t.start()
       t.update t.props.startTime + 1400
-      expect(t.progress).toBe .2
+      expect(t.progress).toBeCloseTo .2
       t.update t.props.startTime + 2700
-      expect(t.progress).toBe .3
+      expect(t.progress).toBeCloseTo .3
       t.update t.props.startTime + 3400
       expect(t.progress).toBe 1
     it 'should update progress to 0 if in delay gap', ->
@@ -87,13 +87,13 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 1000
       expect(t.progress).toBe 1
-    it 'should not call update method if timeline isnt active -', ->
+    it 'should not call update method if timeline isnt active "-"', ->
       t = new Timeline(duration: 1000, onUpdate:->)
-      spyOn t, 'onUpdate'
       t.start()
+      spyOn t, 'onUpdate'
       t.update(performance.now() - 500)
       expect(t.onUpdate).not.toHaveBeenCalled()
-    it 'should not call update method if timeline isnt active +', ->
+    it 'should not call update method if timeline isnt active "+"', ->
       cnt = 0
       t = new Timeline(duration: 1000, onUpdate:-> cnt++ )
       t.start(); t.update(performance.now() + 1500)
@@ -420,9 +420,9 @@ describe 'Timeline ->', ->
       t = new Timeline(easing: 'Linear.None')
       expect(typeof t.props.easing).toBe 'function'
     it 'should parse standart easing', ->
-      t = new Timeline(easing: 'Sinusoidal.Out', duration: 100)
+      t = new Timeline(easing: 'Sin.Out', duration: 100)
       t.start(); t.update(t.props.startTime + 50)
-      expect(t.easedProgress).toBe easing.sinusoidal.out t.progress
+      expect(t.easedProgress).toBe easing.sin.out t.progress
     it 'should work with easing function', ->
       easings = one: -> a = 1
       t = new Timeline(easing: easings.one)

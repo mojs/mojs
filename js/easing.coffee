@@ -1,47 +1,44 @@
+bezier = require './bezier-easing'
+
 class Easing
+  bezier: bezier
   linear: none: (k) -> k
-  quadratic:
-    in:     (k) -> k * k
-    out:    (k) -> k * (2 - k)
-    inout:  (k) ->
-      return 0.5 * k * k  if (k *= 2) < 1
-      -0.5 * (--k * (k - 2) - 1)
+  ease:
+    in:     bezier.apply @, [ 0.42,   0,     1,      1   ]
+    out:    bezier.apply @, [ 0,      0,    0.58,    1   ]
+    inout:  bezier.apply @, [ 0.42,   0,    0.58,    1   ]
+  quad:
+    in:     bezier.apply @, [ 0.55,  0.085, 0.68,   0.53 ]
+    out:    bezier.apply @, [ 0.25,  0.46,  0.45,   0.94 ]
+    inout:  bezier.apply @, [ 0.455, 0.03,  0.515, 0.955 ]
   cubic:
-    in:     (k) -> k * k * k
-    out:    (k) -> --k * k * k + 1
-    inout:  (k) ->
-      return 0.5 * k * k * k  if (k *= 2) < 1
-      0.5 * ((k -= 2) * k * k + 2)
-  quartic:
-    in:     (k) -> k * k * k * k
-    out:    (k) -> 1 - (--k * k * k * k)
-    inout:  (k) ->
-      return 0.5 * k * k * k * k  if (k *= 2) < 1
-      -0.5 * ((k -= 2) * k * k * k - 2)
-  quintic:
-    in:     (k) -> k * k * k * k * k
-    out:    (k) -> --k * k * k * k * k + 1
-    inout:  (k) ->
-      return 0.5 * k * k * k * k * k  if (k *= 2) < 1
-      0.5 * ((k -= 2) * k * k * k * k + 2)
-  sinusoidal:
-    in:     (k) -> 1 - Math.cos(k * Math.PI / 2)
-    out:    (k) -> Math.sin k * Math.PI / 2
-    inout:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
-  exponential:
-    in:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
-    out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
-    inout:  (k) ->
-      return 0  if k is 0
-      return 1  if k is 1
-      return 0.5 * Math.pow(1024, k - 1)  if (k *= 2) < 1
-      0.5 * (-Math.pow(2, -10 * (k - 1)) + 2)
-  circular:
-    in:     (k) ->    1 - Math.sqrt(1 - k * k)
-    out:    (k) ->   Math.sqrt 1 - (--k * k)
-    inout:  (k) ->
-      return -0.5 * (Math.sqrt(1 - k * k) - 1) if (k *= 2) < 1
-      0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1)
+    in:     bezier.apply @, [ 0.55,  0.055, 0.675,  0.19 ]
+    out:    bezier.apply @, [ 0.215, 0.61,  0.355,   1   ]
+    inout:  bezier.apply @, [ 0.645, 0.045, 0.355,   1   ]
+  quart:
+    in:     bezier.apply @, [ 0.895, 0.03,  0.685,  0.22 ]
+    out:    bezier.apply @, [ 0.165, 0.84,  0.44,    1   ]
+    inout:  bezier.apply @, [ 0.77,   0,    0.175,   1   ]
+  quint:
+    in:     bezier.apply @, [ 0.895, 0.03,  0.685,  0.22 ]
+    out:    bezier.apply @, [ 0.165, 0.84,  0.44,    1   ]
+    inout:  bezier.apply @, [ 0.77,   0,    0.175,   1   ]
+  sin:
+    in:     bezier.apply @, [ 0.47,   0,    0.745,  0.715]
+    out:    bezier.apply @, [ 0.39,  0.575, 0.565,   1   ]
+    inout:  bezier.apply @, [ 0.445, 0.05,  0.55,   0.95 ]
+  expo:
+    in:     bezier.apply @, [ 0.95,  0.05,  0.795,  0.035]
+    out:    bezier.apply @, [ 0.19,   1,     0.22,    1  ]
+    inout:  bezier.apply @, [ 1,      0,      0,      1  ]
+  circ:
+    in:     bezier.apply @, [ 0.6,   0.04,  0.98,   0.335]
+    out:    bezier.apply @, [ 0.075, 0.82,  0.165,    1  ]
+    inout:  bezier.apply @, [ 0.785, 0.135, 0.15,   0.86 ]
+  back:
+    in:     bezier.apply @, [ 0.6,    0,    0.735,  0.045]
+    out:    bezier.apply @, [ 0.175, 0.885, 0.32,     1  ]
+    inout:  bezier.apply @, [ 0.68,   0,    0.265,    1  ]
   elastic:
     in: (k) ->
       s = undefined
@@ -54,7 +51,7 @@ class Easing
       s = p / 4
       # else
       #   s = p * Math.asin(1 / a) / (2 * Math.PI)
-      -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p))
+      -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI)/p))
     out: (k) ->
       s = undefined
       # a = 0.1
@@ -81,17 +78,6 @@ class Easing
       if (k *= 2) < 1
         return -0.5*(a*Math.pow(2, 10*(k -= 1))*Math.sin((k-s)*(2*Math.PI)/p))
       a*Math.pow(2, -10*(k -= 1))*Math.sin((k - s)*(2 * Math.PI) / p)*0.5+1
-  back:
-    in: (k) ->
-      s = 1.70158
-      k * k * ((s + 1) * k - s)
-    out: (k) ->
-      s = 1.70158
-      --k * k * ((s + 1) * k + s) + 1
-    inout: (k) ->
-      s = 1.70158 * 1.525
-      return 0.5 * (k * k * ((s + 1) * k - s))  if (k *= 2) < 1
-      0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2)
   bounce:
     in: (k) -> 1 - easing.bounce.out(1 - k)
     out: (k) ->
