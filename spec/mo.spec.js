@@ -1234,7 +1234,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.115.1',
+  revision: '0.116.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1321,7 +1321,8 @@ MotionPath = (function() {
     isPresetPosition: true,
     onStart: null,
     onComplete: null,
-    onUpdate: null
+    onUpdate: null,
+    onPosit: null
   };
 
   function MotionPath(o1) {
@@ -1629,8 +1630,7 @@ MotionPath = (function() {
 
   MotionPath.prototype.setElPosition = function(x, y) {
     var rotate, transform;
-    rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
-    transform = "translate(" + x + "px," + y + "px) " + rotate;
+    transform = this.props.onPosit == null ? (rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '', "translate(" + x + "px," + y + "px) " + rotate) : this.props.onPosit(x, y, this.angle);
     this.el.style[h.prefix.css + "transform"] = transform;
     return this.el.style['transform'] = transform;
   };

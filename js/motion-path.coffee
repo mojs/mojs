@@ -253,6 +253,16 @@ class MotionPath
     # 
     # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
     onUpdate:         null
+    # ---
+
+    # Callback **onPosit** fires every raf frame on motion
+    # path update. Recieves curent **x**, **y** and **angle**
+    # of type **Number**. Returned value will be set as el's transform
+    # 
+    # @property   onPosit
+    # @type       {Function}
+    # 
+    onPosit:         null
   # ---
   # ### Class body docs
   # ---
@@ -480,8 +490,10 @@ class MotionPath
     !isInit and @onUpdate?(p)
 
   setElPosition:(x,y)->
-    rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
-    transform = "translate(#{x}px,#{y}px) #{rotate}"
+    transform = if !@props.onPosit?
+      rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+      "translate(#{x}px,#{y}px) #{rotate}"
+    else @props.onPosit x, y, @angle
     @el.style["#{h.prefix.css}transform"] = transform
     @el.style['transform'] = transform
   setModulePosition:(x, y)->

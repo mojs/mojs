@@ -329,6 +329,24 @@ describe 'MotionPath ->', ->
           expect(isRightScope).toBe(true); dfr()
         , 100
 
+  describe 'onPosit callback ->', ->
+    it 'should be defined', ->
+      mp = new MotionPath
+        path:       'M0,0 L100,100'
+        el:         document.createElement 'div'
+        isRunLess:  true
+        onPosit:    ->
+      expect(typeof mp.props.onPosit).toBe 'function'
+    it 'should be called with x, y and angle', ->
+      mp = new MotionPath
+        path:       'M0,100 L100,0'
+        el:         document.createElement 'div'
+        isRunLess:  true
+        onPosit:->
+      spyOn mp.props, 'onPosit'
+      mp.tween.setProgress .5
+      expect(mp.props.onPosit).toHaveBeenCalledWith 50, 50, 0
+
   describe 'fill ->', ->
     div = null; container = null
     beforeEach ->

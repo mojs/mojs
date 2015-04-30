@@ -439,6 +439,28 @@
         });
       });
     });
+    describe('onPosit callback ->', function() {
+      it('should be defined', function() {
+        mp = new MotionPath({
+          path: 'M0,0 L100,100',
+          el: document.createElement('div'),
+          isRunLess: true,
+          onPosit: function() {}
+        });
+        return expect(typeof mp.props.onPosit).toBe('function');
+      });
+      return it('should be called with x, y and angle', function() {
+        mp = new MotionPath({
+          path: 'M0,100 L100,0',
+          el: document.createElement('div'),
+          isRunLess: true,
+          onPosit: function() {}
+        });
+        spyOn(mp.props, 'onPosit');
+        mp.tween.setProgress(.5);
+        return expect(mp.props.onPosit).toHaveBeenCalledWith(50, 50, 0);
+      });
+    });
     describe('fill ->', function() {
       var container, div;
       div = null;
