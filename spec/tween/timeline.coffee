@@ -51,7 +51,8 @@ describe 'Timeline ->', ->
       expect(t.props.endTime).toBe t.props.startTime + 1000
     it 'should calculate end time if repeat', ->
       t = new Timeline(duration: 1000, delay: 500, repeat: 2).start()
-      expect(t.props.endTime).toBe t.props.startTime+(3*(1000+500))-500
+      time = t.props.startTime+(3*(1000+500))-500
+      expect(t.props.endTime).toBeCloseTo time, 5
     it 'should restart flags', ->
       t = new Timeline(duration: 20, repeat: 2).start()
       t.update t.props.startTime + 10

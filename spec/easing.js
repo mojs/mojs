@@ -127,7 +127,7 @@
         return expect(easing.elastic.inout(.75).toFixed(2)).toBe('1.00');
       });
     });
-    return describe('bounce ->', function() {
+    describe('bounce ->', function() {
       it('should have In', function() {
         return expect(easing.bounce["in"](.75).toFixed(2)).toBe('0.53');
       });
@@ -140,6 +140,21 @@
       return it('should have InOut', function() {
         expect(easing.bounce.inout(.25).toFixed(2)).toBe('0.12');
         return expect(easing.bounce.inout(.75).toFixed(2)).toBe('0.88');
+      });
+    });
+    describe('bezier ->', function() {
+      return it('should have bezier constructor', function() {
+        return expect(typeof easing.bezier).toBe('function');
+      });
+    });
+    describe('path ->', function() {
+      return it('should have path constructor', function() {
+        return expect(typeof easing.path).toBe('function');
+      });
+    });
+    return describe('PathEasing ->', function() {
+      return it('should have PathEasing constructor', function() {
+        return expect(typeof easing.PathEasing).toBe('function');
       });
     });
   });

@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.114.4', isDebug: true
+  revision:   '0.115.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -23,6 +23,69 @@ mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+# h = mojs.h
+
+# pe = new mojs.easing.path 'M0,100 L100,0'
+# pe = new mojs.easing.path '#js-path'
+# circle = document.querySelector '#js-circle'
+
+# tm = new mojs.Timeline
+#   delay: 1000
+#   duration: 2000
+#   onUpdate:(p)->
+#     y = pe.sample p
+#     circle.setAttribute 'cx', p*100
+#     circle.setAttribute 'cy', y*100
+
+# tw = new mojs.Tween
+
+# tw.add tm
+# tw.start()
+
+
+# console.log pe.sample .7
+
+# path = pe.path
+# console.log(path.getPointAtLength(path.getTotalLength()*.7))
+
+# path = document.querySelector '#js-path'
+# i = 25
+# fun = (i)->
+#   path.getPointAtLength(50+i)
+
+# console.time '1'
+# while(i--)
+#   fun(i)
+# console.timeEnd '1'
+
+
+# console.log(path.getTotalLength())
+
+# path = document.createElementNS h.NS, 'path'
+# circle = document.createElementNS h.NS, 'circle'
+# svg = document.createElementNS h.NS, 'svg'
+# pathId = 'js-path'; path.setAttribute 'id', pathId
+
+# # path.setAttribute 'd', 'M0,100 L100,0'
+# path.setAttribute 'd', 'M0,100 L10,20 L20,90 L30,30 L40,80 L100, 0'
+# path.setAttribute 'stroke', 'red'
+# path.setAttribute 'fill', 'none'
+# path.setAttribute 'pathLength', '0.25'
+# circle.setAttribute 'r', '10'
+
+# svg.appendChild(circle); svg.appendChild(path)
+# document.body.appendChild svg
+
+# totalLength = path.getTotalLength()
+# point = path.getPointAtLength(totalLength*.5)
+
+# circle.setAttribute 'cx', point.x
+# circle.setAttribute 'cy', point.y
+
+# console.log(path)
+# console.log(point)
+# console.log(totalLength)
 
 # burst = new mojs.Burst
 #   # isRunLess: true

@@ -523,15 +523,21 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":4,"./shapes/bitsMap":10,"./swirl":19,"./transit":20,"./tween/tween":22}],3:[function(require,module,exports){
-var Easing, bezier, easing;
+},{"./h":4,"./shapes/bitsMap":11,"./swirl":20,"./transit":21,"./tween/tween":23}],3:[function(require,module,exports){
+var Easing, PathEasing, bezier, easing;
 
 bezier = require('./bezier-easing');
+
+PathEasing = require('./path-easing');
 
 Easing = (function() {
   function Easing() {}
 
   Easing.prototype.bezier = bezier;
+
+  Easing.prototype.PathEasing = PathEasing;
+
+  Easing.prototype.path = (new PathEasing('creator')).create;
 
   Easing.prototype.linear = {
     none: function(k) {
@@ -672,10 +678,12 @@ easing = new Easing;
 
 module.exports = easing;
 
-},{"./bezier-easing":1}],4:[function(require,module,exports){
+},{"./bezier-easing":1,"./path-easing":7}],4:[function(require,module,exports){
 var Helpers, h;
 
 Helpers = (function() {
+  Helpers.prototype.NS = 'http://www.w3.org/2000/svg';
+
   Helpers.prototype.logBadgeCss = 'background:#3A0839;color:#FF512F;border-radius:5px; padding: 1px 5px 2px; border: 1px solid #FF512F;';
 
   Helpers.prototype.shortColors = {
@@ -1198,6 +1206,22 @@ Helpers = (function() {
     return ++this.uniqIDs;
   };
 
+  Helpers.prototype.parsePath = function(path) {
+    var domPath;
+    if (typeof path === 'string') {
+      if (path.charAt(0).toLowerCase() === 'm') {
+        domPath = document.createElementNS(this.NS, 'path');
+        domPath.setAttributeNS(null, 'd', path);
+        return domPath;
+      } else {
+        return document.querySelector(path);
+      }
+    }
+    if (path.style) {
+      return path;
+    }
+  };
+
   return Helpers;
 
 })();
@@ -1210,7 +1234,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.114.4',
+  revision: '0.115.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1258,7 +1282,7 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":9,"./shapes/bitsMap":10,"./shapes/circle":11,"./shapes/cross":12,"./shapes/equal":13,"./shapes/line":14,"./shapes/polygon":15,"./shapes/rect":16,"./shapes/zigzag":17,"./stagger":18,"./swirl":19,"./transit":20,"./tween/timeline":21,"./tween/tween":22,"./tween/tweener":23}],6:[function(require,module,exports){
+},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./stagger":19,"./swirl":20,"./transit":21,"./tween/timeline":22,"./tween/tween":23,"./tween/tweener":24}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, easing, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -1273,8 +1297,6 @@ Timeline = require('./tween/timeline');
 Tween = require('./tween/tween');
 
 MotionPath = (function() {
-  MotionPath.prototype.NS = 'http://www.w3.org/2000/svg';
-
   MotionPath.prototype.defaults = {
     path: null,
     curvature: {
@@ -1325,7 +1347,7 @@ MotionPath = (function() {
 
   MotionPath.prototype.curveToPath = function(o) {
     var angle, curvature, curvatureX, curvatureY, curvePoint, curveXPoint, dX, dY, endPoint, path, percent, radius, start;
-    path = document.createElementNS(this.NS, 'path');
+    path = document.createElementNS(h.NS, 'path');
     start = o.start;
     endPoint = {
       x: start.x + o.shift.x,
@@ -1434,17 +1456,9 @@ MotionPath = (function() {
 
   MotionPath.prototype.getPath = function() {
     var path;
-    if (typeof this.props.path === 'string') {
-      if (this.props.path.charAt(0).toLowerCase() === 'm') {
-        path = document.createElementNS(this.NS, 'path');
-        path.setAttributeNS(null, 'd', this.props.path);
-        return path;
-      } else {
-        return document.querySelector(this.props.path);
-      }
-    }
-    if (this.props.path.style) {
-      return this.props.path;
+    path = h.parsePath(this.props.path);
+    if (path) {
+      return path;
     }
     if (this.props.path.x || this.props.path.y) {
       return this.curveToPath({
@@ -1768,7 +1782,69 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./easing":3,"./h":4,"./tween/timeline":21,"./tween/tween":22,"./vendor/resize":24}],7:[function(require,module,exports){
+},{"./easing":3,"./h":4,"./tween/timeline":22,"./tween/tween":23,"./vendor/resize":25}],7:[function(require,module,exports){
+var PathEasing, h;
+
+h = require('./h');
+
+PathEasing = (function() {
+  function PathEasing(path, o) {
+    var ref;
+    if (o == null) {
+      o = {};
+    }
+    if (path === 'creator') {
+      return;
+    }
+    this.path = h.parsePath(path);
+    this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
+    this.precision = o.precision || 24;
+    this.rect = o.rect || 100;
+    this;
+  }
+
+  PathEasing.prototype.sample = function(p, start, end, precision) {
+    var center, newEnd, newStart, point, rect;
+    if (start == null) {
+      start = 0;
+    }
+    if (end == null) {
+      end = 1;
+    }
+    if (precision == null) {
+      precision = this.precision;
+    }
+    p = h.clamp(p, 0, 1);
+    center = start + ((end - start) / 2);
+    point = this.path.getPointAtLength(this.pathLength * center);
+    rect = this.rect;
+    if (rect * p > point.x) {
+      newStart = center;
+      newEnd = end;
+    } else if (rect * p < point.x) {
+      newStart = start;
+      newEnd = center;
+    } else {
+      return 1 - point.y / rect;
+    }
+    if (--precision < 1) {
+      return 1 - point.y / rect;
+    } else {
+      return this.sample(p, newStart, newEnd, precision);
+    }
+  };
+
+  PathEasing.prototype.create = function(path, o) {
+    return (new PathEasing(path, o)).sample;
+  };
+
+  return PathEasing;
+
+})();
+
+module.exports = PathEasing;
+
+},{"./h":4}],8:[function(require,module,exports){
 
 /* istanbul ignore next */
 (function(root) {
@@ -1787,7 +1863,7 @@ module.exports = MotionPath;
   }
 })(window);
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 
 /* istanbul ignore next */
 (function() {
@@ -1820,7 +1896,7 @@ module.exports = MotionPath;
   }
 })();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var Bit, h;
 
 h = require('../h');
@@ -2026,7 +2102,7 @@ Bit = (function() {
 
 module.exports = Bit;
 
-},{"../h":4}],10:[function(require,module,exports){
+},{"../h":4}],11:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -2073,7 +2149,7 @@ BitsMap = (function() {
 
 module.exports = new BitsMap;
 
-},{"../h":4,"./bit":9,"./circle":11,"./cross":12,"./equal":13,"./line":14,"./polygon":15,"./rect":16,"./zigzag":17}],11:[function(require,module,exports){
+},{"../h":4,"./bit":10,"./circle":12,"./cross":13,"./equal":14,"./line":15,"./polygon":16,"./rect":17,"./zigzag":18}],12:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Circle,
@@ -2117,7 +2193,7 @@ Circle = (function(superClass) {
 
 module.exports = Circle;
 
-},{"./bit":9}],12:[function(require,module,exports){
+},{"./bit":10}],13:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Cross,
@@ -2165,7 +2241,7 @@ Cross = (function(superClass) {
 
 module.exports = Cross;
 
-},{"./bit":9}],13:[function(require,module,exports){
+},{"./bit":10}],14:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Equal,
@@ -2217,7 +2293,7 @@ Equal = (function(superClass) {
 
 module.exports = Equal;
 
-},{"./bit":9}],14:[function(require,module,exports){
+},{"./bit":10}],15:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Line,
@@ -2251,7 +2327,7 @@ Line = (function(superClass) {
 
 module.exports = Line;
 
-},{"./bit":9}],15:[function(require,module,exports){
+},{"./bit":10}],16:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Polygon, h,
@@ -2314,7 +2390,7 @@ Polygon = (function(superClass) {
 
 module.exports = Polygon;
 
-},{"../h":4,"./bit":9}],16:[function(require,module,exports){
+},{"../h":4,"./bit":10}],17:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Rect,
@@ -2360,7 +2436,7 @@ Rect = (function(superClass) {
 
 module.exports = Rect;
 
-},{"./bit":9}],17:[function(require,module,exports){
+},{"./bit":10}],18:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Bit, Zigzag,
@@ -2413,7 +2489,7 @@ Zigzag = (function(superClass) {
 
 module.exports = Zigzag;
 
-},{"./bit":9}],18:[function(require,module,exports){
+},{"./bit":10}],19:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Stagger, Timeline, Transit, Tween, h,
@@ -2552,7 +2628,7 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":4,"./transit":20,"./tween/timeline":21,"./tween/tween":22}],19:[function(require,module,exports){
+},{"./h":4,"./transit":21,"./tween/timeline":22,"./tween/tween":23}],20:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Swirl, Transit,
@@ -2666,7 +2742,7 @@ Swirl = (function(superClass) {
 
 module.exports = Swirl;
 
-},{"./transit":20}],20:[function(require,module,exports){
+},{"./transit":21}],21:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -3330,7 +3406,7 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":4,"./shapes/bitsMap":10,"./tween/timeline":21,"./tween/tween":22}],21:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":22,"./tween/tween":23}],22:[function(require,module,exports){
 var Easing, Timeline, h;
 
 Easing = require('../easing');
@@ -3497,7 +3573,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../easing":3,"../h":4}],22:[function(require,module,exports){
+},{"../easing":3,"../h":4}],23:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3692,7 +3768,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../h":4,"./tweener":23}],23:[function(require,module,exports){
+},{"../h":4,"./tweener":24}],24:[function(require,module,exports){
 var Tweener, h, i, t;
 
 require('../polyfills/raf');
@@ -3779,7 +3855,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":4,"../polyfills/performance":7,"../polyfills/raf":8}],24:[function(require,module,exports){
+},{"../h":4,"../polyfills/performance":8,"../polyfills/raf":9}],25:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com

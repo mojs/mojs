@@ -93,13 +93,14 @@
         return expect(t.props.endTime).toBe(t.props.startTime + 1000);
       });
       it('should calculate end time if repeat', function() {
-        var t;
+        var t, time;
         t = new Timeline({
           duration: 1000,
           delay: 500,
           repeat: 2
         }).start();
-        return expect(t.props.endTime).toBe(t.props.startTime + (3 * (1000 + 500)) - 500);
+        time = t.props.startTime + (3 * (1000 + 500)) - 500;
+        return expect(t.props.endTime).toBeCloseTo(time, 5);
       });
       return it('should restart flags', function() {
         var t;

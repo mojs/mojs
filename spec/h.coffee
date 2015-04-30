@@ -6,6 +6,8 @@ describe 'Helpers ->', ->
     expect(h.logBadgeCss).toBeDefined()
   it 'should have RAD_TO_DEG CONSTANT', ->
     expect(h.RAD_TO_DEG).toBe 180/Math.PI
+  it 'should have svg namespace', ->
+    expect(h.NS).toBe 'http://www.w3.org/2000/svg'
   it 'should have remBase', ->
     expect(typeof h.remBase).toBe 'number'
   it 'should have posPropsMap map', ->
@@ -816,6 +818,29 @@ describe 'Helpers ->', ->
       expect(h.getUniqID()).toBe 1
       expect(h.getUniqID()).toBe 2
       expect(h.uniqIDs)    .toBe 2
+
+  describe 'parsePath method', ->
+    it 'should parse path if string passed', ->
+      pathStr = 'M0,0 10,10'
+      expect(h.parsePath(pathStr).tagName).toBe 'path'
+      expect(h.parsePath(pathStr).getAttribute('d')).toBe pathStr
+    it 'should parse path if selector passed', ->
+      path = document.createElementNS h.NS, 'path'
+      svg = document.createElementNS h.NS, 'svg'
+      pathId = 'js-path'; path.setAttribute 'id', pathId
+      svg.appendChild(path); document.body.appendChild svg
+
+      expect(h.parsePath("##{pathId}").tagName).toBe 'path'
+      expect(h.parsePath("##{pathId}").getAttribute('id')).toBe pathId
+
+    it 'should parse path if DOM node passed', ->
+      path = document.createElementNS h.NS, 'path'
+      svg = document.createElementNS h.NS, 'svg'
+      pathId = 'js-path'; path.setAttribute 'id', pathId
+      svg.appendChild(path); document.body.appendChild svg
+
+      expect(h.parsePath(path).tagName).toBe 'path'
+      expect(h.parsePath(path).getAttribute('id')).toBe pathId
 
 
 

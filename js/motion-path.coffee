@@ -9,7 +9,6 @@ Timeline  = require './tween/timeline'
 Tween     = require './tween/tween'
 
 class MotionPath
-  NS: 'http://www.w3.org/2000/svg'
   # ---
   # ### Defaults/APIs
   # ---
@@ -282,7 +281,7 @@ class MotionPath
   #
   # @return {SVGElement} svg path
   curveToPath:(o)->
-    path = document.createElementNS @NS , 'path'
+    path = document.createElementNS h.NS , 'path'
     start = o.start
     endPoint  = x: start.x + o.shift.x, y: start.x + o.shift.y
     curvature = o.curvature
@@ -375,14 +374,8 @@ class MotionPath
     return el if el instanceof HTMLElement
     if el.setProp? then @isModule = true; return el
   getPath:->
-    if typeof @props.path is 'string'
-      return if @props.path.charAt(0).toLowerCase() is 'm'
-        path = document.createElementNS @NS, 'path'
-        path.setAttributeNS(null, 'd', @props.path); path
-      else document.querySelector @props.path
-    # DOM node
-    if @props.path.style
-      return @props.path
+    path = h.parsePath(@props.path); return path if path
+    
     if @props.path.x or @props.path.y
       @curveToPath
         start: x: 0, y: 0

@@ -4,6 +4,13 @@
 class Helpers
   # ---
 
+  # SVG namespace
+  #
+  # @property   NS
+  # @type       {String}
+  NS: 'http://www.w3.org/2000/svg'
+  # ---
+
   # CSS styles for console.log/warn/error ::mojs:: badge styling
   #
   # @property   logBadgeCss
@@ -446,6 +453,19 @@ class Helpers
   # @method getUniqID
   # @return {Number}
   getUniqID:-> ++@uniqIDs
+  # ---
+
+  # Returns uniq id
+  #
+  # @method parsePath
+  # @return {SVGPath}
+  parsePath:(path)->
+    if typeof path is 'string'
+      return if path.charAt(0).toLowerCase() is 'm'
+        domPath = document.createElementNS @NS, 'path'
+        domPath.setAttributeNS(null, 'd', path); domPath
+      else document.querySelector path
+    return path if path.style
 
 
 h = new Helpers

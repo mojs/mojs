@@ -12,6 +12,9 @@
     it('should have RAD_TO_DEG CONSTANT', function() {
       return expect(h.RAD_TO_DEG).toBe(180 / Math.PI);
     });
+    it('should have svg namespace', function() {
+      return expect(h.NS).toBe('http://www.w3.org/2000/svg');
+    });
     it('should have remBase', function() {
       return expect(typeof h.remBase).toBe('number');
     });
@@ -1149,12 +1152,42 @@
         return expect(delta).toBe(void 0);
       });
     });
-    return describe('getUniqID method', function() {
+    describe('getUniqID method', function() {
       return it('should return uniq id', function() {
         expect(h.getUniqID()).toBe(0);
         expect(h.getUniqID()).toBe(1);
         expect(h.getUniqID()).toBe(2);
         return expect(h.uniqIDs).toBe(2);
+      });
+    });
+    return describe('parsePath method', function() {
+      it('should parse path if string passed', function() {
+        var pathStr;
+        pathStr = 'M0,0 10,10';
+        expect(h.parsePath(pathStr).tagName).toBe('path');
+        return expect(h.parsePath(pathStr).getAttribute('d')).toBe(pathStr);
+      });
+      it('should parse path if selector passed', function() {
+        var path, pathId, svg;
+        path = document.createElementNS(h.NS, 'path');
+        svg = document.createElementNS(h.NS, 'svg');
+        pathId = 'js-path';
+        path.setAttribute('id', pathId);
+        svg.appendChild(path);
+        document.body.appendChild(svg);
+        expect(h.parsePath("#" + pathId).tagName).toBe('path');
+        return expect(h.parsePath("#" + pathId).getAttribute('id')).toBe(pathId);
+      });
+      return it('should parse path if DOM node passed', function() {
+        var path, pathId, svg;
+        path = document.createElementNS(h.NS, 'path');
+        svg = document.createElementNS(h.NS, 'svg');
+        pathId = 'js-path';
+        path.setAttribute('id', pathId);
+        svg.appendChild(path);
+        document.body.appendChild(svg);
+        expect(h.parsePath(path).tagName).toBe('path');
+        return expect(h.parsePath(path).getAttribute('id')).toBe(pathId);
       });
     });
   });

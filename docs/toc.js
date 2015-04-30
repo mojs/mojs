@@ -37,8 +37,13 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "isRunLess: true",
+  "title": "path.setAttribute &#39;d&#39;, &#39;M0,100 L100,0&#39;",
   "toc": [
+    {
+      "level": 1,
+      "slug": "path-setattribute-39-d-39-39-m0-100-l100-0-39-",
+      "title": "path.setAttribute &#39;d&#39;, &#39;M0,100 L100,0&#39;"
+    },
     {
       "level": 1,
       "slug": "isrunless-true",
@@ -86,6 +91,20 @@ window.files = [
   ]
 },
 {
+  "path": "js/path-easing.coffee.html",
+  "originalName": "path-easing.coffee",
+  "originalPath": "js/path-easing.coffee",
+  "name": "path-easing.coffee.html",
+  "lang": "coffeescript",
+  "toc": [
+    {
+      "level": 2,
+      "slug": "patheasing",
+      "title": "PathEasing"
+    }
+  ]
+},
+{
   "path": "js/stagger.coffee.html",
   "originalName": "stagger.coffee",
   "originalPath": "js/stagger.coffee",
@@ -122,47 +141,6 @@ window.files = [
   "originalName": "raf.coffee",
   "originalPath": "js/polyfills/raf.coffee",
   "name": "raf.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/tween/timeline.coffee.html",
-  "originalName": "timeline.coffee",
-  "originalPath": "js/tween/timeline.coffee",
-  "name": "timeline.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/tween/tween.coffee.html",
-  "originalName": "tween.coffee",
-  "originalPath": "js/tween/tween.coffee",
-  "name": "tween.coffee.html",
-  "lang": "coffeescript",
-  "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "update-every-timeline-to-its-start-time-timelines-while-i-lt-len-and-timelines-if-timeline-is-actually-a-tween-then-reset-progress-there",
-      "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there"
-    },
-    {
-      "level": 1,
-      "slug": "if-timeline-resetprogress-then-timeline-resetprogress-",
-      "title": "if timeline.resetProgress? then timeline.resetProgress()"
-    },
-    {
-      "level": 1,
-      "slug": "else-timeline-update-timeline-props-starttime-",
-      "title": "else timeline.update(timeline.props.startTime)"
-    }
-  ]
-},
-{
-  "path": "js/tween/tweener.coffee.html",
-  "originalName": "tweener.coffee",
-  "originalPath": "js/tween/tweener.coffee",
-  "name": "tweener.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
@@ -235,6 +213,47 @@ window.files = [
   "originalName": "zigzag.coffee",
   "originalPath": "js/shapes/zigzag.coffee",
   "name": "zigzag.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/tween/timeline.coffee.html",
+  "originalName": "timeline.coffee",
+  "originalPath": "js/tween/timeline.coffee",
+  "name": "timeline.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/tween/tween.coffee.html",
+  "originalName": "tween.coffee",
+  "originalPath": "js/tween/tween.coffee",
+  "name": "tween.coffee.html",
+  "lang": "coffeescript",
+  "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there",
+  "toc": [
+    {
+      "level": 1,
+      "slug": "update-every-timeline-to-its-start-time-timelines-while-i-lt-len-and-timelines-if-timeline-is-actually-a-tween-then-reset-progress-there",
+      "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there"
+    },
+    {
+      "level": 1,
+      "slug": "if-timeline-resetprogress-then-timeline-resetprogress-",
+      "title": "if timeline.resetProgress? then timeline.resetProgress()"
+    },
+    {
+      "level": 1,
+      "slug": "else-timeline-update-timeline-props-starttime-",
+      "title": "else timeline.update(timeline.props.startTime)"
+    }
+  ]
+},
+{
+  "path": "js/tween/tweener.coffee.html",
+  "originalName": "tweener.coffee",
+  "originalPath": "js/tween/tweener.coffee",
+  "name": "tweener.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
