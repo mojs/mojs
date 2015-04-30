@@ -71,7 +71,7 @@
           precision: 10
         });
         expect(typeof easing).toBe('function');
-        return expect(easing.toString()).toBe(pe.sample.toString());
+        return expect(easing(.5)).toBe(.5);
       });
     });
   });

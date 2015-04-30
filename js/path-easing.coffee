@@ -17,6 +17,7 @@ class PathEasing
     return if path is 'creator'
     @path = h.parsePath(path); @pathLength = @path?.getTotalLength()
     @precision = o.precision or 24; @rect = o.rect or 100
+    @sample = h.bind @sample, @
     @
   # ---
 

@@ -46,7 +46,8 @@ describe 'PathEasing ->', ->
       pe = new PathEasing 'creator'
       easing = pe.create('M0,100 100,0', precision: 10)
       expect(typeof easing).toBe 'function'
-      expect(easing.toString()).toBe pe.sample.toString()
+      expect(easing(.5)).toBe .5
+      # expect(easing.toString()).toBe pe.sample.toString()
 
 
 
