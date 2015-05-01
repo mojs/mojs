@@ -256,7 +256,7 @@ class MotionPath
     # ---
 
     # Callback **onPosit** fires every raf frame on motion
-    # path update. Recieves curent **x**, **y** and **angle**
+    # path update. Recieves current **progress**, **x**, **y** and **angle**
     # of type **Number**. Returned value will be set as el's transform
     # 
     # @property   onPosit
@@ -478,7 +478,7 @@ class MotionPath
     # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
     # set position and angle
-    if @isModule then @setModulePosition(x,y) else @setElPosition(x,y)
+    if @isModule then @setModulePosition(x,y) else @setElPosition(x,y,p)
     # set transform origin
     if @props.transformOrigin
       # transform origin could be a function
@@ -489,11 +489,11 @@ class MotionPath
     # call onUpdate but not on the very first(0 progress) call
     !isInit and @onUpdate?(p)
 
-  setElPosition:(x,y)->
+  setElPosition:(x,y,p)->
     transform = if !@props.onPosit?
       rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
       "translate(#{x}px,#{y}px) #{rotate}"
-    else @props.onPosit x, y, @angle
+    else @props.onPosit p, x, y, @angle
     @el.style["#{h.prefix.css}transform"] = transform
     @el.style['transform'] = transform
   setModulePosition:(x, y)->

@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.116.0 
+	0.116.1 
 */
 
 (function(f){
@@ -1236,7 +1236,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.116.0',
+  revision: '0.116.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1611,7 +1611,7 @@ MotionPath = (function() {
     if (this.isModule) {
       this.setModulePosition(x, y);
     } else {
-      this.setElPosition(x, y);
+      this.setElPosition(x, y, p);
     }
     if (this.props.transformOrigin) {
       tOrigin = !isTransformFunOrigin ? this.props.transformOrigin : this.props.transformOrigin(this.angle, p);
@@ -1621,9 +1621,9 @@ MotionPath = (function() {
     return !isInit && (typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0);
   };
 
-  MotionPath.prototype.setElPosition = function(x, y) {
+  MotionPath.prototype.setElPosition = function(x, y, p) {
     var rotate, transform;
-    transform = this.props.onPosit == null ? (rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '', "translate(" + x + "px," + y + "px) " + rotate) : this.props.onPosit(x, y, this.angle);
+    transform = this.props.onPosit == null ? (rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '', "translate(" + x + "px," + y + "px) " + rotate) : this.props.onPosit(p, x, y, this.angle);
     this.el.style[h.prefix.css + "transform"] = transform;
     return this.el.style['transform'] = transform;
   };

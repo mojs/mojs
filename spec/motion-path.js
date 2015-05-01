@@ -449,7 +449,7 @@
         });
         return expect(typeof mp.props.onPosit).toBe('function');
       });
-      return it('should be called with x, y and angle', function() {
+      return it('should be called with progress, x, y and angle', function() {
         mp = new MotionPath({
           path: 'M0,100 L100,0',
           el: document.createElement('div'),
@@ -458,7 +458,7 @@
         });
         spyOn(mp.props, 'onPosit');
         mp.tween.setProgress(.5);
-        return expect(mp.props.onPosit).toHaveBeenCalledWith(50, 50, 0);
+        return expect(mp.props.onPosit).toHaveBeenCalledWith(.5, 50, 50, 0);
       });
     });
     describe('fill ->', function() {

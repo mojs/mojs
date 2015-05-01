@@ -337,7 +337,7 @@ describe 'MotionPath ->', ->
         isRunLess:  true
         onPosit:    ->
       expect(typeof mp.props.onPosit).toBe 'function'
-    it 'should be called with x, y and angle', ->
+    it 'should be called with progress, x, y and angle', ->
       mp = new MotionPath
         path:       'M0,100 L100,0'
         el:         document.createElement 'div'
@@ -345,7 +345,7 @@ describe 'MotionPath ->', ->
         onPosit:->
       spyOn mp.props, 'onPosit'
       mp.tween.setProgress .5
-      expect(mp.props.onPosit).toHaveBeenCalledWith 50, 50, 0
+      expect(mp.props.onPosit).toHaveBeenCalledWith .5, 50, 50, 0
 
   describe 'fill ->', ->
     div = null; container = null
