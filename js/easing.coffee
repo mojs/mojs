@@ -1,7 +1,10 @@
-bezier = require './bezier-easing'
+bezier     = require './bezier-easing'
+PathEasing = require('./path-easing')
 
 class Easing
-  bezier: bezier
+  bezier:     bezier
+  PathEasing: PathEasing
+  path:       (new PathEasing 'creator').create
   linear: none: (k) -> k
   ease:
     in:     bezier.apply @, [ 0.42,   0,     1,      1   ]
@@ -95,7 +98,3 @@ class Easing
 
 easing = new Easing
 module.exports = easing
-
-
-
-

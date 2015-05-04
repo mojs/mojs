@@ -1,5 +1,6 @@
 Timeline = window.mojs.Timeline
 easing   = window.mojs.easing
+h        = window.mojs.h
     
 describe 'Timeline ->', ->
   describe 'init ->', ->
@@ -51,7 +52,8 @@ describe 'Timeline ->', ->
       expect(t.props.endTime).toBe t.props.startTime + 1000
     it 'should calculate end time if repeat', ->
       t = new Timeline(duration: 1000, delay: 500, repeat: 2).start()
-      expect(t.props.endTime).toBe t.props.startTime+(3*(1000+500))-500
+      time = t.props.startTime+(3*(1000+500))-500
+      expect(t.props.endTime).toBeCloseTo time, 5
     it 'should restart flags', ->
       t = new Timeline(duration: 20, repeat: 2).start()
       t.update t.props.startTime + 10
@@ -457,13 +459,58 @@ describe 'Timeline ->', ->
       t = new Timeline duration: 100
       t.setProp 'duration', 1000
       expect(t.props.totalTime).toBe 1000
-      
+  describe 'parseEasing method ->', ->
+    it 'should parse function easing', ->
+      t = new Timeline duration: 100
+      fun = ->
+      expect(t.parseEasing(fun)).toBe fun
+      expect(typeof t.parseEasing(fun)).toBe 'function'
+    describe 'easing name option ->', ->
+      it 'should parse string easing', ->
+        t = new Timeline duration: 100
+        expect(typeof t.parseEasing('cubic.in')).toBe 'function'
+      # it 'should call h.splitEasing method', ->
+      #   t = new Timeline duration: 100
+      #   spyOn h, 'splitEasing'
+      #   t.parseEasing('cubic.in')
+      #   expect(h.splitEasing).toHaveBeenCalled()
+    describe 'SVG path option ->', ->
+      it 'should parse SVG path easing', ->
+        t = new Timeline duration: 100
+        expect(typeof t.parseEasing('M0,100 L100,0')).toBe 'function'
+      it 'should call easing.path method', ->
+        t = new Timeline duration: 100
+        spyOn window.mojs.easing, 'path'
+        t.parseEasing('M0,100 L100,0')
+        expect(window.mojs.easing.path).toHaveBeenCalled()
+    describe 'bezier option ->', ->
+      it 'should parse bezier easing', ->
+        t = new Timeline duration: 100
+        expect(typeof t.parseEasing([0.42,0,1,1])).toBe 'function'
+      it 'should call bezier method', ->
+        t = new Timeline duration: 100
+        spyOn window.mojs.easing, 'bezier'
+        t.parseEasing([0.42,0,1,1])
+        expect(window.mojs.easing.bezier).toHaveBeenCalled()
 
+  describe 'splitEasing method', ->
+    t = new Timeline duration: 100
+    it 'should split easing string to array',->
+      expect(t.splitEasing('Linear.None')[0]).toBe 'linear'
+      expect(t.splitEasing('Linear.None')[1]).toBe 'none'
+    it 'should return default easing Linear.None if argument is bad', ->
+      expect(t.splitEasing(4)[0]).toBe 'linear'
+      expect(t.splitEasing(4)[1]).toBe 'none'
+    it 'should return default easing Linear.None if argument is bad #2', ->
+      expect(t.splitEasing('')[0]).toBe 'linear'
+      expect(t.splitEasing('')[1]).toBe 'none'
+    it 'should return default easing Linear.None if argument is bad #3', ->
+      expect(t.splitEasing('Linear..None')[0]).toBe 'linear'
+      expect(t.splitEasing('Linear..None')[1]).toBe 'none'
+    it 'should work with lovercase easing', ->
+      expect(t.splitEasing('linear..none')[0]).toBe 'linear'
+      expect(t.splitEasing('linear..none')[1]).toBe 'none'
+    it 'should work with function easing', ->
+      easing = -> console.log 'function'
+      expect(t.splitEasing(easing)+'').toBe easing+''
 
-
-
-
-
-
-
-      

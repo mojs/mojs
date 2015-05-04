@@ -32,10 +32,13 @@
       <div class="segment">
       
       
-        <div class="code"><div class="wrapper">bezier = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bezier-easing'</span>
+        <div class="code"><div class="wrapper">bezier     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bezier-easing'</span>
+PathEasing = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./path-easing'</span>)
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Easing</span></span>
-  <span class="hljs-attribute">bezier</span>: bezier
+  <span class="hljs-attribute">bezier</span>:     bezier
+  <span class="hljs-attribute">PathEasing</span>: PathEasing
+  <span class="hljs-attribute">path</span>:       (<span class="hljs-keyword">new</span> PathEasing <span class="hljs-string">'creator'</span>).create
   <span class="hljs-attribute">linear</span>: <span class="hljs-attribute">none</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> k
   <span class="hljs-attribute">ease</span>:
     <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.42</span>,   <span class="hljs-number">0</span>,     <span class="hljs-number">1</span>,      <span class="hljs-number">1</span>   ]
@@ -219,10 +222,6 @@
 
 easing = <span class="hljs-keyword">new</span> Easing
 <span class="hljs-built_in">module</span>.exports = easing
-
-
-
-
 </div></div>
       
       </div>

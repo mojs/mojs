@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>isRunLess: true - mojs.coffee</title>
+  <title>path.setAttribute &#39;d&#39;, &#39;M0,100 L100,0&#39; - mojs.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.114.4'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.117.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -63,14 +63,204 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
+          <div class="wrapper"><p>h = mojs.h</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>pe = new mojs.easing.path &#39;M0,100 L100,0&#39;
+pe = new mojs.easing.path &#39;#js-path&#39;
+circle = document.querySelector &#39;#js-circle&#39;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tm = new mojs.Timeline
+  delay: 1000
+  duration: 2000
+  onUpdate:(p)-&gt;
+    y = pe.sample p
+    circle.setAttribute &#39;cx&#39;, p<em>100
+    circle.setAttribute &#39;cy&#39;, y</em>100</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tw = new mojs.Tween</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tw.add tm
+tw.start()</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log pe.sample .7</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>path = pe.path
+console.log(path.getPointAtLength(path.getTotalLength()*.7))</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>path = document.querySelector &#39;#js-path&#39;
+i = 25
+fun = (i)-&gt;
+  path.getPointAtLength(50+i)</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.time &#39;1&#39;
+while(i--)
+  fun(i)
+console.timeEnd &#39;1&#39;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log(path.getTotalLength())</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>path = document.createElementNS h.NS, &#39;path&#39;
+circle = document.createElementNS h.NS, &#39;circle&#39;
+svg = document.createElementNS h.NS, &#39;svg&#39;
+pathId = &#39;js-path&#39;; path.setAttribute &#39;id&#39;, pathId</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><h1 id="path-setattribute-39-d-39-39-m0-100-l100-0-39-"><a href="#path-setattribute-39-d-39-39-m0-100-l100-0-39-" class="anchor"></a>path.setAttribute &#39;d&#39;, &#39;M0,100 L100,0&#39;</h1><p>path.setAttribute &#39;d&#39;, &#39;M0,100 L10,20 L20,90 L30,30 L40,80 L100, 0&#39;
+path.setAttribute &#39;stroke&#39;, &#39;red&#39;
+path.setAttribute &#39;fill&#39;, &#39;none&#39;
+path.setAttribute &#39;pathLength&#39;, &#39;0.25&#39;
+circle.setAttribute &#39;r&#39;, &#39;10&#39;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>svg.appendChild(circle); svg.appendChild(path)
+document.body.appendChild svg</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>totalLength = path.getTotalLength()
+point = path.getPointAtLength(totalLength*.5)</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>circle.setAttribute &#39;cx&#39;, point.x
+circle.setAttribute &#39;cy&#39;, point.y</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log(path)
+console.log(point)
+console.log(totalLength)</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
           <div class="wrapper"><p>burst = new mojs.Burst</p>
 <h1 id="isrunless-true"><a href="#isrunless-true" class="anchor"></a>isRunLess: true</h1><p>  x: 200, y: 200
   isShowEnd: true
   type: &#39;line&#39;
   stroke: &#39;deeppink&#39;
   strokeWidth: 2:0
-  count: 5</p>
-<h1 id="delay-39-stagger-100-39-"><a href="#delay-39-stagger-100-39-" class="anchor"></a>delay: &#39;stagger(100)&#39;</h1><h1 id="childoptions-angle-45-0"><a href="#childoptions-angle-45-0" class="anchor"></a>childOptions: angle: 45: 0</h1></div>
+  duration: 5000
+  count: 5
+  easing: &#39;M0,0 C0,0 32.1191406,0.314142863 40.1669859,0 C40.1669859,0.165327852 50.9999996,-112.569017 74.0660521,0 C80.8905119,-16.0420643 87.1001393,-19.621745 92.0689049,0 C92.0689049,1.54522552 95.3231688,-14.8615687 100,0&#39;</p>
+</div>
         </div>
       
       

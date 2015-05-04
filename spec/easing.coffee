@@ -92,6 +92,17 @@ describe 'easing ->', ->
     it 'should have InOut', ->
       expect(easing.bounce.inout(.25).toFixed(2)).toBe '0.12'
       expect(easing.bounce.inout(.75).toFixed(2)).toBe '0.88'
+
+  describe 'bezier ->', ->
+    it 'should have bezier constructor', ->
+      expect(typeof easing.bezier).toBe 'function'
+  describe 'path ->', ->
+    it 'should have path constructor', ->
+      expect(typeof easing.path).toBe 'function'
+  describe 'PathEasing ->', ->
+    it 'should have PathEasing constructor', ->
+      expect(typeof easing.PathEasing).toBe 'function'
+
     
 
 

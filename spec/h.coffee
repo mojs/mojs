@@ -6,6 +6,8 @@ describe 'Helpers ->', ->
     expect(h.logBadgeCss).toBeDefined()
   it 'should have RAD_TO_DEG CONSTANT', ->
     expect(h.RAD_TO_DEG).toBe 180/Math.PI
+  it 'should have svg namespace', ->
+    expect(h.NS).toBe 'http://www.w3.org/2000/svg'
   it 'should have remBase', ->
     expect(typeof h.remBase).toBe 'number'
   it 'should have posPropsMap map', ->
@@ -651,25 +653,6 @@ describe 'Helpers ->', ->
         expect(-> h.capitalize()).toThrow()
       it 'should should not throw with empty strings', ->
         expect(-> h.capitalize('')).not.toThrow()
-    describe 'splitEasing method', ->
-      it 'should split easing string to array',->
-        expect(h.splitEasing('Linear.None')[0]).toBe 'linear'
-        expect(h.splitEasing('Linear.None')[1]).toBe 'none'
-      it 'should return default easing Linear.None if argument is bad', ->
-        expect(h.splitEasing(4)[0]).toBe 'linear'
-        expect(h.splitEasing(4)[1]).toBe 'none'
-      it 'should return default easing Linear.None if argument is bad #2', ->
-        expect(h.splitEasing('')[0]).toBe 'linear'
-        expect(h.splitEasing('')[1]).toBe 'none'
-      it 'should return default easing Linear.None if argument is bad #3', ->
-        expect(h.splitEasing('Linear..None')[0]).toBe 'linear'
-        expect(h.splitEasing('Linear..None')[1]).toBe 'none'
-      it 'should work with lovercase easing', ->
-        expect(h.splitEasing('linear..none')[0]).toBe 'linear'
-        expect(h.splitEasing('linear..none')[1]).toBe 'none'
-      it 'should work with function easing', ->
-        easing = -> console.log 'function'
-        expect(h.splitEasing(easing)+'').toBe easing+''
     describe 'color parsing - makeColorObj method', ->
       it 'should have shortColors map', ->
         expect(h.shortColors).toBeDefined()
@@ -816,6 +799,31 @@ describe 'Helpers ->', ->
       expect(h.getUniqID()).toBe 1
       expect(h.getUniqID()).toBe 2
       expect(h.uniqIDs)    .toBe 2
+
+  describe 'parsePath method', ->
+    it 'should parse path if string passed', ->
+      pathStr = 'M0,0 10,10'
+      expect(h.parsePath(pathStr).tagName).toBe 'path'
+      isNormalpath = h.parsePath(pathStr).getAttribute('d') is pathStr
+      isIEPath = h.parsePath(pathStr).getAttribute('d') is 'M 0 0 L 10 10'
+      expect(isNormalpath or isIEPath).toBe true
+    it 'should parse path if selector passed', ->
+      path = document.createElementNS h.NS, 'path'
+      svg = document.createElementNS h.NS, 'svg'
+      pathId = 'js-path'; path.setAttribute 'id', pathId
+      svg.appendChild(path); document.body.appendChild svg
+
+      expect(h.parsePath("##{pathId}").tagName).toBe 'path'
+      expect(h.parsePath("##{pathId}").getAttribute('id')).toBe pathId
+
+    it 'should parse path if DOM node passed', ->
+      path = document.createElementNS h.NS, 'path'
+      svg = document.createElementNS h.NS, 'svg'
+      pathId = 'js-path'; path.setAttribute 'id', pathId
+      svg.appendChild(path); document.body.appendChild svg
+
+      expect(h.parsePath(path).tagName).toBe 'path'
+      expect(h.parsePath(path).getAttribute('id')).toBe pathId
 
 
 

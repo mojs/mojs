@@ -9,7 +9,6 @@ Timeline  = require './tween/timeline'
 Tween     = require './tween/tween'
 
 class MotionPath
-  NS: 'http://www.w3.org/2000/svg'
   # ---
   # ### Defaults/APIs
   # ---
@@ -67,11 +66,12 @@ class MotionPath
     duration:         1000
     # ---
 
-    # Easing function. Can be a string, a bezier() curve or a function
-    # String options can be found in [easing module](easing.coffee.html).
+    # Easing. The option will be passed to timeline.parseEasing method.
+    # Please see the [timeline module](timeline.coffee.html#parseEasing) for
+    # all avaliable options.
     #
     # @property   easing
-    # @type       {String, Function}
+    # @type       {String, Function, Array}
     #
     # @codepen String:              http://codepen.io/sol0mka/pen/GgVeKR/
     # @codepen Bezier cubic curve:  http://codepen.io/sol0mka/pen/WbVmeo/
@@ -254,6 +254,16 @@ class MotionPath
     # 
     # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
     onUpdate:         null
+    # ---
+
+    # Callback **onPosit** fires every raf frame on motion
+    # path update. Recieves current **progress**, **x**, **y** and **angle**
+    # of type **Number**. Returned value will be set as el's transform
+    # 
+    # @property   onPosit
+    # @type       {Function}
+    # 
+    onPosit:         null
   # ---
   # ### Class body docs
   # ---
@@ -282,7 +292,7 @@ class MotionPath
   #
   # @return {SVGElement} svg path
   curveToPath:(o)->
-    path = document.createElementNS @NS , 'path'
+    path = document.createElementNS h.NS , 'path'
     start = o.start
     endPoint  = x: start.x + o.shift.x, y: start.x + o.shift.y
     curvature = o.curvature
@@ -375,14 +385,8 @@ class MotionPath
     return el if el instanceof HTMLElement
     if el.setProp? then @isModule = true; return el
   getPath:->
-    if typeof @props.path is 'string'
-      return if @props.path.charAt(0).toLowerCase() is 'm'
-        path = document.createElementNS @NS, 'path'
-        path.setAttributeNS(null, 'd', @props.path); path
-      else document.querySelector @props.path
-    # DOM node
-    if @props.path.style
-      return @props.path
+    path = h.parsePath(@props.path); return path if path
+    
     if @props.path.x or @props.path.y
       @curveToPath
         start: x: 0, y: 0
@@ -475,7 +479,7 @@ class MotionPath
     # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
     # set position and angle
-    if @isModule then @setModulePosition(x,y) else @setElPosition(x,y)
+    if @isModule then @setModulePosition(x,y) else @setElPosition(x,y,p)
     # set transform origin
     if @props.transformOrigin
       # transform origin could be a function
@@ -486,9 +490,11 @@ class MotionPath
     # call onUpdate but not on the very first(0 progress) call
     !isInit and @onUpdate?(p)
 
-  setElPosition:(x,y)->
-    rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
-    transform = "translate(#{x}px,#{y}px) #{rotate}"
+  setElPosition:(x,y,p)->
+    transform = if !@props.onPosit?
+      rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+      "translate(#{x}px,#{y}px) #{rotate}"
+    else @props.onPosit p, x, y, @angle
     @el.style["#{h.prefix.css}transform"] = transform
     @el.style['transform'] = transform
   setModulePosition:(x, y)->
