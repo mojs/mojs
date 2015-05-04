@@ -1,9 +1,11 @@
 (function() {
-  var Timeline, easing;
+  var Timeline, easing, h;
 
   Timeline = window.mojs.Timeline;
 
   easing = window.mojs.easing;
+
+  h = window.mojs.h;
 
   describe('Timeline ->', function() {
     describe('init ->', function() {
@@ -735,7 +737,7 @@
         }), 50);
       });
     });
-    return describe('setProc method ->', function() {
+    describe('setProc method ->', function() {
       it('should set the current progress', function() {
         var t;
         t = new Timeline({
@@ -782,6 +784,94 @@
         });
         t.setProp('duration', 1000);
         return expect(t.props.totalTime).toBe(1000);
+      });
+    });
+    describe('parseEasing method ->', function() {
+      it('should parse function easing', function() {
+        var fun, t;
+        t = new Timeline({
+          duration: 100
+        });
+        fun = function() {};
+        expect(t.parseEasing(fun)).toBe(fun);
+        return expect(typeof t.parseEasing(fun)).toBe('function');
+      });
+      describe('easing name option ->', function() {
+        return it('should parse string easing', function() {
+          var t;
+          t = new Timeline({
+            duration: 100
+          });
+          return expect(typeof t.parseEasing('cubic.in')).toBe('function');
+        });
+      });
+      describe('SVG path option ->', function() {
+        it('should parse SVG path easing', function() {
+          var t;
+          t = new Timeline({
+            duration: 100
+          });
+          return expect(typeof t.parseEasing('M0,100 L100,0')).toBe('function');
+        });
+        return it('should call easing.path method', function() {
+          var t;
+          t = new Timeline({
+            duration: 100
+          });
+          spyOn(window.mojs.easing, 'path');
+          t.parseEasing('M0,100 L100,0');
+          return expect(window.mojs.easing.path).toHaveBeenCalled();
+        });
+      });
+      return describe('bezier option ->', function() {
+        it('should parse bezier easing', function() {
+          var t;
+          t = new Timeline({
+            duration: 100
+          });
+          return expect(typeof t.parseEasing([0.42, 0, 1, 1])).toBe('function');
+        });
+        return it('should call bezier method', function() {
+          var t;
+          t = new Timeline({
+            duration: 100
+          });
+          spyOn(window.mojs.easing, 'bezier');
+          t.parseEasing([0.42, 0, 1, 1]);
+          return expect(window.mojs.easing.bezier).toHaveBeenCalled();
+        });
+      });
+    });
+    return describe('splitEasing method', function() {
+      var t;
+      t = new Timeline({
+        duration: 100
+      });
+      it('should split easing string to array', function() {
+        expect(t.splitEasing('Linear.None')[0]).toBe('linear');
+        return expect(t.splitEasing('Linear.None')[1]).toBe('none');
+      });
+      it('should return default easing Linear.None if argument is bad', function() {
+        expect(t.splitEasing(4)[0]).toBe('linear');
+        return expect(t.splitEasing(4)[1]).toBe('none');
+      });
+      it('should return default easing Linear.None if argument is bad #2', function() {
+        expect(t.splitEasing('')[0]).toBe('linear');
+        return expect(t.splitEasing('')[1]).toBe('none');
+      });
+      it('should return default easing Linear.None if argument is bad #3', function() {
+        expect(t.splitEasing('Linear..None')[0]).toBe('linear');
+        return expect(t.splitEasing('Linear..None')[1]).toBe('none');
+      });
+      it('should work with lovercase easing', function() {
+        expect(t.splitEasing('linear..none')[0]).toBe('linear');
+        return expect(t.splitEasing('linear..none')[1]).toBe('none');
+      });
+      return it('should work with function easing', function() {
+        easing = function() {
+          return console.log('function');
+        };
+        return expect(t.splitEasing(easing) + '').toBe(easing + '');
       });
     });
   });

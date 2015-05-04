@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.116.1', isDebug: true
+  revision:   '0.117.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -94,9 +94,9 @@ mojs.delta = mojs.h.delta
 #   type: 'line'
 #   stroke: 'deeppink'
 #   strokeWidth: 2:0
+#   duration: 5000
 #   count: 5
-#   # delay: 'stagger(100)'
-#   # childOptions: angle: 45: 0
+#   easing: 'M0,0 C0,0 32.1191406,0.314142863 40.1669859,0 C40.1669859,0.165327852 50.9999996,-112.569017 74.0660521,0 C80.8905119,-16.0420643 87.1001393,-19.621745 92.0689049,0 C92.0689049,1.54522552 95.3231688,-14.8615687 100,0'
 
 # document.body.addEventListener 'click', (e)->
 #   burst.run(x: e.x, y: e.y, isResetAngles: true, childOptions: angle: {0:90})

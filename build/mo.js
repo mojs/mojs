@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.116.1 
+	0.117.0 
 */
 
 (function(f){
@@ -1022,21 +1022,6 @@ Helpers = (function() {
     return getComputedStyle(el);
   };
 
-  Helpers.prototype.splitEasing = function(string) {
-    var firstPart, secondPart, split;
-    if (typeof string === 'function') {
-      return string;
-    }
-    if (typeof string === 'string' && string.length) {
-      split = string.split('.');
-      firstPart = split[0].toLowerCase() || 'linear';
-      secondPart = split[1].toLowerCase() || 'none';
-      return [firstPart, secondPart];
-    } else {
-      return ['linear', 'none'];
-    }
-  };
-
   Helpers.prototype.capitalize = function(str) {
     if (typeof str !== 'string') {
       throw Error('String expected - nothing to capitalize');
@@ -1236,7 +1221,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.116.1',
+  revision: '0.117.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3389,9 +3374,9 @@ Transit = (function(superClass) {
 module.exports = Transit;
 
 },{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":22,"./tween/tween":23}],22:[function(require,module,exports){
-var Easing, Timeline, h;
+var Timeline, easingModule, h;
 
-Easing = require('../easing');
+easingModule = require('../easing');
 
 h = require('../h');
 
@@ -3421,15 +3406,13 @@ Timeline = (function() {
     this.props = {};
     this.progress = 0;
     this.prevTime = 0;
+    this.props.easing = this.parseEasing(this.o.easing);
     return this.calcDimentions();
   };
 
   Timeline.prototype.calcDimentions = function() {
-    var easing;
     this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
-    this.props.totalDuration = this.props.totalTime - this.o.delay;
-    easing = h.splitEasing(this.o.easing);
-    return this.props.easing = typeof easing === 'function' ? easing : Easing[easing[0]][easing[1]];
+    return this.props.totalDuration = this.props.totalTime - this.o.delay;
   };
 
   Timeline.prototype.extendDefaults = function() {
@@ -3547,6 +3530,40 @@ Timeline = (function() {
       this.o[obj] = value;
     }
     return this.calcDimentions();
+  };
+
+  Timeline.prototype.parseEasing = function(easing) {
+    var type;
+    type = typeof easing;
+    if (type === 'string') {
+      if (easing.charAt(0).toLowerCase() === 'm') {
+        return easingModule.path(easing);
+      } else {
+        easing = this.splitEasing(easing);
+        return easingModule[easing[0]][easing[1]];
+      }
+    }
+    if (h.isArray(easing)) {
+      return easingModule.bezier.apply(easingModule, easing);
+    }
+    if ('function') {
+      return easing;
+    }
+  };
+
+  Timeline.prototype.splitEasing = function(string) {
+    var firstPart, secondPart, split;
+    if (typeof string === 'function') {
+      return string;
+    }
+    if (typeof string === 'string' && string.length) {
+      split = string.split('.');
+      firstPart = split[0].toLowerCase() || 'linear';
+      secondPart = split[1].toLowerCase() || 'none';
+      return [firstPart, secondPart];
+    } else {
+      return ['linear', 'none'];
+    }
   };
 
   return Timeline;

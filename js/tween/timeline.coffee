@@ -1,5 +1,5 @@
-Easing = require '../easing'
-h      = require '../h'
+easingModule = require '../easing'
+h            = require '../h'
 
 class Timeline
   defaults:
@@ -16,13 +16,11 @@ class Timeline
   constructor:(@o={})-> @extendDefaults(); @vars(); @
   vars:->
     @h = h; @props = {}; @progress = 0; @prevTime = 0
+    @props.easing = @parseEasing @o.easing
     @calcDimentions()
   calcDimentions:->
     @props.totalTime     = (@o.repeat+1)*(@o.duration+@o.delay)
     @props.totalDuration = @props.totalTime - @o.delay
-    easing = h.splitEasing @o.easing
-    @props.easing = if typeof easing is 'function' then easing
-    else Easing[easing[0]][easing[1]]# or (k)-> k
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
@@ -82,6 +80,48 @@ class Timeline
         @o[key] = val
     else if typeof obj is 'string' then @o[obj] = value
     @calcDimentions()
+  # ---
+
+  # Method to parse easing
+  # @method parseEasing
+  # 
+  # @param {String, Function, Array}
+  #   - *String*: Easing name delimited by dot e.g "cubic.in" or "elastic.out"
+  #     all avaliable options you can find at
+  #     [easing module](easing.coffee.html) page.
+  #   - *String*: SVG path coordinates in rectangle of 100x100
+  #   - *Function*: function that recieve current time and returns modified one
+  #     e.g. *function (k) { return k*k; }*. The function can be created by
+  #     calling mojs.easing.bezier(0.55,0.085,0.68,0.53) or
+  #     mojs.easing.path('M0,0 ...') function. 
+  #
+  # @return {Function}
+  parseEasing:(easing)->
+    type = typeof easing
+    if type is 'string'
+      return if easing.charAt(0).toLowerCase() is 'm'
+        easingModule.path(easing)
+      else easing = @splitEasing(easing); easingModule[easing[0]][easing[1]]
+    if h.isArray(easing)
+      return easingModule.bezier.apply(easingModule, easing)
+    if 'function' then return easing
+  # ---
+
+  # Method to parse easing name string
+  # @method splitEasing
+  # 
+  # @param {String} easing name. All easing names can be found
+  #                 at [easing module](easing.coffee.html) page.
+  # @return {Array}
+  splitEasing:(string)->
+    return string if typeof string is 'function'
+    if typeof string is 'string' and string.length
+      split = string.split '.'
+      firstPart   = split[0].toLowerCase() or 'linear'
+      secondPart  = split[1].toLowerCase() or 'none'
+      [ firstPart, secondPart ]
+    else ['linear', 'none']
+
 
 module.exports = Timeline
 

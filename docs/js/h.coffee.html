@@ -527,14 +527,6 @@ shorthand color and rgb()</p>
 
   <span class="hljs-attribute">computedStyle</span>:<span class="hljs-function"><span class="hljs-params">(el)</span>-&gt;</span> getComputedStyle el
 
-  <span class="hljs-attribute">splitEasing</span>:<span class="hljs-function"><span class="hljs-params">(string)</span>-&gt;</span>
-    <span class="hljs-keyword">return</span> string <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> string <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> string <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">and</span> string.length
-      split = string.split <span class="hljs-string">'.'</span>
-      firstPart   = split[<span class="hljs-number">0</span>].toLowerCase() <span class="hljs-keyword">or</span> <span class="hljs-string">'linear'</span>
-      secondPart  = split[<span class="hljs-number">1</span>].toLowerCase() <span class="hljs-keyword">or</span> <span class="hljs-string">'none'</span>
-      [ firstPart, secondPart ]
-    <span class="hljs-keyword">else</span> [<span class="hljs-string">'linear'</span>, <span class="hljs-string">'none'</span>]
   <span class="hljs-attribute">capitalize</span>:<span class="hljs-function"><span class="hljs-params">(str)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> str <span class="hljs-keyword">isnt</span> <span class="hljs-string">'string'</span>
       <span class="hljs-keyword">throw</span> Error <span class="hljs-string">'String expected - nothing to capitalize'</span>

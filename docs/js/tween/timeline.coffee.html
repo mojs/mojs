@@ -32,8 +32,8 @@
       <div class="segment">
       
       
-        <div class="code"><div class="wrapper">Easing = <span class="hljs-built_in">require</span> <span class="hljs-string">'../easing'</span>
-h      = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
+        <div class="code"><div class="wrapper">easingModule = <span class="hljs-built_in">require</span> <span class="hljs-string">'../easing'</span>
+h            = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Timeline</span></span>
   <span class="hljs-attribute">defaults</span>:
@@ -50,13 +50,11 @@ h      = <span class="hljs-built_in">require</span> <span class="hljs-string">'.
   <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-property">@extendDefaults</span>(); <span class="hljs-property">@vars</span>(); @
   <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@h</span> = h; <span class="hljs-property">@props</span> = {}; <span class="hljs-property">@progress</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@prevTime</span> = <span class="hljs-number">0</span>
+    <span class="hljs-property">@props</span>.easing = <span class="hljs-property">@parseEasing</span> <span class="hljs-property">@o</span>.easing
     <span class="hljs-property">@calcDimentions</span>()
   <span class="hljs-attribute">calcDimentions</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@props</span>.totalTime     = (<span class="hljs-property">@o</span>.repeat+<span class="hljs-number">1</span>)*(<span class="hljs-property">@o</span>.duration+<span class="hljs-property">@o</span>.delay)
     <span class="hljs-property">@props</span>.totalDuration = <span class="hljs-property">@props</span>.totalTime - <span class="hljs-property">@o</span>.delay
-    easing = h.splitEasing <span class="hljs-property">@o</span>.easing
-    <span class="hljs-property">@props</span>.easing = <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> easing <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> easing
-    <span class="hljs-keyword">else</span> Easing[easing[<span class="hljs-number">0</span>]][easing[<span class="hljs-number">1</span>]]<span class="hljs-comment"># or (k)-&gt; k</span>
   <span class="hljs-attribute">extendDefaults</span>:<span class="hljs-function">-&gt;</span> h.extend(<span class="hljs-property">@o</span>, <span class="hljs-property">@defaults</span>); <span class="hljs-property">@onUpdate</span> = <span class="hljs-property">@o</span>.onUpdate
   <span class="hljs-attribute">start</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
     <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">false</span>; <span class="hljs-property">@isStarted</span> = <span class="hljs-literal">false</span>
@@ -175,7 +173,91 @@ h      = <span class="hljs-built_in">require</span> <span class="hljs-string">'.
       <span class="hljs-keyword">for</span> key, val <span class="hljs-keyword">of</span> obj
         <span class="hljs-property">@o</span>[key] = val
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> obj <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@o</span>[obj] = value
-    <span class="hljs-property">@calcDimentions</span>()
+    <span class="hljs-property">@calcDimentions</span>()</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>parseEasing</strong>
+</span></p>
+<p>Method to parse easing</p>
+<p>Parameters:</p>
+<p>{String, Function, Array}</p>
+<ul>
+<li><em>String</em>: Easing name delimited by dot e.g &quot;cubic.in&quot; or &quot;elastic.out&quot;
+all avaliable options you can find at
+<a href="easing.coffee.html">easing module</a> page.</li>
+<li><em>String</em>: SVG path coordinates in rectangle of 100x100</li>
+<li><em>Function</em>: function that recieve current time and returns modified one
+e.g. <em>function (k) { return k</em>k; }*. The function can be created by
+calling mojs.easing.bezier(0.55,0.085,0.68,0.53) or
+mojs.easing.path(&#39;M0,0 ...&#39;) function. </li>
+</ul>
+<p><strong>Returns a Function</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">parseEasing</span>:<span class="hljs-function"><span class="hljs-params">(easing)</span>-&gt;</span>
+    type = <span class="hljs-keyword">typeof</span> easing
+    <span class="hljs-keyword">if</span> type <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> easing.charAt(<span class="hljs-number">0</span>).toLowerCase() <span class="hljs-keyword">is</span> <span class="hljs-string">'m'</span>
+        easingModule.path(easing)
+      <span class="hljs-keyword">else</span> easing = <span class="hljs-property">@splitEasing</span>(easing); easingModule[easing[<span class="hljs-number">0</span>]][easing[<span class="hljs-number">1</span>]]
+    <span class="hljs-keyword">if</span> h.isArray(easing)
+      <span class="hljs-keyword">return</span> easingModule.bezier.apply(easingModule, easing)
+    <span class="hljs-keyword">if</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> easing</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>splitEasing</strong>
+</span></p>
+<p>Method to parse easing name string</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>easing</code> must be a String.</strong><br/>(name. All easing names can be found at <a href="easing.coffee.html">easing module</a> page.)</li>
+</ul>
+<p><strong>Returns an Array</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">splitEasing</span>:<span class="hljs-function"><span class="hljs-params">(string)</span>-&gt;</span>
+    <span class="hljs-keyword">return</span> string <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> string <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> string <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">and</span> string.length
+      split = string.split <span class="hljs-string">'.'</span>
+      firstPart   = split[<span class="hljs-number">0</span>].toLowerCase() <span class="hljs-keyword">or</span> <span class="hljs-string">'linear'</span>
+      secondPart  = split[<span class="hljs-number">1</span>].toLowerCase() <span class="hljs-keyword">or</span> <span class="hljs-string">'none'</span>
+      [ firstPart, secondPart ]
+    <span class="hljs-keyword">else</span> [<span class="hljs-string">'linear'</span>, <span class="hljs-string">'none'</span>]
+
 
 <span class="hljs-built_in">module</span>.exports = Timeline
 

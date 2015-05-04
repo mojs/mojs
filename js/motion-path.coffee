@@ -66,11 +66,12 @@ class MotionPath
     duration:         1000
     # ---
 
-    # Easing function. Can be a string, a bezier() curve or a function
-    # String options can be found in [easing module](easing.coffee.html).
+    # Easing. The option will be passed to timeline.parseEasing method.
+    # Please see the [timeline module](timeline.coffee.html#parseEasing) for
+    # all avaliable options.
     #
     # @property   easing
-    # @type       {String, Function}
+    # @type       {String, Function, Array}
     #
     # @codepen String:              http://codepen.io/sol0mka/pen/GgVeKR/
     # @codepen Bezier cubic curve:  http://codepen.io/sol0mka/pen/WbVmeo/

@@ -896,35 +896,6 @@
           }).not.toThrow();
         });
       });
-      describe('splitEasing method', function() {
-        it('should split easing string to array', function() {
-          expect(h.splitEasing('Linear.None')[0]).toBe('linear');
-          return expect(h.splitEasing('Linear.None')[1]).toBe('none');
-        });
-        it('should return default easing Linear.None if argument is bad', function() {
-          expect(h.splitEasing(4)[0]).toBe('linear');
-          return expect(h.splitEasing(4)[1]).toBe('none');
-        });
-        it('should return default easing Linear.None if argument is bad #2', function() {
-          expect(h.splitEasing('')[0]).toBe('linear');
-          return expect(h.splitEasing('')[1]).toBe('none');
-        });
-        it('should return default easing Linear.None if argument is bad #3', function() {
-          expect(h.splitEasing('Linear..None')[0]).toBe('linear');
-          return expect(h.splitEasing('Linear..None')[1]).toBe('none');
-        });
-        it('should work with lovercase easing', function() {
-          expect(h.splitEasing('linear..none')[0]).toBe('linear');
-          return expect(h.splitEasing('linear..none')[1]).toBe('none');
-        });
-        return it('should work with function easing', function() {
-          var easing;
-          easing = function() {
-            return console.log('function');
-          };
-          return expect(h.splitEasing(easing) + '').toBe(easing + '');
-        });
-      });
       describe('color parsing - makeColorObj method', function() {
         it('should have shortColors map', function() {
           return expect(h.shortColors).toBeDefined();
@@ -1162,10 +1133,12 @@
     });
     return describe('parsePath method', function() {
       it('should parse path if string passed', function() {
-        var pathStr;
+        var isIEPath, isNormalpath, pathStr;
         pathStr = 'M0,0 10,10';
         expect(h.parsePath(pathStr).tagName).toBe('path');
-        return expect(h.parsePath(pathStr).getAttribute('d')).toBe(pathStr);
+        isNormalpath = h.parsePath(pathStr).getAttribute('d') === pathStr;
+        isIEPath = h.parsePath(pathStr).getAttribute('d') === 'M 0 0 L 10 10';
+        return expect(isNormalpath || isIEPath).toBe(true);
       });
       it('should parse path if selector passed', function() {
         var path, pathId, svg;

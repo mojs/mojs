@@ -295,14 +295,6 @@ class Helpers
 
   computedStyle:(el)-> getComputedStyle el
 
-  splitEasing:(string)->
-    return string if typeof string is 'function'
-    if typeof string is 'string' and string.length
-      split = string.split '.'
-      firstPart   = split[0].toLowerCase() or 'linear'
-      secondPart  = split[1].toLowerCase() or 'none'
-      [ firstPart, secondPart ]
-    else ['linear', 'none']
   capitalize:(str)->
     if typeof str isnt 'string'
       throw Error 'String expected - nothing to capitalize'
