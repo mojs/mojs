@@ -623,7 +623,7 @@ Easing = (function() {
     }
   };
 
-  Easing.prototype.exp = {
+  Easing.prototype.expo = {
     "in": function(k) {
       if (k === 0) {
         return 0;
@@ -1314,7 +1314,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.117.2',
+  revision: '0.117.3',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

@@ -81,20 +81,20 @@
         return expect(easing.sin.inout(.5)).toBe(result);
       });
     });
-    describe('exp ->', function() {
+    describe('expo ->', function() {
       it('should have In', function() {
-        expect(easing.exp["in"](0)).toBe(0);
-        return expect(easing.exp["in"](.5)).toBe(Math.pow(1024, .5 - 1));
+        expect(easing.expo["in"](0)).toBe(0);
+        return expect(easing.expo["in"](.5)).toBe(Math.pow(1024, .5 - 1));
       });
       it('should have Out', function() {
-        expect(easing.exp.out(1)).toBe(1);
-        return expect(easing.exp.out(.5)).toBe(1 - Math.pow(2, -10 * .5));
+        expect(easing.expo.out(1)).toBe(1);
+        return expect(easing.expo.out(.5)).toBe(1 - Math.pow(2, -10 * .5));
       });
       return it('should have InOut', function() {
-        expect(easing.exp.inout(0)).toBe(0);
-        expect(easing.exp.inout(1)).toBe(1);
-        expect(easing.exp.inout(.25)).toBe(0.5 * Math.pow(1024, .5 - 1));
-        return expect(easing.exp.inout(.5)).toBe(.5);
+        expect(easing.expo.inout(0)).toBe(0);
+        expect(easing.expo.inout(1)).toBe(1);
+        expect(easing.expo.inout(.25)).toBe(0.5 * Math.pow(1024, .5 - 1));
+        return expect(easing.expo.inout(.5)).toBe(.5);
       });
     });
     describe('circ ->', function() {

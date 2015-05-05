@@ -38,7 +38,7 @@ class Easing
     in:     (k) -> 1 - Math.cos(k * Math.PI / 2)
     out:    (k) -> Math.sin k * Math.PI / 2
     inout:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
-  exp:
+  expo:
     in:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
     out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
     inout:  (k) ->

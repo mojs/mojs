@@ -50,18 +50,18 @@ describe 'easing ->', ->
     it 'should have InOut', ->
       result = 0.5 * (1 - Math.cos(Math.PI * .5))
       expect(easing.sin.inout(.5)).toBe result
-  describe 'exp ->', ->
+  describe 'expo ->', ->
     it 'should have In', ->
-      expect(easing.exp.in(0)).toBe 0
-      expect(easing.exp.in(.5)).toBe Math.pow(1024, .5 - 1)
+      expect(easing.expo.in(0)).toBe 0
+      expect(easing.expo.in(.5)).toBe Math.pow(1024, .5 - 1)
     it 'should have Out', ->
-      expect(easing.exp.out(1)).toBe 1
-      expect(easing.exp.out(.5)).toBe 1 - Math.pow(2, -10 * .5)
+      expect(easing.expo.out(1)).toBe 1
+      expect(easing.expo.out(.5)).toBe 1 - Math.pow(2, -10 * .5)
     it 'should have InOut', ->
-      expect(easing.exp.inout(0)).toBe 0
-      expect(easing.exp.inout(1)).toBe 1
-      expect(easing.exp.inout(.25)).toBe 0.5 * Math.pow(1024, .5 - 1)
-      expect(easing.exp.inout(.5)).toBe  .5
+      expect(easing.expo.inout(0)).toBe 0
+      expect(easing.expo.inout(1)).toBe 1
+      expect(easing.expo.inout(.25)).toBe 0.5 * Math.pow(1024, .5 - 1)
+      expect(easing.expo.inout(.5)).toBe  .5
   describe 'circ ->', ->
     it 'should have In', ->
       expect(easing.circ.in(.5)).toBe 1 - Math.sqrt(1 - .5 * .5)
