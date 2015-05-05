@@ -332,9 +332,7 @@ class Transit extends bitsMap.map.bit
     opts[keys[i]] = merged[keys[i]] while(i--)
     it = @; len = it.history.length
     do (len)=>
-      opts.onUpdate      = (p)=>
-        @setProgress p
-        # console.log 'update', p, len
+      opts.onUpdate      = (p)=> @setProgress p
       opts.onStart       = => @props.onStart?.apply(@)
       opts.onComplete    = => @props.onComplete?.apply @
       opts.onFirstUpdate = -> it.tuneOptions it.history[@index]

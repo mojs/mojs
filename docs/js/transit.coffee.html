@@ -708,20 +708,8 @@ else o[key] = startKey</p>
     opts[keys[i]] = merged[keys[i]] <span class="hljs-keyword">while</span>(i--)
     it = @; len = it.history.length
     <span class="hljs-keyword">do</span> (len)=&gt;
-      opts.onUpdate      = <span class="hljs-function"><span class="hljs-params">(p)</span>=&gt;</span>
-        <span class="hljs-property">@setProgress</span> p</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>console.log &#39;update&#39;, p, len</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">      opts.onStart       = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onStart?.apply(@)
+      opts.onUpdate      = <span class="hljs-function"><span class="hljs-params">(p)</span>=&gt;</span> <span class="hljs-property">@setProgress</span> p
+      opts.onStart       = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onStart?.apply(@)
       opts.onComplete    = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onComplete?.apply @
       opts.onFirstUpdate = <span class="hljs-function">-&gt;</span> it.tuneOptions it.history[<span class="hljs-property">@index</span>]
       opts.isChained = !o.delay

@@ -813,7 +813,13 @@ Helpers = (function() {
   };
 
   Helpers.prototype.clamp = function(value, min, max) {
-    return Math.min(Math.max(value, min), max);
+    if (value < min) {
+      return min;
+    } else if (value > max) {
+      return max;
+    } else {
+      return value;
+    }
   };
 
   Helpers.prototype.setPrefixedStyle = function(el, name, value) {
@@ -1219,7 +1225,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.117.0',
+  revision: '0.117.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

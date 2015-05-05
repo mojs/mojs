@@ -147,7 +147,11 @@ class Helpers
     style = getComputedStyle(html)
     @remBase = parseFloat style.fontSize
 
-  clamp:(value, min, max)-> Math.min Math.max(value, min), max
+  clamp:(value, min, max)->
+    if value < min then min
+    else if value > max then max
+    else value
+    # Math.min Math.max(value, min), max
 
   setPrefixedStyle:(el, name, value)->
     prefixedName            = "#{@prefix.css}#{name}"
