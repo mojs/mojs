@@ -552,51 +552,140 @@ Easing = (function() {
   };
 
   Easing.prototype.quad = {
-    "in": bezier.apply(Easing, [0.55, 0.085, 0.68, 0.53]),
-    out: bezier.apply(Easing, [0.25, 0.46, 0.45, 0.94]),
-    inout: bezier.apply(Easing, [0.455, 0.03, 0.515, 0.955])
+    "in": function(k) {
+      return k * k;
+    },
+    out: function(k) {
+      return k * (2 - k);
+    },
+    inout: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k;
+      }
+      return -0.5 * (--k * (k - 2) - 1);
+    }
   };
 
   Easing.prototype.cubic = {
-    "in": bezier.apply(Easing, [0.55, 0.055, 0.675, 0.19]),
-    out: bezier.apply(Easing, [0.215, 0.61, 0.355, 1]),
-    inout: bezier.apply(Easing, [0.645, 0.045, 0.355, 1])
+    "in": function(k) {
+      return k * k * k;
+    },
+    out: function(k) {
+      return --k * k * k + 1;
+    },
+    inout: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k * k;
+      }
+      return 0.5 * ((k -= 2) * k * k + 2);
+    }
   };
 
   Easing.prototype.quart = {
-    "in": bezier.apply(Easing, [0.895, 0.03, 0.685, 0.22]),
-    out: bezier.apply(Easing, [0.165, 0.84, 0.44, 1]),
-    inout: bezier.apply(Easing, [0.77, 0, 0.175, 1])
+    "in": function(k) {
+      return k * k * k * k;
+    },
+    out: function(k) {
+      return 1 - (--k * k * k * k);
+    },
+    inout: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k * k * k;
+      }
+      return -0.5 * ((k -= 2) * k * k * k - 2);
+    }
   };
 
   Easing.prototype.quint = {
-    "in": bezier.apply(Easing, [0.895, 0.03, 0.685, 0.22]),
-    out: bezier.apply(Easing, [0.165, 0.84, 0.44, 1]),
-    inout: bezier.apply(Easing, [0.77, 0, 0.175, 1])
+    "in": function(k) {
+      return k * k * k * k * k;
+    },
+    out: function(k) {
+      return --k * k * k * k * k + 1;
+    },
+    inout: function(k) {
+      if ((k *= 2) < 1) {
+        return 0.5 * k * k * k * k * k;
+      }
+      return 0.5 * ((k -= 2) * k * k * k * k + 2);
+    }
   };
 
   Easing.prototype.sin = {
-    "in": bezier.apply(Easing, [0.47, 0, 0.745, 0.715]),
-    out: bezier.apply(Easing, [0.39, 0.575, 0.565, 1]),
-    inout: bezier.apply(Easing, [0.445, 0.05, 0.55, 0.95])
+    "in": function(k) {
+      return 1 - Math.cos(k * Math.PI / 2);
+    },
+    out: function(k) {
+      return Math.sin(k * Math.PI / 2);
+    },
+    inout: function(k) {
+      return 0.5 * (1 - Math.cos(Math.PI * k));
+    }
   };
 
-  Easing.prototype.expo = {
-    "in": bezier.apply(Easing, [0.95, 0.05, 0.795, 0.035]),
-    out: bezier.apply(Easing, [0.19, 1, 0.22, 1]),
-    inout: bezier.apply(Easing, [1, 0, 0, 1])
+  Easing.prototype.exp = {
+    "in": function(k) {
+      if (k === 0) {
+        return 0;
+      } else {
+        return Math.pow(1024, k - 1);
+      }
+    },
+    out: function(k) {
+      if (k === 1) {
+        return 1;
+      } else {
+        return 1 - Math.pow(2, -10 * k);
+      }
+    },
+    inout: function(k) {
+      if (k === 0) {
+        return 0;
+      }
+      if (k === 1) {
+        return 1;
+      }
+      if ((k *= 2) < 1) {
+        return 0.5 * Math.pow(1024, k - 1);
+      }
+      return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+    }
   };
 
   Easing.prototype.circ = {
-    "in": bezier.apply(Easing, [0.6, 0.04, 0.98, 0.335]),
-    out: bezier.apply(Easing, [0.075, 0.82, 0.165, 1]),
-    inout: bezier.apply(Easing, [0.785, 0.135, 0.15, 0.86])
+    "in": function(k) {
+      return 1 - Math.sqrt(1 - k * k);
+    },
+    out: function(k) {
+      return Math.sqrt(1 - (--k * k));
+    },
+    inout: function(k) {
+      if ((k *= 2) < 1) {
+        return -0.5 * (Math.sqrt(1 - k * k) - 1);
+      }
+      return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+    }
   };
 
   Easing.prototype.back = {
-    "in": bezier.apply(Easing, [0.6, 0, 0.735, 0.045]),
-    out: bezier.apply(Easing, [0.175, 0.885, 0.32, 1]),
-    inout: bezier.apply(Easing, [0.68, 0, 0.265, 1])
+    "in": function(k) {
+      var s;
+      s = 1.70158;
+      return k * k * ((s + 1) * k - s);
+    },
+    out: function(k) {
+      var s;
+      s = 1.70158;
+      return --k * k * ((s + 1) * k + s) + 1;
+    },
+    inout: function(k) {
+      var s;
+      s = 1.70158 * 1.525;
+      if ((k *= 2) < 1) {
+        return 0.5 * (k * k * ((s + 1) * k - s));
+      }
+      return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+    }
   };
 
   Easing.prototype.elastic = {
@@ -1225,7 +1314,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.117.1',
+  revision: '0.117.2',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

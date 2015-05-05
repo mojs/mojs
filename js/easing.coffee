@@ -11,37 +11,58 @@ class Easing
     out:    bezier.apply @, [ 0,      0,    0.58,    1   ]
     inout:  bezier.apply @, [ 0.42,   0,    0.58,    1   ]
   quad:
-    in:     bezier.apply @, [ 0.55,  0.085, 0.68,   0.53 ]
-    out:    bezier.apply @, [ 0.25,  0.46,  0.45,   0.94 ]
-    inout:  bezier.apply @, [ 0.455, 0.03,  0.515, 0.955 ]
+    in:     (k) -> k * k
+    out:    (k) -> k * (2 - k)
+    inout:  (k) ->
+      return 0.5 * k * k  if (k *= 2) < 1
+      -0.5 * (--k * (k - 2) - 1)
   cubic:
-    in:     bezier.apply @, [ 0.55,  0.055, 0.675,  0.19 ]
-    out:    bezier.apply @, [ 0.215, 0.61,  0.355,   1   ]
-    inout:  bezier.apply @, [ 0.645, 0.045, 0.355,   1   ]
+    in:     (k) -> k * k * k
+    out:    (k) -> --k * k * k + 1
+    inout:  (k) ->
+      return 0.5 * k * k * k  if (k *= 2) < 1
+      0.5 * ((k -= 2) * k * k + 2)
   quart:
-    in:     bezier.apply @, [ 0.895, 0.03,  0.685,  0.22 ]
-    out:    bezier.apply @, [ 0.165, 0.84,  0.44,    1   ]
-    inout:  bezier.apply @, [ 0.77,   0,    0.175,   1   ]
+    in:     (k) -> k * k * k * k
+    out:    (k) -> 1 - (--k * k * k * k)
+    inout:  (k) ->
+      return 0.5 * k * k * k * k  if (k *= 2) < 1
+      -0.5 * ((k -= 2) * k * k * k - 2)
   quint:
-    in:     bezier.apply @, [ 0.895, 0.03,  0.685,  0.22 ]
-    out:    bezier.apply @, [ 0.165, 0.84,  0.44,    1   ]
-    inout:  bezier.apply @, [ 0.77,   0,    0.175,   1   ]
+    in:     (k) -> k * k * k * k * k
+    out:    (k) -> --k * k * k * k * k + 1
+    inout:  (k) ->
+      return 0.5 * k * k * k * k * k  if (k *= 2) < 1
+      0.5 * ((k -= 2) * k * k * k * k + 2)
   sin:
-    in:     bezier.apply @, [ 0.47,   0,    0.745,  0.715]
-    out:    bezier.apply @, [ 0.39,  0.575, 0.565,   1   ]
-    inout:  bezier.apply @, [ 0.445, 0.05,  0.55,   0.95 ]
-  expo:
-    in:     bezier.apply @, [ 0.95,  0.05,  0.795,  0.035]
-    out:    bezier.apply @, [ 0.19,   1,     0.22,    1  ]
-    inout:  bezier.apply @, [ 1,      0,      0,      1  ]
+    in:     (k) -> 1 - Math.cos(k * Math.PI / 2)
+    out:    (k) -> Math.sin k * Math.PI / 2
+    inout:  (k) -> 0.5 * (1 - Math.cos(Math.PI * k))
+  exp:
+    in:     (k) -> (if k is 0 then 0 else Math.pow(1024, k - 1))
+    out:    (k) -> (if k is 1 then 1 else 1 - Math.pow(2, -10 * k))
+    inout:  (k) ->
+      return 0  if k is 0
+      return 1  if k is 1
+      return 0.5 * Math.pow(1024, k - 1)  if (k *= 2) < 1
+      0.5 * (-Math.pow(2, -10 * (k - 1)) + 2)
   circ:
-    in:     bezier.apply @, [ 0.6,   0.04,  0.98,   0.335]
-    out:    bezier.apply @, [ 0.075, 0.82,  0.165,    1  ]
-    inout:  bezier.apply @, [ 0.785, 0.135, 0.15,   0.86 ]
+    in:     (k) ->    1 - Math.sqrt(1 - k * k)
+    out:    (k) ->   Math.sqrt 1 - (--k * k)
+    inout:  (k) ->
+      return -0.5 * (Math.sqrt(1 - k * k) - 1) if (k *= 2) < 1
+      0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1)
   back:
-    in:     bezier.apply @, [ 0.6,    0,    0.735,  0.045]
-    out:    bezier.apply @, [ 0.175, 0.885, 0.32,     1  ]
-    inout:  bezier.apply @, [ 0.68,   0,    0.265,    1  ]
+    in: (k) ->
+      s = 1.70158
+      k * k * ((s + 1) * k - s)
+    out: (k) ->
+      s = 1.70158
+      --k * k * ((s + 1) * k + s) + 1
+    inout: (k) ->
+      s = 1.70158 * 1.525
+      return 0.5 * (k * k * ((s + 1) * k - s))  if (k *= 2) < 1
+      0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2)
   elastic:
     in: (k) ->
       s = undefined
