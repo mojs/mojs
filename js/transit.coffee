@@ -44,6 +44,7 @@ class Transit extends bitsMap.map.bit
     easing:             'Linear.None'
   vars:->
     @h ?= h; @lastSet ?= {}; @index = @o.index or 0
+    @runCount ?= 0
     @extendDefaults()
     o = @h.cloneObj(@o); @h.extend(o, @defaults)
     # inherit the radiusX/Y from radius if werent defined
@@ -365,6 +366,7 @@ class Transit extends bitsMap.map.bit
         !@o.isShowInit and @hide(); @props.onReverseComplete?.apply @
 
   run:(o)->
+    @runCount++
     if o and Object.keys(o).length
       # if then chain is present and the user tries to
       # change the start timing - warn him and delete the
@@ -383,6 +385,7 @@ class Transit extends bitsMap.map.bit
       @tuneNewOption(o)
       o = @h.cloneObj(@o); @h.extend(o, @defaults); @history[0] = o
       !@o.isDrawLess and @setProgress(0, true)
+    else @tuneNewOption @history[0]
     @startTween()
 
   # adds new options to history chain

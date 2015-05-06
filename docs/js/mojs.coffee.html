@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.117.4'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.117.5'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -57,6 +57,43 @@
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tr = new mojs.Transit(
+  type:       &#39;circle&#39;
+  radius:     0: 100
+  x: 300,     y: 300
+  duration:   3000
+  isRunLess:  true
+  fill:      &#39;red&#39;
+  onStart: -&gt; console.log &#39;start&#39;
+).then(
+  radius:   100: 200
+  fill:      &#39;green&#39;: &#39;green&#39;
+).then(
+  radius:   200: 300
+  fill:      &#39;blue&#39;: &#39;blue&#39;
+)</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tr.run()
+setInterval -&gt;
+  tr.run()
+, 12000</p>
+</div>
+        </div>
+      
       
       </div>
     

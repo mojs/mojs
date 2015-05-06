@@ -14,6 +14,9 @@ describe 'Transit ->', ->
     byte = new Byte
     expect(byte.vars).toBeDefined()
     expect(-> byte.vars()).not.toThrow()
+  it 'should have runCount', ->
+    byte = new Byte
+    expect(byte.runCount).toBe 0
   describe 'extension ->', ->
     it 'should extend Bit class', ->
       byte = new Byte
@@ -1129,16 +1132,15 @@ describe 'Transit ->', ->
       o = { strokeWidth: 20 }
       byte.run(o)
       expect(byte.extendDefaults).toHaveBeenCalledWith o
-    it 'should not extend defaults if object was not passed', ->
+    it 'should not transform history if object was not passed', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
-      spyOn byte, 'extendDefaults'
+      spyOn byte, 'transformHistory'
       byte.run()
-      expect(byte.extendDefaults).not.toHaveBeenCalled()
+      expect(byte.transformHistory).not.toHaveBeenCalled()
     it 'should not override deltas', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
       byte.run stroke: 'green'
       expect(byte.deltas.strokeWidth).toBeDefined()
-
     it 'should calculate el size', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       spyOn byte, 'calcSize'
@@ -1153,22 +1155,18 @@ describe 'Transit ->', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50
       expect(byte.el.style.width).toBe '104px'
-
     it 'should set new el size with respect to radiusX/radiusY', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50, radiusX: {100: 0}
       expect(byte.el.style.width).toBe '204px'
-
     it 'should set new el size with respect to radiusX/radiusY', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 50, radiusY: 110
       expect(byte.el.style.width).toBe '224px'
-
     it 'should set new el size with respect to radiusX/radiusY', ->
       byte = new Byte(radius: {10: 5}, isRunLess: true)
       byte.run radius: 450, radiusY: 110, radiusX: {200:0}
       expect(byte.el.style.width).toBe '404px'
-
     it 'should start tween', ->
       byte = new Byte(strokeWidth: {10: 5}, isRunLess: true)
       spyOn byte, 'startTween'
@@ -1217,20 +1215,17 @@ describe 'Transit ->', ->
       spyOn byte.tween, 'recalcDuration'
       byte.run duration: 2000
       expect(byte.tween.recalcDuration).toHaveBeenCalled()
-
     it 'should call transformHistory', ->
       byte = new Byte
       spyOn byte, 'transformHistory'
       o = duration: 2000
       byte.run o
       expect(byte.transformHistory).toHaveBeenCalledWith o
-
     it 'should not call transformHistory if optionless', ->
       byte = new Byte
       spyOn byte, 'transformHistory'
       byte.run()
       expect(byte.transformHistory).not.toHaveBeenCalled()
-
     it 'shoud warn if tweenValues changed on run', ->
       byte = new Byte(
         isRunLess:  true, duration:  2000
@@ -1248,7 +1243,6 @@ describe 'Transit ->', ->
       expect(h.warn).toHaveBeenCalled()
       expect(byte.history[0].duration).toBe 2000
       expect(byte.props.duration)     .toBe 2000
-
     it 'shoud not warn if history is 1 record long', ->
       byte = new Byte(isRunLess:  true, duration:  2000)
       spyOn h, 'warn'
@@ -1268,6 +1262,18 @@ describe 'Transit ->', ->
       byte = new Byte(isRunLess:  true, duration:  2000)
         .then radius: 500
       expect(-> byte.run()).not.toThrow()
+    it 'should save run count', ->
+      byte = new Byte(isRunLess:  true, duration:  2000)
+        .then radius: 500
+      byte.run()
+      expect(byte.runCount).toBe 1
+    it 'should tuneNewOption on run if runCount > 1', ->
+      byte = new Byte(isRunLess:  true, duration:  2000)
+        .then radius: 500
+      byte.run()
+      spyOn byte, 'tuneNewOption'
+      byte.run()
+      expect(byte.tuneNewOption).toHaveBeenCalledWith byte.history[0]
 
   describe 'isForeign flag ->', ->
     it 'should not be set by default', ->

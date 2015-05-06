@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.117.4', isDebug: true
+  revision:   '0.117.5', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -23,6 +23,29 @@ mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+# tr = new mojs.Transit(
+#   type:       'circle'
+#   radius:     0: 100
+#   x: 300,     y: 300
+#   duration:   3000
+#   isRunLess:  true
+#   fill:      'red'
+#   onStart: -> console.log 'start'
+# ).then(
+#   radius:   100: 200
+#   fill:      'green': 'green'
+# ).then(
+#   radius:   200: 300
+#   fill:      'blue': 'blue'
+# )
+
+# tr.run()
+# setInterval ->
+#   tr.run()
+# , 12000
+
+
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

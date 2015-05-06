@@ -1314,7 +1314,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.117.4',
+  revision: '0.117.5',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -2891,6 +2891,9 @@ Transit = (function(superClass) {
       this.lastSet = {};
     }
     this.index = this.o.index || 0;
+    if (this.runCount == null) {
+      this.runCount = 0;
+    }
     this.extendDefaults();
     o = this.h.cloneObj(this.o);
     this.h.extend(o, this.defaults);
@@ -3383,6 +3386,7 @@ Transit = (function(superClass) {
 
   Transit.prototype.run = function(o) {
     var key, keys, len;
+    this.runCount++;
     if (o && Object.keys(o).length) {
       if (this.history.length > 1) {
         keys = Object.keys(o);
@@ -3401,6 +3405,8 @@ Transit = (function(superClass) {
       this.h.extend(o, this.defaults);
       this.history[0] = o;
       !this.o.isDrawLess && this.setProgress(0, true);
+    } else {
+      this.tuneNewOption(this.history[0]);
     }
     return this.startTween();
   };
