@@ -124,17 +124,42 @@ return true</p>
 
     <span class="hljs-property">@state</span>.radius = <span class="hljs-property">@props</span>.radius
 
-  <span class="hljs-attribute">castStrokeDash</span>:<span class="hljs-function"><span class="hljs-params">(name)</span>-&gt;</span>
-    <span class="hljs-keyword">if</span> h.isArray(<span class="hljs-property">@props</span>[name])
+  <span class="hljs-attribute">castStrokeDash</span>:<span class="hljs-function"><span class="hljs-params">(name)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if array of values</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> h.isArray(<span class="hljs-property">@props</span>[name])
       stroke = <span class="hljs-string">''</span>
       <span class="hljs-keyword">for</span> dash, i <span class="hljs-keyword">in</span> <span class="hljs-property">@props</span>[name]
         cast = <span class="hljs-keyword">if</span> dash.unit <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@castPercent</span>(dash.value) <span class="hljs-keyword">else</span> dash.value
         stroke += <span class="hljs-string">"<span class="hljs-subst">#{cast}</span> "</span>
-      <span class="hljs-keyword">return</span> <span class="hljs-property">@props</span>[name] = stroke
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> <span class="hljs-property">@props</span>[name] <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span>
-      <span class="hljs-property">@props</span>[name] = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>[name].unit <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span>
+      <span class="hljs-property">@props</span>[name] = <span class="hljs-keyword">if</span> stroke <span class="hljs-keyword">is</span> <span class="hljs-string">'0 '</span> <span class="hljs-keyword">then</span> stroke = <span class="hljs-string">''</span> <span class="hljs-keyword">else</span> stroke
+      <span class="hljs-keyword">return</span> <span class="hljs-property">@props</span>[name] = stroke</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if single value</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> <span class="hljs-property">@props</span>[name] <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span>
+      stroke = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>[name].unit <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span>
         <span class="hljs-property">@castPercent</span>(<span class="hljs-property">@props</span>[name].value)
       <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>[name].value
+      <span class="hljs-property">@props</span>[name] = <span class="hljs-keyword">if</span> stroke <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> stroke = <span class="hljs-string">''</span> <span class="hljs-keyword">else</span> stroke
+
   <span class="hljs-attribute">castPercent</span>:<span class="hljs-function"><span class="hljs-params">(percent)</span>-&gt;</span> percent * (<span class="hljs-property">@props</span>.length/<span class="hljs-number">100</span>)
   <span class="hljs-attribute">setAttrsIfChanged</span>:<span class="hljs-function"><span class="hljs-params">(name, value)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> name <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span>

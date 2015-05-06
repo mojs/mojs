@@ -316,7 +316,6 @@ describe 'Bit', ->
       bit.props['stroke-dashoffset'] = { unit: 'px', value: 100 }
       bit.castStrokeDash 'stroke-dashoffset'
       expect(bit.props['stroke-dashoffset']).toBe 100
-
     it 'should cast % values', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
@@ -324,6 +323,24 @@ describe 'Bit', ->
       bit.props['stroke-dashoffset'] = { unit: '%', value: 100 }
       bit.castStrokeDash 'stroke-dashoffset'
       expect(bit.props['stroke-dashoffset']).toBe bit.props.length
+    
+    it 'should not set 0 value >> ff issue fix', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+        isIt: true
+      bit.props['stroke-dasharray'] = { unit: 'px', value: 0 }
+      bit.castStrokeDash 'stroke-dasharray'
+      expect(bit.props['stroke-dasharray']).toBe ''
+
+    it 'should not set 0 value >> ff issue fix #2', ->
+      bit = new Bit
+        ctx:    document.createElementNS ns, 'svg'
+        radius: 100
+        isIt: true
+      bit.props['stroke-dasharray'] = [{ unit: 'px', value: 0 }]
+      bit.castStrokeDash 'stroke-dasharray'
+      expect(bit.props['stroke-dasharray']).toBe ''
 
   describe 'isChanged method ->', ->
     it 'should check if attribute was changed', ->

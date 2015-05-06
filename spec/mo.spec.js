@@ -1314,7 +1314,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.117.3',
+  revision: '0.117.4',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -2123,10 +2123,12 @@ Bit = (function() {
         cast = dash.unit === '%' ? this.castPercent(dash.value) : dash.value;
         stroke += cast + " ";
       }
+      this.props[name] = stroke === '0 ' ? stroke = '' : stroke;
       return this.props[name] = stroke;
     }
     if (typeof this.props[name] === 'object') {
-      return this.props[name] = this.props[name].unit === '%' ? this.castPercent(this.props[name].value) : this.props[name].value;
+      stroke = this.props[name].unit === '%' ? this.castPercent(this.props[name].value) : this.props[name].value;
+      return this.props[name] = stroke === 0 ? stroke = '' : stroke;
     }
   };
 
