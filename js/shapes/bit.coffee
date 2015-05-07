@@ -76,16 +76,21 @@ class Bit
     @state.radius = @props.radius
 
   castStrokeDash:(name)->
+    # if array of values
     if h.isArray(@props[name])
       stroke = ''
       for dash, i in @props[name]
         cast = if dash.unit is '%' then @castPercent(dash.value) else dash.value
         stroke += "#{cast} "
+      @props[name] = if stroke is '0 ' then stroke = '' else stroke
       return @props[name] = stroke
+    # if single value
     if typeof @props[name] is 'object'
-      @props[name] = if @props[name].unit is '%'
+      stroke = if @props[name].unit is '%'
         @castPercent(@props[name].value)
       else @props[name].value
+      @props[name] = if stroke is 0 then stroke = '' else stroke
+
   castPercent:(percent)-> percent * (@props.length/100)
   setAttrsIfChanged:(name, value)->
     if typeof name is 'object'

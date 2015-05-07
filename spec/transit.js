@@ -26,6 +26,11 @@
         return byte.vars();
       }).not.toThrow();
     });
+    it('should have runCount', function() {
+      var byte;
+      byte = new Byte;
+      return expect(byte.runCount).toBe(0);
+    });
     describe('extension ->', function() {
       return it('should extend Bit class', function() {
         var byte;
@@ -2078,7 +2083,7 @@
         byte.run(o);
         return expect(byte.extendDefaults).toHaveBeenCalledWith(o);
       });
-      it('should not extend defaults if object was not passed', function() {
+      it('should not transform history if object was not passed', function() {
         var byte;
         byte = new Byte({
           strokeWidth: {
@@ -2086,9 +2091,9 @@
           },
           isRunLess: true
         });
-        spyOn(byte, 'extendDefaults');
+        spyOn(byte, 'transformHistory');
         byte.run();
-        return expect(byte.extendDefaults).not.toHaveBeenCalled();
+        return expect(byte.transformHistory).not.toHaveBeenCalled();
       });
       it('should not override deltas', function() {
         var byte;
@@ -2359,7 +2364,7 @@
         expect(byte.history[0].duration).toBe(100);
         return expect(byte.props.duration).toBe(100);
       });
-      return it('shoud work with no arguments passed', function() {
+      it('shoud work with no arguments passed', function() {
         var byte;
         byte = new Byte({
           isRunLess: true,
@@ -2370,6 +2375,30 @@
         return expect(function() {
           return byte.run();
         }).not.toThrow();
+      });
+      it('should save run count', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 500
+        });
+        byte.run();
+        return expect(byte.runCount).toBe(1);
+      });
+      return it('should tuneNewOption on run if runCount > 1', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 500
+        });
+        byte.run();
+        spyOn(byte, 'tuneNewOption');
+        byte.run();
+        return expect(byte.tuneNewOption).toHaveBeenCalledWith(byte.history[0]);
       });
     });
     describe('isForeign flag ->', function() {

@@ -45,37 +45,58 @@ PathEasing = <span class="hljs-built_in">require</span>(<span class="hljs-string
     <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0</span>,      <span class="hljs-number">0</span>,    <span class="hljs-number">0.58</span>,    <span class="hljs-number">1</span>   ]
     <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.42</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.58</span>,    <span class="hljs-number">1</span>   ]
   <span class="hljs-attribute">quad</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.55</span>,  <span class="hljs-number">0.085</span>, <span class="hljs-number">0.68</span>,   <span class="hljs-number">0.53</span> ]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.25</span>,  <span class="hljs-number">0.46</span>,  <span class="hljs-number">0.45</span>,   <span class="hljs-number">0.94</span> ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.455</span>, <span class="hljs-number">0.03</span>,  <span class="hljs-number">0.515</span>, <span class="hljs-number">0.955</span> ]
+    <span class="hljs-attribute">in</span>:     <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> k * k
+    <span class="hljs-attribute">out</span>:    <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> k * (<span class="hljs-number">2</span> - k)
+    <span class="hljs-attribute">inout</span>:  <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0.5</span> * k * k  <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+      -<span class="hljs-number">0.5</span> * (--k * (k - <span class="hljs-number">2</span>) - <span class="hljs-number">1</span>)
   <span class="hljs-attribute">cubic</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.55</span>,  <span class="hljs-number">0.055</span>, <span class="hljs-number">0.675</span>,  <span class="hljs-number">0.19</span> ]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.215</span>, <span class="hljs-number">0.61</span>,  <span class="hljs-number">0.355</span>,   <span class="hljs-number">1</span>   ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.645</span>, <span class="hljs-number">0.045</span>, <span class="hljs-number">0.355</span>,   <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">in</span>:     <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> k * k * k
+    <span class="hljs-attribute">out</span>:    <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> --k * k * k + <span class="hljs-number">1</span>
+    <span class="hljs-attribute">inout</span>:  <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0.5</span> * k * k * k  <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+      <span class="hljs-number">0.5</span> * ((k -= <span class="hljs-number">2</span>) * k * k + <span class="hljs-number">2</span>)
   <span class="hljs-attribute">quart</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.895</span>, <span class="hljs-number">0.03</span>,  <span class="hljs-number">0.685</span>,  <span class="hljs-number">0.22</span> ]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.165</span>, <span class="hljs-number">0.84</span>,  <span class="hljs-number">0.44</span>,    <span class="hljs-number">1</span>   ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.77</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.175</span>,   <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">in</span>:     <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> k * k * k * k
+    <span class="hljs-attribute">out</span>:    <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> <span class="hljs-number">1</span> - (--k * k * k * k)
+    <span class="hljs-attribute">inout</span>:  <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0.5</span> * k * k * k * k  <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+      -<span class="hljs-number">0.5</span> * ((k -= <span class="hljs-number">2</span>) * k * k * k - <span class="hljs-number">2</span>)
   <span class="hljs-attribute">quint</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.895</span>, <span class="hljs-number">0.03</span>,  <span class="hljs-number">0.685</span>,  <span class="hljs-number">0.22</span> ]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.165</span>, <span class="hljs-number">0.84</span>,  <span class="hljs-number">0.44</span>,    <span class="hljs-number">1</span>   ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.77</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.175</span>,   <span class="hljs-number">1</span>   ]
+    <span class="hljs-attribute">in</span>:     <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> k * k * k * k * k
+    <span class="hljs-attribute">out</span>:    <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> --k * k * k * k * k + <span class="hljs-number">1</span>
+    <span class="hljs-attribute">inout</span>:  <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0.5</span> * k * k * k * k * k  <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+      <span class="hljs-number">0.5</span> * ((k -= <span class="hljs-number">2</span>) * k * k * k * k + <span class="hljs-number">2</span>)
   <span class="hljs-attribute">sin</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.47</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.745</span>,  <span class="hljs-number">0.715</span>]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.39</span>,  <span class="hljs-number">0.575</span>, <span class="hljs-number">0.565</span>,   <span class="hljs-number">1</span>   ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.445</span>, <span class="hljs-number">0.05</span>,  <span class="hljs-number">0.55</span>,   <span class="hljs-number">0.95</span> ]
+    <span class="hljs-attribute">in</span>:     <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> <span class="hljs-number">1</span> - Math.cos(k * Math.PI / <span class="hljs-number">2</span>)
+    <span class="hljs-attribute">out</span>:    <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> Math.sin k * Math.PI / <span class="hljs-number">2</span>
+    <span class="hljs-attribute">inout</span>:  <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> <span class="hljs-number">0.5</span> * (<span class="hljs-number">1</span> - Math.cos(Math.PI * k))
   <span class="hljs-attribute">expo</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.95</span>,  <span class="hljs-number">0.05</span>,  <span class="hljs-number">0.795</span>,  <span class="hljs-number">0.035</span>]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.19</span>,   <span class="hljs-number">1</span>,     <span class="hljs-number">0.22</span>,    <span class="hljs-number">1</span>  ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">1</span>,      <span class="hljs-number">0</span>,      <span class="hljs-number">0</span>,      <span class="hljs-number">1</span>  ]
+    <span class="hljs-attribute">in</span>:     <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> (<span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> Math.pow(<span class="hljs-number">1024</span>, k - <span class="hljs-number">1</span>))
+    <span class="hljs-attribute">out</span>:    <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span> (<span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-number">1</span> - Math.pow(<span class="hljs-number">2</span>, -<span class="hljs-number">10</span> * k))
+    <span class="hljs-attribute">inout</span>:  <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>  <span class="hljs-keyword">if</span> k <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0.5</span> * Math.pow(<span class="hljs-number">1024</span>, k - <span class="hljs-number">1</span>)  <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+      <span class="hljs-number">0.5</span> * (-Math.pow(<span class="hljs-number">2</span>, -<span class="hljs-number">10</span> * (k - <span class="hljs-number">1</span>)) + <span class="hljs-number">2</span>)
   <span class="hljs-attribute">circ</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.6</span>,   <span class="hljs-number">0.04</span>,  <span class="hljs-number">0.98</span>,   <span class="hljs-number">0.335</span>]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.075</span>, <span class="hljs-number">0.82</span>,  <span class="hljs-number">0.165</span>,    <span class="hljs-number">1</span>  ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.785</span>, <span class="hljs-number">0.135</span>, <span class="hljs-number">0.15</span>,   <span class="hljs-number">0.86</span> ]
+    <span class="hljs-attribute">in</span>:     <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>    <span class="hljs-number">1</span> - Math.sqrt(<span class="hljs-number">1</span> - k * k)
+    <span class="hljs-attribute">out</span>:    <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>   Math.sqrt <span class="hljs-number">1</span> - (--k * k)
+    <span class="hljs-attribute">inout</span>:  <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> -<span class="hljs-number">0.5</span> * (Math.sqrt(<span class="hljs-number">1</span> - k * k) - <span class="hljs-number">1</span>) <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+      <span class="hljs-number">0.5</span> * (Math.sqrt(<span class="hljs-number">1</span> - (k -= <span class="hljs-number">2</span>) * k) + <span class="hljs-number">1</span>)
   <span class="hljs-attribute">back</span>:
-    <span class="hljs-attribute">in</span>:     bezier.apply @, [ <span class="hljs-number">0.6</span>,    <span class="hljs-number">0</span>,    <span class="hljs-number">0.735</span>,  <span class="hljs-number">0.045</span>]
-    <span class="hljs-attribute">out</span>:    bezier.apply @, [ <span class="hljs-number">0.175</span>, <span class="hljs-number">0.885</span>, <span class="hljs-number">0.32</span>,     <span class="hljs-number">1</span>  ]
-    <span class="hljs-attribute">inout</span>:  bezier.apply @, [ <span class="hljs-number">0.68</span>,   <span class="hljs-number">0</span>,    <span class="hljs-number">0.265</span>,    <span class="hljs-number">1</span>  ]
+    <span class="hljs-attribute">in</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      s = <span class="hljs-number">1.70158</span>
+      k * k * ((s + <span class="hljs-number">1</span>) * k - s)
+    <span class="hljs-attribute">out</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      s = <span class="hljs-number">1.70158</span>
+      --k * k * ((s + <span class="hljs-number">1</span>) * k + s) + <span class="hljs-number">1</span>
+    <span class="hljs-attribute">inout</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
+      s = <span class="hljs-number">1.70158</span> * <span class="hljs-number">1.525</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0.5</span> * (k * k * ((s + <span class="hljs-number">1</span>) * k - s))  <span class="hljs-keyword">if</span> (k *= <span class="hljs-number">2</span>) &lt; <span class="hljs-number">1</span>
+      <span class="hljs-number">0.5</span> * ((k -= <span class="hljs-number">2</span>) * k * ((s + <span class="hljs-number">1</span>) * k + s) + <span class="hljs-number">2</span>)
   <span class="hljs-attribute">elastic</span>:
     <span class="hljs-attribute">in</span>: <span class="hljs-function"><span class="hljs-params">(k)</span> -&gt;</span>
       s = <span class="hljs-literal">undefined</span></div></div>

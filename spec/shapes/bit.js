@@ -408,7 +408,7 @@
         bit.castStrokeDash('stroke-dashoffset');
         return expect(bit.props['stroke-dashoffset']).toBe(100);
       });
-      return it('should cast % values', function() {
+      it('should cast % values', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
           radius: 100
@@ -419,6 +419,34 @@
         };
         bit.castStrokeDash('stroke-dashoffset');
         return expect(bit.props['stroke-dashoffset']).toBe(bit.props.length);
+      });
+      it('should not set 0 value >> ff issue fix', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100,
+          isIt: true
+        });
+        bit.props['stroke-dasharray'] = {
+          unit: 'px',
+          value: 0
+        };
+        bit.castStrokeDash('stroke-dasharray');
+        return expect(bit.props['stroke-dasharray']).toBe('');
+      });
+      return it('should not set 0 value >> ff issue fix #2', function() {
+        bit = new Bit({
+          ctx: document.createElementNS(ns, 'svg'),
+          radius: 100,
+          isIt: true
+        });
+        bit.props['stroke-dasharray'] = [
+          {
+            unit: 'px',
+            value: 0
+          }
+        ];
+        bit.castStrokeDash('stroke-dasharray');
+        return expect(bit.props['stroke-dasharray']).toBe('');
       });
     });
     describe('isChanged method ->', function() {

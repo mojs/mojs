@@ -37,24 +37,7 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "path.setAttribute &#39;d&#39;, &#39;M0,100 L100,0&#39;",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "path-setattribute-39-d-39-39-m0-100-l100-0-39-",
-      "title": "path.setAttribute &#39;d&#39;, &#39;M0,100 L100,0&#39;"
-    },
-    {
-      "level": 1,
-      "slug": "isrunless-true",
-      "title": "isRunLess: true"
-    },
-    {
-      "level": 1,
-      "slug": "delay-2000",
-      "title": "delay:  2000"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/motion-path.coffee.html",
