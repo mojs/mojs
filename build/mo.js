@@ -2566,7 +2566,12 @@ Spriter = (function() {
   Spriter.prototype.defaults = {
     duration: 500,
     delay: 0,
-    easing: 'linear.none'
+    easing: 'linear.none',
+    repeat: 0,
+    yoyo: false,
+    onStart: null,
+    onUpdate: null,
+    onComplete: null
   };
 
   return Spriter;

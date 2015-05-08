@@ -27,6 +27,43 @@ class Spriter
     # @property easing
     # @type     {String, Function}
     easing:     'linear.none'
+    # ---
+    
+    # Repeat times count
+    # 
+    # @property repeat
+    # @type     {Number}
+    repeat:     0
+    # ---
+    
+    # Yoyo option defines if animation should be altered on repeat.
+    # 
+    # @property yoyo
+    # @type     {Boolean}
+    yoyo:       false
+    # ---
+    
+    # onStart callback will be called once on animation start.
+    # 
+    # @property onStart
+    # @type     {Function}
+    onStart:    null
+    # ---
+    
+    # onUpdate callback will be called on every frame of the animation.
+    # The current progress in range **[0,1]** will be passed to the callback.
+    # 
+    # @property onUpdate
+    # @type     {Function}
+    onUpdate:   null
+    # ---
+    
+    # onComplete callback will be called once on animation complete.
+    # 
+    # @property onComplete
+    # @type     {Function}
+    onComplete: null
+
 
 
 
