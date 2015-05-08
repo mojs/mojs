@@ -1,3 +1,5 @@
+h = require './h'
+
 # ## Spriter
 # Class for toggling opacity on bunch of elements
 #
@@ -63,6 +65,20 @@ class Spriter
     # @property onComplete
     # @type     {Function}
     onComplete: null
+
+  constructor:(@o={})->
+    return h.error('No "el" option specified, aborting') if !@o.el?
+    @_vars(); @_extendDefaults(); @
+  _vars:->
+    @_props ?= {}
+    @el = @o.el
+    
+  # ---
+
+  # Method to extend _props by options(this.o)
+  # 
+  # @method _extendDefaults
+  _extendDefaults:-> h.extend(@_props, @o)
 
 
 

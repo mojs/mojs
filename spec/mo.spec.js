@@ -2574,11 +2574,11 @@ Zigzag = (function(superClass) {
 module.exports = Zigzag;
 
 },{"./bit":10}],19:[function(require,module,exports){
-var Spriter;
+var Spriter, h;
+
+h = require('./h');
 
 Spriter = (function() {
-  function Spriter() {}
-
   Spriter.prototype.defaults = {
     duration: 500,
     delay: 0,
@@ -2590,13 +2590,34 @@ Spriter = (function() {
     onComplete: null
   };
 
+  function Spriter(o) {
+    this.o = o != null ? o : {};
+    if (this.o.el == null) {
+      return h.error('No "el" option specified, aborting');
+    }
+    this._vars();
+    this._extendDefaults();
+    this;
+  }
+
+  Spriter.prototype._vars = function() {
+    if (this._props == null) {
+      this._props = {};
+    }
+    return this.el = this.o.el;
+  };
+
+  Spriter.prototype._extendDefaults = function() {
+    return h.extend(this._props, this.o);
+  };
+
   return Spriter;
 
 })();
 
 module.exports = Spriter;
 
-},{}],20:[function(require,module,exports){
+},{"./h":4}],20:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Stagger, Timeline, Transit, Tween, h,
