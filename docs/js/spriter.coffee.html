@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title> - mojs.coffee</title>
+  <title> - spriter.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -15,7 +15,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
   <meta name="groc-relative-root" content="../"/>
-  <meta name="groc-document-path" content="js/mojs.coffee"/>
+  <meta name="groc-document-path" content="js/spriter.coffee"/>
   
 </head>
 <body>
@@ -23,7 +23,7 @@
     <div id="meta">
       <code class="file-path">
       
-        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/mojs.coffee">js/mojs.coffee</a>
+        <a href="https://github.com/legomushroom/mojs.git/blob/master/js/spriter.coffee">js/spriter.coffee</a>
       
       </code>
     </div>
@@ -31,109 +31,104 @@
     
       <div class="segment">
       
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+ class Spriter
+</span></p>
+<h2 id="spriter"><a href="#spriter" class="anchor"></a>Spriter</h2><p>Class for toggling opacity on bunch of elements</p>
+</div>
+        </div>
       
-        <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.117.5'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
-  helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
-  Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
-  bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
-  Circle      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/circle'</span>
-  Cross       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/cross'</span>
-  Line        : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/line'</span>
-  Rect        : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/rect'</span>
-  Polygon     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/polygon'</span>
-  Equal       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/equal'</span>
-  Zigzag      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/zigzag'</span>
-  Burst       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./burst'</span>
-  Transit     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./transit'</span>
-  Swirl       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./swirl'</span>
-  Stagger     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./stagger'</span>
-  Spriter     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./spriter'</span>
-  MotionPath  : <span class="hljs-built_in">require</span> <span class="hljs-string">'./motion-path'</span>
-  Timeline    : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/timeline'</span>
-  Tween       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
-  tweener     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tweener'</span>
-  easing      : <span class="hljs-built_in">require</span> <span class="hljs-string">'./easing'</span>
+      
+        <div class="code"><div class="wrapper"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Spriter</span></span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+<h3 id="defaults-apis"><a href="#defaults-apis" class="anchor"></a>Defaults/APIs</h3><hr>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">defaults</span>:</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-duration"><strong>duration</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Duration</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">duration</span>:   <span class="hljs-number">500</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-delay"><strong>delay</strong></span> of type <strong>Number</strong>
+</span></p>
+<p>Delay</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">delay</span>:      <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-easing"><strong>easing</strong></span> of type <strong>String, Function</strong>
+</span></p>
+<p>Easing. Please see the 
+<a href="timeline.coffee.html#parseEasing">timeline module parseEasing function</a>
+for all avaliable options.</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">easing</span>:     <span class="hljs-string">'linear.none'</span>
 
-mojs.h     = mojs.helpers
-mojs.delta = mojs.h.delta
-</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tr = new mojs.Transit(
-  type:       &#39;circle&#39;
-  radius:     0: 100
-  x: 300,     y: 300
-  duration:   3000
-  isRunLess:  true
-  fill:      &#39;red&#39;
-  onStart: -&gt; console.log &#39;start&#39;
-).then(
-  radius:   100: 200
-  fill:      &#39;green&#39;: &#39;green&#39;
-).then(
-  radius:   200: 300
-  fill:      &#39;blue&#39;: &#39;blue&#39;
-)</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tr.run()
-setInterval -&gt;
-  tr.run()
-, 12000</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>istanbul ignore next</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper"><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">"function"</span>) <span class="hljs-keyword">and</span> define.amd
-  define <span class="hljs-string">"mojs"</span>, [], <span class="hljs-function">-&gt;</span> mojs</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>istanbul ignore next</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper"><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> <span class="hljs-keyword">is</span> <span class="hljs-string">"object"</span>) <span class="hljs-keyword">and</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span>.exports <span class="hljs-keyword">is</span> <span class="hljs-string">"object"</span>)
-  <span class="hljs-built_in">module</span>.exports = mojs</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>istanbul ignore next</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper"><span class="hljs-keyword">return</span> <span class="hljs-built_in">window</span>?.mojs = mojs
-</div></div>
+
+
+<span class="hljs-built_in">module</span>.exports = Spriter</div></div>
       
       </div>
     

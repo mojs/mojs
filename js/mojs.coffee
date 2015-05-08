@@ -15,6 +15,7 @@ mojs =
   Transit     : require './transit'
   Swirl       : require './swirl'
   Stagger     : require './stagger'
+  Spriter     : require './spriter'
   MotionPath  : require './motion-path'
   Timeline    : require './tween/timeline'
   Tween       : require './tween/tween'

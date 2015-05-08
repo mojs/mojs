@@ -78,6 +78,25 @@ window.files = [
   ]
 },
 {
+  "path": "js/spriter.coffee.html",
+  "originalName": "spriter.coffee",
+  "originalPath": "js/spriter.coffee",
+  "name": "spriter.coffee.html",
+  "lang": "coffeescript",
+  "toc": [
+    {
+      "level": 2,
+      "slug": "spriter",
+      "title": "Spriter"
+    },
+    {
+      "level": 3,
+      "slug": "defaults-apis",
+      "title": "Defaults/APIs"
+    }
+  ]
+},
+{
   "path": "js/stagger.coffee.html",
   "originalName": "stagger.coffee",
   "originalPath": "js/stagger.coffee",
