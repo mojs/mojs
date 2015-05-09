@@ -8,7 +8,7 @@ class Spriter
   # ---
   # ### Defaults/APIs
   # ---
-  defaults:
+  _defaults:
     # Duration
     # 
     # @property duration
@@ -68,17 +68,29 @@ class Spriter
 
   constructor:(@o={})->
     return h.error('No "el" option specified, aborting') if !@o.el?
-    @_vars(); @_extendDefaults(); @
+    @_vars(); @_extendDefaults(); @_parseFrames()
+    if @_frames.length <= 2
+      h.warn("Spriter: only #{@_frames.length} frames found")
+    if @_frames.length < 1
+      h.error("Spriter: there is no frames to animate, aborting")
+    @
   _vars:->
-    @_props ?= {}
+    @_props = h.cloneObj(@o)
     @el = @o.el
-    
+    @_frames = []
   # ---
 
   # Method to extend _props by options(this.o)
   # 
   # @method _extendDefaults
-  _extendDefaults:-> h.extend(@_props, @o)
+  _extendDefaults:-> h.extend(@_props, @_defaults)
+  # ---
+
+  # Method to parse frames as child nodes of el
+  # 
+  # @method _extendDefaults
+  _parseFrames:->
+    @_frames = Array::slice.call @el.childNodes, 0
 
 
 

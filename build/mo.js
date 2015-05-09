@@ -2563,7 +2563,7 @@ var Spriter, h;
 h = require('./h');
 
 Spriter = (function() {
-  Spriter.prototype.defaults = {
+  Spriter.prototype._defaults = {
     duration: 500,
     delay: 0,
     easing: 'linear.none',
@@ -2581,18 +2581,28 @@ Spriter = (function() {
     }
     this._vars();
     this._extendDefaults();
+    this._parseFrames();
+    if (this._frames.length <= 2) {
+      h.warn("Spriter: only " + this._frames.length + " frames found");
+    }
+    if (this._frames.length < 1) {
+      h.error("Spriter: there is no frames to animate, aborting");
+    }
     this;
   }
 
   Spriter.prototype._vars = function() {
-    if (this._props == null) {
-      this._props = {};
-    }
-    return this.el = this.o.el;
+    this._props = h.cloneObj(this.o);
+    this.el = this.o.el;
+    return this._frames = [];
   };
 
   Spriter.prototype._extendDefaults = function() {
-    return h.extend(this._props, this.o);
+    return h.extend(this._props, this._defaults);
+  };
+
+  Spriter.prototype._parseFrames = function() {
+    return this._frames = Array.prototype.slice.call(this.el.childNodes, 0);
   };
 
   return Spriter;
