@@ -210,13 +210,41 @@ Propery <span id="property-yoyo"><strong>yoyo</strong></span> of type <strong>Bo
           <div class="wrapper"><p><span class='doc-section-header'>
 Propery <span id="property-isRunLess"><strong>isRunLess</strong></span> of type <strong>Boolean</strong>
 </span></p>
-<p>isRunLess option. Prevents animation from running immediately after
+<p>isRunLess option prevents animation from running immediately after
 initialization.</p>
 </div>
         </div>
       
       
         <div class="code"><div class="wrapper">    <span class="hljs-attribute">isRunLess</span>:  <span class="hljs-literal">false</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Propery <span id="property-isShowEnd"><strong>isShowEnd</strong></span> of type <strong>Boolean</strong>
+</span></p>
+<p>isShowEnd option defines if the last frame should be shown when
+animation completed.</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-attribute">isShowEnd</span>:  <span class="hljs-literal">false</span></div></div>
       
       </div>
     
@@ -362,7 +390,11 @@ Method <strong>_extendDefaults</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_parseFrames</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@_frames</span> = <span class="hljs-attribute">Array</span>::slice.call <span class="hljs-property">@el</span>.childNodes, <span class="hljs-number">0</span></div></div>
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_parseFrames</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@_frames</span> = <span class="hljs-attribute">Array</span>::slice.call <span class="hljs-property">@el</span>.childNodes, <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> frame, i <span class="hljs-keyword">in</span> <span class="hljs-property">@_frames</span>
+      frame.style.opacity = <span class="hljs-number">0</span>
+      frame.num = i</div></div>
       
       </div>
     
@@ -452,7 +484,80 @@ Method <strong>_setProgress</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_setProgress</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span>
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_setProgress</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get the frame number</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    proc = Math.floor (p / (<span class="hljs-number">1</span>/(<span class="hljs-property">@_frames</span>.length)))</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if previous frame isnt current one, hide it</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-property">@_prevFrame</span> <span class="hljs-keyword">isnt</span> <span class="hljs-property">@_frames</span>[proc]</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>keep the last frame on progress of 1</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@_prevFrame</span>?.style.opacity = <span class="hljs-number">0</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if end of animation and isShowEnd flag was specified
+then show the last frame else show current frame</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      currentNum = <span class="hljs-keyword">if</span> p <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@_props</span>.isShowEnd <span class="hljs-keyword">then</span> proc-<span class="hljs-number">1</span> <span class="hljs-keyword">else</span> proc</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>show the current frame</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@_frames</span>[currentNum]?.style.opacity = <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>set previous frame as current</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@_prevFrame</span> = <span class="hljs-property">@_frames</span>[proc]
 
 
 

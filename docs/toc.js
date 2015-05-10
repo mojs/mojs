@@ -209,14 +209,6 @@ window.files = [
   "toc": []
 },
 {
-  "path": "js/vendor/resize.coffee.html",
-  "originalName": "resize.coffee",
-  "originalPath": "js/vendor/resize.coffee",
-  "name": "resize.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/tween/timeline.coffee.html",
   "originalName": "timeline.coffee",
   "originalPath": "js/tween/timeline.coffee",
@@ -254,6 +246,14 @@ window.files = [
   "originalName": "tweener.coffee",
   "originalPath": "js/tween/tweener.coffee",
   "name": "tweener.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/vendor/resize.coffee.html",
+  "originalName": "resize.coffee",
+  "originalPath": "js/vendor/resize.coffee",
+  "name": "resize.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },

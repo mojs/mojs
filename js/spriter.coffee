@@ -47,12 +47,21 @@ class Spriter
     yoyo:       false
     # ---
     
-    # isRunLess option. Prevents animation from running immediately after
+    # isRunLess option prevents animation from running immediately after
     # initialization.
     # 
     # @property isRunLess
     # @type     {Boolean}
     isRunLess:  false
+    # ---
+    
+    # isShowEnd option defines if the last frame should be shown when
+    # animation completed.
+    # 
+    # 
+    # @property isShowEnd
+    # @type     {Boolean}
+    isShowEnd:  false
     # ---
     
     # onStart callback will be called once on animation start.
@@ -100,7 +109,11 @@ class Spriter
   # Method to parse frames as child nodes of el
   # 
   # @method _extendDefaults
-  _parseFrames:-> @_frames = Array::slice.call @el.childNodes, 0
+  _parseFrames:->
+    @_frames = Array::slice.call @el.childNodes, 0
+    for frame, i in @_frames
+      frame.style.opacity = 0
+      frame.num = i
   # ---
 
   # Method to create tween and timeline and supply callbacks
@@ -131,6 +144,19 @@ class Spriter
   # @method _setProgress
   # @param  {Number} Progress in range **[0,1]**
   _setProgress:(p)->
+    # get the frame number
+    proc = Math.floor (p / (1/(@_frames.length)))
+    # if previous frame isnt current one, hide it
+    if @_prevFrame isnt @_frames[proc]
+      # keep the last frame on progress of 1
+      @_prevFrame?.style.opacity = 0
+      # if end of animation and isShowEnd flag was specified
+      # then show the last frame else show current frame
+      currentNum = if p is 1 and @_props.isShowEnd then proc-1 else proc
+      # show the current frame
+      @_frames[currentNum]?.style.opacity = 1
+      # set previous frame as current
+      @_prevFrame = @_frames[proc]
 
 
 

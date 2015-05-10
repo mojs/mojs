@@ -12,6 +12,7 @@ describe 'Spriter module ->', ->
     expect(sp._defaults.yoyo)      .toBe false
     
     expect(sp._defaults.isRunLess) .toBe false
+    expect(sp._defaults.isShowEnd) .toBe false
     
     expect(sp._defaults.onStart)   .toBe null
     expect(sp._defaults.onUpdate)  .toBe null
@@ -75,6 +76,19 @@ describe 'Spriter module ->', ->
       sp = new Spriter el: div
       expect(h.error).toHaveBeenCalled()
 
+    it 'should hide all frames', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div'); div2 = document.createElement('div')
+      div3 = document.createElement('div'); div4 = document.createElement('div')
+      div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
+      div.appendChild(div4)
+      sp = new Spriter el: div, isRunLess: true
+
+      expect(sp._frames[0].style.opacity).toBe '0'
+      expect(sp._frames[1].style.opacity).toBe '0'
+      expect(sp._frames[2].style.opacity).toBe '0'
+      expect(sp._frames[3].style.opacity).toBe '0'
+
   describe 'tween creation', ->
     it 'should create timeline and tween', ->
       div = document.createElement('div')
@@ -109,6 +123,68 @@ describe 'Spriter module ->', ->
         dfr()
       , 10
 
+  describe '_setProgress method', ->
+    it 'should show element on progress', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div'); div2 = document.createElement('div')
+      div3 = document.createElement('div'); div4 = document.createElement('div')
+      div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
+      div.appendChild(div4)
+      sp = new Spriter el: div, isRunLess: true
+      sp._setProgress .5
+
+      expect(sp._frames[0].style.opacity).toBe '0'
+      expect(sp._frames[1].style.opacity).toBe '0'
+      expect(sp._frames[2].style.opacity).toBe '1'
+      expect(sp._frames[3].style.opacity).toBe '0'
+
+    it 'should hide previous element on progress', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div'); div2 = document.createElement('div')
+      div3 = document.createElement('div'); div4 = document.createElement('div')
+      div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
+      div.appendChild(div4)
+      sp = new Spriter el: div, isRunLess: true
+      sp._setProgress .25
+      sp._setProgress .5
+
+      expect(sp._frames[0].style.opacity).toBe '0'
+      expect(sp._frames[1].style.opacity).toBe '0'
+      expect(sp._frames[2].style.opacity).toBe '1'
+      expect(sp._frames[3].style.opacity).toBe '0'
+
+    it 'should hide all frames at end', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div'); div2 = document.createElement('div')
+      div3 = document.createElement('div'); div4 = document.createElement('div')
+      div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
+      div.appendChild(div4)
+      sp = new Spriter el: div, isRunLess: true
+      sp._setProgress .25
+      sp._setProgress .5
+      sp._setProgress 1
+
+      expect(sp._frames[0].style.opacity).toBe '0'
+      expect(sp._frames[1].style.opacity).toBe '0'
+      expect(sp._frames[2].style.opacity).toBe '0'
+      expect(sp._frames[3].style.opacity).toBe '0'
+
+    it 'should not hide the last frame at end if isShowEnd passed', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div'); div2 = document.createElement('div')
+      div3 = document.createElement('div'); div4 = document.createElement('div')
+      div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
+      div.appendChild(div4)
+      sp = new Spriter el: div, isRunLess: true, isShowEnd: true, isIt: true
+      sp._setProgress .25
+      sp._setProgress .5
+      sp._setProgress 1
+
+      # expect(sp._frames[0].style.opacity).toBe '0'
+      # expect(sp._frames[1].style.opacity).toBe '0'
+      # expect(sp._frames[2].style.opacity).toBe '0'
+      # console.log(sp._frames[2].style.opacity)
+      expect(sp._frames[3].style.opacity).toBe '1'
 
 
 

@@ -17,6 +17,7 @@
       expect(sp._defaults.repeat).toBe(0);
       expect(sp._defaults.yoyo).toBe(false);
       expect(sp._defaults.isRunLess).toBe(false);
+      expect(sp._defaults.isShowEnd).toBe(false);
       expect(sp._defaults.onStart).toBe(null);
       expect(sp._defaults.onUpdate).toBe(null);
       return expect(sp._defaults.onComplete).toBe(null);
@@ -109,7 +110,7 @@
         });
         return expect(h.warn).toHaveBeenCalled();
       });
-      return it('should error if 0 frames parsed', function() {
+      it('should error if 0 frames parsed', function() {
         var div, sp;
         div = document.createElement('div');
         spyOn(h, 'error');
@@ -118,8 +119,28 @@
         });
         return expect(h.error).toHaveBeenCalled();
       });
+      return it('should hide all frames', function() {
+        var div, div1, div2, div3, div4, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div3 = document.createElement('div');
+        div4 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        div.appendChild(div3);
+        div.appendChild(div4);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true
+        });
+        expect(sp._frames[0].style.opacity).toBe('0');
+        expect(sp._frames[1].style.opacity).toBe('0');
+        expect(sp._frames[2].style.opacity).toBe('0');
+        return expect(sp._frames[3].style.opacity).toBe('0');
+      });
     });
-    return describe('tween creation', function() {
+    describe('tween creation', function() {
       it('should create timeline and tween', function() {
         var div, div1, div2, sp;
         div = document.createElement('div');
@@ -166,6 +187,96 @@
           expect(sp._tween.start).not.toHaveBeenCalled();
           return dfr();
         }, 10);
+      });
+    });
+    return describe('_setProgress method', function() {
+      it('should show element on progress', function() {
+        var div, div1, div2, div3, div4, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div3 = document.createElement('div');
+        div4 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        div.appendChild(div3);
+        div.appendChild(div4);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true
+        });
+        sp._setProgress(.5);
+        expect(sp._frames[0].style.opacity).toBe('0');
+        expect(sp._frames[1].style.opacity).toBe('0');
+        expect(sp._frames[2].style.opacity).toBe('1');
+        return expect(sp._frames[3].style.opacity).toBe('0');
+      });
+      it('should hide previous element on progress', function() {
+        var div, div1, div2, div3, div4, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div3 = document.createElement('div');
+        div4 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        div.appendChild(div3);
+        div.appendChild(div4);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true
+        });
+        sp._setProgress(.25);
+        sp._setProgress(.5);
+        expect(sp._frames[0].style.opacity).toBe('0');
+        expect(sp._frames[1].style.opacity).toBe('0');
+        expect(sp._frames[2].style.opacity).toBe('1');
+        return expect(sp._frames[3].style.opacity).toBe('0');
+      });
+      it('should hide all frames at end', function() {
+        var div, div1, div2, div3, div4, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div3 = document.createElement('div');
+        div4 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        div.appendChild(div3);
+        div.appendChild(div4);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true
+        });
+        sp._setProgress(.25);
+        sp._setProgress(.5);
+        sp._setProgress(1);
+        expect(sp._frames[0].style.opacity).toBe('0');
+        expect(sp._frames[1].style.opacity).toBe('0');
+        expect(sp._frames[2].style.opacity).toBe('0');
+        return expect(sp._frames[3].style.opacity).toBe('0');
+      });
+      return it('should not hide the last frame at end if isShowEnd passed', function() {
+        var div, div1, div2, div3, div4, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div3 = document.createElement('div');
+        div4 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        div.appendChild(div3);
+        div.appendChild(div4);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true,
+          isShowEnd: true,
+          isIt: true
+        });
+        sp._setProgress(.25);
+        sp._setProgress(.5);
+        sp._setProgress(1);
+        return expect(sp._frames[3].style.opacity).toBe('1');
       });
     });
   });

@@ -2590,6 +2590,7 @@ Spriter = (function() {
     repeat: 0,
     yoyo: false,
     isRunLess: false,
+    isShowEnd: false,
     onStart: null,
     onUpdate: null,
     onComplete: null
@@ -2624,7 +2625,16 @@ Spriter = (function() {
   };
 
   Spriter.prototype._parseFrames = function() {
-    return this._frames = Array.prototype.slice.call(this.el.childNodes, 0);
+    var frame, i, j, len, ref, results;
+    this._frames = Array.prototype.slice.call(this.el.childNodes, 0);
+    ref = this._frames;
+    results = [];
+    for (i = j = 0, len = ref.length; j < len; i = ++j) {
+      frame = ref[i];
+      frame.style.opacity = 0;
+      results.push(frame.num = i);
+    }
+    return results;
   };
 
   Spriter.prototype._createTween = function() {
@@ -2665,7 +2675,20 @@ Spriter = (function() {
     })(this)), 1);
   };
 
-  Spriter.prototype._setProgress = function(p) {};
+  Spriter.prototype._setProgress = function(p) {
+    var currentNum, proc, ref, ref1;
+    proc = Math.floor(p / (1 / this._frames.length));
+    if (this._prevFrame !== this._frames[proc]) {
+      if ((ref = this._prevFrame) != null) {
+        ref.style.opacity = 0;
+      }
+      currentNum = p === 1 && this._props.isShowEnd ? proc - 1 : proc;
+      if ((ref1 = this._frames[currentNum]) != null) {
+        ref1.style.opacity = 1;
+      }
+      return this._prevFrame = this._frames[proc];
+    }
+  };
 
   return Spriter;
 
