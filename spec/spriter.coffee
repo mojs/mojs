@@ -11,6 +11,8 @@ describe 'Spriter module ->', ->
     expect(sp._defaults.repeat)    .toBe 0
     expect(sp._defaults.yoyo)      .toBe false
     
+    expect(sp._defaults.isRunLess) .toBe false
+    
     expect(sp._defaults.onStart)   .toBe null
     expect(sp._defaults.onUpdate)  .toBe null
     expect(sp._defaults.onComplete).toBe null
@@ -48,7 +50,6 @@ describe 'Spriter module ->', ->
       div1 = document.createElement('div')
       div2 = document.createElement('div')
       div.appendChild(div1); div.appendChild div2
-
       sp = new Spriter el: div
       expect(sp._frames.length).toBe 2
       expect(sp._frames[0]).toBe div1
@@ -73,6 +74,41 @@ describe 'Spriter module ->', ->
       spyOn h, 'error'
       sp = new Spriter el: div
       expect(h.error).toHaveBeenCalled()
+
+  describe 'tween creation', ->
+    it 'should create timeline and tween', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div')
+      div2 = document.createElement('div')
+      div.appendChild(div1); div.appendChild div2
+      sp = new Spriter el: div
+      expect(sp._timeline instanceof mojs.Timeline).toBe true
+      expect(sp._tween    instanceof mojs.Tween)   .toBe true
+      expect(sp._tween.timelines[0]).toBe sp._timeline
+
+    it 'should start tween', (dfr)->
+      div = document.createElement('div')
+      div1 = document.createElement('div')
+      div2 = document.createElement('div')
+      div.appendChild(div1); div.appendChild div2
+      sp = new Spriter el: div
+      spyOn sp._tween, 'start'
+      setTimeout ->
+        expect(sp._tween.start).toHaveBeenCalled()
+        dfr()
+      , 10
+    it 'should not start tween if isRunLess passed', (dfr)->
+      div = document.createElement('div')
+      div1 = document.createElement('div')
+      div2 = document.createElement('div')
+      div.appendChild(div1); div.appendChild div2
+      sp = new Spriter el: div, isRunLess: true
+      spyOn sp._tween, 'start'
+      setTimeout ->
+        expect(sp._tween.start).not.toHaveBeenCalled()
+        dfr()
+      , 10
+
 
 
 

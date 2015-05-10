@@ -2558,9 +2558,13 @@ Zigzag = (function(superClass) {
 module.exports = Zigzag;
 
 },{"./bit":10}],19:[function(require,module,exports){
-var Spriter, h;
+var Spriter, Timeline, Tween, h;
 
 h = require('./h');
+
+Timeline = require('./tween/timeline');
+
+Tween = require('./tween/tween');
 
 Spriter = (function() {
   Spriter.prototype._defaults = {
@@ -2569,6 +2573,7 @@ Spriter = (function() {
     easing: 'linear.none',
     repeat: 0,
     yoyo: false,
+    isRunLess: false,
     onStart: null,
     onUpdate: null,
     onComplete: null
@@ -2588,6 +2593,7 @@ Spriter = (function() {
     if (this._frames.length < 1) {
       h.error("Spriter: there is no frames to animate, aborting");
     }
+    this._createTween();
     this;
   }
 
@@ -2605,13 +2611,53 @@ Spriter = (function() {
     return this._frames = Array.prototype.slice.call(this.el.childNodes, 0);
   };
 
+  Spriter.prototype._createTween = function() {
+    this._timeline = new Timeline({
+      duration: this._props.duration,
+      delay: this._props.delay,
+      yoyo: this._props.yoyo,
+      repeat: this._props.repeat,
+      easing: this._props.easing,
+      onStart: (function(_this) {
+        return function() {
+          var base;
+          return typeof (base = _this._props).onStart === "function" ? base.onStart() : void 0;
+        };
+      })(this),
+      onComplete: (function(_this) {
+        return function() {
+          var base;
+          return typeof (base = _this._props).onComplete === "function" ? base.onComplete() : void 0;
+        };
+      })(this),
+      onUpdate: (function(_this) {
+        return function(p) {
+          return _this._setProgress(p);
+        };
+      })(this)
+    });
+    this._tween = new Tween;
+    this._tween.add(this._timeline);
+    return !this._props.isRunLess && this._startTween();
+  };
+
+  Spriter.prototype._startTween = function() {
+    return setTimeout(((function(_this) {
+      return function() {
+        return _this._tween.start();
+      };
+    })(this)), 1);
+  };
+
+  Spriter.prototype._setProgress = function(p) {};
+
   return Spriter;
 
 })();
 
 module.exports = Spriter;
 
-},{"./h":4}],20:[function(require,module,exports){
+},{"./h":4,"./tween/timeline":23,"./tween/tween":24}],20:[function(require,module,exports){
 
 var Stagger, Timeline, Transit, Tween, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },

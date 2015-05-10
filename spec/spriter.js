@@ -16,6 +16,7 @@
       expect(sp._defaults.easing).toBe('linear.none');
       expect(sp._defaults.repeat).toBe(0);
       expect(sp._defaults.yoyo).toBe(false);
+      expect(sp._defaults.isRunLess).toBe(false);
       expect(sp._defaults.onStart).toBe(null);
       expect(sp._defaults.onUpdate).toBe(null);
       return expect(sp._defaults.onComplete).toBe(null);
@@ -56,7 +57,7 @@
         return expect(sp._props.yoyo).toBe(false);
       });
     });
-    return describe('el option // el parsing', function() {
+    describe('el option // el parsing', function() {
       it('should recieve el option', function() {
         var div, sp;
         div = document.createElement('div');
@@ -116,6 +117,55 @@
           el: div
         });
         return expect(h.error).toHaveBeenCalled();
+      });
+    });
+    return describe('tween creation', function() {
+      it('should create timeline and tween', function() {
+        var div, div1, div2, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        sp = new Spriter({
+          el: div
+        });
+        expect(sp._timeline instanceof mojs.Timeline).toBe(true);
+        expect(sp._tween instanceof mojs.Tween).toBe(true);
+        return expect(sp._tween.timelines[0]).toBe(sp._timeline);
+      });
+      it('should start tween', function(dfr) {
+        var div, div1, div2, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        sp = new Spriter({
+          el: div
+        });
+        spyOn(sp._tween, 'start');
+        return setTimeout(function() {
+          expect(sp._tween.start).toHaveBeenCalled();
+          return dfr();
+        }, 10);
+      });
+      return it('should not start tween if isRunLess passed', function(dfr) {
+        var div, div1, div2, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true
+        });
+        spyOn(sp._tween, 'start');
+        return setTimeout(function() {
+          expect(sp._tween.start).not.toHaveBeenCalled();
+          return dfr();
+        }, 10);
       });
     });
   });

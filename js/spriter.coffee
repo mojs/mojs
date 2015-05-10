@@ -1,4 +1,6 @@
-h = require './h'
+h        = require './h'
+Timeline = require './tween/timeline'
+Tween    = require './tween/tween'
 
 # ## Spriter
 # Class for toggling opacity on bunch of elements
@@ -45,6 +47,14 @@ class Spriter
     yoyo:       false
     # ---
     
+    # isRunLess option. Prevents animation from running immediately after
+    # initialization.
+    # 
+    # @property isRunLess
+    # @type     {Boolean}
+    isRunLess:  false
+    # ---
+    
     # onStart callback will be called once on animation start.
     # 
     # @property onStart
@@ -73,6 +83,7 @@ class Spriter
       h.warn("Spriter: only #{@_frames.length} frames found")
     if @_frames.length < 1
       h.error("Spriter: there is no frames to animate, aborting")
+    @_createTween()
     @
   _vars:->
     @_props = h.cloneObj(@o)
@@ -89,8 +100,37 @@ class Spriter
   # Method to parse frames as child nodes of el
   # 
   # @method _extendDefaults
-  _parseFrames:->
-    @_frames = Array::slice.call @el.childNodes, 0
+  _parseFrames:-> @_frames = Array::slice.call @el.childNodes, 0
+  # ---
+
+  # Method to create tween and timeline and supply callbacks
+  # 
+  # @method _createTween
+  _createTween:->
+    @_timeline = new Timeline
+      duration:   @_props.duration
+      delay:      @_props.delay
+      yoyo:       @_props.yoyo
+      repeat:     @_props.repeat
+      easing:     @_props.easing
+      onStart:    => @_props.onStart?()
+      onComplete: => @_props.onComplete?()
+      onUpdate:  (p)=> @_setProgress(p)
+    @_tween = new Tween; @_tween.add(@_timeline)
+    !@_props.isRunLess and @_startTween()
+  # ---
+
+  # Method to start tween
+  # 
+  # @method _startTween
+  _startTween:-> setTimeout (=> @_tween.start()), 1
+  # ---
+
+  # Method to set progress of the sprite
+  # 
+  # @method _setProgress
+  # @param  {Number} Progress in range **[0,1]**
+  _setProgress:(p)->
 
 
 
