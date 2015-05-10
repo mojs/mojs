@@ -110,10 +110,10 @@ class Spriter
   # 
   # @method _extendDefaults
   _parseFrames:->
-    @_frames = Array::slice.call @el.childNodes, 0
+    @_frames = Array::slice.call @el.children, 0
     for frame, i in @_frames
       frame.style.opacity = 0
-      frame.num = i
+    @_frameStep = 1/@_frames.length
   # ---
 
   # Method to create tween and timeline and supply callbacks
@@ -145,10 +145,10 @@ class Spriter
   # @param  {Number} Progress in range **[0,1]**
   _setProgress:(p)->
     # get the frame number
-    proc = Math.floor (p / (1/(@_frames.length)))
-    # if previous frame isnt current one, hide it
+    proc = Math.floor (p / @_frameStep)
+    # react only if frame changes
     if @_prevFrame isnt @_frames[proc]
-      # keep the last frame on progress of 1
+      # if previous frame isnt current one, hide it
       @_prevFrame?.style.opacity = 0
       # if end of animation and isShowEnd flag was specified
       # then show the last frame else show current frame

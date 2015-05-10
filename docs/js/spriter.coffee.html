@@ -391,10 +391,10 @@ Method <strong>_extendDefaults</strong>
       
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_parseFrames</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@_frames</span> = <span class="hljs-attribute">Array</span>::slice.call <span class="hljs-property">@el</span>.childNodes, <span class="hljs-number">0</span>
+    <span class="hljs-property">@_frames</span> = <span class="hljs-attribute">Array</span>::slice.call <span class="hljs-property">@el</span>.children, <span class="hljs-number">0</span>
     <span class="hljs-keyword">for</span> frame, i <span class="hljs-keyword">in</span> <span class="hljs-property">@_frames</span>
       frame.style.opacity = <span class="hljs-number">0</span>
-      frame.num = i</div></div>
+    <span class="hljs-property">@_frameStep</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_frames</span>.length</div></div>
       
       </div>
     
@@ -496,14 +496,14 @@ Method <strong>_setProgress</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">    proc = Math.floor (p / (<span class="hljs-number">1</span>/(<span class="hljs-property">@_frames</span>.length)))</div></div>
+        <div class="code"><div class="wrapper">    proc = Math.floor (p / <span class="hljs-property">@_frameStep</span>)</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>if previous frame isnt current one, hide it</p>
+          <div class="wrapper"><p>react only if frame changes</p>
 </div>
         </div>
       
@@ -515,7 +515,7 @@ Method <strong>_setProgress</strong>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>keep the last frame on progress of 1</p>
+          <div class="wrapper"><p>if previous frame isnt current one, hide it</p>
 </div>
         </div>
       

@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.117.5 
+	0.118.0 
 */
 
 (function(f){
@@ -1316,7 +1316,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.117.5',
+  revision: '0.118.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -2609,16 +2609,14 @@ Spriter = (function() {
   };
 
   Spriter.prototype._parseFrames = function() {
-    var frame, i, j, len, ref, results;
-    this._frames = Array.prototype.slice.call(this.el.childNodes, 0);
+    var frame, i, j, len, ref;
+    this._frames = Array.prototype.slice.call(this.el.children, 0);
     ref = this._frames;
-    results = [];
     for (i = j = 0, len = ref.length; j < len; i = ++j) {
       frame = ref[i];
       frame.style.opacity = 0;
-      results.push(frame.num = i);
     }
-    return results;
+    return this._frameStep = 1 / this._frames.length;
   };
 
   Spriter.prototype._createTween = function() {
@@ -2661,7 +2659,7 @@ Spriter = (function() {
 
   Spriter.prototype._setProgress = function(p) {
     var currentNum, proc, ref, ref1;
-    proc = Math.floor(p / (1 / this._frames.length));
+    proc = Math.floor(p / this._frameStep);
     if (this._prevFrame !== this._frames[proc]) {
       if ((ref = this._prevFrame) != null) {
         ref.style.opacity = 0;

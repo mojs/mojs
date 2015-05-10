@@ -7,7 +7,22 @@ html
     //- meta(name="viewport", content="width=device-width, user-scalable=no")
   
   body
-    svg
+    .el#js-el
+
+
+    //- svg.sprite#js-sprite
+    //-   - for (var i = 0; i < 50; i++)
+    //-     ellipse(rx="#{i}", ry="10", cx="80", cy="80", class="sprite__frame", stroke-width="#{5 - i*.1}")
+
+    
+    //- .sprite#js-sprite
+    //-   - var framesCount = 100
+    //-   - var frameStep = .1
+    //-   - for (var i = 0; i < framesCount; i++)
+    //-     .sprite__frame(style="width: #{300 + i}px; margin-left: -#{i/2}px; border-width: #{frameStep*framesCount - i*frameStep}px")
+
+
+    //- svg
       //- clipPath(id="clip")
       //-   rect(width="50", height="50")
       //- path(clip-path="url(#clip)", id="js-path", d="M0,100 L10,20 L20,90 L30,30 L40,80 L100, 0", stroke="red", fill="none")
@@ -15,7 +30,7 @@ html
       //- path(clip-path="url(#clip)", id="js-path", d="M0,100 L100, 0", stroke="red", fill="none")
     //- input(type="range", min="0", max="100000", value="0")#js-slider
 
-    #js-el.el text some text
+    //- #js-el.el text some text
     //- svg
       //- filter#filter-1( x='-100%', y="-100%", height="180%", width="180%")
       //-   feOffset(in='SourceGraphic', dx='15', dy='0', result='offset2')

@@ -119,7 +119,7 @@
         });
         return expect(h.error).toHaveBeenCalled();
       });
-      return it('should hide all frames', function() {
+      it('should hide all frames', function() {
         var div, div1, div2, div3, div4, sp;
         div = document.createElement('div');
         div1 = document.createElement('div');
@@ -138,6 +138,23 @@
         expect(sp._frames[1].style.opacity).toBe('0');
         expect(sp._frames[2].style.opacity).toBe('0');
         return expect(sp._frames[3].style.opacity).toBe('0');
+      });
+      return it('should calculate _frameStep variable', function() {
+        var div, div1, div2, div3, div4, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div3 = document.createElement('div');
+        div4 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        div.appendChild(div3);
+        div.appendChild(div4);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true
+        });
+        return expect(sp._frameStep).toBe(.25);
       });
     });
     describe('tween creation', function() {

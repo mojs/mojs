@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.117.5', isDebug: true
+  revision:   '0.118.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -24,6 +24,25 @@ mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+# sp = new mojs.Spriter
+#   el:         document.querySelector '#js-sprite'
+#   duration:   1000
+#   delay:      1000
+#   easing:     'cubic.out'
+
+# el = document.querySelector '#js-el'
+# tm = new mojs.Timeline
+#   duration: 3000
+#   repeat:   10
+#   onUpdate:(p)->
+#     r = Math.floor 255*p
+#     el.style.background = "rgb(#{r},#{r},#{r})"
+
+# tw = new mojs.Tween
+# tw.add tm
+
+# tw.start()
 
 # tr = new mojs.Transit(
 #   type:       'circle'
