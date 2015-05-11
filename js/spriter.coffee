@@ -100,6 +100,14 @@ class Spriter
     @_frames = []
   # ---
 
+  # Method to run the spriter on demand
+  # 
+  # @method run
+  # @param  {Object} New options
+  # @todo   Implement new object merging
+  run:(o)-> @_tween.start()
+  # ---
+
   # Method to extend _props by options(this.o)
   # 
   # @method _extendDefaults
@@ -158,6 +166,8 @@ class Spriter
       # set previous frame as current
       @_prevFrame = @_frames[proc]
     @_props.onUpdate? p
+
+
 
 
 
