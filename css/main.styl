@@ -20,23 +20,22 @@ html, body
 //   background magenta
 //   transform translateZ(0)
 
-// .sprite
-//   position  absolute
-//   left      100px
-//   top       100px
-//   &__frame
-//     // position  absolute
-//     // width     100px
-//     // height    100px
-//     // fill      none
-//     // stroke    deeppink
-//     position  absolute
-//     height    10px
-//     border PX solid deeppink
-//     border-radius 50%
-//     transform translateZ(0)
-
-
+.sprite
+  position  absolute
+  left      100px
+  top       100px
+  &__frame
+    position    absolute
+    top         0
+    left        0
+    transform   translateZ(0)
+    display     block
+    width       100px
+    height      100px
+  &__ellipse
+    stroke      deeppink
+    fill        none
+    
 // .el
 //   width  50px
 //   height 50px

@@ -206,7 +206,7 @@
         }, 10);
       });
     });
-    return describe('_setProgress method', function() {
+    describe('_setProgress method', function() {
       it('should show element on progress', function() {
         var div, div1, div2, div3, div4, sp;
         div = document.createElement('div');
@@ -294,6 +294,27 @@
         sp._setProgress(.5);
         sp._setProgress(1);
         return expect(sp._frames[3].style.opacity).toBe('1');
+      });
+    });
+    return describe('onUpdate callback', function() {
+      return it('should be called on every sprite update', function() {
+        var div, div1, div2, div3, div4, sp;
+        div = document.createElement('div');
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        div3 = document.createElement('div');
+        div4 = document.createElement('div');
+        div.appendChild(div1);
+        div.appendChild(div2);
+        div.appendChild(div3);
+        div.appendChild(div4);
+        sp = new Spriter({
+          el: div,
+          isRunLess: true
+        });
+        spyOn(sp._props, 'onUpdate');
+        sp._tween.setProgress(.5);
+        return expect(sp._props.onUpdate).toHaveBeenCalledWith(.5);
       });
     });
   });

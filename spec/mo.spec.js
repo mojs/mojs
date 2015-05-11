@@ -1314,7 +1314,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.118.0',
+  revision: '0.118.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -2674,7 +2674,7 @@ Spriter = (function() {
   };
 
   Spriter.prototype._setProgress = function(p) {
-    var currentNum, proc, ref, ref1;
+    var base, currentNum, proc, ref, ref1;
     proc = Math.floor(p / this._frameStep);
     if (this._prevFrame !== this._frames[proc]) {
       if ((ref = this._prevFrame) != null) {
@@ -2684,8 +2684,9 @@ Spriter = (function() {
       if ((ref1 = this._frames[currentNum]) != null) {
         ref1.style.opacity = 1;
       }
-      return this._prevFrame = this._frames[proc];
+      this._prevFrame = this._frames[proc];
     }
+    return typeof (base = this._props).onUpdate === "function" ? base.onUpdate(p) : void 0;
   };
 
   return Spriter;

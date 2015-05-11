@@ -183,6 +183,17 @@ describe 'Spriter module ->', ->
       # console.log(sp._frames[2].style.opacity)
       expect(sp._frames[3].style.opacity).toBe '1'
 
+  describe 'onUpdate callback', ->
+    it 'should be called on every sprite update', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div'); div2 = document.createElement('div')
+      div3 = document.createElement('div'); div4 = document.createElement('div')
+      div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
+      div.appendChild(div4)
+      sp = new Spriter el: div, isRunLess: true
+      spyOn sp._props, 'onUpdate'
+      sp._tween.setProgress(.5)
+      expect(sp._props.onUpdate).toHaveBeenCalledWith(.5)
 
 
 

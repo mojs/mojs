@@ -80,16 +80,6 @@ class Tween
 
   setStartTime:(time)-> @prepareStart(); @startTimelines(time)
 
-  # resetProgress:->
-  #   @setProgress 0
-  #   # update every timeline to its start time
-  #   # i = -1; len = @timelines.length-1
-  #   # while(i++ < len)
-  #   #   timeline = @timelines[i]
-  #   #   # if timeline is actually a tween then reset progress there
-  #   #   if timeline.resetProgress? then timeline.resetProgress()
-  #   #   else timeline.update(timeline.props.startTime)
-
   setProgress:(progress)->
     if !@props.startTime? then @setStartTime()
     progress = Math.max progress, 0

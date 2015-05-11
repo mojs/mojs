@@ -157,6 +157,7 @@ class Spriter
       @_frames[currentNum]?.style.opacity = 1
       # set previous frame as current
       @_prevFrame = @_frames[proc]
+    @_props.onUpdate? p
 
 
 

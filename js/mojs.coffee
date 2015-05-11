@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.118.0', isDebug: true
+  revision:   '0.118.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -27,7 +27,7 @@ mojs.delta = mojs.h.delta
 
 # sp = new mojs.Spriter
 #   el:         document.querySelector '#js-sprite'
-#   duration:   1000
+#   duration:   500
 #   delay:      1000
 #   easing:     'cubic.out'
 

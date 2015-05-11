@@ -2,6 +2,26 @@ html,
 body {
   height: 1000px;
 }
+.sprite {
+  position: absolute;
+  left: 100px;
+  top: 100px;
+}
+.sprite__frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  display: block;
+  width: 100px;
+  height: 100px;
+}
+.sprite__ellipse {
+  stroke: #ff1493;
+  fill: none;
+}
 .svg {
   position: absolute;
   top: 400px;
