@@ -6,6 +6,10 @@ Tween    = require './tween/tween'
 # Class for toggling opacity on bunch of elements
 #
 # @class Spriter
+# @todo
+#   - add isForce3d option
+#   - add run new option merging
+#   - add then chains
 class Spriter
   # ---
   # ### Defaults/APIs
