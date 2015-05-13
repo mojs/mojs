@@ -193,7 +193,19 @@ describe 'Spriter module ->', ->
       sp = new Spriter el: div, isRunLess: true
       spyOn sp._props, 'onUpdate'
       sp._tween.setProgress(.5)
-      expect(sp._props.onUpdate).toHaveBeenCalledWith(.5)
+      expect(sp._props.onUpdate).toHaveBeenCalled()
+    it 'should be called with progress on every sprite update', ->
+      div = document.createElement('div')
+      div1 = document.createElement('div'); div2 = document.createElement('div')
+      div3 = document.createElement('div'); div4 = document.createElement('div')
+      div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
+      div.appendChild(div4)
+      progress = -1
+      sp = new Spriter
+        el: div, isRunLess: true
+        onUpdate: (p)-> progress = p
+      sp._tween.setProgress(.5)
+      expect(progress.toFixed(1)).toBe '0.5'
 
   describe 'run method', ->
     it 'should start tween', ->
