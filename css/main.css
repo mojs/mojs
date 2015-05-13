@@ -2,14 +2,25 @@ html,
 body {
   height: 1000px;
 }
-.el {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #ff1493;
+.sprite {
   position: absolute;
-  top: 20%;
-  left: 10%;
+  left: 100px;
+  top: 100px;
+}
+.sprite__frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  display: block;
+  width: 100px;
+  height: 100px;
+}
+.sprite__ellipse {
+  stroke: #ff1493;
+  fill: none;
 }
 .svg {
   position: absolute;

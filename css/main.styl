@@ -12,16 +12,40 @@ use('assets/nesting-tree-traversal.js')
 html, body
   height 1000px
 
-.el
-  width  50px
-  height 50px
-  border-radius 50%
-  background deeppink
-  position absolute
-  top 20%
-  left 10%
-  // margin-left 500px
-  // nw 50%
+
+// .el
+//   width 800px
+//   height 800px
+//   // background #111
+//   background magenta
+//   transform translateZ(0)
+
+.sprite
+  position  absolute
+  left      100px
+  top       100px
+  &__frame
+    position    absolute
+    top         0
+    left        0
+    transform   translateZ(0)
+    display     block
+    width       100px
+    height      100px
+  &__ellipse
+    stroke      deeppink
+    fill        none
+    
+// .el
+//   width  50px
+//   height 50px
+//   border-radius 50%
+//   background deeppink
+//   position absolute
+//   top 20%
+//   left 10%
+//   margin-left 500px
+//   nw 50%
 
 // svg
 //   hl deeppink

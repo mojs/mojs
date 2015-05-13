@@ -523,7 +523,7 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":4,"./shapes/bitsMap":11,"./swirl":20,"./transit":21,"./tween/tween":23}],3:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":11,"./swirl":21,"./transit":22,"./tween/tween":24}],3:[function(require,module,exports){
 var Easing, PathEasing, bezier, easing;
 
 bezier = require('./bezier-easing');
@@ -1314,7 +1314,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.117.5',
+  revision: '0.119.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1330,6 +1330,7 @@ mojs = {
   Transit: require('./transit'),
   Swirl: require('./swirl'),
   Stagger: require('./stagger'),
+  Spriter: require('./spriter'),
   MotionPath: require('./motion-path'),
   Timeline: require('./tween/timeline'),
   Tween: require('./tween/tween'),
@@ -1362,7 +1363,7 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./stagger":19,"./swirl":20,"./transit":21,"./tween/timeline":22,"./tween/tween":23,"./tween/tweener":24}],6:[function(require,module,exports){
+},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./spriter":19,"./stagger":20,"./swirl":21,"./transit":22,"./tween/timeline":23,"./tween/tween":24,"./tween/tweener":25}],6:[function(require,module,exports){
 var MotionPath, Timeline, Tween, easing, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -1862,7 +1863,7 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./easing":3,"./h":4,"./tween/timeline":22,"./tween/tween":23,"./vendor/resize":25}],7:[function(require,module,exports){
+},{"./easing":3,"./h":4,"./tween/timeline":23,"./tween/tween":24,"./vendor/resize":26}],7:[function(require,module,exports){
 var PathEasing, h;
 
 h = require('./h');
@@ -2573,6 +2574,132 @@ Zigzag = (function(superClass) {
 module.exports = Zigzag;
 
 },{"./bit":10}],19:[function(require,module,exports){
+var Spriter, Timeline, Tween, h;
+
+h = require('./h');
+
+Timeline = require('./tween/timeline');
+
+Tween = require('./tween/tween');
+
+Spriter = (function() {
+  Spriter.prototype._defaults = {
+    duration: 500,
+    delay: 0,
+    easing: 'linear.none',
+    repeat: 0,
+    yoyo: false,
+    isRunLess: false,
+    isShowEnd: false,
+    onStart: null,
+    onUpdate: null,
+    onComplete: null
+  };
+
+  function Spriter(o1) {
+    this.o = o1 != null ? o1 : {};
+    if (this.o.el == null) {
+      return h.error('No "el" option specified, aborting');
+    }
+    this._vars();
+    this._extendDefaults();
+    this._parseFrames();
+    if (this._frames.length <= 2) {
+      h.warn("Spriter: only " + this._frames.length + " frames found");
+    }
+    if (this._frames.length < 1) {
+      h.error("Spriter: there is no frames to animate, aborting");
+    }
+    this._createTween();
+    this;
+  }
+
+  Spriter.prototype._vars = function() {
+    this._props = h.cloneObj(this.o);
+    this.el = this.o.el;
+    return this._frames = [];
+  };
+
+  Spriter.prototype.run = function(o) {
+    return this._tween.start();
+  };
+
+  Spriter.prototype._extendDefaults = function() {
+    return h.extend(this._props, this._defaults);
+  };
+
+  Spriter.prototype._parseFrames = function() {
+    var frame, i, j, len, ref;
+    this._frames = Array.prototype.slice.call(this.el.children, 0);
+    ref = this._frames;
+    for (i = j = 0, len = ref.length; j < len; i = ++j) {
+      frame = ref[i];
+      frame.style.opacity = 0;
+    }
+    return this._frameStep = 1 / this._frames.length;
+  };
+
+  Spriter.prototype._createTween = function() {
+    this._timeline = new Timeline({
+      duration: this._props.duration,
+      delay: this._props.delay,
+      yoyo: this._props.yoyo,
+      repeat: this._props.repeat,
+      easing: this._props.easing,
+      onStart: (function(_this) {
+        return function() {
+          var base;
+          return typeof (base = _this._props).onStart === "function" ? base.onStart() : void 0;
+        };
+      })(this),
+      onComplete: (function(_this) {
+        return function() {
+          var base;
+          return typeof (base = _this._props).onComplete === "function" ? base.onComplete() : void 0;
+        };
+      })(this),
+      onUpdate: (function(_this) {
+        return function(p) {
+          return _this._setProgress(p);
+        };
+      })(this)
+    });
+    this._tween = new Tween;
+    this._tween.add(this._timeline);
+    return !this._props.isRunLess && this._startTween();
+  };
+
+  Spriter.prototype._startTween = function() {
+    return setTimeout(((function(_this) {
+      return function() {
+        return _this._tween.start();
+      };
+    })(this)), 1);
+  };
+
+  Spriter.prototype._setProgress = function(p) {
+    var base, currentNum, proc, ref, ref1;
+    proc = Math.floor(p / this._frameStep);
+    if (this._prevFrame !== this._frames[proc]) {
+      if ((ref = this._prevFrame) != null) {
+        ref.style.opacity = 0;
+      }
+      currentNum = p === 1 && this._props.isShowEnd ? proc - 1 : proc;
+      if ((ref1 = this._frames[currentNum]) != null) {
+        ref1.style.opacity = 1;
+      }
+      this._prevFrame = this._frames[proc];
+    }
+    return typeof (base = this._props).onUpdate === "function" ? base.onUpdate(p) : void 0;
+  };
+
+  return Spriter;
+
+})();
+
+module.exports = Spriter;
+
+},{"./h":4,"./tween/timeline":23,"./tween/tween":24}],20:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Stagger, Timeline, Transit, Tween, h,
@@ -2711,7 +2838,7 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":4,"./transit":21,"./tween/timeline":22,"./tween/tween":23}],20:[function(require,module,exports){
+},{"./h":4,"./transit":22,"./tween/timeline":23,"./tween/tween":24}],21:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Swirl, Transit,
@@ -2825,7 +2952,7 @@ Swirl = (function(superClass) {
 
 module.exports = Swirl;
 
-},{"./transit":21}],21:[function(require,module,exports){
+},{"./transit":22}],22:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -3495,7 +3622,7 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":22,"./tween/tween":23}],22:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
 var Timeline, easingModule, h;
 
 easingModule = require('../easing');
@@ -3694,7 +3821,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../easing":3,"../h":4}],23:[function(require,module,exports){
+},{"../easing":3,"../h":4}],24:[function(require,module,exports){
 var Tween, h, t;
 
 h = require('../h');
@@ -3889,7 +4016,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../h":4,"./tweener":24}],24:[function(require,module,exports){
+},{"../h":4,"./tweener":25}],25:[function(require,module,exports){
 var Tweener, h, i, t;
 
 require('../polyfills/raf');
@@ -3976,7 +4103,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":4,"../polyfills/performance":8,"../polyfills/raf":9}],25:[function(require,module,exports){
+},{"../h":4,"../polyfills/performance":8,"../polyfills/raf":9}],26:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com

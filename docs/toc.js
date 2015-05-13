@@ -78,6 +78,25 @@ window.files = [
   ]
 },
 {
+  "path": "js/spriter.coffee.html",
+  "originalName": "spriter.coffee",
+  "originalPath": "js/spriter.coffee",
+  "name": "spriter.coffee.html",
+  "lang": "coffeescript",
+  "toc": [
+    {
+      "level": 2,
+      "slug": "spriter",
+      "title": "Spriter"
+    },
+    {
+      "level": 3,
+      "slug": "defaults-apis",
+      "title": "Defaults/APIs"
+    }
+  ]
+},
+{
   "path": "js/stagger.coffee.html",
   "originalName": "stagger.coffee",
   "originalPath": "js/stagger.coffee",
@@ -203,24 +222,7 @@ window.files = [
   "originalPath": "js/tween/tween.coffee",
   "name": "tween.coffee.html",
   "lang": "coffeescript",
-  "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "update-every-timeline-to-its-start-time-timelines-while-i-lt-len-and-timelines-if-timeline-is-actually-a-tween-then-reset-progress-there",
-      "title": "update every timeline to its start time, timelines   # while(i++ &lt; len), and timelines   #   # if timeline is actually a tween then reset progress there"
-    },
-    {
-      "level": 1,
-      "slug": "if-timeline-resetprogress-then-timeline-resetprogress-",
-      "title": "if timeline.resetProgress? then timeline.resetProgress()"
-    },
-    {
-      "level": 1,
-      "slug": "else-timeline-update-timeline-props-starttime-",
-      "title": "else timeline.update(timeline.props.startTime)"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/tween/tweener.coffee.html",
