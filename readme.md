@@ -1,8 +1,8 @@
-# mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg)](https://coveralls.io/r/legomushroom/mojs) [![unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)](http://github.com/badges/stability-badges) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=legomushroom&url=https://github.com/legomushroom/mojs&title=motion%20graphics%20for%20the%20web&language=javascript&tags=github&category=software) [![Join the chat at https://gitter.im/legomushroom/mojs](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/legomushroom/mojs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=dev)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=dev)](https://coveralls.io/r/legomushroom/mojs?branch=dev) [![unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)](http://github.com/badges/stability-badges) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=legomushroom&url=https://github.com/legomushroom/mojs&title=motion%20graphics%20for%20the%20web&language=javascript&tags=github&category=software)
 
 #### motion graphics toolbelt for the web
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom.svg)](https://saucelabs.com/u/legomushroom)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/legomushroom-dev.svg)](https://saucelabs.com/u/legomushroom-dev)
 
 ## Demos
 [[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]
