@@ -450,15 +450,27 @@
         return expect(typeof mp.props.onPosit).toBe('function');
       });
       return it('should be called with progress, x, y and angle', function() {
+        var angle, progress, x, y;
+        progress = null;
+        x = null;
+        y = null;
+        angle = null;
         mp = new MotionPath({
           path: 'M0,100 L100,0',
           el: document.createElement('div'),
           isRunLess: true,
-          onPosit: function() {}
+          onPosit: function(p, xPos, yPos, ang) {
+            progress = p;
+            x = xPos;
+            y = yPos;
+            return angle = ang;
+          }
         });
-        spyOn(mp.props, 'onPosit');
         mp.tween.setProgress(.5);
-        return expect(mp.props.onPosit).toHaveBeenCalledWith(.5, 50, 50, 0);
+        expect(progress.toFixed(1)).toBe('0.5');
+        expect(x).toBe(50);
+        expect(y).toBe(50);
+        return expect(angle).toBe(0);
       });
     });
     describe('fill ->', function() {
