@@ -88,7 +88,7 @@ describe 'Timeline ->', ->
       t = new Timeline(duration: 1000, delay: 200, repeat: 2)
       t.start()
       t.update t.props.startTime + 1000
-      expect(t.progress).toBe 1
+      expect(t.progress).toBeCloseTo 1, 5
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Timeline(duration: 1000, onUpdate:->)
       t.start()

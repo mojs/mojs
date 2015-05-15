@@ -166,7 +166,7 @@
         });
         t.start();
         t.update(t.props.startTime + 1000);
-        return expect(t.progress).toBe(1);
+        return expect(t.progress).toBeCloseTo(1, 5);
       });
       it('should not call update method if timeline isnt active "-"', function() {
         var t;
