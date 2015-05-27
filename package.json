@@ -7,7 +7,7 @@
   "scripts": {
     "test": "karma start --single-run"
   },
-  "main": "build/mo.min.js",
+  "main": "lib/mojs.js",
   "keywords": [
     "motion",
     "effects",

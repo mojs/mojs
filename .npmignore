@@ -1,5 +1,5 @@
 bower_components/
 node_modules/
 coverage/
-lib/
+js/
 npm-debug.log

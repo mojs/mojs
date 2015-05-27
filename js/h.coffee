@@ -5,7 +5,7 @@ class Helpers
   # ---
 
   # SVG namespace
-  #
+  # 
   # @property   NS
   # @type       {String}
   NS: 'http://www.w3.org/2000/svg'
