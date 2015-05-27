@@ -1,5 +1,11 @@
 bower_components/
 node_modules/
 coverage/
+build/
+docs/
+spec/
+css/
 js/
+index.html
+index.jade
 npm-debug.log

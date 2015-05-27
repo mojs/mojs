@@ -7,7 +7,7 @@
   "authors": [
     "Oleg Solomka @legomushroom <legomushroom@gmail.com>"
   ],
-  "main": "build/mo.min.js",
+  "main": "lib/mojs.js",
   "keywords": [
     "motion",
     "motion",
@@ -17,11 +17,14 @@
   ],
   "ignore": [
     "**/.*",
-    "node_modules",
     "bower_components",
+    "node_modules",
+    "coverage",
+    "build",
+    "docs",
     "spec",
     "css",
-    "mockups"
+    "js"
   ],
   "moduleType": [
     "amd",
