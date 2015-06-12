@@ -21,6 +21,9 @@ class PathEasing
     @
   # ---
 
+  # Loop thru path trying to find the most closer x
+  # compared to current progress value
+  # 
   # @method sample
   # @param  {Number} easing progress in range [0,1]
   # @return {Number} easing y
@@ -30,11 +33,14 @@ class PathEasing
     point  = @path.getPointAtLength (@pathLength*center)
 
     rect = @rect
+    # orient is point.x
     if rect*p > point.x      then newStart = center; newEnd = end
     else if rect*p < point.x then newStart = start; newEnd = center
     else return 1 - point.y/rect
     
+    # if precise enough then return result
     return if --precision < 1 then 1 - point.y/rect
+    # else sample further
     else @sample p, newStart, newEnd, precision
   # ---
 
