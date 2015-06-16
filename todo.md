@@ -1,5 +1,12 @@
 ## TODO
 
+
+- path easing
+  - perf fix
+  - fix x axis to be infinite
+
+- merge tween and timeline
+
 - fix coverage
 - release
   - website
