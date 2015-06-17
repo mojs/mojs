@@ -1878,15 +1878,38 @@ PathEasing = (function() {
       return;
     }
     this.path = h.parsePath(path);
+    if (this.path == null) {
+      return h.error('Error while parsing the path');
+    }
     this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
     this.precision = o.precision || 24;
     this.rect = o.rect || 100;
     this.sample = h.bind(this.sample, this);
+    this._preSample();
     this;
   }
 
+  PathEasing.prototype._preSample = function() {
+    var i, j, progress, ref, results, stepsCount, y;
+    this._samples = {};
+    stepsCount = 100;
+    this._step = 1 / stepsCount;
+    progress = 0;
+    results = [];
+    for (i = j = 0, ref = stepsCount; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+      y = this.path.getPointAtLength(this.pathLength * progress).y;
+      this._samples[progress] = {
+        value: 1 - (y / this.rect),
+        i: i
+      };
+      progress += this._step;
+      results.push(progress = parseFloat(progress.toFixed(2)));
+    }
+    return results;
+  };
+
   PathEasing.prototype.sample = function(p, start, end, precision) {
-    var center, newEnd, newStart, point, rect;
+    var currentKey, endKey, i, j, keys, len, ref, ref1, sampled, startIndex, startKey;
     if (start == null) {
       start = 0;
     }
@@ -1897,23 +1920,23 @@ PathEasing = (function() {
       precision = this.precision;
     }
     p = h.clamp(p, 0, 1);
-    center = start + ((end - start) / 2);
-    point = this.path.getPointAtLength(this.pathLength * center);
-    rect = this.rect;
-    if (rect * p > point.x) {
-      newStart = center;
-      newEnd = end;
-    } else if (rect * p < point.x) {
-      newStart = start;
-      newEnd = center;
-    } else {
-      return 1 - point.y / rect;
+    sampled = this._samples[p];
+    if (sampled != null) {
+      return sampled.value;
     }
-    if (--precision < 1) {
-      return 1 - point.y / rect;
-    } else {
-      return this.sample(p, newStart, newEnd, precision);
+    startKey = parseFloat(p.toFixed(2));
+    endKey = 1;
+    keys = Object.keys(this._samples);
+    len = keys.length;
+    startIndex = keys.indexOf(startKey + '');
+    for (i = j = ref = startIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
+      currentKey = parseFloat(keys[i]);
+      if (p < currentKey) {
+        endKey = currentKey;
+        break;
+      }
     }
+    return console.log(startKey, endKey);
   };
 
   PathEasing.prototype.create = function(path, o) {

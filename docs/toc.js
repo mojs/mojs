@@ -69,11 +69,22 @@ window.files = [
   "originalPath": "js/path-easing.coffee",
   "name": "path-easing.coffee.html",
   "lang": "coffeescript",
+  "title": "if precise enough then return result",
   "toc": [
     {
       "level": 2,
       "slug": "patheasing",
       "title": "PathEasing"
+    },
+    {
+      "level": 1,
+      "slug": "if-precise-enough-then-return-result",
+      "title": "if precise enough then return result"
+    },
+    {
+      "level": 1,
+      "slug": "else-sample-further",
+      "title": "else sample further"
     }
   ]
 },

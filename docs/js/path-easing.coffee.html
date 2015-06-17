@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title> - path-easing.coffee</title>
+  <title>if precise enough then return result - path-easing.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -67,10 +67,68 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
       
       
         <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> path <span class="hljs-keyword">is</span> <span class="hljs-string">'creator'</span>
-    <span class="hljs-property">@path</span> = h.parsePath(path); <span class="hljs-property">@pathLength</span> = <span class="hljs-property">@path</span>?.getTotalLength()
+    <span class="hljs-property">@path</span> = h.parsePath(path)
+    <span class="hljs-keyword">return</span> h.error <span class="hljs-string">'Error while parsing the path'</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@path</span>?
+    <span class="hljs-property">@pathLength</span> = <span class="hljs-property">@path</span>?.getTotalLength()
     <span class="hljs-property">@precision</span> = o.precision <span class="hljs-keyword">or</span> <span class="hljs-number">24</span>; <span class="hljs-property">@rect</span> = o.rect <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>
-    <span class="hljs-property">@sample</span> = h.bind <span class="hljs-property">@sample</span>, @
-    @</div></div>
+    <span class="hljs-property">@sample</span> = h.bind(<span class="hljs-property">@sample</span>, @);</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.time &#39;pre sample&#39;</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_preSample</span>()</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.timeEnd &#39;pre sample&#39;</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    @
+
+  <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@_samples</span> = {}
+
+    stepsCount = <span class="hljs-number">100</span>; <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/stepsCount; progress = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>.stepsCount]
+      y = <span class="hljs-property">@path</span>.getPointAtLength(<span class="hljs-property">@pathLength</span>*progress).y</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>divide y by rect value and invert it</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@_samples</span>[progress] = { <span class="hljs-attribute">value</span>: <span class="hljs-number">1</span> - (y/<span class="hljs-property">@rect</span>), <span class="hljs-attribute">i</span>: i }
+      progress += <span class="hljs-property">@_step</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>fix decimal fraction issue</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      progress = parseFloat progress.toFixed(<span class="hljs-number">2</span>)
+</div></div>
       
       </div>
     
@@ -90,6 +148,8 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
           <div class="wrapper"><p><span class='doc-section-header'>
 Method <strong>sample</strong>
 </span></p>
+<p>Loop thru path trying to find the most closer x
+compared to current progress value</p>
 <p>Parameters:</p>
 <ul>
 <li><strong><code>easing</code> must be a Number.</strong><br/>(progress in range [0,1])</li>
@@ -100,17 +160,110 @@ Method <strong>sample</strong>
       
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">sample</span>:<span class="hljs-function"><span class="hljs-params">(p, start=<span class="hljs-number">0</span>, end=<span class="hljs-number">1</span>, precision=<span class="hljs-property">@precision</span>)</span>-&gt;</span>
-    p = h.clamp p, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
-    center = start+((end-start)/<span class="hljs-number">2</span>)
-    point  = <span class="hljs-property">@path</span>.getPointAtLength (<span class="hljs-property">@pathLength</span>*center)
-
-    rect = <span class="hljs-property">@rect</span>
-    <span class="hljs-keyword">if</span> rect*p &gt; point.x      <span class="hljs-keyword">then</span> newStart = center; newEnd = end
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> rect*p &lt; point.x <span class="hljs-keyword">then</span> newStart = start; newEnd = center
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> - point.y/rect
+    p = h.clamp p, <span class="hljs-number">0</span>, <span class="hljs-number">1</span></div></div>
+      
+      </div>
     
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> --precision &lt; <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-number">1</span> - point.y/rect
-    <span class="hljs-keyword">else</span> <span class="hljs-property">@sample</span> p, newStart, newEnd, precision</div></div>
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if there is sampled value, then use it</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    sampled = <span class="hljs-property">@_samples</span>[p]
+    <span class="hljs-keyword">return</span> sampled.value <span class="hljs-keyword">if</span> sampled?</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if there is no sampled value,
+find the nearest start and end values
+  nearest start:</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    startKey = parseFloat p.toFixed(<span class="hljs-number">2</span>); endKey = <span class="hljs-number">1</span>
+    keys = Object.keys(<span class="hljs-property">@_samples</span>); len = keys.length
+    startIndex = keys.indexOf(startKey+<span class="hljs-string">''</span>)
+    
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>find the end key here</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [startIndex..len]
+      currentKey = parseFloat keys[i]</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>break if the current value is larger then progress</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> p &lt; currentKey
+        endKey = currentKey
+        <span class="hljs-keyword">break</span>
+
+    <span class="hljs-built_in">console</span>.log startKey, endKey</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>center = start+((end-start)/2)</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+ rect # orient is point.x
+if rect<em>p &gt; point.x      then newStart = center; newEnd = end
+else if rect</em>p &lt; point.x then newStart = start; newEnd = center
+else return 1 - point.y/rect
+</span></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+ sample p, newStart, newEnd, precision
+</span></p>
+<h1 id="if-precise-enough-then-return-result"><a href="#if-precise-enough-then-return-result" class="anchor"></a>if precise enough then return result</h1><p>return if --precision &lt; 1 then 1 - point.y/rect</p>
+<h1 id="else-sample-further"><a href="#else-sample-further" class="anchor"></a>else sample further</h1></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  
+</div></div>
       
       </div>
     
