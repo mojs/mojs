@@ -8,6 +8,11 @@ describe 'PathEasing ->', ->
     pe = new PathEasing 'creator'
     expect(pe.precision).not.toBeDefined()
 
+  describe 'variables ->', ->
+    it 'should have _eps defined', ->
+      pe = new PathEasing 'M0,0 10,10'
+      expect(pe._eps).toBeDefined()
+
   describe 'path parsing ->', ->
     it 'should parse path', ->
       path = 'M0,0 10,10'
@@ -66,6 +71,10 @@ describe 'PathEasing ->', ->
       path = 'M0,100 100,0'
       pe = new PathEasing path, isIt: true
       expect(pe.sample(.705)).toBe .705
+    it 'should return nearest value if it less then _eps', ->
+      path = 'M0,100 100,0'
+      pe = new PathEasing path, isIt: true
+      expect(pe.sample(.70000000000005)).toBe .7
 
 
 

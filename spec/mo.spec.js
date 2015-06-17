@@ -1885,24 +1885,22 @@ PathEasing = (function() {
     this.precision = o.precision || 24;
     this.rect = o.rect || 100;
     this.sample = h.bind(this.sample, this);
+    this._eps = 0.0000000001;
     this._preSample();
     this;
   }
 
   PathEasing.prototype._preSample = function() {
-    var i, j, progress, ref, results, stepsCount, y;
+    var i, j, progress, ref, results, step, stepsCount, y;
     this._samples = {};
     stepsCount = 100;
-    this._step = 1 / stepsCount;
+    step = 1 / stepsCount;
     progress = 0;
     results = [];
     for (i = j = 0, ref = stepsCount; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
       y = this.path.getPointAtLength(this.pathLength * progress).y;
-      this._samples[progress] = {
-        value: 1 - (y / this.rect),
-        i: i
-      };
-      progress += this._step;
+      this._samples[progress] = 1 - (y / this.rect);
+      progress += step;
       results.push(progress = parseFloat(progress.toFixed(2)));
     }
     return results;
@@ -1922,10 +1920,13 @@ PathEasing = (function() {
     p = h.clamp(p, 0, 1);
     sampled = this._samples[p];
     if (sampled != null) {
-      return sampled.value;
+      return sampled;
     }
     startKey = parseFloat(p.toFixed(2));
     endKey = 1;
+    if (Math.abs(startKey - p) < this._eps) {
+      return this._samples[startKey];
+    }
     keys = Object.keys(this._samples);
     len = keys.length;
     startIndex = keys.indexOf(startKey + '');

@@ -71,7 +71,8 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
     <span class="hljs-keyword">return</span> h.error <span class="hljs-string">'Error while parsing the path'</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@path</span>?
     <span class="hljs-property">@pathLength</span> = <span class="hljs-property">@path</span>?.getTotalLength()
     <span class="hljs-property">@precision</span> = o.precision <span class="hljs-keyword">or</span> <span class="hljs-number">24</span>; <span class="hljs-property">@rect</span> = o.rect <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>
-    <span class="hljs-property">@sample</span> = h.bind(<span class="hljs-property">@sample</span>, @);</div></div>
+    <span class="hljs-property">@sample</span> = h.bind(<span class="hljs-property">@sample</span>, @)
+    <span class="hljs-property">@_eps</span> = <span class="hljs-number">0.0000000001</span></div></div>
       
       </div>
     
@@ -100,7 +101,7 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
   <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@_samples</span> = {}
 
-    stepsCount = <span class="hljs-number">100</span>; <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/stepsCount; progress = <span class="hljs-number">0</span>
+    stepsCount = <span class="hljs-number">100</span>; step = <span class="hljs-number">1</span>/stepsCount; progress = <span class="hljs-number">0</span>
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>.stepsCount]
       y = <span class="hljs-property">@path</span>.getPointAtLength(<span class="hljs-property">@pathLength</span>*progress).y</div></div>
       
@@ -114,8 +115,8 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-property">@_samples</span>[progress] = { <span class="hljs-attribute">value</span>: <span class="hljs-number">1</span> - (y/<span class="hljs-property">@rect</span>), <span class="hljs-attribute">i</span>: i }
-      progress += <span class="hljs-property">@_step</span></div></div>
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@_samples</span>[progress] = <span class="hljs-number">1</span> - (y/<span class="hljs-property">@rect</span>)
+      progress += step</div></div>
       
       </div>
     
@@ -173,7 +174,7 @@ compared to current progress value</p>
       
       
         <div class="code"><div class="wrapper">    sampled = <span class="hljs-property">@_samples</span>[p]
-    <span class="hljs-keyword">return</span> sampled.value <span class="hljs-keyword">if</span> sampled?</div></div>
+    <span class="hljs-keyword">return</span> sampled <span class="hljs-keyword">if</span> sampled?</div></div>
       
       </div>
     
@@ -187,10 +188,22 @@ find the nearest start and end values
         </div>
       
       
-        <div class="code"><div class="wrapper">    startKey = parseFloat p.toFixed(<span class="hljs-number">2</span>); endKey = <span class="hljs-number">1</span>
+        <div class="code"><div class="wrapper">    startKey = parseFloat p.toFixed(<span class="hljs-number">2</span>); endKey = <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if startKey compared to progress is about the same (_eps)
+return the startKey right here</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> <span class="hljs-property">@_samples</span>[startKey] <span class="hljs-keyword">if</span> Math.abs(startKey - p) &lt; <span class="hljs-property">@_eps</span>
     keys = Object.keys(<span class="hljs-property">@_samples</span>); len = keys.length
     startIndex = keys.indexOf(startKey+<span class="hljs-string">''</span>)
-    
 </div></div>
       
       </div>

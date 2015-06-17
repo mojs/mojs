@@ -19,7 +19,8 @@ class PathEasing
     return h.error 'Error while parsing the path' if !@path?
     @pathLength = @path?.getTotalLength()
     @precision = o.precision or 24; @rect = o.rect or 100
-    @sample = h.bind(@sample, @);
+    @sample = h.bind(@sample, @)
+    @_eps = 0.0000000001
     # console.time 'pre sample'
     @_preSample()
     # console.timeEnd 'pre sample'
@@ -28,12 +29,12 @@ class PathEasing
   _preSample:->
     @_samples = {}
 
-    stepsCount = 100; @_step = 1/stepsCount; progress = 0
+    stepsCount = 100; step = 1/stepsCount; progress = 0
     for i in [0..stepsCount]
       y = @path.getPointAtLength(@pathLength*progress).y
       # divide y by rect value and invert it
-      @_samples[progress] = { value: 1 - (y/@rect), i: i }
-      progress += @_step
+      @_samples[progress] = 1 - (y/@rect)
+      progress += step
       # fix decimal fraction issue
       progress = parseFloat progress.toFixed(2)
 
@@ -49,14 +50,16 @@ class PathEasing
     p = h.clamp p, 0, 1
     # if there is sampled value, then use it
     sampled = @_samples[p]
-    return sampled.value if sampled?
+    return sampled if sampled?
     # if there is no sampled value,
     # find the nearest start and end values
     #   nearest start:
     startKey = parseFloat p.toFixed(2); endKey = 1
+    # if startKey compared to progress is about the same (_eps)
+    # return the startKey right here
+    return @_samples[startKey] if Math.abs(startKey - p) < @_eps
     keys = Object.keys(@_samples); len = keys.length
     startIndex = keys.indexOf(startKey+'')
-    
 
     # find the end key here
     for i in [startIndex..len]

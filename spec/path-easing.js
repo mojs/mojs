@@ -14,6 +14,13 @@
       pe = new PathEasing('creator');
       return expect(pe.precision).not.toBeDefined();
     });
+    describe('variables ->', function() {
+      return it('should have _eps defined', function() {
+        var pe;
+        pe = new PathEasing('M0,0 10,10');
+        return expect(pe._eps).toBeDefined();
+      });
+    });
     describe('path parsing ->', function() {
       it('should parse path', function() {
         var path, pe;
@@ -91,13 +98,21 @@
         pe = new PathEasing(path);
         return expect(pe.sample(.7)).toBe(.7);
       });
-      return it('should sample y', function() {
+      it('should sample y', function() {
         var path, pe;
         path = 'M0,100 100,0';
         pe = new PathEasing(path, {
           isIt: true
         });
         return expect(pe.sample(.705)).toBe(.705);
+      });
+      return it('should return nearest value if it less then _eps', function() {
+        var path, pe;
+        path = 'M0,100 100,0';
+        pe = new PathEasing(path, {
+          isIt: true
+        });
+        return expect(pe.sample(.70000000000005)).toBe(.7);
       });
     });
   });
