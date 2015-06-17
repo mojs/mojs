@@ -69,12 +69,28 @@ describe 'PathEasing ->', ->
       expect(pe.sample(.7)).toBe .7
     it 'should sample y', ->
       path = 'M0,100 100,0'
-      pe = new PathEasing path, isIt: true
+      pe = new PathEasing path
       expect(pe.sample(.705)).toBe .705
     it 'should return nearest value if it less then _eps', ->
       path = 'M0,100 100,0'
-      pe = new PathEasing path, isIt: true
+      pe = new PathEasing path
       expect(pe.sample(.70000000000005)).toBe .7
+
+    it 'should return nearest value if it less then _eps', ->
+      path = 'M0,100 100,0'
+      pe = new PathEasing path
+      pe._samples['0.705'] = 1
+      expect(pe.sample(.70500000000005)).toBe 1
+
+  describe '_findSmaller method', ->
+    it 'should find item that is smaller then current',->
+      pe = new PathEasing 'M0,100 100,0'
+      index = pe._findSmaller Object.keys(pe._samples), 0.1
+      expect(index).toBe '0.09'
+    it 'should return 0 if start index is 0',->
+      pe = new PathEasing 'M0,100 100,0'
+      index = pe._findSmaller Object.keys(pe._samples), 0
+      expect(index).toBe '0'
 
 
 

@@ -84,7 +84,7 @@
         return expect(easing(.5)).toBe(.5);
       });
     });
-    return describe('sample method ->', function() {
+    describe('sample method ->', function() {
       it('should clamp x value', function() {
         var path, pe;
         path = 'M0,100 100,0';
@@ -101,18 +101,35 @@
       it('should sample y', function() {
         var path, pe;
         path = 'M0,100 100,0';
-        pe = new PathEasing(path, {
-          isIt: true
-        });
+        pe = new PathEasing(path);
         return expect(pe.sample(.705)).toBe(.705);
+      });
+      it('should return nearest value if it less then _eps', function() {
+        var path, pe;
+        path = 'M0,100 100,0';
+        pe = new PathEasing(path);
+        return expect(pe.sample(.70000000000005)).toBe(.7);
       });
       return it('should return nearest value if it less then _eps', function() {
         var path, pe;
         path = 'M0,100 100,0';
-        pe = new PathEasing(path, {
-          isIt: true
-        });
-        return expect(pe.sample(.70000000000005)).toBe(.7);
+        pe = new PathEasing(path);
+        pe._samples['0.705'] = 1;
+        return expect(pe.sample(.70500000000005)).toBe(1);
+      });
+    });
+    return describe('_findSmaller method', function() {
+      it('should find item that is smaller then current', function() {
+        var index, pe;
+        pe = new PathEasing('M0,100 100,0');
+        index = pe._findSmaller(Object.keys(pe._samples), 0.1);
+        return expect(index).toBe('0.09');
+      });
+      return it('should return 0 if start index is 0', function() {
+        var index, pe;
+        pe = new PathEasing('M0,100 100,0');
+        index = pe._findSmaller(Object.keys(pe._samples), 0);
+        return expect(index).toBe('0');
       });
     });
   });

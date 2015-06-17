@@ -201,9 +201,26 @@ return the startKey right here</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> <span class="hljs-property">@_samples</span>[startKey] <span class="hljs-keyword">if</span> Math.abs(startKey - p) &lt; <span class="hljs-property">@_eps</span>
-    keys = Object.keys(<span class="hljs-property">@_samples</span>); len = keys.length
+        <div class="code"><div class="wrapper">    keys = Object.keys(<span class="hljs-property">@_samples</span>); len = keys.length
     startIndex = keys.indexOf(startKey+<span class="hljs-string">''</span>)
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>we called toFixed(2) to be sure that we have the sampled value
+in _samples object but we need to check now, if startKey was rounded
+to larger number, for instance .705 will coerce .71 and it is larger
+then the progress itself so, decrease the startIndex value by 1 </p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    startIndex-- <span class="hljs-keyword">if</span> startKey &gt; p
+    <span class="hljs-keyword">return</span> <span class="hljs-property">@_samples</span>[startKey] <span class="hljs-keyword">if</span> Math.abs(startKey - p) &lt; <span class="hljs-property">@_eps</span>
+
 </div></div>
       
       </div>
@@ -217,7 +234,8 @@ return the startKey right here</p>
       
       
         <div class="code"><div class="wrapper">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [startIndex..len]
-      currentKey = parseFloat keys[i]</div></div>
+      currentKey = parseFloat keys[i]
+      <span class="hljs-built_in">console</span>.log currentKey</div></div>
       
       </div>
     
@@ -231,7 +249,20 @@ return the startKey right here</p>
       
         <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> p &lt; currentKey
         endKey = currentKey
-        <span class="hljs-keyword">break</span>
+        <span class="hljs-keyword">break</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if endKey compared to progress is about the same (_eps)
+return the startKey right here</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> <span class="hljs-property">@_samples</span>[endKey] <span class="hljs-keyword">if</span> Math.abs(endKey - p) &lt; <span class="hljs-property">@_eps</span>
 
     <span class="hljs-built_in">console</span>.log startKey, endKey</div></div>
       
@@ -276,6 +307,13 @@ else return 1 - point.y/rect
       
       
         <div class="code"><div class="wrapper">  
+  <span class="hljs-attribute">_findSmaller</span>:<span class="hljs-function"><span class="hljs-params">(array, value, startIndex)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> !startIndex? <span class="hljs-keyword">then</span> startIndex = array.indexOf(value+<span class="hljs-string">''</span>)
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'0'</span> <span class="hljs-keyword">if</span> startIndex &lt;= <span class="hljs-number">0</span>
+    currentValue = array[startIndex-<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">if</span> currentValue &lt; value <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> currentValue
+    <span class="hljs-keyword">else</span> <span class="hljs-property">@_findSmaller</span> array, startIndex-<span class="hljs-number">1</span>, value
+
 </div></div>
       
       </div>

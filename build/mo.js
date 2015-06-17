@@ -1917,20 +1917,43 @@ PathEasing = (function() {
     }
     startKey = parseFloat(p.toFixed(2));
     endKey = 1;
-    if (Math.abs(startKey - p) < this._eps) {
-      return this._samples[startKey];
-    }
     keys = Object.keys(this._samples);
     len = keys.length;
     startIndex = keys.indexOf(startKey + '');
+    if (startKey > p) {
+      startIndex--;
+    }
+    if (Math.abs(startKey - p) < this._eps) {
+      return this._samples[startKey];
+    }
     for (i = j = ref = startIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
       currentKey = parseFloat(keys[i]);
+      console.log(currentKey);
       if (p < currentKey) {
         endKey = currentKey;
         break;
       }
     }
+    if (Math.abs(endKey - p) < this._eps) {
+      return this._samples[endKey];
+    }
     return console.log(startKey, endKey);
+  };
+
+  PathEasing.prototype._findSmaller = function(array, value, startIndex) {
+    var currentValue;
+    if (startIndex == null) {
+      startIndex = array.indexOf(value + '');
+    }
+    if (startIndex <= 0) {
+      return '0';
+    }
+    currentValue = array[startIndex - 1];
+    if (currentValue < value) {
+      return currentValue;
+    } else {
+      return this._findSmaller(array, startIndex - 1, value);
+    }
   };
 
   PathEasing.prototype.create = function(path, o) {

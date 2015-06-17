@@ -57,17 +57,28 @@ class PathEasing
     startKey = parseFloat p.toFixed(2); endKey = 1
     # if startKey compared to progress is about the same (_eps)
     # return the startKey right here
-    return @_samples[startKey] if Math.abs(startKey - p) < @_eps
     keys = Object.keys(@_samples); len = keys.length
     startIndex = keys.indexOf(startKey+'')
+
+    # we called toFixed(2) to be sure that we have the sampled value
+    # in _samples object but we need to check now, if startKey was rounded
+    # to larger number, for instance .705 will coerce .71 and it is larger
+    # then the progress itself so, decrease the startIndex value by 1 
+    startIndex-- if startKey > p
+    return @_samples[startKey] if Math.abs(startKey - p) < @_eps
+
 
     # find the end key here
     for i in [startIndex..len]
       currentKey = parseFloat keys[i]
+      console.log currentKey
       # break if the current value is larger then progress
       if p < currentKey
         endKey = currentKey
         break
+    # if endKey compared to progress is about the same (_eps)
+    # return the startKey right here
+    return @_samples[endKey] if Math.abs(endKey - p) < @_eps
 
     console.log startKey, endKey
     # center = start+((end-start)/2)
@@ -84,6 +95,13 @@ class PathEasing
     # # else sample further
     # else @sample p, newStart, newEnd, precision
   
+  _findSmaller:(array, value, startIndex)->
+    if !startIndex? then startIndex = array.indexOf(value+'')
+    return '0' if startIndex <= 0
+    currentValue = array[startIndex-1]
+    if currentValue < value then return currentValue
+    else @_findSmaller array, startIndex-1, value
+
 
   # ---
 
