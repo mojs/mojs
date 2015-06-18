@@ -77,6 +77,11 @@ window.files = [
       "title": "PathEasing"
     },
     {
+      "level": 2,
+      "slug": "-sample-p-newstart-newend-precision",
+      "title": " sample p, newStart, newEnd, precision"
+    },
+    {
       "level": 1,
       "slug": "if-precise-enough-then-return-result",
       "title": "if precise enough then return result"

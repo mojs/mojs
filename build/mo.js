@@ -1900,7 +1900,7 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype.sample = function(p, start, end, precision) {
-    var currentKey, endKey, i, j, keys, len, ref, ref1, sampled, startIndex, startKey;
+    var endKey, keys, sampled, startIndex, startKey, startObject;
     if (start == null) {
       start = 0;
     }
@@ -1918,26 +1918,17 @@ PathEasing = (function() {
     startKey = parseFloat(p.toFixed(2));
     endKey = 1;
     keys = Object.keys(this._samples);
-    len = keys.length;
-    startIndex = keys.indexOf(startKey + '');
     if (startKey > p) {
-      startIndex--;
+      startObject = this._findSmaller(keys, startKey);
+      startKey = startObject.value;
+      startIndex = startObject.index;
+    } else {
+      startIndex = keys.indexOf(startKey + '');
     }
     if (Math.abs(startKey - p) < this._eps) {
       return this._samples[startKey];
     }
-    for (i = j = ref = startIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
-      currentKey = parseFloat(keys[i]);
-      console.log(currentKey);
-      if (p < currentKey) {
-        endKey = currentKey;
-        break;
-      }
-    }
-    if (Math.abs(endKey - p) < this._eps) {
-      return this._samples[endKey];
-    }
-    return console.log(startKey, endKey);
+    return endKey = this._findLarger(keys, p, startIndex);
   };
 
   PathEasing.prototype._findSmaller = function(array, value, startIndex) {
@@ -1946,13 +1937,35 @@ PathEasing = (function() {
       startIndex = array.indexOf(value + '');
     }
     if (startIndex <= 0) {
-      return '0';
+      return {
+        value: 0,
+        index: 0
+      };
     }
     currentValue = array[startIndex - 1];
     if (currentValue < value) {
-      return currentValue;
+      return {
+        value: parseFloat(currentValue),
+        index: startIndex - 1
+      };
     } else {
-      return this._findSmaller(array, startIndex - 1, value);
+      return this._findSmaller(array, value, startIndex - 1);
+    }
+  };
+
+  PathEasing.prototype._findLarger = function(array, value, startIndex) {
+    var currentValue;
+    if (startIndex == null) {
+      startIndex = array.indexOf(value + '');
+    }
+    if (startIndex >= array.length || startIndex <= 0) {
+      return 1;
+    }
+    currentValue = array[startIndex + 1];
+    if (currentValue > value) {
+      return parseFloat(currentValue);
+    } else {
+      return this._findLarger(array, value, startIndex + 1);
     }
   };
 

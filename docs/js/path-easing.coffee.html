@@ -188,7 +188,7 @@ find the nearest start and end values
         </div>
       
       
-        <div class="code"><div class="wrapper">    startKey = parseFloat p.toFixed(<span class="hljs-number">2</span>); endKey = <span class="hljs-number">1</span></div></div>
+        <div class="code"><div class="wrapper">    startKey = parseFloat(p.toFixed(<span class="hljs-number">2</span>)); endKey = <span class="hljs-number">1</span></div></div>
       
       </div>
     
@@ -201,9 +201,7 @@ return the startKey right here</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    keys = Object.keys(<span class="hljs-property">@_samples</span>); len = keys.length
-    startIndex = keys.indexOf(startKey+<span class="hljs-string">''</span>)
-</div></div>
+        <div class="code"><div class="wrapper">    keys = Object.keys(<span class="hljs-property">@_samples</span>)</div></div>
       
       </div>
     
@@ -218,60 +216,54 @@ then the progress itself so, decrease the startIndex value by 1 </p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    startIndex-- <span class="hljs-keyword">if</span> startKey &gt; p
+        <div class="code"><div class="wrapper">    
+    <span class="hljs-keyword">if</span> startKey &gt; p
+      startObject = <span class="hljs-property">@_findSmaller</span>(keys, startKey)
+      startKey   = startObject.value
+      startIndex = startObject.index
+    <span class="hljs-keyword">else</span> startIndex = keys.indexOf(startKey+<span class="hljs-string">''</span>)
     <span class="hljs-keyword">return</span> <span class="hljs-property">@_samples</span>[startKey] <span class="hljs-keyword">if</span> Math.abs(startKey - p) &lt; <span class="hljs-property">@_eps</span>
 
-</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>find the end key here</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [startIndex..len]
-      currentKey = parseFloat keys[i]
-      <span class="hljs-built_in">console</span>.log currentKey</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>break if the current value is larger then progress</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> p &lt; currentKey
-        endKey = currentKey
-        <span class="hljs-keyword">break</span></div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>if endKey compared to progress is about the same (_eps)
-return the startKey right here</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> <span class="hljs-property">@_samples</span>[endKey] <span class="hljs-keyword">if</span> Math.abs(endKey - p) &lt; <span class="hljs-property">@_eps</span>
-
-    <span class="hljs-built_in">console</span>.log startKey, endKey</div></div>
+    endKey   = <span class="hljs-property">@_findLarger</span>(keys, p, startIndex)</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments doc-section">
-          <div class="wrapper"><p>center = start+((end-start)/2)</p>
+          <div class="wrapper"><p>if endKey compared to progress is about the same (_eps)
+return the startKey right here</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log startKey</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>return &#39;unresolved return&#39;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>console.log startKey, endKey
+center = start+((end-start)/2)</p>
 </div>
         </div>
       
@@ -298,23 +290,98 @@ else return 1 - point.y/rect
       <div class="segment">
       
         <div class="comments doc-section">
-          <div class="wrapper"><p><span class='doc-section-header'>
- sample p, newStart, newEnd, precision
-</span></p>
+          <div class="wrapper"><p><span class='doc-section-header'></p>
+<h2 id="-sample-p-newstart-newend-precision"><a href="#-sample-p-newstart-newend-precision" class="anchor"></a> sample p, newStart, newEnd, precision</h2><p></span></p>
 <h1 id="if-precise-enough-then-return-result"><a href="#if-precise-enough-then-return-result" class="anchor"></a>if precise enough then return result</h1><p>return if --precision &lt; 1 then 1 - point.y/rect</p>
 <h1 id="else-sample-further"><a href="#else-sample-further" class="anchor"></a>else sample further</h1></div>
         </div>
       
       
-        <div class="code"><div class="wrapper">  
-  <span class="hljs-attribute">_findSmaller</span>:<span class="hljs-function"><span class="hljs-params">(array, value, startIndex)</span>-&gt;</span>
-    <span class="hljs-keyword">if</span> !startIndex? <span class="hljs-keyword">then</span> startIndex = array.indexOf(value+<span class="hljs-string">''</span>)
-    <span class="hljs-keyword">return</span> <span class="hljs-string">'0'</span> <span class="hljs-keyword">if</span> startIndex &lt;= <span class="hljs-number">0</span>
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>_findSmaller</strong>
+</span></p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>array</code> must be an Array.</strong><br/>(of keys)</li>
+<li><strong><code>value</code> must be a Number.</strong><br/>(to start from)</li>
+<li><strong><code>index</code> must be a Number, Null.</strong><br/>(to start from)</li>
+</ul>
+<p><strong>Returns an Object</strong><br/>(- value: smaller key value - index: it&#39;s index in array)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_findSmaller</span>:<span class="hljs-function"><span class="hljs-params">(array, value, startIndex)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>find the index of the value</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> !startIndex? <span class="hljs-keyword">then</span> startIndex = array.indexOf(value+<span class="hljs-string">''</span>)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>return the smallest value possible if nothing was found</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> {<span class="hljs-attribute">value</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">index</span>: <span class="hljs-number">0</span>} <span class="hljs-keyword">if</span> startIndex &lt;= <span class="hljs-number">0</span>
+    
     currentValue = array[startIndex-<span class="hljs-number">1</span>]
-    <span class="hljs-keyword">if</span> currentValue &lt; value <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> currentValue
-    <span class="hljs-keyword">else</span> <span class="hljs-property">@_findSmaller</span> array, startIndex-<span class="hljs-number">1</span>, value
-
-</div></div>
+    <span class="hljs-keyword">if</span> currentValue &lt; value
+      <span class="hljs-keyword">return</span> {<span class="hljs-attribute">value</span>: parseFloat(currentValue), <span class="hljs-attribute">index</span>: startIndex-<span class="hljs-number">1</span>}
+    <span class="hljs-keyword">else</span> <span class="hljs-property">@_findSmaller</span> array, value, startIndex-<span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>_findLarger</strong>
+</span></p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>array</code> must be an Array.</strong><br/>(of keys)</li>
+<li><strong><code>value</code> must be a Number.</strong><br/>(to start from)</li>
+<li><strong><code>index</code> must be a Number, Null.</strong><br/>(to start from)</li>
+</ul>
+<p><strong>Returns a String</strong><br/>(larger key)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_findLarger</span>:<span class="hljs-function"><span class="hljs-params">(array, value, startIndex)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> !startIndex? <span class="hljs-keyword">then</span> startIndex = array.indexOf(value+<span class="hljs-string">''</span>)
+    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> startIndex &gt;= array.length <span class="hljs-keyword">or</span> startIndex &lt;= <span class="hljs-number">0</span>
+    currentValue = array[startIndex+<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">if</span> currentValue &gt; value <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> parseFloat(currentValue)
+    <span class="hljs-keyword">else</span> <span class="hljs-property">@_findLarger</span> array, value, startIndex+<span class="hljs-number">1</span></div></div>
       
       </div>
     

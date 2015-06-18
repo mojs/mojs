@@ -102,7 +102,7 @@
         var path, pe;
         path = 'M0,100 100,0';
         pe = new PathEasing(path);
-        return expect(pe.sample(.705)).toBe(.705);
+        return expect(pe.sample(.706)).toBe(.706);
       });
       it('should return nearest value if it less then _eps', function() {
         var path, pe;
@@ -114,22 +114,44 @@
         var path, pe;
         path = 'M0,100 100,0';
         pe = new PathEasing(path);
-        pe._samples['0.705'] = 1;
-        return expect(pe.sample(.70500000000005)).toBe(1);
+        return expect(pe.sample(.7099999999999999999)).toBe(pe._samples['0.71']);
       });
     });
-    return describe('_findSmaller method', function() {
+    describe('_findSmaller method', function() {
       it('should find item that is smaller then current', function() {
         var index, pe;
         pe = new PathEasing('M0,100 100,0');
         index = pe._findSmaller(Object.keys(pe._samples), 0.1);
-        return expect(index).toBe('0.09');
+        expect(index.value).toBe(0.09);
+        return expect(index.index).toBe(9);
       });
-      return it('should return 0 if start index is 0', function() {
+      it('should return 0 if start index is 0', function() {
         var index, pe;
         pe = new PathEasing('M0,100 100,0');
         index = pe._findSmaller(Object.keys(pe._samples), 0);
-        return expect(index).toBe('0');
+        expect(index.value).toBe(0);
+        return expect(index.index).toBe(0);
+      });
+      return it('should return the same value with index if it is ', function() {
+        var index, pe;
+        pe = new PathEasing('M0,100 100,0');
+        index = pe._findSmaller(Object.keys(pe._samples), 0);
+        expect(index.value).toBe(0);
+        return expect(index.index).toBe(0);
+      });
+    });
+    return describe('_findLarger method', function() {
+      it('should find item that is smaller then current', function() {
+        var index, pe;
+        pe = new PathEasing('M0,100 100,0');
+        index = pe._findLarger(Object.keys(pe._samples), 0.1, 10);
+        return expect(index).toBe(0.11);
+      });
+      return it('should return 1 if end index is 1', function() {
+        var index, pe;
+        pe = new PathEasing('M0,100 100,0');
+        index = pe._findLarger(Object.keys(pe._samples), 1);
+        return expect(index).toBe(1);
       });
     });
   });

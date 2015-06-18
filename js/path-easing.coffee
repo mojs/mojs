@@ -54,33 +54,34 @@ class PathEasing
     # if there is no sampled value,
     # find the nearest start and end values
     #   nearest start:
-    startKey = parseFloat p.toFixed(2); endKey = 1
+    startKey = parseFloat(p.toFixed(2)); endKey = 1
     # if startKey compared to progress is about the same (_eps)
     # return the startKey right here
-    keys = Object.keys(@_samples); len = keys.length
-    startIndex = keys.indexOf(startKey+'')
-
+    keys = Object.keys(@_samples)
     # we called toFixed(2) to be sure that we have the sampled value
     # in _samples object but we need to check now, if startKey was rounded
     # to larger number, for instance .705 will coerce .71 and it is larger
     # then the progress itself so, decrease the startIndex value by 1 
-    startIndex-- if startKey > p
+    
+    if startKey > p
+      startObject = @_findSmaller(keys, startKey)
+      startKey   = startObject.value
+      startIndex = startObject.index
+    else startIndex = keys.indexOf(startKey+'')
     return @_samples[startKey] if Math.abs(startKey - p) < @_eps
 
-
-    # find the end key here
-    for i in [startIndex..len]
-      currentKey = parseFloat keys[i]
-      console.log currentKey
-      # break if the current value is larger then progress
-      if p < currentKey
-        endKey = currentKey
-        break
+    endKey   = @_findLarger(keys, p, startIndex)
     # if endKey compared to progress is about the same (_eps)
     # return the startKey right here
-    return @_samples[endKey] if Math.abs(endKey - p) < @_eps
+    # return @_samples[endKey] if Math.abs(endKey - p) < @_eps
 
-    console.log startKey, endKey
+
+    # console.log startKey
+
+    # return 'unresolved return'
+
+
+    # console.log startKey, endKey
     # center = start+((end-start)/2)
     # point  = @path.getPointAtLength (@pathLength*center)
 
@@ -94,15 +95,38 @@ class PathEasing
     # return if --precision < 1 then 1 - point.y/rect
     # # else sample further
     # else @sample p, newStart, newEnd, precision
-  
+  # ---
+
+  # @method _findSmaller
+  # @param  {Array}  array of keys
+  # @param  {Number} value to start from
+  # @param  {Number, Null} index to start from
+  # @return {Object}
+  #         - value: smaller key value
+  #         - index: it's index in array
   _findSmaller:(array, value, startIndex)->
+    # find the index of the value
     if !startIndex? then startIndex = array.indexOf(value+'')
-    return '0' if startIndex <= 0
+    # return the smallest value possible if nothing was found
+    return {value: 0, index: 0} if startIndex <= 0
+    
     currentValue = array[startIndex-1]
-    if currentValue < value then return currentValue
-    else @_findSmaller array, startIndex-1, value
+    if currentValue < value
+      return {value: parseFloat(currentValue), index: startIndex-1}
+    else @_findSmaller array, value, startIndex-1
+  # ---
 
-
+  # @method _findLarger
+  # @param  {Array}  array of keys
+  # @param  {Number} value to start from
+  # @param  {Number, Null} index to start from
+  # @return {String} larger key
+  _findLarger:(array, value, startIndex)->
+    if !startIndex? then startIndex = array.indexOf(value+'')
+    return 1 if startIndex >= array.length or startIndex <= 0
+    currentValue = array[startIndex+1]
+    if currentValue > value then return parseFloat(currentValue)
+    else @_findLarger array, value, startIndex+1
   # ---
 
   # Create new instance of PathEasing with specified parameters
