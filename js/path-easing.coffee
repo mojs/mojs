@@ -22,6 +22,7 @@ class PathEasing
     @sample = h.bind(@sample, @)
     @_hardSample = h.bind(@_hardSample, @)
     @_eps = 0.0000000001
+    
     # console.time 'pre sample'
     @_preSample()
     # console.timeEnd 'pre sample'
@@ -37,7 +38,7 @@ class PathEasing
       @_samples[progress] = 1 - (y/@rect)
       progress += step
       # fix decimal fraction issue
-      progress = parseFloat progress.toFixed(2)
+      progress = parseFloat progress.toFixed(3)
 
   # ---
 
@@ -55,7 +56,7 @@ class PathEasing
     # if there is no sampled value,
     # find the nearest start and end values
     #   nearest start:
-    startKey = parseFloat(p.toFixed(2)); endKey = 1
+    startKey = parseFloat(p.toFixed(3)); endKey = 1
     # if startKey compared to progress is about the same (_eps)
     # return the startKey right here
     keys = Object.keys(@_samples)
@@ -72,6 +73,9 @@ class PathEasing
     # if endKey compared to progress is about the same (_eps)
     # return the startKey right here
     # return @_samples[endKey] if Math.abs(endKey - p) < @_eps
+    # 
+    console.log startKey, endKey
+    @_hardSample p, startKey, endKey
 
   # ---
   
@@ -83,12 +87,13 @@ class PathEasing
   # 
   # @return {Number} y value for the progress
   _hardSample:(p, start, end, precision = @precision)->
+    # console.log 'step'
     center = start+((end-start)/2)
     # console.log "#{i+1}: ", start, end, center
     point  = @path.getPointAtLength (@pathLength*center)
     rect = @rect
     
-    if Math.abs(rect*p - point.x ) < 0.0001
+    if Math.abs(rect*p - point.x) < 0.001
       return 1 - point.y/rect
     # orient is point.x
     if rect*p > point.x      then newStart = center; newEnd = end

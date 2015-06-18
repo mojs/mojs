@@ -1895,7 +1895,7 @@ PathEasing = (function() {
       y = this.path.getPointAtLength(this.pathLength * progress).y;
       this._samples[progress] = 1 - (y / this.rect);
       progress += step;
-      results.push(progress = parseFloat(progress.toFixed(2)));
+      results.push(progress = parseFloat(progress.toFixed(3)));
     }
     return results;
   };
@@ -1907,7 +1907,7 @@ PathEasing = (function() {
     if (sampled != null) {
       return sampled;
     }
-    startKey = parseFloat(p.toFixed(2));
+    startKey = parseFloat(p.toFixed(3));
     endKey = 1;
     keys = Object.keys(this._samples);
     if (startKey > p) {
@@ -1920,7 +1920,9 @@ PathEasing = (function() {
     if (Math.abs(startKey - p) < this._eps) {
       return this._samples[startKey];
     }
-    return endKey = this._findLarger(keys, p, startIndex);
+    endKey = this._findLarger(keys, p, startIndex);
+    console.log(startKey, endKey);
+    return this._hardSample(p, startKey, endKey);
   };
 
   PathEasing.prototype._hardSample = function(p, start, end, precision) {
@@ -1931,7 +1933,7 @@ PathEasing = (function() {
     center = start + ((end - start) / 2);
     point = this.path.getPointAtLength(this.pathLength * center);
     rect = this.rect;
-    if (Math.abs(rect * p - point.x) < 0.0001) {
+    if (Math.abs(rect * p - point.x) < 0.001) {
       return 1 - point.y / rect;
     }
     if (rect * p > point.x) {

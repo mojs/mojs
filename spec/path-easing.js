@@ -68,13 +68,13 @@
         var pe;
         pe = new PathEasing('M0,100 100,0');
         expect(pe._samples['0']).toBeDefined();
-        expect(pe._samples['0.01']).toBeDefined();
-        expect(pe._samples['0.02']).toBeDefined();
+        expect(pe._samples['0.001']).toBeDefined();
+        expect(pe._samples['0.002']).toBeDefined();
         return expect(pe._samples['0.5']).toBeDefined();
       });
     });
     describe('create method ->', function() {
-      return it('should create new instance of path-easing and return sample method', function() {
+      return it('should create new instance of path-easing and return it\'s method', function() {
         var easing, pe;
         pe = new PathEasing('creator');
         easing = pe.create('M0,100 100,0', {
@@ -102,28 +102,22 @@
         var path, pe;
         path = 'M0,100 100,0';
         pe = new PathEasing(path);
-        return expect(pe.sample(.706)).toBe(.706);
-      });
-      it('should return nearest value if it less then _eps', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(pe.sample(.70000000000005)).toBe(.7);
+        return expect(pe.sample(.706)).toBeCloseTo(.706, 4);
       });
       return it('should return nearest value if it less then _eps', function() {
         var path, pe;
         path = 'M0,100 100,0';
         pe = new PathEasing(path);
-        return expect(pe.sample(.7099999999999999999)).toBe(pe._samples['0.71']);
+        return expect(pe.sample(.70000000000005)).toBe(.7);
       });
     });
-    describe('_hardSample method', function() {
+    return describe('_hardSample method', function() {
       return it('should return y', function() {
         var count, i, pe1, pe2, searchValue, value, _i, _j;
         pe1 = new PathEasing('M0,100 100,0');
         pe2 = new PathEasing('M0,100 100,0');
-        searchValue = 0.7067;
-        value = pe1._hardSample(searchValue, 0.7066, 0.7068);
+        searchValue = 0.203231;
+        value = pe1._hardSample(searchValue, 0.7065, 0.7067);
         value = pe2._hardSample(searchValue, 0, 1);
         count = 60;
         console.time('old');
@@ -133,46 +127,9 @@
         console.timeEnd('old');
         console.time('new');
         for (i = _j = 0; 0 <= count ? _j <= count : _j >= count; i = 0 <= count ? ++_j : --_j) {
-          value = pe2._hardSample(searchValue, 0.7066, 0.7068);
+          value = pe2._hardSample(searchValue, 0.203, 0.2035);
         }
         return console.timeEnd('new');
-      });
-    });
-    describe('_findSmaller method', function() {
-      it('should find item that is smaller then current', function() {
-        var index, pe;
-        pe = new PathEasing('M0,100 100,0');
-        index = pe._findSmaller(Object.keys(pe._samples), 0.1);
-        expect(index.value).toBe(0.09);
-        return expect(index.index).toBe(9);
-      });
-      it('should return 0 if start index is 0', function() {
-        var index, pe;
-        pe = new PathEasing('M0,100 100,0');
-        index = pe._findSmaller(Object.keys(pe._samples), 0);
-        expect(index.value).toBe(0);
-        return expect(index.index).toBe(0);
-      });
-      return it('should return the same value with index if it is ', function() {
-        var index, pe;
-        pe = new PathEasing('M0,100 100,0');
-        index = pe._findSmaller(Object.keys(pe._samples), 0);
-        expect(index.value).toBe(0);
-        return expect(index.index).toBe(0);
-      });
-    });
-    return describe('_findLarger method', function() {
-      it('should find item that is smaller then current', function() {
-        var index, pe;
-        pe = new PathEasing('M0,100 100,0');
-        index = pe._findLarger(Object.keys(pe._samples), 0.1, 10);
-        return expect(index).toBe(0.11);
-      });
-      return it('should return 1 if end index is 1', function() {
-        var index, pe;
-        pe = new PathEasing('M0,100 100,0');
-        index = pe._findLarger(Object.keys(pe._samples), 1);
-        return expect(index).toBe(1);
       });
     });
   });

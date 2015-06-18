@@ -45,17 +45,16 @@ describe 'PathEasing ->', ->
     it 'should pre sample the path', ->
       pe = new PathEasing 'M0,100 100,0'
       expect(pe._samples['0']).toBeDefined()
-      expect(pe._samples['0.01']).toBeDefined()
-      expect(pe._samples['0.02']).toBeDefined()
+      expect(pe._samples['0.001']).toBeDefined()
+      expect(pe._samples['0.002']).toBeDefined()
       expect(pe._samples['0.5']).toBeDefined()
 
   describe 'create method ->', ->
-    it 'should create new instance of path-easing and return sample method', ->
+    it 'should create new instance of path-easing and return it\'s method', ->
       pe = new PathEasing 'creator'
       easing = pe.create('M0,100 100,0', precision: 10)
       expect(typeof easing).toBe 'function'
       expect(easing(.5)).toBe .5
-      # expect(easing.toString()).toBe pe.sample.toString()
 
   describe 'sample method ->', ->
     it 'should clamp x value', ->
@@ -70,22 +69,22 @@ describe 'PathEasing ->', ->
     it 'should sample y', ->
       path = 'M0,100 100,0'
       pe = new PathEasing path
-      expect(pe.sample(.706)).toBe .706
+      expect(pe.sample(.706)).toBeCloseTo .706, 4
     it 'should return nearest value if it less then _eps', ->
       path = 'M0,100 100,0'
       pe = new PathEasing path
       expect(pe.sample(.70000000000005)).toBe .7
-    it 'should return nearest value if it less then _eps', ->
-      path = 'M0,100 100,0'
-      pe = new PathEasing path
-      expect(pe.sample(.7099999999999999999)).toBe pe._samples['0.71']
+  #   it 'should return nearest value if it less then _eps', ->
+  #     path = 'M0,100 100,0'
+  #     pe = new PathEasing path
+  #     expect(pe.sample(.7099999999999999999)).toBe pe._samples['0.71']
 
   describe '_hardSample method', ->
     it 'should return y', ->
       pe1 = new PathEasing 'M0,100 100,0'
       pe2 = new PathEasing 'M0,100 100,0'
-      searchValue = 0.7067
-      value = pe1._hardSample searchValue, 0.7066, 0.7068
+      searchValue = 0.203231
+      value = pe1._hardSample searchValue, 0.7065, 0.7067
       value = pe2._hardSample searchValue, 0, 1
       
       count = 60
@@ -96,7 +95,7 @@ describe 'PathEasing ->', ->
 
       console.time 'new'
       for i in [0..count]
-        value = pe2._hardSample searchValue, 0.7066, 0.7068
+        value = pe2._hardSample searchValue, 0.203, 0.2035
       console.timeEnd 'new'
 
 
@@ -105,32 +104,32 @@ describe 'PathEasing ->', ->
       # expect(value).toBeCloseTo pathY, 5
 
 
-  describe '_findSmaller method', ->
-    it 'should find item that is smaller then current',->
-      pe = new PathEasing 'M0,100 100,0'
-      index = pe._findSmaller Object.keys(pe._samples), 0.1
-      expect(index.value).toBe 0.09
-      expect(index.index).toBe 9
-    it 'should return 0 if start index is 0',->
-      pe = new PathEasing 'M0,100 100,0'
-      index = pe._findSmaller Object.keys(pe._samples), 0
-      expect(index.value).toBe 0
-      expect(index.index).toBe 0
-    it 'should return the same value with index if it is ',->
-      pe = new PathEasing 'M0,100 100,0'
-      index = pe._findSmaller Object.keys(pe._samples), 0
-      expect(index.value).toBe 0
-      expect(index.index).toBe 0
+  # describe '_findSmaller method', ->
+  #   it 'should find item that is smaller then current',->
+  #     pe = new PathEasing 'M0,100 100,0'
+  #     index = pe._findSmaller Object.keys(pe._samples), 0.1
+  #     expect(index.value).toBe 0.09
+  #     expect(index.index).toBe 9
+  #   it 'should return 0 if start index is 0',->
+  #     pe = new PathEasing 'M0,100 100,0'
+  #     index = pe._findSmaller Object.keys(pe._samples), 0
+  #     expect(index.value).toBe 0
+  #     expect(index.index).toBe 0
+  #   it 'should return the same value with index if it is ',->
+  #     pe = new PathEasing 'M0,100 100,0'
+  #     index = pe._findSmaller Object.keys(pe._samples), 0
+  #     expect(index.value).toBe 0
+  #     expect(index.index).toBe 0
 
-  describe '_findLarger method', ->
-    it 'should find item that is smaller then current',->
-      pe = new PathEasing 'M0,100 100,0'
-      index = pe._findLarger Object.keys(pe._samples), 0.1, 10
-      expect(index).toBe 0.11
-    it 'should return 1 if end index is 1',->
-      pe = new PathEasing 'M0,100 100,0'
-      index = pe._findLarger Object.keys(pe._samples), 1
-      expect(index).toBe 1
+  # describe '_findLarger method', ->
+  #   it 'should find item that is smaller then current',->
+  #     pe = new PathEasing 'M0,100 100,0'
+  #     index = pe._findLarger Object.keys(pe._samples), 0.1, 10
+  #     expect(index).toBe 0.11
+  #   it 'should return 1 if end index is 1',->
+  #     pe = new PathEasing 'M0,100 100,0'
+  #     index = pe._findLarger Object.keys(pe._samples), 1
+  #     expect(index).toBe 1
 
 
 
