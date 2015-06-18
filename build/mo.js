@@ -1875,9 +1875,10 @@ PathEasing = (function() {
       return h.error('Error while parsing the path');
     }
     this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
-    this.precision = o.precision || 24;
+    this.precision = o.precision || 54;
     this.rect = o.rect || 100;
     this.sample = h.bind(this.sample, this);
+    this._hardSample = h.bind(this._hardSample, this);
     this._eps = 0.0000000001;
     this._preSample();
     this;
@@ -1886,7 +1887,7 @@ PathEasing = (function() {
   PathEasing.prototype._preSample = function() {
     var i, j, progress, ref, results, step, stepsCount, y;
     this._samples = {};
-    stepsCount = 100;
+    stepsCount = 1000;
     step = 1 / stepsCount;
     progress = 0;
     results = [];
@@ -1899,17 +1900,8 @@ PathEasing = (function() {
     return results;
   };
 
-  PathEasing.prototype.sample = function(p, start, end, precision) {
+  PathEasing.prototype.sample = function(p) {
     var endKey, keys, sampled, startIndex, startKey, startObject;
-    if (start == null) {
-      start = 0;
-    }
-    if (end == null) {
-      end = 1;
-    }
-    if (precision == null) {
-      precision = this.precision;
-    }
     p = h.clamp(p, 0, 1);
     sampled = this._samples[p];
     if (sampled != null) {
@@ -1929,6 +1921,33 @@ PathEasing = (function() {
       return this._samples[startKey];
     }
     return endKey = this._findLarger(keys, p, startIndex);
+  };
+
+  PathEasing.prototype._hardSample = function(p, start, end, precision) {
+    var center, newEnd, newStart, point, rect;
+    if (precision == null) {
+      precision = this.precision;
+    }
+    center = start + ((end - start) / 2);
+    point = this.path.getPointAtLength(this.pathLength * center);
+    rect = this.rect;
+    if (Math.abs(rect * p - point.x) < 0.0001) {
+      return 1 - point.y / rect;
+    }
+    if (rect * p > point.x) {
+      newStart = center;
+      newEnd = end;
+    } else if (rect * p < point.x) {
+      newStart = start;
+      newEnd = center;
+    } else {
+      return 1 - point.y / rect;
+    }
+    if (--precision < 1) {
+      return 1 - point.y / rect;
+    } else {
+      return this._hardSample(p, newStart, newEnd, precision);
+    }
   };
 
   PathEasing.prototype._findSmaller = function(array, value, startIndex) {

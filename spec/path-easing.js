@@ -117,6 +117,27 @@
         return expect(pe.sample(.7099999999999999999)).toBe(pe._samples['0.71']);
       });
     });
+    describe('_hardSample method', function() {
+      return it('should return y', function() {
+        var count, i, pe1, pe2, searchValue, value, _i, _j;
+        pe1 = new PathEasing('M0,100 100,0');
+        pe2 = new PathEasing('M0,100 100,0');
+        searchValue = 0.7067;
+        value = pe1._hardSample(searchValue, 0.7066, 0.7068);
+        value = pe2._hardSample(searchValue, 0, 1);
+        count = 60;
+        console.time('old');
+        for (i = _i = 0; 0 <= count ? _i <= count : _i >= count; i = 0 <= count ? ++_i : --_i) {
+          value = pe1._hardSample(searchValue, 0, 1);
+        }
+        console.timeEnd('old');
+        console.time('new');
+        for (i = _j = 0; 0 <= count ? _j <= count : _j >= count; i = 0 <= count ? ++_j : --_j) {
+          value = pe2._hardSample(searchValue, 0.7066, 0.7068);
+        }
+        return console.timeEnd('new');
+      });
+    });
     describe('_findSmaller method', function() {
       it('should find item that is smaller then current', function() {
         var index, pe;

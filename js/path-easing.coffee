@@ -18,8 +18,9 @@ class PathEasing
     @path = h.parsePath(path)
     return h.error 'Error while parsing the path' if !@path?
     @pathLength = @path?.getTotalLength()
-    @precision = o.precision or 24; @rect = o.rect or 100
+    @precision = o.precision or 54; @rect = o.rect or 100
     @sample = h.bind(@sample, @)
+    @_hardSample = h.bind(@_hardSample, @)
     @_eps = 0.0000000001
     # console.time 'pre sample'
     @_preSample()
@@ -29,7 +30,7 @@ class PathEasing
   _preSample:->
     @_samples = {}
 
-    stepsCount = 100; step = 1/stepsCount; progress = 0
+    stepsCount = 1000; step = 1/stepsCount; progress = 0
     for i in [0..stepsCount]
       y = @path.getPointAtLength(@pathLength*progress).y
       # divide y by rect value and invert it
@@ -46,7 +47,7 @@ class PathEasing
   # @method sample
   # @param  {Number} easing progress in range [0,1]
   # @return {Number} easing y
-  sample:(p, start=0, end=1, precision=@precision)->
+  sample:(p)->
     p = h.clamp p, 0, 1
     # if there is sampled value, then use it
     sampled = @_samples[p]
@@ -62,39 +63,42 @@ class PathEasing
     # in _samples object but we need to check now, if startKey was rounded
     # to larger number, for instance .705 will coerce .71 and it is larger
     # then the progress itself so, decrease the startIndex value by 1 
-    
     if startKey > p
       startObject = @_findSmaller(keys, startKey)
-      startKey   = startObject.value
-      startIndex = startObject.index
+      startKey   = startObject.value; startIndex = startObject.index
     else startIndex = keys.indexOf(startKey+'')
     return @_samples[startKey] if Math.abs(startKey - p) < @_eps
-
     endKey   = @_findLarger(keys, p, startIndex)
     # if endKey compared to progress is about the same (_eps)
     # return the startKey right here
     # return @_samples[endKey] if Math.abs(endKey - p) < @_eps
 
-
-    # console.log startKey
-
-    # return 'unresolved return'
-
-
-    # console.log startKey, endKey
-    # center = start+((end-start)/2)
-    # point  = @path.getPointAtLength (@pathLength*center)
-
-    # rect = @rect
-    # # orient is point.x
-    # if rect*p > point.x      then newStart = center; newEnd = end
-    # else if rect*p < point.x then newStart = start; newEnd = center
-    # else return 1 - point.y/rect
+  # ---
+  
+  # @method _hardSample
+  # @param {Number} p: progress
+  # @param {Number} start
+  # @param {Number} end
+  # @param {Number} precision
+  # 
+  # @return {Number} y value for the progress
+  _hardSample:(p, start, end, precision = @precision)->
+    center = start+((end-start)/2)
+    # console.log "#{i+1}: ", start, end, center
+    point  = @path.getPointAtLength (@pathLength*center)
+    rect = @rect
     
-    # # if precise enough then return result
-    # return if --precision < 1 then 1 - point.y/rect
-    # # else sample further
-    # else @sample p, newStart, newEnd, precision
+    if Math.abs(rect*p - point.x ) < 0.0001
+      return 1 - point.y/rect
+    # orient is point.x
+    if rect*p > point.x      then newStart = center; newEnd = end
+    else if rect*p < point.x then newStart = start; newEnd = center
+    else return 1 - point.y/rect
+    
+    # if precise enough then return result
+    return if --precision < 1 then 1 - point.y/rect
+    # else sample further
+    else @_hardSample p, newStart, newEnd, precision
   # ---
 
   # @method _findSmaller

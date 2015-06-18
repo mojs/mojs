@@ -69,27 +69,11 @@ window.files = [
   "originalPath": "js/path-easing.coffee",
   "name": "path-easing.coffee.html",
   "lang": "coffeescript",
-  "title": "if precise enough then return result",
   "toc": [
     {
       "level": 2,
       "slug": "patheasing",
       "title": "PathEasing"
-    },
-    {
-      "level": 2,
-      "slug": "-sample-p-newstart-newend-precision",
-      "title": " sample p, newStart, newEnd, precision"
-    },
-    {
-      "level": 1,
-      "slug": "if-precise-enough-then-return-result",
-      "title": "if precise enough then return result"
-    },
-    {
-      "level": 1,
-      "slug": "else-sample-further",
-      "title": "else sample further"
     }
   ]
 },
@@ -133,22 +117,6 @@ window.files = [
   "originalName": "transit.coffee",
   "originalPath": "js/transit.coffee",
   "name": "transit.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/polyfills/performance.coffee.html",
-  "originalName": "performance.coffee",
-  "originalPath": "js/polyfills/performance.coffee",
-  "name": "performance.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/polyfills/raf.coffee.html",
-  "originalName": "raf.coffee",
-  "originalPath": "js/polyfills/raf.coffee",
-  "name": "raf.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
@@ -221,6 +189,22 @@ window.files = [
   "originalName": "zigzag.coffee",
   "originalPath": "js/shapes/zigzag.coffee",
   "name": "zigzag.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/polyfills/performance.coffee.html",
+  "originalName": "performance.coffee",
+  "originalPath": "js/polyfills/performance.coffee",
+  "name": "performance.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/polyfills/raf.coffee.html",
+  "originalName": "raf.coffee",
+  "originalPath": "js/polyfills/raf.coffee",
+  "name": "raf.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
