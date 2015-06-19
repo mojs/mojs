@@ -44,21 +44,22 @@ easing = mojs.easing.path 'M0,100 C4.00577744,92.3519448
                             L97.5682773,0.0450612221 C97.5682773,-0.227841855
                             98.9774879,1.86613741 100,0.0450612221'
 
-# timeline = new mojs.Timeline
-#   delay:    1000
-#   duration: 2000
-#   onUpdate:(p)->
-#     # console.time 'sample'
-#     ease = easing(p)
-#     # console.timeEnd 'sample'
-#     # console.log p, ease
-#     # mojs.easing.bounce.out
-#     el.style.transform = "translateY(#{600*ease}px)"
+timeline = new mojs.Timeline
+  delay:    1000
+  duration: 12600
+  onUpdate:(p)->
+    # console.time 'sample'
+    ease = easing(p)
+    # console.log ease
+    # console.timeEnd 'sample'
+    # console.log p, ease
+    # mojs.easing.bounce.out
+    el.style.transform = "translateY(#{600*ease}px)"
 
-# tween = new mojs.Tween
+tween = new mojs.Tween
 
-# tween.add timeline
-# tween.start()
+tween.add timeline
+tween.start()
 
 
 ### istanbul ignore next ###

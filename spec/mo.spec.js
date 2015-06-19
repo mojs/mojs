@@ -1311,7 +1311,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var easing, el, mojs;
+var easing, el, mojs, timeline, tween;
 
 mojs = {
   revision: '0.119.0',
@@ -1345,6 +1345,22 @@ mojs.delta = mojs.h.delta;
 el = document.querySelector('#js-sprite');
 
 easing = mojs.easing.path('M0,100 C4.00577744,92.3519448 8.46993511,63.9895504 13.1512887,0.0901667719 L21.3497674,0.0450612221 C21.3497674,-1.77229627 30.5883328,115.057627 42.9949846,0.0450612221 L48.1345723,0.0450612221 C48.1345723,-0.774700647 54.5357691,56.4124428 63.0607938,0.0450612221 L66.17434,0.0450612221 C66.17434,-0.960124778 70.5072591,29.23993 76.7835754,0.0450612221 L78.6555388,0.0450612221 C78.6555388,0.000360393587 81.8632425,16.4914595 86.0928122,0.0450612221 L87.2894428,0.0450612221 C87.2894428,-0.761743229 89.1622181,9.6571475 92.2144672,0.0450612221 L93.1382971,0.0450612221 C93.1382971,-0.227841855 94.7579743,4.40567189 96.9144218,0.0450612221 L97.5682773,0.0450612221 C97.5682773,-0.227841855 98.9774879,1.86613741 100,0.0450612221');
+
+timeline = new mojs.Timeline({
+  delay: 1000,
+  duration: 12600,
+  onUpdate: function(p) {
+    var ease;
+    ease = easing(p);
+    return el.style.transform = "translateY(" + (600 * ease) + "px)";
+  }
+});
+
+tween = new mojs.Tween;
+
+tween.add(timeline);
+
+tween.start();
 
 
 /* istanbul ignore next */
@@ -1886,9 +1902,11 @@ PathEasing = (function() {
       return h.error('Error while parsing the path');
     }
     this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
-    this.precision = o.precision || 100;
+    this.precision = o.precision || 10;
     this.rect = o.rect || 100;
-    this._eps = 0.001;
+    this.sample = h.bind(this.sample, this);
+    this._hardSample = h.bind(this._hardSample, this);
+    this._eps = 0.0001;
     this._vars();
     this._preSample();
     this;
@@ -1917,10 +1935,12 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._findBounds = function(array, p) {
-    var end, i, j, len, start, value;
+    var end, i, j, len, ref, ref1, start, startIndex, value;
     start = 0;
     end = null;
-    for (i = j = 0, len = array.length; j < len; i = ++j) {
+    len = array.length;
+    startIndex = parseInt(p * 1000);
+    for (i = j = ref = startIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
       value = array[i];
       if (value.progress < p) {
         start = value;
@@ -1933,6 +1953,44 @@ PathEasing = (function() {
       start: start,
       end: end
     };
+  };
+
+  PathEasing.prototype.sample = function(p) {
+    var bounds;
+    p = h.clamp(p, 0, 1);
+    bounds = this._findBounds(this._samples, p);
+    return this._hardSample(p, bounds.start.length, bounds.end.length);
+  };
+
+  PathEasing.prototype._hardSample = function(p, start, end, precision, i) {
+    var center, newEnd, newStart, point, rect, x;
+    if (precision == null) {
+      precision = this.precision;
+    }
+    if (i == null) {
+      i = 0;
+    }
+    center = start + ((end - start) / 2);
+    point = this.path.getPointAtLength(center);
+    rect = this.rect;
+    x = point.x / rect;
+    if (Math.abs(p - x) < this._eps) {
+      return 1 - point.y / rect;
+    }
+    if (p > x) {
+      newStart = center;
+      newEnd = end;
+    } else if (p < x) {
+      newStart = start;
+      newEnd = center;
+    } else {
+      return 1 - point.y / rect;
+    }
+    if (--precision < 1) {
+      return 1 - point.y / rect;
+    } else {
+      return this._hardSample(p, newStart, newEnd, precision, i + 1);
+    }
   };
 
   PathEasing.prototype.create = function(path, o) {

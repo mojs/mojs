@@ -49,71 +49,40 @@ describe 'PathEasing ->', ->
     it 'should pre sample the path', ->
       pe = new PathEasing 'M0,100 100,0'
       len = pe.pathLength
-      expect(pe._samples[pe._step*0]).toBeDefined()
-      expect(pe._samples[pe._step*1]).toBeDefined()
-      expect(pe._samples[pe._step*2]).toBeDefined()
-      expect(pe._samples[pe._step*50]).toBeDefined()
-      expect(pe._samples[pe._step*pe._stepsCount]).toBeDefined()
+      expect(pe._samples[0]).toBeDefined()
+      expect(pe._samples[1]).toBeDefined()
+      expect(pe._samples[2]).toBeDefined()
+      expect(pe._samples[50]).toBeDefined()
+      expect(pe._samples[pe._stepsCount-1]).toBeDefined()
 
-  # describe 'sample method ->', ->
-  #   it 'should clamp x value', ->
-  #     path = 'M0,100 100,0'
-  #     pe = new PathEasing path
-  #     expect(pe.sample(-.5)).toBeCloseTo 0, 5
-  #     expect(pe.sample(1.5)).toBeCloseTo 1, 5
-  #   it 'should return y', ->
-  #     path = 'M0,100 100,0'
-  #     pe = new PathEasing path
-  #     expect(pe.sample(.7)).toBe .7
-  #   it 'should sample y', ->
-  #     path = 'M0,100 100,0'
-  #     pe = new PathEasing path
-  #     expect(pe.sample(.706)).toBeCloseTo .706, 4
-  #   it 'should return nearest value if it less then _eps', ->
-  #     path = 'M0,100 100,0'
-  #     pe = new PathEasing path
-  #     expect(pe.sample(.70000000000005)).toBe .7
-  #   it 'should return nearest value if it less then _eps', ->
-  #     path = 'M0,100 100,0'
-  #     pe = new PathEasing path
-  #     expect(pe.sample(.7099999999999999999)).toBe pe._samples['0.71']
+  describe 'sample method ->', ->
+    it 'should clamp x value', ->
+      path = 'M0,100 100,0'
+      pe = new PathEasing path
+      expect(pe.sample(-.5)).toBeCloseTo 0, 5
+      expect(pe.sample(1.5)).toBeCloseTo 1, 5
+    it 'should return y', ->
+      path = 'M0,100 100,0'
+      pe = new PathEasing path
+      expect(pe.sample(.7)).toBe .7
+    it 'should sample y', ->
+      path = 'M0,100 100,0'
+      pe = new PathEasing path
+      expect(pe.sample(.706)).toBeCloseTo .706, 4
 
-  # describe '_hardSample method', ->
-  #   it 'should return y', ->
-  #     pe1 = new PathEasing 'M0,100 100,0'
-  #     pe2 = new PathEasing 'M0,100 100,0'
-  #     searchValue = 0.203231
-  #     value = pe1._hardSample searchValue, 0.7065, 0.7067
-  #     value = pe2._hardSample searchValue, 0, 1
-
-      # console.log pe1.sample 0.7065
-      
-      # count = 60
-      # console.time 'old'
-      # for i in [0..count]
-      #   value = pe1._hardSample searchValue, 0, 1
-      # console.timeEnd 'old'
-
-      # console.time 'new'
-      # for i in [0..count]
-      #   value = pe2._hardSample searchValue, 0.203, 0.2035
-      # console.timeEnd 'new'
-
-
-      # pathY = 1-(pe.path.getPointAtLength(pe.pathLength*searchValue).y/100)
-      # # console.log value
-      # expect(value).toBeCloseTo pathY, 5
+  describe '_hardSample method', ->
+    it 'should return y', ->
+      pe1 = new PathEasing 'M0,100 100,0'
+      p = 0.203231
+      bounds = pe1._findBounds pe1._samples, p
+      value = pe1._hardSample p, bounds.start.length, bounds.end.length
+      expect(value).toBeCloseTo p, 4
 
   describe '_findBounds method', ->
     it 'should find lowest and highest bounderies',->
       pe1 = new PathEasing 'M0,100 100,0'
       progress = .735
-      console.time 'search'
       bounds = pe1._findBounds pe1._samples, progress
-      console.timeEnd 'search'
-      # console.log progress, bounds.start.point.x, bounds.end.point.x
-      # console.log progress, bounds.start.length, bounds.end.length
-      # expect(bounds.start.length).toBe progress*pe1.pathLength
 
   # describe 'create method ->', ->
   #   it 'should create new instance of path-easing and return it\'s method', ->

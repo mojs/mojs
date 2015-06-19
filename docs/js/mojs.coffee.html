@@ -76,47 +76,45 @@ easing = mojs.easing.path <span class="hljs-string">'M0,100 C4.00577744,92.35194
                             94.7579743,4.40567189 96.9144218,0.0450612221
                             L97.5682773,0.0450612221 C97.5682773,-0.227841855
                             98.9774879,1.86613741 100,0.0450612221'</span>
+
+timeline = <span class="hljs-keyword">new</span> mojs.Timeline
+  <span class="hljs-attribute">delay</span>:    <span class="hljs-number">1000</span>
+  <span class="hljs-attribute">duration</span>: <span class="hljs-number">12600</span>
+  <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.time &#39;sample&#39;</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    ease = easing(p)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log ease
+console.timeEnd &#39;sample&#39;
+console.log p, ease
+mojs.easing.bounce.out</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    el.style.transform = <span class="hljs-string">"translateY(<span class="hljs-subst">#{<span class="hljs-number">600</span>*ease}</span>px)"</span>
+
+tween = <span class="hljs-keyword">new</span> mojs.Tween
+
+tween.add timeline
+tween.start()
+
 </div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>timeline = new mojs.Timeline
-  delay:    1000
-  duration: 2000
-  onUpdate:(p)-&gt;</p>
-<pre><code><span class="hljs-preprocessor"># console.time 'sample'</span>
-ease = easing(p)
-<span class="hljs-preprocessor"># console.timeEnd 'sample'</span>
-<span class="hljs-preprocessor"># console.log p, ease</span>
-<span class="hljs-preprocessor"># mojs.easing.bounce.out</span>
-el.style.transform = <span class="hljs-string">"translateY(#{600*ease}px)"</span>
-</code></pre></div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tween = new mojs.Tween</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tween.add timeline
-tween.start()</p>
-</div>
-        </div>
-      
       
       </div>
     
