@@ -25,9 +25,7 @@
         progress = .735;
         console.time('search');
         bounds = pe1._findBounds(pe1._samples, progress);
-        console.timeEnd('search');
-        console.log(progress, bounds.start.point.x, bounds.end.point.x);
-        return console.log(progress, bounds.start.length, bounds.end.length);
+        return console.timeEnd('search');
       });
     });
   });

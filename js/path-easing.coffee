@@ -35,32 +35,28 @@ class PathEasing
   _vars:-> @_stepsCount = 1000; @_step = 1/@_stepsCount
 
   _preSample:->
-    @_samples = {}
+    @_samples = []
     for i in [0..@_stepsCount]
       progress = i*@_step
       length = @pathLength*progress
       point = @path.getPointAtLength(length)
-      @_samples[progress] = point: point, length: length
+      @_samples[i] = point: point, length: length, progress: progress
   # ---
 
   # @method _findBounds
-  # @param  {Object}  to search in
+  # @param  {Array}   to search in
   # @param  {Number}  progress to search for
   # @return {Object}
   #         - start {Number}: lowest boundry
   #         - end   {Number}: highest boundry
-  _findBounds:(object, p)->
-    keys = Object.keys(object)
-    len = keys.length
+  _findBounds:(array, p)->
     start = 0; end = null
-    for i in [0..len]
-      key = parseFloat(keys[i]); value = object[key]
-      if key < p
+    for value, i in array
+      if value.progress < p
         start = value
       else
         end   = value
         break
-
     start: start, end: end
 
 

@@ -1894,30 +1894,28 @@ PathEasing = (function() {
 
   PathEasing.prototype._preSample = function() {
     var i, j, length, point, progress, ref, results;
-    this._samples = {};
+    this._samples = [];
     results = [];
     for (i = j = 0, ref = this._stepsCount; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
       progress = i * this._step;
       length = this.pathLength * progress;
       point = this.path.getPointAtLength(length);
-      results.push(this._samples[progress] = {
+      results.push(this._samples[i] = {
         point: point,
-        length: length
+        length: length,
+        progress: progress
       });
     }
     return results;
   };
 
-  PathEasing.prototype._findBounds = function(object, p) {
-    var end, i, j, key, keys, len, ref, start, value;
-    keys = Object.keys(object);
-    len = keys.length;
+  PathEasing.prototype._findBounds = function(array, p) {
+    var end, i, j, len, start, value;
     start = 0;
     end = null;
-    for (i = j = 0, ref = len; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-      key = parseFloat(keys[i]);
-      value = object[key];
-      if (key < p) {
+    for (i = j = 0, len = array.length; j < len; i = ++j) {
+      value = array[i];
+      if (value.progress < p) {
         start = value;
       } else {
         end = value;
