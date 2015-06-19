@@ -73,7 +73,7 @@
         return expect(pe._samples['0.5']).toBeDefined();
       });
     });
-    describe('create method ->', function() {
+    return describe('create method ->', function() {
       return it('should create new instance of path-easing and return it\'s method', function() {
         var easing, pe;
         pe = new PathEasing('creator');
@@ -82,59 +82,6 @@
         });
         expect(typeof easing).toBe('function');
         return expect(easing(.5)).toBe(.5);
-      });
-    });
-    describe('sample method ->', function() {
-      it('should clamp x value', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        expect(pe.sample(-.5)).toBeCloseTo(0, 5);
-        return expect(pe.sample(1.5)).toBeCloseTo(1, 5);
-      });
-      it('should return y', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(pe.sample(.7)).toBe(.7);
-      });
-      it('should sample y', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(pe.sample(.706)).toBeCloseTo(.706, 4);
-      });
-      it('should return nearest value if it less then _eps', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(pe.sample(.70000000000005)).toBe(.7);
-      });
-      return it('should return nearest value if it less then _eps', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(pe.sample(.7099999999999999999)).toBe(pe._samples['0.71']);
-      });
-    });
-    describe('_hardSample method', function() {
-      return it('should return y', function() {
-        var pe1, pe2, searchValue, value;
-        pe1 = new PathEasing('M0,100 100,0');
-        pe2 = new PathEasing('M0,100 100,0');
-        searchValue = 0.203231;
-        value = pe1._hardSample(searchValue, 0.7065, 0.7067);
-        value = pe2._hardSample(searchValue, 0, 1);
-        return pe1.isIt = true;
-      });
-    });
-    return describe('_findSmaller method', function() {
-      return it('should find item that is smaller then current', function() {
-        var index, pe;
-        pe = new PathEasing('M0,100 100,0');
-        index = pe._findSmaller(Object.keys(pe._samples), 0.1);
-        expect(index.value).toBe(0.099);
-        return expect(index.index).toBe(99);
       });
     });
   });

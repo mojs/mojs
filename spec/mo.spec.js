@@ -1311,7 +1311,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var easing, el, mojs, timeline, tween;
+var a, easing, el, i, j, k, mojs;
 
 mojs = {
   revision: '0.119.0',
@@ -1346,21 +1346,19 @@ el = document.querySelector('#js-sprite');
 
 easing = mojs.easing.path('M0,100 C4.00577744,92.3519448 8.46993511,63.9895504 13.1512887,0.0901667719 L21.3497674,0.0450612221 C21.3497674,-1.77229627 30.5883328,115.057627 42.9949846,0.0450612221 L48.1345723,0.0450612221 C48.1345723,-0.774700647 54.5357691,56.4124428 63.0607938,0.0450612221 L66.17434,0.0450612221 C66.17434,-0.960124778 70.5072591,29.23993 76.7835754,0.0450612221 L78.6555388,0.0450612221 C78.6555388,0.000360393587 81.8632425,16.4914595 86.0928122,0.0450612221 L87.2894428,0.0450612221 C87.2894428,-0.761743229 89.1622181,9.6571475 92.2144672,0.0450612221 L93.1382971,0.0450612221 C93.1382971,-0.227841855 94.7579743,4.40567189 96.9144218,0.0450612221 L97.5682773,0.0450612221 C97.5682773,-0.227841855 98.9774879,1.86613741 100,0.0450612221');
 
-timeline = new mojs.Timeline({
-  delay: 1000,
-  duration: 2000,
-  onUpdate: function(p) {
-    var ease;
-    ease = easing(p);
-    return el.style.transform = "translateY(" + (600 * ease) + "px)";
-  }
-});
+a = {};
 
-tween = new mojs.Tween;
+for (i = j = 0; j <= 10000; i = ++j) {
+  a[i] = 1 / i;
+}
 
-tween.add(timeline);
+console.time('loop');
 
-tween.start();
+for (i = k = 0; k <= 10000; i = ++k) {
+  a[i];
+}
+
+console.timeEnd('loop');
 
 
 /* istanbul ignore next */
@@ -1926,102 +1924,6 @@ PathEasing = (function() {
       results.push(progress = parseFloat(progress.toFixed(this._fixed)));
     }
     return results;
-  };
-
-  PathEasing.prototype.sample = function(p) {
-    var endKey, keys, sampled, startIndex, startKey, startObject;
-    p = h.clamp(p, 0, 1);
-    sampled = this._samples[p];
-    if (sampled != null) {
-      return sampled;
-    }
-    startKey = parseFloat(p.toFixed(this._fixed));
-    endKey = 1;
-    keys = Object.keys(this._samples);
-    if (startKey > p) {
-      startObject = this._findSmaller(keys, startKey);
-      startKey = startObject.value;
-      startIndex = startObject.index;
-    } else {
-      startIndex = keys.indexOf(startKey + '');
-    }
-    endKey = this._findLarger(keys, p, startIndex);
-    console.log('');
-    console.log('start ->>>');
-    console.log(p, startKey, endKey);
-    return this._hardSample(p, startKey, endKey);
-  };
-
-  PathEasing.prototype._hardSample = function(p, start, end, precision, i) {
-    var center, newEnd, newStart, point, rect;
-    if (precision == null) {
-      precision = this.precision;
-    }
-    if (i == null) {
-      i = 0;
-    }
-    debugger;
-    center = start + ((end - start) / 2);
-    point = this.path.getPointAtLength(this.pathLength * center);
-    rect = this.rect;
-    if (Math.abs(p - (point.x / 100)) < this._eps) {
-      console.log("eps: " + i, Math.abs(rect * p - point.x));
-      return 1 - point.y / rect;
-    }
-    if (p > point.x / 100) {
-      newStart = center;
-      newEnd = end;
-    } else if (p < point.x / 100) {
-      newStart = start;
-      newEnd = center;
-    } else {
-      console.log("equal: " + i);
-      return 1 - point.y / rect;
-    }
-    if (--precision < 1) {
-      console.log("precision: " + i, Math.abs(p - (point.x / 100)));
-      return 1 - point.y / rect;
-    } else {
-      return this._hardSample(p, newStart, newEnd, precision, i + 1);
-    }
-  };
-
-  PathEasing.prototype._findSmaller = function(array, value, startIndex) {
-    var currentValue;
-    if (startIndex == null) {
-      startIndex = array.indexOf(value + '');
-    }
-    if (startIndex <= 0) {
-      return {
-        value: 0,
-        index: 0
-      };
-    }
-    currentValue = array[startIndex - 1];
-    if (currentValue < value) {
-      return {
-        value: parseFloat(currentValue),
-        index: startIndex - 1
-      };
-    } else {
-      return this._findSmaller(array, value, startIndex - 1);
-    }
-  };
-
-  PathEasing.prototype._findLarger = function(array, value, startIndex) {
-    var currentValue;
-    if (startIndex == null) {
-      startIndex = array.indexOf(value + '');
-    }
-    if (startIndex >= array.length || startIndex <= 0) {
-      return 1;
-    }
-    currentValue = array[startIndex + 1];
-    if (currentValue > value) {
-      return parseFloat(currentValue);
-    } else {
-      return this._findLarger(array, value, startIndex + 1);
-    }
   };
 
   PathEasing.prototype.create = function(path, o) {

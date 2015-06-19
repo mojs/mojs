@@ -69,11 +69,142 @@ window.files = [
   "originalPath": "js/path-easing.coffee",
   "name": "path-easing.coffee.html",
   "lang": "coffeescript",
+  "title": "---",
   "toc": [
     {
       "level": 2,
       "slug": "patheasing",
       "title": "PathEasing"
+    },
+    {
+      "level": 1,
+      "slug": "-",
+      "title": "---"
+    },
+    {
+      "level": 1,
+      "slug": "if-there-is-no-sampled-value-",
+      "title": "if there is no sampled value,"
+    },
+    {
+      "level": 1,
+      "slug": "find-the-nearest-start-and-end-values",
+      "title": "find the nearest start and end values"
+    },
+    {
+      "level": 1,
+      "slug": "nearest-start-",
+      "title": "nearest start:"
+    },
+    {
+      "level": 1,
+      "slug": "if-startkey-compared-to-progress-is-about-the-same-_eps-",
+      "title": "if startKey compared to progress is about the same (_eps)"
+    },
+    {
+      "level": 1,
+      "slug": "return-the-startkey-right-here",
+      "title": "return the startKey right here"
+    },
+    {
+      "level": 1,
+      "slug": "we-called-tofixed-2-to-be-sure-that-we-have-the-sampled-value",
+      "title": "we called toFixed(2) to be sure that we have the sampled value"
+    },
+    {
+      "level": 1,
+      "slug": "in-_samples-object-but-we-need-to-check-now-if-startkey-was-rounded",
+      "title": "in _samples object but we need to check now, if startKey was rounded"
+    },
+    {
+      "level": 1,
+      "slug": "to-larger-number-for-instance-705-will-coerce-71-and-it-is-larger",
+      "title": "to larger number, for instance .705 will coerce .71 and it is larger"
+    },
+    {
+      "level": 1,
+      "slug": "then-the-progress-itself-so-decrease-the-startindex-value-by-1",
+      "title": "then the progress itself so, decrease the startIndex value by 1"
+    },
+    {
+      "level": 1,
+      "slug": "return-the-startkey-right-here",
+      "title": "return the startKey right here"
+    },
+    {
+      "level": 1,
+      "slug": "loop-thru-path-trying-to-find-the-most-closer-x",
+      "title": "Loop thru path trying to find the most closer x"
+    },
+    {
+      "level": 1,
+      "slug": "compared-to-current-progress-value",
+      "title": "compared to current progress value"
+    },
+    {
+      "level": 1,
+      "slug": "-",
+      "title": " "
+    },
+    {
+      "level": 1,
+      "slug": "console-timeend-39-hard-sample-39-",
+      "title": "console.timeEnd &#39;hard sample&#39;"
+    },
+    {
+      "level": 1,
+      "slug": "console-log-p-startkey-endkey",
+      "title": "console.log p, startKey, endKey"
+    },
+    {
+      "level": 1,
+      "slug": "console-time-39-hard-sample-39-",
+      "title": "console.time &#39;hard sample&#39;"
+    },
+    {
+      "level": 1,
+      "slug": "-",
+      "title": "---"
+    },
+    {
+      "level": 1,
+      "slug": "console-log-39-step-39-",
+      "title": "console.log &#39;step&#39;"
+    },
+    {
+      "level": 1,
+      "slug": "console-log-quot-i-1-quot-start-end-center",
+      "title": "console.log &quot;#{i+1}: &quot;, start, end, center"
+    },
+    {
+      "level": 1,
+      "slug": "orient-is-point-x",
+      "title": "orient is point.x"
+    },
+    {
+      "level": 1,
+      "slug": "-",
+      "title": "---"
+    },
+    {
+      "level": 1,
+      "slug": "if-precise-enough-then-return-result",
+      "title": "if precise enough then return result"
+    },
+    {
+      "level": 1,
+      "slug": "else-sample-further",
+      "title": "else sample further"
+    },
+    {
+      "level": 1,
+      "slug": "-",
+      "title": "---"
+    },
+    {
+      "level": 2,
+      "slug": "method-_findlarger-_findlarger-array-value-startindex-1",
+      "title": "Method _findLarger _findLarger array, value, startIndex+1"
     }
   ]
 },
