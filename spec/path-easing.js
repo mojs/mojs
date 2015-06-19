@@ -104,32 +104,37 @@
         pe = new PathEasing(path);
         return expect(pe.sample(.706)).toBeCloseTo(.706, 4);
       });
-      return it('should return nearest value if it less then _eps', function() {
+      it('should return nearest value if it less then _eps', function() {
         var path, pe;
         path = 'M0,100 100,0';
         pe = new PathEasing(path);
         return expect(pe.sample(.70000000000005)).toBe(.7);
       });
+      return it('should return nearest value if it less then _eps', function() {
+        var path, pe;
+        path = 'M0,100 100,0';
+        pe = new PathEasing(path);
+        return expect(pe.sample(.7099999999999999999)).toBe(pe._samples['0.71']);
+      });
     });
-    return describe('_hardSample method', function() {
+    describe('_hardSample method', function() {
       return it('should return y', function() {
-        var count, i, pe1, pe2, searchValue, value, _i, _j;
+        var pe1, pe2, searchValue, value;
         pe1 = new PathEasing('M0,100 100,0');
         pe2 = new PathEasing('M0,100 100,0');
         searchValue = 0.203231;
         value = pe1._hardSample(searchValue, 0.7065, 0.7067);
         value = pe2._hardSample(searchValue, 0, 1);
-        count = 60;
-        console.time('old');
-        for (i = _i = 0; 0 <= count ? _i <= count : _i >= count; i = 0 <= count ? ++_i : --_i) {
-          value = pe1._hardSample(searchValue, 0, 1);
-        }
-        console.timeEnd('old');
-        console.time('new');
-        for (i = _j = 0; 0 <= count ? _j <= count : _j >= count; i = 0 <= count ? ++_j : --_j) {
-          value = pe2._hardSample(searchValue, 0.203, 0.2035);
-        }
-        return console.timeEnd('new');
+        return pe1.isIt = true;
+      });
+    });
+    return describe('_findSmaller method', function() {
+      return it('should find item that is smaller then current', function() {
+        var index, pe;
+        pe = new PathEasing('M0,100 100,0');
+        index = pe._findSmaller(Object.keys(pe._samples), 0.1);
+        expect(index.value).toBe(0.099);
+        return expect(index.index).toBe(99);
       });
     });
   });

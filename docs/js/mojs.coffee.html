@@ -57,95 +57,63 @@
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+
+el = <span class="hljs-built_in">document</span>.querySelector <span class="hljs-string">'#js-sprite'</span>
+easing = mojs.easing.path <span class="hljs-string">'M0,100 C4.00577744,92.3519448
+                            8.46993511,63.9895504 13.1512887,0.0901667719
+                            L21.3497674,0.0450612221 C21.3497674,-1.77229627
+                            30.5883328,115.057627 42.9949846,0.0450612221
+                            L48.1345723,0.0450612221 C48.1345723,-0.774700647
+                            54.5357691,56.4124428 63.0607938,0.0450612221
+                            L66.17434,0.0450612221 C66.17434,-0.960124778
+                            70.5072591,29.23993 76.7835754,0.0450612221
+                            L78.6555388,0.0450612221 C78.6555388,0.000360393587
+                            81.8632425,16.4914595 86.0928122,0.0450612221
+                            L87.2894428,0.0450612221 C87.2894428,-0.761743229
+                            89.1622181,9.6571475 92.2144672,0.0450612221
+                            L93.1382971,0.0450612221 C93.1382971,-0.227841855
+                            94.7579743,4.40567189 96.9144218,0.0450612221
+                            L97.5682773,0.0450612221 C97.5682773,-0.227841855
+                            98.9774879,1.86613741 100,0.0450612221'</span>
+
+timeline = <span class="hljs-keyword">new</span> mojs.Timeline
+  <span class="hljs-attribute">delay</span>:    <span class="hljs-number">1000</span>
+  <span class="hljs-attribute">duration</span>: <span class="hljs-number">2000</span>
+  <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.time &#39;sample&#39;</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    ease = easing(p)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.timeEnd &#39;sample&#39;
+console.log p, ease
+mojs.easing.bounce.out</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    el.style.transform = <span class="hljs-string">"translateY(<span class="hljs-subst">#{<span class="hljs-number">600</span>*ease}</span>px)"</span>
+
+tween = <span class="hljs-keyword">new</span> mojs.Tween
+
+tween.add timeline
+tween.start()
+
 </div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>sp = new mojs.Spriter
-  el:         document.querySelector &#39;#js-sprite&#39;
-  duration:   500
-  delay:      1000
-  easing:     &#39;cubic.out&#39;</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>el = document.querySelector &#39;#js-el&#39;
-tm = new mojs.Timeline
-  duration: 3000
-  repeat:   10
-  onUpdate:(p)-&gt;
-    r = Math.floor 255*p
-    el.style.background = &quot;rgb(#{r},#{r},#{r})&quot;</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw = new mojs.Tween
-tw.add tm</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw.start()</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tr = new mojs.Transit(
-  type:       &#39;circle&#39;
-  radius:     0: 100
-  x: 300,     y: 300
-  duration:   3000
-  isRunLess:  true
-  fill:      &#39;red&#39;
-  onStart: -&gt; console.log &#39;start&#39;
-).then(
-  radius:   100: 200
-  fill:      &#39;green&#39;: &#39;green&#39;
-).then(
-  radius:   200: 300
-  fill:      &#39;blue&#39;: &#39;blue&#39;
-)</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tr.run()
-setInterval -&gt;
-  tr.run()
-, 12000</p>
-</div>
-        </div>
-      
       
       </div>
     

@@ -5,7 +5,7 @@ body {
 .sprite {
   position: absolute;
   left: 100px;
-  top: 100px;
+  top: 50px;
 }
 .sprite__frame {
   position: absolute;
