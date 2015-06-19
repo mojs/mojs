@@ -182,9 +182,9 @@ window.files = [
       "title": "orient is point.x"
     },
     {
-      "level": 1,
-      "slug": "-",
-      "title": "---"
+      "level": 2,
+      "slug": "-_hardsample-p-newstart-newend-precision-i-1",
+      "title": " _hardSample p, newStart, newEnd, precision, i+1"
     },
     {
       "level": 1,
@@ -195,16 +195,6 @@ window.files = [
       "level": 1,
       "slug": "else-sample-further",
       "title": "else sample further"
-    },
-    {
-      "level": 1,
-      "slug": "-",
-      "title": "---"
-    },
-    {
-      "level": 2,
-      "slug": "method-_findlarger-_findlarger-array-value-startindex-1",
-      "title": "Method _findLarger _findLarger array, value, startIndex+1"
     }
   ]
 },

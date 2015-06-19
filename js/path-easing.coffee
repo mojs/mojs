@@ -19,27 +19,51 @@ class PathEasing
     return h.error 'Error while parsing the path' if !@path?
     @pathLength = @path?.getTotalLength()
     @precision = o.precision or 100; @rect = o.rect or 100
-    @sample = h.bind(@sample, @)
-    @_hardSample = h.bind(@_hardSample, @)
+    # @sample = h.bind(@sample, @)
+    # @_hardSample = h.bind(@_hardSample, @)
     @_eps = 0.001
+    @_vars()
     
     # console.time 'pre sample'
     @_preSample()
     # console.timeEnd 'pre sample'
     @
+  # ---
+
+  # Method to create variables
+  # @method _vars
+  _vars:-> @_stepsCount = 1000; @_step = 1/@_stepsCount
 
   _preSample:->
     @_samples = {}
+    for i in [0..@_stepsCount]
+      progress = i*@_step
+      length = @pathLength*progress
+      point = @path.getPointAtLength(length)
+      @_samples[progress] = point: point, length: length
+  # ---
 
-    @_fixed = 3
-    stepsCount = 1000; step = 1/stepsCount; progress = 0
-    for i in [0..stepsCount]
-      y = @path.getPointAtLength(@pathLength*progress).y
-      # divide y by rect value and invert it
-      @_samples[progress] = 1 - (y/@rect)
-      progress += step
-      # fix decimal fraction issue
-      progress = parseFloat progress.toFixed(@_fixed)
+  # @method _findBounds
+  # @param  {Object}  to search in
+  # @param  {Number}  progress to search for
+  # @return {Object}
+  #         - start {Number}: lowest boundry
+  #         - end   {Number}: highest boundry
+  _findBounds:(object, p)->
+    keys = Object.keys(object)
+    len = keys.length
+    start = 0; end = null
+    for i in [0..len]
+      key = parseFloat(keys[i]); value = object[key]
+      if key < p
+        start = value
+      else
+        end   = value
+        break
+
+    start: start, end: end
+
+
 
   # # ---
 
@@ -118,39 +142,6 @@ class PathEasing
   #     return 1 - point.y/rect
   #   # else sample further
   #   else @_hardSample p, newStart, newEnd, precision, i+1
-  # # ---
-
-  # # @method _findSmaller
-  # # @param  {Array}  array of keys
-  # # @param  {Number} value to start from
-  # # @param  {Number, Null} index to start from
-  # # @return {Object}
-  # #         - value: smaller key value
-  # #         - index: it's index in array
-  # _findSmaller:(array, value, startIndex)->
-  #   # find the index of the value
-  #   if !startIndex?
-  #     startIndex = array.indexOf(value+'')
-  #   # return the smallest value possible if nothing was found
-  #   return {value: 0, index: 0} if startIndex <= 0
-    
-  #   currentValue = array[startIndex-1]
-  #   if currentValue < value
-  #     return {value: parseFloat(currentValue), index: startIndex-1}
-  #   else @_findSmaller array, value, startIndex-1
-  # # ---
-
-  # # @method _findLarger
-  # # @param  {Array}  array of keys
-  # # @param  {Number} value to start from
-  # # @param  {Number, Null} index to start from
-  # # @return {String} larger key
-  # _findLarger:(array, value, startIndex)->
-  #   if !startIndex? then startIndex = array.indexOf(value+'')
-  #   return 1 if startIndex >= array.length or startIndex <= 0
-  #   currentValue = array[startIndex+1]
-  #   if currentValue > value then return parseFloat(currentValue)
-  #   else @_findLarger array, value, startIndex+1
   # ---
 
   # Create new instance of PathEasing with specified parameters

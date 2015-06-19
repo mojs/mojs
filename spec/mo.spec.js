@@ -1311,7 +1311,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var a, easing, el, i, j, k, mojs;
+var easing, el, mojs;
 
 mojs = {
   revision: '0.119.0',
@@ -1345,20 +1345,6 @@ mojs.delta = mojs.h.delta;
 el = document.querySelector('#js-sprite');
 
 easing = mojs.easing.path('M0,100 C4.00577744,92.3519448 8.46993511,63.9895504 13.1512887,0.0901667719 L21.3497674,0.0450612221 C21.3497674,-1.77229627 30.5883328,115.057627 42.9949846,0.0450612221 L48.1345723,0.0450612221 C48.1345723,-0.774700647 54.5357691,56.4124428 63.0607938,0.0450612221 L66.17434,0.0450612221 C66.17434,-0.960124778 70.5072591,29.23993 76.7835754,0.0450612221 L78.6555388,0.0450612221 C78.6555388,0.000360393587 81.8632425,16.4914595 86.0928122,0.0450612221 L87.2894428,0.0450612221 C87.2894428,-0.761743229 89.1622181,9.6571475 92.2144672,0.0450612221 L93.1382971,0.0450612221 C93.1382971,-0.227841855 94.7579743,4.40567189 96.9144218,0.0450612221 L97.5682773,0.0450612221 C97.5682773,-0.227841855 98.9774879,1.86613741 100,0.0450612221');
-
-a = {};
-
-for (i = j = 0; j <= 10000; i = ++j) {
-  a[i] = 1 / i;
-}
-
-console.time('loop');
-
-for (i = k = 0; k <= 10000; i = ++k) {
-  a[i];
-}
-
-console.timeEnd('loop');
 
 
 /* istanbul ignore next */
@@ -1902,28 +1888,53 @@ PathEasing = (function() {
     this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
     this.precision = o.precision || 100;
     this.rect = o.rect || 100;
-    this.sample = h.bind(this.sample, this);
-    this._hardSample = h.bind(this._hardSample, this);
     this._eps = 0.001;
+    this._vars();
     this._preSample();
     this;
   }
 
+  PathEasing.prototype._vars = function() {
+    this._stepsCount = 1000;
+    return this._step = 1 / this._stepsCount;
+  };
+
   PathEasing.prototype._preSample = function() {
-    var i, j, progress, ref, results, step, stepsCount, y;
+    var i, j, length, point, progress, ref, results;
     this._samples = {};
-    this._fixed = 3;
-    stepsCount = 1000;
-    step = 1 / stepsCount;
-    progress = 0;
     results = [];
-    for (i = j = 0, ref = stepsCount; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-      y = this.path.getPointAtLength(this.pathLength * progress).y;
-      this._samples[progress] = 1 - (y / this.rect);
-      progress += step;
-      results.push(progress = parseFloat(progress.toFixed(this._fixed)));
+    for (i = j = 0, ref = this._stepsCount; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+      progress = i * this._step;
+      length = this.pathLength * progress;
+      point = this.path.getPointAtLength(length);
+      results.push(this._samples[progress] = {
+        point: point,
+        length: length
+      });
     }
     return results;
+  };
+
+  PathEasing.prototype._findBounds = function(object, p) {
+    var end, i, j, key, keys, len, ref, start, value;
+    keys = Object.keys(object);
+    len = keys.length;
+    start = 0;
+    end = null;
+    for (i = j = 0, ref = len; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+      key = parseFloat(keys[i]);
+      value = object[key];
+      if (key < p) {
+        start = value;
+      } else {
+        end = value;
+        break;
+      }
+    }
+    return {
+      start: start,
+      end: end
+    };
   };
 
   PathEasing.prototype.create = function(path, o) {

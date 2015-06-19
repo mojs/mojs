@@ -44,15 +44,6 @@ easing = mojs.easing.path 'M0,100 C4.00577744,92.3519448
                             L97.5682773,0.0450612221 C97.5682773,-0.227841855
                             98.9774879,1.86613741 100,0.0450612221'
 
-a = {}
-for i in [0..10000]
-  a[i] = 1/i
-
-console.time 'loop'
-for i in [0..10000]
-  a[i]
-console.timeEnd 'loop'
-
 # timeline = new mojs.Timeline
 #   delay:    1000
 #   duration: 2000

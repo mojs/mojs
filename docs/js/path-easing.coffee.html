@@ -70,10 +70,22 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
     <span class="hljs-property">@path</span> = h.parsePath(path)
     <span class="hljs-keyword">return</span> h.error <span class="hljs-string">'Error while parsing the path'</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@path</span>?
     <span class="hljs-property">@pathLength</span> = <span class="hljs-property">@path</span>?.getTotalLength()
-    <span class="hljs-property">@precision</span> = o.precision <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>; <span class="hljs-property">@rect</span> = o.rect <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>
-    <span class="hljs-property">@sample</span> = h.bind(<span class="hljs-property">@sample</span>, @)
-    <span class="hljs-property">@_hardSample</span> = h.bind(<span class="hljs-property">@_hardSample</span>, @)
-    <span class="hljs-property">@_eps</span> = <span class="hljs-number">0.001</span>
+    <span class="hljs-property">@precision</span> = o.precision <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>; <span class="hljs-property">@rect</span> = o.rect <span class="hljs-keyword">or</span> <span class="hljs-number">100</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+ sample = h.bind(@sample, @) and _hardSample = h.bind(@_hardSample, @)
+</span></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_eps</span> = <span class="hljs-number">0.001</span>
+    <span class="hljs-property">@_vars</span>()
     </div></div>
       
       </div>
@@ -98,40 +110,84 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    @
+        <div class="code"><div class="wrapper">    @</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>_vars</strong>
+</span></p>
+<p>Method to create variables</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_vars</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@_stepsCount</span> = <span class="hljs-number">1000</span>; <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_stepsCount</span>
 
   <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@_samples</span> = {}
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>.<span class="hljs-property">@_stepsCount</span>]
+      progress = i*<span class="hljs-property">@_step</span>
+      length = <span class="hljs-property">@pathLength</span>*progress
+      point = <span class="hljs-property">@path</span>.getPointAtLength(length)
+      <span class="hljs-property">@_samples</span>[progress] = <span class="hljs-attribute">point</span>: point, <span class="hljs-attribute">length</span>: length</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>_findBounds</strong>
+</span></p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>to</code> must be an Object.</strong><br/>(search in)</li>
+<li><strong><code>progress</code> must be a Number.</strong><br/>(to search for)</li>
+</ul>
+<p><strong>Returns an Object</strong><br/>(- start {Number}: lowest boundry - end {Number}: highest boundry)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_findBounds</span>:<span class="hljs-function"><span class="hljs-params">(object, p)</span>-&gt;</span>
+    keys = Object.keys(object)
+    len = keys.length
+    start = <span class="hljs-number">0</span>; end = <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>.len]
+      key = parseFloat(keys[i]); value = object[key]
+      <span class="hljs-keyword">if</span> key &lt; p
+        start = value
+      <span class="hljs-keyword">else</span>
+        end   = value
+        <span class="hljs-keyword">break</span>
 
-    <span class="hljs-property">@_fixed</span> = <span class="hljs-number">3</span>
-    stepsCount = <span class="hljs-number">1000</span>; step = <span class="hljs-number">1</span>/stepsCount; progress = <span class="hljs-number">0</span>
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>.stepsCount]
-      y = <span class="hljs-property">@path</span>.getPointAtLength(<span class="hljs-property">@pathLength</span>*progress).y</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>divide y by rect value and invert it</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">      <span class="hljs-property">@_samples</span>[progress] = <span class="hljs-number">1</span> - (y/<span class="hljs-property">@rect</span>)
-      progress += step</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>fix decimal fraction issue</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">      progress = parseFloat progress.toFixed(<span class="hljs-property">@_fixed</span>)
+    <span class="hljs-attribute">start</span>: start, <span class="hljs-attribute">end</span>: end
+
+
 </div></div>
       
       </div>
@@ -238,67 +294,12 @@ Method <strong>_hardSample</strong> precision   # debugger</p>
       <div class="segment">
       
         <div class="comments doc-section">
-          <div class="wrapper"><p><span class='doc-section-header'>
- _hardSample p, newStart, newEnd, precision, i+1</p>
-<h1 id="-"><a href="#-" class="anchor"></a>---</h1><p></span></p>
+          <div class="wrapper"><p><span class='doc-section-header'></p>
+<h2 id="-_hardsample-p-newstart-newend-precision-i-1"><a href="#-_hardsample-p-newstart-newend-precision-i-1" class="anchor"></a> _hardSample p, newStart, newEnd, precision, i+1</h2><p></span></p>
 <h1 id="if-precise-enough-then-return-result"><a href="#if-precise-enough-then-return-result" class="anchor"></a>if precise enough then return result</h1><p>  if --precision &lt; 1</p>
 <pre><code># console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"precision: #{i}"</span>, Math.<span class="hljs-built_in">abs</span>(p - (<span class="hljs-built_in">point</span>.x/<span class="hljs-number">100</span>)))
 <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> - <span class="hljs-built_in">point</span>.y/<span class="hljs-built_in">rect</span>
 </code></pre><h1 id="else-sample-further"><a href="#else-sample-further" class="anchor"></a>else sample further</h1></div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments doc-section">
-          <div class="wrapper"><p><span class='doc-section-header'>
-Method <strong>_findSmaller</strong>
-</span></p>
-<p>Parameters:</p>
-<ul>
-<li><strong><code>array</code> must be an Array.</strong><br/>(of keys)</li>
-<li><strong><code>value</code> must be a Number.</strong><br/>(to start from)</li>
-<li><strong><code>index</code> must be a Number, Null.</strong><br/>(to start from)</li>
-</ul>
-<p><strong>Returns an Object</strong><br/>(# - value: smaller key value # - index: it&#39;s index in array _findSmaller:(array, value, startIndex)-&gt; # find the index of the value if !startIndex? startIndex = array.indexOf(value+&#39;&#39;) # return the smallest value possible if nothing was found return {value: 0, index: 0} if startIndex &lt;= 0)</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">    </div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments doc-section">
-          <div class="wrapper"><p><span class='doc-section-header'>
- _findSmaller array, value, startIndex-1</p>
-<h1 id="-"><a href="#-" class="anchor"></a>---</h1><p></span></p>
-<p>  currentValue = array[startIndex-1]
-  if currentValue &lt; value
-    return {value: parseFloat(currentValue), index: startIndex-1}</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments doc-section">
-          <div class="wrapper"><p><span class='doc-section-header'></p>
-<h2 id="method-_findlarger-_findlarger-array-value-startindex-1"><a href="#method-_findlarger-_findlarger-array-value-startindex-1" class="anchor"></a>Method <strong>_findLarger</strong> _findLarger array, value, startIndex+1</h2><p></span></p>
-<p>Parameters:</p>
-<ul>
-<li><strong><code>array</code> must be an Array.</strong><br/>(of keys)</li>
-<li><strong><code>value</code> must be a Number.</strong><br/>(to start from)</li>
-<li><strong><code>index</code> must be a Number, Null.</strong><br/>(to start from)</li>
-</ul>
-<p><strong>Returns a String</strong><br/>(larger key _findLarger:(array, value, startIndex)-&gt; if !startIndex? then startIndex = array.indexOf(value+&#39;&#39;) return 1 if startIndex &gt;= array.length or startIndex &lt;= 0 currentValue = array[startIndex+1] if currentValue &gt; value then return parseFloat(currentValue))</p>
-</div>
         </div>
       
       
