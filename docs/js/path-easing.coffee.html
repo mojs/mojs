@@ -124,7 +124,7 @@ Method <strong>_vars</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_vars</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@_stepsCount</span> = <span class="hljs-number">1000</span>; <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_stepsCount</span>
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_vars</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@_stepsCount</span> = <span class="hljs-number">5000</span>; <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_stepsCount</span>
 
   <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@_samples</span> = []
@@ -176,14 +176,16 @@ Method <strong>_findBounds</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">    startIndex = parseInt p*<span class="hljs-number">1000</span></div></div>
+        <div class="code"><div class="wrapper">    startIndex = <span class="hljs-number">0</span>
+    <span class="hljs-built_in">console</span>.log p, (p*<span class="hljs-number">5000</span>)</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>loop thru the array from the startIndex</p>
+          <div class="wrapper"><p>console.log startIndex
+loop thru the array from the startIndex</p>
 </div>
         </div>
       
@@ -196,12 +198,13 @@ Method <strong>_findBounds</strong>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>save the latest smaller value as start value</p>
+          <div class="wrapper"><p>save the latest smaller value as start value
+console.log &quot;pointX: #{value.point.x}&quot;, p, i</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> value.progress &lt; p
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> value.point.x/<span class="hljs-number">100</span> &lt; p
         start = value</div></div>
       
       </div>
@@ -248,9 +251,27 @@ compared to current progress value</p>
       
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">sample</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span>
+    <span class="hljs-built_in">console</span>.time <span class="hljs-string">'clamp'</span>
     p = h.clamp p, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
+    <span class="hljs-built_in">console</span>.timeEnd <span class="hljs-string">'clamp'</span>
+    <span class="hljs-built_in">console</span>.time <span class="hljs-string">'find'</span>
     bounds = <span class="hljs-property">@_findBounds</span> <span class="hljs-property">@_samples</span>, p
-    <span class="hljs-property">@_hardSample</span> p, bounds.start.length, bounds.end.length
+    <span class="hljs-built_in">console</span>.timeEnd <span class="hljs-string">'find'</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log p, bounds.start.point.x, bounds.end.point.x</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-built_in">console</span>.time <span class="hljs-string">'hard sample'</span>
+    res = <span class="hljs-property">@_hardSample</span> p, bounds.start.length, bounds.end.length
+    <span class="hljs-built_in">console</span>.timeEnd <span class="hljs-string">'hard sample'</span>
+    res
 </div></div>
       
       </div>
@@ -285,8 +306,19 @@ Method <strong>_hardSample</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_hardSample</span>:<span class="hljs-function"><span class="hljs-params">(p, start, end, precision = <span class="hljs-property">@precision</span>, i=<span class="hljs-number">0</span>)</span>-&gt;</span>
-    center = start+((end-start)/<span class="hljs-number">2</span>)
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_hardSample</span>:<span class="hljs-function"><span class="hljs-params">(p, start, end, precision = <span class="hljs-property">@precision</span>, i=<span class="hljs-number">0</span>)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>debugger</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    center = start+((end-start)/<span class="hljs-number">2</span>)
     point  = <span class="hljs-property">@path</span>.getPointAtLength (center)
     rect = <span class="hljs-property">@rect</span>; x = point.x/rect
     
@@ -295,11 +327,6 @@ Method <strong>_hardSample</strong>
       </div>
     
       <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>console.log(&quot;eps: #{i}&quot;, Math.abs(rect*p - point.x))</p>
-</div>
-        </div>
       
       
         <div class="code"><div class="wrapper">      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> - point.y/rect</div></div>

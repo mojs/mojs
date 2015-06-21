@@ -32,7 +32,7 @@ class PathEasing
 
   # Method to create variables
   # @method _vars
-  _vars:-> @_stepsCount = 1000; @_step = 1/@_stepsCount
+  _vars:-> @_stepsCount = 5000; @_step = 1/@_stepsCount
 
   _preSample:->
     @_samples = []
@@ -53,12 +53,15 @@ class PathEasing
     start = 0; end = null
     len = array.length
     # get the start index in the array
-    startIndex = parseInt p*1000
+    startIndex = 0
+    console.log p, (p*5000)
+    # console.log startIndex
     # loop thru the array from the startIndex
     for i in [startIndex..len]
       value = array[i]
       # save the latest smaller value as start value
-      if value.progress < p
+      # console.log "pointX: #{value.point.x}", p, i
+      if value.point.x/100 < p
         start = value
       # save the first larger value as end value
       # and break immediately
@@ -73,9 +76,17 @@ class PathEasing
   # @param  {Number} easing progress in range [0,1]
   # @return {Number} easing y
   sample:(p)->
+    console.time 'clamp'
     p = h.clamp p, 0, 1
+    console.timeEnd 'clamp'
+    console.time 'find'
     bounds = @_findBounds @_samples, p
-    @_hardSample p, bounds.start.length, bounds.end.length
+    console.timeEnd 'find'
+    # console.log p, bounds.start.point.x, bounds.end.point.x
+    console.time 'hard sample'
+    res = @_hardSample p, bounds.start.length, bounds.end.length
+    console.timeEnd 'hard sample'
+    res
 
   # ---
   
@@ -87,12 +98,13 @@ class PathEasing
   # 
   # @return {Number} y value for the progress
   _hardSample:(p, start, end, precision = @precision, i=0)->
+    # debugger
     center = start+((end-start)/2)
     point  = @path.getPointAtLength (center)
     rect = @rect; x = point.x/rect
     
     if Math.abs(p - x) < @_eps
-      # console.log("eps: #{i}", Math.abs(rect*p - point.x))
+      # console.log("eps: #{i+1}", Math.abs(p - x), @_eps)
       return 1 - point.y/rect
     # orient is point.x
     if p > x then newStart = center; newEnd = end
