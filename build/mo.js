@@ -1901,7 +1901,7 @@ PathEasing = (function() {
     this.rect = o.rect || 100;
     this.sample = h.bind(this.sample, this);
     this._hardSample = h.bind(this._hardSample, this);
-    this._eps = 0.0001;
+    this._eps = 0.001;
     this._vars();
     this._preSample();
     this;
@@ -1909,7 +1909,8 @@ PathEasing = (function() {
 
   PathEasing.prototype._vars = function() {
     this._stepsCount = 5000;
-    return this._step = 1 / this._stepsCount;
+    this._step = 1 / this._stepsCount;
+    return this._boundsPrevProgress = -1;
   };
 
   PathEasing.prototype._preSample = function() {
@@ -1930,21 +1931,25 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._findBounds = function(array, p) {
-    var end, i, j, len, ref, ref1, start, startIndex, value;
+    var end, i, index, j, len, ref, ref1, start, value;
     start = 0;
     end = null;
     len = array.length;
-    startIndex = 0;
-    console.log(p, p * 5000);
-    for (i = j = ref = startIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
+    if (this._boundsStartIndex == null) {
+      this._boundsStartIndex = 0;
+    }
+    for (i = j = ref = this._boundsStartIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
       value = array[i];
       if (value.point.x / 100 < p) {
         start = value;
+        index = this._boundsPrevProgress < p ? i : 0;
+        this._boundsStartIndex = index;
       } else {
         end = value;
         break;
       }
     }
+    this._boundsPrevProgress = p;
     return {
       start: start,
       end: end
@@ -1978,6 +1983,7 @@ PathEasing = (function() {
     rect = this.rect;
     x = point.x / rect;
     if (Math.abs(p - x) < this._eps) {
+      console.log("eps: " + (i + 1), Math.abs(p - x), this._eps);
       return 1 - point.y / rect;
     }
     if (p > x) {
@@ -1987,9 +1993,11 @@ PathEasing = (function() {
       newStart = start;
       newEnd = center;
     } else {
+      console.log("equal: " + i);
       return 1 - point.y / rect;
     }
     if (--precision < 1) {
+      console.log("precision: " + i, Math.abs(p - x));
       return 1 - point.y / rect;
     } else {
       return this._hardSample(p, newStart, newEnd, precision, i + 1);

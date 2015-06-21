@@ -6,6 +6,24 @@
   PathEasing = mojs.easing.PathEasing;
 
   describe('PathEasing ->', function() {
+    describe('variables ->', function() {
+      it('should have _eps defined', function() {
+        var pe;
+        pe = new PathEasing('M0,0 10,10');
+        return expect(pe._eps).toBeDefined();
+      });
+      it('should have _eps defined', function() {
+        var pe;
+        pe = new PathEasing('M0,0 10,10');
+        expect(pe._stepsCount).toBe(5000);
+        return expect(pe._step).toBe(1 / pe._stepsCount);
+      });
+      return it('should have _boundsPrevProgress defined', function() {
+        var pe;
+        pe = new PathEasing('M0,0 10,10');
+        return expect(pe._boundsPrevProgress).toBe(-1);
+      });
+    });
     describe('_preSample method ->', function() {
       return it('should pre sample the path', function() {
         var len, pe;
@@ -18,43 +36,32 @@
         return expect(pe._samples[pe._stepsCount - 1]).toBeDefined();
       });
     });
-    describe('sample method ->', function() {
-      it('should clamp x value', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        expect(pe.sample(-.5)).toBeCloseTo(0, 5);
-        return expect(pe.sample(1.5)).toBeCloseTo(1, 5);
-      });
-      it('should return y', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(pe.sample(.7)).toBe(.7);
-      });
-      return it('should sample y', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(pe.sample(.706)).toBeCloseTo(.706, 4);
-      });
-    });
-    describe('_hardSample method', function() {
-      return it('should return y', function() {
-        var bounds, p, pe1, value;
-        pe1 = new PathEasing('M0,100 100,0');
-        p = 0.203231;
-        bounds = pe1._findBounds(pe1._samples, p);
-        value = pe1._hardSample(p, bounds.start.length, bounds.end.length);
-        return expect(value).toBeCloseTo(p, 4);
-      });
-    });
+    describe('sample method ->', function() {});
+    describe('_hardSample method', function() {});
     return describe('_findBounds method', function() {
-      return it('should find lowest and highest bounderies', function() {
+      it('should find lowest and highest bounderies', function() {
         var bounds, pe1, progress;
         pe1 = new PathEasing('M0,100 100,0');
         progress = .735;
         return bounds = pe1._findBounds(pe1._samples, progress);
+      });
+      it('should save previous start index', function() {
+        var bounds, pe1, progress;
+        pe1 = new PathEasing('M0,100 100,0');
+        progress = .735;
+        bounds = pe1._findBounds(pe1._samples, progress);
+        expect(pe1._boundsStartIndex).toBeGreaterThan(3600);
+        return expect(pe1._boundsPrevProgress).toBe(.735);
+      });
+      return it('should reset previous start index if current progress is smaller then previous one', function() {
+        var bounds, newProgress, pe1, progress;
+        pe1 = new PathEasing('M0,100 100,0');
+        progress = .735;
+        newProgress = progress - .01;
+        bounds = pe1._findBounds(pe1._samples, progress);
+        bounds = pe1._findBounds(pe1._samples, newProgress);
+        expect(pe1._boundsStartIndex).toBe(0);
+        return expect(pe1._boundsPrevProgress).toBe(newProgress);
       });
     });
   });

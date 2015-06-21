@@ -21,7 +21,7 @@ class PathEasing
     @precision = o.precision or 10; @rect = o.rect or 100
     @sample = h.bind(@sample, @)
     @_hardSample = h.bind(@_hardSample, @)
-    @_eps = 0.0001
+    @_eps = 0.001
     @_vars()
     
     # console.time 'pre sample'
@@ -32,7 +32,9 @@ class PathEasing
 
   # Method to create variables
   # @method _vars
-  _vars:-> @_stepsCount = 5000; @_step = 1/@_stepsCount
+  _vars:->
+    @_stepsCount = 5000; @_step = 1/@_stepsCount
+    @_boundsPrevProgress = -1
 
   _preSample:->
     @_samples = []
@@ -53,19 +55,23 @@ class PathEasing
     start = 0; end = null
     len = array.length
     # get the start index in the array
-    startIndex = 0
-    console.log p, (p*5000)
-    # console.log startIndex
-    # loop thru the array from the startIndex
-    for i in [startIndex..len]
+    @_boundsStartIndex ?= 0
+    # console.log p, parseInt((p*5000)), array[parseInt((p*4000))-1].point.x/100
+    # console.log @_boundsStartIndex
+    # loop thru the array from the @_boundsStartIndex
+    for i in [@_boundsStartIndex..len]
       value = array[i]
       # save the latest smaller value as start value
       # console.log "pointX: #{value.point.x}", p, i
       if value.point.x/100 < p
         start = value
+        index = if @_boundsPrevProgress < p then i else 0
+        @_boundsStartIndex = index
+        # console.log index
       # save the first larger value as end value
       # and break immediately
       else end = value; break
+    @_boundsPrevProgress = p
     start: start, end: end
   # ---
 
@@ -104,18 +110,18 @@ class PathEasing
     rect = @rect; x = point.x/rect
     
     if Math.abs(p - x) < @_eps
-      # console.log("eps: #{i+1}", Math.abs(p - x), @_eps)
+      console.log("eps: #{i+1}", Math.abs(p - x), @_eps)
       return 1 - point.y/rect
     # orient is point.x
     if p > x then newStart = center; newEnd = end
     else if p < x then newStart = start; newEnd = center
     else
-      # console.log("equal: #{i}")
+      console.log("equal: #{i}")
       return 1 - point.y/rect
     
     # if precise enough then return result
     if --precision < 1
-      # console.log("precision: #{i}", Math.abs(p - x))
+      console.log("precision: #{i}", Math.abs(p - x))
       return 1 - point.y/rect
     # else sample further
     else @_hardSample p, newStart, newEnd, precision, i+1
