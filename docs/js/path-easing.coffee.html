@@ -126,10 +126,43 @@ Method <strong>_vars</strong>
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_vars</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@_stepsCount</span> = <span class="hljs-number">5000</span>; <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_stepsCount</span>
     <span class="hljs-property">@_boundsPrevProgress</span> = -<span class="hljs-number">1</span>
-    <span class="hljs-property">@_eps</span> = <span class="hljs-property">@_step</span>/<span class="hljs-number">2</span>
-
-  <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@_samples</span> = []
+    <span class="hljs-property">@_eps</span> = <span class="hljs-number">0.001</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>_preSample</strong> sideEffect {Array} _samples - set of sampled points
+</span></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.time &#39;pre sample&#39;/</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_samples</span> = []
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>.<span class="hljs-property">@_stepsCount</span>]
       progress = i*<span class="hljs-property">@_step</span>
       length = <span class="hljs-property">@pathLength</span>*progress
@@ -141,8 +174,7 @@ Method <strong>_vars</strong>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><hr>
-</div>
+          <div class="wrapper"><h2 id="console-timeend-39-pre-sample-39-"><a href="#console-timeend-39-pre-sample-39-" class="anchor"></a>console.timeEnd &#39;pre sample&#39;</h2></div>
         </div>
       
       
@@ -173,21 +205,18 @@ Method <strong>_findBounds</strong>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>get the start index in the array</p>
+          <div class="wrapper"><p>get the start index in the array
+reset the cached prev progress if new progress
+is smaller then previous one or it is not defined</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-property">@_boundsStartIndex</span> ?= <span class="hljs-number">0</span></div></div>
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_boundsStartIndex</span> = <span class="hljs-number">0</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@_boundsPrevProgress</span> &gt; p <span class="hljs-keyword">or</span> !<span class="hljs-property">@_boundsStartIndex</span>?</div></div>
       
       </div>
     
       <div class="segment">
-      
-        <div class="comments doc-section">
-          <div class="wrapper"><p>console.log p, parseInt((p<em>5000)), array[parseInt((p</em>4000))-1].point.x/100</p>
-</div>
-        </div>
       
       
         <div class="code"><div class="wrapper">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-property">@_boundsStartIndex</span>..len]
@@ -198,15 +227,38 @@ Method <strong>_findBounds</strong>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>save the latest smaller value as start value
-console.log &quot;pointX: #{value.point.x}&quot;, p, i</p>
+          <div class="wrapper"><p>save the latest smaller value as start value</p>
 </div>
         </div>
       
       
         <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> value.point.x/<span class="hljs-property">@rect</span> &lt; p
-        start = value
-        index = <span class="hljs-keyword">if</span> <span class="hljs-property">@_boundsPrevProgress</span> &lt; p <span class="hljs-keyword">then</span> i <span class="hljs-keyword">else</span> <span class="hljs-number">0</span></div></div>
+        start = value</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>cache the prev bounds start index</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">        <span class="hljs-property">@_boundsStartIndex</span> = i <span class="hljs-keyword">if</span> <span class="hljs-property">@_boundsPrevProgress</span> &lt; p</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>save the first larger value as end value
+and break immediately</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span> end = value; <span class="hljs-keyword">break</span></div></div>
       
       </div>
     
@@ -214,28 +266,13 @@ console.log &quot;pointX: #{value.point.x}&quot;, p, i</p>
       
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
- _boundsPrevProgress &lt; p, @_boundsPrevProgress, p
+ isIt and console.log @_boundsPrevProgress, p, @_boundsStartIndex
 </span></p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">        <span class="hljs-property">@_boundsStartIndex</span> = index</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>console.log index
-save the first larger value as end value
-and break immediately</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span> end = value; <span class="hljs-keyword">break</span>
-    <span class="hljs-property">@_boundsPrevProgress</span> = p
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_boundsPrevProgress</span> = p
     <span class="hljs-attribute">start</span>: start, <span class="hljs-attribute">end</span>: end</div></div>
       
       </div>

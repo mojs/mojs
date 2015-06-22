@@ -34,15 +34,20 @@ class PathEasing
   _vars:->
     @_stepsCount = 5000; @_step = 1/@_stepsCount
     @_boundsPrevProgress = -1
-    @_eps = @_step/2
+    @_eps = 0.001
+  # ---
 
+  # @method _preSample
+  # @sideEffect {Array} _samples - set of sampled points
   _preSample:->
+    # console.time 'pre sample'/
     @_samples = []
     for i in [0..@_stepsCount]
       progress = i*@_step
       length = @pathLength*progress
       point = @path.getPointAtLength(length)
       @_samples[i] = point: point, length: length, progress: progress
+    # console.timeEnd 'pre sample'
   # ---
 
   # @method _findBounds
@@ -55,23 +60,21 @@ class PathEasing
     start = 0; end = null
     len = array.length
     # get the start index in the array
-    @_boundsStartIndex ?= 0
-    # console.log p, parseInt((p*5000)), array[parseInt((p*4000))-1].point.x/100
-    # console.log @_boundsStartIndex
+    # reset the cached prev progress if new progress
+    # is smaller then previous one or it is not defined
+    @_boundsStartIndex = 0 if @_boundsPrevProgress > p or !@_boundsStartIndex?
     # loop thru the array from the @_boundsStartIndex
     for i in [@_boundsStartIndex..len]
       value = array[i]
       # save the latest smaller value as start value
-      # console.log "pointX: #{value.point.x}", p, i
       if value.point.x/@rect < p
         start = value
-        index = if @_boundsPrevProgress < p then i else 0
-        # console.log  @_boundsPrevProgress < p, @_boundsPrevProgress, p
-        @_boundsStartIndex = index
-        # console.log index
+        # cache the prev bounds start index
+        @_boundsStartIndex = i if @_boundsPrevProgress < p
       # save the first larger value as end value
       # and break immediately
       else end = value; break
+    # @isIt and console.log @_boundsPrevProgress, p, @_boundsStartIndex
     @_boundsPrevProgress = p
     start: start, end: end
   # ---

@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.119.1 
+	0.120.1 
 */
 
 (function(f){
@@ -1320,7 +1320,7 @@ module.exports = h;
 var easing, el, mojs, path, timeline, tween;
 
 mojs = {
-  revision: '0.119.1',
+  revision: '0.120.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1914,7 +1914,7 @@ PathEasing = (function() {
     this._stepsCount = 5000;
     this._step = 1 / this._stepsCount;
     this._boundsPrevProgress = -1;
-    return this._eps = this._step / 2;
+    return this._eps = 0.001;
   };
 
   PathEasing.prototype._preSample = function() {
@@ -1935,19 +1935,20 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._findBounds = function(array, p) {
-    var end, i, index, j, len, ref, ref1, start, value;
+    var end, i, j, len, ref, ref1, start, value;
     start = 0;
     end = null;
     len = array.length;
-    if (this._boundsStartIndex == null) {
+    if (this._boundsPrevProgress > p || (this._boundsStartIndex == null)) {
       this._boundsStartIndex = 0;
     }
     for (i = j = ref = this._boundsStartIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
       value = array[i];
       if (value.point.x / this.rect < p) {
         start = value;
-        index = this._boundsPrevProgress < p ? i : 0;
-        this._boundsStartIndex = index;
+        if (this._boundsPrevProgress < p) {
+          this._boundsStartIndex = i;
+        }
       } else {
         end = value;
         break;

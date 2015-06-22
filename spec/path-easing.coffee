@@ -97,6 +97,7 @@ describe 'PathEasing ->', ->
     it 'should reset previous start index if current
         progress is smaller then previous one', ->
       pe1 = new PathEasing 'M0,100 100,0'
+      pe1.isIt = true
       progress = .735; newProgress = progress - .1
       bounds = pe1._findBounds pe1._samples, progress
       bounds = pe1._findBounds pe1._samples, newProgress

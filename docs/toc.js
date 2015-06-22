@@ -74,6 +74,11 @@ window.files = [
       "level": 2,
       "slug": "patheasing",
       "title": "PathEasing"
+    },
+    {
+      "level": 2,
+      "slug": "console-timeend-39-pre-sample-39-",
+      "title": "console.timeEnd &#39;pre sample&#39;"
     }
   ]
 },
