@@ -81,6 +81,12 @@ describe 'PathEasing ->', ->
     #   bounds = pe1._findBounds pe1._samples, p
     #   value = pe1._hardSample p, bounds.start.length, bounds.end.length
     #   expect(value).toBeCloseTo p, 4
+  describe '_approximate method',->
+    it 'should find approximation', ->
+      pe = new PathEasing 'M0,100 100,0'
+      s = pe._samples
+      approximation = pe._approximate s[11], s[12], s[11].progress+0.0003
+      expect(approximation).toBe s[11].length + .3*(s[12].length - s[11].length)
 
   describe '_findBounds method', ->
     it 'should find lowest and highest bounderies',->
@@ -93,7 +99,6 @@ describe 'PathEasing ->', ->
       bounds = pe1._findBounds pe1._samples, progress
       expect(pe1._boundsStartIndex).toBeGreaterThan 3600
       expect(pe1._boundsPrevProgress).toBe .735
-
     it 'should reset previous start index if current
         progress is smaller then previous one', ->
       pe1 = new PathEasing 'M0,100 100,0'

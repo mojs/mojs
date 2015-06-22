@@ -18,7 +18,7 @@ class PathEasing
     @path = h.parsePath(path)
     return h.error 'Error while parsing the path' if !@path?
     @pathLength = @path?.getTotalLength()
-    @precision = o.precision or 10; @rect = o.rect or 100
+    @precision = o.precision or 5; @rect = o.rect or 100
     @sample = h.bind(@sample, @)
     @_hardSample = h.bind(@_hardSample, @)
     @_vars()
@@ -32,9 +32,9 @@ class PathEasing
   # Method to create variables
   # @method _vars
   _vars:->
-    @_stepsCount = 5000; @_step = 1/@_stepsCount
+    @_stepsCount = 2000; @_step = 1/@_stepsCount
     @_boundsPrevProgress = -1
-    @_eps = 0.001
+    @_eps = 0.00001
   # ---
 
   # @method _preSample
@@ -69,7 +69,7 @@ class PathEasing
       # save the latest smaller value as start value
       if value.point.x/@rect < p
         start = value
-        # cache the prev bounds start index
+        # cache the bounds start index for further usage
         @_boundsStartIndex = i if @_boundsPrevProgress < p
       # save the first larger value as end value
       # and break immediately
@@ -101,6 +101,23 @@ class PathEasing
       # console.timeEnd 'sample'
       # console.log 'end is close enough'
       return @_resolveY(bounds.end.point)
+
+    approximation = @_approximate bounds.start, bounds.end, p
+    point = @path.getPointAtLength approximation
+    
+    newPoint = {point: point, length: approximation}
+    if p < point.x/100
+      console.log 'a'
+      approximation = @_approximate bounds.start, newPoint, p
+    else
+      console.log 'b'
+      approximation = @_approximate newPoint, bounds.end, p
+
+    point = @path.getPointAtLength approximation
+    distance = Math.abs(p-point.x/100)
+    window.d ?= 0
+    window.d = Math.max distance, window.d
+    console.log "distance: #{window.d}"
 
     # at the end hard sample
     res = @_hardSample p, bounds.start.length, bounds.end.length
@@ -137,6 +154,18 @@ class PathEasing
       return @_resolveY(point)
     # else sample further
     else @_hardSample p, newStart, newEnd, precision, i+1
+  # ---
+
+  # @method _approximate
+  # @param  {Object} start point object
+  # @param  {Object} end point object
+  # @param  {Number} progress to search
+  # @return {Object} approximation
+  _approximate:(start, end, p)->
+    deltaP = end.point.x - start.point.x
+    percentP = (p - (start.point.x/100))/(deltaP/100)
+    # console.log "precent: #{percentP} deltaP: #{deltaP} percentP: #{percentP}"
+    start.length + percentP*(end.length - start.length)
   # ---
 
   # 

@@ -38,6 +38,15 @@
     });
     describe('sample method ->', function() {});
     describe('_hardSample method', function() {});
+    describe('_approximate method', function() {
+      return it('should find approximation', function() {
+        var approximation, pe, s;
+        pe = new PathEasing('M0,100 100,0');
+        s = pe._samples;
+        approximation = pe._approximate(s[11], s[12], s[11].progress + 0.0003);
+        return expect(approximation).toBe(s[11].length + .3 * (s[12].length - s[11].length));
+      });
+    });
     describe('_findBounds method', function() {
       it('should find lowest and highest bounderies', function() {
         var bounds, pe1, progress;
