@@ -6,6 +6,14 @@
   PathEasing = mojs.easing.PathEasing;
 
   describe('PathEasing ->', function() {
+    it('should be a function', function() {
+      return expect(typeof mojs.easing.PathEasing).toBe('function');
+    });
+    it('should not init if "creator" was passed', function() {
+      var pe;
+      pe = new PathEasing('creator');
+      return expect(pe.precision).not.toBeDefined();
+    });
     describe('variables ->', function() {
       it('should have _eps defined', function() {
         var pe;
@@ -15,13 +23,93 @@
       it('should have _eps defined', function() {
         var pe;
         pe = new PathEasing('M0,0 10,10');
-        expect(pe._stepsCount).toBe(5000);
-        return expect(pe._step).toBe(1 / pe._stepsCount);
+        expect(pe._precompute).toBe(2000);
+        return expect(pe._step).toBe(1 / pe._precompute);
       });
       return it('should have _boundsPrevProgress defined', function() {
         var pe;
         pe = new PathEasing('M0,0 10,10');
         return expect(pe._boundsPrevProgress).toBe(-1);
+      });
+    });
+    describe('path parsing ->', function() {
+      it('should parse path', function() {
+        var path, pe;
+        path = 'M0,0 10,10';
+        spyOn(h, 'parsePath');
+        pe = new PathEasing(path);
+        return expect(h.parsePath).toHaveBeenCalledWith(path);
+      });
+      it('should save path and pathLength', function() {
+        var path, pe;
+        path = 'M0,0 10,10';
+        pe = new PathEasing(path);
+        expect(pe.path).toBeDefined();
+        return expect(pe.pathLength).toBe(pe.path.getTotalLength());
+      });
+      return it('should error if path wasnt parsed', function() {
+        var path, pe;
+        path = 'M0,0 10,10';
+        spyOn(h, 'error');
+        spyOn(h, 'parsePath');
+        pe = new PathEasing(path);
+        return expect(h.error).toHaveBeenCalled();
+      });
+    });
+    describe('options ->', function() {
+      it('should recieve "_approximateMax" option', function() {
+        var path, pe;
+        path = 'M0,0 10,10';
+        pe = new PathEasing(path, {
+          approximateMax: 10
+        });
+        return expect(pe._approximateMax).toBe(10);
+      });
+      it('should recieve "rect" option', function() {
+        var path, pe;
+        path = 'M0,0 10,10';
+        pe = new PathEasing(path, {
+          rect: 200
+        });
+        return expect(pe._rect).toBe(200);
+      });
+      it('should recieve "eps" option', function() {
+        var eps, path, pe;
+        path = 'M0,0 10,10';
+        eps = .00001;
+        pe = new PathEasing(path, {
+          eps: eps
+        });
+        return expect(pe._eps).toBe(eps);
+      });
+      return describe('precompute option ->', function() {
+        it('should recieve "precompute" option', function() {
+          var path, pe, precompute;
+          path = 'M0,0 10,10';
+          precompute = 10000;
+          pe = new PathEasing(path, {
+            precompute: precompute
+          });
+          return expect(pe._precompute).toBe(precompute);
+        });
+        it('should not be larger than 10000', function() {
+          var path, pe, precompute;
+          path = 'M0,0 10,10';
+          precompute = 20000;
+          pe = new PathEasing(path, {
+            precompute: precompute
+          });
+          return expect(pe._precompute).toBe(10000);
+        });
+        return it('should not be smaller than 100', function() {
+          var path, pe, precompute;
+          path = 'M0,0 10,10';
+          precompute = 20;
+          pe = new PathEasing(path, {
+            precompute: precompute
+          });
+          return expect(pe._precompute).toBe(100);
+        });
       });
     });
     describe('_preSample method ->', function() {
@@ -33,18 +121,28 @@
         expect(pe._samples[1]).toBeDefined();
         expect(pe._samples[2]).toBeDefined();
         expect(pe._samples[50]).toBeDefined();
-        return expect(pe._samples[pe._stepsCount - 1]).toBeDefined();
+        return expect(pe._samples[pe._precompute - 1]).toBeDefined();
       });
     });
-    describe('sample method ->', function() {});
-    describe('_hardSample method', function() {
-      return it('should return y', function() {
-        var bounds, p, pe1, value;
-        pe1 = new PathEasing('M0,100 100,0');
-        p = 0.203231;
-        bounds = pe1._findBounds(pe1._samples, p);
-        value = pe1._hardSample(p, bounds.start.length, bounds.end.length);
-        return expect(value).toBeCloseTo(p, 4);
+    describe('sample method ->', function() {
+      it('should clamp x value', function() {
+        var path, pe;
+        path = 'M0,100 100,0';
+        pe = new PathEasing(path);
+        expect(pe.sample(-.5)).toBeCloseTo(0, 3);
+        return expect(pe.sample(1.5)).toBeCloseTo(1, 3);
+      });
+      it('should return y', function() {
+        var path, pe;
+        path = 'M0,100 100,0';
+        pe = new PathEasing(path);
+        return expect(Math.abs(pe.sample(.7) - .7)).toBeLessThan(pe._eps);
+      });
+      return it('should sample y', function() {
+        var path, pe;
+        path = 'M0,100 100,0';
+        pe = new PathEasing(path);
+        return expect(Math.abs(pe.sample(.706) - .706)).toBeLessThan(pe._eps);
       });
     });
     describe('_approximate method', function() {
@@ -81,8 +179,16 @@
         pe1 = new PathEasing('M0,100 100,0');
         progress = .735;
         bounds = pe1._findBounds(pe1._samples, progress);
-        expect(pe1._boundsStartIndex).toBeGreaterThan(3600);
+        expect(pe1._boundsStartIndex).toBeGreaterThan(1400);
         return expect(pe1._boundsPrevProgress).toBe(.735);
+      });
+      it('should return [0] item if progress is 0', function() {
+        var bounds, pe1, progress;
+        pe1 = new PathEasing('M0,100 100,0');
+        progress = 0;
+        bounds = pe1._findBounds(pe1._samples, progress);
+        expect(bounds.start).toBeDefined();
+        return expect(bounds.start.point.x).toBeCloseTo(0, 1);
       });
       return it('should reset previous start index if current progress is smaller then previous one', function() {
         var bounds, newProgress, pe1, progress;
@@ -96,7 +202,7 @@
         return expect(pe1._boundsPrevProgress).toBe(newProgress);
       });
     });
-    return describe('_resolveY method', function() {
+    describe('_resolveY method', function() {
       return it('should resolve Y from point', function() {
         var pe1, y;
         pe1 = new PathEasing('M0,100 100,0');
@@ -104,6 +210,17 @@
         return expect(pe1._resolveY({
           y: y
         })).toBe(1 - (y / 100));
+      });
+    });
+    return describe('create method ->', function() {
+      return it('should create new instance of path-easing and return it\'s method', function() {
+        var easing, pe;
+        pe = new PathEasing('creator');
+        easing = pe.create('M0,100 100,0', {
+          precision: 10
+        });
+        expect(typeof easing).toBe('function');
+        return expect(Math.abs(easing(.5) - .5)).toBeLessThan(.01);
       });
     });
   });
