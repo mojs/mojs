@@ -21,7 +21,6 @@ class PathEasing
     @precision = o.precision or 10; @rect = o.rect or 100
     @sample = h.bind(@sample, @)
     @_hardSample = h.bind(@_hardSample, @)
-    @_eps = 0.001
     @_vars()
     
     # console.time 'pre sample'
@@ -35,6 +34,7 @@ class PathEasing
   _vars:->
     @_stepsCount = 5000; @_step = 1/@_stepsCount
     @_boundsPrevProgress = -1
+    @_eps = @_step/2
 
   _preSample:->
     @_samples = []
@@ -63,9 +63,10 @@ class PathEasing
       value = array[i]
       # save the latest smaller value as start value
       # console.log "pointX: #{value.point.x}", p, i
-      if value.point.x/100 < p
+      if value.point.x/@rect < p
         start = value
         index = if @_boundsPrevProgress < p then i else 0
+        # console.log  @_boundsPrevProgress < p, @_boundsPrevProgress, p
         @_boundsStartIndex = index
         # console.log index
       # save the first larger value as end value
@@ -82,18 +83,26 @@ class PathEasing
   # @param  {Number} easing progress in range [0,1]
   # @return {Number} easing y
   sample:(p)->
-    console.time 'clamp'
+    # console.time 'sample'
     p = h.clamp p, 0, 1
-    console.timeEnd 'clamp'
-    console.time 'find'
     bounds = @_findBounds @_samples, p
-    console.timeEnd 'find'
-    # console.log p, bounds.start.point.x, bounds.end.point.x
-    console.time 'hard sample'
-    res = @_hardSample p, bounds.start.length, bounds.end.length
-    console.timeEnd 'hard sample'
-    res
+    # console.log bounds.start.point.x/@rect, p
+    # check if start bound is close enough
+    if h.closeEnough p, bounds.start.point.x/@rect, @_eps
+      # console.timeEnd 'sample'
+      # console.log 'start is close enough'
+      return @_resolveY(bounds.start.point)
+    # console.log bounds.end.point.x/@rect, p
+    # check if end bound is close enough
+    if h.closeEnough p, bounds.end.point.x/@rect, @_eps
+      # console.timeEnd 'sample'
+      # console.log 'end is close enough'
+      return @_resolveY(bounds.end.point)
 
+    # at the end hard sample
+    res = @_hardSample p, bounds.start.length, bounds.end.length
+    # console.timeEnd 'sample'
+    res
   # ---
   
   # @method _hardSample
@@ -109,22 +118,30 @@ class PathEasing
     point  = @path.getPointAtLength (center)
     rect = @rect; x = point.x/rect
     
-    if Math.abs(p - x) < @_eps
-      console.log("eps: #{i+1}", Math.abs(p - x), @_eps)
-      return 1 - point.y/rect
+    if h.closeEnough p, x, @_eps
+      # console.log("eps: #{i+1}", Math.abs(p - x), @_eps)
+      return @_resolveY(point)
     # orient is point.x
     if p > x then newStart = center; newEnd = end
     else if p < x then newStart = start; newEnd = center
     else
-      console.log("equal: #{i}")
-      return 1 - point.y/rect
+      # console.log("equal: #{i}")
+      return @_resolveY(point)
     
     # if precise enough then return result
     if --precision < 1
-      console.log("precision: #{i}", Math.abs(p - x))
-      return 1 - point.y/rect
+      # console.log("precision: #{i}", Math.abs(p - x))
+      return @_resolveY(point)
     # else sample further
     else @_hardSample p, newStart, newEnd, precision, i+1
+  # ---
+
+  # 
+  # 
+  # @method resolveY
+  # @param  {Object} SVG point
+  # @return {Number} normalized y
+  _resolveY:(point)-> 1 - (point.y/@rect)
   # ---
 
   # Create new instance of PathEasing with specified parameters

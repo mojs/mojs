@@ -97,13 +97,16 @@ describe 'PathEasing ->', ->
     it 'should reset previous start index if current
         progress is smaller then previous one', ->
       pe1 = new PathEasing 'M0,100 100,0'
-      progress = .735; newProgress = progress - .01
+      progress = .735; newProgress = progress - .1
       bounds = pe1._findBounds pe1._samples, progress
       bounds = pe1._findBounds pe1._samples, newProgress
       expect(pe1._boundsStartIndex).toBe   0
       expect(pe1._boundsPrevProgress).toBe newProgress
 
-
+  describe '_resolveY method', ->
+    it 'should resolve Y from point', ->
+      pe1 = new PathEasing('M0,100 100,0'); y = 10
+      expect(pe1._resolveY(y: y)).toBe 1-(y/100)
 
   # describe 'create method ->', ->
   #   it 'should create new instance of path-easing and return it\'s method', ->

@@ -451,7 +451,7 @@ class Helpers
   getUniqID:-> ++@uniqIDs
   # ---
 
-  # Returns uniq id
+  # Returns an uniq id
   #
   # @method parsePath
   # @return {SVGPath}
@@ -462,6 +462,13 @@ class Helpers
         domPath.setAttributeNS(null, 'd', path); domPath
       else document.querySelector path
     return path if path.style
+  # ---
+
+  # Returns uniq id
+  #
+  # @method parsePath
+  # @return {SVGPath}
+  closeEnough:(num1, num2, eps)-> Math.abs(num1-num2) < eps
 
 
 h = new Helpers

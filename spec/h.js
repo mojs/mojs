@@ -1131,7 +1131,7 @@
         return expect(h.uniqIDs).toBe(2);
       });
     });
-    return describe('parsePath method', function() {
+    describe('parsePath method', function() {
       it('should parse path if string passed', function() {
         var isIEPath, isNormalpath, pathStr;
         pathStr = 'M0,0 10,10';
@@ -1161,6 +1161,14 @@
         document.body.appendChild(svg);
         expect(h.parsePath(path).tagName).toBe('path');
         return expect(h.parsePath(path).getAttribute('id')).toBe(pathId);
+      });
+    });
+    return describe('closeEnough method', function() {
+      return it('should compare two numbers', function() {
+        expect(h.closeEnough(.0005, .0006, .001)).toBe(true);
+        expect(h.closeEnough(.0005, .0005, .00000001)).toBe(true);
+        expect(h.closeEnough(1, .0005, .00000001)).toBe(false);
+        return expect(h.closeEnough(1, .0005, 1)).toBe(true);
       });
     });
   });

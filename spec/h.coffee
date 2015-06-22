@@ -825,6 +825,11 @@ describe 'Helpers ->', ->
       expect(h.parsePath(path).tagName).toBe 'path'
       expect(h.parsePath(path).getAttribute('id')).toBe pathId
 
-
+  describe 'closeEnough method', ->
+    it 'should compare two numbers', ->
+      expect(h.closeEnough(.0005, .0006, .001))     .toBe true
+      expect(h.closeEnough(.0005, .0005, .00000001)).toBe true
+      expect(h.closeEnough(1, .0005, .00000001))    .toBe false
+      expect(h.closeEnough(1, .0005, 1))            .toBe true
 
 

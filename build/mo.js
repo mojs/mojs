@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.119.0 
+	0.119.1 
 */
 
 (function(f){
@@ -1304,6 +1304,10 @@ Helpers = (function() {
     }
   };
 
+  Helpers.prototype.closeEnough = function(num1, num2, eps) {
+    return Math.abs(num1 - num2) < eps;
+  };
+
   return Helpers;
 
 })();
@@ -1316,7 +1320,7 @@ module.exports = h;
 var easing, el, mojs, path, timeline, tween;
 
 mojs = {
-  revision: '0.119.0',
+  revision: '0.119.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1352,7 +1356,7 @@ easing = mojs.easing.path(path);
 
 timeline = new mojs.Timeline({
   delay: 1000,
-  duration: 1600,
+  duration: 16000,
   onUpdate: function(p) {
     var ease;
     ease = easing(p);
@@ -1901,7 +1905,6 @@ PathEasing = (function() {
     this.rect = o.rect || 100;
     this.sample = h.bind(this.sample, this);
     this._hardSample = h.bind(this._hardSample, this);
-    this._eps = 0.001;
     this._vars();
     this._preSample();
     this;
@@ -1910,7 +1913,8 @@ PathEasing = (function() {
   PathEasing.prototype._vars = function() {
     this._stepsCount = 5000;
     this._step = 1 / this._stepsCount;
-    return this._boundsPrevProgress = -1;
+    this._boundsPrevProgress = -1;
+    return this._eps = this._step / 2;
   };
 
   PathEasing.prototype._preSample = function() {
@@ -1940,7 +1944,7 @@ PathEasing = (function() {
     }
     for (i = j = ref = this._boundsStartIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
       value = array[i];
-      if (value.point.x / 100 < p) {
+      if (value.point.x / this.rect < p) {
         start = value;
         index = this._boundsPrevProgress < p ? i : 0;
         this._boundsStartIndex = index;
@@ -1958,15 +1962,15 @@ PathEasing = (function() {
 
   PathEasing.prototype.sample = function(p) {
     var bounds, res;
-    console.time('clamp');
     p = h.clamp(p, 0, 1);
-    console.timeEnd('clamp');
-    console.time('find');
     bounds = this._findBounds(this._samples, p);
-    console.timeEnd('find');
-    console.time('hard sample');
+    if (h.closeEnough(p, bounds.start.point.x / this.rect, this._eps)) {
+      return this._resolveY(bounds.start.point);
+    }
+    if (h.closeEnough(p, bounds.end.point.x / this.rect, this._eps)) {
+      return this._resolveY(bounds.end.point);
+    }
     res = this._hardSample(p, bounds.start.length, bounds.end.length);
-    console.timeEnd('hard sample');
     return res;
   };
 
@@ -1982,9 +1986,8 @@ PathEasing = (function() {
     point = this.path.getPointAtLength(center);
     rect = this.rect;
     x = point.x / rect;
-    if (Math.abs(p - x) < this._eps) {
-      console.log("eps: " + (i + 1), Math.abs(p - x), this._eps);
-      return 1 - point.y / rect;
+    if (h.closeEnough(p, x, this._eps)) {
+      return this._resolveY(point);
     }
     if (p > x) {
       newStart = center;
@@ -1993,15 +1996,17 @@ PathEasing = (function() {
       newStart = start;
       newEnd = center;
     } else {
-      console.log("equal: " + i);
-      return 1 - point.y / rect;
+      return this._resolveY(point);
     }
     if (--precision < 1) {
-      console.log("precision: " + i, Math.abs(p - x));
-      return 1 - point.y / rect;
+      return this._resolveY(point);
     } else {
       return this._hardSample(p, newStart, newEnd, precision, i + 1);
     }
+  };
+
+  PathEasing.prototype._resolveY = function(point) {
+    return 1 - (point.y / this.rect);
   };
 
   PathEasing.prototype.create = function(path, o) {

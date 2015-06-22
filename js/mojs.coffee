@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.119.0', isDebug: true
+  revision:   '0.119.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -52,10 +52,14 @@ easing = mojs.easing.path path
 
 timeline = new mojs.Timeline
   delay:    1000
-  duration: 1600
+  duration: 16000
   onUpdate:(p)->
     # console.time 'sample'
     ease = easing(p)
+    # ease = easing(p)
+    # ease = easing(p)
+    # ease = easing(p)
+    # ease = easing(p)
     # console.log ease
     # console.log ease
     # ease2 = easing2(p)

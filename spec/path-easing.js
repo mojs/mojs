@@ -38,7 +38,7 @@
     });
     describe('sample method ->', function() {});
     describe('_hardSample method', function() {});
-    return describe('_findBounds method', function() {
+    describe('_findBounds method', function() {
       it('should find lowest and highest bounderies', function() {
         var bounds, pe1, progress;
         pe1 = new PathEasing('M0,100 100,0');
@@ -57,11 +57,21 @@
         var bounds, newProgress, pe1, progress;
         pe1 = new PathEasing('M0,100 100,0');
         progress = .735;
-        newProgress = progress - .01;
+        newProgress = progress - .1;
         bounds = pe1._findBounds(pe1._samples, progress);
         bounds = pe1._findBounds(pe1._samples, newProgress);
         expect(pe1._boundsStartIndex).toBe(0);
         return expect(pe1._boundsPrevProgress).toBe(newProgress);
+      });
+    });
+    return describe('_resolveY method', function() {
+      return it('should resolve Y from point', function() {
+        var pe1, y;
+        pe1 = new PathEasing('M0,100 100,0');
+        y = 10;
+        return expect(pe1._resolveY({
+          y: y
+        })).toBe(1 - (y / 100));
       });
     });
   });
