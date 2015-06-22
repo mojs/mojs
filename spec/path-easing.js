@@ -37,14 +37,36 @@
       });
     });
     describe('sample method ->', function() {});
-    describe('_hardSample method', function() {});
+    describe('_hardSample method', function() {
+      return it('should return y', function() {
+        var bounds, p, pe1, value;
+        pe1 = new PathEasing('M0,100 100,0');
+        p = 0.203231;
+        bounds = pe1._findBounds(pe1._samples, p);
+        value = pe1._hardSample(p, bounds.start.length, bounds.end.length);
+        return expect(value).toBeCloseTo(p, 4);
+      });
+    });
     describe('_approximate method', function() {
       return it('should find approximation', function() {
-        var approximation, pe, s;
+        var approximation, length2, pe, point1, point2, s;
         pe = new PathEasing('M0,100 100,0');
         s = pe._samples;
         approximation = pe._approximate(s[11], s[12], s[11].progress + 0.0003);
-        return expect(approximation).toBe(s[11].length + .3 * (s[12].length - s[11].length));
+        point1 = pe.path.getPointAtLength(approximation);
+        length2 = s[11].length + .3 * (s[12].length - s[11].length);
+        point2 = pe.path.getPointAtLength(length2);
+        return expect(point1.x).toBeCloseTo(point2.x, 1);
+      });
+    });
+    describe('_findApproximate method', function() {
+      return it('should return y', function() {
+        var bounds, p, pe1, value;
+        pe1 = new PathEasing('M0,100 100,0');
+        p = 0.203231;
+        bounds = pe1._findBounds(pe1._samples, p);
+        value = pe1._findApproximate(p, bounds.start, bounds.end);
+        return expect(value).toBeCloseTo(p, 4);
       });
     });
     describe('_findBounds method', function() {

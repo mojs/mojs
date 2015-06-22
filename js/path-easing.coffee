@@ -34,20 +34,20 @@ class PathEasing
   _vars:->
     @_stepsCount = 2000; @_step = 1/@_stepsCount
     @_boundsPrevProgress = -1
-    @_eps = 0.00001
+    @_eps = 0.001
   # ---
 
   # @method _preSample
   # @sideEffect {Array} _samples - set of sampled points
   _preSample:->
-    # console.time 'pre sample'/
+    console.time 'pre sample'
     @_samples = []
     for i in [0..@_stepsCount]
       progress = i*@_step
       length = @pathLength*progress
       point = @path.getPointAtLength(length)
       @_samples[i] = point: point, length: length, progress: progress
-    # console.timeEnd 'pre sample'
+    console.timeEnd 'pre sample'
   # ---
 
   # @method _findBounds
@@ -166,6 +166,25 @@ class PathEasing
     percentP = (p - (start.point.x/100))/(deltaP/100)
     # console.log "precent: #{percentP} deltaP: #{deltaP} percentP: #{percentP}"
     start.length + percentP*(end.length - start.length)
+  # ---
+
+  # @method _findApproximate
+  # @param  {Number} progress to search for
+  # @param  {Object} start point object
+  # @param  {Object} end point object
+  # @return {Number} y approximation
+  _findApproximate:(p, start, end)->
+    approximation = @_approximate start, end, p
+    point = @path.getPointAtLength(approximation); x = point.x/100
+    # if close enough resolve the y value
+    if h.closeEnough p, x, @_eps then @_resolveY(point)
+    else
+      # not precise enough so we will call self
+      # again recursively, lets find arguments for the call
+      newPoint = {point: point, length: approximation}
+      args = if p < x then [p, bounds.start, newPoint]
+      else [p, newPoint, bounds.end]
+      @_findApproximate.apply @, args
   # ---
 
   # 

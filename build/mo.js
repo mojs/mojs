@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.120.1 
+	0.120.2 
 */
 
 (function(f){
@@ -1320,7 +1320,7 @@ module.exports = h;
 var easing, el, mojs, path, path2, timeline, tween;
 
 mojs = {
-  revision: '0.120.1',
+  revision: '0.120.2',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1916,24 +1916,24 @@ PathEasing = (function() {
     this._stepsCount = 2000;
     this._step = 1 / this._stepsCount;
     this._boundsPrevProgress = -1;
-    return this._eps = 0.00001;
+    return this._eps = 0.001;
   };
 
   PathEasing.prototype._preSample = function() {
-    var i, j, length, point, progress, ref, results;
+    var i, j, length, point, progress, ref;
+    console.time('pre sample');
     this._samples = [];
-    results = [];
     for (i = j = 0, ref = this._stepsCount; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
       progress = i * this._step;
       length = this.pathLength * progress;
       point = this.path.getPointAtLength(length);
-      results.push(this._samples[i] = {
+      this._samples[i] = {
         point: point,
         length: length,
         progress: progress
-      });
+      };
     }
-    return results;
+    return console.timeEnd('pre sample');
   };
 
   PathEasing.prototype._findBounds = function(array, p) {
@@ -2033,6 +2033,23 @@ PathEasing = (function() {
     deltaP = end.point.x - start.point.x;
     percentP = (p - (start.point.x / 100)) / (deltaP / 100);
     return start.length + percentP * (end.length - start.length);
+  };
+
+  PathEasing.prototype._findApproximate = function(p, start, end) {
+    var approximation, args, newPoint, point, x;
+    approximation = this._approximate(start, end, p);
+    point = this.path.getPointAtLength(approximation);
+    x = point.x / 100;
+    if (h.closeEnough(p, x, this._eps)) {
+      return this._resolveY(point);
+    } else {
+      newPoint = {
+        point: point,
+        length: approximation
+      };
+      args = p < x ? [p, bounds.start, newPoint] : [p, newPoint, bounds.end];
+      return this._findApproximate.apply(this, args);
+    }
   };
 
   PathEasing.prototype._resolveY = function(point) {

@@ -126,7 +126,7 @@ Method <strong>_vars</strong>
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_vars</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@_stepsCount</span> = <span class="hljs-number">2000</span>; <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_stepsCount</span>
     <span class="hljs-property">@_boundsPrevProgress</span> = -<span class="hljs-number">1</span>
-    <span class="hljs-property">@_eps</span> = <span class="hljs-number">0.00001</span></div></div>
+    <span class="hljs-property">@_eps</span> = <span class="hljs-number">0.001</span></div></div>
       
       </div>
     
@@ -150,31 +150,23 @@ Method <strong>_preSample</strong> sideEffect {Array} _samples - set of sampled 
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span></div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>console.time &#39;pre sample&#39;/</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">    <span class="hljs-property">@_samples</span> = []
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_preSample</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-built_in">console</span>.time <span class="hljs-string">'pre sample'</span>
+    <span class="hljs-property">@_samples</span> = []
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>.<span class="hljs-property">@_stepsCount</span>]
       progress = i*<span class="hljs-property">@_step</span>
       length = <span class="hljs-property">@pathLength</span>*progress
       point = <span class="hljs-property">@path</span>.getPointAtLength(length)
-      <span class="hljs-property">@_samples</span>[i] = <span class="hljs-attribute">point</span>: point, <span class="hljs-attribute">length</span>: length, <span class="hljs-attribute">progress</span>: progress</div></div>
+      <span class="hljs-property">@_samples</span>[i] = <span class="hljs-attribute">point</span>: point, <span class="hljs-attribute">length</span>: length, <span class="hljs-attribute">progress</span>: progress
+    <span class="hljs-built_in">console</span>.timeEnd <span class="hljs-string">'pre sample'</span></div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><h2 id="console-timeend-39-pre-sample-39-"><a href="#console-timeend-39-pre-sample-39-" class="anchor"></a>console.timeEnd &#39;pre sample&#39;</h2></div>
+          <div class="wrapper"><hr>
+</div>
         </div>
       
       
@@ -577,6 +569,68 @@ Method <strong>_approximate</strong>
       
       
         <div class="code"><div class="wrapper">    start.length + percentP*(end.length - start.length)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Method <strong>_findApproximate</strong>
+</span></p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>progress</code> must be a Number.</strong><br/>(to search for)</li>
+<li><strong><code>start</code> must be an Object.</strong><br/>(point object)</li>
+<li><strong><code>end</code> must be an Object.</strong><br/>(point object)</li>
+</ul>
+<p><strong>Returns a Number</strong><br/>(y approximation)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_findApproximate</span>:<span class="hljs-function"><span class="hljs-params">(p, start, end)</span>-&gt;</span>
+    approximation = <span class="hljs-property">@_approximate</span> start, end, p
+    point = <span class="hljs-property">@path</span>.getPointAtLength(approximation); x = point.x/<span class="hljs-number">100</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if close enough resolve the y value</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> h.closeEnough p, x, <span class="hljs-property">@_eps</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@_resolveY</span>(point)
+    <span class="hljs-keyword">else</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>not precise enough so we will call self
+again recursively, lets find arguments for the call</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      newPoint = {<span class="hljs-attribute">point</span>: point, <span class="hljs-attribute">length</span>: approximation}
+      args = <span class="hljs-keyword">if</span> p &lt; x <span class="hljs-keyword">then</span> [p, bounds.start, newPoint]
+      <span class="hljs-keyword">else</span> [p, newPoint, bounds.end]
+      <span class="hljs-property">@_findApproximate</span>.apply @, args</div></div>
       
       </div>
     

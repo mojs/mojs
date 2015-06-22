@@ -75,18 +75,29 @@ describe 'PathEasing ->', ->
     #   expect(pe.sample(.706)).toBeCloseTo .706, 4
 
   describe '_hardSample method', ->
-    # it 'should return y', ->
-    #   pe1 = new PathEasing 'M0,100 100,0'
-    #   p = 0.203231
-    #   bounds = pe1._findBounds pe1._samples, p
-    #   value = pe1._hardSample p, bounds.start.length, bounds.end.length
-    #   expect(value).toBeCloseTo p, 4
+    it 'should return y', ->
+      pe1 = new PathEasing 'M0,100 100,0'
+      p = 0.203231
+      bounds = pe1._findBounds pe1._samples, p
+      value = pe1._hardSample p, bounds.start.length, bounds.end.length
+      expect(value).toBeCloseTo p, 4
   describe '_approximate method',->
     it 'should find approximation', ->
       pe = new PathEasing 'M0,100 100,0'
       s = pe._samples
       approximation = pe._approximate s[11], s[12], s[11].progress+0.0003
-      expect(approximation).toBe s[11].length + .3*(s[12].length - s[11].length)
+      point1 = pe.path.getPointAtLength approximation
+      length2 = s[11].length + .3*(s[12].length - s[11].length)
+      point2 = pe.path.getPointAtLength length2
+      expect(point1.x).toBeCloseTo point2.x, 1
+  describe '_findApproximate method',->
+    it 'should return y', ->
+      pe1 = new PathEasing 'M0,100 100,0'
+      p = 0.203231
+      bounds = pe1._findBounds pe1._samples, p
+      value = pe1._findApproximate p, bounds.start, bounds.end
+      expect(value).toBeCloseTo p, 4
+
 
   describe '_findBounds method', ->
     it 'should find lowest and highest bounderies',->
