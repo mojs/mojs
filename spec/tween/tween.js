@@ -14,8 +14,8 @@
     it('should have timelines var', function() {
       var t;
       t = new Tween;
-      expect(t.timelines.length).toBe(0);
-      return expect(t.props.totalTime).toBe(0);
+      expect(t.timelines.length).toBe(1);
+      return expect(t.props.totalTime).toBe(600);
     });
     it('should have initial state flags', function() {
       var t;
@@ -27,8 +27,8 @@
         var t;
         t = new Tween;
         t.add(new Timeline);
-        expect(t.timelines.length).toBe(1);
-        return expect(t.timelines[0] instanceof Timeline).toBe(true);
+        expect(t.timelines.length).toBe(2);
+        return expect(t.timelines[1] instanceof Timeline).toBe(true);
       });
       it('should work with arrays of tweens', function() {
         var t, t1, t2;
@@ -40,11 +40,12 @@
           duration: 1500
         });
         t.add([t1, t2, new Tween]);
-        expect(t.timelines.length).toBe(3);
+        expect(t.timelines.length).toBe(4);
         expect(t.props.totalTime).toBe(1500);
         expect(t.timelines[0] instanceof Timeline).toBe(true);
         expect(t.timelines[1] instanceof Timeline).toBe(true);
-        return expect(t.timelines[2] instanceof Tween).toBe(true);
+        expect(t.timelines[2] instanceof Timeline).toBe(true);
+        return expect(t.timelines[3] instanceof Tween).toBe(true);
       });
       it('should work with arguments', function() {
         var t1, t2, tween;
@@ -61,7 +62,7 @@
         });
         tween.add(t1, t2);
         expect(tween.props.totalTime).toBe(1000);
-        return expect(tween.timelines.length).toBe(2);
+        return expect(tween.timelines.length).toBe(3);
       });
       it('should work with mixed arguments', function() {
         var t, t1, t2;
@@ -73,12 +74,13 @@
           duration: 1500
         });
         t.add([t1, new Timeline, new Tween], t2);
-        expect(t.timelines.length).toBe(4);
+        expect(t.timelines.length).toBe(5);
         expect(t.props.totalTime).toBe(1500);
         expect(t.timelines[0] instanceof Timeline).toBe(true);
         expect(t.timelines[1] instanceof Timeline).toBe(true);
-        expect(t.timelines[2] instanceof Tween).toBe(true);
-        return expect(t.timelines[3] instanceof Timeline).toBe(true);
+        expect(t.timelines[2] instanceof Timeline).toBe(true);
+        expect(t.timelines[3] instanceof Tween).toBe(true);
+        return expect(t.timelines[4] instanceof Timeline).toBe(true);
       });
       it('should calc self duration', function() {
         var t;
@@ -119,8 +121,9 @@
         t.pushTimeline(new Timeline({
           duration: 4000
         }));
-        expect(t.timelines.length).toBe(1);
+        expect(t.timelines.length).toBe(2);
         expect(t.timelines[0] instanceof Timeline).toBe(true);
+        expect(t.timelines[1] instanceof Timeline).toBe(true);
         return expect(t.props.totalTime).toBe(4000);
       });
     });
@@ -129,8 +132,8 @@
         var t;
         t = new Tween;
         t.append(new Timeline);
-        expect(t.timelines.length).toBe(1);
-        return expect(t.timelines[0] instanceof Timeline).toBe(true);
+        expect(t.timelines.length).toBe(2);
+        return expect(t.timelines[1] instanceof Timeline).toBe(true);
       });
       it('should delay the timeline to duration', function() {
         var t;
@@ -143,7 +146,7 @@
           duration: 500,
           delay: 500
         }));
-        return expect(t.timelines[1].o.delay).toBe(1700);
+        return expect(t.timelines[2].o.delay).toBe(1700);
       });
       it('should recalc duration', function() {
         var t;
@@ -174,7 +177,7 @@
           delay: 700
         });
         t.append([tm1, tm2]);
-        expect(t.timelines.length).toBe(3);
+        expect(t.timelines.length).toBe(4);
         return expect(t.props.totalTime).toBe(2400);
       });
       it('should work with array #2', function() {
@@ -203,7 +206,7 @@
           duration: 1000,
           delay: 200
         }));
-        return expect(t.timelines.length).toBe(1);
+        return expect(t.timelines.length).toBe(2);
       });
       return it('should add element index', function() {
         var t;
@@ -216,8 +219,8 @@
           duration: 1000,
           delay: 200
         }));
-        expect(t.timelines[0].index).toBe(0);
-        return expect(t.timelines[1].index).toBe(1);
+        expect(t.timelines[1].index).toBe(1);
+        return expect(t.timelines[2].index).toBe(2);
       });
     });
     describe('remove method ->', function() {
@@ -227,7 +230,7 @@
         timeline = new Timeline;
         t.add(timeline);
         t.remove(timeline);
-        return expect(t.timelines.length).toBe(0);
+        return expect(t.timelines.length).toBe(1);
       });
       return it('should remove tween', function() {
         var t, t1, timeline;
@@ -237,7 +240,7 @@
         t.add(timeline);
         t1.add(t);
         t1.remove(t);
-        return expect(t1.timelines.length).toBe(0);
+        return expect(t1.timelines.length).toBe(1);
       });
     });
     describe('recalcDuration method ->', function() {
@@ -425,217 +428,6 @@
         return expect(t.start).toHaveBeenCalled();
       });
     });
-    describe('onReverseComplete callback ->', function() {
-      it('should be defined', function() {
-        var t;
-        t = new Tween({
-          onReverseComplete: function() {}
-        });
-        return expect(t.o.onReverseComplete).toBeDefined();
-      });
-      it('should call onReverseComplete callback', function() {
-        var t;
-        t = new Tween({
-          onReverseComplete: function() {}
-        });
-        t.add(new Timeline({
-          duration: 10
-        }));
-        spyOn(t.o, 'onReverseComplete');
-        t.start();
-        t.setProgress(.5);
-        t.setProgress(0);
-        return expect(t.o.onReverseComplete).toHaveBeenCalled();
-      });
-      return it('should not be called on start', function() {
-        var t;
-        t = new Tween({
-          onReverseComplete: function() {}
-        });
-        t.add(new Timeline({
-          duration: 10
-        }));
-        spyOn(t.o, 'onReverseComplete');
-        t.start();
-        t.setProgress(0);
-        return expect(t.o.onReverseComplete).not.toHaveBeenCalled();
-      });
-    });
-    describe('onComplete callback ->', function() {
-      it('should be defined', function() {
-        var t;
-        t = new Tween({
-          onComplete: function() {}
-        });
-        return expect(t.o.onComplete).toBeDefined();
-      });
-      it('should call onComplete callback', function(dfr) {
-        var t;
-        t = new Tween({
-          onComplete: function() {}
-        });
-        t.add(new Timeline({
-          duration: 10
-        }));
-        spyOn(t.o, 'onComplete');
-        t.start();
-        return setTimeout(function() {
-          expect(t.o.onComplete).toHaveBeenCalled();
-          return dfr();
-        }, 200);
-      });
-      it('should have the right scope', function(dfr) {
-        var isRightScope, t;
-        isRightScope = false;
-        t = new Tween({
-          onComplete: function() {
-            return isRightScope = this instanceof Tween;
-          }
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.start();
-        return setTimeout((function() {
-          expect(isRightScope).toBe(true);
-          return dfr();
-        }), 100);
-      });
-      return it('should fire after the last onUpdate', function(dfr) {
-        var proc, tween;
-        proc = 0;
-        tween = new Tween({
-          isIt: true,
-          onUpdate: function(p) {
-            return proc = p;
-          },
-          onComplete: function() {
-            expect(proc).toBe(1);
-            return dfr();
-          }
-        });
-        tween.add(new Timeline({
-          duration: 20
-        }));
-        tween.start();
-        return tween.update(tween.props.startTime + 22);
-      });
-    });
-    describe('onUpdate callback ->', function() {
-      it('should be defined', function() {
-        var t;
-        t = new Tween({
-          onUpdate: function() {}
-        });
-        return expect(t.onUpdate).toBeDefined();
-      });
-      it('should call onUpdate callback', function(dfr) {
-        var t;
-        t = new Tween({
-          onUpdate: function() {}
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        spyOn(t, 'onUpdate');
-        t.start();
-        return setTimeout(function() {
-          expect(t.onUpdate).toHaveBeenCalled();
-          return dfr();
-        }, 100);
-      });
-      it('should have the right scope', function(dfr) {
-        var isRightScope, t;
-        isRightScope = false;
-        t = new Tween({
-          onUpdate: function() {
-            return isRightScope = this instanceof Tween;
-          }
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.start();
-        return setTimeout((function() {
-          expect(isRightScope).toBe(true);
-          return dfr();
-        }), 100);
-      });
-      it('should pass the current progress', function() {
-        var t;
-        t = new Tween({
-          onUpdate: function() {}
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        spyOn(t, 'onUpdate');
-        t.start();
-        t.update(t.props.startTime + 10);
-        return expect(t.onUpdate).toHaveBeenCalledWith(.5);
-      });
-      it('should not run if time is less then startTime', function() {
-        var t;
-        t = new Tween({
-          onUpdate: function() {}
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        spyOn(t, 'onUpdate');
-        t.start();
-        t.update(t.props.startTime - 10);
-        return expect(t.onUpdate).not.toHaveBeenCalled();
-      });
-      return it('should run if time is greater then endTime', function() {
-        var t;
-        t = new Tween({
-          onUpdate: function() {}
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        spyOn(t, 'onUpdate');
-        t.start();
-        t.update(t.props.startTime + 25);
-        return expect(t.onUpdate).toHaveBeenCalledWith(1);
-      });
-    });
-    describe('onStart callback ->', function() {
-      it('should be defined', function() {
-        var t;
-        t = new Tween({
-          onStart: function() {}
-        });
-        return expect(t.o.onStart).toBeDefined();
-      });
-      it('should call onStart callback', function() {
-        var t;
-        t = new Tween({
-          onStart: function() {}
-        });
-        t.add(new Timeline({
-          duration: 10
-        }));
-        spyOn(t.o, 'onStart');
-        t.start();
-        return expect(t.o.onStart).toHaveBeenCalled();
-      });
-      return it('should have the right scope', function() {
-        var isRightScope, t;
-        isRightScope = false;
-        t = new Tween({
-          onStart: function() {
-            return isRightScope = this instanceof Tween;
-          }
-        });
-        t.add(new Timeline({
-          duration: 20
-        }));
-        t.start();
-        return expect(isRightScope).toBe(true);
-      });
-    });
     describe('update method ->', function() {
       it('should update the current time on every timeline', function() {
         var t, time;
@@ -654,7 +446,7 @@
         expect(t.timelines[0].update).toHaveBeenCalledWith(time);
         return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
       });
-      it('should return true is ended', function() {
+      it('should return true if is finished', function() {
         var t;
         t = new Tween;
         t.add(new Timeline({
@@ -847,15 +639,30 @@
         return expect(t.startTimelines).toHaveBeenCalledWith(time);
       });
     });
-    return describe('time track', function() {
+    describe('time track', function() {
       return it('should save the current time track', function() {
         var t;
-        t = new Tween;
-        t.add(new Timeline({
+        t = new Tween({
           duration: 500
-        }));
+        });
         t.setProgress(.5);
         return expect(t.prevTime).toBe(t.props.startTime + 250);
+      });
+    });
+    return describe('self timeline', function() {
+      it('should have at least one timeline', function() {
+        var t;
+        t = new Tween;
+        expect(t.timelines[0] instanceof Timeline).toBe(true);
+        return expect(t.props.totalTime).toBe(600);
+      });
+      return it('should pass options to the timeline', function() {
+        var t;
+        t = new Tween({
+          duration: 300
+        });
+        expect(t.timelines[0].o.duration).toBe(300);
+        return expect(t.props.totalTime).toBe(300);
       });
     });
   });

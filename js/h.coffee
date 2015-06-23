@@ -148,9 +148,7 @@ class Helpers
     @remBase = parseFloat style.fontSize
 
   clamp:(value, min, max)->
-    if value < min then min
-    else if value > max then max
-    else value
+    if value < min then min else if value > max then max else value
     # Math.min Math.max(value, min), max
 
   setPrefixedStyle:(el, name, value)->

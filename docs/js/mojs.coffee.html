@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.121.3'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.122.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -57,7 +57,38 @@
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-</div></div>
+
+tween = <span class="hljs-keyword">new</span> mojs.Tween
+  <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span>
+    <span class="hljs-built_in">console</span>.log p
+  <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-built_in">console</span>.log <span class="hljs-string">'comple'</span>
+  <span class="hljs-attribute">onReverseComplete</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-built_in">console</span>.log <span class="hljs-string">'rev comple'</span>
+  <span class="hljs-attribute">onFirstUpdateBackward</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-built_in">console</span>.log <span class="hljs-string">'first back'</span>
+  <span class="hljs-attribute">onFirstUpdate</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-built_in">console</span>.log <span class="hljs-string">'first forw'</span>
+
+tween.setProgress .<span class="hljs-number">5</span>
+tween.setProgress .<span class="hljs-number">75</span>
+tween.setProgress .<span class="hljs-number">95</span>
+tween.setProgress <span class="hljs-number">1.95</span>
+tween.setProgress <span class="hljs-number">2.95</span>
+tween.setProgress .<span class="hljs-number">95</span>
+tween.setProgress .<span class="hljs-number">25</span>
+tween.setProgress <span class="hljs-number">0</span>
+tween.setProgress -<span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tween.start()</p>
+</div>
+        </div>
+      
       
       </div>
     
