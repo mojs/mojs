@@ -1939,16 +1939,30 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype.sample = function(p) {
-    var bounds;
+    var bounds, res;
     p = h.clamp(p, 0, 1);
     bounds = this._findBounds(this._samples, p);
-    if (h.closeEnough(p, bounds.start.point.x / this._rect, this._eps)) {
-      return this._resolveY(bounds.start.point);
-    }
-    if (h.closeEnough(p, bounds.end.point.x / this._rect, this._eps)) {
-      return this._resolveY(bounds.end.point);
+    res = this._checkIfBoundsCloseEnough(p, bounds);
+    if (res != null) {
+      return res;
     }
     return this._findApproximate(p, bounds.start, bounds.end);
+  };
+
+  PathEasing.prototype._checkIfBoundsCloseEnough = function(p, bounds) {
+    var point, y;
+    point = void 0;
+    y = this._checkIfPointCloseEnough(p, bounds.start.point);
+    if (y != null) {
+      return y;
+    }
+    return this._checkIfPointCloseEnough(p, bounds.end.point);
+  };
+
+  PathEasing.prototype._checkIfPointCloseEnough = function(p, point) {
+    if (h.closeEnough(p, point.x / this._rect, this._eps)) {
+      return this._resolveY(point);
+    }
   };
 
   PathEasing.prototype._approximate = function(start, end, p) {

@@ -1,19 +1,9 @@
 ## TODO
 
-
-- path easing
-  - perf fix
-  - fix x axis to be infinite
-
-- merge tween and timeline
-
 - fix coverage
 - release
-  - website
-    - css
-    - page transitions
-    - docs
-    - tuts
+  - docs
+  - tuts
 - add meta balls
 - add layers
 - add states

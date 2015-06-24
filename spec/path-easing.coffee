@@ -91,9 +91,31 @@ describe 'PathEasing ->', ->
       pe = new PathEasing path
       expect(Math.abs(pe.sample(.7) - .7)).toBeLessThan pe._eps
     it 'should sample y', ->
-      path = 'M0,100 100,0'
-      pe = new PathEasing path
-      expect(Math.abs(pe.sample(.706) - .706)).toBeLessThan pe._eps
+      pe = new PathEasing 'M0,100 100,0'
+      for i in [1...20]
+        progress = 1/i
+        expect(Math.abs(pe.sample(progress) - progress)).toBeLessThan pe._eps
+    it 'should call _findApproximate method if bounds are not close enough',->
+      pe = new PathEasing 'M0,100 100,0', precompute: 100
+      spyOn pe, '_findApproximate'
+      pe.sample(0.015)
+      expect(pe._findApproximate).toHaveBeenCalled()
+
+  describe '_checkIfBoundsCloseEnough method', ->
+    it 'should return start value if it is close enough', ->
+      pe = new PathEasing 'M0,100 100,0'
+      value = .5
+      pe._checkIfBoundsCloseEnough(value, {
+        start: {point: {x: value+(pe._eps/2)}},
+        end:   {point: {x: .75}}
+        })
+    it 'should return end value if it is close enough', ->
+      pe = new PathEasing 'M0,100 100,0'
+      value = .5
+      pe._checkIfBoundsCloseEnough(value, {
+        start: {point: {x: .25}},
+        end:   {point: {x: value+(pe._eps/2)}}
+        })
 
   describe '_approximate method',->
     it 'should find approximation', ->
@@ -111,6 +133,23 @@ describe 'PathEasing ->', ->
       bounds = pe1._findBounds pe1._samples, p
       value = pe1._findApproximate p, bounds.start, bounds.end
       expect(value).toBeCloseTo p, 4
+    it 'should stop if running for a log time( _approximateMax < 1)', ->
+      pe1 = new PathEasing 'M0,100 100,0', precompute: 100
+      p = 0.015
+      start = {point: {x: 0.01, length: 0}}
+      end   = {point: {x: 0.02, length: 1}}
+      value = pe1._findApproximate p, start, end, 1
+      expect(value).toBeCloseTo 0, 3
+    it 'should call self recursivelly if not precise enough
+        but no more the _approximateMax value', ->
+      pe = new PathEasing 'M0,100 100,0', precompute: 100, eps: .00000001
+      pe.isIt
+      p = 0.015
+      start = {point: {x: 0.01, length: 10}}
+      end   = {point: {x: 0.5, length: 20}}
+      spyOn(pe, '_findApproximate').and.callThrough()
+      value = pe._findApproximate p, start, end
+      expect(pe._findApproximate.calls.count()).toEqual 5
 
   describe '_findBounds method', ->
     it 'should find lowest and highest bounderies',->

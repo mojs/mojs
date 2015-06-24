@@ -102,15 +102,34 @@ class PathEasing
   sample:(p)->
     p = h.clamp p, 0, 1
     bounds = @_findBounds @_samples, p
-
-    # check if start bound is close enough
-    if h.closeEnough p, bounds.start.point.x/@_rect, @_eps
-      return @_resolveY(bounds.start.point)
-    # check if end bound is close enough
-    if h.closeEnough p, bounds.end.point.x/@_rect, @_eps
-      return @_resolveY(bounds.end.point)
-
+    res = @_checkIfBoundsCloseEnough(p, bounds); return res if res?
     @_findApproximate p, bounds.start, bounds.end
+  # ---
+
+  # Check if one of bounds.start or bounds.end
+  # is close enough to searched progress
+  # 
+  # @method _checkIfBoundsCloseEnough
+  # @param  {Number} progress
+  # @param  {Object} bounds
+  # @return {Number, Undefined} returns Y value if true, undefined if false
+  _checkIfBoundsCloseEnough:(p, bounds)->
+    point = undefined
+    # check if start bound is close enough
+    y = @_checkIfPointCloseEnough p, bounds.start.point
+    return y if y?
+    # check if end bound is close enough
+    @_checkIfPointCloseEnough p, bounds.end.point
+  # ---
+
+  # Check if bound point close enough to progress
+  # 
+  # @method _checkIfPointCloseEnough
+  # @param  {Number} progress
+  # @param  {Object} bound point (start or end)
+  # @return {Number, Undefined} returns Y value if true, undefined if false
+  _checkIfPointCloseEnough:(p, point)->
+    @_resolveY(point) if h.closeEnough p, point.x/@_rect, @_eps
   # ---
 
   # @method _approximate
@@ -133,10 +152,11 @@ class PathEasing
     approximation = @_approximate start, end, p
     point = @path.getPointAtLength(approximation); x = point.x/100
     # if close enough resolve the y value
-    if h.closeEnough p, x, @_eps then @_resolveY(point)
+    if h.closeEnough p, x, @_eps
+      @_resolveY(point)
     else
       # if looping for a long time
-      return @_resolveY(point) if --approximateMax < 1
+      return @_resolveY(point) if (--approximateMax < 1)
       # not precise enough so we will call self
       # again recursively, lets find arguments for the call
       newPoint = {point: point, length: approximation}

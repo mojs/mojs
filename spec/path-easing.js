@@ -138,11 +138,60 @@
         pe = new PathEasing(path);
         return expect(Math.abs(pe.sample(.7) - .7)).toBeLessThan(pe._eps);
       });
-      return it('should sample y', function() {
-        var path, pe;
-        path = 'M0,100 100,0';
-        pe = new PathEasing(path);
-        return expect(Math.abs(pe.sample(.706) - .706)).toBeLessThan(pe._eps);
+      it('should sample y', function() {
+        var i, pe, progress, _i, _results;
+        pe = new PathEasing('M0,100 100,0');
+        _results = [];
+        for (i = _i = 1; _i < 20; i = ++_i) {
+          progress = 1 / i;
+          _results.push(expect(Math.abs(pe.sample(progress) - progress)).toBeLessThan(pe._eps));
+        }
+        return _results;
+      });
+      return it('should call _findApproximate method if bounds are not close enough', function() {
+        var pe;
+        pe = new PathEasing('M0,100 100,0', {
+          precompute: 100
+        });
+        spyOn(pe, '_findApproximate');
+        pe.sample(0.015);
+        return expect(pe._findApproximate).toHaveBeenCalled();
+      });
+    });
+    describe('_checkIfBoundsCloseEnough method', function() {
+      it('should return start value if it is close enough', function() {
+        var pe, value;
+        pe = new PathEasing('M0,100 100,0');
+        value = .5;
+        return pe._checkIfBoundsCloseEnough(value, {
+          start: {
+            point: {
+              x: value + (pe._eps / 2)
+            }
+          },
+          end: {
+            point: {
+              x: .75
+            }
+          }
+        });
+      });
+      return it('should return end value if it is close enough', function() {
+        var pe, value;
+        pe = new PathEasing('M0,100 100,0');
+        value = .5;
+        return pe._checkIfBoundsCloseEnough(value, {
+          start: {
+            point: {
+              x: .25
+            }
+          },
+          end: {
+            point: {
+              x: value + (pe._eps / 2)
+            }
+          }
+        });
       });
     });
     describe('_approximate method', function() {
@@ -158,13 +207,58 @@
       });
     });
     describe('_findApproximate method', function() {
-      return it('should return y', function() {
+      it('should return y', function() {
         var bounds, p, pe1, value;
         pe1 = new PathEasing('M0,100 100,0');
         p = 0.203231;
         bounds = pe1._findBounds(pe1._samples, p);
         value = pe1._findApproximate(p, bounds.start, bounds.end);
         return expect(value).toBeCloseTo(p, 4);
+      });
+      it('should stop if running for a log time( _approximateMax < 1)', function() {
+        var end, p, pe1, start, value;
+        pe1 = new PathEasing('M0,100 100,0', {
+          precompute: 100
+        });
+        p = 0.015;
+        start = {
+          point: {
+            x: 0.01,
+            length: 0
+          }
+        };
+        end = {
+          point: {
+            x: 0.02,
+            length: 1
+          }
+        };
+        value = pe1._findApproximate(p, start, end, 1);
+        return expect(value).toBeCloseTo(0, 3);
+      });
+      return it('should call self recursivelly if not precise enough but no more the _approximateMax value', function() {
+        var end, p, pe, start, value;
+        pe = new PathEasing('M0,100 100,0', {
+          precompute: 100,
+          eps: .00000001
+        });
+        pe.isIt;
+        p = 0.015;
+        start = {
+          point: {
+            x: 0.01,
+            length: 10
+          }
+        };
+        end = {
+          point: {
+            x: 0.5,
+            length: 20
+          }
+        };
+        spyOn(pe, '_findApproximate').and.callThrough();
+        value = pe._findApproximate(p, start, end);
+        return expect(pe._findApproximate.calls.count()).toEqual(5);
       });
     });
     describe('_findBounds method', function() {
