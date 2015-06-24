@@ -1629,7 +1629,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.createTween = function() {
-    this.timeline = new Timeline({
+    this.tween = new Tween({
       duration: this.props.duration,
       delay: this.props.delay,
       yoyo: this.props.yoyo,
@@ -1668,8 +1668,6 @@ MotionPath = (function() {
         };
       })(this)
     });
-    this.tween = new Tween;
-    this.tween.add(this.timeline);
     !this.props.isRunLess && this.startTween();
     return this.props.isPresetPosition && this.setProgress(0, true);
   };
@@ -3545,7 +3543,6 @@ Transit = (function(superClass) {
       onComplete: (function(_this) {
         return function() {
           var ref;
-          console.log('on comple');
           !_this.o.isShowEnd && _this.hide();
           return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
         };

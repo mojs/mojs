@@ -1478,7 +1478,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.tween.timelines[2].o.delay).toBe(2100);
+        return expect(mp.tween.timelines[1].o.delay).toBe(2100);
       });
       it('should not copy previous callbacks', function() {
         var onUpdate;
@@ -1530,9 +1530,9 @@
           pathStart: .5,
           pathEnd: 1
         });
-        expect(mp.tween.timelines.length).toBe(3);
-        expect(mp.tween.timelines[2].o.duration).toBe(2000);
-        return expect(mp.tween.timelines[2].o.onFirstUpdate).toBeDefined();
+        expect(mp.tween.timelines.length).toBe(2);
+        expect(mp.tween.timelines[1].o.duration).toBe(2000);
+        return expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined();
       });
       it('should add isChained option to the new timeline', function() {
         mp = new MotionPath({
@@ -1545,7 +1545,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.tween.timelines[2].o.isChained).toBe(true);
+        return expect(mp.tween.timelines[1].o.isChained).toBe(true);
       });
       return it('should not add isChained option if delay', function() {
         mp = new MotionPath({
@@ -1601,7 +1601,7 @@
           path: coords,
           el: document.createElement('div')
         });
-        return expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe('function');
+        return expect(typeof mp.tween.timelines[0].o.onFirstUpdateBackward).toBe('function');
       });
     });
     describe('isModule flag ->', function() {

@@ -733,9 +733,7 @@ else o[key] = startKey</p>
     it = @
     <span class="hljs-property">@createTimeline</span>()
     <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Tween
-      <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">=&gt;</span>
-        <span class="hljs-built_in">console</span>.log <span class="hljs-string">'on comple'</span>
-        !<span class="hljs-property">@o</span>.isShowEnd <span class="hljs-keyword">and</span> <span class="hljs-property">@hide</span>(); <span class="hljs-property">@props</span>.onComplete?.apply @
+      <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">=&gt;</span> !<span class="hljs-property">@o</span>.isShowEnd <span class="hljs-keyword">and</span> <span class="hljs-property">@hide</span>(); <span class="hljs-property">@props</span>.onComplete?.apply @
     <span class="hljs-property">@tween</span>.add <span class="hljs-property">@timeline</span>
     !<span class="hljs-property">@o</span>.isRunLess <span class="hljs-keyword">and</span> <span class="hljs-property">@startTween</span>()
 
