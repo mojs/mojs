@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.122.0 
+	0.122.1 
 */
 
 (function(f){
@@ -1317,10 +1317,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs, tween;
+var mojs;
 
 mojs = {
-  revision: '0.122.0',
+  revision: '0.122.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1347,24 +1347,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-tween = new mojs.Tween({
-  onUpdate: function(p) {
-    return console.log(p);
-  },
-  onComplete: function() {
-    return console.log('comple');
-  },
-  onReverseComplete: function() {
-    return console.log('rev comple');
-  },
-  onFirstUpdateBackward: function() {
-    return console.log('first back');
-  },
-  onFirstUpdate: function() {
-    return console.log('first forw');
-  }
-});
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -3520,7 +3502,7 @@ Transit = (function(superClass) {
           return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
         };
         opts.onFirstUpdate = function() {
-          return it.tuneOptions(it.history[this.index]);
+          return it.tuneOptions(it.history[this.index - 1]);
         };
         opts.isChained = !o.delay;
         return _this.tween.append(new Timeline(opts));

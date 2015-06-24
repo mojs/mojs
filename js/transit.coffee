@@ -336,13 +336,13 @@ class Transit extends bitsMap.map.bit
       opts.onUpdate      = (p)=> @setProgress p
       opts.onStart       = => @props.onStart?.apply(@)
       opts.onComplete    = => @props.onComplete?.apply @
-      opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
+      opts.onFirstUpdate = -> it.tuneOptions it.history[@index-1]
       opts.isChained = !o.delay
       @tween.append new Timeline(opts)
     @
     
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
-  # TWEEN
+
   createTween:->
     it = @
     @createTimeline()

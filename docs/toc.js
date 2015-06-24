@@ -37,7 +37,54 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "title": "tween.setProgress .5",
+  "toc": [
+    {
+      "level": 1,
+      "slug": "tween-setprogress-5",
+      "title": "tween.setProgress .5"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-75",
+      "title": "tween.setProgress .75"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-95",
+      "title": "tween.setProgress .95"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-1-95",
+      "title": "tween.setProgress 1.95"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-2-95",
+      "title": "tween.setProgress 2.95"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-95",
+      "title": "tween.setProgress .95"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-25",
+      "title": "tween.setProgress .25"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-0",
+      "title": "tween.setProgress 0"
+    },
+    {
+      "level": 1,
+      "slug": "tween-setprogress-1",
+      "title": "tween.setProgress -1"
+    }
+  ]
 },
 {
   "path": "js/motion-path.coffee.html",
@@ -209,14 +256,6 @@ window.files = [
   "toc": []
 },
 {
-  "path": "js/vendor/resize.coffee.html",
-  "originalName": "resize.coffee",
-  "originalPath": "js/vendor/resize.coffee",
-  "name": "resize.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/tween/timeline.coffee.html",
   "originalName": "timeline.coffee",
   "originalPath": "js/tween/timeline.coffee",
@@ -243,6 +282,14 @@ window.files = [
   "originalName": "tweener.coffee",
   "originalPath": "js/tween/tweener.coffee",
   "name": "tweener.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/vendor/resize.coffee.html",
+  "originalName": "resize.coffee",
+  "originalPath": "js/vendor/resize.coffee",
+  "name": "resize.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },

@@ -379,7 +379,7 @@
         byte.then({
           radiusX: 5
         });
-        return expect(byte.tween.timelines[1].o.isChained).toBe(true);
+        return expect(byte.tween.timelines[2].o.isChained).toBe(true);
       });
       it('should not pass isChained to timeline if delay', function() {
         var byte;
@@ -488,6 +488,7 @@
         onUpdate = function() {};
         onStart = function() {};
         byte = new Byte({
+          isIt: true,
           radius: 20,
           duration: 1000,
           delay: 10,

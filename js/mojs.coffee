@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.122.0', isDebug: true
+  revision:   '0.122.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -25,28 +25,28 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-tween = new mojs.Tween
-  onUpdate:(p)->
-    console.log p
-  onComplete:->
-    console.log 'comple'
-  onReverseComplete:->
-    console.log 'rev comple'
-  onFirstUpdateBackward:->
-    console.log 'first back'
-  onFirstUpdate:->
-    console.log 'first forw'
+# tween = new mojs.Tween
+#   onUpdate:(p)->
+#     console.log p
+#   onComplete:->
+#     console.log 'comple'
+#   onReverseComplete:->
+#     console.log 'rev comple'
+#   onFirstUpdateBackward:->
+#     console.log 'first back'
+#   onFirstUpdate:->
+#     console.log 'first forw'
 
-# tween.setProgress .5
-# tween.setProgress .75
-# tween.setProgress .95
-# tween.setProgress 1.95
-# tween.setProgress 2.95
-# tween.setProgress .95
-# tween.setProgress .25
-# tween.setProgress 0
-# tween.setProgress -1
-tween.start()
+# # tween.setProgress .5
+# # tween.setProgress .75
+# # tween.setProgress .95
+# # tween.setProgress 1.95
+# # tween.setProgress 2.95
+# # tween.setProgress .95
+# # tween.setProgress .25
+# # tween.setProgress 0
+# # tween.setProgress -1
+# tween.start()
 
 
 

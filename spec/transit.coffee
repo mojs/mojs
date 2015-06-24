@@ -196,7 +196,7 @@ describe 'Transit ->', ->
     it 'should pass isChained to timeline', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5
-      expect(byte.tween.timelines[1].o.isChained).toBe true
+      expect(byte.tween.timelines[2].o.isChained).toBe true
 
     it 'should not pass isChained to timeline if delay', ->
       byte = new Byte radius: 20, duration: 1000
@@ -249,6 +249,7 @@ describe 'Transit ->', ->
       onUpdate = ->
       onStart  = ->
       byte = new Byte
+        isIt: true
         radius: 20, duration: 1000, delay: 10
         onUpdate:  onUpdate, onStart: onStart
         isRunLess: true
