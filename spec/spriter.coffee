@@ -94,7 +94,7 @@ describe 'Spriter module ->', ->
       sp = new Spriter el: div, isRunLess: true
       expect(sp._frameStep).toBe .25
 
-  describe 'tween creation', ->
+  describe 'tween creation ->', ->
     it 'should create timeline and tween', ->
       div = document.createElement('div')
       div1 = document.createElement('div')
@@ -103,7 +103,7 @@ describe 'Spriter module ->', ->
       sp = new Spriter el: div
       expect(sp._timeline instanceof mojs.Timeline).toBe true
       expect(sp._tween    instanceof mojs.Tween)   .toBe true
-      expect(sp._tween.timelines[0]).toBe sp._timeline
+      expect(sp._tween.timelines[1]).toBe sp._timeline
     it 'should start tween', (dfr)->
       div = document.createElement('div')
       div1 = document.createElement('div')

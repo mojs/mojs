@@ -346,7 +346,7 @@
         byte.then({
           radius: 5
         });
-        return expect(byte.tween.timelines.length).toBe(2);
+        return expect(byte.tween.timelines.length).toBe(3);
       });
       it('should return if no options passed or options are empty', function() {
         var byte;
@@ -435,9 +435,9 @@
         byte.then({
           radius: 5
         });
-        expect(byte.tween.timelines[1].o.duration).toBe(1000);
-        expect(byte.tween.timelines[1].o.yoyo).toBe(false);
-        return expect(byte.tween.timelines[1].o.delay).toBe(1010);
+        expect(byte.tween.timelines[2].o.duration).toBe(1000);
+        expect(byte.tween.timelines[2].o.yoyo).toBe(false);
+        return expect(byte.tween.timelines[2].o.delay).toBe(1010);
       });
       it('should merge then options and add them to the history', function() {
         var byte;
@@ -554,7 +554,7 @@
         expect(typeof byte.tween.timelines[1].o.onStart).toBe('function');
         return expect(typeof byte.tween.timelines[2].o.onStart).toBe('function');
       });
-      it('should bind onFirstUpdate function', function() {
+      it('should bind onFirstUpdate function #1', function() {
         var byte;
         byte = new Byte({
           radius: 20,
@@ -573,10 +573,10 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
+        expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
+        return expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe('function');
       });
-      return it('should bind onFirstUpdate function', function() {
+      return it('should bind onFirstUpdate function #2', function() {
         var byte;
         byte = new Byte({
           radius: 20,
@@ -595,8 +595,8 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
+        expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
+        return expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe('function');
       });
     });
     describe('tuneOptions method ->', function() {
@@ -1844,7 +1844,7 @@
             return dfr();
           }, 300);
         });
-        it('should have scope of byte', function(dfr) {
+        it('should have scope of transit', function(dfr) {
           var byte, isRightScope;
           isRightScope = null;
           byte = new Byte({

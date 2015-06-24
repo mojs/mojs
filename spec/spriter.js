@@ -157,7 +157,7 @@
         return expect(sp._frameStep).toBe(.25);
       });
     });
-    describe('tween creation', function() {
+    describe('tween creation ->', function() {
       it('should create timeline and tween', function() {
         var div, div1, div2, sp;
         div = document.createElement('div');
@@ -170,7 +170,7 @@
         });
         expect(sp._timeline instanceof mojs.Timeline).toBe(true);
         expect(sp._tween instanceof mojs.Tween).toBe(true);
-        return expect(sp._tween.timelines[0]).toBe(sp._timeline);
+        return expect(sp._tween.timelines[1]).toBe(sp._timeline);
       });
       it('should start tween', function(dfr) {
         var div, div1, div2, sp;

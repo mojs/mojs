@@ -180,7 +180,7 @@ describe 'Transit ->', ->
     it 'should add new timeline with options', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radius: 5
-      expect(byte.tween.timelines.length).toBe 2
+      expect(byte.tween.timelines.length).toBe 3
 
     it 'should return if no options passed or options are empty', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -221,9 +221,9 @@ describe 'Transit ->', ->
       byte = new Byte
         radius: 20, duration: 1000, delay: 10, yoyo: true
       byte.then radius: 5
-      expect(byte.tween.timelines[1].o.duration).toBe 1000
-      expect(byte.tween.timelines[1].o.yoyo)    .toBe false
-      expect(byte.tween.timelines[1].o.delay)   .toBe 1010
+      expect(byte.tween.timelines[2].o.duration).toBe 1000
+      expect(byte.tween.timelines[2].o.yoyo)    .toBe false
+      expect(byte.tween.timelines[2].o.delay)   .toBe 1010
 
     it 'should merge then options and add them to the history', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -279,19 +279,19 @@ describe 'Transit ->', ->
       expect(typeof byte.tween.timelines[1].o.onStart).toBe 'function'
       expect(typeof byte.tween.timelines[2].o.onStart).toBe 'function'
 
-    it 'should bind onFirstUpdate function', ->
+    it 'should bind onFirstUpdate function #1', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
-      expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe 'function'
       expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe 'function'
+      expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe 'function'
 
-    it 'should bind onFirstUpdate function', ->
+    it 'should bind onFirstUpdate function #2', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
-      expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe 'function'
       expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe 'function'
+      expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe 'function'
 
   describe 'tuneOptions method ->', ->
     it 'should call extendDefaults with options', ->
@@ -1005,7 +1005,7 @@ describe 'Transit ->', ->
         setTimeout ->
           expect(isOnStart).toBe(true); dfr()
         , 300
-      it 'should have scope of byte', (dfr)->
+      it 'should have scope of transit', (dfr)->
         isRightScope = null
         byte = new Byte
           radius: {'25': 75}

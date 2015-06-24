@@ -29,7 +29,7 @@ describe 'Tween ->', ->
       expect(t.timelines[2] instanceof Timeline).toBe true
       expect(t.timelines[3] instanceof Tween)   .toBe true
     it 'should work with arguments',->
-      tween = new Tween isIt: true
+      tween = new Tween
       t1 = new Timeline duration: 500, delay: 200
       t2 = new Timeline duration: 500, delay: 500
       tween.add t1, t2
@@ -307,33 +307,32 @@ describe 'Tween ->', ->
   #     t.setProgress 0
   #     expect(t.o.onReverseComplete).not.toHaveBeenCalled()
 
-  # describe 'onComplete callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onComplete: ->
-  #     expect(t.o.onComplete).toBeDefined()
-  #   it 'should call onComplete callback', (dfr)->
-  #     t = new Tween(onComplete:->)
-  #     t.add new Timeline duration: 10
-  #     spyOn(t.o, 'onComplete'); t.start()
-  #     setTimeout ->
-  #       expect(t.o.onComplete).toHaveBeenCalled(); dfr()
-  #     , 200
-  #   it 'should have the right scope', (dfr)->
-  #     isRightScope = false
-  #     t = new Tween onComplete:-> isRightScope = @ instanceof Tween
-  #     t.add new Timeline duration: 20
-  #     t.start()
-  #     setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+  describe 'onComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onComplete: ->
+      expect(t.o.onComplete).toBeDefined()
+    it 'should call onComplete callback', (dfr)->
+      t = new Tween(onComplete:->)
+      t.add new Timeline duration: 10
+      spyOn(t.o, 'onComplete'); t.start()
+      setTimeout ->
+        expect(t.o.onComplete).toHaveBeenCalled(); dfr()
+      , 200
+    it 'should have the right scope', (dfr)->
+      isRightScope = false
+      t = new Tween onComplete:-> isRightScope = @ instanceof Tween
+      t.add new Timeline duration: 20
+      t.start()
+      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
 
-  #   it 'should fire after the last onUpdate', (dfr)->
-  #     proc = 0
-  #     tween = new Tween
-  #       isIt: true
-  #       onUpdate:(p)-> proc = p
-  #       onComplete:-> expect(proc).toBe(1); dfr()
-  #     tween.add new Timeline duration: 20
-  #     tween.start()
-  #     tween.update tween.props.startTime + 22
+    it 'should fire after the last onUpdate', (dfr)->
+      proc = 0
+      tween = new Tween
+        onUpdate:(p)-> proc = p
+        onComplete:-> expect(proc).toBe(1); dfr()
+      tween.add new Timeline duration: 20
+      tween.start()
+      tween.update tween.props.startTime + 22
 
   # describe 'onUpdate callback ->', ->
   #   it 'should be defined', ->
@@ -509,7 +508,14 @@ describe 'Tween ->', ->
       t.setProgress .5
       expect(t.prevTime).toBe t.props.startTime + 250
 
-  describe 'self timeline', ->
+  describe 'recalcDuration method ->', ->
+    it 'should not count the self time if duration wasn\'t specified', ->
+      t   = new Tween
+      t.add new Timeline duration: 500
+      t.recalcDuration()
+      expect(t.props.totalTime).toBe 500
+
+  describe 'self timeline ->', ->
     it 'should have at least one timeline', ->
       t = new Tween
       expect(t.timelines[0] instanceof Timeline).toBe true
@@ -518,7 +524,18 @@ describe 'Tween ->', ->
       t = new Tween duration: 300
       expect(t.timelines[0].o.duration).toBe 300
       expect(t.props.totalTime)     .toBe 300
+    it 'should add flag if duration was specified on init', ->
+      t = new Tween duration: 300
+      expect(t._isDurationSet).toBe true
+      t = new Tween
+      expect(t._isDurationSet).toBe false
 
+    it 'should count if duration wasn\'t set and new timeline added
+        it should recalc total duration without the self timeline', ->
+      t = new Tween isIt: true
+      timeline = new Timeline duration: 20
+      t.add timeline
+      expect(t.props.totalTime).toBe 20
 
 
       

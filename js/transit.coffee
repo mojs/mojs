@@ -347,7 +347,9 @@ class Transit extends bitsMap.map.bit
     it = @
     @createTimeline()
     @tween = new Tween
-      onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
+      onComplete:=>
+        console.log 'on comple'
+        !@o.isShowEnd and @hide(); @props.onComplete?.apply @
     @tween.add @timeline
     !@o.isRunLess and @startTween()
 

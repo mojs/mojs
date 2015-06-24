@@ -1366,24 +1366,6 @@ tween = new mojs.Tween({
   }
 });
 
-tween.setProgress(.5);
-
-tween.setProgress(.75);
-
-tween.setProgress(.95);
-
-tween.setProgress(1.95);
-
-tween.setProgress(2.95);
-
-tween.setProgress(.95);
-
-tween.setProgress(.25);
-
-tween.setProgress(0);
-
-tween.setProgress(-1);
-
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
     return mojs;
@@ -3563,6 +3545,7 @@ Transit = (function(superClass) {
       onComplete: (function(_this) {
         return function() {
           var ref;
+          console.log('on comple');
           !_this.o.isShowEnd && _this.hide();
           return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
         };
@@ -3941,7 +3924,7 @@ Tween = (function() {
       totalTime: 0
     };
     this.loop = h.bind(this.loop, this);
-    return this.onUpdate = this.o.onUpdate;
+    return this._isDurationSet = this.o.duration != null;
   };
 
   Tween.prototype._addTimeline = function() {
@@ -3972,6 +3955,9 @@ Tween = (function() {
   };
 
   Tween.prototype._updateTotalTime = function(timeline) {
+    if (this.timelines.length === 2 && !this._isDurationSet) {
+      this.props.totalTime = 0;
+    }
     return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
   };
 
@@ -3988,7 +3974,7 @@ Tween = (function() {
     if (!h.isArray(timeline)) {
       timeline.index = this.timelines.length;
       this.appendTimeline(timeline);
-      return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
+      return this._updateTotalTime(timeline);
     } else {
       i = timeline.length;
       while (i--) {
@@ -4012,13 +3998,13 @@ Tween = (function() {
     results = [];
     while (len--) {
       timeline = this.timelines[len];
-      results.push(this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime));
+      results.push(this._updateTotalTime(timeline));
     }
     return results;
   };
 
   Tween.prototype.update = function(time) {
-    var i, len;
+    var i, len, ref;
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
@@ -4029,6 +4015,9 @@ Tween = (function() {
     }
     this.prevTime = time;
     if (time === this.props.endTime) {
+      if ((ref = this.o.onComplete) != null) {
+        ref.apply(this);
+      }
       return true;
     }
   };

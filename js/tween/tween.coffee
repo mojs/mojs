@@ -6,9 +6,9 @@ class Tween
   state: 'stop'
   constructor:(@o={})-> @vars(); @_addTimeline(); @
   vars:->
-    @timelines = []; @props = totalTime: 0
-    @loop = h.bind @loop, @
-    @onUpdate = @o.onUpdate
+    @timelines = []; @props = totalTime: 0; @loop = h.bind @loop, @
+    @_isDurationSet = @o.duration?
+    # @onUpdate = @o.onUpdate
   # ---
   
   # Add 1 self timeline
@@ -29,41 +29,73 @@ class Tween
     @_updateTotalTime timeline
   # ---
 
-  # Checks if the timlines time is larger then
-  # totalTime, if so, updates the totalTime
+  # Update the totalTime with respect to the timeline
   # 
-  # @method _updateTotalTime
+  # @method remove
+  # @param {Object} Timeline or Tween
+  # @sideEffect updates @totalTime
   _updateTotalTime:(timeline)->
+    @props.totalTime = 0 if @timelines.length is 2 and !@_isDurationSet
     @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
+  # ---
 
+  # Remove the timeline form tween
+  # 
+  # @method remove
+  # @param {Object} Timeline or Tween
+  # @sideEffect updates @timelines
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
+  # ---
+
+  # Append the timeline or set of ones, to the end of the
+  # current tween time
+  # 
+  # @method append
+  # @param {Object, Array} Timeline or Tween or Array of those
+  # @sideEffect updates @timelines
+  # @sideEffect updates @totalTime
   append:(timeline)->
     if !h.isArray(timeline)
       timeline.index = @timelines.length
       @appendTimeline timeline
-      @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
+      @_updateTotalTime timeline
     else
       i = timeline.length
       @appendTimeline(timeline[i]) while(i--)
       @recalcDuration()
+  # ---
+
+  # Append the timeline, to the end of the
+  # current tween time, by increasing it's delay to
+  # the current tween's totalTime
+  # 
+  # @method appendTimeline
+  # @param {Object, Array} Timeline or Tween or Array of those
+  # @sideEffect updates @timelines
+  # @sideEffect updates timeline's delay
   appendTimeline:(timeline)->
     timeline.setProp(delay: timeline.o.delay + @props.totalTime)
     @timelines.push timeline
   # reset:(timeline)-> @remove(timeline); @add timeline
+  # ---
+
+  # Recalculate the totalTime for the timelines array
+  # 
+  # @method recalcDuration
+  # @sideEffect updates @props.totalTime
   recalcDuration:->
     len = @timelines.length; @props.totalTime = 0
     while(len--)
-      timeline  = @timelines[len]
-      @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
+      timeline = @timelines[len]
+      @_updateTotalTime timeline
   update:(time)->
     # react only on endTime max
     if time > @props.endTime then time = @props.endTime
     # update self timelines
     i = -1; len = @timelines.length-1
     @timelines[i].update(time) while(i++ < len)
-    # @_timeline.update time
     # if isn't complete
     # if time >= @props.startTime and time < @props.endTime
     #   @onUpdate? (time - @props.startTime)/@props.totalTime
@@ -73,8 +105,9 @@ class Tween
 
     @prevTime = time
     # if completed
-    return true if time is @props.endTime
-    #   @onUpdate?(1); @o.onComplete?.apply(@); return true
+    if time is @props.endTime
+      # @onUpdate?(1);
+      @o.onComplete?.apply(@); return true
   
   prepareStart:-> @getDimentions(); @o.onStart?.apply @
   startTimelines:(time)->

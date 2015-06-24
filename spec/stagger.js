@@ -207,7 +207,7 @@
         s = new Stagger({
           els: els
         });
-        return expect(s.tween.timelines.length).toBe(2);
+        return expect(s.tween.timelines.length).toBe(3);
       });
       it('should call startTween', function() {
         var s;

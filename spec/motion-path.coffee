@@ -1059,7 +1059,7 @@ describe 'MotionPath ->', ->
         delay:    100
       )
       .then pathStart: .5, pathEnd: 1
-      expect(mp.tween.timelines[1].o.delay).toBe 2100
+      expect(mp.tween.timelines[2].o.delay).toBe 2100
 
     it 'should not copy previous callbacks', ->
       onUpdate = ->
@@ -1071,7 +1071,9 @@ describe 'MotionPath ->', ->
         delay:    100
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0
+      
       mp.tween.setProgress .75
+      
       expect(mp.history[1].onUpdate).not.toBeDefined()
       expect(mp.props.onUpdate)     .not.toBeDefined()
 
@@ -1097,9 +1099,9 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
-      expect(mp.tween.timelines.length)             .toBe 2
-      expect(mp.tween.timelines[1].o.duration)     .toBe 2000
-      expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined()
+      expect(mp.tween.timelines.length)            .toBe 3
+      expect(mp.tween.timelines[2].o.duration)     .toBe 2000
+      expect(mp.tween.timelines[2].o.onFirstUpdate).toBeDefined()
 
     it 'should add isChained option to the new timeline', ->
       mp = new MotionPath(
@@ -1110,7 +1112,7 @@ describe 'MotionPath ->', ->
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
       
-      expect(mp.tween.timelines[1].o.isChained).toBe true
+      expect(mp.tween.timelines[2].o.isChained).toBe true
 
     it 'should not add isChained option if delay', ->
       mp = new MotionPath(

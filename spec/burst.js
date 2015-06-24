@@ -781,7 +781,7 @@
       it('should add timelines to tween', function() {
         var burst;
         burst = new Burst;
-        return expect(burst.tween.timelines.length).toBe(6);
+        return expect(burst.tween.timelines.length).toBe(7);
       });
       it('should call startTween method', function() {
         var burst;
@@ -843,7 +843,7 @@
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
         t.removeAll();
-        isRightScope = false;
+        isRightScope = null;
         burst = new Burst({
           duration: 20,
           onComplete: function() {

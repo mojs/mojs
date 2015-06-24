@@ -489,7 +489,7 @@ describe 'Burst ->', ->
       expect(burst.tween).toBeDefined()
     it 'should add timelines to tween', ->
       burst = new Burst
-      expect(burst.tween.timelines.length).toBe 6
+      expect(burst.tween.timelines.length).toBe 7
     it 'should call startTween method', ->
       burst = new Burst
       spyOn burst, 'startTween'
@@ -524,7 +524,7 @@ describe 'Burst ->', ->
 
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
-      isRightScope = false
+      isRightScope = null
       burst = new Burst
         duration: 20, onComplete:-> isRightScope = @ instanceof Burst
       setTimeout ->
@@ -543,6 +543,7 @@ describe 'Burst ->', ->
       setTimeout ->
         expect(burst.onUpdate).toHaveBeenCalledWith(1); dfr()
       , 300
+
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
       isRightScope = false
