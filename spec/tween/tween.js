@@ -478,11 +478,7 @@
             return dfr();
           }
         });
-        tween.add(new Timeline({
-          duration: 20
-        }));
-        tween.start();
-        return tween.update(tween.props.startTime + 22);
+        return tween.start();
       });
     });
     describe('update method ->', function() {
@@ -711,10 +707,10 @@
         var t;
         t = new Tween;
         t.add(new Timeline({
-          duration: 500
+          duration: 20
         }));
         t.recalcDuration();
-        return expect(t.props.totalTime).toBe(500);
+        return expect(t.props.totalTime).toBe(20);
       });
     });
     return describe('self timeline ->', function() {
@@ -731,6 +727,14 @@
         });
         expect(t.timelines[0].o.duration).toBe(300);
         return expect(t.props.totalTime).toBe(300);
+      });
+      it('should not pass onComplete option to the timeline', function() {
+        var t;
+        t = new Tween({
+          duration: 300,
+          onComplete: function() {}
+        });
+        return expect(t.timelines[0].o.onComplete).toBe(null);
       });
       it('should add flag if duration was specified on init', function() {
         var t;

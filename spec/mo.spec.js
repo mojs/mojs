@@ -3947,7 +3947,9 @@ Tween = (function() {
   };
 
   Tween.prototype._addTimeline = function() {
-    return this.add(new Timeline(this.o));
+    return this.add(new Timeline(h.cloneObj(this.o, {
+      onComplete: 1
+    })));
   };
 
   Tween.prototype.add = function() {
@@ -4011,13 +4013,15 @@ Tween = (function() {
   };
 
   Tween.prototype.recalcDuration = function() {
-    var len, results, timeline;
+    var len, results;
     len = this.timelines.length;
     this.props.totalTime = 0;
     results = [];
     while (len--) {
-      timeline = this.timelines[len];
-      results.push(this._updateTotalTime(timeline));
+      if (len === 0 && !this._isDurationSet) {
+        break;
+      }
+      results.push(this._updateTotalTime(this.timelines[len]));
     }
     return results;
   };

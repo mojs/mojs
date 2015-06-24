@@ -15,7 +15,7 @@ class Tween
   # 
   # @method     _addTimeline
   # @sideEffect adds _timeline variable on the object
-  _addTimeline:-> @add new Timeline(@o)
+  _addTimeline:-> @add new Timeline h.cloneObj(@o, {onComplete: 1})
 
   add:-> @pushTimelineArray Array::slice.apply(arguments)
   pushTimelineArray:(array)->
@@ -88,8 +88,10 @@ class Tween
   recalcDuration:->
     len = @timelines.length; @props.totalTime = 0
     while(len--)
-      timeline = @timelines[len]
-      @_updateTotalTime timeline
+      # do not include the self's timeline if
+      # duration wasn't set
+      break if len is 0 and !@_isDurationSet
+      @_updateTotalTime @timelines[len]
   update:(time)->
     # react only on endTime max
     if time > @props.endTime then time = @props.endTime

@@ -330,9 +330,8 @@ describe 'Tween ->', ->
       tween = new Tween
         onUpdate:(p)-> proc = p
         onComplete:-> expect(proc).toBe(1); dfr()
-      tween.add new Timeline duration: 20
       tween.start()
-      tween.update tween.props.startTime + 22
+      # tween.update tween.props.startTime + 22
 
   # describe 'onUpdate callback ->', ->
   #   it 'should be defined', ->
@@ -511,9 +510,9 @@ describe 'Tween ->', ->
   describe 'recalcDuration method ->', ->
     it 'should not count the self time if duration wasn\'t specified', ->
       t   = new Tween
-      t.add new Timeline duration: 500
+      t.add new Timeline duration: 20
       t.recalcDuration()
-      expect(t.props.totalTime).toBe 500
+      expect(t.props.totalTime).toBe 20
 
   describe 'self timeline ->', ->
     it 'should have at least one timeline', ->
@@ -524,12 +523,14 @@ describe 'Tween ->', ->
       t = new Tween duration: 300
       expect(t.timelines[0].o.duration).toBe 300
       expect(t.props.totalTime)     .toBe 300
+    it 'should not pass onComplete option to the timeline', ->
+      t = new Tween duration: 300, onComplete:->
+      expect(t.timelines[0].o.onComplete).toBe null
     it 'should add flag if duration was specified on init', ->
       t = new Tween duration: 300
       expect(t._isDurationSet).toBe true
       t = new Tween
       expect(t._isDurationSet).toBe false
-
     it 'should count if duration wasn\'t set and new timeline added
         it should recalc total duration without the self timeline', ->
       t = new Tween isIt: true
