@@ -511,7 +511,9 @@ describe 'Burst ->', ->
       , 300
     it 'should have the scope of burst', (dfr)->
       isRightScope = null
-      burst = new Burst onStart:-> isRightScope = @ instanceof Burst
+      burst = new Burst
+        duration: 20
+        onStart:-> isRightScope = @ instanceof Burst
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
       , 300

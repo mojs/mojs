@@ -262,15 +262,14 @@ describe 'MotionPath ->', ->
 
         setTimeout (->
           expect(isStarted).toBe(true); dfr()
-          ), 100
+          ), 300
       it 'should have the scope of MotionPath', (dfr)->
         isRightScope = null
         mp = new MotionPath
           path: coords
           el: div
-          onStart:->
-            isRightScope = @ instanceof MotionPath
-        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+          onStart:-> isRightScope = @ instanceof MotionPath
+        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
     
     describe 'onComplete callback ->', ->
       it 'onComplete callback should work', (dfr)->
@@ -282,7 +281,7 @@ describe 'MotionPath ->', ->
           onComplete:-> isCompleted = true
         setTimeout ->
           expect(isCompleted).toBe(true); dfr()
-        , 100
+        , 300
 
       it 'should have the scope of MotionPath', (dfr)->
         isRightScope = false
@@ -293,7 +292,7 @@ describe 'MotionPath ->', ->
           onComplete:-> isRightScope = @ instanceof MotionPath
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
-        , 100
+        , 300
     
     describe 'onUpdate callback ->', ->
       it 'onUpdate callback should work', (dfr)->
@@ -303,10 +302,10 @@ describe 'MotionPath ->', ->
           el: div
           duration: 5
           onUpdate:-> isOnUpdate = true
-
         setTimeout ->
           expect(isOnUpdate).toBe(true); dfr()
-        , 100
+        , 300
+        
       it 'onUpdate callback should have "progress" argument', (dfr)->
         isOnUpdate = false
         mp = new MotionPath
@@ -316,7 +315,7 @@ describe 'MotionPath ->', ->
           onUpdate:(progress)-> isOnUpdate = true if progress?
         setTimeout ->
           expect(isOnUpdate).toBe(true); dfr()
-        , 100
+        , 300
 
       it 'should have the scope of MotionPath', (dfr)->
         isRightScope = false
@@ -327,7 +326,7 @@ describe 'MotionPath ->', ->
           onUpdate:-> isRightScope = @ instanceof MotionPath
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
-        , 100
+        , 300
       it 'should be called with progress, x, y and angle', ->
 
         progress = null; x = null; y = null; angle = null
@@ -451,15 +450,18 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path: 'M0,0 L500,0'
         el: el
-        duration: 100
+        duration: 50
         fill: { container: c }
         onUpdate:(proc)->
           if proc >= .1 and !isSizeChange
             mp.container.style.width = '100px'
             isSizeChange = true
-        onComplete:->
-          x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
-          expect(parseInt(x, 10)).toBe(100); dfr()
+        # onComplete:->
+
+      setTimeout ->
+        x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
+        expect(parseInt(x, 10)).toBe(100); dfr()
+      , 300
 
   describe 'functionality ->', ->
     div = document.createElement 'div'
@@ -474,10 +476,12 @@ describe 'MotionPath ->', ->
         offsetX: 10
         duration: 50
         isAngle: true
-        onComplete: ->
-          x = div.style.transform.split(/(translate\()|,|\)/)[2]
-          isEqual = parseInt(x, 10) is 10
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      
+      setTimeout (->
+        x = div.style.transform.split(/(translate\()|,|\)/)[2]
+        isEqual = parseInt(x, 10) is 10
+        expect(isEqual).toBe(true); dfr()
+      ), 300
 
     it 'should work with negative offsetX', (dfr)->
       coords = 'M0,0 L0,10'
@@ -491,7 +495,7 @@ describe 'MotionPath ->', ->
           x = div.style.transform.split(/(translate\()|,|\)/)[2]
           x = parseInt(x, 10)
           isEqual = x is -10
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should work with positive offsetY', (dfr)->
       coords = 'M0,0 L10,0'
@@ -505,7 +509,7 @@ describe 'MotionPath ->', ->
           y = div.style.transform.split(/(translate\()|,|\)/)[4]
           y = parseInt(y, 10)
           isEqual = y is 10
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should work with negative offsetY', (dfr)->
       coords = 'M0,0 L10,0'
@@ -519,7 +523,7 @@ describe 'MotionPath ->', ->
           y = div.style.transform.split(/(translate\()|,|\)/)[4]
           isEqual = parseInt(y, 10) is -10
 
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should calculate current angle', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -533,7 +537,7 @@ describe 'MotionPath ->', ->
           detect.firstAngle ?= mp.angle
           isEquial2 = detect.firstAngle is 0
         onComplete:-> isEqual = mp.angle is 90
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should calculate current angle if transformOrigin is a fun', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -547,7 +551,7 @@ describe 'MotionPath ->', ->
           detect.firstAngle ?= mp.angle
           isEquial2 = detect.firstAngle is 0
         onComplete:-> isEqual = mp.angle is 90
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should calculate current angle with isReverse', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -563,7 +567,7 @@ describe 'MotionPath ->', ->
           isEquial2 = detect.firstAngle is 90
         onComplete: -> isEqual = mp.angle is 0
 
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should have transform-origin', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -616,9 +620,11 @@ describe 'MotionPath ->', ->
         duration: 50
         angleOffset: -90
         isAngle: true
-        onComplete:-> isEqual = mp.angle is 0
-
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
+        # onComplete:-> 
+      setTimeout (->
+        isEqual = mp.angle is 0
+        expect(isEqual).toBe(true); dfr()
+      ), 300
 
     it 'should be evaluated if a function', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -635,7 +641,7 @@ describe 'MotionPath ->', ->
 
     it 'should get current angle', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
-      isOnAngle = false
+      isOnAngle = null
       angleSum1 = 0; angleSum2 = 0
       mp = new MotionPath
         path: coords
@@ -649,7 +655,7 @@ describe 'MotionPath ->', ->
           angle
         onComplete:-> isOnAngle = angleSum1 is angleSum2
       mp.run()
-      setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 100
+      setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 300
 
     it 'should set current angle', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -666,7 +672,7 @@ describe 'MotionPath ->', ->
           for isSetItem, i in isAnglesArray
             if !isSetItem then isSet = true
       
-      setTimeout (-> expect(isSet).toBe(false); dfr()), 100
+      setTimeout (-> expect(isSet).toBe(false); dfr()), 300
 
     it 'angleOffset should get current progress as second parameter', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -677,7 +683,7 @@ describe 'MotionPath ->', ->
         duration: 50
         angleOffset:(angle, progress)-> proc = progress; angle
         onComplete:-> isProgress = proc is 1
-      setTimeout (-> expect(isProgress).toBe(true); dfr()), 100
+      setTimeout (-> expect(isProgress).toBe(true); dfr()), 300
 
     it 'should have scope of motion path', ->
       coords = 'M0,0 L10,0 L10,10'
@@ -689,7 +695,10 @@ describe 'MotionPath ->', ->
         duration: 50
         isAngle: true
         angleOffset:-> isRightScope = @ instanceof MotionPath
-      expect(isRightScope).toBe(true)
+
+      setTimeout ->
+        expect(isRightScope).toBe(true)
+      , 300
 
   describe 'setProgress method ->', (dfr)->
     it 'should have own function for setting up current progress', ->
@@ -796,7 +805,7 @@ describe 'MotionPath ->', ->
           pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
           pos = parseInt pos, 10
     
-      setTimeout (-> expect(pos).toBe(250); dfr()), 100
+      setTimeout (-> expect(pos).toBe(250); dfr()), 300
 
   describe 'path option ->', ->
     it 'should error if path has no d attribute', ->

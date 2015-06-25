@@ -138,8 +138,11 @@ describe 'PathEasing ->', ->
       p = 0.015
       start = {point: {x: 0.01, length: 0}}
       end   = {point: {x: 0.02, length: 1}}
+      spyOn(pe1, '_findApproximate').and.callThrough()
       value = pe1._findApproximate p, start, end, 1
-      expect(value).toBeCloseTo 0, 3
+      expect(pe1._findApproximate.calls.count()).toBe 1
+
+
     it 'should call self recursivelly if not precise enough
         but no more the _approximateMax value', ->
       pe = new PathEasing 'M0,100 100,0', precompute: 100, eps: .00000001

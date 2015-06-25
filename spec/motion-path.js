@@ -334,7 +334,7 @@
           return setTimeout((function() {
             expect(isStarted).toBe(true);
             return dfr();
-          }), 100);
+          }), 300);
         });
         return it('should have the scope of MotionPath', function(dfr) {
           var isRightScope;
@@ -349,7 +349,7 @@
           return setTimeout((function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }), 100);
+          }), 300);
         });
       });
       describe('onComplete callback ->', function() {
@@ -367,7 +367,7 @@
           return setTimeout(function() {
             expect(isCompleted).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
         return it('should have the scope of MotionPath', function(dfr) {
           var isRightScope;
@@ -383,7 +383,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
       });
       return describe('onUpdate callback ->', function() {
@@ -401,7 +401,7 @@
           return setTimeout(function() {
             expect(isOnUpdate).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
         it('onUpdate callback should have "progress" argument', function(dfr) {
           var isOnUpdate;
@@ -419,7 +419,7 @@
           return setTimeout(function() {
             expect(isOnUpdate).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
         it('should have the scope of MotionPath', function(dfr) {
           var isRightScope;
@@ -435,7 +435,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
         return it('should be called with progress, x, y and angle', function() {
           var angle, progress, x, y;
@@ -585,10 +585,10 @@
         c.setAttribute('id', 'js-container2');
         document.body.appendChild(c);
         x = -1;
-        return mp = new MotionPath({
+        mp = new MotionPath({
           path: 'M0,0 L500,0',
           el: el,
-          duration: 100,
+          duration: 50,
           fill: {
             container: c
           },
@@ -597,13 +597,13 @@
               mp.container.style.width = '100px';
               return isSizeChange = true;
             }
-          },
-          onComplete: function() {
-            x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
-            expect(parseInt(x, 10)).toBe(100);
-            return dfr();
           }
         });
+        return setTimeout(function() {
+          x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
+          expect(parseInt(x, 10)).toBe(100);
+          return dfr();
+        }, 300);
       });
     });
     describe('functionality ->', function() {
@@ -615,20 +615,19 @@
         coords = 'M0,0 L0,10';
         x = 0;
         isEqual = false;
-        return mp = new MotionPath({
+        mp = new MotionPath({
           path: coords,
           el: div,
           offsetX: 10,
           duration: 50,
-          isAngle: true,
-          onComplete: function() {
-            x = div.style.transform.split(/(translate\()|,|\)/)[2];
-            return isEqual = parseInt(x, 10) === 10;
-          }
-        }, setTimeout((function() {
+          isAngle: true
+        });
+        return setTimeout((function() {
+          x = div.style.transform.split(/(translate\()|,|\)/)[2];
+          isEqual = parseInt(x, 10) === 10;
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100));
+        }), 300);
       });
       it('should work with negative offsetX', function(dfr) {
         var isEqual, x;
@@ -649,7 +648,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should work with positive offsetY', function(dfr) {
         var isEqual, y;
@@ -670,7 +669,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should work with negative offsetY', function(dfr) {
         var isEqual, y;
@@ -690,7 +689,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should calculate current angle', function(dfr) {
         var angle, detect, isEqual, isEquial2;
@@ -717,7 +716,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should calculate current angle if transformOrigin is a fun', function(dfr) {
         var angle, detect, isEqual, isEquial2;
@@ -744,7 +743,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should calculate current angle with isReverse', function(dfr) {
         var angle, detect, isEqual, isEquial2;
@@ -771,7 +770,7 @@
         }, setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100));
+        }), 300));
       });
       it('should have transform-origin', function(dfr) {
         var isComplete;
@@ -845,12 +844,10 @@
           el: div,
           duration: 50,
           angleOffset: -90,
-          isAngle: true,
-          onComplete: function() {
-            return isEqual = mp.angle === 0;
-          }
+          isAngle: true
         });
         return setTimeout((function() {
+          isEqual = mp.angle === 0;
           expect(isEqual).toBe(true);
           return dfr();
         }), 300);
@@ -876,7 +873,7 @@
       it('should get current angle', function(dfr) {
         var angleSum1, angleSum2, isOnAngle;
         coords = 'M0,0 L10,0 L10,10';
-        isOnAngle = false;
+        isOnAngle = null;
         angleSum1 = 0;
         angleSum2 = 0;
         mp = new MotionPath({
@@ -899,7 +896,7 @@
         return setTimeout((function() {
           expect(isOnAngle).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should set current angle', function(dfr) {
         var angleShift, currAngle, isAnglesArray, isSet;
@@ -936,7 +933,7 @@
         return setTimeout((function() {
           expect(isSet).toBe(false);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('angleOffset should get current progress as second parameter', function(dfr) {
         var isProgress, proc;
@@ -958,7 +955,7 @@
         return setTimeout((function() {
           expect(isProgress).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       return it('should have scope of motion path', function() {
         var angleSum1, angleSum2, isRightScope;
@@ -975,7 +972,9 @@
             return isRightScope = this instanceof MotionPath;
           }
         });
-        return expect(isRightScope).toBe(true);
+        return setTimeout(function() {
+          return expect(isRightScope).toBe(true);
+        }, 300);
       });
     });
     describe('setProgress method ->', function(dfr) {
@@ -1116,7 +1115,7 @@
         return setTimeout((function() {
           expect(pos).toBe(250);
           return dfr();
-        }), 100);
+        }), 300);
       });
     });
     describe('path option ->', function() {

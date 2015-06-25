@@ -233,8 +233,9 @@
             length: 1
           }
         };
+        spyOn(pe1, '_findApproximate').and.callThrough();
         value = pe1._findApproximate(p, start, end, 1);
-        return expect(value).toBeCloseTo(0, 3);
+        return expect(pe1._findApproximate.calls.count()).toBe(1);
       });
       return it('should call self recursivelly if not precise enough but no more the _approximateMax value', function() {
         var end, p, pe, start, value;

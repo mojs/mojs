@@ -818,6 +818,7 @@
         var burst, isRightScope;
         isRightScope = null;
         burst = new Burst({
+          duration: 20,
           onStart: function() {
             return isRightScope = this instanceof Burst;
           }
