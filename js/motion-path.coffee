@@ -254,16 +254,6 @@ class MotionPath
     # 
     # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
     onUpdate:         null
-    # ---
-
-    # Callback **onPosit** fires every raf frame on motion
-    # path update. Recieves current **progress**, **x**, **y** and **angle**
-    # of type **Number**. Returned value will be set as el's transform
-    # 
-    # @property   onPosit
-    # @type       {Function}
-    # 
-    onPosit:         null
   # ---
   # ### Class body docs
   # ---
@@ -456,50 +446,54 @@ class MotionPath
   startTween:-> setTimeout (=> @tween?.start()), 1
 
   setProgress:(p, isInit)->
-    props = @props
-    len = @startLen+if !props.isReverse then p*@slicedLen else (1-p)*@slicedLen
+    len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
     point = @path.getPointAtLength len
-
-    isTransformFunOrigin = typeof props.transformOrigin is 'function'
-    # get current angle
-    if props.isAngle or props.angleOffset? or isTransformFunOrigin
+    # get x and y coordinates
+    x = point.x + @props.offsetX; y = point.y + @props.offsetY
+    @_getCurrentAngle point, len, p
+    @_setTransformOrigin(p)
+    @_setTransform(x, y, p, isInit)
+    @props.motionBlur and @makeMotionBlur(x, y)
+    
+  setElPosition:(x,y,p)->
+    rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+    h.setPrefixedStyle @el, 'transform', "translate(#{x}px,#{y}px) #{rotate}"
+  setModulePosition:(x, y)->
+    @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
+    @el.draw()
+  _getCurrentAngle:(point, len, p)->
+    isTransformFunOrigin = typeof @props.transformOrigin is 'function'
+    if @props.isAngle or @props.angleOffset? or isTransformFunOrigin
       prevPoint = @path.getPointAtLength len - 1
       x1 = point.y - prevPoint.y; x2 = point.x - prevPoint.x
       atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
       @angle = atan*h.RAD_TO_DEG
-      if (typeof props.angleOffset) isnt 'function'
-        @angle += props.angleOffset or 0
-      else @angle = props.angleOffset.call @, @angle, p
+      if (typeof @props.angleOffset) isnt 'function'
+        @angle += @props.angleOffset or 0
+      else @angle = @props.angleOffset.call @, @angle, p
     else @angle = 0
-    # get x and y coordinates
-    x = point.x + @props.offsetX; y = point.y + @props.offsetY
-
-    @props.motionBlur and @makeMotionBlur(x, y)
-
+  _setTransform:(x,y,p,isInit)->
     # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
+    # call onUpdate but not on the very first(0 progress) call
+    transform = null
+    if !isInit then transform = @onUpdate?(p, { x: x, y: y, angle: @angle })
     # set position and angle
-    if @isModule then @setModulePosition(x,y) else @setElPosition(x,y,p)
-    # set transform origin
+    # 1: if motion path is for module
+    if @isModule then @setModulePosition(x,y)
+    # 2: if motion path is for DOM node
+    else
+      # if string was returned from the onUpdate call
+      # then set this string to the @el
+      if typeof transform isnt 'string' then @setElPosition(x,y,p)
+      else h.setPrefixedStyle @el, 'transform', transform
+  _setTransformOrigin:(p)->
     if @props.transformOrigin
+      isTransformFunOrigin = typeof @props.transformOrigin is 'function'
       # transform origin could be a function
       tOrigin = if !isTransformFunOrigin then @props.transformOrigin
       else @props.transformOrigin(@angle, p)
-      @el.style["#{h.prefix.css}transform-origin"] = tOrigin
-      @el.style['transform-origin'] = tOrigin
-    # call onUpdate but not on the very first(0 progress) call
-    !isInit and @onUpdate?(p)
-
-  setElPosition:(x,y,p)->
-    transform = if !@props.onPosit?
-      rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
-      "translate(#{x}px,#{y}px) #{rotate}"
-    else @props.onPosit p, x, y, @angle
-    @el.style["#{h.prefix.css}transform"] = transform
-    @el.style['transform'] = transform
-  setModulePosition:(x, y)->
-    @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
-    @el.draw()
+      h.setPrefixedStyle @el, 'transform-origin', tOrigin
   makeMotionBlur:(x, y)->
     # if previous coords are not defined yet -- set speed to 0
     tailAngle = 0; signX = 1; signY = 1

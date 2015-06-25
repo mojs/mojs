@@ -421,7 +421,7 @@
             return dfr();
           }, 100);
         });
-        return it('should have the scope of MotionPath', function(dfr) {
+        it('should have the scope of MotionPath', function(dfr) {
           var isRightScope;
           isRightScope = false;
           mp = new MotionPath({
@@ -437,40 +437,29 @@
             return dfr();
           }, 100);
         });
-      });
-    });
-    describe('onPosit callback ->', function() {
-      it('should be defined', function() {
-        mp = new MotionPath({
-          path: 'M0,0 L100,100',
-          el: document.createElement('div'),
-          isRunLess: true,
-          onPosit: function() {}
+        return it('should be called with progress, x, y and angle', function() {
+          var angle, progress, x, y;
+          progress = null;
+          x = null;
+          y = null;
+          angle = null;
+          mp = new MotionPath({
+            path: 'M0,100 L100,0',
+            el: document.createElement('div'),
+            isRunLess: true,
+            onUpdate: function(p, o) {
+              progress = p;
+              x = o.x;
+              y = o.y;
+              return angle = o.angle;
+            }
+          });
+          mp.tween.setProgress(.5);
+          expect(progress.toFixed(1)).toBe('0.5');
+          expect(x).toBe(50);
+          expect(y).toBe(50);
+          return expect(angle).toBe(0);
         });
-        return expect(typeof mp.props.onPosit).toBe('function');
-      });
-      return it('should be called with progress, x, y and angle', function() {
-        var angle, progress, x, y;
-        progress = null;
-        x = null;
-        y = null;
-        angle = null;
-        mp = new MotionPath({
-          path: 'M0,100 L100,0',
-          el: document.createElement('div'),
-          isRunLess: true,
-          onPosit: function(p, xPos, yPos, ang) {
-            progress = p;
-            x = xPos;
-            y = yPos;
-            return angle = ang;
-          }
-        });
-        mp.tween.setProgress(.5);
-        expect(progress.toFixed(1)).toBe('0.5');
-        expect(x).toBe(50);
-        expect(y).toBe(50);
-        return expect(angle).toBe(0);
       });
     });
     describe('fill ->', function() {
@@ -989,7 +978,7 @@
         return expect(isRightScope).toBe(true);
       });
     });
-    describe('setProgress function ->', function(dfr) {
+    describe('setProgress method ->', function(dfr) {
       it('should have own function for setting up current progress', function() {
         var div, pos;
         div = document.createElement('div');
@@ -1003,19 +992,21 @@
         return expect(pos).toBe(250);
       });
       it('should call the onUpdate callback', function() {
-        var div;
+        var div, progress;
         div = document.createElement('div');
+        progress = null;
         mp = new MotionPath({
           path: 'M0,0 L500,0',
           el: div,
           isRunLess: true,
-          onUpdate: function() {}
+          onUpdate: function(p) {
+            return progress = p;
+          }
         });
-        spyOn(mp, 'onUpdate');
         mp.setProgress(.5);
-        return expect(mp.onUpdate).toHaveBeenCalledWith(.5);
+        return expect(progress).toBe(.5);
       });
-      return it('should not call the onUpdate callback on start', function() {
+      it('should not call the onUpdate callback on start', function() {
         var isCalled;
         isCalled = false;
         mp = new MotionPath({
@@ -1027,6 +1018,34 @@
           }
         });
         return expect(isCalled).toBe(false);
+      });
+      it('should set transform if it was returned from the onUpdate', function() {
+        var transform;
+        transform = 'translate(20px, 50px)';
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: document.createElement('div'),
+          isRunLess: true,
+          onUpdate: function() {
+            return transform;
+          }
+        });
+        mp.setProgress(.5);
+        return expect(mp.el.style.transform).toBe(transform);
+      });
+      return it('should not set transform if something other then string was returned from onUpdate callback', function() {
+        var transform;
+        transform = 'translate(20px, 50px)';
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: document.createElement('div'),
+          isRunLess: true,
+          onUpdate: function() {
+            return null;
+          }
+        });
+        mp.setProgress(.5);
+        return expect(mp.el.style.transform).not.toBe(null);
       });
     });
     describe('preset position ->', function() {

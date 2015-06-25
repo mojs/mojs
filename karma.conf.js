@@ -86,9 +86,9 @@ module.exports = function(config) {
     ],
     // list of files to exclude
     exclude: [
-      // // 'js/mo.js',
-      // // 'dist/mo.js',
-      // // 'dist/mojs.js',
+      // 'js/mo.js',
+      // 'dist/mo.js',
+      // 'dist/mojs.js',
       // 'dist/h.js',
       // 'spec/h.js',
       // 'dist/transit.js',
@@ -107,8 +107,8 @@ module.exports = function(config) {
       // 'spec/timeline.js',
       // 'dist/motion-path.js',
       // 'spec/motion-path.js',
-      // // 'dist/tweener.js',
-      // // 'spec/tweener.js'
+      // 'dist/tweener.js',
+      // 'spec/tweener.js'
     ],
 
     // preprocess matching files before serving them to the browser

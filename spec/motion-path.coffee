@@ -328,31 +328,30 @@ describe 'MotionPath ->', ->
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
         , 100
+      it 'should be called with progress, x, y and angle', ->
 
-  describe 'onPosit callback ->', ->
-    it 'should be defined', ->
-      mp = new MotionPath
-        path:       'M0,0 L100,100'
-        el:         document.createElement 'div'
-        isRunLess:  true
-        onPosit:    ->
-      expect(typeof mp.props.onPosit).toBe 'function'
-    it 'should be called with progress, x, y and angle', ->
+        progress = null; x = null; y = null; angle = null
+        mp = new MotionPath
+          path:       'M0,100 L100,0'
+          el:         document.createElement 'div'
+          isRunLess:  true
+          onUpdate:(p, o)->
+            progress = p; x = o.x; y = o.y; angle = o.angle
 
-      progress = null; x = null; y = null; angle = null
-      mp = new MotionPath
-        path:       'M0,100 L100,0'
-        el:         document.createElement 'div'
-        isRunLess:  true
-        onPosit:(p, xPos, yPos, ang)->
-          progress = p; x = xPos; y = yPos; angle = ang
+        mp.tween.setProgress .5
+        expect(progress.toFixed(1)).toBe '0.5'
+        expect(x)       .toBe 50
+        expect(y)       .toBe 50
+        expect(angle)   .toBe 0
 
-      mp.tween.setProgress .5
-      expect(progress.toFixed(1)).toBe '0.5'
-      expect(x)       .toBe 50
-      expect(y)       .toBe 50
-      expect(angle)   .toBe 0
-      # expect(mp.props.onPosit).toHaveBeenCalledWith .5, 50, 50, 0
+  # describe 'onPosit callback ->', ->
+  #   it 'should be defined', ->
+  #     mp = new MotionPath
+  #       path:       'M0,0 L100,100'
+  #       el:         document.createElement 'div'
+  #       isRunLess:  true
+  #       onPosit:    ->
+  #     expect(typeof mp.props.onPosit).toBe 'function'
 
   describe 'fill ->', ->
     div = null; container = null
@@ -692,7 +691,7 @@ describe 'MotionPath ->', ->
         angleOffset:-> isRightScope = @ instanceof MotionPath
       expect(isRightScope).toBe(true)
 
-  describe 'setProgress function ->', (dfr)->
+  describe 'setProgress method ->', (dfr)->
     it 'should have own function for setting up current progress', ->
       div = document.createElement 'div'
       mp = new MotionPath
@@ -702,18 +701,17 @@ describe 'MotionPath ->', ->
       mp.setProgress(.5)
       pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
-
     it 'should call the onUpdate callback', ->
       div = document.createElement 'div'
+      progress = null
       mp = new MotionPath
         path: 'M0,0 L500,0'
         el: div
         isRunLess: true
-        onUpdate:->
-      spyOn mp, 'onUpdate'
+        onUpdate:(p)-> progress = p
+      # spyOn mp, 'onUpdate'
       mp.setProgress(.5)
-      expect(mp.onUpdate).toHaveBeenCalledWith .5
-
+      expect(progress).toBe .5
     it 'should not call the onUpdate callback on start', ->
       isCalled = false
       mp = new MotionPath
@@ -722,6 +720,25 @@ describe 'MotionPath ->', ->
         isRunLess: true
         onUpdate:-> isCalled = true
       expect(isCalled).toBe false
+    it 'should set transform if it was returned from the onUpdate', ->
+      transform = 'translate(20px, 50px)'
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: document.createElement 'div'
+        isRunLess: true
+        onUpdate:-> transform
+      mp.setProgress .5
+      expect(mp.el.style.transform).toBe transform
+    it 'should not set transform if something other then string
+        was returned from onUpdate callback', ->
+      transform = 'translate(20px, 50px)'
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: document.createElement 'div'
+        isRunLess: true
+        onUpdate:-> null
+      mp.setProgress .5
+      expect(mp.el.style.transform).not.toBe null
 
   describe 'preset position ->', ->
     it 'should preset initial position by default', ->

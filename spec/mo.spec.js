@@ -1318,7 +1318,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.122.1',
+  revision: '0.123.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1406,8 +1406,7 @@ MotionPath = (function() {
     isPresetPosition: true,
     onStart: null,
     onComplete: null,
-    onUpdate: null,
-    onPosit: null
+    onUpdate: null
   };
 
   function MotionPath(o1) {
@@ -1671,51 +1670,21 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setProgress = function(p, isInit) {
-    var atan, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
-    props = this.props;
-    len = this.startLen + (!props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
+    var len, point, x, y;
+    len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
-    isTransformFunOrigin = typeof props.transformOrigin === 'function';
-    if (props.isAngle || (props.angleOffset != null) || isTransformFunOrigin) {
-      prevPoint = this.path.getPointAtLength(len - 1);
-      x1 = point.y - prevPoint.y;
-      x2 = point.x - prevPoint.x;
-      atan = Math.atan(x1 / x2);
-      !isFinite(atan) && (atan = 0);
-      this.angle = atan * h.RAD_TO_DEG;
-      if ((typeof props.angleOffset) !== 'function') {
-        this.angle += props.angleOffset || 0;
-      } else {
-        this.angle = props.angleOffset.call(this, this.angle, p);
-      }
-    } else {
-      this.angle = 0;
-    }
     x = point.x + this.props.offsetX;
     y = point.y + this.props.offsetY;
-    this.props.motionBlur && this.makeMotionBlur(x, y);
-    if (this.scaler) {
-      x *= this.scaler.x;
-      y *= this.scaler.y;
-    }
-    if (this.isModule) {
-      this.setModulePosition(x, y);
-    } else {
-      this.setElPosition(x, y, p);
-    }
-    if (this.props.transformOrigin) {
-      tOrigin = !isTransformFunOrigin ? this.props.transformOrigin : this.props.transformOrigin(this.angle, p);
-      this.el.style[h.prefix.css + "transform-origin"] = tOrigin;
-      this.el.style['transform-origin'] = tOrigin;
-    }
-    return !isInit && (typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0);
+    this._getCurrentAngle(point, len, p);
+    this._setTransformOrigin(p);
+    this._setTransform(x, y, p, isInit);
+    return this.props.motionBlur && this.makeMotionBlur(x, y);
   };
 
   MotionPath.prototype.setElPosition = function(x, y, p) {
-    var rotate, transform;
-    transform = this.props.onPosit == null ? (rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '', "translate(" + x + "px," + y + "px) " + rotate) : this.props.onPosit(p, x, y, this.angle);
-    this.el.style[h.prefix.css + "transform"] = transform;
-    return this.el.style['transform'] = transform;
+    var rotate;
+    rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
+    return h.setPrefixedStyle(this.el, 'transform', "translate(" + x + "px," + y + "px) " + rotate);
   };
 
   MotionPath.prototype.setModulePosition = function(x, y) {
@@ -1725,6 +1694,60 @@ MotionPath = (function() {
       angle: this.angle
     });
     return this.el.draw();
+  };
+
+  MotionPath.prototype._getCurrentAngle = function(point, len, p) {
+    var atan, isTransformFunOrigin, prevPoint, x1, x2;
+    isTransformFunOrigin = typeof this.props.transformOrigin === 'function';
+    if (this.props.isAngle || (this.props.angleOffset != null) || isTransformFunOrigin) {
+      prevPoint = this.path.getPointAtLength(len - 1);
+      x1 = point.y - prevPoint.y;
+      x2 = point.x - prevPoint.x;
+      atan = Math.atan(x1 / x2);
+      !isFinite(atan) && (atan = 0);
+      this.angle = atan * h.RAD_TO_DEG;
+      if ((typeof this.props.angleOffset) !== 'function') {
+        return this.angle += this.props.angleOffset || 0;
+      } else {
+        return this.angle = this.props.angleOffset.call(this, this.angle, p);
+      }
+    } else {
+      return this.angle = 0;
+    }
+  };
+
+  MotionPath.prototype._setTransform = function(x, y, p, isInit) {
+    var transform;
+    if (this.scaler) {
+      x *= this.scaler.x;
+      y *= this.scaler.y;
+    }
+    transform = null;
+    if (!isInit) {
+      transform = typeof this.onUpdate === "function" ? this.onUpdate(p, {
+        x: x,
+        y: y,
+        angle: this.angle
+      }) : void 0;
+    }
+    if (this.isModule) {
+      return this.setModulePosition(x, y);
+    } else {
+      if (typeof transform !== 'string') {
+        return this.setElPosition(x, y, p);
+      } else {
+        return h.setPrefixedStyle(this.el, 'transform', transform);
+      }
+    }
+  };
+
+  MotionPath.prototype._setTransformOrigin = function(p) {
+    var isTransformFunOrigin, tOrigin;
+    if (this.props.transformOrigin) {
+      isTransformFunOrigin = typeof this.props.transformOrigin === 'function';
+      tOrigin = !isTransformFunOrigin ? this.props.transformOrigin : this.props.transformOrigin(this.angle, p);
+      return h.setPrefixedStyle(this.el, 'transform-origin', tOrigin);
+    }
   };
 
   MotionPath.prototype.makeMotionBlur = function(x, y) {
