@@ -508,7 +508,7 @@ describe 'Burst ->', ->
       burst.run()
       setTimeout ->
         expect(burst.props.onStart).toHaveBeenCalled(); dfr()
-      , 300
+      , 500
     it 'should have the scope of burst', (dfr)->
       isRightScope = null
       burst = new Burst

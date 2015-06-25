@@ -85,7 +85,7 @@ describe 'PathEasing ->', ->
       path = 'M0,100 100,0'
       pe = new PathEasing path
       expect(pe.sample(-.5)).toBeCloseTo 0, 3
-      expect(pe.sample(1.5)).toBeCloseTo 1, 3
+      expect(pe.sample(1.5)).toBeCloseTo 1, 2
     it 'should return y', ->
       path = 'M0,100 100,0'
       pe = new PathEasing path
@@ -136,20 +136,20 @@ describe 'PathEasing ->', ->
     it 'should stop if running for a log time( _approximateMax < 1)', ->
       pe1 = new PathEasing 'M0,100 100,0', precompute: 100
       p = 0.015
-      start = {point: {x: 0.01, length: 0}}
-      end   = {point: {x: 0.02, length: 1}}
+      start = {point: {x: 0.01}, length: 0}
+      end   = {point: {x: 0.02}, length: 1}
       spyOn(pe1, '_findApproximate').and.callThrough()
       value = pe1._findApproximate p, start, end, 1
       expect(pe1._findApproximate.calls.count()).toBe 1
 
 
     it 'should call self recursivelly if not precise enough
-        but no more the _approximateMax value', ->
+        but no more then _approximateMax value', ->
       pe = new PathEasing 'M0,100 100,0', precompute: 100, eps: .00000001
       pe.isIt
       p = 0.015
-      start = {point: {x: 0.01, length: 10}}
-      end   = {point: {x: 0.5, length: 20}}
+      start = {point: {x: 0.01}, length: 10}
+      end   = {point: {x: 0.5}, length: 20}
       spyOn(pe, '_findApproximate').and.callThrough()
       value = pe._findApproximate p, start, end
       expect(pe._findApproximate.calls.count()).toEqual 5

@@ -812,7 +812,7 @@
         return setTimeout(function() {
           expect(burst.props.onStart).toHaveBeenCalled();
           return dfr();
-        }, 300);
+        }, 500);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;

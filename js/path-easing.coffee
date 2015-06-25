@@ -139,7 +139,7 @@ class PathEasing
   # @return {Object} approximation
   _approximate:(start, end, p)->
     deltaP = end.point.x - start.point.x
-    percentP = (p - (start.point.x/100))/(deltaP/100)
+    percentP = (p - (start.point.x/100)) / (deltaP/100)
     start.length + percentP*(end.length - start.length)
   # ---
 
@@ -147,7 +147,7 @@ class PathEasing
   # @param  {Number} progress to search for
   # @param  {Object} start point object
   # @param  {Object} end point object
-  # @return {Number} y approximation
+  # @return {Nunomber} y approximation
   _findApproximate:(p, start, end, approximateMax = @_approximateMax)->
     approximation = @_approximate start, end, p
     point = @path.getPointAtLength(approximation); x = point.x/100

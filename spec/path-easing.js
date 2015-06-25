@@ -130,7 +130,7 @@
         path = 'M0,100 100,0';
         pe = new PathEasing(path);
         expect(pe.sample(-.5)).toBeCloseTo(0, 3);
-        return expect(pe.sample(1.5)).toBeCloseTo(1, 3);
+        return expect(pe.sample(1.5)).toBeCloseTo(1, 2);
       });
       it('should return y', function() {
         var path, pe;
@@ -223,21 +223,21 @@
         p = 0.015;
         start = {
           point: {
-            x: 0.01,
-            length: 0
-          }
+            x: 0.01
+          },
+          length: 0
         };
         end = {
           point: {
-            x: 0.02,
-            length: 1
-          }
+            x: 0.02
+          },
+          length: 1
         };
         spyOn(pe1, '_findApproximate').and.callThrough();
         value = pe1._findApproximate(p, start, end, 1);
         return expect(pe1._findApproximate.calls.count()).toBe(1);
       });
-      return it('should call self recursivelly if not precise enough but no more the _approximateMax value', function() {
+      return it('should call self recursivelly if not precise enough but no more then _approximateMax value', function() {
         var end, p, pe, start, value;
         pe = new PathEasing('M0,100 100,0', {
           precompute: 100,
@@ -247,15 +247,15 @@
         p = 0.015;
         start = {
           point: {
-            x: 0.01,
-            length: 10
-          }
+            x: 0.01
+          },
+          length: 10
         };
         end = {
           point: {
-            x: 0.5,
-            length: 20
-          }
+            x: 0.5
+          },
+          length: 20
         };
         spyOn(pe, '_findApproximate').and.callThrough();
         value = pe._findApproximate(p, start, end);
