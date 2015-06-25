@@ -1615,11 +1615,13 @@
     });
     describe('createTween method', function() {
       return it('should bind the onFirstUpdateBackward metod', function() {
+        var type;
         mp = new MotionPath({
           path: coords,
           el: document.createElement('div')
         });
-        return expect(typeof mp.tween.timelines[0].o.onFirstUpdateBackward).toBe('function');
+        type = typeof mp.tween.timelines[0].o.onFirstUpdateBackward;
+        return expect(type).toBe('function');
       });
     });
     describe('isModule flag ->', function() {

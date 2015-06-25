@@ -305,7 +305,7 @@ describe 'MotionPath ->', ->
         setTimeout ->
           expect(isOnUpdate).toBe(true); dfr()
         , 300
-        
+
       it 'onUpdate callback should have "progress" argument', (dfr)->
         isOnUpdate = false
         mp = new MotionPath
@@ -620,7 +620,7 @@ describe 'MotionPath ->', ->
         duration: 50
         angleOffset: -90
         isAngle: true
-        # onComplete:-> 
+        # onComplete:->
       setTimeout (->
         isEqual = mp.angle is 0
         expect(isEqual).toBe(true); dfr()
@@ -1184,7 +1184,8 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path:       coords
         el:         document.createElement 'div'
-      expect(typeof mp.tween.timelines[0].o.onFirstUpdateBackward).toBe 'function'
+      type = typeof mp.tween.timelines[0].o.onFirstUpdateBackward
+      expect(type).toBe 'function'
 
   describe 'isModule flag ->', ->
     it 'should be set if module was passed', ->
