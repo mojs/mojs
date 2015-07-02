@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.123.0 
+	0.123.1 
 */
 
 (function(f){
@@ -1320,7 +1320,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.123.0',
+  revision: '0.123.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -2053,32 +2053,30 @@ module.exports = PathEasing;
 },{}],9:[function(require,module,exports){
 
 (function() {
-  var k, lastTime, vendors, x;
-  lastTime = 0;
-  x = 0;
-  vendors = ["ms", "moz", "webkit", "o"];
-  while (x < vendors.length && !window.requestAnimationFrame) {
-    window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
-    k = window[vendors[x] + "CancelRequestAnimationFrame"];
-    window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || k;
-    ++x;
+  'use strict';
+  var cancel, i, isOldBrowser, lastTime, vendors, vp, w;
+  vendors = ['webkit', 'moz'];
+  i = 0;
+  w = window;
+  while (i < vendors.length && !w.requestAnimationFrame) {
+    vp = vendors[i];
+    w.requestAnimationFrame = w[vp + 'RequestAnimationFrame'];
+    cancel = w[vp + 'CancelAnimationFrame'];
+    w.cancelAnimationFrame = cancel || w[vp + 'CancelRequestAnimationFrame'];
+    ++i;
   }
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function(callback, element) {
-      var currTime, id, timeToCall;
-      currTime = new Date().getTime();
-      timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      id = window.setTimeout(function() {
-        callback(currTime + timeToCall);
-      }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
+  isOldBrowser = !w.requestAnimationFrame || !w.cancelAnimationFrame;
+  if (/iP(ad|hone|od).*OS 6/.test(w.navigator.userAgent) || isOldBrowser) {
+    lastTime = 0;
+    w.requestAnimationFrame = function(callback) {
+      var nextTime, now;
+      now = Date.now();
+      nextTime = Math.max(lastTime + 16, now);
+      return setTimeout((function() {
+        callback(lastTime = nextTime);
+      }), nextTime - now);
     };
-  }
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function(id) {
-      clearTimeout(id);
-    };
+    w.cancelAnimationFrame = clearTimeout;
   }
 })();
 

@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.123.0', isDebug: true
+  revision:   '0.123.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
