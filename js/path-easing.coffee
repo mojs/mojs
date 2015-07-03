@@ -78,7 +78,7 @@ class PathEasing
     # is smaller then previous one or it is not defined
     @_boundsStartIndex = 0 if @_boundsPrevProgress > p or !@_boundsStartIndex?
     # loop thru the array from the @_boundsStartIndex
-    for i in [@_boundsStartIndex..len]
+    for i in [@_boundsStartIndex...len]
       value = array[i]
       # save the latest smaller value as start value
       if value.point.x/@_rect < p

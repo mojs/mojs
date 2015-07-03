@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.124.0 
+	0.124.1 
 */
 
 (function(f){
@@ -1320,7 +1320,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.124.0',
+  revision: '0.124.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1942,7 +1942,7 @@ PathEasing = (function() {
     if (this._boundsPrevProgress > p || (this._boundsStartIndex == null)) {
       this._boundsStartIndex = 0;
     }
-    for (i = j = ref = this._boundsStartIndex, ref1 = len; ref <= ref1 ? j <= ref1 : j >= ref1; i = ref <= ref1 ? ++j : --j) {
+    for (i = j = ref = this._boundsStartIndex, ref1 = len; ref <= ref1 ? j < ref1 : j > ref1; i = ref <= ref1 ? ++j : --j) {
       value = array[i];
       if (value.point.x / this._rect < p) {
         start = value;

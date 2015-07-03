@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>tween.setProgress .5 - mojs.coffee</title>
+  <title> - mojs.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.124.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.124.1'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -64,17 +64,10 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>tween = new mojs.Tween
-  onUpdate:(p)-&gt;
-    console.log p
-  onComplete:-&gt;
-    console.log &#39;comple&#39;
-  onReverseComplete:-&gt;
-    console.log &#39;rev comple&#39;
-  onFirstUpdateBackward:-&gt;
-    console.log &#39;first back&#39;
-  onFirstUpdate:-&gt;
-    console.log &#39;first forw&#39;</p>
+          <div class="wrapper"><p>stretchEasing = mojs.easing.path(&#39;M0,0 C0,0 31.4848633,29.7739254
+                                  55.2021484,-4.28613761e-07
+                                  C74.9160156,-20.18457
+                                  100,0 100,0&#39;)</p>
 </div>
         </div>
       
@@ -84,7 +77,13 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><h1 id="tween-setprogress-5"><a href="#tween-setprogress-5" class="anchor"></a>tween.setProgress .5</h1><h1 id="tween-setprogress-75"><a href="#tween-setprogress-75" class="anchor"></a>tween.setProgress .75</h1><h1 id="tween-setprogress-95"><a href="#tween-setprogress-95" class="anchor"></a>tween.setProgress .95</h1><h1 id="tween-setprogress-1-95"><a href="#tween-setprogress-1-95" class="anchor"></a>tween.setProgress 1.95</h1><h1 id="tween-setprogress-2-95"><a href="#tween-setprogress-2-95" class="anchor"></a>tween.setProgress 2.95</h1><h1 id="tween-setprogress-95"><a href="#tween-setprogress-95" class="anchor"></a>tween.setProgress .95</h1><h1 id="tween-setprogress-25"><a href="#tween-setprogress-25" class="anchor"></a>tween.setProgress .25</h1><h1 id="tween-setprogress-0"><a href="#tween-setprogress-0" class="anchor"></a>tween.setProgress 0</h1><h1 id="tween-setprogress-1"><a href="#tween-setprogress-1" class="anchor"></a>tween.setProgress -1</h1><p>tween.start()</p>
+          <div class="wrapper"><p>mp = new mojs.MotionPath
+  path: &#39;M0,0 L100,100&#39;
+  el: document.createElement &#39;div&#39;
+  duration: 1500
+  onUpdate: (p)-&gt;
+    stretchP = stretchEasing(p)
+    console.log stretchP</p>
 </div>
         </div>
       

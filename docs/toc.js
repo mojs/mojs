@@ -37,54 +37,7 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "tween.setProgress .5",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "tween-setprogress-5",
-      "title": "tween.setProgress .5"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-75",
-      "title": "tween.setProgress .75"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-95",
-      "title": "tween.setProgress .95"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-1-95",
-      "title": "tween.setProgress 1.95"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-2-95",
-      "title": "tween.setProgress 2.95"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-95",
-      "title": "tween.setProgress .95"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-25",
-      "title": "tween.setProgress .25"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-0",
-      "title": "tween.setProgress 0"
-    },
-    {
-      "level": 1,
-      "slug": "tween-setprogress-1",
-      "title": "tween.setProgress -1"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/motion-path.coffee.html",
