@@ -376,10 +376,12 @@ describe 'Helpers ->', ->
     describe 'setPrefixedStyle method', ->
       it 'should set prefixed style', ->
         el = document.createElement 'div'
-        h.setPrefixedStyle el, 'transform', 'translate(20px, 10px)'
-        prefixed = "#{h.prefix.css}transform"
-        expect(el.style[prefixed]).toBe 'translate(20px, 10px)'
-        expect(el.style['transform']).toBe         'translate(20px, 10px)'
+        styleToSet = 'translateX(20px)'
+        name = 'transform'; prefixedName = "#{h.prefix.css}transform"
+        h.setPrefixedStyle(el, name, styleToSet)
+        style = if el.style[prefixedName]? then el.style[prefixedName]
+        else el.style[name]
+        expect(style).toBe styleToSet
     describe 'parseUnit method', ->
       it 'should parse number to pixels', ->
         unit = h.parseUnit(100)
@@ -831,5 +833,22 @@ describe 'Helpers ->', ->
       expect(h.closeEnough(.0005, .0005, .00000001)).toBe true
       expect(h.closeEnough(1, .0005, .00000001))    .toBe false
       expect(h.closeEnough(1, .0005, 1))            .toBe true
-
+  describe 'style method', ->
+    it 'should set style on el', ->
+      el = document.createElement 'div'
+      h.style(el, 'width', '20px')
+      expect(el.style.width).toBe '20px'
+    it 'should set multiple styles on el', ->
+      el = document.createElement 'div'
+      transformToSet = 'translateX(20px)'
+      h.style(el, {
+        'width': '20px',
+        height: '30px',
+        transform: transformToSet
+      })
+      s = el.style
+      expect(s.width).toBe '20px'
+      expect(s.height).toBe '30px'
+      tr = s.transform? or s["#{h.prefix.css}transform"]
+      expect(tr).toBe transformToSet
 

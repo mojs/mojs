@@ -580,14 +580,18 @@ describe 'Transit ->', ->
           byte = new Byte
             shiftX: 100
             shiftY: 50
-          expect(byte.el.style.transform).toBe 'translate(100px, 50px)'
+          s = byte.el.style
+          tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+          expect(tr).toBe 'translate(100px, 50px)'
         
         it 'should animate position', (dfr)->
           byte = new Byte
             shiftX: {100: '200px'}
             duration: 20
             onComplete:->
-              expect(byte.el.style.transform) .toBe 'translate(200px, 0px)'
+              s = byte.el.style
+              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+              expect(tr) .toBe 'translate(200px, 0px)'
               dfr()
 
         it 'should animate position with respect to units', (dfr)->
@@ -595,7 +599,9 @@ describe 'Transit ->', ->
             shiftX: {'20%': '50%'}
             duration: 20
             onComplete:->
-              expect(byte.el.style.transform).toBe 'translate(50%, 0px)'
+              s = byte.el.style
+              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+              expect(tr).toBe 'translate(50%, 0px)'
               dfr()
         
         it 'should fallback to end units if units are differnt', (dfr)->
@@ -604,7 +610,9 @@ describe 'Transit ->', ->
             shiftY: { 0: '50%'}
             duration: 20
             onComplete:->
-              expect(byte.el.style.transform).toBe 'translate(50px, 50%)'
+              s = byte.el.style
+              tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+              expect(tr).toBe 'translate(50px, 50%)'
               dfr()
 
   describe 'fillTransform method ->', ->
@@ -774,14 +782,16 @@ describe 'Transit ->', ->
       expect(byte.el.style.left)      .toBe     '0px'
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
-      expect(byte.el.style.transform) .toBe     'translate(0px, 0px)'
+      s = byte.el.style; tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+      expect(tr) .toBe     'translate(0px, 0px)'
     it 'should set only opacity if foreign context', ->
       byte = new Byte radius: 25, y: 10, ctx: svg
       byte.draw()
       expect(byte.el.style.opacity)   .toBe         '1'
       expect(byte.el.style.left)      .not.toBe     '0px'
       expect(byte.el.style.top)       .not.toBe     '10px'
-      expect(byte.el.style.transform) .not.toBe     'translate(0px, 0px)'
+      s = byte.el.style; tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+      expect(tr) .not.toBe     'translate(0px, 0px)'
     it 'should set new values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()
@@ -1364,7 +1374,6 @@ describe 'Transit ->', ->
       spyOn byte.bit, 'getLength'
       byte.getBitLength()
       expect(byte.bit.getLength).toHaveBeenCalled()
-
     it 'should cache the value to props', ->
       byte = new Byte()
       byte.props.bitLength = null

@@ -518,8 +518,12 @@
             container: container
           },
           onComplete: function() {
-            var args, height, isHeight, isWidth, width;
-            args = motionPath.el.style.transform.split(/(translate\()|\,|\)/);
+            var args, height, isHeight, isWidth, tr, width;
+            tr = motionPath.el.style.transform;
+            if (tr == null) {
+              tr = motionPath.el.style["" + h.prefix.css + "transform"];
+            }
+            args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
             isWidth = width === container.offsetWidth;
@@ -543,8 +547,12 @@
           },
           all: true,
           onComplete: function() {
-            var args, height, isHeight, isWidth, width;
-            args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+            var args, height, isHeight, isWidth, tr, width;
+            tr = mp.el.style.transform;
+            if (tr == null) {
+              tr = mp.el.style["" + h.prefix.css + "transform"];
+            }
+            args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
             isWidth = width === container.offsetWidth;
@@ -567,8 +575,12 @@
             fillRule: 'height'
           },
           onComplete: function() {
-            var args, height, isHeight, isWidth, width;
-            args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+            var args, height, isHeight, isWidth, tr, width;
+            tr = mp.el.style.transform;
+            if (tr == null) {
+              tr = mp.el.style["" + h.prefix.css + "transform"];
+            }
+            args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
             isWidth = width === (height / 2);
@@ -607,8 +619,10 @@
           }
         });
         return setTimeout(function() {
-          x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
-          expect(parseInt(x, 10)).toBe(100);
+          var tr;
+          tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+          x = tr.split(/(translate\()|\,|\)/);
+          expect(parseInt(x[2], 10)).toBe(100);
           return dfr();
         }, 300);
       });
@@ -630,7 +644,9 @@
           isAngle: true
         });
         return setTimeout((function() {
-          x = div.style.transform.split(/(translate\()|,|\)/)[2];
+          var tr;
+          tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+          x = tr.split(/(translate\()|,|\)/)[2];
           isEqual = parseInt(x, 10) === 10;
           expect(isEqual).toBe(true);
           return dfr();
@@ -647,7 +663,9 @@
           offsetX: -10,
           duration: 50,
           onComplete: function() {
-            x = div.style.transform.split(/(translate\()|,|\)/)[2];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            x = tr.split(/(translate\()|,|\)/)[2];
             x = parseInt(x, 10);
             return isEqual = x === -10;
           }
@@ -668,7 +686,9 @@
           offsetY: 10,
           duration: 50,
           onComplete: function() {
-            y = div.style.transform.split(/(translate\()|,|\)/)[4];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            y = tr.split(/(translate\()|,|\)/)[4];
             y = parseInt(y, 10);
             return isEqual = y === 10;
           }
@@ -689,7 +709,9 @@
           offsetY: -10,
           duration: 50,
           onComplete: function() {
-            y = div.style.transform.split(/(translate\()|,|\)/)[4];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            y = tr.split(/(translate\()|,|\)/)[4];
             return isEqual = parseInt(y, 10) === -10;
           }
         });
@@ -793,7 +815,10 @@
           }
         });
         return setTimeout(function() {
-          expect(mp.el.style['transform-origin'].length >= 1).toBe(true);
+          var s, tr;
+          s = mp.el.style;
+          tr = s['transform-origin'] || s["" + h.prefix.css + "transform-origin"];
+          expect(tr.length >= 1).toBe(true);
           return dfr();
         }, 100);
       });
@@ -986,7 +1011,7 @@
     });
     describe('setProgress method ->', function(dfr) {
       it('should have own function for setting up current progress', function() {
-        var div, pos;
+        var div, pos, tr;
         div = document.createElement('div');
         mp = new MotionPath({
           path: 'M0,0 L500,0',
@@ -994,7 +1019,8 @@
           isRunLess: true
         });
         mp.setProgress(.5);
-        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+        pos = parseInt(tr.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(250);
       });
       it('should call the onUpdate callback', function() {
@@ -1026,7 +1052,7 @@
         return expect(isCalled).toBe(false);
       });
       it('should set transform if it was returned from the onUpdate', function() {
-        var transform;
+        var tr, transform;
         transform = 'translate(20px, 50px)';
         mp = new MotionPath({
           path: 'M0,0 L500,0',
@@ -1037,7 +1063,8 @@
           }
         });
         mp.setProgress(.5);
-        return expect(mp.el.style.transform).toBe(transform);
+        tr = (mp.el.style.transform != null) || mp.el.style["" + h.prefix.css + "transform"];
+        return expect(tr).toBe(transform);
       });
       return it('should not set transform if something other then string was returned from onUpdate callback', function() {
         var transform;
@@ -1056,13 +1083,14 @@
     });
     describe('preset position ->', function() {
       it('should preset initial position by default', function() {
-        var div, pos;
+        var div, pos, tr;
         div = document.createElement('div');
         mp = new MotionPath({
           path: 'M50,0 L500,0',
           el: div
         });
-        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+        pos = parseInt(tr.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(50);
       });
       return it('should not set initial position if isPresetPosition is false', function() {
@@ -1090,7 +1118,7 @@
         return expect(mp.startLen).toBe(250);
       });
       it('should start from pathStart position', function() {
-        var div, pos;
+        var div, pos, tr;
         div = document.createElement('div');
         mp = new MotionPath({
           path: 'M0,0 L500,0',
@@ -1101,7 +1129,8 @@
           isIt: true
         });
         mp.tween.setProgress(0);
-        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+        pos = parseInt(tr.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(250);
       });
       return it('should end at pathEnd position', function(dfr) {
@@ -1115,7 +1144,9 @@
           pathStart: .25,
           pathEnd: .5,
           onComplete: function() {
-            pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            pos = tr.split(/(translate\()|\,|\)/)[2];
             return pos = parseInt(pos, 10);
           }
         });

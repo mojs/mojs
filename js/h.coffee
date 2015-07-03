@@ -150,11 +150,30 @@ class Helpers
   clamp:(value, min, max)->
     if value < min then min else if value > max then max else value
     # Math.min Math.max(value, min), max
-
   setPrefixedStyle:(el, name, value)->
-    prefixedName            = "#{@prefix.css}#{name}"
-    el.style[name]          = value
-    el.style[prefixedName]  = value
+    prefixedName  = "#{@prefix.css}#{name}"
+    prefixedStyle = if el.style[prefixedName]? then prefixedName else name
+    el.style[prefixedStyle]  = value
+  # ---
+  # 
+  # Sets styles on element with prefix(if needed) on el
+  # 
+  # @method style
+  # @param {DOMNode}          element to set the styles on
+  # @param {String, Object}   style name or style: value object
+  # @param {String}           style value
+  # @example
+  #   h.style(el, 'width', '20px')
+  # @example
+  #   h.style(el, { width: '20px', height: '10px' })
+  style:(el, name, value)->
+    if typeof name is 'object'
+      keys = Object.keys(name); len = keys.length
+      while(len--)
+        key = keys[len]; value = name[key]
+        @setPrefixedStyle el, key, value
+    else @setPrefixedStyle el, name, value
+
   prepareForLog:(args)->
     args = Array::slice.apply args
     args.unshift('::'); args.unshift(@logBadgeCss); args.unshift('%cmo·js%c')

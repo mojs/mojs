@@ -1047,12 +1047,14 @@
         });
         return describe('shiftX/shiftY coordinates ->', function() {
           it('should set a position with respect to units', function() {
-            var byte;
+            var byte, s, tr;
             byte = new Byte({
               shiftX: 100,
               shiftY: 50
             });
-            return expect(byte.el.style.transform).toBe('translate(100px, 50px)');
+            s = byte.el.style;
+            tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+            return expect(tr).toBe('translate(100px, 50px)');
           });
           it('should animate position', function(dfr) {
             var byte;
@@ -1062,7 +1064,10 @@
               },
               duration: 20,
               onComplete: function() {
-                expect(byte.el.style.transform).toBe('translate(200px, 0px)');
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(200px, 0px)');
                 return dfr();
               }
             });
@@ -1075,7 +1080,10 @@
               },
               duration: 20,
               onComplete: function() {
-                expect(byte.el.style.transform).toBe('translate(50%, 0px)');
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(50%, 0px)');
                 return dfr();
               }
             });
@@ -1091,7 +1099,10 @@
               },
               duration: 20,
               onComplete: function() {
-                expect(byte.el.style.transform).toBe('translate(50px, 50%)');
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(50px, 50%)');
                 return dfr();
               }
             });
@@ -1394,7 +1405,7 @@
     });
     describe('drawEl method ->', function() {
       it('should set el positions and transforms', function() {
-        var byte;
+        var byte, s, tr;
         byte = new Byte({
           radius: 25,
           y: 10
@@ -1403,10 +1414,12 @@
         expect(byte.el.style.left).toBe('0px');
         expect(byte.el.style.top).toBe('10px');
         expect(byte.el.style.opacity).toBe('1');
-        return expect(byte.el.style.transform).toBe('translate(0px, 0px)');
+        s = byte.el.style;
+        tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+        return expect(tr).toBe('translate(0px, 0px)');
       });
       it('should set only opacity if foreign context', function() {
-        var byte;
+        var byte, s, tr;
         byte = new Byte({
           radius: 25,
           y: 10,
@@ -1416,7 +1429,9 @@
         expect(byte.el.style.opacity).toBe('1');
         expect(byte.el.style.left).not.toBe('0px');
         expect(byte.el.style.top).not.toBe('10px');
-        return expect(byte.el.style.transform).not.toBe('translate(0px, 0px)');
+        s = byte.el.style;
+        tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+        return expect(tr).not.toBe('translate(0px, 0px)');
       });
       it('should set new values', function() {
         var byte;

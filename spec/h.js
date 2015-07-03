@@ -516,12 +516,14 @@
       });
       describe('setPrefixedStyle method', function() {
         return it('should set prefixed style', function() {
-          var el, prefixed;
+          var el, name, prefixedName, style, styleToSet;
           el = document.createElement('div');
-          h.setPrefixedStyle(el, 'transform', 'translate(20px, 10px)');
-          prefixed = "" + h.prefix.css + "transform";
-          expect(el.style[prefixed]).toBe('translate(20px, 10px)');
-          return expect(el.style['transform']).toBe('translate(20px, 10px)');
+          styleToSet = 'translateX(20px)';
+          name = 'transform';
+          prefixedName = "" + h.prefix.css + "transform";
+          h.setPrefixedStyle(el, name, styleToSet);
+          style = el.style[prefixedName] != null ? el.style[prefixedName] : el.style[name];
+          return expect(style).toBe(styleToSet);
         });
       });
       describe('parseUnit method', function() {
@@ -1163,12 +1165,35 @@
         return expect(h.parsePath(path).getAttribute('id')).toBe(pathId);
       });
     });
-    return describe('closeEnough method', function() {
+    describe('closeEnough method', function() {
       return it('should compare two numbers', function() {
         expect(h.closeEnough(.0005, .0006, .001)).toBe(true);
         expect(h.closeEnough(.0005, .0005, .00000001)).toBe(true);
         expect(h.closeEnough(1, .0005, .00000001)).toBe(false);
         return expect(h.closeEnough(1, .0005, 1)).toBe(true);
+      });
+    });
+    return describe('style method', function() {
+      it('should set style on el', function() {
+        var el;
+        el = document.createElement('div');
+        h.style(el, 'width', '20px');
+        return expect(el.style.width).toBe('20px');
+      });
+      return it('should set multiple styles on el', function() {
+        var el, s, tr, transformToSet;
+        el = document.createElement('div');
+        transformToSet = 'translateX(20px)';
+        h.style(el, {
+          'width': '20px',
+          height: '30px',
+          transform: transformToSet
+        });
+        s = el.style;
+        expect(s.width).toBe('20px');
+        expect(s.height).toBe('30px');
+        tr = (s.transform != null) || s["" + h.prefix.css + "transform"];
+        return expect(tr).toBe(transformToSet);
       });
     });
   });

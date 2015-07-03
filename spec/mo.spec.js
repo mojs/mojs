@@ -912,10 +912,27 @@ Helpers = (function() {
   };
 
   Helpers.prototype.setPrefixedStyle = function(el, name, value) {
-    var prefixedName;
+    var prefixedName, prefixedStyle;
     prefixedName = "" + this.prefix.css + name;
-    el.style[name] = value;
-    return el.style[prefixedName] = value;
+    prefixedStyle = el.style[prefixedName] != null ? prefixedName : name;
+    return el.style[prefixedStyle] = value;
+  };
+
+  Helpers.prototype.style = function(el, name, value) {
+    var key, keys, len, results;
+    if (typeof name === 'object') {
+      keys = Object.keys(name);
+      len = keys.length;
+      results = [];
+      while (len--) {
+        key = keys[len];
+        value = name[key];
+        results.push(this.setPrefixedStyle(el, key, value));
+      }
+      return results;
+    } else {
+      return this.setPrefixedStyle(el, name, value);
+    }
   };
 
   Helpers.prototype.prepareForLog = function(args) {
@@ -1034,9 +1051,9 @@ Helpers = (function() {
   };
 
   Helpers.prototype.calcArrDelta = function(arr1, arr2) {
-    var delta, i, j, len, num;
+    var delta, i, j, len1, num;
     delta = [];
-    for (i = j = 0, len = arr1.length; j < len; i = ++j) {
+    for (i = j = 0, len1 = arr1.length; j < len1; i = ++j) {
       num = arr1[i];
       delta[i] = this.parseUnit("" + (arr2[i].value - arr1[i].value) + arr2[i].unit);
     }
@@ -1159,7 +1176,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.parseDelta = function(key, value) {
-    var delta, end, endArr, endColorObj, i, j, len, start, startArr, startColorObj;
+    var delta, end, endArr, endColorObj, i, j, len1, start, startArr, startColorObj;
     start = Object.keys(value)[0];
     end = value[start];
     delta = {
@@ -1187,7 +1204,7 @@ Helpers = (function() {
       startArr = this.strToArr(start);
       endArr = this.strToArr(end);
       this.normDashArrays(startArr, endArr);
-      for (i = j = 0, len = startArr.length; j < len; i = ++j) {
+      for (i = j = 0, len1 = startArr.length; j < len1; i = ++j) {
         start = startArr[i];
         end = endArr[i];
         this.mergeUnits(start, end, key);
@@ -1318,7 +1335,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.124.1',
+  revision: '0.125.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

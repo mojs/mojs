@@ -394,7 +394,9 @@ describe 'MotionPath ->', ->
         fill: { container: container }
         # all: true
         onComplete:->
-          args = motionPath.el.style.transform.split /(translate\()|\,|\)/
+          tr = motionPath.el.style.transform
+          tr ?= motionPath.el.style["#{h.prefix.css}transform"]
+          args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
           isWidth  = width  is container.offsetWidth
@@ -412,7 +414,9 @@ describe 'MotionPath ->', ->
         fill: { container: container, fillRule: 'width' }
         all: true
         onComplete:->
-          args = mp.el.style.transform.split /(translate\()|\,|\)/
+          tr = mp.el.style.transform
+          tr ?= mp.el.style["#{h.prefix.css}transform"]
+          args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
           isWidth  = width  is container.offsetWidth
@@ -430,7 +434,9 @@ describe 'MotionPath ->', ->
         duration: 50
         fill: { container: container, fillRule: 'height' }
         onComplete:->
-          args = mp.el.style.transform.split /(translate\()|\,|\)/
+          tr = mp.el.style.transform
+          tr ?= mp.el.style["#{h.prefix.css}transform"]
+          args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
           isWidth  = width  is (height/2)
@@ -459,11 +465,11 @@ describe 'MotionPath ->', ->
           if proc >= .1 and !isSizeChange
             mp.container.style.width = '100px'
             isSizeChange = true
-        # onComplete:->
 
       setTimeout ->
-        x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
-        expect(parseInt(x, 10)).toBe(100); dfr()
+        tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+        x = tr.split /(translate\()|\,|\)/
+        expect(parseInt(x[2], 10)).toBe(100); dfr()
       , 300
 
   describe 'functionality ->', ->
@@ -481,7 +487,8 @@ describe 'MotionPath ->', ->
         isAngle: true
       
       setTimeout (->
-        x = div.style.transform.split(/(translate\()|,|\)/)[2]
+        tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+        x = tr.split(/(translate\()|,|\)/)[2]
         isEqual = parseInt(x, 10) is 10
         expect(isEqual).toBe(true); dfr()
       ), 300
@@ -495,7 +502,8 @@ describe 'MotionPath ->', ->
         offsetX: -10
         duration: 50
         onComplete: ->
-          x = div.style.transform.split(/(translate\()|,|\)/)[2]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          x = tr.split(/(translate\()|,|\)/)[2]
           x = parseInt(x, 10)
           isEqual = x is -10
       setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
@@ -509,7 +517,8 @@ describe 'MotionPath ->', ->
         offsetY: 10
         duration: 50
         onComplete: ->
-          y = div.style.transform.split(/(translate\()|,|\)/)[4]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          y = tr.split(/(translate\()|,|\)/)[4]
           y = parseInt(y, 10)
           isEqual = y is 10
       setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
@@ -523,7 +532,8 @@ describe 'MotionPath ->', ->
         offsetY: -10
         duration: 50
         onComplete: ->
-          y = div.style.transform.split(/(translate\()|,|\)/)[4]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          y = tr.split(/(translate\()|,|\)/)[4]
           isEqual = parseInt(y, 10) is -10
 
       setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
@@ -583,7 +593,9 @@ describe 'MotionPath ->', ->
         onComplete: -> isComplete = true
 
       setTimeout ->
-        expect(mp.el.style['transform-origin'].length >= 1).toBe(true); dfr()
+        s = mp.el.style
+        tr = s['transform-origin'] or s["#{h.prefix.css}transform-origin"]
+        expect(tr.length >= 1).toBe(true); dfr()
       , 100
 
     it 'transform-origin could be a function', (dfr)->
@@ -711,7 +723,8 @@ describe 'MotionPath ->', ->
         el: div
         isRunLess: true
       mp.setProgress(.5)
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+      pos = parseInt tr.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
     it 'should call the onUpdate callback', ->
       div = document.createElement 'div'
@@ -740,7 +753,8 @@ describe 'MotionPath ->', ->
         isRunLess: true
         onUpdate:-> transform
       mp.setProgress .5
-      expect(mp.el.style.transform).toBe transform
+      tr = mp.el.style.transform? or mp.el.style["#{h.prefix.css}transform"]
+      expect(tr).toBe transform
     it 'should not set transform if something other then string
         was returned from onUpdate callback', ->
       transform = 'translate(20px, 50px)'
@@ -758,7 +772,8 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path: 'M50,0 L500,0'
         el:   div
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+      pos = parseInt tr.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(50)
 
     it 'should not set initial position if isPresetPosition is false', ->
@@ -792,7 +807,8 @@ describe 'MotionPath ->', ->
         isIt: true
 
       mp.tween.setProgress 0
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+      pos = parseInt tr.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
 
     it 'should end at pathEnd position', (dfr)->
@@ -805,7 +821,8 @@ describe 'MotionPath ->', ->
         pathStart:  .25
         pathEnd:    .5
         onComplete:->
-          pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          pos = tr.split(/(translate\()|\,|\)/)[2]
           pos = parseInt pos, 10
     
       setTimeout (-> expect(pos).toBe(250); dfr()), 300
