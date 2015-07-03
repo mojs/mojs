@@ -52,6 +52,12 @@ class MotionPath
     curvature:        x: '75%', y: '50%'
     # ---
 
+    # Defines if composite layer should be forced on el to prevent
+    # paint during animation.
+    # @type       {Boolean}
+    isCompositeLayer:   true
+    # ---
+
     # Delay before animation starts, *ms*
     # @property   delay
     # @type       {Number}
@@ -456,8 +462,11 @@ class MotionPath
     @props.motionBlur and @makeMotionBlur(x, y)
     
   setElPosition:(x,y,p)->
-    rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
-    h.setPrefixedStyle @el, 'transform', "translate(#{x}px,#{y}px) #{rotate}"
+    rotate    = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+    composite = if @props.isCompositeLayer then 'translateZ(0)' else ''
+    transform = "translate(#{x}px,#{y}px) #{rotate} #{composite}"
+
+    h.setPrefixedStyle @el, 'transform', transform
   setModulePosition:(x, y)->
     @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
     @el.draw()

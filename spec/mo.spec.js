@@ -1318,7 +1318,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.123.1',
+  revision: '0.124.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1388,6 +1388,7 @@ MotionPath = (function() {
       x: '75%',
       y: '50%'
     },
+    isCompositeLayer: true,
     delay: 0,
     duration: 1000,
     easing: null,
@@ -1682,9 +1683,11 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setElPosition = function(x, y, p) {
-    var rotate;
+    var composite, rotate, transform;
     rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
-    return h.setPrefixedStyle(this.el, 'transform', "translate(" + x + "px," + y + "px) " + rotate);
+    composite = this.props.isCompositeLayer ? 'translateZ(0)' : '';
+    transform = "translate(" + x + "px," + y + "px) " + rotate + " " + composite;
+    return h.setPrefixedStyle(this.el, 'transform', transform);
   };
 
   MotionPath.prototype.setModulePosition = function(x, y) {

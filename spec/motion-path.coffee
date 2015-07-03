@@ -70,6 +70,11 @@ describe 'MotionPath ->', ->
         isRunLess: true
         isPresetPosition: false
       expect(mp.angle).toBe 0
+    it 'should have isCompositeLayer default of true', ->
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el:    document.createElement 'div'
+      expect(mp.defaults.isCompositeLayer).toBe true
     it 'have speed of 0', ->
       el = document.createElement 'div'
       mp = new MotionPath
@@ -88,8 +93,7 @@ describe 'MotionPath ->', ->
         isPresetPosition: false
       expect(mp.blurX).toBe 0
       expect(mp.blurY).toBe 0
-
-    it 'have blurAmount of 12', ->
+    it 'have blurAmount of 20', ->
       el = document.createElement 'div'
       mp = new MotionPath
         path: 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -245,7 +249,6 @@ describe 'MotionPath ->', ->
       expect(h.warn).toHaveBeenCalled()
       expect(mp.history[0].duration).toBe 2000
       expect(mp.props.duration)     .toBe 2000
-
 
   describe 'callbacks ->', ->
     div = document.createElement 'div'
@@ -817,6 +820,36 @@ describe 'MotionPath ->', ->
         path: path
         el: div
       expect(h.error).toHaveBeenCalled()
+
+  describe 'isCompositeLayer option ->', ->
+    it 'should be true by default', ->
+      mp = new MotionPath
+        path:   document.createElementNS ns, 'path'
+        el:     document.createElement 'div'
+      expect(mp.props.isCompositeLayer).toBe true
+    it 'should be able to be set to false', ->
+      mp = new MotionPath
+        path:   document.createElementNS ns, 'path'
+        el:     document.createElement 'div'
+        isCompositeLayer: false
+      expect(mp.props.isCompositeLayer).toBe false
+    it 'should set translateZ(0) is isCompositeLayer is set to true', ()->
+      mp = new MotionPath
+        path:       document.createElementNS ns, 'path'
+        el:         document.createElement 'div'
+        isRunLess:  true
+      mp.setProgress(.5)
+      tr = mp.el.style.transform or mp.el.style["#{mojs.h.prefix.css}transform"]
+      expect(tr.match /translateZ/gi).toBeTruthy()
+    it 'should not set translateZ(0) is isCompositeLayer is set to false', ()->
+      mp = new MotionPath
+        path:             document.createElementNS ns, 'path'
+        el:               document.createElement 'div'
+        isRunLess:        true
+        isCompositeLayer: false
+      mp.setProgress(.5)
+      tr = mp.el.style.transform or mp.el.style["#{mojs.h.prefix.css}transform"]
+      expect(tr.match /translateZ/gi).toBeFalsy()
 
   describe 'getPath method ->', ->
     it 'should have a getPath method', ->

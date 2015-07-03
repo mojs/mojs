@@ -118,6 +118,13 @@
         });
         return expect(mp.angle).toBe(0);
       });
+      it('should have isCompositeLayer default of true', function() {
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: document.createElement('div')
+        });
+        return expect(mp.defaults.isCompositeLayer).toBe(true);
+      });
       it('have speed of 0', function() {
         el = document.createElement('div');
         mp = new MotionPath({
@@ -140,7 +147,7 @@
         expect(mp.blurX).toBe(0);
         return expect(mp.blurY).toBe(0);
       });
-      it('have blurAmount of 12', function() {
+      it('have blurAmount of 20', function() {
         el = document.createElement('div');
         mp = new MotionPath({
           path: 'M0.55859375,593.527344L0.55859375,593.527344',
@@ -1129,6 +1136,46 @@
           el: div
         });
         return expect(h.error).toHaveBeenCalled();
+      });
+    });
+    describe('isCompositeLayer option ->', function() {
+      it('should be true by default', function() {
+        mp = new MotionPath({
+          path: document.createElementNS(ns, 'path'),
+          el: document.createElement('div')
+        });
+        return expect(mp.props.isCompositeLayer).toBe(true);
+      });
+      it('should be able to be set to false', function() {
+        mp = new MotionPath({
+          path: document.createElementNS(ns, 'path'),
+          el: document.createElement('div'),
+          isCompositeLayer: false
+        });
+        return expect(mp.props.isCompositeLayer).toBe(false);
+      });
+      it('should set translateZ(0) is isCompositeLayer is set to true', function() {
+        var tr;
+        mp = new MotionPath({
+          path: document.createElementNS(ns, 'path'),
+          el: document.createElement('div'),
+          isRunLess: true
+        });
+        mp.setProgress(.5);
+        tr = mp.el.style.transform || mp.el.style["" + mojs.h.prefix.css + "transform"];
+        return expect(tr.match(/translateZ/gi)).toBeTruthy();
+      });
+      return it('should not set translateZ(0) is isCompositeLayer is set to false', function() {
+        var tr;
+        mp = new MotionPath({
+          path: document.createElementNS(ns, 'path'),
+          el: document.createElement('div'),
+          isRunLess: true,
+          isCompositeLayer: false
+        });
+        mp.setProgress(.5);
+        tr = mp.el.style.transform || mp.el.style["" + mojs.h.prefix.css + "transform"];
+        return expect(tr.match(/translateZ/gi)).toBeFalsy();
       });
     });
     describe('getPath method ->', function() {
