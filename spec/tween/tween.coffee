@@ -30,6 +30,7 @@ describe 'Tween ->', ->
       expect(t.timelines[1] instanceof Timeline).toBe true
       expect(t.timelines[2] instanceof Timeline).toBe true
       expect(t.timelines[3] instanceof Tween)   .toBe true
+    #
     it 'should work with arguments',->
       tween = new Tween
       t1 = new Timeline duration: 500, delay: 200
@@ -37,6 +38,7 @@ describe 'Tween ->', ->
       tween.add t1, t2
       expect(tween.props.totalTime) .toBe 1000
       expect(tween.timelines.length).toBe 3
+    #
     it 'should work with mixed arguments',->
       t = new Tween
       t1 = new Timeline duration: 1000
@@ -49,6 +51,7 @@ describe 'Tween ->', ->
       expect(t.timelines[2] instanceof Timeline).toBe true
       expect(t.timelines[3] instanceof Tween)   .toBe true
       expect(t.timelines[4] instanceof Timeline).toBe true
+    #
     it 'should calc self duration',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200
@@ -155,7 +158,7 @@ describe 'Tween ->', ->
       time = 0
       t.start time
       expect(t.setStartTime).toHaveBeenCalledWith time
-
+    #
     it 'should start every timeline',->
       it 'should update the current time on every timeline',->
       t = new Tween
@@ -166,6 +169,7 @@ describe 'Tween ->', ->
       t.start()
       expect(t.timelines[0].start).toHaveBeenCalledWith t.props.startTime
       expect(t.timelines[1].start).toHaveBeenCalledWith t.props.startTime
+    #
     it 'should add itself to tweener',->
       t = new Tween
       spyOn tweener, 'add'

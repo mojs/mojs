@@ -1338,7 +1338,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs, t;
+var mojs;
 
 mojs = {
   revision: '0.126.0',
@@ -1368,10 +1368,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-t = new mojs.Timeline;
-
-t.run();
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -3793,16 +3789,27 @@ Timeline = (function() {
   };
 
   Timeline.prototype.start = function(time) {
+    var i, len;
     this.isCompleted = false;
     this.isStarted = false;
-    this.props.startTime = (time || performance.now()) + this.o.delay;
+    this.props.startTime = time || performance.now() + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
+    i = -1;
+    len = this._tweens.length - 1;
+    while (i++ < len) {
+      this._tweens[i].start(time || this.props.startTime);
+    }
     return this;
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, ref, ref1, ref2, ref3, ref4, ref5, start;
+    var cnt, elapsed, i, isFlip, len, ref, ref1, ref2, ref3, ref4, ref5, start;
     (this.props.startTime == null) && this.start();
+    i = -1;
+    len = this._tweens.length - 1;
+    while (i++ < len) {
+      this._tweens[i].update(time);
+    }
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
@@ -3907,11 +3914,34 @@ Timeline = (function() {
     return this.calcDimentions();
   };
 
-  Timeline.prototype.add = function(tween) {
-    return this._tweens.push(tween);
+  Timeline.prototype.add = function() {
+    return this._pushTimelineArray(Array.prototype.slice.apply(arguments));
   };
 
-  Timeline.prototype.run = function(time) {
+  Timeline.prototype._pushTimelineArray = function(array) {
+    var i, j, len1, results, tm;
+    results = [];
+    for (i = j = 0, len1 = array.length; j < len1; i = ++j) {
+      tm = array[i];
+      if (h.isArray(tm)) {
+        results.push(this._pushTimelineArray(tm));
+      } else {
+        results.push(this._pushTimeline(tm));
+      }
+    }
+    return results;
+  };
+
+  Timeline.prototype._pushTimeline = function(tween) {
+    this._tweens.push(tween);
+    return this._updateTotalTime(tween);
+  };
+
+  Timeline.prototype._updateTotalTime = function(tween) {
+    return this.props.totalTime = Math.max(tween.props.totalTime, this.props.totalTime);
+  };
+
+  Timeline.prototype.run = function() {
     this.start();
     return t.add(this);
   };

@@ -26,11 +26,18 @@ mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
 
-t = new mojs.Timeline
-  # delay: 1000
-  # onUpdate:(p)-> console.log p
-  # repeat: 5
-t.run()
+# t2 = new mojs.Timeline
+#   delay: 1000
+#   onUpdate:(p)-> console.log "t2: #{p}"
+
+# t3 = new mojs.Timeline
+#   onUpdate:(p)-> console.log "t3: #{p}"
+# t = new mojs.Timeline
+#   # delay: 1000
+#   # onUpdate:(p)-> console.log p
+#   # repeat: 5
+# t.add(t3)
+# t.run()
 # console.log('run')
 
 # stretchEasing = mojs.easing.path('M0,0 C0,0 31.4848633,29.7739254

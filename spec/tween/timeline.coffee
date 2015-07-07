@@ -5,12 +5,13 @@ tweener  = window.mojs.tweener
     
 describe 'Timeline ->', ->
   describe 'init ->', ->
-    it 'should calc totalDuration and totalTime', ->
+    # it 'should calc totalDuration and totalTime', ->
+    it 'should calc  totalTime', ->
       t = new Timeline duration: 1000, delay: 100
-      expect(t.props.totalDuration).toBe  1000
+      # expect(t.props.totalDuration).toBe  1000
       expect(t.props.totalTime).toBe      1100
       t = new Timeline duration: 1000, delay: 100, repeat: 5
-      expect(t.props.totalDuration).toBe  6500
+      # expect(t.props.totalDuration).toBe  6500
       expect(t.props.totalTime).toBe      6600
     it 'should have _tweens object', ->
       t = new Timeline duration: 1000, delay: 100
@@ -67,6 +68,17 @@ describe 'Timeline ->', ->
       t.start()
       expect(t.isCompleted).toBe false
       expect(t.isStarted)  .toBe false
+    it 'should start every timeline',->
+      it 'should update the current time on every timeline',->
+      t = new Timeline
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      spyOn t._tweens[0], 'start'
+      spyOn t._tweens[1], 'start'
+      t.start()
+      expect(t._tweens[0].start).toHaveBeenCalledWith t.props.startTime
+      expect(t._tweens[1].start).toHaveBeenCalledWith t.props.startTime
+
   describe 'update method ->', ->
     it 'should update progress', ->
       t = new Timeline(duration: 1000, delay: 500)
@@ -132,23 +144,24 @@ describe 'Timeline ->', ->
       t.update t.props.startTime + 1000
       expect(t.prevTime).toBe t.props.endTime
 
-    # it 'should work with tweens',->
-    #   t   = new Timeline
-    #   ti1 = new Timeline duration: 500, delay: 200
-    #   spyOn ti1, 'update'
-    #   ti2 = new Timeline duration: 500, delay: 100
-    #   spyOn ti2, 'update'
-    #   ti3 = new Timeline duration: 100, delay: 0
-    #   spyOn ti3, 'update'
-    #   ti4 = new Timeline duration: 800, delay: 500
-    #   spyOn ti4, 'update'
+    it 'should work with tweens',->
+      t   = new Timeline
+      t1 = new Timeline duration: 500, delay: 200
+      spyOn t1, 'update'
+      t2 = new Timeline duration: 500, delay: 100
+      spyOn t2, 'update'
+      t3 = new Timeline duration: 100, delay: 0
+      spyOn t3, 'update'
+      t4 = new Timeline duration: 800, delay: 500
+      spyOn t4, 'update'
       
-    #   t.start()
-    #   t.update time = t.props.startTime + 300
-    #   expect(ti1.update).toHaveBeenCalledWith time
-    #   expect(ti2.update).toHaveBeenCalledWith time
-    #   expect(ti3.update).toHaveBeenCalledWith time
-    #   expect(ti4.update).toHaveBeenCalledWith time
+      t.add(t1, t2, t3, t4)
+      t.start()
+      t.update time = t.props.startTime + 300
+      expect(t1.update).toHaveBeenCalledWith time
+      expect(t2.update).toHaveBeenCalledWith time
+      expect(t3.update).toHaveBeenCalledWith time
+      expect(t4.update).toHaveBeenCalledWith time
 
   describe 'add method', ->
     it 'should add a tween', ->
@@ -166,12 +179,51 @@ describe 'Timeline ->', ->
       t1 = new Timeline duration: 1000
       t2 = new Timeline duration: 1500
       t.add [t1, t2, new Timeline]
+      expect(t._tweens.length).toBe 3
+      expect(t.props.totalTime).toBe 1500
+      expect(t._tweens[0] instanceof Timeline).toBe true
+      expect(t._tweens[1] instanceof Timeline).toBe true
+      expect(t._tweens[2] instanceof Timeline).toBe true
+    it 'should work with arguments',->
+      tween = new Timeline
+      t1 = new Timeline duration: 500, delay: 200
+      t2 = new Timeline duration: 500, delay: 500
+      tween.add t1, t2
+      expect(tween.props.totalTime) .toBe 1000
+      expect(tween._tweens.length).toBe 2
+    it 'should work with mixed arguments',->
+      t = new Timeline
+      t1 = new Timeline duration: 1000
+      t2 = new Timeline duration: 1500
+      t.add [t1, new Timeline, new Timeline], t2
       expect(t._tweens.length).toBe 4
       expect(t.props.totalTime).toBe 1500
       expect(t._tweens[0] instanceof Timeline).toBe true
       expect(t._tweens[1] instanceof Timeline).toBe true
       expect(t._tweens[2] instanceof Timeline).toBe true
       expect(t._tweens[3] instanceof Timeline).toBe true
+    it 'should calc self duration',->
+      t = new Timeline
+      t.add new Timeline duration: 500, delay: 200
+      expect(t.props.totalTime).toBe 700
+      t.add new Timeline duration: 500, delay: 200, repeat: 1
+      expect(t.props.totalTime).toBe 1400
+
+  describe '_updateTotalTime method ->', ->
+    it 'should update total time in respect to the tween', ->
+      t = new Timeline
+      t2 = new Timeline duration: 1500
+
+      t._updateTotalTime(t2)
+      expect(t.props.totalTime).toBe t2.props.totalTime
+
+  describe '_pushTimeline method ->', ->
+    it 'should push timeline to timelines and calc totalTime',->
+      t = new Timeline
+      t._pushTimeline new Timeline duration: 4000
+      expect(t._tweens.length).toBe 1
+      expect(t._tweens[0] instanceof Timeline).toBe true
+      expect(t.props.totalTime).toBe 4000
 
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->

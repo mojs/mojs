@@ -23,15 +23,30 @@ class Timeline
     @calcDimentions()
   calcDimentions:->
     @props.totalTime     = (@o.repeat+1)*(@o.duration+@o.delay)
+    # totalDuration is duration without the very first delay,
+    # since the tween will be shifted on the delay amount on add
     @props.totalDuration = @props.totalTime - @o.delay
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
-    @props.startTime = (time or performance.now()) + @o.delay
+    # shift the start time on delay size
+    @props.startTime = time or performance.now() + @o.delay
+    # since we shifted on delay, add the totalDuration, not the
+    # total time
     @props.endTime   = @props.startTime + @props.totalDuration
+    # start all the tweens
+    i = -1; len = @_tweens.length-1
+    @_tweens[i].start(time or @props.startTime) while(i++ < len)
     @
   update:(time)->
+    # # react only on endTime max
+    # time = @props.endTime if time > @props.endTime
+    # get the start and end times if they are not defined
     !@props.startTime? and @start()
+
+    i = -1; len = @_tweens.length-1
+    @_tweens[i].update(time) while(i++ < len)
+
     if (time >= @props.startTime) and (time < @props.endTime)
       @isOnReverseComplete = false; @isCompleted = false
       if !@isFirstUpdate then @o.onFirstUpdate?.apply(@); @isFirstUpdate = true
@@ -62,7 +77,6 @@ class Timeline
       @onUpdate? @easedProgress
     # is not in the tween time scope
     else
-      
       if time > @props.endTime or time < @props.startTime
         @isFirstUpdate = false
       # reset isFirstUpdateBackward flag if progress went further the end time
@@ -83,7 +97,10 @@ class Timeline
         @setProc(0); !@o.isChained and @onUpdate? @easedProgress
         @o.onReverseComplete?.apply(@)
     @prevTime = time
-  setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress
+  setProc:(p)->
+    @progress = p; @easedProgress = @props.easing @progress
+
+
   setProp:(obj, value)->
     if typeof obj is 'object'
       for key, val of obj
@@ -95,14 +112,30 @@ class Timeline
   # 
   # Adds a tween to the _tweens array
   # @param {Object} Tween to add
-  add:(tween)->
-    @_tweens.push tween
+  add:-> @_pushTimelineArray Array::slice.apply(arguments)
+  _pushTimelineArray:(array)->
+    for tm, i in array
+      # recursive push to handle arrays of arrays
+      if h.isArray tm then @_pushTimelineArray tm
+      # simple push
+      else @_pushTimeline tm
+  _pushTimeline:(tween)-> @_tweens.push(tween); @_updateTotalTime tween
+  
+  # ---
+
+  # Update the totalTime with respect to the tween
+  # 
+  # @method remove
+  # @param {Object} Tween
+  # @sideEffect updates @totalTime
+  _updateTotalTime:(tween)->
+    @props.totalTime = Math.max tween.props.totalTime, @props.totalTime
 
   # ---
   
   # Method to run (play) the tween
   # @return {Object} Self
-  run:(time)->
+  run:->
     @start(); t.add(@)
 
   # EASING PARSING:

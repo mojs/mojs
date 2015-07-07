@@ -37,7 +37,24 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "title": "delay: 1000",
+  "toc": [
+    {
+      "level": 1,
+      "slug": "delay-1000",
+      "title": "delay: 1000"
+    },
+    {
+      "level": 1,
+      "slug": "onupdate-p-gt-console-log-p",
+      "title": "onUpdate:(p)-&gt; console.log p"
+    },
+    {
+      "level": 1,
+      "slug": "repeat-5",
+      "title": "repeat: 5"
+    }
+  ]
 },
 {
   "path": "js/motion-path.coffee.html",
@@ -214,7 +231,13 @@ window.files = [
   "originalPath": "js/tween/timeline.coffee",
   "name": "timeline.coffee.html",
   "lang": "coffeescript",
+  "title": "react only on endTime max",
   "toc": [
+    {
+      "level": 1,
+      "slug": "react-only-on-endtime-max",
+      "title": "react only on endTime max"
+    },
     {
       "level": 2,
       "slug": "easing-parsing-",

@@ -4,11 +4,14 @@ Timeline = require './timeline'
 
 class Tween
   state: 'stop'
+  #
   constructor:(@o={})-> @vars(); @_addTimeline(); @
+  #
   vars:->
     @timelines = []; @props = totalTime: 0; @loop = h.bind @loop, @
     @_isDurationSet = @o.duration?
     # @onUpdate = @o.onUpdate
+  #
   # ---
   
   # Add 1 self timeline
@@ -17,16 +20,20 @@ class Tween
   # @sideEffect adds _timeline variable on the object
   _addTimeline:-> @add new Timeline h.cloneObj(@o, {onComplete: 1})
 
+  #
   add:-> @pushTimelineArray Array::slice.apply(arguments)
+  #
   pushTimelineArray:(array)->
     for tm, i in array
       # recursive push to handle arrays of arrays
       if h.isArray tm then @pushTimelineArray tm
       # simple push
       else @pushTimeline tm
+  #
   pushTimeline:(timeline)->
     @timelines.push timeline
     @_updateTotalTime timeline
+  #
   # ---
 
   # Update the totalTime with respect to the timeline
@@ -125,7 +132,7 @@ class Tween
   stop:->  @removeFromTweener(); @setProgress(0); @state = 'stop'; @
   restart:-> @stop(); @start()
   removeFromTweener:-> t.remove(@); @
-
+  
   getDimentions:->
     @props.startTime = performance.now()
     @props.endTime = @props.startTime + @props.totalTime
