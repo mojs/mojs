@@ -167,9 +167,22 @@
         return expect(typeof easing.path).toBe('function');
       });
     });
-    return describe('PathEasing ->', function() {
+    describe('PathEasing ->', function() {
       return it('should have PathEasing constructor', function() {
         return expect(typeof easing.PathEasing).toBe('function');
+      });
+    });
+    return describe('inverse method ->', function() {
+      return it('should inverse passed value', function() {
+        expect(easing.inverse(-2)).toBeCloseTo(3, 4);
+        expect(easing.inverse(-1)).toBeCloseTo(2, 4);
+        expect(easing.inverse(0)).toBeCloseTo(1, 4);
+        expect(easing.inverse(.2)).toBeCloseTo(.8, 4);
+        expect(easing.inverse(.5)).toBeCloseTo(.5, 4);
+        expect(easing.inverse(.7)).toBeCloseTo(.3, 4);
+        expect(easing.inverse(1)).toBeCloseTo(0, 4);
+        expect(easing.inverse(2)).toBeCloseTo(-1, 4);
+        return expect(easing.inverse(3)).toBeCloseTo(-2, 4);
       });
     });
   });

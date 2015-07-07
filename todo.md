@@ -1,12 +1,11 @@
 ## TODO
 
 - merge timeline and tween
-- make setPrefixedStyle alias (or style method)
 - add el warn on Motion Path (if wasnt specified)
 - add motion path stagger
 - ability to add a module to tween
 - add new rAF polyfill
-- add easing inverse method
+- add easing mix method
 
 - fix coverage
 - release

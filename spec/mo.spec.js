@@ -539,6 +539,10 @@ Easing = (function() {
 
   Easing.prototype.path = (new PathEasing('creator')).create;
 
+  Easing.prototype.inverse = function(p) {
+    return 1 - p;
+  };
+
   Easing.prototype.linear = {
     none: function(k) {
       return k;
@@ -1335,7 +1339,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.125.0',
+  revision: '0.126.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
