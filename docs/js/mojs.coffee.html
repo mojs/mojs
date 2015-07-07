@@ -57,7 +57,6 @@
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-
 </div></div>
       
       </div>
@@ -66,7 +65,8 @@ mojs.delta = mojs.h.delta
       
         <div class="comments ">
           <div class="wrapper"><p>t2 = new mojs.Timeline
-  delay: 1000
+  delay: 5000
+  duration: 10000
   onUpdate:(p)-&gt; console.log &quot;t2: #{p}&quot;</p>
 </div>
         </div>
@@ -78,9 +78,19 @@ mojs.delta = mojs.h.delta
       
         <div class="comments ">
           <div class="wrapper"><p>t3 = new mojs.Timeline
-  onUpdate:(p)-&gt; console.log &quot;t3: #{p}&quot;
-t = new mojs.Timeline</p>
-<h1 id="delay-1000"><a href="#delay-1000" class="anchor"></a>delay: 1000</h1><h1 id="onupdate-p-gt-console-log-p"><a href="#onupdate-p-gt-console-log-p" class="anchor"></a>onUpdate:(p)-&gt; console.log p</h1><h1 id="repeat-5"><a href="#repeat-5" class="anchor"></a>repeat: 5</h1><p>t.add(t3)
+  onUpdate:(p)-&gt; console.log &quot;t3: #{p}&quot;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>t = new mojs.Timeline
+  onComplete:-&gt; console.log &#39;a&#39;</p>
+<h1 id="delay-1000"><a href="#delay-1000" class="anchor"></a>delay: 1000</h1><h1 id="onupdate-p-gt-console-log-p"><a href="#onupdate-p-gt-console-log-p" class="anchor"></a>onUpdate:(p)-&gt; console.log p</h1><h1 id="repeat-5"><a href="#repeat-5" class="anchor"></a>repeat: 5</h1><p>t.add(t2, t3)
 t.run()
 console.log(&#39;run&#39;)</p>
 </div>

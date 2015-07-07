@@ -3792,7 +3792,7 @@ Timeline = (function() {
     var i, len;
     this.isCompleted = false;
     this.isStarted = false;
-    this.props.startTime = time || performance.now() + this.o.delay;
+    this.props.startTime = (time || performance.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     i = -1;
     len = this._tweens.length - 1;
@@ -3938,7 +3938,9 @@ Timeline = (function() {
   };
 
   Timeline.prototype._updateTotalTime = function(tween) {
-    return this.props.totalTime = Math.max(tween.props.totalTime, this.props.totalTime);
+    this.props.totalTime = Math.max(tween.props.totalTime, this.props.totalTime);
+    this.props.totalDuration = this.props.totalTime - this.o.delay;
+    return this.props.endTime = this.props.startTime + this.props.totalDuration;
   };
 
   Timeline.prototype.run = function() {

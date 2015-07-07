@@ -25,18 +25,20 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-
 # t2 = new mojs.Timeline
-#   delay: 1000
+#   delay: 5000
+#   duration: 10000
 #   onUpdate:(p)-> console.log "t2: #{p}"
 
 # t3 = new mojs.Timeline
 #   onUpdate:(p)-> console.log "t3: #{p}"
+
 # t = new mojs.Timeline
+#   onComplete:-> console.log 'a'
 #   # delay: 1000
 #   # onUpdate:(p)-> console.log p
 #   # repeat: 5
-# t.add(t3)
+# t.add(t2, t3)
 # t.run()
 # console.log('run')
 

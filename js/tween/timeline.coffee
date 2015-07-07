@@ -30,7 +30,8 @@ class Timeline
   start:(time)->
     @isCompleted = false; @isStarted = false
     # shift the start time on delay size
-    @props.startTime = time or performance.now() + @o.delay
+    @props.startTime = (time or performance.now()) + @o.delay
+    # console.log @props.startTime, @o.delay
     # since we shifted on delay, add the totalDuration, not the
     # total time
     @props.endTime   = @props.startTime + @props.totalDuration
@@ -129,7 +130,9 @@ class Timeline
   # @param {Object} Tween
   # @sideEffect updates @totalTime
   _updateTotalTime:(tween)->
-    @props.totalTime = Math.max tween.props.totalTime, @props.totalTime
+    @props.totalTime     = Math.max tween.props.totalTime, @props.totalTime
+    @props.totalDuration = @props.totalTime - @o.delay
+    @props.endTime = @props.startTime + @props.totalDuration
 
   # ---
   

@@ -378,7 +378,7 @@
       });
     });
     describe('_updateTotalTime method ->', function() {
-      return it('should update total time in respect to the tween', function() {
+      it('should update total time in respect to the tween', function() {
         var t, t2;
         t = new Timeline;
         t2 = new Timeline({
@@ -386,6 +386,18 @@
         });
         t._updateTotalTime(t2);
         return expect(t.props.totalTime).toBe(t2.props.totalTime);
+      });
+      return it('should update props.endTime', function() {
+        var t, t2;
+        t = new Timeline;
+        t2 = new Timeline({
+          duration: 1500
+        });
+        t.start();
+        t._updateTotalTime(t2);
+        expect(t.props.totalTime).toBe(t2.props.totalTime);
+        expect(t.props.totalDuration).toBe(t2.props.totalTime - t.o.delay);
+        return expect(t.props.endTime).toBe(t.props.startTime + t.props.totalDuration);
       });
     });
     describe('_pushTimeline method ->', function() {

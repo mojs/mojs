@@ -213,9 +213,16 @@ describe 'Timeline ->', ->
     it 'should update total time in respect to the tween', ->
       t = new Timeline
       t2 = new Timeline duration: 1500
-
       t._updateTotalTime(t2)
       expect(t.props.totalTime).toBe t2.props.totalTime
+    it 'should update props.endTime', ->
+      t = new Timeline
+      t2 = new Timeline duration: 1500
+      t.start()
+      t._updateTotalTime(t2)
+      expect(t.props.totalTime).toBe t2.props.totalTime
+      expect(t.props.totalDuration).toBe t2.props.totalTime - t.o.delay
+      expect(t.props.endTime).toBe   t.props.startTime + t.props.totalDuration
 
   describe '_pushTimeline method ->', ->
     it 'should push timeline to timelines and calc totalTime',->
