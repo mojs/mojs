@@ -34,6 +34,7 @@
       
         <div class="code"><div class="wrapper">easingModule = <span class="hljs-built_in">require</span> <span class="hljs-string">'../easing'</span>
 h            = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
+t            = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tweener'</span>
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Timeline</span></span>
   <span class="hljs-attribute">defaults</span>:
@@ -50,6 +51,7 @@ h            = <span class="hljs-built_in">require</span> <span class="hljs-stri
   <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-property">@extendDefaults</span>(); <span class="hljs-property">@vars</span>(); @
   <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@h</span> = h; <span class="hljs-property">@props</span> = {}; <span class="hljs-property">@progress</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@prevTime</span> = <span class="hljs-number">0</span>
+    <span class="hljs-property">@_tweens</span> = []
     <span class="hljs-property">@props</span>.easing = <span class="hljs-property">@parseEasing</span> <span class="hljs-property">@o</span>.easing
     <span class="hljs-property">@calcDimentions</span>()
   <span class="hljs-attribute">calcDimentions</span>:<span class="hljs-function">-&gt;</span>
@@ -62,6 +64,7 @@ h            = <span class="hljs-built_in">require</span> <span class="hljs-stri
     <span class="hljs-property">@props</span>.endTime   = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.totalDuration
     @
   <span class="hljs-attribute">update</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
+    !<span class="hljs-property">@props</span>.startTime? <span class="hljs-keyword">and</span> <span class="hljs-property">@start</span>()
     <span class="hljs-keyword">if</span> (time &gt;= <span class="hljs-property">@props</span>.startTime) <span class="hljs-keyword">and</span> (time &lt; <span class="hljs-property">@props</span>.endTime)
       <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">false</span>; <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">false</span>
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@isFirstUpdate</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@o</span>.onFirstUpdate?.apply(@); <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">true</span>
@@ -139,12 +142,20 @@ h            = <span class="hljs-built_in">require</span> <span class="hljs-stri
         <div class="code"><div class="wrapper">        <span class="hljs-keyword">else</span> <span class="hljs-property">@setProc</span> <span class="hljs-number">0</span>
       <span class="hljs-keyword">if</span> time &lt; <span class="hljs-property">@prevTime</span> <span class="hljs-keyword">and</span> !<span class="hljs-property">@isFirstUpdateBackward</span>
         <span class="hljs-property">@o</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span>
-      <span class="hljs-property">@onUpdate</span>? <span class="hljs-property">@easedProgress</span>
-    <span class="hljs-keyword">else</span>
-      <span class="hljs-keyword">if</span> time &gt;= <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">and</span> !<span class="hljs-property">@isCompleted</span>
-        <span class="hljs-property">@setProc</span> <span class="hljs-number">1</span>; <span class="hljs-property">@onUpdate</span>? <span class="hljs-property">@easedProgress</span>
-        <span class="hljs-property">@o</span>.onComplete?.apply(@); <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">true</span>
-        <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">false</span>
+      <span class="hljs-property">@onUpdate</span>? <span class="hljs-property">@easedProgress</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>is not in the tween time scope</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">else</span>
+      
       <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">or</span> time &lt; <span class="hljs-property">@props</span>.startTime
         <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">false</span></div></div>
       
@@ -158,8 +169,36 @@ h            = <span class="hljs-built_in">require</span> <span class="hljs-stri
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime
-    <span class="hljs-keyword">if</span> time &lt; <span class="hljs-property">@prevTime</span> <span class="hljs-keyword">and</span> time &lt;= <span class="hljs-property">@props</span>.startTime<span class="hljs-comment"># and @isIt</span>
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>time is larger then the end time</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> time &gt;= <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">and</span> !<span class="hljs-property">@isCompleted</span>
+        <span class="hljs-property">@setProc</span> <span class="hljs-number">1</span>; <span class="hljs-property">@onUpdate</span>? <span class="hljs-property">@easedProgress</span>
+        <span class="hljs-property">@o</span>.onComplete?.apply(@); <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">true</span>
+        <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">false</span>
+        <span class="hljs-property">@prevTime</span> = Math.min <span class="hljs-property">@props</span>.endTime, time
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>time is smaller then the start time</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> time &lt; <span class="hljs-property">@prevTime</span> <span class="hljs-keyword">and</span> time &lt;= <span class="hljs-property">@props</span>.startTime
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@isFirstUpdateBackward</span>
         <span class="hljs-property">@o</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span>
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@isOnReverseComplete</span>
@@ -173,7 +212,27 @@ h            = <span class="hljs-built_in">require</span> <span class="hljs-stri
       <span class="hljs-keyword">for</span> key, val <span class="hljs-keyword">of</span> obj
         <span class="hljs-property">@o</span>[key] = val
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> obj <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@o</span>[obj] = value
-    <span class="hljs-property">@calcDimentions</span>()</div></div>
+    <span class="hljs-property">@calcDimentions</span>()
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><hr>
+<p>Adds a tween to the _tweens array</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Tween</code> must be an Object.</strong><br/>(to add)</li>
+</ul>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">add</span>:<span class="hljs-function"><span class="hljs-params">(tween)</span>-&gt;</span>
+    <span class="hljs-property">@_tweens</span>.push tween
+</div></div>
       
       </div>
     
@@ -182,6 +241,32 @@ h            = <span class="hljs-built_in">require</span> <span class="hljs-stri
         <div class="comments ">
           <div class="wrapper"><hr>
 </div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to run (play) the tween</p>
+<p><strong>Returns an Object</strong><br/>(Self)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">run</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
+    <span class="hljs-property">@start</span>(); t.add(@)
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><h2 id="easing-parsing-"><a href="#easing-parsing-" class="anchor"></a>EASING PARSING:</h2></div>
         </div>
       
       

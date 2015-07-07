@@ -1,5 +1,7 @@
+
 easingModule = require '../easing'
 h            = require '../h'
+t            = require './tweener'
 
 class Timeline
   defaults:
@@ -16,6 +18,7 @@ class Timeline
   constructor:(@o={})-> @extendDefaults(); @vars(); @
   vars:->
     @h = h; @props = {}; @progress = 0; @prevTime = 0
+    @_tweens = []
     @props.easing = @parseEasing @o.easing
     @calcDimentions()
   calcDimentions:->
@@ -28,6 +31,7 @@ class Timeline
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->
+    !@props.startTime? and @start()
     if (time >= @props.startTime) and (time < @props.endTime)
       @isOnReverseComplete = false; @isCompleted = false
       if !@isFirstUpdate then @o.onFirstUpdate?.apply(@); @isFirstUpdate = true
@@ -56,16 +60,22 @@ class Timeline
       if time < @prevTime and !@isFirstUpdateBackward
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       @onUpdate? @easedProgress
+    # is not in the tween time scope
     else
-      if time >= @props.endTime and !@isCompleted
-        @setProc 1; @onUpdate? @easedProgress
-        @o.onComplete?.apply(@); @isCompleted = true
-        @isOnReverseComplete = false
+      
       if time > @props.endTime or time < @props.startTime
         @isFirstUpdate = false
       # reset isFirstUpdateBackward flag if progress went further the end time
       @isFirstUpdateBackward = false if time > @props.endTime
-    if time < @prevTime and time <= @props.startTime# and @isIt
+      # time is larger then the end time
+      if time >= @props.endTime and !@isCompleted
+        @setProc 1; @onUpdate? @easedProgress
+        @o.onComplete?.apply(@); @isCompleted = true
+        @isOnReverseComplete = false
+        @prevTime = Math.min @props.endTime, time
+        return true
+    # time is smaller then the start time
+    if time < @prevTime and time <= @props.startTime
       if !@isFirstUpdateBackward
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       if !@isOnReverseComplete
@@ -80,6 +90,22 @@ class Timeline
         @o[key] = val
     else if typeof obj is 'string' then @o[obj] = value
     @calcDimentions()
+
+  # ---
+  # 
+  # Adds a tween to the _tweens array
+  # @param {Object} Tween to add
+  add:(tween)->
+    @_tweens.push tween
+
+  # ---
+  
+  # Method to run (play) the tween
+  # @return {Object} Self
+  run:(time)->
+    @start(); t.add(@)
+
+  # EASING PARSING:
   # ---
 
   # Method to parse easing

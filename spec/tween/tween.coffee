@@ -12,11 +12,13 @@ describe 'Tween ->', ->
     t = new Tween
     expect(t.state).toBe 'stop'
   describe 'add method ->', ->
+    #
     it 'should add timeline',->
       t = new Tween
       t.add new Timeline
       expect(t.timelines.length).toBe 2
       expect(t.timelines[1] instanceof Timeline).toBe true
+    #
     it 'should work with arrays of tweens',->
       t = new Tween
       t1 = new Timeline duration: 1000
@@ -140,11 +142,13 @@ describe 'Tween ->', ->
       expect(t.props.totalTime).toBe 1000
     
   describe 'start method ->', ->
+    #
     it 'should get the start time',->
       t = new Tween
       t.start()
       expect(t.props.startTime).toBeDefined()
       expect(t.props.endTime).toBe t.props.startTime + t.props.totalTime
+    #
     it 'should call the setStartTime method',->
       t = new Tween
       spyOn t, 'setStartTime'
@@ -397,13 +401,14 @@ describe 'Tween ->', ->
       expect(t.timelines[1].update).toHaveBeenCalledWith time
       # expect(t._timeline.update)   .toHaveBeenCalledWith time
 
+    #
     it 'should return true if is finished',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200
       t.add new Timeline duration: 500, delay: 100
       t.start()
       expect(t.update(performance.now() + 2000)).toBe true
-
+    #
     it 'should not go further then endTime',->
       t = new Tween
       t.add new Timeline duration: 500, delay: 200

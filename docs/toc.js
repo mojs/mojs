@@ -214,7 +214,13 @@ window.files = [
   "originalPath": "js/tween/timeline.coffee",
   "name": "timeline.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "toc": [
+    {
+      "level": 2,
+      "slug": "easing-parsing-",
+      "title": "EASING PARSING:"
+    }
+  ]
 },
 {
   "path": "js/tween/tween.coffee.html",

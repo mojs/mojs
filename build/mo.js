@@ -1338,7 +1338,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs;
+var mojs, t;
 
 mojs = {
   revision: '0.126.0',
@@ -1368,6 +1368,10 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+t = new mojs.Timeline;
+
+t.run();
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -3739,11 +3743,13 @@ Transit = (function(superClass) {
 module.exports = Transit;
 
 },{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
-var Timeline, easingModule, h;
+var Timeline, easingModule, h, t;
 
 easingModule = require('../easing');
 
 h = require('../h');
+
+t = require('./tweener');
 
 Timeline = (function() {
   Timeline.prototype.defaults = {
@@ -3771,6 +3777,7 @@ Timeline = (function() {
     this.props = {};
     this.progress = 0;
     this.prevTime = 0;
+    this._tweens = [];
     this.props.easing = this.parseEasing(this.o.easing);
     return this.calcDimentions();
   };
@@ -3795,6 +3802,7 @@ Timeline = (function() {
 
   Timeline.prototype.update = function(time) {
     var cnt, elapsed, isFlip, ref, ref1, ref2, ref3, ref4, ref5, start;
+    (this.props.startTime == null) && this.start();
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
@@ -3842,6 +3850,12 @@ Timeline = (function() {
         this.onUpdate(this.easedProgress);
       }
     } else {
+      if (time > this.props.endTime || time < this.props.startTime) {
+        this.isFirstUpdate = false;
+      }
+      if (time > this.props.endTime) {
+        this.isFirstUpdateBackward = false;
+      }
       if (time >= this.props.endTime && !this.isCompleted) {
         this.setProc(1);
         if (typeof this.onUpdate === "function") {
@@ -3852,12 +3866,8 @@ Timeline = (function() {
         }
         this.isCompleted = true;
         this.isOnReverseComplete = false;
-      }
-      if (time > this.props.endTime || time < this.props.startTime) {
-        this.isFirstUpdate = false;
-      }
-      if (time > this.props.endTime) {
-        this.isFirstUpdateBackward = false;
+        this.prevTime = Math.min(this.props.endTime, time);
+        return true;
       }
     }
     if (time < this.prevTime && time <= this.props.startTime) {
@@ -3895,6 +3905,15 @@ Timeline = (function() {
       this.o[obj] = value;
     }
     return this.calcDimentions();
+  };
+
+  Timeline.prototype.add = function(tween) {
+    return this._tweens.push(tween);
+  };
+
+  Timeline.prototype.run = function(time) {
+    this.start();
+    return t.add(this);
   };
 
   Timeline.prototype.parseEasing = function(easing) {
@@ -3937,7 +3956,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../easing":3,"../h":4}],24:[function(require,module,exports){
+},{"../easing":3,"../h":4,"./tweener":25}],24:[function(require,module,exports){
 var Timeline, Tween, h, t;
 
 h = require('../h');

@@ -1,5 +1,5 @@
 (function() {
-  var Timeline, easing, h;
+  var Timeline, easing, h, tweener;
 
   Timeline = window.mojs.Timeline;
 
@@ -7,9 +7,11 @@
 
   h = window.mojs.h;
 
+  tweener = window.mojs.tweener;
+
   describe('Timeline ->', function() {
     describe('init ->', function() {
-      return it('calc totalDuration and totalTime', function() {
+      it('should calc totalDuration and totalTime', function() {
         var t;
         t = new Timeline({
           duration: 1000,
@@ -24,6 +26,14 @@
         });
         expect(t.props.totalDuration).toBe(6500);
         return expect(t.props.totalTime).toBe(6600);
+      });
+      return it('should have _tweens object', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          delay: 100
+        });
+        return expect(h.isArray(t._tweens)).toBe(true);
       });
     });
     describe('defaults ->', function() {
@@ -68,7 +78,7 @@
         return expect(t.o.isChained).toBe(false);
       });
     });
-    describe('start ->', function() {
+    describe('start method ->', function() {
       it('should calculate start time', function() {
         var now, t;
         t = new Timeline({
@@ -119,7 +129,7 @@
         return expect(t.isStarted).toBe(false);
       });
     });
-    describe('update time ->', function() {
+    describe('update method ->', function() {
       it('should update progress', function() {
         var t, time;
         t = new Timeline({
@@ -192,7 +202,7 @@
         t.update(performance.now() + 1500);
         return expect(cnt).toBe(1);
       });
-      return it('should set Timeline to the end if Timeline ended', function() {
+      it('should set Timeline to the end if Timeline ended', function() {
         var t;
         t = new Timeline({
           duration: 1000,
@@ -201,6 +211,77 @@
         t.start();
         t.update(t.props.startTime + 1200);
         return expect(t.progress).toBe(1);
+      });
+      it('should call start method if props.startTime isnt defined', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          delay: 500
+        });
+        spyOn(t, 'start');
+        t.update(t.props.startTime + 1200);
+        return expect(t.start).toHaveBeenCalled();
+      });
+      it('should return true if is finished', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000
+        });
+        return expect(t.update(performance.now() + 2000)).toBe(true);
+      });
+      it('should be removed from tweener when finished', function(dfr) {
+        var t;
+        tweener.removeAll();
+        t = new Timeline({
+          duration: 100
+        });
+        t.run();
+        expect(tweener.tweens.length).toBe(1);
+        return setTimeout(function() {
+          expect(tweener.tweens.length).toBe(0);
+          return dfr();
+        }, 300);
+      });
+      return it('should not go further then endTime', function() {
+        var t;
+        t = new Timeline({
+          duration: 500,
+          delay: 200
+        });
+        t.start();
+        t.update(t.props.startTime + 1000);
+        return expect(t.prevTime).toBe(t.props.endTime);
+      });
+    });
+    describe('add method', function() {
+      it('should add a tween', function() {
+        var t, t2, t3;
+        t = new Timeline;
+        t2 = new Timeline;
+        t.add(t2);
+        expect(t._tweens.length).toBe(1);
+        expect(t._tweens[0]).toBe(t2);
+        t3 = new Timeline;
+        t.add(t3);
+        expect(t._tweens.length).toBe(2);
+        return expect(t._tweens[1]).toBe(t3);
+      });
+      return it('should work with arrays of tweens', function() {
+        var t, t1, t2;
+        t = new Timeline;
+        t1 = new Timeline({
+          duration: 1000
+        });
+        t2 = new Timeline({
+          duration: 1500
+        });
+        t.add([t1, t2, new Timeline]);
+        expect(t._tweens.length).toBe(4);
+        expect(t.props.totalTime).toBe(1500);
+        expect(t._tweens[0] instanceof Timeline).toBe(true);
+        expect(t._tweens[1] instanceof Timeline).toBe(true);
+        expect(t._tweens[2] instanceof Timeline).toBe(true);
+        return expect(t._tweens[3] instanceof Timeline).toBe(true);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -842,7 +923,7 @@
         });
       });
     });
-    return describe('splitEasing method', function() {
+    describe('splitEasing method', function() {
       var t;
       t = new Timeline({
         duration: 100
@@ -872,6 +953,24 @@
           return console.log('function');
         };
         return expect(t.splitEasing(easing) + '').toBe(easing + '');
+      });
+    });
+    return describe('run method', function() {
+      it('should get the start time', function() {
+        var t;
+        t = new Timeline;
+        t.run();
+        expect(t.props.startTime).toBeDefined();
+        return expect(t.props.endTime).toBe(t.props.startTime + t.props.totalDuration);
+      });
+      return it('should add itself to tweener', function() {
+        var t;
+        t = new Timeline({
+          duration: 100
+        });
+        spyOn(tweener, 'add');
+        t.run();
+        return expect(tweener.add).toHaveBeenCalledWith(t);
       });
     });
   });
