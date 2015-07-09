@@ -30,6 +30,12 @@
         expect(t.timelines.length).toBe(1);
         return expect(t.timelines[0] instanceof Timeline).toBe(true);
       });
+      it('should return self for chaining', function() {
+        var obj, t;
+        t = new Tween;
+        obj = t.add(new Timeline);
+        return expect(obj).toBe(t);
+      });
       it('should work with arrays of tweens', function() {
         var t, t1, t2;
         t = new Tween;
@@ -120,6 +126,49 @@
         expect(t.timelines.length).toBe(1);
         expect(t.timelines[0] instanceof Timeline).toBe(true);
         return expect(t.props.totalTime).toBe(4000);
+      });
+    });
+    describe('repeat option', function() {
+      it('should increase totalTime', function() {
+        var t;
+        t = new Tween({
+          repeat: 2
+        });
+        t.add(new Timeline({
+          duration: 200
+        }));
+        expect(t.props.totalTime).toBe(400);
+        return expect(t.props.time).toBe(200);
+      });
+      it('should set nearest start time', function() {
+        var t;
+        t = new Tween({
+          repeat: 2
+        });
+        t.add(new Timeline({
+          duration: 200
+        }));
+        t.setProgress(.6);
+        return expect(t.timelines[0].progress).toBe(.2);
+      });
+      return it('should end at 1', function(dfr) {
+        var proc, t;
+        t = new Tween({
+          repeat: 2,
+          isIt: true
+        });
+        proc = -1;
+        t.add(new Timeline({
+          duration: 50,
+          onUpdate: function(p) {
+            return proc = p;
+          },
+          onComplete: function() {
+            expect(proc).toBe(1);
+            return dfr();
+          }
+        }));
+        return t.start();
       });
     });
     describe('append method ->', function() {
@@ -747,8 +796,7 @@
         t2.add(ti4);
         t.add(t1);
         t.add(t2);
-        t.prepareStart();
-        t.startTimelines();
+        t.setStartTime();
         t.setProgress(.5);
         time = t.props.startTime + 650;
         expect(ti1.update).toHaveBeenCalledWith(time);
@@ -790,8 +838,7 @@
         t2.add(ti4);
         t.add(t1);
         t.add(t2);
-        t.prepareStart();
-        t.startTimelines();
+        t.setStartTime();
         spyOn(t, 'update');
         t.setProgress(.5);
         return expect(t.update).toHaveBeenCalledWith(t.props.startTime + 650);
@@ -805,8 +852,7 @@
           delay: 200
         }));
         t.add(t1);
-        t.prepareStart();
-        t.startTimelines();
+        t.setStartTime();
         spyOn(t, 'update');
         t.setProgress(1.5);
         return expect(t.update).toHaveBeenCalledWith(t.props.startTime + t.props.totalTime);
@@ -820,15 +866,14 @@
           delay: 200
         }));
         t.add(t1);
-        t.prepareStart();
-        t.startTimelines();
+        t.setStartTime();
         spyOn(t, 'update');
         t.setProgress(-1.5);
         return expect(t.update).toHaveBeenCalledWith(t.props.startTime);
       });
     });
     describe('setStartTime method', function() {
-      return it('should call prepareStart and startTimelines methods', function() {
+      return it('should call startTimelines methods', function() {
         var t, t1, time;
         t = new Tween;
         t1 = new Tween;
@@ -836,11 +881,9 @@
           duration: 500,
           delay: 200
         }));
-        spyOn(t, 'prepareStart');
         spyOn(t, 'startTimelines');
         time = 0;
         t.setStartTime(time);
-        expect(t.prepareStart).toHaveBeenCalled();
         return expect(t.startTimelines).toHaveBeenCalledWith(time);
       });
     });

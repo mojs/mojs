@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.126.0', isDebug: true
+  revision:   '0.127.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -25,19 +25,23 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# stretchEasing = mojs.easing.path('M0,0 C0,0 31.4848633,29.7739254
-#                                   55.2021484,-4.28613761e-07
-#                                   C74.9160156,-20.18457
-#                                   100,0 100,0')
+# tm = new mojs.Timeline
+#   delay: 1000
+#   # onComplete: -> console.log 'tm: a'
+#   # onUpdate:(p)-> console.log "tm: #{p}"
+# tw = new mojs.Tween repeat: 2, isIt: true, onComplete: -> console.log 'tween end'
+# tw.add tm
 
+# tm1 = new mojs.Timeline
+#   delay: 1000
+#   onComplete: -> console.log 'tm1: a'
+#   onUpdate:(p)-> console.log "tm1: #{p}"
+# tw2 = new mojs.Tween repeat: 2, isIt: true
+# tw2.add tm1
 
-# mp = new mojs.MotionPath
-#   path: 'M0,0 L100,100'
-#   el: document.createElement 'div'
-#   duration: 1500
-#   onUpdate: (p)->
-#     stretchP = stretchEasing(p)
-#     console.log stretchP
+# tw.add tw2
+
+# tw.start()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

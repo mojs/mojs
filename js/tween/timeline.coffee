@@ -8,8 +8,6 @@ class Timeline
     repeat:           0
     yoyo:             false
     easing:           'Linear.None'
-    durationElapsed:  0
-    delayElapsed:     0
     onStart:          null
     onComplete:       null
     isChained:        false
@@ -35,14 +33,20 @@ class Timeline
       elapsed = time - @props.startTime
       # in the first repeat or without any repeats
       if elapsed <= @o.duration then @setProc elapsed/@o.duration
-      else # far in the repeats
+      # far in the repeats
+      else
         start = @props.startTime
-        isFlip = false; cnt = 0
+        isDuration = false; cnt = 0
+        # get the last time point before time
+        # by increasing the startTime by the
+        # duration or delay in series
+        # get the latest just before the time
         while(start <= time)
-          isFlip = !isFlip
-          start += if isFlip then cnt++; @o.duration else @o.delay
-        # is in start point + duration
-        if isFlip
+          isDuration = !isDuration
+          start += if isDuration then cnt++; @o.duration else @o.delay
+        # if have we stopped in start point + duration
+        if isDuration
+          # get the start point
           start = start - @o.duration
           elapsed = time - start
           @setProc elapsed/@o.duration
@@ -51,7 +55,7 @@ class Timeline
             @setProc if cnt % 2 is 1 then @progress
             # when reversed progress of 1 should be 0
             else 1-if @progress is 0 then 1 else @progress
-        # is in start point + delay
+        # we have stopped in start point + delay
         else @setProc 0
       if time < @prevTime and !@isFirstUpdateBackward
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true

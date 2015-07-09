@@ -17,6 +17,10 @@ describe 'Tween ->', ->
       t.add new Timeline
       expect(t.timelines.length).toBe 1
       expect(t.timelines[0] instanceof Timeline).toBe true
+    it 'should return self for chaining',->
+      t = new Tween
+      obj = t.add new Timeline
+      expect(obj).toBe t
     it 'should work with arrays of tweens',->
       t = new Tween
       t1 = new Timeline duration: 1000
@@ -66,6 +70,29 @@ describe 'Tween ->', ->
       expect(t.timelines.length).toBe 1
       expect(t.timelines[0] instanceof Timeline).toBe true
       expect(t.props.totalTime).toBe 4000
+
+  describe 'repeat option', ->
+    it 'should increase totalTime', ->
+      t = new Tween repeat: 2
+      t.add new Timeline duration: 200
+      expect(t.props.totalTime).toBe 400
+      expect(t.props.time)     .toBe 200
+
+    it 'should set nearest start time', ->
+      t = new Tween repeat: 2
+      t.add new Timeline duration: 200
+      t.setProgress .6
+      expect(t.timelines[0].progress).toBe .2
+
+    it 'should end at 1', (dfr)->
+      t = new Tween repeat: 2, isIt: true
+      proc = -1
+      t.add new Timeline
+        duration: 50,
+        onUpdate:(p)-> proc = p
+        onComplete:-> expect(proc).toBe(1); dfr()
+      t.start()
+
 
   describe 'append method ->', ->
     it 'should add timeline',->
@@ -159,6 +186,7 @@ describe 'Tween ->', ->
       t.start()
       expect(t.timelines[0].start).toHaveBeenCalledWith t.props.startTime
       expect(t.timelines[1].start).toHaveBeenCalledWith t.props.startTime
+
     it 'should add itself to tweener',->
       t = new Tween
       spyOn tweener, 'add'
@@ -446,7 +474,8 @@ describe 'Tween ->', ->
       spyOn ti4, 'update'
       t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
       t.add(t1); t.add(t2)
-      t.prepareStart(); t.startTimelines()
+      t.setStartTime()
+      # t.prepareStart(); t.startTimelines()
       t.setProgress .5
       time = t.props.startTime + 650
       expect(ti1.update).toHaveBeenCalledWith time
@@ -469,34 +498,33 @@ describe 'Tween ->', ->
       ti4 = new Timeline duration: 800, delay: 500
       t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
       t.add(t1); t.add(t2)
-      t.prepareStart(); t.startTimelines()
+      # t.prepareStart(); t.startTimelines()
+      t.setStartTime()
       spyOn t, 'update'
       t.setProgress .5
       expect(t.update).toHaveBeenCalledWith t.props.startTime + 650
     it 'should not set the progress more then 1', ->
       t   = new Tween; t1  = new Tween
       t1.add new Timeline duration: 500, delay: 200
-      t.add(t1); t.prepareStart(); t.startTimelines()
+      t.add(t1); t.setStartTime() # t.prepareStart(); t.startTimelines()
       spyOn t, 'update'
       t.setProgress 1.5
       expect(t.update).toHaveBeenCalledWith t.props.startTime+t.props.totalTime
     it 'should not set the progress less then 0', ->
       t   = new Tween; t1  = new Tween
       t1.add new Timeline duration: 500, delay: 200
-      t.add(t1); t.prepareStart(); t.startTimelines()
+      t.add(t1); t.setStartTime() #t.prepareStart(); t.startTimelines()
       spyOn t, 'update'
       t.setProgress -1.5
       expect(t.update).toHaveBeenCalledWith t.props.startTime
 
   describe 'setStartTime method', ->
-    it 'should call prepareStart and startTimelines methods', ->
+    it 'should call startTimelines methods', ->
       t   = new Tween; t1  = new Tween
       t1.add new Timeline duration: 500, delay: 200
-      spyOn t, 'prepareStart'
       spyOn t, 'startTimelines'
       time = 0
       t.setStartTime time
-      expect(t.prepareStart)  .toHaveBeenCalled()
       expect(t.startTimelines).toHaveBeenCalledWith time
 
   describe 'time track', ->
