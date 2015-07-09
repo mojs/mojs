@@ -23,19 +23,16 @@ class Tween
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
   append:(timeline)->
-    if !h.isArray(timeline)
-      timeline.index = @timelines.length
-      @appendTimeline timeline
-      @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
-    else
-      i = timeline.length; time = @props.totalTime
-      @appendTimeline(timeline[i], time) while(i--)
-      @recalcDuration()
+    # if not an array was passed, make it
+    timeline = [timeline] if !h.isArray(timeline)
+    i = timeline.length; time = @props.totalTime; index = @timelines.length
+    @appendTimeline(timeline[i], index, time) while(i--)
 
-  appendTimeline:(timeline, time)->
+  appendTimeline:(timeline, index, time)->
     timeline.setProp(delay: timeline.o.delay + (time or @props.totalTime))
+    timeline.index = index
     @pushTimeline timeline
-  # reset:(timeline)-> @remove(timeline); @add timeline
+
   recalcDuration:->
     len = @timelines.length; @props.totalTime = 0
     while(len--)

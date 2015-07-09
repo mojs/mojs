@@ -1,6 +1,6 @@
 ## TODO
 
-- merge timeline and tween
+- add delay to tween
 - add el warn on Motion Path (if wasnt specified)
 - add motion path stagger
 - ability to add a module to tween

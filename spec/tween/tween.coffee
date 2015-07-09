@@ -109,27 +109,32 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 1000, delay: 200
       t.append new Timeline duration: 500, delay: 500
       expect(t.props.totalTime).toBe 2200
-    it 'should work with array #1',->
-      t = new Tween isIt: true
+    it 'should work with array',->
+      t = new Tween
       t.add new Timeline duration: 1000, delay: 200
-      # console.log t.props.totalTime
       tm1 = new Timeline(duration: 500, delay: 500)
       tm2 = new Timeline(duration: 500, delay: 700)
       t.append [tm1, tm2]
       expect(t.timelines.length).toBe 3
       expect(t.props.totalTime).toBe 2400
-    # it 'should work with array #2',->
-    #   t = new Tween
-    #   t.add new Timeline duration: 1000, delay: 200
-    #   tm1 = new Timeline(duration: 500, delay: 500)
-    #   tm2 = new Timeline(duration: 500, delay: 700)
-    #   spyOn t, 'recalcDuration'
-    #   t.append [tm1, tm2]
-    #   expect(t.recalcDuration).toHaveBeenCalled()
-    it 'should work with array #2',->
+    it 'should work with one argument',->
       t = new Tween
       t.append new Timeline duration: 1000, delay: 200
       expect(t.timelines.length).toBe 1
+    # it 'should work with multiple arguments',->
+    #   t = new Tween isIt: true
+    #   tm1 = new Timeline(duration: 500, delay: 500)
+    #   tm2 = new Timeline(duration: 500, delay: 700)
+    #   t.append tm1, tm2
+    #   expect(t.timelines.length).toBe 2
+    it 'should work with array and set the indexes',->
+      t = new Tween
+      t.add new Timeline duration: 1000, delay: 200
+      tm1 = new Timeline(duration: 500, delay: 500)
+      tm2 = new Timeline(duration: 500, delay: 700)
+      t.append [tm1, tm2]
+      expect(tm1.index).toBe 1
+      expect(tm2.index).toBe 1
     it 'should add element index',->
       t = new Tween
       t.append new Timeline duration: 1000, delay: 200
@@ -275,43 +280,6 @@ describe 'Tween ->', ->
       spyOn t, 'start'
       t.restart()
       expect(t.start).toHaveBeenCalled()
-
-  # probaly no needed for this
-  # describe 'resetProgress method ->', ->
-  #   it 'should call setProgress with 0', ->
-  #     t = new Tween
-  #     timeline1 = new Timeline duration: 2000
-  #     timeline2 = new Timeline duration: 2000
-  #     t.add(timeline1, timeline2)
-  #     t.setStartTime()
-  #     spyOn t, 'setProgress'
-  #     t.resetProgress()
-  #     expect(t.setProgress).toHaveBeenCalledWith 0
-  #   it 'should update every timeline with its initial time', ->
-  #     t = new Tween
-  #     tm1 = new Timeline duration: 2000, delay: 500
-  #     tm2 = new Timeline duration: 2000, delay: 100
-  #     t.add(tm1, tm2)
-  #     t.setStartTime()
-  #     spyOn tm1, 'update'
-  #     spyOn tm2, 'update'
-  #     t.resetProgress()
-  #     expect(tm1.update).toHaveBeenCalledWith tm1.props.startTime
-  #     expect(tm2.update).toHaveBeenCalledWith tm2.props.startTime
-
-  #   it 'should call resetProgress on every tween', ->
-  #     t = new Tween
-  #     tm1 = new Timeline duration: 2000, delay: 500
-  #     tw1 = new Tween
-  #     tw1.add tm1
-  #     tm2 = new Timeline duration: 2000, delay: 100
-  #     t.add(tw1, tm2)
-  #     t.setStartTime()
-  #     spyOn tw1, 'resetProgress'
-  #     spyOn tm2, 'update'
-  #     t.resetProgress()
-  #     expect(tw1.resetProgress).toHaveBeenCalled()
-  #     expect(tm2.update).toHaveBeenCalledWith tm2.props.startTime
 
   describe 'onReverseComplete callback ->', ->
     it 'should be defined', ->

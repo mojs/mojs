@@ -204,11 +204,9 @@
         }));
         return expect(t.props.totalTime).toBe(2200);
       });
-      it('should work with array #1', function() {
+      it('should work with array', function() {
         var t, tm1, tm2;
-        t = new Tween({
-          isIt: true
-        });
+        t = new Tween;
         t.add(new Timeline({
           duration: 1000,
           delay: 200
@@ -225,7 +223,7 @@
         expect(t.timelines.length).toBe(3);
         return expect(t.props.totalTime).toBe(2400);
       });
-      it('should work with array #2', function() {
+      it('should work with one argument', function() {
         var t;
         t = new Tween;
         t.append(new Timeline({
@@ -233,6 +231,25 @@
           delay: 200
         }));
         return expect(t.timelines.length).toBe(1);
+      });
+      it('should work with array and set the indexes', function() {
+        var t, tm1, tm2;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 1000,
+          delay: 200
+        }));
+        tm1 = new Timeline({
+          duration: 500,
+          delay: 500
+        });
+        tm2 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        t.append([tm1, tm2]);
+        expect(tm1.index).toBe(1);
+        return expect(tm2.index).toBe(1);
       });
       return it('should add element index', function() {
         var t;

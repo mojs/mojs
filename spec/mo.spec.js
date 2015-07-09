@@ -1339,7 +1339,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.127.1',
+  revision: '0.128.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4018,25 +4018,25 @@ Tween = (function() {
   };
 
   Tween.prototype.append = function(timeline) {
-    var i, time;
+    var i, index, results, time;
     if (!h.isArray(timeline)) {
-      timeline.index = this.timelines.length;
-      this.appendTimeline(timeline);
-      return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
-    } else {
-      i = timeline.length;
-      time = this.props.totalTime;
-      while (i--) {
-        this.appendTimeline(timeline[i], time);
-      }
-      return this.recalcDuration();
+      timeline = [timeline];
     }
+    i = timeline.length;
+    time = this.props.totalTime;
+    index = this.timelines.length;
+    results = [];
+    while (i--) {
+      results.push(this.appendTimeline(timeline[i], index, time));
+    }
+    return results;
   };
 
-  Tween.prototype.appendTimeline = function(timeline, time) {
+  Tween.prototype.appendTimeline = function(timeline, index, time) {
     timeline.setProp({
       delay: timeline.o.delay + (time || this.props.totalTime)
     });
+    timeline.index = index;
     return this.pushTimeline(timeline);
   };
 
