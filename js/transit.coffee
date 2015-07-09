@@ -129,9 +129,12 @@ class Transit extends bitsMap.map.bit
       @isPropChanged('y') and (@el.style.top  = @props.y)
       if @isNeedsTransform()
         @h.setPrefixedStyle @el, 'transform', @fillTransform()
+
   fillTransform:-> "translate(#{@props.shiftX}, #{@props.shiftY})"
   isNeedsTransform:->
-    isX = @isPropChanged('shiftX'); isY = @isPropChanged('shiftY'); isX or isY
+    isX = @isPropChanged('shiftX'); isY = @isPropChanged('shiftY')
+    @o.isIt and console.log isX, isY
+    isX or isY
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     if @lastSet[name].value isnt @props[name]
@@ -336,13 +339,13 @@ class Transit extends bitsMap.map.bit
       opts.onUpdate      = (p)=> @setProgress p
       opts.onStart       = => @props.onStart?.apply(@)
       opts.onComplete    = => @props.onComplete?.apply @
-      opts.onFirstUpdate = -> it.tuneOptions it.history[@index-1]
+      opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
       opts.isChained = !o.delay
       @tween.append new Timeline(opts)
     @
     
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
-
+  # TWEEN
   createTween:->
     it = @
     @createTimeline()

@@ -431,8 +431,7 @@ class MotionPath
     @startTween()
 
   createTween:->
-    # @timeline = new Timeline
-    @tween = new Tween
+    @timeline = new Timeline
       duration:   @props.duration
       delay:      @props.delay
       yoyo:       @props.yoyo
@@ -445,7 +444,8 @@ class MotionPath
         @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
-    # @tween.add(@timeline)
+    @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
+    @tween.add(@timeline)
     !@props.isRunLess and @startTween()
     @props.isPresetPosition and @setProgress(0, true)
 

@@ -781,7 +781,7 @@
       it('should add timelines to tween', function() {
         var burst;
         burst = new Burst;
-        return expect(burst.tween.timelines.length).toBe(7);
+        return expect(burst.tween.timelines.length).toBe(6);
       });
       it('should call startTween method', function() {
         var burst;
@@ -812,13 +812,12 @@
         return setTimeout(function() {
           expect(burst.props.onStart).toHaveBeenCalled();
           return dfr();
-        }, 500);
+        }, 300);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
         isRightScope = null;
         burst = new Burst({
-          duration: 20,
           onStart: function() {
             return isRightScope = this instanceof Burst;
           }
@@ -844,7 +843,7 @@
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
         t.removeAll();
-        isRightScope = null;
+        isRightScope = false;
         burst = new Burst({
           duration: 20,
           onComplete: function() {

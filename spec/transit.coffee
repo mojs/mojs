@@ -180,7 +180,7 @@ describe 'Transit ->', ->
     it 'should add new timeline with options', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radius: 5
-      expect(byte.tween.timelines.length).toBe 3
+      expect(byte.tween.timelines.length).toBe 2
 
     it 'should return if no options passed or options are empty', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -196,7 +196,7 @@ describe 'Transit ->', ->
     it 'should pass isChained to timeline', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5
-      expect(byte.tween.timelines[2].o.isChained).toBe true
+      expect(byte.tween.timelines[1].o.isChained).toBe true
 
     it 'should not pass isChained to timeline if delay', ->
       byte = new Byte radius: 20, duration: 1000
@@ -221,9 +221,9 @@ describe 'Transit ->', ->
       byte = new Byte
         radius: 20, duration: 1000, delay: 10, yoyo: true
       byte.then radius: 5
-      expect(byte.tween.timelines[2].o.duration).toBe 1000
-      expect(byte.tween.timelines[2].o.yoyo)    .toBe false
-      expect(byte.tween.timelines[2].o.delay)   .toBe 1010
+      expect(byte.tween.timelines[1].o.duration).toBe 1000
+      expect(byte.tween.timelines[1].o.yoyo)    .toBe false
+      expect(byte.tween.timelines[1].o.delay)   .toBe 1010
 
     it 'should merge then options and add them to the history', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -249,7 +249,6 @@ describe 'Transit ->', ->
       onUpdate = ->
       onStart  = ->
       byte = new Byte
-        isIt: true
         radius: 20, duration: 1000, delay: 10
         onUpdate:  onUpdate, onStart: onStart
         isRunLess: true
@@ -284,15 +283,15 @@ describe 'Transit ->', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe 'function'
       expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe 'function'
-      expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe 'function'
 
     it 'should bind onFirstUpdate function #2', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe 'function'
       expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe 'function'
-      expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe 'function'
 
   describe 'tuneOptions method ->', ->
     it 'should call extendDefaults with options', ->
@@ -777,12 +776,13 @@ describe 'Transit ->', ->
       expect(byte.calcTransform).toBeDefined()
   describe 'drawEl method ->', ->
     it 'should set el positions and transforms', ->
-      byte = new Byte radius: 25, y: 10
-      byte.draw()
+      byte = new Byte radius: 25, y: 10, isRunLess: true
+      # byte.draw()
       expect(byte.el.style.left)      .toBe     '0px'
       expect(byte.el.style.top)       .toBe     '10px'
       expect(byte.el.style.opacity)   .toBe     '1'
-      s = byte.el.style; tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+      s = byte.el.style
+      tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       expect(tr) .toBe     'translate(0px, 0px)'
     it 'should set only opacity if foreign context', ->
       byte = new Byte radius: 25, y: 10, ctx: svg
@@ -790,8 +790,11 @@ describe 'Transit ->', ->
       expect(byte.el.style.opacity)   .toBe         '1'
       expect(byte.el.style.left)      .not.toBe     '0px'
       expect(byte.el.style.top)       .not.toBe     '10px'
-      s = byte.el.style; tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      expect(tr) .not.toBe     'translate(0px, 0px)'
+      
+      s = byte.el.style
+      tr = s.transform or s["#{mojs.h.prefix.css}transform"]
+      expect(tr).toBe     ''
+
     it 'should set new values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()
@@ -1374,6 +1377,7 @@ describe 'Transit ->', ->
       spyOn byte.bit, 'getLength'
       byte.getBitLength()
       expect(byte.bit.getLength).toHaveBeenCalled()
+
     it 'should cache the value to props', ->
       byte = new Byte()
       byte.props.bitLength = null

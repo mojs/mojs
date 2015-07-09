@@ -637,8 +637,7 @@
           duration: 100,
           onFirstUpdateBackward: function() {
             return cnt++;
-          },
-          isIt: true
+          }
         }).start();
         t.update(t.props.startTime + 500);
         t.update(t.props.startTime - 40);

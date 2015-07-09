@@ -136,7 +136,7 @@ describe 'Stagger ->', ->
 
     it 'should add timelines to the tween', ->
       s = new Stagger els: els
-      expect(s.tween.timelines.length).toBe 3
+      expect(s.tween.timelines.length).toBe 2
 
     it 'should call startTween', ->
       s = new Stagger els: els

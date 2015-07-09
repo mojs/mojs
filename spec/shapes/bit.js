@@ -423,8 +423,7 @@
       it('should not set 0 value >> ff issue fix', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
-          radius: 100,
-          isIt: true
+          radius: 100
         });
         bit.props['stroke-dasharray'] = {
           unit: 'px',
@@ -436,8 +435,7 @@
       return it('should not set 0 value >> ff issue fix #2', function() {
         bit = new Bit({
           ctx: document.createElementNS(ns, 'svg'),
-          radius: 100,
-          isIt: true
+          radius: 100
         });
         bit.props['stroke-dasharray'] = [
           {

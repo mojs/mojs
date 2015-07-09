@@ -222,13 +222,7 @@ window.files = [
   "originalPath": "js/tween/tween.coffee",
   "name": "tween.coffee.html",
   "lang": "coffeescript",
-  "toc": [
-    {
-      "level": 2,
-      "slug": "-onupdate-o-onupdate",
-      "title": " onUpdate = @o.onUpdate"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/tween/tweener.coffee.html",

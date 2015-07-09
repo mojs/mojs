@@ -346,7 +346,7 @@
         byte.then({
           radius: 5
         });
-        return expect(byte.tween.timelines.length).toBe(3);
+        return expect(byte.tween.timelines.length).toBe(2);
       });
       it('should return if no options passed or options are empty', function() {
         var byte;
@@ -379,7 +379,7 @@
         byte.then({
           radiusX: 5
         });
-        return expect(byte.tween.timelines[2].o.isChained).toBe(true);
+        return expect(byte.tween.timelines[1].o.isChained).toBe(true);
       });
       it('should not pass isChained to timeline if delay', function() {
         var byte;
@@ -435,9 +435,9 @@
         byte.then({
           radius: 5
         });
-        expect(byte.tween.timelines[2].o.duration).toBe(1000);
-        expect(byte.tween.timelines[2].o.yoyo).toBe(false);
-        return expect(byte.tween.timelines[2].o.delay).toBe(1010);
+        expect(byte.tween.timelines[1].o.duration).toBe(1000);
+        expect(byte.tween.timelines[1].o.yoyo).toBe(false);
+        return expect(byte.tween.timelines[1].o.delay).toBe(1010);
       });
       it('should merge then options and add them to the history', function() {
         var byte;
@@ -488,7 +488,6 @@
         onUpdate = function() {};
         onStart = function() {};
         byte = new Byte({
-          isIt: true,
           radius: 20,
           duration: 1000,
           delay: 10,
@@ -574,8 +573,8 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe('function');
+        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
+        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
       });
       return it('should bind onFirstUpdate function #2', function() {
         var byte;
@@ -596,8 +595,8 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.tween.timelines[3].o.onFirstUpdate).toBe('function');
+        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
+        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
       });
     });
     describe('tuneOptions method ->', function() {
@@ -1408,9 +1407,9 @@
         var byte, s, tr;
         byte = new Byte({
           radius: 25,
-          y: 10
+          y: 10,
+          isRunLess: true
         });
-        byte.draw();
         expect(byte.el.style.left).toBe('0px');
         expect(byte.el.style.top).toBe('10px');
         expect(byte.el.style.opacity).toBe('1');
@@ -1431,7 +1430,7 @@
         expect(byte.el.style.top).not.toBe('10px');
         s = byte.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-        return expect(tr).not.toBe('translate(0px, 0px)');
+        return expect(tr).toBe('');
       });
       it('should set new values', function() {
         var byte;

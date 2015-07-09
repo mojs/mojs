@@ -291,7 +291,7 @@ describe 'Bit', ->
     #   bit = new Bit
     #     ctx:    document.createElementNS ns, 'svg'
     #     radius: 100
-    #     isIt: true
+    #     
     #   bit.setAttrsIfChanged 'radius', 100
     #   bit.draw()
     #   spyOn bit, 'getLength'
@@ -328,7 +328,7 @@ describe 'Bit', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
-        isIt: true
+        
       bit.props['stroke-dasharray'] = { unit: 'px', value: 0 }
       bit.castStrokeDash 'stroke-dasharray'
       expect(bit.props['stroke-dasharray']).toBe ''
@@ -337,7 +337,7 @@ describe 'Bit', ->
       bit = new Bit
         ctx:    document.createElementNS ns, 'svg'
         radius: 100
-        isIt: true
+        
       bit.props['stroke-dasharray'] = [{ unit: 'px', value: 0 }]
       bit.castStrokeDash 'stroke-dasharray'
       expect(bit.props['stroke-dasharray']).toBe ''

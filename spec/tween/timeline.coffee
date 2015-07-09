@@ -388,7 +388,7 @@ describe 'Timeline ->', ->
       t = new Timeline
         duration: 100
         onFirstUpdateBackward:-> cnt++
-        isIt: true
+        
       .start()
       t.update t.props.startTime + 500
       t.update t.props.startTime - 40
