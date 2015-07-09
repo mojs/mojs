@@ -1,13 +1,11 @@
 ## TODO
 
 - merge timeline and tween
-- ability to add a module to tween
-
 - add el warn on Motion Path (if wasnt specified)
 - add motion path stagger
-
+- ability to add a module to tween
+- add new rAF polyfill
 - add easing mix method
-- add easing noize method
 
 - fix coverage
 - release
@@ -17,6 +15,7 @@
 - add layers
 - add states
 - add custom easing handler
+  - add path handler
   - add spring
 - add shaker
 - add line trails
@@ -40,6 +39,7 @@
 # UNDER CONSIDERATION
 - add text tricks
 - add backgrounds
+- add spriter
 - add camera glare
 
 

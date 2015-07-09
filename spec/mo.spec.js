@@ -3758,13 +3758,11 @@ Transit = (function(superClass) {
 module.exports = Transit;
 
 },{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
-var Timeline, easingModule, h, t;
+var Timeline, easingModule, h;
 
 easingModule = require('../easing');
 
 h = require('../h');
-
-t = require('./tweener');
 
 Timeline = (function() {
   Timeline.prototype.defaults = {
@@ -3792,7 +3790,6 @@ Timeline = (function() {
     this.props = {};
     this.progress = 0;
     this.prevTime = 0;
-    this._tweens = [];
     this.props.easing = this.parseEasing(this.o.easing);
     return this.calcDimentions();
   };
@@ -3808,27 +3805,15 @@ Timeline = (function() {
   };
 
   Timeline.prototype.start = function(time) {
-    var i, len;
     this.isCompleted = false;
     this.isStarted = false;
     this.props.startTime = (time || performance.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
-    i = -1;
-    len = this._tweens.length - 1;
-    while (i++ < len) {
-      this._tweens[i].start(time || this.props.startTime);
-    }
     return this;
   };
 
   Timeline.prototype.update = function(time) {
-    var cnt, elapsed, i, isFlip, len, ref, ref1, ref2, ref3, ref4, ref5, start;
-    (this.props.startTime == null) && this.start();
-    i = -1;
-    len = this._tweens.length - 1;
-    while (i++ < len) {
-      this._tweens[i].update(time);
-    }
+    var cnt, elapsed, isFlip, ref, ref1, ref2, ref3, ref4, ref5, start;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
@@ -3876,12 +3861,6 @@ Timeline = (function() {
         this.onUpdate(this.easedProgress);
       }
     } else {
-      if (time > this.props.endTime || time < this.props.startTime) {
-        this.isFirstUpdate = false;
-      }
-      if (time > this.props.endTime) {
-        this.isFirstUpdateBackward = false;
-      }
       if (time >= this.props.endTime && !this.isCompleted) {
         this.setProc(1);
         if (typeof this.onUpdate === "function") {
@@ -3892,8 +3871,12 @@ Timeline = (function() {
         }
         this.isCompleted = true;
         this.isOnReverseComplete = false;
-        this.prevTime = Math.min(this.props.endTime, time);
-        return true;
+      }
+      if (time > this.props.endTime || time < this.props.startTime) {
+        this.isFirstUpdate = false;
+      }
+      if (time > this.props.endTime) {
+        this.isFirstUpdateBackward = false;
       }
     }
     if (time < this.prevTime && time <= this.props.startTime) {
@@ -3931,40 +3914,6 @@ Timeline = (function() {
       this.o[obj] = value;
     }
     return this.calcDimentions();
-  };
-
-  Timeline.prototype.add = function() {
-    return this._pushTimelineArray(Array.prototype.slice.apply(arguments));
-  };
-
-  Timeline.prototype._pushTimelineArray = function(array) {
-    var i, j, len1, results, tm;
-    results = [];
-    for (i = j = 0, len1 = array.length; j < len1; i = ++j) {
-      tm = array[i];
-      if (h.isArray(tm)) {
-        results.push(this._pushTimelineArray(tm));
-      } else {
-        results.push(this._pushTimeline(tm));
-      }
-    }
-    return results;
-  };
-
-  Timeline.prototype._pushTimeline = function(tween) {
-    this._tweens.push(tween);
-    return this._updateTotalTime(tween);
-  };
-
-  Timeline.prototype._updateTotalTime = function(tween) {
-    this.props.totalTime = Math.max(tween.props.totalTime, this.props.totalTime);
-    this.props.totalDuration = this.props.totalTime - this.o.delay;
-    return this.props.endTime = this.props.startTime + this.props.totalDuration;
-  };
-
-  Timeline.prototype.run = function() {
-    this.start();
-    return t.add(this);
   };
 
   Timeline.prototype.parseEasing = function(easing) {
@@ -4007,7 +3956,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../easing":3,"../h":4,"./tweener":25}],24:[function(require,module,exports){
+},{"../easing":3,"../h":4}],24:[function(require,module,exports){
 var Timeline, Tween, h, t;
 
 h = require('../h');
