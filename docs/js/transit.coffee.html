@@ -253,9 +253,7 @@ o.radiusX ?= o.radius; o.radiusY ?= o.radius</p>
 
   <span class="hljs-attribute">fillTransform</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-string">"translate(<span class="hljs-subst">#{<span class="hljs-property">@props</span>.shiftX}</span>, <span class="hljs-subst">#{<span class="hljs-property">@props</span>.shiftY}</span>)"</span>
   <span class="hljs-attribute">isNeedsTransform</span>:<span class="hljs-function">-&gt;</span>
-    isX = <span class="hljs-property">@isPropChanged</span>(<span class="hljs-string">'shiftX'</span>); isY = <span class="hljs-property">@isPropChanged</span>(<span class="hljs-string">'shiftY'</span>)
-    <span class="hljs-property">@o</span>.isIt <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log isX, isY
-    isX <span class="hljs-keyword">or</span> isY
+    isX = <span class="hljs-property">@isPropChanged</span>(<span class="hljs-string">'shiftX'</span>); isY = <span class="hljs-property">@isPropChanged</span>(<span class="hljs-string">'shiftY'</span>); isX <span class="hljs-keyword">or</span> isY
   <span class="hljs-attribute">isPropChanged</span>:<span class="hljs-function"><span class="hljs-params">(name)</span>-&gt;</span>
     <span class="hljs-property">@lastSet</span>[name] ?= {}
     <span class="hljs-keyword">if</span> <span class="hljs-property">@lastSet</span>[name].value <span class="hljs-keyword">isnt</span> <span class="hljs-property">@props</span>[name]
@@ -273,7 +271,7 @@ o.radiusX ?= o.radius; o.radiusY ?= o.radius</p>
     stroke = <span class="hljs-keyword">if</span> dStroke?
       Math.max Math.abs(dStroke.start), Math.abs(dStroke.end)
     <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.strokeWidth
-    <span class="hljs-property">@props</span>.size   = <span class="hljs-number">2</span>*radius + <span class="hljs-number">2</span>*stroke
+    <span class="hljs-property">@props</span>.size = <span class="hljs-number">2</span>*radius + <span class="hljs-number">2</span>*stroke
     </div></div>
       
       </div>

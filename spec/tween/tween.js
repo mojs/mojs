@@ -154,8 +154,7 @@
       return it('should end at 1', function(dfr) {
         var proc, t;
         t = new Tween({
-          repeat: 2,
-          isIt: true
+          repeat: 2
         });
         proc = -1;
         t.add(new Timeline({
@@ -205,9 +204,11 @@
         }));
         return expect(t.props.totalTime).toBe(2200);
       });
-      it('should work with array', function() {
+      it('should work with array #1', function() {
         var t, tm1, tm2;
-        t = new Tween;
+        t = new Tween({
+          isIt: true
+        });
         t.add(new Timeline({
           duration: 1000,
           delay: 200
@@ -223,25 +224,6 @@
         t.append([tm1, tm2]);
         expect(t.timelines.length).toBe(3);
         return expect(t.props.totalTime).toBe(2400);
-      });
-      it('should work with array #2', function() {
-        var t, tm1, tm2;
-        t = new Tween;
-        t.add(new Timeline({
-          duration: 1000,
-          delay: 200
-        }));
-        tm1 = new Timeline({
-          duration: 500,
-          delay: 500
-        });
-        tm2 = new Timeline({
-          duration: 500,
-          delay: 700
-        });
-        spyOn(t, 'recalcDuration');
-        t.append([tm1, tm2]);
-        return expect(t.recalcDuration).toHaveBeenCalled();
       });
       it('should work with array #2', function() {
         var t;

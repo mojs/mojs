@@ -493,7 +493,8 @@
           delay: 10,
           onUpdate: onUpdate,
           onStart: onStart,
-          isRunLess: true
+          isRunLess: true,
+          isIt: true
         });
         byte.then({
           radius: 5,

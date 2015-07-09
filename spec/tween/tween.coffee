@@ -85,14 +85,13 @@ describe 'Tween ->', ->
       expect(t.timelines[0].progress).toBe .2
 
     it 'should end at 1', (dfr)->
-      t = new Tween repeat: 2, isIt: true
+      t = new Tween repeat: 2
       proc = -1
       t.add new Timeline
         duration: 50,
         onUpdate:(p)-> proc = p
         onComplete:-> expect(proc).toBe(1); dfr()
       t.start()
-
 
   describe 'append method ->', ->
     it 'should add timeline',->
@@ -110,22 +109,23 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 1000, delay: 200
       t.append new Timeline duration: 500, delay: 500
       expect(t.props.totalTime).toBe 2200
-    it 'should work with array',->
-      t = new Tween
+    it 'should work with array #1',->
+      t = new Tween isIt: true
       t.add new Timeline duration: 1000, delay: 200
+      # console.log t.props.totalTime
       tm1 = new Timeline(duration: 500, delay: 500)
       tm2 = new Timeline(duration: 500, delay: 700)
       t.append [tm1, tm2]
       expect(t.timelines.length).toBe 3
       expect(t.props.totalTime).toBe 2400
-    it 'should work with array #2',->
-      t = new Tween
-      t.add new Timeline duration: 1000, delay: 200
-      tm1 = new Timeline(duration: 500, delay: 500)
-      tm2 = new Timeline(duration: 500, delay: 700)
-      spyOn t, 'recalcDuration'
-      t.append [tm1, tm2]
-      expect(t.recalcDuration).toHaveBeenCalled()
+    # it 'should work with array #2',->
+    #   t = new Tween
+    #   t.add new Timeline duration: 1000, delay: 200
+    #   tm1 = new Timeline(duration: 500, delay: 500)
+    #   tm2 = new Timeline(duration: 500, delay: 700)
+    #   spyOn t, 'recalcDuration'
+    #   t.append [tm1, tm2]
+    #   expect(t.recalcDuration).toHaveBeenCalled()
     it 'should work with array #2',->
       t = new Tween
       t.append new Timeline duration: 1000, delay: 200

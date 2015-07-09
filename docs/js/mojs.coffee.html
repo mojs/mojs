@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>onComplete: -&gt; console.log &#39;tm: a&#39; - mojs.coffee</title>
+  <title> - mojs.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.127.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.127.1'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -58,54 +58,6 @@
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 </div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tm = new mojs.Timeline
-  delay: 1000</p>
-<h1 id="oncomplete-gt-console-log-39-tm-a-39-"><a href="#oncomplete-gt-console-log-39-tm-a-39-" class="anchor"></a>onComplete: -&gt; console.log &#39;tm: a&#39;</h1><h1 id="onupdate-p-gt-console-log-quot-tm-p-quot-"><a href="#onupdate-p-gt-console-log-quot-tm-p-quot-" class="anchor"></a>onUpdate:(p)-&gt; console.log &quot;tm: #{p}&quot;</h1><p>tw = new mojs.Tween repeat: 2, isIt: true, onComplete: -&gt; console.log &#39;tween end&#39;
-tw.add tm</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tm1 = new mojs.Timeline
-  delay: 1000
-  onComplete: -&gt; console.log &#39;tm1: a&#39;
-  onUpdate:(p)-&gt; console.log &quot;tm1: #{p}&quot;
-tw2 = new mojs.Tween repeat: 2, isIt: true
-tw2.add tm1</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw.add tw2</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw.start()</p>
-</div>
-        </div>
-      
       
       </div>
     

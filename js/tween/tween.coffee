@@ -28,12 +28,13 @@ class Tween
       @appendTimeline timeline
       @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
     else
-      i = timeline.length
-      @appendTimeline(timeline[i]) while(i--)
+      i = timeline.length; time = @props.totalTime
+      @appendTimeline(timeline[i], time) while(i--)
       @recalcDuration()
-  appendTimeline:(timeline)->
-    timeline.setProp(delay: timeline.o.delay + @props.totalTime)
-    @timelines.push timeline
+
+  appendTimeline:(timeline, time)->
+    timeline.setProp(delay: timeline.o.delay + (time or @props.totalTime))
+    @pushTimeline timeline
   # reset:(timeline)-> @remove(timeline); @add timeline
   recalcDuration:->
     len = @timelines.length; @props.totalTime = 0
@@ -71,7 +72,6 @@ class Tween
 
     i = -1; len = @timelines.length-1
     @timelines[i].update(timeToTimelines) while(i++ < len)
-
 
     @prevTime = time
     

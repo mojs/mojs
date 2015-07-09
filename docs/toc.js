@@ -37,19 +37,7 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "onComplete: -&gt; console.log &#39;tm: a&#39;",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "oncomplete-gt-console-log-39-tm-a-39-",
-      "title": "onComplete: -&gt; console.log &#39;tm: a&#39;"
-    },
-    {
-      "level": 1,
-      "slug": "onupdate-p-gt-console-log-quot-tm-p-quot-",
-      "title": "onUpdate:(p)-&gt; console.log &quot;tm: #{p}&quot;"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/motion-path.coffee.html",

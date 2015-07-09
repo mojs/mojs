@@ -251,7 +251,7 @@ describe 'Transit ->', ->
       byte = new Byte
         radius: 20, duration: 1000, delay: 10
         onUpdate:  onUpdate, onStart: onStart
-        isRunLess: true
+        isRunLess: true, isIt: true
       byte.then radius: 5, yoyo: true, delay: 100
 
       expect(byte.history.length)       .toBe 2

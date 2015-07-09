@@ -82,12 +82,13 @@ t = <span class="hljs-built_in">require</span> <span class="hljs-string">'./twee
       <span class="hljs-property">@appendTimeline</span> timeline
       <span class="hljs-property">@props</span>.totalTime = Math.max timeline.props.totalTime, <span class="hljs-property">@props</span>.totalTime
     <span class="hljs-keyword">else</span>
-      i = timeline.length
-      <span class="hljs-property">@appendTimeline</span>(timeline[i]) <span class="hljs-keyword">while</span>(i--)
+      i = timeline.length; time = <span class="hljs-property">@props</span>.totalTime
+      <span class="hljs-property">@appendTimeline</span>(timeline[i], time) <span class="hljs-keyword">while</span>(i--)
       <span class="hljs-property">@recalcDuration</span>()
-  <span class="hljs-attribute">appendTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
-    timeline.setProp(<span class="hljs-attribute">delay</span>: timeline.o.delay + <span class="hljs-property">@props</span>.totalTime)
-    <span class="hljs-property">@timelines</span>.push timeline</div></div>
+
+  <span class="hljs-attribute">appendTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline, time)</span>-&gt;</span>
+    timeline.setProp(<span class="hljs-attribute">delay</span>: timeline.o.delay + (time <span class="hljs-keyword">or</span> <span class="hljs-property">@props</span>.totalTime))
+    <span class="hljs-property">@pushTimeline</span> timeline</div></div>
       
       </div>
     
@@ -190,7 +191,6 @@ t = <span class="hljs-built_in">require</span> <span class="hljs-string">'./twee
 
     i = -<span class="hljs-number">1</span>; len = <span class="hljs-property">@timelines</span>.length-<span class="hljs-number">1</span>
     <span class="hljs-property">@timelines</span>[i].update(timeToTimelines) <span class="hljs-keyword">while</span>(i++ &lt; len)
-
 
     <span class="hljs-property">@prevTime</span> = time
     </div></div>

@@ -132,9 +132,7 @@ class Transit extends bitsMap.map.bit
 
   fillTransform:-> "translate(#{@props.shiftX}, #{@props.shiftY})"
   isNeedsTransform:->
-    isX = @isPropChanged('shiftX'); isY = @isPropChanged('shiftY')
-    @o.isIt and console.log isX, isY
-    isX or isY
+    isX = @isPropChanged('shiftX'); isY = @isPropChanged('shiftY'); isX or isY
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     if @lastSet[name].value isnt @props[name]
@@ -152,7 +150,7 @@ class Transit extends bitsMap.map.bit
     stroke = if dStroke?
       Math.max Math.abs(dStroke.start), Math.abs(dStroke.end)
     else @props.strokeWidth
-    @props.size   = 2*radius + 2*stroke
+    @props.size = 2*radius + 2*stroke
     
     # increase el's size on elastic
     # and back easings

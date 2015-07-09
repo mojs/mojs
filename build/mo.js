@@ -1341,7 +1341,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.127.0',
+  revision: '0.127.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3258,7 +3258,6 @@ Transit = (function(superClass) {
     var isX, isY;
     isX = this.isPropChanged('shiftX');
     isY = this.isPropChanged('shiftY');
-    this.o.isIt && console.log(isX, isY);
     return isX || isY;
   };
 
@@ -4000,25 +3999,26 @@ Tween = (function() {
   };
 
   Tween.prototype.append = function(timeline) {
-    var i;
+    var i, time;
     if (!h.isArray(timeline)) {
       timeline.index = this.timelines.length;
       this.appendTimeline(timeline);
       return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
     } else {
       i = timeline.length;
+      time = this.props.totalTime;
       while (i--) {
-        this.appendTimeline(timeline[i]);
+        this.appendTimeline(timeline[i], time);
       }
       return this.recalcDuration();
     }
   };
 
-  Tween.prototype.appendTimeline = function(timeline) {
+  Tween.prototype.appendTimeline = function(timeline, time) {
     timeline.setProp({
-      delay: timeline.o.delay + this.props.totalTime
+      delay: timeline.o.delay + (time || this.props.totalTime)
     });
-    return this.timelines.push(timeline);
+    return this.pushTimeline(timeline);
   };
 
   Tween.prototype.recalcDuration = function() {
