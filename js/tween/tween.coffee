@@ -24,16 +24,17 @@ class Tween
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
+  
   append:(timeline...)->
-    i = timeline.length; time = @props.totalTime; index = @timelines.length
-    while(i--)
-      tm = timeline[i]
-      if h.isArray(tm) then @append.apply @, tm
-      else @appendTimeline(tm, index, time)
-
+    for tm, i in timeline
+      if h.isArray(tm) then @_appendTimelineArray(tm)
+      else @appendTimeline(tm, @timelines.length)
+  _appendTimelineArray:(timelineArray)->
+    i = timelineArray.length; time = @props.totalTime; index = @timelines.length
+    @appendTimeline(timelineArray[i], index, time) while(i--)
   appendTimeline:(timeline, index, time)->
-    timeline.setProp(delay: timeline.o.delay + (time or @props.totalTime))
-    timeline.index = index
+    delay = timeline.o.delay + (if time? then time else @props.totalTime)
+    timeline.setProp(delay: delay); timeline.index = index
     @pushTimeline timeline
 
   recalcDuration:->

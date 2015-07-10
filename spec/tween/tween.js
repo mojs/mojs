@@ -187,25 +187,24 @@
         expect(t.timelines.length).toBe(1);
         return expect(t.timelines[0] instanceof Timeline).toBe(true);
       });
-      it('should work with nested arrays', function() {
-        var t, tm1, tm2, tm3;
+      it('should treat every argument as new append call', function() {
+        var t, tm1, tm2;
         t = new Tween;
         tm1 = new Timeline({
-          duration: 500,
+          duration: 1000,
           delay: 500
         });
         tm2 = new Timeline({
-          duration: 500,
+          duration: 1000,
           delay: 700
         });
-        tm3 = new Timeline({
-          duration: 500,
-          delay: 700
-        });
-        t.append(tm1, [tm2, tm3]);
-        return expect(t.timelines.length).toBe(3);
+        t.append(tm1, tm2);
+        expect(t.timelines.length).toBe(2);
+        expect(t.timelines[0] instanceof Timeline).toBe(true);
+        expect(t.timelines[1] instanceof Timeline).toBe(true);
+        return expect(t.props.totalTime).toBe(3200);
       });
-      it('should set the same time for all appended items', function() {
+      it('should treat arrays as parallel tweens #1', function() {
         var t, tm1, tm2, tm3;
         t = new Tween;
         tm1 = new Timeline({
@@ -221,7 +220,25 @@
           delay: 700
         });
         t.append(tm1, [tm2, tm3]);
-        return expect(t.props.totalTime).toBe(1200);
+        return expect(t.props.totalTime).toBe(2200);
+      });
+      it('should treat arrays as parallel tweens #2', function() {
+        var t, tm1, tm2, tm3;
+        t = new Tween;
+        tm1 = new Timeline({
+          duration: 500,
+          delay: 800
+        });
+        tm2 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        tm3 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        t.append([tm2, tm3], tm1);
+        return expect(t.props.totalTime).toBe(1200 + 1300);
       });
       it('should delay the timeline to duration', function() {
         var t;
@@ -279,9 +296,7 @@
       });
       it('should work with multiple arguments', function() {
         var t, tm1, tm2;
-        t = new Tween({
-          isIt: true
-        });
+        t = new Tween;
         tm1 = new Timeline({
           duration: 500,
           delay: 500

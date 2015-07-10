@@ -1338,10 +1338,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs, tm1, tm2, tm3, tw;
+var mojs;
 
 mojs = {
-  revision: '0.128.3',
+  revision: '0.129.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1368,16 +1368,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-tw = new mojs.Tween;
-
-tm1 = new mojs.Timeline;
-
-tm2 = new mojs.Timeline;
-
-tm3 = new mojs.Timeline;
-
-tw.append(tm1, [tm2, tm3]);
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -4016,26 +4006,37 @@ Tween = (function() {
   };
 
   Tween.prototype.append = function() {
-    var i, index, results, time, timeline, tm;
+    var i, j, len1, results, timeline, tm;
     timeline = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    i = timeline.length;
-    time = this.props.totalTime;
-    index = this.timelines.length;
     results = [];
-    while (i--) {
+    for (i = j = 0, len1 = timeline.length; j < len1; i = ++j) {
       tm = timeline[i];
       if (h.isArray(tm)) {
-        results.push(this.append.apply(this, tm));
+        results.push(this._appendTimelineArray(tm));
       } else {
-        results.push(this.appendTimeline(tm, index, time));
+        results.push(this.appendTimeline(tm, this.timelines.length));
       }
     }
     return results;
   };
 
+  Tween.prototype._appendTimelineArray = function(timelineArray) {
+    var i, index, results, time;
+    i = timelineArray.length;
+    time = this.props.totalTime;
+    index = this.timelines.length;
+    results = [];
+    while (i--) {
+      results.push(this.appendTimeline(timelineArray[i], index, time));
+    }
+    return results;
+  };
+
   Tween.prototype.appendTimeline = function(timeline, index, time) {
+    var delay;
+    delay = timeline.o.delay + (time != null ? time : this.props.totalTime);
     timeline.setProp({
-      delay: timeline.o.delay + (time || this.props.totalTime)
+      delay: delay
     });
     timeline.index = index;
     return this.pushTimeline(timeline);

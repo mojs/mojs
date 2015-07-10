@@ -88,16 +88,17 @@ t = <span class="hljs-built_in">require</span> <span class="hljs-string">'./twee
   <span class="hljs-attribute">remove</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
     index = <span class="hljs-property">@timelines</span>.indexOf timeline
     <span class="hljs-keyword">if</span> index <span class="hljs-keyword">isnt</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@timelines</span>.splice index, <span class="hljs-number">1</span>
+  
   <span class="hljs-attribute">append</span>:<span class="hljs-function"><span class="hljs-params">(timeline...)</span>-&gt;</span>
-    i = timeline.length; time = <span class="hljs-property">@props</span>.totalTime; index = <span class="hljs-property">@timelines</span>.length
-    <span class="hljs-keyword">while</span>(i--)
-      tm = timeline[i]
-      <span class="hljs-keyword">if</span> h.isArray(tm) <span class="hljs-keyword">then</span> <span class="hljs-property">@append</span>.apply @, tm
-      <span class="hljs-keyword">else</span> <span class="hljs-property">@appendTimeline</span>(tm, index, time)
-
+    <span class="hljs-keyword">for</span> tm, i <span class="hljs-keyword">in</span> timeline
+      <span class="hljs-keyword">if</span> h.isArray(tm) <span class="hljs-keyword">then</span> <span class="hljs-property">@_appendTimelineArray</span>(tm)
+      <span class="hljs-keyword">else</span> <span class="hljs-property">@appendTimeline</span>(tm, <span class="hljs-property">@timelines</span>.length)
+  <span class="hljs-attribute">_appendTimelineArray</span>:<span class="hljs-function"><span class="hljs-params">(timelineArray)</span>-&gt;</span>
+    i = timelineArray.length; time = <span class="hljs-property">@props</span>.totalTime; index = <span class="hljs-property">@timelines</span>.length
+    <span class="hljs-property">@appendTimeline</span>(timelineArray[i], index, time) <span class="hljs-keyword">while</span>(i--)
   <span class="hljs-attribute">appendTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline, index, time)</span>-&gt;</span>
-    timeline.setProp(<span class="hljs-attribute">delay</span>: timeline.o.delay + (time <span class="hljs-keyword">or</span> <span class="hljs-property">@props</span>.totalTime))
-    timeline.index = index
+    delay = timeline.o.delay + (<span class="hljs-keyword">if</span> time? <span class="hljs-keyword">then</span> time <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.totalTime)
+    timeline.setProp(<span class="hljs-attribute">delay</span>: delay); timeline.index = index
     <span class="hljs-property">@pushTimeline</span> timeline
 
   <span class="hljs-attribute">recalcDuration</span>:<span class="hljs-function">-&gt;</span>

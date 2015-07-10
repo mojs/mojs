@@ -105,20 +105,29 @@ describe 'Tween ->', ->
       t.append new Timeline
       expect(t.timelines.length).toBe 1
       expect(t.timelines[0] instanceof Timeline).toBe true
-    it 'should work with nested arrays', ->
-        t = new Tween
-        tm1 = new Timeline(duration: 500, delay: 500)
-        tm2 = new Timeline(duration: 500, delay: 700)
-        tm3 = new Timeline(duration: 500, delay: 700)
-        t.append tm1, [tm2, tm3]
-        expect(t.timelines.length).toBe 3
-    it 'should set the same time for all appended items', ->
-        t = new Tween
-        tm1 = new Timeline(duration: 500, delay: 500)
-        tm2 = new Timeline(duration: 500, delay: 700)
-        tm3 = new Timeline(duration: 500, delay: 700)
-        t.append tm1, [tm2, tm3]
-        expect(t.props.totalTime).toBe 1200
+    it 'should treat every argument as new append call',->
+      t = new Tween
+      tm1 = new Timeline duration: 1000, delay: 500
+      tm2 = new Timeline duration: 1000, delay: 700
+      t.append tm1, tm2
+      expect(t.timelines.length).toBe 2
+      expect(t.timelines[0] instanceof Timeline).toBe true
+      expect(t.timelines[1] instanceof Timeline).toBe true
+      expect(t.props.totalTime).toBe 3200
+    it 'should treat arrays as parallel tweens #1', ->
+      t = new Tween
+      tm1 = new Timeline(duration: 500, delay: 500)
+      tm2 = new Timeline(duration: 500, delay: 700)
+      tm3 = new Timeline(duration: 500, delay: 700)
+      t.append tm1, [tm2, tm3]
+      expect(t.props.totalTime).toBe 2200
+    it 'should treat arrays as parallel tweens #2', ->
+      t = new Tween
+      tm1 = new Timeline(duration: 500, delay: 800)
+      tm2 = new Timeline(duration: 500, delay: 700)
+      tm3 = new Timeline(duration: 500, delay: 700)
+      t.append [tm2, tm3], tm1
+      expect(t.props.totalTime).toBe 1200 + 1300
     it 'should delay the timeline to duration',->
       t = new Tween
       t.add new Timeline duration: 1000, delay: 200
@@ -142,7 +151,7 @@ describe 'Tween ->', ->
       t.append new Timeline duration: 1000, delay: 200
       expect(t.timelines.length).toBe 1
     it 'should work with multiple arguments',->
-      t = new Tween isIt: true
+      t = new Tween
       tm1 = new Timeline(duration: 500, delay: 500)
       tm2 = new Timeline(duration: 500, delay: 700)
       t.append tm1, tm2

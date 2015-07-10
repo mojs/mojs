@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.128.3', isDebug: true
+  revision:   '0.129.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -24,13 +24,6 @@ mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-
-tw = new mojs.Tween
-tm1 = new mojs.Timeline
-tm2 = new mojs.Timeline
-tm3 = new mojs.Timeline
-
-tw.append tm1, [tm2, tm3]
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
