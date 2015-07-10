@@ -1336,10 +1336,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs;
+var mojs, tm1, tm2, tm3, tw;
 
 mojs = {
-  revision: '0.128.0',
+  revision: '0.128.3',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1366,6 +1366,16 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+tw = new mojs.Tween;
+
+tm1 = new mojs.Timeline;
+
+tm2 = new mojs.Timeline;
+
+tm3 = new mojs.Timeline;
+
+tw.append(tm1, [tm2, tm3]);
 
 
 /* istanbul ignore next */
@@ -1505,6 +1515,10 @@ MotionPath = (function() {
     this.blurAmount = 20;
     this.props.motionBlur = h.clamp(this.props.motionBlur, 0, 1);
     this.onUpdate = this.props.onUpdate;
+    if (!this.o.el) {
+      h.error('Missed "el" option. It could be a selector, DOMNode or another module.');
+      return true;
+    }
     this.el = this.parseEl(this.props.el);
     this.props.motionBlur > 0 && this.createFilter();
     this.path = this.getPath();
@@ -4004,6 +4018,9 @@ Tween = (function() {
   };
 
   Tween.prototype.pushTimeline = function(timeline) {
+    if (timeline.tween instanceof Tween) {
+      timeline = timeline.tween;
+    }
     this.timelines.push(timeline);
     this.props.time = Math.max(timeline.props.totalTime, this.props.totalTime);
     return this.props.totalTime = this.props.time * (this.o.repeat || 1);
@@ -4017,17 +4034,20 @@ Tween = (function() {
     }
   };
 
-  Tween.prototype.append = function(timeline) {
-    var i, index, results, time;
-    if (!h.isArray(timeline)) {
-      timeline = [timeline];
-    }
+  Tween.prototype.append = function() {
+    var i, index, results, time, timeline, tm;
+    timeline = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     i = timeline.length;
     time = this.props.totalTime;
     index = this.timelines.length;
     results = [];
     while (i--) {
-      results.push(this.appendTimeline(timeline[i], index, time));
+      tm = timeline[i];
+      if (h.isArray(tm)) {
+        results.push(this.append.apply(this, tm));
+      } else {
+        results.push(this.appendTimeline(tm, index, time));
+      }
     }
     return results;
   };
@@ -4053,10 +4073,15 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var elapsed, i, len, ref, ref1, start, timeToTimelines;
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
+    this._updateTimelines(time);
+    return this._checkCallbacks(time);
+  };
+
+  Tween.prototype._checkCallbacks = function(time) {
+    var ref, ref1;
     if (time >= this.props.startTime && time < this.props.endTime) {
       if (typeof this.onUpdate === "function") {
         this.onUpdate((time - this.props.startTime) / this.props.totalTime);
@@ -4066,22 +4091,6 @@ Tween = (function() {
       if ((ref = this.o.onReverseComplete) != null) {
         ref.apply(this);
       }
-    }
-    elapsed = time - this.props.startTime;
-    timeToTimelines = time;
-    if (elapsed > this.props.time) {
-      start = this.props.startTime;
-      while (start <= time) {
-        start += this.props.time;
-      }
-      start -= this.props.time;
-      elapsed = time - start;
-      timeToTimelines = this.props.endTime === time ? this.props.endTime : this.props.startTime + elapsed;
-    }
-    i = -1;
-    len = this.timelines.length - 1;
-    while (i++ < len) {
-      this.timelines[i].update(timeToTimelines);
     }
     this.prevTime = time;
     if (time === this.props.endTime) {
@@ -4093,6 +4102,19 @@ Tween = (function() {
       }
       return true;
     }
+  };
+
+  Tween.prototype._updateTimelines = function(time) {
+    var elapsed, i, len, results, timeToTimelines;
+    elapsed = (time - this.props.startTime) % this.props.time;
+    timeToTimelines = this.props.endTime === time ? this.props.endTime : this.props.startTime + elapsed;
+    i = -1;
+    len = this.timelines.length - 1;
+    results = [];
+    while (i++ < len) {
+      results.push(this.timelines[i].update(timeToTimelines));
+    }
+    return results;
   };
 
   Tween.prototype.startTimelines = function(time) {

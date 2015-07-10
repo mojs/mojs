@@ -330,6 +330,11 @@ class MotionPath
     @props.motionBlur = h.clamp @props.motionBlur, 0, 1
     
     @onUpdate   = @props.onUpdate
+    if !@o.el
+      h.error 'Missed "el" option. It could be a selector,
+                DOMNode or another module.'
+      return true
+    
     @el         = @parseEl @props.el
     @props.motionBlur > 0 and @createFilter()
 
@@ -578,7 +583,7 @@ class MotionPath
     y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
     x: x*1.428571429
     y: y*1.428571429
-    # x: Math.cos(radAngle), y: Math.sin(radAngle)    
+    # x: Math.cos(radAngle), y: Math.sin(radAngle)
 
 module.exports = MotionPath
 

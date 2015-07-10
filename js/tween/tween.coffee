@@ -16,17 +16,20 @@ class Tween
       # simple push
       else @pushTimeline tm
   pushTimeline:(timeline)->
+    # if timeline is a module with tween property then extract it
+    timeline = timeline.tween if timeline.tween instanceof Tween
     @timelines.push timeline
     @props.time      = Math.max timeline.props.totalTime, @props.totalTime
     @props.totalTime = @props.time*(@o.repeat or 1)
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
-  append:(timeline)->
-    # if not an array was passed, make it
-    timeline = [timeline] if !h.isArray(timeline)
+  append:(timeline...)->
     i = timeline.length; time = @props.totalTime; index = @timelines.length
-    @appendTimeline(timeline[i], index, time) while(i--)
+    while(i--)
+      tm = timeline[i]
+      if h.isArray(tm) then @append.apply @, tm
+      else @appendTimeline(tm, index, time)
 
   appendTimeline:(timeline, index, time)->
     timeline.setProp(delay: timeline.o.delay + (time or @props.totalTime))
@@ -38,48 +41,62 @@ class Tween
     while(len--)
       timeline  = @timelines[len]
       @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
+  # ---
+
+  # Method to take care of the current time.
+  # @param {Number} The current time
+  # @return {Undefined, Boolean} Returns true if the tween
+  # had ended it execution so should be removed form the 
+  # tweener's active tweens array
   update:(time)->
-    # dont go further then the endTime
+    # don't go further then the endTime
     if time > @props.endTime then time = @props.endTime
-    
+    # set the time to timelines
+    @_updateTimelines time
+    # check the callbacks for the current time
+    # NOTE: should be returned from this update
+    # function, because it returns true if the tween
+    # was completed, to indicate the tweener module
+    # to remove it from the active tweens array for 
+    # performance purposes
+    return @_checkCallbacks(time)
+  # ---
+
+  # Method to check the callbacks
+  # for the current time
+  # @param {Number} The current time
+  _checkCallbacks:(time)->
     # if isn't complete
     if time >= @props.startTime and time < @props.endTime
       @onUpdate? (time - @props.startTime)/@props.totalTime
-    
     # if reverse completed
     if @prevTime > time and time <= @props.startTime
       @o.onReverseComplete?.apply(@)
-
-    elapsed = time - @props.startTime
-
-    # if in the first repeat or without any repeats
-    timeToTimelines = time
-    if elapsed > @props.time
-      start = @props.startTime
-      while (start <= time)
-        start += @props.time
-      
-      # start time in repeat period
-      start -= @props.time
-      # elsapsed time in repeat period
-      elapsed = time - start
-
-      timeToTimelines = if @props.endTime is time then @props.endTime
-      else @props.startTime + elapsed
-
-    i = -1; len = @timelines.length-1
-    @timelines[i].update(timeToTimelines) while(i++ < len)
-
+    # save the current time as previous for future
     @prevTime = time
-    
     # if completed
     if time is @props.endTime
       @onUpdate?(1); @o.onComplete?.apply(@); return true
+  # ---
+  # 
+  # Method to set time on timelines,
+  # with respect to repeat periods **if present**
+  # @param {Number} Time to set
+  _updateTimelines:(time)->
+    # get elapsed with respect to repeat option
+    # so take a modulo of the elapsed time
+    elapsed = (time - @props.startTime) % @props.time
+    # get the time for timelines
+    timeToTimelines = if @props.endTime is time then @props.endTime
+    else @props.startTime + elapsed
+    # set the normalized time to the timelines
+    i = -1; len = @timelines.length-1
+    @timelines[i].update(timeToTimelines) while(i++ < len)
   
   startTimelines:(time)->
     i = @timelines.length
-    while(i--)
-      @timelines[i].start time or @props.startTime
+    @timelines[i].start(time or @props.startTime) while(i--)
+
   start:(time)->
     @setStartTime(time); !time and t.add(@); @state = 'play'
     @

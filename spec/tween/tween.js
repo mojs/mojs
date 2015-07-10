@@ -1,11 +1,13 @@
 (function() {
-  var Timeline, Tween, tweener;
+  var Timeline, Transit, Tween, tweener;
 
   Tween = window.mojs.Tween;
 
   Timeline = window.mojs.Timeline;
 
   tweener = window.mojs.tweener;
+
+  Transit = window.mojs.Transit;
 
   describe('Tween ->', function() {
     beforeEach(function() {
@@ -35,6 +37,13 @@
         t = new Tween;
         obj = t.add(new Timeline);
         return expect(obj).toBe(t);
+      });
+      it('should treat a module with tween object as a tween', function() {
+        var t;
+        t = new Tween;
+        t.add(new Transit);
+        expect(t.timelines.length).toBe(1);
+        return expect(t.timelines[0] instanceof Tween).toBe(true);
       });
       it('should work with arrays of tweens', function() {
         var t, t1, t2;
@@ -178,6 +187,42 @@
         expect(t.timelines.length).toBe(1);
         return expect(t.timelines[0] instanceof Timeline).toBe(true);
       });
+      it('should work with nested arrays', function() {
+        var t, tm1, tm2, tm3;
+        t = new Tween;
+        tm1 = new Timeline({
+          duration: 500,
+          delay: 500
+        });
+        tm2 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        tm3 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        t.append(tm1, [tm2, tm3]);
+        return expect(t.timelines.length).toBe(3);
+      });
+      it('should set the same time for all appended items', function() {
+        var t, tm1, tm2, tm3;
+        t = new Tween;
+        tm1 = new Timeline({
+          duration: 500,
+          delay: 500
+        });
+        tm2 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        tm3 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        t.append(tm1, [tm2, tm3]);
+        return expect(t.props.totalTime).toBe(1200);
+      });
       it('should delay the timeline to duration', function() {
         var t;
         t = new Tween;
@@ -231,6 +276,22 @@
           delay: 200
         }));
         return expect(t.timelines.length).toBe(1);
+      });
+      it('should work with multiple arguments', function() {
+        var t, tm1, tm2;
+        t = new Tween({
+          isIt: true
+        });
+        tm1 = new Timeline({
+          duration: 500,
+          delay: 500
+        });
+        tm2 = new Timeline({
+          duration: 500,
+          delay: 700
+        });
+        t.append(tm1, tm2);
+        return expect(t.timelines.length).toBe(2);
       });
       it('should work with array and set the indexes', function() {
         var t, tm1, tm2;
@@ -684,7 +745,9 @@
     describe('update method ->', function() {
       it('should update the current time on every timeline', function() {
         var t, time;
-        t = new Tween;
+        t = new Tween({
+          isIt: true
+        });
         t.add(new Timeline({
           duration: 500,
           delay: 200
@@ -693,6 +756,7 @@
           duration: 500,
           delay: 100
         }));
+        t.start();
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
         t.update(time = performance.now() + 200);
@@ -761,6 +825,48 @@
         expect(ti2.update).toHaveBeenCalledWith(time);
         expect(ti3.update).toHaveBeenCalledWith(time);
         return expect(ti4.update).toHaveBeenCalledWith(time);
+      });
+    });
+    describe('_updateTimelines method', function() {
+      it('should set time to timelines', function() {
+        var t, time;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(new Timeline({
+          duration: 500,
+          delay: 100
+        }));
+        t.setStartTime();
+        time = t.props.startTime + 200;
+        spyOn(t.timelines[0], 'update');
+        spyOn(t.timelines[1], 'update');
+        t._updateTimelines(time);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
+        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+      });
+      return it('should set time to timelines with respect to repeat option', function() {
+        var t, time;
+        t = new Tween({
+          repeat: 2
+        });
+        t.add(new Timeline({
+          duration: 500,
+          delay: 200
+        }));
+        t.add(new Timeline({
+          duration: 500,
+          delay: 100
+        }));
+        t.setStartTime();
+        time = t.props.startTime + 200;
+        spyOn(t.timelines[0], 'update');
+        spyOn(t.timelines[1], 'update');
+        t._updateTimelines(time + 1400);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
+        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
       });
     });
     describe('setProgress method ->', function() {

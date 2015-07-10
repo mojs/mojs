@@ -256,9 +256,10 @@
         o = {
           duration: 500
         };
+        div = document.createElement('div');
         mp = new MotionPath({
           path: coords,
-          el: document.createElement('div'),
+          el: div,
           isRunLess: true
         }).then({
           pathEnd: .5
@@ -1509,7 +1510,7 @@
         });
         return expect(mp.el instanceof HTMLElement).toBe(true);
       });
-      return it('should return the module when module was passed', function() {
+      it('should return the module when module was passed', function() {
         var tr;
         tr = new Transit({
           isRunLess: true
@@ -1521,6 +1522,15 @@
           isPresetPosition: false
         });
         return expect(mp.el).toBe(tr);
+      });
+      return it('should nicely error to console if el wasn\'t specified', function() {
+        spyOn(h, 'error');
+        mp = new MotionPath({
+          path: coords,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        return expect(h.error).toHaveBeenCalled();
       });
     });
     describe('then method ->', function() {

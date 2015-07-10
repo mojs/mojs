@@ -120,7 +120,6 @@ class Helpers
       if exclude? then newObj[key] = obj[key] if !exclude[key]
       else newObj[key] = obj[key]
     newObj
-
   # ---
 
   # Copies keys and values from the second object to the first if

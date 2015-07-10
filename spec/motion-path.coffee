@@ -196,9 +196,10 @@ describe 'MotionPath ->', ->
 
     it 'shoud call tuneOptions if options passed', ->
       o = duration: 500
+      div = document.createElement('div')
       mp = new MotionPath(
         path:       coords
-        el:         document.createElement 'div'
+        el:         div
         isRunLess:  true
       ).then pathEnd: .5
       spyOn mp, 'tuneOptions'
@@ -1091,6 +1092,14 @@ describe 'MotionPath ->', ->
         isRunLess: true
         isPresetPosition: false
       expect(mp.el).toBe tr
+
+    it 'should nicely error to console if el wasn\'t specified', ->
+      spyOn h, 'error'
+      mp = new MotionPath
+        path: coords
+        isRunLess: true
+        isPresetPosition: false
+      expect(h.error).toHaveBeenCalled()
 
   describe 'then method ->', ->
     it 'should contribute to history on init', ->

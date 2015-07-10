@@ -1,10 +1,14 @@
 ## TODO
 
 - add delay to tween
-- add el warn on Motion Path (if wasnt specified)
-- add motion path stagger
-- ability to add a module to tween
-- add new rAF polyfill
+- add multiple arguments and nested arrays to append method
+
+- fix timeline on delay progress
+- fix the path-eathing direction calculation
+- add timeline run method
+
+- add motion path stagger 
+
 - add easing mix method
 
 - fix coverage
@@ -14,9 +18,8 @@
 - add meta balls
 - add layers
 - add states
-- add custom easing handler
-  - add path handler
-  - add spring
+- easing
+  - add spring handler
 - add shaker
 - add line trails
 - radial springs

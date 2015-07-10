@@ -1,6 +1,7 @@
 Tween    = window.mojs.Tween
 Timeline = window.mojs.Timeline
 tweener  = window.mojs.tweener
+Transit  = window.mojs.Transit
 
 describe 'Tween ->', ->
   beforeEach -> tweener.removeAll()
@@ -21,6 +22,11 @@ describe 'Tween ->', ->
       t = new Tween
       obj = t.add new Timeline
       expect(obj).toBe t
+    it 'should treat a module with tween object as a tween',->
+      t = new Tween
+      t.add new Transit
+      expect(t.timelines.length).toBe 1
+      expect(t.timelines[0] instanceof Tween).toBe true
     it 'should work with arrays of tweens',->
       t = new Tween
       t1 = new Timeline duration: 1000
@@ -99,6 +105,20 @@ describe 'Tween ->', ->
       t.append new Timeline
       expect(t.timelines.length).toBe 1
       expect(t.timelines[0] instanceof Timeline).toBe true
+    it 'should work with nested arrays', ->
+        t = new Tween
+        tm1 = new Timeline(duration: 500, delay: 500)
+        tm2 = new Timeline(duration: 500, delay: 700)
+        tm3 = new Timeline(duration: 500, delay: 700)
+        t.append tm1, [tm2, tm3]
+        expect(t.timelines.length).toBe 3
+    it 'should set the same time for all appended items', ->
+        t = new Tween
+        tm1 = new Timeline(duration: 500, delay: 500)
+        tm2 = new Timeline(duration: 500, delay: 700)
+        tm3 = new Timeline(duration: 500, delay: 700)
+        t.append tm1, [tm2, tm3]
+        expect(t.props.totalTime).toBe 1200
     it 'should delay the timeline to duration',->
       t = new Tween
       t.add new Timeline duration: 1000, delay: 200
@@ -121,12 +141,12 @@ describe 'Tween ->', ->
       t = new Tween
       t.append new Timeline duration: 1000, delay: 200
       expect(t.timelines.length).toBe 1
-    # it 'should work with multiple arguments',->
-    #   t = new Tween isIt: true
-    #   tm1 = new Timeline(duration: 500, delay: 500)
-    #   tm2 = new Timeline(duration: 500, delay: 700)
-    #   t.append tm1, tm2
-    #   expect(t.timelines.length).toBe 2
+    it 'should work with multiple arguments',->
+      t = new Tween isIt: true
+      tm1 = new Timeline(duration: 500, delay: 500)
+      tm2 = new Timeline(duration: 500, delay: 700)
+      t.append tm1, tm2
+      expect(t.timelines.length).toBe 2
     it 'should work with array and set the indexes',->
       t = new Tween
       t.add new Timeline duration: 1000, delay: 200
@@ -383,9 +403,10 @@ describe 'Tween ->', ->
       expect(isRightScope).toBe(true)
   describe 'update method ->', ->
     it 'should update the current time on every timeline',->
-      t = new Tween
+      t = new Tween isIt: true
       t.add new Timeline duration: 500, delay: 200
       t.add new Timeline duration: 500, delay: 100
+      t.start()
       spyOn t.timelines[0], 'update'
       spyOn t.timelines[1], 'update'
       t.update time = performance.now() + 200
@@ -426,6 +447,31 @@ describe 'Tween ->', ->
       expect(ti2.update).toHaveBeenCalledWith time
       expect(ti3.update).toHaveBeenCalledWith time
       expect(ti4.update).toHaveBeenCalledWith time
+
+  describe '_updateTimelines method', ->
+    it 'should set time to timelines', ->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.setStartTime()
+      time = t.props.startTime + 200
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      t._updateTimelines(time)
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
+
+    it 'should set time to timelines with respect to repeat option', ->
+      t = new Tween repeat: 2
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.setStartTime()
+      time = t.props.startTime + 200
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      t._updateTimelines(time+1400)
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
 
   describe 'setProgress method ->', ->
     it 'should call the update on every child with progress time', ->
