@@ -24,6 +24,45 @@
       t = new Tween;
       return expect(t.state).toBe('stop');
     });
+    describe('defaults ->', function() {
+      return it('should have defaults', function() {
+        var t;
+        t = new Tween;
+        expect(t.defaults.repeat).toBe(0);
+        expect(t.defaults.delay).toBe(0);
+        return expect(typeof t.props).toBe('object');
+      });
+    });
+    describe('_extendDefaults method', function() {
+      it('should extend defaults by options #1', function() {
+        var t;
+        t = new Tween({
+          delay: 200
+        });
+        expect(t.props.delay).toBe(200);
+        expect(t.props.repeat).toBe(0);
+        return expect(t.props.totalTime).toBe(0);
+      });
+      it('should extend defaults by options #2', function() {
+        var t;
+        t = new Tween({
+          repeat: 2
+        });
+        expect(t.props.repeat).toBe(2);
+        expect(t.props.delay).toBe(0);
+        return expect(t.props.totalTime).toBe(0);
+      });
+      return it('should extend defaults by options #3', function() {
+        var t;
+        t = new Tween({
+          repeat: 2,
+          delay: 300
+        });
+        expect(t.props.repeat).toBe(2);
+        expect(t.props.delay).toBe(300);
+        return expect(t.props.totalTime).toBe(0);
+      });
+    });
     describe('add method ->', function() {
       it('should add timeline', function() {
         var t;
@@ -1007,7 +1046,7 @@
         return expect(t.startTimelines).toHaveBeenCalledWith(time);
       });
     });
-    return describe('time track', function() {
+    return describe('time track ->', function() {
       return it('should save the current time track', function() {
         var t;
         t = new Tween;

@@ -12,6 +12,31 @@ describe 'Tween ->', ->
   it 'should have initial state flags', ->
     t = new Tween
     expect(t.state).toBe 'stop'
+
+  describe 'defaults ->', ->
+    it 'should have defaults', ->
+      t = new Tween
+      expect(t.defaults.repeat).toBe 0
+      expect(t.defaults.delay) .toBe 0
+      expect(typeof t.props)   .toBe 'object'
+
+  describe '_extendDefaults method', ->
+    it 'should extend defaults by options #1', ->
+      t = new Tween delay: 200
+      expect(t.props.delay)    .toBe 200
+      expect(t.props.repeat)   .toBe 0
+      expect(t.props.totalTime).toBe 0
+    it 'should extend defaults by options #2', ->
+      t = new Tween repeat: 2
+      expect(t.props.repeat)   .toBe 2
+      expect(t.props.delay)    .toBe 0
+      expect(t.props.totalTime).toBe 0
+    it 'should extend defaults by options #3', ->
+      t = new Tween repeat: 2, delay: 300
+      expect(t.props.repeat)   .toBe 2
+      expect(t.props.delay)    .toBe 300
+      expect(t.props.totalTime).toBe 0
+
   describe 'add method ->', ->
     it 'should add timeline',->
       t = new Tween
@@ -550,12 +575,18 @@ describe 'Tween ->', ->
       t.setStartTime time
       expect(t.startTimelines).toHaveBeenCalledWith time
 
-  describe 'time track', ->
+  describe 'time track ->', ->
     it 'should save the current time track', ->
       t   = new Tween
       t.add new Timeline duration: 500
       t.setProgress .5
       expect(t.prevTime).toBe t.props.startTime + 250
+
+  # describe 'delay option ->', ->
+  #   it 'should add self delay to all the child tweens', ->
+  #     t = new Tween delay: 200 isIt: true
+  #     t.add new Timeline delay: 400
+  #     expect(t.timelines[0].o.delay).toBe 600
 
 
       

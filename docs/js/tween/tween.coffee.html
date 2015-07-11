@@ -37,7 +37,10 @@ t = <span class="hljs-built_in">require</span> <span class="hljs-string">'./twee
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Tween</span></span>
   <span class="hljs-attribute">state</span>: <span class="hljs-string">'stop'</span>
-  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-property">@vars</span>(); @
+  <span class="hljs-attribute">defaults</span>:
+    <span class="hljs-attribute">repeat</span>: <span class="hljs-number">0</span>
+    <span class="hljs-attribute">delay</span>:  <span class="hljs-number">0</span>
+  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-property">@vars</span>(); <span class="hljs-property">@_extendDefaults</span>(); @
   <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@timelines</span> = []; <span class="hljs-property">@props</span> = <span class="hljs-attribute">totalTime</span>: <span class="hljs-number">0</span>
     <span class="hljs-property">@loop</span> = h.bind <span class="hljs-property">@loop</span>, @
@@ -68,7 +71,33 @@ t = <span class="hljs-built_in">require</span> <span class="hljs-string">'./twee
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span> <span class="hljs-property">@pushTimeline</span> tm
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span> <span class="hljs-property">@pushTimeline</span> tm</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>Method to extend defaults by options and save
+the result to props object</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_extendDefaults</span>:<span class="hljs-function">-&gt;</span>
+    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> <span class="hljs-property">@defaults</span>
+      <span class="hljs-property">@props</span>[key] = <span class="hljs-keyword">if</span> <span class="hljs-property">@o</span>[key]? <span class="hljs-keyword">then</span> <span class="hljs-property">@o</span>[key] <span class="hljs-keyword">else</span> value
+
   <span class="hljs-attribute">pushTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span></div></div>
       
       </div>
@@ -82,14 +111,57 @@ t = <span class="hljs-built_in">require</span> <span class="hljs-string">'./twee
       
       
         <div class="code"><div class="wrapper">    timeline = timeline.tween <span class="hljs-keyword">if</span> timeline.tween <span class="hljs-keyword">instanceof</span> Tween
-    <span class="hljs-property">@timelines</span>.push timeline
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+ o timeline.setProp delay: timeline.o.delay + myDelay
+</span></p>
+<p>add self delay to the timeline</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@timelines</span>.push timeline
     <span class="hljs-property">@props</span>.time      = Math.max timeline.props.totalTime, <span class="hljs-property">@props</span>.totalTime
     <span class="hljs-property">@props</span>.totalTime = <span class="hljs-property">@props</span>.time*(<span class="hljs-property">@o</span>.repeat <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>)
   <span class="hljs-attribute">remove</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
     index = <span class="hljs-property">@timelines</span>.indexOf timeline
     <span class="hljs-keyword">if</span> index <span class="hljs-keyword">isnt</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@timelines</span>.splice index, <span class="hljs-number">1</span>
-  
-  <span class="hljs-attribute">append</span>:<span class="hljs-function"><span class="hljs-params">(timeline...)</span>-&gt;</span>
+  </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to append the tween to the end of the
+timeline. Each argument is treated as a new 
+append. Array of tweens is treated as a parallel
+sequence. </p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Tween</code> must be an Object, Array.</strong><br/>(to append or array of such.)</li>
+</ul>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">append</span>:<span class="hljs-function"><span class="hljs-params">(timeline...)</span>-&gt;</span>
     <span class="hljs-keyword">for</span> tm, i <span class="hljs-keyword">in</span> timeline
       <span class="hljs-keyword">if</span> h.isArray(tm) <span class="hljs-keyword">then</span> <span class="hljs-property">@_appendTimelineArray</span>(tm)
       <span class="hljs-keyword">else</span> <span class="hljs-property">@appendTimeline</span>(tm, <span class="hljs-property">@timelines</span>.length)

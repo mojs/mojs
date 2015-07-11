@@ -3,7 +3,10 @@ t = require './tweener'
 
 class Tween
   state: 'stop'
-  constructor:(@o={})-> @vars(); @
+  defaults:
+    repeat: 0
+    delay:  0
+  constructor:(@o={})-> @vars(); @_extendDefaults(); @
   vars:->
     @timelines = []; @props = totalTime: 0
     @loop = h.bind @loop, @
@@ -15,9 +18,22 @@ class Tween
       if h.isArray tm then @pushTimelineArray tm
       # simple push
       else @pushTimeline tm
+  # ---
+
+  # Method to extend defaults by options and save
+  # the result to props object
+  _extendDefaults:->
+    for key, value of @defaults
+      @props[key] = if @o[key]? then @o[key] else value
+
   pushTimeline:(timeline)->
     # if timeline is a module with tween property then extract it
     timeline = timeline.tween if timeline.tween instanceof Tween
+
+    # add self delay to the timeline
+    # myDelay = (if @o.delay? then @o.delay else 0)
+    # timeline.setProp delay: timeline.o.delay + myDelay
+
     @timelines.push timeline
     @props.time      = Math.max timeline.props.totalTime, @props.totalTime
     @props.totalTime = @props.time*(@o.repeat or 1)
@@ -25,6 +41,13 @@ class Tween
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
   
+  # ---
+
+  # Method to append the tween to the end of the
+  # timeline. Each argument is treated as a new 
+  # append. Array of tweens is treated as a parallel
+  # sequence. 
+  # @param {Object, Array} Tween to append or array of such.
   append:(timeline...)->
     for tm, i in timeline
       if h.isArray(tm) then @_appendTimelineArray(tm)

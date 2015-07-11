@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.128.3 
+	0.128.4 
 */
 
 (function(f){
@@ -1341,7 +1341,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.129.0',
+  revision: '0.128.4',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3952,9 +3952,15 @@ t = require('./tweener');
 Tween = (function() {
   Tween.prototype.state = 'stop';
 
+  Tween.prototype.defaults = {
+    repeat: 0,
+    delay: 0
+  };
+
   function Tween(o) {
     this.o = o != null ? o : {};
     this.vars();
+    this._extendDefaults();
     this;
   }
 
@@ -3984,6 +3990,17 @@ Tween = (function() {
       } else {
         results.push(this.pushTimeline(tm));
       }
+    }
+    return results;
+  };
+
+  Tween.prototype._extendDefaults = function() {
+    var key, ref, results, value;
+    ref = this.defaults;
+    results = [];
+    for (key in ref) {
+      value = ref[key];
+      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
     }
     return results;
   };

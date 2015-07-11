@@ -1,16 +1,17 @@
 ## TODO
 
 - add delay to tween
-- add multiple arguments and nested arrays to append method
-
+- add extend defaults functionality to tween
+---
 - fix timeline on delay progress
 - fix the path-eathing direction calculation
 - add timeline run method
-
+- swap tween and timline names
+---
 - add motion path stagger 
-
+---
 - add easing mix method
-
+---
 - fix coverage
 - release
   - docs
