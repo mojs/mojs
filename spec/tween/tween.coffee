@@ -20,7 +20,7 @@ describe 'Tween ->', ->
       expect(t.defaults.delay) .toBe 0
       expect(typeof t.props)   .toBe 'object'
 
-  describe '_extendDefaults method', ->
+  describe '_extendDefaults method ->', ->
     it 'should extend defaults by options #1', ->
       t = new Tween delay: 200
       expect(t.props.delay)    .toBe 200
@@ -36,6 +36,17 @@ describe 'Tween ->', ->
       expect(t.props.repeat)   .toBe 2
       expect(t.props.delay)    .toBe 300
       expect(t.props.totalTime).toBe 0
+
+  describe '_setProp method ->', ->
+    it 'should set a prop to the props object', ->
+      t = new Tween repeat: 4
+      t._setProp repeat: 8
+      expect(t.props.repeat).toBe 8
+    it 'should call recalcDuration method', ->
+      t = new Tween repeat: 4
+      spyOn t, 'recalcDuration'
+      t._setProp repeat: 8
+      expect(t.recalcDuration).toHaveBeenCalled()
 
   describe 'add method ->', ->
     it 'should add timeline',->
@@ -106,11 +117,11 @@ describe 'Tween ->', ->
     it 'should increase totalTime', ->
       t = new Tween repeat: 2
       t.add new Timeline duration: 200
-      expect(t.props.totalTime).toBe 400
+      expect(t.props.totalTime).toBe 600
       expect(t.props.time)     .toBe 200
 
     it 'should set nearest start time', ->
-      t = new Tween repeat: 2
+      t = new Tween repeat: 1
       t.add new Timeline duration: 200
       t.setProgress .6
       expect(t.timelines[0].progress).toBe .2
@@ -496,7 +507,7 @@ describe 'Tween ->', ->
       expect(t.timelines[1].update).toHaveBeenCalledWith time
 
     it 'should set time to timelines with respect to repeat option', ->
-      t = new Tween repeat: 2
+      t = new Tween repeat: 1
       t.add new Timeline duration: 500, delay: 200
       t.add new Timeline duration: 500, delay: 100
       t.setStartTime()
@@ -581,6 +592,26 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 500
       t.setProgress .5
       expect(t.prevTime).toBe t.props.startTime + 250
+
+  describe 'recalcDuration method ->', ->
+    it 'should recalc duration', ->
+      t   = new Tween
+      t.add new Timeline duration: 500
+      t.recalcDuration()
+      expect(t.props.time).toBe 500
+      expect(t.props.totalTime).toBe 500
+    it 'should recalc duration with parallel tweens', ->
+      t   = new Tween
+      tm1 = new Timeline duration: 500
+      tm2 = new Timeline delay: 500, duration: 700
+      tm3 = new Timeline duration: 800
+      tm4 = new Timeline delay: 1500, duration: 500
+      t.add tm1, [tm2, tm3], tm4
+      time = t.props.time
+      totalTime = t.props.totalTime
+      t.recalcDuration()
+      expect(t.props.time).toBe time
+      expect(t.props.totalTime).toBe totalTime
 
   # describe 'delay option ->', ->
   #   it 'should add self delay to all the child tweens', ->

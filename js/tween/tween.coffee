@@ -25,6 +25,13 @@ class Tween
   _extendDefaults:->
     for key, value of @defaults
       @props[key] = if @o[key]? then @o[key] else value
+  # ---
+
+  # Method to add a prop to the props object.
+  _setProp:(props)->
+    for key, value of props
+      @props[key] = value
+    @recalcDuration()
 
   pushTimeline:(timeline)->
     # if timeline is a module with tween property then extract it
@@ -36,7 +43,7 @@ class Tween
 
     @timelines.push timeline
     @props.time      = Math.max timeline.props.totalTime, @props.totalTime
-    @props.totalTime = @props.time*(@o.repeat or 1)
+    @props.totalTime = @props.time*(@props.repeat + 1)
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
@@ -64,7 +71,8 @@ class Tween
     len = @timelines.length; @props.totalTime = 0
     while(len--)
       timeline  = @timelines[len]
-      @props.totalTime = Math.max timeline.props.totalTime, @props.totalTime
+      @props.time = Math.max timeline.props.totalTime, @props.totalTime
+      @props.totalTime = @props.time*(@props.repeat+1)
   # ---
 
   # Method to take care of the current time.

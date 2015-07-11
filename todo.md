@@ -1,7 +1,6 @@
 ## TODO
 
 - add delay to tween
-- add extend defaults functionality to tween
 ---
 - fix timeline on delay progress
 - fix the path-eathing direction calculation

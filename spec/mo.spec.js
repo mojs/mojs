@@ -4024,13 +4024,22 @@ Tween = (function() {
     return results;
   };
 
+  Tween.prototype._setProp = function(props) {
+    var key, value;
+    for (key in props) {
+      value = props[key];
+      this.props[key] = value;
+    }
+    return this.recalcDuration();
+  };
+
   Tween.prototype.pushTimeline = function(timeline) {
     if (timeline.tween instanceof Tween) {
       timeline = timeline.tween;
     }
     this.timelines.push(timeline);
     this.props.time = Math.max(timeline.props.totalTime, this.props.totalTime);
-    return this.props.totalTime = this.props.time * (this.o.repeat || 1);
+    return this.props.totalTime = this.props.time * (this.props.repeat + 1);
   };
 
   Tween.prototype.remove = function(timeline) {
@@ -4085,7 +4094,8 @@ Tween = (function() {
     results = [];
     while (len--) {
       timeline = this.timelines[len];
-      results.push(this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime));
+      this.props.time = Math.max(timeline.props.totalTime, this.props.totalTime);
+      results.push(this.props.totalTime = this.props.time * (this.props.repeat + 1));
     }
     return results;
   };

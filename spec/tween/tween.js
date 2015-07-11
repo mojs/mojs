@@ -33,7 +33,7 @@
         return expect(typeof t.props).toBe('object');
       });
     });
-    describe('_extendDefaults method', function() {
+    describe('_extendDefaults method ->', function() {
       it('should extend defaults by options #1', function() {
         var t;
         t = new Tween({
@@ -61,6 +61,29 @@
         expect(t.props.repeat).toBe(2);
         expect(t.props.delay).toBe(300);
         return expect(t.props.totalTime).toBe(0);
+      });
+    });
+    describe('_setProp method ->', function() {
+      it('should set a prop to the props object', function() {
+        var t;
+        t = new Tween({
+          repeat: 4
+        });
+        t._setProp({
+          repeat: 8
+        });
+        return expect(t.props.repeat).toBe(8);
+      });
+      return it('should call recalcDuration method', function() {
+        var t;
+        t = new Tween({
+          repeat: 4
+        });
+        spyOn(t, 'recalcDuration');
+        t._setProp({
+          repeat: 8
+        });
+        return expect(t.recalcDuration).toHaveBeenCalled();
       });
     });
     describe('add method ->', function() {
@@ -185,13 +208,13 @@
         t.add(new Timeline({
           duration: 200
         }));
-        expect(t.props.totalTime).toBe(400);
+        expect(t.props.totalTime).toBe(600);
         return expect(t.props.time).toBe(200);
       });
       it('should set nearest start time', function() {
         var t;
         t = new Tween({
-          repeat: 2
+          repeat: 1
         });
         t.add(new Timeline({
           duration: 200
@@ -904,7 +927,7 @@
       return it('should set time to timelines with respect to repeat option', function() {
         var t, time;
         t = new Tween({
-          repeat: 2
+          repeat: 1
         });
         t.add(new Timeline({
           duration: 500,
@@ -1046,7 +1069,7 @@
         return expect(t.startTimelines).toHaveBeenCalledWith(time);
       });
     });
-    return describe('time track ->', function() {
+    describe('time track ->', function() {
       return it('should save the current time track', function() {
         var t;
         t = new Tween;
@@ -1055,6 +1078,42 @@
         }));
         t.setProgress(.5);
         return expect(t.prevTime).toBe(t.props.startTime + 250);
+      });
+    });
+    return describe('recalcDuration method ->', function() {
+      it('should recalc duration', function() {
+        var t;
+        t = new Tween;
+        t.add(new Timeline({
+          duration: 500
+        }));
+        t.recalcDuration();
+        expect(t.props.time).toBe(500);
+        return expect(t.props.totalTime).toBe(500);
+      });
+      return it('should recalc duration with parallel tweens', function() {
+        var t, time, tm1, tm2, tm3, tm4, totalTime;
+        t = new Tween;
+        tm1 = new Timeline({
+          duration: 500
+        });
+        tm2 = new Timeline({
+          delay: 500,
+          duration: 700
+        });
+        tm3 = new Timeline({
+          duration: 800
+        });
+        tm4 = new Timeline({
+          delay: 1500,
+          duration: 500
+        });
+        t.add(tm1, [tm2, tm3], tm4);
+        time = t.props.time;
+        totalTime = t.props.totalTime;
+        t.recalcDuration();
+        expect(t.props.time).toBe(time);
+        return expect(t.props.totalTime).toBe(totalTime);
       });
     });
   });
