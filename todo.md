@@ -1,8 +1,6 @@
 ## TODO
 
-- add delay to tween
----
-- fix timeline on delay progress
+- fix timeline on delay progress (now is 0)
 - fix the path-eathing direction calculation
 - add timeline run method
 - swap tween and timline names

@@ -37,15 +37,15 @@ describe 'Tween ->', ->
       expect(t.props.delay)    .toBe 300
       expect(t.props.totalTime).toBe 0
 
-  describe '_setProp method ->', ->
+  describe 'setProp method ->', ->
     it 'should set a prop to the props object', ->
       t = new Tween repeat: 4
-      t._setProp repeat: 8
+      t.setProp repeat: 8
       expect(t.props.repeat).toBe 8
     it 'should call recalcDuration method', ->
       t = new Tween repeat: 4
       spyOn t, 'recalcDuration'
-      t._setProp repeat: 8
+      t.setProp repeat: 8
       expect(t.recalcDuration).toHaveBeenCalled()
 
   describe 'add method ->', ->
@@ -121,10 +121,10 @@ describe 'Tween ->', ->
       expect(t.props.time)     .toBe 200
 
     it 'should set nearest start time', ->
-      t = new Tween repeat: 1
+      t = new Tween repeat: 2
       t.add new Timeline duration: 200
       t.setProgress .6
-      expect(t.timelines[0].progress).toBe .2
+      expect(t.timelines[0].progress).toBe .8
 
     it 'should end at 1', (dfr)->
       t = new Tween repeat: 2
@@ -505,16 +505,37 @@ describe 'Tween ->', ->
       t._updateTimelines(time)
       expect(t.timelines[0].update).toHaveBeenCalledWith time
       expect(t.timelines[1].update).toHaveBeenCalledWith time
-
-    it 'should set time to timelines with respect to repeat option', ->
-      t = new Tween repeat: 1
+    it 'should pass the endTime if the progress is much further', ->
+      t = new Tween
       t.add new Timeline duration: 500, delay: 200
       t.add new Timeline duration: 500, delay: 100
       t.setStartTime()
       time = t.props.startTime + 200
       spyOn t.timelines[0], 'update'
       spyOn t.timelines[1], 'update'
-      t._updateTimelines(time+1400)
+      t._updateTimelines(time+(5*t.props.time))
+      expect(t.timelines[0].update).toHaveBeenCalledWith t.props.endTime
+      expect(t.timelines[1].update).toHaveBeenCalledWith t.props.endTime
+    it 'should set time to timelines with respect to repeat option', ->
+      t = new Tween repeat: 1
+      t.add new Timeline delay: 200, duration: 500
+      t.add new Timeline delay: 100, duration: 500
+      t.setStartTime()
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      time = t.props.startTime + t.timelines[0].props.delay
+      t._updateTimelines(time+t.props.time)
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
+    it 'should set time to timelines with repeat and delay option', ->
+      t = new Tween repeat: 1, delay: 500
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.setStartTime()
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      time = t.props.startTime + t.timelines[0].props.delay
+      t._updateTimelines(time + t.props.time + t.props.delay)
       expect(t.timelines[0].update).toHaveBeenCalledWith time
       expect(t.timelines[1].update).toHaveBeenCalledWith time
 
@@ -613,11 +634,27 @@ describe 'Tween ->', ->
       expect(t.props.time).toBe time
       expect(t.props.totalTime).toBe totalTime
 
-  # describe 'delay option ->', ->
-  #   it 'should add self delay to all the child tweens', ->
-  #     t = new Tween delay: 200 isIt: true
-  #     t.add new Timeline delay: 400
-  #     expect(t.timelines[0].o.delay).toBe 600
+  describe 'delay option ->', ->
+    it 'should add self delay to all the child tweens', ->
+      t = new Tween delay: 200
+      t.add new Timeline delay: 400
+      expect(t.timelines[0].o.delay).toBe 600
+    it 'should add self delay to all the child tweens with arrays', ->
+      t = new Tween delay: 200
+      tm1 = new Timeline delay: 400
+      tm2 = new Timeline delay: 400
+      tm3 = new Timeline delay: 1000
+      t.add tm1, [tm2, tm3]
+      expect(t.timelines[0].o.delay).toBe 600
+      expect(t.timelines[1].o.delay).toBe 600
+      expect(t.timelines[2].o.delay).toBe 1200
+    it 'should add self delay to all the child tweens when append', ->
+      t = new Tween delay: 200
+      t.add new Timeline delay: 400, duration: 500
+      t.append new Timeline delay: 400
+      expect(t.timelines[1].o.delay).toBe 1500
+
+
 
 
       

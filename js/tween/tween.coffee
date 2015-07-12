@@ -8,7 +8,7 @@ class Tween
     delay:  0
   constructor:(@o={})-> @vars(); @_extendDefaults(); @
   vars:->
-    @timelines = []; @props = totalTime: 0
+    @timelines = []; @props = totalTime: 0, time: 0
     @loop = h.bind @loop, @
     @onUpdate = @o.onUpdate
   add:(args...)-> @pushTimelineArray(args); @
@@ -28,26 +28,23 @@ class Tween
   # ---
 
   # Method to add a prop to the props object.
-  _setProp:(props)->
+  setProp:(props)->
     for key, value of props
       @props[key] = value
     @recalcDuration()
 
-  pushTimeline:(timeline)->
+  pushTimeline:(timeline, delay)->
     # if timeline is a module with tween property then extract it
     timeline = timeline.tween if timeline.tween instanceof Tween
-
     # add self delay to the timeline
-    # myDelay = (if @o.delay? then @o.delay else 0)
-    # timeline.setProp delay: timeline.o.delay + myDelay
-
+    delay ?= (timeline.o.delay + @props.delay)
+    timeline.setProp delay: delay
     @timelines.push timeline
-    @props.time      = Math.max timeline.props.totalTime, @props.totalTime
+    @props.time      = Math.max timeline.props.totalTime, @props.time
     @props.totalTime = @props.time*(@props.repeat + 1)
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
-  
   # ---
 
   # Method to append the tween to the end of the
@@ -64,8 +61,7 @@ class Tween
     @appendTimeline(timelineArray[i], index, time) while(i--)
   appendTimeline:(timeline, index, time)->
     delay = timeline.o.delay + (if time? then time else @props.totalTime)
-    timeline.setProp(delay: delay); timeline.index = index
-    @pushTimeline timeline
+    timeline.index = index; @pushTimeline timeline, delay
 
   recalcDuration:->
     len = @timelines.length; @props.totalTime = 0
@@ -93,6 +89,21 @@ class Tween
     # performance purposes
     return @_checkCallbacks(time)
   # ---
+  # 
+  # Method to set time on timelines,
+  # with respect to repeat periods **if present**
+  # @param {Number} Time to set
+  _updateTimelines:(time)->
+    # get elapsed with respect to repeat option
+    # so take a modulo of the elapsed time
+    elapsed = (time - @props.startTime) % @props.time
+    # get the time for timelines
+    timeToTimelines = if time >= @props.endTime then @props.endTime
+    else @props.startTime + elapsed
+    # set the normalized time to the timelines
+    i = -1; len = @timelines.length-1
+    @timelines[i].update(timeToTimelines) while(i++ < len)
+  # ---
 
   # Method to check the callbacks
   # for the current time
@@ -109,21 +120,6 @@ class Tween
     # if completed
     if time is @props.endTime
       @onUpdate?(1); @o.onComplete?.apply(@); return true
-  # ---
-  # 
-  # Method to set time on timelines,
-  # with respect to repeat periods **if present**
-  # @param {Number} Time to set
-  _updateTimelines:(time)->
-    # get elapsed with respect to repeat option
-    # so take a modulo of the elapsed time
-    elapsed = (time - @props.startTime) % @props.time
-    # get the time for timelines
-    timeToTimelines = if @props.endTime is time then @props.endTime
-    else @props.startTime + elapsed
-    # set the normalized time to the timelines
-    i = -1; len = @timelines.length-1
-    @timelines[i].update(timeToTimelines) while(i++ < len)
   
   startTimelines:(time)->
     i = @timelines.length

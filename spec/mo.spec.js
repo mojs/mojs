@@ -1339,7 +1339,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.128.4',
+  revision: '0.129.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3986,7 +3986,8 @@ Tween = (function() {
   Tween.prototype.vars = function() {
     this.timelines = [];
     this.props = {
-      totalTime: 0
+      totalTime: 0,
+      time: 0
     };
     this.loop = h.bind(this.loop, this);
     return this.onUpdate = this.o.onUpdate;
@@ -4024,7 +4025,7 @@ Tween = (function() {
     return results;
   };
 
-  Tween.prototype._setProp = function(props) {
+  Tween.prototype.setProp = function(props) {
     var key, value;
     for (key in props) {
       value = props[key];
@@ -4033,12 +4034,18 @@ Tween = (function() {
     return this.recalcDuration();
   };
 
-  Tween.prototype.pushTimeline = function(timeline) {
+  Tween.prototype.pushTimeline = function(timeline, delay) {
     if (timeline.tween instanceof Tween) {
       timeline = timeline.tween;
     }
+    if (delay == null) {
+      delay = timeline.o.delay + this.props.delay;
+    }
+    timeline.setProp({
+      delay: delay
+    });
     this.timelines.push(timeline);
-    this.props.time = Math.max(timeline.props.totalTime, this.props.totalTime);
+    this.props.time = Math.max(timeline.props.totalTime, this.props.time);
     return this.props.totalTime = this.props.time * (this.props.repeat + 1);
   };
 
@@ -4080,11 +4087,8 @@ Tween = (function() {
   Tween.prototype.appendTimeline = function(timeline, index, time) {
     var delay;
     delay = timeline.o.delay + (time != null ? time : this.props.totalTime);
-    timeline.setProp({
-      delay: delay
-    });
     timeline.index = index;
-    return this.pushTimeline(timeline);
+    return this.pushTimeline(timeline, delay);
   };
 
   Tween.prototype.recalcDuration = function() {
@@ -4106,6 +4110,19 @@ Tween = (function() {
     }
     this._updateTimelines(time);
     return this._checkCallbacks(time);
+  };
+
+  Tween.prototype._updateTimelines = function(time) {
+    var elapsed, i, len, results, timeToTimelines;
+    elapsed = (time - this.props.startTime) % this.props.time;
+    timeToTimelines = time >= this.props.endTime ? this.props.endTime : this.props.startTime + elapsed;
+    i = -1;
+    len = this.timelines.length - 1;
+    results = [];
+    while (i++ < len) {
+      results.push(this.timelines[i].update(timeToTimelines));
+    }
+    return results;
   };
 
   Tween.prototype._checkCallbacks = function(time) {
@@ -4130,19 +4147,6 @@ Tween = (function() {
       }
       return true;
     }
-  };
-
-  Tween.prototype._updateTimelines = function(time) {
-    var elapsed, i, len, results, timeToTimelines;
-    elapsed = (time - this.props.startTime) % this.props.time;
-    timeToTimelines = this.props.endTime === time ? this.props.endTime : this.props.startTime + elapsed;
-    i = -1;
-    len = this.timelines.length - 1;
-    results = [];
-    while (i++ < len) {
-      results.push(this.timelines[i].update(timeToTimelines));
-    }
-    return results;
   };
 
   Tween.prototype.startTimelines = function(time) {
