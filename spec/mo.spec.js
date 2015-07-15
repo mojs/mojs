@@ -1336,10 +1336,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs, timeline, tw;
+var mojs;
 
 mojs = {
-  revision: '0.129.1',
+  revision: '0.129.2',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1366,26 +1366,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-tw = new mojs.Tween({
-  repeat: 2,
-  delay: 3000,
-  onComplete: function() {
-    return console.log('comple');
-  }
-});
-
-timeline = new mojs.Timeline({
-  isIt: true,
-  duration: 2000,
-  onUpdate: function(p) {
-    return console.log(p);
-  }
-});
-
-tw.add(timeline);
-
-tw.start();
 
 
 /* istanbul ignore next */
@@ -4181,8 +4161,7 @@ Tween = (function() {
 
   Tween.prototype.start = function(time) {
     this.setStartTime(time);
-    !time && t.add(this);
-    this.state = 'play';
+    !time && (t.add(this), this.state = 'play');
     return this;
   };
 
@@ -4211,7 +4190,7 @@ Tween = (function() {
 
   Tween.prototype.setStartTime = function(time) {
     var ref;
-    this.getDimentions();
+    this.getDimentions(time);
     if ((ref = this.o.onStart) != null) {
       ref.apply(this);
     }
@@ -4227,7 +4206,8 @@ Tween = (function() {
     return this.update(this.props.startTime + progress * this.props.totalTime);
   };
 
-  Tween.prototype.getDimentions = function() {
+  Tween.prototype.getDimentions = function(time) {
+    this.props.startTime = (time != null ? time : performance.now()) + this.props.delay;
     this.props.startTime = performance.now() + this.props.delay;
     return this.props.endTime = this.props.startTime + this.props.totalTime;
   };

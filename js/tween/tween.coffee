@@ -102,6 +102,7 @@ class Tween
       if time >= @props.endTime then @props.endTime
       else startPoint + elapsed
     else
+
       if time > @props.startTime + @props.time
         @props.startTime + @props.time
       else null
@@ -132,7 +133,7 @@ class Tween
     @timelines[i].start(time or @props.startTime) while(i--)
 
   start:(time)->
-    @setStartTime(time); !time and t.add(@); @state = 'play'
+    @setStartTime(time); !time and (t.add(@); @state = 'play')
     @
   
   pause:-> @removeFromTweener(); @state = 'pause'; @
@@ -141,14 +142,15 @@ class Tween
   removeFromTweener:-> t.remove(@); @
 
   setStartTime:(time)->
-    @getDimentions(); @o.onStart?.apply(@); @startTimelines(time)
+    @getDimentions(time); @o.onStart?.apply(@); @startTimelines(time)
 
   setProgress:(progress)->
     if !@props.startTime? then @setStartTime()
     progress = Math.max progress, 0
     progress = Math.min progress, 1
     @update @props.startTime + progress*@props.totalTime
-  getDimentions:->
+  getDimentions:(time)->
+    @props.startTime = (if time? then time else performance.now()) + @props.delay
     @props.startTime = performance.now() + @props.delay
     @props.endTime = @props.startTime + @props.totalTime
 

@@ -121,7 +121,7 @@ describe 'Tween ->', ->
       expect(t.props.time)     .toBe 200
 
     it 'should set nearest start time', ->
-      t = new Tween repeat: 2, isIt: true
+      t = new Tween repeat: 2
       t.add new Timeline duration: 200
       t.setProgress .6
       expect(t.timelines[0].progress).toBe .8
@@ -446,136 +446,138 @@ describe 'Tween ->', ->
       t.add new Timeline duration: 20
       t.start()
       expect(isRightScope).toBe(true)
-  # describe 'update method ->', ->
-  #   it 'should update the current time on every timeline',->
-  #     t = new Tween
-  #     t.add new Timeline duration: 500, delay: 200
-  #     t.add new Timeline duration: 500, delay: 100
-  #     t.start()
-  #     spyOn t.timelines[0], 'update'
-  #     spyOn t.timelines[1], 'update'
-  #     t.update time = performance.now() + 200
-  #     expect(t.timelines[0].update).toHaveBeenCalledWith time
-  #     expect(t.timelines[1].update).toHaveBeenCalledWith time
+  describe 'update method ->', ->
+    it 'should update the current time on every timeline',->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.start()
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      t.update time = performance.now() + 200
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
 
-  #   it 'should return true is ended',->
-  #     t = new Tween
-  #     t.add new Timeline duration: 500, delay: 200
-  #     t.add new Timeline duration: 500, delay: 100
-  #     t.start()
-  #     expect(t.update(performance.now() + 2000)).toBe true
+    it 'should return true is ended',->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.start()
+      expect(t.update(performance.now() + 2000)).toBe true
 
-  #   it 'should not go further then endTime',->
-  #     t = new Tween
-  #     t.add new Timeline duration: 500, delay: 200
-  #     t.start()
-  #     t.update t.props.startTime + 1000
-  #     expect(t.prevTime).toBe t.props.endTime
+    it 'should not go further then endTime',->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.start()
+      t.update t.props.startTime + 1000
+      expect(t.prevTime).toBe t.props.endTime
 
-  #   it 'should work with tweens', ->
-  #     t  = new Tween
-  #     t1 = new Tween
-  #     t2 = new Tween
-  #     ti1 = new Timeline duration: 500, delay: 200
-  #     spyOn ti1, 'update'
-  #     ti2 = new Timeline duration: 500, delay: 100
-  #     spyOn ti2, 'update'
-  #     ti3 = new Timeline duration: 100, delay: 0
-  #     spyOn ti3, 'update'
-  #     ti4 = new Timeline duration: 800, delay: 500
-  #     spyOn ti4, 'update'
-  #     t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
-  #     t.add(t1); t.add(t2)
-  #     t.start()
-  #     t.update time = t.props.startTime + 300
-  #     expect(ti1.update).toHaveBeenCalledWith time
-  #     expect(ti2.update).toHaveBeenCalledWith time
-  #     expect(ti3.update).toHaveBeenCalledWith time
-  #     expect(ti4.update).toHaveBeenCalledWith time
+    it 'should work with tweens', ->
+      t  = new Tween
+      t1 = new Tween
+      t2 = new Tween
+      ti1 = new Timeline duration: 500, delay: 200
+      spyOn ti1, 'update'
+      ti2 = new Timeline duration: 500, delay: 100
+      spyOn ti2, 'update'
+      ti3 = new Timeline duration: 100, delay: 0
+      spyOn ti3, 'update'
+      ti4 = new Timeline duration: 800, delay: 500
+      spyOn ti4, 'update'
+      t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
+      t.add(t1); t.add(t2)
+      t.start()
+      t.update time = t.props.startTime + 300
+      expect(ti1.update).toHaveBeenCalledWith time
+      expect(ti2.update).toHaveBeenCalledWith time
+      expect(ti3.update).toHaveBeenCalledWith time
+      expect(ti4.update).toHaveBeenCalledWith time
 
-  # describe '_updateTimelines method', ->
-  #   it 'should set time to timelines', ->
-  #     t = new Tween
-  #     t.add new Timeline duration: 500, delay: 200
-  #     t.add new Timeline duration: 500, delay: 100
-  #     t.setStartTime()
-  #     time = t.props.startTime + 200
-  #     spyOn t.timelines[0], 'update'
-  #     spyOn t.timelines[1], 'update'
-  #     t._updateTimelines(time)
-  #     expect(t.timelines[0].update).toHaveBeenCalledWith time
-  #     expect(t.timelines[1].update).toHaveBeenCalledWith time
-  #   it 'should pass the endTime if the progress is much further', ->
-  #     t = new Tween
-  #     t.add new Timeline duration: 500, delay: 200
-  #     t.add new Timeline duration: 500, delay: 100
-  #     t.setStartTime()
-  #     time = t.props.startTime + 200
-  #     spyOn t.timelines[0], 'update'
-  #     spyOn t.timelines[1], 'update'
-  #     t._updateTimelines(time+(5*t.props.time))
-  #     expect(t.timelines[0].update).toHaveBeenCalledWith t.props.endTime
-  #     expect(t.timelines[1].update).toHaveBeenCalledWith t.props.endTime
+  describe '_updateTimelines method', ->
+    it 'should set time to timelines', ->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.setStartTime()
+      time = t.props.startTime + 200
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      t._updateTimelines(time)
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
+    it 'should pass the endTime if the progress is much further', ->
+      t = new Tween
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.setStartTime()
+      time = t.props.startTime + 200
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      t._updateTimelines(time+(5*t.props.time))
+      expect(t.timelines[0].update).toHaveBeenCalledWith t.props.endTime
+      expect(t.timelines[1].update).toHaveBeenCalledWith t.props.endTime
 
-  #   it 'should pass the endTime if the progress is in delay period', ->
-  #     t = new Tween delay: 200
-  #     t.add new Timeline duration: 500, delay: 200
-  #     t.add new Timeline duration: 500, delay: 100
-  #     t.setStartTime()
-  #     time = t.props.startTime - 100
-  #     spyOn t.timelines[0], 'update'
-  #     spyOn t.timelines[1], 'update'
-  #     t._updateTimelines(time)
-  #     expect(t.timelines[0].update).toHaveBeenCalledWith time
-  #     expect(t.timelines[1].update).toHaveBeenCalledWith time
+    it 'should pass the endTime if the progress is in delay period', ->
+      t = new Tween delay: 200, isIt: true
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.setStartTime()
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      time = t.props.startTime - 100
+      timeAfterPeriod = t.props.startTime+t.props.delay+t.props.time-100
+      t._updateTimelines(timeAfterPeriod)
+      timeAtOne = t.props.startTime+t.props.time
+      expect(t.timelines[0].update).toHaveBeenCalledWith timeAtOne
+      expect(t.timelines[1].update).toHaveBeenCalledWith timeAtOne
 
-  #   it 'should pass the endTime if the progress is in
-  #       subsequent delay period', ->
-  #     t = new Tween delay: 200, repeat: 2
-  #     t.add new Timeline duration: 500
-  #     t.setStartTime()
-  #     time = t.props.startTime + t.props.time + 100
-  #     spyOn t.timelines[0], 'update'
-  #     t._updateTimelines(time)
-  #     endTime = t.props.startTime + t.props.time
-  #     expect(t.timelines[0].update).toHaveBeenCalledWith endTime
+    it 'should pass the endTime if the progress is in
+        subsequent delay period', ->
+      t = new Tween delay: 200, repeat: 2
+      t.add new Timeline duration: 500
+      t.setStartTime()
+      time = t.props.startTime + t.props.time + 100
+      spyOn t.timelines[0], 'update'
+      t._updateTimelines(time)
+      endTime = t.props.startTime + t.props.time
+      expect(t.timelines[0].update).toHaveBeenCalledWith endTime
 
-  #   # it 'should pass if is in self delay and repeat', ->
-  #   #   t = new Tween
-  #   #   t.add new Timeline duration: 500, delay: 200
-  #   #   t.add new Timeline duration: 500, delay: 100
-  #   #   t.setStartTime()
-  #   #   time = t.props.startTime + 200
-  #   #   spyOn t.timelines[0], 'update'
-  #   #   spyOn t.timelines[1], 'update'
-  #   #   t._updateTimelines(time+(5*t.props.time))
-  #   #   ti1Time = t.timelines[0].props.endTime
-  #   #   ti2Time = t.timelines[1].props.endTime
-  #   #   expect(t.timelines[0].update).toHaveBeenCalledWith ti1Time
-  #   #   expect(t.timelines[1].update).toHaveBeenCalledWith ti2Time
+    # it 'should pass if is in self delay and repeat', ->
+    #   t = new Tween
+    #   t.add new Timeline duration: 500, delay: 200
+    #   t.add new Timeline duration: 500, delay: 100
+    #   t.setStartTime()
+    #   time = t.props.startTime + 200
+    #   spyOn t.timelines[0], 'update'
+    #   spyOn t.timelines[1], 'update'
+    #   t._updateTimelines(time+(5*t.props.time))
+    #   ti1Time = t.timelines[0].props.endTime
+    #   ti2Time = t.timelines[1].props.endTime
+    #   expect(t.timelines[0].update).toHaveBeenCalledWith ti1Time
+    #   expect(t.timelines[1].update).toHaveBeenCalledWith ti2Time
 
-  #   it 'should set time to timelines with respect to repeat option', ->
-  #     t = new Tween repeat: 1
-  #     t.add new Timeline delay: 200, duration: 500
-  #     t.add new Timeline delay: 100, duration: 500
-  #     t.setStartTime()
-  #     spyOn t.timelines[0], 'update'
-  #     spyOn t.timelines[1], 'update'
-  #     time = t.props.startTime + t.timelines[0].props.delay
-  #     t._updateTimelines(time+t.props.time)
-  #     expect(t.timelines[0].update).toHaveBeenCalledWith time
-  #     expect(t.timelines[1].update).toHaveBeenCalledWith time
-  #   it 'should set time to timelines with repeat and delay option', ->
-  #     t = new Tween repeat: 1, delay: 500
-  #     t.add new Timeline duration: 500, delay: 200
-  #     t.add new Timeline duration: 500, delay: 100
-  #     t.setStartTime()
-  #     spyOn t.timelines[0], 'update'
-  #     spyOn t.timelines[1], 'update'
-  #     time = t.props.startTime + t.timelines[0].props.delay
-  #     t._updateTimelines(time + t.props.time + t.props.delay)
-  #     expect(t.timelines[0].update).toHaveBeenCalledWith time
-  #     expect(t.timelines[1].update).toHaveBeenCalledWith time
+    it 'should set time to timelines with respect to repeat option', ->
+      t = new Tween repeat: 1
+      t.add new Timeline delay: 200, duration: 500
+      t.add new Timeline delay: 100, duration: 500
+      t.setStartTime()
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      time = t.props.startTime
+      t._updateTimelines(time+t.props.time)
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
+    it 'should set time to timelines with repeat and delay option', ->
+      t = new Tween repeat: 1, delay: 500
+      t.add new Timeline duration: 500, delay: 200
+      t.add new Timeline duration: 500, delay: 100
+      t.setStartTime()
+      spyOn t.timelines[0], 'update'
+      spyOn t.timelines[1], 'update'
+      time = t.props.startTime
+      t._updateTimelines(time + t.props.time + t.props.delay)
+      expect(t.timelines[0].update).toHaveBeenCalledWith time
+      expect(t.timelines[1].update).toHaveBeenCalledWith time
 
   describe 'setProgress method ->', ->
     it 'should call the update on every child with progress time', ->
