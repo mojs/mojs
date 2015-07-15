@@ -1,11 +1,13 @@
 (function() {
-  var Timeline, easing, h;
+  var Timeline, easing, h, tweener;
 
   Timeline = window.mojs.Timeline;
 
   easing = window.mojs.easing;
 
   h = window.mojs.h;
+
+  tweener = window.mojs.tweener;
 
   describe('Timeline ->', function() {
     describe('init ->', function() {
@@ -854,7 +856,7 @@
         });
       });
     });
-    return describe('splitEasing method', function() {
+    describe('splitEasing method', function() {
       var t;
       t = new Timeline({
         duration: 100
@@ -884,6 +886,39 @@
           return console.log('function');
         };
         return expect(t.splitEasing(easing) + '').toBe(easing + '');
+      });
+    });
+    return describe('run method', function() {
+      return describe('start method ->', function() {
+        it('should get the start time', function() {
+          var t;
+          t = new Timeline;
+          t.run();
+          expect(t.props.startTime).toBeDefined();
+          return expect(t.props.endTime).toBe(t.props.startTime + t.props.totalTime);
+        });
+        it('should call the setStartTime method', function() {
+          var t, time;
+          t = new Timeline;
+          spyOn(t, 'start');
+          time = 0;
+          t.run(time);
+          return expect(t.start).toHaveBeenCalledWith(time);
+        });
+        it('should add itself to tweener', function() {
+          var t;
+          t = new Timeline;
+          spyOn(tweener, 'add');
+          t.run();
+          return expect(tweener.add).toHaveBeenCalled();
+        });
+        return it('should not add itself to tweener if time was passed', function() {
+          var t;
+          t = new Timeline;
+          spyOn(tweener, 'add');
+          t.run(10239123);
+          return expect(tweener.add).not.toHaveBeenCalled();
+        });
       });
     });
   });

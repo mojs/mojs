@@ -1339,7 +1339,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.129.2',
+  revision: '0.130.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3764,11 +3764,13 @@ Transit = (function(superClass) {
 module.exports = Transit;
 
 },{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
-var Timeline, easingModule, h;
+var Timeline, easingModule, h, t;
 
 easingModule = require('../easing');
 
 h = require('../h');
+
+t = require('./tweener');
 
 Timeline = (function() {
   Timeline.prototype.defaults = {
@@ -3954,13 +3956,23 @@ Timeline = (function() {
     }
   };
 
+  Timeline.prototype.run = function(time) {
+    this.start(time);
+    !time && ((function() {
+      return t.add(this);
+
+      /*@state = 'play' */
+    }).call(this));
+    return this;
+  };
+
   return Timeline;
 
 })();
 
 module.exports = Timeline;
 
-},{"../easing":3,"../h":4}],24:[function(require,module,exports){
+},{"../easing":3,"../h":4,"./tweener":25}],24:[function(require,module,exports){
 var Tween, h, t,
   slice = [].slice;
 

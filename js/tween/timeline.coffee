@@ -1,5 +1,6 @@
 easingModule = require '../easing'
 h            = require '../h'
+t            = require './tweener'
 
 class Timeline
   defaults:
@@ -130,6 +131,10 @@ class Timeline
       secondPart  = split[1].toLowerCase() or 'none'
       [ firstPart, secondPart ]
     else ['linear', 'none']
+
+  run:(time)->
+    @start(time); !time and (t.add(@); ###@state = 'play'###)
+    @
 
 
 module.exports = Timeline

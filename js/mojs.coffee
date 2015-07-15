@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.129.2', isDebug: true
+  revision:   '0.130.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -25,26 +25,13 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# tw = new mojs.Tween
+# tw = new mojs.Timeline
 #   repeat: 2
 #   delay: 3000
+#   onUpdate:(p)-> console.log p
 #   onComplete: -> console.log 'tw comple'
 
-# tw2 = new mojs.Tween
-#   delay: 3000
-#   # repeat: 2
-
-# tw2.add new mojs.Timeline
-#     duration: 2000
-#     onUpdate:(p)-> console.log "tm2: #{p}"
-
-# timeline = new mojs.Timeline
-#   duration: 2000
-#   onUpdate:(p)-> console.log "tm1: #{p}"
-
-# tw.add timeline, tw2
-# tw.start()
-# console.log tw.props.startTime, tw2.props.startTime
+# tw.run()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

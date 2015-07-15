@@ -37,14 +37,7 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "repeat: 2",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "repeat-2",
-      "title": "repeat: 2"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/motion-path.coffee.html",

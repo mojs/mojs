@@ -34,6 +34,7 @@
       
         <div class="code"><div class="wrapper">easingModule = <span class="hljs-built_in">require</span> <span class="hljs-string">'../easing'</span>
 h            = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
+t            = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tweener'</span>
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Timeline</span></span>
   <span class="hljs-attribute">defaults</span>:
@@ -311,6 +312,10 @@ Method <strong>splitEasing</strong>
       secondPart  = split[<span class="hljs-number">1</span>].toLowerCase() <span class="hljs-keyword">or</span> <span class="hljs-string">'none'</span>
       [ firstPart, secondPart ]
     <span class="hljs-keyword">else</span> [<span class="hljs-string">'linear'</span>, <span class="hljs-string">'none'</span>]
+
+  <span class="hljs-attribute">run</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
+    <span class="hljs-property">@start</span>(time); !time <span class="hljs-keyword">and</span> (t.add(@); <span class="hljs-comment">###@state = 'play'###</span>)
+    @
 
 
 <span class="hljs-built_in">module</span>.exports = Timeline

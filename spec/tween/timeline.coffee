@@ -1,6 +1,7 @@
 Timeline = window.mojs.Timeline
 easing   = window.mojs.easing
 h        = window.mojs.h
+tweener  = window.mojs.tweener
     
 describe 'Timeline ->', ->
   describe 'init ->', ->
@@ -526,4 +527,28 @@ describe 'Timeline ->', ->
     it 'should work with function easing', ->
       easing = -> console.log 'function'
       expect(t.splitEasing(easing)+'').toBe easing+''
+
+  describe 'run method', ->
+    describe 'start method ->', ->
+      it 'should get the start time',->
+        t = new Timeline
+        t.run()
+        expect(t.props.startTime).toBeDefined()
+        expect(t.props.endTime).toBe t.props.startTime + t.props.totalTime
+      it 'should call the setStartTime method',->
+        t = new Timeline
+        spyOn t, 'start'
+        time = 0
+        t.run time
+        expect(t.start).toHaveBeenCalledWith time
+      it 'should add itself to tweener',->
+        t = new Timeline
+        spyOn tweener, 'add'
+        t.run()
+        expect(tweener.add).toHaveBeenCalled()
+      it 'should not add itself to tweener if time was passed',->
+        t = new Timeline
+        spyOn tweener, 'add'
+        t.run 10239123
+        expect(tweener.add).not.toHaveBeenCalled()
 

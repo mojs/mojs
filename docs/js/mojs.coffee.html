@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>repeat: 2 - mojs.coffee</title>
+  <title> - mojs.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.129.2'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.130.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -64,9 +64,10 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>tw = new mojs.Tween
+          <div class="wrapper"><p>tw = new mojs.Timeline
   repeat: 2
   delay: 3000
+  onUpdate:(p)-&gt; console.log p
   onComplete: -&gt; console.log &#39;tw comple&#39;</p>
 </div>
         </div>
@@ -77,44 +78,7 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>tw2 = new mojs.Tween
-  delay: 3000</p>
-<h1 id="repeat-2"><a href="#repeat-2" class="anchor"></a>repeat: 2</h1></div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw2.add new mojs.Timeline
-    duration: 2000
-    onUpdate:(p)-&gt; console.log &quot;tm2: #{p}&quot;</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>timeline = new mojs.Timeline
-  duration: 2000
-  onUpdate:(p)-&gt; console.log &quot;tm1: #{p}&quot;</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw.add timeline, tw2
-tw.start()
-console.log tw.props.startTime, tw2.props.startTime</p>
+          <div class="wrapper"><p>tw.run()</p>
 </div>
         </div>
       
