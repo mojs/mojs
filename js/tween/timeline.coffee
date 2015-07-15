@@ -56,11 +56,14 @@ class Timeline
             # when reversed progress of 1 should be 0
             else 1-if @progress is 0 then 1 else @progress
         # we have stopped in start point + delay
-        else @setProc 0
+        # set proc to 1 if previous time is smaller
+        # then the current one, otherwise set to 0
+        else @setProc if @prevTime < time then 1 else 0
       if time < @prevTime and !@isFirstUpdateBackward
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       @onUpdate? @easedProgress
     else
+      # @o.isIt and console.log time
       if time >= @props.endTime and !@isCompleted
         @setProc 1; @onUpdate? @easedProgress
         @o.onComplete?.apply(@); @isCompleted = true
@@ -69,7 +72,9 @@ class Timeline
         @isFirstUpdate = false
       # reset isFirstUpdateBackward flag if progress went further the end time
       @isFirstUpdateBackward = false if time > @props.endTime
-    if time < @prevTime and time <= @props.startTime# and @isIt
+    # console.log time, @prevTime
+    if time < @prevTime and time <= @props.startTime
+      # @o.isIt and console.log time, @props.startTime
       if !@isFirstUpdateBackward
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       if !@isOnReverseComplete

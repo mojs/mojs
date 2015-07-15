@@ -1,9 +1,9 @@
 ## TODO
 
-- fix timeline on delay progress (now is 0)
-- fix the path-eathing direction calculation
 - add timeline run method
 - swap tween and timline names
+
+- fix the path-eathing direction calculation
 ---
 - add motion path stagger 
 ---

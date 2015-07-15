@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.129.0 
+	0.129.1 
 */
 
 (function(f){
@@ -1338,10 +1338,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs;
+var mojs, timeline, tw;
 
 mojs = {
-  revision: '0.129.0',
+  revision: '0.129.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1368,6 +1368,26 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+tw = new mojs.Tween({
+  repeat: 2,
+  delay: 3000,
+  onComplete: function() {
+    return console.log('comple');
+  }
+});
+
+timeline = new mojs.Timeline({
+  isIt: true,
+  duration: 2000,
+  onUpdate: function(p) {
+    return console.log(p);
+  }
+});
+
+tw.add(timeline);
+
+tw.start();
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -3833,7 +3853,7 @@ Timeline = (function() {
             this.setProc(cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress));
           }
         } else {
-          this.setProc(0);
+          this.setProc(this.prevTime < time ? 1 : 0);
         }
       }
       if (time < this.prevTime && !this.isFirstUpdateBackward) {
@@ -4019,15 +4039,12 @@ Tween = (function() {
     if (timeline.tween instanceof Tween) {
       timeline = timeline.tween;
     }
-    if (delay == null) {
-      delay = timeline.o.delay + this.props.delay;
-    }
-    timeline.setProp({
+    (delay != null) && timeline.setProp({
       delay: delay
     });
     this.timelines.push(timeline);
     this.props.time = Math.max(timeline.props.totalTime, this.props.time);
-    return this.props.totalTime = this.props.time * (this.props.repeat + 1);
+    return this.props.totalTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
   };
 
   Tween.prototype.remove = function(timeline) {
@@ -4094,16 +4111,19 @@ Tween = (function() {
   };
 
   Tween.prototype._updateTimelines = function(time) {
-    var elapsed, i, len, results, timeToTimelines;
-    elapsed = (time - this.props.startTime) % this.props.time;
-    timeToTimelines = time >= this.props.endTime ? this.props.endTime : this.props.startTime + elapsed;
-    i = -1;
-    len = this.timelines.length - 1;
-    results = [];
-    while (i++ < len) {
-      results.push(this.timelines[i].update(timeToTimelines));
+    var elapsed, i, len, results, startPoint, timeToTimelines;
+    startPoint = this.props.startTime - this.props.delay;
+    elapsed = (time - startPoint) % (this.props.delay + this.props.time);
+    timeToTimelines = startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
+    if (timeToTimelines != null) {
+      i = -1;
+      len = this.timelines.length - 1;
+      results = [];
+      while (i++ < len) {
+        results.push(this.timelines[i].update(timeToTimelines));
+      }
+      return results;
     }
-    return results;
   };
 
   Tween.prototype._checkCallbacks = function(time) {
@@ -4189,7 +4209,7 @@ Tween = (function() {
   };
 
   Tween.prototype.getDimentions = function() {
-    this.props.startTime = performance.now();
+    this.props.startTime = performance.now() + this.props.delay;
     return this.props.endTime = this.props.startTime + this.props.totalTime;
   };
 

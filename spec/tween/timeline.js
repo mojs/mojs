@@ -119,7 +119,7 @@
         return expect(t.isStarted).toBe(false);
       });
     });
-    describe('update time ->', function() {
+    describe('update method ->', function() {
       it('should update progress', function() {
         var t, time;
         t = new Timeline({
@@ -146,7 +146,7 @@
         t.update(t.props.startTime + 3400);
         return expect(t.progress).toBe(1);
       });
-      it('should update progress to 0 if in delay gap', function() {
+      it('should update progress to 1 if in delay gap and previous time value was smaller then the current one', function() {
         var t;
         t = new Timeline({
           duration: 1000,
@@ -154,6 +154,19 @@
           repeat: 2
         });
         t.start();
+        t.update(t.props.startTime + 300);
+        t.update(t.props.startTime + 1100);
+        return expect(t.progress).toBe(1);
+      });
+      it('should update progress to 1 if in delay gap and previous time value was bigger then the current one', function() {
+        var t;
+        t = new Timeline({
+          duration: 1000,
+          delay: 200,
+          repeat: 2
+        });
+        t.start();
+        t.update(t.props.startTime + 1300);
         t.update(t.props.startTime + 1100);
         return expect(t.progress).toBe(0);
       });

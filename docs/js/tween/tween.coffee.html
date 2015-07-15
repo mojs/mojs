@@ -147,11 +147,10 @@ the result to props object</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    delay ?= (timeline.o.delay + <span class="hljs-property">@props</span>.delay)
-    timeline.setProp <span class="hljs-attribute">delay</span>: delay
+        <div class="code"><div class="wrapper">    delay? <span class="hljs-keyword">and</span> timeline.setProp <span class="hljs-attribute">delay</span>: delay
     <span class="hljs-property">@timelines</span>.push timeline
     <span class="hljs-property">@props</span>.time      = Math.max timeline.props.totalTime, <span class="hljs-property">@props</span>.time
-    <span class="hljs-property">@props</span>.totalTime = <span class="hljs-property">@props</span>.time*(<span class="hljs-property">@props</span>.repeat + <span class="hljs-number">1</span>)
+    <span class="hljs-property">@props</span>.totalTime = (<span class="hljs-property">@props</span>.time+<span class="hljs-property">@props</span>.delay)*(<span class="hljs-property">@props</span>.repeat+<span class="hljs-number">1</span>) - <span class="hljs-property">@props</span>.delay
   <span class="hljs-attribute">remove</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
     index = <span class="hljs-property">@timelines</span>.indexOf timeline
     <span class="hljs-keyword">if</span> index <span class="hljs-keyword">isnt</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@timelines</span>.splice index, <span class="hljs-number">1</span></div></div>
@@ -298,7 +297,8 @@ so take a modulo of the elapsed time</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    elapsed = (time - <span class="hljs-property">@props</span>.startTime) % <span class="hljs-property">@props</span>.time</div></div>
+        <div class="code"><div class="wrapper">    startPoint = <span class="hljs-property">@props</span>.startTime - <span class="hljs-property">@props</span>.delay
+    elapsed = (time - startPoint) % (<span class="hljs-property">@props</span>.delay + <span class="hljs-property">@props</span>.time)</div></div>
       
       </div>
     
@@ -310,8 +310,13 @@ so take a modulo of the elapsed time</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    timeToTimelines = <span class="hljs-keyword">if</span> time &gt;= <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.endTime
-    <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.startTime + elapsed</div></div>
+        <div class="code"><div class="wrapper">    timeToTimelines = <span class="hljs-keyword">if</span> startPoint + elapsed &gt;= <span class="hljs-property">@props</span>.startTime
+      <span class="hljs-keyword">if</span> time &gt;= <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.endTime
+      <span class="hljs-keyword">else</span> startPoint + elapsed
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.time
+        <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.time
+      <span class="hljs-keyword">else</span> <span class="hljs-literal">null</span></div></div>
       
       </div>
     
@@ -323,8 +328,9 @@ so take a modulo of the elapsed time</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    i = -<span class="hljs-number">1</span>; len = <span class="hljs-property">@timelines</span>.length-<span class="hljs-number">1</span>
-    <span class="hljs-property">@timelines</span>[i].update(timeToTimelines) <span class="hljs-keyword">while</span>(i++ &lt; len)</div></div>
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> timeToTimelines?
+      i = -<span class="hljs-number">1</span>; len = <span class="hljs-property">@timelines</span>.length-<span class="hljs-number">1</span>
+      <span class="hljs-property">@timelines</span>[i].update(timeToTimelines) <span class="hljs-keyword">while</span>(i++ &lt; len)</div></div>
       
       </div>
     
@@ -426,7 +432,7 @@ for the current time</p>
     progress = Math.min progress, <span class="hljs-number">1</span>
     <span class="hljs-property">@update</span> <span class="hljs-property">@props</span>.startTime + progress*<span class="hljs-property">@props</span>.totalTime
   <span class="hljs-attribute">getDimentions</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@props</span>.startTime = performance.now()
+    <span class="hljs-property">@props</span>.startTime = performance.now() + <span class="hljs-property">@props</span>.delay
     <span class="hljs-property">@props</span>.endTime = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.totalTime
 
 <span class="hljs-built_in">module</span>.exports = Tween

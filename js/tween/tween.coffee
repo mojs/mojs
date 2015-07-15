@@ -37,11 +37,10 @@ class Tween
     # if timeline is a module with tween property then extract it
     timeline = timeline.tween if timeline.tween instanceof Tween
     # add self delay to the timeline
-    delay ?= (timeline.o.delay + @props.delay)
-    timeline.setProp delay: delay
+    delay? and timeline.setProp delay: delay
     @timelines.push timeline
     @props.time      = Math.max timeline.props.totalTime, @props.time
-    @props.totalTime = @props.time*(@props.repeat + 1)
+    @props.totalTime = (@props.time+@props.delay)*(@props.repeat+1) - @props.delay
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
@@ -96,13 +95,20 @@ class Tween
   _updateTimelines:(time)->
     # get elapsed with respect to repeat option
     # so take a modulo of the elapsed time
-    elapsed = (time - @props.startTime) % @props.time
+    startPoint = @props.startTime - @props.delay
+    elapsed = (time - startPoint) % (@props.delay + @props.time)
     # get the time for timelines
-    timeToTimelines = if time >= @props.endTime then @props.endTime
-    else @props.startTime + elapsed
+    timeToTimelines = if startPoint + elapsed >= @props.startTime
+      if time >= @props.endTime then @props.endTime
+      else startPoint + elapsed
+    else
+      if time > @props.startTime + @props.time
+        @props.startTime + @props.time
+      else null
     # set the normalized time to the timelines
-    i = -1; len = @timelines.length-1
-    @timelines[i].update(timeToTimelines) while(i++ < len)
+    if timeToTimelines?
+      i = -1; len = @timelines.length-1
+      @timelines[i].update(timeToTimelines) while(i++ < len)
   # ---
 
   # Method to check the callbacks
@@ -143,7 +149,7 @@ class Tween
     progress = Math.min progress, 1
     @update @props.startTime + progress*@props.totalTime
   getDimentions:->
-    @props.startTime = performance.now()
+    @props.startTime = performance.now() + @props.delay
     @props.endTime = @props.startTime + @props.totalTime
 
 module.exports = Tween
