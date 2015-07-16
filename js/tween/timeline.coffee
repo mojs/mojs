@@ -23,7 +23,7 @@ class Timeline
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
-    @props.startTime = (time or performance.now()) + @o.delay
+    @props.startTime = (if time? then time else performance.now()) + @o.delay
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->
@@ -31,6 +31,7 @@ class Timeline
       @isOnReverseComplete = false; @isCompleted = false
       if !@isFirstUpdate then @o.onFirstUpdate?.apply(@); @isFirstUpdate = true
       if !@isStarted then @o.onStart?.apply(@); @isStarted = true
+      
       elapsed = time - @props.startTime
       # in the first repeat or without any repeats
       if elapsed <= @o.duration then @setProc elapsed/@o.duration
@@ -62,11 +63,11 @@ class Timeline
         else @setProc if @prevTime < time then 1 else 0
       if time < @prevTime and !@isFirstUpdateBackward
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
-      @onUpdate? @easedProgress
+      # @onUpdate? @easedProgress
     else
       # @o.isIt and console.log time
       if time >= @props.endTime and !@isCompleted
-        @setProc 1; @onUpdate? @easedProgress
+        @setProc 1#; @onUpdate? @easedProgress
         @o.onComplete?.apply(@); @isCompleted = true
         @isOnReverseComplete = false
       if time > @props.endTime or time < @props.startTime
@@ -80,10 +81,15 @@ class Timeline
         @o.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       if !@isOnReverseComplete
         @isOnReverseComplete = true
-        @setProc(0); !@o.isChained and @onUpdate? @easedProgress
+        @setProc(0, !@o.isChained)#; !@o.isChained and @onUpdate? @easedProgress
         @o.onReverseComplete?.apply(@)
     @prevTime = time
-  setProc:(p)-> @progress = p; @easedProgress = @props.easing @progress
+  setProc:(p, isCallback=true)->
+    @progress = p; @easedProgress = @props.easing @progress
+    if @props.prevEasedProgress isnt @easedProgress and isCallback
+      @onUpdate?(@easedProgress)
+    @props.prevEasedProgress = @easedProgress
+
   setProp:(obj, value)->
     if typeof obj is 'object'
       for key, val of obj

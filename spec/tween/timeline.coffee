@@ -135,6 +135,16 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 200
       expect(isRightScope).toBe true
+
+    it 'should be called just once on delay', ->
+      t = new Timeline delay: 200, repeat: 2, onUpdate:->
+      spyOn(t, 'onUpdate').and.callThrough()
+      t.start()
+      t.update t.props.startTime + t.o.duration + 50
+      t.update t.props.startTime + t.o.duration + 100
+      t.update t.props.startTime + t.o.duration + 150
+      expect(t.onUpdate.calls.count()).toBe 1
+
   describe 'onStart callback ->', ->
     it 'should be defined', ->
       t = new Timeline(onStart: ->)

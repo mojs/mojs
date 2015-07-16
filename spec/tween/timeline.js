@@ -238,7 +238,7 @@
         t.update(t.props.startTime + 500);
         return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress);
       });
-      return it('should have the right scope', function() {
+      it('should have the right scope', function() {
         var isRightScope, t;
         isRightScope = false;
         t = new Timeline({
@@ -249,6 +249,20 @@
         t.start();
         t.update(t.props.startTime + 200);
         return expect(isRightScope).toBe(true);
+      });
+      return it('should be called just once on delay', function() {
+        var t;
+        t = new Timeline({
+          delay: 200,
+          repeat: 2,
+          onUpdate: function() {}
+        });
+        spyOn(t, 'onUpdate').and.callThrough();
+        t.start();
+        t.update(t.props.startTime + t.o.duration + 50);
+        t.update(t.props.startTime + t.o.duration + 100);
+        t.update(t.props.startTime + t.o.duration + 150);
+        return expect(t.onUpdate.calls.count()).toBe(1);
       });
     });
     describe('onStart callback ->', function() {

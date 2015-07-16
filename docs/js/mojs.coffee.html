@@ -57,31 +57,15 @@
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+tw = <span class="hljs-keyword">new</span> mojs.Timeline
+  <span class="hljs-attribute">repeat</span>: <span class="hljs-number">2</span>
+  <span class="hljs-attribute">delay</span>: <span class="hljs-number">3000</span>
+  <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span> <span class="hljs-built_in">console</span>.log p
+  <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">'tw comple'</span>
+
+tw.run()
 </div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw = new mojs.Timeline
-  repeat: 2
-  delay: 3000
-  onUpdate:(p)-&gt; console.log p
-  onComplete: -&gt; console.log &#39;tw comple&#39;</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tw.run()</p>
-</div>
-        </div>
-      
       
       </div>
     

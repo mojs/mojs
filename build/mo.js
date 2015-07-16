@@ -1338,7 +1338,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs;
+var mojs, tw;
 
 mojs = {
   revision: '0.130.0',
@@ -1368,6 +1368,19 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+tw = new mojs.Timeline({
+  repeat: 2,
+  delay: 3000,
+  onUpdate: function(p) {
+    return console.log(p);
+  },
+  onComplete: function() {
+    return console.log('tw comple');
+  }
+});
+
+tw.run();
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -3794,7 +3807,7 @@ Timeline = (function() {
   Timeline.prototype.start = function(time) {
     this.isCompleted = false;
     this.isStarted = false;
-    this.props.startTime = (time || performance.now()) + this.o.delay;
+    this.props.startTime = (time != null ? time : performance.now()) + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };
@@ -3844,15 +3857,9 @@ Timeline = (function() {
         }
         this.isFirstUpdateBackward = true;
       }
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate(this.easedProgress);
-      }
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
         this.setProc(1);
-        if (typeof this.onUpdate === "function") {
-          this.onUpdate(this.easedProgress);
-        }
         if ((ref3 = this.o.onComplete) != null) {
           ref3.apply(this);
         }
@@ -3875,8 +3882,7 @@ Timeline = (function() {
       }
       if (!this.isOnReverseComplete) {
         this.isOnReverseComplete = true;
-        this.setProc(0);
-        !this.o.isChained && (typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0);
+        this.setProc(0, !this.o.isChained);
         if ((ref5 = this.o.onReverseComplete) != null) {
           ref5.apply(this);
         }
@@ -3885,9 +3891,18 @@ Timeline = (function() {
     return this.prevTime = time;
   };
 
-  Timeline.prototype.setProc = function(p) {
+  Timeline.prototype.setProc = function(p, isCallback) {
+    if (isCallback == null) {
+      isCallback = true;
+    }
     this.progress = p;
-    return this.easedProgress = this.props.easing(this.progress);
+    this.easedProgress = this.props.easing(this.progress);
+    if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(this.easedProgress);
+      }
+    }
+    return this.props.prevEasedProgress = this.easedProgress;
   };
 
   Timeline.prototype.setProp = function(obj, value) {
