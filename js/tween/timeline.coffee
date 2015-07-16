@@ -146,6 +146,11 @@ class Timeline
     @start(time); !time and (t.add(@); ###@state = 'play'###)
     @
   # ---
+
+  # Method to stop the timeline.
+  stop:-> @_removeFromTweener(); @setProc 0
+
+  # ---
   # 
   # Method to remove the timeline from the tweener.
   _removeFromTweener:-> t.remove(@); @

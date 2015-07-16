@@ -564,31 +564,27 @@ describe 'Timeline ->', ->
 
   describe '_removeFromTweener method ->', ->
     it 'should call tweener.remove method with self',->
-      tweener.tweens = []
+      tweener.removeAll()
       timeline = new Timeline duration: 2000
       timeline.run()
       timeline._removeFromTweener()
       expect(tweener.tweens.length).toBe 0
 
-  # describe 'stop method', ->
-  #   it 'should call removeFromTweener method with self',->
-  #     tweener.tweens = []; t = new Tween
-  #     timeline = new Timeline duration: 2000
-  #     t.add timeline
-  #     t.start()
-  #     spyOn t, 'removeFromTweener'
-  #     t.stop()
-  #     expect(t.removeFromTweener).toHaveBeenCalled()
-
-    # it 'should reset progress to 0',->
-    #   tweener.tweens = []; t = new Tween
-    #   timeline = new Timeline duration: 2000
-    #   t.add timeline
-    #   t.start()
-    #   spyOn t, 'setProgress'
-    #   t.stop()
-    #   expect(t.setProgress).toHaveBeenCalledWith 0
-
+  describe 'stop method', ->
+    it 'should call r_emoveFromTweener method with self',->
+      tweener.removeAll()
+      timeline = new Timeline duration: 2000
+      timeline.run()
+      spyOn timeline, '_removeFromTweener'
+      timeline.stop()
+      expect(timeline._removeFromTweener).toHaveBeenCalled()
+    it 'should reset progress to 0',->
+      tweener.removeAll()
+      timeline = new Timeline duration: 2000
+      timeline.run()
+      spyOn timeline, 'setProc'
+      timeline.stop()
+      expect(timeline.setProc).toHaveBeenCalledWith 0
     # it 'should set state to "stop"',->
     #   tweener.tweens = []
     #   t = new Tween

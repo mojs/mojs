@@ -935,16 +935,40 @@
         });
       });
     });
-    return describe('_removeFromTweener method ->', function() {
+    describe('_removeFromTweener method ->', function() {
       return it('should call tweener.remove method with self', function() {
         var timeline;
-        tweener.tweens = [];
+        tweener.removeAll();
         timeline = new Timeline({
           duration: 2000
         });
         timeline.run();
         timeline._removeFromTweener();
         return expect(tweener.tweens.length).toBe(0);
+      });
+    });
+    return describe('stop method', function() {
+      it('should call r_emoveFromTweener method with self', function() {
+        var timeline;
+        tweener.removeAll();
+        timeline = new Timeline({
+          duration: 2000
+        });
+        timeline.run();
+        spyOn(timeline, '_removeFromTweener');
+        timeline.stop();
+        return expect(timeline._removeFromTweener).toHaveBeenCalled();
+      });
+      return it('should reset progress to 0', function() {
+        var timeline;
+        tweener.removeAll();
+        timeline = new Timeline({
+          duration: 2000
+        });
+        timeline.run();
+        spyOn(timeline, 'setProc');
+        timeline.stop();
+        return expect(timeline.setProc).toHaveBeenCalledWith(0);
       });
     });
   });

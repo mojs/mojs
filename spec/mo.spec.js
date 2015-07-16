@@ -3981,6 +3981,11 @@ Timeline = (function() {
     return this;
   };
 
+  Timeline.prototype.stop = function() {
+    this._removeFromTweener();
+    return this.setProc(0);
+  };
+
   Timeline.prototype._removeFromTweener = function() {
     t.remove(this);
     return this;
