@@ -538,7 +538,7 @@ describe 'Timeline ->', ->
       easing = -> console.log 'function'
       expect(t.splitEasing(easing)+'').toBe easing+''
 
-  describe 'run method', ->
+  describe 'run method ->', ->
     describe 'start method ->', ->
       it 'should get the start time',->
         t = new Timeline
@@ -561,4 +561,38 @@ describe 'Timeline ->', ->
         spyOn tweener, 'add'
         t.run 10239123
         expect(tweener.add).not.toHaveBeenCalled()
+
+  describe '_removeFromTweener method ->', ->
+    it 'should call tweener.remove method with self',->
+      tweener.tweens = []
+      timeline = new Timeline duration: 2000
+      timeline.run()
+      timeline._removeFromTweener()
+      expect(tweener.tweens.length).toBe 0
+
+  # describe 'stop method', ->
+  #   it 'should call removeFromTweener method with self',->
+  #     tweener.tweens = []; t = new Tween
+  #     timeline = new Timeline duration: 2000
+  #     t.add timeline
+  #     t.start()
+  #     spyOn t, 'removeFromTweener'
+  #     t.stop()
+  #     expect(t.removeFromTweener).toHaveBeenCalled()
+
+    # it 'should reset progress to 0',->
+    #   tweener.tweens = []; t = new Tween
+    #   timeline = new Timeline duration: 2000
+    #   t.add timeline
+    #   t.start()
+    #   spyOn t, 'setProgress'
+    #   t.stop()
+    #   expect(t.setProgress).toHaveBeenCalledWith 0
+
+    # it 'should set state to "stop"',->
+    #   tweener.tweens = []
+    #   t = new Tween
+    #   timeline = new Timeline duration: 2000
+    #   t.add(timeline); t.start(); t.stop()
+    #   expect(t.state).toBe 'stop'
 

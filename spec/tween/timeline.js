@@ -902,7 +902,7 @@
         return expect(t.splitEasing(easing) + '').toBe(easing + '');
       });
     });
-    return describe('run method', function() {
+    describe('run method ->', function() {
       return describe('start method ->', function() {
         it('should get the start time', function() {
           var t;
@@ -933,6 +933,18 @@
           t.run(10239123);
           return expect(tweener.add).not.toHaveBeenCalled();
         });
+      });
+    });
+    return describe('_removeFromTweener method ->', function() {
+      return it('should call tweener.remove method with self', function() {
+        var timeline;
+        tweener.tweens = [];
+        timeline = new Timeline({
+          duration: 2000
+        });
+        timeline.run();
+        timeline._removeFromTweener();
+        return expect(tweener.tweens.length).toBe(0);
       });
     });
   });

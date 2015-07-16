@@ -137,10 +137,18 @@ class Timeline
       secondPart  = split[1].toLowerCase() or 'none'
       [ firstPart, secondPart ]
     else ['linear', 'none']
+  # ---
 
+  # Method to run the timeline
+  # @param  {Number} Start time
+  # @return {Object} Self
   run:(time)->
     @start(time); !time and (t.add(@); ###@state = 'play'###)
     @
+  # ---
+  # 
+  # Method to remove the timeline from the tweener.
+  _removeFromTweener:-> t.remove(@); @
 
 
 module.exports = Timeline
