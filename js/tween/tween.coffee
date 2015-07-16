@@ -40,7 +40,7 @@ class Tween
     delay? and timeline.setProp delay: delay
     @timelines.push timeline
     @props.time      = Math.max timeline.props.totalTime, @props.time
-    @props.totalTime = (@props.time+@props.delay)*(@props.repeat+1) - @props.delay
+    @props.totalTime = (@props.time+@props.delay)*(@props.repeat+1)-@props.delay
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
@@ -150,7 +150,7 @@ class Tween
     progress = Math.min progress, 1
     @update @props.startTime + progress*@props.totalTime
   getDimentions:(time)->
-    @props.startTime = (if time? then time else performance.now()) + @props.delay
+    @props.startTime = (if time? then time else performance.now())+@props.delay
     @props.startTime = performance.now() + @props.delay
     @props.endTime = @props.startTime + @props.totalTime
 

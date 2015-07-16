@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.130.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.131.1'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -57,14 +57,6 @@
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-
-tw = <span class="hljs-keyword">new</span> mojs.Timeline
-  <span class="hljs-attribute">repeat</span>: <span class="hljs-number">2</span>
-  <span class="hljs-attribute">delay</span>: <span class="hljs-number">3000</span>
-  <span class="hljs-attribute">onUpdate</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span> <span class="hljs-built_in">console</span>.log p
-  <span class="hljs-attribute">onComplete</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">'tw comple'</span>
-
-tw.run()
 </div></div>
       
       </div>

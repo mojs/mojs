@@ -228,6 +228,9 @@ then the current one, otherwise set to 0</p>
         <span class="hljs-property">@setProc</span>(<span class="hljs-number">0</span>, !<span class="hljs-property">@o</span>.isChained)<span class="hljs-comment">#; !@o.isChained and @onUpdate? @easedProgress</span>
         <span class="hljs-property">@o</span>.onReverseComplete?.apply(@)
     <span class="hljs-property">@prevTime</span> = time
+
+    <span class="hljs-property">@isCompleted</span>
+
   <span class="hljs-attribute">setProc</span>:<span class="hljs-function"><span class="hljs-params">(p, isCallback=<span class="hljs-literal">true</span>)</span>-&gt;</span>
     <span class="hljs-property">@progress</span> = p; <span class="hljs-property">@easedProgress</span> = <span class="hljs-property">@props</span>.easing <span class="hljs-property">@progress</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.prevEasedProgress <span class="hljs-keyword">isnt</span> <span class="hljs-property">@easedProgress</span> <span class="hljs-keyword">and</span> isCallback

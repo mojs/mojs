@@ -103,6 +103,13 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 1000
       expect(t.progress).toBeCloseTo 1, 5
+    it 'should return true on the end', ->
+      t = new Timeline(duration: 1000, delay: 200)
+      t.start()
+      returnValue = t.update t.props.startTime + 1000
+      expect(t.progress).toBeCloseTo 1, 5
+      expect(t.isCompleted).toBe true
+      expect(returnValue).toBe true
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Timeline(duration: 1000, onUpdate:->)
       t.start()

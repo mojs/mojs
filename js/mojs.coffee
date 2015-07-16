@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.130.0', isDebug: true
+  revision:   '0.131.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -24,14 +24,6 @@ mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-
-tw = new mojs.Timeline
-  repeat: 2
-  delay: 3000
-  onUpdate:(p)-> console.log p
-  onComplete: -> console.log 'tw comple'
-
-tw.run()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

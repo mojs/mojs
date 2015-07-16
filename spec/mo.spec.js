@@ -1336,10 +1336,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],5:[function(require,module,exports){
-var mojs, tw;
+var mojs;
 
 mojs = {
-  revision: '0.130.0',
+  revision: '0.131.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1366,19 +1366,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-tw = new mojs.Timeline({
-  repeat: 2,
-  delay: 3000,
-  onUpdate: function(p) {
-    return console.log(p);
-  },
-  onComplete: function() {
-    return console.log('tw comple');
-  }
-});
-
-tw.run();
 
 
 /* istanbul ignore next */
@@ -3907,7 +3894,8 @@ Timeline = (function() {
         }
       }
     }
-    return this.prevTime = time;
+    this.prevTime = time;
+    return this.isCompleted;
   };
 
   Timeline.prototype.setProc = function(p, isCallback) {

@@ -183,6 +183,18 @@
         t.update(t.props.startTime + 1000);
         return expect(t.progress).toBeCloseTo(1, 5);
       });
+      it('should return true on the end', function() {
+        var returnValue, t;
+        t = new Timeline({
+          duration: 1000,
+          delay: 200
+        });
+        t.start();
+        returnValue = t.update(t.props.startTime + 1000);
+        expect(t.progress).toBeCloseTo(1, 5);
+        expect(t.isCompleted).toBe(true);
+        return expect(returnValue).toBe(true);
+      });
       it('should not call update method if timeline isnt active "-"', function() {
         var t;
         t = new Timeline({

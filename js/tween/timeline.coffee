@@ -84,6 +84,9 @@ class Timeline
         @setProc(0, !@o.isChained)#; !@o.isChained and @onUpdate? @easedProgress
         @o.onReverseComplete?.apply(@)
     @prevTime = time
+
+    @isCompleted
+
   setProc:(p, isCallback=true)->
     @progress = p; @easedProgress = @props.easing @progress
     if @props.prevEasedProgress isnt @easedProgress and isCallback
