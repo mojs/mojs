@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.129.2 
+	0.130.0 
 */
 
 (function(f){
@@ -3963,8 +3963,14 @@ Timeline = (function() {
   };
 
   Timeline.prototype.stop = function() {
+    this.pause();
+    this.setProc(0);
+    return this;
+  };
+
+  Timeline.prototype.pause = function() {
     this._removeFromTweener();
-    return this.setProc(0);
+    return this;
   };
 
   Timeline.prototype._removeFromTweener = function() {

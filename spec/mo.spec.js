@@ -3982,8 +3982,14 @@ Timeline = (function() {
   };
 
   Timeline.prototype.stop = function() {
+    this.pause();
+    this.setProc(0);
+    return this;
+  };
+
+  Timeline.prototype.pause = function() {
     this._removeFromTweener();
-    return this.setProc(0);
+    return this;
   };
 
   Timeline.prototype._removeFromTweener = function() {

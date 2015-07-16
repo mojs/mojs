@@ -148,7 +148,11 @@ class Timeline
   # ---
 
   # Method to stop the timeline.
-  stop:-> @_removeFromTweener(); @setProc 0
+  stop:-> @pause(); @setProc(0); @
+  # ---
+
+  # Method to pause timeline.
+  pause:-> @_removeFromTweener(); @
 
   # ---
   # 

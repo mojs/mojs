@@ -1,11 +1,10 @@
 ## TODO
 
-- add timeline run method
 - swap tween and timline names
 
 - fix the path-eathing direction calculation
 ---
-- add motion path stagger 
+- add motion path stagger
 ---
 - add easing mix method
 ---

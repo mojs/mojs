@@ -592,3 +592,22 @@ describe 'Timeline ->', ->
     #   t.add(timeline); t.start(); t.stop()
     #   expect(t.state).toBe 'stop'
 
+  describe 'pause method ->', ->
+    it 'should call t.remove method with self',->
+      tweener.removeAll()
+      timeline = new Timeline duration: 2000
+      timeline.run()
+      spyOn timeline, '_removeFromTweener'
+      timeline.pause()
+      expect(timeline._removeFromTweener).toHaveBeenCalled()
+    # it 'should set state to "pause"',->
+    #   tweener.tweens = []
+    #   t = new Tween
+    #   timeline = new Timeline duration: 2000
+    #   t.add(timeline); t.start(); t.pause()
+    #   expect(t.state).toBe 'pause'
+
+
+
+
+

@@ -947,7 +947,7 @@
         return expect(tweener.tweens.length).toBe(0);
       });
     });
-    return describe('stop method', function() {
+    describe('stop method', function() {
       it('should call r_emoveFromTweener method with self', function() {
         var timeline;
         tweener.removeAll();
@@ -969,6 +969,19 @@
         spyOn(timeline, 'setProc');
         timeline.stop();
         return expect(timeline.setProc).toHaveBeenCalledWith(0);
+      });
+    });
+    return describe('pause method ->', function() {
+      return it('should call t.remove method with self', function() {
+        var timeline;
+        tweener.removeAll();
+        timeline = new Timeline({
+          duration: 2000
+        });
+        timeline.run();
+        spyOn(timeline, '_removeFromTweener');
+        timeline.pause();
+        return expect(timeline._removeFromTweener).toHaveBeenCalled();
       });
     });
   });
