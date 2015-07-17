@@ -72,8 +72,8 @@ class MotionPath
     duration:         1000
     # ---
 
-    # Easing. The option will be passed to timeline.parseEasing method.
-    # Please see the [timeline module](timeline.coffee.html#parseEasing) for
+    # Easing. The option will be passed to tween.parseEasing method.
+    # Please see the [tween module](tween.coffee.html#parseEasing) for
     # all avaliable options.
     #
     # @property   easing
@@ -436,7 +436,7 @@ class MotionPath
     @startTween()
 
   createTween:->
-    @timeline = new Tween
+    @tween = new Tween
       duration:   @props.duration
       delay:      @props.delay
       yoyo:       @props.yoyo
@@ -449,12 +449,12 @@ class MotionPath
         @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
-    @tween = new Timeline# onUpdate:(p)=> @o.onChainUpdate?(p)
-    @tween.add(@timeline)
+    @timeline = new Timeline# onUpdate:(p)=> @o.onChainUpdate?(p)
+    @timeline.add(@tween)
     !@props.isRunLess and @startTween()
     @props.isPresetPosition and @setProgress(0, true)
 
-  startTween:-> setTimeout (=> @tween?.start()), 1
+  startTween:-> setTimeout (=> @timeline?.start()), 1
 
   setProgress:(p, isInit)->
     len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
@@ -559,7 +559,7 @@ class MotionPath
       # because we are inside the prevOptions hash and it means
       # the callback was previously defined
       else o[key] ?= undefined
-      # get tween timing values to feed the timeline
+      # get animation timing values to feed the tween
       if h.tweenOptionMap[key]
         # copy all props, if prop is duration - fallback to previous value
         opts[key] = if key isnt 'duration' then o[key]
@@ -570,7 +570,7 @@ class MotionPath
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     opts.isChained = !o.delay
-    @tween.append new Tween(opts)
+    @timeline.append new Tween(opts)
     @
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()

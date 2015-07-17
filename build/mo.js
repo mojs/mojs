@@ -1634,7 +1634,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.createTween = function() {
-    this.timeline = new Tween({
+    this.tween = new Tween({
       duration: this.props.duration,
       delay: this.props.delay,
       yoyo: this.props.yoyo,
@@ -1673,8 +1673,8 @@ MotionPath = (function() {
         };
       })(this)
     });
-    this.tween = new Timeline;
-    this.tween.add(this.timeline);
+    this.timeline = new Timeline;
+    this.timeline.add(this.tween);
     !this.props.isRunLess && this.startTween();
     return this.props.isPresetPosition && this.setProgress(0, true);
   };
@@ -1683,7 +1683,7 @@ MotionPath = (function() {
     return setTimeout(((function(_this) {
       return function() {
         var ref;
-        return (ref = _this.tween) != null ? ref.start() : void 0;
+        return (ref = _this.timeline) != null ? ref.start() : void 0;
       };
     })(this)), 1);
   };
@@ -1880,7 +1880,7 @@ MotionPath = (function() {
       return it.tuneOptions(it.history[this.index]);
     };
     opts.isChained = !o.delay;
-    this.tween.append(new Tween(opts));
+    this.timeline.append(new Tween(opts));
     return this;
   };
 

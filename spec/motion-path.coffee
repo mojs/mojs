@@ -341,7 +341,7 @@ describe 'MotionPath ->', ->
           onUpdate:(p, o)->
             progress = p; x = o.x; y = o.y; angle = o.angle
 
-        mp.tween.setProgress .5
+        mp.timeline.setProgress .5
         expect(progress.toFixed(1)).toBe '0.5'
         expect(x)       .toBe 50
         expect(y)       .toBe 50
@@ -807,7 +807,7 @@ describe 'MotionPath ->', ->
         pathEnd:   .75
         isIt: true
 
-      mp.tween.setProgress 0
+      mp.timeline.setProgress 0
       tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
       pos = parseInt tr.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
@@ -1144,7 +1144,7 @@ describe 'MotionPath ->', ->
         delay:    100
       )
       .then pathStart: .5, pathEnd: 1
-      expect(mp.tween.timelines[1].o.delay).toBe 2100
+      expect(mp.timeline.timelines[1].o.delay).toBe 2100
 
     it 'should not copy previous callbacks', ->
       onUpdate = ->
@@ -1157,7 +1157,7 @@ describe 'MotionPath ->', ->
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0
       
-      mp.tween.setProgress .75
+      mp.timeline.setProgress .75
       
       expect(mp.history[1].onUpdate).not.toBeDefined()
       expect(mp.props.onUpdate)     .not.toBeDefined()
@@ -1172,7 +1172,7 @@ describe 'MotionPath ->', ->
         delay:    100
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0, onUpdate: ->
-      mp.tween.setProgress .75
+      mp.timeline.setProgress .75
       expect(mp.history[1].onUpdate).toBeDefined()
       expect(mp.props.onUpdate)     .toBeDefined()
 
@@ -1184,9 +1184,9 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
-      expect(mp.tween.timelines.length)            .toBe 2
-      expect(mp.tween.timelines[1].o.duration)     .toBe 2000
-      expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined()
+      expect(mp.timeline.timelines.length)            .toBe 2
+      expect(mp.timeline.timelines[1].o.duration)     .toBe 2000
+      expect(mp.timeline.timelines[1].o.onFirstUpdate).toBeDefined()
 
     it 'should add isChained option to the new timeline', ->
       mp = new MotionPath(
@@ -1197,7 +1197,7 @@ describe 'MotionPath ->', ->
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
       
-      expect(mp.tween.timelines[1].o.isChained).toBe true
+      expect(mp.timeline.timelines[1].o.isChained).toBe true
 
     it 'should not add isChained option if delay', ->
       mp = new MotionPath(
@@ -1208,7 +1208,7 @@ describe 'MotionPath ->', ->
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1, delay: 100
       
-      expect(mp.tween.timelines[1].o.isChained).toBe false
+      expect(mp.timeline.timelines[1].o.isChained).toBe false
 
   describe 'tuneOptions ->', ->
     it 'should tune options', ->
@@ -1243,7 +1243,7 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path:       coords
         el:         document.createElement 'div'
-      type = typeof mp.tween.timelines[0].o.onFirstUpdateBackward
+      type = typeof mp.timeline.timelines[0].o.onFirstUpdateBackward
       expect(type).toBe 'function'
 
   describe 'isModule flag ->', ->

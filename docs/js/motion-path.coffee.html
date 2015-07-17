@@ -226,8 +226,8 @@ Propery <span id="property-duration"><strong>duration</strong></span> of type <s
           <div class="wrapper"><p><span class='doc-section-header'>
 Propery <span id="property-easing"><strong>easing</strong></span> of type <strong>String, Function, Array</strong>
 </span></p>
-<p>Easing. The option will be passed to timeline.parseEasing method.
-Please see the <a href="timeline.coffee.html#parseEasing">timeline module</a> for
+<p>Easing. The option will be passed to tween.parseEasing method.
+Please see the <a href="tween.coffee.html#parseEasing">tween module</a> for
 all avaliable options.</p>
 <p>String:</p><p data-height="300" data-theme-id="14132" data-slug-hash="GgVeKR" data-default-tab="result" data-user="sol0mka" class='codepen'> </p>
 
@@ -934,7 +934,7 @@ to svg path</p>
     <span class="hljs-property">@startTween</span>()
 
   <span class="hljs-attribute">createTween</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@timeline</span> = <span class="hljs-keyword">new</span> Tween
+    <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Tween
       <span class="hljs-attribute">duration</span>:   <span class="hljs-property">@props</span>.duration
       <span class="hljs-attribute">delay</span>:      <span class="hljs-property">@props</span>.delay
       <span class="hljs-attribute">yoyo</span>:       <span class="hljs-property">@props</span>.yoyo
@@ -947,12 +947,12 @@ to svg path</p>
         <span class="hljs-property">@props</span>.onComplete?.apply @
       <span class="hljs-attribute">onUpdate</span>:  <span class="hljs-function"><span class="hljs-params">(p)</span>=&gt;</span> <span class="hljs-property">@setProgress</span>(p)
       <span class="hljs-attribute">onFirstUpdateBackward</span>:<span class="hljs-function">=&gt;</span> <span class="hljs-property">@history</span>.length &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@tuneOptions</span> <span class="hljs-property">@history</span>[<span class="hljs-number">0</span>]
-    <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Timeline<span class="hljs-comment"># onUpdate:(p)=&gt; @o.onChainUpdate?(p)</span>
-    <span class="hljs-property">@tween</span>.add(<span class="hljs-property">@timeline</span>)
+    <span class="hljs-property">@timeline</span> = <span class="hljs-keyword">new</span> Timeline<span class="hljs-comment"># onUpdate:(p)=&gt; @o.onChainUpdate?(p)</span>
+    <span class="hljs-property">@timeline</span>.add(<span class="hljs-property">@tween</span>)
     !<span class="hljs-property">@props</span>.isRunLess <span class="hljs-keyword">and</span> <span class="hljs-property">@startTween</span>()
     <span class="hljs-property">@props</span>.isPresetPosition <span class="hljs-keyword">and</span> <span class="hljs-property">@setProgress</span>(<span class="hljs-number">0</span>, <span class="hljs-literal">true</span>)
 
-  <span class="hljs-attribute">startTween</span>:<span class="hljs-function">-&gt;</span> setTimeout (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@tween</span>?.start()), <span class="hljs-number">1</span>
+  <span class="hljs-attribute">startTween</span>:<span class="hljs-function">-&gt;</span> setTimeout (<span class="hljs-function">=&gt;</span> <span class="hljs-property">@timeline</span>?.start()), <span class="hljs-number">1</span>
 
   <span class="hljs-attribute">setProgress</span>:<span class="hljs-function"><span class="hljs-params">(p, isInit)</span>-&gt;</span>
     len = <span class="hljs-property">@startLen</span>+<span class="hljs-keyword">if</span> !<span class="hljs-property">@props</span>.isReverse <span class="hljs-keyword">then</span> p*<span class="hljs-property">@slicedLen</span> <span class="hljs-keyword">else</span> (<span class="hljs-number">1</span>-p)*<span class="hljs-property">@slicedLen</span>
@@ -1192,7 +1192,7 @@ the callback was previously defined</p>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>get tween timing values to feed the timeline</p>
+          <div class="wrapper"><p>get animation timing values to feed the tween</p>
 </div>
         </div>
       
@@ -1217,7 +1217,7 @@ the callback was previously defined</p>
     opts.onComplete    = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onComplete?.apply @
     opts.onFirstUpdate = <span class="hljs-function">-&gt;</span> it.tuneOptions it.history[<span class="hljs-property">@index</span>]
     opts.isChained = !o.delay
-    <span class="hljs-property">@tween</span>.append <span class="hljs-keyword">new</span> Tween(opts)
+    <span class="hljs-property">@timeline</span>.append <span class="hljs-keyword">new</span> Tween(opts)
     @
 
   <span class="hljs-attribute">tuneOptions</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span> <span class="hljs-property">@extendOptions</span>(o); <span class="hljs-property">@postVars</span>()
