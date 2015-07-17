@@ -2,7 +2,7 @@
 ### istanbul ignore next ###
 
 bitsMap   = require './shapes/bitsMap'
-Tween     = require './tween/tween'
+# Tween     = require './tween/timeline'
 Transit   = require './transit'
 Swirl     = require './swirl'
 h         = require './h'

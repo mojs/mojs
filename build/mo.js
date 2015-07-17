@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.131.1 
+	0.132.0 
 */
 
 (function(f){
@@ -180,13 +180,11 @@ module.exports = bezierEasing;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./h":4}],2:[function(require,module,exports){
 
-var Burst, Swirl, Transit, Tween, bitsMap, h,
+var Burst, Swirl, Transit, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 bitsMap = require('./shapes/bitsMap');
-
-Tween = require('./tween/tween');
 
 Transit = require('./transit');
 
@@ -525,7 +523,7 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":4,"./shapes/bitsMap":11,"./swirl":21,"./transit":22,"./tween/tween":24}],3:[function(require,module,exports){
+},{"./h":4,"./shapes/bitsMap":11,"./swirl":21,"./transit":22}],3:[function(require,module,exports){
 var Easing, PathEasing, bezier, easing;
 
 bezier = require('./bezier-easing');
@@ -1341,7 +1339,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.131.1',
+  revision: '0.132.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1359,8 +1357,8 @@ mojs = {
   Stagger: require('./stagger'),
   Spriter: require('./spriter'),
   MotionPath: require('./motion-path'),
-  Timeline: require('./tween/timeline'),
   Tween: require('./tween/tween'),
+  Timeline: require('./tween/timeline'),
   tweener: require('./tween/tweener'),
   easing: require('./easing')
 };
@@ -1391,9 +1389,9 @@ easing = require('./easing');
 
 resize = require('./vendor/resize');
 
-Timeline = require('./tween/timeline');
-
 Tween = require('./tween/tween');
+
+Timeline = require('./tween/timeline');
 
 MotionPath = (function() {
   MotionPath.prototype.defaults = {
@@ -1636,7 +1634,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.createTween = function() {
-    this.timeline = new Timeline({
+    this.timeline = new Tween({
       duration: this.props.duration,
       delay: this.props.delay,
       yoyo: this.props.yoyo,
@@ -1675,7 +1673,7 @@ MotionPath = (function() {
         };
       })(this)
     });
-    this.tween = new Tween;
+    this.tween = new Timeline;
     this.tween.add(this.timeline);
     !this.props.isRunLess && this.startTween();
     return this.props.isPresetPosition && this.setProgress(0, true);
@@ -1882,7 +1880,7 @@ MotionPath = (function() {
       return it.tuneOptions(it.history[this.index]);
     };
     opts.isChained = !o.delay;
-    this.tween.append(new Timeline(opts));
+    this.tween.append(new Tween(opts));
     return this;
   };
 
@@ -2703,9 +2701,9 @@ var Spriter, Timeline, Tween, h;
 
 h = require('./h');
 
-Timeline = require('./tween/timeline');
-
 Tween = require('./tween/tween');
+
+Timeline = require('./tween/timeline');
 
 Spriter = (function() {
   Spriter.prototype._defaults = {
@@ -2765,7 +2763,7 @@ Spriter = (function() {
   };
 
   Spriter.prototype._createTween = function() {
-    this._timeline = new Timeline({
+    this._timeline = new Tween({
       duration: this._props.duration,
       delay: this._props.delay,
       yoyo: this._props.yoyo,
@@ -2789,7 +2787,7 @@ Spriter = (function() {
         };
       })(this)
     });
-    this._tween = new Tween;
+    this._tween = new Timeline;
     this._tween.add(this._timeline);
     return !this._props.isRunLess && this._startTween();
   };
@@ -2826,15 +2824,13 @@ module.exports = Spriter;
 
 },{"./h":4,"./tween/timeline":23,"./tween/tween":24}],20:[function(require,module,exports){
 
-var Stagger, Timeline, Transit, Tween, h,
+var Stagger, Timeline, Transit, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 h = require('./h');
 
 Timeline = require('./tween/timeline');
-
-Tween = require('./tween/tween');
 
 Transit = require('./transit');
 
@@ -2944,7 +2940,7 @@ Stagger = (function(superClass) {
 
   Stagger.prototype.createTween = function() {
     var i;
-    this.tween = new Tween;
+    this.tween = new Timeline;
     i = -1;
     while (i++ < this.transits.length - 1) {
       this.tween.add(this.transits[i].tween);
@@ -2962,7 +2958,7 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":4,"./transit":22,"./tween/timeline":23,"./tween/tween":24}],21:[function(require,module,exports){
+},{"./h":4,"./transit":22,"./tween/timeline":23}],21:[function(require,module,exports){
 
 var Swirl, Transit,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -3085,9 +3081,9 @@ h = require('./h');
 
 bitsMap = require('./shapes/bitsMap');
 
-Timeline = require('./tween/timeline');
-
 Tween = require('./tween/tween');
+
+Timeline = require('./tween/timeline');
 
 Transit = (function(superClass) {
   extend(Transit, superClass);
@@ -3570,7 +3566,7 @@ Transit = (function(superClass) {
           return it.tuneOptions(it.history[this.index]);
         };
         opts.isChained = !o.delay;
-        return _this.tween.append(new Timeline(opts));
+        return _this.tween.append(new Tween(opts));
       });
     })(this)(len);
     return this;
@@ -3586,7 +3582,7 @@ Transit = (function(superClass) {
     var it;
     it = this;
     this.createTimeline();
-    this.tween = new Tween({
+    this.tween = new Timeline({
       onComplete: (function(_this) {
         return function() {
           var ref;
@@ -3600,7 +3596,7 @@ Transit = (function(superClass) {
   };
 
   Transit.prototype.createTimeline = function() {
-    return this.timeline = new Timeline({
+    return this.timeline = new Tween({
       duration: this.props.duration,
       delay: this.props.delay,
       repeat: this.props.repeat,
@@ -3745,7 +3741,265 @@ Transit = (function(superClass) {
 module.exports = Transit;
 
 },{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
-var Timeline, easingModule, h, t;
+var Timeline, h, t,
+  slice = [].slice;
+
+h = require('../h');
+
+t = require('./tweener');
+
+Timeline = (function() {
+  Timeline.prototype.state = 'stop';
+
+  Timeline.prototype.defaults = {
+    repeat: 0,
+    delay: 0
+  };
+
+  function Timeline(o) {
+    this.o = o != null ? o : {};
+    this.vars();
+    this._extendDefaults();
+    this;
+  }
+
+  Timeline.prototype.vars = function() {
+    this.timelines = [];
+    this.props = {
+      totalTime: 0,
+      time: 0
+    };
+    this.loop = h.bind(this.loop, this);
+    return this.onUpdate = this.o.onUpdate;
+  };
+
+  Timeline.prototype.add = function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    this.pushTimelineArray(args);
+    return this;
+  };
+
+  Timeline.prototype.pushTimelineArray = function(array) {
+    var i, j, len1, results, tm;
+    results = [];
+    for (i = j = 0, len1 = array.length; j < len1; i = ++j) {
+      tm = array[i];
+      if (h.isArray(tm)) {
+        results.push(this.pushTimelineArray(tm));
+      } else {
+        results.push(this.pushTimeline(tm));
+      }
+    }
+    return results;
+  };
+
+  Timeline.prototype._extendDefaults = function() {
+    var key, ref, results, value;
+    ref = this.defaults;
+    results = [];
+    for (key in ref) {
+      value = ref[key];
+      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
+    }
+    return results;
+  };
+
+  Timeline.prototype.setProp = function(props) {
+    var key, value;
+    for (key in props) {
+      value = props[key];
+      this.props[key] = value;
+    }
+    return this.recalcDuration();
+  };
+
+  Timeline.prototype.pushTimeline = function(timeline, delay) {
+    if (timeline.tween instanceof Timeline) {
+      timeline = timeline.tween;
+    }
+    (delay != null) && timeline.setProp({
+      delay: delay
+    });
+    this.timelines.push(timeline);
+    this.props.time = Math.max(timeline.props.totalTime, this.props.time);
+    return this.props.totalTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
+  };
+
+  Timeline.prototype.remove = function(timeline) {
+    var index;
+    index = this.timelines.indexOf(timeline);
+    if (index !== -1) {
+      return this.timelines.splice(index, 1);
+    }
+  };
+
+  Timeline.prototype.append = function() {
+    var i, j, len1, results, timeline, tm;
+    timeline = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    results = [];
+    for (i = j = 0, len1 = timeline.length; j < len1; i = ++j) {
+      tm = timeline[i];
+      if (h.isArray(tm)) {
+        results.push(this._appendTimelineArray(tm));
+      } else {
+        results.push(this.appendTimeline(tm, this.timelines.length));
+      }
+    }
+    return results;
+  };
+
+  Timeline.prototype._appendTimelineArray = function(timelineArray) {
+    var i, index, results, time;
+    i = timelineArray.length;
+    time = this.props.totalTime;
+    index = this.timelines.length;
+    results = [];
+    while (i--) {
+      results.push(this.appendTimeline(timelineArray[i], index, time));
+    }
+    return results;
+  };
+
+  Timeline.prototype.appendTimeline = function(timeline, index, time) {
+    var delay;
+    delay = timeline.o.delay + (time != null ? time : this.props.totalTime);
+    timeline.index = index;
+    return this.pushTimeline(timeline, delay);
+  };
+
+  Timeline.prototype.recalcDuration = function() {
+    var len, results, timeline;
+    len = this.timelines.length;
+    this.props.totalTime = 0;
+    results = [];
+    while (len--) {
+      timeline = this.timelines[len];
+      this.props.time = Math.max(timeline.props.totalTime, this.props.totalTime);
+      results.push(this.props.totalTime = this.props.time * (this.props.repeat + 1));
+    }
+    return results;
+  };
+
+  Timeline.prototype.update = function(time) {
+    if (time > this.props.endTime) {
+      time = this.props.endTime;
+    }
+    this._updateTimelines(time);
+    return this._checkCallbacks(time);
+  };
+
+  Timeline.prototype._updateTimelines = function(time) {
+    var elapsed, i, len, results, startPoint, timeToTimelines;
+    startPoint = this.props.startTime - this.props.delay;
+    elapsed = (time - startPoint) % (this.props.delay + this.props.time);
+    timeToTimelines = startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
+    if (timeToTimelines != null) {
+      i = -1;
+      len = this.timelines.length - 1;
+      results = [];
+      while (i++ < len) {
+        results.push(this.timelines[i].update(timeToTimelines));
+      }
+      return results;
+    }
+  };
+
+  Timeline.prototype._checkCallbacks = function(time) {
+    var ref, ref1;
+    if (time >= this.props.startTime && time < this.props.endTime) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
+      }
+    }
+    if (this.prevTime > time && time <= this.props.startTime) {
+      if ((ref = this.o.onReverseComplete) != null) {
+        ref.apply(this);
+      }
+    }
+    this.prevTime = time;
+    if (time === this.props.endTime) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(1);
+      }
+      if ((ref1 = this.o.onComplete) != null) {
+        ref1.apply(this);
+      }
+      return true;
+    }
+  };
+
+  Timeline.prototype.startTimelines = function(time) {
+    var i, results;
+    i = this.timelines.length;
+    results = [];
+    while (i--) {
+      results.push(this.timelines[i].start(time || this.props.startTime));
+    }
+    return results;
+  };
+
+  Timeline.prototype.start = function(time) {
+    this.setStartTime(time);
+    !time && (t.add(this), this.state = 'play');
+    return this;
+  };
+
+  Timeline.prototype.pause = function() {
+    this.removeFromTweener();
+    this.state = 'pause';
+    return this;
+  };
+
+  Timeline.prototype.stop = function() {
+    this.removeFromTweener();
+    this.setProgress(0);
+    this.state = 'stop';
+    return this;
+  };
+
+  Timeline.prototype.restart = function() {
+    this.stop();
+    return this.start();
+  };
+
+  Timeline.prototype.removeFromTweener = function() {
+    t.remove(this);
+    return this;
+  };
+
+  Timeline.prototype.setStartTime = function(time) {
+    var ref;
+    this.getDimentions(time);
+    if ((ref = this.o.onStart) != null) {
+      ref.apply(this);
+    }
+    return this.startTimelines(time);
+  };
+
+  Timeline.prototype.setProgress = function(progress) {
+    if (this.props.startTime == null) {
+      this.setStartTime();
+    }
+    progress = Math.max(progress, 0);
+    progress = Math.min(progress, 1);
+    return this.update(this.props.startTime + progress * this.props.totalTime);
+  };
+
+  Timeline.prototype.getDimentions = function(time) {
+    this.props.startTime = (time != null ? time : performance.now()) + this.props.delay;
+    this.props.startTime = performance.now() + this.props.delay;
+    return this.props.endTime = this.props.startTime + this.props.totalTime;
+  };
+
+  return Timeline;
+
+})();
+
+module.exports = Timeline;
+
+},{"../h":4,"./tweener":25}],24:[function(require,module,exports){
+var Tween, easingModule, h, t;
 
 easingModule = require('../easing');
 
@@ -3753,8 +4007,8 @@ h = require('../h');
 
 t = require('./tweener');
 
-Timeline = (function() {
-  Timeline.prototype.defaults = {
+Tween = (function() {
+  Tween.prototype.defaults = {
     duration: 600,
     delay: 0,
     repeat: 0,
@@ -3765,14 +4019,14 @@ Timeline = (function() {
     isChained: false
   };
 
-  function Timeline(o) {
+  function Tween(o) {
     this.o = o != null ? o : {};
     this.extendDefaults();
     this.vars();
     this;
   }
 
-  Timeline.prototype.vars = function() {
+  Tween.prototype.vars = function() {
     this.h = h;
     this.props = {};
     this.progress = 0;
@@ -3781,17 +4035,17 @@ Timeline = (function() {
     return this.calcDimentions();
   };
 
-  Timeline.prototype.calcDimentions = function() {
+  Tween.prototype.calcDimentions = function() {
     this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
     return this.props.totalDuration = this.props.totalTime - this.o.delay;
   };
 
-  Timeline.prototype.extendDefaults = function() {
+  Tween.prototype.extendDefaults = function() {
     h.extend(this.o, this.defaults);
     return this.onUpdate = this.o.onUpdate;
   };
 
-  Timeline.prototype.start = function(time) {
+  Tween.prototype.start = function(time) {
     this.isCompleted = false;
     this.isStarted = false;
     this.props.startTime = (time != null ? time : performance.now()) + this.o.delay;
@@ -3799,7 +4053,7 @@ Timeline = (function() {
     return this;
   };
 
-  Timeline.prototype.update = function(time) {
+  Tween.prototype.update = function(time) {
     var cnt, elapsed, isDuration, ref, ref1, ref2, ref3, ref4, ref5, start;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
@@ -3879,7 +4133,7 @@ Timeline = (function() {
     return this.isCompleted;
   };
 
-  Timeline.prototype.setProc = function(p, isCallback) {
+  Tween.prototype.setProc = function(p, isCallback) {
     if (isCallback == null) {
       isCallback = true;
     }
@@ -3893,7 +4147,7 @@ Timeline = (function() {
     return this.props.prevEasedProgress = this.easedProgress;
   };
 
-  Timeline.prototype.setProp = function(obj, value) {
+  Tween.prototype.setProp = function(obj, value) {
     var key, val;
     if (typeof obj === 'object') {
       for (key in obj) {
@@ -3906,7 +4160,7 @@ Timeline = (function() {
     return this.calcDimentions();
   };
 
-  Timeline.prototype.parseEasing = function(easing) {
+  Tween.prototype.parseEasing = function(easing) {
     var type;
     type = typeof easing;
     if (type === 'string') {
@@ -3925,7 +4179,7 @@ Timeline = (function() {
     }
   };
 
-  Timeline.prototype.splitEasing = function(string) {
+  Tween.prototype.splitEasing = function(string) {
     var firstPart, secondPart, split;
     if (typeof string === 'function') {
       return string;
@@ -3940,7 +4194,7 @@ Timeline = (function() {
     }
   };
 
-  Timeline.prototype.run = function(time) {
+  Tween.prototype.run = function(time) {
     this.start(time);
     !time && ((function() {
       return t.add(this);
@@ -3950,278 +4204,20 @@ Timeline = (function() {
     return this;
   };
 
-  Timeline.prototype.stop = function() {
+  Tween.prototype.stop = function() {
     this.pause();
     this.setProc(0);
     return this;
   };
 
-  Timeline.prototype.pause = function() {
+  Tween.prototype.pause = function() {
     this._removeFromTweener();
     return this;
   };
 
-  Timeline.prototype._removeFromTweener = function() {
+  Tween.prototype._removeFromTweener = function() {
     t.remove(this);
     return this;
-  };
-
-  return Timeline;
-
-})();
-
-module.exports = Timeline;
-
-},{"../easing":3,"../h":4,"./tweener":25}],24:[function(require,module,exports){
-var Tween, h, t,
-  slice = [].slice;
-
-h = require('../h');
-
-t = require('./tweener');
-
-Tween = (function() {
-  Tween.prototype.state = 'stop';
-
-  Tween.prototype.defaults = {
-    repeat: 0,
-    delay: 0
-  };
-
-  function Tween(o) {
-    this.o = o != null ? o : {};
-    this.vars();
-    this._extendDefaults();
-    this;
-  }
-
-  Tween.prototype.vars = function() {
-    this.timelines = [];
-    this.props = {
-      totalTime: 0,
-      time: 0
-    };
-    this.loop = h.bind(this.loop, this);
-    return this.onUpdate = this.o.onUpdate;
-  };
-
-  Tween.prototype.add = function() {
-    var args;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    this.pushTimelineArray(args);
-    return this;
-  };
-
-  Tween.prototype.pushTimelineArray = function(array) {
-    var i, j, len1, results, tm;
-    results = [];
-    for (i = j = 0, len1 = array.length; j < len1; i = ++j) {
-      tm = array[i];
-      if (h.isArray(tm)) {
-        results.push(this.pushTimelineArray(tm));
-      } else {
-        results.push(this.pushTimeline(tm));
-      }
-    }
-    return results;
-  };
-
-  Tween.prototype._extendDefaults = function() {
-    var key, ref, results, value;
-    ref = this.defaults;
-    results = [];
-    for (key in ref) {
-      value = ref[key];
-      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
-    }
-    return results;
-  };
-
-  Tween.prototype.setProp = function(props) {
-    var key, value;
-    for (key in props) {
-      value = props[key];
-      this.props[key] = value;
-    }
-    return this.recalcDuration();
-  };
-
-  Tween.prototype.pushTimeline = function(timeline, delay) {
-    if (timeline.tween instanceof Tween) {
-      timeline = timeline.tween;
-    }
-    (delay != null) && timeline.setProp({
-      delay: delay
-    });
-    this.timelines.push(timeline);
-    this.props.time = Math.max(timeline.props.totalTime, this.props.time);
-    return this.props.totalTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
-  };
-
-  Tween.prototype.remove = function(timeline) {
-    var index;
-    index = this.timelines.indexOf(timeline);
-    if (index !== -1) {
-      return this.timelines.splice(index, 1);
-    }
-  };
-
-  Tween.prototype.append = function() {
-    var i, j, len1, results, timeline, tm;
-    timeline = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    results = [];
-    for (i = j = 0, len1 = timeline.length; j < len1; i = ++j) {
-      tm = timeline[i];
-      if (h.isArray(tm)) {
-        results.push(this._appendTimelineArray(tm));
-      } else {
-        results.push(this.appendTimeline(tm, this.timelines.length));
-      }
-    }
-    return results;
-  };
-
-  Tween.prototype._appendTimelineArray = function(timelineArray) {
-    var i, index, results, time;
-    i = timelineArray.length;
-    time = this.props.totalTime;
-    index = this.timelines.length;
-    results = [];
-    while (i--) {
-      results.push(this.appendTimeline(timelineArray[i], index, time));
-    }
-    return results;
-  };
-
-  Tween.prototype.appendTimeline = function(timeline, index, time) {
-    var delay;
-    delay = timeline.o.delay + (time != null ? time : this.props.totalTime);
-    timeline.index = index;
-    return this.pushTimeline(timeline, delay);
-  };
-
-  Tween.prototype.recalcDuration = function() {
-    var len, results, timeline;
-    len = this.timelines.length;
-    this.props.totalTime = 0;
-    results = [];
-    while (len--) {
-      timeline = this.timelines[len];
-      this.props.time = Math.max(timeline.props.totalTime, this.props.totalTime);
-      results.push(this.props.totalTime = this.props.time * (this.props.repeat + 1));
-    }
-    return results;
-  };
-
-  Tween.prototype.update = function(time) {
-    if (time > this.props.endTime) {
-      time = this.props.endTime;
-    }
-    this._updateTimelines(time);
-    return this._checkCallbacks(time);
-  };
-
-  Tween.prototype._updateTimelines = function(time) {
-    var elapsed, i, len, results, startPoint, timeToTimelines;
-    startPoint = this.props.startTime - this.props.delay;
-    elapsed = (time - startPoint) % (this.props.delay + this.props.time);
-    timeToTimelines = startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
-    if (timeToTimelines != null) {
-      i = -1;
-      len = this.timelines.length - 1;
-      results = [];
-      while (i++ < len) {
-        results.push(this.timelines[i].update(timeToTimelines));
-      }
-      return results;
-    }
-  };
-
-  Tween.prototype._checkCallbacks = function(time) {
-    var ref, ref1;
-    if (time >= this.props.startTime && time < this.props.endTime) {
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
-      }
-    }
-    if (this.prevTime > time && time <= this.props.startTime) {
-      if ((ref = this.o.onReverseComplete) != null) {
-        ref.apply(this);
-      }
-    }
-    this.prevTime = time;
-    if (time === this.props.endTime) {
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate(1);
-      }
-      if ((ref1 = this.o.onComplete) != null) {
-        ref1.apply(this);
-      }
-      return true;
-    }
-  };
-
-  Tween.prototype.startTimelines = function(time) {
-    var i, results;
-    i = this.timelines.length;
-    results = [];
-    while (i--) {
-      results.push(this.timelines[i].start(time || this.props.startTime));
-    }
-    return results;
-  };
-
-  Tween.prototype.start = function(time) {
-    this.setStartTime(time);
-    !time && (t.add(this), this.state = 'play');
-    return this;
-  };
-
-  Tween.prototype.pause = function() {
-    this.removeFromTweener();
-    this.state = 'pause';
-    return this;
-  };
-
-  Tween.prototype.stop = function() {
-    this.removeFromTweener();
-    this.setProgress(0);
-    this.state = 'stop';
-    return this;
-  };
-
-  Tween.prototype.restart = function() {
-    this.stop();
-    return this.start();
-  };
-
-  Tween.prototype.removeFromTweener = function() {
-    t.remove(this);
-    return this;
-  };
-
-  Tween.prototype.setStartTime = function(time) {
-    var ref;
-    this.getDimentions(time);
-    if ((ref = this.o.onStart) != null) {
-      ref.apply(this);
-    }
-    return this.startTimelines(time);
-  };
-
-  Tween.prototype.setProgress = function(progress) {
-    if (this.props.startTime == null) {
-      this.setStartTime();
-    }
-    progress = Math.max(progress, 0);
-    progress = Math.min(progress, 1);
-    return this.update(this.props.startTime + progress * this.props.totalTime);
-  };
-
-  Tween.prototype.getDimentions = function(time) {
-    this.props.startTime = (time != null ? time : performance.now()) + this.props.delay;
-    this.props.startTime = performance.now() + this.props.delay;
-    return this.props.endTime = this.props.startTime + this.props.totalTime;
   };
 
   return Tween;
@@ -4230,7 +4226,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../h":4,"./tweener":25}],25:[function(require,module,exports){
+},{"../easing":3,"../h":4,"./tweener":25}],25:[function(require,module,exports){
 var Tweener, h, i, t;
 
 require('../polyfills/raf');

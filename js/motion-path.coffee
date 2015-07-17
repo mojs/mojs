@@ -5,8 +5,8 @@
 h         = require './h'
 easing    = require './easing'
 resize    = require './vendor/resize'
-Timeline  = require './tween/timeline'
 Tween     = require './tween/tween'
+Timeline  = require './tween/timeline'
 
 class MotionPath
   # ---
@@ -436,7 +436,7 @@ class MotionPath
     @startTween()
 
   createTween:->
-    @timeline = new Timeline
+    @timeline = new Tween
       duration:   @props.duration
       delay:      @props.delay
       yoyo:       @props.yoyo
@@ -449,7 +449,7 @@ class MotionPath
         @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
-    @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
+    @tween = new Timeline# onUpdate:(p)=> @o.onChainUpdate?(p)
     @tween.add(@timeline)
     !@props.isRunLess and @startTween()
     @props.isPresetPosition and @setProgress(0, true)
@@ -570,7 +570,7 @@ class MotionPath
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     opts.isChained = !o.delay
-    @tween.append new Timeline(opts)
+    @tween.append new Tween(opts)
     @
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()

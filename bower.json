@@ -1,7 +1,7 @@
 {
   "name": "mojs",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.131.1",
+  "version": "0.132.0",
   "license": "MIT",
   "homepage": "https://github.com/legomushroom/mojs",
   "authors": [

@@ -378,10 +378,7 @@ class Helpers
     else if key is 'strokeDasharray' or key is 'strokeDashoffset'
       startArr  = @strToArr start
       endArr    = @strToArr end
-
-      # console.log startArr, endArr
       @normDashArrays startArr, endArr
-      # console.log startArr, endArr
 
       for start, i in startArr
         end = endArr[i]

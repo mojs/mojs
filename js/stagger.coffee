@@ -1,8 +1,8 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 h        = require './h'
+# Tween    = require './tween/tween'
 Timeline = require './tween/timeline'
-Tween    = require './tween/tween'
 Transit  = require './transit'
 
 class Stagger extends Transit
@@ -60,7 +60,7 @@ class Stagger extends Transit
   createTween:->
     # optimization TODO:
     # the stagger doesnt need the self timeline
-    @tween = new Tween
+    @tween = new Timeline
     i = -1
     while(i++ < @transits.length-1)
       @tween.add(@transits[i].tween)

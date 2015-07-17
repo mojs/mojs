@@ -1,5 +1,5 @@
 bezier     = require './bezier-easing'
-PathEasing = require('./path-easing')
+PathEasing = require './path-easing'
 
 class Easing
   bezier:     bezier

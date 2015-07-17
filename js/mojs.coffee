@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.131.1', isDebug: true
+  revision:   '0.132.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -17,8 +17,8 @@ mojs =
   Stagger     : require './stagger'
   Spriter     : require './spriter'
   MotionPath  : require './motion-path'
-  Timeline    : require './tween/timeline'
   Tween       : require './tween/tween'
+  Timeline    : require './tween/timeline'
   tweener     : require './tween/tweener'
   easing      : require './easing'
 

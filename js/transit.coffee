@@ -2,8 +2,8 @@
 
 h         = require './h'
 bitsMap   = require './shapes/bitsMap'
-Timeline = require './tween/timeline'
-Tween    = require './tween/tween'
+Tween     = require './tween/tween'
+Timeline  = require './tween/timeline'
 
 class Transit extends bitsMap.map.bit
   progress: 0
@@ -339,7 +339,7 @@ class Transit extends bitsMap.map.bit
       opts.onComplete    = => @props.onComplete?.apply @
       opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
       opts.isChained = !o.delay
-      @tween.append new Timeline(opts)
+      @tween.append new Tween(opts)
     @
     
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
@@ -347,13 +347,13 @@ class Transit extends bitsMap.map.bit
   createTween:->
     it = @
     @createTimeline()
-    @tween = new Tween
+    @tween = new Timeline
       onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
     @tween.add @timeline
     !@o.isRunLess and @startTween()
 
   createTimeline:->
-    @timeline = new Timeline
+    @timeline = new Tween
       duration: @props.duration
       delay:    @props.delay
       repeat:   @props.repeat

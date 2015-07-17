@@ -39,8 +39,8 @@
       
         <div class="code"><div class="wrapper">h         = <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
 bitsMap   = <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
-Timeline = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/timeline'</span>
-Tween    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
+Tween     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
+Timeline  = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/timeline'</span>
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Transit</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">bitsMap</span>.<span class="hljs-title">map</span>.<span class="hljs-title">bit</span></span>
   <span class="hljs-attribute">progress</span>: <span class="hljs-number">0</span>
@@ -715,7 +715,7 @@ else o[key] = startKey</p>
       opts.onComplete    = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onComplete?.apply @
       opts.onFirstUpdate = <span class="hljs-function">-&gt;</span> it.tuneOptions it.history[<span class="hljs-property">@index</span>]
       opts.isChained = !o.delay
-      <span class="hljs-property">@tween</span>.append <span class="hljs-keyword">new</span> Timeline(opts)
+      <span class="hljs-property">@tween</span>.append <span class="hljs-keyword">new</span> Tween(opts)
     @
     
   <span class="hljs-attribute">tuneOptions</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span> <span class="hljs-property">@extendDefaults</span>(o); <span class="hljs-property">@calcSize</span>(); <span class="hljs-property">@setElStyles</span>()</div></div>
@@ -733,13 +733,13 @@ else o[key] = startKey</p>
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">createTween</span>:<span class="hljs-function">-&gt;</span>
     it = @
     <span class="hljs-property">@createTimeline</span>()
-    <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Tween
+    <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Timeline
       <span class="hljs-attribute">onComplete</span>:<span class="hljs-function">=&gt;</span> !<span class="hljs-property">@o</span>.isShowEnd <span class="hljs-keyword">and</span> <span class="hljs-property">@hide</span>(); <span class="hljs-property">@props</span>.onComplete?.apply @
     <span class="hljs-property">@tween</span>.add <span class="hljs-property">@timeline</span>
     !<span class="hljs-property">@o</span>.isRunLess <span class="hljs-keyword">and</span> <span class="hljs-property">@startTween</span>()
 
   <span class="hljs-attribute">createTimeline</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@timeline</span> = <span class="hljs-keyword">new</span> Timeline
+    <span class="hljs-property">@timeline</span> = <span class="hljs-keyword">new</span> Tween
       <span class="hljs-attribute">duration</span>: <span class="hljs-property">@props</span>.duration
       <span class="hljs-attribute">delay</span>:    <span class="hljs-property">@props</span>.delay
       <span class="hljs-attribute">repeat</span>:   <span class="hljs-property">@props</span>.repeat

@@ -1,6 +1,6 @@
 h        = require './h'
-Timeline = require './tween/timeline'
 Tween    = require './tween/tween'
+Timeline = require './tween/timeline'
 
 # ## Spriter
 # Class for toggling opacity on bunch of elements
@@ -132,7 +132,7 @@ class Spriter
   # 
   # @method _createTween
   _createTween:->
-    @_timeline = new Timeline
+    @_timeline = new Tween
       duration:   @_props.duration
       delay:      @_props.delay
       yoyo:       @_props.yoyo
@@ -141,7 +141,7 @@ class Spriter
       onStart:    => @_props.onStart?()
       onComplete: => @_props.onComplete?()
       onUpdate:  (p)=> @_setProgress(p)
-    @_tween = new Tween; @_tween.add(@_timeline)
+    @_tween = new Timeline; @_tween.add(@_timeline)
     !@_props.isRunLess and @_startTween()
   # ---
 

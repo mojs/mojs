@@ -1,13 +1,21 @@
 ## TODO
 
+---
+
 - swap tween and timline names
-- 
-- fix the path-eathing direction calculation
+
 ---
+
 - add motion path stagger
+
 ---
+
 - add easing mix method
+- timeline refactor
+- fix the path-eathing direction calculation
+
 ---
+
 - fix coverage
 - release
   - docs
