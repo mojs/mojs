@@ -339,7 +339,7 @@ class Transit extends bitsMap.map.bit
       opts.onComplete    = => @props.onComplete?.apply @
       opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
       opts.isChained = !o.delay
-      @tween.append new Tween(opts)
+      @timeline.append new Tween(opts)
     @
     
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
@@ -347,13 +347,13 @@ class Transit extends bitsMap.map.bit
   createTween:->
     it = @
     @createTimeline()
-    @tween = new Timeline
+    @timeline = new Timeline
       onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
-    @tween.add @timeline
+    @timeline.add @tween
     !@o.isRunLess and @startTween()
 
   createTimeline:->
-    @timeline = new Tween
+    @tween = new Tween
       duration: @props.duration
       delay:    @props.delay
       repeat:   @props.repeat
@@ -428,11 +428,11 @@ class Transit extends bitsMap.map.bit
     # extend defaults only if options obj was passed
     if o? and Object.keys(o).length
       @extendDefaults(o); @resetTimeline()
-      !isForeign and @tween.recalcDuration()
+      !isForeign and @timeline.recalcDuration()
       @calcSize()
       !isForeign and @setElStyles()
   # defer tween start to wait for "then" functions
-  startTween:-> setTimeout (=> @tween?.start()), 1
+  startTween:-> setTimeout (=> @timeline?.start()), 1
   resetTimeline:->
     # if you reset the timeline options -
     # you should reset the whole "then" chain
@@ -442,7 +442,7 @@ class Transit extends bitsMap.map.bit
       timelineOptions[key] = @props[key]
     timelineOptions.onStart    = @props.onStart
     timelineOptions.onComplete = @props.onComplete
-    @timeline.setProp timelineOptions
+    @tween.setProp timelineOptions
   
   getBitLength:->
     @props.bitLength = @bit.getLength()

@@ -130,12 +130,12 @@ the result to props object</p>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>if timeline is a module with tween property then extract it</p>
+          <div class="wrapper"><p>if timeline is a module with timeline property then extract it</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    timeline = timeline.tween <span class="hljs-keyword">if</span> timeline.tween <span class="hljs-keyword">instanceof</span> Timeline</div></div>
+        <div class="code"><div class="wrapper">    timeline = timeline.timeline <span class="hljs-keyword">if</span> timeline.timeline <span class="hljs-keyword">instanceof</span> Timeline</div></div>
       
       </div>
     
@@ -151,8 +151,8 @@ the result to props object</p>
     <span class="hljs-property">@timelines</span>.push timeline
     <span class="hljs-property">@props</span>.time      = Math.max timeline.props.totalTime, <span class="hljs-property">@props</span>.time
     <span class="hljs-property">@props</span>.totalTime = (<span class="hljs-property">@props</span>.time+<span class="hljs-property">@props</span>.delay)*(<span class="hljs-property">@props</span>.repeat+<span class="hljs-number">1</span>)-<span class="hljs-property">@props</span>.delay
-  <span class="hljs-attribute">remove</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
-    index = <span class="hljs-property">@timelines</span>.indexOf timeline
+  <span class="hljs-attribute">remove</span>:<span class="hljs-function"><span class="hljs-params">(tween)</span>-&gt;</span>
+    index = <span class="hljs-property">@timelines</span>.indexOf tween
     <span class="hljs-keyword">if</span> index <span class="hljs-keyword">isnt</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@timelines</span>.splice index, <span class="hljs-number">1</span></div></div>
       
       </div>

@@ -100,7 +100,7 @@
         obj = t.add(new Tween);
         return expect(obj).toBe(t);
       });
-      it('should treat a module with tween object as a tween', function() {
+      it('should treat a module with timeline object as a timeline', function() {
         var t;
         t = new Timeline;
         t.add(new Transit);

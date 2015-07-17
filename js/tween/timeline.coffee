@@ -34,15 +34,15 @@ class Timeline
     @recalcDuration()
 
   pushTimeline:(timeline, delay)->
-    # if timeline is a module with tween property then extract it
-    timeline = timeline.tween if timeline.tween instanceof Timeline
+    # if timeline is a module with timeline property then extract it
+    timeline = timeline.timeline if timeline.timeline instanceof Timeline
     # add self delay to the timeline
     delay? and timeline.setProp delay: delay
     @timelines.push timeline
     @props.time      = Math.max timeline.props.totalTime, @props.time
     @props.totalTime = (@props.time+@props.delay)*(@props.repeat+1)-@props.delay
-  remove:(timeline)->
-    index = @timelines.indexOf timeline
+  remove:(tween)->
+    index = @timelines.indexOf tween
     if index isnt -1 then @timelines.splice index, 1
   # ---
 

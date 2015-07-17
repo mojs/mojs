@@ -296,7 +296,7 @@ Burst = (function(superClass) {
         }
         this.transits[len].tuneNewOption(option, true);
       }
-      this.tween.recalcDuration();
+      this.timeline.recalcDuration();
     }
     if (this.props.randomAngle || this.props.randomRadius) {
       len = this.transits.length;
@@ -422,7 +422,7 @@ Burst = (function(superClass) {
     i = this.transits.length;
     results = [];
     while (i--) {
-      results.push(this.tween.add(this.transits[i].timeline));
+      results.push(this.timeline.add(this.transits[i].tween));
     }
     return results;
   };
@@ -3585,7 +3585,7 @@ Transit = (function(superClass) {
           return it.tuneOptions(it.history[this.index]);
         };
         opts.isChained = !o.delay;
-        return _this.tween.append(new Tween(opts));
+        return _this.timeline.append(new Tween(opts));
       });
     })(this)(len);
     return this;
@@ -3601,7 +3601,7 @@ Transit = (function(superClass) {
     var it;
     it = this;
     this.createTimeline();
-    this.tween = new Timeline({
+    this.timeline = new Timeline({
       onComplete: (function(_this) {
         return function() {
           var ref;
@@ -3610,12 +3610,12 @@ Transit = (function(superClass) {
         };
       })(this)
     });
-    this.tween.add(this.timeline);
+    this.timeline.add(this.tween);
     return !this.o.isRunLess && this.startTween();
   };
 
   Transit.prototype.createTimeline = function() {
-    return this.timeline = new Tween({
+    return this.tween = new Tween({
       duration: this.props.duration,
       delay: this.props.delay,
       repeat: this.props.repeat,
@@ -3720,7 +3720,7 @@ Transit = (function(superClass) {
     if ((o != null) && Object.keys(o).length) {
       this.extendDefaults(o);
       this.resetTimeline();
-      !isForeign && this.tween.recalcDuration();
+      !isForeign && this.timeline.recalcDuration();
       this.calcSize();
       return !isForeign && this.setElStyles();
     }
@@ -3730,7 +3730,7 @@ Transit = (function(superClass) {
     return setTimeout(((function(_this) {
       return function() {
         var ref;
-        return (ref = _this.tween) != null ? ref.start() : void 0;
+        return (ref = _this.timeline) != null ? ref.start() : void 0;
       };
     })(this)), 1);
   };
@@ -3745,7 +3745,7 @@ Transit = (function(superClass) {
     }
     timelineOptions.onStart = this.props.onStart;
     timelineOptions.onComplete = this.props.onComplete;
-    return this.timeline.setProp(timelineOptions);
+    return this.tween.setProp(timelineOptions);
   };
 
   Transit.prototype.getBitLength = function() {
@@ -3834,8 +3834,8 @@ Timeline = (function() {
   };
 
   Timeline.prototype.pushTimeline = function(timeline, delay) {
-    if (timeline.tween instanceof Timeline) {
-      timeline = timeline.tween;
+    if (timeline.timeline instanceof Timeline) {
+      timeline = timeline.timeline;
     }
     (delay != null) && timeline.setProp({
       delay: delay
@@ -3845,9 +3845,9 @@ Timeline = (function() {
     return this.props.totalTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
   };
 
-  Timeline.prototype.remove = function(timeline) {
+  Timeline.prototype.remove = function(tween) {
     var index;
-    index = this.timelines.indexOf(timeline);
+    index = this.timelines.indexOf(tween);
     if (index !== -1) {
       return this.timelines.splice(index, 1);
     }

@@ -486,10 +486,10 @@ describe 'Burst ->', ->
   describe 'createTween method ->', ->
     it 'should create tween', ->
       burst = new Burst
-      expect(burst.tween).toBeDefined()
-    it 'should add timelines to tween', ->
+      expect(burst.timeline).toBeDefined()
+    it 'should add tweens to timeline', ->
       burst = new Burst
-      expect(burst.tween.timelines.length).toBe 6
+      expect(burst.timeline.timelines.length).toBe 6
     it 'should call startTween method', ->
       burst = new Burst
       spyOn burst, 'startTween'
@@ -606,10 +606,10 @@ describe 'Burst ->', ->
       burst = new Burst
         duration: 400, childOptions: fill: 'deeppink'
       newDuration = [null, 1000, null]
-      spyOn burst.tween, 'recalcDuration'
+      spyOn burst.timeline, 'recalcDuration'
       burst.run duration: 500, childOptions: duration: newDuration
-      expect(burst.tween.recalcDuration).toHaveBeenCalled()
-    it 'should start tween', ->
+      expect(burst.timeline.recalcDuration).toHaveBeenCalled()
+    it 'should start timeline', ->
       burst = new Burst
       spyOn burst, 'startTween'
       burst.run duration: 500

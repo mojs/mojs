@@ -59,7 +59,7 @@ describe 'Timeline ->', ->
       t = new Timeline
       obj = t.add new Tween
       expect(obj).toBe t
-    it 'should treat a module with tween object as a tween',->
+    it 'should treat a module with timeline object as a timeline',->
       t = new Timeline
       t.add new Transit
       expect(t.timelines.length).toBe 1

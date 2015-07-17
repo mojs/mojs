@@ -235,7 +235,7 @@ and not isResetAngles</p>
           option.angle = <span class="hljs-property">@getBitAngle</span> option.angle, len
 
         <span class="hljs-property">@transits</span>[len].tuneNewOption option, <span class="hljs-literal">true</span>
-      <span class="hljs-property">@tween</span>.recalcDuration()
+      <span class="hljs-property">@timeline</span>.recalcDuration()
     <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.randomAngle <span class="hljs-keyword">or</span> <span class="hljs-property">@props</span>.randomRadius
       len = <span class="hljs-property">@transits</span>.length
       <span class="hljs-keyword">while</span>(len--)
@@ -364,7 +364,7 @@ angle in burst for each transit and angleShift</p>
   <span class="hljs-attribute">fillTransform</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-string">"rotate(<span class="hljs-subst">#{<span class="hljs-property">@props</span>.angle}</span>deg) translate(<span class="hljs-subst">#{<span class="hljs-property">@props</span>.shiftX}</span>, <span class="hljs-subst">#{<span class="hljs-property">@props</span>.shiftY}</span>)"</span>
   <span class="hljs-attribute">createTween</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-keyword">super</span>; i = <span class="hljs-property">@transits</span>.length; <span class="hljs-property">@tween</span>.add(<span class="hljs-property">@transits</span>[i].timeline) <span class="hljs-keyword">while</span>(i--)
+    <span class="hljs-keyword">super</span>; i = <span class="hljs-property">@transits</span>.length; <span class="hljs-property">@timeline</span>.add(<span class="hljs-property">@transits</span>[i].tween) <span class="hljs-keyword">while</span>(i--)
     
   <span class="hljs-attribute">calcSize</span>:<span class="hljs-function">-&gt;</span>
     largestSize = -<span class="hljs-number">1</span>
