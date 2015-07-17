@@ -2760,7 +2760,7 @@ Spriter = (function() {
   };
 
   Spriter.prototype.run = function(o) {
-    return this._tween.start();
+    return this._timeline.start();
   };
 
   Spriter.prototype._extendDefaults = function() {
@@ -2779,7 +2779,7 @@ Spriter = (function() {
   };
 
   Spriter.prototype._createTween = function() {
-    this._timeline = new Tween({
+    this._tween = new Tween({
       duration: this._props.duration,
       delay: this._props.delay,
       yoyo: this._props.yoyo,
@@ -2803,15 +2803,15 @@ Spriter = (function() {
         };
       })(this)
     });
-    this._tween = new Timeline;
-    this._tween.add(this._timeline);
+    this._timeline = new Timeline;
+    this._timeline.add(this._tween);
     return !this._props.isRunLess && this._startTween();
   };
 
   Spriter.prototype._startTween = function() {
     return setTimeout(((function(_this) {
       return function() {
-        return _this._tween.start();
+        return _this._timeline.start();
       };
     })(this)), 1);
   };

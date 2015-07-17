@@ -157,7 +157,7 @@
         return expect(sp._frameStep).toBe(.25);
       });
     });
-    describe('tween creation', function() {
+    describe('tween creation ->', function() {
       it('should create timeline and tween', function() {
         var div, div1, div2, sp;
         div = document.createElement('div');
@@ -170,7 +170,7 @@
         });
         expect(sp._timeline instanceof mojs.Timeline).toBe(true);
         expect(sp._tween instanceof mojs.Tween).toBe(true);
-        return expect(sp._tween.timelines[0]).toBe(sp._timeline);
+        return expect(sp._timeline.timelines[0]).toBe(sp._tween);
       });
       it('should start tween', function(dfr) {
         var div, div1, div2, sp;
@@ -296,7 +296,7 @@
         return expect(sp._frames[3].style.opacity).toBe('1');
       });
     });
-    describe('onUpdate callback', function() {
+    describe('onUpdate callback ->', function() {
       it('should be called on every sprite update', function() {
         var div, div1, div2, div3, div4, sp;
         div = document.createElement('div');
@@ -313,7 +313,7 @@
           isRunLess: true
         });
         spyOn(sp._props, 'onUpdate');
-        sp._tween.setProgress(.5);
+        sp._timeline.setProgress(.5);
         return expect(sp._props.onUpdate).toHaveBeenCalled();
       });
       return it('should be called with progress on every sprite update', function() {
@@ -335,7 +335,7 @@
             return progress = p;
           }
         });
-        sp._tween.setProgress(.5);
+        sp._timeline.setProgress(.5);
         return expect(progress.toFixed(1)).toBe('0.5');
       });
     });

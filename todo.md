@@ -2,10 +2,6 @@
 
 ---
 
-- swap tween and timline names
-
----
-
 - add motion path stagger
 
 ---
