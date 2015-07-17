@@ -126,7 +126,7 @@ describe 'Stagger ->', ->
 
     it 'should parse delay and duration', ->
       s = new Stagger els: els
-      expect(s.tween).toBeDefined()
+      expect(s.timeline).toBeDefined()
 
     # it 'should call super createTween method', ->
     #   s = new Stagger els: els
@@ -136,7 +136,7 @@ describe 'Stagger ->', ->
 
     it 'should add timelines to the tween', ->
       s = new Stagger els: els
-      expect(s.tween.timelines.length).toBe 2
+      expect(s.timeline.timelines.length).toBe 2
 
     it 'should call startTween', ->
       s = new Stagger els: els

@@ -60,10 +60,10 @@ class Stagger extends Transit
   createTween:->
     # optimization TODO:
     # the stagger doesnt need the self timeline
-    @tween = new Timeline
+    @timeline = new Timeline
     i = -1
     while(i++ < @transits.length-1)
-      @tween.add(@transits[i].tween)
+      @timeline.add(@transits[i].tween)
     !@o.isRunLess and @startTween()
 
   # setProgress:->
