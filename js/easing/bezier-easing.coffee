@@ -1,4 +1,4 @@
-h = require './h'
+h = require '../h'
 
 ###*
  * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u

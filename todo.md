@@ -8,7 +8,7 @@
 
 - add easing mix method
 - timeline refactor
-- fix the path-eathing direction calculation
+- normalize path for path-easing
 
 ---
 

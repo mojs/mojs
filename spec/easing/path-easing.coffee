@@ -146,7 +146,6 @@ describe 'PathEasing ->', ->
     it 'should call self recursivelly if not precise enough
         but no more then _approximateMax value', ->
       pe = new PathEasing 'M0,100 100,0', precompute: 100, eps: .00000001
-      pe.isIt
       p = 0.015
       start = {point: {x: 0.01}, length: 10}
       end   = {point: {x: 0.5}, length: 20}
@@ -165,23 +164,30 @@ describe 'PathEasing ->', ->
       bounds = pe1._findBounds pe1._samples, progress
       expect(pe1._boundsStartIndex).toBeGreaterThan 1400
       expect(pe1._boundsPrevProgress).toBe .735
-    
     it 'should return [0] item if progress is 0', ->
       pe1 = new PathEasing 'M0,100 100,0'
       progress = 0
       bounds = pe1._findBounds pe1._samples, progress
       expect(bounds.start).toBeDefined()
       expect(bounds.start.point.x).toBeCloseTo 0, 1
-
-    it 'should reset previous start index if current
-        progress is smaller then previous one', ->
+    it 'should cache index in reverse order', ->
       pe1 = new PathEasing 'M0,100 100,0'
-      pe1.isIt = true
-      progress = .735; newProgress = progress - .1
+      progress = .735; newProgress = progress - .2
       bounds = pe1._findBounds pe1._samples, progress
       bounds = pe1._findBounds pe1._samples, newProgress
-      expect(pe1._boundsStartIndex).toBe   0
+      expect(pe1._boundsStartIndex).toBeLessThan 1400
       expect(pe1._boundsPrevProgress).toBe newProgress
+    it 'should cache previous return object', ->
+      pe1 = new PathEasing 'M0,100 100,0'
+      bounds = pe1._findBounds pe1._samples, .735
+      expect(pe1._prevBounds).toBe bounds
+    it 'should detect if previous progress is the current one', ->
+      pe1 = new PathEasing 'M0,100 100,0'
+      progress = .735; newProgress = progress - .2
+      bounds1 = pe1._findBounds pe1._samples, progress
+      bounds2 = pe1._findBounds pe1._samples, progress
+      expect(bounds1).toBe bounds2
+      
   describe '_resolveY method', ->
     it 'should resolve Y from point', ->
       pe1 = new PathEasing('M0,100 100,0'); y = 10

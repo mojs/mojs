@@ -700,6 +700,19 @@ describe 'Timeline ->', ->
   #     t.append new Tween delay: 400
   #     expect(t.timelines[1].o.delay).toBe 1500
 
-      
+  describe 'getDimentions method ->', ->
+    it 'should set startTime and endTime', ->
+      t = new Timeline
+      t.add new Tween
+      t.getDimentions()
+      expect(t.props.startTime).toBeDefined()
+      expect(t.props.endTime)  .toBeDefined()
+
+    it 'should have time option to start from', ->
+      t = new Timeline delay: 600
+      t.add new Tween
+      time = performance.now() + 500
+      t.getDimentions(time)
+      expect(t.props.startTime).toBe time + 600
 
 

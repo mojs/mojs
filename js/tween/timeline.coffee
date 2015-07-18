@@ -41,8 +41,8 @@ class Timeline
     @timelines.push timeline
     @props.time      = Math.max timeline.props.totalTime, @props.time
     @props.totalTime = (@props.time+@props.delay)*(@props.repeat+1)-@props.delay
-  remove:(tween)->
-    index = @timelines.indexOf tween
+  remove:(timeline)->
+    index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
   # ---
 
@@ -127,10 +127,6 @@ class Timeline
     # if completed
     if time is @props.endTime
       @onUpdate?(1); @o.onComplete?.apply(@); return true
-  
-  startTimelines:(time)->
-    i = @timelines.length
-    @timelines[i].start(time or @props.startTime) while(i--)
 
   start:(time)->
     @setStartTime(time); !time and (t.add(@); @state = 'play')
@@ -144,14 +140,18 @@ class Timeline
   setStartTime:(time)->
     @getDimentions(time); @o.onStart?.apply(@); @startTimelines(time)
 
+  startTimelines:(time)->
+    i = @timelines.length
+    time ?= @props.startTime
+    @timelines[i].start(time) while(i--)
+
   setProgress:(progress)->
     if !@props.startTime? then @setStartTime()
-    progress = Math.max progress, 0
-    progress = Math.min progress, 1
+    progress = h.clamp progress, 0, 1
     @update @props.startTime + progress*@props.totalTime
   getDimentions:(time)->
-    @props.startTime = (if time? then time else performance.now())+@props.delay
-    @props.startTime = performance.now() + @props.delay
+    time ?= performance.now()
+    @props.startTime = time+@props.delay
     @props.endTime = @props.startTime + @props.totalTime
 
 module.exports = Timeline

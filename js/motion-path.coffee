@@ -3,7 +3,6 @@
 #
 # @class MotionPath
 h         = require './h'
-easing    = require './easing'
 resize    = require './vendor/resize'
 Tween     = require './tween/tween'
 Timeline  = require './tween/timeline'

@@ -1,4 +1,4 @@
-h = require './h'
+h = require '../h'
 
 # todo
 #   - optimize _findBounds method caching for reverse order
@@ -71,26 +71,38 @@ class PathEasing
   #         - start {Number}: lowest boundry
   #         - end   {Number}: highest boundry
   _findBounds:(array, p)->
-    start = null; end = null
-    len = array.length
+    return @_prevBounds if p is @_boundsPrevProgress
+
+    start = null; end = null; len = array.length
     # get the start index in the array
-    # reset the cached prev progress if new progress
+    # reset the cached prev index if new progress
     # is smaller then previous one or it is not defined
-    @_boundsStartIndex = 0 if @_boundsPrevProgress > p or !@_boundsStartIndex?
+    @_boundsStartIndex ?= 0
+    
+    # get start and end indexes of the loop and save the direction
+    if @_boundsPrevProgress > p then loopEnd = 0; direction = 'reverse'
+    else loopEnd = len; direction = 'forward'
+
     # loop thru the array from the @_boundsStartIndex
-    for i in [@_boundsStartIndex...len]
-      value = array[i]
+    for i in [@_boundsStartIndex...loopEnd]
+      value = array[i]; pointX = value.point.x/@_rect; pointP = p
+      # if direction is reverse swap pointX and pointP
+      # for if statement
+      if direction is 'reverse'
+        buffer = pointX; pointX = pointP; pointP = buffer
+        # the next statement is nicer but it creates
+        # a new object, so bothers GC
+        # {pointX, pointP} = {pointX: pointP, pointP: pointX}
       # save the latest smaller value as start value
-      if value.point.x/@_rect < p
-        start = value
-        # cache the bounds start index for further usage
-        @_boundsStartIndex = i if @_boundsPrevProgress < p
+      if pointX < pointP
+        start = value; @_boundsStartIndex = i
       # save the first larger value as end value
       # and break immediately
       else end = value; break
     @_boundsPrevProgress = p
+    # return the first item if start wasn't found
     start ?= array[0]
-    start: start, end: end
+    @_prevBounds = start: start, end: end
   # ---
 
   # Loop thru path trying to find the most closer x

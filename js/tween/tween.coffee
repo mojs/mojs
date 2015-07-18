@@ -1,4 +1,4 @@
-easingModule = require '../easing'
+easingModule = require '../easing/easing'
 h            = require '../h'
 t            = require './tweener'
 
@@ -23,7 +23,8 @@ class Tween
   extendDefaults:-> h.extend(@o, @defaults); @onUpdate = @o.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
-    @props.startTime = (if time? then time else performance.now()) + @o.delay
+    time ?= performance.now()
+    @props.startTime = time + @o.delay
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->

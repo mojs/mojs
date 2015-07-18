@@ -1192,7 +1192,7 @@
         return expect(t.props.totalTime).toBe(totalTime);
       });
     });
-    return describe('delay option ->', function() {
+    describe('delay option ->', function() {
       return it('should increase totalTime', function() {
         var t;
         t = new Timeline({
@@ -1201,6 +1201,26 @@
         });
         t.add(new Tween);
         return expect(t.props.totalTime).toBe(11000);
+      });
+    });
+    return describe('getDimentions method ->', function() {
+      it('should set startTime and endTime', function() {
+        var t;
+        t = new Timeline;
+        t.add(new Tween);
+        t.getDimentions();
+        expect(t.props.startTime).toBeDefined();
+        return expect(t.props.endTime).toBeDefined();
+      });
+      return it('should have time option to start from', function() {
+        var t, time;
+        t = new Timeline({
+          delay: 600
+        });
+        t.add(new Tween);
+        time = performance.now() + 500;
+        t.getDimentions(time);
+        return expect(t.props.startTime).toBe(time + 600);
       });
     });
   });

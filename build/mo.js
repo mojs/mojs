@@ -1,184 +1,12 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.132.2 
+	0.132.3 
 */
 
 (function(f){
 if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.yes = f()}})(function(){var define,module,exports;return (function e(t,n,r){
 function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
-var BezierEasing, bezierEasing, h,
-  indexOf = [].indexOf || 
-function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-h = require('./h');
-
-/**
- * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
- * Adopted from https://github.com/gre/bezier-easing
- */
-
-BezierEasing = (function() {
-  function BezierEasing(o) {
-    this.vars();
-    return this.generate;
-  }
-
-  BezierEasing.prototype.vars = function() {
-    return this.generate = h.bind(this.generate, this);
-  };
-
-  BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
-    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, binarySubdivide, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute, str;
-    if (arguments.length < 4) {
-      return this.error('Bezier function expects 4 arguments');
-    }
-    for (i = j = 0; j < 4; i = ++j) {
-      arg = arguments[i];
-      if (typeof arg !== "number" || isNaN(arg) || !isFinite(arg)) {
-        return this.error('Bezier function expects 4 arguments');
-      }
-    }
-    if (mX1 < 0 || mX1 > 1 || mX2 < 0 || mX2 > 1) {
-      return this.error('Bezier x values should be > 0 and < 1');
-    }
-    NEWTON_ITERATIONS = 4;
-    NEWTON_MIN_SLOPE = 0.001;
-    SUBDIVISION_PRECISION = 0.0000001;
-    SUBDIVISION_MAX_ITERATIONS = 10;
-    kSplineTableSize = 11;
-    kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
-    float32ArraySupported = indexOf.call(global, 'Float32Array') >= 0;
-    A = function(aA1, aA2) {
-      return 1.0 - 3.0 * aA2 + 3.0 * aA1;
-    };
-    B = function(aA1, aA2) {
-      return 3.0 * aA2 - 6.0 * aA1;
-    };
-    C = function(aA1) {
-      return 3.0 * aA1;
-    };
-    calcBezier = function(aT, aA1, aA2) {
-      return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
-    };
-    getSlope = function(aT, aA1, aA2) {
-      return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
-    };
-    newtonRaphsonIterate = function(aX, aGuessT) {
-      var currentSlope, currentX;
-      i = 0;
-      while (i < NEWTON_ITERATIONS) {
-        currentSlope = getSlope(aGuessT, mX1, mX2);
-
-        /* istanbul ignore if */
-        if (currentSlope === 0.0) {
-          return aGuessT;
-        }
-        currentX = calcBezier(aGuessT, mX1, mX2) - aX;
-        aGuessT -= currentX / currentSlope;
-        ++i;
-      }
-      return aGuessT;
-    };
-    calcSampleValues = function() {
-      i = 0;
-      while (i < kSplineTableSize) {
-        mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
-        ++i;
-      }
-    };
-
-    binarySubdivide = function(aX, aA, aB) {
-      var currentT, currentX, isBig;
-      currentX = void 0;
-      currentT = void 0;
-      i = 0;
-      while (true) {
-        currentT = aA + (aB - aA) / 2.0;
-        currentX = calcBezier(currentT, mX1, mX2) - aX;
-        if (currentX > 0.0) {
-          aB = currentT;
-        } else {
-          aA = currentT;
-        }
-        isBig = Math.abs(currentX) > SUBDIVISION_PRECISION;
-        if (!(isBig && ++i < SUBDIVISION_MAX_ITERATIONS)) {
-          break;
-        }
-      }
-      return currentT;
-    };
-    getTForX = function(aX) {
-      var currentSample, delta, dist, guessForT, initialSlope, intervalStart, lastSample;
-      intervalStart = 0.0;
-      currentSample = 1;
-      lastSample = kSplineTableSize - 1;
-      while (currentSample !== lastSample && mSampleValues[currentSample] <= aX) {
-        intervalStart += kSampleStepSize;
-        ++currentSample;
-      }
-      --currentSample;
-      delta = mSampleValues[currentSample + 1] - mSampleValues[currentSample];
-      dist = (aX - mSampleValues[currentSample]) / delta;
-      guessForT = intervalStart + dist * kSampleStepSize;
-      initialSlope = getSlope(guessForT, mX1, mX2);
-      if (initialSlope >= NEWTON_MIN_SLOPE) {
-        return newtonRaphsonIterate(aX, guessForT);
-      } else {
-
-        if (initialSlope === 0.0) {
-          return guessForT;
-        } else {
-          return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize);
-        }
-      }
-    };
-    precompute = function() {
-      var _precomputed;
-      _precomputed = true;
-      if (mX1 !== mY1 || mX2 !== mY2) {
-        calcSampleValues();
-      }
-    };
-    mSampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
-    _precomputed = false;
-    f = function(aX) {
-      if (!_precomputed) {
-        precompute();
-      }
-      if (mX1 === mY1 && mX2 === mY2) {
-        return aX;
-      }
-      if (aX === 0) {
-        return 0;
-      }
-      if (aX === 1) {
-        return 1;
-      }
-      return calcBezier(getTForX(aX), mY1, mY2);
-    };
-    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
-    f.toStr = function() {
-      return str;
-    };
-    return f;
-  };
-
-  BezierEasing.prototype.error = function(msg) {
-    return h.error(msg);
-  };
-
-  return BezierEasing;
-
-})();
-
-bezierEasing = new BezierEasing;
-
-module.exports = bezierEasing;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./h":4}],2:[function(require,module,exports){
 
 var Burst, Swirl, Transit, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -523,7 +351,179 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":4,"./shapes/bitsMap":11,"./swirl":21,"./transit":22}],3:[function(require,module,exports){
+},{"./h":5,"./shapes/bitsMap":11,"./swirl":21,"./transit":22}],2:[function(require,module,exports){
+(function (global){
+var BezierEasing, bezierEasing, h,
+  indexOf = [].indexOf || 
+function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+h = require('../h');
+
+/**
+ * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
+ * Adopted from https://github.com/gre/bezier-easing
+ */
+
+BezierEasing = (function() {
+  function BezierEasing(o) {
+    this.vars();
+    return this.generate;
+  }
+
+  BezierEasing.prototype.vars = function() {
+    return this.generate = h.bind(this.generate, this);
+  };
+
+  BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
+    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, binarySubdivide, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute, str;
+    if (arguments.length < 4) {
+      return this.error('Bezier function expects 4 arguments');
+    }
+    for (i = j = 0; j < 4; i = ++j) {
+      arg = arguments[i];
+      if (typeof arg !== "number" || isNaN(arg) || !isFinite(arg)) {
+        return this.error('Bezier function expects 4 arguments');
+      }
+    }
+    if (mX1 < 0 || mX1 > 1 || mX2 < 0 || mX2 > 1) {
+      return this.error('Bezier x values should be > 0 and < 1');
+    }
+    NEWTON_ITERATIONS = 4;
+    NEWTON_MIN_SLOPE = 0.001;
+    SUBDIVISION_PRECISION = 0.0000001;
+    SUBDIVISION_MAX_ITERATIONS = 10;
+    kSplineTableSize = 11;
+    kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
+    float32ArraySupported = indexOf.call(global, 'Float32Array') >= 0;
+    A = function(aA1, aA2) {
+      return 1.0 - 3.0 * aA2 + 3.0 * aA1;
+    };
+    B = function(aA1, aA2) {
+      return 3.0 * aA2 - 6.0 * aA1;
+    };
+    C = function(aA1) {
+      return 3.0 * aA1;
+    };
+    calcBezier = function(aT, aA1, aA2) {
+      return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
+    };
+    getSlope = function(aT, aA1, aA2) {
+      return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
+    };
+    newtonRaphsonIterate = function(aX, aGuessT) {
+      var currentSlope, currentX;
+      i = 0;
+      while (i < NEWTON_ITERATIONS) {
+        currentSlope = getSlope(aGuessT, mX1, mX2);
+
+        /* istanbul ignore if */
+        if (currentSlope === 0.0) {
+          return aGuessT;
+        }
+        currentX = calcBezier(aGuessT, mX1, mX2) - aX;
+        aGuessT -= currentX / currentSlope;
+        ++i;
+      }
+      return aGuessT;
+    };
+    calcSampleValues = function() {
+      i = 0;
+      while (i < kSplineTableSize) {
+        mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
+        ++i;
+      }
+    };
+
+    binarySubdivide = function(aX, aA, aB) {
+      var currentT, currentX, isBig;
+      currentX = void 0;
+      currentT = void 0;
+      i = 0;
+      while (true) {
+        currentT = aA + (aB - aA) / 2.0;
+        currentX = calcBezier(currentT, mX1, mX2) - aX;
+        if (currentX > 0.0) {
+          aB = currentT;
+        } else {
+          aA = currentT;
+        }
+        isBig = Math.abs(currentX) > SUBDIVISION_PRECISION;
+        if (!(isBig && ++i < SUBDIVISION_MAX_ITERATIONS)) {
+          break;
+        }
+      }
+      return currentT;
+    };
+    getTForX = function(aX) {
+      var currentSample, delta, dist, guessForT, initialSlope, intervalStart, lastSample;
+      intervalStart = 0.0;
+      currentSample = 1;
+      lastSample = kSplineTableSize - 1;
+      while (currentSample !== lastSample && mSampleValues[currentSample] <= aX) {
+        intervalStart += kSampleStepSize;
+        ++currentSample;
+      }
+      --currentSample;
+      delta = mSampleValues[currentSample + 1] - mSampleValues[currentSample];
+      dist = (aX - mSampleValues[currentSample]) / delta;
+      guessForT = intervalStart + dist * kSampleStepSize;
+      initialSlope = getSlope(guessForT, mX1, mX2);
+      if (initialSlope >= NEWTON_MIN_SLOPE) {
+        return newtonRaphsonIterate(aX, guessForT);
+      } else {
+
+        if (initialSlope === 0.0) {
+          return guessForT;
+        } else {
+          return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize);
+        }
+      }
+    };
+    precompute = function() {
+      var _precomputed;
+      _precomputed = true;
+      if (mX1 !== mY1 || mX2 !== mY2) {
+        calcSampleValues();
+      }
+    };
+    mSampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
+    _precomputed = false;
+    f = function(aX) {
+      if (!_precomputed) {
+        precompute();
+      }
+      if (mX1 === mY1 && mX2 === mY2) {
+        return aX;
+      }
+      if (aX === 0) {
+        return 0;
+      }
+      if (aX === 1) {
+        return 1;
+      }
+      return calcBezier(getTForX(aX), mY1, mY2);
+    };
+    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
+    f.toStr = function() {
+      return str;
+    };
+    return f;
+  };
+
+  BezierEasing.prototype.error = function(msg) {
+    return h.error(msg);
+  };
+
+  return BezierEasing;
+
+})();
+
+bezierEasing = new BezierEasing;
+
+module.exports = bezierEasing;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../h":5}],3:[function(require,module,exports){
 var Easing, PathEasing, bezier, easing;
 
 bezier = require('./bezier-easing');
@@ -771,7 +771,173 @@ easing = new Easing;
 
 module.exports = easing;
 
-},{"./bezier-easing":1,"./path-easing":7}],4:[function(require,module,exports){
+},{"./bezier-easing":2,"./path-easing":4}],4:[function(require,module,exports){
+var PathEasing, h;
+
+h = require('../h');
+
+PathEasing = (function() {
+  PathEasing.prototype._vars = function() {
+    this._precompute = h.clamp(this.o.precompute || 2000, 100, 10000);
+    this._step = 1 / this._precompute;
+    this._rect = this.o.rect || 100;
+    this._approximateMax = this.o.approximateMax || 5;
+    this._eps = this.o.eps || 0.001;
+    return this._boundsPrevProgress = -1;
+  };
+
+  function PathEasing(path, o1) {
+    var ref;
+    this.o = o1 != null ? o1 : {};
+    if (path === 'creator') {
+      return;
+    }
+    this.path = h.parsePath(path);
+    if (this.path == null) {
+      return h.error('Error while parsing the path');
+    }
+    this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
+    this.sample = h.bind(this.sample, this);
+    this._hardSample = h.bind(this._hardSample, this);
+    this._vars();
+    this._preSample();
+    this;
+  }
+
+  PathEasing.prototype._preSample = function() {
+    var i, j, length, point, progress, ref, results;
+    this._samples = [];
+    results = [];
+    for (i = j = 0, ref = this._precompute; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+      progress = i * this._step;
+      length = this.pathLength * progress;
+      point = this.path.getPointAtLength(length);
+      results.push(this._samples[i] = {
+        point: point,
+        length: length,
+        progress: progress
+      });
+    }
+    return results;
+  };
+
+  PathEasing.prototype._findBounds = function(array, p) {
+    var buffer, direction, end, i, j, len, loopEnd, pointP, pointX, ref, ref1, start, value;
+    if (p === this._boundsPrevProgress) {
+      return this._prevBounds;
+    }
+    start = null;
+    end = null;
+    len = array.length;
+    if (this._boundsStartIndex == null) {
+      this._boundsStartIndex = 0;
+    }
+    if (this._boundsPrevProgress > p) {
+      loopEnd = 0;
+      direction = 'reverse';
+    } else {
+      loopEnd = len;
+      direction = 'forward';
+    }
+    for (i = j = ref = this._boundsStartIndex, ref1 = loopEnd; ref <= ref1 ? j < ref1 : j > ref1; i = ref <= ref1 ? ++j : --j) {
+      value = array[i];
+      pointX = value.point.x / this._rect;
+      pointP = p;
+      if (direction === 'reverse') {
+        buffer = pointX;
+        pointX = pointP;
+        pointP = buffer;
+      }
+      if (pointX < pointP) {
+        start = value;
+        this._boundsStartIndex = i;
+      } else {
+        end = value;
+        break;
+      }
+    }
+    this._boundsPrevProgress = p;
+    if (start == null) {
+      start = array[0];
+    }
+    return this._prevBounds = {
+      start: start,
+      end: end
+    };
+  };
+
+  PathEasing.prototype.sample = function(p) {
+    var bounds, res;
+    p = h.clamp(p, 0, 1);
+    bounds = this._findBounds(this._samples, p);
+    res = this._checkIfBoundsCloseEnough(p, bounds);
+    if (res != null) {
+      return res;
+    }
+    return this._findApproximate(p, bounds.start, bounds.end);
+  };
+
+  PathEasing.prototype._checkIfBoundsCloseEnough = function(p, bounds) {
+    var point, y;
+    point = void 0;
+    y = this._checkIfPointCloseEnough(p, bounds.start.point);
+    if (y != null) {
+      return y;
+    }
+    return this._checkIfPointCloseEnough(p, bounds.end.point);
+  };
+
+  PathEasing.prototype._checkIfPointCloseEnough = function(p, point) {
+    if (h.closeEnough(p, point.x / this._rect, this._eps)) {
+      return this._resolveY(point);
+    }
+  };
+
+  PathEasing.prototype._approximate = function(start, end, p) {
+    var deltaP, percentP;
+    deltaP = end.point.x - start.point.x;
+    percentP = (p - (start.point.x / 100)) / (deltaP / 100);
+    return start.length + percentP * (end.length - start.length);
+  };
+
+  PathEasing.prototype._findApproximate = function(p, start, end, approximateMax) {
+    var approximation, args, newPoint, point, x;
+    if (approximateMax == null) {
+      approximateMax = this._approximateMax;
+    }
+    approximation = this._approximate(start, end, p);
+    point = this.path.getPointAtLength(approximation);
+    x = point.x / 100;
+    if (h.closeEnough(p, x, this._eps)) {
+      return this._resolveY(point);
+    } else {
+      if (--approximateMax < 1) {
+        return this._resolveY(point);
+      }
+      newPoint = {
+        point: point,
+        length: approximation
+      };
+      args = p < x ? [p, start, newPoint, approximateMax] : [p, newPoint, end, approximateMax];
+      return this._findApproximate.apply(this, args);
+    }
+  };
+
+  PathEasing.prototype._resolveY = function(point) {
+    return 1 - (point.y / this._rect);
+  };
+
+  PathEasing.prototype.create = function(path, o) {
+    return (new PathEasing(path, o)).sample;
+  };
+
+  return PathEasing;
+
+})();
+
+module.exports = PathEasing;
+
+},{"../h":5}],5:[function(require,module,exports){
 var Helpers, h;
 
 Helpers = (function() {
@@ -1335,11 +1501,11 @@ h = new Helpers;
 
 module.exports = h;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var mojs;
 
 mojs = {
-  revision: '0.132.2',
+  revision: '0.132.3',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1360,7 +1526,7 @@ mojs = {
   Tween: require('./tween/tween'),
   Timeline: require('./tween/timeline'),
   tweener: require('./tween/tweener'),
-  easing: require('./easing')
+  easing: require('./easing/easing')
 };
 
 mojs.h = mojs.helpers;
@@ -1379,13 +1545,11 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./spriter":19,"./stagger":20,"./swirl":21,"./transit":22,"./tween/timeline":23,"./tween/tween":24,"./tween/tweener":25}],6:[function(require,module,exports){
-var MotionPath, Timeline, Tween, easing, h, resize,
+},{"./burst":1,"./easing/easing":3,"./h":5,"./motion-path":7,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./spriter":19,"./stagger":20,"./swirl":21,"./transit":22,"./tween/timeline":23,"./tween/tween":24,"./tween/tweener":25}],7:[function(require,module,exports){
+var MotionPath, Timeline, Tween, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 h = require('./h');
-
-easing = require('./easing');
 
 resize = require('./vendor/resize');
 
@@ -1909,158 +2073,7 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./easing":3,"./h":4,"./tween/timeline":23,"./tween/tween":24,"./vendor/resize":26}],7:[function(require,module,exports){
-var PathEasing, h;
-
-h = require('./h');
-
-PathEasing = (function() {
-  PathEasing.prototype._vars = function() {
-    this._precompute = h.clamp(this.o.precompute || 2000, 100, 10000);
-    this._step = 1 / this._precompute;
-    this._rect = this.o.rect || 100;
-    this._approximateMax = this.o.approximateMax || 5;
-    this._eps = this.o.eps || 0.001;
-    return this._boundsPrevProgress = -1;
-  };
-
-  function PathEasing(path, o1) {
-    var ref;
-    this.o = o1 != null ? o1 : {};
-    if (path === 'creator') {
-      return;
-    }
-    this.path = h.parsePath(path);
-    if (this.path == null) {
-      return h.error('Error while parsing the path');
-    }
-    this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
-    this.sample = h.bind(this.sample, this);
-    this._hardSample = h.bind(this._hardSample, this);
-    this._vars();
-    this._preSample();
-    this;
-  }
-
-  PathEasing.prototype._preSample = function() {
-    var i, j, length, point, progress, ref, results;
-    this._samples = [];
-    results = [];
-    for (i = j = 0, ref = this._precompute; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-      progress = i * this._step;
-      length = this.pathLength * progress;
-      point = this.path.getPointAtLength(length);
-      results.push(this._samples[i] = {
-        point: point,
-        length: length,
-        progress: progress
-      });
-    }
-    return results;
-  };
-
-  PathEasing.prototype._findBounds = function(array, p) {
-    var end, i, j, len, ref, ref1, start, value;
-    start = null;
-    end = null;
-    len = array.length;
-    if (this._boundsPrevProgress > p || (this._boundsStartIndex == null)) {
-      this._boundsStartIndex = 0;
-    }
-    for (i = j = ref = this._boundsStartIndex, ref1 = len; ref <= ref1 ? j < ref1 : j > ref1; i = ref <= ref1 ? ++j : --j) {
-      value = array[i];
-      if (value.point.x / this._rect < p) {
-        start = value;
-        if (this._boundsPrevProgress < p) {
-          this._boundsStartIndex = i;
-        }
-      } else {
-        end = value;
-        break;
-      }
-    }
-    this._boundsPrevProgress = p;
-    if (start == null) {
-      start = array[0];
-    }
-    return {
-      start: start,
-      end: end
-    };
-  };
-
-  PathEasing.prototype.sample = function(p) {
-    var bounds, res;
-    p = h.clamp(p, 0, 1);
-    bounds = this._findBounds(this._samples, p);
-    res = this._checkIfBoundsCloseEnough(p, bounds);
-    if (res != null) {
-      return res;
-    }
-    return this._findApproximate(p, bounds.start, bounds.end);
-  };
-
-  PathEasing.prototype._checkIfBoundsCloseEnough = function(p, bounds) {
-    var point, y;
-    point = void 0;
-    y = this._checkIfPointCloseEnough(p, bounds.start.point);
-    if (y != null) {
-      return y;
-    }
-    return this._checkIfPointCloseEnough(p, bounds.end.point);
-  };
-
-  PathEasing.prototype._checkIfPointCloseEnough = function(p, point) {
-    if (h.closeEnough(p, point.x / this._rect, this._eps)) {
-      return this._resolveY(point);
-    }
-  };
-
-  PathEasing.prototype._approximate = function(start, end, p) {
-    var deltaP, percentP;
-    deltaP = end.point.x - start.point.x;
-    percentP = (p - (start.point.x / 100)) / (deltaP / 100);
-    return start.length + percentP * (end.length - start.length);
-  };
-
-  PathEasing.prototype._findApproximate = function(p, start, end, approximateMax) {
-    var approximation, args, newPoint, point, x;
-    if (approximateMax == null) {
-      approximateMax = this._approximateMax;
-    }
-    approximation = this._approximate(start, end, p);
-    point = this.path.getPointAtLength(approximation);
-    x = point.x / 100;
-    if (h.closeEnough(p, x, this._eps)) {
-      return this._resolveY(point);
-    } else {
-      if (--approximateMax < 1) {
-        return this._resolveY(point);
-      }
-      newPoint = {
-        point: point,
-        length: approximation
-      };
-      args = p < x ? [p, start, newPoint, approximateMax] : [p, newPoint, end, approximateMax];
-      return this._findApproximate.apply(this, args);
-    }
-  };
-
-  PathEasing.prototype._resolveY = function(point) {
-    return 1 - (point.y / this._rect);
-  };
-
-  PathEasing.prototype.create = function(path, o) {
-    return (new PathEasing(path, o)).sample;
-  };
-
-  return PathEasing;
-
-})();
-
-module.exports = PathEasing;
-
-},{"./h":4}],8:[function(require,module,exports){
+},{"./h":5,"./tween/timeline":23,"./tween/tween":24,"./vendor/resize":26}],8:[function(require,module,exports){
 
 (function(root) {
   var offset, ref, ref1;
@@ -2316,7 +2329,7 @@ Bit = (function() {
 
 module.exports = Bit;
 
-},{"../h":4}],11:[function(require,module,exports){
+},{"../h":5}],11:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -2363,7 +2376,7 @@ BitsMap = (function() {
 
 module.exports = new BitsMap;
 
-},{"../h":4,"./bit":10,"./circle":12,"./cross":13,"./equal":14,"./line":15,"./polygon":16,"./rect":17,"./zigzag":18}],12:[function(require,module,exports){
+},{"../h":5,"./bit":10,"./circle":12,"./cross":13,"./equal":14,"./line":15,"./polygon":16,"./rect":17,"./zigzag":18}],12:[function(require,module,exports){
 
 var Bit, Circle,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2599,7 +2612,7 @@ Polygon = (function(superClass) {
 
 module.exports = Polygon;
 
-},{"../h":4,"./bit":10}],17:[function(require,module,exports){
+},{"../h":5,"./bit":10}],17:[function(require,module,exports){
 
 var Bit, Rect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2822,7 +2835,7 @@ Spriter = (function() {
 
 module.exports = Spriter;
 
-},{"./h":4,"./tween/timeline":23,"./tween/tween":24}],20:[function(require,module,exports){
+},{"./h":5,"./tween/timeline":23,"./tween/tween":24}],20:[function(require,module,exports){
 
 var Stagger, Timeline, Transit, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2958,7 +2971,7 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":4,"./transit":22,"./tween/timeline":23}],21:[function(require,module,exports){
+},{"./h":5,"./transit":22,"./tween/timeline":23}],21:[function(require,module,exports){
 
 var Swirl, Transit,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -3740,7 +3753,7 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
+},{"./h":5,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
 var Timeline, h, t,
   slice = [].slice;
 
@@ -3826,9 +3839,9 @@ Timeline = (function() {
     return this.props.totalTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
   };
 
-  Timeline.prototype.remove = function(tween) {
+  Timeline.prototype.remove = function(timeline) {
     var index;
-    index = this.timelines.indexOf(tween);
+    index = this.timelines.indexOf(timeline);
     if (index !== -1) {
       return this.timelines.splice(index, 1);
     }
@@ -3929,16 +3942,6 @@ Timeline = (function() {
     }
   };
 
-  Timeline.prototype.startTimelines = function(time) {
-    var i, results;
-    i = this.timelines.length;
-    results = [];
-    while (i--) {
-      results.push(this.timelines[i].start(time || this.props.startTime));
-    }
-    return results;
-  };
-
   Timeline.prototype.start = function(time) {
     this.setStartTime(time);
     !time && (t.add(this), this.state = 'play');
@@ -3977,18 +3980,32 @@ Timeline = (function() {
     return this.startTimelines(time);
   };
 
+  Timeline.prototype.startTimelines = function(time) {
+    var i, results;
+    i = this.timelines.length;
+    if (time == null) {
+      time = this.props.startTime;
+    }
+    results = [];
+    while (i--) {
+      results.push(this.timelines[i].start(time));
+    }
+    return results;
+  };
+
   Timeline.prototype.setProgress = function(progress) {
     if (this.props.startTime == null) {
       this.setStartTime();
     }
-    progress = Math.max(progress, 0);
-    progress = Math.min(progress, 1);
+    progress = h.clamp(progress, 0, 1);
     return this.update(this.props.startTime + progress * this.props.totalTime);
   };
 
   Timeline.prototype.getDimentions = function(time) {
-    this.props.startTime = (time != null ? time : performance.now()) + this.props.delay;
-    this.props.startTime = performance.now() + this.props.delay;
+    if (time == null) {
+      time = performance.now();
+    }
+    this.props.startTime = time + this.props.delay;
     return this.props.endTime = this.props.startTime + this.props.totalTime;
   };
 
@@ -3998,10 +4015,10 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../h":4,"./tweener":25}],24:[function(require,module,exports){
+},{"../h":5,"./tweener":25}],24:[function(require,module,exports){
 var Tween, easingModule, h, t;
 
-easingModule = require('../easing');
+easingModule = require('../easing/easing');
 
 h = require('../h');
 
@@ -4048,7 +4065,10 @@ Tween = (function() {
   Tween.prototype.start = function(time) {
     this.isCompleted = false;
     this.isStarted = false;
-    this.props.startTime = (time != null ? time : performance.now()) + this.o.delay;
+    if (time == null) {
+      time = performance.now();
+    }
+    this.props.startTime = time + this.o.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };
@@ -4226,7 +4246,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../easing":3,"../h":4,"./tweener":25}],25:[function(require,module,exports){
+},{"../easing/easing":3,"../h":5,"./tweener":25}],25:[function(require,module,exports){
 var Tweener, h, i, t;
 
 require('../polyfills/raf');
@@ -4313,7 +4333,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":4,"../polyfills/performance":8,"../polyfills/raf":9}],26:[function(require,module,exports){
+},{"../h":5,"../polyfills/performance":8,"../polyfills/raf":9}],26:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com
@@ -4529,5 +4549,5 @@ module.exports = t;
   }
 })();
 
-},{}]},{},[5])(5)
+},{}]},{},[6])(6)
 });

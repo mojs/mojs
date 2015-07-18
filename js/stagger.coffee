@@ -1,7 +1,6 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 h        = require './h'
-# Tween    = require './tween/tween'
 Timeline = require './tween/timeline'
 Transit  = require './transit'
 

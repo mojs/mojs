@@ -32,7 +32,7 @@
       <div class="segment">
       
       
-        <div class="code"><div class="wrapper">easingModule = <span class="hljs-built_in">require</span> <span class="hljs-string">'../easing'</span>
+        <div class="code"><div class="wrapper">easingModule = <span class="hljs-built_in">require</span> <span class="hljs-string">'../easing/easing'</span>
 h            = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
 t            = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tweener'</span>
 
@@ -57,7 +57,8 @@ t            = <span class="hljs-built_in">require</span> <span class="hljs-stri
   <span class="hljs-attribute">extendDefaults</span>:<span class="hljs-function">-&gt;</span> h.extend(<span class="hljs-property">@o</span>, <span class="hljs-property">@defaults</span>); <span class="hljs-property">@onUpdate</span> = <span class="hljs-property">@o</span>.onUpdate
   <span class="hljs-attribute">start</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
     <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">false</span>; <span class="hljs-property">@isStarted</span> = <span class="hljs-literal">false</span>
-    <span class="hljs-property">@props</span>.startTime = (<span class="hljs-keyword">if</span> time? <span class="hljs-keyword">then</span> time <span class="hljs-keyword">else</span> performance.now()) + <span class="hljs-property">@o</span>.delay
+    time ?= performance.now()
+    <span class="hljs-property">@props</span>.startTime = time + <span class="hljs-property">@o</span>.delay
     <span class="hljs-property">@props</span>.endTime   = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.totalDuration
     @
   <span class="hljs-attribute">update</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>

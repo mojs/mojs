@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.132.2', isDebug: true
+  revision:   '0.132.3', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -20,7 +20,7 @@ mojs =
   Tween       : require './tween/tween'
   Timeline    : require './tween/timeline'
   tweener     : require './tween/tweener'
-  easing      : require './easing'
+  easing      : require './easing/easing'
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta

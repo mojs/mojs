@@ -243,7 +243,6 @@
           precompute: 100,
           eps: .00000001
         });
-        pe.isIt;
         p = 0.015;
         start = {
           point: {
@@ -285,16 +284,30 @@
         expect(bounds.start).toBeDefined();
         return expect(bounds.start.point.x).toBeCloseTo(0, 1);
       });
-      return it('should reset previous start index if current progress is smaller then previous one', function() {
+      it('should cache index in reverse order', function() {
         var bounds, newProgress, pe1, progress;
         pe1 = new PathEasing('M0,100 100,0');
-        pe1.isIt = true;
         progress = .735;
-        newProgress = progress - .1;
+        newProgress = progress - .2;
         bounds = pe1._findBounds(pe1._samples, progress);
         bounds = pe1._findBounds(pe1._samples, newProgress);
-        expect(pe1._boundsStartIndex).toBe(0);
+        expect(pe1._boundsStartIndex).toBeLessThan(1400);
         return expect(pe1._boundsPrevProgress).toBe(newProgress);
+      });
+      it('should cache previous return object', function() {
+        var bounds, pe1;
+        pe1 = new PathEasing('M0,100 100,0');
+        bounds = pe1._findBounds(pe1._samples, .735);
+        return expect(pe1._prevBounds).toBe(bounds);
+      });
+      return it('should detect if previous progress is the current one', function() {
+        var bounds1, bounds2, newProgress, pe1, progress;
+        pe1 = new PathEasing('M0,100 100,0');
+        progress = .735;
+        newProgress = progress - .2;
+        bounds1 = pe1._findBounds(pe1._samples, progress);
+        bounds2 = pe1._findBounds(pe1._samples, progress);
+        return expect(bounds1).toBe(bounds2);
       });
     });
     describe('_resolveY method', function() {
