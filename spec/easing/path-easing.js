@@ -14,6 +14,12 @@
       pe = new PathEasing('creator');
       return expect(pe.precision).not.toBeDefined();
     });
+    it('should have path property', function() {
+      var easing, pe;
+      pe = new PathEasing('creator');
+      easing = pe.create('M 0, 0 L 100,100');
+      return expect(easing.path instanceof SVGElement).toBe(true);
+    });
     describe('variables ->', function() {
       it('should have _eps defined', function() {
         var pe;
@@ -320,7 +326,7 @@
         })).toBe(1 - (y / 100));
       });
     });
-    return describe('create method ->', function() {
+    describe('create method ->', function() {
       return it('should create new instance of path-easing and return it\'s method', function() {
         var easing, pe;
         pe = new PathEasing('creator');
@@ -329,6 +335,20 @@
         });
         expect(typeof easing).toBe('function');
         return expect(Math.abs(easing(.5) - .5)).toBeLessThan(.01);
+      });
+    });
+    return describe('_normalizePath method', function() {
+      it('should normalize start x value to 0', function() {
+        var newPath, pe;
+        pe = new PathEasing('creator');
+        newPath = pe._normalizePath('M0.1,0 L100,100');
+        return expect(newPath).toBe('M0,0 L100,100');
+      });
+      return it('should normalize end x value to rect.x value', function() {
+        var newPath, pe;
+        pe = new PathEasing('creator');
+        newPath = pe._normalizePath('M0.1,0 L99,100');
+        return expect(newPath).toBe('M0,0 L100,100');
       });
     });
   });

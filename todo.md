@@ -2,13 +2,13 @@
 
 ---
 
+- normalize path for path-easing
 - add motion path stagger
 
 ---
 
 - add easing mix method
 - timeline refactor
-- normalize path for path-easing
 
 ---
 

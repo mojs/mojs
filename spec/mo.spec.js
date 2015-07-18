@@ -925,8 +925,31 @@ PathEasing = (function() {
     return 1 - (point.y / this._rect);
   };
 
+  PathEasing.prototype._normalizePath = function(path) {
+    var endCoordinates, endX, endY, parsedEndX, parsedX, ref, regexp, startCoords, x;
+    startCoords = path.split(/[m|\s+|\,]/gim);
+    x = startCoords[1];
+    parsedX = Number(x);
+    if (parsedX !== 0) {
+      regexp = new RegExp("m" + x, 'gim');
+      path = path.replace(regexp, "M0");
+    }
+    endCoordinates = path.split(/[A-Z]/gim);
+    endCoordinates = endCoordinates[endCoordinates.length - 1];
+    ref = endCoordinates.split(/[(\s+)|\,]/), endX = ref[0], endY = ref[1];
+    parsedEndX = Number(endX);
+    if (parsedEndX !== (this._rect || 100)) {
+      regexp = new RegExp("([A-Z])(\s+)?" + endX, 'gim');
+      path = path.replace(regexp, "$1" + (this._rect || 100));
+    }
+    return path;
+  };
+
   PathEasing.prototype.create = function(path, o) {
-    return (new PathEasing(path, o)).sample;
+    var handler;
+    handler = new PathEasing(path, o);
+    handler.sample.path = handler.path;
+    return handler.sample;
   };
 
   return PathEasing;

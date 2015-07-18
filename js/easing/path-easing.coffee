@@ -177,12 +177,32 @@ class PathEasing
       @_findApproximate.apply @, args
   # ---
 
-  # 
-  # 
   # @method resolveY
   # @param  {Object} SVG point
   # @return {Number} normalized y
   _resolveY:(point)-> 1 - (point.y/@_rect)
+  # ---
+  # 
+  # Method to normalize path's X start and end value
+  # since it must start at 0 and end at 100
+  # @param  {String} Path coordinates to normalize
+  # @return {String} Normalized path coordinates
+  _normalizePath:(path)->
+    startCoords = path.split /[m|\s+|\,]/gim
+    x = startCoords[1]
+    parsedX = Number x
+    if parsedX isnt 0
+      regexp = new RegExp "m#{x}", 'gim'
+      path = path.replace regexp, "M0"
+
+    endCoordinates = path.split(/[A-Z]/gim)
+    endCoordinates = endCoordinates[endCoordinates.length-1]
+    [endX, endY] = endCoordinates.split /[(\s+)|\,]/
+    parsedEndX = Number endX
+    if parsedEndX isnt (@_rect or 100)
+      regexp = new RegExp "([A-Z])(\s+)?#{endX}", 'gim'
+      path = path.replace(regexp, "$1#{@_rect or 100}")
+    path
   # ---
 
   # Create new instance of PathEasing with specified parameters
@@ -191,6 +211,9 @@ class PathEasing
   # @method create
   # @param  {String, DOMNode} path
   # @return {Object} easing y
-  create:(path, o)-> (new PathEasing(path, o)).sample
+  create:(path, o)->
+    handler = new PathEasing(path, o)
+    handler.sample.path = handler.path
+    handler.sample
 
 module.exports = PathEasing

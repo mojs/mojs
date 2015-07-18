@@ -8,6 +8,12 @@ describe 'PathEasing ->', ->
     pe = new PathEasing 'creator'
     expect(pe.precision).not.toBeDefined()
 
+  it 'should have path property', ->
+    pe = new PathEasing 'creator'
+    easing = pe.create 'M 0, 0 L 100,100'
+    expect(easing.path instanceof SVGElement).toBe true
+
+
   describe 'variables ->', ->
     it 'should have _eps defined', ->
       pe = new PathEasing 'M0,0 10,10'
@@ -187,7 +193,7 @@ describe 'PathEasing ->', ->
       bounds1 = pe1._findBounds pe1._samples, progress
       bounds2 = pe1._findBounds pe1._samples, progress
       expect(bounds1).toBe bounds2
-      
+
   describe '_resolveY method', ->
     it 'should resolve Y from point', ->
       pe1 = new PathEasing('M0,100 100,0'); y = 10
@@ -200,6 +206,23 @@ describe 'PathEasing ->', ->
       expect(typeof easing).toBe 'function'
       expect(Math.abs(easing(.5)-.5)).toBeLessThan .01
 
+
+  describe '_normalizePath method', ->
+    it 'should normalize start x value to 0', ->
+      pe = new PathEasing 'creator'
+      newPath = pe._normalizePath('M0.1,0 L100,100')
+      expect(newPath).toBe 'M0,0 L100,100'
+
+    it 'should normalize end x value to rect.x value', ->
+      pe = new PathEasing 'creator'
+      newPath = pe._normalizePath('M0.1,0 L99,100')
+      expect(newPath).toBe 'M0,0 L100,100'
+    
+    # control point not sure if needed
+    # it 'should replace further apperances of x', ->
+    #   pe = new PathEasing 'creator'
+    #   newPath = pe._normalizePath('M.1,0 C0.1,20 10,20 20,30 L100,100')
+    #   expect(newPath).toBe 'M0,0 C0,20 10,20 20,30 L100,100'
 
 
 
