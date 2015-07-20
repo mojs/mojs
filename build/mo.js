@@ -928,22 +928,34 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._normalizePath = function(path) {
-    var commands, points;
+    var command, commands, coords, endIndex, i, j, len1, normalizedPath, points, space, startIndex;
     points = path.split(/[A-Z]/gim);
     points.shift();
     commands = path.match(/[A-Z]/gim);
     if (commands[commands.length - 1].toLowerCase() === 'z') {
       points.length = points.length - 1;
     }
-    this.isIt && console.log(points);
-    this.isIt && console.log(commands);
-    return path;
+    startIndex = 0;
+    points[startIndex] = this._normalizeSegment(points[startIndex]);
+    endIndex = points.length - 1;
+    points[endIndex] = this._normalizeSegment(points[endIndex], this._rect || 100);
+    normalizedPath = '';
+    for (i = j = 0, len1 = commands.length; j < len1; i = ++j) {
+      command = commands[i];
+      space = i === 0 ? '' : ' ';
+      coords = points[i] != null ? points[i] : '';
+      normalizedPath += "" + space + command + (coords.trim());
+    }
+    return normalizedPath;
   };
 
   PathEasing.prototype._normalizeSegment = function(segment, value) {
     var i, j, lastPoint, len1, pairs, parsedX, point, space, x;
+    if (value == null) {
+      value = 0;
+    }
     segment = segment.trim();
-    pairs = this._getSegmentPairs(segment.match(/((\d\.?\d+)|(\.?\d+))/gim));
+    pairs = this._getSegmentPairs(segment.match(/(-|\+)?((\d\.?\d+)|(\.?\d+))/gim));
     lastPoint = pairs[pairs.length - 1];
     x = lastPoint[0];
     parsedX = Number(x);

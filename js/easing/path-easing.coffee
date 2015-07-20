@@ -191,43 +191,39 @@ class PathEasing
     points     = path.split /[A-Z]/gim
     # remove the first empty item - it is always
     # empty cuz we split by M
-    points.shift()
-    commands = path.match /[A-Z]/gim
-    # if path has Z command then remove
-    # the latest item from points cuz it is empty
+    points.shift(); commands = path.match /[A-Z]/gim
+    # if path has Z command then remove the latest
+    # item from points cuz it is empty after the split
     if commands[commands.length-1].toLowerCase() is 'z'
       points.length = points.length - 1
 
+    # normalize the x value of the start segment to 0
+    startIndex = 0
+    points[startIndex] = @_normalizeSegment points[startIndex]
+    # normalize the x value of the end segment to _rect value
+    endIndex = points.length-1
+    points[endIndex] = @_normalizeSegment points[endIndex], @_rect or 100
 
+    # form the normalized path
+    normalizedPath = ''
+    for command, i in commands
+      space = if i is 0 then '' else ' '
+      # get coordinates for command, needed cuz the
+      # latest Z command doesnt have any coordinates
+      coords = if points[i]? then points[i] else ''
+      normalizedPath += "#{space}#{command}#{coords.trim()}"
 
-    @isIt and console.log points
-    @isIt and console.log commands
+    normalizedPath
 
-    # startCoords = path.split /[m|\s+|\,]/gim
-    # x = startCoords[1]
-    # parsedX = Number x
-    # if parsedX isnt 0
-    #   regexp = new RegExp "m#{x}", 'gim'
-    #   path = path.replace regexp, "M0"
-
-    # endCoordinates = path.split(/[A-Z]/gim)
-    # endCoordinates = endCoordinates[endCoordinates.length-1]
-    # [endX, endY] = endCoordinates.split /[(\s+)|\,]/
-    # parsedEndX = Number endX
-    # if parsedEndX isnt (@_rect or 100)
-    #   regexp = new RegExp "([A-Z])(\s+)?#{endX}", 'gim'
-    #   path = path.replace(regexp, "$1#{@_rect or 100}")
-    path
   # ---
 
   # Method to normalize SVG path segment
   # @param  {String} Segment to normalize.
   # @param  {Number} Value to normalize to.
   # @return {String} Normalized Segment.
-  _normalizeSegment:(segment, value)->
+  _normalizeSegment:(segment, value=0)->
     segment = segment.trim()
-    pairs = @_getSegmentPairs segment.match /((\d\.?\d+)|(\.?\d+))/gim
-
+    pairs   = @_getSegmentPairs segment.match /(-|\+)?((\d\.?\d+)|(\.?\d+))/gim
     # get x value of the latest point
     lastPoint = pairs[pairs.length-1]
     x = lastPoint[0]; parsedX = Number x

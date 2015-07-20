@@ -627,27 +627,21 @@ empty cuz we split by M</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    points.shift()
-    commands = path.match <span class="hljs-regexp">/[A-Z]/gim</span></div></div>
+        <div class="code"><div class="wrapper">    points.shift(); commands = path.match <span class="hljs-regexp">/[A-Z]/gim</span></div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>if path has Z command then remove
-the latest item from points cuz it is empty</p>
+          <div class="wrapper"><p>if path has Z command then remove the latest
+item from points cuz it is empty after the split</p>
 </div>
         </div>
       
       
         <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> commands[commands.length-<span class="hljs-number">1</span>].toLowerCase() <span class="hljs-keyword">is</span> <span class="hljs-string">'z'</span>
       points.length = points.length - <span class="hljs-number">1</span>
-
-
-
-    <span class="hljs-property">@isIt</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log points
-    <span class="hljs-property">@isIt</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log commands
 </div></div>
       
       </div>
@@ -655,33 +649,58 @@ the latest item from points cuz it is empty</p>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>startCoords = path.split /[m|\s+|\,]/gim
-x = startCoords[1]
-parsedX = Number x
-if parsedX isnt 0
-  regexp = new RegExp &quot;m#{x}&quot;, &#39;gim&#39;
-  path = path.replace regexp, &quot;M0&quot;</p>
+          <div class="wrapper"><p>normalize the x value of the start segment to 0</p>
 </div>
         </div>
       
+      
+        <div class="code"><div class="wrapper">    startIndex = <span class="hljs-number">0</span>
+    points[startIndex] = <span class="hljs-property">@_normalizeSegment</span> points[startIndex]</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>endCoordinates = path.split(/[A-Z]/gim)
-endCoordinates = endCoordinates[endCoordinates.length-1]
-[endX, endY] = endCoordinates.split /[(\s+)|\,]/
-parsedEndX = Number endX
-if parsedEndX isnt (@_rect or 100)
-  regexp = new RegExp &quot;([A-Z])(\s+)?#{endX}&quot;, &#39;gim&#39;
-  path = path.replace(regexp, &quot;$1#{@_rect or 100}&quot;)</p>
+          <div class="wrapper"><p>normalize the x value of the end segment to _rect value</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    path</div></div>
+        <div class="code"><div class="wrapper">    endIndex = points.length-<span class="hljs-number">1</span>
+    points[endIndex] = <span class="hljs-property">@_normalizeSegment</span> points[endIndex], <span class="hljs-property">@_rect</span> <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>form the normalized path</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    normalizedPath = <span class="hljs-string">''</span>
+    <span class="hljs-keyword">for</span> command, i <span class="hljs-keyword">in</span> commands
+      space = <span class="hljs-keyword">if</span> i <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-string">''</span> <span class="hljs-keyword">else</span> <span class="hljs-string">' '</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get coordinates for command, needed cuz the
+latest Z command doesnt have any coordinates</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      coords = <span class="hljs-keyword">if</span> points[i]? <span class="hljs-keyword">then</span> points[i] <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+      normalizedPath += <span class="hljs-string">"<span class="hljs-subst">#{space}</span><span class="hljs-subst">#{command}</span><span class="hljs-subst">#{coords.trim()}</span>"</span>
+
+    normalizedPath
+</div></div>
       
       </div>
     
@@ -709,10 +728,9 @@ if parsedEndX isnt (@_rect or 100)
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizeSegment</span>:<span class="hljs-function"><span class="hljs-params">(segment, value)</span>-&gt;</span>
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizeSegment</span>:<span class="hljs-function"><span class="hljs-params">(segment, value=<span class="hljs-number">0</span>)</span>-&gt;</span>
     segment = segment.trim()
-    pairs = <span class="hljs-property">@_getSegmentPairs</span> segment.match <span class="hljs-regexp">/((\d\.?\d+)|(\.?\d+))/gim</span>
-</div></div>
+    pairs   = <span class="hljs-property">@_getSegmentPairs</span> segment.match <span class="hljs-regexp">/(-|\+)?((\d\.?\d+)|(\.?\d+))/gim</span></div></div>
       
       </div>
     

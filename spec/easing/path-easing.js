@@ -337,6 +337,29 @@
         return expect(Math.abs(easing(.5) - .5)).toBeLessThan(.01);
       });
     });
+    describe('_normalizePath method', function() {
+      it('should normalize start x value to 0', function() {
+        var newPath, pe;
+        pe = new PathEasing('creator');
+        newPath = pe._normalizePath('M0.1,0 L100,100');
+        return expect(newPath).toBe('M0,0 L100,100');
+      });
+      it('should normalize end x value to rect.x value', function() {
+        var newPath, pe;
+        pe = new PathEasing('creator');
+        newPath = pe._normalizePath('M0.1,0 L99,100');
+        return expect(newPath).toBe('M0,0 L100,100');
+      });
+      return it('should normalize end x value for the latest segment only', function() {
+        var newPath, normPath, path, pe;
+        pe = new PathEasing('creator');
+        pe.isIt = true;
+        path = 'M0.1,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 101,0 Z';
+        newPath = pe._normalizePath(path);
+        normPath = 'M0,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 100,0 Z';
+        return expect(newPath).toBe(normPath);
+      });
+    });
     describe('_normalizeSegment method', function() {
       it('should normalize segment by passed value', function() {
         var pe;
