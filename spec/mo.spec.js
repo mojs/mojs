@@ -785,7 +785,6 @@ PathEasing = (function() {
   };
 
   function PathEasing(path, o1) {
-    var ref;
     this.o = o1 != null ? o1 : {};
     if (path === 'creator') {
       return;
@@ -794,7 +793,8 @@ PathEasing = (function() {
     if (this.path == null) {
       return h.error('Error while parsing the path');
     }
-    this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
+    this.path.setAttribute('d', this._normalizePath(this.path.getAttribute('d')));
+    this.pathLength = this.path.getTotalLength();
     this.sample = h.bind(this.sample, this);
     this._hardSample = h.bind(this._hardSample, this);
     this._vars();
@@ -926,7 +926,7 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._normalizePath = function(path) {
-    var command, commands, coords, endIndex, i, j, len1, normalizedPath, points, space, startIndex;
+    var commands, endIndex, normalizedPath, points, startIndex;
     points = path.split(/[A-Z]/gim);
     points.shift();
     commands = path.match(/[A-Z]/gim);
@@ -937,6 +937,11 @@ PathEasing = (function() {
     points[startIndex] = this._normalizeSegment(points[startIndex]);
     endIndex = points.length - 1;
     points[endIndex] = this._normalizeSegment(points[endIndex], this._rect || 100);
+    return normalizedPath = this._joinNormalizedPath(commands, points);
+  };
+
+  PathEasing.prototype._joinNormalizedPath = function(commands, points) {
+    var command, coords, i, j, len1, normalizedPath, space;
     normalizedPath = '';
     for (i = j = 0, len1 = commands.length; j < len1; i = ++j) {
       command = commands[i];
@@ -958,8 +963,8 @@ PathEasing = (function() {
     x = lastPoint[0];
     parsedX = Number(x);
     if (parsedX !== value) {
-      lastPoint[0] = value;
       segment = '';
+      lastPoint[0] = value;
       for (i = j = 0, len1 = pairs.length; j < len1; i = ++j) {
         point = pairs[i];
         space = i === 0 ? '' : ' ';

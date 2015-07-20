@@ -40,7 +40,12 @@ class PathEasing
     return if path is 'creator'
     @path = h.parsePath(path)
     return h.error 'Error while parsing the path' if !@path?
-    @pathLength = @path?.getTotalLength()
+
+    # normalize start and end x value of the path
+    @path.setAttribute 'd', @_normalizePath @path.getAttribute('d')
+
+    @pathLength = @path.getTotalLength()
+
     @sample = h.bind(@sample, @)
     @_hardSample = h.bind(@_hardSample, @)
     @_vars()
@@ -196,15 +201,22 @@ class PathEasing
     # item from points cuz it is empty after the split
     if commands[commands.length-1].toLowerCase() is 'z'
       points.length = points.length - 1
-
     # normalize the x value of the start segment to 0
     startIndex = 0
     points[startIndex] = @_normalizeSegment points[startIndex]
     # normalize the x value of the end segment to _rect value
     endIndex = points.length-1
     points[endIndex] = @_normalizeSegment points[endIndex], @_rect or 100
-
     # form the normalized path
+    normalizedPath = @_joinNormalizedPath commands, points
+
+  # ---
+
+  # Method to form normalized path.
+  # @param {Array} Commands array.
+  # @param {Array} Points array.
+  # @return {String} Formed normalized path.
+  _joinNormalizedPath:(commands, points)->
     normalizedPath = ''
     for command, i in commands
       space = if i is 0 then '' else ' '
@@ -229,9 +241,8 @@ class PathEasing
     x = lastPoint[0]; parsedX = Number x
     # if the x point isn't the same as value, set it to the value
     if parsedX isnt value
-      lastPoint[0] = value
       # join pairs to form segment
-      segment = ''
+      segment = ''; lastPoint[0] = value
       for point, i in pairs
         space = if i is 0 then '' else ' '
         segment += "#{space}#{point[0]},#{point[1]}"
@@ -261,7 +272,6 @@ class PathEasing
   # @return {Object} easing y
   create:(path, o)->
     handler = new PathEasing(path, o)
-    handler.sample.path = handler.path
-    handler.sample
+    handler.sample.path = handler.path; handler.sample
 
 module.exports = PathEasing
