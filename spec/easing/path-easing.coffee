@@ -16,29 +16,29 @@ describe 'PathEasing ->', ->
 
   describe 'variables ->', ->
     it 'should have _eps defined', ->
-      pe = new PathEasing 'M0,0 10,10'
+      pe = new PathEasing 'M0,0 L10,10'
       expect(pe._eps).toBeDefined()
     it 'should have _eps defined', ->
-      pe = new PathEasing 'M0,0 10,10'
+      pe = new PathEasing 'M0,0 L10,10'
       expect(pe._precompute).toBe 2000
       expect(pe._step).toBe       1/pe._precompute
     it 'should have _boundsPrevProgress defined', ->
-      pe = new PathEasing 'M0,0 10,10'
+      pe = new PathEasing 'M0,0 L10,10'
       expect(pe._boundsPrevProgress).toBe -1
 
   describe 'path parsing ->', ->
     it 'should parse path', ->
-      path = 'M0,0 10,10'
+      path = 'M0,0 L10,10'
       spyOn h, 'parsePath'
       pe = new PathEasing path
       expect(h.parsePath).toHaveBeenCalledWith path
     it 'should save path and pathLength', ->
-      path = 'M0,0 10,10'
+      path = 'M0,0 L10,10'
       pe = new PathEasing path
       expect(pe.path).toBeDefined()
       expect(pe.pathLength).toBe pe.path.getTotalLength()
     it 'should error if path wasnt parsed', ->
-      path = 'M0,0 10,10'
+      path = 'M0,0 L10,10'
       spyOn h, 'error'
       spyOn h, 'parsePath' # spoil the parsePath method
       pe = new PathEasing path
@@ -46,32 +46,32 @@ describe 'PathEasing ->', ->
 
   describe 'options ->', ->
     it 'should recieve "_approximateMax" option', ->
-      path = 'M0,0 10,10'
+      path = 'M0,0 L10,10'
       pe = new PathEasing path, approximateMax: 10
       expect(pe._approximateMax).toBe 10
     it 'should recieve "rect" option', ->
-      path = 'M0,0 10,10'
+      path = 'M0,0 L10,10'
       pe = new PathEasing path, rect: 200
       expect(pe._rect).toBe 200
     it 'should recieve "eps" option', ->
-      path = 'M0,0 10,10'
+      path = 'M0,0 L10,10'
       eps = .00001
       pe = new PathEasing path, eps: eps
       expect(pe._eps).toBe eps
     
     describe 'precompute option ->', ->
       it 'should recieve "precompute" option', ->
-        path = 'M0,0 10,10'
+        path = 'M0,0 L10,10'
         precompute = 10000
         pe = new PathEasing path, precompute: precompute
         expect(pe._precompute).toBe precompute
       it 'should not be larger than 10000', ->
-        path = 'M0,0 10,10'
+        path = 'M0,0 L10,10'
         precompute = 20000
         pe = new PathEasing path, precompute: precompute
         expect(pe._precompute).toBe 10000
       it 'should not be smaller than 100', ->
-        path = 'M0,0 10,10'
+        path = 'M0,0 L10,10'
         precompute = 20
         pe = new PathEasing path, precompute: precompute
         expect(pe._precompute).toBe 100
@@ -207,23 +207,51 @@ describe 'PathEasing ->', ->
       expect(Math.abs(easing(.5)-.5)).toBeLessThan .01
 
 
-  describe '_normalizePath method', ->
-    it 'should normalize start x value to 0', ->
-      pe = new PathEasing 'creator'
-      newPath = pe._normalizePath('M0.1,0 L100,100')
-      expect(newPath).toBe 'M0,0 L100,100'
+  # describe '_normalizePath method', ->
+  #   it 'should normalize start x value to 0', ->
+  #     pe = new PathEasing 'creator'
+  #     newPath = pe._normalizePath('M0.1,0 L100,100')
+  #     expect(newPath).toBe 'M0,0 L100,100'
 
-    it 'should normalize end x value to rect.x value', ->
+  #   it 'should normalize end x value to rect.x value', ->
+  #     pe = new PathEasing 'creator'
+  #     newPath = pe._normalizePath('M0.1,0 L99,100')
+  #     expect(newPath).toBe 'M0,0 L100,100'
+
+  #   it 'should normalize end x value for the latest segment only', ->
+  #     pe = new PathEasing 'creator'
+  #     pe.isIt = true
+  #     path = 'M0.1,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 101,0 Z'
+  #     newPath = pe._normalizePath(path)
+  #     normPath = 'M0,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 101,0 Z'
+  #     expect(newPath).toBe normPath
+
+  describe '_normalizeSegment method', ->
+    it 'should normalize segment by passed value', ->
       pe = new PathEasing 'creator'
-      newPath = pe._normalizePath('M0.1,0 L99,100')
-      expect(newPath).toBe 'M0,0 L100,100'
+      expect(pe._normalizeSegment('0.1522, 100 ', 0)).toBe '0, 100'
+
+  describe '_getSegmentPairs', ->
+    it 'should normalize an array by pairs', ->
+      pe = new PathEasing 'creator'
+      pairs = pe._getSegmentPairs(['0.12', '102'])
+      expect(pairs[0][0]).toBe '0.12'
+      expect(pairs[0][1]).toBe '102'
+      pairs = pe._getSegmentPairs(['0.12', '102', 200, 12])
+      expect(pairs[0][0]).toBe '0.12'
+      expect(pairs[0][1]).toBe '102'
+      expect(pairs[1][0]).toBe 200
+      expect(pairs[1][1]).toBe 12
+
+    it 'should error if array is not even', ->
+      pe = new PathEasing 'creator'
+      spyOn h, 'error'
+      pairs = pe._getSegmentPairs(['0.12', '102', 200])
+      expect(h.error).toHaveBeenCalled()
+
+
+
     
-    # control point not sure if needed
-    # it 'should replace further apperances of x', ->
-    #   pe = new PathEasing 'creator'
-    #   newPath = pe._normalizePath('M.1,0 C0.1,20 10,20 20,30 L100,100')
-    #   expect(newPath).toBe 'M0,0 C0,20 10,20 20,30 L100,100'
-
 
 
 

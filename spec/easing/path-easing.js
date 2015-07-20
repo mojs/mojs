@@ -23,39 +23,39 @@
     describe('variables ->', function() {
       it('should have _eps defined', function() {
         var pe;
-        pe = new PathEasing('M0,0 10,10');
+        pe = new PathEasing('M0,0 L10,10');
         return expect(pe._eps).toBeDefined();
       });
       it('should have _eps defined', function() {
         var pe;
-        pe = new PathEasing('M0,0 10,10');
+        pe = new PathEasing('M0,0 L10,10');
         expect(pe._precompute).toBe(2000);
         return expect(pe._step).toBe(1 / pe._precompute);
       });
       return it('should have _boundsPrevProgress defined', function() {
         var pe;
-        pe = new PathEasing('M0,0 10,10');
+        pe = new PathEasing('M0,0 L10,10');
         return expect(pe._boundsPrevProgress).toBe(-1);
       });
     });
     describe('path parsing ->', function() {
       it('should parse path', function() {
         var path, pe;
-        path = 'M0,0 10,10';
+        path = 'M0,0 L10,10';
         spyOn(h, 'parsePath');
         pe = new PathEasing(path);
         return expect(h.parsePath).toHaveBeenCalledWith(path);
       });
       it('should save path and pathLength', function() {
         var path, pe;
-        path = 'M0,0 10,10';
+        path = 'M0,0 L10,10';
         pe = new PathEasing(path);
         expect(pe.path).toBeDefined();
         return expect(pe.pathLength).toBe(pe.path.getTotalLength());
       });
       return it('should error if path wasnt parsed', function() {
         var path, pe;
-        path = 'M0,0 10,10';
+        path = 'M0,0 L10,10';
         spyOn(h, 'error');
         spyOn(h, 'parsePath');
         pe = new PathEasing(path);
@@ -65,7 +65,7 @@
     describe('options ->', function() {
       it('should recieve "_approximateMax" option', function() {
         var path, pe;
-        path = 'M0,0 10,10';
+        path = 'M0,0 L10,10';
         pe = new PathEasing(path, {
           approximateMax: 10
         });
@@ -73,7 +73,7 @@
       });
       it('should recieve "rect" option', function() {
         var path, pe;
-        path = 'M0,0 10,10';
+        path = 'M0,0 L10,10';
         pe = new PathEasing(path, {
           rect: 200
         });
@@ -81,7 +81,7 @@
       });
       it('should recieve "eps" option', function() {
         var eps, path, pe;
-        path = 'M0,0 10,10';
+        path = 'M0,0 L10,10';
         eps = .00001;
         pe = new PathEasing(path, {
           eps: eps
@@ -91,7 +91,7 @@
       return describe('precompute option ->', function() {
         it('should recieve "precompute" option', function() {
           var path, pe, precompute;
-          path = 'M0,0 10,10';
+          path = 'M0,0 L10,10';
           precompute = 10000;
           pe = new PathEasing(path, {
             precompute: precompute
@@ -100,7 +100,7 @@
         });
         it('should not be larger than 10000', function() {
           var path, pe, precompute;
-          path = 'M0,0 10,10';
+          path = 'M0,0 L10,10';
           precompute = 20000;
           pe = new PathEasing(path, {
             precompute: precompute
@@ -109,7 +109,7 @@
         });
         return it('should not be smaller than 100', function() {
           var path, pe, precompute;
-          path = 'M0,0 10,10';
+          path = 'M0,0 L10,10';
           precompute = 20;
           pe = new PathEasing(path, {
             precompute: precompute
@@ -337,18 +337,32 @@
         return expect(Math.abs(easing(.5) - .5)).toBeLessThan(.01);
       });
     });
-    return describe('_normalizePath method', function() {
-      it('should normalize start x value to 0', function() {
-        var newPath, pe;
+    describe('_normalizeSegment method', function() {
+      return it('should normalize segment by passed value', function() {
+        var pe;
         pe = new PathEasing('creator');
-        newPath = pe._normalizePath('M0.1,0 L100,100');
-        return expect(newPath).toBe('M0,0 L100,100');
+        return expect(pe._normalizeSegment('0.1522, 100 ', 0)).toBe('0, 100');
       });
-      return it('should normalize end x value to rect.x value', function() {
-        var newPath, pe;
+    });
+    return describe('_getSegmentPairs', function() {
+      it('should normalize an array by pairs', function() {
+        var pairs, pe;
         pe = new PathEasing('creator');
-        newPath = pe._normalizePath('M0.1,0 L99,100');
-        return expect(newPath).toBe('M0,0 L100,100');
+        pairs = pe._getSegmentPairs(['0.12', '102']);
+        expect(pairs[0][0]).toBe('0.12');
+        expect(pairs[0][1]).toBe('102');
+        pairs = pe._getSegmentPairs(['0.12', '102', 200, 12]);
+        expect(pairs[0][0]).toBe('0.12');
+        expect(pairs[0][1]).toBe('102');
+        expect(pairs[1][0]).toBe(200);
+        return expect(pairs[1][1]).toBe(12);
+      });
+      return it('should error if array is not even', function() {
+        var pairs, pe;
+        pe = new PathEasing('creator');
+        spyOn(h, 'error');
+        pairs = pe._getSegmentPairs(['0.12', '102', 200]);
+        return expect(h.error).toHaveBeenCalled();
       });
     });
   });

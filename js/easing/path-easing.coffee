@@ -188,21 +188,62 @@ class PathEasing
   # @param  {String} Path coordinates to normalize
   # @return {String} Normalized path coordinates
   _normalizePath:(path)->
-    startCoords = path.split /[m|\s+|\,]/gim
-    x = startCoords[1]
-    parsedX = Number x
-    if parsedX isnt 0
-      regexp = new RegExp "m#{x}", 'gim'
-      path = path.replace regexp, "M0"
+    points     = path.split /[A-Z]/gim
+    # remove the first empty item - it is always
+    # empty cuz we split by M
+    points.shift()
+    commands = path.match /[A-Z]/gim
+    # if path has Z command then remove
+    # the latest item from points cuz it is empty
+    if commands[commands.length-1].toLowerCase() is 'z'
+      points.length = points.length - 1
 
-    endCoordinates = path.split(/[A-Z]/gim)
-    endCoordinates = endCoordinates[endCoordinates.length-1]
-    [endX, endY] = endCoordinates.split /[(\s+)|\,]/
-    parsedEndX = Number endX
-    if parsedEndX isnt (@_rect or 100)
-      regexp = new RegExp "([A-Z])(\s+)?#{endX}", 'gim'
-      path = path.replace(regexp, "$1#{@_rect or 100}")
+
+
+    @isIt and console.log points
+    @isIt and console.log commands
+
+    # startCoords = path.split /[m|\s+|\,]/gim
+    # x = startCoords[1]
+    # parsedX = Number x
+    # if parsedX isnt 0
+    #   regexp = new RegExp "m#{x}", 'gim'
+    #   path = path.replace regexp, "M0"
+
+    # endCoordinates = path.split(/[A-Z]/gim)
+    # endCoordinates = endCoordinates[endCoordinates.length-1]
+    # [endX, endY] = endCoordinates.split /[(\s+)|\,]/
+    # parsedEndX = Number endX
+    # if parsedEndX isnt (@_rect or 100)
+    #   regexp = new RegExp "([A-Z])(\s+)?#{endX}", 'gim'
+    #   path = path.replace(regexp, "$1#{@_rect or 100}")
     path
+  # ---
+
+  # Method to normalize SVG path segment
+  # @param {String} Segment to normalize.
+  # @param {Number} Value to normalize to.
+  # @return {String} Normalized Segment.
+  _normalizeSegment:(segment, value)->
+    segment = segment.trim()
+    split   = segment.match /((\d\.?\d+)|(\.?\d+))/gim
+    console.log split
+    segment
+  
+  # Method to geather array values to pairs.
+  # @param  {Array} Array to search pairs in.
+  # @return {Array} Matrix of pairs.
+  _getSegmentPairs:(array)->
+    if array.length % 2 isnt 0
+      h.error 'Failed to parse the path - segment pairs are not even.'
+    newArray = []
+    # loop over the array by 2
+    # and save the pairs
+    for value, i in array by 2
+      pair = [ array[i], array[i+1] ]
+      newArray.push pair
+    newArray
+
   # ---
 
   # Create new instance of PathEasing with specified parameters

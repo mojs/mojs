@@ -614,21 +614,144 @@ since it must start at 0 and end at 100</p>
       
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizePath</span>:<span class="hljs-function"><span class="hljs-params">(path)</span>-&gt;</span>
-    startCoords = path.split <span class="hljs-regexp">/[m|\s+|\,]/gim</span>
-    x = startCoords[<span class="hljs-number">1</span>]
-    parsedX = Number x
-    <span class="hljs-keyword">if</span> parsedX <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
-      regexp = <span class="hljs-keyword">new</span> RegExp <span class="hljs-string">"m<span class="hljs-subst">#{x}</span>"</span>, <span class="hljs-string">'gim'</span>
-      path = path.replace regexp, <span class="hljs-string">"M0"</span>
+    points     = path.split <span class="hljs-regexp">/[A-Z]/gim</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>remove the first empty item - it is always
+empty cuz we split by M</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    points.shift()
+    commands = path.match <span class="hljs-regexp">/[A-Z]/gim</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if path has Z command then remove
+the latest item from points cuz it is empty</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> commands[commands.length-<span class="hljs-number">1</span>].toLowerCase() <span class="hljs-keyword">is</span> <span class="hljs-string">'z'</span>
+      points.length = points.length - <span class="hljs-number">1</span>
 
-    endCoordinates = path.split(<span class="hljs-regexp">/[A-Z]/gim</span>)
-    endCoordinates = endCoordinates[endCoordinates.length-<span class="hljs-number">1</span>]
-    [endX, endY] = endCoordinates.split <span class="hljs-regexp">/[(\s+)|\,]/</span>
-    parsedEndX = Number endX
-    <span class="hljs-keyword">if</span> parsedEndX <span class="hljs-keyword">isnt</span> (<span class="hljs-property">@_rect</span> <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>)
-      regexp = <span class="hljs-keyword">new</span> RegExp <span class="hljs-string">"([A-Z])(\s+)?<span class="hljs-subst">#{endX}</span>"</span>, <span class="hljs-string">'gim'</span>
-      path = path.replace(regexp, <span class="hljs-string">"$1<span class="hljs-subst">#{<span class="hljs-property">@_rect</span> <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>}</span>"</span>)
-    path</div></div>
+
+
+    <span class="hljs-property">@isIt</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log points
+    <span class="hljs-property">@isIt</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log commands
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>startCoords = path.split /[m|\s+|\,]/gim
+x = startCoords[1]
+parsedX = Number x
+if parsedX isnt 0
+  regexp = new RegExp &quot;m#{x}&quot;, &#39;gim&#39;
+  path = path.replace regexp, &quot;M0&quot;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>endCoordinates = path.split(/[A-Z]/gim)
+endCoordinates = endCoordinates[endCoordinates.length-1]
+[endX, endY] = endCoordinates.split /[(\s+)|\,]/
+parsedEndX = Number endX
+if parsedEndX isnt (@_rect or 100)
+  regexp = new RegExp &quot;([A-Z])(\s+)?#{endX}&quot;, &#39;gim&#39;
+  path = path.replace(regexp, &quot;$1#{@_rect or 100}&quot;)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    path</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to normalize SVG path segment</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Segment</code> must be a String.</strong><br/>(to normalize.)</li>
+<li><strong><code>Value</code> must be a Number.</strong><br/>(to normalize to.)</li>
+</ul>
+<p><strong>Returns a String</strong><br/>(Normalized Segment.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizeSegment</span>:<span class="hljs-function"><span class="hljs-params">(segment, value)</span>-&gt;</span>
+    segment = segment.trim()
+    split   = segment.match <span class="hljs-regexp">/((\d\.?\d+)|(\.?\d+))/gim</span>
+    <span class="hljs-built_in">console</span>.log split
+    segment
+  </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to geather array values to pairs.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Array</code> must be an Array.</strong><br/>(to search pairs in.)</li>
+</ul>
+<p><strong>Returns an Array</strong><br/>(Matrix of pairs.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_getSegmentPairs</span>:<span class="hljs-function"><span class="hljs-params">(array)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> array.length % <span class="hljs-number">2</span> <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
+      h.error <span class="hljs-string">'Failed to parse the path - segment pairs are not even.'</span>
+    newArray = []</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>loop over the array by 2
+and save the pairs</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">for</span> value, i <span class="hljs-keyword">in</span> array <span class="hljs-keyword">by</span> <span class="hljs-number">2</span>
+      pair = [ array[i], array[i+<span class="hljs-number">1</span>] ]
+      newArray.push pair
+    newArray
+</div></div>
       
       </div>
     

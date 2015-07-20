@@ -928,23 +928,38 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._normalizePath = function(path) {
-    var endCoordinates, endX, endY, parsedEndX, parsedX, ref, regexp, startCoords, x;
-    startCoords = path.split(/[m|\s+|\,]/gim);
-    x = startCoords[1];
-    parsedX = Number(x);
-    if (parsedX !== 0) {
-      regexp = new RegExp("m" + x, 'gim');
-      path = path.replace(regexp, "M0");
+    var commands, points;
+    points = path.split(/[A-Z]/gim);
+    points.shift();
+    commands = path.match(/[A-Z]/gim);
+    if (commands[commands.length - 1].toLowerCase() === 'z') {
+      points.length = points.length - 1;
     }
-    endCoordinates = path.split(/[A-Z]/gim);
-    endCoordinates = endCoordinates[endCoordinates.length - 1];
-    ref = endCoordinates.split(/[(\s+)|\,]/), endX = ref[0], endY = ref[1];
-    parsedEndX = Number(endX);
-    if (parsedEndX !== (this._rect || 100)) {
-      regexp = new RegExp("([A-Z])(\s+)?" + endX, 'gim');
-      path = path.replace(regexp, "$1" + (this._rect || 100));
-    }
+    this.isIt && console.log(points);
+    this.isIt && console.log(commands);
     return path;
+  };
+
+  PathEasing.prototype._normalizeSegment = function(segment, value) {
+    var split;
+    segment = segment.trim();
+    split = segment.match(/((\d\.?\d+)|(\.?\d+))/gim);
+    console.log(split);
+    return segment;
+  };
+
+  PathEasing.prototype._getSegmentPairs = function(array) {
+    var i, j, len1, newArray, pair, value;
+    if (array.length % 2 !== 0) {
+      h.error('Failed to parse the path - segment pairs are not even.');
+    }
+    newArray = [];
+    for (i = j = 0, len1 = array.length; j < len1; i = j += 2) {
+      value = array[i];
+      pair = [array[i], array[i + 1]];
+      newArray.push(pair);
+    }
+    return newArray;
   };
 
   PathEasing.prototype.create = function(path, o) {
