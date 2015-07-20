@@ -229,7 +229,12 @@ describe 'PathEasing ->', ->
   describe '_normalizeSegment method', ->
     it 'should normalize segment by passed value', ->
       pe = new PathEasing 'creator'
-      expect(pe._normalizeSegment('0.1522, 100 ', 0)).toBe '0, 100'
+      expect(pe._normalizeSegment('0.1522, 100 ', 0)).toBe '0,100'
+    it 'should last value of the segment', ->
+      pe = new PathEasing 'creator'
+      segment = ' 0.1522, 100 20, 30 12,10'
+      normSegment = '0.1522,100 20,30 100,10'
+      expect(pe._normalizeSegment(segment, 100)).toBe normSegment
 
   describe '_getSegmentPairs', ->
     it 'should normalize an array by pairs', ->

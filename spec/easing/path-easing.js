@@ -338,10 +338,17 @@
       });
     });
     describe('_normalizeSegment method', function() {
-      return it('should normalize segment by passed value', function() {
+      it('should normalize segment by passed value', function() {
         var pe;
         pe = new PathEasing('creator');
-        return expect(pe._normalizeSegment('0.1522, 100 ', 0)).toBe('0, 100');
+        return expect(pe._normalizeSegment('0.1522, 100 ', 0)).toBe('0,100');
+      });
+      return it('should last value of the segment', function() {
+        var normSegment, pe, segment;
+        pe = new PathEasing('creator');
+        segment = ' 0.1522, 100 20, 30 12,10';
+        normSegment = '0.1522,100 20,30 100,10';
+        return expect(pe._normalizeSegment(segment, 100)).toBe(normSegment);
       });
     });
     return describe('_getSegmentPairs', function() {

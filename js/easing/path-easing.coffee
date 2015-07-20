@@ -221,13 +221,24 @@ class PathEasing
   # ---
 
   # Method to normalize SVG path segment
-  # @param {String} Segment to normalize.
-  # @param {Number} Value to normalize to.
+  # @param  {String} Segment to normalize.
+  # @param  {Number} Value to normalize to.
   # @return {String} Normalized Segment.
   _normalizeSegment:(segment, value)->
     segment = segment.trim()
-    split   = segment.match /((\d\.?\d+)|(\.?\d+))/gim
-    console.log split
+    pairs = @_getSegmentPairs segment.match /((\d\.?\d+)|(\.?\d+))/gim
+
+    # get x value of the latest point
+    lastPoint = pairs[pairs.length-1]
+    x = lastPoint[0]; parsedX = Number x
+    # if the x point isn't the same as value, set it to the value
+    if parsedX isnt value
+      lastPoint[0] = value
+      # join pairs to form segment
+      segment = ''
+      for point, i in pairs
+        space = if i is 0 then '' else ' '
+        segment += "#{space}#{point[0]},#{point[1]}"
     segment
   
   # Method to geather array values to pairs.

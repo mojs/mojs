@@ -939,10 +939,21 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._normalizeSegment = function(segment, value) {
-    var split;
+    var i, j, lastPoint, len1, pairs, parsedX, point, space, x;
     segment = segment.trim();
-    split = segment.match(/((\d\.?\d+)|(\.?\d+))/gim);
-    console.log(split);
+    pairs = this._getSegmentPairs(segment.match(/((\d\.?\d+)|(\.?\d+))/gim));
+    lastPoint = pairs[pairs.length - 1];
+    x = lastPoint[0];
+    parsedX = Number(x);
+    if (parsedX !== value) {
+      lastPoint[0] = value;
+      segment = '';
+      for (i = j = 0, len1 = pairs.length; j < len1; i = ++j) {
+        point = pairs[i];
+        space = i === 0 ? '' : ' ';
+        segment += "" + space + point[0] + "," + point[1];
+      }
+    }
     return segment;
   };
 
