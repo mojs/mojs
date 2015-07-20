@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.133.1 
+	0.134.0 
 */
 
 (function(f){
@@ -932,9 +932,6 @@ PathEasing = (function() {
     points = path.split(/[A-Y]/gim);
     points.shift();
     commands = path.match(/[A-Y]/gim);
-    if (commands[commands.length - 1].toLowerCase() === 'z') {
-      points.length = points.length - 1;
-    }
     startIndex = 0;
     points[startIndex] = this._normalizeSegment(points[startIndex]);
     endIndex = points.length - 1;
@@ -1571,7 +1568,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.133.1',
+  revision: '0.134.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4227,7 +4224,7 @@ Tween = (function() {
     this.easedProgress = this.props.easing(this.progress);
     if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
       if (typeof this.onUpdate === "function") {
-        this.onUpdate(this.easedProgress);
+        this.onUpdate(this.easedProgress, this.progress);
       }
     }
     return this.props.prevEasedProgress = this.easedProgress;

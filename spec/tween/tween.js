@@ -248,7 +248,7 @@
         spyOn(t, 'onUpdate');
         t.start();
         t.update(t.props.startTime + 500);
-        return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress);
+        return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress);
       });
       it('should have the right scope', function() {
         var isRightScope, t;
@@ -262,7 +262,7 @@
         t.update(t.props.startTime + 200);
         return expect(isRightScope).toBe(true);
       });
-      return it('should be called just once on delay', function() {
+      it('should be called just once on delay', function() {
         var t;
         t = new Tween({
           delay: 200,
@@ -275,6 +275,20 @@
         t.update(t.props.startTime + t.o.duration + 100);
         t.update(t.props.startTime + t.o.duration + 150);
         return expect(t.onUpdate.calls.count()).toBe(1);
+      });
+      return it('should pass eased progress and raw progress', function() {
+        var easedProgress, progress, t;
+        easedProgress = null;
+        progress = null;
+        t = new Tween({
+          easing: 'cubic.out',
+          onUpdate: function(ep, p) {
+            easedProgress = ep;
+            return progress = p;
+          }
+        });
+        t.setProc(.5);
+        return expect(easedProgress).toBe(mojs.easing.cubic.out(progress));
       });
     });
     describe('onStart callback ->', function() {
@@ -413,7 +427,7 @@
         spyOn(t, 'onUpdate');
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime - 20);
-        expect(t.onUpdate).toHaveBeenCalledWith(0);
+        expect(t.onUpdate).toHaveBeenCalledWith(0, 0);
         return expect(t.progress).toBe(0);
       });
       return it('should not setProgress to 0 if timeline isChained', function() {

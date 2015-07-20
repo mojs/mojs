@@ -88,7 +88,7 @@ class Tween
   setProc:(p, isCallback=true)->
     @progress = p; @easedProgress = @props.easing @progress
     if @props.prevEasedProgress isnt @easedProgress and isCallback
-      @onUpdate?(@easedProgress)
+      @onUpdate?(@easedProgress, @progress)
     @props.prevEasedProgress = @easedProgress
 
   setProp:(obj, value)->

@@ -217,7 +217,7 @@ then the current one, otherwise set to 0</p>
   <span class="hljs-attribute">setProc</span>:<span class="hljs-function"><span class="hljs-params">(p, isCallback=<span class="hljs-literal">true</span>)</span>-&gt;</span>
     <span class="hljs-property">@progress</span> = p; <span class="hljs-property">@easedProgress</span> = <span class="hljs-property">@props</span>.easing <span class="hljs-property">@progress</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.prevEasedProgress <span class="hljs-keyword">isnt</span> <span class="hljs-property">@easedProgress</span> <span class="hljs-keyword">and</span> isCallback
-      <span class="hljs-property">@onUpdate</span>?(<span class="hljs-property">@easedProgress</span>)
+      <span class="hljs-property">@onUpdate</span>?(<span class="hljs-property">@easedProgress</span>, <span class="hljs-property">@progress</span>)
     <span class="hljs-property">@props</span>.prevEasedProgress = <span class="hljs-property">@easedProgress</span>
 
   <span class="hljs-attribute">setProp</span>:<span class="hljs-function"><span class="hljs-params">(obj, value)</span>-&gt;</span>

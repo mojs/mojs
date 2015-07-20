@@ -135,14 +135,13 @@ describe 'Tween ->', ->
       spyOn t, 'onUpdate'
       t.start()
       t.update t.props.startTime + 500
-      expect(t.onUpdate).toHaveBeenCalledWith t.easedProgress
+      expect(t.onUpdate).toHaveBeenCalledWith t.easedProgress, t.progress
     it 'should have the right scope', ->
       isRightScope = false
       t = new Tween onUpdate:-> isRightScope = @ instanceof Tween
       t.start()
       t.update t.props.startTime + 200
       expect(isRightScope).toBe true
-
     it 'should be called just once on delay', ->
       t = new Tween delay: 200, repeat: 2, onUpdate:->
       spyOn(t, 'onUpdate').and.callThrough()
@@ -151,6 +150,18 @@ describe 'Tween ->', ->
       t.update t.props.startTime + t.o.duration + 100
       t.update t.props.startTime + t.o.duration + 150
       expect(t.onUpdate.calls.count()).toBe 1
+
+    it 'should pass eased progress and raw progress', ->
+      easedProgress = null
+      progress      = null
+      t = new Tween
+        easing: 'cubic.out'
+        onUpdate:(ep, p)->
+          easedProgress = ep
+          progress = p
+
+      t.setProc .5
+      expect(easedProgress).toBe mojs.easing.cubic.out progress
 
   describe 'onStart callback ->', ->
     it 'should be defined', ->
@@ -248,7 +259,7 @@ describe 'Tween ->', ->
       spyOn(t, 'onUpdate')
       t.update t.props.startTime + 55
       t.update t.props.startTime - 20
-      expect(t.onUpdate).toHaveBeenCalledWith 0
+      expect(t.onUpdate).toHaveBeenCalledWith 0, 0
       expect(t.progress).toBe 0
 
     it 'should not setProgress to 0 if timeline isChained', ->

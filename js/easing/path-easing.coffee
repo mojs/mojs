@@ -197,10 +197,6 @@ class PathEasing
     # remove the first empty item - it is always
     # empty cuz we split by M
     points.shift(); commands = path.match /[A-Y]/gim
-    # if path has Z command then remove the latest
-    # item from points cuz it is empty after the split
-    if commands[commands.length-1].toLowerCase() is 'z'
-      points.length = points.length - 1
     # normalize the x value of the start segment to 0
     startIndex = 0
     points[startIndex] = @_normalizeSegment points[startIndex]

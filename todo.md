@@ -3,13 +3,12 @@
 ---
 
 - add motion path stagger
-- tween should pass also a plain progress
-- path easing - is 1000 samples is enough?
 
 ---
 
 - add easing mix method
 - timeline refactor
+- path easing - is 1000 samples is enough?
 
 ---
 
