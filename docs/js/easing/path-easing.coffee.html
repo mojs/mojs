@@ -629,7 +629,7 @@ since it must start at 0 and end at 100</p>
       
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizePath</span>:<span class="hljs-function"><span class="hljs-params">(path)</span>-&gt;</span>
-    points     = path.split <span class="hljs-regexp">/[A-Z]/gim</span></div></div>
+    points     = path.split <span class="hljs-regexp">/[A-Y]/gim</span></div></div>
       
       </div>
     
@@ -642,7 +642,7 @@ empty cuz we split by M</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    points.shift(); commands = path.match <span class="hljs-regexp">/[A-Z]/gim</span></div></div>
+        <div class="code"><div class="wrapper">    points.shift(); commands = path.match <span class="hljs-regexp">/[A-Y]/gim</span></div></div>
       
       </div>
     
@@ -726,21 +726,8 @@ item from points cuz it is empty after the split</p>
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_joinNormalizedPath</span>:<span class="hljs-function"><span class="hljs-params">(commands, points)</span>-&gt;</span>
     normalizedPath = <span class="hljs-string">''</span>
     <span class="hljs-keyword">for</span> command, i <span class="hljs-keyword">in</span> commands
-      space = <span class="hljs-keyword">if</span> i <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-string">''</span> <span class="hljs-keyword">else</span> <span class="hljs-string">' '</span></div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>get coordinates for command, needed cuz the
-latest Z command doesnt have any coordinates</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">      coords = <span class="hljs-keyword">if</span> points[i]? <span class="hljs-keyword">then</span> points[i] <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
-      normalizedPath += <span class="hljs-string">"<span class="hljs-subst">#{space}</span><span class="hljs-subst">#{command}</span><span class="hljs-subst">#{coords.trim()}</span>"</span>
+      space = <span class="hljs-keyword">if</span> i <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-string">''</span> <span class="hljs-keyword">else</span> <span class="hljs-string">' '</span>
+      normalizedPath += <span class="hljs-string">"<span class="hljs-subst">#{space}</span><span class="hljs-subst">#{command}</span><span class="hljs-subst">#{points[i].trim()}</span>"</span>
 
     normalizedPath
 </div></div>
@@ -773,7 +760,8 @@ latest Z command doesnt have any coordinates</p>
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizeSegment</span>:<span class="hljs-function"><span class="hljs-params">(segment, value=<span class="hljs-number">0</span>)</span>-&gt;</span>
     segment = segment.trim()
-    pairs   = <span class="hljs-property">@_getSegmentPairs</span> segment.match <span class="hljs-regexp">/(-|\+)?((\d\.?\d+)|(\.?\d+))/gim</span></div></div>
+    numbersRegexp = <span class="hljs-regexp">/(-|\+)?((\d+(\.\d+)?)|(\.?\d+))/gim</span>
+    pairs   = <span class="hljs-property">@_getSegmentPairs</span> segment.match numbersRegexp</div></div>
       
       </div>
     
@@ -834,7 +822,7 @@ latest Z command doesnt have any coordinates</p>
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_getSegmentPairs</span>:<span class="hljs-function"><span class="hljs-params">(array)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> array.length % <span class="hljs-number">2</span> <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span>
-      h.error <span class="hljs-string">'Failed to parse the path - segment pairs are not even.'</span>
+      h.error <span class="hljs-string">'Failed to parse the path - segment pairs are not even.'</span>, array
     newArray = []</div></div>
       
       </div>

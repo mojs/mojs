@@ -193,10 +193,10 @@ class PathEasing
   # @param  {String} Path coordinates to normalize
   # @return {String} Normalized path coordinates
   _normalizePath:(path)->
-    points     = path.split /[A-Z]/gim
+    points     = path.split /[A-Y]/gim
     # remove the first empty item - it is always
     # empty cuz we split by M
-    points.shift(); commands = path.match /[A-Z]/gim
+    points.shift(); commands = path.match /[A-Y]/gim
     # if path has Z command then remove the latest
     # item from points cuz it is empty after the split
     if commands[commands.length-1].toLowerCase() is 'z'
@@ -220,10 +220,7 @@ class PathEasing
     normalizedPath = ''
     for command, i in commands
       space = if i is 0 then '' else ' '
-      # get coordinates for command, needed cuz the
-      # latest Z command doesnt have any coordinates
-      coords = if points[i]? then points[i] else ''
-      normalizedPath += "#{space}#{command}#{coords.trim()}"
+      normalizedPath += "#{space}#{command}#{points[i].trim()}"
 
     normalizedPath
 
@@ -235,7 +232,8 @@ class PathEasing
   # @return {String} Normalized Segment.
   _normalizeSegment:(segment, value=0)->
     segment = segment.trim()
-    pairs   = @_getSegmentPairs segment.match /(-|\+)?((\d\.?\d+)|(\.?\d+))/gim
+    numbersRegexp = /(-|\+)?((\d+(\.\d+)?)|(\.?\d+))/gim
+    pairs   = @_getSegmentPairs segment.match numbersRegexp
     # get x value of the latest point
     lastPoint = pairs[pairs.length-1]
     x = lastPoint[0]; parsedX = Number x
@@ -253,7 +251,7 @@ class PathEasing
   # @return {Array} Matrix of pairs.
   _getSegmentPairs:(array)->
     if array.length % 2 isnt 0
-      h.error 'Failed to parse the path - segment pairs are not even.'
+      h.error 'Failed to parse the path - segment pairs are not even.', array
     newArray = []
     # loop over the array by 2
     # and save the pairs

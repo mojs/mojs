@@ -2,9 +2,9 @@
 
 ---
 
-- normalize path for path-easing
 - add motion path stagger
 - tween should pass also a plain progress
+- path easing - is 1000 samples is enough?
 
 ---
 

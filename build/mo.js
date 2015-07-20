@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.132.3 
+	0.133.1 
 */
 
 (function(f){
@@ -929,9 +929,9 @@ PathEasing = (function() {
 
   PathEasing.prototype._normalizePath = function(path) {
     var commands, endIndex, normalizedPath, points, startIndex;
-    points = path.split(/[A-Z]/gim);
+    points = path.split(/[A-Y]/gim);
     points.shift();
-    commands = path.match(/[A-Z]/gim);
+    commands = path.match(/[A-Y]/gim);
     if (commands[commands.length - 1].toLowerCase() === 'z') {
       points.length = points.length - 1;
     }
@@ -943,24 +943,24 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._joinNormalizedPath = function(commands, points) {
-    var command, coords, i, j, len1, normalizedPath, space;
+    var command, i, j, len1, normalizedPath, space;
     normalizedPath = '';
     for (i = j = 0, len1 = commands.length; j < len1; i = ++j) {
       command = commands[i];
       space = i === 0 ? '' : ' ';
-      coords = points[i] != null ? points[i] : '';
-      normalizedPath += "" + space + command + (coords.trim());
+      normalizedPath += "" + space + command + (points[i].trim());
     }
     return normalizedPath;
   };
 
   PathEasing.prototype._normalizeSegment = function(segment, value) {
-    var i, j, lastPoint, len1, pairs, parsedX, point, space, x;
+    var i, j, lastPoint, len1, numbersRegexp, pairs, parsedX, point, space, x;
     if (value == null) {
       value = 0;
     }
     segment = segment.trim();
-    pairs = this._getSegmentPairs(segment.match(/(-|\+)?((\d\.?\d+)|(\.?\d+))/gim));
+    numbersRegexp = /(-|\+)?((\d+(\.\d+)?)|(\.?\d+))/gim;
+    pairs = this._getSegmentPairs(segment.match(numbersRegexp));
     lastPoint = pairs[pairs.length - 1];
     x = lastPoint[0];
     parsedX = Number(x);
@@ -979,7 +979,7 @@ PathEasing = (function() {
   PathEasing.prototype._getSegmentPairs = function(array) {
     var i, j, len1, newArray, pair, value;
     if (array.length % 2 !== 0) {
-      h.error('Failed to parse the path - segment pairs are not even.');
+      h.error('Failed to parse the path - segment pairs are not even.', array);
     }
     newArray = [];
     for (i = j = 0, len1 = array.length; j < len1; i = j += 2) {
@@ -1571,7 +1571,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.132.3',
+  revision: '0.133.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
