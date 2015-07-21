@@ -88,29 +88,17 @@ Transit  = <span class="hljs-built_in">require</span> <span class="hljs-string">
         </div>
       
       
-        <div class="code"><div class="wrapper">      option = <span class="hljs-property">@getOption</span>(i); option.index = i; option.isRunLess = <span class="hljs-literal">true</span></div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>option.radius = 0</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">      <span class="hljs-property">@transits</span>.push <span class="hljs-keyword">new</span> Transit option
-
-  <span class="hljs-attribute">getOption</span>:<span class="hljs-function"><span class="hljs-params">(i)</span>-&gt;</span>
+        <div class="code"><div class="wrapper">      option = <span class="hljs-property">@getOptionByIndex</span>(i)
+      option.index = i; option.isRunLess = <span class="hljs-literal">true</span>
+      <span class="hljs-property">@transits</span>.push <span class="hljs-keyword">new</span> Transit option
+  <span class="hljs-attribute">getOptionByIndex</span>:<span class="hljs-function"><span class="hljs-params">(i)</span>-&gt;</span>
     option = {}
     <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> <span class="hljs-property">@props</span>
       option[key] = <span class="hljs-property">@getPropByMod</span>(key, i)
     option.bit = <span class="hljs-property">@getPropByMod</span>(<span class="hljs-string">'els'</span>, i)
     option
-
-  <span class="hljs-attribute">getPropByMod</span>:<span class="hljs-function"><span class="hljs-params">(name, i)</span>-&gt;</span>
-    prop = <span class="hljs-property">@props</span>[name]; <span class="hljs-keyword">if</span> h.isArray(prop) <span class="hljs-keyword">then</span> prop[i % prop.length] <span class="hljs-keyword">else</span> prop
+  <span class="hljs-attribute">getPropByMod</span>:<span class="hljs-function"><span class="hljs-params">(name, i, store=<span class="hljs-property">@props</span>)</span>-&gt;</span>
+    prop = store[name]; <span class="hljs-keyword">if</span> h.isArray(prop) <span class="hljs-keyword">then</span> prop[i % prop.length] <span class="hljs-keyword">else</span> prop
 
   <span class="hljs-attribute">render</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@createBit</span>(); <span class="hljs-property">@setProgress</span>(<span class="hljs-number">0</span>, <span class="hljs-literal">true</span>); <span class="hljs-property">@createTween</span>(); @
   <span class="hljs-attribute">isDelta</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-literal">false</span>

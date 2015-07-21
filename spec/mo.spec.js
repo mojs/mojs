@@ -346,7 +346,7 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":5,"./shapes/bitsMap":11,"./swirl":21,"./transit":22}],2:[function(require,module,exports){
+},{"./h":5,"./shapes/bitsMap":11,"./swirl":22,"./transit":23}],2:[function(require,module,exports){
 (function (global){
 var BezierEasing, bezierEasing, h,
   indexOf = [].indexOf || /* istanbul ignore next */
@@ -1582,6 +1582,7 @@ mojs = {
   Transit: require('./transit'),
   Swirl: require('./swirl'),
   Stagger: require('./stagger'),
+  Staggler: require('./staggler'),
   Spriter: require('./spriter'),
   MotionPath: require('./motion-path'),
   Tween: require('./tween/tween'),
@@ -1615,7 +1616,7 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":1,"./easing/easing":3,"./h":5,"./motion-path":7,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./spriter":19,"./stagger":20,"./swirl":21,"./transit":22,"./tween/timeline":23,"./tween/tween":24,"./tween/tweener":25}],7:[function(require,module,exports){
+},{"./burst":1,"./easing/easing":3,"./h":5,"./motion-path":7,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./spriter":19,"./stagger":20,"./staggler":21,"./swirl":22,"./transit":23,"./tween/timeline":24,"./tween/tween":25,"./tween/tweener":26}],7:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -2143,7 +2144,7 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./h":5,"./tween/timeline":23,"./tween/tween":24,"./vendor/resize":26}],8:[function(require,module,exports){
+},{"./h":5,"./tween/timeline":24,"./tween/tween":25,"./vendor/resize":27}],8:[function(require,module,exports){
 
 /* istanbul ignore next */
 (function(root) {
@@ -2914,7 +2915,7 @@ Spriter = (function() {
 
 module.exports = Spriter;
 
-},{"./h":5,"./tween/timeline":23,"./tween/tween":24}],20:[function(require,module,exports){
+},{"./h":5,"./tween/timeline":24,"./tween/tween":25}],20:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Stagger, Timeline, Transit, h,
@@ -2990,7 +2991,7 @@ Stagger = (function(superClass) {
     len = this.props.els.length;
     results = [];
     for (i = j = 0, ref = len; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-      option = this.getOption(i);
+      option = this.getOptionByIndex(i);
       option.index = i;
       option.isRunLess = true;
       results.push(this.transits.push(new Transit(option)));
@@ -2998,7 +2999,7 @@ Stagger = (function(superClass) {
     return results;
   };
 
-  Stagger.prototype.getOption = function(i) {
+  Stagger.prototype.getOptionByIndex = function(i) {
     var key, option, ref, value;
     option = {};
     ref = this.props;
@@ -3010,9 +3011,12 @@ Stagger = (function(superClass) {
     return option;
   };
 
-  Stagger.prototype.getPropByMod = function(name, i) {
+  Stagger.prototype.getPropByMod = function(name, i, store) {
     var prop;
-    prop = this.props[name];
+    if (store == null) {
+      store = this.props;
+    }
+    prop = store[name];
     if (h.isArray(prop)) {
       return prop[i % prop.length];
     } else {
@@ -3051,7 +3055,35 @@ Stagger = (function(superClass) {
 
 module.exports = Stagger;
 
-},{"./h":5,"./transit":22,"./tween/timeline":23}],21:[function(require,module,exports){
+},{"./h":5,"./transit":23,"./tween/timeline":24}],21:[function(require,module,exports){
+
+/* istanbul ignore next */
+var Staggler, h;
+
+h = require('./h');
+
+Staggler = (function() {
+  function Staggler() {}
+
+  Staggler.prototype._getOptionByMod = function(name, i, store) {
+    var props;
+    props = store[name];
+    if (h.isArray(props)) {
+      return props[i % props.length];
+    } else {
+      return props;
+    }
+  };
+
+  Staggler.prototype._getOptionByIndex = function(i, store) {};
+
+  return Staggler;
+
+})();
+
+module.exports = Staggler;
+
+},{"./h":5}],22:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Swirl, Transit,
@@ -3165,7 +3197,7 @@ Swirl = (function(superClass) {
 
 module.exports = Swirl;
 
-},{"./transit":22}],22:[function(require,module,exports){
+},{"./transit":23}],23:[function(require,module,exports){
 
 /* istanbul ignore next */
 var Timeline, Transit, Tween, bitsMap, h,
@@ -3835,7 +3867,7 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":5,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
+},{"./h":5,"./shapes/bitsMap":11,"./tween/timeline":24,"./tween/tween":25}],24:[function(require,module,exports){
 var Timeline, h, t,
   slice = [].slice;
 
@@ -4097,7 +4129,7 @@ Timeline = (function() {
 
 module.exports = Timeline;
 
-},{"../h":5,"./tweener":25}],24:[function(require,module,exports){
+},{"../h":5,"./tweener":26}],25:[function(require,module,exports){
 var Tween, easingModule, h, t;
 
 easingModule = require('../easing/easing');
@@ -4328,7 +4360,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../easing/easing":3,"../h":5,"./tweener":25}],25:[function(require,module,exports){
+},{"../easing/easing":3,"../h":5,"./tweener":26}],26:[function(require,module,exports){
 var Tweener, h, i, t;
 
 require('../polyfills/raf');
@@ -4415,7 +4447,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":5,"../polyfills/performance":8,"../polyfills/raf":9}],26:[function(require,module,exports){
+},{"../h":5,"../polyfills/performance":8,"../polyfills/raf":9}],27:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com

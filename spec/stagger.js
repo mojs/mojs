@@ -314,19 +314,20 @@
         return expect(s.getPropByMod('stroke', 2)).toBe('deeppink');
       });
     });
-    return describe('getOption method ->', function() {
+    return describe('getOptionByIndex method ->', function() {
       return it('should get options for a transit by its index', function() {
-        var s;
-        s = new Stagger({
+        var options, s;
+        options = {
           els: els,
           stroke: ['deeppink', 'cyan', 'yellow']
-        });
-        expect(s.getOption(0).stroke).toBe('deeppink');
-        expect(s.getOption(0).bit).toBe(path1);
-        expect(s.getOption(0).duration).toBe(500);
-        expect(s.getOption(1).stroke).toBe('cyan');
-        expect(s.getOption(1).bit).toBe(path2);
-        return expect(s.getOption(1).duration).toBe(500);
+        };
+        s = new Stagger(options);
+        expect(s.getOptionByIndex(0).stroke).toBe('deeppink');
+        expect(s.getOptionByIndex(0).bit).toBe(path1);
+        expect(s.getOptionByIndex(0).duration).toBe(500);
+        expect(s.getOptionByIndex(1).stroke).toBe('cyan');
+        expect(s.getOptionByIndex(1).bit).toBe(path2);
+        return expect(s.getOptionByIndex(1).duration).toBe(500);
       });
     });
   });

@@ -75,6 +75,14 @@ window.files = [
   "toc": []
 },
 {
+  "path": "js/staggler.coffee.html",
+  "originalName": "staggler.coffee",
+  "originalPath": "js/staggler.coffee",
+  "name": "staggler.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/swirl.coffee.html",
   "originalName": "swirl.coffee",
   "originalPath": "js/swirl.coffee",

@@ -33,6 +33,8 @@ describe 'mojs ->', ->
     expect(mojs.Swirl).toBeDefined()
   it 'should have Stagger', ->
     expect(mojs.Stagger).toBeDefined()
+  it 'should have Staggler', ->
+    expect(mojs.Staggler).toBeDefined()
   it 'should have Spriter', ->
     expect(mojs.Spriter).toBeDefined()
   it 'should have MotionPath', ->

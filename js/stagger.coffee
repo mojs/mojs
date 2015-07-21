@@ -40,19 +40,17 @@ class Stagger extends Transit
     @transits = []; len = @props.els.length
     for i in [0...len]
       # cover the index set
-      option = @getOption(i); option.index = i; option.isRunLess = true
-      # option.radius = 0
+      option = @getOptionByIndex(i)
+      option.index = i; option.isRunLess = true
       @transits.push new Transit option
-
-  getOption:(i)->
+  getOptionByIndex:(i)->
     option = {}
     for key, value of @props
       option[key] = @getPropByMod(key, i)
     option.bit = @getPropByMod('els', i)
     option
-
-  getPropByMod:(name, i)->
-    prop = @props[name]; if h.isArray(prop) then prop[i % prop.length] else prop
+  getPropByMod:(name, i, store=@props)->
+    prop = store[name]; if h.isArray(prop) then prop[i % prop.length] else prop
 
   render:-> @createBit(); @setProgress(0, true); @createTween(); @
   isDelta:-> false
