@@ -14,7 +14,11 @@ class Staggler
   _getOptionByMod:(name, i, store)->
     props = store[name]
     if props+'' is '[object NodeList]' then props = Array::slice.call props, 0
-    if h.isArray(props) then props[i % props.length] else props
+    value = if h.isArray(props) then props[i % props.length] else props
+    
+    if typeof value is 'string' and value.match /stagger/g
+      value = h.parseStagger(value, i)
+    value
   # ---
 
   # Method to get option by modulo of index.

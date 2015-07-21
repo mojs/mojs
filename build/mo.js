@@ -1605,7 +1605,7 @@ mpStagger.init({
     x: 200,
     y: 100
   },
-  delay: [100, 200]
+  delay: 'stagger(1000, rand(100, 1000))'
 }, mojs.MotionPath);
 
 mpStagger.run();
@@ -3063,16 +3063,16 @@ Staggler = (function() {
   function Staggler() {}
 
   Staggler.prototype._getOptionByMod = function(name, i, store) {
-    var props;
+    var props, value;
     props = store[name];
     if (props + '' === '[object NodeList]') {
       props = Array.prototype.slice.call(props, 0);
     }
-    if (h.isArray(props)) {
-      return props[i % props.length];
-    } else {
-      return props;
+    value = h.isArray(props) ? props[i % props.length] : props;
+    if (typeof value === 'string' && value.match(/stagger/g)) {
+      value = h.parseStagger(value, i);
     }
+    return value;
   };
 
   Staggler.prototype._getOptionByIndex = function(i, store) {

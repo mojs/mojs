@@ -76,21 +76,10 @@ mpStagger = <span class="hljs-keyword">new</span> mojs.Staggler
         <div class="code"><div class="wrapper">mpStagger.init {
   <span class="hljs-attribute">el</span>: <span class="hljs-built_in">document</span>.querySelectorAll(<span class="hljs-string">'.el'</span>),
   <span class="hljs-attribute">path</span>: (<span class="hljs-attribute">x</span>: <span class="hljs-number">200</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">100</span>)
-  <span class="hljs-attribute">delay</span>: [<span class="hljs-number">100</span>, <span class="hljs-number">200</span>]
+  <span class="hljs-attribute">delay</span>: <span class="hljs-string">'stagger(1000, rand(100, 1000))'</span>
   }, mojs.MotionPath
-</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>console.log mpStagger.childModules</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">mpStagger.run()
+
+mpStagger.run()
 
 </div></div>
       

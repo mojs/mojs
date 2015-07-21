@@ -26,7 +26,7 @@
         expect(s._getOptionByMod('bit', 0, options)).toBe('foo');
         return expect(s._getOptionByMod('bit', 1, options)).toBe('foo');
       });
-      return it('should get option if it is array like', function() {
+      it('should get option if it is array like', function() {
         var div1, div2, divWrapper, options, s;
         div1 = document.createElement('div');
         div2 = document.createElement('div');
@@ -39,6 +39,16 @@
         s = new Staggler;
         expect(s._getOptionByMod('bit', 0, options)).toBe(div1);
         return expect(s._getOptionByMod('bit', 1, options)).toBe(div2);
+      });
+      return it('should parse stagger options', function() {
+        var options, s;
+        options = {
+          bit: 'stagger(200)'
+        };
+        s = new Staggler;
+        expect(s._getOptionByMod('bit', 0, options)).toBe(0);
+        expect(s._getOptionByMod('bit', 1, options)).toBe(200);
+        return expect(s._getOptionByMod('bit', 2, options)).toBe(400);
       });
     });
     describe('_getOptionByIndex method ->', function() {

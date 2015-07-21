@@ -33,10 +33,9 @@ mpStagger = new mojs.Staggler
 mpStagger.init {
   el: document.querySelectorAll('.el'),
   path: (x: 200, y: 100)
-  delay: [100, 200]
+  delay: 'stagger(1000, rand(100, 1000))'
   }, mojs.MotionPath
 
-# console.log mpStagger.childModules
 mpStagger.run()
 
 

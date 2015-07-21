@@ -26,6 +26,13 @@ describe 'Staggler ->', ->
       s = new Staggler
       expect(s._getOptionByMod('bit', 0, options)).toBe div1
       expect(s._getOptionByMod('bit', 1, options)).toBe div2
+
+    it 'should parse stagger options', ->
+      options = bit: 'stagger(200)'
+      s = new Staggler
+      expect(s._getOptionByMod('bit', 0, options)).toBe 0
+      expect(s._getOptionByMod('bit', 1, options)).toBe 200
+      expect(s._getOptionByMod('bit', 2, options)).toBe 400
   
   describe '_getOptionByIndex method ->', ->
     it 'should get option by modulo of index', ->
