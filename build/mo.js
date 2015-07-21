@@ -1565,7 +1565,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],6:[function(require,module,exports){
-var mojs;
+var mojs, mpStagger;
 
 mojs = {
   revision: '0.134.0',
@@ -1596,6 +1596,19 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+mpStagger = new mojs.Staggler;
+
+mpStagger.init({
+  el: document.querySelectorAll('.el'),
+  path: {
+    x: 200,
+    y: 100
+  },
+  delay: [100, 200]
+}, mojs.MotionPath);
+
+mpStagger.run();
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -3040,9 +3053,11 @@ module.exports = Stagger;
 
 },{"./h":5,"./transit":23,"./tween/timeline":24}],21:[function(require,module,exports){
 
-var Staggler, h;
+var Staggler, Timeline, h;
 
 h = require('./h');
+
+Timeline = require('./tween/timeline');
 
 Staggler = (function() {
   function Staggler() {}
@@ -3050,6 +3065,9 @@ Staggler = (function() {
   Staggler.prototype._getOptionByMod = function(name, i, store) {
     var props;
     props = store[name];
+    if (props + '' === '[object NodeList]') {
+      props = Array.prototype.slice.call(props, 0);
+    }
     if (h.isArray(props)) {
       return props[i % props.length];
     } else {
@@ -3067,13 +3085,50 @@ Staggler = (function() {
     return options;
   };
 
+  Staggler.prototype._getChildQuantity = function(name, store) {
+    var quantifier;
+    quantifier = store[name];
+    if (h.isArray(quantifier)) {
+      return quantifier.length;
+    } else if (quantifier + '' === '[object NodeList]') {
+      return quantifier.length;
+    } else if (quantifier instanceof HTMLElement) {
+      return 1;
+    } else if (typeof quantifier === 'string') {
+      return 1;
+    }
+  };
+
+  Staggler.prototype._createTimeline = function() {
+    return this.timeline = new Timeline;
+  };
+
+  Staggler.prototype.init = function(options, Module) {
+    var count, i, j, module, option, ref;
+    count = this._getChildQuantity('el', options);
+    this._createTimeline();
+    this.childModules = [];
+    for (i = j = 0, ref = count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      option = this._getOptionByIndex(i, options);
+      option.isRunLess = true;
+      module = new Module(option);
+      this.childModules.push(module);
+      this.timeline.add(module.timeline);
+    }
+    return this;
+  };
+
+  Staggler.prototype.run = function() {
+    return this.timeline.start();
+  };
+
   return Staggler;
 
 })();
 
 module.exports = Staggler;
 
-},{"./h":5}],22:[function(require,module,exports){
+},{"./h":5,"./tween/timeline":24}],22:[function(require,module,exports){
 
 var Swirl, Transit,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },

@@ -26,6 +26,20 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
+
+mpStagger = new mojs.Staggler
+
+# console.log document.querySelectorAll('.el')
+mpStagger.init {
+  el: document.querySelectorAll('.el'),
+  path: (x: 200, y: 100)
+  delay: [100, 200]
+  }, mojs.MotionPath
+
+# console.log mpStagger.childModules
+mpStagger.run()
+
+
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "mojs", [], -> mojs

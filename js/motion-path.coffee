@@ -334,7 +334,7 @@ class MotionPath
                 DOMNode or another module.'
       return true
     
-    @el         = @parseEl @props.el
+    @el = @parseEl @props.el
     @props.motionBlur > 0 and @createFilter()
 
     @path       = @getPath()

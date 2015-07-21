@@ -1,3 +1,9 @@
+.el {
+  width: 1.25em;
+  height: 1.25em;
+  background: #aaa;
+  position: absolute;
+}
 html,
 body {
   height: 1000px;
