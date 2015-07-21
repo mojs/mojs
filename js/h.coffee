@@ -347,6 +347,15 @@ class Helpers
     
     if unit then "#{number}#{unit}" else number
 
+  # ---
+
+  # Method to parse stagger or return the passed value if
+  # it has no stagger expression in it.
+  parseIfStagger:(value, i)->
+    if !(typeof value is 'string' and value.match /stagger/g) then value
+    else @parseStagger(value, i)
+    
+
   # if passed string has rand function then get the rand value
   parseIfRand:(str)->
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)

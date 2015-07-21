@@ -1,6 +1,6 @@
 
 mojs =
-  revision:   '0.134.0', isDebug: true
+  revision:   '0.136.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -32,8 +32,10 @@ mpStagger = new mojs.Staggler
 # console.log document.querySelectorAll('.el')
 mpStagger.init {
   el: document.querySelectorAll('.el'),
-  path: (x: 200, y: 100)
-  delay: 'stagger(1000, rand(100, 1000))'
+  easing: 'cubic.out'
+  # isAngle: true
+  path: x: 200, y: 0
+  delay: 'stagger(1000, rand(100, 300))'
   }, mojs.MotionPath
 
 mpStagger.run()

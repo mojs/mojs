@@ -658,6 +658,33 @@ if num taken as 1, rand() taken as 0</p>
       <div class="segment">
       
         <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>Method to parse stagger or return the passed value if
+it has no stagger expression in it.</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">parseIfStagger</span>:<span class="hljs-function"><span class="hljs-params">(value, i)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> !(<span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">and</span> value.match <span class="hljs-regexp">/stagger/g</span>) <span class="hljs-keyword">then</span> value
+    <span class="hljs-keyword">else</span> <span class="hljs-property">@parseStagger</span>(value, i)
+    
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
           <div class="wrapper"><p>if passed string has rand function then get the rand value</p>
 </div>
         </div>

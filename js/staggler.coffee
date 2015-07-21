@@ -13,12 +13,12 @@ class Staggler
   # @return {Any} Property.
   _getOptionByMod:(name, i, store)->
     props = store[name]
+    # if not dom list then clone it to array
     if props+'' is '[object NodeList]' then props = Array::slice.call props, 0
+    # get the value in array or return the value itself
     value = if h.isArray(props) then props[i % props.length] else props
-    
-    if typeof value is 'string' and value.match /stagger/g
-      value = h.parseStagger(value, i)
-    value
+    # check if value has the stagger expression, if so parse it
+    h.parseIfStagger(value, i)
   # ---
 
   # Method to get option by modulo of index.

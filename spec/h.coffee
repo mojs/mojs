@@ -93,7 +93,7 @@ describe 'Helpers ->', ->
         expect(parseFloat rand).not.toBeGreaterThan  20
         expect(rand.match(/\%/)).toBeTruthy()
 
-    describe 'parseStagger method', ->
+    describe 'parseStagger method ->', ->
       it 'should get random number from string', ->
         value = h.parseStagger 'stagger(150)', 3
         expect(typeof value).toBe 'number'
@@ -101,11 +101,9 @@ describe 'Helpers ->', ->
       it 'should get random if was passed', ->
         value = h.parseStagger 'stagger(rand(10%,20%))', 0
         expect(value).toBe '0%'
-        
         value = parseInt(h.parseStagger('stagger(rand(10%,20%))', 3), 10)
         expect(value).toBeGreaterThan     29
         expect(value).not.toBeGreaterThan 60
-
       it 'should get string of unit value', ->
         value = h.parseStagger 'stagger(20%)', 2
         expect(value).toBe '40%'
@@ -134,6 +132,18 @@ describe 'Helpers ->', ->
         expect(parseInt(value),10).toBeGreaterThan     539
         expect(parseInt(value),10).not.toBeGreaterThan 639
         expect(value.match /\%/ ).toBeTruthy()
+
+    describe 'parseIfStagger method', ->
+      it 'should parse stagger if stagger string passed', ->
+        value = h.parseIfStagger 'stagger(200)', 2
+        expect(value).toBe 400
+
+      it 'should return passed value if it has no stagger expression', ->
+        arg = []
+        value = h.parseIfStagger arg, 2
+        expect(value).toBe arg
+
+
 
     describe 'parseIfRand method', ->
       it 'should get random number from string if it is rand', ->

@@ -127,7 +127,7 @@
           return expect(rand.match(/\%/)).toBeTruthy();
         });
       });
-      describe('parseStagger method', function() {
+      describe('parseStagger method ->', function() {
         it('should get random number from string', function() {
           var value;
           value = h.parseStagger('stagger(150)', 3);
@@ -185,6 +185,19 @@
           expect(parseInt(value), 10).toBeGreaterThan(539);
           expect(parseInt(value), 10).not.toBeGreaterThan(639);
           return expect(value.match(/\%/)).toBeTruthy();
+        });
+      });
+      describe('parseIfStagger method', function() {
+        it('should parse stagger if stagger string passed', function() {
+          var value;
+          value = h.parseIfStagger('stagger(200)', 2);
+          return expect(value).toBe(400);
+        });
+        return it('should return passed value if it has no stagger expression', function() {
+          var arg, value;
+          arg = [];
+          value = h.parseIfStagger(arg, 2);
+          return expect(value).toBe(arg);
         });
       });
       describe('parseIfRand method', function() {

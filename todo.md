@@ -8,7 +8,7 @@
 
 - add easing mix method
 - timeline refactor
-- path easing - is 1000 samples is enough?
+- path easing - 1000 samples is enough?
 
 ---
 

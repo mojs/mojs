@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.134.0 
+	0.136.0 
 */
 
 (function(f){
@@ -1400,6 +1400,14 @@ Helpers = (function() {
     }
   };
 
+  Helpers.prototype.parseIfStagger = function(value, i) {
+    if (!(typeof value === 'string' && value.match(/stagger/g))) {
+      return value;
+    } else {
+      return this.parseStagger(value, i);
+    }
+  };
+
   Helpers.prototype.parseIfRand = function(str) {
     if (typeof str === 'string' && str.match(/rand\(/)) {
       return this.parseRand(str);
@@ -1568,7 +1576,7 @@ module.exports = h;
 var mojs, mpStagger;
 
 mojs = {
-  revision: '0.134.0',
+  revision: '0.136.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1601,11 +1609,12 @@ mpStagger = new mojs.Staggler;
 
 mpStagger.init({
   el: document.querySelectorAll('.el'),
+  easing: 'cubic.out',
   path: {
     x: 200,
-    y: 100
+    y: 0
   },
-  delay: 'stagger(1000, rand(100, 1000))'
+  delay: 'stagger(1000, rand(100, 300))'
 }, mojs.MotionPath);
 
 mpStagger.run();
@@ -3069,10 +3078,7 @@ Staggler = (function() {
       props = Array.prototype.slice.call(props, 0);
     }
     value = h.isArray(props) ? props[i % props.length] : props;
-    if (typeof value === 'string' && value.match(/stagger/g)) {
-      value = h.parseStagger(value, i);
-    }
-    return value;
+    return h.parseIfStagger(value, i);
   };
 
   Staggler.prototype._getOptionByIndex = function(i, store) {
