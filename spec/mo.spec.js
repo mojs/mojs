@@ -3075,7 +3075,15 @@ Staggler = (function() {
     }
   };
 
-  Staggler.prototype._getOptionByIndex = function(i, store) {};
+  Staggler.prototype._getOptionByIndex = function(i, store) {
+    var key, options, value;
+    options = {};
+    for (key in store) {
+      value = store[key];
+      options[key] = this._getOptionByMod(key, i, store);
+    }
+    return options;
+  };
 
   return Staggler;
 

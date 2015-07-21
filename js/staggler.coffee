@@ -19,6 +19,10 @@ class Staggler
   # @param {Number} Index for modulo calculations.
   # @param {Object} Options hash to look in.
   _getOptionByIndex:(i, store)->
+    options = {}
+    for key, value of store
+      options[key] = @_getOptionByMod key, i, store
+    options
 
 
 module.exports = Staggler
