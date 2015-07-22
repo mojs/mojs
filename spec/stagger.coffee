@@ -1,218 +1,107 @@
-Stagger = mojs.Stagger
-h       = mojs.helpers
-ns      = 'http://www.w3.org/2000/svg'
-# svg  = document.createElementNS?(ns, 'svg')
+StagglerWrapper = mojs.Stagger
+Staggler = StagglerWrapper mojs.MotionPath
 
-els   = document.createElementNS ns, 'g'
-path1 = document.createElementNS ns, 'path'
-path2 = document.createElementNS ns, 'path'
-els.appendChild(path1); els.appendChild path2
+describe 'Staggler ->', ->
+  describe '_getOptionByMod method ->', ->
+    it 'should get an option by modulo of i', ->
+      options = bit: ['foo', 'bar', 'baz'], path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getOptionByMod('bit', 0, options)).toBe 'foo'
+      expect(s._getOptionByMod('bit', 1, options)).toBe 'bar'
+      expect(s._getOptionByMod('bit', 2, options)).toBe 'baz'
+      expect(s._getOptionByMod('bit', 3, options)).toBe 'foo'
+      expect(s._getOptionByMod('bit', 7, options)).toBe 'bar'
+    it 'should return option if it isnt defined by array', ->
+      options = bit: 'foo', path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getOptionByMod('bit', 0, options)).toBe 'foo'
+      expect(s._getOptionByMod('bit', 1, options)).toBe 'foo'
+    it 'should get option if it is array like', ->
+      div1 = document.createElement 'div'
+      div2 = document.createElement 'div'
+      divWrapper = document.createElement 'div'
+      divWrapper.appendChild div1
+      divWrapper.appendChild div2
+      options = bit: divWrapper.childNodes, path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getOptionByMod('bit', 0, options)).toBe div1
+      expect(s._getOptionByMod('bit', 1, options)).toBe div2
 
-describe 'Stagger ->', ->
-  describe 'defaults ->', ->
-    it 'should have its own defaults', ->
-      s = new Stagger els: els
-      expect(s.ownDefaults.delay).toBe 'stagger(100)'
-      expect(s.ownDefaults.els)  .toBeDefined()
-      
-      expect(s.ownDefaults.strokeDasharray)         .toBe '100%'
-      expect(s.ownDefaults.strokeDashoffset['100%']).toBe '0%'
-      
-      expect(s.ownDefaults.stroke[0]).toBe 'yellow'
-      expect(s.ownDefaults.stroke[1]).toBe 'cyan'
-      expect(s.ownDefaults.stroke[2]).toBe 'deeppink'
+    it 'should parse stagger options', ->
+      options = bit: 'stagger(200)', path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getOptionByMod('bit', 0, options)).toBe 0
+      expect(s._getOptionByMod('bit', 1, options)).toBe 200
+      expect(s._getOptionByMod('bit', 2, options)).toBe 400
+  
+  describe '_getOptionByIndex method ->', ->
+    it 'should get option by modulo of index', ->
+      options =
+        bax:  ['foo', 'bar', 'baz']
+        qux:  200
+        norf: ['norf', 300]
+        path: 'M0,0 L100,100'
+      s = new Staggler options
+      option1 = s._getOptionByIndex 0, options
+      expect(option1.bax) .toBe 'foo'
+      expect(option1.qux) .toBe 200
+      expect(option1.norf).toBe 'norf'
 
-      expect(s.ownDefaults.fill).toBe 'transparent'
-      expect(s.ownDefaults.type).toBe 'line'
-
-      expect(s.ownDefaults.isShowInit).toBe false
-      expect(s.ownDefaults.isShowEnd) .toBe false
-
-    it 'should have isSkipDelta flag', ->
-      s = new Stagger els: els
-      expect(s.isSkipDelta).toBe true
-
-  describe 'defaults extend ->', ->
-    it 'defaults should extend ownDefaults', ->
-      s = new Stagger els: els
-      expect(s.defaults.strokeWidth).toBe 2
-      expect(s.defaults.delay)      .toBe 'stagger(100)'
-      expect(s.ownDefaults.els)     .toBeDefined()
-
-  describe 'extendDefaults method ->', ->
-    it 'should override extendDefaults method', ->
-      s = new Stagger els: els
-      expect(s.extendDefaults).not.toBe Stagger.__super__.extendDefaults
-    it 'should define props object', ->
-      s = new Stagger els: els
-      s.props = undefined; s.extendDefaults()
-      expect(s.props).toBeDefined()
-    it 'should define deltas object', ->
-      s = new Stagger els: els
-      s.deltas = undefined; s.extendDefaults()
-      expect(s.deltas).toBeDefined()
-    it 'should just copy options to props and fallback to defaults', ->
-      s = new Stagger els: els, stroke: 'deeppink'
-      expect(s.props.stroke).toBe 'deeppink'
-      expect(s.props.delay) .toBe s.defaults.delay
-
-  describe 'isDelta method ->', ->
-    it 'should override isDelta method', ->
-      s = new Stagger els: els
-      expect(s.isDelta).not.toBe Stagger.__super__.isDelta
-    it 'should always return false', ->
-      s = new Stagger els: els
-      expect(s.isDelta()).toBe false
-
-  describe 'createBit method ->', ->
-    it 'should override createBit method', ->
-      s = new Stagger els: els
-      expect(s.createBit).not.toBe Stagger.__super__.createBit
-    it 'should create transit for every el', ->
-      els   = document.createElementNS ns, 'g'
-      path1 = document.createElementNS ns, 'path'
-      path2 = document.createElementNS ns, 'path'
-      els.appendChild(path1); els.appendChild path2
-      s = new Stagger
-        els: els
-        stroke: ['deeppink', 'cyan', 'yellow']
-      expect(s.transits.length)   .toBe 2
-      expect(s.transits[0].o.bit).toBe path1
-      expect(s.transits[1].o.bit).toBe path2
-      expect(s.transits[0].o.stroke).toBe 'deeppink'
-      expect(s.transits[1].o.stroke).toBe 'cyan'
-
-    it 'should pass index and isRunLess to every transit', ->
-      els   = document.createElementNS ns, 'g'
-      path1 = document.createElementNS ns, 'path'
-      path2 = document.createElementNS ns, 'path'
-      els.appendChild(path1); els.appendChild path2
-      s = new Stagger
-        els: els
-        stroke: ['deeppink', 'cyan', 'yellow']
-      expect(s.transits.length)   .toBe 2
-      expect(s.transits[0].o.index).toBe 0
-      expect(s.transits[1].o.index).toBe 1
-      expect(s.transits[0].o.isRunLess).toBe true
-      expect(s.transits[1].o.isRunLess).toBe true
-
-  describe 'render method ->', ->
-    it 'should override render method', ->
-      s = new Stagger els: els
-      expect(s.render).not.toBe Stagger.__super__.render
-
-    it 'should call createBit method', ->
-      s = new Stagger els: els
-      spyOn s, 'createBit'
-      s.render()
-      expect(s.createBit).toHaveBeenCalled()
-
-    it 'should call setProgress method', ->
-      s = new Stagger els: els, isRunLess: true
-      spyOn s, 'setProgress'
-      s.render()
-      expect(s.setProgress).toHaveBeenCalledWith 0, true
-
-    it 'should call createTween method', ->
-      s = new Stagger els: els
-      spyOn s, 'createTween'
-      s.render()
-      expect(s.createTween).toHaveBeenCalled()
-
-  describe 'createTween method ->', ->
-    it 'should override createTween method', ->
-      s = new Stagger els: els
-      expect(s.createTween).not.toBe Stagger.__super__.createTween
-
-    it 'should parse delay and duration', ->
-      s = new Stagger els: els
-      expect(s.timeline).toBeDefined()
-
-    # it 'should call super createTween method', ->
-    #   s = new Stagger els: els
-    #   spyOn Stagger.__super__, 'createTween'
-    #   s.createTween()
-    #   expect(Stagger.__super__.createTween).toHaveBeenCalled()
-
-    it 'should add timelines to the tween', ->
-      s = new Stagger els: els
+  describe '_getChildQuantity method', ->
+    it 'should get quantity of child modules #array', ->
+      options = el: ['body', 'body', 'body'], path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getChildQuantity 'el', options).toBe 3
+    it 'should get quantity of child modules #dom list', ->
+      div1 = document.createElement 'div'
+      div2 = document.createElement 'div'
+      divWrapper = document.createElement 'div'
+      divWrapper.appendChild div1
+      divWrapper.appendChild div2
+      options = el: divWrapper.childNodes, path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getChildQuantity 'el', options).toBe 2
+    it 'should get quantity of child modules #single value', ->
+      options = el: document.createElement('div'), path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getChildQuantity 'el', options).toBe 1
+    it 'should get quantity of child modules #string', ->
+      options = el: 'body', path: 'M0,0 L100,100'
+      s = new Staggler options
+      expect(s._getChildQuantity 'el', options).toBe 1
+  describe '_createTimeline method ->', ->
+    it 'should create timeline', ->
+      options = el: 'body', path: 'M0,0 L100,100'
+      s = new Staggler options
+      s._createTimeline()
+      expect(s.timeline instanceof mojs.Timeline).toBe true
+  describe 'init ->', ->
+    it 'should make stagger', ->
+      div = document.createElement 'div'
+      options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
+      s = new Staggler options
+      s.init options, mojs.MotionPath
       expect(s.timeline.timelines.length).toBe 2
+    it 'should pass isRunLess = true', ->
+      div = document.createElement 'div'
+      options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
+      s = new Staggler options
+      s.init options, mojs.MotionPath
+      expect(s.childModules[0].o.isRunLess).toBe true
+    it 'should return self', ->
+      div = document.createElement 'div'
+      options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
+      s = new Staggler options
+      expect(s.init options, mojs.MotionPath).toBe s
 
-    it 'should call startTween', ->
-      s = new Stagger els: els
-      spyOn s, 'startTween'
-      s.createTween()
-      expect(s.startTween).toHaveBeenCalled()
-
-    it 'should not call startTween if isRunLess was passed', ->
-      s = new Stagger els: els, isRunLess: true
-      spyOn s, 'startTween'
-      s.createTween()
-      expect(s.startTween).not.toHaveBeenCalled()
-
-  describe 'draw method ->', ->
-    it 'should override draw method', ->
-      s = new Stagger els: els
-      expect(s.draw).not.toBe Stagger.__super__.draw
-
-    it 'should call drawEl method', ->
-      s = new Stagger els: els
-      spyOn s, 'drawEl'
-      s.draw()
-      expect(s.drawEl).toHaveBeenCalled()
-
-  describe 'parseEls method ->', ->
-    it 'should recieve els as a DOM node', ->
-      els   = document.createElementNS ns, 'g'
-      path1 = document.createElementNS ns, 'path'
-      path2 = document.createElementNS ns, 'path'
-      els.appendChild(path1); els.appendChild path2
-      s = new Stagger els: els
-      expect(h.isArray(s.props.els)).toBe true
-    it 'should recieve els as an Array of nodes', ->
-      path1 = document.createElementNS ns, 'path'
-      path2 = document.createElementNS ns, 'path'
-      s = new Stagger els: [path1, path2]
-      expect(h.isArray(s.props.els)).toBe true
-    it 'should recieve els as children', ->
-      els   = document.createElementNS ns, 'g'
-      path1 = document.createElementNS ns, 'path'
-      path2 = document.createElementNS ns, 'path'
-      els.appendChild(path1); els.appendChild path2
-      s = new Stagger els: els.childNodes
-      expect(h.isArray(s.props.els)).toBe true
-    it 'should recieve as a selector of parent', ->
-      els   = document.createElementNS ns, 'g'
-      path1 = document.createElementNS ns, 'path'
-      path2 = document.createElementNS ns, 'path'
-      els.appendChild(path1); els.appendChild path2
-      document.body.appendChild els
-      s = new Stagger els: 'g'
-      expect(h.isArray(s.props.els)).toBe true
-  describe 'getPropByMod method ->', ->
-    it 'should return property by mod', ->
-      s = new Stagger els: els, stroke: ['deeppink', 'cyan', 'white', 'orange']
-      expect(s.getPropByMod('stroke', 2)).toBe 'white'
-      expect(s.getPropByMod('stroke', 5)).toBe 'cyan'
-    it 'should return property if single property was passed', ->
-      s = new Stagger els: els, stroke: 'deeppink'
-      expect(s.getPropByMod('stroke', 2)).toBe 'deeppink'
-
-  describe 'getOptionByIndex method ->', ->
-    it 'should get options for a transit by its index', ->
-      options = els: els, stroke: ['deeppink', 'cyan', 'yellow']
-      s = new Stagger options
-      expect(s.getOptionByIndex(0).stroke)   .toBe 'deeppink'
-      expect(s.getOptionByIndex(0).bit)      .toBe path1
-      expect(s.getOptionByIndex(0).duration) .toBe 500
-      expect(s.getOptionByIndex(1).stroke)   .toBe 'cyan'
-      expect(s.getOptionByIndex(1).bit)      .toBe path2
-      expect(s.getOptionByIndex(1).duration) .toBe 500
-
-
-
-
-
-
+  describe 'run method ->', ->
+    it 'should run timeline', ->
+      div = document.createElement 'div'
+      options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
+      s = new Staggler options
+      s.init options, mojs.MotionPath
+      spyOn s.timeline, 'start'
+      s.run()
+      expect(s.timeline.start).toHaveBeenCalled()
 
 

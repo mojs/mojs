@@ -243,7 +243,7 @@ o.radiusX ?= o.radius; o.radiusY ?= o.radius</p>
     <span class="hljs-property">@drawEl</span>()
 
   <span class="hljs-attribute">drawEl</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@el</span>?
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@el</span>?
     <span class="hljs-property">@isPropChanged</span>(<span class="hljs-string">'opacity'</span>) <span class="hljs-keyword">and</span> (<span class="hljs-property">@el</span>.style.opacity = <span class="hljs-property">@props</span>.opacity)
     <span class="hljs-keyword">if</span> !<span class="hljs-property">@isForeign</span>
       <span class="hljs-property">@isPropChanged</span>(<span class="hljs-string">'x'</span>) <span class="hljs-keyword">and</span> (<span class="hljs-property">@el</span>.style.left = <span class="hljs-property">@props</span>.x)

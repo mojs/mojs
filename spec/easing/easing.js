@@ -172,7 +172,7 @@
         return expect(typeof easing.PathEasing).toBe('function');
       });
     });
-    return describe('inverse method ->', function() {
+    describe('inverse method ->', function() {
       return it('should inverse passed value', function() {
         expect(easing.inverse(-2)).toBeCloseTo(3, 4);
         expect(easing.inverse(-1)).toBeCloseTo(2, 4);
@@ -183,6 +183,11 @@
         expect(easing.inverse(1)).toBeCloseTo(0, 4);
         expect(easing.inverse(2)).toBeCloseTo(-1, 4);
         return expect(easing.inverse(3)).toBeCloseTo(-2, 4);
+      });
+    });
+    return describe('mix method ->', function() {
+      return it('should be definede', function() {
+        return expect(typeof easing.mix).toBe('function');
       });
     });
   });

@@ -1,333 +1,184 @@
 (function() {
-  var Stagger, els, h, ns, path1, path2;
+  var Staggler, StagglerWrapper;
 
-  Stagger = mojs.Stagger;
+  StagglerWrapper = mojs.Stagger;
 
-  h = mojs.helpers;
+  Staggler = StagglerWrapper(mojs.MotionPath);
 
-  ns = 'http://www.w3.org/2000/svg';
-
-  els = document.createElementNS(ns, 'g');
-
-  path1 = document.createElementNS(ns, 'path');
-
-  path2 = document.createElementNS(ns, 'path');
-
-  els.appendChild(path1);
-
-  els.appendChild(path2);
-
-  describe('Stagger ->', function() {
-    describe('defaults ->', function() {
-      it('should have its own defaults', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        expect(s.ownDefaults.delay).toBe('stagger(100)');
-        expect(s.ownDefaults.els).toBeDefined();
-        expect(s.ownDefaults.strokeDasharray).toBe('100%');
-        expect(s.ownDefaults.strokeDashoffset['100%']).toBe('0%');
-        expect(s.ownDefaults.stroke[0]).toBe('yellow');
-        expect(s.ownDefaults.stroke[1]).toBe('cyan');
-        expect(s.ownDefaults.stroke[2]).toBe('deeppink');
-        expect(s.ownDefaults.fill).toBe('transparent');
-        expect(s.ownDefaults.type).toBe('line');
-        expect(s.ownDefaults.isShowInit).toBe(false);
-        return expect(s.ownDefaults.isShowEnd).toBe(false);
-      });
-      return it('should have isSkipDelta flag', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.isSkipDelta).toBe(true);
-      });
-    });
-    describe('defaults extend ->', function() {
-      return it('defaults should extend ownDefaults', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        expect(s.defaults.strokeWidth).toBe(2);
-        expect(s.defaults.delay).toBe('stagger(100)');
-        return expect(s.ownDefaults.els).toBeDefined();
-      });
-    });
-    describe('extendDefaults method ->', function() {
-      it('should override extendDefaults method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.extendDefaults).not.toBe(Stagger.__super__.extendDefaults);
-      });
-      it('should define props object', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        s.props = void 0;
-        s.extendDefaults();
-        return expect(s.props).toBeDefined();
-      });
-      it('should define deltas object', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        s.deltas = void 0;
-        s.extendDefaults();
-        return expect(s.deltas).toBeDefined();
-      });
-      return it('should just copy options to props and fallback to defaults', function() {
-        var s;
-        s = new Stagger({
-          els: els,
-          stroke: 'deeppink'
-        });
-        expect(s.props.stroke).toBe('deeppink');
-        return expect(s.props.delay).toBe(s.defaults.delay);
-      });
-    });
-    describe('isDelta method ->', function() {
-      it('should override isDelta method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.isDelta).not.toBe(Stagger.__super__.isDelta);
-      });
-      return it('should always return false', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.isDelta()).toBe(false);
-      });
-    });
-    describe('createBit method ->', function() {
-      it('should override createBit method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.createBit).not.toBe(Stagger.__super__.createBit);
-      });
-      it('should create transit for every el', function() {
-        var s;
-        els = document.createElementNS(ns, 'g');
-        path1 = document.createElementNS(ns, 'path');
-        path2 = document.createElementNS(ns, 'path');
-        els.appendChild(path1);
-        els.appendChild(path2);
-        s = new Stagger({
-          els: els,
-          stroke: ['deeppink', 'cyan', 'yellow']
-        });
-        expect(s.transits.length).toBe(2);
-        expect(s.transits[0].o.bit).toBe(path1);
-        expect(s.transits[1].o.bit).toBe(path2);
-        expect(s.transits[0].o.stroke).toBe('deeppink');
-        return expect(s.transits[1].o.stroke).toBe('cyan');
-      });
-      return it('should pass index and isRunLess to every transit', function() {
-        var s;
-        els = document.createElementNS(ns, 'g');
-        path1 = document.createElementNS(ns, 'path');
-        path2 = document.createElementNS(ns, 'path');
-        els.appendChild(path1);
-        els.appendChild(path2);
-        s = new Stagger({
-          els: els,
-          stroke: ['deeppink', 'cyan', 'yellow']
-        });
-        expect(s.transits.length).toBe(2);
-        expect(s.transits[0].o.index).toBe(0);
-        expect(s.transits[1].o.index).toBe(1);
-        expect(s.transits[0].o.isRunLess).toBe(true);
-        return expect(s.transits[1].o.isRunLess).toBe(true);
-      });
-    });
-    describe('render method ->', function() {
-      it('should override render method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.render).not.toBe(Stagger.__super__.render);
-      });
-      it('should call createBit method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        spyOn(s, 'createBit');
-        s.render();
-        return expect(s.createBit).toHaveBeenCalled();
-      });
-      it('should call setProgress method', function() {
-        var s;
-        s = new Stagger({
-          els: els,
-          isRunLess: true
-        });
-        spyOn(s, 'setProgress');
-        s.render();
-        return expect(s.setProgress).toHaveBeenCalledWith(0, true);
-      });
-      return it('should call createTween method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        spyOn(s, 'createTween');
-        s.render();
-        return expect(s.createTween).toHaveBeenCalled();
-      });
-    });
-    describe('createTween method ->', function() {
-      it('should override createTween method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.createTween).not.toBe(Stagger.__super__.createTween);
-      });
-      it('should parse delay and duration', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.timeline).toBeDefined();
-      });
-      it('should add timelines to the tween', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.timeline.timelines.length).toBe(2);
-      });
-      it('should call startTween', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        spyOn(s, 'startTween');
-        s.createTween();
-        return expect(s.startTween).toHaveBeenCalled();
-      });
-      return it('should not call startTween if isRunLess was passed', function() {
-        var s;
-        s = new Stagger({
-          els: els,
-          isRunLess: true
-        });
-        spyOn(s, 'startTween');
-        s.createTween();
-        return expect(s.startTween).not.toHaveBeenCalled();
-      });
-    });
-    describe('draw method ->', function() {
-      it('should override draw method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        return expect(s.draw).not.toBe(Stagger.__super__.draw);
-      });
-      return it('should call drawEl method', function() {
-        var s;
-        s = new Stagger({
-          els: els
-        });
-        spyOn(s, 'drawEl');
-        s.draw();
-        return expect(s.drawEl).toHaveBeenCalled();
-      });
-    });
-    describe('parseEls method ->', function() {
-      it('should recieve els as a DOM node', function() {
-        var s;
-        els = document.createElementNS(ns, 'g');
-        path1 = document.createElementNS(ns, 'path');
-        path2 = document.createElementNS(ns, 'path');
-        els.appendChild(path1);
-        els.appendChild(path2);
-        s = new Stagger({
-          els: els
-        });
-        return expect(h.isArray(s.props.els)).toBe(true);
-      });
-      it('should recieve els as an Array of nodes', function() {
-        var s;
-        path1 = document.createElementNS(ns, 'path');
-        path2 = document.createElementNS(ns, 'path');
-        s = new Stagger({
-          els: [path1, path2]
-        });
-        return expect(h.isArray(s.props.els)).toBe(true);
-      });
-      it('should recieve els as children', function() {
-        var s;
-        els = document.createElementNS(ns, 'g');
-        path1 = document.createElementNS(ns, 'path');
-        path2 = document.createElementNS(ns, 'path');
-        els.appendChild(path1);
-        els.appendChild(path2);
-        s = new Stagger({
-          els: els.childNodes
-        });
-        return expect(h.isArray(s.props.els)).toBe(true);
-      });
-      return it('should recieve as a selector of parent', function() {
-        var s;
-        els = document.createElementNS(ns, 'g');
-        path1 = document.createElementNS(ns, 'path');
-        path2 = document.createElementNS(ns, 'path');
-        els.appendChild(path1);
-        els.appendChild(path2);
-        document.body.appendChild(els);
-        s = new Stagger({
-          els: 'g'
-        });
-        return expect(h.isArray(s.props.els)).toBe(true);
-      });
-    });
-    describe('getPropByMod method ->', function() {
-      it('should return property by mod', function() {
-        var s;
-        s = new Stagger({
-          els: els,
-          stroke: ['deeppink', 'cyan', 'white', 'orange']
-        });
-        expect(s.getPropByMod('stroke', 2)).toBe('white');
-        return expect(s.getPropByMod('stroke', 5)).toBe('cyan');
-      });
-      return it('should return property if single property was passed', function() {
-        var s;
-        s = new Stagger({
-          els: els,
-          stroke: 'deeppink'
-        });
-        return expect(s.getPropByMod('stroke', 2)).toBe('deeppink');
-      });
-    });
-    return describe('getOptionByIndex method ->', function() {
-      return it('should get options for a transit by its index', function() {
+  describe('Staggler ->', function() {
+    describe('_getOptionByMod method ->', function() {
+      it('should get an option by modulo of i', function() {
         var options, s;
         options = {
-          els: els,
-          stroke: ['deeppink', 'cyan', 'yellow']
+          bit: ['foo', 'bar', 'baz'],
+          path: 'M0,0 L100,100'
         };
-        s = new Stagger(options);
-        expect(s.getOptionByIndex(0).stroke).toBe('deeppink');
-        expect(s.getOptionByIndex(0).bit).toBe(path1);
-        expect(s.getOptionByIndex(0).duration).toBe(500);
-        expect(s.getOptionByIndex(1).stroke).toBe('cyan');
-        expect(s.getOptionByIndex(1).bit).toBe(path2);
-        return expect(s.getOptionByIndex(1).duration).toBe(500);
+        s = new Staggler(options);
+        expect(s._getOptionByMod('bit', 0, options)).toBe('foo');
+        expect(s._getOptionByMod('bit', 1, options)).toBe('bar');
+        expect(s._getOptionByMod('bit', 2, options)).toBe('baz');
+        expect(s._getOptionByMod('bit', 3, options)).toBe('foo');
+        return expect(s._getOptionByMod('bit', 7, options)).toBe('bar');
+      });
+      it('should return option if it isnt defined by array', function() {
+        var options, s;
+        options = {
+          bit: 'foo',
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        expect(s._getOptionByMod('bit', 0, options)).toBe('foo');
+        return expect(s._getOptionByMod('bit', 1, options)).toBe('foo');
+      });
+      it('should get option if it is array like', function() {
+        var div1, div2, divWrapper, options, s;
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        divWrapper = document.createElement('div');
+        divWrapper.appendChild(div1);
+        divWrapper.appendChild(div2);
+        options = {
+          bit: divWrapper.childNodes,
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        expect(s._getOptionByMod('bit', 0, options)).toBe(div1);
+        return expect(s._getOptionByMod('bit', 1, options)).toBe(div2);
+      });
+      return it('should parse stagger options', function() {
+        var options, s;
+        options = {
+          bit: 'stagger(200)',
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        expect(s._getOptionByMod('bit', 0, options)).toBe(0);
+        expect(s._getOptionByMod('bit', 1, options)).toBe(200);
+        return expect(s._getOptionByMod('bit', 2, options)).toBe(400);
+      });
+    });
+    describe('_getOptionByIndex method ->', function() {
+      return it('should get option by modulo of index', function() {
+        var option1, options, s;
+        options = {
+          bax: ['foo', 'bar', 'baz'],
+          qux: 200,
+          norf: ['norf', 300],
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        option1 = s._getOptionByIndex(0, options);
+        expect(option1.bax).toBe('foo');
+        expect(option1.qux).toBe(200);
+        return expect(option1.norf).toBe('norf');
+      });
+    });
+    describe('_getChildQuantity method', function() {
+      it('should get quantity of child modules #array', function() {
+        var options, s;
+        options = {
+          el: ['body', 'body', 'body'],
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        return expect(s._getChildQuantity('el', options)).toBe(3);
+      });
+      it('should get quantity of child modules #dom list', function() {
+        var div1, div2, divWrapper, options, s;
+        div1 = document.createElement('div');
+        div2 = document.createElement('div');
+        divWrapper = document.createElement('div');
+        divWrapper.appendChild(div1);
+        divWrapper.appendChild(div2);
+        options = {
+          el: divWrapper.childNodes,
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        return expect(s._getChildQuantity('el', options)).toBe(2);
+      });
+      it('should get quantity of child modules #single value', function() {
+        var options, s;
+        options = {
+          el: document.createElement('div'),
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        return expect(s._getChildQuantity('el', options)).toBe(1);
+      });
+      return it('should get quantity of child modules #string', function() {
+        var options, s;
+        options = {
+          el: 'body',
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        return expect(s._getChildQuantity('el', options)).toBe(1);
+      });
+    });
+    describe('_createTimeline method ->', function() {
+      return it('should create timeline', function() {
+        var options, s;
+        options = {
+          el: 'body',
+          path: 'M0,0 L100,100'
+        };
+        s = new Staggler(options);
+        s._createTimeline();
+        return expect(s.timeline instanceof mojs.Timeline).toBe(true);
+      });
+    });
+    describe('init ->', function() {
+      it('should make stagger', function() {
+        var div, options, s;
+        div = document.createElement('div');
+        options = {
+          el: [div, div],
+          path: 'M0,0 L100,100',
+          delay: '200'
+        };
+        s = new Staggler(options);
+        s.init(options, mojs.MotionPath);
+        return expect(s.timeline.timelines.length).toBe(2);
+      });
+      it('should pass isRunLess = true', function() {
+        var div, options, s;
+        div = document.createElement('div');
+        options = {
+          el: [div, div],
+          path: 'M0,0 L100,100',
+          delay: '200'
+        };
+        s = new Staggler(options);
+        s.init(options, mojs.MotionPath);
+        return expect(s.childModules[0].o.isRunLess).toBe(true);
+      });
+      return it('should return self', function() {
+        var div, options, s;
+        div = document.createElement('div');
+        options = {
+          el: [div, div],
+          path: 'M0,0 L100,100',
+          delay: '200'
+        };
+        s = new Staggler(options);
+        return expect(s.init(options, mojs.MotionPath)).toBe(s);
+      });
+    });
+    return describe('run method ->', function() {
+      return it('should run timeline', function() {
+        var div, options, s;
+        div = document.createElement('div');
+        options = {
+          el: [div, div],
+          path: 'M0,0 L100,100',
+          delay: '200'
+        };
+        s = new Staggler(options);
+        s.init(options, mojs.MotionPath);
+        spyOn(s.timeline, 'start');
+        s.run();
+        return expect(s.timeline.start).toHaveBeenCalled();
       });
     });
   });

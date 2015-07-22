@@ -75,14 +75,6 @@ window.files = [
   "toc": []
 },
 {
-  "path": "js/staggler.coffee.html",
-  "originalName": "staggler.coffee",
-  "originalPath": "js/staggler.coffee",
-  "name": "staggler.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/swirl.coffee.html",
   "originalName": "swirl.coffee",
   "originalPath": "js/swirl.coffee",
@@ -115,6 +107,14 @@ window.files = [
   "toc": []
 },
 {
+  "path": "js/easing/mix.coffee.html",
+  "originalName": "mix.coffee",
+  "originalPath": "js/easing/mix.coffee",
+  "name": "mix.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/easing/path-easing.coffee.html",
   "originalName": "path-easing.coffee",
   "originalPath": "js/easing/path-easing.coffee",
@@ -127,6 +127,22 @@ window.files = [
       "title": "PathEasing"
     }
   ]
+},
+{
+  "path": "js/polyfills/performance.coffee.html",
+  "originalName": "performance.coffee",
+  "originalPath": "js/polyfills/performance.coffee",
+  "name": "performance.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/polyfills/raf.coffee.html",
+  "originalName": "raf.coffee",
+  "originalPath": "js/polyfills/raf.coffee",
+  "name": "raf.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
 },
 {
   "path": "js/shapes/bit.coffee.html",
@@ -197,22 +213,6 @@ window.files = [
   "originalName": "zigzag.coffee",
   "originalPath": "js/shapes/zigzag.coffee",
   "name": "zigzag.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/polyfills/performance.coffee.html",
-  "originalName": "performance.coffee",
-  "originalPath": "js/polyfills/performance.coffee",
-  "name": "performance.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/polyfills/raf.coffee.html",
-  "originalName": "raf.coffee",
-  "originalPath": "js/polyfills/raf.coffee",
-  "name": "raf.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },

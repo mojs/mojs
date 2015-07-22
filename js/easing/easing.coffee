@@ -5,12 +5,13 @@ class Easing
   bezier:     bezier
   PathEasing: PathEasing
   path:       (new PathEasing 'creator').create
+  mix:        require './mix'
   # ---
 
   # Method to inverse the easing value
   # @param {Number} Value to inverse
   # @return {Number} Inversed value
-  inverse:(p)-> (1-p)
+  inverse:(p)-> 1 - p
 
   # EASINGS
   linear: none: (k) -> k

@@ -1456,7 +1456,7 @@
         expect(byte.el.style.left).toBe('0px');
         return expect(byte.lastSet.x.value).toBe('0px');
       });
-      return it('should call fillTransform method', function() {
+      it('should call fillTransform method', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -1467,6 +1467,14 @@
         });
         byte.draw();
         return expect(byte.fillTransform).toHaveBeenCalled();
+      });
+      return it('should return true if there is no el', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte.el = null;
+        return expect(byte.drawEl()).toBe(true);
       });
     });
     describe('isPropChanged method ->', function() {

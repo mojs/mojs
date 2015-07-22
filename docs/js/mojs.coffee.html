@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.136.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.138.0'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -48,7 +48,6 @@
   Transit     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./transit'</span>
   Swirl       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./swirl'</span>
   Stagger     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./stagger'</span>
-  Staggler    : <span class="hljs-built_in">require</span> <span class="hljs-string">'./staggler'</span>
   Spriter     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./spriter'</span>
   MotionPath  : <span class="hljs-built_in">require</span> <span class="hljs-string">'./motion-path'</span>
   Tween       : <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
@@ -58,41 +57,6 @@
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-
-
-mpStagger = <span class="hljs-keyword">new</span> mojs.Staggler
-</div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>console.log document.querySelectorAll(&#39;.el&#39;)</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">mpStagger.init {
-  <span class="hljs-attribute">el</span>: <span class="hljs-built_in">document</span>.querySelectorAll(<span class="hljs-string">'.el'</span>),
-  <span class="hljs-attribute">easing</span>: <span class="hljs-string">'cubic.out'</span></div></div>
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>isAngle: true</p>
-</div>
-        </div>
-      
-      
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">path</span>: <span class="hljs-attribute">x</span>: <span class="hljs-number">200</span>, <span class="hljs-attribute">y</span>: <span class="hljs-number">0</span>
-  <span class="hljs-attribute">delay</span>: <span class="hljs-string">'stagger(1000, rand(100, 300))'</span>
-  }, mojs.MotionPath
-
-mpStagger.run()
-
 </div></div>
       
       </div>
@@ -131,7 +95,9 @@ mpStagger.run()
         </div>
       
       
-        <div class="code"><div class="wrapper"><span class="hljs-keyword">return</span> <span class="hljs-built_in">window</span>?.mojs = mojs</div></div>
+        <div class="code"><div class="wrapper"><span class="hljs-keyword">return</span> <span class="hljs-built_in">window</span>?.mojs = mojs
+
+</div></div>
       
       </div>
     

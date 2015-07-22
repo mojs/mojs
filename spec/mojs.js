@@ -51,9 +51,6 @@
     it('should have Stagger', function() {
       return expect(mojs.Stagger).toBeDefined();
     });
-    it('should have Staggler', function() {
-      return expect(mojs.Staggler).toBeDefined();
-    });
     it('should have Spriter', function() {
       return expect(mojs.Spriter).toBeDefined();
     });

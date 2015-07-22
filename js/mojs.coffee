@@ -1,6 +1,5 @@
-
 mojs =
-  revision:   '0.136.0', isDebug: true
+  revision:   '0.138.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -15,7 +14,6 @@ mojs =
   Transit     : require './transit'
   Swirl       : require './swirl'
   Stagger     : require './stagger'
-  Staggler    : require './staggler'
   Spriter     : require './spriter'
   MotionPath  : require './motion-path'
   Tween       : require './tween/tween'
@@ -26,21 +24,6 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-
-mpStagger = new mojs.Staggler
-
-# console.log document.querySelectorAll('.el')
-mpStagger.init {
-  el: document.querySelectorAll('.el'),
-  easing: 'cubic.out'
-  # isAngle: true
-  path: x: 200, y: 0
-  delay: 'stagger(1000, rand(100, 300))'
-  }, mojs.MotionPath
-
-mpStagger.run()
-
-
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "mojs", [], -> mojs
@@ -49,3 +32,4 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 ### istanbul ignore next ###
 return window?.mojs = mojs
+

@@ -122,7 +122,7 @@ class Transit extends bitsMap.map.bit
     @drawEl()
 
   drawEl:->
-    return if !@el?
+    return true if !@el?
     @isPropChanged('opacity') and (@el.style.opacity = @props.opacity)
     if !@isForeign
       @isPropChanged('x') and (@el.style.left = @props.x)

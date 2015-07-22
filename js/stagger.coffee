@@ -1,71 +1,74 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
-h        = require './h'
+h = require './h'
 Timeline = require './tween/timeline'
-Transit  = require './transit'
 
-class Stagger extends Transit
-  isSkipDelta: true
-  ownDefaults:
-    delay:            'stagger(100)'
-    els:              null
-    fill:             'transparent'
-    stroke:           ['yellow', 'cyan', 'deeppink']
-    strokeDasharray:  '100%'
-    strokeDashoffset: '100%': '0%'
-    isShowInit:       false
-    isShowEnd:        false
-    radius:           0
-    type:             'line'
+class Stagger
+  constructor:(options, Module)-> @init options, Module
+  # ---
 
-  vars:->
-    h.extend(@ownDefaults, @defaults); @defaults = @ownDefaults
-    super; @parseEls()
+  # Method to get an option by modulo and name.
+  # @param {String} Name of the property to get.
+  # @param {Number} Index for the modulo calculation.
+  # @param {Object} Options hash to look in.
+  # @return {Any} Property.
+  _getOptionByMod:(name, i, store)->
+    props = store[name]
+    # if not dom list then clone it to array
+    if props+'' is '[object NodeList]' then props = Array::slice.call props, 0
+    # get the value in array or return the value itself
+    value = if h.isArray(props) then props[i % props.length] else props
+    # check if value has the stagger expression, if so parse it
+    h.parseIfStagger(value, i)
+  # ---
 
-  extendDefaults:(o)->
-    @props = {}; @deltas = {}; fromObj = o or @o
-    for key, value of @defaults
-      @props[key] = if fromObj[key]? then fromObj[key] else @defaults[key]
+  # Method to get option by modulo of index.
+  # @param {Number} Index for modulo calculations.
+  # @param {Object} Options hash to look in.
+  _getOptionByIndex:(i, store)->
+    options = {}
+    for key, value of store
+      options[key] = @_getOptionByMod key, i, store
+    options
+  # ---
 
-  parseEls:->
-    if @props.els + '' is '[object NodeList]'
-      @props.els = Array::slice.call @props.els, 0
-    else if typeof @props.els is 'string'
-      els = document.querySelector @props.els
-      @props.els = h.getChildElements els
-    else if h.isDOM(@props.els)
-      @props.els = h.getChildElements @props.els
+  # Method to get total child modules quantity.
+  # @param  {String} Name of quantifier in options hash.
+  # @param  {Object} Options hash object.
+  # @return {Number} Number of child object that should be defined.
+  _getChildQuantity:(name, store)->
+    quantifier = store[name]
+    if h.isArray(quantifier) then quantifier.length
+    else if quantifier+'' is '[object NodeList]' then quantifier.length
+    else if quantifier instanceof HTMLElement then 1
+    else if typeof quantifier is 'string'     then 1
+  # ---
 
-  createBit:->
-    @transits = []; len = @props.els.length
-    for i in [0...len]
-      # cover the index set
-      option = @getOptionByIndex(i)
-      option.index = i; option.isRunLess = true
-      @transits.push new Transit option
-  getOptionByIndex:(i)->
-    option = {}
-    for key, value of @props
-      option[key] = @getPropByMod(key, i)
-    option.bit = @getPropByMod('els', i)
-    option
-  getPropByMod:(name, i, store=@props)->
-    prop = store[name]; if h.isArray(prop) then prop[i % prop.length] else prop
+  # Method to create timeline.
+  _createTimeline:-> @timeline = new Timeline
+  # ---
 
-  render:-> @createBit(); @setProgress(0, true); @createTween(); @
-  isDelta:-> false
-  createTween:->
-    # optimization TODO:
-    # the stagger doesnt need the self timeline
-    @timeline = new Timeline
-    i = -1
-    while(i++ < @transits.length-1)
-      @timeline.add(@transits[i].tween)
-    !@o.isRunLess and @startTween()
+  # Method to make stagger form options
+  # @param {Object} Options.
+  # @param {Object} Child class.
+  init:(options, Module)->
+    count = @_getChildQuantity 'el', options
+    @_createTimeline(); @childModules = []
+    for i in [0...count]
+      # get child module's option
+      option = @_getOptionByIndex(i, options); option.isRunLess = true
+      # create child module
+      module = new Module(option); @childModules.push module
+      # add child module's timeline to the self timeline
+      @timeline.add module.timeline
+    @
+  # ---
 
-  # setProgress:->
-  # calcSize:->
-  draw:-> @drawEl()
+  # Method to start timeline.
+  run:-> @timeline.start()
 
-module.exports = Stagger
+class StaggerWrapper
+  constructor:(Module)->
+    M = Module; return (options)-> new Stagger options, M
 
+module.exports = StaggerWrapper

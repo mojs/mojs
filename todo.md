@@ -1,14 +1,8 @@
 ## TODO
 
----
-
-- add motion path stagger
-
----
-
 - add easing mix method
 - timeline refactor
-- path easing - 1000 samples is enough?
+- path easing - maybe 1000 samples is enough?
 
 ---
 
@@ -28,7 +22,6 @@
 # FIXES
 - cover polyfills
 - stagger callbacks should run only once
-- stagger self generation
 - foreign context coordinates in burst
 - add onChainUpdate to all the bits
 - transit

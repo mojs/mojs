@@ -790,11 +790,9 @@ describe 'Transit ->', ->
       expect(byte.el.style.opacity)   .toBe         '1'
       expect(byte.el.style.left)      .not.toBe     '0px'
       expect(byte.el.style.top)       .not.toBe     '10px'
-      
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
       expect(tr).toBe     ''
-
     it 'should set new values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()
@@ -814,6 +812,10 @@ describe 'Transit ->', ->
       byte.setProp shiftX: 20
       byte.draw()
       expect(byte.fillTransform).toHaveBeenCalled()
+    it 'should return true if there is no el', ->
+      byte = new Byte radius: 25
+      byte.el = null
+      expect(byte.drawEl()).toBe true
 
   describe 'isPropChanged method ->', ->
     it 'should return bool showing if prop was changed after the last set', ->
