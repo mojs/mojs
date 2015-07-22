@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.140.0 
+	0.141.0 
 */
 
 (function(f){
@@ -828,13 +828,7 @@ parseIfEasing = function(item) {
 sort = function(a, b) {
   a.value = parseIfEasing(a);
   b.value = parseIfEasing(b);
-  if (a.to < b.to) {
-    return -1;
-  } else if (a.to > b.to) {
-    return 1;
-  } else {
-    return 0;
-  }
+  return a.to < b.to;
 };
 
 getNearest = function(array, progress) {
@@ -1687,7 +1681,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.140.0',
+  revision: '0.141.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4317,11 +4311,7 @@ Tween = (function() {
 
   Tween.prototype.run = function(time) {
     this.start(time);
-    !time && ((function() {
-      return t.add(this);
-
-      /*@state = 'play' */
-    }).call(this));
+    !time && (t.add(this));
     return this;
   };
 

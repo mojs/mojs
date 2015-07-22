@@ -33,26 +33,118 @@
       
       
         <div class="code"><div class="wrapper">easing = <span class="hljs-literal">null</span>
-<span class="hljs-function">
-<span class="hljs-title">parseIfEasing</span> = <span class="hljs-params">(item)</span>-&gt;</span>
+</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to check if need to parse easing expression.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Mix</code> must be an Object.</strong><br/>(array item)</li>
+</ul>
+<p><strong>Returns a Function, Number</strong><br/>(Parsed easing or static easing number.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">parseIfEasing</span> = <span class="hljs-params">(item)</span>-&gt;</span>
   <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> item.value <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">then</span> item.value
-  <span class="hljs-keyword">else</span> easing.parseEasing item.value
-<span class="hljs-function">
-<span class="hljs-title">sort</span> = <span class="hljs-params">(a, b)</span>-&gt;</span>
-  a.value = parseIfEasing a
-  b.value = parseIfEasing b
-
-  <span class="hljs-keyword">if</span> a.to &lt; b.to <span class="hljs-keyword">then</span> -<span class="hljs-number">1</span>
-  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> a.to &gt; b.to <span class="hljs-keyword">then</span> <span class="hljs-number">1</span>
-  <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
-<span class="hljs-function">
-<span class="hljs-title">getNearest</span> = <span class="hljs-params">(array, progress)</span>-&gt;</span>
+  <span class="hljs-keyword">else</span> easing.parseEasing item.value</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p><span class='doc-section-header'>
+ side               parsed, and parses it if so.
+</span></p>
+<p>Method to sort an array form smallest to largest.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Array</code> must be an Any.</strong><br/>(item.)</li>
+<li><strong><code>Array</code> must be an Any.</strong><br/>(item.)</li>
+</ul>
+<p><strong>Returns a Number</strong><br/>(Comparation indicator.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">sort</span> = <span class="hljs-params">(a, b)</span>-&gt;</span>
+  a.value = parseIfEasing(a); b.value = parseIfEasing(b)
+  a.to &lt; b.to</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to get the nearest to item to the progress.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Array</code> must be an Array.</strong><br/>(to search in.)</li>
+<li><strong><code>Progress</code> must be a Number.</strong><br/>(to search for.)</li>
+</ul>
+<p><strong>Returns a Number</strong><br/>(Nearest item index.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">getNearest</span> = <span class="hljs-params">(array, progress)</span>-&gt;</span>
   index = <span class="hljs-number">0</span>
-  <span class="hljs-keyword">for</span> value, i <span class="hljs-keyword">in</span> array
-    index = i; <span class="hljs-keyword">break</span> <span class="hljs-keyword">if</span> value.to &gt; progress
-  index
-<span class="hljs-function">
-<span class="hljs-title">mix</span> = <span class="hljs-params">(args...)</span>-&gt;</span></div></div>
+  (index = i; <span class="hljs-keyword">break</span> <span class="hljs-keyword">if</span> value.to &gt; progress) <span class="hljs-keyword">for</span> value, i <span class="hljs-keyword">in</span> array
+  index</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to get the nearest to item to the progress.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Array</code> must be an Array.</strong><br/>(to search in.)</li>
+<li><strong><code>Progress</code> must be a Number.</strong><br/>(to search for.)</li>
+</ul>
+<p><strong>Returns a Number</strong><br/>(Nearest item index.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">mix</span> = <span class="hljs-params">(args...)</span>-&gt;</span></div></div>
       
       </div>
     
@@ -105,11 +197,38 @@
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> value(progress) <span class="hljs-keyword">else</span> value
-<span class="hljs-function">
-<span class="hljs-title">create</span> = <span class="hljs-params">(e)</span>-&gt;</span>
-  easing = e
-  mix
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> value(progress) <span class="hljs-keyword">else</span> value</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method initialize the mix function.
+It was made since requiring &quot;easing&quot; module cuases
+cycle dependensies issue but we need the module.
+So we pass it to the create method and it assigns it to
+already declared easing variable.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Easing</code> must be an Object.</strong><br/>(module.)</li>
+</ul>
+<p><strong>Returns a Function</strong><br/>(Mix function.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">create</span> = <span class="hljs-params">(e)</span>-&gt;</span> easing = e; mix
 
 <span class="hljs-built_in">module</span>.exports = create</div></div>
       

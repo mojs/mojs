@@ -1,6 +1,5 @@
 ## TODO
 
-- add easing mix method
 - timeline refactor
 - path easing - maybe 1000 samples is enough?
 

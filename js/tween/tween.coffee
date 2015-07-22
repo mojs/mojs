@@ -103,7 +103,7 @@ class Tween
   # @param  {Number} Start time
   # @return {Object} Self
   run:(time)->
-    @start(time); !time and (t.add(@); ###@state = 'play'###)
+    @start(time); !time and (t.add(@);)#@state = 'play'
     @
   # ---
 
