@@ -1,5 +1,6 @@
 bezier     = require './bezier-easing'
 PathEasing = require './path-easing'
+h          = require '../h'
 
 class Easing
   bezier:     bezier
@@ -125,6 +126,49 @@ class Easing
     inout: (k) ->
       return easing.bounce.in(k * 2) * 0.5  if k < 0.5
       easing.bounce.out(k * 2 - 1) * 0.5 + 0.5
+
+  # ---
+
+  # Method to parse easing
+  # @method parseEasing
+  # 
+  # @param {String, Function, Array}
+  #   - *String*: Easing name delimited by dot e.g "cubic.in" or "elastic.out"
+  #     all avaliable options you can find at
+  #     [easing module](easing.coffee.html) page.
+  #   - *String*: SVG path coordinates in rectangle of 100x100
+  #   - *Function*: function that recieve current time and returns modified one
+  #     e.g. *function (k) { return k*k; }*. The function can be created by
+  #     calling mojs.easing.bezier(0.55,0.085,0.68,0.53) or
+  #     mojs.easing.path('M0,0 ...') function. 
+  #
+  # @return {Function}
+  parseEasing:(easing)->
+    type = typeof easing
+    if type is 'string'
+      return if easing.charAt(0).toLowerCase() is 'm'
+        @path(easing)
+      else easing = @_splitEasing(easing); @[easing[0]][easing[1]]
+    if h.isArray(easing)
+      return @bezier.apply(@, easing)
+    if 'function' then return easing
+
+  # ---
+
+  # Method to parse easing name string
+  # @method splitEasing
+  # 
+  # @param {String} easing name. All easing names can be found
+  #                 at [easing module](easing.coffee.html) page.
+  # @return {Array}
+  _splitEasing:(string)->
+    return string if typeof string is 'function'
+    if typeof string is 'string' and string.length
+      split = string.split '.'
+      firstPart   = split[0].toLowerCase() or 'linear'
+      secondPart  = split[1].toLowerCase() or 'none'
+      [ firstPart, secondPart ]
+    else ['linear', 'none']
 
 easing = new Easing
 module.exports = easing

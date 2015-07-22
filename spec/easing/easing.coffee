@@ -129,6 +129,55 @@ describe 'easing ->', ->
     it 'should be definede', ->
       expect(typeof easing.mix).toBe 'function'
 
+  describe 'parseEasing method ->', ->
+    it 'should parse function easing', ->
+      fun = ->
+      expect(easing.parseEasing(fun)).toBe fun
+      expect(typeof easing.parseEasing(fun)).toBe 'function'
+    describe 'easing name option ->', ->
+      it 'should parse string easing', ->
+        expect(typeof easing.parseEasing('cubic.in')).toBe 'function'
+      # it 'should call easing.splitEasing method', ->
+      #   t = new Tween duration: 100
+      #   spyOn h, 'splitEasing'
+      #   easing.parseEasing('cubic.in')
+      #   expect(easing.splitEasing).toHaveBeenCalled()
+      describe 'SVG path option ->', ->
+        it 'should parse SVG path easing', ->
+          expect(typeof easing.parseEasing('M0,100 L100,0')).toBe 'function'
+        it 'should call easing.path method', ->
+          spyOn window.mojs.easing, 'path'
+          easing.parseEasing('M0,100 L100,0')
+          expect(window.mojs.easing.path).toHaveBeenCalled()
+      describe 'bezier option ->', ->
+        it 'should parse bezier easing', ->
+          expect(typeof easing.parseEasing([0.42,0,1,1])).toBe 'function'
+        it 'should call bezier method', ->
+          spyOn window.mojs.easing, 'bezier'
+          easing.parseEasing([0.42,0,1,1])
+          expect(window.mojs.easing.bezier).toHaveBeenCalled()
+
+  describe 'splitEasing method ->', ->
+    it 'should split easing string to array',->
+      expect(easing._splitEasing('Linear.None')[0]).toBe 'linear'
+      expect(easing._splitEasing('Linear.None')[1]).toBe 'none'
+    it 'should return default easing Linear.None if argument is bad', ->
+      expect(easing._splitEasing(4)[0]).toBe 'linear'
+      expect(easing._splitEasing(4)[1]).toBe 'none'
+    it 'should return default easing Linear.None if argument is bad #2', ->
+      expect(easing._splitEasing('')[0]).toBe 'linear'
+      expect(easing._splitEasing('')[1]).toBe 'none'
+    it 'should return default easing Linear.None if argument is bad #3', ->
+      expect(easing._splitEasing('Linear..None')[0]).toBe 'linear'
+      expect(easing._splitEasing('Linear..None')[1]).toBe 'none'
+    it 'should work with lovercase easing', ->
+      expect(easing._splitEasing('linear..none')[0]).toBe 'linear'
+      expect(easing._splitEasing('linear..none')[1]).toBe 'none'
+    it 'should work with function easing', ->
+      fun = -> console.log 'function'
+      expect(easing._splitEasing(fun)+'').toBe fun+''
+
+
 
     
 

@@ -17,3 +17,6 @@ describe 'returned function ->', ->
   it 'should return 1 if not defined', ->
     res = mix({to: .5, value: (p)-> return 2*p })
     expect(res(.6)).toBe 1
+  it 'should parse easing', ->
+    res = mix({to: .5, value: 'cubic.in' })
+    expect(res(.3)).toBe mojs.easing.cubic.in .6

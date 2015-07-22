@@ -41,7 +41,7 @@
       expect(res(.4)).toBe(2 * .4);
       return expect(res(.6)).toBe(3);
     });
-    return it('should return 1 if not defined', function() {
+    it('should return 1 if not defined', function() {
       var res;
       res = mix({
         to: .5,
@@ -50,6 +50,14 @@
         }
       });
       return expect(res(.6)).toBe(1);
+    });
+    return it('should parse easing', function() {
+      var res;
+      res = mix({
+        to: .5,
+        value: 'cubic.in'
+      });
+      return expect(res(.3)).toBe(mojs.easing.cubic["in"](.6));
     });
   });
 

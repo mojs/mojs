@@ -185,9 +185,71 @@
         return expect(easing.inverse(3)).toBeCloseTo(-2, 4);
       });
     });
-    return describe('mix method ->', function() {
+    describe('mix method ->', function() {
       return it('should be definede', function() {
         return expect(typeof easing.mix).toBe('function');
+      });
+    });
+    describe('parseEasing method ->', function() {
+      it('should parse function easing', function() {
+        var fun;
+        fun = function() {};
+        expect(easing.parseEasing(fun)).toBe(fun);
+        return expect(typeof easing.parseEasing(fun)).toBe('function');
+      });
+      return describe('easing name option ->', function() {
+        it('should parse string easing', function() {
+          return expect(typeof easing.parseEasing('cubic.in')).toBe('function');
+        });
+        describe('SVG path option ->', function() {
+          it('should parse SVG path easing', function() {
+            return expect(typeof easing.parseEasing('M0,100 L100,0')).toBe('function');
+          });
+          return it('should call easing.path method', function() {
+            spyOn(window.mojs.easing, 'path');
+            easing.parseEasing('M0,100 L100,0');
+            return expect(window.mojs.easing.path).toHaveBeenCalled();
+          });
+        });
+        return describe('bezier option ->', function() {
+          it('should parse bezier easing', function() {
+            return expect(typeof easing.parseEasing([0.42, 0, 1, 1])).toBe('function');
+          });
+          return it('should call bezier method', function() {
+            spyOn(window.mojs.easing, 'bezier');
+            easing.parseEasing([0.42, 0, 1, 1]);
+            return expect(window.mojs.easing.bezier).toHaveBeenCalled();
+          });
+        });
+      });
+    });
+    return describe('splitEasing method ->', function() {
+      it('should split easing string to array', function() {
+        expect(easing._splitEasing('Linear.None')[0]).toBe('linear');
+        return expect(easing._splitEasing('Linear.None')[1]).toBe('none');
+      });
+      it('should return default easing Linear.None if argument is bad', function() {
+        expect(easing._splitEasing(4)[0]).toBe('linear');
+        return expect(easing._splitEasing(4)[1]).toBe('none');
+      });
+      it('should return default easing Linear.None if argument is bad #2', function() {
+        expect(easing._splitEasing('')[0]).toBe('linear');
+        return expect(easing._splitEasing('')[1]).toBe('none');
+      });
+      it('should return default easing Linear.None if argument is bad #3', function() {
+        expect(easing._splitEasing('Linear..None')[0]).toBe('linear');
+        return expect(easing._splitEasing('Linear..None')[1]).toBe('none');
+      });
+      it('should work with lovercase easing', function() {
+        expect(easing._splitEasing('linear..none')[0]).toBe('linear');
+        return expect(easing._splitEasing('linear..none')[1]).toBe('none');
+      });
+      return it('should work with function easing', function() {
+        var fun;
+        fun = function() {
+          return console.log('function');
+        };
+        return expect(easing._splitEasing(fun) + '').toBe(fun + '');
       });
     });
   });

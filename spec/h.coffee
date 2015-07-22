@@ -843,7 +843,7 @@ describe 'Helpers ->', ->
       expect(h.closeEnough(.0005, .0005, .00000001)).toBe true
       expect(h.closeEnough(1, .0005, .00000001))    .toBe false
       expect(h.closeEnough(1, .0005, 1))            .toBe true
-  describe 'style method', ->
+  describe 'style method ->', ->
     it 'should set style on el', ->
       el = document.createElement 'div'
       h.style(el, 'width', '20px')
@@ -861,4 +861,3 @@ describe 'Helpers ->', ->
       expect(s.height).toBe '30px'
       tr = s.transform? or s["#{h.prefix.css}transform"]
       expect(tr).toBe transformToSet
-

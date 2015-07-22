@@ -522,11 +522,13 @@ module.exports = bezierEasing;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../h":6}],3:[function(require,module,exports){
-var Easing, PathEasing, bezier, easing;
+var Easing, PathEasing, bezier, easing, h;
 
 bezier = require('./bezier-easing');
 
 PathEasing = require('./path-easing');
+
+h = require('../h');
 
 Easing = (function() {
   function Easing() {}
@@ -763,6 +765,40 @@ Easing = (function() {
     }
   };
 
+  Easing.prototype.parseEasing = function(easing) {
+    var type;
+    type = typeof easing;
+    if (type === 'string') {
+      if (easing.charAt(0).toLowerCase() === 'm') {
+        return this.path(easing);
+      } else {
+        easing = this._splitEasing(easing);
+        return this[easing[0]][easing[1]];
+      }
+    }
+    if (h.isArray(easing)) {
+      return this.bezier.apply(this, easing);
+    }
+    if ('function') {
+      return easing;
+    }
+  };
+
+  Easing.prototype._splitEasing = function(string) {
+    var firstPart, secondPart, split;
+    if (typeof string === 'function') {
+      return string;
+    }
+    if (typeof string === 'string' && string.length) {
+      split = string.split('.');
+      firstPart = split[0].toLowerCase() || 'linear';
+      secondPart = split[1].toLowerCase() || 'none';
+      return [firstPart, secondPart];
+    } else {
+      return ['linear', 'none'];
+    }
+  };
+
   return Easing;
 
 })();
@@ -771,7 +807,7 @@ easing = new Easing;
 
 module.exports = easing;
 
-},{"./bezier-easing":2,"./mix":4,"./path-easing":5}],4:[function(require,module,exports){
+},{"../h":6,"./bezier-easing":2,"./mix":4,"./path-easing":5}],4:[function(require,module,exports){
 var getNearest, mix, sort,
   slice = [].slice;
 
@@ -4111,13 +4147,13 @@ Timeline = (function() {
 module.exports = Timeline;
 
 },{"../h":6,"./tweener":26}],25:[function(require,module,exports){
-var Tween, easingModule, h, t;
-
-easingModule = require('../easing/easing');
+var Tween, easing, h, t;
 
 h = require('../h');
 
 t = require('./tweener');
+
+easing = require('../easing/easing');
 
 Tween = (function() {
   Tween.prototype.defaults = {
@@ -4143,7 +4179,7 @@ Tween = (function() {
     this.props = {};
     this.progress = 0;
     this.prevTime = 0;
-    this.props.easing = this.parseEasing(this.o.easing);
+    this.props.easing = easing.parseEasing(this.o.easing);
     return this.calcDimentions();
   };
 
@@ -4273,40 +4309,6 @@ Tween = (function() {
       this.o[obj] = value;
     }
     return this.calcDimentions();
-  };
-
-  Tween.prototype.parseEasing = function(easing) {
-    var type;
-    type = typeof easing;
-    if (type === 'string') {
-      if (easing.charAt(0).toLowerCase() === 'm') {
-        return easingModule.path(easing);
-      } else {
-        easing = this.splitEasing(easing);
-        return easingModule[easing[0]][easing[1]];
-      }
-    }
-    if (h.isArray(easing)) {
-      return easingModule.bezier.apply(easingModule, easing);
-    }
-    if ('function') {
-      return easing;
-    }
-  };
-
-  Tween.prototype.splitEasing = function(string) {
-    var firstPart, secondPart, split;
-    if (typeof string === 'function') {
-      return string;
-    }
-    if (typeof string === 'string' && string.length) {
-      split = string.split('.');
-      firstPart = split[0].toLowerCase() || 'linear';
-      secondPart = split[1].toLowerCase() || 'none';
-      return [firstPart, secondPart];
-    } else {
-      return ['linear', 'none'];
-    }
   };
 
   Tween.prototype.run = function(time) {

@@ -1186,7 +1186,7 @@
         return expect(h.closeEnough(1, .0005, 1)).toBe(true);
       });
     });
-    return describe('style method', function() {
+    return describe('style method ->', function() {
       it('should set style on el', function() {
         var el;
         el = document.createElement('div');

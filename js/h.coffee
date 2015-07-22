@@ -1,3 +1,4 @@
+
 # Utils methods and map objects
 #
 # @class Helpers
@@ -491,7 +492,6 @@ class Helpers
   # @method parsePath
   # @return {SVGPath}
   closeEnough:(num1, num2, eps)-> Math.abs(num1-num2) < eps
-
 
 h = new Helpers
 module.exports = h

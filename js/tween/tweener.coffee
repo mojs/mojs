@@ -1,6 +1,5 @@
 require '../polyfills/raf'
 require '../polyfills/performance'
-
 h = require '../h'
 
 i = 0
