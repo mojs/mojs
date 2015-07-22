@@ -1,12 +1,12 @@
 bezier     = require './bezier-easing'
 PathEasing = require './path-easing'
+mix        = require './mix'
 h          = require '../h'
 
 class Easing
   bezier:     bezier
   PathEasing: PathEasing
   path:       (new PathEasing 'creator').create
-  mix:        require './mix'
   # ---
 
   # Method to inverse the easing value
@@ -152,7 +152,6 @@ class Easing
     if h.isArray(easing)
       return @bezier.apply(@, easing)
     if 'function' then return easing
-
   # ---
 
   # Method to parse easing name string
@@ -170,5 +169,6 @@ class Easing
       [ firstPart, secondPart ]
     else ['linear', 'none']
 
-easing = new Easing
+easing = new Easing; easing.mix = mix easing
+
 module.exports = easing

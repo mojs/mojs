@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.138.0 
+	0.140.0 
 */
 
 (function(f){
@@ -524,11 +524,13 @@ module.exports = bezierEasing;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../h":6}],3:[function(require,module,exports){
-var Easing, PathEasing, bezier, easing, h;
+var Easing, PathEasing, bezier, easing, h, mix;
 
 bezier = require('./bezier-easing');
 
 PathEasing = require('./path-easing');
+
+mix = require('./mix');
 
 h = require('../h');
 
@@ -540,8 +542,6 @@ Easing = (function() {
   Easing.prototype.PathEasing = PathEasing;
 
   Easing.prototype.path = (new PathEasing('creator')).create;
-
-  Easing.prototype.mix = require('./mix');
 
   Easing.prototype.inverse = function(p) {
     return 1 - p;
@@ -807,13 +807,27 @@ Easing = (function() {
 
 easing = new Easing;
 
+easing.mix = mix(easing);
+
 module.exports = easing;
 
 },{"../h":6,"./bezier-easing":2,"./mix":4,"./path-easing":5}],4:[function(require,module,exports){
-var getNearest, mix, sort,
+var create, easing, getNearest, mix, parseIfEasing, sort,
   slice = [].slice;
 
+easing = null;
+
+parseIfEasing = function(item) {
+  if (typeof item.value !== 'string') {
+    return item.value;
+  } else {
+    return easing.parseEasing(item.value);
+  }
+};
+
 sort = function(a, b) {
+  a.value = parseIfEasing(a);
+  b.value = parseIfEasing(b);
   if (a.to < b.to) {
     return -1;
   } else if (a.to > b.to) {
@@ -839,7 +853,11 @@ getNearest = function(array, progress) {
 mix = function() {
   var args;
   args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-  args = args.sort(sort);
+  if (args.length > 1) {
+    args = args.sort(sort);
+  } else {
+    args[0].value = parseIfEasing(args[0]);
+  }
   return function(progress) {
     var index, value;
     index = getNearest(args, progress);
@@ -857,7 +875,12 @@ mix = function() {
   };
 };
 
-module.exports = mix;
+create = function(e) {
+  easing = e;
+  return mix;
+};
+
+module.exports = create;
 
 },{}],5:[function(require,module,exports){
 var PathEasing, h;
@@ -1664,7 +1687,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.138.0',
+  revision: '0.140.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

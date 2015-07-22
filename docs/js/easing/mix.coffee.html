@@ -32,10 +32,16 @@
       <div class="segment">
       
       
-        <div class="code"><div class="wrapper"><span class="hljs-function">
-
-
+        <div class="code"><div class="wrapper">easing = <span class="hljs-literal">null</span>
+<span class="hljs-function">
+<span class="hljs-title">parseIfEasing</span> = <span class="hljs-params">(item)</span>-&gt;</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> item.value <span class="hljs-keyword">isnt</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> item.value
+  <span class="hljs-keyword">else</span> easing.parseEasing item.value
+<span class="hljs-function">
 <span class="hljs-title">sort</span> = <span class="hljs-params">(a, b)</span>-&gt;</span>
+  a.value = parseIfEasing a
+  b.value = parseIfEasing b
+
   <span class="hljs-keyword">if</span> a.to &lt; b.to <span class="hljs-keyword">then</span> -<span class="hljs-number">1</span>
   <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> a.to &gt; b.to <span class="hljs-keyword">then</span> <span class="hljs-number">1</span>
   <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
@@ -46,8 +52,32 @@
     index = i; <span class="hljs-keyword">break</span> <span class="hljs-keyword">if</span> value.to &gt; progress
   index
 <span class="hljs-function">
-<span class="hljs-title">mix</span> = <span class="hljs-params">(args...)</span>-&gt;</span>
-  args = args.sort(sort)
+<span class="hljs-title">mix</span> = <span class="hljs-params">(args...)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if there are more than 1 mix values - sort the array</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> args.length &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> args = args.sort(sort)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if there is just one value - parse it&#39;s easing expression</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-keyword">else</span> args[<span class="hljs-number">0</span>].value = parseIfEasing args[<span class="hljs-number">0</span>]
+
   (progress)-&gt;
     index = getNearest(args, progress)
     <span class="hljs-keyword">if</span> index <span class="hljs-keyword">isnt</span> -<span class="hljs-number">1</span>
@@ -76,8 +106,12 @@
       
       
         <div class="code"><div class="wrapper">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> value(progress) <span class="hljs-keyword">else</span> value
+<span class="hljs-function">
+<span class="hljs-title">create</span> = <span class="hljs-params">(e)</span>-&gt;</span>
+  easing = e
+  mix
 
-<span class="hljs-built_in">module</span>.exports = mix</div></div>
+<span class="hljs-built_in">module</span>.exports = create</div></div>
       
       </div>
     

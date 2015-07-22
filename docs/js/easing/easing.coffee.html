@@ -34,13 +34,13 @@
       
         <div class="code"><div class="wrapper">bezier     = <span class="hljs-built_in">require</span> <span class="hljs-string">'./bezier-easing'</span>
 PathEasing = <span class="hljs-built_in">require</span> <span class="hljs-string">'./path-easing'</span>
+mix        = <span class="hljs-built_in">require</span> <span class="hljs-string">'./mix'</span>
 h          = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Easing</span></span>
   <span class="hljs-attribute">bezier</span>:     bezier
   <span class="hljs-attribute">PathEasing</span>: PathEasing
-  <span class="hljs-attribute">path</span>:       (<span class="hljs-keyword">new</span> PathEasing <span class="hljs-string">'creator'</span>).create
-  <span class="hljs-attribute">mix</span>:        <span class="hljs-built_in">require</span> <span class="hljs-string">'./mix'</span></div></div>
+  <span class="hljs-attribute">path</span>:       (<span class="hljs-keyword">new</span> PathEasing <span class="hljs-string">'creator'</span>).create</div></div>
       
       </div>
     
@@ -327,8 +327,7 @@ mojs.easing.path(&#39;M0,0 ...&#39;) function. </li>
       <span class="hljs-keyword">else</span> easing = <span class="hljs-property">@_splitEasing</span>(easing); @[easing[<span class="hljs-number">0</span>]][easing[<span class="hljs-number">1</span>]]
     <span class="hljs-keyword">if</span> h.isArray(easing)
       <span class="hljs-keyword">return</span> <span class="hljs-property">@bezier</span>.apply(@, easing)
-    <span class="hljs-keyword">if</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> easing
-</div></div>
+    <span class="hljs-keyword">if</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> easing</div></div>
       
       </div>
     
@@ -367,7 +366,8 @@ Method <strong>splitEasing</strong>
       [ firstPart, secondPart ]
     <span class="hljs-keyword">else</span> [<span class="hljs-string">'linear'</span>, <span class="hljs-string">'none'</span>]
 
-easing = <span class="hljs-keyword">new</span> Easing
+easing = <span class="hljs-keyword">new</span> Easing; easing.mix = mix easing
+
 <span class="hljs-built_in">module</span>.exports = easing
 </div></div>
       
