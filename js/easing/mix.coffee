@@ -1,7 +1,7 @@
 easing = null
 
 parseIfEasing = (item)->
-  if typeof item.value isnt 'string' then item.value
+  if typeof item.value is 'number' then item.value
   else easing.parseEasing item.value
 
 sort = (a, b)->

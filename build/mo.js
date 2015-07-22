@@ -818,7 +818,7 @@ var create, easing, getNearest, mix, parseIfEasing, sort,
 easing = null;
 
 parseIfEasing = function(item) {
-  if (typeof item.value !== 'string') {
+  if (typeof item.value === 'number') {
     return item.value;
   } else {
     return easing.parseEasing(item.value);
