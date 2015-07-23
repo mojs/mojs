@@ -805,7 +805,6 @@ describe 'MotionPath ->', ->
         isRunLess: true
         pathStart: .5
         pathEnd:   .75
-        isIt: true
 
       mp.timeline.setProgress 0
       tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
@@ -1144,7 +1143,7 @@ describe 'MotionPath ->', ->
         delay:    100
       )
       .then pathStart: .5, pathEnd: 1
-      expect(mp.timeline.timelines[1].o.delay).toBe 2100
+      expect(mp.timeline.timelines[1].props.delay).toBe 2100
 
     it 'should not copy previous callbacks', ->
       onUpdate = ->

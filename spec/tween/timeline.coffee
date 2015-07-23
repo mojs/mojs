@@ -170,7 +170,7 @@ describe 'Timeline ->', ->
       t = new Timeline
       t.add new Tween duration: 1000, delay: 200
       t.append new Tween duration: 500, delay: 500
-      expect(t.timelines[1].o.delay).toBe 1700
+      expect(t.timelines[1].props.delay).toBe 1700
     it 'should recalc duration',->
       t = new Timeline
       t.add new Tween duration: 1000, delay: 200

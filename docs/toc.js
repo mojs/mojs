@@ -129,6 +129,22 @@ window.files = [
   ]
 },
 {
+  "path": "js/polyfills/performance.coffee.html",
+  "originalName": "performance.coffee",
+  "originalPath": "js/polyfills/performance.coffee",
+  "name": "performance.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/polyfills/raf.coffee.html",
+  "originalName": "raf.coffee",
+  "originalPath": "js/polyfills/raf.coffee",
+  "name": "raf.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/shapes/bit.coffee.html",
   "originalName": "bit.coffee",
   "originalPath": "js/shapes/bit.coffee",
@@ -201,22 +217,6 @@ window.files = [
   "toc": []
 },
 {
-  "path": "js/polyfills/performance.coffee.html",
-  "originalName": "performance.coffee",
-  "originalPath": "js/polyfills/performance.coffee",
-  "name": "performance.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/polyfills/raf.coffee.html",
-  "originalName": "raf.coffee",
-  "originalPath": "js/polyfills/raf.coffee",
-  "name": "raf.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/tween/timeline.coffee.html",
   "originalName": "timeline.coffee",
   "originalPath": "js/tween/timeline.coffee",
@@ -230,7 +230,24 @@ window.files = [
   "originalPath": "js/tween/tween.coffee",
   "name": "tween.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "title": "get elapsed with respect to repeat option",
+  "toc": [
+    {
+      "level": 1,
+      "slug": "get-elapsed-with-respect-to-repeat-option",
+      "title": "get elapsed with respect to repeat option"
+    },
+    {
+      "level": 1,
+      "slug": "so-take-a-modulo-of-the-elapsed-time",
+      "title": "so take a modulo of the elapsed time"
+    },
+    {
+      "level": 1,
+      "slug": "set-the-normalized-time-to-the-timelines",
+      "title": "set the normalized time to the timelines"
+    }
+  ]
 },
 {
   "path": "js/tween/tweener.coffee.html",

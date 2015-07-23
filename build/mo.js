@@ -2220,6 +2220,7 @@ MotionPath = (function() {
       return it.tuneOptions(it.history[this.index]);
     };
     opts.isChained = !o.delay;
+    opts.isIt = this.o.isIt;
     this.timeline.append(new Tween(opts));
     return this;
   };
@@ -4005,7 +4006,7 @@ Timeline = (function() {
 
   Timeline.prototype.appendTimeline = function(timeline, index, time) {
     var delay;
-    delay = timeline.o.delay + (time != null ? time : this.props.totalTime);
+    delay = timeline.props.delay + (time != null ? time : this.props.totalTime);
     timeline.index = index;
     return this.pushTimeline(timeline, delay);
   };
@@ -4162,6 +4163,10 @@ Tween = (function() {
     easing: 'Linear.None',
     onStart: null,
     onComplete: null,
+    onReverseComplete: null,
+    onFirstUpdate: null,
+    onUpdate: null,
+    onFirstUpdateBackward: null,
     isChained: false
   };
 
@@ -4174,21 +4179,26 @@ Tween = (function() {
 
   Tween.prototype.vars = function() {
     this.h = h;
-    this.props = {};
     this.progress = 0;
     this.prevTime = 0;
-    this.props.easing = easing.parseEasing(this.o.easing);
     return this.calcDimentions();
   };
 
   Tween.prototype.calcDimentions = function() {
-    this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
-    return this.props.totalDuration = this.props.totalTime - this.o.delay;
+    this.props.totalTime = (this.props.repeat + 1) * (this.props.duration + this.props.delay);
+    return this.props.totalDuration = this.props.totalTime - this.props.delay;
   };
 
   Tween.prototype.extendDefaults = function() {
-    h.extend(this.o, this.defaults);
-    return this.onUpdate = this.o.onUpdate;
+    var key, ref, value;
+    this.props = {};
+    ref = this.defaults;
+    for (key in ref) {
+      value = ref[key];
+      this.props[key] = this.o[key] != null ? this.o[key] : value;
+    }
+    this.props.easing = easing.parseEasing(this.o.easing || this.defaults.easing);
+    return this.onUpdate = this.props.onUpdate;
   };
 
   Tween.prototype.start = function(time) {
@@ -4197,7 +4207,7 @@ Tween = (function() {
     if (time == null) {
       time = performance.now();
     }
-    this.props.startTime = time + this.o.delay;
+    this.props.startTime = time + this.props.delay;
     this.props.endTime = this.props.startTime + this.props.totalDuration;
     return this;
   };
@@ -4208,33 +4218,33 @@ Tween = (function() {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
       if (!this.isFirstUpdate) {
-        if ((ref = this.o.onFirstUpdate) != null) {
+        if ((ref = this.props.onFirstUpdate) != null) {
           ref.apply(this);
         }
         this.isFirstUpdate = true;
       }
       if (!this.isStarted) {
-        if ((ref1 = this.o.onStart) != null) {
+        if ((ref1 = this.props.onStart) != null) {
           ref1.apply(this);
         }
         this.isStarted = true;
       }
       elapsed = time - this.props.startTime;
-      if (elapsed <= this.o.duration) {
-        this.setProc(elapsed / this.o.duration);
+      if (elapsed <= this.props.duration) {
+        this.setProc(elapsed / this.props.duration);
       } else {
         start = this.props.startTime;
         isDuration = false;
         cnt = 0;
         while (start <= time) {
           isDuration = !isDuration;
-          start += isDuration ? (cnt++, this.o.duration) : this.o.delay;
+          start += isDuration ? (cnt++, this.props.duration) : this.props.delay;
         }
         if (isDuration) {
-          start = start - this.o.duration;
+          start = start - this.props.duration;
           elapsed = time - start;
-          this.setProc(elapsed / this.o.duration);
-          if (this.o.yoyo && this.o.repeat) {
+          this.setProc(elapsed / this.props.duration);
+          if (this.props.yoyo && this.props.repeat) {
             this.setProc(cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress));
           }
         } else {
@@ -4242,7 +4252,7 @@ Tween = (function() {
         }
       }
       if (time < this.prevTime && !this.isFirstUpdateBackward) {
-        if ((ref2 = this.o.onFirstUpdateBackward) != null) {
+        if ((ref2 = this.props.onFirstUpdateBackward) != null) {
           ref2.apply(this);
         }
         this.isFirstUpdateBackward = true;
@@ -4250,7 +4260,7 @@ Tween = (function() {
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
         this.setProc(1);
-        if ((ref3 = this.o.onComplete) != null) {
+        if ((ref3 = this.props.onComplete) != null) {
           ref3.apply(this);
         }
         this.isCompleted = true;
@@ -4265,15 +4275,15 @@ Tween = (function() {
     }
     if (time < this.prevTime && time <= this.props.startTime) {
       if (!this.isFirstUpdateBackward) {
-        if ((ref4 = this.o.onFirstUpdateBackward) != null) {
+        if ((ref4 = this.props.onFirstUpdateBackward) != null) {
           ref4.apply(this);
         }
         this.isFirstUpdateBackward = true;
       }
       if (!this.isOnReverseComplete) {
         this.isOnReverseComplete = true;
-        this.setProc(0, !this.o.isChained);
-        if ((ref5 = this.o.onReverseComplete) != null) {
+        this.setProc(0, !this.props.isChained);
+        if ((ref5 = this.props.onReverseComplete) != null) {
           ref5.apply(this);
         }
       }
@@ -4301,10 +4311,17 @@ Tween = (function() {
     if (typeof obj === 'object') {
       for (key in obj) {
         val = obj[key];
-        this.o[key] = val;
+        this.props[key] = val;
+        if (key === 'easing') {
+          this.props.easing = easing.parseEasing(this.props.easing);
+        }
       }
     } else if (typeof obj === 'string') {
-      this.o[obj] = value;
+      if (obj === 'easing') {
+        this.props.easing = easing.parseEasing(value);
+      } else {
+        this.props[obj] = value;
+      }
     }
     return this.calcDimentions();
   };

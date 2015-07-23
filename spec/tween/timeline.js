@@ -313,7 +313,7 @@
           duration: 500,
           delay: 500
         }));
-        return expect(t.timelines[1].o.delay).toBe(1700);
+        return expect(t.timelines[1].props.delay).toBe(1700);
       });
       it('should recalc duration', function() {
         var t;

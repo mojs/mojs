@@ -1216,6 +1216,7 @@ the callback was previously defined</p>
     opts.onComplete    = <span class="hljs-function">=&gt;</span> <span class="hljs-property">@props</span>.onComplete?.apply @
     opts.onFirstUpdate = <span class="hljs-function">-&gt;</span> it.tuneOptions it.history[<span class="hljs-property">@index</span>]
     opts.isChained = !o.delay
+    opts.isIt = <span class="hljs-property">@o</span>.isIt
     <span class="hljs-property">@timeline</span>.append <span class="hljs-keyword">new</span> Tween(opts)
     @
 

@@ -569,6 +569,7 @@ class MotionPath
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     opts.isChained = !o.delay
+    opts.isIt = @o.isIt
     @timeline.append new Tween(opts)
     @
 

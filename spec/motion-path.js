@@ -1126,8 +1126,7 @@
           el: div,
           isRunLess: true,
           pathStart: .5,
-          pathEnd: .75,
-          isIt: true
+          pathEnd: .75
         });
         mp.timeline.setProgress(0);
         tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
@@ -1584,7 +1583,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.timeline.timelines[1].o.delay).toBe(2100);
+        return expect(mp.timeline.timelines[1].props.delay).toBe(2100);
       });
       it('should not copy previous callbacks', function() {
         var onUpdate;

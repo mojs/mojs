@@ -24,20 +24,23 @@ describe 'Tween ->', ->
       expect(t.defaults.delay).toBe     0
       expect(t.defaults.yoyo).toBe      false
       expect(t.defaults.isChained).toBe false
-    it 'should extend defaults to options', ->
+    # it 'should extend defaults to options', ->
+    #   t = new Tween duration: 1000
+    #   expect(t.props.duration).toBe   1000
+    #   expect(t.props.delay).toBe      0
+    it 'should extend defaults to props', ->
       t = new Tween duration: 1000
-      expect(t.o.duration).toBe   1000
-      expect(t.o.delay).toBe      0
+      expect(t.props.duration).toBe   1000
+      expect(t.props.delay).toBe      0
 
   describe 'isChained option ->', ->
     it 'should recieve isChained option', ->
       t = new Tween
         duration: 1000, isChained: true
-      expect(t.o.isChained).toBe  true
+      expect(t.props.isChained).toBe  true
     it 'should fallback to default isChained option', ->
-      t = new Tween
-        duration: 1000
-      expect(t.o.isChained).toBe false
+      t = new Tween duration: 1000
+      expect(t.props.isChained).toBe false
 
   describe 'start ->', ->
     it 'should calculate start time', ->
@@ -129,7 +132,7 @@ describe 'Tween ->', ->
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
       t = new Tween onUpdate: ->
-      expect(t.o.onUpdate).toBeDefined()
+      expect(t.props.onUpdate).toBeDefined()
     it 'should call onUpdate callback with the current progress', ->
       t = new Tween duration: 1000, easing: 'bounce.out', onUpdate: ->
       spyOn t, 'onUpdate'
@@ -146,9 +149,9 @@ describe 'Tween ->', ->
       t = new Tween delay: 200, repeat: 2, onUpdate:->
       spyOn(t, 'onUpdate').and.callThrough()
       t.start()
-      t.update t.props.startTime + t.o.duration + 50
-      t.update t.props.startTime + t.o.duration + 100
-      t.update t.props.startTime + t.o.duration + 150
+      t.update t.props.startTime + t.props.duration + 50
+      t.update t.props.startTime + t.props.duration + 100
+      t.update t.props.startTime + t.props.duration + 150
       expect(t.onUpdate.calls.count()).toBe 1
 
     it 'should pass eased progress and raw progress', ->
@@ -167,13 +170,13 @@ describe 'Tween ->', ->
     it 'should be defined', ->
       t = new Tween(onStart: ->)
       t.start()
-      expect(t.o.onStart).toBeDefined()
+      expect(t.props.onStart).toBeDefined()
     it 'should call onStart callback', ->
       t = new Tween duration: 32, onStart:->
       t.start()
-      spyOn(t.o, 'onStart')
+      spyOn(t.props, 'onStart')
       t.update t.props.startTime + 1
-      expect(t.o.onStart).toHaveBeenCalled()
+      expect(t.props.onStart).toHaveBeenCalled()
     it 'should be called just once', ->
       cnt = 0
       t = new Tween(duration: 32, onStart:-> cnt++).start()
@@ -189,17 +192,17 @@ describe 'Tween ->', ->
   describe 'onReverseComplete callback ->', ->
     it 'should be defined', ->
       t = new Tween onReverseComplete: ->
-      expect(t.o.onReverseComplete).toBeDefined()
+      expect(t.props.onReverseComplete).toBeDefined()
 
     it 'should call onReverseComplete callback', ->
       t = new Tween(
         duration: 100
         onReverseComplete:->
       ).start()
-      spyOn(t.o, 'onReverseComplete')
+      spyOn(t.props, 'onReverseComplete')
       t.update t.props.startTime + 55
       t.update t.props.startTime
-      expect(t.o.onReverseComplete).toHaveBeenCalled()
+      expect(t.props.onReverseComplete).toHaveBeenCalled()
 
     it 'should onReverseComplete only once', ->
       cnt = 0
@@ -277,12 +280,12 @@ describe 'Tween ->', ->
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
       t = new Tween onComplete: ->
-      expect(t.o.onComplete).toBeDefined()
+      expect(t.props.onComplete).toBeDefined()
     it 'should call onComplete callback', ->
       t = new Tween(duration: 100, onComplete:->).start()
-      spyOn(t.o, 'onComplete')
+      spyOn(t.props, 'onComplete')
       t.update t.props.startTime + 101
-      expect(t.o.onComplete).toHaveBeenCalled()
+      expect(t.props.onComplete).toHaveBeenCalled()
     it 'should be called just once', ->
       cnt = 0
       t = new Tween(duration: 32, onComplete:-> cnt++).start()
@@ -317,12 +320,12 @@ describe 'Tween ->', ->
   describe 'onFirstUpdate callback ->', ->
     it 'should be defined', ->
       t = new Tween onFirstUpdate: ->
-      expect(t.o.onFirstUpdate).toBeDefined()
+      expect(t.props.onFirstUpdate).toBeDefined()
     it 'should call onFirstUpdate callback', ->
       t = new Tween(duration: 100, onFirstUpdate:->).start()
-      spyOn(t.o, 'onFirstUpdate')
+      spyOn(t.props, 'onFirstUpdate')
       t.update t.props.startTime + 3
-      expect(t.o.onFirstUpdate).toHaveBeenCalled()
+      expect(t.props.onFirstUpdate).toHaveBeenCalled()
     it 'should be called just once', ->
       cnt = 0
       t = new Tween(duration: 100, onFirstUpdate:-> cnt++ ).start()
@@ -344,9 +347,9 @@ describe 'Tween ->', ->
       .start()
       t.update t.props.startTime + 1
       t.update t.props.startTime + 12
-      spyOn(t.o, 'onFirstUpdate')
+      spyOn(t.props, 'onFirstUpdate')
       t.update t.props.startTime + 9
-      expect(t.o.onFirstUpdate).toHaveBeenCalled()
+      expect(t.props.onFirstUpdate).toHaveBeenCalled()
 
     it 'should be called before onStart callback', ->
       isOnStart = false; isOnStartCalled = true
@@ -366,14 +369,14 @@ describe 'Tween ->', ->
       .start()
       t.update t.props.startTime + 1
       t.update t.props.startTime + -1
-      spyOn(t.o, 'onFirstUpdate')
+      spyOn(t.props, 'onFirstUpdate')
       t.update t.props.startTime + 2
-      expect(t.o.onFirstUpdate).toHaveBeenCalled()
+      expect(t.props.onFirstUpdate).toHaveBeenCalled()
 
   describe 'onFirstUpdateBackward callback ->', ->
     it 'should be defined', ->
       t = new Tween onFirstUpdateBackward: ->
-      expect(t.o.onFirstUpdateBackward).toBeDefined()
+      expect(t.props.onFirstUpdateBackward).toBeDefined()
     it 'should be called only on backward progress', ->
       isRightScope = false
       t = new Tween
@@ -381,9 +384,9 @@ describe 'Tween ->', ->
         onFirstUpdateBackward:->
       .start()
       t.update t.props.startTime + 500
-      spyOn(t.o, 'onFirstUpdateBackward')
+      spyOn(t.props, 'onFirstUpdateBackward')
       t.update t.props.startTime + 40
-      expect(t.o.onFirstUpdateBackward).toHaveBeenCalled()
+      expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
     it 'should be called just once', ->
       cnt = 0
       t = new Tween(duration: 100, onFirstUpdateBackward:-> cnt++ ).start()
@@ -407,24 +410,24 @@ describe 'Tween ->', ->
       t.prevTime = t.props.startTime + 11
       t.update t.props.startTime + 9
       t.update t.props.startTime + 12
-      spyOn(t.o, 'onFirstUpdateBackward')
+      spyOn(t.props, 'onFirstUpdateBackward')
       t.update t.props.startTime + 9
-      expect(t.o.onFirstUpdateBackward).toHaveBeenCalled()
+      expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
     it 'should not be called at the start', ->
       t = new Tween(duration: 10, onFirstUpdateBackward: ->)
         .start()
-      spyOn(t.o, 'onFirstUpdateBackward')
+      spyOn(t.props, 'onFirstUpdateBackward')
       t.update t.props.startTime + 1
-      expect(t.o.onFirstUpdateBackward).not.toHaveBeenCalled()
+      expect(t.props.onFirstUpdateBackward).not.toHaveBeenCalled()
     it 'should be called even if new time is less then start time', ->
       t = new Tween
         duration: 100
         onFirstUpdateBackward:->
       .start()
       t.update t.props.startTime + 500
-      spyOn(t.o, 'onFirstUpdateBackward')
+      spyOn(t.props, 'onFirstUpdateBackward')
       t.update t.props.startTime - 40
-      expect(t.o.onFirstUpdateBackward).toHaveBeenCalled()
+      expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
     it 'should be called ONCE if new time is less then start time', ->
       cnt = 0
       t = new Tween
@@ -440,7 +443,7 @@ describe 'Tween ->', ->
   describe 'yoyo option ->', ->
     it 'should recieve yoyo option', ->
       t = new Tween yoyo: true
-      expect(t.o.yoyo).toBe true
+      expect(t.props.yoyo).toBe true
     it 'should toggle the progress direction on repeat', ->
       t = new Tween(repeat: 2, duration: 10, yoyo: true).start()
       time = t.props.startTime
@@ -483,15 +486,17 @@ describe 'Tween ->', ->
       t.setProc .75
       expect(t.progress).toBe .75
       expect(t.easedProgress.toFixed(2)).toBe '0.97'
+
+  describe 'setProp method ->', ->
     it 'should set new timeline options', ->
       t = new Tween duration: 100, delay: 0
       t.setProp duration: 1000, delay: 200
-      expect(t.o.duration).toBe 1000
-      expect(t.o.delay).toBe    200
+      expect(t.props.duration).toBe 1000
+      expect(t.props.delay).toBe    200
     it 'should work with arguments', ->
       t = new Tween duration: 100
       t.setProp 'duration', 1000
-      expect(t.o.duration).toBe 1000
+      expect(t.props.duration).toBe 1000
     it 'should call calcDimentions method', ->
       t = new Tween duration: 100
       spyOn t, 'calcDimentions'
@@ -501,6 +506,10 @@ describe 'Tween ->', ->
       t = new Tween duration: 100
       t.setProp 'duration', 1000
       expect(t.props.totalTime).toBe 1000
+    it 'should parse easing', ->
+      t = new Tween duration: 100, isIt: true
+      t.setProp 'easing', 'elastic.in'
+      expect(t.props.easing).toBe mojs.easing.elastic.in
 
   describe 'run method ->', ->
     describe 'start method ->', ->

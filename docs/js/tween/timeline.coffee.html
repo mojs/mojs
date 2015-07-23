@@ -190,7 +190,7 @@ sequence. </p>
     i = timelineArray.length; time = <span class="hljs-property">@props</span>.totalTime; index = <span class="hljs-property">@timelines</span>.length
     <span class="hljs-property">@appendTimeline</span>(timelineArray[i], index, time) <span class="hljs-keyword">while</span>(i--)
   <span class="hljs-attribute">appendTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline, index, time)</span>-&gt;</span>
-    delay = timeline.o.delay + (<span class="hljs-keyword">if</span> time? <span class="hljs-keyword">then</span> time <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.totalTime)
+    delay = timeline.props.delay + (<span class="hljs-keyword">if</span> time? <span class="hljs-keyword">then</span> time <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.totalTime)
     timeline.index = index; <span class="hljs-property">@pushTimeline</span> timeline, delay
 
   <span class="hljs-attribute">recalcDuration</span>:<span class="hljs-function">-&gt;</span>

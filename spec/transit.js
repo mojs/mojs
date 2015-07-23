@@ -379,7 +379,7 @@
         byte.then({
           radiusX: 5
         });
-        return expect(byte.timeline.timelines[1].o.isChained).toBe(true);
+        return expect(byte.timeline.timelines[1].props.isChained).toBe(true);
       });
       it('should not pass isChained to timeline if delay', function() {
         var byte;
@@ -391,7 +391,7 @@
           radiusX: 5,
           delay: 100
         });
-        return expect(byte.timeline.timelines[1].o.isChained).toBe(false);
+        return expect(byte.timeline.timelines[1].props.isChained).toBe(false);
       });
       it('should inherit radius for radiusX/Y options in further chain', function() {
         var byte;
@@ -435,9 +435,9 @@
         byte.then({
           radius: 5
         });
-        expect(byte.timeline.timelines[1].o.duration).toBe(1000);
-        expect(byte.timeline.timelines[1].o.yoyo).toBe(false);
-        return expect(byte.timeline.timelines[1].o.delay).toBe(1010);
+        expect(byte.timeline.timelines[1].props.duration).toBe(1000);
+        expect(byte.timeline.timelines[1].props.yoyo).toBe(false);
+        return expect(byte.timeline.timelines[1].props.delay).toBe(1010);
       });
       it('should merge then options and add them to the history', function() {
         var byte;
@@ -493,8 +493,7 @@
           delay: 10,
           onUpdate: onUpdate,
           onStart: onStart,
-          isRunLess: true,
-          isIt: true
+          isRunLess: true
         });
         byte.then({
           radius: 5,
@@ -530,8 +529,8 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.timeline.timelines[1].o.onUpdate).toBe('function');
-        return expect(typeof byte.timeline.timelines[2].o.onUpdate).toBe('function');
+        expect(typeof byte.timeline.timelines[1].props.onUpdate).toBe('function');
+        return expect(typeof byte.timeline.timelines[2].props.onUpdate).toBe('function');
       });
       it('should bind onStart function', function() {
         var byte;
@@ -552,11 +551,11 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.timeline.timelines[1].o.onStart).toBe('function');
-        return expect(typeof byte.timeline.timelines[2].o.onStart).toBe('function');
+        expect(typeof byte.timeline.timelines[1].props.onStart).toBe('function');
+        return expect(typeof byte.timeline.timelines[2].props.onStart).toBe('function');
       });
       it('should bind onFirstUpdate function #1', function() {
-        var byte;
+        var byte, type1, type2;
         byte = new Byte({
           radius: 20,
           duration: 1000,
@@ -574,11 +573,13 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.timeline.timelines[1].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.timeline.timelines[2].o.onFirstUpdate).toBe('function');
+        type1 = typeof byte.timeline.timelines[1].props.onFirstUpdate;
+        type2 = typeof byte.timeline.timelines[2].props.onFirstUpdate;
+        expect(type1).toBe('function');
+        return expect(type2).toBe('function');
       });
       return it('should bind onFirstUpdate function #2', function() {
-        var byte;
+        var byte, type1, type2;
         byte = new Byte({
           radius: 20,
           duration: 1000,
@@ -596,8 +597,10 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.timeline.timelines[1].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.timeline.timelines[2].o.onFirstUpdate).toBe('function');
+        type1 = typeof byte.timeline.timelines[1].props.onFirstUpdate;
+        type2 = typeof byte.timeline.timelines[2].props.onFirstUpdate;
+        expect(type1).toBe('function');
+        return expect(type2).toBe('function');
       });
     });
     describe('tuneOptions method ->', function() {
@@ -2310,13 +2313,14 @@
           onComplete: onComplete,
           yoyo: false
         });
-        expect(byte.tween.o.duration).toBe(2000);
-        expect(byte.tween.o.delay).toBe(0);
-        expect(byte.tween.o.repeat).toBe(2);
-        expect(byte.tween.o.easing).toBe('linear.none');
-        expect(byte.tween.o.onStart).toBe(onStart);
-        expect(byte.tween.o.onComplete).toBe(onComplete);
-        return expect(byte.tween.o.yoyo).toBe(false);
+        expect(byte.tween.props.duration).toBe(2000);
+        expect(byte.tween.props.delay).toBe(0);
+        expect(byte.tween.props.repeat).toBe(2);
+        expect(typeof byte.tween.props.easing).toBe('function');
+        expect(byte.tween.props.easing).toBe(mojs.easing.linear.none);
+        expect(byte.tween.props.onStart).toBe(onStart);
+        expect(byte.tween.props.onComplete).toBe(onComplete);
+        return expect(byte.tween.props.yoyo).toBe(false);
       });
       it('should call recalcDuration on tween', function() {
         var byte;

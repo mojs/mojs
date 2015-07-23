@@ -1,7 +1,9 @@
 ## TODO
 
-- timeline refactor
+- tween refactor
 - path easing - maybe 1000 samples is enough?
+- stagger callbacks
+- release
 
 ---
 
