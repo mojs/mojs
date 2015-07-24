@@ -1679,7 +1679,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.141.0',
+  revision: '0.142.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3076,14 +3076,16 @@ Stagger = (function() {
     }
   };
 
-  Stagger.prototype._createTimeline = function() {
-    return this.timeline = new Timeline;
+  Stagger.prototype._createTimeline = function(options) {
+    return this.timeline = new Timeline({
+      onUpdate: options != null ? options.onStaggerUpdate : void 0
+    });
   };
 
   Stagger.prototype.init = function(options, Module) {
     var count, i, j, module, option, ref;
     count = this._getChildQuantity('el', options);
-    this._createTimeline();
+    this._createTimeline(options);
     this.childModules = [];
     for (i = j = 0, ref = count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
       option = this._getOptionByIndex(i, options);

@@ -45,7 +45,10 @@ class Stagger
   # ---
 
   # Method to create timeline.
-  _createTimeline:-> @timeline = new Timeline
+  # @param {Object} Options.
+  _createTimeline:(options)->
+    @timeline = new Timeline
+      onUpdate: options?.onStaggerUpdate
   # ---
 
   # Method to make stagger form options
@@ -53,7 +56,7 @@ class Stagger
   # @param {Object} Child class.
   init:(options, Module)->
     count = @_getChildQuantity 'el', options
-    @_createTimeline(); @childModules = []
+    @_createTimeline(options); @childModules = []
     for i in [0...count]
       # get child module's option
       option = @_getOptionByIndex(i, options); option.isRunLess = true

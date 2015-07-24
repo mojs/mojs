@@ -1,11 +1,11 @@
 (function() {
-  var Staggler, StagglerWrapper;
+  var Stagger, StaggerWrapper;
 
-  StagglerWrapper = mojs.Stagger;
+  StaggerWrapper = mojs.Stagger;
 
-  Staggler = StagglerWrapper(mojs.MotionPath);
+  Stagger = StaggerWrapper(mojs.MotionPath);
 
-  describe('Staggler ->', function() {
+  describe('Stagger ->', function() {
     describe('_getOptionByMod method ->', function() {
       it('should get an option by modulo of i', function() {
         var options, s;
@@ -13,7 +13,7 @@
           bit: ['foo', 'bar', 'baz'],
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         expect(s._getOptionByMod('bit', 0, options)).toBe('foo');
         expect(s._getOptionByMod('bit', 1, options)).toBe('bar');
         expect(s._getOptionByMod('bit', 2, options)).toBe('baz');
@@ -26,7 +26,7 @@
           bit: 'foo',
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         expect(s._getOptionByMod('bit', 0, options)).toBe('foo');
         return expect(s._getOptionByMod('bit', 1, options)).toBe('foo');
       });
@@ -41,7 +41,7 @@
           bit: divWrapper.childNodes,
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         expect(s._getOptionByMod('bit', 0, options)).toBe(div1);
         return expect(s._getOptionByMod('bit', 1, options)).toBe(div2);
       });
@@ -51,7 +51,7 @@
           bit: 'stagger(200)',
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         expect(s._getOptionByMod('bit', 0, options)).toBe(0);
         expect(s._getOptionByMod('bit', 1, options)).toBe(200);
         return expect(s._getOptionByMod('bit', 2, options)).toBe(400);
@@ -66,7 +66,7 @@
           norf: ['norf', 300],
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         option1 = s._getOptionByIndex(0, options);
         expect(option1.bax).toBe('foo');
         expect(option1.qux).toBe(200);
@@ -80,7 +80,7 @@
           el: ['body', 'body', 'body'],
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         return expect(s._getChildQuantity('el', options)).toBe(3);
       });
       it('should get quantity of child modules #dom list', function() {
@@ -94,7 +94,7 @@
           el: divWrapper.childNodes,
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         return expect(s._getChildQuantity('el', options)).toBe(2);
       });
       it('should get quantity of child modules #single value', function() {
@@ -103,7 +103,7 @@
           el: document.createElement('div'),
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         return expect(s._getChildQuantity('el', options)).toBe(1);
       });
       return it('should get quantity of child modules #string', function() {
@@ -112,7 +112,7 @@
           el: 'body',
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         return expect(s._getChildQuantity('el', options)).toBe(1);
       });
     });
@@ -123,7 +123,7 @@
           el: 'body',
           path: 'M0,0 L100,100'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         s._createTimeline();
         return expect(s.timeline instanceof mojs.Timeline).toBe(true);
       });
@@ -137,7 +137,7 @@
           path: 'M0,0 L100,100',
           delay: '200'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         s.init(options, mojs.MotionPath);
         return expect(s.timeline.timelines.length).toBe(2);
       });
@@ -149,7 +149,7 @@
           path: 'M0,0 L100,100',
           delay: '200'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         s.init(options, mojs.MotionPath);
         return expect(s.childModules[0].o.isRunLess).toBe(true);
       });
@@ -161,11 +161,11 @@
           path: 'M0,0 L100,100',
           delay: '200'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         return expect(s.init(options, mojs.MotionPath)).toBe(s);
       });
     });
-    return describe('run method ->', function() {
+    describe('run method ->', function() {
       return it('should run timeline', function() {
         var div, options, s;
         div = document.createElement('div');
@@ -174,11 +174,23 @@
           path: 'M0,0 L100,100',
           delay: '200'
         };
-        s = new Staggler(options);
+        s = new Stagger(options);
         s.init(options, mojs.MotionPath);
         spyOn(s.timeline, 'start');
         s.run();
         return expect(s.timeline.start).toHaveBeenCalled();
+      });
+    });
+    return describe('stagger callbacks ->', function() {
+      return describe('onStaggerUpdate callback ->', function() {
+        return it('should pass onStaggerUpdate callback to timeline', function() {
+          var fun, s;
+          fun = function() {};
+          s = new Stagger({
+            onStaggerUpdate: fun
+          });
+          return expect(s.timeline.o.onUpdate).toBe(fun);
+        });
       });
     });
   });
