@@ -36,62 +36,30 @@ class Tween
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->
-    # # get elapsed with respect to repeat option
-    # # so take a modulo of the elapsed time
-    # startPoint = @props.startTime - @props.delay
-    # elapsed = (time - startPoint) % (@props.delay + @props.time)
-    # # get the time for timelines
-    # timeToTimelines = if startPoint + elapsed >= @props.startTime
-    #   if time >= @props.endTime then @props.endTime
-    #   else startPoint + elapsed
-    # else
-
-    #   if time > @props.startTime + @props.time
-    #     @props.startTime + @props.time
-    #   else null
-    # # set the normalized time to the timelines
-    # if timeToTimelines?
-    #   i = -1; len = @timelines.length-1
-    #   @timelines[i].update(timeToTimelines) while(i++ < len)
     if (time >= @props.startTime) and (time < @props.endTime)
       @isOnReverseComplete = false; @isCompleted = false
       if !@isFirstUpdate
         @props.onFirstUpdate?.apply(@); @isFirstUpdate = true
       if !@isStarted then @props.onStart?.apply(@); @isStarted = true
       
-      # startPoint = @props.startTime - @props.delay
-      # elapsed1 = (time - startPoint) % (@props.delay + @props.time)
-      elapsed = time - @props.startTime
-      # console.log elapsed1, elapsed, startPoint, @props.delay
+      startPoint = @props.startTime - @props.delay
+      elapsed = (time - startPoint) % (@props.delay + @props.duration)
+      cnt = Math.floor (time - startPoint)/(@props.delay + @props.duration)
 
-      # in the first repeat or without any repeats
-      if elapsed <= @props.duration then @setProc elapsed/@props.duration
-      # far in the repeats
-      else
-        start = @props.startTime
-        isDuration = false; cnt = 0
-        # get the last time point before time
-        # by increasing the startTime by the
-        # duration or delay in series
-        # get the latest just before the time
-        while(start <= time)
-          isDuration = !isDuration
-          start += if isDuration then cnt++; @props.duration else @props.delay
-        # if have we stopped in start point + duration
-        if isDuration
-          # get the start point
-          start = start - @props.duration
-          elapsed = time - start
-          @setProc elapsed/@props.duration
-          # yoyo
-          if @props.yoyo and @props.repeat
-            @setProc if cnt % 2 is 1 then @progress
-            # when reversed progress of 1 should be 0
-            else 1-if @progress is 0 then 1 else @progress
-        # we have stopped in start point + delay
-        # set proc to 1 if previous time is smaller
-        # then the current one, otherwise set to 0
-        else @setProc if @prevTime < time then 1 else 0
+      if startPoint + elapsed >= @props.startTime
+        # active zone or larger then end
+        if time > @props.endTime then @setProc 1
+          # set to end time
+        else
+          elapsed2 = (time-@props.startTime) % (@props.delay + @props.duration)
+          proc = elapsed2/@props.duration
+          @setProc if !@props.yoyo then proc
+          else
+            if cnt % 2 is 0 then proc
+            else 1-if proc is 1 then 0 else proc
+      # delay gap
+      else @setProc if @prevTime < time then 1 else 0
+        
       if time < @prevTime and !@isFirstUpdateBackward
         @props.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       # @onUpdate? @easedProgress
@@ -117,7 +85,7 @@ class Tween
     @isCompleted
 
   setProc:(p, isCallback=true)->
-    # console.log @props.easing
+    @o.isIt and console.log p
     @progress = p; @easedProgress = @props.easing @progress
     if @props.prevEasedProgress isnt @easedProgress and isCallback
       @onUpdate?(@easedProgress, @progress)

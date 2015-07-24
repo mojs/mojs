@@ -844,8 +844,7 @@
       return it('should parse easing', function() {
         var t;
         t = new Tween({
-          duration: 100,
-          isIt: true
+          duration: 100
         });
         t.setProp('easing', 'elastic.in');
         return expect(t.props.easing).toBe(mojs.easing.elastic["in"]);

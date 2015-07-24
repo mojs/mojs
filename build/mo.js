@@ -4213,7 +4213,7 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var cnt, elapsed, isDuration, ref, ref1, ref2, ref3, ref4, ref5, start;
+    var cnt, elapsed, elapsed2, proc, ref, ref1, ref2, ref3, ref4, ref5, startPoint;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
@@ -4229,27 +4229,19 @@ Tween = (function() {
         }
         this.isStarted = true;
       }
-      elapsed = time - this.props.startTime;
-      if (elapsed <= this.props.duration) {
-        this.setProc(elapsed / this.props.duration);
-      } else {
-        start = this.props.startTime;
-        isDuration = false;
-        cnt = 0;
-        while (start <= time) {
-          isDuration = !isDuration;
-          start += isDuration ? (cnt++, this.props.duration) : this.props.delay;
-        }
-        if (isDuration) {
-          start = start - this.props.duration;
-          elapsed = time - start;
-          this.setProc(elapsed / this.props.duration);
-          if (this.props.yoyo && this.props.repeat) {
-            this.setProc(cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress));
-          }
+      startPoint = this.props.startTime - this.props.delay;
+      elapsed = (time - startPoint) % (this.props.delay + this.props.duration);
+      cnt = Math.floor((time - startPoint) / (this.props.delay + this.props.duration));
+      if (startPoint + elapsed >= this.props.startTime) {
+        if (time > this.props.endTime) {
+          this.setProc(1);
         } else {
-          this.setProc(this.prevTime < time ? 1 : 0);
+          elapsed2 = (time - this.props.startTime) % (this.props.delay + this.props.duration);
+          proc = elapsed2 / this.props.duration;
+          this.setProc(!this.props.yoyo ? proc : cnt % 2 === 0 ? proc : 1 - (proc === 1 ? 0 : proc));
         }
+      } else {
+        this.setProc(this.prevTime < time ? 1 : 0);
       }
       if (time < this.prevTime && !this.isFirstUpdateBackward) {
         if ((ref2 = this.props.onFirstUpdateBackward) != null) {
@@ -4296,6 +4288,7 @@ Tween = (function() {
     if (isCallback == null) {
       isCallback = true;
     }
+    this.o.isIt && console.log(p);
     this.progress = p;
     this.easedProgress = this.props.easing(this.progress);
     if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {

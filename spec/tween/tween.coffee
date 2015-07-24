@@ -74,6 +74,7 @@ describe 'Tween ->', ->
       time = t.props.startTime + 200
       t.update time
       expect(t.progress).toBe .2
+
     it 'should update progress with repeat', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
       t.start()
@@ -83,7 +84,6 @@ describe 'Tween ->', ->
       expect(t.progress).toBeCloseTo .3
       t.update t.props.startTime + 3400
       expect(t.progress).toBe 1
-    
     it 'should update progress to 1 if in delay gap and previous time value
         was smaller then the current one', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
@@ -91,7 +91,6 @@ describe 'Tween ->', ->
       t.update t.props.startTime + 300
       t.update t.props.startTime + 1100
       expect(t.progress).toBe 1
-
     it 'should update progress to 1 if in delay gap and previous time value
         was bigger then the current one', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
@@ -99,8 +98,6 @@ describe 'Tween ->', ->
       t.update t.props.startTime + 1300
       t.update t.props.startTime + 1100
       expect(t.progress).toBe 0
-
-
     it 'should update progress to 1 on the end', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
       t.start()
@@ -153,7 +150,6 @@ describe 'Tween ->', ->
       t.update t.props.startTime + t.props.duration + 100
       t.update t.props.startTime + t.props.duration + 150
       expect(t.onUpdate.calls.count()).toBe 1
-
     it 'should pass eased progress and raw progress', ->
       easedProgress = null
       progress      = null
@@ -507,7 +503,7 @@ describe 'Tween ->', ->
       t.setProp 'duration', 1000
       expect(t.props.totalTime).toBe 1000
     it 'should parse easing', ->
-      t = new Tween duration: 100, isIt: true
+      t = new Tween duration: 100
       t.setProp 'easing', 'elastic.in'
       expect(t.props.easing).toBe mojs.easing.elastic.in
 

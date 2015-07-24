@@ -102,7 +102,6 @@ class Timeline
       if time >= @props.endTime then @props.endTime
       else startPoint + elapsed
     else
-
       if time > @props.startTime + @props.time
         @props.startTime + @props.time
       else null
