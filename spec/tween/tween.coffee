@@ -159,7 +159,7 @@ describe 'Tween ->', ->
           easedProgress = ep
           progress = p
 
-      t.setProc .5
+      t.setProgress .5
       expect(easedProgress).toBe mojs.easing.cubic.out progress
 
   describe 'onStart callback ->', ->
@@ -476,10 +476,10 @@ describe 'Tween ->', ->
       t = new Tween(easing: easings.one)
       t.start(); t.update t.props.startTime + 40
       setTimeout (-> expect(easings.one).toHaveBeenCalled(); dfr()), 50
-  describe 'setProc method ->', ->
+  describe 'setProgress method ->', ->
     it 'should set the current progress', ->
       t = new Tween(easing: 'Bounce.Out')
-      t.setProc .75
+      t.setProgress .75
       expect(t.progress).toBe .75
       expect(t.easedProgress.toFixed(2)).toBe '0.97'
 
@@ -551,9 +551,9 @@ describe 'Tween ->', ->
       tweener.removeAll()
       timeline = new Tween duration: 2000
       timeline.run()
-      spyOn timeline, 'setProc'
+      spyOn timeline, 'setProgress'
       timeline.stop()
-      expect(timeline.setProc).toHaveBeenCalledWith 0
+      expect(timeline.setProgress).toHaveBeenCalledWith 0
     # it 'should set state to "stop"',->
     #   tweener.tweens = []
     #   t = new Tween

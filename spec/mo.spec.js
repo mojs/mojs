@@ -4257,7 +4257,7 @@ Tween = (function() {
       }
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
-        this.setProc(1);
+        this.setProgress(1);
         if ((ref3 = this.props.onComplete) != null) {
           ref3.apply(this);
         }
@@ -4280,7 +4280,7 @@ Tween = (function() {
       }
       if (!this.isOnReverseComplete) {
         this.isOnReverseComplete = true;
-        this.setProc(0, !this.props.isChained);
+        this.setProgress(0, !this.props.isChained);
         if ((ref5 = this.props.onReverseComplete) != null) {
           ref5.apply(this);
         }
@@ -4296,23 +4296,18 @@ Tween = (function() {
     elapsed = (time - startPoint) % (this.props.delay + this.props.duration);
     cnt = Math.floor((time - startPoint) / (this.props.delay + this.props.duration));
     if (startPoint + elapsed >= this.props.startTime) {
-      if (time > this.props.endTime) {
-        return this.setProc(1);
-      } else {
-        elapsed2 = (time - this.props.startTime) % (this.props.delay + this.props.duration);
-        proc = elapsed2 / this.props.duration;
-        return this.setProc(!this.props.yoyo ? proc : cnt % 2 === 0 ? proc : 1 - (proc === 1 ? 0 : proc));
-      }
+      elapsed2 = (time - this.props.startTime) % (this.props.delay + this.props.duration);
+      proc = elapsed2 / this.props.duration;
+      return this.setProgress(!this.props.yoyo ? proc : cnt % 2 === 0 ? proc : 1 - (proc === 1 ? 0 : proc));
     } else {
-      return this.setProc(this.prevTime < time ? 1 : 0);
+      return this.setProgress(this.prevTime < time ? 1 : 0);
     }
   };
 
-  Tween.prototype.setProc = function(p, isCallback) {
+  Tween.prototype.setProgress = function(p, isCallback) {
     if (isCallback == null) {
       isCallback = true;
     }
-    this.o.isIt && console.log(p);
     this.progress = p;
     this.easedProgress = this.props.easing(this.progress);
     if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
@@ -4351,7 +4346,7 @@ Tween = (function() {
 
   Tween.prototype.stop = function() {
     this.pause();
-    this.setProc(0);
+    this.setProgress(0);
     return this;
   };
 

@@ -58,7 +58,7 @@ class Tween
 
       # complete if time is larger then end time
       if time >= @props.endTime and !@isCompleted
-        @setProc(1); @props.onComplete?.apply(@)
+        @setProgress(1); @props.onComplete?.apply(@)
         @isOnReverseComplete = false; @isCompleted = true
       # rest isFirstUpdate flag if update was out of active zone
       @isFirstUpdate = false if time > @props.endTime or time < @props.startTime
@@ -70,7 +70,7 @@ class Tween
         @props.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
       if !@isOnReverseComplete
         @isOnReverseComplete = true
-        @setProc(0, !@props.isChained)
+        @setProgress(0, !@props.isChained)
         #; !@o.isChained and @onUpdate? @easedProgress
         @props.onReverseComplete?.apply(@)
 
@@ -84,24 +84,20 @@ class Tween
     # if time is inside the duration area of the tween
     if startPoint + elapsed >= @props.startTime
       # active zone or larger then end
-      if time > @props.endTime then @setProc 1
-        # set to end time
+      elapsed2 = (time-@props.startTime) % (@props.delay + @props.duration)
+      proc = elapsed2/@props.duration
+      # if not yoyo then set the plain progress
+      @setProgress if !@props.yoyo then proc
       else
-        elapsed2 = (time-@props.startTime) % (@props.delay + @props.duration)
-        proc = elapsed2/@props.duration
-        # if not yoyo then set the plain progress
-        @setProc if !@props.yoyo then proc
         # if yoyo then check if the current duration
         # period is even. If so set progress, otherwise
         # set inverset proc value
-        else
-          if cnt % 2 is 0 then proc
-          else 1-if proc is 1 then 0 else proc
+        if cnt % 2 is 0 then proc
+        else 1-if proc is 1 then 0 else proc
     # delay gap
-    else @setProc if @prevTime < time then 1 else 0
+    else @setProgress if @prevTime < time then 1 else 0
 
-  setProc:(p, isCallback=true)->
-    @o.isIt and console.log p
+  setProgress:(p, isCallback=true)->
     @progress = p; @easedProgress = @props.easing @progress
     if @props.prevEasedProgress isnt @easedProgress and isCallback
       @onUpdate?(@easedProgress, @progress)
@@ -130,7 +126,7 @@ class Tween
   # ---
 
   # Method to stop the Tween.
-  stop:-> @pause(); @setProc(0); @
+  stop:-> @pause(); @setProgress(0); @
   # ---
 
   # Method to pause Tween.

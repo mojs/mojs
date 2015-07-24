@@ -287,7 +287,7 @@
             return progress = p;
           }
         });
-        t.setProc(.5);
+        t.setProgress(.5);
         return expect(easedProgress).toBe(mojs.easing.cubic.out(progress));
       });
     });
@@ -791,13 +791,13 @@
         }), 50);
       });
     });
-    describe('setProc method ->', function() {
+    describe('setProgress method ->', function() {
       return it('should set the current progress', function() {
         var t;
         t = new Tween({
           easing: 'Bounce.Out'
         });
-        t.setProc(.75);
+        t.setProgress(.75);
         expect(t.progress).toBe(.75);
         return expect(t.easedProgress.toFixed(2)).toBe('0.97');
       });
@@ -914,9 +914,9 @@
           duration: 2000
         });
         timeline.run();
-        spyOn(timeline, 'setProc');
+        spyOn(timeline, 'setProgress');
         timeline.stop();
-        return expect(timeline.setProc).toHaveBeenCalledWith(0);
+        return expect(timeline.setProgress).toHaveBeenCalledWith(0);
       });
     });
     return describe('pause method ->', function() {
