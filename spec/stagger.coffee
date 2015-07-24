@@ -104,11 +104,23 @@ describe 'Stagger ->', ->
       expect(s.timeline.start).toHaveBeenCalled()
 
   describe 'stagger callbacks ->', ->
-    describe 'onStaggerUpdate callback ->', ->
-      it 'should pass onStaggerUpdate callback to timeline', ->
-        fun = ->
-        s = new Stagger onStaggerUpdate: fun
-        expect(s.timeline.o.onUpdate).toBe fun
+    it 'should pass onStaggerStart callback to timeline', ->
+      fun = ->
+      s = new Stagger onStaggerStart: fun
+      expect(s.timeline.o.onStart).toBe fun
+    it 'should pass onStaggerUpdate callback to timeline', ->
+      fun = ->
+      s = new Stagger onStaggerUpdate: fun
+      expect(s.timeline.o.onUpdate).toBe fun
+    it 'should pass onStaggerComplete callback to timeline', ->
+      fun = ->
+      s = new Stagger onStaggerComplete: fun
+      expect(s.timeline.o.onComplete).toBe fun
+    it 'should pass onStaggerReverseComplete callback to timeline', ->
+      fun = ->
+      s = new Stagger onStaggerReverseComplete: fun
+      expect(s.timeline.o.onReverseComplete).toBe fun
+
 
 
 

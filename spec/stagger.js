@@ -182,15 +182,37 @@
       });
     });
     return describe('stagger callbacks ->', function() {
-      return describe('onStaggerUpdate callback ->', function() {
-        return it('should pass onStaggerUpdate callback to timeline', function() {
-          var fun, s;
-          fun = function() {};
-          s = new Stagger({
-            onStaggerUpdate: fun
-          });
-          return expect(s.timeline.o.onUpdate).toBe(fun);
+      it('should pass onStaggerStart callback to timeline', function() {
+        var fun, s;
+        fun = function() {};
+        s = new Stagger({
+          onStaggerStart: fun
         });
+        return expect(s.timeline.o.onStart).toBe(fun);
+      });
+      it('should pass onStaggerUpdate callback to timeline', function() {
+        var fun, s;
+        fun = function() {};
+        s = new Stagger({
+          onStaggerUpdate: fun
+        });
+        return expect(s.timeline.o.onUpdate).toBe(fun);
+      });
+      it('should pass onStaggerComplete callback to timeline', function() {
+        var fun, s;
+        fun = function() {};
+        s = new Stagger({
+          onStaggerComplete: fun
+        });
+        return expect(s.timeline.o.onComplete).toBe(fun);
+      });
+      return it('should pass onStaggerReverseComplete callback to timeline', function() {
+        var fun, s;
+        fun = function() {};
+        s = new Stagger({
+          onStaggerReverseComplete: fun
+        });
+        return expect(s.timeline.o.onReverseComplete).toBe(fun);
       });
     });
   });

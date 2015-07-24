@@ -45,10 +45,13 @@ class Stagger
   # ---
 
   # Method to create timeline.
-  # @param {Object} Options.
-  _createTimeline:(options)->
+  # @param {Object} Options. ** default ** empty object.
+  _createTimeline:(options={})->
     @timeline = new Timeline
-      onUpdate: options?.onStaggerUpdate
+      onStart:           options.onStaggerStart
+      onUpdate:          options.onStaggerUpdate
+      onComplete:        options.onStaggerComplete
+      onReverseComplete: options.onStaggerReverseComplete
   # ---
 
   # Method to make stagger form options

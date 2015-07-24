@@ -1679,7 +1679,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.142.0',
+  revision: '0.143.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3077,8 +3077,14 @@ Stagger = (function() {
   };
 
   Stagger.prototype._createTimeline = function(options) {
+    if (options == null) {
+      options = {};
+    }
     return this.timeline = new Timeline({
-      onUpdate: options != null ? options.onStaggerUpdate : void 0
+      onStart: options.onStaggerStart,
+      onUpdate: options.onStaggerUpdate,
+      onComplete: options.onStaggerComplete,
+      onReverseComplete: options.onStaggerReverseComplete
     });
   };
 
