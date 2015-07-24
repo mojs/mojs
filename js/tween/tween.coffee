@@ -36,42 +36,35 @@ class Tween
     @props.endTime   = @props.startTime + @props.totalDuration
     @
   update:(time)->
-    if (time >= @props.startTime) and (time < @props.endTime)
-      @isOnReverseComplete = false; @isCompleted = false
-      if !@isFirstUpdate
-        @props.onFirstUpdate?.apply(@); @isFirstUpdate = true
-      if !@isStarted then @props.onStart?.apply(@); @isStarted = true
-      
-      startPoint = @props.startTime - @props.delay
-      elapsed = (time - startPoint) % (@props.delay + @props.duration)
-      cnt = Math.floor (time - startPoint)/(@props.delay + @props.duration)
 
-      if startPoint + elapsed >= @props.startTime
-        # active zone or larger then end
-        if time > @props.endTime then @setProc 1
-          # set to end time
-        else
-          elapsed2 = (time-@props.startTime) % (@props.delay + @props.duration)
-          proc = elapsed2/@props.duration
-          @setProc if !@props.yoyo then proc
-          else
-            if cnt % 2 is 0 then proc
-            else 1-if proc is 1 then 0 else proc
-      # delay gap
-      else @setProc if @prevTime < time then 1 else 0
+    # if time is inside the active area of the tween.
+    # active area is the area from start time to end time,
+    # with all the repeat and delays in it
+    if (time >= @props.startTime) and (time < @props.endTime)
+
+      # reset callback flags
+      @isOnReverseComplete = false; @isCompleted = false
+      # onFirtUpdate callback
+      (@props.onFirstUpdate?.apply(@); @isFirstUpdate = true) if !@isFirstUpdate
+      # onStart callback
+      (@props.onStart?.apply(@); @isStarted = true) if !@isStarted
+      
+      @_updateInActiveArea(time)
         
       if time < @prevTime and !@isFirstUpdateBackward
         @props.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
-      # @onUpdate? @easedProgress
+    
     else
+
+      # complete if time is larger then end time
       if time >= @props.endTime and !@isCompleted
-        @setProc 1#; @onUpdate? @easedProgress
-        @props.onComplete?.apply(@); @isCompleted = true
-        @isOnReverseComplete = false
-      if time > @props.endTime or time < @props.startTime
-        @isFirstUpdate = false
+        @setProc(1); @props.onComplete?.apply(@)
+        @isOnReverseComplete = false; @isCompleted = true
+      # rest isFirstUpdate flag if update was out of active zone
+      @isFirstUpdate = false if time > @props.endTime or time < @props.startTime
       # reset isFirstUpdateBackward flag if progress went further the end time
       @isFirstUpdateBackward = false if time > @props.endTime
+    
     if time < @prevTime and time <= @props.startTime
       if !@isFirstUpdateBackward
         @props.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
@@ -80,9 +73,32 @@ class Tween
         @setProc(0, !@props.isChained)
         #; !@o.isChained and @onUpdate? @easedProgress
         @props.onReverseComplete?.apply(@)
+
     @prevTime = time
-    
     @isCompleted
+
+  _updateInActiveArea:(time)->
+    startPoint = @props.startTime - @props.delay
+    elapsed = (time - startPoint) % (@props.delay + @props.duration)
+    cnt = Math.floor (time - startPoint)/(@props.delay + @props.duration)
+    # if time is inside the duration area of the tween
+    if startPoint + elapsed >= @props.startTime
+      # active zone or larger then end
+      if time > @props.endTime then @setProc 1
+        # set to end time
+      else
+        elapsed2 = (time-@props.startTime) % (@props.delay + @props.duration)
+        proc = elapsed2/@props.duration
+        # if not yoyo then set the plain progress
+        @setProc if !@props.yoyo then proc
+        # if yoyo then check if the current duration
+        # period is even. If so set progress, otherwise
+        # set inverset proc value
+        else
+          if cnt % 2 is 0 then proc
+          else 1-if proc is 1 then 0 else proc
+    # delay gap
+    else @setProc if @prevTime < time then 1 else 0
 
   setProc:(p, isCallback=true)->
     @o.isIt and console.log p

@@ -70,75 +70,92 @@ easing       = <span class="hljs-built_in">require</span> <span class="hljs-stri
     <span class="hljs-property">@props</span>.endTime   = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.totalDuration
     @
   <span class="hljs-attribute">update</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
-    <span class="hljs-keyword">if</span> (time &gt;= <span class="hljs-property">@props</span>.startTime) <span class="hljs-keyword">and</span> (time &lt; <span class="hljs-property">@props</span>.endTime)
-      <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">false</span>; <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">false</span>
-      <span class="hljs-keyword">if</span> !<span class="hljs-property">@isFirstUpdate</span>
-        <span class="hljs-property">@props</span>.onFirstUpdate?.apply(@); <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">true</span>
-      <span class="hljs-keyword">if</span> !<span class="hljs-property">@isStarted</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@props</span>.onStart?.apply(@); <span class="hljs-property">@isStarted</span> = <span class="hljs-literal">true</span>
-      
-      startPoint = <span class="hljs-property">@props</span>.startTime - <span class="hljs-property">@props</span>.delay
-      elapsed = (time - startPoint) % (<span class="hljs-property">@props</span>.delay + <span class="hljs-property">@props</span>.duration)
-      cnt = Math.floor (time - startPoint)/(<span class="hljs-property">@props</span>.delay + <span class="hljs-property">@props</span>.duration)
-
-      <span class="hljs-keyword">if</span> startPoint + elapsed &gt;= <span class="hljs-property">@props</span>.startTime</div></div>
+</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>active zone or larger then end</p>
+          <div class="wrapper"><p>if time is inside the active area of the tween.
+active area is the area from start time to end time,
+with all the repeat and delays in it</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">        <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">then</span> <span class="hljs-property">@setProc</span> <span class="hljs-number">1</span></div></div>
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> (time &gt;= <span class="hljs-property">@props</span>.startTime) <span class="hljs-keyword">and</span> (time &lt; <span class="hljs-property">@props</span>.endTime)
+</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>set to end time</p>
+          <div class="wrapper"><p>reset callback flags</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">        <span class="hljs-keyword">else</span>
-          elapsed2 = (time-<span class="hljs-property">@props</span>.startTime) % (<span class="hljs-property">@props</span>.delay + <span class="hljs-property">@props</span>.duration)
-          proc = elapsed2/<span class="hljs-property">@props</span>.duration
-          <span class="hljs-property">@setProc</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@props</span>.yoyo <span class="hljs-keyword">then</span> proc
-          <span class="hljs-keyword">else</span>
-            <span class="hljs-keyword">if</span> cnt % <span class="hljs-number">2</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> proc
-            <span class="hljs-keyword">else</span> <span class="hljs-number">1</span>-<span class="hljs-keyword">if</span> proc <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> proc</div></div>
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">false</span>; <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">false</span></div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>delay gap</p>
+          <div class="wrapper"><p>onFirtUpdate callback</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span> <span class="hljs-property">@setProc</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@prevTime</span> &lt; time <span class="hljs-keyword">then</span> <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
+        <div class="code"><div class="wrapper">      (<span class="hljs-property">@props</span>.onFirstUpdate?.apply(@); <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">true</span>) <span class="hljs-keyword">if</span> !<span class="hljs-property">@isFirstUpdate</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>onStart callback</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      (<span class="hljs-property">@props</span>.onStart?.apply(@); <span class="hljs-property">@isStarted</span> = <span class="hljs-literal">true</span>) <span class="hljs-keyword">if</span> !<span class="hljs-property">@isStarted</span>
+      
+      <span class="hljs-property">@_updateInActiveArea</span>(time)
         
       <span class="hljs-keyword">if</span> time &lt; <span class="hljs-property">@prevTime</span> <span class="hljs-keyword">and</span> !<span class="hljs-property">@isFirstUpdateBackward</span>
-        <span class="hljs-property">@props</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span></div></div>
+        <span class="hljs-property">@props</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span>
+    
+    <span class="hljs-keyword">else</span>
+</div></div>
       
       </div>
     
       <div class="segment">
       
+        <div class="comments ">
+          <div class="wrapper"><p>complete if time is larger then end time</p>
+</div>
+        </div>
       
-        <div class="code"><div class="wrapper">    <span class="hljs-keyword">else</span>
-      <span class="hljs-keyword">if</span> time &gt;= <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">and</span> !<span class="hljs-property">@isCompleted</span>
-        <span class="hljs-property">@setProc</span> <span class="hljs-number">1</span><span class="hljs-comment">#; @onUpdate? @easedProgress</span>
-        <span class="hljs-property">@props</span>.onComplete?.apply(@); <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">true</span>
-        <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">false</span>
-      <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">or</span> time &lt; <span class="hljs-property">@props</span>.startTime
-        <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">false</span></div></div>
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> time &gt;= <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">and</span> !<span class="hljs-property">@isCompleted</span>
+        <span class="hljs-property">@setProc</span>(<span class="hljs-number">1</span>); <span class="hljs-property">@props</span>.onComplete?.apply(@)
+        <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">false</span>; <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">true</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>rest isFirstUpdate flag if update was out of active zone</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">or</span> time &lt; <span class="hljs-property">@props</span>.startTime</div></div>
       
       </div>
     
@@ -151,6 +168,7 @@ easing       = <span class="hljs-built_in">require</span> <span class="hljs-stri
       
       
         <div class="code"><div class="wrapper">      <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime
+    
     <span class="hljs-keyword">if</span> time &lt; <span class="hljs-property">@prevTime</span> <span class="hljs-keyword">and</span> time &lt;= <span class="hljs-property">@props</span>.startTime
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@isFirstUpdateBackward</span>
         <span class="hljs-property">@props</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span>
@@ -159,9 +177,92 @@ easing       = <span class="hljs-built_in">require</span> <span class="hljs-stri
         <span class="hljs-property">@setProc</span>(<span class="hljs-number">0</span>, !<span class="hljs-property">@props</span>.isChained)
         <span class="hljs-comment">#; !@o.isChained and @onUpdate? @easedProgress</span>
         <span class="hljs-property">@props</span>.onReverseComplete?.apply(@)
+
     <span class="hljs-property">@prevTime</span> = time
-    
     <span class="hljs-property">@isCompleted</span>
+
+  <span class="hljs-attribute">_updateInActiveArea</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
+    startPoint = <span class="hljs-property">@props</span>.startTime - <span class="hljs-property">@props</span>.delay
+    elapsed = (time - startPoint) % (<span class="hljs-property">@props</span>.delay + <span class="hljs-property">@props</span>.duration)
+    cnt = Math.floor (time - startPoint)/(<span class="hljs-property">@props</span>.delay + <span class="hljs-property">@props</span>.duration)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if time is inside the duration area of the tween</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> startPoint + elapsed &gt;= <span class="hljs-property">@props</span>.startTime</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>active zone or larger then end</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">then</span> <span class="hljs-property">@setProc</span> <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>set to end time</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span>
+        elapsed2 = (time-<span class="hljs-property">@props</span>.startTime) % (<span class="hljs-property">@props</span>.delay + <span class="hljs-property">@props</span>.duration)
+        proc = elapsed2/<span class="hljs-property">@props</span>.duration</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if not yoyo then set the plain progress</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">        <span class="hljs-property">@setProc</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@props</span>.yoyo <span class="hljs-keyword">then</span> proc</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if yoyo then check if the current duration
+period is even. If so set progress, otherwise
+set inverset proc value</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">        <span class="hljs-keyword">else</span>
+          <span class="hljs-keyword">if</span> cnt % <span class="hljs-number">2</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> proc
+          <span class="hljs-keyword">else</span> <span class="hljs-number">1</span>-<span class="hljs-keyword">if</span> proc <span class="hljs-keyword">is</span> <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> proc</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>delay gap</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">else</span> <span class="hljs-property">@setProc</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@prevTime</span> &lt; time <span class="hljs-keyword">then</span> <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
 
   <span class="hljs-attribute">setProc</span>:<span class="hljs-function"><span class="hljs-params">(p, isCallback=<span class="hljs-literal">true</span>)</span>-&gt;</span>
     <span class="hljs-property">@o</span>.isIt <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log p

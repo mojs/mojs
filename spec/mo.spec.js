@@ -4232,7 +4232,7 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time) {
-    var cnt, elapsed, elapsed2, proc, ref, ref1, ref2, ref3, ref4, ref5, startPoint;
+    var ref, ref1, ref2, ref3, ref4, ref5;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
@@ -4248,20 +4248,7 @@ Tween = (function() {
         }
         this.isStarted = true;
       }
-      startPoint = this.props.startTime - this.props.delay;
-      elapsed = (time - startPoint) % (this.props.delay + this.props.duration);
-      cnt = Math.floor((time - startPoint) / (this.props.delay + this.props.duration));
-      if (startPoint + elapsed >= this.props.startTime) {
-        if (time > this.props.endTime) {
-          this.setProc(1);
-        } else {
-          elapsed2 = (time - this.props.startTime) % (this.props.delay + this.props.duration);
-          proc = elapsed2 / this.props.duration;
-          this.setProc(!this.props.yoyo ? proc : cnt % 2 === 0 ? proc : 1 - (proc === 1 ? 0 : proc));
-        }
-      } else {
-        this.setProc(this.prevTime < time ? 1 : 0);
-      }
+      this._updateInActiveArea(time);
       if (time < this.prevTime && !this.isFirstUpdateBackward) {
         if ((ref2 = this.props.onFirstUpdateBackward) != null) {
           ref2.apply(this);
@@ -4274,8 +4261,8 @@ Tween = (function() {
         if ((ref3 = this.props.onComplete) != null) {
           ref3.apply(this);
         }
-        this.isCompleted = true;
         this.isOnReverseComplete = false;
+        this.isCompleted = true;
       }
       if (time > this.props.endTime || time < this.props.startTime) {
         this.isFirstUpdate = false;
@@ -4301,6 +4288,24 @@ Tween = (function() {
     }
     this.prevTime = time;
     return this.isCompleted;
+  };
+
+  Tween.prototype._updateInActiveArea = function(time) {
+    var cnt, elapsed, elapsed2, proc, startPoint;
+    startPoint = this.props.startTime - this.props.delay;
+    elapsed = (time - startPoint) % (this.props.delay + this.props.duration);
+    cnt = Math.floor((time - startPoint) / (this.props.delay + this.props.duration));
+    if (startPoint + elapsed >= this.props.startTime) {
+      if (time > this.props.endTime) {
+        return this.setProc(1);
+      } else {
+        elapsed2 = (time - this.props.startTime) % (this.props.delay + this.props.duration);
+        proc = elapsed2 / this.props.duration;
+        return this.setProc(!this.props.yoyo ? proc : cnt % 2 === 0 ? proc : 1 - (proc === 1 ? 0 : proc));
+      }
+    } else {
+      return this.setProc(this.prevTime < time ? 1 : 0);
+    }
   };
 
   Tween.prototype.setProc = function(p, isCallback) {
