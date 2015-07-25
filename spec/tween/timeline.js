@@ -1023,8 +1023,8 @@
         spyOn(t.timelines[1], 'update');
         time = t.props.startTime;
         t._updateTimelines(time + t.props.time + t.props.delay + 5);
-        expect(t.timelines[0].update).toHaveBeenCalledWith(time + 5);
-        expect(t.timelines[1].update).toHaveBeenCalledWith(time + 5);
+        expect(t.timelines[0].update.calls.mostRecent().args[0]).toBeCloseTo(time + 5, 5);
+        expect(t.timelines[1].update.calls.mostRecent().args[0]).toBeCloseTo(time + 5, 5);
         return dfr();
       });
     });
