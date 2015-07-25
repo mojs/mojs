@@ -126,7 +126,7 @@ describe 'Timeline ->', ->
       t = new Timeline repeat: 2
       t.add new Tween duration: 200
       t.setProgress .6
-      expect(t.timelines[0].progress).toBe .8
+      expect(t.timelines[0].progress).toBeCloseTo .8, 5
 
     it 'should end at 1', (dfr)->
       t = new Timeline repeat: 2

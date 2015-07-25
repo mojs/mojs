@@ -220,7 +220,7 @@
           duration: 200
         }));
         t.setProgress(.6);
-        return expect(t.timelines[0].progress).toBe(.8);
+        return expect(t.timelines[0].progress).toBeCloseTo(.8, 5);
       });
       return it('should end at 1', function(dfr) {
         var proc, t;
