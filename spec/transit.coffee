@@ -795,7 +795,7 @@ describe 'Transit ->', ->
       expect(byte.el.style.top)       .not.toBe     '10px'
       s = byte.el.style
       tr = if s.transform? then s.transform else s["#{mojs.h.prefix.css}transform"]
-      expect(tr).toBe ''
+      expect(tr).toBeFalsy()
     it 'should set new values', ->
       byte = new Byte radius: 25, y: 10
       byte.draw()

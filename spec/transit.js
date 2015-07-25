@@ -1434,7 +1434,7 @@
         expect(byte.el.style.top).not.toBe('10px');
         s = byte.el.style;
         tr = s.transform != null ? s.transform : s["" + mojs.h.prefix.css + "transform"];
-        return expect(tr).toBe('');
+        return expect(tr).toBeFalsy();
       });
       it('should set new values', function() {
         var byte;
