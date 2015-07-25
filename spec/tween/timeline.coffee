@@ -495,7 +495,7 @@ describe 'Timeline ->', ->
       expect(ti3.update).toHaveBeenCalledWith time
       expect(ti4.update).toHaveBeenCalledWith time
 
-  describe '_updateTimelines method', ->
+  describe '_updateTimelines method ->', ->
     it 'should set time to timelines', ->
       t = new Timeline
       t.add new Tween duration: 500, delay: 200
@@ -569,7 +569,7 @@ describe 'Timeline ->', ->
       t._updateTimelines(time+t.props.time)
       expect(t.timelines[0].update).toHaveBeenCalledWith time
       expect(t.timelines[1].update).toHaveBeenCalledWith time
-    it 'should set time to timelines with repeat and delay option', ->
+    it 'should set time to timelines with repeat and delay option', (dfr)->
       t = new Timeline repeat: 1, delay: 500
       t.add new Tween duration: 500, delay: 200
       t.add new Tween duration: 500, delay: 100
@@ -578,8 +578,13 @@ describe 'Timeline ->', ->
       spyOn t.timelines[1], 'update'
       time = t.props.startTime
       t._updateTimelines(time + t.props.time + t.props.delay)
-      expect(t.timelines[0].update).toHaveBeenCalledWith time
-      expect(t.timelines[1].update).toHaveBeenCalledWith time
+
+      setTimeout ->
+        # It is async because of strange ff 37.0.0 behaviour
+        expect(t.timelines[0].update).toHaveBeenCalledWith time
+        expect(t.timelines[1].update).toHaveBeenCalledWith time
+        dfr()
+      , 100
 
   describe 'setProgress method ->', ->
     it 'should call the update on every child with progress time', ->

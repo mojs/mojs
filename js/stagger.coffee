@@ -52,6 +52,7 @@ class Stagger
       onUpdate:          options.onStaggerUpdate
       onComplete:        options.onStaggerComplete
       onReverseComplete: options.onStaggerReverseComplete
+      delay:             options.delay
   # ---
 
   # Method to make stagger form options

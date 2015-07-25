@@ -347,15 +347,6 @@ describe 'MotionPath ->', ->
         expect(y)       .toBe 50
         expect(angle)   .toBe 0
 
-  # describe 'onPosit callback ->', ->
-  #   it 'should be defined', ->
-  #     mp = new MotionPath
-  #       path:       'M0,0 L100,100'
-  #       el:         document.createElement 'div'
-  #       isRunLess:  true
-  #       onPosit:    ->
-  #     expect(typeof mp.props.onPosit).toBe 'function'
-
   describe 'fill ->', ->
     div = null; container = null
     beforeEach ->
@@ -392,11 +383,13 @@ describe 'MotionPath ->', ->
         path: 'M0,0 L500,500'
         el: div
         duration: 64
+        isIt: true
         fill: { container: container }
         # all: true
         onComplete:->
-          tr = motionPath.el.style.transform
-          tr ?= motionPath.el.style["#{h.prefix.css}transform"]
+          style = motionPath.el.style; prefixed = "#{h.prefix.css}transform"
+          tr = if style[prefixed]? then style[prefixed] else style.transform
+          div = document.createElement 'div'
           args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
@@ -415,8 +408,8 @@ describe 'MotionPath ->', ->
         fill: { container: container, fillRule: 'width' }
         all: true
         onComplete:->
-          tr = mp.el.style.transform
-          tr ?= mp.el.style["#{h.prefix.css}transform"]
+          style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+          tr = if style[prefixed]? then style[prefixed] else style.transform
           args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
@@ -435,8 +428,8 @@ describe 'MotionPath ->', ->
         duration: 50
         fill: { container: container, fillRule: 'height' }
         onComplete:->
-          tr = mp.el.style.transform
-          tr ?= mp.el.style["#{h.prefix.css}transform"]
+          style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+          tr = if style[prefixed]? then style[prefixed] else style.transform
           args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
@@ -754,7 +747,8 @@ describe 'MotionPath ->', ->
         isRunLess: true
         onUpdate:-> transform
       mp.setProgress .5
-      tr = mp.el.style.transform? or mp.el.style["#{h.prefix.css}transform"]
+      style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+      tr = if style[prefixed]? then style[prefixed] else style.transform
       expect(tr).toBe transform
     it 'should not set transform if something other then string
         was returned from onUpdate callback', ->
@@ -850,17 +844,20 @@ describe 'MotionPath ->', ->
         el:     document.createElement 'div'
         isCompositeLayer: false
       expect(mp.props.isCompositeLayer).toBe false
-    it 'should set translateZ(0) is isCompositeLayer is set to true', ()->
+    it 'should set translateZ(0) if isCompositeLayer is set to true
+        and h.is3d', ()->
       mp = new MotionPath
-        path:       document.createElementNS ns, 'path'
+        path:       'M0,0 L100,100'
         el:         document.createElement 'div'
         isRunLess:  true
       mp.setProgress(.5)
-      tr = mp.el.style.transform or mp.el.style["#{mojs.h.prefix.css}transform"]
-      expect(tr.match /translateZ/gi).toBeTruthy()
+      style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+      tr = if style[prefixed]? then style[prefixed] else style.transform
+      expect(tr.match(/translateZ/gi) or !h.is3d).toBeTruthy()
+
     it 'should not set translateZ(0) is isCompositeLayer is set to false', ()->
       mp = new MotionPath
-        path:             document.createElementNS ns, 'path'
+        path:             'M0,0 L100,100'
         el:               document.createElement 'div'
         isRunLess:        true
         isCompositeLayer: false

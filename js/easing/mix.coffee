@@ -18,7 +18,12 @@ parseIfEasing = (item)->
 #               parsed, and parses it if so.
 sort = (a, b)->
   a.value = parseIfEasing(a); b.value = parseIfEasing(b)
-  a.to < b.to
+
+  returnValue = 0
+  a.to <  b.to and (returnValue = -1)
+  a.to >  b.to and (returnValue =  1)
+  returnValue
+  
 # ---
 
 # Method to get the nearest to item to the progress.

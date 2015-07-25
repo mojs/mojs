@@ -902,7 +902,7 @@
         return expect(ti4.update).toHaveBeenCalledWith(time);
       });
     });
-    describe('_updateTimelines method', function() {
+    describe('_updateTimelines method ->', function() {
       it('should set time to timelines', function() {
         var t, time;
         t = new Timeline;
@@ -1002,7 +1002,7 @@
         expect(t.timelines[0].update).toHaveBeenCalledWith(time);
         return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
       });
-      return it('should set time to timelines with repeat and delay option', function() {
+      return it('should set time to timelines with repeat and delay option', function(dfr) {
         var t, time;
         t = new Timeline({
           repeat: 1,
@@ -1021,8 +1021,11 @@
         spyOn(t.timelines[1], 'update');
         time = t.props.startTime;
         t._updateTimelines(time + t.props.time + t.props.delay);
-        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
-        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+        return setTimeout(function() {
+          expect(t.timelines[0].update).toHaveBeenCalledWith(time);
+          expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+          return dfr();
+        }, 100);
       });
     });
     describe('setProgress method ->', function() {

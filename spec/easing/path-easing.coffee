@@ -7,12 +7,10 @@ describe 'PathEasing ->', ->
   it 'should not init if "creator" was passed', ->
     pe = new PathEasing 'creator'
     expect(pe.precision).not.toBeDefined()
-
   it 'should have path property', ->
     pe = new PathEasing 'creator'
     easing = pe.create 'M 0, 0 L 100,100'
     expect(easing.path instanceof SVGElement).toBe true
-
 
   describe 'variables ->', ->
     it 'should have _eps defined', ->
@@ -215,18 +213,27 @@ describe 'PathEasing ->', ->
       pe = new PathEasing 'creator'
       newPath = pe._normalizePath('M0.1,0 L99,100')
       expect(newPath).toBe 'M0,0 L100,100'
-    it 'should normalize end x value for the latest segment only and strip Z', ->
+    it 'should normalize end x value for the latest
+        segment only and strip Z', ->
       pe = new PathEasing 'creator'
-      path = 'M0.1,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 101,0 Z'
+      path = 'M0.1,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6
+              100,0 101,0 Z'
       newPath = pe._normalizePath(path)
-      normPath = 'M0,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 100,0'
+      normPath = 'M0,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6
+                  100,0 100,0'
       expect(newPath).toBe normPath
     it 'should normalize path and set it to the DOM', ->
       pe = new PathEasing 'creator'
-      path = 'M0.1,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 101,0 Z'
-      normPath = 'M0,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 100,0'
+      path = 'M0.1,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0
+              101,0 Z'
+      normPath = 'M0,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0
+                  100,0'
+      IEnormPath = 'M 0 0 C 68 -3.5 69 6 70 14 C 70 21 74 27 74 18 C 77 -0.6
+                    100 0 100 0'
       easing = pe.create path
-      expect(easing.path.getAttribute('d')).toBe normPath
+      attr = easing.path.getAttribute('d')
+      isNormPath = attr is normPath or attr is IEnormPath
+      expect(isNormPath).toBe true
 
     it 'should normalize path and set it to the DOM', ->
       pe = new PathEasing 'creator'
@@ -251,9 +258,20 @@ describe 'PathEasing ->', ->
        C68.7340668,-3.542523 69.730594,6.60260412 70.3281,14.02343
        C70.9301836,21.50049 74.0961573,27.0302603 74.78883,18.83163
        C77.5927734,-0.603027419 100,0 100,0'
+
+      IEnormPath = 'M 0 99.9661 L 3.13086 99.9661 C 11.1284 -42.5142
+        24.7358 10.3389 24.7358 10.3389 C 24.7358 10.3389 35.4207 6.43612
+        35.4207 19.5517 C 35.4207 19.5518 35.4207 28.5204 38.4679 20.101
+        C 45.9122 -2.41707 48.248 19.328 49.4206 19.325 C 49.4206 6.88001
+        55.0592 -3.51335 59 15.8786 C 60.6252 22.5932 56.8918 -3.34082
+        65.4951 -3.34082 C 68.7341 -3.54252 69.7306 6.6026 70.3281 14.0234
+        C 70.9302 21.5005 74.0962 27.0303 74.7888 18.8316 C 77.5928
+        -0.603027 100 0 100 0'
       
       easing = pe.create path
-      expect(easing.path.getAttribute('d')).toBe normPath
+      attr = easing.path.getAttribute('d')
+      isNormPath = (attr is normPath) or (attr is IEnormPath)
+      expect(isNormPath).toBe true
 
   describe '_normalizeSegment method', ->
     it 'should normalize segment by passed value', ->

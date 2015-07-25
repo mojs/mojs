@@ -181,8 +181,8 @@
         return expect(s.timeline.start).toHaveBeenCalled();
       });
     });
-    return describe('stagger callbacks ->', function() {
-      it('should pass onStaggerStart callback to timeline', function() {
+    describe('stagger callbacks ->', function() {
+      it('should pass the onStaggerStart callback to timeline', function() {
         var fun, s;
         fun = function() {};
         s = new Stagger({
@@ -190,7 +190,7 @@
         });
         return expect(s.timeline.o.onStart).toBe(fun);
       });
-      it('should pass onStaggerUpdate callback to timeline', function() {
+      it('should pass the onStaggerUpdate callback to timeline', function() {
         var fun, s;
         fun = function() {};
         s = new Stagger({
@@ -198,7 +198,7 @@
         });
         return expect(s.timeline.o.onUpdate).toBe(fun);
       });
-      it('should pass onStaggerComplete callback to timeline', function() {
+      it('should pass the onStaggerComplete callback to timeline', function() {
         var fun, s;
         fun = function() {};
         s = new Stagger({
@@ -206,13 +206,22 @@
         });
         return expect(s.timeline.o.onComplete).toBe(fun);
       });
-      return it('should pass onStaggerReverseComplete callback to timeline', function() {
+      return it('should pass the onStaggerReverseComplete callback to timeline', function() {
         var fun, s;
         fun = function() {};
         s = new Stagger({
           onStaggerReverseComplete: fun
         });
         return expect(s.timeline.o.onReverseComplete).toBe(fun);
+      });
+    });
+    return describe('delay option ->', function() {
+      return it('should pass the delay option to timeline', function() {
+        var s;
+        s = new Stagger({
+          delay: 200
+        });
+        return expect(s.timeline.o.delay).toBe(200);
       });
     });
   });

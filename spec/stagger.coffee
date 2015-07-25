@@ -104,22 +104,27 @@ describe 'Stagger ->', ->
       expect(s.timeline.start).toHaveBeenCalled()
 
   describe 'stagger callbacks ->', ->
-    it 'should pass onStaggerStart callback to timeline', ->
+    it 'should pass the onStaggerStart callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerStart: fun
       expect(s.timeline.o.onStart).toBe fun
-    it 'should pass onStaggerUpdate callback to timeline', ->
+    it 'should pass the onStaggerUpdate callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerUpdate: fun
       expect(s.timeline.o.onUpdate).toBe fun
-    it 'should pass onStaggerComplete callback to timeline', ->
+    it 'should pass the onStaggerComplete callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerComplete: fun
       expect(s.timeline.o.onComplete).toBe fun
-    it 'should pass onStaggerReverseComplete callback to timeline', ->
+    it 'should pass the onStaggerReverseComplete callback to timeline', ->
       fun = ->
       s = new Stagger onStaggerReverseComplete: fun
       expect(s.timeline.o.onReverseComplete).toBe fun
+
+  describe 'delay option ->', ->
+    it 'should pass the delay option to timeline', ->
+      s = new Stagger delay: 200
+      expect(s.timeline.o.delay).toBe 200
 
 
 

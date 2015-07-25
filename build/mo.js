@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.143.0 
+	0.144.0 
 */
 
 (function(f){
@@ -826,9 +826,13 @@ parseIfEasing = function(item) {
 };
 
 sort = function(a, b) {
+  var returnValue;
   a.value = parseIfEasing(a);
   b.value = parseIfEasing(b);
-  return a.to < b.to;
+  returnValue = 0;
+  a.to < b.to && (returnValue = -1);
+  a.to > b.to && (returnValue = 1);
+  return returnValue;
 };
 
 getNearest = function(array, progress) {
@@ -1198,6 +1202,7 @@ Helpers = (function() {
     this.isChrome && this.isSafari && (this.isSafari = false);
     (ua.match(/PhantomJS/gim)) && (this.isSafari = false);
     this.isChrome && this.isOpera && (this.isChrome = false);
+    this.is3d = this.checkIf3d();
     this.uniqIDs = -1;
     this.div = document.createElement('div');
     return document.body.appendChild(this.div);
@@ -1669,6 +1674,16 @@ Helpers = (function() {
     return Math.abs(num1 - num2) < eps;
   };
 
+  Helpers.prototype.checkIf3d = function() {
+    var div, prefixed, style, tr;
+    div = document.createElement('div');
+    this.style(div, 'transform', 'translateZ(0)');
+    style = div.style;
+    prefixed = this.prefix.css + "transform";
+    tr = style[prefixed] != null ? style[prefixed] : style.transform;
+    return tr !== '';
+  };
+
   return Helpers;
 
 })();
@@ -1681,7 +1696,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.143.0',
+  revision: '0.144.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -2041,9 +2056,10 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.setElPosition = function(x, y, p) {
-    var composite, rotate, transform;
+    var composite, isComposite, rotate, transform;
     rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
-    composite = this.props.isCompositeLayer ? 'translateZ(0)' : '';
+    isComposite = this.props.isCompositeLayer && h.is3d;
+    composite = isComposite ? 'translateZ(0)' : '';
     transform = "translate(" + x + "px," + y + "px) " + rotate + " " + composite;
     return h.setPrefixedStyle(this.el, 'transform', transform);
   };
@@ -3067,7 +3083,8 @@ Stagger = (function() {
       onStart: options.onStaggerStart,
       onUpdate: options.onStaggerUpdate,
       onComplete: options.onStaggerComplete,
-      onReverseComplete: options.onStaggerReverseComplete
+      onReverseComplete: options.onStaggerReverseComplete,
+      delay: options.delay
     });
   };
 

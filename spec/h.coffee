@@ -859,5 +859,19 @@ describe 'Helpers ->', ->
       s = el.style
       expect(s.width).toBe '20px'
       expect(s.height).toBe '30px'
-      tr = s.transform? or s["#{h.prefix.css}transform"]
+      prefixed = "#{h.prefix.css}transform"
+      tr = if s[prefixed]? then s[prefixed] else s.transform
       expect(tr).toBe transformToSet
+  describe 'checkIf3d method ->',->
+    it 'should detect if transform 3d is supported', ->
+      div = document.createElement 'div'
+      h.style div, 'transform', 'translateZ(0)'
+      style = div.style; prefixed = "#{h.prefix.css}transform"
+      tr = if style[prefixed]? then style[prefixed] else style.transform
+      expect(tr isnt '').toBe h.checkIf3d()
+  describe 'is3d property ->',->
+    it 'should be fulfilled', ->
+      expect(h.is3d).toBe h.checkIf3d()
+
+
+

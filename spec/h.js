@@ -1186,7 +1186,7 @@
         return expect(h.closeEnough(1, .0005, 1)).toBe(true);
       });
     });
-    return describe('style method ->', function() {
+    describe('style method ->', function() {
       it('should set style on el', function() {
         var el;
         el = document.createElement('div');
@@ -1194,7 +1194,7 @@
         return expect(el.style.width).toBe('20px');
       });
       return it('should set multiple styles on el', function() {
-        var el, s, tr, transformToSet;
+        var el, prefixed, s, tr, transformToSet;
         el = document.createElement('div');
         transformToSet = 'translateX(20px)';
         h.style(el, {
@@ -1205,8 +1205,25 @@
         s = el.style;
         expect(s.width).toBe('20px');
         expect(s.height).toBe('30px');
-        tr = (s.transform != null) || s["" + h.prefix.css + "transform"];
+        prefixed = "" + h.prefix.css + "transform";
+        tr = s[prefixed] != null ? s[prefixed] : s.transform;
         return expect(tr).toBe(transformToSet);
+      });
+    });
+    describe('checkIf3d method ->', function() {
+      return it('should detect if transform 3d is supported', function() {
+        var div, prefixed, style, tr;
+        div = document.createElement('div');
+        h.style(div, 'transform', 'translateZ(0)');
+        style = div.style;
+        prefixed = "" + h.prefix.css + "transform";
+        tr = style[prefixed] != null ? style[prefixed] : style.transform;
+        return expect(tr !== '').toBe(h.checkIf3d());
+      });
+    });
+    return describe('is3d property ->', function() {
+      return it('should be fulfilled', function() {
+        return expect(h.is3d).toBe(h.checkIf3d());
       });
     });
   });

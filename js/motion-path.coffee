@@ -464,12 +464,11 @@ class MotionPath
     @_setTransformOrigin(p)
     @_setTransform(x, y, p, isInit)
     @props.motionBlur and @makeMotionBlur(x, y)
-    
   setElPosition:(x,y,p)->
     rotate    = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
-    composite = if @props.isCompositeLayer then 'translateZ(0)' else ''
+    isComposite = @props.isCompositeLayer and h.is3d
+    composite = if isComposite then 'translateZ(0)' else ''
     transform = "translate(#{x}px,#{y}px) #{rotate} #{composite}"
-
     h.setPrefixedStyle @el, 'transform', transform
   setModulePosition:(x, y)->
     @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
@@ -500,6 +499,7 @@ class MotionPath
       # then set this string to the @el
       if typeof transform isnt 'string' then @setElPosition(x,y,p)
       else h.setPrefixedStyle @el, 'transform', transform
+
   _setTransformOrigin:(p)->
     if @props.transformOrigin
       isTransformFunOrigin = typeof @props.transformOrigin is 'function'

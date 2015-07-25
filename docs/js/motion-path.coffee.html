@@ -972,12 +972,11 @@ to svg path</p>
     <span class="hljs-property">@_setTransformOrigin</span>(p)
     <span class="hljs-property">@_setTransform</span>(x, y, p, isInit)
     <span class="hljs-property">@props</span>.motionBlur <span class="hljs-keyword">and</span> <span class="hljs-property">@makeMotionBlur</span>(x, y)
-    
   <span class="hljs-attribute">setElPosition</span>:<span class="hljs-function"><span class="hljs-params">(x,y,p)</span>-&gt;</span>
     rotate    = <span class="hljs-keyword">if</span> <span class="hljs-property">@angle</span> <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-string">"rotate(<span class="hljs-subst">#{<span class="hljs-property">@angle</span>}</span>deg)"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
-    composite = <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.isCompositeLayer <span class="hljs-keyword">then</span> <span class="hljs-string">'translateZ(0)'</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+    isComposite = <span class="hljs-property">@props</span>.isCompositeLayer <span class="hljs-keyword">and</span> h.is3d
+    composite = <span class="hljs-keyword">if</span> isComposite <span class="hljs-keyword">then</span> <span class="hljs-string">'translateZ(0)'</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
     transform = <span class="hljs-string">"translate(<span class="hljs-subst">#{x}</span>px,<span class="hljs-subst">#{y}</span>px) <span class="hljs-subst">#{rotate}</span> <span class="hljs-subst">#{composite}</span>"</span>
-
     h.setPrefixedStyle <span class="hljs-property">@el</span>, <span class="hljs-string">'transform'</span>, transform
   <span class="hljs-attribute">setModulePosition</span>:<span class="hljs-function"><span class="hljs-params">(x, y)</span>-&gt;</span>
     <span class="hljs-property">@el</span>.setProp <span class="hljs-attribute">shiftX</span>: <span class="hljs-string">"<span class="hljs-subst">#{x}</span>px"</span>, <span class="hljs-attribute">shiftY</span>: <span class="hljs-string">"<span class="hljs-subst">#{y}</span>px"</span>, <span class="hljs-attribute">angle</span>: <span class="hljs-property">@angle</span>
@@ -1057,6 +1056,7 @@ to svg path</p>
       
         <div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> transform <span class="hljs-keyword">isnt</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@setElPosition</span>(x,y,p)
       <span class="hljs-keyword">else</span> h.setPrefixedStyle <span class="hljs-property">@el</span>, <span class="hljs-string">'transform'</span>, transform
+
   <span class="hljs-attribute">_setTransformOrigin</span>:<span class="hljs-function"><span class="hljs-params">(p)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.transformOrigin
       isTransformFunOrigin = <span class="hljs-keyword">typeof</span> <span class="hljs-property">@props</span>.transformOrigin <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span></div></div>

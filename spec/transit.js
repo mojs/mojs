@@ -1433,7 +1433,7 @@
         expect(byte.el.style.left).not.toBe('0px');
         expect(byte.el.style.top).not.toBe('10px');
         s = byte.el.style;
-        tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+        tr = s.transform != null ? s.transform : s["" + mojs.h.prefix.css + "transform"];
         return expect(tr).toBe('');
       });
       it('should set new values', function() {

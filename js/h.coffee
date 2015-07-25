@@ -95,6 +95,7 @@ class Helpers
     @isChrome and @isSafari   and (@isSafari = false)
     (ua.match /PhantomJS/gim) and (@isSafari = false)
     @isChrome and @isOpera  and (@isChrome = false)
+    @is3d = @checkIf3d()
 
     @uniqIDs = -1
 
@@ -492,6 +493,15 @@ class Helpers
   # @method parsePath
   # @return {SVGPath}
   closeEnough:(num1, num2, eps)-> Math.abs(num1-num2) < eps
+  # ---
+
+  # Method to check if 3d transform are supported
+  checkIf3d:->
+    div = document.createElement 'div'
+    @style div, 'transform', 'translateZ(0)'
+    style = div.style; prefixed = "#{@prefix.css}transform"
+    tr = if style[prefixed]? then style[prefixed] else style.transform
+    tr isnt ''
 
 h = new Helpers
 module.exports = h

@@ -359,20 +359,26 @@
         return expect(newPath).toBe(normPath);
       });
       it('should normalize path and set it to the DOM', function() {
-        var easing, normPath, path, pe;
+        var IEnormPath, attr, easing, isNormPath, normPath, path, pe;
         pe = new PathEasing('creator');
         path = 'M0.1,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 101,0 Z';
         normPath = 'M0,0 C68,-3.5 69,6 70,14 C70,21 74,27 74,18 C77,-0.6 100,0 100,0';
+        IEnormPath = 'M 0 0 C 68 -3.5 69 6 70 14 C 70 21 74 27 74 18 C 77 -0.6 100 0 100 0';
         easing = pe.create(path);
-        return expect(easing.path.getAttribute('d')).toBe(normPath);
+        attr = easing.path.getAttribute('d');
+        isNormPath = attr === normPath || attr === IEnormPath;
+        return expect(isNormPath).toBe(true);
       });
       return it('should normalize path and set it to the DOM', function() {
-        var easing, normPath, path, pe;
+        var IEnormPath, attr, easing, isNormPath, normPath, path, pe;
         pe = new PathEasing('creator');
         path = 'M2,99.9660556 L3.13085938,99.9660558 C11.128418,-42.5141612 24.73576,10.33894 24.7357688,10.33894 C24.7357688,10.33894 35.4207115,6.43611673 35.420711,19.5517 C35.420711,19.551763 35.4207115,28.52044 38.4679491,20.10104 C45.9122391,-2.417068 48.24804,19.32803 49.42055,19.325 C49.4205546,6.880008 55.05924,-3.51334643 59,15.87858 C60.6251608,22.5931723 56.89184,-3.3408203 65.49511,-3.34082 C68.7340668,-3.542523 69.730594,6.60260412 70.3281,14.02343 C70.9301836,21.50049 74.0961573,27.0302603 74.78883,18.83163 C77.5927734,-0.603027419 100,0 101,0';
         normPath = 'M0,99.9660556 L3.13085938,99.9660558 C11.128418,-42.5141612 24.73576,10.33894 24.7357688,10.33894 C24.7357688,10.33894 35.4207115,6.43611673 35.420711,19.5517 C35.420711,19.551763 35.4207115,28.52044 38.4679491,20.10104 C45.9122391,-2.417068 48.24804,19.32803 49.42055,19.325 C49.4205546,6.880008 55.05924,-3.51334643 59,15.87858 C60.6251608,22.5931723 56.89184,-3.3408203 65.49511,-3.34082 C68.7340668,-3.542523 69.730594,6.60260412 70.3281,14.02343 C70.9301836,21.50049 74.0961573,27.0302603 74.78883,18.83163 C77.5927734,-0.603027419 100,0 100,0';
+        IEnormPath = 'M 0 99.9661 L 3.13086 99.9661 C 11.1284 -42.5142 24.7358 10.3389 24.7358 10.3389 C 24.7358 10.3389 35.4207 6.43612 35.4207 19.5517 C 35.4207 19.5518 35.4207 28.5204 38.4679 20.101 C 45.9122 -2.41707 48.248 19.328 49.4206 19.325 C 49.4206 6.88001 55.0592 -3.51335 59 15.8786 C 60.6252 22.5932 56.8918 -3.34082 65.4951 -3.34082 C 68.7341 -3.54252 69.7306 6.6026 70.3281 14.0234 C 70.9302 21.5005 74.0962 27.0303 74.7888 18.8316 C 77.5928 -0.603027 100 0 100 0';
         easing = pe.create(path);
-        return expect(easing.path.getAttribute('d')).toBe(normPath);
+        attr = easing.path.getAttribute('d');
+        isNormPath = (attr === normPath) || (attr === IEnormPath);
+        return expect(isNormPath).toBe(true);
       });
     });
     describe('_normalizeSegment method', function() {

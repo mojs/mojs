@@ -515,15 +515,16 @@
           path: 'M0,0 L500,500',
           el: div,
           duration: 64,
+          isIt: true,
           fill: {
             container: container
           },
           onComplete: function() {
-            var args, height, isHeight, isWidth, tr, width;
-            tr = motionPath.el.style.transform;
-            if (tr == null) {
-              tr = motionPath.el.style["" + h.prefix.css + "transform"];
-            }
+            var args, height, isHeight, isWidth, prefixed, style, tr, width;
+            style = motionPath.el.style;
+            prefixed = "" + h.prefix.css + "transform";
+            tr = style[prefixed] != null ? style[prefixed] : style.transform;
+            div = document.createElement('div');
             args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
@@ -548,11 +549,10 @@
           },
           all: true,
           onComplete: function() {
-            var args, height, isHeight, isWidth, tr, width;
-            tr = mp.el.style.transform;
-            if (tr == null) {
-              tr = mp.el.style["" + h.prefix.css + "transform"];
-            }
+            var args, height, isHeight, isWidth, prefixed, style, tr, width;
+            style = mp.el.style;
+            prefixed = "" + h.prefix.css + "transform";
+            tr = style[prefixed] != null ? style[prefixed] : style.transform;
             args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
@@ -576,11 +576,10 @@
             fillRule: 'height'
           },
           onComplete: function() {
-            var args, height, isHeight, isWidth, tr, width;
-            tr = mp.el.style.transform;
-            if (tr == null) {
-              tr = mp.el.style["" + h.prefix.css + "transform"];
-            }
+            var args, height, isHeight, isWidth, prefixed, style, tr, width;
+            style = mp.el.style;
+            prefixed = "" + h.prefix.css + "transform";
+            tr = style[prefixed] != null ? style[prefixed] : style.transform;
             args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
@@ -1053,7 +1052,7 @@
         return expect(isCalled).toBe(false);
       });
       it('should set transform if it was returned from the onUpdate', function() {
-        var tr, transform;
+        var prefixed, style, tr, transform;
         transform = 'translate(20px, 50px)';
         mp = new MotionPath({
           path: 'M0,0 L500,0',
@@ -1064,7 +1063,9 @@
           }
         });
         mp.setProgress(.5);
-        tr = (mp.el.style.transform != null) || mp.el.style["" + h.prefix.css + "transform"];
+        style = mp.el.style;
+        prefixed = "" + h.prefix.css + "transform";
+        tr = style[prefixed] != null ? style[prefixed] : style.transform;
         return expect(tr).toBe(transform);
       });
       return it('should not set transform if something other then string was returned from onUpdate callback', function() {
@@ -1185,21 +1186,23 @@
         });
         return expect(mp.props.isCompositeLayer).toBe(false);
       });
-      it('should set translateZ(0) is isCompositeLayer is set to true', function() {
-        var tr;
+      it('should set translateZ(0) if isCompositeLayer is set to true and h.is3d', function() {
+        var prefixed, style, tr;
         mp = new MotionPath({
-          path: document.createElementNS(ns, 'path'),
+          path: 'M0,0 L100,100',
           el: document.createElement('div'),
           isRunLess: true
         });
         mp.setProgress(.5);
-        tr = mp.el.style.transform || mp.el.style["" + mojs.h.prefix.css + "transform"];
-        return expect(tr.match(/translateZ/gi)).toBeTruthy();
+        style = mp.el.style;
+        prefixed = "" + h.prefix.css + "transform";
+        tr = style[prefixed] != null ? style[prefixed] : style.transform;
+        return expect(tr.match(/translateZ/gi) || !h.is3d).toBeTruthy();
       });
       return it('should not set translateZ(0) is isCompositeLayer is set to false', function() {
         var tr;
         mp = new MotionPath({
-          path: document.createElementNS(ns, 'path'),
+          path: 'M0,0 L100,100',
           el: document.createElement('div'),
           isRunLess: true,
           isCompositeLayer: false

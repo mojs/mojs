@@ -1,7 +1,6 @@
 ## TODO
 
 - path easing - maybe 1000 samples is enough?
-- stagger callbacks
 - release
 
 ---
