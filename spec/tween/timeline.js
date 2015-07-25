@@ -997,10 +997,10 @@
         t.setStartTime();
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
-        time = t.props.startTime;
+        time = t.props.startTime + 5;
         t._updateTimelines(time + t.props.time);
-        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
-        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+        expect(t.timelines[0].update.calls.mostRecent().args[0]).toBeCloseTo(time, 5);
+        return expect(t.timelines[1].update.calls.mostRecent().args[0]).toBeCloseTo(time, 5);
       });
       return it('should set time to timelines with repeat and delay option', function(dfr) {
         var t, time;
