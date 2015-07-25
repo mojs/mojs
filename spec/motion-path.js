@@ -515,7 +515,6 @@
           path: 'M0,0 L500,500',
           el: div,
           duration: 64,
-          isIt: true,
           fill: {
             container: container
           },

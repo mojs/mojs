@@ -1694,7 +1694,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.144.0',
+  revision: '0.144.3',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

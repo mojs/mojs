@@ -1004,9 +1004,11 @@
       });
       return it('should set time to timelines with repeat and delay option', function(dfr) {
         var t, time;
+        tweener.removeAll();
         t = new Timeline({
           repeat: 1,
-          delay: 500
+          delay: 500,
+          isIt: true
         });
         t.add(new Tween({
           duration: 500,
@@ -1020,12 +1022,10 @@
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
         time = t.props.startTime;
-        t._updateTimelines(time + t.props.time + t.props.delay);
-        return setTimeout(function() {
-          expect(t.timelines[0].update).toHaveBeenCalledWith(time);
-          expect(t.timelines[1].update).toHaveBeenCalledWith(time);
-          return dfr();
-        }, 100);
+        t._updateTimelines(time + t.props.time + t.props.delay + 5);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(time + 5);
+        expect(t.timelines[1].update).toHaveBeenCalledWith(time + 5);
+        return dfr();
       });
     });
     describe('setProgress method ->', function() {

@@ -105,6 +105,7 @@ class Timeline
       if time > @props.startTime + @props.time
         @props.startTime + @props.time
       else null
+
     # set the normalized time to the timelines
     if timeToTimelines?
       i = -1; len = @timelines.length-1

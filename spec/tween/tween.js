@@ -131,7 +131,7 @@
         t.start();
         time = t.props.startTime + 200;
         t.update(time);
-        return expect(t.progress).toBe(.2);
+        return expect(t.progress).toBeCloseTo(.2, 5);
       });
       it('should update progress with repeat', function() {
         var t;

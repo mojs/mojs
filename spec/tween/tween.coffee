@@ -73,7 +73,7 @@ describe 'Tween ->', ->
       t.start()
       time = t.props.startTime + 200
       t.update time
-      expect(t.progress).toBe .2
+      expect(t.progress).toBeCloseTo .2, 5
 
     it 'should update progress with repeat', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
