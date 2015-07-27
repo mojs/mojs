@@ -120,6 +120,7 @@ class PathEasing
     p = h.clamp p, 0, 1
     bounds = @_findBounds @_samples, p
     res = @_checkIfBoundsCloseEnough(p, bounds); return res if res?
+    !bounds.end? and console.log p
     @_findApproximate p, bounds.start, bounds.end
   # ---
 
@@ -136,7 +137,7 @@ class PathEasing
     y = @_checkIfPointCloseEnough p, bounds.start.point
     return y if y?
     # check if end bound is close enough
-    @_checkIfPointCloseEnough p, bounds.end.point
+    bounds.end? and @_checkIfPointCloseEnough p, bounds.end.point
   # ---
 
   # Check if bound point close enough to progress

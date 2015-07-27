@@ -981,6 +981,7 @@ PathEasing = (function() {
     if (res != null) {
       return res;
     }
+    (bounds.end == null) && console.log(p);
     return this._findApproximate(p, bounds.start, bounds.end);
   };
 
@@ -991,7 +992,7 @@ PathEasing = (function() {
     if (y != null) {
       return y;
     }
-    return this._checkIfPointCloseEnough(p, bounds.end.point);
+    return (bounds.end != null) && this._checkIfPointCloseEnough(p, bounds.end.point);
   };
 
   PathEasing.prototype._checkIfPointCloseEnough = function(p, point) {
@@ -1695,7 +1696,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.144.5',
+  revision: '0.144.7',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
