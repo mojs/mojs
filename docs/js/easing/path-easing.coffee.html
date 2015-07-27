@@ -92,10 +92,10 @@ Method <strong>_vars</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-property">@_precompute</span> = h.clamp (<span class="hljs-property">@o</span>.precompute <span class="hljs-keyword">or</span> <span class="hljs-number">2000</span>), <span class="hljs-number">100</span>, <span class="hljs-number">10000</span>
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_precompute</span> = h.clamp (<span class="hljs-property">@o</span>.precompute <span class="hljs-keyword">or</span> <span class="hljs-number">140</span>), <span class="hljs-number">100</span>, <span class="hljs-number">10000</span>
     <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_precompute</span>; <span class="hljs-property">@_rect</span> = <span class="hljs-property">@o</span>.rect <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>
     <span class="hljs-property">@_approximateMax</span> = <span class="hljs-property">@o</span>.approximateMax <span class="hljs-keyword">or</span> <span class="hljs-number">5</span>
-    <span class="hljs-property">@_eps</span> = <span class="hljs-property">@o</span>.eps <span class="hljs-keyword">or</span> <span class="hljs-number">0.001</span></div></div>
+    <span class="hljs-property">@_eps</span> = <span class="hljs-property">@o</span>.eps <span class="hljs-keyword">or</span> <span class="hljs-number">0.01</span></div></div>
       
       </div>
     
@@ -550,8 +550,7 @@ Method <strong>_findApproximate</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> h.closeEnough p, x, <span class="hljs-property">@_eps</span>
-      <span class="hljs-property">@_resolveY</span>(point)
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> h.closeEnough p, x, <span class="hljs-property">@_eps</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@_resolveY</span>(point)
     <span class="hljs-keyword">else</span></div></div>
       
       </div>
@@ -628,8 +627,20 @@ since it must start at 0 and end at 100</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizePath</span>:<span class="hljs-function"><span class="hljs-params">(path)</span>-&gt;</span>
-    points     = path.split <span class="hljs-regexp">/[A-Y]/gim</span></div></div>
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizePath</span>:<span class="hljs-function"><span class="hljs-params">(path)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>SVG path commands</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    svgCommandsRegexp = <span class="hljs-regexp">/[M|L|H|V|C|S|Q|T|A]/gim</span>
+    points = path.split svgCommandsRegexp</div></div>
       
       </div>
     
@@ -642,7 +653,7 @@ empty cuz we split by M</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    points.shift(); commands = path.match <span class="hljs-regexp">/[A-Y]/gim</span></div></div>
+        <div class="code"><div class="wrapper">    points.shift(); commands = path.match svgCommandsRegexp</div></div>
       
       </div>
     
@@ -668,7 +679,8 @@ empty cuz we split by M</p>
       
       
         <div class="code"><div class="wrapper">    endIndex = points.length-<span class="hljs-number">1</span>
-    points[endIndex] = <span class="hljs-property">@_normalizeSegment</span> points[endIndex], <span class="hljs-property">@_rect</span> <span class="hljs-keyword">or</span> <span class="hljs-number">100</span></div></div>
+    points[endIndex] = <span class="hljs-property">@_normalizeSegment</span> points[endIndex], <span class="hljs-property">@_rect</span> <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>
+</div></div>
       
       </div>
     
@@ -746,8 +758,8 @@ empty cuz we split by M</p>
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_normalizeSegment</span>:<span class="hljs-function"><span class="hljs-params">(segment, value=<span class="hljs-number">0</span>)</span>-&gt;</span>
     segment = segment.trim()
-    numbersRegexp = <span class="hljs-regexp">/(-|\+)?((\d+(\.\d+)?)|(\.?\d+))/gim</span>
-    pairs   = <span class="hljs-property">@_getSegmentPairs</span> segment.match numbersRegexp</div></div>
+    nRgx = <span class="hljs-regexp">/(-|\+)?((\d+(\.(\d|\e(-|\+)?)+)?)|(\.?(\d|\e|(\-|\+))+))/gim</span>
+    pairs   = <span class="hljs-property">@_getSegmentPairs</span> segment.match nRgx</div></div>
       
       </div>
     

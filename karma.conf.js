@@ -64,7 +64,7 @@ module.exports = function(config) {
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
       reporters = ['progress', 'coverage', 'clear-screen'];
       browsers = ['PhantomJS'];
-      browsers = [];
+      // browsers = [];
     } else {
       reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
       browsers = Object.keys(customLaunchers);
@@ -97,8 +97,8 @@ module.exports = function(config) {
       // 'spec/swirl.js',
       // 'dist/spriter.js',
       // 'spec/spriter.js',
-      // // 'dist/stagger.js',
-      // // 'spec/stagger.js',
+      // 'dist/stagger.js',
+      // 'spec/stagger.js',
       // 'dist/tween.js',
       // 'spec/tween.js',
       // 'dist/burst.js',
@@ -145,7 +145,7 @@ module.exports = function(config) {
     colors: true,
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_ERROR,
+    logLevel: config.LOG_INFO,
     sauceLabs: {
       testName: 'mo · js tests',
     },

@@ -567,8 +567,10 @@ describe 'Timeline ->', ->
       spyOn t.timelines[1], 'update'
       time = t.props.startTime + 5
       t._updateTimelines(time + t.props.time)
-      expect(t.timelines[0].update.calls.mostRecent().args[0]).toBeCloseTo time, 5
-      expect(t.timelines[1].update.calls.mostRecent().args[0]).toBeCloseTo time, 5
+      arg0 = t.timelines[0].update.calls.mostRecent().args[0]
+      arg1 = t.timelines[1].update.calls.mostRecent().args[0]
+      expect(arg0).toBeCloseTo time, 5
+      expect(arg1).toBeCloseTo time, 5
     it 'should set time to timelines with repeat and delay option', (dfr)->
       tweener.removeAll()
       t = new Timeline repeat: 1, delay: 500, isIt: true
@@ -579,8 +581,10 @@ describe 'Timeline ->', ->
       spyOn t.timelines[1], 'update'
       time = t.props.startTime
       t._updateTimelines(time + t.props.time + t.props.delay + 5)
-      expect(t.timelines[0].update.calls.mostRecent().args[0]).toBeCloseTo (time + 5), 5
-      expect(t.timelines[1].update.calls.mostRecent().args[0]).toBeCloseTo (time + 5), 5
+      arg0 = t.timelines[0].update.calls.mostRecent().args[0]
+      arg1 = t.timelines[1].update.calls.mostRecent().args[0]
+      expect(arg0).toBeCloseTo (time + 5), 5
+      expect(arg1).toBeCloseTo (time + 5), 5
       dfr()
 
   describe 'setProgress method ->', ->

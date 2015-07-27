@@ -29,7 +29,7 @@
       it('should have _eps defined', function() {
         var pe;
         pe = new PathEasing('M0,0 L10,10');
-        expect(pe._precompute).toBe(2000);
+        expect(pe._precompute).toBe(140);
         return expect(pe._step).toBe(1 / pe._precompute);
       });
       return it('should have _boundsPrevProgress defined', function() {
@@ -53,13 +53,24 @@
         expect(pe.path).toBeDefined();
         return expect(pe.pathLength).toBe(pe.path.getTotalLength());
       });
-      return it('should error if path wasnt parsed', function() {
+      it('should error if path wasnt parsed', function() {
         var path, pe;
         path = 'M0,0 L10,10';
         spyOn(h, 'error');
         spyOn(h, 'parsePath');
         pe = new PathEasing(path);
         return expect(h.error).toHaveBeenCalled();
+      });
+      return it('should work with scientific notation', function() {
+        var path, pe, testFun;
+        path = 'M0,0 C0,0 31.4848633,29.7739254 55.2021484,-4.28613761e-07 C74.9160156,-20.18457 100,0 100,0';
+        pe = new PathEasing(path, {
+          isIt: true
+        });
+        testFun = function() {
+          return pe.sample(.8);
+        };
+        return expect(testFun).not.toThrow();
       });
     });
     describe('options ->', function() {
@@ -136,7 +147,7 @@
         path = 'M0,100 100,0';
         pe = new PathEasing(path);
         expect(pe.sample(-.5)).toBeCloseTo(0, 3);
-        return expect(pe.sample(1.5)).toBeCloseTo(1, 2);
+        return expect(pe.sample(1.5)).toBeCloseTo(1, 1);
       });
       it('should return y', function() {
         var path, pe;
@@ -157,7 +168,8 @@
       return it('should call _findApproximate method if bounds are not close enough', function() {
         var pe;
         pe = new PathEasing('M0,100 100,0', {
-          precompute: 100
+          precompute: 100,
+          eps: 0.001
         });
         spyOn(pe, '_findApproximate');
         pe.sample(0.015);
@@ -200,10 +212,13 @@
         });
       });
     });
-    describe('_approximate method', function() {
+    describe('_approximate method ->', function() {
       return it('should find approximation', function() {
         var approximation, length2, pe, point1, point2, s;
-        pe = new PathEasing('M0,100 100,0');
+        pe = new PathEasing('M0,100 100,0', {
+          eps: 0.001,
+          precompute: 2000
+        });
         s = pe._samples;
         approximation = pe._approximate(s[11], s[12], s[11].progress + 0.0003);
         point1 = pe.path.getPointAtLength(approximation);
@@ -267,7 +282,7 @@
         return expect(pe._findApproximate.calls.count()).toEqual(5);
       });
     });
-    describe('_findBounds method', function() {
+    describe('_findBounds method ->', function() {
       it('should find lowest and highest bounderies', function() {
         var bounds, pe1, progress;
         pe1 = new PathEasing('M0,100 100,0');
@@ -279,7 +294,7 @@
         pe1 = new PathEasing('M0,100 100,0');
         progress = .735;
         bounds = pe1._findBounds(pe1._samples, progress);
-        expect(pe1._boundsStartIndex).toBeGreaterThan(1400);
+        expect(pe1._boundsStartIndex).toBeGreaterThan(100);
         return expect(pe1._boundsPrevProgress).toBe(.735);
       });
       it('should return [0] item if progress is 0', function() {

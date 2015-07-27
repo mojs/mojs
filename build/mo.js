@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.144.3 
+	0.144.5 
 */
 
 (function(f){
@@ -887,11 +887,11 @@ h = require('../h');
 
 PathEasing = (function() {
   PathEasing.prototype._vars = function() {
-    this._precompute = h.clamp(this.o.precompute || 2000, 100, 10000);
+    this._precompute = h.clamp(this.o.precompute || 140, 100, 10000);
     this._step = 1 / this._precompute;
     this._rect = this.o.rect || 100;
     this._approximateMax = this.o.approximateMax || 5;
-    this._eps = this.o.eps || 0.001;
+    this._eps = this.o.eps || 0.01;
     return this._boundsPrevProgress = -1;
   };
 
@@ -1037,10 +1037,11 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._normalizePath = function(path) {
-    var commands, endIndex, normalizedPath, points, startIndex;
-    points = path.split(/[A-Y]/gim);
+    var commands, endIndex, normalizedPath, points, startIndex, svgCommandsRegexp;
+    svgCommandsRegexp = /[M|L|H|V|C|S|Q|T|A]/gim;
+    points = path.split(svgCommandsRegexp);
     points.shift();
-    commands = path.match(/[A-Y]/gim);
+    commands = path.match(svgCommandsRegexp);
     startIndex = 0;
     points[startIndex] = this._normalizeSegment(points[startIndex]);
     endIndex = points.length - 1;
@@ -1060,13 +1061,13 @@ PathEasing = (function() {
   };
 
   PathEasing.prototype._normalizeSegment = function(segment, value) {
-    var i, j, lastPoint, len1, numbersRegexp, pairs, parsedX, point, space, x;
+    var i, j, lastPoint, len1, nRgx, pairs, parsedX, point, space, x;
     if (value == null) {
       value = 0;
     }
     segment = segment.trim();
-    numbersRegexp = /(-|\+)?((\d+(\.\d+)?)|(\.?\d+))/gim;
-    pairs = this._getSegmentPairs(segment.match(numbersRegexp));
+    nRgx = /(-|\+)?((\d+(\.(\d|\e(-|\+)?)+)?)|(\.?(\d|\e|(\-|\+))+))/gim;
+    pairs = this._getSegmentPairs(segment.match(nRgx));
     lastPoint = pairs[pairs.length - 1];
     x = lastPoint[0];
     parsedX = Number(x);
@@ -1696,7 +1697,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.144.3',
+  revision: '0.144.5',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

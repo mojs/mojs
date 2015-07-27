@@ -18,7 +18,7 @@ describe 'PathEasing ->', ->
       expect(pe._eps).toBeDefined()
     it 'should have _eps defined', ->
       pe = new PathEasing 'M0,0 L10,10'
-      expect(pe._precompute).toBe 2000
+      expect(pe._precompute).toBe 140
       expect(pe._step).toBe       1/pe._precompute
     it 'should have _boundsPrevProgress defined', ->
       pe = new PathEasing 'M0,0 L10,10'
@@ -41,6 +41,12 @@ describe 'PathEasing ->', ->
       spyOn h, 'parsePath' # spoil the parsePath method
       pe = new PathEasing path
       expect(h.error).toHaveBeenCalled()
+    it 'should work with scientific notation', ->
+      path = 'M0,0 C0,0 31.4848633,29.7739254 55.2021484,-4.28613761e-07
+              C74.9160156,-20.18457 100,0 100,0'
+      pe = new PathEasing path, isIt: true
+      testFun = -> pe.sample .8
+      expect(testFun).not.toThrow()
 
   describe 'options ->', ->
     it 'should recieve "_approximateMax" option', ->
@@ -89,7 +95,7 @@ describe 'PathEasing ->', ->
       path = 'M0,100 100,0'
       pe = new PathEasing path
       expect(pe.sample(-.5)).toBeCloseTo 0, 3
-      expect(pe.sample(1.5)).toBeCloseTo 1, 2
+      expect(pe.sample(1.5)).toBeCloseTo 1, 1
     it 'should return y', ->
       path = 'M0,100 100,0'
       pe = new PathEasing path
@@ -100,7 +106,7 @@ describe 'PathEasing ->', ->
         progress = 1/i
         expect(Math.abs(pe.sample(progress) - progress)).toBeLessThan pe._eps
     it 'should call _findApproximate method if bounds are not close enough',->
-      pe = new PathEasing 'M0,100 100,0', precompute: 100
+      pe = new PathEasing 'M0,100 100,0', precompute: 100, eps: 0.001
       spyOn pe, '_findApproximate'
       pe.sample(0.015)
       expect(pe._findApproximate).toHaveBeenCalled()
@@ -121,9 +127,9 @@ describe 'PathEasing ->', ->
         end:   {point: {x: value+(pe._eps/2)}}
         })
 
-  describe '_approximate method',->
+  describe '_approximate method ->',->
     it 'should find approximation', ->
-      pe = new PathEasing 'M0,100 100,0'
+      pe = new PathEasing 'M0,100 100,0', eps: 0.001, precompute: 2000
       s = pe._samples
       approximation = pe._approximate s[11], s[12], s[11].progress+0.0003
       point1 = pe.path.getPointAtLength approximation
@@ -157,7 +163,7 @@ describe 'PathEasing ->', ->
       value = pe._findApproximate p, start, end
       expect(pe._findApproximate.calls.count()).toEqual 5
 
-  describe '_findBounds method', ->
+  describe '_findBounds method ->', ->
     it 'should find lowest and highest bounderies',->
       pe1 = new PathEasing 'M0,100 100,0'
       progress = .735
@@ -166,7 +172,7 @@ describe 'PathEasing ->', ->
       pe1 = new PathEasing 'M0,100 100,0'
       progress = .735
       bounds = pe1._findBounds pe1._samples, progress
-      expect(pe1._boundsStartIndex).toBeGreaterThan 1400
+      expect(pe1._boundsStartIndex).toBeGreaterThan 100
       expect(pe1._boundsPrevProgress).toBe .735
     it 'should return [0] item if progress is 0', ->
       pe1 = new PathEasing 'M0,100 100,0'

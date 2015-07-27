@@ -982,7 +982,7 @@
         return expect(t.timelines[0].update).toHaveBeenCalledWith(endTime);
       });
       it('should set time to timelines with respect to repeat option', function() {
-        var t, time;
+        var arg0, arg1, t, time;
         t = new Timeline({
           repeat: 1
         });
@@ -999,11 +999,13 @@
         spyOn(t.timelines[1], 'update');
         time = t.props.startTime + 5;
         t._updateTimelines(time + t.props.time);
-        expect(t.timelines[0].update.calls.mostRecent().args[0]).toBeCloseTo(time, 5);
-        return expect(t.timelines[1].update.calls.mostRecent().args[0]).toBeCloseTo(time, 5);
+        arg0 = t.timelines[0].update.calls.mostRecent().args[0];
+        arg1 = t.timelines[1].update.calls.mostRecent().args[0];
+        expect(arg0).toBeCloseTo(time, 5);
+        return expect(arg1).toBeCloseTo(time, 5);
       });
       return it('should set time to timelines with repeat and delay option', function(dfr) {
-        var t, time;
+        var arg0, arg1, t, time;
         tweener.removeAll();
         t = new Timeline({
           repeat: 1,
@@ -1023,8 +1025,10 @@
         spyOn(t.timelines[1], 'update');
         time = t.props.startTime;
         t._updateTimelines(time + t.props.time + t.props.delay + 5);
-        expect(t.timelines[0].update.calls.mostRecent().args[0]).toBeCloseTo(time + 5, 5);
-        expect(t.timelines[1].update.calls.mostRecent().args[0]).toBeCloseTo(time + 5, 5);
+        arg0 = t.timelines[0].update.calls.mostRecent().args[0];
+        arg1 = t.timelines[1].update.calls.mostRecent().args[0];
+        expect(arg0).toBeCloseTo(time + 5, 5);
+        expect(arg1).toBeCloseTo(time + 5, 5);
         return dfr();
       });
     });

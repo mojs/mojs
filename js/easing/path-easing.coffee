@@ -25,10 +25,10 @@ class PathEasing
   # @method _vars
   _vars:->
     # options
-    @_precompute = h.clamp (@o.precompute or 2000), 100, 10000
+    @_precompute = h.clamp (@o.precompute or 140), 100, 10000
     @_step = 1/@_precompute; @_rect = @o.rect or 100
     @_approximateMax = @o.approximateMax or 5
-    @_eps = @o.eps or 0.001
+    @_eps = @o.eps or 0.01
     # util variables
     @_boundsPrevProgress = -1
   # ---
@@ -169,8 +169,7 @@ class PathEasing
     approximation = @_approximate start, end, p
     point = @path.getPointAtLength(approximation); x = point.x/100
     # if close enough resolve the y value
-    if h.closeEnough p, x, @_eps
-      @_resolveY(point)
+    if h.closeEnough p, x, @_eps then @_resolveY(point)
     else
       # if looping for a long time
       return @_resolveY(point) if (--approximateMax < 1)
@@ -193,16 +192,19 @@ class PathEasing
   # @param  {String} Path coordinates to normalize
   # @return {String} Normalized path coordinates
   _normalizePath:(path)->
-    points     = path.split /[A-Y]/gim
+    # SVG path commands
+    svgCommandsRegexp = /[M|L|H|V|C|S|Q|T|A]/gim
+    points = path.split svgCommandsRegexp
     # remove the first empty item - it is always
     # empty cuz we split by M
-    points.shift(); commands = path.match /[A-Y]/gim
+    points.shift(); commands = path.match svgCommandsRegexp
     # normalize the x value of the start segment to 0
     startIndex = 0
     points[startIndex] = @_normalizeSegment points[startIndex]
     # normalize the x value of the end segment to _rect value
     endIndex = points.length-1
     points[endIndex] = @_normalizeSegment points[endIndex], @_rect or 100
+
     # form the normalized path
     normalizedPath = @_joinNormalizedPath commands, points
 
@@ -228,8 +230,8 @@ class PathEasing
   # @return {String} Normalized Segment.
   _normalizeSegment:(segment, value=0)->
     segment = segment.trim()
-    numbersRegexp = /(-|\+)?((\d+(\.\d+)?)|(\.?\d+))/gim
-    pairs   = @_getSegmentPairs segment.match numbersRegexp
+    nRgx = /(-|\+)?((\d+(\.(\d|\e(-|\+)?)+)?)|(\.?(\d|\e|(\-|\+))+))/gim
+    pairs   = @_getSegmentPairs segment.match nRgx
     # get x value of the latest point
     lastPoint = pairs[pairs.length-1]
     x = lastPoint[0]; parsedX = Number x
