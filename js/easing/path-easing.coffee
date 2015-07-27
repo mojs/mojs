@@ -1,8 +1,5 @@
 h = require '../h'
 
-# todo
-#   - optimize _findBounds method caching for reverse order
-
 # ## PathEasing
 # Class allows you to specify custom easing function
 # by **SVG path** [line commands](http://goo.gl/LzvV6P).
@@ -77,17 +74,21 @@ class PathEasing
   #         - end   {Number}: highest boundry
   _findBounds:(array, p)->
     return @_prevBounds if p is @_boundsPrevProgress
-
-    start = null; end = null; len = array.length
     # get the start index in the array
     # reset the cached prev index if new progress
     # is smaller then previous one or it is not defined
     @_boundsStartIndex ?= 0
     
+    len = array.length
     # get start and end indexes of the loop and save the direction
     if @_boundsPrevProgress > p then loopEnd = 0; direction = 'reverse'
     else loopEnd = len; direction = 'forward'
 
+    # set default start and end bounds to the
+    # very first and the very last items in array
+    if direction is 'forward' then start = array[0]; end = array[array.length-1]
+    else start = array[array.length-1]; end = array[0]
+      
     # loop thru the array from the @_boundsStartIndex
     for i in [@_boundsStartIndex...loopEnd]
       value = array[i]; pointX = value.point.x/@_rect; pointP = p
@@ -106,7 +107,9 @@ class PathEasing
       else end = value; break
     @_boundsPrevProgress = p
     # return the first item if start wasn't found
-    start ?= array[0]
+    # start ?= array[0]
+    # end   ?= array[array.length-1]
+    # !end? and console.log p
     @_prevBounds = start: start, end: end
   # ---
 
@@ -120,7 +123,6 @@ class PathEasing
     p = h.clamp p, 0, 1
     bounds = @_findBounds @_samples, p
     res = @_checkIfBoundsCloseEnough(p, bounds); return res if res?
-    !bounds.end? and console.log p
     @_findApproximate p, bounds.start, bounds.end
   # ---
 
@@ -137,7 +139,7 @@ class PathEasing
     y = @_checkIfPointCloseEnough p, bounds.start.point
     return y if y?
     # check if end bound is close enough
-    bounds.end? and @_checkIfPointCloseEnough p, bounds.end.point
+    @_checkIfPointCloseEnough p, bounds.end.point
   # ---
 
   # Check if bound point close enough to progress

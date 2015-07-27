@@ -39,19 +39,6 @@
     
       <div class="segment">
       
-        <div class="comments ">
-          <div class="wrapper"><p>todo</p>
-<ul>
-<li>optimize _findBounds method caching for reverse order</li>
-</ul>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
         <div class="comments doc-section">
           <div class="wrapper"><h2 id="patheasing"><a href="#patheasing" class="anchor"></a>PathEasing</h2><p>Class allows you to specify custom easing function
 by <strong>SVG path</strong> <a href="http://goo.gl/LzvV6P">line commands</a>.
@@ -250,9 +237,7 @@ Method <strong>_findBounds</strong>
       
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_findBounds</span>:<span class="hljs-function"><span class="hljs-params">(array, p)</span>-&gt;</span>
-    <span class="hljs-keyword">return</span> <span class="hljs-property">@_prevBounds</span> <span class="hljs-keyword">if</span> p <span class="hljs-keyword">is</span> <span class="hljs-property">@_boundsPrevProgress</span>
-
-    start = <span class="hljs-literal">null</span>; end = <span class="hljs-literal">null</span>; len = array.length</div></div>
+    <span class="hljs-keyword">return</span> <span class="hljs-property">@_prevBounds</span> <span class="hljs-keyword">if</span> p <span class="hljs-keyword">is</span> <span class="hljs-property">@_boundsPrevProgress</span></div></div>
       
       </div>
     
@@ -267,7 +252,8 @@ is smaller then previous one or it is not defined</p>
       
       
         <div class="code"><div class="wrapper">    <span class="hljs-property">@_boundsStartIndex</span> ?= <span class="hljs-number">0</span>
-    </div></div>
+    
+    len = array.length</div></div>
       
       </div>
     
@@ -282,6 +268,21 @@ is smaller then previous one or it is not defined</p>
         <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> <span class="hljs-property">@_boundsPrevProgress</span> &gt; p <span class="hljs-keyword">then</span> loopEnd = <span class="hljs-number">0</span>; direction = <span class="hljs-string">'reverse'</span>
     <span class="hljs-keyword">else</span> loopEnd = len; direction = <span class="hljs-string">'forward'</span>
 </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>set default start and end bounds to the
+very first and the very last items in array</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> direction <span class="hljs-keyword">is</span> <span class="hljs-string">'forward'</span> <span class="hljs-keyword">then</span> start = array[<span class="hljs-number">0</span>]; end = array[array.length-<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">else</span> start = array[array.length-<span class="hljs-number">1</span>]; end = array[<span class="hljs-number">0</span>]
+      </div></div>
       
       </div>
     
@@ -340,13 +341,15 @@ and break immediately</p>
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>return the first item if start wasn&#39;t found</p>
+          <div class="wrapper"><p>return the first item if start wasn&#39;t found
+start ?= array[0]
+end   ?= array[array.length-1]
+!end? and console.log p</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    start ?= array[<span class="hljs-number">0</span>]
-    <span class="hljs-property">@_prevBounds</span> = <span class="hljs-attribute">start</span>: start, <span class="hljs-attribute">end</span>: end</div></div>
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_prevBounds</span> = <span class="hljs-attribute">start</span>: start, <span class="hljs-attribute">end</span>: end</div></div>
       
       </div>
     
@@ -381,7 +384,6 @@ compared to current progress value</p>
     p = h.clamp p, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>
     bounds = <span class="hljs-property">@_findBounds</span> <span class="hljs-property">@_samples</span>, p
     res = <span class="hljs-property">@_checkIfBoundsCloseEnough</span>(p, bounds); <span class="hljs-keyword">return</span> res <span class="hljs-keyword">if</span> res?
-    !bounds.end? <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log p
     <span class="hljs-property">@_findApproximate</span> p, bounds.start, bounds.end</div></div>
       
       </div>
@@ -440,7 +442,7 @@ is close enough to searched progress</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">    bounds.end? <span class="hljs-keyword">and</span> <span class="hljs-property">@_checkIfPointCloseEnough</span> p, bounds.end.point</div></div>
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_checkIfPointCloseEnough</span> p, bounds.end.point</div></div>
       
       </div>
     

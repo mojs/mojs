@@ -194,7 +194,7 @@
           }
         });
       });
-      it('should return end value if it is close enough', function() {
+      return it('should return end value if it is close enough', function() {
         var pe, value;
         pe = new PathEasing('M0,100 100,0');
         value = .5;
@@ -210,19 +210,6 @@
             }
           }
         });
-      });
-      return it('should not throw', function() {
-        var pe, testFun;
-        pe = new PathEasing('M0,100 C0,100 5.01160836,100 8.74856937,100.270866 C15.1440434,57.219434 23.7860103,98.447299 23.7860103,100.097037 C30.2913574,71.1380541 36.1603623,98.3939125 36.160361,100.162142 C41.9325738,44.182975 49.1344299,98.9199542 49.1344299,100.053418 C53.6287224,80.2298508 59.2720971,99.9303714 59.2720971,99.9303714 C59.2720971,99.9303714 63.6855469,84.1318359 70.2742418,100.003578 C72.8310547,113.017578 74.5979385,101.614397 75,100 C76.9232712,85.1240234 82.3889542,100.577847 94.1109085,100 L100,100');
-        testFun = function() {
-          var i, _i, _results;
-          _results = [];
-          for (i = _i = 1; _i < 1000; i = ++_i) {
-            _results.push(pe.sample(1 / i));
-          }
-          return _results;
-        };
-        return expect(testFun).not.toThrow();
       });
     });
     describe('_approximate method ->', function() {
@@ -334,7 +321,7 @@
         bounds = pe1._findBounds(pe1._samples, .735);
         return expect(pe1._prevBounds).toBe(bounds);
       });
-      return it('should detect if previous progress is the current one', function() {
+      it('should detect if previous progress is the current one', function() {
         var bounds1, bounds2, newProgress, pe1, progress;
         pe1 = new PathEasing('M0,100 100,0');
         progress = .735;
@@ -342,6 +329,30 @@
         bounds1 = pe1._findBounds(pe1._samples, progress);
         bounds2 = pe1._findBounds(pe1._samples, progress);
         return expect(bounds1).toBe(bounds2);
+      });
+      it('should not return the end bound', function() {
+        var bounds, i, pe, _i;
+        pe = new PathEasing('M0,100 C0,100 5.01160836,100 8.74856937,100.270866 C15.1440434,57.219434 23.7860103,98.447299 23.7860103,100.097037 C30.2913574,71.1380541 36.1603623,98.3939125 36.160361,100.162142 C41.9325738,44.182975 49.1344299,98.9199542 49.1344299,100.053418 C53.6287224,80.2298508 59.2720971,99.9303714 59.2720971,99.9303714 C59.2720971,99.9303714 63.6855469,84.1318359 70.2742418,100.003578 C72.8310547,113.017578 74.5979385,101.614397 75,100 C76.9232712,85.1240234 82.3889542,100.577847 94.1109085,100 L100,100');
+        bounds = true;
+        for (i = _i = 1; _i < 1000; i = ++_i) {
+          bounds = pe._findBounds(pe._samples, 1 / i);
+          if (bounds.end == null) {
+            break;
+          }
+        }
+        return expect(bounds.end).not.toBeNull();
+      });
+      return it('should not return the end bound #2', function() {
+        var bounds, i, pe, _i;
+        pe = new PathEasing('M0,100 C0,100 5.01160836,100 8.74856937,100.270866 C15.1440434,57.219434 23.7860103,98.447299 23.7860103,100.097037 C30.2913574,71.1380541 36.1603623,98.3939125 36.160361,100.162142 C41.9325738,44.182975 49.1344299,98.9199542 49.1344299,100.053418 C53.6287224,80.2298508 59.2720971,99.9303714 59.2720971,99.9303714 C59.2720971,99.9303714 63.6855469,84.1318359 70.2742418,100.003578 C72.8310547,113.017578 74.5979385,101.614397 75,100 C76.9232712,85.1240234 82.3889542,100.577847 94.1109085,100 L100,100');
+        bounds = true;
+        for (i = _i = 1; _i < 1000; i = ++_i) {
+          bounds = pe._findBounds(Math.random());
+          if (bounds.end == null) {
+            break;
+          }
+        }
+        return expect(bounds.end).not.toBeNull();
       });
     });
     describe('_resolveY method', function() {

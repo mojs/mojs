@@ -933,18 +933,23 @@ PathEasing = (function() {
     if (p === this._boundsPrevProgress) {
       return this._prevBounds;
     }
-    start = null;
-    end = null;
-    len = array.length;
     if (this._boundsStartIndex == null) {
       this._boundsStartIndex = 0;
     }
+    len = array.length;
     if (this._boundsPrevProgress > p) {
       loopEnd = 0;
       direction = 'reverse';
     } else {
       loopEnd = len;
       direction = 'forward';
+    }
+    if (direction === 'forward') {
+      start = array[0];
+      end = array[array.length - 1];
+    } else {
+      start = array[array.length - 1];
+      end = array[0];
     }
     for (i = j = ref = this._boundsStartIndex, ref1 = loopEnd; ref <= ref1 ? j < ref1 : j > ref1; i = ref <= ref1 ? ++j : --j) {
       value = array[i];
@@ -964,9 +969,6 @@ PathEasing = (function() {
       }
     }
     this._boundsPrevProgress = p;
-    if (start == null) {
-      start = array[0];
-    }
     return this._prevBounds = {
       start: start,
       end: end
@@ -981,7 +983,6 @@ PathEasing = (function() {
     if (res != null) {
       return res;
     }
-    (bounds.end == null) && console.log(p);
     return this._findApproximate(p, bounds.start, bounds.end);
   };
 
@@ -992,7 +993,7 @@ PathEasing = (function() {
     if (y != null) {
       return y;
     }
-    return (bounds.end != null) && this._checkIfPointCloseEnough(p, bounds.end.point);
+    return this._checkIfPointCloseEnough(p, bounds.end.point);
   };
 
   PathEasing.prototype._checkIfPointCloseEnough = function(p, point) {
@@ -1693,10 +1694,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],7:[function(require,module,exports){
-var mojs;
+var mojs, p, tw;
 
 mojs = {
-  revision: '0.144.7',
+  revision: '0.144.8',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1723,6 +1724,19 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+p = mojs.easing.path('M0,100 C0,100 5.01160836,100 8.74856937,100.270866 C15.1440434,57.219434 23.7860103,98.447299 23.7860103,100.097037 C30.2913574,71.1380541 36.1603623,98.3939125 36.160361,100.162142 C41.9325738,44.182975 49.1344299,98.9199542 49.1344299,100.053418 C53.6287224,80.2298508 59.2720971,99.9303714 59.2720971,99.9303714 C59.2720971,99.9303714 63.6855469,84.1318359 70.2742418,100.003578 C72.8310547,113.017578 74.5979385,101.614397 75,100 C76.9232712,85.1240234 82.3889542,100.577847 94.1109085,100 L100,100');
+
+tw = new mojs.Tween({
+  duration: 10000,
+  onUpdate: function() {
+    var pr;
+    pr = Math.random();
+    return console.log(p(pr));
+  }
+});
+
+tw.run();
 
 
 /* istanbul ignore next */
