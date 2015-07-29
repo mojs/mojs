@@ -3994,8 +3994,9 @@ Timeline = (function() {
       delay: delay
     });
     this.timelines.push(timeline);
-    this.props.time = Math.max(timeline.props.repeatTime, this.props.time);
-    return this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
+    this.props.time = Math.max(timeline.props.repeatTime, this.props.repeatTime);
+    this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
+    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0) - this.props.delay;
   };
 
   Timeline.prototype.remove = function(timeline) {
@@ -4047,8 +4048,9 @@ Timeline = (function() {
     results = [];
     while (len--) {
       timeline = this.timelines[len];
-      this.props.time = Math.max(timeline.props.totalTime, this.props.totalTime);
-      results.push(this.props.totalTime = this.props.time * (this.props.repeat + 1));
+      this.props.time = Math.max(timeline.props.repeatTime, this.props.repeatTime);
+      this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
+      results.push(this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0));
     }
     return results;
   };
@@ -4066,6 +4068,7 @@ Timeline = (function() {
     startPoint = this.props.startTime - this.props.delay;
     elapsed = (time - startPoint) % (this.props.delay + this.props.time);
     timeToTimelines = startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
+    this.o.isIt && console.log(timeToTimelines);
     if (timeToTimelines != null) {
       i = -1;
       len = this.timelines.length - 1;
@@ -4157,7 +4160,7 @@ Timeline = (function() {
       this.setStartTime();
     }
     progress = h.clamp(progress, 0, 1);
-    return this.update(this.props.startTime + progress * this.props.totalTime);
+    return this.update(this.props.startTime + progress * this.props.repeatTime);
   };
 
   Timeline.prototype.getDimentions = function(time) {
@@ -4165,7 +4168,7 @@ Timeline = (function() {
       time = performance.now();
     }
     this.props.startTime = time + this.props.delay;
-    return this.props.endTime = this.props.startTime + this.props.totalTime;
+    return this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
   };
 
   return Timeline;
@@ -4215,8 +4218,8 @@ Tween = (function() {
 
   Tween.prototype.calcDimentions = function() {
     this.props.time = this.props.duration + this.props.delay;
-    this.props.repeatTime = this.props.time * (this.props.repeat + 1) - this.props.delay;
-    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
+    this.props.repeatTime = this.props.time * (this.props.repeat + 1);
+    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0) - this.props.delay;
   };
 
   Tween.prototype.extendDefaults = function() {

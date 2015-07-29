@@ -39,8 +39,10 @@ class Timeline
     # add self delay to the timeline
     delay? and timeline.setProp delay: delay
     @timelines.push timeline
-    @props.time       = Math.max timeline.props.repeatTime, @props.time
-    @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)-@props.delay
+    @props.time       = Math.max timeline.props.repeatTime, @props.repeatTime
+    @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)
+    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)-@props.delay
+    # @o.isIt and console.log (@props.shiftTime or 0), @props.shiftTime
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
@@ -66,8 +68,9 @@ class Timeline
     len = @timelines.length; @props.totalTime = 0
     while(len--)
       timeline  = @timelines[len]
-      @props.time = Math.max timeline.props.totalTime, @props.totalTime
-      @props.totalTime = @props.time*(@props.repeat+1)
+      @props.time = Math.max timeline.props.repeatTime, @props.repeatTime
+      @props.repeatTime =(@props.time+@props.delay)*(@props.repeat+1)-@props.delay
+      @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
   # ---
 
   # Method to take care of the current time.
@@ -105,6 +108,8 @@ class Timeline
       if time > @props.startTime + @props.time
         @props.startTime + @props.time
       else null
+
+    @o.isIt and console.log timeToTimelines
 
     # set the normalized time to the timelines
     if timeToTimelines?
@@ -148,11 +153,11 @@ class Timeline
   setProgress:(progress)->
     if !@props.startTime? then @setStartTime()
     progress = h.clamp progress, 0, 1
-    @update @props.startTime + progress*@props.totalTime
+    @update @props.startTime + progress*@props.repeatTime
   getDimentions:(time)->
     time ?= performance.now()
-    @props.startTime = time+@props.delay
-    @props.endTime = @props.startTime + @props.totalTime
+    @props.startTime = time + @props.delay
+    @props.endTime = @props.startTime + @props.shiftedRepeatTime
 
 module.exports = Timeline
 

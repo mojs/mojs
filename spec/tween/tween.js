@@ -43,7 +43,7 @@
           delay: 100
         });
         expect(t.props.time).toBe(1100);
-        return expect(t.props.repeatTime).toBe(1000);
+        return expect(t.props.repeatTime).toBe(1100);
       });
       it('should calc time, repeatTime #2', function() {
         var t;
@@ -53,7 +53,7 @@
           repeat: 2
         });
         expect(t.props.time).toBe(1100);
-        return expect(t.props.repeatTime).toBe(3200);
+        return expect(t.props.repeatTime).toBe(3300);
       });
       it('should calculate shiftedRepeatTime', function() {
         var t;
@@ -63,7 +63,7 @@
           repeat: 2
         });
         expect(t.props.time).toBe(1100);
-        expect(t.props.repeatTime).toBe(3200);
+        expect(t.props.repeatTime).toBe(3300);
         return expect(t.props.shiftedRepeatTime).toBe(3200);
       });
       return it('should calculate shiftedRepeatTime #2', function() {
@@ -75,7 +75,7 @@
         });
         t.setProp('shiftTime', 700);
         expect(t.props.time).toBe(1100);
-        expect(t.props.repeatTime).toBe(3200);
+        expect(t.props.repeatTime).toBe(3300);
         return expect(t.props.shiftedRepeatTime).toBe(3900);
       });
     });
