@@ -4293,7 +4293,7 @@ Tween = (function() {
         this.isOnReverseComplete = false;
         this.isCompleted = true;
       }
-      if (time > this.props.endTime || time < this.props.startTime) {
+      if (time > this.props.endTime) {
         this.isFirstUpdate = false;
       }
       if (time > this.props.endTime) {
@@ -4307,13 +4307,14 @@ Tween = (function() {
         }
         this.isFirstUpdateBackward = true;
       }
-      if (!this.isOnReverseComplete) {
+      if (!this.isOnReverseComplete && this.isFirstUpdate) {
         this.isOnReverseComplete = true;
         this.setProgress(0, !this.props.isChained);
         if ((ref5 = this.props.onReverseComplete) != null) {
           ref5.apply(this);
         }
       }
+      this.isFirstUpdate = false;
     }
     this.prevTime = time;
     return this.isCompleted;

@@ -70,8 +70,7 @@ easing       = <span class="hljs-built_in">require</span> <span class="hljs-stri
     <span class="hljs-property">@props</span>.startTime = time + <span class="hljs-property">@props</span>.delay + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
     <span class="hljs-property">@props</span>.endTime   = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.shiftedRepeatTime
     @
-  <span class="hljs-attribute">update</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
-</div></div>
+  <span class="hljs-attribute">update</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span></div></div>
       
       </div>
     
@@ -128,9 +127,7 @@ with all the repeat and delays in it</p>
         
       <span class="hljs-keyword">if</span> time &lt; <span class="hljs-property">@prevTime</span> <span class="hljs-keyword">and</span> !<span class="hljs-property">@isFirstUpdateBackward</span>
         <span class="hljs-property">@props</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span>
-    
-    <span class="hljs-keyword">else</span>
-</div></div>
+    <span class="hljs-keyword">else</span></div></div>
       
       </div>
     
@@ -156,7 +153,7 @@ with all the repeat and delays in it</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime <span class="hljs-keyword">or</span> time &lt; <span class="hljs-property">@props</span>.startTime</div></div>
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">false</span> <span class="hljs-keyword">if</span> time &gt; <span class="hljs-property">@props</span>.endTime</div></div>
       
       </div>
     
@@ -173,11 +170,13 @@ with all the repeat and delays in it</p>
     <span class="hljs-keyword">if</span> time &lt; <span class="hljs-property">@prevTime</span> <span class="hljs-keyword">and</span> time &lt;= <span class="hljs-property">@props</span>.startTime
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@isFirstUpdateBackward</span>
         <span class="hljs-property">@props</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span>
-      <span class="hljs-keyword">if</span> !<span class="hljs-property">@isOnReverseComplete</span>
+
+      <span class="hljs-keyword">if</span> !<span class="hljs-property">@isOnReverseComplete</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isFirstUpdate</span>
         <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">true</span>
         <span class="hljs-property">@setProgress</span>(<span class="hljs-number">0</span>, !<span class="hljs-property">@props</span>.isChained)
         <span class="hljs-comment">#; !@o.isChained and @onUpdate? @easedProgress</span>
         <span class="hljs-property">@props</span>.onReverseComplete?.apply(@)
+      <span class="hljs-property">@isFirstUpdate</span> = <span class="hljs-literal">false</span>
 
     <span class="hljs-property">@prevTime</span> = time
     <span class="hljs-property">@isCompleted</span>

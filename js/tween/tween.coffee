@@ -37,7 +37,6 @@ class Tween
     @props.endTime   = @props.startTime + @props.shiftedRepeatTime
     @
   update:(time)->
-
     # if time is inside the active area of the tween.
     # active area is the area from start time to end time,
     # with all the repeat and delays in it
@@ -54,26 +53,26 @@ class Tween
         
       if time < @prevTime and !@isFirstUpdateBackward
         @props.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
-    
     else
-
       # complete if time is larger then end time
       if time >= @props.endTime and !@isCompleted
         @setProgress(1); @props.onComplete?.apply(@)
         @isOnReverseComplete = false; @isCompleted = true
       # rest isFirstUpdate flag if update was out of active zone
-      @isFirstUpdate = false if time > @props.endTime or time < @props.startTime
+      @isFirstUpdate = false if time > @props.endTime
       # reset isFirstUpdateBackward flag if progress went further the end time
       @isFirstUpdateBackward = false if time > @props.endTime
     
     if time < @prevTime and time <= @props.startTime
       if !@isFirstUpdateBackward
         @props.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
-      if !@isOnReverseComplete
+
+      if !@isOnReverseComplete and @isFirstUpdate
         @isOnReverseComplete = true
         @setProgress(0, !@props.isChained)
         #; !@o.isChained and @onUpdate? @easedProgress
         @props.onReverseComplete?.apply(@)
+      @isFirstUpdate = false
 
     @prevTime = time
     @isCompleted
