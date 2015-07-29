@@ -3956,8 +3956,9 @@ Timeline = (function() {
   Timeline.prototype.vars = function() {
     this.timelines = [];
     this.props = {
-      totalTime: 0,
-      time: 0
+      time: 0,
+      repeatTime: 0,
+      shiftedRepeatTime: 0
     };
     this.loop = h.bind(this.loop, this);
     return this.onUpdate = this.o.onUpdate;
@@ -4012,8 +4013,8 @@ Timeline = (function() {
       delay: delay
     });
     this.timelines.push(timeline);
-    this.props.time = Math.max(timeline.props.totalTime, this.props.time);
-    return this.props.totalTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
+    this.props.time = Math.max(timeline.props.repeatTime, this.props.time);
+    return this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
   };
 
   Timeline.prototype.remove = function(timeline) {
@@ -4233,8 +4234,8 @@ Tween = (function() {
 
   Tween.prototype.calcDimentions = function() {
     this.props.time = this.props.duration + this.props.delay;
-    this.props.repeatTime = this.props.time * (this.props.repeat + 1);
-    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0) - this.props.delay;
+    this.props.repeatTime = this.props.time * (this.props.repeat + 1) - this.props.delay;
+    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
   };
 
   Tween.prototype.extendDefaults = function() {

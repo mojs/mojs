@@ -8,7 +8,7 @@ class Timeline
     delay:  0
   constructor:(@o={})-> @vars(); @_extendDefaults(); @
   vars:->
-    @timelines = []; @props = totalTime: 0, time: 0
+    @timelines = []; @props = time: 0, repeatTime: 0, shiftedRepeatTime: 0
     @loop = h.bind @loop, @
     @onUpdate = @o.onUpdate
   add:(args...)-> @pushTimelineArray(args); @
@@ -39,8 +39,8 @@ class Timeline
     # add self delay to the timeline
     delay? and timeline.setProp delay: delay
     @timelines.push timeline
-    @props.time      = Math.max timeline.props.totalTime, @props.time
-    @props.totalTime = (@props.time+@props.delay)*(@props.repeat+1)-@props.delay
+    @props.time       = Math.max timeline.props.repeatTime, @props.time
+    @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)-@props.delay
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1

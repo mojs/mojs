@@ -24,21 +24,21 @@ describe 'Tween ->', ->
     it 'should calc time, repeatTime', ->
       t = new Tween duration: 1000, delay: 100
       expect(t.props.time).toBe        1100
-      expect(t.props.repeatTime).toBe  1100
+      expect(t.props.repeatTime).toBe  1000
     it 'should calc time, repeatTime #2', ->
       t = new Tween duration: 1000, delay: 100, repeat: 2
       expect(t.props.time).toBe        1100
-      expect(t.props.repeatTime).toBe  3300
+      expect(t.props.repeatTime).toBe  3200
     it 'should calculate shiftedRepeatTime', ->
       t = new Tween duration: 1000, delay: 100, repeat: 2
       expect(t.props.time).toBe             1100
-      expect(t.props.repeatTime).toBe       3300
+      expect(t.props.repeatTime).toBe       3200
       expect(t.props.shiftedRepeatTime).toBe  3200
     it 'should calculate shiftedRepeatTime #2', ->
       t = new Tween duration: 1000, delay: 100, repeat: 2
       t.setProp 'shiftTime', 700
       expect(t.props.time).toBe              1100
-      expect(t.props.repeatTime).toBe        3300
+      expect(t.props.repeatTime).toBe        3200
       expect(t.props.shiftedRepeatTime).toBe 3900
 
   describe 'isChained option ->', ->

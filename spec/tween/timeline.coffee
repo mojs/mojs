@@ -1,17 +1,19 @@
-# Timeline = window.mojs.Timeline
-# Tween    = window.mojs.Tween
-# tweener  = window.mojs.tweener
-# Transit  = window.mojs.Transit
+Timeline = window.mojs.Timeline
+Tween    = window.mojs.Tween
+tweener  = window.mojs.tweener
+Transit  = window.mojs.Transit
 
-# describe 'Timeline ->', ->
-#   beforeEach -> tweener.removeAll()
-#   it 'should have timelines var', ->
-#     t = new Timeline
-#     expect(t.timelines.length).toBe 0
-#     expect(t.props.totalTime) .toBe 0
-#   it 'should have initial state flags', ->
-#     t = new Timeline
-#     expect(t.state).toBe 'stop'
+describe 'Timeline ->', ->
+  beforeEach -> tweener.removeAll()
+  it 'should have timelines var', ->
+    t = new Timeline
+    expect(t.timelines.length).toBe 0
+    expect(t.props.time)      .toBe 0
+    expect(t.props.repeatTime).toBe 0
+    expect(t.props.shiftedRepeatTime).toBe 0
+  it 'should have initial state flags', ->
+    t = new Timeline
+    expect(t.state).toBe 'stop'
 
 #   describe 'defaults ->', ->
 #     it 'should have defaults', ->
