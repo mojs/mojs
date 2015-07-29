@@ -39,11 +39,6 @@ mojs.delta = mojs.h.delta
 
 # tm0.start()
 
-
-
-
-
-
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "mojs", [], -> mojs

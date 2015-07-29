@@ -37,12 +37,12 @@ class Timeline
     # if timeline is a module with timeline property then extract it
     timeline = timeline.timeline if timeline.timeline instanceof Timeline
     # add self delay to the timeline
-    delay? and timeline.setProp delay: delay
+    delay? and timeline.setProp 'shiftTime': delay
     @timelines.push timeline
-    @props.time       = Math.max timeline.props.repeatTime, @props.repeatTime
+    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime or 0)
+    @props.time       = Math.max timelineTime, @props.repeatTime
     @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)
     @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)-@props.delay
-    # @o.isIt and console.log (@props.shiftTime or 0), @props.shiftTime
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
@@ -58,14 +58,14 @@ class Timeline
       if h.isArray(tm) then @_appendTimelineArray(tm)
       else @appendTimeline(tm, @timelines.length)
   _appendTimelineArray:(timelineArray)->
-    i = timelineArray.length; time = @props.totalTime; index = @timelines.length
+    i = timelineArray.length; time = @props.repeatTime; index = @timelines.length
     @appendTimeline(timelineArray[i], index, time) while(i--)
   appendTimeline:(timeline, index, time)->
-    delay = timeline.props.delay + (if time? then time else @props.totalTime)
+    delay = timeline.props.delay + (if time? then time else @props.repeatTime)
     timeline.index = index; @pushTimeline timeline, delay
 
   recalcDuration:->
-    len = @timelines.length; @props.totalTime = 0
+    len = @timelines.length; @props.repeatTime = 0
     while(len--)
       timeline  = @timelines[len]
       @props.time = Math.max timeline.props.repeatTime, @props.repeatTime
@@ -108,9 +108,6 @@ class Timeline
       if time > @props.startTime + @props.time
         @props.startTime + @props.time
       else null
-
-    @o.isIt and console.log timeToTimelines
-
     # set the normalized time to the timelines
     if timeToTimelines?
       i = -1; len = @timelines.length-1
@@ -123,7 +120,7 @@ class Timeline
   _checkCallbacks:(time)->
     # if isn't complete
     if time >= @props.startTime and time < @props.endTime
-      @onUpdate? (time - @props.startTime)/@props.totalTime
+      @onUpdate? (time - @props.startTime)/@props.repeatTime
     # if reverse completed
     if @prevTime > time and time <= @props.startTime
       @o.onReverseComplete?.apply(@)

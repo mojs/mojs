@@ -83,7 +83,7 @@ describe 'Timeline ->', ->
       expect(t.props.repeatTime).toBe 1500
       expect(t.props.shiftedRepeatTime).toBe 1500
     it 'should calculate shiftedRepeatTime #2',->
-      t = new Timeline isIt: true
+      t = new Timeline
       t1 = new Tween duration: 1000
       t2 = new Tween duration: 1500
       t.setProp 'shiftTime': 500
@@ -138,7 +138,7 @@ describe 'Timeline ->', ->
       expect(t.props.repeatTime).toBe 600
       expect(t.props.time)     .toBe 200
     it 'should set nearest start time', ->
-      t = new Timeline repeat: 2, isIt: true
+      t = new Timeline repeat: 2
       t.add new Tween duration: 200
       t.setProgress .6
       expect(t.timelines[0].progress).toBeCloseTo .8, 5
@@ -170,21 +170,21 @@ describe 'Timeline ->', ->
       expectedTime = performance.now()
       expect(t.props.endTime).toBe t.props.startTime+t.props.shiftedRepeatTime
 
-  # describe 'append method ->', ->
-  #   it 'should add timeline',->
-  #     t = new Timeline
-  #     t.append new Tween
-  #     expect(t.timelines.length).toBe 1
-  #     expect(t.timelines[0] instanceof Tween).toBe true
-  #   it 'should treat every argument as new append call',->
-  #     t = new Timeline
-  #     tm1 = new Tween duration: 1000, delay: 500
-  #     tm2 = new Tween duration: 1000, delay: 700
-  #     t.append tm1, tm2
-  #     expect(t.timelines.length).toBe 2
-  #     expect(t.timelines[0] instanceof Tween).toBe true
-  #     expect(t.timelines[1] instanceof Tween).toBe true
-  #     expect(t.props.repeatTime).toBe 3200
+  describe 'append method ->', ->
+    it 'should add timeline',->
+      t = new Timeline
+      t.append new Tween
+      expect(t.timelines.length).toBe 1
+      expect(t.timelines[0] instanceof Tween).toBe true
+    it 'should treat every argument as new append call',->
+      t = new Timeline isIt: true
+      tm1 = new Tween duration: 1000, delay: 500
+      tm2 = new Tween duration: 1000, delay: 700
+      t.append tm1, tm2
+      expect(t.timelines.length).toBe 2
+      expect(t.timelines[0] instanceof Tween).toBe true
+      expect(t.timelines[1] instanceof Tween).toBe true
+      expect(t.props.time).toBe 3200
   #   it 'should treat arrays as parallel tweens #1', ->
   #     t = new Timeline
   #     tm1 = new Tween(duration: 500, delay: 500)
@@ -718,39 +718,42 @@ describe 'Timeline ->', ->
   # describe 'delay option ->', ->
   #   it 'should increase repeatTime', ->
   #     t = new Timeline repeat: 4, delay: 2000
-  #     t.add new Tween
-  #     expect(t.props.repeatTime).toBe 11000
-  # #   it 'should add self delay to all the child tweens', ->
-  # #     t = new Timeline delay: 200
-  # #     t.add new Tween delay: 400
-  # #     expect(t.timelines[0].o.delay).toBe 600
-  # #   it 'should add self delay to all the child tweens with arrays', ->
-  # #     t = new Timeline delay: 200
-  # #     tm1 = new Tween delay: 400
-  # #     tm2 = new Tween delay: 400
-  # #     tm3 = new Tween delay: 1000
-  # #     t.add tm1, [tm2, tm3]
-  # #     expect(t.timelines[0].o.delay).toBe 600
-  # #     expect(t.timelines[1].o.delay).toBe 600
-  # #     expect(t.timelines[2].o.delay).toBe 1200
-  # #   it 'should add self delay to all the child tweens when append', ->
-  # #     t = new Timeline delay: 200
-  # #     t.add new Tween delay: 400, duration: 500
-  # #     t.append new Tween delay: 400
-  # #     expect(t.timelines[1].o.delay).toBe 1500
+  #     t.add new Tween duration: 600
+  #     expect(t.props.repeatTime).toBe 13000
 
-  describe 'getDimentions method ->', ->
-    it 'should set startTime and endTime', ->
-      t = new Timeline
-      t.add new Tween
-      t.getDimentions()
-      expect(t.props.startTime).toBeDefined()
-      expect(t.props.endTime)  .toBeDefined()
-    it 'should have time option to start from', ->
-      t = new Timeline delay: 600
-      t.add new Tween
-      time = performance.now() + 500
-      t.getDimentions(time)
-      expect(t.props.startTime).toBe time + 600
+  # describe 'getDimentions method ->', ->
+  #   it 'should set startTime and endTime', ->
+  #     t = new Timeline
+  #     t.add new Tween
+  #     t.getDimentions()
+  #     expect(t.props.startTime).toBeDefined()
+  #     expect(t.props.endTime)  .toBeDefined()
+  #   it 'should have time option to start from', ->
+  #     t = new Timeline delay: 600
+  #     t.add new Tween
+  #     time = performance.now() + 500
+  #     t.getDimentions(time)
+  #     expect(t.props.startTime).toBe time + 600
+
+  # # describe 'nested timelines ->', ->
+  # #   it 'should work with nested timelines', ->
+  # #     tm0 = new mojs.Timeline isIt: '1'
+  # #     tm1 = new mojs.Timeline
+  # #     tm2 = new mojs.Timeline isIt: '2'
+
+  # #     tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
+  # #     tm1.add tw1
+
+  # #     tw2 = new mojs.Tween duration: 400, onUpdate:(p)->
+  # #     tm2.add tw2
+
+  # #     tm0.add tm1
+  # #     tm0.append tm2
+
+  # #     tm0.setProgress .75
+  # #     console.log tm0.props.startTime, tm0.props.endTime
+  # #     expect(tw2.progress).toBe .6875
+
+  #     # tm0.start()
 
 

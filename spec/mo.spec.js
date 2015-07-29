@@ -4006,14 +4006,16 @@ Timeline = (function() {
   };
 
   Timeline.prototype.pushTimeline = function(timeline, delay) {
+    var timelineTime;
     if (timeline.timeline instanceof Timeline) {
       timeline = timeline.timeline;
     }
     (delay != null) && timeline.setProp({
-      delay: delay
+      'shiftTime': delay
     });
     this.timelines.push(timeline);
-    this.props.time = Math.max(timeline.props.repeatTime, this.props.repeatTime);
+    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
+    this.props.time = Math.max(timelineTime, this.props.repeatTime);
     this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
     return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0) - this.props.delay;
   };
@@ -4044,7 +4046,7 @@ Timeline = (function() {
   Timeline.prototype._appendTimelineArray = function(timelineArray) {
     var i, index, results, time;
     i = timelineArray.length;
-    time = this.props.totalTime;
+    time = this.props.repeatTime;
     index = this.timelines.length;
     results = [];
     while (i--) {
@@ -4055,7 +4057,7 @@ Timeline = (function() {
 
   Timeline.prototype.appendTimeline = function(timeline, index, time) {
     var delay;
-    delay = timeline.props.delay + (time != null ? time : this.props.totalTime);
+    delay = timeline.props.delay + (time != null ? time : this.props.repeatTime);
     timeline.index = index;
     return this.pushTimeline(timeline, delay);
   };
@@ -4063,7 +4065,7 @@ Timeline = (function() {
   Timeline.prototype.recalcDuration = function() {
     var len, results, timeline;
     len = this.timelines.length;
-    this.props.totalTime = 0;
+    this.props.repeatTime = 0;
     results = [];
     while (len--) {
       timeline = this.timelines[len];
@@ -4087,7 +4089,6 @@ Timeline = (function() {
     startPoint = this.props.startTime - this.props.delay;
     elapsed = (time - startPoint) % (this.props.delay + this.props.time);
     timeToTimelines = startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
-    this.o.isIt && console.log(timeToTimelines);
     if (timeToTimelines != null) {
       i = -1;
       len = this.timelines.length - 1;
@@ -4103,7 +4104,7 @@ Timeline = (function() {
     var ref, ref1;
     if (time >= this.props.startTime && time < this.props.endTime) {
       if (typeof this.onUpdate === "function") {
-        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
+        this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
       }
     }
     if (this.prevTime > time && time <= this.props.startTime) {

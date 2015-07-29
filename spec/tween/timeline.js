@@ -141,9 +141,7 @@
       });
       it('should calculate shiftedRepeatTime #2', function() {
         var t, t1, t2;
-        t = new Timeline({
-          isIt: true
-        });
+        t = new Timeline;
         t1 = new Tween({
           duration: 1000
         });
@@ -249,8 +247,7 @@
       return it('should set nearest start time', function() {
         var t;
         t = new Timeline({
-          repeat: 2,
-          isIt: true
+          repeat: 2
         });
         t.add(new Tween({
           duration: 200
@@ -288,24 +285,32 @@
         return expect(t.props.endTime).toBe(t.props.startTime + t.props.shiftedRepeatTime);
       });
     });
-    return describe('getDimentions method ->', function() {
-      it('should set startTime and endTime', function() {
+    return describe('append method ->', function() {
+      it('should add timeline', function() {
         var t;
         t = new Timeline;
-        t.add(new Tween);
-        t.getDimentions();
-        expect(t.props.startTime).toBeDefined();
-        return expect(t.props.endTime).toBeDefined();
+        t.append(new Tween);
+        expect(t.timelines.length).toBe(1);
+        return expect(t.timelines[0] instanceof Tween).toBe(true);
       });
-      return it('should have time option to start from', function() {
-        var t, time;
+      return it('should treat every argument as new append call', function() {
+        var t, tm1, tm2;
         t = new Timeline({
-          delay: 600
+          isIt: true
         });
-        t.add(new Tween);
-        time = performance.now() + 500;
-        t.getDimentions(time);
-        return expect(t.props.startTime).toBe(time + 600);
+        tm1 = new Tween({
+          duration: 1000,
+          delay: 500
+        });
+        tm2 = new Tween({
+          duration: 1000,
+          delay: 700
+        });
+        t.append(tm1, tm2);
+        expect(t.timelines.length).toBe(2);
+        expect(t.timelines[0] instanceof Tween).toBe(true);
+        expect(t.timelines[1] instanceof Tween).toBe(true);
+        return expect(t.props.time).toBe(3200);
       });
     });
   });
