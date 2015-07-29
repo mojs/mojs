@@ -21,8 +21,9 @@ class Tween
     @h = h; @progress = 0; @prevTime = 0
     @calcDimentions()
   calcDimentions:->
-    @props.totalTime     = (@props.repeat+1)*(@props.duration+@props.delay)
-    @props.totalDuration = @props.totalTime - @props.delay
+    @props.time              = @props.duration + @props.delay
+    @props.repeatTime        = @props.time * (@props.repeat + 1)
+    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0) - @props.delay
   extendDefaults:->
     @props = {}
     for key, value of @defaults
@@ -32,8 +33,8 @@ class Tween
   start:(time)->
     @isCompleted = false; @isStarted = false
     time ?= performance.now()
-    @props.startTime = time + @props.delay
-    @props.endTime   = @props.startTime + @props.totalDuration
+    @props.startTime = time + @props.delay + (@props.shiftTime or 0)
+    @props.endTime   = @props.startTime + @props.shiftedRepeatTime
     @
   update:(time)->
 

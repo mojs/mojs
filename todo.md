@@ -1,10 +1,7 @@
 ## TODO
 
-- path easing - maybe 1000 samples is enough?
 - nested timelines issue
   - negative delays on timelines
-  < .1 > .9 on path easing can cause error
-
 - release
 
 ---

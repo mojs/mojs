@@ -4232,8 +4232,9 @@ Tween = (function() {
   };
 
   Tween.prototype.calcDimentions = function() {
-    this.props.totalTime = (this.props.repeat + 1) * (this.props.duration + this.props.delay);
-    return this.props.totalDuration = this.props.totalTime - this.props.delay;
+    this.props.time = this.props.duration + this.props.delay;
+    this.props.repeatTime = this.props.time * (this.props.repeat + 1);
+    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0) - this.props.delay;
   };
 
   Tween.prototype.extendDefaults = function() {
@@ -4254,8 +4255,8 @@ Tween = (function() {
     if (time == null) {
       time = performance.now();
     }
-    this.props.startTime = time + this.props.delay;
-    this.props.endTime = this.props.startTime + this.props.totalDuration;
+    this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
+    this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
     return this;
   };
 

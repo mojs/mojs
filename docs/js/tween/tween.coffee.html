@@ -55,8 +55,9 @@ easing       = <span class="hljs-built_in">require</span> <span class="hljs-stri
     <span class="hljs-property">@h</span> = h; <span class="hljs-property">@progress</span> = <span class="hljs-number">0</span>; <span class="hljs-property">@prevTime</span> = <span class="hljs-number">0</span>
     <span class="hljs-property">@calcDimentions</span>()
   <span class="hljs-attribute">calcDimentions</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@props</span>.totalTime     = (<span class="hljs-property">@props</span>.repeat+<span class="hljs-number">1</span>)*(<span class="hljs-property">@props</span>.duration+<span class="hljs-property">@props</span>.delay)
-    <span class="hljs-property">@props</span>.totalDuration = <span class="hljs-property">@props</span>.totalTime - <span class="hljs-property">@props</span>.delay
+    <span class="hljs-property">@props</span>.time              = <span class="hljs-property">@props</span>.duration + <span class="hljs-property">@props</span>.delay
+    <span class="hljs-property">@props</span>.repeatTime        = <span class="hljs-property">@props</span>.time * (<span class="hljs-property">@props</span>.repeat + <span class="hljs-number">1</span>)
+    <span class="hljs-property">@props</span>.shiftedRepeatTime = <span class="hljs-property">@props</span>.repeatTime + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>) - <span class="hljs-property">@props</span>.delay
   <span class="hljs-attribute">extendDefaults</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@props</span> = {}
     <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> <span class="hljs-property">@defaults</span>
@@ -66,8 +67,8 @@ easing       = <span class="hljs-built_in">require</span> <span class="hljs-stri
   <span class="hljs-attribute">start</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
     <span class="hljs-property">@isCompleted</span> = <span class="hljs-literal">false</span>; <span class="hljs-property">@isStarted</span> = <span class="hljs-literal">false</span>
     time ?= performance.now()
-    <span class="hljs-property">@props</span>.startTime = time + <span class="hljs-property">@props</span>.delay
-    <span class="hljs-property">@props</span>.endTime   = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.totalDuration
+    <span class="hljs-property">@props</span>.startTime = time + <span class="hljs-property">@props</span>.delay + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
+    <span class="hljs-property">@props</span>.endTime   = <span class="hljs-property">@props</span>.startTime + <span class="hljs-property">@props</span>.shiftedRepeatTime
     @
   <span class="hljs-attribute">update</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
 </div></div>
