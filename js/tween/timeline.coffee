@@ -61,7 +61,7 @@ class Timeline
     i = timelineArray.length; time = @props.repeatTime; index = @timelines.length
     @appendTimeline(timelineArray[i], index, time) while(i--)
   appendTimeline:(timeline, index, time)->
-    delay = timeline.props.delay + (if time? then time else @props.repeatTime)
+    delay = (if time? then time else @props.repeatTime)
     timeline.index = index; @pushTimeline timeline, delay
 
   recalcDuration:->

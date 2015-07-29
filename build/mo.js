@@ -4038,7 +4038,7 @@ Timeline = (function() {
 
   Timeline.prototype.appendTimeline = function(timeline, index, time) {
     var delay;
-    delay = timeline.props.delay + (time != null ? time : this.props.repeatTime);
+    delay = (time != null ? time : this.props.repeatTime);
     timeline.index = index;
     return this.pushTimeline(timeline, delay);
   };
