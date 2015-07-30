@@ -4005,19 +4005,20 @@ Timeline = (function() {
     return this.recalcDuration();
   };
 
-  Timeline.prototype.pushTimeline = function(timeline, delay) {
+  Timeline.prototype.pushTimeline = function(timeline, shift) {
     var timelineTime;
     if (timeline.timeline instanceof Timeline) {
       timeline = timeline.timeline;
     }
-    (delay != null) && timeline.setProp({
-      'shiftTime': delay
+    (shift != null) && timeline.setProp({
+      'shiftTime': shift
     });
     this.timelines.push(timeline);
     timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
     this.props.time = Math.max(timelineTime, this.props.repeatTime);
     this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
-    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0) - this.props.delay;
+    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
+    return this.props.shiftedRepeatTime -= this.props.delay;
   };
 
   Timeline.prototype.remove = function(timeline) {
@@ -4044,22 +4045,22 @@ Timeline = (function() {
   };
 
   Timeline.prototype._appendTimelineArray = function(timelineArray) {
-    var i, index, results, time;
+    var i, len, results, time;
     i = timelineArray.length;
     time = this.props.repeatTime;
-    index = this.timelines.length;
+    len = this.timelines.length;
     results = [];
     while (i--) {
-      results.push(this.appendTimeline(timelineArray[i], index, time));
+      results.push(this.appendTimeline(timelineArray[i], len, time));
     }
     return results;
   };
 
   Timeline.prototype.appendTimeline = function(timeline, index, time) {
-    var delay;
-    delay = (time != null ? time : this.props.repeatTime);
+    var shift;
+    shift = (time != null ? time : this.props.repeatTime);
     timeline.index = index;
-    return this.pushTimeline(timeline, delay);
+    return this.pushTimeline(timeline, shift);
   };
 
   Timeline.prototype.recalcDuration = function() {
@@ -4070,8 +4071,9 @@ Timeline = (function() {
     while (len--) {
       timeline = this.timelines[len];
       this.props.time = Math.max(timeline.props.repeatTime, this.props.repeatTime);
-      this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1) - this.props.delay;
-      results.push(this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0));
+      this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
+      this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
+      results.push(this.props.shiftedRepeatTime -= this.props.delay);
     }
     return results;
   };
@@ -4168,6 +4170,7 @@ Timeline = (function() {
     if (time == null) {
       time = this.props.startTime;
     }
+    time += this.props.shiftTime || 0;
     results = [];
     while (i--) {
       results.push(this.timelines[i].start(time));
@@ -4187,8 +4190,9 @@ Timeline = (function() {
     if (time == null) {
       time = performance.now();
     }
-    this.props.startTime = time + this.props.delay;
-    return this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
+    this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
+    this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
+    return this.props.endTime -= this.props.shiftTime || 0;
   };
 
   return Timeline;
@@ -4239,7 +4243,8 @@ Tween = (function() {
   Tween.prototype.calcDimentions = function() {
     this.props.time = this.props.duration + this.props.delay;
     this.props.repeatTime = this.props.time * (this.props.repeat + 1);
-    return this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0) - this.props.delay;
+    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
+    return this.props.shiftedRepeatTime -= this.props.delay;
   };
 
   Tween.prototype.extendDefaults = function() {

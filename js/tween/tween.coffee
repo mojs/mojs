@@ -23,7 +23,8 @@ class Tween
   calcDimentions:->
     @props.time              = @props.duration + @props.delay
     @props.repeatTime        = @props.time * (@props.repeat + 1)
-    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0) - @props.delay
+    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
+    @props.shiftedRepeatTime -= @props.delay
   extendDefaults:->
     @props = {}
     for key, value of @defaults

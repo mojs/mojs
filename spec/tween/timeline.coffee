@@ -177,7 +177,7 @@ describe 'Timeline ->', ->
       expect(t.timelines.length).toBe 1
       expect(t.timelines[0] instanceof Tween).toBe true
     it 'should treat every argument as new append call',->
-      t = new Timeline isIt: true
+      t = new Timeline
       tm1 = new Tween duration: 1000, delay: 500
       tm2 = new Tween duration: 1000, delay: 700
       t.append tm1, tm2
@@ -412,15 +412,14 @@ describe 'Timeline ->', ->
       t.add new Tween duration: 20
       t.start()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
-    # TODO
-    # it 'should fire after the last onUpdate', (dfr)->
-    #   proc = 0
-    #   tween = new Timeline
-    #     onUpdate:(p)-> proc = p
-    #     onComplete:-> expect(proc).toBe(1); dfr()
-    #   tween.add new Tween duration: 20
-    #   tween.start()
-    #   tween.update tween.props.startTime + 22
+    it 'should fire after the last onUpdate', (dfr)->
+      proc = 0
+      tween = new Timeline
+        onUpdate:(p)-> proc = p
+        onComplete:-> expect(proc).toBe(1); dfr()
+      tween.add new Tween duration: 20
+      tween.start()
+      tween.update tween.props.startTime + 22
 
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -431,8 +430,7 @@ describe 'Timeline ->', ->
       t.add new Tween duration: 20
       spyOn(t, 'onUpdate'); t.start()
       setTimeout ->
-        expect(t.onUpdate).toHaveBeenCalled()
-        dfr()
+        expect(t.onUpdate).toHaveBeenCalled(); dfr()
       , 100
     it 'should have the right scope', (dfr)->
       isRightScope = false
@@ -678,6 +676,16 @@ describe 'Timeline ->', ->
       t.setStartTime time
       expect(t.startTimelines).toHaveBeenCalledWith time
 
+  describe 'startTimelines method ->', ->
+    it 'should add self shiftTime to child timelines', ->
+      t   = new Timeline
+      t.add new Tween duration: 500
+      time = 0; shift = 500
+      t.setProp 'shiftTime': shift
+      t.setStartTime time
+      expect(t.timelines[0].props.startTime).toBe time + shift
+
+
   describe 'time track ->', ->
     it 'should save the current time track', ->
       t   = new Timeline
@@ -725,25 +733,42 @@ describe 'Timeline ->', ->
       t.getDimentions(time)
       expect(t.props.startTime).toBe time + 600
 
-  # describe 'nested timelines ->', ->
-  #   it 'should work with nested timelines', ->
-  #     tm0 = new mojs.Timeline isIt: '1'
-  #     tm1 = new mojs.Timeline
-  #     tm2 = new mojs.Timeline isIt: '2'
+  describe 'nested timelines ->', ->
+    it 'should work with nested timelines', ->
+      tm0 = new mojs.Timeline
+      tm1 = new mojs.Timeline
+      tm2 = new mojs.Timeline
 
-  #     tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
-  #     tm1.add tw1
+      tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
+      tm1.add tw1
 
-  #     tw2 = new mojs.Tween duration: 400, onUpdate:(p)->
-  #     tm2.add tw2
+      tw2 = new mojs.Tween duration: 400, onUpdate:(p)->
+      tm2.add tw2
 
-  #     tm0.add tm1
-  #     tm0.append tm2
+      tm0.add tm1
+      tm0.append tm2
+      tm0.setProgress .5
+      expect(tw2.progress).toBe .625
+    it 'should set right endTime times', ->
+      tm0 = new mojs.Timeline isIt: '1'
+      tm1 = new mojs.Timeline isIt: '2'
+      tm2 = new mojs.Timeline isIt: '3'
 
-  #     tm0.setProgress .75
-  #     console.log tm0.props.startTime, tm0.props.endTime
-  #     expect(tw2.progress).toBe .6875
+      tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
+      tm1.add tw1
 
-      # tm0.start()
+      tw2 = new mojs.Tween duration: 400, onUpdate:(p)->
+      tm2.add tw2
+
+      tm0.add tm1
+      tm0.append tm2
+
+      tm0.setStartTime()
+      
+      expect(tm0.props.endTime).toBe tm0.props.startTime + 500
+      expect(tm2.props.endTime).toBe tm0.props.startTime + 500
+      expect(tm2.props.startTime).toBe tm0.props.startTime + 100
+
+  # test for shifted start time
 
 

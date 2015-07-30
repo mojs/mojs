@@ -57,7 +57,8 @@ easing       = <span class="hljs-built_in">require</span> <span class="hljs-stri
   <span class="hljs-attribute">calcDimentions</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@props</span>.time              = <span class="hljs-property">@props</span>.duration + <span class="hljs-property">@props</span>.delay
     <span class="hljs-property">@props</span>.repeatTime        = <span class="hljs-property">@props</span>.time * (<span class="hljs-property">@props</span>.repeat + <span class="hljs-number">1</span>)
-    <span class="hljs-property">@props</span>.shiftedRepeatTime = <span class="hljs-property">@props</span>.repeatTime + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>) - <span class="hljs-property">@props</span>.delay
+    <span class="hljs-property">@props</span>.shiftedRepeatTime = <span class="hljs-property">@props</span>.repeatTime + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
+    <span class="hljs-property">@props</span>.shiftedRepeatTime -= <span class="hljs-property">@props</span>.delay
   <span class="hljs-attribute">extendDefaults</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@props</span> = {}
     <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> <span class="hljs-property">@defaults</span>

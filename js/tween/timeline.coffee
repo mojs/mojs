@@ -33,16 +33,19 @@ class Timeline
       @props[key] = value
     @recalcDuration()
 
-  pushTimeline:(timeline, delay)->
+  pushTimeline:(timeline, shift)->
     # if timeline is a module with timeline property then extract it
     timeline = timeline.timeline if timeline.timeline instanceof Timeline
     # add self delay to the timeline
-    delay? and timeline.setProp 'shiftTime': delay
+    shift? and timeline.setProp 'shiftTime': shift
     @timelines.push timeline
     timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime or 0)
+
     @props.time       = Math.max timelineTime, @props.repeatTime
     @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)
-    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)-@props.delay
+    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
+    @props.shiftedRepeatTime -= @props.delay
+
   remove:(timeline)->
     index = @timelines.indexOf timeline
     if index isnt -1 then @timelines.splice index, 1
@@ -58,19 +61,21 @@ class Timeline
       if h.isArray(tm) then @_appendTimelineArray(tm)
       else @appendTimeline(tm, @timelines.length)
   _appendTimelineArray:(timelineArray)->
-    i = timelineArray.length; time = @props.repeatTime; index = @timelines.length
-    @appendTimeline(timelineArray[i], index, time) while(i--)
+    i = timelineArray.length; time = @props.repeatTime; len = @timelines.length
+    @appendTimeline(timelineArray[i], len, time) while(i--)
   appendTimeline:(timeline, index, time)->
-    delay = (if time? then time else @props.repeatTime)
-    timeline.index = index; @pushTimeline timeline, delay
+    shift = (if time? then time else @props.repeatTime)
+    timeline.index = index; @pushTimeline timeline, shift
 
   recalcDuration:->
     len = @timelines.length; @props.repeatTime = 0
     while(len--)
       timeline  = @timelines[len]
       @props.time = Math.max timeline.props.repeatTime, @props.repeatTime
-      @props.repeatTime =(@props.time+@props.delay)*(@props.repeat+1)-@props.delay
+
+      @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)
       @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
+      @props.shiftedRepeatTime -= @props.delay
   # ---
 
   # Method to take care of the current time.
@@ -145,6 +150,9 @@ class Timeline
   startTimelines:(time)->
     i = @timelines.length
     time ?= @props.startTime
+    # cover
+    time += (@props.shiftTime or 0)
+    # @o.isIt is '3' and console.log time
     @timelines[i].start(time) while(i--)
 
   setProgress:(progress)->
@@ -153,8 +161,9 @@ class Timeline
     @update @props.startTime + progress*@props.repeatTime
   getDimentions:(time)->
     time ?= performance.now()
-    @props.startTime = time + @props.delay
+    @props.startTime = time + @props.delay + (@props.shiftTime or 0)
     @props.endTime = @props.startTime + @props.shiftedRepeatTime
+    @props.endTime -= (@props.shiftTime or 0)
 
 module.exports = Timeline
 

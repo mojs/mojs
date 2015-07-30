@@ -24,9 +24,9 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# tm0 = new mojs.Timeline isIt: '1'#, onUpdate:(p)-> console.log p
-# tm1 = new mojs.Timeline
-# tm2 = new mojs.Timeline isIt: '2'
+# tm0 = new mojs.Timeline repeat: 0, isIt: '1'#, onUpdate:(p)-> console.log p
+# tm1 = new mojs.Timeline isIt: '2'
+# tm2 = new mojs.Timeline isIt: '3'
 
 # tw1 = new mojs.Tween onUpdate:(p)-> console.log "tw1: #{p}"
 # tm1.add tw1
@@ -38,6 +38,8 @@ mojs.delta = mojs.h.delta
 # tm0.append tm2
 
 # tm0.start()
+
+# console.log tm2.props.startTime, tm2.props.endTime, tw2.props.startTime
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

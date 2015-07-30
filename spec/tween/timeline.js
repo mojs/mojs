@@ -295,9 +295,7 @@
       });
       it('should treat every argument as new append call', function() {
         var t, tm1, tm2;
-        t = new Timeline({
-          isIt: true
-        });
+        t = new Timeline;
         tm1 = new Tween({
           duration: 1000,
           delay: 500
@@ -715,7 +713,7 @@
           return dfr();
         }, 200);
       });
-      return it('should have the right scope', function(dfr) {
+      it('should have the right scope', function(dfr) {
         var isRightScope, t;
         isRightScope = false;
         t = new Timeline({
@@ -731,6 +729,24 @@
           expect(isRightScope).toBe(true);
           return dfr();
         }), 100);
+      });
+      return it('should fire after the last onUpdate', function(dfr) {
+        var proc, tween;
+        proc = 0;
+        tween = new Timeline({
+          onUpdate: function(p) {
+            return proc = p;
+          },
+          onComplete: function() {
+            expect(proc).toBe(1);
+            return dfr();
+          }
+        });
+        tween.add(new Tween({
+          duration: 20
+        }));
+        tween.start();
+        return tween.update(tween.props.startTime + 22);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -1179,6 +1195,22 @@
         return expect(t.startTimelines).toHaveBeenCalledWith(time);
       });
     });
+    describe('startTimelines method ->', function() {
+      return it('should add self shiftTime to child timelines', function() {
+        var shift, t, time;
+        t = new Timeline;
+        t.add(new Tween({
+          duration: 500
+        }));
+        time = 0;
+        shift = 500;
+        t.setProp({
+          'shiftTime': shift
+        });
+        t.setStartTime(time);
+        return expect(t.timelines[0].props.startTime).toBe(time + shift);
+      });
+    });
     describe('time track ->', function() {
       return it('should save the current time track', function() {
         var t;
@@ -1239,7 +1271,7 @@
         return expect(t.props.repeatTime).toBe(13000);
       });
     });
-    return describe('getDimentions method ->', function() {
+    describe('getDimentions method ->', function() {
       it('should set startTime and endTime', function() {
         var t;
         t = new Timeline;
@@ -1257,6 +1289,56 @@
         time = performance.now() + 500;
         t.getDimentions(time);
         return expect(t.props.startTime).toBe(time + 600);
+      });
+    });
+    return describe('nested timelines ->', function() {
+      it('should work with nested timelines', function() {
+        var tm0, tm1, tm2, tw1, tw2;
+        tm0 = new mojs.Timeline;
+        tm1 = new mojs.Timeline;
+        tm2 = new mojs.Timeline;
+        tw1 = new mojs.Tween({
+          duration: 100,
+          onUpdate: function(p) {}
+        });
+        tm1.add(tw1);
+        tw2 = new mojs.Tween({
+          duration: 400,
+          onUpdate: function(p) {}
+        });
+        tm2.add(tw2);
+        tm0.add(tm1);
+        tm0.append(tm2);
+        tm0.setProgress(.5);
+        return expect(tw2.progress).toBe(.625);
+      });
+      return it('should set right endTime times', function() {
+        var tm0, tm1, tm2, tw1, tw2;
+        tm0 = new mojs.Timeline({
+          isIt: '1'
+        });
+        tm1 = new mojs.Timeline({
+          isIt: '2'
+        });
+        tm2 = new mojs.Timeline({
+          isIt: '3'
+        });
+        tw1 = new mojs.Tween({
+          duration: 100,
+          onUpdate: function(p) {}
+        });
+        tm1.add(tw1);
+        tw2 = new mojs.Tween({
+          duration: 400,
+          onUpdate: function(p) {}
+        });
+        tm2.add(tw2);
+        tm0.add(tm1);
+        tm0.append(tm2);
+        tm0.setStartTime();
+        expect(tm0.props.endTime).toBe(tm0.props.startTime + 500);
+        expect(tm2.props.endTime).toBe(tm0.props.startTime + 500);
+        return expect(tm2.props.startTime).toBe(tm0.props.startTime + 100);
       });
     });
   });
