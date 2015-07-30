@@ -38,13 +38,7 @@ class Timeline
     timeline = timeline.timeline if timeline.timeline instanceof Timeline
     # add self delay to the timeline
     shift? and timeline.setProp 'shiftTime': shift
-    @timelines.push timeline
-    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime or 0)
-
-    @props.time       = Math.max timelineTime, @props.repeatTime
-    @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)
-    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
-    @props.shiftedRepeatTime -= @props.delay
+    @timelines.push(timeline); @_recalcTimelineDuration timeline
 
   remove:(timeline)->
     index = @timelines.indexOf timeline
@@ -64,18 +58,21 @@ class Timeline
     i = timelineArray.length; time = @props.repeatTime; len = @timelines.length
     @appendTimeline(timelineArray[i], len, time) while(i--)
   appendTimeline:(timeline, index, time)->
-    shift = (if time? then time else @props.repeatTime)
+    shift = (if time? then time else @props.time)
     timeline.index = index; @pushTimeline timeline, shift
 
   recalcDuration:->
-    len = @timelines.length; @props.repeatTime = 0
-    while(len--)
-      timeline  = @timelines[len]
-      @props.time = Math.max timeline.props.repeatTime, @props.repeatTime
+    len = @timelines.length
+    @props.time = 0; @props.repeatTime = 0; @props.shiftedRepeatTime = 0
+    @_recalcTimelineDuration @timelines[len] while(len--)
 
-      @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)
-      @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
-      @props.shiftedRepeatTime -= @props.delay
+  _recalcTimelineDuration:(timeline)->
+    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime or 0)
+    @props.time = Math.max timelineTime, @props.time
+    @props.repeatTime = (@props.time+@props.delay)*(@props.repeat+1)
+    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
+    @props.shiftedRepeatTime -= @props.delay
+
   # ---
 
   # Method to take care of the current time.

@@ -4006,7 +4006,6 @@ Timeline = (function() {
   };
 
   Timeline.prototype.pushTimeline = function(timeline, shift) {
-    var timelineTime;
     if (timeline.timeline instanceof Timeline) {
       timeline = timeline.timeline;
     }
@@ -4014,11 +4013,7 @@ Timeline = (function() {
       'shiftTime': shift
     });
     this.timelines.push(timeline);
-    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
-    this.props.time = Math.max(timelineTime, this.props.repeatTime);
-    this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
-    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
-    return this.props.shiftedRepeatTime -= this.props.delay;
+    return this._recalcTimelineDuration(timeline);
   };
 
   Timeline.prototype.remove = function(timeline) {
@@ -4058,24 +4053,31 @@ Timeline = (function() {
 
   Timeline.prototype.appendTimeline = function(timeline, index, time) {
     var shift;
-    shift = (time != null ? time : this.props.repeatTime);
+    shift = (time != null ? time : this.props.time);
     timeline.index = index;
     return this.pushTimeline(timeline, shift);
   };
 
   Timeline.prototype.recalcDuration = function() {
-    var len, results, timeline;
+    var len, results;
     len = this.timelines.length;
+    this.props.time = 0;
     this.props.repeatTime = 0;
+    this.props.shiftedRepeatTime = 0;
     results = [];
     while (len--) {
-      timeline = this.timelines[len];
-      this.props.time = Math.max(timeline.props.repeatTime, this.props.repeatTime);
-      this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
-      this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
-      results.push(this.props.shiftedRepeatTime -= this.props.delay);
+      results.push(this._recalcTimelineDuration(this.timelines[len]));
     }
     return results;
+  };
+
+  Timeline.prototype._recalcTimelineDuration = function(timeline) {
+    var timelineTime;
+    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
+    this.props.time = Math.max(timelineTime, this.props.time);
+    this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
+    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
+    return this.props.shiftedRepeatTime -= this.props.delay;
   };
 
   Timeline.prototype.update = function(time) {

@@ -748,11 +748,11 @@ describe 'Timeline ->', ->
       tm0.add tm1
       tm0.append tm2
       tm0.setProgress .5
-      expect(tw2.progress).toBe .625
+      expect(tw2.progress).toBe .375
     it 'should set right endTime times', ->
-      tm0 = new mojs.Timeline isIt: '1'
-      tm1 = new mojs.Timeline isIt: '2'
-      tm2 = new mojs.Timeline isIt: '3'
+      tm0 = new mojs.Timeline
+      tm1 = new mojs.Timeline
+      tm2 = new mojs.Timeline
 
       tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
       tm1.add tw1
@@ -768,6 +768,23 @@ describe 'Timeline ->', ->
       expect(tm0.props.endTime).toBe tm0.props.startTime + 500
       expect(tm2.props.endTime).toBe tm0.props.startTime + 500
       expect(tm2.props.startTime).toBe tm0.props.startTime + 100
+    it 'should set right endTime times', ->
+      tm0 = new mojs.Timeline repeat: 2, isIt: '1'
+      tm1 = new mojs.Timeline isIt: '2'
+      tm2 = new mojs.Timeline isIt: '3'
+
+      tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
+      tm1.add tw1
+
+      tw2 = new mojs.Tween duration: 400, onUpdate:(p)->
+      tm2.add tw2
+
+      tm0.add tm1
+      tm0.append tm2
+
+      tm0.setStartTime()
+      
+      expect(tm2.props.shiftedRepeatTime).toBe 500
 
   # test for shifted start time
 

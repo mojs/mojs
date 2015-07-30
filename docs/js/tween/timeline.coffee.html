@@ -148,13 +148,7 @@ the result to props object</p>
       
       
         <div class="code"><div class="wrapper">    shift? <span class="hljs-keyword">and</span> timeline.setProp <span class="hljs-string">'shiftTime'</span>: shift
-    <span class="hljs-property">@timelines</span>.push timeline
-    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
-
-    <span class="hljs-property">@props</span>.time       = Math.max timelineTime, <span class="hljs-property">@props</span>.repeatTime
-    <span class="hljs-property">@props</span>.repeatTime = (<span class="hljs-property">@props</span>.time+<span class="hljs-property">@props</span>.delay)*(<span class="hljs-property">@props</span>.repeat+<span class="hljs-number">1</span>)
-    <span class="hljs-property">@props</span>.shiftedRepeatTime = <span class="hljs-property">@props</span>.repeatTime + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
-    <span class="hljs-property">@props</span>.shiftedRepeatTime -= <span class="hljs-property">@props</span>.delay
+    <span class="hljs-property">@timelines</span>.push(timeline); <span class="hljs-property">@_recalcTimelineDuration</span> timeline
 
   <span class="hljs-attribute">remove</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
     index = <span class="hljs-property">@timelines</span>.indexOf timeline
@@ -195,18 +189,21 @@ sequence. </p>
     i = timelineArray.length; time = <span class="hljs-property">@props</span>.repeatTime; len = <span class="hljs-property">@timelines</span>.length
     <span class="hljs-property">@appendTimeline</span>(timelineArray[i], len, time) <span class="hljs-keyword">while</span>(i--)
   <span class="hljs-attribute">appendTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline, index, time)</span>-&gt;</span>
-    shift = (<span class="hljs-keyword">if</span> time? <span class="hljs-keyword">then</span> time <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.repeatTime)
+    shift = (<span class="hljs-keyword">if</span> time? <span class="hljs-keyword">then</span> time <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.time)
     timeline.index = index; <span class="hljs-property">@pushTimeline</span> timeline, shift
 
   <span class="hljs-attribute">recalcDuration</span>:<span class="hljs-function">-&gt;</span>
-    len = <span class="hljs-property">@timelines</span>.length; <span class="hljs-property">@props</span>.repeatTime = <span class="hljs-number">0</span>
-    <span class="hljs-keyword">while</span>(len--)
-      timeline  = <span class="hljs-property">@timelines</span>[len]
-      <span class="hljs-property">@props</span>.time = Math.max timeline.props.repeatTime, <span class="hljs-property">@props</span>.repeatTime
+    len = <span class="hljs-property">@timelines</span>.length
+    <span class="hljs-property">@props</span>.time = <span class="hljs-number">0</span>; <span class="hljs-property">@props</span>.repeatTime = <span class="hljs-number">0</span>; <span class="hljs-property">@props</span>.shiftedRepeatTime = <span class="hljs-number">0</span>
+    <span class="hljs-property">@_recalcTimelineDuration</span> <span class="hljs-property">@timelines</span>[len] <span class="hljs-keyword">while</span>(len--)
 
-      <span class="hljs-property">@props</span>.repeatTime = (<span class="hljs-property">@props</span>.time+<span class="hljs-property">@props</span>.delay)*(<span class="hljs-property">@props</span>.repeat+<span class="hljs-number">1</span>)
-      <span class="hljs-property">@props</span>.shiftedRepeatTime = <span class="hljs-property">@props</span>.repeatTime + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
-      <span class="hljs-property">@props</span>.shiftedRepeatTime -= <span class="hljs-property">@props</span>.delay</div></div>
+  <span class="hljs-attribute">_recalcTimelineDuration</span>:<span class="hljs-function"><span class="hljs-params">(timeline)</span>-&gt;</span>
+    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
+    <span class="hljs-property">@props</span>.time = Math.max timelineTime, <span class="hljs-property">@props</span>.time
+    <span class="hljs-property">@props</span>.repeatTime = (<span class="hljs-property">@props</span>.time+<span class="hljs-property">@props</span>.delay)*(<span class="hljs-property">@props</span>.repeat+<span class="hljs-number">1</span>)
+    <span class="hljs-property">@props</span>.shiftedRepeatTime = <span class="hljs-property">@props</span>.repeatTime + (<span class="hljs-property">@props</span>.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
+    <span class="hljs-property">@props</span>.shiftedRepeatTime -= <span class="hljs-property">@props</span>.delay
+</div></div>
       
       </div>
     
