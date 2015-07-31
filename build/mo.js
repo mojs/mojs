@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.144.8 
+	0.144.10 
 */
 
 (function(f){
@@ -1699,7 +1699,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.144.8',
+  revision: '0.144.10',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -2239,7 +2239,6 @@ MotionPath = (function() {
       return it.tuneOptions(it.history[this.index]);
     };
     opts.isChained = !o.delay;
-    opts.isIt = this.o.isIt;
     this.timeline.append(new Tween(opts));
     return this;
   };
@@ -4006,18 +4005,17 @@ Timeline = (function() {
   };
 
   Timeline.prototype.append = function() {
-    var i, j, len1, results, timeline, tm;
+    var i, j, len1, timeline, tm;
     timeline = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    results = [];
     for (i = j = 0, len1 = timeline.length; j < len1; i = ++j) {
       tm = timeline[i];
       if (h.isArray(tm)) {
-        results.push(this._appendTimelineArray(tm));
+        this._appendTimelineArray(tm);
       } else {
-        results.push(this.appendTimeline(tm, this.timelines.length));
+        this.appendTimeline(tm, this.timelines.length);
       }
     }
-    return results;
+    return this;
   };
 
   Timeline.prototype._appendTimelineArray = function(timelineArray) {
@@ -4035,6 +4033,7 @@ Timeline = (function() {
   Timeline.prototype.appendTimeline = function(timeline, index, time) {
     var shift;
     shift = (time != null ? time : this.props.time);
+    shift += timeline.props.shiftTime || 0;
     timeline.index = index;
     return this.pushTimeline(timeline, shift);
   };
@@ -4073,7 +4072,7 @@ Timeline = (function() {
     var elapsed, i, len, results, startPoint, timeToTimelines;
     startPoint = this.props.startTime - this.props.delay;
     elapsed = (time - startPoint) % (this.props.delay + this.props.time);
-    timeToTimelines = startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
+    timeToTimelines = time === this.props.endTime ? this.props.endTime : startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
     if (timeToTimelines != null) {
       i = -1;
       len = this.timelines.length - 1;
@@ -4144,16 +4143,13 @@ Timeline = (function() {
     if ((ref = this.o.onStart) != null) {
       ref.apply(this);
     }
-    return this.startTimelines(time);
+    return this.startTimelines(this.props.startTime);
   };
 
   Timeline.prototype.startTimelines = function(time) {
     var i, results;
     i = this.timelines.length;
-    if (time == null) {
-      time = this.props.startTime;
-    }
-    time += this.props.shiftTime || 0;
+    (time == null) && (time = this.props.startTime);
     results = [];
     while (i--) {
       results.push(this.timelines[i].start(time));
@@ -4225,9 +4221,7 @@ Tween = (function() {
 
   Tween.prototype.calcDimentions = function() {
     this.props.time = this.props.duration + this.props.delay;
-    this.props.repeatTime = this.props.time * (this.props.repeat + 1);
-    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
-    return this.props.shiftedRepeatTime -= this.props.delay;
+    return this.props.repeatTime = this.props.time * (this.props.repeat + 1);
   };
 
   Tween.prototype.extendDefaults = function() {
@@ -4249,7 +4243,7 @@ Tween = (function() {
       time = performance.now();
     }
     this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
-    this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
+    this.props.endTime = this.props.startTime + this.props.repeatTime - this.props.delay;
     return this;
   };
 

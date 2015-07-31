@@ -287,8 +287,7 @@
         sp = new Spriter({
           el: div,
           isRunLess: true,
-          isShowEnd: true,
-          isIt: true
+          isShowEnd: true
         });
         sp._setProgress(.25);
         sp._setProgress(.5);

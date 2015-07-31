@@ -1,7 +1,5 @@
 ## TODO
 
-- nested timelines issue
-  - negative delays on timelines
 - release
 
 ---

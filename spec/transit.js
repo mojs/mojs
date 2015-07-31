@@ -437,7 +437,7 @@
         });
         expect(byte.timeline.timelines[1].props.duration).toBe(1000);
         expect(byte.timeline.timelines[1].props.yoyo).toBe(false);
-        return expect(byte.timeline.timelines[1].props.delay).toBe(1010);
+        return expect(byte.timeline.timelines[1].props.shiftTime).toBe(1010);
       });
       it('should merge then options and add them to the history', function() {
         var byte;

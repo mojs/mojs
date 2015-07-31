@@ -23,8 +23,8 @@ class Tween
   calcDimentions:->
     @props.time              = @props.duration + @props.delay
     @props.repeatTime        = @props.time * (@props.repeat + 1)
-    @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
-    @props.shiftedRepeatTime -= @props.delay
+    # @props.shiftedRepeatTime = @props.repeatTime + (@props.shiftTime or 0)
+    # @props.shiftedRepeatTime -= @props.delay
   extendDefaults:->
     @props = {}
     for key, value of @defaults
@@ -33,16 +33,16 @@ class Tween
     @onUpdate     = @props.onUpdate
   start:(time)->
     @isCompleted = false; @isStarted = false
+    
     time ?= performance.now()
     @props.startTime = time + @props.delay + (@props.shiftTime or 0)
-    @props.endTime   = @props.startTime + @props.shiftedRepeatTime
+    @props.endTime   = @props.startTime + @props.repeatTime - @props.delay
     @
   update:(time)->
     # if time is inside the active area of the tween.
     # active area is the area from start time to end time,
     # with all the repeat and delays in it
     if (time >= @props.startTime) and (time < @props.endTime)
-
       # reset callback flags
       @isOnReverseComplete = false; @isCompleted = false
       # onFirtUpdate callback

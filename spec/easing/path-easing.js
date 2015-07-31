@@ -64,9 +64,7 @@
       return it('should work with scientific notation', function() {
         var path, pe, testFun;
         path = 'M0,0 C0,0 31.4848633,29.7739254 55.2021484,-4.28613761e-07 C74.9160156,-20.18457 100,0 100,0';
-        pe = new PathEasing(path, {
-          isIt: true
-        });
+        pe = new PathEasing(path);
         testFun = function() {
           return pe.sample(.8);
         };

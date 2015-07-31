@@ -29,17 +29,17 @@ describe 'Tween ->', ->
       t = new Tween duration: 1000, delay: 100, repeat: 2
       expect(t.props.time).toBe        1100
       expect(t.props.repeatTime).toBe  3300
-    it 'should calculate shiftedRepeatTime', ->
-      t = new Tween duration: 1000, delay: 100, repeat: 2
-      expect(t.props.time).toBe             1100
-      expect(t.props.repeatTime).toBe       3300
-      expect(t.props.shiftedRepeatTime).toBe  3200
-    it 'should calculate shiftedRepeatTime #2', ->
-      t = new Tween duration: 1000, delay: 100, repeat: 2
-      t.setProp 'shiftTime', 700
-      expect(t.props.time).toBe              1100
-      expect(t.props.repeatTime).toBe        3300
-      expect(t.props.shiftedRepeatTime).toBe 3900
+    # it 'should calculate shiftedRepeatTime', ->
+    #   t = new Tween duration: 1000, delay: 100, repeat: 2
+    #   expect(t.props.time).toBe             1100
+    #   expect(t.props.repeatTime).toBe       3300
+    #   expect(t.props.shiftedRepeatTime).toBe  3200
+    # it 'should calculate shiftedRepeatTime #2', ->
+    #   t = new Tween duration: 1000, delay: 100, repeat: 2
+    #   t.setProp 'shiftTime', 700
+    #   expect(t.props.time).toBe              1100
+    #   expect(t.props.repeatTime).toBe        3300
+    #   expect(t.props.shiftedRepeatTime).toBe 3900
 
   describe 'isChained option ->', ->
     it 'should recieve isChained option', ->
@@ -62,15 +62,17 @@ describe 'Tween ->', ->
     it 'should calculate end time', ->
       duration = 1000; delay = 500
       t = new Tween(duration: duration, delay: delay).start()
-      expect(t.props.endTime).toBe t.props.startTime + t.props.shiftedRepeatTime
+      endTime = t.props.startTime + t.props.repeatTime - t.props.delay
+      expect(t.props.endTime).toBe endTime
     it 'should calculate end time with repeat', ->
       duration = 1000; delay = 500
       t = new Tween(duration: duration, delay: delay, repeat: 2).start()
-      expect(t.props.endTime).toBe t.props.startTime + t.props.shiftedRepeatTime
+      endTime = t.props.startTime + t.props.repeatTime - t.props.delay
+      expect(t.props.endTime).toBe endTime
     it 'should calculate end time if repeat', ->
       duration = 1000; delay = 500
       t = new Tween(duration: duration, delay: delay, repeat: 2).start()
-      time = t.props.startTime+(3*(duration+delay))-delay
+      time = t.props.startTime + (3*(duration+delay)) - delay
       expect(t.props.endTime).toBe time
     it 'should calculate startTime and endTime if shifted', ->
       duration = 1000; delay = 500
@@ -82,9 +84,9 @@ describe 'Tween ->', ->
       expect(t.props.startTime).toBeGreaterThan expectedTime - 50
       expect(t.props.startTime).not.toBeGreaterThan expectedTime
 
-      endTime = t.props.startTime+(3*(duration+delay))-delay+t.props.shiftTime
+      endTime = t.props.startTime + (3*(duration+delay)) - delay
       expect(t.props.endTime).toBe endTime
-      expect(t.props.endTime).toBe t.props.startTime + t.props.shiftedRepeatTime
+
     it 'should restart flags', ->
       t = new Tween(duration: 20, repeat: 2).start()
       t.update t.props.startTime + 10
@@ -137,6 +139,8 @@ describe 'Tween ->', ->
       expect(t.progress).toBeCloseTo 1, 5
       expect(t.isCompleted).toBe true
       expect(returnValue).toBe true
+
+
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)
       t.start()
@@ -280,7 +284,6 @@ describe 'Tween ->', ->
     it 'should setProgress to 0 if progress went before startTime', ->
       t = new Tween(
         duration: 100
-        isIt: true
         onReverseComplete:->
         onUpdate:->
       ).start()
@@ -537,28 +540,27 @@ describe 'Tween ->', ->
       expect(t.props.easing).toBe mojs.easing.elastic.in
 
   describe 'run method ->', ->
-    describe 'start method ->', ->
-      it 'should get the start time',->
-        t = new Tween
-        t.run()
-        expect(t.props.startTime).toBeDefined()
-        expect(t.props.endTime).toBe t.props.startTime + t.props.shiftedRepeatTime
-      it 'should call the setStartTime method',->
-        t = new Tween
-        spyOn t, 'start'
-        time = 0
-        t.run time
-        expect(t.start).toHaveBeenCalledWith time
-      it 'should add itself to tweener',->
-        t = new Tween
-        spyOn tweener, 'add'
-        t.run()
-        expect(tweener.add).toHaveBeenCalled()
-      it 'should not add itself to tweener if time was passed',->
-        t = new Tween
-        spyOn tweener, 'add'
-        t.run 10239123
-        expect(tweener.add).not.toHaveBeenCalled()
+    it 'should get the start time',->
+      t = new Tween
+      t.run()
+      expect(t.props.startTime).toBeDefined()
+      expect(t.props.endTime).toBe t.props.startTime + t.props.repeatTime
+    it 'should call the setStartTime method',->
+      t = new Tween
+      spyOn t, 'start'
+      time = 0
+      t.run time
+      expect(t.start).toHaveBeenCalledWith time
+    it 'should add itself to tweener',->
+      t = new Tween
+      spyOn tweener, 'add'
+      t.run()
+      expect(tweener.add).toHaveBeenCalled()
+    it 'should not add itself to tweener if time was passed',->
+      t = new Tween
+      spyOn tweener, 'add'
+      t.run 10239123
+      expect(tweener.add).not.toHaveBeenCalled()
 
   describe '_removeFromTweener method ->', ->
     it 'should call tweener.remove method with self',->

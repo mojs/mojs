@@ -173,7 +173,7 @@ describe 'Spriter module ->', ->
       div3 = document.createElement('div'); div4 = document.createElement('div')
       div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
       div.appendChild(div4)
-      sp = new Spriter el: div, isRunLess: true, isShowEnd: true, isIt: true
+      sp = new Spriter el: div, isRunLess: true, isShowEnd: true
       sp._setProgress .25
       sp._setProgress .5
       sp._setProgress 1

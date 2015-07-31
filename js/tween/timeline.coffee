@@ -54,11 +54,14 @@ class Timeline
     for tm, i in timeline
       if h.isArray(tm) then @_appendTimelineArray(tm)
       else @appendTimeline(tm, @timelines.length)
+    @
+
   _appendTimelineArray:(timelineArray)->
     i = timelineArray.length; time = @props.repeatTime; len = @timelines.length
     @appendTimeline(timelineArray[i], len, time) while(i--)
   appendTimeline:(timeline, index, time)->
     shift = (if time? then time else @props.time)
+    shift += (timeline.props.shiftTime or 0)
     timeline.index = index; @pushTimeline timeline, shift
 
   recalcDuration:->
@@ -82,7 +85,7 @@ class Timeline
   # tweener's active tweens array
   update:(time)->
     # don't go further then the endTime
-    if time > @props.endTime then time = @props.endTime
+    time = @props.endTime if time > @props.endTime
     # set the time to timelines
     @_updateTimelines time
     # check the callbacks for the current time
@@ -102,8 +105,11 @@ class Timeline
     # so take a modulo of the elapsed time
     startPoint = @props.startTime - @props.delay
     elapsed = (time - startPoint) % (@props.delay + @props.time)
+
     # get the time for timelines
-    timeToTimelines = if startPoint + elapsed >= @props.startTime
+    timeToTimelines = if time is @props.endTime then @props.endTime
+    # after delay
+    else if startPoint + elapsed >= @props.startTime
       if time >= @props.endTime then @props.endTime
       else startPoint + elapsed
     else
@@ -142,14 +148,11 @@ class Timeline
   removeFromTweener:-> t.remove(@); @
 
   setStartTime:(time)->
-    @getDimentions(time); @o.onStart?.apply(@); @startTimelines(time)
+    @getDimentions(time); @o.onStart?.apply(@); @startTimelines(@props.startTime)
 
   startTimelines:(time)->
     i = @timelines.length
-    time ?= @props.startTime
-    # cover
-    time += (@props.shiftTime or 0)
-    # @o.isIt is '3' and console.log time
+    !time? and (time = @props.startTime)
     @timelines[i].start(time) while(i--)
 
   setProgress:(progress)->

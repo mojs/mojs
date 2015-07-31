@@ -223,7 +223,7 @@ describe 'Transit ->', ->
       byte.then radius: 5
       expect(byte.timeline.timelines[1].props.duration).toBe 1000
       expect(byte.timeline.timelines[1].props.yoyo)    .toBe false
-      expect(byte.timeline.timelines[1].props.delay)   .toBe 1010
+      expect(byte.timeline.timelines[1].props.shiftTime).toBe 1010
 
     it 'should merge then options and add them to the history', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10

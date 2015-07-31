@@ -1585,7 +1585,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.timeline.timelines[1].props.delay).toBe(2100);
+        return expect(mp.timeline.timelines[1].props.shiftTime).toBe(2100);
       });
       it('should not copy previous callbacks', function() {
         var onUpdate;

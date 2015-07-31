@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.144.8'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.144.10'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -58,6 +58,94 @@
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 </div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tm0 = new mojs.Timeline
+  onComplete:-&gt; console.log &#39;a&#39;
+  repeat: 0
+tm1 = new mojs.Timeline
+tm2 = new mojs.Timeline delay: 1000</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tw1 = new mojs.Tween onUpdate:(p)-&gt; console.log &quot;tw1: #{p}&quot;
+tm1.add tw1</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tw2 = new mojs.Tween isIt: &#39;1&#39;, onUpdate:(p)-&gt; console.log &quot;tw2: #{p}&quot;
+tm2.add tw2</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tm0.add tm1
+tm0.append tm2</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tm0.start()</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log &quot;tm0 startTime: #{tm0.props.startTime}&quot;
+console.log &quot;tm0 endTime: #{tm0.props.endTime}&quot;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log &quot;tw2 endTime: #{tw2.props.endTime}&quot;</p>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log &#39;-------------------&gt;&gt;&gt;&#39;</p>
+</div>
+        </div>
+      
       
       </div>
     

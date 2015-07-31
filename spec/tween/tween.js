@@ -45,7 +45,7 @@
         expect(t.props.time).toBe(1100);
         return expect(t.props.repeatTime).toBe(1100);
       });
-      it('should calc time, repeatTime #2', function() {
+      return it('should calc time, repeatTime #2', function() {
         var t;
         t = new Tween({
           duration: 1000,
@@ -54,29 +54,6 @@
         });
         expect(t.props.time).toBe(1100);
         return expect(t.props.repeatTime).toBe(3300);
-      });
-      it('should calculate shiftedRepeatTime', function() {
-        var t;
-        t = new Tween({
-          duration: 1000,
-          delay: 100,
-          repeat: 2
-        });
-        expect(t.props.time).toBe(1100);
-        expect(t.props.repeatTime).toBe(3300);
-        return expect(t.props.shiftedRepeatTime).toBe(3200);
-      });
-      return it('should calculate shiftedRepeatTime #2', function() {
-        var t;
-        t = new Tween({
-          duration: 1000,
-          delay: 100,
-          repeat: 2
-        });
-        t.setProp('shiftTime', 700);
-        expect(t.props.time).toBe(1100);
-        expect(t.props.repeatTime).toBe(3300);
-        return expect(t.props.shiftedRepeatTime).toBe(3900);
       });
     });
     describe('isChained option ->', function() {
@@ -115,17 +92,18 @@
         return expect(t.props.startTime).toBe(1);
       });
       it('should calculate end time', function() {
-        var delay, duration, t;
+        var delay, duration, endTime, t;
         duration = 1000;
         delay = 500;
         t = new Tween({
           duration: duration,
           delay: delay
         }).start();
-        return expect(t.props.endTime).toBe(t.props.startTime + t.props.shiftedRepeatTime);
+        endTime = t.props.startTime + t.props.repeatTime - t.props.delay;
+        return expect(t.props.endTime).toBe(endTime);
       });
       it('should calculate end time with repeat', function() {
-        var delay, duration, t;
+        var delay, duration, endTime, t;
         duration = 1000;
         delay = 500;
         t = new Tween({
@@ -133,7 +111,8 @@
           delay: delay,
           repeat: 2
         }).start();
-        return expect(t.props.endTime).toBe(t.props.startTime + t.props.shiftedRepeatTime);
+        endTime = t.props.startTime + t.props.repeatTime - t.props.delay;
+        return expect(t.props.endTime).toBe(endTime);
       });
       it('should calculate end time if repeat', function() {
         var delay, duration, t, time;
@@ -161,9 +140,8 @@
         expectedTime = performance.now() + 500 + delay;
         expect(t.props.startTime).toBeGreaterThan(expectedTime - 50);
         expect(t.props.startTime).not.toBeGreaterThan(expectedTime);
-        endTime = t.props.startTime + (3 * (duration + delay)) - delay + t.props.shiftTime;
-        expect(t.props.endTime).toBe(endTime);
-        return expect(t.props.endTime).toBe(t.props.startTime + t.props.shiftedRepeatTime);
+        endTime = t.props.startTime + (3 * (duration + delay)) - delay;
+        return expect(t.props.endTime).toBe(endTime);
       });
       return it('should restart flags', function() {
         var t;
@@ -480,7 +458,6 @@
         var t;
         t = new Tween({
           duration: 100,
-          isIt: true,
           onReverseComplete: function() {},
           onUpdate: function() {}
         }).start();
@@ -912,36 +889,34 @@
       });
     });
     describe('run method ->', function() {
-      return describe('start method ->', function() {
-        it('should get the start time', function() {
-          var t;
-          t = new Tween;
-          t.run();
-          expect(t.props.startTime).toBeDefined();
-          return expect(t.props.endTime).toBe(t.props.startTime + t.props.shiftedRepeatTime);
-        });
-        it('should call the setStartTime method', function() {
-          var t, time;
-          t = new Tween;
-          spyOn(t, 'start');
-          time = 0;
-          t.run(time);
-          return expect(t.start).toHaveBeenCalledWith(time);
-        });
-        it('should add itself to tweener', function() {
-          var t;
-          t = new Tween;
-          spyOn(tweener, 'add');
-          t.run();
-          return expect(tweener.add).toHaveBeenCalled();
-        });
-        return it('should not add itself to tweener if time was passed', function() {
-          var t;
-          t = new Tween;
-          spyOn(tweener, 'add');
-          t.run(10239123);
-          return expect(tweener.add).not.toHaveBeenCalled();
-        });
+      it('should get the start time', function() {
+        var t;
+        t = new Tween;
+        t.run();
+        expect(t.props.startTime).toBeDefined();
+        return expect(t.props.endTime).toBe(t.props.startTime + t.props.repeatTime);
+      });
+      it('should call the setStartTime method', function() {
+        var t, time;
+        t = new Tween;
+        spyOn(t, 'start');
+        time = 0;
+        t.run(time);
+        return expect(t.start).toHaveBeenCalledWith(time);
+      });
+      it('should add itself to tweener', function() {
+        var t;
+        t = new Tween;
+        spyOn(tweener, 'add');
+        t.run();
+        return expect(tweener.add).toHaveBeenCalled();
+      });
+      return it('should not add itself to tweener if time was passed', function() {
+        var t;
+        t = new Tween;
+        spyOn(tweener, 'add');
+        t.run(10239123);
+        return expect(tweener.add).not.toHaveBeenCalled();
       });
     });
     describe('_removeFromTweener method ->', function() {
