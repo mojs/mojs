@@ -72,7 +72,7 @@ describe 'Stagger ->', ->
       options = el: ['body', 'body', 'body'], path: 'M0,0 L100,100'
       s = new Stagger options
       expect(s._getChildQuantity 2, options).toBe 2
-      
+
   describe '_createTimeline method ->', ->
     it 'should create timeline', ->
       options = el: 'body', path: 'M0,0 L100,100'
@@ -129,6 +129,14 @@ describe 'Stagger ->', ->
     it 'should pass the delay option to timeline', ->
       s = new Stagger delay: 200
       expect(s.timeline.o.delay).toBe 200
+
+  describe 'quantifier option ->', ->
+    it 'should be passed to the _getChildQuantity method', ->
+      s = new Stagger delay: [100, 200, 300], quantifier: 2
+      expect(s.childModules[0].o.delay).toBe 100
+      expect(s.childModules[1].o.delay).toBe 200
+      expect(s.childModules[2]).not.toBeDefined()
+
 
 
 

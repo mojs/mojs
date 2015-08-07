@@ -62,7 +62,8 @@ class Stagger
   # @param {Object} Options.
   # @param {Object} Child class.
   init:(options, Module)->
-    count = @_getChildQuantity 'el', options
+    count = @_getChildQuantity options.quantifier or 'el', options
+    options.isIt and console.log count
     @_createTimeline(options); @childModules = []
     for i in [0...count]
       # get child module's option
@@ -70,7 +71,7 @@ class Stagger
       # create child module
       module = new Module(option); @childModules.push module
       # add child module's timeline to the self timeline
-      @timeline.add module.timeline
+      @timeline.add module
     @
   # ---
 

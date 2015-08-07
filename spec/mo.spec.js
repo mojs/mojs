@@ -1697,7 +1697,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.144.12',
+  revision: '0.145.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3112,7 +3112,8 @@ Stagger = (function() {
 
   Stagger.prototype.init = function(options, Module) {
     var count, i, j, module, option, ref;
-    count = this._getChildQuantity('el', options);
+    count = this._getChildQuantity(options.quantifier || 'el', options);
+    options.isIt && console.log(count);
     this._createTimeline(options);
     this.childModules = [];
     for (i = j = 0, ref = count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
@@ -3120,7 +3121,7 @@ Stagger = (function() {
       option.isRunLess = true;
       module = new Module(option);
       this.childModules.push(module);
-      this.timeline.add(module.timeline);
+      this.timeline.add(module);
     }
     return this;
   };

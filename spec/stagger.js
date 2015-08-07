@@ -222,13 +222,25 @@
         return expect(s.timeline.o.onReverseComplete).toBe(fun);
       });
     });
-    return describe('delay option ->', function() {
+    describe('delay option ->', function() {
       return it('should pass the delay option to timeline', function() {
         var s;
         s = new Stagger({
           delay: 200
         });
         return expect(s.timeline.o.delay).toBe(200);
+      });
+    });
+    return describe('quantifier option ->', function() {
+      return it('should be passed to the _getChildQuantity method', function() {
+        var s;
+        s = new Stagger({
+          delay: [100, 200, 300],
+          quantifier: 2
+        });
+        expect(s.childModules[0].o.delay).toBe(100);
+        expect(s.childModules[1].o.delay).toBe(200);
+        return expect(s.childModules[2]).not.toBeDefined();
       });
     });
   });
