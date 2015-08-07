@@ -1,9 +1,7 @@
 (function() {
-  var Stagger, StaggerWrapper;
+  var Stagger;
 
-  StaggerWrapper = mojs.Stagger;
-
-  Stagger = StaggerWrapper(mojs.MotionPath);
+  Stagger = mojs.Stagger(mojs.MotionPath);
 
   describe('Stagger ->', function() {
     describe('_getOptionByMod method ->', function() {
@@ -106,7 +104,7 @@
         s = new Stagger(options);
         return expect(s._getChildQuantity('el', options)).toBe(1);
       });
-      return it('should get quantity of child modules #string', function() {
+      it('should get quantity of child modules #string', function() {
         var options, s;
         options = {
           el: 'body',
@@ -114,6 +112,15 @@
         };
         s = new Stagger(options);
         return expect(s._getChildQuantity('el', options)).toBe(1);
+      });
+      return it('should get quantity of is number was passed', function() {
+        var options, s;
+        options = {
+          el: ['body', 'body', 'body'],
+          path: 'M0,0 L100,100'
+        };
+        s = new Stagger(options);
+        return expect(s._getChildQuantity(2, options)).toBe(2);
       });
     });
     describe('_createTimeline method ->', function() {

@@ -37,6 +37,9 @@ class Stagger
   # @param  {Object} Options hash object.
   # @return {Number} Number of child object that should be defined.
   _getChildQuantity:(name, store)->
+    # if number was set
+    return name if typeof name is 'number'
+
     quantifier = store[name]
     if h.isArray(quantifier) then quantifier.length
     else if quantifier+'' is '[object NodeList]' then quantifier.length

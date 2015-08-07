@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.144.11 
+	0.144.12 
 */
 
 (function(f){
@@ -1699,7 +1699,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.144.11',
+  revision: '0.144.12',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3065,6 +3065,9 @@ Stagger = (function() {
 
   Stagger.prototype._getChildQuantity = function(name, store) {
     var quantifier;
+    if (typeof name === 'number') {
+      return name;
+    }
     quantifier = store[name];
     if (h.isArray(quantifier)) {
       return quantifier.length;
