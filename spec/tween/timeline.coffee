@@ -200,6 +200,23 @@ describe 'Timeline ->', ->
       tm3 = new Tween(duration: 500, delay: 700)
       t.append [tm2, tm3], tm1
       expect(t.props.repeatTime).toBe 1200 + 1300
+    it 'should arguments time = array time', ->
+
+      # t = new Timeline delay: 2500, isIt: '0'
+      t1 = new Timeline delay: 2500, isIt: '1'
+      t2 = new Timeline delay: 2500, isIt: '2'
+      tm0 = new Tween duration: 3000, delay: 200
+      tm1 = new Tween(duration: 500, delay: 800)
+      tm2 = new Tween(duration: 500, delay: 800)
+      t1.add tm0; t2.add tm0
+      t1.append tm1
+      t2.append [tm2]
+
+      # t.add t1, t2
+      # t.setStartTime()
+      t1.setStartTime(); t2.setStartTime()
+      expect(tm2.props.startTime).toBe tm1.props.startTime
+
     it 'should delay the timeline to duration',->
       t = new Timeline
       t.add new Tween duration: 1000, delay: 200

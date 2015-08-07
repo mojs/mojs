@@ -188,8 +188,10 @@ sequence. </p>
     @
 
   <span class="hljs-attribute">_appendTimelineArray</span>:<span class="hljs-function"><span class="hljs-params">(timelineArray)</span>-&gt;</span>
-    i = timelineArray.length; time = <span class="hljs-property">@props</span>.repeatTime; len = <span class="hljs-property">@timelines</span>.length
+    i = timelineArray.length; time = <span class="hljs-property">@props</span>.repeatTime - <span class="hljs-property">@props</span>.delay
+    len = <span class="hljs-property">@timelines</span>.length
     <span class="hljs-property">@appendTimeline</span>(timelineArray[i], len, time) <span class="hljs-keyword">while</span>(i--)
+  
   <span class="hljs-attribute">appendTimeline</span>:<span class="hljs-function"><span class="hljs-params">(timeline, index, time)</span>-&gt;</span>
     shift = (<span class="hljs-keyword">if</span> time? <span class="hljs-keyword">then</span> time <span class="hljs-keyword">else</span> <span class="hljs-property">@props</span>.time)
     shift += (timeline.props.shiftTime <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>)
@@ -441,7 +443,8 @@ for the current time</p>
   <span class="hljs-attribute">removeFromTweener</span>:<span class="hljs-function">-&gt;</span> t.remove(@); @
 
   <span class="hljs-attribute">setStartTime</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
-    <span class="hljs-property">@getDimentions</span>(time); <span class="hljs-property">@o</span>.onStart?.apply(@); <span class="hljs-property">@startTimelines</span>(<span class="hljs-property">@props</span>.startTime)
+    <span class="hljs-property">@getDimentions</span>(time); <span class="hljs-property">@o</span>.onStart?.apply(@)
+    <span class="hljs-property">@startTimelines</span>(<span class="hljs-property">@props</span>.startTime)
 
   <span class="hljs-attribute">startTimelines</span>:<span class="hljs-function"><span class="hljs-params">(time)</span>-&gt;</span>
     i = <span class="hljs-property">@timelines</span>.length

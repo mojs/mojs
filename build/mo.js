@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.144.10 
+	0.144.11 
 */
 
 (function(f){
@@ -1699,7 +1699,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.144.10',
+  revision: '0.144.11',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4021,7 +4021,7 @@ Timeline = (function() {
   Timeline.prototype._appendTimelineArray = function(timelineArray) {
     var i, len, results, time;
     i = timelineArray.length;
-    time = this.props.repeatTime;
+    time = this.props.repeatTime - this.props.delay;
     len = this.timelines.length;
     results = [];
     while (i--) {

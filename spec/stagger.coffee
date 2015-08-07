@@ -1,5 +1,4 @@
-StaggerWrapper = mojs.Stagger
-Stagger = StaggerWrapper mojs.MotionPath
+Stagger = mojs.Stagger mojs.MotionPath
 
 describe 'Stagger ->', ->
   describe '_getOptionByMod method ->', ->

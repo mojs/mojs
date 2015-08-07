@@ -57,8 +57,10 @@ class Timeline
     @
 
   _appendTimelineArray:(timelineArray)->
-    i = timelineArray.length; time = @props.repeatTime; len = @timelines.length
+    i = timelineArray.length; time = @props.repeatTime - @props.delay
+    len = @timelines.length
     @appendTimeline(timelineArray[i], len, time) while(i--)
+  
   appendTimeline:(timeline, index, time)->
     shift = (if time? then time else @props.time)
     shift += (timeline.props.shiftTime or 0)
@@ -148,7 +150,8 @@ class Timeline
   removeFromTweener:-> t.remove(@); @
 
   setStartTime:(time)->
-    @getDimentions(time); @o.onStart?.apply(@); @startTimelines(@props.startTime)
+    @getDimentions(time); @o.onStart?.apply(@)
+    @startTimelines(@props.startTime)
 
   startTimelines:(time)->
     i = @timelines.length
