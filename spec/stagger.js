@@ -222,11 +222,11 @@
         return expect(s.timeline.o.onReverseComplete).toBe(fun);
       });
     });
-    describe('delay option ->', function() {
-      return it('should pass the delay option to timeline', function() {
+    describe('moduleDelay option ->', function() {
+      return it('should pass the moduleDelay option to timeline', function() {
         var s;
         s = new Stagger({
-          delay: 200
+          moduleDelay: 200
         });
         return expect(s.timeline.o.delay).toBe(200);
       });

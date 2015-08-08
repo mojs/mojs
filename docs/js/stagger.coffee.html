@@ -215,7 +215,7 @@ Timeline = <span class="hljs-built_in">require</span> <span class="hljs-string">
       <span class="hljs-attribute">onUpdate</span>:          options.onStaggerUpdate
       <span class="hljs-attribute">onComplete</span>:        options.onStaggerComplete
       <span class="hljs-attribute">onReverseComplete</span>: options.onStaggerReverseComplete
-      <span class="hljs-attribute">delay</span>:             options.delay</div></div>
+      <span class="hljs-attribute">delay</span>:             options.moduleDelay</div></div>
       
       </div>
     
@@ -244,7 +244,6 @@ Timeline = <span class="hljs-built_in">require</span> <span class="hljs-string">
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">init</span>:<span class="hljs-function"><span class="hljs-params">(options, Module)</span>-&gt;</span>
     count = <span class="hljs-property">@_getChildQuantity</span> options.quantifier <span class="hljs-keyword">or</span> <span class="hljs-string">'el'</span>, options
-    options.isIt <span class="hljs-keyword">and</span> <span class="hljs-built_in">console</span>.log count
     <span class="hljs-property">@_createTimeline</span>(options); <span class="hljs-property">@childModules</span> = []
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..count]</div></div>
       

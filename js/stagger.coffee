@@ -55,7 +55,7 @@ class Stagger
       onUpdate:          options.onStaggerUpdate
       onComplete:        options.onStaggerComplete
       onReverseComplete: options.onStaggerReverseComplete
-      delay:             options.delay
+      delay:             options.moduleDelay
   # ---
 
   # Method to make stagger form options
@@ -63,7 +63,6 @@ class Stagger
   # @param {Object} Child class.
   init:(options, Module)->
     count = @_getChildQuantity options.quantifier or 'el', options
-    options.isIt and console.log count
     @_createTimeline(options); @childModules = []
     for i in [0...count]
       # get child module's option

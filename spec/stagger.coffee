@@ -125,9 +125,9 @@ describe 'Stagger ->', ->
       s = new Stagger onStaggerReverseComplete: fun
       expect(s.timeline.o.onReverseComplete).toBe fun
 
-  describe 'delay option ->', ->
-    it 'should pass the delay option to timeline', ->
-      s = new Stagger delay: 200
+  describe 'moduleDelay option ->', ->
+    it 'should pass the moduleDelay option to timeline', ->
+      s = new Stagger moduleDelay: 200
       expect(s.timeline.o.delay).toBe 200
 
   describe 'quantifier option ->', ->
