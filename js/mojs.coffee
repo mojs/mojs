@@ -1,5 +1,5 @@
 mojs =
-  revision:   '0.146.5', isDebug: true
+  revision:   '0.146.6', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -27,16 +27,19 @@ mojs.delta = mojs.h.delta
 
 # tm1 = new mojs.Timeline repeat: 999999
 
-# tm2 = new mojs.Timeline
+# # tm2 = new mojs.Timeline
 
 # tw1 = new mojs.Tween
+#   delay: 200,
+#   onUpdate:(p)-> console.log p,
+#   onStart:-> console.log('start')
 
-# tw2 = new mojs.Tween onUpdate:(p)-> console.log p
+# # tw2 = new mojs.Tween onUpdate:(p)-> console.log p
 
-# tm2.add tw1
-# tm2.append tw2
+# # tm2.add tw1
+# # tm2.append tw2
 
-# tm1.add tm2
+# tm1.add tw1
 
 # tm1.start()
 

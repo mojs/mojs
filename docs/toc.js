@@ -21,7 +21,29 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "title": "tm2 = new mojs.Timeline",
+  "toc": [
+    {
+      "level": 1,
+      "slug": "tm2-new-mojs-timeline",
+      "title": "tm2 = new mojs.Timeline"
+    },
+    {
+      "level": 1,
+      "slug": "tw2-new-mojs-tween-onupdate-p-gt-console-log-p",
+      "title": "tw2 = new mojs.Tween onUpdate:(p)-&gt; console.log p"
+    },
+    {
+      "level": 1,
+      "slug": "tm2-add-tw1",
+      "title": "tm2.add tw1"
+    },
+    {
+      "level": 1,
+      "slug": "tm2-append-tw2",
+      "title": "tm2.append tw2"
+    }
+  ]
 },
 {
   "path": "js/motion-path.coffee.html",

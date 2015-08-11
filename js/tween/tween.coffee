@@ -77,7 +77,8 @@ class Tween
   # Method to set tween's state to complete
   _complete:->
     @setProgress(1); @props.onComplete?.apply(@)
-    @isOnReverseComplete = false; @isCompleted = true
+    @isCompleted = true; @isStart = false
+    @isOnReverseComplete = false;
 
 
   _updateInActiveArea:(time)->

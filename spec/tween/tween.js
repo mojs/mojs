@@ -1007,11 +1007,17 @@
         tw._complete();
         return expect(tw.isOnReverseComplete).toBe(false);
       });
-      return it('should set isCompleted to true', function() {
+      it('should set isCompleted to true', function() {
         var tw;
         tw = new Tween;
         tw._complete();
         return expect(tw.isCompleted).toBe(true);
+      });
+      return it('should set isStart to false', function() {
+        var tw;
+        tw = new Tween;
+        tw._complete();
+        return expect(tw.isStart).toBe(false);
       });
     });
   });

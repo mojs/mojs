@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title> - mojs.coffee</title>
+  <title>tm2 = new mojs.Timeline - mojs.coffee</title>
 
   <link rel="stylesheet" href="../assets/style.css">
   
@@ -33,7 +33,7 @@
       
       
         <div class="code"><div class="wrapper">mojs =
-  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.146.5'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
+  <span class="hljs-attribute">revision</span>:   <span class="hljs-string">'0.146.6'</span>, <span class="hljs-attribute">isDebug</span>: <span class="hljs-literal">true</span>
   helpers     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
   Bit         : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bit'</span>
   bitsMap     : <span class="hljs-built_in">require</span> <span class="hljs-string">'./shapes/bitsMap'</span>
@@ -75,7 +75,19 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>tm2 = new mojs.Timeline</p>
+          <div class="wrapper"><h1 id="tm2-new-mojs-timeline"><a href="#tm2-new-mojs-timeline" class="anchor"></a>tm2 = new mojs.Timeline</h1></div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>tw1 = new mojs.Tween
+  delay: 200,
+  onUpdate:(p)-&gt; console.log p,
+  onStart:-&gt; console.log(&#39;start&#39;)</p>
 </div>
         </div>
       
@@ -85,8 +97,7 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>tw1 = new mojs.Tween</p>
-</div>
+          <div class="wrapper"><h1 id="tw2-new-mojs-tween-onupdate-p-gt-console-log-p"><a href="#tw2-new-mojs-tween-onupdate-p-gt-console-log-p" class="anchor"></a>tw2 = new mojs.Tween onUpdate:(p)-&gt; console.log p</h1></div>
         </div>
       
       
@@ -95,8 +106,7 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>tw2 = new mojs.Tween onUpdate:(p)-&gt; console.log p</p>
-</div>
+          <div class="wrapper"><h1 id="tm2-add-tw1"><a href="#tm2-add-tw1" class="anchor"></a>tm2.add tw1</h1><h1 id="tm2-append-tw2"><a href="#tm2-append-tw2" class="anchor"></a>tm2.append tw2</h1></div>
         </div>
       
       
@@ -105,18 +115,7 @@ mojs.delta = mojs.h.delta
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>tm2.add tw1
-tm2.append tw2</p>
-</div>
-        </div>
-      
-      
-      </div>
-    
-      <div class="segment">
-      
-        <div class="comments ">
-          <div class="wrapper"><p>tm1.add tm2</p>
+          <div class="wrapper"><p>tm1.add tw1</p>
 </div>
         </div>
       

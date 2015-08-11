@@ -635,6 +635,10 @@ describe 'Tween ->', ->
       tw = new Tween
       tw._complete()
       expect(tw.isCompleted).toBe true
+    it 'should set isStart to false', ->
+      tw = new Tween
+      tw._complete()
+      expect(tw.isStart).toBe false
 
 
 

@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.146.5 
+	0.146.6 
 */
 
 (function(f){
@@ -1699,7 +1699,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.5',
+  revision: '0.146.6',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4315,8 +4315,9 @@ Tween = (function() {
     if ((ref = this.props.onComplete) != null) {
       ref.apply(this);
     }
-    this.isOnReverseComplete = false;
-    return this.isCompleted = true;
+    this.isCompleted = true;
+    this.isStart = false;
+    return this.isOnReverseComplete = false;
   };
 
   Tween.prototype._updateInActiveArea = function(time) {
