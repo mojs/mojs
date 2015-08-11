@@ -348,7 +348,7 @@
         return expect(t.props.repeatTime).toBe(1200 + 1300);
       });
       it('should arguments time = array time', function() {
-        var t1, t2, tm0, tm1, tm2;
+        var t1, t2, time, tm0, tm1, tm2;
         t1 = new Timeline({
           delay: 2500,
           isIt: '1'
@@ -373,8 +373,9 @@
         t2.add(tm0);
         t1.append(tm1);
         t2.append([tm2]);
-        t1.setStartTime();
-        t2.setStartTime();
+        time = performance.now();
+        t1.setStartTime(time);
+        t2.setStartTime(time);
         return expect(tm2.props.startTime).toBe(tm1.props.startTime);
       });
       it('should delay the timeline to duration', function() {

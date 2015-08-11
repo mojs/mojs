@@ -211,10 +211,8 @@ describe 'Timeline ->', ->
       t1.add tm0; t2.add tm0
       t1.append tm1
       t2.append [tm2]
-
-      # t.add t1, t2
-      # t.setStartTime()
-      t1.setStartTime(); t2.setStartTime()
+      time = performance.now()
+      t1.setStartTime(time); t2.setStartTime(time)
       expect(tm2.props.startTime).toBe tm1.props.startTime
 
     it 'should delay the timeline to duration',->
@@ -598,7 +596,6 @@ describe 'Timeline ->', ->
       spyOn t.timelines[0], 'update'
       t._updateTimelines(time-10)
       expect(t.timelines[0].update).toHaveBeenCalledWith time-10, false
-
 
     it 'should set time to timelines with respect to repeat option', ->
       t = new Timeline repeat: 1

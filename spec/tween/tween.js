@@ -955,7 +955,7 @@
         return expect(timeline.setProgress).toHaveBeenCalledWith(0);
       });
     });
-    return describe('pause method ->', function() {
+    describe('pause method ->', function() {
       return it('should call t.remove method with self', function() {
         var timeline;
         tweener.removeAll();
@@ -966,6 +966,39 @@
         spyOn(timeline, '_removeFromTweener');
         timeline.pause();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
+      });
+    });
+    return describe('_complete method ->', function() {
+      it('should set progress to 1', function() {
+        var tw;
+        tw = new Tween;
+        spyOn(tw, 'setProgress');
+        tw._complete();
+        return expect(tw.setProgress).toHaveBeenCalledWith(1);
+      });
+      it('should call onComplete callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onComplete: fun
+        });
+        tw._complete();
+        return expect(isCalled).toBe(true);
+      });
+      it('should set isOnReverseComplete to false', function() {
+        var tw;
+        tw = new Tween;
+        tw._complete();
+        return expect(tw.isOnReverseComplete).toBe(false);
+      });
+      return it('should set isCompleted to true', function() {
+        var tw;
+        tw = new Tween;
+        tw._complete();
+        return expect(tw.isCompleted).toBe(true);
       });
     });
   });

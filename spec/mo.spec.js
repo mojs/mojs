@@ -1697,7 +1697,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.1',
+  revision: '0.146.3',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4268,7 +4268,7 @@ Tween = (function() {
     return this;
   };
 
-  Tween.prototype.update = function(time) {
+  Tween.prototype.update = function(time, isGrow) {
     var ref, ref1, ref2, ref3, ref4, ref5;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
@@ -4326,6 +4326,16 @@ Tween = (function() {
     }
     this.prevTime = time;
     return this.isCompleted;
+  };
+
+  Tween.prototype._complete = function() {
+    var ref;
+    this.setProgress(1);
+    if ((ref = this.props.onComplete) != null) {
+      ref.apply(this);
+    }
+    this.isOnReverseComplete = false;
+    return this.isCompleted = true;
   };
 
   Tween.prototype._updateInActiveArea = function(time) {

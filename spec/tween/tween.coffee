@@ -607,6 +607,27 @@ describe 'Tween ->', ->
     #   t.add(timeline); t.start(); t.pause()
     #   expect(t.state).toBe 'pause'
 
+  describe '_complete method ->', ->
+    it 'should set progress to 1', ->
+      tw = new Tween
+      spyOn tw, 'setProgress'
+      tw._complete()
+      expect(tw.setProgress).toHaveBeenCalledWith 1
+    it 'should call onComplete callback', ->
+      isCalled = null
+      fun = -> isCalled = true
+      tw = new Tween onComplete: fun
+      tw._complete()
+      expect(isCalled).toBe true
+    it 'should set isOnReverseComplete to false', ->
+      tw = new Tween
+      tw._complete()
+      expect(tw.isOnReverseComplete).toBe false
+    it 'should set isCompleted to true', ->
+      tw = new Tween
+      tw._complete()
+      expect(tw.isCompleted).toBe true
+
 
 
 
