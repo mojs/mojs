@@ -1697,7 +1697,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.3',
+  revision: '0.146.4',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4269,7 +4269,7 @@ Tween = (function() {
   };
 
   Tween.prototype.update = function(time, isGrow) {
-    var ref, ref1, ref2, ref3, ref4, ref5;
+    var ref, ref1, ref2, ref3, ref4;
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       this.isOnReverseComplete = false;
       this.isCompleted = false;
@@ -4294,12 +4294,7 @@ Tween = (function() {
       }
     } else {
       if (time >= this.props.endTime && !this.isCompleted) {
-        this.setProgress(1);
-        if ((ref3 = this.props.onComplete) != null) {
-          ref3.apply(this);
-        }
-        this.isOnReverseComplete = false;
-        this.isCompleted = true;
+        this._complete();
       }
       if (time > this.props.endTime) {
         this.isFirstUpdate = false;
@@ -4310,16 +4305,18 @@ Tween = (function() {
     }
     if (time < this.prevTime && time <= this.props.startTime) {
       if (!this.isFirstUpdateBackward) {
-        if ((ref4 = this.props.onFirstUpdateBackward) != null) {
-          ref4.apply(this);
+        if ((ref3 = this.props.onFirstUpdateBackward) != null) {
+          ref3.apply(this);
         }
         this.isFirstUpdateBackward = true;
       }
-      if (!this.isOnReverseComplete && this.isFirstUpdate) {
+      if (isGrow) {
+        this._complete();
+      } else if (!this.isOnReverseComplete && this.isFirstUpdate) {
         this.isOnReverseComplete = true;
         this.setProgress(0, !this.props.isChained);
-        if ((ref5 = this.props.onReverseComplete) != null) {
-          ref5.apply(this);
+        if ((ref4 = this.props.onReverseComplete) != null) {
+          ref4.apply(this);
         }
       }
       this.isFirstUpdate = false;

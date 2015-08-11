@@ -139,7 +139,15 @@ describe 'Tween ->', ->
       expect(t.progress).toBeCloseTo 1, 5
       expect(t.isCompleted).toBe true
       expect(returnValue).toBe true
+    it 'should set progress to 1 on delay gaps', ->
+      t = new Tween(duration: 1000, delay: 200)
+      t.start()
 
+      spyOn(t, '_complete').and.callThrough()
+      t.update t.props.startTime + 20, true
+      t.update t.props.startTime - 20, true
+      expect(t.progress).toBe 1
+      expect(t._complete).toHaveBeenCalled()
 
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)

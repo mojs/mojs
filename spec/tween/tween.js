@@ -232,6 +232,19 @@
         expect(t.isCompleted).toBe(true);
         return expect(returnValue).toBe(true);
       });
+      it('should set progress to 1 on delay gaps', function() {
+        var t;
+        t = new Tween({
+          duration: 1000,
+          delay: 200
+        });
+        t.start();
+        spyOn(t, '_complete').and.callThrough();
+        t.update(t.props.startTime + 20, true);
+        t.update(t.props.startTime - 20, true);
+        expect(t.progress).toBe(1);
+        return expect(t._complete).toHaveBeenCalled();
+      });
       it('should not call update method if timeline isnt active "-"', function() {
         var t;
         t = new Tween({
