@@ -91,10 +91,10 @@ class Timeline
     # set the time to timelines
     @_updateTimelines time
     # check the callbacks for the current time
-    # NOTE: should be returned from this update
-    # function, because it returns true if the tween
-    # was completed, to indicate the tweener module
-    # to remove it from the active tweens array for 
+    # NOTE: _checkCallbacks method should be returned
+    # from this update function, because it returns true
+    # if the tween was completed, to indicate the tweener
+    # module to remove it from the active tweens array for 
     # performance purposes
     return @_checkCallbacks(time)
   # ---
@@ -118,10 +118,14 @@ class Timeline
       if time > @props.startTime + @props.time
         @props.startTime + @props.time
       else null
+
     # set the normalized time to the timelines
     if timeToTimelines?
       i = -1; len = @timelines.length-1
-      @timelines[i].update(timeToTimelines) while(i++ < len)
+      while(i++ < len)
+        @timelines[i].update(timeToTimelines, time > (@_previousUpdateTime or 0))
+
+    @_previousUpdateTime = time
   # ---
 
   # Method to check the callbacks

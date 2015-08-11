@@ -1697,7 +1697,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.0',
+  revision: '0.146.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4091,19 +4091,18 @@ Timeline = (function() {
   };
 
   Timeline.prototype._updateTimelines = function(time) {
-    var elapsed, i, len, results, startPoint, timeToTimelines;
+    var elapsed, i, len, startPoint, timeToTimelines;
     startPoint = this.props.startTime - this.props.delay;
     elapsed = (time - startPoint) % (this.props.delay + this.props.time);
     timeToTimelines = time === this.props.endTime ? this.props.endTime : startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
     if (timeToTimelines != null) {
       i = -1;
       len = this.timelines.length - 1;
-      results = [];
       while (i++ < len) {
-        results.push(this.timelines[i].update(timeToTimelines));
+        this.timelines[i].update(timeToTimelines, time > (this._previousUpdateTime || 0));
       }
-      return results;
     }
+    return this._previousUpdateTime = time;
   };
 
   Timeline.prototype._checkCallbacks = function(time) {

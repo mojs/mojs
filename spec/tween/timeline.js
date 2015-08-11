@@ -910,8 +910,8 @@
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
         t.update(time = performance.now() + 200);
-        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
-        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(time, true);
+        return expect(t.timelines[1].update).toHaveBeenCalledWith(time, true);
       });
       it('should return true is ended', function() {
         var t;
@@ -938,7 +938,7 @@
         t.update(t.props.startTime + 1000);
         return expect(t.prevTime).toBe(t.props.endTime);
       });
-      return it('should work with tweens', function() {
+      it('should work with tweens', function() {
         var t, t1, t2, ti1, ti2, ti3, ti4, time;
         t = new Timeline;
         t1 = new Timeline;
@@ -971,10 +971,17 @@
         t.add(t2);
         t.start();
         t.update(time = t.props.startTime + 300);
-        expect(ti1.update).toHaveBeenCalledWith(time);
-        expect(ti2.update).toHaveBeenCalledWith(time);
-        expect(ti3.update).toHaveBeenCalledWith(time);
-        return expect(ti4.update).toHaveBeenCalledWith(time);
+        expect(ti1.update).toHaveBeenCalledWith(time, true);
+        expect(ti2.update).toHaveBeenCalledWith(time, true);
+        expect(ti3.update).toHaveBeenCalledWith(time, true);
+        return expect(ti4.update).toHaveBeenCalledWith(time, true);
+      });
+      return it('should save _previousUpdateTime', function() {
+        var t, time;
+        t = new Timeline;
+        time = performance.now();
+        t.update(time);
+        return expect(t._previousUpdateTime).toBe(time);
       });
     });
     describe('_updateTimelines method ->', function() {
@@ -994,8 +1001,8 @@
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
         t._updateTimelines(time);
-        expect(t.timelines[0].update).toHaveBeenCalledWith(time);
-        return expect(t.timelines[1].update).toHaveBeenCalledWith(time);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(time, true);
+        return expect(t.timelines[1].update).toHaveBeenCalledWith(time, true);
       });
       it('should pass the endTime if the progress is much further', function() {
         var t, time;
@@ -1013,8 +1020,8 @@
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
         t._updateTimelines(time + (5 * t.props.time));
-        expect(t.timelines[0].update).toHaveBeenCalledWith(t.props.endTime);
-        return expect(t.timelines[1].update).toHaveBeenCalledWith(t.props.endTime);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(t.props.endTime, true);
+        return expect(t.timelines[1].update).toHaveBeenCalledWith(t.props.endTime, true);
       });
       it('should pass the endTime if the progress is in delay period', function() {
         var t, time, timeAfterPeriod, timeAtOne;
@@ -1036,8 +1043,8 @@
         timeAfterPeriod = t.props.startTime + t.props.delay + t.props.time - 100;
         t._updateTimelines(timeAfterPeriod);
         timeAtOne = t.props.startTime + t.props.time;
-        expect(t.timelines[0].update).toHaveBeenCalledWith(timeAtOne);
-        return expect(t.timelines[1].update).toHaveBeenCalledWith(timeAtOne);
+        expect(t.timelines[0].update).toHaveBeenCalledWith(timeAtOne, true);
+        return expect(t.timelines[1].update).toHaveBeenCalledWith(timeAtOne, true);
       });
       it('should pass the endTime if the progress is in subsequent delay period', function() {
         var endTime, t, time;
@@ -1053,7 +1060,23 @@
         spyOn(t.timelines[0], 'update');
         t._updateTimelines(time);
         endTime = t.props.startTime + t.props.time;
-        return expect(t.timelines[0].update).toHaveBeenCalledWith(endTime);
+        return expect(t.timelines[0].update).toHaveBeenCalledWith(endTime, true);
+      });
+      it('should pass false as second parameter if the new time is smaller', function() {
+        var t, time;
+        t = new Timeline({
+          delay: 200,
+          repeat: 2
+        });
+        t.add(new Tween({
+          duration: 500
+        }));
+        t.setStartTime();
+        time = t.props.startTime + 300;
+        t._updateTimelines(time);
+        spyOn(t.timelines[0], 'update');
+        t._updateTimelines(time - 10);
+        return expect(t.timelines[0].update).toHaveBeenCalledWith(time - 10, false);
       });
       it('should set time to timelines with respect to repeat option', function() {
         var arg0, arg1, t, time;
@@ -1137,10 +1160,10 @@
         t.setStartTime();
         t.setProgress(.5);
         time = t.props.startTime + 650;
-        expect(ti1.update).toHaveBeenCalledWith(time);
-        expect(ti2.update).toHaveBeenCalledWith(time);
-        expect(ti3.update).toHaveBeenCalledWith(time);
-        return expect(ti4.update).toHaveBeenCalledWith(time);
+        expect(ti1.update).toHaveBeenCalledWith(time, true);
+        expect(ti2.update).toHaveBeenCalledWith(time, true);
+        expect(ti3.update).toHaveBeenCalledWith(time, true);
+        return expect(ti4.update).toHaveBeenCalledWith(time, true);
       });
       it('should call setStartTime if there is no @props.startTime', function() {
         var t;

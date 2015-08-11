@@ -59,6 +59,7 @@ class Tween
       if time >= @props.endTime and !@isCompleted
         @setProgress(1); @props.onComplete?.apply(@)
         @isOnReverseComplete = false; @isCompleted = true
+     
       # rest isFirstUpdate flag if update was out of active zone
       @isFirstUpdate = false if time > @props.endTime
       # reset isFirstUpdateBackward flag if progress went further the end time
@@ -71,7 +72,6 @@ class Tween
       if !@isOnReverseComplete and @isFirstUpdate
         @isOnReverseComplete = true
         @setProgress(0, !@props.isChained)
-        #; !@o.isChained and @onUpdate? @easedProgress
         @props.onReverseComplete?.apply(@)
       @isFirstUpdate = false
 
