@@ -85,11 +85,11 @@ class Timeline
   # @return {Undefined, Boolean} Returns true if the tween
   # had ended it execution so should be removed form the 
   # tweener's active tweens array
-  update:(time)->
+  update:(time, isGrow)->
     # don't go further then the endTime
     time = @props.endTime if time > @props.endTime
     # set the time to timelines
-    @_updateTimelines time
+    @_updateTimelines time, isGrow
     # check the callbacks for the current time
     # NOTE: _checkCallbacks method should be returned
     # from this update function, because it returns true
@@ -102,7 +102,7 @@ class Timeline
   # Method to set time on timelines,
   # with respect to repeat periods **if present**
   # @param {Number} Time to set
-  _updateTimelines:(time)->
+  _updateTimelines:(time, isGrow)->
     # get elapsed with respect to repeat option
     # so take a modulo of the elapsed time
     startPoint = @props.startTime - @props.delay
@@ -123,7 +123,8 @@ class Timeline
     if timeToTimelines?
       i = -1; len = @timelines.length-1
       while(i++ < len)
-        @timelines[i].update(timeToTimelines, time > (@_previousUpdateTime or 0))
+        isGrow ?= time > (@_previousUpdateTime or 0)
+        @timelines[i].update(timeToTimelines, isGrow)
 
     @_previousUpdateTime = time
   # ---

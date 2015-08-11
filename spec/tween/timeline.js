@@ -1102,7 +1102,7 @@
         expect(arg0).toBeCloseTo(time, 5);
         return expect(arg1).toBeCloseTo(time, 5);
       });
-      return it('should set time to timelines with repeat and delay option', function(dfr) {
+      it('should set time to timelines with repeat and delay option', function(dfr) {
         var arg0, arg1, t, time;
         tweener.removeAll();
         t = new Timeline({
@@ -1127,6 +1127,20 @@
         expect(arg0).toBeCloseTo(time + 5, 5);
         expect(arg1).toBeCloseTo(time + 5, 5);
         return dfr();
+      });
+      return it('should pass thru the isGrow param', function() {
+        var t, time, tw;
+        t = new Timeline({
+          repeat: 1,
+          delay: 500
+        });
+        tw = new mojs.Tween;
+        t.add(tw);
+        t.setStartTime();
+        spyOn(tw, 'update');
+        time = t.props.startTime + 100;
+        t._updateTimelines(time, false);
+        return expect(tw.update).toHaveBeenCalledWith(time, false);
       });
     });
     describe('setProgress method ->', function() {

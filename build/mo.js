@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.146.4 
+	0.146.5 
 */
 
 (function(f){
@@ -1699,7 +1699,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.4',
+  revision: '0.146.5',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4063,15 +4063,15 @@ Timeline = (function() {
     return this.props.shiftedRepeatTime -= this.props.delay;
   };
 
-  Timeline.prototype.update = function(time) {
+  Timeline.prototype.update = function(time, isGrow) {
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
-    this._updateTimelines(time);
+    this._updateTimelines(time, isGrow);
     return this._checkCallbacks(time);
   };
 
-  Timeline.prototype._updateTimelines = function(time) {
+  Timeline.prototype._updateTimelines = function(time, isGrow) {
     var elapsed, i, len, startPoint, timeToTimelines;
     startPoint = this.props.startTime - this.props.delay;
     elapsed = (time - startPoint) % (this.props.delay + this.props.time);
@@ -4080,7 +4080,10 @@ Timeline = (function() {
       i = -1;
       len = this.timelines.length - 1;
       while (i++ < len) {
-        this.timelines[i].update(timeToTimelines, time > (this._previousUpdateTime || 0));
+        if (isGrow == null) {
+          isGrow = time > (this._previousUpdateTime || 0);
+        }
+        this.timelines[i].update(timeToTimelines, isGrow);
       }
     }
     return this._previousUpdateTime = time;

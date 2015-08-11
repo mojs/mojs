@@ -626,6 +626,17 @@ describe 'Timeline ->', ->
       expect(arg1).toBeCloseTo (time + 5), 5
       dfr()
 
+    it 'should pass thru the isGrow param', ->
+      t = new Timeline repeat: 1, delay: 500
+      tw = new mojs.Tween
+      t.add tw
+      t.setStartTime()
+      spyOn tw, 'update'
+      time = t.props.startTime + 100
+      t._updateTimelines time, false
+      expect(tw.update).toHaveBeenCalledWith time, false
+
+
   describe 'setProgress method ->', ->
     it 'should call the update on every child with progress time', ->
       t   = new Timeline
