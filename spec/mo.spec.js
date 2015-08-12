@@ -1697,7 +1697,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.6',
+  revision: '0.146.8',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4109,15 +4109,16 @@ Timeline = (function() {
   };
 
   Timeline.prototype._checkCallbacks = function(time) {
-    var ref, ref1;
+    var ref, ref1, ref2;
+    !this.isStarted && ((ref = this.o.onStart) != null ? ref.apply(this) : void 0, this.isStarted = true);
     if (time >= this.props.startTime && time < this.props.endTime) {
       if (typeof this.onUpdate === "function") {
         this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
       }
     }
     if (this.prevTime > time && time <= this.props.startTime) {
-      if ((ref = this.o.onReverseComplete) != null) {
-        ref.apply(this);
+      if ((ref1 = this.o.onReverseComplete) != null) {
+        ref1.apply(this);
       }
     }
     this.prevTime = time;
@@ -4125,9 +4126,10 @@ Timeline = (function() {
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);
       }
-      if ((ref1 = this.o.onComplete) != null) {
-        ref1.apply(this);
+      if ((ref2 = this.o.onComplete) != null) {
+        ref2.apply(this);
       }
+      this.isStarted = false;
       return true;
     }
   };
@@ -4162,11 +4164,7 @@ Timeline = (function() {
   };
 
   Timeline.prototype.setStartTime = function(time) {
-    var ref;
     this.getDimentions(time);
-    if ((ref = this.o.onStart) != null) {
-      ref.apply(this);
-    }
     return this.startTimelines(this.props.startTime);
   };
 
@@ -4335,7 +4333,7 @@ Tween = (function() {
       ref.apply(this);
     }
     this.isCompleted = true;
-    this.isStart = false;
+    this.isStarted = false;
     return this.isOnReverseComplete = false;
   };
 

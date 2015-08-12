@@ -152,7 +152,7 @@
         t.update(t.props.startTime + 10);
         t.update(t.props.startTime + 60);
         expect(t.isCompleted).toBe(true);
-        expect(t.isStarted).toBe(true);
+        expect(t.isStarted).toBe(false);
         t.start();
         expect(t.isCompleted).toBe(false);
         return expect(t.isStarted).toBe(false);
@@ -1013,11 +1013,11 @@
         tw._complete();
         return expect(tw.isCompleted).toBe(true);
       });
-      return it('should set isStart to false', function() {
+      return it('should set isStarted flag to false', function() {
         var tw;
         tw = new Tween;
         tw._complete();
-        return expect(tw.isStart).toBe(false);
+        return expect(tw.isStarted).toBe(false);
       });
     });
   });

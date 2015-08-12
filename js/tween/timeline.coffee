@@ -133,6 +133,7 @@ class Timeline
   # for the current time
   # @param {Number} The current time
   _checkCallbacks:(time)->
+    !@isStarted and (@o.onStart?.apply(@); @isStarted = true)
     # if isn't complete
     if time >= @props.startTime and time < @props.endTime
       @onUpdate? (time - @props.startTime)/@props.repeatTime
@@ -143,7 +144,8 @@ class Timeline
     @prevTime = time
     # if completed
     if time is @props.endTime
-      @onUpdate?(1); @o.onComplete?.apply(@); return true
+      @onUpdate?(1); @o.onComplete?.apply(@)
+      @isStarted = false; return true
 
   start:(time)->
     @setStartTime(time); !time and (t.add(@); @state = 'play')
@@ -154,9 +156,7 @@ class Timeline
   restart:-> @stop(); @start()
   removeFromTweener:-> t.remove(@); @
 
-  setStartTime:(time)->
-    @getDimentions(time); @o.onStart?.apply(@)
-    @startTimelines(@props.startTime)
+  setStartTime:(time)-> @getDimentions(time); @startTimelines(@props.startTime)
 
   startTimelines:(time)->
     i = @timelines.length

@@ -21,29 +21,7 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "title": "tm2 = new mojs.Timeline",
-  "toc": [
-    {
-      "level": 1,
-      "slug": "tm2-new-mojs-timeline",
-      "title": "tm2 = new mojs.Timeline"
-    },
-    {
-      "level": 1,
-      "slug": "tw2-new-mojs-tween-onupdate-p-gt-console-log-p",
-      "title": "tw2 = new mojs.Tween onUpdate:(p)-&gt; console.log p"
-    },
-    {
-      "level": 1,
-      "slug": "tm2-add-tw1",
-      "title": "tm2.add tw1"
-    },
-    {
-      "level": 1,
-      "slug": "tm2-append-tw2",
-      "title": "tm2.append tw2"
-    }
-  ]
+  "toc": []
 },
 {
   "path": "js/motion-path.coffee.html",
@@ -239,6 +217,14 @@ window.files = [
   "toc": []
 },
 {
+  "path": "js/vendor/resize.coffee.html",
+  "originalName": "resize.coffee",
+  "originalPath": "js/vendor/resize.coffee",
+  "name": "resize.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/tween/timeline.coffee.html",
   "originalName": "timeline.coffee",
   "originalPath": "js/tween/timeline.coffee",
@@ -259,14 +245,6 @@ window.files = [
   "originalName": "tweener.coffee",
   "originalPath": "js/tween/tweener.coffee",
   "name": "tweener.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/vendor/resize.coffee.html",
-  "originalName": "resize.coffee",
-  "originalPath": "js/vendor/resize.coffee",
-  "name": "resize.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },

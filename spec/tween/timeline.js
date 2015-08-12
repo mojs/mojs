@@ -761,7 +761,7 @@
           return dfr();
         }), 100);
       });
-      return it('should fire after the last onUpdate', function(dfr) {
+      it('should fire after the last onUpdate', function(dfr) {
         var proc, tween;
         proc = 0;
         tween = new Timeline({
@@ -778,6 +778,19 @@
         }));
         tween.start();
         return tween.update(tween.props.startTime + 22);
+      });
+      return it('should reset flags', function() {
+        var duration, t;
+        t = new Timeline({
+          onComplete: function() {}
+        });
+        duration = 500;
+        t.add(new Tween({
+          duration: duration
+        }));
+        t.update(t.props.startTime + duration / 2);
+        t.update(t.props.endTime);
+        return expect(t.isStarted).toBe(false);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -874,11 +887,27 @@
           onStart: function() {}
         });
         t.add(new Tween({
-          duration: 10
+          duration: 500
         }));
         spyOn(t.o, 'onStart');
         t.start();
-        return expect(t.o.onStart).toHaveBeenCalled();
+        t.update(t.props.startTime + 10);
+        expect(t.o.onStart).toHaveBeenCalled();
+        return expect(t.isStarted).toBe(true);
+      });
+      it('should call onStart callback only once', function() {
+        var t;
+        t = new Timeline({
+          onStart: function() {}
+        });
+        t.add(new Tween({
+          duration: 500
+        }));
+        spyOn(t.o, 'onStart');
+        t.start();
+        t.update(t.props.startTime + 10);
+        t.update(t.props.startTime + 15);
+        return expect(t.o.onStart.calls.count()).toBe(1);
       });
       return it('should have the right scope', function() {
         var isRightScope, t;
@@ -892,6 +921,7 @@
           duration: 20
         }));
         t.start();
+        t.update(t.props.startTime + 10);
         return expect(isRightScope).toBe(true);
       });
     });

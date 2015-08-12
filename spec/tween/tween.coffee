@@ -92,7 +92,7 @@ describe 'Tween ->', ->
       t.update t.props.startTime + 10
       t.update t.props.startTime + 60
       expect(t.isCompleted).toBe true
-      expect(t.isStarted)  .toBe true
+      expect(t.isStarted)  .toBe false
       t.start()
       expect(t.isCompleted).toBe false
       expect(t.isStarted)  .toBe false
@@ -635,10 +635,10 @@ describe 'Tween ->', ->
       tw = new Tween
       tw._complete()
       expect(tw.isCompleted).toBe true
-    it 'should set isStart to false', ->
+    it 'should set isStarted flag to false', ->
       tw = new Tween
       tw._complete()
-      expect(tw.isStart).toBe false
+      expect(tw.isStarted).toBe false
 
 
 

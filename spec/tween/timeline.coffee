@@ -435,6 +435,15 @@ describe 'Timeline ->', ->
       tween.add new Tween duration: 20
       tween.start()
       tween.update tween.props.startTime + 22
+    it 'should reset flags', ->
+      t = new Timeline(onComplete:->)
+      duration = 500
+      t.add new Tween duration: duration
+
+      t.update t.props.startTime + duration/2
+      t.update t.props.endTime
+
+      expect(t.isStarted).toBe false
 
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -478,14 +487,24 @@ describe 'Timeline ->', ->
       expect(t.o.onStart).toBeDefined()
     it 'should call onStart callback', ->
       t = new Timeline(onStart:->)
-      t.add new Tween duration: 10
+      t.add new Tween duration: 500
       spyOn(t.o, 'onStart'); t.start()
+      t.update t.props.startTime + 10
       expect(t.o.onStart).toHaveBeenCalled()
+      expect(t.isStarted).toBe true
+    it 'should call onStart callback only once', ->
+      t = new Timeline(onStart:->)
+      t.add new Tween duration: 500
+      spyOn(t.o, 'onStart'); t.start()
+      t.update t.props.startTime + 10
+      t.update t.props.startTime + 15
+      expect(t.o.onStart.calls.count()).toBe 1
     it 'should have the right scope', ->
       isRightScope = false
       t = new Timeline onStart:-> isRightScope = @ instanceof Timeline
       t.add new Tween duration: 20
       t.start()
+      t.update t.props.startTime + 10
       expect(isRightScope).toBe(true)
   describe 'update method ->', ->
     it 'should update the current time on every timeline',->
