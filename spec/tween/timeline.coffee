@@ -202,9 +202,9 @@ describe 'Timeline ->', ->
       expect(t.props.repeatTime).toBe 1200 + 1300
     it 'should arguments time = array time', ->
 
-      # t = new Timeline delay: 2500, isIt: '0'
-      t1 = new Timeline delay: 2500, isIt: '1'
-      t2 = new Timeline delay: 2500, isIt: '2'
+      # t = new Timeline delay: 2500
+      t1 = new Timeline delay: 2500
+      t2 = new Timeline delay: 2500
       tm0 = new Tween duration: 3000, delay: 200
       tm1 = new Tween(duration: 500, delay: 800)
       tm2 = new Tween(duration: 500, delay: 800)
@@ -421,6 +421,30 @@ describe 'Timeline ->', ->
       setTimeout ->
         expect(t.o.onComplete).toHaveBeenCalled(); dfr()
       , 200
+    it 'should call onComplete callback just once', ->
+      t0 = new Timeline repeat: 5, delay: 400
+      t  = new Timeline
+        onComplete:->
+        isIt: true
+      t.add new Tween
+      t0.add t
+      t0.setStartTime()
+      spyOn(t.o, 'onComplete')
+
+      t0.update t0.props.startTime - 250
+      t0.update t0.props.startTime
+      t0.update t0.props.startTime + 16
+      t0.update t0.props.startTime + 32
+      t0.update t0.props.endTime
+
+      t0.update t0.props.startTime - 250
+      t0.update t0.props.startTime
+      t0.update t0.props.startTime + 16
+      t0.update t0.props.startTime + 32
+      t0.update t0.props.endTime
+
+      expect(t.o.onComplete.calls.count()).toBe 2
+
     it 'should have the right scope', (dfr)->
       isRightScope = false
       t = new Timeline onComplete:-> isRightScope = @ instanceof Timeline
@@ -444,6 +468,7 @@ describe 'Timeline ->', ->
       t.update t.props.endTime
 
       expect(t.isStarted).toBe false
+      expect(t.isCompleted).toBe true
 
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -506,6 +531,26 @@ describe 'Timeline ->', ->
       t.start()
       t.update t.props.startTime + 10
       expect(isRightScope).toBe(true)
+    it 'should be called just once when nested', (dfr)->
+      
+      tm0 = new Timeline repeat: 2, delay: 50
+      tm  = new Timeline onStart: ->
+      tw1 = new Tween duration: 50
+
+      tm.add tw1
+      tm0.add tm, tw1
+
+      spyOn(tm.o, 'onStart').and.callThrough()
+
+      tm0.start()
+
+      setTimeout ->
+        expect(tm.o.onStart.calls.count()).toBe 3
+        dfr()
+      , 500
+
+
+
   describe 'update method ->', ->
     it 'should update the current time on every timeline',->
       t = new Timeline
@@ -862,9 +907,8 @@ describe 'Timeline ->', ->
       expect(tm2.props.shiftTime).toBe 600
 
       expect(tm2.props.startTime).toBe tw2.props.startTime
-      tm2StartTime = tm0.props.startTime + tm1.props.repeatTime + tm2.props.delay
+      tm2StartTime = tm0.props.startTime + tm1.props.repeatTime+tm2.props.delay
       expect(tm2.props.startTime).toBe tm2StartTime
-
 
       tm2EndTime = tm2.props.startTime + tm2.props.repeatTime - tm2.props.delay
       expect(tm2.props.endTime).toBe tm2EndTime
@@ -892,14 +936,14 @@ describe 'Timeline ->', ->
       expect(tw2.props.repeatTime).toBe 600
       # expect(tw2.props.shiftedRepeatTime).toBe 1200
 
-      expect(tw2.props.startTime).toBe tm0.props.startTime + tm1.props.repeatTime
-      expect(tw2.props.endTime).toBe tm0.props.startTime + tm0.props.repeatTime
+      expect(tw2.props.startTime).toBe tm0.props.startTime+tm1.props.repeatTime
+      expect(tw2.props.endTime).toBe tm0.props.startTime+tm0.props.repeatTime
 
     it 'should set nesed tween inside timeline progress to 1 at the end', ->
       tm0 = new mojs.Timeline
 
       tm1 = new mojs.Timeline
-      tm2 = new mojs.Timeline delay: 1000, isIt: true
+      tm2 = new mojs.Timeline delay: 1000
 
       tw1 = new mojs.Tween
       tm1.add tw1

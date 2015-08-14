@@ -1,5 +1,5 @@
 mojs =
-  revision:   '0.146.8', isDebug: true
+  revision:   '0.146.9', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -23,6 +23,10 @@ mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+
+Timeline = mojs.Timeline
+Tween    = mojs.Tween
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

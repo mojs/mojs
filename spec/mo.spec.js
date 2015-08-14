@@ -1694,10 +1694,10 @@ h = new Helpers;
 module.exports = h;
 
 },{}],7:[function(require,module,exports){
-var mojs;
+var Timeline, Tween, mojs;
 
 mojs = {
-  revision: '0.146.8',
+  revision: '0.146.9',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1724,6 +1724,10 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
+
+Timeline = mojs.Timeline;
+
+Tween = mojs.Tween;
 
 
 /* istanbul ignore next */
@@ -4110,7 +4114,12 @@ Timeline = (function() {
 
   Timeline.prototype._checkCallbacks = function(time) {
     var ref, ref1, ref2;
-    !this.isStarted && ((ref = this.o.onStart) != null ? ref.apply(this) : void 0, this.isStarted = true);
+    if (this.prevTime === time) {
+      return;
+    }
+    if (!this.prevTime || this.isCompleted) {
+      !this.isStarted && ((ref = this.o.onStart) != null ? ref.apply(this) : void 0, this.isStarted = true, this.isCompleted = false);
+    }
     if (time >= this.props.startTime && time < this.props.endTime) {
       if (typeof this.onUpdate === "function") {
         this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
@@ -4122,13 +4131,14 @@ Timeline = (function() {
       }
     }
     this.prevTime = time;
-    if (time === this.props.endTime) {
+    if (time === this.props.endTime && !this.isCompleted) {
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);
       }
       if ((ref2 = this.o.onComplete) != null) {
         ref2.apply(this);
       }
+      this.isCompleted = true;
       this.isStarted = false;
       return true;
     }

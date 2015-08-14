@@ -350,12 +350,10 @@
       it('should arguments time = array time', function() {
         var t1, t2, time, tm0, tm1, tm2;
         t1 = new Timeline({
-          delay: 2500,
-          isIt: '1'
+          delay: 2500
         });
         t2 = new Timeline({
-          delay: 2500,
-          isIt: '2'
+          delay: 2500
         });
         tm0 = new Tween({
           duration: 3000,
@@ -744,6 +742,32 @@
           return dfr();
         }, 200);
       });
+      it('should call onComplete callback just once', function() {
+        var t, t0;
+        t0 = new Timeline({
+          repeat: 5,
+          delay: 400
+        });
+        t = new Timeline({
+          onComplete: function() {},
+          isIt: true
+        });
+        t.add(new Tween);
+        t0.add(t);
+        t0.setStartTime();
+        spyOn(t.o, 'onComplete');
+        t0.update(t0.props.startTime - 250);
+        t0.update(t0.props.startTime);
+        t0.update(t0.props.startTime + 16);
+        t0.update(t0.props.startTime + 32);
+        t0.update(t0.props.endTime);
+        t0.update(t0.props.startTime - 250);
+        t0.update(t0.props.startTime);
+        t0.update(t0.props.startTime + 16);
+        t0.update(t0.props.startTime + 32);
+        t0.update(t0.props.endTime);
+        return expect(t.o.onComplete.calls.count()).toBe(2);
+      });
       it('should have the right scope', function(dfr) {
         var isRightScope, t;
         isRightScope = false;
@@ -790,7 +814,8 @@
         }));
         t.update(t.props.startTime + duration / 2);
         t.update(t.props.endTime);
-        return expect(t.isStarted).toBe(false);
+        expect(t.isStarted).toBe(false);
+        return expect(t.isCompleted).toBe(true);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -909,7 +934,7 @@
         t.update(t.props.startTime + 15);
         return expect(t.o.onStart.calls.count()).toBe(1);
       });
-      return it('should have the right scope', function() {
+      it('should have the right scope', function() {
         var isRightScope, t;
         isRightScope = false;
         t = new Timeline({
@@ -923,6 +948,27 @@
         t.start();
         t.update(t.props.startTime + 10);
         return expect(isRightScope).toBe(true);
+      });
+      return it('should be called just once when nested', function(dfr) {
+        var tm, tm0, tw1;
+        tm0 = new Timeline({
+          repeat: 2,
+          delay: 50
+        });
+        tm = new Timeline({
+          onStart: function() {}
+        });
+        tw1 = new Tween({
+          duration: 50
+        });
+        tm.add(tw1);
+        tm0.add(tm, tw1);
+        spyOn(tm.o, 'onStart').and.callThrough();
+        tm0.start();
+        return setTimeout(function() {
+          expect(tm.o.onStart.calls.count()).toBe(3);
+          return dfr();
+        }, 500);
       });
     });
     describe('update method ->', function() {
@@ -1512,8 +1558,7 @@
         tm0 = new mojs.Timeline;
         tm1 = new mojs.Timeline;
         tm2 = new mojs.Timeline({
-          delay: 1000,
-          isIt: true
+          delay: 1000
         });
         tw1 = new mojs.Tween;
         tm1.add(tw1);
