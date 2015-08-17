@@ -66,7 +66,7 @@ module.exports = function(config) {
       browsers = ['PhantomJS'];
       // browsers = [];
   } else {
-      reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
+      reporters = ['[progress]', 'coverage', 'clear-screen', 'saucelabs'];
       browsers = Object.keys(customLaunchers);
   }
 
