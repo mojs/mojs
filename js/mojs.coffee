@@ -24,10 +24,6 @@ mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-
-Timeline = mojs.Timeline
-Tween    = mojs.Tween
-
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "mojs", [], -> mojs

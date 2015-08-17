@@ -65,10 +65,11 @@ module.exports = function(config) {
       reporters = ['progress', 'coverage', 'clear-screen'];
       browsers = ['PhantomJS'];
       // browsers = [];
-    } else {
-      reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
+  } else {
+      reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
       browsers = Object.keys(customLaunchers);
-    }
+  }
+
 
   config.set({
     basePath: '',
@@ -86,31 +87,31 @@ module.exports = function(config) {
     ],
     // list of files to exclude
     exclude: [
-      'js/mo.js',
-      'dist/mo.js',
-      'dist/mojs.js',
-      'dist/h.js',
-      'spec/h.js',
-      'dist/transit.js',
-      'spec/transit.js',
-      'dist/swirl.js',
-      'spec/swirl.js',
-      'dist/spriter.js',
-      'spec/spriter.js',
-      'dist/stagger.js',
-      'spec/stagger.js',
-      // 'dist/tween.js',
-      // 'spec/tween.js',
-      'dist/burst.js',
-      'spec/burst.js',
-      // 'dist/timeline.js',
-      // 'spec/timeline.js',
-      'dist/motion-path.js',
-      'spec/motion-path.js',
-      'dist/tweener.js',
-      'spec/tweener.js',
-      'dist/bits/*.js',
-      'spec/bits/*.js'
+      // 'js/mo.js',
+      // 'dist/mo.js',
+      // 'dist/mojs.js',
+      // 'dist/h.js',
+      // 'spec/h.js',
+      // 'dist/transit.js',
+      // 'spec/transit.js',
+      // 'dist/swirl.js',
+      // 'spec/swirl.js',
+      // 'dist/spriter.js',
+      // 'spec/spriter.js',
+      // 'dist/stagger.js',
+      // 'spec/stagger.js',
+      // // 'dist/tween.js',
+      // // 'spec/tween.js',
+      // 'dist/burst.js',
+      // 'spec/burst.js',
+      // // 'dist/timeline.js',
+      // // 'spec/timeline.js',
+      // 'dist/motion-path.js',
+      // 'spec/motion-path.js',
+      // 'dist/tweener.js',
+      // 'spec/tweener.js',
+      // 'dist/bits/*.js',
+      // 'spec/bits/*.js'
     ],
 
     // preprocess matching files before serving them to the browser
@@ -145,7 +146,7 @@ module.exports = function(config) {
     colors: true,
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DISABLE,
     sauceLabs: {
       testName: 'mo · js tests',
     },

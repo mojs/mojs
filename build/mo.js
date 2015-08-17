@@ -1696,7 +1696,7 @@ h = new Helpers;
 module.exports = h;
 
 },{}],7:[function(require,module,exports){
-var Timeline, Tween, mojs;
+var mojs;
 
 mojs = {
   revision: '0.146.9',
@@ -1726,10 +1726,6 @@ mojs = {
 mojs.h = mojs.helpers;
 
 mojs.delta = mojs.h.delta;
-
-Timeline = mojs.Timeline;
-
-Tween = mojs.Tween;
 
 if ((typeof define === "function") && define.amd) {
   define("mojs", [], function() {
@@ -4098,8 +4094,12 @@ Timeline = (function() {
     if (this.prevTime === time) {
       return;
     }
-    if (!this.prevTime || this.isCompleted) {
-      !this.isStarted && ((ref = this.o.onStart) != null ? ref.apply(this) : void 0, this.isStarted = true, this.isCompleted = false);
+    if (!this.prevTime || this.isCompleted && !this.isStarted) {
+      if ((ref = this.o.onStart) != null) {
+        ref.apply(this);
+      }
+      this.isStarted = true;
+      this.isCompleted = false;
     }
     if (time >= this.props.startTime && time < this.props.endTime) {
       if (typeof this.onUpdate === "function") {

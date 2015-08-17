@@ -133,9 +133,14 @@ class Timeline
   # for the current time
   # @param {Number} The current time
   _checkCallbacks:(time)->
+    # dont care about the multiple exact same time calls
     return if @prevTime is time
-    if !@prevTime or @isCompleted
-      !@isStarted and ( @o.onStart?.apply(@); @isStarted = true; @isCompleted = false)
+
+    # if there is no prevTime - so it wasnt called ever at all
+    # or if it was called but have been completed already
+    # and it wasnt started yet -- then start!
+    if !@prevTime or @isCompleted and !@isStarted
+      @o.onStart?.apply(@); @isStarted = true; @isCompleted = false
     # if isn't complete
     if time >= @props.startTime and time < @props.endTime
       @onUpdate? (time - @props.startTime)/@props.repeatTime
