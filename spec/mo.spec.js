@@ -481,10 +481,10 @@ BezierEasing = (function() {
       var _precomputed;
       _precomputed = true;
       if (mX1 !== mY1 || mX2 !== mY2) {
-        calcSampleValues();
+        return calcSampleValues();
       }
     };
-    mSampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
+    mSampleValues = !float32ArraySupported ? new Array(kSplineTableSize) : new Float32Array(kSplineTableSize);
     _precomputed = false;
     f = function(aX) {
       if (!_precomputed) {

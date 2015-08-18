@@ -218,20 +218,15 @@ tests (tradeoff: performance VS precision)</p>
 <span class="hljs-function">
     <span class="hljs-title">precompute</span> = -&gt;</span>
       _precomputed = <span class="hljs-literal">true</span>
-      <span class="hljs-keyword">if</span> mX1 != mY1 <span class="hljs-keyword">or</span> mX2 != mY2
-        calcSampleValues()
-      <span class="hljs-keyword">return</span>
+      calcSampleValues() <span class="hljs-keyword">if</span> mX1 != mY1 <span class="hljs-keyword">or</span> mX2 != mY2
 
-    mSampleValues = <span class="hljs-keyword">if</span> float32ArraySupported
-      <span class="hljs-keyword">new</span> Float32Array(kSplineTableSize)
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">new</span> Array(kSplineTableSize)
+    mSampleValues = <span class="hljs-keyword">if</span> !float32ArraySupported <span class="hljs-keyword">then</span> <span class="hljs-keyword">new</span> Array(kSplineTableSize)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">new</span> Float32Array(kSplineTableSize)
     _precomputed = <span class="hljs-literal">false</span>
 <span class="hljs-function">
     <span class="hljs-title">f</span> = <span class="hljs-params">(aX)</span> -&gt;</span>
-      <span class="hljs-keyword">if</span> !_precomputed
-        precompute()
-      <span class="hljs-keyword">if</span> mX1 == mY1 <span class="hljs-keyword">and</span> mX2 == mY2
-        <span class="hljs-keyword">return</span> aX</div></div>
+      <span class="hljs-keyword">if</span> !_precomputed <span class="hljs-keyword">then</span> precompute()
+      <span class="hljs-keyword">if</span> mX1 == mY1 <span class="hljs-keyword">and</span> mX2 == mY2 <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> aX</div></div>
       
       </div>
     

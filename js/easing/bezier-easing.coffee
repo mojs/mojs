@@ -95,20 +95,15 @@ class BezierEasing
 
     precompute = ->
       _precomputed = true
-      if mX1 != mY1 or mX2 != mY2
-        calcSampleValues()
-      return
+      calcSampleValues() if mX1 != mY1 or mX2 != mY2
 
-    mSampleValues = if float32ArraySupported
-      new Float32Array(kSplineTableSize)
-    else new Array(kSplineTableSize)
+    mSampleValues = if !float32ArraySupported then new Array(kSplineTableSize)
+    else new Float32Array(kSplineTableSize)
     _precomputed = false
 
     f = (aX) ->
-      if !_precomputed
-        precompute()
-      if mX1 == mY1 and mX2 == mY2
-        return aX
+      if !_precomputed then precompute()
+      if mX1 == mY1 and mX2 == mY2 then return aX
       # linear
       # Because JavaScript number are imprecise,
       # we should guarantee the extremes are right.
