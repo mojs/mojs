@@ -3,13 +3,6 @@ node_js:
   - "0.10"
 
 after_script:
-  - if [[ `node --version` == *v0.10* ]]; then ls; fi
-  - if [[ `node --version` == *v0.10* ]]; then cd ./coverage/; fi
-  - if [[ `node --version` == *v0.10* ]]; then ls; fi
-  - if [[ `node --version` == *v0.10* ]]; then cd ./lcov-report/; fi
-  - if [[ `node --version` == *v0.10* ]]; then ls; fi
-  - if [[ `node --version` == *v0.10* ]]; then cat lcov.info; fi
-  - if [[ `node --version` == *v0.10* ]]; then cd ../../; fi
   - if [[ `node --version` == *v0.10* ]]; then cat ./coverage/lcov-report/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
 
 env:
