@@ -346,7 +346,7 @@
         byte.then({
           radius: 5
         });
-        return expect(byte.tween.timelines.length).toBe(2);
+        return expect(byte.timeline.timelines.length).toBe(2);
       });
       it('should return if no options passed or options are empty', function() {
         var byte;
@@ -379,7 +379,7 @@
         byte.then({
           radiusX: 5
         });
-        return expect(byte.tween.timelines[1].o.isChained).toBe(true);
+        return expect(byte.timeline.timelines[1].props.isChained).toBe(true);
       });
       it('should not pass isChained to timeline if delay', function() {
         var byte;
@@ -391,7 +391,7 @@
           radiusX: 5,
           delay: 100
         });
-        return expect(byte.tween.timelines[1].o.isChained).toBe(false);
+        return expect(byte.timeline.timelines[1].props.isChained).toBe(false);
       });
       it('should inherit radius for radiusX/Y options in further chain', function() {
         var byte;
@@ -435,9 +435,9 @@
         byte.then({
           radius: 5
         });
-        expect(byte.tween.timelines[1].o.duration).toBe(1000);
-        expect(byte.tween.timelines[1].o.yoyo).toBe(false);
-        return expect(byte.tween.timelines[1].o.delay).toBe(1010);
+        expect(byte.timeline.timelines[1].props.duration).toBe(1000);
+        expect(byte.timeline.timelines[1].props.yoyo).toBe(false);
+        return expect(byte.timeline.timelines[1].props.shiftTime).toBe(1010);
       });
       it('should merge then options and add them to the history', function() {
         var byte;
@@ -506,7 +506,7 @@
         expect(byte.history[1].delay).toBe(100);
         expect(byte.history[1].yoyo).toBe(true);
         expect(byte.history[1].onUpdate).toBe(void 0);
-        byte.tween.setProgress(.75);
+        byte.timeline.setProgress(.75);
         expect(byte.props.onUpdate).not.toBeDefined();
         return expect(byte.props.onStart).not.toBeDefined();
       });
@@ -529,8 +529,8 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[1].o.onUpdate).toBe('function');
-        return expect(typeof byte.tween.timelines[2].o.onUpdate).toBe('function');
+        expect(typeof byte.timeline.timelines[1].props.onUpdate).toBe('function');
+        return expect(typeof byte.timeline.timelines[2].props.onUpdate).toBe('function');
       });
       it('should bind onStart function', function() {
         var byte;
@@ -551,11 +551,11 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[1].o.onStart).toBe('function');
-        return expect(typeof byte.tween.timelines[2].o.onStart).toBe('function');
+        expect(typeof byte.timeline.timelines[1].props.onStart).toBe('function');
+        return expect(typeof byte.timeline.timelines[2].props.onStart).toBe('function');
       });
-      it('should bind onFirstUpdate function', function() {
-        var byte;
+      it('should bind onFirstUpdate function #1', function() {
+        var byte, type1, type2;
         byte = new Byte({
           radius: 20,
           duration: 1000,
@@ -573,11 +573,13 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
+        type1 = typeof byte.timeline.timelines[1].props.onFirstUpdate;
+        type2 = typeof byte.timeline.timelines[2].props.onFirstUpdate;
+        expect(type1).toBe('function');
+        return expect(type2).toBe('function');
       });
-      return it('should bind onFirstUpdate function', function() {
-        var byte;
+      return it('should bind onFirstUpdate function #2', function() {
+        var byte, type1, type2;
         byte = new Byte({
           radius: 20,
           duration: 1000,
@@ -595,8 +597,10 @@
           delay: 200,
           stroke: 'green'
         });
-        expect(typeof byte.tween.timelines[1].o.onFirstUpdate).toBe('function');
-        return expect(typeof byte.tween.timelines[2].o.onFirstUpdate).toBe('function');
+        type1 = typeof byte.timeline.timelines[1].props.onFirstUpdate;
+        type2 = typeof byte.timeline.timelines[2].props.onFirstUpdate;
+        expect(type1).toBe('function');
+        return expect(type2).toBe('function');
       });
     });
     describe('tuneOptions method ->', function() {
@@ -1046,12 +1050,14 @@
         });
         return describe('shiftX/shiftY coordinates ->', function() {
           it('should set a position with respect to units', function() {
-            var byte;
+            var byte, s, tr;
             byte = new Byte({
               shiftX: 100,
               shiftY: 50
             });
-            return expect(byte.el.style.transform).toBe('translate(100px, 50px)');
+            s = byte.el.style;
+            tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+            return expect(tr).toBe('translate(100px, 50px)');
           });
           it('should animate position', function(dfr) {
             var byte;
@@ -1061,7 +1067,10 @@
               },
               duration: 20,
               onComplete: function() {
-                expect(byte.el.style.transform).toBe('translate(200px, 0px)');
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(200px, 0px)');
                 return dfr();
               }
             });
@@ -1074,7 +1083,10 @@
               },
               duration: 20,
               onComplete: function() {
-                expect(byte.el.style.transform).toBe('translate(50%, 0px)');
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(50%, 0px)');
                 return dfr();
               }
             });
@@ -1090,7 +1102,10 @@
               },
               duration: 20,
               onComplete: function() {
-                expect(byte.el.style.transform).toBe('translate(50px, 50%)');
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(50px, 50%)');
                 return dfr();
               }
             });
@@ -1393,19 +1408,21 @@
     });
     describe('drawEl method ->', function() {
       it('should set el positions and transforms', function() {
-        var byte;
+        var byte, s, tr;
         byte = new Byte({
           radius: 25,
-          y: 10
+          y: 10,
+          isRunLess: true
         });
-        byte.draw();
         expect(byte.el.style.left).toBe('0px');
         expect(byte.el.style.top).toBe('10px');
         expect(byte.el.style.opacity).toBe('1');
-        return expect(byte.el.style.transform).toBe('translate(0px, 0px)');
+        s = byte.el.style;
+        tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+        return expect(tr).toBe('translate(0px, 0px)');
       });
       it('should set only opacity if foreign context', function() {
-        var byte;
+        var byte, s, tr;
         byte = new Byte({
           radius: 25,
           y: 10,
@@ -1415,7 +1432,9 @@
         expect(byte.el.style.opacity).toBe('1');
         expect(byte.el.style.left).not.toBe('0px');
         expect(byte.el.style.top).not.toBe('10px');
-        return expect(byte.el.style.transform).not.toBe('translate(0px, 0px)');
+        s = byte.el.style;
+        tr = s.transform != null ? s.transform : s["" + mojs.h.prefix.css + "transform"];
+        return expect(tr).toBeFalsy();
       });
       it('should set new values', function() {
         var byte;
@@ -1440,7 +1459,7 @@
         expect(byte.el.style.left).toBe('0px');
         return expect(byte.lastSet.x.value).toBe('0px');
       });
-      return it('should call fillTransform method', function() {
+      it('should call fillTransform method', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -1451,6 +1470,14 @@
         });
         byte.draw();
         return expect(byte.fillTransform).toHaveBeenCalled();
+      });
+      return it('should return true if there is no el', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        byte.el = null;
+        return expect(byte.drawEl()).toBe(true);
       });
     });
     describe('isPropChanged method ->', function() {
@@ -1844,7 +1871,7 @@
             return dfr();
           }, 300);
         });
-        it('should have scope of byte', function(dfr) {
+        it('should have scope of transit', function(dfr) {
           var byte, isRightScope;
           isRightScope = null;
           byte = new Byte({
@@ -1868,7 +1895,7 @@
             }
           });
           spyOn(byte, 'show');
-          byte.tween.setProgress(.5);
+          byte.timeline.setProgress(.5);
           return expect(byte.show).toHaveBeenCalled();
         });
       });
@@ -1971,8 +1998,8 @@
             radius: 20
           });
           spyOn(byte, 'tuneOptions');
-          byte.tween.setProgress(.99);
-          byte.tween.setProgress(0);
+          byte.timeline.setProgress(.99);
+          byte.timeline.setProgress(0);
           return expect(byte.tuneOptions).toHaveBeenCalled();
         });
         return it('should call not tuneOptions if history length is one record', function() {
@@ -1983,8 +2010,8 @@
             }
           });
           spyOn(byte, 'tuneOptions');
-          byte.tween.setProgress(.99);
-          byte.tween.setProgress(0);
+          byte.timeline.setProgress(.99);
+          byte.timeline.setProgress(0);
           return expect(byte.tuneOptions).not.toHaveBeenCalled();
         });
       });
@@ -1997,7 +2024,7 @@
             '25': 75
           }
         });
-        return expect(byte.tween).toBeDefined();
+        return expect(byte.timeline).toBeDefined();
       });
       it('should bind the onFirstUpdateBackward metod', function() {
         var byte;
@@ -2006,7 +2033,7 @@
             '25': 75
           }
         });
-        return expect(typeof byte.timeline.o.onFirstUpdateBackward).toBe('function');
+        return expect(typeof byte.tween.o.onFirstUpdateBackward).toBe('function');
       });
       it('should start tween after init', function(dfr) {
         var byte, isStarted;
@@ -2049,10 +2076,10 @@
               '25': 75
             }
           });
-          spyOn(byte.tween, 'start');
+          spyOn(byte.timeline, 'start');
           byte.startTween();
           return setTimeout(function() {
-            expect(byte.tween.start).toHaveBeenCalled();
+            expect(byte.timeline.start).toHaveBeenCalled();
             return dfr();
           }, 10);
         });
@@ -2067,7 +2094,7 @@
         return expect(byte.props.easing).toBe('Linear.None');
       });
     });
-    describe('run method->', function() {
+    describe('run method ->', function() {
       it('should extend defaults with passed object', function() {
         var byte, o;
         byte = new Byte({
@@ -2286,22 +2313,23 @@
           onComplete: onComplete,
           yoyo: false
         });
-        expect(byte.timeline.o.duration).toBe(2000);
-        expect(byte.timeline.o.delay).toBe(0);
-        expect(byte.timeline.o.repeat).toBe(2);
-        expect(byte.timeline.o.easing).toBe('linear.none');
-        expect(byte.timeline.o.onStart).toBe(onStart);
-        expect(byte.timeline.o.onComplete).toBe(onComplete);
-        return expect(byte.timeline.o.yoyo).toBe(false);
+        expect(byte.tween.props.duration).toBe(2000);
+        expect(byte.tween.props.delay).toBe(0);
+        expect(byte.tween.props.repeat).toBe(2);
+        expect(typeof byte.tween.props.easing).toBe('function');
+        expect(byte.tween.props.easing).toBe(mojs.easing.linear.none);
+        expect(byte.tween.props.onStart).toBe(onStart);
+        expect(byte.tween.props.onComplete).toBe(onComplete);
+        return expect(byte.tween.props.yoyo).toBe(false);
       });
       it('should call recalcDuration on tween', function() {
         var byte;
         byte = new Byte;
-        spyOn(byte.tween, 'recalcDuration');
+        spyOn(byte.timeline, 'recalcDuration');
         byte.run({
           duration: 2000
         });
-        return expect(byte.tween.recalcDuration).toHaveBeenCalled();
+        return expect(byte.timeline.recalcDuration).toHaveBeenCalled();
       });
       it('should call transformHistory', function() {
         var byte, o;
@@ -2428,7 +2456,7 @@
         byte = new Byte({
           ctx: svg
         });
-        byte.tween.setProgress(.5);
+        byte.timeline.setProgress(.5);
         return expect(byte.el.style.display).toBe('block');
       });
       it('should hide the el on end', function() {
@@ -2436,7 +2464,7 @@
         byte = new Byte({
           ctx: svg
         });
-        byte.tween.setProgress(1);
+        byte.timeline.setProgress(1);
         return expect(byte.el.style.display).toBe('none');
       });
       it('should not hide the el on end if isShowEnd was passed', function() {
@@ -2445,7 +2473,7 @@
           ctx: svg,
           isShowEnd: true
         });
-        byte.tween.setProgress(1);
+        byte.timeline.setProgress(1);
         return expect(byte.el.style.display).toBe('block');
       });
       it('should not hide the el on end if isShowEnd was passed #2 - chain', function() {
@@ -2459,7 +2487,7 @@
         }).then({
           radius: 20
         });
-        byte.tween.setProgress(1);
+        byte.timeline.setProgress(1);
         return expect(byte.el.style.display).toBe('block');
       });
       it('should hide the el on reverse end', function() {
@@ -2467,8 +2495,8 @@
         byte = new Byte({
           ctx: svg
         });
-        byte.tween.setProgress(.5);
-        byte.tween.setProgress(0);
+        byte.timeline.setProgress(.5);
+        byte.timeline.setProgress(0);
         return expect(byte.el.style.display).toBe('none');
       });
       return it('should not hide the el on reverse end if isShowInit passed', function() {
@@ -2477,8 +2505,8 @@
           ctx: svg,
           isShowInit: true
         });
-        byte.tween.setProgress(.5);
-        byte.tween.setProgress(0);
+        byte.timeline.setProgress(.5);
+        byte.timeline.setProgress(0);
         return expect(byte.el.style.display).toBe('block');
       });
     });

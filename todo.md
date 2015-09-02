@@ -1,29 +1,25 @@
 ## TODO
 
+- release
+
+---
+
 - fix coverage
 - release
-  - website
-    - css
-    - page transitions
-    - docs
-    - tuts
+  - docs
+  - tuts
 - add meta balls
 - add layers
 - add states
-- add custom easing handler
-  - add path handler
-  - add spring
+- easing
+  - add spring handler
 - add shaker
 - add line trails
 - radial springs
 
 # FIXES
-- tween
-  - add and append multiple timelines
-  - tween + timeline?
 - cover polyfills
 - stagger callbacks should run only once
-- stagger self generation
 - foreign context coordinates in burst
 - add onChainUpdate to all the bits
 - transit

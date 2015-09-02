@@ -93,7 +93,7 @@ describe 'Helpers ->', ->
         expect(parseFloat rand).not.toBeGreaterThan  20
         expect(rand.match(/\%/)).toBeTruthy()
 
-    describe 'parseStagger method', ->
+    describe 'parseStagger method ->', ->
       it 'should get random number from string', ->
         value = h.parseStagger 'stagger(150)', 3
         expect(typeof value).toBe 'number'
@@ -101,11 +101,9 @@ describe 'Helpers ->', ->
       it 'should get random if was passed', ->
         value = h.parseStagger 'stagger(rand(10%,20%))', 0
         expect(value).toBe '0%'
-        
         value = parseInt(h.parseStagger('stagger(rand(10%,20%))', 3), 10)
         expect(value).toBeGreaterThan     29
         expect(value).not.toBeGreaterThan 60
-
       it 'should get string of unit value', ->
         value = h.parseStagger 'stagger(20%)', 2
         expect(value).toBe '40%'
@@ -134,6 +132,18 @@ describe 'Helpers ->', ->
         expect(parseInt(value),10).toBeGreaterThan     539
         expect(parseInt(value),10).not.toBeGreaterThan 639
         expect(value.match /\%/ ).toBeTruthy()
+
+    describe 'parseIfStagger method', ->
+      it 'should parse stagger if stagger string passed', ->
+        value = h.parseIfStagger 'stagger(200)', 2
+        expect(value).toBe 400
+
+      it 'should return passed value if it has no stagger expression', ->
+        arg = []
+        value = h.parseIfStagger arg, 2
+        expect(value).toBe arg
+
+
 
     describe 'parseIfRand method', ->
       it 'should get random number from string if it is rand', ->
@@ -376,10 +386,12 @@ describe 'Helpers ->', ->
     describe 'setPrefixedStyle method', ->
       it 'should set prefixed style', ->
         el = document.createElement 'div'
-        h.setPrefixedStyle el, 'transform', 'translate(20px, 10px)'
-        prefixed = "#{h.prefix.css}transform"
-        expect(el.style[prefixed]).toBe 'translate(20px, 10px)'
-        expect(el.style['transform']).toBe         'translate(20px, 10px)'
+        styleToSet = 'translateX(20px)'
+        name = 'transform'; prefixedName = "#{h.prefix.css}transform"
+        h.setPrefixedStyle(el, name, styleToSet)
+        style = if el.style[prefixedName]? then el.style[prefixedName]
+        else el.style[name]
+        expect(style).toBe styleToSet
     describe 'parseUnit method', ->
       it 'should parse number to pixels', ->
         unit = h.parseUnit(100)
@@ -825,6 +837,41 @@ describe 'Helpers ->', ->
       expect(h.parsePath(path).tagName).toBe 'path'
       expect(h.parsePath(path).getAttribute('id')).toBe pathId
 
+  describe 'closeEnough method', ->
+    it 'should compare two numbers', ->
+      expect(h.closeEnough(.0005, .0006, .001))     .toBe true
+      expect(h.closeEnough(.0005, .0005, .00000001)).toBe true
+      expect(h.closeEnough(1, .0005, .00000001))    .toBe false
+      expect(h.closeEnough(1, .0005, 1))            .toBe true
+  describe 'style method ->', ->
+    it 'should set style on el', ->
+      el = document.createElement 'div'
+      h.style(el, 'width', '20px')
+      expect(el.style.width).toBe '20px'
+    it 'should set multiple styles on el', ->
+      el = document.createElement 'div'
+      transformToSet = 'translateX(20px)'
+      h.style(el, {
+        'width': '20px',
+        height: '30px',
+        transform: transformToSet
+      })
+      s = el.style
+      expect(s.width).toBe '20px'
+      expect(s.height).toBe '30px'
+      prefixed = "#{h.prefix.css}transform"
+      tr = if s[prefixed]? then s[prefixed] else s.transform
+      expect(tr).toBe transformToSet
+  describe 'checkIf3d method ->',->
+    it 'should detect if transform 3d is supported', ->
+      div = document.createElement 'div'
+      h.style div, 'transform', 'translateZ(0)'
+      style = div.style; prefixed = "#{h.prefix.css}transform"
+      tr = if style[prefixed]? then style[prefixed] else style.transform
+      expect(tr isnt '').toBe h.checkIf3d()
+  describe 'is3d property ->',->
+    it 'should be fulfilled', ->
+      expect(h.is3d).toBe h.checkIf3d()
 
 
 

@@ -776,12 +776,12 @@
       it('should create tween', function() {
         var burst;
         burst = new Burst;
-        return expect(burst.tween).toBeDefined();
+        return expect(burst.timeline).toBeDefined();
       });
-      it('should add timelines to tween', function() {
+      it('should add tweens to timeline', function() {
         var burst;
         burst = new Burst;
-        return expect(burst.tween.timelines.length).toBe(6);
+        return expect(burst.timeline.timelines.length).toBe(6);
       });
       it('should call startTween method', function() {
         var burst;
@@ -983,16 +983,16 @@
           }
         });
         newDuration = [null, 1000, null];
-        spyOn(burst.tween, 'recalcDuration');
+        spyOn(burst.timeline, 'recalcDuration');
         burst.run({
           duration: 500,
           childOptions: {
             duration: newDuration
           }
         });
-        return expect(burst.tween.recalcDuration).toHaveBeenCalled();
+        return expect(burst.timeline.recalcDuration).toHaveBeenCalled();
       });
-      it('should start tween', function() {
+      it('should start timeline', function() {
         var burst;
         burst = new Burst;
         spyOn(burst, 'startTween');

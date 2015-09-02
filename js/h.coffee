@@ -1,3 +1,4 @@
+
 # Utils methods and map objects
 #
 # @class Helpers
@@ -5,7 +6,7 @@ class Helpers
   # ---
 
   # SVG namespace
-  #
+  # 
   # @property   NS
   # @type       {String}
   NS: 'http://www.w3.org/2000/svg'
@@ -94,6 +95,7 @@ class Helpers
     @isChrome and @isSafari   and (@isSafari = false)
     (ua.match /PhantomJS/gim) and (@isSafari = false)
     @isChrome and @isOpera  and (@isChrome = false)
+    @is3d = @checkIf3d()
 
     @uniqIDs = -1
 
@@ -120,7 +122,6 @@ class Helpers
       if exclude? then newObj[key] = obj[key] if !exclude[key]
       else newObj[key] = obj[key]
     newObj
-
   # ---
 
   # Copies keys and values from the second object to the first if
@@ -148,15 +149,32 @@ class Helpers
     @remBase = parseFloat style.fontSize
 
   clamp:(value, min, max)->
-    if value < min then min
-    else if value > max then max
-    else value
+    if value < min then min else if value > max then max else value
     # Math.min Math.max(value, min), max
-
   setPrefixedStyle:(el, name, value)->
-    prefixedName            = "#{@prefix.css}#{name}"
-    el.style[name]          = value
-    el.style[prefixedName]  = value
+    prefixedName  = "#{@prefix.css}#{name}"
+    prefixedStyle = if el.style[prefixedName]? then prefixedName else name
+    el.style[prefixedStyle]  = value
+  # ---
+  # 
+  # Sets styles on element with prefix(if needed) on el
+  # 
+  # @method style
+  # @param {DOMNode}          element to set the styles on
+  # @param {String, Object}   style name or style: value object
+  # @param {String}           style value
+  # @example
+  #   h.style(el, 'width', '20px')
+  # @example
+  #   h.style(el, { width: '20px', height: '10px' })
+  style:(el, name, value)->
+    if typeof name is 'object'
+      keys = Object.keys(name); len = keys.length
+      while(len--)
+        key = keys[len]; value = name[key]
+        @setPrefixedStyle el, key, value
+    else @setPrefixedStyle el, name, value
+
   prepareForLog:(args)->
     args = Array::slice.apply args
     args.unshift('::'); args.unshift(@logBadgeCss); args.unshift('%cmo·js%c')
@@ -331,6 +349,15 @@ class Helpers
     
     if unit then "#{number}#{unit}" else number
 
+  # ---
+
+  # Method to parse stagger or return the passed value if
+  # it has no stagger expression in it.
+  parseIfStagger:(value, i)->
+    if !(typeof value is 'string' and value.match /stagger/g) then value
+    else @parseStagger(value, i)
+    
+
   # if passed string has rand function then get the rand value
   parseIfRand:(str)->
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
@@ -362,10 +389,7 @@ class Helpers
     else if key is 'strokeDasharray' or key is 'strokeDashoffset'
       startArr  = @strToArr start
       endArr    = @strToArr end
-
-      # console.log startArr, endArr
       @normDashArrays startArr, endArr
-      # console.log startArr, endArr
 
       for start, i in startArr
         end = endArr[i]
@@ -451,7 +475,7 @@ class Helpers
   getUniqID:-> ++@uniqIDs
   # ---
 
-  # Returns uniq id
+  # Returns an uniq id
   #
   # @method parsePath
   # @return {SVGPath}
@@ -462,7 +486,22 @@ class Helpers
         domPath.setAttributeNS(null, 'd', path); domPath
       else document.querySelector path
     return path if path.style
+  # ---
 
+  # Returns uniq id
+  #
+  # @method parsePath
+  # @return {SVGPath}
+  closeEnough:(num1, num2, eps)-> Math.abs(num1-num2) < eps
+  # ---
+
+  # Method to check if 3d transform are supported
+  checkIf3d:->
+    div = document.createElement 'div'
+    @style div, 'transform', 'translateZ(0)'
+    style = div.style; prefixed = "#{@prefix.css}transform"
+    tr = if style[prefixed]? then style[prefixed] else style.transform
+    tr isnt ''
 
 h = new Helpers
 module.exports = h

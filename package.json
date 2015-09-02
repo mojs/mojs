@@ -1,13 +1,13 @@
 {
   "name": "mo-js",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.119.0",
+  "version": "0.146.9",
   "license": "MIT",
   "private": false,
   "scripts": {
     "test": "karma start --single-run"
   },
-  "main": "build/mo.min.js",
+  "main": "lib/mojs.js",
   "keywords": [
     "motion",
     "effects",

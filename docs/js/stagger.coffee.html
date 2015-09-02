@@ -38,119 +38,279 @@ istanbul ignore next</p>
         </div>
       
       
-        <div class="code"><div class="wrapper">h        = <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
+        <div class="code"><div class="wrapper">h = <span class="hljs-built_in">require</span> <span class="hljs-string">'./h'</span>
 Timeline = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/timeline'</span>
-Tween    = <span class="hljs-built_in">require</span> <span class="hljs-string">'./tween/tween'</span>
-Transit  = <span class="hljs-built_in">require</span> <span class="hljs-string">'./transit'</span>
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Stagger</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Transit</span></span>
-  <span class="hljs-attribute">isSkipDelta</span>: <span class="hljs-literal">true</span>
-  <span class="hljs-attribute">ownDefaults</span>:
-    <span class="hljs-attribute">delay</span>:            <span class="hljs-string">'stagger(100)'</span>
-    <span class="hljs-attribute">els</span>:              <span class="hljs-literal">null</span>
-    <span class="hljs-attribute">fill</span>:             <span class="hljs-string">'transparent'</span>
-    <span class="hljs-attribute">stroke</span>:           [<span class="hljs-string">'yellow'</span>, <span class="hljs-string">'cyan'</span>, <span class="hljs-string">'deeppink'</span>]
-    <span class="hljs-attribute">strokeDasharray</span>:  <span class="hljs-string">'100%'</span>
-    <span class="hljs-attribute">strokeDashoffset</span>: <span class="hljs-string">'100%'</span>: <span class="hljs-string">'0%'</span>
-    <span class="hljs-attribute">isShowInit</span>:       <span class="hljs-literal">false</span>
-    <span class="hljs-attribute">isShowEnd</span>:        <span class="hljs-literal">false</span>
-    <span class="hljs-attribute">radius</span>:           <span class="hljs-number">0</span>
-    <span class="hljs-attribute">type</span>:             <span class="hljs-string">'line'</span>
-
-  <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
-    h.extend(<span class="hljs-property">@ownDefaults</span>, <span class="hljs-property">@defaults</span>); <span class="hljs-property">@defaults</span> = <span class="hljs-property">@ownDefaults</span>
-    <span class="hljs-keyword">super</span>; <span class="hljs-property">@parseEls</span>()
-
-  <span class="hljs-attribute">extendDefaults</span>:<span class="hljs-function"><span class="hljs-params">(o)</span>-&gt;</span>
-    <span class="hljs-property">@props</span> = {}; <span class="hljs-property">@deltas</span> = {}; fromObj = o <span class="hljs-keyword">or</span> <span class="hljs-property">@o</span>
-    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> <span class="hljs-property">@defaults</span>
-      <span class="hljs-property">@props</span>[key] = <span class="hljs-keyword">if</span> fromObj[key]? <span class="hljs-keyword">then</span> fromObj[key] <span class="hljs-keyword">else</span> <span class="hljs-property">@defaults</span>[key]
-
-  <span class="hljs-attribute">parseEls</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@props</span>.els + <span class="hljs-string">''</span> <span class="hljs-keyword">is</span> <span class="hljs-string">'[object NodeList]'</span>
-      <span class="hljs-property">@props</span>.els = <span class="hljs-attribute">Array</span>::slice.call <span class="hljs-property">@props</span>.els, <span class="hljs-number">0</span>
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> <span class="hljs-property">@props</span>.els <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
-      els = <span class="hljs-built_in">document</span>.querySelector <span class="hljs-property">@props</span>.els
-      <span class="hljs-property">@props</span>.els = h.getChildElements els
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> h.isDOM(<span class="hljs-property">@props</span>.els)
-      <span class="hljs-property">@props</span>.els = h.getChildElements <span class="hljs-property">@props</span>.els
-
-  <span class="hljs-attribute">createBit</span>:<span class="hljs-function">-&gt;</span>
-    <span class="hljs-property">@transits</span> = []; len = <span class="hljs-property">@props</span>.els.length
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..len]</div></div>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Stagger</span></span>
+  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(options, Module)</span>-&gt;</span> <span class="hljs-property">@init</span> options, Module</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>cover the index set</p>
+          <div class="wrapper"><hr>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">      option = <span class="hljs-property">@getOption</span>(i); option.index = i; option.isRunLess = <span class="hljs-literal">true</span></div></div>
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to get an option by modulo and name.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Name</code> must be a String.</strong><br/>(of the property to get.)</li>
+<li><strong><code>Index</code> must be a Number.</strong><br/>(for the modulo calculation.)</li>
+<li><strong><code>Options</code> must be an Object.</strong><br/>(hash to look in.)</li>
+</ul>
+<p><strong>Returns an Any</strong><br/>(Property.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_getOptionByMod</span>:<span class="hljs-function"><span class="hljs-params">(name, i, store)</span>-&gt;</span>
+    props = store[name]</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>option.radius = 0</p>
+          <div class="wrapper"><p>if not dom list then clone it to array</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">      <span class="hljs-property">@transits</span>.push <span class="hljs-keyword">new</span> Transit option
-
-  <span class="hljs-attribute">getOption</span>:<span class="hljs-function"><span class="hljs-params">(i)</span>-&gt;</span>
-    option = {}
-    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> <span class="hljs-property">@props</span>
-      option[key] = <span class="hljs-property">@getPropByMod</span>(key, i)
-    option.bit = <span class="hljs-property">@getPropByMod</span>(<span class="hljs-string">'els'</span>, i)
-    option
-
-  <span class="hljs-attribute">getPropByMod</span>:<span class="hljs-function"><span class="hljs-params">(name, i)</span>-&gt;</span>
-    prop = <span class="hljs-property">@props</span>[name]; <span class="hljs-keyword">if</span> h.isArray(prop) <span class="hljs-keyword">then</span> prop[i % prop.length] <span class="hljs-keyword">else</span> prop
-
-  <span class="hljs-attribute">render</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@createBit</span>(); <span class="hljs-property">@setProgress</span>(<span class="hljs-number">0</span>, <span class="hljs-literal">true</span>); <span class="hljs-property">@createTween</span>(); @
-  <span class="hljs-attribute">isDelta</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-literal">false</span>
-  <span class="hljs-attribute">createTween</span>:<span class="hljs-function">-&gt;</span></div></div>
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> props+<span class="hljs-string">''</span> <span class="hljs-keyword">is</span> <span class="hljs-string">'[object NodeList]'</span> <span class="hljs-keyword">then</span> props = <span class="hljs-attribute">Array</span>::slice.call props, <span class="hljs-number">0</span></div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>optimization TODO:
-the stagger doesnt need the self timeline</p>
+          <div class="wrapper"><p>get the value in array or return the value itself</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-property">@tween</span> = <span class="hljs-keyword">new</span> Tween
-    i = -<span class="hljs-number">1</span>
-    <span class="hljs-keyword">while</span>(i++ &lt; <span class="hljs-property">@transits</span>.length-<span class="hljs-number">1</span>)
-      <span class="hljs-property">@tween</span>.add(<span class="hljs-property">@transits</span>[i].tween)
-    !<span class="hljs-property">@o</span>.isRunLess <span class="hljs-keyword">and</span> <span class="hljs-property">@startTween</span>()
-</div></div>
+        <div class="code"><div class="wrapper">    value = <span class="hljs-keyword">if</span> h.isArray(props) <span class="hljs-keyword">then</span> props[i % props.length] <span class="hljs-keyword">else</span> props</div></div>
       
       </div>
     
       <div class="segment">
       
         <div class="comments ">
-          <div class="wrapper"><p>setProgress:-&gt;
-calcSize:-&gt;</p>
+          <div class="wrapper"><p>check if value has the stagger expression, if so parse it</p>
 </div>
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">draw</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@drawEl</span>()
+        <div class="code"><div class="wrapper">    h.parseIfStagger(value, i)</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to get option by modulo of index.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Index</code> must be a Number.</strong><br/>(for modulo calculations.)</li>
+<li><strong><code>Options</code> must be an Object.</strong><br/>(hash to look in.)</li>
+</ul>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_getOptionByIndex</span>:<span class="hljs-function"><span class="hljs-params">(i, store)</span>-&gt;</span>
+    options = {}
+    <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> store
+      options[key] = <span class="hljs-property">@_getOptionByMod</span> key, i, store
+    options</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to get total child modules quantity.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>Name</code> must be a String.</strong><br/>(of quantifier in options hash.)</li>
+<li><strong><code>Options</code> must be an Object.</strong><br/>(hash object.)</li>
+</ul>
+<p><strong>Returns a Number</strong><br/>(Number of child object that should be defined.)</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_getChildQuantity</span>:<span class="hljs-function"><span class="hljs-params">(name, store)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>if number was set</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> name <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> name <span class="hljs-keyword">is</span> <span class="hljs-string">'number'</span>
 
-<span class="hljs-built_in">module</span>.exports = Stagger
+    quantifier = store[name]
+    <span class="hljs-keyword">if</span> h.isArray(quantifier) <span class="hljs-keyword">then</span> quantifier.length
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> quantifier+<span class="hljs-string">''</span> <span class="hljs-keyword">is</span> <span class="hljs-string">'[object NodeList]'</span> <span class="hljs-keyword">then</span> quantifier.length
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> quantifier <span class="hljs-keyword">instanceof</span> HTMLElement <span class="hljs-keyword">then</span> <span class="hljs-number">1</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> quantifier <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>     <span class="hljs-keyword">then</span> <span class="hljs-number">1</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to create timeline.</p>
+<p>Parameters:</p>
+<pre><code><span class="hljs-keyword">*</span> <span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>`Options.` must be an Object.<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-variable">&lt;br/&gt;</span>(<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span> default <span class="hljs-keyword">*</span><span class="hljs-keyword">*</span> empty object.)
+</code></pre></div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_createTimeline</span>:<span class="hljs-function"><span class="hljs-params">(options={})</span>-&gt;</span>
+    <span class="hljs-property">@timeline</span> = <span class="hljs-keyword">new</span> Timeline
+      <span class="hljs-attribute">onStart</span>:           options.onStaggerStart
+      <span class="hljs-attribute">onUpdate</span>:          options.onStaggerUpdate
+      <span class="hljs-attribute">onComplete</span>:        options.onStaggerComplete
+      <span class="hljs-attribute">onReverseComplete</span>: options.onStaggerReverseComplete
+      <span class="hljs-attribute">delay</span>:             options.moduleDelay</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>Method to make stagger form options</p>
+<p>Parameters:</p>
+<pre><code><span class="hljs-keyword">*</span> <span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>`Options.` must be an Object.<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>
+</code></pre><ul>
+<li><strong><code>Child</code> must be an Object.</strong><br/>(class.)</li>
+</ul>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">init</span>:<span class="hljs-function"><span class="hljs-params">(options, Module)</span>-&gt;</span>
+    count = <span class="hljs-property">@_getChildQuantity</span> options.quantifier <span class="hljs-keyword">or</span> <span class="hljs-string">'el'</span>, options
+    <span class="hljs-property">@_createTimeline</span>(options); <span class="hljs-property">@childModules</span> = []
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..count]</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>get child module&#39;s option</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      option = <span class="hljs-property">@_getOptionByIndex</span>(i, options); option.isRunLess = <span class="hljs-literal">true</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>create child module</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-built_in">module</span> = <span class="hljs-keyword">new</span> Module(option); <span class="hljs-property">@childModules</span>.push <span class="hljs-built_in">module</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>add child module&#39;s timeline to the self timeline</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">      <span class="hljs-property">@timeline</span>.add <span class="hljs-built_in">module</span>
+    @</div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><hr>
+</div>
+        </div>
+      
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>Method to start timeline.</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">run</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@timeline</span>.start()
 
-</div></div>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StaggerWrapper</span></span>
+  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(Module)</span>-&gt;</span>
+    M = Module; <span class="hljs-keyword">return</span> (options)-&gt; <span class="hljs-keyword">new</span> Stagger options, M
+
+<span class="hljs-built_in">module</span>.exports = StaggerWrapper</div></div>
       
       </div>
     

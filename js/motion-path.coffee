@@ -3,10 +3,9 @@
 #
 # @class MotionPath
 h         = require './h'
-easing    = require './easing'
 resize    = require './vendor/resize'
-Timeline  = require './tween/timeline'
 Tween     = require './tween/tween'
+Timeline  = require './tween/timeline'
 
 class MotionPath
   # ---
@@ -52,6 +51,12 @@ class MotionPath
     curvature:        x: '75%', y: '50%'
     # ---
 
+    # Defines if composite layer should be forced on el to prevent
+    # paint during animation.
+    # @type       {Boolean}
+    isCompositeLayer:   true
+    # ---
+
     # Delay before animation starts, *ms*
     # @property   delay
     # @type       {Number}
@@ -66,8 +71,8 @@ class MotionPath
     duration:         1000
     # ---
 
-    # Easing. The option will be passed to timeline.parseEasing method.
-    # Please see the [timeline module](timeline.coffee.html#parseEasing) for
+    # Easing. The option will be passed to tween.parseEasing method.
+    # Please see the [tween module](tween.coffee.html#parseEasing) for
     # all avaliable options.
     #
     # @property   easing
@@ -254,16 +259,6 @@ class MotionPath
     # 
     # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
     onUpdate:         null
-    # ---
-
-    # Callback **onPosit** fires every raf frame on motion
-    # path update. Recieves current **progress**, **x**, **y** and **angle**
-    # of type **Number**. Returned value will be set as el's transform
-    # 
-    # @property   onPosit
-    # @type       {Function}
-    # 
-    onPosit:         null
   # ---
   # ### Class body docs
   # ---
@@ -334,7 +329,12 @@ class MotionPath
     @props.motionBlur = h.clamp @props.motionBlur, 0, 1
     
     @onUpdate   = @props.onUpdate
-    @el         = @parseEl @props.el
+    if !@o.el
+      h.error 'Missed "el" option. It could be a selector,
+                DOMNode or another module.'
+      return true
+    
+    @el = @parseEl @props.el
     @props.motionBlur > 0 and @createFilter()
 
     @path       = @getPath()
@@ -435,7 +435,7 @@ class MotionPath
     @startTween()
 
   createTween:->
-    @timeline = new Timeline
+    @tween = new Tween
       duration:   @props.duration
       delay:      @props.delay
       yoyo:       @props.yoyo
@@ -448,58 +448,65 @@ class MotionPath
         @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
       onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
-    @tween = new Tween# onUpdate:(p)=> @o.onChainUpdate?(p)
-    @tween.add(@timeline)
+    @timeline = new Timeline# onUpdate:(p)=> @o.onChainUpdate?(p)
+    @timeline.add(@tween)
     !@props.isRunLess and @startTween()
     @props.isPresetPosition and @setProgress(0, true)
 
-  startTween:-> setTimeout (=> @tween?.start()), 1
+  startTween:-> setTimeout (=> @timeline?.start()), 1
 
   setProgress:(p, isInit)->
-    props = @props
-    len = @startLen+if !props.isReverse then p*@slicedLen else (1-p)*@slicedLen
+    len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen
     point = @path.getPointAtLength len
-
-    isTransformFunOrigin = typeof props.transformOrigin is 'function'
-    # get current angle
-    if props.isAngle or props.angleOffset? or isTransformFunOrigin
+    # get x and y coordinates
+    x = point.x + @props.offsetX; y = point.y + @props.offsetY
+    @_getCurrentAngle point, len, p
+    @_setTransformOrigin(p)
+    @_setTransform(x, y, p, isInit)
+    @props.motionBlur and @makeMotionBlur(x, y)
+  setElPosition:(x,y,p)->
+    rotate    = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
+    isComposite = @props.isCompositeLayer and h.is3d
+    composite = if isComposite then 'translateZ(0)' else ''
+    transform = "translate(#{x}px,#{y}px) #{rotate} #{composite}"
+    h.setPrefixedStyle @el, 'transform', transform
+  setModulePosition:(x, y)->
+    @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
+    @el.draw()
+  _getCurrentAngle:(point, len, p)->
+    isTransformFunOrigin = typeof @props.transformOrigin is 'function'
+    if @props.isAngle or @props.angleOffset? or isTransformFunOrigin
       prevPoint = @path.getPointAtLength len - 1
       x1 = point.y - prevPoint.y; x2 = point.x - prevPoint.x
       atan = Math.atan(x1/x2); !isFinite(atan) and (atan = 0)
       @angle = atan*h.RAD_TO_DEG
-      if (typeof props.angleOffset) isnt 'function'
-        @angle += props.angleOffset or 0
-      else @angle = props.angleOffset.call @, @angle, p
+      if (typeof @props.angleOffset) isnt 'function'
+        @angle += @props.angleOffset or 0
+      else @angle = @props.angleOffset.call @, @angle, p
     else @angle = 0
-    # get x and y coordinates
-    x = point.x + @props.offsetX; y = point.y + @props.offsetY
-
-    @props.motionBlur and @makeMotionBlur(x, y)
-
+  _setTransform:(x,y,p,isInit)->
     # get real coordinates relative to container size
     if @scaler then x *= @scaler.x; y *= @scaler.y
+    # call onUpdate but not on the very first(0 progress) call
+    transform = null
+    if !isInit then transform = @onUpdate?(p, { x: x, y: y, angle: @angle })
     # set position and angle
-    if @isModule then @setModulePosition(x,y) else @setElPosition(x,y,p)
-    # set transform origin
+    # 1: if motion path is for module
+    if @isModule then @setModulePosition(x,y)
+    # 2: if motion path is for DOM node
+    else
+      # if string was returned from the onUpdate call
+      # then set this string to the @el
+      if typeof transform isnt 'string' then @setElPosition(x,y,p)
+      else h.setPrefixedStyle @el, 'transform', transform
+
+  _setTransformOrigin:(p)->
     if @props.transformOrigin
+      isTransformFunOrigin = typeof @props.transformOrigin is 'function'
       # transform origin could be a function
       tOrigin = if !isTransformFunOrigin then @props.transformOrigin
       else @props.transformOrigin(@angle, p)
-      @el.style["#{h.prefix.css}transform-origin"] = tOrigin
-      @el.style['transform-origin'] = tOrigin
-    # call onUpdate but not on the very first(0 progress) call
-    !isInit and @onUpdate?(p)
-
-  setElPosition:(x,y,p)->
-    transform = if !@props.onPosit?
-      rotate = if @angle isnt 0 then "rotate(#{@angle}deg)" else ''
-      "translate(#{x}px,#{y}px) #{rotate}"
-    else @props.onPosit p, x, y, @angle
-    @el.style["#{h.prefix.css}transform"] = transform
-    @el.style['transform'] = transform
-  setModulePosition:(x, y)->
-    @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
-    @el.draw()
+      h.setPrefixedStyle @el, 'transform-origin', tOrigin
   makeMotionBlur:(x, y)->
     # if previous coords are not defined yet -- set speed to 0
     tailAngle = 0; signX = 1; signY = 1
@@ -551,7 +558,7 @@ class MotionPath
       # because we are inside the prevOptions hash and it means
       # the callback was previously defined
       else o[key] ?= undefined
-      # get tween timing values to feed the timeline
+      # get animation timing values to feed the tween
       if h.tweenOptionMap[key]
         # copy all props, if prop is duration - fallback to previous value
         opts[key] = if key isnt 'duration' then o[key]
@@ -562,7 +569,7 @@ class MotionPath
     opts.onComplete    = => @props.onComplete?.apply @
     opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
     opts.isChained = !o.delay
-    @tween.append new Timeline(opts)
+    @timeline.append new Tween(opts)
     @
 
   tuneOptions:(o)-> @extendOptions(o); @postVars()
@@ -575,7 +582,7 @@ class MotionPath
     y = if y < 0 then Math.max(y, -0.7) else Math.min(y, .7)
     x: x*1.428571429
     y: y*1.428571429
-    # x: Math.cos(radAngle), y: Math.sin(radAngle)    
+    # x: Math.cos(radAngle), y: Math.sin(radAngle)
 
 module.exports = MotionPath
 

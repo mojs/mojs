@@ -1,192 +1,18 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.119.0 
+	0.146.9 
 */
 
 (function(f){
 if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.yes = f()}})(function(){var define,module,exports;return (function e(t,n,r){
 function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
-var BezierEasing, bezierEasing, h,
-  indexOf = [].indexOf || 
-function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-h = require('./h');
-
-/**
- * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
- * Adopted from https://github.com/gre/bezier-easing
- */
-
-BezierEasing = (function() {
-  function BezierEasing(o) {
-    this.vars();
-    return this.generate;
-  }
-
-  BezierEasing.prototype.vars = function() {
-    return this.generate = h.bind(this.generate, this);
-  };
-
-  BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
-    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, binarySubdivide, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute, str;
-    if (arguments.length < 4) {
-      return this.error('Bezier function expects 4 arguments');
-    }
-    for (i = j = 0; j < 4; i = ++j) {
-      arg = arguments[i];
-      if (typeof arg !== "number" || isNaN(arg) || !isFinite(arg)) {
-        return this.error('Bezier function expects 4 arguments');
-      }
-    }
-    if (mX1 < 0 || mX1 > 1 || mX2 < 0 || mX2 > 1) {
-      return this.error('Bezier x values should be > 0 and < 1');
-    }
-    NEWTON_ITERATIONS = 4;
-    NEWTON_MIN_SLOPE = 0.001;
-    SUBDIVISION_PRECISION = 0.0000001;
-    SUBDIVISION_MAX_ITERATIONS = 10;
-    kSplineTableSize = 11;
-    kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
-    float32ArraySupported = indexOf.call(global, 'Float32Array') >= 0;
-    A = function(aA1, aA2) {
-      return 1.0 - 3.0 * aA2 + 3.0 * aA1;
-    };
-    B = function(aA1, aA2) {
-      return 3.0 * aA2 - 6.0 * aA1;
-    };
-    C = function(aA1) {
-      return 3.0 * aA1;
-    };
-    calcBezier = function(aT, aA1, aA2) {
-      return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
-    };
-    getSlope = function(aT, aA1, aA2) {
-      return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
-    };
-    newtonRaphsonIterate = function(aX, aGuessT) {
-      var currentSlope, currentX;
-      i = 0;
-      while (i < NEWTON_ITERATIONS) {
-        currentSlope = getSlope(aGuessT, mX1, mX2);
-
-        /* istanbul ignore if */
-        if (currentSlope === 0.0) {
-          return aGuessT;
-        }
-        currentX = calcBezier(aGuessT, mX1, mX2) - aX;
-        aGuessT -= currentX / currentSlope;
-        ++i;
-      }
-      return aGuessT;
-    };
-    calcSampleValues = function() {
-      i = 0;
-      while (i < kSplineTableSize) {
-        mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
-        ++i;
-      }
-    };
-
-    binarySubdivide = function(aX, aA, aB) {
-      var currentT, currentX, isBig;
-      currentX = void 0;
-      currentT = void 0;
-      i = 0;
-      while (true) {
-        currentT = aA + (aB - aA) / 2.0;
-        currentX = calcBezier(currentT, mX1, mX2) - aX;
-        if (currentX > 0.0) {
-          aB = currentT;
-        } else {
-          aA = currentT;
-        }
-        isBig = Math.abs(currentX) > SUBDIVISION_PRECISION;
-        if (!(isBig && ++i < SUBDIVISION_MAX_ITERATIONS)) {
-          break;
-        }
-      }
-      return currentT;
-    };
-    getTForX = function(aX) {
-      var currentSample, delta, dist, guessForT, initialSlope, intervalStart, lastSample;
-      intervalStart = 0.0;
-      currentSample = 1;
-      lastSample = kSplineTableSize - 1;
-      while (currentSample !== lastSample && mSampleValues[currentSample] <= aX) {
-        intervalStart += kSampleStepSize;
-        ++currentSample;
-      }
-      --currentSample;
-      delta = mSampleValues[currentSample + 1] - mSampleValues[currentSample];
-      dist = (aX - mSampleValues[currentSample]) / delta;
-      guessForT = intervalStart + dist * kSampleStepSize;
-      initialSlope = getSlope(guessForT, mX1, mX2);
-      if (initialSlope >= NEWTON_MIN_SLOPE) {
-        return newtonRaphsonIterate(aX, guessForT);
-      } else {
-
-        if (initialSlope === 0.0) {
-          return guessForT;
-        } else {
-          return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize);
-        }
-      }
-    };
-    precompute = function() {
-      var _precomputed;
-      _precomputed = true;
-      if (mX1 !== mY1 || mX2 !== mY2) {
-        calcSampleValues();
-      }
-    };
-    mSampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
-    _precomputed = false;
-    f = function(aX) {
-      if (!_precomputed) {
-        precompute();
-      }
-      if (mX1 === mY1 && mX2 === mY2) {
-        return aX;
-      }
-      if (aX === 0) {
-        return 0;
-      }
-      if (aX === 1) {
-        return 1;
-      }
-      return calcBezier(getTForX(aX), mY1, mY2);
-    };
-    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
-    f.toStr = function() {
-      return str;
-    };
-    return f;
-  };
-
-  BezierEasing.prototype.error = function(msg) {
-    return h.error(msg);
-  };
-
-  return BezierEasing;
-
-})();
-
-bezierEasing = new BezierEasing;
-
-module.exports = bezierEasing;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./h":4}],2:[function(require,module,exports){
-
-var Burst, Swirl, Transit, Tween, bitsMap, h,
+var Burst, Swirl, Transit, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 bitsMap = require('./shapes/bitsMap');
-
-Tween = require('./tween/tween');
 
 Transit = require('./transit');
 
@@ -300,7 +126,7 @@ Burst = (function(superClass) {
         }
         this.transits[len].tuneNewOption(option, true);
       }
-      this.tween.recalcDuration();
+      this.timeline.recalcDuration();
     }
     if (this.props.randomAngle || this.props.randomRadius) {
       len = this.transits.length;
@@ -426,7 +252,7 @@ Burst = (function(superClass) {
     i = this.transits.length;
     results = [];
     while (i--) {
-      results.push(this.tween.add(this.transits[i].timeline));
+      results.push(this.timeline.add(this.transits[i].tween));
     }
     return results;
   };
@@ -525,12 +351,188 @@ Burst = (function(superClass) {
 
 module.exports = Burst;
 
-},{"./h":4,"./shapes/bitsMap":11,"./swirl":21,"./transit":22,"./tween/tween":24}],3:[function(require,module,exports){
-var Easing, PathEasing, bezier, easing;
+},{"./h":6,"./shapes/bitsMap":12,"./swirl":22,"./transit":23}],2:[function(require,module,exports){
+(function (global){
+var BezierEasing, bezierEasing, h,
+  indexOf = [].indexOf || 
+function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+h = require('../h');
+
+/**
+ * Copyright (c) 2014 Gaëtan Renaudeau http://goo.gl/El3k7u
+ * Adopted from https://github.com/gre/bezier-easing
+ */
+
+BezierEasing = (function() {
+  function BezierEasing(o) {
+    this.vars();
+    return this.generate;
+  }
+
+  BezierEasing.prototype.vars = function() {
+    return this.generate = h.bind(this.generate, this);
+  };
+
+  BezierEasing.prototype.generate = function(mX1, mY1, mX2, mY2) {
+    var A, B, C, NEWTON_ITERATIONS, NEWTON_MIN_SLOPE, SUBDIVISION_MAX_ITERATIONS, SUBDIVISION_PRECISION, _precomputed, arg, binarySubdivide, calcBezier, calcSampleValues, f, float32ArraySupported, getSlope, getTForX, i, j, kSampleStepSize, kSplineTableSize, mSampleValues, newtonRaphsonIterate, precompute, str;
+    if (arguments.length < 4) {
+      return this.error('Bezier function expects 4 arguments');
+    }
+    for (i = j = 0; j < 4; i = ++j) {
+      arg = arguments[i];
+      if (typeof arg !== "number" || isNaN(arg) || !isFinite(arg)) {
+        return this.error('Bezier function expects 4 arguments');
+      }
+    }
+    if (mX1 < 0 || mX1 > 1 || mX2 < 0 || mX2 > 1) {
+      return this.error('Bezier x values should be > 0 and < 1');
+    }
+    NEWTON_ITERATIONS = 4;
+    NEWTON_MIN_SLOPE = 0.001;
+    SUBDIVISION_PRECISION = 0.0000001;
+    SUBDIVISION_MAX_ITERATIONS = 10;
+    kSplineTableSize = 11;
+    kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
+    float32ArraySupported = indexOf.call(global, 'Float32Array') >= 0;
+    A = function(aA1, aA2) {
+      return 1.0 - 3.0 * aA2 + 3.0 * aA1;
+    };
+    B = function(aA1, aA2) {
+      return 3.0 * aA2 - 6.0 * aA1;
+    };
+    C = function(aA1) {
+      return 3.0 * aA1;
+    };
+    calcBezier = function(aT, aA1, aA2) {
+      return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
+    };
+    getSlope = function(aT, aA1, aA2) {
+      return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
+    };
+    newtonRaphsonIterate = function(aX, aGuessT) {
+      var currentSlope, currentX;
+      i = 0;
+      while (i < NEWTON_ITERATIONS) {
+        currentSlope = getSlope(aGuessT, mX1, mX2);
+
+        /* istanbul ignore if */
+        if (currentSlope === 0.0) {
+          return aGuessT;
+        }
+        currentX = calcBezier(aGuessT, mX1, mX2) - aX;
+        aGuessT -= currentX / currentSlope;
+        ++i;
+      }
+      return aGuessT;
+    };
+    calcSampleValues = function() {
+      i = 0;
+      while (i < kSplineTableSize) {
+        mSampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
+        ++i;
+      }
+    };
+
+    binarySubdivide = function(aX, aA, aB) {
+      var currentT, currentX, isBig;
+      currentX = void 0;
+      currentT = void 0;
+      i = 0;
+      while (true) {
+        currentT = aA + (aB - aA) / 2.0;
+        currentX = calcBezier(currentT, mX1, mX2) - aX;
+        if (currentX > 0.0) {
+          aB = currentT;
+        } else {
+          aA = currentT;
+        }
+        isBig = Math.abs(currentX) > SUBDIVISION_PRECISION;
+        if (!(isBig && ++i < SUBDIVISION_MAX_ITERATIONS)) {
+          break;
+        }
+      }
+      return currentT;
+    };
+    getTForX = function(aX) {
+      var currentSample, delta, dist, guessForT, initialSlope, intervalStart, lastSample;
+      intervalStart = 0.0;
+      currentSample = 1;
+      lastSample = kSplineTableSize - 1;
+      while (currentSample !== lastSample && mSampleValues[currentSample] <= aX) {
+        intervalStart += kSampleStepSize;
+        ++currentSample;
+      }
+      --currentSample;
+      delta = mSampleValues[currentSample + 1] - mSampleValues[currentSample];
+      dist = (aX - mSampleValues[currentSample]) / delta;
+      guessForT = intervalStart + dist * kSampleStepSize;
+      initialSlope = getSlope(guessForT, mX1, mX2);
+      if (initialSlope >= NEWTON_MIN_SLOPE) {
+        return newtonRaphsonIterate(aX, guessForT);
+      } else {
+
+        if (initialSlope === 0.0) {
+          return guessForT;
+        } else {
+          return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize);
+        }
+      }
+    };
+    precompute = function() {
+      var _precomputed;
+      _precomputed = true;
+      if (mX1 !== mY1 || mX2 !== mY2) {
+        return calcSampleValues();
+      }
+    };
+    mSampleValues = !float32ArraySupported ? new Array(kSplineTableSize) : new Float32Array(kSplineTableSize);
+    _precomputed = false;
+    f = function(aX) {
+      if (!_precomputed) {
+        precompute();
+      }
+      if (mX1 === mY1 && mX2 === mY2) {
+        return aX;
+      }
+      if (aX === 0) {
+        return 0;
+      }
+      if (aX === 1) {
+        return 1;
+      }
+      return calcBezier(getTForX(aX), mY1, mY2);
+    };
+    str = "bezier(" + [mX1, mY1, mX2, mY2] + ")";
+    f.toStr = function() {
+      return str;
+    };
+    return f;
+  };
+
+  BezierEasing.prototype.error = function(msg) {
+    return h.error(msg);
+  };
+
+  return BezierEasing;
+
+})();
+
+bezierEasing = new BezierEasing;
+
+module.exports = bezierEasing;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../h":6}],3:[function(require,module,exports){
+var Easing, PathEasing, bezier, easing, h, mix;
 
 bezier = require('./bezier-easing');
 
 PathEasing = require('./path-easing');
+
+mix = require('./mix');
+
+h = require('../h');
 
 Easing = (function() {
   function Easing() {}
@@ -540,6 +542,10 @@ Easing = (function() {
   Easing.prototype.PathEasing = PathEasing;
 
   Easing.prototype.path = (new PathEasing('creator')).create;
+
+  Easing.prototype.inverse = function(p) {
+    return 1 - p;
+  };
 
   Easing.prototype.linear = {
     none: function(k) {
@@ -761,15 +767,352 @@ Easing = (function() {
     }
   };
 
+  Easing.prototype.parseEasing = function(easing) {
+    var type;
+    type = typeof easing;
+    if (type === 'string') {
+      if (easing.charAt(0).toLowerCase() === 'm') {
+        return this.path(easing);
+      } else {
+        easing = this._splitEasing(easing);
+        return this[easing[0]][easing[1]];
+      }
+    }
+    if (h.isArray(easing)) {
+      return this.bezier.apply(this, easing);
+    }
+    if ('function') {
+      return easing;
+    }
+  };
+
+  Easing.prototype._splitEasing = function(string) {
+    var firstPart, secondPart, split;
+    if (typeof string === 'function') {
+      return string;
+    }
+    if (typeof string === 'string' && string.length) {
+      split = string.split('.');
+      firstPart = split[0].toLowerCase() || 'linear';
+      secondPart = split[1].toLowerCase() || 'none';
+      return [firstPart, secondPart];
+    } else {
+      return ['linear', 'none'];
+    }
+  };
+
   return Easing;
 
 })();
 
 easing = new Easing;
 
+easing.mix = mix(easing);
+
 module.exports = easing;
 
-},{"./bezier-easing":1,"./path-easing":7}],4:[function(require,module,exports){
+},{"../h":6,"./bezier-easing":2,"./mix":4,"./path-easing":5}],4:[function(require,module,exports){
+var create, easing, getNearest, mix, parseIfEasing, sort,
+  slice = [].slice;
+
+easing = null;
+
+parseIfEasing = function(item) {
+  if (typeof item.value === 'number') {
+    return item.value;
+  } else {
+    return easing.parseEasing(item.value);
+  }
+};
+
+sort = function(a, b) {
+  var returnValue;
+  a.value = parseIfEasing(a);
+  b.value = parseIfEasing(b);
+  returnValue = 0;
+  a.to < b.to && (returnValue = -1);
+  a.to > b.to && (returnValue = 1);
+  return returnValue;
+};
+
+getNearest = function(array, progress) {
+  var i, index, j, len, value;
+  index = 0;
+  for (i = j = 0, len = array.length; j < len; i = ++j) {
+    value = array[i];
+    index = i;
+    if (value.to > progress) {
+      break;
+    }
+  }
+  return index;
+};
+
+mix = function() {
+  var args;
+  args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+  if (args.length > 1) {
+    args = args.sort(sort);
+  } else {
+    args[0].value = parseIfEasing(args[0]);
+  }
+  return function(progress) {
+    var index, value;
+    index = getNearest(args, progress);
+    if (index !== -1) {
+      value = args[index].value;
+      if (index === args.length - 1 && progress > args[index].to) {
+        return 1;
+      }
+      if (typeof value === 'function') {
+        return value(progress);
+      } else {
+        return value;
+      }
+    }
+  };
+};
+
+create = function(e) {
+  easing = e;
+  return mix;
+};
+
+module.exports = create;
+
+},{}],5:[function(require,module,exports){
+var PathEasing, h;
+
+h = require('../h');
+
+PathEasing = (function() {
+  PathEasing.prototype._vars = function() {
+    this._precompute = h.clamp(this.o.precompute || 140, 100, 10000);
+    this._step = 1 / this._precompute;
+    this._rect = this.o.rect || 100;
+    this._approximateMax = this.o.approximateMax || 5;
+    this._eps = this.o.eps || 0.01;
+    return this._boundsPrevProgress = -1;
+  };
+
+  function PathEasing(path, o1) {
+    this.o = o1 != null ? o1 : {};
+    if (path === 'creator') {
+      return;
+    }
+    this.path = h.parsePath(path);
+    if (this.path == null) {
+      return h.error('Error while parsing the path');
+    }
+    this.path.setAttribute('d', this._normalizePath(this.path.getAttribute('d')));
+    this.pathLength = this.path.getTotalLength();
+    this.sample = h.bind(this.sample, this);
+    this._hardSample = h.bind(this._hardSample, this);
+    this._vars();
+    this._preSample();
+    this;
+  }
+
+  PathEasing.prototype._preSample = function() {
+    var i, j, length, point, progress, ref, results;
+    this._samples = [];
+    results = [];
+    for (i = j = 0, ref = this._precompute; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+      progress = i * this._step;
+      length = this.pathLength * progress;
+      point = this.path.getPointAtLength(length);
+      results.push(this._samples[i] = {
+        point: point,
+        length: length,
+        progress: progress
+      });
+    }
+    return results;
+  };
+
+  PathEasing.prototype._findBounds = function(array, p) {
+    var buffer, direction, end, i, j, len, loopEnd, pointP, pointX, ref, ref1, start, value;
+    if (p === this._boundsPrevProgress) {
+      return this._prevBounds;
+    }
+    if (this._boundsStartIndex == null) {
+      this._boundsStartIndex = 0;
+    }
+    len = array.length;
+    if (this._boundsPrevProgress > p) {
+      loopEnd = 0;
+      direction = 'reverse';
+    } else {
+      loopEnd = len;
+      direction = 'forward';
+    }
+    if (direction === 'forward') {
+      start = array[0];
+      end = array[array.length - 1];
+    } else {
+      start = array[array.length - 1];
+      end = array[0];
+    }
+    for (i = j = ref = this._boundsStartIndex, ref1 = loopEnd; ref <= ref1 ? j < ref1 : j > ref1; i = ref <= ref1 ? ++j : --j) {
+      value = array[i];
+      pointX = value.point.x / this._rect;
+      pointP = p;
+      if (direction === 'reverse') {
+        buffer = pointX;
+        pointX = pointP;
+        pointP = buffer;
+      }
+      if (pointX < pointP) {
+        start = value;
+        this._boundsStartIndex = i;
+      } else {
+        end = value;
+        break;
+      }
+    }
+    this._boundsPrevProgress = p;
+    return this._prevBounds = {
+      start: start,
+      end: end
+    };
+  };
+
+  PathEasing.prototype.sample = function(p) {
+    var bounds, res;
+    p = h.clamp(p, 0, 1);
+    bounds = this._findBounds(this._samples, p);
+    res = this._checkIfBoundsCloseEnough(p, bounds);
+    if (res != null) {
+      return res;
+    }
+    return this._findApproximate(p, bounds.start, bounds.end);
+  };
+
+  PathEasing.prototype._checkIfBoundsCloseEnough = function(p, bounds) {
+    var point, y;
+    point = void 0;
+    y = this._checkIfPointCloseEnough(p, bounds.start.point);
+    if (y != null) {
+      return y;
+    }
+    return this._checkIfPointCloseEnough(p, bounds.end.point);
+  };
+
+  PathEasing.prototype._checkIfPointCloseEnough = function(p, point) {
+    if (h.closeEnough(p, point.x / this._rect, this._eps)) {
+      return this._resolveY(point);
+    }
+  };
+
+  PathEasing.prototype._approximate = function(start, end, p) {
+    var deltaP, percentP;
+    deltaP = end.point.x - start.point.x;
+    percentP = (p - (start.point.x / 100)) / (deltaP / 100);
+    return start.length + percentP * (end.length - start.length);
+  };
+
+  PathEasing.prototype._findApproximate = function(p, start, end, approximateMax) {
+    var approximation, args, newPoint, point, x;
+    if (approximateMax == null) {
+      approximateMax = this._approximateMax;
+    }
+    approximation = this._approximate(start, end, p);
+    point = this.path.getPointAtLength(approximation);
+    x = point.x / 100;
+    if (h.closeEnough(p, x, this._eps)) {
+      return this._resolveY(point);
+    } else {
+      if (--approximateMax < 1) {
+        return this._resolveY(point);
+      }
+      newPoint = {
+        point: point,
+        length: approximation
+      };
+      args = p < x ? [p, start, newPoint, approximateMax] : [p, newPoint, end, approximateMax];
+      return this._findApproximate.apply(this, args);
+    }
+  };
+
+  PathEasing.prototype._resolveY = function(point) {
+    return 1 - (point.y / this._rect);
+  };
+
+  PathEasing.prototype._normalizePath = function(path) {
+    var commands, endIndex, normalizedPath, points, startIndex, svgCommandsRegexp;
+    svgCommandsRegexp = /[M|L|H|V|C|S|Q|T|A]/gim;
+    points = path.split(svgCommandsRegexp);
+    points.shift();
+    commands = path.match(svgCommandsRegexp);
+    startIndex = 0;
+    points[startIndex] = this._normalizeSegment(points[startIndex]);
+    endIndex = points.length - 1;
+    points[endIndex] = this._normalizeSegment(points[endIndex], this._rect || 100);
+    return normalizedPath = this._joinNormalizedPath(commands, points);
+  };
+
+  PathEasing.prototype._joinNormalizedPath = function(commands, points) {
+    var command, i, j, len1, normalizedPath, space;
+    normalizedPath = '';
+    for (i = j = 0, len1 = commands.length; j < len1; i = ++j) {
+      command = commands[i];
+      space = i === 0 ? '' : ' ';
+      normalizedPath += "" + space + command + (points[i].trim());
+    }
+    return normalizedPath;
+  };
+
+  PathEasing.prototype._normalizeSegment = function(segment, value) {
+    var i, j, lastPoint, len1, nRgx, pairs, parsedX, point, space, x;
+    if (value == null) {
+      value = 0;
+    }
+    segment = segment.trim();
+    nRgx = /(-|\+)?((\d+(\.(\d|\e(-|\+)?)+)?)|(\.?(\d|\e|(\-|\+))+))/gim;
+    pairs = this._getSegmentPairs(segment.match(nRgx));
+    lastPoint = pairs[pairs.length - 1];
+    x = lastPoint[0];
+    parsedX = Number(x);
+    if (parsedX !== value) {
+      segment = '';
+      lastPoint[0] = value;
+      for (i = j = 0, len1 = pairs.length; j < len1; i = ++j) {
+        point = pairs[i];
+        space = i === 0 ? '' : ' ';
+        segment += "" + space + point[0] + "," + point[1];
+      }
+    }
+    return segment;
+  };
+
+  PathEasing.prototype._getSegmentPairs = function(array) {
+    var i, j, len1, newArray, pair, value;
+    if (array.length % 2 !== 0) {
+      h.error('Failed to parse the path - segment pairs are not even.', array);
+    }
+    newArray = [];
+    for (i = j = 0, len1 = array.length; j < len1; i = j += 2) {
+      value = array[i];
+      pair = [array[i], array[i + 1]];
+      newArray.push(pair);
+    }
+    return newArray;
+  };
+
+  PathEasing.prototype.create = function(path, o) {
+    var handler;
+    handler = new PathEasing(path, o);
+    handler.sample.path = handler.path;
+    return handler.sample;
+  };
+
+  return PathEasing;
+
+})();
+
+module.exports = PathEasing;
+
+},{"../h":6}],6:[function(require,module,exports){
 var Helpers, h;
 
 Helpers = (function() {
@@ -862,6 +1205,7 @@ Helpers = (function() {
     this.isChrome && this.isSafari && (this.isSafari = false);
     (ua.match(/PhantomJS/gim)) && (this.isSafari = false);
     this.isChrome && this.isOpera && (this.isChrome = false);
+    this.is3d = this.checkIf3d();
     this.uniqIDs = -1;
     this.div = document.createElement('div');
     return document.body.appendChild(this.div);
@@ -914,10 +1258,27 @@ Helpers = (function() {
   };
 
   Helpers.prototype.setPrefixedStyle = function(el, name, value) {
-    var prefixedName;
+    var prefixedName, prefixedStyle;
     prefixedName = "" + this.prefix.css + name;
-    el.style[name] = value;
-    return el.style[prefixedName] = value;
+    prefixedStyle = el.style[prefixedName] != null ? prefixedName : name;
+    return el.style[prefixedStyle] = value;
+  };
+
+  Helpers.prototype.style = function(el, name, value) {
+    var key, keys, len, results;
+    if (typeof name === 'object') {
+      keys = Object.keys(name);
+      len = keys.length;
+      results = [];
+      while (len--) {
+        key = keys[len];
+        value = name[key];
+        results.push(this.setPrefixedStyle(el, key, value));
+      }
+      return results;
+    } else {
+      return this.setPrefixedStyle(el, name, value);
+    }
   };
 
   Helpers.prototype.prepareForLog = function(args) {
@@ -1036,9 +1397,9 @@ Helpers = (function() {
   };
 
   Helpers.prototype.calcArrDelta = function(arr1, arr2) {
-    var delta, i, j, len, num;
+    var delta, i, j, len1, num;
     delta = [];
-    for (i = j = 0, len = arr1.length; j < len; i = ++j) {
+    for (i = j = 0, len1 = arr1.length; j < len1; i = ++j) {
       num = arr1[i];
       delta[i] = this.parseUnit("" + (arr2[i].value - arr1[i].value) + arr2[i].unit);
     }
@@ -1152,6 +1513,14 @@ Helpers = (function() {
     }
   };
 
+  Helpers.prototype.parseIfStagger = function(value, i) {
+    if (!(typeof value === 'string' && value.match(/stagger/g))) {
+      return value;
+    } else {
+      return this.parseStagger(value, i);
+    }
+  };
+
   Helpers.prototype.parseIfRand = function(str) {
     if (typeof str === 'string' && str.match(/rand\(/)) {
       return this.parseRand(str);
@@ -1161,7 +1530,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.parseDelta = function(key, value) {
-    var delta, end, endArr, endColorObj, i, j, len, start, startArr, startColorObj;
+    var delta, end, endArr, endColorObj, i, j, len1, start, startArr, startColorObj;
     start = Object.keys(value)[0];
     end = value[start];
     delta = {
@@ -1189,7 +1558,7 @@ Helpers = (function() {
       startArr = this.strToArr(start);
       endArr = this.strToArr(end);
       this.normDashArrays(startArr, endArr);
-      for (i = j = 0, len = startArr.length; j < len; i = ++j) {
+      for (i = j = 0, len1 = startArr.length; j < len1; i = ++j) {
         start = startArr[i];
         end = endArr[i];
         this.mergeUnits(start, end, key);
@@ -1304,6 +1673,20 @@ Helpers = (function() {
     }
   };
 
+  Helpers.prototype.closeEnough = function(num1, num2, eps) {
+    return Math.abs(num1 - num2) < eps;
+  };
+
+  Helpers.prototype.checkIf3d = function() {
+    var div, prefixed, style, tr;
+    div = document.createElement('div');
+    this.style(div, 'transform', 'translateZ(0)');
+    style = div.style;
+    prefixed = this.prefix.css + "transform";
+    tr = style[prefixed] != null ? style[prefixed] : style.transform;
+    return tr !== '';
+  };
+
   return Helpers;
 
 })();
@@ -1312,11 +1695,11 @@ h = new Helpers;
 
 module.exports = h;
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var mojs;
 
 mojs = {
-  revision: '0.119.0',
+  revision: '0.146.9',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1334,10 +1717,10 @@ mojs = {
   Stagger: require('./stagger'),
   Spriter: require('./spriter'),
   MotionPath: require('./motion-path'),
-  Timeline: require('./tween/timeline'),
   Tween: require('./tween/tween'),
+  Timeline: require('./tween/timeline'),
   tweener: require('./tween/tweener'),
-  easing: require('./easing')
+  easing: require('./easing/easing')
 };
 
 mojs.h = mojs.helpers;
@@ -1356,19 +1739,17 @@ if ((typeof module === "object") && (typeof module.exports === "object")) {
 
 return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
-},{"./burst":2,"./easing":3,"./h":4,"./motion-path":6,"./shapes/bit":10,"./shapes/bitsMap":11,"./shapes/circle":12,"./shapes/cross":13,"./shapes/equal":14,"./shapes/line":15,"./shapes/polygon":16,"./shapes/rect":17,"./shapes/zigzag":18,"./spriter":19,"./stagger":20,"./swirl":21,"./transit":22,"./tween/timeline":23,"./tween/tween":24,"./tween/tweener":25}],6:[function(require,module,exports){
-var MotionPath, Timeline, Tween, easing, h, resize,
+},{"./burst":1,"./easing/easing":3,"./h":6,"./motion-path":8,"./shapes/bit":11,"./shapes/bitsMap":12,"./shapes/circle":13,"./shapes/cross":14,"./shapes/equal":15,"./shapes/line":16,"./shapes/polygon":17,"./shapes/rect":18,"./shapes/zigzag":19,"./spriter":20,"./stagger":21,"./swirl":22,"./transit":23,"./tween/timeline":24,"./tween/tween":25,"./tween/tweener":26}],8:[function(require,module,exports){
+var MotionPath, Timeline, Tween, h, resize,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 h = require('./h');
 
-easing = require('./easing');
-
 resize = require('./vendor/resize');
 
-Timeline = require('./tween/timeline');
-
 Tween = require('./tween/tween');
+
+Timeline = require('./tween/timeline');
 
 MotionPath = (function() {
   MotionPath.prototype.defaults = {
@@ -1377,6 +1758,7 @@ MotionPath = (function() {
       x: '75%',
       y: '50%'
     },
+    isCompositeLayer: true,
     delay: 0,
     duration: 1000,
     easing: null,
@@ -1395,8 +1777,7 @@ MotionPath = (function() {
     isPresetPosition: true,
     onStart: null,
     onComplete: null,
-    onUpdate: null,
-    onPosit: null
+    onUpdate: null
   };
 
   function MotionPath(o1) {
@@ -1473,6 +1854,10 @@ MotionPath = (function() {
     this.blurAmount = 20;
     this.props.motionBlur = h.clamp(this.props.motionBlur, 0, 1);
     this.onUpdate = this.props.onUpdate;
+    if (!this.o.el) {
+      h.error('Missed "el" option. It could be a selector, DOMNode or another module.');
+      return true;
+    }
     this.el = this.parseEl(this.props.el);
     this.props.motionBlur > 0 && this.createFilter();
     this.path = this.getPath();
@@ -1607,7 +1992,7 @@ MotionPath = (function() {
   };
 
   MotionPath.prototype.createTween = function() {
-    this.timeline = new Timeline({
+    this.tween = new Tween({
       duration: this.props.duration,
       delay: this.props.delay,
       yoyo: this.props.yoyo,
@@ -1646,8 +2031,8 @@ MotionPath = (function() {
         };
       })(this)
     });
-    this.tween = new Tween;
-    this.tween.add(this.timeline);
+    this.timeline = new Timeline;
+    this.timeline.add(this.tween);
     !this.props.isRunLess && this.startTween();
     return this.props.isPresetPosition && this.setProgress(0, true);
   };
@@ -1656,57 +2041,30 @@ MotionPath = (function() {
     return setTimeout(((function(_this) {
       return function() {
         var ref;
-        return (ref = _this.tween) != null ? ref.start() : void 0;
+        return (ref = _this.timeline) != null ? ref.start() : void 0;
       };
     })(this)), 1);
   };
 
   MotionPath.prototype.setProgress = function(p, isInit) {
-    var atan, isTransformFunOrigin, len, point, prevPoint, props, tOrigin, x, x1, x2, y;
-    props = this.props;
-    len = this.startLen + (!props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
+    var len, point, x, y;
+    len = this.startLen + (!this.props.isReverse ? p * this.slicedLen : (1 - p) * this.slicedLen);
     point = this.path.getPointAtLength(len);
-    isTransformFunOrigin = typeof props.transformOrigin === 'function';
-    if (props.isAngle || (props.angleOffset != null) || isTransformFunOrigin) {
-      prevPoint = this.path.getPointAtLength(len - 1);
-      x1 = point.y - prevPoint.y;
-      x2 = point.x - prevPoint.x;
-      atan = Math.atan(x1 / x2);
-      !isFinite(atan) && (atan = 0);
-      this.angle = atan * h.RAD_TO_DEG;
-      if ((typeof props.angleOffset) !== 'function') {
-        this.angle += props.angleOffset || 0;
-      } else {
-        this.angle = props.angleOffset.call(this, this.angle, p);
-      }
-    } else {
-      this.angle = 0;
-    }
     x = point.x + this.props.offsetX;
     y = point.y + this.props.offsetY;
-    this.props.motionBlur && this.makeMotionBlur(x, y);
-    if (this.scaler) {
-      x *= this.scaler.x;
-      y *= this.scaler.y;
-    }
-    if (this.isModule) {
-      this.setModulePosition(x, y);
-    } else {
-      this.setElPosition(x, y, p);
-    }
-    if (this.props.transformOrigin) {
-      tOrigin = !isTransformFunOrigin ? this.props.transformOrigin : this.props.transformOrigin(this.angle, p);
-      this.el.style[h.prefix.css + "transform-origin"] = tOrigin;
-      this.el.style['transform-origin'] = tOrigin;
-    }
-    return !isInit && (typeof this.onUpdate === "function" ? this.onUpdate(p) : void 0);
+    this._getCurrentAngle(point, len, p);
+    this._setTransformOrigin(p);
+    this._setTransform(x, y, p, isInit);
+    return this.props.motionBlur && this.makeMotionBlur(x, y);
   };
 
   MotionPath.prototype.setElPosition = function(x, y, p) {
-    var rotate, transform;
-    transform = this.props.onPosit == null ? (rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '', "translate(" + x + "px," + y + "px) " + rotate) : this.props.onPosit(p, x, y, this.angle);
-    this.el.style[h.prefix.css + "transform"] = transform;
-    return this.el.style['transform'] = transform;
+    var composite, isComposite, rotate, transform;
+    rotate = this.angle !== 0 ? "rotate(" + this.angle + "deg)" : '';
+    isComposite = this.props.isCompositeLayer && h.is3d;
+    composite = isComposite ? 'translateZ(0)' : '';
+    transform = "translate(" + x + "px," + y + "px) " + rotate + " " + composite;
+    return h.setPrefixedStyle(this.el, 'transform', transform);
   };
 
   MotionPath.prototype.setModulePosition = function(x, y) {
@@ -1716,6 +2074,60 @@ MotionPath = (function() {
       angle: this.angle
     });
     return this.el.draw();
+  };
+
+  MotionPath.prototype._getCurrentAngle = function(point, len, p) {
+    var atan, isTransformFunOrigin, prevPoint, x1, x2;
+    isTransformFunOrigin = typeof this.props.transformOrigin === 'function';
+    if (this.props.isAngle || (this.props.angleOffset != null) || isTransformFunOrigin) {
+      prevPoint = this.path.getPointAtLength(len - 1);
+      x1 = point.y - prevPoint.y;
+      x2 = point.x - prevPoint.x;
+      atan = Math.atan(x1 / x2);
+      !isFinite(atan) && (atan = 0);
+      this.angle = atan * h.RAD_TO_DEG;
+      if ((typeof this.props.angleOffset) !== 'function') {
+        return this.angle += this.props.angleOffset || 0;
+      } else {
+        return this.angle = this.props.angleOffset.call(this, this.angle, p);
+      }
+    } else {
+      return this.angle = 0;
+    }
+  };
+
+  MotionPath.prototype._setTransform = function(x, y, p, isInit) {
+    var transform;
+    if (this.scaler) {
+      x *= this.scaler.x;
+      y *= this.scaler.y;
+    }
+    transform = null;
+    if (!isInit) {
+      transform = typeof this.onUpdate === "function" ? this.onUpdate(p, {
+        x: x,
+        y: y,
+        angle: this.angle
+      }) : void 0;
+    }
+    if (this.isModule) {
+      return this.setModulePosition(x, y);
+    } else {
+      if (typeof transform !== 'string') {
+        return this.setElPosition(x, y, p);
+      } else {
+        return h.setPrefixedStyle(this.el, 'transform', transform);
+      }
+    }
+  };
+
+  MotionPath.prototype._setTransformOrigin = function(p) {
+    var isTransformFunOrigin, tOrigin;
+    if (this.props.transformOrigin) {
+      isTransformFunOrigin = typeof this.props.transformOrigin === 'function';
+      tOrigin = !isTransformFunOrigin ? this.props.transformOrigin : this.props.transformOrigin(this.angle, p);
+      return h.setPrefixedStyle(this.el, 'transform-origin', tOrigin);
+    }
   };
 
   MotionPath.prototype.makeMotionBlur = function(x, y) {
@@ -1827,7 +2239,7 @@ MotionPath = (function() {
       return it.tuneOptions(it.history[this.index]);
     };
     opts.isChained = !o.delay;
-    this.tween.append(new Timeline(opts));
+    this.timeline.append(new Tween(opts));
     return this;
   };
 
@@ -1856,70 +2268,7 @@ MotionPath = (function() {
 
 module.exports = MotionPath;
 
-},{"./easing":3,"./h":4,"./tween/timeline":23,"./tween/tween":24,"./vendor/resize":26}],7:[function(require,module,exports){
-var PathEasing, h;
-
-h = require('./h');
-
-PathEasing = (function() {
-  function PathEasing(path, o) {
-    var ref;
-    if (o == null) {
-      o = {};
-    }
-    if (path === 'creator') {
-      return;
-    }
-    this.path = h.parsePath(path);
-    this.pathLength = (ref = this.path) != null ? ref.getTotalLength() : void 0;
-    this.precision = o.precision || 24;
-    this.rect = o.rect || 100;
-    this.sample = h.bind(this.sample, this);
-    this;
-  }
-
-  PathEasing.prototype.sample = function(p, start, end, precision) {
-    var center, newEnd, newStart, point, rect;
-    if (start == null) {
-      start = 0;
-    }
-    if (end == null) {
-      end = 1;
-    }
-    if (precision == null) {
-      precision = this.precision;
-    }
-    p = h.clamp(p, 0, 1);
-    center = start + ((end - start) / 2);
-    point = this.path.getPointAtLength(this.pathLength * center);
-    rect = this.rect;
-    if (rect * p > point.x) {
-      newStart = center;
-      newEnd = end;
-    } else if (rect * p < point.x) {
-      newStart = start;
-      newEnd = center;
-    } else {
-      return 1 - point.y / rect;
-    }
-    if (--precision < 1) {
-      return 1 - point.y / rect;
-    } else {
-      return this.sample(p, newStart, newEnd, precision);
-    }
-  };
-
-  PathEasing.prototype.create = function(path, o) {
-    return (new PathEasing(path, o)).sample;
-  };
-
-  return PathEasing;
-
-})();
-
-module.exports = PathEasing;
-
-},{"./h":4}],8:[function(require,module,exports){
+},{"./h":6,"./tween/timeline":24,"./tween/tween":25,"./vendor/resize":27}],9:[function(require,module,exports){
 
 (function(root) {
   var offset, ref, ref1;
@@ -1937,39 +2286,37 @@ module.exports = PathEasing;
   }
 })(window);
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 (function() {
-  var k, lastTime, vendors, x;
-  lastTime = 0;
-  x = 0;
-  vendors = ["ms", "moz", "webkit", "o"];
-  while (x < vendors.length && !window.requestAnimationFrame) {
-    window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
-    k = window[vendors[x] + "CancelRequestAnimationFrame"];
-    window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || k;
-    ++x;
+  'use strict';
+  var cancel, i, isOldBrowser, lastTime, vendors, vp, w;
+  vendors = ['webkit', 'moz'];
+  i = 0;
+  w = window;
+  while (i < vendors.length && !w.requestAnimationFrame) {
+    vp = vendors[i];
+    w.requestAnimationFrame = w[vp + 'RequestAnimationFrame'];
+    cancel = w[vp + 'CancelAnimationFrame'];
+    w.cancelAnimationFrame = cancel || w[vp + 'CancelRequestAnimationFrame'];
+    ++i;
   }
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function(callback, element) {
-      var currTime, id, timeToCall;
-      currTime = new Date().getTime();
-      timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      id = window.setTimeout(function() {
-        callback(currTime + timeToCall);
-      }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
+  isOldBrowser = !w.requestAnimationFrame || !w.cancelAnimationFrame;
+  if (/iP(ad|hone|od).*OS 6/.test(w.navigator.userAgent) || isOldBrowser) {
+    lastTime = 0;
+    w.requestAnimationFrame = function(callback) {
+      var nextTime, now;
+      now = Date.now();
+      nextTime = Math.max(lastTime + 16, now);
+      return setTimeout((function() {
+        callback(lastTime = nextTime);
+      }), nextTime - now);
     };
-  }
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function(id) {
-      clearTimeout(id);
-    };
+    w.cancelAnimationFrame = clearTimeout;
   }
 })();
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var Bit, h;
 
 h = require('../h');
@@ -2177,7 +2524,7 @@ Bit = (function() {
 
 module.exports = Bit;
 
-},{"../h":4}],11:[function(require,module,exports){
+},{"../h":6}],12:[function(require,module,exports){
 var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
 Bit = require('./bit');
@@ -2224,7 +2571,7 @@ BitsMap = (function() {
 
 module.exports = new BitsMap;
 
-},{"../h":4,"./bit":10,"./circle":12,"./cross":13,"./equal":14,"./line":15,"./polygon":16,"./rect":17,"./zigzag":18}],12:[function(require,module,exports){
+},{"../h":6,"./bit":11,"./circle":13,"./cross":14,"./equal":15,"./line":16,"./polygon":17,"./rect":18,"./zigzag":19}],13:[function(require,module,exports){
 
 var Bit, Circle,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2267,7 +2614,7 @@ Circle = (function(superClass) {
 
 module.exports = Circle;
 
-},{"./bit":10}],13:[function(require,module,exports){
+},{"./bit":11}],14:[function(require,module,exports){
 
 var Bit, Cross,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2314,7 +2661,7 @@ Cross = (function(superClass) {
 
 module.exports = Cross;
 
-},{"./bit":10}],14:[function(require,module,exports){
+},{"./bit":11}],15:[function(require,module,exports){
 
 var Bit, Equal,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2365,7 +2712,7 @@ Equal = (function(superClass) {
 
 module.exports = Equal;
 
-},{"./bit":10}],15:[function(require,module,exports){
+},{"./bit":11}],16:[function(require,module,exports){
 
 var Bit, Line,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2398,7 +2745,7 @@ Line = (function(superClass) {
 
 module.exports = Line;
 
-},{"./bit":10}],16:[function(require,module,exports){
+},{"./bit":11}],17:[function(require,module,exports){
 
 var Bit, Polygon, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2460,7 +2807,7 @@ Polygon = (function(superClass) {
 
 module.exports = Polygon;
 
-},{"../h":4,"./bit":10}],17:[function(require,module,exports){
+},{"../h":6,"./bit":11}],18:[function(require,module,exports){
 
 var Bit, Rect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2505,7 +2852,7 @@ Rect = (function(superClass) {
 
 module.exports = Rect;
 
-},{"./bit":10}],18:[function(require,module,exports){
+},{"./bit":11}],19:[function(require,module,exports){
 
 var Bit, Zigzag,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2557,14 +2904,14 @@ Zigzag = (function(superClass) {
 
 module.exports = Zigzag;
 
-},{"./bit":10}],19:[function(require,module,exports){
+},{"./bit":11}],20:[function(require,module,exports){
 var Spriter, Timeline, Tween, h;
 
 h = require('./h');
 
-Timeline = require('./tween/timeline');
-
 Tween = require('./tween/tween');
+
+Timeline = require('./tween/timeline');
 
 Spriter = (function() {
   Spriter.prototype._defaults = {
@@ -2605,7 +2952,7 @@ Spriter = (function() {
   };
 
   Spriter.prototype.run = function(o) {
-    return this._tween.start();
+    return this._timeline.start();
   };
 
   Spriter.prototype._extendDefaults = function() {
@@ -2624,7 +2971,7 @@ Spriter = (function() {
   };
 
   Spriter.prototype._createTween = function() {
-    this._timeline = new Timeline({
+    this._tween = new Tween({
       duration: this._props.duration,
       delay: this._props.delay,
       yoyo: this._props.yoyo,
@@ -2648,15 +2995,15 @@ Spriter = (function() {
         };
       })(this)
     });
-    this._tween = new Tween;
-    this._tween.add(this._timeline);
+    this._timeline = new Timeline;
+    this._timeline.add(this._tween);
     return !this._props.isRunLess && this._startTween();
   };
 
   Spriter.prototype._startTween = function() {
     return setTimeout(((function(_this) {
       return function() {
-        return _this._tween.start();
+        return _this._timeline.start();
       };
     })(this)), 1);
   };
@@ -2683,145 +3030,108 @@ Spriter = (function() {
 
 module.exports = Spriter;
 
-},{"./h":4,"./tween/timeline":23,"./tween/tween":24}],20:[function(require,module,exports){
+},{"./h":6,"./tween/timeline":24,"./tween/tween":25}],21:[function(require,module,exports){
 
-var Stagger, Timeline, Transit, Tween, h,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+var Stagger, StaggerWrapper, Timeline, h;
 
 h = require('./h');
 
 Timeline = require('./tween/timeline');
 
-Tween = require('./tween/tween');
-
-Transit = require('./transit');
-
-Stagger = (function(superClass) {
-  extend(Stagger, superClass);
-
-  function Stagger() {
-    return Stagger.__super__.constructor.apply(this, arguments);
+Stagger = (function() {
+  function Stagger(options, Module) {
+    this.init(options, Module);
   }
 
-  Stagger.prototype.isSkipDelta = true;
-
-  Stagger.prototype.ownDefaults = {
-    delay: 'stagger(100)',
-    els: null,
-    fill: 'transparent',
-    stroke: ['yellow', 'cyan', 'deeppink'],
-    strokeDasharray: '100%',
-    strokeDashoffset: {
-      '100%': '0%'
-    },
-    isShowInit: false,
-    isShowEnd: false,
-    radius: 0,
-    type: 'line'
-  };
-
-  Stagger.prototype.vars = function() {
-    h.extend(this.ownDefaults, this.defaults);
-    this.defaults = this.ownDefaults;
-    Stagger.__super__.vars.apply(this, arguments);
-    return this.parseEls();
-  };
-
-  Stagger.prototype.extendDefaults = function(o) {
-    var fromObj, key, ref, results, value;
-    this.props = {};
-    this.deltas = {};
-    fromObj = o || this.o;
-    ref = this.defaults;
-    results = [];
-    for (key in ref) {
-      value = ref[key];
-      results.push(this.props[key] = fromObj[key] != null ? fromObj[key] : this.defaults[key]);
+  Stagger.prototype._getOptionByMod = function(name, i, store) {
+    var props, value;
+    props = store[name];
+    if (props + '' === '[object NodeList]') {
+      props = Array.prototype.slice.call(props, 0);
     }
-    return results;
+    value = h.isArray(props) ? props[i % props.length] : props;
+    return h.parseIfStagger(value, i);
   };
 
-  Stagger.prototype.parseEls = function() {
-    var els;
-    if (this.props.els + '' === '[object NodeList]') {
-      return this.props.els = Array.prototype.slice.call(this.props.els, 0);
-    } else if (typeof this.props.els === 'string') {
-      els = document.querySelector(this.props.els);
-      return this.props.els = h.getChildElements(els);
-    } else if (h.isDOM(this.props.els)) {
-      return this.props.els = h.getChildElements(this.props.els);
+  Stagger.prototype._getOptionByIndex = function(i, store) {
+    var key, options, value;
+    options = {};
+    for (key in store) {
+      value = store[key];
+      options[key] = this._getOptionByMod(key, i, store);
+    }
+    return options;
+  };
+
+  Stagger.prototype._getChildQuantity = function(name, store) {
+    var quantifier;
+    if (typeof name === 'number') {
+      return name;
+    }
+    quantifier = store[name];
+    if (h.isArray(quantifier)) {
+      return quantifier.length;
+    } else if (quantifier + '' === '[object NodeList]') {
+      return quantifier.length;
+    } else if (quantifier instanceof HTMLElement) {
+      return 1;
+    } else if (typeof quantifier === 'string') {
+      return 1;
     }
   };
 
-  Stagger.prototype.createBit = function() {
-    var i, j, len, option, ref, results;
-    this.transits = [];
-    len = this.props.els.length;
-    results = [];
-    for (i = j = 0, ref = len; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-      option = this.getOption(i);
-      option.index = i;
+  Stagger.prototype._createTimeline = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    return this.timeline = new Timeline({
+      onStart: options.onStaggerStart,
+      onUpdate: options.onStaggerUpdate,
+      onComplete: options.onStaggerComplete,
+      onReverseComplete: options.onStaggerReverseComplete,
+      delay: options.moduleDelay
+    });
+  };
+
+  Stagger.prototype.init = function(options, Module) {
+    var count, i, j, module, option, ref;
+    count = this._getChildQuantity(options.quantifier || 'el', options);
+    this._createTimeline(options);
+    this.childModules = [];
+    for (i = j = 0, ref = count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      option = this._getOptionByIndex(i, options);
       option.isRunLess = true;
-      results.push(this.transits.push(new Transit(option)));
+      module = new Module(option);
+      this.childModules.push(module);
+      this.timeline.add(module);
     }
-    return results;
-  };
-
-  Stagger.prototype.getOption = function(i) {
-    var key, option, ref, value;
-    option = {};
-    ref = this.props;
-    for (key in ref) {
-      value = ref[key];
-      option[key] = this.getPropByMod(key, i);
-    }
-    option.bit = this.getPropByMod('els', i);
-    return option;
-  };
-
-  Stagger.prototype.getPropByMod = function(name, i) {
-    var prop;
-    prop = this.props[name];
-    if (h.isArray(prop)) {
-      return prop[i % prop.length];
-    } else {
-      return prop;
-    }
-  };
-
-  Stagger.prototype.render = function() {
-    this.createBit();
-    this.setProgress(0, true);
-    this.createTween();
     return this;
   };
 
-  Stagger.prototype.isDelta = function() {
-    return false;
-  };
-
-  Stagger.prototype.createTween = function() {
-    var i;
-    this.tween = new Tween;
-    i = -1;
-    while (i++ < this.transits.length - 1) {
-      this.tween.add(this.transits[i].tween);
-    }
-    return !this.o.isRunLess && this.startTween();
-  };
-
-  Stagger.prototype.draw = function() {
-    return this.drawEl();
+  Stagger.prototype.run = function() {
+    return this.timeline.start();
   };
 
   return Stagger;
 
-})(Transit);
+})();
 
-module.exports = Stagger;
+StaggerWrapper = (function() {
+  function StaggerWrapper(Module) {
+    var M;
+    M = Module;
+    return function(options) {
+      return new Stagger(options, M);
+    };
+  }
 
-},{"./h":4,"./transit":22,"./tween/timeline":23,"./tween/tween":24}],21:[function(require,module,exports){
+  return StaggerWrapper;
+
+})();
+
+module.exports = StaggerWrapper;
+
+},{"./h":6,"./tween/timeline":24}],22:[function(require,module,exports){
 
 var Swirl, Transit,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2934,7 +3244,7 @@ Swirl = (function(superClass) {
 
 module.exports = Swirl;
 
-},{"./transit":22}],22:[function(require,module,exports){
+},{"./transit":23}],23:[function(require,module,exports){
 
 var Timeline, Transit, Tween, bitsMap, h,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -2944,9 +3254,9 @@ h = require('./h');
 
 bitsMap = require('./shapes/bitsMap');
 
-Timeline = require('./tween/timeline');
-
 Tween = require('./tween/tween');
+
+Timeline = require('./tween/timeline');
 
 Transit = (function(superClass) {
   extend(Transit, superClass);
@@ -3101,7 +3411,7 @@ Transit = (function(superClass) {
 
   Transit.prototype.drawEl = function() {
     if (this.el == null) {
-      return;
+      return true;
     }
     this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
     if (!this.isForeign) {
@@ -3429,7 +3739,7 @@ Transit = (function(superClass) {
           return it.tuneOptions(it.history[this.index]);
         };
         opts.isChained = !o.delay;
-        return _this.tween.append(new Timeline(opts));
+        return _this.timeline.append(new Tween(opts));
       });
     })(this)(len);
     return this;
@@ -3445,7 +3755,7 @@ Transit = (function(superClass) {
     var it;
     it = this;
     this.createTimeline();
-    this.tween = new Tween({
+    this.timeline = new Timeline({
       onComplete: (function(_this) {
         return function() {
           var ref;
@@ -3454,12 +3764,12 @@ Transit = (function(superClass) {
         };
       })(this)
     });
-    this.tween.add(this.timeline);
+    this.timeline.add(this.tween);
     return !this.o.isRunLess && this.startTween();
   };
 
   Transit.prototype.createTimeline = function() {
-    return this.timeline = new Timeline({
+    return this.tween = new Tween({
       duration: this.props.duration,
       delay: this.props.delay,
       repeat: this.props.repeat,
@@ -3564,7 +3874,7 @@ Transit = (function(superClass) {
     if ((o != null) && Object.keys(o).length) {
       this.extendDefaults(o);
       this.resetTimeline();
-      !isForeign && this.tween.recalcDuration();
+      !isForeign && this.timeline.recalcDuration();
       this.calcSize();
       return !isForeign && this.setElStyles();
     }
@@ -3574,7 +3884,7 @@ Transit = (function(superClass) {
     return setTimeout(((function(_this) {
       return function() {
         var ref;
-        return (ref = _this.tween) != null ? ref.start() : void 0;
+        return (ref = _this.timeline) != null ? ref.start() : void 0;
       };
     })(this)), 1);
   };
@@ -3589,7 +3899,7 @@ Transit = (function(superClass) {
     }
     timelineOptions.onStart = this.props.onStart;
     timelineOptions.onComplete = this.props.onComplete;
-    return this.timeline.setProp(timelineOptions);
+    return this.tween.setProp(timelineOptions);
   };
 
   Transit.prototype.getBitLength = function() {
@@ -3603,237 +3913,48 @@ Transit = (function(superClass) {
 
 module.exports = Transit;
 
-},{"./h":4,"./shapes/bitsMap":11,"./tween/timeline":23,"./tween/tween":24}],23:[function(require,module,exports){
-var Timeline, easingModule, h;
-
-easingModule = require('../easing');
-
-h = require('../h');
-
-Timeline = (function() {
-  Timeline.prototype.defaults = {
-    duration: 600,
-    delay: 0,
-    repeat: 0,
-    yoyo: false,
-    easing: 'Linear.None',
-    durationElapsed: 0,
-    delayElapsed: 0,
-    onStart: null,
-    onComplete: null,
-    isChained: false
-  };
-
-  function Timeline(o) {
-    this.o = o != null ? o : {};
-    this.extendDefaults();
-    this.vars();
-    this;
-  }
-
-  Timeline.prototype.vars = function() {
-    this.h = h;
-    this.props = {};
-    this.progress = 0;
-    this.prevTime = 0;
-    this.props.easing = this.parseEasing(this.o.easing);
-    return this.calcDimentions();
-  };
-
-  Timeline.prototype.calcDimentions = function() {
-    this.props.totalTime = (this.o.repeat + 1) * (this.o.duration + this.o.delay);
-    return this.props.totalDuration = this.props.totalTime - this.o.delay;
-  };
-
-  Timeline.prototype.extendDefaults = function() {
-    h.extend(this.o, this.defaults);
-    return this.onUpdate = this.o.onUpdate;
-  };
-
-  Timeline.prototype.start = function(time) {
-    this.isCompleted = false;
-    this.isStarted = false;
-    this.props.startTime = (time || performance.now()) + this.o.delay;
-    this.props.endTime = this.props.startTime + this.props.totalDuration;
-    return this;
-  };
-
-  Timeline.prototype.update = function(time) {
-    var cnt, elapsed, isFlip, ref, ref1, ref2, ref3, ref4, ref5, start;
-    if ((time >= this.props.startTime) && (time < this.props.endTime)) {
-      this.isOnReverseComplete = false;
-      this.isCompleted = false;
-      if (!this.isFirstUpdate) {
-        if ((ref = this.o.onFirstUpdate) != null) {
-          ref.apply(this);
-        }
-        this.isFirstUpdate = true;
-      }
-      if (!this.isStarted) {
-        if ((ref1 = this.o.onStart) != null) {
-          ref1.apply(this);
-        }
-        this.isStarted = true;
-      }
-      elapsed = time - this.props.startTime;
-      if (elapsed <= this.o.duration) {
-        this.setProc(elapsed / this.o.duration);
-      } else {
-        start = this.props.startTime;
-        isFlip = false;
-        cnt = 0;
-        while (start <= time) {
-          isFlip = !isFlip;
-          start += isFlip ? (cnt++, this.o.duration) : this.o.delay;
-        }
-        if (isFlip) {
-          start = start - this.o.duration;
-          elapsed = time - start;
-          this.setProc(elapsed / this.o.duration);
-          if (this.o.yoyo && this.o.repeat) {
-            this.setProc(cnt % 2 === 1 ? this.progress : 1 - (this.progress === 0 ? 1 : this.progress));
-          }
-        } else {
-          this.setProc(0);
-        }
-      }
-      if (time < this.prevTime && !this.isFirstUpdateBackward) {
-        if ((ref2 = this.o.onFirstUpdateBackward) != null) {
-          ref2.apply(this);
-        }
-        this.isFirstUpdateBackward = true;
-      }
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate(this.easedProgress);
-      }
-    } else {
-      if (time >= this.props.endTime && !this.isCompleted) {
-        this.setProc(1);
-        if (typeof this.onUpdate === "function") {
-          this.onUpdate(this.easedProgress);
-        }
-        if ((ref3 = this.o.onComplete) != null) {
-          ref3.apply(this);
-        }
-        this.isCompleted = true;
-        this.isOnReverseComplete = false;
-      }
-      if (time > this.props.endTime || time < this.props.startTime) {
-        this.isFirstUpdate = false;
-      }
-      if (time > this.props.endTime) {
-        this.isFirstUpdateBackward = false;
-      }
-    }
-    if (time < this.prevTime && time <= this.props.startTime) {
-      if (!this.isFirstUpdateBackward) {
-        if ((ref4 = this.o.onFirstUpdateBackward) != null) {
-          ref4.apply(this);
-        }
-        this.isFirstUpdateBackward = true;
-      }
-      if (!this.isOnReverseComplete) {
-        this.isOnReverseComplete = true;
-        this.setProc(0);
-        !this.o.isChained && (typeof this.onUpdate === "function" ? this.onUpdate(this.easedProgress) : void 0);
-        if ((ref5 = this.o.onReverseComplete) != null) {
-          ref5.apply(this);
-        }
-      }
-    }
-    return this.prevTime = time;
-  };
-
-  Timeline.prototype.setProc = function(p) {
-    this.progress = p;
-    return this.easedProgress = this.props.easing(this.progress);
-  };
-
-  Timeline.prototype.setProp = function(obj, value) {
-    var key, val;
-    if (typeof obj === 'object') {
-      for (key in obj) {
-        val = obj[key];
-        this.o[key] = val;
-      }
-    } else if (typeof obj === 'string') {
-      this.o[obj] = value;
-    }
-    return this.calcDimentions();
-  };
-
-  Timeline.prototype.parseEasing = function(easing) {
-    var type;
-    type = typeof easing;
-    if (type === 'string') {
-      if (easing.charAt(0).toLowerCase() === 'm') {
-        return easingModule.path(easing);
-      } else {
-        easing = this.splitEasing(easing);
-        return easingModule[easing[0]][easing[1]];
-      }
-    }
-    if (h.isArray(easing)) {
-      return easingModule.bezier.apply(easingModule, easing);
-    }
-    if ('function') {
-      return easing;
-    }
-  };
-
-  Timeline.prototype.splitEasing = function(string) {
-    var firstPart, secondPart, split;
-    if (typeof string === 'function') {
-      return string;
-    }
-    if (typeof string === 'string' && string.length) {
-      split = string.split('.');
-      firstPart = split[0].toLowerCase() || 'linear';
-      secondPart = split[1].toLowerCase() || 'none';
-      return [firstPart, secondPart];
-    } else {
-      return ['linear', 'none'];
-    }
-  };
-
-  return Timeline;
-
-})();
-
-module.exports = Timeline;
-
-},{"../easing":3,"../h":4}],24:[function(require,module,exports){
-var Tween, h, t;
+},{"./h":6,"./shapes/bitsMap":12,"./tween/timeline":24,"./tween/tween":25}],24:[function(require,module,exports){
+var Timeline, h, t,
+  slice = [].slice;
 
 h = require('../h');
 
 t = require('./tweener');
 
-Tween = (function() {
-  Tween.prototype.state = 'stop';
+Timeline = (function() {
+  Timeline.prototype.state = 'stop';
 
-  function Tween(o) {
+  Timeline.prototype.defaults = {
+    repeat: 0,
+    delay: 0
+  };
+
+  function Timeline(o) {
     this.o = o != null ? o : {};
     this.vars();
+    this._extendDefaults();
     this;
   }
 
-  Tween.prototype.vars = function() {
+  Timeline.prototype.vars = function() {
     this.timelines = [];
     this.props = {
-      totalTime: 0
+      time: 0,
+      repeatTime: 0,
+      shiftedRepeatTime: 0
     };
     this.loop = h.bind(this.loop, this);
     return this.onUpdate = this.o.onUpdate;
   };
 
-  Tween.prototype.add = function() {
-    var timeline;
-    timeline = Array.prototype.slice.apply(arguments);
-    return this.pushTimelineArray(timeline);
+  Timeline.prototype.add = function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    this.pushTimelineArray(args);
+    return this;
   };
 
-  Tween.prototype.pushTimelineArray = function(array) {
+  Timeline.prototype.pushTimelineArray = function(array) {
     var i, j, len1, results, tm;
     results = [];
     for (i = j = 0, len1 = array.length; j < len1; i = ++j) {
@@ -3847,12 +3968,38 @@ Tween = (function() {
     return results;
   };
 
-  Tween.prototype.pushTimeline = function(timeline) {
-    this.timelines.push(timeline);
-    return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
+  Timeline.prototype._extendDefaults = function() {
+    var key, ref, results, value;
+    ref = this.defaults;
+    results = [];
+    for (key in ref) {
+      value = ref[key];
+      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
+    }
+    return results;
   };
 
-  Tween.prototype.remove = function(timeline) {
+  Timeline.prototype.setProp = function(props) {
+    var key, value;
+    for (key in props) {
+      value = props[key];
+      this.props[key] = value;
+    }
+    return this.recalcDuration();
+  };
+
+  Timeline.prototype.pushTimeline = function(timeline, shift) {
+    if (timeline.timeline instanceof Timeline) {
+      timeline = timeline.timeline;
+    }
+    (shift != null) && timeline.setProp({
+      'shiftTime': shift
+    });
+    this.timelines.push(timeline);
+    return this._recalcTimelineDuration(timeline);
+  };
+
+  Timeline.prototype.remove = function(timeline) {
     var index;
     index = this.timelines.indexOf(timeline);
     if (index !== -1) {
@@ -3860,135 +4007,395 @@ Tween = (function() {
     }
   };
 
-  Tween.prototype.append = function(timeline) {
-    var i;
-    if (!h.isArray(timeline)) {
-      timeline.index = this.timelines.length;
-      this.appendTimeline(timeline);
-      return this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime);
-    } else {
-      i = timeline.length;
-      while (i--) {
-        this.appendTimeline(timeline[i]);
+  Timeline.prototype.append = function() {
+    var i, j, len1, timeline, tm;
+    timeline = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    for (i = j = 0, len1 = timeline.length; j < len1; i = ++j) {
+      tm = timeline[i];
+      if (h.isArray(tm)) {
+        this._appendTimelineArray(tm);
+      } else {
+        this.appendTimeline(tm, this.timelines.length);
       }
-      return this.recalcDuration();
     }
+    return this;
   };
 
-  Tween.prototype.appendTimeline = function(timeline) {
-    timeline.setProp({
-      delay: timeline.o.delay + this.props.totalTime
-    });
-    return this.timelines.push(timeline);
-  };
-
-  Tween.prototype.recalcDuration = function() {
-    var len, results, timeline;
+  Timeline.prototype._appendTimelineArray = function(timelineArray) {
+    var i, len, results, time;
+    i = timelineArray.length;
+    time = this.props.repeatTime - this.props.delay;
     len = this.timelines.length;
-    this.props.totalTime = 0;
     results = [];
-    while (len--) {
-      timeline = this.timelines[len];
-      results.push(this.props.totalTime = Math.max(timeline.props.totalTime, this.props.totalTime));
+    while (i--) {
+      results.push(this.appendTimeline(timelineArray[i], len, time));
     }
     return results;
   };
 
-  Tween.prototype.update = function(time) {
-    var i, len, ref, ref1;
+  Timeline.prototype.appendTimeline = function(timeline, index, time) {
+    var shift;
+    shift = (time != null ? time : this.props.time);
+    shift += timeline.props.shiftTime || 0;
+    timeline.index = index;
+    return this.pushTimeline(timeline, shift);
+  };
+
+  Timeline.prototype.recalcDuration = function() {
+    var len, results;
+    len = this.timelines.length;
+    this.props.time = 0;
+    this.props.repeatTime = 0;
+    this.props.shiftedRepeatTime = 0;
+    results = [];
+    while (len--) {
+      results.push(this._recalcTimelineDuration(this.timelines[len]));
+    }
+    return results;
+  };
+
+  Timeline.prototype._recalcTimelineDuration = function(timeline) {
+    var timelineTime;
+    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
+    this.props.time = Math.max(timelineTime, this.props.time);
+    this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
+    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
+    return this.props.shiftedRepeatTime -= this.props.delay;
+  };
+
+  Timeline.prototype.update = function(time, isGrow) {
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
-    i = -1;
-    len = this.timelines.length - 1;
-    while (i++ < len) {
-      this.timelines[i].update(time);
+    this._updateTimelines(time, isGrow);
+    return this._checkCallbacks(time);
+  };
+
+  Timeline.prototype._updateTimelines = function(time, isGrow) {
+    var elapsed, i, len, startPoint, timeToTimelines;
+    startPoint = this.props.startTime - this.props.delay;
+    elapsed = (time - startPoint) % (this.props.delay + this.props.time);
+    timeToTimelines = time === this.props.endTime ? this.props.endTime : startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
+    if (timeToTimelines != null) {
+      i = -1;
+      len = this.timelines.length - 1;
+      while (i++ < len) {
+        if (isGrow == null) {
+          isGrow = time > (this._previousUpdateTime || 0);
+        }
+        this.timelines[i].update(timeToTimelines, isGrow);
+      }
+    }
+    return this._previousUpdateTime = time;
+  };
+
+  Timeline.prototype._checkCallbacks = function(time) {
+    var ref, ref1, ref2;
+    if (this.prevTime === time) {
+      return;
+    }
+    if (!this.prevTime || this.isCompleted && !this.isStarted) {
+      if ((ref = this.o.onStart) != null) {
+        ref.apply(this);
+      }
+      this.isStarted = true;
+      this.isCompleted = false;
     }
     if (time >= this.props.startTime && time < this.props.endTime) {
       if (typeof this.onUpdate === "function") {
-        this.onUpdate((time - this.props.startTime) / this.props.totalTime);
+        this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
       }
     }
     if (this.prevTime > time && time <= this.props.startTime) {
-      if ((ref = this.o.onReverseComplete) != null) {
-        ref.apply(this);
+      if ((ref1 = this.o.onReverseComplete) != null) {
+        ref1.apply(this);
       }
     }
     this.prevTime = time;
-    if (time === this.props.endTime) {
+    if (time === this.props.endTime && !this.isCompleted) {
       if (typeof this.onUpdate === "function") {
         this.onUpdate(1);
       }
-      if ((ref1 = this.o.onComplete) != null) {
-        ref1.apply(this);
+      if ((ref2 = this.o.onComplete) != null) {
+        ref2.apply(this);
       }
+      this.isCompleted = true;
+      this.isStarted = false;
       return true;
     }
   };
 
-  Tween.prototype.prepareStart = function() {
-    var ref;
-    this.getDimentions();
-    return (ref = this.o.onStart) != null ? ref.apply(this) : void 0;
-  };
-
-  Tween.prototype.startTimelines = function(time) {
-    var i, results;
-    i = this.timelines.length;
-    results = [];
-    while (i--) {
-      results.push(this.timelines[i].start(time || this.props.startTime));
-    }
-    return results;
-  };
-
-  Tween.prototype.start = function(time) {
+  Timeline.prototype.start = function(time) {
     this.setStartTime(time);
-    !time && t.add(this);
-    this.state = 'play';
+    !time && (t.add(this), this.state = 'play');
     return this;
   };
 
-  Tween.prototype.pause = function() {
+  Timeline.prototype.pause = function() {
     this.removeFromTweener();
     this.state = 'pause';
     return this;
   };
 
-  Tween.prototype.stop = function() {
+  Timeline.prototype.stop = function() {
     this.removeFromTweener();
     this.setProgress(0);
     this.state = 'stop';
     return this;
   };
 
-  Tween.prototype.restart = function() {
+  Timeline.prototype.restart = function() {
     this.stop();
     return this.start();
   };
 
-  Tween.prototype.removeFromTweener = function() {
+  Timeline.prototype.removeFromTweener = function() {
     t.remove(this);
     return this;
   };
 
-  Tween.prototype.getDimentions = function() {
-    this.props.startTime = performance.now();
-    return this.props.endTime = this.props.startTime + this.props.totalTime;
+  Timeline.prototype.setStartTime = function(time) {
+    this.getDimentions(time);
+    return this.startTimelines(this.props.startTime);
   };
 
-  Tween.prototype.setStartTime = function(time) {
-    this.prepareStart();
-    return this.startTimelines(time);
+  Timeline.prototype.startTimelines = function(time) {
+    var i, results;
+    i = this.timelines.length;
+    (time == null) && (time = this.props.startTime);
+    results = [];
+    while (i--) {
+      results.push(this.timelines[i].start(time));
+    }
+    return results;
   };
 
-  Tween.prototype.setProgress = function(progress) {
+  Timeline.prototype.setProgress = function(progress) {
     if (this.props.startTime == null) {
       this.setStartTime();
     }
-    progress = Math.max(progress, 0);
-    progress = Math.min(progress, 1);
-    return this.update(this.props.startTime + progress * this.props.totalTime);
+    progress = h.clamp(progress, 0, 1);
+    return this.update(this.props.startTime + progress * this.props.repeatTime);
+  };
+
+  Timeline.prototype.getDimentions = function(time) {
+    if (time == null) {
+      time = performance.now();
+    }
+    this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
+    this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
+    return this.props.endTime -= this.props.shiftTime || 0;
+  };
+
+  return Timeline;
+
+})();
+
+module.exports = Timeline;
+
+},{"../h":6,"./tweener":26}],25:[function(require,module,exports){
+var Tween, easing, h, t;
+
+h = require('../h');
+
+t = require('./tweener');
+
+easing = require('../easing/easing');
+
+Tween = (function() {
+  Tween.prototype.defaults = {
+    duration: 600,
+    delay: 0,
+    repeat: 0,
+    yoyo: false,
+    easing: 'Linear.None',
+    onStart: null,
+    onComplete: null,
+    onReverseComplete: null,
+    onFirstUpdate: null,
+    onUpdate: null,
+    onFirstUpdateBackward: null,
+    isChained: false
+  };
+
+  function Tween(o) {
+    this.o = o != null ? o : {};
+    this.extendDefaults();
+    this.vars();
+    this;
+  }
+
+  Tween.prototype.vars = function() {
+    this.h = h;
+    this.progress = 0;
+    this.prevTime = 0;
+    return this.calcDimentions();
+  };
+
+  Tween.prototype.calcDimentions = function() {
+    this.props.time = this.props.duration + this.props.delay;
+    return this.props.repeatTime = this.props.time * (this.props.repeat + 1);
+  };
+
+  Tween.prototype.extendDefaults = function() {
+    var key, ref, value;
+    this.props = {};
+    ref = this.defaults;
+    for (key in ref) {
+      value = ref[key];
+      this.props[key] = this.o[key] != null ? this.o[key] : value;
+    }
+    this.props.easing = easing.parseEasing(this.o.easing || this.defaults.easing);
+    return this.onUpdate = this.props.onUpdate;
+  };
+
+  Tween.prototype.start = function(time) {
+    this.isCompleted = false;
+    this.isStarted = false;
+    if (time == null) {
+      time = performance.now();
+    }
+    this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
+    this.props.endTime = this.props.startTime + this.props.repeatTime - this.props.delay;
+    return this;
+  };
+
+  Tween.prototype.update = function(time, isGrow) {
+    var ref, ref1, ref2, ref3, ref4;
+    if ((time >= this.props.startTime) && (time < this.props.endTime)) {
+      this.isOnReverseComplete = false;
+      this.isCompleted = false;
+      if (!this.isFirstUpdate) {
+        if ((ref = this.props.onFirstUpdate) != null) {
+          ref.apply(this);
+        }
+        this.isFirstUpdate = true;
+      }
+      if (!this.isStarted) {
+        if ((ref1 = this.props.onStart) != null) {
+          ref1.apply(this);
+        }
+        this.isStarted = true;
+      }
+      this._updateInActiveArea(time);
+      if (time < this.prevTime && !this.isFirstUpdateBackward) {
+        if ((ref2 = this.props.onFirstUpdateBackward) != null) {
+          ref2.apply(this);
+        }
+        this.isFirstUpdateBackward = true;
+      }
+    } else {
+      if (time >= this.props.endTime && !this.isCompleted) {
+        this._complete();
+      }
+      if (time > this.props.endTime) {
+        this.isFirstUpdate = false;
+      }
+      if (time > this.props.endTime) {
+        this.isFirstUpdateBackward = false;
+      }
+    }
+    if (time < this.prevTime && time <= this.props.startTime) {
+      if (!this.isFirstUpdateBackward) {
+        if ((ref3 = this.props.onFirstUpdateBackward) != null) {
+          ref3.apply(this);
+        }
+        this.isFirstUpdateBackward = true;
+      }
+      if (isGrow) {
+        this._complete();
+      } else if (!this.isOnReverseComplete && this.isFirstUpdate) {
+        this.isOnReverseComplete = true;
+        this.setProgress(0, !this.props.isChained);
+        if ((ref4 = this.props.onReverseComplete) != null) {
+          ref4.apply(this);
+        }
+      }
+      this.isFirstUpdate = false;
+    }
+    this.prevTime = time;
+    return this.isCompleted;
+  };
+
+  Tween.prototype._complete = function() {
+    var ref;
+    this.setProgress(1);
+    if ((ref = this.props.onComplete) != null) {
+      ref.apply(this);
+    }
+    this.isCompleted = true;
+    this.isStarted = false;
+    return this.isOnReverseComplete = false;
+  };
+
+  Tween.prototype._updateInActiveArea = function(time) {
+    var cnt, elapsed, elapsed2, proc, startPoint;
+    startPoint = this.props.startTime - this.props.delay;
+    elapsed = (time - startPoint) % (this.props.delay + this.props.duration);
+    cnt = Math.floor((time - startPoint) / (this.props.delay + this.props.duration));
+    if (startPoint + elapsed >= this.props.startTime) {
+      elapsed2 = (time - this.props.startTime) % (this.props.delay + this.props.duration);
+      proc = elapsed2 / this.props.duration;
+      return this.setProgress(!this.props.yoyo ? proc : cnt % 2 === 0 ? proc : 1 - (proc === 1 ? 0 : proc));
+    } else {
+      return this.setProgress(this.prevTime < time ? 1 : 0);
+    }
+  };
+
+  Tween.prototype.setProgress = function(p, isCallback) {
+    if (isCallback == null) {
+      isCallback = true;
+    }
+    this.progress = p;
+    this.easedProgress = this.props.easing(this.progress);
+    if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
+      if (typeof this.onUpdate === "function") {
+        this.onUpdate(this.easedProgress, this.progress);
+      }
+    }
+    return this.props.prevEasedProgress = this.easedProgress;
+  };
+
+  Tween.prototype.setProp = function(obj, value) {
+    var key, val;
+    if (typeof obj === 'object') {
+      for (key in obj) {
+        val = obj[key];
+        this.props[key] = val;
+        if (key === 'easing') {
+          this.props.easing = easing.parseEasing(this.props.easing);
+        }
+      }
+    } else if (typeof obj === 'string') {
+      if (obj === 'easing') {
+        this.props.easing = easing.parseEasing(value);
+      } else {
+        this.props[obj] = value;
+      }
+    }
+    return this.calcDimentions();
+  };
+
+  Tween.prototype.run = function(time) {
+    this.start(time);
+    !time && (t.add(this));
+    return this;
+  };
+
+  Tween.prototype.stop = function() {
+    this.pause();
+    this.setProgress(0);
+    return this;
+  };
+
+  Tween.prototype.pause = function() {
+    this._removeFromTweener();
+    return this;
+  };
+
+  Tween.prototype._removeFromTweener = function() {
+    t.remove(this);
+    return this;
   };
 
   return Tween;
@@ -3997,7 +4404,7 @@ Tween = (function() {
 
 module.exports = Tween;
 
-},{"../h":4,"./tweener":25}],25:[function(require,module,exports){
+},{"../easing/easing":3,"../h":6,"./tweener":26}],26:[function(require,module,exports){
 var Tweener, h, i, t;
 
 require('../polyfills/raf');
@@ -4084,7 +4491,7 @@ t = new Tweener;
 
 module.exports = t;
 
-},{"../h":4,"../polyfills/performance":8,"../polyfills/raf":9}],26:[function(require,module,exports){
+},{"../h":6,"../polyfills/performance":9,"../polyfills/raf":10}],27:[function(require,module,exports){
 
 /*!
   LegoMushroom @legomushroom http://legomushroom.com
@@ -4300,5 +4707,5 @@ module.exports = t;
   }
 })();
 
-},{}]},{},[5])(5)
+},{}]},{},[7])(7)
 });

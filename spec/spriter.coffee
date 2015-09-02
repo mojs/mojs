@@ -94,7 +94,7 @@ describe 'Spriter module ->', ->
       sp = new Spriter el: div, isRunLess: true
       expect(sp._frameStep).toBe .25
 
-  describe 'tween creation', ->
+  describe 'tween creation ->', ->
     it 'should create timeline and tween', ->
       div = document.createElement('div')
       div1 = document.createElement('div')
@@ -103,7 +103,7 @@ describe 'Spriter module ->', ->
       sp = new Spriter el: div
       expect(sp._timeline instanceof mojs.Timeline).toBe true
       expect(sp._tween    instanceof mojs.Tween)   .toBe true
-      expect(sp._tween.timelines[0]).toBe sp._timeline
+      expect(sp._timeline.timelines[0]).toBe sp._tween
     it 'should start tween', (dfr)->
       div = document.createElement('div')
       div1 = document.createElement('div')
@@ -173,7 +173,7 @@ describe 'Spriter module ->', ->
       div3 = document.createElement('div'); div4 = document.createElement('div')
       div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
       div.appendChild(div4)
-      sp = new Spriter el: div, isRunLess: true, isShowEnd: true, isIt: true
+      sp = new Spriter el: div, isRunLess: true, isShowEnd: true
       sp._setProgress .25
       sp._setProgress .5
       sp._setProgress 1
@@ -183,7 +183,7 @@ describe 'Spriter module ->', ->
       # console.log(sp._frames[2].style.opacity)
       expect(sp._frames[3].style.opacity).toBe '1'
 
-  describe 'onUpdate callback', ->
+  describe 'onUpdate callback ->', ->
     it 'should be called on every sprite update', ->
       div = document.createElement('div')
       div1 = document.createElement('div'); div2 = document.createElement('div')
@@ -192,7 +192,7 @@ describe 'Spriter module ->', ->
       div.appendChild(div4)
       sp = new Spriter el: div, isRunLess: true
       spyOn sp._props, 'onUpdate'
-      sp._tween.setProgress(.5)
+      sp._timeline.setProgress(.5)
       expect(sp._props.onUpdate).toHaveBeenCalled()
     it 'should be called with progress on every sprite update', ->
       div = document.createElement('div')
@@ -204,7 +204,7 @@ describe 'Spriter module ->', ->
       sp = new Spriter
         el: div, isRunLess: true
         onUpdate: (p)-> progress = p
-      sp._tween.setProgress(.5)
+      sp._timeline.setProgress(.5)
       expect(progress.toFixed(1)).toBe '0.5'
 
   describe 'run method', ->

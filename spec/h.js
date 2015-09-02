@@ -127,7 +127,7 @@
           return expect(rand.match(/\%/)).toBeTruthy();
         });
       });
-      describe('parseStagger method', function() {
+      describe('parseStagger method ->', function() {
         it('should get random number from string', function() {
           var value;
           value = h.parseStagger('stagger(150)', 3);
@@ -185,6 +185,19 @@
           expect(parseInt(value), 10).toBeGreaterThan(539);
           expect(parseInt(value), 10).not.toBeGreaterThan(639);
           return expect(value.match(/\%/)).toBeTruthy();
+        });
+      });
+      describe('parseIfStagger method', function() {
+        it('should parse stagger if stagger string passed', function() {
+          var value;
+          value = h.parseIfStagger('stagger(200)', 2);
+          return expect(value).toBe(400);
+        });
+        return it('should return passed value if it has no stagger expression', function() {
+          var arg, value;
+          arg = [];
+          value = h.parseIfStagger(arg, 2);
+          return expect(value).toBe(arg);
         });
       });
       describe('parseIfRand method', function() {
@@ -516,12 +529,14 @@
       });
       describe('setPrefixedStyle method', function() {
         return it('should set prefixed style', function() {
-          var el, prefixed;
+          var el, name, prefixedName, style, styleToSet;
           el = document.createElement('div');
-          h.setPrefixedStyle(el, 'transform', 'translate(20px, 10px)');
-          prefixed = "" + h.prefix.css + "transform";
-          expect(el.style[prefixed]).toBe('translate(20px, 10px)');
-          return expect(el.style['transform']).toBe('translate(20px, 10px)');
+          styleToSet = 'translateX(20px)';
+          name = 'transform';
+          prefixedName = "" + h.prefix.css + "transform";
+          h.setPrefixedStyle(el, name, styleToSet);
+          style = el.style[prefixedName] != null ? el.style[prefixedName] : el.style[name];
+          return expect(style).toBe(styleToSet);
         });
       });
       describe('parseUnit method', function() {
@@ -1131,7 +1146,7 @@
         return expect(h.uniqIDs).toBe(2);
       });
     });
-    return describe('parsePath method', function() {
+    describe('parsePath method', function() {
       it('should parse path if string passed', function() {
         var isIEPath, isNormalpath, pathStr;
         pathStr = 'M0,0 10,10';
@@ -1161,6 +1176,54 @@
         document.body.appendChild(svg);
         expect(h.parsePath(path).tagName).toBe('path');
         return expect(h.parsePath(path).getAttribute('id')).toBe(pathId);
+      });
+    });
+    describe('closeEnough method', function() {
+      return it('should compare two numbers', function() {
+        expect(h.closeEnough(.0005, .0006, .001)).toBe(true);
+        expect(h.closeEnough(.0005, .0005, .00000001)).toBe(true);
+        expect(h.closeEnough(1, .0005, .00000001)).toBe(false);
+        return expect(h.closeEnough(1, .0005, 1)).toBe(true);
+      });
+    });
+    describe('style method ->', function() {
+      it('should set style on el', function() {
+        var el;
+        el = document.createElement('div');
+        h.style(el, 'width', '20px');
+        return expect(el.style.width).toBe('20px');
+      });
+      return it('should set multiple styles on el', function() {
+        var el, prefixed, s, tr, transformToSet;
+        el = document.createElement('div');
+        transformToSet = 'translateX(20px)';
+        h.style(el, {
+          'width': '20px',
+          height: '30px',
+          transform: transformToSet
+        });
+        s = el.style;
+        expect(s.width).toBe('20px');
+        expect(s.height).toBe('30px');
+        prefixed = "" + h.prefix.css + "transform";
+        tr = s[prefixed] != null ? s[prefixed] : s.transform;
+        return expect(tr).toBe(transformToSet);
+      });
+    });
+    describe('checkIf3d method ->', function() {
+      return it('should detect if transform 3d is supported', function() {
+        var div, prefixed, style, tr;
+        div = document.createElement('div');
+        h.style(div, 'transform', 'translateZ(0)');
+        style = div.style;
+        prefixed = "" + h.prefix.css + "transform";
+        tr = style[prefixed] != null ? style[prefixed] : style.transform;
+        return expect(tr !== '').toBe(h.checkIf3d());
+      });
+    });
+    return describe('is3d property ->', function() {
+      return it('should be fulfilled', function() {
+        return expect(h.is3d).toBe(h.checkIf3d());
       });
     });
   });

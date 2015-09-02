@@ -1,3 +1,9 @@
+.el {
+  width: 1.25em;
+  height: 1.25em;
+  background: #aaa;
+  position: absolute;
+}
 html,
 body {
   height: 1000px;
@@ -5,7 +11,7 @@ body {
 .sprite {
   position: absolute;
   left: 100px;
-  top: 100px;
+  top: 50px;
 }
 .sprite__frame {
   position: absolute;

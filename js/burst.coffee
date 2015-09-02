@@ -2,7 +2,7 @@
 ### istanbul ignore next ###
 
 bitsMap   = require './shapes/bitsMap'
-Tween     = require './tween/tween'
+# Tween     = require './tween/timeline'
 Transit   = require './transit'
 Swirl     = require './swirl'
 h         = require './h'
@@ -98,7 +98,7 @@ class Burst extends Transit
           option.angle = @getBitAngle option.angle, len
 
         @transits[len].tuneNewOption option, true
-      @tween.recalcDuration()
+      @timeline.recalcDuration()
     if @props.randomAngle or @props.randomRadius
       len = @transits.length
       while(len--)
@@ -185,7 +185,7 @@ class Burst extends Transit
   fillTransform:->
     "rotate(#{@props.angle}deg) translate(#{@props.shiftX}, #{@props.shiftY})"
   createTween:->
-    super; i = @transits.length; @tween.add(@transits[i].timeline) while(i--)
+    super; i = @transits.length; @timeline.add(@transits[i].tween) while(i--)
     
   calcSize:->
     largestSize = -1

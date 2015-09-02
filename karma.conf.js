@@ -21,8 +21,8 @@ module.exports = function(config) {
     sl_safari: {
       base: 'SauceLabs',
       browserName: 'safari',
-      platform: 'OS X 10.6',
-      version: '5'
+      platform: 'OS X 10.8',
+      version: '6'
     },
     sl_firefox_30: {
       base: 'SauceLabs',
@@ -65,10 +65,11 @@ module.exports = function(config) {
       reporters = ['progress', 'coverage', 'clear-screen'];
       browsers = ['PhantomJS'];
       // browsers = [];
-    } else {
-      reporters = ['progress', 'coverage', 'clear-screen', 'saucelabs'];
+  } else {
+      reporters = ['dots', 'coverage', 'clear-screen', 'saucelabs'];
       browsers = Object.keys(customLaunchers);
-    }
+  }
+
 
   config.set({
     basePath: '',
@@ -95,16 +96,22 @@ module.exports = function(config) {
       // 'spec/transit.js',
       // 'dist/swirl.js',
       // 'spec/swirl.js',
-      // 'dist/tween.js',
-      // 'spec/tween.js',
+      // 'dist/spriter.js',
+      // 'spec/spriter.js',
+      // 'dist/stagger.js',
+      // 'spec/stagger.js',
+      // // 'dist/tween.js',
+      // // 'spec/tween.js',
       // 'dist/burst.js',
       // 'spec/burst.js',
-      // 'dist/timeline.js',
-      // 'spec/timeline.js',
+      // // 'dist/timeline.js',
+      // // 'spec/timeline.js',
       // 'dist/motion-path.js',
       // 'spec/motion-path.js',
       // 'dist/tweener.js',
-      // 'spec/tweener.js'
+      // 'spec/tweener.js',
+      // 'dist/bits/*.js',
+      // 'spec/bits/*.js'
     ],
 
     // preprocess matching files before serving them to the browser

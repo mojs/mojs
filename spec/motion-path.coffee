@@ -70,6 +70,11 @@ describe 'MotionPath ->', ->
         isRunLess: true
         isPresetPosition: false
       expect(mp.angle).toBe 0
+    it 'should have isCompositeLayer default of true', ->
+      mp = new MotionPath
+        path: 'M0.55859375,593.527344L0.55859375,593.527344'
+        el:    document.createElement 'div'
+      expect(mp.defaults.isCompositeLayer).toBe true
     it 'have speed of 0', ->
       el = document.createElement 'div'
       mp = new MotionPath
@@ -88,8 +93,7 @@ describe 'MotionPath ->', ->
         isPresetPosition: false
       expect(mp.blurX).toBe 0
       expect(mp.blurY).toBe 0
-
-    it 'have blurAmount of 12', ->
+    it 'have blurAmount of 20', ->
       el = document.createElement 'div'
       mp = new MotionPath
         path: 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -192,9 +196,10 @@ describe 'MotionPath ->', ->
 
     it 'shoud call tuneOptions if options passed', ->
       o = duration: 500
+      div = document.createElement('div')
       mp = new MotionPath(
         path:       coords
-        el:         document.createElement 'div'
+        el:         div
         isRunLess:  true
       ).then pathEnd: .5
       spyOn mp, 'tuneOptions'
@@ -246,7 +251,6 @@ describe 'MotionPath ->', ->
       expect(mp.history[0].duration).toBe 2000
       expect(mp.props.duration)     .toBe 2000
 
-
   describe 'callbacks ->', ->
     div = document.createElement 'div'
     coords = 'M0.55859375,593.527344L0.55859375,593.527344'
@@ -262,15 +266,14 @@ describe 'MotionPath ->', ->
 
         setTimeout (->
           expect(isStarted).toBe(true); dfr()
-          ), 100
+          ), 300
       it 'should have the scope of MotionPath', (dfr)->
         isRightScope = null
         mp = new MotionPath
           path: coords
           el: div
-          onStart:->
-            isRightScope = @ instanceof MotionPath
-        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
+          onStart:-> isRightScope = @ instanceof MotionPath
+        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
     
     describe 'onComplete callback ->', ->
       it 'onComplete callback should work', (dfr)->
@@ -282,7 +285,7 @@ describe 'MotionPath ->', ->
           onComplete:-> isCompleted = true
         setTimeout ->
           expect(isCompleted).toBe(true); dfr()
-        , 100
+        , 300
 
       it 'should have the scope of MotionPath', (dfr)->
         isRightScope = false
@@ -293,7 +296,7 @@ describe 'MotionPath ->', ->
           onComplete:-> isRightScope = @ instanceof MotionPath
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
-        , 100
+        , 300
     
     describe 'onUpdate callback ->', ->
       it 'onUpdate callback should work', (dfr)->
@@ -303,10 +306,10 @@ describe 'MotionPath ->', ->
           el: div
           duration: 5
           onUpdate:-> isOnUpdate = true
-
         setTimeout ->
           expect(isOnUpdate).toBe(true); dfr()
-        , 100
+        , 300
+
       it 'onUpdate callback should have "progress" argument', (dfr)->
         isOnUpdate = false
         mp = new MotionPath
@@ -316,7 +319,7 @@ describe 'MotionPath ->', ->
           onUpdate:(progress)-> isOnUpdate = true if progress?
         setTimeout ->
           expect(isOnUpdate).toBe(true); dfr()
-        , 100
+        , 300
 
       it 'should have the scope of MotionPath', (dfr)->
         isRightScope = false
@@ -327,25 +330,22 @@ describe 'MotionPath ->', ->
           onUpdate:-> isRightScope = @ instanceof MotionPath
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
-        , 100
+        , 300
+      it 'should be called with progress, x, y and angle', ->
 
-  describe 'onPosit callback ->', ->
-    it 'should be defined', ->
-      mp = new MotionPath
-        path:       'M0,0 L100,100'
-        el:         document.createElement 'div'
-        isRunLess:  true
-        onPosit:    ->
-      expect(typeof mp.props.onPosit).toBe 'function'
-    it 'should be called with progress, x, y and angle', ->
-      mp = new MotionPath
-        path:       'M0,100 L100,0'
-        el:         document.createElement 'div'
-        isRunLess:  true
-        onPosit:->
-      spyOn mp.props, 'onPosit'
-      mp.tween.setProgress .5
-      expect(mp.props.onPosit).toHaveBeenCalledWith .5, 50, 50, 0
+        progress = null; x = null; y = null; angle = null
+        mp = new MotionPath
+          path:       'M0,100 L100,0'
+          el:         document.createElement 'div'
+          isRunLess:  true
+          onUpdate:(p, o)->
+            progress = p; x = o.x; y = o.y; angle = o.angle
+
+        mp.timeline.setProgress .5
+        expect(progress.toFixed(1)).toBe '0.5'
+        expect(x)       .toBe 50
+        expect(y)       .toBe 50
+        expect(angle)   .toBe 0
 
   describe 'fill ->', ->
     div = null; container = null
@@ -386,7 +386,10 @@ describe 'MotionPath ->', ->
         fill: { container: container }
         # all: true
         onComplete:->
-          args = motionPath.el.style.transform.split /(translate\()|\,|\)/
+          style = motionPath.el.style; prefixed = "#{h.prefix.css}transform"
+          tr = if style[prefixed]? then style[prefixed] else style.transform
+          div = document.createElement 'div'
+          args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
           isWidth  = width  is container.offsetWidth
@@ -404,7 +407,9 @@ describe 'MotionPath ->', ->
         fill: { container: container, fillRule: 'width' }
         all: true
         onComplete:->
-          args = mp.el.style.transform.split /(translate\()|\,|\)/
+          style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+          tr = if style[prefixed]? then style[prefixed] else style.transform
+          args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
           isWidth  = width  is container.offsetWidth
@@ -422,7 +427,9 @@ describe 'MotionPath ->', ->
         duration: 50
         fill: { container: container, fillRule: 'height' }
         onComplete:->
-          args = mp.el.style.transform.split /(translate\()|\,|\)/
+          style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+          tr = if style[prefixed]? then style[prefixed] else style.transform
+          args = tr.split /(translate\()|\,|\)/
           width  = parseInt(args[2], 10)
           height = parseInt(args[4], 10)
           isWidth  = width  is (height/2)
@@ -445,15 +452,18 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path: 'M0,0 L500,0'
         el: el
-        duration: 100
+        duration: 50
         fill: { container: c }
         onUpdate:(proc)->
           if proc >= .1 and !isSizeChange
             mp.container.style.width = '100px'
             isSizeChange = true
-        onComplete:->
-          x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2]
-          expect(parseInt(x, 10)).toBe(100); dfr()
+
+      setTimeout ->
+        tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+        x = tr.split /(translate\()|\,|\)/
+        expect(parseInt(x[2], 10)).toBe(100); dfr()
+      , 300
 
   describe 'functionality ->', ->
     div = document.createElement 'div'
@@ -468,10 +478,13 @@ describe 'MotionPath ->', ->
         offsetX: 10
         duration: 50
         isAngle: true
-        onComplete: ->
-          x = div.style.transform.split(/(translate\()|,|\)/)[2]
-          isEqual = parseInt(x, 10) is 10
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      
+      setTimeout (->
+        tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+        x = tr.split(/(translate\()|,|\)/)[2]
+        isEqual = parseInt(x, 10) is 10
+        expect(isEqual).toBe(true); dfr()
+      ), 300
 
     it 'should work with negative offsetX', (dfr)->
       coords = 'M0,0 L0,10'
@@ -482,10 +495,11 @@ describe 'MotionPath ->', ->
         offsetX: -10
         duration: 50
         onComplete: ->
-          x = div.style.transform.split(/(translate\()|,|\)/)[2]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          x = tr.split(/(translate\()|,|\)/)[2]
           x = parseInt(x, 10)
           isEqual = x is -10
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should work with positive offsetY', (dfr)->
       coords = 'M0,0 L10,0'
@@ -496,10 +510,11 @@ describe 'MotionPath ->', ->
         offsetY: 10
         duration: 50
         onComplete: ->
-          y = div.style.transform.split(/(translate\()|,|\)/)[4]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          y = tr.split(/(translate\()|,|\)/)[4]
           y = parseInt(y, 10)
           isEqual = y is 10
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should work with negative offsetY', (dfr)->
       coords = 'M0,0 L10,0'
@@ -510,10 +525,11 @@ describe 'MotionPath ->', ->
         offsetY: -10
         duration: 50
         onComplete: ->
-          y = div.style.transform.split(/(translate\()|,|\)/)[4]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          y = tr.split(/(translate\()|,|\)/)[4]
           isEqual = parseInt(y, 10) is -10
 
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should calculate current angle', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -527,7 +543,7 @@ describe 'MotionPath ->', ->
           detect.firstAngle ?= mp.angle
           isEquial2 = detect.firstAngle is 0
         onComplete:-> isEqual = mp.angle is 90
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should calculate current angle if transformOrigin is a fun', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -541,7 +557,7 @@ describe 'MotionPath ->', ->
           detect.firstAngle ?= mp.angle
           isEquial2 = detect.firstAngle is 0
         onComplete:-> isEqual = mp.angle is 90
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should calculate current angle with isReverse', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -557,7 +573,7 @@ describe 'MotionPath ->', ->
           isEquial2 = detect.firstAngle is 90
         onComplete: -> isEqual = mp.angle is 0
 
-        setTimeout (-> expect(isEqual).toBe(true); dfr()), 100
+        setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
 
     it 'should have transform-origin', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -570,7 +586,9 @@ describe 'MotionPath ->', ->
         onComplete: -> isComplete = true
 
       setTimeout ->
-        expect(mp.el.style['transform-origin'].length >= 1).toBe(true); dfr()
+        s = mp.el.style
+        tr = s['transform-origin'] or s["#{h.prefix.css}transform-origin"]
+        expect(tr.length >= 1).toBe(true); dfr()
       , 100
 
     it 'transform-origin could be a function', (dfr)->
@@ -610,9 +628,11 @@ describe 'MotionPath ->', ->
         duration: 50
         angleOffset: -90
         isAngle: true
-        onComplete:-> isEqual = mp.angle is 0
-
-      setTimeout (-> expect(isEqual).toBe(true); dfr()), 300
+        # onComplete:->
+      setTimeout (->
+        isEqual = mp.angle is 0
+        expect(isEqual).toBe(true); dfr()
+      ), 300
 
     it 'should be evaluated if a function', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -629,7 +649,7 @@ describe 'MotionPath ->', ->
 
     it 'should get current angle', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
-      isOnAngle = false
+      isOnAngle = null
       angleSum1 = 0; angleSum2 = 0
       mp = new MotionPath
         path: coords
@@ -643,7 +663,7 @@ describe 'MotionPath ->', ->
           angle
         onComplete:-> isOnAngle = angleSum1 is angleSum2
       mp.run()
-      setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 100
+      setTimeout (-> expect(isOnAngle).toBe(true); dfr()), 300
 
     it 'should set current angle', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -660,7 +680,7 @@ describe 'MotionPath ->', ->
           for isSetItem, i in isAnglesArray
             if !isSetItem then isSet = true
       
-      setTimeout (-> expect(isSet).toBe(false); dfr()), 100
+      setTimeout (-> expect(isSet).toBe(false); dfr()), 300
 
     it 'angleOffset should get current progress as second parameter', (dfr)->
       coords = 'M0,0 L10,0 L10,10'
@@ -671,7 +691,7 @@ describe 'MotionPath ->', ->
         duration: 50
         angleOffset:(angle, progress)-> proc = progress; angle
         onComplete:-> isProgress = proc is 1
-      setTimeout (-> expect(isProgress).toBe(true); dfr()), 100
+      setTimeout (-> expect(isProgress).toBe(true); dfr()), 300
 
     it 'should have scope of motion path', ->
       coords = 'M0,0 L10,0 L10,10'
@@ -683,9 +703,12 @@ describe 'MotionPath ->', ->
         duration: 50
         isAngle: true
         angleOffset:-> isRightScope = @ instanceof MotionPath
-      expect(isRightScope).toBe(true)
 
-  describe 'setProgress function ->', (dfr)->
+      setTimeout ->
+        expect(isRightScope).toBe(true)
+      , 300
+
+  describe 'setProgress method ->', (dfr)->
     it 'should have own function for setting up current progress', ->
       div = document.createElement 'div'
       mp = new MotionPath
@@ -693,20 +716,20 @@ describe 'MotionPath ->', ->
         el: div
         isRunLess: true
       mp.setProgress(.5)
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+      pos = parseInt tr.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
-
     it 'should call the onUpdate callback', ->
       div = document.createElement 'div'
+      progress = null
       mp = new MotionPath
         path: 'M0,0 L500,0'
         el: div
         isRunLess: true
-        onUpdate:->
-      spyOn mp, 'onUpdate'
+        onUpdate:(p)-> progress = p
+      # spyOn mp, 'onUpdate'
       mp.setProgress(.5)
-      expect(mp.onUpdate).toHaveBeenCalledWith .5
-
+      expect(progress).toBe .5
     it 'should not call the onUpdate callback on start', ->
       isCalled = false
       mp = new MotionPath
@@ -715,6 +738,27 @@ describe 'MotionPath ->', ->
         isRunLess: true
         onUpdate:-> isCalled = true
       expect(isCalled).toBe false
+    it 'should set transform if it was returned from the onUpdate', ->
+      transform = 'translate(20px, 50px)'
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: document.createElement 'div'
+        isRunLess: true
+        onUpdate:-> transform
+      mp.setProgress .5
+      style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+      tr = if style[prefixed]? then style[prefixed] else style.transform
+      expect(tr).toBe transform
+    it 'should not set transform if something other then string
+        was returned from onUpdate callback', ->
+      transform = 'translate(20px, 50px)'
+      mp = new MotionPath
+        path: 'M0,0 L500,0'
+        el: document.createElement 'div'
+        isRunLess: true
+        onUpdate:-> null
+      mp.setProgress .5
+      expect(mp.el.style.transform).not.toBe null
 
   describe 'preset position ->', ->
     it 'should preset initial position by default', ->
@@ -722,7 +766,8 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path: 'M50,0 L500,0'
         el:   div
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+      pos = parseInt tr.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(50)
 
     it 'should not set initial position if isPresetPosition is false', ->
@@ -753,10 +798,10 @@ describe 'MotionPath ->', ->
         isRunLess: true
         pathStart: .5
         pathEnd:   .75
-        isIt: true
 
-      mp.tween.setProgress 0
-      pos = parseInt div.style.transform.split(/(translate\()|\,|\)/)[2], 10
+      mp.timeline.setProgress 0
+      tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+      pos = parseInt tr.split(/(translate\()|\,|\)/)[2], 10
       expect(pos).toBe(250)
 
     it 'should end at pathEnd position', (dfr)->
@@ -769,10 +814,11 @@ describe 'MotionPath ->', ->
         pathStart:  .25
         pathEnd:    .5
         onComplete:->
-          pos = div.style.transform.split(/(translate\()|\,|\)/)[2]
+          tr = mp.el.style.transform or mp.el.style["#{h.prefix.css}transform"]
+          pos = tr.split(/(translate\()|\,|\)/)[2]
           pos = parseInt pos, 10
     
-      setTimeout (-> expect(pos).toBe(250); dfr()), 100
+      setTimeout (-> expect(pos).toBe(250); dfr()), 300
 
   describe 'path option ->', ->
     it 'should error if path has no d attribute', ->
@@ -784,6 +830,39 @@ describe 'MotionPath ->', ->
         path: path
         el: div
       expect(h.error).toHaveBeenCalled()
+
+  describe 'isCompositeLayer option ->', ->
+    it 'should be true by default', ->
+      mp = new MotionPath
+        path:   document.createElementNS ns, 'path'
+        el:     document.createElement 'div'
+      expect(mp.props.isCompositeLayer).toBe true
+    it 'should be able to be set to false', ->
+      mp = new MotionPath
+        path:   document.createElementNS ns, 'path'
+        el:     document.createElement 'div'
+        isCompositeLayer: false
+      expect(mp.props.isCompositeLayer).toBe false
+    it 'should set translateZ(0) if isCompositeLayer is set to true
+        and h.is3d', ()->
+      mp = new MotionPath
+        path:       'M0,0 L100,100'
+        el:         document.createElement 'div'
+        isRunLess:  true
+      mp.setProgress(.5)
+      style = mp.el.style; prefixed = "#{h.prefix.css}transform"
+      tr = if style[prefixed]? then style[prefixed] else style.transform
+      expect(tr.match(/translateZ/gi) or !h.is3d).toBeTruthy()
+
+    it 'should not set translateZ(0) is isCompositeLayer is set to false', ()->
+      mp = new MotionPath
+        path:             'M0,0 L100,100'
+        el:               document.createElement 'div'
+        isRunLess:        true
+        isCompositeLayer: false
+      mp.setProgress(.5)
+      tr = mp.el.style.transform or mp.el.style["#{mojs.h.prefix.css}transform"]
+      expect(tr.match /translateZ/gi).toBeFalsy()
 
   describe 'getPath method ->', ->
     it 'should have a getPath method', ->
@@ -1009,6 +1088,14 @@ describe 'MotionPath ->', ->
         isPresetPosition: false
       expect(mp.el).toBe tr
 
+    it 'should nicely error to console if el wasn\'t specified', ->
+      spyOn h, 'error'
+      mp = new MotionPath
+        path: coords
+        isRunLess: true
+        isPresetPosition: false
+      expect(h.error).toHaveBeenCalled()
+
   describe 'then method ->', ->
     it 'should contribute to history on init', ->
       options =
@@ -1052,7 +1139,7 @@ describe 'MotionPath ->', ->
         delay:    100
       )
       .then pathStart: .5, pathEnd: 1
-      expect(mp.tween.timelines[1].o.delay).toBe 2100
+      expect(mp.timeline.timelines[1].props.shiftTime).toBe 2100
 
     it 'should not copy previous callbacks', ->
       onUpdate = ->
@@ -1064,7 +1151,9 @@ describe 'MotionPath ->', ->
         delay:    100
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0
-      mp.tween.setProgress .75
+      
+      mp.timeline.setProgress .75
+      
       expect(mp.history[1].onUpdate).not.toBeDefined()
       expect(mp.props.onUpdate)     .not.toBeDefined()
 
@@ -1078,7 +1167,7 @@ describe 'MotionPath ->', ->
         delay:    100
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0, onUpdate: ->
-      mp.tween.setProgress .75
+      mp.timeline.setProgress .75
       expect(mp.history[1].onUpdate).toBeDefined()
       expect(mp.props.onUpdate)     .toBeDefined()
 
@@ -1090,9 +1179,9 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
-      expect(mp.tween.timelines.length)             .toBe 2
-      expect(mp.tween.timelines[1].o.duration)     .toBe 2000
-      expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined()
+      expect(mp.timeline.timelines.length)            .toBe 2
+      expect(mp.timeline.timelines[1].o.duration)     .toBe 2000
+      expect(mp.timeline.timelines[1].o.onFirstUpdate).toBeDefined()
 
     it 'should add isChained option to the new timeline', ->
       mp = new MotionPath(
@@ -1103,7 +1192,7 @@ describe 'MotionPath ->', ->
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
       
-      expect(mp.tween.timelines[1].o.isChained).toBe true
+      expect(mp.timeline.timelines[1].o.isChained).toBe true
 
     it 'should not add isChained option if delay', ->
       mp = new MotionPath(
@@ -1114,7 +1203,7 @@ describe 'MotionPath ->', ->
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1, delay: 100
       
-      expect(mp.tween.timelines[1].o.isChained).toBe false
+      expect(mp.timeline.timelines[1].o.isChained).toBe false
 
   describe 'tuneOptions ->', ->
     it 'should tune options', ->
@@ -1149,7 +1238,8 @@ describe 'MotionPath ->', ->
       mp = new MotionPath
         path:       coords
         el:         document.createElement 'div'
-      expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe 'function'
+      type = typeof mp.timeline.timelines[0].o.onFirstUpdateBackward
+      expect(type).toBe 'function'
 
   describe 'isModule flag ->', ->
     it 'should be set if module was passed', ->

@@ -21,7 +21,7 @@ var insert        = require('gulp-insert');
 var jeditor       = require("gulp-json-editor");
 var shell         = require("gulp-shell");
 var grock         = require("grock");
-// var pygments      = require("pygments");
+var babel         = require("gulp-babel");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
 var paths = {
@@ -100,6 +100,14 @@ gulp.task('coffeeify', function(e){
     .pipe(gulp.dest('./build'))
   });
 
+gulp.task('lib', function(e){
+  return gulp.src(paths.src.js)
+    .pipe(plumber())
+    .pipe(coffee())
+    // remove browserfy sudo code
+    .pipe(gulp.dest('lib/'))
+  });
+
 gulp.task('docs', function(e){
   // gulp.src('js/**/*.coffee')
   //   .pipe(insert.transform(function(contents) {
@@ -166,7 +174,7 @@ gulp.task('default', function(){
   gulp.run('get-current-version');
   gulp.watch(paths.src.tests,['coffee:tests']);
   gulp.watch(paths.src.css,  ['stylus']);
-  gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs']);
+  gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs', 'lib']);
   gulp.watch(paths.src.index,['index:jade']);
   gulp.watch('package.json', ['update-version']);
   });

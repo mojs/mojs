@@ -118,6 +118,13 @@
         });
         return expect(mp.angle).toBe(0);
       });
+      it('should have isCompositeLayer default of true', function() {
+        mp = new MotionPath({
+          path: 'M0.55859375,593.527344L0.55859375,593.527344',
+          el: document.createElement('div')
+        });
+        return expect(mp.defaults.isCompositeLayer).toBe(true);
+      });
       it('have speed of 0', function() {
         el = document.createElement('div');
         mp = new MotionPath({
@@ -140,7 +147,7 @@
         expect(mp.blurX).toBe(0);
         return expect(mp.blurY).toBe(0);
       });
-      it('have blurAmount of 12', function() {
+      it('have blurAmount of 20', function() {
         el = document.createElement('div');
         mp = new MotionPath({
           path: 'M0.55859375,593.527344L0.55859375,593.527344',
@@ -249,9 +256,10 @@
         o = {
           duration: 500
         };
+        div = document.createElement('div');
         mp = new MotionPath({
           path: coords,
-          el: document.createElement('div'),
+          el: div,
           isRunLess: true
         }).then({
           pathEnd: .5
@@ -334,7 +342,7 @@
           return setTimeout((function() {
             expect(isStarted).toBe(true);
             return dfr();
-          }), 100);
+          }), 300);
         });
         return it('should have the scope of MotionPath', function(dfr) {
           var isRightScope;
@@ -349,7 +357,7 @@
           return setTimeout((function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }), 100);
+          }), 300);
         });
       });
       describe('onComplete callback ->', function() {
@@ -367,7 +375,7 @@
           return setTimeout(function() {
             expect(isCompleted).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
         return it('should have the scope of MotionPath', function(dfr) {
           var isRightScope;
@@ -383,7 +391,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
       });
       return describe('onUpdate callback ->', function() {
@@ -401,7 +409,7 @@
           return setTimeout(function() {
             expect(isOnUpdate).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
         it('onUpdate callback should have "progress" argument', function(dfr) {
           var isOnUpdate;
@@ -419,9 +427,9 @@
           return setTimeout(function() {
             expect(isOnUpdate).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
-        return it('should have the scope of MotionPath', function(dfr) {
+        it('should have the scope of MotionPath', function(dfr) {
           var isRightScope;
           isRightScope = false;
           mp = new MotionPath({
@@ -435,30 +443,31 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 100);
+          }, 300);
         });
-      });
-    });
-    describe('onPosit callback ->', function() {
-      it('should be defined', function() {
-        mp = new MotionPath({
-          path: 'M0,0 L100,100',
-          el: document.createElement('div'),
-          isRunLess: true,
-          onPosit: function() {}
+        return it('should be called with progress, x, y and angle', function() {
+          var angle, progress, x, y;
+          progress = null;
+          x = null;
+          y = null;
+          angle = null;
+          mp = new MotionPath({
+            path: 'M0,100 L100,0',
+            el: document.createElement('div'),
+            isRunLess: true,
+            onUpdate: function(p, o) {
+              progress = p;
+              x = o.x;
+              y = o.y;
+              return angle = o.angle;
+            }
+          });
+          mp.timeline.setProgress(.5);
+          expect(progress.toFixed(1)).toBe('0.5');
+          expect(x).toBe(50);
+          expect(y).toBe(50);
+          return expect(angle).toBe(0);
         });
-        return expect(typeof mp.props.onPosit).toBe('function');
-      });
-      return it('should be called with progress, x, y and angle', function() {
-        mp = new MotionPath({
-          path: 'M0,100 L100,0',
-          el: document.createElement('div'),
-          isRunLess: true,
-          onPosit: function() {}
-        });
-        spyOn(mp.props, 'onPosit');
-        mp.tween.setProgress(.5);
-        return expect(mp.props.onPosit).toHaveBeenCalledWith(.5, 50, 50, 0);
       });
     });
     describe('fill ->', function() {
@@ -510,8 +519,12 @@
             container: container
           },
           onComplete: function() {
-            var args, height, isHeight, isWidth, width;
-            args = motionPath.el.style.transform.split(/(translate\()|\,|\)/);
+            var args, height, isHeight, isWidth, prefixed, style, tr, width;
+            style = motionPath.el.style;
+            prefixed = "" + h.prefix.css + "transform";
+            tr = style[prefixed] != null ? style[prefixed] : style.transform;
+            div = document.createElement('div');
+            args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
             isWidth = width === container.offsetWidth;
@@ -535,8 +548,11 @@
           },
           all: true,
           onComplete: function() {
-            var args, height, isHeight, isWidth, width;
-            args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+            var args, height, isHeight, isWidth, prefixed, style, tr, width;
+            style = mp.el.style;
+            prefixed = "" + h.prefix.css + "transform";
+            tr = style[prefixed] != null ? style[prefixed] : style.transform;
+            args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
             isWidth = width === container.offsetWidth;
@@ -559,8 +575,11 @@
             fillRule: 'height'
           },
           onComplete: function() {
-            var args, height, isHeight, isWidth, width;
-            args = mp.el.style.transform.split(/(translate\()|\,|\)/);
+            var args, height, isHeight, isWidth, prefixed, style, tr, width;
+            style = mp.el.style;
+            prefixed = "" + h.prefix.css + "transform";
+            tr = style[prefixed] != null ? style[prefixed] : style.transform;
+            args = tr.split(/(translate\()|\,|\)/);
             width = parseInt(args[2], 10);
             height = parseInt(args[4], 10);
             isWidth = width === (height / 2);
@@ -584,10 +603,10 @@
         c.setAttribute('id', 'js-container2');
         document.body.appendChild(c);
         x = -1;
-        return mp = new MotionPath({
+        mp = new MotionPath({
           path: 'M0,0 L500,0',
           el: el,
-          duration: 100,
+          duration: 50,
           fill: {
             container: c
           },
@@ -596,13 +615,15 @@
               mp.container.style.width = '100px';
               return isSizeChange = true;
             }
-          },
-          onComplete: function() {
-            x = mp.el.style.transform.split(/(translate\()|\,|\)/)[2];
-            expect(parseInt(x, 10)).toBe(100);
-            return dfr();
           }
         });
+        return setTimeout(function() {
+          var tr;
+          tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+          x = tr.split(/(translate\()|\,|\)/);
+          expect(parseInt(x[2], 10)).toBe(100);
+          return dfr();
+        }, 300);
       });
     });
     describe('functionality ->', function() {
@@ -614,20 +635,21 @@
         coords = 'M0,0 L0,10';
         x = 0;
         isEqual = false;
-        return mp = new MotionPath({
+        mp = new MotionPath({
           path: coords,
           el: div,
           offsetX: 10,
           duration: 50,
-          isAngle: true,
-          onComplete: function() {
-            x = div.style.transform.split(/(translate\()|,|\)/)[2];
-            return isEqual = parseInt(x, 10) === 10;
-          }
-        }, setTimeout((function() {
+          isAngle: true
+        });
+        return setTimeout((function() {
+          var tr;
+          tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+          x = tr.split(/(translate\()|,|\)/)[2];
+          isEqual = parseInt(x, 10) === 10;
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100));
+        }), 300);
       });
       it('should work with negative offsetX', function(dfr) {
         var isEqual, x;
@@ -640,7 +662,9 @@
           offsetX: -10,
           duration: 50,
           onComplete: function() {
-            x = div.style.transform.split(/(translate\()|,|\)/)[2];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            x = tr.split(/(translate\()|,|\)/)[2];
             x = parseInt(x, 10);
             return isEqual = x === -10;
           }
@@ -648,7 +672,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should work with positive offsetY', function(dfr) {
         var isEqual, y;
@@ -661,7 +685,9 @@
           offsetY: 10,
           duration: 50,
           onComplete: function() {
-            y = div.style.transform.split(/(translate\()|,|\)/)[4];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            y = tr.split(/(translate\()|,|\)/)[4];
             y = parseInt(y, 10);
             return isEqual = y === 10;
           }
@@ -669,7 +695,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should work with negative offsetY', function(dfr) {
         var isEqual, y;
@@ -682,14 +708,16 @@
           offsetY: -10,
           duration: 50,
           onComplete: function() {
-            y = div.style.transform.split(/(translate\()|,|\)/)[4];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            y = tr.split(/(translate\()|,|\)/)[4];
             return isEqual = parseInt(y, 10) === -10;
           }
         });
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should calculate current angle', function(dfr) {
         var angle, detect, isEqual, isEquial2;
@@ -716,7 +744,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should calculate current angle if transformOrigin is a fun', function(dfr) {
         var angle, detect, isEqual, isEquial2;
@@ -743,7 +771,7 @@
         return setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should calculate current angle with isReverse', function(dfr) {
         var angle, detect, isEqual, isEquial2;
@@ -770,7 +798,7 @@
         }, setTimeout((function() {
           expect(isEqual).toBe(true);
           return dfr();
-        }), 100));
+        }), 300));
       });
       it('should have transform-origin', function(dfr) {
         var isComplete;
@@ -786,7 +814,10 @@
           }
         });
         return setTimeout(function() {
-          expect(mp.el.style['transform-origin'].length >= 1).toBe(true);
+          var s, tr;
+          s = mp.el.style;
+          tr = s['transform-origin'] || s["" + h.prefix.css + "transform-origin"];
+          expect(tr.length >= 1).toBe(true);
           return dfr();
         }, 100);
       });
@@ -844,12 +875,10 @@
           el: div,
           duration: 50,
           angleOffset: -90,
-          isAngle: true,
-          onComplete: function() {
-            return isEqual = mp.angle === 0;
-          }
+          isAngle: true
         });
         return setTimeout((function() {
+          isEqual = mp.angle === 0;
           expect(isEqual).toBe(true);
           return dfr();
         }), 300);
@@ -875,7 +904,7 @@
       it('should get current angle', function(dfr) {
         var angleSum1, angleSum2, isOnAngle;
         coords = 'M0,0 L10,0 L10,10';
-        isOnAngle = false;
+        isOnAngle = null;
         angleSum1 = 0;
         angleSum2 = 0;
         mp = new MotionPath({
@@ -898,7 +927,7 @@
         return setTimeout((function() {
           expect(isOnAngle).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('should set current angle', function(dfr) {
         var angleShift, currAngle, isAnglesArray, isSet;
@@ -935,7 +964,7 @@
         return setTimeout((function() {
           expect(isSet).toBe(false);
           return dfr();
-        }), 100);
+        }), 300);
       });
       it('angleOffset should get current progress as second parameter', function(dfr) {
         var isProgress, proc;
@@ -957,7 +986,7 @@
         return setTimeout((function() {
           expect(isProgress).toBe(true);
           return dfr();
-        }), 100);
+        }), 300);
       });
       return it('should have scope of motion path', function() {
         var angleSum1, angleSum2, isRightScope;
@@ -974,12 +1003,14 @@
             return isRightScope = this instanceof MotionPath;
           }
         });
-        return expect(isRightScope).toBe(true);
+        return setTimeout(function() {
+          return expect(isRightScope).toBe(true);
+        }, 300);
       });
     });
-    describe('setProgress function ->', function(dfr) {
+    describe('setProgress method ->', function(dfr) {
       it('should have own function for setting up current progress', function() {
-        var div, pos;
+        var div, pos, tr;
         div = document.createElement('div');
         mp = new MotionPath({
           path: 'M0,0 L500,0',
@@ -987,23 +1018,26 @@
           isRunLess: true
         });
         mp.setProgress(.5);
-        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+        pos = parseInt(tr.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(250);
       });
       it('should call the onUpdate callback', function() {
-        var div;
+        var div, progress;
         div = document.createElement('div');
+        progress = null;
         mp = new MotionPath({
           path: 'M0,0 L500,0',
           el: div,
           isRunLess: true,
-          onUpdate: function() {}
+          onUpdate: function(p) {
+            return progress = p;
+          }
         });
-        spyOn(mp, 'onUpdate');
         mp.setProgress(.5);
-        return expect(mp.onUpdate).toHaveBeenCalledWith(.5);
+        return expect(progress).toBe(.5);
       });
-      return it('should not call the onUpdate callback on start', function() {
+      it('should not call the onUpdate callback on start', function() {
         var isCalled;
         isCalled = false;
         mp = new MotionPath({
@@ -1016,16 +1050,48 @@
         });
         return expect(isCalled).toBe(false);
       });
+      it('should set transform if it was returned from the onUpdate', function() {
+        var prefixed, style, tr, transform;
+        transform = 'translate(20px, 50px)';
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: document.createElement('div'),
+          isRunLess: true,
+          onUpdate: function() {
+            return transform;
+          }
+        });
+        mp.setProgress(.5);
+        style = mp.el.style;
+        prefixed = "" + h.prefix.css + "transform";
+        tr = style[prefixed] != null ? style[prefixed] : style.transform;
+        return expect(tr).toBe(transform);
+      });
+      return it('should not set transform if something other then string was returned from onUpdate callback', function() {
+        var transform;
+        transform = 'translate(20px, 50px)';
+        mp = new MotionPath({
+          path: 'M0,0 L500,0',
+          el: document.createElement('div'),
+          isRunLess: true,
+          onUpdate: function() {
+            return null;
+          }
+        });
+        mp.setProgress(.5);
+        return expect(mp.el.style.transform).not.toBe(null);
+      });
     });
     describe('preset position ->', function() {
       it('should preset initial position by default', function() {
-        var div, pos;
+        var div, pos, tr;
         div = document.createElement('div');
         mp = new MotionPath({
           path: 'M50,0 L500,0',
           el: div
         });
-        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+        pos = parseInt(tr.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(50);
       });
       return it('should not set initial position if isPresetPosition is false', function() {
@@ -1053,18 +1119,18 @@
         return expect(mp.startLen).toBe(250);
       });
       it('should start from pathStart position', function() {
-        var div, pos;
+        var div, pos, tr;
         div = document.createElement('div');
         mp = new MotionPath({
           path: 'M0,0 L500,0',
           el: div,
           isRunLess: true,
           pathStart: .5,
-          pathEnd: .75,
-          isIt: true
+          pathEnd: .75
         });
-        mp.tween.setProgress(0);
-        pos = parseInt(div.style.transform.split(/(translate\()|\,|\)/)[2], 10);
+        mp.timeline.setProgress(0);
+        tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+        pos = parseInt(tr.split(/(translate\()|\,|\)/)[2], 10);
         return expect(pos).toBe(250);
       });
       return it('should end at pathEnd position', function(dfr) {
@@ -1078,14 +1144,16 @@
           pathStart: .25,
           pathEnd: .5,
           onComplete: function() {
-            pos = div.style.transform.split(/(translate\()|\,|\)/)[2];
+            var tr;
+            tr = mp.el.style.transform || mp.el.style["" + h.prefix.css + "transform"];
+            pos = tr.split(/(translate\()|\,|\)/)[2];
             return pos = parseInt(pos, 10);
           }
         });
         return setTimeout((function() {
           expect(pos).toBe(250);
           return dfr();
-        }), 100);
+        }), 300);
       });
     });
     describe('path option ->', function() {
@@ -1099,6 +1167,48 @@
           el: div
         });
         return expect(h.error).toHaveBeenCalled();
+      });
+    });
+    describe('isCompositeLayer option ->', function() {
+      it('should be true by default', function() {
+        mp = new MotionPath({
+          path: document.createElementNS(ns, 'path'),
+          el: document.createElement('div')
+        });
+        return expect(mp.props.isCompositeLayer).toBe(true);
+      });
+      it('should be able to be set to false', function() {
+        mp = new MotionPath({
+          path: document.createElementNS(ns, 'path'),
+          el: document.createElement('div'),
+          isCompositeLayer: false
+        });
+        return expect(mp.props.isCompositeLayer).toBe(false);
+      });
+      it('should set translateZ(0) if isCompositeLayer is set to true and h.is3d', function() {
+        var prefixed, style, tr;
+        mp = new MotionPath({
+          path: 'M0,0 L100,100',
+          el: document.createElement('div'),
+          isRunLess: true
+        });
+        mp.setProgress(.5);
+        style = mp.el.style;
+        prefixed = "" + h.prefix.css + "transform";
+        tr = style[prefixed] != null ? style[prefixed] : style.transform;
+        return expect(tr.match(/translateZ/gi) || !h.is3d).toBeTruthy();
+      });
+      return it('should not set translateZ(0) is isCompositeLayer is set to false', function() {
+        var tr;
+        mp = new MotionPath({
+          path: 'M0,0 L100,100',
+          el: document.createElement('div'),
+          isRunLess: true,
+          isCompositeLayer: false
+        });
+        mp.setProgress(.5);
+        tr = mp.el.style.transform || mp.el.style["" + mojs.h.prefix.css + "transform"];
+        return expect(tr.match(/translateZ/gi)).toBeFalsy();
       });
     });
     describe('getPath method ->', function() {
@@ -1401,7 +1511,7 @@
         });
         return expect(mp.el instanceof HTMLElement).toBe(true);
       });
-      return it('should return the module when module was passed', function() {
+      it('should return the module when module was passed', function() {
         var tr;
         tr = new Transit({
           isRunLess: true
@@ -1413,6 +1523,15 @@
           isPresetPosition: false
         });
         return expect(mp.el).toBe(tr);
+      });
+      return it('should nicely error to console if el wasn\'t specified', function() {
+        spyOn(h, 'error');
+        mp = new MotionPath({
+          path: coords,
+          isRunLess: true,
+          isPresetPosition: false
+        });
+        return expect(h.error).toHaveBeenCalled();
       });
     });
     describe('then method ->', function() {
@@ -1466,7 +1585,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.tween.timelines[1].o.delay).toBe(2100);
+        return expect(mp.timeline.timelines[1].props.shiftTime).toBe(2100);
       });
       it('should not copy previous callbacks', function() {
         var onUpdate;
@@ -1483,7 +1602,7 @@
           pathEnd: 1,
           delay: 0
         });
-        mp.tween.setProgress(.75);
+        mp.timeline.setProgress(.75);
         expect(mp.history[1].onUpdate).not.toBeDefined();
         return expect(mp.props.onUpdate).not.toBeDefined();
       });
@@ -1503,7 +1622,7 @@
           delay: 0,
           onUpdate: function() {}
         });
-        mp.tween.setProgress(.75);
+        mp.timeline.setProgress(.75);
         expect(mp.history[1].onUpdate).toBeDefined();
         return expect(mp.props.onUpdate).toBeDefined();
       });
@@ -1518,9 +1637,9 @@
           pathStart: .5,
           pathEnd: 1
         });
-        expect(mp.tween.timelines.length).toBe(2);
-        expect(mp.tween.timelines[1].o.duration).toBe(2000);
-        return expect(mp.tween.timelines[1].o.onFirstUpdate).toBeDefined();
+        expect(mp.timeline.timelines.length).toBe(2);
+        expect(mp.timeline.timelines[1].o.duration).toBe(2000);
+        return expect(mp.timeline.timelines[1].o.onFirstUpdate).toBeDefined();
       });
       it('should add isChained option to the new timeline', function() {
         mp = new MotionPath({
@@ -1533,7 +1652,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.tween.timelines[1].o.isChained).toBe(true);
+        return expect(mp.timeline.timelines[1].o.isChained).toBe(true);
       });
       return it('should not add isChained option if delay', function() {
         mp = new MotionPath({
@@ -1547,7 +1666,7 @@
           pathEnd: 1,
           delay: 100
         });
-        return expect(mp.tween.timelines[1].o.isChained).toBe(false);
+        return expect(mp.timeline.timelines[1].o.isChained).toBe(false);
       });
     });
     describe('tuneOptions ->', function() {
@@ -1585,11 +1704,13 @@
     });
     describe('createTween method', function() {
       return it('should bind the onFirstUpdateBackward metod', function() {
+        var type;
         mp = new MotionPath({
           path: coords,
           el: document.createElement('div')
         });
-        return expect(typeof mp.timeline.o.onFirstUpdateBackward).toBe('function');
+        type = typeof mp.timeline.timelines[0].o.onFirstUpdateBackward;
+        return expect(type).toBe('function');
       });
     });
     describe('isModule flag ->', function() {

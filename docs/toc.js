@@ -1,25 +1,9 @@
 window.files = [
 {
-  "path": "js/bezier-easing.coffee.html",
-  "originalName": "bezier-easing.coffee",
-  "originalPath": "js/bezier-easing.coffee",
-  "name": "bezier-easing.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/burst.coffee.html",
   "originalName": "burst.coffee",
   "originalPath": "js/burst.coffee",
   "name": "burst.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/easing.coffee.html",
-  "originalName": "easing.coffee",
-  "originalPath": "js/easing.coffee",
-  "name": "easing.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
@@ -60,20 +44,6 @@ window.files = [
       "level": 3,
       "slug": "class-body-docs",
       "title": "Class body docs"
-    }
-  ]
-},
-{
-  "path": "js/path-easing.coffee.html",
-  "originalName": "path-easing.coffee",
-  "originalPath": "js/path-easing.coffee",
-  "name": "path-easing.coffee.html",
-  "lang": "coffeescript",
-  "toc": [
-    {
-      "level": 2,
-      "slug": "patheasing",
-      "title": "PathEasing"
     }
   ]
 },
@@ -119,6 +89,44 @@ window.files = [
   "name": "transit.coffee.html",
   "lang": "coffeescript",
   "toc": []
+},
+{
+  "path": "js/easing/bezier-easing.coffee.html",
+  "originalName": "bezier-easing.coffee",
+  "originalPath": "js/easing/bezier-easing.coffee",
+  "name": "bezier-easing.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/easing/easing.coffee.html",
+  "originalName": "easing.coffee",
+  "originalPath": "js/easing/easing.coffee",
+  "name": "easing.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/easing/mix.coffee.html",
+  "originalName": "mix.coffee",
+  "originalPath": "js/easing/mix.coffee",
+  "name": "mix.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/easing/path-easing.coffee.html",
+  "originalName": "path-easing.coffee",
+  "originalPath": "js/easing/path-easing.coffee",
+  "name": "path-easing.coffee.html",
+  "lang": "coffeescript",
+  "toc": [
+    {
+      "level": 2,
+      "slug": "patheasing",
+      "title": "PathEasing"
+    }
+  ]
 },
 {
   "path": "js/polyfills/performance.coffee.html",
