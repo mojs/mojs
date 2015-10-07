@@ -8,6 +8,11 @@
 - release
   - docs
   - tuts
+
+- add [object HTMLCollection] quantifier + normalize nodeList -> array
+- add none to colors
+- add readable easing error
+
 - add meta balls
 - add layers
 - add states

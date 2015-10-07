@@ -423,9 +423,7 @@ describe 'Timeline ->', ->
       , 200
     it 'should call onComplete callback just once', ->
       t0 = new Timeline repeat: 5, delay: 400
-      t  = new Timeline
-        onComplete:->
-        isIt: true
+      t  = new Timeline onComplete:->
       t.add new Tween
       t0.add t
       t0.setStartTime()
@@ -699,6 +697,28 @@ describe 'Timeline ->', ->
       time = t.props.startTime + 100
       t._updateTimelines time, false
       expect(tw.update).toHaveBeenCalledWith time, false
+
+    it 'should not be called if the timeline was completed', ->
+      tm    = new mojs.Timeline
+      tm1   = new mojs.Timeline isIt: true
+      tm1.add new mojs.Tween duration: 1000
+      tm2   = new mojs.Timeline delay: 1000
+      tm2.add new mojs.Tween
+      tm.add tm1, tm2
+
+      tm.setStartTime()
+      tm.update tm.props.startTime + 100
+      tm.update tm.props.startTime + 200
+      tm.update tm.props.startTime + 800
+      tm.update tm.props.startTime + 1000
+      
+      spyOn(tm1, '_updateTimelines').and.callThrough()
+      spyOn(tm1, '_checkCallbacks').and.callThrough()
+
+      tm.update tm.props.startTime + 1200
+      
+      expect(tm1._updateTimelines).not.toHaveBeenCalled()
+      expect(tm1._checkCallbacks).not.toHaveBeenCalled()
 
 
   describe 'setProgress method ->', ->

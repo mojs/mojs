@@ -749,8 +749,7 @@
           delay: 400
         });
         t = new Timeline({
-          onComplete: function() {},
-          isIt: true
+          onComplete: function() {}
         });
         t.add(new Tween);
         t0.add(t);
@@ -1204,7 +1203,7 @@
         expect(arg1).toBeCloseTo(time + 5, 5);
         return dfr();
       });
-      return it('should pass thru the isGrow param', function() {
+      it('should pass thru the isGrow param', function() {
         var t, time, tw;
         t = new Timeline({
           repeat: 1,
@@ -1217,6 +1216,31 @@
         time = t.props.startTime + 100;
         t._updateTimelines(time, false);
         return expect(tw.update).toHaveBeenCalledWith(time, false);
+      });
+      return it('should not be called if the timeline was completed', function() {
+        var tm, tm1, tm2;
+        tm = new mojs.Timeline;
+        tm1 = new mojs.Timeline({
+          isIt: true
+        });
+        tm1.add(new mojs.Tween({
+          duration: 1000
+        }));
+        tm2 = new mojs.Timeline({
+          delay: 1000
+        });
+        tm2.add(new mojs.Tween);
+        tm.add(tm1, tm2);
+        tm.setStartTime();
+        tm.update(tm.props.startTime + 100);
+        tm.update(tm.props.startTime + 200);
+        tm.update(tm.props.startTime + 800);
+        tm.update(tm.props.startTime + 1000);
+        spyOn(tm1, '_updateTimelines').and.callThrough();
+        spyOn(tm1, '_checkCallbacks').and.callThrough();
+        tm.update(tm.props.startTime + 1200);
+        expect(tm1._updateTimelines).not.toHaveBeenCalled();
+        return expect(tm1._checkCallbacks).not.toHaveBeenCalled();
       });
     });
     describe('setProgress method ->', function() {

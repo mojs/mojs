@@ -1697,7 +1697,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.9',
+  revision: '0.146.11',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -4086,6 +4086,9 @@ Timeline = (function() {
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
+    if (time === this.props.endTime && this.isCompleted) {
+      return true;
+    }
     this._updateTimelines(time, isGrow);
     return this._checkCallbacks(time);
   };
@@ -4323,7 +4326,7 @@ Tween = (function() {
       }
       if (isGrow) {
         this._complete();
-      } else if (!this.isOnReverseComplete && this.isFirstUpdate) {
+      } else if (!this.isOnReverseComplete) {
         this.isOnReverseComplete = true;
         this.setProgress(0, !this.props.isChained);
         if ((ref4 = this.props.onReverseComplete) != null) {
