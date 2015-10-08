@@ -12,6 +12,7 @@
 - add [object HTMLCollection] quantifier + normalize nodeList -> array
 - add none to colors
 - add readable easing error
+- fix gc
 
 - add meta balls
 - add layers

@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.146.11 
+	0.146.12 
 */
 
 (function(f){
@@ -887,11 +887,11 @@ h = require('../h');
 
 PathEasing = (function() {
   PathEasing.prototype._vars = function() {
-    this._precompute = h.clamp(this.o.precompute || 140, 100, 10000);
+    this._precompute = h.clamp(this.o.precompute || 1450, 100, 10000);
     this._step = 1 / this._precompute;
     this._rect = this.o.rect || 100;
     this._approximateMax = this.o.approximateMax || 5;
-    this._eps = this.o.eps || 0.01;
+    this._eps = this.o.eps || 0.001;
     return this._boundsPrevProgress = -1;
   };
 
@@ -904,11 +904,11 @@ PathEasing = (function() {
     if (this.path == null) {
       return h.error('Error while parsing the path');
     }
+    this._vars();
     this.path.setAttribute('d', this._normalizePath(this.path.getAttribute('d')));
     this.pathLength = this.path.getTotalLength();
     this.sample = h.bind(this.sample, this);
     this._hardSample = h.bind(this._hardSample, this);
-    this._vars();
     this._preSample();
     this;
   }
@@ -1007,7 +1007,7 @@ PathEasing = (function() {
   PathEasing.prototype._approximate = function(start, end, p) {
     var deltaP, percentP;
     deltaP = end.point.x - start.point.x;
-    percentP = (p - (start.point.x / 100)) / (deltaP / 100);
+    percentP = (p - (start.point.x / this._rect)) / (deltaP / this._rect);
     return start.length + percentP * (end.length - start.length);
   };
 
@@ -1018,7 +1018,7 @@ PathEasing = (function() {
     }
     approximation = this._approximate(start, end, p);
     point = this.path.getPointAtLength(approximation);
-    x = point.x / 100;
+    x = point.x / this._rect;
     if (h.closeEnough(p, x, this._eps)) {
       return this._resolveY(point);
     } else {
@@ -1699,7 +1699,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.11',
+  revision: '0.146.12',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

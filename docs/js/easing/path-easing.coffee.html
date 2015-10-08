@@ -46,7 +46,7 @@ Line commands should by in range of rect 100x100.</p>
 <p>Parameters:</p>
 <p>{String, DOMNode}</p>
 <ul>
-<li><strong><code>options</code> must be an Object.</strong><br/>(- eps {Number} Epsilon specifies how precise we should be when sampling the path. Smaller number - more precise is computation, but more CPU power it takes <em>default: 0.001</em> - precompute {Number} Quantity of steps for sampling the path on the init. In can be in <em>range of [1000, 10000]</em>. Larger number specified - more time it takes to init the module, but less time it takes during the animation. <em>default: 2000</em> - rect {Number} The largest number SVG path coordinates can have <em>default: 100</em> - approximateMax {Number} Number of loops avaliable when approximating the path value <em>default: 5</em>)</li>
+<li><strong><code>options</code> must be an Object.</strong><br/>(- eps {Number} Epsilon specifies how precise we should be when sampling the path. Smaller number - more precise is computation, but more CPU power it takes <em>default: 0.001</em> - precompute {Number} Quantity of steps for sampling specified path on init. It can be in <em>range of [100, 10000]</em>. Larger number specified - more time it takes to init the module, but less time it takes during the animation. <em>default: 1450</em> - rect {Number} The largest number SVG path coordinates can have <em>default: 100</em> - approximateMax {Number} Number of loops avaliable when approximating the path value <em>default: 5</em>)</li>
 </ul>
 </div>
         </div>
@@ -79,10 +79,10 @@ Method <strong>_vars</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">    <span class="hljs-property">@_precompute</span> = h.clamp (<span class="hljs-property">@o</span>.precompute <span class="hljs-keyword">or</span> <span class="hljs-number">140</span>), <span class="hljs-number">100</span>, <span class="hljs-number">10000</span>
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_precompute</span> = h.clamp (<span class="hljs-property">@o</span>.precompute <span class="hljs-keyword">or</span> <span class="hljs-number">1450</span>), <span class="hljs-number">100</span>, <span class="hljs-number">10000</span>
     <span class="hljs-property">@_step</span> = <span class="hljs-number">1</span>/<span class="hljs-property">@_precompute</span>; <span class="hljs-property">@_rect</span> = <span class="hljs-property">@o</span>.rect <span class="hljs-keyword">or</span> <span class="hljs-number">100</span>
     <span class="hljs-property">@_approximateMax</span> = <span class="hljs-property">@o</span>.approximateMax <span class="hljs-keyword">or</span> <span class="hljs-number">5</span>
-    <span class="hljs-property">@_eps</span> = <span class="hljs-property">@o</span>.eps <span class="hljs-keyword">or</span> <span class="hljs-number">0.01</span></div></div>
+    <span class="hljs-property">@_eps</span> = <span class="hljs-property">@o</span>.eps <span class="hljs-keyword">or</span> <span class="hljs-number">0.001</span></div></div>
       
       </div>
     
@@ -132,7 +132,8 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
         <div class="code"><div class="wrapper">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> path <span class="hljs-keyword">is</span> <span class="hljs-string">'creator'</span>
     <span class="hljs-property">@path</span> = h.parsePath(path)
     <span class="hljs-keyword">return</span> h.error <span class="hljs-string">'Error while parsing the path'</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@path</span>?
-</div></div>
+
+    <span class="hljs-property">@_vars</span>()</div></div>
       
       </div>
     
@@ -150,7 +151,6 @@ so no need to init if &#39;creator&#39; passed insted of path</p>
 
     <span class="hljs-property">@sample</span> = h.bind(<span class="hljs-property">@sample</span>, @)
     <span class="hljs-property">@_hardSample</span> = h.bind(<span class="hljs-property">@_hardSample</span>, @)
-    <span class="hljs-property">@_vars</span>()
     </div></div>
       
       </div>
@@ -343,8 +343,7 @@ and break immediately</p>
         <div class="comments ">
           <div class="wrapper"><p>return the first item if start wasn&#39;t found
 start ?= array[0]
-end   ?= array[array.length-1]
-!end? and console.log p</p>
+end   ?= array[array.length-1]</p>
 </div>
         </div>
       
@@ -473,8 +472,19 @@ Method <strong>_checkIfPointCloseEnough</strong>
         </div>
       
       
-        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_checkIfPointCloseEnough</span>:<span class="hljs-function"><span class="hljs-params">(p, point)</span>-&gt;</span>
-    <span class="hljs-property">@_resolveY</span>(point) <span class="hljs-keyword">if</span> h.closeEnough p, point.x/<span class="hljs-property">@_rect</span>, <span class="hljs-property">@_eps</span></div></div>
+        <div class="code"><div class="wrapper">  <span class="hljs-attribute">_checkIfPointCloseEnough</span>:<span class="hljs-function"><span class="hljs-params">(p, point)</span>-&gt;</span></div></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments ">
+          <div class="wrapper"><p>console.log p, point.x/@_rect</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><div class="wrapper">    <span class="hljs-property">@_resolveY</span>(point) <span class="hljs-keyword">if</span> h.closeEnough p, point.x/<span class="hljs-property">@_rect</span>, <span class="hljs-property">@_eps</span></div></div>
       
       </div>
     
@@ -507,7 +517,7 @@ Method <strong>_approximate</strong>
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_approximate</span>:<span class="hljs-function"><span class="hljs-params">(start, end, p)</span>-&gt;</span>
     deltaP = end.point.x - start.point.x
-    percentP = (p - (start.point.x<span class="hljs-regexp">/100)) /</span> (deltaP/<span class="hljs-number">100</span>)
+    percentP = (p - (start.point.x<span class="hljs-regexp">/@_rect)) /</span> (deltaP/<span class="hljs-property">@_rect</span>)
     start.length + percentP*(end.length - start.length)</div></div>
       
       </div>
@@ -541,7 +551,7 @@ Method <strong>_findApproximate</strong>
       
         <div class="code"><div class="wrapper">  <span class="hljs-attribute">_findApproximate</span>:<span class="hljs-function"><span class="hljs-params">(p, start, end, approximateMax = <span class="hljs-property">@_approximateMax</span>)</span>-&gt;</span>
     approximation = <span class="hljs-property">@_approximate</span> start, end, p
-    point = <span class="hljs-property">@path</span>.getPointAtLength(approximation); x = point.x/<span class="hljs-number">100</span></div></div>
+    point = <span class="hljs-property">@path</span>.getPointAtLength(approximation); x = point.x/<span class="hljs-property">@_rect</span></div></div>
       
       </div>
     
