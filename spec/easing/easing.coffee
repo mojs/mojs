@@ -137,6 +137,11 @@ describe 'easing ->', ->
     describe 'easing name option ->', ->
       it 'should parse string easing', ->
         expect(typeof easing.parseEasing('cubic.in')).toBe 'function'
+      it 'should error if easing was not found and fallback to linear one', ->
+        spyOn mojs.h, 'error'
+        fun = easing.parseEasing('sinusoidal.in')
+        expect(mojs.h.error).toHaveBeenCalled()
+        expect(fun).toBe mojs.easing.linear.none
       # it 'should call easing.splitEasing method', ->
       #   t = new Tween duration: 100
       #   spyOn h, 'splitEasing'

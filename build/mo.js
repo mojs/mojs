@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.147.0 
+	0.147.1 
 */
 
 (function(f){
@@ -768,14 +768,19 @@ Easing = (function() {
   };
 
   Easing.prototype.parseEasing = function(easing) {
-    var type;
+    var easingParent, type;
     type = typeof easing;
     if (type === 'string') {
       if (easing.charAt(0).toLowerCase() === 'm') {
         return this.path(easing);
       } else {
         easing = this._splitEasing(easing);
-        return this[easing[0]][easing[1]];
+        easingParent = this[easing[0]];
+        if (!easingParent) {
+          h.error("Easing with name \"" + easing[0] + "\" was not found, fallback to \"linear.none\" instead");
+          return this['linear']['none'];
+        }
+        return easingParent[easing[1]];
       }
     }
     if (h.isArray(easing)) {
@@ -1697,10 +1702,8 @@ h = new Helpers;
 module.exports = h;
 
 },{}],7:[function(require,module,exports){
-var mojs;
-
-mojs = {
-  revision: '0.147.0',
+window.mojs = {
+  revision: '0.147.1',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1737,8 +1740,6 @@ if ((typeof define === "function") && define.amd) {
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = mojs;
 }
-
-return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
 },{"./burst":1,"./easing/easing":3,"./h":6,"./motion-path":8,"./shapes/bit":11,"./shapes/bitsMap":12,"./shapes/circle":13,"./shapes/cross":14,"./shapes/equal":15,"./shapes/line":16,"./shapes/polygon":17,"./shapes/rect":18,"./shapes/zigzag":19,"./spriter":20,"./stagger":21,"./swirl":22,"./transit":23,"./tween/timeline":24,"./tween/tween":25,"./tween/tweener":26}],8:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize,
