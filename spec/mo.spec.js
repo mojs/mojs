@@ -1701,7 +1701,7 @@ module.exports = h;
 
 },{}],7:[function(require,module,exports){
 window.mojs = {
-  revision: '0.147.1',
+  revision: '0.147.2',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -3065,6 +3065,9 @@ Stagger = (function() {
     if (props + '' === '[object NodeList]') {
       props = Array.prototype.slice.call(props, 0);
     }
+    if (props + '' === '[object HTMLCollection]') {
+      props = Array.prototype.slice.call(props, 0);
+    }
     value = h.isArray(props) ? props[i % props.length] : props;
     return h.parseIfStagger(value, i);
   };
@@ -3080,7 +3083,7 @@ Stagger = (function() {
   };
 
   Stagger.prototype._getChildQuantity = function(name, store) {
-    var quantifier;
+    var ary, quantifier;
     if (typeof name === 'number') {
       return name;
     }
@@ -3089,6 +3092,9 @@ Stagger = (function() {
       return quantifier.length;
     } else if (quantifier + '' === '[object NodeList]') {
       return quantifier.length;
+    } else if (quantifier + '' === '[object HTMLCollection]') {
+      ary = Array.prototype.slice.call(quantifier, 0);
+      return ary.length;
     } else if (quantifier instanceof HTMLElement) {
       return 1;
     } else if (typeof quantifier === 'string') {

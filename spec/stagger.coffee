@@ -26,6 +26,17 @@ describe 'Stagger ->', ->
       expect(s._getOptionByMod('bit', 0, options)).toBe div1
       expect(s._getOptionByMod('bit', 1, options)).toBe div2
 
+    it 'should get option if it is array like #HTMLCollection', ->
+      div1 = document.createElement 'div'
+      div2 = document.createElement 'div'
+      divWrapper = document.createElement 'div'
+      divWrapper.appendChild div1
+      divWrapper.appendChild div2
+      options = bit: divWrapper.children, path: 'M0,0 L100,100'
+      s = new Stagger options
+      expect(s._getOptionByMod('bit', 0, options)).toBe div1
+      expect(s._getOptionByMod('bit', 1, options)).toBe div2
+
     it 'should parse stagger options', ->
       options = bit: 'stagger(200)', path: 'M0,0 L100,100'
       s = new Stagger options
@@ -58,6 +69,15 @@ describe 'Stagger ->', ->
       divWrapper.appendChild div1
       divWrapper.appendChild div2
       options = el: divWrapper.childNodes, path: 'M0,0 L100,100'
+      s = new Stagger options
+      expect(s._getChildQuantity 'el', options).toBe 2
+    it 'should get quantity of child modules #dom HTMLCollection', ->
+      div1 = document.createElement 'div'
+      div2 = document.createElement 'div'
+      divWrapper = document.createElement 'div'
+      divWrapper.appendChild div1
+      divWrapper.appendChild div2
+      options = el: divWrapper.children, path: 'M0,0 L100,100'
       s = new Stagger options
       expect(s._getChildQuantity 'el', options).toBe 2
     it 'should get quantity of child modules #single value', ->
