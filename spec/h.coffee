@@ -688,6 +688,12 @@ describe 'Helpers ->', ->
         expect(colorObj.g)  .toBe 20
         expect(colorObj.b)  .toBe 147
         expect(colorObj.a)  .toBe 1
+      it 'should parse none color shorthand', ->
+        colorObj = h.makeColorObj 'none'
+        expect(colorObj.r)  .toBe 0
+        expect(colorObj.g)  .toBe 0
+        expect(colorObj.b)  .toBe 0
+        expect(colorObj.a)  .toBe 0
       it 'should parse rgb color', ->
         colorObj = h.makeColorObj 'rgb(200,100,0)'
         expect(colorObj.r)  .toBe 200

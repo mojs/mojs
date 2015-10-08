@@ -942,6 +942,14 @@
           expect(colorObj.b).toBe(147);
           return expect(colorObj.a).toBe(1);
         });
+        it('should parse none color shorthand', function() {
+          var colorObj;
+          colorObj = h.makeColorObj('none');
+          expect(colorObj.r).toBe(0);
+          expect(colorObj.g).toBe(0);
+          expect(colorObj.b).toBe(0);
+          return expect(colorObj.a).toBe(0);
+        });
         it('should parse rgb color', function() {
           var colorObj;
           colorObj = h.makeColorObj('rgb(200,100,0)');

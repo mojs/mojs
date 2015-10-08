@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.146.12 
+	0.147.0 
 */
 
 (function(f){
@@ -1122,6 +1122,7 @@ Helpers = (function() {
 
   Helpers.prototype.shortColors = {
     transparent: 'rgba(0,0,0,0)',
+    none: 'rgba(0,0,0,0)',
     aqua: 'rgb(0,255,255)',
     black: 'rgb(0,0,0)',
     blue: 'rgb(0,0,255)',
@@ -1699,7 +1700,7 @@ module.exports = h;
 var mojs;
 
 mojs = {
-  revision: '0.146.12',
+  revision: '0.147.0',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
