@@ -389,9 +389,17 @@ describe 'Helpers ->', ->
         styleToSet = 'translateX(20px)'
         name = 'transform'; prefixedName = "#{h.prefix.css}transform"
         h.setPrefixedStyle(el, name, styleToSet)
-        style = if el.style[prefixedName]? then el.style[prefixedName]
-        else el.style[name]
-        expect(style).toBe styleToSet
+        
+        expect(el.style[name] or el.style[prefixedName]).toBe styleToSet
+
+      it 'should set prefixed style #2', ->
+        el = document.createElement 'div'
+        styleToSet = 'translateX(20px)'
+        name = ' transform'; prefixedName = "#{h.prefix.css}transform"
+        h.setPrefixedStyle(el, name, styleToSet, true)
+        
+        expect(el.style[name] or el.style[prefixedName]).toBe styleToSet
+
     describe 'parseUnit method', ->
       it 'should parse number to pixels', ->
         unit = h.parseUnit(100)

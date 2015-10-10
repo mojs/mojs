@@ -528,15 +528,23 @@
         });
       });
       describe('setPrefixedStyle method', function() {
-        return it('should set prefixed style', function() {
-          var el, name, prefixedName, style, styleToSet;
+        it('should set prefixed style', function() {
+          var el, name, prefixedName, styleToSet;
           el = document.createElement('div');
           styleToSet = 'translateX(20px)';
           name = 'transform';
           prefixedName = "" + h.prefix.css + "transform";
           h.setPrefixedStyle(el, name, styleToSet);
-          style = el.style[prefixedName] != null ? el.style[prefixedName] : el.style[name];
-          return expect(style).toBe(styleToSet);
+          return expect(el.style[name] || el.style[prefixedName]).toBe(styleToSet);
+        });
+        return it('should set prefixed style #2', function() {
+          var el, name, prefixedName, styleToSet;
+          el = document.createElement('div');
+          styleToSet = 'translateX(20px)';
+          name = ' transform';
+          prefixedName = "" + h.prefix.css + "transform";
+          h.setPrefixedStyle(el, name, styleToSet, true);
+          return expect(el.style[name] || el.style[prefixedName]).toBe(styleToSet);
         });
       });
       describe('parseUnit method', function() {

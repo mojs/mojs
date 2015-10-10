@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.147.2 
+	0.147.3 
 */
 
 (function(f){
@@ -1263,11 +1263,13 @@ Helpers = (function() {
     }
   };
 
-  Helpers.prototype.setPrefixedStyle = function(el, name, value) {
-    var prefixedName, prefixedStyle;
-    prefixedName = "" + this.prefix.css + name;
-    prefixedStyle = el.style[prefixedName] != null ? prefixedName : name;
-    return el.style[prefixedStyle] = value;
+  Helpers.prototype.setPrefixedStyle = function(el, name, value, isIt) {
+    if (name.match(/transform/gim)) {
+      el.style["" + name] = value;
+      return el.style["" + this.prefix.css + name] = value;
+    } else {
+      return el.style[name] = value;
+    }
   };
 
   Helpers.prototype.style = function(el, name, value) {
@@ -1703,7 +1705,7 @@ module.exports = h;
 
 },{}],7:[function(require,module,exports){
 window.mojs = {
-  revision: '0.147.2',
+  revision: '0.147.3',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
