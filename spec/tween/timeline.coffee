@@ -886,9 +886,9 @@ describe 'Timeline ->', ->
 
       tm0.setStartTime()
       
-      expect(tm0.props.endTime).toBe tm0.props.startTime + 500
-      expect(tm2.props.endTime).toBe tm0.props.startTime + 500
-      expect(tm2.props.startTime).toBe tm0.props.startTime + 100
+      expect(tm0.props.endTime).toBeCloseTo tm0.props.startTime + 500, 3
+      expect(tm2.props.endTime).toBeCloseTo tm0.props.startTime + 500, 3
+      expect(tm2.props.startTime).toBeCloseTo tm0.props.startTime + 100, 3
     it 'should set right endTime times', ->
       tm0 = new mojs.Timeline repeat: 2
       tm1 = new mojs.Timeline

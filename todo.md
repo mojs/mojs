@@ -30,7 +30,6 @@
 # UNDER CONSIDERATION
 - add text tricks
 - add backgrounds
-- add spriter
 - add camera glare
 
 

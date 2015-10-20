@@ -1508,9 +1508,9 @@
         tm0.add(tm1);
         tm0.append(tm2);
         tm0.setStartTime();
-        expect(tm0.props.endTime).toBe(tm0.props.startTime + 500);
-        expect(tm2.props.endTime).toBe(tm0.props.startTime + 500);
-        return expect(tm2.props.startTime).toBe(tm0.props.startTime + 100);
+        expect(tm0.props.endTime).toBeCloseTo(tm0.props.startTime + 500, 3);
+        expect(tm2.props.endTime).toBeCloseTo(tm0.props.startTime + 500, 3);
+        return expect(tm2.props.startTime).toBeCloseTo(tm0.props.startTime + 100, 3);
       });
       it('should set right endTime times', function() {
         var tm0, tm1, tm2, tw1, tw2;
