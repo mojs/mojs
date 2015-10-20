@@ -9,10 +9,10 @@ h = require '../h'
 #   - eps  {Number}  Epsilon specifies how precise we
 #     should be when sampling the path. Smaller number - more
 #     precise is computation, but more CPU power it takes *default: 0.001*
-#   - precompute {Number} Quantity of steps for sampling the path
-#     on the init. In can be in *range of [1000, 10000]*.
+#   - precompute {Number} Quantity of steps for sampling specified path
+#     on init. It can be in *range of [100, 10000]*.
 #     Larger number specified - more time it takes to init the module,
-#     but less time it takes during the animation. *default: 2000*
+#     but less time it takes during the animation. *default: 1450*
 #   - rect {Number} The largest
 #     number SVG path coordinates can have *default: 100*
 #   - approximateMax {Number} Number of loops avaliable
@@ -22,10 +22,10 @@ class PathEasing
   # @method _vars
   _vars:->
     # options
-    @_precompute = h.clamp (@o.precompute or 140), 100, 10000
+    @_precompute = h.clamp (@o.precompute or 1450), 100, 10000
     @_step = 1/@_precompute; @_rect = @o.rect or 100
     @_approximateMax = @o.approximateMax or 5
-    @_eps = @o.eps or 0.01
+    @_eps = @o.eps or 0.001
     # util variables
     @_boundsPrevProgress = -1
   # ---
@@ -38,6 +38,7 @@ class PathEasing
     @path = h.parsePath(path)
     return h.error 'Error while parsing the path' if !@path?
 
+    @_vars()
     # normalize start and end x value of the path
     @path.setAttribute 'd', @_normalizePath @path.getAttribute('d')
 
@@ -45,7 +46,6 @@ class PathEasing
 
     @sample = h.bind(@sample, @)
     @_hardSample = h.bind(@_hardSample, @)
-    @_vars()
     
     # console.time 'pre sample'
     @_preSample()
@@ -109,7 +109,7 @@ class PathEasing
     # return the first item if start wasn't found
     # start ?= array[0]
     # end   ?= array[array.length-1]
-    # !end? and console.log p
+
     @_prevBounds = start: start, end: end
   # ---
 
@@ -149,6 +149,7 @@ class PathEasing
   # @param  {Object} bound point (start or end)
   # @return {Number, Undefined} returns Y value if true, undefined if false
   _checkIfPointCloseEnough:(p, point)->
+    # console.log p, point.x/@_rect
     @_resolveY(point) if h.closeEnough p, point.x/@_rect, @_eps
   # ---
 
@@ -159,7 +160,7 @@ class PathEasing
   # @return {Object} approximation
   _approximate:(start, end, p)->
     deltaP = end.point.x - start.point.x
-    percentP = (p - (start.point.x/100)) / (deltaP/100)
+    percentP = (p - (start.point.x/@_rect)) / (deltaP/@_rect)
     start.length + percentP*(end.length - start.length)
   # ---
 
@@ -170,7 +171,7 @@ class PathEasing
   # @return {Nunomber} y approximation
   _findApproximate:(p, start, end, approximateMax = @_approximateMax)->
     approximation = @_approximate start, end, p
-    point = @path.getPointAtLength(approximation); x = point.x/100
+    point = @path.getPointAtLength(approximation); x = point.x/@_rect
     # if close enough resolve the y value
     if h.closeEnough p, x, @_eps then @_resolveY(point)
     else

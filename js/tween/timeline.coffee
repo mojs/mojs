@@ -88,6 +88,8 @@ class Timeline
   update:(time, isGrow)->
     # don't go further then the endTime
     time = @props.endTime if time > @props.endTime
+    # return true if timeline was already completed
+    return true if time is @props.endTime and @isCompleted
     # set the time to timelines
     @_updateTimelines time, isGrow
     # check the callbacks for the current time

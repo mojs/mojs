@@ -169,7 +169,7 @@ with all the repeat and delays in it</p>
         <span class="hljs-property">@props</span>.onFirstUpdateBackward?.apply(@); <span class="hljs-property">@isFirstUpdateBackward</span> = <span class="hljs-literal">true</span>
 
       <span class="hljs-keyword">if</span> isGrow <span class="hljs-keyword">then</span> <span class="hljs-property">@_complete</span>()
-      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@isOnReverseComplete</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@isFirstUpdate</span>
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@isOnReverseComplete</span><span class="hljs-comment"># and @isFirstUpdate</span>
         <span class="hljs-property">@isOnReverseComplete</span> = <span class="hljs-literal">true</span>
         <span class="hljs-property">@setProgress</span>(<span class="hljs-number">0</span>, !<span class="hljs-property">@props</span>.isChained)
         <span class="hljs-property">@props</span>.onReverseComplete?.apply(@)

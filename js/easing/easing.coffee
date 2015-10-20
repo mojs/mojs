@@ -148,7 +148,14 @@ class Easing
     if type is 'string'
       return if easing.charAt(0).toLowerCase() is 'm'
         @path(easing)
-      else easing = @_splitEasing(easing); @[easing[0]][easing[1]]
+      else
+        easing = @_splitEasing(easing)
+        easingParent = @[easing[0]]
+        if !easingParent
+          h.error "Easing with name \"#{easing[0]}\" was not found, 
+                    fallback to \"linear.none\" instead"
+          return @['linear']['none']
+        easingParent[easing[1]]
     if h.isArray(easing)
       return @bezier.apply(@, easing)
     if 'function' then return easing

@@ -29,7 +29,7 @@
       it('should have _eps defined', function() {
         var pe;
         pe = new PathEasing('M0,0 L10,10');
-        expect(pe._precompute).toBe(140);
+        expect(pe._precompute).toBe(1450);
         return expect(pe._step).toBe(1 / pe._precompute);
       });
       return it('should have _boundsPrevProgress defined', function() {

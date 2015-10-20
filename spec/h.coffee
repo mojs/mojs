@@ -389,9 +389,17 @@ describe 'Helpers ->', ->
         styleToSet = 'translateX(20px)'
         name = 'transform'; prefixedName = "#{h.prefix.css}transform"
         h.setPrefixedStyle(el, name, styleToSet)
-        style = if el.style[prefixedName]? then el.style[prefixedName]
-        else el.style[name]
-        expect(style).toBe styleToSet
+        
+        expect(el.style[name] or el.style[prefixedName]).toBe styleToSet
+
+      it 'should set prefixed style #2', ->
+        el = document.createElement 'div'
+        styleToSet = 'translateX(20px)'
+        name = ' transform'; prefixedName = "#{h.prefix.css}transform"
+        h.setPrefixedStyle(el, name, styleToSet, true)
+        
+        expect(el.style[name] or el.style[prefixedName]).toBe styleToSet
+
     describe 'parseUnit method', ->
       it 'should parse number to pixels', ->
         unit = h.parseUnit(100)
@@ -688,6 +696,12 @@ describe 'Helpers ->', ->
         expect(colorObj.g)  .toBe 20
         expect(colorObj.b)  .toBe 147
         expect(colorObj.a)  .toBe 1
+      it 'should parse none color shorthand', ->
+        colorObj = h.makeColorObj 'none'
+        expect(colorObj.r)  .toBe 0
+        expect(colorObj.g)  .toBe 0
+        expect(colorObj.b)  .toBe 0
+        expect(colorObj.a)  .toBe 0
       it 'should parse rgb color', ->
         colorObj = h.makeColorObj 'rgb(200,100,0)'
         expect(colorObj.r)  .toBe 200

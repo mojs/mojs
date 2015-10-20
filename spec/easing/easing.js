@@ -201,6 +201,13 @@
         it('should parse string easing', function() {
           return expect(typeof easing.parseEasing('cubic.in')).toBe('function');
         });
+        it('should error if easing was not found and fallback to linear one', function() {
+          var fun;
+          spyOn(mojs.h, 'error');
+          fun = easing.parseEasing('sinusoidal.in');
+          expect(mojs.h.error).toHaveBeenCalled();
+          return expect(fun).toBe(mojs.easing.linear.none);
+        });
         describe('SVG path option ->', function() {
           it('should parse SVG path easing', function() {
             return expect(typeof easing.parseEasing('M0,100 L100,0')).toBe('function');

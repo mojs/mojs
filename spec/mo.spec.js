@@ -766,14 +766,19 @@ Easing = (function() {
   };
 
   Easing.prototype.parseEasing = function(easing) {
-    var type;
+    var easingParent, type;
     type = typeof easing;
     if (type === 'string') {
       if (easing.charAt(0).toLowerCase() === 'm') {
         return this.path(easing);
       } else {
         easing = this._splitEasing(easing);
-        return this[easing[0]][easing[1]];
+        easingParent = this[easing[0]];
+        if (!easingParent) {
+          h.error("Easing with name \"" + easing[0] + "\" was not found, fallback to \"linear.none\" instead");
+          return this['linear']['none'];
+        }
+        return easingParent[easing[1]];
       }
     }
     if (h.isArray(easing)) {
@@ -885,11 +890,11 @@ h = require('../h');
 
 PathEasing = (function() {
   PathEasing.prototype._vars = function() {
-    this._precompute = h.clamp(this.o.precompute || 140, 100, 10000);
+    this._precompute = h.clamp(this.o.precompute || 1450, 100, 10000);
     this._step = 1 / this._precompute;
     this._rect = this.o.rect || 100;
     this._approximateMax = this.o.approximateMax || 5;
-    this._eps = this.o.eps || 0.01;
+    this._eps = this.o.eps || 0.001;
     return this._boundsPrevProgress = -1;
   };
 
@@ -902,11 +907,11 @@ PathEasing = (function() {
     if (this.path == null) {
       return h.error('Error while parsing the path');
     }
+    this._vars();
     this.path.setAttribute('d', this._normalizePath(this.path.getAttribute('d')));
     this.pathLength = this.path.getTotalLength();
     this.sample = h.bind(this.sample, this);
     this._hardSample = h.bind(this._hardSample, this);
-    this._vars();
     this._preSample();
     this;
   }
@@ -1005,7 +1010,7 @@ PathEasing = (function() {
   PathEasing.prototype._approximate = function(start, end, p) {
     var deltaP, percentP;
     deltaP = end.point.x - start.point.x;
-    percentP = (p - (start.point.x / 100)) / (deltaP / 100);
+    percentP = (p - (start.point.x / this._rect)) / (deltaP / this._rect);
     return start.length + percentP * (end.length - start.length);
   };
 
@@ -1016,7 +1021,7 @@ PathEasing = (function() {
     }
     approximation = this._approximate(start, end, p);
     point = this.path.getPointAtLength(approximation);
-    x = point.x / 100;
+    x = point.x / this._rect;
     if (h.closeEnough(p, x, this._eps)) {
       return this._resolveY(point);
     } else {
@@ -1120,6 +1125,7 @@ Helpers = (function() {
 
   Helpers.prototype.shortColors = {
     transparent: 'rgba(0,0,0,0)',
+    none: 'rgba(0,0,0,0)',
     aqua: 'rgb(0,255,255)',
     black: 'rgb(0,0,0)',
     blue: 'rgb(0,0,255)',
@@ -1255,11 +1261,13 @@ Helpers = (function() {
     }
   };
 
-  Helpers.prototype.setPrefixedStyle = function(el, name, value) {
-    var prefixedName, prefixedStyle;
-    prefixedName = "" + this.prefix.css + name;
-    prefixedStyle = el.style[prefixedName] != null ? prefixedName : name;
-    return el.style[prefixedStyle] = value;
+  Helpers.prototype.setPrefixedStyle = function(el, name, value, isIt) {
+    if (name.match(/transform/gim)) {
+      el.style["" + name] = value;
+      return el.style["" + this.prefix.css + name] = value;
+    } else {
+      return el.style[name] = value;
+    }
   };
 
   Helpers.prototype.style = function(el, name, value) {
@@ -1694,10 +1702,8 @@ h = new Helpers;
 module.exports = h;
 
 },{}],7:[function(require,module,exports){
-var mojs;
-
-mojs = {
-  revision: '0.146.9',
+window.mojs = {
+  revision: '0.147.3',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
@@ -1740,11 +1746,6 @@ if ((typeof define === "function") && define.amd) {
 if ((typeof module === "object") && (typeof module.exports === "object")) {
   module.exports = mojs;
 }
-
-
-/* istanbul ignore next */
-
-return typeof window !== "undefined" && window !== null ? window.mojs = mojs : void 0;
 
 },{"./burst":1,"./easing/easing":3,"./h":6,"./motion-path":8,"./shapes/bit":11,"./shapes/bitsMap":12,"./shapes/circle":13,"./shapes/cross":14,"./shapes/equal":15,"./shapes/line":16,"./shapes/polygon":17,"./shapes/rect":18,"./shapes/zigzag":19,"./spriter":20,"./stagger":21,"./swirl":22,"./transit":23,"./tween/timeline":24,"./tween/tween":25,"./tween/tweener":26}],8:[function(require,module,exports){
 var MotionPath, Timeline, Tween, h, resize,
@@ -3066,6 +3067,9 @@ Stagger = (function() {
     if (props + '' === '[object NodeList]') {
       props = Array.prototype.slice.call(props, 0);
     }
+    if (props + '' === '[object HTMLCollection]') {
+      props = Array.prototype.slice.call(props, 0);
+    }
     value = h.isArray(props) ? props[i % props.length] : props;
     return h.parseIfStagger(value, i);
   };
@@ -3081,7 +3085,7 @@ Stagger = (function() {
   };
 
   Stagger.prototype._getChildQuantity = function(name, store) {
-    var quantifier;
+    var ary, quantifier;
     if (typeof name === 'number') {
       return name;
     }
@@ -3090,6 +3094,9 @@ Stagger = (function() {
       return quantifier.length;
     } else if (quantifier + '' === '[object NodeList]') {
       return quantifier.length;
+    } else if (quantifier + '' === '[object HTMLCollection]') {
+      ary = Array.prototype.slice.call(quantifier, 0);
+      return ary.length;
     } else if (quantifier instanceof HTMLElement) {
       return 1;
     } else if (typeof quantifier === 'string') {
@@ -4086,6 +4093,9 @@ Timeline = (function() {
     if (time > this.props.endTime) {
       time = this.props.endTime;
     }
+    if (time === this.props.endTime && this.isCompleted) {
+      return true;
+    }
     this._updateTimelines(time, isGrow);
     return this._checkCallbacks(time);
   };
@@ -4323,7 +4333,7 @@ Tween = (function() {
       }
       if (isGrow) {
         this._complete();
-      } else if (!this.isOnReverseComplete && this.isFirstUpdate) {
+      } else if (!this.isOnReverseComplete) {
         this.isOnReverseComplete = true;
         this.setProgress(0, !this.props.isChained);
         if ((ref4 = this.props.onReverseComplete) != null) {

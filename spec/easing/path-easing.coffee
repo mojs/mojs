@@ -18,7 +18,7 @@ describe 'PathEasing ->', ->
       expect(pe._eps).toBeDefined()
     it 'should have _eps defined', ->
       pe = new PathEasing 'M0,0 L10,10'
-      expect(pe._precompute).toBe 140
+      expect(pe._precompute).toBe 1450
       expect(pe._step).toBe       1/pe._precompute
     it 'should have _boundsPrevProgress defined', ->
       pe = new PathEasing 'M0,0 L10,10'

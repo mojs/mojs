@@ -65,7 +65,7 @@ class Tween
         @props.onFirstUpdateBackward?.apply(@); @isFirstUpdateBackward = true
 
       if isGrow then @_complete()
-      else if !@isOnReverseComplete and @isFirstUpdate
+      else if !@isOnReverseComplete# and @isFirstUpdate
         @isOnReverseComplete = true
         @setProgress(0, !@props.isChained)
         @props.onReverseComplete?.apply(@)

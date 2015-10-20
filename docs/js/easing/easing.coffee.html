@@ -324,7 +324,14 @@ mojs.easing.path(&#39;M0,0 ...&#39;) function. </li>
     <span class="hljs-keyword">if</span> type <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> easing.charAt(<span class="hljs-number">0</span>).toLowerCase() <span class="hljs-keyword">is</span> <span class="hljs-string">'m'</span>
         <span class="hljs-property">@path</span>(easing)
-      <span class="hljs-keyword">else</span> easing = <span class="hljs-property">@_splitEasing</span>(easing); @[easing[<span class="hljs-number">0</span>]][easing[<span class="hljs-number">1</span>]]
+      <span class="hljs-keyword">else</span>
+        easing = <span class="hljs-property">@_splitEasing</span>(easing)
+        easingParent = @[easing[<span class="hljs-number">0</span>]]
+        <span class="hljs-keyword">if</span> !easingParent
+          h.error <span class="hljs-string">"Easing with name \"<span class="hljs-subst">#{easing[<span class="hljs-number">0</span>]}</span>\" was not found, 
+                    fallback to \"linear.none\" instead"</span>
+          <span class="hljs-keyword">return</span> @[<span class="hljs-string">'linear'</span>][<span class="hljs-string">'none'</span>]
+        easingParent[easing[<span class="hljs-number">1</span>]]
     <span class="hljs-keyword">if</span> h.isArray(easing)
       <span class="hljs-keyword">return</span> <span class="hljs-property">@bezier</span>.apply(@, easing)
     <span class="hljs-keyword">if</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> easing</div></div>

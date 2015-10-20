@@ -15,7 +15,8 @@ class Stagger
   _getOptionByMod:(name, i, store)->
     props = store[name]
     # if not dom list then clone it to array
-    if props+'' is '[object NodeList]' then props = Array::slice.call props, 0
+    props = Array::slice.call props, 0 if props+'' is '[object NodeList]'
+    props = Array::slice.call props, 0 if props+'' is '[object HTMLCollection]'
     # get the value in array or return the value itself
     value = if h.isArray(props) then props[i % props.length] else props
     # check if value has the stagger expression, if so parse it
@@ -43,6 +44,9 @@ class Stagger
     quantifier = store[name]
     if h.isArray(quantifier) then quantifier.length
     else if quantifier+'' is '[object NodeList]' then quantifier.length
+    else if quantifier+'' is '[object HTMLCollection]'
+      ary = Array::slice.call quantifier, 0
+      ary.length
     else if quantifier instanceof HTMLElement then 1
     else if typeof quantifier is 'string'     then 1
   # ---

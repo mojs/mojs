@@ -528,15 +528,23 @@
         });
       });
       describe('setPrefixedStyle method', function() {
-        return it('should set prefixed style', function() {
-          var el, name, prefixedName, style, styleToSet;
+        it('should set prefixed style', function() {
+          var el, name, prefixedName, styleToSet;
           el = document.createElement('div');
           styleToSet = 'translateX(20px)';
           name = 'transform';
           prefixedName = "" + h.prefix.css + "transform";
           h.setPrefixedStyle(el, name, styleToSet);
-          style = el.style[prefixedName] != null ? el.style[prefixedName] : el.style[name];
-          return expect(style).toBe(styleToSet);
+          return expect(el.style[name] || el.style[prefixedName]).toBe(styleToSet);
+        });
+        return it('should set prefixed style #2', function() {
+          var el, name, prefixedName, styleToSet;
+          el = document.createElement('div');
+          styleToSet = 'translateX(20px)';
+          name = ' transform';
+          prefixedName = "" + h.prefix.css + "transform";
+          h.setPrefixedStyle(el, name, styleToSet, true);
+          return expect(el.style[name] || el.style[prefixedName]).toBe(styleToSet);
         });
       });
       describe('parseUnit method', function() {
@@ -941,6 +949,14 @@
           expect(colorObj.g).toBe(20);
           expect(colorObj.b).toBe(147);
           return expect(colorObj.a).toBe(1);
+        });
+        it('should parse none color shorthand', function() {
+          var colorObj;
+          colorObj = h.makeColorObj('none');
+          expect(colorObj.r).toBe(0);
+          expect(colorObj.g).toBe(0);
+          expect(colorObj.b).toBe(0);
+          return expect(colorObj.a).toBe(0);
         });
         it('should parse rgb color', function() {
           var colorObj;

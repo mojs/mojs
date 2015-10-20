@@ -21,7 +21,13 @@ window.files = [
   "originalPath": "js/mojs.coffee",
   "name": "mojs.coffee.html",
   "lang": "coffeescript",
-  "toc": []
+  "toc": [
+    {
+      "level": 3,
+      "slug": "istanbul-ignore-next",
+      "title": "istanbul ignore next"
+    }
+  ]
 },
 {
   "path": "js/motion-path.coffee.html",
