@@ -1488,7 +1488,7 @@
         tm0.add(tm1);
         tm0.append(tm2);
         tm0.setProgress(.5);
-        return expect(tw2.progress).toBe(.375);
+        return expect(tw2.progress).toBeCloseTo(.375, 5);
       });
       it('should set right endTime times', function() {
         var tm0, tm1, tm2, tw1, tw2;
