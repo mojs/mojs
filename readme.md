@@ -6,6 +6,8 @@
 
 ## Demos
 [[motion graphics for the web](http://codepen.io/sol0mka/full/ogOYJj/)]
+[[bubble layout](http://codepen.io/sol0mka/full/yNOage/)]
+[[sleepy mole](http://codepen.io/sol0mka/full/OyzBXR)]
 
 ## Important note
 The library is under active development. APIs should be considered `[unstable]` and can be changed drastically.
