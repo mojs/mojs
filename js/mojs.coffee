@@ -33,7 +33,3 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 # ### istanbul ignore next ###
 # return window?.mojs = mojs
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
