@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.147.3', isDebug: true
+  revision:   '0.147.4', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -33,4 +33,3 @@ if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 # ### istanbul ignore next ###
 # return window?.mojs = mojs
-
