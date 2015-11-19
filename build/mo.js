@@ -1,7 +1,7 @@
 /*! 
 	:: mo · js :: motion graphics toolbelt for the web
 	Oleg Solomka @LegoMushroom 2015 MIT
-	0.147.3 
+	0.147.4 
 */
 
 (function(f){
@@ -1441,7 +1441,7 @@ Helpers = (function() {
   };
 
   Helpers.prototype.makeColorObj = function(color) {
-    var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor, style;
+    var alpha, b, colorObj, g, isRgb, r, regexString1, regexString2, result, rgbColor;
     if (color[0] === '#') {
       result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(color);
       colorObj = {};
@@ -1463,7 +1463,7 @@ Helpers = (function() {
         rgbColor = color;
       }
       if (!isRgb) {
-        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.isFF || this.isIE || this.isOldOpera ? (style = this.computedStyle(this.div), this.computedStyle(this.div).color) : this.div.style.color) : this.shortColors[color];
+        rgbColor = !this.shortColors[color] ? (this.div.style.color = color, this.computedStyle(this.div).color) : this.shortColors[color];
       }
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),';
       regexString2 = '\\s?(\\d{1,3}),?\\s?(\\d{1}|0?\\.\\d{1,})?\\)$';
@@ -1705,7 +1705,7 @@ module.exports = h;
 
 },{}],7:[function(require,module,exports){
 window.mojs = {
-  revision: '0.147.3',
+  revision: '0.147.4',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),

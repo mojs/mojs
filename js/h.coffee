@@ -298,10 +298,7 @@ class Helpers
       if !isRgb
         rgbColor = if !@shortColors[color]
           @div.style.color = color
-          if @isFF or @isIE or @isOldOpera
-            style = @computedStyle(@div)
-            @computedStyle(@div).color
-          else @div.style.color
+          @computedStyle(@div).color
         else @shortColors[color]
 
       regexString1 = '^rgba?\\((\\d{1,3}),\\s?(\\d{1,3}),'
