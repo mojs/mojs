@@ -1,4 +1,4 @@
- # mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master) [![unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)](http://github.com/badges/stability-badges) [![mojs channel on slack](https://img.shields.io/badge/slack-mojs%20channel-61DAAA.svg?style=flat)](https://mojs.slack.com/messages/mojs/)
+# mo · js [![Build Status](https://travis-ci.org/legomushroom/mojs.svg?branch=master)](https://travis-ci.org/legomushroom/mojs) [![Coverage Status](https://coveralls.io/repos/legomushroom/mojs/badge.svg?branch=master)](https://coveralls.io/r/legomushroom/mojs?branch=master) [![unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)](http://github.com/badges/stability-badges) [![mojs channel on slack](https://img.shields.io/badge/slack-mojs%20channel-61DAAA.svg?style=flat)](https://mojs.slack.com/messages/mojs/)
 
 #### motion graphics toolbelt for the web
 
