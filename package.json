@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
+    "build": "", 
     "test": "karma start --single-run"
   },
   "main": "lib/mojs.js",

@@ -1194,6 +1194,7 @@ Helpers = (function() {
   Helpers.prototype.RAD_TO_DEG = 180 / Math.PI;
 
   function Helpers() {
+    console.log('HELPERS CONSTRUCT');
     this.vars();
   }
 

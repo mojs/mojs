@@ -75,11 +75,11 @@ module.exports = function(config) {
     basePath: '',
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['jasmine'],
     // list of files / patterns to load in the browser
     files: [
-      'spec/mo.spec.js',
       // 'dist/**/*.js',
+      'dist/mo.min.js',
       'spec/**/*.js'
       // 'dist/mo.js',
       // 'dist/transit.js',
@@ -117,15 +117,15 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'spec/mo.spec.js': 'coverage',
+        'dist/mo.min.js': 'coverage',
         // 'dist/**/*.js': ['browserify']
     },
-    browserify: {
-      debug: true,
-      transform: [ 'brfs', istanbul({
-        ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
-      })]
-    },
+    // browserify: {
+    //   debug: true,
+    //   transform: [ 'brfs', istanbul({
+    //     ignore: ['**/node_modules/**', '**/spec/**', '**/vendor/**'],
+    //   })]
+    // },
     coverageReporter: {
       reporters:[
         {type: 'html', dir:'coverage/'},
