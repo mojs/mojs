@@ -1,15 +1,5 @@
 var path = require('path');
 var webpack = require('webpack');
-var plugins = [];
-
-var minimize = process.argv.indexOf('--minimize') === -1 ? false : true;
-console.log(minimize)
-
-var outputFileName = 'mo.js'
-if (minimize) {
-  plugins.push( new webpack.optimize.UglifyJsPlugin );
-  outputFileName = 'mo.min.js';
-}
 
 module.exports = {
   watch: true,
@@ -34,10 +24,10 @@ module.exports = {
   },
   output: {
     path:         __dirname + '/dist',
-    filename:     outputFileName,
+    filename:     'mo.js',
     publicPath:   'dist/'
   },
-  plugins: plugins,
+  plugins: [],
   resolve: {
     root: [ path.resolve('./'), path.resolve('./css/') ],
     moduleDirectories: ['node_modules'],

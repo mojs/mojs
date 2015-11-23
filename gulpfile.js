@@ -24,11 +24,14 @@ var grock         = require("grock");
 var babel         = require("gulp-babel");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
+
+var distMoFile = devFolder + 'dist/mo.js';
+
 var paths = {
   src: {
-    js:       devFolder + 'js/**/*.coffee',
-    index:    devFolder + 'index.jade',
-    css:      devFolder + 'css/**/*.styl',
+    js:       devFolder +  'js/**/*.coffee',
+    index:    devFolder +  'index.jade',
+    css:      devFolder +  'css/**/*.styl',
     tests:    distFolder + 'spec/**/*.coffee'
   },
   dist:{
@@ -60,82 +63,94 @@ gulp.task('stylus', function(){
   });
 
 // function s(o,u){if(!n[o]){if(!t[o]
-var startString    = 'function s(o,u){if(!n[o])',
-    startString2   = 'if(typeof exports==="object"&&typeof module!=="undefined")'
-    startString3   = 'function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; }'
-    istanbulIgnore = '/* istanbul ignore next */\n',
-    regex = new RegExp('\/\* istanbul ignore next \*\/', 'gm');
+// var startString    = 'function s(o,u){if(!n[o])',
+//     startString2   = 'if(typeof exports==="object"&&typeof module!=="undefined")'
+//     startString3   = 'function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; }'
+//     istanbulIgnore = '/* istanbul ignore next */\n',
+//     regex = new RegExp('\/\* istanbul ignore next \*\/', 'gm');
 
 var credits = ''
-gulp.task('coffeeify', function(e){
-  return gulp.src(['js/mojs.coffee'])
-    .pipe(plumber())
-    .pipe(coffeeify({options: {
-      standalone: 'yes'
-      // debug: true
-    }}))
-    // remove browserfy sudo code
-    .pipe(rename('mo.spec.js'))
-    .pipe(insert.transform(function(contents) {
-      contents = contents.replace(startString3, istanbulIgnore+startString3);
-      contents = contents.replace(startString2, istanbulIgnore+startString2);
-      return contents.replace(startString, istanbulIgnore+startString);
-    }))
-    .pipe(gulp.dest('./spec'))
+// gulp.task('coffeeify', function(e){
+//   return gulp.src(['js/mojs.coffee'])
+//     .pipe(plumber())
+//     .pipe(coffeeify({options: {
+//       standalone: 'yes'
+//       // debug: true
+//     }}))
+//     // remove browserfy sudo code
+//     .pipe(rename('mo.spec.js'))
+//     .pipe(insert.transform(function(contents) {
+//       contents = contents.replace(startString3, istanbulIgnore+startString3);
+//       contents = contents.replace(startString2, istanbulIgnore+startString2);
+//       return contents.replace(startString, istanbulIgnore+startString);
+//     }))
+//     .pipe(gulp.dest('./spec'))
 
-    .pipe(rename('mo.js'))
-    .pipe(insert.transform(function(contents) {
-      var str = contents.replace(/\/\* istanbul ignore next \*\//gm, '\r\r');
-      str = str.replace(/^\s*[\r\n]/gm, '\n');
-      return credits + str;
-    }))
-    .pipe(gulp.dest('./build'))
-    .pipe(livereload())
+//     .pipe(rename('mo.js'))
+//     .pipe(insert.transform(function(contents) {
+//       var str = contents.replace(/\/\* istanbul ignore next \*\//gm, '\r\r');
+//       str = str.replace(/^\s*[\r\n]/gm, '\n');
+//       return credits + str;
+//     }))
+//     .pipe(gulp.dest('./build'))
+//     .pipe(livereload())
 
-    .pipe(uglify())
-    .pipe(insert.transform(function(contents) {
-      return credits + contents;
-    }))
-    .pipe(rename('mo.min.js'))
-    .pipe(gulp.dest('./build'))
-  });
+//     .pipe(uglify())
+//     .pipe(insert.transform(function(contents) {
+//       return credits + contents;
+//     }))
+//     .pipe(rename('mo.min.js'))
+//     .pipe(gulp.dest('./build'))
+//   });
 
 gulp.task('lib', function(e){
   return gulp.src(paths.src.js)
     .pipe(plumber())
     .pipe(coffee())
-    // remove browserfy sudo code
     .pipe(gulp.dest('lib/'))
   });
 
-gulp.task('docs', function(e){
-  // gulp.src('js/**/*.coffee')
-  //   .pipe(insert.transform(function(contents) {
-  //     contents.replace(/\/\* istanbul ignore next \*\//gm, '\r\r');
-  //   });
-  return gulp.src('').pipe(shell('grock'));
+// gulp.task('docs', function(e){
+//   // gulp.src('js/**/*.coffee')
+//   //   .pipe(insert.transform(function(contents) {
+//   //     contents.replace(/\/\* istanbul ignore next \*\//gm, '\r\r');
+//   //   });
+//   return gulp.src('').pipe(shell('grock'));
+// });
+
+// gulp.task('coffee-lint', function(e){
+//   return gulp.src(paths.src.js)
+//     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+//     .pipe(changed(paths.src.js), { extension: '.js'} )
+//     .pipe(coffeelint({no_trailing_whitespace:{ allowed_in_comments: true } }))
+//     .pipe(coffeelint.reporter())
+//     // .pipe(coffeelint.reporter('fail'))
+//   });
+
+// gulp.task('index:jade', function(e){
+//   return gulp.src(paths.src.index)
+//           .pipe(plumber())
+//           .pipe(jade({pretty:true}))
+//           .pipe(gulp.dest(paths.dist.index))
+//           .pipe(livereload())
+//   });
+
+gulp.task('minify-mo', function() {
+  return gulp.src(distMoFile)
+          .pipe(plumber())
+          .pipe(uglify())
+          .pipe(insert.transform(function(contents) {
+            return credits + contents;
+          }))
+          .pipe(rename('mo.min.js'))
+          .pipe(gulp.dest('./dist'))
+  // sequence('get-current-version', 'update-bower-version', 'update-main-file-version', 'coffeeify');
 });
 
-gulp.task('coffee-lint', function(e){
-  return gulp.src(paths.src.js)
-    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-    .pipe(changed(paths.src.js), { extension: '.js'} )
-    .pipe(coffeelint({no_trailing_whitespace:{ allowed_in_comments: true } }))
-    .pipe(coffeelint.reporter())
-    // .pipe(coffeelint.reporter('fail'))
-  });
-
-gulp.task('index:jade', function(e){
-  return gulp.src(paths.src.index)
-          .pipe(plumber())
-          .pipe(jade({pretty:true}))
-          .pipe(gulp.dest(paths.dist.index))
-          .pipe(livereload())
-  });
-
 gulp.task('update-version', function() {
-  sequence('get-current-version', 'update-bower-version', 'update-main-file-version', 'coffeeify');
-  });
+  sequence('get-current-version', 'update-bower-version', 'update-main-file-version');
+  // sequence('get-current-version', 'update-bower-version', 'update-main-file-version', 'coffeeify');
+});
 
 gulp.task('get-current-version', function(e){
   return gulp.src('package.json')
@@ -174,10 +189,12 @@ gulp.task('default', function(){
   gulp.run('get-current-version');
   gulp.watch(paths.src.tests,['coffee:tests']);
   gulp.watch(paths.src.css,  ['stylus']);
-  gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs', 'lib']);
-  gulp.watch(paths.src.index,['index:jade']);
+  // gulp.watch(paths.src.js,   ['coffeeify', 'coffee-lint', 'docs', 'lib']);
+  gulp.watch(paths.src.js,   [ 'lib' ]);
+  gulp.watch(distMoFile,   [ 'minify-mo' ]);
+  // gulp.watch(paths.src.index,['index:jade']);
   gulp.watch('package.json', ['update-version']);
-  });
+});
 
 
 

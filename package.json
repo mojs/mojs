@@ -1,11 +1,11 @@
 {
   "name": "mo-js",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.147.4",
+  "version": "0.147.5",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "", 
+    "build": "",
     "test": "karma start --single-run"
   },
   "main": "lib/mojs.js",

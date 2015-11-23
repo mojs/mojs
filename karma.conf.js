@@ -79,7 +79,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // 'dist/**/*.js',
-      'dist/mo.min.js',
+      'dist/mo.js',
       'spec/**/*.js'
       // 'dist/mo.js',
       // 'dist/transit.js',
@@ -117,7 +117,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'dist/mo.min.js': 'coverage',
+        'dist/mo.js': 'coverage',
         // 'dist/**/*.js': ['browserify']
     },
     // browserify: {
