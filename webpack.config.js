@@ -9,7 +9,7 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.(jsx|es6.js)$/, exclude: /node_modules/, loaders: ['6to5-loader?optional=coreAliasing'] },
+      { test: /\.(jsx|es6.js|babel.js)$/, exclude: /node_modules/, loaders: ['6to5-loader?optional=coreAliasing'] },
       { test: /\.coffee$/, exclude: /node_modules/, loaders: ['coffee-loader?bare=true'] },
       { test: /\.cjsx$/, loaders: ['coffee', 'cjsx']},
       { test: /\.jade$/, loaders: ['jade'] },
@@ -23,9 +23,9 @@ module.exports = {
     ]
   },
   output: {
-    path:         __dirname + '/dist',
+    path:         __dirname + '/build',
     filename:     'mo.js',
-    publicPath:   'dist/'
+    publicPath:   'build/'
   },
   plugins: [],
   resolve: {
@@ -33,10 +33,8 @@ module.exports = {
     moduleDirectories: ['node_modules'],
     target: 'node',
     extensions: [
-      '', '.js', '.jsx', '.es6',
-      '.styl',   '.jade',
-      '.coffee', '.cjsx',
-      '.html',
+      '', '.js', '.es6', '.babel.js', '.coffee',
+      '.styl', 
     ]
   }
 };

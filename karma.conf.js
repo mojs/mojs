@@ -79,7 +79,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // 'dist/**/*.js',
-      'dist/mo.js',
+      'build/mo.js',
       'spec/**/*.js'
       // 'dist/mo.js',
       // 'dist/transit.js',

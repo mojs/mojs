@@ -25,7 +25,7 @@ var babel         = require("gulp-babel");
 
 var devFolder   = '', distFolder  = '', currentVersion = 0;
 
-var distMoFile = devFolder + 'dist/mo.js';
+var distMoFile = devFolder + 'build/mo.js';
 
 var paths = {
   src: {
@@ -143,7 +143,7 @@ gulp.task('minify-mo', function() {
             return credits + contents;
           }))
           .pipe(rename('mo.min.js'))
-          .pipe(gulp.dest('./dist'))
+          .pipe(gulp.dest('./build'))
   // sequence('get-current-version', 'update-bower-version', 'update-main-file-version', 'coffeeify');
 });
 
