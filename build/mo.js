@@ -1752,7 +1752,7 @@
 
 	Tween = __webpack_require__(18);
 
-	Timeline = __webpack_require__(19);
+	Timeline = __webpack_require__(20);
 
 	Transit = (function(superClass) {
 	  extend(Transit, superClass);
@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.147.5',
+	  revision: '0.147.6',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -2434,9 +2434,9 @@
 	  Spriter: __webpack_require__(16),
 	  MotionPath: __webpack_require__(17),
 	  Tween: __webpack_require__(18),
-	  Timeline: __webpack_require__(19),
+	  Timeline: __webpack_require__(20),
 	  tweener: __webpack_require__(21),
-	  easing: __webpack_require__(20)
+	  easing: __webpack_require__(19)
 	};
 
 	mojs.h = mojs.helpers;
@@ -2470,7 +2470,7 @@
 
 	h = __webpack_require__(2);
 
-	Timeline = __webpack_require__(19);
+	Timeline = __webpack_require__(20);
 
 	Stagger = (function() {
 	  function Stagger(options, Module) {
@@ -2582,7 +2582,7 @@
 
 	Tween = __webpack_require__(18);
 
-	Timeline = __webpack_require__(19);
+	Timeline = __webpack_require__(20);
 
 	Spriter = (function() {
 	  Spriter.prototype._defaults = {
@@ -2715,7 +2715,7 @@
 
 	Tween = __webpack_require__(18);
 
-	Timeline = __webpack_require__(19);
+	Timeline = __webpack_require__(20);
 
 	MotionPath = (function() {
 	  MotionPath.prototype.defaults = {
@@ -3245,7 +3245,7 @@
 
 	t = __webpack_require__(21);
 
-	easing = __webpack_require__(20);
+	easing = __webpack_require__(19);
 
 	Tween = (function() {
 	  Tween.prototype.defaults = {
@@ -3452,293 +3452,6 @@
 
 /***/ },
 /* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Timeline, h, t,
-	  slice = [].slice;
-
-	h = __webpack_require__(2);
-
-	t = __webpack_require__(21);
-
-	Timeline = (function() {
-	  Timeline.prototype.state = 'stop';
-
-	  Timeline.prototype.defaults = {
-	    repeat: 0,
-	    delay: 0
-	  };
-
-	  function Timeline(o) {
-	    this.o = o != null ? o : {};
-	    this.vars();
-	    this._extendDefaults();
-	    this;
-	  }
-
-	  Timeline.prototype.vars = function() {
-	    this.timelines = [];
-	    this.props = {
-	      time: 0,
-	      repeatTime: 0,
-	      shiftedRepeatTime: 0
-	    };
-	    this.loop = h.bind(this.loop, this);
-	    return this.onUpdate = this.o.onUpdate;
-	  };
-
-	  Timeline.prototype.add = function() {
-	    var args;
-	    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-	    this.pushTimelineArray(args);
-	    return this;
-	  };
-
-	  Timeline.prototype.pushTimelineArray = function(array) {
-	    var i, j, len1, results, tm;
-	    results = [];
-	    for (i = j = 0, len1 = array.length; j < len1; i = ++j) {
-	      tm = array[i];
-	      if (h.isArray(tm)) {
-	        results.push(this.pushTimelineArray(tm));
-	      } else {
-	        results.push(this.pushTimeline(tm));
-	      }
-	    }
-	    return results;
-	  };
-
-	  Timeline.prototype._extendDefaults = function() {
-	    var key, ref, results, value;
-	    ref = this.defaults;
-	    results = [];
-	    for (key in ref) {
-	      value = ref[key];
-	      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
-	    }
-	    return results;
-	  };
-
-	  Timeline.prototype.setProp = function(props) {
-	    var key, value;
-	    for (key in props) {
-	      value = props[key];
-	      this.props[key] = value;
-	    }
-	    return this.recalcDuration();
-	  };
-
-	  Timeline.prototype.pushTimeline = function(timeline, shift) {
-	    if (timeline.timeline instanceof Timeline) {
-	      timeline = timeline.timeline;
-	    }
-	    (shift != null) && timeline.setProp({
-	      'shiftTime': shift
-	    });
-	    this.timelines.push(timeline);
-	    return this._recalcTimelineDuration(timeline);
-	  };
-
-	  Timeline.prototype.remove = function(timeline) {
-	    var index;
-	    index = this.timelines.indexOf(timeline);
-	    if (index !== -1) {
-	      return this.timelines.splice(index, 1);
-	    }
-	  };
-
-	  Timeline.prototype.append = function() {
-	    var i, j, len1, timeline, tm;
-	    timeline = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-	    for (i = j = 0, len1 = timeline.length; j < len1; i = ++j) {
-	      tm = timeline[i];
-	      if (h.isArray(tm)) {
-	        this._appendTimelineArray(tm);
-	      } else {
-	        this.appendTimeline(tm, this.timelines.length);
-	      }
-	    }
-	    return this;
-	  };
-
-	  Timeline.prototype._appendTimelineArray = function(timelineArray) {
-	    var i, len, results, time;
-	    i = timelineArray.length;
-	    time = this.props.repeatTime - this.props.delay;
-	    len = this.timelines.length;
-	    results = [];
-	    while (i--) {
-	      results.push(this.appendTimeline(timelineArray[i], len, time));
-	    }
-	    return results;
-	  };
-
-	  Timeline.prototype.appendTimeline = function(timeline, index, time) {
-	    var shift;
-	    shift = (time != null ? time : this.props.time);
-	    shift += timeline.props.shiftTime || 0;
-	    timeline.index = index;
-	    return this.pushTimeline(timeline, shift);
-	  };
-
-	  Timeline.prototype.recalcDuration = function() {
-	    var len, results;
-	    len = this.timelines.length;
-	    this.props.time = 0;
-	    this.props.repeatTime = 0;
-	    this.props.shiftedRepeatTime = 0;
-	    results = [];
-	    while (len--) {
-	      results.push(this._recalcTimelineDuration(this.timelines[len]));
-	    }
-	    return results;
-	  };
-
-	  Timeline.prototype._recalcTimelineDuration = function(timeline) {
-	    var timelineTime;
-	    timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
-	    this.props.time = Math.max(timelineTime, this.props.time);
-	    this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
-	    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
-	    return this.props.shiftedRepeatTime -= this.props.delay;
-	  };
-
-	  Timeline.prototype.update = function(time, isGrow) {
-	    if (time > this.props.endTime) {
-	      time = this.props.endTime;
-	    }
-	    if (time === this.props.endTime && this.isCompleted) {
-	      return true;
-	    }
-	    this._updateTimelines(time, isGrow);
-	    return this._checkCallbacks(time);
-	  };
-
-	  Timeline.prototype._updateTimelines = function(time, isGrow) {
-	    var elapsed, i, len, startPoint, timeToTimelines;
-	    startPoint = this.props.startTime - this.props.delay;
-	    elapsed = (time - startPoint) % (this.props.delay + this.props.time);
-	    timeToTimelines = time === this.props.endTime ? this.props.endTime : startPoint + elapsed >= this.props.startTime ? time >= this.props.endTime ? this.props.endTime : startPoint + elapsed : time > this.props.startTime + this.props.time ? this.props.startTime + this.props.time : null;
-	    if (timeToTimelines != null) {
-	      i = -1;
-	      len = this.timelines.length - 1;
-	      while (i++ < len) {
-	        if (isGrow == null) {
-	          isGrow = time > (this._previousUpdateTime || 0);
-	        }
-	        this.timelines[i].update(timeToTimelines, isGrow);
-	      }
-	    }
-	    return this._previousUpdateTime = time;
-	  };
-
-	  Timeline.prototype._checkCallbacks = function(time) {
-	    var ref, ref1, ref2;
-	    if (this.prevTime === time) {
-	      return;
-	    }
-	    if (!this.prevTime || this.isCompleted && !this.isStarted) {
-	      if ((ref = this.o.onStart) != null) {
-	        ref.apply(this);
-	      }
-	      this.isStarted = true;
-	      this.isCompleted = false;
-	    }
-	    if (time >= this.props.startTime && time < this.props.endTime) {
-	      if (typeof this.onUpdate === "function") {
-	        this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
-	      }
-	    }
-	    if (this.prevTime > time && time <= this.props.startTime) {
-	      if ((ref1 = this.o.onReverseComplete) != null) {
-	        ref1.apply(this);
-	      }
-	    }
-	    this.prevTime = time;
-	    if (time === this.props.endTime && !this.isCompleted) {
-	      if (typeof this.onUpdate === "function") {
-	        this.onUpdate(1);
-	      }
-	      if ((ref2 = this.o.onComplete) != null) {
-	        ref2.apply(this);
-	      }
-	      this.isCompleted = true;
-	      this.isStarted = false;
-	      return true;
-	    }
-	  };
-
-	  Timeline.prototype.start = function(time) {
-	    this.setStartTime(time);
-	    !time && (t.add(this), this.state = 'play');
-	    return this;
-	  };
-
-	  Timeline.prototype.pause = function() {
-	    this.removeFromTweener();
-	    this.state = 'pause';
-	    return this;
-	  };
-
-	  Timeline.prototype.stop = function() {
-	    this.removeFromTweener();
-	    this.setProgress(0);
-	    this.state = 'stop';
-	    return this;
-	  };
-
-	  Timeline.prototype.restart = function() {
-	    this.stop();
-	    return this.start();
-	  };
-
-	  Timeline.prototype.removeFromTweener = function() {
-	    t.remove(this);
-	    return this;
-	  };
-
-	  Timeline.prototype.setStartTime = function(time) {
-	    this.getDimentions(time);
-	    return this.startTimelines(this.props.startTime);
-	  };
-
-	  Timeline.prototype.startTimelines = function(time) {
-	    var i, results;
-	    i = this.timelines.length;
-	    (time == null) && (time = this.props.startTime);
-	    results = [];
-	    while (i--) {
-	      results.push(this.timelines[i].start(time));
-	    }
-	    return results;
-	  };
-
-	  Timeline.prototype.setProgress = function(progress) {
-	    if (this.props.startTime == null) {
-	      this.setStartTime();
-	    }
-	    progress = h.clamp(progress, 0, 1);
-	    return this.update(this.props.startTime + progress * this.props.repeatTime);
-	  };
-
-	  Timeline.prototype.getDimentions = function(time) {
-	    if (time == null) {
-	      time = performance.now();
-	    }
-	    this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
-	    this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
-	    return this.props.endTime -= this.props.shiftTime || 0;
-	  };
-
-	  return Timeline;
-
-	})();
-
-	module.exports = Timeline;
-
-
-/***/ },
-/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Easing, PathEasing, bezier, easing, h, mix;
@@ -4033,6 +3746,444 @@
 
 	module.exports = easing;
 
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _prototypeProperties = function (child, staticProps, instanceProps) {
+	  if (staticProps) Object.defineProperties(child, staticProps);
+	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+	};
+
+	var _interopRequire = function (obj) {
+	  return obj && (obj["default"] || obj);
+	};
+
+	var _core = _interopRequire(__webpack_require__(28));
+
+	var h = _interopRequire(__webpack_require__(2));
+
+	var t = _interopRequire(__webpack_require__(21));
+
+	var Timeline = (function () {
+	  function Timeline() {
+	    var o = arguments[0] === undefined ? {} : arguments[0];
+	    this.o = o;
+	    this.vars();
+	    this._extendDefaults();
+	    return this;
+	  }
+
+	  _prototypeProperties(Timeline, null, {
+	    vars: {
+	      value: function vars() {
+	        this.state = "stop";
+	        this.defaults = { repeat: 0, delay: 0 };
+	        this.timelines = [];
+	        this.props = { time: 0, repeatTime: 0, shiftedRepeatTime: 0 };
+	        this.loop = h.bind(this.loop, this);
+	        this.onUpdate = this.o.onUpdate;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    add: {
+	      value: function add() {
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        this.pushTimelineArray(args);return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    pushTimelineArray: {
+	      value: function pushTimelineArray(array) {
+	        for (var i = 0; i < array.length; i++) {
+	          var tm = array[i];
+	          // recursive push to handle arrays of arrays
+	          if (h.isArray(tm)) {
+	            this.pushTimelineArray(tm);
+	          } else {
+	            this.pushTimeline(tm);
+	          }
+	        };
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _extendDefaults: {
+
+	      /*
+	        Method to extend defaults by options and save
+	        the result to props object
+	      */
+	      value: function ExtendDefaults() {
+	        for (var key in this.defaults) {
+	          if (this.defaults.hasOwnProperty(key)) {
+	            this.props[key] = this.o[key] != null ? this.o[key] : this.defaults[key];
+	          }
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    setProp: {
+
+	      /*
+	        Method to add a prop to the props object.
+	      */
+	      value: function setProp(props) {
+	        for (var key in props) {
+	          if (props.hasOwnProperty(key)) {
+	            this.props[key] = props[key];
+	          }
+	        }
+	        return this.recalcDuration();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    pushTimeline: {
+	      value: function pushTimeline(timeline, shift) {
+	        // if timeline is a module with timeline property then extract it
+	        if (timeline.timeline instanceof Timeline) {
+	          timeline = timeline.timeline;
+	        }
+	        // add self delay to the timeline
+	        shift != null && timeline.setProp({ shiftTime: shift });
+	        this.timelines.push(timeline);
+	        return this._recalcTimelineDuration(timeline);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    remove: {
+	      value: function remove(timeline) {
+	        var index = this.timelines.indexOf(timeline);
+	        if (index !== -1) {
+	          this.timelines.splice(index, 1);
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    append: {
+
+	      /*  Method to append the tween to the end of the
+	          timeline. Each argument is treated as a new 
+	          append. Array of tweens is treated as a parallel
+	          sequence. 
+	          @param {Object, Array} Tween to append or array of such.
+	      */
+	      value: function append() {
+	        for (var _len2 = arguments.length, timeline = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	          timeline[_key2] = arguments[_key2];
+	        }
+
+	        for (var _iterator = _core.$for.getIterator(timeline), _step; !(_step = _iterator.next()).done;) {
+	          var tm = _step.value;
+	          if (h.isArray(tm)) {
+	            this._appendTimelineArray(tm);
+	          } else this.appendTimeline(tm, this.timelines.length);
+	        }
+
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _appendTimelineArray: {
+	      value: function AppendTimelineArray(timelineArray) {
+	        var i = timelineArray.length;
+	        var time = this.props.repeatTime - this.props.delay;
+	        var len = this.timelines.length;
+
+	        while (i--) {
+	          this.appendTimeline(timelineArray[i], len, time);
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    appendTimeline: {
+	      value: function appendTimeline(timeline, index, time) {
+	        var shift = time != null ? time : this.props.time;
+	        shift += timeline.props.shiftTime || 0;
+	        timeline.index = index;this.pushTimeline(timeline, shift);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    recalcDuration: {
+	      value: function recalcDuration() {
+	        var len = this.timelines.length;
+	        this.props.time = 0;this.props.repeatTime = 0;this.props.shiftedRepeatTime = 0;
+	        while (len--) {
+	          this._recalcTimelineDuration(this.timelines[len]);
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _recalcTimelineDuration: {
+	      value: function RecalcTimelineDuration(timeline) {
+	        var timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
+	        this.props.time = Math.max(timelineTime, this.props.time);
+	        this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
+	        this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
+	        this.props.shiftedRepeatTime -= this.props.delay;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    update: {
+
+	      /*  Method to take care of the current time.
+	          @param {Number} The current time
+	          @return {Undefined, Boolean} Returns true if the tween
+	          had ended it execution so should be removed form the 
+	          tweener's active tweens array
+	      */
+	      value: function update(time, isGrow) {
+	        // don't go further then the endTime
+	        if (time > this.props.endTime) {
+	          time = this.props.endTime;
+	        }
+	        // return true if timeline was already completed
+	        if (time === this.props.endTime && this.isCompleted) {
+	          return true;
+	        }
+	        // set the time to timelines
+	        this._updateTimelines(time, isGrow);
+	        /*  check the callbacks for the current time
+	            NOTE: _checkCallbacks method should be returned
+	            from this update function, because it returns true
+	            if the tween was completed, to indicate the tweener
+	            module to remove it from the active tweens array for 
+	            performance purposes
+	        */
+	        return this._checkCallbacks(time);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _updateTimelines: {
+
+	      /*
+	        Method to set time on timelines,
+	        with respect to repeat periods **if present**
+	        @param {Number} Time to set
+	      */
+	      value: function UpdateTimelines(time, isGrow) {
+	        // get elapsed with respect to repeat option
+	        // so take a modulo of the elapsed time
+	        var startPoint = this.props.startTime - this.props.delay;
+	        var elapsed = (time - startPoint) % (this.props.delay + this.props.time);
+
+	        var timeToTimelines = null;
+	        // get the time for timelines
+	        if (time === this.props.endTime) {
+	          timeToTimelines = this.props.endTime;
+	        }
+	        // after delay
+	        else if (startPoint + elapsed >= this.props.startTime) if (time >= this.props.endTime) {
+	          timeToTimelines = this.props.endTime;
+	        } else {
+	          timeToTimelines = startPoint + elapsed;
+	        } else if (time > this.props.startTime + this.props.time) {
+	          timeToTimelines = this.props.startTime + this.props.time;
+	        } else {
+	          timeToTimelines = null;
+	        }
+
+	        // set the normalized time to the timelines
+	        if (timeToTimelines != null) {
+	          var i = -1,
+	              len = this.timelines.length - 1;
+
+	          while (i++ < len) {
+	            isGrow = isGrow == null ? time > (this._previousUpdateTime || 0) : isGrow;
+	            this.timelines[i].update(timeToTimelines, isGrow);
+	          }
+	        }
+	        return this._previousUpdateTime = time;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _checkCallbacks: {
+	      /*
+	        Method to check the callbacks
+	        for the current time
+	        @param {Number} The current time
+	      */
+	      value: function CheckCallbacks(time) {
+	        // dont care about the multiple exact same time calls
+	        if (this.prevTime === time) {
+	          return;
+	        }
+
+	        // if there is no prevTime - so it wasnt called ever at all
+	        // or if it was called but have been completed already
+	        // and it wasnt started yet -- then start!
+	        if (!this.prevTime || this.isCompleted && !this.isStarted) {
+	          if (this.o.onStart != null && typeof this.o.onStart === "function") {
+	            this.o.onStart.apply(this);
+	          }
+	          this.isStarted = true;this.isCompleted = false;
+	        }
+	        // if isn't complete
+	        if (time >= this.props.startTime && time < this.props.endTime) {
+	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
+	            this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
+	          }
+	        }
+	        // if reverse completed
+	        if (this.prevTime > time && time <= this.props.startTime) {
+	          if (this.o.onReverseComplete != null && typeof this.o.onReverseComplete === "function") {
+	            this.o.onReverseComplete.apply(this);
+	          }
+	        }
+	        // @isCompleted = false if time < this.props.startTime
+	        // save the current time as previous for future
+	        this.prevTime = time;
+	        // if completed
+	        if (time === this.props.endTime && !this.isCompleted) {
+	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
+	            this.onUpdate(1);
+	          }
+	          if (this.o.onComplete != null && typeof this.o.onComplete === "function") {
+	            this.o.onComplete.apply(this);
+	          }
+	          this.isCompleted = true;this.isStarted = false;return true;
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    start: {
+	      value: function start(time) {
+	        this.setStartTime(time);
+	        if (!time) {
+	          t.add(this);this.state = "play";
+	        };
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    pause: {
+	      value: function pause() {
+	        this.removeFromTweener();this.state = "pause";return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    stop: {
+	      value: function stop() {
+	        this.removeFromTweener();this.setProgress(0);
+	        this.state = "stop";return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    restart: {
+	      value: function restart() {
+	        this.stop();this.start();return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    removeFromTweener: {
+	      value: function removeFromTweener() {
+	        t.remove(this);return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    setStartTime: {
+	      value: function setStartTime(time) {
+	        this.getDimentions(time);this.startTimelines(this.props.startTime);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    startTimelines: {
+	      value: function startTimelines(time) {
+	        var i = this.timelines.length;
+	        time == null && (time = this.props.startTime);
+	        while (i--) {
+	          this.timelines[i].start(time);
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    setProgress: {
+	      value: function setProgress(progress) {
+	        if (this.props.startTime == null) {
+	          this.setStartTime();
+	        }
+	        progress = h.clamp(progress, 0, 1);
+	        this.update(this.props.startTime + progress * this.props.repeatTime);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    getDimentions: {
+	      value: function getDimentions(time) {
+	        time = time == null ? performance.now() : time;
+	        this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
+	        this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
+	        this.props.endTime -= this.props.shiftTime || 0;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return Timeline;
+	})();
+
+	module.exports = Timeline;
+
+
+	/*
+	  Method to append the tween to the end of the
+	  timeline. Each argument is treated as a new 
+	  append. Array of tweens is treated as a parallel
+	  sequence. 
+	  @param {Object, Array} Tween to append or array of such.
+	*/
 
 /***/ },
 /* 21 */
