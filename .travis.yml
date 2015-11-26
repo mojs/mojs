@@ -7,7 +7,7 @@ after_script:
 
 env:
   global:
-    - SAUCE_ACCESS_KEY="saucekey"
+    - SAUCE_ACCESS_KEY="$saucekey"
 
 notifications:
   slack: mojs:n6WXx45anfQn03fJu5Yw0Btt
