@@ -178,11 +178,11 @@ class Timeline {
       var i   = -1,
           len = this.timelines.length-1;
 
+      isGrow = (isGrow == null)
+        ? time > (this._previousUpdateTime || 0)
+        : isGrow;
       while(i++ < len) {
-        isGrow = (isGrow == null)
-          ? time > (this._previousUpdateTime || 0)
-          : isGrow;
-        this.timelines[i].update(timeToTimelines, isGrow)
+        this.timelines[i].update(timeToTimelines, isGrow);
         }
       }
     return this._previousUpdateTime = time;

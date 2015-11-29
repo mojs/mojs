@@ -351,7 +351,36 @@ describe 'Tween ->', ->
         onUpdate:(p)->  proc = p
         onComplete:-> expect(proc).toBe(1); dfr()
       t.start().update t.props.startTime + 2
+
+    it 'should fire only once if inside timline', ()->
+      cnt = 0
+      tm = new mojs.Timeline repeat: 1
+      t1 = new Tween
+        delay: 10
+        duration: 50
+        onComplete:-> cnt++
+      t2 = new Tween
+        delay: 20
+        duration: 100
+
+      tm.add t1, t2
+      tm.setStartTime()
+
+      tm.update t1.props.startTime
+      tm.update t1.props.startTime + 11
+      tm.update t1.props.startTime + 56
       
+      tm.update t1.props.startTime + 61
+      tm.update t1.props.startTime + 102
+
+      tm.update t1.props.startTime + 120 # <-- error
+      tm.update t1.props.startTime + 137
+      tm.update t1.props.startTime + 169
+      tm.update t1.props.startTime + 182
+      tm.update t1.props.startTime + 201
+      tm.update t1.props.startTime + 220
+
+      expect(cnt).toBe(2)
 
   describe 'onFirstUpdate callback ->', ->
     it 'should be defined', ->

@@ -61,6 +61,7 @@ var Tween = class Tween {
     time = (time == null) ? performance.now() : time;
     props.startTime = time + props.delay + (props.shiftTime || 0);
     props.endTime   = props.startTime + props.repeatTime - props.delay;
+
     return this;
   }
 
@@ -98,7 +99,10 @@ var Tween = class Tween {
 
     } else {
       // complete if time is larger then end time
-      if ( time >= this.props.endTime && !this.isCompleted ) { this._complete(); }
+      // this.o.isIt && console.log(this.isCompleted);
+      if ( time >= this.props.endTime && !this.isCompleted ) {
+        this._complete();
+      }
       // rest isFirstUpdate flag if update was out of active zone
       if ( time > this.props.endTime ) { this.isFirstUpdate = false; }
       // reset isFirstUpdateBackward flag if progress went further the end time
@@ -113,8 +117,16 @@ var Tween = class Tween {
         this.isFirstUpdateBackward = true;
       }
 
+      // isGrow indicates if actual parent time is growing.
+      // Despite the fact that the time could be < previous time && <= startTime
+      // it is actually grows. Tween could be added to a
+      // Timeline, and the later will work with Tween's periods, feeding
+      // 0 at the end of the period, because period % period === 0.
+      // See 182 line of Timline's code for more info.
       if (isGrow) {
-        this._complete();
+        if (!this.isCompleted && this.prevTime < this.props.endTime ) {
+          this._complete();
+        }
       } else if ( !this.isOnReverseComplete /* && this.isFirstUpdate */ ) {
         this.isOnReverseComplete = true;
         this.setProgress(0, !this.props.isChained);

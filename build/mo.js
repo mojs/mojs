@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.147.7',
+	  revision: '0.147.8',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3632,6 +3632,7 @@
 	        time = time == null ? performance.now() : time;
 	        props.startTime = time + props.delay + (props.shiftTime || 0);
 	        props.endTime = props.startTime + props.repeatTime - props.delay;
+
 	        return this;
 	      },
 	      writable: true,
@@ -3672,6 +3673,7 @@
 	          }
 	        } else {
 	          // complete if time is larger then end time
+	          // this.o.isIt && console.log(this.isCompleted);
 	          if (time >= this.props.endTime && !this.isCompleted) {
 	            this._complete();
 	          }
@@ -3693,8 +3695,16 @@
 	            this.isFirstUpdateBackward = true;
 	          }
 
+	          // isGrow indicates if actual parent time is growing.
+	          // Despite the fact that the time could be < previous time && <= startTime
+	          // it is actually grows. Tween could be added to a
+	          // Timeline, and the later will work with Tween's periods, feeding
+	          // 0 at the end of the period, because period % period === 0.
+	          // See 182 line of Timline's code for more info.
 	          if (isGrow) {
-	            this._complete();
+	            if (!this.isCompleted && this.prevTime < this.props.endTime) {
+	              this._complete();
+	            }
 	          } else if (!this.isOnReverseComplete /* && this.isFirstUpdate */) {
 	            this.isOnReverseComplete = true;
 	            this.setProgress(0, !this.props.isChained);
@@ -4162,8 +4172,8 @@
 	          var i = -1,
 	              len = this.timelines.length - 1;
 
+	          isGrow = isGrow == null ? time > (this._previousUpdateTime || 0) : isGrow;
 	          while (i++ < len) {
-	            isGrow = isGrow == null ? time > (this._previousUpdateTime || 0) : isGrow;
 	            this.timelines[i].update(timeToTimelines, isGrow);
 	          }
 	        }

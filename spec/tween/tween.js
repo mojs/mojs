@@ -549,7 +549,7 @@
         t.start().update(t.props.startTime + 2);
         return expect(isRightScope).toBe(true);
       });
-      return it('should fire after the last onUpdate', function(dfr) {
+      it('should fire after the last onUpdate', function(dfr) {
         var proc, t;
         proc = 0;
         t = new Tween({
@@ -563,6 +563,38 @@
           }
         });
         return t.start().update(t.props.startTime + 2);
+      });
+      return it('should fire only once if inside timline', function() {
+        var cnt, t1, t2, tm;
+        cnt = 0;
+        tm = new mojs.Timeline({
+          repeat: 1
+        });
+        t1 = new Tween({
+          delay: 10,
+          duration: 50,
+          onComplete: function() {
+            return cnt++;
+          }
+        });
+        t2 = new Tween({
+          delay: 20,
+          duration: 100
+        });
+        tm.add(t1, t2);
+        tm.setStartTime();
+        tm.update(t1.props.startTime);
+        tm.update(t1.props.startTime + 11);
+        tm.update(t1.props.startTime + 56);
+        tm.update(t1.props.startTime + 61);
+        tm.update(t1.props.startTime + 102);
+        tm.update(t1.props.startTime + 120);
+        tm.update(t1.props.startTime + 137);
+        tm.update(t1.props.startTime + 169);
+        tm.update(t1.props.startTime + 182);
+        tm.update(t1.props.startTime + 201);
+        tm.update(t1.props.startTime + 220);
+        return expect(cnt).toBe(2);
       });
     });
     describe('onFirstUpdate callback ->', function() {
