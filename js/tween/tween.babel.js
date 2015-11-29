@@ -143,7 +143,6 @@ var Tween = class Tween {
   }
 
   _updateInActiveArea(time) {
-    // TODO: REFACTOR setProgress
     var props = this.props;
     var startPoint = props.startTime - props.delay;
     var elapsed = (time - startPoint) % (props.delay + props.duration);
