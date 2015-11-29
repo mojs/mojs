@@ -790,7 +790,7 @@
         });
         return expect(t.props.yoyo).toBe(true);
       });
-      return it('should toggle the progress direction on repeat', function() {
+      it('should toggle the progress direction on repeat', function() {
         var t, time;
         t = new Tween({
           repeat: 2,
@@ -821,6 +821,32 @@
         t.update(time + 30);
         expect(t.progress).toBe(1);
         return expect(t.isCompleted).toBe(true);
+      });
+      return it('should set progress to 0 on return', function() {
+        var delay, duration, p, t;
+        p = 0;
+        duration = 800;
+        delay = 1000;
+        t = new mojs.Tween({
+          yoyo: true,
+          repeat: 10,
+          delay: delay,
+          duration: duration,
+          onUpdate: function(progress) {
+            return p = progress;
+          }
+        });
+        t.start();
+        t.update(t.props.startTime - 5);
+        t.update(t.props.startTime);
+        t.update(t.props.startTime + (duration / 2));
+        t.update(t.props.startTime + duration);
+        expect(p).toBe(1);
+        t.update(t.props.startTime + duration + 5);
+        t.update(t.props.startTime + duration + delay);
+        t.update(t.props.startTime + duration + delay + (duration / 2));
+        t.update(t.props.startTime + duration + delay + duration);
+        return expect(p).toBe(0);
       });
     });
     describe('easing ->', function() {

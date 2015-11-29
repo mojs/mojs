@@ -527,6 +527,32 @@ describe 'Tween ->', ->
       t.update(time+30);  expect(t.progress).toBe 1
       expect(t.isCompleted).toBe true
 
+    it 'should set progress to 0 on return', ->
+      p = 0; duration = 800; delay = 1000
+      t = new mojs.Tween
+        yoyo: true,
+        repeat: 10,
+        delay: delay,
+        duration: duration,
+        onUpdate: (progress)-> p = progress
+
+      t.start()
+      t.update t.props.startTime - 5
+      t.update t.props.startTime
+      t.update t.props.startTime + (duration/2)
+      t.update t.props.startTime + duration
+      
+      expect(p).toBe 1
+
+      t.update t.props.startTime + duration + 5
+      t.update t.props.startTime + duration + delay
+      t.update t.props.startTime + duration + delay + (duration/2)
+      t.update t.props.startTime + duration + delay + duration
+
+      expect(p).toBe 0
+
+
+
   describe 'easing ->', ->
     it 'should parse easing string', ->
       t = new Tween(easing: 'Linear.None')

@@ -165,20 +165,30 @@ var Tween = class Tween {
       var elapsed2 = (time-props.startTime) % (props.delay + props.duration)
       var proc = elapsed2/props.duration
       // if not yoyo then set the plain progress
-      if (!props.yoyo) { this.setProgress(proc); }
-      else {
+      if (!props.yoyo) {
+        this.setProgress(proc);
+      } else {
         // if yoyo then check if the current duration
         // period is even. If so set progress, otherwise
         // set inverset proc value
-        if (cnt % 2 === 0) { this.setProgress(proc); }
-        else {
-          if (proc === 1) { this.setProgress(1-0); } else { this.setProgress(1-proc); }
+        if (cnt % 2 === 0) {
+          this.setProgress(proc);
+        } else {
+          if (proc === 1) {
+            this.setProgress(1);
+          } else {
+            this.setProgress(1-proc);
+          }
         }
       }
-    }
     // delay gap
-    else {
-      if (this.prevTime < time) { this.setProgress(1); } else { this.setProgress(0); }
+    } else {
+      // if yoyo and even period we should flip
+      // so set flipCoef to 1 if we need flip, otherwise to 0
+      var flipCoef = (props.yoyo && (cnt % 2 === 0)) ? 1 : 0;
+      // if flip is 0 - bitwise XOR will leave the numbers as is,
+      // if flip is 1 - bitwise XOR will inverse the numbers
+      this.setProgress( (this.prevTime < time) ? 1 ^ flipCoef : 0 ^ flipCoef );
     }
   }
 
