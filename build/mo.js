@@ -1750,7 +1750,7 @@
 
 	bitsMap = __webpack_require__(4);
 
-	Tween = __webpack_require__(18);
+	Tween = __webpack_require__(19);
 
 	Timeline = __webpack_require__(20);
 
@@ -2433,10 +2433,10 @@
 	  Stagger: __webpack_require__(15),
 	  Spriter: __webpack_require__(16),
 	  MotionPath: __webpack_require__(17),
-	  Tween: __webpack_require__(18),
+	  Tween: __webpack_require__(19),
 	  Timeline: __webpack_require__(20),
 	  tweener: __webpack_require__(21),
-	  easing: __webpack_require__(19)
+	  easing: __webpack_require__(18)
 	};
 
 	mojs.h = mojs.helpers;
@@ -2580,7 +2580,7 @@
 
 	h = __webpack_require__(2);
 
-	Tween = __webpack_require__(18);
+	Tween = __webpack_require__(19);
 
 	Timeline = __webpack_require__(20);
 
@@ -2713,7 +2713,7 @@
 
 	resize = __webpack_require__(22);
 
-	Tween = __webpack_require__(18);
+	Tween = __webpack_require__(19);
 
 	Timeline = __webpack_require__(20);
 
@@ -3239,221 +3239,6 @@
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Tween, easing, h, t;
-
-	h = __webpack_require__(2);
-
-	t = __webpack_require__(21);
-
-	easing = __webpack_require__(19);
-
-	Tween = (function() {
-	  Tween.prototype.defaults = {
-	    duration: 600,
-	    delay: 0,
-	    repeat: 0,
-	    yoyo: false,
-	    easing: 'Linear.None',
-	    onStart: null,
-	    onComplete: null,
-	    onReverseComplete: null,
-	    onFirstUpdate: null,
-	    onUpdate: null,
-	    onFirstUpdateBackward: null,
-	    isChained: false
-	  };
-
-	  function Tween(o) {
-	    this.o = o != null ? o : {};
-	    this.extendDefaults();
-	    this.vars();
-	    this;
-	  }
-
-	  Tween.prototype.vars = function() {
-	    this.h = h;
-	    this.progress = 0;
-	    this.prevTime = 0;
-	    return this.calcDimentions();
-	  };
-
-	  Tween.prototype.calcDimentions = function() {
-	    this.props.time = this.props.duration + this.props.delay;
-	    return this.props.repeatTime = this.props.time * (this.props.repeat + 1);
-	  };
-
-	  Tween.prototype.extendDefaults = function() {
-	    var key, ref, value;
-	    this.props = {};
-	    ref = this.defaults;
-	    for (key in ref) {
-	      value = ref[key];
-	      this.props[key] = this.o[key] != null ? this.o[key] : value;
-	    }
-	    this.props.easing = easing.parseEasing(this.o.easing || this.defaults.easing);
-	    return this.onUpdate = this.props.onUpdate;
-	  };
-
-	  Tween.prototype.start = function(time) {
-	    this.isCompleted = false;
-	    this.isStarted = false;
-	    if (time == null) {
-	      time = performance.now();
-	    }
-	    this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
-	    this.props.endTime = this.props.startTime + this.props.repeatTime - this.props.delay;
-	    return this;
-	  };
-
-	  Tween.prototype.update = function(time, isGrow) {
-	    var ref, ref1, ref2, ref3, ref4;
-	    if ((time >= this.props.startTime) && (time < this.props.endTime)) {
-	      this.isOnReverseComplete = false;
-	      this.isCompleted = false;
-	      if (!this.isFirstUpdate) {
-	        if ((ref = this.props.onFirstUpdate) != null) {
-	          ref.apply(this);
-	        }
-	        this.isFirstUpdate = true;
-	      }
-	      if (!this.isStarted) {
-	        if ((ref1 = this.props.onStart) != null) {
-	          ref1.apply(this);
-	        }
-	        this.isStarted = true;
-	      }
-	      this._updateInActiveArea(time);
-	      if (time < this.prevTime && !this.isFirstUpdateBackward) {
-	        if ((ref2 = this.props.onFirstUpdateBackward) != null) {
-	          ref2.apply(this);
-	        }
-	        this.isFirstUpdateBackward = true;
-	      }
-	    } else {
-	      if (time >= this.props.endTime && !this.isCompleted) {
-	        this._complete();
-	      }
-	      if (time > this.props.endTime) {
-	        this.isFirstUpdate = false;
-	      }
-	      if (time > this.props.endTime) {
-	        this.isFirstUpdateBackward = false;
-	      }
-	    }
-	    if (time < this.prevTime && time <= this.props.startTime) {
-	      if (!this.isFirstUpdateBackward) {
-	        if ((ref3 = this.props.onFirstUpdateBackward) != null) {
-	          ref3.apply(this);
-	        }
-	        this.isFirstUpdateBackward = true;
-	      }
-	      if (isGrow) {
-	        this._complete();
-	      } else if (!this.isOnReverseComplete) {
-	        this.isOnReverseComplete = true;
-	        this.setProgress(0, !this.props.isChained);
-	        if ((ref4 = this.props.onReverseComplete) != null) {
-	          ref4.apply(this);
-	        }
-	      }
-	      this.isFirstUpdate = false;
-	    }
-	    this.prevTime = time;
-	    return this.isCompleted;
-	  };
-
-	  Tween.prototype._complete = function() {
-	    var ref;
-	    this.setProgress(1);
-	    if ((ref = this.props.onComplete) != null) {
-	      ref.apply(this);
-	    }
-	    this.isCompleted = true;
-	    this.isStarted = false;
-	    return this.isOnReverseComplete = false;
-	  };
-
-	  Tween.prototype._updateInActiveArea = function(time) {
-	    var cnt, elapsed, elapsed2, proc, startPoint;
-	    startPoint = this.props.startTime - this.props.delay;
-	    elapsed = (time - startPoint) % (this.props.delay + this.props.duration);
-	    cnt = Math.floor((time - startPoint) / (this.props.delay + this.props.duration));
-	    if (startPoint + elapsed >= this.props.startTime) {
-	      elapsed2 = (time - this.props.startTime) % (this.props.delay + this.props.duration);
-	      proc = elapsed2 / this.props.duration;
-	      return this.setProgress(!this.props.yoyo ? proc : cnt % 2 === 0 ? proc : 1 - (proc === 1 ? 0 : proc));
-	    } else {
-	      return this.setProgress(this.prevTime < time ? 1 : 0);
-	    }
-	  };
-
-	  Tween.prototype.setProgress = function(p, isCallback) {
-	    if (isCallback == null) {
-	      isCallback = true;
-	    }
-	    this.progress = p;
-	    this.easedProgress = this.props.easing(this.progress);
-	    if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
-	      if (typeof this.onUpdate === "function") {
-	        this.onUpdate(this.easedProgress, this.progress);
-	      }
-	    }
-	    return this.props.prevEasedProgress = this.easedProgress;
-	  };
-
-	  Tween.prototype.setProp = function(obj, value) {
-	    var key, val;
-	    if (typeof obj === 'object') {
-	      for (key in obj) {
-	        val = obj[key];
-	        this.props[key] = val;
-	        if (key === 'easing') {
-	          this.props.easing = easing.parseEasing(this.props.easing);
-	        }
-	      }
-	    } else if (typeof obj === 'string') {
-	      if (obj === 'easing') {
-	        this.props.easing = easing.parseEasing(value);
-	      } else {
-	        this.props[obj] = value;
-	      }
-	    }
-	    return this.calcDimentions();
-	  };
-
-	  Tween.prototype.run = function(time) {
-	    this.start(time);
-	    !time && (t.add(this));
-	    return this;
-	  };
-
-	  Tween.prototype.stop = function() {
-	    this.pause();
-	    this.setProgress(0);
-	    return this;
-	  };
-
-	  Tween.prototype.pause = function() {
-	    this._removeFromTweener();
-	    return this;
-	  };
-
-	  Tween.prototype._removeFromTweener = function() {
-	    t.remove(this);
-	    return this;
-	  };
-
-	  return Tween;
-
-	})();
-
-	module.exports = Tween;
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Easing, PathEasing, bezier, easing, h, mix;
 
 	bezier = __webpack_require__(23);
@@ -3746,6 +3531,365 @@
 
 	module.exports = easing;
 
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _prototypeProperties = function (child, staticProps, instanceProps) {
+	  if (staticProps) Object.defineProperties(child, staticProps);
+	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+	};
+
+	var _interopRequire = function (obj) {
+	  return obj && (obj["default"] || obj);
+	};
+
+	var _core = _interopRequire(__webpack_require__(28));
+
+	var h = _interopRequire(__webpack_require__(2));
+
+	var t = _interopRequire(__webpack_require__(21));
+
+	var easing = _interopRequire(__webpack_require__(18));
+
+	// TODO: all public methods should return this
+
+	var Tween = (function () {
+	  function Tween() {
+	    var o = arguments[0] === undefined ? {} : arguments[0];
+	    this.o = o;
+	    this.declareDefaults();this.extendDefaults();this.vars();return this;
+	  }
+
+	  _prototypeProperties(Tween, null, {
+	    declareDefaults: {
+	      value: function declareDefaults() {
+	        this.defaults = {
+	          duration: 600,
+	          delay: 0,
+	          repeat: 0,
+	          yoyo: false,
+	          easing: "Linear.None",
+	          onStart: null,
+	          onComplete: null,
+	          onReverseComplete: null,
+	          onFirstUpdate: null,
+	          onUpdate: null,
+	          onFirstUpdateBackward: null,
+	          isChained: false };
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    vars: {
+	      value: function vars() {
+	        this.h = h;this.progress = 0;this.prevTime = 0;
+	        return this.calcDimentions();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    calcDimentions: {
+	      value: function calcDimentions() {
+	        this.props.time = this.props.duration + this.props.delay;
+	        this.props.repeatTime = this.props.time * (this.props.repeat + 1);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    extendDefaults: {
+	      value: function extendDefaults() {
+	        this.props = {};
+	        for (var key in this.defaults) {
+	          if (Object.hasOwnProperty.call(this.defaults, key)) {
+	            var value = this.defaults[key];
+	            this.props[key] = this.o[key] != null ? this.o[key] : value;
+	            this.props.easing = easing.parseEasing(this.o.easing || this.defaults.easing);
+	            this.onUpdate = this.props.onUpdate;
+	          }
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    start: {
+	      /*
+	        Method for setting start and end time to selft props.
+	        @param Number(Timestamp), Null
+	        @returns this
+	      */
+	      value: function start(time) {
+	        var props = this.props;
+	        this.isCompleted = false;this.isStarted = false;
+
+	        time = time == null ? performance.now() : time;
+	        props.startTime = time + props.delay + (props.shiftTime || 0);
+	        props.endTime = props.startTime + props.repeatTime - props.delay;
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    update: {
+	      value: function update(time, isGrow) {
+	        /*
+	          if time is inside the active area of the tween.
+	          active area is the area from start time to end time,
+	          with all the repeat and delays in it
+	        */
+	        if (time >= this.props.startTime && time < this.props.endTime) {
+	          // reset callback flags
+	          this.isOnReverseComplete = false;this.isCompleted = false;
+	          // onFirtUpdate callback
+
+	          if (!this.isFirstUpdate) {
+	            if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === "function") {
+	              this.props.onFirstUpdate.apply(this);this.isFirstUpdate = true;
+	            }
+	          }
+
+	          if (!this.isStarted) {
+	            if (this.props.onStart != null && typeof this.props.onStart === "function") {
+	              this.props.onStart.apply(this);this.isStarted = true;
+	            }
+	          }
+
+	          this._updateInActiveArea(time);
+
+	          if (time < this.prevTime && !this.isFirstUpdateBackward) {
+	            if (this.props.onFirstUpdateBackward != null && typeof this.props.onFirstUpdateBackward === "function") {
+	              this.props.onFirstUpdateBackward.apply(this);
+	            }
+	            this.isFirstUpdateBackward = true;
+	          }
+	        } else {
+	          // complete if time is larger then end time
+	          if (time >= this.props.endTime && !this.isCompleted) {
+	            this._complete();
+	          }
+	          // rest isFirstUpdate flag if update was out of active zone
+	          if (time > this.props.endTime) {
+	            this.isFirstUpdate = false;
+	          }
+	          // reset isFirstUpdateBackward flag if progress went further the end time
+	          if (time > this.props.endTime) {
+	            this.isFirstUpdateBackward = false;
+	          }
+	        }
+
+	        if (time < this.prevTime && time <= this.props.startTime) {
+	          if (!this.isFirstUpdateBackward) {
+	            if (this.props.onFirstUpdateBackward != null && typeof this.props.onFirstUpdateBackward === "function") {
+	              this.props.onFirstUpdateBackward.apply(this);
+	            }
+	            this.isFirstUpdateBackward = true;
+	          }
+
+	          if (isGrow) {
+	            this._complete();
+	          } else if (!this.isOnReverseComplete /* && this.isFirstUpdate */) {
+	            this.isOnReverseComplete = true;
+	            this.setProgress(0, !this.props.isChained);
+	            if (this.props.onReverseComplete != null && typeof this.props.onReverseComplete === "function") {
+	              this.props.onReverseComplete.apply(this);
+	            }
+	          }
+
+	          this.isFirstUpdate = false;
+	        }
+
+	        this.prevTime = time;
+	        return this.isCompleted;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _complete: {
+
+	      /*
+	        Method to set tween's state to complete
+	      */
+	      value: function Complete() {
+	        this.setProgress(1);
+	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
+	          this.props.onComplete.apply(this);
+	        }
+	        this.isCompleted = true;this.isStarted = false;
+	        this.isOnReverseComplete = false;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _updateInActiveArea: {
+	      value: function UpdateInActiveArea(time) {
+	        // TODO: REFACTOR setProgress
+	        var props = this.props;
+	        var startPoint = props.startTime - props.delay;
+	        var elapsed = (time - startPoint) % (props.delay + props.duration);
+	        var cnt = Math.floor((time - startPoint) / (props.delay + props.duration));
+	        // if time is inside the duration area of the tween
+	        if (startPoint + elapsed >= props.startTime) {
+	          // active zone or larger then end
+	          var elapsed2 = (time - props.startTime) % (props.delay + props.duration);
+	          var proc = elapsed2 / props.duration;
+	          // if not yoyo then set the plain progress
+	          if (!props.yoyo) {
+	            this.setProgress(proc);
+	          } else {
+	            // if yoyo then check if the current duration
+	            // period is even. If so set progress, otherwise
+	            // set inverset proc value
+	            if (cnt % 2 === 0) {
+	              this.setProgress(proc);
+	            } else {
+	              if (proc === 1) {
+	                this.setProgress(1 - 0);
+	              } else {
+	                this.setProgress(1 - proc);
+	              }
+	            }
+	          }
+	        }
+	        // delay gap
+	        else {
+	          if (this.prevTime < time) {
+	            this.setProgress(1);
+	          } else {
+	            this.setProgress(0);
+	          }
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    setProgress: {
+
+	      /*
+	        Method to set Tween's progress
+	        @param {Number} Progress to set
+	        @param {Boolean} ?
+	      */
+
+	      value: function setProgress(p) {
+	        var isCallback = arguments[1] === undefined ? true : arguments[1];
+	        this.progress = p;
+	        this.easedProgress = this.props.easing(this.progress);
+	        if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
+	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
+	            this.onUpdate(this.easedProgress, this.progress);
+	          }
+	        }
+	        this.props.prevEasedProgress = this.easedProgress;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    setProp: {
+
+	      /*
+	        Method to set property[s] on Tween
+	        @param {Object, String} Hash object of key/value pairs, or property name
+	        @param {_} Property's value to set
+	      */
+	      value: function setProp(obj, value) {
+	        // handle hash object case
+	        if (typeof obj === "object") {
+	          for (var key in obj) {
+	            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+	              this.props[key] = obj[key];
+	              if (key === "easing") {
+	                this.props.easing = easing.parseEasing(this.props.easing);
+	              }
+	            }
+	          }
+	          // handle key, value case
+	        } else if (typeof obj === "string") {
+	          // if key is easing - parse it immediately
+	          if (obj === "easing") {
+	            this.props.easing = easing.parseEasing(value);
+	          }
+	          // else just save it to props
+	          else {
+	            this.props[obj] = value;
+	          }
+	        }
+	        this.calcDimentions();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    run: {
+
+	      /*
+	        Method to run the Tween
+	        @param  {Number} Start time
+	        @return {Object} Self
+	      */
+	      value: function run(time) {
+	        this.start(time);!time && t.add(this); //@state = 'play'
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    stop: {
+
+	      /*
+	        Method to stop the Tween.
+	        @returns {Object} Self
+	      */
+	      value: function stop() {
+	        this.pause();this.setProgress(0);return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    pause: {
+
+	      /*
+	        Method to pause Tween.
+	        @returns {Object} Self
+	      */
+	      value: function pause() {
+	        this._removeFromTweener();return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _removeFromTweener: {
+
+	      /*
+	        Method to remove the Tween from the tweener.
+	      */
+	      value: function RemoveFromTweener() {
+	        t.remove(this);return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return Tween;
+	})();
+
+	module.exports = Tween;
 
 /***/ },
 /* 20 */
