@@ -858,17 +858,19 @@
         }), 100);
       });
       it('should pass the current progress', function() {
-        var t;
+        var progress, t;
+        progress = null;
         t = new Timeline({
-          onUpdate: function() {}
+          onUpdate: function(p) {
+            return progress = p;
+          }
         });
         t.add(new Tween({
           duration: 20
         }));
-        spyOn(t, 'onUpdate');
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 10);
-        return expect(t.onUpdate).toHaveBeenCalledWith(.5);
+        return expect(progress).toBeCloseTo(.5, 5);
       });
       it('should not run if time is less then startTime', function() {
         var t;
@@ -1488,7 +1490,7 @@
         tm0.add(tm1);
         tm0.append(tm2);
         tm0.setProgress(.5);
-        return expect(tw2.progress).toBe(.375);
+        return expect(tw2.progress).toBeCloseTo(.375, 5);
       });
       it('should set right endTime times', function() {
         var tm0, tm1, tm2, tw1, tw2;

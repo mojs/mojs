@@ -208,7 +208,7 @@ class Timeline {
     // if isn't complete
     if (time >= this.props.startTime && time < this.props.endTime) {
       if ( this.onUpdate != null && typeof this.onUpdate === 'function' ) {
-        this.onUpdate( (time - this.props.startTime)/this.props.repeatTime )
+        this.onUpdate( (time - this.props.startTime) / this.props.repeatTime )
       }
     }
     // if reverse completed

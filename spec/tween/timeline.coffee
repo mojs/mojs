@@ -486,11 +486,12 @@ describe 'Timeline ->', ->
       t.start()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
     it 'should pass the current progress', ->
-      t = new Timeline onUpdate:->
+      progress = null
+      t = new Timeline onUpdate:(p)-> progress = p
       t.add new Tween duration: 20
-      spyOn(t, 'onUpdate'); t.start()
+      t.setStartTime()
       t.update t.props.startTime + 10
-      expect(t.onUpdate).toHaveBeenCalledWith .5
+      expect(progress).toBeCloseTo .5, 5
     it 'should not run if time is less then startTime', ->
       t = new Timeline onUpdate:->
       t.add new Tween duration: 20
@@ -869,7 +870,7 @@ describe 'Timeline ->', ->
       tm0.add tm1
       tm0.append tm2
       tm0.setProgress .5
-      expect(tw2.progress).toBe .375
+      expect(tw2.progress).toBeCloseTo .375, 5
     it 'should set right endTime times', ->
       tm0 = new mojs.Timeline
       tm1 = new mojs.Timeline
