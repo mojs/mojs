@@ -153,8 +153,10 @@
         t.update(t.props.startTime + 60);
         expect(t.isCompleted).toBe(true);
         expect(t.isStarted).toBe(false);
+        expect(t.isRepeatCompleted).toBe(true);
         t.setStartTime();
         expect(t.isCompleted).toBe(false);
+        expect(t.isRepeatCompleted).toBe(false);
         return expect(t.isStarted).toBe(false);
       });
     });
@@ -230,6 +232,7 @@
         returnValue = t.update(t.props.startTime + 1000);
         expect(t.progress).toBeCloseTo(1, 5);
         expect(t.isCompleted).toBe(true);
+        expect(t.isRepeatCompleted).toBe(true);
         return expect(returnValue).toBe(true);
       });
       it('should set progress to 1 on delay gaps', function() {
@@ -708,6 +711,164 @@
         return expect(cnt).toBe(2);
       });
     });
+    describe('onRepeatComplete callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onRepeatComplete: function() {}
+        });
+        return expect(t.props.onRepeatComplete).toBeDefined();
+      });
+      it('should call onRepeatComplete callback', function() {
+        var t;
+        t = new Tween({
+          duration: 100,
+          onRepeatComplete: function() {}
+        }).setStartTime();
+        spyOn(t.props, 'onRepeatComplete');
+        t.update(t.props.startTime + 101);
+        return expect(t.props.onRepeatComplete).toHaveBeenCalled();
+      });
+      it('should be called just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Tween({
+          duration: 32,
+          onComplete: function() {
+            return cnt++;
+          }
+        }).setStartTime();
+        t.update(t.props.startTime + 33);
+        t.update(t.props.startTime + 33);
+        return expect(cnt).toBe(1);
+      });
+      it('should be called on each repeat period', function() {
+        var cnt, duration, t1, timeShift;
+        cnt = 0;
+        duration = 50;
+        t1 = new Tween({
+          repeat: 2,
+          duration: duration,
+          onRepeatComplete: function() {
+            return cnt++;
+          }
+        });
+        t1.setStartTime();
+        timeShift = 0;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = duration;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 2 * duration;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 3 * duration;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        return expect(cnt).toBe(3);
+      });
+      it('should be called on each repeat period if yoyo', function() {
+        var cnt, duration, t1, timeShift;
+        cnt = 0;
+        duration = 50;
+        t1 = new Tween({
+          yoyo: true,
+          repeat: 2,
+          duration: duration,
+          onRepeatComplete: function() {
+            return cnt++;
+          }
+        });
+        t1.setStartTime();
+        timeShift = 0;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = duration;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 2 * duration;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 3 * duration;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        return expect(cnt).toBe(3);
+      });
+      it('should be called on each repeat period if yoyo and delay', function() {
+        var cnt, delay, duration, t1, timeShift;
+        cnt = 0;
+        duration = 50;
+        delay = 25;
+        t1 = new Tween({
+          delay: delay,
+          yoyo: true,
+          repeat: 3,
+          duration: duration,
+          onRepeatComplete: function() {
+            return cnt++;
+          }
+        });
+        t1.setStartTime();
+        timeShift = 0;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = duration + delay;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 2 * (duration + delay);
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 3 * (duration + delay);
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 4 * (duration + delay);
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        timeShift = 5 * (duration + delay);
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        return expect(cnt).toBe(4);
+      });
+      return it('should be called just once in delay gaps', function() {
+        var cnt, delay, duration, t1, timeShift;
+        cnt = 0;
+        duration = 50;
+        delay = 25;
+        t1 = new Tween({
+          delay: delay,
+          yoyo: true,
+          repeat: 3,
+          duration: duration,
+          onRepeatComplete: function() {
+            return cnt++;
+          }
+        });
+        t1.setStartTime();
+        timeShift = 0;
+        t1.update(t1.props.startTime + timeShift);
+        t1.update(t1.props.startTime + timeShift + (duration / 2));
+        t1.update(t1.props.startTime + timeShift + duration);
+        t1.update(t1.props.startTime + timeShift + duration + 5);
+        t1.update(t1.props.startTime + timeShift + duration + 10);
+        t1.update(t1.props.startTime + timeShift + duration + 15);
+        return expect(cnt).toBe(1);
+      });
+    });
     describe('onFirstUpdate callback ->', function() {
       it('should be defined', function() {
         var t;
@@ -1150,7 +1311,7 @@
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
       });
     });
-    return describe('_complete method ->', function() {
+    describe('_complete method ->', function() {
       it('should set progress to 1', function() {
         var tw;
         tw = new Tween;
@@ -1165,7 +1326,7 @@
         tw._complete(0);
         return expect(tw.setProgress).toHaveBeenCalledWith(0);
       });
-      it('should call onComplete callback', function() {
+      it('should call onRepeatComplete callback', function() {
         var fun, isCalled, tw;
         isCalled = null;
         fun = function() {
@@ -1173,6 +1334,18 @@
         };
         tw = new Tween({
           onComplete: fun
+        });
+        tw._complete();
+        return expect(isCalled).toBe(true);
+      });
+      it('should call onRepeatComplete callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onRepeatComplete: fun
         });
         tw._complete();
         return expect(isCalled).toBe(true);
@@ -1194,6 +1367,39 @@
         tw = new Tween;
         tw._complete();
         return expect(tw.isStarted).toBe(false);
+      });
+    });
+    return describe('_repeatComplete method ->', function() {
+      it('should call onRepeatComplete callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onRepeatComplete: fun
+        });
+        tw._repeatComplete();
+        return expect(isCalled).toBe(true);
+      });
+      it('should call onRepeatComplete callback only once', function() {
+        var cnt, fun, tw;
+        cnt = 0;
+        fun = function() {
+          return cnt++;
+        };
+        tw = new Tween({
+          onRepeatComplete: fun
+        });
+        tw._repeatComplete();
+        tw._repeatComplete();
+        return expect(cnt).toBe(1);
+      });
+      return it('should set isRepeatCompleted to true', function() {
+        var tw;
+        tw = new Tween;
+        tw._repeatComplete();
+        return expect(tw.isRepeatCompleted).toBe(true);
       });
     });
   });

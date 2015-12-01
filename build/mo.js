@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.148.0',
+	  revision: '0.149.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3575,6 +3575,7 @@
 	          easing: "Linear.None",
 	          onStart: null,
 	          onComplete: null,
+	          onRepeatComplete: null,
 	          onReverseComplete: null,
 	          onFirstUpdate: null,
 	          onUpdate: null,
@@ -3627,7 +3628,8 @@
 	      */
 	      value: function setStartTime(time) {
 	        var props = this.props;
-	        this.isCompleted = false;this.isStarted = false;
+	        this.isCompleted = false;this.isRepeatCompleted = false;
+	        this.isStarted = false;
 
 	        time = time == null ? performance.now() : time;
 	        props.startTime = time + props.delay + (props.shiftTime || 0);
@@ -3649,6 +3651,7 @@
 	        if (time >= this.props.startTime && time < this.props.endTime) {
 	          // reset callback flags
 	          this.isOnReverseComplete = false;this.isCompleted = false;
+	          // this.isRepeatCompleted = false;
 	          // onFirtUpdate callback
 
 	          if (!this.isFirstUpdate) {
@@ -3735,11 +3738,30 @@
 	      value: function Complete() {
 	        var progress = arguments[0] === undefined ? 1 : arguments[0];
 	        this.setProgress(progress);
+	        this._repeatComplete();
 	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
 	          this.props.onComplete.apply(this);
 	        }
 	        this.isCompleted = true;this.isStarted = false;
 	        this.isOnReverseComplete = false;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _repeatComplete: {
+
+	      /*
+	        Method call onRepeatComplete calback and set flags.
+	      */
+	      value: function RepeatComplete() {
+	        if (this.isRepeatCompleted) {
+	          return;
+	        }
+	        if (this.props.onRepeatComplete != null && typeof this.props.onRepeatComplete === "function") {
+	          this.props.onRepeatComplete.apply(this);
+	        }
+	        this.isRepeatCompleted = true;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3756,6 +3778,7 @@
 
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
+	          this.isRepeatCompleted = false;
 	          // active zone or larger then end
 	          var elapsed2 = (time - props.startTime) % delayDuration;
 	          var proc = elapsed2 / props.duration;
@@ -3768,6 +3791,7 @@
 	          if (!props.yoyo) {
 	            if (isOnEdge) {
 	              this.setProgress(1);
+	              this._repeatComplete();
 	            }
 	            // proc === 0 means that the time === end of the period,
 	            // and we have already handled this case, so set progress
@@ -3780,6 +3804,7 @@
 	            // set 1 or 0 on periods' edge
 	            if (isOnEdge) {
 	              this.setProgress(isEvenPeriod ? 0 : 1);
+	              this._repeatComplete();
 	            }
 	            // if yoyo then check if the current duration
 	            // period is even. If so set progress, otherwise
@@ -3794,6 +3819,7 @@
 	          // if flip is 0 - bitwise XOR will leave the numbers as is,
 	          // if flip is 1 - bitwise XOR will inverse the numbers
 	          this.setProgress(this.prevTime < time ? 1 ^ flipCoef : 0 ^ flipCoef);
+	          this._repeatComplete();
 	        }
 	      },
 	      writable: true,

@@ -20,6 +20,7 @@ var Tween = class Tween {
       easing:                 'Linear.None',
       onStart:                null,
       onComplete:             null,
+      onRepeatComplete:       null,
       onReverseComplete:      null,
       onFirstUpdate:          null,
       onUpdate:               null,
@@ -56,7 +57,8 @@ var Tween = class Tween {
   */
   setStartTime(time) {
     var props = this.props;
-    this.isCompleted = false; this.isStarted = false
+    this.isCompleted = false; this.isRepeatCompleted = false;
+    this.isStarted = false;
     
     time = (time == null) ? performance.now() : time;
     props.startTime = time + props.delay + (props.shiftTime || 0);
@@ -73,7 +75,8 @@ var Tween = class Tween {
     */
     if ((time >= this.props.startTime) && (time < this.props.endTime)) {
       // reset callback flags
-      this.isOnReverseComplete = false; this.isCompleted = false
+      this.isOnReverseComplete = false; this.isCompleted = false;
+      // this.isRepeatCompleted = false;
       // onFirtUpdate callback
       
       if (!this.isFirstUpdate) {
@@ -151,11 +154,23 @@ var Tween = class Tween {
   */
   _complete(progress = 1) {
     this.setProgress(progress);
+    this._repeatComplete();
     if (this.props.onComplete != null && typeof this.props.onComplete === 'function') {
       this.props.onComplete.apply(this);
     }
     this.isCompleted = true; this.isStarted = false;
     this.isOnReverseComplete = false;
+  }
+
+  /*
+    Method call onRepeatComplete calback and set flags.
+  */
+  _repeatComplete() {
+    if (this.isRepeatCompleted) { return; }
+    if (this.props.onRepeatComplete != null && typeof this.props.onRepeatComplete === 'function') {
+      this.props.onRepeatComplete.apply(this);
+    }
+    this.isRepeatCompleted = true;
   }
 
   _updateInActiveArea(time) {
@@ -168,6 +183,7 @@ var Tween = class Tween {
 
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
+      this.isRepeatCompleted = false;
       // active zone or larger then end
       var elapsed2 = ( time - props.startTime) % delayDuration;
       var proc = elapsed2 / props.duration;
@@ -175,10 +191,13 @@ var Tween = class Tween {
       // time is larger then the first period
       // AND
       // previous period is smaller then the current one
-      var isOnEdge = periodNumber > 0 && (prevPeriodNumber < periodNumber);
+      var isOnEdge = (periodNumber > 0) && (prevPeriodNumber < periodNumber);
       // if not yoyo then set the plain progress
       if (!props.yoyo) {
-          if ( isOnEdge ) { this.setProgress(1); }
+          if ( isOnEdge ) {
+            this.setProgress(1);
+            this._repeatComplete();
+          }
           // proc === 0 means that the time === end of the period,
           // and we have already handled this case, so set progress
           // only if proc > 0
@@ -186,7 +205,10 @@ var Tween = class Tween {
       } else {
         var isEvenPeriod = (periodNumber % 2 === 0);
         // set 1 or 0 on periods' edge
-        if ( isOnEdge ) { this.setProgress( (isEvenPeriod) ? 0 : 1 ); }
+        if ( isOnEdge ) {
+          this.setProgress( (isEvenPeriod) ? 0 : 1 );
+          this._repeatComplete();
+        }
         // if yoyo then check if the current duration
         // period is even. If so set progress, otherwise
         // set inverted proc value
@@ -200,6 +222,7 @@ var Tween = class Tween {
       // if flip is 0 - bitwise XOR will leave the numbers as is,
       // if flip is 1 - bitwise XOR will inverse the numbers
       this.setProgress( (this.prevTime < time) ? 1 ^ flipCoef : 0 ^ flipCoef );
+      this._repeatComplete();
     }
   }
 
