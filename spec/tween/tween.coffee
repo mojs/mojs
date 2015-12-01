@@ -202,6 +202,128 @@ describe 'Tween ->', ->
       t.setProgress .5
       expect(easedProgress).toBe mojs.easing.cubic.out progress
 
+    it 'should be called with 1 on each repeat period', ()->
+      progress = null
+      duration = 50
+      t1 = new Tween
+        repeat:     2
+        duration:   duration
+        onUpdate:(p)-> progress = p
+
+      t1.start()
+      timeShift = 0
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration)
+
+      timeShift = duration
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration)
+
+      expect(progress).toBe(1)
+
+      timeShift = 2*duration
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration)
+
+      expect(progress).toBe(1)
+
+    it 'should be called with 1 on each repeat period // if yoyo', ()->
+      duration = 50
+      t1 = new Tween
+        yoyo:       true
+        repeat:     2
+        duration:   duration
+
+      t1.start()
+
+      spyOn t1, 'onUpdate'
+      timeShift = 0
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      expect(t1.onUpdate).toHaveBeenCalledWith 1, 1
+
+    it 'should be called with 1 on each repeat period // if yoyo in further periods',->
+      duration = 50
+      t1 = new Tween
+        yoyo:       true
+        repeat:     2
+        duration:   duration
+
+      t1.start()
+
+      timeShift = 0
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      timeShift = duration + 10
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      spyOn t1, 'onUpdate'
+
+      timeShift = 2*duration + 10
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      expect(t1.onUpdate).toHaveBeenCalledWith 1, 1
+
+    it 'should be called with 0 on each repeat period // if yoyo', ()->
+      duration = 50
+      t1 = new Tween
+        yoyo:       true
+        repeat:     2
+        duration:   duration
+        # onUpdate:(p)-> console.log p
+
+      t1.start()
+
+      timeShift = 0
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      spyOn t1, 'onUpdate'
+
+      timeShift = duration + 10
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      expect(t1.onUpdate).toHaveBeenCalledWith 0, 0
+
+    it 'should end at 0 at the end odd period in if yoyo', ()->
+      progress = null
+      duration = 50
+      t1 = new Tween
+        isIt:       true
+        yoyo:       true
+        repeat:     1
+        duration:   duration
+        onUpdate:(p)-> progress = p
+
+      t1.start()
+
+      timeShift = 0
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      timeShift = duration + 10
+      t1.update t1.props.startTime + timeShift
+      t1.update t1.props.startTime + timeShift + (duration/2)
+      t1.update t1.props.startTime + timeShift + (duration) + 10
+
+      expect(progress).toBe 0
+
+
   describe 'onStart callback ->', ->
     it 'should be defined', ->
       t = new Tween(onStart: ->)
@@ -381,6 +503,39 @@ describe 'Tween ->', ->
       tm.update t1.props.startTime + 220
 
       expect(cnt).toBe(2)
+
+    # redo to onRepeatComplete callback
+    # it 'should be called on each repeat period', ()->
+    #   cnt = 0
+    #   duration = 50
+    #   t1 = new Tween
+    #     isIt:       true
+    #     repeat:     2
+    #     duration:   duration
+    #     onComplete: -> cnt++
+
+    #   t1.start()
+    #   timeShift = 0
+    #   t1.update t1.props.startTime + timeShift
+    #   t1.update t1.props.startTime + timeShift + (duration/2)
+    #   t1.update t1.props.startTime + timeShift + (duration)
+
+    #   timeShift = duration
+    #   t1.update t1.props.startTime + timeShift
+    #   t1.update t1.props.startTime + timeShift + (duration/2)
+    #   t1.update t1.props.startTime + timeShift + (duration)
+
+    #   timeShift = 2*duration
+    #   t1.update t1.props.startTime + timeShift
+    #   t1.update t1.props.startTime + timeShift + (duration/2)
+    #   t1.update t1.props.startTime + timeShift + (duration)
+
+    #   timeShift = 3*duration
+    #   t1.update t1.props.startTime + timeShift
+    #   t1.update t1.props.startTime + timeShift + (duration/2)
+    #   t1.update t1.props.startTime + timeShift + (duration)
+
+    #   expect(cnt).toBe(3)
 
   describe 'onFirstUpdate callback ->', ->
     it 'should be defined', ->
@@ -676,6 +831,11 @@ describe 'Tween ->', ->
       spyOn tw, 'setProgress'
       tw._complete()
       expect(tw.setProgress).toHaveBeenCalledWith 1
+    it 'should set progress to number that was passed', ->
+      tw = new Tween
+      spyOn tw, 'setProgress'
+      tw._complete(0)
+      expect(tw.setProgress).toHaveBeenCalledWith 0
     it 'should call onComplete callback', ->
       isCalled = null
       fun = -> isCalled = true
