@@ -453,7 +453,7 @@ class MotionPath
     !@props.isRunLess and @startTween()
     @props.isPresetPosition and @setProgress(0, true)
 
-  startTween:-> setTimeout (=> @timeline?.start()), 1
+  startTween:-> setTimeout (=> @timeline?.play()), 1
 
   setProgress:(p, isInit)->
     len = @startLen+if !@props.isReverse then p*@slicedLen else (1-p)*@slicedLen

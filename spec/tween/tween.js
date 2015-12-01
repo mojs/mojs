@@ -73,13 +73,13 @@
         return expect(t.props.isChained).toBe(false);
       });
     });
-    describe('start ->', function() {
+    describe('setStartTime ->', function() {
       it('should calculate start time', function() {
         var expectedTime, t;
         t = new Tween({
           duration: 1000,
           delay: 500
-        }).start();
+        }).setStartTime();
         expectedTime = performance.now() + 500;
         expect(t.props.startTime).toBeGreaterThan(expectedTime - 50);
         return expect(t.props.startTime).not.toBeGreaterThan(expectedTime);
@@ -88,7 +88,7 @@
         var t;
         t = new Tween({
           duration: 1000
-        }).start(1);
+        }).setStartTime(1);
         return expect(t.props.startTime).toBe(1);
       });
       it('should calculate end time', function() {
@@ -98,7 +98,7 @@
         t = new Tween({
           duration: duration,
           delay: delay
-        }).start();
+        }).setStartTime();
         endTime = t.props.startTime + t.props.repeatTime - t.props.delay;
         return expect(t.props.endTime).toBe(endTime);
       });
@@ -110,7 +110,7 @@
           duration: duration,
           delay: delay,
           repeat: 2
-        }).start();
+        }).setStartTime();
         endTime = t.props.startTime + t.props.repeatTime - t.props.delay;
         return expect(t.props.endTime).toBe(endTime);
       });
@@ -122,7 +122,7 @@
           duration: duration,
           delay: delay,
           repeat: 2
-        }).start();
+        }).setStartTime();
         time = t.props.startTime + (3 * (duration + delay)) - delay;
         return expect(t.props.endTime).toBe(time);
       });
@@ -136,7 +136,7 @@
           repeat: 2
         });
         t.setProp('shiftTime', 500);
-        t.start();
+        t.setStartTime();
         expectedTime = performance.now() + 500 + delay;
         expect(t.props.startTime).toBeGreaterThan(expectedTime - 50);
         expect(t.props.startTime).not.toBeGreaterThan(expectedTime);
@@ -148,12 +148,12 @@
         t = new Tween({
           duration: 20,
           repeat: 2
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 10);
         t.update(t.props.startTime + 60);
         expect(t.isCompleted).toBe(true);
         expect(t.isStarted).toBe(false);
-        t.start();
+        t.setStartTime();
         expect(t.isCompleted).toBe(false);
         return expect(t.isStarted).toBe(false);
       });
@@ -165,7 +165,7 @@
           duration: 1000,
           delay: 500
         });
-        t.start();
+        t.setStartTime();
         time = t.props.startTime + 200;
         t.update(time);
         return expect(t.progress).toBeCloseTo(.2, 5);
@@ -177,7 +177,7 @@
           delay: 200,
           repeat: 2
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 1400);
         expect(t.progress).toBeCloseTo(.2);
         t.update(t.props.startTime + 2700);
@@ -192,7 +192,7 @@
           delay: 200,
           repeat: 2
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 300);
         t.update(t.props.startTime + 1100);
         return expect(t.progress).toBe(1);
@@ -204,7 +204,7 @@
           delay: 200,
           repeat: 2
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 1300);
         t.update(t.props.startTime + 1100);
         return expect(t.progress).toBe(0);
@@ -216,7 +216,7 @@
           delay: 200,
           repeat: 2
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 1000);
         return expect(t.progress).toBeCloseTo(1, 5);
       });
@@ -226,7 +226,7 @@
           duration: 1000,
           delay: 200
         });
-        t.start();
+        t.setStartTime();
         returnValue = t.update(t.props.startTime + 1000);
         expect(t.progress).toBeCloseTo(1, 5);
         expect(t.isCompleted).toBe(true);
@@ -238,7 +238,7 @@
           duration: 1000,
           delay: 200
         });
-        t.start();
+        t.setStartTime();
         spyOn(t, '_complete').and.callThrough();
         t.update(t.props.startTime + 20, true);
         t.update(t.props.startTime - 20, true);
@@ -251,7 +251,7 @@
           duration: 1000,
           onUpdate: function() {}
         });
-        t.start();
+        t.setStartTime();
         spyOn(t, 'onUpdate');
         t.update(t.props.startTime - 500);
         return expect(t.onUpdate).not.toHaveBeenCalled();
@@ -265,7 +265,7 @@
             return cnt++;
           }
         });
-        t.start();
+        t.setStartTime();
         t.update(performance.now() + 1500);
         return expect(cnt).toBe(1);
       });
@@ -275,7 +275,7 @@
           duration: 1000,
           delay: 500
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 1200);
         return expect(t.progress).toBe(1);
       });
@@ -296,7 +296,7 @@
           onUpdate: function() {}
         });
         spyOn(t, 'onUpdate');
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 500);
         return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress);
       });
@@ -308,7 +308,7 @@
             return isRightScope = this instanceof Tween;
           }
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 200);
         return expect(isRightScope).toBe(true);
       });
@@ -320,7 +320,7 @@
           onUpdate: function() {}
         });
         spyOn(t, 'onUpdate').and.callThrough();
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + t.props.duration + 50);
         t.update(t.props.startTime + t.props.duration + 100);
         t.update(t.props.startTime + t.props.duration + 150);
@@ -351,7 +351,7 @@
             return progress = p;
           }
         });
-        t1.start();
+        t1.setStartTime();
         timeShift = 0;
         t1.update(t1.props.startTime + timeShift);
         t1.update(t1.props.startTime + timeShift + (duration / 2));
@@ -375,7 +375,7 @@
           repeat: 2,
           duration: duration
         });
-        t1.start();
+        t1.setStartTime();
         spyOn(t1, 'onUpdate');
         timeShift = 0;
         t1.update(t1.props.startTime + timeShift);
@@ -391,7 +391,7 @@
           repeat: 2,
           duration: duration
         });
-        t1.start();
+        t1.setStartTime();
         timeShift = 0;
         t1.update(t1.props.startTime + timeShift);
         t1.update(t1.props.startTime + timeShift + (duration / 2));
@@ -415,7 +415,7 @@
           repeat: 2,
           duration: duration
         });
-        t1.start();
+        t1.setStartTime();
         timeShift = 0;
         t1.update(t1.props.startTime + timeShift);
         t1.update(t1.props.startTime + timeShift + (duration / 2));
@@ -440,7 +440,7 @@
             return progress = p;
           }
         });
-        t1.start();
+        t1.setStartTime();
         timeShift = 0;
         t1.update(t1.props.startTime + timeShift);
         t1.update(t1.props.startTime + timeShift + (duration / 2));
@@ -458,7 +458,7 @@
         t = new Tween({
           onStart: function() {}
         });
-        t.start();
+        t.setStartTime();
         return expect(t.props.onStart).toBeDefined();
       });
       it('should call onStart callback', function() {
@@ -467,7 +467,7 @@
           duration: 32,
           onStart: function() {}
         });
-        t.start();
+        t.setStartTime();
         spyOn(t.props, 'onStart');
         t.update(t.props.startTime + 1);
         return expect(t.props.onStart).toHaveBeenCalled();
@@ -480,7 +480,7 @@
           onStart: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 1);
         t.update(t.props.startTime + 1);
         return expect(cnt).toBe(1);
@@ -493,7 +493,7 @@
             return isRightScope = this instanceof Tween;
           }
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 1);
         return expect(isRightScope).toBe(true);
       });
@@ -511,7 +511,7 @@
         t = new Tween({
           duration: 100,
           onReverseComplete: function() {}
-        }).start();
+        }).setStartTime();
         spyOn(t.props, 'onReverseComplete');
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime);
@@ -525,7 +525,7 @@
           onReverseComplete: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime);
         t.update(t.props.startTime - 20);
@@ -541,7 +541,7 @@
           onReverseComplete: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime);
         t.update(t.props.startTime - 20);
@@ -557,7 +557,7 @@
           onReverseComplete: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime);
         t.update(t.props.startTime - 20);
@@ -573,7 +573,7 @@
           onReverseComplete: function() {
             return isRightScope = this instanceof Tween;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime);
         return expect(isRightScope).toBe(true);
@@ -584,7 +584,7 @@
           duration: 100,
           onReverseComplete: function() {},
           onUpdate: function() {}
-        }).start();
+        }).setStartTime();
         spyOn(t, 'onUpdate');
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime - 20);
@@ -598,7 +598,7 @@
           isChained: true,
           onReverseComplete: function() {},
           onUpdate: function() {}
-        }).start();
+        }).setStartTime();
         spyOn(t, 'onUpdate');
         t.update(t.props.startTime + 55);
         t.update(t.props.startTime - 20);
@@ -618,7 +618,7 @@
         t = new Tween({
           duration: 100,
           onComplete: function() {}
-        }).start();
+        }).setStartTime();
         spyOn(t.props, 'onComplete');
         t.update(t.props.startTime + 101);
         return expect(t.props.onComplete).toHaveBeenCalled();
@@ -631,7 +631,7 @@
           onComplete: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 33);
         t.update(t.props.startTime + 33);
         return expect(cnt).toBe(1);
@@ -641,7 +641,7 @@
         t = new Tween({
           duration: 32,
           onComplete: function() {}
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 10);
         t.update(t.props.endTime);
         expect(t.isCompleted).toBe(true);
@@ -657,7 +657,7 @@
             return isRightScope = this instanceof Tween;
           }
         });
-        t.start().update(t.props.startTime + 2);
+        t.setStartTime().update(t.props.startTime + 2);
         return expect(isRightScope).toBe(true);
       });
       it('should fire after the last onUpdate', function(dfr) {
@@ -673,7 +673,7 @@
             return dfr();
           }
         });
-        return t.start().update(t.props.startTime + 2);
+        return t.setStartTime().update(t.props.startTime + 2);
       });
       return it('should fire only once if inside timline', function() {
         var cnt, t1, t2, tm;
@@ -721,7 +721,7 @@
         t = new Tween({
           duration: 100,
           onFirstUpdate: function() {}
-        }).start();
+        }).setStartTime();
         spyOn(t.props, 'onFirstUpdate');
         t.update(t.props.startTime + 3);
         return expect(t.props.onFirstUpdate).toHaveBeenCalled();
@@ -734,7 +734,7 @@
           onFirstUpdate: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 3);
         t.update(t.props.startTime + 3);
         t.update(t.props.startTime + 3);
@@ -749,7 +749,7 @@
             return isRightScope = this instanceof Tween;
           }
         });
-        t.start().update(t.props.startTime + 2);
+        t.setStartTime().update(t.props.startTime + 2);
         return expect(isRightScope).toBe(true);
       });
       it('should be called after progress went further the timeline', function() {
@@ -758,7 +758,7 @@
         t = new Tween({
           duration: 10,
           onFirstUpdate: function() {}
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 1);
         t.update(t.props.startTime + 12);
         spyOn(t.props, 'onFirstUpdate');
@@ -777,7 +777,7 @@
           onFirstUpdate: function() {
             return isOnStartCalled = isOnStart;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 1);
         return expect(isOnStartCalled).toBe(false);
       });
@@ -787,7 +787,7 @@
         t = new Tween({
           duration: 10,
           onFirstUpdate: function() {}
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 1);
         t.update(t.props.startTime + -1);
         spyOn(t.props, 'onFirstUpdate');
@@ -809,7 +809,7 @@
         t = new Tween({
           duration: 100,
           onFirstUpdateBackward: function() {}
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 500);
         spyOn(t.props, 'onFirstUpdateBackward');
         t.update(t.props.startTime + 40);
@@ -823,7 +823,7 @@
           onFirstUpdateBackward: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.prevTime = t.props.startTime + 103;
         t.update(t.props.startTime + 90);
         t.update(t.props.startTime + 80);
@@ -839,7 +839,7 @@
             return isRightScope = this instanceof Tween;
           }
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 12);
         t.update(t.props.startTime + 9);
         return expect(isRightScope).toBe(true);
@@ -849,7 +849,7 @@
         t = new Tween({
           duration: 10,
           onFirstUpdateBackward: function() {}
-        }).start();
+        }).setStartTime();
         t.prevTime = t.props.startTime + 11;
         t.update(t.props.startTime + 9);
         t.update(t.props.startTime + 12);
@@ -862,7 +862,7 @@
         t = new Tween({
           duration: 10,
           onFirstUpdateBackward: function() {}
-        }).start();
+        }).setStartTime();
         spyOn(t.props, 'onFirstUpdateBackward');
         t.update(t.props.startTime + 1);
         return expect(t.props.onFirstUpdateBackward).not.toHaveBeenCalled();
@@ -872,7 +872,7 @@
         t = new Tween({
           duration: 100,
           onFirstUpdateBackward: function() {}
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 500);
         spyOn(t.props, 'onFirstUpdateBackward');
         t.update(t.props.startTime - 40);
@@ -886,7 +886,7 @@
           onFirstUpdateBackward: function() {
             return cnt++;
           }
-        }).start();
+        }).setStartTime();
         t.update(t.props.startTime + 500);
         t.update(t.props.startTime - 40);
         t.update(t.props.startTime - 100);
@@ -907,7 +907,7 @@
           repeat: 2,
           duration: 10,
           yoyo: true
-        }).start();
+        }).setStartTime();
         time = t.props.startTime;
         t.update(time + 1);
         expect(t.progress).toBe(.1);
@@ -947,7 +947,7 @@
             return p = progress;
           }
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime - 5);
         t.update(t.props.startTime);
         t.update(t.props.startTime + (duration / 2));
@@ -974,7 +974,7 @@
           easing: 'Sin.Out',
           duration: 100
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 50);
         return expect(t.easedProgress).toBe(easing.sin.out(t.progress));
       });
@@ -1002,7 +1002,7 @@
         t = new Tween({
           easing: easings.one
         });
-        t.start();
+        t.setStartTime();
         t.update(t.props.startTime + 40);
         return setTimeout((function() {
           expect(easings.one).toHaveBeenCalled();
@@ -1074,30 +1074,30 @@
       it('should get the start time', function() {
         var t;
         t = new Tween;
-        t.run();
+        t.play();
         expect(t.props.startTime).toBeDefined();
         return expect(t.props.endTime).toBe(t.props.startTime + t.props.repeatTime);
       });
       it('should call the setStartTime method', function() {
         var t, time;
         t = new Tween;
-        spyOn(t, 'start');
+        spyOn(t, 'setStartTime');
         time = 0;
-        t.run(time);
-        return expect(t.start).toHaveBeenCalledWith(time);
+        t.play(time);
+        return expect(t.setStartTime).toHaveBeenCalledWith(time);
       });
       it('should add itself to tweener', function() {
         var t;
         t = new Tween;
         spyOn(tweener, 'add');
-        t.run();
+        t.play();
         return expect(tweener.add).toHaveBeenCalled();
       });
       return it('should not add itself to tweener if time was passed', function() {
         var t;
         t = new Tween;
         spyOn(tweener, 'add');
-        t.run(10239123);
+        t.play(10239123);
         return expect(tweener.add).not.toHaveBeenCalled();
       });
     });
@@ -1108,19 +1108,19 @@
         timeline = new Tween({
           duration: 2000
         });
-        timeline.run();
+        timeline.play();
         timeline._removeFromTweener();
         return expect(tweener.tweens.length).toBe(0);
       });
     });
     describe('stop method', function() {
-      it('should call r_emoveFromTweener method with self', function() {
+      it('should call removeFromTweener method with self', function() {
         var timeline;
         tweener.removeAll();
         timeline = new Tween({
           duration: 2000
         });
-        timeline.run();
+        timeline.play();
         spyOn(timeline, '_removeFromTweener');
         timeline.stop();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
@@ -1131,7 +1131,7 @@
         timeline = new Tween({
           duration: 2000
         });
-        timeline.run();
+        timeline.play();
         spyOn(timeline, 'setProgress');
         timeline.stop();
         return expect(timeline.setProgress).toHaveBeenCalledWith(0);
@@ -1144,7 +1144,7 @@
         timeline = new Tween({
           duration: 2000
         });
-        timeline.run();
+        timeline.play();
         spyOn(timeline, '_removeFromTweener');
         timeline.pause();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();

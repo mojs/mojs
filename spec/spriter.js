@@ -182,9 +182,9 @@
         sp = new Spriter({
           el: div
         });
-        spyOn(sp._tween, 'start');
+        spyOn(sp._timeline, 'play');
         return setTimeout(function() {
-          expect(sp._tween.start).toHaveBeenCalled();
+          expect(sp._timeline.play).toHaveBeenCalled();
           return dfr();
         }, 10);
       });
@@ -199,9 +199,9 @@
           el: div,
           isRunLess: true
         });
-        spyOn(sp._tween, 'start');
+        spyOn(sp._timeline, 'play');
         return setTimeout(function() {
-          expect(sp._tween.start).not.toHaveBeenCalled();
+          expect(sp._timeline.play).not.toHaveBeenCalled();
           return dfr();
         }, 10);
       });
@@ -354,9 +354,9 @@
           el: div,
           isRunLess: true
         });
-        spyOn(sp._tween, 'start');
+        spyOn(sp._timeline, 'play');
         sp.run();
-        return expect(sp._tween.start).toHaveBeenCalled();
+        return expect(sp._timeline.play).toHaveBeenCalled();
       });
     });
   });

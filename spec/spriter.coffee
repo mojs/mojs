@@ -110,9 +110,9 @@ describe 'Spriter module ->', ->
       div2 = document.createElement('div')
       div.appendChild(div1); div.appendChild div2
       sp = new Spriter el: div
-      spyOn sp._tween, 'start'
+      spyOn sp._timeline, 'play'
       setTimeout ->
-        expect(sp._tween.start).toHaveBeenCalled()
+        expect(sp._timeline.play).toHaveBeenCalled()
         dfr()
       , 10
     it 'should not start tween if isRunLess passed', (dfr)->
@@ -121,9 +121,9 @@ describe 'Spriter module ->', ->
       div2 = document.createElement('div')
       div.appendChild(div1); div.appendChild div2
       sp = new Spriter el: div, isRunLess: true
-      spyOn sp._tween, 'start'
+      spyOn sp._timeline, 'play'
       setTimeout ->
-        expect(sp._tween.start).not.toHaveBeenCalled()
+        expect(sp._timeline.play).not.toHaveBeenCalled()
         dfr()
       , 10
   describe '_setProgress method', ->
@@ -215,9 +215,9 @@ describe 'Spriter module ->', ->
       div.appendChild(div1); div.appendChild(div2); div.appendChild(div3)
       div.appendChild(div4)
       sp = new Spriter el: div, isRunLess: true
-      spyOn sp._tween, 'start'
+      spyOn sp._timeline, 'play'
       sp.run()
-      expect(sp._tween.start).toHaveBeenCalled()
+      expect(sp._timeline.play).toHaveBeenCalled()
 
 
 

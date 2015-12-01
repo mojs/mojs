@@ -79,7 +79,7 @@ class Stagger
   # ---
 
   # Method to start timeline.
-  run:-> @timeline.start()
+  run:-> @timeline.play()
 
 class StaggerWrapper
   constructor:(Module)->

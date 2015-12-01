@@ -212,9 +212,9 @@
         };
         s = new Stagger(options);
         s.init(options, mojs.MotionPath);
-        spyOn(s.timeline, 'start');
+        spyOn(s.timeline, 'play');
         s.run();
-        return expect(s.timeline.start).toHaveBeenCalled();
+        return expect(s.timeline.play).toHaveBeenCalled();
       });
     });
     describe('stagger callbacks ->', function() {

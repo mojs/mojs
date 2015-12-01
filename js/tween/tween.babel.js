@@ -54,7 +54,7 @@ var Tween = class Tween {
     @param Number(Timestamp), Null
     @returns this
   */
-  start(time) {
+  setStartTime(time) {
     var props = this.props;
     this.isCompleted = false; this.isStarted = false
     
@@ -251,8 +251,9 @@ var Tween = class Tween {
     @param  {Number} Start time
     @return {Object} Self
   */
-  run(time) {
-    this.start(time); !time && (t.add(this)); //@state = 'play'
+  play(time) {
+    this.setStartTime(time);
+    !time && (t.add(this)); // this.state = 'play'
     return this;
   }
 

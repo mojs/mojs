@@ -232,7 +232,7 @@ class Timeline {
     }
   }
 
-  start(time) {
+  play(time) {
     this.setStartTime(time);
     if (!time) { t.add(this); this.state = 'play'; };
     return this;
@@ -245,7 +245,7 @@ class Timeline {
     this.state = 'stop'; return this;
   }
 
-  restart() { this.stop(); this.start(); return this; }
+  restart() { this.stop(); this.play(); return this; }
 
   removeFromTweener() { t.remove(this); return this; }
 
@@ -256,7 +256,7 @@ class Timeline {
   startTimelines(time) {
     var i = this.timelines.length;
     ( time == null) && (time = this.props.startTime);
-    while(i--) { this.timelines[i].start(time); }
+    while(i--) { this.timelines[i].setStartTime(time); }
   }
 
   setProgress(progress) {

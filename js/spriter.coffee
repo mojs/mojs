@@ -109,7 +109,7 @@ class Spriter
   # @method run
   # @param  {Object} New options
   # @todo   Implement new object merging
-  run:(o)-> @_timeline.start()
+  run:(o)-> @_timeline.play()
   # ---
 
   # Method to extend _props by options(this.o)
@@ -148,7 +148,7 @@ class Spriter
   # Method to start tween
   # 
   # @method _startTween
-  _startTween:-> setTimeout (=> @_timeline.start()), 1
+  _startTween:-> setTimeout (=> @_timeline.play()), 1
   # ---
 
   # Method to set progress of the sprite

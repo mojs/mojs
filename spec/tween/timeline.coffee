@@ -149,7 +149,7 @@ describe 'Timeline ->', ->
   #       duration: 50,
   #       onUpdate:(p)-> proc = p
   #       onComplete:-> expect(proc).toBe(1); dfr()
-  #     t.start()
+  #     t.play()
 
   describe 'startTime ->', ->
     it 'should set startTime', ->
@@ -284,43 +284,43 @@ describe 'Timeline ->', ->
       t.recalcDuration()
       expect(t.props.time).toBe 1000
     
-  describe 'start method ->', ->
+  describe 'play method ->', ->
     it 'should get the start time',->
       t = new Timeline
-      t.start()
+      t.play()
       expect(t.props.startTime).toBeDefined()
       expect(t.props.endTime).toBe t.props.startTime + t.props.repeatTime
     it 'should call the setStartTime method',->
       t = new Timeline
       spyOn t, 'setStartTime'
       time = 0
-      t.start time
+      t.play time
       expect(t.setStartTime).toHaveBeenCalledWith time
     it 'should start every timeline',->
       it 'should update the current time on every timeline',->
       t = new Timeline
       t.add new Tween duration: 500, delay: 200
       t.add new Tween duration: 500, delay: 100
-      spyOn t.timelines[0], 'start'
-      spyOn t.timelines[1], 'start'
-      t.start()
-      expect(t.timelines[0].start).toHaveBeenCalledWith t.props.startTime
-      expect(t.timelines[1].start).toHaveBeenCalledWith t.props.startTime
+      spyOn t.timelines[0], 'setStartTime'
+      spyOn t.timelines[1], 'setStartTime'
+      t.play()
+      expect(t.timelines[0].setStartTime).toHaveBeenCalledWith t.props.startTime
+      expect(t.timelines[1].setStartTime).toHaveBeenCalledWith t.props.startTime
     it 'should add itself to tweener',->
       t = new Timeline
       spyOn tweener, 'add'
-      t.start()
+      t.play()
       expect(tweener.add).toHaveBeenCalled()
     it 'should not add itself to tweener if time was passed',->
       t = new Timeline
       spyOn tweener, 'add'
-      t.start 10239123
+      t.play 10239123
       expect(tweener.add).not.toHaveBeenCalled()
     it 'should set state to "play"',->
       tweener.tweens = []
       t = new Timeline
       timeline = new Tween duration: 2000
-      t.add(timeline); t.start()
+      t.add(timeline); t.play()
       expect(t.state).toBe 'play'
     
   describe 'removeFromTweener method ->', ->
@@ -329,7 +329,7 @@ describe 'Timeline ->', ->
       t = new Timeline
       timeline = new Tween duration: 2000
       t.add timeline
-      t.start()
+      t.play()
       t.removeFromTweener()
       expect(tweener.tweens.length).toBe 0
 
@@ -339,7 +339,7 @@ describe 'Timeline ->', ->
       t = new Timeline
       timeline = new Tween duration: 2000
       t.add timeline
-      t.start()
+      t.play()
       spyOn t, 'removeFromTweener'
       t.pause()
       expect(t.removeFromTweener).toHaveBeenCalled()
@@ -347,7 +347,7 @@ describe 'Timeline ->', ->
       tweener.tweens = []
       t = new Timeline
       timeline = new Tween duration: 2000
-      t.add(timeline); t.start(); t.pause()
+      t.add(timeline); t.play(); t.pause()
       expect(t.state).toBe 'pause'
   
   describe 'stop method ->', ->
@@ -355,7 +355,7 @@ describe 'Timeline ->', ->
       tweener.tweens = []; t = new Timeline
       timeline = new Tween duration: 2000
       t.add timeline
-      t.start()
+      t.play()
       spyOn t, 'removeFromTweener'
       t.stop()
       expect(t.removeFromTweener).toHaveBeenCalled()
@@ -363,7 +363,7 @@ describe 'Timeline ->', ->
       tweener.tweens = []; t = new Timeline
       timeline = new Tween duration: 2000
       t.add timeline
-      t.start()
+      t.play()
       spyOn t, 'setProgress'
       t.stop()
       expect(t.setProgress).toHaveBeenCalledWith 0
@@ -371,7 +371,7 @@ describe 'Timeline ->', ->
       tweener.tweens = []
       t = new Timeline
       timeline = new Tween duration: 2000
-      t.add(timeline); t.start(); t.stop()
+      t.add(timeline); t.play(); t.stop()
       expect(t.state).toBe 'stop'
 
   describe 'restart method ->', ->
@@ -379,18 +379,18 @@ describe 'Timeline ->', ->
       tweener.tweens = []
       t = new Timeline
       timeline = new Tween duration: 2000
-      t.add(timeline); t.start()
+      t.add(timeline); t.play()
       spyOn t, 'stop'
       t.restart()
       expect(t.stop).toHaveBeenCalled()
-    it 'should call start method',->
+    it 'should call play method',->
       tweener.tweens = []
       t = new Timeline
       timeline = new Tween duration: 2000
-      t.add(timeline); t.start()
-      spyOn t, 'start'
+      t.add(timeline); t.play()
+      spyOn t, 'play'
       t.restart()
-      expect(t.start).toHaveBeenCalled()
+      expect(t.play).toHaveBeenCalled()
 
   describe 'onReverseComplete callback ->', ->
     it 'should be defined', ->
@@ -399,14 +399,14 @@ describe 'Timeline ->', ->
     it 'should call onReverseComplete callback', ()->
       t = new Timeline(onReverseComplete:->)
       t.add new Tween duration: 10
-      spyOn(t.o, 'onReverseComplete'); t.start()
+      spyOn(t.o, 'onReverseComplete'); t.play()
       t.setProgress .5
       t.setProgress 0
       expect(t.o.onReverseComplete).toHaveBeenCalled()
     it 'should not be called on start', ()->
       t = new Timeline(onReverseComplete:->)
       t.add new Tween duration: 10
-      spyOn(t.o, 'onReverseComplete'); t.start()
+      spyOn(t.o, 'onReverseComplete'); t.play()
       t.setProgress 0
       expect(t.o.onReverseComplete).not.toHaveBeenCalled()
 
@@ -417,7 +417,7 @@ describe 'Timeline ->', ->
     it 'should call onComplete callback', (dfr)->
       t = new Timeline(onComplete:->)
       t.add new Tween duration: 10
-      spyOn(t.o, 'onComplete'); t.start()
+      spyOn(t.o, 'onComplete'); t.play()
       setTimeout ->
         expect(t.o.onComplete).toHaveBeenCalled(); dfr()
       , 200
@@ -447,7 +447,7 @@ describe 'Timeline ->', ->
       isRightScope = false
       t = new Timeline onComplete:-> isRightScope = @ instanceof Timeline
       t.add new Tween duration: 20
-      t.start()
+      t.play()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
     it 'should fire after the last onUpdate', (dfr)->
       proc = 0
@@ -455,7 +455,7 @@ describe 'Timeline ->', ->
         onUpdate:(p)-> proc = p
         onComplete:-> expect(proc).toBe(1); dfr()
       tween.add new Tween duration: 20
-      tween.start()
+      tween.play()
       tween.update tween.props.startTime + 22
     it 'should reset flags', ->
       t = new Timeline(onComplete:->)
@@ -475,7 +475,7 @@ describe 'Timeline ->', ->
     it 'should call onUpdate callback', (dfr)->
       t = new Timeline(onUpdate:->)
       t.add new Tween duration: 20
-      spyOn(t, 'onUpdate'); t.start()
+      spyOn(t, 'onUpdate'); t.play()
       setTimeout ->
         expect(t.onUpdate).toHaveBeenCalled(); dfr()
       , 100
@@ -483,7 +483,7 @@ describe 'Timeline ->', ->
       isRightScope = false
       t = new Timeline onUpdate:-> isRightScope = @ instanceof Timeline
       t.add new Tween duration: 20
-      t.start()
+      t.play()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 100
     it 'should pass the current progress', ->
       progress = null
@@ -495,13 +495,13 @@ describe 'Timeline ->', ->
     it 'should not run if time is less then startTime', ->
       t = new Timeline onUpdate:->
       t.add new Tween duration: 20
-      spyOn(t, 'onUpdate'); t.start()
+      spyOn(t, 'onUpdate'); t.play()
       t.update t.props.startTime - 10
       expect(t.onUpdate).not.toHaveBeenCalled()
     it 'should run if time is greater then endTime', ->
       t = new Timeline onUpdate:->
       t.add new Tween duration: 20
-      spyOn(t, 'onUpdate'); t.start()
+      spyOn(t, 'onUpdate'); t.play()
       t.update t.props.startTime + 25
       expect(t.onUpdate).toHaveBeenCalledWith 1
 
@@ -512,14 +512,14 @@ describe 'Timeline ->', ->
     it 'should call onStart callback', ->
       t = new Timeline(onStart:->)
       t.add new Tween duration: 500
-      spyOn(t.o, 'onStart'); t.start()
+      spyOn(t.o, 'onStart'); t.play()
       t.update t.props.startTime + 10
       expect(t.o.onStart).toHaveBeenCalled()
       expect(t.isStarted).toBe true
     it 'should call onStart callback only once', ->
       t = new Timeline(onStart:->)
       t.add new Tween duration: 500
-      spyOn(t.o, 'onStart'); t.start()
+      spyOn(t.o, 'onStart'); t.play()
       t.update t.props.startTime + 10
       t.update t.props.startTime + 15
       expect(t.o.onStart.calls.count()).toBe 1
@@ -527,7 +527,7 @@ describe 'Timeline ->', ->
       isRightScope = false
       t = new Timeline onStart:-> isRightScope = @ instanceof Timeline
       t.add new Tween duration: 20
-      t.start()
+      t.play()
       t.update t.props.startTime + 10
       expect(isRightScope).toBe(true)
     it 'should be called just once when nested', (dfr)->
@@ -541,7 +541,7 @@ describe 'Timeline ->', ->
 
       spyOn(tm.o, 'onStart').and.callThrough()
 
-      tm0.start()
+      tm0.play()
 
       setTimeout ->
         expect(tm.o.onStart.calls.count()).toBe 3
@@ -555,7 +555,7 @@ describe 'Timeline ->', ->
       t = new Timeline
       t.add new Tween duration: 500, delay: 200
       t.add new Tween duration: 500, delay: 100
-      t.start()
+      t.play()
       spyOn t.timelines[0], 'update'
       spyOn t.timelines[1], 'update'
       t.update time = performance.now() + 200
@@ -565,12 +565,12 @@ describe 'Timeline ->', ->
       t = new Timeline
       t.add new Tween duration: 500, delay: 200
       t.add new Tween duration: 500, delay: 100
-      t.start()
+      t.play()
       expect(t.update(performance.now() + 2000)).toBe true
     it 'should not go further then endTime',->
       t = new Timeline
       t.add new Tween duration: 500, delay: 200
-      t.start()
+      t.play()
       t.update t.props.startTime + 1000
       expect(t.prevTime).toBe t.props.endTime
     it 'should work with tweens', ->
@@ -587,7 +587,7 @@ describe 'Timeline ->', ->
       spyOn ti4, 'update'
       t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
       t.add(t1); t.add(t2)
-      t.start()
+      t.play()
       t.update time = t.props.startTime + 300
       expect(ti1.update).toHaveBeenCalledWith time, true
       expect(ti2.update).toHaveBeenCalledWith time, true
@@ -802,10 +802,10 @@ describe 'Timeline ->', ->
     it 'should set time to startTime if no time was passed', ->
       t   = new Timeline
       t.add new Tween duration: 500
-      spyOn t.timelines[0], 'start'
+      spyOn t.timelines[0], 'setStartTime'
       t.setStartTime(null)
 
-      expect(t.timelines[0].start).toHaveBeenCalledWith t.props.startTime
+      expect(t.timelines[0].setStartTime).toHaveBeenCalledWith t.props.startTime
 
 
   describe 'time track ->', ->

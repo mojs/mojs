@@ -432,7 +432,7 @@ class Transit extends bitsMap.map.bit
       @calcSize()
       !isForeign and @setElStyles()
   # defer tween start to wait for "then" functions
-  startTween:-> setTimeout (=> @timeline?.start()), 1
+  startTween:-> setTimeout (=> @timeline?.play()), 1
   resetTimeline:->
     # if you reset the timeline options -
     # you should reset the whole "then" chain

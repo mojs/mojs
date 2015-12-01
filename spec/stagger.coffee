@@ -123,9 +123,9 @@ describe 'Stagger ->', ->
       options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
       s = new Stagger options
       s.init options, mojs.MotionPath
-      spyOn s.timeline, 'start'
+      spyOn s.timeline, 'play'
       s.run()
-      expect(s.timeline.start).toHaveBeenCalled()
+      expect(s.timeline.play).toHaveBeenCalled()
 
   describe 'stagger callbacks ->', ->
     it 'should pass the onStaggerStart callback to timeline', ->

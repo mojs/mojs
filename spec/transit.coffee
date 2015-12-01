@@ -1133,10 +1133,10 @@ describe 'Transit ->', ->
     describe 'startTween method ->', ->
       it 'should start tween', (dfr)->
         byte = new Byte radius:  {'25': 75}
-        spyOn byte.timeline, 'start'
+        spyOn byte.timeline, 'play'
         byte.startTween()
         setTimeout ->
-          expect(byte.timeline.start).toHaveBeenCalled(); dfr()
+          expect(byte.timeline.play).toHaveBeenCalled(); dfr()
         , 10
 
   describe 'easing ->', ->

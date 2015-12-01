@@ -2076,10 +2076,10 @@
               '25': 75
             }
           });
-          spyOn(byte.timeline, 'start');
+          spyOn(byte.timeline, 'play');
           byte.startTween();
           return setTimeout(function() {
-            expect(byte.timeline.start).toHaveBeenCalled();
+            expect(byte.timeline.play).toHaveBeenCalled();
             return dfr();
           }, 10);
         });

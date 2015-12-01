@@ -514,11 +514,11 @@
         return expect(t.props.time).toBe(1000);
       });
     });
-    describe('start method ->', function() {
+    describe('play method ->', function() {
       it('should get the start time', function() {
         var t;
         t = new Timeline;
-        t.start();
+        t.play();
         expect(t.props.startTime).toBeDefined();
         return expect(t.props.endTime).toBe(t.props.startTime + t.props.repeatTime);
       });
@@ -527,7 +527,7 @@
         t = new Timeline;
         spyOn(t, 'setStartTime');
         time = 0;
-        t.start(time);
+        t.play(time);
         return expect(t.setStartTime).toHaveBeenCalledWith(time);
       });
       it('should start every timeline', function() {
@@ -542,24 +542,24 @@
           duration: 500,
           delay: 100
         }));
-        spyOn(t.timelines[0], 'start');
-        spyOn(t.timelines[1], 'start');
-        t.start();
-        expect(t.timelines[0].start).toHaveBeenCalledWith(t.props.startTime);
-        return expect(t.timelines[1].start).toHaveBeenCalledWith(t.props.startTime);
+        spyOn(t.timelines[0], 'setStartTime');
+        spyOn(t.timelines[1], 'setStartTime');
+        t.play();
+        expect(t.timelines[0].setStartTime).toHaveBeenCalledWith(t.props.startTime);
+        return expect(t.timelines[1].setStartTime).toHaveBeenCalledWith(t.props.startTime);
       });
       it('should add itself to tweener', function() {
         var t;
         t = new Timeline;
         spyOn(tweener, 'add');
-        t.start();
+        t.play();
         return expect(tweener.add).toHaveBeenCalled();
       });
       it('should not add itself to tweener if time was passed', function() {
         var t;
         t = new Timeline;
         spyOn(tweener, 'add');
-        t.start(10239123);
+        t.play(10239123);
         return expect(tweener.add).not.toHaveBeenCalled();
       });
       return it('should set state to "play"', function() {
@@ -570,7 +570,7 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         return expect(t.state).toBe('play');
       });
     });
@@ -583,7 +583,7 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         t.removeFromTweener();
         return expect(tweener.tweens.length).toBe(0);
       });
@@ -597,7 +597,7 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         spyOn(t, 'removeFromTweener');
         t.pause();
         return expect(t.removeFromTweener).toHaveBeenCalled();
@@ -610,7 +610,7 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         t.pause();
         return expect(t.state).toBe('pause');
       });
@@ -624,7 +624,7 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         spyOn(t, 'removeFromTweener');
         t.stop();
         return expect(t.removeFromTweener).toHaveBeenCalled();
@@ -637,7 +637,7 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         spyOn(t, 'setProgress');
         t.stop();
         return expect(t.setProgress).toHaveBeenCalledWith(0);
@@ -650,7 +650,7 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         t.stop();
         return expect(t.state).toBe('stop');
       });
@@ -664,12 +664,12 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
+        t.play();
         spyOn(t, 'stop');
         t.restart();
         return expect(t.stop).toHaveBeenCalled();
       });
-      return it('should call start method', function() {
+      return it('should call play method', function() {
         var t, timeline;
         tweener.tweens = [];
         t = new Timeline;
@@ -677,10 +677,10 @@
           duration: 2000
         });
         t.add(timeline);
-        t.start();
-        spyOn(t, 'start');
+        t.play();
+        spyOn(t, 'play');
         t.restart();
-        return expect(t.start).toHaveBeenCalled();
+        return expect(t.play).toHaveBeenCalled();
       });
     });
     describe('onReverseComplete callback ->', function() {
@@ -700,7 +700,7 @@
           duration: 10
         }));
         spyOn(t.o, 'onReverseComplete');
-        t.start();
+        t.play();
         t.setProgress(.5);
         t.setProgress(0);
         return expect(t.o.onReverseComplete).toHaveBeenCalled();
@@ -714,7 +714,7 @@
           duration: 10
         }));
         spyOn(t.o, 'onReverseComplete');
-        t.start();
+        t.play();
         t.setProgress(0);
         return expect(t.o.onReverseComplete).not.toHaveBeenCalled();
       });
@@ -736,7 +736,7 @@
           duration: 10
         }));
         spyOn(t.o, 'onComplete');
-        t.start();
+        t.play();
         return setTimeout(function() {
           expect(t.o.onComplete).toHaveBeenCalled();
           return dfr();
@@ -778,7 +778,7 @@
         t.add(new Tween({
           duration: 20
         }));
-        t.start();
+        t.play();
         return setTimeout((function() {
           expect(isRightScope).toBe(true);
           return dfr();
@@ -799,7 +799,7 @@
         tween.add(new Tween({
           duration: 20
         }));
-        tween.start();
+        tween.play();
         return tween.update(tween.props.startTime + 22);
       });
       return it('should reset flags', function() {
@@ -834,7 +834,7 @@
           duration: 20
         }));
         spyOn(t, 'onUpdate');
-        t.start();
+        t.play();
         return setTimeout(function() {
           expect(t.onUpdate).toHaveBeenCalled();
           return dfr();
@@ -851,7 +851,7 @@
         t.add(new Tween({
           duration: 20
         }));
-        t.start();
+        t.play();
         return setTimeout((function() {
           expect(isRightScope).toBe(true);
           return dfr();
@@ -881,7 +881,7 @@
           duration: 20
         }));
         spyOn(t, 'onUpdate');
-        t.start();
+        t.play();
         t.update(t.props.startTime - 10);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
@@ -894,7 +894,7 @@
           duration: 20
         }));
         spyOn(t, 'onUpdate');
-        t.start();
+        t.play();
         t.update(t.props.startTime + 25);
         return expect(t.onUpdate).toHaveBeenCalledWith(1);
       });
@@ -916,7 +916,7 @@
           duration: 500
         }));
         spyOn(t.o, 'onStart');
-        t.start();
+        t.play();
         t.update(t.props.startTime + 10);
         expect(t.o.onStart).toHaveBeenCalled();
         return expect(t.isStarted).toBe(true);
@@ -930,7 +930,7 @@
           duration: 500
         }));
         spyOn(t.o, 'onStart');
-        t.start();
+        t.play();
         t.update(t.props.startTime + 10);
         t.update(t.props.startTime + 15);
         return expect(t.o.onStart.calls.count()).toBe(1);
@@ -946,7 +946,7 @@
         t.add(new Tween({
           duration: 20
         }));
-        t.start();
+        t.play();
         t.update(t.props.startTime + 10);
         return expect(isRightScope).toBe(true);
       });
@@ -965,7 +965,7 @@
         tm.add(tw1);
         tm0.add(tm, tw1);
         spyOn(tm.o, 'onStart').and.callThrough();
-        tm0.start();
+        tm0.play();
         return setTimeout(function() {
           expect(tm.o.onStart.calls.count()).toBe(3);
           return dfr();
@@ -984,7 +984,7 @@
           duration: 500,
           delay: 100
         }));
-        t.start();
+        t.play();
         spyOn(t.timelines[0], 'update');
         spyOn(t.timelines[1], 'update');
         t.update(time = performance.now() + 200);
@@ -1002,7 +1002,7 @@
           duration: 500,
           delay: 100
         }));
-        t.start();
+        t.play();
         return expect(t.update(performance.now() + 2000)).toBe(true);
       });
       it('should not go further then endTime', function() {
@@ -1012,7 +1012,7 @@
           duration: 500,
           delay: 200
         }));
-        t.start();
+        t.play();
         t.update(t.props.startTime + 1000);
         return expect(t.prevTime).toBe(t.props.endTime);
       });
@@ -1047,7 +1047,7 @@
         t2.add(ti4);
         t.add(t1);
         t.add(t2);
-        t.start();
+        t.play();
         t.update(time = t.props.startTime + 300);
         expect(ti1.update).toHaveBeenCalledWith(time, true);
         expect(ti2.update).toHaveBeenCalledWith(time, true);
@@ -1386,9 +1386,9 @@
         t.add(new Tween({
           duration: 500
         }));
-        spyOn(t.timelines[0], 'start');
+        spyOn(t.timelines[0], 'setStartTime');
         t.setStartTime(null);
-        return expect(t.timelines[0].start).toHaveBeenCalledWith(t.props.startTime);
+        return expect(t.timelines[0].setStartTime).toHaveBeenCalledWith(t.props.startTime);
       });
     });
     describe('time track ->', function() {

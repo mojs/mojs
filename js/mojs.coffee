@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.147.13', isDebug: true
+  revision:   '0.148.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -24,6 +24,21 @@ window.mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+
+# tm = new mojs.Timeline# repeat: 4
+# tween = new mojs.Tween
+#   delay:      500
+#   # isIt:       true
+#   yoyo:       true
+#   repeat:     3
+#   onStart:    -> console.log('--->>> start')
+#   onUpdate:   (p)-> console.log(p)
+#   onComplete: -> console.log('--->>> complete')
+# # tween.run()
+
+# tm.add tween
+# tm.start()
 
 
 ### istanbul ignore next ###
