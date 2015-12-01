@@ -25,6 +25,7 @@ window.mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
+
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
   define "mojs", [], -> mojs

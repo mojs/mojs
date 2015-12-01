@@ -103,9 +103,7 @@ var Tween = class Tween {
         // get period number
         var props = this.props;
         var startPoint = props.startTime - props.delay;
-        var delayDuration = props.delay + props.duration;
-        var elapsed = (time - startPoint) % delayDuration;
-        var periodNumber = Math.floor((time - startPoint) / delayDuration );
+        var periodNumber = Math.floor((time-startPoint) / (props.delay+props.duration));
 
         this._complete( (this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1 );
       }
@@ -173,42 +171,26 @@ var Tween = class Tween {
       // active zone or larger then end
       var elapsed2 = ( time - props.startTime) % delayDuration;
       var proc = elapsed2 / props.duration;
+      // isOnEdge means
+      // time is larger then the first period
+      // AND
+      // previous period is smaller then the current one
+      var isOnEdge = periodNumber > 0 && (prevPeriodNumber < periodNumber);
       // if not yoyo then set the plain progress
       if (!props.yoyo) {
-          // set progress to 1 if:
-          // time is larger then the first period
-          // AND
-          // previous period is smaller then the current one
-          if ( periodNumber > 0 && (prevPeriodNumber < periodNumber) ) {
-            this.setProgress(1);
-          }
+          if ( isOnEdge ) { this.setProgress(1); }
           // proc === 0 means that the time === end of the period,
           // and we have already handled this case, so set progress
           // only if proc > 0
           if (proc > 0) { this.setProgress(proc); }
-
       } else {
-
+        var isEvenPeriod = (periodNumber % 2 === 0);
+        // set 1 or 0 on periods' edge
+        if ( isOnEdge ) { this.setProgress( (isEvenPeriod) ? 0 : 1 ); }
         // if yoyo then check if the current duration
         // period is even. If so set progress, otherwise
         // set inverted proc value
-        if (periodNumber % 2 === 0) {
-
-          if (periodNumber > 0 && (prevPeriodNumber < periodNumber) ) {
-            this.setProgress(0);
-          }
-
-          this.setProgress(proc);
-
-        } else {
-
-          if (periodNumber > 0 && (prevPeriodNumber < periodNumber) ) {
-            this.setProgress(1);
-          }
-
-          // if (proc === 1) { this.setProgress(1); } else { }
-          this.setProgress(1-proc);
-        }
+        this.setProgress( (isEvenPeriod) ? proc : 1-proc );
       }
     // delay gap
     } else {
