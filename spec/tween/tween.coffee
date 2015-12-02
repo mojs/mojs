@@ -284,7 +284,6 @@ describe 'Tween ->', ->
         yoyo:       true
         repeat:     2
         duration:   duration
-        # onUpdate:(p)-> console.log p
 
       t1.setStartTime()
 
@@ -306,7 +305,6 @@ describe 'Tween ->', ->
       progress = null
       duration = 50
       t1 = new Tween
-        isIt:       true
         yoyo:       true
         repeat:     1
         duration:   duration
@@ -473,7 +471,7 @@ describe 'Tween ->', ->
         onUpdate:(p)->  proc = p
         onComplete:-> expect(proc).toBe(1); dfr()
       t.setStartTime().update t.props.startTime + 2
-    it 'should fire only once if inside timline', ()->
+    it 'should fire only once if inside timeline', ()->
       cnt = 0
       tm = new mojs.Timeline repeat: 1
       t1 = new Tween
@@ -500,8 +498,97 @@ describe 'Tween ->', ->
       tm.update t1.props.startTime + 182
       tm.update t1.props.startTime + 201
       tm.update t1.props.startTime + 220
+      tm.update t1.props.startTime + 231
 
       expect(cnt).toBe(2)
+
+  it 'should update with 0 if in timeline with yoyo and repeat', ()->
+      progress = null; duration1 = 50; delay1 = 10
+      tm = new mojs.Timeline repeat: 4
+      t1 = new Tween
+        delay:    delay1
+        duration: duration1
+        yoyo: true
+        repeat: 1
+        isIt: true
+        onUpdate:(p)-> progress = p
+      t2 = new Tween
+        delay: 20
+        duration: 100
+
+      tm.add t1
+      tm.setStartTime()
+
+      tm.update t1.props.startTime 
+      tm.update t1.props.startTime + 2
+      tm.update t1.props.startTime + duration1 - 4
+      tm.update t1.props.startTime + duration1
+
+      timeShift = duration1 + delay1
+      tm.update t1.props.startTime + timeShift
+      tm.update t1.props.startTime + timeShift + 2
+      tm.update t1.props.startTime + timeShift + duration1 - 4
+      tm.update t1.props.startTime + timeShift + timeShift
+
+      expect(progress).toBe(0)
+
+    it 'should update with 0 if in timeline with yoyo and repeat #2', ()->
+      progress = null; duration1 = 50; delay1 = 10
+      tm = new mojs.Timeline repeat: 4
+      t1 = new Tween
+        delay:    delay1
+        duration: duration1
+        yoyo: true
+        repeat: 1
+        isIt: true
+        onUpdate:(p)-> progress = p
+      t2 = new Tween
+        delay: 20
+        duration: 100
+
+      tm.add t1, t2
+      tm.setStartTime()
+
+      tm.update t1.props.startTime 
+      tm.update t1.props.startTime + 2
+      tm.update t1.props.startTime + duration1 - 4
+      tm.update t1.props.startTime + duration1
+
+      timeShift = duration1 + delay1
+      tm.update t1.props.startTime + timeShift
+      tm.update t1.props.startTime + timeShift + 2
+      tm.update t1.props.startTime + timeShift + duration1 - 4
+      tm.update t1.props.startTime + timeShift + timeShift
+
+      expect(progress).toBe(0)
+
+    # it 'should be called when inside timline with repeat', ()->
+    #   cnt = 0
+    #   duration = 50
+    #   tm = new mojs.Timeline repeat: 2
+    #   t1 = new Tween
+    #     duration: duration
+    #     onComplete:-> cnt++
+    #     # onRepeatComplete:->
+    #     #   console.log 'repeat complete'
+    #     # onReverseComplete:->
+    #     #   console.log 'reverse complete'
+      
+    #   tm.add t1
+    #   tm.setStartTime()
+
+    #   shiftTime = 0
+    #   tm.update t1.props.startTime + shiftTime
+    #   tm.update t1.props.startTime + shiftTime + (duration/2)
+    #   tm.update t1.props.startTime + shiftTime + (duration) - 10
+
+    #   shiftTime = duration
+    #   tm.update t1.props.startTime + shiftTime + 10
+    #   tm.update t1.props.startTime + shiftTime + (duration/2.5)
+    #   tm.update t1.props.startTime + shiftTime + (duration/2)
+    #   tm.update t1.props.startTime + shiftTime + (duration)
+
+    #   expect(cnt).toBe(2)
 
   describe 'onRepeatComplete callback ->', ->
     it 'should be defined', ->

@@ -505,6 +505,34 @@ describe 'Timeline ->', ->
       t.update t.props.startTime + 25
       expect(t.onUpdate).toHaveBeenCalledWith 1
 
+    it 'should be called with 1 on repeat', ->
+      isOne = 0; duration = 20
+      t = new Timeline isIt: true, repeat: 3
+      t.add new Tween duration: duration, onUpdate:(p)-> (p is 1) and isOne++
+      t.setStartTime()
+      
+      updateInPeriod = (shiftTime)->
+        t.update t.props.startTime + shiftTime + 5
+        t.update t.props.startTime + shiftTime + (duration/2)
+        t.update t.props.startTime + shiftTime + (duration) - 5
+
+      updateInPeriod( 0 )
+      
+      updateInPeriod( duration )
+      updateInPeriod( 2*duration )
+      
+      expect(isOne).toBe 2
+
+      updateInPeriod( 3*duration )
+      
+      expect(isOne).toBe 3
+
+      updateInPeriod( 4*duration )
+      updateInPeriod( 5*duration )
+      updateInPeriod( 6*duration )
+      
+      expect(isOne).toBe 4
+
   describe 'onStart callback ->', ->
     it 'should be defined', ->
       t = new Timeline onStart: ->
@@ -547,8 +575,6 @@ describe 'Timeline ->', ->
         expect(tm.o.onStart.calls.count()).toBe 3
         dfr()
       , 500
-
-
 
   describe 'update method ->', ->
     it 'should update the current time on every timeline',->
@@ -701,7 +727,7 @@ describe 'Timeline ->', ->
 
     it 'should not be called if the timeline was completed', ->
       tm    = new mojs.Timeline
-      tm1   = new mojs.Timeline isIt: true
+      tm1   = new mojs.Timeline
       tm1.add new mojs.Tween duration: 1000
       tm2   = new mojs.Timeline delay: 1000
       tm2.add new mojs.Tween

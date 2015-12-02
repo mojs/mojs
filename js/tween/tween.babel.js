@@ -66,7 +66,13 @@ var Tween = class Tween {
 
     return this;
   }
-
+  /*
+    Method to update tween's progress.
+    @param {Number}   Time from the parent regarding it's period size.
+    @param {Boolean}  Indicates if parent progress grows.
+    @param {Number}   Parent's current period number.
+    @param {Number}   Parent's previous period number.
+  */
   update(time, isGrow) {
     /*
       if time is inside the active area of the tween.
@@ -78,7 +84,6 @@ var Tween = class Tween {
       this.isOnReverseComplete = false; this.isCompleted = false;
       // this.isRepeatCompleted = false;
       // onFirtUpdate callback
-      
       if (!this.isFirstUpdate) {
         if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === 'function') {
           this.props.onFirstUpdate.apply(this); this.isFirstUpdate = true;
@@ -106,8 +111,8 @@ var Tween = class Tween {
         // get period number
         var props = this.props;
         var startPoint = props.startTime - props.delay;
-        var periodNumber = Math.floor((time-startPoint) / (props.delay+props.duration));
-
+        var periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
+        
         this._complete( (this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1 );
       }
       // rest isFirstUpdate flag if update was out of active zone

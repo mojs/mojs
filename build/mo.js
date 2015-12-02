@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.149.0',
+	  revision: '0.149.1',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3642,6 +3642,13 @@
 	      configurable: true
 	    },
 	    update: {
+	      /*
+	        Method to update tween's progress.
+	        @param {Number}   Time from the parent regarding it's period size.
+	        @param {Boolean}  Indicates if parent progress grows.
+	        @param {Number}   Parent's current period number.
+	        @param {Number}   Parent's previous period number.
+	      */
 	      value: function update(time, isGrow) {
 	        /*
 	          if time is inside the active area of the tween.
@@ -3653,7 +3660,6 @@
 	          this.isOnReverseComplete = false;this.isCompleted = false;
 	          // this.isRepeatCompleted = false;
 	          // onFirtUpdate callback
-
 	          if (!this.isFirstUpdate) {
 	            if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === "function") {
 	              this.props.onFirstUpdate.apply(this);this.isFirstUpdate = true;
@@ -3680,7 +3686,7 @@
 	            // get period number
 	            var props = this.props;
 	            var startPoint = props.startTime - props.delay;
-	            var periodNumber = Math.floor((time - startPoint) / (props.delay + props.duration));
+	            var periodNumber = Math.floor((props.endTime - startPoint) / (props.delay + props.duration));
 
 	            this._complete(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1);
 	          }
@@ -4193,23 +4199,28 @@
 	      value: function UpdateTimelines(time, isGrow) {
 	        // get elapsed with respect to repeat option
 	        // so take a modulo of the elapsed time
-	        var startPoint = this.props.startTime - this.props.delay;
-	        var elapsed = (time - startPoint) % (this.props.delay + this.props.time);
+	        var props = this.props;
+	        var startPoint = props.startTime - props.delay;
+	        var elapsed = (time - startPoint) % (props.delay + props.time);
 
 	        var timeToTimelines = null;
 	        // get the time for timelines
-	        if (time === this.props.endTime) {
-	          timeToTimelines = this.props.endTime;
+	        if (time === props.endTime) {
+	          timeToTimelines = props.endTime;
 	        }
 	        // after delay
-	        else if (startPoint + elapsed >= this.props.startTime) if (time >= this.props.endTime) {
-	          timeToTimelines = this.props.endTime;
+	        else if (startPoint + elapsed >= props.startTime) {
+	          if (time >= props.endTime) {
+	            timeToTimelines = props.endTime;
+	          } else {
+	            timeToTimelines = startPoint + elapsed;
+	          }
 	        } else {
-	          timeToTimelines = startPoint + elapsed;
-	        } else if (time > this.props.startTime + this.props.time) {
-	          timeToTimelines = this.props.startTime + this.props.time;
-	        } else {
-	          timeToTimelines = null;
+	          if (time > props.startTime + props.time) {
+	            timeToTimelines = props.startTime + props.time;
+	          } else {
+	            timeToTimelines = null;
+	          }
 	        }
 
 	        // set the normalized time to the timelines
@@ -4217,6 +4228,23 @@
 	          var i = -1,
 	              len = this.timelines.length - 1;
 
+	          // calculate current and previous periods
+	          var delayDuration = props.delay + props.time;
+	          var T = Math.floor((time - startPoint) / delayDuration);
+	          var prevT = Math.floor((this._previousUpdateTime - startPoint) / delayDuration);
+
+	          // if on edge of the periods
+	          if (T > 0 && T > prevT) {
+	            // get the time we have missed
+	            var missedTime = props.startTime + T * (props.delay + props.time);
+	            // update child timelines with missed time
+	            var j = -1;
+	            while (j++ < len) {
+	              this.timelines[j].update(missedTime);
+	            }
+	          }
+
+	          // check if progress grows
 	          isGrow = isGrow == null ? time > (this._previousUpdateTime || 0) : isGrow;
 	          while (i++ < len) {
 	            this.timelines[i].update(timeToTimelines, isGrow);
@@ -4255,13 +4283,14 @@
 	            this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
 	          }
 	        }
+
 	        // if reverse completed
 	        if (this.prevTime > time && time <= this.props.startTime) {
 	          if (this.o.onReverseComplete != null && typeof this.o.onReverseComplete === "function") {
 	            this.o.onReverseComplete.apply(this);
 	          }
 	        }
-	        // @isCompleted = false if time < this.props.startTime
+
 	        // save the current time as previous for future
 	        this.prevTime = time;
 	        // if completed

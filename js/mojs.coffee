@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.149.0', isDebug: true
+  revision:   '0.149.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -24,6 +24,28 @@ window.mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
+# tm = new mojs.Timeline repeat: 4
+# tween = new mojs.Tween
+#   # isIt:       true
+#   # delay:      200
+#   # yoyo:       true
+#   repeat:     2
+#   onStart:    -> console.log('--->>> start')
+#   onUpdate:   (p)-> console.log(p)
+#   onComplete: -> console.log('--->>> complete')
+#   onRepeatComplete: -> console.log('--->>> repeat complete')
+
+# # tween.play()
+
+# tm.add tween
+# # tm.play()
+
+# launcher = new mojs.Tween
+#   duration: 10000
+#   onUpdate:(p)-> tm.setProgress 1-p
+
+# launcher.play()
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

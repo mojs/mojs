@@ -435,7 +435,6 @@
         progress = null;
         duration = 50;
         t1 = new Tween({
-          isIt: true,
           yoyo: true,
           repeat: 1,
           duration: duration,
@@ -678,7 +677,7 @@
         });
         return t.setStartTime().update(t.props.startTime + 2);
       });
-      return it('should fire only once if inside timline', function() {
+      return it('should fire only once if inside timeline', function() {
         var cnt, t1, t2, tm;
         cnt = 0;
         tm = new mojs.Timeline({
@@ -708,8 +707,79 @@
         tm.update(t1.props.startTime + 182);
         tm.update(t1.props.startTime + 201);
         tm.update(t1.props.startTime + 220);
+        tm.update(t1.props.startTime + 231);
         return expect(cnt).toBe(2);
       });
+    });
+    it('should update with 0 if in timeline with yoyo and repeat', function() {
+      var delay1, duration1, progress, t1, t2, timeShift, tm;
+      progress = null;
+      duration1 = 50;
+      delay1 = 10;
+      tm = new mojs.Timeline({
+        repeat: 4
+      });
+      t1 = new Tween({
+        delay: delay1,
+        duration: duration1,
+        yoyo: true,
+        repeat: 1,
+        isIt: true,
+        onUpdate: function(p) {
+          return progress = p;
+        }
+      });
+      t2 = new Tween({
+        delay: 20,
+        duration: 100
+      });
+      tm.add(t1);
+      tm.setStartTime();
+      tm.update(t1.props.startTime);
+      tm.update(t1.props.startTime + 2);
+      tm.update(t1.props.startTime + duration1 - 4);
+      tm.update(t1.props.startTime + duration1);
+      timeShift = duration1 + delay1;
+      tm.update(t1.props.startTime + timeShift);
+      tm.update(t1.props.startTime + timeShift + 2);
+      tm.update(t1.props.startTime + timeShift + duration1 - 4);
+      tm.update(t1.props.startTime + timeShift + timeShift);
+      return expect(progress).toBe(0);
+    });
+    it('should update with 0 if in timeline with yoyo and repeat #2', function() {
+      var delay1, duration1, progress, t1, t2, timeShift, tm;
+      progress = null;
+      duration1 = 50;
+      delay1 = 10;
+      tm = new mojs.Timeline({
+        repeat: 4
+      });
+      t1 = new Tween({
+        delay: delay1,
+        duration: duration1,
+        yoyo: true,
+        repeat: 1,
+        isIt: true,
+        onUpdate: function(p) {
+          return progress = p;
+        }
+      });
+      t2 = new Tween({
+        delay: 20,
+        duration: 100
+      });
+      tm.add(t1, t2);
+      tm.setStartTime();
+      tm.update(t1.props.startTime);
+      tm.update(t1.props.startTime + 2);
+      tm.update(t1.props.startTime + duration1 - 4);
+      tm.update(t1.props.startTime + duration1);
+      timeShift = duration1 + delay1;
+      tm.update(t1.props.startTime + timeShift);
+      tm.update(t1.props.startTime + timeShift + 2);
+      tm.update(t1.props.startTime + timeShift + duration1 - 4);
+      tm.update(t1.props.startTime + timeShift + timeShift);
+      return expect(progress).toBe(0);
     });
     describe('onRepeatComplete callback ->', function() {
       it('should be defined', function() {
