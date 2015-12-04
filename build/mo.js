@@ -4003,7 +4003,7 @@
 	            T = Math.floor(dTime / TTime),
 	            elapsed = dTime % TTime;
 	        // if the end of period and there is a delay
-	        if (elapsed === 0 && p.delay > 0) {
+	        if (elapsed === 0 && T > 0) {
 	          T--;
 	        }
 	        return T;

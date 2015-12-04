@@ -748,7 +748,7 @@ describe 'Tween ->', ->
   describe '_getPeriod method ->', ->
     it 'should get the current period', ->
       duration = 50; delay = 20
-      t = new Tween isIt2: true, repeat: 3, duration: duration, delay: delay
+      t = new Tween repeat: 3, duration: duration, delay: delay
 
       t.setStartTime()
 
@@ -774,6 +774,32 @@ describe 'Tween ->', ->
       expect(t._getPeriod(t.props.startTime + timeShift)).toBe 3
       expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 3
       expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 3
+
+    it 'should get the current period with no delay', ->
+      duration = 50
+      t = new Tween isIt2: true, repeat: 3, duration: duration
+
+      t.setStartTime()
+
+      expect(t._getPeriod(t.props.startTime)).toBe 0
+      expect(t._getPeriod(t.props.startTime + duration/2)).toBe 0
+      expect(t._getPeriod(t.props.startTime + duration)).toBe 0
+      expect(t._getPeriod(t.props.startTime + duration + 1)).toBe 1
+
+      timeShift = duration
+      expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 1
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 1
+      expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 2
+
+      timeShift = 2*duration
+      expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 2
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 2
+      expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 3
+
+      timeShift = 3*duration
+      expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 3
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 3
+      expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 4
 
   describe 'onComplete callback ->', ->
     it 'should be defined', ->
