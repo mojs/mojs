@@ -532,7 +532,6 @@
       });
       it('should start every timeline', function() {
         var t;
-        it('should update the current time on every timeline', function() {});
         t = new Timeline;
         t.add(new Tween({
           duration: 500,
@@ -885,7 +884,7 @@
         t.update(t.props.startTime - 10);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
-      it('should run if time is greater then endTime', function() {
+      return it('should run if time is greater then endTime', function() {
         var t;
         t = new Timeline({
           onUpdate: function() {}
@@ -897,37 +896,6 @@
         t.play();
         t.update(t.props.startTime + 25);
         return expect(t.onUpdate).toHaveBeenCalledWith(1);
-      });
-      return it('should be called with 1 on repeat', function() {
-        var duration, isOne, t, updateInPeriod;
-        isOne = 0;
-        duration = 20;
-        t = new Timeline({
-          isIt: true,
-          repeat: 3
-        });
-        t.add(new Tween({
-          duration: duration,
-          onUpdate: function(p) {
-            return (p === 1) && isOne++;
-          }
-        }));
-        t.setStartTime();
-        updateInPeriod = function(shiftTime) {
-          t.update(t.props.startTime + shiftTime + 5);
-          t.update(t.props.startTime + shiftTime + (duration / 2));
-          return t.update(t.props.startTime + shiftTime + duration - 5);
-        };
-        updateInPeriod(0);
-        updateInPeriod(duration);
-        updateInPeriod(2 * duration);
-        expect(isOne).toBe(2);
-        updateInPeriod(3 * duration);
-        expect(isOne).toBe(3);
-        updateInPeriod(4 * duration);
-        updateInPeriod(5 * duration);
-        updateInPeriod(6 * duration);
-        return expect(isOne).toBe(4);
       });
     });
     describe('onStart callback ->', function() {

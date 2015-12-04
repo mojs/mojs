@@ -297,7 +297,6 @@ describe 'Timeline ->', ->
       t.play time
       expect(t.setStartTime).toHaveBeenCalledWith time
     it 'should start every timeline',->
-      it 'should update the current time on every timeline',->
       t = new Timeline
       t.add new Tween duration: 500, delay: 200
       t.add new Tween duration: 500, delay: 100
@@ -505,33 +504,87 @@ describe 'Timeline ->', ->
       t.update t.props.startTime + 25
       expect(t.onUpdate).toHaveBeenCalledWith 1
 
-    it 'should be called with 1 on repeat', ->
-      isOne = 0; duration = 20
-      t = new Timeline isIt: true, repeat: 3
-      t.add new Tween duration: duration, onUpdate:(p)-> (p is 1) and isOne++
-      t.setStartTime()
+    # it 'should be called with 0 on repeat if reversed and missed time', ->
+    #   isZero = 0; duration = 20
+    #   t = new Timeline repeat: 3
+    #   t.add new Tween
+    #     duration: duration,
+    #     onUpdate:(p)-> (p is 0) and isZero++
+    #   t.setStartTime()
       
-      updateInPeriod = (shiftTime)->
-        t.update t.props.startTime + shiftTime + 5
-        t.update t.props.startTime + shiftTime + (duration/2)
-        t.update t.props.startTime + shiftTime + (duration) - 5
+    #   updateInPeriod = (shiftTime)->
+    #     t.update t.props.startTime + shiftTime + (duration) - 5
+    #     t.update t.props.startTime + shiftTime + (duration/2)
+    #     t.update t.props.startTime + shiftTime + 5
 
-      updateInPeriod( 0 )
-      
-      updateInPeriod( duration )
-      updateInPeriod( 2*duration )
-      
-      expect(isOne).toBe 2
+    #   updateInPeriod( 3*duration )
+    #   updateInPeriod( 2*duration )
+    #   expect(isZero).toBe(1)
 
-      updateInPeriod( 3*duration )
-      
-      expect(isOne).toBe 3
+    #   updateInPeriod( 1*duration )
+    #   expect(isZero).toBe(2)
 
-      updateInPeriod( 4*duration )
-      updateInPeriod( 5*duration )
-      updateInPeriod( 6*duration )
+    #   updateInPeriod( 0*duration )
+    #   expect(isZero).toBe(3)
+
+    # it 'should be called with 0 on repeat if reversed and tween in repeat', ->
+    #   isZero = 0; duration = 20
+    #   t = new Timeline repeat: 1
+    #   t.add new Tween
+    #     repeat: 1
+    #     duration: duration,
+    #     onUpdate:(p)-> (p is 0) and isZero++
+    #   t.setStartTime()
       
-      expect(isOne).toBe 4
+    #   updateInPeriod = (shiftTime)->
+    #     t.update t.props.startTime + shiftTime + (duration) - 5
+    #     t.update t.props.startTime + shiftTime + (duration/2)
+    #     t.update t.props.startTime + shiftTime + 5
+
+    #   updateInPeriod( 3*duration )
+    #   # updateInPeriod( 2*duration )
+    #   t.update t.props.startTime + 2*duration + (duration) - 5
+    #   expect(isZero).toBe(1)
+
+      # updateInPeriod( 1*duration )
+      # expect(isZero).toBe(2)
+
+
+
+      # updateInPeriod( 2*duration )
+      # expect(isZero).toBe(2)
+
+      # updateInPeriod( 0*duration )
+      # expect(isZero).toBe(3)
+
+
+    # it 'should be called with 1 on repeat with missed time', ->
+    #   isOne = 0; duration = 20
+    #   t = new Timeline repeat: 3
+    #   t.add new Tween duration: duration, onUpdate:(p)-> (p is 1) and isOne++
+    #   t.setStartTime()
+      
+    #   updateInPeriod = (shiftTime)->
+    #     t.update t.props.startTime + shiftTime + 5
+    #     t.update t.props.startTime + shiftTime + (duration/2)
+    #     t.update t.props.startTime + shiftTime + (duration) - 5
+
+    #   updateInPeriod( 0 )
+      
+    #   updateInPeriod( duration )
+    #   updateInPeriod( 2*duration )
+      
+    #   expect(isOne).toBe 2
+
+    #   updateInPeriod( 3*duration )
+      
+    #   expect(isOne).toBe 3
+
+    #   updateInPeriod( 4*duration )
+    #   updateInPeriod( 5*duration )
+    #   updateInPeriod( 6*duration )
+      
+    #   expect(isOne).toBe 4
 
   describe 'onStart callback ->', ->
     it 'should be defined', ->
