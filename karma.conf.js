@@ -104,8 +104,8 @@ module.exports = function(config) {
       'build/burst.js',
       'spec/burst.js',
 
-      // 'build/timeline.js',
-      // 'spec/timeline.js',
+      'build/timeline.js',
+      'spec/timeline.js',
       // // 'build/tween.js',
       // // 'spec/tween.js',
       // 'build/tweener.js',

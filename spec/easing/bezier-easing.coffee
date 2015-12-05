@@ -31,7 +31,7 @@ describe 'bezier easing ->', ->
         easing    = bezier(a,b,c,d)
         projected = bezier(b,a,d,c)
         composed  = (x)-> projected easing x
-        expect(x).toBeCloseTo composed(x)
+        expect(x).toBeCloseTo composed(x), 1
   describe 'two same instances ->', ->
     it 'should be strictly equal', ->
       samples = 100

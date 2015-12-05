@@ -56,7 +56,7 @@
           composed = function(x) {
             return projected(easing(x));
           };
-          _results.push(expect(x).toBeCloseTo(composed(x)));
+          _results.push(expect(x).toBeCloseTo(composed(x), 1));
         }
         return _results;
       });

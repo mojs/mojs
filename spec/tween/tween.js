@@ -206,6 +206,9 @@
           delay: 500
         });
         t.setStartTime();
+        time = t.props.startTime + 199;
+        t.update(time);
+        expect(t.progress).toBe(0);
         time = t.props.startTime + 200;
         t.update(time);
         return expect(t.progress).toBeCloseTo(.2, 5);
@@ -218,6 +221,8 @@
           repeat: 2
         });
         t.setStartTime();
+        t.update(t.props.startTime + 1399);
+        expect(t.progress).toBeCloseTo(0);
         t.update(t.props.startTime + 1400);
         expect(t.progress).toBeCloseTo(.2);
         t.update(t.props.startTime + 2700);
@@ -257,6 +262,8 @@
           repeat: 2
         });
         t.setStartTime();
+        t.update(t.props.startTime + 500);
+        expect(t.progress).toBeCloseTo(0);
         t.update(t.props.startTime + 1000);
         return expect(t.progress).toBeCloseTo(1, 5);
       });
@@ -338,6 +345,7 @@
         });
         spyOn(t, 'onUpdate');
         t.setStartTime();
+        t.update(t.props.startTime + 499);
         t.update(t.props.startTime + 500);
         return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress);
       });
@@ -350,6 +358,7 @@
           }
         });
         t.setStartTime();
+        t.update(t.props.startTime + 199);
         t.update(t.props.startTime + 200);
         return expect(isRightScope).toBe(true);
       });
@@ -385,254 +394,42 @@
       /*
         TWEEN IN NORMAL DIRECTION
        */
-      it('should be called with 1 and 0 on each repeat period', function() {
-        var duration, oneCnt, repeatCnt, t1, updateInPeriod, zeroCnt;
+      return it('should be called with 1 and 0 on each repeat period', function() {
+        var duration, oneCnt, repeatCnt, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         repeatCnt = 0;
         duration = 50;
-        t1 = new Tween({
+        updateValue = null;
+        t = new Tween({
           repeat: 1,
-          duration: duration,
-          onUpdate: function(p) {
-            (p === 0) && zeroCnt++;
-            return (p === 1) && oneCnt++;
-          },
-          onRepeatComplete: function() {
-            return repeatCnt++;
-          }
-        });
-        updateInPeriod = createUpdateInPeriod(t1, duration);
-        t1.setStartTime();
-        updateInPeriod(0);
-        expect(oneCnt).toBe(1);
-        expect(zeroCnt).toBe(2);
-        expect(repeatCnt).toBe(1);
-        updateInPeriod(duration);
-        expect(oneCnt).toBe(2);
-        expect(zeroCnt).toBe(2);
-        return expect(repeatCnt).toBe(2);
-      });
-      it('should be called with 1 and 0 on each repeat period if missed time', function() {
-        var duration, oneCnt, repeatCnt, t1, updateInPeriod, zeroCnt;
-        zeroCnt = 0;
-        oneCnt = 0;
-        repeatCnt = 0;
-        duration = 50;
-        t1 = new Tween({
-          repeat: 2,
-          duration: duration,
-          onUpdate: function(p) {
-            (p === 0) && zeroCnt++;
-            return (p === 1) && oneCnt++;
-          },
-          onRepeatComplete: function() {
-            return repeatCnt++;
-          }
-        });
-        updateInPeriod = createUpdateInPeriodWithGap(t1, duration);
-        t1.setStartTime();
-        updateInPeriod(0);
-        updateInPeriod(duration);
-        expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(1);
-        expect(repeatCnt).toBe(1);
-        updateInPeriod(2 * duration);
-        expect(zeroCnt).toBe(2);
-        expect(oneCnt).toBe(2);
-        return expect(repeatCnt).toBe(2);
-      });
-      it('should be called with 1 and 0 on each repeat period if delay', function() {
-        var delay, duration, oneCnt, repeatCnt, t1, updateInPeriod, zeroCnt;
-        zeroCnt = 0;
-        oneCnt = 0;
-        repeatCnt = 0;
-        duration = 50;
-        delay = 20;
-        t1 = new Tween({
-          repeat: 2,
-          duration: duration,
-          delay: delay,
-          onUpdate: function(p) {
-            (p === 0) && zeroCnt++;
-            return (p === 1) && oneCnt++;
-          },
-          onRepeatComplete: function() {
-            return repeatCnt++;
-          }
-        });
-        updateInPeriod = createUpdateInPeriod(t1, duration);
-        t1.setStartTime();
-        updateInPeriod(0);
-        expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(1);
-        expect(repeatCnt).toBe(1);
-        updateInPeriod(duration + delay);
-        expect(oneCnt).toBe(2);
-        expect(zeroCnt).toBe(2);
-        expect(repeatCnt).toBe(2);
-        updateInPeriod(2 * (duration + delay));
-        expect(oneCnt).toBe(3);
-        expect(zeroCnt).toBe(3);
-        return expect(repeatCnt).toBe(3);
-      });
-      it('should be called with 1 and 0 on each repeat period if in delay', function() {
-        var delay, duration, oneCnt, repeatCnt, t, timeShift, zeroCnt;
-        zeroCnt = 0;
-        oneCnt = 0;
-        repeatCnt = 0;
-        duration = 50;
-        delay = 20;
-        t = new Tween({
-          repeat: 2,
-          duration: duration,
-          delay: delay,
-          onUpdate: function(p) {
-            (p === 0) && zeroCnt++;
-            return (p === 1) && oneCnt++;
-          },
-          onRepeatComplete: function() {
-            return repeatCnt++;
-          }
-        });
-        t.setStartTime();
-        timeShift = 0;
-        t.update(t.props.startTime + timeShift);
-        t.update(t.props.startTime + timeShift + (duration / 2));
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
-        expect(oneCnt).toBe(1);
-        expect(zeroCnt).toBe(1);
-        expect(repeatCnt).toBe(1);
-        timeShift = duration + delay;
-        t.update(t.props.startTime + timeShift + 5);
-        t.update(t.props.startTime + timeShift + (duration / 2));
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
-        expect(oneCnt).toBe(2);
-        expect(zeroCnt).toBe(2);
-        expect(repeatCnt).toBe(2);
-        timeShift = 2 * (duration + delay);
-        t.update(t.props.startTime + timeShift + 5);
-        t.update(t.props.startTime + timeShift + (duration / 2));
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
-        expect(oneCnt).toBe(3);
-        expect(zeroCnt).toBe(3);
-        return expect(repeatCnt).toBe(3);
-      });
-
-      /*
-        TWEEN IN REVERSE DIRECTION
-       */
-      it('should be called with 0 and 1 on each repeat period || reverse', function() {
-        var duration, oneCnt, repeatCnt, t1, updateInPeriod, zeroCnt;
-        zeroCnt = 0;
-        oneCnt = 0;
-        repeatCnt = 0;
-        duration = 50;
-        t1 = new Tween({
-          repeat: 1,
-          duration: duration,
-          onUpdate: function(p) {
-            (p === 0) && zeroCnt++;
-            return (p === 1) && oneCnt++;
-          },
-          onRepeatComplete: function() {
-            return repeatCnt++;
-          }
-        });
-        updateInPeriod = r_createUpdateInPeriod(t1, duration);
-        t1.setStartTime();
-        updateInPeriod(duration);
-        expect(oneCnt).toBe(1);
-        expect(zeroCnt).toBe(1);
-        expect(repeatCnt).toBe(1);
-        updateInPeriod(0);
-        expect(oneCnt).toBe(2);
-        expect(zeroCnt).toBe(2);
-        return expect(repeatCnt).toBe(2);
-      });
-      it('should be called with 1 and 0 on each repeat period if missed time || reverse', function() {
-        var delay, duration, gap, oneCnt, repeatCnt, t, timeShift, zeroCnt;
-        zeroCnt = 0;
-        oneCnt = 0;
-        repeatCnt = 0;
-        duration = 50;
-        delay = 20;
-        gap = 5;
-        t = new Tween({
-          repeat: 2,
-          duration: duration,
-          delay: delay,
-          onUpdate: function(p) {
-            (p === 0) && zeroCnt++;
-            return (p === 1) && oneCnt++;
-          },
-          onRepeatComplete: function() {
-            return repeatCnt++;
-          }
-        });
-        t.setStartTime();
-        timeShift = 2 * (duration + delay);
-        t.update(t.props.startTime + timeShift + duration - gap);
-        t.update(t.props.startTime + timeShift + (duration / 2));
-        t.update(t.props.startTime + timeShift + gap);
-        expect(oneCnt).toBe(1);
-        expect(zeroCnt).toBe(0);
-        expect(repeatCnt).toBe(1);
-        timeShift = duration + delay;
-        t.update(t.props.startTime + timeShift + duration - gap);
-        t.update(t.props.startTime + timeShift + (duration / 2));
-        t.update(t.props.startTime + timeShift + gap);
-        expect(oneCnt).toBe(2);
-        expect(zeroCnt).toBe(1);
-        expect(repeatCnt).toBe(2);
-        timeShift = 0;
-        t.update(t.props.startTime + timeShift + duration - gap);
-        t.update(t.props.startTime + timeShift + (duration / 2));
-        t.update(t.props.startTime + timeShift + gap);
-        expect(oneCnt).toBe(3);
-        expect(zeroCnt).toBe(2);
-        expect(repeatCnt).toBe(3);
-        t.update(t.props.startTime + timeShift);
-        expect(oneCnt).toBe(3);
-        expect(zeroCnt).toBe(3);
-        return expect(repeatCnt).toBe(3);
-      });
-      return it('should be called with 1 and 0 on each repeat period if delay and missed time || reverse', function() {
-        var delay, duration, gap, oneCnt, repeatCnt, t, timeShift, zeroCnt;
-        zeroCnt = 0;
-        oneCnt = 0;
-        repeatCnt = 0;
-        duration = 50;
-        delay = 20;
-        gap = 5;
-        t = new Tween({
-          repeat: 2,
           isIt: true,
           duration: duration,
-          delay: delay,
           onUpdate: function(p) {
-            console.log(p);
+            updateValue = p;
+            console.log('onUpdate: ', p);
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
           },
           onRepeatComplete: function() {
-            console.log('*** REPEAT ***');
+            console.log('*********** REPEAT COMPLETE ***************');
             return repeatCnt++;
           }
         });
         t.setStartTime();
-        timeShift = 2 * (duration + delay);
-        t.update(t.props.startTime + timeShift + duration - gap);
-        t.update(t.props.startTime + timeShift + (duration / 2));
-        t.update(t.props.startTime + timeShift + gap);
-        expect(oneCnt).toBe(1);
+        timeShift = 0;
+        t.update(t.props.startTime + timeShift);
+        expect(updateValue).toBe(null);
+        expect(t._wasUknownUpdate).toBe(true);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
-        expect(repeatCnt).toBe(1);
-        t.update(t.props.startTime + timeShift + gap - delay / 2);
-        expect(repeatCnt).toBe(1);
-        timeShift = duration;
-        t.update(t.props.startTime + timeShift + duration - gap);
-        return expect(repeatCnt).toBe(2);
+        expect(repeatCnt).toBe(0);
+        t.update(t.props.startTime + timeShift + (duration / 2));
+        expect(updateValue).toBe(.5);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
+        expect(zeroCnt).toBe(1);
+        return expect(repeatCnt).toBe(0);
       });
     });
     describe('onStart callback ->', function() {
@@ -682,7 +479,7 @@
       });
     });
     describe('_getPeriod method ->', function() {
-      it('should get the current period', function() {
+      it('should get current period', function() {
         var delay, duration, t, timeShift;
         duration = 50;
         delay = 20;
@@ -694,47 +491,49 @@
         t.setStartTime();
         expect(t._getPeriod(t.props.startTime)).toBe(0);
         expect(t._getPeriod(t.props.startTime + duration / 2)).toBe(0);
-        expect(t._getPeriod(t.props.startTime + duration)).toBe(0);
+        expect(t._getPeriod(t.props.startTime + duration)).toBe(1);
         timeShift = duration + delay;
-        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe(1);
+        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe('delay');
+        expect(t._delayT).toBe(1);
         expect(t._getPeriod(t.props.startTime + timeShift)).toBe(1);
         expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(1);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(1);
+        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(2);
         timeShift = 2 * (duration + delay);
-        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe(2);
+        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe('delay');
+        expect(t._delayT).toBe(2);
         expect(t._getPeriod(t.props.startTime + timeShift)).toBe(2);
         expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(2);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(2);
+        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(3);
         timeShift = 3 * (duration + delay);
-        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe(3);
+        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe('delay');
+        expect(t._delayT).toBe(3);
         expect(t._getPeriod(t.props.startTime + timeShift)).toBe(3);
         expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(3);
-        return expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(3);
+        return expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(4);
       });
       return it('should get the current period with no delay', function() {
         var duration, t, timeShift;
         duration = 50;
         t = new Tween({
-          isIt2: true,
           repeat: 3,
           duration: duration
         });
         t.setStartTime();
         expect(t._getPeriod(t.props.startTime)).toBe(0);
         expect(t._getPeriod(t.props.startTime + duration / 2)).toBe(0);
-        expect(t._getPeriod(t.props.startTime + duration)).toBe(0);
+        expect(t._getPeriod(t.props.startTime + duration)).toBe(1);
         expect(t._getPeriod(t.props.startTime + duration + 1)).toBe(1);
         timeShift = duration;
         expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(1);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(1);
+        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(2);
         expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe(2);
         timeShift = 2 * duration;
         expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(2);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(2);
+        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(3);
         expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe(3);
         timeShift = 3 * duration;
         expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(3);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(3);
+        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(4);
         return expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe(4);
       });
     });
@@ -909,6 +708,24 @@
       tm.update(t1.props.startTime + timeShift + duration1 - 4);
       tm.update(t1.props.startTime + timeShift + timeShift);
       return expect(progress).toBe(0);
+    });
+    describe('onRepeatComplete callback ->', function() {
+      return it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onRepeatComplete: function() {}
+        });
+        return expect(t.props.onRepeatComplete).toBeDefined();
+      });
+    });
+    describe('onRepeatStart callback ->', function() {
+      return it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onRepeatStart: function() {}
+        });
+        return expect(t.props.onRepeatStart).toBeDefined();
+      });
     });
     describe('onFirstUpdate callback ->', function() {
       it('should be defined', function() {
@@ -1096,44 +913,12 @@
       });
     });
     describe('yoyo option ->', function() {
-      it('should recieve yoyo option', function() {
+      return it('should recieve yoyo option', function() {
         var t;
         t = new Tween({
           yoyo: true
         });
         return expect(t.props.yoyo).toBe(true);
-      });
-      return it('should toggle the progress direction on repeat', function() {
-        var t, time;
-        t = new Tween({
-          repeat: 2,
-          duration: 10,
-          yoyo: true
-        }).setStartTime();
-        time = t.props.startTime;
-        t.update(time + 1);
-        expect(t.progress).toBe(.1);
-        t.update(time + 5);
-        expect(t.progress).toBe(.5);
-        t.update(time + 10);
-        expect(t.progress).toBe(1);
-        t.update(time + 11);
-        expect(t.progress).toBe(.9);
-        t.update(time + 15);
-        expect(t.progress).toBe(.5);
-        t.update(time + 19);
-        expect(parseFloat(t.progress.toFixed(1))).toBe(.1);
-        t.update(time + 20);
-        expect(t.progress).toBe(0);
-        t.update(time + 21);
-        expect(t.progress).toBe(.1);
-        t.update(time + 25);
-        expect(t.progress).toBe(.5);
-        t.update(time + 29);
-        expect(t.progress).toBe(.9);
-        t.update(time + 30);
-        expect(t.progress).toBe(1);
-        return expect(t.isCompleted).toBe(true);
       });
     });
     describe('easing ->', function() {
@@ -1151,6 +936,9 @@
           duration: 100
         });
         t.setStartTime();
+        t.update(t.props.startTime + 49);
+        expect(t.progress).toBe(0);
+        expect(t.easedProgress).toBe(void 0);
         t.update(t.props.startTime + 50);
         return expect(t.easedProgress).toBe(easing.sin.out(t.progress));
       });
@@ -1179,6 +967,7 @@
           easing: easings.one
         });
         t.setStartTime();
+        t.update(t.props.startTime + 39);
         t.update(t.props.startTime + 40);
         return setTimeout((function() {
           expect(easings.one).toHaveBeenCalled();
@@ -1384,7 +1173,7 @@
         return expect(tw.isStarted).toBe(false);
       });
     });
-    return describe('_repeatComplete method ->', function() {
+    describe('_repeatComplete method ->', function() {
       it('should call onRepeatComplete callback', function() {
         var fun, isCalled, tw;
         isCalled = null;
@@ -1415,6 +1204,39 @@
         tw = new Tween;
         tw._repeatComplete();
         return expect(tw.isRepeatCompleted).toBe(true);
+      });
+    });
+    return describe('_repeatStart method ->', function() {
+      it('should call onRepeatStart callback', function() {
+        var fun, isCalled, tw;
+        isCalled = null;
+        fun = function() {
+          return isCalled = true;
+        };
+        tw = new Tween({
+          onRepeatStart: fun
+        });
+        tw._repeatStart();
+        return expect(isCalled).toBe(true);
+      });
+      it('should call onRepeatStart callback only once', function() {
+        var cnt, fun, tw;
+        cnt = 0;
+        fun = function() {
+          return cnt++;
+        };
+        tw = new Tween({
+          onRepeatStart: fun
+        });
+        tw._repeatStart();
+        tw._repeatStart();
+        return expect(cnt).toBe(1);
+      });
+      return it('should set isRepeatStart to true', function() {
+        var tw;
+        tw = new Tween;
+        tw._repeatComplete();
+        return expect(tw.isRepeatStart).toBe(true);
       });
     });
   });

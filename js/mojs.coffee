@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.149.2', isDebug: true
+  revision:   '0.149.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -25,19 +25,19 @@ window.mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# # tm = new mojs.Timeline repeat: 1
-# tween = new mojs.Tween
-#   isIt:       true
-#   # yoyo:       true
-#   delay:        2000
-#   repeat:       2
-#   onStart:    -> console.log('--->>> start')
-#   onUpdate:   (p)-> console.log(p)
-#   onComplete: -> console.log('--->>> complete')
-#   onRepeatComplete: -> console.log('--->>> repeat complete')
+# tm = new mojs.Timeline repeat: 1
+tween = new mojs.Tween
+  # isIt:       true
+  # yoyo:       true
+  delay:        2000
+  repeat:       2
+  onStart:    -> console.log('--->>> start')
+  onUpdate:   (p)-> console.log(p)
+  onComplete: -> console.log('--->>> complete')
+  onRepeatComplete: -> console.log('--->>> repeat complete')
 
 
-# tween.play()
+tween.play()
 
 # # tween.play()
 

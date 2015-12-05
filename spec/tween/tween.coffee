@@ -128,12 +128,17 @@ describe 'Tween ->', ->
     it 'should update progress', ->
       t = new Tween(duration: 1000, delay: 500)
       t.setStartTime()
+      time = t.props.startTime + 199
+      t.update time
+      expect(t.progress).toBe 0
       time = t.props.startTime + 200
       t.update time
       expect(t.progress).toBeCloseTo .2, 5
     it 'should update progress with repeat', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
       t.setStartTime()
+      t.update t.props.startTime + 1399
+      expect(t.progress).toBeCloseTo 0
       t.update t.props.startTime + 1400
       expect(t.progress).toBeCloseTo .2
       t.update t.props.startTime + 2700
@@ -157,6 +162,8 @@ describe 'Tween ->', ->
     it 'should update progress to 1 on the end', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
       t.setStartTime()
+      t.update t.props.startTime + 500
+      expect(t.progress).toBeCloseTo 0
       t.update t.props.startTime + 1000
       expect(t.progress).toBeCloseTo 1, 5
     it 'should return true on the end', ->
@@ -202,12 +209,14 @@ describe 'Tween ->', ->
       t = new Tween duration: 1000, easing: 'bounce.out', onUpdate: ->
       spyOn t, 'onUpdate'
       t.setStartTime()
+      t.update t.props.startTime + 499
       t.update t.props.startTime + 500
       expect(t.onUpdate).toHaveBeenCalledWith t.easedProgress, t.progress
     it 'should have the right scope', ->
       isRightScope = false
       t = new Tween onUpdate:-> isRightScope = @ instanceof Tween
       t.setStartTime()
+      t.update t.props.startTime + 199
       t.update t.props.startTime + 200
       expect(isRightScope).toBe true
     it 'should be called just once on delay', ->
@@ -236,248 +245,268 @@ describe 'Tween ->', ->
 
     it 'should be called with 1 and 0 on each repeat period', ()->
       zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-      duration = 50
-      t1 = new Tween
+      duration = 50; updateValue = null
+      t = new Tween
         repeat:     1
-        duration:   duration
-        onUpdate:(p)->
-          (p is 0) and zeroCnt++
-          (p is 1) and oneCnt++
-        onRepeatComplete:-> repeatCnt++
-
-      updateInPeriod = createUpdateInPeriod t1, duration
-
-
-      t1.setStartTime()
-      updateInPeriod(0)
-      expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
-      expect(repeatCnt).toBe(1)
-
-      updateInPeriod(duration)
-      expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
-      expect(repeatCnt).toBe(2)
-
-    it 'should be called with 1 and 0 on each repeat period if missed time', ()->
-      zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-      duration = 50
-      t1 = new Tween
-        repeat:     2
-        duration:   duration
-        onUpdate:(p)->
-          (p is 0) and zeroCnt++
-          (p is 1) and oneCnt++
-        onRepeatComplete:-> repeatCnt++
-
-      updateInPeriod = createUpdateInPeriodWithGap t1, duration
-
-      t1.setStartTime()
-      updateInPeriod(0)
-      updateInPeriod(duration)
-      expect(zeroCnt).toBe(1)
-      expect(oneCnt).toBe(1)
-      expect(repeatCnt).toBe(1)
-
-      # console.log '**************************************'
-      updateInPeriod(2*duration)
-      expect(zeroCnt).toBe(2)
-      expect(oneCnt).toBe(2)
-      expect(repeatCnt).toBe(2)
-
-    it 'should be called with 1 and 0 on each repeat period if delay', ()->
-      zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-      duration = 50; delay = 20
-      t1 = new Tween
-        repeat:     2
-        duration:   duration
-        delay:      delay
-        onUpdate:(p)->
-          (p is 0) and zeroCnt++
-          (p is 1) and oneCnt++
-        onRepeatComplete:-> repeatCnt++
-
-      updateInPeriod = createUpdateInPeriod t1, duration
-
-      t1.setStartTime()
-      
-      updateInPeriod( 0 )
-      expect(zeroCnt).toBe(1)
-      expect(oneCnt).toBe(1)
-      expect(repeatCnt).toBe(1)
-
-      updateInPeriod( duration + delay )
-      expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
-      expect(repeatCnt).toBe(2)
-
-      updateInPeriod( 2*(duration + delay) )
-      expect(oneCnt).toBe(3)
-      expect(zeroCnt).toBe(3)
-      expect(repeatCnt).toBe(3)
-
-    it 'should be called with 1 and 0 on each repeat period if in delay', ()->
-      zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-      duration = 50; delay = 20
-      t = new Tween
-        repeat:     2
-        duration:   duration
-        delay:      delay
-        onUpdate:(p)->
-          (p is 0) and zeroCnt++
-          (p is 1) and oneCnt++
-        onRepeatComplete:-> repeatCnt++
-
-      t.setStartTime()
-
-      timeShift = 0
-      t.update t.props.startTime + timeShift
-      t.update t.props.startTime + timeShift + (duration/2)
-      t.update t.props.startTime + timeShift + (duration) + delay/2 
-      
-      expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
-      expect(repeatCnt).toBe(1)
-
-      timeShift = duration + delay
-      t.update t.props.startTime + timeShift + 5
-      t.update t.props.startTime + timeShift + (duration/2)
-      t.update t.props.startTime + timeShift + (duration) + delay/2 
-      
-      expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
-      expect(repeatCnt).toBe(2)
-
-      timeShift = 2*(duration + delay)
-      t.update t.props.startTime + timeShift + 5
-      t.update t.props.startTime + timeShift + (duration/2)
-      t.update t.props.startTime + timeShift + (duration) + delay/2 
-      
-      expect(oneCnt).toBe(3)
-      expect(zeroCnt).toBe(3)
-      expect(repeatCnt).toBe(3)
-
-    ###
-      TWEEN IN REVERSE DIRECTION
-    ###
-
-    it 'should be called with 0 and 1 on each repeat period || reverse', ()->
-      zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-      duration = 50
-      t1 = new Tween
-        repeat:     1
-        duration:   duration
-        onUpdate:(p)->
-          (p is 0) and zeroCnt++
-          (p is 1) and oneCnt++
-        onRepeatComplete:-> repeatCnt++
-
-      updateInPeriod = r_createUpdateInPeriod t1, duration
-
-      t1.setStartTime()
-
-      updateInPeriod(duration)
-      expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
-      expect(repeatCnt).toBe(1)
-
-      updateInPeriod(0)
-      expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
-      expect(repeatCnt).toBe(2)
-
-
-    it 'should be called with 1 and 0 on each repeat period if missed time || reverse', ()->
-      zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-      duration = 50; delay = 20; gap = 5
-      t = new Tween
-        repeat:     2
-        duration:   duration
-        delay:      delay
-        onUpdate:(p)->
-          (p is 0) and zeroCnt++
-          (p is 1) and oneCnt++
-        onRepeatComplete:-> repeatCnt++
-
-      t.setStartTime()
-
-      timeShift = 2*(duration+delay)
-      t.update t.props.startTime + timeShift + (duration) - gap
-      t.update t.props.startTime + timeShift + (duration/2)
-      t.update t.props.startTime + timeShift + gap
-      expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(0)
-      expect(repeatCnt).toBe(1)
-
-      timeShift = (duration+delay)
-      t.update t.props.startTime + timeShift + (duration) - gap
-      t.update t.props.startTime + timeShift + (duration/2)
-      t.update t.props.startTime + timeShift + gap
-      expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(1)
-      expect(repeatCnt).toBe(2)
-
-      timeShift = 0
-      t.update t.props.startTime + timeShift + (duration) - gap
-      t.update t.props.startTime + timeShift + (duration/2)
-      t.update t.props.startTime + timeShift + gap
-      expect(oneCnt).toBe(3)
-      expect(zeroCnt).toBe(2)
-      expect(repeatCnt).toBe(3)
-      t.update t.props.startTime + timeShift
-      expect(oneCnt).toBe(3)
-      expect(zeroCnt).toBe(3)
-      expect(repeatCnt).toBe(3)
-
-    it 'should be called with 1 and 0 on each repeat period if delay and missed time || reverse', ()->
-      zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-      duration = 50; delay = 20; gap = 5
-      t = new Tween
-        repeat:     2
         isIt:       true
         duration:   duration
-        delay:      delay
         onUpdate:(p)->
-          console.log p
+          updateValue = p
+          console.log 'onUpdate: ', p
           (p is 0) and zeroCnt++
           (p is 1) and oneCnt++
         onRepeatComplete:->
-          console.log '*** REPEAT ***'
+          console.log '*********** REPEAT COMPLETE ***************'
           repeatCnt++
-
+      
       t.setStartTime()
-
-      timeShift = 2*(duration+delay)
-      t.update t.props.startTime + timeShift + (duration) - gap
-      t.update t.props.startTime + timeShift + (duration/2)
-      t.update t.props.startTime + timeShift + gap
-      expect(oneCnt).toBe(1)
+      
+      timeShift = 0
+      t.update t.props.startTime + timeShift
+      
+      expect(updateValue).toBe(null)
+      expect(t._wasUknownUpdate).toBe(true)
+      expect(oneCnt).toBe(0)
       expect(zeroCnt).toBe(0)
-      expect(repeatCnt).toBe(1)
+      expect(repeatCnt).toBe(0)
 
-      t.update t.props.startTime + timeShift + gap - delay/2
-      expect(repeatCnt).toBe(1)
 
-      timeShift = (duration)
-      t.update t.props.startTime + timeShift + (duration) - gap
-      expect(repeatCnt).toBe(2)
-      # t.update t.props.startTime + timeShift + (duration/2)
-      # t.update t.props.startTime + timeShift + gap
+      t.update t.props.startTime + timeShift + (duration/2)
+      expect(updateValue).toBe(.5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(0)
+      expect(zeroCnt).toBe(1)
+      expect(repeatCnt).toBe(0)
+
+
+      # t.update t.props.startTime + timeShift + (duration)
+
+      # expect(oneCnt).toBe(1)
+      # expect(zeroCnt).toBe(2)
+      # expect(repeatCnt).toBe(1)
+
+      # updateInPeriod(duration)
       # expect(oneCnt).toBe(2)
-      # expect(zeroCnt).toBe(1)
+      # expect(zeroCnt).toBe(2)
       # expect(repeatCnt).toBe(2)
 
-      # timeShift = 0
-      # t.update t.props.startTime + timeShift + (duration) - gap
-      # t.update t.props.startTime + timeShift + (duration/2)
-      # t.update t.props.startTime + timeShift + gap
-      # expect(oneCnt).toBe(3)
-      # expect(zeroCnt).toBe(2)
-      # expect(repeatCnt).toBe(3)
-      # t.update t.props.startTime + timeShift
-      # expect(oneCnt).toBe(3)
-      # expect(zeroCnt).toBe(3)
-      # expect(repeatCnt).toBe(3)
+    # it 'should be called with 1 and 0 on each repeat period if missed time', ()->
+    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
+    #   duration = 50
+    #   t1 = new Tween
+    #     repeat:     2
+    #     duration:   duration
+    #     onUpdate:(p)->
+    #       (p is 0) and zeroCnt++
+    #       (p is 1) and oneCnt++
+    #     onRepeatComplete:-> repeatCnt++
+
+    #   updateInPeriod = createUpdateInPeriodWithGap t1, duration
+
+    #   t1.setStartTime()
+    #   updateInPeriod(0)
+    #   updateInPeriod(duration)
+    #   expect(zeroCnt).toBe(1)
+    #   expect(oneCnt).toBe(1)
+    #   expect(repeatCnt).toBe(1)
+
+    #   updateInPeriod(2*duration)
+    #   expect(zeroCnt).toBe(2)
+    #   expect(oneCnt).toBe(2)
+    #   expect(repeatCnt).toBe(2)
+
+    # it 'should be called with 1 and 0 on each repeat period if delay', ()->
+    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
+    #   duration = 50; delay = 20
+    #   t1 = new Tween
+    #     repeat:     2
+    #     duration:   duration
+    #     delay:      delay
+    #     onUpdate:(p)->
+    #       (p is 0) and zeroCnt++
+    #       (p is 1) and oneCnt++
+    #     onRepeatComplete:-> repeatCnt++
+
+    #   updateInPeriod = createUpdateInPeriod t1, duration
+
+    #   t1.setStartTime()
+      
+    #   updateInPeriod( 0 )
+    #   expect(zeroCnt).toBe(1)
+    #   expect(oneCnt).toBe(1)
+    #   expect(repeatCnt).toBe(1)
+
+    #   updateInPeriod( duration + delay )
+    #   expect(oneCnt).toBe(2)
+    #   expect(zeroCnt).toBe(2)
+    #   expect(repeatCnt).toBe(2)
+
+    #   updateInPeriod( 2*(duration + delay) )
+    #   expect(oneCnt).toBe(3)
+    #   expect(zeroCnt).toBe(3)
+    #   expect(repeatCnt).toBe(3)
+
+    # it 'should be called with 1 and 0 on each repeat period if in delay', ()->
+    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
+    #   duration = 50; delay = 20
+    #   t = new Tween
+    #     repeat:     2
+    #     duration:   duration
+    #     delay:      delay
+    #     onUpdate:(p)->
+    #       (p is 0) and zeroCnt++
+    #       (p is 1) and oneCnt++
+    #     onRepeatComplete:-> repeatCnt++
+
+    #   t.setStartTime()
+
+    #   timeShift = 0
+    #   t.update t.props.startTime + timeShift
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + (duration) + delay/2 
+      
+    #   expect(oneCnt).toBe(1)
+    #   expect(zeroCnt).toBe(1)
+    #   expect(repeatCnt).toBe(1)
+
+    #   timeShift = duration + delay
+    #   t.update t.props.startTime + timeShift + 5
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + (duration) + delay/2 
+      
+    #   expect(oneCnt).toBe(2)
+    #   expect(zeroCnt).toBe(2)
+    #   expect(repeatCnt).toBe(2)
+
+    #   timeShift = 2*(duration + delay)
+    #   t.update t.props.startTime + timeShift + 5
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + (duration) + delay/2 
+      
+    #   expect(oneCnt).toBe(3)
+    #   expect(zeroCnt).toBe(3)
+    #   expect(repeatCnt).toBe(3)
+
+    # ###
+    #   TWEEN IN REVERSE DIRECTION
+    # ###
+
+    # it 'should be called with 0 and 1 on each repeat period || reverse', ()->
+    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
+    #   duration = 50
+    #   t1 = new Tween
+    #     repeat:     1
+    #     duration:   duration
+    #     onUpdate:(p)->
+    #       (p is 0) and zeroCnt++
+    #       (p is 1) and oneCnt++
+    #     onRepeatComplete:-> repeatCnt++
+
+    #   updateInPeriod = r_createUpdateInPeriod t1, duration
+
+    #   t1.setStartTime()
+
+    #   updateInPeriod(duration)
+    #   expect(oneCnt).toBe(1)
+    #   expect(zeroCnt).toBe(1)
+    #   expect(repeatCnt).toBe(1)
+
+    #   updateInPeriod(0)
+    #   expect(oneCnt).toBe(2)
+    #   expect(zeroCnt).toBe(2)
+    #   expect(repeatCnt).toBe(2)
+
+
+    # it 'should be called with 1 and 0 on each repeat period if missed time || reverse', ()->
+    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
+    #   duration = 50; delay = 20; gap = 5
+    #   t = new Tween
+    #     repeat:     2
+    #     duration:   duration
+    #     delay:      delay
+    #     onUpdate:(p)->
+    #       (p is 0) and zeroCnt++
+    #       (p is 1) and oneCnt++
+    #     onRepeatComplete:-> repeatCnt++
+
+    #   t.setStartTime()
+
+    #   timeShift = 2*(duration+delay)
+    #   t.update t.props.startTime + timeShift + (duration) - gap
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + gap
+    #   expect(oneCnt).toBe(1)
+    #   expect(zeroCnt).toBe(0)
+    #   expect(repeatCnt).toBe(1)
+
+    #   timeShift = (duration+delay)
+    #   t.update t.props.startTime + timeShift + (duration) - gap
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + gap
+    #   expect(oneCnt).toBe(2)
+    #   expect(zeroCnt).toBe(1)
+    #   expect(repeatCnt).toBe(2)
+
+    #   timeShift = 0
+    #   t.update t.props.startTime + timeShift + (duration) - gap
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + gap
+    #   expect(oneCnt).toBe(3)
+    #   expect(zeroCnt).toBe(2)
+    #   expect(repeatCnt).toBe(3)
+    #   t.update t.props.startTime + timeShift
+    #   expect(oneCnt).toBe(3)
+    #   expect(zeroCnt).toBe(3)
+    #   expect(repeatCnt).toBe(3)
+
+    # it 'should be called with 1 and 0 on each repeat period if delay and missed time || reverse', ()->
+    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
+    #   duration = 50; delay = 20; gap = 5
+    #   t = new Tween
+    #     repeat:     2
+    #     duration:   duration
+    #     delay:      delay
+    #     onUpdate:(p)->
+    #       (p is 0) and zeroCnt++
+    #       (p is 1) and oneCnt++
+    #     onRepeatComplete:-> repeatCnt++
+
+    #   t.setStartTime()
+
+    #   timeShift = 2*(duration+delay)
+    #   t.update t.props.startTime + timeShift + (duration) - gap
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + gap
+    #   expect(oneCnt).toBe(1)
+    #   expect(zeroCnt).toBe(0)
+    #   expect(repeatCnt).toBe(1)
+
+    #   t.update t.props.startTime + timeShift + gap - delay/2
+    #   expect(repeatCnt).toBe(1)
+
+    #   timeShift = (duration)
+    #   t.update t.props.startTime + timeShift + (duration) - gap
+    #   expect(oneCnt).toBe(2)
+    #   expect(zeroCnt).toBe(1)
+    #   expect(repeatCnt).toBe(2)
+
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + gap
+    #   expect(oneCnt).toBe(2)
+    #   expect(zeroCnt).toBe(2)
+    #   expect(repeatCnt).toBe(2)
+
+    #   timeShift = 0
+    #   t.update t.props.startTime + timeShift + (duration) - gap
+    #   t.update t.props.startTime + timeShift + (duration/2)
+    #   t.update t.props.startTime + timeShift + gap
+    #   expect(oneCnt).toBe(3)
+    #   expect(zeroCnt).toBe(2)
+    #   expect(repeatCnt).toBe(3)
+    #   t.update t.props.startTime + timeShift
+    #   expect(oneCnt).toBe(3)
+    #   expect(zeroCnt).toBe(3)
+    #   expect(repeatCnt).toBe(3)
 
   #   it 'should be called with 1 on each repeat period // if yoyo', ()->
   #     duration = 50
@@ -746,7 +775,7 @@ describe 'Tween ->', ->
   #     # expect(t.progress).toBe 0
 
   describe '_getPeriod method ->', ->
-    it 'should get the current period', ->
+    it 'should get current period', ->
       duration = 50; delay = 20
       t = new Tween repeat: 3, duration: duration, delay: delay
 
@@ -754,51 +783,53 @@ describe 'Tween ->', ->
 
       expect(t._getPeriod(t.props.startTime)).toBe 0
       expect(t._getPeriod(t.props.startTime + duration/2)).toBe 0
-      expect(t._getPeriod(t.props.startTime + duration)).toBe 0
-      # expect(t._getPeriod(t.props.startTime + duration + delay)).toBe 1
+      expect(t._getPeriod(t.props.startTime + duration)).toBe 1
 
       timeShift = duration + delay
-      expect(t._getPeriod(t.props.startTime + timeShift - delay/2)).toBe 1
+      expect(t._getPeriod(t.props.startTime + timeShift - delay/2)).toBe 'delay'
+      expect(t._delayT).toBe 1
       expect(t._getPeriod(t.props.startTime + timeShift)).toBe 1
       expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 1
-      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 1
-
-      timeShift = 2*(duration + delay)
-      expect(t._getPeriod(t.props.startTime + timeShift - delay/2)).toBe 2
-      expect(t._getPeriod(t.props.startTime + timeShift)).toBe 2
-      expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 2
       expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 2
 
+      timeShift = 2*(duration + delay)
+      expect(t._getPeriod(t.props.startTime + timeShift - delay/2)).toBe 'delay'
+      expect(t._delayT).toBe 2
+      expect(t._getPeriod(t.props.startTime + timeShift)).toBe 2
+      expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 2
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 3
+
       timeShift = 3*(duration + delay)
-      expect(t._getPeriod(t.props.startTime + timeShift - delay/2)).toBe 3
+      expect(t._getPeriod(t.props.startTime + timeShift - delay/2)).toBe 'delay'
+      expect(t._delayT).toBe 3
       expect(t._getPeriod(t.props.startTime + timeShift)).toBe 3
       expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 3
-      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 3
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 4
 
     it 'should get the current period with no delay', ->
       duration = 50
-      t = new Tween isIt2: true, repeat: 3, duration: duration
+      t = new Tween repeat: 3, duration: duration
 
       t.setStartTime()
 
       expect(t._getPeriod(t.props.startTime)).toBe 0
       expect(t._getPeriod(t.props.startTime + duration/2)).toBe 0
-      expect(t._getPeriod(t.props.startTime + duration)).toBe 0
+      expect(t._getPeriod(t.props.startTime + duration)).toBe 1
       expect(t._getPeriod(t.props.startTime + duration + 1)).toBe 1
 
       timeShift = duration
       expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 1
-      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 1
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 2
       expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 2
 
       timeShift = 2*duration
       expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 2
-      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 2
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 3
       expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 3
 
       timeShift = 3*duration
       expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 3
-      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 3
+      expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 4
       expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 4
 
   describe 'onComplete callback ->', ->
@@ -953,10 +984,16 @@ describe 'Tween ->', ->
 
     #   expect(cnt).toBe(2)
 
-  # describe 'onRepeatComplete callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onRepeatComplete: ->
-  #     expect(t.props.onRepeatComplete).toBeDefined()
+  describe 'onRepeatComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onRepeatComplete: ->
+      expect(t.props.onRepeatComplete).toBeDefined()
+
+  describe 'onRepeatStart callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onRepeatStart: ->
+      expect(t.props.onRepeatStart).toBeDefined()
+
   #   it 'should call onRepeatComplete callback', ->
   #     t = new Tween(duration: 100, onRepeatComplete:->).setStartTime()
   #     spyOn(t.props, 'onRepeatComplete')
@@ -1248,23 +1285,23 @@ describe 'Tween ->', ->
     it 'should recieve yoyo option', ->
       t = new Tween yoyo: true
       expect(t.props.yoyo).toBe true
-    it 'should toggle the progress direction on repeat', ->
-      t = new Tween(repeat: 2, duration: 10, yoyo: true).setStartTime()
-      time = t.props.startTime
-      t.update(time+1);   expect(t.progress).toBe .1
-      t.update(time+5);   expect(t.progress).toBe .5
-      t.update(time+10);  expect(t.progress).toBe 1
+    # it 'should toggle the progress direction on repeat', ->
+    #   t = new Tween(repeat: 2, duration: 10, yoyo: true).setStartTime()
+    #   time = t.props.startTime
+    #   t.update(time+1);   expect(t.progress).toBe .1
+    #   t.update(time+5);   expect(t.progress).toBe .5
+    #   t.update(time+10);  expect(t.progress).toBe 1
 
-      t.update(time+11);  expect(t.progress).toBe .9
-      t.update(time+15);  expect(t.progress).toBe .5
-      t.update(time+19);  expect(parseFloat t.progress.toFixed(1)).toBe .1
+    #   t.update(time+11);  expect(t.progress).toBe .9
+    #   t.update(time+15);  expect(t.progress).toBe .5
+    #   t.update(time+19);  expect(parseFloat t.progress.toFixed(1)).toBe .1
 
-      t.update(time+20);  expect(t.progress).toBe 0
-      t.update(time+21);  expect(t.progress).toBe .1
-      t.update(time+25);  expect(t.progress).toBe .5
-      t.update(time+29);  expect(t.progress).toBe .9
-      t.update(time+30);  expect(t.progress).toBe 1
-      expect(t.isCompleted).toBe true
+    #   t.update(time+20);  expect(t.progress).toBe 0
+    #   t.update(time+21);  expect(t.progress).toBe .1
+    #   t.update(time+25);  expect(t.progress).toBe .5
+    #   t.update(time+29);  expect(t.progress).toBe .9
+    #   t.update(time+30);  expect(t.progress).toBe 1
+    #   expect(t.isCompleted).toBe true
 
     # it 'should set progress to 0 on return', ->
     #   p = 0; duration = 800; delay = 1000
@@ -1296,7 +1333,11 @@ describe 'Tween ->', ->
       expect(typeof t.props.easing).toBe 'function'
     it 'should parse standart easing', ->
       t = new Tween(easing: 'Sin.Out', duration: 100)
-      t.setStartTime(); t.update(t.props.startTime + 50)
+      t.setStartTime();
+      t.update(t.props.startTime + 49)
+      expect(t.progress).toBe 0
+      expect(t.easedProgress).toBe undefined
+      t.update(t.props.startTime + 50)
       expect(t.easedProgress).toBe easing.sin.out t.progress
     it 'should work with easing function', ->
       easings = one: -> a = 1
@@ -1306,7 +1347,9 @@ describe 'Tween ->', ->
       easings = one:(k)-> k
       spyOn easings, 'one'
       t = new Tween(easing: easings.one)
-      t.setStartTime(); t.update t.props.startTime + 40
+      t.setStartTime();
+      t.update t.props.startTime + 39
+      t.update t.props.startTime + 40
       setTimeout (-> expect(easings.one).toHaveBeenCalled(); dfr()), 50
   describe 'setProgress method ->', ->
     it 'should set the current progress', ->
@@ -1466,6 +1509,30 @@ describe 'Tween ->', ->
       tw = new Tween
       tw._repeatComplete()
       expect(tw.isRepeatCompleted).toBe true
+
+  describe '_repeatStart method ->', ->
+    it 'should call onRepeatStart callback', ->
+      isCalled = null
+      fun = -> isCalled = true
+      tw = new Tween onRepeatStart: fun
+      tw._repeatStart()
+      expect(isCalled).toBe true
+
+    it 'should call onRepeatStart callback only once', ->
+      cnt = 0
+      fun = -> cnt++
+      tw = new Tween onRepeatStart: fun
+      tw._repeatStart()
+      tw._repeatStart()
+      expect(cnt).toBe 1
+    # it 'should set isOnReverseComplete to false', ->
+    #   tw = new Tween
+    #   tw._repeatComplete()
+    #   expect(tw.isOnReverseComplete).toBe false
+    it 'should set isRepeatStart to true', ->
+      tw = new Tween
+      tw._repeatComplete()
+      expect(tw.isRepeatStart).toBe true
 
 
 

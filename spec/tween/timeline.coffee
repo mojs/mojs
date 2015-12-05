@@ -137,11 +137,11 @@ describe 'Timeline ->', ->
       t.add new Tween duration: 200
       expect(t.props.repeatTime).toBe 600
       expect(t.props.time)     .toBe 200
-    it 'should set nearest start time', ->
-      t = new Timeline repeat: 2
-      t.add new Tween duration: 200
-      t.setProgress .6
-      expect(t.timelines[0].progress).toBeCloseTo .8, 5
+    # it 'should set nearest start time', ->
+    #   t = new Timeline repeat: 2
+    #   t.add new Tween duration: 200
+    #   t.setProgress .6
+    #   expect(t.timelines[0].progress).toBeCloseTo .8, 5
   #   it 'should end at 1', (dfr)->
   #     t = new Timeline repeat: 2
   #     proc = -1
@@ -935,21 +935,21 @@ describe 'Timeline ->', ->
       expect(t.props.startTime).toBe time + 600
 
   describe 'nested timelines ->', ->
-    it 'should work with nested timelines', ->
-      tm0 = new mojs.Timeline
-      tm1 = new mojs.Timeline
-      tm2 = new mojs.Timeline
+    # it 'should work with nested timelines', ->
+    #   tm0 = new mojs.Timeline
+    #   tm1 = new mojs.Timeline
+    #   tm2 = new mojs.Timeline
 
-      tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
-      tm1.add tw1
+    #   tw1 = new mojs.Tween duration: 100, onUpdate:(p)->
+    #   tm1.add tw1
 
-      tw2 = new mojs.Tween duration: 400, onUpdate:(p)->
-      tm2.add tw2
+    #   tw2 = new mojs.Tween duration: 400, onUpdate:(p)->
+    #   tm2.add tw2
 
-      tm0.add tm1
-      tm0.append tm2
-      tm0.setProgress .5
-      expect(tw2.progress).toBeCloseTo .375, 5
+    #   tm0.add tm1
+    #   tm0.append tm2
+    #   tm0.setProgress .5
+    #   expect(tw2.progress).toBeCloseTo .375, 5
     it 'should set right endTime times', ->
       tm0 = new mojs.Timeline
       tm1 = new mojs.Timeline

@@ -21,6 +21,7 @@ var Tween = class Tween {
       onStart:                null,
       onComplete:             null,
       onRepeatComplete:       null,
+      onRepeatStart:          null,
       onReverseComplete:      null,
       onFirstUpdate:          null,
       onUpdate:               null,
@@ -30,7 +31,7 @@ var Tween = class Tween {
   }
 
   vars() {
-    this.h = h; this.progress = 0; this.prevTime = 0;
+    this.h = h; this.progress = 0; this.prevTime = -1;
     return this.calcDimentions();
   }
 
@@ -76,10 +77,6 @@ var Tween = class Tween {
   update(time, isGrow) {
 
     var props = this.props;
-
-    this.o.isIt && console.log(`=========`);
-    this.o.isIt && console.log(`tween:`);
-    this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
 
     /*
       if time is inside the active area of the tween.
@@ -186,24 +183,40 @@ var Tween = class Tween {
     this.isRepeatCompleted = true;
   }
 
+  /*
+    Method call onRepeatStart calback and set flags.
+  */
+  _repeatStart() {
+    if (this.isRepeatStart) { return; }
+    if (this.props.onRepeatStart != null && typeof this.props.onRepeatStart === 'function') {
+      this.props.onRepeatStart.apply(this);
+    }
+    this.isRepeatStart = true;
+  }
+
+
   _updateInActiveArea(time) {
 
-    var props = this.props;
+    // We need to know what direction we are heading in with this tween,
+    // so if we don't have the previous update value - this is very first
+    // update, - skip it entirely and wait for the next value
+    if ( this.prevTime === -1 ) { return this._wasUknownUpdate = true; }
 
-    var startPoint = props.startTime - props.delay;
-    var delayDuration = props.delay + props.duration;
-    var elapsed = (time - startPoint) % delayDuration;
-    // var TCount = Math.floor(( props.endTime - startPoint) / delayDuration );
-    var T = Math.floor(( time - startPoint - props.delay ) / delayDuration );
-    var prevT = Math.floor((this.prevTime - startPoint - props.delay) / delayDuration);
+    var props         = this.props,
+        delayDuration = props.delay + props.duration,
+        startPoint    = props.startTime - props.delay,
+        elapsed       = (time - props.startTime + props.delay) % delayDuration,
+        T             = this._getPeriod(time),
+        TValue        = this._delayT,
+        prevT         = this._getPeriod(this.prevTime),
+        TPrevValue    = this._delayT;
 
-    // this.o.isIt && console.log(`TCount: ${TCount}`);
-
-    if ( this.prevTime === props.endTime ) {
-      prevT--;
-    }
-
-    this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}`);
+    this.o.isIt && console.log(`=========`);
+    this.o.isIt && console.log(`tween:`);
+    this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
+    this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}, prevTime: ${this.prevTime}`);
+    this.o.isIt && console.log(`TValue: ${TValue}, TPrevValue: ${TPrevValue}`);
+    this.o.isIt && this._visualizeProgress(time);
 
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
@@ -211,19 +224,28 @@ var Tween = class Tween {
       // active zone or larger then end
       var elapsed2 = ( time - props.startTime) % delayDuration;
       var proc = elapsed2 / props.duration;
-      // isOnEdge means
-      // time is larger then the first period
-      // AND
-      // previous period is smaller then the current one
+      this.o.isIt && console.log(`proc: ${proc}, elapsed2: ${elapsed2}, elapsed: ${elapsed}`);
+      
+      // |=====|=====|=====| >>>
+      //      ^1^2
       var isOnEdge = (T > 0) && (prevT < T);
+      // |=====|=====|=====| <<<
+      //      ^2^1
       var isOnReverseEdge = (prevT > T);
+
       // if not yoyo then set the plain progress
       if (!props.yoyo) {
+
+          if ( this._wasUknownUpdate ) {
+            if ( this.prevTime < time ) {
+              this.setProgress(0);
+            }
+          }
 
           if ( isOnEdge ) {
             // if not just after delay
             // |=====|---=====|---=====| >>>
-            //           ^here    ^here
+            //         ^1 ^2
             // because we have already handled
             // 1 and onRepeatComplete in delay gap
             if (this.progress !== 1) {
@@ -236,20 +258,28 @@ var Tween = class Tween {
             if ( prevT >=0 ) { this.setProgress(0); }
           }
 
-
-          if ( isOnReverseEdge ) {
+          if ( isOnReverseEdge && this.prevTime !== props.endTime ) {
             this.setProgress(0);
             this.setProgress(1);
-            this._repeatComplete(); 
+            this._repeatComplete();
           }
-          // proc === 0 means that the time === end of the period,
-          // and we have already handled this case, so set progress
-          // only if proc > 0
-          // proc === 0 aslo if time === start of the period,
-          // so check this case in ||
-          // if (proc > 0 || ( proc === 0 && (prevT === T) ) ) {
-            this.setProgress(proc);
-          // }
+
+          // if just before delay gap
+          // |---=====|---=====|---=====| >>>
+          //               ^2    ^1
+          if ( prevT === 'delay' && T < TPrevValue ) {
+            this.setProgress(1);
+            this._repeatComplete();
+          }
+
+          // if just after delay gap
+          // |---=====|---=====|---=====| >>>
+          //            ^1  ^2
+          if ( prevT === 'delay' && T === TPrevValue ) {
+            this.setProgress(0);
+          }
+          
+          this.setProgress(proc);
 
       } else {
         var isEvenPeriod = (T % 2 === 0);
@@ -265,6 +295,7 @@ var Tween = class Tween {
       }
     // delay gap
     } else {
+      this.o.isIt && console.log(`in the delay gap`);
       // if yoyo and even period we should flip
       // so set flipCoef to 1 if we need flip, otherwise to 0
       var flipCoef = (props.yoyo && (T % 2 === 0)) ? 1 : 0;
@@ -277,6 +308,7 @@ var Tween = class Tween {
       //         ^here    ^here   
       if (this.progress !== 0) { this._repeatComplete(); }
     }
+    this._wasUknownUpdate = false;
   }
 
   /*
@@ -360,8 +392,14 @@ var Tween = class Tween {
         dTime   = time - p.startTime + p.delay,
         T       = Math.floor( dTime / TTime ),
         elapsed = dTime % TTime;
+
+    // if in delay gap, set _delayT to current
+    // period number and return "delay"
+    if ( elapsed > 0 && elapsed < p.delay ) {
+      this._delayT = T; T = 'delay';
+    }
     // if the end of period and there is a delay
-    if ( elapsed === 0 && T > 0 ) { T--; }
+    // if ( elapsed === 0 && T > 0 ) { T--; }
     return T;
   }
 

@@ -233,7 +233,7 @@
       });
     });
     describe('repeat option ->', function() {
-      it('should increase repeatTime', function() {
+      return it('should increase repeatTime', function() {
         var t;
         t = new Timeline({
           repeat: 2
@@ -243,17 +243,6 @@
         }));
         expect(t.props.repeatTime).toBe(600);
         return expect(t.props.time).toBe(200);
-      });
-      return it('should set nearest start time', function() {
-        var t;
-        t = new Timeline({
-          repeat: 2
-        });
-        t.add(new Tween({
-          duration: 200
-        }));
-        t.setProgress(.6);
-        return expect(t.timelines[0].progress).toBeCloseTo(.8, 5);
       });
     });
     describe('startTime ->', function() {
@@ -1469,26 +1458,6 @@
       });
     });
     return describe('nested timelines ->', function() {
-      it('should work with nested timelines', function() {
-        var tm0, tm1, tm2, tw1, tw2;
-        tm0 = new mojs.Timeline;
-        tm1 = new mojs.Timeline;
-        tm2 = new mojs.Timeline;
-        tw1 = new mojs.Tween({
-          duration: 100,
-          onUpdate: function(p) {}
-        });
-        tm1.add(tw1);
-        tw2 = new mojs.Tween({
-          duration: 400,
-          onUpdate: function(p) {}
-        });
-        tm2.add(tw2);
-        tm0.add(tm1);
-        tm0.append(tm2);
-        tm0.setProgress(.5);
-        return expect(tw2.progress).toBeCloseTo(.375, 5);
-      });
       it('should set right endTime times', function() {
         var tm0, tm1, tm2, tw1, tw2;
         tm0 = new mojs.Timeline;
