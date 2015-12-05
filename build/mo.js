@@ -2414,10 +2414,8 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var tween;
-
-	window.mojs = {
-	  revision: '0.149.1',
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
+	  revision: '0.149.3',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -2444,25 +2442,6 @@
 	mojs.h = mojs.helpers;
 
 	mojs.delta = mojs.h.delta;
-
-	tween = new mojs.Tween({
-	  delay: 2000,
-	  repeat: 2,
-	  onStart: function() {
-	    return console.log('--->>> start');
-	  },
-	  onUpdate: function(p) {
-	    return console.log(p);
-	  },
-	  onComplete: function() {
-	    return console.log('--->>> complete');
-	  },
-	  onRepeatComplete: function() {
-	    return console.log('--->>> repeat complete');
-	  }
-	});
-
-	tween.play();
 
 
 	/* istanbul ignore next */
@@ -3822,6 +3801,8 @@
 	        // so if we don't have the previous update value - this is very first
 	        // update, - skip it entirely and wait for the next value
 	        if (this.prevTime === -1) {
+	          this.o.isIt && console.log("=========");
+	          this.o.isIt && console.log("tween: SKIP");
 	          return this._wasUknownUpdate = true;
 	        }
 
@@ -3844,6 +3825,7 @@
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
 	          this.isRepeatCompleted = false;
+	          this.isRepeatStart = false;
 	          // active zone or larger then end
 	          var elapsed2 = (time - props.startTime) % delayDuration;
 	          var proc = elapsed2 / props.duration;
@@ -3860,6 +3842,7 @@
 	          if (!props.yoyo) {
 	            if (this._wasUknownUpdate) {
 	              if (this.prevTime < time) {
+	                this._repeatStart();
 	                this.setProgress(0);
 	              }
 	            }
@@ -3878,6 +3861,7 @@
 	              // |=====|=====|=====|
 	              // ^here             ^here
 	              if (prevT >= 0) {
+	                this._repeatStart();
 	                this.setProgress(0);
 	              }
 	            }
@@ -3900,10 +3884,16 @@
 	            // |---=====|---=====|---=====| >>>
 	            //            ^1  ^2
 	            if (prevT === "delay" && T === TPrevValue) {
+	              this._repeatStart();
 	              this.setProgress(0);
 	            }
 
 	            this.setProgress(proc);
+
+	            // if progress is equal 0 and progress grows
+	            if (proc === 0 && time > this.prevTime) {
+	              this._repeatStart();
+	            }
 	          } else {
 	            var isEvenPeriod = T % 2 === 0;
 	            // set 1 or 0 on periods' edge
@@ -3918,6 +3908,7 @@
 	          }
 	          // delay gap
 	        } else {
+	          this.isRepeatStart = false;
 	          this.o.isIt && console.log("in the delay gap");
 	          // if yoyo and even period we should flip
 	          // so set flipCoef to 1 if we need flip, otherwise to 0

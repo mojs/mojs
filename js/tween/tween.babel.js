@@ -200,7 +200,11 @@ var Tween = class Tween {
     // We need to know what direction we are heading in with this tween,
     // so if we don't have the previous update value - this is very first
     // update, - skip it entirely and wait for the next value
-    if ( this.prevTime === -1 ) { return this._wasUknownUpdate = true; }
+    if ( this.prevTime === -1 ) {
+      this.o.isIt && console.log(`=========`);
+      this.o.isIt && console.log(`tween: SKIP`);
+      return this._wasUknownUpdate = true;
+    }
 
     var props         = this.props,
         delayDuration = props.delay + props.duration,
@@ -221,6 +225,7 @@ var Tween = class Tween {
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
       this.isRepeatCompleted = false;
+      this.isRepeatStart = false;
       // active zone or larger then end
       var elapsed2 = ( time - props.startTime) % delayDuration;
       var proc = elapsed2 / props.duration;
@@ -238,6 +243,7 @@ var Tween = class Tween {
 
           if ( this._wasUknownUpdate ) {
             if ( this.prevTime < time ) {
+              this._repeatStart();
               this.setProgress(0);
             }
           }
@@ -255,7 +261,10 @@ var Tween = class Tween {
             // if on edge but not at very start and very end
             // |=====|=====|=====|
             // ^here             ^here
-            if ( prevT >=0 ) { this.setProgress(0); }
+            if ( prevT >=0 ) {
+              this._repeatStart();
+              this.setProgress(0);
+            }
           }
 
           if ( isOnReverseEdge && this.prevTime !== props.endTime ) {
@@ -276,10 +285,16 @@ var Tween = class Tween {
           // |---=====|---=====|---=====| >>>
           //            ^1  ^2
           if ( prevT === 'delay' && T === TPrevValue ) {
+            this._repeatStart();
             this.setProgress(0);
           }
-          
+
           this.setProgress(proc);
+          
+          // if progress is equal 0 and progress grows
+          if ( proc === 0 && time > this.prevTime) {
+            this._repeatStart();
+          }
 
       } else {
         var isEvenPeriod = (T % 2 === 0);
@@ -295,6 +310,7 @@ var Tween = class Tween {
       }
     // delay gap
     } else {
+      this.isRepeatStart = false;
       this.o.isIt && console.log(`in the delay gap`);
       // if yoyo and even period we should flip
       // so set flipCoef to 1 if we need flip, otherwise to 0
