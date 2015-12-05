@@ -112,17 +112,17 @@ describe 'Tween ->', ->
       endTime = t.props.startTime + (3*(duration+delay)) - delay
       expect(t.props.endTime).toBe endTime
 
-    it 'should restart flags', ->
-      t = new Tween(duration: 20, repeat: 2).setStartTime()
-      t.update t.props.startTime + 10
-      t.update t.props.startTime + 60
-      expect(t.isCompleted).toBe true
-      expect(t.isStarted)  .toBe false
-      expect(t.isRepeatCompleted).toBe true
-      t.setStartTime()
-      expect(t.isCompleted).toBe false
-      expect(t.isRepeatCompleted).toBe false
-      expect(t.isStarted)  .toBe false
+    # it 'should restart flags', ->
+    #   t = new Tween(duration: 20, repeat: 2).setStartTime()
+    #   t.update t.props.startTime + 10
+    #   t.update t.props.startTime + 60
+    #   expect(t.isCompleted).toBe true
+    #   expect(t.isStarted)  .toBe false
+    #   expect(t.isRepeatCompleted).toBe true
+    #   t.setStartTime()
+    #   expect(t.isCompleted).toBe false
+    #   expect(t.isRepeatCompleted).toBe false
+    #   expect(t.isStarted)  .toBe false
   
   describe 'update method ->', ->
     it 'should update progress', ->
@@ -166,23 +166,25 @@ describe 'Tween ->', ->
       expect(t.progress).toBeCloseTo 0
       t.update t.props.startTime + 1000
       expect(t.progress).toBeCloseTo 1, 5
-    it 'should return true on the end', ->
-      t = new Tween(duration: 1000, delay: 200)
-      t.setStartTime()
-      returnValue = t.update t.props.startTime + 1000
-      expect(t.progress).toBeCloseTo 1, 5
-      expect(t.isCompleted).toBe true
-      expect(t.isRepeatCompleted).toBe true
-      expect(returnValue).toBe true
-    it 'should set progress to 1 on delay gaps', ->
-      t = new Tween(duration: 1000, delay: 200)
-      t.setStartTime()
+    # it 'should return true on the end', ->
+    #   t = new Tween(duration: 1000, delay: 200)
+    #   t.setStartTime()
+    #   returnValue = t.update t.props.startTime + 1000
+    #   expect(t.progress).toBeCloseTo 1, 5
+    #   expect(t.isCompleted).toBe true
+    #   expect(t.isRepeatCompleted).toBe true
+    #   expect(returnValue).toBe true
+    
+    # remove it
+    # it 'should set progress to 1 on delay gaps', ->
+    #   t = new Tween(duration: 1000, delay: 200, isIt: true)
+    #   t.setStartTime()
 
-      spyOn(t, '_complete').and.callThrough()
-      t.update t.props.startTime + 20, true
-      t.update t.props.startTime - 20, true
-      expect(t.progress).toBe 1
-      expect(t._complete).toHaveBeenCalled()
+    #   spyOn(t, '_complete').and.callThrough()
+    #   t.update t.props.startTime + 20, true
+    #   t.update t.props.startTime - 20, true
+    #   expect(t.progress).toBe 1
+    #   expect(t._complete).toHaveBeenCalled()
 
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)
@@ -298,7 +300,7 @@ describe 'Tween ->', ->
       expect(oneCnt).toBe(2)
       expect(zeroCnt).toBe(2)
       expect(repeatStartCnt).toBe(2)
-      expect(repeatCnt).toBe(2)
+      # expect(repeatCnt).toBe(2)
 
     it 'should be called with 1 and 0 on each repeat period if missed time', ()->
       zeroCnt = 0; oneCnt = 0; repeatCnt = 0; repeatStartCnt = 0
@@ -312,8 +314,6 @@ describe 'Tween ->', ->
           (p is 1) and oneCnt++
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
-
-      # updateInPeriod = createUpdateInPeriodWithGap t1, duration
 
       t.setStartTime()
 
@@ -369,6 +369,8 @@ describe 'Tween ->', ->
       expect(zeroCnt).toBe(2)
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
+
+    # --
 
     it 'should be called with 1 and 0 on each repeat period if delay', ()->
       zeroCnt = 0; oneCnt = 0; repeatCnt = 0; repeatStartCnt = 0
@@ -638,300 +640,208 @@ describe 'Tween ->', ->
     #   TWEEN IN REVERSE DIRECTION
     # ###
 
-    # it 'should be called with 0 and 1 on each repeat period || reverse', ()->
-    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-    #   duration = 50
-    #   t1 = new Tween
-    #     repeat:     1
-    #     duration:   duration
-    #     onUpdate:(p)->
-    #       (p is 0) and zeroCnt++
-    #       (p is 1) and oneCnt++
-    #     onRepeatComplete:-> repeatCnt++
-
-    #   updateInPeriod = r_createUpdateInPeriod t1, duration
-
-    #   t1.setStartTime()
-
-    #   updateInPeriod(duration)
-    #   expect(oneCnt).toBe(1)
-    #   expect(zeroCnt).toBe(1)
-    #   expect(repeatCnt).toBe(1)
-
-    #   updateInPeriod(0)
-    #   expect(oneCnt).toBe(2)
-    #   expect(zeroCnt).toBe(2)
-    #   expect(repeatCnt).toBe(2)
-
-
-    # it 'should be called with 1 and 0 on each repeat period if missed time || reverse', ()->
-    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-    #   duration = 50; delay = 20; gap = 5
-    #   t = new Tween
-    #     repeat:     2
-    #     duration:   duration
-    #     delay:      delay
-    #     onUpdate:(p)->
-    #       (p is 0) and zeroCnt++
-    #       (p is 1) and oneCnt++
-    #     onRepeatComplete:-> repeatCnt++
-
-    #   t.setStartTime()
-
-    #   timeShift = 2*(duration+delay)
-    #   t.update t.props.startTime + timeShift + (duration) - gap
-    #   t.update t.props.startTime + timeShift + (duration/2)
-    #   t.update t.props.startTime + timeShift + gap
-    #   expect(oneCnt).toBe(1)
-    #   expect(zeroCnt).toBe(0)
-    #   expect(repeatCnt).toBe(1)
-
-    #   timeShift = (duration+delay)
-    #   t.update t.props.startTime + timeShift + (duration) - gap
-    #   t.update t.props.startTime + timeShift + (duration/2)
-    #   t.update t.props.startTime + timeShift + gap
-    #   expect(oneCnt).toBe(2)
-    #   expect(zeroCnt).toBe(1)
-    #   expect(repeatCnt).toBe(2)
-
-    #   timeShift = 0
-    #   t.update t.props.startTime + timeShift + (duration) - gap
-    #   t.update t.props.startTime + timeShift + (duration/2)
-    #   t.update t.props.startTime + timeShift + gap
-    #   expect(oneCnt).toBe(3)
-    #   expect(zeroCnt).toBe(2)
-    #   expect(repeatCnt).toBe(3)
-    #   t.update t.props.startTime + timeShift
-    #   expect(oneCnt).toBe(3)
-    #   expect(zeroCnt).toBe(3)
-    #   expect(repeatCnt).toBe(3)
-
-    # it 'should be called with 1 and 0 on each repeat period if delay and missed time || reverse', ()->
-    #   zeroCnt = 0; oneCnt = 0; repeatCnt = 0
-    #   duration = 50; delay = 20; gap = 5
-    #   t = new Tween
-    #     repeat:     2
-    #     duration:   duration
-    #     delay:      delay
-    #     onUpdate:(p)->
-    #       (p is 0) and zeroCnt++
-    #       (p is 1) and oneCnt++
-    #     onRepeatComplete:-> repeatCnt++
-
-    #   t.setStartTime()
-
-    #   timeShift = 2*(duration+delay)
-    #   t.update t.props.startTime + timeShift + (duration) - gap
-    #   t.update t.props.startTime + timeShift + (duration/2)
-    #   t.update t.props.startTime + timeShift + gap
-    #   expect(oneCnt).toBe(1)
-    #   expect(zeroCnt).toBe(0)
-    #   expect(repeatCnt).toBe(1)
-
-    #   t.update t.props.startTime + timeShift + gap - delay/2
-    #   expect(repeatCnt).toBe(1)
-
-    #   timeShift = (duration)
-    #   t.update t.props.startTime + timeShift + (duration) - gap
-    #   expect(oneCnt).toBe(2)
-    #   expect(zeroCnt).toBe(1)
-    #   expect(repeatCnt).toBe(2)
-
-    #   t.update t.props.startTime + timeShift + (duration/2)
-    #   t.update t.props.startTime + timeShift + gap
-    #   expect(oneCnt).toBe(2)
-    #   expect(zeroCnt).toBe(2)
-    #   expect(repeatCnt).toBe(2)
-
-    #   timeShift = 0
-    #   t.update t.props.startTime + timeShift + (duration) - gap
-    #   t.update t.props.startTime + timeShift + (duration/2)
-    #   t.update t.props.startTime + timeShift + gap
-    #   expect(oneCnt).toBe(3)
-    #   expect(zeroCnt).toBe(2)
-    #   expect(repeatCnt).toBe(3)
-    #   t.update t.props.startTime + timeShift
-    #   expect(oneCnt).toBe(3)
-    #   expect(zeroCnt).toBe(3)
-    #   expect(repeatCnt).toBe(3)
-
-  #   it 'should be called with 1 on each repeat period // if yoyo', ()->
-  #     duration = 50
-  #     t1 = new Tween
-  #       yoyo:       true
-  #       repeat:     2
-  #       duration:   duration
-
-  #     t1.setStartTime()
-
-  #     spyOn t1, 'onUpdate'
-  #     timeShift = 0
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     expect(t1.onUpdate).toHaveBeenCalledWith 1, 1
-
-  #   it 'should be called with 1 on each repeat period // if yoyo in further periods',->
-  #     duration = 50
-  #     t1 = new Tween
-  #       yoyo:       true
-  #       repeat:     2
-  #       duration:   duration
-
-  #     t1.setStartTime()
-
-  #     timeShift = 0
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     timeShift = duration + 10
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     spyOn t1, 'onUpdate'
-
-  #     timeShift = 2*duration + 10
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     expect(t1.onUpdate).toHaveBeenCalledWith 1, 1
-
-  #   it 'should be called with 0 on each repeat period // if yoyo', ()->
-  #     duration = 50
-  #     t1 = new Tween
-  #       yoyo:       true
-  #       repeat:     2
-  #       duration:   duration
-
-  #     t1.setStartTime()
-
-  #     timeShift = 0
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     spyOn t1, 'onUpdate'
-
-  #     timeShift = duration + 10
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     expect(t1.onUpdate).toHaveBeenCalledWith 0, 0
-
-  #   it 'should end at 0 at the end odd period in if yoyo', ()->
-  #     progress = null
-  #     duration = 50
-  #     t1 = new Tween
-  #       yoyo:       true
-  #       repeat:     1
-  #       duration:   duration
-  #       onUpdate:(p)-> progress = p
-
-  #     t1.setStartTime()
-
-  #     timeShift = 0
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     timeShift = duration + 10
-  #     t1.update t1.props.startTime + timeShift
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + (duration) + 10
-
-  #     expect(progress).toBe 0
-
-  #   it 'should be called with 0 on each repeat period if reversed', ()->
-  #     progress = null
-  #     zeroCnt = 0; oneCnt = 0
-  #     duration = 50
-  #     t1 = new Tween
-  #       isIt:       true
-  #       repeat:     2
-  #       duration:   duration
-  #       onUpdate:(p)->
-  #         console.log p
-  #         (p is 0) and zeroCnt++
-  #         (p is 1) and oneCnt++
-
-  #     t1.setStartTime()
-
-  #     updateInPeriod = (timeShift)->
-  #       t1.update t1.props.startTime + timeShift + (duration)
-  #       t1.update t1.props.startTime + timeShift + (duration/2)
-  #       t1.update t1.props.startTime + timeShift
-
-  #     updateInPeriod(duration)
-  #     expect(zeroCnt).toBe(1)
-
-  #     # updateInPeriod(duration)
-  #     # expect(zeroCnt).toBe(2)
-
-  #     # updateInPeriod(0)
-  #     # expect(zeroCnt).toBe(3)
-
-  # it 'should be called with 0 on each repeat period if reversed with missed time', ()->
-  #     progress = null
-  #     duration = 50
-  #     t1 = new Tween
-  #       repeat:     2
-  #       duration:   duration
-  #       onUpdate:(p)-> progress = p
-
-  #     t1.setStartTime()
-
-  #     # updateInPeriod = (timeShift)->
-  #     timeShift = 2*duration
-  #     t1.update t1.props.startTime + timeShift + (duration) - 5
-  #     t1.update t1.props.startTime + timeShift + (duration/2)
-  #     t1.update t1.props.startTime + timeShift + 5
-
-  #     timeShift = duration
-  #     spyOn t1, 'onUpdate' 
-  #     t1.update t1.props.startTime + timeShift + (duration) - 5
-  #     expect(t1.onUpdate).toHaveBeenCalledWith 0, 0
-
-
-  #     # t1.update t1.props.startTime + timeShift + (duration/2)
-  #     # t1.update t1.props.startTime + timeShift + 5
-
-  #     # updateInPeriod(2*duration)
-  #     # expect(progress).toBe(0)
-
-  #     # updateInPeriod(duration)
-  #     # expect(progress).toBe(0)
-
-  #     # updateInPeriod(0)
-  #     # expect(progress).toBe(0)
-
-
-  describe 'onStart callback ->', ->
-    it 'should be defined', ->
-      t = new Tween(onStart: ->)
+    it 'should be called with 1 and 0 on each repeat period || reverse', ()->
+      zeroCnt = 0; oneCnt = 0; repeatCnt = 0; repeatStartCnt = 0
+      duration = 50; updateValue = null
+      t = new Tween
+        repeat:     2
+        duration:   duration
+        onUpdate:(p)->
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:-> repeatCnt++
+        onRepeatStart:-> repeatStartCnt++
+      
       t.setStartTime()
-      expect(t.props.onStart).toBeDefined()
-    it 'should call onStart callback', ->
-      t = new Tween duration: 32, onStart:->
+      
+      timeShift = 3*duration
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(null)
+      expect(t._wasUknownUpdate).toBe(true)
+      expect(oneCnt).toBe(0)
+      expect(zeroCnt).toBe(0)
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatCnt).toBe(0)
+
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatCnt).toBe(1)
+
+      timeShift = 2*duration
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(0)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatCnt).toBe(1)
+
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatCnt).toBe(2)
+
+      timeShift = duration
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(0)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatCnt).toBe(2)
+
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(2)
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatCnt).toBe(3)
+
+      timeShift = 0
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(0)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(3)
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatCnt).toBe(3)
+
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBe(0)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(3)
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatCnt).toBe(3)
+
+    it 'should be called with 1 and 0 on each repeat period if missed time || reverse', ()->
+      zeroCnt = 0; oneCnt = 0; repeatCnt = 0; repeatStartCnt = 0
+      duration = 50; updateValue = null
+      t = new Tween
+        repeat:     1
+        isIt:       true
+        duration:   duration
+        onUpdate:(p)->
+          console.log "update: #{p}"
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:->
+          console.log 'REAPEAT COMPLETE'
+          repeatCnt++
+        onRepeatStart:->
+          console.log 'REAPEAT START'
+          repeatStartCnt++
+
       t.setStartTime()
-      spyOn(t.props, 'onStart')
-      t.update t.props.startTime + 1
-      expect(t.props.onStart).toHaveBeenCalled()
-    it 'should be called just once', ->
-      cnt = 0
-      t = new Tween(duration: 32, onStart:-> cnt++).setStartTime()
-      t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
-      expect(cnt).toBe 1
-    it 'should have the right scope', ->
-      isRightScope = false
-      t = new Tween(onStart:-> isRightScope = @ instanceof Tween)
-      t.setStartTime()
-      t.update t.props.startTime + 1
-      expect(isRightScope).toBe true
+
+      gap = 5
+      timeShift = 2*duration
+      t.update t.props.startTime + timeShift - gap
+      expect(updateValue).toBe(null)
+      expect(t._wasUknownUpdate).toBe(true)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(0)
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatCnt).toBe(0)
+
+      t.update t.props.startTime + timeShift - (duration/2)
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(1)
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatCnt).toBe(1)
+
+      t.update t.props.startTime + timeShift - (duration) + gap
+      expect(updateValue).toBeCloseTo(.1, 5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(1)
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatCnt).toBe(1)
+
+      timeShift = duration
+      t.update t.props.startTime + timeShift - gap
+      expect(updateValue).toBeCloseTo(.9, 5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(2)
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatCnt).toBe(2)
+
+      t.update t.props.startTime + timeShift - (duration/2)
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(2)
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatCnt).toBe(2)
+
+      t.update t.props.startTime + timeShift - (duration) + gap
+      expect(updateValue).toBeCloseTo(.1)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(2)
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatCnt).toBe(2)
+
+      t.update t.props.startTime + timeShift - (duration) - gap
+      expect(updateValue).toBe(0)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(2)
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatCnt).toBe(2)
+
+      # t.update t.props.startTime + timeShift + (duration/2)
+      # expect(updateValue).toBeCloseTo(.5, 5)
+      # expect(t._wasUknownUpdate).toBe(false)
+      # expect(oneCnt).toBe(1)
+      # expect(zeroCnt).toBe(2)
+      # expect(repeatStartCnt).toBe(2)
+      # expect(repeatCnt).toBe(1)
+
+      # timeShift = 2*duration
+      # t.update t.props.startTime + timeShift + gap
+      # expect(updateValue).toBeCloseTo(1)
+      # expect(t._wasUknownUpdate).toBe(false)
+      # expect(oneCnt).toBe(2)
+      # expect(zeroCnt).toBe(2)
+      # expect(repeatStartCnt).toBe(2)
+      # expect(repeatCnt).toBe(2)
+
+  # describe 'onStart callback ->', ->
+  #   it 'should be defined', ->
+  #     t = new Tween(onStart: ->)
+  #     t.setStartTime()
+  #     expect(t.props.onStart).toBeDefined()
+  #   it 'should call onStart callback', ->
+  #     t = new Tween duration: 32, onStart:->
+  #     t.setStartTime()
+  #     spyOn(t.props, 'onStart')
+  #     t.update t.props.startTime + 1
+  #     expect(t.props.onStart).toHaveBeenCalled()
+  #   it 'should be called just once', ->
+  #     cnt = 0
+  #     t = new Tween(duration: 32, onStart:-> cnt++).setStartTime()
+  #     t.update(t.props.startTime + 1); t.update(t.props.startTime + 1)
+  #     expect(cnt).toBe 1
+  #   it 'should have the right scope', ->
+  #     isRightScope = false
+  #     t = new Tween(onStart:-> isRightScope = @ instanceof Tween)
+  #     t.setStartTime()
+  #     t.update t.props.startTime + 1
+  #     expect(isRightScope).toBe true
 
   # describe 'onReverseComplete callback ->', ->
   #   it 'should be defined', ->
@@ -1079,157 +989,157 @@ describe 'Tween ->', ->
       expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 4
       expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 4
 
-  describe 'onComplete callback ->', ->
-    it 'should be defined', ->
-      t = new Tween onComplete: ->
-      expect(t.props.onComplete).toBeDefined()
-    it 'should call onComplete callback', ->
-      t = new Tween(duration: 100, onComplete:->).setStartTime()
-      spyOn(t.props, 'onComplete')
-      t.update t.props.startTime + 101
-      expect(t.props.onComplete).toHaveBeenCalled()
-    it 'should be called just once', ->
-      cnt = 0
-      t = new Tween(duration: 32, onComplete:-> cnt++).setStartTime()
-      t.update(t.props.startTime + 33)
-      t.update(t.props.startTime + 33)
-      expect(cnt).toBe 1
-    it 'should reset isCompleted flag', ->
-      t = new Tween(duration: 32, onComplete:->).setStartTime()
-      t.update(t.props.startTime + 10)
-      t.update(t.props.endTime)
-      expect(t.isCompleted).toBe true
-      t.update(t.props.startTime + 10)
-      expect(t.isCompleted).toBe false
-    it 'should have the right scope', ->
-      isRightScope = false
-      t = new Tween
-        duration: 1, onComplete:-> isRightScope = @ instanceof Tween
-      t.setStartTime().update t.props.startTime + 2
-      expect(isRightScope).toBe true
-    it 'should fire after the last onUpdate', (dfr)->
-      proc = 0
-      t = new Tween
-        duration: 1,
-        onUpdate:(p)->  proc = p
-        onComplete:-> expect(proc).toBe(1); dfr()
-      t.setStartTime().update t.props.startTime + 2
-    it 'should fire only once if inside timeline', ()->
-      cnt = 0
-      tm = new mojs.Timeline repeat: 1
-      t1 = new Tween
-        delay: 10
-        duration: 50
-        onComplete:-> cnt++
-      t2 = new Tween
-        delay: 20
-        duration: 100
+  # describe 'onComplete callback ->', ->
+  #   it 'should be defined', ->
+  #     t = new Tween onComplete: ->
+  #     expect(t.props.onComplete).toBeDefined()
+  #   it 'should call onComplete callback', ->
+  #     t = new Tween(duration: 100, onComplete:->).setStartTime()
+  #     spyOn(t.props, 'onComplete')
+  #     t.update t.props.startTime + 101
+  #     expect(t.props.onComplete).toHaveBeenCalled()
+  #   it 'should be called just once', ->
+  #     cnt = 0
+  #     t = new Tween(duration: 32, onComplete:-> cnt++).setStartTime()
+  #     t.update(t.props.startTime + 33)
+  #     t.update(t.props.startTime + 33)
+  #     expect(cnt).toBe 1
+  #   it 'should reset isCompleted flag', ->
+  #     t = new Tween(duration: 32, onComplete:->).setStartTime()
+  #     t.update(t.props.startTime + 10)
+  #     t.update(t.props.endTime)
+  #     expect(t.isCompleted).toBe true
+  #     t.update(t.props.startTime + 10)
+  #     expect(t.isCompleted).toBe false
+  #   it 'should have the right scope', ->
+  #     isRightScope = false
+  #     t = new Tween
+  #       duration: 1, onComplete:-> isRightScope = @ instanceof Tween
+  #     t.setStartTime().update t.props.startTime + 2
+  #     expect(isRightScope).toBe true
+  #   it 'should fire after the last onUpdate', (dfr)->
+  #     proc = 0
+  #     t = new Tween
+  #       duration: 1,
+  #       onUpdate:(p)->  proc = p
+  #       onComplete:-> expect(proc).toBe(1); dfr()
+  #     t.setStartTime().update t.props.startTime + 2
+  #   it 'should fire only once if inside timeline', ()->
+  #     cnt = 0
+  #     tm = new mojs.Timeline repeat: 1
+  #     t1 = new Tween
+  #       delay: 10
+  #       duration: 50
+  #       onComplete:-> cnt++
+  #     t2 = new Tween
+  #       delay: 20
+  #       duration: 100
 
-      tm.add t1, t2
-      tm.setStartTime()
+  #     tm.add t1, t2
+  #     tm.setStartTime()
 
-      tm.update t1.props.startTime
-      tm.update t1.props.startTime + 11
-      tm.update t1.props.startTime + 56
+  #     tm.update t1.props.startTime
+  #     tm.update t1.props.startTime + 11
+  #     tm.update t1.props.startTime + 56
       
-      tm.update t1.props.startTime + 61
-      tm.update t1.props.startTime + 102
+  #     tm.update t1.props.startTime + 61
+  #     tm.update t1.props.startTime + 102
 
-      tm.update t1.props.startTime + 120 # <-- error
-      tm.update t1.props.startTime + 137
-      tm.update t1.props.startTime + 169
-      tm.update t1.props.startTime + 182
-      tm.update t1.props.startTime + 201
-      tm.update t1.props.startTime + 220
-      tm.update t1.props.startTime + 231
+  #     tm.update t1.props.startTime + 120 # <-- error
+  #     tm.update t1.props.startTime + 137
+  #     tm.update t1.props.startTime + 169
+  #     tm.update t1.props.startTime + 182
+  #     tm.update t1.props.startTime + 201
+  #     tm.update t1.props.startTime + 220
+  #     tm.update t1.props.startTime + 231
 
-      expect(cnt).toBe(2)
+  #     expect(cnt).toBe(2)
 
-  it 'should update with 0 if in timeline with yoyo and repeat', ()->
-      progress = null; duration1 = 50; delay1 = 10
-      tm = new mojs.Timeline repeat: 4
-      t1 = new Tween
-        delay:    delay1
-        duration: duration1
-        yoyo: true
-        repeat: 1
-        onUpdate:(p)-> progress = p
-      t2 = new Tween
-        delay: 20
-        duration: 100
+  # it 'should update with 0 if in timeline with yoyo and repeat', ()->
+  #     progress = null; duration1 = 50; delay1 = 10
+  #     tm = new mojs.Timeline repeat: 4
+  #     t1 = new Tween
+  #       delay:    delay1
+  #       duration: duration1
+  #       yoyo: true
+  #       repeat: 1
+  #       onUpdate:(p)-> progress = p
+  #     t2 = new Tween
+  #       delay: 20
+  #       duration: 100
 
-      tm.add t1
-      tm.setStartTime()
+  #     tm.add t1
+  #     tm.setStartTime()
 
-      tm.update t1.props.startTime 
-      tm.update t1.props.startTime + 2
-      tm.update t1.props.startTime + duration1 - 4
-      tm.update t1.props.startTime + duration1
+  #     tm.update t1.props.startTime 
+  #     tm.update t1.props.startTime + 2
+  #     tm.update t1.props.startTime + duration1 - 4
+  #     tm.update t1.props.startTime + duration1
 
-      timeShift = duration1 + delay1
-      tm.update t1.props.startTime + timeShift
-      tm.update t1.props.startTime + timeShift + 2
-      tm.update t1.props.startTime + timeShift + duration1 - 4
-      tm.update t1.props.startTime + timeShift + timeShift
+  #     timeShift = duration1 + delay1
+  #     tm.update t1.props.startTime + timeShift
+  #     tm.update t1.props.startTime + timeShift + 2
+  #     tm.update t1.props.startTime + timeShift + duration1 - 4
+  #     tm.update t1.props.startTime + timeShift + timeShift
 
-      expect(progress).toBe(0)
+  #     expect(progress).toBe(0)
 
-    it 'should update with 0 if in timeline with yoyo and repeat #2', ()->
-      progress = null; duration1 = 50; delay1 = 10
-      tm = new mojs.Timeline repeat: 4
-      t1 = new Tween
-        delay:    delay1
-        duration: duration1
-        yoyo: true
-        repeat: 1
-        onUpdate:(p)-> progress = p
-      t2 = new Tween
-        delay: 20
-        duration: 100
+  #   it 'should update with 0 if in timeline with yoyo and repeat #2', ()->
+  #     progress = null; duration1 = 50; delay1 = 10
+  #     tm = new mojs.Timeline repeat: 4
+  #     t1 = new Tween
+  #       delay:    delay1
+  #       duration: duration1
+  #       yoyo: true
+  #       repeat: 1
+  #       onUpdate:(p)-> progress = p
+  #     t2 = new Tween
+  #       delay: 20
+  #       duration: 100
 
-      tm.add t1, t2
-      tm.setStartTime()
+  #     tm.add t1, t2
+  #     tm.setStartTime()
 
-      tm.update t1.props.startTime 
-      tm.update t1.props.startTime + 2
-      tm.update t1.props.startTime + duration1 - 4
-      tm.update t1.props.startTime + duration1
+  #     tm.update t1.props.startTime 
+  #     tm.update t1.props.startTime + 2
+  #     tm.update t1.props.startTime + duration1 - 4
+  #     tm.update t1.props.startTime + duration1
 
-      timeShift = duration1 + delay1
-      tm.update t1.props.startTime + timeShift
-      tm.update t1.props.startTime + timeShift + 2
-      tm.update t1.props.startTime + timeShift + duration1 - 4
-      tm.update t1.props.startTime + timeShift + timeShift
+  #     timeShift = duration1 + delay1
+  #     tm.update t1.props.startTime + timeShift
+  #     tm.update t1.props.startTime + timeShift + 2
+  #     tm.update t1.props.startTime + timeShift + duration1 - 4
+  #     tm.update t1.props.startTime + timeShift + timeShift
 
-      expect(progress).toBe(0)
+  #     expect(progress).toBe(0)
 
-    # it 'should be called when inside timline with repeat', ()->
-    #   cnt = 0
-    #   duration = 50
-    #   tm = new mojs.Timeline repeat: 2
-    #   t1 = new Tween
-    #     duration: duration
-    #     onComplete:-> cnt++
-    #     # onRepeatComplete:->
-    #     #   console.log 'repeat complete'
-    #     # onReverseComplete:->
-    #     #   console.log 'reverse complete'
+  #   # it 'should be called when inside timline with repeat', ()->
+  #   #   cnt = 0
+  #   #   duration = 50
+  #   #   tm = new mojs.Timeline repeat: 2
+  #   #   t1 = new Tween
+  #   #     duration: duration
+  #   #     onComplete:-> cnt++
+  #   #     # onRepeatComplete:->
+  #   #     #   console.log 'repeat complete'
+  #   #     # onReverseComplete:->
+  #   #     #   console.log 'reverse complete'
       
-    #   tm.add t1
-    #   tm.setStartTime()
+  #   #   tm.add t1
+  #   #   tm.setStartTime()
 
-    #   shiftTime = 0
-    #   tm.update t1.props.startTime + shiftTime
-    #   tm.update t1.props.startTime + shiftTime + (duration/2)
-    #   tm.update t1.props.startTime + shiftTime + (duration) - 10
+  #   #   shiftTime = 0
+  #   #   tm.update t1.props.startTime + shiftTime
+  #   #   tm.update t1.props.startTime + shiftTime + (duration/2)
+  #   #   tm.update t1.props.startTime + shiftTime + (duration) - 10
 
-    #   shiftTime = duration
-    #   tm.update t1.props.startTime + shiftTime + 10
-    #   tm.update t1.props.startTime + shiftTime + (duration/2.5)
-    #   tm.update t1.props.startTime + shiftTime + (duration/2)
-    #   tm.update t1.props.startTime + shiftTime + (duration)
+  #   #   shiftTime = duration
+  #   #   tm.update t1.props.startTime + shiftTime + 10
+  #   #   tm.update t1.props.startTime + shiftTime + (duration/2.5)
+  #   #   tm.update t1.props.startTime + shiftTime + (duration/2)
+  #   #   tm.update t1.props.startTime + shiftTime + (duration)
 
-    #   expect(cnt).toBe(2)
+  #   #   expect(cnt).toBe(2)
 
   describe 'onRepeatComplete callback ->', ->
     it 'should be defined', ->
@@ -1405,128 +1315,128 @@ describe 'Tween ->', ->
       
   #     expect(cnt).toBe(3)
 
-  describe 'onFirstUpdate callback ->', ->
-    it 'should be defined', ->
-      t = new Tween onFirstUpdate: ->
-      expect(t.props.onFirstUpdate).toBeDefined()
-    it 'should call onFirstUpdate callback', ->
-      t = new Tween(duration: 100, onFirstUpdate:->).setStartTime()
-      spyOn(t.props, 'onFirstUpdate')
-      t.update t.props.startTime + 3
-      expect(t.props.onFirstUpdate).toHaveBeenCalled()
-    it 'should be called just once', ->
-      cnt = 0
-      t = new Tween(duration: 100, onFirstUpdate:-> cnt++ ).setStartTime()
-      t.update t.props.startTime + 3
-      t.update t.props.startTime + 3
-      t.update t.props.startTime + 3
-      expect(cnt).toBe 1
-    it 'should have the right scope', ->
-      isRightScope = false
-      t = new Tween
-        duration: 10, onFirstUpdate:-> isRightScope = @ instanceof Tween
-      t.setStartTime().update t.props.startTime + 2
-      expect(isRightScope).toBe true
-    it 'should be called after progress went further the timeline', ->
-      isRightScope = false
-      t = new Tween
-        duration: 10
-        onFirstUpdate:->
-      .setStartTime()
-      t.update t.props.startTime + 1
-      t.update t.props.startTime + 12
-      spyOn(t.props, 'onFirstUpdate')
-      t.update t.props.startTime + 9
-      expect(t.props.onFirstUpdate).toHaveBeenCalled()
+  # describe 'onFirstUpdate callback ->', ->
+  #   it 'should be defined', ->
+  #     t = new Tween onFirstUpdate: ->
+  #     expect(t.props.onFirstUpdate).toBeDefined()
+  #   it 'should call onFirstUpdate callback', ->
+  #     t = new Tween(duration: 100, onFirstUpdate:->).setStartTime()
+  #     spyOn(t.props, 'onFirstUpdate')
+  #     t.update t.props.startTime + 3
+  #     expect(t.props.onFirstUpdate).toHaveBeenCalled()
+  #   it 'should be called just once', ->
+  #     cnt = 0
+  #     t = new Tween(duration: 100, onFirstUpdate:-> cnt++ ).setStartTime()
+  #     t.update t.props.startTime + 3
+  #     t.update t.props.startTime + 3
+  #     t.update t.props.startTime + 3
+  #     expect(cnt).toBe 1
+  #   it 'should have the right scope', ->
+  #     isRightScope = false
+  #     t = new Tween
+  #       duration: 10, onFirstUpdate:-> isRightScope = @ instanceof Tween
+  #     t.setStartTime().update t.props.startTime + 2
+  #     expect(isRightScope).toBe true
+  #   it 'should be called after progress went further the timeline', ->
+  #     isRightScope = false
+  #     t = new Tween
+  #       duration: 10
+  #       onFirstUpdate:->
+  #     .setStartTime()
+  #     t.update t.props.startTime + 1
+  #     t.update t.props.startTime + 12
+  #     spyOn(t.props, 'onFirstUpdate')
+  #     t.update t.props.startTime + 9
+  #     expect(t.props.onFirstUpdate).toHaveBeenCalled()
 
-    it 'should be called before onStart callback', ->
-      isOnStart = false; isOnStartCalled = true
-      t = new Tween
-        duration: 10
-        onStart:-> isOnStart = true
-        onFirstUpdate:-> isOnStartCalled = isOnStart
-      .setStartTime()
-      t.update t.props.startTime + 1
-      expect(isOnStartCalled).toBe false
+  #   it 'should be called before onStart callback', ->
+  #     isOnStart = false; isOnStartCalled = true
+  #     t = new Tween
+  #       duration: 10
+  #       onStart:-> isOnStart = true
+  #       onFirstUpdate:-> isOnStartCalled = isOnStart
+  #     .setStartTime()
+  #     t.update t.props.startTime + 1
+  #     expect(isOnStartCalled).toBe false
 
-    it 'should be called after progress went before the timeline', ->
-      isRightScope = false
-      t = new Tween
-        duration: 10
-        onFirstUpdate:->
-      .setStartTime()
-      t.update t.props.startTime + 1
-      t.update t.props.startTime + -1
-      spyOn(t.props, 'onFirstUpdate')
-      t.update t.props.startTime + 2
-      expect(t.props.onFirstUpdate).toHaveBeenCalled()
+  #   it 'should be called after progress went before the timeline', ->
+  #     isRightScope = false
+  #     t = new Tween
+  #       duration: 10
+  #       onFirstUpdate:->
+  #     .setStartTime()
+  #     t.update t.props.startTime + 1
+  #     t.update t.props.startTime + -1
+  #     spyOn(t.props, 'onFirstUpdate')
+  #     t.update t.props.startTime + 2
+  #     expect(t.props.onFirstUpdate).toHaveBeenCalled()
 
-  describe 'onFirstUpdateBackward callback ->', ->
-    it 'should be defined', ->
-      t = new Tween onFirstUpdateBackward: ->
-      expect(t.props.onFirstUpdateBackward).toBeDefined()
-    it 'should be called only on backward progress', ->
-      isRightScope = false
-      t = new Tween
-        duration: 100
-        onFirstUpdateBackward:->
-      .setStartTime()
-      t.update t.props.startTime + 500
-      spyOn(t.props, 'onFirstUpdateBackward')
-      t.update t.props.startTime + 40
-      expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
-    it 'should be called just once', ->
-      cnt = 0
-      t = new Tween(duration: 100, onFirstUpdateBackward:-> cnt++ ).setStartTime()
-      t.prevTime = t.props.startTime + 103
-      t.update t.props.startTime + 90
-      t.update t.props.startTime + 80
-      t.update t.props.startTime + 70
-      expect(cnt).toBe 1
-    it 'should have the right scope', ->
-      isRightScope = false
-      t = new Tween
-        duration: 10
-        onFirstUpdateBackward:-> isRightScope = @ instanceof Tween
-      t.setStartTime()
-      t.update t.props.startTime + 12
-      t.update t.props.startTime + 9
-      expect(isRightScope).toBe true
-    it 'should be called after progress went further the timeline', ->
-      t = new Tween(duration: 10, onFirstUpdateBackward: ->)
-        .setStartTime()
-      t.prevTime = t.props.startTime + 11
-      t.update t.props.startTime + 9
-      t.update t.props.startTime + 12
-      spyOn(t.props, 'onFirstUpdateBackward')
-      t.update t.props.startTime + 9
-      expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
-    it 'should not be called at the start', ->
-      t = new Tween(duration: 10, onFirstUpdateBackward: ->)
-        .setStartTime()
-      spyOn(t.props, 'onFirstUpdateBackward')
-      t.update t.props.startTime + 1
-      expect(t.props.onFirstUpdateBackward).not.toHaveBeenCalled()
-    it 'should be called even if new time is less then start time', ->
-      t = new Tween
-        duration: 100
-        onFirstUpdateBackward:->
-      .setStartTime()
-      t.update t.props.startTime + 500
-      spyOn(t.props, 'onFirstUpdateBackward')
-      t.update t.props.startTime - 40
-      expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
-    it 'should be called ONCE if new time is less then start time', ->
-      cnt = 0
-      t = new Tween
-        duration: 100
-        onFirstUpdateBackward:-> cnt++
+  # describe 'onFirstUpdateBackward callback ->', ->
+  #   it 'should be defined', ->
+  #     t = new Tween onFirstUpdateBackward: ->
+  #     expect(t.props.onFirstUpdateBackward).toBeDefined()
+  #   it 'should be called only on backward progress', ->
+  #     isRightScope = false
+  #     t = new Tween
+  #       duration: 100
+  #       onFirstUpdateBackward:->
+  #     .setStartTime()
+  #     t.update t.props.startTime + 500
+  #     spyOn(t.props, 'onFirstUpdateBackward')
+  #     t.update t.props.startTime + 40
+  #     expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
+  #   it 'should be called just once', ->
+  #     cnt = 0
+  #     t = new Tween(duration: 100, onFirstUpdateBackward:-> cnt++ ).setStartTime()
+  #     t.prevTime = t.props.startTime + 103
+  #     t.update t.props.startTime + 90
+  #     t.update t.props.startTime + 80
+  #     t.update t.props.startTime + 70
+  #     expect(cnt).toBe 1
+  #   it 'should have the right scope', ->
+  #     isRightScope = false
+  #     t = new Tween
+  #       duration: 10
+  #       onFirstUpdateBackward:-> isRightScope = @ instanceof Tween
+  #     t.setStartTime()
+  #     t.update t.props.startTime + 12
+  #     t.update t.props.startTime + 9
+  #     expect(isRightScope).toBe true
+  #   it 'should be called after progress went further the timeline', ->
+  #     t = new Tween(duration: 10, onFirstUpdateBackward: ->)
+  #       .setStartTime()
+  #     t.prevTime = t.props.startTime + 11
+  #     t.update t.props.startTime + 9
+  #     t.update t.props.startTime + 12
+  #     spyOn(t.props, 'onFirstUpdateBackward')
+  #     t.update t.props.startTime + 9
+  #     expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
+  #   it 'should not be called at the start', ->
+  #     t = new Tween(duration: 10, onFirstUpdateBackward: ->)
+  #       .setStartTime()
+  #     spyOn(t.props, 'onFirstUpdateBackward')
+  #     t.update t.props.startTime + 1
+  #     expect(t.props.onFirstUpdateBackward).not.toHaveBeenCalled()
+  #   it 'should be called even if new time is less then start time', ->
+  #     t = new Tween
+  #       duration: 100
+  #       onFirstUpdateBackward:->
+  #     .setStartTime()
+  #     t.update t.props.startTime + 500
+  #     spyOn(t.props, 'onFirstUpdateBackward')
+  #     t.update t.props.startTime - 40
+  #     expect(t.props.onFirstUpdateBackward).toHaveBeenCalled()
+  #   it 'should be called ONCE if new time is less then start time', ->
+  #     cnt = 0
+  #     t = new Tween
+  #       duration: 100
+  #       onFirstUpdateBackward:-> cnt++
         
-      .setStartTime()
-      t.update t.props.startTime + 500
-      t.update t.props.startTime - 40
-      t.update t.props.startTime - 100
-      expect(cnt).toBe 1
+  #     .setStartTime()
+  #     t.update t.props.startTime + 500
+  #     t.update t.props.startTime - 40
+  #     t.update t.props.startTime - 100
+  #     expect(cnt).toBe 1
 
   describe 'yoyo option ->', ->
     it 'should recieve yoyo option', ->

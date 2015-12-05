@@ -1502,7 +1502,7 @@
         tm0.setStartTime();
         return expect(tm2.props.shiftedRepeatTime).toBe(500);
       });
-      it('should calculate right dimentions', function() {
+      return it('should calculate right dimentions', function() {
         var tm0, tm1, tm2, tm2EndTime, tm2StartTime, tw1, tw2;
         tm0 = new mojs.Timeline;
         tm1 = new mojs.Timeline;
@@ -1526,42 +1526,6 @@
         tm2EndTime = tm2.props.startTime + tm2.props.repeatTime - tm2.props.delay;
         expect(tm2.props.endTime).toBe(tm2EndTime);
         return expect(tm0.props.endTime).toBe(tm2.props.endTime);
-      });
-      it('should set nesed tween progress to 1 at the end', function() {
-        var tm0, tm1, tw1, tw2;
-        tm0 = new mojs.Timeline;
-        tm1 = new mojs.Timeline;
-        tw1 = new mojs.Tween;
-        tm1.add(tw1);
-        tw2 = new mojs.Tween;
-        tm0.add(tm1);
-        tm0.append(tw2);
-        tm0.setStartTime();
-        tm0.update(tm0.props.endTime - 20);
-        tm0.update(tm0.props.endTime);
-        expect(tw2.progress).toBe(1);
-        expect(tm0.props.repeatTime).toBe(1200);
-        expect(tw2.props.repeatTime).toBe(600);
-        expect(tw2.props.startTime).toBe(tm0.props.startTime + tm1.props.repeatTime);
-        return expect(tw2.props.endTime).toBe(tm0.props.startTime + tm0.props.repeatTime);
-      });
-      return it('should set nesed tween inside timeline progress to 1 at the end', function() {
-        var tm0, tm1, tm2, tw1, tw2;
-        tm0 = new mojs.Timeline;
-        tm1 = new mojs.Timeline;
-        tm2 = new mojs.Timeline({
-          delay: 1000
-        });
-        tw1 = new mojs.Tween;
-        tm1.add(tw1);
-        tw2 = new mojs.Tween;
-        tm2.add(tw2);
-        tm0.add(tm1);
-        tm0.append(tm2);
-        tm0.setStartTime();
-        tm0.update(tm0.props.endTime - 20);
-        tm0.update(tm0.props.endTime);
-        return expect(tw2.progress).toBe(1);
       });
     });
   });
