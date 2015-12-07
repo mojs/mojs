@@ -75,8 +75,19 @@ var Tween = class Tween {
     @param {Number}   Parent's previous period number.
   */
   update(time, isGrow) {
-
     var props = this.props;
+
+    // We need to know what direction we are heading in with this tween,
+    // so if we don't have the previous update value - this is very first
+    // update, - skip it entirely and wait for the next value
+    if ( this.prevTime === -1 ) {
+      this.o.isIt && console.log(`=========`);
+      this.o.isIt && console.log(`tween: SKIP`);
+      this.o.isIt && this._visualizeProgress(time);
+      this.prevTime = time;
+      this._wasUknownUpdate = true;
+      return false;
+    }
 
     /*
       if time is inside the active area of the tween.
@@ -97,7 +108,6 @@ var Tween = class Tween {
       //     this.props.onStart.apply(this); this.isStarted = true;
       //   }
       // }
-      
       this._updateInActiveArea(time);
         
       // if ( time < this.prevTime && !this.isFirstUpdateBackward ) {
@@ -109,7 +119,7 @@ var Tween = class Tween {
 
     } else {
       // complete if time is larger then end time
-      if ( time > this.props.endTime && !this.isCompleted ) {
+      if ( time > this.props.endTime && !this.isCompleted && this._isInActiveArea ) {
         // get period number
         var props = this.props;
         var startPoint = props.startTime - props.delay;
@@ -118,50 +128,63 @@ var Tween = class Tween {
         // if ( isGrow == null ) { isGrow = time > this.prevTime; }
         this._complete( (this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1 );
       }
+
+      // if was active and went to - unactive area
+      if ( time < this.prevTime && time < this.props.startTime ) {
+
+        if ( !this.isOnReverseComplete && this._isInActiveArea ) {
+          // _start()
+          this.setProgress(0);
+          this._repeatStart();
+          this.isOnReverseComplete = true;
+        }
+
+        // if (!this.isFirstUpdateBackward) {
+        //   if (this.props.onFirstUpdateBackward != null && typeof this.props.onFirstUpdateBackward === 'function') {
+        //     this.props.onFirstUpdateBackward.apply(this);
+        //   }
+        //   this.isFirstUpdateBackward = true;
+        // }
+
+        // isGrow indicates if actual parent time is growing.
+        // Despite the fact that the time could be < previous time && <= startTime
+        // it is actually grows. Tween could be added to a
+        // Timeline, and the later will work with Tween's periods, feeding
+        // 0 at the end of the period, because period % period === 0.
+        // See 182 line of Timline's code for more info.
+        // if (isGrow) {
+        //   if (!this.isCompleted && this.prevTime < this.props.endTime ) {
+        //     this._complete();
+        //   }
+        // } else if ( !this.isOnReverseComplete /* && this.isFirstUpdate */ ) {
+        //   this.isOnReverseComplete = true;
+        //   this.setProgress(0, !this.props.isChained);
+        //   if (this.props.onReverseComplete != null && typeof this.props.onReverseComplete === 'function') {
+        //     this.props.onReverseComplete.apply(this);
+        //   }
+        // }
+
+        // this.isFirstUpdate = false;
+      }
+
+      this._isInActiveArea = false;
+
       // // rest isFirstUpdate flag if update was out of active zone
       // if ( time > this.props.endTime ) { this.isFirstUpdate = false; }
       // // reset isFirstUpdateBackward flag if progress went further the end time
       // if ( time > this.props.endTime ) { this.isFirstUpdateBackward = false; }
     }
-    
-    // if was active and went to - unactive area
-    if ( time < this.prevTime && time < this.props.startTime ) {
 
-      // TODO: same for 1 progress
-      // update progress to 0 only once
-      if ( !this.isOnReverseComplete ) {
-        this.setProgress(0);
-        this._repeatStart();
-        this.isOnReverseComplete = true;
-      }
-
-      // if (!this.isFirstUpdateBackward) {
-      //   if (this.props.onFirstUpdateBackward != null && typeof this.props.onFirstUpdateBackward === 'function') {
-      //     this.props.onFirstUpdateBackward.apply(this);
-      //   }
-      //   this.isFirstUpdateBackward = true;
-      // }
-
-      // isGrow indicates if actual parent time is growing.
-      // Despite the fact that the time could be < previous time && <= startTime
-      // it is actually grows. Tween could be added to a
-      // Timeline, and the later will work with Tween's periods, feeding
-      // 0 at the end of the period, because period % period === 0.
-      // See 182 line of Timline's code for more info.
-      // if (isGrow) {
-      //   if (!this.isCompleted && this.prevTime < this.props.endTime ) {
-      //     this._complete();
-      //   }
-      // } else if ( !this.isOnReverseComplete /* && this.isFirstUpdate */ ) {
-      //   this.isOnReverseComplete = true;
-      //   this.setProgress(0, !this.props.isChained);
-      //   if (this.props.onReverseComplete != null && typeof this.props.onReverseComplete === 'function') {
-      //     this.props.onReverseComplete.apply(this);
-      //   }
-      // }
-
-      // this.isFirstUpdate = false;
-    }
+    // // complete if time is larger then end time
+    // if ( time > this.props.endTime && !this.isCompleted ) {
+    //   // get period number
+    //   var props = this.props;
+    //   var startPoint = props.startTime - props.delay;
+    //   var periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
+      
+    //   // if ( isGrow == null ) { isGrow = time > this.prevTime; }
+    //   this._complete( (this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1 );
+    // }
 
     this.prevTime = time;
     return this.isCompleted;
@@ -206,15 +229,6 @@ var Tween = class Tween {
     // reset callback flags
     this.isOnReverseComplete = false; this.isCompleted = false;
 
-    // We need to know what direction we are heading in with this tween,
-    // so if we don't have the previous update value - this is very first
-    // update, - skip it entirely and wait for the next value
-    if ( this.prevTime === -1 ) {
-      this.o.isIt && console.log(`=========`);
-      this.o.isIt && console.log(`tween: SKIP`);
-      return this._wasUknownUpdate = true;
-    }
-
     if ( time === this.props.endTime ) {
       this._wasUknownUpdate = false;
       return this._complete();
@@ -224,7 +238,7 @@ var Tween = class Tween {
         delayDuration = props.delay + props.duration,
         startPoint    = props.startTime - props.delay,
         elapsed       = (time - props.startTime + props.delay) % delayDuration,
-        TCount        = (props.endTime - props.startTime) / delayDuration,
+        TCount        = (props.endTime - props.startTime + props.delay) / delayDuration,
         T             = this._getPeriod(time),
         TValue        = this._delayT,
         prevT         = this._getPeriod(this.prevTime),
@@ -233,13 +247,15 @@ var Tween = class Tween {
     this.o.isIt && console.log(`=========`);
     this.o.isIt && console.log(`tween:`);
     this.o.isIt && console.log(`TCount: ${TCount}`);
-    this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
+    // this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
     this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}, prevTime: ${this.prevTime}`);
-    this.o.isIt && console.log(`TValue: ${TValue}, TPrevValue: ${TPrevValue}`);
+    // this.o.isIt && console.log(`TValue: ${TValue}, TPrevValue: ${TPrevValue}`);
     this.o.isIt && this._visualizeProgress(time);
 
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
+
+      this._isInActiveArea = true;
 
       this.isRepeatCompleted = false;
       this.isRepeatStart = false;
@@ -283,7 +299,7 @@ var Tween = class Tween {
             }
             // if on edge but not at very start
             // |=====|=====|=====| >>>
-            // ^here           
+            // ^not  ^here ^here           
             if ( prevT >= 0 ) {
               this._repeatStart();
               this.setProgress(0);
@@ -293,7 +309,7 @@ var Tween = class Tween {
           if ( isOnReverseEdge ) {
             // if on edge but not at very end
             // |=====|=====|=====| <<<
-            //                   ^not here        
+            //       ^here ^here ^not here        
             if (this.progress !== 0 && prevT != TCount) {
               this.setProgress(0);
               this._repeatStart();
@@ -343,7 +359,16 @@ var Tween = class Tween {
       }
     // delay gap
     } else {
+
+      // if was in active area and previous time was larger
+      if ( this._isInActiveArea && time < this.prevTime ) {
+        this.setProgress(0);
+        this._repeatStart();
+      }
+
+      this._isInActiveArea = false;
       this.isRepeatStart = false;
+
       this.o.isIt && console.log(`in the delay gap`);
       // if yoyo and even period we should flip
       // so set flipCoef to 1 if we need flip, otherwise to 0
