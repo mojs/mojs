@@ -20,13 +20,11 @@ var Tween = class Tween {
       easing:                 'Linear.None',
       onStart:                null,
       onComplete:             null,
-      onRepeatComplete:       null,
       onRepeatStart:          null,
-      onReverseComplete:      null,
+      onRepeatComplete:       null,
       onFirstUpdate:          null,
       onUpdate:               null,
-      onFirstUpdateBackward:  null,
-      isChained:              false,
+      isChained:              false
     }
   }
 
@@ -96,27 +94,20 @@ var Tween = class Tween {
     */
     if ((time >= this.props.startTime) && (time <= this.props.endTime)) {
       // // this.isRepeatCompleted = false;
-      // // onFirtUpdate callback
       // if (!this.isFirstUpdate) {
       //   if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === 'function') {
       //     this.props.onFirstUpdate.apply(this); this.isFirstUpdate = true;
       //   }
       // }
 
-      // if (!this.isStarted) {
-      //   if (this.props.onStart != null && typeof this.props.onStart === 'function') {
-      //     this.props.onStart.apply(this); this.isStarted = true;
-      //   }
-      // }
+      if (!this.isStarted) {
+        if (this.props.onStart != null && typeof this.props.onStart === 'function') {
+          this.props.onStart.apply(this); this.isStarted = true;
+        }
+      }
+
       this._updateInActiveArea(time);
         
-      // if ( time < this.prevTime && !this.isFirstUpdateBackward ) {
-      //   if (this.props.onFirstUpdateBackward != null && typeof this.props.onFirstUpdateBackward === 'function') {
-      //     this.props.onFirstUpdateBackward.apply(this);
-      //   }
-      //   this.isFirstUpdateBackward = true;
-      // }
-
     } else {
       // complete if time is larger then end time
       if ( time > this.props.endTime && !this.isCompleted && this._isInActiveArea ) {
@@ -124,7 +115,7 @@ var Tween = class Tween {
         var props = this.props;
         var startPoint = props.startTime - props.delay;
         var periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
-        
+
         // if ( isGrow == null ) { isGrow = time > this.prevTime; }
         this._complete( (this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1 );
       }
