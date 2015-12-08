@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.149.4',
+	  revision: '0.149.5',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3670,19 +3670,6 @@
 	          with all the repeat and delays in it
 	        */
 	        if (time >= this.props.startTime && time <= this.props.endTime) {
-	          // // this.isRepeatCompleted = false;
-	          // if (!this.isFirstUpdate) {
-	          //   if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === 'function') {
-	          //     this.props.onFirstUpdate.apply(this); this.isFirstUpdate = true;
-	          //   }
-	          // }
-
-	          if (!this.isStarted) {
-	            if (this.props.onStart != null && typeof this.props.onStart === "function") {
-	              this.props.onStart.apply(this);this.isStarted = true;
-	            }
-	          }
-
 	          this._updateInActiveArea(time);
 	        } else {
 	          // complete if time is larger then end time
@@ -3699,61 +3686,41 @@
 	          // if was active and went to - unactive area
 	          if (time < this.prevTime && time < this.props.startTime) {
 	            if (!this.isOnReverseComplete && this._isInActiveArea) {
-	              // _start()
+	              this._start();
 	              this.setProgress(0);
 	              this._repeatStart();
 	              this.isOnReverseComplete = true;
 	            }
-
-	            // if (!this.isFirstUpdateBackward) {
-	            //   if (this.props.onFirstUpdateBackward != null && typeof this.props.onFirstUpdateBackward === 'function') {
-	            //     this.props.onFirstUpdateBackward.apply(this);
-	            //   }
-	            //   this.isFirstUpdateBackward = true;
-	            // }
-
-	            // isGrow indicates if actual parent time is growing.
-	            // Despite the fact that the time could be < previous time && <= startTime
-	            // it is actually grows. Tween could be added to a
-	            // Timeline, and the later will work with Tween's periods, feeding
-	            // 0 at the end of the period, because period % period === 0.
-	            // See 182 line of Timline's code for more info.
-	            // if (isGrow) {
-	            //   if (!this.isCompleted && this.prevTime < this.props.endTime ) {
-	            //     this._complete();
-	            //   }
-	            // } else if ( !this.isOnReverseComplete /* && this.isFirstUpdate */ ) {
-	            //   this.isOnReverseComplete = true;
-	            //   this.setProgress(0, !this.props.isChained);
-	            //   if (this.props.onReverseComplete != null && typeof this.props.onReverseComplete === 'function') {
-	            //     this.props.onReverseComplete.apply(this);
-	            //   }
-	            // }
-
-	            // this.isFirstUpdate = false;
 	          }
 
 	          this._isInActiveArea = false;
-
-	          // // rest isFirstUpdate flag if update was out of active zone
-	          // if ( time > this.props.endTime ) { this.isFirstUpdate = false; }
-	          // // reset isFirstUpdateBackward flag if progress went further the end time
-	          // if ( time > this.props.endTime ) { this.isFirstUpdateBackward = false; }
 	        }
-
-	        // // complete if time is larger then end time
-	        // if ( time > this.props.endTime && !this.isCompleted ) {
-	        //   // get period number
-	        //   var props = this.props;
-	        //   var startPoint = props.startTime - props.delay;
-	        //   var periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
-
-	        //   // if ( isGrow == null ) { isGrow = time > this.prevTime; }
-	        //   this._complete( (this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1 );
-	        // }
 
 	        this.prevTime = time;
 	        return this.isCompleted;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _start: {
+
+	      /*
+	        Method to set tween's state to start
+	        @method _start
+	      */
+	      value: function Start() {
+	        var progress = arguments[0] === undefined ? 0 : arguments[0];
+	        if (this.isStarted) {
+	          return;
+	        }
+	        this.setProgress(progress);
+	        // this._repeatStart();
+	        if (this.props.onStart != null && typeof this.props.onStart === "function") {
+	          this.o.isIt && console.log("********** START **********");
+	          this.props.onStart.apply(this);
+	        }
+	        this.isCompleted = false;this.isStarted = true;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3763,16 +3730,17 @@
 
 	      /*
 	        Method to set tween's state to complete
+	        @method _complete
 	      */
 	      value: function Complete() {
 	        var progress = arguments[0] === undefined ? 1 : arguments[0];
 	        this.setProgress(progress);
 	        this._repeatComplete();
 	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
+	          this.o.isIt && console.log("********** START **********");
 	          this.props.onComplete.apply(this);
 	        }
 	        this.isCompleted = true;this.isStarted = false;
-	        this.isOnReverseComplete = false;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3788,6 +3756,7 @@
 	          return;
 	        }
 	        if (this.props.onRepeatComplete != null && typeof this.props.onRepeatComplete === "function") {
+	          this.o.isIt && console.log("********** REPEAT COMPLETE **********");
 	          this.props.onRepeatComplete.apply(this);
 	        }
 	        this.isRepeatCompleted = true;
@@ -3806,6 +3775,7 @@
 	          return;
 	        }
 	        if (this.props.onRepeatStart != null && typeof this.props.onRepeatStart === "function") {
+	          this.o.isIt && console.log("********** REPEAT START **********");
 	          this.props.onRepeatStart.apply(this);
 	        }
 	        this.isRepeatStart = true;
@@ -3848,6 +3818,8 @@
 
 	          this.isRepeatCompleted = false;
 	          this.isRepeatStart = false;
+	          this.isOnReverseComplete = false;
+	          this.isStarted = false;
 	          // active zone or larger then end
 	          var elapsed2 = (time - props.startTime) % delayDuration;
 	          var proc = elapsed2 / props.duration;
@@ -3864,6 +3836,7 @@
 	          if (!props.yoyo) {
 	            if (this._wasUknownUpdate) {
 	              if (this.prevTime < time) {
+	                this._start();
 	                this._repeatStart();
 	                this.setProgress(0);
 	              }
@@ -3931,6 +3904,10 @@
 	              this._repeatStart();
 	            }
 
+	            if (time === props.startTime) {
+	              this._start();
+	            }
+
 	            // yoyo
 	          } else {}
 	          // delay gap
@@ -3972,13 +3949,13 @@
 	        @param {Number} Progress to set
 	        @param {Boolean} ?
 	      */
-
 	      value: function setProgress(p) {
 	        var isCallback = arguments[1] === undefined ? true : arguments[1];
 	        this.progress = p;
 	        this.easedProgress = this.props.easing(this.progress);
 	        if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
+	            this.o.isIt && console.log("********** ONUPDATE " + p + " **********");
 	            this.onUpdate(this.easedProgress, this.progress);
 	          }
 	        }
