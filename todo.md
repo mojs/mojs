@@ -5,6 +5,7 @@
 ### TWEEN + TIMELINE:
   - add direction boolean to all callbacks
   - add yoyo tests
+  - fix callbacks firing order
 
 - fix coverage
 - release

@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.150.0',
+	  revision: '0.151.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3681,7 +3681,7 @@
 	            var periodNumber = Math.floor((props.endTime - startPoint) / (props.delay + props.duration));
 
 	            // if ( isGrow == null ) { isGrow = time > this.prevTime; }
-	            this._complete(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1);
+	            this._complete(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1, time);
 	          }
 
 	          // if was active and went to - unactive area
@@ -3735,13 +3735,13 @@
 	        @method _complete
 	        @param {Number} Progress to set.
 	      */
-	      value: function Complete() {
+	      value: function Complete(progress, time) {
 	        var progress = arguments[0] === undefined ? 1 : arguments[0];
 	        this.setProgress(progress);
 	        this._repeatComplete();
 	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
 	          this.o.isIt && console.log("********** COMPLETE **********");
-	          this.props.onComplete.apply(this);
+	          this.props.onComplete.call(this, time > this.prevTime);
 	        }
 	        this.isCompleted = true;this.isStarted = false;
 	      },
@@ -3815,7 +3815,7 @@
 
 	        if (time === this.props.endTime) {
 	          this._wasUknownUpdate = false;
-	          return this._complete();
+	          return this._complete(1, time);
 	        }
 
 	        var props = this.props,
@@ -3904,7 +3904,7 @@
 	              // |=====|=====|=====| <<<
 	              //       ^!    ^!    ^here
 	              if (prevT === TCount) {
-	                this._complete();
+	                this._complete(1, time);
 	              }
 
 	              this.setProgress(1);

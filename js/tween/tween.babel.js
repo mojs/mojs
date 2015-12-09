@@ -104,7 +104,10 @@ var Tween = class Tween {
         var periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
         
         // if ( isGrow == null ) { isGrow = time > this.prevTime; }
-        this._complete( (this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1 );
+        this._complete(
+          ((this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1),
+          time
+        );
       }
 
       // if was active and went to - unactive area
@@ -146,12 +149,12 @@ var Tween = class Tween {
     @method _complete
     @param {Number} Progress to set.
   */
-  _complete(progress = 1) {
+  _complete(progress = 1, time) {
     this.setProgress(progress);
     this._repeatComplete();
     if (this.props.onComplete != null && typeof this.props.onComplete === 'function') {
       this.o.isIt && console.log("********** COMPLETE **********");
-      this.props.onComplete.apply(this);
+      this.props.onComplete.call(this, time > this.prevTime );
     }
     this.isCompleted = true; this.isStarted = false;
   }
@@ -200,7 +203,7 @@ var Tween = class Tween {
 
     if ( time === this.props.endTime ) {
       this._wasUknownUpdate = false;
-      return this._complete();
+      return this._complete(1, time);
     }
 
     var props         = this.props,
@@ -292,7 +295,7 @@ var Tween = class Tween {
             // |=====|=====|=====| <<<
             //       ^!    ^!    ^here
             if ( prevT === TCount ) {
-              this._complete();
+              this._complete(1, time);
             }
 
             this.setProgress(1);
