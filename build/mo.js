@@ -3622,8 +3622,8 @@
 	    },
 	    setStartTime: {
 	      /*
-	        Method for setting start and end time to selft props.
-	        @param Number(Timestamp), Null
+	        Method for setting start and end time to props.
+	        @param {Number(Timestamp)}, {Null}
 	        @returns this
 	      */
 	      value: function setStartTime(time) {
@@ -3689,7 +3689,7 @@
 	            if (!this.isOnReverseComplete && this._isInActiveArea) {
 	              this._start(0, time);
 	              this.setProgress(0);
-	              this._repeatStart();
+	              this._repeatStart(time);
 	              this.isOnReverseComplete = true;
 	            }
 	          }
@@ -3794,13 +3794,13 @@
 	      /*
 	        Method call onRepeatStart calback and set flags.
 	      */
-	      value: function RepeatStart() {
+	      value: function RepeatStart(time) {
 	        if (this.isRepeatStart) {
 	          return;
 	        }
 	        if (this.props.onRepeatStart != null && typeof this.props.onRepeatStart === "function") {
 	          this.o.isIt && console.log("********** REPEAT START **********");
-	          this.props.onRepeatStart.apply(this);
+	          this.props.onRepeatStart.call(this, time > this.prevTime);
 	        }
 	        this.isRepeatStart = true;
 	      },
@@ -3862,7 +3862,7 @@
 	            if (this._wasUknownUpdate) {
 	              if (this.prevTime < time) {
 	                this._start(0, time);
-	                this._repeatStart();
+	                this._repeatStart(time);
 	                this.setProgress(0);
 	              }
 
@@ -3886,7 +3886,7 @@
 	              // |=====|=====|=====| >>>
 	              // ^not  ^here ^here          
 	              if (prevT >= 0) {
-	                this._repeatStart();
+	                this._repeatStart(time);
 	                this.setProgress(0);
 	              }
 	            }
@@ -3897,7 +3897,7 @@
 	              //       ^here ^here ^not here    
 	              if (this.progress !== 0 && prevT != TCount) {
 	                this.setProgress(0);
-	                this._repeatStart();
+	                this._repeatStart(time);
 	              }
 
 	              // if on very end edge
@@ -3923,7 +3923,7 @@
 	              // |---=====|---=====|---=====| >>>
 	              //            ^1  ^2
 	              if (T === TPrevValue) {
-	                this._repeatStart();
+	                this._repeatStart(time);
 	                this.setProgress(0);
 	              }
 	            }
@@ -3934,7 +3934,7 @@
 
 	            // if progress is equal 0 and progress grows
 	            if (proc === 0) {
-	              this._repeatStart();
+	              this._repeatStart(time);
 	            }
 
 	            if (time === props.startTime) {
@@ -3948,7 +3948,7 @@
 	          // if was in active area and previous time was larger
 	          if (this._isInActiveArea && time < this.prevTime) {
 	            this.setProgress(0);
-	            this._repeatStart();
+	            this._repeatStart(time);
 	          }
 
 	          this._isInActiveArea = false;

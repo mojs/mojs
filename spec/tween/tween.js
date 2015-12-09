@@ -399,7 +399,7 @@
         TWEEN IN NORMAL DIRECTION
        */
       it('should be called with 1 and 0 on each repeat period', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -409,6 +409,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         updateValue = null;
         t = new Tween({
@@ -422,7 +423,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -445,6 +447,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -457,6 +460,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -469,6 +473,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -482,6 +487,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -494,6 +500,7 @@
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -502,7 +509,7 @@
         return expect(firstUpdateCnt).toBe(1);
       });
       it('should be called with 1 and 0 on each repeat period if missed time', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, gap, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, gap, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -512,6 +519,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         updateValue = null;
         t = new Tween({
@@ -525,7 +533,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -549,6 +558,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -561,6 +571,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -573,6 +584,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -586,6 +598,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -598,6 +611,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -611,6 +625,7 @@
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -619,7 +634,7 @@
         return expect(firstUpdateCnt).toBe(1);
       });
       it('should be called with 1 and 0 on each repeat period if delay', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -629,6 +644,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         delay = 20;
         updateValue = null;
@@ -644,7 +660,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -667,6 +684,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -679,6 +697,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -691,6 +710,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -704,6 +724,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -716,6 +737,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -728,6 +750,7 @@
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -741,6 +764,7 @@
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -753,6 +777,7 @@
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -765,6 +790,7 @@
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -777,6 +803,7 @@
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -785,7 +812,7 @@
         return expect(firstUpdateCnt).toBe(1);
       });
       it('should be called with 1 and 0 on each repeat period if in delay', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -795,6 +822,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         delay = 20;
         updateValue = null;
@@ -810,7 +838,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -833,6 +862,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -845,6 +875,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -857,6 +888,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -870,6 +902,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -882,6 +915,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -894,6 +928,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -907,6 +942,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -919,6 +955,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -931,6 +968,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -943,6 +981,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(true);
@@ -951,7 +990,7 @@
         return expect(firstUpdateCnt).toBe(1);
       });
       it('should be called with 0 and 1 on each repeat period || reverse', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -961,6 +1000,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         updateValue = null;
         t = new Tween({
@@ -974,7 +1014,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -997,6 +1038,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1009,6 +1051,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1022,6 +1065,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1034,6 +1078,7 @@
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1047,6 +1092,7 @@
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1059,6 +1105,7 @@
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1072,6 +1119,7 @@
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
@@ -1084,6 +1132,7 @@
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
@@ -1092,7 +1141,7 @@
         return expect(firstUpdateCnt).toBe(1);
       });
       it('should be called with 0 and 1 on each repeat period if missed time || reverse', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, gap, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, gap, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -1102,6 +1151,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         updateValue = null;
         t = new Tween({
@@ -1115,7 +1165,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -1139,6 +1190,7 @@
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1151,6 +1203,7 @@
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1163,6 +1216,7 @@
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1176,6 +1230,7 @@
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1188,6 +1243,7 @@
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1200,6 +1256,7 @@
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1213,6 +1270,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
@@ -1225,6 +1283,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
@@ -1237,6 +1296,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(2);
         expect(startDirection).toBe(false);
@@ -1245,7 +1305,7 @@
         return expect(firstUpdateCnt).toBe(2);
       });
       it('should be called with 0 and 1 on each repeat period if in delay || reverse', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -1255,6 +1315,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         delay = 20;
         updateValue = null;
@@ -1270,7 +1331,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -1293,6 +1355,7 @@
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1305,6 +1368,7 @@
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1317,6 +1381,7 @@
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1330,6 +1395,7 @@
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1342,6 +1408,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1355,6 +1422,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1367,6 +1435,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
@@ -1379,6 +1448,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
@@ -1387,7 +1457,7 @@
         return expect(firstUpdateCnt).toBe(1);
       });
       return it('should be called with 0 and 1 on each repeat period if delay || reverse', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, oneCnt, repeatCnt, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -1397,6 +1467,7 @@
         firstUpdateCnt = 0;
         startDirection = null;
         completeDirection = null;
+        repeatStartDirection = null;
         duration = 50;
         delay = 20;
         updateValue = null;
@@ -1412,7 +1483,8 @@
           onRepeatComplete: function() {
             return repeatCnt++;
           },
-          onRepeatStart: function() {
+          onRepeatStart: function(isForward) {
+            repeatStartDirection = isForward;
             return repeatStartCnt++;
           },
           onStart: function(isForward) {
@@ -1435,6 +1507,7 @@
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(0);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1447,6 +1520,7 @@
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
+        expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1459,6 +1533,7 @@
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(1);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1472,6 +1547,7 @@
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1485,6 +1561,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1498,6 +1575,7 @@
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(0);
         expect(startDirection).toBe(null);
@@ -1511,6 +1589,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
@@ -1523,6 +1602,7 @@
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
         expect(startCnt).toBe(1);
         expect(startDirection).toBe(false);
