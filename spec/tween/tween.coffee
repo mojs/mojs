@@ -291,6 +291,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
+        onComplete:-> completeCnt++
       
       t.setStartTime()
       
@@ -303,6 +304,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -312,6 +314,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration)
       expect(updateValue).toBe(0)
@@ -321,6 +324,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       timeShift = duration
       t.update t.props.startTime + timeShift + (duration/2)
@@ -331,6 +335,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration)
       expect(updateValue).toBe(1)
@@ -340,6 +345,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
     it 'should be called with 1 and 0 on each repeat period if missed time', ()->
       zeroCnt = 0; oneCnt = 0
@@ -356,6 +362,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
+        onComplete:-> completeCnt++
 
       t.setStartTime()
 
@@ -370,6 +377,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -378,7 +386,8 @@ describe 'Tween ->', ->
       expect(zeroCnt).toBe(1)
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(0)
-      expect(startCnt).toBe(1) 
+      expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration) - gap
       expect(updateValue).toBeCloseTo(.9, 5)
@@ -388,6 +397,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       timeShift = duration
       t.update t.props.startTime + timeShift + gap
@@ -398,6 +408,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -407,6 +418,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       timeShift = 2*duration
       t.update t.props.startTime + timeShift + gap
@@ -417,6 +429,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
     it 'should be called with 1 and 0 on each repeat period if delay', ()->
       zeroCnt = 0; oneCnt = 0
@@ -434,6 +447,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
+        onComplete:-> completeCnt++
 
       t.setStartTime()
 
@@ -446,6 +460,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -455,6 +470,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration)
       expect(updateValue).toBe(1)
@@ -464,6 +480,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       timeShift = duration + delay
       t.update t.props.startTime + timeShift
@@ -474,6 +491,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -483,6 +501,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration)
       expect(updateValue).toBe(1)
@@ -492,6 +511,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       timeShift = 2*(duration + delay)
       t.update t.props.startTime + timeShift
@@ -502,6 +522,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -511,6 +532,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration)
       expect(updateValue).toBe(1)
@@ -520,6 +542,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
       expect(updateValue).toBe(1)
@@ -529,6 +552,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
     it 'should be called with 1 and 0 on each repeat period if in delay', ()->
       zeroCnt = 0; oneCnt = 0
@@ -546,6 +570,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
+        onComplete:-> completeCnt++
 
       t.setStartTime()
 
@@ -558,6 +583,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBe(.5)
@@ -567,6 +593,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
       expect(updateValue).toBe(1)
@@ -576,6 +603,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       timeShift = duration + delay
       t.update t.props.startTime + timeShift + 10
@@ -586,6 +614,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -595,6 +624,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
       expect(updateValue).toBe(1)
@@ -604,6 +634,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       timeShift = 2*(duration + delay)
       t.update t.props.startTime + timeShift + 10
@@ -614,6 +645,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -623,6 +655,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
       expect(updateValue).toBe(1)
@@ -632,6 +665,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift + (duration) + delay/2 + 10
       expect(updateValue).toBe(1)
@@ -641,6 +675,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
     # ###
     #   TWEEN IN REVERSE DIRECTION
@@ -661,6 +696,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
+        onComplete:-> completeCnt++
       
       t.setStartTime()
       
@@ -673,6 +709,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift - duration/2
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -682,6 +719,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = 2*duration
       t.update t.props.startTime + timeShift
@@ -692,6 +730,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - duration/2
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -701,6 +740,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = duration
       t.update t.props.startTime + timeShift
@@ -711,6 +751,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - duration/2
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -720,6 +761,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = 0
       t.update t.props.startTime + timeShift
@@ -730,6 +772,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - duration/2
       expect(updateValue).toBe(0)
@@ -739,6 +782,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
     it 'should be called with 0 and 1 on each repeat period if missed time || reverse', ()->
       zeroCnt = 0; oneCnt = 0
@@ -755,7 +799,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
-
+        onComplete:-> completeCnt++
 
       t.setStartTime()
 
@@ -769,6 +813,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift - (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -778,6 +823,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - (duration) + gap
       expect(updateValue).toBeCloseTo(.1, 5)
@@ -787,6 +833,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = 2*duration
       t.update t.props.startTime + timeShift - gap
@@ -797,6 +844,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -806,6 +854,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - (duration) + gap
       expect(updateValue).toBeCloseTo(.1, 5)
@@ -815,6 +864,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = duration
       t.update t.props.startTime + timeShift - (duration) - gap
@@ -825,6 +875,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - (duration/2)
       expect(updateValue).toBe(.5)
@@ -834,6 +885,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime - gap
       expect(updateValue).toBe(0)
@@ -843,6 +895,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(2)
+      expect(completeCnt).toBe(1)
 
     it 'should be called with 0 and 1 on each repeat period if in delay || reverse', ()->
       zeroCnt = 0; oneCnt = 0
@@ -860,6 +913,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
+        onComplete:-> completeCnt++
 
       t.setStartTime()
 
@@ -872,6 +926,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift - (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -881,6 +936,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - (duration) - 5
       expect(updateValue).toBe(0)
@@ -890,6 +946,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = 2*(duration + delay) - delay
       t.update t.props.startTime + timeShift - duration/2
@@ -900,6 +957,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - duration - 5
       expect(updateValue).toBe(0)
@@ -908,6 +966,7 @@ describe 'Tween ->', ->
       expect(oneCnt).toBe(2)
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
+      expect(completeCnt).toBe(1)
 
       timeShift = duration
       t.update t.props.startTime + timeShift - duration/2
@@ -918,6 +977,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - duration - 5
       expect(updateValue).toBe(0)
@@ -927,6 +987,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
       # repeat the last period
       t.update t.props.startTime + timeShift - duration - 15
       expect(updateValue).toBe(0)
@@ -936,6 +997,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
     it 'should be called with 0 and 1 on each repeat period if delay || reverse', ()->
       zeroCnt = 0; oneCnt = 0
@@ -953,6 +1015,7 @@ describe 'Tween ->', ->
         onRepeatComplete:-> repeatCnt++
         onRepeatStart:-> repeatStartCnt++
         onStart:-> startCnt++
+        onComplete:-> completeCnt++
 
       t.setStartTime()
 
@@ -965,6 +1028,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(0)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(0)
 
       t.update t.props.startTime + timeShift - (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -974,6 +1038,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(0)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       t.update t.props.startTime + timeShift - duration
       expect(updateValue).toBe(0)
@@ -983,6 +1048,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(1)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = 2*(duration + delay) - delay
       t.update t.props.startTime + timeShift - duration/2
@@ -993,6 +1059,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(1)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = 2*(duration + delay) - delay
       t.update t.props.startTime + timeShift - duration
@@ -1003,6 +1070,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(2)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = duration
       t.update t.props.startTime + timeShift - duration/2
@@ -1013,6 +1081,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(2)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(0)
+      expect(completeCnt).toBe(1)
 
       timeShift = duration
       t.update t.props.startTime + timeShift - duration
@@ -1023,6 +1092,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
       # repeat the last period      
       t.update t.props.startTime + timeShift - duration - 10
       expect(updateValue).toBe(0)
@@ -1032,6 +1102,7 @@ describe 'Tween ->', ->
       expect(repeatStartCnt).toBe(3)
       expect(repeatCnt).toBe(3)
       expect(startCnt).toBe(1)
+      expect(completeCnt).toBe(1)
 
   describe '_getPeriod method ->', ->
     it 'should get current period', ->
@@ -1090,6 +1161,15 @@ describe 'Tween ->', ->
       expect(t._getPeriod(t.props.startTime + timeShift + duration/2)).toBe 3
       expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe 4
       expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe 4
+
+    it 'should return period number if time > endTime', ->
+      duration = 50; delay = 20
+      t = new Tween repeat: 2, duration: duration, delay: delay
+
+      t.setStartTime()
+
+      timeShift = 3*(duration + delay) - delay
+      expect(t._getPeriod(t.props.startTime + timeShift + delay/2)).toBe 3
 
   # describe 'onComplete callback ->', ->
   #   it 'should be defined', ->

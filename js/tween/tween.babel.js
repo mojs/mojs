@@ -133,7 +133,7 @@ var Tween = class Tween {
     this.setProgress(progress);
     // this._repeatStart();
     if (this.props.onStart != null && typeof this.props.onStart === 'function') {
-      this.o.isIt && console.log("********** START **********");
+      this.o.isIt && console.log("********** STARxT **********");
       this.props.onStart.apply(this);
     }
     this.isCompleted = false; this.isStarted = true;
@@ -147,7 +147,7 @@ var Tween = class Tween {
     this.setProgress(progress);
     this._repeatComplete();
     if (this.props.onComplete != null && typeof this.props.onComplete === 'function') {
-      this.o.isIt && console.log("********** START **********");
+      this.o.isIt && console.log("********** COMPLETE **********");
       this.props.onComplete.apply(this);
     }
     this.isCompleted = true; this.isStarted = false;
@@ -264,11 +264,19 @@ var Tween = class Tween {
           if ( isOnReverseEdge ) {
             // if on edge but not at very end
             // |=====|=====|=====| <<<
-            //       ^here ^here ^not here        
+            //       ^here ^here ^not here     
             if (this.progress !== 0 && prevT != TCount) {
               this.setProgress(0);
               this._repeatStart();
             }
+
+            // if on very end edge
+            // |=====|=====|=====| <<<
+            //       ^!    ^!    ^here
+            if ( prevT === TCount ) {
+              this._complete();
+            }
+
             this.setProgress(1);
             this._repeatComplete();
           }
@@ -426,9 +434,13 @@ var Tween = class Tween {
         T       = Math.floor( dTime / TTime ),
         elapsed = dTime % TTime;
 
+    // if time is larger then the end time
+    if ( time > p.endTime ) {
+      // set equal to the periods count
+      T = (p.endTime - p.startTime + p.delay) / TTime;
     // if in delay gap, set _delayT to current
     // period number and return "delay"
-    if ( elapsed > 0 && elapsed < p.delay ) {
+    } else if ( elapsed > 0 && elapsed < p.delay ) {
       this._delayT = T; T = 'delay';
     }
     // if the end of period and there is a delay

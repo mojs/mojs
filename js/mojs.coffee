@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.149.5', isDebug: true
+  revision:   '0.149.6', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -29,7 +29,7 @@ mojs.delta = mojs.h.delta
 # tween = new mojs.Tween
 #   # isIt:       true
 #   # yoyo:       true
-#   # delay:        2000
+#   delay:        2000
 #   repeat:       2
 #   onStart:    -> console.log('--->>> start')
 #   onUpdate:   (p)-> console.log(p)
