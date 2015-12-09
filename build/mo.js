@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.149.6',
+	  revision: '0.149.7',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3672,6 +3672,7 @@
 	        if (time >= this.props.startTime && time <= this.props.endTime) {
 	          this._updateInActiveArea(time);
 	        } else {
+	          this.isFirstUpdate = false;
 	          // complete if time is larger then end time
 	          if (time > this.props.endTime && !this.isCompleted && this._isInActiveArea) {
 	            // get period number
@@ -3729,8 +3730,9 @@
 	    _complete: {
 
 	      /*
-	        Method to set tween's state to complete
+	        Method to set tween's state to complete.
 	        @method _complete
+	        @param {Number} Progress to set.
 	      */
 	      value: function Complete() {
 	        var progress = arguments[0] === undefined ? 1 : arguments[0];
@@ -3741,6 +3743,27 @@
 	          this.props.onComplete.apply(this);
 	        }
 	        this.isCompleted = true;this.isStarted = false;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _firstUpdate: {
+
+	      /*
+	        Method to run onFirstUpdate callback.
+	        @method _firstUpdate
+	      */
+	      value: function FirstUpdate() {
+	        if (this.isFirstUpdate) {
+	          return;
+	        }
+	        if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === "function") {
+	          this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
+	          this.props.onFirstUpdate.apply(this);
+	        }
+	        this.isCompleted = false;
+	        this.isFirstUpdate = true;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3814,8 +3837,9 @@
 
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
-	          this._isInActiveArea = true;
+	          this._firstUpdate();
 
+	          this._isInActiveArea = true;
 	          this.isRepeatCompleted = false;
 	          this.isRepeatStart = false;
 	          this.isOnReverseComplete = false;

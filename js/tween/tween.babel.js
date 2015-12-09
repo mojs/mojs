@@ -95,6 +95,7 @@ var Tween = class Tween {
     if ((time >= this.props.startTime) && (time <= this.props.endTime)) {
       this._updateInActiveArea(time);
     } else {
+      this.isFirstUpdate = false;
       // complete if time is larger then end time
       if ( time > this.props.endTime && !this.isCompleted && this._isInActiveArea ) {
         // get period number
@@ -140,8 +141,9 @@ var Tween = class Tween {
   }
 
   /*
-    Method to set tween's state to complete
+    Method to set tween's state to complete.
     @method _complete
+    @param {Number} Progress to set.
   */
   _complete(progress = 1) {
     this.setProgress(progress);
@@ -151,6 +153,20 @@ var Tween = class Tween {
       this.props.onComplete.apply(this);
     }
     this.isCompleted = true; this.isStarted = false;
+  }
+
+  /*
+    Method to run onFirstUpdate callback.
+    @method _firstUpdate
+  */
+  _firstUpdate() {
+    if ( this.isFirstUpdate ) { return; }
+    if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === 'function') {
+      this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
+      this.props.onFirstUpdate.apply(this);
+    }
+    this.isCompleted = false;
+    this.isFirstUpdate = true;
   }
 
   /*
@@ -207,8 +223,9 @@ var Tween = class Tween {
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
 
-      this._isInActiveArea = true;
+      this._firstUpdate();
 
+      this._isInActiveArea = true;
       this.isRepeatCompleted = false;
       this.isRepeatStart = false;
       this.isOnReverseComplete = false;
