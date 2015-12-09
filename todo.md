@@ -3,7 +3,6 @@
 
 
 ### TWEEN + TIMELINE:
-  - add onFirstUpdate callback
   - add direction boolean to all callbacks
   - add yoyo tests
 

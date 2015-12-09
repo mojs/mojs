@@ -111,7 +111,7 @@ var Tween = class Tween {
       if ( time < this.prevTime && time < this.props.startTime ) {
 
         if ( !this.isOnReverseComplete && this._isInActiveArea ) {
-          this._start();
+          this._start(0, time);
           this.setProgress(0);
           this._repeatStart();
           this.isOnReverseComplete = true;
@@ -128,14 +128,15 @@ var Tween = class Tween {
   /*
     Method to set tween's state to start
     @method _start
+    @param {Numner} Progress to set.
   */
-  _start(progress = 0) {
+  _start(progress = 0, time) {
     if ( this.isStarted ) { return; }
     this.setProgress(progress);
     // this._repeatStart();
     if (this.props.onStart != null && typeof this.props.onStart === 'function') {
-      this.o.isIt && console.log("********** STARxT **********");
-      this.props.onStart.apply(this);
+      this.o.isIt && console.log("********** START **********");
+      this.props.onStart.call(this, time > this.prevTime );
     }
     this.isCompleted = false; this.isStarted = true;
   }
@@ -247,7 +248,7 @@ var Tween = class Tween {
 
           if ( this._wasUknownUpdate ) {
             if ( this.prevTime < time ) {
-              this._start()
+              this._start(0, time);
               this._repeatStart();
               this.setProgress(0);
             }
@@ -325,7 +326,7 @@ var Tween = class Tween {
           }
 
           if ( time === props.startTime ) {
-            this._start();
+            this._start(0, time);
           }
 
       // yoyo

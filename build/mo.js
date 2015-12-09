@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.149.7',
+	  revision: '0.150.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3687,7 +3687,7 @@
 	          // if was active and went to - unactive area
 	          if (time < this.prevTime && time < this.props.startTime) {
 	            if (!this.isOnReverseComplete && this._isInActiveArea) {
-	              this._start();
+	              this._start(0, time);
 	              this.setProgress(0);
 	              this._repeatStart();
 	              this.isOnReverseComplete = true;
@@ -3709,8 +3709,9 @@
 	      /*
 	        Method to set tween's state to start
 	        @method _start
+	        @param {Numner} Progress to set.
 	      */
-	      value: function Start() {
+	      value: function Start(progress, time) {
 	        var progress = arguments[0] === undefined ? 0 : arguments[0];
 	        if (this.isStarted) {
 	          return;
@@ -3718,8 +3719,8 @@
 	        this.setProgress(progress);
 	        // this._repeatStart();
 	        if (this.props.onStart != null && typeof this.props.onStart === "function") {
-	          this.o.isIt && console.log("********** STARxT **********");
-	          this.props.onStart.apply(this);
+	          this.o.isIt && console.log("********** START **********");
+	          this.props.onStart.call(this, time > this.prevTime);
 	        }
 	        this.isCompleted = false;this.isStarted = true;
 	      },
@@ -3860,7 +3861,7 @@
 	          if (!props.yoyo) {
 	            if (this._wasUknownUpdate) {
 	              if (this.prevTime < time) {
-	                this._start();
+	                this._start(0, time);
 	                this._repeatStart();
 	                this.setProgress(0);
 	              }
@@ -3937,7 +3938,7 @@
 	            }
 
 	            if (time === props.startTime) {
-	              this._start();
+	              this._start(0, time);
 	            }
 
 	            // yoyo
