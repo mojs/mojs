@@ -5,6 +5,9 @@
 ### TWEEN + TIMELINE:
   - add yoyo tests
   - fix callbacks firing order
+  - fixes
+   - onStart should reset flags just like the onComplete does
+   - if endTime equal the latest time - reset onFirstUpdate too
 
 - fix coverage
 - release

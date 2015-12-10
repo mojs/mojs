@@ -193,27 +193,30 @@ class Timeline {
       this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}`);
       // if on edge of the periods
       if ( T > 0 && ( T > prevT ) ) {
-        // get the time we have missed
-        var missedTime = props.startTime + T*(props.delay + props.time)
-        // update child timelines with missed time
-        this.o.isIt && console.log(`xxxxxxx missed time: ${missedTime}, time: ${props.time}`);
-        var j = -1;
-        while(j++ < len) {
-          this.timelines[j].update(missedTime);
-        }
+        // // get the time we have missed
+        // var missedTime = props.startTime + T*(props.delay + props.time)
+        // // update child timelines with missed time
+        // this.o.isIt && console.log(`xxxxxxx missed time: ${missedTime}, time: ${props.time}`);
+        // // maybe >
+        // if ( time !== missedTime ) {
+        //   var j = -1;
+        //   while(j++ < len) {
+        //     this.timelines[j].update(missedTime);
+        //   }
+        // }
       }
 
       // if on edge of the periods
-      if ( T < prevT ) {
-        // get the time we have missed
-        var missedTime = props.startTime + T*(props.delay + props.time) - 2*props.time
-        // update child timelines with missed time
-        this.o.isIt && console.log(`******* missed time: ${missedTime}, time: ${props.time}`);
-        var j = -1;
-        while(j++ < len) {
-          this.timelines[j].update(missedTime);
-        }
-      }
+      // if ( T < prevT ) {
+      //   // get the time we have missed
+      //   var missedTime = props.startTime + T*(props.delay + props.time) - 2*props.time
+      //   // update child timelines with missed time
+      //   this.o.isIt && console.log(`******* missed time: ${missedTime}, time: ${props.time}`);
+      //   var j = -1;
+      //   while(j++ < len) {
+      //     this.timelines[j].update(missedTime);
+      //   }
+      // }
 
       // check if progress grows
       isGrow = (isGrow == null)

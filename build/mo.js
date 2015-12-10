@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.0',
+	  revision: '0.154.1',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3681,16 +3681,17 @@
 	                periodNumber = Math.floor((props.endTime - startPoint) / (props.delay + props.duration));
 
 	            // if ( isGrow == null ) { isGrow = time > this.prevTime; }
+	            this.o.isIt && console.log("HERE");
 	            this._complete(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1, time);
 	          }
 
 	          // if was active and went to - inactive area "-"
 	          if (time < this.prevTime && time < this.props.startTime) {
-	            if (!this.isOnReverseComplete && this._isInActiveArea) {
+	            if (!this.isStarted && this._isInActiveArea) {
+	              this.o.isIt && console.log("is it 1");
 	              this._start(0, time);
 	              this.setProgress(0, time);
 	              this._repeatStart(time);
-	              this.isOnReverseComplete = true;
 	            }
 	          }
 
@@ -3745,6 +3746,7 @@
 	          this.props.onComplete.call(this, time > this.prevTime);
 	        }
 	        this.isCompleted = true;this.isStarted = false;
+	        // this.isFirstUpdate = false;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3818,6 +3820,8 @@
 
 	        if (time === this.props.endTime) {
 	          this._wasUknownUpdate = false;
+	          this.o.isIt && console.log("HERE 2");
+	          this.o.isIt && console.log("time: " + time + ", end: " + this.props.endTime + ", prev: " + this.prevTime);
 	          return this._complete(1, time);
 	        }
 
@@ -3904,9 +3908,13 @@
 
 	              // if on very end edge
 	              // |=====|=====|=====| <<<
-	              //       ^!    ^!    ^here
+	              //       ^!    ^! ^2 ^1
 	              if (prevT === TCount) {
+	                this.o.isIt && console.log("HERE 3");
 	                this._complete(1, time);
+	                // reset isComplete flag call
+	                // cuz we returned to active area
+	                this.isCompleted = false;
 	              }
 
 	              this.setProgress(1);
@@ -4463,28 +4471,19 @@
 
 	          this.o.isIt && console.log("T: " + T + ", prevT: " + prevT);
 	          // if on edge of the periods
-	          if (T > 0 && T > prevT) {
-	            // get the time we have missed
-	            var missedTime = props.startTime + T * (props.delay + props.time);
-	            // update child timelines with missed time
-	            this.o.isIt && console.log("xxxxxxx missed time: " + missedTime + ", time: " + props.time);
-	            var j = -1;
-	            while (j++ < len) {
-	              this.timelines[j].update(missedTime);
-	            }
-	          }
+	          if (T > 0 && T > prevT) {}
 
 	          // if on edge of the periods
-	          if (T < prevT) {
-	            // get the time we have missed
-	            var missedTime = props.startTime + T * (props.delay + props.time) - 2 * props.time;
-	            // update child timelines with missed time
-	            this.o.isIt && console.log("******* missed time: " + missedTime + ", time: " + props.time);
-	            var j = -1;
-	            while (j++ < len) {
-	              this.timelines[j].update(missedTime);
-	            }
-	          }
+	          // if ( T < prevT ) {
+	          //   // get the time we have missed
+	          //   var missedTime = props.startTime + T*(props.delay + props.time) - 2*props.time
+	          //   // update child timelines with missed time
+	          //   this.o.isIt && console.log(`******* missed time: ${missedTime}, time: ${props.time}`);
+	          //   var j = -1;
+	          //   while(j++ < len) {
+	          //     this.timelines[j].update(missedTime);
+	          //   }
+	          // }
 
 	          // check if progress grows
 	          isGrow = isGrow == null ? time > (this._previousUpdateTime || 0) : isGrow;
@@ -4653,6 +4652,17 @@
 	  sequence. 
 	  @param {Object, Array} Tween to append or array of such.
 	*/
+	// // get the time we have missed
+	// var missedTime = props.startTime + T*(props.delay + props.time)
+	// // update child timelines with missed time
+	// this.o.isIt && console.log(`xxxxxxx missed time: ${missedTime}, time: ${props.time}`);
+	// // maybe >
+	// if ( time !== missedTime ) {
+	//   var j = -1;
+	//   while(j++ < len) {
+	//     this.timelines[j].update(missedTime);
+	//   }
+	// }
 
 /***/ },
 /* 21 */

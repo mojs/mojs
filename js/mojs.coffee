@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.154.0', isDebug: true
+  revision:   '0.154.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -25,31 +25,30 @@ window.mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# tm = new mojs.Timeline repeat: 1
-# tween = new mojs.Tween
-#   # isIt:       true
-#   # yoyo:       true
-#   delay:        2000
-#   repeat:       2
-#   onStart:    -> console.log('--->>> start')
-#   onUpdate:   (p)-> console.log(p)
-#   onComplete: -> console.log('--->>> complete')
-#   onRepeatStart: -> console.log('--->>> repeat start')
-#   onRepeatComplete: -> console.log('--->>> repeat complete')
+# RANGE_MAX = 10000
+# rangeSlider = document.querySelector('#js-range-slider')
 
+# tw2 = new mojs.Tween duration: 4400
 
-# tween.play()
+# tw = new mojs.Tween
+#   # repeat: 3
+#   # delay: 200
+#   # isIt: true
+#   onUpdate:(pe, p, isForward)->
+#     console.log "ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
 
-# # tween.play()
+#   onStart:(isForward)->    console.log "ON_START: #{isForward}"
+#   onComplete:(isForward)-> console.log "ON_COMPLETE: #{isForward}"
+#   onRepeatStart:(isForward)-> console.log "ON_REPEAT_START: #{isForward}"
+#   onRepeatComplete:(isForward)-> console.log "ON_REPEAT_COMPLETE: #{isForward}"
+#   onFirstUpdate:(isForward)-> console.log "ON_FIRST_UPDATE: #{isForward}"
 
-# tm.add tween
-# tm.play()
+# tm = new mojs.Timeline
+# tm.add tw#, tw2
 
-# launcher = new mojs.Tween
-#   duration: 400
-#   onUpdate:(p)-> tm.setProgress 1-p
-
-# launcher.play()
+# rangeSlider.oninput = (e)->
+#   proc = (1*rangeSlider.value)/10000
+#   tm.setProgress proc
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

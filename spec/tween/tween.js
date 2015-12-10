@@ -1203,89 +1203,6 @@
         expect(completeCnt).toBe(1);
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
-        expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
-        expect(updateValue).toBeCloseTo(.5, 5);
-        expect(updateDirection).toBe(false);
-        expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
-        expect(zeroCnt).toBe(1);
-        expect(repeatStartCnt).toBe(1);
-        expect(repeatStartDirection).toBe(false);
-        expect(repeatCnt).toBe(2);
-        expect(repeatCompleteDirection).toBe(false);
-        expect(startCnt).toBe(0);
-        expect(startDirection).toBe(null);
-        expect(completeCnt).toBe(1);
-        expect(completeDirection).toBe(false);
-        expect(firstUpdateCnt).toBe(1);
-        expect(firstUpdateDirection).toBe(false);
-        timeShift = duration;
-        t.update(t.props.startTime + timeShift);
-        expect(updateValue).toBe(0);
-        expect(updateDirection).toBe(false);
-        expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
-        expect(zeroCnt).toBe(2);
-        expect(repeatStartCnt).toBe(2);
-        expect(repeatStartDirection).toBe(false);
-        expect(repeatCnt).toBe(2);
-        expect(repeatCompleteDirection).toBe(false);
-        expect(startCnt).toBe(0);
-        expect(startDirection).toBe(null);
-        expect(completeCnt).toBe(1);
-        expect(completeDirection).toBe(false);
-        expect(firstUpdateCnt).toBe(1);
-        expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
-        expect(updateValue).toBeCloseTo(.5, 5);
-        expect(updateDirection).toBe(false);
-        expect(updateDirection).toBe(false);
-        expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(3);
-        expect(zeroCnt).toBe(2);
-        expect(repeatStartCnt).toBe(2);
-        expect(repeatStartDirection).toBe(false);
-        expect(repeatCnt).toBe(3);
-        expect(repeatCompleteDirection).toBe(false);
-        expect(startCnt).toBe(0);
-        expect(startDirection).toBe(null);
-        expect(completeCnt).toBe(1);
-        expect(completeDirection).toBe(false);
-        expect(firstUpdateCnt).toBe(1);
-        expect(firstUpdateDirection).toBe(false);
-        timeShift = 0;
-        t.update(t.props.startTime + timeShift);
-        expect(updateValue).toBe(0);
-        expect(updateDirection).toBe(false);
-        expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(3);
-        expect(zeroCnt).toBe(3);
-        expect(repeatStartCnt).toBe(3);
-        expect(repeatStartDirection).toBe(false);
-        expect(repeatCnt).toBe(3);
-        expect(repeatCompleteDirection).toBe(false);
-        expect(startCnt).toBe(1);
-        expect(startDirection).toBe(false);
-        expect(completeCnt).toBe(1);
-        expect(completeDirection).toBe(false);
-        expect(firstUpdateCnt).toBe(1);
-        expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
-        expect(updateValue).toBe(0);
-        expect(updateDirection).toBe(false);
-        expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(3);
-        expect(zeroCnt).toBe(3);
-        expect(repeatStartCnt).toBe(3);
-        expect(repeatStartDirection).toBe(false);
-        expect(repeatCnt).toBe(3);
-        expect(repeatCompleteDirection).toBe(false);
-        expect(startCnt).toBe(1);
-        expect(startDirection).toBe(false);
-        expect(completeCnt).toBe(1);
-        expect(completeDirection).toBe(false);
-        expect(firstUpdateCnt).toBe(1);
         return expect(firstUpdateDirection).toBe(false);
       });
       it('should be called with 0 and 1 on each repeat period if missed time || reverse', function() {
@@ -1922,6 +1839,138 @@
         t.setStartTime();
         timeShift = 3 * (duration + delay) - delay;
         return expect(t._getPeriod(t.props.startTime + timeShift + delay / 2)).toBe(3);
+      });
+    });
+    describe('onComplete callback ->', function() {
+      it('should be defined', function() {
+        var t;
+        t = new Tween({
+          onComplete: function() {}
+        });
+        return expect(t.props.onComplete).toBeDefined();
+      });
+      it('should call onComplete callback', function() {
+        var t;
+        t = new Tween({
+          duration: 100,
+          onComplete: function() {}
+        }).setStartTime();
+        spyOn(t.props, 'onComplete');
+        t.update(t.props.startTime + 50);
+        t.update(t.props.startTime + 51);
+        t.update(t.props.startTime + 101);
+        return expect(t.props.onComplete).toHaveBeenCalled();
+      });
+      it('should be called just once', function() {
+        var cnt, t;
+        cnt = 0;
+        t = new Tween({
+          duration: 32,
+          onComplete: function() {
+            return cnt++;
+          }
+        }).setStartTime();
+        spyOn(t.props, 'onComplete');
+        t.update(t.props.startTime + 0);
+        t.update(t.props.startTime + 10);
+        t.update(t.props.startTime + 20);
+        t.update(t.props.startTime + 30);
+        t.update(t.props.startTime + 34);
+        expect(t.props.onComplete).toHaveBeenCalledWith(true);
+        return expect(t.props.onComplete.calls.count()).toBe(1);
+      });
+      it('should be called just once when inside timeline', function() {
+        var t, tm;
+        tm = new mojs.Timeline;
+        t = new Tween({
+          duration: 32,
+          onComplete: function() {}
+        }).setStartTime();
+        tm.add(t);
+        tm.setStartTime();
+        spyOn(t.props, 'onComplete');
+        tm.update(t.props.startTime + 0);
+        tm.update(t.props.startTime + 10);
+        tm.update(t.props.startTime + 32);
+        expect(t.props.onComplete).toHaveBeenCalledWith(true);
+        return expect(t.props.onComplete.calls.count()).toBe(1);
+      });
+      it('should reset isCompleted flag', function() {
+        var t;
+        t = new Tween({
+          duration: 32
+        }).setStartTime();
+        t.update(t.props.startTime + 10);
+        t.update(t.props.startTime + 11);
+        t.update(t.props.endTime);
+        expect(t.isCompleted).toBe(true);
+        t.update(t.props.startTime + 10);
+        return expect(t.isCompleted).toBe(false);
+      });
+      it('should have the right scope', function() {
+        var isRightScope, t;
+        isRightScope = null;
+        t = new Tween({
+          duration: 10,
+          onComplete: function() {
+            return isRightScope = this instanceof Tween;
+          }
+        });
+        t.setStartTime().update(t.props.startTime + 2);
+        t.setStartTime().update(t.props.startTime + 3);
+        t.setStartTime().update(t.props.startTime + 11);
+        return expect(isRightScope).toBe(true);
+      });
+      it('should fire after the last onUpdate', function(dfr) {
+        var proc, t;
+        proc = 0;
+        t = new Tween({
+          duration: 32,
+          onUpdate: function(p) {
+            return proc = p;
+          },
+          onComplete: function() {
+            expect(proc).toBe(1);
+            return dfr();
+          }
+        });
+        t.setStartTime();
+        t.update(t.props.startTime + 1);
+        t.update(t.props.startTime + 2);
+        return t.update(t.props.startTime + 32);
+      });
+      return it('should fire only once if inside timeline', function() {
+        var cnt, delay, duration, t1, t2, tm;
+        cnt = 0;
+        duration = 50;
+        delay = 10;
+        tm = new mojs.Timeline({
+          repeat: 1
+        });
+        t1 = new Tween({
+          delay: delay,
+          duration: duration,
+          onComplete: function() {
+            return cnt++;
+          }
+        });
+        t2 = new Tween({
+          delay: 2 * delay,
+          duration: 2 * duration
+        });
+        tm.add(t1, t2);
+        tm.setStartTime();
+        tm.update(t1.props.startTime);
+        tm.update(t1.props.startTime + duration / 2);
+        tm.update(t1.props.startTime + duration / 2 + delay / 2);
+        tm.update(t1.props.startTime + duration + delay + 1);
+        tm.update(t1.props.startTime + 2 * duration + delay / 2);
+        tm.update(t1.props.startTime + 2 * (duration + delay));
+        tm.update(t1.props.startTime + 2 * (duration + delay) + delay);
+        tm.update(t1.props.startTime + 2 * (duration + delay) + 2 * delay);
+        tm.update(t1.props.startTime + 2 * (duration + delay) + 3 * delay);
+        tm.update(t1.props.startTime + 2 * (duration + delay) + 4 * delay);
+        return expect(cnt).toBe(2);
       });
     });
     describe('onStart callback ->', function() {

@@ -104,6 +104,7 @@ var Tween = class Tween {
             periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
         
         // if ( isGrow == null ) { isGrow = time > this.prevTime; }
+        this.o.isIt && console.log('HERE');
         this._complete(
           ((this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1),
           time
@@ -113,11 +114,11 @@ var Tween = class Tween {
       // if was active and went to - inactive area "-"
       if ( time < this.prevTime && time < this.props.startTime ) {
 
-        if ( !this.isOnReverseComplete && this._isInActiveArea ) {
+        if ( !this.isStarted && this._isInActiveArea ) {
+          this.o.isIt && console.log('is it 1')
           this._start(0, time);
           this.setProgress(0, time);
           this._repeatStart(time);
-          this.isOnReverseComplete = true;
         }
       }
 
@@ -158,6 +159,7 @@ var Tween = class Tween {
       this.props.onComplete.call(this, time > this.prevTime );
     }
     this.isCompleted = true; this.isStarted = false;
+    // this.isFirstUpdate = false;
   }
 
   /*
@@ -206,6 +208,8 @@ var Tween = class Tween {
 
     if ( time === this.props.endTime ) {
       this._wasUknownUpdate = false;
+      this.o.isIt && console.log('HERE 2');
+      this.o.isIt && console.log(`time: ${time}, end: ${this.props.endTime}, prev: ${this.prevTime}`);
       return this._complete(1, time);
     }
 
@@ -294,9 +298,13 @@ var Tween = class Tween {
 
             // if on very end edge
             // |=====|=====|=====| <<<
-            //       ^!    ^!    ^here
+            //       ^!    ^! ^2 ^1
             if ( prevT === TCount ) {
+              this.o.isIt && console.log('HERE 3');
               this._complete(1, time);
+              // reset isComplete flag call
+              // cuz we returned to active area
+              this.isCompleted = false;
             }
 
             this.setProgress(1);
