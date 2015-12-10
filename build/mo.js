@@ -3676,15 +3676,15 @@
 	          // complete if time is larger then end time
 	          if (time > this.props.endTime && !this.isCompleted && this._isInActiveArea) {
 	            // get period number
-	            var props = this.props;
-	            var startPoint = props.startTime - props.delay;
-	            var periodNumber = Math.floor((props.endTime - startPoint) / (props.delay + props.duration));
+	            var props = this.props,
+	                startPoint = props.startTime - props.delay,
+	                periodNumber = Math.floor((props.endTime - startPoint) / (props.delay + props.duration));
 
 	            // if ( isGrow == null ) { isGrow = time > this.prevTime; }
 	            this._complete(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1, time);
 	          }
 
-	          // if was active and went to - unactive area
+	          // if was active and went to - inactive area "-"
 	          if (time < this.prevTime && time < this.props.startTime) {
 	            if (!this.isOnReverseComplete && this._isInActiveArea) {
 	              this._start(0, time);
@@ -3734,11 +3734,12 @@
 	        Method to set tween's state to complete.
 	        @method _complete
 	        @param {Number} Progress to set.
+	        @param {Number} Current time.
 	      */
 	      value: function Complete(progress, time) {
 	        var progress = arguments[0] === undefined ? 1 : arguments[0];
 	        this.setProgress(progress);
-	        this._repeatComplete();
+	        this._repeatComplete(time);
 	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
 	          this.o.isIt && console.log("********** COMPLETE **********");
 	          this.props.onComplete.call(this, time > this.prevTime);
@@ -3774,14 +3775,15 @@
 
 	      /*
 	        Method call onRepeatComplete calback and set flags.
+	        @param {Number} Current update time.
 	      */
-	      value: function RepeatComplete() {
+	      value: function RepeatComplete(time) {
 	        if (this.isRepeatCompleted) {
 	          return;
 	        }
 	        if (this.props.onRepeatComplete != null && typeof this.props.onRepeatComplete === "function") {
 	          this.o.isIt && console.log("********** REPEAT COMPLETE **********");
-	          this.props.onRepeatComplete.apply(this);
+	          this.props.onRepeatComplete.call(this, time > this.prevTime);
 	        }
 	        this.isRepeatCompleted = true;
 	      },
@@ -3832,7 +3834,7 @@
 	        this.o.isIt && console.log("tween:");
 	        this.o.isIt && console.log("TCount: " + TCount);
 	        // this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
-	        this.o.isIt && console.log("T: " + T + ", prevT: " + prevT + ", prevTime: " + this.prevTime);
+	        this.o.isIt && console.log("T: " + T + ", prevT: " + prevT + ", time: " + time + " prevTime: " + this.prevTime);
 	        // this.o.isIt && console.log(`TValue: ${TValue}, TPrevValue: ${TPrevValue}`);
 	        this.o.isIt && this._visualizeProgress(time);
 
@@ -3856,7 +3858,6 @@
 	          // |=====|=====|=====| <<<
 	          //      ^2^1
 	          var isOnReverseEdge = prevT > T;
-
 	          // if not yoyo then set the plain progress
 	          if (!props.yoyo) {
 	            if (this._wasUknownUpdate) {
@@ -3867,7 +3868,7 @@
 	              }
 
 	              if (this.prevTime > time) {
-	                this._repeatComplete();
+	                this._repeatComplete(time);
 	                this.setProgress(1);
 	              }
 	            }
@@ -3880,7 +3881,7 @@
 	              // 1 and onRepeatComplete in delay gap
 	              if (this.progress !== 1) {
 	                this.setProgress(1);
-	                this._repeatComplete();
+	                this._repeatComplete(time);
 	              }
 	              // if on edge but not at very start
 	              // |=====|=====|=====| >>>
@@ -3908,7 +3909,7 @@
 	              }
 
 	              this.setProgress(1);
-	              this._repeatComplete();
+	              this._repeatComplete(time);
 	            }
 
 	            if (prevT === "delay") {
@@ -3917,7 +3918,7 @@
 	              //               ^2    ^1
 	              if (T < TPrevValue) {
 	                this.setProgress(1);
-	                this._repeatComplete();
+	                this._repeatComplete(time);
 	              }
 	              // if just after delay gap
 	              // |---=====|---=====|---=====| >>>
@@ -3966,7 +3967,7 @@
 	          // |=====|---=====|---=====| <<<
 	          //         ^here    ^here  
 	          if (this.progress !== 0) {
-	            this._repeatComplete();
+	            this._repeatComplete(time);
 	          }
 	        }
 	        this._wasUknownUpdate = false;

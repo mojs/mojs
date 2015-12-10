@@ -99,9 +99,9 @@ var Tween = class Tween {
       // complete if time is larger then end time
       if ( time > this.props.endTime && !this.isCompleted && this._isInActiveArea ) {
         // get period number
-        var props = this.props;
-        var startPoint = props.startTime - props.delay;
-        var periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
+        var props = this.props,
+            startPoint = props.startTime - props.delay,
+            periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
         
         // if ( isGrow == null ) { isGrow = time > this.prevTime; }
         this._complete(
@@ -110,7 +110,7 @@ var Tween = class Tween {
         );
       }
 
-      // if was active and went to - unactive area
+      // if was active and went to - inactive area "-"
       if ( time < this.prevTime && time < this.props.startTime ) {
 
         if ( !this.isOnReverseComplete && this._isInActiveArea ) {
@@ -148,10 +148,11 @@ var Tween = class Tween {
     Method to set tween's state to complete.
     @method _complete
     @param {Number} Progress to set.
+    @param {Number} Current time.
   */
   _complete(progress = 1, time) {
     this.setProgress(progress);
-    this._repeatComplete();
+    this._repeatComplete(time);
     if (this.props.onComplete != null && typeof this.props.onComplete === 'function') {
       this.o.isIt && console.log("********** COMPLETE **********");
       this.props.onComplete.call(this, time > this.prevTime );
@@ -175,12 +176,13 @@ var Tween = class Tween {
 
   /*
     Method call onRepeatComplete calback and set flags.
+    @param {Number} Current update time.
   */
-  _repeatComplete() {
+  _repeatComplete(time) {
     if (this.isRepeatCompleted) { return; }
     if (this.props.onRepeatComplete != null && typeof this.props.onRepeatComplete === 'function') {
       this.o.isIt && console.log("********** REPEAT COMPLETE **********");
-      this.props.onRepeatComplete.apply(this);
+      this.props.onRepeatComplete.call( this, time > this.prevTime );
     }
     this.isRepeatCompleted = true;
   }
@@ -220,7 +222,7 @@ var Tween = class Tween {
     this.o.isIt && console.log(`tween:`);
     this.o.isIt && console.log(`TCount: ${TCount}`);
     // this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
-    this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}, prevTime: ${this.prevTime}`);
+    this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}, time: ${time} prevTime: ${this.prevTime}`);
     // this.o.isIt && console.log(`TValue: ${TValue}, TPrevValue: ${TPrevValue}`);
     this.o.isIt && this._visualizeProgress(time);
 
@@ -245,7 +247,6 @@ var Tween = class Tween {
       // |=====|=====|=====| <<<
       //      ^2^1
       var isOnReverseEdge = (prevT > T);
-
       // if not yoyo then set the plain progress
       if (!props.yoyo) {
 
@@ -257,10 +258,9 @@ var Tween = class Tween {
             }
 
             if ( this.prevTime > time ) {
-              this._repeatComplete();
+              this._repeatComplete(time);
               this.setProgress(1);
             }
-
           }
 
           if ( isOnEdge ) {
@@ -271,7 +271,7 @@ var Tween = class Tween {
             // 1 and onRepeatComplete in delay gap
             if (this.progress !== 1) {
               this.setProgress(1);
-              this._repeatComplete();
+              this._repeatComplete(time);
             }
             // if on edge but not at very start
             // |=====|=====|=====| >>>
@@ -299,7 +299,7 @@ var Tween = class Tween {
             }
 
             this.setProgress(1);
-            this._repeatComplete();
+            this._repeatComplete(time);
           }
 
           if ( prevT === 'delay') {
@@ -308,7 +308,7 @@ var Tween = class Tween {
             //               ^2    ^1
             if ( T < TPrevValue ) {
               this.setProgress(1);
-              this._repeatComplete();
+              this._repeatComplete(time);
             }
             // if just after delay gap
             // |---=====|---=====|---=====| >>>
@@ -368,7 +368,7 @@ var Tween = class Tween {
       // if so we don't need to call the onRepeatComplete callback
       // |=====|---=====|---=====| <<<
       //         ^here    ^here   
-      if (this.progress !== 0) { this._repeatComplete(); }
+      if (this.progress !== 0) { this._repeatComplete(time); }
     }
     this._wasUknownUpdate = false;
   }
