@@ -4,8 +4,6 @@
 
 ### TWEEN + TIMELINE:
   - add direction boolean to all callbacks
-    - add direction for onRepeatComplete callback
-    - add direction for onFirstUpdate callback
     - add direction for onUpdate callback
   - add yoyo tests
   - fix callbacks firing order

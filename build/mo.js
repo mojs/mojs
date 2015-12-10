@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.152.0',
+	  revision: '0.153.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3755,14 +3755,15 @@
 	      /*
 	        Method to run onFirstUpdate callback.
 	        @method _firstUpdate
+	        @param {Number} Current update time.
 	      */
-	      value: function FirstUpdate() {
+	      value: function FirstUpdate(time) {
 	        if (this.isFirstUpdate) {
 	          return;
 	        }
 	        if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === "function") {
 	          this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
-	          this.props.onFirstUpdate.apply(this);
+	          this.props.onFirstUpdate.call(this, time > this.prevTime);
 	        }
 	        this.isCompleted = false;
 	        this.isFirstUpdate = true;
@@ -3840,7 +3841,7 @@
 
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
-	          this._firstUpdate();
+	          this._firstUpdate(time);
 
 	          this._isInActiveArea = true;
 	          this.isRepeatCompleted = false;

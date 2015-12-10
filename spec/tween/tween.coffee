@@ -270,7 +270,7 @@ describe 'Tween ->', ->
       zeroCnt = 0;    oneCnt = 0
       startCnt = 0;   completeCnt = 0
       repeatCnt = 0;  repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; updateValue = null
@@ -293,7 +293,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
       
       t.setStartTime()
       
@@ -315,7 +317,9 @@ describe 'Tween ->', ->
 
       expect(completeCnt).toBe(0)
       expect(completeDirection).toBe(null)
+      
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -337,6 +341,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration)
@@ -358,6 +363,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       timeShift = duration
@@ -380,7 +386,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
-
+      expect(firstUpdateDirection).toBe(true)
 
       t.update t.props.startTime + timeShift + (duration)
       expect(updateValue).toBe(1)
@@ -401,13 +407,13 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(true)
 
       expect(firstUpdateCnt).toBe(1)
-
+      expect(firstUpdateDirection).toBe(true)
 
     it 'should be called with 1 and 0 on each repeat period if missed time', ()->
       zeroCnt = 0; oneCnt = 0
       startCnt = 0; completeCnt = 0
       repeatCnt = 0; repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; updateValue = null
@@ -430,7 +436,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
       t.setStartTime()
 
@@ -456,6 +464,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -477,6 +486,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration) - gap
@@ -498,6 +508,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       timeShift = duration
@@ -520,6 +531,8 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
+
 
       t.update t.props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
@@ -540,6 +553,8 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
+
 
       timeShift = 2*duration
       t.update t.props.startTime + timeShift + gap
@@ -561,12 +576,13 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(true)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
     it 'should be called with 1 and 0 on each repeat period if delay', ()->
       zeroCnt = 0; oneCnt = 0
       startCnt = 0; completeCnt = 0
       repeatCnt = 0; repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; delay = 20; updateValue = null
@@ -590,7 +606,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
       t.setStartTime()
 
@@ -614,6 +632,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -635,6 +654,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration)
@@ -656,6 +676,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       timeShift = duration + delay
@@ -678,6 +699,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -699,6 +721,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration)
@@ -720,6 +743,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       timeShift = 2*(duration + delay)
@@ -742,6 +766,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -763,6 +788,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration)
@@ -784,6 +810,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(true)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
@@ -805,12 +832,14 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(true)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
+
 
     it 'should be called with 1 and 0 on each repeat period if in delay', ()->
       zeroCnt = 0; oneCnt = 0
       startCnt = 0; completeCnt = 0
       repeatCnt = 0; repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; delay = 20; updateValue = null
@@ -834,7 +863,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
       t.setStartTime()
 
@@ -858,6 +889,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -879,6 +911,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
@@ -900,6 +933,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       timeShift = duration + delay
@@ -922,6 +956,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -943,6 +978,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
@@ -964,6 +1000,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       timeShift = 2*(duration + delay)
@@ -986,6 +1023,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration/2)
@@ -1007,6 +1045,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration) + delay/2
@@ -1028,6 +1067,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(true)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime + timeShift + (duration) + delay/2 + 10
@@ -1049,6 +1089,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(true)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
 
     # ###
     #   TWEEN IN REVERSE DIRECTION
@@ -1058,7 +1099,7 @@ describe 'Tween ->', ->
       zeroCnt = 0; oneCnt = 0
       startCnt = 0; completeCnt = 0
       repeatCnt = 0; repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; updateValue = null
@@ -1081,7 +1122,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
       
       t.setStartTime()
       
@@ -1105,6 +1148,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift - duration/2
@@ -1126,6 +1170,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = 2*duration
@@ -1148,6 +1193,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - duration/2
@@ -1169,6 +1215,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = duration
@@ -1191,6 +1238,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - duration/2
@@ -1212,6 +1260,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = 0
@@ -1234,6 +1283,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - duration/2
@@ -1255,12 +1305,13 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
     it 'should be called with 0 and 1 on each repeat period if missed time || reverse', ()->
       zeroCnt = 0; oneCnt = 0
       startCnt = 0; completeCnt = 0
       repeatCnt = 0; repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; updateValue = null
@@ -1283,7 +1334,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
       t.setStartTime()
 
@@ -1308,6 +1361,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift - (duration/2)
@@ -1329,6 +1383,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - (duration) + gap
@@ -1350,6 +1405,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = 2*duration
@@ -1372,6 +1428,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - (duration/2)
@@ -1393,6 +1450,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - (duration) + gap
@@ -1414,6 +1472,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = duration
@@ -1436,6 +1495,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - (duration/2)
@@ -1457,6 +1517,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(2)
+      expect(firstUpdateDirection).toBe(true)
 
 
       t.update t.props.startTime - gap
@@ -1478,12 +1539,13 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(2)
+      expect(firstUpdateDirection).toBe(true)
 
     it 'should be called with 0 and 1 on each repeat period if in delay || reverse', ()->
       zeroCnt = 0; oneCnt = 0
       startCnt = 0; completeCnt = 0
       repeatCnt = 0; repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; delay = 20; updateValue = null
@@ -1507,7 +1569,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
       t.setStartTime()
 
@@ -1531,6 +1595,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift - (duration/2)
@@ -1552,6 +1617,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - (duration) - 5
@@ -1573,6 +1639,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = 2*(duration + delay) - delay
@@ -1595,6 +1662,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - duration - 5
@@ -1616,6 +1684,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = duration
@@ -1638,6 +1707,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - duration - 5
@@ -1659,6 +1729,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
       # repeat the last period
       t.update t.props.startTime + timeShift - duration - 15
@@ -1680,12 +1751,13 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
     it 'should be called with 0 and 1 on each repeat period if delay || reverse', ()->
       zeroCnt = 0; oneCnt = 0
       startCnt = 0; completeCnt = 0
       repeatCnt = 0; repeatStartCnt = 0
-      firstUpdateCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
       startDirection = null; completeDirection = null
       repeatStartDirection = null; repeatCompleteDirection = null
       duration = 50; delay = 20; updateValue = null
@@ -1709,7 +1781,9 @@ describe 'Tween ->', ->
         onComplete:(isForward)->
           completeDirection = isForward
           completeCnt++
-        onFirstUpdate:-> firstUpdateCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
       t.setStartTime()
 
@@ -1733,6 +1807,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(null)
 
       expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
 
 
       t.update t.props.startTime + timeShift - (duration/2)
@@ -1754,6 +1829,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       t.update t.props.startTime + timeShift - duration
@@ -1775,6 +1851,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = 2*(duration + delay) - delay
@@ -1797,6 +1874,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = 2*(duration + delay) - delay
@@ -1819,6 +1897,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = duration
@@ -1841,6 +1920,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
       timeShift = duration
@@ -1863,6 +1943,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
       # repeat the last period      
       t.update t.props.startTime + timeShift - duration - 10
@@ -1884,6 +1965,7 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(false)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
   describe '_getPeriod method ->', ->
     it 'should get current period', ->

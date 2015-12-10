@@ -163,12 +163,13 @@ var Tween = class Tween {
   /*
     Method to run onFirstUpdate callback.
     @method _firstUpdate
+    @param {Number} Current update time.
   */
-  _firstUpdate() {
+  _firstUpdate(time) {
     if ( this.isFirstUpdate ) { return; }
     if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === 'function') {
       this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
-      this.props.onFirstUpdate.apply(this);
+      this.props.onFirstUpdate.call( this, time > this.prevTime );
     }
     this.isCompleted = false;
     this.isFirstUpdate = true;
@@ -229,7 +230,7 @@ var Tween = class Tween {
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
 
-      this._firstUpdate();
+      this._firstUpdate(time);
 
       this._isInActiveArea = true;
       this.isRepeatCompleted = false;
