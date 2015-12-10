@@ -115,7 +115,7 @@ var Tween = class Tween {
 
         if ( !this.isOnReverseComplete && this._isInActiveArea ) {
           this._start(0, time);
-          this.setProgress(0);
+          this.setProgress(0, time);
           this._repeatStart(time);
           this.isOnReverseComplete = true;
         }
@@ -135,7 +135,7 @@ var Tween = class Tween {
   */
   _start(progress = 0, time) {
     if ( this.isStarted ) { return; }
-    this.setProgress(progress);
+    this.setProgress(progress, time);
     // this._repeatStart();
     if (this.props.onStart != null && typeof this.props.onStart === 'function') {
       this.o.isIt && console.log("********** START **********");
@@ -151,7 +151,7 @@ var Tween = class Tween {
     @param {Number} Current time.
   */
   _complete(progress = 1, time) {
-    this.setProgress(progress);
+    this.setProgress(progress, time);
     this._repeatComplete(time);
     if (this.props.onComplete != null && typeof this.props.onComplete === 'function') {
       this.o.isIt && console.log("********** COMPLETE **********");
@@ -255,12 +255,12 @@ var Tween = class Tween {
             if ( this.prevTime < time ) {
               this._start(0, time);
               this._repeatStart(time);
-              this.setProgress(0);
+              this.setProgress(0, time);
             }
 
             if ( this.prevTime > time ) {
               this._repeatComplete(time);
-              this.setProgress(1);
+              this.setProgress(1, time);
             }
           }
 
@@ -271,7 +271,7 @@ var Tween = class Tween {
             // because we have already handled
             // 1 and onRepeatComplete in delay gap
             if (this.progress !== 1) {
-              this.setProgress(1);
+              this.setProgress(1, time);
               this._repeatComplete(time);
             }
             // if on edge but not at very start
@@ -279,7 +279,7 @@ var Tween = class Tween {
             // ^not  ^here ^here           
             if ( prevT >= 0 ) {
               this._repeatStart(time);
-              this.setProgress(0);
+              this.setProgress(0, time);
             }
           }
 
@@ -288,7 +288,7 @@ var Tween = class Tween {
             // |=====|=====|=====| <<<
             //       ^here ^here ^not here     
             if (this.progress !== 0 && prevT != TCount) {
-              this.setProgress(0);
+              this.setProgress(0, time);
               this._repeatStart(time);
             }
 
@@ -308,7 +308,7 @@ var Tween = class Tween {
             // |---=====|---=====|---=====| >>>
             //               ^2    ^1
             if ( T < TPrevValue ) {
-              this.setProgress(1);
+              this.setProgress(1, time);
               this._repeatComplete(time);
             }
             // if just after delay gap
@@ -316,12 +316,12 @@ var Tween = class Tween {
             //            ^1  ^2
             if ( T === TPrevValue ) {
               this._repeatStart(time);
-              this.setProgress(0);
+              this.setProgress(0, time);
             }
           }
 
           if ( time !== props.endTime ) {
-            this.setProgress(proc);
+            this.setProgress(proc, time);
           }
           
           // if progress is equal 0 and progress grows
@@ -351,7 +351,7 @@ var Tween = class Tween {
 
       // if was in active area and previous time was larger
       if ( this._isInActiveArea && time < this.prevTime ) {
-        this.setProgress(0);
+        this.setProgress(0, time);
         this._repeatStart(time);
       }
 
@@ -364,7 +364,10 @@ var Tween = class Tween {
       var flipCoef = (props.yoyo && (T % 2 === 0)) ? 1 : 0;
       // if flip is 0 - bitwise XOR will leave the numbers as is,
       // if flip is 1 - bitwise XOR will inverse the numbers
-      this.setProgress( (this.prevTime < time) ? 1 ^ flipCoef : 0 ^ flipCoef );
+      this.setProgress(
+        ((this.prevTime < time) ? 1 ^ flipCoef : 0 ^ flipCoef),
+        time
+      );
       // if reverse direction and in delay gap, then progress will be 0
       // if so we don't need to call the onRepeatComplete callback
       // |=====|---=====|---=====| <<<
@@ -375,17 +378,17 @@ var Tween = class Tween {
   }
 
   /*
-    Method to set Tween's progress
-    @param {Number} Progress to set
-    @param {Boolean} ?
+    Method to set Tween's progress.
+    @param {Number} Progress to set.
+    @param {Number} Current update time.
   */
-  setProgress(p, isCallback=true) {
+  setProgress(p, time) {
     this.progress = p;
     this.easedProgress = this.props.easing(this.progress);
-    if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
+    if ( this.props.prevEasedProgress !== this.easedProgress ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
         this.o.isIt && console.log(`********** ONUPDATE ${p} **********`);
-        this.onUpdate(this.easedProgress, this.progress);
+        this.onUpdate( this.easedProgress, this.progress, time > this.prevTime );
       }
     }
     this.props.prevEasedProgress = this.easedProgress;
@@ -432,7 +435,7 @@ var Tween = class Tween {
     Method to stop the Tween.
     @returns {Object} Self
   */
-  stop() { this.pause(); this.setProgress(0); return this; }
+  stop() { this.pause(); this.setProgress(0); /* add smallest time */ return this; }
 
   /*
     Method to pause Tween.

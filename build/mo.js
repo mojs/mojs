@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.153.0',
+	  revision: '0.154.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3688,7 +3688,7 @@
 	          if (time < this.prevTime && time < this.props.startTime) {
 	            if (!this.isOnReverseComplete && this._isInActiveArea) {
 	              this._start(0, time);
-	              this.setProgress(0);
+	              this.setProgress(0, time);
 	              this._repeatStart(time);
 	              this.isOnReverseComplete = true;
 	            }
@@ -3716,7 +3716,7 @@
 	        if (this.isStarted) {
 	          return;
 	        }
-	        this.setProgress(progress);
+	        this.setProgress(progress, time);
 	        // this._repeatStart();
 	        if (this.props.onStart != null && typeof this.props.onStart === "function") {
 	          this.o.isIt && console.log("********** START **********");
@@ -3738,7 +3738,7 @@
 	      */
 	      value: function Complete(progress, time) {
 	        var progress = arguments[0] === undefined ? 1 : arguments[0];
-	        this.setProgress(progress);
+	        this.setProgress(progress, time);
 	        this._repeatComplete(time);
 	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
 	          this.o.isIt && console.log("********** COMPLETE **********");
@@ -3865,12 +3865,12 @@
 	              if (this.prevTime < time) {
 	                this._start(0, time);
 	                this._repeatStart(time);
-	                this.setProgress(0);
+	                this.setProgress(0, time);
 	              }
 
 	              if (this.prevTime > time) {
 	                this._repeatComplete(time);
-	                this.setProgress(1);
+	                this.setProgress(1, time);
 	              }
 	            }
 
@@ -3881,7 +3881,7 @@
 	              // because we have already handled
 	              // 1 and onRepeatComplete in delay gap
 	              if (this.progress !== 1) {
-	                this.setProgress(1);
+	                this.setProgress(1, time);
 	                this._repeatComplete(time);
 	              }
 	              // if on edge but not at very start
@@ -3889,7 +3889,7 @@
 	              // ^not  ^here ^here          
 	              if (prevT >= 0) {
 	                this._repeatStart(time);
-	                this.setProgress(0);
+	                this.setProgress(0, time);
 	              }
 	            }
 
@@ -3898,7 +3898,7 @@
 	              // |=====|=====|=====| <<<
 	              //       ^here ^here ^not here    
 	              if (this.progress !== 0 && prevT != TCount) {
-	                this.setProgress(0);
+	                this.setProgress(0, time);
 	                this._repeatStart(time);
 	              }
 
@@ -3918,7 +3918,7 @@
 	              // |---=====|---=====|---=====| >>>
 	              //               ^2    ^1
 	              if (T < TPrevValue) {
-	                this.setProgress(1);
+	                this.setProgress(1, time);
 	                this._repeatComplete(time);
 	              }
 	              // if just after delay gap
@@ -3926,12 +3926,12 @@
 	              //            ^1  ^2
 	              if (T === TPrevValue) {
 	                this._repeatStart(time);
-	                this.setProgress(0);
+	                this.setProgress(0, time);
 	              }
 	            }
 
 	            if (time !== props.endTime) {
-	              this.setProgress(proc);
+	              this.setProgress(proc, time);
 	            }
 
 	            // if progress is equal 0 and progress grows
@@ -3949,7 +3949,7 @@
 	        } else {
 	          // if was in active area and previous time was larger
 	          if (this._isInActiveArea && time < this.prevTime) {
-	            this.setProgress(0);
+	            this.setProgress(0, time);
 	            this._repeatStart(time);
 	          }
 
@@ -3962,7 +3962,7 @@
 	          var flipCoef = props.yoyo && T % 2 === 0 ? 1 : 0;
 	          // if flip is 0 - bitwise XOR will leave the numbers as is,
 	          // if flip is 1 - bitwise XOR will inverse the numbers
-	          this.setProgress(this.prevTime < time ? 1 ^ flipCoef : 0 ^ flipCoef);
+	          this.setProgress(this.prevTime < time ? 1 ^ flipCoef : 0 ^ flipCoef, time);
 	          // if reverse direction and in delay gap, then progress will be 0
 	          // if so we don't need to call the onRepeatComplete callback
 	          // |=====|---=====|---=====| <<<
@@ -3980,18 +3980,17 @@
 	    setProgress: {
 
 	      /*
-	        Method to set Tween's progress
-	        @param {Number} Progress to set
-	        @param {Boolean} ?
+	        Method to set Tween's progress.
+	        @param {Number} Progress to set.
+	        @param {Number} Current update time.
 	      */
-	      value: function setProgress(p) {
-	        var isCallback = arguments[1] === undefined ? true : arguments[1];
+	      value: function setProgress(p, time) {
 	        this.progress = p;
 	        this.easedProgress = this.props.easing(this.progress);
-	        if (this.props.prevEasedProgress !== this.easedProgress && isCallback) {
+	        if (this.props.prevEasedProgress !== this.easedProgress) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
 	            this.o.isIt && console.log("********** ONUPDATE " + p + " **********");
-	            this.onUpdate(this.easedProgress, this.progress);
+	            this.onUpdate(this.easedProgress, this.progress, time > this.prevTime);
 	          }
 	        }
 	        this.props.prevEasedProgress = this.easedProgress;
@@ -4058,7 +4057,7 @@
 	        @returns {Object} Self
 	      */
 	      value: function stop() {
-	        this.pause();this.setProgress(0);return this;
+	        this.pause();this.setProgress(0); /* add smallest time */return this;
 	      },
 	      writable: true,
 	      enumerable: true,

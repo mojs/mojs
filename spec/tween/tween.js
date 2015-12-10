@@ -289,7 +289,7 @@
         expect(t._isInActiveArea).toBe(true);
         t.update(t.props.startTime - 500);
         expect(t._isInActiveArea).toBe(false);
-        expect(t.onUpdate).toHaveBeenCalledWith(0, 0);
+        expect(t.onUpdate).toHaveBeenCalledWith(0, 0, false);
         t.update(t.props.startTime - 500);
         expect(t._isInActiveArea).toBe(false);
         return expect(t.onUpdate.calls.count()).toBe(3);
@@ -318,7 +318,7 @@
         expect(t._isInActiveArea).toBe(true);
         t.update(t.props.startTime + 1500);
         expect(t._isInActiveArea).toBe(false);
-        return expect(t.onUpdate).toHaveBeenCalledWith(1, 1);
+        return expect(t.onUpdate).toHaveBeenCalledWith(1, 1, true);
       });
       return it('should set Tween to the end if Tween ended', function() {
         var t;
@@ -351,7 +351,7 @@
         t.setStartTime();
         t.update(t.props.startTime + 499);
         t.update(t.props.startTime + 500);
-        return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress);
+        return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress, true);
       });
       it('should have the right scope', function() {
         var isRightScope, t;
@@ -399,7 +399,7 @@
         TWEEN IN NORMAL DIRECTION
        */
       it('should be called with 1 and 0 on each repeat period', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -414,10 +414,12 @@
         repeatCompleteDirection = null;
         duration = 50;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 1,
           duration: duration,
-          onUpdate: function(p) {
+          onUpdate: function(p, ep, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -447,6 +449,7 @@
         timeShift = 0;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
@@ -462,6 +465,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
@@ -477,6 +481,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
@@ -493,6 +498,7 @@
         timeShift = duration;
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
@@ -508,6 +514,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
@@ -523,7 +530,7 @@
         return expect(firstUpdateDirection).toBe(true);
       });
       it('should be called with 1 and 0 on each repeat period if missed time', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, gap, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, gap, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -538,10 +545,12 @@
         repeatCompleteDirection = null;
         duration = 50;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 1,
           duration: duration,
-          onUpdate: function(p) {
+          onUpdate: function(p, ep, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -572,6 +581,7 @@
         timeShift = 0;
         t.update(t.props.startTime + timeShift + gap);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
@@ -587,6 +597,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
@@ -602,6 +613,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration - gap);
         expect(updateValue).toBeCloseTo(.9, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
@@ -618,6 +630,7 @@
         timeShift = duration;
         t.update(t.props.startTime + timeShift + gap);
         expect(updateValue).toBeCloseTo(.1, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
@@ -633,6 +646,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
@@ -649,6 +663,7 @@
         timeShift = 2 * duration;
         t.update(t.props.startTime + timeShift + gap);
         expect(updateValue).toBeCloseTo(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
@@ -664,7 +679,7 @@
         return expect(firstUpdateDirection).toBe(true);
       });
       it('should be called with 1 and 0 on each repeat period if delay', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -680,11 +695,13 @@
         duration = 50;
         delay = 20;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 2,
           duration: duration,
           delay: delay,
-          onUpdate: function(p) {
+          onUpdate: function(p, ep, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -714,6 +731,7 @@
         timeShift = 0;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
@@ -729,6 +747,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
@@ -744,6 +763,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
@@ -760,6 +780,7 @@
         timeShift = duration + delay;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
@@ -775,6 +796,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
@@ -790,6 +812,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
@@ -806,6 +829,7 @@
         timeShift = 2 * (duration + delay);
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(3);
@@ -821,6 +845,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(3);
@@ -836,6 +861,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
@@ -851,6 +877,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
@@ -866,7 +893,7 @@
         return expect(firstUpdateDirection).toBe(true);
       });
       it('should be called with 1 and 0 on each repeat period if in delay', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -882,11 +909,13 @@
         duration = 50;
         delay = 20;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 2,
           duration: duration,
           delay: delay,
-          onUpdate: function(p) {
+          onUpdate: function(p, ep, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -916,6 +945,7 @@
         timeShift = 0;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
@@ -931,6 +961,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBe(.5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
@@ -946,6 +977,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
@@ -962,6 +994,7 @@
         timeShift = duration + delay;
         t.update(t.props.startTime + timeShift + 10);
         expect(updateValue).toBeCloseTo(.2, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(1);
@@ -977,6 +1010,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(1);
@@ -992,6 +1026,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
@@ -1008,6 +1043,7 @@
         timeShift = 2 * (duration + delay);
         t.update(t.props.startTime + timeShift + 10);
         expect(updateValue).toBeCloseTo(.2, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(2);
@@ -1023,6 +1059,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(2);
@@ -1038,6 +1075,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
@@ -1053,6 +1091,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime + timeShift + duration + delay / 2 + 10);
         expect(updateValue).toBe(1);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
@@ -1068,7 +1107,7 @@
         return expect(firstUpdateDirection).toBe(true);
       });
       it('should be called with 0 and 1 on each repeat period || reverse', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -1083,10 +1122,12 @@
         repeatCompleteDirection = null;
         duration = 50;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 2,
           duration: duration,
-          onUpdate: function(p) {
+          onUpdate: function(p, ep, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -1116,6 +1157,7 @@
         timeShift = 3 * duration;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
@@ -1131,6 +1173,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(0);
@@ -1147,6 +1190,7 @@
         timeShift = 2 * duration;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
@@ -1162,6 +1206,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(1);
@@ -1178,6 +1223,7 @@
         timeShift = duration;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
         expect(zeroCnt).toBe(2);
@@ -1193,6 +1239,8 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(2);
@@ -1209,6 +1257,7 @@
         timeShift = 0;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
@@ -1224,6 +1273,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
         expect(zeroCnt).toBe(3);
@@ -1239,7 +1289,7 @@
         return expect(firstUpdateDirection).toBe(false);
       });
       it('should be called with 0 and 1 on each repeat period if missed time || reverse', function() {
-        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, gap, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, duration, firstUpdateCnt, firstUpdateDirection, gap, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -1254,10 +1304,12 @@
         repeatCompleteDirection = null;
         duration = 50;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 2,
           duration: duration,
-          onUpdate: function(p) {
+          onUpdate: function(p, pe, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -1288,6 +1340,7 @@
         timeShift = 3 * duration;
         t.update(t.props.startTime + timeShift + gap);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(0);
@@ -1303,6 +1356,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
@@ -1318,6 +1372,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration + gap);
         expect(updateValue).toBeCloseTo(.1, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
@@ -1334,6 +1389,7 @@
         timeShift = 2 * duration;
         t.update(t.props.startTime + timeShift - gap);
         expect(updateValue).toBeCloseTo(.9, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
@@ -1349,6 +1405,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
@@ -1364,6 +1421,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration + gap);
         expect(updateValue).toBeCloseTo(.1, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
@@ -1380,6 +1438,7 @@
         timeShift = duration;
         t.update(t.props.startTime + timeShift - duration - gap);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
@@ -1395,6 +1454,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBe(.5);
+        expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
@@ -1410,6 +1470,7 @@
         expect(firstUpdateDirection).toBe(true);
         t.update(t.props.startTime - gap);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(2);
@@ -1425,7 +1486,7 @@
         return expect(firstUpdateDirection).toBe(true);
       });
       it('should be called with 0 and 1 on each repeat period if in delay || reverse', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -1441,11 +1502,13 @@
         duration = 50;
         delay = 20;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 2,
           duration: duration,
           delay: delay,
-          onUpdate: function(p) {
+          onUpdate: function(p, pe, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -1475,6 +1538,7 @@
         timeShift = 3 * (duration + delay) - delay;
         t.update(t.props.startTime + timeShift + 5);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(0);
@@ -1490,6 +1554,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
@@ -1505,6 +1570,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(1);
@@ -1521,6 +1587,7 @@
         timeShift = 2 * (duration + delay) - delay;
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
@@ -1536,6 +1603,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
@@ -1552,6 +1620,7 @@
         timeShift = duration;
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(3);
@@ -1567,6 +1636,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
@@ -1582,6 +1652,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration - 15);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
@@ -1597,7 +1668,7 @@
         return expect(firstUpdateDirection).toBe(false);
       });
       return it('should be called with 0 and 1 on each repeat period if delay || reverse', function() {
-        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateValue, zeroCnt;
+        var completeCnt, completeDirection, delay, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, t, timeShift, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
         startCnt = 0;
@@ -1613,11 +1684,13 @@
         duration = 50;
         delay = 20;
         updateValue = null;
+        updateDirection = null;
         t = new Tween({
           repeat: 2,
           duration: duration,
           delay: delay,
-          onUpdate: function(p) {
+          onUpdate: function(p, pe, isForward) {
+            updateDirection = isForward;
             updateValue = p;
             (p === 0) && zeroCnt++;
             return (p === 1) && oneCnt++;
@@ -1647,6 +1720,7 @@
         timeShift = 3 * (duration + delay) - delay;
         t.update(t.props.startTime + timeShift);
         expect(updateValue).toBe(null);
+        expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
         expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
@@ -1662,6 +1736,7 @@
         expect(firstUpdateDirection).toBe(null);
         t.update(t.props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(0);
         expect(oneCnt).toBe(1);
@@ -1677,6 +1752,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
@@ -1693,6 +1769,7 @@
         timeShift = 2 * (duration + delay) - delay;
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(1);
         expect(oneCnt).toBe(2);
@@ -1709,6 +1786,7 @@
         timeShift = 2 * (duration + delay) - delay;
         t.update(t.props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
@@ -1725,6 +1803,7 @@
         timeShift = duration;
         t.update(t.props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(3);
@@ -1741,6 +1820,7 @@
         timeShift = duration;
         t.update(t.props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
@@ -1756,6 +1836,7 @@
         expect(firstUpdateDirection).toBe(false);
         t.update(t.props.startTime + timeShift - duration - 10);
         expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(3);
@@ -2132,14 +2213,21 @@
         tw = new Tween;
         spyOn(tw, 'setProgress');
         tw._complete();
-        return expect(tw.setProgress).toHaveBeenCalledWith(1);
+        return expect(tw.setProgress).toHaveBeenCalledWith(1, void 0);
       });
       it('should set progress to number that was passed', function() {
         var tw;
         tw = new Tween;
         spyOn(tw, 'setProgress');
         tw._complete(0);
-        return expect(tw.setProgress).toHaveBeenCalledWith(0);
+        return expect(tw.setProgress).toHaveBeenCalledWith(0, void 0);
+      });
+      it('should set direction with time passed', function() {
+        var tw;
+        tw = new Tween;
+        spyOn(tw, 'setProgress');
+        tw._complete(0, 2);
+        return expect(tw.setProgress).toHaveBeenCalledWith(0, 2);
       });
       it('should call onRepeatComplete callback', function() {
         var fun, isCalled, tw;
@@ -2184,14 +2272,21 @@
         tw = new Tween;
         spyOn(tw, 'setProgress');
         tw._start();
-        return expect(tw.setProgress).toHaveBeenCalledWith(0);
+        return expect(tw.setProgress).toHaveBeenCalledWith(0, void 0);
       });
       it('should set progress to number that was passed', function() {
         var tw;
         tw = new Tween;
         spyOn(tw, 'setProgress');
         tw._start(1);
-        return expect(tw.setProgress).toHaveBeenCalledWith(1);
+        return expect(tw.setProgress).toHaveBeenCalledWith(1, void 0);
+      });
+      it('should call setProgress with time passed', function() {
+        var tw;
+        tw = new Tween;
+        spyOn(tw, 'setProgress');
+        tw._start(1, 2);
+        return expect(tw.setProgress).toHaveBeenCalledWith(1, 2);
       });
       it('should call onStart callback', function() {
         var fun, isCalled, tw;
