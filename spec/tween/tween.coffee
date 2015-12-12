@@ -1268,128 +1268,128 @@ describe 'Tween ->', ->
       expect(firstUpdateDirection).toBe(false)
 
 
-      # t.update t.props.startTime + timeShift - duration/2
-      # expect(updateValue).toBeCloseTo(.5, 5)
-      # expect(updateDirection).toBe(false)
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(updateDirection).toBe(false)
 
-      # expect(t._wasUknownUpdate).toBe(false)
-      # expect(oneCnt).toBe(2)
-      # expect(zeroCnt).toBe(1)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
-      # expect(repeatStartCnt).toBe(1)
-      # expect(repeatStartDirection).toBe(false)
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
 
-      # expect(repeatCnt).toBe(2)
-      # expect(repeatCompleteDirection).toBe(false)
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
       
-      # expect(startCnt).toBe(0)
-      # expect(startDirection).toBe(null)
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
 
-      # expect(completeCnt).toBe(1)
-      # expect(completeDirection).toBe(false)
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
 
-      # expect(firstUpdateCnt).toBe(1)
-      # expect(firstUpdateDirection).toBe(false)
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
-      # timeShift = duration
-      # t.update t.props.startTime + timeShift
-      # expect(updateValue).toBe(0)
-      # expect(updateDirection).toBe(false)
+      timeShift = duration
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
 
-      # expect(t._wasUknownUpdate).toBe(false)
-      # expect(oneCnt).toBe(2)
-      # expect(zeroCnt).toBe(2)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
       
-      # expect(repeatStartCnt).toBe(2)
-      # expect(repeatStartDirection).toBe(false)
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
 
-      # expect(repeatCnt).toBe(2)
-      # expect(repeatCompleteDirection).toBe(false)
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
       
-      # expect(startCnt).toBe(0)
-      # expect(startDirection).toBe(null)
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
 
-      # expect(completeCnt).toBe(1)
-      # expect(completeDirection).toBe(false)
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
 
-      # expect(firstUpdateCnt).toBe(1)
-      # expect(firstUpdateDirection).toBe(false)
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
-      # t.update t.props.startTime + timeShift - duration/2
-      # expect(updateValue).toBeCloseTo(.5, 5)
-      # expect(updateDirection).toBe(false)
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(updateDirection).toBe(false)
 
-      # expect(updateDirection).toBe(false)
+      expect(updateDirection).toBe(false)
 
-      # expect(t._wasUknownUpdate).toBe(false)
-      # expect(oneCnt).toBe(3)
-      # expect(zeroCnt).toBe(2)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(2)
 
-      # expect(repeatStartCnt).toBe(2)
-      # expect(repeatStartDirection).toBe(false)
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
 
-      # expect(repeatCnt).toBe(3)
-      # expect(repeatCompleteDirection).toBe(false)
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
       
-      # expect(startCnt).toBe(0)
-      # expect(startDirection).toBe(null)
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
 
-      # expect(completeCnt).toBe(1)
-      # expect(completeDirection).toBe(false)
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
 
-      # expect(firstUpdateCnt).toBe(1)
-      # expect(firstUpdateDirection).toBe(false)
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
-      # timeShift = 0
-      # t.update t.props.startTime + timeShift
-      # expect(updateValue).toBe(0)
-      # expect(updateDirection).toBe(false)
+      timeShift = 0
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
 
-      # expect(t._wasUknownUpdate).toBe(false)
-      # expect(oneCnt).toBe(3)
-      # expect(zeroCnt).toBe(3)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(3)
       
-      # expect(repeatStartCnt).toBe(3)
-      # expect(repeatStartDirection).toBe(false)
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
 
-      # expect(repeatCnt).toBe(3)
-      # expect(repeatCompleteDirection).toBe(false)
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
       
-      # expect(startCnt).toBe(1)
-      # expect(startDirection).toBe(false)
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
 
-      # expect(completeCnt).toBe(1)
-      # expect(completeDirection).toBe(false)
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
 
-      # expect(firstUpdateCnt).toBe(1)
-      # expect(firstUpdateDirection).toBe(false)
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
 
-      # t.update t.props.startTime + timeShift - duration/2
-      # expect(updateValue).toBe(0)
-      # expect(updateDirection).toBe(false)
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
 
-      # expect(t._wasUknownUpdate).toBe(false)
-      # expect(oneCnt).toBe(3)
-      # expect(zeroCnt).toBe(3)
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(3)
       
-      # expect(repeatStartCnt).toBe(3)
-      # expect(repeatStartDirection).toBe(false)
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
 
-      # expect(repeatCnt).toBe(3)
-      # expect(repeatCompleteDirection).toBe(false)
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
 
-      # expect(startCnt).toBe(1)
-      # expect(startDirection).toBe(false)
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
 
-      # expect(completeCnt).toBe(1)
-      # expect(completeDirection).toBe(false)
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
 
-      # expect(firstUpdateCnt).toBe(1)
-      # expect(firstUpdateDirection).toBe(false)
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
 
     it 'should be called with 0 and 1 on each repeat period if missed time || reverse', ()->
       zeroCnt = 0; oneCnt = 0
@@ -2256,11 +2256,12 @@ describe 'Tween ->', ->
       tm.update t1.props.startTime + duration + delay + 1
       tm.update t1.props.startTime + 2*duration + delay/2
 
+      # end
       tm.update t1.props.startTime + 2*( duration + delay ) # <-- error
-      tm.update t1.props.startTime + 2*( duration + delay ) + delay
-      tm.update t1.props.startTime + 2*( duration + delay ) + 2*delay
-      tm.update t1.props.startTime + 2*( duration + delay ) + 3*delay
-      tm.update t1.props.startTime + 2*( duration + delay ) + 4*delay
+      # tm.update t1.props.startTime + 2*( duration + delay ) + delay
+      # tm.update t1.props.startTime + 2*( duration + delay ) + 2*delay
+      # tm.update t1.props.startTime + 2*( duration + delay ) + 3*delay
+      # tm.update t1.props.startTime + 2*( duration + delay ) + 4*delay
 
       expect(cnt).toBe(2)
 
@@ -2790,33 +2791,38 @@ describe 'Tween ->', ->
     #   expect(t.state).toBe 'pause'
 
   describe '_complete method ->', ->
-    it 'should set progress to 1', ->
-      tw = new Tween
-      spyOn tw, 'setProgress'
-      tw._complete()
-      expect(tw.setProgress).toHaveBeenCalledWith 1, undefined
-    it 'should set progress to number that was passed', ->
-      tw = new Tween
-      spyOn tw, 'setProgress'
-      tw._complete(0)
-      expect(tw.setProgress).toHaveBeenCalledWith 0, undefined
-    it 'should set direction with time passed', ->
-      tw = new Tween
-      spyOn tw, 'setProgress'
-      tw._complete(0, 2)
-      expect(tw.setProgress).toHaveBeenCalledWith 0, 2
-    it 'should call onRepeatComplete callback', ->
+    # nope
+    # it 'should set progress to 1', ->
+    #   tw = new Tween
+    #   spyOn tw, 'setProgress'
+    #   tw._complete()
+    #   expect(tw.setProgress).toHaveBeenCalledWith 1, undefined
+
+    # nope
+    # it 'should set progress to number that was passed', ->
+    #   tw = new Tween
+    #   spyOn tw, 'setProgress'
+    #   tw._complete(0)
+    #   expect(tw.setProgress).toHaveBeenCalledWith 0, undefined
+    # nope
+    # it 'should set direction with time passed', ->
+    #   tw = new Tween
+    #   spyOn tw, 'setProgress'
+    #   tw._complete(0, 2)
+    #   expect(tw.setProgress).toHaveBeenCalledWith 0, 2
+    it 'should call onComplete callback', ->
       isCalled = null
       fun = -> isCalled = true
       tw = new Tween onComplete: fun
       tw._complete()
       expect(isCalled).toBe true
-    it 'should call onRepeatComplete callback', ->
-      isCalled = null
-      fun = -> isCalled = true
-      tw = new Tween onRepeatComplete: fun
-      tw._complete()
-      expect(isCalled).toBe true
+    # nope
+    # it 'should call onRepeatComplete callback', ->
+    #   isCalled = null
+    #   fun = -> isCalled = true
+    #   tw = new Tween onRepeatComplete: fun
+    #   tw._complete()
+    #   expect(isCalled).toBe true
     it 'should set isCompleted to true', ->
       tw = new Tween
       tw._complete()
@@ -2827,21 +2833,27 @@ describe 'Tween ->', ->
       expect(tw.isStarted).toBe false
 
   describe '_start method ->', ->
-    it 'should set progress to 0', ->
-      tw = new Tween
-      spyOn tw, 'setProgress'
-      tw._start()
-      expect(tw.setProgress).toHaveBeenCalledWith 0, undefined
-    it 'should set progress to number that was passed', ->
-      tw = new Tween
-      spyOn tw, 'setProgress'
-      tw._start(1)
-      expect(tw.setProgress).toHaveBeenCalledWith 1, undefined
-    it 'should call setProgress with time passed', ->
-      tw = new Tween
-      spyOn tw, 'setProgress'
-      tw._start(1, 2)
-      expect(tw.setProgress).toHaveBeenCalledWith 1, 2
+    # nope
+    # it 'should set progress to 0', ->
+    #   tw = new Tween
+    #   spyOn tw, 'setProgress'
+    #   tw._start()
+    #   expect(tw.setProgress).toHaveBeenCalledWith 0, undefined
+
+    # nope
+    # it 'should set progress to number that was passed', ->
+    #   tw = new Tween
+    #   spyOn tw, 'setProgress'
+    #   tw._start(1)
+    #   expect(tw.setProgress).toHaveBeenCalledWith 1, undefined
+    
+    # nope
+    # it 'should call setProgress with time passed', ->
+    #   tw = new Tween
+    #   spyOn tw, 'setProgress'
+    #   tw._start(1, 2)
+    #   expect(tw.setProgress).toHaveBeenCalledWith 1, 2
+
     it 'should call onStart callback', ->
       isCalled = null
       fun = -> isCalled = true
@@ -2933,10 +2945,11 @@ describe 'Tween ->', ->
       tw = new Tween onFirstUpdate: fun
       tw._firstUpdate()
       expect(isCalled).toBe true
-    it 'should set isCompleted to false', ->
-      tw = new Tween
-      tw._firstUpdate()
-      expect(tw.isCompleted).toBe false
+    # nope
+    # it 'should set isCompleted to false', ->
+    #   tw = new Tween
+    #   tw._firstUpdate()
+    #   expect(tw.isCompleted).toBe false
     it 'should call onFirstUpdate callback only once', ->
       cnt = 0
       fun = -> cnt++
@@ -2945,6 +2958,252 @@ describe 'Tween ->', ->
       tw._firstUpdate()
       expect(cnt).toBe 1
 
+  describe 'callbacks order || forward', ->
+    it 'should have the right order when normal direction || start', ->
+      order = []
+      tw = new Tween
+        onStart:-> order.push( 'start' )
+        onRepeatStart:-> order.push( 'repeat-start' )
+        onFirstUpdate:-> order.push( 'first-update' )
+        onUpdate:-> order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:-> order.push( 'complete' )
 
+      tw.setStartTime()
 
+      tw.update tw.props.startTime
+      tw.update tw.props.startTime + 10
 
+      expect(order[0]).toBe 'start'
+      expect(order[1]).toBe 'repeat-start'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+
+    it 'should have the right order when normal direction || end', ->
+      order = []; duration = 500
+      tw = new Tween
+        duration: duration
+        onStart:-> order.push( 'start' )
+        onRepeatStart:-> order.push( 'repeat-start' )
+        onFirstUpdate:-> order.push( 'first-update' )
+        onUpdate:-> order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:-> order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + duration
+
+      expect(order[0]).toBe 'start'
+      expect(order[1]).toBe 'repeat-start'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'repeat-complete'
+      expect(order[7]).toBe 'complete'
+
+    it 'should have the right order when normal direction || repeat end', ->
+      order = []; duration = 500
+      tw = new Tween
+        repeat: 1
+        duration: duration
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:->       order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + duration + 10
+      tw.update tw.props.startTime + duration + duration/2
+      tw.update tw.props.startTime + duration + duration
+
+      expect(order[0]).toBe 'start'
+      expect(order[1]).toBe 'repeat-start'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'repeat-complete'
+      expect(order[7]).toBe 'repeat-start'
+      expect(order[8]).toBe 'update'
+      expect(order[9]).toBe 'update'
+      expect(order[10]).toBe 'update'
+      expect(order[11]).toBe 'update'
+      expect(order[12]).toBe 'repeat-complete'
+      expect(order[13]).toBe 'complete'
+
+    it 'should have the right order when normal direction || end + delay', ->
+      order = []; duration = 500; delay = 200
+      tw = new Tween
+        repeat:   1
+        duration: duration
+        delay:    delay
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:->       order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + duration + delay/2
+      tw.update tw.props.startTime + duration + delay + 10
+      tw.update tw.props.startTime + duration + delay + duration/2
+      tw.update tw.props.startTime + duration + delay + duration
+
+      expect(order[0]).toBe 'start'
+      expect(order[1]).toBe 'repeat-start'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'repeat-complete'
+      expect(order[7]).toBe 'repeat-start'
+      expect(order[8]).toBe 'update'
+      expect(order[9]).toBe 'update'
+      expect(order[10]).toBe 'update'
+      expect(order[11]).toBe 'update'
+      expect(order[12]).toBe 'repeat-complete'
+      expect(order[13]).toBe 'complete'
+
+  describe 'callbacks order || backward', ->
+    it 'should have the right order when reverse direction || start', ->
+      order = []; duration = 500
+      tw = new Tween
+        duration: duration
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:->       order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + duration - duration/4
+      tw.update tw.props.startTime + duration/2
+
+      expect(order[0]).toBe 'complete'
+      expect(order[1]).toBe 'repeat-complete'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      
+
+    it 'should have the right order when reverse direction || end', ->
+      order = []; duration = 500
+      tw = new Tween
+        duration:           duration
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:->       order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + duration
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime
+
+      expect(order[0]).toBe 'complete'
+      expect(order[1]).toBe 'repeat-complete'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'update'
+      expect(order[7]).toBe 'repeat-start'
+      expect(order[8]).toBe 'start'
+
+    it 'should have the right order when reverse direction || repeat end', ->
+      order = []; duration = 500
+      tw = new Tween
+        repeat:             1
+        duration:           duration
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:->       order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + duration + duration
+      tw.update tw.props.startTime + duration + duration/2
+      tw.update tw.props.startTime + duration + 10
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime
+
+      expect(order[0]).toBe 'complete'
+      expect(order[1]).toBe 'repeat-complete'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'update'
+      expect(order[7]).toBe 'repeat-start'
+      expect(order[8]).toBe 'repeat-complete'
+      expect(order[9]).toBe 'update'
+      expect(order[10]).toBe 'update'
+      expect(order[11]).toBe 'update'
+      expect(order[12]).toBe 'update'
+      expect(order[13]).toBe 'repeat-start'
+      expect(order[14]).toBe 'start'
+      expect(order[15]).toBe undefined
+      
+    it 'should have the right order when reverse direction || end + delay', ->
+      order = []; duration = 500; delay = 200
+      tw = new Tween
+        repeat:             1
+        duration:           duration
+        delay:              delay
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:->       order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + duration + delay + duration
+      tw.update tw.props.startTime + duration + delay + duration/2
+      tw.update tw.props.startTime + duration + delay + 10
+      tw.update tw.props.startTime + duration + delay/2
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime
+
+      expect(order[0]).toBe 'complete'
+      expect(order[1]).toBe 'repeat-complete'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'update'
+      expect(order[7]).toBe 'repeat-start'
+      expect(order[8]).toBe 'repeat-complete'
+      expect(order[9]).toBe 'update'
+      expect(order[10]).toBe 'update'
+      expect(order[11]).toBe 'update'
+      expect(order[12]).toBe 'update'
+      expect(order[13]).toBe 'repeat-start'
+      expect(order[14]).toBe 'start'
+      expect(order[15]).toBe undefined

@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.1',
+	  revision: '0.154.2',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3682,7 +3682,12 @@
 
 	            // if ( isGrow == null ) { isGrow = time > this.prevTime; }
 	            this.o.isIt && console.log("HERE");
-	            this._complete(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1, time);
+
+	            this.setProgress(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1, time);
+
+	            this._repeatComplete(time);
+	            this.o.isIt && console.log("HERE 5");
+	            this._complete(time);
 	          }
 
 	          // if was active and went to - inactive area "-"
@@ -3717,7 +3722,7 @@
 	        if (this.isStarted) {
 	          return;
 	        }
-	        this.setProgress(progress, time);
+	        // this.setProgress(progress, time);
 	        // this._repeatStart();
 	        if (this.props.onStart != null && typeof this.props.onStart === "function") {
 	          this.o.isIt && console.log("********** START **********");
@@ -3734,13 +3739,14 @@
 	      /*
 	        Method to set tween's state to complete.
 	        @method _complete
-	        @param {Number} Progress to set.
 	        @param {Number} Current time.
 	      */
-	      value: function Complete(progress, time) {
-	        var progress = arguments[0] === undefined ? 1 : arguments[0];
-	        this.setProgress(progress, time);
-	        this._repeatComplete(time);
+	      value: function Complete(time) {
+	        if (this.isCompleted) {
+	          return;
+	        }
+	        // this.setProgress(progress, time);
+	        // this._repeatComplete(time);
 	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
 	          this.o.isIt && console.log("********** COMPLETE **********");
 	          this.props.onComplete.call(this, time > this.prevTime);
@@ -3767,7 +3773,6 @@
 	          this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
 	          this.props.onFirstUpdate.call(this, time > this.prevTime);
 	        }
-	        this.isCompleted = false;
 	        this.isFirstUpdate = true;
 	      },
 	      writable: true,
@@ -3822,7 +3827,11 @@
 	          this._wasUknownUpdate = false;
 	          this.o.isIt && console.log("HERE 2");
 	          this.o.isIt && console.log("time: " + time + ", end: " + this.props.endTime + ", prev: " + this.prevTime);
-	          return this._complete(1, time);
+
+	          this.setProgress(1, time);
+	          this._repeatComplete(time);
+	          this.o.isIt && console.log("HERE 6");
+	          return this._complete(time);
 	        }
 
 	        var props = this.props,
@@ -3845,8 +3854,6 @@
 
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
-	          this._firstUpdate(time);
-
 	          this._isInActiveArea = true;
 	          this.isRepeatCompleted = false;
 	          this.isRepeatStart = false;
@@ -3866,14 +3873,18 @@
 	          // if not yoyo then set the plain progress
 	          if (!props.yoyo) {
 	            if (this._wasUknownUpdate) {
-	              if (this.prevTime < time) {
+	              if (time > this.prevTime) {
 	                this._start(0, time);
 	                this._repeatStart(time);
+	                this._firstUpdate(time);
 	                this.setProgress(0, time);
 	              }
 
-	              if (this.prevTime > time) {
+	              if (time < this.prevTime) {
+	                this.o.isIt && console.log("HERE 7");
+	                this._complete(time);
 	                this._repeatComplete(time);
+	                this._firstUpdate(time);
 	                this.setProgress(1, time);
 	              }
 	            }
@@ -3897,6 +3908,8 @@
 	              }
 	            }
 
+	            this._firstUpdate(time);
+
 	            if (isOnReverseEdge) {
 	              // if on edge but not at very end
 	              // |=====|=====|=====| <<<
@@ -3909,16 +3922,26 @@
 	              // if on very end edge
 	              // |=====|=====|=====| <<<
 	              //       ^!    ^! ^2 ^1
-	              if (prevT === TCount) {
+	              // we have handled the case in this._wasUknownUpdate
+	              // block so filter that
+	              if (prevT === TCount && !this._wasUknownUpdate) {
 	                this.o.isIt && console.log("HERE 3");
-	                this._complete(1, time);
+	                this.o.isIt && console.log(this.isCompleted);
+	                this.setProgress(1, time);
+	                this._repeatComplete(time);
+	                this._complete(time);
 	                // reset isComplete flag call
 	                // cuz we returned to active area
 	                this.isCompleted = false;
 	              }
-
-	              this.setProgress(1);
-	              this._repeatComplete(time);
+	              // change order regarding direction
+	              if (time > this.prevTime) {
+	                this.setProgress(1, time);
+	                this._repeatComplete(time);
+	              } else {
+	                this._repeatComplete(time);
+	                this.setProgress(1, time);
+	              }
 	            }
 
 	            if (prevT === "delay") {
@@ -3926,8 +3949,8 @@
 	              // |---=====|---=====|---=====| >>>
 	              //               ^2    ^1
 	              if (T < TPrevValue) {
-	                this.setProgress(1, time);
 	                this._repeatComplete(time);
+	                this.setProgress(1, time);
 	              }
 	              // if just after delay gap
 	              // |---=====|---=====|---=====| >>>

@@ -1203,6 +1203,89 @@
         expect(completeCnt).toBe(1);
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
+        expect(firstUpdateDirection).toBe(false);
+        t.update(t.props.startTime + timeShift - duration / 2);
+        expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(2);
+        expect(zeroCnt).toBe(1);
+        expect(repeatStartCnt).toBe(1);
+        expect(repeatStartDirection).toBe(false);
+        expect(repeatCnt).toBe(2);
+        expect(repeatCompleteDirection).toBe(false);
+        expect(startCnt).toBe(0);
+        expect(startDirection).toBe(null);
+        expect(completeCnt).toBe(1);
+        expect(completeDirection).toBe(false);
+        expect(firstUpdateCnt).toBe(1);
+        expect(firstUpdateDirection).toBe(false);
+        timeShift = duration;
+        t.update(t.props.startTime + timeShift);
+        expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(2);
+        expect(zeroCnt).toBe(2);
+        expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
+        expect(repeatCnt).toBe(2);
+        expect(repeatCompleteDirection).toBe(false);
+        expect(startCnt).toBe(0);
+        expect(startDirection).toBe(null);
+        expect(completeCnt).toBe(1);
+        expect(completeDirection).toBe(false);
+        expect(firstUpdateCnt).toBe(1);
+        expect(firstUpdateDirection).toBe(false);
+        t.update(t.props.startTime + timeShift - duration / 2);
+        expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(false);
+        expect(updateDirection).toBe(false);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(3);
+        expect(zeroCnt).toBe(2);
+        expect(repeatStartCnt).toBe(2);
+        expect(repeatStartDirection).toBe(false);
+        expect(repeatCnt).toBe(3);
+        expect(repeatCompleteDirection).toBe(false);
+        expect(startCnt).toBe(0);
+        expect(startDirection).toBe(null);
+        expect(completeCnt).toBe(1);
+        expect(completeDirection).toBe(false);
+        expect(firstUpdateCnt).toBe(1);
+        expect(firstUpdateDirection).toBe(false);
+        timeShift = 0;
+        t.update(t.props.startTime + timeShift);
+        expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(3);
+        expect(zeroCnt).toBe(3);
+        expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
+        expect(repeatCnt).toBe(3);
+        expect(repeatCompleteDirection).toBe(false);
+        expect(startCnt).toBe(1);
+        expect(startDirection).toBe(false);
+        expect(completeCnt).toBe(1);
+        expect(completeDirection).toBe(false);
+        expect(firstUpdateCnt).toBe(1);
+        expect(firstUpdateDirection).toBe(false);
+        t.update(t.props.startTime + timeShift - duration / 2);
+        expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(3);
+        expect(zeroCnt).toBe(3);
+        expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(false);
+        expect(repeatCnt).toBe(3);
+        expect(repeatCompleteDirection).toBe(false);
+        expect(startCnt).toBe(1);
+        expect(startDirection).toBe(false);
+        expect(completeCnt).toBe(1);
+        expect(completeDirection).toBe(false);
+        expect(firstUpdateCnt).toBe(1);
         return expect(firstUpdateDirection).toBe(false);
       });
       it('should be called with 0 and 1 on each repeat period if missed time || reverse', function() {
@@ -1966,10 +2049,6 @@
         tm.update(t1.props.startTime + duration + delay + 1);
         tm.update(t1.props.startTime + 2 * duration + delay / 2);
         tm.update(t1.props.startTime + 2 * (duration + delay));
-        tm.update(t1.props.startTime + 2 * (duration + delay) + delay);
-        tm.update(t1.props.startTime + 2 * (duration + delay) + 2 * delay);
-        tm.update(t1.props.startTime + 2 * (duration + delay) + 3 * delay);
-        tm.update(t1.props.startTime + 2 * (duration + delay) + 4 * delay);
         return expect(cnt).toBe(2);
       });
     });
@@ -2257,28 +2336,7 @@
       });
     });
     describe('_complete method ->', function() {
-      it('should set progress to 1', function() {
-        var tw;
-        tw = new Tween;
-        spyOn(tw, 'setProgress');
-        tw._complete();
-        return expect(tw.setProgress).toHaveBeenCalledWith(1, void 0);
-      });
-      it('should set progress to number that was passed', function() {
-        var tw;
-        tw = new Tween;
-        spyOn(tw, 'setProgress');
-        tw._complete(0);
-        return expect(tw.setProgress).toHaveBeenCalledWith(0, void 0);
-      });
-      it('should set direction with time passed', function() {
-        var tw;
-        tw = new Tween;
-        spyOn(tw, 'setProgress');
-        tw._complete(0, 2);
-        return expect(tw.setProgress).toHaveBeenCalledWith(0, 2);
-      });
-      it('should call onRepeatComplete callback', function() {
+      it('should call onComplete callback', function() {
         var fun, isCalled, tw;
         isCalled = null;
         fun = function() {
@@ -2286,18 +2344,6 @@
         };
         tw = new Tween({
           onComplete: fun
-        });
-        tw._complete();
-        return expect(isCalled).toBe(true);
-      });
-      it('should call onRepeatComplete callback', function() {
-        var fun, isCalled, tw;
-        isCalled = null;
-        fun = function() {
-          return isCalled = true;
-        };
-        tw = new Tween({
-          onRepeatComplete: fun
         });
         tw._complete();
         return expect(isCalled).toBe(true);
@@ -2316,27 +2362,6 @@
       });
     });
     describe('_start method ->', function() {
-      it('should set progress to 0', function() {
-        var tw;
-        tw = new Tween;
-        spyOn(tw, 'setProgress');
-        tw._start();
-        return expect(tw.setProgress).toHaveBeenCalledWith(0, void 0);
-      });
-      it('should set progress to number that was passed', function() {
-        var tw;
-        tw = new Tween;
-        spyOn(tw, 'setProgress');
-        tw._start(1);
-        return expect(tw.setProgress).toHaveBeenCalledWith(1, void 0);
-      });
-      it('should call setProgress with time passed', function() {
-        var tw;
-        tw = new Tween;
-        spyOn(tw, 'setProgress');
-        tw._start(1, 2);
-        return expect(tw.setProgress).toHaveBeenCalledWith(1, 2);
-      });
       it('should call onStart callback', function() {
         var fun, isCalled, tw;
         isCalled = null;
@@ -2436,7 +2461,7 @@
         return expect(tw.isRepeatStart).toBe(true);
       });
     });
-    return describe('_firstUpdate method ->', function() {
+    describe('_firstUpdate method ->', function() {
       it('should call onFirstUpdate callback', function() {
         var fun, isCalled, tw;
         isCalled = null;
@@ -2448,12 +2473,6 @@
         });
         tw._firstUpdate();
         return expect(isCalled).toBe(true);
-      });
-      it('should set isCompleted to false', function() {
-        var tw;
-        tw = new Tween;
-        tw._firstUpdate();
-        return expect(tw.isCompleted).toBe(false);
       });
       return it('should call onFirstUpdate callback only once', function() {
         var cnt, fun, tw;
@@ -2467,6 +2486,354 @@
         tw._firstUpdate();
         tw._firstUpdate();
         return expect(cnt).toBe(1);
+      });
+    });
+    describe('callbacks order || forward', function() {
+      it('should have the right order when normal direction || start', function() {
+        var order, tw;
+        order = [];
+        tw = new Tween({
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime);
+        tw.update(tw.props.startTime + 10);
+        expect(order[0]).toBe('start');
+        expect(order[1]).toBe('repeat-start');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        return expect(order[4]).toBe('update');
+      });
+      it('should have the right order when normal direction || end', function() {
+        var duration, order, tw;
+        order = [];
+        duration = 500;
+        tw = new Tween({
+          duration: duration,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + duration);
+        expect(order[0]).toBe('start');
+        expect(order[1]).toBe('repeat-start');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('repeat-complete');
+        return expect(order[7]).toBe('complete');
+      });
+      it('should have the right order when normal direction || repeat end', function() {
+        var duration, order, tw;
+        order = [];
+        duration = 500;
+        tw = new Tween({
+          repeat: 1,
+          duration: duration,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + duration + 10);
+        tw.update(tw.props.startTime + duration + duration / 2);
+        tw.update(tw.props.startTime + duration + duration);
+        expect(order[0]).toBe('start');
+        expect(order[1]).toBe('repeat-start');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('repeat-complete');
+        expect(order[7]).toBe('repeat-start');
+        expect(order[8]).toBe('update');
+        expect(order[9]).toBe('update');
+        expect(order[10]).toBe('update');
+        expect(order[11]).toBe('update');
+        expect(order[12]).toBe('repeat-complete');
+        return expect(order[13]).toBe('complete');
+      });
+      return it('should have the right order when normal direction || end + delay', function() {
+        var delay, duration, order, tw;
+        order = [];
+        duration = 500;
+        delay = 200;
+        tw = new Tween({
+          repeat: 1,
+          duration: duration,
+          delay: delay,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + duration + delay / 2);
+        tw.update(tw.props.startTime + duration + delay + 10);
+        tw.update(tw.props.startTime + duration + delay + duration / 2);
+        tw.update(tw.props.startTime + duration + delay + duration);
+        expect(order[0]).toBe('start');
+        expect(order[1]).toBe('repeat-start');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('repeat-complete');
+        expect(order[7]).toBe('repeat-start');
+        expect(order[8]).toBe('update');
+        expect(order[9]).toBe('update');
+        expect(order[10]).toBe('update');
+        expect(order[11]).toBe('update');
+        expect(order[12]).toBe('repeat-complete');
+        return expect(order[13]).toBe('complete');
+      });
+    });
+    return describe('callbacks order || backward', function() {
+      it('should have the right order when reverse direction || start', function() {
+        var duration, order, tw;
+        order = [];
+        duration = 500;
+        tw = new Tween({
+          duration: duration,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + duration - duration / 4);
+        tw.update(tw.props.startTime + duration / 2);
+        expect(order[0]).toBe('complete');
+        expect(order[1]).toBe('repeat-complete');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        return expect(order[4]).toBe('update');
+      });
+      it('should have the right order when reverse direction || end', function() {
+        var duration, order, tw;
+        order = [];
+        duration = 500;
+        tw = new Tween({
+          duration: duration,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + duration);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime);
+        expect(order[0]).toBe('complete');
+        expect(order[1]).toBe('repeat-complete');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('update');
+        expect(order[7]).toBe('repeat-start');
+        return expect(order[8]).toBe('start');
+      });
+      it('should have the right order when reverse direction || repeat end', function() {
+        var duration, order, tw;
+        order = [];
+        duration = 500;
+        tw = new Tween({
+          repeat: 1,
+          duration: duration,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + duration + duration);
+        tw.update(tw.props.startTime + duration + duration / 2);
+        tw.update(tw.props.startTime + duration + 10);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime);
+        expect(order[0]).toBe('complete');
+        expect(order[1]).toBe('repeat-complete');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('update');
+        expect(order[7]).toBe('repeat-start');
+        expect(order[8]).toBe('repeat-complete');
+        expect(order[9]).toBe('update');
+        expect(order[10]).toBe('update');
+        expect(order[11]).toBe('update');
+        expect(order[12]).toBe('update');
+        expect(order[13]).toBe('repeat-start');
+        expect(order[14]).toBe('start');
+        return expect(order[15]).toBe(void 0);
+      });
+      return it('should have the right order when reverse direction || end + delay', function() {
+        var delay, duration, order, tw;
+        order = [];
+        duration = 500;
+        delay = 200;
+        tw = new Tween({
+          repeat: 1,
+          duration: duration,
+          delay: delay,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + duration + delay + duration);
+        tw.update(tw.props.startTime + duration + delay + duration / 2);
+        tw.update(tw.props.startTime + duration + delay + 10);
+        tw.update(tw.props.startTime + duration + delay / 2);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime);
+        expect(order[0]).toBe('complete');
+        expect(order[1]).toBe('repeat-complete');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('update');
+        expect(order[7]).toBe('repeat-start');
+        expect(order[8]).toBe('repeat-complete');
+        expect(order[9]).toBe('update');
+        expect(order[10]).toBe('update');
+        expect(order[11]).toBe('update');
+        expect(order[12]).toBe('update');
+        expect(order[13]).toBe('repeat-start');
+        expect(order[14]).toBe('start');
+        return expect(order[15]).toBe(void 0);
       });
     });
   });
