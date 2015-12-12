@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.154.2', isDebug: true
+  revision:   '0.154.4', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -31,9 +31,9 @@ mojs.delta = mojs.h.delta
 # tw2 = new mojs.Tween duration: 4400
 
 # tw = new mojs.Tween
-#   # repeat: 3
+#   repeat: 0
 #   # delay: 200
-#   # isIt: true
+#   isIt2: true
 #   onUpdate:(pe, p, isForward)->
 #     console.log "ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
 
@@ -44,7 +44,7 @@ mojs.delta = mojs.h.delta
 #   onFirstUpdate:(isForward)-> console.log "ON_FIRST_UPDATE: #{isForward}"
 
 # tm = new mojs.Timeline
-# tm.add tw#, tw2
+# tm.add tw, tw2
 
 # rangeSlider.oninput = (e)->
 #   proc = (1*rangeSlider.value)/10000

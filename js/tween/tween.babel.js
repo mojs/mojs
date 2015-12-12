@@ -120,10 +120,9 @@ var Tween = class Tween {
       if ( time < this.prevTime && time < this.props.startTime ) {
 
         if ( !this.isStarted && this._isInActiveArea ) {
-          this.o.isIt && console.log('is it 1')
-          this._start(0, time);
           this.setProgress(0, time);
           this._repeatStart(time);
+          this._start(0, time);
         }
       }
 
@@ -148,6 +147,7 @@ var Tween = class Tween {
       this.props.onStart.call(this, time > this.prevTime );
     }
     this.isCompleted = false; this.isStarted = true;
+    this.isFirstUpdate = false;
   }
 
   /*
@@ -164,7 +164,7 @@ var Tween = class Tween {
       this.props.onComplete.call(this, time > this.prevTime );
     }
     this.isCompleted = true; this.isStarted = false;
-    // this.isFirstUpdate = false;
+    this.isFirstUpdate = false;
   }
 
   /*
@@ -297,7 +297,9 @@ var Tween = class Tween {
             }
           }
 
-          this._firstUpdate(time);
+          if ( time > this.prevTime ) {
+            this._firstUpdate(time);
+          }
 
           if ( isOnReverseEdge ) {
             // if on edge but not at very end
@@ -315,10 +317,11 @@ var Tween = class Tween {
             // block so filter that
             if ( prevT === TCount && !this._wasUknownUpdate ) {
               this.o.isIt && console.log('HERE 3');
-              this.o.isIt && console.log( this.isCompleted );
-              this.setProgress( 1, time );
-              this._repeatComplete( time );
               this._complete( time );
+              this._repeatComplete( time );              
+              this._firstUpdate(time);
+              this.setProgress( 1, time );
+
               // reset isComplete flag call
               // cuz we returned to active area
               this.isCompleted = false;
@@ -340,7 +343,7 @@ var Tween = class Tween {
             if ( T < TPrevValue ) {
               this._repeatComplete(time);
               this.setProgress(1, time);
-              
+
             }
             // if just after delay gap
             // |---=====|---=====|---=====| >>>
@@ -389,7 +392,6 @@ var Tween = class Tween {
       this._isInActiveArea = false;
       this.isRepeatStart = false;
 
-      this.o.isIt && console.log(`in the delay gap`);
       // if yoyo and even period we should flip
       // so set flipCoef to 1 if we need flip, otherwise to 0
       var flipCoef = (props.yoyo && (T % 2 === 0)) ? 1 : 0;

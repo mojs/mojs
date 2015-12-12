@@ -2831,6 +2831,10 @@ describe 'Tween ->', ->
       tw = new Tween
       tw._complete()
       expect(tw.isStarted).toBe false
+    it 'should set isFirstUpdate flag to false', ->
+      tw = new Tween
+      tw._complete()
+      expect(tw.isFirstUpdate).toBe false
 
   describe '_start method ->', ->
     # nope
@@ -2962,12 +2966,12 @@ describe 'Tween ->', ->
     it 'should have the right order when normal direction || start', ->
       order = []
       tw = new Tween
-        onStart:-> order.push( 'start' )
-        onRepeatStart:-> order.push( 'repeat-start' )
-        onFirstUpdate:-> order.push( 'first-update' )
-        onUpdate:-> order.push( 'update' )
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
         onRepeatComplete:-> order.push( 'repeat-complete' )
-        onComplete:-> order.push( 'complete' )
+        onComplete:->       order.push( 'complete' )
 
       tw.setStartTime()
 
@@ -2979,6 +2983,30 @@ describe 'Tween ->', ->
       expect(order[2]).toBe 'first-update'
       expect(order[3]).toBe 'update'
       expect(order[4]).toBe 'update'
+
+    it 'should have the right order when normal direction || start #2', ->
+      order = []; isReact = false; duration = 500
+      tw = new Tween
+        duration:           duration
+        onStart:->          isReact && order.push( 'start' )
+        onRepeatStart:->    isReact && order.push( 'repeat-start' )
+        onFirstUpdate:->    isReact && order.push( 'first-update' )
+        onUpdate:->         isReact && order.push( 'update' )
+        onRepeatComplete:-> isReact && order.push( 'repeat-complete' )
+        onComplete:->       isReact && order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + duration/2 + 10
+      tw.update tw.props.startTime + duration/2 - 10
+      tw.update tw.props.startTime
+      isReact = true
+      tw.update tw.props.startTime + duration/2
+
+      expect(order[0]).toBe 'first-update'
+      expect(order[1]).toBe 'update'
 
     it 'should have the right order when normal direction || end', ->
       order = []; duration = 500
@@ -3207,3 +3235,122 @@ describe 'Tween ->', ->
       expect(order[13]).toBe 'repeat-start'
       expect(order[14]).toBe 'start'
       expect(order[15]).toBe undefined
+
+    it 'should have the right order when reverse direction || end + delay #2', ->
+      order = []; duration = 500; delay = 200
+      tw = new Tween
+        repeat:             1
+        duration:           duration
+        delay:              delay
+        onStart:->          order.push( 'start' )
+        onRepeatStart:->    order.push( 'repeat-start' )
+        onFirstUpdate:->    order.push( 'first-update' )
+        onUpdate:->         order.push( 'update' )
+        onRepeatComplete:-> order.push( 'repeat-complete' )
+        onComplete:->       order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime + duration + delay + duration
+      tw.update tw.props.startTime + duration + delay + duration/2
+      tw.update tw.props.startTime + duration + delay + 10
+      tw.update tw.props.startTime + duration + delay/2
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime - 10
+
+      expect(order[0]).toBe 'complete'
+      expect(order[1]).toBe 'repeat-complete'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'update'
+      expect(order[7]).toBe 'repeat-start'
+      expect(order[8]).toBe 'repeat-complete'
+      expect(order[9]).toBe 'update'
+      expect(order[10]).toBe 'update'
+      expect(order[11]).toBe 'update'
+      expect(order[12]).toBe 'update'
+      expect(order[13]).toBe 'repeat-start'
+      expect(order[14]).toBe 'start'
+      expect(order[15]).toBe undefined
+
+    it 'should have the right order when reverse direction || end + delay #3', ->
+      order = []; duration = 500; delay = 200
+      isReact = false
+      tw = new Tween
+        repeat:             1
+        duration:           duration
+        delay:              delay
+        onStart:->          isReact && order.push( 'start' )
+        onRepeatStart:->    isReact && order.push( 'repeat-start' )
+        onFirstUpdate:->    isReact && order.push( 'first-update' )
+        onUpdate:->         isReact && order.push( 'update' )
+        onRepeatComplete:-> isReact && order.push( 'repeat-complete' )
+        onComplete:->       isReact && order.push( 'complete' )
+
+      tw.setStartTime()
+
+      tw.update tw.props.startTime
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + duration
+      tw.update tw.props.startTime + duration + delay
+      tw.update tw.props.startTime + duration + delay + duration/2
+      tw.update tw.props.startTime + duration + delay + duration + 10
+
+      isReact = true
+
+      tw.update tw.props.startTime + duration + delay + duration/2
+      tw.update tw.props.startTime + duration + delay + 10
+      tw.update tw.props.startTime + duration + delay/2
+      tw.update tw.props.startTime + duration/2
+      tw.update tw.props.startTime + 10
+      tw.update tw.props.startTime - 10
+
+      expect(order[0]).toBe 'complete'
+      expect(order[1]).toBe 'repeat-complete'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
+      expect(order[4]).toBe 'update'
+      expect(order[5]).toBe 'update'
+      expect(order[6]).toBe 'repeat-start'
+      expect(order[7]).toBe 'repeat-complete'
+      expect(order[8]).toBe 'update'
+      expect(order[9]).toBe 'update'
+      expect(order[10]).toBe 'update'
+      expect(order[11]).toBe 'update'
+      expect(order[12]).toBe 'repeat-start'
+      expect(order[13]).toBe 'start'
+      expect(order[14]).toBe undefined
+
+  it 'should have the right order when reverse direction || end + delay #3', ->
+    order = []; duration = 500; delay = 200
+    isReact = false
+    tw = new Tween
+      duration:           duration
+      onStart:->          isReact && order.push( 'start' )
+      onRepeatStart:->    isReact && order.push( 'repeat-start' )
+      onFirstUpdate:->    isReact && order.push( 'first-update' )
+      onUpdate:->         isReact && order.push( 'update' )
+      onRepeatComplete:-> isReact && order.push( 'repeat-complete' )
+      onComplete:->       isReact && order.push( 'complete' )
+
+    tw.setStartTime()
+
+    tw.update tw.props.startTime
+    tw.update tw.props.startTime + duration/2
+    tw.update tw.props.startTime + duration
+
+    isReact = true
+    tw.update tw.props.startTime + duration/2
+    tw.update tw.props.startTime - 10
+
+    expect(order[0]).toBe 'complete'
+    expect(order[1]).toBe 'repeat-complete'
+    expect(order[2]).toBe 'first-update'
+    expect(order[3]).toBe 'update'
+    expect(order[4]).toBe 'update'
+    expect(order[5]).toBe 'repeat-start'
+    expect(order[6]).toBe 'start'
+    expect(order[7]).toBe undefined

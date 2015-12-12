@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.2',
+	  revision: '0.154.4',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3693,10 +3693,9 @@
 	          // if was active and went to - inactive area "-"
 	          if (time < this.prevTime && time < this.props.startTime) {
 	            if (!this.isStarted && this._isInActiveArea) {
-	              this.o.isIt && console.log("is it 1");
-	              this._start(0, time);
 	              this.setProgress(0, time);
 	              this._repeatStart(time);
+	              this._start(0, time);
 	            }
 	          }
 
@@ -3729,6 +3728,7 @@
 	          this.props.onStart.call(this, time > this.prevTime);
 	        }
 	        this.isCompleted = false;this.isStarted = true;
+	        this.isFirstUpdate = false;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3752,7 +3752,7 @@
 	          this.props.onComplete.call(this, time > this.prevTime);
 	        }
 	        this.isCompleted = true;this.isStarted = false;
-	        // this.isFirstUpdate = false;
+	        this.isFirstUpdate = false;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3908,7 +3908,9 @@
 	              }
 	            }
 
-	            this._firstUpdate(time);
+	            if (time > this.prevTime) {
+	              this._firstUpdate(time);
+	            }
 
 	            if (isOnReverseEdge) {
 	              // if on edge but not at very end
@@ -3926,10 +3928,11 @@
 	              // block so filter that
 	              if (prevT === TCount && !this._wasUknownUpdate) {
 	                this.o.isIt && console.log("HERE 3");
-	                this.o.isIt && console.log(this.isCompleted);
-	                this.setProgress(1, time);
-	                this._repeatComplete(time);
 	                this._complete(time);
+	                this._repeatComplete(time);
+	                this._firstUpdate(time);
+	                this.setProgress(1, time);
+
 	                // reset isComplete flag call
 	                // cuz we returned to active area
 	                this.isCompleted = false;
@@ -3987,7 +3990,6 @@
 	          this._isInActiveArea = false;
 	          this.isRepeatStart = false;
 
-	          this.o.isIt && console.log("in the delay gap");
 	          // if yoyo and even period we should flip
 	          // so set flipCoef to 1 if we need flip, otherwise to 0
 	          var flipCoef = props.yoyo && T % 2 === 0 ? 1 : 0;

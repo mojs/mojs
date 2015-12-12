@@ -2354,11 +2354,17 @@
         tw._complete();
         return expect(tw.isCompleted).toBe(true);
       });
-      return it('should set isStarted flag to false', function() {
+      it('should set isStarted flag to false', function() {
         var tw;
         tw = new Tween;
         tw._complete();
         return expect(tw.isStarted).toBe(false);
+      });
+      return it('should set isFirstUpdate flag to false', function() {
+        var tw;
+        tw = new Tween;
+        tw._complete();
+        return expect(tw.isFirstUpdate).toBe(false);
       });
     });
     describe('_start method ->', function() {
@@ -2521,6 +2527,43 @@
         expect(order[3]).toBe('update');
         return expect(order[4]).toBe('update');
       });
+      it('should have the right order when normal direction || start #2', function() {
+        var duration, isReact, order, tw;
+        order = [];
+        isReact = false;
+        duration = 500;
+        tw = new Tween({
+          duration: duration,
+          onStart: function() {
+            return isReact && order.push('start');
+          },
+          onRepeatStart: function() {
+            return isReact && order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return isReact && order.push('first-update');
+          },
+          onUpdate: function() {
+            return isReact && order.push('update');
+          },
+          onRepeatComplete: function() {
+            return isReact && order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return isReact && order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + duration / 2 + 10);
+        tw.update(tw.props.startTime + duration / 2 - 10);
+        tw.update(tw.props.startTime);
+        isReact = true;
+        tw.update(tw.props.startTime + duration / 2);
+        expect(order[0]).toBe('first-update');
+        return expect(order[1]).toBe('update');
+      });
       it('should have the right order when normal direction || end', function() {
         var duration, order, tw;
         order = [];
@@ -2657,7 +2700,7 @@
         return expect(order[13]).toBe('complete');
       });
     });
-    return describe('callbacks order || backward', function() {
+    describe('callbacks order || backward', function() {
       it('should have the right order when reverse direction || start', function() {
         var duration, order, tw;
         order = [];
@@ -2782,7 +2825,7 @@
         expect(order[14]).toBe('start');
         return expect(order[15]).toBe(void 0);
       });
-      return it('should have the right order when reverse direction || end + delay', function() {
+      it('should have the right order when reverse direction || end + delay', function() {
         var delay, duration, order, tw;
         order = [];
         duration = 500;
@@ -2835,6 +2878,161 @@
         expect(order[14]).toBe('start');
         return expect(order[15]).toBe(void 0);
       });
+      it('should have the right order when reverse direction || end + delay #2', function() {
+        var delay, duration, order, tw;
+        order = [];
+        duration = 500;
+        delay = 200;
+        tw = new Tween({
+          repeat: 1,
+          duration: duration,
+          delay: delay,
+          onStart: function() {
+            return order.push('start');
+          },
+          onRepeatStart: function() {
+            return order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return order.push('first-update');
+          },
+          onUpdate: function() {
+            return order.push('update');
+          },
+          onRepeatComplete: function() {
+            return order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime + duration + delay + duration);
+        tw.update(tw.props.startTime + duration + delay + duration / 2);
+        tw.update(tw.props.startTime + duration + delay + 10);
+        tw.update(tw.props.startTime + duration + delay / 2);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime - 10);
+        expect(order[0]).toBe('complete');
+        expect(order[1]).toBe('repeat-complete');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('update');
+        expect(order[7]).toBe('repeat-start');
+        expect(order[8]).toBe('repeat-complete');
+        expect(order[9]).toBe('update');
+        expect(order[10]).toBe('update');
+        expect(order[11]).toBe('update');
+        expect(order[12]).toBe('update');
+        expect(order[13]).toBe('repeat-start');
+        expect(order[14]).toBe('start');
+        return expect(order[15]).toBe(void 0);
+      });
+      return it('should have the right order when reverse direction || end + delay #3', function() {
+        var delay, duration, isReact, order, tw;
+        order = [];
+        duration = 500;
+        delay = 200;
+        isReact = false;
+        tw = new Tween({
+          repeat: 1,
+          duration: duration,
+          delay: delay,
+          onStart: function() {
+            return isReact && order.push('start');
+          },
+          onRepeatStart: function() {
+            return isReact && order.push('repeat-start');
+          },
+          onFirstUpdate: function() {
+            return isReact && order.push('first-update');
+          },
+          onUpdate: function() {
+            return isReact && order.push('update');
+          },
+          onRepeatComplete: function() {
+            return isReact && order.push('repeat-complete');
+          },
+          onComplete: function() {
+            return isReact && order.push('complete');
+          }
+        });
+        tw.setStartTime();
+        tw.update(tw.props.startTime);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + duration);
+        tw.update(tw.props.startTime + duration + delay);
+        tw.update(tw.props.startTime + duration + delay + duration / 2);
+        tw.update(tw.props.startTime + duration + delay + duration + 10);
+        isReact = true;
+        tw.update(tw.props.startTime + duration + delay + duration / 2);
+        tw.update(tw.props.startTime + duration + delay + 10);
+        tw.update(tw.props.startTime + duration + delay / 2);
+        tw.update(tw.props.startTime + duration / 2);
+        tw.update(tw.props.startTime + 10);
+        tw.update(tw.props.startTime - 10);
+        expect(order[0]).toBe('complete');
+        expect(order[1]).toBe('repeat-complete');
+        expect(order[2]).toBe('first-update');
+        expect(order[3]).toBe('update');
+        expect(order[4]).toBe('update');
+        expect(order[5]).toBe('update');
+        expect(order[6]).toBe('repeat-start');
+        expect(order[7]).toBe('repeat-complete');
+        expect(order[8]).toBe('update');
+        expect(order[9]).toBe('update');
+        expect(order[10]).toBe('update');
+        expect(order[11]).toBe('update');
+        expect(order[12]).toBe('repeat-start');
+        expect(order[13]).toBe('start');
+        return expect(order[14]).toBe(void 0);
+      });
+    });
+    return it('should have the right order when reverse direction || end + delay #3', function() {
+      var delay, duration, isReact, order, tw;
+      order = [];
+      duration = 500;
+      delay = 200;
+      isReact = false;
+      tw = new Tween({
+        duration: duration,
+        onStart: function() {
+          return isReact && order.push('start');
+        },
+        onRepeatStart: function() {
+          return isReact && order.push('repeat-start');
+        },
+        onFirstUpdate: function() {
+          return isReact && order.push('first-update');
+        },
+        onUpdate: function() {
+          return isReact && order.push('update');
+        },
+        onRepeatComplete: function() {
+          return isReact && order.push('repeat-complete');
+        },
+        onComplete: function() {
+          return isReact && order.push('complete');
+        }
+      });
+      tw.setStartTime();
+      tw.update(tw.props.startTime);
+      tw.update(tw.props.startTime + duration / 2);
+      tw.update(tw.props.startTime + duration);
+      isReact = true;
+      tw.update(tw.props.startTime + duration / 2);
+      tw.update(tw.props.startTime - 10);
+      expect(order[0]).toBe('complete');
+      expect(order[1]).toBe('repeat-complete');
+      expect(order[2]).toBe('first-update');
+      expect(order[3]).toBe('update');
+      expect(order[4]).toBe('update');
+      expect(order[5]).toBe('repeat-start');
+      expect(order[6]).toBe('start');
+      return expect(order[7]).toBe(void 0);
     });
   });
 
