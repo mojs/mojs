@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.154.4', isDebug: true
+  revision:   '0.154.5', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -44,7 +44,7 @@ mojs.delta = mojs.h.delta
 #   onFirstUpdate:(isForward)-> console.log "ON_FIRST_UPDATE: #{isForward}"
 
 # tm = new mojs.Timeline
-# tm.add tw, tw2
+# tm.add tw#, tw2
 
 # rangeSlider.oninput = (e)->
 #   proc = (1*rangeSlider.value)/10000

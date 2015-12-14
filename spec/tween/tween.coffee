@@ -1571,7 +1571,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(false)
 
-
+      # END
       timeShift = duration
       t.update t.props.startTime + timeShift - (duration) - gap
       expect(updateValue).toBe(0)
@@ -1596,7 +1596,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(false)
 
-
+      # start again
       t.update t.props.startTime + timeShift - (duration/2)
       expect(updateValue).toBe(.5)
       expect(updateDirection).toBe(true)
@@ -1605,14 +1605,14 @@ describe 'Tween ->', ->
       expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
 
-      expect(repeatStartCnt).toBe(2)
-      expect(repeatStartDirection).toBe(false)
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(true)
 
       expect(repeatCnt).toBe(2)
       expect(repeatCompleteDirection).toBe(false)
 
-      expect(startCnt).toBe(1)
-      expect(startDirection).toBe(false)
+      expect(startCnt).toBe(2)
+      expect(startDirection).toBe(true)
 
       expect(completeCnt).toBe(1)
       expect(completeDirection).toBe(false)
@@ -1620,7 +1620,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(2)
       expect(firstUpdateDirection).toBe(true)
 
-
+      # return to "-" inactive area
       t.update t.props.startTime - gap
       expect(updateValue).toBe(0)
       expect(updateDirection).toBe(false)
@@ -1629,13 +1629,37 @@ describe 'Tween ->', ->
       expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(2)
 
-      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartCnt).toBe(4)
       expect(repeatStartDirection).toBe(false)
 
       expect(repeatCnt).toBe(2)
       expect(repeatCompleteDirection).toBe(false)
       
-      expect(startCnt).toBe(2)
+      expect(startCnt).toBe(3)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(2)
+      expect(firstUpdateDirection).toBe(true)
+
+      # repeat the previous step
+      t.update t.props.startTime - gap - 15
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(3)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(4)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(3)
       expect(startDirection).toBe(false)
 
       expect(completeCnt).toBe(1)
@@ -2360,7 +2384,7 @@ describe 'Tween ->', ->
 
       t.setStartTime()
       t.update t.props.startTime + t.props.duration/2
-      expect(startCnt).toBe 0
+      expect(startCnt).toBe 0 # because we ignore single updates
       t.update t.props.startTime + t.props.duration/2 + 10
       expect(startCnt).toBe 1
       t.update t.props.startTime + t.props.duration
@@ -2368,15 +2392,13 @@ describe 'Tween ->', ->
       t.update t.props.startTime - 10
       expect(startCnt).toBe 2
       t.update t.props.startTime + t.props.duration/2
-      expect(startCnt).toBe 2
+      expect(startCnt).toBe 3
 
     it 'should run before onComplete if tween ended', ->
       startCnt = 0; callback = null
       t = new Tween
-        onStart: ->
-          callback ?= 'start'; startCnt++
-        onComplete:->
-          callback ?= 'complete'
+        onStart: ->   callback ?= 'start'; startCnt++
+        onComplete:-> callback ?= 'complete'
 
       t.setStartTime()
       t.update t.props.startTime + t.props.duration/2
@@ -3002,11 +3024,14 @@ describe 'Tween ->', ->
       tw.update tw.props.startTime + duration/2 + 10
       tw.update tw.props.startTime + duration/2 - 10
       tw.update tw.props.startTime
+      
       isReact = true
       tw.update tw.props.startTime + duration/2
 
-      expect(order[0]).toBe 'first-update'
-      expect(order[1]).toBe 'update'
+      expect(order[0]).toBe 'start'
+      expect(order[1]).toBe 'repeat-start'
+      expect(order[2]).toBe 'first-update'
+      expect(order[3]).toBe 'update'
 
     it 'should have the right order when normal direction || end', ->
       order = []; duration = 500

@@ -1458,12 +1458,12 @@
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(2);
         expect(oneCnt).toBe(2);
-        expect(repeatStartCnt).toBe(2);
-        expect(repeatStartDirection).toBe(false);
+        expect(repeatStartCnt).toBe(3);
+        expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(2);
         expect(repeatCompleteDirection).toBe(false);
-        expect(startCnt).toBe(1);
-        expect(startDirection).toBe(false);
+        expect(startCnt).toBe(2);
+        expect(startDirection).toBe(true);
         expect(completeCnt).toBe(1);
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(2);
@@ -1474,11 +1474,27 @@
         expect(t._wasUknownUpdate).toBe(false);
         expect(zeroCnt).toBe(3);
         expect(oneCnt).toBe(2);
-        expect(repeatStartCnt).toBe(3);
+        expect(repeatStartCnt).toBe(4);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
         expect(repeatCompleteDirection).toBe(false);
-        expect(startCnt).toBe(2);
+        expect(startCnt).toBe(3);
+        expect(startDirection).toBe(false);
+        expect(completeCnt).toBe(1);
+        expect(completeDirection).toBe(false);
+        expect(firstUpdateCnt).toBe(2);
+        expect(firstUpdateDirection).toBe(true);
+        t.update(t.props.startTime - gap - 15);
+        expect(updateValue).toBe(0);
+        expect(updateDirection).toBe(false);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(zeroCnt).toBe(3);
+        expect(oneCnt).toBe(2);
+        expect(repeatStartCnt).toBe(4);
+        expect(repeatStartDirection).toBe(false);
+        expect(repeatCnt).toBe(2);
+        expect(repeatCompleteDirection).toBe(false);
+        expect(startCnt).toBe(3);
         expect(startDirection).toBe(false);
         expect(completeCnt).toBe(1);
         expect(completeDirection).toBe(false);
@@ -2078,7 +2094,7 @@
         t.update(t.props.startTime - 10);
         expect(startCnt).toBe(2);
         t.update(t.props.startTime + t.props.duration / 2);
-        return expect(startCnt).toBe(2);
+        return expect(startCnt).toBe(3);
       });
       return it('should run before onComplete if tween ended', function() {
         var callback, startCnt, t;
@@ -2561,8 +2577,10 @@
         tw.update(tw.props.startTime);
         isReact = true;
         tw.update(tw.props.startTime + duration / 2);
-        expect(order[0]).toBe('first-update');
-        return expect(order[1]).toBe('update');
+        expect(order[0]).toBe('start');
+        expect(order[1]).toBe('repeat-start');
+        expect(order[2]).toBe('first-update');
+        return expect(order[3]).toBe('update');
       });
       it('should have the right order when normal direction || end', function() {
         var duration, order, tw;

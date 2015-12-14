@@ -78,8 +78,11 @@ var Tween = class Tween {
     // We need to know what direction we are heading in with this tween,
     // so if we don't have the previous update value - this is very first
     // update, - skip it entirely and wait for the next value
+    this.o.isIt && console.log(`XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`);
+    this.o.isIt && console.log(`tween:`);
+    this.o.isIt && this._visualizeProgress(time);
+
     if ( this.prevTime === -1 ) {
-      this.o.isIt && console.log(`=========`);
       this.o.isIt && console.log(`tween: SKIP`);
       this.o.isIt && this._visualizeProgress(time);
       this.prevTime = time;
@@ -95,7 +98,7 @@ var Tween = class Tween {
     if ((time >= this.props.startTime) && (time <= this.props.endTime)) {
       this._updateInActiveArea(time);
     } else {
-      this.isFirstUpdate = false;
+      // this.isFirstUpdate = false;
       // complete if time is larger then end time
       if ( time > this.props.endTime && !this.isCompleted && this._isInActiveArea ) {
         // get period number
@@ -119,10 +122,11 @@ var Tween = class Tween {
       // if was active and went to - inactive area "-"
       if ( time < this.prevTime && time < this.props.startTime ) {
 
+        this.o.isIt && console.log( `isStarted: ${ this.isStarted }` );
         if ( !this.isStarted && this._isInActiveArea ) {
-          this.setProgress(0, time);
-          this._repeatStart(time);
-          this._start(0, time);
+          this.setProgress( 0, time );
+          this._repeatStart( time );
+          this._start( time );
         }
       }
 
@@ -136,9 +140,9 @@ var Tween = class Tween {
   /*
     Method to set tween's state to start
     @method _start
-    @param {Numner} Progress to set.
+    @param {Number} Progress to set.
   */
-  _start(progress = 0, time) {
+  _start(time) {
     if ( this.isStarted ) { return; }
     // this.setProgress(progress, time);
     // this._repeatStart();
@@ -209,6 +213,7 @@ var Tween = class Tween {
   _updateInActiveArea(time) {
     // reset callback flags
     this.isOnReverseComplete = false; this.isCompleted = false;
+    // this.isStarted = false;
 
     if ( time === this.props.endTime ) {
       this._wasUknownUpdate = false;
@@ -231,13 +236,8 @@ var Tween = class Tween {
         prevT         = this._getPeriod(this.prevTime),
         TPrevValue    = this._delayT;
 
-    this.o.isIt && console.log(`=========`);
-    this.o.isIt && console.log(`tween:`);
     this.o.isIt && console.log(`TCount: ${TCount}`);
-    // this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
     this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}, time: ${time} prevTime: ${this.prevTime}`);
-    // this.o.isIt && console.log(`TValue: ${TValue}, TPrevValue: ${TPrevValue}`);
-    this.o.isIt && this._visualizeProgress(time);
 
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
@@ -258,15 +258,19 @@ var Tween = class Tween {
       // |=====|=====|=====| <<<
       //      ^2^1
       var isOnReverseEdge = (prevT > T);
+      this.o.isIt && console.log(`isOnEdge: ${isOnEdge}, isOnReverseEdge: ${isOnReverseEdge}`);
+
       // if not yoyo then set the plain progress
       if (!props.yoyo) {
 
           if ( this._wasUknownUpdate ) {
+
             if ( time > this.prevTime ) {
-              this._start(0, time);
-              this._repeatStart(time);
-              this._firstUpdate(time);
-              this.setProgress(0, time);
+              this.o.isIt && console.log( 'HERE 8' );
+              this._start( time );
+              this._repeatStart( time );
+              this._firstUpdate( time );
+              this.setProgress( 0, time );
             }
 
             if ( time < this.prevTime ) {
@@ -290,7 +294,7 @@ var Tween = class Tween {
             }
             // if on edge but not at very start
             // |=====|=====|=====| >>>
-            // ^not  ^here ^here           
+            // ^!    ^here ^here           
             if ( prevT >= 0 ) {
               this._repeatStart(time);
               this.setProgress(0, time);
@@ -298,7 +302,19 @@ var Tween = class Tween {
           }
 
           if ( time > this.prevTime ) {
-            this._firstUpdate(time);
+
+            // 
+            //  |=====|=====|=====| >>>
+            // ^1  ^2
+            if ( !this.isStarted && this.prevTime <= props.startTime ) {
+              this.o.isIt && console.log('HERE 11')
+              this._start( time );
+              this._repeatStart( time );
+              // restart flags immediately in case if we will
+              // return to '-' inactive area on the next step
+              this.isStarted = false; this.isRepeatStart = false;
+            }
+            this._firstUpdate( time );
           }
 
           if ( isOnReverseEdge ) {
@@ -364,7 +380,7 @@ var Tween = class Tween {
           }
 
           if ( time === props.startTime ) {
-            this._start(0, time);
+            this._start( time );
           }
 
       // yoyo

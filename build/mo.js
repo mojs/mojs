@@ -169,6 +169,356 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
+	
+	/* istanbul ignore next */
+	var Burst, Swirl, Transit, bitsMap, h,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	bitsMap = __webpack_require__(5);
+
+	Transit = __webpack_require__(13);
+
+	Swirl = __webpack_require__(1);
+
+	h = __webpack_require__(3);
+
+	Burst = (function(superClass) {
+	  extend(Burst, superClass);
+
+	  function Burst() {
+	    return Burst.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Burst.prototype.skipProps = {
+	    childOptions: 1
+	  };
+
+	  Burst.prototype.defaults = {
+	    count: 5,
+	    degree: 360,
+	    opacity: 1,
+	    randomAngle: 0,
+	    randomRadius: 0,
+	    x: 100,
+	    y: 100,
+	    shiftX: 0,
+	    shiftY: 0,
+	    easing: 'Linear.None',
+	    radius: {
+	      25: 75
+	    },
+	    radiusX: void 0,
+	    radiusY: void 0,
+	    angle: 0,
+	    size: null,
+	    sizeGap: 0,
+	    duration: 600,
+	    delay: 0,
+	    onStart: null,
+	    onComplete: null,
+	    onCompleteChain: null,
+	    onUpdate: null,
+	    isResetAngles: false
+	  };
+
+	  Burst.prototype.childDefaults = {
+	    radius: {
+	      7: 0
+	    },
+	    radiusX: void 0,
+	    radiusY: void 0,
+	    angle: 0,
+	    opacity: 1,
+	    onStart: null,
+	    onComplete: null,
+	    onUpdate: null,
+	    points: 3,
+	    duration: 500,
+	    delay: 0,
+	    repeat: 0,
+	    yoyo: false,
+	    easing: 'Linear.None',
+	    type: 'circle',
+	    fill: 'deeppink',
+	    fillOpacity: 1,
+	    isSwirl: false,
+	    swirlSize: 10,
+	    swirlFrequency: 3,
+	    stroke: 'transparent',
+	    strokeWidth: 0,
+	    strokeOpacity: 1,
+	    strokeDasharray: '',
+	    strokeDashoffset: '',
+	    strokeLinecap: null
+	  };
+
+	  Burst.prototype.optionsIntersection = {
+	    radius: 1,
+	    radiusX: 1,
+	    radiusY: 1,
+	    angle: 1,
+	    opacity: 1,
+	    onStart: 1,
+	    onComplete: 1,
+	    onUpdate: 1
+	  };
+
+	  Burst.prototype.run = function(o) {
+	    var base, i, j, key, keys, len, len1, option, ref, ref1, tr;
+	    if ((o != null) && Object.keys(o).length) {
+	      if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
+	        this.h.warn('Sorry, count can not be changed on run');
+	      }
+	      this.extendDefaults(o);
+	      keys = Object.keys(o.childOptions || {});
+	      if ((base = this.o).childOptions == null) {
+	        base.childOptions = {};
+	      }
+	      for (i = j = 0, len1 = keys.length; j < len1; i = ++j) {
+	        key = keys[i];
+	        this.o.childOptions[key] = o.childOptions[key];
+	      }
+	      len = this.transits.length;
+	      while (len--) {
+	        option = this.getOption(len);
+	        if ((((ref1 = o.childOptions) != null ? ref1.angle : void 0) == null) && (o.angleShift == null)) {
+	          option.angle = this.transits[len].o.angle;
+	        } else if (!o.isResetAngles) {
+	          option.angle = this.getBitAngle(option.angle, len);
+	        }
+	        this.transits[len].tuneNewOption(option, true);
+	      }
+	      this.timeline.recalcDuration();
+	    }
+	    if (this.props.randomAngle || this.props.randomRadius) {
+	      len = this.transits.length;
+	      while (len--) {
+	        tr = this.transits[len];
+	        this.props.randomAngle && tr.setProp({
+	          angleShift: this.generateRandomAngle()
+	        });
+	        this.props.randomRadius && tr.setProp({
+	          radiusScale: this.generateRandomRadius()
+	        });
+	      }
+	    }
+	    return this.startTween();
+	  };
+
+	  Burst.prototype.createBit = function() {
+	    var i, j, option, ref, results;
+	    this.transits = [];
+	    results = [];
+	    for (i = j = 0, ref = this.props.count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	      option = this.getOption(i);
+	      option.ctx = this.ctx;
+	      option.index = i;
+	      option.isDrawLess = option.isRunLess = option.isTweenLess = true;
+	      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
+	      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
+	      results.push(this.transits.push(new Swirl(option)));
+	    }
+	    return results;
+	  };
+
+	  Burst.prototype.addBitOptions = function() {
+	    var aShift, i, j, len1, pointEnd, pointStart, points, ref, results, step, transit;
+	    points = this.props.count;
+	    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
+	    step = this.props.degree / this.degreeCnt;
+	    ref = this.transits;
+	    results = [];
+	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+	      transit = ref[i];
+	      aShift = transit.props.angleShift || 0;
+	      pointStart = this.getSidePoint('start', i * step + aShift);
+	      pointEnd = this.getSidePoint('end', i * step + aShift);
+	      transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
+	      transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
+	      if (!this.props.isResetAngles) {
+	        transit.o.angle = this.getBitAngle(transit.o.angle, i);
+	      }
+	      results.push(transit.extendDefaults());
+	    }
+	    return results;
+	  };
+
+	  Burst.prototype.getBitAngle = function(angle, i) {
+	    var angleAddition, angleShift, curAngleShift, degCnt, delta, end, keys, newEnd, newStart, points, start, step;
+	    points = this.props.count;
+	    degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
+	    step = this.props.degree / degCnt;
+	    angleAddition = i * step + 90;
+	    angleShift = this.transits[i].props.angleShift || 0;
+	    angle = typeof angle !== 'object' ? angle + angleAddition + angleShift : (keys = Object.keys(angle), start = keys[0], end = angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
+	    return angle;
+	  };
+
+	  Burst.prototype.getSidePoint = function(side, angle) {
+	    var pointStart, sideRadius;
+	    sideRadius = this.getSideRadius(side);
+	    return pointStart = this.h.getRadialPoint({
+	      radius: sideRadius.radius,
+	      radiusX: sideRadius.radiusX,
+	      radiusY: sideRadius.radiusY,
+	      angle: angle,
+	      center: {
+	        x: this.props.center,
+	        y: this.props.center
+	      }
+	    });
+	  };
+
+	  Burst.prototype.getSideRadius = function(side) {
+	    return {
+	      radius: this.getRadiusByKey('radius', side),
+	      radiusX: this.getRadiusByKey('radiusX', side),
+	      radiusY: this.getRadiusByKey('radiusY', side)
+	    };
+	  };
+
+	  Burst.prototype.getRadiusByKey = function(key, side) {
+	    if (this.deltas[key] != null) {
+	      return this.deltas[key][side];
+	    } else if (this.props[key] != null) {
+	      return this.props[key];
+	    }
+	  };
+
+	  Burst.prototype.getDeltaFromPoints = function(key, pointStart, pointEnd) {
+	    var delta;
+	    delta = {};
+	    if (pointStart[key] === pointEnd[key]) {
+	      return delta = pointStart[key];
+	    } else {
+	      delta[pointStart[key]] = pointEnd[key];
+	      return delta;
+	    }
+	  };
+
+	  Burst.prototype.draw = function(progress) {
+	    return this.drawEl();
+	  };
+
+	  Burst.prototype.isNeedsTransform = function() {
+	    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY') || this.isPropChanged('angle');
+	  };
+
+	  Burst.prototype.fillTransform = function() {
+	    return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+	  };
+
+	  Burst.prototype.createTween = function() {
+	    var i, results;
+	    Burst.__super__.createTween.apply(this, arguments);
+	    i = this.transits.length;
+	    results = [];
+	    while (i--) {
+	      results.push(this.timeline.add(this.transits[i].tween));
+	    }
+	    return results;
+	  };
+
+	  Burst.prototype.calcSize = function() {
+	    var i, j, largestSize, len1, radius, ref, transit;
+	    largestSize = -1;
+	    ref = this.transits;
+	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+	      transit = ref[i];
+	      transit.calcSize();
+	      if (largestSize < transit.props.size) {
+	        largestSize = transit.props.size;
+	      }
+	    }
+	    radius = this.calcMaxRadius();
+	    this.props.size = largestSize + 2 * radius;
+	    this.props.size += 2 * this.props.sizeGap;
+	    this.props.center = this.props.size / 2;
+	    return this.addBitOptions();
+	  };
+
+	  Burst.prototype.getOption = function(i) {
+	    var key, keys, len, option;
+	    option = {};
+	    keys = Object.keys(this.childDefaults);
+	    len = keys.length;
+	    while (len--) {
+	      key = keys[len];
+	      option[key] = this.getPropByMod({
+	        key: key,
+	        i: i,
+	        from: this.o.childOptions
+	      });
+	      if (this.optionsIntersection[key]) {
+	        if (option[key] == null) {
+	          option[key] = this.getPropByMod({
+	            key: key,
+	            i: i,
+	            from: this.childDefaults
+	          });
+	        }
+	        continue;
+	      }
+	      if (option[key] == null) {
+	        option[key] = this.getPropByMod({
+	          key: key,
+	          i: i,
+	          from: this.o
+	        });
+	      }
+	      if (option[key] == null) {
+	        option[key] = this.getPropByMod({
+	          key: key,
+	          i: i,
+	          from: this.childDefaults
+	        });
+	      }
+	    }
+	    return option;
+	  };
+
+	  Burst.prototype.getPropByMod = function(o) {
+	    var prop, ref;
+	    prop = (ref = o.from || this.o.childOptions) != null ? ref[o.key] : void 0;
+	    if (this.h.isArray(prop)) {
+	      return prop[o.i % prop.length];
+	    } else {
+	      return prop;
+	    }
+	  };
+
+	  Burst.prototype.generateRandomAngle = function(i) {
+	    var randdomness, randomness;
+	    randomness = parseFloat(this.props.randomAngle);
+	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
+	    return this.h.rand(0, randomness ? randomness * 360 : 180);
+	  };
+
+	  Burst.prototype.generateRandomRadius = function(i) {
+	    var randdomness, randomness, start;
+	    randomness = parseFloat(this.props.randomRadius);
+	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
+	    start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
+	    return this.h.rand(start, 100) / 100;
+	  };
+
+	  Burst.prototype.then = function(o) {
+	    this.h.error("Burst's \"then\" method is under consideration, you can vote for it in github repo issues");
+	    return this;
+	  };
+
+	  return Burst;
+
+	})(Transit);
+
+	module.exports = Burst;
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var Helpers, h;
 
 	Helpers = (function() {
@@ -756,12 +1106,12 @@
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Bit, h;
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 	Bit = (function() {
 	  Bit.prototype.ns = 'http://www.w3.org/2000/svg';
@@ -968,28 +1318,28 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
-	Circle = __webpack_require__(5);
+	Circle = __webpack_require__(6);
 
-	Line = __webpack_require__(7);
+	Line = __webpack_require__(8);
 
-	Zigzag = __webpack_require__(11);
+	Zigzag = __webpack_require__(12);
 
-	Rect = __webpack_require__(8);
+	Rect = __webpack_require__(9);
 
-	Polygon = __webpack_require__(9);
+	Polygon = __webpack_require__(10);
 
-	Cross = __webpack_require__(6);
+	Cross = __webpack_require__(7);
 
-	Equal = __webpack_require__(10);
+	Equal = __webpack_require__(11);
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 	BitsMap = (function() {
 	  function BitsMap() {}
@@ -1019,7 +1369,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1028,7 +1378,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
 	Circle = (function(superClass) {
 	  extend(Circle, superClass);
@@ -1067,7 +1417,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1076,7 +1426,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
 	Cross = (function(superClass) {
 	  extend(Cross, superClass);
@@ -1119,7 +1469,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1128,7 +1478,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
 	Line = (function(superClass) {
 	  extend(Line, superClass);
@@ -1157,7 +1507,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1166,7 +1516,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
 	Rect = (function(superClass) {
 	  extend(Rect, superClass);
@@ -1207,7 +1557,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1216,9 +1566,9 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 	Polygon = (function(superClass) {
 	  extend(Polygon, superClass);
@@ -1274,7 +1624,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1283,7 +1633,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
 	Equal = (function(superClass) {
 	  extend(Equal, superClass);
@@ -1330,7 +1680,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1339,7 +1689,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(3);
+	Bit = __webpack_require__(4);
 
 	Zigzag = (function(superClass) {
 	  extend(Zigzag, superClass);
@@ -1387,356 +1737,6 @@
 
 
 /***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Burst, Swirl, Transit, bitsMap, h,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	bitsMap = __webpack_require__(4);
-
-	Transit = __webpack_require__(13);
-
-	Swirl = __webpack_require__(1);
-
-	h = __webpack_require__(2);
-
-	Burst = (function(superClass) {
-	  extend(Burst, superClass);
-
-	  function Burst() {
-	    return Burst.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Burst.prototype.skipProps = {
-	    childOptions: 1
-	  };
-
-	  Burst.prototype.defaults = {
-	    count: 5,
-	    degree: 360,
-	    opacity: 1,
-	    randomAngle: 0,
-	    randomRadius: 0,
-	    x: 100,
-	    y: 100,
-	    shiftX: 0,
-	    shiftY: 0,
-	    easing: 'Linear.None',
-	    radius: {
-	      25: 75
-	    },
-	    radiusX: void 0,
-	    radiusY: void 0,
-	    angle: 0,
-	    size: null,
-	    sizeGap: 0,
-	    duration: 600,
-	    delay: 0,
-	    onStart: null,
-	    onComplete: null,
-	    onCompleteChain: null,
-	    onUpdate: null,
-	    isResetAngles: false
-	  };
-
-	  Burst.prototype.childDefaults = {
-	    radius: {
-	      7: 0
-	    },
-	    radiusX: void 0,
-	    radiusY: void 0,
-	    angle: 0,
-	    opacity: 1,
-	    onStart: null,
-	    onComplete: null,
-	    onUpdate: null,
-	    points: 3,
-	    duration: 500,
-	    delay: 0,
-	    repeat: 0,
-	    yoyo: false,
-	    easing: 'Linear.None',
-	    type: 'circle',
-	    fill: 'deeppink',
-	    fillOpacity: 1,
-	    isSwirl: false,
-	    swirlSize: 10,
-	    swirlFrequency: 3,
-	    stroke: 'transparent',
-	    strokeWidth: 0,
-	    strokeOpacity: 1,
-	    strokeDasharray: '',
-	    strokeDashoffset: '',
-	    strokeLinecap: null
-	  };
-
-	  Burst.prototype.optionsIntersection = {
-	    radius: 1,
-	    radiusX: 1,
-	    radiusY: 1,
-	    angle: 1,
-	    opacity: 1,
-	    onStart: 1,
-	    onComplete: 1,
-	    onUpdate: 1
-	  };
-
-	  Burst.prototype.run = function(o) {
-	    var base, i, j, key, keys, len, len1, option, ref, ref1, tr;
-	    if ((o != null) && Object.keys(o).length) {
-	      if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
-	        this.h.warn('Sorry, count can not be changed on run');
-	      }
-	      this.extendDefaults(o);
-	      keys = Object.keys(o.childOptions || {});
-	      if ((base = this.o).childOptions == null) {
-	        base.childOptions = {};
-	      }
-	      for (i = j = 0, len1 = keys.length; j < len1; i = ++j) {
-	        key = keys[i];
-	        this.o.childOptions[key] = o.childOptions[key];
-	      }
-	      len = this.transits.length;
-	      while (len--) {
-	        option = this.getOption(len);
-	        if ((((ref1 = o.childOptions) != null ? ref1.angle : void 0) == null) && (o.angleShift == null)) {
-	          option.angle = this.transits[len].o.angle;
-	        } else if (!o.isResetAngles) {
-	          option.angle = this.getBitAngle(option.angle, len);
-	        }
-	        this.transits[len].tuneNewOption(option, true);
-	      }
-	      this.timeline.recalcDuration();
-	    }
-	    if (this.props.randomAngle || this.props.randomRadius) {
-	      len = this.transits.length;
-	      while (len--) {
-	        tr = this.transits[len];
-	        this.props.randomAngle && tr.setProp({
-	          angleShift: this.generateRandomAngle()
-	        });
-	        this.props.randomRadius && tr.setProp({
-	          radiusScale: this.generateRandomRadius()
-	        });
-	      }
-	    }
-	    return this.startTween();
-	  };
-
-	  Burst.prototype.createBit = function() {
-	    var i, j, option, ref, results;
-	    this.transits = [];
-	    results = [];
-	    for (i = j = 0, ref = this.props.count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	      option = this.getOption(i);
-	      option.ctx = this.ctx;
-	      option.index = i;
-	      option.isDrawLess = option.isRunLess = option.isTweenLess = true;
-	      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
-	      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
-	      results.push(this.transits.push(new Swirl(option)));
-	    }
-	    return results;
-	  };
-
-	  Burst.prototype.addBitOptions = function() {
-	    var aShift, i, j, len1, pointEnd, pointStart, points, ref, results, step, transit;
-	    points = this.props.count;
-	    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
-	    step = this.props.degree / this.degreeCnt;
-	    ref = this.transits;
-	    results = [];
-	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
-	      transit = ref[i];
-	      aShift = transit.props.angleShift || 0;
-	      pointStart = this.getSidePoint('start', i * step + aShift);
-	      pointEnd = this.getSidePoint('end', i * step + aShift);
-	      transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
-	      transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
-	      if (!this.props.isResetAngles) {
-	        transit.o.angle = this.getBitAngle(transit.o.angle, i);
-	      }
-	      results.push(transit.extendDefaults());
-	    }
-	    return results;
-	  };
-
-	  Burst.prototype.getBitAngle = function(angle, i) {
-	    var angleAddition, angleShift, curAngleShift, degCnt, delta, end, keys, newEnd, newStart, points, start, step;
-	    points = this.props.count;
-	    degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
-	    step = this.props.degree / degCnt;
-	    angleAddition = i * step + 90;
-	    angleShift = this.transits[i].props.angleShift || 0;
-	    angle = typeof angle !== 'object' ? angle + angleAddition + angleShift : (keys = Object.keys(angle), start = keys[0], end = angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
-	    return angle;
-	  };
-
-	  Burst.prototype.getSidePoint = function(side, angle) {
-	    var pointStart, sideRadius;
-	    sideRadius = this.getSideRadius(side);
-	    return pointStart = this.h.getRadialPoint({
-	      radius: sideRadius.radius,
-	      radiusX: sideRadius.radiusX,
-	      radiusY: sideRadius.radiusY,
-	      angle: angle,
-	      center: {
-	        x: this.props.center,
-	        y: this.props.center
-	      }
-	    });
-	  };
-
-	  Burst.prototype.getSideRadius = function(side) {
-	    return {
-	      radius: this.getRadiusByKey('radius', side),
-	      radiusX: this.getRadiusByKey('radiusX', side),
-	      radiusY: this.getRadiusByKey('radiusY', side)
-	    };
-	  };
-
-	  Burst.prototype.getRadiusByKey = function(key, side) {
-	    if (this.deltas[key] != null) {
-	      return this.deltas[key][side];
-	    } else if (this.props[key] != null) {
-	      return this.props[key];
-	    }
-	  };
-
-	  Burst.prototype.getDeltaFromPoints = function(key, pointStart, pointEnd) {
-	    var delta;
-	    delta = {};
-	    if (pointStart[key] === pointEnd[key]) {
-	      return delta = pointStart[key];
-	    } else {
-	      delta[pointStart[key]] = pointEnd[key];
-	      return delta;
-	    }
-	  };
-
-	  Burst.prototype.draw = function(progress) {
-	    return this.drawEl();
-	  };
-
-	  Burst.prototype.isNeedsTransform = function() {
-	    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY') || this.isPropChanged('angle');
-	  };
-
-	  Burst.prototype.fillTransform = function() {
-	    return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-	  };
-
-	  Burst.prototype.createTween = function() {
-	    var i, results;
-	    Burst.__super__.createTween.apply(this, arguments);
-	    i = this.transits.length;
-	    results = [];
-	    while (i--) {
-	      results.push(this.timeline.add(this.transits[i].tween));
-	    }
-	    return results;
-	  };
-
-	  Burst.prototype.calcSize = function() {
-	    var i, j, largestSize, len1, radius, ref, transit;
-	    largestSize = -1;
-	    ref = this.transits;
-	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
-	      transit = ref[i];
-	      transit.calcSize();
-	      if (largestSize < transit.props.size) {
-	        largestSize = transit.props.size;
-	      }
-	    }
-	    radius = this.calcMaxRadius();
-	    this.props.size = largestSize + 2 * radius;
-	    this.props.size += 2 * this.props.sizeGap;
-	    this.props.center = this.props.size / 2;
-	    return this.addBitOptions();
-	  };
-
-	  Burst.prototype.getOption = function(i) {
-	    var key, keys, len, option;
-	    option = {};
-	    keys = Object.keys(this.childDefaults);
-	    len = keys.length;
-	    while (len--) {
-	      key = keys[len];
-	      option[key] = this.getPropByMod({
-	        key: key,
-	        i: i,
-	        from: this.o.childOptions
-	      });
-	      if (this.optionsIntersection[key]) {
-	        if (option[key] == null) {
-	          option[key] = this.getPropByMod({
-	            key: key,
-	            i: i,
-	            from: this.childDefaults
-	          });
-	        }
-	        continue;
-	      }
-	      if (option[key] == null) {
-	        option[key] = this.getPropByMod({
-	          key: key,
-	          i: i,
-	          from: this.o
-	        });
-	      }
-	      if (option[key] == null) {
-	        option[key] = this.getPropByMod({
-	          key: key,
-	          i: i,
-	          from: this.childDefaults
-	        });
-	      }
-	    }
-	    return option;
-	  };
-
-	  Burst.prototype.getPropByMod = function(o) {
-	    var prop, ref;
-	    prop = (ref = o.from || this.o.childOptions) != null ? ref[o.key] : void 0;
-	    if (this.h.isArray(prop)) {
-	      return prop[o.i % prop.length];
-	    } else {
-	      return prop;
-	    }
-	  };
-
-	  Burst.prototype.generateRandomAngle = function(i) {
-	    var randdomness, randomness;
-	    randomness = parseFloat(this.props.randomAngle);
-	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
-	    return this.h.rand(0, randomness ? randomness * 360 : 180);
-	  };
-
-	  Burst.prototype.generateRandomRadius = function(i) {
-	    var randdomness, randomness, start;
-	    randomness = parseFloat(this.props.randomRadius);
-	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
-	    start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
-	    return this.h.rand(start, 100) / 100;
-	  };
-
-	  Burst.prototype.then = function(o) {
-	    this.h.error("Burst's \"then\" method is under consideration, you can vote for it in github repo issues");
-	    return this;
-	  };
-
-	  return Burst;
-
-	})(Transit);
-
-	module.exports = Burst;
-
-
-/***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1746,9 +1746,9 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
-	bitsMap = __webpack_require__(4);
+	bitsMap = __webpack_require__(5);
 
 	Tween = __webpack_require__(19);
 
@@ -2415,19 +2415,19 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.4',
+	  revision: '0.154.5',
 	  isDebug: true,
-	  helpers: __webpack_require__(2),
-	  Bit: __webpack_require__(3),
-	  bitsMap: __webpack_require__(4),
-	  Circle: __webpack_require__(5),
-	  Cross: __webpack_require__(6),
-	  Line: __webpack_require__(7),
-	  Rect: __webpack_require__(8),
-	  Polygon: __webpack_require__(9),
-	  Equal: __webpack_require__(10),
-	  Zigzag: __webpack_require__(11),
-	  Burst: __webpack_require__(12),
+	  helpers: __webpack_require__(3),
+	  Bit: __webpack_require__(4),
+	  bitsMap: __webpack_require__(5),
+	  Circle: __webpack_require__(6),
+	  Cross: __webpack_require__(7),
+	  Line: __webpack_require__(8),
+	  Rect: __webpack_require__(9),
+	  Polygon: __webpack_require__(10),
+	  Equal: __webpack_require__(11),
+	  Zigzag: __webpack_require__(12),
+	  Burst: __webpack_require__(2),
 	  Transit: __webpack_require__(13),
 	  Swirl: __webpack_require__(1),
 	  Stagger: __webpack_require__(15),
@@ -2468,7 +2468,7 @@
 	/* istanbul ignore next */
 	var Stagger, StaggerWrapper, Timeline, h;
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 	Timeline = __webpack_require__(20);
 
@@ -2578,7 +2578,7 @@
 
 	var Spriter, Timeline, Tween, h;
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 	Tween = __webpack_require__(19);
 
@@ -2709,9 +2709,9 @@
 	var MotionPath, Timeline, Tween, h, resize,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
-	resize = __webpack_require__(22);
+	resize = __webpack_require__(25);
 
 	Tween = __webpack_require__(19);
 
@@ -3241,13 +3241,13 @@
 
 	var Easing, PathEasing, bezier, easing, h, mix;
 
-	bezier = __webpack_require__(23);
+	bezier = __webpack_require__(22);
 
-	PathEasing = __webpack_require__(24);
+	PathEasing = __webpack_require__(23);
 
-	mix = __webpack_require__(25);
+	mix = __webpack_require__(24);
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 	Easing = (function() {
 	  function Easing() {}
@@ -3549,7 +3549,7 @@
 
 	var _core = _interopRequire(__webpack_require__(28));
 
-	var h = _interopRequire(__webpack_require__(2));
+	var h = _interopRequire(__webpack_require__(3));
 
 	var t = _interopRequire(__webpack_require__(21));
 
@@ -3655,8 +3655,11 @@
 	        // We need to know what direction we are heading in with this tween,
 	        // so if we don't have the previous update value - this is very first
 	        // update, - skip it entirely and wait for the next value
+	        this.o.isIt && console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+	        this.o.isIt && console.log("tween:");
+	        this.o.isIt && this._visualizeProgress(time);
+
 	        if (this.prevTime === -1) {
-	          this.o.isIt && console.log("=========");
 	          this.o.isIt && console.log("tween: SKIP");
 	          this.o.isIt && this._visualizeProgress(time);
 	          this.prevTime = time;
@@ -3672,7 +3675,7 @@
 	        if (time >= this.props.startTime && time <= this.props.endTime) {
 	          this._updateInActiveArea(time);
 	        } else {
-	          this.isFirstUpdate = false;
+	          // this.isFirstUpdate = false;
 	          // complete if time is larger then end time
 	          if (time > this.props.endTime && !this.isCompleted && this._isInActiveArea) {
 	            // get period number
@@ -3692,10 +3695,11 @@
 
 	          // if was active and went to - inactive area "-"
 	          if (time < this.prevTime && time < this.props.startTime) {
+	            this.o.isIt && console.log("isStarted: " + this.isStarted);
 	            if (!this.isStarted && this._isInActiveArea) {
 	              this.setProgress(0, time);
 	              this._repeatStart(time);
-	              this._start(0, time);
+	              this._start(time);
 	            }
 	          }
 
@@ -3714,10 +3718,9 @@
 	      /*
 	        Method to set tween's state to start
 	        @method _start
-	        @param {Numner} Progress to set.
+	        @param {Number} Progress to set.
 	      */
-	      value: function Start(progress, time) {
-	        var progress = arguments[0] === undefined ? 0 : arguments[0];
+	      value: function Start(time) {
 	        if (this.isStarted) {
 	          return;
 	        }
@@ -3822,6 +3825,7 @@
 	      value: function UpdateInActiveArea(time) {
 	        // reset callback flags
 	        this.isOnReverseComplete = false;this.isCompleted = false;
+	        // this.isStarted = false;
 
 	        if (time === this.props.endTime) {
 	          this._wasUknownUpdate = false;
@@ -3844,13 +3848,8 @@
 	            prevT = this._getPeriod(this.prevTime),
 	            TPrevValue = this._delayT;
 
-	        this.o.isIt && console.log("=========");
-	        this.o.isIt && console.log("tween:");
 	        this.o.isIt && console.log("TCount: " + TCount);
-	        // this.o.isIt && console.log(`time: ${time}, start: ${props.startTime}, end: ${props.endTime}`);
 	        this.o.isIt && console.log("T: " + T + ", prevT: " + prevT + ", time: " + time + " prevTime: " + this.prevTime);
-	        // this.o.isIt && console.log(`TValue: ${TValue}, TPrevValue: ${TPrevValue}`);
-	        this.o.isIt && this._visualizeProgress(time);
 
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
@@ -3870,11 +3869,14 @@
 	          // |=====|=====|=====| <<<
 	          //      ^2^1
 	          var isOnReverseEdge = prevT > T;
+	          this.o.isIt && console.log("isOnEdge: " + isOnEdge + ", isOnReverseEdge: " + isOnReverseEdge);
+
 	          // if not yoyo then set the plain progress
 	          if (!props.yoyo) {
 	            if (this._wasUknownUpdate) {
 	              if (time > this.prevTime) {
-	                this._start(0, time);
+	                this.o.isIt && console.log("HERE 8");
+	                this._start(time);
 	                this._repeatStart(time);
 	                this._firstUpdate(time);
 	                this.setProgress(0, time);
@@ -3901,7 +3903,7 @@
 	              }
 	              // if on edge but not at very start
 	              // |=====|=====|=====| >>>
-	              // ^not  ^here ^here          
+	              // ^!    ^here ^here          
 	              if (prevT >= 0) {
 	                this._repeatStart(time);
 	                this.setProgress(0, time);
@@ -3909,6 +3911,17 @@
 	            }
 
 	            if (time > this.prevTime) {
+	              //
+	              //  |=====|=====|=====| >>>
+	              // ^1  ^2
+	              if (!this.isStarted && this.prevTime <= props.startTime) {
+	                this.o.isIt && console.log("HERE 11");
+	                this._start(time);
+	                this._repeatStart(time);
+	                // restart flags immediately in case if we will
+	                // return to '-' inactive area on the next step
+	                this.isStarted = false;this.isRepeatStart = false;
+	              }
 	              this._firstUpdate(time);
 	            }
 
@@ -3974,7 +3987,7 @@
 	            }
 
 	            if (time === props.startTime) {
-	              this._start(0, time);
+	              this._start(time);
 	            }
 
 	            // yoyo
@@ -4224,7 +4237,7 @@
 
 	var _core = _interopRequire(__webpack_require__(28));
 
-	var h = _interopRequire(__webpack_require__(2));
+	var h = _interopRequire(__webpack_require__(3));
 
 	var t = _interopRequire(__webpack_require__(21));
 
@@ -4708,7 +4721,7 @@
 
 	__webpack_require__(26);
 	__webpack_require__(27);
-	var h = _interopRequire(__webpack_require__(2));
+	var h = _interopRequire(__webpack_require__(3));
 
 	var Tweener = (function () {
 	  function Tweener() {
@@ -4812,231 +4825,10 @@
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-	/*!
-	  LegoMushroom @legomushroom http://legomushroom.com
-	  MIT License 2014
-	 */
-
-	/* istanbul ignore next */
-	(function() {
-	  var Main;
-	  Main = (function() {
-	    function Main(o) {
-	      this.o = o != null ? o : {};
-	      if (window.isAnyResizeEventInited) {
-	        return;
-	      }
-	      this.vars();
-	      this.redefineProto();
-	    }
-
-	    Main.prototype.vars = function() {
-	      window.isAnyResizeEventInited = true;
-	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
-	      return this.timerElements = {
-	        img: 1,
-	        textarea: 1,
-	        input: 1,
-	        embed: 1,
-	        object: 1,
-	        svg: 1,
-	        canvas: 1,
-	        tr: 1,
-	        tbody: 1,
-	        thead: 1,
-	        tfoot: 1,
-	        a: 1,
-	        select: 1,
-	        option: 1,
-	        optgroup: 1,
-	        dl: 1,
-	        dt: 1,
-	        br: 1,
-	        basefont: 1,
-	        font: 1,
-	        col: 1,
-	        iframe: 1
-	      };
-	    };
-
-	    Main.prototype.redefineProto = function() {
-	      var i, it, proto, t;
-	      it = this;
-	      return t = (function() {
-	        var j, len, ref, results;
-	        ref = this.allowedProtos;
-	        results = [];
-	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	          proto = ref[i];
-	          if (proto.prototype == null) {
-	            continue;
-	          }
-	          results.push((function(proto) {
-	            var listener, remover;
-	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	            (function(listener) {
-	              var wrappedListener;
-	              wrappedListener = function() {
-	                var option;
-	                if (this !== window || this !== document) {
-	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
-	                  option && it.handleResize({
-	                    args: arguments,
-	                    that: this
-	                  });
-	                }
-	                return listener.apply(this, arguments);
-	              };
-	              if (proto.prototype.addEventListener) {
-	                return proto.prototype.addEventListener = wrappedListener;
-	              } else if (proto.prototype.attachEvent) {
-	                return proto.prototype.attachEvent = wrappedListener;
-	              }
-	            })(listener);
-	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
-	            return (function(remover) {
-	              var wrappedRemover;
-	              wrappedRemover = function() {
-	                this.isAnyResizeEventInited = false;
-	                this.iframe && this.removeChild(this.iframe);
-	                return remover.apply(this, arguments);
-	              };
-	              if (proto.prototype.removeEventListener) {
-	                return proto.prototype.removeEventListener = wrappedRemover;
-	              } else if (proto.prototype.detachEvent) {
-	                return proto.prototype.detachEvent = wrappedListener;
-	              }
-	            })(remover);
-	          })(proto));
-	        }
-	        return results;
-	      }).call(this);
-	    };
-
-	    Main.prototype.handleResize = function(args) {
-	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
-	      el = args.that;
-	      if (!this.timerElements[el.tagName.toLowerCase()]) {
-	        iframe = document.createElement('iframe');
-	        el.appendChild(iframe);
-	        iframe.style.width = '100%';
-	        iframe.style.height = '100%';
-	        iframe.style.position = 'absolute';
-	        iframe.style.zIndex = -999;
-	        iframe.style.opacity = 0;
-	        iframe.style.top = 0;
-	        iframe.style.left = 0;
-	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
-	        isNoPos = el.style.position === '';
-	        isStatic = computedStyle.position === 'static' && isNoPos;
-	        isEmpty = computedStyle.position === '' && el.style.position === '';
-	        if (isStatic || isEmpty) {
-	          el.style.position = 'relative';
-	        }
-	        if ((ref = iframe.contentWindow) != null) {
-	          ref.onresize = (function(_this) {
-	            return function(e) {
-	              return _this.dispatchEvent(el);
-	            };
-	          })(this);
-	        }
-	        el.iframe = iframe;
-	      } else {
-	        this.initTimer(el);
-	      }
-	      return el.isAnyResizeEventInited = true;
-	    };
-
-	    Main.prototype.initTimer = function(el) {
-	      var height, width;
-	      width = 0;
-	      height = 0;
-	      return this.interval = setInterval((function(_this) {
-	        return function() {
-	          var newHeight, newWidth;
-	          newWidth = el.offsetWidth;
-	          newHeight = el.offsetHeight;
-	          if (newWidth !== width || newHeight !== height) {
-	            _this.dispatchEvent(el);
-	            width = newWidth;
-	            return height = newHeight;
-	          }
-	        };
-	      })(this), this.o.interval || 62.5);
-	    };
-
-	    Main.prototype.dispatchEvent = function(el) {
-	      var e;
-	      if (document.createEvent) {
-	        e = document.createEvent('HTMLEvents');
-	        e.initEvent('onresize', false, false);
-	        return el.dispatchEvent(e);
-	      } else if (document.createEventObject) {
-	        e = document.createEventObject();
-	        return el.fireEvent('onresize', e);
-	      } else {
-	        return false;
-	      }
-	    };
-
-	    Main.prototype.destroy = function() {
-	      var i, it, j, len, proto, ref, results;
-	      clearInterval(this.interval);
-	      this.interval = null;
-	      window.isAnyResizeEventInited = false;
-	      it = this;
-	      ref = this.allowedProtos;
-	      results = [];
-	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	        proto = ref[i];
-	        if (proto.prototype == null) {
-	          continue;
-	        }
-	        results.push((function(proto) {
-	          var listener;
-	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	          if (proto.prototype.addEventListener) {
-	            proto.prototype.addEventListener = Element.prototype.addEventListener;
-	          } else if (proto.prototype.attachEvent) {
-	            proto.prototype.attachEvent = Element.prototype.attachEvent;
-	          }
-	          if (proto.prototype.removeEventListener) {
-	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
-	          } else if (proto.prototype.detachEvent) {
-	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
-	          }
-	        })(proto));
-	      }
-	      return results;
-	    };
-
-	    return Main;
-
-	  })();
-	  if (true) {
-	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
-	      return new Main;
-	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
-	    return module.exports = new Main;
-	  } else {
-	    if (typeof window !== "undefined" && window !== null) {
-	      window.AnyResizeEvent = Main;
-	    }
-	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
-	  }
-	})();
-
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function(global) {var BezierEasing, bezierEasing, h,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 
 	/**
@@ -5207,12 +4999,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var PathEasing, h;
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(3);
 
 	PathEasing = (function() {
 	  PathEasing.prototype._vars = function() {
@@ -5443,7 +5235,7 @@
 
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var create, easing, getNearest, mix, parseIfEasing, sort,
@@ -5513,6 +5305,227 @@
 	};
 
 	module.exports = create;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+	/*!
+	  LegoMushroom @legomushroom http://legomushroom.com
+	  MIT License 2014
+	 */
+
+	/* istanbul ignore next */
+	(function() {
+	  var Main;
+	  Main = (function() {
+	    function Main(o) {
+	      this.o = o != null ? o : {};
+	      if (window.isAnyResizeEventInited) {
+	        return;
+	      }
+	      this.vars();
+	      this.redefineProto();
+	    }
+
+	    Main.prototype.vars = function() {
+	      window.isAnyResizeEventInited = true;
+	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
+	      return this.timerElements = {
+	        img: 1,
+	        textarea: 1,
+	        input: 1,
+	        embed: 1,
+	        object: 1,
+	        svg: 1,
+	        canvas: 1,
+	        tr: 1,
+	        tbody: 1,
+	        thead: 1,
+	        tfoot: 1,
+	        a: 1,
+	        select: 1,
+	        option: 1,
+	        optgroup: 1,
+	        dl: 1,
+	        dt: 1,
+	        br: 1,
+	        basefont: 1,
+	        font: 1,
+	        col: 1,
+	        iframe: 1
+	      };
+	    };
+
+	    Main.prototype.redefineProto = function() {
+	      var i, it, proto, t;
+	      it = this;
+	      return t = (function() {
+	        var j, len, ref, results;
+	        ref = this.allowedProtos;
+	        results = [];
+	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	          proto = ref[i];
+	          if (proto.prototype == null) {
+	            continue;
+	          }
+	          results.push((function(proto) {
+	            var listener, remover;
+	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	            (function(listener) {
+	              var wrappedListener;
+	              wrappedListener = function() {
+	                var option;
+	                if (this !== window || this !== document) {
+	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
+	                  option && it.handleResize({
+	                    args: arguments,
+	                    that: this
+	                  });
+	                }
+	                return listener.apply(this, arguments);
+	              };
+	              if (proto.prototype.addEventListener) {
+	                return proto.prototype.addEventListener = wrappedListener;
+	              } else if (proto.prototype.attachEvent) {
+	                return proto.prototype.attachEvent = wrappedListener;
+	              }
+	            })(listener);
+	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
+	            return (function(remover) {
+	              var wrappedRemover;
+	              wrappedRemover = function() {
+	                this.isAnyResizeEventInited = false;
+	                this.iframe && this.removeChild(this.iframe);
+	                return remover.apply(this, arguments);
+	              };
+	              if (proto.prototype.removeEventListener) {
+	                return proto.prototype.removeEventListener = wrappedRemover;
+	              } else if (proto.prototype.detachEvent) {
+	                return proto.prototype.detachEvent = wrappedListener;
+	              }
+	            })(remover);
+	          })(proto));
+	        }
+	        return results;
+	      }).call(this);
+	    };
+
+	    Main.prototype.handleResize = function(args) {
+	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
+	      el = args.that;
+	      if (!this.timerElements[el.tagName.toLowerCase()]) {
+	        iframe = document.createElement('iframe');
+	        el.appendChild(iframe);
+	        iframe.style.width = '100%';
+	        iframe.style.height = '100%';
+	        iframe.style.position = 'absolute';
+	        iframe.style.zIndex = -999;
+	        iframe.style.opacity = 0;
+	        iframe.style.top = 0;
+	        iframe.style.left = 0;
+	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
+	        isNoPos = el.style.position === '';
+	        isStatic = computedStyle.position === 'static' && isNoPos;
+	        isEmpty = computedStyle.position === '' && el.style.position === '';
+	        if (isStatic || isEmpty) {
+	          el.style.position = 'relative';
+	        }
+	        if ((ref = iframe.contentWindow) != null) {
+	          ref.onresize = (function(_this) {
+	            return function(e) {
+	              return _this.dispatchEvent(el);
+	            };
+	          })(this);
+	        }
+	        el.iframe = iframe;
+	      } else {
+	        this.initTimer(el);
+	      }
+	      return el.isAnyResizeEventInited = true;
+	    };
+
+	    Main.prototype.initTimer = function(el) {
+	      var height, width;
+	      width = 0;
+	      height = 0;
+	      return this.interval = setInterval((function(_this) {
+	        return function() {
+	          var newHeight, newWidth;
+	          newWidth = el.offsetWidth;
+	          newHeight = el.offsetHeight;
+	          if (newWidth !== width || newHeight !== height) {
+	            _this.dispatchEvent(el);
+	            width = newWidth;
+	            return height = newHeight;
+	          }
+	        };
+	      })(this), this.o.interval || 62.5);
+	    };
+
+	    Main.prototype.dispatchEvent = function(el) {
+	      var e;
+	      if (document.createEvent) {
+	        e = document.createEvent('HTMLEvents');
+	        e.initEvent('onresize', false, false);
+	        return el.dispatchEvent(e);
+	      } else if (document.createEventObject) {
+	        e = document.createEventObject();
+	        return el.fireEvent('onresize', e);
+	      } else {
+	        return false;
+	      }
+	    };
+
+	    Main.prototype.destroy = function() {
+	      var i, it, j, len, proto, ref, results;
+	      clearInterval(this.interval);
+	      this.interval = null;
+	      window.isAnyResizeEventInited = false;
+	      it = this;
+	      ref = this.allowedProtos;
+	      results = [];
+	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	        proto = ref[i];
+	        if (proto.prototype == null) {
+	          continue;
+	        }
+	        results.push((function(proto) {
+	          var listener;
+	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	          if (proto.prototype.addEventListener) {
+	            proto.prototype.addEventListener = Element.prototype.addEventListener;
+	          } else if (proto.prototype.attachEvent) {
+	            proto.prototype.attachEvent = Element.prototype.attachEvent;
+	          }
+	          if (proto.prototype.removeEventListener) {
+	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
+	          } else if (proto.prototype.detachEvent) {
+	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
+	          }
+	        })(proto));
+	      }
+	      return results;
+	    };
+
+	    return Main;
+
+	  })();
+	  if (true) {
+	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	      return new Main;
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
+	    return module.exports = new Main;
+	  } else {
+	    if (typeof window !== "undefined" && window !== null) {
+	      window.AnyResizeEvent = Main;
+	    }
+	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
+	  }
+	})();
 
 
 /***/ },
