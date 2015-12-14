@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.154.6', isDebug: true
+  revision:   '0.154.7', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
