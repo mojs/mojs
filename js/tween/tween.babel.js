@@ -512,7 +512,7 @@ var Tween = class Tween {
     // if time is larger then the end time
     if ( time > p.endTime ) {
       // set equal to the periods count
-      T = (p.endTime - p.startTime + p.delay) / TTime;
+      T = Math.round( (p.endTime - p.startTime + p.delay) / TTime );
     // if in delay gap, set _delayT to current
     // period number and return "delay"
     } else if ( elapsed > 0 && elapsed < p.delay ) {

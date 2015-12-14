@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.7',
+	  revision: '0.154.8',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -4150,7 +4150,7 @@
 	        // if time is larger then the end time
 	        if (time > p.endTime) {
 	          // set equal to the periods count
-	          T = (p.endTime - p.startTime + p.delay) / TTime;
+	          T = Math.round((p.endTime - p.startTime + p.delay) / TTime);
 	          // if in delay gap, set _delayT to current
 	          // period number and return "delay"
 	        } else if (elapsed > 0 && elapsed < p.delay) {
