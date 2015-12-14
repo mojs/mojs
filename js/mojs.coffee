@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.154.5', isDebug: true
+  revision:   '0.154.6', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -30,11 +30,14 @@ mojs.delta = mojs.h.delta
 
 # tw2 = new mojs.Tween duration: 4400
 
+# obj = document.querySelector('#js-el1')
+
 # tw = new mojs.Tween
-#   repeat: 0
+#   repeat: 2
 #   # delay: 200
 #   isIt2: true
 #   onUpdate:(pe, p, isForward)->
+#     mojs.h.style( obj, 'transform', "translate3d(#{200*pe}px, 0, 0)" )
 #     console.log "ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
 
 #   onStart:(isForward)->    console.log "ON_START: #{isForward}"
@@ -43,8 +46,9 @@ mojs.delta = mojs.h.delta
 #   onRepeatComplete:(isForward)-> console.log "ON_REPEAT_COMPLETE: #{isForward}"
 #   onFirstUpdate:(isForward)-> console.log "ON_FIRST_UPDATE: #{isForward}"
 
-# tm = new mojs.Timeline
+# tm = new mojs.Timeline# delay: 2000
 # tm.add tw#, tw2
+# # tm.play()
 
 # rangeSlider.oninput = (e)->
 #   proc = (1*rangeSlider.value)/10000

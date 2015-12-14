@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.5',
+	  revision: '0.154.6',
 	  isDebug: true,
 	  helpers: __webpack_require__(3),
 	  Bit: __webpack_require__(4),
@@ -3842,7 +3842,7 @@
 	            delayDuration = props.delay + props.duration,
 	            startPoint = props.startTime - props.delay,
 	            elapsed = (time - props.startTime + props.delay) % delayDuration,
-	            TCount = (props.endTime - props.startTime + props.delay) / delayDuration,
+	            TCount = Math.round((props.endTime - props.startTime + props.delay) / delayDuration),
 	            T = this._getPeriod(time),
 	            TValue = this._delayT,
 	            prevT = this._getPeriod(this.prevTime),
