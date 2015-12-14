@@ -33,8 +33,8 @@ mojs.delta = mojs.h.delta
 # obj = document.querySelector('#js-el1')
 
 # tw = new mojs.Tween
-#   repeat: 2
-#   # delay: 200
+#   repeat: 1
+#   delay: 200
 #   isIt2: true
 #   onUpdate:(pe, p, isForward)->
 #     mojs.h.style( obj, 'transform', "translate3d(#{200*pe}px, 0, 0)" )

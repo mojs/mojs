@@ -169,356 +169,6 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	/* istanbul ignore next */
-	var Burst, Swirl, Transit, bitsMap, h,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	bitsMap = __webpack_require__(5);
-
-	Transit = __webpack_require__(13);
-
-	Swirl = __webpack_require__(1);
-
-	h = __webpack_require__(3);
-
-	Burst = (function(superClass) {
-	  extend(Burst, superClass);
-
-	  function Burst() {
-	    return Burst.__super__.constructor.apply(this, arguments);
-	  }
-
-	  Burst.prototype.skipProps = {
-	    childOptions: 1
-	  };
-
-	  Burst.prototype.defaults = {
-	    count: 5,
-	    degree: 360,
-	    opacity: 1,
-	    randomAngle: 0,
-	    randomRadius: 0,
-	    x: 100,
-	    y: 100,
-	    shiftX: 0,
-	    shiftY: 0,
-	    easing: 'Linear.None',
-	    radius: {
-	      25: 75
-	    },
-	    radiusX: void 0,
-	    radiusY: void 0,
-	    angle: 0,
-	    size: null,
-	    sizeGap: 0,
-	    duration: 600,
-	    delay: 0,
-	    onStart: null,
-	    onComplete: null,
-	    onCompleteChain: null,
-	    onUpdate: null,
-	    isResetAngles: false
-	  };
-
-	  Burst.prototype.childDefaults = {
-	    radius: {
-	      7: 0
-	    },
-	    radiusX: void 0,
-	    radiusY: void 0,
-	    angle: 0,
-	    opacity: 1,
-	    onStart: null,
-	    onComplete: null,
-	    onUpdate: null,
-	    points: 3,
-	    duration: 500,
-	    delay: 0,
-	    repeat: 0,
-	    yoyo: false,
-	    easing: 'Linear.None',
-	    type: 'circle',
-	    fill: 'deeppink',
-	    fillOpacity: 1,
-	    isSwirl: false,
-	    swirlSize: 10,
-	    swirlFrequency: 3,
-	    stroke: 'transparent',
-	    strokeWidth: 0,
-	    strokeOpacity: 1,
-	    strokeDasharray: '',
-	    strokeDashoffset: '',
-	    strokeLinecap: null
-	  };
-
-	  Burst.prototype.optionsIntersection = {
-	    radius: 1,
-	    radiusX: 1,
-	    radiusY: 1,
-	    angle: 1,
-	    opacity: 1,
-	    onStart: 1,
-	    onComplete: 1,
-	    onUpdate: 1
-	  };
-
-	  Burst.prototype.run = function(o) {
-	    var base, i, j, key, keys, len, len1, option, ref, ref1, tr;
-	    if ((o != null) && Object.keys(o).length) {
-	      if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
-	        this.h.warn('Sorry, count can not be changed on run');
-	      }
-	      this.extendDefaults(o);
-	      keys = Object.keys(o.childOptions || {});
-	      if ((base = this.o).childOptions == null) {
-	        base.childOptions = {};
-	      }
-	      for (i = j = 0, len1 = keys.length; j < len1; i = ++j) {
-	        key = keys[i];
-	        this.o.childOptions[key] = o.childOptions[key];
-	      }
-	      len = this.transits.length;
-	      while (len--) {
-	        option = this.getOption(len);
-	        if ((((ref1 = o.childOptions) != null ? ref1.angle : void 0) == null) && (o.angleShift == null)) {
-	          option.angle = this.transits[len].o.angle;
-	        } else if (!o.isResetAngles) {
-	          option.angle = this.getBitAngle(option.angle, len);
-	        }
-	        this.transits[len].tuneNewOption(option, true);
-	      }
-	      this.timeline.recalcDuration();
-	    }
-	    if (this.props.randomAngle || this.props.randomRadius) {
-	      len = this.transits.length;
-	      while (len--) {
-	        tr = this.transits[len];
-	        this.props.randomAngle && tr.setProp({
-	          angleShift: this.generateRandomAngle()
-	        });
-	        this.props.randomRadius && tr.setProp({
-	          radiusScale: this.generateRandomRadius()
-	        });
-	      }
-	    }
-	    return this.startTween();
-	  };
-
-	  Burst.prototype.createBit = function() {
-	    var i, j, option, ref, results;
-	    this.transits = [];
-	    results = [];
-	    for (i = j = 0, ref = this.props.count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	      option = this.getOption(i);
-	      option.ctx = this.ctx;
-	      option.index = i;
-	      option.isDrawLess = option.isRunLess = option.isTweenLess = true;
-	      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
-	      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
-	      results.push(this.transits.push(new Swirl(option)));
-	    }
-	    return results;
-	  };
-
-	  Burst.prototype.addBitOptions = function() {
-	    var aShift, i, j, len1, pointEnd, pointStart, points, ref, results, step, transit;
-	    points = this.props.count;
-	    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
-	    step = this.props.degree / this.degreeCnt;
-	    ref = this.transits;
-	    results = [];
-	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
-	      transit = ref[i];
-	      aShift = transit.props.angleShift || 0;
-	      pointStart = this.getSidePoint('start', i * step + aShift);
-	      pointEnd = this.getSidePoint('end', i * step + aShift);
-	      transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
-	      transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
-	      if (!this.props.isResetAngles) {
-	        transit.o.angle = this.getBitAngle(transit.o.angle, i);
-	      }
-	      results.push(transit.extendDefaults());
-	    }
-	    return results;
-	  };
-
-	  Burst.prototype.getBitAngle = function(angle, i) {
-	    var angleAddition, angleShift, curAngleShift, degCnt, delta, end, keys, newEnd, newStart, points, start, step;
-	    points = this.props.count;
-	    degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
-	    step = this.props.degree / degCnt;
-	    angleAddition = i * step + 90;
-	    angleShift = this.transits[i].props.angleShift || 0;
-	    angle = typeof angle !== 'object' ? angle + angleAddition + angleShift : (keys = Object.keys(angle), start = keys[0], end = angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
-	    return angle;
-	  };
-
-	  Burst.prototype.getSidePoint = function(side, angle) {
-	    var pointStart, sideRadius;
-	    sideRadius = this.getSideRadius(side);
-	    return pointStart = this.h.getRadialPoint({
-	      radius: sideRadius.radius,
-	      radiusX: sideRadius.radiusX,
-	      radiusY: sideRadius.radiusY,
-	      angle: angle,
-	      center: {
-	        x: this.props.center,
-	        y: this.props.center
-	      }
-	    });
-	  };
-
-	  Burst.prototype.getSideRadius = function(side) {
-	    return {
-	      radius: this.getRadiusByKey('radius', side),
-	      radiusX: this.getRadiusByKey('radiusX', side),
-	      radiusY: this.getRadiusByKey('radiusY', side)
-	    };
-	  };
-
-	  Burst.prototype.getRadiusByKey = function(key, side) {
-	    if (this.deltas[key] != null) {
-	      return this.deltas[key][side];
-	    } else if (this.props[key] != null) {
-	      return this.props[key];
-	    }
-	  };
-
-	  Burst.prototype.getDeltaFromPoints = function(key, pointStart, pointEnd) {
-	    var delta;
-	    delta = {};
-	    if (pointStart[key] === pointEnd[key]) {
-	      return delta = pointStart[key];
-	    } else {
-	      delta[pointStart[key]] = pointEnd[key];
-	      return delta;
-	    }
-	  };
-
-	  Burst.prototype.draw = function(progress) {
-	    return this.drawEl();
-	  };
-
-	  Burst.prototype.isNeedsTransform = function() {
-	    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY') || this.isPropChanged('angle');
-	  };
-
-	  Burst.prototype.fillTransform = function() {
-	    return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
-	  };
-
-	  Burst.prototype.createTween = function() {
-	    var i, results;
-	    Burst.__super__.createTween.apply(this, arguments);
-	    i = this.transits.length;
-	    results = [];
-	    while (i--) {
-	      results.push(this.timeline.add(this.transits[i].tween));
-	    }
-	    return results;
-	  };
-
-	  Burst.prototype.calcSize = function() {
-	    var i, j, largestSize, len1, radius, ref, transit;
-	    largestSize = -1;
-	    ref = this.transits;
-	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
-	      transit = ref[i];
-	      transit.calcSize();
-	      if (largestSize < transit.props.size) {
-	        largestSize = transit.props.size;
-	      }
-	    }
-	    radius = this.calcMaxRadius();
-	    this.props.size = largestSize + 2 * radius;
-	    this.props.size += 2 * this.props.sizeGap;
-	    this.props.center = this.props.size / 2;
-	    return this.addBitOptions();
-	  };
-
-	  Burst.prototype.getOption = function(i) {
-	    var key, keys, len, option;
-	    option = {};
-	    keys = Object.keys(this.childDefaults);
-	    len = keys.length;
-	    while (len--) {
-	      key = keys[len];
-	      option[key] = this.getPropByMod({
-	        key: key,
-	        i: i,
-	        from: this.o.childOptions
-	      });
-	      if (this.optionsIntersection[key]) {
-	        if (option[key] == null) {
-	          option[key] = this.getPropByMod({
-	            key: key,
-	            i: i,
-	            from: this.childDefaults
-	          });
-	        }
-	        continue;
-	      }
-	      if (option[key] == null) {
-	        option[key] = this.getPropByMod({
-	          key: key,
-	          i: i,
-	          from: this.o
-	        });
-	      }
-	      if (option[key] == null) {
-	        option[key] = this.getPropByMod({
-	          key: key,
-	          i: i,
-	          from: this.childDefaults
-	        });
-	      }
-	    }
-	    return option;
-	  };
-
-	  Burst.prototype.getPropByMod = function(o) {
-	    var prop, ref;
-	    prop = (ref = o.from || this.o.childOptions) != null ? ref[o.key] : void 0;
-	    if (this.h.isArray(prop)) {
-	      return prop[o.i % prop.length];
-	    } else {
-	      return prop;
-	    }
-	  };
-
-	  Burst.prototype.generateRandomAngle = function(i) {
-	    var randdomness, randomness;
-	    randomness = parseFloat(this.props.randomAngle);
-	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
-	    return this.h.rand(0, randomness ? randomness * 360 : 180);
-	  };
-
-	  Burst.prototype.generateRandomRadius = function(i) {
-	    var randdomness, randomness, start;
-	    randomness = parseFloat(this.props.randomRadius);
-	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
-	    start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
-	    return this.h.rand(start, 100) / 100;
-	  };
-
-	  Burst.prototype.then = function(o) {
-	    this.h.error("Burst's \"then\" method is under consideration, you can vote for it in github repo issues");
-	    return this;
-	  };
-
-	  return Burst;
-
-	})(Transit);
-
-	module.exports = Burst;
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Helpers, h;
 
 	Helpers = (function() {
@@ -1106,12 +756,12 @@
 
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Bit, h;
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	Bit = (function() {
 	  Bit.prototype.ns = 'http://www.w3.org/2000/svg';
@@ -1318,28 +968,28 @@
 
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
-	Circle = __webpack_require__(6);
+	Circle = __webpack_require__(5);
 
-	Line = __webpack_require__(8);
+	Line = __webpack_require__(7);
 
-	Zigzag = __webpack_require__(12);
+	Zigzag = __webpack_require__(11);
 
-	Rect = __webpack_require__(9);
+	Rect = __webpack_require__(8);
 
-	Polygon = __webpack_require__(10);
+	Polygon = __webpack_require__(9);
 
-	Cross = __webpack_require__(7);
+	Cross = __webpack_require__(6);
 
-	Equal = __webpack_require__(11);
+	Equal = __webpack_require__(10);
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	BitsMap = (function() {
 	  function BitsMap() {}
@@ -1369,7 +1019,7 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1378,7 +1028,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
 	Circle = (function(superClass) {
 	  extend(Circle, superClass);
@@ -1417,7 +1067,7 @@
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1426,7 +1076,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
 	Cross = (function(superClass) {
 	  extend(Cross, superClass);
@@ -1469,7 +1119,7 @@
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1478,7 +1128,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
 	Line = (function(superClass) {
 	  extend(Line, superClass);
@@ -1507,7 +1157,7 @@
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1516,7 +1166,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
 	Rect = (function(superClass) {
 	  extend(Rect, superClass);
@@ -1557,7 +1207,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1566,9 +1216,9 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	Polygon = (function(superClass) {
 	  extend(Polygon, superClass);
@@ -1624,7 +1274,7 @@
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1633,7 +1283,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
 	Equal = (function(superClass) {
 	  extend(Equal, superClass);
@@ -1680,7 +1330,7 @@
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1689,7 +1339,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(4);
+	Bit = __webpack_require__(3);
 
 	Zigzag = (function(superClass) {
 	  extend(Zigzag, superClass);
@@ -1737,6 +1387,356 @@
 
 
 /***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	var Burst, Swirl, Transit, bitsMap, h,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	bitsMap = __webpack_require__(4);
+
+	Transit = __webpack_require__(13);
+
+	Swirl = __webpack_require__(1);
+
+	h = __webpack_require__(2);
+
+	Burst = (function(superClass) {
+	  extend(Burst, superClass);
+
+	  function Burst() {
+	    return Burst.__super__.constructor.apply(this, arguments);
+	  }
+
+	  Burst.prototype.skipProps = {
+	    childOptions: 1
+	  };
+
+	  Burst.prototype.defaults = {
+	    count: 5,
+	    degree: 360,
+	    opacity: 1,
+	    randomAngle: 0,
+	    randomRadius: 0,
+	    x: 100,
+	    y: 100,
+	    shiftX: 0,
+	    shiftY: 0,
+	    easing: 'Linear.None',
+	    radius: {
+	      25: 75
+	    },
+	    radiusX: void 0,
+	    radiusY: void 0,
+	    angle: 0,
+	    size: null,
+	    sizeGap: 0,
+	    duration: 600,
+	    delay: 0,
+	    onStart: null,
+	    onComplete: null,
+	    onCompleteChain: null,
+	    onUpdate: null,
+	    isResetAngles: false
+	  };
+
+	  Burst.prototype.childDefaults = {
+	    radius: {
+	      7: 0
+	    },
+	    radiusX: void 0,
+	    radiusY: void 0,
+	    angle: 0,
+	    opacity: 1,
+	    onStart: null,
+	    onComplete: null,
+	    onUpdate: null,
+	    points: 3,
+	    duration: 500,
+	    delay: 0,
+	    repeat: 0,
+	    yoyo: false,
+	    easing: 'Linear.None',
+	    type: 'circle',
+	    fill: 'deeppink',
+	    fillOpacity: 1,
+	    isSwirl: false,
+	    swirlSize: 10,
+	    swirlFrequency: 3,
+	    stroke: 'transparent',
+	    strokeWidth: 0,
+	    strokeOpacity: 1,
+	    strokeDasharray: '',
+	    strokeDashoffset: '',
+	    strokeLinecap: null
+	  };
+
+	  Burst.prototype.optionsIntersection = {
+	    radius: 1,
+	    radiusX: 1,
+	    radiusY: 1,
+	    angle: 1,
+	    opacity: 1,
+	    onStart: 1,
+	    onComplete: 1,
+	    onUpdate: 1
+	  };
+
+	  Burst.prototype.run = function(o) {
+	    var base, i, j, key, keys, len, len1, option, ref, ref1, tr;
+	    if ((o != null) && Object.keys(o).length) {
+	      if (o.count || ((ref = o.childOptions) != null ? ref.count : void 0)) {
+	        this.h.warn('Sorry, count can not be changed on run');
+	      }
+	      this.extendDefaults(o);
+	      keys = Object.keys(o.childOptions || {});
+	      if ((base = this.o).childOptions == null) {
+	        base.childOptions = {};
+	      }
+	      for (i = j = 0, len1 = keys.length; j < len1; i = ++j) {
+	        key = keys[i];
+	        this.o.childOptions[key] = o.childOptions[key];
+	      }
+	      len = this.transits.length;
+	      while (len--) {
+	        option = this.getOption(len);
+	        if ((((ref1 = o.childOptions) != null ? ref1.angle : void 0) == null) && (o.angleShift == null)) {
+	          option.angle = this.transits[len].o.angle;
+	        } else if (!o.isResetAngles) {
+	          option.angle = this.getBitAngle(option.angle, len);
+	        }
+	        this.transits[len].tuneNewOption(option, true);
+	      }
+	      this.timeline.recalcDuration();
+	    }
+	    if (this.props.randomAngle || this.props.randomRadius) {
+	      len = this.transits.length;
+	      while (len--) {
+	        tr = this.transits[len];
+	        this.props.randomAngle && tr.setProp({
+	          angleShift: this.generateRandomAngle()
+	        });
+	        this.props.randomRadius && tr.setProp({
+	          radiusScale: this.generateRandomRadius()
+	        });
+	      }
+	    }
+	    return this.startTween();
+	  };
+
+	  Burst.prototype.createBit = function() {
+	    var i, j, option, ref, results;
+	    this.transits = [];
+	    results = [];
+	    for (i = j = 0, ref = this.props.count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+	      option = this.getOption(i);
+	      option.ctx = this.ctx;
+	      option.index = i;
+	      option.isDrawLess = option.isRunLess = option.isTweenLess = true;
+	      this.props.randomAngle && (option.angleShift = this.generateRandomAngle());
+	      this.props.randomRadius && (option.radiusScale = this.generateRandomRadius());
+	      results.push(this.transits.push(new Swirl(option)));
+	    }
+	    return results;
+	  };
+
+	  Burst.prototype.addBitOptions = function() {
+	    var aShift, i, j, len1, pointEnd, pointStart, points, ref, results, step, transit;
+	    points = this.props.count;
+	    this.degreeCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
+	    step = this.props.degree / this.degreeCnt;
+	    ref = this.transits;
+	    results = [];
+	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+	      transit = ref[i];
+	      aShift = transit.props.angleShift || 0;
+	      pointStart = this.getSidePoint('start', i * step + aShift);
+	      pointEnd = this.getSidePoint('end', i * step + aShift);
+	      transit.o.x = this.getDeltaFromPoints('x', pointStart, pointEnd);
+	      transit.o.y = this.getDeltaFromPoints('y', pointStart, pointEnd);
+	      if (!this.props.isResetAngles) {
+	        transit.o.angle = this.getBitAngle(transit.o.angle, i);
+	      }
+	      results.push(transit.extendDefaults());
+	    }
+	    return results;
+	  };
+
+	  Burst.prototype.getBitAngle = function(angle, i) {
+	    var angleAddition, angleShift, curAngleShift, degCnt, delta, end, keys, newEnd, newStart, points, start, step;
+	    points = this.props.count;
+	    degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
+	    step = this.props.degree / degCnt;
+	    angleAddition = i * step + 90;
+	    angleShift = this.transits[i].props.angleShift || 0;
+	    angle = typeof angle !== 'object' ? angle + angleAddition + angleShift : (keys = Object.keys(angle), start = keys[0], end = angle[start], curAngleShift = angleAddition + angleShift, newStart = parseFloat(start) + curAngleShift, newEnd = parseFloat(end) + curAngleShift, delta = {}, delta[newStart] = newEnd, delta);
+	    return angle;
+	  };
+
+	  Burst.prototype.getSidePoint = function(side, angle) {
+	    var pointStart, sideRadius;
+	    sideRadius = this.getSideRadius(side);
+	    return pointStart = this.h.getRadialPoint({
+	      radius: sideRadius.radius,
+	      radiusX: sideRadius.radiusX,
+	      radiusY: sideRadius.radiusY,
+	      angle: angle,
+	      center: {
+	        x: this.props.center,
+	        y: this.props.center
+	      }
+	    });
+	  };
+
+	  Burst.prototype.getSideRadius = function(side) {
+	    return {
+	      radius: this.getRadiusByKey('radius', side),
+	      radiusX: this.getRadiusByKey('radiusX', side),
+	      radiusY: this.getRadiusByKey('radiusY', side)
+	    };
+	  };
+
+	  Burst.prototype.getRadiusByKey = function(key, side) {
+	    if (this.deltas[key] != null) {
+	      return this.deltas[key][side];
+	    } else if (this.props[key] != null) {
+	      return this.props[key];
+	    }
+	  };
+
+	  Burst.prototype.getDeltaFromPoints = function(key, pointStart, pointEnd) {
+	    var delta;
+	    delta = {};
+	    if (pointStart[key] === pointEnd[key]) {
+	      return delta = pointStart[key];
+	    } else {
+	      delta[pointStart[key]] = pointEnd[key];
+	      return delta;
+	    }
+	  };
+
+	  Burst.prototype.draw = function(progress) {
+	    return this.drawEl();
+	  };
+
+	  Burst.prototype.isNeedsTransform = function() {
+	    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY') || this.isPropChanged('angle');
+	  };
+
+	  Burst.prototype.fillTransform = function() {
+	    return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+	  };
+
+	  Burst.prototype.createTween = function() {
+	    var i, results;
+	    Burst.__super__.createTween.apply(this, arguments);
+	    i = this.transits.length;
+	    results = [];
+	    while (i--) {
+	      results.push(this.timeline.add(this.transits[i].tween));
+	    }
+	    return results;
+	  };
+
+	  Burst.prototype.calcSize = function() {
+	    var i, j, largestSize, len1, radius, ref, transit;
+	    largestSize = -1;
+	    ref = this.transits;
+	    for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+	      transit = ref[i];
+	      transit.calcSize();
+	      if (largestSize < transit.props.size) {
+	        largestSize = transit.props.size;
+	      }
+	    }
+	    radius = this.calcMaxRadius();
+	    this.props.size = largestSize + 2 * radius;
+	    this.props.size += 2 * this.props.sizeGap;
+	    this.props.center = this.props.size / 2;
+	    return this.addBitOptions();
+	  };
+
+	  Burst.prototype.getOption = function(i) {
+	    var key, keys, len, option;
+	    option = {};
+	    keys = Object.keys(this.childDefaults);
+	    len = keys.length;
+	    while (len--) {
+	      key = keys[len];
+	      option[key] = this.getPropByMod({
+	        key: key,
+	        i: i,
+	        from: this.o.childOptions
+	      });
+	      if (this.optionsIntersection[key]) {
+	        if (option[key] == null) {
+	          option[key] = this.getPropByMod({
+	            key: key,
+	            i: i,
+	            from: this.childDefaults
+	          });
+	        }
+	        continue;
+	      }
+	      if (option[key] == null) {
+	        option[key] = this.getPropByMod({
+	          key: key,
+	          i: i,
+	          from: this.o
+	        });
+	      }
+	      if (option[key] == null) {
+	        option[key] = this.getPropByMod({
+	          key: key,
+	          i: i,
+	          from: this.childDefaults
+	        });
+	      }
+	    }
+	    return option;
+	  };
+
+	  Burst.prototype.getPropByMod = function(o) {
+	    var prop, ref;
+	    prop = (ref = o.from || this.o.childOptions) != null ? ref[o.key] : void 0;
+	    if (this.h.isArray(prop)) {
+	      return prop[o.i % prop.length];
+	    } else {
+	      return prop;
+	    }
+	  };
+
+	  Burst.prototype.generateRandomAngle = function(i) {
+	    var randdomness, randomness;
+	    randomness = parseFloat(this.props.randomAngle);
+	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
+	    return this.h.rand(0, randomness ? randomness * 360 : 180);
+	  };
+
+	  Burst.prototype.generateRandomRadius = function(i) {
+	    var randdomness, randomness, start;
+	    randomness = parseFloat(this.props.randomRadius);
+	    randdomness = randomness > 1 ? 1 : randomness < 0 ? 0 : void 0;
+	    start = randomness ? (1 - randomness) * 100 : (1 - .5) * 100;
+	    return this.h.rand(start, 100) / 100;
+	  };
+
+	  Burst.prototype.then = function(o) {
+	    this.h.error("Burst's \"then\" method is under consideration, you can vote for it in github repo issues");
+	    return this;
+	  };
+
+	  return Burst;
+
+	})(Transit);
+
+	module.exports = Burst;
+
+
+/***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1746,9 +1746,9 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
-	bitsMap = __webpack_require__(5);
+	bitsMap = __webpack_require__(4);
 
 	Tween = __webpack_require__(19);
 
@@ -2417,17 +2417,17 @@
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
 	  revision: '0.154.6',
 	  isDebug: true,
-	  helpers: __webpack_require__(3),
-	  Bit: __webpack_require__(4),
-	  bitsMap: __webpack_require__(5),
-	  Circle: __webpack_require__(6),
-	  Cross: __webpack_require__(7),
-	  Line: __webpack_require__(8),
-	  Rect: __webpack_require__(9),
-	  Polygon: __webpack_require__(10),
-	  Equal: __webpack_require__(11),
-	  Zigzag: __webpack_require__(12),
-	  Burst: __webpack_require__(2),
+	  helpers: __webpack_require__(2),
+	  Bit: __webpack_require__(3),
+	  bitsMap: __webpack_require__(4),
+	  Circle: __webpack_require__(5),
+	  Cross: __webpack_require__(6),
+	  Line: __webpack_require__(7),
+	  Rect: __webpack_require__(8),
+	  Polygon: __webpack_require__(9),
+	  Equal: __webpack_require__(10),
+	  Zigzag: __webpack_require__(11),
+	  Burst: __webpack_require__(12),
 	  Transit: __webpack_require__(13),
 	  Swirl: __webpack_require__(1),
 	  Stagger: __webpack_require__(15),
@@ -2468,7 +2468,7 @@
 	/* istanbul ignore next */
 	var Stagger, StaggerWrapper, Timeline, h;
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	Timeline = __webpack_require__(20);
 
@@ -2578,7 +2578,7 @@
 
 	var Spriter, Timeline, Tween, h;
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	Tween = __webpack_require__(19);
 
@@ -2709,7 +2709,7 @@
 	var MotionPath, Timeline, Tween, h, resize,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	resize = __webpack_require__(25);
 
@@ -3247,7 +3247,7 @@
 
 	mix = __webpack_require__(24);
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	Easing = (function() {
 	  function Easing() {}
@@ -3549,7 +3549,7 @@
 
 	var _core = _interopRequire(__webpack_require__(28));
 
-	var h = _interopRequire(__webpack_require__(3));
+	var h = _interopRequire(__webpack_require__(2));
 
 	var t = _interopRequire(__webpack_require__(21));
 
@@ -3684,12 +3684,10 @@
 	                periodNumber = Math.floor((props.endTime - startPoint) / (props.delay + props.duration));
 
 	            // if ( isGrow == null ) { isGrow = time > this.prevTime; }
-	            this.o.isIt && console.log("HERE");
 
 	            this.setProgress(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1, time);
 
 	            this._repeatComplete(time);
-	            this.o.isIt && console.log("HERE 5");
 	            this._complete(time);
 	          }
 
@@ -3698,6 +3696,7 @@
 	            this.o.isIt && console.log("isStarted: " + this.isStarted);
 	            if (!this.isStarted && this._isInActiveArea) {
 	              this.setProgress(0, time);
+	              this.o.isIt && console.log("HERE 5");
 	              this._repeatStart(time);
 	              this._start(time);
 	            }
@@ -3829,12 +3828,10 @@
 
 	        if (time === this.props.endTime) {
 	          this._wasUknownUpdate = false;
-	          this.o.isIt && console.log("HERE 2");
 	          this.o.isIt && console.log("time: " + time + ", end: " + this.props.endTime + ", prev: " + this.prevTime);
 
 	          this.setProgress(1, time);
 	          this._repeatComplete(time);
-	          this.o.isIt && console.log("HERE 6");
 	          return this._complete(time);
 	        }
 
@@ -3875,7 +3872,7 @@
 	          if (!props.yoyo) {
 	            if (this._wasUknownUpdate) {
 	              if (time > this.prevTime) {
-	                this.o.isIt && console.log("HERE 8");
+	                this.o.isIt && console.log("HERE 2");
 	                this._start(time);
 	                this._repeatStart(time);
 	                this._firstUpdate(time);
@@ -3883,7 +3880,6 @@
 	              }
 
 	              if (time < this.prevTime) {
-	                this.o.isIt && console.log("HERE 7");
 	                this._complete(time);
 	                this._repeatComplete(time);
 	                this._firstUpdate(time);
@@ -3905,6 +3901,7 @@
 	              // |=====|=====|=====| >>>
 	              // ^!    ^here ^here          
 	              if (prevT >= 0) {
+	                this.o.isIt && console.log("HERE 5");
 	                this._repeatStart(time);
 	                this.setProgress(0, time);
 	              }
@@ -3915,12 +3912,13 @@
 	              //  |=====|=====|=====| >>>
 	              // ^1  ^2
 	              if (!this.isStarted && this.prevTime <= props.startTime) {
-	                this.o.isIt && console.log("HERE 11");
+	                this.o.isIt && console.log("HERE 3");
 	                this._start(time);
 	                this._repeatStart(time);
 	                // restart flags immediately in case if we will
 	                // return to '-' inactive area on the next step
-	                this.isStarted = false;this.isRepeatStart = false;
+	                this.isStarted = false;
+	                this.isRepeatStart = false;
 	              }
 	              this._firstUpdate(time);
 	            }
@@ -3931,6 +3929,7 @@
 	              //       ^here ^here ^not here    
 	              if (this.progress !== 0 && prevT != TCount) {
 	                this.setProgress(0, time);
+	                this.o.isIt && console.log("HERE 4");
 	                this._repeatStart(time);
 	              }
 
@@ -3940,7 +3939,6 @@
 	              // we have handled the case in this._wasUknownUpdate
 	              // block so filter that
 	              if (prevT === TCount && !this._wasUknownUpdate) {
-	                this.o.isIt && console.log("HERE 3");
 	                this._complete(time);
 	                this._repeatComplete(time);
 	                this._firstUpdate(time);
@@ -3971,7 +3969,8 @@
 	              // if just after delay gap
 	              // |---=====|---=====|---=====| >>>
 	              //            ^1  ^2
-	              if (T === TPrevValue) {
+	              if (T === TPrevValue && T > 0) {
+	                this.o.isIt && console.log("here 9");
 	                this._repeatStart(time);
 	                this.setProgress(0, time);
 	              }
@@ -3997,11 +3996,12 @@
 	          // if was in active area and previous time was larger
 	          if (this._isInActiveArea && time < this.prevTime) {
 	            this.setProgress(0, time);
+	            this.o.isIt && console.log("here 8");
 	            this._repeatStart(time);
 	          }
 
 	          this._isInActiveArea = false;
-	          this.isRepeatStart = false;
+	          // this.isRepeatStart = false;
 
 	          // if yoyo and even period we should flip
 	          // so set flipCoef to 1 if we need flip, otherwise to 0
@@ -4237,7 +4237,7 @@
 
 	var _core = _interopRequire(__webpack_require__(28));
 
-	var h = _interopRequire(__webpack_require__(3));
+	var h = _interopRequire(__webpack_require__(2));
 
 	var t = _interopRequire(__webpack_require__(21));
 
@@ -4721,7 +4721,7 @@
 
 	__webpack_require__(26);
 	__webpack_require__(27);
-	var h = _interopRequire(__webpack_require__(3));
+	var h = _interopRequire(__webpack_require__(2));
 
 	var Tweener = (function () {
 	  function Tweener() {
@@ -4828,7 +4828,7 @@
 	/* WEBPACK VAR INJECTION */(function(global) {var BezierEasing, bezierEasing, h,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 
 	/**
@@ -5004,7 +5004,7 @@
 
 	var PathEasing, h;
 
-	h = __webpack_require__(3);
+	h = __webpack_require__(2);
 
 	PathEasing = (function() {
 	  PathEasing.prototype._vars = function() {

@@ -1833,7 +1833,6 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        timeShift = duration;
         t.update(t.props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
@@ -1865,7 +1864,23 @@
         expect(completeCnt).toBe(1);
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
-        return expect(firstUpdateDirection).toBe(false);
+        expect(firstUpdateDirection).toBe(false);
+        t.update(t.props.startTime + timeShift - duration / 2);
+        expect(updateValue).toBeCloseTo(.5, 5);
+        expect(updateDirection).toBe(true);
+        expect(t._wasUknownUpdate).toBe(false);
+        expect(zeroCnt).toBe(3);
+        expect(oneCnt).toBe(3);
+        expect(repeatStartCnt).toBe(4);
+        expect(repeatStartDirection).toBe(true);
+        expect(repeatCnt).toBe(3);
+        expect(repeatCompleteDirection).toBe(false);
+        expect(startCnt).toBe(2);
+        expect(startDirection).toBe(true);
+        expect(completeCnt).toBe(1);
+        expect(completeDirection).toBe(false);
+        expect(firstUpdateCnt).toBe(2);
+        return expect(firstUpdateDirection).toBe(true);
       });
     });
     describe('_getPeriod method ->', function() {

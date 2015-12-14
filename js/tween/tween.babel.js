@@ -107,7 +107,6 @@ var Tween = class Tween {
             periodNumber = Math.floor((props.endTime-startPoint) / (props.delay+props.duration));
         
         // if ( isGrow == null ) { isGrow = time > this.prevTime; }
-        this.o.isIt && console.log('HERE');
 
         this.setProgress(
           ((this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1),
@@ -115,7 +114,6 @@ var Tween = class Tween {
         );
         
         this._repeatComplete( time );
-        this.o.isIt && console.log( 'HERE 5' );
         this._complete( time );
       }
 
@@ -125,6 +123,7 @@ var Tween = class Tween {
         this.o.isIt && console.log( `isStarted: ${ this.isStarted }` );
         if ( !this.isStarted && this._isInActiveArea ) {
           this.setProgress( 0, time );
+          this.o.isIt && console.log( 'HERE 5' );
           this._repeatStart( time );
           this._start( time );
         }
@@ -217,12 +216,10 @@ var Tween = class Tween {
 
     if ( time === this.props.endTime ) {
       this._wasUknownUpdate = false;
-      this.o.isIt && console.log('HERE 2');
       this.o.isIt && console.log(`time: ${time}, end: ${this.props.endTime}, prev: ${this.prevTime}`);
       
       this.setProgress( 1, time );
       this._repeatComplete( time );
-      this.o.isIt && console.log( 'HERE 6' );
       return this._complete( time );
     }
 
@@ -266,7 +263,7 @@ var Tween = class Tween {
           if ( this._wasUknownUpdate ) {
 
             if ( time > this.prevTime ) {
-              this.o.isIt && console.log( 'HERE 8' );
+              this.o.isIt && console.log( 'HERE 2' );
               this._start( time );
               this._repeatStart( time );
               this._firstUpdate( time );
@@ -274,7 +271,6 @@ var Tween = class Tween {
             }
 
             if ( time < this.prevTime ) {
-              this.o.isIt && console.log( 'HERE 7' );
               this._complete( time );
               this._repeatComplete( time );
               this._firstUpdate(time);
@@ -296,6 +292,7 @@ var Tween = class Tween {
             // |=====|=====|=====| >>>
             // ^!    ^here ^here           
             if ( prevT >= 0 ) {
+              this.o.isIt && console.log( 'HERE 5' );
               this._repeatStart(time);
               this.setProgress(0, time);
             }
@@ -307,12 +304,13 @@ var Tween = class Tween {
             //  |=====|=====|=====| >>>
             // ^1  ^2
             if ( !this.isStarted && this.prevTime <= props.startTime ) {
-              this.o.isIt && console.log('HERE 11')
+              this.o.isIt && console.log('HERE 3')
               this._start( time );
               this._repeatStart( time );
               // restart flags immediately in case if we will
               // return to '-' inactive area on the next step
-              this.isStarted = false; this.isRepeatStart = false;
+              this.isStarted = false;
+              this.isRepeatStart = false;
             }
             this._firstUpdate( time );
           }
@@ -323,6 +321,7 @@ var Tween = class Tween {
             //       ^here ^here ^not here     
             if (this.progress !== 0 && prevT != TCount) {
               this.setProgress(0, time);
+              this.o.isIt && console.log( 'HERE 4' );
               this._repeatStart(time);
             }
 
@@ -332,7 +331,6 @@ var Tween = class Tween {
             // we have handled the case in this._wasUknownUpdate
             // block so filter that
             if ( prevT === TCount && !this._wasUknownUpdate ) {
-              this.o.isIt && console.log('HERE 3');
               this._complete( time );
               this._repeatComplete( time );              
               this._firstUpdate(time);
@@ -364,7 +362,8 @@ var Tween = class Tween {
             // if just after delay gap
             // |---=====|---=====|---=====| >>>
             //            ^1  ^2
-            if ( T === TPrevValue ) {
+            if ( T === TPrevValue && T > 0 ) {
+              this.o.isIt && console.log('here 9')
               this._repeatStart(time);
               this.setProgress(0, time);
             }
@@ -402,11 +401,12 @@ var Tween = class Tween {
       // if was in active area and previous time was larger
       if ( this._isInActiveArea && time < this.prevTime ) {
         this.setProgress(0, time);
+        this.o.isIt && console.log('here 8')
         this._repeatStart(time);
       }
 
       this._isInActiveArea = false;
-      this.isRepeatStart = false;
+      // this.isRepeatStart = false;
 
       // if yoyo and even period we should flip
       // so set flipCoef to 1 if we need flip, otherwise to 0
