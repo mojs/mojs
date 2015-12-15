@@ -2152,7 +2152,7 @@ describe 'Tween ->', ->
       expect(firstUpdateDirection).toBe(true)
 
     ###
-      TWEEN IN NORMAL DIRECTION
+      TWEEN IN NORMAL DIRECTION || YOYO
     ###
 
     it 'should be called with 1 and 0 on each repeat period || yoyo', ()->
@@ -3046,6 +3046,1004 @@ describe 'Tween ->', ->
       expect(completeDirection).toBe(true)
 
       expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(true)
+
+    # ###
+    #   TWEEN IN REVERSE DIRECTION || YOYO
+    # ###
+
+    it 'should be called with 0 and 1 on each repeat period || reverse yoyo', ()->
+      zeroCnt = 0; oneCnt = 0
+      startCnt = 0; completeCnt = 0
+      repeatCnt = 0; repeatStartCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
+      startDirection = null; completeDirection = null
+      repeatStartDirection = null; repeatCompleteDirection = null
+      duration = 50; updateValue = null; updateDirection = null
+      t = new Tween
+        repeat:     2
+        duration:   duration
+        yoyo:       true
+        onUpdate:(p, ep, isForward)->
+          updateDirection = isForward
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:(isForward)->
+          repeatCompleteDirection = isForward
+          repeatCnt++
+        onRepeatStart:(isForward)->
+          repeatStartDirection = isForward
+          repeatStartCnt++
+        onStart:(isForward)->
+          startDirection = isForward
+          startCnt++
+        onComplete:(isForward)->
+          completeDirection = isForward
+          completeCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
+      
+      t.setStartTime()
+      
+      timeShift = 3*duration
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(null)
+      expect(updateDirection).toBe(null)
+
+      expect(t._wasUknownUpdate).toBe(true)
+      expect(oneCnt).toBe(0)
+      expect(zeroCnt).toBe(0)
+
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(0)
+      expect(repeatCompleteDirection).toBe(null)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(0)
+      expect(completeDirection).toBe(null)
+
+      expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
+
+
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.75, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
+
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = 2*duration
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.25, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = duration
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(1)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
+      
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.75, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = 0
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
+      
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+      # repeat the latest period
+      t.update t.props.startTime + timeShift - duration/2
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
+      
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+    it 'should be called with 0 and 1 on each repeat period if missed time || yoyo reverse', ()->
+      zeroCnt = 0; oneCnt = 0
+      startCnt = 0; completeCnt = 0
+      repeatCnt = 0; repeatStartCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
+      startDirection = null; completeDirection = null
+      repeatStartDirection = null; repeatCompleteDirection = null
+      duration = 50; updateValue = null; updateDirection = null
+      t = new Tween
+        repeat:     2
+        duration:   duration
+        yoyo:       true
+        onUpdate:(p, pe, isForward)->
+          updateDirection = isForward
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:(isForward)->
+          repeatCompleteDirection = isForward
+          repeatCnt++
+        onRepeatStart:(isForward)->
+          repeatStartDirection = isForward
+          repeatStartCnt++
+        onStart:(isForward)->
+          startDirection = isForward
+          startCnt++
+        onComplete:(isForward)->
+          completeDirection = isForward
+          completeCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
+
+      t.setStartTime()
+
+      gap = 5
+      timeShift = 3*duration
+      t.update t.props.startTime + timeShift + gap
+      expect(updateValue).toBe(null)
+      expect(updateDirection).toBe(null)
+
+      expect(t._wasUknownUpdate).toBe(true)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(0)
+      
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(0)
+      expect(repeatCompleteDirection).toBe(null)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(0)
+      expect(completeDirection).toBe(null)
+
+      expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
+
+
+      t.update t.props.startTime + timeShift - (duration/2)
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(1)
+      
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - (duration) + gap
+      expect(updateValue).toBeCloseTo(.1, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(1)
+      
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = 2*duration
+      t.update t.props.startTime + timeShift - gap
+      expect(updateValue).toBeCloseTo(.1, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(1)
+      
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - (duration/4)
+      expect(updateValue).toBeCloseTo(.25, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(1)
+      
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - (duration) + gap
+      expect(updateValue).toBeCloseTo(.9, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(1)
+      
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+      # END
+      timeShift = duration
+      t.update t.props.startTime + timeShift - (duration) - gap
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(1)
+      
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+      # start again
+      t.update t.props.startTime + timeShift - (duration/4)
+      expect(updateValue).toBeCloseTo(.75, 5)
+      expect(updateDirection).toBe(true)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(true)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+
+      expect(startCnt).toBe(2)
+      expect(startDirection).toBe(true)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(2)
+      expect(firstUpdateDirection).toBe(true)
+
+      # return to "-" inactive area
+      t.update t.props.startTime - gap
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(3)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(4)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(3)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(2)
+      expect(firstUpdateDirection).toBe(true)
+
+      # repeat the previous step
+      t.update t.props.startTime - gap - 15
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(3)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(4)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(3)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(2)
+      expect(firstUpdateDirection).toBe(true)
+
+    it 'should be called with 0 and 1 on each repeat period if in delay || yoyo reverse', ()->
+      zeroCnt = 0; oneCnt = 0
+      startCnt = 0; completeCnt = 0
+      repeatCnt = 0; repeatStartCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
+      startDirection = null; completeDirection = null
+      repeatStartDirection = null; repeatCompleteDirection = null
+      duration = 50; delay = 20; updateValue = null; updateDirection = null
+      t = new Tween
+        repeat:     2
+        duration:   duration
+        delay:      delay
+        yoyo:       true
+        onUpdate:(p, pe, isForward)->
+          updateDirection = isForward
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:(isForward)->
+          repeatCompleteDirection = isForward
+          repeatCnt++
+        onRepeatStart:(isForward)->
+          repeatStartDirection = isForward
+          repeatStartCnt++
+        onStart:(isForward)->
+          startDirection = isForward
+          startCnt++
+        onComplete:(isForward)->
+          completeDirection = isForward
+          completeCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
+
+      t.setStartTime()
+
+      timeShift = 3*(duration + delay) - delay
+      t.update t.props.startTime + timeShift + 5
+      expect(updateValue).toBe(null)
+      expect(updateDirection).toBe(null)
+
+      expect(t._wasUknownUpdate).toBe(true)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(0)
+      
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(0)
+      expect(repeatCompleteDirection).toBe(null)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(0)
+      expect(completeDirection).toBe(null)
+
+      expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
+
+
+      t.update t.props.startTime + timeShift - (duration/4)
+      expect(updateValue).toBeCloseTo(.75, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - (duration) - 5
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = 2*(duration + delay) - delay
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.25, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - duration - 5
+      expect(updateValue).toBe(1)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = duration
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.75, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - duration - 5
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+      # repeat the last period
+      t.update t.props.startTime + timeShift - duration - 15
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+    it 'should be called with 0 and 1 on each repeat period if delay || yoyo reverse', ()->
+      zeroCnt = 0; oneCnt = 0
+      startCnt = 0; completeCnt = 0
+      repeatCnt = 0; repeatStartCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
+      startDirection = null; completeDirection = null
+      repeatStartDirection = null; repeatCompleteDirection = null
+      duration = 50; delay = 20; updateValue = null; updateDirection = null
+      t = new Tween
+        repeat:     2
+        duration:   duration
+        delay:      delay
+        yoyo:       true
+        onUpdate:(p, pe, isForward)->
+          updateDirection = isForward
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:(isForward)->
+          repeatCompleteDirection = isForward
+          repeatCnt++
+        onRepeatStart:(isForward)->
+          repeatStartDirection = isForward
+          repeatStartCnt++
+        onStart:(isForward)->
+          startDirection = isForward
+          startCnt++
+        onComplete:(isForward)->
+          completeDirection = isForward
+          completeCnt++
+        onFirstUpdate:(isForward)->
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
+
+      t.setStartTime()
+
+      timeShift = 3*(duration + delay) - delay
+      t.update t.props.startTime + timeShift
+      expect(updateValue).toBe(null)
+      expect(updateDirection).toBe(null)
+
+      expect(t._wasUknownUpdate).toBe(true)
+      expect(oneCnt).toBe(0)
+      expect(zeroCnt).toBe(0)
+      
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(0)
+      expect(repeatCompleteDirection).toBe(null)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(0)
+      expect(completeDirection).toBe(null)
+
+      expect(firstUpdateCnt).toBe(0)
+      expect(firstUpdateDirection).toBe(null)
+
+
+      t.update t.props.startTime + timeShift - (duration/2)
+      expect(updateValue).toBeCloseTo(.5, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(0)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(0)
+      expect(repeatStartDirection).toBe(null)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - duration
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(1)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = 2*(duration + delay) - delay
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.25, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(1)
+
+      expect(repeatStartCnt).toBe(1)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = 2*(duration + delay) - delay
+      t.update t.props.startTime + timeShift - duration
+      expect(updateValue).toBe(1)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(2)
+      expect(repeatCompleteDirection).toBe(false)
+
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      timeShift = duration
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.75, 5)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(1)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(2)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(0)
+      expect(startDirection).toBe(null)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+
+      t.update t.props.startTime + timeShift - duration
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+      
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+      # repeat the last period
+      t.update t.props.startTime + timeShift - duration - 10
+      expect(updateValue).toBe(0)
+      expect(updateDirection).toBe(false)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(3)
+      expect(repeatStartDirection).toBe(false)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+
+      expect(startCnt).toBe(1)
+      expect(startDirection).toBe(false)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(1)
+      expect(firstUpdateDirection).toBe(false)
+
+      # start again
+      t.update t.props.startTime + timeShift - duration/4
+      expect(updateValue).toBeCloseTo(.75, 5)
+      expect(updateDirection).toBe(true)
+
+      expect(t._wasUknownUpdate).toBe(false)
+      expect(zeroCnt).toBe(2)
+      expect(oneCnt).toBe(2)
+
+      expect(repeatStartCnt).toBe(4)
+      expect(repeatStartDirection).toBe(true)
+
+      expect(repeatCnt).toBe(3)
+      expect(repeatCompleteDirection).toBe(false)
+
+      expect(startCnt).toBe(2)
+      expect(startDirection).toBe(true)
+
+      expect(completeCnt).toBe(1)
+      expect(completeDirection).toBe(false)
+
+      expect(firstUpdateCnt).toBe(2)
       expect(firstUpdateDirection).toBe(true)
 
   describe '_getPeriod method ->', ->

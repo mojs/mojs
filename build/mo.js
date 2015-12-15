@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.10',
+	  revision: '0.154.11',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3922,6 +3922,9 @@
 	              this.o.isIt && console.log("HERE 3");
 	              this._start(time);
 	              this._repeatStart(time);
+	              // it was zero anyways
+	              // this.setProgress( yoyoZero , time);
+
 	              // restart flags immediately in case if we will
 	              // return to '-' inactive area on the next step
 	              this.isStarted = false;
@@ -3934,9 +3937,9 @@
 	            // if on edge but not at very end
 	            // |=====|=====|=====| <<<
 	            //       ^here ^here ^not here    
-	            if (this.progress !== 0 && prevT != TCount) {
+	            if (this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
+	              this.o.isIt && console.log("HERE 4", yoyoZero, T);
 	              this.setProgress(0, time);
-	              this.o.isIt && console.log("HERE 4");
 	              this._repeatStart(time);
 	            }
 
@@ -3964,7 +3967,7 @@
 	            } else {
 	              this.o.isIt && console.log("THERE 3.1");
 	              this._repeatComplete(time);
-	              this.setProgress(1, time);
+	              this.setProgress(yoyoOne, time);
 	            }
 	          }
 
@@ -3975,7 +3978,7 @@
 	            if (T < TPrevValue) {
 	              this.o.isIt && console.log("THERE 4");
 	              this._repeatComplete(time);
-	              this.setProgress(1, time);
+	              this.setProgress(yoyoOne, time);
 	            }
 	            // if just after delay gap
 	            // |---=====|---=====|---=====| >>>
@@ -4004,8 +4007,11 @@
 	        } else {
 	          // if was in active area and previous time was larger
 	          if (this._isInActiveArea && time < this.prevTime) {
-	            this.setProgress(0, time);
-	            this.o.isIt && console.log("here 8");
+	            var t = T === "delay" ? TValue : T;
+	            yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
+
+	            this.o.isIt && console.log("here 8", yoyoZero, T, TValue);
+	            this.setProgress(yoyoZero, time);
 	            this._repeatStart(time);
 	          }
 
@@ -4023,6 +4029,7 @@
 	            t--;
 	          }
 	          yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
+	          this.o.isIt && console.log("hherre 1", yoyoZero);
 	          this.setProgress(time > this.prevTime ? 1 - yoyoZero : yoyoZero, time);
 	          // if reverse direction and in delay gap, then progress will be 0
 	          // if so we don't need to call the onRepeatComplete callback
@@ -4054,6 +4061,8 @@
 	            this.o.isIt && console.log("********** ONUPDATE " + p + " **********");
 	            this.onUpdate(this.easedProgress, this.progress, time > this.prevTime);
 	          }
+	        } else {
+	          this.o.isIt && console.log("********** ONUPDATE TRYOUT **********");
 	        }
 	        this.props.prevEasedProgress = this.easedProgress;
 	      },
