@@ -2657,7 +2657,7 @@
         expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(4);
         return expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe(4);
       });
-      return it('should return period number if time > endTime', function() {
+      it('should return period number if time > endTime', function() {
         var delay, duration, t, timeShift;
         duration = 50;
         delay = 20;
@@ -2669,6 +2669,16 @@
         t.setStartTime();
         timeShift = 3 * (duration + delay) - delay;
         return expect(t._getPeriod(t.props.startTime + timeShift + delay / 2)).toBe(3);
+      });
+      return it('should round instead of floor if time >= endTime', function() {
+        var duration, t;
+        duration = 50 + 3 / 2.123;
+        t = new Tween({
+          repeat: 2,
+          duration: duration
+        });
+        t.setStartTime();
+        return expect(t._getPeriod(t.props.startTime + 3 * duration)).toBe(3);
       });
     });
     describe('onComplete callback ->', function() {

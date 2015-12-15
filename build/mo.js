@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.9',
+	  revision: '0.154.10',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -4162,11 +4162,11 @@
 	            dTime = time - p.startTime + p.delay,
 	            T = dTime / TTime,
 	            elapsed = dTime % TTime;
-
-	        // cover
+	        // If the latest period, round the result, otherwise floor it.
+	        // Basically we always can floor the result, but because of js
+	        // precision issues, sometimes the result is 2.99999998 which
+	        // will result in 2 instead of 3 after the floor operation.
 	        T = time >= p.endTime ? Math.round(T) : Math.floor(T);
-
-	        // console.log(`-------------------- T: ${T}`, dTime / TTime)
 	        // if time is larger then the end time
 	        if (time > p.endTime) {
 	          // set equal to the periods count

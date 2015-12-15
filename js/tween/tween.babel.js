@@ -514,11 +514,11 @@ var Tween = class Tween {
         dTime   = time - p.startTime + p.delay,
         T       = dTime / TTime,
         elapsed = dTime % TTime;
-
-    // cover
+    // If the latest period, round the result, otherwise floor it.
+    // Basically we always can floor the result, but because of js
+    // precision issues, sometimes the result is 2.99999998 which
+    // will result in 2 instead of 3 after the floor operation.
     T = ( time >= p.endTime ) ? Math.round(T) : Math.floor(T);
-
-    // console.log(`-------------------- T: ${T}`, dTime / TTime)
     // if time is larger then the end time
     if ( time > p.endTime ) {
       // set equal to the periods count
