@@ -4,8 +4,6 @@
 
 ### TWEEN + TIMELINE:
   - add yoyo tests
-  - fixes
-    - onStart should reset first update flag
 
 - fix coverage
 - release

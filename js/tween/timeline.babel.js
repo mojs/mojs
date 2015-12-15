@@ -68,22 +68,6 @@ class Timeline {
     if (index !== -1) { this.timelines.splice(index, 1); }
   }
 
-  /*
-    Method to append the tween to the end of the
-    timeline. Each argument is treated as a new 
-    append. Array of tweens is treated as a parallel
-    sequence. 
-    @param {Object, Array} Tween to append or array of such.
-  */
-  append() {
-    for (var tm of timeline) {
-      if ( h.isArray(tm) ) {
-        this._appendTimelineArray(tm);
-      } else { this.appendTimeline(tm, this.timelines.length); }
-    }
-    return this;
-  }
-
   /*  Method to append the tween to the end of the
       timeline. Each argument is treated as a new 
       append. Array of tweens is treated as a parallel

@@ -83,8 +83,7 @@ var Tween = class Tween {
     this.o.isIt && this._visualizeProgress(time);
 
     if ( this.prevTime === -1 ) {
-      this.o.isIt && console.log(`tween: SKIP`);
-      this.o.isIt && this._visualizeProgress(time);
+      this.o.isIt && console.log(`SKIP`);
       this.prevTime = time;
       this._wasUknownUpdate = true;
       return false;
@@ -108,6 +107,7 @@ var Tween = class Tween {
         
         // if ( isGrow == null ) { isGrow = time > this.prevTime; }
 
+        this.o.isIt && console.log( 'THERE 51' );
         this.setProgress(
           ((this.o.yoyo && (periodNumber % 2 === 0)) ? 0 : 1),
           time
@@ -122,8 +122,8 @@ var Tween = class Tween {
 
         this.o.isIt && console.log( `isStarted: ${ this.isStarted }` );
         if ( !this.isStarted && this._isInActiveArea ) {
-          this.setProgress( 0, time );
           this.o.isIt && console.log( 'HERE 5' );
+          this.setProgress( 0, time );
           this._repeatStart( time );
           this._start( time );
         }
@@ -212,17 +212,7 @@ var Tween = class Tween {
   _updateInActiveArea(time) {
     // reset callback flags
     this.isOnReverseComplete = false; this.isCompleted = false;
-    // this.isStarted = false;
-
-    if ( time === this.props.endTime ) {
-      this._wasUknownUpdate = false;
-      this.o.isIt && console.log(`time: ${time}, end: ${this.props.endTime}, prev: ${this.prevTime}`);
-      
-      this.setProgress( 1, time );
-      this._repeatComplete( time );
-      return this._complete( time );
-    }
-
+    
     var props         = this.props,
         delayDuration = props.delay + props.duration,
         startPoint    = props.startTime - props.delay,
@@ -232,6 +222,22 @@ var Tween = class Tween {
         TValue        = this._delayT,
         prevT         = this._getPeriod(this.prevTime),
         TPrevValue    = this._delayT;
+
+    // "zero" and "one" value regarding yoyo and it's period
+    var yoyoZero = ((props.yoyo && (T % 2 === 1)) ? 1 : 0),
+        yoyoOne  = 1-yoyoZero;
+
+    if ( time === this.props.endTime ) {
+      this._wasUknownUpdate = false;
+      this.o.isIt && console.log(`time: ${time}, end: ${this.props.endTime}, prev: ${this.prevTime}`);
+      this.o.isIt && console.log(`T: ${T}`);
+      this.o.isIt && console.log( 'THERE 6', yoyoOne );
+      // if `time` is equal to `endTime`, T is equal to the next period,
+      // so we need to decrement T and calculate "one" value regarding yoyo
+      this.setProgress( ((props.yoyo && ((T-1) % 2 === 1)) ? 0 : 1), time );
+      this._repeatComplete( time );
+      return this._complete( time );
+    }
 
     this.o.isIt && console.log(`TCount: ${TCount}`);
     this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}, time: ${time} prevTime: ${this.prevTime}`);
@@ -255,146 +261,141 @@ var Tween = class Tween {
       // |=====|=====|=====| <<<
       //      ^2^1
       var isOnReverseEdge = (prevT > T);
+
       this.o.isIt && console.log(`isOnEdge: ${isOnEdge}, isOnReverseEdge: ${isOnReverseEdge}`);
 
-      // if not yoyo then set the plain progress
-      if (!props.yoyo) {
+      if ( this._wasUknownUpdate ) {
 
-          if ( this._wasUknownUpdate ) {
+        if ( time > this.prevTime ) {
+          this.o.isIt && console.log( 'HERE 2' );
+          this._start( time );
+          this._repeatStart( time );
+          this._firstUpdate( time );
+          this.setProgress( 0, time );
+        }
 
-            if ( time > this.prevTime ) {
-              this.o.isIt && console.log( 'HERE 2' );
-              this._start( time );
-              this._repeatStart( time );
-              this._firstUpdate( time );
-              this.setProgress( 0, time );
-            }
-
-            if ( time < this.prevTime ) {
-              this._complete( time );
-              this._repeatComplete( time );
-              this._firstUpdate(time);
-              this.setProgress(1, time);
-            }
-          }
-
-          if ( isOnEdge ) {
-            // if not just after delay
-            // |=====|---=====|---=====| >>>
-            //         ^1 ^2
-            // because we have already handled
-            // 1 and onRepeatComplete in delay gap
-            if (this.progress !== 1) {
-              this.setProgress(1, time);
-              this._repeatComplete(time);
-            }
-            // if on edge but not at very start
-            // |=====|=====|=====| >>>
-            // ^!    ^here ^here           
-            if ( prevT >= 0 ) {
-              this.o.isIt && console.log( 'HERE 5' );
-              this._repeatStart(time);
-              this.setProgress(0, time);
-            }
-          }
-
-          if ( time > this.prevTime ) {
-
-            // 
-            //  |=====|=====|=====| >>>
-            // ^1  ^2
-            if ( !this.isStarted && this.prevTime <= props.startTime ) {
-              this.o.isIt && console.log('HERE 3')
-              this._start( time );
-              this._repeatStart( time );
-              // restart flags immediately in case if we will
-              // return to '-' inactive area on the next step
-              this.isStarted = false;
-              this.isRepeatStart = false;
-            }
-            this._firstUpdate( time );
-          }
-
-          if ( isOnReverseEdge ) {
-            // if on edge but not at very end
-            // |=====|=====|=====| <<<
-            //       ^here ^here ^not here     
-            if (this.progress !== 0 && prevT != TCount) {
-              this.setProgress(0, time);
-              this.o.isIt && console.log( 'HERE 4' );
-              this._repeatStart(time);
-            }
-
-            // if on very end edge
-            // |=====|=====|=====| <<<
-            //       ^!    ^! ^2 ^1
-            // we have handled the case in this._wasUknownUpdate
-            // block so filter that
-            if ( prevT === TCount && !this._wasUknownUpdate ) {
-              this._complete( time );
-              this._repeatComplete( time );              
-              this._firstUpdate(time);
-              this.setProgress( 1, time );
-
-              // reset isComplete flag call
-              // cuz we returned to active area
-              this.isCompleted = false;
-            }
-            // change order regarding direction
-            if ( time > this.prevTime ) {
-              this.setProgress(1, time);
-              this._repeatComplete(time);
-            } else {
-              this._repeatComplete(time);
-              this.setProgress(1, time);
-            }
-          }
-
-          if ( prevT === 'delay') {
-            // if just before delay gap
-            // |---=====|---=====|---=====| >>>
-            //               ^2    ^1
-            if ( T < TPrevValue ) {
-              this._repeatComplete(time);
-              this.setProgress(1, time);
-
-            }
-            // if just after delay gap
-            // |---=====|---=====|---=====| >>>
-            //            ^1  ^2
-            if ( T === TPrevValue && T > 0 ) {
-              this.o.isIt && console.log('here 9')
-              this._repeatStart(time);
-              this.setProgress(0, time);
-            }
-          }
-
-          if ( time !== props.endTime ) {
-            this.setProgress(proc, time);
-          }
-          
-          // if progress is equal 0 and progress grows
-          if ( proc === 0 ) {
-            this._repeatStart(time);
-          }
-
-          if ( time === props.startTime ) {
-            this._start( time );
-          }
-
-      // yoyo
-      } else {
-        // var isEvenPeriod = (T % 2 === 0);
-        // // set 1 or 0 on periods' edge
-        // if ( isOnEdge ) {
-        //   this.setProgress( (isEvenPeriod) ? 0 : 1 );
-        //   this._repeatComplete();
-        // }
-        // // if yoyo then check if the current duration
-        // // period is even. If so set progress, otherwise
-        // // set inverted proc value
-        // this.setProgress( (isEvenPeriod) ? proc : 1-proc );
+        if ( time < this.prevTime ) {
+          this._complete( time );
+          this._repeatComplete( time );
+          this._firstUpdate(time);
+          this.setProgress(1, time);
+        }
       }
+
+      if ( isOnEdge ) {
+        // if not just after delay
+        // |=====|---=====|---=====| >>>
+        //         ^1 ^2
+        // because we have already handled
+        // 1 and onRepeatComplete in delay gap
+        if (this.progress !== 1) {
+          this.o.isIt && console.log( 'THERE 1' );
+          this.setProgress(1, time);
+          this._repeatComplete(time);
+        }
+        // if on edge but not at very start
+        // |=====|=====|=====| >>>
+        // ^!    ^here ^here           
+        if ( prevT >= 0 ) {
+          this.o.isIt && console.log( 'HERE 51' );
+          this._repeatStart(time);
+
+          this.setProgress( yoyoZero , time);
+        }
+      }
+
+      if ( time > this.prevTime ) {
+
+        // 
+        //  |=====|=====|=====| >>>
+        // ^1  ^2
+        if ( !this.isStarted && this.prevTime <= props.startTime ) {
+          this.o.isIt && console.log('HERE 3')
+          this._start( time );
+          this._repeatStart( time );
+          // restart flags immediately in case if we will
+          // return to '-' inactive area on the next step
+          this.isStarted = false;
+          this.isRepeatStart = false;
+        }
+        this._firstUpdate( time );
+      }
+
+      if ( isOnReverseEdge ) {
+        // if on edge but not at very end
+        // |=====|=====|=====| <<<
+        //       ^here ^here ^not here     
+        if (this.progress !== 0 && prevT != TCount) {
+          this.setProgress(0, time);
+          this.o.isIt && console.log( 'HERE 4' );
+          this._repeatStart(time);
+        }
+
+        // if on very end edge
+        // |=====|=====|=====| <<<
+        //       ^!    ^! ^2 ^1
+        // we have handled the case in this._wasUknownUpdate
+        // block so filter that
+        if ( prevT === TCount && !this._wasUknownUpdate ) {
+          this._complete( time );
+          this._repeatComplete( time );              
+          this._firstUpdate(time);
+          this.o.isIt && console.log( 'THERE 2' );
+          this.setProgress( 1, time );
+
+          // reset isComplete flag call
+          // cuz we returned to active area
+          this.isCompleted = false;
+        }
+        // change order regarding direction
+        if ( time > this.prevTime ) {
+          this.o.isIt && console.log( 'THERE 3' );
+          this.setProgress(1, time);
+          this._repeatComplete(time);
+        } else {
+          this.o.isIt && console.log( 'THERE 3.1' );
+          this._repeatComplete(time);
+          this.setProgress(1, time);
+        }
+      }
+
+      if ( prevT === 'delay') {
+        // if just before delay gap
+        // |---=====|---=====|---=====| >>>
+        //               ^2    ^1
+        if ( T < TPrevValue ) {
+          this.o.isIt && console.log( 'THERE 4' );
+          this._repeatComplete(time);
+          this.setProgress(1, time);
+
+        }
+        // if just after delay gap
+        // |---=====|---=====|---=====| >>>
+        //            ^1  ^2
+        if ( T === TPrevValue && T > 0 ) {
+          this.o.isIt && console.log('here 9')
+          this._repeatStart(time);
+          this.setProgress(yoyoZero, time);
+        }
+      }
+
+      if ( time !== props.endTime ) {
+
+        this.setProgress(
+          (props.yoyo && (T % 2 === 1)) ? 1-proc : proc,
+          time
+        );
+      }
+      
+      // if progress is equal 0 and progress grows
+      if ( proc === 0 ) {
+        this._repeatStart(time);
+      }
+
+      if ( time === props.startTime ) {
+        this._start( time );
+      }
+
     // delay gap
     } else {
 
@@ -410,18 +411,23 @@ var Tween = class Tween {
 
       // if yoyo and even period we should flip
       // so set flipCoef to 1 if we need flip, otherwise to 0
-      var flipCoef = (props.yoyo && (T % 2 === 0)) ? 1 : 0;
+      // var flipCoef = (props.yoyo && ((TValue-1) % 2 === 1)) ? 1 : 0;
       // if flip is 0 - bitwise XOR will leave the numbers as is,
       // if flip is 1 - bitwise XOR will inverse the numbers
+
+      var t = (T === 'delay') ? TValue : T;
+      if ( time > this.prevTime ) { t--; }
+      yoyoZero = ((props.yoyo && (t % 2 === 1)) ? 1 : 0);
       this.setProgress(
-        ((this.prevTime < time) ? 1 ^ flipCoef : 0 ^ flipCoef),
+        (( time > this.prevTime ) ? 1-yoyoZero : yoyoZero ),
         time
       );
       // if reverse direction and in delay gap, then progress will be 0
       // if so we don't need to call the onRepeatComplete callback
       // |=====|---=====|---=====| <<<
       //         ^here    ^here   
-      if (this.progress !== 0) { this._repeatComplete(time); }
+      // OR we have flipped 0 to 1 regarding yoyo option
+      if ( this.progress !== 0 || yoyoZero === 1 ) { this._repeatComplete(time); }
 
     }
     this._wasUknownUpdate = false;
@@ -506,9 +512,13 @@ var Tween = class Tween {
     var p       = this.props,
         TTime   = p.delay + p.duration,
         dTime   = time - p.startTime + p.delay,
-        T       = Math.floor( dTime / TTime ),
+        T       = dTime / TTime,
         elapsed = dTime % TTime;
 
+    // cover
+    T = ( time >= p.endTime ) ? Math.round(T) : Math.floor(T);
+
+    // console.log(`-------------------- T: ${T}`, dTime / TTime)
     // if time is larger then the end time
     if ( time > p.endTime ) {
       // set equal to the periods count
