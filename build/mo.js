@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.154.11',
+	  revision: '0.154.12',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -2711,7 +2711,7 @@
 
 	h = __webpack_require__(2);
 
-	resize = __webpack_require__(22);
+	resize = __webpack_require__(25);
 
 	Tween = __webpack_require__(19);
 
@@ -3241,11 +3241,11 @@
 
 	var Easing, PathEasing, bezier, easing, h, mix;
 
-	bezier = __webpack_require__(23);
+	bezier = __webpack_require__(22);
 
-	PathEasing = __webpack_require__(24);
+	PathEasing = __webpack_require__(23);
 
-	mix = __webpack_require__(25);
+	mix = __webpack_require__(24);
 
 	h = __webpack_require__(2);
 
@@ -3555,19 +3555,63 @@
 
 	var easing = _interopRequire(__webpack_require__(18));
 
-	// TODO: all public methods should return this
-
 	var Tween = (function () {
 	  function Tween() {
 	    var o = arguments[0] === undefined ? {} : arguments[0];
 	    this.o = o;
-	    this.declareDefaults();this.extendDefaults();this.vars();return this;
+	    this._declareDefaults();this._extendDefaults();this._vars();return this;
 	  }
 
 	  _prototypeProperties(Tween, null, {
-	    declareDefaults: {
-	      value: function declareDefaults() {
-	        this.defaults = {
+	    play: {
+
+	      /*
+	        Method to run the Tween
+	        @param  {Number} Start time
+	        @return {Object} Self
+	      */
+	      value: function play(time) {
+	        this._setStartTime(time);
+	        !time && t.add(this); // this.state = 'play'
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    stop: {
+
+	      /*
+	        Method to stop the Tween.
+	        @returns {Object} Self.
+	      */
+	      value: function stop() {
+	        this.pause();this._setProgress(0);return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    pause: {
+
+	      /*
+	        Method to pause Tween.
+	        @returns {Object} Self.
+	      */
+	      value: function pause() {
+	        this._removeFromTweener();return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _declareDefaults: {
+
+	      /*
+	        Method do declare defaults by this._defaults object
+	      */
+	      value: function DeclareDefaults() {
+	        this._defaults = {
 	          duration: 600,
 	          delay: 0,
 	          repeat: 0,
@@ -3586,33 +3630,33 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    vars: {
-	      value: function vars() {
-	        this.h = h;this.progress = 0;this.prevTime = -1;
-	        return this.calcDimentions();
+	    _vars: {
+	      value: function Vars() {
+	        this.h = h;this.progress = 0;this._prevTime = -1;
+	        return this._calcDimentions();
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    calcDimentions: {
-	      value: function calcDimentions() {
-	        this.props.time = this.props.duration + this.props.delay;
-	        this.props.repeatTime = this.props.time * (this.props.repeat + 1);
+	    _calcDimentions: {
+	      value: function CalcDimentions() {
+	        this._props.time = this._props.duration + this._props.delay;
+	        this._props.repeatTime = this._props.time * (this._props.repeat + 1);
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    extendDefaults: {
-	      value: function extendDefaults() {
-	        this.props = {};
-	        for (var key in this.defaults) {
-	          if (Object.hasOwnProperty.call(this.defaults, key)) {
-	            var value = this.defaults[key];
-	            this.props[key] = this.o[key] != null ? this.o[key] : value;
-	            this.props.easing = easing.parseEasing(this.o.easing || this.defaults.easing);
-	            this.onUpdate = this.props.onUpdate;
+	    _extendDefaults: {
+	      value: function ExtendDefaults() {
+	        this._props = {};
+	        for (var key in this._defaults) {
+	          if (Object.hasOwnProperty.call(this._defaults, key)) {
+	            var value = this._defaults[key];
+	            this._props[key] = this.o[key] != null ? this.o[key] : value;
+	            this._props.easing = easing.parseEasing(this.o.easing || this._defaults.easing);
+	            this.onUpdate = this._props.onUpdate;
 	          }
 	        }
 	      },
@@ -3620,16 +3664,16 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    setStartTime: {
+	    _setStartTime: {
 	      /*
 	        Method for setting start and end time to props.
 	        @param {Number(Timestamp)}, {Null}
 	        @returns this
 	      */
-	      value: function setStartTime(time) {
-	        var props = this.props;
-	        this.isCompleted = false;this.isRepeatCompleted = false;
-	        this.isStarted = false;
+	      value: function SetStartTime(time) {
+	        var props = this._props;
+	        this._isCompleted = false;this._isRepeatCompleted = false;
+	        this._isStarted = false;
 
 	        time = time == null ? performance.now() : time;
 	        props.startTime = time + props.delay + (props.shiftTime || 0);
@@ -3641,7 +3685,7 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    update: {
+	    _update: {
 	      /*
 	        Method to update tween's progress.
 	        @param {Number}   Time from the parent regarding it's period size.
@@ -3649,223 +3693,102 @@
 	        @param {Number}   Parent's current period number.
 	        @param {Number}   Parent's previous period number.
 	      */
-	      value: function update(time, isGrow) {
-	        var props = this.props;
-
+	      value: function Update(time, isGrow) {
 	        // We need to know what direction we are heading in with this tween,
 	        // so if we don't have the previous update value - this is very first
 	        // update, - skip it entirely and wait for the next value
 	        this.o.isIt && console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 	        this.o.isIt && console.log("tween:");
 	        this.o.isIt && this._visualizeProgress(time);
-
-	        if (this.prevTime === -1) {
+	        if (this._prevTime === -1) {
 	          this.o.isIt && console.log("SKIP");
-	          this.prevTime = time;
+	          this._prevTime = time;
 	          this._wasUknownUpdate = true;
 	          return false;
 	        }
-
 	        /*
 	          if time is inside the active area of the tween.
 	          active area is the area from start time to end time,
 	          with all the repeat and delays in it
 	        */
-	        if (time >= this.props.startTime && time <= this.props.endTime) {
+	        var props = this._props;
+	        if (time >= this._props.startTime && time <= this._props.endTime) {
 	          this._updateInActiveArea(time);
 	        } else {
-	          // this.isFirstUpdate = false;
 	          // complete if time is larger then end time
-	          if (time > this.props.endTime && !this.isCompleted && this._isInActiveArea) {
+	          // probably we must check for direction too
+	          if (time > this._props.endTime && !this._isCompleted && this._isInActiveArea) {
 	            // get period number
-	            var props = this.props,
-	                startPoint = props.startTime - props.delay,
-	                periodNumber = Math.floor((props.endTime - startPoint) / (props.delay + props.duration));
-
-	            // if ( isGrow == null ) { isGrow = time > this.prevTime; }
-
-	            this.o.isIt && console.log("THERE 51");
-	            this.setProgress(this.o.yoyo && periodNumber % 2 === 0 ? 0 : 1, time);
-
+	            var T = this._getPeriod(props.endTime);
+	            this._setProgress(this.o.yoyo && T % 2 === 0 ? 0 : 1, time);
 	            this._repeatComplete(time);
 	            this._complete(time);
 	          }
 
 	          // if was active and went to - inactive area "-"
-	          if (time < this.prevTime && time < this.props.startTime) {
-	            this.o.isIt && console.log("isStarted: " + this.isStarted);
-	            if (!this.isStarted && this._isInActiveArea) {
-	              this.o.isIt && console.log("HERE 5");
-	              this.setProgress(0, time);
+	          if (time < this._prevTime && time < this._props.startTime) {
+	            // if was in active area and didn't fire onStart callback
+	            if (!this._isStarted && this._isInActiveArea) {
+	              this._setProgress(0, time);
 	              this._repeatStart(time);
 	              this._start(time);
 	            }
 	          }
-
 	          this._isInActiveArea = false;
 	        }
 
-	        this.prevTime = time;
-	        return this.isCompleted;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _start: {
-
-	      /*
-	        Method to set tween's state to start
-	        @method _start
-	        @param {Number} Progress to set.
-	      */
-	      value: function Start(time) {
-	        if (this.isStarted) {
-	          return;
-	        }
-	        // this.setProgress(progress, time);
-	        // this._repeatStart();
-	        if (this.props.onStart != null && typeof this.props.onStart === "function") {
-	          this.o.isIt && console.log("********** START **********");
-	          this.props.onStart.call(this, time > this.prevTime);
-	        }
-	        this.isCompleted = false;this.isStarted = true;
-	        this.isFirstUpdate = false;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _complete: {
-
-	      /*
-	        Method to set tween's state to complete.
-	        @method _complete
-	        @param {Number} Current time.
-	      */
-	      value: function Complete(time) {
-	        if (this.isCompleted) {
-	          return;
-	        }
-	        // this.setProgress(progress, time);
-	        // this._repeatComplete(time);
-	        if (this.props.onComplete != null && typeof this.props.onComplete === "function") {
-	          this.o.isIt && console.log("********** COMPLETE **********");
-	          this.props.onComplete.call(this, time > this.prevTime);
-	        }
-	        this.isCompleted = true;this.isStarted = false;
-	        this.isFirstUpdate = false;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _firstUpdate: {
-
-	      /*
-	        Method to run onFirstUpdate callback.
-	        @method _firstUpdate
-	        @param {Number} Current update time.
-	      */
-	      value: function FirstUpdate(time) {
-	        if (this.isFirstUpdate) {
-	          return;
-	        }
-	        if (this.props.onFirstUpdate != null && typeof this.props.onFirstUpdate === "function") {
-	          this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
-	          this.props.onFirstUpdate.call(this, time > this.prevTime);
-	        }
-	        this.isFirstUpdate = true;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _repeatComplete: {
-
-	      /*
-	        Method call onRepeatComplete calback and set flags.
-	        @param {Number} Current update time.
-	      */
-	      value: function RepeatComplete(time) {
-	        if (this.isRepeatCompleted) {
-	          return;
-	        }
-	        if (this.props.onRepeatComplete != null && typeof this.props.onRepeatComplete === "function") {
-	          this.o.isIt && console.log("********** REPEAT COMPLETE **********");
-	          this.props.onRepeatComplete.call(this, time > this.prevTime);
-	        }
-	        this.isRepeatCompleted = true;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _repeatStart: {
-
-	      /*
-	        Method call onRepeatStart calback and set flags.
-	      */
-	      value: function RepeatStart(time) {
-	        if (this.isRepeatStart) {
-	          return;
-	        }
-	        if (this.props.onRepeatStart != null && typeof this.props.onRepeatStart === "function") {
-	          this.o.isIt && console.log("********** REPEAT START **********");
-	          this.props.onRepeatStart.call(this, time > this.prevTime);
-	        }
-	        this.isRepeatStart = true;
+	        this._prevTime = time;
+	        return this._isCompleted;
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
 	    _updateInActiveArea: {
+	      /*
+	        Method to handle tween's progress in active area.
+	        @param {Number} Current update time.
+	      */
 	      value: function UpdateInActiveArea(time) {
 	        // reset callback flags
-	        this.isOnReverseComplete = false;this.isCompleted = false;
+	        this._isCompleted = false;
 
-	        var props = this.props,
+	        var props = this._props,
 	            delayDuration = props.delay + props.duration,
 	            startPoint = props.startTime - props.delay,
 	            elapsed = (time - props.startTime + props.delay) % delayDuration,
 	            TCount = Math.round((props.endTime - props.startTime + props.delay) / delayDuration),
 	            T = this._getPeriod(time),
 	            TValue = this._delayT,
-	            prevT = this._getPeriod(this.prevTime),
+	            prevT = this._getPeriod(this._prevTime),
 	            TPrevValue = this._delayT;
 
 	        // "zero" and "one" value regarding yoyo and it's period
 	        var yoyoZero = props.yoyo && T % 2 === 1 ? 1 : 0,
 	            yoyoOne = 1 - yoyoZero;
 
-	        if (time === this.props.endTime) {
+	        if (time === this._props.endTime) {
 	          this._wasUknownUpdate = false;
-	          this.o.isIt && console.log("time: " + time + ", end: " + this.props.endTime + ", prev: " + this.prevTime);
+	          this.o.isIt && console.log("time: " + time + ", end: " + this._props.endTime + ", prev: " + this._prevTime);
 	          this.o.isIt && console.log("T: " + T);
 	          this.o.isIt && console.log("THERE 6", yoyoOne);
 	          // if `time` is equal to `endTime`, T is equal to the next period,
 	          // so we need to decrement T and calculate "one" value regarding yoyo
-	          this.setProgress(props.yoyo && (T - 1) % 2 === 1 ? 0 : 1, time);
+	          this._setProgress(props.yoyo && (T - 1) % 2 === 1 ? 0 : 1, time);
 	          this._repeatComplete(time);
 	          return this._complete(time);
 	        }
 
 	        this.o.isIt && console.log("TCount: " + TCount);
-	        this.o.isIt && console.log("T: " + T + ", prevT: " + prevT + ", time: " + time + " prevTime: " + this.prevTime);
+	        this.o.isIt && console.log("T: " + T + ", prevT: " + prevT + ", time: " + time + " _prevTime: " + this._prevTime);
 
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
-	          this._isInActiveArea = true;
-	          this.isRepeatCompleted = false;
-	          this.isRepeatStart = false;
-	          this.isOnReverseComplete = false;
-	          this.isStarted = false;
+	          this._isInActiveArea = true;this._isRepeatCompleted = false;
+	          this._isRepeatStart = false;this._isStarted = false;
 	          // active zone or larger then end
-	          var elapsed2 = (time - props.startTime) % delayDuration;
-	          var proc = elapsed2 / props.duration;
-	          this.o.isIt && console.log("proc: " + proc + ", elapsed2: " + elapsed2 + ", elapsed: " + elapsed);
-
+	          var elapsed2 = (time - props.startTime) % delayDuration,
+	              proc = elapsed2 / props.duration;
 	          // |=====|=====|=====| >>>
 	          //      ^1^2
 	          var isOnEdge = T > 0 && prevT < T;
@@ -3873,22 +3796,18 @@
 	          //      ^2^1
 	          var isOnReverseEdge = prevT > T;
 
-	          this.o.isIt && console.log("isOnEdge: " + isOnEdge + ", isOnReverseEdge: " + isOnReverseEdge);
-
 	          if (this._wasUknownUpdate) {
-	            if (time > this.prevTime) {
-	              this.o.isIt && console.log("HERE 2");
+	            if (time > this._prevTime) {
 	              this._start(time);
 	              this._repeatStart(time);
 	              this._firstUpdate(time);
-	              this.setProgress(0, time);
+	              this._setProgress(0, time);
 	            }
-
-	            if (time < this.prevTime) {
+	            if (time < this._prevTime) {
 	              this._complete(time);
 	              this._repeatComplete(time);
 	              this._firstUpdate(time);
-	              this.setProgress(1, time);
+	              this._setProgress(1, time);
 	            }
 	          }
 
@@ -3899,36 +3818,33 @@
 	            // because we have already handled
 	            // 1 and onRepeatComplete in delay gap
 	            if (this.progress !== 1) {
-	              this.o.isIt && console.log("THERE 1");
-	              this.setProgress(1, time);
+	              this._setProgress(1, time);
 	              this._repeatComplete(time);
 	            }
 	            // if on edge but not at very start
 	            // |=====|=====|=====| >>>
 	            // ^!    ^here ^here          
 	            if (prevT >= 0) {
-	              this.o.isIt && console.log("HERE 51");
 	              this._repeatStart(time);
 
-	              this.setProgress(yoyoZero, time);
+	              this._setProgress(yoyoZero, time);
 	            }
 	          }
 
-	          if (time > this.prevTime) {
+	          if (time > this._prevTime) {
 	            //
 	            //  |=====|=====|=====| >>>
 	            // ^1  ^2
-	            if (!this.isStarted && this.prevTime <= props.startTime) {
-	              this.o.isIt && console.log("HERE 3");
+	            if (!this._isStarted && this._prevTime <= props.startTime) {
 	              this._start(time);
 	              this._repeatStart(time);
 	              // it was zero anyways
-	              // this.setProgress( yoyoZero , time);
+	              // this._setProgress( yoyoZero , time);
 
 	              // restart flags immediately in case if we will
 	              // return to '-' inactive area on the next step
-	              this.isStarted = false;
-	              this.isRepeatStart = false;
+	              this._isStarted = false;
+	              this._isRepeatStart = false;
 	            }
 	            this._firstUpdate(time);
 	          }
@@ -3938,8 +3854,7 @@
 	            // |=====|=====|=====| <<<
 	            //       ^here ^here ^not here    
 	            if (this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
-	              this.o.isIt && console.log("HERE 4", yoyoZero, T);
-	              this.setProgress(0, time);
+	              this._setProgress(0, time);
 	              this._repeatStart(time);
 	            }
 
@@ -3952,22 +3867,18 @@
 	              this._complete(time);
 	              this._repeatComplete(time);
 	              this._firstUpdate(time);
-	              this.o.isIt && console.log("THERE 2");
-	              this.setProgress(1, time);
-
+	              this._setProgress(1, time);
 	              // reset isComplete flag call
 	              // cuz we returned to active area
-	              this.isCompleted = false;
+	              this._isCompleted = false;
 	            }
 	            // change order regarding direction
-	            if (time > this.prevTime) {
-	              this.o.isIt && console.log("THERE 3");
-	              this.setProgress(1, time);
+	            if (time > this._prevTime) {
+	              this._setProgress(1, time);
 	              this._repeatComplete(time);
 	            } else {
-	              this.o.isIt && console.log("THERE 3.1");
 	              this._repeatComplete(time);
-	              this.setProgress(yoyoOne, time);
+	              this._setProgress(yoyoOne, time);
 	            }
 	          }
 
@@ -3976,24 +3887,21 @@
 	            // |---=====|---=====|---=====| >>>
 	            //               ^2    ^1
 	            if (T < TPrevValue) {
-	              this.o.isIt && console.log("THERE 4");
 	              this._repeatComplete(time);
-	              this.setProgress(yoyoOne, time);
+	              this._setProgress(yoyoOne, time);
 	            }
 	            // if just after delay gap
 	            // |---=====|---=====|---=====| >>>
 	            //            ^1  ^2
 	            if (T === TPrevValue && T > 0) {
-	              this.o.isIt && console.log("here 9");
 	              this._repeatStart(time);
-	              this.setProgress(yoyoZero, time);
+	              this._setProgress(yoyoZero, time);
 	            }
 	          }
 
 	          if (time !== props.endTime) {
-	            this.setProgress(props.yoyo && T % 2 === 1 ? 1 - proc : proc, time);
+	            this._setProgress(props.yoyo && T % 2 === 1 ? 1 - proc : proc, time);
 	          }
-
 	          // if progress is equal 0 and progress grows
 	          if (proc === 0) {
 	            this._repeatStart(time);
@@ -4002,89 +3910,83 @@
 	          if (time === props.startTime) {
 	            this._start(time);
 	          }
-
 	          // delay gap
 	        } else {
+	          // because T will be string of "delay" here,
+	          // let's normalize it be setting to TValue
+	          var t = T === "delay" ? TValue : T,
+	              isGrows = time > this._prevTime;
+	          // decrement period if forward direction of update
+	          isGrows && t--;
+	          // calculate normalized yoyoZero value
+	          yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
 	          // if was in active area and previous time was larger
-	          if (this._isInActiveArea && time < this.prevTime) {
-	            var t = T === "delay" ? TValue : T;
-	            yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
-
-	            this.o.isIt && console.log("here 8", yoyoZero, T, TValue);
-	            this.setProgress(yoyoZero, time);
+	          // |---=====|---=====|---=====| <<<
+	          //   ^2 ^1    ^2 ^1    ^2 ^1
+	          if (this._isInActiveArea && time < this._prevTime) {
+	            this._setProgress(yoyoZero, time);
 	            this._repeatStart(time);
 	          }
-
-	          this._isInActiveArea = false;
-	          // this.isRepeatStart = false;
-
-	          // if yoyo and even period we should flip
-	          // so set flipCoef to 1 if we need flip, otherwise to 0
-	          // var flipCoef = (props.yoyo && ((TValue-1) % 2 === 1)) ? 1 : 0;
-	          // if flip is 0 - bitwise XOR will leave the numbers as is,
-	          // if flip is 1 - bitwise XOR will inverse the numbers
-
-	          var t = T === "delay" ? TValue : T;
-	          if (time > this.prevTime) {
-	            t--;
-	          }
-	          yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
-	          this.o.isIt && console.log("hherre 1", yoyoZero);
-	          this.setProgress(time > this.prevTime ? 1 - yoyoZero : yoyoZero, time);
+	          // set 1 or 0 regarding direction and yoyo
+	          this._setProgress(isGrows ? 1 - yoyoZero : yoyoZero, time);
 	          // if reverse direction and in delay gap, then progress will be 0
 	          // if so we don't need to call the onRepeatComplete callback
-	          // |=====|---=====|---=====| <<<
-	          //         ^here    ^here  
+	          // |---=====|---=====|---=====| <<<
+	          //   ^0       ^0       ^0  
 	          // OR we have flipped 0 to 1 regarding yoyo option
 	          if (this.progress !== 0 || yoyoZero === 1) {
 	            this._repeatComplete(time);
 	          }
+	          // set flag to indicate inactive area
+	          this._isInActiveArea = false;
 	        }
+	        // we've got the first update now
 	        this._wasUknownUpdate = false;
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    setProgress: {
-
+	    _setProgress: {
 	      /*
 	        Method to set Tween's progress.
 	        @param {Number} Progress to set.
 	        @param {Number} Current update time.
+	        @returns {Object} Self.
 	      */
-	      value: function setProgress(p, time) {
+	      value: function SetProgress(p, time) {
 	        this.progress = p;
-	        this.easedProgress = this.props.easing(this.progress);
-	        if (this.props.prevEasedProgress !== this.easedProgress) {
+	        this.easedProgress = this._props.easing(this.progress);
+	        if (this._props.prevEasedProgress !== this.easedProgress) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
 	            this.o.isIt && console.log("********** ONUPDATE " + p + " **********");
-	            this.onUpdate(this.easedProgress, this.progress, time > this.prevTime);
+	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime);
 	          }
 	        } else {
 	          this.o.isIt && console.log("********** ONUPDATE TRYOUT **********");
 	        }
-	        this.props.prevEasedProgress = this.easedProgress;
+	        this._props.prevEasedProgress = this.easedProgress;
+	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    setProp: {
+	    _setProp: {
 
 	      /*
 	        Method to set property[s] on Tween
 	        @param {Object, String} Hash object of key/value pairs, or property name
 	        @param {_} Property's value to set
 	      */
-	      value: function setProp(obj, value) {
+	      value: function SetProp(obj, value) {
 	        // handle hash object case
 	        if (typeof obj === "object") {
 	          for (var key in obj) {
 	            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-	              this.props[key] = obj[key];
+	              this._props[key] = obj[key];
 	              if (key === "easing") {
-	                this.props.easing = easing.parseEasing(this.props.easing);
+	                this._props.easing = easing.parseEasing(this._props.easing);
 	              }
 	            }
 	          }
@@ -4092,65 +3994,23 @@
 	        } else if (typeof obj === "string") {
 	          // if key is easing - parse it immediately
 	          if (obj === "easing") {
-	            this.props.easing = easing.parseEasing(value);
+	            this._props.easing = easing.parseEasing(value);
 	          }
 	          // else just save it to props
 	          else {
-	            this.props[obj] = value;
+	            this._props[obj] = value;
 	          }
 	        }
-	        this.calcDimentions();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    play: {
-
-	      /*
-	        Method to run the Tween
-	        @param  {Number} Start time
-	        @return {Object} Self
-	      */
-	      value: function play(time) {
-	        this.setStartTime(time);
-	        !time && t.add(this); // this.state = 'play'
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    stop: {
-
-	      /*
-	        Method to stop the Tween.
-	        @returns {Object} Self
-	      */
-	      value: function stop() {
-	        this.pause();this.setProgress(0); /* add smallest time */return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    pause: {
-
-	      /*
-	        Method to pause Tween.
-	        @returns {Object} Self
-	      */
-	      value: function pause() {
-	        this._removeFromTweener();return this;
+	        this._calcDimentions();
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
 	    _removeFromTweener: {
-
 	      /*
 	        Method to remove the Tween from the tweener.
+	        @returns {Onject} Self.
 	      */
 	      value: function RemoveFromTweener() {
 	        t.remove(this);return this;
@@ -4164,9 +4024,10 @@
 	      /*
 	        Method to get current period number
 	        @param {Number} Time to get the period for.
+	        @returns {Number} Current period number.
 	      */
 	      value: function GetPeriod(time) {
-	        var p = this.props,
+	        var p = this._props,
 	            TTime = p.delay + p.duration,
 	            dTime = time - p.startTime + p.delay,
 	            T = dTime / TTime,
@@ -4186,8 +4047,114 @@
 	          this._delayT = T;T = "delay";
 	        }
 	        // if the end of period and there is a delay
-	        // if ( elapsed === 0 && T > 0 ) { T--; }
 	        return T;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _start: {
+
+	      /*
+	        Method to set tween's state to start
+	        @method _start
+	        @param {Number} Progress to set.
+	      */
+	      value: function Start(time) {
+	        if (this._isStarted) {
+	          return;
+	        }
+	        if (this._props.onStart != null && typeof this._props.onStart === "function") {
+	          this.o.isIt && console.log("********** START **********");
+	          this._props.onStart.call(this, time > this._prevTime);
+	        }
+	        this._isCompleted = false;this._isStarted = true;
+	        this._isFirstUpdate = false;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _complete: {
+
+	      /*
+	        Method to set tween's state to complete.
+	        @method _complete
+	        @param {Number} Current time.
+	      */
+	      value: function Complete(time) {
+	        if (this._isCompleted) {
+	          return;
+	        }
+	        // this._setProgress(progress, time);
+	        // this._repeatComplete(time);
+	        if (this._props.onComplete != null && typeof this._props.onComplete === "function") {
+	          this.o.isIt && console.log("********** COMPLETE **********");
+	          this._props.onComplete.call(this, time > this._prevTime);
+	        }
+	        this._isCompleted = true;this._isStarted = false;
+	        this._isFirstUpdate = false;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _firstUpdate: {
+
+	      /*
+	        Method to run onFirstUpdate callback.
+	        @method _firstUpdate
+	        @param {Number} Current update time.
+	      */
+	      value: function FirstUpdate(time) {
+	        if (this._isFirstUpdate) {
+	          return;
+	        }
+	        if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === "function") {
+	          this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
+	          this._props.onFirstUpdate.call(this, time > this._prevTime);
+	        }
+	        this._isFirstUpdate = true;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _repeatComplete: {
+
+	      /*
+	        Method call onRepeatComplete calback and set flags.
+	        @param {Number} Current update time.
+	      */
+	      value: function RepeatComplete(time) {
+	        if (this._isRepeatCompleted) {
+	          return;
+	        }
+	        if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === "function") {
+	          this.o.isIt && console.log("********** REPEAT COMPLETE **********");
+	          this._props.onRepeatComplete.call(this, time > this._prevTime);
+	        }
+	        this._isRepeatCompleted = true;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _repeatStart: {
+
+	      /*
+	        Method call onRepeatStart calback and set flags.
+	        @param {Number} Current update time.
+	      */
+	      value: function RepeatStart(time) {
+	        if (this._isRepeatStart) {
+	          return;
+	        }
+	        if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === "function") {
+	          this.o.isIt && console.log("********** REPEAT START **********");
+	          this._props.onRepeatStart.call(this, time > this._prevTime);
+	        }
+	        this._isRepeatStart = true;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4197,7 +4164,7 @@
 	      value: function VisualizeProgress(time) {
 	        var str = "|",
 	            procStr = " ",
-	            p = this.props,
+	            p = this._props,
 	            proc = p.startTime - p.delay;
 
 	        while (proc < p.endTime) {
@@ -4275,7 +4242,7 @@
 	        this.state = "stop";
 	        this.defaults = { repeat: 0, delay: 0 };
 	        this.timelines = [];
-	        this.props = { time: 0, repeatTime: 0, shiftedRepeatTime: 0 };
+	        this._props = { time: 0, repeatTime: 0, shiftedRepeatTime: 0 };
 	        this.loop = h.bind(this.loop, this);
 	        this.onUpdate = this.o.onUpdate;
 	      },
@@ -4320,7 +4287,7 @@
 	      value: function ExtendDefaults() {
 	        for (var key in this.defaults) {
 	          if (this.defaults.hasOwnProperty(key)) {
-	            this.props[key] = this.o[key] != null ? this.o[key] : this.defaults[key];
+	            this._props[key] = this.o[key] != null ? this.o[key] : this.defaults[key];
 	          }
 	        }
 	      },
@@ -4328,15 +4295,15 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    setProp: {
+	    _setProp: {
 
 	      /*
 	        Method to add a prop to the props object.
 	      */
-	      value: function setProp(props) {
+	      value: function SetProp(props) {
 	        for (var key in props) {
 	          if (props.hasOwnProperty(key)) {
-	            this.props[key] = props[key];
+	            this._props[key] = props[key];
 	          }
 	        }
 	        return this.recalcDuration();
@@ -4352,7 +4319,7 @@
 	          timeline = timeline.timeline;
 	        }
 	        // add self delay to the timeline
-	        shift != null && timeline.setProp({ shiftTime: shift });
+	        shift != null && timeline._setProp({ shiftTime: shift });
 	        this.timelines.push(timeline);
 	        return this._recalcTimelineDuration(timeline);
 	      },
@@ -4400,7 +4367,7 @@
 	    _appendTimelineArray: {
 	      value: function AppendTimelineArray(timelineArray) {
 	        var i = timelineArray.length;
-	        var time = this.props.repeatTime - this.props.delay;
+	        var time = this._props.repeatTime - this._props.delay;
 	        var len = this.timelines.length;
 
 	        while (i--) {
@@ -4413,8 +4380,8 @@
 	    },
 	    appendTimeline: {
 	      value: function appendTimeline(timeline, index, time) {
-	        var shift = time != null ? time : this.props.time;
-	        shift += timeline.props.shiftTime || 0;
+	        var shift = time != null ? time : this._props.time;
+	        shift += timeline._props.shiftTime || 0;
 	        timeline.index = index;this.pushTimeline(timeline, shift);
 	      },
 	      writable: true,
@@ -4424,7 +4391,7 @@
 	    recalcDuration: {
 	      value: function recalcDuration() {
 	        var len = this.timelines.length;
-	        this.props.time = 0;this.props.repeatTime = 0;this.props.shiftedRepeatTime = 0;
+	        this._props.time = 0;this._props.repeatTime = 0;this._props.shiftedRepeatTime = 0;
 	        while (len--) {
 	          this._recalcTimelineDuration(this.timelines[len]);
 	        }
@@ -4435,17 +4402,17 @@
 	    },
 	    _recalcTimelineDuration: {
 	      value: function RecalcTimelineDuration(timeline) {
-	        var timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
-	        this.props.time = Math.max(timelineTime, this.props.time);
-	        this.props.repeatTime = (this.props.time + this.props.delay) * (this.props.repeat + 1);
-	        this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
-	        this.props.shiftedRepeatTime -= this.props.delay;
+	        var timelineTime = timeline._props.repeatTime + (timeline._props.shiftTime || 0);
+	        this._props.time = Math.max(timelineTime, this._props.time);
+	        this._props.repeatTime = (this._props.time + this._props.delay) * (this._props.repeat + 1);
+	        this._props.shiftedRepeatTime = this._props.repeatTime + (this._props.shiftTime || 0);
+	        this._props.shiftedRepeatTime -= this._props.delay;
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    update: {
+	    _update: {
 
 	      /*  Method to take care of the current time.
 	          @param {Number} The current time
@@ -4453,18 +4420,18 @@
 	          had ended it execution so should be removed form the 
 	          tweener's active tweens array
 	      */
-	      value: function update(time, isGrow) {
-	        var props = this.props;
+	      value: function Update(time, isGrow) {
+	        var props = this._props;
 	        this.o.isIt && console.log("------------------------------------------------");
 	        this.o.isIt && console.log("timeline:");
 	        this.o.isIt && console.log("time: " + time + ", prevTime: " + this._previousUpdateTime);
 	        this.o.isIt && console.log("start: " + props.startTime + ", end: " + props.endTime);
 	        // don't go further then the endTime
-	        if (time > this.props.endTime) {
-	          time = this.props.endTime;
+	        if (time > this._props.endTime) {
+	          time = this._props.endTime;
 	        }
 	        // return true if timeline was already completed
-	        if (time === this.props.endTime && this.isCompleted) {
+	        if (time === this._props.endTime && this.isCompleted) {
 	          return true;
 	        }
 	        // set the time to timelines
@@ -4492,7 +4459,7 @@
 	      value: function UpdateTimelines(time, isGrow) {
 	        // get elapsed with respect to repeat option
 	        // so take a modulo of the elapsed time
-	        var props = this.props;
+	        var props = this._props;
 	        var startPoint = props.startTime - props.delay;
 	        var elapsed = (time - startPoint) % (props.delay + props.time);
 
@@ -4538,14 +4505,14 @@
 	          //   this.o.isIt && console.log(`******* missed time: ${missedTime}, time: ${props.time}`);
 	          //   var j = -1;
 	          //   while(j++ < len) {
-	          //     this.timelines[j].update(missedTime);
+	          //     this.timelines[j]._update(missedTime);
 	          //   }
 	          // }
 
 	          // check if progress grows
 	          isGrow = isGrow == null ? time > (this._previousUpdateTime || 0) : isGrow;
 	          while (i++ < len) {
-	            this.timelines[i].update(timeToTimelines, isGrow);
+	            this.timelines[i]._update(timeToTimelines, isGrow);
 	          }
 	        }
 	        return this._previousUpdateTime = time;
@@ -4576,14 +4543,14 @@
 	          this.isStarted = true;this.isCompleted = false;
 	        }
 	        // if isn't complete
-	        if (time >= this.props.startTime && time < this.props.endTime) {
+	        if (time >= this._props.startTime && time < this._props.endTime) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
-	            this.onUpdate((time - this.props.startTime) / this.props.repeatTime);
+	            this.onUpdate((time - this._props.startTime) / this._props.repeatTime);
 	          }
 	        }
 
 	        // if reverse completed
-	        if (this.prevTime > time && time <= this.props.startTime) {
+	        if (this.prevTime > time && time <= this._props.startTime) {
 	          if (this.o.onReverseComplete != null && typeof this.o.onReverseComplete === "function") {
 	            this.o.onReverseComplete.apply(this);
 	          }
@@ -4592,7 +4559,7 @@
 	        // save the current time as previous for future
 	        this.prevTime = time;
 	        // if completed
-	        if (time === this.props.endTime && !this.isCompleted) {
+	        if (time === this._props.endTime && !this.isCompleted) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
 	            this.onUpdate(1);
 	          }
@@ -4608,7 +4575,7 @@
 	    },
 	    play: {
 	      value: function play(time) {
-	        this.setStartTime(time);
+	        this._setStartTime(time);
 	        if (!time) {
 	          t.add(this);this.state = "play";
 	        };
@@ -4651,9 +4618,9 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    setStartTime: {
-	      value: function setStartTime(time) {
-	        this.getDimentions(time);this.startTimelines(this.props.startTime);
+	    _setStartTime: {
+	      value: function SetStartTime(time) {
+	        this.getDimentions(time);this.startTimelines(this._props.startTime);
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4662,9 +4629,9 @@
 	    startTimelines: {
 	      value: function startTimelines(time) {
 	        var i = this.timelines.length;
-	        time == null && (time = this.props.startTime);
+	        time == null && (time = this._props.startTime);
 	        while (i--) {
-	          this.timelines[i].setStartTime(time);
+	          this.timelines[i]._setStartTime(time);
 	        }
 	      },
 	      writable: true,
@@ -4673,11 +4640,11 @@
 	    },
 	    setProgress: {
 	      value: function setProgress(progress) {
-	        if (this.props.startTime == null) {
-	          this.setStartTime();
+	        if (this._props.startTime == null) {
+	          this._setStartTime();
 	        }
 	        progress = h.clamp(progress, 0, 1);
-	        this.update(this.props.startTime + progress * this.props.repeatTime);
+	        this._update(this._props.startTime + progress * this._props.repeatTime);
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4686,9 +4653,9 @@
 	    getDimentions: {
 	      value: function getDimentions(time) {
 	        time = time == null ? performance.now() : time;
-	        this.props.startTime = time + this.props.delay + (this.props.shiftTime || 0);
-	        this.props.endTime = this.props.startTime + this.props.shiftedRepeatTime;
-	        this.props.endTime -= this.props.shiftTime || 0;
+	        this._props.startTime = time + this._props.delay + (this._props.shiftTime || 0);
+	        this._props.endTime = this._props.startTime + this._props.shiftedRepeatTime;
+	        this._props.endTime -= this._props.shiftTime || 0;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4708,7 +4675,7 @@
 	// if ( time !== missedTime ) {
 	//   var j = -1;
 	//   while(j++ < len) {
-	//     this.timelines[j].update(missedTime);
+	//     this.timelines[j]._update(missedTime);
 	//   }
 	// }
 
@@ -4752,7 +4719,7 @@
 	        if (!this.isRunning) {
 	          return false;
 	        }
-	        var time = performance.now();this.update(time);
+	        var time = performance.now();this._update(time);
 	        if (!this.tweens.length) {
 	          return this.isRunning = false;
 	        }
@@ -4782,11 +4749,11 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    update: {
-	      value: function update(time) {
+	    _update: {
+	      value: function Update(time) {
 	        var i = this.tweens.length;
 	        while (i--) {
-	          if (this.tweens[i].update(time) === true) {
+	          if (this.tweens[i]._update(time) === true) {
 	            this.remove(i);
 	          }
 	        }
@@ -4833,227 +4800,6 @@
 
 /***/ },
 /* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-	/*!
-	  LegoMushroom @legomushroom http://legomushroom.com
-	  MIT License 2014
-	 */
-
-	/* istanbul ignore next */
-	(function() {
-	  var Main;
-	  Main = (function() {
-	    function Main(o) {
-	      this.o = o != null ? o : {};
-	      if (window.isAnyResizeEventInited) {
-	        return;
-	      }
-	      this.vars();
-	      this.redefineProto();
-	    }
-
-	    Main.prototype.vars = function() {
-	      window.isAnyResizeEventInited = true;
-	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
-	      return this.timerElements = {
-	        img: 1,
-	        textarea: 1,
-	        input: 1,
-	        embed: 1,
-	        object: 1,
-	        svg: 1,
-	        canvas: 1,
-	        tr: 1,
-	        tbody: 1,
-	        thead: 1,
-	        tfoot: 1,
-	        a: 1,
-	        select: 1,
-	        option: 1,
-	        optgroup: 1,
-	        dl: 1,
-	        dt: 1,
-	        br: 1,
-	        basefont: 1,
-	        font: 1,
-	        col: 1,
-	        iframe: 1
-	      };
-	    };
-
-	    Main.prototype.redefineProto = function() {
-	      var i, it, proto, t;
-	      it = this;
-	      return t = (function() {
-	        var j, len, ref, results;
-	        ref = this.allowedProtos;
-	        results = [];
-	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	          proto = ref[i];
-	          if (proto.prototype == null) {
-	            continue;
-	          }
-	          results.push((function(proto) {
-	            var listener, remover;
-	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	            (function(listener) {
-	              var wrappedListener;
-	              wrappedListener = function() {
-	                var option;
-	                if (this !== window || this !== document) {
-	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
-	                  option && it.handleResize({
-	                    args: arguments,
-	                    that: this
-	                  });
-	                }
-	                return listener.apply(this, arguments);
-	              };
-	              if (proto.prototype.addEventListener) {
-	                return proto.prototype.addEventListener = wrappedListener;
-	              } else if (proto.prototype.attachEvent) {
-	                return proto.prototype.attachEvent = wrappedListener;
-	              }
-	            })(listener);
-	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
-	            return (function(remover) {
-	              var wrappedRemover;
-	              wrappedRemover = function() {
-	                this.isAnyResizeEventInited = false;
-	                this.iframe && this.removeChild(this.iframe);
-	                return remover.apply(this, arguments);
-	              };
-	              if (proto.prototype.removeEventListener) {
-	                return proto.prototype.removeEventListener = wrappedRemover;
-	              } else if (proto.prototype.detachEvent) {
-	                return proto.prototype.detachEvent = wrappedListener;
-	              }
-	            })(remover);
-	          })(proto));
-	        }
-	        return results;
-	      }).call(this);
-	    };
-
-	    Main.prototype.handleResize = function(args) {
-	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
-	      el = args.that;
-	      if (!this.timerElements[el.tagName.toLowerCase()]) {
-	        iframe = document.createElement('iframe');
-	        el.appendChild(iframe);
-	        iframe.style.width = '100%';
-	        iframe.style.height = '100%';
-	        iframe.style.position = 'absolute';
-	        iframe.style.zIndex = -999;
-	        iframe.style.opacity = 0;
-	        iframe.style.top = 0;
-	        iframe.style.left = 0;
-	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
-	        isNoPos = el.style.position === '';
-	        isStatic = computedStyle.position === 'static' && isNoPos;
-	        isEmpty = computedStyle.position === '' && el.style.position === '';
-	        if (isStatic || isEmpty) {
-	          el.style.position = 'relative';
-	        }
-	        if ((ref = iframe.contentWindow) != null) {
-	          ref.onresize = (function(_this) {
-	            return function(e) {
-	              return _this.dispatchEvent(el);
-	            };
-	          })(this);
-	        }
-	        el.iframe = iframe;
-	      } else {
-	        this.initTimer(el);
-	      }
-	      return el.isAnyResizeEventInited = true;
-	    };
-
-	    Main.prototype.initTimer = function(el) {
-	      var height, width;
-	      width = 0;
-	      height = 0;
-	      return this.interval = setInterval((function(_this) {
-	        return function() {
-	          var newHeight, newWidth;
-	          newWidth = el.offsetWidth;
-	          newHeight = el.offsetHeight;
-	          if (newWidth !== width || newHeight !== height) {
-	            _this.dispatchEvent(el);
-	            width = newWidth;
-	            return height = newHeight;
-	          }
-	        };
-	      })(this), this.o.interval || 62.5);
-	    };
-
-	    Main.prototype.dispatchEvent = function(el) {
-	      var e;
-	      if (document.createEvent) {
-	        e = document.createEvent('HTMLEvents');
-	        e.initEvent('onresize', false, false);
-	        return el.dispatchEvent(e);
-	      } else if (document.createEventObject) {
-	        e = document.createEventObject();
-	        return el.fireEvent('onresize', e);
-	      } else {
-	        return false;
-	      }
-	    };
-
-	    Main.prototype.destroy = function() {
-	      var i, it, j, len, proto, ref, results;
-	      clearInterval(this.interval);
-	      this.interval = null;
-	      window.isAnyResizeEventInited = false;
-	      it = this;
-	      ref = this.allowedProtos;
-	      results = [];
-	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	        proto = ref[i];
-	        if (proto.prototype == null) {
-	          continue;
-	        }
-	        results.push((function(proto) {
-	          var listener;
-	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	          if (proto.prototype.addEventListener) {
-	            proto.prototype.addEventListener = Element.prototype.addEventListener;
-	          } else if (proto.prototype.attachEvent) {
-	            proto.prototype.attachEvent = Element.prototype.attachEvent;
-	          }
-	          if (proto.prototype.removeEventListener) {
-	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
-	          } else if (proto.prototype.detachEvent) {
-	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
-	          }
-	        })(proto));
-	      }
-	      return results;
-	    };
-
-	    return Main;
-
-	  })();
-	  if (true) {
-	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
-	      return new Main;
-	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
-	    return module.exports = new Main;
-	  } else {
-	    if (typeof window !== "undefined" && window !== null) {
-	      window.AnyResizeEvent = Main;
-	    }
-	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
-	  }
-	})();
-
-
-/***/ },
-/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var BezierEasing, bezierEasing, h,
@@ -5230,7 +4976,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var PathEasing, h;
@@ -5466,7 +5212,7 @@
 
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var create, easing, getNearest, mix, parseIfEasing, sort,
@@ -5536,6 +5282,227 @@
 	};
 
 	module.exports = create;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+	/*!
+	  LegoMushroom @legomushroom http://legomushroom.com
+	  MIT License 2014
+	 */
+
+	/* istanbul ignore next */
+	(function() {
+	  var Main;
+	  Main = (function() {
+	    function Main(o) {
+	      this.o = o != null ? o : {};
+	      if (window.isAnyResizeEventInited) {
+	        return;
+	      }
+	      this.vars();
+	      this.redefineProto();
+	    }
+
+	    Main.prototype.vars = function() {
+	      window.isAnyResizeEventInited = true;
+	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
+	      return this.timerElements = {
+	        img: 1,
+	        textarea: 1,
+	        input: 1,
+	        embed: 1,
+	        object: 1,
+	        svg: 1,
+	        canvas: 1,
+	        tr: 1,
+	        tbody: 1,
+	        thead: 1,
+	        tfoot: 1,
+	        a: 1,
+	        select: 1,
+	        option: 1,
+	        optgroup: 1,
+	        dl: 1,
+	        dt: 1,
+	        br: 1,
+	        basefont: 1,
+	        font: 1,
+	        col: 1,
+	        iframe: 1
+	      };
+	    };
+
+	    Main.prototype.redefineProto = function() {
+	      var i, it, proto, t;
+	      it = this;
+	      return t = (function() {
+	        var j, len, ref, results;
+	        ref = this.allowedProtos;
+	        results = [];
+	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	          proto = ref[i];
+	          if (proto.prototype == null) {
+	            continue;
+	          }
+	          results.push((function(proto) {
+	            var listener, remover;
+	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	            (function(listener) {
+	              var wrappedListener;
+	              wrappedListener = function() {
+	                var option;
+	                if (this !== window || this !== document) {
+	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
+	                  option && it.handleResize({
+	                    args: arguments,
+	                    that: this
+	                  });
+	                }
+	                return listener.apply(this, arguments);
+	              };
+	              if (proto.prototype.addEventListener) {
+	                return proto.prototype.addEventListener = wrappedListener;
+	              } else if (proto.prototype.attachEvent) {
+	                return proto.prototype.attachEvent = wrappedListener;
+	              }
+	            })(listener);
+	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
+	            return (function(remover) {
+	              var wrappedRemover;
+	              wrappedRemover = function() {
+	                this.isAnyResizeEventInited = false;
+	                this.iframe && this.removeChild(this.iframe);
+	                return remover.apply(this, arguments);
+	              };
+	              if (proto.prototype.removeEventListener) {
+	                return proto.prototype.removeEventListener = wrappedRemover;
+	              } else if (proto.prototype.detachEvent) {
+	                return proto.prototype.detachEvent = wrappedListener;
+	              }
+	            })(remover);
+	          })(proto));
+	        }
+	        return results;
+	      }).call(this);
+	    };
+
+	    Main.prototype.handleResize = function(args) {
+	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
+	      el = args.that;
+	      if (!this.timerElements[el.tagName.toLowerCase()]) {
+	        iframe = document.createElement('iframe');
+	        el.appendChild(iframe);
+	        iframe.style.width = '100%';
+	        iframe.style.height = '100%';
+	        iframe.style.position = 'absolute';
+	        iframe.style.zIndex = -999;
+	        iframe.style.opacity = 0;
+	        iframe.style.top = 0;
+	        iframe.style.left = 0;
+	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
+	        isNoPos = el.style.position === '';
+	        isStatic = computedStyle.position === 'static' && isNoPos;
+	        isEmpty = computedStyle.position === '' && el.style.position === '';
+	        if (isStatic || isEmpty) {
+	          el.style.position = 'relative';
+	        }
+	        if ((ref = iframe.contentWindow) != null) {
+	          ref.onresize = (function(_this) {
+	            return function(e) {
+	              return _this.dispatchEvent(el);
+	            };
+	          })(this);
+	        }
+	        el.iframe = iframe;
+	      } else {
+	        this.initTimer(el);
+	      }
+	      return el.isAnyResizeEventInited = true;
+	    };
+
+	    Main.prototype.initTimer = function(el) {
+	      var height, width;
+	      width = 0;
+	      height = 0;
+	      return this.interval = setInterval((function(_this) {
+	        return function() {
+	          var newHeight, newWidth;
+	          newWidth = el.offsetWidth;
+	          newHeight = el.offsetHeight;
+	          if (newWidth !== width || newHeight !== height) {
+	            _this.dispatchEvent(el);
+	            width = newWidth;
+	            return height = newHeight;
+	          }
+	        };
+	      })(this), this.o.interval || 62.5);
+	    };
+
+	    Main.prototype.dispatchEvent = function(el) {
+	      var e;
+	      if (document.createEvent) {
+	        e = document.createEvent('HTMLEvents');
+	        e.initEvent('onresize', false, false);
+	        return el.dispatchEvent(e);
+	      } else if (document.createEventObject) {
+	        e = document.createEventObject();
+	        return el.fireEvent('onresize', e);
+	      } else {
+	        return false;
+	      }
+	    };
+
+	    Main.prototype.destroy = function() {
+	      var i, it, j, len, proto, ref, results;
+	      clearInterval(this.interval);
+	      this.interval = null;
+	      window.isAnyResizeEventInited = false;
+	      it = this;
+	      ref = this.allowedProtos;
+	      results = [];
+	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	        proto = ref[i];
+	        if (proto.prototype == null) {
+	          continue;
+	        }
+	        results.push((function(proto) {
+	          var listener;
+	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	          if (proto.prototype.addEventListener) {
+	            proto.prototype.addEventListener = Element.prototype.addEventListener;
+	          } else if (proto.prototype.attachEvent) {
+	            proto.prototype.attachEvent = Element.prototype.attachEvent;
+	          }
+	          if (proto.prototype.removeEventListener) {
+	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
+	          } else if (proto.prototype.detachEvent) {
+	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
+	          }
+	        })(proto));
+	      }
+	      return results;
+	    };
+
+	    return Main;
+
+	  })();
+	  if (true) {
+	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	      return new Main;
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
+	    return module.exports = new Main;
+	  } else {
+	    if (typeof window !== "undefined" && window !== null) {
+	      window.AnyResizeEvent = Main;
+	    }
+	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
+	  }
+	})();
 
 
 /***/ },

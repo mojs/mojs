@@ -11,9 +11,9 @@
 
   createUpdateInPeriod = function(t, duration) {
     return function(timeShift) {
-      t.update(t.props.startTime + timeShift);
-      t.update(t.props.startTime + timeShift + (duration / 2));
-      return t.update(t.props.startTime + timeShift + duration);
+      t._update(t._props.startTime + timeShift);
+      t._update(t._props.startTime + timeShift + (duration / 2));
+      return t._update(t._props.startTime + timeShift + duration);
     };
   };
 
@@ -22,17 +22,17 @@
       gap = 5;
     }
     return function(timeShift) {
-      t.update(t.props.startTime + timeShift + gap);
-      t.update(t.props.startTime + timeShift + (duration / 2));
-      return t.update(t.props.startTime + timeShift + duration - gap);
+      t._update(t._props.startTime + timeShift + gap);
+      t._update(t._props.startTime + timeShift + (duration / 2));
+      return t._update(t._props.startTime + timeShift + duration - gap);
     };
   };
 
   r_createUpdateInPeriod = function(t, duration) {
     return function(timeShift) {
-      t.update(t.props.startTime + timeShift + duration);
-      t.update(t.props.startTime + timeShift + (duration / 2));
-      return t.update(t.props.startTime + timeShift);
+      t._update(t._props.startTime + timeShift + duration);
+      t._update(t._props.startTime + timeShift + (duration / 2));
+      return t._update(t._props.startTime + timeShift);
     };
   };
 
@@ -41,9 +41,9 @@
       gap = 5;
     }
     return function(timeShift) {
-      t.update(t.props.startTime + timeShift + duration - gap);
-      t.update(t.props.startTime + timeShift + (duration / 2));
-      return t.update(t.props.startTime + timeShift + gap);
+      t._update(t._props.startTime + timeShift + duration - gap);
+      t._update(t._props.startTime + timeShift + (duration / 2));
+      return t._update(t._props.startTime + timeShift + gap);
     };
   };
 
@@ -52,25 +52,25 @@
       it('should have vars', function() {
         var t;
         t = new Tween;
-        expect(t.props).toBeDefined();
+        expect(t._props).toBeDefined();
         expect(t.h).toBeDefined();
         return expect(t.progress).toBe(0);
       });
       it('should have defaults', function() {
         var t;
         t = new Tween;
-        expect(t.defaults.duration).toBe(600);
-        expect(t.defaults.delay).toBe(0);
-        expect(t.defaults.yoyo).toBe(false);
-        return expect(t.defaults.isChained).toBe(false);
+        expect(t._defaults.duration).toBe(600);
+        expect(t._defaults.delay).toBe(0);
+        expect(t._defaults.yoyo).toBe(false);
+        return expect(t._defaults.isChained).toBe(false);
       });
       return it('should extend defaults to props', function() {
         var t;
         t = new Tween({
           duration: 1000
         });
-        expect(t.props.duration).toBe(1000);
-        return expect(t.props.delay).toBe(0);
+        expect(t._props.duration).toBe(1000);
+        return expect(t._props.delay).toBe(0);
       });
     });
     describe('init ->', function() {
@@ -80,8 +80,8 @@
           duration: 1000,
           delay: 100
         });
-        expect(t.props.time).toBe(1100);
-        return expect(t.props.repeatTime).toBe(1100);
+        expect(t._props.time).toBe(1100);
+        return expect(t._props.repeatTime).toBe(1100);
       });
       return it('should calc time, repeatTime #2', function() {
         var t;
@@ -90,8 +90,8 @@
           delay: 100,
           repeat: 2
         });
-        expect(t.props.time).toBe(1100);
-        return expect(t.props.repeatTime).toBe(3300);
+        expect(t._props.time).toBe(1100);
+        return expect(t._props.repeatTime).toBe(3300);
       });
     });
     describe('isChained option ->', function() {
@@ -101,14 +101,14 @@
           duration: 1000,
           isChained: true
         });
-        return expect(t.props.isChained).toBe(true);
+        return expect(t._props.isChained).toBe(true);
       });
       return it('should fallback to default isChained option', function() {
         var t;
         t = new Tween({
           duration: 1000
         });
-        return expect(t.props.isChained).toBe(false);
+        return expect(t._props.isChained).toBe(false);
       });
     });
     describe('setStartTime ->', function() {
@@ -117,17 +117,17 @@
         t = new Tween({
           duration: 1000,
           delay: 500
-        }).setStartTime();
+        })._setStartTime();
         expectedTime = performance.now() + 500;
-        expect(t.props.startTime).toBeGreaterThan(expectedTime - 50);
-        return expect(t.props.startTime).not.toBeGreaterThan(expectedTime);
+        expect(t._props.startTime).toBeGreaterThan(expectedTime - 50);
+        return expect(t._props.startTime).not.toBeGreaterThan(expectedTime);
       });
       it('should recieve the start time', function() {
         var t;
         t = new Tween({
           duration: 1000
-        }).setStartTime(1);
-        return expect(t.props.startTime).toBe(1);
+        })._setStartTime(1);
+        return expect(t._props.startTime).toBe(1);
       });
       it('should calculate end time', function() {
         var delay, duration, endTime, t;
@@ -136,9 +136,9 @@
         t = new Tween({
           duration: duration,
           delay: delay
-        }).setStartTime();
-        endTime = t.props.startTime + t.props.repeatTime - t.props.delay;
-        return expect(t.props.endTime).toBe(endTime);
+        })._setStartTime();
+        endTime = t._props.startTime + t._props.repeatTime - t._props.delay;
+        return expect(t._props.endTime).toBe(endTime);
       });
       it('should calculate end time with repeat', function() {
         var delay, duration, endTime, t;
@@ -148,9 +148,9 @@
           duration: duration,
           delay: delay,
           repeat: 2
-        }).setStartTime();
-        endTime = t.props.startTime + t.props.repeatTime - t.props.delay;
-        return expect(t.props.endTime).toBe(endTime);
+        })._setStartTime();
+        endTime = t._props.startTime + t._props.repeatTime - t._props.delay;
+        return expect(t._props.endTime).toBe(endTime);
       });
       it('should calculate end time if repeat', function() {
         var delay, duration, t, time;
@@ -160,9 +160,9 @@
           duration: duration,
           delay: delay,
           repeat: 2
-        }).setStartTime();
-        time = t.props.startTime + (3 * (duration + delay)) - delay;
-        return expect(t.props.endTime).toBe(time);
+        })._setStartTime();
+        time = t._props.startTime + (3 * (duration + delay)) - delay;
+        return expect(t._props.endTime).toBe(time);
       });
       return it('should calculate startTime and endTime if shifted', function() {
         var delay, duration, endTime, expectedTime, t;
@@ -173,13 +173,13 @@
           delay: delay,
           repeat: 2
         });
-        t.setProp('shiftTime', 500);
-        t.setStartTime();
+        t._setProp('shiftTime', 500);
+        t._setStartTime();
         expectedTime = performance.now() + 500 + delay;
-        expect(t.props.startTime).toBeGreaterThan(expectedTime - 50);
-        expect(t.props.startTime).not.toBeGreaterThan(expectedTime);
-        endTime = t.props.startTime + (3 * (duration + delay)) - delay;
-        return expect(t.props.endTime).toBe(endTime);
+        expect(t._props.startTime).toBeGreaterThan(expectedTime - 50);
+        expect(t._props.startTime).not.toBeGreaterThan(expectedTime);
+        endTime = t._props.startTime + (3 * (duration + delay)) - delay;
+        return expect(t._props.endTime).toBe(endTime);
       });
     });
     describe('update method ->', function() {
@@ -189,12 +189,12 @@
           duration: 1000,
           delay: 500
         });
-        t.setStartTime();
-        time = t.props.startTime + 199;
-        t.update(time);
+        t._setStartTime();
+        time = t._props.startTime + 199;
+        t._update(time);
         expect(t.progress).toBe(0);
-        time = t.props.startTime + 200;
-        t.update(time);
+        time = t._props.startTime + 200;
+        t._update(time);
         return expect(t.progress).toBeCloseTo(.2, 5);
       });
       it('should update progress with repeat', function() {
@@ -204,14 +204,14 @@
           delay: 200,
           repeat: 2
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 1399);
+        t._setStartTime();
+        t._update(t._props.startTime + 1399);
         expect(t.progress).toBeCloseTo(0);
-        t.update(t.props.startTime + 1400);
+        t._update(t._props.startTime + 1400);
         expect(t.progress).toBeCloseTo(.2);
-        t.update(t.props.startTime + 2700);
+        t._update(t._props.startTime + 2700);
         expect(t.progress).toBeCloseTo(.3);
-        t.update(t.props.startTime + 3400);
+        t._update(t._props.startTime + 3400);
         return expect(t.progress).toBe(1);
       });
       it('should update progress to 1 if in delay gap and previous time value was smaller then the current one', function() {
@@ -221,9 +221,9 @@
           delay: 200,
           repeat: 2
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 300);
-        t.update(t.props.startTime + 1100);
+        t._setStartTime();
+        t._update(t._props.startTime + 300);
+        t._update(t._props.startTime + 1100);
         return expect(t.progress).toBe(1);
       });
       it('should update progress to 1 if in delay gap and previous time value was bigger then the current one', function() {
@@ -233,9 +233,9 @@
           delay: 200,
           repeat: 2
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 1300);
-        t.update(t.props.startTime + 1100);
+        t._setStartTime();
+        t._update(t._props.startTime + 1300);
+        t._update(t._props.startTime + 1100);
         return expect(t.progress).toBe(0);
       });
       it('should update progress to 1 on the end', function() {
@@ -245,10 +245,10 @@
           delay: 200,
           repeat: 2
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 500);
+        t._setStartTime();
+        t._update(t._props.startTime + 500);
         expect(t.progress).toBeCloseTo(0);
-        t.update(t.props.startTime + 1000);
+        t._update(t._props.startTime + 1000);
         return expect(t.progress).toBeCloseTo(1, 5);
       });
       it('should return true on the end', function() {
@@ -257,12 +257,12 @@
           duration: 1000,
           delay: 200
         });
-        t.setStartTime();
-        t.update(t.props.startTime + t.props.duration / 2);
-        returnValue = t.update(t.props.startTime + 1000);
+        t._setStartTime();
+        t._update(t._props.startTime + t._props.duration / 2);
+        returnValue = t._update(t._props.startTime + 1000);
         expect(t.progress).toBeCloseTo(1, 5);
-        expect(t.isCompleted).toBe(true);
-        expect(t.isRepeatCompleted).toBe(true);
+        expect(t._isCompleted).toBe(true);
+        expect(t._isRepeatCompleted).toBe(true);
         return expect(returnValue).toBe(true);
       });
       it('should not call update method if timeline isnt active "-"', function() {
@@ -271,9 +271,9 @@
           duration: 1000,
           onUpdate: function() {}
         });
-        t.setStartTime();
+        t._setStartTime();
         spyOn(t, 'onUpdate');
-        t.update(t.props.startTime - 500);
+        t._update(t._props.startTime - 500);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
       it('should not call update method if timeline isnt active but was "-"', function() {
@@ -282,15 +282,15 @@
           duration: 1000,
           onUpdate: function() {}
         });
-        t.setStartTime();
+        t._setStartTime();
         spyOn(t, 'onUpdate');
-        t.update(t.props.startTime + 500);
-        t.update(t.props.startTime + 200);
+        t._update(t._props.startTime + 500);
+        t._update(t._props.startTime + 200);
         expect(t._isInActiveArea).toBe(true);
-        t.update(t.props.startTime - 500);
+        t._update(t._props.startTime - 500);
         expect(t._isInActiveArea).toBe(false);
         expect(t.onUpdate).toHaveBeenCalledWith(0, 0, false);
-        t.update(t.props.startTime - 500);
+        t._update(t._props.startTime - 500);
         expect(t._isInActiveArea).toBe(false);
         return expect(t.onUpdate.calls.count()).toBe(3);
       });
@@ -301,8 +301,8 @@
           onUpdate: function() {}
         });
         spyOn(t, 'onUpdate');
-        t.setStartTime();
-        t.update(performance.now() + 1500);
+        t._setStartTime();
+        t._update(performance.now() + 1500);
         return expect(t.onUpdate).not.toHaveBeenCalled();
       });
       it('should not call update method if timeline isnt active but was "+"', function() {
@@ -312,11 +312,11 @@
           onUpdate: function() {}
         });
         spyOn(t, 'onUpdate');
-        t.setStartTime();
-        t.update(t.props.startTime + 200);
-        t.update(t.props.startTime + 500);
+        t._setStartTime();
+        t._update(t._props.startTime + 200);
+        t._update(t._props.startTime + 500);
         expect(t._isInActiveArea).toBe(true);
-        t.update(t.props.startTime + 1500);
+        t._update(t._props.startTime + 1500);
         expect(t._isInActiveArea).toBe(false);
         return expect(t.onUpdate).toHaveBeenCalledWith(1, 1, true);
       });
@@ -326,9 +326,9 @@
           duration: 1000,
           delay: 500
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 200);
-        t.update(t.props.startTime + 1200);
+        t._setStartTime();
+        t._update(t._props.startTime + 200);
+        t._update(t._props.startTime + 1200);
         return expect(t.progress).not.toBe(1);
       });
     });
@@ -338,7 +338,7 @@
         t = new Tween({
           onUpdate: function() {}
         });
-        return expect(t.props.onUpdate).toBeDefined();
+        return expect(t._props.onUpdate).toBeDefined();
       });
       it('should call onUpdate callback with the current progress', function() {
         var t;
@@ -348,9 +348,9 @@
           onUpdate: function() {}
         });
         spyOn(t, 'onUpdate');
-        t.setStartTime();
-        t.update(t.props.startTime + 499);
-        t.update(t.props.startTime + 500);
+        t._setStartTime();
+        t._update(t._props.startTime + 499);
+        t._update(t._props.startTime + 500);
         return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress, true);
       });
       it('should have the right scope', function() {
@@ -361,9 +361,9 @@
             return isRightScope = this instanceof Tween;
           }
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 199);
-        t.update(t.props.startTime + 200);
+        t._setStartTime();
+        t._update(t._props.startTime + 199);
+        t._update(t._props.startTime + 200);
         return expect(isRightScope).toBe(true);
       });
       it('should be called just once on delay', function() {
@@ -374,10 +374,10 @@
           onUpdate: function() {}
         });
         spyOn(t, 'onUpdate').and.callThrough();
-        t.setStartTime();
-        t.update(t.props.startTime + t.props.duration + 50);
-        t.update(t.props.startTime + t.props.duration + 100);
-        t.update(t.props.startTime + t.props.duration + 150);
+        t._setStartTime();
+        t._update(t._props.startTime + t._props.duration + 50);
+        t._update(t._props.startTime + t._props.duration + 100);
+        t._update(t._props.startTime + t._props.duration + 150);
         return expect(t.onUpdate.calls.count()).toBe(1);
       });
       it('should pass eased progress and raw progress', function() {
@@ -391,7 +391,7 @@
             return progress = p;
           }
         });
-        t.setProgress(.5);
+        t._setProgress(.5);
         return expect(easedProgress).toBe(mojs.easing.cubic.out(progress));
       });
 
@@ -445,9 +445,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -463,7 +463,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -479,7 +479,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -496,7 +496,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -512,7 +512,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -576,10 +576,10 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         gap = 5;
         timeShift = 0;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -595,7 +595,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -611,7 +611,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration - gap);
+        t._update(t._props.startTime + timeShift + duration - gap);
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -628,7 +628,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -644,7 +644,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -661,7 +661,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = 2 * duration;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBeCloseTo(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -727,9 +727,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -745,7 +745,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -761,7 +761,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -778,7 +778,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration + delay;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -794,7 +794,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -810,7 +810,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -827,7 +827,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = 2 * (duration + delay);
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -843,7 +843,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -859,7 +859,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -875,7 +875,7 @@
         expect(completeDirection).toBe(true);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -941,9 +941,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -959,7 +959,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBe(.5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -975,7 +975,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -992,7 +992,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration + delay;
-        t.update(t.props.startTime + timeShift + 10);
+        t._update(t._props.startTime + timeShift + 10);
         expect(updateValue).toBeCloseTo(.2, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1008,7 +1008,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1024,7 +1024,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1041,7 +1041,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = 2 * (duration + delay);
-        t.update(t.props.startTime + timeShift + 10);
+        t._update(t._props.startTime + timeShift + 10);
         expect(updateValue).toBeCloseTo(.2, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1057,7 +1057,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1073,7 +1073,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1089,7 +1089,7 @@
         expect(completeDirection).toBe(true);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2 + 10);
+        t._update(t._props.startTime + timeShift + duration + delay / 2 + 10);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1153,9 +1153,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 3 * duration;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -1171,7 +1171,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1188,7 +1188,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * duration;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1204,7 +1204,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1221,7 +1221,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1237,7 +1237,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(updateDirection).toBe(false);
@@ -1255,7 +1255,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1271,7 +1271,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1335,10 +1335,10 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         gap = 5;
         timeShift = 3 * duration;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -1354,7 +1354,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - (duration / 2));
+        t._update(t._props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1370,7 +1370,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration + gap);
+        t._update(t._props.startTime + timeShift - duration + gap);
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1387,7 +1387,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * duration;
-        t.update(t.props.startTime + timeShift - gap);
+        t._update(t._props.startTime + timeShift - gap);
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1403,7 +1403,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - (duration / 2));
+        t._update(t._props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1419,7 +1419,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration + gap);
+        t._update(t._props.startTime + timeShift - duration + gap);
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1436,7 +1436,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift - duration - gap);
+        t._update(t._props.startTime + timeShift - duration - gap);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1452,7 +1452,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - (duration / 2));
+        t._update(t._props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBe(.5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1468,7 +1468,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(2);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime - gap);
+        t._update(t._props.startTime - gap);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1484,7 +1484,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(2);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime - gap - 15);
+        t._update(t._props.startTime - gap - 15);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1550,9 +1550,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 3 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift + 5);
+        t._update(t._props.startTime + timeShift + 5);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -1568,7 +1568,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - (duration / 2));
+        t._update(t._props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1584,7 +1584,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 5);
+        t._update(t._props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1601,7 +1601,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1617,7 +1617,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 5);
+        t._update(t._props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1634,7 +1634,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1650,7 +1650,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 5);
+        t._update(t._props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1666,7 +1666,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 15);
+        t._update(t._props.startTime + timeShift - duration - 15);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1732,9 +1732,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 3 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -1750,7 +1750,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - (duration / 2));
+        t._update(t._props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1766,7 +1766,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration);
+        t._update(t._props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1783,7 +1783,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1800,7 +1800,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift - duration);
+        t._update(t._props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1817,7 +1817,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1833,7 +1833,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration);
+        t._update(t._props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1849,7 +1849,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 10);
+        t._update(t._props.startTime + timeShift - duration - 10);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1865,7 +1865,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1934,9 +1934,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -1952,7 +1952,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1968,7 +1968,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -1985,7 +1985,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift + (duration / 4));
+        t._update(t._props.startTime + timeShift + (duration / 4));
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2001,7 +2001,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2066,10 +2066,10 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         gap = 5;
         timeShift = 0;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -2085,7 +2085,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2101,7 +2101,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration - gap);
+        t._update(t._props.startTime + timeShift + duration - gap);
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2118,7 +2118,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2134,7 +2134,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 4));
+        t._update(t._props.startTime + timeShift + (duration / 4));
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2151,7 +2151,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = 2 * duration;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBeCloseTo(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2218,9 +2218,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -2236,7 +2236,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2252,7 +2252,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2269,7 +2269,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration + delay;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2285,7 +2285,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 4));
+        t._update(t._props.startTime + timeShift + (duration / 4));
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2301,7 +2301,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2318,7 +2318,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = 2 * (duration + delay);
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2334,7 +2334,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 4));
+        t._update(t._props.startTime + timeShift + (duration / 4));
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2350,7 +2350,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration);
+        t._update(t._props.startTime + timeShift + duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2366,7 +2366,7 @@
         expect(completeDirection).toBe(true);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2433,9 +2433,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -2451,7 +2451,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift + (duration / 2));
+        t._update(t._props.startTime + timeShift + (duration / 2));
         expect(updateValue).toBe(.5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2467,7 +2467,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2484,7 +2484,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration + delay;
-        t.update(t.props.startTime + timeShift + 10);
+        t._update(t._props.startTime + timeShift + 10);
         expect(updateValue).toBeCloseTo(.8, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2500,7 +2500,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 4));
+        t._update(t._props.startTime + timeShift + (duration / 4));
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2516,7 +2516,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2533,7 +2533,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         timeShift = 2 * (duration + delay);
-        t.update(t.props.startTime + timeShift + 10);
+        t._update(t._props.startTime + timeShift + 10);
         expect(updateValue).toBeCloseTo(.2, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2549,7 +2549,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + (duration / 4));
+        t._update(t._props.startTime + timeShift + (duration / 4));
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2565,7 +2565,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2);
+        t._update(t._props.startTime + timeShift + duration + delay / 2);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2581,7 +2581,7 @@
         expect(completeDirection).toBe(true);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime + timeShift + duration + delay / 2 + 10);
+        t._update(t._props.startTime + timeShift + duration + delay / 2 + 10);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2646,9 +2646,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 3 * duration;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -2664,7 +2664,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2681,7 +2681,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * duration;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2697,7 +2697,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2714,7 +2714,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2730,7 +2730,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(updateDirection).toBe(false);
@@ -2748,7 +2748,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 0;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2764,7 +2764,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 2);
+        t._update(t._props.startTime + timeShift - duration / 2);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2829,10 +2829,10 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         gap = 5;
         timeShift = 3 * duration;
-        t.update(t.props.startTime + timeShift + gap);
+        t._update(t._props.startTime + timeShift + gap);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -2848,7 +2848,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - (duration / 2));
+        t._update(t._props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2864,7 +2864,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration + gap);
+        t._update(t._props.startTime + timeShift - duration + gap);
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2881,7 +2881,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * duration;
-        t.update(t.props.startTime + timeShift - gap);
+        t._update(t._props.startTime + timeShift - gap);
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2897,7 +2897,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - (duration / 4));
+        t._update(t._props.startTime + timeShift - (duration / 4));
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2913,7 +2913,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration + gap);
+        t._update(t._props.startTime + timeShift - duration + gap);
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2930,7 +2930,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift - duration - gap);
+        t._update(t._props.startTime + timeShift - duration - gap);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2946,7 +2946,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - (duration / 4));
+        t._update(t._props.startTime + timeShift - (duration / 4));
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2962,7 +2962,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(2);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime - gap);
+        t._update(t._props.startTime - gap);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2978,7 +2978,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(2);
         expect(firstUpdateDirection).toBe(true);
-        t.update(t.props.startTime - gap - 15);
+        t._update(t._props.startTime - gap - 15);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3045,9 +3045,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 3 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift + 5);
+        t._update(t._props.startTime + timeShift + 5);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -3063,7 +3063,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - (duration / 4));
+        t._update(t._props.startTime + timeShift - (duration / 4));
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3079,7 +3079,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 5);
+        t._update(t._props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3096,7 +3096,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3112,7 +3112,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 5);
+        t._update(t._props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3129,7 +3129,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3145,7 +3145,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 5);
+        t._update(t._props.startTime + timeShift - duration - 5);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3161,7 +3161,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 15);
+        t._update(t._props.startTime + timeShift - duration - 15);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3192,8 +3192,8 @@
         completeDirection = null;
         repeatStartDirection = null;
         repeatCompleteDirection = null;
-        duration = 50;
-        delay = 20;
+        duration = 500;
+        delay = 200;
         updateValue = null;
         updateDirection = null;
         t = new Tween({
@@ -3228,9 +3228,9 @@
             return firstUpdateCnt++;
           }
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 3 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift);
+        t._update(t._props.startTime + timeShift);
         expect(updateValue).toBe(null);
         expect(updateDirection).toBe(null);
         expect(t._wasUknownUpdate).toBe(true);
@@ -3246,7 +3246,7 @@
         expect(completeDirection).toBe(null);
         expect(firstUpdateCnt).toBe(0);
         expect(firstUpdateDirection).toBe(null);
-        t.update(t.props.startTime + timeShift - (duration / 2));
+        t._update(t._props.startTime + timeShift - (duration / 2));
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3262,7 +3262,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration);
+        t._update(t._props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3279,7 +3279,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3296,7 +3296,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
-        t.update(t.props.startTime + timeShift - duration);
+        t._update(t._props.startTime + timeShift - duration);
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3313,7 +3313,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3329,7 +3329,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration);
+        t._update(t._props.startTime + timeShift - duration);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3345,7 +3345,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration - 10);
+        t._update(t._props.startTime + timeShift - duration - 10);
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3361,7 +3361,7 @@
         expect(completeDirection).toBe(false);
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
-        t.update(t.props.startTime + timeShift - duration / 4);
+        t._update(t._props.startTime + timeShift - duration / 4);
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3389,28 +3389,28 @@
           duration: duration,
           delay: delay
         });
-        t.setStartTime();
-        expect(t._getPeriod(t.props.startTime)).toBe(0);
-        expect(t._getPeriod(t.props.startTime + duration / 2)).toBe(0);
-        expect(t._getPeriod(t.props.startTime + duration)).toBe(1);
+        t._setStartTime();
+        expect(t._getPeriod(t._props.startTime)).toBe(0);
+        expect(t._getPeriod(t._props.startTime + duration / 2)).toBe(0);
+        expect(t._getPeriod(t._props.startTime + duration)).toBe(1);
         timeShift = duration + delay;
-        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe('delay');
+        expect(t._getPeriod(t._props.startTime + timeShift - delay / 2)).toBe('delay');
         expect(t._delayT).toBe(1);
-        expect(t._getPeriod(t.props.startTime + timeShift)).toBe(1);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(1);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(2);
+        expect(t._getPeriod(t._props.startTime + timeShift)).toBe(1);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration / 2)).toBe(1);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe(2);
         timeShift = 2 * (duration + delay);
-        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe('delay');
+        expect(t._getPeriod(t._props.startTime + timeShift - delay / 2)).toBe('delay');
         expect(t._delayT).toBe(2);
-        expect(t._getPeriod(t.props.startTime + timeShift)).toBe(2);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(2);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(3);
+        expect(t._getPeriod(t._props.startTime + timeShift)).toBe(2);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration / 2)).toBe(2);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe(3);
         timeShift = 3 * (duration + delay);
-        expect(t._getPeriod(t.props.startTime + timeShift - delay / 2)).toBe('delay');
+        expect(t._getPeriod(t._props.startTime + timeShift - delay / 2)).toBe('delay');
         expect(t._delayT).toBe(3);
-        expect(t._getPeriod(t.props.startTime + timeShift)).toBe(3);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(3);
-        return expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(4);
+        expect(t._getPeriod(t._props.startTime + timeShift)).toBe(3);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration / 2)).toBe(3);
+        return expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe(4);
       });
       it('should get the current period with no delay', function() {
         var duration, t, timeShift;
@@ -3419,23 +3419,23 @@
           repeat: 3,
           duration: duration
         });
-        t.setStartTime();
-        expect(t._getPeriod(t.props.startTime)).toBe(0);
-        expect(t._getPeriod(t.props.startTime + duration / 2)).toBe(0);
-        expect(t._getPeriod(t.props.startTime + duration)).toBe(1);
-        expect(t._getPeriod(t.props.startTime + duration + 1)).toBe(1);
+        t._setStartTime();
+        expect(t._getPeriod(t._props.startTime)).toBe(0);
+        expect(t._getPeriod(t._props.startTime + duration / 2)).toBe(0);
+        expect(t._getPeriod(t._props.startTime + duration)).toBe(1);
+        expect(t._getPeriod(t._props.startTime + duration + 1)).toBe(1);
         timeShift = duration;
-        expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(1);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(2);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe(2);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration / 2)).toBe(1);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe(2);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe(2);
         timeShift = 2 * duration;
-        expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(2);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(3);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe(3);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration / 2)).toBe(2);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe(3);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe(3);
         timeShift = 3 * duration;
-        expect(t._getPeriod(t.props.startTime + timeShift + duration / 2)).toBe(3);
-        expect(t._getPeriod(t.props.startTime + timeShift + duration)).toBe(4);
-        return expect(t._getPeriod(t.props.startTime + timeShift + duration + 1)).toBe(4);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration / 2)).toBe(3);
+        expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe(4);
+        return expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe(4);
       });
       it('should return period number if time > endTime', function() {
         var delay, duration, t, timeShift;
@@ -3446,9 +3446,9 @@
           duration: duration,
           delay: delay
         });
-        t.setStartTime();
+        t._setStartTime();
         timeShift = 3 * (duration + delay) - delay;
-        return expect(t._getPeriod(t.props.startTime + timeShift + delay / 2)).toBe(3);
+        return expect(t._getPeriod(t._props.startTime + timeShift + delay / 2)).toBe(3);
       });
       return it('should round instead of floor if time >= endTime', function() {
         var duration, t;
@@ -3457,8 +3457,8 @@
           repeat: 2,
           duration: duration
         });
-        t.setStartTime();
-        return expect(t._getPeriod(t.props.startTime + 3 * duration)).toBe(3);
+        t._setStartTime();
+        return expect(t._getPeriod(t._props.startTime + 3 * duration)).toBe(3);
       });
     });
     describe('onComplete callback ->', function() {
@@ -3467,19 +3467,19 @@
         t = new Tween({
           onComplete: function() {}
         });
-        return expect(t.props.onComplete).toBeDefined();
+        return expect(t._props.onComplete).toBeDefined();
       });
       it('should call onComplete callback', function() {
         var t;
         t = new Tween({
           duration: 100,
           onComplete: function() {}
-        }).setStartTime();
-        spyOn(t.props, 'onComplete');
-        t.update(t.props.startTime + 50);
-        t.update(t.props.startTime + 51);
-        t.update(t.props.startTime + 101);
-        return expect(t.props.onComplete).toHaveBeenCalled();
+        })._setStartTime();
+        spyOn(t._props, 'onComplete');
+        t._update(t._props.startTime + 50);
+        t._update(t._props.startTime + 51);
+        t._update(t._props.startTime + 101);
+        return expect(t._props.onComplete).toHaveBeenCalled();
       });
       it('should be called just once', function() {
         var cnt, t;
@@ -3489,15 +3489,15 @@
           onComplete: function() {
             return cnt++;
           }
-        }).setStartTime();
-        spyOn(t.props, 'onComplete');
-        t.update(t.props.startTime + 0);
-        t.update(t.props.startTime + 10);
-        t.update(t.props.startTime + 20);
-        t.update(t.props.startTime + 30);
-        t.update(t.props.startTime + 34);
-        expect(t.props.onComplete).toHaveBeenCalledWith(true);
-        return expect(t.props.onComplete.calls.count()).toBe(1);
+        })._setStartTime();
+        spyOn(t._props, 'onComplete');
+        t._update(t._props.startTime + 0);
+        t._update(t._props.startTime + 10);
+        t._update(t._props.startTime + 20);
+        t._update(t._props.startTime + 30);
+        t._update(t._props.startTime + 34);
+        expect(t._props.onComplete).toHaveBeenCalledWith(true);
+        return expect(t._props.onComplete.calls.count()).toBe(1);
       });
       it('should be called just once when inside timeline', function() {
         var t, tm;
@@ -3505,27 +3505,27 @@
         t = new Tween({
           duration: 32,
           onComplete: function() {}
-        }).setStartTime();
+        })._setStartTime();
         tm.add(t);
-        tm.setStartTime();
-        spyOn(t.props, 'onComplete');
-        tm.update(t.props.startTime + 0);
-        tm.update(t.props.startTime + 10);
-        tm.update(t.props.startTime + 32);
-        expect(t.props.onComplete).toHaveBeenCalledWith(true);
-        return expect(t.props.onComplete.calls.count()).toBe(1);
+        tm._setStartTime();
+        spyOn(t._props, 'onComplete');
+        tm._update(t._props.startTime + 0);
+        tm._update(t._props.startTime + 10);
+        tm._update(t._props.startTime + 32);
+        expect(t._props.onComplete).toHaveBeenCalledWith(true);
+        return expect(t._props.onComplete.calls.count()).toBe(1);
       });
       it('should reset isCompleted flag', function() {
         var t;
         t = new Tween({
           duration: 32
-        }).setStartTime();
-        t.update(t.props.startTime + 10);
-        t.update(t.props.startTime + 11);
-        t.update(t.props.endTime);
-        expect(t.isCompleted).toBe(true);
-        t.update(t.props.startTime + 10);
-        return expect(t.isCompleted).toBe(false);
+        })._setStartTime();
+        t._update(t._props.startTime + 10);
+        t._update(t._props.startTime + 11);
+        t._update(t._props.endTime);
+        expect(t._isCompleted).toBe(true);
+        t._update(t._props.startTime + 10);
+        return expect(t._isCompleted).toBe(false);
       });
       it('should have the right scope', function() {
         var isRightScope, t;
@@ -3536,9 +3536,9 @@
             return isRightScope = this instanceof Tween;
           }
         });
-        t.setStartTime().update(t.props.startTime + 2);
-        t.setStartTime().update(t.props.startTime + 3);
-        t.setStartTime().update(t.props.startTime + 11);
+        t._setStartTime()._update(t._props.startTime + 2);
+        t._setStartTime()._update(t._props.startTime + 3);
+        t._setStartTime()._update(t._props.startTime + 11);
         return expect(isRightScope).toBe(true);
       });
       it('should fire after the last onUpdate', function(dfr) {
@@ -3554,10 +3554,10 @@
             return dfr();
           }
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 1);
-        t.update(t.props.startTime + 2);
-        return t.update(t.props.startTime + 32);
+        t._setStartTime();
+        t._update(t._props.startTime + 1);
+        t._update(t._props.startTime + 2);
+        return t._update(t._props.startTime + 32);
       });
       return it('should fire only once if inside timeline', function() {
         var cnt, delay, duration, t1, t2, tm;
@@ -3579,13 +3579,13 @@
           duration: 2 * duration
         });
         tm.add(t1, t2);
-        tm.setStartTime();
-        tm.update(t1.props.startTime);
-        tm.update(t1.props.startTime + duration / 2);
-        tm.update(t1.props.startTime + duration / 2 + delay / 2);
-        tm.update(t1.props.startTime + duration + delay + 1);
-        tm.update(t1.props.startTime + 2 * duration + delay / 2);
-        tm.update(t1.props.startTime + 2 * (duration + delay));
+        tm._setStartTime();
+        tm._update(t1._props.startTime);
+        tm._update(t1._props.startTime + duration / 2);
+        tm._update(t1._props.startTime + duration / 2 + delay / 2);
+        tm._update(t1._props.startTime + duration + delay + 1);
+        tm._update(t1._props.startTime + 2 * duration + delay / 2);
+        tm._update(t1._props.startTime + 2 * (duration + delay));
         return expect(cnt).toBe(2);
       });
     });
@@ -3595,7 +3595,7 @@
         t = new Tween({
           onStart: function() {}
         });
-        return expect(t.props.onStart).toBeDefined();
+        return expect(t._props.onStart).toBeDefined();
       });
       it('should restart if tween was completed', function() {
         var startCnt, t;
@@ -3605,16 +3605,16 @@
             return startCnt++;
           }
         });
-        t.setStartTime();
-        t.update(t.props.startTime + t.props.duration / 2);
+        t._setStartTime();
+        t._update(t._props.startTime + t._props.duration / 2);
         expect(startCnt).toBe(0);
-        t.update(t.props.startTime + t.props.duration / 2 + 10);
+        t._update(t._props.startTime + t._props.duration / 2 + 10);
         expect(startCnt).toBe(1);
-        t.update(t.props.startTime + t.props.duration);
+        t._update(t._props.startTime + t._props.duration);
         expect(startCnt).toBe(1);
-        t.update(t.props.startTime - 10);
+        t._update(t._props.startTime - 10);
         expect(startCnt).toBe(2);
-        t.update(t.props.startTime + t.props.duration / 2);
+        t._update(t._props.startTime + t._props.duration / 2);
         return expect(startCnt).toBe(3);
       });
       return it('should run before onComplete if tween ended', function() {
@@ -3632,12 +3632,12 @@
             return callback != null ? callback : callback = 'complete';
           }
         });
-        t.setStartTime();
-        t.update(t.props.startTime + t.props.duration / 2);
+        t._setStartTime();
+        t._update(t._props.startTime + t._props.duration / 2);
         expect(startCnt).toBe(0);
-        t.update(t.props.startTime + t.props.duration / 2 + 10);
+        t._update(t._props.startTime + t._props.duration / 2 + 10);
         expect(startCnt).toBe(1);
-        t.update(t.props.startTime + t.props.duration);
+        t._update(t._props.startTime + t._props.duration);
         expect(startCnt).toBe(1);
         return expect(callback).toBe('start');
       });
@@ -3648,7 +3648,7 @@
         t = new Tween({
           onFirstUpdate: function() {}
         });
-        return expect(t.props.onFirstUpdate).toBeDefined();
+        return expect(t._props.onFirstUpdate).toBeDefined();
       });
     });
     describe('onRepeatStart callback ->', function() {
@@ -3657,7 +3657,7 @@
         t = new Tween({
           onRepeatStart: function() {}
         });
-        return expect(t.props.onRepeatStart).toBeDefined();
+        return expect(t._props.onRepeatStart).toBeDefined();
       });
     });
     describe('onRepeatComplete callback ->', function() {
@@ -3666,7 +3666,7 @@
         t = new Tween({
           onRepeatComplete: function() {}
         });
-        return expect(t.props.onRepeatComplete).toBeDefined();
+        return expect(t._props.onRepeatComplete).toBeDefined();
       });
     });
     describe('yoyo option ->', function() {
@@ -3675,7 +3675,7 @@
         t = new Tween({
           yoyo: true
         });
-        return expect(t.props.yoyo).toBe(true);
+        return expect(t._props.yoyo).toBe(true);
       });
     });
     describe('easing ->', function() {
@@ -3684,7 +3684,7 @@
         t = new Tween({
           easing: 'Linear.None'
         });
-        return expect(typeof t.props.easing).toBe('function');
+        return expect(typeof t._props.easing).toBe('function');
       });
       it('should parse standart easing', function() {
         var t;
@@ -3692,11 +3692,11 @@
           easing: 'Sin.Out',
           duration: 100
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 49);
+        t._setStartTime();
+        t._update(t._props.startTime + 49);
         expect(t.progress).toBe(0);
         expect(t.easedProgress).toBe(void 0);
-        t.update(t.props.startTime + 50);
+        t._update(t._props.startTime + 50);
         return expect(t.easedProgress).toBe(easing.sin.out(t.progress));
       });
       it('should work with easing function', function() {
@@ -3710,7 +3710,7 @@
         t = new Tween({
           easing: easings.one
         });
-        return expect(t.props.easing.toString()).toBe(easings.one.toString());
+        return expect(t._props.easing.toString()).toBe(easings.one.toString());
       });
       return it('should work with easing function', function(dfr) {
         var easings, t;
@@ -3723,56 +3723,64 @@
         t = new Tween({
           easing: easings.one
         });
-        t.setStartTime();
-        t.update(t.props.startTime + 39);
-        t.update(t.props.startTime + 40);
+        t._setStartTime();
+        t._update(t._props.startTime + 39);
+        t._update(t._props.startTime + 40);
         return setTimeout((function() {
           expect(easings.one).toHaveBeenCalled();
           return dfr();
         }), 50);
       });
     });
-    describe('setProgress method ->', function() {
-      return it('should set the current progress', function() {
+    describe('_setProgress method ->', function() {
+      it('should set the current progress', function() {
         var t;
         t = new Tween({
           easing: 'Bounce.Out'
         });
-        t.setProgress(.75);
+        t._setProgress(.75);
         expect(t.progress).toBe(.75);
         return expect(t.easedProgress.toFixed(2)).toBe('0.97');
       });
+      return it('should set return self', function() {
+        var obj, t;
+        t = new Tween({
+          easing: 'Bounce.Out'
+        });
+        obj = t._setProgress(.75);
+        return expect(obj).toBe(t);
+      });
     });
-    describe('setProp method ->', function() {
+    describe('_setProp method ->', function() {
       it('should set new timeline options', function() {
         var t;
         t = new Tween({
           duration: 100,
           delay: 0
         });
-        t.setProp({
+        t._setProp({
           duration: 1000,
           delay: 200
         });
-        expect(t.props.duration).toBe(1000);
-        return expect(t.props.delay).toBe(200);
+        expect(t._props.duration).toBe(1000);
+        return expect(t._props.delay).toBe(200);
       });
       it('should work with arguments', function() {
         var t;
         t = new Tween({
           duration: 100
         });
-        t.setProp('duration', 1000);
-        return expect(t.props.duration).toBe(1000);
+        t._setProp('duration', 1000);
+        return expect(t._props.duration).toBe(1000);
       });
-      it('should call calcDimentions method', function() {
+      it('should call _calcDimentions method', function() {
         var t;
         t = new Tween({
           duration: 100
         });
-        spyOn(t, 'calcDimentions');
-        t.setProp('duration', 1000);
-        return expect(t.calcDimentions).toHaveBeenCalled();
+        spyOn(t, '_calcDimentions');
+        t._setProp('duration', 1000);
+        return expect(t._calcDimentions).toHaveBeenCalled();
       });
       it('should update the time', function() {
         var t;
@@ -3780,16 +3788,16 @@
           duration: 100,
           delay: 100
         });
-        t.setProp('duration', 1000);
-        return expect(t.props.time).toBe(1100);
+        t._setProp('duration', 1000);
+        return expect(t._props.time).toBe(1100);
       });
       return it('should parse easing', function() {
         var t;
         t = new Tween({
           duration: 100
         });
-        t.setProp('easing', 'elastic.in');
-        return expect(t.props.easing).toBe(mojs.easing.elastic["in"]);
+        t._setProp('easing', 'elastic.in');
+        return expect(t._props.easing).toBe(mojs.easing.elastic["in"]);
       });
     });
     describe('run method ->', function() {
@@ -3797,16 +3805,16 @@
         var t;
         t = new Tween;
         t.play();
-        expect(t.props.startTime).toBeDefined();
-        return expect(t.props.endTime).toBe(t.props.startTime + t.props.repeatTime);
+        expect(t._props.startTime).toBeDefined();
+        return expect(t._props.endTime).toBe(t._props.startTime + t._props.repeatTime);
       });
       it('should call the setStartTime method', function() {
         var t, time;
         t = new Tween;
-        spyOn(t, 'setStartTime');
+        spyOn(t, '_setStartTime');
         time = 0;
         t.play(time);
-        return expect(t.setStartTime).toHaveBeenCalledWith(time);
+        return expect(t._setStartTime).toHaveBeenCalledWith(time);
       });
       it('should add itself to tweener', function() {
         var t;
@@ -3848,15 +3856,15 @@
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
       });
       return it('should reset progress to 0', function() {
-        var timeline;
+        var tw;
         tweener.removeAll();
-        timeline = new Tween({
+        tw = new Tween({
           duration: 2000
         });
-        timeline.play();
-        spyOn(timeline, 'setProgress');
-        timeline.stop();
-        return expect(timeline.setProgress).toHaveBeenCalledWith(0);
+        tw.play();
+        spyOn(tw, '_setProgress');
+        tw.stop();
+        return expect(tw._setProgress).toHaveBeenCalledWith(0);
       });
     });
     describe('pause method ->', function() {
@@ -3889,19 +3897,19 @@
         var tw;
         tw = new Tween;
         tw._complete();
-        return expect(tw.isCompleted).toBe(true);
+        return expect(tw._isCompleted).toBe(true);
       });
       it('should set isStarted flag to false', function() {
         var tw;
         tw = new Tween;
         tw._complete();
-        return expect(tw.isStarted).toBe(false);
+        return expect(tw._isStarted).toBe(false);
       });
       return it('should set isFirstUpdate flag to false', function() {
         var tw;
         tw = new Tween;
         tw._complete();
-        return expect(tw.isFirstUpdate).toBe(false);
+        return expect(tw._isFirstUpdate).toBe(false);
       });
     });
     describe('_start method ->', function() {
@@ -3921,21 +3929,21 @@
         var tw;
         tw = new Tween;
         tw._start();
-        return expect(tw.isStarted).toBe(true);
+        return expect(tw._isStarted).toBe(true);
       });
       it('should set isCompleted flag to false', function() {
         var tw;
         tw = new Tween;
         tw._start();
-        return expect(tw.isCompleted).toBe(false);
+        return expect(tw._isCompleted).toBe(false);
       });
       return it('should be called just once', function() {
         var tw;
         tw = new Tween;
         tw._start();
-        tw.isCompleted = true;
+        tw._isCompleted = true;
         tw._start();
-        return expect(tw.isCompleted).toBe(true);
+        return expect(tw._isCompleted).toBe(true);
       });
     });
     describe('_repeatComplete method ->', function() {
@@ -3968,7 +3976,7 @@
         var tw;
         tw = new Tween;
         tw._repeatComplete();
-        return expect(tw.isRepeatCompleted).toBe(true);
+        return expect(tw._isRepeatCompleted).toBe(true);
       });
     });
     describe('_repeatStart method ->', function() {
@@ -4001,7 +4009,7 @@
         var tw;
         tw = new Tween;
         tw._repeatStart();
-        return expect(tw.isRepeatStart).toBe(true);
+        return expect(tw._isRepeatStart).toBe(true);
       });
     });
     describe('_firstUpdate method ->', function() {
@@ -4055,9 +4063,9 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime);
-        tw.update(tw.props.startTime + 10);
+        tw._setStartTime();
+        tw._update(tw._props.startTime);
+        tw._update(tw._props.startTime + 10);
         expect(order[0]).toBe('start');
         expect(order[1]).toBe('repeat-start');
         expect(order[2]).toBe('first-update');
@@ -4090,14 +4098,14 @@
             return isReact && order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + duration / 2 + 10);
-        tw.update(tw.props.startTime + duration / 2 - 10);
-        tw.update(tw.props.startTime);
+        tw._setStartTime();
+        tw._update(tw._props.startTime);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + duration / 2 + 10);
+        tw._update(tw._props.startTime + duration / 2 - 10);
+        tw._update(tw._props.startTime);
         isReact = true;
-        tw.update(tw.props.startTime + duration / 2);
+        tw._update(tw._props.startTime + duration / 2);
         expect(order[0]).toBe('start');
         expect(order[1]).toBe('repeat-start');
         expect(order[2]).toBe('first-update');
@@ -4128,10 +4136,10 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + duration);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + duration);
         expect(order[0]).toBe('start');
         expect(order[1]).toBe('repeat-start');
         expect(order[2]).toBe('first-update');
@@ -4167,12 +4175,12 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + duration + 10);
-        tw.update(tw.props.startTime + duration + duration / 2);
-        tw.update(tw.props.startTime + duration + duration);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + duration + 10);
+        tw._update(tw._props.startTime + duration + duration / 2);
+        tw._update(tw._props.startTime + duration + duration);
         expect(order[0]).toBe('start');
         expect(order[1]).toBe('repeat-start');
         expect(order[2]).toBe('first-update');
@@ -4216,13 +4224,13 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + duration + delay / 2);
-        tw.update(tw.props.startTime + duration + delay + 10);
-        tw.update(tw.props.startTime + duration + delay + duration / 2);
-        tw.update(tw.props.startTime + duration + delay + duration);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + duration + delay / 2);
+        tw._update(tw._props.startTime + duration + delay + 10);
+        tw._update(tw._props.startTime + duration + delay + duration / 2);
+        tw._update(tw._props.startTime + duration + delay + duration);
         expect(order[0]).toBe('start');
         expect(order[1]).toBe('repeat-start');
         expect(order[2]).toBe('first-update');
@@ -4265,9 +4273,9 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + duration - duration / 4);
-        tw.update(tw.props.startTime + duration / 2);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + duration - duration / 4);
+        tw._update(tw._props.startTime + duration / 2);
         expect(order[0]).toBe('complete');
         expect(order[1]).toBe('repeat-complete');
         expect(order[2]).toBe('first-update');
@@ -4299,11 +4307,11 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + duration);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + duration);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime);
         expect(order[0]).toBe('complete');
         expect(order[1]).toBe('repeat-complete');
         expect(order[2]).toBe('first-update');
@@ -4340,13 +4348,13 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + duration + duration);
-        tw.update(tw.props.startTime + duration + duration / 2);
-        tw.update(tw.props.startTime + duration + 10);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + duration + duration);
+        tw._update(tw._props.startTime + duration + duration / 2);
+        tw._update(tw._props.startTime + duration + 10);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime);
         expect(order[0]).toBe('complete');
         expect(order[1]).toBe('repeat-complete');
         expect(order[2]).toBe('first-update');
@@ -4392,14 +4400,14 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + duration + delay + duration);
-        tw.update(tw.props.startTime + duration + delay + duration / 2);
-        tw.update(tw.props.startTime + duration + delay + 10);
-        tw.update(tw.props.startTime + duration + delay / 2);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + duration + delay + duration);
+        tw._update(tw._props.startTime + duration + delay + duration / 2);
+        tw._update(tw._props.startTime + duration + delay + 10);
+        tw._update(tw._props.startTime + duration + delay / 2);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime);
         expect(order[0]).toBe('complete');
         expect(order[1]).toBe('repeat-complete');
         expect(order[2]).toBe('first-update');
@@ -4445,14 +4453,14 @@
             return order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime + duration + delay + duration);
-        tw.update(tw.props.startTime + duration + delay + duration / 2);
-        tw.update(tw.props.startTime + duration + delay + 10);
-        tw.update(tw.props.startTime + duration + delay / 2);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime - 10);
+        tw._setStartTime();
+        tw._update(tw._props.startTime + duration + delay + duration);
+        tw._update(tw._props.startTime + duration + delay + duration / 2);
+        tw._update(tw._props.startTime + duration + delay + 10);
+        tw._update(tw._props.startTime + duration + delay / 2);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime - 10);
         expect(order[0]).toBe('complete');
         expect(order[1]).toBe('repeat-complete');
         expect(order[2]).toBe('first-update');
@@ -4499,20 +4507,20 @@
             return isReact && order.push('complete');
           }
         });
-        tw.setStartTime();
-        tw.update(tw.props.startTime);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + duration);
-        tw.update(tw.props.startTime + duration + delay);
-        tw.update(tw.props.startTime + duration + delay + duration / 2);
-        tw.update(tw.props.startTime + duration + delay + duration + 10);
+        tw._setStartTime();
+        tw._update(tw._props.startTime);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + duration);
+        tw._update(tw._props.startTime + duration + delay);
+        tw._update(tw._props.startTime + duration + delay + duration / 2);
+        tw._update(tw._props.startTime + duration + delay + duration + 10);
         isReact = true;
-        tw.update(tw.props.startTime + duration + delay + duration / 2);
-        tw.update(tw.props.startTime + duration + delay + 10);
-        tw.update(tw.props.startTime + duration + delay / 2);
-        tw.update(tw.props.startTime + duration / 2);
-        tw.update(tw.props.startTime + 10);
-        tw.update(tw.props.startTime - 10);
+        tw._update(tw._props.startTime + duration + delay + duration / 2);
+        tw._update(tw._props.startTime + duration + delay + 10);
+        tw._update(tw._props.startTime + duration + delay / 2);
+        tw._update(tw._props.startTime + duration / 2);
+        tw._update(tw._props.startTime + 10);
+        tw._update(tw._props.startTime - 10);
         expect(order[0]).toBe('complete');
         expect(order[1]).toBe('repeat-complete');
         expect(order[2]).toBe('first-update');
@@ -4557,13 +4565,13 @@
           return isReact && order.push('complete');
         }
       });
-      tw.setStartTime();
-      tw.update(tw.props.startTime);
-      tw.update(tw.props.startTime + duration / 2);
-      tw.update(tw.props.startTime + duration);
+      tw._setStartTime();
+      tw._update(tw._props.startTime);
+      tw._update(tw._props.startTime + duration / 2);
+      tw._update(tw._props.startTime + duration);
       isReact = true;
-      tw.update(tw.props.startTime + duration / 2);
-      tw.update(tw.props.startTime - 10);
+      tw._update(tw._props.startTime + duration / 2);
+      tw._update(tw._props.startTime - 10);
       expect(order[0]).toBe('complete');
       expect(order[1]).toBe('repeat-complete');
       expect(order[2]).toBe('first-update');

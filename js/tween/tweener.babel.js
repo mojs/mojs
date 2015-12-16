@@ -11,7 +11,7 @@ class Tweener {
 
   loop() {
     if (!this.isRunning) { return false; }
-    var time = performance.now(); this.update(time);
+    var time = performance.now(); this._update(time);
     if (!this.tweens.length) { return this.isRunning = false; }
     requestAnimationFrame(this.loop);
     return this;
@@ -24,10 +24,10 @@ class Tweener {
 
   stopLoop() { this.isRunning = false; }
 
-  update(time) {
+  _update(time) {
     var i = this.tweens.length;
     while(i--) {
-      if (this.tweens[i].update(time) === true) { this.remove(i); }
+      if (this.tweens[i]._update(time) === true) { this.remove(i); }
     }
   }
 

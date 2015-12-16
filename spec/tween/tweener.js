@@ -40,9 +40,9 @@
       });
       it('should call update fun', function(dfr) {
         t.startLoop();
-        spyOn(t, 'update');
+        spyOn(t, '_update');
         return setTimeout(function() {
-          expect(t.update).toHaveBeenCalledWith(jasmine.any(Number));
+          expect(t._update).toHaveBeenCalledWith(jasmine.any(Number));
           return dfr();
         }, 100);
       });
@@ -50,7 +50,7 @@
         t.add(new Tween);
         t.startLoop();
         setTimeout((function() {
-          return t.tweens[0].update = function() {
+          return t.tweens[0]._update = function() {
             return true;
           };
         }), 100);
@@ -62,10 +62,10 @@
       return it('should stop if !@isRunning', function() {
         t.isRunning = false;
         spyOn(window, 'requestAnimationFrame');
-        spyOn(t, 'update');
+        spyOn(t, '_update');
         t.loop();
         expect(window.requestAnimationFrame).not.toHaveBeenCalled();
-        return expect(t.update).not.toHaveBeenCalled();
+        return expect(t._update).not.toHaveBeenCalled();
       });
     });
     describe('startLoop method ->', function() {
@@ -155,11 +155,11 @@
         var time;
         t.add(new Tween);
         t.add(new Tween);
-        spyOn(t.tweens[0], 'update');
-        spyOn(t.tweens[1], 'update');
-        t.update(time = performance.now() + 200);
-        expect(t.tweens[0].update).toHaveBeenCalledWith(time);
-        return expect(t.tweens[1].update).toHaveBeenCalledWith(time);
+        spyOn(t.tweens[0], '_update');
+        spyOn(t.tweens[1], '_update');
+        t._update(time = performance.now() + 200);
+        expect(t.tweens[0]._update).toHaveBeenCalledWith(time);
+        return expect(t.tweens[1]._update).toHaveBeenCalledWith(time);
       });
     });
   });

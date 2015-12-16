@@ -13,7 +13,7 @@ class Timeline {
     this.state      = 'stop';
     this.defaults   = { repeat: 0, delay:  0 };
     this.timelines  = [];
-    this.props      = { time: 0, repeatTime: 0, shiftedRepeatTime: 0  };
+    this._props      = { time: 0, repeatTime: 0, shiftedRepeatTime: 0  };
     this.loop       = h.bind(this.loop, this);
     this.onUpdate   = this.o.onUpdate;
   }
@@ -37,7 +37,7 @@ class Timeline {
   _extendDefaults() {
     for (var key in this.defaults) {
       if (this.defaults.hasOwnProperty(key)) {
-        this.props[key] = ( this.o[key] != null ) ? this.o[key] : this.defaults[key];
+        this._props[key] = ( this.o[key] != null ) ? this.o[key] : this.defaults[key];
       }
     }
   }
@@ -45,10 +45,10 @@ class Timeline {
   /*
     Method to add a prop to the props object.
   */
-  setProp(props) {
+  _setProp(props) {
     for (var key in props) {
       if (props.hasOwnProperty(key)) {
-        this.props[key] = props[key];
+        this._props[key] = props[key];
       }
     }
     return this.recalcDuration();
@@ -58,7 +58,7 @@ class Timeline {
     // if timeline is a module with timeline property then extract it
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
     // add self delay to the timeline
-    (shift != null) && timeline.setProp({ 'shiftTime': shift });
+    (shift != null) && timeline._setProp({ 'shiftTime': shift });
     this.timelines.push(timeline);
     return this._recalcTimelineDuration(timeline);
   }
@@ -85,30 +85,30 @@ class Timeline {
 
   _appendTimelineArray(timelineArray) {
     var i     = timelineArray.length;
-    var time  = this.props.repeatTime - this.props.delay;
+    var time  = this._props.repeatTime - this._props.delay;
     var len   = this.timelines.length;
 
     while(i--) { this.appendTimeline(timelineArray[i], len, time); }
   }
 
   appendTimeline(timeline, index, time) {
-    var shift = (time != null) ? time : this.props.time;
-    shift    += timeline.props.shiftTime || 0;
+    var shift = (time != null) ? time : this._props.time;
+    shift    += timeline._props.shiftTime || 0;
     timeline.index = index; this.pushTimeline(timeline, shift);
   }
 
   recalcDuration() {
     var len = this.timelines.length;
-    this.props.time = 0; this.props.repeatTime = 0; this.props.shiftedRepeatTime = 0
+    this._props.time = 0; this._props.repeatTime = 0; this._props.shiftedRepeatTime = 0
     while(len--) { this._recalcTimelineDuration(this.timelines[len]); }
   }
 
   _recalcTimelineDuration(timeline) {
-    var timelineTime = timeline.props.repeatTime + (timeline.props.shiftTime || 0);
-    this.props.time = Math.max(timelineTime, this.props.time);
-    this.props.repeatTime = (this.props.time+this.props.delay)*(this.props.repeat+1);
-    this.props.shiftedRepeatTime = this.props.repeatTime + (this.props.shiftTime || 0);
-    this.props.shiftedRepeatTime -= this.props.delay;
+    var timelineTime = timeline._props.repeatTime + (timeline._props.shiftTime || 0);
+    this._props.time = Math.max(timelineTime, this._props.time);
+    this._props.repeatTime = (this._props.time+this._props.delay)*(this._props.repeat+1);
+    this._props.shiftedRepeatTime = this._props.repeatTime + (this._props.shiftTime || 0);
+    this._props.shiftedRepeatTime -= this._props.delay;
   }
 
   /*  Method to take care of the current time.
@@ -117,16 +117,16 @@ class Timeline {
       had ended it execution so should be removed form the 
       tweener's active tweens array
   */
-  update(time, isGrow) {
-    var props = this.props;
+  _update(time, isGrow) {
+    var props = this._props;
     this.o.isIt && console.log(`------------------------------------------------`)
     this.o.isIt && console.log(`timeline:`)
     this.o.isIt && console.log(`time: ${time}, prevTime: ${this._previousUpdateTime}`)
     this.o.isIt && console.log(`start: ${props.startTime}, end: ${props.endTime}`)
     // don't go further then the endTime
-    if (time > this.props.endTime) { time = this.props.endTime; }
+    if (time > this._props.endTime) { time = this._props.endTime; }
     // return true if timeline was already completed
-    if (time === this.props.endTime && this.isCompleted) { return true; }
+    if (time === this._props.endTime && this.isCompleted) { return true; }
     // set the time to timelines
     this._updateTimelines(time, isGrow);
     /*  check the callbacks for the current time
@@ -147,7 +147,7 @@ class Timeline {
   _updateTimelines(time, isGrow) {
     // get elapsed with respect to repeat option
     // so take a modulo of the elapsed time
-    var props      = this.props;
+    var props      = this._props;
     var startPoint = props.startTime - props.delay
     var elapsed    = (time - startPoint) % (props.delay + props.time)
 
@@ -185,7 +185,7 @@ class Timeline {
         // if ( time !== missedTime ) {
         //   var j = -1;
         //   while(j++ < len) {
-        //     this.timelines[j].update(missedTime);
+        //     this.timelines[j]._update(missedTime);
         //   }
         // }
       }
@@ -198,7 +198,7 @@ class Timeline {
       //   this.o.isIt && console.log(`******* missed time: ${missedTime}, time: ${props.time}`);
       //   var j = -1;
       //   while(j++ < len) {
-      //     this.timelines[j].update(missedTime);
+      //     this.timelines[j]._update(missedTime);
       //   }
       // }
 
@@ -207,7 +207,7 @@ class Timeline {
         ? time > (this._previousUpdateTime || 0)
         : isGrow;
       while(i++ < len) {
-        this.timelines[i].update(timeToTimelines, isGrow);
+        this.timelines[i]._update(timeToTimelines, isGrow);
         }
       }
     return this._previousUpdateTime = time;
@@ -231,14 +231,14 @@ class Timeline {
       this.isStarted = true; this.isCompleted = false;
     }
     // if isn't complete
-    if (time >= this.props.startTime && time < this.props.endTime) {
+    if (time >= this._props.startTime && time < this._props.endTime) {
       if ( this.onUpdate != null && typeof this.onUpdate === 'function' ) {
-        this.onUpdate( (time - this.props.startTime) / this.props.repeatTime )
+        this.onUpdate( (time - this._props.startTime) / this._props.repeatTime )
       }
     }
 
     // if reverse completed
-    if ( this.prevTime > time && time <= this.props.startTime ) {
+    if ( this.prevTime > time && time <= this._props.startTime ) {
       if ( this.o.onReverseComplete != null && typeof this.o.onReverseComplete === 'function' ) {
         this.o.onReverseComplete.apply(this);
       }
@@ -247,7 +247,7 @@ class Timeline {
     // save the current time as previous for future
     this.prevTime = time;
     // if completed
-    if ( time === this.props.endTime && !this.isCompleted ) {
+    if ( time === this._props.endTime && !this.isCompleted ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function' ) {
         this.onUpdate(1);
       }
@@ -259,7 +259,7 @@ class Timeline {
   }
 
   play(time) {
-    this.setStartTime(time);
+    this._setStartTime(time);
     if (!time) { t.add(this); this.state = 'play'; };
     return this;
   }
@@ -275,27 +275,27 @@ class Timeline {
 
   removeFromTweener() { t.remove(this); return this; }
 
-  setStartTime(time) {
-    this.getDimentions(time); this.startTimelines(this.props.startTime);
+  _setStartTime(time) {
+    this.getDimentions(time); this.startTimelines(this._props.startTime);
   }
 
   startTimelines(time) {
     var i = this.timelines.length;
-    ( time == null) && (time = this.props.startTime);
-    while(i--) { this.timelines[i].setStartTime(time); }
+    ( time == null) && (time = this._props.startTime);
+    while(i--) { this.timelines[i]._setStartTime(time); }
   }
 
   setProgress(progress) {
-    if ( this.props.startTime == null ) { this.setStartTime(); }
+    if ( this._props.startTime == null ) { this._setStartTime(); }
     progress = h.clamp(progress, 0, 1);
-    this.update( this.props.startTime + progress*this.props.repeatTime );
+    this._update( this._props.startTime + progress*this._props.repeatTime );
   }
 
   getDimentions(time) {
     time = (time == null) ? performance.now() : time;
-    this.props.startTime  = time + this.props.delay + (this.props.shiftTime || 0);
-    this.props.endTime    = this.props.startTime + this.props.shiftedRepeatTime;
-    this.props.endTime   -= (this.props.shiftTime || 0);
+    this._props.startTime  = time + this._props.delay + (this._props.shiftTime || 0);
+    this._props.endTime    = this._props.startTime + this._props.shiftedRepeatTime;
+    this._props.endTime   -= (this._props.shiftTime || 0);
   }
 }
 

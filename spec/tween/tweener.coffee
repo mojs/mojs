@@ -25,23 +25,23 @@ describe 'Twenner ->', ->
       , 100
     it 'should call update fun', (dfr)->
       t.startLoop()
-      spyOn t, 'update'
+      spyOn t, '_update'
       setTimeout ->
-        expect(t.update).toHaveBeenCalledWith(jasmine.any(Number)); dfr()
+        expect(t._update).toHaveBeenCalledWith(jasmine.any(Number)); dfr()
       , 100
     it 'should stop at the end', (dfr)->
       t.add new Tween
       t.startLoop()
-      setTimeout (-> t.tweens[0].update = -> true), 100
+      setTimeout (-> t.tweens[0]._update = -> true), 100
       setTimeout (-> expect(t.isRunning).toBe(false); dfr()), 200
 
     it 'should stop if !@isRunning', ()->
       t.isRunning = false
       spyOn window, 'requestAnimationFrame'
-      spyOn t, 'update'
+      spyOn t, '_update'
       t.loop()
       expect(window.requestAnimationFrame).not.toHaveBeenCalled()
-      expect(t.update).not.toHaveBeenCalled()
+      expect(t._update).not.toHaveBeenCalled()
 
   describe 'startLoop method ->', ->
     it 'should call loop method', (dfr)->
@@ -106,11 +106,11 @@ describe 'Twenner ->', ->
     it 'should update the current time on every timeline',->
       t.add new Tween
       t.add new Tween
-      spyOn t.tweens[0], 'update'
-      spyOn t.tweens[1], 'update'
-      t.update time = performance.now() + 200
-      expect(t.tweens[0].update).toHaveBeenCalledWith time
-      expect(t.tweens[1].update).toHaveBeenCalledWith time
+      spyOn t.tweens[0], '_update'
+      spyOn t.tweens[1], '_update'
+      t._update time = performance.now() + 200
+      expect(t.tweens[0]._update).toHaveBeenCalledWith time
+      expect(t.tweens[1]._update).toHaveBeenCalledWith time
 
 
 
