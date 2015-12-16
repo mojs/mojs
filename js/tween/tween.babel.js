@@ -5,7 +5,9 @@ import easing from '../easing/easing';
 var Tween = class Tween {
   constructor(o={}) {
     this.o = o;
-    this._declareDefaults(); this._extendDefaults(); this._vars(); return this;
+    this._declareDefaults(); this._extendDefaults();
+    this._vars();
+    return this;
   }
 
   /*
@@ -50,17 +52,35 @@ var Tween = class Tween {
       isChained:              false
     }
   }
-
+  /*
+    Method to declare some vars.
+  */
   _vars() {
-    this.h = h; this.progress = 0; this._prevTime = -1;
+    this.h = h;
+    this.progress = 0;
+    this._prevTime = -1;
+
+    this._negativeShift = 0;
+    // if negative delay was specified,
+    // save it to _negativeShift property and
+    // reset it back to 0
+    if ( this._props.delay < 0 ) {
+      this._negativeShift = this._props.delay;
+      this._props.delay = 0;
+    }
+
     return this._calcDimentions();
   }
-
+  /*
+    Method to calculate tween's dimentions.
+  */
   _calcDimentions() {
     this._props.time       = this._props.duration + this._props.delay;
     this._props.repeatTime = this._props.time * (this._props.repeat + 1);
   }
-
+  /*
+    Method to extend defaults by options and put it in _props.
+  */
   _extendDefaults() {
     this._props = {};
     for (var key in this._defaults) {
@@ -78,13 +98,14 @@ var Tween = class Tween {
     @returns this
   */
   _setStartTime(time) {
-    var props = this._props;
+    var p = this._props;
     this._isCompleted = false; this._isRepeatCompleted = false;
     this._isStarted = false;
     
     time = (time == null) ? performance.now() : time;
-    props.startTime = time + props.delay + (props.shiftTime || 0);
-    props.endTime   = props.startTime + props.repeatTime - props.delay;
+    var shiftTime = (this._props.shiftTime || 0);
+    p.startTime = time + p.delay + this._negativeShift + shiftTime;
+    p.endTime   = p.startTime + p.repeatTime - p.delay;
 
     return this;
   }
@@ -493,40 +514,40 @@ var Tween = class Tween {
     this._isRepeatStart = true;
   }
 
-  _visualizeProgress(time) {
-    var str = '|',
-        procStr = ' ',
-        p = this._props,
-        proc = p.startTime - p.delay;
+  // _visualizeProgress(time) {
+  //   var str = '|',
+  //       procStr = ' ',
+  //       p = this._props,
+  //       proc = p.startTime - p.delay;
 
-    while ( proc < p.endTime ) {
-      if (p.delay > 0 ) {
-        var newProc = proc + p.delay;
-        if ( time > proc && time < newProc ) {
-          procStr += ' ^ ';
-        } else {
-          procStr += '   ';
-        }
-        proc = newProc;
-        str  += '---';
-      }
-      var newProc = proc + p.duration;
-      if ( time > proc && time < newProc ) {
-        procStr += '  ^   ';
-      } else if (time === proc) {
-        procStr += '^     ';
-      } else if (time === newProc) {
-        procStr += '    ^ ';
-      } else {
-        procStr += '      ';
-      }
-      proc = newProc;
-      str += '=====|';
-    }
+  //   while ( proc < p.endTime ) {
+  //     if (p.delay > 0 ) {
+  //       var newProc = proc + p.delay;
+  //       if ( time > proc && time < newProc ) {
+  //         procStr += ' ^ ';
+  //       } else {
+  //         procStr += '   ';
+  //       }
+  //       proc = newProc;
+  //       str  += '---';
+  //     }
+  //     var newProc = proc + p.duration;
+  //     if ( time > proc && time < newProc ) {
+  //       procStr += '  ^   ';
+  //     } else if (time === proc) {
+  //       procStr += '^     ';
+  //     } else if (time === newProc) {
+  //       procStr += '    ^ ';
+  //     } else {
+  //       procStr += '      ';
+  //     }
+  //     proc = newProc;
+  //     str += '=====|';
+  //   }
 
-    console.log(str);
-    console.log(procStr);
-  }
+  //   console.log(str);
+  //   console.log(procStr);
+  // }
 }
 
 export default Tween;

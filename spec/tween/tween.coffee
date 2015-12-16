@@ -32,9 +32,10 @@ describe 'Tween ->', ->
   describe 'defaults ->', ->
     it 'should have vars', ->
       t = new Tween
-      expect(t._props) .toBeDefined()
-      expect(t.h)     .toBeDefined()
-      expect(t.progress).toBe 0
+      expect(t._props)        .toBeDefined()
+      expect(t.h)             .toBeDefined()
+      expect(t._negativeShift).toBe 0
+      expect(t.progress)      .toBe 0
     it 'should have defaults', ->
       t = new Tween
       expect(t._defaults.duration).toBe  600
@@ -54,17 +55,6 @@ describe 'Tween ->', ->
       t = new Tween duration: 1000, delay: 100, repeat: 2
       expect(t._props.time).toBe        1100
       expect(t._props.repeatTime).toBe  3300
-    # it 'should calculate shiftedRepeatTime', ->
-    #   t = new Tween duration: 1000, delay: 100, repeat: 2
-    #   expect(t._props.time).toBe             1100
-    #   expect(t._props.repeatTime).toBe       3300
-    #   expect(t._props.shiftedRepeatTime).toBe  3200
-    # it 'should calculate shiftedRepeatTime #2', ->
-    #   t = new Tween duration: 1000, delay: 100, repeat: 2
-    #   t._setProp 'shiftTime', 700
-    #   expect(t._props.time).toBe              1100
-    #   expect(t._props.repeatTime).toBe        3300
-    #   expect(t._props.shiftedRepeatTime).toBe 3900
 
   describe 'isChained option ->', ->
     it 'should recieve isChained option', ->
@@ -112,17 +102,17 @@ describe 'Tween ->', ->
       endTime = t._props.startTime + (3*(duration+delay)) - delay
       expect(t._props.endTime).toBe endTime
 
-    # it 'should restart flags', ->
-    #   t = new Tween(duration: 20, repeat: 2)._setStartTime()
-    #   t._update t._props.startTime + 10
-    #   t._update t._props.startTime + 60
-    #   expect(t._isCompleted).toBe true
-    #   expect(t._isStarted)  .toBe false
-    #   expect(t._isRepeatCompleted).toBe true
-    #   t._setStartTime()
-    #   expect(t._isCompleted).toBe false
-    #   expect(t._isRepeatCompleted).toBe false
-    #   expect(t._isStarted)  .toBe false
+    it 'should restart flags', ->
+      t = new Tween(duration: 20, repeat: 2)._setStartTime()
+      t._update t._props.startTime + 10
+      t._update t._props.startTime + 60
+      expect(t._isCompleted).toBe true
+      expect(t._isStarted)  .toBe false
+      expect(t._isRepeatCompleted).toBe true
+      t._setStartTime()
+      expect(t._isCompleted).toBe false
+      expect(t._isRepeatCompleted).toBe false
+      expect(t._isStarted)  .toBe false
   
   describe 'update method ->', ->
     it 'should update progress', ->
@@ -4935,3 +4925,31 @@ describe 'Tween ->', ->
     expect(order[5]).toBe 'repeat-start'
     expect(order[6]).toBe 'start'
     expect(order[7]).toBe undefined
+
+  describe 'negative delay', ->
+    it 'should save negative delay to _negativeShift property', ->
+      tw = new Tween
+        delay: -200
+
+      expect(tw._negativeShift).toBe -200
+
+    it 'should set negative delay to 0', ->
+      tw = new Tween delay: -200
+
+      expect(tw._negativeShift).toBe -200
+      expect(tw._props.delay).toBe 0
+
+    it 'should calculate startTime regarding negative delay', ->
+      delay = -200
+      tw = new Tween delay: delay
+
+      time = performance.now()
+      tw._setStartTime(time)
+
+      expect(tw._props.startTime).toBe time-200
+
+
+
+
+
+

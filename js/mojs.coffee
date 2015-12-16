@@ -36,7 +36,8 @@ mojs.delta = mojs.h.delta
 #   repeat: 2
 #   yoyo: true
 #   # isIt: true
-#   delay: 200
+#   delay: -6500
+#   duration: 5000
 #   isIt21: true
 #   onUpdate:(pe, p, isForward)->
 #     mojs.h.style( obj, 'transform', "translate3d(#{200*pe}px, 0, 0)" )
@@ -50,7 +51,7 @@ mojs.delta = mojs.h.delta
 
 # tm = new mojs.Timeline
 # tm.add tw#, tw2
-# tm.play()
+# tw.play()
 # # tw.play()
 
 # rangeSlider.oninput = (e)->

@@ -3559,7 +3559,9 @@
 	  function Tween() {
 	    var o = arguments[0] === undefined ? {} : arguments[0];
 	    this.o = o;
-	    this._declareDefaults();this._extendDefaults();this._vars();return this;
+	    this._declareDefaults();this._extendDefaults();
+	    this._vars();
+	    return this;
 	  }
 
 	  _prototypeProperties(Tween, null, {
@@ -3631,8 +3633,23 @@
 	      configurable: true
 	    },
 	    _vars: {
+	      /*
+	        Method to declare some vars.
+	      */
 	      value: function Vars() {
-	        this.h = h;this.progress = 0;this._prevTime = -1;
+	        this.h = h;
+	        this.progress = 0;
+	        this._prevTime = -1;
+
+	        this._negativeShift = 0;
+	        // if negative delay was specified,
+	        // save it to _negativeShift property and
+	        // reset it back to 0
+	        if (this._props.delay < 0) {
+	          this._negativeShift = this._props.delay;
+	          this._props.delay = 0;
+	        }
+
 	        return this._calcDimentions();
 	      },
 	      writable: true,
@@ -3640,6 +3657,9 @@
 	      configurable: true
 	    },
 	    _calcDimentions: {
+	      /*
+	        Method to calculate tween's dimentions.
+	      */
 	      value: function CalcDimentions() {
 	        this._props.time = this._props.duration + this._props.delay;
 	        this._props.repeatTime = this._props.time * (this._props.repeat + 1);
@@ -3649,6 +3669,9 @@
 	      configurable: true
 	    },
 	    _extendDefaults: {
+	      /*
+	        Method to extend defaults by options and put it in _props.
+	      */
 	      value: function ExtendDefaults() {
 	        this._props = {};
 	        for (var key in this._defaults) {
@@ -3671,13 +3694,14 @@
 	        @returns this
 	      */
 	      value: function SetStartTime(time) {
-	        var props = this._props;
+	        var p = this._props;
 	        this._isCompleted = false;this._isRepeatCompleted = false;
 	        this._isStarted = false;
 
 	        time = time == null ? performance.now() : time;
-	        props.startTime = time + props.delay + (props.shiftTime || 0);
-	        props.endTime = props.startTime + props.repeatTime - props.delay;
+	        var shiftTime = this._props.shiftTime || 0;
+	        p.startTime = time + p.delay + this._negativeShift + shiftTime;
+	        p.endTime = p.startTime + p.repeatTime - p.delay;
 
 	        return this;
 	      },
@@ -4155,46 +4179,43 @@
 	          this._props.onRepeatStart.call(this, time > this._prevTime);
 	        }
 	        this._isRepeatStart = true;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _visualizeProgress: {
-	      value: function VisualizeProgress(time) {
-	        var str = "|",
-	            procStr = " ",
-	            p = this._props,
-	            proc = p.startTime - p.delay;
+	      }
 
-	        while (proc < p.endTime) {
-	          if (p.delay > 0) {
-	            var newProc = proc + p.delay;
-	            if (time > proc && time < newProc) {
-	              procStr += " ^ ";
-	            } else {
-	              procStr += "   ";
-	            }
-	            proc = newProc;
-	            str += "---";
-	          }
-	          var newProc = proc + p.duration;
-	          if (time > proc && time < newProc) {
-	            procStr += "  ^   ";
-	          } else if (time === proc) {
-	            procStr += "^     ";
-	          } else if (time === newProc) {
-	            procStr += "    ^ ";
-	          } else {
-	            procStr += "      ";
-	          }
-	          proc = newProc;
-	          str += "=====|";
-	        }
+	      // _visualizeProgress(time) {
+	      //   var str = '|',
+	      //       procStr = ' ',
+	      //       p = this._props,
+	      //       proc = p.startTime - p.delay;
 
-	        console.log(str);
-	        console.log(procStr);
-	      },
+	      //   while ( proc < p.endTime ) {
+	      //     if (p.delay > 0 ) {
+	      //       var newProc = proc + p.delay;
+	      //       if ( time > proc && time < newProc ) {
+	      //         procStr += ' ^ ';
+	      //       } else {
+	      //         procStr += '   ';
+	      //       }
+	      //       proc = newProc;
+	      //       str  += '---';
+	      //     }
+	      //     var newProc = proc + p.duration;
+	      //     if ( time > proc && time < newProc ) {
+	      //       procStr += '  ^   ';
+	      //     } else if (time === proc) {
+	      //       procStr += '^     ';
+	      //     } else if (time === newProc) {
+	      //       procStr += '    ^ ';
+	      //     } else {
+	      //       procStr += '      ';
+	      //     }
+	      //     proc = newProc;
+	      //     str += '=====|';
+	      //   }
+
+	      //   console.log(str);
+	      //   console.log(procStr);
+	      // }
+	      ,
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
