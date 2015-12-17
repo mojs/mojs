@@ -12,7 +12,7 @@ var Tween = class Tween {
   /*
     API method to run the Tween.
     @public
-    @param  {Number} Shift time time.
+    @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
   */
   play(shift = 0) {
@@ -26,7 +26,7 @@ var Tween = class Tween {
     @public
     @returns {Object} Self.
   */
-  stop() { this.pause(); this._setProgress(0); return this; }
+  stop() { this.pause(); this.setProgress(0); return this; }
   /*
     API method to pause Tween.
     @public

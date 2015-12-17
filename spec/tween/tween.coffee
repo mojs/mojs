@@ -4454,9 +4454,9 @@ describe 'Tween ->', ->
       tweener.removeAll()
       tw = new Tween duration: 2000
       tw.play()
-      spyOn tw, '_setProgress'
+      spyOn tw, 'setProgress'
       tw.stop()
-      expect(tw._setProgress).toHaveBeenCalledWith 0
+      expect(tw.setProgress).toHaveBeenCalledWith 0
     # it 'should set state to "stop"',->
     #   tweener.tweens = []
     #   t = new Tween

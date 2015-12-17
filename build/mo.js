@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.158.0',
+	  revision: '0.158.2',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3569,7 +3569,7 @@
 	      /*
 	        API method to run the Tween.
 	        @public
-	        @param  {Number} Shift time time.
+	        @param  {Number} Shift time in milliseconds.
 	        @return {Object} Self.
 	      */
 	      value: function play() {
@@ -3590,7 +3590,7 @@
 	        @returns {Object} Self.
 	      */
 	      value: function stop() {
-	        this.pause();this._setProgress(0);return this;
+	        this.pause();this.setProgress(0);return this;
 	      },
 	      writable: true,
 	      enumerable: true,

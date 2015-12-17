@@ -3911,9 +3911,9 @@
           duration: 2000
         });
         tw.play();
-        spyOn(tw, '_setProgress');
+        spyOn(tw, 'setProgress');
         tw.stop();
-        return expect(tw._setProgress).toHaveBeenCalledWith(0);
+        return expect(tw.setProgress).toHaveBeenCalledWith(0);
       });
     });
     describe('pause method ->', function() {

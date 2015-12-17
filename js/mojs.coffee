@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.158.0', isDebug: true
+  revision:   '0.158.2', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -30,16 +30,16 @@ mojs.delta = mojs.h.delta
 # obj         = document.querySelector('#js-el1')
 
 # tw = new mojs.Tween
-#   # repeat: 2
-#   # yoyo: true
+#   repeat: 2
+#   yoyo: true
 #   # isIt: true
-#   # delay: -6500
-#   duration: 10000
+#   delay: 500
+#   duration: 500
 #   onUpdate:(pe, p, isForward)->
 #     mojs.h.style( obj, 'transform', "translate3d(#{200*pe}px, 0, 0)" )
 #     console.log "TWEEN ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
 
-# tw.setProgress(.5).play()
+# tw.setProgress(0).play( 0 )
 
 # rangeSlider.oninput = (e)->
 #   proc = (1*rangeSlider.value)/10000
