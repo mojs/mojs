@@ -320,20 +320,12 @@ describe 'Timeline ->', ->
       result = t.setProgress .5
       expect(result).toBe t
     it 'should call self update', ->
+      duration = 500; progress = .75
       t   = new Timeline
-      t1  = new Timeline
-      t2  = new Timeline
-      ti1 = new Tween duration: 500, delay: 200
-      ti2 = new Tween duration: 500, delay: 100
-      ti3 = new Tween duration: 100, delay: 0
-      ti4 = new Tween duration: 800, delay: 500
-      t1.add(ti1); t1.add(ti2); t2.add(ti3); t2.add(ti4)
-      t.add(t1); t.add(t2)
-      # t.prepareStart(); t.startTimelines()
-      t._setStartTime()
+      t.add new Tween duration: duration
       spyOn t, '_update'
-      t.setProgress .5
-      expect(t._update).toHaveBeenCalledWith t._props.startTime + 650
+      t.setProgress progress
+      expect(t._update).toHaveBeenCalledWith t._props.startTime + (progress*duration)
     it 'should not set the progress less then 0', ->
       delay = 5000
       t   = new Timeline delay: delay; t1  = new Timeline

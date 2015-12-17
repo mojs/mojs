@@ -450,36 +450,16 @@
         return expect(result).toBe(t);
       });
       it('should call self update', function() {
-        var t, t1, t2, ti1, ti2, ti3, ti4;
+        var duration, progress, t;
+        duration = 500;
+        progress = .75;
         t = new Timeline;
-        t1 = new Timeline;
-        t2 = new Timeline;
-        ti1 = new Tween({
-          duration: 500,
-          delay: 200
-        });
-        ti2 = new Tween({
-          duration: 500,
-          delay: 100
-        });
-        ti3 = new Tween({
-          duration: 100,
-          delay: 0
-        });
-        ti4 = new Tween({
-          duration: 800,
-          delay: 500
-        });
-        t1.add(ti1);
-        t1.add(ti2);
-        t2.add(ti3);
-        t2.add(ti4);
-        t.add(t1);
-        t.add(t2);
-        t._setStartTime();
+        t.add(new Tween({
+          duration: duration
+        }));
         spyOn(t, '_update');
-        t.setProgress(.5);
-        return expect(t._update).toHaveBeenCalledWith(t._props.startTime + 650);
+        t.setProgress(progress);
+        return expect(t._update).toHaveBeenCalledWith(t._props.startTime + (progress * duration));
       });
       it('should not set the progress less then 0', function() {
         var delay, t, t1;

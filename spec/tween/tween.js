@@ -4553,7 +4553,7 @@
       expect(order[6]).toBe('start');
       return expect(order[7]).toBe(void 0);
     });
-    return describe('negative delay', function() {
+    describe('negative delay', function() {
       it('should save negative delay to _negativeShift property', function() {
         var tw;
         tw = new Tween({
@@ -4578,6 +4578,52 @@
         time = performance.now();
         tw._setStartTime(time);
         return expect(tw._props.startTime).toBe(time - 200);
+      });
+    });
+    return describe('setProgress method ->', function() {
+      it('should call _setStartTime if there is no this._props.startTime', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, '_setStartTime');
+        t.setProgress(.5);
+        return expect(t._setStartTime).toHaveBeenCalled();
+      });
+      it('should return self', function() {
+        var result, t;
+        t = new Tween;
+        result = t.setProgress(.5);
+        return expect(result).toBe(t);
+      });
+      it('should call self _update', function() {
+        var duration, progress, t;
+        duration = 500;
+        progress = .75;
+        t = new Tween({
+          duration: duration
+        });
+        spyOn(t, '_update');
+        t.setProgress(progress);
+        return expect(t._update).toHaveBeenCalledWith(t._props.startTime + (progress * duration));
+      });
+      it('should not set the progress less then 0', function() {
+        var delay, t;
+        delay = 5000;
+        t = new Tween({
+          delay: delay
+        });
+        spyOn(t, '_update');
+        t.setProgress(-1.5);
+        return expect(t._update).toHaveBeenCalledWith(t._props.startTime - delay);
+      });
+      return it('should not set the progress more then 1', function() {
+        var delay, t;
+        delay = 200;
+        t = new Tween({
+          delay: delay
+        });
+        spyOn(t, '_update');
+        t.setProgress(1.5);
+        return expect(t._update).toHaveBeenCalledWith((t._props.startTime - delay) + t._props.repeatTime);
       });
     });
   });

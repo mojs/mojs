@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.156.0',
+	  revision: '0.156.1',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3568,7 +3568,8 @@
 	    play: {
 
 	      /*
-	        Method to run the Tween
+	        API method to run the Tween
+	        @public
 	        @param  {Number} Start time
 	        @return {Object} Self
 	      */
@@ -3584,7 +3585,8 @@
 	    stop: {
 
 	      /*
-	        Method to stop the Tween.
+	        API method to stop the Tween.
+	        @public
 	        @returns {Object} Self.
 	      */
 	      value: function stop() {
@@ -3597,7 +3599,8 @@
 	    pause: {
 
 	      /*
-	        Method to pause Tween.
+	        API method to pause Tween.
+	        @public
 	        @returns {Object} Self.
 	      */
 	      value: function pause() {
@@ -3607,10 +3610,34 @@
 	      enumerable: true,
 	      configurable: true
 	    },
+	    setProgress: {
+	      /*
+	        API method to set total progress on timeline.
+	        @public
+	        @param {Number} Progress to set.
+	        @returns {Object} Self.
+	      */
+	      value: function setProgress(progress) {
+	        // set start time if there is no one yet.
+	        if (this._props.startTime == null) {
+	          this._setStartTime();
+	        }
+	        // progress should be in range of [0..1]
+	        progress = h.clamp(progress, 0, 1);
+	        // update self with calculated time
+	        var startPoint = this._props.startTime - this._props.delay;
+	        this._update(startPoint + progress * this._props.repeatTime);
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    _declareDefaults: {
 
 	      /*
 	        Method do declare defaults by this._defaults object
+	        @private
 	      */
 	      value: function DeclareDefaults() {
 	        this._defaults = {
@@ -3635,6 +3662,7 @@
 	    _vars: {
 	      /*
 	        Method to declare some vars.
+	        @private
 	      */
 	      value: function Vars() {
 	        this.h = h;
@@ -3659,6 +3687,7 @@
 	    _calcDimentions: {
 	      /*
 	        Method to calculate tween's dimentions.
+	        @private
 	      */
 	      value: function CalcDimentions() {
 	        this._props.time = this._props.duration + this._props.delay;
@@ -3671,6 +3700,7 @@
 	    _extendDefaults: {
 	      /*
 	        Method to extend defaults by options and put it in _props.
+	        @private
 	      */
 	      value: function ExtendDefaults() {
 	        this._props = {};
@@ -3690,6 +3720,7 @@
 	    _setStartTime: {
 	      /*
 	        Method for setting start and end time to props.
+	        @private
 	        @param {Number(Timestamp)}, {Null}
 	        @returns this
 	      */
@@ -3712,6 +3743,7 @@
 	    _update: {
 	      /*
 	        Method to update tween's progress.
+	        @private
 	        @param {Number}   Time from the parent regarding it's period size.
 	        @param {Boolean}  Indicates if parent progress grows.
 	        @param {Number}   Parent's current period number.
@@ -3771,6 +3803,7 @@
 	    _updateInActiveArea: {
 	      /*
 	        Method to handle tween's progress in active area.
+	        @private
 	        @param {Number} Current update time.
 	      */
 	      value: function UpdateInActiveArea(time) {
@@ -3856,7 +3889,6 @@
 	          }
 
 	          if (time > this._prevTime) {
-	            //
 	            //  |=====|=====|=====| >>>
 	            // ^1  ^2
 	            if (!this._isStarted && this._prevTime <= props.startTime) {
@@ -3881,7 +3913,6 @@
 	              this._setProgress(0, time);
 	              this._repeatStart(time);
 	            }
-
 	            // if on very end edge
 	            // |=====|=====|=====| <<<
 	            //       ^!    ^! ^2 ^1
@@ -3974,6 +4005,7 @@
 	    _setProgress: {
 	      /*
 	        Method to set Tween's progress.
+	        @private
 	        @param {Number} Progress to set.
 	        @param {Number} Current update time.
 	        @returns {Object} Self.
@@ -4000,6 +4032,7 @@
 
 	      /*
 	        Method to set property[s] on Tween
+	        @private
 	        @param {Object, String} Hash object of key/value pairs, or property name
 	        @param {_} Property's value to set
 	      */
@@ -4034,7 +4067,8 @@
 	    _removeFromTweener: {
 	      /*
 	        Method to remove the Tween from the tweener.
-	        @returns {Onject} Self.
+	        @private
+	        @returns {Object} Self.
 	      */
 	      value: function RemoveFromTweener() {
 	        t.remove(this);return this;
@@ -4046,7 +4080,8 @@
 	    _getPeriod: {
 
 	      /*
-	        Method to get current period number
+	        Method to get current period number.
+	        @private
 	        @param {Number} Time to get the period for.
 	        @returns {Number} Current period number.
 	      */
@@ -4082,6 +4117,7 @@
 	      /*
 	        Method to set tween's state to start
 	        @method _start
+	        @private
 	        @param {Number} Progress to set.
 	      */
 	      value: function Start(time) {
@@ -4104,6 +4140,7 @@
 	      /*
 	        Method to set tween's state to complete.
 	        @method _complete
+	        @private
 	        @param {Number} Current time.
 	      */
 	      value: function Complete(time) {
@@ -4128,6 +4165,7 @@
 	      /*
 	        Method to run onFirstUpdate callback.
 	        @method _firstUpdate
+	        @private
 	        @param {Number} Current update time.
 	      */
 	      value: function FirstUpdate(time) {
@@ -4148,6 +4186,7 @@
 
 	      /*
 	        Method call onRepeatComplete calback and set flags.
+	        @private
 	        @param {Number} Current update time.
 	      */
 	      value: function RepeatComplete(time) {
@@ -4168,6 +4207,7 @@
 
 	      /*
 	        Method call onRepeatStart calback and set flags.
+	        @private
 	        @param {Number} Current update time.
 	      */
 	      value: function RepeatStart(time) {
@@ -4311,29 +4351,6 @@
 
 	        this._pushTimelineArray(args);
 	        this._calcDimentions();
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    setProgress: {
-	      /*
-	        API method to set total progress on timeline.
-	        @public
-	        @param {Number} Progress to set.
-	        @returns {Object} Self.
-	      */
-	      value: function setProgress(progress) {
-	        // set start time if there is no one yet.
-	        if (this._props.startTime == null) {
-	          this._setStartTime();
-	        }
-	        // tprogress should be in range of [0..1]
-	        progress = h.clamp(progress, 0, 1);
-	        // update self with calculated time
-	        var startPoint = this._props.startTime - this._props.delay;
-	        this._update(startPoint + progress * this._props.repeatTime);
 	        return this;
 	      },
 	      writable: true,

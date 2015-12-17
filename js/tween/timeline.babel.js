@@ -15,22 +15,6 @@ class Timeline extends Tween {
     return this;
   }
   /*
-    API method to set total progress on timeline.
-    @public
-    @param {Number} Progress to set.
-    @returns {Object} Self.
-  */
-  setProgress(progress) {
-    // set start time if there is no one yet.
-    if ( this._props.startTime == null ) { this._setStartTime(); }
-    // tprogress should be in range of [0..1]
-    progress = h.clamp(progress, 0, 1);
-    // update self with calculated time
-    var startPoint = (this._props.startTime - this._props.delay);
-    this._update( startPoint + progress*this._props.repeatTime );
-    return this;
-  }
-  /*
     API method to append the Tween/Timeline to the end of the
     timeline. Each argument is treated as a new append.
     Array of tweens is treated as a parallel sequence. 

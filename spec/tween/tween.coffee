@@ -4951,6 +4951,35 @@ describe 'Tween ->', ->
 
       expect(tw._props.startTime).toBe time-200
 
+  describe 'setProgress method ->', ->
+    it 'should call _setStartTime if there is no this._props.startTime', ->
+      t = new Tween
+      spyOn t, '_setStartTime'
+      t.setProgress .5
+      expect(t._setStartTime).toHaveBeenCalled()
+    it 'should return self', ->
+      t = new Tween
+      result = t.setProgress .5
+      expect(result).toBe t
+    it 'should call self _update', ->
+      duration = 500; progress = .75
+      t   = new Tween duration: duration
+      # t.add new Tween duration: duration
+      spyOn t, '_update'
+      t.setProgress progress
+      expect(t._update).toHaveBeenCalledWith t._props.startTime + (progress*duration)
+    it 'should not set the progress less then 0', ->
+      delay = 5000
+      t   = new Tween delay: delay
+      spyOn t, '_update'
+      t.setProgress -1.5
+      expect(t._update).toHaveBeenCalledWith t._props.startTime - delay
+    it 'should not set the progress more then 1', ->
+      delay  = 200
+      t   = new Tween delay: delay
+      spyOn t, '_update'
+      t.setProgress 1.5
+      expect(t._update).toHaveBeenCalledWith (t._props.startTime - delay) + t._props.repeatTime
 
 
 

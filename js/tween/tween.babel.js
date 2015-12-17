@@ -11,7 +11,8 @@ var Tween = class Tween {
   }
 
   /*
-    Method to run the Tween
+    API method to run the Tween
+    @public
     @param  {Number} Start time
     @return {Object} Self
   */
@@ -22,19 +23,38 @@ var Tween = class Tween {
   }
 
   /*
-    Method to stop the Tween.
+    API method to stop the Tween.
+    @public
     @returns {Object} Self.
   */
   stop() { this.pause(); this._setProgress(0); return this; }
 
   /*
-    Method to pause Tween.
+    API method to pause Tween.
+    @public
     @returns {Object} Self.
   */
   pause() { this._removeFromTweener(); return this; }
+  /*
+    API method to set total progress on timeline.
+    @public
+    @param {Number} Progress to set.
+    @returns {Object} Self.
+  */
+  setProgress(progress) {
+    // set start time if there is no one yet.
+    if ( this._props.startTime == null ) { this._setStartTime(); }
+    // progress should be in range of [0..1]
+    progress = h.clamp(progress, 0, 1);
+    // update self with calculated time
+    var startPoint = (this._props.startTime - this._props.delay);
+    this._update( startPoint + progress*this._props.repeatTime );
+    return this;
+  }
 
   /*
     Method do declare defaults by this._defaults object
+    @private
   */
   _declareDefaults() {
     this._defaults = {
@@ -54,6 +74,7 @@ var Tween = class Tween {
   }
   /*
     Method to declare some vars.
+    @private
   */
   _vars() {
     this.h = h;
@@ -73,6 +94,7 @@ var Tween = class Tween {
   }
   /*
     Method to calculate tween's dimentions.
+    @private
   */
   _calcDimentions() {
     this._props.time       = this._props.duration + this._props.delay;
@@ -80,6 +102,7 @@ var Tween = class Tween {
   }
   /*
     Method to extend defaults by options and put it in _props.
+    @private
   */
   _extendDefaults() {
     this._props = {};
@@ -94,6 +117,7 @@ var Tween = class Tween {
   }
   /*
     Method for setting start and end time to props.
+    @private
     @param {Number(Timestamp)}, {Null}
     @returns this
   */
@@ -111,6 +135,7 @@ var Tween = class Tween {
   }
   /*
     Method to update tween's progress.
+    @private
     @param {Number}   Time from the parent regarding it's period size.
     @param {Boolean}  Indicates if parent progress grows.
     @param {Number}   Parent's current period number.
@@ -165,6 +190,7 @@ var Tween = class Tween {
   }
   /*
     Method to handle tween's progress in active area.
+    @private
     @param {Number} Current update time.
   */
   _updateInActiveArea(time) {
@@ -250,8 +276,6 @@ var Tween = class Tween {
       }
 
       if ( time > this._prevTime ) {
-
-        // 
         //  |=====|=====|=====| >>>
         // ^1  ^2
         if ( !this._isStarted && this._prevTime <= props.startTime ) {
@@ -276,7 +300,6 @@ var Tween = class Tween {
           this._setProgress( 0, time );
           this._repeatStart( time );
         }
-
         // if on very end edge
         // |=====|=====|=====| <<<
         //       ^!    ^! ^2 ^1
@@ -365,6 +388,7 @@ var Tween = class Tween {
   }
   /*
     Method to set Tween's progress.
+    @private
     @param {Number} Progress to set.
     @param {Number} Current update time.
     @returns {Object} Self.
@@ -384,6 +408,7 @@ var Tween = class Tween {
 
   /*
     Method to set property[s] on Tween
+    @private
     @param {Object, String} Hash object of key/value pairs, or property name
     @param {_} Property's value to set
   */
@@ -409,12 +434,14 @@ var Tween = class Tween {
   }
   /*
     Method to remove the Tween from the tweener.
-    @returns {Onject} Self.
+    @private
+    @returns {Object} Self.
   */
   _removeFromTweener() { t.remove(this); return this; }
 
   /*
-    Method to get current period number
+    Method to get current period number.
+    @private
     @param {Number} Time to get the period for.
     @returns {Number} Current period number.
   */
@@ -445,6 +472,7 @@ var Tween = class Tween {
   /*
     Method to set tween's state to start
     @method _start
+    @private
     @param {Number} Progress to set.
   */
   _start(time) {
@@ -460,6 +488,7 @@ var Tween = class Tween {
   /*
     Method to set tween's state to complete.
     @method _complete
+    @private
     @param {Number} Current time.
   */
   _complete(time) {
@@ -477,6 +506,7 @@ var Tween = class Tween {
   /*
     Method to run onFirstUpdate callback.
     @method _firstUpdate
+    @private
     @param {Number} Current update time.
   */
   _firstUpdate(time) {
@@ -490,6 +520,7 @@ var Tween = class Tween {
 
   /*
     Method call onRepeatComplete calback and set flags.
+    @private
     @param {Number} Current update time.
   */
   _repeatComplete(time) {
@@ -503,6 +534,7 @@ var Tween = class Tween {
 
   /*
     Method call onRepeatStart calback and set flags.
+    @private
     @param {Number} Current update time.
   */
   _repeatStart(time) {
