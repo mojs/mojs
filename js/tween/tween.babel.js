@@ -9,7 +9,6 @@ var Tween = class Tween {
     this._vars();
     return this;
   }
-
   /*
     API method to run the Tween
     @public
@@ -21,14 +20,12 @@ var Tween = class Tween {
     !time && (t.add(this)); // this.state = 'play'
     return this;
   }
-
   /*
     API method to stop the Tween.
     @public
     @returns {Object} Self.
   */
   stop() { this.pause(); this._setProgress(0); return this; }
-
   /*
     API method to pause Tween.
     @public

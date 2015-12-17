@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.156.1', isDebug: true
+  revision:   '0.157.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -66,13 +66,13 @@ mojs.delta = mojs.h.delta
 #   # onRepeatStart:(isForward)-> console.log "ON_REPEAT_START: #{isForward}"
 #   # onRepeatComplete:(isForward)-> console.log "ON_REPEAT_COMPLETE: #{isForward}"
 #   # onFirstUpdate:(isForward)-> console.log "ON_FIRST_UPDATE: #{isForward}"
-# tm.add tw#, tw2
+# # tm.add tw#, tw2
 # # tw.play()
 # # tm.play()
 
 # rangeSlider.oninput = (e)->
 #   proc = (1*rangeSlider.value)/10000
-#   tm.setProgress proc
+#   tw.setProgress proc
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
