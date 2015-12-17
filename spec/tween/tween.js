@@ -3516,22 +3516,6 @@
         expect(t._props.onComplete).toHaveBeenCalledWith(true);
         return expect(t._props.onComplete.calls.count()).toBe(1);
       });
-      it('should be called just once when inside timeline', function() {
-        var t, tm;
-        tm = new mojs.Timeline;
-        t = new Tween({
-          duration: 32,
-          onComplete: function() {}
-        })._setStartTime();
-        tm.add(t);
-        tm._setStartTime();
-        spyOn(t._props, 'onComplete');
-        tm._update(t._props.startTime + 0);
-        tm._update(t._props.startTime + 10);
-        tm._update(t._props.startTime + 32);
-        expect(t._props.onComplete).toHaveBeenCalledWith(true);
-        return expect(t._props.onComplete.calls.count()).toBe(1);
-      });
       it('should reset isCompleted flag', function() {
         var t;
         t = new Tween({
@@ -3558,7 +3542,7 @@
         t._setStartTime()._update(t._props.startTime + 11);
         return expect(isRightScope).toBe(true);
       });
-      it('should fire after the last onUpdate', function(dfr) {
+      return it('should fire after the last onUpdate', function(dfr) {
         var proc, t;
         proc = 0;
         t = new Tween({
@@ -3575,35 +3559,6 @@
         t._update(t._props.startTime + 1);
         t._update(t._props.startTime + 2);
         return t._update(t._props.startTime + 32);
-      });
-      return it('should fire only once if inside timeline', function() {
-        var cnt, delay, duration, t1, t2, tm;
-        cnt = 0;
-        duration = 50;
-        delay = 10;
-        tm = new mojs.Timeline({
-          repeat: 1
-        });
-        t1 = new Tween({
-          delay: delay,
-          duration: duration,
-          onComplete: function() {
-            return cnt++;
-          }
-        });
-        t2 = new Tween({
-          delay: 2 * delay,
-          duration: 2 * duration
-        });
-        tm.add(t1, t2);
-        tm._setStartTime();
-        tm._update(t1._props.startTime);
-        tm._update(t1._props.startTime + duration / 2);
-        tm._update(t1._props.startTime + duration / 2 + delay / 2);
-        tm._update(t1._props.startTime + duration + delay + 1);
-        tm._update(t1._props.startTime + 2 * duration + delay / 2);
-        tm._update(t1._props.startTime + 2 * (duration + delay));
-        return expect(cnt).toBe(2);
       });
     });
     describe('onStart callback ->', function() {
