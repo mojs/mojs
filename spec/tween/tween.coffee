@@ -114,7 +114,7 @@ describe 'Tween ->', ->
       expect(t._isRepeatCompleted).toBe false
       expect(t._isStarted)  .toBe false
   
-  describe 'update method ->', ->
+  describe '_update method ->', ->
     it 'should update progress', ->
       t = new Tween(duration: 1000, delay: 500)
       t._setStartTime()
@@ -165,14 +165,12 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe true
       expect(t._isRepeatCompleted).toBe true
       expect(returnValue).toBe true
-
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)
       t._setStartTime()
       spyOn t, 'onUpdate'
       t._update(t._props.startTime - 500)
       expect(t.onUpdate).not.toHaveBeenCalled()
-
     it 'should not call update method if timeline isnt active but was "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)
       t._setStartTime()
@@ -188,13 +186,11 @@ describe 'Tween ->', ->
       t._update(t._props.startTime - 500)
       expect(t._isInActiveArea).toBe(false)
       expect(t.onUpdate.calls.count()).toBe 3
-
     it 'should not call update method if timeline isnt active "+"', ->
       t = new Tween(duration: 1000, onUpdate:-> )
       spyOn t, 'onUpdate'
       t._setStartTime(); t._update(performance.now() + 1500)
       expect(t.onUpdate).not.toHaveBeenCalled()
-    
     it 'should not call update method if timeline isnt active but was "+"', ->
       t = new Tween(duration: 1000, onUpdate:-> )
       spyOn t, 'onUpdate'
@@ -205,13 +201,39 @@ describe 'Tween ->', ->
       t._update(t._props.startTime + 1500)
       expect(t._isInActiveArea).toBe(false)
       expect(t.onUpdate).toHaveBeenCalledWith(1, 1, true)
-
     it 'should set Tween to the end if Tween ended', ->
       t = new Tween(duration: 1000, delay: 500)
       t._setStartTime()
       t._update t._props.startTime + 200
       t._update t._props.startTime + 1200
       expect(t.progress).not.toBe 1
+    it 'should save progress time to _progressTime', ->
+      delay = 500; duration = 1000
+      t = new Tween(duration: duration, delay: delay, isIt1: 1)
+      t._setStartTime()
+      updateTime = 199
+      time = t._props.startTime + updateTime
+      t._update time - 1
+      t._update time
+      expect(t._progressTime).toBe delay + updateTime
+    it 'should save progress start point time to _progressTime', ->
+      delay = 500; duration = 1000
+      t = new Tween(duration: duration, delay: delay)
+      t._setStartTime()
+      updateTime = 199
+      time = t._props.startTime - 2*delay
+      t._update time - 1
+      t._update time
+      expect(t._progressTime).toBe 0
+    it 'should save progress 0 at the end time to _progressTime', ->
+      delay = 500; duration = 1000
+      t = new Tween(duration: duration, delay: delay, repeat: 2, isIt1: 1)
+      t._setStartTime()
+      updateTime = 199
+      time = t._props.startTime + 4*(duration + delay)
+      t._update time - 1
+      t._update time
+      expect(t._progressTime).toBe 0
   
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -4367,28 +4389,50 @@ describe 'Tween ->', ->
       t._setProp 'easing', 'elastic.in'
       expect(t._props.easing).toBe mojs.easing.elastic.in
 
-  describe 'run method ->', ->
+  describe 'play method ->', ->
     it 'should get the start time',->
       t = new Tween
       t.play()
       expect(t._props.startTime).toBeDefined()
       expect(t._props.endTime).toBe t._props.startTime + t._props.repeatTime
+    it 'should reset _prevTime to null',->
+      t = new Tween
+      t.play()
+      expect(t._prevTime).toBe null
     it 'should call the setStartTime method',->
       t = new Tween
       spyOn t, '_setStartTime'
-      time = 0
-      t.play time
-      expect(t._setStartTime).toHaveBeenCalledWith time
+      t.play()
+      expect(t._setStartTime).toHaveBeenCalled()
     it 'should add itself to tweener',->
       t = new Tween
       spyOn tweener, 'add'
       t.play()
       expect(tweener.add).toHaveBeenCalled()
-    it 'should not add itself to tweener if time was passed',->
+    it 'should recieve progress time',->
       t = new Tween
-      spyOn tweener, 'add'
-      t.play 10239123
-      expect(tweener.add).not.toHaveBeenCalled()
+      t._setStartTime()
+      time = t._props.startTime
+      shift = 200
+      t.play( shift )
+      expect(t._props.startTime).toBe time - shift
+    it 'should treat negative progress time as positive',->
+      t = new Tween
+      t._setStartTime()
+      time = t._props.startTime
+      shift = -200
+      t.play( shift )
+      expect(t._props.startTime).toBe time - Math.abs(shift)
+
+    it 'should encount time progress',->
+      duration = 1000
+      t = new Tween duration: duration
+      progress = .5
+      t.setProgress( progress - .1 )
+      t.setProgress( progress )
+      start = t._props.startTime
+      t.play()
+      expect(t._props.startTime).toBe start - progress*t._props.repeatTime
 
   describe '_removeFromTweener method ->', ->
     it 'should call tweener.remove method with self',->

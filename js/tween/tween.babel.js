@@ -10,15 +10,16 @@ var Tween = class Tween {
     return this;
   }
   /*
-    API method to run the Tween
+    API method to run the Tween.
     @public
-    @param  {Number} Start time
-    @return {Object} Self
+    @param  {Number} Shift time time.
+    @return {Object} Self.
   */
-  play(time) {
-    this._setStartTime(time);
-    !time && (t.add(this)); // this.state = 'play'
-    return this;
+  play(shift = 0) {
+    this._prevTime = null;
+    var pausedShift = (this._progressTime || 0);
+    this._setStartTime( performance.now() - Math.abs(shift) - pausedShift );
+    t.add(this); return this;
   }
   /*
     API method to stop the Tween.
@@ -118,7 +119,7 @@ var Tween = class Tween {
     @param {Number(Timestamp)}, {Null}
     @returns this
   */
-  _setStartTime(time) {
+  _setStartTime (time) {
     var p = this._props;
     this._isCompleted = false; this._isRepeatCompleted = false;
     this._isStarted = false;
@@ -138,15 +139,21 @@ var Tween = class Tween {
     @param {Number}   Parent's current period number.
     @param {Number}   Parent's previous period number.
   */
-  _update(time, isGrow) {
+  _update (time, isGrow) {
+    // this._visualizeProgress( time );
+    // Save progress time for pause/play purposes.
+    var startPoint = this._props.startTime - this._props.delay;
+    // if in active area and not ended - save progress time
+    if ( time >= startPoint && time < this._props.endTime ) {
+      this._progressTime = time - startPoint;
+    // else if not started or ended set progress time to 0
+    } else if ( time < startPoint || time >= this._props.endTime ) {
+      this._progressTime = 0;
+    }
     // We need to know what direction we are heading in with this tween,
     // so if we don't have the previous update value - this is very first
     // update, - skip it entirely and wait for the next value
-    this.o.isIt && console.log(`XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`);
-    this.o.isIt && console.log(`tween:`);
-    this.o.isIt && this._visualizeProgress(time);
     if ( this._prevTime === -1 ) {
-      this.o.isIt && console.log(`SKIP`);
       this._prevTime = time;
       this._wasUknownUpdate = true;
       return false;
@@ -210,18 +217,12 @@ var Tween = class Tween {
 
     if ( time === this._props.endTime ) {
       this._wasUknownUpdate = false;
-      this.o.isIt && console.log(`time: ${time}, end: ${this._props.endTime}, prev: ${this._prevTime}`);
-      this.o.isIt && console.log(`T: ${T}`);
-      this.o.isIt && console.log( 'THERE 6', yoyoOne );
       // if `time` is equal to `endTime`, T is equal to the next period,
       // so we need to decrement T and calculate "one" value regarding yoyo
       this._setProgress( ((props.yoyo && ((T-1) % 2 === 1)) ? 0 : 1), time );
       this._repeatComplete( time );
       return this._complete( time );
     }
-
-    this.o.isIt && console.log(`TCount: ${TCount}`);
-    this.o.isIt && console.log(`T: ${T}, prevT: ${prevT}, time: ${time} _prevTime: ${this._prevTime}`);
 
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
