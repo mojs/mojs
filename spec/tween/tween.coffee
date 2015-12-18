@@ -3,31 +3,6 @@ easing   = window.mojs.easing
 h        = window.mojs.h
 tweener  = window.mojs.tweener
 
-
-createUpdateInPeriod = (t, duration)->
-  (timeShift)->
-    t._update t._props.startTime + timeShift
-    t._update t._props.startTime + timeShift + (duration/2)
-    t._update t._props.startTime + timeShift + (duration)
-
-createUpdateInPeriodWithGap = (t, duration, gap=5)->
-  (timeShift)->
-    t._update t._props.startTime + timeShift + gap
-    t._update t._props.startTime + timeShift + (duration/2)
-    t._update t._props.startTime + timeShift + (duration) - gap
-
-r_createUpdateInPeriod = (t, duration)->
-  (timeShift)->
-    t._update t._props.startTime + timeShift + (duration)
-    t._update t._props.startTime + timeShift + (duration/2)
-    t._update t._props.startTime + timeShift
-
-r_createUpdateInPeriodWithGap = (t, duration, gap=5)->
-  (timeShift)->
-    t._update t._props.startTime + timeShift + (duration) - gap
-    t._update t._props.startTime + timeShift + (duration/2)
-    t._update t._props.startTime + timeShift + gap
-
 describe 'Tween ->', ->
   describe 'defaults ->', ->
     it 'should have vars', ->
@@ -35,6 +10,7 @@ describe 'Tween ->', ->
       expect(t._props)        .toBeDefined()
       expect(t.h)             .toBeDefined()
       expect(t._negativeShift).toBe 0
+      expect(t._progressTime) .toBe 0
       expect(t.progress)      .toBe 0
     it 'should have defaults', ->
       t = new Tween
@@ -209,7 +185,7 @@ describe 'Tween ->', ->
       expect(t.progress).not.toBe 1
     it 'should save progress time to _progressTime', ->
       delay = 500; duration = 1000
-      t = new Tween(duration: duration, delay: delay, isIt1: 1)
+      t = new Tween(duration: duration, delay: delay)
       t._setStartTime()
       updateTime = 199
       time = t._props.startTime + updateTime
@@ -227,13 +203,23 @@ describe 'Tween ->', ->
       expect(t._progressTime).toBe 0
     it 'should save progress 0 at the end time to _progressTime', ->
       delay = 500; duration = 1000
-      t = new Tween(duration: duration, delay: delay, repeat: 2, isIt1: 1)
+      t = new Tween(duration: duration, delay: delay, repeat: 2)
       t._setStartTime()
       updateTime = 199
       time = t._props.startTime + 4*(duration + delay)
       t._update time - 1
       t._update time
-      expect(t._progressTime).toBe 0
+      expect(t._progressTime).toBeCloseTo t._props.repeatTime, 3
+    it 'should update with reversed time if _props.isReversed', ->
+      delay = 500; duration = 1000
+      t = new Tween(duration: duration, delay: delay, repeat: 2)
+      t._setStartTime()
+      t._setProp 'isReversed', true
+      shift = 200
+      time = t._props.startTime + shift
+      t._update time - 1
+      t._update time
+      expect(t._prevTime).toBeCloseTo (t._props.endTime - delay - shift), 3
   
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -1236,6 +1222,7 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
+      expect(t._isCompleted).toBe(false)
       expect(oneCnt).toBe(1)
       expect(zeroCnt).toBe(0)
 
@@ -4399,6 +4386,12 @@ describe 'Tween ->', ->
       t = new Tween
       t.play()
       expect(t._prevTime).toBe null
+    it 'should reset _progressTime to 0 if tween ended',->
+      t = new Tween isIt: true
+      t._setStartTime()
+      time = t._props.startTime
+      t.setProgress(1).play()
+      expect(t._props.startTime).toBe time
     it 'should call the setStartTime method',->
       t = new Tween
       spyOn t, '_setStartTime'
@@ -4423,15 +4416,14 @@ describe 'Tween ->', ->
       shift = -200
       t.play( shift )
       expect(t._props.startTime).toBe time - Math.abs(shift)
-
     it 'should encount time progress',->
       duration = 1000
       t = new Tween duration: duration
       progress = .5
       t.setProgress( progress - .1 )
       t.setProgress( progress )
-      start = t._props.startTime
       t.play()
+      start = performance.now()
       expect(t._props.startTime).toBe start - progress*t._props.repeatTime
 
   describe '_removeFromTweener method ->', ->

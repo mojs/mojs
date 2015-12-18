@@ -3,12 +3,6 @@ import t from './tweener';
 import easing from '../easing/easing';
 
 var Tween = class Tween {
-  constructor(o={}) {
-    this.o = o;
-    this._declareDefaults(); this._extendDefaults();
-    this._vars();
-    return this;
-  }
   /*
     API method to run the Tween.
     @public
@@ -16,9 +10,14 @@ var Tween = class Tween {
     @return {Object} Self.
   */
   play(shift = 0) {
+    // reset previous time cache
     this._prevTime = null;
-    var pausedShift = (this._progressTime || 0);
-    this._setStartTime( performance.now() - Math.abs(shift) - pausedShift );
+    // if tween was ended, set progress to 0 if not, set to elapsed progress
+    var procTime = ( this._progressTime >= this._props.repeatTime )
+      ? 0 : this._progressTime;
+    // set start time regarding passed `shift` and calculated `procTime`
+    this._setStartTime( performance.now() - Math.abs(shift) - procTime );
+    // add self to tweener = run
     t.add(this); return this;
   }
   /*
@@ -51,7 +50,22 @@ var Tween = class Tween {
   }
 
   /*
-    Method do declare defaults by this._defaults object
+    API ^
+    PRIVATE METHODS v
+  */
+
+  /*
+    Constructor of the class.
+    @private
+  */
+  constructor(o={}) {
+    this.o = o;
+    this._declareDefaults(); this._extendDefaults();
+    this._vars();
+    return this;
+  }
+  /*
+    Method do declare defaults by this._defaults object.
     @private
   */
   _declareDefaults() {
@@ -77,8 +91,8 @@ var Tween = class Tween {
   _vars() {
     this.h = h;
     this.progress = 0;
-    this._prevTime = -1;
-
+    this._prevTime = null;
+    this._progressTime = 0;
     this._negativeShift = 0;
     // if negative delay was specified,
     // save it to _negativeShift property and
@@ -142,18 +156,29 @@ var Tween = class Tween {
   _update (time, isGrow) {
     // this._visualizeProgress( time );
     // Save progress time for pause/play purposes.
-    var startPoint = this._props.startTime - this._props.delay;
+    var p = this._props,
+        startPoint = p.startTime - p.delay;
     // if in active area and not ended - save progress time
-    if ( time >= startPoint && time < this._props.endTime ) {
+    if ( time > startPoint && time < p.endTime ) {
       this._progressTime = time - startPoint;
     // else if not started or ended set progress time to 0
-    } else if ( time < startPoint || time >= this._props.endTime ) {
+    } else if ( time <= startPoint  ) {
       this._progressTime = 0;
+    } else if ( time >= p.endTime ) {
+      // set progress time to repeat time + tiny cofficient
+      // to make it extend further than the end time
+      this._progressTime = p.repeatTime + .000001;
     }
+
+    // reverse time if _props.isReversed is set
+    if ( p.isReversed ) {
+      time = p.endTime - this._progressTime;
+    }
+
     // We need to know what direction we are heading in with this tween,
     // so if we don't have the previous update value - this is very first
     // update, - skip it entirely and wait for the next value
-    if ( this._prevTime === -1 ) {
+    if ( this._prevTime === null ) {
       this._prevTime = time;
       this._wasUknownUpdate = true;
       return false;
@@ -163,22 +188,21 @@ var Tween = class Tween {
       active area is the area from start time to end time,
       with all the repeat and delays in it
     */
-    var props = this._props;
-    if ((time >= this._props.startTime) && (time <= this._props.endTime)) {
+    if ((time >= p.startTime) && (time <= p.endTime)) {
       this._updateInActiveArea(time);
     } else {
       // complete if time is larger then end time
       // probably we must check for direction too
-      if ( time > this._props.endTime && !this._isCompleted && this._isInActiveArea ) {
+      if ( time > p.endTime && !this._isCompleted && this._isInActiveArea ) {
         // get period number
-        var T = this._getPeriod( props.endTime );
+        var T = this._getPeriod( p.endTime );
         this._setProgress( ((this.o.yoyo && (T % 2 === 0)) ? 0 : 1), time );
         this._repeatComplete( time );
         this._complete( time );
       }
 
       // if was active and went to - inactive area "-"
-      if ( time < this._prevTime && time < this._props.startTime ) {
+      if ( time < this._prevTime && time < p.startTime ) {
         // if was in active area and didn't fire onStart callback
         if ( !this._isStarted && this._isInActiveArea ) {
           this._setProgress( 0, time );
@@ -249,7 +273,10 @@ var Tween = class Tween {
           this._complete( time );
           this._repeatComplete( time );
           this._firstUpdate(time);
+          // cover yoyoOne
           this._setProgress(1, time);
+          // reset isCompleted immediately
+          this._isCompleted = false;
         }
       }
 
@@ -268,7 +295,6 @@ var Tween = class Tween {
         // ^!    ^here ^here           
         if ( prevT >= 0 ) {
           this._repeatStart(time);
-
           this._setProgress( yoyoZero , time);
         }
       }
@@ -324,7 +350,7 @@ var Tween = class Tween {
 
       if ( prevT === 'delay') {
         // if just before delay gap
-        // |---=====|---=====|---=====| >>>
+        // |---=====|---=====|---=====| <<<
         //               ^2    ^1
         if ( T < TPrevValue ) {
           this._repeatComplete(time);

@@ -1,5 +1,5 @@
 (function() {
-  var Tween, createUpdateInPeriod, createUpdateInPeriodWithGap, easing, h, r_createUpdateInPeriod, r_createUpdateInPeriodWithGap, tweener;
+  var Tween, easing, h, tweener;
 
   Tween = window.mojs.Tween;
 
@@ -9,44 +9,6 @@
 
   tweener = window.mojs.tweener;
 
-  createUpdateInPeriod = function(t, duration) {
-    return function(timeShift) {
-      t._update(t._props.startTime + timeShift);
-      t._update(t._props.startTime + timeShift + (duration / 2));
-      return t._update(t._props.startTime + timeShift + duration);
-    };
-  };
-
-  createUpdateInPeriodWithGap = function(t, duration, gap) {
-    if (gap == null) {
-      gap = 5;
-    }
-    return function(timeShift) {
-      t._update(t._props.startTime + timeShift + gap);
-      t._update(t._props.startTime + timeShift + (duration / 2));
-      return t._update(t._props.startTime + timeShift + duration - gap);
-    };
-  };
-
-  r_createUpdateInPeriod = function(t, duration) {
-    return function(timeShift) {
-      t._update(t._props.startTime + timeShift + duration);
-      t._update(t._props.startTime + timeShift + (duration / 2));
-      return t._update(t._props.startTime + timeShift);
-    };
-  };
-
-  r_createUpdateInPeriodWithGap = function(t, duration, gap) {
-    if (gap == null) {
-      gap = 5;
-    }
-    return function(timeShift) {
-      t._update(t._props.startTime + timeShift + duration - gap);
-      t._update(t._props.startTime + timeShift + (duration / 2));
-      return t._update(t._props.startTime + timeShift + gap);
-    };
-  };
-
   describe('Tween ->', function() {
     describe('defaults ->', function() {
       it('should have vars', function() {
@@ -55,6 +17,7 @@
         expect(t._props).toBeDefined();
         expect(t.h).toBeDefined();
         expect(t._negativeShift).toBe(0);
+        expect(t._progressTime).toBe(0);
         return expect(t.progress).toBe(0);
       });
       it('should have defaults', function() {
@@ -354,8 +317,7 @@
         duration = 1000;
         t = new Tween({
           duration: duration,
-          delay: delay,
-          isIt1: 1
+          delay: delay
         });
         t._setStartTime();
         updateTime = 199;
@@ -379,22 +341,38 @@
         t._update(time);
         return expect(t._progressTime).toBe(0);
       });
-      return it('should save progress 0 at the end time to _progressTime', function() {
+      it('should save progress 0 at the end time to _progressTime', function() {
         var delay, duration, t, time, updateTime;
         delay = 500;
         duration = 1000;
         t = new Tween({
           duration: duration,
           delay: delay,
-          repeat: 2,
-          isIt1: 1
+          repeat: 2
         });
         t._setStartTime();
         updateTime = 199;
         time = t._props.startTime + 4 * (duration + delay);
         t._update(time - 1);
         t._update(time);
-        return expect(t._progressTime).toBe(0);
+        return expect(t._progressTime).toBeCloseTo(t._props.repeatTime, 3);
+      });
+      return it('should update with reversed time if _props.isReversed', function() {
+        var delay, duration, shift, t, time;
+        delay = 500;
+        duration = 1000;
+        t = new Tween({
+          duration: duration,
+          delay: delay,
+          repeat: 2
+        });
+        t._setStartTime();
+        t._setProp('isReversed', true);
+        shift = 200;
+        time = t._props.startTime + shift;
+        t._update(time - 1);
+        t._update(time);
+        return expect(t._prevTime).toBeCloseTo(t._props.endTime - delay - shift, 3);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -1240,6 +1218,7 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(t._isCompleted).toBe(false);
         expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
@@ -3834,6 +3813,16 @@
         t.play();
         return expect(t._prevTime).toBe(null);
       });
+      it('should reset _progressTime to 0 if tween ended', function() {
+        var t, time;
+        t = new Tween({
+          isIt: true
+        });
+        t._setStartTime();
+        time = t._props.startTime;
+        t.setProgress(1).play();
+        return expect(t._props.startTime).toBe(time);
+      });
       it('should call the setStartTime method', function() {
         var t;
         t = new Tween;
@@ -3875,8 +3864,8 @@
         progress = .5;
         t.setProgress(progress - .1);
         t.setProgress(progress);
-        start = t._props.startTime;
         t.play();
+        start = performance.now();
         return expect(t._props.startTime).toBe(start - progress * t._props.repeatTime);
       });
     });
