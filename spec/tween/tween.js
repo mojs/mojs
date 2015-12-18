@@ -3823,6 +3823,20 @@
         t.setProgress(1).play();
         return expect(t._props.startTime).toBe(time);
       });
+      it('should reset isReversed to false', function() {
+        var t;
+        t = new Tween;
+        t._props.isReversed = true;
+        t.play();
+        return expect(t._props.isReversed).toBe(false);
+      });
+      it('should set isReversed to true', function() {
+        var t;
+        t = new Tween;
+        t._props.isReversed = false;
+        t.play(0, true);
+        return expect(t._props.isReversed).toBe(true);
+      });
       it('should call the setStartTime method', function() {
         var t;
         t = new Tween;
@@ -3865,8 +3879,23 @@
         t.setProgress(progress - .1);
         t.setProgress(progress);
         t.play();
-        start = performance.now();
-        return expect(t._props.startTime).toBe(start - progress * t._props.repeatTime);
+        start = performance.now() - progress * t._props.repeatTime;
+        return expect(Math.abs(t._props.startTime - start)).not.toBeGreaterThan(20);
+      });
+    });
+    describe('playReverse method ->', function() {
+      it('should call play method', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, 'play');
+        t.reverse(200);
+        return expect(t.play).toHaveBeenCalledWith(200, true);
+      });
+      return it('should return self', function() {
+        var obj, t;
+        t = new Tween;
+        obj = t.reverse(200);
+        return expect(obj).toBe(t);
       });
     });
     describe('_removeFromTweener method ->', function() {

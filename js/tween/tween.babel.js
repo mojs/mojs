@@ -7,11 +7,14 @@ var Tween = class Tween {
     API method to run the Tween.
     @public
     @param  {Number} Shift time in milliseconds.
+    @param  {Boolean} If should play in reverse.
     @return {Object} Self.
   */
-  play(shift = 0) {
+  play(shift = 0, isReversed = false) {
     // reset previous time cache
     this._prevTime = null;
+    // play in specified direction, forward is default
+    this._props.isReversed = isReversed;
     // if tween was ended, set progress to 0 if not, set to elapsed progress
     var procTime = ( this._progressTime >= this._props.repeatTime )
       ? 0 : this._progressTime;
@@ -19,6 +22,17 @@ var Tween = class Tween {
     this._setStartTime( performance.now() - Math.abs(shift) - procTime );
     // add self to tweener = run
     t.add(this); return this;
+  }
+  /*
+    API method to run the Tween in reverse.
+    @public
+    @param  {Number} Shift time in milliseconds.
+    @return {Object} Self.
+  */
+  reverse(shift = 0) {
+    this.play( shift, true );
+    // reset previous time cache
+    return this;
   }
   /*
     API method to stop the Tween.

@@ -4392,6 +4392,16 @@ describe 'Tween ->', ->
       time = t._props.startTime
       t.setProgress(1).play()
       expect(t._props.startTime).toBe time
+    it 'should reset isReversed to false',->
+      t = new Tween
+      t._props.isReversed = true
+      t.play()
+      expect(t._props.isReversed).toBe false
+    it 'should set isReversed to true',->
+      t = new Tween
+      t._props.isReversed = false
+      t.play(0, true)
+      expect(t._props.isReversed).toBe true
     it 'should call the setStartTime method',->
       t = new Tween
       spyOn t, '_setStartTime'
@@ -4423,8 +4433,19 @@ describe 'Tween ->', ->
       t.setProgress( progress - .1 )
       t.setProgress( progress )
       t.play()
-      start = performance.now()
-      expect(t._props.startTime).toBe start - progress*t._props.repeatTime
+      start = performance.now() - progress*t._props.repeatTime
+      expect(Math.abs( t._props.startTime - start )).not.toBeGreaterThan 20
+
+  describe 'playReverse method ->', ->
+    it 'should call play method',->
+      t = new Tween
+      spyOn t, 'play'
+      t.reverse(200)
+      expect(t.play).toHaveBeenCalledWith 200, true
+    it 'should return self',->
+      t = new Tween
+      obj = t.reverse(200)
+      expect(obj).toBe t
 
   describe '_removeFromTweener method ->', ->
     it 'should call tweener.remove method with self',->

@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.159.0',
+	  revision: '0.160.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3579,18 +3579,39 @@
 	        API method to run the Tween.
 	        @public
 	        @param  {Number} Shift time in milliseconds.
+	        @param  {Boolean} If should play in reverse.
 	        @return {Object} Self.
 	      */
 	      value: function play() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
+	        var isReversed = arguments[1] === undefined ? false : arguments[1];
 	        // reset previous time cache
 	        this._prevTime = null;
+	        // play in specified direction, forward is default
+	        this._props.isReversed = isReversed;
 	        // if tween was ended, set progress to 0 if not, set to elapsed progress
 	        var procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
 	        // set start time regarding passed `shift` and calculated `procTime`
 	        this._setStartTime(performance.now() - Math.abs(shift) - procTime);
 	        // add self to tweener = run
 	        t.add(this);return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    reverse: {
+	      /*
+	        API method to run the Tween in reverse.
+	        @public
+	        @param  {Number} Shift time in milliseconds.
+	        @return {Object} Self.
+	      */
+	      value: function reverse() {
+	        var shift = arguments[0] === undefined ? 0 : arguments[0];
+	        this.play(shift, true);
+	        // reset previous time cache
+	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,
