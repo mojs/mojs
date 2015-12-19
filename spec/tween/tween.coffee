@@ -12,6 +12,7 @@ describe 'Tween ->', ->
       expect(t._negativeShift).toBe 0
       expect(t._progressTime) .toBe 0
       expect(t.progress)      .toBe 0
+      expect(t._state)        .toBe 'stop'
     it 'should have defaults', ->
       t = new Tween
       expect(t._defaults.duration).toBe  600
@@ -4386,12 +4387,16 @@ describe 'Tween ->', ->
       t = new Tween
       t.play()
       expect(t._prevTime).toBe null
+    it 'should set _state to "play"',->
+      t = new Tween
+      t.play()
+      expect(t._state).toBe 'play'
     it 'should reset _progressTime to 0 if tween ended',->
-      t = new Tween isIt: true
+      t = new Tween
       t._setStartTime()
       time = t._props.startTime
       t.setProgress(1).play()
-      expect(t._props.startTime).toBe time
+      expect(Math.abs( time - t._props.startTime) ).not.toBeGreaterThan 20
     it 'should reset isReversed to false',->
       t = new Tween
       t._props.isReversed = true
@@ -4435,8 +4440,33 @@ describe 'Tween ->', ->
       t.play()
       start = performance.now() - progress*t._props.repeatTime
       expect(Math.abs( t._props.startTime - start )).not.toBeGreaterThan 20
+    it 'should recalc _progressTime if previous state was "reverse" + "pause"',->
+      duration = 1000
+      t = new Tween duration: duration
+      t.setProgress(.75)
+      progress = t._progressTime
+      t
+        .play()
+        .reverse()
+        .pause()
+        .play()
+      expect(t._progressTime).toBe progress
+    it 'should recalc _progressTime if previous state was "reverse"',->
+      duration = 1000
+      t = new Tween duration: duration
+      t.setProgress(.75)
+      progress = t._progressTime
+      t
+        .play()
+        .reverse()
+        .play()
+      expect(t._progressTime).toBe progress
 
-  describe 'playReverse method ->', ->
+  describe 'reverse method ->', ->
+    it 'should set _state to "reverse"',->
+      t = new Tween
+      t.reverse()
+      expect(t._state).toBe 'reverse'
     it 'should call play method',->
       t = new Tween
       spyOn t, 'play'
@@ -4446,14 +4476,28 @@ describe 'Tween ->', ->
       t = new Tween
       obj = t.reverse(200)
       expect(obj).toBe t
-
-  describe '_removeFromTweener method ->', ->
-    it 'should call tweener.remove method with self',->
-      tweener.removeAll()
-      timeline = new Tween duration: 2000
-      timeline.play()
-      timeline._removeFromTweener()
-      expect(tweener.tweens.length).toBe 0
+    it 'should overwrite play state',->
+      t = new Tween
+      t.reverse(200)
+      expect(t._prevState).toBe 'stop'
+      expect(t._state).toBe 'reverse'
+    it 'should recalc _progressTime if previous state was "play" + "pause"',->
+      duration = 1000
+      t = new Tween duration: duration
+      t.setProgress(.75)
+      progress = t._progressTime
+      t .play()
+        .pause()
+        .reverse()
+      expect(t._progressTime).toBe t._props.repeatTime - progress
+    it 'should recalc _progressTime if previous state was "play"',->
+      duration = 1000
+      t = new Tween duration: duration
+      t.setProgress(.75)
+      progress = t._progressTime
+      t .play()
+        .reverse()
+      expect(t._progressTime).toBe t._props.repeatTime - progress
 
   describe 'stop method', ->
     it 'should call removeFromTweener method with self',->
@@ -4470,12 +4514,15 @@ describe 'Tween ->', ->
       spyOn tw, 'setProgress'
       tw.stop()
       expect(tw.setProgress).toHaveBeenCalledWith 0
-    # it 'should set state to "stop"',->
-    #   tweener.tweens = []
-    #   t = new Tween
-    #   timeline = new Tween duration: 2000
-    #   t.add(timeline); t._setStartTime(); t.stop()
-    #   expect(t.state).toBe 'stop'
+    it 'should set _state to "stop"',->
+      t = new Tween
+      t.stop()
+      expect(t._state).toBe 'stop'
+    it 'should set isReversed to false',->
+      t = new Tween
+      t._props.isReversed = true
+      t.stop()
+      expect(t._props.isReversed).toBe false
 
   describe 'pause method ->', ->
     it 'should call t.remove method with self',->
@@ -4485,12 +4532,37 @@ describe 'Tween ->', ->
       spyOn timeline, '_removeFromTweener'
       timeline.pause()
       expect(timeline._removeFromTweener).toHaveBeenCalled()
-    # it 'should set state to "pause"',->
-    #   tweener.tweens = []
-    #   t = new Tween
-    #   timeline = new Tween duration: 2000
-    #   t.add(timeline); t._setStartTime(); t.pause()
-    #   expect(t.state).toBe 'pause'
+    it 'should set _state to "pause"',->
+      t = new Tween
+      t.pause()
+    
+  describe '_setPlaybackState method ->', ->
+    it 'should set playback state', ->
+      t = new Tween
+      t._setPlaybackState 'play'
+      expect(t._state).toBe 'play'
+    it 'should track previous playback state', ->
+      t = new Tween
+      t._setPlaybackState 'play'
+      t._setPlaybackState 'pause'
+      expect(t._prevState).toBe 'play'
+      expect(t._state).toBe 'pause'
+
+    it 'should overwrite previous playback state', ->
+      t = new Tween
+      t._setPlaybackState 'pause'
+      t._setPlaybackState 'play'
+      t._setPlaybackState 'reverse', true
+      expect(t._prevState).toBe 'pause'
+      expect(t._state).toBe 'reverse'
+
+  describe '_removeFromTweener method ->', ->
+    it 'should call tweener.remove method with self',->
+      tweener.removeAll()
+      timeline = new Tween duration: 2000
+      timeline.play()
+      timeline._removeFromTweener()
+      expect(tweener.tweens.length).toBe 0
 
   describe '_complete method ->', ->
     it 'should call onComplete callback', ->

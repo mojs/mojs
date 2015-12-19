@@ -10,18 +10,25 @@ var Tween = class Tween {
     @param  {Boolean} If should play in reverse.
     @return {Object} Self.
   */
-  play(shift = 0, isReversed = false) {
+  play(shift = 0, _isReversed = false) {
+    // if was played and paused or playing right now
+    // flip time progress in repeatTime bounds
+    var isPausedReverse = this._state === 'pause' && this._prevState === 'reverse';
+    if ( isPausedReverse || this._state === 'reverse' ) {
+      this._progressTime = this._props.repeatTime - this._progressTime;
+    }
     // reset previous time cache
     this._prevTime = null;
     // play in specified direction, forward is default
-    this._props.isReversed = isReversed;
+    this._props.isReversed = _isReversed;
     // if tween was ended, set progress to 0 if not, set to elapsed progress
     var procTime = ( this._progressTime >= this._props.repeatTime )
       ? 0 : this._progressTime;
     // set start time regarding passed `shift` and calculated `procTime`
     this._setStartTime( performance.now() - Math.abs(shift) - procTime );
     // add self to tweener = run
-    t.add(this); return this;
+    t.add(this); this._setPlaybackState('play');
+    return this;
   }
   /*
     API method to run the Tween in reverse.
@@ -30,7 +37,16 @@ var Tween = class Tween {
     @return {Object} Self.
   */
   reverse(shift = 0) {
+    // if was played and paused or playing right now
+    // flip time progress in repeatTime bounds
+    var isPausedPlay = this._state === 'pause' && this._prevState === 'play';
+    if ( isPausedPlay || this._state === 'play' ) {
+      this._progressTime = this._props.repeatTime - this._progressTime;
+    }
+    // play reversed
     this.play( shift, true );
+    // overwrite state
+    this._setPlaybackState('reverse', true);
     // reset previous time cache
     return this;
   }
@@ -39,13 +55,23 @@ var Tween = class Tween {
     @public
     @returns {Object} Self.
   */
-  stop() { this.pause(); this.setProgress(0); return this; }
+  stop() {
+    this._props.isReversed = false;
+    this._removeFromTweener();
+    this.setProgress(0);
+    this._setPlaybackState('stop');
+    return this;
+  }
   /*
     API method to pause Tween.
     @public
     @returns {Object} Self.
   */
-  pause() { this._removeFromTweener(); return this; }
+  pause() {
+    this._removeFromTweener();
+    this._setPlaybackState('pause');
+    return this;
+  }
   /*
     API method to set total progress on timeline.
     @public
@@ -79,6 +105,17 @@ var Tween = class Tween {
     return this;
   }
   /*
+    Method set playback state string.
+    @private
+    @param {String} State name
+    @param {Boolean} If should owerwrite the previous state.
+  */
+  _setPlaybackState (state, isOverwrite) {
+    // if not overwrite, save previous state
+    if ( !isOverwrite ) { this._prevState = this._state; }
+    this._state = state;
+  }
+  /*
     Method do declare defaults by this._defaults object.
     @private
   */
@@ -108,6 +145,7 @@ var Tween = class Tween {
     this._prevTime = null;
     this._progressTime = 0;
     this._negativeShift = 0;
+    this._state = 'stop';
     // if negative delay was specified,
     // save it to _negativeShift property and
     // reset it back to 0
@@ -436,10 +474,9 @@ var Tween = class Tween {
     this.easedProgress = this._props.easing(this.progress);
     if ( this._props.prevEasedProgress !== this.easedProgress ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-        this.o.isIt && console.log(`********** ONUPDATE ${p} **********`);
         this.onUpdate( this.easedProgress, this.progress, time > this._prevTime );
       }
-    } else { this.o.isIt && console.log(`********** ONUPDATE TRYOUT **********`); }
+    }
     this._props.prevEasedProgress = this.easedProgress;
     return this;
   }
@@ -475,8 +512,7 @@ var Tween = class Tween {
     @private
     @returns {Object} Self.
   */
-  _removeFromTweener() { t.remove(this); return this; }
-
+  _removeFromTweener () { t.remove(this); return this; }
   /*
     Method to get current period number.
     @private
@@ -516,7 +552,6 @@ var Tween = class Tween {
   _start(time) {
     if ( this._isStarted ) { return; }
     if (this._props.onStart != null && typeof this._props.onStart === 'function') {
-      this.o.isIt && console.log("********** START **********");
       this._props.onStart.call(this, time > this._prevTime );
     }
     this._isCompleted = false; this._isStarted = true;
@@ -534,7 +569,6 @@ var Tween = class Tween {
     // this._setProgress(progress, time);
     // this._repeatComplete(time);
     if (this._props.onComplete != null && typeof this._props.onComplete === 'function') {
-      this.o.isIt && console.log("********** COMPLETE **********");
       this._props.onComplete.call(this, time > this._prevTime );
     }
     this._isCompleted = true; this._isStarted = false;
@@ -550,7 +584,6 @@ var Tween = class Tween {
   _firstUpdate(time) {
     if ( this._isFirstUpdate ) { return; }
     if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
-      this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
       this._props.onFirstUpdate.call( this, time > this._prevTime );
     }
     this._isFirstUpdate = true;
@@ -564,7 +597,6 @@ var Tween = class Tween {
   _repeatComplete(time) {
     if (this._isRepeatCompleted) { return; }
     if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
-      this.o.isIt && console.log("********** REPEAT COMPLETE **********");
       this._props.onRepeatComplete.call( this, time > this._prevTime );
     }
     this._isRepeatCompleted = true;
@@ -578,7 +610,6 @@ var Tween = class Tween {
   _repeatStart(time) {
     if (this._isRepeatStart) { return; }
     if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
-      this.o.isIt && console.log("********** REPEAT START **********");
       this._props.onRepeatStart.call( this, time > this._prevTime );
     }
     this._isRepeatStart = true;

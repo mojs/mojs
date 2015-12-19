@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.160.0', isDebug: true
+  revision:   '0.161.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -28,29 +28,40 @@ mojs.delta = mojs.h.delta
 # RANGE_MAX   = 10000
 # rangeSlider = document.querySelector('#js-range-slider')
 # obj         = document.querySelector('#js-el1')
+# play        = document.querySelector('#js-play')
+# reverse     = document.querySelector('#js-reverse')
+# pause       = document.querySelector('#js-pause')
+# stop        = document.querySelector('#js-stop')
 
 # tw = new mojs.Tween
-#   repeat: 3
-#   yoyo: true
-#   isIt: true
+#   # repeat: 3
+#   # yoyo: true
+#   # isIt: true
 #   # delay: 500
-#   duration: 3000
+#   duration: 10000
 #   onStart:->
 #   onComplete:->
 #   onRepeatStart:->
 #   onRepeatComplete:->
 #   onFirstUpdate:->
 #   onUpdate:(pe, p, isForward)->
-#     mojs.h.style( obj, 'transform', "translate3d(#{200*pe}px, 0, 0)" )
+#     mojs.h.style( obj, 'transform', "translate3d(#{400*pe}px, 0, 0)" )
 #     # console.log "TWEEN ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
 
-# tw._setProp( 'isReversed', true )
 
-# setTimeout =>
-#   tw
-#     # .setProgress( 1 )
-#     .play( 0 );
-# , 1000
+# play.addEventListener 'click', -> tw.play()
+# reverse.addEventListener 'click', -> tw.reverse()
+# pause.addEventListener 'click', -> tw.pause()
+# stop.addEventListener 'click', -> tw.stop()
+# stop.addEventListener 'click', -> tw.stop()
+
+# # tw._setProp( 'isReversed', true )
+
+# # setTimeout =>
+# #   tw
+# #     # .setProgress( 1 )
+# #     .play( 0 );
+# # , 1000
 
 # rangeSlider.oninput = (e)->
 #   proc = (1*rangeSlider.value)/10000

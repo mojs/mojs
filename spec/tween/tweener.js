@@ -9,11 +9,11 @@
 
   describe('Twenner ->', function() {
     afterEach(function() {
-      t.stopLoop();
+      t._stopLoop();
       return t.tweens.length = 0;
     });
     beforeEach(function() {
-      t.stopLoop();
+      t._stopLoop();
       return t.tweens.length = 0;
     });
     it('have tweens array', function() {
@@ -28,18 +28,18 @@
         return expect(window.requestAnimationFrame).toBeDefined();
       });
     });
-    describe('loop ->', function() {
+    describe('_loop ->', function() {
       it('should loop over', function(dfr) {
-        t.startLoop();
+        t._startLoop();
         t.add(new Tween);
-        spyOn(t, 'loop');
+        spyOn(t, '_loop');
         return setTimeout(function() {
-          expect(t.loop).toHaveBeenCalled();
+          expect(t._loop).toHaveBeenCalled();
           return dfr();
         }, 100);
       });
       it('should call update fun', function(dfr) {
-        t.startLoop();
+        t._startLoop();
         spyOn(t, '_update');
         return setTimeout(function() {
           expect(t._update).toHaveBeenCalledWith(jasmine.any(Number));
@@ -48,59 +48,59 @@
       });
       it('should stop at the end', function(dfr) {
         t.add(new Tween);
-        t.startLoop();
+        t._startLoop();
         setTimeout((function() {
           return t.tweens[0]._update = function() {
             return true;
           };
         }), 100);
         return setTimeout((function() {
-          expect(t.isRunning).toBe(false);
+          expect(t._isRunning).toBe(false);
           return dfr();
         }), 200);
       });
       return it('should stop if !@isRunning', function() {
-        t.isRunning = false;
+        t._isRunning = false;
         spyOn(window, 'requestAnimationFrame');
         spyOn(t, '_update');
-        t.loop();
+        t._loop();
         expect(window.requestAnimationFrame).not.toHaveBeenCalled();
         return expect(t._update).not.toHaveBeenCalled();
       });
     });
-    describe('startLoop method ->', function() {
+    describe('_startLoop method ->', function() {
       it('should call loop method', function(dfr) {
-        spyOn(t, 'loop');
-        t.startLoop();
+        spyOn(t, '_loop');
+        t._startLoop();
         return setTimeout(function() {
-          expect(t.loop).toHaveBeenCalled();
+          expect(t._loop).toHaveBeenCalled();
           return dfr();
         }, 60);
       });
       it('should set isRunning flag', function() {
-        expect(t.isRunning).toBeFalsy();
-        t.startLoop();
-        return expect(t.isRunning).toBe(true);
+        expect(t._isRunning).toBeFalsy();
+        t._startLoop();
+        return expect(t._isRunning).toBe(true);
       });
       it('should call loop only once', function() {
-        t.startLoop();
-        spyOn(t, 'loop');
-        t.startLoop();
-        return expect(t.loop).not.toHaveBeenCalled();
+        t._startLoop();
+        spyOn(t, '_loop');
+        t._startLoop();
+        return expect(t._loop).not.toHaveBeenCalled();
       });
       return it('should start only 1 concurrent loop', function() {
-        t.startLoop();
-        expect(t.isRunning).toBe(true);
+        t._startLoop();
+        expect(t._isRunning).toBe(true);
         spyOn(window, 'requestAnimationFrame');
-        t.startLoop();
+        t._startLoop();
         return expect(window.requestAnimationFrame).not.toHaveBeenCalled();
       });
     });
-    describe('stopLoop method ->', function() {
+    describe('_stopLoop method ->', function() {
       return it('should set isRunning to false', function() {
-        t.startLoop();
-        t.stopLoop();
-        return expect(t.isRunning).toBe(false);
+        t._startLoop();
+        t._stopLoop();
+        return expect(t._isRunning).toBe(false);
       });
     });
     describe('add method ->', function() {
@@ -109,10 +109,24 @@
         expect(t.tweens.length).toBe(1);
         return expect(t.tweens[0] instanceof Tween).toBe(true);
       });
-      return it('should call startLoop method', function() {
-        spyOn(t, 'startLoop');
+      it('should add to tweens only once', function() {
+        var t1;
+        t1 = new Tween;
+        t.add(t1);
+        t.add(t1);
+        expect(t.tweens.length).toBe(1);
+        return expect(t.tweens[0]).toBe(t1);
+      });
+      it('should call _startLoop method', function() {
+        spyOn(t, '_startLoop');
         t.add(new Tween);
-        return expect(t.startLoop).toHaveBeenCalled();
+        return expect(t._startLoop).toHaveBeenCalled();
+      });
+      return it('should set _isRunning to true', function() {
+        var t1;
+        t1 = new Tween;
+        t.add(t1);
+        return expect(t1._isRunning).toBe(true);
       });
     });
     describe('remove method ->', function() {
@@ -126,7 +140,7 @@
         t.remove(t2);
         return expect(t.tweens.length).toBe(1);
       });
-      return it('should be able to remove by i', function() {
+      it('should be able to remove by i', function() {
         var t1, t2;
         t1 = new Tween;
         t2 = new Tween;
@@ -136,6 +150,17 @@
         t.remove(1);
         expect(t.tweens.length).toBe(1);
         return expect(t.tweens[0]).toBe(t1);
+      });
+      return it('should set _isRunning to false', function() {
+        var t1, t2;
+        t1 = new Tween;
+        t2 = new Tween;
+        t.add(t1);
+        t.add(t2);
+        expect(t.tweens.length).toBe(2);
+        t.remove(t1);
+        expect(t1._isRunning).toBe(false);
+        return expect(t2._isRunning).toBe(true);
       });
     });
     describe('removeAll method ->', function() {

@@ -18,7 +18,8 @@
         expect(t.h).toBeDefined();
         expect(t._negativeShift).toBe(0);
         expect(t._progressTime).toBe(0);
-        return expect(t.progress).toBe(0);
+        expect(t.progress).toBe(0);
+        return expect(t._state).toBe('stop');
       });
       it('should have defaults', function() {
         var t;
@@ -3813,15 +3814,19 @@
         t.play();
         return expect(t._prevTime).toBe(null);
       });
+      it('should set _state to "play"', function() {
+        var t;
+        t = new Tween;
+        t.play();
+        return expect(t._state).toBe('play');
+      });
       it('should reset _progressTime to 0 if tween ended', function() {
         var t, time;
-        t = new Tween({
-          isIt: true
-        });
+        t = new Tween;
         t._setStartTime();
         time = t._props.startTime;
         t.setProgress(1).play();
-        return expect(t._props.startTime).toBe(time);
+        return expect(Math.abs(time - t._props.startTime)).not.toBeGreaterThan(20);
       });
       it('should reset isReversed to false', function() {
         var t;
@@ -3869,7 +3874,7 @@
         t.play(shift);
         return expect(t._props.startTime).toBe(time - Math.abs(shift));
       });
-      return it('should encount time progress', function() {
+      it('should encount time progress', function() {
         var duration, progress, start, t;
         duration = 1000;
         t = new Tween({
@@ -3882,8 +3887,36 @@
         start = performance.now() - progress * t._props.repeatTime;
         return expect(Math.abs(t._props.startTime - start)).not.toBeGreaterThan(20);
       });
+      it('should recalc _progressTime if previous state was "reverse" + "pause"', function() {
+        var duration, progress, t;
+        duration = 1000;
+        t = new Tween({
+          duration: duration
+        });
+        t.setProgress(.75);
+        progress = t._progressTime;
+        t.play().reverse().pause().play();
+        return expect(t._progressTime).toBe(progress);
+      });
+      return it('should recalc _progressTime if previous state was "reverse"', function() {
+        var duration, progress, t;
+        duration = 1000;
+        t = new Tween({
+          duration: duration
+        });
+        t.setProgress(.75);
+        progress = t._progressTime;
+        t.play().reverse().play();
+        return expect(t._progressTime).toBe(progress);
+      });
     });
-    describe('playReverse method ->', function() {
+    describe('reverse method ->', function() {
+      it('should set _state to "reverse"', function() {
+        var t;
+        t = new Tween;
+        t.reverse();
+        return expect(t._state).toBe('reverse');
+      });
       it('should call play method', function() {
         var t;
         t = new Tween;
@@ -3891,23 +3924,40 @@
         t.reverse(200);
         return expect(t.play).toHaveBeenCalledWith(200, true);
       });
-      return it('should return self', function() {
+      it('should return self', function() {
         var obj, t;
         t = new Tween;
         obj = t.reverse(200);
         return expect(obj).toBe(t);
       });
-    });
-    describe('_removeFromTweener method ->', function() {
-      return it('should call tweener.remove method with self', function() {
-        var timeline;
-        tweener.removeAll();
-        timeline = new Tween({
-          duration: 2000
+      it('should overwrite play state', function() {
+        var t;
+        t = new Tween;
+        t.reverse(200);
+        expect(t._prevState).toBe('stop');
+        return expect(t._state).toBe('reverse');
+      });
+      it('should recalc _progressTime if previous state was "play" + "pause"', function() {
+        var duration, progress, t;
+        duration = 1000;
+        t = new Tween({
+          duration: duration
         });
-        timeline.play();
-        timeline._removeFromTweener();
-        return expect(tweener.tweens.length).toBe(0);
+        t.setProgress(.75);
+        progress = t._progressTime;
+        t.play().pause().reverse();
+        return expect(t._progressTime).toBe(t._props.repeatTime - progress);
+      });
+      return it('should recalc _progressTime if previous state was "play"', function() {
+        var duration, progress, t;
+        duration = 1000;
+        t = new Tween({
+          duration: duration
+        });
+        t.setProgress(.75);
+        progress = t._progressTime;
+        t.play().reverse();
+        return expect(t._progressTime).toBe(t._props.repeatTime - progress);
       });
     });
     describe('stop method', function() {
@@ -3922,7 +3972,7 @@
         timeline.stop();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
       });
-      return it('should reset progress to 0', function() {
+      it('should reset progress to 0', function() {
         var tw;
         tweener.removeAll();
         tw = new Tween({
@@ -3933,9 +3983,22 @@
         tw.stop();
         return expect(tw.setProgress).toHaveBeenCalledWith(0);
       });
+      it('should set _state to "stop"', function() {
+        var t;
+        t = new Tween;
+        t.stop();
+        return expect(t._state).toBe('stop');
+      });
+      return it('should set isReversed to false', function() {
+        var t;
+        t = new Tween;
+        t._props.isReversed = true;
+        t.stop();
+        return expect(t._props.isReversed).toBe(false);
+      });
     });
     describe('pause method ->', function() {
-      return it('should call t.remove method with self', function() {
+      it('should call t.remove method with self', function() {
         var timeline;
         tweener.removeAll();
         timeline = new Tween({
@@ -3945,6 +4008,48 @@
         spyOn(timeline, '_removeFromTweener');
         timeline.pause();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
+      });
+      return it('should set _state to "pause"', function() {
+        var t;
+        t = new Tween;
+        return t.pause();
+      });
+    });
+    describe('_setPlaybackState method ->', function() {
+      it('should set playback state', function() {
+        var t;
+        t = new Tween;
+        t._setPlaybackState('play');
+        return expect(t._state).toBe('play');
+      });
+      it('should track previous playback state', function() {
+        var t;
+        t = new Tween;
+        t._setPlaybackState('play');
+        t._setPlaybackState('pause');
+        expect(t._prevState).toBe('play');
+        return expect(t._state).toBe('pause');
+      });
+      return it('should overwrite previous playback state', function() {
+        var t;
+        t = new Tween;
+        t._setPlaybackState('pause');
+        t._setPlaybackState('play');
+        t._setPlaybackState('reverse', true);
+        expect(t._prevState).toBe('pause');
+        return expect(t._state).toBe('reverse');
+      });
+    });
+    describe('_removeFromTweener method ->', function() {
+      return it('should call tweener.remove method with self', function() {
+        var timeline;
+        tweener.removeAll();
+        timeline = new Tween({
+          duration: 2000
+        });
+        timeline.play();
+        timeline._removeFromTweener();
+        return expect(tweener.tweens.length).toBe(0);
       });
     });
     describe('_complete method ->', function() {

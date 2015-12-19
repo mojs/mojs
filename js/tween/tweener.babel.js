@@ -3,26 +3,26 @@ require('../polyfills/performance');
 import h from '../h';
 
 class Tweener {
-  constructor() { this.vars(); return this; }
+  constructor() { this._vars(); return this; }
   
-  vars () {
-    this.tweens = []; this.loop = h.bind(this.loop, this);
+  _vars () {
+    this.tweens = []; this._loop = h.bind(this._loop, this);
   }
 
-  loop() {
-    if (!this.isRunning) { return false; }
+  _loop() {
+    if (!this._isRunning) { return false; }
     var time = performance.now(); this._update(time);
-    if (!this.tweens.length) { return this.isRunning = false; }
-    requestAnimationFrame(this.loop);
+    if (!this.tweens.length) { return this._isRunning = false; }
+    requestAnimationFrame(this._loop);
     return this;
   }
 
-  startLoop() {
-    if (this.isRunning) { return; }; this.isRunning = true
-    requestAnimationFrame(this.loop);
+  _startLoop() {
+    if (this._isRunning) { return; }; this._isRunning = true
+    requestAnimationFrame(this._loop);
   }
 
-  stopLoop() { this.isRunning = false; }
+  _stopLoop() { this._isRunning = false; }
 
   _update(time) {
     var i = this.tweens.length;
@@ -30,9 +30,16 @@ class Tweener {
       if (this.tweens[i]._update(time) === true) { this.remove(i); }
     }
   }
-
+  /*
+    Method to add a Tween/Timeline to loop pool.
+    @param {Object} Tween/Timeline to add.
+  */
   add(tween) {
-    this.tweens.push(tween); this.startLoop();
+    // return if tween is already running
+    if ( tween._isRunning ) { return; }
+    tween._isRunning = true;
+    this.tweens.push(tween);
+    this._startLoop();
   }
   
   removeAll() {
@@ -44,7 +51,10 @@ class Tweener {
       ? tween
       : this.tweens.indexOf(tween);
 
-    if (index !== -1) { this.tweens.splice(index, 1); }
+    if (index !== -1) {
+      this.tweens[index]._isRunning = false;
+      this.tweens.splice(index, 1);
+    }
   }
 }
   

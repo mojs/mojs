@@ -331,7 +331,7 @@
         time = performance.now();
         t1._setStartTime(time);
         t2._setStartTime(time);
-        return expect(tm2._props.startTime).toBe(tm1._props.startTime);
+        return expect(Math.abs(tm2._props.startTime - tm1._props.startTime)).not.toBeGreaterThan(20);
       });
       it('should delay the timeline to duration', function() {
         var t;

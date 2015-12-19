@@ -239,7 +239,8 @@ describe 'Timeline ->', ->
       t2.append [tm2]
       time = performance.now()
       t1._setStartTime(time); t2._setStartTime(time)
-      expect(tm2._props.startTime).toBe tm1._props.startTime
+      expect( Math.abs( tm2._props.startTime - tm1._props.startTime ) )
+        .not.toBeGreaterThan 20
     it 'should delay the timeline to duration',->
       t = new Timeline
       t.add new Tween duration: 1000, delay: 200

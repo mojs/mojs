@@ -3,8 +3,8 @@ Tween    = window.mojs.Tween
 Timeline = window.mojs.Timeline
 
 describe 'Twenner ->', ->
-  afterEach  -> t.stopLoop(); t.tweens.length = 0
-  beforeEach -> t.stopLoop(); t.tweens.length = 0
+  afterEach  -> t._stopLoop(); t.tweens.length = 0
+  beforeEach -> t._stopLoop(); t.tweens.length = 0
   it 'have tweens array', ->
     expect(t.tweens).toBeDefined()
     expect(t.tweens instanceof Array).toBe true
@@ -15,71 +15,81 @@ describe 'Twenner ->', ->
     it 'should have requestAnimationFrame defined', ->
       expect(window.requestAnimationFrame).toBeDefined()
 
-  describe 'loop ->', ->
+  describe '_loop ->', ->
     it 'should loop over', (dfr)->
-      t.startLoop()
+      t._startLoop()
       t.add new Tween
-      spyOn t, 'loop'
+      spyOn t, '_loop'
       setTimeout ->
-        expect(t.loop).toHaveBeenCalled(); dfr()
+        expect(t._loop).toHaveBeenCalled(); dfr()
       , 100
     it 'should call update fun', (dfr)->
-      t.startLoop()
+      t._startLoop()
       spyOn t, '_update'
       setTimeout ->
         expect(t._update).toHaveBeenCalledWith(jasmine.any(Number)); dfr()
       , 100
     it 'should stop at the end', (dfr)->
       t.add new Tween
-      t.startLoop()
+      t._startLoop()
       setTimeout (-> t.tweens[0]._update = -> true), 100
-      setTimeout (-> expect(t.isRunning).toBe(false); dfr()), 200
+      setTimeout (-> expect(t._isRunning).toBe(false); dfr()), 200
 
     it 'should stop if !@isRunning', ()->
-      t.isRunning = false
+      t._isRunning = false
       spyOn window, 'requestAnimationFrame'
       spyOn t, '_update'
-      t.loop()
+      t._loop()
       expect(window.requestAnimationFrame).not.toHaveBeenCalled()
       expect(t._update).not.toHaveBeenCalled()
 
-  describe 'startLoop method ->', ->
+  describe '_startLoop method ->', ->
     it 'should call loop method', (dfr)->
-      spyOn t, 'loop'
-      t.startLoop()
+      spyOn t, '_loop'
+      t._startLoop()
       setTimeout ->
-        expect(t.loop).toHaveBeenCalled()
+        expect(t._loop).toHaveBeenCalled()
         dfr()
       , 60
     it 'should set isRunning flag', ->
-      expect(t.isRunning).toBeFalsy()
-      t.startLoop()
-      expect(t.isRunning).toBe true
+      expect(t._isRunning).toBeFalsy()
+      t._startLoop()
+      expect(t._isRunning).toBe true
     it 'should call loop only once', ->
-      t.startLoop()
-      spyOn t, 'loop'
-      t.startLoop()
-      expect(t.loop).not.toHaveBeenCalled()
+      t._startLoop()
+      spyOn t, '_loop'
+      t._startLoop()
+      expect(t._loop).not.toHaveBeenCalled()
     it 'should start only 1 concurrent loop', ()->
-      t.startLoop()
-      expect(t.isRunning).toBe true
+      t._startLoop()
+      expect(t._isRunning).toBe true
       spyOn window, 'requestAnimationFrame'
-      t.startLoop()
+      t._startLoop()
       expect(window.requestAnimationFrame).not.toHaveBeenCalled()
-  describe 'stopLoop method ->', ->
+  describe '_stopLoop method ->', ->
     it 'should set isRunning to false', ->
-      t.startLoop()
-      t.stopLoop()
-      expect(t.isRunning).toBe false
+      t._startLoop()
+      t._stopLoop()
+      expect(t._isRunning).toBe false
   describe 'add method ->', ->
     it 'should add to tweens', ->
       t.add new Tween
       expect(t.tweens.length).toBe 1
       expect(t.tweens[0] instanceof Tween).toBe true
-    it 'should call startLoop method', ->
-      spyOn t, 'startLoop'
+    it 'should add to tweens only once', ->
+      t1 = new Tween
+      t.add t1
+      t.add t1
+      expect(t.tweens.length).toBe 1
+      expect(t.tweens[0]).toBe t1
+    it 'should call _startLoop method', ->
+      spyOn t, '_startLoop'
       t.add new Tween
-      expect(t.startLoop).toHaveBeenCalled()
+      expect(t._startLoop).toHaveBeenCalled()
+    it 'should set _isRunning to true', ->
+      t1 = new Tween
+      t.add t1
+      expect(t1._isRunning).toBe true
   describe 'remove method ->', ->
     it 'should remove a tween', ->
       t1 = new Tween; t2 = new Tween
@@ -94,6 +104,13 @@ describe 'Twenner ->', ->
       t.remove 1
       expect(t.tweens.length).toBe 1
       expect(t.tweens[0])    .toBe t1
+    it 'should set _isRunning to false', ->
+      t1 = new Tween; t2 = new Tween
+      t.add t1; t.add t2
+      expect(t.tweens.length).toBe 2
+      t.remove t1
+      expect(t1._isRunning).toBe false
+      expect(t2._isRunning).toBe true
   describe 'removeAll method ->', ->
     it 'should remove all tweens', ->
       t1 = new Tween; t2 = new Tween

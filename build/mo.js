@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.160.0',
+	  revision: '0.161.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3584,17 +3584,24 @@
 	      */
 	      value: function play() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        var isReversed = arguments[1] === undefined ? false : arguments[1];
+	        var _isReversed = arguments[1] === undefined ? false : arguments[1];
+	        // if was played and paused or playing right now
+	        // flip time progress in repeatTime bounds
+	        var isPausedReverse = this._state === "pause" && this._prevState === "reverse";
+	        if (isPausedReverse || this._state === "reverse") {
+	          this._progressTime = this._props.repeatTime - this._progressTime;
+	        }
 	        // reset previous time cache
 	        this._prevTime = null;
 	        // play in specified direction, forward is default
-	        this._props.isReversed = isReversed;
+	        this._props.isReversed = _isReversed;
 	        // if tween was ended, set progress to 0 if not, set to elapsed progress
 	        var procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
 	        // set start time regarding passed `shift` and calculated `procTime`
 	        this._setStartTime(performance.now() - Math.abs(shift) - procTime);
 	        // add self to tweener = run
-	        t.add(this);return this;
+	        t.add(this);this._setPlaybackState("play");
+	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3609,7 +3616,16 @@
 	      */
 	      value: function reverse() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
+	        // if was played and paused or playing right now
+	        // flip time progress in repeatTime bounds
+	        var isPausedPlay = this._state === "pause" && this._prevState === "play";
+	        if (isPausedPlay || this._state === "play") {
+	          this._progressTime = this._props.repeatTime - this._progressTime;
+	        }
+	        // play reversed
 	        this.play(shift, true);
+	        // overwrite state
+	        this._setPlaybackState("reverse", true);
 	        // reset previous time cache
 	        return this;
 	      },
@@ -3624,7 +3640,11 @@
 	        @returns {Object} Self.
 	      */
 	      value: function stop() {
-	        this.pause();this.setProgress(0);return this;
+	        this._props.isReversed = false;
+	        this._removeFromTweener();
+	        this.setProgress(0);
+	        this._setPlaybackState("stop");
+	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3637,7 +3657,9 @@
 	        @returns {Object} Self.
 	      */
 	      value: function pause() {
-	        this._removeFromTweener();return this;
+	        this._removeFromTweener();
+	        this._setPlaybackState("pause");
+	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3661,6 +3683,24 @@
 	        var startPoint = this._props.startTime - this._props.delay;
 	        this._update(startPoint + progress * this._props.repeatTime);
 	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _setPlaybackState: {
+	      /*
+	        Method set playback state string.
+	        @private
+	        @param {String} State name
+	        @param {Boolean} If should owerwrite the previous state.
+	      */
+	      value: function SetPlaybackState(state, isOverwrite) {
+	        // if not overwrite, save previous state
+	        if (!isOverwrite) {
+	          this._prevState = this._state;
+	        }
+	        this._state = state;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3702,6 +3742,7 @@
 	        this._prevTime = null;
 	        this._progressTime = 0;
 	        this._negativeShift = 0;
+	        this._state = "stop";
 	        // if negative delay was specified,
 	        // save it to _negativeShift property and
 	        // reset it back to 0
@@ -4059,11 +4100,8 @@
 	        this.easedProgress = this._props.easing(this.progress);
 	        if (this._props.prevEasedProgress !== this.easedProgress) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
-	            this.o.isIt && console.log("********** ONUPDATE " + p + " **********");
 	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime);
 	          }
-	        } else {
-	          this.o.isIt && console.log("********** ONUPDATE TRYOUT **********");
 	        }
 	        this._props.prevEasedProgress = this.easedProgress;
 	        return this;
@@ -4122,7 +4160,6 @@
 	      configurable: true
 	    },
 	    _getPeriod: {
-
 	      /*
 	        Method to get current period number.
 	        @private
@@ -4169,7 +4206,6 @@
 	          return;
 	        }
 	        if (this._props.onStart != null && typeof this._props.onStart === "function") {
-	          this.o.isIt && console.log("********** START **********");
 	          this._props.onStart.call(this, time > this._prevTime);
 	        }
 	        this._isCompleted = false;this._isStarted = true;
@@ -4194,7 +4230,6 @@
 	        // this._setProgress(progress, time);
 	        // this._repeatComplete(time);
 	        if (this._props.onComplete != null && typeof this._props.onComplete === "function") {
-	          this.o.isIt && console.log("********** COMPLETE **********");
 	          this._props.onComplete.call(this, time > this._prevTime);
 	        }
 	        this._isCompleted = true;this._isStarted = false;
@@ -4217,7 +4252,6 @@
 	          return;
 	        }
 	        if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === "function") {
-	          this.o.isIt && console.log("********** ON_FIRST_UPDATE **********");
 	          this._props.onFirstUpdate.call(this, time > this._prevTime);
 	        }
 	        this._isFirstUpdate = true;
@@ -4238,7 +4272,6 @@
 	          return;
 	        }
 	        if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === "function") {
-	          this.o.isIt && console.log("********** REPEAT COMPLETE **********");
 	          this._props.onRepeatComplete.call(this, time > this._prevTime);
 	        }
 	        this._isRepeatCompleted = true;
@@ -4259,7 +4292,6 @@
 	          return;
 	        }
 	        if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === "function") {
-	          this.o.isIt && console.log("********** REPEAT START **********");
 	          this._props.onRepeatStart.call(this, time > this._prevTime);
 	        }
 	        this._isRepeatStart = true;
@@ -4646,48 +4678,48 @@
 
 	var Tweener = (function () {
 	  function Tweener() {
-	    this.vars();return this;
+	    this._vars();return this;
 	  }
 
 	  _prototypeProperties(Tweener, null, {
-	    vars: {
-	      value: function vars() {
-	        this.tweens = [];this.loop = h.bind(this.loop, this);
+	    _vars: {
+	      value: function Vars() {
+	        this.tweens = [];this._loop = h.bind(this._loop, this);
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    loop: {
-	      value: function loop() {
-	        if (!this.isRunning) {
+	    _loop: {
+	      value: function Loop() {
+	        if (!this._isRunning) {
 	          return false;
 	        }
 	        var time = performance.now();this._update(time);
 	        if (!this.tweens.length) {
-	          return this.isRunning = false;
+	          return this._isRunning = false;
 	        }
-	        requestAnimationFrame(this.loop);
+	        requestAnimationFrame(this._loop);
 	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    startLoop: {
-	      value: function startLoop() {
-	        if (this.isRunning) {
+	    _startLoop: {
+	      value: function StartLoop() {
+	        if (this._isRunning) {
 	          return;
-	        };this.isRunning = true;
-	        requestAnimationFrame(this.loop);
+	        };this._isRunning = true;
+	        requestAnimationFrame(this._loop);
 	      },
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
 	    },
-	    stopLoop: {
-	      value: function stopLoop() {
-	        this.isRunning = false;
+	    _stopLoop: {
+	      value: function StopLoop() {
+	        this._isRunning = false;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4707,8 +4739,18 @@
 	      configurable: true
 	    },
 	    add: {
+	      /*
+	        Method to add a Tween/Timeline to loop pool.
+	        @param {Object} Tween/Timeline to add.
+	      */
 	      value: function add(tween) {
-	        this.tweens.push(tween);this.startLoop();
+	        // return if tween is already running
+	        if (tween._isRunning) {
+	          return;
+	        }
+	        tween._isRunning = true;
+	        this.tweens.push(tween);
+	        this._startLoop();
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4727,6 +4769,7 @@
 	        var index = typeof tween === "number" ? tween : this.tweens.indexOf(tween);
 
 	        if (index !== -1) {
+	          this.tweens[index]._isRunning = false;
 	          this.tweens.splice(index, 1);
 	        }
 	      },
