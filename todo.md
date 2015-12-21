@@ -3,7 +3,11 @@
 
 
 ### TWEEN + TIMELINE:
-  - add yoyo tests
+  - add speed
+  - speed for nested tweens
+  - add total onUpdate
+  - refator play's method params
+  - play/pause and others should not run if already running
 
 - fix coverage
 - release

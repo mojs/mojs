@@ -18,6 +18,13 @@ describe 'Tween ->', ->
       expect(t._defaults.duration).toBe  600
       expect(t._defaults.delay).toBe     0
       expect(t._defaults.yoyo).toBe      false
+      expect(t._defaults.speed).toBeDefined()
+      expect(t._defaults.onStart).toBeDefined()
+      expect(t._defaults.onRepeatStart).toBeDefined()
+      expect(t._defaults.onFirstUpdate).toBeDefined()
+      expect(t._defaults.onRepeatComplete).toBeDefined()
+      expect(t._defaults.onComplete).toBeDefined()
+      expect(t._defaults.onUpdate).toBeDefined()
       expect(t._defaults.isChained).toBe false
     it 'should extend defaults to props', ->
       t = new Tween duration: 1000
@@ -221,6 +228,25 @@ describe 'Tween ->', ->
       t._update time - 1
       t._update time
       expect(t._prevTime).toBeCloseTo (t._props.endTime - delay - shift), 3
+    it 'should recalculate time for speed if defined', ->
+      delay = 50; duration = 1000
+      speed = 2
+      t = new Tween(speed: speed, duration: duration, delay: delay, repeat: 2)
+      t.play().pause()
+      time = t._props.startTime + duration/4
+      startPoint = (t._props.startTime - delay)
+      t._update time - 1
+      t._update time
+      expect(t._prevTime).toBe startPoint + speed * ( time - startPoint )
+    it 'should ignore speed if _playTime is not set', ->
+      delay = 200; duration = 1000
+      speed = 2
+      t = new Tween(speed: speed, duration: duration, delay: delay, repeat: 2)
+      t._setStartTime()
+      time = t._props.startTime + duration/2
+      t._update time
+      expect(t._prevTime).toBe time
+
   
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -4397,6 +4423,12 @@ describe 'Tween ->', ->
       time = t._props.startTime
       t.setProgress(1).play()
       expect(Math.abs( time - t._props.startTime) ).not.toBeGreaterThan 20
+    it 'should set _playTime',->
+      t = new Tween
+      t.play()
+      now = performance.now()
+      expect( t._playTime ).toBeDefined()
+      expect( Math.abs( t._playTime - now ) ).not.toBeGreaterThan 10
     it 'should reset isReversed to false',->
       t = new Tween
       t._props.isReversed = true
@@ -4481,14 +4513,13 @@ describe 'Tween ->', ->
       t.reverse(200)
       expect(t._prevState).toBe 'stop'
       expect(t._state).toBe 'reverse'
-    it 'should recalc _progressTime if previous state was "play" + "pause"',->
+    # it 'should recalc _progressTime if previous state was "play" + "pause"',->
+    it 'should recalc _progressTime',->
       duration = 1000
       t = new Tween duration: duration
       t.setProgress(.75)
       progress = t._progressTime
-      t .play()
-        .pause()
-        .reverse()
+      t.reverse()
       expect(t._progressTime).toBe t._props.repeatTime - progress
     it 'should recalc _progressTime if previous state was "play"',->
       duration = 1000
@@ -5109,6 +5140,12 @@ describe 'Tween ->', ->
       spyOn t, '_update'
       t.setProgress 1.5
       expect(t._update).toHaveBeenCalledWith (t._props.startTime - delay) + t._props.repeatTime
+    it 'should set _playTime to null', ->
+      delay  = 200
+      t   = new Tween delay: delay
+      t.play().pause()
+      t.setProgress(.5)
+      expect(t._playTime).toBe null
 
 
 

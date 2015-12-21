@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.161.0',
+	  revision: '0.162.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3585,8 +3585,8 @@
 	      value: function play() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
 	        var _isReversed = arguments[1] === undefined ? false : arguments[1];
-	        // if was played and paused or playing right now
-	        // flip time progress in repeatTime bounds
+	        // if was playing reverse and paused or playing reverse right now,
+	        // flip the time progress in repeatTime bounds
 	        var isPausedReverse = this._state === "pause" && this._prevState === "reverse";
 	        if (isPausedReverse || this._state === "reverse") {
 	          this._progressTime = this._props.repeatTime - this._progressTime;
@@ -3598,7 +3598,8 @@
 	        // if tween was ended, set progress to 0 if not, set to elapsed progress
 	        var procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
 	        // set start time regarding passed `shift` and calculated `procTime`
-	        this._setStartTime(performance.now() - Math.abs(shift) - procTime);
+	        this._playTime = performance.now();
+	        this._setStartTime(this._playTime - Math.abs(shift) - procTime);
 	        // add self to tweener = run
 	        t.add(this);this._setPlaybackState("play");
 	        return this;
@@ -3618,10 +3619,10 @@
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
 	        // if was played and paused or playing right now
 	        // flip time progress in repeatTime bounds
-	        var isPausedPlay = this._state === "pause" && this._prevState === "play";
-	        if (isPausedPlay || this._state === "play") {
-	          this._progressTime = this._props.repeatTime - this._progressTime;
-	        }
+	        // var isPausedPlay = this._state === 'pause' && this._prevState === 'play';
+	        // if ( isPausedPlay || this._state === 'play' ) {
+	        this._progressTime = this._props.repeatTime - this._progressTime;
+	        // }
 	        // play reversed
 	        this.play(shift, true);
 	        // overwrite state
@@ -3673,6 +3674,8 @@
 	        @returns {Object} Self.
 	      */
 	      value: function setProgress(progress) {
+	        // reset play time
+	        this._playTime = null;
 	        // set start time if there is no one yet.
 	        if (this._props.startTime == null) {
 	          this._setStartTime();
@@ -3716,6 +3719,7 @@
 	          duration: 600,
 	          delay: 0,
 	          repeat: 0,
+	          speed: null,
 	          yoyo: false,
 	          easing: "Linear.None",
 	          onStart: null,
@@ -3823,10 +3827,17 @@
 	        @param {Number}   Parent's previous period number.
 	      */
 	      value: function Update(time, isGrow) {
-	        // this._visualizeProgress( time );
 	        // Save progress time for pause/play purposes.
 	        var p = this._props,
 	            startPoint = p.startTime - p.delay;
+
+	        // if speed param was defined - calculate
+	        // new time regarding speed
+	        if (p.speed && this._playTime) {
+	          // play point + ( speed * delta )
+	          time = this._playTime + p.speed * (time - this._playTime);
+	        }
+
 	        // if in active area and not ended - save progress time
 	        if (time > startPoint && time < p.endTime) {
 	          this._progressTime = time - startPoint;
@@ -3843,7 +3854,6 @@
 	        if (p.isReversed) {
 	          time = p.endTime - this._progressTime;
 	        }
-
 	        // We need to know what direction we are heading in with this tween,
 	        // so if we don't have the previous update value - this is very first
 	        // update, - skip it entirely and wait for the next value

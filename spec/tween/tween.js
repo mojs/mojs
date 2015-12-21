@@ -27,6 +27,13 @@
         expect(t._defaults.duration).toBe(600);
         expect(t._defaults.delay).toBe(0);
         expect(t._defaults.yoyo).toBe(false);
+        expect(t._defaults.speed).toBeDefined();
+        expect(t._defaults.onStart).toBeDefined();
+        expect(t._defaults.onRepeatStart).toBeDefined();
+        expect(t._defaults.onFirstUpdate).toBeDefined();
+        expect(t._defaults.onRepeatComplete).toBeDefined();
+        expect(t._defaults.onComplete).toBeDefined();
+        expect(t._defaults.onUpdate).toBeDefined();
         return expect(t._defaults.isChained).toBe(false);
       });
       return it('should extend defaults to props', function() {
@@ -358,7 +365,7 @@
         t._update(time);
         return expect(t._progressTime).toBeCloseTo(t._props.repeatTime, 3);
       });
-      return it('should update with reversed time if _props.isReversed', function() {
+      it('should update with reversed time if _props.isReversed', function() {
         var delay, duration, shift, t, time;
         delay = 500;
         duration = 1000;
@@ -374,6 +381,40 @@
         t._update(time - 1);
         t._update(time);
         return expect(t._prevTime).toBeCloseTo(t._props.endTime - delay - shift, 3);
+      });
+      it('should recalculate time for speed if defined', function() {
+        var delay, duration, speed, startPoint, t, time;
+        delay = 50;
+        duration = 1000;
+        speed = 2;
+        t = new Tween({
+          speed: speed,
+          duration: duration,
+          delay: delay,
+          repeat: 2
+        });
+        t.play().pause();
+        time = t._props.startTime + duration / 4;
+        startPoint = t._props.startTime - delay;
+        t._update(time - 1);
+        t._update(time);
+        return expect(t._prevTime).toBe(startPoint + speed * (time - startPoint));
+      });
+      return it('should ignore speed if _playTime is not set', function() {
+        var delay, duration, speed, t, time;
+        delay = 200;
+        duration = 1000;
+        speed = 2;
+        t = new Tween({
+          speed: speed,
+          duration: duration,
+          delay: delay,
+          repeat: 2
+        });
+        t._setStartTime();
+        time = t._props.startTime + duration / 2;
+        t._update(time);
+        return expect(t._prevTime).toBe(time);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -3828,6 +3869,14 @@
         t.setProgress(1).play();
         return expect(Math.abs(time - t._props.startTime)).not.toBeGreaterThan(20);
       });
+      it('should set _playTime', function() {
+        var now, t;
+        t = new Tween;
+        t.play();
+        now = performance.now();
+        expect(t._playTime).toBeDefined();
+        return expect(Math.abs(t._playTime - now)).not.toBeGreaterThan(10);
+      });
       it('should reset isReversed to false', function() {
         var t;
         t = new Tween;
@@ -3937,7 +3986,7 @@
         expect(t._prevState).toBe('stop');
         return expect(t._state).toBe('reverse');
       });
-      it('should recalc _progressTime if previous state was "play" + "pause"', function() {
+      it('should recalc _progressTime', function() {
         var duration, progress, t;
         duration = 1000;
         t = new Tween({
@@ -3945,7 +3994,7 @@
         });
         t.setProgress(.75);
         progress = t._progressTime;
-        t.play().pause().reverse();
+        t.reverse();
         return expect(t._progressTime).toBe(t._props.repeatTime - progress);
       });
       return it('should recalc _progressTime if previous state was "play"', function() {
@@ -4815,7 +4864,7 @@
         t.setProgress(-1.5);
         return expect(t._update).toHaveBeenCalledWith(t._props.startTime - delay);
       });
-      return it('should not set the progress more then 1', function() {
+      it('should not set the progress more then 1', function() {
         var delay, t;
         delay = 200;
         t = new Tween({
@@ -4824,6 +4873,16 @@
         spyOn(t, '_update');
         t.setProgress(1.5);
         return expect(t._update).toHaveBeenCalledWith((t._props.startTime - delay) + t._props.repeatTime);
+      });
+      return it('should set _playTime to null', function() {
+        var delay, t;
+        delay = 200;
+        t = new Tween({
+          delay: delay
+        });
+        t.play().pause();
+        t.setProgress(.5);
+        return expect(t._playTime).toBe(null);
       });
     });
   });

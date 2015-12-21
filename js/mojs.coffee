@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.161.0', isDebug: true
+  revision:   '0.162.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -38,9 +38,10 @@ mojs.delta = mojs.h.delta
 #   # yoyo: true
 #   # isIt: true
 #   # delay: 500
+#   speed:    5
 #   duration: 10000
 #   onStart:->
-#   onComplete:->
+#   onComplete:-> console.log "COMPLETE"
 #   onRepeatStart:->
 #   onRepeatComplete:->
 #   onFirstUpdate:->
