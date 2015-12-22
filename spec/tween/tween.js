@@ -513,7 +513,6 @@
         updateDirection = null;
         t = new Tween({
           repeat: 1,
-          isIt: true,
           duration: duration,
           onUpdate: function(p, ep, isForward) {
             updateDirection = isForward;

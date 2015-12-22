@@ -90,7 +90,7 @@ class Timeline extends Tween {
     @param {Number} Current update time.
   */
   _setProgress (progress, time) {
-    super(progress, time);
+    super._setProgress(progress, time);
     // cover
     var timeToTimelines = this._props.startTime + progress*this._props.time,
         i = this._timelines.length;
@@ -113,7 +113,7 @@ class Timeline extends Tween {
     @param {Number, Null} Time to start with.
   */
   _setStartTime(time) {
-    super();
+    super._setStartTime(time);
     this._startTimelines(this._props.startTime);
   }
   /*
@@ -143,7 +143,7 @@ class Timeline extends Tween {
       h.error(`Duration can not be declared on Timeline, but "${this.o.duration}" is. You probably want to use Tween instead.`);
       this.o.duration = 0;
     }
-    super();
+    super._declareDefaults();
     // set default duration = 0
     this._defaults.duration = 0;
   }
@@ -153,7 +153,7 @@ class Timeline extends Tween {
   */
   _vars() {
     this._timelines = [];
-    super();
+    super._vars();
   }
 }
 

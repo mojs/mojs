@@ -196,6 +196,7 @@ var Tween = class Tween {
     @returns this
   */
   _setStartTime (time) {
+
     var p = this._props;
     // reset flags
     this._isCompleted = false; this._isRepeatCompleted = false;

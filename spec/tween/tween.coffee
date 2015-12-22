@@ -307,7 +307,6 @@ describe 'Tween ->', ->
       duration = 50; updateValue = null; updateDirection = null
       t = new Tween
         repeat:     1
-        isIt:       true
         duration:   duration
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward

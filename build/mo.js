@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.162.0',
+	  revision: '0.163.2',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -4612,7 +4612,7 @@
 	        @param {Number, Null} Time to start with.
 	      */
 	      value: function SetStartTime(time) {
-	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_setStartTime", this).call(this);
+	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_setStartTime", this).call(this, time);
 	        this._startTimelines(this._props.startTime);
 	      },
 	      writable: true,
