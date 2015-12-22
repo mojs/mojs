@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.162.0',
+	  revision: '0.163.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3674,12 +3674,12 @@
 	        @returns {Object} Self.
 	      */
 	      value: function setProgress(progress) {
-	        // reset play time
-	        this._playTime = null;
 	        // set start time if there is no one yet.
 	        if (this._props.startTime == null) {
 	          this._setStartTime();
 	        }
+	        // reset play time
+	        this._playTime = null;
 	        // progress should be in range of [0..1]
 	        progress = h.clamp(progress, 0, 1);
 	        // update self with calculated time
@@ -3803,11 +3803,17 @@
 	      */
 	      value: function SetStartTime(time) {
 	        var p = this._props;
+	        // reset flags
 	        this._isCompleted = false;this._isRepeatCompleted = false;
 	        this._isStarted = false;
-
-	        time = time == null ? performance.now() : time;
+	        // set play time to the current moment
+	        this._playTime = performance.now();
+	        // get time of the start
+	        time = time == null ? this._playTime : time;
 	        var shiftTime = this._props.shiftTime || 0;
+	        // calculate bounds
+	        // - negativeShift is negative delay in options hash
+	        // - shift time is shift of the parent
 	        p.startTime = time + p.delay + this._negativeShift + shiftTime;
 	        p.endTime = p.startTime + p.repeatTime - p.delay;
 
@@ -4461,11 +4467,10 @@
 	          var tm = _step.value;
 	          if (h.isArray(tm)) {
 	            this._appendTimelineArray(tm);
-	            this._calcDimentions();
 	          } else {
 	            this._appendTimeline(tm, this._timelines.length);
-	            this._calcDimentions();
 	          }
+	          this._calcDimentions();
 	        }
 
 	        return this;
@@ -4581,7 +4586,8 @@
 	      */
 	      value: function RecalcDuration(timeline) {
 	        var p = timeline._props,
-	            timelineTime = p.repeatTime + (p.shiftTime || 0);
+	            speedCoef = p.speed ? 1 / p.speed : 1,
+	            timelineTime = speedCoef * p.repeatTime + (p.shiftTime || 0);
 	        this._props.duration = Math.max(timelineTime, this._props.duration);
 	      },
 	      writable: true,

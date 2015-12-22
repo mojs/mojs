@@ -49,7 +49,7 @@ describe 'Tween ->', ->
       t = new Tween duration: 1000
       expect(t._props.isChained).toBe false
 
-  describe 'setStartTime ->', ->
+  describe '_setStartTime method ->', ->
     it 'should calculate start time', ->
       t = new Tween(duration: 1000, delay: 500)._setStartTime()
       expectedTime = performance.now() + 500
@@ -85,7 +85,6 @@ describe 'Tween ->', ->
 
       endTime = t._props.startTime + (3*(duration+delay)) - delay
       expect(t._props.endTime).toBe endTime
-
     it 'should restart flags', ->
       t = new Tween(duration: 20, repeat: 2)._setStartTime()
       t._update t._props.startTime + 10
@@ -97,6 +96,13 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe false
       expect(t._isRepeatCompleted).toBe false
       expect(t._isStarted)  .toBe false
+
+    it 'should set _playTime',->
+      t = new Tween
+      t._setStartTime()
+      now = performance.now()
+      expect( t._playTime ).toBeDefined()
+      expect( Math.abs( t._playTime - now ) ).not.toBeGreaterThan 10
   
   describe '_update method ->', ->
     it 'should update progress', ->
@@ -244,6 +250,7 @@ describe 'Tween ->', ->
       t = new Tween(speed: speed, duration: duration, delay: delay, repeat: 2)
       t._setStartTime()
       time = t._props.startTime + duration/2
+      t._playTime = null
       t._update time
       expect(t._prevTime).toBe time
 
@@ -4423,12 +4430,6 @@ describe 'Tween ->', ->
       time = t._props.startTime
       t.setProgress(1).play()
       expect(Math.abs( time - t._props.startTime) ).not.toBeGreaterThan 20
-    it 'should set _playTime',->
-      t = new Tween
-      t.play()
-      now = performance.now()
-      expect( t._playTime ).toBeDefined()
-      expect( Math.abs( t._playTime - now ) ).not.toBeGreaterThan 10
     it 'should reset isReversed to false',->
       t = new Tween
       t._props.isReversed = true

@@ -83,7 +83,7 @@
         return expect(t._props.isChained).toBe(false);
       });
     });
-    describe('setStartTime ->', function() {
+    describe('_setStartTime method ->', function() {
       it('should calculate start time', function() {
         var expectedTime, t;
         t = new Tween({
@@ -153,7 +153,7 @@
         endTime = t._props.startTime + (3 * (duration + delay)) - delay;
         return expect(t._props.endTime).toBe(endTime);
       });
-      return it('should restart flags', function() {
+      it('should restart flags', function() {
         var t;
         t = new Tween({
           duration: 20,
@@ -168,6 +168,14 @@
         expect(t._isCompleted).toBe(false);
         expect(t._isRepeatCompleted).toBe(false);
         return expect(t._isStarted).toBe(false);
+      });
+      return it('should set _playTime', function() {
+        var now, t;
+        t = new Tween;
+        t._setStartTime();
+        now = performance.now();
+        expect(t._playTime).toBeDefined();
+        return expect(Math.abs(t._playTime - now)).not.toBeGreaterThan(10);
       });
     });
     describe('_update method ->', function() {
@@ -413,6 +421,7 @@
         });
         t._setStartTime();
         time = t._props.startTime + duration / 2;
+        t._playTime = null;
         t._update(time);
         return expect(t._prevTime).toBe(time);
       });
@@ -3868,14 +3877,6 @@
         time = t._props.startTime;
         t.setProgress(1).play();
         return expect(Math.abs(time - t._props.startTime)).not.toBeGreaterThan(20);
-      });
-      it('should set _playTime', function() {
-        var now, t;
-        t = new Tween;
-        t.play();
-        now = performance.now();
-        expect(t._playTime).toBeDefined();
-        return expect(Math.abs(t._playTime - now)).not.toBeGreaterThan(10);
       });
       it('should reset isReversed to false', function() {
         var t;

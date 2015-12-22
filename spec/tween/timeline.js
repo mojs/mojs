@@ -224,7 +224,20 @@
         expect(t._timelines[0]).toBe(tw);
         return expect(t._props.duration).toBe(4000);
       });
-      return it('should calc _recalcDuration method', function() {
+      it('should calc time regarding tween\'s speed', function() {
+        var t, tw;
+        t = new Timeline;
+        tw = new Tween({
+          duration: 4000,
+          speed: .1
+        });
+        t._pushTimeline(tw);
+        expect(t._timelines.length).toBe(1);
+        expect(t._timelines[0] instanceof Tween).toBe(true);
+        expect(t._timelines[0]).toBe(tw);
+        return expect(t._props.duration).toBe(40000);
+      });
+      return it('should call _recalcDuration method', function() {
         var t, tw;
         t = new Timeline;
         tw = new Tween({

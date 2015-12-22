@@ -184,8 +184,15 @@ describe 'Timeline ->', ->
       expect(t._timelines[0] instanceof Tween).toBe true
       expect(t._timelines[0]).toBe tw
       expect(t._props.duration).toBe 4000
-
-    it 'should calc _recalcDuration method',->
+    it 'should calc time regarding tween\'s speed' ,->
+      t = new Timeline
+      tw = new Tween duration: 4000, speed: .1
+      t._pushTimeline tw
+      expect(t._timelines.length).toBe 1
+      expect(t._timelines[0] instanceof Tween).toBe true
+      expect(t._timelines[0]).toBe tw
+      expect(t._props.duration).toBe 40000
+    it 'should call _recalcDuration method',->
       t = new Timeline
       tw = new Tween duration: 4000
       spyOn t, '_recalcDuration'

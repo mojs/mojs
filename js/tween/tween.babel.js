@@ -80,10 +80,10 @@ var Tween = class Tween {
     @returns {Object} Self.
   */
   setProgress (progress) {
-    // reset play time
-    this._playTime = null;
     // set start time if there is no one yet.
     if ( this._props.startTime == null ) { this._setStartTime(); }
+    // reset play time
+    this._playTime = null;
     // progress should be in range of [0..1]
     progress = h.clamp(progress, 0, 1);
     // update self with calculated time
@@ -191,11 +191,17 @@ var Tween = class Tween {
   */
   _setStartTime (time) {
     var p = this._props;
+    // reset flags
     this._isCompleted = false; this._isRepeatCompleted = false;
     this._isStarted = false;
-    
-    time = (time == null) ? performance.now() : time;
+    // set play time to the current moment
+    this._playTime = performance.now();
+    // get time of the start
+    time = (time == null) ? this._playTime : time;
     var shiftTime = (this._props.shiftTime || 0);
+    // calculate bounds
+    // - negativeShift is negative delay in options hash
+    // - shift time is shift of the parent
     p.startTime = time + p.delay + this._negativeShift + shiftTime;
     p.endTime   = p.startTime + p.repeatTime - p.delay;
 

@@ -24,13 +24,9 @@ class Timeline extends Tween {
   */
   append(...timeline) {
     for (var tm of timeline) {
-      if (h.isArray(tm)) {
-        this._appendTimelineArray(tm);
-        this._calcDimentions();
-      } else {
-        this._appendTimeline(tm, this._timelines.length);
-        this._calcDimentions();
-      }
+      if (h.isArray(tm)) { this._appendTimelineArray(tm); }
+      else { this._appendTimeline(tm, this._timelines.length); }
+      this._calcDimentions();
     }
     return this;
   }
@@ -106,8 +102,9 @@ class Timeline extends Tween {
     @param {Object} Tween or Timeline to calculate.
   */
   _recalcDuration(timeline) {
-    var p = timeline._props,
-        timelineTime = p.repeatTime + (p.shiftTime || 0);
+    var p             = timeline._props,
+        speedCoef     = ( p.speed ) ? (1/p.speed) : 1,
+        timelineTime  = speedCoef*p.repeatTime + (p.shiftTime || 0);
     this._props.duration = Math.max(timelineTime, this._props.duration);
   }
   /*
