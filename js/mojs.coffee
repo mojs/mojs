@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.163.2', isDebug: true
+  revision:   '0.163.3', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -33,14 +33,15 @@ mojs.delta = mojs.h.delta
 # pause       = document.querySelector('#js-pause')
 # stop        = document.querySelector('#js-stop')
 
-# tm = new mojs.Timeline isIt: 1
+# tm = new mojs.Timeline
 # tw = new mojs.Tween
+#   isIt2: 1
 #   # repeat: 3
 #   # yoyo: true
 #   # isIt: true
 #   # delay: 500
 #   # speed:    .5
-#   duration: 10000
+#   duration: 1000
 #   # onStart:-> console.log "START"
 #   # onComplete:-> console.log "COMPLETE"
 #   # onRepeatStart:-> console.log "REPEAT START"

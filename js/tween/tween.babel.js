@@ -10,6 +10,7 @@ var Tween = class Tween {
     @return {Object} Self.
   */
   play (shift = 0) {
+    if ( this._state === 'play' && this._isRunning ) { return false; }
     // if was playing reverse and paused or playing reverse right now,
     // flip the time progress in repeatTime bounds
     var isPausedReverse = this._state === 'pause' && this._prevState === 'reverse';
@@ -28,8 +29,13 @@ var Tween = class Tween {
     @return {Object} Self.
   */
   reverse (shift = 0) {
+    this.o.isIt && console.log(this._isRunning);
+    if ( this._state === 'reverse' && this._isRunning)  { return false; }
     // flip time progress in repeatTime bounds
-    this._progressTime = this._props.repeatTime - this._progressTime;
+    var isPlayPaused = this._state === 'pause' && this._prevState === 'play';
+    if ( isPlayPaused || this._state === 'play' ) {
+      this._progressTime = this._props.repeatTime - this._progressTime;
+    }
     // play reversed
     this._props.isReversed = true;
     this._subPlay( shift );
@@ -289,7 +295,7 @@ var Tween = class Tween {
     }
 
     this._prevTime = time;
-    return this._isCompleted;
+    return (time >= p.endTime) || (time <= startPoint);
   }
   /*
     Method to handle tween's progress in active area.

@@ -5,7 +5,6 @@
 ### TWEEN + TIMELINE:
   - add total onUpdate
   - nested speed tests
-  - play/pause and others should not run if already running
 
 - fix coverage
 - release

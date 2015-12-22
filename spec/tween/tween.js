@@ -263,6 +263,22 @@
         expect(t._isRepeatCompleted).toBe(true);
         return expect(returnValue).toBe(true);
       });
+      it('should return true on the start', function() {
+        var returnValue, t;
+        t = new Tween({
+          duration: 1000,
+          delay: 200,
+          isIt: true,
+          onUpdate: function(p) {
+            return console.log(p);
+          }
+        });
+        t._setStartTime();
+        t._update(t._props.startTime + t._props.duration / 2);
+        returnValue = t._update(t._props.startTime - 1000);
+        expect(t.progress).toBeCloseTo(0, 5);
+        return expect(returnValue).toBe(true);
+      });
       it('should not call update method if timeline isnt active "-"', function() {
         var t;
         t = new Tween({
@@ -3943,7 +3959,7 @@
         t.play().reverse().pause().play();
         return expect(t._progressTime).toBe(progress);
       });
-      return it('should recalc _progressTime if previous state was "reverse"', function() {
+      it('should recalc _progressTime if previous state was "reverse"', function() {
         var duration, progress, t;
         duration = 1000;
         t = new Tween({
@@ -3953,6 +3969,30 @@
         progress = t._progressTime;
         t.play().reverse().play();
         return expect(t._progressTime).toBe(progress);
+      });
+      it('should return immediately if already playing', function() {
+        var t;
+        t = new Tween({
+          duration: 1000
+        });
+        t.play();
+        spyOn(t, '_subPlay');
+        t.play();
+        return expect(t._subPlay).not.toHaveBeenCalled();
+      });
+      return it('should run if already playing but ended', function(dfr) {
+        var duration, t;
+        duration = 50;
+        t = new Tween({
+          duration: duration
+        });
+        t.play();
+        return setTimeout(function() {
+          spyOn(t, '_subPlay');
+          t.play();
+          expect(t._subPlay).toHaveBeenCalled();
+          return dfr();
+        }, 2 * duration);
       });
     });
     describe('reverse method ->', function() {
@@ -3991,9 +4031,9 @@
         t.setProgress(.75);
         progress = t._progressTime;
         t.reverse();
-        return expect(t._progressTime).toBe(t._props.repeatTime - progress);
+        return expect(t._progressTime).toBe(progress);
       });
-      return it('should recalc _progressTime if previous state was "play"', function() {
+      it('should recalc _progressTime if previous state was "play"', function() {
         var duration, progress, t;
         duration = 1000;
         t = new Tween({
@@ -4003,6 +4043,30 @@
         progress = t._progressTime;
         t.play().reverse();
         return expect(t._progressTime).toBe(t._props.repeatTime - progress);
+      });
+      it('should return immediately if already reversing', function() {
+        var t;
+        t = new Tween({
+          duration: 1000
+        });
+        t.reverse();
+        spyOn(t, '_subPlay');
+        t.reverse();
+        return expect(t._subPlay).not.toHaveBeenCalled();
+      });
+      return it('should run if already reversing but ended', function(dfr) {
+        var duration, t;
+        duration = 50;
+        t = new Tween({
+          duration: duration
+        });
+        t.reverse();
+        return setTimeout(function() {
+          spyOn(t, '_subPlay');
+          t.reverse();
+          expect(t._subPlay).toHaveBeenCalled();
+          return dfr();
+        }, 2 * duration);
       });
     });
     describe('stop method', function() {

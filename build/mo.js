@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.163.2',
+	  revision: '0.163.3',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3583,6 +3583,9 @@
 	      */
 	      value: function play() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
+	        if (this._state === "play" && this._isRunning) {
+	          return false;
+	        }
 	        // if was playing reverse and paused or playing reverse right now,
 	        // flip the time progress in repeatTime bounds
 	        var isPausedReverse = this._state === "pause" && this._prevState === "reverse";
@@ -3607,8 +3610,15 @@
 	      */
 	      value: function reverse() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
+	        this.o.isIt && console.log(this._isRunning);
+	        if (this._state === "reverse" && this._isRunning) {
+	          return false;
+	        }
 	        // flip time progress in repeatTime bounds
-	        this._progressTime = this._props.repeatTime - this._progressTime;
+	        var isPlayPaused = this._state === "pause" && this._prevState === "play";
+	        if (isPlayPaused || this._state === "play") {
+	          this._progressTime = this._props.repeatTime - this._progressTime;
+	        }
 	        // play reversed
 	        this._props.isReversed = true;
 	        this._subPlay(shift);
@@ -3910,7 +3920,7 @@
 	        }
 
 	        this._prevTime = time;
-	        return this._isCompleted;
+	        return time >= p.endTime || time <= startPoint;
 	      },
 	      writable: true,
 	      enumerable: true,

@@ -42,9 +42,7 @@ class Tweener {
     this._startLoop();
   }
   
-  removeAll() {
-    this.tweens.length = 0;
-  }
+  removeAll() { this.tweens.length = 0; }
 
   remove(tween) {
     var index = (typeof tween === 'number')

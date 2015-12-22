@@ -156,6 +156,13 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe true
       expect(t._isRepeatCompleted).toBe true
       expect(returnValue).toBe true
+    it 'should return true on the start', ->
+      t = new Tween(duration: 1000, delay: 200, isIt: true, onUpdate:(p)-> console.log(p) )
+      t._setStartTime()
+      t._update t._props.startTime + t._props.duration/2
+      returnValue = t._update t._props.startTime - 1000
+      expect(t.progress).toBeCloseTo 0, 5
+      expect(returnValue).toBe true
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)
       t._setStartTime()
@@ -4490,6 +4497,23 @@ describe 'Tween ->', ->
         .reverse()
         .play()
       expect(t._progressTime).toBe progress
+    it 'should return immediately if already playing',->
+      t = new Tween duration: 1000
+      t.play()
+      spyOn t, '_subPlay'
+      t.play()
+      expect(t._subPlay).not.toHaveBeenCalled()
+
+    it 'should run if already playing but ended', (dfr)->
+      duration = 50
+      t = new Tween duration: duration
+      t.play()
+      setTimeout ->
+        spyOn t, '_subPlay'
+        t.play()
+        expect(t._subPlay).toHaveBeenCalled()
+        dfr()
+      , 2*duration
 
   describe 'reverse method ->', ->
     it 'should set _state to "reverse"',->
@@ -4517,7 +4541,7 @@ describe 'Tween ->', ->
       t.setProgress(.75)
       progress = t._progressTime
       t.reverse()
-      expect(t._progressTime).toBe t._props.repeatTime - progress
+      expect(t._progressTime).toBe progress
     it 'should recalc _progressTime if previous state was "play"',->
       duration = 1000
       t = new Tween duration: duration
@@ -4526,6 +4550,23 @@ describe 'Tween ->', ->
       t .play()
         .reverse()
       expect(t._progressTime).toBe t._props.repeatTime - progress
+    it 'should return immediately if already reversing',->
+      t = new Tween duration: 1000
+      t.reverse()
+      spyOn t, '_subPlay'
+      t.reverse()
+      expect(t._subPlay).not.toHaveBeenCalled()
+
+    it 'should run if already reversing but ended', (dfr)->
+      duration = 50
+      t = new Tween duration: duration
+      t.reverse()
+      setTimeout ->
+        spyOn t, '_subPlay'
+        t.reverse()
+        expect(t._subPlay).toHaveBeenCalled()
+        dfr()
+      , 2*duration
 
   describe 'stop method', ->
     it 'should call removeFromTweener method with self',->
