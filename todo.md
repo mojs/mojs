@@ -4,8 +4,7 @@
 
 ### TWEEN + TIMELINE:
   - add total onUpdate
-  - refator play's method params
-  - multiple complete callback fire issue when inside timeline
+  - nested speed tests
   - play/pause and others should not run if already running
    - timeline issue
 

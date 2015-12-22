@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.163.1',
+	  revision: '0.162.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3579,29 +3579,19 @@
 	        API method to run the Tween.
 	        @public
 	        @param  {Number} Shift time in milliseconds.
-	        @param  {Boolean} If should play in reverse.
 	        @return {Object} Self.
 	      */
 	      value: function play() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        var _isReversed = arguments[1] === undefined ? false : arguments[1];
 	        // if was playing reverse and paused or playing reverse right now,
 	        // flip the time progress in repeatTime bounds
 	        var isPausedReverse = this._state === "pause" && this._prevState === "reverse";
 	        if (isPausedReverse || this._state === "reverse") {
 	          this._progressTime = this._props.repeatTime - this._progressTime;
 	        }
-	        // reset previous time cache
-	        this._prevTime = null;
-	        // play in specified direction, forward is default
-	        this._props.isReversed = _isReversed;
-	        // if tween was ended, set progress to 0 if not, set to elapsed progress
-	        var procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
-	        // set start time regarding passed `shift` and calculated `procTime`
-	        this._playTime = performance.now();
-	        this._setStartTime(this._playTime - Math.abs(shift) - procTime);
-	        // add self to tweener = run
-	        t.add(this);this._setPlaybackState("play");
+	        this._props.isReversed = false;
+	        this._subPlay(shift);
+	        this._setPlaybackState("play");
 	        return this;
 	      },
 	      writable: true,
@@ -3617,16 +3607,12 @@
 	      */
 	      value: function reverse() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        // if was played and paused or playing right now
 	        // flip time progress in repeatTime bounds
-	        // var isPausedPlay = this._state === 'pause' && this._prevState === 'play';
-	        // if ( isPausedPlay || this._state === 'play' ) {
 	        this._progressTime = this._props.repeatTime - this._progressTime;
-	        // }
 	        // play reversed
-	        this.play(shift, true);
-	        // overwrite state
-	        this._setPlaybackState("reverse", true);
+	        this._props.isReversed = true;
+	        this._subPlay(shift);
+	        this._setPlaybackState("reverse");
 	        // reset previous time cache
 	        return this;
 	      },
@@ -3704,6 +3690,31 @@
 	          this._prevState = this._state;
 	        }
 	        this._state = state;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _subPlay: {
+	      /*
+	        Method to launch play. Origianlly was a part of play method.
+	        Divided to use in reverse method.
+	        @private
+	        @param  {Number} Shift time in milliseconds.
+	        @return {Object} Self.
+	      */
+	      value: function SubPlay() {
+	        var shift = arguments[0] === undefined ? 0 : arguments[0];
+	        // reset previous time cache
+	        this._prevTime = null;
+	        // if tween was ended, set progress to 0 if not, set to elapsed progress
+	        var procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
+	        // set start time regarding passed `shift` and calculated `procTime`
+	        this._playTime = performance.now();
+	        this._setStartTime(this._playTime - Math.abs(shift) - procTime);
+	        // add self to tweener = run
+	        t.add(this);
+	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,

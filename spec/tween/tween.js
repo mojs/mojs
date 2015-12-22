@@ -3888,13 +3888,6 @@
         t.play();
         return expect(t._props.isReversed).toBe(false);
       });
-      it('should set isReversed to true', function() {
-        var t;
-        t = new Tween;
-        t._props.isReversed = false;
-        t.play(0, true);
-        return expect(t._props.isReversed).toBe(true);
-      });
       it('should call the setStartTime method', function() {
         var t;
         t = new Tween;
@@ -3970,12 +3963,12 @@
         t.reverse();
         return expect(t._state).toBe('reverse');
       });
-      it('should call play method', function() {
+      it('should call _subPlay method', function() {
         var t;
         t = new Tween;
-        spyOn(t, 'play');
+        spyOn(t, '_subPlay');
         t.reverse(200);
-        return expect(t.play).toHaveBeenCalledWith(200, true);
+        return expect(t._subPlay).toHaveBeenCalledWith(200);
       });
       it('should return self', function() {
         var obj, t;

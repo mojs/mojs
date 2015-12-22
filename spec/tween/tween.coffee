@@ -4437,11 +4437,6 @@ describe 'Tween ->', ->
       t._props.isReversed = true
       t.play()
       expect(t._props.isReversed).toBe false
-    it 'should set isReversed to true',->
-      t = new Tween
-      t._props.isReversed = false
-      t.play(0, true)
-      expect(t._props.isReversed).toBe true
     it 'should call the setStartTime method',->
       t = new Tween
       spyOn t, '_setStartTime'
@@ -4502,11 +4497,11 @@ describe 'Tween ->', ->
       t = new Tween
       t.reverse()
       expect(t._state).toBe 'reverse'
-    it 'should call play method',->
+    it 'should call _subPlay method',->
       t = new Tween
-      spyOn t, 'play'
+      spyOn t, '_subPlay'
       t.reverse(200)
-      expect(t.play).toHaveBeenCalledWith 200, true
+      expect(t._subPlay).toHaveBeenCalledWith 200
     it 'should return self',->
       t = new Tween
       obj = t.reverse(200)

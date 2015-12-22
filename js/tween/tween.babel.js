@@ -7,28 +7,18 @@ var Tween = class Tween {
     API method to run the Tween.
     @public
     @param  {Number} Shift time in milliseconds.
-    @param  {Boolean} If should play in reverse.
     @return {Object} Self.
   */
-  play (shift = 0, _isReversed = false) {
+  play (shift = 0) {
     // if was playing reverse and paused or playing reverse right now,
     // flip the time progress in repeatTime bounds
     var isPausedReverse = this._state === 'pause' && this._prevState === 'reverse';
     if ( isPausedReverse || this._state === 'reverse' ) {
       this._progressTime = this._props.repeatTime - this._progressTime;
     }
-    // reset previous time cache
-    this._prevTime = null;
-    // play in specified direction, forward is default
-    this._props.isReversed = _isReversed;
-    // if tween was ended, set progress to 0 if not, set to elapsed progress
-    var procTime = ( this._progressTime >= this._props.repeatTime )
-      ? 0 : this._progressTime;
-    // set start time regarding passed `shift` and calculated `procTime`
-    this._playTime = performance.now();
-    this._setStartTime( this._playTime - Math.abs(shift) - procTime );
-    // add self to tweener = run
-    t.add(this); this._setPlaybackState('play');
+    this._props.isReversed = false;
+    this._subPlay(shift);
+    this._setPlaybackState('play');
     return this;
   }
   /*
@@ -38,16 +28,12 @@ var Tween = class Tween {
     @return {Object} Self.
   */
   reverse (shift = 0) {
-    // if was played and paused or playing right now
     // flip time progress in repeatTime bounds
-    // var isPausedPlay = this._state === 'pause' && this._prevState === 'play';
-    // if ( isPausedPlay || this._state === 'play' ) {
     this._progressTime = this._props.repeatTime - this._progressTime;
-    // }
     // play reversed
-    this.play( shift, true );
-    // overwrite state
-    this._setPlaybackState('reverse', true);
+    this._props.isReversed = true;
+    this._subPlay( shift );
+    this._setPlaybackState('reverse');
     // reset previous time cache
     return this;
   }
@@ -117,6 +103,26 @@ var Tween = class Tween {
     // if not overwrite, save previous state
     if ( !isOverwrite ) { this._prevState = this._state; }
     this._state = state;
+  }
+  /*
+    Method to launch play. Origianlly was a part of play method.
+    Divided to use in reverse method.
+    @private
+    @param  {Number} Shift time in milliseconds.
+    @return {Object} Self.
+  */
+  _subPlay (shift = 0) {
+    // reset previous time cache
+    this._prevTime = null;
+    // if tween was ended, set progress to 0 if not, set to elapsed progress
+    var procTime = ( this._progressTime >= this._props.repeatTime )
+      ? 0 : this._progressTime;
+    // set start time regarding passed `shift` and calculated `procTime`
+    this._playTime = performance.now();
+    this._setStartTime( this._playTime - Math.abs(shift) - procTime );
+    // add self to tweener = run
+    t.add(this);
+    return this;
   }
   /*
     Method do declare defaults by this._defaults object.
