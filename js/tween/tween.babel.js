@@ -236,7 +236,7 @@ var Tween = class Tween {
     } else if ( time >= p.endTime ) {
       // set progress time to repeat time + tiny cofficient
       // to make it extend further than the end time
-      this._progressTime = p.repeatTime + .000001;
+      this._progressTime = p.repeatTime + .00000000001;
     }
 
     // reverse time if _props.isReversed is set
@@ -290,8 +290,6 @@ var Tween = class Tween {
     @param {Number} Current update time.
   */
   _updateInActiveArea(time) {
-    // reset callback flags
-    this._isCompleted = false;
     
     var props         = this._props,
         delayDuration = props.delay + props.duration,
@@ -315,6 +313,9 @@ var Tween = class Tween {
       this._repeatComplete( time );
       return this._complete( time );
     }
+
+    // reset callback flags
+    this._isCompleted = false;
 
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
@@ -565,7 +566,7 @@ var Tween = class Tween {
     @private
     @param {Number} Progress to set.
   */
-  _start(time) {
+  _start (time) {
     if ( this._isStarted ) { return; }
     if (this._props.onStart != null && typeof this._props.onStart === 'function') {
       this._props.onStart.call(this, time > this._prevTime );
@@ -580,7 +581,7 @@ var Tween = class Tween {
     @private
     @param {Number} Current time.
   */
-  _complete(time) {
+  _complete (time) {
     if ( this._isCompleted ) { return; }
     // this._setProgress(progress, time);
     // this._repeatComplete(time);

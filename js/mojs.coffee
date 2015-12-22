@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.163.0', isDebug: true
+  revision:   '0.163.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -59,14 +59,6 @@ mojs.delta = mojs.h.delta
 # tm
 #   .add(tw)
 #   # .play()
-
-# # tw._setProp( 'isReversed', true )
-
-# # setTimeout =>
-# #   tw
-# #     # .setProgress( 1 )
-# #     .play( 0 );
-# # , 1000
 
 # rangeSlider.oninput = (e)->
 #   proc = (1*rangeSlider.value)/10000

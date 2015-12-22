@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.163.0',
+	  revision: '0.163.1',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3853,7 +3853,7 @@
 	        } else if (time >= p.endTime) {
 	          // set progress time to repeat time + tiny cofficient
 	          // to make it extend further than the end time
-	          this._progressTime = p.repeatTime + 0.000001;
+	          this._progressTime = p.repeatTime + 1e-11;
 	        }
 
 	        // reverse time if _props.isReversed is set
@@ -3912,9 +3912,6 @@
 	        @param {Number} Current update time.
 	      */
 	      value: function UpdateInActiveArea(time) {
-	        // reset callback flags
-	        this._isCompleted = false;
-
 	        var props = this._props,
 	            delayDuration = props.delay + props.duration,
 	            startPoint = props.startTime - props.delay,
@@ -3937,6 +3934,9 @@
 	          this._repeatComplete(time);
 	          return this._complete(time);
 	        }
+
+	        // reset callback flags
+	        this._isCompleted = false;
 
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {

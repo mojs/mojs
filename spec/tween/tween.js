@@ -1,7 +1,9 @@
 (function() {
-  var Tween, easing, h, tweener;
+  var Timeline, Tween, easing, h, tweener;
 
   Tween = window.mojs.Tween;
+
+  Timeline = window.mojs.Timeline;
 
   easing = window.mojs.easing;
 
@@ -511,6 +513,7 @@
         updateDirection = null;
         t = new Tween({
           repeat: 1,
+          isIt: true,
           duration: duration,
           onUpdate: function(p, ep, isForward) {
             updateDirection = isForward;
@@ -4830,7 +4833,7 @@
         return expect(tw._props.startTime).toBe(time - 200);
       });
     });
-    return describe('setProgress method ->', function() {
+    describe('setProgress method ->', function() {
       it('should call _setStartTime if there is no this._props.startTime', function() {
         var t;
         t = new Tween;
@@ -4884,6 +4887,70 @@
         t.play().pause();
         t.setProgress(.5);
         return expect(t._playTime).toBe(null);
+      });
+    });
+    return describe('onComplete callback ->', function() {
+      return it('should be called just once when finished and inside Timeline ->', function() {
+        var completeCnt, completeDirection, debug, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, tm, tw, updateDirection, updateValue, zeroCnt;
+        zeroCnt = 0;
+        oneCnt = 0;
+        startCnt = 0;
+        completeCnt = 0;
+        repeatCnt = 0;
+        repeatStartCnt = 0;
+        firstUpdateCnt = 0;
+        firstUpdateDirection = null;
+        startDirection = null;
+        completeDirection = null;
+        repeatStartDirection = null;
+        repeatCompleteDirection = null;
+        duration = 50;
+        updateValue = null;
+        updateDirection = null;
+        debug = false;
+        tm = new Timeline;
+        tw = new Tween({
+          duration: duration,
+          onUpdate: function(p, ep, isForward) {
+            debug && console.log("ONUPDATE " + p);
+            updateDirection = isForward;
+            updateValue = p;
+            (p === 0) && zeroCnt++;
+            return (p === 1) && oneCnt++;
+          },
+          onRepeatComplete: function(isForward) {
+            debug && console.log("REPEAT COMPLETE " + isForward);
+            repeatCompleteDirection = isForward;
+            return repeatCnt++;
+          },
+          onRepeatStart: function(isForward) {
+            debug && console.log("REPEAT START " + isForward);
+            repeatStartDirection = isForward;
+            return repeatStartCnt++;
+          },
+          onStart: function(isForward) {
+            debug && console.log("START " + isForward);
+            startDirection = isForward;
+            return startCnt++;
+          },
+          onComplete: function(isForward) {
+            debug && console.log("COMPLETE " + isForward);
+            completeDirection = isForward;
+            return completeCnt++;
+          },
+          onFirstUpdate: function(isForward) {
+            debug && console.log("FIRST UPDATE " + isForward);
+            firstUpdateDirection = isForward;
+            return firstUpdateCnt++;
+          }
+        });
+        tm.add(tw);
+        tm.setProgress(0);
+        tm.setProgress(.5);
+        tm.setProgress(.9);
+        tm.setProgress(1);
+        tm.setProgress(.9);
+        return expect(completeCnt).toBe(2);
       });
     });
   });

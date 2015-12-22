@@ -1,4 +1,5 @@
 Tween    = window.mojs.Tween
+Timeline = window.mojs.Timeline
 easing   = window.mojs.easing
 h        = window.mojs.h
 tweener  = window.mojs.tweener
@@ -253,7 +254,6 @@ describe 'Tween ->', ->
       t._playTime = null
       t._update time
       expect(t._prevTime).toBe time
-
   
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -307,6 +307,7 @@ describe 'Tween ->', ->
       duration = 50; updateValue = null; updateDirection = null
       t = new Tween
         repeat:     1
+        isIt:       true
         duration:   duration
         onUpdate:(p, ep, isForward)->
           updateDirection = isForward
@@ -428,6 +429,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
 
+      # end
       t._update t._props.startTime + timeShift + (duration)
       expect(updateValue).toBe(1)
       expect(updateDirection).toBe(true)
@@ -5148,7 +5150,54 @@ describe 'Tween ->', ->
       t.setProgress(.5)
       expect(t._playTime).toBe null
 
+  describe 'onComplete callback ->', ->
+    it 'should be called just once when finished and inside Timeline ->', ->
+      zeroCnt = 0;    oneCnt = 0
+      startCnt = 0;   completeCnt = 0
+      repeatCnt = 0;  repeatStartCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
+      startDirection = null; completeDirection = null
+      repeatStartDirection = null; repeatCompleteDirection = null
+      duration = 50; updateValue = null; updateDirection = null
+      
+      debug = false
+      tm = new Timeline
+      tw = new Tween
+        duration:   duration
+        onUpdate:(p, ep, isForward)->
+          debug and console.log "ONUPDATE #{p}"
+          updateDirection = isForward
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:(isForward)->
+          debug and console.log "REPEAT COMPLETE #{isForward}"
+          repeatCompleteDirection = isForward
+          repeatCnt++
+        onRepeatStart:(isForward)->
+          debug and console.log "REPEAT START #{isForward}"
+          repeatStartDirection = isForward
+          repeatStartCnt++
+        onStart:(isForward)->
+          debug and console.log "START #{isForward}"
+          startDirection = isForward
+          startCnt++
+        onComplete:(isForward)->
+          debug and console.log "COMPLETE #{isForward}"
+          completeDirection = isForward
+          completeCnt++
+        onFirstUpdate:(isForward)->
+          debug and console.log "FIRST UPDATE #{isForward}"
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
+      tm.add tw
 
+      tm.setProgress(0)
+      tm.setProgress(.5)
+      tm.setProgress(.9)
+      tm.setProgress(1)
+      tm.setProgress(.9)
 
+      expect(completeCnt).toBe 2
 
