@@ -4488,7 +4488,7 @@ describe 'Tween ->', ->
       progress = t._progressTime
       t
         .play()
-        .reverse()
+        .playBackward()
         .pause()
         .play()
       expect(t._progressTime).toBe progress
@@ -4499,7 +4499,7 @@ describe 'Tween ->', ->
       progress = t._progressTime
       t
         .play()
-        .reverse()
+        .playBackward()
         .play()
       expect(t._progressTime).toBe progress
     it 'should return immediately if already playing',->
@@ -4523,20 +4523,20 @@ describe 'Tween ->', ->
   describe 'reverse method ->', ->
     it 'should set _state to "reverse"',->
       t = new Tween
-      t.reverse()
+      t.playBackward()
       expect(t._state).toBe 'reverse'
     it 'should call _subPlay method',->
       t = new Tween
       spyOn t, '_subPlay'
-      t.reverse(200)
+      t.playBackward(200)
       expect(t._subPlay).toHaveBeenCalledWith 200
     it 'should return self',->
       t = new Tween
-      obj = t.reverse(200)
+      obj = t.playBackward(200)
       expect(obj).toBe t
     it 'should overwrite play state',->
       t = new Tween
-      t.reverse(200)
+      t.playBackward(200)
       expect(t._prevState).toBe 'stop'
       expect(t._state).toBe 'reverse'
     # it 'should recalc _progressTime if previous state was "play" + "pause"',->
@@ -4545,7 +4545,7 @@ describe 'Tween ->', ->
       t = new Tween duration: duration
       t.setProgress(.75)
       progress = t._progressTime
-      t.reverse()
+      t.playBackward()
       expect(t._progressTime).toBe progress
     it 'should recalc _progressTime if previous state was "play"',->
       duration = 1000
@@ -4553,22 +4553,22 @@ describe 'Tween ->', ->
       t.setProgress(.75)
       progress = t._progressTime
       t .play()
-        .reverse()
+        .playBackward()
       expect(t._progressTime).toBe t._props.repeatTime - progress
     it 'should return immediately if already reversing',->
       t = new Tween duration: 1000
-      t.reverse()
+      t.playBackward()
       spyOn t, '_subPlay'
-      t.reverse()
+      t.playBackward()
       expect(t._subPlay).not.toHaveBeenCalled()
 
     it 'should run if already reversing but ended', (dfr)->
       duration = 50
       t = new Tween duration: duration
-      t.reverse()
+      t.playBackward()
       setTimeout ->
         spyOn t, '_subPlay'
-        t.reverse()
+        t.playBackward()
         expect(t._subPlay).toHaveBeenCalled()
         dfr()
       , 2*duration

@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.163.4',
+	  revision: '0.164.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3601,14 +3601,14 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    reverse: {
+	    playBackward: {
 	      /*
 	        API method to run the Tween in reverse.
 	        @public
 	        @param  {Number} Shift time in milliseconds.
 	        @return {Object} Self.
 	      */
-	      value: function reverse() {
+	      value: function playBackward() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
 	        if (this._state === "reverse" && this._isRunning) {
 	          return false;
@@ -3882,9 +3882,9 @@
 	          // to make it extend further than the end time
 	          this._progressTime = p.repeatTime + 1e-11;
 	        }
-
 	        // reverse time if _props.isReversed is set
 	        if (p.isReversed) {
+	          // console.log(this._progressTime)
 	          time = p.endTime - this._progressTime;
 	        }
 	        // We need to know what direction we are heading in with this tween,

@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.163.4', isDebug: true
+  revision:   '0.164.0', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -39,24 +39,24 @@ mojs.delta = mojs.h.delta
 #     delay: 3000,
 #     # speed: .5,
 #     isIt1: 1,
-#     onUpdate:(p)-> console.log(p)
-#   # tm0 = new mojs.Timeline speed: 1, delay: 200
+#     # onUpdate:(p)-> console.log(p)
+#   # tm0 = new mojs.Timeline speed: .5, delay: 200
 
 #   tw = new mojs.Tween
 #     # repeat: 3
 #     # yoyo: true
 #     # isIt: true
 #     # delay: 500
-#     speed:    2
+#     # speed:    2
 #     duration: 1000
 #     isIt2: 1
 #     onStart:->
 #       console.log "START"
-#       console.time 'duration'
-#       console.timeEnd 'delay'
-#     onComplete:->
 #       console.timeEnd 'duration'
+#     onComplete:->
+#       console.timeEnd 'delay'
 #       console.log "COMPLETE"
+#       console.time 'duration'
 #     onRepeatStart:-> console.log "REPEAT START"
 #     onRepeatComplete:-> console.log "REPEAT COMPLETE"
 #     onFirstUpdate:-> console.log "FIRST UPDATE"
@@ -64,10 +64,10 @@ mojs.delta = mojs.h.delta
 #       mojs.h.style( obj, 'transform', "translate3d(#{400*pe}px, 0, 0)" )
 #       # console.log "TWEEN ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
 
-#   play.addEventListener 'click', ->
+#   play.addEventListener 'click', -> tm.play()
+#   reverse.addEventListener 'click', ->
 #     console.time 'delay'
-#     tm.play()
-#   reverse.addEventListener 'click', -> tm.reverse()
+#     tm.reverse()
 #   pause.addEventListener 'click', -> tm.pause()
 #   stop.addEventListener 'click', -> tm.stop()
 #   stop.addEventListener 'click', -> tm.stop()
@@ -76,7 +76,7 @@ mojs.delta = mojs.h.delta
 #     .add(tw)
 #     # .play()
 #   # tm.add tm0
-
+#   # tm.append new mojs.Tween duration: 4000
 #   rangeSlider.oninput = (e)->
 #     proc = (1*rangeSlider.value)/10000
 #     tm.setProgress proc

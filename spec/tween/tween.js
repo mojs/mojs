@@ -3963,7 +3963,7 @@
         });
         t.setProgress(.75);
         progress = t._progressTime;
-        t.play().reverse().pause().play();
+        t.play().playBackward().pause().play();
         return expect(t._progressTime).toBe(progress);
       });
       it('should recalc _progressTime if previous state was "reverse"', function() {
@@ -3974,7 +3974,7 @@
         });
         t.setProgress(.75);
         progress = t._progressTime;
-        t.play().reverse().play();
+        t.play().playBackward().play();
         return expect(t._progressTime).toBe(progress);
       });
       it('should return immediately if already playing', function() {
@@ -4006,26 +4006,26 @@
       it('should set _state to "reverse"', function() {
         var t;
         t = new Tween;
-        t.reverse();
+        t.playBackward();
         return expect(t._state).toBe('reverse');
       });
       it('should call _subPlay method', function() {
         var t;
         t = new Tween;
         spyOn(t, '_subPlay');
-        t.reverse(200);
+        t.playBackward(200);
         return expect(t._subPlay).toHaveBeenCalledWith(200);
       });
       it('should return self', function() {
         var obj, t;
         t = new Tween;
-        obj = t.reverse(200);
+        obj = t.playBackward(200);
         return expect(obj).toBe(t);
       });
       it('should overwrite play state', function() {
         var t;
         t = new Tween;
-        t.reverse(200);
+        t.playBackward(200);
         expect(t._prevState).toBe('stop');
         return expect(t._state).toBe('reverse');
       });
@@ -4037,7 +4037,7 @@
         });
         t.setProgress(.75);
         progress = t._progressTime;
-        t.reverse();
+        t.playBackward();
         return expect(t._progressTime).toBe(progress);
       });
       it('should recalc _progressTime if previous state was "play"', function() {
@@ -4048,7 +4048,7 @@
         });
         t.setProgress(.75);
         progress = t._progressTime;
-        t.play().reverse();
+        t.play().playBackward();
         return expect(t._progressTime).toBe(t._props.repeatTime - progress);
       });
       it('should return immediately if already reversing', function() {
@@ -4056,9 +4056,9 @@
         t = new Tween({
           duration: 1000
         });
-        t.reverse();
+        t.playBackward();
         spyOn(t, '_subPlay');
-        t.reverse();
+        t.playBackward();
         return expect(t._subPlay).not.toHaveBeenCalled();
       });
       return it('should run if already reversing but ended', function(dfr) {
@@ -4067,10 +4067,10 @@
         t = new Tween({
           duration: duration
         });
-        t.reverse();
+        t.playBackward();
         return setTimeout(function() {
           spyOn(t, '_subPlay');
-          t.reverse();
+          t.playBackward();
           expect(t._subPlay).toHaveBeenCalled();
           return dfr();
         }, 2 * duration);

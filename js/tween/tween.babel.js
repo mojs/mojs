@@ -28,7 +28,7 @@ var Tween = class Tween {
     @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
   */
-  reverse (shift = 0) {
+  playBackward (shift = 0) {
     if ( this._state === 'reverse' && this._isRunning)  { return false; }
     // flip time progress in repeatTime bounds
     var isPlayPaused = this._state === 'pause' && this._prevState === 'play';
@@ -256,9 +256,9 @@ var Tween = class Tween {
       // to make it extend further than the end time
       this._progressTime = p.repeatTime + .00000000001;
     }
-
     // reverse time if _props.isReversed is set
     if ( p.isReversed ) {
+      // console.log(this._progressTime)
       time = p.endTime - this._progressTime;
     }
     // We need to know what direction we are heading in with this tween,

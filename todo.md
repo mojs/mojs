@@ -3,11 +3,11 @@
 
 
 ### TWEEN + TIMELINE:
-  - nested speed tests
-  - reverse delay
+  - rename reverse to playBackward
   - remove missed points set
   - performance optimizations
   - add total onUpdate
+  - add playFlipped method?
 
 - fix coverage
 - release
