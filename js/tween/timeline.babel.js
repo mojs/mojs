@@ -91,8 +91,9 @@ class Timeline extends Tween {
   */
   _setProgress (progress, time) {
     super._setProgress(progress, time);
-    // cover
-    var timeToTimelines = this._props.startTime + progress*this._props.time,
+    // console.log(progress)
+    // cover !!!
+    var timeToTimelines = this._props.startTime + progress*(this._props.duration),
         i = this._timelines.length;
     while(i--) { this._timelines[i]._update( timeToTimelines ); }
   }

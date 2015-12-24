@@ -171,13 +171,20 @@
         expect(t._isRepeatCompleted).toBe(false);
         return expect(t._isStarted).toBe(false);
       });
-      return it('should set _playTime', function() {
+      it('should set _playTime', function() {
         var now, t;
         t = new Tween;
         t._setStartTime();
         now = performance.now();
         expect(t._playTime).toBeDefined();
         return expect(Math.abs(t._playTime - now)).not.toBeGreaterThan(10);
+      });
+      return it('should set _playTime to passed time', function() {
+        var now, t;
+        t = new Tween;
+        now = performance.now() + 50;
+        t._setStartTime(now);
+        return expect(t._playTime).toBe(now);
       });
     });
     describe('_update method ->', function() {

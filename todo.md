@@ -3,8 +3,11 @@
 
 
 ### TWEEN + TIMELINE:
-  - add total onUpdate
   - nested speed tests
+  - reverse delay
+  - remove missed points set
+  - performance optimizations
+  - add total onUpdate
 
 - fix coverage
 - release

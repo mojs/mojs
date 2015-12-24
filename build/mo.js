@@ -2415,7 +2415,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.163.3',
+	  revision: '0.163.4',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  Bit: __webpack_require__(3),
@@ -3610,7 +3610,6 @@
 	      */
 	      value: function reverse() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        this.o.isIt && console.log(this._isRunning);
 	        if (this._state === "reverse" && this._isRunning) {
 	          return false;
 	        }
@@ -3720,8 +3719,8 @@
 	        // if tween was ended, set progress to 0 if not, set to elapsed progress
 	        var procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
 	        // set start time regarding passed `shift` and calculated `procTime`
-	        this._playTime = performance.now();
-	        this._setStartTime(this._playTime - Math.abs(shift) - procTime);
+	        // this._playTime = performance.now();
+	        this._setStartTime(performance.now() - Math.abs(shift) - procTime);
 	        // add self to tweener = run
 	        t.add(this);
 	        return this;
@@ -3827,16 +3826,19 @@
 	        // reset flags
 	        this._isCompleted = false;this._isRepeatCompleted = false;
 	        this._isStarted = false;
-	        // set play time to the current moment
-	        this._playTime = performance.now();
 	        // get time of the start
-	        time = time == null ? this._playTime : time;
+	        time = time == null ? performance.now() : time;
+	        // set play time to the time
 	        var shiftTime = this._props.shiftTime || 0;
 	        // calculate bounds
 	        // - negativeShift is negative delay in options hash
 	        // - shift time is shift of the parent
 	        p.startTime = time + p.delay + this._negativeShift + shiftTime;
 	        p.endTime = p.startTime + p.repeatTime - p.delay;
+	        this._playTime = time;
+
+	        // var name = ( this.o.isIt1 ) ? 'Timeline' : 'Tween'
+	        // console.log(`${name}:  startTime: ${p.startTime}, endTime: ${p.endTime}, playTime: ${this._playTime}, shift: ${shiftTime}, time: ${time}`);
 
 	        return this;
 	      },
@@ -3862,8 +3864,12 @@
 	        // new time regarding speed
 	        if (p.speed && this._playTime) {
 	          // play point + ( speed * delta )
+	          // console.log(time - this._playTime, this._playTime, time)
 	          time = this._playTime + p.speed * (time - this._playTime);
 	        }
+
+	        var name = this.o.isIt1 ? "Timeline" : "Tween";
+	        // console.log(`${name}:  update: ${time}`);
 
 	        // if in active area and not ended - save progress time
 	        if (time > startPoint && time < p.endTime) {
@@ -4588,8 +4594,9 @@
 	      */
 	      value: function SetProgress(progress, time) {
 	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_setProgress", this).call(this, progress, time);
-	        // cover
-	        var timeToTimelines = this._props.startTime + progress * this._props.time,
+	        // console.log(progress)
+	        // cover !!!
+	        var timeToTimelines = this._props.startTime + progress * this._props.duration,
 	            i = this._timelines.length;
 	        while (i--) {
 	          this._timelines[i]._update(timeToTimelines);

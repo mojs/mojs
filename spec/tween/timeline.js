@@ -175,8 +175,8 @@
         t._setStartTime();
         progress = .75;
         t._setProgress(progress, 2);
-        expect(tw1._update).toHaveBeenCalledWith(t._props.startTime + progress * t._props.time);
-        return expect(tw2._update).toHaveBeenCalledWith(t._props.startTime + progress * t._props.time);
+        expect(tw1._update).toHaveBeenCalledWith(t._props.startTime + progress * t._props.duration);
+        return expect(tw2._update).toHaveBeenCalledWith(t._props.startTime + progress * t._props.duration);
       });
     });
     describe('_setStartTime method ->', function() {

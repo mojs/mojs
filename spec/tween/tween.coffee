@@ -97,13 +97,18 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe false
       expect(t._isRepeatCompleted).toBe false
       expect(t._isStarted)  .toBe false
-
     it 'should set _playTime',->
       t = new Tween
       t._setStartTime()
       now = performance.now()
       expect( t._playTime ).toBeDefined()
       expect( Math.abs( t._playTime - now ) ).not.toBeGreaterThan 10
+
+    it 'should set _playTime to passed time',->
+      t = new Tween
+      now = performance.now() + 50
+      t._setStartTime(now)
+      expect( t._playTime ).toBe now
   
   describe '_update method ->', ->
     it 'should update progress', ->
