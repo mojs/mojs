@@ -3,11 +3,10 @@
 
 
 ### TWEEN + TIMELINE:
-  - rename reverse to playBackward
   - remove missed points set
-  - performance optimizations
+  - easing for timeline
+  - performance owptimizations
   - add total onUpdate
-  - add playFlipped method?
 
 - fix coverage
 - release

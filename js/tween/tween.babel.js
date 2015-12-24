@@ -216,9 +216,6 @@ var Tween = class Tween {
     p.endTime   = p.startTime + p.repeatTime - p.delay;
     this._playTime = time;
 
-    // var name = ( this.o.isIt1 ) ? 'Timeline' : 'Tween'
-    // console.log(`${name}:  startTime: ${p.startTime}, endTime: ${p.endTime}, playTime: ${this._playTime}, shift: ${shiftTime}, time: ${time}`);
-
     return this;
   }
   /*
@@ -234,17 +231,14 @@ var Tween = class Tween {
     var p = this._props,
         startPoint = p.startTime - p.delay;
 
+    this.o.isIt && this._visualizeProgress( time );
+
     // if speed param was defined - calculate
     // new time regarding speed
     if ( p.speed && this._playTime ) {
       // play point + ( speed * delta )
-      // console.log(time - this._playTime, this._playTime, time)
       time = this._playTime + ( p.speed * ( time - this._playTime ) );
     }
-
-    var name = ( this.o.isIt1 ) ? 'Timeline' : 'Tween'
-    // console.log(`${name}:  update: ${time}`);
-
     // if in active area and not ended - save progress time
     if ( time > startPoint && time < p.endTime ) {
       this._progressTime = time - startPoint;
@@ -258,7 +252,6 @@ var Tween = class Tween {
     }
     // reverse time if _props.isReversed is set
     if ( p.isReversed ) {
-      // console.log(this._progressTime)
       time = p.endTime - this._progressTime;
     }
     // We need to know what direction we are heading in with this tween,
@@ -354,7 +347,7 @@ var Tween = class Tween {
           this._start( time );
           this._repeatStart( time );
           this._firstUpdate( time );
-          this._setProgress( 0, time );
+          // this._setProgress( 0, time );
         }
         if ( time < this._prevTime ) {
           this._complete( time );
@@ -382,7 +375,7 @@ var Tween = class Tween {
         // ^!    ^here ^here           
         if ( prevT >= 0 ) {
           this._repeatStart(time);
-          this._setProgress( yoyoZero , time);
+          // this._setProgress( yoyoZero , time);
         }
       }
 
@@ -408,7 +401,7 @@ var Tween = class Tween {
         // |=====|=====|=====| <<<
         //       ^here ^here ^not here     
         if ( this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
-          this._setProgress( 0, time );
+          // this._setProgress( 0, time );
           this._repeatStart( time );
         }
         // if on very end edge
@@ -431,7 +424,9 @@ var Tween = class Tween {
           this._repeatComplete(time);
         } else {
           this._repeatComplete(time);
-          this._setProgress(yoyoOne, time);
+          if ( yoyoOne !== 0 ) {
+            this._setProgress(yoyoOne, time);
+          }
         }
       }
 
@@ -448,7 +443,7 @@ var Tween = class Tween {
         //            ^1  ^2
         if ( T === TPrevValue && T > 0 ) {
           this._repeatStart(time);
-          this._setProgress(yoyoZero, time);
+          // this._setProgress(yoyoZero, time);
         }
       }
 
@@ -509,6 +504,7 @@ var Tween = class Tween {
     this.easedProgress = this._props.easing(this.progress);
     if ( this._props.prevEasedProgress !== this.easedProgress ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
+        this.o.isIt && console.log(`********** ONUPDATE ${p} **********`);
         this.onUpdate( this.easedProgress, this.progress, time > this._prevTime );
       }
     }
@@ -587,6 +583,7 @@ var Tween = class Tween {
   _start (time) {
     if ( this._isStarted ) { return; }
     if (this._props.onStart != null && typeof this._props.onStart === 'function') {
+      this.o.isIt && console.log('********** START **********');
       this._props.onStart.call(this, time > this._prevTime );
     }
     this._isCompleted = false; this._isStarted = true;
@@ -604,6 +601,7 @@ var Tween = class Tween {
     // this._setProgress(progress, time);
     // this._repeatComplete(time);
     if (this._props.onComplete != null && typeof this._props.onComplete === 'function') {
+      this.o.isIt && console.log('********** COMPLETE **********');
       this._props.onComplete.call(this, time > this._prevTime );
     }
     this._isCompleted = true; this._isStarted = false;
@@ -619,6 +617,7 @@ var Tween = class Tween {
   _firstUpdate(time) {
     if ( this._isFirstUpdate ) { return; }
     if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
+      this.o.isIt && console.log('********** FIRST UPDATE **********');
       this._props.onFirstUpdate.call( this, time > this._prevTime );
     }
     this._isFirstUpdate = true;
@@ -632,6 +631,7 @@ var Tween = class Tween {
   _repeatComplete(time) {
     if (this._isRepeatCompleted) { return; }
     if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
+      this.o.isIt && console.log('********** REPEAT COMPLETE **********');
       this._props.onRepeatComplete.call( this, time > this._prevTime );
     }
     this._isRepeatCompleted = true;
@@ -645,45 +645,46 @@ var Tween = class Tween {
   _repeatStart(time) {
     if (this._isRepeatStart) { return; }
     if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
+      this.o.isIt && console.log('********** REPEAT START **********');
       this._props.onRepeatStart.call( this, time > this._prevTime );
     }
     this._isRepeatStart = true;
   }
+  
+  _visualizeProgress(time) {
+    var str = '|',
+        procStr = ' ',
+        p = this._props,
+        proc = p.startTime - p.delay;
 
-  // _visualizeProgress(time) {
-  //   var str = '|',
-  //       procStr = ' ',
-  //       p = this._props,
-  //       proc = p.startTime - p.delay;
+    while ( proc < p.endTime ) {
+      if (p.delay > 0 ) {
+        var newProc = proc + p.delay;
+        if ( time > proc && time < newProc ) {
+          procStr += ' ^ ';
+        } else {
+          procStr += '   ';
+        }
+        proc = newProc;
+        str  += '---';
+      }
+      var newProc = proc + p.duration;
+      if ( time > proc && time < newProc ) {
+        procStr += '  ^   ';
+      } else if (time === proc) {
+        procStr += '^     ';
+      } else if (time === newProc) {
+        procStr += '    ^ ';
+      } else {
+        procStr += '      ';
+      }
+      proc = newProc;
+      str += '=====|';
+    }
 
-  //   while ( proc < p.endTime ) {
-  //     if (p.delay > 0 ) {
-  //       var newProc = proc + p.delay;
-  //       if ( time > proc && time < newProc ) {
-  //         procStr += ' ^ ';
-  //       } else {
-  //         procStr += '   ';
-  //       }
-  //       proc = newProc;
-  //       str  += '---';
-  //     }
-  //     var newProc = proc + p.duration;
-  //     if ( time > proc && time < newProc ) {
-  //       procStr += '  ^   ';
-  //     } else if (time === proc) {
-  //       procStr += '^     ';
-  //     } else if (time === newProc) {
-  //       procStr += '    ^ ';
-  //     } else {
-  //       procStr += '      ';
-  //     }
-  //     proc = newProc;
-  //     str += '=====|';
-  //   }
-
-  //   console.log(str);
-  //   console.log(procStr);
-  // }
+    console.log(str);
+    console.log(procStr);
+  }
 }
 
 export default Tween;

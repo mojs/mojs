@@ -162,7 +162,7 @@ describe 'Tween ->', ->
       expect(t._isRepeatCompleted).toBe true
       expect(returnValue).toBe true
     it 'should return true on the start', ->
-      t = new Tween(duration: 1000, delay: 200, isIt: true, onUpdate:(p)-> console.log(p) )
+      t = new Tween(duration: 1000, delay: 200, onUpdate:(p)-> console.log(p) )
       t._setStartTime()
       t._update t._props.startTime + t._props.duration/2
       returnValue = t._update t._props.startTime - 1000
@@ -374,7 +374,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -398,7 +398,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -423,7 +423,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -447,7 +447,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -531,7 +531,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -555,7 +555,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -580,7 +580,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -604,7 +604,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -629,7 +629,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -712,7 +712,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -736,7 +736,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -761,7 +761,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -778,14 +778,13 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
 
-
       t._update t._props.startTime + timeShift + (duration/2)
       expect(updateValue).toBeCloseTo(.5, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -809,7 +808,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -834,7 +833,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(3)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -858,7 +857,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(3)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -875,14 +874,14 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
 
-
+      # end
       t._update t._props.startTime + timeShift + (duration)
       expect(updateValue).toBe(1)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(3)
-      expect(zeroCnt).toBe(3)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -899,14 +898,14 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
 
-
+      # repeat the end
       t._update t._props.startTime + timeShift + (duration) + delay/2
       expect(updateValue).toBe(1)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(3)
-      expect(zeroCnt).toBe(3)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -922,7 +921,6 @@ describe 'Tween ->', ->
 
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
-
 
     it 'should be called with 1 and 0 on each repeat period if in delay', ()->
       zeroCnt = 0; oneCnt = 0
@@ -990,7 +988,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -1014,7 +1012,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -1038,8 +1036,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -1062,8 +1060,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -1086,8 +1084,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -1111,8 +1109,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -1135,9 +1133,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(2)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
 
@@ -1153,14 +1151,14 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
 
-
+      # end
       t._update t._props.startTime + timeShift + (duration) + delay/2
       expect(updateValue).toBe(1)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -1183,8 +1181,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(3)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -1388,7 +1386,6 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(false)
 
-
       timeShift = 0
       t._update t._props.startTime + timeShift
       expect(updateValue).toBe(0)
@@ -1551,9 +1548,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(2)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(false)
 
@@ -1575,8 +1572,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(false)
@@ -1599,9 +1596,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(2)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(false)
 
@@ -1624,9 +1621,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
-      
+      expect(zeroCnt).toBe(1)
+
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(false)
 
@@ -1648,8 +1645,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -1672,8 +1669,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(4)
       expect(repeatStartDirection).toBe(false)
@@ -1696,8 +1693,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(4)
       expect(repeatStartDirection).toBe(false)
@@ -2149,7 +2146,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(false)
 
-      # repeat the last period
+  #     # repeat the last period
       t._update t._props.startTime + timeShift - duration - 10
       expect(updateValue).toBe(0)
       expect(updateDirection).toBe(false)
@@ -2267,7 +2264,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -2291,7 +2288,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2316,7 +2313,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2339,7 +2336,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2423,7 +2420,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -2447,7 +2444,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -2472,7 +2469,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2496,7 +2493,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2513,7 +2510,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
 
-
+      # end
       timeShift = 2*duration
       t._update t._props.startTime + timeShift + gap
       expect(updateValue).toBeCloseTo(0)
@@ -2521,7 +2518,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2605,7 +2602,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -2629,7 +2626,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
       
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -2654,7 +2651,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2678,7 +2675,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2701,7 +2698,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
       
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2726,7 +2723,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -2750,7 +2747,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -2774,7 +2771,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -2798,7 +2795,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(2)
-      expect(zeroCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -2883,7 +2880,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(0)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -2907,7 +2904,7 @@ describe 'Tween ->', ->
 
       expect(t._wasUknownUpdate).toBe(false)
       expect(oneCnt).toBe(1)
-      expect(zeroCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(true)
@@ -2931,8 +2928,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2955,8 +2952,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -2979,8 +2976,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(true)
@@ -3004,8 +3001,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -3028,9 +3025,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(1)
-      
+      expect(zeroCnt).toBe(1)
+
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
 
@@ -3046,14 +3043,14 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(true)
 
-
+      # end
       t._update t._props.startTime + timeShift + (duration) + delay/2
       expect(updateValue).toBe(1)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -3076,8 +3073,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -3280,7 +3277,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(false)
 
-
+      # end
       timeShift = 0
       t._update t._props.startTime + timeShift
       expect(updateValue).toBe(0)
@@ -3305,7 +3302,7 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(1)
       expect(firstUpdateDirection).toBe(false)
 
-      # repeat the latest period
+      # repeat the last period
       t._update t._props.startTime + timeShift - duration/2
       expect(updateValue).toBe(0)
       expect(updateDirection).toBe(false)
@@ -3371,9 +3368,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(null)
 
       expect(t._wasUknownUpdate).toBe(true)
-      expect(zeroCnt).toBe(0)
       expect(oneCnt).toBe(0)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(0)
       expect(repeatStartDirection).toBe(null)
 
@@ -3395,9 +3392,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(0)
       expect(oneCnt).toBe(1)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(0)
       expect(repeatStartDirection).toBe(null)
 
@@ -3419,9 +3416,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(0)
       expect(oneCnt).toBe(1)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(0)
       expect(repeatStartDirection).toBe(null)
 
@@ -3444,9 +3441,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(1)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(false)
 
@@ -3468,9 +3465,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(1)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(false)
 
@@ -3492,9 +3489,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(1)
-      
+      expect(zeroCnt).toBe(0)
+
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(false)
 
@@ -3517,9 +3514,9 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(1)
-      
+      expect(zeroCnt).toBe(1)
+
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(false)
 
@@ -3541,8 +3538,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(true)
@@ -3565,8 +3562,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(4)
       expect(repeatStartDirection).toBe(false)
@@ -3589,8 +3586,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(3)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(4)
       expect(repeatStartDirection).toBe(false)
@@ -3903,8 +3900,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(0)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(0)
 
       expect(repeatStartCnt).toBe(0)
       expect(repeatStartDirection).toBe(null)
@@ -3952,8 +3949,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(1)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(1)
       expect(repeatStartDirection).toBe(false)
@@ -3977,8 +3974,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(false)
@@ -4002,8 +3999,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(1)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(1)
 
       expect(repeatStartCnt).toBe(2)
       expect(repeatStartDirection).toBe(false)
@@ -4026,8 +4023,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(false)
@@ -4050,8 +4047,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(3)
       expect(repeatStartDirection).toBe(false)
@@ -4074,8 +4071,8 @@ describe 'Tween ->', ->
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
-      expect(zeroCnt).toBe(2)
       expect(oneCnt).toBe(2)
+      expect(zeroCnt).toBe(2)
 
       expect(repeatStartCnt).toBe(4)
       expect(repeatStartDirection).toBe(true)
@@ -4189,19 +4186,18 @@ describe 'Tween ->', ->
       expect(t._props.onComplete).toHaveBeenCalledWith true
       expect(t._props.onComplete.calls.count()).toBe 1
 
-    # return when timeline will be ready
-    # it 'should be called just once when inside timeline', ->
-    #   tm = new mojs.Timeline
-    #   t = new Tween(duration: 32, onComplete:->)._setStartTime()
-    #   tm.add t
-    #   tm._setStartTime()
-
-    #   spyOn t._props, 'onComplete'
-    #   tm._update(t._props.startTime + 0)
-    #   tm._update(t._props.startTime + 10)
-    #   tm._update(t._props.startTime + 32)
-    #   expect(t._props.onComplete).toHaveBeenCalledWith true
-    #   expect(t._props.onComplete.calls.count()).toBe 1
+    it 'should be called just once when inside timeline', ->
+      tm = new mojs.Timeline
+      duration = 32
+      t = new Tween(duration: duration, onComplete:->)._setStartTime()
+      tm.add t
+      tm._setStartTime()
+      spyOn t._props, 'onComplete'
+      tm._update(t._props.startTime + 0)
+      tm._update(t._props.startTime + duration/2)
+      tm._update(t._props.startTime + duration)
+      expect(t._props.onComplete).toHaveBeenCalledWith true
+      expect(t._props.onComplete.calls.count()).toBe 1
 
     # it 'should reset isCompleted and isFirstUpdate flag', ->
     it 'should reset isCompleted flag', ->
@@ -4233,36 +4229,34 @@ describe 'Tween ->', ->
       t._update t._props.startTime + 2
       t._update t._props.startTime + 32
 
-    # return when timeline will be ready
-    # it 'should fire only once if inside timeline', ()->
-    #   cnt = 0; duration = 50; delay = 10
-    #   tm = new mojs.Timeline repeat: 1
-    #   t1 = new Tween
-    #     delay:      delay
-    #     duration:   duration
-    #     onComplete:-> cnt++
-    #   t2 = new Tween
-    #     delay:      2*delay
-    #     duration:   2*duration
+    it 'should fire only once if inside timeline', ()->
+      cnt = 0; duration = 50; delay = 10
+      tm = new mojs.Timeline repeat: 1
+      t1 = new Tween
+        delay:      delay
+        duration:   duration
+        onComplete:-> cnt++
+      t2 = new Tween
+        delay:      2*delay
+        duration:   2*duration
 
-    #   tm.add t1, t2
-    #   tm._setStartTime()
+      tm.add t1, t2
+      tm._setStartTime()
 
-    #   tm._update t1._props.startTime
-    #   tm._update t1._props.startTime + duration/2
-    #   tm._update t1._props.startTime + duration/2 + delay/2
-      
-    #   tm._update t1._props.startTime + duration + delay + 1
-    #   tm._update t1._props.startTime + 2*duration + delay/2
+      tm._update t1._props.startTime
+      tm._update t1._props.startTime + duration/2
+      tm._update t1._props.startTime + duration + delay/2
+      tm._update t1._props.startTime + duration + delay + 1
 
-    #   # end
-    #   tm._update t1._props.startTime + 2*( duration + delay ) # <-- error
-    #   # tm._update t1._props.startTime + 2*( duration + delay ) + delay
-    #   # tm._update t1._props.startTime + 2*( duration + delay ) + 2*delay
-    #   # tm._update t1._props.startTime + 2*( duration + delay ) + 3*delay
-    #   # tm._update t1._props.startTime + 2*( duration + delay ) + 4*delay
+      tm._update t1._props.startTime + 2*duration + delay/2
+      # end
+      tm._update t1._props.startTime + 2*( duration + delay ) # <-- error
+      tm._update t1._props.startTime + 2*( duration + delay ) + delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 2*delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 3*delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 4*delay
 
-    #   expect(cnt).toBe(2)
+      expect(cnt).toBe(1)
 
   describe 'onStart callback ->', ->
     it 'should be defined', ->
@@ -4322,47 +4316,6 @@ describe 'Tween ->', ->
     it 'should recieve yoyo option', ->
       t = new Tween yoyo: true
       expect(t._props.yoyo).toBe true
-    # it 'should toggle the progress direction on repeat', ->
-    #   t = new Tween(repeat: 2, duration: 10, yoyo: true)._setStartTime()
-    #   time = t._props.startTime
-    #   t._update(time+1);   expect(t.progress).toBe .1
-    #   t._update(time+5);   expect(t.progress).toBe .5
-    #   t._update(time+10);  expect(t.progress).toBe 1
-
-    #   t._update(time+11);  expect(t.progress).toBe .9
-    #   t._update(time+15);  expect(t.progress).toBe .5
-    #   t._update(time+19);  expect(parseFloat t.progress.toFixed(1)).toBe .1
-
-    #   t._update(time+20);  expect(t.progress).toBe 0
-    #   t._update(time+21);  expect(t.progress).toBe .1
-    #   t._update(time+25);  expect(t.progress).toBe .5
-    #   t._update(time+29);  expect(t.progress).toBe .9
-    #   t._update(time+30);  expect(t.progress).toBe 1
-    #   expect(t._isCompleted).toBe true
-
-    # it 'should set progress to 0 on return', ->
-    #   p = 0; duration = 800; delay = 1000
-    #   t = new mojs.Tween
-    #     yoyo: true,
-    #     repeat: 10,
-    #     delay: delay,
-    #     duration: duration,
-    #     onUpdate: (progress)-> p = progress
-
-    #   t._setStartTime()
-    #   t._update t._props.startTime - 5
-    #   t._update t._props.startTime
-    #   t._update t._props.startTime + (duration/2)
-    #   t._update t._props.startTime + duration
-      
-    #   expect(p).toBe 1
-
-    #   t._update t._props.startTime + duration + 5
-    #   t._update t._props.startTime + duration + delay
-    #   t._update t._props.startTime + duration + delay + (duration/2)
-    #   t._update t._props.startTime + duration + delay + duration
-
-    #   expect(p).toBe 0
 
   describe 'easing ->', ->
     it 'should parse easing string', ->
@@ -4736,7 +4689,7 @@ describe 'Tween ->', ->
       tw._firstUpdate()
       expect(cnt).toBe 1
 
-  describe 'callbacks order || forward', ->
+  describe 'callbacks order || forward ->', ->
     it 'should have the right order when normal direction || start', ->
       order = []
       tw = new Tween
@@ -4756,7 +4709,7 @@ describe 'Tween ->', ->
       expect(order[1]).toBe 'repeat-start'
       expect(order[2]).toBe 'first-update'
       expect(order[3]).toBe 'update'
-      expect(order[4]).toBe 'update'
+      expect(order[4]).toBe undefined
 
     it 'should have the right order when normal direction || start #2', ->
       order = []; isReact = false; duration = 500
@@ -4807,9 +4760,9 @@ describe 'Tween ->', ->
       expect(order[2]).toBe 'first-update'
       expect(order[3]).toBe 'update'
       expect(order[4]).toBe 'update'
-      expect(order[5]).toBe 'update'
-      expect(order[6]).toBe 'repeat-complete'
-      expect(order[7]).toBe 'complete'
+      expect(order[5]).toBe 'repeat-complete'
+      expect(order[6]).toBe 'complete'
+      expect(order[7]).toBe undefined
 
     it 'should have the right order when normal direction || repeat end', ->
       order = []; duration = 500
@@ -4836,15 +4789,14 @@ describe 'Tween ->', ->
       expect(order[2]).toBe 'first-update'
       expect(order[3]).toBe 'update'
       expect(order[4]).toBe 'update'
-      expect(order[5]).toBe 'update'
-      expect(order[6]).toBe 'repeat-complete'
-      expect(order[7]).toBe 'repeat-start'
+      expect(order[5]).toBe 'repeat-complete'
+      expect(order[6]).toBe 'repeat-start'
+      expect(order[7]).toBe 'update'
       expect(order[8]).toBe 'update'
       expect(order[9]).toBe 'update'
-      expect(order[10]).toBe 'update'
-      expect(order[11]).toBe 'update'
-      expect(order[12]).toBe 'repeat-complete'
-      expect(order[13]).toBe 'complete'
+      expect(order[10]).toBe 'repeat-complete'
+      expect(order[11]).toBe 'complete'
+      expect(order[12]).toBe undefined
 
     it 'should have the right order when normal direction || end + delay', ->
       order = []; duration = 500; delay = 200
@@ -4873,15 +4825,14 @@ describe 'Tween ->', ->
       expect(order[2]).toBe 'first-update'
       expect(order[3]).toBe 'update'
       expect(order[4]).toBe 'update'
-      expect(order[5]).toBe 'update'
-      expect(order[6]).toBe 'repeat-complete'
-      expect(order[7]).toBe 'repeat-start'
+      expect(order[5]).toBe 'repeat-complete'
+      expect(order[6]).toBe 'repeat-start'
+      expect(order[7]).toBe 'update'
       expect(order[8]).toBe 'update'
       expect(order[9]).toBe 'update'
-      expect(order[10]).toBe 'update'
-      expect(order[11]).toBe 'update'
-      expect(order[12]).toBe 'repeat-complete'
-      expect(order[13]).toBe 'complete'
+      expect(order[10]).toBe 'repeat-complete'
+      expect(order[11]).toBe 'complete'
+      expect(order[12]).toBe undefined
 
   describe 'callbacks order || backward', ->
     it 'should have the right order when reverse direction || start', ->
@@ -4962,16 +4913,15 @@ describe 'Tween ->', ->
       expect(order[3]).toBe 'update'
       expect(order[4]).toBe 'update'
       expect(order[5]).toBe 'update'
-      expect(order[6]).toBe 'update'
-      expect(order[7]).toBe 'repeat-start'
-      expect(order[8]).toBe 'repeat-complete'
+      expect(order[6]).toBe 'repeat-start'
+      expect(order[7]).toBe 'repeat-complete'
+      expect(order[8]).toBe 'update'
       expect(order[9]).toBe 'update'
       expect(order[10]).toBe 'update'
       expect(order[11]).toBe 'update'
-      expect(order[12]).toBe 'update'
-      expect(order[13]).toBe 'repeat-start'
-      expect(order[14]).toBe 'start'
-      expect(order[15]).toBe undefined
+      expect(order[12]).toBe 'repeat-start'
+      expect(order[13]).toBe 'start'
+      expect(order[14]).toBe undefined
       
     it 'should have the right order when reverse direction || end + delay', ->
       order = []; duration = 500; delay = 200
