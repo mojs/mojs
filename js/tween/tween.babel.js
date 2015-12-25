@@ -147,6 +147,7 @@ var Tween = class Tween {
       onRepeatComplete:       null,
       onFirstUpdate:          null,
       onUpdate:               null,
+      onProgress:             null,
       isChained:              false
     }
   }
@@ -230,15 +231,17 @@ var Tween = class Tween {
     // Save progress time for pause/play purposes.
     var p = this._props,
         startPoint = p.startTime - p.delay;
-
-    this.o.isIt && this._visualizeProgress( time );
-
     // if speed param was defined - calculate
     // new time regarding speed
     if ( p.speed && this._playTime ) {
       // play point + ( speed * delta )
       time = this._playTime + ( p.speed * ( time - this._playTime ) );
     }
+    // handle onProgress callback
+    if  ( time >= startPoint && time <= p.endTime ) {
+      this._progress( (time - startPoint) / p.repeatTime , time );
+    }
+
     // if in active area and not ended - save progress time
     if ( time > startPoint && time < p.endTime ) {
       this._progressTime = time - startPoint;
@@ -273,6 +276,7 @@ var Tween = class Tween {
       // complete if time is larger then end time
       // probably we must check for direction too
       if ( time > p.endTime && !this._isCompleted && this._isInActiveArea ) {
+        this._progress( 1, time );
         // get period number
         var T = this._getPeriod( p.endTime );
         this._setProgress( ((this.o.yoyo && (T % 2 === 0)) ? 0 : 1), time );
@@ -284,6 +288,7 @@ var Tween = class Tween {
       if ( time < this._prevTime && time < p.startTime ) {
         // if was in active area and didn't fire onStart callback
         if ( !this._isStarted && this._isInActiveArea ) {
+          this._progress( 0, time );
           this._setProgress( 0, time );
           this._repeatStart( time );
           this._start( time );
@@ -318,7 +323,7 @@ var Tween = class Tween {
 
     if ( time === this._props.endTime ) {
       this._wasUknownUpdate = false;
-      // if `time` is equal to `endTime`, T is equal to the next period,
+      // if `time` is equal to `endTime`, T represents the next period,
       // so we need to decrement T and calculate "one" value regarding yoyo
       this._setProgress( ((props.yoyo && ((T-1) % 2 === 1)) ? 0 : 1), time );
       this._repeatComplete( time );
@@ -354,7 +359,7 @@ var Tween = class Tween {
           this._repeatComplete( time );
           this._firstUpdate(time);
           // cover yoyoOne
-          this._setProgress(1, time);
+          // this._setProgress(1, time);
           // reset isCompleted immediately
           this._isCompleted = false;
         }
@@ -362,12 +367,12 @@ var Tween = class Tween {
 
       if ( isOnEdge ) {
         // if not just after delay
-        // |=====|---=====|---=====| >>>
-        //         ^1 ^2
+        // |---=====|---=====|---=====| >>>
+        //            ^1 ^2
         // because we have already handled
         // 1 and onRepeatComplete in delay gap
         if (this.progress !== 1) {
-          this._setProgress(1, time);
+          // this._setProgress(1, time);
           this._repeatComplete(time);
         }
         // if on edge but not at very start
@@ -413,21 +418,20 @@ var Tween = class Tween {
           this._complete( time );
           this._repeatComplete( time );              
           this._firstUpdate( time);
-          this._setProgress( 1, time );
+          // this._setProgress( 1, time );
           // reset isComplete flag call
           // cuz we returned to active area
           this._isCompleted = false;
         }
-        // change order regarding direction
-        if ( time > this._prevTime ) {
-          this._setProgress(1, time);
-          this._repeatComplete(time);
-        } else {
-          this._repeatComplete(time);
-          if ( yoyoOne !== 0 ) {
-            this._setProgress(yoyoOne, time);
-          }
-        }
+        this._repeatComplete(time);
+        // // change order regarding direction
+        // if ( time > this._prevTime ) {
+        //   // this._setProgress(1, time);
+        //   this._repeatComplete(time);
+        // } else {
+        //   this._repeatComplete(time);
+        //   // this._setProgress(yoyoOne, time);
+        // }
       }
 
       if ( prevT === 'delay') {
@@ -436,7 +440,7 @@ var Tween = class Tween {
         //               ^2    ^1
         if ( T < TPrevValue ) {
           this._repeatComplete(time);
-          this._setProgress(yoyoOne, time);
+          // this._setProgress(yoyoOne, time);
         }
         // if just after delay gap
         // |---=====|---=====|---=====| >>>
@@ -492,26 +496,6 @@ var Tween = class Tween {
     // we've got the first update now
     this._wasUknownUpdate = false;
   }
-  /*
-    Method to set Tween's progress.
-    @private
-    @param {Number} Progress to set.
-    @param {Number} Current update time.
-    @returns {Object} Self.
-  */
-  _setProgress (p, time) {
-    this.progress = p;
-    this.easedProgress = this._props.easing(this.progress);
-    if ( this._props.prevEasedProgress !== this.easedProgress ) {
-      if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-        this.o.isIt && console.log(`********** ONUPDATE ${p} **********`);
-        this.onUpdate( this.easedProgress, this.progress, time > this._prevTime );
-      }
-    }
-    this._props.prevEasedProgress = this.easedProgress;
-    return this;
-  }
-
   /*
     Method to set property[s] on Tween
     @private
@@ -573,9 +557,27 @@ var Tween = class Tween {
     // if the end of period and there is a delay
     return T;
   }
+  /*
+    Method to set Tween's progress and call onUpdate callback.
+    @private
+    @param {Number} Progress to set.
+    @param {Number} Current update time.
+    @returns {Object} Self.
+  */
+  _setProgress (p, time) {
+    this.progress = p;
+    this.easedProgress = this._props.easing(this.progress);
+    if ( this._props.prevEasedProgress !== this.easedProgress ) {
+      if (this.onUpdate != null && typeof this.onUpdate === 'function') {
+        this.onUpdate( this.easedProgress, this.progress, time > this._prevTime );
+      }
+    }
+    this._props.prevEasedProgress = this.easedProgress;
+    return this;
+  }
 
   /*
-    Method to set tween's state to start
+    Method to set tween's state to start and call onStart callback.
     @method _start
     @private
     @param {Number} Progress to set.
@@ -583,7 +585,6 @@ var Tween = class Tween {
   _start (time) {
     if ( this._isStarted ) { return; }
     if (this._props.onStart != null && typeof this._props.onStart === 'function') {
-      this.o.isIt && console.log('********** START **********');
       this._props.onStart.call(this, time > this._prevTime );
     }
     this._isCompleted = false; this._isStarted = true;
@@ -598,10 +599,7 @@ var Tween = class Tween {
   */
   _complete (time) {
     if ( this._isCompleted ) { return; }
-    // this._setProgress(progress, time);
-    // this._repeatComplete(time);
     if (this._props.onComplete != null && typeof this._props.onComplete === 'function') {
-      this.o.isIt && console.log('********** COMPLETE **********');
       this._props.onComplete.call(this, time > this._prevTime );
     }
     this._isCompleted = true; this._isStarted = false;
@@ -617,7 +615,6 @@ var Tween = class Tween {
   _firstUpdate(time) {
     if ( this._isFirstUpdate ) { return; }
     if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
-      this.o.isIt && console.log('********** FIRST UPDATE **********');
       this._props.onFirstUpdate.call( this, time > this._prevTime );
     }
     this._isFirstUpdate = true;
@@ -631,7 +628,6 @@ var Tween = class Tween {
   _repeatComplete(time) {
     if (this._isRepeatCompleted) { return; }
     if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
-      this.o.isIt && console.log('********** REPEAT COMPLETE **********');
       this._props.onRepeatComplete.call( this, time > this._prevTime );
     }
     this._isRepeatCompleted = true;
@@ -645,46 +641,56 @@ var Tween = class Tween {
   _repeatStart(time) {
     if (this._isRepeatStart) { return; }
     if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
-      this.o.isIt && console.log('********** REPEAT START **********');
       this._props.onRepeatStart.call( this, time > this._prevTime );
     }
     this._isRepeatStart = true;
   }
-  
-  _visualizeProgress(time) {
-    var str = '|',
-        procStr = ' ',
-        p = this._props,
-        proc = p.startTime - p.delay;
-
-    while ( proc < p.endTime ) {
-      if (p.delay > 0 ) {
-        var newProc = proc + p.delay;
-        if ( time > proc && time < newProc ) {
-          procStr += ' ^ ';
-        } else {
-          procStr += '   ';
-        }
-        proc = newProc;
-        str  += '---';
-      }
-      var newProc = proc + p.duration;
-      if ( time > proc && time < newProc ) {
-        procStr += '  ^   ';
-      } else if (time === proc) {
-        procStr += '^     ';
-      } else if (time === newProc) {
-        procStr += '    ^ ';
-      } else {
-        procStr += '      ';
-      }
-      proc = newProc;
-      str += '=====|';
+  /*
+    Method to launch onProgress callback.
+    @method _progress
+    @private
+    @param {Number} Progress to set.
+  */
+  _progress (progress, time) {
+    if (this._props.onProgress != null && typeof this._props.onProgress === 'function') {
+      this._props.onProgress.call(this, progress, time > this._prevTime );
     }
-
-    console.log(str);
-    console.log(procStr);
   }
+
+  // _visualizeProgress(time) {
+  //   var str = '|',
+  //       procStr = ' ',
+  //       p = this._props,
+  //       proc = p.startTime - p.delay;
+
+  //   while ( proc < p.endTime ) {
+  //     if (p.delay > 0 ) {
+  //       var newProc = proc + p.delay;
+  //       if ( time > proc && time < newProc ) {
+  //         procStr += ' ^ ';
+  //       } else {
+  //         procStr += '   ';
+  //       }
+  //       proc = newProc;
+  //       str  += '---';
+  //     }
+  //     var newProc = proc + p.duration;
+  //     if ( time > proc && time < newProc ) {
+  //       procStr += '  ^   ';
+  //     } else if (time === proc) {
+  //       procStr += '^     ';
+  //     } else if (time === newProc) {
+  //       procStr += '    ^ ';
+  //     } else {
+  //       procStr += '      ';
+  //     }
+  //     proc = newProc;
+  //     str += '=====|';
+  //   }
+
+  //   console.log(str);
+  //   console.log(procStr);
+  // }
 }
 
 export default Tween;

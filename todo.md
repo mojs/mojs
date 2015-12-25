@@ -3,10 +3,8 @@
 
 
 ### TWEEN + TIMELINE:
-  - remove missed points set
-  - easing for timeline
+  - add onProgress
   - performance owptimizations
-  - add total onUpdate
 
 - fix coverage
 - release

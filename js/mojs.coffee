@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.164.1', isDebug: true
+  revision:   '0.165.1', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -35,39 +35,29 @@ mojs.delta = mojs.h.delta
 #   pause       = document.querySelector('#js-pause')
 #   stop        = document.querySelector('#js-stop')
 
-#   tm = new mojs.Timeline
-#     delay: 3000,
-#     # speed: .5,
-#     isIt1: 1,
-#     # onUpdate:(p)-> console.log(p)
-#   # tm0 = new mojs.Timeline speed: .5, delay: 200
+#   tm = new mojs.Timeline speed: .1
 
 #   tw = new mojs.Tween
-#     # repeat: 3
-#     # yoyo: true
-#     # isIt: true
-#     # delay: 500
-#     # speed:    2
+#     yoyo: true
 #     duration: 1000
-#     isIt2: 1
 #     onStart:->
 #       console.log "START"
-#       console.timeEnd 'duration'
 #     onComplete:->
-#       console.timeEnd 'delay'
 #       console.log "COMPLETE"
-#       console.time 'duration'
 #     onRepeatStart:-> console.log "REPEAT START"
 #     onRepeatComplete:-> console.log "REPEAT COMPLETE"
 #     onFirstUpdate:-> console.log "FIRST UPDATE"
+#     onProgress:(p, isForward)->
+#       console.log "***** PROGRESS: #{p}, #{isForward}"
+#       rangeSlider.value = p*10000
 #     onUpdate:(pe, p, isForward)->
 #       mojs.h.style( obj, 'transform', "translate3d(#{400*pe}px, 0, 0)" )
-#       # console.log "TWEEN ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
+#       console.log "TWEEN ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
 
 #   play.addEventListener 'click', -> tm.play()
 #   reverse.addEventListener 'click', ->
 #     console.time 'delay'
-#     tm.reverse()
+#     tm.playBackward()
 #   pause.addEventListener 'click', -> tm.pause()
 #   stop.addEventListener 'click', -> tm.stop()
 #   stop.addEventListener 'click', -> tm.stop()

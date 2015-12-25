@@ -36,6 +36,7 @@
         expect(t._defaults.onRepeatComplete).toBeDefined();
         expect(t._defaults.onComplete).toBeDefined();
         expect(t._defaults.onUpdate).toBeDefined();
+        expect(t._defaults.onProgress).toBeDefined();
         return expect(t._defaults.isChained).toBe(false);
       });
       return it('should extend defaults to props', function() {
@@ -312,7 +313,7 @@
         expect(t.onUpdate).toHaveBeenCalledWith(0, 0, false);
         t._update(t._props.startTime - 500);
         expect(t._isInActiveArea).toBe(false);
-        return expect(t.onUpdate.calls.count()).toBe(3);
+        return expect(t.onUpdate.calls.count()).toBe(2);
       });
       it('should not call update method if timeline isnt active "+"', function() {
         var t;
@@ -601,7 +602,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -618,7 +619,7 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -634,7 +635,7 @@
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -750,7 +751,7 @@
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -766,7 +767,7 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -783,7 +784,7 @@
         expect(updateValue).toBeCloseTo(1);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -1294,7 +1295,7 @@
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(t._isCompleted).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
@@ -1311,7 +1312,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -1327,7 +1328,7 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -1344,7 +1345,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -1361,7 +1362,7 @@
         expect(updateDirection).toBe(false);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(3);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -1378,7 +1379,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(3);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
@@ -1394,7 +1395,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(3);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
@@ -1477,8 +1478,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
@@ -1493,8 +1494,8 @@
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
@@ -1510,7 +1511,7 @@
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -1526,7 +1527,7 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -1542,7 +1543,7 @@
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -1559,7 +1560,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -1575,7 +1576,7 @@
         expect(updateValue).toBe(.5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(true);
@@ -1591,7 +1592,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(4);
         expect(repeatStartDirection).toBe(false);
@@ -1607,7 +1608,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(4);
         expect(repeatStartDirection).toBe(false);
@@ -1691,8 +1692,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
@@ -1707,8 +1708,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(1);
@@ -1724,8 +1725,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
@@ -1740,8 +1741,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
@@ -1757,8 +1758,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
-        expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -1773,8 +1774,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(3);
-        expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -1789,8 +1790,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(3);
-        expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -1873,8 +1874,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
@@ -1889,7 +1890,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -1906,8 +1907,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
@@ -1923,8 +1924,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
@@ -1940,8 +1941,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
-        expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -1956,8 +1957,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(3);
-        expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -1972,8 +1973,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(3);
-        expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -1988,8 +1989,8 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(3);
-        expect(oneCnt).toBe(3);
         expect(repeatStartCnt).toBe(4);
         expect(repeatStartDirection).toBe(true);
         expect(repeatCnt).toBe(3);
@@ -2241,7 +2242,7 @@
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -2257,7 +2258,7 @@
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -2274,7 +2275,7 @@
         expect(updateValue).toBeCloseTo(0);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(true);
@@ -2787,7 +2788,7 @@
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
@@ -2804,7 +2805,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -2820,7 +2821,7 @@
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -2837,7 +2838,7 @@
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -2854,7 +2855,7 @@
         expect(updateDirection).toBe(false);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -2871,7 +2872,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
@@ -2887,7 +2888,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
@@ -2971,7 +2972,7 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
@@ -2987,7 +2988,7 @@
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
@@ -3004,7 +3005,7 @@
         expect(updateValue).toBeCloseTo(.1, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -3020,7 +3021,7 @@
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -3036,7 +3037,7 @@
         expect(updateValue).toBeCloseTo(.9, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -3053,7 +3054,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -3069,7 +3070,7 @@
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(true);
@@ -3085,7 +3086,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(4);
         expect(repeatStartDirection).toBe(false);
@@ -3101,7 +3102,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(4);
         expect(repeatStartDirection).toBe(false);
@@ -3186,8 +3187,8 @@
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
         expect(repeatCnt).toBe(1);
@@ -3202,8 +3203,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(1);
@@ -3219,8 +3220,8 @@
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
@@ -3235,8 +3236,8 @@
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(2);
@@ -3252,8 +3253,8 @@
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -3268,8 +3269,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -3284,8 +3285,8 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
-        expect(oneCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
         expect(repeatCnt).toBe(3);
@@ -3369,7 +3370,7 @@
         expect(updateValue).toBeCloseTo(.5, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(0);
         expect(repeatStartCnt).toBe(0);
         expect(repeatStartDirection).toBe(null);
@@ -3385,7 +3386,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -3402,7 +3403,7 @@
         expect(updateValue).toBeCloseTo(.25, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(1);
+        expect(oneCnt).toBe(0);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(1);
         expect(repeatStartDirection).toBe(false);
@@ -3419,7 +3420,7 @@
         expect(updateValue).toBe(1);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -3436,7 +3437,7 @@
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(1);
         expect(repeatStartCnt).toBe(2);
         expect(repeatStartDirection).toBe(false);
@@ -3452,7 +3453,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
@@ -3468,7 +3469,7 @@
         expect(updateValue).toBe(0);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(3);
         expect(repeatStartDirection).toBe(false);
@@ -3484,7 +3485,7 @@
         expect(updateValue).toBeCloseTo(.75, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
-        expect(oneCnt).toBe(2);
+        expect(oneCnt).toBe(1);
         expect(zeroCnt).toBe(2);
         expect(repeatStartCnt).toBe(4);
         expect(repeatStartDirection).toBe(true);
@@ -4522,15 +4523,14 @@
         expect(order[1]).toBe('repeat-start');
         expect(order[2]).toBe('first-update');
         expect(order[3]).toBe('update');
-        expect(order[4]).toBe('update');
-        expect(order[5]).toBe('repeat-complete');
-        expect(order[6]).toBe('repeat-start');
+        expect(order[4]).toBe('repeat-complete');
+        expect(order[5]).toBe('repeat-start');
+        expect(order[6]).toBe('update');
         expect(order[7]).toBe('update');
         expect(order[8]).toBe('update');
-        expect(order[9]).toBe('update');
-        expect(order[10]).toBe('repeat-complete');
-        expect(order[11]).toBe('complete');
-        return expect(order[12]).toBe(void 0);
+        expect(order[9]).toBe('repeat-complete');
+        expect(order[10]).toBe('complete');
+        return expect(order[11]).toBe(void 0);
       });
       return it('should have the right order when normal direction || end + delay', function() {
         var delay, duration, order, tw;
@@ -4582,7 +4582,7 @@
         return expect(order[12]).toBe(void 0);
       });
     });
-    describe('callbacks order || backward', function() {
+    describe('callbacks order || backward ->', function() {
       it('should have the right order when reverse direction || start', function() {
         var duration, order, tw;
         order = [];
@@ -4615,7 +4615,7 @@
         expect(order[1]).toBe('repeat-complete');
         expect(order[2]).toBe('first-update');
         expect(order[3]).toBe('update');
-        return expect(order[4]).toBe('update');
+        return expect(order[4]).toBe(void 0);
       });
       it('should have the right order when reverse direction || end', function() {
         var duration, order, tw;
@@ -4653,9 +4653,9 @@
         expect(order[3]).toBe('update');
         expect(order[4]).toBe('update');
         expect(order[5]).toBe('update');
-        expect(order[6]).toBe('update');
-        expect(order[7]).toBe('repeat-start');
-        return expect(order[8]).toBe('start');
+        expect(order[6]).toBe('repeat-start');
+        expect(order[7]).toBe('start');
+        return expect(order[8]).toBe(void 0);
       });
       it('should have the right order when reverse direction || repeat end', function() {
         var duration, order, tw;
@@ -4695,16 +4695,14 @@
         expect(order[2]).toBe('first-update');
         expect(order[3]).toBe('update');
         expect(order[4]).toBe('update');
-        expect(order[5]).toBe('update');
-        expect(order[6]).toBe('repeat-start');
-        expect(order[7]).toBe('repeat-complete');
+        expect(order[5]).toBe('repeat-start');
+        expect(order[6]).toBe('repeat-complete');
+        expect(order[7]).toBe('update');
         expect(order[8]).toBe('update');
         expect(order[9]).toBe('update');
-        expect(order[10]).toBe('update');
-        expect(order[11]).toBe('update');
-        expect(order[12]).toBe('repeat-start');
-        expect(order[13]).toBe('start');
-        return expect(order[14]).toBe(void 0);
+        expect(order[10]).toBe('repeat-start');
+        expect(order[11]).toBe('start');
+        return expect(order[12]).toBe(void 0);
       });
       it('should have the right order when reverse direction || end + delay', function() {
         var delay, duration, order, tw;
@@ -4748,16 +4746,14 @@
         expect(order[3]).toBe('update');
         expect(order[4]).toBe('update');
         expect(order[5]).toBe('update');
-        expect(order[6]).toBe('update');
-        expect(order[7]).toBe('repeat-start');
-        expect(order[8]).toBe('repeat-complete');
+        expect(order[6]).toBe('repeat-start');
+        expect(order[7]).toBe('repeat-complete');
+        expect(order[8]).toBe('update');
         expect(order[9]).toBe('update');
         expect(order[10]).toBe('update');
-        expect(order[11]).toBe('update');
-        expect(order[12]).toBe('update');
-        expect(order[13]).toBe('repeat-start');
-        expect(order[14]).toBe('start');
-        return expect(order[15]).toBe(void 0);
+        expect(order[11]).toBe('repeat-start');
+        expect(order[12]).toBe('start');
+        return expect(order[13]).toBe(void 0);
       });
       it('should have the right order when reverse direction || end + delay #2', function() {
         var delay, duration, order, tw;
@@ -4801,16 +4797,14 @@
         expect(order[3]).toBe('update');
         expect(order[4]).toBe('update');
         expect(order[5]).toBe('update');
-        expect(order[6]).toBe('update');
-        expect(order[7]).toBe('repeat-start');
-        expect(order[8]).toBe('repeat-complete');
+        expect(order[6]).toBe('repeat-start');
+        expect(order[7]).toBe('repeat-complete');
+        expect(order[8]).toBe('update');
         expect(order[9]).toBe('update');
         expect(order[10]).toBe('update');
-        expect(order[11]).toBe('update');
-        expect(order[12]).toBe('update');
-        expect(order[13]).toBe('repeat-start');
-        expect(order[14]).toBe('start');
-        return expect(order[15]).toBe(void 0);
+        expect(order[11]).toBe('repeat-start');
+        expect(order[12]).toBe('start');
+        return expect(order[13]).toBe(void 0);
       });
       return it('should have the right order when reverse direction || end + delay #3', function() {
         var delay, duration, isReact, order, tw;
@@ -4866,10 +4860,9 @@
         expect(order[8]).toBe('update');
         expect(order[9]).toBe('update');
         expect(order[10]).toBe('update');
-        expect(order[11]).toBe('update');
-        expect(order[12]).toBe('repeat-start');
-        expect(order[13]).toBe('start');
-        return expect(order[14]).toBe(void 0);
+        expect(order[11]).toBe('repeat-start');
+        expect(order[12]).toBe('start');
+        return expect(order[13]).toBe(void 0);
       });
     });
     it('should have the right order when reverse direction || end + delay #3', function() {
@@ -4998,7 +4991,7 @@
         return expect(t._playTime).toBe(null);
       });
     });
-    return describe('onComplete callback ->', function() {
+    describe('onComplete callback ->', function() {
       return it('should be called just once when finished and inside Timeline ->', function() {
         var completeCnt, completeDirection, debug, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, tm, tw, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
@@ -5060,6 +5053,157 @@
         tm.setProgress(1);
         tm.setProgress(.9);
         return expect(completeCnt).toBe(2);
+      });
+    });
+    describe('_progress method ->', function() {
+      return it('should call onProgress callback', function() {
+        var duration, time, tw;
+        duration = 1000;
+        tw = new Tween({
+          duration: duration,
+          onProgress: function() {}
+        });
+        spyOn(tw._props, 'onProgress');
+        tw._setStartTime();
+        time = tw._props.startTime + duration / 2;
+        tw._prevTime = time - 1;
+        tw._progress(.5, time);
+        return expect(tw._props.onProgress).toHaveBeenCalledWith(.5, true);
+      });
+    });
+    return describe('onProgress callback ->', function() {
+      it('should be called with current progress and direction', function() {
+        var duration, time, tw;
+        duration = 1000;
+        tw = new Tween({
+          duration: duration,
+          onProgress: function() {}
+        });
+        spyOn(tw, '_progress').and.callThrough();
+        spyOn(tw._props, 'onProgress');
+        tw._setStartTime();
+        time = tw._props.startTime + duration / 2;
+        tw._update(time - 1);
+        tw._update(time);
+        expect(tw._progress).toHaveBeenCalledWith(.5, time);
+        return expect(tw._props.onProgress).toHaveBeenCalledWith(.5, true);
+      });
+      it('should include all delays and repeats', function() {
+        var delay, duration, p, repeat, resultProgress, startPoint, time, tw;
+        duration = 1000;
+        delay = 200;
+        repeat = 2;
+        tw = new Tween({
+          duration: duration,
+          delay: delay,
+          repeat: repeat,
+          onProgress: function() {}
+        });
+        spyOn(tw, '_progress').and.callThrough();
+        spyOn(tw._props, 'onProgress');
+        tw._setStartTime();
+        time = tw._props.startTime + 2 * (duration + delay) + duration / 2;
+        tw._update(time - 1);
+        tw._update(time);
+        p = tw._props;
+        startPoint = p.startTime - p.delay;
+        resultProgress = (time - startPoint) / p.repeatTime;
+        expect(tw._progress).toHaveBeenCalledWith(resultProgress, time);
+        return expect(tw._props.onProgress).toHaveBeenCalledWith(resultProgress, true);
+      });
+      it('should be called only in active bounds regarding delay "-"', function() {
+        var delay, duration, p, startPoint, time, tw;
+        duration = 1000;
+        delay = 200;
+        tw = new Tween({
+          duration: duration,
+          delay: delay,
+          onProgress: function() {}
+        });
+        tw._setStartTime();
+        p = tw._props;
+        startPoint = p.startTime - p.delay;
+        spyOn(tw, '_progress').and.callThrough();
+        spyOn(tw._props, 'onProgress');
+        time = p.startTime - delay / 2;
+        tw._update(time - 1);
+        tw._update(time);
+        expect(tw._progress).toHaveBeenCalledWith((delay / 2) / p.repeatTime, time);
+        return expect(tw._props.onProgress).toHaveBeenCalledWith((delay / 2) / p.repeatTime, true);
+      });
+      it('should be called only in active bounds "-"', function() {
+        var delay, duration, time, tw;
+        duration = 1000;
+        delay = 200;
+        tw = new Tween({
+          duration: duration,
+          delay: delay,
+          onProgress: function() {}
+        });
+        spyOn(tw, '_progress').and.callThrough();
+        spyOn(tw._props, 'onProgress');
+        tw._setStartTime();
+        time = (tw._props.startTime - delay) - delay / 2;
+        tw._update(time - 1);
+        tw._update(time);
+        expect(tw._progress).not.toHaveBeenCalled();
+        return expect(tw._props.onProgress).not.toHaveBeenCalled();
+      });
+      it('should be called only in active bounds "+"', function() {
+        var duration, time, tw;
+        duration = 1000;
+        tw = new Tween({
+          duration: duration,
+          onProgress: function() {}
+        });
+        spyOn(tw, '_progress').and.callThrough();
+        spyOn(tw._props, 'onProgress');
+        tw._setStartTime();
+        time = tw._props.startTime + 2 * duration;
+        tw._update(time - 1);
+        tw._update(time);
+        expect(tw._progress).not.toHaveBeenCalled();
+        return expect(tw._props.onProgress).not.toHaveBeenCalled();
+      });
+      it('should be called only once after active bounds "-"', function() {
+        var duration, time, tw;
+        duration = 1000;
+        tw = new Tween({
+          duration: duration,
+          onProgress: function() {}
+        });
+        tw._setStartTime();
+        time = tw._props.startTime + duration / 2;
+        tw._update(time);
+        tw._update(time - 10);
+        spyOn(tw, '_progress').and.callThrough();
+        spyOn(tw._props, 'onProgress');
+        tw._update(time - duration);
+        tw._update(time - duration - 10);
+        expect(tw._progress).toHaveBeenCalledWith(0, time - duration);
+        expect(tw._progress.calls.count()).toBe(1);
+        expect(tw._props.onProgress).toHaveBeenCalledWith(0, false);
+        return expect(tw._props.onProgress.calls.count()).toBe(1);
+      });
+      return it('should be called only once after active bounds "+"', function() {
+        var duration, time, tw;
+        duration = 1000;
+        tw = new Tween({
+          duration: duration,
+          onProgress: function() {}
+        });
+        tw._setStartTime();
+        time = tw._props.startTime + duration / 2;
+        tw._update(time);
+        tw._update(time + 10);
+        spyOn(tw, '_progress').and.callThrough();
+        spyOn(tw._props, 'onProgress');
+        tw._update(time + duration);
+        tw._update(time + duration + 10);
+        expect(tw._progress).toHaveBeenCalledWith(1, time + duration);
+        expect(tw._progress.calls.count()).toBe(1);
+        expect(tw._props.onProgress).toHaveBeenCalledWith(1, true);
+        return expect(tw._props.onProgress.calls.count()).toBe(1);
       });
     });
   });

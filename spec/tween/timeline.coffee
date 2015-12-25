@@ -24,6 +24,7 @@ describe 'Timeline ->', ->
       expect(t._defaults.onRepeatComplete).toBe null
       expect(t._defaults.onFirstUpdate)   .toBe null
       expect(t._defaults.onUpdate)        .toBe null
+      expect(t._defaults.onProgress)      .toBe null
       expect(t._defaults.isChained)       .toBe false
 
   describe '_extendDefaults method ->', ->
