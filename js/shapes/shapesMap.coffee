@@ -18,7 +18,7 @@ class BitsMap
   polygon:  Polygon
   cross:    Cross
   equal:    Equal
-  getBit:(name)-> @[name] or h.error "no \"#{name}\" shape available yet,
+  getShape:(name)-> @[name] or h.error "no \"#{name}\" shape available yet,
       please choose from this list:", @
 
 module.exports = new BitsMap

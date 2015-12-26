@@ -107,6 +107,15 @@ class Timeline extends Tween {
     this._props.duration = Math.max(timelineTime, this._props.duration);
   }
   /*
+    Method calculate self duration from skretch.
+    @private
+  */
+  _recalcTotalDuration() {
+    var i = this._timelines.length;
+    this._props.duration = 0;
+    while(i--) { this._recalcDuration(this._timelines[i]); }
+  }
+  /*
     Method set start and end times.
     @private
     @param {Number, Null} Time to start with.
@@ -125,13 +134,6 @@ class Timeline extends Tween {
     ( time == null) && (time = this._props.startTime);
     while(i--) { this._timelines[i]._setStartTime(time); }
   }
-
-  // recalcDuration() {
-  //   var len = this._timelines.length;
-  //   this._props.time = 0; this._props.repeatTime = 0; this._props.shiftedRepeatTime = 0
-  //   while(len--) { this._recalcDuration(this._timelines[len]); }
-  // }
-
   /*
     Method do declare defaults by this._defaults object
     @private

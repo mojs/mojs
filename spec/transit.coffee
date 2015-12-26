@@ -1,6 +1,6 @@
 Byte = mojs.Transit
-Bit  = mojs.Bit
-Rect = mojs.Rect
+Bit  = mojs.shapesMap.getShape('bit')
+Rect = mojs.shapesMap.getShape('rect')
 h    = mojs.helpers
 ns   = 'http://www.w3.org/2000/svg'
 svg  = document.createElementNS?(ns, 'svg')
@@ -180,7 +180,7 @@ describe 'Transit ->', ->
     it 'should add new timeline with options', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radius: 5
-      expect(byte.timeline.timelines.length).toBe 2
+      expect(byte.timeline._timelines.length).toBe 2
 
     it 'should return if no options passed or options are empty', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -196,12 +196,12 @@ describe 'Transit ->', ->
     it 'should pass isChained to timeline', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5
-      expect(byte.timeline.timelines[1].props.isChained).toBe true
+      expect(byte.timeline._timelines[1]._props.isChained).toBe true
 
     it 'should not pass isChained to timeline if delay', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5, delay: 100
-      expect(byte.timeline.timelines[1].props.isChained).toBe false
+      expect(byte.timeline._timelines[1]._props.isChained).toBe false
 
     it 'should inherit radius for radiusX/Y options in further chain', ->
       byte = new Byte radius: 20, duration: 1000
@@ -221,9 +221,9 @@ describe 'Transit ->', ->
       byte = new Byte
         radius: 20, duration: 1000, delay: 10, yoyo: true
       byte.then radius: 5
-      expect(byte.timeline.timelines[1].props.duration).toBe 1000
-      expect(byte.timeline.timelines[1].props.yoyo)    .toBe false
-      expect(byte.timeline.timelines[1].props.shiftTime).toBe 1010
+      expect(byte.timeline._timelines[1]._props.duration).toBe 1000
+      expect(byte.timeline._timelines[1]._props.yoyo)    .toBe false
+      expect(byte.timeline._timelines[1]._props.shiftTime).toBe 1010
 
     it 'should merge then options and add them to the history', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
@@ -269,22 +269,22 @@ describe 'Transit ->', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
-      expect(typeof byte.timeline.timelines[1].props.onUpdate).toBe 'function'
-      expect(typeof byte.timeline.timelines[2].props.onUpdate).toBe 'function'
+      expect(typeof byte.timeline._timelines[1]._props.onUpdate).toBe 'function'
+      expect(typeof byte.timeline._timelines[2]._props.onUpdate).toBe 'function'
 
     it 'should bind onStart function', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
-      expect(typeof byte.timeline.timelines[1].props.onStart).toBe 'function'
-      expect(typeof byte.timeline.timelines[2].props.onStart).toBe 'function'
+      expect(typeof byte.timeline._timelines[1]._props.onStart).toBe 'function'
+      expect(typeof byte.timeline._timelines[2]._props.onStart).toBe 'function'
 
     it 'should bind onFirstUpdate function #1', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
-      type1 = typeof byte.timeline.timelines[1].props.onFirstUpdate
-      type2 = typeof byte.timeline.timelines[2].props.onFirstUpdate
+      type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
+      type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
       expect(type1).toBe 'function'
       expect(type2).toBe 'function'
 
@@ -292,8 +292,8 @@ describe 'Transit ->', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
       byte.then radius: {100:10}, delay: 200, stroke: 'green'
-      type1 = typeof byte.timeline.timelines[1].props.onFirstUpdate
-      type2 = typeof byte.timeline.timelines[2].props.onFirstUpdate
+      type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
+      type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
       expect(type1).toBe 'function'
       expect(type2).toBe 'function'
 

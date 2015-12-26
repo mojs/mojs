@@ -1,5 +1,5 @@
-Rect    = mojs.shapesMap.getBit('rect')
-Bit     = mojs.shapesMap.getBit('bit')
+Rect    = mojs.shapesMap.getShape('rect')
+Bit     = mojs.shapesMap.getShape('bit')
 ns      = 'http://www.w3.org/2000/svg'
 svg     = document.createElementNS?(ns, "svg")
 rect    = new Rect ctx: svg

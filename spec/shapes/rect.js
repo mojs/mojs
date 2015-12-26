@@ -1,9 +1,9 @@
 (function() {
   var Bit, Rect, ns, rect, svg;
 
-  Rect = mojs.shapesMap.getBit('rect');
+  Rect = mojs.shapesMap.getShape('rect');
 
-  Bit = mojs.shapesMap.getBit('bit');
+  Bit = mojs.shapesMap.getShape('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 

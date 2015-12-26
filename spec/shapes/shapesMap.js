@@ -1,28 +1,28 @@
 (function() {
-  var bitsMap, h;
+  var h, shapesMap;
 
-  bitsMap = window.mojs.shapesMap;
+  shapesMap = window.mojs.shapesMap;
 
   h = mojs.h;
 
-  describe('bitsMap ->', function() {
+  describe('shapesMap ->', function() {
     it('should have all available shapes', function() {
-      expect(bitsMap.bit).toBeDefined();
-      expect(bitsMap.circle).toBeDefined();
-      expect(bitsMap.line).toBeDefined();
-      expect(bitsMap.zigzag).toBeDefined();
-      expect(bitsMap.rect).toBeDefined();
-      expect(bitsMap.polygon).toBeDefined();
-      expect(bitsMap.cross).toBeDefined();
-      return expect(bitsMap.equal).toBeDefined();
+      expect(shapesMap.bit).toBeDefined();
+      expect(shapesMap.circle).toBeDefined();
+      expect(shapesMap.line).toBeDefined();
+      expect(shapesMap.zigzag).toBeDefined();
+      expect(shapesMap.rect).toBeDefined();
+      expect(shapesMap.polygon).toBeDefined();
+      expect(shapesMap.cross).toBeDefined();
+      return expect(shapesMap.equal).toBeDefined();
     });
-    return describe('getBit', function() {
+    return describe('getShape', function() {
       it('should get bit by string', function() {
-        return expect(bitsMap.getBit('bit')).toBeDefined();
+        return expect(shapesMap.getShape('bit')).toBeDefined();
       });
       return it('should console.error if bit was not found', function() {
         spyOn(h, 'error');
-        bitsMap.getBit('');
+        shapesMap.getShape('');
         return expect(h.error).toHaveBeenCalled();
       });
     });

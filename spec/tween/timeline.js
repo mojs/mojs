@@ -154,7 +154,23 @@
           delay: 200,
           repeat: 1
         }));
-        return expect(t._props.time).toBe(1400);
+        expect(t._props.time).toBe(1400);
+        return it('should work with another tweens', function() {
+          var t1;
+          t1 = new Timeline;
+          t = new Timeline;
+          t.add(new Tween({
+            duration: 500,
+            delay: 200
+          }));
+          t.add(new Tween({
+            duration: 500,
+            delay: 200,
+            repeat: 1
+          }));
+          t1.add(t);
+          return expect(t1._props.repeatTime).toBe(1400);
+        });
       });
     });
     describe('_setProgress method ->', function() {
@@ -197,7 +213,7 @@
       });
     });
     describe('_startTimelines method ->', function() {
-      return it('should set time to startTime if no time was passed', function() {
+      it('should set time to startTime if no time was passed', function() {
         var t;
         t = new Timeline;
         t.add(new Tween({
@@ -210,6 +226,20 @@
         t._startTimelines(null);
         expect(t._timelines[0]._setStartTime).toHaveBeenCalledWith(t._props.startTime);
         return expect(t._timelines[1]._setStartTime).toHaveBeenCalledWith(t._props.startTime);
+      });
+      return it('should add self shiftTime to child timelines', function() {
+        var shift, t, time;
+        t = new Timeline;
+        t.add(new Tween({
+          duration: 500
+        }));
+        time = 0;
+        shift = 500;
+        t._setProp({
+          'shiftTime': shift
+        });
+        t._setStartTime(time);
+        return expect(t._timelines[0]._props.startTime).toBe(time + shift);
       });
     });
     describe('_pushTimeline method ->', function() {
@@ -447,6 +477,22 @@
         }));
         expect(t._timelines[0].index).toBe(0);
         return expect(t._timelines[1].index).toBe(1);
+      });
+    });
+    describe('_recalcTotalDuration method ->', function() {
+      return it('should recalculate duration', function() {
+        var t, timeline, timeline2;
+        t = new Timeline;
+        timeline = new Tween({
+          duration: 100
+        });
+        timeline2 = new Tween({
+          duration: 1000
+        });
+        t.add(timeline);
+        t._timelines.push(timeline2);
+        t._recalcTotalDuration();
+        return expect(t._props.duration).toBe(1000);
       });
     });
     return describe('setProgress method ->', function() {

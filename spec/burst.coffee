@@ -489,7 +489,7 @@ describe 'Burst ->', ->
       expect(burst.timeline).toBeDefined()
     it 'should add tweens to timeline', ->
       burst = new Burst
-      expect(burst.timeline.timelines.length).toBe 6
+      expect(burst.timeline._timelines.length).toBe 6
     it 'should call startTween method', ->
       burst = new Burst
       spyOn burst, 'startTween'
@@ -520,7 +520,7 @@ describe 'Burst ->', ->
     it 'should run onComplete callback', (dfr)->
       t.removeAll()
       burst = new Burst
-        duration: 20, onComplete:-> expect(true).toBe(true); dfr()
+        duration: 40, onComplete:-> expect(true).toBe(true); dfr()
 
     it 'should have the scope of burst', (dfr)->
       t.removeAll()

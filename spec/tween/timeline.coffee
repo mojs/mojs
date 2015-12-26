@@ -103,30 +103,13 @@ describe 'Timeline ->', ->
       expect(t._props.time).toBe 700
       t.add new Tween duration: 500, delay: 200, repeat: 1
       expect(t._props.time).toBe 1400
-    #   it 'should calculate shiftedRepeatTime',->
-    #     t = new Timeline
-    #     t1 = new Tween duration: 1000
-    #     t2 = new Tween duration: 1500
-    #     t.add [t1, t2, new Timeline]
-    #     expect(t.timelines.length).toBe 3
-    #     expect(t._props.repeatTime).toBe 1500
-    #     expect(t._props.shiftedRepeatTime).toBe 1500
-    #   it 'should calculate shiftedRepeatTime #2',->
-    #     t = new Timeline
-    #     t1 = new Tween duration: 1000
-    #     t2 = new Tween duration: 1500
-    #     t._setProp 'shiftTime': 500
-    #     t.add [t1, t2, new Timeline]
-    #     expect(t.timelines.length).toBe 3
-    #     expect(t._props.repeatTime).toBe 1500
-    #     expect(t._props.shiftedRepeatTime).toBe 2000
-    #   it 'should work with another tweens',->
-    #     t1 = new Timeline
-    #     t = new Timeline
-    #     t.add new Tween duration: 500, delay: 200
-    #     t.add new Tween duration: 500, delay: 200, repeat: 1
-    #     t1.add t
-    #     expect(t1._props.repeatTime).toBe 1400
+      it 'should work with another tweens',->
+        t1 = new Timeline
+        t = new Timeline
+        t.add new Tween duration: 500, delay: 200
+        t.add new Tween duration: 500, delay: 200, repeat: 1
+        t1.add t
+        expect(t1._props.repeatTime).toBe 1400
   describe '_setProgress method ->', ->
     it 'should call super _setProgress method', ->
       t = new Timeline
@@ -168,13 +151,13 @@ describe 'Timeline ->', ->
       t._startTimelines(null)
       expect(t._timelines[0]._setStartTime).toHaveBeenCalledWith t._props.startTime
       expect(t._timelines[1]._setStartTime).toHaveBeenCalledWith t._props.startTime
-    # it 'should add self shiftTime to child timelines', ->
-    #   t   = new Timeline
-    #   t.add new Tween duration: 500
-    #   time = 0; shift = 500
-    #   t._setProp 'shiftTime': shift
-    #   t._setStartTime time
-    #   expect(t.timelines[0]._props.startTime).toBe time + shift
+    it 'should add self shiftTime to child timelines', ->
+      t   = new Timeline
+      t.add new Tween duration: 500
+      time = 0; shift = 500
+      t._setProp 'shiftTime': shift
+      t._setStartTime time
+      expect(t._timelines[0]._props.startTime).toBe time + shift
 
   describe '_pushTimeline method ->', ->
     it 'should push timeline to timelines and calc repeatTime',->
@@ -308,15 +291,15 @@ describe 'Timeline ->', ->
   #     t1.remove t
   #     expect(t1.timelines.length).toBe 0
   
-  # describe 'recalcDuration method ->', ->
-  #   it 'should recalculate duration', ->
-  #     t = new Timeline
-  #     timeline = new Tween  duration: 100
-  #     timeline2 = new Tween duration: 1000
-  #     t.add timeline
-  #     t.timelines.push timeline2
-  #     t.recalcDuration()
-  #     expect(t._props.time).toBe 1000
+  describe '_recalcTotalDuration method ->', ->
+    it 'should recalculate duration', ->
+      t = new Timeline
+      timeline = new Tween  duration: 100
+      timeline2 = new Tween duration: 1000
+      t.add timeline
+      t._timelines.push timeline2
+      t._recalcTotalDuration()
+      expect(t._props.duration).toBe 1000
   
   describe 'setProgress method ->', ->
     it 'should call _setStartTime if there is no this._props.startTime', ->

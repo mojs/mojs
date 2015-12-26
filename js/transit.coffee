@@ -177,7 +177,7 @@ class Transit extends Bit
     else if @props[o.key]? then parseFloat(@props[o.key]) else o.fallback or 0
 
   createBit:->
-    bitClass = shapesMap.getBit(@o.type or @type)
+    bitClass = shapesMap.getShape(@o.type or @type)
     @bit = new bitClass ctx: @ctx, el: @o.bit, isDrawLess: true
     if @isForeign or @isForeignBit then @el = @bit.el
 
@@ -443,7 +443,7 @@ class Transit extends Bit
       timelineOptions[key] = @props[key]
     timelineOptions.onStart    = @props.onStart
     timelineOptions.onComplete = @props.onComplete
-    @tween.setProp timelineOptions
+    @tween._setProp timelineOptions
   
   getBitLength:->
     @props.bitLength = @bit.getLength()

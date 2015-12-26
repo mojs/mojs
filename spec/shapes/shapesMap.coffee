@@ -1,22 +1,22 @@
-bitsMap = window.mojs.shapesMap
+shapesMap = window.mojs.shapesMap
 h = mojs.h
 
-describe 'bitsMap ->', ->
+describe 'shapesMap ->', ->
   it 'should have all available shapes', ->
-    expect(bitsMap.bit)       .toBeDefined()
-    expect(bitsMap.circle)    .toBeDefined()
-    expect(bitsMap.line)      .toBeDefined()
-    expect(bitsMap.zigzag)    .toBeDefined()
-    expect(bitsMap.rect)      .toBeDefined()
-    expect(bitsMap.polygon)   .toBeDefined()
-    expect(bitsMap.cross)     .toBeDefined()
-    expect(bitsMap.equal)     .toBeDefined()
-  describe 'getBit', ->
+    expect(shapesMap.bit)       .toBeDefined()
+    expect(shapesMap.circle)    .toBeDefined()
+    expect(shapesMap.line)      .toBeDefined()
+    expect(shapesMap.zigzag)    .toBeDefined()
+    expect(shapesMap.rect)      .toBeDefined()
+    expect(shapesMap.polygon)   .toBeDefined()
+    expect(shapesMap.cross)     .toBeDefined()
+    expect(shapesMap.equal)     .toBeDefined()
+  describe 'getShape', ->
     it 'should get bit by string', ->
-      expect(bitsMap.getBit('bit')).toBeDefined()
+      expect(shapesMap.getShape('bit')).toBeDefined()
     it 'should console.error if bit was not found', ->
       spyOn h, 'error'
-      bitsMap.getBit('')
+      shapesMap.getShape('')
       expect(h.error).toHaveBeenCalled()
 
 

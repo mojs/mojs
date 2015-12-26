@@ -1,7 +1,7 @@
 (function() {
   var Bit, bit, ns, svg;
 
-  Bit = mojs.shapesMap.getBit('bit');
+  Bit = mojs.shapesMap.getShape('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 

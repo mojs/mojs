@@ -781,7 +781,7 @@
       it('should add tweens to timeline', function() {
         var burst;
         burst = new Burst;
-        return expect(burst.timeline.timelines.length).toBe(6);
+        return expect(burst.timeline._timelines.length).toBe(6);
       });
       it('should call startTween method', function() {
         var burst;
@@ -833,7 +833,7 @@
         var burst;
         t.removeAll();
         return burst = new Burst({
-          duration: 20,
+          duration: 40,
           onComplete: function() {
             expect(true).toBe(true);
             return dfr();

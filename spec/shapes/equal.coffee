@@ -1,5 +1,5 @@
-Equal  = mojs.shapesMap.getBit('equal')
-Bit    = mojs.shapesMap.getBit('bit')
+Equal  = mojs.shapesMap.getShape('equal')
+Bit    = mojs.shapesMap.getShape('bit')
 ns     = 'http://www.w3.org/2000/svg'
 svg    = document.createElementNS?(ns, "svg")
 

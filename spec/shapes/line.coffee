@@ -1,5 +1,5 @@
-Line  = mojs.shapesMap.getBit('line')
-Bit   = mojs.shapesMap.getBit('bit')
+Line  = mojs.shapesMap.getShape('line')
+Bit   = mojs.shapesMap.getShape('bit')
 ns    = 'http://www.w3.org/2000/svg'
 svg   = document.createElementNS?(ns, "svg")
 line  = new Line ctx: svg

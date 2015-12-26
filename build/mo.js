@@ -281,6 +281,22 @@
 	      enumerable: true,
 	      configurable: true
 	    },
+	    _recalcTotalDuration: {
+	      /*
+	        Method calculate self duration from skretch.
+	        @private
+	      */
+	      value: function RecalcTotalDuration() {
+	        var i = this._timelines.length;
+	        this._props.duration = 0;
+	        while (i--) {
+	          this._recalcDuration(this._timelines[i]);
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    _setStartTime: {
 	      /*
 	        Method set start and end times.
@@ -313,13 +329,6 @@
 	      configurable: true
 	    },
 	    _declareDefaults: {
-
-	      // recalcDuration() {
-	      //   var len = this._timelines.length;
-	      //   this._props.time = 0; this._props.repeatTime = 0; this._props.shiftedRepeatTime = 0
-	      //   while(len--) { this._recalcDuration(this._timelines[len]); }
-	      // }
-
 	      /*
 	        Method do declare defaults by this._defaults object
 	        @private
@@ -622,7 +631,7 @@
 
 	  Transit.prototype.createBit = function() {
 	    var bitClass;
-	    bitClass = shapesMap.getBit(this.o.type || this.type);
+	    bitClass = shapesMap.getShape(this.o.type || this.type);
 	    this.bit = new bitClass({
 	      ctx: this.ctx,
 	      el: this.o.bit,
@@ -1019,7 +1028,7 @@
 	    }
 	    timelineOptions.onStart = this.props.onStart;
 	    timelineOptions.onComplete = this.props.onComplete;
-	    return this.tween.setProp(timelineOptions);
+	    return this.tween._setProp(timelineOptions);
 	  };
 
 	  Transit.prototype.getBitLength = function() {
@@ -4608,7 +4617,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.165.3',
+	  revision: '0.166.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(3),
 	  shapesMap: __webpack_require__(40),
@@ -7791,7 +7800,7 @@
 
 	  BitsMap.prototype.equal = Equal;
 
-	  BitsMap.prototype.getBit = function(name) {
+	  BitsMap.prototype.getShape = function(name) {
 	    return this[name] || h.error("no \"" + name + "\" shape available yet, please choose from this list:", this);
 	  };
 
