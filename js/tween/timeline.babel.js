@@ -143,7 +143,7 @@ class Timeline extends Tween {
       this.o.duration = 0;
     }
     super._declareDefaults();
-    // set default duration = 0
+    // remove default 
     this._defaults.duration = 0;
   }
   /*

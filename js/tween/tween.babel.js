@@ -71,15 +71,16 @@ var Tween = class Tween {
     @returns {Object} Self.
   */
   setProgress (progress) {
+    var p = this._props;
     // set start time if there is no one yet.
-    if ( this._props.startTime == null ) { this._setStartTime(); }
+    !p.startTime && this._setStartTime();
     // reset play time
     this._playTime = null;
     // progress should be in range of [0..1]
-    progress = h.clamp(progress, 0, 1);
+    ( progress < 0 ) && ( progress = 0 );
+    ( progress > 1 ) && ( progress = 1 );
     // update self with calculated time
-    var startPoint = (this._props.startTime - this._props.delay);
-    this._update( startPoint + progress*this._props.repeatTime );
+    this._update( (p.startTime - p.delay) + progress*p.repeatTime );
     return this;
   }
 
@@ -222,13 +223,18 @@ var Tween = class Tween {
   /*
     Method to update tween's progress.
     @private
-    @param {Number}   Time from the parent regarding it's period size.
-    @param {Boolean}  Indicates if parent progress grows.
-    @param {Number}   Parent's current period number.
-    @param {Number}   Parent's previous period number.
+    @param {Number} Current update time.
   */
-  _update (time, isGrow) {
-    // Save progress time for pause/play purposes.
+  _update (time) {
+    // We need to know what direction we are heading to,
+    // so if we don't have the previous update value - this is very first
+    // update, - skip it entirely and wait for the next value
+    if ( this._prevTime === null ) {
+      this._prevTime = time;
+      this._wasUknownUpdate = true;
+      return false;
+    }
+    // cache vars
     var p = this._props,
         startPoint = p.startTime - p.delay;
     // if speed param was defined - calculate
@@ -239,74 +245,69 @@ var Tween = class Tween {
     }
     // handle onProgress callback
     if  ( time >= startPoint && time <= p.endTime ) {
-      this._progress( (time - startPoint) / p.repeatTime , time );
+      this._progress( (time - startPoint) / p.repeatTime, time );
     }
-
     // if in active area and not ended - save progress time
+    // for pause/play purposes.
     if ( time > startPoint && time < p.endTime ) {
       this._progressTime = time - startPoint;
+    }
     // else if not started or ended set progress time to 0
-    } else if ( time <= startPoint  ) {
-      this._progressTime = 0;
-    } else if ( time >= p.endTime ) {
+    else if ( time <= startPoint  ) { this._progressTime = 0; }
+    else if ( time >= p.endTime ) {
       // set progress time to repeat time + tiny cofficient
       // to make it extend further than the end time
       this._progressTime = p.repeatTime + .00000000001;
     }
     // reverse time if _props.isReversed is set
-    if ( p.isReversed ) {
-      time = p.endTime - this._progressTime;
-    }
-    // We need to know what direction we are heading in with this tween,
-    // so if we don't have the previous update value - this is very first
-    // update, - skip it entirely and wait for the next value
-    if ( this._prevTime === null ) {
-      this._prevTime = time;
-      this._wasUknownUpdate = true;
-      return false;
-    }
+    if ( p.isReversed ) { time = p.endTime - this._progressTime; }
     /*
       if time is inside the active area of the tween.
       active area is the area from start time to end time,
       with all the repeat and delays in it
     */
     if ((time >= p.startTime) && (time <= p.endTime)) {
-      this._updateInActiveArea(time);
-    } else {
-      // complete if time is larger then end time
-      // probably we must check for direction too
-      if ( time > p.endTime && !this._isCompleted && this._isInActiveArea ) {
-        this._progress( 1, time );
-        // get period number
-        var T = this._getPeriod( p.endTime );
-        this._setProgress( ((this.o.yoyo && (T % 2 === 0)) ? 0 : 1), time );
-        this._repeatComplete( time );
-        this._complete( time );
-      }
-
-      // if was active and went to - inactive area "-"
-      if ( time < this._prevTime && time < p.startTime ) {
-        // if was in active area and didn't fire onStart callback
-        if ( !this._isStarted && this._isInActiveArea ) {
-          this._progress( 0, time );
-          this._setProgress( 0, time );
-          this._repeatStart( time );
-          this._start( time );
-        }
-      }
-      this._isInActiveArea = false;
-    }
+      this._updateInActiveArea( time );
+    } else { (this._isInActiveArea) && this._updateInInactiveArea( time ); }
 
     this._prevTime = time;
     return (time >= p.endTime) || (time <= startPoint);
   }
   /*
+    Method to handle tween's progress in inactive area.
+    @private
+    @param {Number} Current update time.
+  */
+  _updateInInactiveArea (time) {
+    if ( !this._isInActiveArea ) { return; }
+    var p = this._props;
+    // complete if time is larger then end time
+    if ( time > p.endTime && !this._isCompleted) {
+      this._progress( 1, time );
+      // get period number
+      var T = this._getPeriod( p.endTime );
+      this._setProgress( ((this.o.yoyo && (T % 2 === 0)) ? 0 : 1), time );
+      this._repeatComplete( time );
+      this._complete( time );
+    }
+    // if was active and went to - inactive area "-"
+    if ( time < this._prevTime && time < p.startTime && !this._isStarted ) {
+      // if was in active area and didn't fire onStart callback
+      this._progress( 0, time );
+      this._setProgress( 0, time );
+      this._repeatStart( time );
+      this._start( time );
+    }
+    this._isInActiveArea = false;
+  }
+
+  /*
     Method to handle tween's progress in active area.
     @private
     @param {Number} Current update time.
   */
-  _updateInActiveArea(time) {
-    
+  _updateInActiveArea (time) {
+    this.o.isIt && console.log('update in area')
     var props         = this._props,
         delayDuration = props.delay + props.duration,
         startPoint    = props.startTime - props.delay,
@@ -352,14 +353,11 @@ var Tween = class Tween {
           this._start( time );
           this._repeatStart( time );
           this._firstUpdate( time );
-          // this._setProgress( 0, time );
         }
         if ( time < this._prevTime ) {
           this._complete( time );
           this._repeatComplete( time );
           this._firstUpdate(time);
-          // cover yoyoOne
-          // this._setProgress(1, time);
           // reset isCompleted immediately
           this._isCompleted = false;
         }
@@ -372,7 +370,6 @@ var Tween = class Tween {
         // because we have already handled
         // 1 and onRepeatComplete in delay gap
         if (this.progress !== 1) {
-          // this._setProgress(1, time);
           this._repeatComplete(time);
         }
         // if on edge but not at very start
@@ -380,7 +377,6 @@ var Tween = class Tween {
         // ^!    ^here ^here           
         if ( prevT >= 0 ) {
           this._repeatStart(time);
-          // this._setProgress( yoyoZero , time);
         }
       }
 
@@ -391,7 +387,6 @@ var Tween = class Tween {
           this._start( time );
           this._repeatStart( time );
           // it was zero anyways
-          // this._setProgress( yoyoZero , time);
 
           // restart flags immediately in case if we will
           // return to '-' inactive area on the next step
@@ -406,7 +401,6 @@ var Tween = class Tween {
         // |=====|=====|=====| <<<
         //       ^here ^here ^not here     
         if ( this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
-          // this._setProgress( 0, time );
           this._repeatStart( time );
         }
         // if on very end edge
@@ -418,20 +412,11 @@ var Tween = class Tween {
           this._complete( time );
           this._repeatComplete( time );              
           this._firstUpdate( time);
-          // this._setProgress( 1, time );
           // reset isComplete flag call
           // cuz we returned to active area
           this._isCompleted = false;
         }
         this._repeatComplete(time);
-        // // change order regarding direction
-        // if ( time > this._prevTime ) {
-        //   // this._setProgress(1, time);
-        //   this._repeatComplete(time);
-        // } else {
-        //   this._repeatComplete(time);
-        //   // this._setProgress(yoyoOne, time);
-        // }
       }
 
       if ( prevT === 'delay') {
@@ -440,14 +425,12 @@ var Tween = class Tween {
         //               ^2    ^1
         if ( T < TPrevValue ) {
           this._repeatComplete(time);
-          // this._setProgress(yoyoOne, time);
         }
         // if just after delay gap
         // |---=====|---=====|---=====| >>>
         //            ^1  ^2
         if ( T === TPrevValue && T > 0 ) {
           this._repeatStart(time);
-          // this._setProgress(yoyoZero, time);
         }
       }
 

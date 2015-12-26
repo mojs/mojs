@@ -1,11 +1,6 @@
 ## TODO
 ---
 
-
-### TWEEN + TIMELINE:
-  - add onProgress
-  - performance owptimizations
-
 - fix coverage
 - release
   - docs

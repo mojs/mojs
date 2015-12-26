@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.165.1', isDebug: true
+  revision:   '0.165.2', isDebug: true
   helpers     : require './h'
   Bit         : require './shapes/bit'
   bitsMap     : require './shapes/bitsMap'
@@ -24,52 +24,6 @@ window.mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
-
-# if (true)
-
-#   RANGE_MAX   = 10000
-#   rangeSlider = document.querySelector('#js-range-slider')
-#   obj         = document.querySelector('#js-el1')
-#   play        = document.querySelector('#js-play')
-#   reverse     = document.querySelector('#js-reverse')
-#   pause       = document.querySelector('#js-pause')
-#   stop        = document.querySelector('#js-stop')
-
-#   tm = new mojs.Timeline speed: .1
-
-#   tw = new mojs.Tween
-#     yoyo: true
-#     duration: 1000
-#     onStart:->
-#       console.log "START"
-#     onComplete:->
-#       console.log "COMPLETE"
-#     onRepeatStart:-> console.log "REPEAT START"
-#     onRepeatComplete:-> console.log "REPEAT COMPLETE"
-#     onFirstUpdate:-> console.log "FIRST UPDATE"
-#     onProgress:(p, isForward)->
-#       console.log "***** PROGRESS: #{p}, #{isForward}"
-#       rangeSlider.value = p*10000
-#     onUpdate:(pe, p, isForward)->
-#       mojs.h.style( obj, 'transform', "translate3d(#{400*pe}px, 0, 0)" )
-#       console.log "TWEEN ON_UPDATE: #{pe.toFixed(5)}, #{isForward}"
-
-#   play.addEventListener 'click', -> tm.play()
-#   reverse.addEventListener 'click', ->
-#     console.time 'delay'
-#     tm.playBackward()
-#   pause.addEventListener 'click', -> tm.pause()
-#   stop.addEventListener 'click', -> tm.stop()
-#   stop.addEventListener 'click', -> tm.stop()
-
-#   tm
-#     .add(tw)
-#     # .play()
-#   # tm.add tm0
-#   # tm.append new mojs.Tween duration: 4000
-#   rangeSlider.oninput = (e)->
-#     proc = (1*rangeSlider.value)/10000
-#     tm.setProgress proc
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd
