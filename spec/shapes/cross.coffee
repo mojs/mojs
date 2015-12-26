@@ -1,5 +1,5 @@
-Cross = mojs.Cross
-Bit   = mojs.Bit
+Cross = mojs.shapesMap.getBit('cross')
+Bit   = mojs.shapesMap.getBit('bit')
 ns    = 'http://www.w3.org/2000/svg'
 svg   = document.createElementNS?(ns, "svg")
 cross  = new Cross ctx: svg

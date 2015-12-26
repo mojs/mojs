@@ -1,16 +1,8 @@
 
 window.mojs =
-  revision:   '0.165.2', isDebug: true
+  revision:   '0.165.3', isDebug: true
   helpers     : require './h'
-  Bit         : require './shapes/bit'
-  bitsMap     : require './shapes/bitsMap'
-  Circle      : require './shapes/circle'
-  Cross       : require './shapes/cross'
-  Line        : require './shapes/line'
-  Rect        : require './shapes/rect'
-  Polygon     : require './shapes/polygon'
-  Equal       : require './shapes/equal'
-  Zigzag      : require './shapes/zigzag'
+  shapesMap   : require './shapes/shapesMap'
   Burst       : require './burst'
   Transit     : require './transit'
   Swirl       : require './swirl'

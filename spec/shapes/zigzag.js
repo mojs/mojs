@@ -1,9 +1,9 @@
 (function() {
   var Bit, Zigzag, ns, svg;
 
-  Zigzag = mojs.Zigzag;
+  Zigzag = mojs.shapesMap.getBit('zigzag');
 
-  Bit = mojs.Bit;
+  Bit = mojs.shapesMap.getBit('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 

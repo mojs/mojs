@@ -1,8 +1,6 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-bitsMap   = require './shapes/bitsMap'
-# Tween     = require './tween/timeline'
 Transit   = require './transit'
 Swirl     = require './swirl'
 h         = require './h'

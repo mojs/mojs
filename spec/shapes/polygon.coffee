@@ -1,5 +1,5 @@
-Polygon  = mojs.Polygon
-Bit     = mojs.Bit
+Polygon = mojs.shapesMap.getBit('polygon')
+Bit     = mojs.shapesMap.getBit('bit')
 ns      = 'http://www.w3.org/2000/svg'
 svg     = document.createElementNS?(ns, "svg")
 

@@ -9,22 +9,22 @@ describe 'mojs ->', ->
     expect(mojs.h).toBe mojs.helpers
   it 'should expose h.delta mojs', ->
     expect(mojs.delta).toBe mojs.helpers.delta
-  it 'should have bitsMap', ->
-    expect(mojs.bitsMap).toBeDefined()
-  it 'should have Circle', ->
-    expect(mojs.Circle).toBeDefined()
-  it 'should have Cross', ->
-    expect(mojs.Cross).toBeDefined()
-  it 'should have Line', ->
-    expect(mojs.Line).toBeDefined()
-  it 'should have Rect', ->
-    expect(mojs.Rect).toBeDefined()
-  it 'should have Polygon', ->
-    expect(mojs.Polygon).toBeDefined()
-  it 'should have Equal', ->
-    expect(mojs.Equal).toBeDefined()
-  it 'should have Zigzag', ->
-    expect(mojs.Zigzag).toBeDefined()
+  it 'should have shapesMap', ->
+    expect(mojs.shapesMap).toBeDefined()
+  # it 'should have Circle', ->
+  #   expect(mojs.Circle).toBeDefined()
+  # it 'should have Cross', ->
+  #   expect(mojs.Cross).toBeDefined()
+  # it 'should have Line', ->
+  #   expect(mojs.Line).toBeDefined()
+  # it 'should have Rect', ->
+  #   expect(mojs.Rect).toBeDefined()
+  # it 'should have Polygon', ->
+  #   expect(mojs.Polygon).toBeDefined()
+  # it 'should have Equal', ->
+  #   expect(mojs.Equal).toBeDefined()
+  # it 'should have Zigzag', ->
+  #   expect(mojs.Zigzag).toBeDefined()
   it 'should have Burst', ->
     expect(mojs.Burst).toBeDefined()
   it 'should have Transit', ->

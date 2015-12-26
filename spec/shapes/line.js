@@ -1,9 +1,9 @@
 (function() {
   var Bit, Line, line, ns, svg;
 
-  Line = mojs.Line;
+  Line = mojs.shapesMap.getBit('line');
 
-  Bit = mojs.Bit;
+  Bit = mojs.shapesMap.getBit('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 

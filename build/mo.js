@@ -364,13 +364,15 @@
 
 	
 	/* istanbul ignore next */
-	var Timeline, Transit, Tween, bitsMap, h,
+	var Bit, Timeline, Transit, Tween, h, shapesMap,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
 	h = __webpack_require__(3);
 
-	bitsMap = __webpack_require__(5);
+	Bit = __webpack_require__(4);
+
+	shapesMap = __webpack_require__(40);
 
 	Tween = __webpack_require__(19);
 
@@ -620,7 +622,7 @@
 
 	  Transit.prototype.createBit = function() {
 	    var bitClass;
-	    bitClass = bitsMap.getBit(this.o.type || this.type);
+	    bitClass = shapesMap.getBit(this.o.type || this.type);
 	    this.bit = new bitClass({
 	      ctx: this.ctx,
 	      el: this.o.bit,
@@ -1027,7 +1029,7 @@
 
 	  return Transit;
 
-	})(bitsMap.map.bit);
+	})(Bit);
 
 	module.exports = Transit;
 
@@ -1835,57 +1837,7 @@
 
 
 /***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
-
-	Bit = __webpack_require__(4);
-
-	Circle = __webpack_require__(6);
-
-	Line = __webpack_require__(8);
-
-	Zigzag = __webpack_require__(12);
-
-	Rect = __webpack_require__(9);
-
-	Polygon = __webpack_require__(10);
-
-	Cross = __webpack_require__(7);
-
-	Equal = __webpack_require__(11);
-
-	h = __webpack_require__(3);
-
-	BitsMap = (function() {
-	  function BitsMap() {}
-
-	  BitsMap.prototype.h = h;
-
-	  BitsMap.prototype.map = {
-	    bit: Bit,
-	    circle: Circle,
-	    line: Line,
-	    zigzag: Zigzag,
-	    rect: Rect,
-	    polygon: Polygon,
-	    cross: Cross,
-	    equal: Equal
-	  };
-
-	  BitsMap.prototype.getBit = function(name) {
-	    return this.map[name] || this.h.error("no \"" + name + "\" shape available yet, please choose from this list:", this.map);
-	  };
-
-	  return BitsMap;
-
-	})();
-
-	module.exports = new BitsMap;
-
-
-/***/ },
+/* 5 */,
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2259,11 +2211,9 @@
 
 	
 	/* istanbul ignore next */
-	var Burst, Swirl, Transit, bitsMap, h,
+	var Burst, Swirl, Transit, h,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
-
-	bitsMap = __webpack_require__(5);
 
 	Transit = __webpack_require__(2);
 
@@ -4658,18 +4608,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.165.2',
+	  revision: '0.165.3',
 	  isDebug: true,
 	  helpers: __webpack_require__(3),
-	  Bit: __webpack_require__(4),
-	  bitsMap: __webpack_require__(5),
-	  Circle: __webpack_require__(6),
-	  Cross: __webpack_require__(7),
-	  Line: __webpack_require__(8),
-	  Rect: __webpack_require__(9),
-	  Polygon: __webpack_require__(10),
-	  Equal: __webpack_require__(11),
-	  Zigzag: __webpack_require__(12),
+	  shapesMap: __webpack_require__(40),
 	  Burst: __webpack_require__(13),
 	  Transit: __webpack_require__(2),
 	  Swirl: __webpack_require__(14),
@@ -7802,6 +7744,63 @@
 	  core.addLocale = addLocale;
 	}(/\b\w\w?\b/g, /:(.*)\|(.*)$/, {}, 'en', 'Seconds', 'Minutes', 'Hours', 'Month', 'FullYear');
 	}(typeof self != 'undefined' && self.Math === Math ? self : Function('return this')(), false);
+
+/***/ },
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
+
+	Bit = __webpack_require__(4);
+
+	Circle = __webpack_require__(6);
+
+	Line = __webpack_require__(8);
+
+	Zigzag = __webpack_require__(12);
+
+	Rect = __webpack_require__(9);
+
+	Polygon = __webpack_require__(10);
+
+	Cross = __webpack_require__(7);
+
+	Equal = __webpack_require__(11);
+
+	h = __webpack_require__(3);
+
+	BitsMap = (function() {
+	  function BitsMap() {}
+
+	  BitsMap.prototype.bit = Bit;
+
+	  BitsMap.prototype.circle = Circle;
+
+	  BitsMap.prototype.line = Line;
+
+	  BitsMap.prototype.zigzag = Zigzag;
+
+	  BitsMap.prototype.rect = Rect;
+
+	  BitsMap.prototype.polygon = Polygon;
+
+	  BitsMap.prototype.cross = Cross;
+
+	  BitsMap.prototype.equal = Equal;
+
+	  BitsMap.prototype.getBit = function(name) {
+	    return this[name] || h.error("no \"" + name + "\" shape available yet, please choose from this list:", this);
+	  };
+
+	  return BitsMap;
+
+	})();
+
+	module.exports = new BitsMap;
+
 
 /***/ }
 /******/ ]);

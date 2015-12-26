@@ -1,11 +1,12 @@
 ### istanbul ignore next ###
 
 h         = require './h'
-bitsMap   = require './shapes/bitsMap'
+Bit       = require './shapes/bit'
+shapesMap = require './shapes/shapesMap'
 Tween     = require './tween/tween'
 Timeline  = require './tween/timeline'
 
-class Transit extends bitsMap.map.bit
+class Transit extends Bit
   progress: 0
   defaults:
     # presentation props
@@ -176,7 +177,7 @@ class Transit extends bitsMap.map.bit
     else if @props[o.key]? then parseFloat(@props[o.key]) else o.fallback or 0
 
   createBit:->
-    bitClass = bitsMap.getBit(@o.type or @type)
+    bitClass = shapesMap.getBit(@o.type or @type)
     @bit = new bitClass ctx: @ctx, el: @o.bit, isDrawLess: true
     if @isForeign or @isForeignBit then @el = @bit.el
 

@@ -1,9 +1,9 @@
 (function() {
   var Bit, Polygon, ns, svg;
 
-  Polygon = mojs.Polygon;
+  Polygon = mojs.shapesMap.getBit('polygon');
 
-  Bit = mojs.Bit;
+  Bit = mojs.shapesMap.getBit('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 

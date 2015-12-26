@@ -1,9 +1,9 @@
 (function() {
   var Bit, Cross, cross, ns, svg;
 
-  Cross = mojs.Cross;
+  Cross = mojs.shapesMap.getBit('cross');
 
-  Bit = mojs.Bit;
+  Bit = mojs.shapesMap.getBit('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 

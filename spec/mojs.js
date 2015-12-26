@@ -15,29 +15,8 @@
     it('should expose h.delta mojs', function() {
       return expect(mojs.delta).toBe(mojs.helpers.delta);
     });
-    it('should have bitsMap', function() {
-      return expect(mojs.bitsMap).toBeDefined();
-    });
-    it('should have Circle', function() {
-      return expect(mojs.Circle).toBeDefined();
-    });
-    it('should have Cross', function() {
-      return expect(mojs.Cross).toBeDefined();
-    });
-    it('should have Line', function() {
-      return expect(mojs.Line).toBeDefined();
-    });
-    it('should have Rect', function() {
-      return expect(mojs.Rect).toBeDefined();
-    });
-    it('should have Polygon', function() {
-      return expect(mojs.Polygon).toBeDefined();
-    });
-    it('should have Equal', function() {
-      return expect(mojs.Equal).toBeDefined();
-    });
-    it('should have Zigzag', function() {
-      return expect(mojs.Zigzag).toBeDefined();
+    it('should have shapesMap', function() {
+      return expect(mojs.shapesMap).toBeDefined();
     });
     it('should have Burst', function() {
       return expect(mojs.Burst).toBeDefined();

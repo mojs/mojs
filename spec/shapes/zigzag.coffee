@@ -1,5 +1,5 @@
-Zigzag = mojs.Zigzag
-Bit    = mojs.Bit
+Zigzag = mojs.shapesMap.getBit('zigzag')
+Bit    = mojs.shapesMap.getBit('bit')
 ns     = 'http://www.w3.org/2000/svg'
 svg    = document.createElementNS?(ns, 'svg')
 document.body.appendChild svg

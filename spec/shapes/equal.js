@@ -1,9 +1,9 @@
 (function() {
   var Bit, Equal, ns, svg;
 
-  Equal = mojs.Equal;
+  Equal = mojs.shapesMap.getBit('equal');
 
-  Bit = mojs.Bit;
+  Bit = mojs.shapesMap.getBit('bit');
 
   ns = 'http://www.w3.org/2000/svg';
 

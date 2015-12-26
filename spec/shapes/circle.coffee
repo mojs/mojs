@@ -1,5 +1,5 @@
-Circle  = mojs.Circle
-Bit     = mojs.Bit
+Circle  = mojs.shapesMap.getBit('circle')
+Bit     = mojs.shapesMap.getBit('bit')
 ns      = 'http://www.w3.org/2000/svg'
 svg     = document.createElementNS?(ns, "svg")
 circle  = new Circle ctx: svg
