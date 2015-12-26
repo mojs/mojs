@@ -224,8 +224,17 @@ var Tween = class Tween {
     Method to update tween's progress.
     @private
     @param {Number} Current update time.
+    @param {Number} Previous update time form parent
   */
-  _update (time) {
+  _update (time, prevTime ) {
+    // if we don't the _prevTime thus the direction we are heading to,
+    // but prevTime was passed thus we are child of a Timeline
+    // set _prevTime to passed one and pretent that there was unknown
+    // update to not to block start/complete callbacks
+    if ( this._prevTime == null && prevTime != null ) {
+      this._prevTime = prevTime;
+      this._wasUknownUpdate = true;
+    }
     // We need to know what direction we are heading to,
     // so if we don't have the previous update value - this is very first
     // update, - skip it entirely and wait for the next value
@@ -234,6 +243,7 @@ var Tween = class Tween {
       this._wasUknownUpdate = true;
       return false;
     }
+    
     // cache vars
     var p = this._props,
         startPoint = p.startTime - p.delay;
@@ -307,7 +317,7 @@ var Tween = class Tween {
     @param {Number} Current update time.
   */
   _updateInActiveArea (time) {
-    this.o.isIt && console.log('update in area')
+
     var props         = this._props,
         delayDuration = props.delay + props.duration,
         startPoint    = props.startTime - props.delay,
@@ -333,7 +343,6 @@ var Tween = class Tween {
 
     // reset callback flags
     this._isCompleted = false;
-
     // if time is inside the duration area of the tween
     if ( startPoint + elapsed >= props.startTime ) {
       this._isInActiveArea = true; this._isRepeatCompleted = false;
@@ -595,7 +604,7 @@ var Tween = class Tween {
     @private
     @param {Number} Current update time.
   */
-  _firstUpdate(time) {
+  _firstUpdate (time) {
     if ( this._isFirstUpdate ) { return; }
     if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
       this._props.onFirstUpdate.call( this, time > this._prevTime );
@@ -608,7 +617,7 @@ var Tween = class Tween {
     @private
     @param {Number} Current update time.
   */
-  _repeatComplete(time) {
+  _repeatComplete (time) {
     if (this._isRepeatCompleted) { return; }
     if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
       this._props.onRepeatComplete.call( this, time > this._prevTime );
@@ -621,7 +630,7 @@ var Tween = class Tween {
     @private
     @param {Number} Current update time.
   */
-  _repeatStart(time) {
+  _repeatStart (time) {
     if (this._isRepeatStart) { return; }
     if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
       this._props.onRepeatStart.call( this, time > this._prevTime );

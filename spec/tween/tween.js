@@ -70,7 +70,7 @@
       });
     });
     describe('isChained option ->', function() {
-      it('should recieve isChained option', function() {
+      it('should receive isChained option', function() {
         var t;
         t = new Tween({
           duration: 1000,
@@ -97,7 +97,7 @@
         expect(t._props.startTime).toBeGreaterThan(expectedTime - 50);
         return expect(t._props.startTime).not.toBeGreaterThan(expectedTime);
       });
-      it('should recieve the start time', function() {
+      it('should receive the start time', function() {
         var t;
         t = new Tween({
           duration: 1000
@@ -433,7 +433,7 @@
         t._update(time);
         return expect(t._prevTime).toBe(startPoint + speed * (time - startPoint));
       });
-      return it('should ignore speed if _playTime is not set', function() {
+      it('should ignore speed if _playTime is not set', function() {
         var delay, duration, speed, t, time;
         delay = 200;
         duration = 1000;
@@ -449,6 +449,39 @@
         t._playTime = null;
         t._update(time);
         return expect(t._prevTime).toBe(time);
+      });
+      it('should receive _prevTime', function() {
+        var prevTime, t;
+        t = new Tween({
+          duration: 1000,
+          delay: 200,
+          repeat: 2,
+          onStart: function() {}
+        });
+        t._setStartTime();
+        prevTime = 1;
+        spyOn(t, '_updateInActiveArea').and.callThrough();
+        spyOn(t._props, 'onStart');
+        t._update(t._props.startTime + 1300, prevTime);
+        expect(t._updateInActiveArea).toHaveBeenCalled();
+        return expect(t._props.onStart).toHaveBeenCalledWith(true);
+      });
+      return it('should receive _prevTime', function() {
+        var prevTime, t;
+        t = new Tween({
+          duration: 1000,
+          delay: 200,
+          repeat: 2,
+          onStart: function() {}
+        });
+        t._setStartTime();
+        t._prevTime = 2;
+        prevTime = 1;
+        spyOn(t, '_updateInActiveArea').and.callThrough();
+        spyOn(t._props, 'onStart');
+        t._update(t._props.startTime + 1300, prevTime);
+        expect(t._updateInActiveArea).toHaveBeenCalled();
+        return expect(t._props.onStart).toHaveBeenCalledWith(true);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -3636,6 +3669,37 @@
         expect(t._props.onComplete).toHaveBeenCalledWith(true);
         return expect(t._props.onComplete.calls.count()).toBe(1);
       });
+      it('should fire only once when inside timeline #2', function() {
+        var cnt, delay, duration, t1, t2, tm;
+        cnt = 0;
+        duration = 50;
+        delay = 10;
+        tm = new mojs.Timeline;
+        t1 = new Tween({
+          delay: delay,
+          duration: duration,
+          onComplete: function() {
+            return cnt++;
+          }
+        });
+        t2 = new Tween({
+          delay: 2 * delay,
+          duration: 2 * duration
+        });
+        tm.add(t1, t2);
+        tm._setStartTime();
+        tm._update(t1._props.startTime);
+        tm._update(t1._props.startTime + duration / 2);
+        tm._update(t1._props.startTime + duration + delay / 2);
+        tm._update(t1._props.startTime + duration + delay + 1);
+        tm._update(t1._props.startTime + 2 * duration + delay / 2);
+        tm._update(t1._props.startTime + 2 * (duration + delay));
+        tm._update(t1._props.startTime + 2 * (duration + delay) + delay);
+        tm._update(t1._props.startTime + 2 * (duration + delay) + 2 * delay);
+        tm._update(t1._props.startTime + 2 * (duration + delay) + 3 * delay);
+        tm._update(t1._props.startTime + 2 * (duration + delay) + 4 * delay);
+        return expect(cnt).toBe(1);
+      });
       it('should reset isCompleted flag', function() {
         var t;
         t = new Tween({
@@ -3662,7 +3726,7 @@
         t._setStartTime()._update(t._props.startTime + 11);
         return expect(isRightScope).toBe(true);
       });
-      it('should fire after the last onUpdate', function(dfr) {
+      return it('should fire after the last onUpdate', function(dfr) {
         var proc, t;
         proc = 0;
         t = new Tween({
@@ -3679,39 +3743,6 @@
         t._update(t._props.startTime + 1);
         t._update(t._props.startTime + 2);
         return t._update(t._props.startTime + 32);
-      });
-      return it('should fire only once if inside timeline', function() {
-        var cnt, delay, duration, t1, t2, tm;
-        cnt = 0;
-        duration = 50;
-        delay = 10;
-        tm = new mojs.Timeline({
-          repeat: 1
-        });
-        t1 = new Tween({
-          delay: delay,
-          duration: duration,
-          onComplete: function() {
-            return cnt++;
-          }
-        });
-        t2 = new Tween({
-          delay: 2 * delay,
-          duration: 2 * duration
-        });
-        tm.add(t1, t2);
-        tm._setStartTime();
-        tm._update(t1._props.startTime);
-        tm._update(t1._props.startTime + duration / 2);
-        tm._update(t1._props.startTime + duration + delay / 2);
-        tm._update(t1._props.startTime + duration + delay + 1);
-        tm._update(t1._props.startTime + 2 * duration + delay / 2);
-        tm._update(t1._props.startTime + 2 * (duration + delay));
-        tm._update(t1._props.startTime + 2 * (duration + delay) + delay);
-        tm._update(t1._props.startTime + 2 * (duration + delay) + 2 * delay);
-        tm._update(t1._props.startTime + 2 * (duration + delay) + 3 * delay);
-        tm._update(t1._props.startTime + 2 * (duration + delay) + 4 * delay);
-        return expect(cnt).toBe(1);
       });
     });
     describe('onStart callback ->', function() {
@@ -3795,7 +3826,7 @@
       });
     });
     describe('yoyo option ->', function() {
-      return it('should recieve yoyo option', function() {
+      return it('should receive yoyo option', function() {
         var t;
         t = new Tween({
           yoyo: true
@@ -3974,7 +4005,7 @@
         t.play();
         return expect(tweener.add).toHaveBeenCalled();
       });
-      it('should recieve progress time', function() {
+      it('should receive progress time', function() {
         var shift, t, time;
         t = new Tween;
         t._setStartTime();

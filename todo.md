@@ -1,6 +1,9 @@
 ## TODO
 ---
 
+- cover COVER labels at tweener
+- remove clamp for setProgress on tween
+
 - fix coverage
 - release
   - docs

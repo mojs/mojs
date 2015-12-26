@@ -27,7 +27,10 @@ class Tweener {
   _update(time) {
     var i = this.tweens.length;
     while(i--) {
-      if (this.tweens[i]._update(time) === true) { this.remove(i); }
+      // COVER
+      if ( this.tweens[i] ) {
+        if (this.tweens[i]._update(time) === true) { this.remove(i); }
+      }
     }
   }
   /*
@@ -50,8 +53,11 @@ class Tweener {
       : this.tweens.indexOf(tween);
 
     if (index !== -1) {
-      this.tweens[index]._isRunning = false;
-      this.tweens.splice(index, 1);
+      // cover
+      if ( this.tweens[index] ) {
+        this.tweens[index]._isRunning = false;
+        this.tweens.splice(index, 1);
+      }
     }
   }
 }

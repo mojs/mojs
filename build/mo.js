@@ -257,8 +257,9 @@
 	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_setProgress", this).call(this, progress, time);
 	        var timeToTimelines = this._props.startTime + progress * this._props.duration,
 	            i = this._timelines.length;
+	        // we need to pass self _prevTime for children
 	        while (i--) {
-	          this._timelines[i]._update(timeToTimelines);
+	          this._timelines[i]._update(timeToTimelines, this._prevTime);
 	        }
 	      },
 	      writable: true,
@@ -1003,7 +1004,7 @@
 	    if ((o != null) && Object.keys(o).length) {
 	      this.extendDefaults(o);
 	      this.resetTimeline();
-	      !isForeign && this.timeline.recalcDuration();
+	      !isForeign && this.timeline._recalcTotalDuration();
 	      this.calcSize();
 	      return !isForeign && this.setElStyles();
 	    }
@@ -4068,8 +4069,17 @@
 	        Method to update tween's progress.
 	        @private
 	        @param {Number} Current update time.
+	        @param {Number} Previous update time form parent
 	      */
-	      value: function Update(time) {
+	      value: function Update(time, prevTime) {
+	        // if we don't the _prevTime thus the direction we are heading to,
+	        // but prevTime was passed thus we are child of a Timeline
+	        // set _prevTime to passed one and pretent that there was unknown
+	        // update to not to block start/complete callbacks
+	        if (this._prevTime == null && prevTime != null) {
+	          this._prevTime = prevTime;
+	          this._wasUknownUpdate = true;
+	        }
 	        // We need to know what direction we are heading to,
 	        // so if we don't have the previous update value - this is very first
 	        // update, - skip it entirely and wait for the next value
@@ -4078,6 +4088,7 @@
 	          this._wasUknownUpdate = true;
 	          return false;
 	        }
+
 	        // cache vars
 	        var p = this._props,
 	            startPoint = p.startTime - p.delay;
@@ -4168,7 +4179,6 @@
 	        @param {Number} Current update time.
 	      */
 	      value: function UpdateInActiveArea(time) {
-	        this.o.isIt && console.log("update in area");
 	        var props = this._props,
 	            delayDuration = props.delay + props.duration,
 	            startPoint = props.startTime - props.delay,
@@ -4194,7 +4204,6 @@
 
 	        // reset callback flags
 	        this._isCompleted = false;
-
 	        // if time is inside the duration area of the tween
 	        if (startPoint + elapsed >= props.startTime) {
 	          this._isInActiveArea = true;this._isRepeatCompleted = false;
@@ -4617,7 +4626,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.166.0',
+	  revision: '0.166.1',
 	  isDebug: true,
 	  helpers: __webpack_require__(3),
 	  shapesMap: __webpack_require__(40),
@@ -4728,8 +4737,11 @@
 	      value: function Update(time) {
 	        var i = this.tweens.length;
 	        while (i--) {
-	          if (this.tweens[i]._update(time) === true) {
-	            this.remove(i);
+	          // COVER
+	          if (this.tweens[i]) {
+	            if (this.tweens[i]._update(time) === true) {
+	              this.remove(i);
+	            }
 	          }
 	        }
 	      },
@@ -4768,8 +4780,11 @@
 	        var index = typeof tween === "number" ? tween : this.tweens.indexOf(tween);
 
 	        if (index !== -1) {
-	          this.tweens[index]._isRunning = false;
-	          this.tweens.splice(index, 1);
+	          // cover
+	          if (this.tweens[index]) {
+	            this.tweens[index]._isRunning = false;
+	            this.tweens.splice(index, 1);
+	          }
 	        }
 	      },
 	      writable: true,

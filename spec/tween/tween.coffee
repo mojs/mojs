@@ -43,7 +43,7 @@ describe 'Tween ->', ->
       expect(t._props.repeatTime).toBe  3300
 
   describe 'isChained option ->', ->
-    it 'should recieve isChained option', ->
+    it 'should receive isChained option', ->
       t = new Tween
         duration: 1000, isChained: true
       expect(t._props.isChained).toBe  true
@@ -57,7 +57,7 @@ describe 'Tween ->', ->
       expectedTime = performance.now() + 500
       expect(t._props.startTime).toBeGreaterThan expectedTime - 50
       expect(t._props.startTime).not.toBeGreaterThan expectedTime
-    it 'should recieve the start time', ->
+    it 'should receive the start time', ->
       t = new Tween(duration: 1000)._setStartTime 1
       expect(t._props.startTime).toBe 1
     it 'should calculate end time', ->
@@ -268,6 +268,27 @@ describe 'Tween ->', ->
       t._playTime = null
       t._update time
       expect(t._prevTime).toBe time
+
+    it 'should receive _prevTime', ->
+      t = new Tween(duration: 1000, delay: 200, repeat: 2, onStart:-> )
+      t._setStartTime()
+      prevTime = 1
+      spyOn( t, '_updateInActiveArea').and.callThrough()
+      spyOn t._props, 'onStart'
+      t._update (t._props.startTime + 1300), prevTime
+      expect(t._updateInActiveArea).toHaveBeenCalled()
+      expect(t._props.onStart).toHaveBeenCalledWith(true)
+
+    it 'should receive _prevTime', ->
+      t = new Tween(duration: 1000, delay: 200, repeat: 2, onStart:-> )
+      t._setStartTime()
+      t._prevTime = 2
+      prevTime = 1
+      spyOn( t, '_updateInActiveArea').and.callThrough()
+      spyOn t._props, 'onStart'
+      t._update (t._props.startTime + 1300), prevTime
+      expect(t._updateInActiveArea).toHaveBeenCalled()
+      expect(t._props.onStart).toHaveBeenCalledWith(true)
   
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -4194,7 +4215,7 @@ describe 'Tween ->', ->
     it 'should be called just once when inside timeline', ->
       tm = new mojs.Timeline
       duration = 32
-      t = new Tween(duration: duration, onComplete:->)._setStartTime()
+      t = new Tween(duration: duration, onComplete:-> )._setStartTime()
       tm.add t
       tm._setStartTime()
       spyOn t._props, 'onComplete'
@@ -4203,6 +4224,35 @@ describe 'Tween ->', ->
       tm._update(t._props.startTime + duration)
       expect(t._props.onComplete).toHaveBeenCalledWith true
       expect(t._props.onComplete.calls.count()).toBe 1
+
+    it 'should fire only once when inside timeline #2', ()->
+      cnt = 0; duration = 50; delay = 10
+      tm = new mojs.Timeline # repeat: 1
+      t1 = new Tween
+        delay:      delay
+        duration:   duration
+        onComplete:-> cnt++
+      t2 = new Tween
+        delay:      2*delay
+        duration:   2*duration
+
+      tm.add t1, t2
+      tm._setStartTime()
+
+      tm._update t1._props.startTime
+      tm._update t1._props.startTime + duration/2
+      tm._update t1._props.startTime + duration + delay/2
+      tm._update t1._props.startTime + duration + delay + 1
+
+      tm._update t1._props.startTime + 2*duration + delay/2
+      # end
+      tm._update t1._props.startTime + 2*( duration + delay ) # <-- error
+      tm._update t1._props.startTime + 2*( duration + delay ) + delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 2*delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 3*delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 4*delay
+
+      expect(cnt).toBe(1)
 
     # it 'should reset isCompleted and isFirstUpdate flag', ->
     it 'should reset isCompleted flag', ->
@@ -4233,35 +4283,6 @@ describe 'Tween ->', ->
       t._update t._props.startTime + 1
       t._update t._props.startTime + 2
       t._update t._props.startTime + 32
-
-    it 'should fire only once if inside timeline', ()->
-      cnt = 0; duration = 50; delay = 10
-      tm = new mojs.Timeline repeat: 1
-      t1 = new Tween
-        delay:      delay
-        duration:   duration
-        onComplete:-> cnt++
-      t2 = new Tween
-        delay:      2*delay
-        duration:   2*duration
-
-      tm.add t1, t2
-      tm._setStartTime()
-
-      tm._update t1._props.startTime
-      tm._update t1._props.startTime + duration/2
-      tm._update t1._props.startTime + duration + delay/2
-      tm._update t1._props.startTime + duration + delay + 1
-
-      tm._update t1._props.startTime + 2*duration + delay/2
-      # end
-      tm._update t1._props.startTime + 2*( duration + delay ) # <-- error
-      tm._update t1._props.startTime + 2*( duration + delay ) + delay
-      tm._update t1._props.startTime + 2*( duration + delay ) + 2*delay
-      tm._update t1._props.startTime + 2*( duration + delay ) + 3*delay
-      tm._update t1._props.startTime + 2*( duration + delay ) + 4*delay
-
-      expect(cnt).toBe(1)
 
   describe 'onStart callback ->', ->
     it 'should be defined', ->
@@ -4318,7 +4339,7 @@ describe 'Tween ->', ->
       expect(t._props.onRepeatComplete).toBeDefined()
 
   describe 'yoyo option ->', ->
-    it 'should recieve yoyo option', ->
+    it 'should receive yoyo option', ->
       t = new Tween yoyo: true
       expect(t._props.yoyo).toBe true
 
@@ -4416,7 +4437,7 @@ describe 'Tween ->', ->
       spyOn tweener, 'add'
       t.play()
       expect(tweener.add).toHaveBeenCalled()
-    it 'should recieve progress time',->
+    it 'should receive progress time',->
       t = new Tween
       t._setStartTime()
       time = t._props.startTime

@@ -10,11 +10,11 @@
   describe('Twenner ->', function() {
     afterEach(function() {
       t._stopLoop();
-      return t.tweens.length = 0;
+      return t.removeAll();
     });
     beforeEach(function() {
       t._stopLoop();
-      return t.tweens.length = 0;
+      return t.removeAll();
     });
     it('have tweens array', function() {
       expect(t.tweens).toBeDefined();

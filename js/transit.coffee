@@ -338,7 +338,8 @@ class Transit extends Bit
       opts.onUpdate      = (p)=> @setProgress p
       opts.onStart       = => @props.onStart?.apply(@)
       opts.onComplete    = => @props.onComplete?.apply @
-      opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
+      opts.onFirstUpdate = ->
+        it.tuneOptions it.history[@index]
       opts.isChained = !o.delay
       @timeline.append new Tween(opts)
     @
@@ -429,7 +430,7 @@ class Transit extends Bit
     # extend defaults only if options obj was passed
     if o? and Object.keys(o).length
       @extendDefaults(o); @resetTimeline()
-      !isForeign and @timeline.recalcDuration()
+      !isForeign and @timeline._recalcTotalDuration()
       @calcSize()
       !isForeign and @setElStyles()
   # defer tween start to wait for "then" functions

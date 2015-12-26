@@ -126,8 +126,8 @@ describe 'Timeline ->', ->
       t._setStartTime()
       progress = .75
       t._setProgress progress, 2
-      expect(tw1._update).toHaveBeenCalledWith t._props.startTime + progress*t._props.duration
-      expect(tw2._update).toHaveBeenCalledWith t._props.startTime + progress*t._props.duration
+      expect(tw1._update).toHaveBeenCalledWith t._props.startTime + progress*t._props.duration, t._prevTime
+      expect(tw2._update).toHaveBeenCalledWith t._props.startTime + progress*t._props.duration, t._prevTime
 
   describe '_setStartTime method ->', ->
     it 'should call super _setStartTime method', ->

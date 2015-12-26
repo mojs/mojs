@@ -93,7 +93,8 @@ class Timeline extends Tween {
     super._setProgress(progress, time);
     var timeToTimelines = this._props.startTime + progress*(this._props.duration),
         i = this._timelines.length;
-    while(i--) { this._timelines[i]._update( timeToTimelines ); }
+    // we need to pass self _prevTime for children
+    while(i--) { this._timelines[i]._update( timeToTimelines, this._prevTime ); }
   }
   /*
     Method calculate self duration based on timeline's duration.

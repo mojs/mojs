@@ -3,8 +3,8 @@ Tween    = window.mojs.Tween
 Timeline = window.mojs.Timeline
 
 describe 'Twenner ->', ->
-  afterEach  -> t._stopLoop(); t.tweens.length = 0
-  beforeEach -> t._stopLoop(); t.tweens.length = 0
+  afterEach  -> t._stopLoop(); t.removeAll()
+  beforeEach -> t._stopLoop(); t.removeAll()
   it 'have tweens array', ->
     expect(t.tweens).toBeDefined()
     expect(t.tweens instanceof Array).toBe true
