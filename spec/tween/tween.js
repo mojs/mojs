@@ -450,8 +450,40 @@
         t._update(time);
         return expect(t._prevTime).toBe(time);
       });
+      it('should save _onEdge property', function() {
+        var duration, t;
+        duration = 1000;
+        t = new Tween({
+          duration: duration,
+          repeat: 1
+        });
+        t._setStartTime();
+        t._update(t._props.startTime);
+        t._update(t._props.startTime + duration / 2);
+        expect(t._onEdge).toBe(0);
+        t._update(t._props.startTime + duration + 1);
+        expect(t._onEdge).toBe(1);
+        t._update(t._props.startTime + duration + 2);
+        return expect(t._onEdge).toBe(0);
+      });
+      it('should save _onEdge property || reverse', function() {
+        var duration, t;
+        duration = 1000;
+        t = new Tween({
+          duration: duration,
+          repeat: 1
+        });
+        t._setStartTime();
+        t._update(t._props.endTime - 1);
+        t._update(t._props.endTime - duration / 2);
+        expect(t._onEdge).toBe(0);
+        t._update(t._props.endTime - duration - 1);
+        expect(t._onEdge).toBe(-1);
+        t._update(t._props.endTime - duration - 2);
+        return expect(t._onEdge).toBe(0);
+      });
       it('should receive _prevTime', function() {
-        var prevTime, t;
+        var prevTime, t, time;
         t = new Tween({
           duration: 1000,
           delay: 200,
@@ -460,14 +492,15 @@
         });
         t._setStartTime();
         prevTime = 1;
+        time = 2;
         spyOn(t, '_updateInActiveArea').and.callThrough();
         spyOn(t._props, 'onStart');
-        t._update(t._props.startTime + 1300, prevTime);
+        t._update(t._props.startTime + 1300, time, prevTime);
         expect(t._updateInActiveArea).toHaveBeenCalled();
         return expect(t._props.onStart).toHaveBeenCalledWith(true);
       });
-      return it('should receive _prevTime', function() {
-        var prevTime, t;
+      it('should receive _prevTime #2', function() {
+        var prevTime, t, time;
         t = new Tween({
           duration: 1000,
           delay: 200,
@@ -477,11 +510,122 @@
         t._setStartTime();
         t._prevTime = 2;
         prevTime = 1;
+        time = 2;
         spyOn(t, '_updateInActiveArea').and.callThrough();
         spyOn(t._props, 'onStart');
-        t._update(t._props.startTime + 1300, prevTime);
+        t._update(t._props.startTime + 1300, time, prevTime);
         expect(t._updateInActiveArea).toHaveBeenCalled();
         return expect(t._props.onStart).toHaveBeenCalledWith(true);
+      });
+      it('should call callbacks if on edge "+1" + was yoyo', function() {
+        var duration, t, tm;
+        tm = new mojs.Timeline({
+          repeat: 2,
+          yoyo: true
+        });
+        duration = 1000;
+        t = new Tween({
+          duration: duration,
+          onStart: function() {},
+          onRepeatStart: function() {},
+          onUpdate: function() {},
+          onProgress: function() {},
+          onRepeatComplete: function() {},
+          onComplete: function() {},
+          onFirstUpdate: function() {}
+        });
+        tm.add(t);
+        tm.setProgress(0);
+        tm.setProgress(.25);
+        tm.setProgress(.35);
+        tm.setProgress(.55);
+        spyOn(t._props, 'onStart');
+        spyOn(t._props, 'onRepeatStart');
+        tm.setProgress(.85);
+        expect(t._props.onStart).toHaveBeenCalledWith(false);
+        return expect(t._props.onRepeatStart).toHaveBeenCalledWith(false);
+      });
+      it('should call callbacks if on edge "+1" + wasn\'t yoyo', function() {
+        var duration, t, tm;
+        tm = new mojs.Timeline({
+          repeat: 2
+        });
+        duration = 1000;
+        t = new Tween({
+          duration: duration,
+          onStart: function() {},
+          onRepeatStart: function() {},
+          onUpdate: function() {},
+          onProgress: function() {},
+          onRepeatComplete: function() {},
+          onComplete: function() {},
+          onFirstUpdate: function() {}
+        });
+        tm.add(t);
+        tm.setProgress(0);
+        tm.setProgress(.25);
+        tm.setProgress(.35);
+        tm.setProgress(.55);
+        spyOn(t._props, 'onRepeatComplete');
+        spyOn(t._props, 'onComplete');
+        tm.setProgress(.85);
+        expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true);
+        return expect(t._props.onComplete).toHaveBeenCalledWith(true);
+      });
+      it('should call callbacks if on edge "-1" + was yoyo', function() {
+        var duration, t, tm;
+        tm = new mojs.Timeline({
+          repeat: 1,
+          yoyo: true
+        });
+        duration = 1000;
+        t = new Tween({
+          duration: duration,
+          onStart: function() {},
+          onRepeatStart: function() {},
+          onUpdate: function() {},
+          onProgress: function() {},
+          onRepeatComplete: function() {},
+          onComplete: function() {},
+          onFirstUpdate: function() {}
+        });
+        tm.add(t);
+        tm.setProgress(0);
+        tm.setProgress(.25);
+        tm.setProgress(.35);
+        tm.setProgress(.55);
+        tm.setProgress(.56);
+        tm.setProgress(.54);
+        spyOn(t._props, 'onRepeatComplete');
+        spyOn(t._props, 'onComplete');
+        tm.setProgress(.25);
+        expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true);
+        return expect(t._props.onComplete).toHaveBeenCalledWith(true);
+      });
+      return it('should call callbacks if on edge "-1" + wasn\'t yoyo', function() {
+        var duration, t, tm;
+        tm = new mojs.Timeline({
+          repeat: 1
+        });
+        duration = 1000;
+        t = new Tween({
+          duration: duration,
+          onStart: function() {},
+          onRepeatStart: function() {},
+          onUpdate: function() {},
+          onProgress: function() {},
+          onRepeatComplete: function() {},
+          onComplete: function() {},
+          onFirstUpdate: function() {}
+        });
+        tm.add(t);
+        tm.setProgress(1);
+        tm.setProgress(.85);
+        spyOn(t._props, 'onRepeatStart');
+        spyOn(t._props, 'onStart');
+        tm.setProgress(.45);
+        expect(t._props.onRepeatStart).toHaveBeenCalledWith(false);
+        return expect(t._props.onStart).toHaveBeenCalledWith(false);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -4006,13 +4150,14 @@
         return expect(tweener.add).toHaveBeenCalled();
       });
       it('should receive progress time', function() {
-        var shift, t, time;
+        var shift, startTime, t, time;
         t = new Tween;
         t._setStartTime();
         time = t._props.startTime;
         shift = 200;
         t.play(shift);
-        return expect(t._props.startTime).toBe(time - shift);
+        startTime = time - shift;
+        return expect(startTime - t._props.startTime).not.toBeGreaterThan(2);
       });
       it('should treat negative progress time as positive', function() {
         var shift, t, time;
@@ -5020,70 +5165,6 @@
         t.play().pause();
         t.setProgress(.5);
         return expect(t._playTime).toBe(null);
-      });
-    });
-    describe('onComplete callback ->', function() {
-      return it('should be called just once when finished and inside Timeline ->', function() {
-        var completeCnt, completeDirection, debug, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, tm, tw, updateDirection, updateValue, zeroCnt;
-        zeroCnt = 0;
-        oneCnt = 0;
-        startCnt = 0;
-        completeCnt = 0;
-        repeatCnt = 0;
-        repeatStartCnt = 0;
-        firstUpdateCnt = 0;
-        firstUpdateDirection = null;
-        startDirection = null;
-        completeDirection = null;
-        repeatStartDirection = null;
-        repeatCompleteDirection = null;
-        duration = 50;
-        updateValue = null;
-        updateDirection = null;
-        debug = false;
-        tm = new Timeline;
-        tw = new Tween({
-          duration: duration,
-          onUpdate: function(p, ep, isForward) {
-            debug && console.log("ONUPDATE " + p);
-            updateDirection = isForward;
-            updateValue = p;
-            (p === 0) && zeroCnt++;
-            return (p === 1) && oneCnt++;
-          },
-          onRepeatComplete: function(isForward) {
-            debug && console.log("REPEAT COMPLETE " + isForward);
-            repeatCompleteDirection = isForward;
-            return repeatCnt++;
-          },
-          onRepeatStart: function(isForward) {
-            debug && console.log("REPEAT START " + isForward);
-            repeatStartDirection = isForward;
-            return repeatStartCnt++;
-          },
-          onStart: function(isForward) {
-            debug && console.log("START " + isForward);
-            startDirection = isForward;
-            return startCnt++;
-          },
-          onComplete: function(isForward) {
-            debug && console.log("COMPLETE " + isForward);
-            completeDirection = isForward;
-            return completeCnt++;
-          },
-          onFirstUpdate: function(isForward) {
-            debug && console.log("FIRST UPDATE " + isForward);
-            firstUpdateDirection = isForward;
-            return firstUpdateCnt++;
-          }
-        });
-        tm.add(tw);
-        tm.setProgress(0);
-        tm.setProgress(.5);
-        tm.setProgress(.9);
-        tm.setProgress(1);
-        tm.setProgress(.9);
-        return expect(completeCnt).toBe(2);
       });
     });
     describe('_progress method ->', function() {

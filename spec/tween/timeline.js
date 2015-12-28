@@ -181,8 +181,20 @@
         t._setProgress(1, 2);
         return expect(Tween.prototype._setProgress).toHaveBeenCalledWith(1, 2);
       });
-      return it('should call _update method on every timeline', function() {
-        var progress, t, tw1, tw2;
+      it('should save previous yoyo value', function() {
+        var progress, t, time;
+        t = new Timeline({
+          yoyo: true,
+          repeat: 1
+        });
+        progress = .75;
+        time = 2;
+        t._setProgress(progress - .1, time, true);
+        t._setProgress(progress, time, true);
+        return expect(t._prevYoyo).toBe(true);
+      });
+      it('should call _update method on every timeline forward', function() {
+        var progress, t, time, tw1, tw2;
         t = new Timeline;
         tw1 = new Tween;
         tw2 = new Tween;
@@ -191,9 +203,65 @@
         spyOn(tw2, '_update');
         t._setStartTime();
         progress = .75;
-        t._setProgress(progress, 2);
-        expect(tw1._update).toHaveBeenCalledWith(t._props.startTime + progress * t._props.duration, t._prevTime);
-        return expect(tw2._update).toHaveBeenCalledWith(t._props.startTime + progress * t._props.duration, t._prevTime);
+        time = t._props.startTime + progress * t._props.duration;
+        t._update(time - 1);
+        t._update(time);
+        expect(tw1._update).toHaveBeenCalledWith(time, time - 1, void 0, 0);
+        return expect(tw2._update).toHaveBeenCalledWith(time, time - 1, void 0, 0);
+      });
+      it('should call _update method on every timeline backward', function() {
+        var progress, t, time, tw1, tw2;
+        t = new Timeline;
+        tw1 = new Tween;
+        tw2 = new Tween;
+        t.add(tw1, tw2);
+        spyOn(tw1, '_update');
+        spyOn(tw2, '_update');
+        t._setStartTime();
+        progress = .75;
+        time = t._props.startTime + progress * t._props.duration;
+        t._update(time + 1);
+        t._update(time);
+        expect(tw1._update).toHaveBeenCalledWith(time, time + 1, void 0, 0);
+        return expect(tw2._update).toHaveBeenCalledWith(time, time + 1, void 0, 0);
+      });
+      it('should call _update method on every timeline forward yoyo', function() {
+        var progress, t, time, tw1, tw2;
+        t = new Timeline({
+          yoyo: true,
+          isIt: 1
+        });
+        tw1 = new Tween;
+        tw2 = new Tween;
+        t.add(tw1, tw2);
+        spyOn(tw1, '_update');
+        spyOn(tw2, '_update');
+        t._setStartTime();
+        progress = .75;
+        time = t._props.startTime + progress * t._props.duration;
+        t._update(time - 1);
+        t._update(time);
+        expect(tw1._update).toHaveBeenCalledWith(time, time - 1, void 0, 0);
+        return expect(tw2._update).toHaveBeenCalledWith(time, time - 1, void 0, 0);
+      });
+      return it('should call _update method on every timeline backward yoyo', function() {
+        var progress, t, time, tw1, tw2;
+        t = new Timeline({
+          yoyo: true,
+          isIt: 1
+        });
+        tw1 = new Tween;
+        tw2 = new Tween;
+        t.add(tw1, tw2);
+        spyOn(tw1, '_update');
+        spyOn(tw2, '_update');
+        t._setStartTime();
+        progress = .75;
+        time = t._props.startTime + progress * t._props.duration;
+        t._update(time + 1);
+        t._update(time);
+        expect(tw1._update).toHaveBeenCalledWith(time, time + 1, void 0, 0);
+        return expect(tw2._update).toHaveBeenCalledWith(time, time + 1, void 0, 0);
       });
     });
     describe('_setStartTime method ->', function() {

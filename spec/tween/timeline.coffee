@@ -116,18 +116,64 @@ describe 'Timeline ->', ->
       spyOn Tween.prototype, '_setProgress'
       t._setProgress 1, 2
       expect(Tween.prototype._setProgress).toHaveBeenCalledWith 1, 2
-    it 'should call _update method on every timeline', ->
+    it 'should save previous yoyo value', ->
+      t = new Timeline yoyo: true, repeat: 1
+      progress = .75; time = 2
+      t._setProgress progress - .1, time, true
+      t._setProgress progress, time, true
+      expect(t._prevYoyo).toBe true
+
+    it 'should call _update method on every timeline forward', ->
       t = new Timeline
       tw1 = new Tween
       tw2 = new Tween
       t.add tw1, tw2
-      spyOn tw1, '_update'
-      spyOn tw2, '_update'
+      spyOn tw1, '_update'; spyOn tw2, '_update'
       t._setStartTime()
-      progress = .75
-      t._setProgress progress, 2
-      expect(tw1._update).toHaveBeenCalledWith t._props.startTime + progress*t._props.duration, t._prevTime
-      expect(tw2._update).toHaveBeenCalledWith t._props.startTime + progress*t._props.duration, t._prevTime
+      progress = .75; time = t._props.startTime + progress*t._props.duration
+      t._update time-1
+      t._update time
+      expect(tw1._update).toHaveBeenCalledWith time, time-1, undefined, 0
+      expect(tw2._update).toHaveBeenCalledWith time, time-1, undefined, 0
+
+    it 'should call _update method on every timeline backward', ->
+      t = new Timeline
+      tw1 = new Tween
+      tw2 = new Tween
+      t.add tw1, tw2
+      spyOn tw1, '_update'; spyOn tw2, '_update'
+      t._setStartTime()
+      progress = .75; time = t._props.startTime + progress*t._props.duration
+      t._update time+1
+      t._update time
+      expect(tw1._update).toHaveBeenCalledWith time, time+1, undefined, 0
+      expect(tw2._update).toHaveBeenCalledWith time, time+1, undefined, 0
+
+    it 'should call _update method on every timeline forward yoyo', ->
+      t = new Timeline yoyo: true, isIt: 1
+      tw1 = new Tween
+      tw2 = new Tween
+      t.add tw1, tw2
+      spyOn tw1, '_update'; spyOn tw2, '_update'
+      t._setStartTime()
+      progress = .75; time = t._props.startTime + progress*t._props.duration
+      t._update time-1
+      t._update time
+      expect(tw1._update).toHaveBeenCalledWith time, time-1, undefined, 0
+      expect(tw2._update).toHaveBeenCalledWith time, time-1, undefined, 0
+
+    it 'should call _update method on every timeline backward yoyo', ->
+      t = new Timeline yoyo: true, isIt: 1
+      tw1 = new Tween
+      tw2 = new Tween
+      t.add tw1, tw2
+      spyOn tw1, '_update'; spyOn tw2, '_update'
+      t._setStartTime()
+      progress = .75; time = t._props.startTime + progress*t._props.duration
+      t._update time+1
+      t._update time
+      expect(tw1._update).toHaveBeenCalledWith time, time+1, undefined, 0
+      expect(tw2._update).toHaveBeenCalledWith time, time+1, undefined, 0
 
   describe '_setStartTime method ->', ->
     it 'should call super _setStartTime method', ->

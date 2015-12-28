@@ -1,6 +1,9 @@
 ## TODO
 ---
 
+- check timeline yoyo and repeat + nested tween 
+- check callbacks order - onProgress should fire first
+
 - cover COVER labels at tweener
 - remove clamp for setProgress on tween
 

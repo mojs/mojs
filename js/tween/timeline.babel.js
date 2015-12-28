@@ -89,12 +89,34 @@ class Timeline extends Tween {
     @param {Number} Progress to set.
     @param {Number} Current update time.
   */
-  _setProgress (progress, time) {
+  _setProgress (progress, time, isYoyo) {
     super._setProgress(progress, time);
     var timeToTimelines = this._props.startTime + progress*(this._props.duration),
         i = this._timelines.length;
-    // we need to pass self _prevTime for children
-    while(i--) { this._timelines[i]._update( timeToTimelines, this._prevTime ); }
+    // we need to pass self previous time to children
+    // to prevent initial _wasUnknownUpdate nested waterfall
+    // if not yoyo option set, pass the previous time
+    // otherwise, pass previous or next time regarding yoyo period.
+    
+    var coef = ( time > this._prevTime ) ? -1 : 1;
+    // this.o.isIt && console.log(coef, time, this._prevTime)
+    if ( this._props.yoyo ) {
+      if ( isYoyo ) {
+        coef *= -1;
+      }
+    }
+    // coef = ( isYoyo ) ? -1*coef: coef;
+    var prevTimeToTimelines = timeToTimelines+coef;
+    // this.o.isIt && console.log( isYoyo, time > this._prevTime )
+    while(i--) {
+      this._timelines[i]._update(
+        timeToTimelines,
+        prevTimeToTimelines,
+        this._prevYoyo,
+        this._onEdge
+      );
+    }
+    this._prevYoyo = isYoyo;
   }
   /*
     Method calculate self duration based on timeline's duration.
