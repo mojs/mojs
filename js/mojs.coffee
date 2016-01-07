@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.166.2', isDebug: true
+  revision:   '0.166.3', isDebug: true
   helpers     : require './h'
   shapesMap   : require './shapes/shapesMap'
   Burst       : require './burst'
@@ -17,7 +17,7 @@ window.mojs =
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
-# tm = new mojs.Timeline isIt11: 1, repeat: 1, yoyo: true
+# tm = new mojs.Timeline repeat: 1, yoyo: true
 
 # tw = new mojs.Tween
 #   isIt: 1
@@ -34,7 +34,7 @@ mojs.delta = mojs.h.delta
 # rangeSlider = document.querySelector ('#js-range-slider')
 
 # rangeSlider.oninput = (e)->
-#   proc = (1*rangeSlider.value)/4
+#   proc = (1*rangeSlider.value)/6
 #   tm.setProgress proc
 
 ### istanbul ignore next ###

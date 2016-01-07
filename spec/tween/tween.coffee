@@ -9,7 +9,6 @@ describe 'Tween ->', ->
     it 'should have vars', ->
       t = new Tween
       expect(t._props)        .toBeDefined()
-      expect(t.h)             .toBeDefined()
       expect(t._negativeShift).toBe 0
       expect(t._progressTime) .toBe 0
       expect(t.progress)      .toBe 0

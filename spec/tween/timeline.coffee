@@ -40,7 +40,7 @@ describe 'Timeline ->', ->
   describe '_vars method ->', ->
     it 'should declare _timelines array', ->
       t = new Timeline
-      expect(t.h.isArray(t._timelines)).toBe true
+      expect(h.isArray(t._timelines)).toBe true
       expect(t._timelines.length).toBe 0
     it 'should call super _vars function', ->
       t = new Timeline

@@ -1,4 +1,4 @@
-import h from '../h';
+// import h from '../h';
 import t from './tweener';
 import easing from '../easing/easing';
 
@@ -131,7 +131,7 @@ var Tween = class Tween {
     return this;
   }
   /*
-    Method do declare defaults by this._defaults object.
+    Method do declare defaults with this._defaults object.
     @private
   */
   _declareDefaults() {
@@ -157,7 +157,7 @@ var Tween = class Tween {
     @private
   */
   _vars() {
-    this.h = h;
+    // this.h = h;
     this.progress = 0;
     this._prevTime = null;
     this._progressTime = 0;
@@ -182,12 +182,13 @@ var Tween = class Tween {
     this._props.repeatTime = this._props.time * (this._props.repeat + 1);
   }
   /*
-    Method to extend defaults by options and put it in _props.
+    Method to extend defaults by options and put them in _props.
     @private
   */
   _extendDefaults() {
     this._props = {};
     for (var key in this._defaults) {
+      // borrow hasOwnProperty function
       if (Object.hasOwnProperty.call(this._defaults, key)) {
         var value = this._defaults[key];
         this._props[key] = (this.o[key] != null) ? this.o[key] : value;
@@ -203,20 +204,20 @@ var Tween = class Tween {
     @returns this
   */
   _setStartTime (time) {
-    var p = this._props;
+    var p = this._props,
+        shiftTime = (p.shiftTime || 0);
     // reset flags
     this._isCompleted = false; this._isRepeatCompleted = false;
-    this._isStarted = false;
-    // get time of the start
-    time = (time == null) ? performance.now() : time;
-    // set play time to the time
-    var shiftTime = (this._props.shiftTime || 0);
+    this._isStarted   = false;
+    // set start time to passed time or to the current moment
+    var startTime = (time == null) ? performance.now() : time;
     // calculate bounds
     // - negativeShift is negative delay in options hash
     // - shift time is shift of the parent
-    p.startTime = time + p.delay + this._negativeShift + shiftTime;
+    p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
     p.endTime   = p.startTime + p.repeatTime - p.delay;
-    this._playTime = time;
+    // set play time to the startTime
+    this._playTime = startTime;
 
     return this;
   }
@@ -228,9 +229,9 @@ var Tween = class Tween {
     @param {Number} Previous Timeline's update time.
     @param {Boolean} Was parent in yoyo period.
     @param {Number} [-1, 0, 1] If update is on edge.
-                    -1 = edge jump in negative direction.
-                    0  = no edge jump.
-                    1  = edge jump in positive direction.
+                   -1 = edge jump in negative direction.
+                    0 = no edge jump.
+                    1 = edge jump in positive direction.
   */
   _update (time, timelinePrevTime, wasYoyo, onEdge) {
 
@@ -261,6 +262,7 @@ var Tween = class Tween {
         } else {
           this._prevTime = time - 1;
           this._repeatComplete( time );
+          this.o.isIt && console.log('here 4');
           this._complete( time );
         }
       // backward edge direction
@@ -269,6 +271,7 @@ var Tween = class Tween {
         if ( wasYoyo ) {
           this._prevTime = time - 1;
           this._repeatComplete( time );
+          this.o.isIt && console.log('here 5');
           this._complete( time );
         } else {
           this._prevTime = time + 1;
@@ -343,6 +346,7 @@ var Tween = class Tween {
       var isYoyo = p.yoyo && (T % 2 === 0);
       this._setProgress( (isYoyo) ? 0 : 1, time, isYoyo );
       this._repeatComplete( time );
+      this.o.isIt && console.log('here 6');
       this._complete( time );
     }
     // if was active and went to - inactive area "-"
@@ -383,7 +387,10 @@ var Tween = class Tween {
       // so we need to decrement T and calculate "one" value regarding yoyo
       var isYoyo = !(props.yoyo && ((T-1) % 2 === 1));
       this._setProgress( (isYoyo ? 1 : 0), time, isYoyo );
+
+      // this._isRepeatCompleted = false;
       this._repeatComplete( time );
+      // this.o.isIt && console.log('here 1');
       return this._complete( time );
     }
 
@@ -414,6 +421,7 @@ var Tween = class Tween {
           this._firstUpdate( time );
         }
         if ( time < this._prevTime ) {
+          this.o.isIt && console.log('here 2');
           this._complete( time );
           this._repeatComplete( time );
           this._firstUpdate( time );
@@ -468,6 +476,7 @@ var Tween = class Tween {
         // we have handled the case in this._wasUknownUpdate
         // block so filter that
         if ( prevT === TCount && !this._wasUknownUpdate ) {
+          this.o.isIt && console.log('here 3');
           this._complete( time );
           this._repeatComplete( time );              
           this._firstUpdate( time);

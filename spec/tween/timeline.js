@@ -58,7 +58,7 @@
       it('should declare _timelines array', function() {
         var t;
         t = new Timeline;
-        expect(t.h.isArray(t._timelines)).toBe(true);
+        expect(h.isArray(t._timelines)).toBe(true);
         return expect(t._timelines.length).toBe(0);
       });
       return it('should call super _vars function', function() {

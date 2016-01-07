@@ -1,10 +1,12 @@
 ## TODO
 ---
 
-- check timeline yoyo and repeat + nested tween 
+- check imediately return onRepeatComplete issue
+- check timeline + tween again
 - check callbacks order - onProgress should fire first
 
 - cover COVER labels at tweener
+- reafctor
 - remove clamp for setProgress on tween
 
 - fix coverage
