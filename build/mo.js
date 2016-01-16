@@ -2296,7 +2296,7 @@
 
 	h = __webpack_require__(2);
 
-	resize = __webpack_require__(25);
+	resize = __webpack_require__(22);
 
 	Tween = __webpack_require__(11);
 
@@ -2826,11 +2826,11 @@
 
 	var Easing, PathEasing, bezier, easing, h, mix;
 
-	bezier = __webpack_require__(22);
+	bezier = __webpack_require__(23);
 
-	PathEasing = __webpack_require__(23);
+	PathEasing = __webpack_require__(24);
 
-	mix = __webpack_require__(24);
+	mix = __webpack_require__(25);
 
 	h = __webpack_require__(2);
 
@@ -3158,6 +3158,60 @@
 	  }
 
 	  _prototypeProperties(Tween, null, {
+	    _declareDefaults: {
+	      /*
+	        Method do declare defaults with this._defaults object.
+	        @private
+	      */
+	      value: function DeclareDefaults() {
+	        // DEFAULTS
+	        this._defaults = {
+	          /* duration of the tween [0..∞] */
+	          duration: 600,
+	          /* delay of the tween [-∞..∞] */
+	          delay: 0,
+	          /* repeat of the tween [0..∞], means how much to
+	             repeat the tween regardless first run,
+	             for instance repeat: 2 will make the tween run 3 times */
+	          repeat: 0,
+	          /* speed of playback [0..∞], speed that is less then 1
+	             will slowdown playback, for instance .5 will make tween
+	             run 2x slower. Speed of 2 will speedup the tween to 2x. */
+	          speed: null,
+	          /*  flip onUpdate's progress on each even period.
+	              note that callbacks order won't flip at least
+	              for now (under consideration). */
+	          yoyo: false,
+	          /* easing for the tween, could be any easing type [link to easing-types.md] */
+	          easing: "Linear.None",
+	          /*
+	            onProgress callback runs before any other callback.
+	            @param {Number}   The entire progress of the tween regarding repeat.
+	            @param {Boolean}  The direction of the tween.
+	                              `true` for forward direction.
+	                              `false` for backward direction(tween runs in reverse).
+	          */
+	          onProgress: null,
+	          /*
+	            onStart callback runs on very start of the tween just after onProgress
+	            one. Runs on very end of the tween if tween is reversed.
+	            @param {Boolean}  Direction of the tween.
+	                              `true` for forward direction.
+	                              `false` for backward direction(tween runs in reverse).
+	          */
+	          onStart: null,
+	          onComplete: null,
+	          onRepeatStart: null,
+	          onRepeatComplete: null,
+	          onFirstUpdate: null,
+	          onUpdate: null,
+	          isChained: false
+	        };
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    play: {
 	      /*
 	        API method to run the Tween.
@@ -3224,6 +3278,7 @@
 	        this._removeFromTweener();
 	        this.setProgress(0);
 	        this._setPlaybackState("stop");
+	        this._prevTime = null;
 	        return this;
 	      },
 	      writable: true,
@@ -3297,43 +3352,25 @@
 	      */
 	      value: function SubPlay() {
 	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        // reset previous time cache
-	        this._prevTime = null;
+	        var procTime, resumeTime, startTime;
 	        // if tween was ended, set progress to 0 if not, set to elapsed progress
-	        var procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
+	        procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
+	        // normalize the progress regarding speed, if it is present
+	        this._props.speed && (procTime /= this._props.speed);
+
+	        resumeTime = performance.now();
 	        // set start time regarding passed `shift` and calculated `procTime`
-	        // this._playTime = performance.now();
-	        this._setStartTime(performance.now() - Math.abs(shift) - procTime);
+	        startTime = resumeTime - Math.abs(shift) - procTime;
+
+	        // set prev time to resume time to prevent firing callbacks
+	        if (this._prevTime) {
+	          this._prevTime = resumeTime;
+	        }
+
+	        this._setStartTime(startTime);
 	        // add self to tweener = run
 	        t.add(this);
 	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _declareDefaults: {
-	      /*
-	        Method do declare defaults with this._defaults object.
-	        @private
-	      */
-	      value: function DeclareDefaults() {
-	        this._defaults = {
-	          duration: 600,
-	          delay: 0,
-	          repeat: 0,
-	          speed: null,
-	          yoyo: false,
-	          easing: "Linear.None",
-	          onStart: null,
-	          onComplete: null,
-	          onRepeatStart: null,
-	          onRepeatComplete: null,
-	          onFirstUpdate: null,
-	          onUpdate: null,
-	          onProgress: null,
-	          isChained: false
-	        };
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3443,12 +3480,6 @@
 	      */
 	      value: function Update(time, timelinePrevTime, wasYoyo, onEdge) {
 	        var p = this._props;
-	        // this.o.isIt && console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
-	        // this.o.isIt && console.log('TWEEN');
-	        // this.o.isIt && this._visualizeProgress( time );
-	        // this.o.isIt && console.log(`time: ${time}, prevTime: ${this._prevTime}, timelinePrevTime: ${timelinePrevTime}`);
-	        // this.o.isIt && console.log(`startTime: ${p.startTime}, endTime: ${p.endTime}`);
-
 	        // if we don't the _prevTime thus the direction we are heading to,
 	        // but prevTime was passed thus we are child of a Timeline
 	        // set _prevTime to passed one and pretent that there was unknown
@@ -3469,7 +3500,6 @@
 	            } else {
 	              this._prevTime = time - 1;
 	              this._repeatComplete(time);
-	              this.o.isIt && console.log("here 4");
 	              this._complete(time);
 	            }
 	            // backward edge direction
@@ -3478,7 +3508,6 @@
 	            if (wasYoyo) {
 	              this._prevTime = time - 1;
 	              this._repeatComplete(time);
-	              this.o.isIt && console.log("here 5");
 	              this._complete(time);
 	            } else {
 	              this._prevTime = time + 1;
@@ -3490,26 +3519,14 @@
 	          // where we are heading
 	          this._prevTime = null;
 	        }
-	        // We need to know what direction we are heading to,
-	        // so if we don't have the previous update value - this is very first
-	        // update, - skip it entirely and wait for the next value
-	        if (this._prevTime === null) {
-	          this._prevTime = time;
-	          this._wasUknownUpdate = true;
-	          return false;
-	        }
+
 	        // cache vars
-	        var p = this._props,
-	            startPoint = p.startTime - p.delay;
+	        var startPoint = p.startTime - p.delay;
 	        // if speed param was defined - calculate
 	        // new time regarding speed
 	        if (p.speed && this._playTime) {
 	          // play point + ( speed * delta )
 	          time = this._playTime + p.speed * (time - this._playTime);
-	        }
-	        // handle onProgress callback
-	        if (time >= startPoint && time <= p.endTime) {
-	          this._progress((time - startPoint) / p.repeatTime, time);
 	        }
 	        // if in active area and not ended - save progress time
 	        // for pause/play purposes.
@@ -3528,6 +3545,21 @@
 	        if (p.isReversed) {
 	          time = p.endTime - this._progressTime;
 	        }
+	        // We need to know what direction we are heading to,
+	        // so if we don't have the previous update value - this is very first
+	        // update, - skip it entirely and wait for the next value
+	        if (this._prevTime === null) {
+	          this._prevTime = time;
+	          this._wasUknownUpdate = true;
+	          return false;
+	        }
+
+	        // AFTER SKIPPED FRAME
+
+	        // handle onProgress callback
+	        if (time >= startPoint && time <= p.endTime) {
+	          this._progress((time - startPoint) / p.repeatTime, time);
+	        }
 	        /*
 	          if time is inside the active area of the tween.
 	          active area is the area from start time to end time,
@@ -3538,7 +3570,6 @@
 	        } else {
 	          this._isInActiveArea && this._updateInInactiveArea(time);
 	        }
-
 	        this._prevTime = time;
 	        return time >= p.endTime || time <= startPoint;
 	      },
@@ -3565,7 +3596,6 @@
 	          var isYoyo = p.yoyo && T % 2 === 0;
 	          this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
 	          this._repeatComplete(time);
-	          this.o.isIt && console.log("here 6");
 	          this._complete(time);
 	        }
 	        // if was active and went to - inactive area "-"
@@ -3611,9 +3641,8 @@
 	          var isYoyo = !(props.yoyo && (T - 1) % 2 === 1);
 	          this._setProgress(isYoyo ? 1 : 0, time, isYoyo);
 
-	          // this._isRepeatCompleted = false;
+	          this._isRepeatCompleted = false;
 	          this._repeatComplete(time);
-	          // this.o.isIt && console.log('here 1');
 	          return this._complete(time);
 	        }
 
@@ -3633,9 +3662,11 @@
 	          //      ^2^1
 	          var isOnReverseEdge = prevT > T;
 
+	          // for use in timeline
 	          this._onEdge = 0;
 	          isOnEdge && (this._onEdge = 1);
 	          isOnReverseEdge && (this._onEdge = -1);
+
 
 	          if (this._wasUknownUpdate) {
 	            if (time > this._prevTime) {
@@ -3644,7 +3675,6 @@
 	              this._firstUpdate(time);
 	            }
 	            if (time < this._prevTime) {
-	              this.o.isIt && console.log("here 2");
 	              this._complete(time);
 	              this._repeatComplete(time);
 	              this._firstUpdate(time);
@@ -3699,7 +3729,6 @@
 	            // we have handled the case in this._wasUknownUpdate
 	            // block so filter that
 	            if (prevT === TCount && !this._wasUknownUpdate) {
-	              this.o.isIt && console.log("here 3");
 	              this._complete(time);
 	              this._repeatComplete(time);
 	              this._firstUpdate(time);
@@ -3871,7 +3900,6 @@
 	        this.easedProgress = this._props.easing(this.progress);
 	        if (this._props.prevEasedProgress !== this.easedProgress) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
-	            // this.o.isIt && console.log(`********** UPDATE ${this.progress}, ${time > this._prevTime} **********`);
 	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime);
 	          }
 	        }
@@ -3895,7 +3923,6 @@
 	          return;
 	        }
 	        if (this._props.onStart != null && typeof this._props.onStart === "function") {
-	          this.o.isIt && console.log("********** START " + (time > this._prevTime) + " **********");
 	          this._props.onStart.call(this, time > this._prevTime);
 	        }
 	        this._isCompleted = false;this._isStarted = true;
@@ -3918,7 +3945,6 @@
 	          return;
 	        }
 	        if (this._props.onComplete != null && typeof this._props.onComplete === "function") {
-	          this.o.isIt && console.log("********** COMPLETE " + (time > this._prevTime) + " **********");
 	          this._props.onComplete.call(this, time > this._prevTime);
 	        }
 	        this._isCompleted = true;this._isStarted = false;
@@ -3941,7 +3967,6 @@
 	          return;
 	        }
 	        if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === "function") {
-	          this.o.isIt && console.log("********** FIRST UPDATE " + (time > this._prevTime) + " **********");
 	          this._props.onFirstUpdate.call(this, time > this._prevTime);
 	        }
 	        this._isFirstUpdate = true;
@@ -3962,7 +3987,6 @@
 	          return;
 	        }
 	        if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === "function") {
-	          this.o.isIt && console.log("********** REPEAT COMPLETE " + (time > this._prevTime) + " **********");
 	          this._props.onRepeatComplete.call(this, time > this._prevTime);
 	        }
 	        this._isRepeatCompleted = true;
@@ -3983,7 +4007,6 @@
 	          return;
 	        }
 	        if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === "function") {
-	          this.o.isIt && console.log("********** REPEAT START " + (time > this._prevTime) + " **********");
 	          this._props.onRepeatStart.call(this, time > this._prevTime);
 	        }
 	        this._isRepeatStart = true;
@@ -4001,7 +4024,6 @@
 	      */
 	      value: function Progress(progress, time) {
 	        if (this._props.onProgress != null && typeof this._props.onProgress === "function") {
-	          // this.o.isIt && console.log(`********** PROGRESS ${time > this._prevTime}, ${progress} **********`);
 	          this._props.onProgress.call(this, progress, time > this._prevTime);
 	        }
 	      },
@@ -4466,10 +4488,11 @@
 	        var i = this.tweens.length;
 	        while (i--) {
 	          // COVER
-	          if (this.tweens[i]) {
-	            if (this.tweens[i]._update(time) === true) {
-	              this.remove(i);
-	            }
+	          // cache the current tween
+	          var tween = this.tweens[i];
+	          if (tween && tween._update(time) === true) {
+	            this.remove(i);
+	            tween._prevTime = null;
 	          }
 	        }
 	      },
@@ -4532,7 +4555,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.166.3',
+	  revision: '0.166.5',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),
@@ -4941,6 +4964,227 @@
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+	/*!
+	  LegoMushroom @legomushroom http://legomushroom.com
+	  MIT License 2014
+	 */
+
+	/* istanbul ignore next */
+	(function() {
+	  var Main;
+	  Main = (function() {
+	    function Main(o) {
+	      this.o = o != null ? o : {};
+	      if (window.isAnyResizeEventInited) {
+	        return;
+	      }
+	      this.vars();
+	      this.redefineProto();
+	    }
+
+	    Main.prototype.vars = function() {
+	      window.isAnyResizeEventInited = true;
+	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
+	      return this.timerElements = {
+	        img: 1,
+	        textarea: 1,
+	        input: 1,
+	        embed: 1,
+	        object: 1,
+	        svg: 1,
+	        canvas: 1,
+	        tr: 1,
+	        tbody: 1,
+	        thead: 1,
+	        tfoot: 1,
+	        a: 1,
+	        select: 1,
+	        option: 1,
+	        optgroup: 1,
+	        dl: 1,
+	        dt: 1,
+	        br: 1,
+	        basefont: 1,
+	        font: 1,
+	        col: 1,
+	        iframe: 1
+	      };
+	    };
+
+	    Main.prototype.redefineProto = function() {
+	      var i, it, proto, t;
+	      it = this;
+	      return t = (function() {
+	        var j, len, ref, results;
+	        ref = this.allowedProtos;
+	        results = [];
+	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	          proto = ref[i];
+	          if (proto.prototype == null) {
+	            continue;
+	          }
+	          results.push((function(proto) {
+	            var listener, remover;
+	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	            (function(listener) {
+	              var wrappedListener;
+	              wrappedListener = function() {
+	                var option;
+	                if (this !== window || this !== document) {
+	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
+	                  option && it.handleResize({
+	                    args: arguments,
+	                    that: this
+	                  });
+	                }
+	                return listener.apply(this, arguments);
+	              };
+	              if (proto.prototype.addEventListener) {
+	                return proto.prototype.addEventListener = wrappedListener;
+	              } else if (proto.prototype.attachEvent) {
+	                return proto.prototype.attachEvent = wrappedListener;
+	              }
+	            })(listener);
+	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
+	            return (function(remover) {
+	              var wrappedRemover;
+	              wrappedRemover = function() {
+	                this.isAnyResizeEventInited = false;
+	                this.iframe && this.removeChild(this.iframe);
+	                return remover.apply(this, arguments);
+	              };
+	              if (proto.prototype.removeEventListener) {
+	                return proto.prototype.removeEventListener = wrappedRemover;
+	              } else if (proto.prototype.detachEvent) {
+	                return proto.prototype.detachEvent = wrappedListener;
+	              }
+	            })(remover);
+	          })(proto));
+	        }
+	        return results;
+	      }).call(this);
+	    };
+
+	    Main.prototype.handleResize = function(args) {
+	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
+	      el = args.that;
+	      if (!this.timerElements[el.tagName.toLowerCase()]) {
+	        iframe = document.createElement('iframe');
+	        el.appendChild(iframe);
+	        iframe.style.width = '100%';
+	        iframe.style.height = '100%';
+	        iframe.style.position = 'absolute';
+	        iframe.style.zIndex = -999;
+	        iframe.style.opacity = 0;
+	        iframe.style.top = 0;
+	        iframe.style.left = 0;
+	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
+	        isNoPos = el.style.position === '';
+	        isStatic = computedStyle.position === 'static' && isNoPos;
+	        isEmpty = computedStyle.position === '' && el.style.position === '';
+	        if (isStatic || isEmpty) {
+	          el.style.position = 'relative';
+	        }
+	        if ((ref = iframe.contentWindow) != null) {
+	          ref.onresize = (function(_this) {
+	            return function(e) {
+	              return _this.dispatchEvent(el);
+	            };
+	          })(this);
+	        }
+	        el.iframe = iframe;
+	      } else {
+	        this.initTimer(el);
+	      }
+	      return el.isAnyResizeEventInited = true;
+	    };
+
+	    Main.prototype.initTimer = function(el) {
+	      var height, width;
+	      width = 0;
+	      height = 0;
+	      return this.interval = setInterval((function(_this) {
+	        return function() {
+	          var newHeight, newWidth;
+	          newWidth = el.offsetWidth;
+	          newHeight = el.offsetHeight;
+	          if (newWidth !== width || newHeight !== height) {
+	            _this.dispatchEvent(el);
+	            width = newWidth;
+	            return height = newHeight;
+	          }
+	        };
+	      })(this), this.o.interval || 62.5);
+	    };
+
+	    Main.prototype.dispatchEvent = function(el) {
+	      var e;
+	      if (document.createEvent) {
+	        e = document.createEvent('HTMLEvents');
+	        e.initEvent('onresize', false, false);
+	        return el.dispatchEvent(e);
+	      } else if (document.createEventObject) {
+	        e = document.createEventObject();
+	        return el.fireEvent('onresize', e);
+	      } else {
+	        return false;
+	      }
+	    };
+
+	    Main.prototype.destroy = function() {
+	      var i, it, j, len, proto, ref, results;
+	      clearInterval(this.interval);
+	      this.interval = null;
+	      window.isAnyResizeEventInited = false;
+	      it = this;
+	      ref = this.allowedProtos;
+	      results = [];
+	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	        proto = ref[i];
+	        if (proto.prototype == null) {
+	          continue;
+	        }
+	        results.push((function(proto) {
+	          var listener;
+	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	          if (proto.prototype.addEventListener) {
+	            proto.prototype.addEventListener = Element.prototype.addEventListener;
+	          } else if (proto.prototype.attachEvent) {
+	            proto.prototype.attachEvent = Element.prototype.attachEvent;
+	          }
+	          if (proto.prototype.removeEventListener) {
+	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
+	          } else if (proto.prototype.detachEvent) {
+	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
+	          }
+	        })(proto));
+	      }
+	      return results;
+	    };
+
+	    return Main;
+
+	  })();
+	  if (true) {
+	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	      return new Main;
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
+	    return module.exports = new Main;
+	  } else {
+	    if (typeof window !== "undefined" && window !== null) {
+	      window.AnyResizeEvent = Main;
+	    }
+	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
+	  }
+	})();
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global) {var BezierEasing, bezierEasing, h,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -5115,7 +5359,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var PathEasing, h;
@@ -5351,7 +5595,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var create, easing, getNearest, mix, parseIfEasing, sort,
@@ -5421,227 +5665,6 @@
 	};
 
 	module.exports = create;
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-	/*!
-	  LegoMushroom @legomushroom http://legomushroom.com
-	  MIT License 2014
-	 */
-
-	/* istanbul ignore next */
-	(function() {
-	  var Main;
-	  Main = (function() {
-	    function Main(o) {
-	      this.o = o != null ? o : {};
-	      if (window.isAnyResizeEventInited) {
-	        return;
-	      }
-	      this.vars();
-	      this.redefineProto();
-	    }
-
-	    Main.prototype.vars = function() {
-	      window.isAnyResizeEventInited = true;
-	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
-	      return this.timerElements = {
-	        img: 1,
-	        textarea: 1,
-	        input: 1,
-	        embed: 1,
-	        object: 1,
-	        svg: 1,
-	        canvas: 1,
-	        tr: 1,
-	        tbody: 1,
-	        thead: 1,
-	        tfoot: 1,
-	        a: 1,
-	        select: 1,
-	        option: 1,
-	        optgroup: 1,
-	        dl: 1,
-	        dt: 1,
-	        br: 1,
-	        basefont: 1,
-	        font: 1,
-	        col: 1,
-	        iframe: 1
-	      };
-	    };
-
-	    Main.prototype.redefineProto = function() {
-	      var i, it, proto, t;
-	      it = this;
-	      return t = (function() {
-	        var j, len, ref, results;
-	        ref = this.allowedProtos;
-	        results = [];
-	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	          proto = ref[i];
-	          if (proto.prototype == null) {
-	            continue;
-	          }
-	          results.push((function(proto) {
-	            var listener, remover;
-	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	            (function(listener) {
-	              var wrappedListener;
-	              wrappedListener = function() {
-	                var option;
-	                if (this !== window || this !== document) {
-	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
-	                  option && it.handleResize({
-	                    args: arguments,
-	                    that: this
-	                  });
-	                }
-	                return listener.apply(this, arguments);
-	              };
-	              if (proto.prototype.addEventListener) {
-	                return proto.prototype.addEventListener = wrappedListener;
-	              } else if (proto.prototype.attachEvent) {
-	                return proto.prototype.attachEvent = wrappedListener;
-	              }
-	            })(listener);
-	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
-	            return (function(remover) {
-	              var wrappedRemover;
-	              wrappedRemover = function() {
-	                this.isAnyResizeEventInited = false;
-	                this.iframe && this.removeChild(this.iframe);
-	                return remover.apply(this, arguments);
-	              };
-	              if (proto.prototype.removeEventListener) {
-	                return proto.prototype.removeEventListener = wrappedRemover;
-	              } else if (proto.prototype.detachEvent) {
-	                return proto.prototype.detachEvent = wrappedListener;
-	              }
-	            })(remover);
-	          })(proto));
-	        }
-	        return results;
-	      }).call(this);
-	    };
-
-	    Main.prototype.handleResize = function(args) {
-	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
-	      el = args.that;
-	      if (!this.timerElements[el.tagName.toLowerCase()]) {
-	        iframe = document.createElement('iframe');
-	        el.appendChild(iframe);
-	        iframe.style.width = '100%';
-	        iframe.style.height = '100%';
-	        iframe.style.position = 'absolute';
-	        iframe.style.zIndex = -999;
-	        iframe.style.opacity = 0;
-	        iframe.style.top = 0;
-	        iframe.style.left = 0;
-	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
-	        isNoPos = el.style.position === '';
-	        isStatic = computedStyle.position === 'static' && isNoPos;
-	        isEmpty = computedStyle.position === '' && el.style.position === '';
-	        if (isStatic || isEmpty) {
-	          el.style.position = 'relative';
-	        }
-	        if ((ref = iframe.contentWindow) != null) {
-	          ref.onresize = (function(_this) {
-	            return function(e) {
-	              return _this.dispatchEvent(el);
-	            };
-	          })(this);
-	        }
-	        el.iframe = iframe;
-	      } else {
-	        this.initTimer(el);
-	      }
-	      return el.isAnyResizeEventInited = true;
-	    };
-
-	    Main.prototype.initTimer = function(el) {
-	      var height, width;
-	      width = 0;
-	      height = 0;
-	      return this.interval = setInterval((function(_this) {
-	        return function() {
-	          var newHeight, newWidth;
-	          newWidth = el.offsetWidth;
-	          newHeight = el.offsetHeight;
-	          if (newWidth !== width || newHeight !== height) {
-	            _this.dispatchEvent(el);
-	            width = newWidth;
-	            return height = newHeight;
-	          }
-	        };
-	      })(this), this.o.interval || 62.5);
-	    };
-
-	    Main.prototype.dispatchEvent = function(el) {
-	      var e;
-	      if (document.createEvent) {
-	        e = document.createEvent('HTMLEvents');
-	        e.initEvent('onresize', false, false);
-	        return el.dispatchEvent(e);
-	      } else if (document.createEventObject) {
-	        e = document.createEventObject();
-	        return el.fireEvent('onresize', e);
-	      } else {
-	        return false;
-	      }
-	    };
-
-	    Main.prototype.destroy = function() {
-	      var i, it, j, len, proto, ref, results;
-	      clearInterval(this.interval);
-	      this.interval = null;
-	      window.isAnyResizeEventInited = false;
-	      it = this;
-	      ref = this.allowedProtos;
-	      results = [];
-	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	        proto = ref[i];
-	        if (proto.prototype == null) {
-	          continue;
-	        }
-	        results.push((function(proto) {
-	          var listener;
-	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	          if (proto.prototype.addEventListener) {
-	            proto.prototype.addEventListener = Element.prototype.addEventListener;
-	          } else if (proto.prototype.attachEvent) {
-	            proto.prototype.attachEvent = Element.prototype.attachEvent;
-	          }
-	          if (proto.prototype.removeEventListener) {
-	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
-	          } else if (proto.prototype.detachEvent) {
-	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
-	          }
-	        })(proto));
-	      }
-	      return results;
-	    };
-
-	    return Main;
-
-	  })();
-	  if (true) {
-	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
-	      return new Main;
-	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
-	    return module.exports = new Main;
-	  } else {
-	    if (typeof window !== "undefined" && window !== null) {
-	      window.AnyResizeEvent = Main;
-	    }
-	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
-	  }
-	})();
 
 
 /***/ },

@@ -414,6 +414,19 @@
         t._update(time);
         return expect(t._prevTime).toBeCloseTo(t._props.endTime - delay - shift, 3);
       });
+      it('should update save reversed time to _prevTime on when skipping frame', function() {
+        var duration, shift, t, time;
+        duration = 1000;
+        t = new Tween({
+          duration: duration
+        });
+        t._setStartTime();
+        t._setProp('isReversed', true);
+        shift = 200;
+        time = t._props.startTime + shift;
+        t._update(time);
+        return expect(t._prevTime).toBeCloseTo(t._props.endTime - t._progressTime, 3);
+      });
       it('should recalculate time for speed if defined', function() {
         var delay, duration, speed, startPoint, t, time;
         delay = 50;
@@ -3675,6 +3688,31 @@
         return expect(firstUpdateDirection).toBe(true);
       });
     });
+
+    /*
+      specific
+     */
+    describe('specific _update behaviour', function() {
+      return it('should call repeatComplete if imideatelly returned inside Timeline', function() {
+        var t, tm;
+        tm = new Timeline({
+          repeat: 1,
+          yoyo: true
+        });
+        t = new Tween({
+          onRepeatComplete: function() {}
+        });
+        tm.add(t);
+        tm.setProgress(0);
+        tm.setProgress(.1);
+        tm.setProgress(.35);
+        tm.setProgress(.5);
+        tm.setProgress(.6);
+        spyOn(t._props, 'onRepeatComplete');
+        tm.setProgress(.5);
+        return expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true);
+      });
+    });
     describe('_getPeriod method ->', function() {
       it('should get current period', function() {
         var delay, duration, t, timeShift;
@@ -4099,19 +4137,67 @@
         return expect(t._props.easing).toBe(mojs.easing.elastic["in"]);
       });
     });
+    describe('_subPlay method ->', function() {
+      it('should recalc _prevTime', function(dfr) {
+        var t;
+        t = new Tween;
+        t.play();
+        return setTimeout(function() {
+          var now;
+          t.pause();
+          now = performance.now();
+          t.play().pause();
+          expect(Math.abs(now - t._prevTime)).not.toBeGreaterThan(5);
+          return dfr();
+        }, 200);
+      });
+      it('should recalc startTime', function(dfr) {
+        var duration, shift, t;
+        duration = 1000;
+        shift = 200;
+        t = new Tween({
+          duration: duration
+        });
+        t.play();
+        return setTimeout(function() {
+          var startTime;
+          t.pause();
+          startTime = performance.now() - Math.abs(shift) - t._progressTime;
+          spyOn(t, '_setStartTime');
+          t.play(shift);
+          expect(Math.abs(startTime - t._setStartTime.calls.argsFor(0)[0])).not.toBeGreaterThan(5);
+          return dfr();
+        }, duration / 2);
+      });
+      return it('should recalc startTime regarding speed', function(dfr) {
+        var duration, shift, speed, t;
+        duration = 1000;
+        shift = 200;
+        speed = .5;
+        t = new Tween({
+          duration: duration,
+          speed: speed
+        });
+        t.play();
+        return setTimeout(function() {
+          var startTime;
+          t.pause();
+          startTime = performance.now() - Math.abs(shift) - t._progressTime / speed;
+          spyOn(t, '_setStartTime');
+          t.play(shift);
+          expect(Math.abs(startTime - t._setStartTime.calls.argsFor(0)[0])).not.toBeGreaterThan(5);
+          return dfr();
+        }, duration / 2);
+      });
+    });
     describe('play method ->', function() {
       it('should get the start time', function() {
-        var t;
+        var p, t;
         t = new Tween;
         t.play();
-        expect(t._props.startTime).toBeDefined();
-        return expect(t._props.endTime).toBe(t._props.startTime + t._props.repeatTime);
-      });
-      it('should reset _prevTime to null', function() {
-        var t;
-        t = new Tween;
-        t.play();
-        return expect(t._prevTime).toBe(null);
+        p = t._props;
+        expect(p.startTime).toBeDefined();
+        return expect(p.endTime).toBe(p.startTime + p.repeatTime);
       });
       it('should set _state to "play"', function() {
         var t;
@@ -4125,7 +4211,7 @@
         t._setStartTime();
         time = t._props.startTime;
         t.setProgress(1).play();
-        return expect(Math.abs(time - t._props.startTime)).not.toBeGreaterThan(20);
+        return expect(Math.abs(time - t._props.startTime)).not.toBeGreaterThan(5);
       });
       it('should reset isReversed to false', function() {
         var t;
@@ -4156,7 +4242,7 @@
         shift = 200;
         t.play(shift);
         startTime = time - shift;
-        return expect(startTime - t._props.startTime).not.toBeGreaterThan(2);
+        return expect(startTime - t._props.startTime).not.toBeGreaterThan(5);
       });
       it('should treat negative progress time as positive', function() {
         var shift, t, time;
@@ -4178,7 +4264,7 @@
         t.setProgress(progress);
         t.play();
         start = performance.now() - progress * t._props.repeatTime;
-        return expect(Math.abs(t._props.startTime - start)).not.toBeGreaterThan(20);
+        return expect(Math.abs(t._props.startTime - start)).not.toBeGreaterThan(5);
       });
       it('should recalc _progressTime if previous state was "reverse" + "pause"', function() {
         var duration, progress, t;
@@ -4323,6 +4409,16 @@
         spyOn(tw, 'setProgress');
         tw.stop();
         return expect(tw.setProgress).toHaveBeenCalledWith(0);
+      });
+      it('should reset _prevTime to null', function() {
+        var tw;
+        tweener.removeAll();
+        tw = new Tween({
+          duration: 2000
+        });
+        tw.play();
+        tw.stop();
+        return expect(tw._prevTime).toBe(null);
       });
       it('should set _state to "stop"', function() {
         var t;
@@ -5166,6 +5262,71 @@
         return expect(t._playTime).toBe(null);
       });
     });
+    describe('onComplete callback ->', function() {
+      return it('should be called just once when finished and inside Timeline ->', function() {
+        var completeCnt, completeDirection, debug, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, tm, tw, updateDirection, updateValue, zeroCnt;
+        zeroCnt = 0;
+        oneCnt = 0;
+        startCnt = 0;
+        completeCnt = 0;
+        repeatCnt = 0;
+        repeatStartCnt = 0;
+        firstUpdateCnt = 0;
+        firstUpdateDirection = null;
+        startDirection = null;
+        completeDirection = null;
+        repeatStartDirection = null;
+        repeatCompleteDirection = null;
+        duration = 50;
+        updateValue = null;
+        updateDirection = null;
+        debug = false;
+        tm = new Timeline;
+        tw = new Tween({
+          duration: duration,
+          onUpdate: function(p, ep, isForward) {
+            debug && console.log("ONUPDATE " + p);
+            updateDirection = isForward;
+            updateValue = p;
+            (p === 0) && zeroCnt++;
+            return (p === 1) && oneCnt++;
+          },
+          onRepeatComplete: function(isForward) {
+            debug && console.log("REPEAT COMPLETE " + isForward);
+            repeatCompleteDirection = isForward;
+            return repeatCnt++;
+          },
+          onRepeatStart: function(isForward) {
+            debug && console.log("REPEAT START " + isForward);
+            repeatStartDirection = isForward;
+            return repeatStartCnt++;
+          },
+          onStart: function(isForward) {
+            debug && console.log("START " + isForward);
+            startDirection = isForward;
+            return startCnt++;
+          },
+          onComplete: function(isForward) {
+            debug && console.log("COMPLETE " + isForward);
+            completeDirection = isForward;
+            return completeCnt++;
+          },
+          onFirstUpdate: function(isForward) {
+            debug && console.log("FIRST UPDATE " + isForward);
+            firstUpdateDirection = isForward;
+            return firstUpdateCnt++;
+          }
+        });
+        tm.add(tw);
+        tm.setProgress(0);
+        tm.setProgress(.5);
+        tm.setProgress(.9);
+        tm.setProgress(1);
+        tm.setProgress(.9);
+        tm.setProgress(.8);
+        return expect(completeCnt).toBe(2);
+      });
+    });
     describe('_progress method ->', function() {
       return it('should call onProgress callback', function() {
         var duration, time, tw;
@@ -5240,6 +5401,7 @@
         tw._update(time - 1);
         tw._update(time);
         expect(tw._progress).toHaveBeenCalledWith((delay / 2) / p.repeatTime, time);
+        expect(tw._progress.calls.count()).toBe(1);
         return expect(tw._props.onProgress).toHaveBeenCalledWith((delay / 2) / p.repeatTime, true);
       });
       it('should be called only in active bounds "-"', function() {

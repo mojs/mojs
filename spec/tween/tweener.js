@@ -175,8 +175,8 @@
         return expect(t.tweens.length).toBe(0);
       });
     });
-    return describe('update method ->', function() {
-      return it('should update the current time on every timeline', function() {
+    return describe('_update method ->', function() {
+      it('should update the current time on every timeline', function() {
         var time;
         t.add(new Tween);
         t.add(new Tween);
@@ -185,6 +185,35 @@
         t._update(time = performance.now() + 200);
         expect(t.tweens[0]._update).toHaveBeenCalledWith(time);
         return expect(t.tweens[1]._update).toHaveBeenCalledWith(time);
+      });
+      it('should remove tween if ended', function() {
+        var time, tw;
+        tw = new Tween;
+        t.add(tw);
+        tw._update = function() {
+          return true;
+        };
+        expect(t.tweens[0]).toBe(tw);
+        spyOn(t, 'remove').and.callThrough();
+        t._update(time = performance.now() + 200);
+        expect(t.remove).toHaveBeenCalledWith(0);
+        return expect(t.tweens[0]).not.toBeDefined();
+      });
+      return it('should set tween\'s _prevTime to null if ended', function(dfr) {
+        var startTime, tw;
+        tw = new Tween({
+          duration: 100,
+          isIt: 1
+        });
+        tw._setStartTime();
+        t.add(tw);
+        expect(t.tweens[0]).toBe(tw);
+        spyOn(t, 'remove').and.callThrough();
+        startTime = performance.now();
+        return setTimeout(function() {
+          expect(tw._prevTime).toBe(null);
+          return dfr();
+        }, 400);
       });
     });
   });

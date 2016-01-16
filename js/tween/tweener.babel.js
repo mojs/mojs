@@ -28,8 +28,11 @@ class Tweener {
     var i = this.tweens.length;
     while(i--) {
       // COVER
-      if ( this.tweens[i] ) {
-        if (this.tweens[i]._update(time) === true) { this.remove(i); }
+      // cache the current tween
+      var tween = this.tweens[i];
+      if (tween && tween._update(time) === true) {
+        this.remove(i);
+        tween._prevTime = null;
       }
     }
   }

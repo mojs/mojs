@@ -189,7 +189,6 @@ describe 'Tween ->', ->
       t._update(t._props.startTime - 500)
       expect(t._isInActiveArea).toBe(false)
       expect(t.onUpdate.calls.count()).toBe 2
-
     it 'should not call update method if timeline isnt active "+"', ->
       t = new Tween(duration: 1000, onUpdate:-> )
       spyOn t, 'onUpdate'
@@ -248,6 +247,15 @@ describe 'Tween ->', ->
       t._update time - 1
       t._update time
       expect(t._prevTime).toBeCloseTo (t._props.endTime - delay - shift), 3
+    it 'should update save reversed time to _prevTime on when skipping frame', ->
+      duration = 1000
+      t = new Tween(duration: duration)
+      t._setStartTime()
+      t._setProp 'isReversed', true
+      shift = 200
+      time = t._props.startTime + shift
+      t._update time
+      expect(t._prevTime).toBeCloseTo (t._props.endTime - t._progressTime), 3
     it 'should recalculate time for speed if defined', ->
       delay = 50; duration = 1000
       speed = 2
@@ -4250,6 +4258,28 @@ describe 'Tween ->', ->
       expect(firstUpdateCnt).toBe(2)
       expect(firstUpdateDirection).toBe(true)
 
+  ###
+    specific
+  ###
+
+  describe 'specific _update behaviour', ->
+    it 'should call repeatComplete if imideatelly returned inside Timeline', ()->
+
+      tm = new Timeline repeat:  1, yoyo: true
+      t = new Tween onRepeatComplete:->
+
+      tm.add t
+
+      tm.setProgress 0
+      tm.setProgress .1
+      tm.setProgress .35
+      tm.setProgress .5
+      tm.setProgress .6
+      spyOn t._props, 'onRepeatComplete'
+      tm.setProgress .5
+
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith true
+      
   describe '_getPeriod method ->', ->
     it 'should get current period', ->
       duration = 50; delay = 20
@@ -4537,27 +4567,65 @@ describe 'Tween ->', ->
       t._setProp 'easing', 'elastic.in'
       expect(t._props.easing).toBe mojs.easing.elastic.in
 
+  describe '_subPlay method ->', ->
+    it 'should recalc _prevTime', (dfr)->
+      t = new Tween
+      t.play()
+      
+      setTimeout ->
+        t.pause()
+
+        now = performance.now()
+        t.play().pause()
+        expect(Math.abs(now - t._prevTime) ).not.toBeGreaterThan 5
+        dfr()
+      , 200
+    it 'should recalc startTime', (dfr)->
+      duration = 1000; shift = 200
+      t = new Tween duration: duration
+      t.play()
+      setTimeout ->
+        t.pause()
+        startTime = performance.now() - Math.abs(shift) - t._progressTime
+        spyOn t, '_setStartTime'
+        t.play(shift)
+        expect(Math.abs(startTime - t._setStartTime.calls.argsFor(0)[0] ))
+          .not.toBeGreaterThan 5
+        dfr()
+      , duration/2
+
+    it 'should recalc startTime regarding speed', (dfr)->
+      duration = 1000; shift = 200; speed = .5
+      t = new Tween duration: duration, speed: speed
+      t.play()
+      setTimeout ->
+        t.pause()
+        startTime = performance.now() - Math.abs(shift) - t._progressTime/speed
+        spyOn t, '_setStartTime'
+        t.play(shift)
+        expect(Math.abs(startTime - t._setStartTime.calls.argsFor(0)[0] ))
+          .not.toBeGreaterThan 5
+        dfr()
+      , duration/2
+
   describe 'play method ->', ->
-    it 'should get the start time',->
+    it 'should get the start time', ->
       t = new Tween
       t.play()
-      expect(t._props.startTime).toBeDefined()
-      expect(t._props.endTime).toBe t._props.startTime + t._props.repeatTime
-    it 'should reset _prevTime to null',->
-      t = new Tween
-      t.play()
-      expect(t._prevTime).toBe null
-    it 'should set _state to "play"',->
+      p = t._props
+      expect(p.startTime).toBeDefined()
+      expect(p.endTime).toBe p.startTime + p.repeatTime
+    it 'should set _state to "play"', ->
       t = new Tween
       t.play()
       expect(t._state).toBe 'play'
-    it 'should reset _progressTime to 0 if tween ended',->
+    it 'should reset _progressTime to 0 if tween ended', ->
       t = new Tween
       t._setStartTime()
       time = t._props.startTime
       t.setProgress(1).play()
-      expect(Math.abs( time - t._props.startTime) ).not.toBeGreaterThan 20
-    it 'should reset isReversed to false',->
+      expect(Math.abs( time - t._props.startTime) ).not.toBeGreaterThan 5
+    it 'should reset isReversed to false', ->
       t = new Tween
       t._props.isReversed = true
       t.play()
@@ -4579,7 +4647,7 @@ describe 'Tween ->', ->
       shift = 200
       t.play( shift )
       startTime = time - shift
-      expect( startTime - t._props.startTime ).not.toBeGreaterThan 2
+      expect( startTime - t._props.startTime ).not.toBeGreaterThan 5
     it 'should treat negative progress time as positive',->
       t = new Tween
       t._setStartTime()
@@ -4595,7 +4663,7 @@ describe 'Tween ->', ->
       t.setProgress( progress )
       t.play()
       start = performance.now() - progress*t._props.repeatTime
-      expect(Math.abs( t._props.startTime - start )).not.toBeGreaterThan 20
+      expect(Math.abs( t._props.startTime - start )).not.toBeGreaterThan 5
     it 'should recalc _progressTime if previous state was "reverse" + "pause"',->
       duration = 1000
       t = new Tween duration: duration
@@ -4623,7 +4691,6 @@ describe 'Tween ->', ->
       spyOn t, '_subPlay'
       t.play()
       expect(t._subPlay).not.toHaveBeenCalled()
-
     it 'should run if already playing but ended', (dfr)->
       duration = 50
       t = new Tween duration: duration
@@ -4703,6 +4770,12 @@ describe 'Tween ->', ->
       spyOn tw, 'setProgress'
       tw.stop()
       expect(tw.setProgress).toHaveBeenCalledWith 0
+    it 'should reset _prevTime to null',->
+      tweener.removeAll()
+      tw = new Tween duration: 2000
+      tw.play()
+      tw.stop()
+      expect(tw._prevTime).toBe null
     it 'should set _state to "stop"',->
       t = new Tween
       t.stop()
@@ -5295,56 +5368,57 @@ describe 'Tween ->', ->
       expect(t._playTime).toBe null
 
   # TODO: return when timeline -> tween update is ready
-  # describe 'onComplete callback ->', ->
-  #   it 'should be called just once when finished and inside Timeline ->', ->
-  #     zeroCnt = 0;    oneCnt = 0
-  #     startCnt = 0;   completeCnt = 0
-  #     repeatCnt = 0;  repeatStartCnt = 0
-  #     firstUpdateCnt = 0; firstUpdateDirection = null
-  #     startDirection = null; completeDirection = null
-  #     repeatStartDirection = null; repeatCompleteDirection = null
-  #     duration = 50; updateValue = null; updateDirection = null
+  describe 'onComplete callback ->', ->
+    it 'should be called just once when finished and inside Timeline ->', ->
+      zeroCnt = 0;    oneCnt = 0
+      startCnt = 0;   completeCnt = 0
+      repeatCnt = 0;  repeatStartCnt = 0
+      firstUpdateCnt = 0; firstUpdateDirection = null
+      startDirection = null; completeDirection = null
+      repeatStartDirection = null; repeatCompleteDirection = null
+      duration = 50; updateValue = null; updateDirection = null
       
-  #     debug = false
-  #     tm = new Timeline
-  #     tw = new Tween
-  #       duration:   duration
-  #       onUpdate:(p, ep, isForward)->
-  #         debug and console.log "ONUPDATE #{p}"
-  #         updateDirection = isForward
-  #         updateValue = p
-  #         (p is 0) and zeroCnt++
-  #         (p is 1) and oneCnt++
-  #       onRepeatComplete:(isForward)->
-  #         debug and console.log "REPEAT COMPLETE #{isForward}"
-  #         repeatCompleteDirection = isForward
-  #         repeatCnt++
-  #       onRepeatStart:(isForward)->
-  #         debug and console.log "REPEAT START #{isForward}"
-  #         repeatStartDirection = isForward
-  #         repeatStartCnt++
-  #       onStart:(isForward)->
-  #         debug and console.log "START #{isForward}"
-  #         startDirection = isForward
-  #         startCnt++
-  #       onComplete:(isForward)->
-  #         debug and console.log "COMPLETE #{isForward}"
-  #         completeDirection = isForward
-  #         completeCnt++
-  #       onFirstUpdate:(isForward)->
-  #         debug and console.log "FIRST UPDATE #{isForward}"
-  #         firstUpdateDirection = isForward
-  #         firstUpdateCnt++
+      debug = false
+      tm = new Timeline
+      tw = new Tween
+        duration:   duration
+        onUpdate:(p, ep, isForward)->
+          debug and console.log "ONUPDATE #{p}"
+          updateDirection = isForward
+          updateValue = p
+          (p is 0) and zeroCnt++
+          (p is 1) and oneCnt++
+        onRepeatComplete:(isForward)->
+          debug and console.log "REPEAT COMPLETE #{isForward}"
+          repeatCompleteDirection = isForward
+          repeatCnt++
+        onRepeatStart:(isForward)->
+          debug and console.log "REPEAT START #{isForward}"
+          repeatStartDirection = isForward
+          repeatStartCnt++
+        onStart:(isForward)->
+          debug and console.log "START #{isForward}"
+          startDirection = isForward
+          startCnt++
+        onComplete:(isForward)->
+          debug and console.log "COMPLETE #{isForward}"
+          completeDirection = isForward
+          completeCnt++
+        onFirstUpdate:(isForward)->
+          debug and console.log "FIRST UPDATE #{isForward}"
+          firstUpdateDirection = isForward
+          firstUpdateCnt++
 
-  #     tm.add tw
+      tm.add tw
 
-  #     tm.setProgress(0)
-  #     tm.setProgress(.5)
-  #     tm.setProgress(.9)
-  #     tm.setProgress(1)
-  #     tm.setProgress(.9)
+      tm.setProgress(0)
+      tm.setProgress(.5)
+      tm.setProgress(.9)
+      tm.setProgress(1)
+      tm.setProgress(.9)
+      tm.setProgress(.8)
 
-  #     expect(completeCnt).toBe 2
+      expect(completeCnt).toBe 2
 
   describe '_progress method ->', ->
     it 'should call onProgress callback', ->
@@ -5395,7 +5469,7 @@ describe 'Tween ->', ->
     it 'should be called only in active bounds regarding delay "-"', ->
       duration = 1000; delay = 200
       tw = new Tween
-        duration: duration,
+        duration: duration
         delay: delay
         onProgress:->
 
@@ -5411,6 +5485,7 @@ describe 'Tween ->', ->
       tw._update time
 
       expect(tw._progress).toHaveBeenCalledWith (delay/2)/p.repeatTime, time
+      expect(tw._progress.calls.count()).toBe 1
       expect(tw._props.onProgress).toHaveBeenCalledWith (delay/2)/p.repeatTime, true
 
     it 'should be called only in active bounds "-"', ->

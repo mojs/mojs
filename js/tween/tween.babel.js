@@ -4,6 +4,55 @@ import easing from '../easing/easing';
 
 var Tween = class Tween {
   /*
+    Method do declare defaults with this._defaults object.
+    @private
+  */
+  _declareDefaults() {
+    // DEFAULTS
+    this._defaults = {
+      /* duration of the tween [0..∞] */
+      duration:               600,
+      /* delay of the tween [-∞..∞] */
+      delay:                  0,
+      /* repeat of the tween [0..∞], means how much to
+         repeat the tween regardless first run,
+         for instance repeat: 2 will make the tween run 3 times */
+      repeat:                 0,
+      /* speed of playback [0..∞], speed that is less then 1
+         will slowdown playback, for instance .5 will make tween
+         run 2x slower. Speed of 2 will speedup the tween to 2x. */
+      speed:                  null,
+      /*  flip onUpdate's progress on each even period.
+          note that callbacks order won't flip at least
+          for now (under consideration). */
+      yoyo:                   false,
+      /* easing for the tween, could be any easing type [link to easing-types.md] */
+      easing:                 'Linear.None',
+      /*
+        onProgress callback runs before any other callback.
+        @param {Number}   The entire progress of the tween regarding repeat.
+        @param {Boolean}  The direction of the tween.
+                          `true` for forward direction.
+                          `false` for backward direction(tween runs in reverse).
+      */
+      onProgress:             null,
+      /*
+        onStart callback runs on very start of the tween just after onProgress
+        one. Runs on very end of the tween if tween is reversed.
+        @param {Boolean}  Direction of the tween.
+                          `true` for forward direction.
+                          `false` for backward direction(tween runs in reverse).
+      */
+      onStart:                null,
+      onComplete:             null,
+      onRepeatStart:          null,
+      onRepeatComplete:       null,
+      onFirstUpdate:          null,
+      onUpdate:               null,
+      isChained:              false
+    }
+  }
+  /*
     API method to run the Tween.
     @public
     @param  {Number} Shift time in milliseconds.
@@ -18,7 +67,7 @@ var Tween = class Tween {
       this._progressTime = this._props.repeatTime - this._progressTime;
     }
     this._props.isReversed = false;
-    this._subPlay(shift);
+    this._subPlay( shift );
     this._setPlaybackState('play');
     return this;
   }
@@ -52,6 +101,7 @@ var Tween = class Tween {
     this._removeFromTweener();
     this.setProgress(0);
     this._setPlaybackState('stop');
+    this._prevTime = null;
     return this;
   }
   /*
@@ -118,39 +168,24 @@ var Tween = class Tween {
     @return {Object} Self.
   */
   _subPlay (shift = 0) {
-    // reset previous time cache
-    this._prevTime = null;
+    var procTime, resumeTime, startTime;
     // if tween was ended, set progress to 0 if not, set to elapsed progress
-    var procTime = ( this._progressTime >= this._props.repeatTime )
-      ? 0 : this._progressTime;
+    procTime = ( this._progressTime >= this._props.repeatTime )
+        ? 0 : this._progressTime;
+    // normalize the progress regarding speed, if it is present
+    this._props.speed && (procTime /= this._props.speed);
+
+    resumeTime = performance.now();
     // set start time regarding passed `shift` and calculated `procTime`
-    // this._playTime = performance.now();
-    this._setStartTime( performance.now() - Math.abs(shift) - procTime );
+    startTime = resumeTime - Math.abs(shift) - procTime;
+
+    // set prev time to resume time to prevent firing callbacks
+    if ( this._prevTime ) { this._prevTime = resumeTime; }
+
+    this._setStartTime( startTime );
     // add self to tweener = run
     t.add(this);
     return this;
-  }
-  /*
-    Method do declare defaults with this._defaults object.
-    @private
-  */
-  _declareDefaults() {
-    this._defaults = {
-      duration:               600,
-      delay:                  0,
-      repeat:                 0,
-      speed:                  null,
-      yoyo:                   false,
-      easing:                 'Linear.None',
-      onStart:                null,
-      onComplete:             null,
-      onRepeatStart:          null,
-      onRepeatComplete:       null,
-      onFirstUpdate:          null,
-      onUpdate:               null,
-      onProgress:             null,
-      isChained:              false
-    }
   }
   /*
     Method to declare some vars.
@@ -234,14 +269,7 @@ var Tween = class Tween {
                     1 = edge jump in positive direction.
   */
   _update (time, timelinePrevTime, wasYoyo, onEdge) {
-
     var p = this._props;
-    // this.o.isIt && console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
-    // this.o.isIt && console.log('TWEEN');
-    // this.o.isIt && this._visualizeProgress( time );
-    // this.o.isIt && console.log(`time: ${time}, prevTime: ${this._prevTime}, timelinePrevTime: ${timelinePrevTime}`);
-    // this.o.isIt && console.log(`startTime: ${p.startTime}, endTime: ${p.endTime}`);
-
     // if we don't the _prevTime thus the direction we are heading to,
     // but prevTime was passed thus we are child of a Timeline
     // set _prevTime to passed one and pretent that there was unknown
@@ -262,7 +290,6 @@ var Tween = class Tween {
         } else {
           this._prevTime = time - 1;
           this._repeatComplete( time );
-          this.o.isIt && console.log('here 4');
           this._complete( time );
         }
       // backward edge direction
@@ -271,7 +298,6 @@ var Tween = class Tween {
         if ( wasYoyo ) {
           this._prevTime = time - 1;
           this._repeatComplete( time );
-          this.o.isIt && console.log('here 5');
           this._complete( time );
         } else {
           this._prevTime = time + 1;
@@ -283,26 +309,14 @@ var Tween = class Tween {
       // where we are heading
       this._prevTime = null;
     }
-    // We need to know what direction we are heading to,
-    // so if we don't have the previous update value - this is very first
-    // update, - skip it entirely and wait for the next value
-    if ( this._prevTime === null ) {
-      this._prevTime = time;
-      this._wasUknownUpdate = true;
-      return false;
-    }
+
     // cache vars
-    var p = this._props,
-        startPoint = p.startTime - p.delay;
+    var startPoint = p.startTime - p.delay;
     // if speed param was defined - calculate
     // new time regarding speed
     if ( p.speed && this._playTime ) {
       // play point + ( speed * delta )
       time = this._playTime + ( p.speed * ( time - this._playTime ) );
-    }
-    // handle onProgress callback
-    if  ( time >= startPoint && time <= p.endTime ) {
-      this._progress( (time - startPoint) / p.repeatTime, time );
     }
     // if in active area and not ended - save progress time
     // for pause/play purposes.
@@ -318,6 +332,21 @@ var Tween = class Tween {
     }
     // reverse time if _props.isReversed is set
     if ( p.isReversed ) { time = p.endTime - this._progressTime; }
+    // We need to know what direction we are heading to,
+    // so if we don't have the previous update value - this is very first
+    // update, - skip it entirely and wait for the next value
+    if ( this._prevTime === null ) {
+      this._prevTime = time;
+      this._wasUknownUpdate = true;
+      return false;
+    }
+
+    // AFTER SKIPPED FRAME
+
+    // handle onProgress callback
+    if  ( time >= startPoint && time <= p.endTime ) {
+      this._progress( (time - startPoint) / p.repeatTime, time );
+    }
     /*
       if time is inside the active area of the tween.
       active area is the area from start time to end time,
@@ -326,7 +355,6 @@ var Tween = class Tween {
     if ((time >= p.startTime) && (time <= p.endTime)) {
       this._updateInActiveArea( time );
     } else { (this._isInActiveArea) && this._updateInInactiveArea( time ); }
-
     this._prevTime = time;
     return (time >= p.endTime) || (time <= startPoint);
   }
@@ -346,7 +374,6 @@ var Tween = class Tween {
       var isYoyo = p.yoyo && (T % 2 === 0);
       this._setProgress( (isYoyo) ? 0 : 1, time, isYoyo );
       this._repeatComplete( time );
-      this.o.isIt && console.log('here 6');
       this._complete( time );
     }
     // if was active and went to - inactive area "-"
@@ -388,11 +415,10 @@ var Tween = class Tween {
       var isYoyo = !(props.yoyo && ((T-1) % 2 === 1));
       this._setProgress( (isYoyo ? 1 : 0), time, isYoyo );
 
-      // this._isRepeatCompleted = false;
+      this._isRepeatCompleted = false;
       this._repeatComplete( time );
-      // this.o.isIt && console.log('here 1');
       return this._complete( time );
-    }
+    }    
 
     // reset callback flags
     this._isCompleted = false;
@@ -410,9 +436,11 @@ var Tween = class Tween {
       //      ^2^1
       var isOnReverseEdge = (prevT > T);
 
+      // for use in timeline
       this._onEdge = 0;
       isOnEdge && (this._onEdge = 1);
       isOnReverseEdge && (this._onEdge = -1);
+
 
       if ( this._wasUknownUpdate ) {
         if ( time > this._prevTime ) {
@@ -421,7 +449,6 @@ var Tween = class Tween {
           this._firstUpdate( time );
         }
         if ( time < this._prevTime ) {
-          this.o.isIt && console.log('here 2');
           this._complete( time );
           this._repeatComplete( time );
           this._firstUpdate( time );
@@ -476,7 +503,6 @@ var Tween = class Tween {
         // we have handled the case in this._wasUknownUpdate
         // block so filter that
         if ( prevT === TCount && !this._wasUknownUpdate ) {
-          this.o.isIt && console.log('here 3');
           this._complete( time );
           this._repeatComplete( time );              
           this._firstUpdate( time);
@@ -504,7 +530,6 @@ var Tween = class Tween {
       }
 
       if ( time !== props.endTime ) {
-
         var isYoyo = props.yoyo && (T % 2 === 1)
         this._setProgress( ((isYoyo) ? 1-proc : proc), time, isYoyo );
       }
@@ -621,7 +646,6 @@ var Tween = class Tween {
     this.easedProgress = this._props.easing(this.progress);
     if ( this._props.prevEasedProgress !== this.easedProgress ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-        // this.o.isIt && console.log(`********** UPDATE ${this.progress}, ${time > this._prevTime} **********`);
         this.onUpdate( this.easedProgress, this.progress, time > this._prevTime );
       }
     }
@@ -638,7 +662,6 @@ var Tween = class Tween {
   _start (time) {
     if ( this._isStarted ) { return; }
     if (this._props.onStart != null && typeof this._props.onStart === 'function') {
-      this.o.isIt && console.log(`********** START ${time > this._prevTime} **********`);
       this._props.onStart.call(this, time > this._prevTime );
     }
     this._isCompleted = false; this._isStarted = true;
@@ -654,7 +677,6 @@ var Tween = class Tween {
   _complete (time) {
     if ( this._isCompleted ) { return; }
     if (this._props.onComplete != null && typeof this._props.onComplete === 'function') {
-      this.o.isIt && console.log(`********** COMPLETE ${time > this._prevTime} **********`);
       this._props.onComplete.call(this, time > this._prevTime );
     }
     this._isCompleted = true; this._isStarted = false;
@@ -670,7 +692,6 @@ var Tween = class Tween {
   _firstUpdate (time) {
     if ( this._isFirstUpdate ) { return; }
     if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
-      this.o.isIt && console.log(`********** FIRST UPDATE ${time > this._prevTime} **********`);
       this._props.onFirstUpdate.call( this, time > this._prevTime );
     }
     this._isFirstUpdate = true;
@@ -684,7 +705,6 @@ var Tween = class Tween {
   _repeatComplete (time) {
     if (this._isRepeatCompleted) { return; }
     if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
-      this.o.isIt && console.log(`********** REPEAT COMPLETE ${time > this._prevTime} **********`);
       this._props.onRepeatComplete.call( this, time > this._prevTime );
     }
     this._isRepeatCompleted = true;
@@ -698,7 +718,6 @@ var Tween = class Tween {
   _repeatStart (time) {
     if (this._isRepeatStart) { return; }
     if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
-      this.o.isIt && console.log(`********** REPEAT START ${time > this._prevTime} **********`);
       this._props.onRepeatStart.call( this, time > this._prevTime );
     }
     this._isRepeatStart = true;
@@ -711,7 +730,6 @@ var Tween = class Tween {
   */
   _progress (progress, time) {
     if (this._props.onProgress != null && typeof this._props.onProgress === 'function') {
-      // this.o.isIt && console.log(`********** PROGRESS ${time > this._prevTime}, ${progress} **********`);
       this._props.onProgress.call(this, progress, time > this._prevTime );
     }
   }
