@@ -3141,11 +3141,6 @@
 
 	var Tween = (function () {
 	  /*
-	    API ^
-	    PRIVATE METHODS v
-	  */
-
-	  /*
 	    Constructor of the class.
 	    @private
 	  */
@@ -3186,7 +3181,8 @@
 	          easing: "Linear.None",
 	          /*
 	            onProgress callback runs before any other callback.
-	            @param {Number}   The entire progress of the tween regarding repeat.
+	            @param {Number}   The entire, not eased, progress
+	                              of the tween regarding repeat option.
 	            @param {Boolean}  The direction of the tween.
 	                              `true` for forward direction.
 	                              `false` for backward direction(tween runs in reverse).
@@ -3231,8 +3227,8 @@
 	          this._progressTime = this._props.repeatTime - this._progressTime;
 	        }
 	        this._props.isReversed = false;
-	        this._subPlay(shift);
 	        this._setPlaybackState("play");
+	        this._subPlay(shift);
 	        return this;
 	      },
 	      writable: true,
@@ -3258,8 +3254,8 @@
 	        }
 	        // play reversed
 	        this._props.isReversed = true;
-	        this._subPlay(shift);
 	        this._setPlaybackState("reverse");
+	        this._subPlay(shift);
 	        // reset previous time cache
 	        return this;
 	      },
@@ -3271,12 +3267,18 @@
 	      /*
 	        API method to stop the Tween.
 	        @public
+	        @param   {Number} Progress [0..1] to set when stopped.
 	        @returns {Object} Self.
 	      */
-	      value: function stop() {
+	      value: function stop(progress) {
 	        this._props.isReversed = false;
 	        this._removeFromTweener();
-	        this.setProgress(0);
+	        // if progress passed - use it
+	        var stopProc = progress != null ? progress
+	        /* if no progress passsed - set 1 if tween
+	           is playingBackward, otherwise set to 0 */
+	         : this._state === "reverse" ? 1 : 0;
+	        this.setProgress(stopProc);
 	        this._setPlaybackState("stop");
 	        this._prevTime = null;
 	        return this;
@@ -3324,6 +3326,50 @@
 	      enumerable: true,
 	      configurable: true
 	    },
+	    _subPlay: {
+
+	      /*
+	        API ^
+	        PRIVATE METHODS v
+	      */
+
+	      /*
+	        Method to launch play. Origianlly was a part of play method.
+	        Divided to use in reverse method.
+	        @private
+	        @param  {Number} Shift time in milliseconds.
+	        @return {Object} Self.
+	      */
+	      value: function SubPlay() {
+	        var shift = arguments[0] === undefined ? 0 : arguments[0];
+	        var procTime,
+	            resumeTime,
+	            startTime,
+	            p = this._props;
+	        // if tween was ended, set progress to 0 if not, set to elapsed progress
+	        procTime = this._progressTime >= p.repeatTime ? 0 : this._progressTime;
+	        // normalize the progress regarding speed, if it is present
+	        p.speed && (procTime /= p.speed);
+	        resumeTime = performance.now();
+	        // set start time regarding passed `shift` and calculated `procTime`
+	        startTime = resumeTime - Math.abs(shift) - procTime;
+	        // if we have prevTime - we need to normalize
+	        // it for the current resume time
+	        if (this._prevTime) {
+	          this._prevTime = this._state === "play" ? resumeTime
+	          // set prevTime to the
+	          // new startTime + (old prevTime - old startTime delta)
+	           : startTime + (this._prevTime - p.startTime);
+	        }
+	        this._setStartTime(startTime);
+	        // add self to tweener = run
+	        t.add(this);
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    _setPlaybackState: {
 	      /*
 	        Method set playback state string.
@@ -3337,40 +3383,6 @@
 	          this._prevState = this._state;
 	        }
 	        this._state = state;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _subPlay: {
-	      /*
-	        Method to launch play. Origianlly was a part of play method.
-	        Divided to use in reverse method.
-	        @private
-	        @param  {Number} Shift time in milliseconds.
-	        @return {Object} Self.
-	      */
-	      value: function SubPlay() {
-	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        var procTime, resumeTime, startTime;
-	        // if tween was ended, set progress to 0 if not, set to elapsed progress
-	        procTime = this._progressTime >= this._props.repeatTime ? 0 : this._progressTime;
-	        // normalize the progress regarding speed, if it is present
-	        this._props.speed && (procTime /= this._props.speed);
-
-	        resumeTime = performance.now();
-	        // set start time regarding passed `shift` and calculated `procTime`
-	        startTime = resumeTime - Math.abs(shift) - procTime;
-
-	        // set prev time to resume time to prevent firing callbacks
-	        if (this._prevTime) {
-	          this._prevTime = resumeTime;
-	        }
-
-	        this._setStartTime(startTime);
-	        // add self to tweener = run
-	        t.add(this);
-	        return this;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3694,7 +3706,7 @@
 	            }
 	            // if on edge but not at very start
 	            // |=====|=====|=====| >>>
-	            // ^!    ^here ^here          
+	            // ^!    ^here ^here
 	            if (prevT >= 0) {
 	              this._repeatStart(time);
 	            }
@@ -3719,7 +3731,7 @@
 	          if (isOnReverseEdge) {
 	            // if on edge but not at very end
 	            // |=====|=====|=====| <<<
-	            //       ^here ^here ^not here    
+	            //       ^here ^here ^not here
 	            if (this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
 	              this._repeatStart(time);
 	            }
@@ -4076,6 +4088,7 @@
 	})();
 
 	module.exports = Tween;
+	// set prev time to resume time to prevent firing callbacks
 
 /***/ },
 /* 12 */
@@ -4555,7 +4568,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.166.5',
+	  revision: '0.166.6',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),

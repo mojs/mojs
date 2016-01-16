@@ -4580,12 +4580,29 @@ describe 'Tween ->', ->
         expect(Math.abs(now - t._prevTime) ).not.toBeGreaterThan 5
         dfr()
       , 200
+
+    it 'should recalc _prevTime if reversed', (dfr)->
+      t = new Tween
+      t.play()
+      
+      setTimeout ->
+        t.pause()
+
+        now = performance.now()
+        prevTimeOld = t._prevTime
+        shift = t._props.startTime - t._prevTime
+        t.playBackward().pause()
+        expect( Math.abs( t._prevTime - ( t._props.startTime - shift ) ) ).not.toBeGreaterThan 5
+        dfr()
+      , 200
+
     it 'should recalc startTime', (dfr)->
       duration = 1000; shift = 200
       t = new Tween duration: duration
       t.play()
       setTimeout ->
         t.pause()
+
         startTime = performance.now() - Math.abs(shift) - t._progressTime
         spyOn t, '_setStartTime'
         t.play(shift)
@@ -4763,13 +4780,27 @@ describe 'Tween ->', ->
       spyOn timeline, '_removeFromTweener'
       timeline.stop()
       expect(timeline._removeFromTweener).toHaveBeenCalled()
-    it 'should reset progress to 0',->
+    it 'should reset progress to 0 if played',->
       tweener.removeAll()
       tw = new Tween duration: 2000
       tw.play()
       spyOn tw, 'setProgress'
       tw.stop()
       expect(tw.setProgress).toHaveBeenCalledWith 0
+    it 'should reset progress to 1 if playedBackward',->
+      tweener.removeAll()
+      tw = new Tween duration: 2000
+      tw.playBackward()
+      spyOn tw, 'setProgress'
+      tw.stop()
+      expect(tw.setProgress).toHaveBeenCalledWith 1
+    it 'should receive progress to set',->
+      tweener.removeAll()
+      tw = new Tween duration: 2000
+      tw.playBackward()
+      spyOn tw, 'setProgress'
+      tw.stop(.5)
+      expect(tw.setProgress).toHaveBeenCalledWith .5
     it 'should reset _prevTime to null',->
       tweener.removeAll()
       tw = new Tween duration: 2000

@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.166.5', isDebug: true
+  revision:   '0.166.6', isDebug: true
   helpers     : require './h'
   shapesMap   : require './shapes/shapesMap'
   Burst       : require './burst'
@@ -18,19 +18,18 @@ mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
 
 # TODO:
-# - stop to 1 when reversed
 
 # tw = new mojs.Tween
-#   # repeat: 1
-#   speed: .5
+#   repeat: 2
+#   # speed: .5
 #   # yoyo: true
 #   duration: 2000
-#   onStart:(isForward)-># console.log("onStart, #{isForward}")
-#   onRepeatStart:(isForward)-># console.log("repeat start, #{isForward}")
-#   onComplete:(isForward)-># console.log("complete, #{isForward}")
-#   onRepeatComplete:(isForward)-># console.log("repeat complete, #{isForward}")
-#   onFirstUpdate:(isForward)-># console.log("first update, #{isForward}")
-#   onProgress:(p, isForward)-># console.log("progress, #{p.toFixed(4)}, #{isForward}")
+#   onStart:(isForward)-> console.log("onStart, #{isForward}")
+#   onRepeatStart:(isForward)-> console.log("repeat start, #{isForward}")
+#   onComplete:(isForward)-> console.log("complete, #{isForward}")
+#   onRepeatComplete:(isForward)-> console.log("repeat complete, #{isForward}")
+#   onFirstUpdate:(isForward)-> console.log("first update, #{isForward}")
+#   onProgress:(p, isForward)-> #console.log("progress, #{p.toFixed(4)}, #{isForward}")
 #   onUpdate:(ep, p, isForward)->
 #     # console.log("********** ONUPDATE: #{p.toFixed(4)}, #{isForward}")
 #     mojs.h.style el, 'transform', "translateX(#{400*p}px)"

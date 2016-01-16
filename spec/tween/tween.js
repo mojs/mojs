@@ -4151,6 +4151,21 @@
           return dfr();
         }, 200);
       });
+      it('should recalc _prevTime if reversed', function(dfr) {
+        var t;
+        t = new Tween;
+        t.play();
+        return setTimeout(function() {
+          var now, prevTimeOld, shift;
+          t.pause();
+          now = performance.now();
+          prevTimeOld = t._prevTime;
+          shift = t._props.startTime - t._prevTime;
+          t.playBackward().pause();
+          expect(Math.abs(t._prevTime - (t._props.startTime - shift))).not.toBeGreaterThan(5);
+          return dfr();
+        }, 200);
+      });
       it('should recalc startTime', function(dfr) {
         var duration, shift, t;
         duration = 1000;
@@ -4399,7 +4414,7 @@
         timeline.stop();
         return expect(timeline._removeFromTweener).toHaveBeenCalled();
       });
-      it('should reset progress to 0', function() {
+      it('should reset progress to 0 if played', function() {
         var tw;
         tweener.removeAll();
         tw = new Tween({
@@ -4409,6 +4424,28 @@
         spyOn(tw, 'setProgress');
         tw.stop();
         return expect(tw.setProgress).toHaveBeenCalledWith(0);
+      });
+      it('should reset progress to 1 if playedBackward', function() {
+        var tw;
+        tweener.removeAll();
+        tw = new Tween({
+          duration: 2000
+        });
+        tw.playBackward();
+        spyOn(tw, 'setProgress');
+        tw.stop();
+        return expect(tw.setProgress).toHaveBeenCalledWith(1);
+      });
+      it('should receive progress to set', function() {
+        var tw;
+        tweener.removeAll();
+        tw = new Tween({
+          duration: 2000
+        });
+        tw.playBackward();
+        spyOn(tw, 'setProgress');
+        tw.stop(.5);
+        return expect(tw.setProgress).toHaveBeenCalledWith(.5);
       });
       it('should reset _prevTime to null', function() {
         var tw;
