@@ -3566,7 +3566,7 @@
 	          return false;
 	        }
 
-	        // AFTER SKIPPED FRAME
+	        // ====== AFTER SKIPPED FRAME ======
 
 	        // handle onProgress callback
 	        if (time >= startPoint && time <= p.endTime) {
@@ -3600,23 +3600,25 @@
 	          return;
 	        }
 	        var p = this._props;
+
 	        // complete if time is larger then end time
 	        if (time > p.endTime && !this._isCompleted) {
 	          this._progress(1, time);
 	          // get period number
-	          var T = this._getPeriod(p.endTime);
-	          var isYoyo = p.yoyo && T % 2 === 0;
+	          var T = this._getPeriod(p.endTime),
+	              isYoyo = p.yoyo && T % 2 === 0;
+
 	          this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
-	          this._repeatComplete(time);
-	          this._complete(time);
+	          this._repeatComplete(time, isYoyo);
+	          this._complete(time, isYoyo);
 	        }
 	        // if was active and went to - inactive area "-"
 	        if (time < this._prevTime && time < p.startTime && !this._isStarted) {
 	          // if was in active area and didn't fire onStart callback
-	          this._progress(0, time);
-	          this._setProgress(0, time);
-	          this._repeatStart(time);
-	          this._start(time);
+	          this._progress(0, time, false);
+	          this._setProgress(0, time, false);
+	          this._repeatStart(time, false);
+	          this._start(time, false);
 	        }
 	        this._isInActiveArea = false;
 	      },
@@ -3643,19 +3645,20 @@
 	            TPrevValue = this._delayT;
 
 	        // "zero" and "one" value regarding yoyo and it's period
-	        var yoyoZero = props.yoyo && T % 2 === 1 ? 1 : 0,
+	        var isYoyo = props.yoyo && T % 2 === 1,
+	            yoyoZero = isYoyo ? 1 : 0,
 	            yoyoOne = 1 - yoyoZero;
 
 	        if (time === this._props.endTime) {
 	          this._wasUknownUpdate = false;
 	          // if `time` is equal to `endTime`, T represents the next period,
 	          // so we need to decrement T and calculate "one" value regarding yoyo
-	          var isYoyo = !(props.yoyo && (T - 1) % 2 === 1);
-	          this._setProgress(isYoyo ? 1 : 0, time, isYoyo);
+	          var isYoyo = props.yoyo && (T - 1) % 2 === 1;
+	          this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
 
 	          this._isRepeatCompleted = false;
-	          this._repeatComplete(time);
-	          return this._complete(time);
+	          this._repeatComplete(time, isYoyo);
+	          return this._complete(time, isYoyo);
 	        }
 
 	        // reset callback flags
@@ -3679,36 +3682,38 @@
 	          isOnEdge && (this._onEdge = 1);
 	          isOnReverseEdge && (this._onEdge = -1);
 
-
 	          if (this._wasUknownUpdate) {
 	            if (time > this._prevTime) {
-	              this._start(time);
-	              this._repeatStart(time);
-	              this._firstUpdate(time);
+	              this._start(time, isYoyo);
+	              this._repeatStart(time, isYoyo);
+	              this._firstUpdate(time, isYoyo);
 	            }
 	            if (time < this._prevTime) {
-	              this._complete(time);
-	              this._repeatComplete(time);
-	              this._firstUpdate(time);
+	              this._complete(time, isYoyo);
+	              this._repeatComplete(time, isYoyo);
+	              this._firstUpdate(time, isYoyo);
 	              // reset isCompleted immediately
 	              this._isCompleted = false;
 	            }
 	          }
 
 	          if (isOnEdge) {
+	            // var isYoyo = (props.yoyo && (T % 2 === 1));
 	            // if not just after delay
 	            // |---=====|---=====|---=====| >>>
 	            //            ^1 ^2
 	            // because we have already handled
 	            // 1 and onRepeatComplete in delay gap
 	            if (this.progress !== 1) {
-	              this._repeatComplete(time);
+	              // prevT
+	              var isThisYoyo = props.yoyo && (T - 1) % 2 === 1;
+	              this._repeatComplete(time, isThisYoyo);
 	            }
 	            // if on edge but not at very start
 	            // |=====|=====|=====| >>>
 	            // ^!    ^here ^here
 	            if (prevT >= 0) {
-	              this._repeatStart(time);
+	              this._repeatStart(time, isYoyo);
 	            }
 	          }
 
@@ -3716,8 +3721,8 @@
 	            //  |=====|=====|=====| >>>
 	            // ^1  ^2
 	            if (!this._isStarted && this._prevTime <= props.startTime) {
-	              this._start(time);
-	              this._repeatStart(time);
+	              this._start(time, isYoyo);
+	              this._repeatStart(time, isYoyo);
 	              // it was zero anyways
 
 	              // restart flags immediately in case if we will
@@ -3725,7 +3730,7 @@
 	              this._isStarted = false;
 	              this._isRepeatStart = false;
 	            }
-	            this._firstUpdate(time);
+	            this._firstUpdate(time, isYoyo);
 	          }
 
 	          if (isOnReverseEdge) {
@@ -3733,7 +3738,7 @@
 	            // |=====|=====|=====| <<<
 	            //       ^here ^here ^not here
 	            if (this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
-	              this._repeatStart(time);
+	              this._repeatStart(time, isYoyo);
 	            }
 	            // if on very end edge
 	            // |=====|=====|=====| <<<
@@ -3741,15 +3746,15 @@
 	            // we have handled the case in this._wasUknownUpdate
 	            // block so filter that
 	            if (prevT === TCount && !this._wasUknownUpdate) {
-	              this._complete(time);
-	              this._repeatComplete(time);
-	              this._firstUpdate(time);
+	              this._complete(time, isYoyo);
+	              this._repeatComplete(time, isYoyo);
+	              this._firstUpdate(time, isYoyo);
 	              // reset isComplete flag call
 	              // cuz we returned to active area
 	              // this._isRepeatCompleted = false;
 	              this._isCompleted = false;
 	            }
-	            this._repeatComplete(time);
+	            this._repeatComplete(time, isYoyo);
 	          }
 
 	          if (prevT === "delay") {
@@ -3757,27 +3762,27 @@
 	            // |---=====|---=====|---=====| <<<
 	            //               ^2    ^1
 	            if (T < TPrevValue) {
-	              this._repeatComplete(time);
+	              this._repeatComplete(time, isYoyo);
 	            }
 	            // if just after delay gap
 	            // |---=====|---=====|---=====| >>>
 	            //            ^1  ^2
 	            if (T === TPrevValue && T > 0) {
-	              this._repeatStart(time);
+	              this._repeatStart(time, isYoyo);
 	            }
 	          }
 
 	          if (time !== props.endTime) {
-	            var isYoyo = props.yoyo && T % 2 === 1;
+	            // var isYoyo = props.yoyo && (T % 2 === 1)
 	            this._setProgress(isYoyo ? 1 - proc : proc, time, isYoyo);
 	          }
 	          // if progress is equal 0 and progress grows
 	          if (proc === 0) {
-	            this._repeatStart(time);
+	            this._repeatStart(time, isYoyo);
 	          }
 
 	          if (time === props.startTime) {
-	            this._start(time);
+	            this._start(time, isYoyo);
 	          }
 	          // delay gap
 	        } else {
@@ -3794,7 +3799,7 @@
 	          //   ^2 ^1    ^2 ^1    ^2 ^1
 	          if (this._isInActiveArea && time < this._prevTime) {
 	            this._setProgress(yoyoZero, time, yoyoZero === 1);
-	            this._repeatStart(time);
+	            this._repeatStart(time, isYoyo);
 	          }
 	          // set 1 or 0 regarding direction and yoyo
 	          this._setProgress(isGrows ? 1 - yoyoZero : yoyoZero, time, yoyoZero === 1);
@@ -3804,7 +3809,7 @@
 	          //   ^0       ^0       ^0  
 	          // OR we have flipped 0 to 1 regarding yoyo option
 	          if (this.progress !== 0 || yoyoZero === 1) {
-	            this._repeatComplete(time);
+	            this._repeatComplete(time, isYoyo);
 	          }
 	          // set flag to indicate inactive area
 	          this._isInActiveArea = false;
@@ -3912,7 +3917,8 @@
 	        this.easedProgress = this._props.easing(this.progress);
 	        if (this._props.prevEasedProgress !== this.easedProgress) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
-	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime);
+	            this.o.isIt && console.log("UPDATE", this.easedProgress, this.progress, time > this._prevTime, isYoyo);
+	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime, isYoyo);
 	          }
 	        }
 	        this._props.prevEasedProgress = this.easedProgress;
@@ -3929,13 +3935,15 @@
 	        @method _start
 	        @private
 	        @param {Number} Progress to set.
+	        @param {Boolean} Is yoyo period.
 	      */
-	      value: function Start(time) {
+	      value: function Start(time, isYoyo) {
 	        if (this._isStarted) {
 	          return;
 	        }
 	        if (this._props.onStart != null && typeof this._props.onStart === "function") {
-	          this._props.onStart.call(this, time > this._prevTime);
+	          this.o.isIt && console.log("START", time > this._prevTime, isYoyo);
+	          this._props.onStart.call(this, time > this._prevTime, isYoyo);
 	        }
 	        this._isCompleted = false;this._isStarted = true;
 	        this._isFirstUpdate = false;
@@ -3951,13 +3959,15 @@
 	        @method _complete
 	        @private
 	        @param {Number} Current time.
+	        @param {Boolean} Is yoyo period.
 	      */
-	      value: function Complete(time) {
+	      value: function Complete(time, isYoyo) {
 	        if (this._isCompleted) {
 	          return;
 	        }
 	        if (this._props.onComplete != null && typeof this._props.onComplete === "function") {
-	          this._props.onComplete.call(this, time > this._prevTime);
+	          this.o.isIt && console.log("COMPLETE", time > this._prevTime, isYoyo);
+	          this._props.onComplete.call(this, time > this._prevTime, isYoyo);
 	        }
 	        this._isCompleted = true;this._isStarted = false;
 	        this._isFirstUpdate = false;
@@ -3973,13 +3983,15 @@
 	        @method _firstUpdate
 	        @private
 	        @param {Number} Current update time.
+	        @param {Boolean} Is yoyo period.
 	      */
-	      value: function FirstUpdate(time) {
+	      value: function FirstUpdate(time, isYoyo) {
 	        if (this._isFirstUpdate) {
 	          return;
 	        }
 	        if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === "function") {
-	          this._props.onFirstUpdate.call(this, time > this._prevTime);
+	          this.o.isIt && console.log("FIRST UPDATE", time > this._prevTime, isYoyo);
+	          this._props.onFirstUpdate.call(this, time > this._prevTime, isYoyo);
 	        }
 	        this._isFirstUpdate = true;
 	      },
@@ -3993,13 +4005,15 @@
 	        Method call onRepeatComplete calback and set flags.
 	        @private
 	        @param {Number} Current update time.
+	        @param {Boolean} Is repeat period.
 	      */
-	      value: function RepeatComplete(time) {
+	      value: function RepeatComplete(time, isYoyo) {
 	        if (this._isRepeatCompleted) {
 	          return;
 	        }
 	        if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === "function") {
-	          this._props.onRepeatComplete.call(this, time > this._prevTime);
+	          this.o.isIt && console.log("REPEAT COMPLETE", time > this._prevTime, isYoyo);
+	          this._props.onRepeatComplete.call(this, time > this._prevTime, isYoyo);
 	        }
 	        this._isRepeatCompleted = true;
 	      },
@@ -4013,13 +4027,15 @@
 	        Method call onRepeatStart calback and set flags.
 	        @private
 	        @param {Number} Current update time.
+	        @param {Boolean} Is yoyo period.
 	      */
-	      value: function RepeatStart(time) {
+	      value: function RepeatStart(time, isYoyo) {
 	        if (this._isRepeatStart) {
 	          return;
 	        }
 	        if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === "function") {
-	          this._props.onRepeatStart.call(this, time > this._prevTime);
+	          this.o.isIt && console.log("REPEAT START", time > this._prevTime, isYoyo);
+	          this._props.onRepeatStart.call(this, time > this._prevTime, isYoyo);
 	        }
 	        this._isRepeatStart = true;
 	      },
@@ -4036,6 +4052,7 @@
 	      */
 	      value: function Progress(progress, time) {
 	        if (this._props.onProgress != null && typeof this._props.onProgress === "function") {
+	          this.o.isIt && console.log("PROGRESS", time > this._prevTime, isYoyo);
 	          this._props.onProgress.call(this, progress, time > this._prevTime);
 	        }
 	      },
