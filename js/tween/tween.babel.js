@@ -397,6 +397,7 @@ var Tween = class Tween {
       // if was in active area and didn't fire onStart callback
       this._progress( 0, time, false );
       this._setProgress( 0, time, false );
+      this._isRepeatStart = false;
       this._repeatStart( time, false );
       this._start( time, false );
     }
@@ -421,9 +422,10 @@ var Tween = class Tween {
         TPrevValue    = this._delayT;
 
     // "zero" and "one" value regarding yoyo and it's period
-    var isYoyo   = props.yoyo && (T % 2 === 1),
-        yoyoZero = (isYoyo) ? 1 : 0,
-        yoyoOne  = 1-yoyoZero;
+    var isYoyo      = props.yoyo && (T % 2 === 1),
+        isYoyoPrev  = props.yoyo && (prevT % 2 === 1),
+        yoyoZero    = (isYoyo) ? 1 : 0,
+        yoyoOne     = 1-yoyoZero;
 
     if ( time === this._props.endTime ) {
       this._wasUknownUpdate = false;
@@ -514,7 +516,7 @@ var Tween = class Tween {
         // |=====|=====|=====| <<<
         //       ^here ^here ^not here
         if ( this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
-          this._repeatStart( time, isYoyo );
+          this._repeatStart( time, isYoyoPrev );
         }
         // if on very end edge
         // |=====|=====|=====| <<<
@@ -548,13 +550,24 @@ var Tween = class Tween {
         }
       }
 
-      if ( time !== props.endTime ) {
-        // var isYoyo = props.yoyo && (T % 2 === 1)
-        this._setProgress( ((isYoyo) ? 1-proc : proc), time, isYoyo );
-      }
-      // if progress is equal 0 and progress grows
-      if ( proc === 0 ) {
-        this._repeatStart( time, isYoyo );
+      // swap progress and repeatStart based on direction
+      // should be covered
+      if ( time > this._prevTime ) {
+        // if progress is equal 0 and progress grows
+        if ( proc === 0 ) {
+          this._repeatStart( time, isYoyo );
+        }
+        if ( time !== props.endTime ) {
+          this._setProgress( ((isYoyo) ? 1-proc : proc), time, isYoyo );
+        }
+      } else {
+        if ( time !== props.endTime ) {
+          this._setProgress( ((isYoyo) ? 1-proc : proc), time, isYoyo );
+        }
+        // if progress is equal 0 and progress grows
+        if ( proc === 0 ) {
+          this._repeatStart( time, isYoyo );
+        }
       }
 
       if ( time === props.startTime ) {
@@ -575,7 +588,7 @@ var Tween = class Tween {
       //   ^2 ^1    ^2 ^1    ^2 ^1
       if ( this._isInActiveArea && time < this._prevTime ) {
         this._setProgress(yoyoZero, time, yoyoZero === 1);
-        this._repeatStart( time, isYoyo );
+        this._repeatStart( time, yoyoZero === 1 );
       }
       // set 1 or 0 regarding direction and yoyo
       this._setProgress( (( isGrows ) ? 1-yoyoZero : yoyoZero ), time, yoyoZero === 1 );
@@ -584,7 +597,12 @@ var Tween = class Tween {
       // |---=====|---=====|---=====| <<<
       //   ^0       ^0       ^0   
       // OR we have flipped 0 to 1 regarding yoyo option
-      if ( this.progress !== 0 || yoyoZero === 1 ) { this._repeatComplete( time, isYoyo ); }
+      if ( this.progress !== 0 || yoyoZero === 1 ) {
+        // since we repeatComplete for previous period
+        // invert isYoyo option
+        // is elapsed is 0 - count as previous period
+        this._repeatComplete( time, (elapsed === 0) ? !isYoyo : isYoyo );
+      }
       // set flag to indicate inactive area
       this._isInActiveArea = false;
     }
@@ -661,15 +679,18 @@ var Tween = class Tween {
     @returns {Object} Self.
   */
   _setProgress (p, time, isYoyo) {
+    var props = this._props,
+        isYoyoChanged = props.wasYoyo !== isYoyo;
     this.progress = p;
     this.easedProgress = this._props.easing(this.progress);
-    if ( this._props.prevEasedProgress !== this.easedProgress ) {
+    if ( props.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
         this.o.isIt && console.log('UPDATE', this.easedProgress, this.progress, time > this._prevTime, isYoyo );
         this.onUpdate( this.easedProgress, this.progress, time > this._prevTime, isYoyo );
       }
     }
     this._props.prevEasedProgress = this.easedProgress;
+    this._props.wasYoyo = isYoyo;
     return this;
   }
 
