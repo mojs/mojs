@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.166.7', isDebug: true
+  revision:   '0.166.8', isDebug: true
   helpers     : require './h'
   shapesMap   : require './shapes/shapesMap'
   Burst       : require './burst'
@@ -22,18 +22,20 @@ mojs.delta = mojs.h.delta
 # tm = new mojs.Timeline repeat: 1, yoyo: true
 
 # tw = new mojs.Tween
+#   isIt: 1
 #   repeat: 2
 #   speed: .5
-#   yoyo: true
-#   duration: 1000
-#   onStart:(isForward)-> console.log("onStart, #{isForward}")
-#   onRepeatStart:(isForward)-> console.log("repeat start, #{isForward}")
-#   onComplete:(isForward)-> console.log("complete, #{isForward}")
-#   onRepeatComplete:(isForward)-> console.log("repeat complete, #{isForward}")
-#   onFirstUpdate:(isForward)-> console.log("first update, #{isForward}")
-#   onProgress:(p, isForward)-> console.log("progress, #{p.toFixed(4)}, #{isForward}")
-#   onUpdate:(ep, p, isForward)->
-#     console.log("********** ONUPDATE: #{p.toFixed(4)}, #{isForward}")
+#   # yoyo: true
+#   duration: 2000
+#   delay: 1000
+#   onStart:(isForward, isYoyo)-># console.log("onStart, isForward: #{isForward}, isYoyo: #{isYoyo}")
+#   onRepeatStart:(isForward, isYoyo)-># console.log("repeat start, isForward: #{isForward}, isYoyo: #{isYoyo}")
+#   onComplete:(isForward, isYoyo)-># console.log("complete, isForward: #{isForward}, isYoyo: #{isYoyo}")
+#   onRepeatComplete:(isForward, isYoyo)-># console.log("repeat complete, isForward: #{isForward}, isYoyo: #{isYoyo}")
+#   onFirstUpdate:(isForward, isYoyo)-># console.log("first update, isForward: #{isForward}, isYoyo: #{isYoyo}")
+#   onProgress:(p, isForward, isYoyo)-># console.log("progress, #{p.toFixed(4)}, isForward: #{isForward}, isYoyo: #{isYoyo}")
+#   onUpdate:(ep, p, isForward, isYoyo)->
+#     # console.log("********** ONUPDATE: #{p.toFixed(4)}, isForward: #{isForward}, isYoyo: #{isYoyo}")
 #     mojs.h.style el, 'transform', "translateX(#{400*p}px)"
 
 # tm.add tw
@@ -47,13 +49,16 @@ mojs.delta = mojs.h.delta
 
 # runner = tw
 
-# playEl.addEventListener 'click',  -> runner.play()
-# reverseEl.addEventListener 'click', -> runner.playBackward();
-# pauseEl.addEventListener 'click', -> runner.pause();
-# stopEl.addEventListener 'click', -> runner.stop();
+# playEl.addEventListener 'click',  ->
+#   # console.clear();
+#   runner.play()
+# reverseEl.addEventListener 'click', -> runner.playBackward()
+# pauseEl.addEventListener 'click', -> runner.pause()
+# stopEl.addEventListener 'click', -> runner.stop()
 
+# range = parseInt( rangeSlider.getAttribute('max'), 10 );
 # rangeSlider.oninput = (e)->
-#   proc = (1*rangeSlider.value)/6
+#   proc = (1*rangeSlider.value)/range
 #   runner.setProgress proc
 
 ### istanbul ignore next ###

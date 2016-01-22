@@ -18,7 +18,7 @@ describe 'Tween ->', ->
       expect(t._defaults.duration).toBe  600
       expect(t._defaults.delay).toBe     0
       expect(t._defaults.yoyo).toBe      false
-      expect(t._defaults.speed).toBeDefined()
+      expect(t._defaults.speed).toBe     1
       expect(t._defaults.onStart).toBeDefined()
       expect(t._defaults.onRepeatStart).toBeDefined()
       expect(t._defaults.onFirstUpdate).toBeDefined()
@@ -103,12 +103,22 @@ describe 'Tween ->', ->
       now = performance.now()
       expect( t._playTime ).toBeDefined()
       expect( Math.abs( t._playTime - now ) ).not.toBeGreaterThan 10
-
     it 'should set _playTime to passed time',->
       t = new Tween
       now = performance.now() + 50
       t._setStartTime(now)
       expect( t._playTime ).toBe now
+    it 'should set _playTime to _resumeTime if present',->
+      t = new Tween
+      resumeTime = 3200
+      t._resumeTime = resumeTime
+      t._setStartTime()
+      expect( t._playTime ).toBe resumeTime
+    it 'should reset _resumeTime',->
+      t = new Tween
+      t._resumeTime = 3200
+      t._setStartTime()
+      expect( t._resumeTime ).toBe null
   
   describe '_update method ->', ->
     it 'should update progress', ->
@@ -297,146 +307,140 @@ describe 'Tween ->', ->
       expect(t._onEdge).toBe -1
       t._update t._props.endTime - duration - 2
       expect(t._onEdge).toBe 0
-    # TODO: PUT BACK when isYoyo argument is ready
-    # it 'should receive _prevTime', ->
-    #   t = new Tween(duration: 1000, delay: 200, repeat: 2, onStart:-> )
-    #   t._setStartTime()
-    #   prevTime = 1; time = 2
-    #   spyOn( t, '_updateInActiveArea').and.callThrough()
-    #   spyOn t._props, 'onStart'
-    #   t._update (t._props.startTime + 1300), time, prevTime
-    #   expect(t._updateInActiveArea).toHaveBeenCalled()
-    #   expect(t._props.onStart).toHaveBeenCalledWith(true)
-    # TODO: PUT BACK when isYoyo argument is ready
-    # it 'should receive _prevTime #2', ->
-    #   t = new Tween(duration: 1000, delay: 200, repeat: 2, onStart:-> )
-    #   t._setStartTime()
-    #   t._prevTime = 2
-    #   prevTime = 1; time = 2
-    #   spyOn( t, '_updateInActiveArea').and.callThrough()
-    #   spyOn t._props, 'onStart'
-    #   t._update (t._props.startTime + 1300), time, prevTime
-    #   expect(t._updateInActiveArea).toHaveBeenCalled()
-    #   expect(t._props.onStart).toHaveBeenCalledWith(true)
+    it 'should receive _prevTime', ->
+      t = new Tween(duration: 1000, delay: 200, repeat: 2, onStart:-> )
+      t._setStartTime()
+      prevTime = 1; time = 2
+      spyOn( t, '_updateInActiveArea').and.callThrough()
+      spyOn t._props, 'onStart'
+      t._update (t._props.startTime + 1300), time, prevTime
+      expect(t._updateInActiveArea).toHaveBeenCalled()
+      expect(t._props.onStart).toHaveBeenCalledWith(true, false)
+    it 'should receive _prevTime #2', ->
+      t = new Tween(duration: 1000, delay: 200, repeat: 2, onStart:-> )
+      t._setStartTime()
+      t._prevTime = 2
+      prevTime = 1; time = 2
+      spyOn( t, '_updateInActiveArea').and.callThrough()
+      spyOn t._props, 'onStart'
+      t._update (t._props.startTime + 1300), time, prevTime
+      expect(t._updateInActiveArea).toHaveBeenCalled()
+      expect(t._props.onStart).toHaveBeenCalledWith(true, false)
 
-    # TODO: PUT BACK when isYoyo argument is done
-    # it 'should call callbacks if on edge "+1" + was yoyo', ->
-    #   tm = new mojs.Timeline repeat: 2, yoyo: true
-    #   duration = 1000
-    #   t = new Tween
-    #     duration: duration
-    #     onStart:->
-    #     onRepeatStart:->
-    #     onUpdate:->
-    #     onProgress:->
-    #     onRepeatComplete:->
-    #     onComplete:->
-    #     onFirstUpdate:->
+    it 'should call callbacks if on edge "+1" + was yoyo', ->
+      tm = new mojs.Timeline repeat: 2, yoyo: true
+      duration = 1000
+      t = new Tween
+        duration: duration
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
 
-    #   tm.add t
+      tm.add t
 
-    #   tm.setProgress 0
-    #   tm.setProgress .25
+      tm.setProgress 0
+      tm.setProgress .25
       
-    #   tm.setProgress .35
-    #   tm.setProgress .55
+      tm.setProgress .35
+      tm.setProgress .55
       
-    #   spyOn t._props, 'onStart'
-    #   spyOn t._props, 'onRepeatStart'
+      spyOn t._props, 'onStart'
+      spyOn t._props, 'onRepeatStart'
 
-    #   tm.setProgress .85
+      tm.setProgress .85
 
-    #   expect(t._props.onStart).toHaveBeenCalledWith false, false
-    #   expect(t._props.onRepeatStart).toHaveBeenCalledWith false, true
+      expect(t._props.onStart).toHaveBeenCalledWith false, false
+      expect(t._props.onRepeatStart).toHaveBeenCalledWith false, false
 
-    # TODO: PUT BACK when isYoyo argument is done
-    # it 'should call callbacks if on edge "+1" + wasn\'t yoyo', ->
-    #   tm = new mojs.Timeline repeat: 2#, yoyo: true
-    #   duration = 1000
-    #   t = new Tween
-    #     duration: duration
-    #     onStart:->
-    #     onRepeatStart:->
-    #     onUpdate:->
-    #     onProgress:->
-    #     onRepeatComplete:->
-    #     onComplete:->
-    #     onFirstUpdate:->
+    it 'should call callbacks if on edge "+1" + wasn\'t yoyo', ->
+      tm = new mojs.Timeline repeat: 2#, yoyo: true
+      duration = 1000
+      t = new Tween
+        duration: duration
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
 
-    #   tm.add t
+      tm.add t
 
-    #   tm.setProgress 0
-    #   tm.setProgress .25
+      tm.setProgress 0
+      tm.setProgress .25
       
-    #   tm.setProgress .35
-    #   tm.setProgress .55
+      tm.setProgress .35
+      tm.setProgress .55
 
-    #   spyOn t._props, 'onRepeatComplete'
-    #   spyOn t._props, 'onComplete'
+      spyOn t._props, 'onRepeatComplete'
+      spyOn t._props, 'onComplete'
 
-    #   tm.setProgress .85
+      tm.setProgress .85
 
-    #   expect(t._props.onRepeatComplete).toHaveBeenCalledWith true
-    #   expect(t._props.onComplete).toHaveBeenCalledWith true
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
+      expect(t._props.onComplete).toHaveBeenCalledWith true, false
     
-    # TODO: PUT BACK when isYoyo argument is done
-    # it 'should call callbacks if on edge "-1" + was yoyo', ->
-    #   tm = new mojs.Timeline repeat: 1, yoyo: true
-    #   duration = 1000
-    #   t = new Tween
-    #     duration: duration
-    #     onStart:->
-    #     onRepeatStart:->
-    #     onUpdate:->
-    #     onProgress:->
-    #     onRepeatComplete:->
-    #     onComplete:->
-    #     onFirstUpdate:->
+    it 'should call callbacks if on edge "-1" + was yoyo', ->
+      tm = new mojs.Timeline repeat: 1, yoyo: true
+      duration = 1000
+      t = new Tween
+        duration: duration
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
 
-    #   tm.add t
+      tm.add t
 
-    #   tm.setProgress 0
-    #   tm.setProgress .25
+      tm.setProgress 0
+      tm.setProgress .25
       
-    #   tm.setProgress .35
-    #   tm.setProgress .55
-    #   tm.setProgress .56
-    #   tm.setProgress .54
+      tm.setProgress .35
+      tm.setProgress .55
+      tm.setProgress .56
+      tm.setProgress .54
       
-    #   spyOn t._props, 'onRepeatComplete'
-    #   spyOn t._props, 'onComplete'
+      spyOn t._props, 'onRepeatComplete'
+      spyOn t._props, 'onComplete'
 
-    #   tm.setProgress .25
+      tm.setProgress .25
 
-    #   expect(t._props.onRepeatComplete).toHaveBeenCalledWith true
-    #   expect(t._props.onComplete).toHaveBeenCalledWith true
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
+      expect(t._props.onComplete).toHaveBeenCalledWith true, false
 
-    # TODO: PUT BACK when isYoyo argument is done
-    # it 'should call callbacks if on edge "-1" + wasn\'t yoyo', ->
-    #   tm = new mojs.Timeline repeat: 1#, yoyo: true
-    #   duration = 1000
-    #   t = new Tween
-    #     duration: duration
-    #     onStart:->
-    #     onRepeatStart:->
-    #     onUpdate:->
-    #     onProgress:->
-    #     onRepeatComplete:->
-    #     onComplete:->
-    #     onFirstUpdate:->
+    it 'should call callbacks if on edge "-1" + wasn\'t yoyo', ->
+      tm = new mojs.Timeline repeat: 1#, yoyo: true
+      duration = 1000
+      t = new Tween
+        duration: duration
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
 
-    #   tm.add t
+      tm.add t
 
-    #   tm.setProgress 1
-    #   tm.setProgress .85
+      tm.setProgress 1
+      tm.setProgress .85
       
-    #   spyOn t._props, 'onRepeatStart'
-    #   spyOn t._props, 'onStart'
+      spyOn t._props, 'onRepeatStart'
+      spyOn t._props, 'onStart'
       
-    #   tm.setProgress .45
+      tm.setProgress .45
 
-    #   expect(t._props.onRepeatStart).toHaveBeenCalledWith false
-    #   expect(t._props.onStart).toHaveBeenCalledWith false
+      expect(t._props.onRepeatStart).toHaveBeenCalledWith false, false
+      expect(t._props.onStart).toHaveBeenCalledWith false, false
 
 
   describe 'onUpdate callback ->', ->
@@ -4648,276 +4652,276 @@ describe 'Tween ->', ->
   #   specific
   # ###
 
-  # describe 'specific _update behaviour', ->
-  #   it 'should call repeatComplete if imideatelly returned inside Timeline', ()->
+  describe 'specific _update behaviour', ->
+    it 'should call repeatComplete if immediately returned inside Timeline', ()->
+      tm = new Timeline repeat:  1, yoyo: true
+      t = new Tween
 
-  #     tm = new Timeline repeat:  1, yoyo: true
-  #     t = new Tween onRepeatComplete:->
+      tm.add t
 
-  #     tm.add t
+      tm.setProgress 0
+      tm.setProgress .1
+      tm.setProgress .35
+      tm.setProgress .5
+      tm.setProgress .6
+      spyOn t._props, 'onRepeatComplete'
+      tm.setProgress .5
 
-  #     tm.setProgress 0
-  #     tm.setProgress .1
-  #     tm.setProgress .35
-  #     tm.setProgress .5
-  #     tm.setProgress .6
-  #     spyOn t._props, 'onRepeatComplete'
-  #     tm.setProgress .5
-
-  #     expect(t._props.onRepeatComplete).toHaveBeenCalledWith true
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
       
-  # describe '_getPeriod method ->', ->
-  #   it 'should get current period', ->
-  #     duration = 50; delay = 20
-  #     t = new Tween repeat: 3, duration: duration, delay: delay
+  describe '_getPeriod method ->', ->
+    it 'should get current period', ->
+      duration = 50; delay = 20
+      t = new Tween repeat: 3, duration: duration, delay: delay
 
-  #     t._setStartTime()
+      t._setStartTime()
 
-  #     expect(t._getPeriod(t._props.startTime)).toBe 0
-  #     expect(t._getPeriod(t._props.startTime + duration/2)).toBe 0
-  #     expect(t._getPeriod(t._props.startTime + duration)).toBe 1
+      expect(t._getPeriod(t._props.startTime)).toBe 0
+      expect(t._getPeriod(t._props.startTime + duration/2)).toBe 0
+      expect(t._getPeriod(t._props.startTime + duration)).toBe 1
 
-  #     timeShift = duration + delay
-  #     expect(t._getPeriod(t._props.startTime + timeShift - delay/2)).toBe 'delay'
-  #     expect(t._delayT).toBe 1
-  #     expect(t._getPeriod(t._props.startTime + timeShift)).toBe 1
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 1
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 2
+      timeShift = duration + delay
+      expect(t._getPeriod(t._props.startTime + timeShift - delay/2)).toBe 'delay'
+      expect(t._delayT).toBe 1
+      expect(t._getPeriod(t._props.startTime + timeShift)).toBe 1
+      expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 1
+      expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 2
 
-  #     timeShift = 2*(duration + delay)
-  #     expect(t._getPeriod(t._props.startTime + timeShift - delay/2)).toBe 'delay'
-  #     expect(t._delayT).toBe 2
-  #     expect(t._getPeriod(t._props.startTime + timeShift)).toBe 2
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 2
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 3
+      timeShift = 2*(duration + delay)
+      expect(t._getPeriod(t._props.startTime + timeShift - delay/2)).toBe 'delay'
+      expect(t._delayT).toBe 2
+      expect(t._getPeriod(t._props.startTime + timeShift)).toBe 2
+      expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 2
+      expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 3
 
-  #     timeShift = 3*(duration + delay)
-  #     expect(t._getPeriod(t._props.startTime + timeShift - delay/2)).toBe 'delay'
-  #     expect(t._delayT).toBe 3
-  #     expect(t._getPeriod(t._props.startTime + timeShift)).toBe 3
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 3
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 4
+      timeShift = 3*(duration + delay)
+      expect(t._getPeriod(t._props.startTime + timeShift - delay/2)).toBe 'delay'
+      expect(t._delayT).toBe 3
+      expect(t._getPeriod(t._props.startTime + timeShift)).toBe 3
+      expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 3
+      expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 4
 
-  #   it 'should get the current period with no delay', ->
-  #     duration = 50
-  #     t = new Tween repeat: 3, duration: duration
+    it 'should get the current period with no delay', ->
+      duration = 50
+      t = new Tween repeat: 3, duration: duration
 
-  #     t._setStartTime()
+      t._setStartTime()
 
-  #     expect(t._getPeriod(t._props.startTime)).toBe 0
-  #     expect(t._getPeriod(t._props.startTime + duration/2)).toBe 0
-  #     expect(t._getPeriod(t._props.startTime + duration)).toBe 1
-  #     expect(t._getPeriod(t._props.startTime + duration + 1)).toBe 1
+      expect(t._getPeriod(t._props.startTime)).toBe 0
+      expect(t._getPeriod(t._props.startTime + duration/2)).toBe 0
+      expect(t._getPeriod(t._props.startTime + duration)).toBe 1
+      expect(t._getPeriod(t._props.startTime + duration + 1)).toBe 1
 
-  #     timeShift = duration
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 1
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 2
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe 2
+      timeShift = duration
+      expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 1
+      expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 2
+      expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe 2
 
-  #     timeShift = 2*duration
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 2
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 3
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe 3
+      timeShift = 2*duration
+      expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 2
+      expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 3
+      expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe 3
 
-  #     timeShift = 3*duration
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 3
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 4
-  #     expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe 4
+      timeShift = 3*duration
+      expect(t._getPeriod(t._props.startTime + timeShift + duration/2)).toBe 3
+      expect(t._getPeriod(t._props.startTime + timeShift + duration)).toBe 4
+      expect(t._getPeriod(t._props.startTime + timeShift + duration + 1)).toBe 4
 
-  #   it 'should return period number if time > endTime', ->
-  #     duration = 50; delay = 20
-  #     t = new Tween repeat: 2, duration: duration, delay: delay
+    it 'should return period number if time > endTime', ->
+      duration = 50; delay = 20
+      t = new Tween repeat: 2, duration: duration, delay: delay
 
-  #     t._setStartTime()
+      t._setStartTime()
 
-  #     timeShift = 3*(duration + delay) - delay
-  #     expect(t._getPeriod(t._props.startTime + timeShift + delay/2)).toBe 3
+      timeShift = 3*(duration + delay) - delay
+      expect(t._getPeriod(t._props.startTime + timeShift + delay/2)).toBe 3
 
-  #   it 'should round instead of floor if time >= endTime', ->
-  #     # fifty plus something that will cause precision issue
-  #     duration = 50 + 3/2.123
-  #     t = new Tween repeat: 2, duration: duration
-  #     t._setStartTime()
-  #     expect(t._getPeriod(t._props.startTime + 3*duration)).toBe 3
+    it 'should round instead of floor if time >= endTime', ->
+      # fifty plus something that will cause precision issue
+      duration = 50 + 3/2.123
+      t = new Tween repeat: 2, duration: duration
+      t._setStartTime()
+      expect(t._getPeriod(t._props.startTime + 3*duration)).toBe 3
 
-  # describe 'onComplete callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onComplete: ->
-  #     expect(t._props.onComplete).toBeDefined()
-  #   it 'should call onComplete callback', ->
-  #     t = new Tween(duration: 100, onComplete:->)._setStartTime()
-  #     spyOn(t._props, 'onComplete')
-  #     t._update t._props.startTime + 50
-  #     t._update t._props.startTime + 51
-  #     t._update t._props.startTime + 101
-  #     expect(t._props.onComplete).toHaveBeenCalled()
-  #   it 'should be called just once', ->
-  #     cnt = 0
-  #     t = new Tween(duration: 32, onComplete:-> cnt++)._setStartTime()
-  #     spyOn t._props, 'onComplete'
-  #     t._update(t._props.startTime + 0)
-  #     t._update(t._props.startTime + 10)
-  #     t._update(t._props.startTime + 20)
-  #     t._update(t._props.startTime + 30)
-  #     t._update(t._props.startTime + 34)
-  #     expect(t._props.onComplete).toHaveBeenCalledWith true
-  #     expect(t._props.onComplete.calls.count()).toBe 1
+  describe 'onComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onComplete: ->
+      expect(t._props.onComplete).toBeDefined()
+    it 'should call onComplete callback', ->
+      t = new Tween(duration: 100, onComplete:->)._setStartTime()
+      spyOn(t._props, 'onComplete')
+      t._update t._props.startTime + 50
+      t._update t._props.startTime + 51
+      t._update t._props.startTime + 101
+      expect(t._props.onComplete).toHaveBeenCalled()
+    it 'should be called just once', ->
+      cnt = 0
+      t = new Tween(duration: 32, onComplete:-> cnt++)._setStartTime()
+      spyOn t._props, 'onComplete'
+      t._update(t._props.startTime + 0)
+      t._update(t._props.startTime + 10)
+      t._update(t._props.startTime + 20)
+      t._update(t._props.startTime + 30)
+      t._update(t._props.startTime + 34)
+      expect(t._props.onComplete).toHaveBeenCalledWith true, false
+      expect(t._props.onComplete.calls.count()).toBe 1
 
-  #   it 'should be called just once when inside timeline', ->
-  #     tm = new mojs.Timeline
-  #     duration = 32
-  #     t = new Tween(duration: duration, onComplete:-> )._setStartTime()
-  #     tm.add t
-  #     tm._setStartTime()
-  #     spyOn t._props, 'onComplete'
-  #     tm._update(t._props.startTime + 0)
-  #     tm._update(t._props.startTime + duration/2)
-  #     tm._update(t._props.startTime + duration)
-  #     expect(t._props.onComplete).toHaveBeenCalledWith true
-  #     expect(t._props.onComplete.calls.count()).toBe 1
+    it 'should be called just once when inside timeline', ->
+      tm = new mojs.Timeline
+      duration = 32
+      t = new Tween(duration: duration, onComplete:-> )._setStartTime()
+      tm.add t
+      tm._setStartTime()
+      spyOn t._props, 'onComplete'
+      tm._update(t._props.startTime + 0)
+      tm._update(t._props.startTime + duration/2)
+      tm._update(t._props.startTime + duration)
+      expect(t._props.onComplete).toHaveBeenCalledWith true, false
+      expect(t._props.onComplete.calls.count()).toBe 1
 
-  #   it 'should fire only once when inside timeline #2', ()->
-  #     cnt = 0; duration = 50; delay = 10
-  #     tm = new mojs.Timeline # repeat: 1
-  #     t1 = new Tween
-  #       delay:      delay
-  #       duration:   duration
-  #       onComplete:-> cnt++
-  #     t2 = new Tween
-  #       delay:      2*delay
-  #       duration:   2*duration
+    it 'should fire only once when inside timeline #2', ()->
+      cnt = 0; duration = 50; delay = 10
+      tm = new mojs.Timeline # repeat: 1
+      t1 = new Tween
+        delay:      delay
+        duration:   duration
+        onComplete:-> cnt++
+      t2 = new Tween
+        delay:      2*delay
+        duration:   2*duration
 
-  #     tm.add t1, t2
-  #     tm._setStartTime()
+      tm.add t1, t2
+      tm._setStartTime()
 
-  #     tm._update t1._props.startTime
-  #     tm._update t1._props.startTime + duration/2
-  #     tm._update t1._props.startTime + duration + delay/2
-  #     tm._update t1._props.startTime + duration + delay + 1
+      tm._update t1._props.startTime
+      tm._update t1._props.startTime + duration/2
+      tm._update t1._props.startTime + duration + delay/2
+      tm._update t1._props.startTime + duration + delay + 1
 
-  #     tm._update t1._props.startTime + 2*duration + delay/2
-  #     # end
-  #     tm._update t1._props.startTime + 2*( duration + delay ) # <-- error
-  #     tm._update t1._props.startTime + 2*( duration + delay ) + delay
-  #     tm._update t1._props.startTime + 2*( duration + delay ) + 2*delay
-  #     tm._update t1._props.startTime + 2*( duration + delay ) + 3*delay
-  #     tm._update t1._props.startTime + 2*( duration + delay ) + 4*delay
+      tm._update t1._props.startTime + 2*duration + delay/2
+      # end
+      tm._update t1._props.startTime + 2*( duration + delay ) # <-- error
+      tm._update t1._props.startTime + 2*( duration + delay ) + delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 2*delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 3*delay
+      tm._update t1._props.startTime + 2*( duration + delay ) + 4*delay
 
-  #     expect(cnt).toBe(1)
+      expect(cnt).toBe(1)
 
-  #   # it 'should reset isCompleted and isFirstUpdate flag', ->
-  #   it 'should reset isCompleted flag', ->
-  #     t = new Tween( duration: 32 )._setStartTime()
-  #     t._update(t._props.startTime + 10)
-  #     t._update(t._props.startTime + 11)
-  #     t._update(t._props.endTime)
-  #     expect(t._isCompleted).toBe true
-  #     # expect(t._isFirstUpdate).toBe false
-  #     t._update(t._props.startTime + 10)
-  #     expect(t._isCompleted).toBe false
+    # it 'should reset isCompleted and isFirstUpdate flag', ->
+    it 'should reset isCompleted flag', ->
+      t = new Tween( duration: 32 )._setStartTime()
+      t._update(t._props.startTime + 10)
+      t._update(t._props.startTime + 11)
+      t._update(t._props.endTime)
+      expect(t._isCompleted).toBe true
+      # expect(t._isFirstUpdate).toBe false
+      t._update(t._props.startTime + 10)
+      expect(t._isCompleted).toBe false
 
-  #   it 'should have the right scope', ->
-  #     isRightScope = null
-  #     t = new Tween
-  #       duration: 10, onComplete:-> isRightScope = @ instanceof Tween
-  #     t._setStartTime()._update t._props.startTime + 2
-  #     t._setStartTime()._update t._props.startTime + 3
-  #     t._setStartTime()._update t._props.startTime + 11
-  #     expect(isRightScope).toBe true
-  #   it 'should fire after the last onUpdate', (dfr)->
-  #     proc = 0
-  #     t = new Tween
-  #       duration: 32,
-  #       onUpdate:(p)-> proc = p
-  #       onComplete:-> expect(proc).toBe(1); dfr()
-  #     t._setStartTime()
-  #     t._update t._props.startTime + 1
-  #     t._update t._props.startTime + 2
-  #     t._update t._props.startTime + 32
+    it 'should have the right scope', ->
+      isRightScope = null
+      t = new Tween
+        duration: 10, onComplete:-> isRightScope = @ instanceof Tween
+      t._setStartTime()._update t._props.startTime + 2
+      t._setStartTime()._update t._props.startTime + 3
+      t._setStartTime()._update t._props.startTime + 11
+      expect(isRightScope).toBe true
+    it 'should fire after the last onUpdate', (dfr)->
+      proc = 0
+      t = new Tween
+        duration: 32,
+        onUpdate:(p)-> proc = p
+        onComplete:-> expect(proc).toBe(1); dfr()
+      t._setStartTime()
+      t._update t._props.startTime + 1
+      t._update t._props.startTime + 2
+      t._update t._props.startTime + 32
 
-  # describe 'onStart callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onStart: ->
-  #     expect(t._props.onStart).toBeDefined()
+  describe 'onStart callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onStart: ->
+      expect(t._props.onStart).toBeDefined()
 
-  #   it 'should restart if tween was completed', ->
-  #     startCnt = 0
-  #     t = new Tween onStart: -> startCnt++
+    it 'should restart if tween was completed', ->
+      startCnt = 0
+      t = new Tween onStart: -> startCnt++
 
-  #     t._setStartTime()
-  #     t._update t._props.startTime + t._props.duration/2
-  #     expect(startCnt).toBe 0 # because we ignore single updates
-  #     t._update t._props.startTime + t._props.duration/2 + 10
-  #     expect(startCnt).toBe 1
-  #     t._update t._props.startTime + t._props.duration
-  #     expect(startCnt).toBe 1
-  #     t._update t._props.startTime - 10
-  #     expect(startCnt).toBe 2
-  #     t._update t._props.startTime + t._props.duration/2
-  #     expect(startCnt).toBe 3
+      t._setStartTime()
+      t._update t._props.startTime + t._props.duration/2
+      expect(startCnt).toBe 0 # because we ignore single updates
+      t._update t._props.startTime + t._props.duration/2 + 10
+      expect(startCnt).toBe 1
+      t._update t._props.startTime + t._props.duration
+      expect(startCnt).toBe 1
+      t._update t._props.startTime - 10
+      expect(startCnt).toBe 2
+      t._update t._props.startTime + t._props.duration/2
+      expect(startCnt).toBe 3
 
-  #   it 'should run before onComplete if tween ended', ->
-  #     startCnt = 0; callback = null
-  #     t = new Tween
-  #       onStart: ->   callback ?= 'start'; startCnt++
-  #       onComplete:-> callback ?= 'complete'
+    it 'should run before onComplete if tween ended', ->
+      startCnt = 0; callback = null
+      t = new Tween
+        onStart: ->   callback ?= 'start'; startCnt++
+        onComplete:-> callback ?= 'complete'
 
-  #     t._setStartTime()
-  #     t._update t._props.startTime + t._props.duration/2
-  #     expect(startCnt).toBe 0
+      t._setStartTime()
+      t._update t._props.startTime + t._props.duration/2
+      expect(startCnt).toBe 0
 
-  #     t._update t._props.startTime + t._props.duration/2 + 10
-  #     expect(startCnt).toBe 1
+      t._update t._props.startTime + t._props.duration/2 + 10
+      expect(startCnt).toBe 1
 
-  #     t._update t._props.startTime + t._props.duration
-  #     expect(startCnt).toBe 1
+      t._update t._props.startTime + t._props.duration
+      expect(startCnt).toBe 1
 
-  #     expect(callback).toBe 'start'
+      expect(callback).toBe 'start'
 
-  # describe 'onFirstUpdate callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onFirstUpdate: ->
-  #     expect(t._props.onFirstUpdate).toBeDefined()
+  describe 'onFirstUpdate callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onFirstUpdate: ->
+      expect(t._props.onFirstUpdate).toBeDefined()
 
-  # describe 'onRepeatStart callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onRepeatStart: ->
-  #     expect(t._props.onRepeatStart).toBeDefined()
+  describe 'onRepeatStart callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onRepeatStart: ->
+      expect(t._props.onRepeatStart).toBeDefined()
 
-  # describe 'onRepeatComplete callback ->', ->
-  #   it 'should be defined', ->
-  #     t = new Tween onRepeatComplete: ->
-  #     expect(t._props.onRepeatComplete).toBeDefined()
+  describe 'onRepeatComplete callback ->', ->
+    it 'should be defined', ->
+      t = new Tween onRepeatComplete: ->
+      expect(t._props.onRepeatComplete).toBeDefined()
 
-  # describe 'yoyo option ->', ->
-  #   it 'should receive yoyo option', ->
-  #     t = new Tween yoyo: true
-  #     expect(t._props.yoyo).toBe true
+  describe 'yoyo option ->', ->
+    it 'should receive yoyo option', ->
+      t = new Tween yoyo: true
+      expect(t._props.yoyo).toBe true
 
-  # describe 'easing ->', ->
-  #   it 'should parse easing string', ->
-  #     t = new Tween(easing: 'Linear.None')
-  #     expect(typeof t._props.easing).toBe 'function'
-  #   it 'should parse standart easing', ->
-  #     t = new Tween(easing: 'Sin.Out', duration: 100)
-  #     t._setStartTime();
-  #     t._update(t._props.startTime + 49)
-  #     expect(t.progress).toBe 0
-  #     expect(t.easedProgress).toBe undefined
-  #     t._update(t._props.startTime + 50)
-  #     expect(t.easedProgress).toBe easing.sin.out t.progress
-  #   it 'should work with easing function', ->
-  #     easings = one: -> a = 1
-  #     t = new Tween(easing: easings.one)
-  #     expect(t._props.easing.toString()).toBe easings.one.toString()
-  #   it 'should work with easing function', (dfr)->
-  #     easings = one:(k)-> k
-  #     spyOn easings, 'one'
-  #     t = new Tween(easing: easings.one)
-  #     t._setStartTime();
-  #     t._update t._props.startTime + 39
-  #     t._update t._props.startTime + 40
-  #     setTimeout (-> expect(easings.one).toHaveBeenCalled(); dfr()), 50
+  describe 'easing ->', ->
+    it 'should parse easing string', ->
+      t = new Tween(easing: 'Linear.None')
+      expect(typeof t._props.easing).toBe 'function'
+    it 'should parse standart easing', ->
+      t = new Tween(easing: 'Sin.Out', duration: 100)
+      t._setStartTime();
+      t._update(t._props.startTime + 49)
+      expect(t.progress).toBe 0
+      expect(t.easedProgress).toBe undefined
+      t._update(t._props.startTime + 50)
+      expect(t.easedProgress).toBe easing.sin.out t.progress
+    it 'should work with easing function', ->
+      easings = one: -> a = 1
+      t = new Tween(easing: easings.one)
+      expect(t._props.easing.toString()).toBe easings.one.toString()
+    it 'should work with easing function', (dfr)->
+      easings = one:(k)-> k
+      spyOn easings, 'one'
+      t = new Tween(easing: easings.one)
+      t._setStartTime();
+      t._update t._props.startTime + 39
+      t._update t._props.startTime + 40
+      setTimeout (-> expect(easings.one).toHaveBeenCalled(); dfr()), 50
+
   describe '_setProgress method ->', ->
     it 'should set the current progress', ->
       t = new Tween(easing: 'Bounce.Out')
@@ -4958,33 +4962,76 @@ describe 'Tween ->', ->
       expect(t._props.easing).toBe mojs.easing.elastic.in
 
   describe '_subPlay method ->', ->
-    it 'should recalc _prevTime', (dfr)->
-      t = new Tween
-      t.play()
-      
-      setTimeout ->
-        t.pause()
-
+    describe '_prevTime recalculation ->', ->
+      it 'should set _resumeTime', ->
+        t = new Tween# isIt: 1
         now = performance.now()
-        t.play().pause()
-        expect(Math.abs(now - t._prevTime) ).not.toBeGreaterThan 5
-        dfr()
-      , 200
-
-    it 'should recalc _prevTime if reversed', (dfr)->
-      t = new Tween
-      t.play()
-      
-      setTimeout ->
-        t.pause()
-
-        now = performance.now()
-        prevTimeOld = t._prevTime
-        shift = t._props.startTime - t._prevTime
-        t.playBackward().pause()
-        expect( Math.abs( t._prevTime - ( t._props.startTime - shift ) ) ).not.toBeGreaterThan 5
-        dfr()
-      , 200
+        t.play()
+        expect( now - t._playTime ).not.toBeGreaterThan 5
+      it 'should recalc _prevTime play + play', (dfr)->
+        t = new Tween# isIt: 1
+        t.play()
+        setTimeout ->
+          t.pause()
+          now = performance.now()
+          t.play().pause()
+          prevTime = t._props.startTime + t._progressTime
+          expect( t._prevTime ).toBe prevTime
+          dfr()
+        , 200
+      it 'should recalc _prevTime playBackward + playBackward', (dfr)->
+        t = new Tween# isIt: 1
+        t.playBackward()
+        setTimeout ->
+          t.pause()
+          now = performance.now()
+          t.playBackward().pause()
+          prevTime = t._props.endTime - t._progressTime
+          expect( t._prevTime ).toBe prevTime
+          dfr()
+        , 200
+      it 'should flip _progressTime if changing direction', (dfr)->
+        t = new Tween# isIt: 1
+        t.play()
+        setTimeout ->
+          t.pause()
+          now = performance.now()
+          progressTime = t._progressTime
+          t.playBackward().pause()
+          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          dfr()
+        , 200
+      it 'should flip _progressTime if changing direction #pauseless 1', (dfr)->
+        t = new Tween# isIt: 1
+        t.play()
+        setTimeout ->
+          now = performance.now()
+          progressTime = t._progressTime
+          t.playBackward().pause()
+          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          dfr()
+        , 200
+      it 'should flip _progressTime if changing direction', (dfr)->
+        t = new Tween# isIt: 1
+        t.playBackward()
+        setTimeout ->
+          t.pause()
+          now = performance.now()
+          progressTime = t._progressTime
+          t.play().pause()
+          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          dfr()
+        , 200
+      it 'should flip _progressTime if changing direction #pauseless 2', (dfr)->
+        t = new Tween# isIt: 1
+        t.playBackward()
+        setTimeout ->
+          now = performance.now()
+          progressTime = t._progressTime
+          t.play().pause()
+          expect( t._progressTime ).toBe t._props.repeatTime - progressTime
+          dfr()
+        , 200
 
     it 'should recalc startTime', (dfr)->
       duration = 1000; shift = 200
@@ -5000,14 +5047,13 @@ describe 'Tween ->', ->
           .not.toBeGreaterThan 5
         dfr()
       , duration/2
-
     it 'should recalc startTime regarding speed', (dfr)->
       duration = 1000; shift = 200; speed = .5
       t = new Tween duration: duration, speed: speed
       t.play()
       setTimeout ->
         t.pause()
-        startTime = performance.now() - Math.abs(shift) - t._progressTime/speed
+        startTime = performance.now() - Math.abs(shift) - t._progressTime
         spyOn t, '_setStartTime'
         t.play(shift)
         expect(Math.abs(startTime - t._setStartTime.calls.argsFor(0)[0] ))
@@ -5071,27 +5117,29 @@ describe 'Tween ->', ->
       t.play()
       start = performance.now() - progress*t._props.repeatTime
       expect(Math.abs( t._props.startTime - start )).not.toBeGreaterThan 5
-    it 'should recalc _progressTime if previous state was "reverse" + "pause"',->
-      duration = 1000
-      t = new Tween duration: duration
-      t.setProgress(.75)
-      progress = t._progressTime
-      t
-        .play()
-        .playBackward()
-        .pause()
-        .play()
-      expect(t._progressTime).toBe progress
-    it 'should recalc _progressTime if previous state was "reverse"',->
-      duration = 1000
-      t = new Tween duration: duration
-      t.setProgress(.75)
-      progress = t._progressTime
-      t
-        .play()
-        .playBackward()
-        .play()
-      expect(t._progressTime).toBe progress
+    # remove
+    # it 'should recalc _progressTime if previous state was "reverse" + "pause"',->
+    #   duration = 1000
+    #   t = new Tween duration: duration
+    #   t.setProgress(.75)
+    #   progress = t._progressTime
+    #   t
+    #     .play()
+    #     .playBackward()
+    #     .pause()
+    #     .play()
+    #   expect(t._progressTime).toBe progress
+    # remove
+    # it 'should recalc _progressTime if previous state was "reverse"',->
+    #   duration = 1000
+    #   t = new Tween duration: duration
+    #   t.setProgress(.75)
+    #   progress = t._progressTime
+    #   t
+    #     .play()
+    #     .playBackward()
+    #     .play()
+    #   expect(t._progressTime).toBe progress
     it 'should return immediately if already playing',->
       t = new Tween duration: 1000
       t.play()
@@ -5108,17 +5156,18 @@ describe 'Tween ->', ->
         expect(t._subPlay).toHaveBeenCalled()
         dfr()
       , 2*duration
+    it 'should call _subPlay with "play" string', ()->
+      duration = 50
+      t = new Tween duration: duration
+      spyOn t, '_subPlay'
+      t.play()
+      expect(t._subPlay).toHaveBeenCalledWith(0, 'play')
 
   describe 'reverse method ->', ->
     it 'should set _state to "reverse"',->
       t = new Tween
       t.playBackward()
       expect(t._state).toBe 'reverse'
-    it 'should call _subPlay method',->
-      t = new Tween
-      spyOn t, '_subPlay'
-      t.playBackward(200)
-      expect(t._subPlay).toHaveBeenCalledWith 200
     it 'should return self',->
       t = new Tween
       obj = t.playBackward(200)
@@ -5128,29 +5177,28 @@ describe 'Tween ->', ->
       t.playBackward(200)
       expect(t._prevState).toBe 'stop'
       expect(t._state).toBe 'reverse'
-    # it 'should recalc _progressTime if previous state was "play" + "pause"',->
-    it 'should recalc _progressTime',->
-      duration = 1000
-      t = new Tween duration: duration
-      t.setProgress(.75)
-      progress = t._progressTime
-      t.playBackward()
-      expect(t._progressTime).toBe progress
-    it 'should recalc _progressTime if previous state was "play"',->
-      duration = 1000
-      t = new Tween duration: duration
-      t.setProgress(.75)
-      progress = t._progressTime
-      t .play()
-        .playBackward()
-      expect(t._progressTime).toBe t._props.repeatTime - progress
+    # TODO
+    # it 'should recalc _progressTime',->
+    #   duration = 1000
+    #   t = new Tween duration: duration
+    #   t.setProgress(.75)
+    #   progress = t._progressTime
+    #   t.playBackward()
+    #   expect(t._progressTime).toBe progress
+    # it 'should recalc _progressTime if previous state was "play"',->
+    #   duration = 1000
+    #   t = new Tween duration: duration
+    #   t.setProgress(.75)
+    #   progress = t._progressTime
+    #   t .play()
+    #     .playBackward()
+    #   expect(t._progressTime).toBe t._props.repeatTime - progress
     it 'should return immediately if already reversing',->
       t = new Tween duration: 1000
       t.playBackward()
       spyOn t, '_subPlay'
       t.playBackward()
       expect(t._subPlay).not.toHaveBeenCalled()
-
     it 'should run if already reversing but ended', (dfr)->
       duration = 50
       t = new Tween duration: duration
@@ -5161,6 +5209,12 @@ describe 'Tween ->', ->
         expect(t._subPlay).toHaveBeenCalled()
         dfr()
       , 2*duration
+    it 'should call _subPlay with "reverse" string', ()->
+      duration = 50
+      t = new Tween duration: duration
+      spyOn t, '_subPlay'
+      t.playBackward()
+      expect(t._subPlay).toHaveBeenCalledWith(0, 'reverse')
 
   describe 'stop method', ->
     it 'should call removeFromTweener method with self',->
@@ -5788,7 +5842,6 @@ describe 'Tween ->', ->
       t.setProgress(.5)
       expect(t._playTime).toBe null
 
-  # TODO: return when timeline -> tween update is ready
   describe 'onComplete callback ->', ->
     it 'should be called just once when finished and inside Timeline ->', ->
       zeroCnt = 0;    oneCnt = 0
