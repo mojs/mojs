@@ -97,6 +97,13 @@ describe 'Tween ->', ->
       expect(t._isCompleted).toBe false
       expect(t._isRepeatCompleted).toBe false
       expect(t._isStarted)  .toBe false
+    it 'should not restart _repeatComplete flag is second param is false', ->
+      t = new Tween(duration: 20, repeat: 2)._setStartTime()
+      t._update t._props.startTime + 10
+      t._update t._props.startTime + 60
+      expect(t._isRepeatCompleted).toBe true
+      t._setStartTime(1, false)
+      expect(t._isRepeatCompleted).toBe true
     it 'should set _playTime',->
       t = new Tween
       t._setStartTime()
@@ -146,6 +153,7 @@ describe 'Tween ->', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
       t._setStartTime()
       t._update t._props.startTime + 300
+      t._update t._props.startTime + 500
       t._update t._props.startTime + 1100
       expect(t.progress).toBe 1
     it 'should update progress to 1 if in delay gap and previous time value
@@ -158,8 +166,10 @@ describe 'Tween ->', ->
     it 'should update progress to 1 on the end', ->
       t = new Tween(duration: 1000, delay: 200, repeat: 2)
       t._setStartTime()
-      t._update t._props.startTime + 500
+      t._update t._props.startTime + 200
       expect(t.progress).toBeCloseTo 0
+      t._update t._props.startTime + 500
+      expect(t.progress).toBeCloseTo .5
       t._update t._props.startTime + 1000
       expect(t.progress).toBeCloseTo 1, 5
     it 'should return true on the end', ->
@@ -461,10 +471,20 @@ describe 'Tween ->', ->
       t._update t._props.startTime + 199
       t._update t._props.startTime + 200
       expect(isRightScope).toBe true
-    it 'should be called just once on delay', ->
+    it 'should not be called on delay', ->
       t = new Tween delay: 200, repeat: 2, onUpdate:->
       spyOn(t, 'onUpdate').and.callThrough()
       t._setStartTime()
+      t._update t._props.startTime + t._props.duration + 50
+      t._update t._props.startTime + t._props.duration + 100
+      t._update t._props.startTime + t._props.duration + 150
+      expect(t.onUpdate.calls.count()).toBe 0
+    it 'should be called just once on delay', ->
+      t = new Tween delay: 200, repeat: 2, onUpdate:->
+      t._setStartTime()
+      t._update t._props.startTime + 50
+      t._update t._props.startTime + t._props.duration/2
+      spyOn(t, 'onUpdate').and.callThrough()
       t._update t._props.startTime + t._props.duration + 50
       t._update t._props.startTime + t._props.duration + 100
       t._update t._props.startTime + t._props.duration + 150
@@ -4668,6 +4688,18 @@ describe 'Tween ->', ->
       tm.setProgress .5
 
       expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
+    it 'should call repeatComplete only once when in delay', ()->
+      duration = 2000; delay = 1000
+      t = new Tween repeat: 1, yoyo: true, duration: duration, delay: delay
+
+      spyOn t._props, 'onRepeatComplete'
+      t.setProgress 1
+      t.setProgress .85
+      t.setProgress .75
+      t.setProgress .6
+      t.setProgress .45 # <-- error
+      t.setProgress .25
+      expect(t._props.onRepeatComplete.calls.count()).toBe 2
       
   describe '_getPeriod method ->', ->
     it 'should get current period', ->
@@ -4964,12 +4996,12 @@ describe 'Tween ->', ->
   describe '_subPlay method ->', ->
     describe '_prevTime recalculation ->', ->
       it 'should set _resumeTime', ->
-        t = new Tween# isIt: 1
+        t = new Tween
         now = performance.now()
         t.play()
         expect( now - t._playTime ).not.toBeGreaterThan 5
       it 'should recalc _prevTime play + play', (dfr)->
-        t = new Tween# isIt: 1
+        t = new Tween
         t.play()
         setTimeout ->
           t.pause()
@@ -4979,8 +5011,20 @@ describe 'Tween ->', ->
           expect( t._prevTime ).toBe prevTime
           dfr()
         , 200
+      it 'should recalc _prevTime play + play regarding delay', (dfr)->
+        delay = 200
+        t = new Tween delay: delay
+        t.play()
+        setTimeout ->
+          t.pause()
+          now = performance.now()
+          t.play().pause()
+          prevTime = t._props.startTime + t._progressTime - delay
+          expect( t._prevTime ).toBe prevTime
+          dfr()
+        , 200
       it 'should recalc _prevTime playBackward + playBackward', (dfr)->
-        t = new Tween# isIt: 1
+        t = new Tween
         t.playBackward()
         setTimeout ->
           t.pause()
@@ -4991,7 +5035,7 @@ describe 'Tween ->', ->
           dfr()
         , 200
       it 'should flip _progressTime if changing direction', (dfr)->
-        t = new Tween# isIt: 1
+        t = new Tween
         t.play()
         setTimeout ->
           t.pause()
@@ -5002,7 +5046,7 @@ describe 'Tween ->', ->
           dfr()
         , 200
       it 'should flip _progressTime if changing direction #pauseless 1', (dfr)->
-        t = new Tween# isIt: 1
+        t = new Tween
         t.play()
         setTimeout ->
           now = performance.now()
@@ -5012,7 +5056,7 @@ describe 'Tween ->', ->
           dfr()
         , 200
       it 'should flip _progressTime if changing direction', (dfr)->
-        t = new Tween# isIt: 1
+        t = new Tween
         t.playBackward()
         setTimeout ->
           t.pause()
@@ -5023,7 +5067,7 @@ describe 'Tween ->', ->
           dfr()
         , 200
       it 'should flip _progressTime if changing direction #pauseless 2', (dfr)->
-        t = new Tween# isIt: 1
+        t = new Tween
         t.playBackward()
         setTimeout ->
           now = performance.now()
@@ -5045,6 +5089,19 @@ describe 'Tween ->', ->
         t.play(shift)
         expect(Math.abs(startTime - t._setStartTime.calls.argsFor(0)[0] ))
           .not.toBeGreaterThan 5
+        dfr()
+      , duration/2
+    it 'should pass false as second param to _setStartTime', (dfr)->
+      duration = 1000; shift = 200
+      t = new Tween duration: duration
+      t.play()
+      setTimeout ->
+        t.pause()
+
+        startTime = performance.now() - Math.abs(shift) - t._progressTime
+        spyOn t, '_setStartTime'
+        t.play(shift)
+        expect(t._setStartTime.calls.argsFor(0)[1]).toBe false
         dfr()
       , duration/2
     it 'should recalc startTime regarding speed', (dfr)->
@@ -5102,12 +5159,12 @@ describe 'Tween ->', ->
       startTime = time - shift
       expect( startTime - t._props.startTime ).not.toBeGreaterThan 5
     it 'should treat negative progress time as positive',->
-      t = new Tween
+      t     = new Tween
       t._setStartTime()
-      time = t._props.startTime
+      time  = t._props.startTime
       shift = -200
       t.play( shift )
-      expect(t._props.startTime).toBe time - Math.abs(shift)
+      expect( Math.abs(t._props.startTime - (time - Math.abs(shift))) ).not.toBeGreaterThan 5
     it 'should encount time progress',->
       duration = 1000
       t = new Tween duration: duration
@@ -5117,29 +5174,6 @@ describe 'Tween ->', ->
       t.play()
       start = performance.now() - progress*t._props.repeatTime
       expect(Math.abs( t._props.startTime - start )).not.toBeGreaterThan 5
-    # remove
-    # it 'should recalc _progressTime if previous state was "reverse" + "pause"',->
-    #   duration = 1000
-    #   t = new Tween duration: duration
-    #   t.setProgress(.75)
-    #   progress = t._progressTime
-    #   t
-    #     .play()
-    #     .playBackward()
-    #     .pause()
-    #     .play()
-    #   expect(t._progressTime).toBe progress
-    # remove
-    # it 'should recalc _progressTime if previous state was "reverse"',->
-    #   duration = 1000
-    #   t = new Tween duration: duration
-    #   t.setProgress(.75)
-    #   progress = t._progressTime
-    #   t
-    #     .play()
-    #     .playBackward()
-    #     .play()
-    #   expect(t._progressTime).toBe progress
     it 'should return immediately if already playing',->
       t = new Tween duration: 1000
       t.play()
@@ -5177,22 +5211,21 @@ describe 'Tween ->', ->
       t.playBackward(200)
       expect(t._prevState).toBe 'stop'
       expect(t._state).toBe 'reverse'
-    # TODO
-    # it 'should recalc _progressTime',->
-    #   duration = 1000
-    #   t = new Tween duration: duration
-    #   t.setProgress(.75)
-    #   progress = t._progressTime
-    #   t.playBackward()
-    #   expect(t._progressTime).toBe progress
-    # it 'should recalc _progressTime if previous state was "play"',->
-    #   duration = 1000
-    #   t = new Tween duration: duration
-    #   t.setProgress(.75)
-    #   progress = t._progressTime
-    #   t .play()
-    #     .playBackward()
-    #   expect(t._progressTime).toBe t._props.repeatTime - progress
+    it 'should recalc _progressTime',->
+      duration = 1000
+      t = new Tween duration: duration
+      t.setProgress(.75)
+      progress = t._progressTime
+      t.playBackward()
+      expect(t._progressTime).toBe progress
+    it 'should recalc _progressTime if previous state was "play"',->
+      duration = 1000
+      t = new Tween duration: duration
+      t.setProgress(.75)
+      progress = t._progressTime
+      t .play()
+        .playBackward()
+      expect(t._progressTime).toBe t._props.repeatTime - progress
     it 'should return immediately if already reversing',->
       t = new Tween duration: 1000
       t.playBackward()
@@ -5284,14 +5317,6 @@ describe 'Tween ->', ->
       t._setPlaybackState 'pause'
       expect(t._prevState).toBe 'play'
       expect(t._state).toBe 'pause'
-
-    it 'should overwrite previous playback state', ->
-      t = new Tween
-      t._setPlaybackState 'pause'
-      t._setPlaybackState 'play'
-      t._setPlaybackState 'reverse', true
-      expect(t._prevState).toBe 'pause'
-      expect(t._state).toBe 'reverse'
 
   describe '_removeFromTweener method ->', ->
     it 'should call tweener.remove method with self',->

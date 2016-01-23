@@ -61,15 +61,9 @@ var Tween = class Tween {
   */
   play (shift = 0) {
     if ( this._state === 'play' && this._isRunning ) { return false; }
-    // if was playing reverse and paused or playing reverse right now,
-    // flip the time progress in repeatTime bounds
-    // var isPausedReverse = this._state === 'pause' && this._prevState === 'reverse';
-    // if ( isPausedReverse || this._state === 'reverse' ) {
-    //   this._progressTime = this._props.repeatTime - this._progressTime;
-    // }
     this._props.isReversed = false;
     this._subPlay( shift, 'play' );
-    this._setPlaybackState('play');
+    this._setPlaybackState( 'play' );
     return this;
   }
   /*
@@ -80,15 +74,9 @@ var Tween = class Tween {
   */
   playBackward (shift = 0) {
     if ( this._state === 'reverse' && this._isRunning)  { return false; }
-    // flip time progress in repeatTime bounds
-    // var isPlayPaused = this._state === 'pause' && this._prevState === 'play';
-    // if ( isPlayPaused || this._state === 'play' ) {
-    //   this._progressTime = this._props.repeatTime - this._progressTime;
-    // }
-    // play reversed
     this._props.isReversed = true;
     this._subPlay( shift, 'reverse' );
-    this._setPlaybackState('reverse');
+    this._setPlaybackState( 'reverse' );
     // reset previous time cache
     return this;
   }
@@ -173,12 +161,12 @@ var Tween = class Tween {
     // get current moment as resume time
     this._resumeTime = performance.now();
     // set start time regarding passed `shift` and `procTime`
-    this._setStartTime( this._resumeTime-Math.abs(shift)-this._progressTime );
+    this._setStartTime( this._resumeTime-Math.abs(shift)-this._progressTime, false );
     // if we have prevTime - we need to normalize
     // it for the current resume time
     if ( this._prevTime != null ) {
       this._prevTime = ( state === 'play' )
-        ? p.startTime + this._progressTime
+        ? p.startTime + this._progressTime - p.delay
         : p.endTime   - this._progressTime;
     }
     // add self to tweener = play
@@ -200,12 +188,11 @@ var Tween = class Tween {
     Method set playback state string.
     @private
     @param {String} State name
-    @param {Boolean} If should owerwrite the previous state.
   */
-  _setPlaybackState (state, isOverwrite) {
-    // if not overwrite, save previous state
-    if ( !isOverwrite ) { this._prevState = this._state; }
-    this._state = state;
+  _setPlaybackState ( state ) {
+    // save previous state
+    this._prevState = this._state;
+    this._state     = state;
   }
   /*
     Method to declare some vars.
@@ -255,15 +242,18 @@ var Tween = class Tween {
   /*
     Method for setting start and end time to props.
     @private
-    @param {Number(Timestamp)}, {Null}
+    @param {Number(Timestamp)}, {Null} Start time.
+    @param {Boolean} Should reset flags.
     @returns this
   */
-  _setStartTime (time) {
+  _setStartTime ( time, isResetFlags = true ) {
     var p = this._props,
         shiftTime = (p.shiftTime || 0);
     // reset flags
-    this._isCompleted = false; this._isRepeatCompleted = false;
-    this._isStarted   = false;
+    if ( isResetFlags ) {
+      this._isCompleted = false; this._isRepeatCompleted = false;
+      this._isStarted   = false;
+    }
     // set start time to passed time or to the current moment
     var startTime = (time == null) ? performance.now() : time;
     // calculate bounds
@@ -345,7 +335,6 @@ var Tween = class Tween {
     // for pause/play purposes.
     if ( time > startPoint && time < p.endTime ) {
       this._progressTime = time - startPoint;
-      // console.log(`progressTime: ${this._progressTime}`)
     }
     // else if not started or ended set progress time to 0
     else if ( time <= startPoint  ) { this._progressTime = 0; }
@@ -367,7 +356,6 @@ var Tween = class Tween {
 
     // ====== AFTER SKIPPED FRAME ======
 
-    // this.o.isIt && console.log( `time: ${time}, prevTime: ${this._prevTime}` );
 
     // handle onProgress callback
     if  ( time >= startPoint && time <= p.endTime ) {
@@ -501,9 +489,7 @@ var Tween = class Tween {
         // if on edge but not at very start
         // |=====|=====|=====| >>>
         // ^!    ^here ^here 
-        if ( prevT >= 0 ) {
-          this._repeatStart( time, isYoyo );
-        }
+        if ( prevT >= 0 ) { this._repeatStart( time, isYoyo ); }
       }
 
       if ( time > this._prevTime ) {
@@ -550,15 +536,11 @@ var Tween = class Tween {
         // if just before delay gap
         // |---=====|---=====|---=====| <<<
         //               ^2    ^1
-        if ( T < TPrevValue ) {
-          this._repeatComplete( time, isYoyo );
-        }
+        if ( T < TPrevValue ) { this._repeatComplete( time, isYoyo ); }
         // if just after delay gap
         // |---=====|---=====|---=====| >>>
         //            ^1  ^2
-        if ( T === TPrevValue && T > 0 ) {
-          this._repeatStart( time, isYoyo );
-        }
+        if ( T === TPrevValue && T > 0 ) { this._repeatStart( time, isYoyo ); }
       }
 
       // swap progress and repeatStart based on direction
@@ -576,16 +558,12 @@ var Tween = class Tween {
           this._setProgress( ((isYoyo) ? 1-proc : proc), time, isYoyo );
         }
         // if progress is equal 0 and progress grows
-        if ( proc === 0 ) {
-          this._repeatStart( time, isYoyo );
-        }
+        if ( proc === 0 ) { this._repeatStart( time, isYoyo ); }
       }
 
-      if ( time === props.startTime ) {
-        this._start( time, isYoyo );
-      }
-    // delay gap
-    } else {
+      if ( time === props.startTime ) { this._start( time, isYoyo ); }
+    // delay gap - react only once
+    } else if ( this._isInActiveArea ) {
       // because T will be string of "delay" here,
       // let's normalize it be setting to TValue
       var t = (T === 'delay') ? TValue : T,
@@ -597,22 +575,25 @@ var Tween = class Tween {
       // if was in active area and previous time was larger
       // |---=====|---=====|---=====| <<<
       //   ^2 ^1    ^2 ^1    ^2 ^1
-      if ( this._isInActiveArea && time < this._prevTime ) {
+      if ( time < this._prevTime ) {
         this._setProgress(yoyoZero, time, yoyoZero === 1);
         this._repeatStart( time, yoyoZero === 1 );
       }
       // set 1 or 0 regarding direction and yoyo
       this._setProgress( (( isGrows ) ? 1-yoyoZero : yoyoZero ), time, yoyoZero === 1 );
-      // if reverse direction and in delay gap, then progress will be 0
-      // if so we don't need to call the onRepeatComplete callback
-      // |---=====|---=====|---=====| <<<
-      //   ^0       ^0       ^0   
-      // OR we have flipped 0 to 1 regarding yoyo option
-      if ( this.progress !== 0 || yoyoZero === 1 ) {
-        // since we repeatComplete for previous period
-        // invert isYoyo option
-        // is elapsed is 0 - count as previous period
-        this._repeatComplete( time, (elapsed === 0) ? !isYoyo : isYoyo );
+      // if time grows
+      if ( time > this._prevTime ) {
+        // if reverse direction and in delay gap, then progress will be 0
+        // if so we don't need to call the onRepeatComplete callback
+        // |---=====|---=====|---=====| <<<
+        //   ^0       ^0       ^0   
+        // OR we have flipped 0 to 1 regarding yoyo option
+        if ( this.progress !== 0 || yoyoZero === 1 ) {
+          // since we repeatComplete for previous period
+          // invert isYoyo option
+          // is elapsed is 0 - count as previous period
+          this._repeatComplete( time, (elapsed === 0) ? !isYoyo : isYoyo );
+        }
       }
       // set flag to indicate inactive area
       this._isInActiveArea = false;
@@ -696,7 +677,7 @@ var Tween = class Tween {
     this.easedProgress = this._props.easing(this.progress);
     if ( props.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-        // this.o.isIt && console.log('UPDATE', this.easedProgress.toFixed(2), this.progress.toFixed(2), time > this._prevTime, isYoyo );
+        // this.o.isIt && console.log('UPDATE', this.progress.toFixed(2), time > this._prevTime, isYoyo );
         this.onUpdate( this.easedProgress, this.progress, time > this._prevTime, isYoyo );
       }
     }
