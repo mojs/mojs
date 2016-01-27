@@ -3343,6 +3343,7 @@
 	            wasPlay = _state === "play" || isPause && _prevState === "play",
 	            wasReverse = _state === "reverse" || isPause && _prevState === "reverse",
 	            isFlip = wasPlay && state === "reverse" || wasReverse && state === "play";
+
 	        // if tween was ended, set progress to 0 if not, set to elapsed progress
 	        this._progressTime = this._progressTime >= p.repeatTime ? 0 : this._progressTime;
 	        // flip the _progressTime if playback direction changed
@@ -3352,15 +3353,30 @@
 	        // get current moment as resume time
 	        this._resumeTime = performance.now();
 	        // set start time regarding passed `shift` and `procTime`
-	        this._setStartTime(this._resumeTime - Math.abs(shift) - this._progressTime, false);
+	        this._setStartTime(this._resumeTime - Math.abs(shift) - this._progressTime, false, state);
 	        // if we have prevTime - we need to normalize
 	        // it for the current resume time
 	        if (this._prevTime != null) {
-	          this._prevTime = state === "play" ? p.startTime + this._progressTime - p.delay : p.endTime - this._progressTime;
+	          this._prevTime = state === "play" ? this._normPrevTimeForward() : p.endTime - this._progressTime;
 	        }
 	        // add self to tweener = play
 	        t.add(this);
 	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _normPrevTimeForward: {
+
+	      /*
+	        Method recalculate _prevTime for forward direction.
+	        @private
+	        @return {Number} Normalized prev time.
+	      */
+
+	      value: function NormPrevTimeForward() {
+	        var p = this._props;return p.startTime + this._progressTime - p.delay;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3499,10 +3515,20 @@
 	          this._prevTime = timelinePrevTime;
 	          this._wasUknownUpdate = true;
 	        }
+
+	        // cache vars
+	        var startPoint = p.startTime - p.delay;
+	        // if speed param was defined - calculate
+	        // new time regarding speed
+	        if (p.speed && this._playTime) {
+	          // play point + ( speed * delta )
+	          time = this._playTime + p.speed * (time - this._playTime);
+	        }
+
 	        // if parent is onEdge but not very start nor very end
 	        if (onEdge && wasYoyo != null) {
 	          var T = this._getPeriod(time),
-	              isYoyo = p.yoyo && T % 2 === 1;
+	              isYoyo = !!(p.yoyo && this._props.repeat && T % 2 === 1);
 	          // forward edge direction
 	          if (onEdge === 1) {
 	            // jumped from yoyo period?
@@ -3532,14 +3558,7 @@
 	          // where we are heading
 	          this._prevTime = null;
 	        }
-	        // cache vars
-	        var startPoint = p.startTime - p.delay;
-	        // if speed param was defined - calculate
-	        // new time regarding speed
-	        if (p.speed && this._playTime) {
-	          // play point + ( speed * delta )
-	          time = this._playTime + p.speed * (time - this._playTime);
-	        }
+
 	        // if in active area and not ended - save progress time
 	        // for pause/play purposes.
 	        if (time > startPoint && time < p.endTime) {
@@ -3827,7 +3846,7 @@
 	              // since we repeatComplete for previous period
 	              // invert isYoyo option
 	              // is elapsed is 0 - count as previous period
-	              this._repeatComplete(time, elapsed === 0 ? !isYoyo : isYoyo);
+	              this._repeatComplete(time, yoyoZero === 1);
 	            }
 	          }
 	          // set flag to indicate inactive area
@@ -4342,17 +4361,13 @@
 	        // to prevent initial _wasUnknownUpdate nested waterfall
 	        // if not yoyo option set, pass the previous time
 	        // otherwise, pass previous or next time regarding yoyo period.
-
 	        var coef = time > this._prevTime ? -1 : 1;
-	        // this.o.isIt && console.log(coef, time, this._prevTime)
 	        if (this._props.yoyo) {
 	          if (isYoyo) {
 	            coef *= -1;
 	          }
 	        }
-	        // coef = ( isYoyo ) ? -1*coef: coef;
 	        var prevTimeToTimelines = timeToTimelines + coef;
-	        // this.o.isIt && console.log( isYoyo, time > this._prevTime )
 	        while (i--) {
 	          this._timelines[i]._update(timeToTimelines, prevTimeToTimelines, this._prevYoyo, this._onEdge);
 	        }
@@ -4401,8 +4416,9 @@
 	        @param {Number, Null} Time to start with.
 	      */
 	      value: function SetStartTime(time) {
+	        var isReset = arguments[1] === undefined ? true : arguments[1];
 	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_setStartTime", this).call(this, time);
-	        this._startTimelines(this._props.startTime);
+	        this._startTimelines(this._props.startTime, isReset);
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4415,10 +4431,18 @@
 	        @param {Number, Null} Time to start with.
 	      */
 	      value: function StartTimelines(time) {
-	        var i = this._timelines.length;
+	        var isReset = arguments[1] === undefined ? true : arguments[1];
+	        var i = this._timelines.length,
+	            p = this._props,
+	            timeline;
 	        time == null && (time = this._props.startTime);
 	        while (i--) {
-	          this._timelines[i]._setStartTime(time);
+	          timeline = this._timelines[i];
+	          timeline._setStartTime(time, isReset);
+	          // if from _subPlay and _prevTime is set
+	          if (!isReset && timeline._prevTime != null) {
+	            timeline._prevTime = timeline._normPrevTimeForward();
+	          }
 	        }
 	      },
 	      writable: true,
@@ -4606,7 +4630,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.166.9',
+	  revision: '0.166.10',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),

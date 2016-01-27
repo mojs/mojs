@@ -451,7 +451,99 @@ describe 'Tween ->', ->
 
       expect(t._props.onRepeatStart).toHaveBeenCalledWith false, false
       expect(t._props.onStart).toHaveBeenCalledWith false, false
+  
+  it 'should call callbacks if on edge "-1" + was yoyo', ->
+      tm = new mojs.Timeline repeat: 1, yoyo: true
+      duration = 1000
+      t = new Tween
+        yoyo: true
+        duration: duration
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
 
+      tm.add t
+
+      tm.setProgress 1
+      tm.setProgress .85
+      
+      spyOn t._props, 'onRepeatComplete'
+      spyOn t._props, 'onComplete'
+      
+      tm.setProgress .45
+
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
+      expect(t._props.onComplete).toHaveBeenCalledWith true, false
+
+  it 'should call callbacks if on edge "+1" + wasn\'t yoyo', ->
+      tm = new mojs.Timeline repeat: 2, yoyo: true
+      duration = 1000
+      t = new Tween
+        repeat: 2
+        yoyo: true
+        speed: .5
+        duration: duration
+        delay: duration/2
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
+
+      tm.add t
+
+      tm.setProgress .05
+      tm.setProgress .1
+      
+      tm.setProgress .15
+      tm.setProgress .2
+      tm.setProgress .25
+      tm.setProgress .3
+      spyOn t._props, 'onRepeatComplete'
+      spyOn t._props, 'onComplete'
+      tm.setProgress .35
+
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
+      expect(t._props.onComplete).toHaveBeenCalledWith true, false
+
+  it 'should call callbacks if on edge "+1" + wasn\'t yoyo', ->
+      tm = new mojs.Timeline repeat: 2, yoyo: true
+      duration = 1000
+      t = new Tween
+        repeat: 2
+        yoyo: true
+        speed: 2
+        duration: duration
+        delay: duration/2
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
+
+      tm.add t
+
+      tm.setProgress .05
+      tm.setProgress .1
+      
+      tm.setProgress .15
+      tm.setProgress .2
+      tm.setProgress .25
+      tm.setProgress .3
+      spyOn t._props, 'onRepeatComplete'
+      spyOn t._props, 'onComplete'
+      tm.setProgress .35
+
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
+      expect(t._props.onComplete).toHaveBeenCalledWith true, false
 
   describe 'onUpdate callback ->', ->
     it 'should be defined', ->
@@ -4676,9 +4768,7 @@ describe 'Tween ->', ->
     it 'should call repeatComplete if immediately returned inside Timeline', ()->
       tm = new Timeline repeat:  1, yoyo: true
       t = new Tween
-
       tm.add t
-
       tm.setProgress 0
       tm.setProgress .1
       tm.setProgress .35
@@ -4688,10 +4778,10 @@ describe 'Tween ->', ->
       tm.setProgress .5
 
       expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
+
     it 'should call repeatComplete only once when in delay', ()->
       duration = 2000; delay = 1000
       t = new Tween repeat: 1, yoyo: true, duration: duration, delay: delay
-
       spyOn t._props, 'onRepeatComplete'
       t.setProgress 1
       t.setProgress .85
@@ -6043,6 +6133,14 @@ describe 'Tween ->', ->
       expect(tw._props.onProgress).toHaveBeenCalledWith 1, true
       expect(tw._props.onProgress.calls.count()).toBe 1
 
+  describe '_normPrevTimeForward method', ->
+    it 'should return normalized _prevTimee', ->
+      duration = 1000
+      tw = new Tween duration: duration, onProgress:->
+      tw._setStartTime()
+      p = tw._props
+      expect(tw._normPrevTimeForward())
+        .toBe p.startTime + tw._progressTime - p.delay
 
 
 

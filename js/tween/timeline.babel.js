@@ -97,17 +97,13 @@ class Timeline extends Tween {
     // to prevent initial _wasUnknownUpdate nested waterfall
     // if not yoyo option set, pass the previous time
     // otherwise, pass previous or next time regarding yoyo period.
-    
     var coef = ( time > this._prevTime ) ? -1 : 1;
-    // this.o.isIt && console.log(coef, time, this._prevTime)
     if ( this._props.yoyo ) {
       if ( isYoyo ) {
         coef *= -1;
       }
     }
-    // coef = ( isYoyo ) ? -1*coef: coef;
     var prevTimeToTimelines = timeToTimelines+coef;
-    // this.o.isIt && console.log( isYoyo, time > this._prevTime )
     while(i--) {
       this._timelines[i]._update(
         timeToTimelines,
@@ -143,19 +139,28 @@ class Timeline extends Tween {
     @private
     @param {Number, Null} Time to start with.
   */
-  _setStartTime(time) {
+  _setStartTime( time, isReset = true ) {
     super._setStartTime(time);
-    this._startTimelines(this._props.startTime);
+    this._startTimelines(this._props.startTime, isReset);
   }
   /*
     Method calculate self duration based on timeline's duration.
     @private
     @param {Number, Null} Time to start with.
   */
-  _startTimelines(time) {
-    var i = this._timelines.length;
+  _startTimelines(time, isReset = true) {
+    var i = this._timelines.length,
+        p = this._props,
+        timeline;
     ( time == null) && (time = this._props.startTime);
-    while(i--) { this._timelines[i]._setStartTime(time); }
+    while(i--) {
+      timeline = this._timelines[i];
+      timeline._setStartTime(time, isReset);
+      // if from _subPlay and _prevTime is set
+      if ( !isReset && timeline._prevTime != null ) {
+        timeline._prevTime = timeline._normPrevTimeForward();
+      }
+    }
   }
   /*
     Method do declare defaults by this._defaults object

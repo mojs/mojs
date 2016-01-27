@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.166.9', isDebug: true
+  revision:   '0.166.10', isDebug: true
   helpers     : require './h'
   shapesMap   : require './shapes/shapesMap'
   Burst       : require './burst'
@@ -16,6 +16,7 @@ window.mojs =
 
 mojs.h     = mojs.helpers
 mojs.delta = mojs.h.delta
+
 
 ### istanbul ignore next ###
 if (typeof define is "function") and define.amd

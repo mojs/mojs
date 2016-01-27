@@ -670,6 +670,101 @@
         return expect(t._props.onStart).toHaveBeenCalledWith(false, false);
       });
     });
+    it('should call callbacks if on edge "-1" + was yoyo', function() {
+      var duration, t, tm;
+      tm = new mojs.Timeline({
+        repeat: 1,
+        yoyo: true
+      });
+      duration = 1000;
+      t = new Tween({
+        yoyo: true,
+        duration: duration,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onProgress: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {},
+        onFirstUpdate: function() {}
+      });
+      tm.add(t);
+      tm.setProgress(1);
+      tm.setProgress(.85);
+      spyOn(t._props, 'onRepeatComplete');
+      spyOn(t._props, 'onComplete');
+      tm.setProgress(.45);
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true, false);
+      return expect(t._props.onComplete).toHaveBeenCalledWith(true, false);
+    });
+    it('should call callbacks if on edge "+1" + wasn\'t yoyo', function() {
+      var duration, t, tm;
+      tm = new mojs.Timeline({
+        repeat: 2,
+        yoyo: true
+      });
+      duration = 1000;
+      t = new Tween({
+        repeat: 2,
+        yoyo: true,
+        speed: .5,
+        duration: duration,
+        delay: duration / 2,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onProgress: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {},
+        onFirstUpdate: function() {}
+      });
+      tm.add(t);
+      tm.setProgress(.05);
+      tm.setProgress(.1);
+      tm.setProgress(.15);
+      tm.setProgress(.2);
+      tm.setProgress(.25);
+      tm.setProgress(.3);
+      spyOn(t._props, 'onRepeatComplete');
+      spyOn(t._props, 'onComplete');
+      tm.setProgress(.35);
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true, false);
+      return expect(t._props.onComplete).toHaveBeenCalledWith(true, false);
+    });
+    it('should call callbacks if on edge "+1" + wasn\'t yoyo', function() {
+      var duration, t, tm;
+      tm = new mojs.Timeline({
+        repeat: 2,
+        yoyo: true
+      });
+      duration = 1000;
+      t = new Tween({
+        repeat: 2,
+        yoyo: true,
+        speed: 2,
+        duration: duration,
+        delay: duration / 2,
+        onStart: function() {},
+        onRepeatStart: function() {},
+        onUpdate: function() {},
+        onProgress: function() {},
+        onRepeatComplete: function() {},
+        onComplete: function() {},
+        onFirstUpdate: function() {}
+      });
+      tm.add(t);
+      tm.setProgress(.05);
+      tm.setProgress(.1);
+      tm.setProgress(.15);
+      tm.setProgress(.2);
+      tm.setProgress(.25);
+      tm.setProgress(.3);
+      spyOn(t._props, 'onRepeatComplete');
+      spyOn(t._props, 'onComplete');
+      tm.setProgress(.35);
+      expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true, false);
+      return expect(t._props.onComplete).toHaveBeenCalledWith(true, false);
+    });
     describe('onUpdate callback ->', function() {
       it('should be defined', function() {
         var t;
@@ -5902,7 +5997,7 @@
         return expect(tw._props.onProgress).toHaveBeenCalledWith(.5, true);
       });
     });
-    return describe('onProgress callback ->', function() {
+    describe('onProgress callback ->', function() {
       it('should be called with current progress and direction', function() {
         var duration, time, tw;
         duration = 1000;
@@ -6036,6 +6131,19 @@
         expect(tw._progress.calls.count()).toBe(1);
         expect(tw._props.onProgress).toHaveBeenCalledWith(1, true);
         return expect(tw._props.onProgress.calls.count()).toBe(1);
+      });
+    });
+    return describe('_normPrevTimeForward method', function() {
+      return it('should return normalized _prevTimee', function() {
+        var duration, p, tw;
+        duration = 1000;
+        tw = new Tween({
+          duration: duration,
+          onProgress: function() {}
+        });
+        tw._setStartTime();
+        p = tw._props;
+        return expect(tw._normPrevTimeForward()).toBe(p.startTime + tw._progressTime - p.delay);
       });
     });
   });

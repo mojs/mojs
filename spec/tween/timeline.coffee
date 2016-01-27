@@ -186,7 +186,7 @@ describe 'Timeline ->', ->
       t = new Timeline
       spyOn t, '_startTimelines'
       t._setStartTime()
-      expect(t._startTimelines).toHaveBeenCalledWith t._props.startTime
+      expect(t._startTimelines).toHaveBeenCalledWith t._props.startTime, true
 
   describe '_startTimelines method ->', ->
     it 'should set time to startTime if no time was passed', ->
@@ -195,8 +195,8 @@ describe 'Timeline ->', ->
       spyOn t._timelines[0], '_setStartTime'
       spyOn t._timelines[1], '_setStartTime'
       t._startTimelines(null)
-      expect(t._timelines[0]._setStartTime).toHaveBeenCalledWith t._props.startTime
-      expect(t._timelines[1]._setStartTime).toHaveBeenCalledWith t._props.startTime
+      expect(t._timelines[0]._setStartTime).toHaveBeenCalledWith t._props.startTime, true
+      expect(t._timelines[1]._setStartTime).toHaveBeenCalledWith t._props.startTime, true
     it 'should add self shiftTime to child timelines', ->
       t   = new Timeline
       t.add new Tween duration: 500
@@ -204,6 +204,18 @@ describe 'Timeline ->', ->
       t._setProp 'shiftTime': shift
       t._setStartTime time
       expect(t._timelines[0]._props.startTime).toBe time + shift
+
+    it 'should set _prevTime on each child if from subplay', (dfr)->
+      t   = new Timeline
+      t.add new Tween duration: 500
+      t.play()
+
+      setTimeout ->
+        t.pause().playBackward().pause()
+        expect(t._timelines[0]._prevTime)
+          .toBe t._timelines[0]._normPrevTimeForward()
+        dfr()
+      , 50
 
   describe '_pushTimeline method ->', ->
     it 'should push timeline to timelines and calc repeatTime',->

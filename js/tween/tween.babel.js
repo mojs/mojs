@@ -153,6 +153,7 @@ var Tween = class Tween {
         wasPlay    = ( _state === 'play' || ( isPause && _prevState === 'play' ) ),
         wasReverse = ( _state === 'reverse' || ( isPause && _prevState === 'reverse' ) ),
         isFlip     = (wasPlay && state === 'reverse') || (wasReverse && state === 'play');
+
     // if tween was ended, set progress to 0 if not, set to elapsed progress
     this._progressTime = ( this._progressTime >= p.repeatTime )
       ? 0 : this._progressTime;
@@ -161,17 +162,27 @@ var Tween = class Tween {
     // get current moment as resume time
     this._resumeTime = performance.now();
     // set start time regarding passed `shift` and `procTime`
-    this._setStartTime( this._resumeTime-Math.abs(shift)-this._progressTime, false );
+    this._setStartTime( this._resumeTime-Math.abs(shift)-this._progressTime, false, state );
     // if we have prevTime - we need to normalize
     // it for the current resume time
     if ( this._prevTime != null ) {
       this._prevTime = ( state === 'play' )
-        ? p.startTime + this._progressTime - p.delay
+        ? this._normPrevTimeForward()
         : p.endTime   - this._progressTime;
     }
     // add self to tweener = play
     t.add(this);
     return this;
+  }
+
+  /*
+    Method recalculate _prevTime for forward direction.
+    @private
+    @return {Number} Normalized prev time.
+  */
+
+  _normPrevTimeForward () {
+    var p = this._props; return p.startTime + this._progressTime - p.delay;
   }
 
   /*
@@ -290,10 +301,20 @@ var Tween = class Tween {
       this._prevTime = timelinePrevTime;
       this._wasUknownUpdate = true;
     }
+
+    // cache vars
+    var startPoint = p.startTime - p.delay;
+    // if speed param was defined - calculate
+    // new time regarding speed
+    if ( p.speed && this._playTime ) {
+      // play point + ( speed * delta )
+      time = this._playTime + ( p.speed * ( time - this._playTime ) );
+    }
+
     // if parent is onEdge but not very start nor very end
     if ( onEdge && wasYoyo != null ) {
-      var T       = this._getPeriod(time),
-          isYoyo  = p.yoyo && (T % 2 === 1);
+      var T        = this._getPeriod(time),
+          isYoyo   = !!(p.yoyo && this._props.repeat && (T % 2 === 1));
       // forward edge direction
       if ( onEdge === 1 ) {
         // jumped from yoyo period?
@@ -323,14 +344,7 @@ var Tween = class Tween {
       // where we are heading
       this._prevTime = null;
     }
-    // cache vars
-    var startPoint = p.startTime - p.delay;
-    // if speed param was defined - calculate
-    // new time regarding speed
-    if ( p.speed && this._playTime ) {
-      // play point + ( speed * delta )
-      time = this._playTime + ( p.speed * ( time - this._playTime ) );
-    }
+    
     // if in active area and not ended - save progress time
     // for pause/play purposes.
     if ( time > startPoint && time < p.endTime ) {
@@ -536,7 +550,9 @@ var Tween = class Tween {
         // if just before delay gap
         // |---=====|---=====|---=====| <<<
         //               ^2    ^1
-        if ( T < TPrevValue ) { this._repeatComplete( time, isYoyo ); }
+        if ( T < TPrevValue ) {
+          this._repeatComplete( time, isYoyo );
+        }
         // if just after delay gap
         // |---=====|---=====|---=====| >>>
         //            ^1  ^2
@@ -592,7 +608,7 @@ var Tween = class Tween {
           // since we repeatComplete for previous period
           // invert isYoyo option
           // is elapsed is 0 - count as previous period
-          this._repeatComplete( time, (elapsed === 0) ? !isYoyo : isYoyo );
+          this._repeatComplete( time, yoyoZero === 1 );
         }
       }
       // set flag to indicate inactive area

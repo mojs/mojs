@@ -277,7 +277,7 @@
         t = new Timeline;
         spyOn(t, '_startTimelines');
         t._setStartTime();
-        return expect(t._startTimelines).toHaveBeenCalledWith(t._props.startTime);
+        return expect(t._startTimelines).toHaveBeenCalledWith(t._props.startTime, true);
       });
     });
     describe('_startTimelines method ->', function() {
@@ -292,10 +292,10 @@
         spyOn(t._timelines[0], '_setStartTime');
         spyOn(t._timelines[1], '_setStartTime');
         t._startTimelines(null);
-        expect(t._timelines[0]._setStartTime).toHaveBeenCalledWith(t._props.startTime);
-        return expect(t._timelines[1]._setStartTime).toHaveBeenCalledWith(t._props.startTime);
+        expect(t._timelines[0]._setStartTime).toHaveBeenCalledWith(t._props.startTime, true);
+        return expect(t._timelines[1]._setStartTime).toHaveBeenCalledWith(t._props.startTime, true);
       });
-      return it('should add self shiftTime to child timelines', function() {
+      it('should add self shiftTime to child timelines', function() {
         var shift, t, time;
         t = new Timeline;
         t.add(new Tween({
@@ -308,6 +308,19 @@
         });
         t._setStartTime(time);
         return expect(t._timelines[0]._props.startTime).toBe(time + shift);
+      });
+      return it('should set _prevTime on each child if from subplay', function(dfr) {
+        var t;
+        t = new Timeline;
+        t.add(new Tween({
+          duration: 500
+        }));
+        t.play();
+        return setTimeout(function() {
+          t.pause().playBackward().pause();
+          expect(t._timelines[0]._prevTime).toBe(t._timelines[0]._normPrevTimeForward());
+          return dfr();
+        }, 50);
       });
     });
     describe('_pushTimeline method ->', function() {
