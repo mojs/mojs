@@ -3259,6 +3259,9 @@
 	        @returns {Object} Self.
 	      */
 	      value: function stop(progress) {
+	        if (this._state === "stop") {
+	          return;
+	        }
 	        this._props.isReversed = false;
 	        this._removeFromTweener();
 	        // if progress passed - use it
@@ -3585,8 +3588,9 @@
 	          return false;
 	        }
 
-	        // ====== AFTER SKIPPED FRAME ======
+	        // this._visualizeProgress(time);
 
+	        // ====== AFTER SKIPPED FRAME ======
 
 	        // handle onProgress callback
 	        if (time >= startPoint && time <= p.endTime) {
@@ -3648,7 +3652,6 @@
 	      configurable: true
 	    },
 	    _updateInActiveArea: {
-
 	      /*
 	        Method to handle tween's progress in active area.
 	        @private
@@ -4101,41 +4104,61 @@
 	      enumerable: true,
 	      configurable: true
 	    },
-	    _visualizeProgress: {
-	      value: function VisualizeProgress(time) {
-	        var str = "|",
-	            procStr = " ",
-	            p = this._props,
-	            proc = p.startTime - p.delay;
+	    _onTweenerRemove: {
+	      /*
+	        Method which is called when the tween is removed from tweener.
+	        @private
+	      */
+	      value: function OnTweenerRemove() {},
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _onTweenerFinish: {
+	      /*
+	        Method which is called when the tween is removed
+	        from tweener when finished.
+	        @private
+	      */
+	      value: function OnTweenerFinish() {
+	        this._setPlaybackState("stop");
+	      }
 
-	        while (proc < p.endTime) {
-	          if (p.delay > 0) {
-	            var newProc = proc + p.delay;
-	            if (time > proc && time < newProc) {
-	              procStr += " ^ ";
-	            } else {
-	              procStr += "   ";
-	            }
-	            proc = newProc;
-	            str += "---";
-	          }
-	          var newProc = proc + p.duration;
-	          if (time > proc && time < newProc) {
-	            procStr += "  ^   ";
-	          } else if (time === proc) {
-	            procStr += "^     ";
-	          } else if (time === newProc) {
-	            procStr += "    ^ ";
-	          } else {
-	            procStr += "      ";
-	          }
-	          proc = newProc;
-	          str += "=====|";
-	        }
+	      // _visualizeProgress(time) {
+	      //   var str = '|',
+	      //       procStr = ' ',
+	      //       p = this._props,
+	      //       proc = p.startTime - p.delay;
 
-	        console.log(str);
-	        console.log(procStr);
-	      },
+	      //   while ( proc < p.endTime ) {
+	      //     if (p.delay > 0 ) {
+	      //       var newProc = proc + p.delay;
+	      //       if ( time > proc && time < newProc ) {
+	      //         procStr += ' ^ ';
+	      //       } else {
+	      //         procStr += '   ';
+	      //       }
+	      //       proc = newProc;
+	      //       str  += '---';
+	      //     }
+	      //     var newProc = proc + p.duration;
+	      //     if ( time > proc && time < newProc ) {
+	      //       procStr += '  ^   ';
+	      //     } else if (time === proc) {
+	      //       procStr += '^     ';
+	      //     } else if (time === newProc) {
+	      //       procStr += '    ^ ';
+	      //     } else {
+	      //       procStr += '      ';
+	      //     }
+	      //     proc = newProc;
+	      //     str += '=====|';
+	      //   }
+
+	      //   console.log(str);
+	      //   console.log(procStr);
+	      // }
+	      ,
 	      writable: true,
 	      enumerable: true,
 	      configurable: true
@@ -4524,6 +4547,11 @@
 	      configurable: true
 	    },
 	    _loop: {
+	      /*
+	        Main animation loop. Should have only one concurrent loop.
+	        @private
+	        @returns this
+	      */
 	      value: function Loop() {
 	        if (!this._isRunning) {
 	          return false;
@@ -4540,6 +4568,10 @@
 	      configurable: true
 	    },
 	    _startLoop: {
+	      /*
+	        Method to start animation loop.
+	        @private
+	      */
 	      value: function StartLoop() {
 	        if (this._isRunning) {
 	          return;
@@ -4551,6 +4583,10 @@
 	      configurable: true
 	    },
 	    _stopLoop: {
+	      /*
+	        Method to stop animation loop.
+	        @private
+	      */
 	      value: function StopLoop() {
 	        this._isRunning = false;
 	      },
@@ -4559,14 +4595,18 @@
 	      configurable: true
 	    },
 	    _update: {
+	      /*
+	        Method to update every tween/timeline on animation frame.
+	        @private
+	      */
 	      value: function Update(time) {
 	        var i = this.tweens.length;
 	        while (i--) {
-	          // COVER
 	          // cache the current tween
 	          var tween = this.tweens[i];
 	          if (tween && tween._update(time) === true) {
 	            this.remove(i);
+	            tween._onTweenerFinish();
 	            tween._prevTime = null;
 	          }
 	        }
@@ -4594,6 +4634,10 @@
 	      configurable: true
 	    },
 	    removeAll: {
+	      /*
+	        Method stop updating all the child tweens/timelines.
+	        @private
+	      */
 	      value: function removeAll() {
 	        this.tweens.length = 0;
 	      },
@@ -4602,14 +4646,19 @@
 	      configurable: true
 	    },
 	    remove: {
+	      /*
+	        Method to remove specific tween/timeline form updating.
+	        @private
+	      */
 	      value: function remove(tween) {
 	        var index = typeof tween === "number" ? tween : this.tweens.indexOf(tween);
 
 	        if (index !== -1) {
-	          // cover
-	          if (this.tweens[index]) {
-	            this.tweens[index]._isRunning = false;
+	          tween = this.tweens[index];
+	          if (tween) {
+	            tween._isRunning = false;
 	            this.tweens.splice(index, 1);
+	            tween._onTweenerRemove();
 	          }
 	        }
 	      },
@@ -4630,7 +4679,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.166.10',
+	  revision: '0.166.11',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),

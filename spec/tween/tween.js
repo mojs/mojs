@@ -5089,12 +5089,20 @@
         t.stop();
         return expect(t._state).toBe('stop');
       });
-      return it('should set isReversed to false', function() {
+      it('should set isReversed to false', function() {
         var t;
         t = new Tween;
         t._props.isReversed = true;
-        t.stop();
+        t.play().stop();
         return expect(t._props.isReversed).toBe(false);
+      });
+      return it('should return immediately if already stopped', function() {
+        var t;
+        t = new Tween;
+        t.stop();
+        t._props.isReversed = true;
+        t.stop();
+        return expect(t._props.isReversed).toBe(true);
       });
     });
     describe('pause method ->', function() {
@@ -6133,7 +6141,7 @@
         return expect(tw._props.onProgress.calls.count()).toBe(1);
       });
     });
-    return describe('_normPrevTimeForward method', function() {
+    describe('_normPrevTimeForward method', function() {
       return it('should return normalized _prevTimee', function() {
         var duration, p, tw;
         duration = 1000;
@@ -6144,6 +6152,35 @@
         tw._setStartTime();
         p = tw._props;
         return expect(tw._normPrevTimeForward()).toBe(p.startTime + tw._progressTime - p.delay);
+      });
+    });
+    describe('playback ->', function() {
+      return it('should set state to stop when finished', function(dfr) {
+        var duration, t;
+        duration = 50;
+        t = new Tween({
+          duration: duration
+        });
+        t.play();
+        return setTimeout(function() {
+          expect(t._state).toBe('stop');
+          return dfr();
+        }, 2 * duration);
+      });
+    });
+    return describe('_onTweenerFinish method', function() {
+      return it('should set _state to stop', function(dfr) {
+        var duration, tw;
+        duration = 50;
+        tw = new Tween({
+          duration: duration
+        });
+        tw.play();
+        return setTimeout(function() {
+          expect(tw._state).toBe('stop');
+          expect(tw._prevState).toBe('play');
+          return dfr();
+        }, 2 * duration);
       });
     });
   });

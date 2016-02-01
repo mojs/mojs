@@ -151,7 +151,7 @@
         expect(t.tweens.length).toBe(1);
         return expect(t.tweens[0]).toBe(t1);
       });
-      return it('should set _isRunning to false', function() {
+      it('should set _isRunning to false', function() {
         var t1, t2;
         t1 = new Tween;
         t2 = new Tween;
@@ -161,6 +161,15 @@
         t.remove(t1);
         expect(t1._isRunning).toBe(false);
         return expect(t2._isRunning).toBe(true);
+      });
+      return it('should call _onTweenerRemove method on each ', function() {
+        var t1;
+        t1 = new Tween;
+        t.add(t1);
+        expect(t.tweens.length).toBe(1);
+        spyOn(t1, '_onTweenerRemove');
+        t.remove(t1);
+        return expect(t1._onTweenerRemove).toHaveBeenCalled();
       });
     });
     describe('removeAll method ->', function() {
@@ -199,11 +208,10 @@
         expect(t.remove).toHaveBeenCalledWith(0);
         return expect(t.tweens[0]).not.toBeDefined();
       });
-      return it('should set tween\'s _prevTime to null if ended', function(dfr) {
+      it('should set tween\'s _prevTime to null if ended', function(dfr) {
         var startTime, tw;
         tw = new Tween({
-          duration: 100,
-          isIt: 1
+          duration: 100
         });
         tw._setStartTime();
         t.add(tw);
@@ -214,6 +222,21 @@
           expect(tw._prevTime).toBe(null);
           return dfr();
         }, 400);
+      });
+      return it('should call tween\'s _onTweenerFinish if ended', function(dfr) {
+        var duration, tw;
+        duration = 50;
+        tw = new Tween({
+          duration: duration
+        });
+        tw._setStartTime();
+        t.add(tw);
+        expect(t.tweens[0]).toBe(tw);
+        spyOn(tw, '_onTweenerFinish');
+        return setTimeout(function() {
+          expect(tw._onTweenerFinish).toHaveBeenCalled();
+          return dfr();
+        }, 2 * duration);
       });
     });
   });

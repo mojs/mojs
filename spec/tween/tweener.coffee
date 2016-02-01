@@ -111,6 +111,13 @@ describe 'Twenner ->', ->
       t.remove t1
       expect(t1._isRunning).toBe false
       expect(t2._isRunning).toBe true
+    it 'should call _onTweenerRemove method on each ', ->
+      t1 = new Tween
+      t.add t1
+      expect(t.tweens.length).toBe 1
+      spyOn t1, '_onTweenerRemove'
+      t.remove t1
+      expect(t1._onTweenerRemove).toHaveBeenCalled()
   describe 'removeAll method ->', ->
     it 'should remove all tweens', ->
       t1 = new Tween; t2 = new Tween
@@ -139,7 +146,7 @@ describe 'Twenner ->', ->
       expect(t.tweens[0]).not.toBeDefined()
 
     it 'should set tween\'s _prevTime to null if ended', (dfr)->
-      tw = new Tween duration: 100, isIt: 1
+      tw = new Tween duration: 100
       tw._setStartTime()
       t.add tw
       expect(t.tweens[0]).toBe tw
@@ -151,6 +158,16 @@ describe 'Twenner ->', ->
         dfr()
       , 400
 
+    it 'should call tween\'s _onTweenerFinish if ended', (dfr)->
+      duration = 50
+      tw = new Tween duration: duration
+      tw._setStartTime()
+      t.add tw
+      expect(t.tweens[0]).toBe tw
+      spyOn tw, '_onTweenerFinish'
 
-
+      setTimeout ->
+        expect(tw._onTweenerFinish).toHaveBeenCalled()
+        dfr()
+      , 2*duration
 

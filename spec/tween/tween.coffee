@@ -5381,8 +5381,14 @@ describe 'Tween ->', ->
     it 'should set isReversed to false',->
       t = new Tween
       t._props.isReversed = true
-      t.stop()
+      t.play().stop()
       expect(t._props.isReversed).toBe false
+    it 'should return immediately if already stopped',->
+      t = new Tween
+      t.stop()
+      t._props.isReversed = true
+      t.stop()
+      expect(t._props.isReversed).toBe true
 
   describe 'pause method ->', ->
     it 'should call t.remove method with self',->
@@ -6142,8 +6148,27 @@ describe 'Tween ->', ->
       expect(tw._normPrevTimeForward())
         .toBe p.startTime + tw._progressTime - p.delay
 
+  describe 'playback ->', ->
+    it 'should set state to stop when finished', (dfr)->
+      duration = 50
+      t = new Tween duration: duration
+      t.play()
+      setTimeout ->
+        expect(t._state).toBe 'stop'
+        dfr()
+      , 2*duration
 
+  describe '_onTweenerFinish method', ->
+    it 'should set _state to stop', (dfr)->
+      duration = 50
+      tw = new Tween duration: duration
+      tw.play()
 
+      setTimeout ->
+        expect(tw._state).toBe 'stop'
+        expect(tw._prevState).toBe 'play'
+        dfr()
+      , 2*duration
 
 
 

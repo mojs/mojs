@@ -87,6 +87,7 @@ var Tween = class Tween {
     @returns {Object} Self.
   */
   stop ( progress ) {
+    if ( this._state === 'stop' ) { return; }
     this._props.isReversed = false;
     this._removeFromTweener();
     // if progress passed - use it
@@ -368,8 +369,9 @@ var Tween = class Tween {
       return false;
     }
 
-    // ====== AFTER SKIPPED FRAME ======
+    // this._visualizeProgress(time);
 
+    // ====== AFTER SKIPPED FRAME ======
 
     // handle onProgress callback
     if  ( time >= startPoint && time <= p.endTime ) {
@@ -417,7 +419,6 @@ var Tween = class Tween {
     }
     this._isInActiveArea = false;
   }
-
   /*
     Method to handle tween's progress in active area.
     @private
@@ -793,41 +794,52 @@ var Tween = class Tween {
       this._props.onProgress.call(this, progress, time > this._prevTime );
     }
   }
+  /*
+    Method which is called when the tween is removed from tweener.
+    @private
+  */
+  _onTweenerRemove () {}
+  /*
+    Method which is called when the tween is removed
+    from tweener when finished.
+    @private
+  */
+  _onTweenerFinish () { this._setPlaybackState('stop'); }
 
-  _visualizeProgress(time) {
-    var str = '|',
-        procStr = ' ',
-        p = this._props,
-        proc = p.startTime - p.delay;
+  // _visualizeProgress(time) {
+  //   var str = '|',
+  //       procStr = ' ',
+  //       p = this._props,
+  //       proc = p.startTime - p.delay;
 
-    while ( proc < p.endTime ) {
-      if (p.delay > 0 ) {
-        var newProc = proc + p.delay;
-        if ( time > proc && time < newProc ) {
-          procStr += ' ^ ';
-        } else {
-          procStr += '   ';
-        }
-        proc = newProc;
-        str  += '---';
-      }
-      var newProc = proc + p.duration;
-      if ( time > proc && time < newProc ) {
-        procStr += '  ^   ';
-      } else if (time === proc) {
-        procStr += '^     ';
-      } else if (time === newProc) {
-        procStr += '    ^ ';
-      } else {
-        procStr += '      ';
-      }
-      proc = newProc;
-      str += '=====|';
-    }
+  //   while ( proc < p.endTime ) {
+  //     if (p.delay > 0 ) {
+  //       var newProc = proc + p.delay;
+  //       if ( time > proc && time < newProc ) {
+  //         procStr += ' ^ ';
+  //       } else {
+  //         procStr += '   ';
+  //       }
+  //       proc = newProc;
+  //       str  += '---';
+  //     }
+  //     var newProc = proc + p.duration;
+  //     if ( time > proc && time < newProc ) {
+  //       procStr += '  ^   ';
+  //     } else if (time === proc) {
+  //       procStr += '^     ';
+  //     } else if (time === newProc) {
+  //       procStr += '    ^ ';
+  //     } else {
+  //       procStr += '      ';
+  //     }
+  //     proc = newProc;
+  //     str += '=====|';
+  //   }
 
-    console.log(str);
-    console.log(procStr);
-  }
+  //   console.log(str);
+  //   console.log(procStr);
+  // }
 }
 
 export default Tween;
