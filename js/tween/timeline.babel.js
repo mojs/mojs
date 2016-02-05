@@ -98,11 +98,7 @@ class Timeline extends Tween {
     // if not yoyo option set, pass the previous time
     // otherwise, pass previous or next time regarding yoyo period.
     var coef = ( time > this._prevTime ) ? -1 : 1;
-    if ( this._props.yoyo ) {
-      if ( isYoyo ) {
-        coef *= -1;
-      }
-    }
+    if ( this._props.yoyo && isYoyo ) { coef *= -1; }
     var prevTimeToTimelines = timeToTimelines+coef;
     while(i--) {
       this._timelines[i]._update(

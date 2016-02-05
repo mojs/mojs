@@ -3139,6 +3139,13 @@
 
 	var easing = _interopRequire(__webpack_require__(10));
 
+
+
+
+	// TODO
+	//   - setProgress should clamp the value?
+	//   - add tween/timeline names
+
 	var Tween = (function () {
 	  /*
 	    Constructor of the class.
@@ -3528,6 +3535,12 @@
 	          time = this._playTime + p.speed * (time - this._playTime);
 	        }
 
+
+	        // // if end time(with precision issue fix)
+	        // // and already completed then return immediately
+	        // var isEnded = Math.abs(time - this._props.endTime) < .000000000001;
+	        // if ( isEnded && ( time < this._prevTime ) && ( this._isCompleted || this._isStarted ) ) { return; }
+
 	        // if parent is onEdge but not very start nor very end
 	        if (onEdge && wasYoyo != null) {
 	          var T = this._getPeriod(time),
@@ -3561,7 +3574,6 @@
 	          // where we are heading
 	          this._prevTime = null;
 	        }
-
 	        // if in active area and not ended - save progress time
 	        // for pause/play purposes.
 	        if (time > startPoint && time < p.endTime) {
@@ -3680,8 +3692,9 @@
 	          // so we need to decrement T and calculate "one" value regarding yoyo
 	          var isYoyo = props.yoyo && (T - 1) % 2 === 1;
 	          this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
-
-	          this._isRepeatCompleted = false;
+	          if (time > this._prevTime) {
+	            this._isRepeatCompleted = false;
+	          }
 	          this._repeatComplete(time, isYoyo);
 	          return this._complete(time, isYoyo);
 	        }
@@ -3797,7 +3810,6 @@
 	          }
 
 	          // swap progress and repeatStart based on direction
-	          // should be covered
 	          if (time > this._prevTime) {
 	            // if progress is equal 0 and progress grows
 	            if (proc === 0) {
@@ -3920,9 +3932,13 @@
 	      value: function GetPeriod(time) {
 	        var p = this._props,
 	            TTime = p.delay + p.duration,
-	            dTime = time - p.startTime + p.delay,
+	            dTime = p.delay + time - p.startTime,
 	            T = dTime / TTime,
-	            elapsed = dTime % TTime;
+
+	        // if time if equal to endTime we need to set the elapsed
+	        // time to 0 to fix the occasional precision js bug, which
+	        // causes 0 to be something like 1e-12
+	        elapsed = time < p.endTime ? dTime % TTime : 0;
 	        // If the latest period, round the result, otherwise floor it.
 	        // Basically we always can floor the result, but because of js
 	        // precision issues, sometimes the result is 2.99999998 which
@@ -3960,7 +3976,7 @@
 	        this.easedProgress = this._props.easing(this.progress);
 	        if (props.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
-	            // this.o.isIt && console.log('UPDATE', this.progress.toFixed(2), time > this._prevTime, isYoyo );
+	            // this.o.isIt1 && console.log('UPDATE', this.progress.toFixed(2), time > this._prevTime, isYoyo );
 	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime, isYoyo);
 	          }
 	        }
@@ -4096,7 +4112,7 @@
 	      */
 	      value: function Progress(progress, time) {
 	        if (this._props.onProgress != null && typeof this._props.onProgress === "function") {
-	          // this.o.isIt && console.log('PROGRESS', time > this._prevTime );
+	          // this.o.isIt && console.log('PROGRESS', progress.toFixed(2), time > this._prevTime );
 	          this._props.onProgress.call(this, progress, time > this._prevTime);
 	        }
 	      },
@@ -4385,10 +4401,8 @@
 	        // if not yoyo option set, pass the previous time
 	        // otherwise, pass previous or next time regarding yoyo period.
 	        var coef = time > this._prevTime ? -1 : 1;
-	        if (this._props.yoyo) {
-	          if (isYoyo) {
-	            coef *= -1;
-	          }
+	        if (this._props.yoyo && isYoyo) {
+	          coef *= -1;
 	        }
 	        var prevTimeToTimelines = timeToTimelines + coef;
 	        while (i--) {
@@ -4679,7 +4693,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.166.11',
+	  revision: '0.166.12',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),

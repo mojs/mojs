@@ -4211,7 +4211,15 @@
           repeat: 1,
           yoyo: true
         });
-        t = new Tween;
+        t = new Tween({
+          onStart: function(isForward, isYoyo) {},
+          onRepeatStart: function(isForward, isYoyo) {},
+          onComplete: function(isForward, isYoyo) {},
+          onRepeatComplete: function(isForward, isYoyo) {},
+          onFirstUpdate: function(isForward, isYoyo) {},
+          onProgress: function(p, isForward, isYoyo) {},
+          onUpdate: function(ep, p, isForward, isYoyo) {}
+        });
         tm.add(t);
         tm.setProgress(0);
         tm.setProgress(.1);
@@ -4222,7 +4230,7 @@
         tm.setProgress(.5);
         return expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true, false);
       });
-      return it('should call repeatComplete only once when in delay', function() {
+      it('should call repeatComplete only once when in delay', function() {
         var delay, duration, t;
         duration = 2000;
         delay = 1000;
@@ -4240,6 +4248,38 @@
         t.setProgress(.45);
         t.setProgress(.25);
         return expect(t._props.onRepeatComplete.calls.count()).toBe(2);
+      });
+      return it('should not call onComplete and onRepeatComplete on start', function() {
+        var et, st, tm, tw;
+        tm = new mojs.Timeline({
+          repeat: 1,
+          yoyo: true
+        });
+        tw = new mojs.Tween({
+          duration: 2000,
+          onStart: function(isForward, isYoyo) {},
+          onRepeatStart: function(isForward, isYoyo) {},
+          onComplete: function(isForward, isYoyo) {},
+          onRepeatComplete: function(isForward, isYoyo) {},
+          onFirstUpdate: function(isForward, isYoyo) {},
+          onProgress: function(p, isForward, isYoyo) {},
+          onUpdate: function(ep, p, isForward, isYoyo) {}
+        });
+        tm.add(tw);
+        tm._setStartTime();
+        st = tm._props.startTime;
+        et = tm._props.endTime;
+        tm._update(st);
+        tm._update(st + 1000);
+        tm._update(st + 2000);
+        tm._update(st + 3000);
+        tm._update(st + 3100);
+        tm._update(st + 3300);
+        spyOn(tw._props, 'onRepeatComplete');
+        spyOn(tw._props, 'onComplete');
+        tm._update(tm._props.endTime - .0000000000001);
+        expect(tw._props.onRepeatComplete).not.toHaveBeenCalled();
+        return expect(tw._props.onComplete).not.toHaveBeenCalled();
       });
     });
     describe('_getPeriod method ->', function() {
@@ -4313,7 +4353,7 @@
         timeShift = 3 * (duration + delay) - delay;
         return expect(t._getPeriod(t._props.startTime + timeShift + delay / 2)).toBe(3);
       });
-      return it('should round instead of floor if time >= endTime', function() {
+      it('should round instead of floor if time >= endTime', function() {
         var duration, t;
         duration = 50 + 3 / 2.123;
         t = new Tween({
@@ -4322,6 +4362,18 @@
         });
         t._setStartTime();
         return expect(t._getPeriod(t._props.startTime + 3 * duration)).toBe(3);
+      });
+      return it('should not fail because of precision error', function() {
+        var delay, duration, t;
+        duration = 500 + 4 / 10000.123;
+        delay = 200 + 4 / 10000.123;
+        t = new Tween({
+          repeat: 2,
+          duration: duration,
+          delay: delay
+        });
+        t._setStartTime();
+        return expect(t._getPeriod(t._props.endTime)).toBe(3);
       });
     });
     describe('onComplete callback ->', function() {

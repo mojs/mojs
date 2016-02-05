@@ -4766,8 +4766,15 @@ describe 'Tween ->', ->
 
   describe 'specific _update behaviour', ->
     it 'should call repeatComplete if immediately returned inside Timeline', ()->
-      tm = new Timeline repeat:  1, yoyo: true
+      tm = new Timeline repeat: 1, yoyo: true
       t = new Tween
+        onStart:(isForward, isYoyo)->
+        onRepeatStart:(isForward, isYoyo)->
+        onComplete:(isForward, isYoyo)->
+        onRepeatComplete:(isForward, isYoyo)->
+        onFirstUpdate:(isForward, isYoyo)->
+        onProgress:(p, isForward, isYoyo)->
+        onUpdate:(ep, p, isForward, isYoyo)->
       tm.add t
       tm.setProgress 0
       tm.setProgress .1
@@ -4790,6 +4797,36 @@ describe 'Tween ->', ->
       t.setProgress .45 # <-- error
       t.setProgress .25
       expect(t._props.onRepeatComplete.calls.count()).toBe 2
+
+    it 'should not call onComplete and onRepeatComplete on start', ->
+      tm = new mojs.Timeline repeat: 1, yoyo: true
+
+      tw = new mojs.Tween
+        duration: 2000
+        onStart:(isForward, isYoyo)->
+        onRepeatStart:(isForward, isYoyo)->
+        onComplete:(isForward, isYoyo)->
+        onRepeatComplete:(isForward, isYoyo)->
+        onFirstUpdate:(isForward, isYoyo)->
+        onProgress:(p, isForward, isYoyo)->
+        onUpdate:(ep, p, isForward, isYoyo)->
+
+      tm.add tw
+
+      tm._setStartTime()
+      st = tm._props.startTime
+      et = tm._props.endTime
+      tm._update st
+      tm._update st + 1000
+      tm._update st + 2000
+      tm._update st + 3000
+      tm._update st + 3100
+      tm._update st + 3300
+      spyOn tw._props, 'onRepeatComplete'
+      spyOn tw._props, 'onComplete'
+      tm._update tm._props.endTime - .0000000000001
+      expect(tw._props.onRepeatComplete).not.toHaveBeenCalled()
+      expect(tw._props.onComplete).not.toHaveBeenCalled()
       
   describe '_getPeriod method ->', ->
     it 'should get current period', ->
@@ -4864,6 +4901,13 @@ describe 'Tween ->', ->
       t = new Tween repeat: 2, duration: duration
       t._setStartTime()
       expect(t._getPeriod(t._props.startTime + 3*duration)).toBe 3
+
+    it 'should not fail because of precision error', ->
+      duration = (500 + 4/10000.123)
+      delay    = (200 + 4/10000.123)
+      t = new Tween repeat: 2, duration: duration, delay: delay
+      t._setStartTime()
+      expect(t._getPeriod(t._props.endTime)).toBe 3
 
   describe 'onComplete callback ->', ->
     it 'should be defined', ->

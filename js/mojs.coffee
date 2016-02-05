@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.166.11', isDebug: true
+  revision:   '0.166.12', isDebug: true
   helpers     : require './h'
   shapesMap   : require './shapes/shapesMap'
   Burst       : require './burst'
