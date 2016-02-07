@@ -179,6 +179,7 @@ class Timeline extends Tween {
   _vars() {
     this._timelines = [];
     super._vars();
+    this._name = 'Timeline';
   }
 }
 

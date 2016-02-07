@@ -10,6 +10,27 @@ describe 'Timeline ->', ->
     expect( Timeline.prototype instanceof Tween ).toBe true
     expect( Tween.isPrototypeOf( Timeline ) ).toBe true
 
+  describe 'name ->', ->
+    it 'should set self custom name', ->
+      name = 'Light timeline 1'
+      t = new Timeline name: name
+      expect(t._props.name).toBe name
+    it 'should make generic name if no one was specified', ->
+      t = new Timeline
+      expect(t._props.name).toBe 'Timeline 1'
+      t = new Timeline
+      expect(t._props.name).toBe 'Timeline 2'
+
+  describe 'constructor ->', ->
+    it 'should increment _name+s on tweener', ->
+      tweener['_Timelines'] = undefined;
+      t = new Timeline
+      expect(tweener['_Timelines']).toBe 1
+      t = new Timeline
+      expect(tweener['_Timelines']).toBe 2
+      t = new Timeline
+      expect(tweener['_Timelines']).toBe 3
+
   describe 'defaults ->', ->
     it 'should have defaults', ->
       t = new Timeline
@@ -47,6 +68,9 @@ describe 'Timeline ->', ->
       spyOn Timeline.prototype, '_vars'
       t._vars()
       expect(Timeline.prototype._vars).toHaveBeenCalled()
+    it 'should override Tween\'s name' , ->
+      t = new Timeline
+      expect(t._name).toBe 'Timeline'
 
   describe 'add method ->', ->
     it 'should add timeline',->

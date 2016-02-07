@@ -2,11 +2,6 @@
 import t from './tweener';
 import easing from '../easing/easing';
 
-
-// TODO
-//   - setProgress should clamp the value?
-//   - add tween/timeline names
-
 var Tween = class Tween {
   /*
     Method do declare defaults with this._defaults object.
@@ -33,6 +28,8 @@ var Tween = class Tween {
       yoyo:                   false,
       /* easing for the tween, could be any easing type [link to easing-types.md] */
       easing:                 'Linear.None',
+      /* custom tween's name */
+      name:                   null,
       /*
         onProgress callback runs before any other callback.
         @param {Number}   The entire, not eased, progress
@@ -195,11 +192,22 @@ var Tween = class Tween {
     Constructor of the class.
     @private
   */
-  constructor(o={}) {
+  constructor ( o = {} ) {
     this.o = o;
-    this._declareDefaults(); this._extendDefaults();
-    this._vars();
+    this._declareDefaults(); this._extendDefaults(); this._vars();
+    ( this._props.name == null ) && this._setSelfName();
     return this;
+  }
+  /*
+    Method to set self name to generic one.
+    @private
+  */
+  _setSelfName () {
+    var globalName = `_${this._name}s`;
+    // track amount of tweens globally
+    t[globalName] = ( t[globalName] == null ) ? 1 : ++t[globalName];
+    // and set generic tween's name  || Tween # ||
+    this._props.name = `${this._name} ${t[globalName]}`;
   }
   /*
     Method set playback state string.
@@ -215,13 +223,15 @@ var Tween = class Tween {
     Method to declare some vars.
     @private
   */
-  _vars() {
-    // this.h = h;
+  _vars () {
+
     this.progress = 0;
     this._prevTime = null;
     this._progressTime = 0;
     this._negativeShift = 0;
     this._state = 'stop';
+    this._name  = 'Tween';
+
     // if negative delay was specified,
     // save it to _negativeShift property and
     // reset it back to 0
@@ -251,10 +261,10 @@ var Tween = class Tween {
       if (Object.hasOwnProperty.call(this._defaults, key)) {
         var value = this._defaults[key];
         this._props[key] = (this.o[key] != null) ? this.o[key] : value;
-        this._props.easing = easing.parseEasing(this.o.easing || this._defaults.easing);
-        this.onUpdate     = this._props.onUpdate;
       }
     }
+    this._props.easing = easing.parseEasing(this.o.easing || this._defaults.easing);
+    this.onUpdate      = this._props.onUpdate;
   }
   /*
     Method for setting start and end time to props.
@@ -704,7 +714,7 @@ var Tween = class Tween {
     this.easedProgress = this._props.easing(this.progress);
     if ( props.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-        // this.o.isIt1 && console.log('UPDATE', this.progress.toFixed(2), time > this._prevTime, isYoyo );
+        this.o.isIt && console.log('UPDATE', this.progress.toFixed(2), time > this._prevTime, isYoyo );
         this.onUpdate( this.easedProgress, this.progress, time > this._prevTime, isYoyo );
       }
     }

@@ -5,9 +5,7 @@ import h from '../h';
 class Tweener {
   constructor() { this._vars(); return this; }
   
-  _vars () {
-    this.tweens = []; this._loop = h.bind(this._loop, this);
-  }
+  _vars () { this.tweens = []; this._loop = h.bind(this._loop, this); }
   /*
     Main animation loop. Should have only one concurrent loop.
     @private

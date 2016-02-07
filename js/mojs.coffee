@@ -1,6 +1,6 @@
 
 window.mojs =
-  revision:   '0.166.12', isDebug: true
+  revision:   '0.166.13', isDebug: true
   helpers     : require './h'
   shapesMap   : require './shapes/shapesMap'
   Burst       : require './burst'
@@ -24,4 +24,4 @@ if (typeof define is "function") and define.amd
 if (typeof module is "object") and (typeof module.exports is "object")
   module.exports = mojs
 # ### istanbul ignore next ###
-# return window?.mojs = mojs
+# window?.mojs = mojs

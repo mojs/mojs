@@ -3139,13 +3139,6 @@
 
 	var easing = _interopRequire(__webpack_require__(10));
 
-
-
-
-	// TODO
-	//   - setProgress should clamp the value?
-	//   - add tween/timeline names
-
 	var Tween = (function () {
 	  /*
 	    Constructor of the class.
@@ -3154,8 +3147,8 @@
 	  function Tween() {
 	    var o = arguments[0] === undefined ? {} : arguments[0];
 	    this.o = o;
-	    this._declareDefaults();this._extendDefaults();
-	    this._vars();
+	    this._declareDefaults();this._extendDefaults();this._vars();
+	    this._props.name == null && this._setSelfName();
 	    return this;
 	  }
 
@@ -3186,6 +3179,8 @@
 	          yoyo: false,
 	          /* easing for the tween, could be any easing type [link to easing-types.md] */
 	          easing: "Linear.None",
+	          /* custom tween's name */
+	          name: null,
 	          /*
 	            onProgress callback runs before any other callback.
 	            @param {Number}   The entire, not eased, progress
@@ -3392,6 +3387,22 @@
 	      enumerable: true,
 	      configurable: true
 	    },
+	    _setSelfName: {
+	      /*
+	        Method to set self name to generic one.
+	        @private
+	      */
+	      value: function SetSelfName() {
+	        var globalName = "_" + this._name + "s";
+	        // track amount of tweens globally
+	        t[globalName] = t[globalName] == null ? 1 : ++t[globalName];
+	        // and set generic tween's name  || Tween # ||
+	        this._props.name = "" + this._name + " " + t[globalName];
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
 	    _setPlaybackState: {
 	      /*
 	        Method set playback state string.
@@ -3413,12 +3424,13 @@
 	        @private
 	      */
 	      value: function Vars() {
-	        // this.h = h;
 	        this.progress = 0;
 	        this._prevTime = null;
 	        this._progressTime = 0;
 	        this._negativeShift = 0;
 	        this._state = "stop";
+	        this._name = "Tween";
+
 	        // if negative delay was specified,
 	        // save it to _negativeShift property and
 	        // reset it back to 0
@@ -3458,10 +3470,10 @@
 	          if (Object.hasOwnProperty.call(this._defaults, key)) {
 	            var value = this._defaults[key];
 	            this._props[key] = this.o[key] != null ? this.o[key] : value;
-	            this._props.easing = easing.parseEasing(this.o.easing || this._defaults.easing);
-	            this.onUpdate = this._props.onUpdate;
 	          }
 	        }
+	        this._props.easing = easing.parseEasing(this.o.easing || this._defaults.easing);
+	        this.onUpdate = this._props.onUpdate;
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -3976,7 +3988,7 @@
 	        this.easedProgress = this._props.easing(this.progress);
 	        if (props.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
 	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
-	            // this.o.isIt1 && console.log('UPDATE', this.progress.toFixed(2), time > this._prevTime, isYoyo );
+	            this.o.isIt && console.log("UPDATE", this.progress.toFixed(2), time > this._prevTime, isYoyo);
 	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime, isYoyo);
 	          }
 	        }
@@ -4513,6 +4525,7 @@
 	      value: function Vars() {
 	        this._timelines = [];
 	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_vars", this).call(this);
+	        this._name = "Timeline";
 	      },
 	      writable: true,
 	      enumerable: true,
@@ -4693,7 +4706,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.166.12',
+	  revision: '0.166.13',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),

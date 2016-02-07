@@ -5,6 +5,27 @@ h        = window.mojs.h
 tweener  = window.mojs.tweener
 
 describe 'Tween ->', ->
+  describe 'name ->', ->
+    it 'should set self custom name', ->
+      tweener['_Tweens'] = undefined;
+      name = 'Light tween 1'
+      t = new Tween name: name
+      expect(t._props.name).toBe name
+    it 'should make generic name if no one was specified', ->
+      t = new Tween
+      expect(t._props.name).toBe 'Tween 1'
+      t = new Tween
+      expect(t._props.name).toBe 'Tween 2'
+
+  describe 'constructor ->', ->
+    it 'should increment _name+s on tweener', ->
+      tweener['_Tweens'] = undefined;
+      t = new Tween
+      expect(tweener['_Tweens']).toBe 1
+      t = new Tween
+      expect(tweener['_Tweens']).toBe 2
+      t = new Tween
+      expect(tweener['_Tweens']).toBe 3
   describe 'defaults ->', ->
     it 'should have vars', ->
       t = new Tween
@@ -13,12 +34,15 @@ describe 'Tween ->', ->
       expect(t._progressTime) .toBe 0
       expect(t.progress)      .toBe 0
       expect(t._state)        .toBe 'stop'
+      expect(t._name)         .toBe 'Tween'
+      # expect(t._globalName)   .toBe '_Tweens'
     it 'should have defaults', ->
       t = new Tween
       expect(t._defaults.duration).toBe  600
       expect(t._defaults.delay).toBe     0
       expect(t._defaults.yoyo).toBe      false
       expect(t._defaults.speed).toBe     1
+      expect(t._defaults.name).toBe      null
       expect(t._defaults.onStart).toBeDefined()
       expect(t._defaults.onRepeatStart).toBeDefined()
       expect(t._defaults.onFirstUpdate).toBeDefined()

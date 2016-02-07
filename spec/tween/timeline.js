@@ -19,6 +19,35 @@
       expect(Timeline.prototype instanceof Tween).toBe(true);
       return expect(Tween.isPrototypeOf(Timeline)).toBe(true);
     });
+    describe('name ->', function() {
+      it('should set self custom name', function() {
+        var name, t;
+        name = 'Light timeline 1';
+        t = new Timeline({
+          name: name
+        });
+        return expect(t._props.name).toBe(name);
+      });
+      return it('should make generic name if no one was specified', function() {
+        var t;
+        t = new Timeline;
+        expect(t._props.name).toBe('Timeline 1');
+        t = new Timeline;
+        return expect(t._props.name).toBe('Timeline 2');
+      });
+    });
+    describe('constructor ->', function() {
+      return it('should increment _name+s on tweener', function() {
+        var t;
+        tweener['_Timelines'] = void 0;
+        t = new Timeline;
+        expect(tweener['_Timelines']).toBe(1);
+        t = new Timeline;
+        expect(tweener['_Timelines']).toBe(2);
+        t = new Timeline;
+        return expect(tweener['_Timelines']).toBe(3);
+      });
+    });
     describe('defaults ->', function() {
       return it('should have defaults', function() {
         var t;
@@ -61,12 +90,17 @@
         expect(h.isArray(t._timelines)).toBe(true);
         return expect(t._timelines.length).toBe(0);
       });
-      return it('should call super _vars function', function() {
+      it('should call super _vars function', function() {
         var t;
         t = new Timeline;
         spyOn(Timeline.prototype, '_vars');
         t._vars();
         return expect(Timeline.prototype._vars).toHaveBeenCalled();
+      });
+      return it('should override Tween\'s name', function() {
+        var t;
+        t = new Timeline;
+        return expect(t._name).toBe('Timeline');
       });
     });
     describe('add method ->', function() {

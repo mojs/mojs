@@ -12,6 +12,36 @@
   tweener = window.mojs.tweener;
 
   describe('Tween ->', function() {
+    describe('name ->', function() {
+      it('should set self custom name', function() {
+        var name, t;
+        tweener['_Tweens'] = void 0;
+        name = 'Light tween 1';
+        t = new Tween({
+          name: name
+        });
+        return expect(t._props.name).toBe(name);
+      });
+      return it('should make generic name if no one was specified', function() {
+        var t;
+        t = new Tween;
+        expect(t._props.name).toBe('Tween 1');
+        t = new Tween;
+        return expect(t._props.name).toBe('Tween 2');
+      });
+    });
+    describe('constructor ->', function() {
+      return it('should increment _name+s on tweener', function() {
+        var t;
+        tweener['_Tweens'] = void 0;
+        t = new Tween;
+        expect(tweener['_Tweens']).toBe(1);
+        t = new Tween;
+        expect(tweener['_Tweens']).toBe(2);
+        t = new Tween;
+        return expect(tweener['_Tweens']).toBe(3);
+      });
+    });
     describe('defaults ->', function() {
       it('should have vars', function() {
         var t;
@@ -20,7 +50,8 @@
         expect(t._negativeShift).toBe(0);
         expect(t._progressTime).toBe(0);
         expect(t.progress).toBe(0);
-        return expect(t._state).toBe('stop');
+        expect(t._state).toBe('stop');
+        return expect(t._name).toBe('Tween');
       });
       it('should have defaults', function() {
         var t;
@@ -29,6 +60,7 @@
         expect(t._defaults.delay).toBe(0);
         expect(t._defaults.yoyo).toBe(false);
         expect(t._defaults.speed).toBe(1);
+        expect(t._defaults.name).toBe(null);
         expect(t._defaults.onStart).toBeDefined();
         expect(t._defaults.onRepeatStart).toBeDefined();
         expect(t._defaults.onFirstUpdate).toBeDefined();
