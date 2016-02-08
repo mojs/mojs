@@ -29,7 +29,9 @@
         return expect(t._props.name).toBe(name);
       });
       it('should make generic name if no one was specified', function() {
-        var t;
+        var nameBase, t;
+        nameBase = 'Timeline';
+        tweener["_" + nameBase + "s"] = void 0;
         t = new Timeline;
         expect(t._props.name).toBe('Timeline 1');
         t = new Timeline;
@@ -288,8 +290,7 @@
       it('should call _update method on every timeline forward yoyo', function() {
         var progress, t, time, tw1, tw2;
         t = new Timeline({
-          yoyo: true,
-          isIt: 1
+          yoyo: true
         });
         tw1 = new Tween;
         tw2 = new Tween;
@@ -307,8 +308,7 @@
       return it('should call _update method on every timeline backward yoyo', function() {
         var progress, t, time, tw1, tw2;
         t = new Timeline({
-          yoyo: true,
-          isIt: 1
+          yoyo: true
         });
         tw1 = new Tween;
         tw2 = new Tween;
@@ -427,6 +427,20 @@
         t.append(new Tween);
         expect(t._timelines.length).toBe(1);
         return expect(t._timelines[0] instanceof Tween).toBe(true);
+      });
+      it('should add module\'s timeline', function() {
+        var t;
+        t = new Timeline;
+        t.add(new Transit);
+        expect(t._timelines.length).toBe(1);
+        return expect(t._timelines[0] instanceof Timeline).toBe(true);
+      });
+      it('should append module\'s timeline', function() {
+        var t;
+        t = new Timeline;
+        t.append(new Transit);
+        expect(t._timelines.length).toBe(1);
+        return expect(t._timelines[0] instanceof Timeline).toBe(true);
       });
       it('should call _calcDimentions method', function() {
         var t;

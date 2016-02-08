@@ -96,7 +96,7 @@ class Burst extends Transit
           option.angle = @getBitAngle option.angle, len
 
         @transits[len].tuneNewOption option, true
-      @timeline.recalcDuration()
+      @timeline._recalcTotalDuration()
     if @props.randomAngle or @props.randomRadius
       len = @transits.length
       while(len--)
@@ -197,7 +197,7 @@ class Burst extends Transit
     @props.center = @props.size/2
     @addBitOptions()
 
-  getOption:(i)->
+  getOption: (i)->
     option = {}; keys = Object.keys(@childDefaults); len = keys.length
     while(len--)
       key = keys[len]

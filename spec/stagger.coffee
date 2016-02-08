@@ -105,7 +105,7 @@ describe 'Stagger ->', ->
       options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
       s = new Stagger options
       s.init options, mojs.MotionPath
-      expect(s.timeline.timelines.length).toBe 2
+      expect(s.timeline._timelines.length).toBe 2
     it 'should pass isRunLess = true', ->
       div = document.createElement 'div'
       options = el: [div, div], path: 'M0,0 L100,100', delay: '200'
@@ -152,7 +152,10 @@ describe 'Stagger ->', ->
 
   describe 'quantifier option ->', ->
     it 'should be passed to the _getChildQuantity method', ->
-      s = new Stagger delay: [100, 200, 300], quantifier: 2
+      s = new Stagger
+        delay:  [100, 200, 300], quantifier: 2
+        el:     document.createElement 'div'
+        path:   'M0,0 L100,100'
       expect(s.childModules[0].o.delay).toBe 100
       expect(s.childModules[1].o.delay).toBe 200
       expect(s.childModules[2]).not.toBeDefined()

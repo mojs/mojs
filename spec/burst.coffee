@@ -284,6 +284,7 @@ describe 'Burst ->', ->
       expect(option0.onUpdate)  .toBe null
       expect(option0.onStart)   .toBe null
       expect(option0.onComplete).toBe null
+    # not needed
     # it 'should recieve options object ->', ->
     #   burst = new Burst
     #     childOptions: radius: [ { 20: 50}, 20, '500' ]
@@ -520,13 +521,13 @@ describe 'Burst ->', ->
     it 'should run onComplete callback', (dfr)->
       t.removeAll()
       burst = new Burst
-        duration: 40, onComplete:-> expect(true).toBe(true); dfr()
+        duration: 100, onComplete:-> expect(true).toBe(true); dfr()
 
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
       isRightScope = false
       burst = new Burst
-        duration: 20, onComplete:-> isRightScope = @ instanceof Burst
+        duration: 100, onComplete:-> isRightScope = @ instanceof Burst
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
       , 300
@@ -536,7 +537,7 @@ describe 'Burst ->', ->
     it 'should run onUpdate callback', (dfr)->
       burst = new Burst
         isRunLess: true
-        duration: 20
+        duration: 100
         onUpdate:->
       spyOn burst, 'onUpdate'
       burst.run()
@@ -545,9 +546,9 @@ describe 'Burst ->', ->
       , 300
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
-      isRightScope = false
+      isRightScope = null
       burst = new Burst
-        duration: 20, onUpdate:-> isRightScope = @ instanceof Burst
+        duration: 100, onUpdate:-> isRightScope = @ instanceof Burst
       burst.run()
       setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
   
@@ -602,13 +603,13 @@ describe 'Burst ->', ->
       burst.run duration: 500, childOptions: duration: newDuration
       expect(burst.o.childOptions.fill)    .toBe 'deeppink'
       expect(burst.o.childOptions.duration).toBe newDuration
-    it 'should call recalcDuration on tween', ->
+    it 'should call _recalcTotalDuration on tween', ->
       burst = new Burst
         duration: 400, childOptions: fill: 'deeppink'
       newDuration = [null, 1000, null]
-      spyOn burst.timeline, 'recalcDuration'
+      spyOn burst.timeline, '_recalcTotalDuration'
       burst.run duration: 500, childOptions: duration: newDuration
-      expect(burst.timeline.recalcDuration).toHaveBeenCalled()
+      expect(burst.timeline._recalcTotalDuration).toHaveBeenCalled()
     it 'should start timeline', ->
       burst = new Burst
       spyOn burst, 'startTween'

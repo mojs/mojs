@@ -447,7 +447,8 @@ class MotionPath
           blur: {x: 0, y: 0}, offset: {x: 0, y: 0}
         @props.onComplete?.apply @
       onUpdate:  (p)=> @setProgress(p)
-      onFirstUpdateBackward:=> @history.length > 1 and @tuneOptions @history[0]
+      onFirstUpdate:(isForward, isYoyo)=>
+        if !isForward then @history.length > 1 and @tuneOptions @history[0]
     @timeline = new Timeline# onUpdate:(p)=> @o.onChainUpdate?(p)
     @timeline.add(@tween)
     !@props.isRunLess and @startTween()

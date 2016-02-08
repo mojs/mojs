@@ -175,7 +175,7 @@
         };
         s = new Stagger(options);
         s.init(options, mojs.MotionPath);
-        return expect(s.timeline.timelines.length).toBe(2);
+        return expect(s.timeline._timelines.length).toBe(2);
       });
       it('should pass isRunLess = true', function() {
         var div, options, s;
@@ -265,7 +265,9 @@
         var s;
         s = new Stagger({
           delay: [100, 200, 300],
-          quantifier: 2
+          quantifier: 2,
+          el: document.createElement('div'),
+          path: 'M0,0 L100,100'
         });
         expect(s.childModules[0].o.delay).toBe(100);
         expect(s.childModules[1].o.delay).toBe(200);

@@ -16,6 +16,8 @@ describe 'Timeline ->', ->
       t = new Timeline name: name
       expect(t._props.name).toBe name
     it 'should make generic name if no one was specified', ->
+      nameBase = 'Timeline'
+      tweener["_#{nameBase}s"] = undefined;
       t = new Timeline
       expect(t._props.name).toBe 'Timeline 1'
       t = new Timeline
@@ -188,7 +190,7 @@ describe 'Timeline ->', ->
       expect(tw2._update).toHaveBeenCalledWith time, time+1, undefined, 0
 
     it 'should call _update method on every timeline forward yoyo', ->
-      t = new Timeline yoyo: true, isIt: 1
+      t = new Timeline yoyo: true
       tw1 = new Tween
       tw2 = new Tween
       t.add tw1, tw2
@@ -201,7 +203,7 @@ describe 'Timeline ->', ->
       expect(tw2._update).toHaveBeenCalledWith time, time-1, undefined, 0
 
     it 'should call _update method on every timeline backward yoyo', ->
-      t = new Timeline yoyo: true, isIt: 1
+      t = new Timeline yoyo: true
       tw1 = new Tween
       tw2 = new Tween
       t.add tw1, tw2
@@ -285,6 +287,16 @@ describe 'Timeline ->', ->
       t.append new Tween
       expect(t._timelines.length).toBe 1
       expect(t._timelines[0] instanceof Tween).toBe true
+    it 'should add module\'s timeline',->
+      t = new Timeline
+      t.add new Transit
+      expect(t._timelines.length).toBe 1
+      expect(t._timelines[0] instanceof Timeline).toBe true
+    it 'should append module\'s timeline',->
+      t = new Timeline
+      t.append new Transit
+      expect(t._timelines.length).toBe 1
+      expect(t._timelines[0] instanceof Timeline).toBe true
     it 'should call _calcDimentions method',->
       t = new Timeline
       spyOn t, '_calcDimentions'

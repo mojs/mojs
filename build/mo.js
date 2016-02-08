@@ -408,7 +408,7 @@
 	    }
 	  };
 
-	  Helpers.prototype.setPrefixedStyle = function(el, name, value, isIt) {
+	  Helpers.prototype.setPrefixedStyle = function(el, name, value) {
 	    if (name.match(/transform/gim)) {
 	      el.style["" + name] = value;
 	      return el.style["" + this.prefix.css + name] = value;
@@ -1025,7 +1025,7 @@
 	        }
 	        this.transits[len].tuneNewOption(option, true);
 	      }
-	      this.timeline.recalcDuration();
+	      this.timeline._recalcTotalDuration();
 	    }
 	    if (this.props.randomAngle || this.props.randomRadius) {
 	      len = this.transits.length;
@@ -1794,22 +1794,21 @@
 	        };
 	      })(this),
 	      onStart: (function(_this) {
-	        return function() {
+	        return function(isForward, isYoyo) {
 	          var ref;
-	          _this.show();
-	          return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
+	          if (isForward) {
+	            _this.show();
+	          } else {
+	            !_this.o.isShowInit && _this.hide();
+	          }
+	          return (ref = _this.props.onStart) != null ? ref.apply(_this, arguments) : void 0;
 	        };
 	      })(this),
-	      onFirstUpdateBackward: (function(_this) {
-	        return function() {
-	          return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
-	        };
-	      })(this),
-	      onReverseComplete: (function(_this) {
-	        return function() {
-	          var ref;
-	          !_this.o.isShowInit && _this.hide();
-	          return (ref = _this.props.onReverseComplete) != null ? ref.apply(_this) : void 0;
+	      onFirstUpdate: (function(_this) {
+	        return function(isForward, isYoyo) {
+	          if (!isForward) {
+	            return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
+	          }
 	        };
 	      })(this)
 	    });
@@ -2208,7 +2207,7 @@
 	  };
 
 	  Spriter.prototype.run = function(o) {
-	    return this._timeline.play();
+	    return this.timeline.play();
 	  };
 
 	  Spriter.prototype._extendDefaults = function() {
@@ -2251,15 +2250,15 @@
 	        };
 	      })(this)
 	    });
-	    this._timeline = new Timeline;
-	    this._timeline.add(this._tween);
+	    this.timeline = new Timeline;
+	    this.timeline.add(this._tween);
 	    return !this._props.isRunLess && this._startTween();
 	  };
 
 	  Spriter.prototype._startTween = function() {
 	    return setTimeout(((function(_this) {
 	      return function() {
-	        return _this._timeline.play();
+	        return _this.timeline.play();
 	      };
 	    })(this)), 1);
 	  };
@@ -2576,9 +2575,11 @@
 	          return _this.setProgress(p);
 	        };
 	      })(this),
-	      onFirstUpdateBackward: (function(_this) {
-	        return function() {
-	          return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
+	      onFirstUpdate: (function(_this) {
+	        return function(isForward, isYoyo) {
+	          if (!isForward) {
+	            return _this.history.length > 1 && _this.tuneOptions(_this.history[0]);
+	          }
 	        };
 	      })(this)
 	    });
@@ -4340,6 +4341,11 @@
 	        @param {Number} Shift time.
 	      */
 	      value: function AppendTimeline(timeline, index, time) {
+	        // if timeline is a module with timeline property then extract it
+	        if (timeline.timeline instanceof Timeline) {
+	          timeline = timeline.timeline;
+	        }
+
 	        var shift = time != null ? time : this._props.duration;
 	        shift += timeline._props.shiftTime || 0;
 	        timeline.index = index;this._pushTimeline(timeline, shift);
@@ -4427,6 +4433,7 @@
 	        @param {Object} Tween or Timeline to calculate.
 	      */
 	      value: function RecalcDuration(timeline) {
+	        !timeline._props && console.log(timeline);
 	        var p = timeline._props,
 	            speedCoef = p.speed ? 1 / p.speed : 1,
 	            timelineTime = speedCoef * p.repeatTime + (p.shiftTime || 0);
@@ -4453,6 +4460,7 @@
 	      configurable: true
 	    },
 	    _setStartTime: {
+
 	      /*
 	        Method set start and end times.
 	        @private

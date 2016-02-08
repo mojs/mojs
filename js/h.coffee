@@ -152,7 +152,7 @@ class Helpers
   clamp:(value, min, max)->
     if value < min then min else if value > max then max else value
     # Math.min Math.max(value, min), max
-  setPrefixedStyle:(el, name, value, isIt)->
+  setPrefixedStyle:(el, name, value)->
     if name.match /transform/gim
       el.style["#{name}"] = value
       el.style["#{@prefix.css}#{name}"] = value

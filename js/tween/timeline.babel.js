@@ -9,7 +9,7 @@ class Timeline extends Tween {
     @param {Object, Array} Tween/Timeline or an array of such.
     @returns {Object} Self.
   */
-  add(...args) {
+  add (...args) {
     this._pushTimelineArray(args);
     this._calcDimentions();
     return this;
@@ -22,7 +22,7 @@ class Timeline extends Tween {
     @param {Object, Array} Tween/Timeline to append or array of such.
     @returns {Object} Self.
   */
-  append(...timeline) {
+  append (...timeline) {
     for (var tm of timeline) {
       if (h.isArray(tm)) { this._appendTimelineArray(tm); }
       else { this._appendTimeline(tm, this._timelines.length); }
@@ -49,7 +49,10 @@ class Timeline extends Tween {
     @param {Number} Index of the append.
     @param {Number} Shift time.
   */
-  _appendTimeline(timeline, index, time) {
+  _appendTimeline (timeline, index, time) {
+    // if timeline is a module with timeline property then extract it
+    if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
+
     var shift = (time != null) ? time : this._props.duration;
     shift    += timeline._props.shiftTime || 0;
     timeline.index = index; this._pushTimeline(timeline, shift);
@@ -59,7 +62,7 @@ class Timeline extends Tween {
     @private
     @param {Array} Array of Tweens/Timelines.
   */
-  _pushTimelineArray(array) {
+  _pushTimelineArray (array) {
     for (var i = 0; i < array.length; i++) {
       var tm = array[i];
       // recursive push to handle arrays of arrays
@@ -75,7 +78,7 @@ class Timeline extends Tween {
     @param {Number} Number of milliseconds to shift the start time
                     of the Tween/Timeline.
   */
-  _pushTimeline(timeline, shift) {
+  _pushTimeline (timeline, shift) {
     // if timeline is a module with timeline property then extract it
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
     // add self delay to the timeline
@@ -116,6 +119,7 @@ class Timeline extends Tween {
     @param {Object} Tween or Timeline to calculate.
   */
   _recalcDuration(timeline) {
+    !timeline._props && console.log(timeline)
     var p             = timeline._props,
         speedCoef     = ( p.speed ) ? (1/p.speed) : 1,
         timelineTime  = speedCoef*p.repeatTime + (p.shiftTime || 0);
@@ -130,6 +134,7 @@ class Timeline extends Tween {
     this._props.duration = 0;
     while(i--) { this._recalcDuration(this._timelines[i]); }
   }
+  
   /*
     Method set start and end times.
     @private

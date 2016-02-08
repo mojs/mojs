@@ -367,7 +367,7 @@
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 5,
+            duration: 100,
             onComplete: function() {
               return isCompleted = true;
             }
@@ -383,7 +383,7 @@
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 5,
+            duration: 100,
             onComplete: function() {
               return isRightScope = this instanceof MotionPath;
             }
@@ -401,7 +401,7 @@
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 5,
+            duration: 100,
             onUpdate: function() {
               return isOnUpdate = true;
             }
@@ -417,7 +417,7 @@
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 5,
+            duration: 100,
             onUpdate: function(progress) {
               if (progress != null) {
                 return isOnUpdate = true;
@@ -435,7 +435,7 @@
           mp = new MotionPath({
             path: coords,
             el: div,
-            duration: 5,
+            duration: 100,
             onUpdate: function() {
               return isRightScope = this instanceof MotionPath;
             }
@@ -462,6 +462,7 @@
               return angle = o.angle;
             }
           });
+          mp.timeline.setProgress(.45);
           mp.timeline.setProgress(.5);
           expect(progress.toFixed(1)).toBe('0.5');
           expect(x).toBe(50);
@@ -1585,7 +1586,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.timeline.timelines[1].props.shiftTime).toBe(2100);
+        return expect(mp.timeline._timelines[1]._props.shiftTime).toBe(2100);
       });
       it('should not copy previous callbacks', function() {
         var onUpdate;
@@ -1602,6 +1603,7 @@
           pathEnd: 1,
           delay: 0
         });
+        mp.timeline.setProgress(.74);
         mp.timeline.setProgress(.75);
         expect(mp.history[1].onUpdate).not.toBeDefined();
         return expect(mp.props.onUpdate).not.toBeDefined();
@@ -1637,9 +1639,9 @@
           pathStart: .5,
           pathEnd: 1
         });
-        expect(mp.timeline.timelines.length).toBe(2);
-        expect(mp.timeline.timelines[1].o.duration).toBe(2000);
-        return expect(mp.timeline.timelines[1].o.onFirstUpdate).toBeDefined();
+        expect(mp.timeline._timelines.length).toBe(2);
+        expect(mp.timeline._timelines[1].o.duration).toBe(2000);
+        return expect(mp.timeline._timelines[1].o.onFirstUpdate).toBeDefined();
       });
       it('should add isChained option to the new timeline', function() {
         mp = new MotionPath({
@@ -1652,7 +1654,7 @@
           pathStart: .5,
           pathEnd: 1
         });
-        return expect(mp.timeline.timelines[1].o.isChained).toBe(true);
+        return expect(mp.timeline._timelines[1].o.isChained).toBe(true);
       });
       return it('should not add isChained option if delay', function() {
         mp = new MotionPath({
@@ -1666,7 +1668,7 @@
           pathEnd: 1,
           delay: 100
         });
-        return expect(mp.timeline.timelines[1].o.isChained).toBe(false);
+        return expect(mp.timeline._timelines[1].o.isChained).toBe(false);
       });
     });
     describe('tuneOptions ->', function() {
@@ -1703,13 +1705,13 @@
       });
     });
     describe('createTween method', function() {
-      return it('should bind the onFirstUpdateBackward metod', function() {
+      return it('should bind the onFirstUpdate metod', function() {
         var type;
         mp = new MotionPath({
           path: coords,
           el: document.createElement('div')
         });
-        type = typeof mp.timeline.timelines[0].o.onFirstUpdateBackward;
+        type = typeof mp.timeline._timelines[0].o.onFirstUpdate;
         return expect(type).toBe('function');
       });
     });

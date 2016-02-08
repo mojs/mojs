@@ -833,7 +833,7 @@
         var burst;
         t.removeAll();
         return burst = new Burst({
-          duration: 40,
+          duration: 100,
           onComplete: function() {
             expect(true).toBe(true);
             return dfr();
@@ -845,7 +845,7 @@
         t.removeAll();
         isRightScope = false;
         burst = new Burst({
-          duration: 20,
+          duration: 100,
           onComplete: function() {
             return isRightScope = this instanceof Burst;
           }
@@ -862,7 +862,7 @@
         var burst;
         burst = new Burst({
           isRunLess: true,
-          duration: 20,
+          duration: 100,
           onUpdate: function() {}
         });
         spyOn(burst, 'onUpdate');
@@ -875,9 +875,9 @@
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
         t.removeAll();
-        isRightScope = false;
+        isRightScope = null;
         burst = new Burst({
-          duration: 20,
+          duration: 100,
           onUpdate: function() {
             return isRightScope = this instanceof Burst;
           }
@@ -974,7 +974,7 @@
         expect(burst.o.childOptions.fill).toBe('deeppink');
         return expect(burst.o.childOptions.duration).toBe(newDuration);
       });
-      it('should call recalcDuration on tween', function() {
+      it('should call _recalcTotalDuration on tween', function() {
         var burst, newDuration;
         burst = new Burst({
           duration: 400,
@@ -983,14 +983,14 @@
           }
         });
         newDuration = [null, 1000, null];
-        spyOn(burst.timeline, 'recalcDuration');
+        spyOn(burst.timeline, '_recalcTotalDuration');
         burst.run({
           duration: 500,
           childOptions: {
             duration: newDuration
           }
         });
-        return expect(burst.timeline.recalcDuration).toHaveBeenCalled();
+        return expect(burst.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
       it('should start timeline', function() {
         var burst;

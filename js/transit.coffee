@@ -181,7 +181,7 @@ class Transit extends Bit
     @bit = new bitClass ctx: @ctx, el: @o.bit, isDrawLess: true
     if @isForeign or @isForeignBit then @el = @bit.el
 
-  setProgress:(progress, isShow)->
+  setProgress: (progress, isShow)->
     if !isShow then @show(); @onUpdate?(progress)
     @progress = if progress < 0 or !progress then 0
     else if progress > 1 then 1 else progress
@@ -362,11 +362,13 @@ class Transit extends Bit
       yoyo:     @props.yoyo
       easing:   @props.easing
       onUpdate: (p)=> @setProgress p
-      onStart:=> @show(); @props.onStart?.apply @
-      onFirstUpdateBackward:=>
-        @history.length > 1 and @tuneOptions @history[0]
-      onReverseComplete:=>
-        !@o.isShowInit and @hide(); @props.onReverseComplete?.apply @
+      onStart:(isForward, isYoyo)=>
+        if (isForward) then @show()
+        else !@o.isShowInit and @hide()
+        @props.onStart?.apply @, arguments
+      onFirstUpdate:(isForward, isYoyo)=>
+        # on first update backward tune new then options
+        if !isForward then @history.length > 1 and @tuneOptions @history[0]
 
   run:(o)->
     @runCount++

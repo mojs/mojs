@@ -281,7 +281,7 @@ describe 'MotionPath ->', ->
         mp = new MotionPath
           path: coords
           el: div
-          duration: 5
+          duration: 100
           onComplete:-> isCompleted = true
         setTimeout ->
           expect(isCompleted).toBe(true); dfr()
@@ -292,7 +292,7 @@ describe 'MotionPath ->', ->
         mp = new MotionPath
           path: coords
           el: div
-          duration: 5
+          duration: 100
           onComplete:-> isRightScope = @ instanceof MotionPath
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
@@ -304,7 +304,7 @@ describe 'MotionPath ->', ->
         mp = new MotionPath
           path: coords
           el: div
-          duration: 5
+          duration: 100
           onUpdate:-> isOnUpdate = true
         setTimeout ->
           expect(isOnUpdate).toBe(true); dfr()
@@ -315,7 +315,7 @@ describe 'MotionPath ->', ->
         mp = new MotionPath
           path: coords
           el: div
-          duration: 5
+          duration: 100
           onUpdate:(progress)-> isOnUpdate = true if progress?
         setTimeout ->
           expect(isOnUpdate).toBe(true); dfr()
@@ -326,13 +326,12 @@ describe 'MotionPath ->', ->
         mp = new MotionPath
           path: coords
           el: div
-          duration: 5
+          duration: 100
           onUpdate:-> isRightScope = @ instanceof MotionPath
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
         , 300
       it 'should be called with progress, x, y and angle', ->
-
         progress = null; x = null; y = null; angle = null
         mp = new MotionPath
           path:       'M0,100 L100,0'
@@ -341,6 +340,7 @@ describe 'MotionPath ->', ->
           onUpdate:(p, o)->
             progress = p; x = o.x; y = o.y; angle = o.angle
 
+        mp.timeline.setProgress .45
         mp.timeline.setProgress .5
         expect(progress.toFixed(1)).toBe '0.5'
         expect(x)       .toBe 50
@@ -1139,7 +1139,7 @@ describe 'MotionPath ->', ->
         delay:    100
       )
       .then pathStart: .5, pathEnd: 1
-      expect(mp.timeline.timelines[1].props.shiftTime).toBe 2100
+      expect(mp.timeline._timelines[1]._props.shiftTime).toBe 2100
 
     it 'should not copy previous callbacks', ->
       onUpdate = ->
@@ -1152,6 +1152,7 @@ describe 'MotionPath ->', ->
         onUpdate: onUpdate
       ).then pathStart: .5, pathEnd: 1, delay: 0
       
+      mp.timeline.setProgress .74
       mp.timeline.setProgress .75
       
       expect(mp.history[1].onUpdate).not.toBeDefined()
@@ -1179,9 +1180,9 @@ describe 'MotionPath ->', ->
         pathEnd:  .5
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
-      expect(mp.timeline.timelines.length)            .toBe 2
-      expect(mp.timeline.timelines[1].o.duration)     .toBe 2000
-      expect(mp.timeline.timelines[1].o.onFirstUpdate).toBeDefined()
+      expect(mp.timeline._timelines.length)            .toBe 2
+      expect(mp.timeline._timelines[1].o.duration)     .toBe 2000
+      expect(mp.timeline._timelines[1].o.onFirstUpdate).toBeDefined()
 
     it 'should add isChained option to the new timeline', ->
       mp = new MotionPath(
@@ -1192,7 +1193,7 @@ describe 'MotionPath ->', ->
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1
       
-      expect(mp.timeline.timelines[1].o.isChained).toBe true
+      expect(mp.timeline._timelines[1].o.isChained).toBe true
 
     it 'should not add isChained option if delay', ->
       mp = new MotionPath(
@@ -1203,7 +1204,7 @@ describe 'MotionPath ->', ->
         onUpdate: ->
       ).then pathStart: .5, pathEnd: 1, delay: 100
       
-      expect(mp.timeline.timelines[1].o.isChained).toBe false
+      expect(mp.timeline._timelines[1].o.isChained).toBe false
 
   describe 'tuneOptions ->', ->
     it 'should tune options', ->
@@ -1234,11 +1235,11 @@ describe 'MotionPath ->', ->
       expect(pathCoords is coords or pathCoords is coordsIE).toBe true
 
   describe 'createTween method', ->
-    it 'should bind the onFirstUpdateBackward metod', ->
+    it 'should bind the onFirstUpdate metod', ->
       mp = new MotionPath
         path:       coords
         el:         document.createElement 'div'
-      type = typeof mp.timeline.timelines[0].o.onFirstUpdateBackward
+      type = typeof mp.timeline._timelines[0].o.onFirstUpdate
       expect(type).toBe 'function'
 
   describe 'isModule flag ->', ->

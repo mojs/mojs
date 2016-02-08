@@ -168,9 +168,9 @@
         sp = new Spriter({
           el: div
         });
-        expect(sp._timeline instanceof mojs.Timeline).toBe(true);
+        expect(sp.timeline instanceof mojs.Timeline).toBe(true);
         expect(sp._tween instanceof mojs.Tween).toBe(true);
-        return expect(sp._timeline.timelines[0]).toBe(sp._tween);
+        return expect(sp.timeline._timelines[0]).toBe(sp._tween);
       });
       it('should start tween', function(dfr) {
         var div, div1, div2, sp;
@@ -182,9 +182,9 @@
         sp = new Spriter({
           el: div
         });
-        spyOn(sp._timeline, 'play');
+        spyOn(sp.timeline, 'play');
         return setTimeout(function() {
-          expect(sp._timeline.play).toHaveBeenCalled();
+          expect(sp.timeline.play).toHaveBeenCalled();
           return dfr();
         }, 10);
       });
@@ -199,9 +199,9 @@
           el: div,
           isRunLess: true
         });
-        spyOn(sp._timeline, 'play');
+        spyOn(sp.timeline, 'play');
         return setTimeout(function() {
-          expect(sp._timeline.play).not.toHaveBeenCalled();
+          expect(sp.timeline.play).not.toHaveBeenCalled();
           return dfr();
         }, 10);
       });
@@ -309,10 +309,12 @@
         div.appendChild(div4);
         sp = new Spriter({
           el: div,
-          isRunLess: true
+          isRunLess: true,
+          onUpdate: function() {}
         });
         spyOn(sp._props, 'onUpdate');
-        sp._timeline.setProgress(.5);
+        sp.timeline.setProgress(.45);
+        sp.timeline.setProgress(.5);
         return expect(sp._props.onUpdate).toHaveBeenCalled();
       });
       return it('should be called with progress on every sprite update', function() {
@@ -334,7 +336,8 @@
             return progress = p;
           }
         });
-        sp._timeline.setProgress(.5);
+        sp.timeline.setProgress(.45);
+        sp.timeline.setProgress(.5);
         return expect(progress.toFixed(1)).toBe('0.5');
       });
     });
@@ -354,9 +357,9 @@
           el: div,
           isRunLess: true
         });
-        spyOn(sp._timeline, 'play');
+        spyOn(sp.timeline, 'play');
         sp.run();
-        return expect(sp._timeline.play).toHaveBeenCalled();
+        return expect(sp.timeline.play).toHaveBeenCalled();
       });
     });
   });
