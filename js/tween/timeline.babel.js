@@ -171,6 +171,7 @@ class Timeline extends Tween {
     super._declareDefaults();
     // remove default 
     this._defaults.duration = 0;
+    this._defaults.nameBase = 'Timeline';
   }
   /*
     Method to declare some vars.
@@ -179,7 +180,6 @@ class Timeline extends Tween {
   _vars() {
     this._timelines = [];
     super._vars();
-    this._name = 'Timeline';
   }
 }
 

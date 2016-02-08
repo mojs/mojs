@@ -20,6 +20,13 @@ describe 'Timeline ->', ->
       expect(t._props.name).toBe 'Timeline 1'
       t = new Timeline
       expect(t._props.name).toBe 'Timeline 2'
+    it 'should make generic name if no one was specified with custom nameBase', ->
+      nameBase = 'Transit'
+      tweener["_#{nameBase}s"] = undefined;
+      t = new Timeline nameBase: nameBase 
+      expect(t._props.name).toBe "#{nameBase} 1"
+      t = new Timeline nameBase: nameBase
+      expect(t._props.name).toBe "#{nameBase} 2"
 
   describe 'constructor ->', ->
     it 'should increment _name+s on tweener', ->
@@ -30,6 +37,15 @@ describe 'Timeline ->', ->
       expect(tweener['_Timelines']).toBe 2
       t = new Timeline
       expect(tweener['_Timelines']).toBe 3
+    it 'should increment _name+s on tweener with custom nameBase', ->
+      nameBase = 'Burst'
+      tweener["_#{nameBase}s"] = undefined;
+      t = new Timeline nameBase: nameBase
+      expect(tweener["_#{nameBase}s"]).toBe 1
+      t = new Timeline nameBase: nameBase
+      expect(tweener["_#{nameBase}s"]).toBe 2
+      t = new Timeline nameBase: nameBase
+      expect(tweener["_#{nameBase}s"]).toBe 3
 
   describe 'defaults ->', ->
     it 'should have defaults', ->
@@ -37,6 +53,7 @@ describe 'Timeline ->', ->
       expect(t._defaults.repeat)          .toBe 0
       expect(t._defaults.delay)           .toBe 0
       expect(t._defaults.duration)        .toBe 0
+      expect(t._defaults.nameBase)        .toBe 'Timeline'
       expect(t._defaults.yoyo)            .toBe false
       expect(t._defaults.easing)          .toBe 'Linear.None'
       expect(t._defaults.onStart)         .toBe null
@@ -68,9 +85,6 @@ describe 'Timeline ->', ->
       spyOn Timeline.prototype, '_vars'
       t._vars()
       expect(Timeline.prototype._vars).toHaveBeenCalled()
-    it 'should override Tween\'s name' , ->
-      t = new Timeline
-      expect(t._name).toBe 'Timeline'
 
   describe 'add method ->', ->
     it 'should add timeline',->

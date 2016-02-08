@@ -50,8 +50,7 @@
         expect(t._negativeShift).toBe(0);
         expect(t._progressTime).toBe(0);
         expect(t.progress).toBe(0);
-        expect(t._state).toBe('stop');
-        return expect(t._name).toBe('Tween');
+        return expect(t._state).toBe('stop');
       });
       it('should have defaults', function() {
         var t;
@@ -61,6 +60,7 @@
         expect(t._defaults.yoyo).toBe(false);
         expect(t._defaults.speed).toBe(1);
         expect(t._defaults.name).toBe(null);
+        expect(t._defaults.nameBase).toBe('Tween');
         expect(t._defaults.onStart).toBeDefined();
         expect(t._defaults.onRepeatStart).toBeDefined();
         expect(t._defaults.onFirstUpdate).toBeDefined();

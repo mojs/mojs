@@ -34,7 +34,6 @@ describe 'Tween ->', ->
       expect(t._progressTime) .toBe 0
       expect(t.progress)      .toBe 0
       expect(t._state)        .toBe 'stop'
-      expect(t._name)         .toBe 'Tween'
       # expect(t._globalName)   .toBe '_Tweens'
     it 'should have defaults', ->
       t = new Tween
@@ -43,6 +42,7 @@ describe 'Tween ->', ->
       expect(t._defaults.yoyo).toBe      false
       expect(t._defaults.speed).toBe     1
       expect(t._defaults.name).toBe      null
+      expect(t._defaults.nameBase).toBe  'Tween'
       expect(t._defaults.onStart).toBeDefined()
       expect(t._defaults.onRepeatStart).toBeDefined()
       expect(t._defaults.onFirstUpdate).toBeDefined()

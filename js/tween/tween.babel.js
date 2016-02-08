@@ -30,6 +30,8 @@ var Tween = class Tween {
       easing:                 'Linear.None',
       /* custom tween's name */
       name:                   null,
+      /* custom tween's name */
+      nameBase:               'Tween',
       /*
         onProgress callback runs before any other callback.
         @param {Number}   The entire, not eased, progress
@@ -203,11 +205,11 @@ var Tween = class Tween {
     @private
   */
   _setSelfName () {
-    var globalName = `_${this._name}s`;
+    var globalName = `_${this._props.nameBase}s`;
     // track amount of tweens globally
     t[globalName] = ( t[globalName] == null ) ? 1 : ++t[globalName];
     // and set generic tween's name  || Tween # ||
-    this._props.name = `${this._name} ${t[globalName]}`;
+    this._props.name = `${this._props.nameBase} ${t[globalName]}`;
   }
   /*
     Method set playback state string.
@@ -230,7 +232,6 @@ var Tween = class Tween {
     this._progressTime = 0;
     this._negativeShift = 0;
     this._state = 'stop';
-    this._name  = 'Tween';
 
     // if negative delay was specified,
     // save it to _negativeShift property and

@@ -28,16 +28,29 @@
         });
         return expect(t._props.name).toBe(name);
       });
-      return it('should make generic name if no one was specified', function() {
+      it('should make generic name if no one was specified', function() {
         var t;
         t = new Timeline;
         expect(t._props.name).toBe('Timeline 1');
         t = new Timeline;
         return expect(t._props.name).toBe('Timeline 2');
       });
+      return it('should make generic name if no one was specified with custom nameBase', function() {
+        var nameBase, t;
+        nameBase = 'Transit';
+        tweener["_" + nameBase + "s"] = void 0;
+        t = new Timeline({
+          nameBase: nameBase
+        });
+        expect(t._props.name).toBe("" + nameBase + " 1");
+        t = new Timeline({
+          nameBase: nameBase
+        });
+        return expect(t._props.name).toBe("" + nameBase + " 2");
+      });
     });
     describe('constructor ->', function() {
-      return it('should increment _name+s on tweener', function() {
+      it('should increment _name+s on tweener', function() {
         var t;
         tweener['_Timelines'] = void 0;
         t = new Timeline;
@@ -47,6 +60,23 @@
         t = new Timeline;
         return expect(tweener['_Timelines']).toBe(3);
       });
+      return it('should increment _name+s on tweener with custom nameBase', function() {
+        var nameBase, t;
+        nameBase = 'Burst';
+        tweener["_" + nameBase + "s"] = void 0;
+        t = new Timeline({
+          nameBase: nameBase
+        });
+        expect(tweener["_" + nameBase + "s"]).toBe(1);
+        t = new Timeline({
+          nameBase: nameBase
+        });
+        expect(tweener["_" + nameBase + "s"]).toBe(2);
+        t = new Timeline({
+          nameBase: nameBase
+        });
+        return expect(tweener["_" + nameBase + "s"]).toBe(3);
+      });
     });
     describe('defaults ->', function() {
       return it('should have defaults', function() {
@@ -55,6 +85,7 @@
         expect(t._defaults.repeat).toBe(0);
         expect(t._defaults.delay).toBe(0);
         expect(t._defaults.duration).toBe(0);
+        expect(t._defaults.nameBase).toBe('Timeline');
         expect(t._defaults.yoyo).toBe(false);
         expect(t._defaults.easing).toBe('Linear.None');
         expect(t._defaults.onStart).toBe(null);
@@ -90,17 +121,12 @@
         expect(h.isArray(t._timelines)).toBe(true);
         return expect(t._timelines.length).toBe(0);
       });
-      it('should call super _vars function', function() {
+      return it('should call super _vars function', function() {
         var t;
         t = new Timeline;
         spyOn(Timeline.prototype, '_vars');
         t._vars();
         return expect(Timeline.prototype._vars).toHaveBeenCalled();
-      });
-      return it('should override Tween\'s name', function() {
-        var t;
-        t = new Timeline;
-        return expect(t._name).toBe('Timeline');
       });
     });
     describe('add method ->', function() {
