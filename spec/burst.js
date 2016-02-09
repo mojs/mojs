@@ -812,7 +812,7 @@
         return setTimeout(function() {
           expect(burst.props.onStart).toHaveBeenCalled();
           return dfr();
-        }, 300);
+        }, 500);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
@@ -825,7 +825,7 @@
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }, 300);
+        }, 500);
       });
     });
     describe('onComplete callback ->', function() {
@@ -833,7 +833,7 @@
         var burst;
         t.removeAll();
         return burst = new Burst({
-          duration: 100,
+          duration: 200,
           onComplete: function() {
             expect(true).toBe(true);
             return dfr();
@@ -843,9 +843,9 @@
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
         t.removeAll();
-        isRightScope = false;
+        isRightScope = null;
         burst = new Burst({
-          duration: 100,
+          duration: 200,
           onComplete: function() {
             return isRightScope = this instanceof Burst;
           }
@@ -853,7 +853,7 @@
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }, 300);
+        }, 500);
       });
     });
     describe('onUpdate callback ->', function() {
@@ -862,7 +862,7 @@
         var burst;
         burst = new Burst({
           isRunLess: true,
-          duration: 100,
+          duration: 200,
           onUpdate: function() {}
         });
         spyOn(burst, 'onUpdate');
@@ -870,14 +870,14 @@
         return setTimeout(function() {
           expect(burst.onUpdate).toHaveBeenCalledWith(1);
           return dfr();
-        }, 300);
+        }, 500);
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
         t.removeAll();
         isRightScope = null;
         burst = new Burst({
-          duration: 100,
+          duration: 200,
           onUpdate: function() {
             return isRightScope = this instanceof Burst;
           }
@@ -886,7 +886,7 @@
         return setTimeout((function() {
           expect(isRightScope).toBe(true);
           return dfr();
-        }), 300);
+        }), 500);
       });
     });
     describe('then method ->', function() {

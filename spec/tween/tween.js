@@ -426,7 +426,7 @@
         time = t._props.startTime + updateTime;
         t._update(time - 1);
         t._update(time);
-        return expect(t._progressTime).toBe(delay + updateTime);
+        return expect(t._progressTime).toBeCloseTo(delay + updateTime, 5);
       });
       it('should save progress start point time to _progressTime', function() {
         var delay, duration, t, time, updateTime;
@@ -961,7 +961,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -994,7 +994,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
@@ -1243,7 +1243,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
@@ -1260,7 +1260,7 @@
         expect(firstUpdateDirection).toBe(true);
         timeShift = duration + delay;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
@@ -1292,7 +1292,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
@@ -1309,7 +1309,7 @@
         expect(firstUpdateDirection).toBe(true);
         timeShift = 2 * (duration + delay);
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
@@ -1341,7 +1341,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
@@ -1357,7 +1357,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration + delay / 2);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
@@ -1457,7 +1457,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration + delay / 2);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(1);
@@ -1506,7 +1506,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration + delay / 2);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(2);
@@ -1555,7 +1555,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration + delay / 2);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
@@ -1571,7 +1571,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime + timeShift + duration + delay / 2 + 10);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(3);
@@ -1671,7 +1671,7 @@
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * duration;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -1704,7 +1704,7 @@
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -1738,7 +1738,7 @@
         expect(firstUpdateDirection).toBe(false);
         timeShift = 0;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -1754,7 +1754,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration / 2);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -1919,7 +1919,7 @@
         expect(firstUpdateDirection).toBe(false);
         timeShift = duration;
         t._update(t._props.startTime + timeShift - duration - gap);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -1951,7 +1951,7 @@
         expect(firstUpdateCnt).toBe(2);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime - gap);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -1967,7 +1967,7 @@
         expect(firstUpdateCnt).toBe(2);
         expect(firstUpdateDirection).toBe(true);
         t._update(t._props.startTime - gap - 15);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2067,7 +2067,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 5);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2100,7 +2100,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 5);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2133,7 +2133,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 5);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2149,7 +2149,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 15);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2249,7 +2249,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2283,7 +2283,7 @@
         expect(firstUpdateDirection).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
         t._update(t._props.startTime + timeShift - duration);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2316,7 +2316,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2332,7 +2332,7 @@
         expect(firstUpdateCnt).toBe(1);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 10);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
         expect(oneCnt).toBe(0);
@@ -2474,7 +2474,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2516,7 +2516,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2833,7 +2833,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBe(1, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2856,7 +2856,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = duration + delay;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBe(1, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2919,7 +2919,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = 2 * (duration + delay);
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2963,7 +2963,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift + duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -2985,7 +2985,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift + duration + delay / 2);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3110,7 +3110,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift + duration + delay / 2);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3177,7 +3177,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift + duration + delay / 2);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3200,7 +3200,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = 2 * (duration + delay);
         t._update(t._props.startTime + timeShift + 10);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(true);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3324,7 +3324,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = 2 * duration;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3369,7 +3369,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = duration;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3414,7 +3414,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = 0;
         t._update(t._props.startTime + timeShift);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3436,7 +3436,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift - duration / 2);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3651,7 +3651,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = duration;
         t._update(t._props.startTime - gap);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3695,7 +3695,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime - gap);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3717,7 +3717,7 @@
         expect(firstUpdateDirection).toBe(true);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime - gap - 15);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3842,7 +3842,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 5);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3887,7 +3887,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 5);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3932,7 +3932,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 5);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -3954,7 +3954,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateDirection).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 15);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -4079,7 +4079,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift - duration);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -4125,7 +4125,7 @@
         expect(firstUpdateYoyo).toBe(false);
         timeShift = 2 * (duration + delay) - delay;
         t._update(t._props.startTime + timeShift - duration);
-        expect(updateValue).toBe(1);
+        expect(updateValue).toBeCloseTo(1, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(true);
         expect(t._wasUknownUpdate).toBe(false);
@@ -4169,7 +4169,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift - duration);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);
@@ -4191,7 +4191,7 @@
         expect(firstUpdateDirection).toBe(false);
         expect(firstUpdateYoyo).toBe(false);
         t._update(t._props.startTime + timeShift - duration - 10);
-        expect(updateValue).toBe(0);
+        expect(updateValue).toBeCloseTo(0, 5);
         expect(updateDirection).toBe(false);
         expect(updateYoyo).toBe(false);
         expect(t._wasUknownUpdate).toBe(false);

@@ -3147,6 +3147,7 @@
 	  */
 	  function Tween() {
 	    var o = arguments[0] === undefined ? {} : arguments[0];
+	    // console.log('tween constructor');
 	    this.o = o;
 	    this._declareDefaults();this._extendDefaults();this._vars();
 	    this._props.name == null && this._setSelfName();
@@ -4255,9 +4256,8 @@
 
 	var Timeline = (function (Tween) {
 	  function Timeline() {
-	    if (_core.Object.getPrototypeOf(Timeline) !== null) {
-	      _core.Object.getPrototypeOf(Timeline).apply(this, arguments);
-	    }
+	    var o = arguments[0] === undefined ? {} : arguments[0];
+	    _get(_core.Object.getPrototypeOf(Timeline.prototype), "constructor", this).call(this, o);
 	  }
 
 	  _inherits(Timeline, Tween);
@@ -4390,6 +4390,7 @@
 	        }
 	        // add self delay to the timeline
 	        shift != null && timeline._setProp({ shiftTime: shift });
+	        // console.log('here', this._timelines);
 	        this._timelines.push(timeline);
 	        this._recalcDuration(timeline);
 	      },
@@ -4526,6 +4527,7 @@
 	        @private
 	      */
 	      value: function Vars() {
+	        // console.log('timeline _vars')
 	        this._timelines = [];
 	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_vars", this).call(this);
 	      },

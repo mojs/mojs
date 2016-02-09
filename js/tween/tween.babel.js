@@ -195,6 +195,7 @@ var Tween = class Tween {
     @private
   */
   constructor ( o = {} ) {
+    // console.log('tween constructor');
     this.o = o;
     this._declareDefaults(); this._extendDefaults(); this._vars();
     ( this._props.name == null ) && this._setSelfName();

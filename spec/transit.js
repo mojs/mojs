@@ -1020,12 +1020,12 @@
             x: {
               '20%': '50%'
             },
-            duration: 200
+            duration: 100
           });
           return setTimeout(function() {
             expect(byte.el.style.left).toBe('50%');
             return dfr();
-          }, 300);
+          }, 500);
         });
         it('end unit that were not specified should fallback to start unit', function() {
           var byte;
@@ -1872,7 +1872,7 @@
           return setTimeout(function() {
             expect(isOnStart).toBe(true);
             return dfr();
-          }, 300);
+          }, 500);
         });
         it('should have scope of transit', function(dfr) {
           var byte, isRightScope;
@@ -1888,7 +1888,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 300);
+          }, 500);
         });
         return it('should show el', function() {
           var byte;
@@ -1919,7 +1919,7 @@
           return setTimeout(function() {
             expect('onUpdate called').toBe('onUpdate called');
             return dfr();
-          }, 300);
+          }, 500);
         });
         it('should have scope of Transit', function(dfr) {
           var byte, isRightScope;
@@ -1936,7 +1936,7 @@
           return setTimeout((function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }), 300);
+          }), 500);
         });
         return it('should set current progress', function(dfr) {
           var byte, progress;
@@ -1954,7 +1954,7 @@
             expect(progress).toBeGreaterThan(0);
             expect(progress).not.toBeGreaterThan(1);
             return dfr();
-          }, 300);
+          }, 500);
         });
       });
       describe('onComplete callback ->', function() {
@@ -1973,7 +1973,7 @@
           return setTimeout(function() {
             expect(isOnComplete).toBe(true);
             return dfr();
-          }, 300);
+          }, 500);
         });
         return it('should have scope of Transit', function(dfr) {
           var byte, isRightScope;
@@ -1990,7 +1990,7 @@
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
-          }, 300);
+          }, 500);
         });
       });
       return describe('onFirstUpdate callback ->', function() {

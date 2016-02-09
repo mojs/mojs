@@ -35,7 +35,7 @@ class Timeline extends Tween {
     @private
     @param {Array} Array of Tweens/Timelines.
   */
-  _appendTimelineArray(timelineArray) {
+  _appendTimelineArray (timelineArray) {
     var i     = timelineArray.length,
         time  = this._props.repeatTime - this._props.delay,
         len   = this._timelines.length;
@@ -83,6 +83,7 @@ class Timeline extends Tween {
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
     // add self delay to the timeline
     (shift != null) && timeline._setProp({ 'shiftTime': shift });
+    // console.log('here', this._timelines);
     this._timelines.push(timeline);
     this._recalcDuration(timeline);
   }
@@ -118,7 +119,7 @@ class Timeline extends Tween {
     @private
     @param {Object} Tween or Timeline to calculate.
   */
-  _recalcDuration(timeline) {
+  _recalcDuration (timeline) {
     !timeline._props && console.log(timeline)
     var p             = timeline._props,
         speedCoef     = ( p.speed ) ? (1/p.speed) : 1,
@@ -129,7 +130,7 @@ class Timeline extends Tween {
     Method calculate self duration from skretch.
     @private
   */
-  _recalcTotalDuration() {
+  _recalcTotalDuration () {
     var i = this._timelines.length;
     this._props.duration = 0;
     while(i--) { this._recalcDuration(this._timelines[i]); }
@@ -140,7 +141,7 @@ class Timeline extends Tween {
     @private
     @param {Number, Null} Time to start with.
   */
-  _setStartTime( time, isReset = true ) {
+  _setStartTime ( time, isReset = true ) {
     super._setStartTime(time);
     this._startTimelines(this._props.startTime, isReset);
   }
@@ -149,7 +150,7 @@ class Timeline extends Tween {
     @private
     @param {Number, Null} Time to start with.
   */
-  _startTimelines(time, isReset = true) {
+  _startTimelines (time, isReset = true) {
     var i = this._timelines.length,
         p = this._props,
         timeline;
@@ -167,7 +168,7 @@ class Timeline extends Tween {
     Method do declare defaults by this._defaults object
     @private
   */
-  _declareDefaults() {
+  _declareDefaults () {
     // if duration was passed on initialization stage, warn user and reset it.
     if ( this.o.duration != null ) {
       h.error(`Duration can not be declared on Timeline, but "${this.o.duration}" is. You probably want to use Tween instead.`);
@@ -178,11 +179,14 @@ class Timeline extends Tween {
     this._defaults.duration = 0;
     this._defaults.nameBase = 'Timeline';
   }
+
+  constructor ( o = {} ) { super(o); }
   /*
     Method to declare some vars.
     @private
   */
-  _vars() {
+  _vars () {
+    // console.log('timeline _vars')
     this._timelines = [];
     super._vars();
   }

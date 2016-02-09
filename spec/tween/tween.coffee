@@ -262,7 +262,7 @@ describe 'Tween ->', ->
       time = t._props.startTime + updateTime
       t._update time - 1
       t._update time
-      expect(t._progressTime).toBe delay + updateTime
+      expect(t._progressTime).toBeCloseTo delay + updateTime, 5
     it 'should save progress start point time to _progressTime', ->
       delay = 500; duration = 1000
       t = new Tween(duration: duration, delay: delay)
@@ -705,7 +705,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -754,7 +754,7 @@ describe 'Tween ->', ->
 
       # end
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1043,7 +1043,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1068,7 +1068,7 @@ describe 'Tween ->', ->
 
       timeShift = duration + delay
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1116,7 +1116,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1141,7 +1141,7 @@ describe 'Tween ->', ->
 
       timeShift = 2*(duration + delay)
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1189,7 +1189,7 @@ describe 'Tween ->', ->
 
       # end
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1214,7 +1214,7 @@ describe 'Tween ->', ->
 
       # repeat the end
       t._update t._props.startTime + timeShift + (duration) + delay/2
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1321,7 +1321,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration) + delay/2
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1394,7 +1394,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration) + delay/2
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1467,7 +1467,7 @@ describe 'Tween ->', ->
 
       # end
       t._update t._props.startTime + timeShift + (duration) + delay/2
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1491,7 +1491,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration) + delay/2 + 10
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1603,7 +1603,7 @@ describe 'Tween ->', ->
 
       timeShift = 2*duration
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1652,7 +1652,7 @@ describe 'Tween ->', ->
 
       timeShift = duration
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1702,7 +1702,7 @@ describe 'Tween ->', ->
 
       timeShift = 0
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1726,7 +1726,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration/2
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1931,7 +1931,7 @@ describe 'Tween ->', ->
       # END
       timeShift = duration
       t._update t._props.startTime + timeShift - (duration) - gap
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -1979,7 +1979,7 @@ describe 'Tween ->', ->
 
       # return to "-" inactive area
       t._update t._props.startTime - gap
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2003,7 +2003,7 @@ describe 'Tween ->', ->
 
       # repeat the previous step
       t._update t._props.startTime - gap - 15
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2110,7 +2110,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - (duration) - 5
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2159,7 +2159,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration - 5
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2208,7 +2208,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration - 5
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2232,7 +2232,7 @@ describe 'Tween ->', ->
 
       # repeat the last period
       t._update t._props.startTime + timeShift - duration - 15
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2339,7 +2339,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2389,7 +2389,7 @@ describe 'Tween ->', ->
 
       timeShift = 2*(duration + delay) - delay
       t._update t._props.startTime + timeShift - duration
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2438,7 +2438,7 @@ describe 'Tween ->', ->
 
       # timeShift = duration
       t._update t._props.startTime + timeShift - duration
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2462,7 +2462,7 @@ describe 'Tween ->', ->
 
       # repeat the last period
       t._update t._props.startTime + timeShift - duration - 10
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
 
       expect(t._wasUknownUpdate).toBe(false)
@@ -2615,7 +2615,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe true
 
@@ -2671,7 +2671,7 @@ describe 'Tween ->', ->
       expect(firstUpdateYoyo).toBe(false)
 
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe true
 
@@ -3017,7 +3017,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBe(1, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(false)
 
@@ -3047,7 +3047,7 @@ describe 'Tween ->', ->
 
       timeShift = duration + delay
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBe(1, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(true)
 
@@ -3132,7 +3132,7 @@ describe 'Tween ->', ->
 
       timeShift = 2*(duration + delay)
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(false)
 
@@ -3192,7 +3192,7 @@ describe 'Tween ->', ->
 
       
       t._update t._props.startTime + timeShift + (duration)
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(false)
 
@@ -3222,7 +3222,7 @@ describe 'Tween ->', ->
 
       # repeat the last period
       t._update t._props.startTime + timeShift + (duration) + delay/2
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(false)
 
@@ -3349,7 +3349,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift + (duration) + delay/2
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(false)
 
@@ -3439,7 +3439,7 @@ describe 'Tween ->', ->
 
       # end
       t._update t._props.startTime + timeShift + (duration) + delay/2
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(true)
 
@@ -3470,7 +3470,7 @@ describe 'Tween ->', ->
       # repeat the last period
       timeShift = 2*(duration + delay)
       t._update t._props.startTime + timeShift + 10
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(true)
       expect(updateYoyo).toBe(true)
 
@@ -3524,7 +3524,7 @@ describe 'Tween ->', ->
 
   #     # end
   #     t._update t._props.startTime + timeShift + (duration) + delay/2
-  #     expect(updateValue).toBe(1)
+  #     expect(updateValue).toBeCloseTo(1, 5)
   #     expect(updateDirection).toBe(true)
 
   #     expect(t._wasUknownUpdate).toBe(false)
@@ -3548,7 +3548,7 @@ describe 'Tween ->', ->
 
   #     # repeat the last period
   #     t._update t._props.startTime + timeShift + (duration) + delay/2 + 10
-  #     expect(updateValue).toBe(1)
+  #     expect(updateValue).toBeCloseTo(1, 5)
   #     expect(updateDirection).toBe(true)
 
   #     expect(t._wasUknownUpdate).toBe(false)
@@ -3674,7 +3674,7 @@ describe 'Tween ->', ->
 
       timeShift = 2*duration
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -3734,7 +3734,7 @@ describe 'Tween ->', ->
 
       timeShift = duration
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(true)
 
@@ -3796,7 +3796,7 @@ describe 'Tween ->', ->
       # end
       timeShift = 0
       t._update t._props.startTime + timeShift
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -3826,7 +3826,7 @@ describe 'Tween ->', ->
 
       # repeat the last period
       t._update t._props.startTime + timeShift - duration/2
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4077,7 +4077,7 @@ describe 'Tween ->', ->
       # end
       timeShift = duration
       t._update t._props.startTime - gap
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4137,7 +4137,7 @@ describe 'Tween ->', ->
 
       # return to "-" inactive area
       t._update t._props.startTime - gap
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4167,7 +4167,7 @@ describe 'Tween ->', ->
 
       # repeat the previous step
       t._update t._props.startTime - gap - 15
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4294,7 +4294,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - (duration) - 5
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4355,7 +4355,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration - 5
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(true)
 
@@ -4416,7 +4416,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration - 5
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4446,7 +4446,7 @@ describe 'Tween ->', ->
 
       # repeat the last period
       t._update t._props.startTime + timeShift - duration - 15
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4573,7 +4573,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4636,7 +4636,7 @@ describe 'Tween ->', ->
 
       timeShift = 2*(duration + delay) - delay
       t._update t._props.startTime + timeShift - duration
-      expect(updateValue).toBe(1)
+      expect(updateValue).toBeCloseTo(1, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(true)
 
@@ -4696,7 +4696,7 @@ describe 'Tween ->', ->
 
 
       t._update t._props.startTime + timeShift - duration
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 
@@ -4726,7 +4726,7 @@ describe 'Tween ->', ->
 
       # repeat the last period
       t._update t._props.startTime + timeShift - duration - 10
-      expect(updateValue).toBe(0)
+      expect(updateValue).toBeCloseTo(0, 5)
       expect(updateDirection).toBe(false)
       expect(updateYoyo).toBe(false)
 

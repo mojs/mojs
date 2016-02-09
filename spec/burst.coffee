@@ -509,48 +509,49 @@ describe 'Burst ->', ->
       burst.run()
       setTimeout ->
         expect(burst.props.onStart).toHaveBeenCalled(); dfr()
-      , 300
+      , 500
     it 'should have the scope of burst', (dfr)->
       isRightScope = null
       burst = new Burst onStart:-> isRightScope = @ instanceof Burst
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
-      , 300
+      , 500
 
   describe 'onComplete callback ->', ->
     it 'should run onComplete callback', (dfr)->
       t.removeAll()
       burst = new Burst
-        duration: 100, onComplete:-> expect(true).toBe(true); dfr()
+        duration: 200, onComplete:-> expect(true).toBe(true); dfr()
 
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
-      isRightScope = false
+      isRightScope = null
       burst = new Burst
-        duration: 100, onComplete:-> isRightScope = @ instanceof Burst
+        duration: 200, onComplete:-> isRightScope = @ instanceof Burst
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
-      , 300
+      , 500
 
   describe 'onUpdate callback ->', ->
     t.removeAll()
     it 'should run onUpdate callback', (dfr)->
       burst = new Burst
         isRunLess: true
-        duration: 100
+        duration: 200
         onUpdate:->
       spyOn burst, 'onUpdate'
       burst.run()
       setTimeout ->
         expect(burst.onUpdate).toHaveBeenCalledWith(1); dfr()
-      , 300
+      , 500
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
       isRightScope = null
       burst = new Burst
-        duration: 100, onUpdate:-> isRightScope = @ instanceof Burst
+        duration: 200
+        onUpdate:-> isRightScope = @ instanceof Burst
       burst.run()
-      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
+      setTimeout (-> expect(isRightScope).toBe(true); dfr()), 500
   
   describe 'then method ->', ->
     it 'should call the h.error method', ->

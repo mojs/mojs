@@ -562,11 +562,11 @@ describe 'Transit ->', ->
       it 'should animate position with respect to units', (dfr)->
         byte = new Byte
           x: {'20%': '50%'}
-          duration: 200
+          duration: 100
         setTimeout ->
           expect(byte.el.style.left)   .toBe '50%'
           dfr()
-        , 300
+        , 500
 
       it 'end unit that were not specified should fallback to start unit', ()->
         byte = new Byte
@@ -1028,7 +1028,7 @@ describe 'Transit ->', ->
         byte = new Byte radius:  {'25': 75}, onStart:-> isOnStart = true
         setTimeout ->
           expect(isOnStart).toBe(true); dfr()
-        , 300
+        , 500
       it 'should have scope of transit', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -1036,7 +1036,7 @@ describe 'Transit ->', ->
           onStart:-> isRightScope = @ instanceof Byte
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
-        , 300
+        , 500
       it 'should show el', ->
         byte = new Byte radius:  {'25': 75}
         spyOn byte, 'show'
@@ -1054,7 +1054,7 @@ describe 'Transit ->', ->
 
         setTimeout ->
           expect('onUpdate called').toBe('onUpdate called'); dfr()
-        , 300
+        , 500
 
       it 'should have scope of Transit', (dfr)->
         isRightScope = null
@@ -1062,7 +1062,7 @@ describe 'Transit ->', ->
           radius: {'25': 75}
           onUpdate:-> isRightScope = @ instanceof Byte
         byte.run()
-        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 300
+        setTimeout (-> expect(isRightScope).toBe(true); dfr()), 500
 
       it 'should set current progress', (dfr)->
         progress = null
@@ -1074,7 +1074,7 @@ describe 'Transit ->', ->
           expect(progress).toBeGreaterThan 0
           expect(progress).not.toBeGreaterThan 1
           dfr()
-        , 300
+        , 500
 
     describe 'onComplete callback ->', ->
       it 'should call onComplete callback',(dfr)->
@@ -1085,7 +1085,7 @@ describe 'Transit ->', ->
           duration: 200
         setTimeout ->
           expect(isOnComplete).toBe(true); dfr()
-        , 300
+        , 500
       it 'should have scope of Transit', (dfr)->
         isRightScope = null
         byte = new Byte
@@ -1094,7 +1094,7 @@ describe 'Transit ->', ->
           onComplete:-> isRightScope = @ instanceof Byte
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
-        , 300
+        , 500
 
     describe 'onFirstUpdate callback ->', ->
       it 'should call tuneOptions method when the tween goes backward', ->

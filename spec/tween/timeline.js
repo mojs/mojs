@@ -16,8 +16,7 @@
       return tweener.removeAll();
     });
     it('should extend Tween', function() {
-      expect(Timeline.prototype instanceof Tween).toBe(true);
-      return expect(Tween.isPrototypeOf(Timeline)).toBe(true);
+      return expect(Timeline.prototype instanceof Tween).toBe(true);
     });
     describe('name ->', function() {
       it('should set self custom name', function() {
