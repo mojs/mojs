@@ -2013,7 +2013,7 @@
           expect(mp.filterOffset.getAttribute('dx')).toBe('0');
           expect(mp.filterOffset.getAttribute('dy')).toBe('0');
           return dfr();
-        }, 200);
+        }, 500);
       });
     });
     describe('motionBlur reset ->', function() {

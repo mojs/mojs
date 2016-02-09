@@ -1459,7 +1459,7 @@ describe 'MotionPath ->', ->
         expect(mp.filterOffset.getAttribute('dx')).toBe '0'
         expect(mp.filterOffset.getAttribute('dy')).toBe '0'
         dfr()
-      , 200
+      , 500
 
   describe 'motionBlur reset ->', ->
     path = "M0,20 L100,150 L200,100"
