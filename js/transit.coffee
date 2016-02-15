@@ -6,32 +6,36 @@ shapesMap = require './shapes/shapesMap'
 Tween     = require './tween/tween'
 Timeline  = require './tween/timeline'
 
+# TODO
+#  - type -> shape
+#  - left/top -> left/top; shiftX/shiftY -> x/y
+#  - tween properties
+#  - properties signatures
+
 class Transit extends Bit
   progress: 0
   defaults:
     # presentation props
-    strokeWidth:        2
+    stroke:             'transparent'
     strokeOpacity:      1
+    strokeLinecap:      ''
+    strokeWidth:        2
     strokeDasharray:    0
     strokeDashoffset:   0
-    stroke:             'transparent'
     fill:               'deeppink'
     fillOpacity:        'transparent'
-    strokeLinecap:      ''
-    points:             3
     # position props/el props
     x:                  0
     y:                  0
     shiftX:             0
     shiftY:             0
     opacity:            1
+    angle:              0
+    points:             3
     # size props
     radius:             0: 50
     radiusX:            undefined
     radiusY:            undefined
-    angle:              0
-    size:               null
-    sizeGap:            0
     # callbacks
     onStart:            null
     onComplete:         null
@@ -43,6 +47,9 @@ class Transit extends Bit
     repeat:             0
     yoyo:               false
     easing:             'Linear.None'
+    #
+    size:               null
+    sizeGap:            0
   vars:->
     @h ?= h; @lastSet ?= {}; @index = @o.index or 0
     @runCount ?= 0

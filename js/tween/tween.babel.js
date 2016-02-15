@@ -227,13 +227,11 @@ var Tween = class Tween {
     @private
   */
   _vars () {
-
-    this.progress = 0;
+    this.progress  = 0;
     this._prevTime = null;
     this._progressTime = 0;
     this._negativeShift = 0;
     this._state = 'stop';
-
     // if negative delay was specified,
     // save it to _negativeShift property and
     // reset it back to 0
