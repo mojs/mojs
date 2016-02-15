@@ -1,7 +1,6 @@
 import h from './h';
 import Tween from './tween/tween';
 import Timeline from './tween/timeline';
-
 /*
   Class for toggling opacity on bunch of elements
   @class Spriter
@@ -14,7 +13,7 @@ class Spriter {
   /*
     Defaults/APIs
   */
-  _declareDefaults() {
+  _declareDefaults () {
     this._defaults = {
       /*
         Duration
@@ -22,15 +21,12 @@ class Spriter {
         @type     {Number}
       */
       duration:   500,
-
       /*
         Delay
         @property delay
         @type     {Number}
       */
       delay:      0,
-
-
       /*
         Easing. Please see the 
         [timeline module parseEasing function](timeline.coffee.html#parseEasing)
@@ -40,7 +36,6 @@ class Spriter {
         @type     {String, Function}
       */
       easing:     'linear.none',
-      
       /*
         Repeat times count
         
@@ -48,7 +43,6 @@ class Spriter {
         @type     {Number}
       */
       repeat:     0,
-
       /*
         Yoyo option defines if animation should be altered on repeat.
         
@@ -56,7 +50,6 @@ class Spriter {
         @type     {Boolean}
       */
       yoyo:       false,
-      
       /*
         isRunLess option prevents animation from running immediately after
         initialization.
@@ -65,7 +58,6 @@ class Spriter {
         @type     {Boolean}
       */
       isRunLess:  false,
-      
       /*
         isShowEnd option defines if the last frame should be shown when
         animation completed.
@@ -74,7 +66,6 @@ class Spriter {
         @type     {Boolean}
       */
       isShowEnd:  false,
-      
       /*
         onStart callback will be called once on animation start.
         
@@ -82,7 +73,6 @@ class Spriter {
         @type     {Function}
       */
       onStart:    null,
-      
       /*
         onUpdate callback will be called on every frame of the animation.
         The current progress in range **[0,1]** will be passed to the callback.
@@ -91,7 +81,6 @@ class Spriter {
         @type     {Function}
       */
       onUpdate:   null,
-      
       /*
         onComplete callback will be called once on animation complete.
         
@@ -102,7 +91,7 @@ class Spriter {
     }
   }
 
-  constructor(o = { }) {
+  constructor (o = { }) {
     this.o = o;
     if (!this.o.el) { return h.error('No "el" option specified, aborting'); }
     this._vars(); this._declareDefaults(); this._extendDefaults(); this._parseFrames();
@@ -113,51 +102,49 @@ class Spriter {
     this._createTween();
     return this;
   }
-
-  _vars() {
-    this._props = h.cloneObj(this.o);
-    this.el = this.o.el;
-    this._frames = [ ];
-  }
-
   /*
-    Method to run the spriter on demand
+    Method to declare some variables.
     
     @method run
     @param  {Object} New options
     @todo   Implement new object merging
   */
-  run(o) {
-    return this.timeline.play();
+  _vars () {
+    this._props = h.cloneObj(this.o);
+    this.el = this.o.el;
+    this._frames = [ ];
   }
-
-
+  /*
+    Method to run the spriter on demand.
+    
+    @method run
+    @param  {Object} New options
+    @todo   Implement new object merging
+  */
+  run(o) { return this.timeline.play(); }
   /*
     Method to extend _props by options(this.o)
     
     @method _extendDefaults
   */
-  _extendDefaults() {
-    return h.extend(this._props, this._defaults);
-  }
-
+  _extendDefaults () { return h.extend(this._props, this._defaults); }
   /*
-    Method to parse frames as child nodes of el
+    Method to parse frames as child nodes of el.
     
     @method _extendDefaults
   */
-  _parseFrames() {
+  _parseFrames () {
     this._frames = Array.prototype.slice.call(this.el.children, 0);
     this._frames.forEach((frame, i) => frame.style.opacity = 0);
     this._frameStep = 1 / this._frames.length;
   }
 
   /*
-    Method to create tween and timeline and supply callbacks
+    Method to create tween and timeline and supply callbacks.
     
     @method _createTween
   */
-  _createTween() {
+  _createTween () {
     this._tween = new Tween({
       duration:   this._props.duration,
       delay:      this._props.delay,
@@ -177,17 +164,14 @@ class Spriter {
     
     @method _startTween
   */
-  _startTween() {
-    setTimeout(() => this.timeline.play(), 1);
-  }
-
+  _startTween () { setTimeout(() => this.timeline.play(), 1); }
   /*
     Method to set progress of the sprite
     
     @method _setProgress
     @param  {Number} Progress in range **[0,1]**
   */
-  _setProgress(p) {
+  _setProgress (p) {
     // get the frame number
     var proc = Math.floor(p / this._frameStep);
     // react only if frame changes
