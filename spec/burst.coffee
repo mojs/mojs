@@ -50,7 +50,7 @@ describe 'Burst ->', ->
       expect(burst.childDefaults.repeat)           .toBe  0
       expect(burst.childDefaults.yoyo)             .toBe  false
       expect(burst.childDefaults.easing)           .toBe  'Linear.None'
-      expect(burst.childDefaults.type)             .toBe  'circle'
+      expect(burst.childDefaults.shape)            .toBe  'circle'
       expect(burst.childDefaults.fill)             .toBe  'deeppink'
       expect(burst.childDefaults.fillOpacity)      .toBe  1
       expect(burst.childDefaults.stroke)           .toBe  'transparent'
@@ -99,7 +99,7 @@ describe 'Burst ->', ->
         strokeLinecap:    'round'
         fill: 'deeppink'
         fillOpacity: .5
-        type: 'rect'
+        shape: 'rect'
         swirlSize: 20
         swirlFrequency: 'rand(10,20)'
         count: 6
@@ -110,7 +110,7 @@ describe 'Burst ->', ->
           strokeWidth: [null, null, 20]
           strokeOpacity: [null, 1 ,null]
           fill:   ['#fff', null]
-          type:   ['circle', null, 'polygon']
+          shape:  ['circle', null, 'polygon']
           swirlSize: [10, null]
           swirlFrequency: [null, 3]
           radius: [ { 20: 50}, 20, '500' ]
@@ -147,9 +147,9 @@ describe 'Burst ->', ->
       expect(burst.transits[0].o.swirlFrequency).toBe  'rand(10,20)'
       expect(burst.transits[1].o.swirlFrequency).toBe  3
       
-      expect(burst.transits[0].o.type).toBe     'circle'
-      expect(burst.transits[1].o.type).toBe     'rect'
-      expect(burst.transits[2].o.type).toBe     'polygon'
+      expect(burst.transits[0].o.shape).toBe     'circle'
+      expect(burst.transits[1].o.shape).toBe     'rect'
+      expect(burst.transits[2].o.shape).toBe     'polygon'
 
       expect(burst.transits[0].o.strokeOpacity[1]).toBe     0
       expect(burst.transits[1].o.strokeOpacity)   .toBe     1

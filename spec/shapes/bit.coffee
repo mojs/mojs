@@ -217,8 +217,8 @@ describe 'Bit', ->
       expect(bit.props.points).toBe 0
     it 'should have namespace object', ->
       expect(bit.ns).toBe 'http://www.w3.org/2000/svg'
-    it 'should have type object', ->
-      expect(bit.type).toBeDefined()
+    it 'should have shape object', ->
+      expect(bit.shape).toBeDefined()
   describe 'calculations', ->
     it 'should calculate transform object', ->
       bit = new Bit

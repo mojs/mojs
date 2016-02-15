@@ -8,6 +8,7 @@ Timeline  = require './tween/timeline'
 
 # TODO
 #  - type -> shape
+#  - don't run by default
 #  - left/top -> left/top; shiftX/shiftY -> x/y
 #  - tween properties
 #  - properties signatures
@@ -184,7 +185,7 @@ class Transit extends Bit
     else if @props[o.key]? then parseFloat(@props[o.key]) else o.fallback or 0
 
   createBit:->
-    bitClass = shapesMap.getShape(@o.type or @type)
+    bitClass = shapesMap.getShape(@o.shape or @shape)
     @bit = new bitClass ctx: @ctx, el: @o.bit, isDrawLess: true
     if @isForeign or @isForeignBit then @el = @bit.el
 
@@ -433,9 +434,9 @@ class Transit extends Bit
   tuneNewOption:(o, isForeign)->
     # if type is defined and it's different
     # than the current type - warn and delete
-    if o? and o.type? and o.type isnt (@o.type or @type)
-      @h.warn 'Sorry, type can not be changed on run'
-      delete o.type
+    if o? and o.shape? and o.shape isnt (@o.shape or @shape)
+      @h.warn 'Sorry, shape can not be changed on run'
+      delete o.shape
     # extend defaults only if options obj was passed
     if o? and Object.keys(o).length
       @extendDefaults(o); @resetTimeline()

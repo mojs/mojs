@@ -18,8 +18,8 @@
       return expect(rect instanceof Bit).toBe(true);
     });
     describe('defaults ->', function() {
-      it('should have type of "rect"', function() {
-        return expect(rect.type).toBe('rect');
+      it('should have shape of "rect"', function() {
+        return expect(rect.shape).toBe('rect');
       });
       return it('should have ratio of 1.43', function() {
         return expect(rect.ratio).toBe(1.43);

@@ -17,12 +17,12 @@
       });
       return expect(equal instanceof Bit).toBe(true);
     });
-    it('have type of path', function() {
+    it('have shape of path', function() {
       var equal;
       equal = new Equal({
         ctx: svg
       });
-      return expect(equal.type).toBe('path');
+      return expect(equal.shape).toBe('path');
     });
     it('have ratio of 1.43', function() {
       var equal;

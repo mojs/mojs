@@ -299,8 +299,8 @@
       it('should have namespace object', function() {
         return expect(bit.ns).toBe('http://www.w3.org/2000/svg');
       });
-      return it('should have type object', function() {
-        return expect(bit.type).toBeDefined();
+      return it('should have shape object', function() {
+        return expect(bit.shape).toBeDefined();
       });
     });
     describe('calculations', function() {

@@ -4,7 +4,7 @@
 Bit = require './bit'
 
 class Equal extends Bit
-  type: 'path'
+  shape: 'path'
   ratio: 1.43
   draw:->
     super

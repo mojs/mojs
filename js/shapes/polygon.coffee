@@ -5,7 +5,7 @@ Bit = require './bit'
 h   = require '../h'
 
 class Polygon extends Bit
-  type: 'path'
+  shape: 'path'
   draw:->
     # !@isDraw and @drawShape()
     @drawShape()

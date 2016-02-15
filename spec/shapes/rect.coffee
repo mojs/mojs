@@ -8,8 +8,8 @@ describe 'Rect ->', ->
   it 'should extend Bit', ->
     expect(rect instanceof Bit).toBe(true)
   describe 'defaults ->', ->
-    it 'should have type of "rect"', ->
-      expect(rect.type).toBe 'rect'
+    it 'should have shape of "rect"', ->
+      expect(rect.shape).toBe 'rect'
     it 'should have ratio of 1.43', ->
       expect(rect.ratio).toBe 1.43
   describe 'draw ->', ->

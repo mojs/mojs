@@ -4,7 +4,7 @@
 Bit = require './bit'
 
 class Cross extends Bit
-  type: 'path'
+  shape: 'path'
   draw:->
     super
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius

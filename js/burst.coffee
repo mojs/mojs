@@ -53,7 +53,7 @@ class Burst extends Transit
     repeat:             0
     yoyo:               false
     easing:             'Linear.None'
-    type:               'circle'
+    shape:              'circle'
     fill:               'deeppink'
     fillOpacity:        1
     isSwirl:            false

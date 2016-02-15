@@ -4,7 +4,7 @@
 Bit = require './bit'
 
 class Circle extends Bit
-  type: 'ellipse'
+  shape: 'ellipse'
   draw:->
     rx = if @props.radiusX? then @props.radiusX else @props.radius
     ry = if @props.radiusY? then @props.radiusY else @props.radius

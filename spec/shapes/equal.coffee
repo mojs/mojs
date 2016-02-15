@@ -7,9 +7,9 @@ describe 'Equal', ->
   it 'should extend Bit', ->
     equal = new Equal ctx: svg
     expect(equal instanceof Bit).toBe(true)
-  it 'have type of path', ->
+  it 'have shape of path', ->
     equal = new Equal ctx: svg
-    expect(equal.type).toBe 'path'
+    expect(equal.shape).toBe 'path'
   it 'have ratio of 1.43', ->
     equal = new Equal ctx: svg
     expect(equal.ratio).toBe 1.43

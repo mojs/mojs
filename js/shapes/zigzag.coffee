@@ -4,7 +4,7 @@
 Bit = require './bit'
 
 class Zigzag extends Bit
-  type: 'path'
+  shape: 'path'
   ratio: 1.43
   draw:->
     return if !@props.points

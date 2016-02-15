@@ -58,7 +58,7 @@
 	Bit = (function() {
 	  Bit.prototype.ns = 'http://www.w3.org/2000/svg';
 
-	  Bit.prototype.type = 'line';
+	  Bit.prototype.shape = 'line';
 
 	  Bit.prototype.ratio = 1;
 
@@ -162,7 +162,7 @@
 	      this.el = this.o.el;
 	      return this.isForeign = true;
 	    } else {
-	      this.el = document.createElementNS(this.ns, this.type || 'line');
+	      this.el = document.createElementNS(this.ns, this.shape || 'line');
 	      !this.o.isDrawLess && this.draw();
 	      return this.ctx.appendChild(this.el);
 	    }
@@ -975,7 +975,7 @@
 	    repeat: 0,
 	    yoyo: false,
 	    easing: 'Linear.None',
-	    type: 'circle',
+	    shape: 'circle',
 	    fill: 'deeppink',
 	    fillOpacity: 1,
 	    isSwirl: false,
@@ -1281,28 +1281,26 @@
 	  Transit.prototype.progress = 0;
 
 	  Transit.prototype.defaults = {
-	    strokeWidth: 2,
+	    stroke: 'transparent',
 	    strokeOpacity: 1,
+	    strokeLinecap: '',
+	    strokeWidth: 2,
 	    strokeDasharray: 0,
 	    strokeDashoffset: 0,
-	    stroke: 'transparent',
 	    fill: 'deeppink',
 	    fillOpacity: 'transparent',
-	    strokeLinecap: '',
-	    points: 3,
 	    x: 0,
 	    y: 0,
 	    shiftX: 0,
 	    shiftY: 0,
 	    opacity: 1,
+	    angle: 0,
+	    points: 3,
 	    radius: {
 	      0: 50
 	    },
 	    radiusX: void 0,
 	    radiusY: void 0,
-	    angle: 0,
-	    size: null,
-	    sizeGap: 0,
 	    onStart: null,
 	    onComplete: null,
 	    onUpdate: null,
@@ -1310,7 +1308,9 @@
 	    delay: 0,
 	    repeat: 0,
 	    yoyo: false,
-	    easing: 'Linear.None'
+	    easing: 'Linear.None',
+	    size: null,
+	    sizeGap: 0
 	  };
 
 	  Transit.prototype.vars = function() {
@@ -1515,7 +1515,7 @@
 
 	  Transit.prototype.createBit = function() {
 	    var bitClass;
-	    bitClass = shapesMap.getShape(this.o.type || this.type);
+	    bitClass = shapesMap.getShape(this.o.shape || this.shape);
 	    this.bit = new bitClass({
 	      ctx: this.ctx,
 	      el: this.o.bit,
@@ -1879,9 +1879,9 @@
 	  };
 
 	  Transit.prototype.tuneNewOption = function(o, isForeign) {
-	    if ((o != null) && (o.type != null) && o.type !== (this.o.type || this.type)) {
-	      this.h.warn('Sorry, type can not be changed on run');
-	      delete o.type;
+	    if ((o != null) && (o.shape != null) && o.shape !== (this.o.shape || this.shape)) {
+	      this.h.warn('Sorry, shape can not be changed on run');
+	      delete o.shape;
 	    }
 	    if ((o != null) && Object.keys(o).length) {
 	      this.extendDefaults(o);
@@ -2046,248 +2046,6 @@
 
 /***/ },
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* istanbul ignore next */
-	var Stagger, StaggerWrapper, Timeline, h;
-
-	h = __webpack_require__(2);
-
-	Timeline = __webpack_require__(12);
-
-	Stagger = (function() {
-	  function Stagger(options, Module) {
-	    this.init(options, Module);
-	  }
-
-	  Stagger.prototype._getOptionByMod = function(name, i, store) {
-	    var props, value;
-	    props = store[name];
-	    if (props + '' === '[object NodeList]') {
-	      props = Array.prototype.slice.call(props, 0);
-	    }
-	    if (props + '' === '[object HTMLCollection]') {
-	      props = Array.prototype.slice.call(props, 0);
-	    }
-	    value = h.isArray(props) ? props[i % props.length] : props;
-	    return h.parseIfStagger(value, i);
-	  };
-
-	  Stagger.prototype._getOptionByIndex = function(i, store) {
-	    var key, options, value;
-	    options = {};
-	    for (key in store) {
-	      value = store[key];
-	      options[key] = this._getOptionByMod(key, i, store);
-	    }
-	    return options;
-	  };
-
-	  Stagger.prototype._getChildQuantity = function(name, store) {
-	    var ary, quantifier;
-	    if (typeof name === 'number') {
-	      return name;
-	    }
-	    quantifier = store[name];
-	    if (h.isArray(quantifier)) {
-	      return quantifier.length;
-	    } else if (quantifier + '' === '[object NodeList]') {
-	      return quantifier.length;
-	    } else if (quantifier + '' === '[object HTMLCollection]') {
-	      ary = Array.prototype.slice.call(quantifier, 0);
-	      return ary.length;
-	    } else if (quantifier instanceof HTMLElement) {
-	      return 1;
-	    } else if (typeof quantifier === 'string') {
-	      return 1;
-	    }
-	  };
-
-	  Stagger.prototype._createTimeline = function(options) {
-	    if (options == null) {
-	      options = {};
-	    }
-	    return this.timeline = new Timeline({
-	      onStart: options.onStaggerStart,
-	      onUpdate: options.onStaggerUpdate,
-	      onComplete: options.onStaggerComplete,
-	      onReverseComplete: options.onStaggerReverseComplete,
-	      delay: options.moduleDelay
-	    });
-	  };
-
-	  Stagger.prototype.init = function(options, Module) {
-	    var count, i, j, module, option, ref;
-	    count = this._getChildQuantity(options.quantifier || 'el', options);
-	    this._createTimeline(options);
-	    this.childModules = [];
-	    for (i = j = 0, ref = count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-	      option = this._getOptionByIndex(i, options);
-	      option.isRunLess = true;
-	      module = new Module(option);
-	      this.childModules.push(module);
-	      this.timeline.add(module);
-	    }
-	    return this;
-	  };
-
-	  Stagger.prototype.run = function() {
-	    return this.timeline.play();
-	  };
-
-	  return Stagger;
-
-	})();
-
-	StaggerWrapper = (function() {
-	  function StaggerWrapper(Module) {
-	    var M;
-	    M = Module;
-	    return function(options) {
-	      return new Stagger(options, M);
-	    };
-	  }
-
-	  return StaggerWrapper;
-
-	})();
-
-	module.exports = StaggerWrapper;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Spriter, Timeline, Tween, h;
-
-	h = __webpack_require__(2);
-
-	Tween = __webpack_require__(11);
-
-	Timeline = __webpack_require__(12);
-
-	Spriter = (function() {
-	  Spriter.prototype._defaults = {
-	    duration: 500,
-	    delay: 0,
-	    easing: 'linear.none',
-	    repeat: 0,
-	    yoyo: false,
-	    isRunLess: false,
-	    isShowEnd: false,
-	    onStart: null,
-	    onUpdate: null,
-	    onComplete: null
-	  };
-
-	  function Spriter(o1) {
-	    this.o = o1 != null ? o1 : {};
-	    if (this.o.el == null) {
-	      return h.error('No "el" option specified, aborting');
-	    }
-	    this._vars();
-	    this._extendDefaults();
-	    this._parseFrames();
-	    if (this._frames.length <= 2) {
-	      h.warn("Spriter: only " + this._frames.length + " frames found");
-	    }
-	    if (this._frames.length < 1) {
-	      h.error("Spriter: there is no frames to animate, aborting");
-	    }
-	    this._createTween();
-	    this;
-	  }
-
-	  Spriter.prototype._vars = function() {
-	    this._props = h.cloneObj(this.o);
-	    this.el = this.o.el;
-	    return this._frames = [];
-	  };
-
-	  Spriter.prototype.run = function(o) {
-	    return this.timeline.play();
-	  };
-
-	  Spriter.prototype._extendDefaults = function() {
-	    return h.extend(this._props, this._defaults);
-	  };
-
-	  Spriter.prototype._parseFrames = function() {
-	    var frame, i, j, len, ref;
-	    this._frames = Array.prototype.slice.call(this.el.children, 0);
-	    ref = this._frames;
-	    for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	      frame = ref[i];
-	      frame.style.opacity = 0;
-	    }
-	    return this._frameStep = 1 / this._frames.length;
-	  };
-
-	  Spriter.prototype._createTween = function() {
-	    this._tween = new Tween({
-	      duration: this._props.duration,
-	      delay: this._props.delay,
-	      yoyo: this._props.yoyo,
-	      repeat: this._props.repeat,
-	      easing: this._props.easing,
-	      onStart: (function(_this) {
-	        return function() {
-	          var base;
-	          return typeof (base = _this._props).onStart === "function" ? base.onStart() : void 0;
-	        };
-	      })(this),
-	      onComplete: (function(_this) {
-	        return function() {
-	          var base;
-	          return typeof (base = _this._props).onComplete === "function" ? base.onComplete() : void 0;
-	        };
-	      })(this),
-	      onUpdate: (function(_this) {
-	        return function(p) {
-	          return _this._setProgress(p);
-	        };
-	      })(this)
-	    });
-	    this.timeline = new Timeline;
-	    this.timeline.add(this._tween);
-	    return !this._props.isRunLess && this._startTween();
-	  };
-
-	  Spriter.prototype._startTween = function() {
-	    return setTimeout(((function(_this) {
-	      return function() {
-	        return _this.timeline.play();
-	      };
-	    })(this)), 1);
-	  };
-
-	  Spriter.prototype._setProgress = function(p) {
-	    var base, currentNum, proc, ref, ref1;
-	    proc = Math.floor(p / this._frameStep);
-	    if (this._prevFrame !== this._frames[proc]) {
-	      if ((ref = this._prevFrame) != null) {
-	        ref.style.opacity = 0;
-	      }
-	      currentNum = p === 1 && this._props.isShowEnd ? proc - 1 : proc;
-	      if ((ref1 = this._frames[currentNum]) != null) {
-	        ref1.style.opacity = 1;
-	      }
-	      this._prevFrame = this._frames[proc];
-	    }
-	    return typeof (base = this._props).onUpdate === "function" ? base.onUpdate(p) : void 0;
-	  };
-
-	  return Spriter;
-
-	})();
-
-	module.exports = Spriter;
-
-
-/***/ },
-/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var MotionPath, Timeline, Tween, h, resize,
@@ -2822,7 +2580,7 @@
 
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Easing, PathEasing, bezier, easing, h, mix;
@@ -3119,6 +2877,435 @@
 
 
 /***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _prototypeProperties = function (child, staticProps, instanceProps) {
+	  if (staticProps) Object.defineProperties(child, staticProps);
+	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+	};
+
+	var _interopRequire = function (obj) {
+	  return obj && (obj["default"] || obj);
+	};
+
+	var _core = _interopRequire(__webpack_require__(28));
+
+	var h = _interopRequire(__webpack_require__(2));
+
+	var Timeline = _interopRequire(__webpack_require__(12));
+
+	var Stagger = (function () {
+	  function Stagger(options, Module) {
+	    return this.init(options, Module);
+	  }
+
+	  _prototypeProperties(Stagger, null, {
+	    _getOptionByMod: {
+	      /*
+	        Method to get an option by modulo and name.
+	        @param {String} Name of the property to get.
+	        @param {Number} Index for the modulo calculation.
+	        @param {Object} Options hash to look in.
+	        @return {Any} Property.
+	      */
+	      value: function GetOptionByMod(name, i, store) {
+	        var props = store[name];
+	        // if not dom list then clone it to array
+	        if (props + "" === "[object NodeList]" || props + "" === "[object HTMLCollection]") props = Array.prototype.slice.call(props, 0);
+	        // get the value in array or return the value itself
+	        var value = h.isArray(props) ? props[i % props.length] : props;
+	        // check if value has the stagger expression, if so parse it
+	        return h.parseIfStagger(value, i);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _getOptionByIndex: {
+	      /*
+	        Method to get option by modulo of index.
+	        @param {Number} Index for modulo calculations.
+	        @param {Object} Options hash to look in.
+	      */
+	      value: function GetOptionByIndex(i, store) {
+	        var _this = this;
+	        var options = {};
+	        _core.Object.keys(store).forEach(function (key) {
+	          return options[key] = _this._getOptionByMod(key, i, store);
+	        });
+	        return options;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _getChildQuantity: {
+	      /*
+	        Method to get total child modules quantity.
+	        @param  {String} Name of quantifier in options hash.
+	        @param  {Object} Options hash object.
+	        @return {Number} Number of child object that should be defined.
+	      */
+	      value: function GetChildQuantity(name, store) {
+	        // if number was set
+	        if (typeof name === "number") return name;
+
+	        var quantifier = store[name];
+	        if (h.isArray(quantifier)) return quantifier.length;else if (quantifier + "" === "[object NodeList]") return quantifier.length;else if (quantifier + "" === "[object HTMLCollection]") return Array.prototype.slice.call(quantifier, 0).length;else if (quantifier instanceof HTMLElement) return 1;else if (typeof quantifier == "string") return 1;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _createTimeline: {
+
+	      /*
+	        Method to create timeline.
+	        @param {Object} Options. ** default ** empty object.
+	      */
+	      value: function CreateTimeline() {
+	        var options = arguments[0] === undefined ? {} : arguments[0];
+	        this.timeline = new Timeline({
+	          onStart: options.onStaggerStart,
+	          onUpdate: options.onStaggerUpdate,
+	          onComplete: options.onStaggerComplete,
+	          onReverseComplete: options.onStaggerReverseComplete,
+	          delay: options.moduleDelay });
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    init: {
+
+	      /*
+	        Method to make stagger form options
+	        @param {Object} Options.
+	        @param {Object} Child class.
+	      */
+	      value: function init(options, Module) {
+	        var count = this._getChildQuantity(options.quantifier || "el", options);
+	        this._createTimeline(options);this.childModules = [];
+	        for (var i = 0; i < count; i++) {
+	          // get child module's option
+	          var option = this._getOptionByIndex(i, options);option.isRunLess = true;
+	          // create child module
+	          var module = new Module(option);this.childModules.push(module);
+	          // add child module's timeline to the self timeline
+	          this.timeline.add(module);
+	        }
+	        return this;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    run: {
+	      /*
+	        Method to start timeline.
+	      */
+	      value: function run() {
+	        this.timeline.play();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return Stagger;
+	})();
+
+	module.exports = function (Module) {
+	  return function (options) {
+	    return new Stagger(options, Module);
+	  };
+	};
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _prototypeProperties = function (child, staticProps, instanceProps) {
+	  if (staticProps) Object.defineProperties(child, staticProps);
+	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+	};
+
+	var _interopRequire = function (obj) {
+	  return obj && (obj["default"] || obj);
+	};
+
+	var _core = _interopRequire(__webpack_require__(28));
+
+	var h = _interopRequire(__webpack_require__(2));
+
+	var Tween = _interopRequire(__webpack_require__(11));
+
+	var Timeline = _interopRequire(__webpack_require__(12));
+
+	/*
+	  Class for toggling opacity on bunch of elements
+	  @class Spriter
+	  @todo
+	    - add isForce3d option
+	    - add run new option merging
+	    - add then chains
+	*/
+	var Spriter = (function () {
+	  function Spriter() {
+	    var o = arguments[0] === undefined ? {} : arguments[0];
+	    this.o = o;
+	    if (!this.o.el) {
+	      return h.error("No \"el\" option specified, aborting");
+	    }
+	    this._vars();this._declareDefaults();this._extendDefaults();this._parseFrames();
+	    if (this._frames.length <= 2) h.warn("Spriter: only " + this._frames.length + " frames found");
+	    if (this._frames.length < 1) h.error("Spriter: there is no frames to animate, aborting");
+	    this._createTween();
+	    return this;
+	  }
+
+	  _prototypeProperties(Spriter, null, {
+	    _declareDefaults: {
+	      /*
+	        Defaults/APIs
+	      */
+	      value: function DeclareDefaults() {
+	        this._defaults = {
+	          /*
+	            Duration
+	            @property duration
+	            @type     {Number}
+	          */
+	          duration: 500,
+	          /*
+	            Delay
+	            @property delay
+	            @type     {Number}
+	          */
+	          delay: 0,
+	          /*
+	            Easing. Please see the 
+	            [timeline module parseEasing function](timeline.coffee.html#parseEasing)
+	            for all avaliable options.
+	              @property easing
+	            @type     {String, Function}
+	          */
+	          easing: "linear.none",
+	          /*
+	            Repeat times count
+	            
+	            @property repeat
+	            @type     {Number}
+	          */
+	          repeat: 0,
+	          /*
+	            Yoyo option defines if animation should be altered on repeat.
+	            
+	            @property yoyo
+	            @type     {Boolean}
+	          */
+	          yoyo: false,
+	          /*
+	            isRunLess option prevents animation from running immediately after
+	            initialization.
+	            
+	            @property isRunLess
+	            @type     {Boolean}
+	          */
+	          isRunLess: false,
+	          /*
+	            isShowEnd option defines if the last frame should be shown when
+	            animation completed.
+	            
+	            @property isShowEnd
+	            @type     {Boolean}
+	          */
+	          isShowEnd: false,
+	          /*
+	            onStart callback will be called once on animation start.
+	            
+	            @property onStart
+	            @type     {Function}
+	          */
+	          onStart: null,
+	          /*
+	            onUpdate callback will be called on every frame of the animation.
+	            The current progress in range **[0,1]** will be passed to the callback.
+	            
+	            @property onUpdate
+	            @type     {Function}
+	          */
+	          onUpdate: null,
+	          /*
+	            onComplete callback will be called once on animation complete.
+	            
+	            @property onComplete
+	            @type     {Function}
+	          */
+	          onComplete: null };
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _vars: {
+	      /*
+	        Method to declare some variables.
+	        
+	        @method run
+	        @param  {Object} New options
+	        @todo   Implement new object merging
+	      */
+	      value: function Vars() {
+	        this._props = h.cloneObj(this.o);
+	        this.el = this.o.el;
+	        this._frames = [];
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    run: {
+	      /*
+	        Method to run the spriter on demand.
+	        
+	        @method run
+	        @param  {Object} New options
+	        @todo   Implement new object merging
+	      */
+	      value: function run(o) {
+	        return this.timeline.play();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _extendDefaults: {
+	      /*
+	        Method to extend _props by options(this.o)
+	        
+	        @method _extendDefaults
+	      */
+	      value: function ExtendDefaults() {
+	        return h.extend(this._props, this._defaults);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _parseFrames: {
+	      /*
+	        Method to parse frames as child nodes of el.
+	        
+	        @method _parseFrames
+	      */
+	      value: function ParseFrames() {
+	        this._frames = Array.prototype.slice.call(this.el.children, 0);
+	        this._frames.forEach(function (frame, i) {
+	          return frame.style.opacity = 0;
+	        });
+	        this._frameStep = 1 / this._frames.length;
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _createTween: {
+
+	      /*
+	        Method to create tween and timeline and supply callbacks.
+	        
+	        @method _createTween
+	      */
+	      value: function CreateTween() {
+	        var _this = this;
+	        this._tween = new Tween({
+	          duration: this._props.duration,
+	          delay: this._props.delay,
+	          yoyo: this._props.yoyo,
+	          repeat: this._props.repeat,
+	          easing: this._props.easing,
+	          onStart: function () {
+	            return _this._props.onStart && _this._props.onStart();
+	          },
+	          onComplete: function () {
+	            return _this._props.onComplete && _this._props.onComplete();
+	          },
+	          onUpdate: function (p) {
+	            return _this._setProgress(p);
+	          } });
+	        this.timeline = new Timeline();this.timeline.add(this._tween);
+	        if (!this._props.isRunLess) this._startTween();
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _startTween: {
+
+	      /*
+	        Method to start tween
+	        
+	        @method _startTween
+	      */
+	      value: function StartTween() {
+	        var _this2 = this;
+	        setTimeout(function () {
+	          return _this2.timeline.play();
+	        }, 1);
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    },
+	    _setProgress: {
+	      /*
+	        Method to set progress of the sprite
+	        
+	        @method _setProgress
+	        @param  {Number} Progress in range **[0,1]**
+	      */
+	      value: function SetProgress(p) {
+	        // get the frame number
+	        var proc = Math.floor(p / this._frameStep);
+	        // react only if frame changes
+	        if (this._prevFrame != this._frames[proc]) {
+	          // if previous frame isnt current one, hide it
+	          if (this._prevFrame) {
+	            this._prevFrame.style.opacity = 0;
+	          }
+	          // if end of animation and isShowEnd flag was specified
+	          // then show the last frame else show current frame
+	          var currentNum = p === 1 && this._props.isShowEnd ? proc - 1 : proc;
+	          // show the current frame
+	          if (this._frames[currentNum]) {
+	            this._frames[currentNum].style.opacity = 1;
+	          }
+	          // set previous frame as current
+	          this._prevFrame = this._frames[proc];
+	        }
+	        if (this._props.onUpdate) {
+	          this._props.onUpdate(p);
+	        }
+	      },
+	      writable: true,
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return Spriter;
+	})();
+
+	module.exports = Spriter;
+
+/***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3138,7 +3325,7 @@
 	// import h from '../h';
 	var t = _interopRequire(__webpack_require__(13));
 
-	var easing = _interopRequire(__webpack_require__(10));
+	var easing = _interopRequire(__webpack_require__(8));
 
 	var Tween = (function () {
 	  /*
@@ -3433,7 +3620,6 @@
 	        this._progressTime = 0;
 	        this._negativeShift = 0;
 	        this._state = "stop";
-
 	        // if negative delay was specified,
 	        // save it to _negativeShift property and
 	        // reset it back to 0
@@ -4710,20 +4896,20 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.167.1',
+	  revision: '0.168.0',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),
 	  Burst: __webpack_require__(4),
 	  Transit: __webpack_require__(5),
 	  Swirl: __webpack_require__(6),
-	  Stagger: __webpack_require__(7),
-	  Spriter: __webpack_require__(8),
-	  MotionPath: __webpack_require__(9),
+	  Stagger: __webpack_require__(9),
+	  Spriter: __webpack_require__(10),
+	  MotionPath: __webpack_require__(7),
 	  Tween: __webpack_require__(11),
 	  Timeline: __webpack_require__(12),
 	  tweener: __webpack_require__(13),
-	  easing: __webpack_require__(10)
+	  easing: __webpack_require__(8)
 	};
 
 	mojs.h = mojs.helpers;
@@ -4766,7 +4952,7 @@
 	    return Circle.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Circle.prototype.type = 'ellipse';
+	  Circle.prototype.shape = 'ellipse';
 
 	  Circle.prototype.draw = function() {
 	    var rx, ry;
@@ -4852,7 +5038,7 @@
 	    return Zigzag.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Zigzag.prototype.type = 'path';
+	  Zigzag.prototype.shape = 'path';
 
 	  Zigzag.prototype.ratio = 1.43;
 
@@ -4909,7 +5095,7 @@
 	    return Rect.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Rect.prototype.type = 'rect';
+	  Rect.prototype.shape = 'rect';
 
 	  Rect.prototype.ratio = 1.43;
 
@@ -4961,7 +5147,7 @@
 	    return Polygon.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Polygon.prototype.type = 'path';
+	  Polygon.prototype.shape = 'path';
 
 	  Polygon.prototype.draw = function() {
 	    this.drawShape();
@@ -5026,7 +5212,7 @@
 	    return Cross.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Cross.prototype.type = 'path';
+	  Cross.prototype.shape = 'path';
 
 	  Cross.prototype.draw = function() {
 	    var d, line1, line2, radiusX, radiusY, x1, x2, y1, y2;
@@ -5078,7 +5264,7 @@
 	    return Equal.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Equal.prototype.type = 'path';
+	  Equal.prototype.shape = 'path';
 
 	  Equal.prototype.ratio = 1.43;
 

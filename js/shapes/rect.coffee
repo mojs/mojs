@@ -4,7 +4,7 @@
 Bit = require './bit'
 
 class Rect extends Bit
-  type:   'rect'
+  shape:   'rect'
   ratio:  1.43
   draw:->
     super

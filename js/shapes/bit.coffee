@@ -2,7 +2,7 @@ h       = require '../h'
 
 class Bit
   ns:                   'http://www.w3.org/2000/svg'
-  type:                 'line'
+  shape:                'line'
   ratio:                1
   defaults:
     radius:             50
@@ -54,7 +54,7 @@ class Bit
     @isRendered = true
     if @o.el? then @el = @o.el; @isForeign = true
     else
-      @el = document.createElementNS @ns, @type or 'line'
+      @el = document.createElementNS @ns, @shape or 'line'
       !@o.isDrawLess and @draw(); @ctx.appendChild @el
 
   drawMap: [
