@@ -2,10 +2,9 @@ import h from './h';
 import Timeline from './tween/timeline';
 
 class Stagger {
-  constructor(options, Module) {
+  constructor (options, Module) {
     return this.init(options, Module);
   }
-
   /*
     Method to get an option by modulo and name.
     @param {String} Name of the property to get.
@@ -13,7 +12,7 @@ class Stagger {
     @param {Object} Options hash to look in.
     @return {Any} Property.
   */
-  _getOptionByMod(name, i, store) {
+  _getOptionByMod (name, i, store) {
   	var props = store[name];
   	// if not dom list then clone it to array
   	if (props + '' === '[object NodeList]' || props + '' === '[object HTMLCollection]')
@@ -23,26 +22,24 @@ class Stagger {
     // check if value has the stagger expression, if so parse it
     return h.parseIfStagger(value, i);
   }
-
   /*
     Method to get option by modulo of index.
     @param {Number} Index for modulo calculations.
     @param {Object} Options hash to look in.
   */
-  _getOptionByIndex(i, store) {
+  _getOptionByIndex (i, store) {
   	var options = { };
   	Object.keys(store).forEach(key =>
   	  options[key] = this._getOptionByMod(key, i, store));
   	return options;
   }
-
   /*
     Method to get total child modules quantity.
     @param  {String} Name of quantifier in options hash.
     @param  {Object} Options hash object.
     @return {Number} Number of child object that should be defined.
   */
-  _getChildQuantity(name, store) {
+  _getChildQuantity (name, store) {
   	// if number was set
   	if (typeof name === 'number')
   	  return name;
@@ -64,7 +61,7 @@ class Stagger {
     Method to create timeline.
     @param {Object} Options. ** default ** empty object.
   */
-  _createTimeline(options = { }) {
+  _createTimeline (options = { }) {
   	this.timeline = new Timeline({
       onStart:           options.onStaggerStart,
       onUpdate:          options.onStaggerUpdate,
@@ -79,7 +76,7 @@ class Stagger {
     @param {Object} Options.
     @param {Object} Child class.
   */
-  init(options, Module) {
+  init (options, Module) {
   	var count = this._getChildQuantity(options.quantifier || 'el', options);
   	this._createTimeline(options); this.childModules = [ ]
   	for (var i = 0; i < count; i ++) {
@@ -92,13 +89,10 @@ class Stagger {
   	}
   	return this;
   }
-
   /*
     Method to start timeline.
   */
-  run() {
-  	this.timeline.play();
-  }
+  run() { this.timeline.play(); }
 }
 
 module.exports = function(Module) {
