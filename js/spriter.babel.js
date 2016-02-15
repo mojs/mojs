@@ -131,7 +131,7 @@ class Spriter {
   /*
     Method to parse frames as child nodes of el.
     
-    @method _extendDefaults
+    @method _parseFrames
   */
   _parseFrames () {
     this._frames = Array.prototype.slice.call(this.el.children, 0);
