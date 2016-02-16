@@ -1764,23 +1764,6 @@
 	    return this.setElStyles();
 	  };
 
-	  Transit.prototype.createTween = function() {
-	    var it;
-	    it = this;
-	    this.createTimeline();
-	    this.timeline = new Timeline({
-	      onComplete: (function(_this) {
-	        return function() {
-	          var ref;
-	          !_this.o.isShowEnd && _this.hide();
-	          return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
-	        };
-	      })(this)
-	    });
-	    this.timeline.add(this.tween);
-	    return !this.o.isRunLess && this.startTween();
-	  };
-
 	  Transit.prototype.createTimeline = function() {
 	    return this.tween = new Tween({
 	      duration: this.props.duration,
@@ -1812,6 +1795,23 @@
 	        };
 	      })(this)
 	    });
+	  };
+
+	  Transit.prototype.createTween = function() {
+	    var it;
+	    it = this;
+	    this.createTimeline();
+	    this.timeline = new Timeline({
+	      onComplete: (function(_this) {
+	        return function() {
+	          var ref;
+	          !_this.o.isShowEnd && _this.hide();
+	          return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
+	        };
+	      })(this)
+	    });
+	    this.timeline.add(this.tween);
+	    return !this.o.isRunLess && this.startTween();
 	  };
 
 	  Transit.prototype.run = function(o) {
@@ -1915,8 +1915,7 @@
 	  };
 
 	  Transit.prototype.getBitLength = function() {
-	    this.props.bitLength = this.bit.getLength();
-	    return this.props.bitLength;
+	    return this.props.bitLength = this.bit.getLength();
 	  };
 
 	  return Transit;
@@ -4896,7 +4895,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.169.1',
+	  revision: '0.169.2',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),

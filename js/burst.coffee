@@ -189,8 +189,7 @@ class Burst extends Transit
     largestSize = -1
     for transit, i in @transits
       transit.calcSize()
-      if largestSize < transit.props.size
-        largestSize = transit.props.size
+      largestSize = transit.props.size if largestSize < transit.props.size
     radius = @calcMaxRadius()
     @props.size   = largestSize + 2*radius
     @props.size   += 2*@props.sizeGap

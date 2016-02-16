@@ -7,7 +7,6 @@ Tween     = require './tween/tween'
 Timeline  = require './tween/timeline'
 
 # TODO
-#  - left/top -> left/top; shiftX/shiftY -> x/y
 #  - don't run by default
 #  - tween properties
 #  - properties signatures
@@ -352,15 +351,8 @@ class Transit extends Bit
     @
     
   tuneOptions:(o)-> @extendDefaults(o); @calcSize(); @setElStyles()
+  
   # TWEEN
-  createTween:->
-    it = @
-    @createTimeline()
-    @timeline = new Timeline
-      onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
-    @timeline.add @tween
-    !@o.isRunLess and @startTween()
-
   createTimeline:->
     @tween = new Tween
       duration: @props.duration
@@ -370,12 +362,19 @@ class Transit extends Bit
       easing:   @props.easing
       onUpdate: (p)=> @setProgress p
       onStart:(isForward, isYoyo)=>
-        if (isForward) then @show()
-        else !@o.isShowInit and @hide()
+        if (isForward) then @show() else !@o.isShowInit and @hide()
         @props.onStart?.apply @, arguments
       onFirstUpdate:(isForward, isYoyo)=>
         # on first update backward tune new then options
         if !isForward then @history.length > 1 and @tuneOptions @history[0]
+
+  createTween:->
+    it = @
+    @createTimeline()
+    @timeline = new Timeline
+      onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
+    @timeline.add @tween
+    !@o.isRunLess and @startTween()
 
   run:(o)->
     @runCount++
@@ -455,9 +454,7 @@ class Transit extends Bit
     timelineOptions.onComplete = @props.onComplete
     @tween._setProp timelineOptions
   
-  getBitLength:->
-    @props.bitLength = @bit.getLength()
-    @props.bitLength
+  getBitLength:-> @props.bitLength = @bit.getLength()
 
 module.exports = Transit
 
