@@ -11,13 +11,13 @@ describe 'Helpers ->', ->
   it 'should have remBase', ->
     expect(typeof h.remBase).toBe 'number'
   it 'should have posPropsMap map', ->
-    expect(h.posPropsMap.x).toBe      1
-    expect(h.posPropsMap.y).toBe      1
-    expect(h.posPropsMap.shiftX).toBe 1
-    expect(h.posPropsMap.shiftY).toBe 1
+    expect(h.posPropsMap.left).toBe 1
+    expect(h.posPropsMap.top).toBe  1
+    expect(h.posPropsMap.x).toBe    1
+    expect(h.posPropsMap.y).toBe    1
   it 'should have strokeDashPropsMap map', ->
-    expect(h.strokeDashPropsMap.strokeDasharray) .toBe    1
-    expect(h.strokeDashPropsMap.strokeDashoffset).toBe    1
+    expect(h.strokeDashPropsMap.strokeDasharray) .toBe     1
+    expect(h.strokeDashPropsMap.strokeDashoffset).toBe     1
     expect(Object.keys(h.strokeDashPropsMap).length).toBe  2
   it 'should have initial uniqIDs props', ->
     expect(h.uniqIDs).toBe -1

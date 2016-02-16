@@ -30,7 +30,7 @@ var Tween = class Tween {
       easing:                 'Linear.None',
       /* custom tween's name */
       name:                   null,
-      /* custom tween's name */
+      /* custom tween's base name */
       nameBase:               'Tween',
       /*
         onProgress callback runs before any other callback.

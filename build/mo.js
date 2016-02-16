@@ -70,10 +70,10 @@
 	    x: 0,
 	    y: 0,
 	    angle: 0,
-	    'stroke': 'hotpink',
+	    stroke: 'hotpink',
 	    'stroke-width': 2,
 	    'stroke-opacity': 1,
-	    'fill': 'transparent',
+	    fill: 'transparent',
 	    'fill-opacity': 1,
 	    'stroke-dasharray': '',
 	    'stroke-dashoffset': '',
@@ -321,10 +321,10 @@
 	  };
 
 	  Helpers.prototype.posPropsMap = {
+	    left: 1,
+	    top: 1,
 	    x: 1,
 	    y: 1,
-	    shiftX: 1,
-	    shiftY: 1,
 	    burstX: 1,
 	    burstY: 1,
 	    burstShiftX: 1,
@@ -936,10 +936,10 @@
 	    opacity: 1,
 	    randomAngle: 0,
 	    randomRadius: 0,
-	    x: 100,
-	    y: 100,
-	    shiftX: 0,
-	    shiftY: 0,
+	    left: 100,
+	    top: 100,
+	    x: 0,
+	    y: 0,
 	    easing: 'Linear.None',
 	    radius: {
 	      25: 75
@@ -1138,11 +1138,11 @@
 	  };
 
 	  Burst.prototype.isNeedsTransform = function() {
-	    return this.isPropChanged('shiftX') || this.isPropChanged('shiftY') || this.isPropChanged('angle');
+	    return this.isPropChanged('x') || this.isPropChanged('y') || this.isPropChanged('angle');
 	  };
 
 	  Burst.prototype.fillTransform = function() {
-	    return "rotate(" + this.props.angle + "deg) translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+	    return "rotate(" + this.props.angle + "deg) translate(" + this.props.x + ", " + this.props.y + ")";
 	  };
 
 	  Burst.prototype.createTween = function() {
@@ -1289,10 +1289,10 @@
 	    strokeDashoffset: 0,
 	    fill: 'deeppink',
 	    fillOpacity: 'transparent',
+	    left: 0,
+	    top: 0,
 	    x: 0,
 	    y: 0,
-	    shiftX: 0,
-	    shiftY: 0,
 	    opacity: 1,
 	    angle: 0,
 	    points: 3,
@@ -1365,8 +1365,8 @@
 	      size = this.props.size + "px";
 	      marginSize = (-this.props.size / 2) + "px";
 	      this.el.style.position = 'absolute';
-	      this.el.style.top = this.props.y;
-	      this.el.style.left = this.props.x;
+	      this.el.style.top = this.props.top;
+	      this.el.style.left = this.props.left;
 	      this.el.style.width = size;
 	      this.el.style.height = size;
 	      this.el.style['margin-left'] = marginSize;
@@ -1428,8 +1428,8 @@
 	    }
 	    this.isPropChanged('opacity') && (this.el.style.opacity = this.props.opacity);
 	    if (!this.isForeign) {
-	      this.isPropChanged('x') && (this.el.style.left = this.props.x);
-	      this.isPropChanged('y') && (this.el.style.top = this.props.y);
+	      this.isPropChanged('left') && (this.el.style.left = this.props.left);
+	      this.isPropChanged('top') && (this.el.style.top = this.props.top);
 	      if (this.isNeedsTransform()) {
 	        return this.h.setPrefixedStyle(this.el, 'transform', this.fillTransform());
 	      }
@@ -1437,13 +1437,13 @@
 	  };
 
 	  Transit.prototype.fillTransform = function() {
-	    return "translate(" + this.props.shiftX + ", " + this.props.shiftY + ")";
+	    return "translate(" + this.props.x + ", " + this.props.y + ")";
 	  };
 
 	  Transit.prototype.isNeedsTransform = function() {
 	    var isX, isY;
-	    isX = this.isPropChanged('shiftX');
-	    isY = this.isPropChanged('shiftY');
+	    isX = this.isPropChanged('x');
+	    isY = this.isPropChanged('y');
 	    return isX || isY;
 	  };
 
@@ -1667,8 +1667,8 @@
 
 	  Transit.prototype.getDelta = function(key, optionsValue) {
 	    var delta, ref;
-	    if ((key === 'x' || key === 'y') && !this.o.ctx) {
-	      this.h.warn('Consider to animate shiftX/shiftY properties instead of x/y, as it would be much more performant', optionsValue);
+	    if ((key === 'left' || key === 'top') && !this.o.ctx) {
+	      this.h.warn('Consider to animate x/y properties instead of left/top, as it would be much more performant', optionsValue);
 	    }
 	    if ((ref = this.skipPropsDelta) != null ? ref[key] : void 0) {
 	      return;
@@ -3370,7 +3370,7 @@
 	          easing: "Linear.None",
 	          /* custom tween's name */
 	          name: null,
-	          /* custom tween's name */
+	          /* custom tween's base name */
 	          nameBase: "Tween",
 	          /*
 	            onProgress callback runs before any other callback.
@@ -4896,7 +4896,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.168.0',
+	  revision: '0.169.1',
 	  isDebug: true,
 	  helpers: __webpack_require__(2),
 	  shapesMap: __webpack_require__(3),

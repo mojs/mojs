@@ -974,8 +974,9 @@
         it('should set a position with respect to units', function() {
           var byte;
           byte = new Byte({
-            x: 100,
-            y: 50
+            left: 100,
+            top: 50,
+            isIt: 1
           });
           expect(byte.el.style.left).toBe('100px');
           return expect(byte.el.style.top).toBe('50px');
@@ -983,7 +984,7 @@
         it('should animate position', function(dfr) {
           var byte;
           return byte = new Byte({
-            x: {
+            left: {
               100: '200px'
             },
             duration: 100,
@@ -997,7 +998,7 @@
           var byte;
           spyOn(console, 'warn');
           byte = new Byte({
-            x: {
+            left: {
               100: '200px'
             }
           });
@@ -1007,7 +1008,7 @@
           var byte;
           spyOn(console, 'warn');
           byte = new Byte({
-            x: {
+            left: {
               100: '200px'
             },
             ctx: svg
@@ -1017,7 +1018,7 @@
         it('should animate position with respect to units', function(dfr) {
           var byte;
           byte = new Byte({
-            x: {
+            left: {
               '20%': '50%'
             },
             duration: 100
@@ -1030,18 +1031,18 @@
         it('end unit that were not specified should fallback to start unit', function() {
           var byte;
           byte = new Byte({
-            x: {
+            left: {
               '20%': 50
             },
             duration: 200
           });
-          expect(byte.deltas.x.start.unit).toBe('%');
-          return expect(byte.deltas.x.end.unit).toBe('%');
+          expect(byte.deltas.left.start.unit).toBe('%');
+          return expect(byte.deltas.left.end.unit).toBe('%');
         });
         it('should fallback to end units if units are differnt', function(dfr) {
           var byte;
           return byte = new Byte({
-            x: {
+            left: {
               '20%': '50px'
             },
             duration: 200,
@@ -1051,12 +1052,12 @@
             }
           });
         });
-        return describe('shiftX/shiftY coordinates ->', function() {
+        return describe('x/y coordinates ->', function() {
           it('should set a position with respect to units', function() {
             var byte, s, tr;
             byte = new Byte({
-              shiftX: 100,
-              shiftY: 50
+              x: 100,
+              y: 50
             });
             s = byte.el.style;
             tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
@@ -1065,7 +1066,7 @@
           it('should animate position', function(dfr) {
             var byte;
             return byte = new Byte({
-              shiftX: {
+              x: {
                 100: '200px'
               },
               duration: 200,
@@ -1081,7 +1082,7 @@
           it('should animate position with respect to units', function(dfr) {
             var byte;
             return byte = new Byte({
-              shiftX: {
+              x: {
                 '20%': '50%'
               },
               duration: 200,
@@ -1097,10 +1098,10 @@
           return it('should fallback to end units if units are differnt', function(dfr) {
             var byte;
             return byte = new Byte({
-              shiftX: {
+              x: {
                 '20%': '50px'
               },
-              shiftY: {
+              y: {
                 0: '50%'
               },
               duration: 200,
@@ -1120,8 +1121,8 @@
       return it('return tranform string of the el', function() {
         var byte;
         byte = new Byte({
-          shiftX: 100,
-          shiftY: 100
+          x: 100,
+          y: 100
         });
         return expect(byte.fillTransform()).toBe('translate(100px, 100px)');
       });
@@ -1130,25 +1131,25 @@
       it('should return boolean if fillTransform needed', function() {
         var byte;
         byte = new Byte({
-          shiftX: 100,
-          shiftY: 100,
+          x: 100,
+          y: 100,
           isRunLess: true
         });
         byte.setProp({
-          shiftX: 101
+          x: 101
         });
         return expect(byte.isNeedsTransform()).toBe(true);
       });
       return it('should execute for both x and y ', function() {
         var byte;
         byte = new Byte({
-          shiftX: 100,
-          shiftY: 100
+          x: 100,
+          y: 100
         });
         spyOn(byte, 'isPropChanged');
         byte.isNeedsTransform();
-        expect(byte.isPropChanged).toHaveBeenCalledWith('shiftX');
-        return expect(byte.isPropChanged).toHaveBeenCalledWith('shiftY');
+        expect(byte.isPropChanged).toHaveBeenCalledWith('x');
+        return expect(byte.isPropChanged).toHaveBeenCalledWith('y');
       });
     });
     describe('show method ->', function() {
@@ -1414,7 +1415,7 @@
         var byte, s, tr;
         byte = new Byte({
           radius: 25,
-          y: 10,
+          top: 10,
           isRunLess: true
         });
         expect(byte.el.style.left).toBe('0px');
@@ -1428,7 +1429,7 @@
         var byte, s, tr;
         byte = new Byte({
           radius: 25,
-          y: 10,
+          top: 10,
           ctx: svg
         });
         byte.draw();
@@ -1443,13 +1444,13 @@
         var byte;
         byte = new Byte({
           radius: 25,
-          y: 10
+          top: 10
         });
         byte.draw();
-        byte.props.x = '1px';
+        byte.props.left = '1px';
         byte.draw();
         expect(byte.el.style.left).toBe('1px');
-        return expect(byte.lastSet.x.value).toBe('1px');
+        return expect(byte.lastSet.left.value).toBe('1px');
       });
       it('should not set old values', function() {
         var byte;
@@ -1469,7 +1470,7 @@
         });
         spyOn(byte, 'fillTransform');
         byte.setProp({
-          shiftX: 20
+          x: 20
         });
         byte.draw();
         return expect(byte.fillTransform).toHaveBeenCalled();
@@ -1490,10 +1491,10 @@
           radius: 25,
           y: 10
         });
-        byte.props.x = '20px';
-        expect(byte.isPropChanged('x')).toBe(true);
-        byte.props.x = '20px';
-        return expect(byte.isPropChanged('x')).toBe(false);
+        byte.props.left = '20px';
+        expect(byte.isPropChanged('left')).toBe(true);
+        byte.props.left = '20px';
+        return expect(byte.isPropChanged('left')).toBe(false);
       });
       return it('should add prop object to lastSet if undefined', function() {
         var byte;
@@ -2101,7 +2102,7 @@
         return expect(byte.props.easing).toBe('Linear.None');
       });
     });
-    return describe('run method ->', function() {
+    describe('run method ->', function() {
       it('should extend defaults with passed object', function() {
         var byte, o;
         byte = new Byte({
@@ -2284,7 +2285,7 @@
         });
         return expect(byte.setProgress).toHaveBeenCalledWith(0, true);
       });
-      return it('should warn if shape was passed', function() {
+      it('should warn if shape was passed', function() {
         var byte;
         byte = new Byte({
           shape: 'polygon',
@@ -2296,6 +2297,311 @@
         });
         expect(byte.h.warn).toHaveBeenCalled();
         return expect(byte.o.shape).toBe('polygon');
+      });
+      it('should set new options on timeline', function() {
+        var byte, onComplete, onStart;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 500,
+          delay: 200,
+          repeat: 1,
+          easing: 'cubic.in',
+          yoyo: true,
+          onStart: function() {},
+          onComplete: function() {}
+        });
+        onStart = (function() {});
+        onComplete = (function() {});
+        byte.run({
+          duration: 2000,
+          delay: 0,
+          repeat: 2,
+          easing: 'linear.none',
+          onStart: onStart,
+          onComplete: onComplete,
+          yoyo: false
+        });
+        expect(byte.tween._props.duration).toBe(2000);
+        expect(byte.tween._props.delay).toBe(0);
+        expect(byte.tween._props.repeat).toBe(2);
+        expect(typeof byte.tween._props.easing).toBe('function');
+        expect(byte.tween._props.easing).toBe(mojs.easing.linear.none);
+        expect(byte.tween._props.onStart).toBe(onStart);
+        expect(byte.tween._props.onComplete).toBe(onComplete);
+        return expect(byte.tween._props.yoyo).toBe(false);
+      });
+      it('should call _recalcTotalDuration on timeline', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte.timeline, '_recalcTotalDuration');
+        byte.run({
+          duration: 2000
+        });
+        return expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+      it('should call transformHistory', function() {
+        var byte, o;
+        byte = new Byte;
+        spyOn(byte, 'transformHistory');
+        o = {
+          duration: 2000
+        };
+        byte.run(o);
+        return expect(byte.transformHistory).toHaveBeenCalledWith(o);
+      });
+      it('should not call transformHistory if optionless', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, 'transformHistory');
+        byte.run();
+        return expect(byte.transformHistory).not.toHaveBeenCalled();
+      });
+      it('shoud warn if tweenValues changed on run', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 40
+        });
+        spyOn(h, 'warn');
+        byte.run({
+          duration: 100,
+          delay: 100,
+          repeat: 1,
+          yoyo: false,
+          easing: 'Linear.None',
+          onStart: function() {},
+          onUpdate: function() {},
+          onComplete: function() {}
+        });
+        expect(h.warn).toHaveBeenCalled();
+        expect(byte.history[0].duration).toBe(2000);
+        return expect(byte.props.duration).toBe(2000);
+      });
+      it('shoud not warn if history is 1 record long', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        });
+        spyOn(h, 'warn');
+        byte.run({
+          duration: 100,
+          delay: 100,
+          repeat: 1,
+          yoyo: false,
+          easing: 'Linear.None',
+          onStart: function() {},
+          onUpdate: function() {},
+          onComplete: function() {}
+        });
+        expect(h.warn).not.toHaveBeenCalled();
+        expect(byte.history[0].duration).toBe(100);
+        return expect(byte.props.duration).toBe(100);
+      });
+      it('shoud work with no arguments passed', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 500
+        });
+        return expect(function() {
+          return byte.run();
+        }).not.toThrow();
+      });
+      it('should save run count', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 500
+        });
+        byte.run();
+        return expect(byte.runCount).toBe(1);
+      });
+      return it('should tuneNewOption on run if runCount > 1', function() {
+        var byte;
+        byte = new Byte({
+          isRunLess: true,
+          duration: 2000
+        }).then({
+          radius: 500
+        });
+        byte.run();
+        spyOn(byte, 'tuneNewOption');
+        byte.run();
+        return expect(byte.tuneNewOption).toHaveBeenCalledWith(byte.history[0]);
+      });
+    });
+    describe('isForeign flag ->', function() {
+      it('should not be set by default', function() {
+        var byte;
+        byte = new Byte;
+        return expect(byte.isForeign).toBe(false);
+      });
+      it('should be set if context was passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        return expect(byte.isForeign).toBe(true);
+      });
+      return it('if context passed el should be bit\'s el', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        return expect(byte.el).toBe(byte.bit.el);
+      });
+    });
+    describe('show/hide on start/end ->', function() {
+      it('should show the el on start', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.timeline.setProgress(.45);
+        byte.timeline.setProgress(.5);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should hide the el on end', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.timeline.setProgress(.99);
+        byte.timeline.setProgress(1);
+        return expect(byte.el.style.display).toBe('none');
+      });
+      it('should not hide the el on end if isShowEnd was passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowEnd: true
+        });
+        byte.timeline.setProgress(.99);
+        byte.timeline.setProgress(1);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should not hide the el on end if isShowEnd was passed #2 - chain', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowEnd: true,
+          isRunLess: true
+        }).then({
+          radius: 10
+        }).then({
+          radius: 20
+        });
+        byte.timeline.setProgress(.99);
+        byte.timeline.setProgress(1);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should hide the el on reverse end', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isIt: 1
+        });
+        byte.timeline.setProgress(1);
+        byte.timeline.setProgress(5);
+        return expect(byte.el.style.display).toBe('none');
+      });
+      return it('should not hide the el on reverse end if isShowInit passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowInit: true
+        });
+        byte.timeline.setProgress(.5);
+        byte.timeline.setProgress(0);
+        return expect(byte.el.style.display).toBe('block');
+      });
+    });
+    describe('getRadiusSize method ->', function() {
+      it('should return max from delatas if key is defined', function() {
+        var byte, size;
+        byte = new Byte({
+          radiusX: {
+            20: 30
+          }
+        });
+        size = byte.getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(30);
+      });
+      it('should return props\' value if delats\' one is not defined ', function() {
+        var byte, size;
+        byte = new Byte({
+          radiusX: 20
+        });
+        size = byte.getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(20);
+      });
+      it('should fallback to passed fallback option', function() {
+        var byte, size;
+        byte = new Byte;
+        size = byte.getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(0);
+      });
+      return it('should fallback to 0 by default', function() {
+        var byte, size;
+        byte = new Byte;
+        size = byte.getRadiusSize({
+          key: 'radiusX'
+        });
+        return expect(size).toBe(0);
+      });
+    });
+    describe('foreign bit option ->', function() {
+      it('should recieve a foreign bit to work with', function() {
+        var bit, byte;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
+        svg.appendChild(bit);
+        byte = new Byte({
+          bit: bit
+        });
+        return expect(byte.bit.el).toBe(bit);
+      });
+      return it('should set isForeignBit flag', function() {
+        var bit, byte;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
+        svg.appendChild(bit);
+        byte = new Byte({
+          bit: bit
+        });
+        return expect(byte.isForeignBit).toBe(true);
+      });
+    });
+    return describe('getBitLength method', function() {
+      it('should call getLength method on bit', function() {
+        var byte;
+        byte = new Byte();
+        spyOn(byte.bit, 'getLength');
+        byte.getBitLength();
+        return expect(byte.bit.getLength).toHaveBeenCalled();
+      });
+      return it('should cache the value to props', function() {
+        var byte;
+        byte = new Byte();
+        byte.props.bitLength = null;
+        byte.getBitLength();
+        return expect(byte.props.bitLength).not.toBe(null);
       });
     });
   });

@@ -1,25 +1,25 @@
 h       = require '../h'
 
 class Bit
-  ns:                   'http://www.w3.org/2000/svg'
-  shape:                'line'
-  ratio:                1
+  ns:                     'http://www.w3.org/2000/svg'
+  shape:                  'line'
+  ratio:                  1
   defaults:
-    radius:             50
-    radiusX:            undefined
-    radiusY:            undefined
-    points:             3
-    x:                  0
-    y:                  0
-    angle:              0
-    'stroke':           'hotpink'
-    'stroke-width':     2
-    'stroke-opacity':   1
-    'fill':             'transparent'
-    'fill-opacity':     1
-    'stroke-dasharray': ''
-    'stroke-dashoffset':''
-    'stroke-linecap':   ''
+    radius:               50
+    radiusX:              undefined
+    radiusY:              undefined
+    points:               3
+    x:                    0
+    y:                    0
+    angle:                0
+    stroke:               'hotpink'
+    'stroke-width':       2
+    'stroke-opacity':     1
+    fill:                 'transparent'
+    'fill-opacity':       1
+    'stroke-dasharray':   ''
+    'stroke-dashoffset':  ''
+    'stroke-linecap':     ''
   constructor:(@o={})-> @init(); @
   init:-> @vars(); @render(); @
   vars:->

@@ -15,10 +15,10 @@ class Burst extends Transit
     randomAngle:        0
     randomRadius:       0
     # position props/el props
-    x:                  100
-    y:                  100
-    shiftX:             0
-    shiftY:             0
+    left:               100
+    top:                100
+    x:                  0
+    y:                  0
     easing:             'Linear.None'
     # size props
     radius:             { 25: 75 }
@@ -179,9 +179,9 @@ class Burst extends Transit
   draw:(progress)-> @drawEl()
 
   isNeedsTransform:->
-    @isPropChanged('shiftX')or@isPropChanged('shiftY')or@isPropChanged('angle')
+    @isPropChanged('x')or@isPropChanged('y')or@isPropChanged('angle')
   fillTransform:->
-    "rotate(#{@props.angle}deg) translate(#{@props.shiftX}, #{@props.shiftY})"
+    "rotate(#{@props.angle}deg) translate(#{@props.x}, #{@props.y})"
   createTween:->
     super; i = @transits.length; @timeline.add(@transits[i].tween) while(i--)
     

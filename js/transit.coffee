@@ -7,9 +7,8 @@ Tween     = require './tween/tween'
 Timeline  = require './tween/timeline'
 
 # TODO
-#  - type -> shape
-#  - don't run by default
 #  - left/top -> left/top; shiftX/shiftY -> x/y
+#  - don't run by default
 #  - tween properties
 #  - properties signatures
 
@@ -26,10 +25,10 @@ class Transit extends Bit
     fill:               'deeppink'
     fillOpacity:        'transparent'
     # position props/el props
+    left:               0
+    top:                0
     x:                  0
     y:                  0
-    shiftX:             0
-    shiftY:             0
     opacity:            1
     angle:              0
     points:             3
@@ -87,8 +86,8 @@ class Transit extends Bit
       size        = "#{@props.size}px"
       marginSize  = "#{-@props.size/2}px"
       @el.style.position    = 'absolute'
-      @el.style.top         = @props.y
-      @el.style.left        = @props.x
+      @el.style.top         = @props.top
+      @el.style.left        = @props.left
       @el.style.width       = size
       @el.style.height      = size
       @el.style['margin-left'] = marginSize
@@ -134,14 +133,14 @@ class Transit extends Bit
     return true if !@el?
     @isPropChanged('opacity') and (@el.style.opacity = @props.opacity)
     if !@isForeign
-      @isPropChanged('x') and (@el.style.left = @props.x)
-      @isPropChanged('y') and (@el.style.top  = @props.y)
+      @isPropChanged('left') and (@el.style.left = @props.left)
+      @isPropChanged('top') and (@el.style.top  = @props.top)
       if @isNeedsTransform()
         @h.setPrefixedStyle @el, 'transform', @fillTransform()
 
-  fillTransform:-> "translate(#{@props.shiftX}, #{@props.shiftY})"
+  fillTransform:-> "translate(#{@props.x}, #{@props.y})"
   isNeedsTransform:->
-    isX = @isPropChanged('shiftX'); isY = @isPropChanged('shiftY'); isX or isY
+    isX = @isPropChanged('x'); isY = @isPropChanged('y'); isX or isY
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     if @lastSet[name].value isnt @props[name]
@@ -284,8 +283,8 @@ class Transit extends Bit
     not (!isObject or @h.isArray(optionsValue) or h.isDOM(optionsValue))
 
   getDelta:(key, optionsValue)->
-    if (key is 'x' or key is 'y') and !@o.ctx
-      @h.warn 'Consider to animate shiftX/shiftY properties instead of x/y,
+    if (key is 'left' or key is 'top') and !@o.ctx
+      @h.warn 'Consider to animate x/y properties instead of left/top,
        as it would be much more performant', optionsValue
     # skip props defined in skipPropsDelta map
     # needed for modules based on transit like swirl

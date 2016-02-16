@@ -19,10 +19,10 @@
       return expect(typeof h.remBase).toBe('number');
     });
     it('should have posPropsMap map', function() {
+      expect(h.posPropsMap.left).toBe(1);
+      expect(h.posPropsMap.top).toBe(1);
       expect(h.posPropsMap.x).toBe(1);
-      expect(h.posPropsMap.y).toBe(1);
-      expect(h.posPropsMap.shiftX).toBe(1);
-      return expect(h.posPropsMap.shiftY).toBe(1);
+      return expect(h.posPropsMap.y).toBe(1);
     });
     it('should have strokeDashPropsMap map', function() {
       expect(h.strokeDashPropsMap.strokeDasharray).toBe(1);

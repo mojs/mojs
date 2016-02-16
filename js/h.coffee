@@ -70,11 +70,10 @@ class Helpers
     easing:           1
     yoyo:             1
   posPropsMap:
+    left:             1
+    top:              1
     x:                1
     y:                1
-    shiftX:           1
-    shiftY:           1
-
     burstX:           1
     burstY:           1
     burstShiftX:      1
