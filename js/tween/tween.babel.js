@@ -7,7 +7,7 @@ var Tween = class Tween {
     Method do declare defaults with this._defaults object.
     @private
   */
-  _declareDefaults() {
+  _declareDefaults () {
     // DEFAULTS
     this._defaults = {
       /* duration of the tween [0..∞] */
@@ -63,7 +63,7 @@ var Tween = class Tween {
     @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
   */
-  play (shift = 0) {
+  play ( shift = 0 ) {
     if ( this._state === 'play' && this._isRunning ) { return false; }
     this._props.isReversed = false;
     this._subPlay( shift, 'play' );
@@ -76,7 +76,7 @@ var Tween = class Tween {
     @param  {Number} Shift time in milliseconds.
     @return {Object} Self.
   */
-  playBackward (shift = 0) {
+  playBackward ( shift = 0 ) {
     if ( this._state === 'reverse' && this._isRunning)  { return false; }
     this._props.isReversed = true;
     this._subPlay( shift, 'reverse' );
@@ -120,7 +120,7 @@ var Tween = class Tween {
     @param {Number} Progress to set.
     @returns {Object} Self.
   */
-  setProgress (progress) {
+  setProgress ( progress ) {
     var p = this._props;
     // set start time if there is no one yet.
     !p.startTime && this._setStartTime();
@@ -307,7 +307,7 @@ var Tween = class Tween {
                     0 = no edge jump.
                     1 = edge jump in positive direction.
   */
-  _update (time, timelinePrevTime, wasYoyo, onEdge) {
+  _update ( time, timelinePrevTime, wasYoyo, onEdge ) {
     var p       = this._props;
     // if we don't the _prevTime thus the direction we are heading to,
     // but prevTime was passed thus we are child of a Timeline
@@ -413,7 +413,7 @@ var Tween = class Tween {
     @private
     @param {Number} Current update time.
   */
-  _updateInInactiveArea (time) {
+  _updateInInactiveArea ( time ) {
     if ( !this._isInActiveArea ) { return; }
     var p = this._props;
 
@@ -444,7 +444,7 @@ var Tween = class Tween {
     @private
     @param {Number} Current update time.
   */
-  _updateInActiveArea (time) {
+  _updateInActiveArea ( time ) {
 
     var props         = this._props,
         delayDuration = props.delay + props.duration,
@@ -641,7 +641,7 @@ var Tween = class Tween {
     @param {Object, String} Hash object of key/value pairs, or property name
     @param {_} Property's value to set
   */
-  _setProp(obj, value) {
+  _setProp( obj, value ) {
     // handle hash object case
     if (typeof obj === 'object') {
       for (var key in obj) {
@@ -707,7 +707,7 @@ var Tween = class Tween {
     @param {Boolean} Is yoyo perido. Used in Timeline to pass to Tween.
     @returns {Object} Self.
   */
-  _setProgress (p, time, isYoyo) {
+  _setProgress ( p, time, isYoyo ) {
     var props = this._props,
         isYoyoChanged = props.wasYoyo !== isYoyo;
     this.progress = p;
@@ -802,7 +802,7 @@ var Tween = class Tween {
     @private
     @param {Number} Progress to set.
   */
-  _progress (progress, time) {
+  _progress ( progress, time ) {
     if (this._props.onProgress != null && typeof this._props.onProgress === 'function') {
       this._props.onProgress.call(this, progress, time > this._prevTime );
     }

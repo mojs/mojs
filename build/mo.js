@@ -44,223 +44,2027 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(14);
+	module.exports = __webpack_require__(51);
 
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Bit, h;
-
-	h = __webpack_require__(2);
-
-	Bit = (function() {
-	  Bit.prototype.ns = 'http://www.w3.org/2000/svg';
-
-	  Bit.prototype.shape = 'line';
-
-	  Bit.prototype.ratio = 1;
-
-	  Bit.prototype.defaults = {
-	    radius: 50,
-	    radiusX: void 0,
-	    radiusY: void 0,
-	    points: 3,
-	    x: 0,
-	    y: 0,
-	    angle: 0,
-	    stroke: 'hotpink',
-	    'stroke-width': 2,
-	    'stroke-opacity': 1,
-	    fill: 'transparent',
-	    'fill-opacity': 1,
-	    'stroke-dasharray': '',
-	    'stroke-dashoffset': '',
-	    'stroke-linecap': ''
-	  };
-
-	  function Bit(o) {
-	    this.o = o != null ? o : {};
-	    this.init();
-	    this;
-	  }
-
-	  Bit.prototype.init = function() {
-	    this.vars();
-	    this.render();
-	    return this;
-	  };
-
-	  Bit.prototype.vars = function() {
-	    if (this.o.ctx && this.o.ctx.tagName === 'svg') {
-	      this.ctx = this.o.ctx;
-	    } else if (!this.o.el) {
-	      h.error('You should pass a real context(ctx) to the bit');
-	    }
-	    this.state = {};
-	    this.drawMapLength = this.drawMap.length;
-	    this.extendDefaults();
-	    return this.calcTransform();
-	  };
-
-	  Bit.prototype.calcTransform = function() {
-	    var rotate;
-	    rotate = "rotate(" + this.props.angle + ", " + this.props.x + ", " + this.props.y + ")";
-	    return this.props.transform = "" + rotate;
-	  };
-
-	  Bit.prototype.extendDefaults = function() {
-	    var key, ref, results, value;
-	    if (this.props == null) {
-	      this.props = {};
-	    }
-	    ref = this.defaults;
-	    results = [];
-	    for (key in ref) {
-	      value = ref[key];
-	      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
-	    }
-	    return results;
-	  };
-
-	  Bit.prototype.setAttr = function(attr, value) {
-	    var el, key, keys, len, results, val;
-	    if (typeof attr === 'object') {
-	      keys = Object.keys(attr);
-	      len = keys.length;
-	      el = value || this.el;
-	      results = [];
-	      while (len--) {
-	        key = keys[len];
-	        val = attr[key];
-	        results.push(el.setAttribute(key, val));
-	      }
-	      return results;
-	    } else {
-	      return this.el.setAttribute(attr, value);
-	    }
-	  };
-
-	  Bit.prototype.setProp = function(attr, value) {
-	    var key, results, val;
-	    if (typeof attr === 'object') {
-	      results = [];
-	      for (key in attr) {
-	        val = attr[key];
-	        results.push(this.props[key] = val);
-	      }
-	      return results;
-	    } else {
-	      return this.props[attr] = value;
-	    }
-	  };
-
-	  Bit.prototype.render = function() {
-	    this.isRendered = true;
-	    if (this.o.el != null) {
-	      this.el = this.o.el;
-	      return this.isForeign = true;
-	    } else {
-	      this.el = document.createElementNS(this.ns, this.shape || 'line');
-	      !this.o.isDrawLess && this.draw();
-	      return this.ctx.appendChild(this.el);
-	    }
-	  };
-
-	  Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
-
-	  Bit.prototype.draw = function() {
-	    var len, name;
-	    this.props.length = this.getLength();
-	    len = this.drawMapLength;
-	    while (len--) {
-	      name = this.drawMap[len];
-	      switch (name) {
-	        case 'stroke-dasharray':
-	        case 'stroke-dashoffset':
-	          this.castStrokeDash(name);
-	      }
-	      this.setAttrsIfChanged(name, this.props[name]);
-	    }
-	    return this.state.radius = this.props.radius;
-	  };
-
-	  Bit.prototype.castStrokeDash = function(name) {
-	    var cast, dash, i, j, len1, ref, stroke;
-	    if (h.isArray(this.props[name])) {
-	      stroke = '';
-	      ref = this.props[name];
-	      for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
-	        dash = ref[i];
-	        cast = dash.unit === '%' ? this.castPercent(dash.value) : dash.value;
-	        stroke += cast + " ";
-	      }
-	      this.props[name] = stroke === '0 ' ? stroke = '' : stroke;
-	      return this.props[name] = stroke;
-	    }
-	    if (typeof this.props[name] === 'object') {
-	      stroke = this.props[name].unit === '%' ? this.castPercent(this.props[name].value) : this.props[name].value;
-	      return this.props[name] = stroke === 0 ? stroke = '' : stroke;
-	    }
-	  };
-
-	  Bit.prototype.castPercent = function(percent) {
-	    return percent * (this.props.length / 100);
-	  };
-
-	  Bit.prototype.setAttrsIfChanged = function(name, value) {
-	    var key, keys, len, results;
-	    if (typeof name === 'object') {
-	      keys = Object.keys(name);
-	      len = keys.length;
-	      results = [];
-	      while (len--) {
-	        key = keys[len];
-	        value = name[key];
-	        results.push(this.setAttrIfChanged(key, value));
-	      }
-	      return results;
-	    } else {
-	      if (value == null) {
-	        value = this.props[name];
-	      }
-	      return this.setAttrIfChanged(name, value);
-	    }
-	  };
-
-	  Bit.prototype.setAttrIfChanged = function(name, value) {
-	    if (this.isChanged(name, value)) {
-	      this.el.setAttribute(name, value);
-	      return this.state[name] = value;
-	    }
-	  };
-
-	  Bit.prototype.isChanged = function(name, value) {
-	    if (value == null) {
-	      value = this.props[name];
-	    }
-	    return this.state[name] !== value;
-	  };
-
-	  Bit.prototype.getLength = function() {
-	    var ref;
-	    if ((((ref = this.el) != null ? ref.getTotalLength : void 0) != null) && this.el.getAttribute('d')) {
-	      return this.el.getTotalLength();
-	    } else {
-	      return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
-	    }
-	  };
-
-	  return Bit;
-
-	})();
-
-	module.exports = Bit;
-
+	var $ = __webpack_require__(62);
+	module.exports = function create(P, D){
+	  return $.create(P, D);
+	};
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _classCallCheck2 = __webpack_require__(16);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(17);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _h = __webpack_require__(9);
+
+	var _h2 = _interopRequireDefault(_h);
+
+	var _tween = __webpack_require__(4);
+
+	var _tween2 = _interopRequireDefault(_tween);
+
+	var _timeline = __webpack_require__(5);
+
+	var _timeline2 = _interopRequireDefault(_timeline);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/*
+	  Class for toggling opacity on bunch of elements
+	  @class Spriter
+	  @todo
+	    - add isForce3d option
+	    - add run new option merging
+	    - add then chains
+	*/
+
+	var Spriter = function () {
+	  (0, _createClass3.default)(Spriter, [{
+	    key: '_declareDefaults',
+
+	    /*
+	      Defaults/APIs
+	    */
+	    value: function _declareDefaults() {
+	      this._defaults = {
+	        /*
+	          Duration
+	          @property duration
+	          @type     {Number}
+	        */
+	        duration: 500,
+	        /*
+	          Delay
+	          @property delay
+	          @type     {Number}
+	        */
+	        delay: 0,
+	        /*
+	          Easing. Please see the 
+	          [timeline module parseEasing function](timeline.coffee.html#parseEasing)
+	          for all avaliable options.
+	            @property easing
+	          @type     {String, Function}
+	        */
+	        easing: 'linear.none',
+	        /*
+	          Repeat times count
+	          
+	          @property repeat
+	          @type     {Number}
+	        */
+	        repeat: 0,
+	        /*
+	          Yoyo option defines if animation should be altered on repeat.
+	          
+	          @property yoyo
+	          @type     {Boolean}
+	        */
+	        yoyo: false,
+	        /*
+	          isRunLess option prevents animation from running immediately after
+	          initialization.
+	          
+	          @property isRunLess
+	          @type     {Boolean}
+	        */
+	        isRunLess: false,
+	        /*
+	          isShowEnd option defines if the last frame should be shown when
+	          animation completed.
+	          
+	          @property isShowEnd
+	          @type     {Boolean}
+	        */
+	        isShowEnd: false,
+	        /*
+	          onStart callback will be called once on animation start.
+	          
+	          @property onStart
+	          @type     {Function}
+	        */
+	        onStart: null,
+	        /*
+	          onUpdate callback will be called on every frame of the animation.
+	          The current progress in range **[0,1]** will be passed to the callback.
+	          
+	          @property onUpdate
+	          @type     {Function}
+	        */
+	        onUpdate: null,
+	        /*
+	          onComplete callback will be called once on animation complete.
+	          
+	          @property onComplete
+	          @type     {Function}
+	        */
+	        onComplete: null
+	      };
+	    }
+	  }]);
+
+	  function Spriter() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    (0, _classCallCheck3.default)(this, Spriter);
+
+	    this.o = o;
+	    if (!this.o.el) {
+	      return _h2.default.error('No "el" option specified, aborting');
+	    }
+	    this._vars();this._declareDefaults();this._extendDefaults();this._parseFrames();
+	    if (this._frames.length <= 2) _h2.default.warn('Spriter: only ' + this._frames.length + ' frames found');
+	    if (this._frames.length < 1) _h2.default.error("Spriter: there is no frames to animate, aborting");
+	    this._createTween();
+	    return this;
+	  }
+	  /*
+	    Method to declare some variables.
+	    
+	    @method run
+	    @param  {Object} New options
+	    @todo   Implement new object merging
+	  */
+
+
+	  (0, _createClass3.default)(Spriter, [{
+	    key: '_vars',
+	    value: function _vars() {
+	      this._props = _h2.default.cloneObj(this.o);
+	      this.el = this.o.el;
+	      this._frames = [];
+	    }
+	    /*
+	      Method to run the spriter on demand.
+	      
+	      @method run
+	      @param  {Object} New options
+	      @todo   Implement new object merging
+	    */
+
+	  }, {
+	    key: 'run',
+	    value: function run(o) {
+	      return this.timeline.play();
+	    }
+	    /*
+	      Method to extend _props by options(this.o)
+	      
+	      @method _extendDefaults
+	    */
+
+	  }, {
+	    key: '_extendDefaults',
+	    value: function _extendDefaults() {
+	      return _h2.default.extend(this._props, this._defaults);
+	    }
+	    /*
+	      Method to parse frames as child nodes of el.
+	      
+	      @method _parseFrames
+	    */
+
+	  }, {
+	    key: '_parseFrames',
+	    value: function _parseFrames() {
+	      this._frames = Array.prototype.slice.call(this.el.children, 0);
+	      this._frames.forEach(function (frame, i) {
+	        return frame.style.opacity = 0;
+	      });
+	      this._frameStep = 1 / this._frames.length;
+	    }
+
+	    /*
+	      Method to create tween and timeline and supply callbacks.
+	      
+	      @method _createTween
+	    */
+
+	  }, {
+	    key: '_createTween',
+	    value: function _createTween() {
+	      var _this = this;
+
+	      this._tween = new _tween2.default({
+	        duration: this._props.duration,
+	        delay: this._props.delay,
+	        yoyo: this._props.yoyo,
+	        repeat: this._props.repeat,
+	        easing: this._props.easing,
+	        onStart: function onStart() {
+	          return _this._props.onStart && _this._props.onStart();
+	        },
+	        onComplete: function onComplete() {
+	          return _this._props.onComplete && _this._props.onComplete();
+	        },
+	        onUpdate: function onUpdate(p) {
+	          return _this._setProgress(p);
+	        }
+	      });
+	      this.timeline = new _timeline2.default();this.timeline.add(this._tween);
+	      if (!this._props.isRunLess) this._startTween();
+	    }
+
+	    /*
+	      Method to start tween
+	      
+	      @method _startTween
+	    */
+
+	  }, {
+	    key: '_startTween',
+	    value: function _startTween() {
+	      var _this2 = this;
+
+	      setTimeout(function () {
+	        return _this2.timeline.play();
+	      }, 1);
+	    }
+	    /*
+	      Method to set progress of the sprite
+	      
+	      @method _setProgress
+	      @param  {Number} Progress in range **[0,1]**
+	    */
+
+	  }, {
+	    key: '_setProgress',
+	    value: function _setProgress(p) {
+	      // get the frame number
+	      var proc = Math.floor(p / this._frameStep);
+	      // react only if frame changes
+	      if (this._prevFrame != this._frames[proc]) {
+	        // if previous frame isnt current one, hide it
+	        if (this._prevFrame) {
+	          this._prevFrame.style.opacity = 0;
+	        }
+	        // if end of animation and isShowEnd flag was specified
+	        // then show the last frame else show current frame
+	        var currentNum = p === 1 && this._props.isShowEnd ? proc - 1 : proc;
+	        // show the current frame
+	        if (this._frames[currentNum]) {
+	          this._frames[currentNum].style.opacity = 1;
+	        }
+	        // set previous frame as current
+	        this._prevFrame = this._frames[proc];
+	      }
+	      if (this._props.onUpdate) {
+	        this._props.onUpdate(p);
+	      }
+	    }
+	  }]);
+	  return Spriter;
+	}();
+
+	exports.default = Spriter;
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _keys = __webpack_require__(19);
+
+	var _keys2 = _interopRequireDefault(_keys);
+
+	var _classCallCheck2 = __webpack_require__(16);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(17);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _h = __webpack_require__(9);
+
+	var _h2 = _interopRequireDefault(_h);
+
+	var _timeline = __webpack_require__(5);
+
+	var _timeline2 = _interopRequireDefault(_timeline);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Stagger = function () {
+	  function Stagger(options, Module) {
+	    (0, _classCallCheck3.default)(this, Stagger);
+
+	    return this.init(options, Module);
+	  }
+	  /*
+	    Method to get an option by modulo and name.
+	    @param {String} Name of the property to get.
+	    @param {Number} Index for the modulo calculation.
+	    @param {Object} Options hash to look in.
+	    @return {Any} Property.
+	  */
+
+
+	  (0, _createClass3.default)(Stagger, [{
+	    key: '_getOptionByMod',
+	    value: function _getOptionByMod(name, i, store) {
+	      var props = store[name];
+	      // if not dom list then clone it to array
+	      if (props + '' === '[object NodeList]' || props + '' === '[object HTMLCollection]') props = Array.prototype.slice.call(props, 0);
+	      // get the value in array or return the value itself
+	      var value = _h2.default.isArray(props) ? props[i % props.length] : props;
+	      // check if value has the stagger expression, if so parse it
+	      return _h2.default.parseIfStagger(value, i);
+	    }
+	    /*
+	      Method to get option by modulo of index.
+	      @param {Number} Index for modulo calculations.
+	      @param {Object} Options hash to look in.
+	    */
+
+	  }, {
+	    key: '_getOptionByIndex',
+	    value: function _getOptionByIndex(i, store) {
+	      var _this = this;
+
+	      var options = {};
+	      (0, _keys2.default)(store).forEach(function (key) {
+	        return options[key] = _this._getOptionByMod(key, i, store);
+	      });
+	      return options;
+	    }
+	    /*
+	      Method to get total child modules quantity.
+	      @param  {String} Name of quantifier in options hash.
+	      @param  {Object} Options hash object.
+	      @return {Number} Number of child object that should be defined.
+	    */
+
+	  }, {
+	    key: '_getChildQuantity',
+	    value: function _getChildQuantity(name, store) {
+	      // if number was set
+	      if (typeof name === 'number') {
+	        return name;
+	      }
+
+	      var quantifier = store[name];
+	      if (_h2.default.isArray(quantifier)) {
+	        return quantifier.length;
+	      } else if (quantifier + '' === '[object NodeList]') {
+	        return quantifier.length;
+	      } else if (quantifier + '' === '[object HTMLCollection]') {
+	        return Array.prototype.slice.call(quantifier, 0).length;
+	      } else if (quantifier instanceof HTMLElement) {
+	        return 1;
+	      } else if (typeof quantifier == 'string') {
+	        return 1;
+	      }
+	    }
+
+	    /*
+	      Method to create timeline.
+	      @param {Object} Options. ** default ** empty object.
+	    */
+
+	  }, {
+	    key: '_createTimeline',
+	    value: function _createTimeline() {
+	      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	      this.timeline = new _timeline2.default({
+	        onStart: options.onStaggerStart,
+	        onUpdate: options.onStaggerUpdate,
+	        onComplete: options.onStaggerComplete,
+	        onReverseComplete: options.onStaggerReverseComplete,
+	        delay: options.moduleDelay
+	      });
+	    }
+
+	    /*
+	      Method to make stagger form options
+	      @param {Object} Options.
+	      @param {Object} Child class.
+	    */
+
+	  }, {
+	    key: 'init',
+	    value: function init(options, Module) {
+	      var count = this._getChildQuantity(options.quantifier || 'el', options);
+	      this._createTimeline(options);this.childModules = [];
+	      for (var i = 0; i < count; i++) {
+	        // get child module's option
+	        var option = this._getOptionByIndex(i, options);option.isRunLess = true;
+	        // create child module
+	        var module = new Module(option);this.childModules.push(module);
+	        // add child module's timeline to the self timeline
+	        this.timeline.add(module);
+	      }
+	      return this;
+	    }
+	    /*
+	      Method to start timeline.
+	    */
+
+	  }, {
+	    key: 'run',
+	    value: function run() {
+	      this.timeline.play();
+	    }
+	  }]);
+	  return Stagger;
+	}();
+
+	module.exports = function (Module) {
+	  return function (options) {
+	    return new Stagger(options, Module);
+	  };
+	};
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof2 = __webpack_require__(8);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	var _classCallCheck2 = __webpack_require__(16);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(17);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _tweener = __webpack_require__(6);
+
+	var _tweener2 = _interopRequireDefault(_tweener);
+
+	var _easing = __webpack_require__(15);
+
+	var _easing2 = _interopRequireDefault(_easing);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import h from '../h';
+
+
+	var Tween = function () {
+	  (0, _createClass3.default)(Tween, [{
+	    key: '_declareDefaults',
+
+	    /*
+	      Method do declare defaults with this._defaults object.
+	      @private
+	    */
+	    value: function _declareDefaults() {
+	      // DEFAULTS
+	      this._defaults = {
+	        /* duration of the tween [0..∞] */
+	        duration: 600,
+	        /* delay of the tween [-∞..∞] */
+	        delay: 0,
+	        /* repeat of the tween [0..∞], means how much to
+	           repeat the tween regardless first run,
+	           for instance repeat: 2 will make the tween run 3 times */
+	        repeat: 0,
+	        /* speed of playback [0..∞], speed that is less then 1
+	           will slowdown playback, for instance .5 will make tween
+	           run 2x slower. Speed of 2 will speedup the tween to 2x. */
+	        speed: 1,
+	        /*  flip onUpdate's progress on each even period.
+	            note that callbacks order won't flip at least
+	            for now (under consideration). */
+	        yoyo: false,
+	        /* easing for the tween, could be any easing type [link to easing-types.md] */
+	        easing: 'Linear.None',
+	        /* custom tween's name */
+	        name: null,
+	        /* custom tween's base name */
+	        nameBase: 'Tween',
+	        /*
+	          onProgress callback runs before any other callback.
+	          @param {Number}   The entire, not eased, progress
+	                            of the tween regarding repeat option.
+	          @param {Boolean}  The direction of the tween.
+	                            `true` for forward direction.
+	                            `false` for backward direction(tween runs in reverse).
+	        */
+	        onProgress: null,
+	        /*
+	          onStart callback runs on very start of the tween just after onProgress
+	          one. Runs on very end of the tween if tween is reversed.
+	          @param {Boolean}  Direction of the tween.
+	                            `true` for forward direction.
+	                            `false` for backward direction(tween runs in reverse).
+	        */
+	        onStart: null,
+	        onComplete: null,
+	        onRepeatStart: null,
+	        onRepeatComplete: null,
+	        onFirstUpdate: null,
+	        onUpdate: null,
+	        isChained: false
+	      };
+	    }
+	    /*
+	      API method to run the Tween.
+	      @public
+	      @param  {Number} Shift time in milliseconds.
+	      @return {Object} Self.
+	    */
+
+	  }, {
+	    key: 'play',
+	    value: function play() {
+	      var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+	      if (this._state === 'play' && this._isRunning) {
+	        return false;
+	      }
+	      this._props.isReversed = false;
+	      this._subPlay(shift, 'play');
+	      this._setPlaybackState('play');
+	      return this;
+	    }
+	    /*
+	      API method to run the Tween in reverse.
+	      @public
+	      @param  {Number} Shift time in milliseconds.
+	      @return {Object} Self.
+	    */
+
+	  }, {
+	    key: 'playBackward',
+	    value: function playBackward() {
+	      var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+	      if (this._state === 'reverse' && this._isRunning) {
+	        return false;
+	      }
+	      this._props.isReversed = true;
+	      this._subPlay(shift, 'reverse');
+	      this._setPlaybackState('reverse');
+	      // reset previous time cache
+	      return this;
+	    }
+	    /*
+	      API method to stop the Tween.
+	      @public
+	      @param   {Number} Progress [0..1] to set when stopped.
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: 'stop',
+	    value: function stop(progress) {
+	      if (this._state === 'stop') {
+	        return;
+	      }
+	      this._props.isReversed = false;
+	      this._removeFromTweener();
+	      // if progress passed - use it
+	      var stopProc = progress != null ? progress
+	      /* if no progress passsed - set 1 if tween
+	         is playingBackward, otherwise set to 0 */
+	      : this._state === 'reverse' ? 1 : 0;
+	      this.setProgress(stopProc);
+	      this._setPlaybackState('stop');
+	      this._prevTime = null;
+	      return this;
+	    }
+	    /*
+	      API method to pause Tween.
+	      @public
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: 'pause',
+	    value: function pause() {
+	      this._removeFromTweener();
+	      this._setPlaybackState('pause');
+	      return this;
+	    }
+	    /*
+	      API method to set total progress on timeline.
+	      @public
+	      @param {Number} Progress to set.
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: 'setProgress',
+	    value: function setProgress(progress) {
+	      var p = this._props;
+	      // set start time if there is no one yet.
+	      !p.startTime && this._setStartTime();
+	      // reset play time
+	      this._playTime = null;
+	      // progress should be in range of [0..1]
+	      progress < 0 && (progress = 0);
+	      progress > 1 && (progress = 1);
+	      // update self with calculated time
+	      this._update(p.startTime - p.delay + progress * p.repeatTime);
+	      return this;
+	    }
+
+	    /*
+	      API ^
+	      PRIVATE METHODS v
+	    */
+
+	    /*
+	      Method to launch play. Used as launch
+	      method for bothplay and reverse methods.
+	      @private
+	      @param  {Number} Shift time in milliseconds.
+	      @param  {String} Play or reverse state.
+	      @return {Object} Self.
+	    */
+
+	  }, {
+	    key: '_subPlay',
+	    value: function _subPlay() {
+	      var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+	      var state = arguments[1];
+
+	      var resumeTime,
+	          startTime,
+	          p = this._props,
+
+	      // check if direction of playback changes,
+	      // if so, the _progressTime needs to be flipped
+	      _state = this._state,
+	          _prevState = this._prevState,
+	          isPause = _state === 'pause',
+	          wasPlay = _state === 'play' || isPause && _prevState === 'play',
+	          wasReverse = _state === 'reverse' || isPause && _prevState === 'reverse',
+	          isFlip = wasPlay && state === 'reverse' || wasReverse && state === 'play';
+
+	      // if tween was ended, set progress to 0 if not, set to elapsed progress
+	      this._progressTime = this._progressTime >= p.repeatTime ? 0 : this._progressTime;
+	      // flip the _progressTime if playback direction changed
+	      if (isFlip) {
+	        this._progressTime = p.repeatTime - this._progressTime;
+	      }
+	      // get current moment as resume time
+	      this._resumeTime = performance.now();
+	      // set start time regarding passed `shift` and `procTime`
+	      this._setStartTime(this._resumeTime - Math.abs(shift) - this._progressTime, false, state);
+	      // if we have prevTime - we need to normalize
+	      // it for the current resume time
+	      if (this._prevTime != null) {
+	        this._prevTime = state === 'play' ? this._normPrevTimeForward() : p.endTime - this._progressTime;
+	      }
+	      // add self to tweener = play
+	      _tweener2.default.add(this);
+	      return this;
+	    }
+
+	    /*
+	      Method recalculate _prevTime for forward direction.
+	      @private
+	      @return {Number} Normalized prev time.
+	    */
+
+	  }, {
+	    key: '_normPrevTimeForward',
+	    value: function _normPrevTimeForward() {
+	      var p = this._props;return p.startTime + this._progressTime - p.delay;
+	    }
+
+	    /*
+	      Constructor of the class.
+	      @private
+	    */
+
+	  }]);
+
+	  function Tween() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    (0, _classCallCheck3.default)(this, Tween);
+
+	    // console.log('tween constructor');
+	    this.o = o;
+	    this._declareDefaults();this._extendDefaults();this._vars();
+	    this._props.name == null && this._setSelfName();
+	    return this;
+	  }
+	  /*
+	    Method to set self name to generic one.
+	    @private
+	  */
+
+
+	  (0, _createClass3.default)(Tween, [{
+	    key: '_setSelfName',
+	    value: function _setSelfName() {
+	      var globalName = '_' + this._props.nameBase + 's';
+	      // track amount of tweens globally
+	      _tweener2.default[globalName] = _tweener2.default[globalName] == null ? 1 : ++_tweener2.default[globalName];
+	      // and set generic tween's name  || Tween # ||
+	      this._props.name = this._props.nameBase + ' ' + _tweener2.default[globalName];
+	    }
+	    /*
+	      Method set playback state string.
+	      @private
+	      @param {String} State name
+	    */
+
+	  }, {
+	    key: '_setPlaybackState',
+	    value: function _setPlaybackState(state) {
+	      // save previous state
+	      this._prevState = this._state;
+	      this._state = state;
+	    }
+	    /*
+	      Method to declare some vars.
+	      @private
+	    */
+
+	  }, {
+	    key: '_vars',
+	    value: function _vars() {
+	      this.progress = 0;
+	      this._prevTime = null;
+	      this._progressTime = 0;
+	      this._negativeShift = 0;
+	      this._state = 'stop';
+	      // if negative delay was specified,
+	      // save it to _negativeShift property and
+	      // reset it back to 0
+	      if (this._props.delay < 0) {
+	        this._negativeShift = this._props.delay;
+	        this._props.delay = 0;
+	      }
+
+	      return this._calcDimentions();
+	    }
+	    /*
+	      Method to calculate tween's dimentions.
+	      @private
+	    */
+
+	  }, {
+	    key: '_calcDimentions',
+	    value: function _calcDimentions() {
+	      this._props.time = this._props.duration + this._props.delay;
+	      this._props.repeatTime = this._props.time * (this._props.repeat + 1);
+	    }
+	    /*
+	      Method to extend defaults by options and put them in _props.
+	      @private
+	    */
+
+	  }, {
+	    key: '_extendDefaults',
+	    value: function _extendDefaults() {
+	      this._props = {};
+	      for (var key in this._defaults) {
+	        // borrow hasOwnProperty function
+	        if (Object.hasOwnProperty.call(this._defaults, key)) {
+	          var value = this._defaults[key];
+	          this._props[key] = this.o[key] != null ? this.o[key] : value;
+	        }
+	      }
+	      this._props.easing = _easing2.default.parseEasing(this.o.easing || this._defaults.easing);
+	      this.onUpdate = this._props.onUpdate;
+	    }
+	    /*
+	      Method for setting start and end time to props.
+	      @private
+	      @param {Number(Timestamp)}, {Null} Start time.
+	      @param {Boolean} Should reset flags.
+	      @returns this
+	    */
+
+	  }, {
+	    key: '_setStartTime',
+	    value: function _setStartTime(time) {
+	      var isResetFlags = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+	      var p = this._props,
+	          shiftTime = p.shiftTime || 0;
+	      // reset flags
+	      if (isResetFlags) {
+	        this._isCompleted = false;this._isRepeatCompleted = false;
+	        this._isStarted = false;
+	      }
+	      // set start time to passed time or to the current moment
+	      var startTime = time == null ? performance.now() : time;
+	      // calculate bounds
+	      // - negativeShift is negative delay in options hash
+	      // - shift time is shift of the parent
+	      p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
+	      p.endTime = p.startTime + p.repeatTime - p.delay;
+	      // set play time to the startTime
+	      // if playback controls are used - use _resumeTime as play time, else use startTime
+	      this._playTime = this._resumeTime != null ? this._resumeTime : startTime;
+	      this._resumeTime = null;
+
+	      return this;
+	    }
+	    /*
+	      Method to update tween's progress.
+	      @private
+	      @param {Number} Current update time.
+	      -- next params only present when parent Timeline calls the method.
+	      @param {Number} Previous Timeline's update time.
+	      @param {Boolean} Was parent in yoyo period.
+	      @param {Number} [-1, 0, 1] If update is on edge.
+	                     -1 = edge jump in negative direction.
+	                      0 = no edge jump.
+	                      1 = edge jump in positive direction.
+	    */
+
+	  }, {
+	    key: '_update',
+	    value: function _update(time, timelinePrevTime, wasYoyo, onEdge) {
+	      var p = this._props;
+	      // if we don't the _prevTime thus the direction we are heading to,
+	      // but prevTime was passed thus we are child of a Timeline
+	      // set _prevTime to passed one and pretent that there was unknown
+	      // update to not to block start/complete callbacks
+	      if (this._prevTime == null && timelinePrevTime != null) {
+	        this._prevTime = timelinePrevTime;
+	        this._wasUknownUpdate = true;
+	      }
+
+	      // cache vars
+	      var startPoint = p.startTime - p.delay;
+	      // if speed param was defined - calculate
+	      // new time regarding speed
+	      if (p.speed && this._playTime) {
+	        // play point + ( speed * delta )
+	        time = this._playTime + p.speed * (time - this._playTime);
+	      }
+
+	      // // if end time(with precision issue fix)
+	      // // and already completed then return immediately
+	      // var isEnded = Math.abs(time - this._props.endTime) < .000000000001;
+	      // if ( isEnded && ( time < this._prevTime ) && ( this._isCompleted || this._isStarted ) ) { return; }
+
+	      // if parent is onEdge but not very start nor very end
+	      if (onEdge && wasYoyo != null) {
+	        var T = this._getPeriod(time),
+	            isYoyo = !!(p.yoyo && this._props.repeat && T % 2 === 1);
+	        // forward edge direction
+	        if (onEdge === 1) {
+	          // jumped from yoyo period?
+	          if (wasYoyo) {
+	            this._prevTime = time + 1;
+	            this._repeatStart(time, isYoyo);
+	            this._start(time, isYoyo);
+	          } else {
+	            this._prevTime = time - 1;
+	            this._repeatComplete(time, isYoyo);
+	            this._complete(time, isYoyo);
+	          }
+	          // backward edge direction
+	        } else if (onEdge === -1) {
+	            // jumped from yoyo period?
+	            if (wasYoyo) {
+	              this._prevTime = time - 1;
+	              this._repeatComplete(time, isYoyo);
+	              this._complete(time, isYoyo);
+	            } else {
+	              this._prevTime = time + 1;
+	              this._repeatStart(time, isYoyo);
+	              this._start(time, isYoyo);
+	            }
+	          }
+	        // reset the _prevTime === drop one frame to undestand
+	        // where we are heading
+	        this._prevTime = null;
+	      }
+	      // if in active area and not ended - save progress time
+	      // for pause/play purposes.
+	      if (time > startPoint && time < p.endTime) {
+	        this._progressTime = time - startPoint;
+	      }
+	      // else if not started or ended set progress time to 0
+	      else if (time <= startPoint) {
+	          this._progressTime = 0;
+	        } else if (time >= p.endTime) {
+	          // set progress time to repeat time + tiny cofficient
+	          // to make it extend further than the end time
+	          this._progressTime = p.repeatTime + .00000000001;
+	        }
+	      // reverse time if _props.isReversed is set
+	      if (p.isReversed) {
+	        time = p.endTime - this._progressTime;
+	      }
+	      // We need to know what direction we are heading to,
+	      // so if we don't have the previous update value - this is very first
+	      // update, - skip it entirely and wait for the next value
+	      if (this._prevTime === null) {
+	        this._prevTime = time;
+	        this._wasUknownUpdate = true;
+	        return false;
+	      }
+
+	      // this._visualizeProgress(time);
+
+	      // ====== AFTER SKIPPED FRAME ======
+
+	      // handle onProgress callback
+	      if (time >= startPoint && time <= p.endTime) {
+	        this._progress((time - startPoint) / p.repeatTime, time);
+	      }
+	      /*
+	        if time is inside the active area of the tween.
+	        active area is the area from start time to end time,
+	        with all the repeat and delays in it
+	      */
+	      if (time >= p.startTime && time <= p.endTime) {
+	        this._updateInActiveArea(time);
+	      } else {
+	        this._isInActiveArea && this._updateInInactiveArea(time);
+	      }
+	      this._prevTime = time;
+	      return time >= p.endTime || time <= startPoint;
+	    }
+	    /*
+	      Method to handle tween's progress in inactive area.
+	      @private
+	      @param {Number} Current update time.
+	    */
+
+	  }, {
+	    key: '_updateInInactiveArea',
+	    value: function _updateInInactiveArea(time) {
+	      if (!this._isInActiveArea) {
+	        return;
+	      }
+	      var p = this._props;
+
+	      // complete if time is larger then end time
+	      if (time > p.endTime && !this._isCompleted) {
+	        this._progress(1, time);
+	        // get period number
+	        var T = this._getPeriod(p.endTime),
+	            isYoyo = p.yoyo && T % 2 === 0;
+
+	        this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
+	        this._repeatComplete(time, isYoyo);
+	        this._complete(time, isYoyo);
+	      }
+	      // if was active and went to - inactive area "-"
+	      if (time < this._prevTime && time < p.startTime && !this._isStarted) {
+	        // if was in active area and didn't fire onStart callback
+	        this._progress(0, time, false);
+	        this._setProgress(0, time, false);
+	        this._isRepeatStart = false;
+	        this._repeatStart(time, false);
+	        this._start(time, false);
+	      }
+	      this._isInActiveArea = false;
+	    }
+	    /*
+	      Method to handle tween's progress in active area.
+	      @private
+	      @param {Number} Current update time.
+	    */
+
+	  }, {
+	    key: '_updateInActiveArea',
+	    value: function _updateInActiveArea(time) {
+
+	      var props = this._props,
+	          delayDuration = props.delay + props.duration,
+	          startPoint = props.startTime - props.delay,
+	          elapsed = (time - props.startTime + props.delay) % delayDuration,
+	          TCount = Math.round((props.endTime - props.startTime + props.delay) / delayDuration),
+	          T = this._getPeriod(time),
+	          TValue = this._delayT,
+	          prevT = this._getPeriod(this._prevTime),
+	          TPrevValue = this._delayT;
+
+	      // "zero" and "one" value regarding yoyo and it's period
+	      var isYoyo = props.yoyo && T % 2 === 1,
+	          isYoyoPrev = props.yoyo && prevT % 2 === 1,
+	          yoyoZero = isYoyo ? 1 : 0,
+	          yoyoOne = 1 - yoyoZero;
+
+	      if (time === this._props.endTime) {
+	        this._wasUknownUpdate = false;
+	        // if `time` is equal to `endTime`, T represents the next period,
+	        // so we need to decrement T and calculate "one" value regarding yoyo
+	        var isYoyo = props.yoyo && (T - 1) % 2 === 1;
+	        this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
+	        if (time > this._prevTime) {
+	          this._isRepeatCompleted = false;
+	        }
+	        this._repeatComplete(time, isYoyo);
+	        return this._complete(time, isYoyo);
+	      }
+
+	      // reset callback flags
+	      this._isCompleted = false;
+	      // if time is inside the duration area of the tween
+	      if (startPoint + elapsed >= props.startTime) {
+	        this._isInActiveArea = true;this._isRepeatCompleted = false;
+	        this._isRepeatStart = false;this._isStarted = false;
+	        // active zone or larger then end
+	        var elapsed2 = (time - props.startTime) % delayDuration,
+	            proc = elapsed2 / props.duration;
+	        // |=====|=====|=====| >>>
+	        //      ^1^2
+	        var isOnEdge = T > 0 && prevT < T;
+	        // |=====|=====|=====| <<<
+	        //      ^2^1
+	        var isOnReverseEdge = prevT > T;
+
+	        // for use in timeline
+	        this._onEdge = 0;
+	        isOnEdge && (this._onEdge = 1);
+	        isOnReverseEdge && (this._onEdge = -1);
+
+	        if (this._wasUknownUpdate) {
+	          if (time > this._prevTime) {
+	            this._start(time, isYoyo);
+	            this._repeatStart(time, isYoyo);
+	            this._firstUpdate(time, isYoyo);
+	          }
+	          if (time < this._prevTime) {
+	            this._complete(time, isYoyo);
+	            this._repeatComplete(time, isYoyo);
+	            this._firstUpdate(time, isYoyo);
+	            // reset isCompleted immediately
+	            this._isCompleted = false;
+	          }
+	        }
+
+	        if (isOnEdge) {
+	          // if not just after delay
+	          // |---=====|---=====|---=====| >>>
+	          //            ^1 ^2
+	          // because we have already handled
+	          // 1 and onRepeatComplete in delay gap
+	          if (this.progress !== 1) {
+	            // prevT
+	            var isThisYoyo = props.yoyo && (T - 1) % 2 === 1;
+	            this._repeatComplete(time, isThisYoyo);
+	          }
+	          // if on edge but not at very start
+	          // |=====|=====|=====| >>>
+	          // ^!    ^here ^here
+	          if (prevT >= 0) {
+	            this._repeatStart(time, isYoyo);
+	          }
+	        }
+
+	        if (time > this._prevTime) {
+	          //  |=====|=====|=====| >>>
+	          // ^1  ^2
+	          if (!this._isStarted && this._prevTime <= props.startTime) {
+	            this._start(time, isYoyo);
+	            this._repeatStart(time, isYoyo);
+	            // it was zero anyways
+
+	            // restart flags immediately in case if we will
+	            // return to '-' inactive area on the next step
+	            this._isStarted = false;
+	            this._isRepeatStart = false;
+	          }
+	          this._firstUpdate(time, isYoyo);
+	        }
+
+	        if (isOnReverseEdge) {
+	          // if on edge but not at very end
+	          // |=====|=====|=====| <<<
+	          //       ^here ^here ^not here
+	          if (this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
+	            this._repeatStart(time, isYoyoPrev);
+	          }
+	          // if on very end edge
+	          // |=====|=====|=====| <<<
+	          //       ^!    ^! ^2 ^1
+	          // we have handled the case in this._wasUknownUpdate
+	          // block so filter that
+	          if (prevT === TCount && !this._wasUknownUpdate) {
+	            this._complete(time, isYoyo);
+	            this._repeatComplete(time, isYoyo);
+	            this._firstUpdate(time, isYoyo);
+	            // reset isComplete flag call
+	            // cuz we returned to active area
+	            // this._isRepeatCompleted = false;
+	            this._isCompleted = false;
+	          }
+	          this._repeatComplete(time, isYoyo);
+	        }
+
+	        if (prevT === 'delay') {
+	          // if just before delay gap
+	          // |---=====|---=====|---=====| <<<
+	          //               ^2    ^1
+	          if (T < TPrevValue) {
+	            this._repeatComplete(time, isYoyo);
+	          }
+	          // if just after delay gap
+	          // |---=====|---=====|---=====| >>>
+	          //            ^1  ^2
+	          if (T === TPrevValue && T > 0) {
+	            this._repeatStart(time, isYoyo);
+	          }
+	        }
+
+	        // swap progress and repeatStart based on direction
+	        if (time > this._prevTime) {
+	          // if progress is equal 0 and progress grows
+	          if (proc === 0) {
+	            this._repeatStart(time, isYoyo);
+	          }
+	          if (time !== props.endTime) {
+	            this._setProgress(isYoyo ? 1 - proc : proc, time, isYoyo);
+	          }
+	        } else {
+	          if (time !== props.endTime) {
+	            this._setProgress(isYoyo ? 1 - proc : proc, time, isYoyo);
+	          }
+	          // if progress is equal 0 and progress grows
+	          if (proc === 0) {
+	            this._repeatStart(time, isYoyo);
+	          }
+	        }
+
+	        if (time === props.startTime) {
+	          this._start(time, isYoyo);
+	        }
+	        // delay gap - react only once
+	      } else if (this._isInActiveArea) {
+	          // because T will be string of "delay" here,
+	          // let's normalize it be setting to TValue
+	          var t = T === 'delay' ? TValue : T,
+	              isGrows = time > this._prevTime;
+	          // decrement period if forward direction of update
+	          isGrows && t--;
+	          // calculate normalized yoyoZero value
+	          yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
+	          // if was in active area and previous time was larger
+	          // |---=====|---=====|---=====| <<<
+	          //   ^2 ^1    ^2 ^1    ^2 ^1
+	          if (time < this._prevTime) {
+	            this._setProgress(yoyoZero, time, yoyoZero === 1);
+	            this._repeatStart(time, yoyoZero === 1);
+	          }
+	          // set 1 or 0 regarding direction and yoyo
+	          this._setProgress(isGrows ? 1 - yoyoZero : yoyoZero, time, yoyoZero === 1);
+	          // if time grows
+	          if (time > this._prevTime) {
+	            // if reverse direction and in delay gap, then progress will be 0
+	            // if so we don't need to call the onRepeatComplete callback
+	            // |---=====|---=====|---=====| <<<
+	            //   ^0       ^0       ^0  
+	            // OR we have flipped 0 to 1 regarding yoyo option
+	            if (this.progress !== 0 || yoyoZero === 1) {
+	              // since we repeatComplete for previous period
+	              // invert isYoyo option
+	              // is elapsed is 0 - count as previous period
+	              this._repeatComplete(time, yoyoZero === 1);
+	            }
+	          }
+	          // set flag to indicate inactive area
+	          this._isInActiveArea = false;
+	        }
+	      // we've got the first update now
+	      this._wasUknownUpdate = false;
+	    }
+	    /*
+	      Method to set property[s] on Tween
+	      @private
+	      @param {Object, String} Hash object of key/value pairs, or property name
+	      @param {_} Property's value to set
+	    */
+
+	  }, {
+	    key: '_setProp',
+	    value: function _setProp(obj, value) {
+	      // handle hash object case
+	      if ((typeof obj === 'undefined' ? 'undefined' : (0, _typeof3.default)(obj)) === 'object') {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) {
+	            this._props[key] = obj[key];
+	            if (key === 'easing') {
+	              this._props.easing = _easing2.default.parseEasing(this._props.easing);
+	            }
+	          }
+	        }
+	        // handle key, value case
+	      } else if (typeof obj === 'string') {
+	          // if key is easing - parse it immediately
+	          if (obj === 'easing') {
+	            this._props.easing = _easing2.default.parseEasing(value);
+	          }
+	          // else just save it to props
+	          else {
+	              this._props[obj] = value;
+	            }
+	        }
+	      this._calcDimentions();
+	    }
+	    /*
+	      Method to remove the Tween from the tweener.
+	      @private
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: '_removeFromTweener',
+	    value: function _removeFromTweener() {
+	      _tweener2.default.remove(this);return this;
+	    }
+	    /*
+	      Method to get current period number.
+	      @private
+	      @param {Number} Time to get the period for.
+	      @returns {Number} Current period number.
+	    */
+
+	  }, {
+	    key: '_getPeriod',
+	    value: function _getPeriod(time) {
+	      var p = this._props,
+	          TTime = p.delay + p.duration,
+	          dTime = p.delay + time - p.startTime,
+	          T = dTime / TTime,
+
+	      // if time if equal to endTime we need to set the elapsed
+	      // time to 0 to fix the occasional precision js bug, which
+	      // causes 0 to be something like 1e-12
+	      elapsed = time < p.endTime ? dTime % TTime : 0;
+	      // If the latest period, round the result, otherwise floor it.
+	      // Basically we always can floor the result, but because of js
+	      // precision issues, sometimes the result is 2.99999998 which
+	      // will result in 2 instead of 3 after the floor operation.
+	      T = time >= p.endTime ? Math.round(T) : Math.floor(T);
+	      // if time is larger then the end time
+	      if (time > p.endTime) {
+	        // set equal to the periods count
+	        T = Math.round((p.endTime - p.startTime + p.delay) / TTime);
+	        // if in delay gap, set _delayT to current
+	        // period number and return "delay"
+	      } else if (elapsed > 0 && elapsed < p.delay) {
+	          this._delayT = T;T = 'delay';
+	        }
+	      // if the end of period and there is a delay
+	      return T;
+	    }
+	    /*
+	      Method to set Tween's progress and call onUpdate callback.
+	      @private
+	      @param {Number} Progress to set.
+	      @param {Number} Current update time.
+	      @param {Boolean} Is yoyo perido. Used in Timeline to pass to Tween.
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: '_setProgress',
+	    value: function _setProgress(p, time, isYoyo) {
+	      var props = this._props,
+	          isYoyoChanged = props.wasYoyo !== isYoyo;
+	      this.progress = p;
+	      this.easedProgress = this._props.easing(this.progress);
+	      if (props.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
+	        if (this.onUpdate != null && typeof this.onUpdate === 'function') {
+	          this.onUpdate(this.easedProgress, this.progress, time > this._prevTime, isYoyo);
+	        }
+	      }
+	      this._props.prevEasedProgress = this.easedProgress;
+	      this._props.wasYoyo = isYoyo;
+	      return this;
+	    }
+
+	    /*
+	      Method to set tween's state to start and call onStart callback.
+	      @method _start
+	      @private
+	      @param {Number} Progress to set.
+	      @param {Boolean} Is yoyo period.
+	    */
+
+	  }, {
+	    key: '_start',
+	    value: function _start(time, isYoyo) {
+	      if (this._isStarted) {
+	        return;
+	      }
+	      if (this._props.onStart != null && typeof this._props.onStart === 'function') {
+	        this._props.onStart.call(this, time > this._prevTime, isYoyo);
+	      }
+	      this._isCompleted = false;this._isStarted = true;
+	      this._isFirstUpdate = false;
+	    }
+
+	    /*
+	      Method to set tween's state to complete.
+	      @method _complete
+	      @private
+	      @param {Number} Current time.
+	      @param {Boolean} Is yoyo period.
+	    */
+
+	  }, {
+	    key: '_complete',
+	    value: function _complete(time, isYoyo) {
+	      if (this._isCompleted) {
+	        return;
+	      }
+	      if (this._props.onComplete != null && typeof this._props.onComplete === 'function') {
+	        this._props.onComplete.call(this, time > this._prevTime, isYoyo);
+	      }
+	      this._isCompleted = true;this._isStarted = false;
+	      this._isFirstUpdate = false;
+	    }
+
+	    /*
+	      Method to run onFirstUpdate callback.
+	      @method _firstUpdate
+	      @private
+	      @param {Number} Current update time.
+	      @param {Boolean} Is yoyo period.
+	    */
+
+	  }, {
+	    key: '_firstUpdate',
+	    value: function _firstUpdate(time, isYoyo) {
+	      if (this._isFirstUpdate) {
+	        return;
+	      }
+	      if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
+	        this._props.onFirstUpdate.call(this, time > this._prevTime, isYoyo);
+	      }
+	      this._isFirstUpdate = true;
+	    }
+
+	    /*
+	      Method call onRepeatComplete calback and set flags.
+	      @private
+	      @param {Number} Current update time.
+	      @param {Boolean} Is repeat period.
+	    */
+
+	  }, {
+	    key: '_repeatComplete',
+	    value: function _repeatComplete(time, isYoyo) {
+	      if (this._isRepeatCompleted) {
+	        return;
+	      }
+	      if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
+	        this._props.onRepeatComplete.call(this, time > this._prevTime, isYoyo);
+	      }
+	      this._isRepeatCompleted = true;
+	    }
+
+	    /*
+	      Method call onRepeatStart calback and set flags.
+	      @private
+	      @param {Number} Current update time.
+	      @param {Boolean} Is yoyo period.
+	    */
+
+	  }, {
+	    key: '_repeatStart',
+	    value: function _repeatStart(time, isYoyo) {
+	      if (this._isRepeatStart) {
+	        return;
+	      }
+	      if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
+	        this._props.onRepeatStart.call(this, time > this._prevTime, isYoyo);
+	      }
+	      this._isRepeatStart = true;
+	    }
+	    /*
+	      Method to launch onProgress callback.
+	      @method _progress
+	      @private
+	      @param {Number} Progress to set.
+	    */
+
+	  }, {
+	    key: '_progress',
+	    value: function _progress(progress, time) {
+	      if (this._props.onProgress != null && typeof this._props.onProgress === 'function') {
+	        this._props.onProgress.call(this, progress, time > this._prevTime);
+	      }
+	    }
+	    /*
+	      Method which is called when the tween is removed from tweener.
+	      @private
+	    */
+
+	  }, {
+	    key: '_onTweenerRemove',
+	    value: function _onTweenerRemove() {}
+	    /*
+	      Method which is called when the tween is removed
+	      from tweener when finished.
+	      @private
+	    */
+
+	  }, {
+	    key: '_onTweenerFinish',
+	    value: function _onTweenerFinish() {
+	      this._setPlaybackState('stop');
+	    }
+
+	    // _visualizeProgress(time) {
+	    //   var str = '|',
+	    //       procStr = ' ',
+	    //       p = this._props,
+	    //       proc = p.startTime - p.delay;
+
+	    //   while ( proc < p.endTime ) {
+	    //     if (p.delay > 0 ) {
+	    //       var newProc = proc + p.delay;
+	    //       if ( time > proc && time < newProc ) {
+	    //         procStr += ' ^ ';
+	    //       } else {
+	    //         procStr += '   ';
+	    //       }
+	    //       proc = newProc;
+	    //       str  += '---';
+	    //     }
+	    //     var newProc = proc + p.duration;
+	    //     if ( time > proc && time < newProc ) {
+	    //       procStr += '  ^   ';
+	    //     } else if (time === proc) {
+	    //       procStr += '^     ';
+	    //     } else if (time === newProc) {
+	    //       procStr += '    ^ ';
+	    //     } else {
+	    //       procStr += '      ';
+	    //     }
+	    //     proc = newProc;
+	    //     str += '=====|';
+	    //   }
+
+	    //   console.log(str);
+	    //   console.log(procStr);
+	    // }
+
+	  }]);
+	  return Tween;
+	}();
+
+	exports.default = Tween;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(20);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _getIterator2 = __webpack_require__(21);
+
+	var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+	var _classCallCheck2 = __webpack_require__(16);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(22);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _createClass2 = __webpack_require__(17);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _inherits2 = __webpack_require__(18);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _get2 = __webpack_require__(23);
+
+	var _get3 = _interopRequireDefault(_get2);
+
+	var _h = __webpack_require__(9);
+
+	var _h2 = _interopRequireDefault(_h);
+
+	var _tweener = __webpack_require__(6);
+
+	var _tweener2 = _interopRequireDefault(_tweener);
+
+	var _tween = __webpack_require__(4);
+
+	var _tween2 = _interopRequireDefault(_tween);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Timeline = function (_Tween) {
+	  (0, _inherits3.default)(Timeline, _Tween);
+	  (0, _createClass3.default)(Timeline, [{
+	    key: 'add',
+
+	    /*
+	      API method to add child tweens/timelines.
+	      @public
+	      @param {Object, Array} Tween/Timeline or an array of such.
+	      @returns {Object} Self.
+	    */
+	    value: function add() {
+	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	        args[_key] = arguments[_key];
+	      }
+
+	      this._pushTimelineArray(args);
+	      this._calcDimentions();
+	      return this;
+	    }
+	    /*
+	      API method to append the Tween/Timeline to the end of the
+	      timeline. Each argument is treated as a new append.
+	      Array of tweens is treated as a parallel sequence. 
+	      @public
+	      @param {Object, Array} Tween/Timeline to append or array of such.
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: 'append',
+	    value: function append() {
+	      for (var _len2 = arguments.length, timeline = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        timeline[_key2] = arguments[_key2];
+	      }
+
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = (0, _getIterator3.default)(timeline), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var tm = _step.value;
+
+	          if (_h2.default.isArray(tm)) {
+	            this._appendTimelineArray(tm);
+	          } else {
+	            this._appendTimeline(tm, this._timelines.length);
+	          }
+	          this._calcDimentions();
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      return this;
+	    }
+	    /*
+	      Method to append Tween/Timeline array or mix of such.
+	      @private
+	      @param {Array} Array of Tweens/Timelines.
+	    */
+
+	  }, {
+	    key: '_appendTimelineArray',
+	    value: function _appendTimelineArray(timelineArray) {
+	      var i = timelineArray.length,
+	          time = this._props.repeatTime - this._props.delay,
+	          len = this._timelines.length;
+
+	      while (i--) {
+	        this._appendTimeline(timelineArray[i], len, time);
+	      }
+	    }
+	    /*
+	      Method to append a single timeline to the Timeline.
+	      @private
+	      @param {Object} Tween/Timline to append.
+	      @param {Number} Index of the append.
+	      @param {Number} Shift time.
+	    */
+
+	  }, {
+	    key: '_appendTimeline',
+	    value: function _appendTimeline(timeline, index, time) {
+	      // if timeline is a module with timeline property then extract it
+	      if (timeline.timeline instanceof Timeline) {
+	        timeline = timeline.timeline;
+	      }
+
+	      var shift = time != null ? time : this._props.duration;
+	      shift += timeline._props.shiftTime || 0;
+	      timeline.index = index;this._pushTimeline(timeline, shift);
+	    }
+	    /*
+	      PrivateMethod to push Tween/Timeline array.
+	      @private
+	      @param {Array} Array of Tweens/Timelines.
+	    */
+
+	  }, {
+	    key: '_pushTimelineArray',
+	    value: function _pushTimelineArray(array) {
+	      for (var i = 0; i < array.length; i++) {
+	        var tm = array[i];
+	        // recursive push to handle arrays of arrays
+	        if (_h2.default.isArray(tm)) {
+	          this._pushTimelineArray(tm);
+	        } else {
+	          this._pushTimeline(tm);
+	        }
+	      };
+	    }
+	    /*
+	      Method to push a single Tween/Timeline.
+	      @private
+	      @param {Object} Tween or Timeline to push.
+	      @param {Number} Number of milliseconds to shift the start time
+	                      of the Tween/Timeline.
+	    */
+
+	  }, {
+	    key: '_pushTimeline',
+	    value: function _pushTimeline(timeline, shift) {
+	      // if timeline is a module with timeline property then extract it
+	      if (timeline.timeline instanceof Timeline) {
+	        timeline = timeline.timeline;
+	      }
+	      // add self delay to the timeline
+	      shift != null && timeline._setProp({ 'shiftTime': shift });
+	      // console.log('here', this._timelines);
+	      this._timelines.push(timeline);
+	      this._recalcDuration(timeline);
+	    }
+	    /*
+	      Method set progress on self and child Tweens/Timelines.
+	      @private
+	      @param {Number} Progress to set.
+	      @param {Number} Current update time.
+	    */
+
+	  }, {
+	    key: '_setProgress',
+	    value: function _setProgress(progress, time, isYoyo) {
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Timeline.prototype), '_setProgress', this).call(this, progress, time);
+	      var timeToTimelines = this._props.startTime + progress * this._props.duration,
+	          i = this._timelines.length;
+	      // we need to pass self previous time to children
+	      // to prevent initial _wasUnknownUpdate nested waterfall
+	      // if not yoyo option set, pass the previous time
+	      // otherwise, pass previous or next time regarding yoyo period.
+	      var coef = time > this._prevTime ? -1 : 1;
+	      if (this._props.yoyo && isYoyo) {
+	        coef *= -1;
+	      }
+	      var prevTimeToTimelines = timeToTimelines + coef;
+	      while (i--) {
+	        this._timelines[i]._update(timeToTimelines, prevTimeToTimelines, this._prevYoyo, this._onEdge);
+	      }
+	      this._prevYoyo = isYoyo;
+	    }
+	    /*
+	      Method calculate self duration based on timeline's duration.
+	      @private
+	      @param {Object} Tween or Timeline to calculate.
+	    */
+
+	  }, {
+	    key: '_recalcDuration',
+	    value: function _recalcDuration(timeline) {
+	      !timeline._props && console.log(timeline);
+	      var p = timeline._props,
+	          speedCoef = p.speed ? 1 / p.speed : 1,
+	          timelineTime = speedCoef * p.repeatTime + (p.shiftTime || 0);
+	      this._props.duration = Math.max(timelineTime, this._props.duration);
+	    }
+	    /*
+	      Method calculate self duration from skretch.
+	      @private
+	    */
+
+	  }, {
+	    key: '_recalcTotalDuration',
+	    value: function _recalcTotalDuration() {
+	      var i = this._timelines.length;
+	      this._props.duration = 0;
+	      while (i--) {
+	        this._recalcDuration(this._timelines[i]);
+	      }
+	    }
+
+	    /*
+	      Method set start and end times.
+	      @private
+	      @param {Number, Null} Time to start with.
+	    */
+
+	  }, {
+	    key: '_setStartTime',
+	    value: function _setStartTime(time) {
+	      var isReset = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Timeline.prototype), '_setStartTime', this).call(this, time);
+	      this._startTimelines(this._props.startTime, isReset);
+	    }
+	    /*
+	      Method calculate self duration based on timeline's duration.
+	      @private
+	      @param {Number, Null} Time to start with.
+	    */
+
+	  }, {
+	    key: '_startTimelines',
+	    value: function _startTimelines(time) {
+	      var isReset = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+	      var i = this._timelines.length,
+	          p = this._props,
+	          timeline;
+	      time == null && (time = this._props.startTime);
+	      while (i--) {
+	        timeline = this._timelines[i];
+	        timeline._setStartTime(time, isReset);
+	        // if from _subPlay and _prevTime is set
+	        if (!isReset && timeline._prevTime != null) {
+	          timeline._prevTime = timeline._normPrevTimeForward();
+	        }
+	      }
+	    }
+	    /*
+	      Method do declare defaults by this._defaults object
+	      @private
+	    */
+
+	  }, {
+	    key: '_declareDefaults',
+	    value: function _declareDefaults() {
+	      // if duration was passed on initialization stage, warn user and reset it.
+	      if (this.o.duration != null) {
+	        _h2.default.error('Duration can not be declared on Timeline, but "' + this.o.duration + '" is. You probably want to use Tween instead.');
+	        this.o.duration = 0;
+	      }
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Timeline.prototype), '_declareDefaults', this).call(this);
+	      // remove default
+	      this._defaults.duration = 0;
+	      this._defaults.nameBase = 'Timeline';
+	    }
+	  }]);
+
+	  function Timeline() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    (0, _classCallCheck3.default)(this, Timeline);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Timeline).call(this, o));
+	  }
+	  /*
+	    Method to declare some vars.
+	    @private
+	  */
+
+
+	  (0, _createClass3.default)(Timeline, [{
+	    key: '_vars',
+	    value: function _vars() {
+	      // console.log('timeline _vars')
+	      this._timelines = [];
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Timeline.prototype), '_vars', this).call(this);
+	    }
+	  }]);
+	  return Timeline;
+	}(_tween2.default);
+
+	exports.default = Timeline;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _classCallCheck2 = __webpack_require__(16);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(17);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	__webpack_require__(24);
+
+	__webpack_require__(25);
+
+	var _h = __webpack_require__(9);
+
+	var _h2 = _interopRequireDefault(_h);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Tweener = function () {
+	  function Tweener() {
+	    (0, _classCallCheck3.default)(this, Tweener);
+	    this._vars();return this;
+	  }
+
+	  (0, _createClass3.default)(Tweener, [{
+	    key: '_vars',
+	    value: function _vars() {
+	      this.tweens = [];this._loop = _h2.default.bind(this._loop, this);
+	    }
+	    /*
+	      Main animation loop. Should have only one concurrent loop.
+	      @private
+	      @returns this
+	    */
+
+	  }, {
+	    key: '_loop',
+	    value: function _loop() {
+	      if (!this._isRunning) {
+	        return false;
+	      }
+	      var time = performance.now();this._update(time);
+	      if (!this.tweens.length) {
+	        return this._isRunning = false;
+	      }
+	      requestAnimationFrame(this._loop);
+	      return this;
+	    }
+	    /*
+	      Method to start animation loop.
+	      @private
+	    */
+
+	  }, {
+	    key: '_startLoop',
+	    value: function _startLoop() {
+	      if (this._isRunning) {
+	        return;
+	      };this._isRunning = true;
+	      requestAnimationFrame(this._loop);
+	    }
+	    /*
+	      Method to stop animation loop.
+	      @private
+	    */
+
+	  }, {
+	    key: '_stopLoop',
+	    value: function _stopLoop() {
+	      this._isRunning = false;
+	    }
+	    /*
+	      Method to update every tween/timeline on animation frame.
+	      @private
+	    */
+
+	  }, {
+	    key: '_update',
+	    value: function _update(time) {
+	      var i = this.tweens.length;
+	      while (i--) {
+	        // cache the current tween
+	        var tween = this.tweens[i];
+	        if (tween && tween._update(time) === true) {
+	          this.remove(i);
+	          tween._onTweenerFinish();
+	          tween._prevTime = null;
+	        }
+	      }
+	    }
+	    /*
+	      Method to add a Tween/Timeline to loop pool.
+	      @param {Object} Tween/Timeline to add.
+	    */
+
+	  }, {
+	    key: 'add',
+	    value: function add(tween) {
+	      // return if tween is already running
+	      if (tween._isRunning) {
+	        return;
+	      }
+	      tween._isRunning = true;
+	      this.tweens.push(tween);
+	      this._startLoop();
+	    }
+	    /*
+	      Method stop updating all the child tweens/timelines.
+	      @private
+	    */
+
+	  }, {
+	    key: 'removeAll',
+	    value: function removeAll() {
+	      this.tweens.length = 0;
+	    }
+	    /*
+	      Method to remove specific tween/timeline form updating.
+	      @private
+	    */
+
+	  }, {
+	    key: 'remove',
+	    value: function remove(tween) {
+	      var index = typeof tween === 'number' ? tween : this.tweens.indexOf(tween);
+
+	      if (index !== -1) {
+	        tween = this.tweens[index];
+	        if (tween) {
+	          tween._isRunning = false;
+	          this.tweens.splice(index, 1);
+	          tween._onTweenerRemove();
+	        }
+	      }
+	    }
+	  }]);
+	  return Tweener;
+	}();
+
+	var t = new Tweener();
+	exports.default = t;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _typeof = typeof _Symbol === "function" && typeof _Symbol$iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof _Symbol === "function" && obj.constructor === _Symbol ? "symbol" : typeof obj; };
+
+	exports.__esModule = true;
+
+	var _iterator = __webpack_require__(26);
+
+	var _iterator2 = _interopRequireDefault(_iterator);
+
+	var _symbol = __webpack_require__(27);
+
+	var _symbol2 = _interopRequireDefault(_symbol);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.default) === "symbol" ? function (obj) {
+	  return typeof obj === "undefined" ? "undefined" : _typeof(obj);
+	} : function (obj) {
+	  return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof(obj);
+	};
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Helpers, h;
@@ -850,28 +2654,28 @@
 
 
 /***/ },
-/* 3 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Bit, BitsMap, Circle, Cross, Equal, Line, Polygon, Rect, Zigzag, h;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
-	Circle = __webpack_require__(15);
+	Circle = __webpack_require__(29);
 
-	Line = __webpack_require__(16);
+	Line = __webpack_require__(30);
 
-	Zigzag = __webpack_require__(17);
+	Zigzag = __webpack_require__(31);
 
-	Rect = __webpack_require__(18);
+	Rect = __webpack_require__(32);
 
-	Polygon = __webpack_require__(19);
+	Polygon = __webpack_require__(33);
 
-	Cross = __webpack_require__(20);
+	Cross = __webpack_require__(34);
 
-	Equal = __webpack_require__(21);
+	Equal = __webpack_require__(35);
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
 	BitsMap = (function() {
 	  function BitsMap() {}
@@ -904,7 +2708,7 @@
 
 
 /***/ },
-/* 4 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -913,11 +2717,11 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Transit = __webpack_require__(5);
+	Transit = __webpack_require__(12);
 
-	Swirl = __webpack_require__(6);
+	Swirl = __webpack_require__(13);
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
 	Burst = (function(superClass) {
 	  extend(Burst, superClass);
@@ -1252,7 +3056,7 @@
 
 
 /***/ },
-/* 5 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1261,15 +3065,15 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
-	shapesMap = __webpack_require__(3);
+	shapesMap = __webpack_require__(10);
 
-	Tween = __webpack_require__(11);
+	Tween = __webpack_require__(4)["default"];
 
-	Timeline = __webpack_require__(12);
+	Timeline = __webpack_require__(5)["default"];
 
 	Transit = (function(superClass) {
 	  extend(Transit, superClass);
@@ -1926,7 +3730,7 @@
 
 
 /***/ },
-/* 6 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1935,7 +3739,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Transit = __webpack_require__(5);
+	Transit = __webpack_require__(12);
 
 	Swirl = (function(superClass) {
 	  extend(Swirl, superClass);
@@ -2044,19 +3848,19 @@
 
 
 /***/ },
-/* 7 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var MotionPath, Timeline, Tween, h, resize,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
-	resize = __webpack_require__(22);
+	resize = __webpack_require__(36);
 
-	Tween = __webpack_require__(11);
+	Tween = __webpack_require__(4)["default"];
 
-	Timeline = __webpack_require__(12);
+	Timeline = __webpack_require__(5)["default"];
 
 	MotionPath = (function() {
 	  MotionPath.prototype.defaults = {
@@ -2579,18 +4383,18 @@
 
 
 /***/ },
-/* 8 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Easing, PathEasing, bezier, easing, h, mix;
 
-	bezier = __webpack_require__(23);
+	bezier = __webpack_require__(37);
 
-	PathEasing = __webpack_require__(24);
+	PathEasing = __webpack_require__(38);
 
-	mix = __webpack_require__(25);
+	mix = __webpack_require__(39);
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
 	Easing = (function() {
 	  function Easing() {}
@@ -2876,1547 +4680,79 @@
 
 
 /***/ },
-/* 9 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _prototypeProperties = function (child, staticProps, instanceProps) {
-	  if (staticProps) Object.defineProperties(child, staticProps);
-	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+	exports.__esModule = true;
+
+	exports.default = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
 	};
 
-	var _interopRequire = function (obj) {
-	  return obj && (obj["default"] || obj);
-	};
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
 
-	var _core = _interopRequire(__webpack_require__(28));
+	"use strict";
 
-	var h = _interopRequire(__webpack_require__(2));
+	exports.__esModule = true;
 
-	var Timeline = _interopRequire(__webpack_require__(12));
+	var _defineProperty = __webpack_require__(40);
 
-	var Stagger = (function () {
-	  function Stagger(options, Module) {
-	    return this.init(options, Module);
+	var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
+	      (0, _defineProperty2.default)(target, descriptor.key, descriptor);
+	    }
 	  }
 
-	  _prototypeProperties(Stagger, null, {
-	    _getOptionByMod: {
-	      /*
-	        Method to get an option by modulo and name.
-	        @param {String} Name of the property to get.
-	        @param {Number} Index for the modulo calculation.
-	        @param {Object} Options hash to look in.
-	        @return {Any} Property.
-	      */
-	      value: function GetOptionByMod(name, i, store) {
-	        var props = store[name];
-	        // if not dom list then clone it to array
-	        if (props + "" === "[object NodeList]" || props + "" === "[object HTMLCollection]") props = Array.prototype.slice.call(props, 0);
-	        // get the value in array or return the value itself
-	        var value = h.isArray(props) ? props[i % props.length] : props;
-	        // check if value has the stagger expression, if so parse it
-	        return h.parseIfStagger(value, i);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _getOptionByIndex: {
-	      /*
-	        Method to get option by modulo of index.
-	        @param {Number} Index for modulo calculations.
-	        @param {Object} Options hash to look in.
-	      */
-	      value: function GetOptionByIndex(i, store) {
-	        var _this = this;
-	        var options = {};
-	        _core.Object.keys(store).forEach(function (key) {
-	          return options[key] = _this._getOptionByMod(key, i, store);
-	        });
-	        return options;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _getChildQuantity: {
-	      /*
-	        Method to get total child modules quantity.
-	        @param  {String} Name of quantifier in options hash.
-	        @param  {Object} Options hash object.
-	        @return {Number} Number of child object that should be defined.
-	      */
-	      value: function GetChildQuantity(name, store) {
-	        // if number was set
-	        if (typeof name === "number") return name;
-
-	        var quantifier = store[name];
-	        if (h.isArray(quantifier)) return quantifier.length;else if (quantifier + "" === "[object NodeList]") return quantifier.length;else if (quantifier + "" === "[object HTMLCollection]") return Array.prototype.slice.call(quantifier, 0).length;else if (quantifier instanceof HTMLElement) return 1;else if (typeof quantifier == "string") return 1;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _createTimeline: {
-
-	      /*
-	        Method to create timeline.
-	        @param {Object} Options. ** default ** empty object.
-	      */
-	      value: function CreateTimeline() {
-	        var options = arguments[0] === undefined ? {} : arguments[0];
-	        this.timeline = new Timeline({
-	          onStart: options.onStaggerStart,
-	          onUpdate: options.onStaggerUpdate,
-	          onComplete: options.onStaggerComplete,
-	          onReverseComplete: options.onStaggerReverseComplete,
-	          delay: options.moduleDelay });
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    init: {
-
-	      /*
-	        Method to make stagger form options
-	        @param {Object} Options.
-	        @param {Object} Child class.
-	      */
-	      value: function init(options, Module) {
-	        var count = this._getChildQuantity(options.quantifier || "el", options);
-	        this._createTimeline(options);this.childModules = [];
-	        for (var i = 0; i < count; i++) {
-	          // get child module's option
-	          var option = this._getOptionByIndex(i, options);option.isRunLess = true;
-	          // create child module
-	          var module = new Module(option);this.childModules.push(module);
-	          // add child module's timeline to the self timeline
-	          this.timeline.add(module);
-	        }
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    run: {
-	      /*
-	        Method to start timeline.
-	      */
-	      value: function run() {
-	        this.timeline.play();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return Stagger;
-	})();
-
-	module.exports = function (Module) {
-	  return function (options) {
-	    return new Stagger(options, Module);
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
 	  };
-	};
+	}();
 
 /***/ },
-/* 10 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _prototypeProperties = function (child, staticProps, instanceProps) {
-	  if (staticProps) Object.defineProperties(child, staticProps);
-	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-	};
+	exports.__esModule = true;
 
-	var _interopRequire = function (obj) {
-	  return obj && (obj["default"] || obj);
-	};
+	var _setPrototypeOf = __webpack_require__(41);
 
-	var _core = _interopRequire(__webpack_require__(28));
+	var _setPrototypeOf2 = _interopRequireDefault(_setPrototypeOf);
 
-	var h = _interopRequire(__webpack_require__(2));
+	var _create = __webpack_require__(42);
 
-	var Tween = _interopRequire(__webpack_require__(11));
+	var _create2 = _interopRequireDefault(_create);
 
-	var Timeline = _interopRequire(__webpack_require__(12));
+	var _typeof2 = __webpack_require__(8);
 
-	/*
-	  Class for toggling opacity on bunch of elements
-	  @class Spriter
-	  @todo
-	    - add isForce3d option
-	    - add run new option merging
-	    - add then chains
-	*/
-	var Spriter = (function () {
-	  function Spriter() {
-	    var o = arguments[0] === undefined ? {} : arguments[0];
-	    this.o = o;
-	    if (!this.o.el) {
-	      return h.error("No \"el\" option specified, aborting");
-	    }
-	    this._vars();this._declareDefaults();this._extendDefaults();this._parseFrames();
-	    if (this._frames.length <= 2) h.warn("Spriter: only " + this._frames.length + " frames found");
-	    if (this._frames.length < 1) h.error("Spriter: there is no frames to animate, aborting");
-	    this._createTween();
-	    return this;
-	  }
+	var _typeof3 = _interopRequireDefault(_typeof2);
 
-	  _prototypeProperties(Spriter, null, {
-	    _declareDefaults: {
-	      /*
-	        Defaults/APIs
-	      */
-	      value: function DeclareDefaults() {
-	        this._defaults = {
-	          /*
-	            Duration
-	            @property duration
-	            @type     {Number}
-	          */
-	          duration: 500,
-	          /*
-	            Delay
-	            @property delay
-	            @type     {Number}
-	          */
-	          delay: 0,
-	          /*
-	            Easing. Please see the 
-	            [timeline module parseEasing function](timeline.coffee.html#parseEasing)
-	            for all avaliable options.
-	              @property easing
-	            @type     {String, Function}
-	          */
-	          easing: "linear.none",
-	          /*
-	            Repeat times count
-	            
-	            @property repeat
-	            @type     {Number}
-	          */
-	          repeat: 0,
-	          /*
-	            Yoyo option defines if animation should be altered on repeat.
-	            
-	            @property yoyo
-	            @type     {Boolean}
-	          */
-	          yoyo: false,
-	          /*
-	            isRunLess option prevents animation from running immediately after
-	            initialization.
-	            
-	            @property isRunLess
-	            @type     {Boolean}
-	          */
-	          isRunLess: false,
-	          /*
-	            isShowEnd option defines if the last frame should be shown when
-	            animation completed.
-	            
-	            @property isShowEnd
-	            @type     {Boolean}
-	          */
-	          isShowEnd: false,
-	          /*
-	            onStart callback will be called once on animation start.
-	            
-	            @property onStart
-	            @type     {Function}
-	          */
-	          onStart: null,
-	          /*
-	            onUpdate callback will be called on every frame of the animation.
-	            The current progress in range **[0,1]** will be passed to the callback.
-	            
-	            @property onUpdate
-	            @type     {Function}
-	          */
-	          onUpdate: null,
-	          /*
-	            onComplete callback will be called once on animation complete.
-	            
-	            @property onComplete
-	            @type     {Function}
-	          */
-	          onComplete: null };
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _vars: {
-	      /*
-	        Method to declare some variables.
-	        
-	        @method run
-	        @param  {Object} New options
-	        @todo   Implement new object merging
-	      */
-	      value: function Vars() {
-	        this._props = h.cloneObj(this.o);
-	        this.el = this.o.el;
-	        this._frames = [];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    run: {
-	      /*
-	        Method to run the spriter on demand.
-	        
-	        @method run
-	        @param  {Object} New options
-	        @todo   Implement new object merging
-	      */
-	      value: function run(o) {
-	        return this.timeline.play();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _extendDefaults: {
-	      /*
-	        Method to extend _props by options(this.o)
-	        
-	        @method _extendDefaults
-	      */
-	      value: function ExtendDefaults() {
-	        return h.extend(this._props, this._defaults);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _parseFrames: {
-	      /*
-	        Method to parse frames as child nodes of el.
-	        
-	        @method _parseFrames
-	      */
-	      value: function ParseFrames() {
-	        this._frames = Array.prototype.slice.call(this.el.children, 0);
-	        this._frames.forEach(function (frame, i) {
-	          return frame.style.opacity = 0;
-	        });
-	        this._frameStep = 1 / this._frames.length;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _createTween: {
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	      /*
-	        Method to create tween and timeline and supply callbacks.
-	        
-	        @method _createTween
-	      */
-	      value: function CreateTween() {
-	        var _this = this;
-	        this._tween = new Tween({
-	          duration: this._props.duration,
-	          delay: this._props.delay,
-	          yoyo: this._props.yoyo,
-	          repeat: this._props.repeat,
-	          easing: this._props.easing,
-	          onStart: function () {
-	            return _this._props.onStart && _this._props.onStart();
-	          },
-	          onComplete: function () {
-	            return _this._props.onComplete && _this._props.onComplete();
-	          },
-	          onUpdate: function (p) {
-	            return _this._setProgress(p);
-	          } });
-	        this.timeline = new Timeline();this.timeline.add(this._tween);
-	        if (!this._props.isRunLess) this._startTween();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _startTween: {
-
-	      /*
-	        Method to start tween
-	        
-	        @method _startTween
-	      */
-	      value: function StartTween() {
-	        var _this2 = this;
-	        setTimeout(function () {
-	          return _this2.timeline.play();
-	        }, 1);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setProgress: {
-	      /*
-	        Method to set progress of the sprite
-	        
-	        @method _setProgress
-	        @param  {Number} Progress in range **[0,1]**
-	      */
-	      value: function SetProgress(p) {
-	        // get the frame number
-	        var proc = Math.floor(p / this._frameStep);
-	        // react only if frame changes
-	        if (this._prevFrame != this._frames[proc]) {
-	          // if previous frame isnt current one, hide it
-	          if (this._prevFrame) {
-	            this._prevFrame.style.opacity = 0;
-	          }
-	          // if end of animation and isShowEnd flag was specified
-	          // then show the last frame else show current frame
-	          var currentNum = p === 1 && this._props.isShowEnd ? proc - 1 : proc;
-	          // show the current frame
-	          if (this._frames[currentNum]) {
-	            this._frames[currentNum].style.opacity = 1;
-	          }
-	          // set previous frame as current
-	          this._prevFrame = this._frames[proc];
-	        }
-	        if (this._props.onUpdate) {
-	          this._props.onUpdate(p);
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return Spriter;
-	})();
-
-	module.exports = Spriter;
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _prototypeProperties = function (child, staticProps, instanceProps) {
-	  if (staticProps) Object.defineProperties(child, staticProps);
-	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-	};
-
-	var _interopRequire = function (obj) {
-	  return obj && (obj["default"] || obj);
-	};
-
-	var _core = _interopRequire(__webpack_require__(28));
-
-	// import h from '../h';
-	var t = _interopRequire(__webpack_require__(13));
-
-	var easing = _interopRequire(__webpack_require__(8));
-
-	var Tween = (function () {
-	  /*
-	    Constructor of the class.
-	    @private
-	  */
-	  function Tween() {
-	    var o = arguments[0] === undefined ? {} : arguments[0];
-	    // console.log('tween constructor');
-	    this.o = o;
-	    this._declareDefaults();this._extendDefaults();this._vars();
-	    this._props.name == null && this._setSelfName();
-	    return this;
-	  }
-
-	  _prototypeProperties(Tween, null, {
-	    _declareDefaults: {
-	      /*
-	        Method do declare defaults with this._defaults object.
-	        @private
-	      */
-	      value: function DeclareDefaults() {
-	        // DEFAULTS
-	        this._defaults = {
-	          /* duration of the tween [0..∞] */
-	          duration: 600,
-	          /* delay of the tween [-∞..∞] */
-	          delay: 0,
-	          /* repeat of the tween [0..∞], means how much to
-	             repeat the tween regardless first run,
-	             for instance repeat: 2 will make the tween run 3 times */
-	          repeat: 0,
-	          /* speed of playback [0..∞], speed that is less then 1
-	             will slowdown playback, for instance .5 will make tween
-	             run 2x slower. Speed of 2 will speedup the tween to 2x. */
-	          speed: 1,
-	          /*  flip onUpdate's progress on each even period.
-	              note that callbacks order won't flip at least
-	              for now (under consideration). */
-	          yoyo: false,
-	          /* easing for the tween, could be any easing type [link to easing-types.md] */
-	          easing: "Linear.None",
-	          /* custom tween's name */
-	          name: null,
-	          /* custom tween's base name */
-	          nameBase: "Tween",
-	          /*
-	            onProgress callback runs before any other callback.
-	            @param {Number}   The entire, not eased, progress
-	                              of the tween regarding repeat option.
-	            @param {Boolean}  The direction of the tween.
-	                              `true` for forward direction.
-	                              `false` for backward direction(tween runs in reverse).
-	          */
-	          onProgress: null,
-	          /*
-	            onStart callback runs on very start of the tween just after onProgress
-	            one. Runs on very end of the tween if tween is reversed.
-	            @param {Boolean}  Direction of the tween.
-	                              `true` for forward direction.
-	                              `false` for backward direction(tween runs in reverse).
-	          */
-	          onStart: null,
-	          onComplete: null,
-	          onRepeatStart: null,
-	          onRepeatComplete: null,
-	          onFirstUpdate: null,
-	          onUpdate: null,
-	          isChained: false
-	        };
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    play: {
-	      /*
-	        API method to run the Tween.
-	        @public
-	        @param  {Number} Shift time in milliseconds.
-	        @return {Object} Self.
-	      */
-	      value: function play() {
-	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        if (this._state === "play" && this._isRunning) {
-	          return false;
-	        }
-	        this._props.isReversed = false;
-	        this._subPlay(shift, "play");
-	        this._setPlaybackState("play");
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    playBackward: {
-	      /*
-	        API method to run the Tween in reverse.
-	        @public
-	        @param  {Number} Shift time in milliseconds.
-	        @return {Object} Self.
-	      */
-	      value: function playBackward() {
-	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        if (this._state === "reverse" && this._isRunning) {
-	          return false;
-	        }
-	        this._props.isReversed = true;
-	        this._subPlay(shift, "reverse");
-	        this._setPlaybackState("reverse");
-	        // reset previous time cache
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    stop: {
-	      /*
-	        API method to stop the Tween.
-	        @public
-	        @param   {Number} Progress [0..1] to set when stopped.
-	        @returns {Object} Self.
-	      */
-	      value: function stop(progress) {
-	        if (this._state === "stop") {
-	          return;
-	        }
-	        this._props.isReversed = false;
-	        this._removeFromTweener();
-	        // if progress passed - use it
-	        var stopProc = progress != null ? progress
-	        /* if no progress passsed - set 1 if tween
-	           is playingBackward, otherwise set to 0 */
-	         : this._state === "reverse" ? 1 : 0;
-	        this.setProgress(stopProc);
-	        this._setPlaybackState("stop");
-	        this._prevTime = null;
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    pause: {
-	      /*
-	        API method to pause Tween.
-	        @public
-	        @returns {Object} Self.
-	      */
-	      value: function pause() {
-	        this._removeFromTweener();
-	        this._setPlaybackState("pause");
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    setProgress: {
-	      /*
-	        API method to set total progress on timeline.
-	        @public
-	        @param {Number} Progress to set.
-	        @returns {Object} Self.
-	      */
-	      value: function setProgress(progress) {
-	        var p = this._props;
-	        // set start time if there is no one yet.
-	        !p.startTime && this._setStartTime();
-	        // reset play time
-	        this._playTime = null;
-	        // progress should be in range of [0..1]
-	        progress < 0 && (progress = 0);
-	        progress > 1 && (progress = 1);
-	        // update self with calculated time
-	        this._update(p.startTime - p.delay + progress * p.repeatTime);
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _subPlay: {
-
-	      /*
-	        API ^
-	        PRIVATE METHODS v
-	      */
-
-	      /*
-	        Method to launch play. Used as launch
-	        method for bothplay and reverse methods.
-	        @private
-	        @param  {Number} Shift time in milliseconds.
-	        @param  {String} Play or reverse state.
-	        @return {Object} Self.
-	      */
-	      value: function SubPlay(shift, state) {
-	        var shift = arguments[0] === undefined ? 0 : arguments[0];
-	        var resumeTime,
-	            startTime,
-	            p = this._props,
-
-	        // check if direction of playback changes,
-	        // if so, the _progressTime needs to be flipped
-	        _state = this._state,
-	            _prevState = this._prevState,
-	            isPause = _state === "pause",
-	            wasPlay = _state === "play" || isPause && _prevState === "play",
-	            wasReverse = _state === "reverse" || isPause && _prevState === "reverse",
-	            isFlip = wasPlay && state === "reverse" || wasReverse && state === "play";
-
-	        // if tween was ended, set progress to 0 if not, set to elapsed progress
-	        this._progressTime = this._progressTime >= p.repeatTime ? 0 : this._progressTime;
-	        // flip the _progressTime if playback direction changed
-	        if (isFlip) {
-	          this._progressTime = p.repeatTime - this._progressTime;
-	        }
-	        // get current moment as resume time
-	        this._resumeTime = performance.now();
-	        // set start time regarding passed `shift` and `procTime`
-	        this._setStartTime(this._resumeTime - Math.abs(shift) - this._progressTime, false, state);
-	        // if we have prevTime - we need to normalize
-	        // it for the current resume time
-	        if (this._prevTime != null) {
-	          this._prevTime = state === "play" ? this._normPrevTimeForward() : p.endTime - this._progressTime;
-	        }
-	        // add self to tweener = play
-	        t.add(this);
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _normPrevTimeForward: {
-
-	      /*
-	        Method recalculate _prevTime for forward direction.
-	        @private
-	        @return {Number} Normalized prev time.
-	      */
-
-	      value: function NormPrevTimeForward() {
-	        var p = this._props;return p.startTime + this._progressTime - p.delay;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setSelfName: {
-	      /*
-	        Method to set self name to generic one.
-	        @private
-	      */
-	      value: function SetSelfName() {
-	        var globalName = "_" + this._props.nameBase + "s";
-	        // track amount of tweens globally
-	        t[globalName] = t[globalName] == null ? 1 : ++t[globalName];
-	        // and set generic tween's name  || Tween # ||
-	        this._props.name = "" + this._props.nameBase + " " + t[globalName];
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setPlaybackState: {
-	      /*
-	        Method set playback state string.
-	        @private
-	        @param {String} State name
-	      */
-	      value: function SetPlaybackState(state) {
-	        // save previous state
-	        this._prevState = this._state;
-	        this._state = state;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _vars: {
-	      /*
-	        Method to declare some vars.
-	        @private
-	      */
-	      value: function Vars() {
-	        this.progress = 0;
-	        this._prevTime = null;
-	        this._progressTime = 0;
-	        this._negativeShift = 0;
-	        this._state = "stop";
-	        // if negative delay was specified,
-	        // save it to _negativeShift property and
-	        // reset it back to 0
-	        if (this._props.delay < 0) {
-	          this._negativeShift = this._props.delay;
-	          this._props.delay = 0;
-	        }
-
-	        return this._calcDimentions();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _calcDimentions: {
-	      /*
-	        Method to calculate tween's dimentions.
-	        @private
-	      */
-	      value: function CalcDimentions() {
-	        this._props.time = this._props.duration + this._props.delay;
-	        this._props.repeatTime = this._props.time * (this._props.repeat + 1);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _extendDefaults: {
-	      /*
-	        Method to extend defaults by options and put them in _props.
-	        @private
-	      */
-	      value: function ExtendDefaults() {
-	        this._props = {};
-	        for (var key in this._defaults) {
-	          // borrow hasOwnProperty function
-	          if (Object.hasOwnProperty.call(this._defaults, key)) {
-	            var value = this._defaults[key];
-	            this._props[key] = this.o[key] != null ? this.o[key] : value;
-	          }
-	        }
-	        this._props.easing = easing.parseEasing(this.o.easing || this._defaults.easing);
-	        this.onUpdate = this._props.onUpdate;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setStartTime: {
-	      /*
-	        Method for setting start and end time to props.
-	        @private
-	        @param {Number(Timestamp)}, {Null} Start time.
-	        @param {Boolean} Should reset flags.
-	        @returns this
-	      */
-	      value: function SetStartTime(time) {
-	        var isResetFlags = arguments[1] === undefined ? true : arguments[1];
-	        var p = this._props,
-	            shiftTime = p.shiftTime || 0;
-	        // reset flags
-	        if (isResetFlags) {
-	          this._isCompleted = false;this._isRepeatCompleted = false;
-	          this._isStarted = false;
-	        }
-	        // set start time to passed time or to the current moment
-	        var startTime = time == null ? performance.now() : time;
-	        // calculate bounds
-	        // - negativeShift is negative delay in options hash
-	        // - shift time is shift of the parent
-	        p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
-	        p.endTime = p.startTime + p.repeatTime - p.delay;
-	        // set play time to the startTime
-	        // if playback controls are used - use _resumeTime as play time, else use startTime
-	        this._playTime = this._resumeTime != null ? this._resumeTime : startTime;
-	        this._resumeTime = null;
-
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _update: {
-	      /*
-	        Method to update tween's progress.
-	        @private
-	        @param {Number} Current update time.
-	        -- next params only present when parent Timeline calls the method.
-	        @param {Number} Previous Timeline's update time.
-	        @param {Boolean} Was parent in yoyo period.
-	        @param {Number} [-1, 0, 1] If update is on edge.
-	                       -1 = edge jump in negative direction.
-	                        0 = no edge jump.
-	                        1 = edge jump in positive direction.
-	      */
-	      value: function Update(time, timelinePrevTime, wasYoyo, onEdge) {
-	        var p = this._props;
-	        // if we don't the _prevTime thus the direction we are heading to,
-	        // but prevTime was passed thus we are child of a Timeline
-	        // set _prevTime to passed one and pretent that there was unknown
-	        // update to not to block start/complete callbacks
-	        if (this._prevTime == null && timelinePrevTime != null) {
-	          this._prevTime = timelinePrevTime;
-	          this._wasUknownUpdate = true;
-	        }
-
-	        // cache vars
-	        var startPoint = p.startTime - p.delay;
-	        // if speed param was defined - calculate
-	        // new time regarding speed
-	        if (p.speed && this._playTime) {
-	          // play point + ( speed * delta )
-	          time = this._playTime + p.speed * (time - this._playTime);
-	        }
-
-
-	        // // if end time(with precision issue fix)
-	        // // and already completed then return immediately
-	        // var isEnded = Math.abs(time - this._props.endTime) < .000000000001;
-	        // if ( isEnded && ( time < this._prevTime ) && ( this._isCompleted || this._isStarted ) ) { return; }
-
-	        // if parent is onEdge but not very start nor very end
-	        if (onEdge && wasYoyo != null) {
-	          var T = this._getPeriod(time),
-	              isYoyo = !!(p.yoyo && this._props.repeat && T % 2 === 1);
-	          // forward edge direction
-	          if (onEdge === 1) {
-	            // jumped from yoyo period?
-	            if (wasYoyo) {
-	              this._prevTime = time + 1;
-	              this._repeatStart(time, isYoyo);
-	              this._start(time, isYoyo);
-	            } else {
-	              this._prevTime = time - 1;
-	              this._repeatComplete(time, isYoyo);
-	              this._complete(time, isYoyo);
-	            }
-	            // backward edge direction
-	          } else if (onEdge === -1) {
-	            // jumped from yoyo period?
-	            if (wasYoyo) {
-	              this._prevTime = time - 1;
-	              this._repeatComplete(time, isYoyo);
-	              this._complete(time, isYoyo);
-	            } else {
-	              this._prevTime = time + 1;
-	              this._repeatStart(time, isYoyo);
-	              this._start(time, isYoyo);
-	            }
-	          }
-	          // reset the _prevTime === drop one frame to undestand
-	          // where we are heading
-	          this._prevTime = null;
-	        }
-	        // if in active area and not ended - save progress time
-	        // for pause/play purposes.
-	        if (time > startPoint && time < p.endTime) {
-	          this._progressTime = time - startPoint;
-	        }
-	        // else if not started or ended set progress time to 0
-	        else if (time <= startPoint) {
-	          this._progressTime = 0;
-	        } else if (time >= p.endTime) {
-	          // set progress time to repeat time + tiny cofficient
-	          // to make it extend further than the end time
-	          this._progressTime = p.repeatTime + 1e-11;
-	        }
-	        // reverse time if _props.isReversed is set
-	        if (p.isReversed) {
-	          time = p.endTime - this._progressTime;
-	        }
-	        // We need to know what direction we are heading to,
-	        // so if we don't have the previous update value - this is very first
-	        // update, - skip it entirely and wait for the next value
-	        if (this._prevTime === null) {
-	          this._prevTime = time;
-	          this._wasUknownUpdate = true;
-	          return false;
-	        }
-
-	        // this._visualizeProgress(time);
-
-	        // ====== AFTER SKIPPED FRAME ======
-
-	        // handle onProgress callback
-	        if (time >= startPoint && time <= p.endTime) {
-	          this._progress((time - startPoint) / p.repeatTime, time);
-	        }
-	        /*
-	          if time is inside the active area of the tween.
-	          active area is the area from start time to end time,
-	          with all the repeat and delays in it
-	        */
-	        if (time >= p.startTime && time <= p.endTime) {
-	          this._updateInActiveArea(time);
-	        } else {
-	          this._isInActiveArea && this._updateInInactiveArea(time);
-	        }
-	        this._prevTime = time;
-	        return time >= p.endTime || time <= startPoint;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _updateInInactiveArea: {
-	      /*
-	        Method to handle tween's progress in inactive area.
-	        @private
-	        @param {Number} Current update time.
-	      */
-	      value: function UpdateInInactiveArea(time) {
-	        if (!this._isInActiveArea) {
-	          return;
-	        }
-	        var p = this._props;
-
-	        // complete if time is larger then end time
-	        if (time > p.endTime && !this._isCompleted) {
-	          this._progress(1, time);
-	          // get period number
-	          var T = this._getPeriod(p.endTime),
-	              isYoyo = p.yoyo && T % 2 === 0;
-
-	          this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
-	          this._repeatComplete(time, isYoyo);
-	          this._complete(time, isYoyo);
-	        }
-	        // if was active and went to - inactive area "-"
-	        if (time < this._prevTime && time < p.startTime && !this._isStarted) {
-	          // if was in active area and didn't fire onStart callback
-	          this._progress(0, time, false);
-	          this._setProgress(0, time, false);
-	          this._isRepeatStart = false;
-	          this._repeatStart(time, false);
-	          this._start(time, false);
-	        }
-	        this._isInActiveArea = false;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _updateInActiveArea: {
-	      /*
-	        Method to handle tween's progress in active area.
-	        @private
-	        @param {Number} Current update time.
-	      */
-	      value: function UpdateInActiveArea(time) {
-	        var props = this._props,
-	            delayDuration = props.delay + props.duration,
-	            startPoint = props.startTime - props.delay,
-	            elapsed = (time - props.startTime + props.delay) % delayDuration,
-	            TCount = Math.round((props.endTime - props.startTime + props.delay) / delayDuration),
-	            T = this._getPeriod(time),
-	            TValue = this._delayT,
-	            prevT = this._getPeriod(this._prevTime),
-	            TPrevValue = this._delayT;
-
-	        // "zero" and "one" value regarding yoyo and it's period
-	        var isYoyo = props.yoyo && T % 2 === 1,
-	            isYoyoPrev = props.yoyo && prevT % 2 === 1,
-	            yoyoZero = isYoyo ? 1 : 0,
-	            yoyoOne = 1 - yoyoZero;
-
-	        if (time === this._props.endTime) {
-	          this._wasUknownUpdate = false;
-	          // if `time` is equal to `endTime`, T represents the next period,
-	          // so we need to decrement T and calculate "one" value regarding yoyo
-	          var isYoyo = props.yoyo && (T - 1) % 2 === 1;
-	          this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
-	          if (time > this._prevTime) {
-	            this._isRepeatCompleted = false;
-	          }
-	          this._repeatComplete(time, isYoyo);
-	          return this._complete(time, isYoyo);
-	        }
-
-	        // reset callback flags
-	        this._isCompleted = false;
-	        // if time is inside the duration area of the tween
-	        if (startPoint + elapsed >= props.startTime) {
-	          this._isInActiveArea = true;this._isRepeatCompleted = false;
-	          this._isRepeatStart = false;this._isStarted = false;
-	          // active zone or larger then end
-	          var elapsed2 = (time - props.startTime) % delayDuration,
-	              proc = elapsed2 / props.duration;
-	          // |=====|=====|=====| >>>
-	          //      ^1^2
-	          var isOnEdge = T > 0 && prevT < T;
-	          // |=====|=====|=====| <<<
-	          //      ^2^1
-	          var isOnReverseEdge = prevT > T;
-
-	          // for use in timeline
-	          this._onEdge = 0;
-	          isOnEdge && (this._onEdge = 1);
-	          isOnReverseEdge && (this._onEdge = -1);
-
-	          if (this._wasUknownUpdate) {
-	            if (time > this._prevTime) {
-	              this._start(time, isYoyo);
-	              this._repeatStart(time, isYoyo);
-	              this._firstUpdate(time, isYoyo);
-	            }
-	            if (time < this._prevTime) {
-	              this._complete(time, isYoyo);
-	              this._repeatComplete(time, isYoyo);
-	              this._firstUpdate(time, isYoyo);
-	              // reset isCompleted immediately
-	              this._isCompleted = false;
-	            }
-	          }
-
-	          if (isOnEdge) {
-	            // if not just after delay
-	            // |---=====|---=====|---=====| >>>
-	            //            ^1 ^2
-	            // because we have already handled
-	            // 1 and onRepeatComplete in delay gap
-	            if (this.progress !== 1) {
-	              // prevT
-	              var isThisYoyo = props.yoyo && (T - 1) % 2 === 1;
-	              this._repeatComplete(time, isThisYoyo);
-	            }
-	            // if on edge but not at very start
-	            // |=====|=====|=====| >>>
-	            // ^!    ^here ^here
-	            if (prevT >= 0) {
-	              this._repeatStart(time, isYoyo);
-	            }
-	          }
-
-	          if (time > this._prevTime) {
-	            //  |=====|=====|=====| >>>
-	            // ^1  ^2
-	            if (!this._isStarted && this._prevTime <= props.startTime) {
-	              this._start(time, isYoyo);
-	              this._repeatStart(time, isYoyo);
-	              // it was zero anyways
-
-	              // restart flags immediately in case if we will
-	              // return to '-' inactive area on the next step
-	              this._isStarted = false;
-	              this._isRepeatStart = false;
-	            }
-	            this._firstUpdate(time, isYoyo);
-	          }
-
-	          if (isOnReverseEdge) {
-	            // if on edge but not at very end
-	            // |=====|=====|=====| <<<
-	            //       ^here ^here ^not here
-	            if (this.progress !== 0 && this.progress !== 1 && prevT != TCount) {
-	              this._repeatStart(time, isYoyoPrev);
-	            }
-	            // if on very end edge
-	            // |=====|=====|=====| <<<
-	            //       ^!    ^! ^2 ^1
-	            // we have handled the case in this._wasUknownUpdate
-	            // block so filter that
-	            if (prevT === TCount && !this._wasUknownUpdate) {
-	              this._complete(time, isYoyo);
-	              this._repeatComplete(time, isYoyo);
-	              this._firstUpdate(time, isYoyo);
-	              // reset isComplete flag call
-	              // cuz we returned to active area
-	              // this._isRepeatCompleted = false;
-	              this._isCompleted = false;
-	            }
-	            this._repeatComplete(time, isYoyo);
-	          }
-
-	          if (prevT === "delay") {
-	            // if just before delay gap
-	            // |---=====|---=====|---=====| <<<
-	            //               ^2    ^1
-	            if (T < TPrevValue) {
-	              this._repeatComplete(time, isYoyo);
-	            }
-	            // if just after delay gap
-	            // |---=====|---=====|---=====| >>>
-	            //            ^1  ^2
-	            if (T === TPrevValue && T > 0) {
-	              this._repeatStart(time, isYoyo);
-	            }
-	          }
-
-	          // swap progress and repeatStart based on direction
-	          if (time > this._prevTime) {
-	            // if progress is equal 0 and progress grows
-	            if (proc === 0) {
-	              this._repeatStart(time, isYoyo);
-	            }
-	            if (time !== props.endTime) {
-	              this._setProgress(isYoyo ? 1 - proc : proc, time, isYoyo);
-	            }
-	          } else {
-	            if (time !== props.endTime) {
-	              this._setProgress(isYoyo ? 1 - proc : proc, time, isYoyo);
-	            }
-	            // if progress is equal 0 and progress grows
-	            if (proc === 0) {
-	              this._repeatStart(time, isYoyo);
-	            }
-	          }
-
-	          if (time === props.startTime) {
-	            this._start(time, isYoyo);
-	          }
-	          // delay gap - react only once
-	        } else if (this._isInActiveArea) {
-	          // because T will be string of "delay" here,
-	          // let's normalize it be setting to TValue
-	          var t = T === "delay" ? TValue : T,
-	              isGrows = time > this._prevTime;
-	          // decrement period if forward direction of update
-	          isGrows && t--;
-	          // calculate normalized yoyoZero value
-	          yoyoZero = props.yoyo && t % 2 === 1 ? 1 : 0;
-	          // if was in active area and previous time was larger
-	          // |---=====|---=====|---=====| <<<
-	          //   ^2 ^1    ^2 ^1    ^2 ^1
-	          if (time < this._prevTime) {
-	            this._setProgress(yoyoZero, time, yoyoZero === 1);
-	            this._repeatStart(time, yoyoZero === 1);
-	          }
-	          // set 1 or 0 regarding direction and yoyo
-	          this._setProgress(isGrows ? 1 - yoyoZero : yoyoZero, time, yoyoZero === 1);
-	          // if time grows
-	          if (time > this._prevTime) {
-	            // if reverse direction and in delay gap, then progress will be 0
-	            // if so we don't need to call the onRepeatComplete callback
-	            // |---=====|---=====|---=====| <<<
-	            //   ^0       ^0       ^0  
-	            // OR we have flipped 0 to 1 regarding yoyo option
-	            if (this.progress !== 0 || yoyoZero === 1) {
-	              // since we repeatComplete for previous period
-	              // invert isYoyo option
-	              // is elapsed is 0 - count as previous period
-	              this._repeatComplete(time, yoyoZero === 1);
-	            }
-	          }
-	          // set flag to indicate inactive area
-	          this._isInActiveArea = false;
-	        }
-	        // we've got the first update now
-	        this._wasUknownUpdate = false;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setProp: {
-	      /*
-	        Method to set property[s] on Tween
-	        @private
-	        @param {Object, String} Hash object of key/value pairs, or property name
-	        @param {_} Property's value to set
-	      */
-	      value: function SetProp(obj, value) {
-	        // handle hash object case
-	        if (typeof obj === "object") {
-	          for (var key in obj) {
-	            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-	              this._props[key] = obj[key];
-	              if (key === "easing") {
-	                this._props.easing = easing.parseEasing(this._props.easing);
-	              }
-	            }
-	          }
-	          // handle key, value case
-	        } else if (typeof obj === "string") {
-	          // if key is easing - parse it immediately
-	          if (obj === "easing") {
-	            this._props.easing = easing.parseEasing(value);
-	          }
-	          // else just save it to props
-	          else {
-	            this._props[obj] = value;
-	          }
-	        }
-	        this._calcDimentions();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _removeFromTweener: {
-	      /*
-	        Method to remove the Tween from the tweener.
-	        @private
-	        @returns {Object} Self.
-	      */
-	      value: function RemoveFromTweener() {
-	        t.remove(this);return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _getPeriod: {
-	      /*
-	        Method to get current period number.
-	        @private
-	        @param {Number} Time to get the period for.
-	        @returns {Number} Current period number.
-	      */
-	      value: function GetPeriod(time) {
-	        var p = this._props,
-	            TTime = p.delay + p.duration,
-	            dTime = p.delay + time - p.startTime,
-	            T = dTime / TTime,
-
-	        // if time if equal to endTime we need to set the elapsed
-	        // time to 0 to fix the occasional precision js bug, which
-	        // causes 0 to be something like 1e-12
-	        elapsed = time < p.endTime ? dTime % TTime : 0;
-	        // If the latest period, round the result, otherwise floor it.
-	        // Basically we always can floor the result, but because of js
-	        // precision issues, sometimes the result is 2.99999998 which
-	        // will result in 2 instead of 3 after the floor operation.
-	        T = time >= p.endTime ? Math.round(T) : Math.floor(T);
-	        // if time is larger then the end time
-	        if (time > p.endTime) {
-	          // set equal to the periods count
-	          T = Math.round((p.endTime - p.startTime + p.delay) / TTime);
-	          // if in delay gap, set _delayT to current
-	          // period number and return "delay"
-	        } else if (elapsed > 0 && elapsed < p.delay) {
-	          this._delayT = T;T = "delay";
-	        }
-	        // if the end of period and there is a delay
-	        return T;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setProgress: {
-	      /*
-	        Method to set Tween's progress and call onUpdate callback.
-	        @private
-	        @param {Number} Progress to set.
-	        @param {Number} Current update time.
-	        @param {Boolean} Is yoyo perido. Used in Timeline to pass to Tween.
-	        @returns {Object} Self.
-	      */
-	      value: function SetProgress(p, time, isYoyo) {
-	        var props = this._props,
-	            isYoyoChanged = props.wasYoyo !== isYoyo;
-	        this.progress = p;
-	        this.easedProgress = this._props.easing(this.progress);
-	        if (props.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
-	          if (this.onUpdate != null && typeof this.onUpdate === "function") {
-	            this.onUpdate(this.easedProgress, this.progress, time > this._prevTime, isYoyo);
-	          }
-	        }
-	        this._props.prevEasedProgress = this.easedProgress;
-	        this._props.wasYoyo = isYoyo;
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _start: {
-
-	      /*
-	        Method to set tween's state to start and call onStart callback.
-	        @method _start
-	        @private
-	        @param {Number} Progress to set.
-	        @param {Boolean} Is yoyo period.
-	      */
-	      value: function Start(time, isYoyo) {
-	        if (this._isStarted) {
-	          return;
-	        }
-	        if (this._props.onStart != null && typeof this._props.onStart === "function") {
-	          this._props.onStart.call(this, time > this._prevTime, isYoyo);
-	        }
-	        this._isCompleted = false;this._isStarted = true;
-	        this._isFirstUpdate = false;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _complete: {
-
-	      /*
-	        Method to set tween's state to complete.
-	        @method _complete
-	        @private
-	        @param {Number} Current time.
-	        @param {Boolean} Is yoyo period.
-	      */
-	      value: function Complete(time, isYoyo) {
-	        if (this._isCompleted) {
-	          return;
-	        }
-	        if (this._props.onComplete != null && typeof this._props.onComplete === "function") {
-	          this._props.onComplete.call(this, time > this._prevTime, isYoyo);
-	        }
-	        this._isCompleted = true;this._isStarted = false;
-	        this._isFirstUpdate = false;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _firstUpdate: {
-
-	      /*
-	        Method to run onFirstUpdate callback.
-	        @method _firstUpdate
-	        @private
-	        @param {Number} Current update time.
-	        @param {Boolean} Is yoyo period.
-	      */
-	      value: function FirstUpdate(time, isYoyo) {
-	        if (this._isFirstUpdate) {
-	          return;
-	        }
-	        if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === "function") {
-	          this._props.onFirstUpdate.call(this, time > this._prevTime, isYoyo);
-	        }
-	        this._isFirstUpdate = true;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _repeatComplete: {
-
-	      /*
-	        Method call onRepeatComplete calback and set flags.
-	        @private
-	        @param {Number} Current update time.
-	        @param {Boolean} Is repeat period.
-	      */
-	      value: function RepeatComplete(time, isYoyo) {
-	        if (this._isRepeatCompleted) {
-	          return;
-	        }
-	        if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === "function") {
-	          this._props.onRepeatComplete.call(this, time > this._prevTime, isYoyo);
-	        }
-	        this._isRepeatCompleted = true;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _repeatStart: {
-
-	      /*
-	        Method call onRepeatStart calback and set flags.
-	        @private
-	        @param {Number} Current update time.
-	        @param {Boolean} Is yoyo period.
-	      */
-	      value: function RepeatStart(time, isYoyo) {
-	        if (this._isRepeatStart) {
-	          return;
-	        }
-	        if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === "function") {
-	          this._props.onRepeatStart.call(this, time > this._prevTime, isYoyo);
-	        }
-	        this._isRepeatStart = true;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _progress: {
-	      /*
-	        Method to launch onProgress callback.
-	        @method _progress
-	        @private
-	        @param {Number} Progress to set.
-	      */
-	      value: function Progress(progress, time) {
-	        if (this._props.onProgress != null && typeof this._props.onProgress === "function") {
-	          this._props.onProgress.call(this, progress, time > this._prevTime);
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _onTweenerRemove: {
-	      /*
-	        Method which is called when the tween is removed from tweener.
-	        @private
-	      */
-	      value: function OnTweenerRemove() {},
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _onTweenerFinish: {
-	      /*
-	        Method which is called when the tween is removed
-	        from tweener when finished.
-	        @private
-	      */
-	      value: function OnTweenerFinish() {
-	        this._setPlaybackState("stop");
-	      }
-
-	      // _visualizeProgress(time) {
-	      //   var str = '|',
-	      //       procStr = ' ',
-	      //       p = this._props,
-	      //       proc = p.startTime - p.delay;
-
-	      //   while ( proc < p.endTime ) {
-	      //     if (p.delay > 0 ) {
-	      //       var newProc = proc + p.delay;
-	      //       if ( time > proc && time < newProc ) {
-	      //         procStr += ' ^ ';
-	      //       } else {
-	      //         procStr += '   ';
-	      //       }
-	      //       proc = newProc;
-	      //       str  += '---';
-	      //     }
-	      //     var newProc = proc + p.duration;
-	      //     if ( time > proc && time < newProc ) {
-	      //       procStr += '  ^   ';
-	      //     } else if (time === proc) {
-	      //       procStr += '^     ';
-	      //     } else if (time === newProc) {
-	      //       procStr += '    ^ ';
-	      //     } else {
-	      //       procStr += '      ';
-	      //     }
-	      //     proc = newProc;
-	      //     str += '=====|';
-	      //   }
-
-	      //   console.log(str);
-	      //   console.log(procStr);
-	      // }
-	      ,
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return Tween;
-	})();
-
-	module.exports = Tween;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _prototypeProperties = function (child, staticProps, instanceProps) {
-	  if (staticProps) Object.defineProperties(child, staticProps);
-	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-	};
-
-	var _get = function get(object, property, receiver) {
-	  var desc = _core.Object.getOwnPropertyDescriptor(object, property);
-
-	  if (desc === undefined) {
-	    var parent = _core.Object.getPrototypeOf(object);
-
-	    if (parent === null) {
-	      return undefined;
-	    } else {
-	      return get(parent, property, receiver);
-	    }
-	  } else if ("value" in desc && desc.writable) {
-	    return desc.value;
-	  } else {
-	    var getter = desc.get;
-	    if (getter === undefined) {
-	      return undefined;
-	    }
-	    return getter.call(receiver);
-	  }
-	};
-
-	var _inherits = function (subClass, superClass) {
+	exports.default = function (subClass, superClass) {
 	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : (0, _typeof3.default)(superClass)));
 	  }
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+
+	  subClass.prototype = (0, _create2.default)(superClass && superClass.prototype, {
 	    constructor: {
 	      value: subClass,
 	      enumerable: false,
@@ -4424,516 +4760,376 @@
 	      configurable: true
 	    }
 	  });
-	  if (superClass) subClass.__proto__ = superClass;
+	  if (superClass) _setPrototypeOf2.default ? (0, _setPrototypeOf2.default)(subClass, superClass) : subClass.__proto__ = superClass;
 	};
-
-	var _interopRequire = function (obj) {
-	  return obj && (obj["default"] || obj);
-	};
-
-	var _core = _interopRequire(__webpack_require__(28));
-
-	var h = _interopRequire(__webpack_require__(2));
-
-	var t = _interopRequire(__webpack_require__(13));
-
-	var Tween = _interopRequire(__webpack_require__(11));
-
-	var Timeline = (function (Tween) {
-	  function Timeline() {
-	    var o = arguments[0] === undefined ? {} : arguments[0];
-	    _get(_core.Object.getPrototypeOf(Timeline.prototype), "constructor", this).call(this, o);
-	  }
-
-	  _inherits(Timeline, Tween);
-
-	  _prototypeProperties(Timeline, null, {
-	    add: {
-	      /*
-	        API method to add child tweens/timelines.
-	        @public
-	        @param {Object, Array} Tween/Timeline or an array of such.
-	        @returns {Object} Self.
-	      */
-	      value: function add() {
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	          args[_key] = arguments[_key];
-	        }
-
-	        this._pushTimelineArray(args);
-	        this._calcDimentions();
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    append: {
-	      /*
-	        API method to append the Tween/Timeline to the end of the
-	        timeline. Each argument is treated as a new append.
-	        Array of tweens is treated as a parallel sequence. 
-	        @public
-	        @param {Object, Array} Tween/Timeline to append or array of such.
-	        @returns {Object} Self.
-	      */
-	      value: function append() {
-	        for (var _len2 = arguments.length, timeline = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	          timeline[_key2] = arguments[_key2];
-	        }
-
-	        for (var _iterator = _core.$for.getIterator(timeline), _step; !(_step = _iterator.next()).done;) {
-	          var tm = _step.value;
-	          if (h.isArray(tm)) {
-	            this._appendTimelineArray(tm);
-	          } else {
-	            this._appendTimeline(tm, this._timelines.length);
-	          }
-	          this._calcDimentions();
-	        }
-
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _appendTimelineArray: {
-	      /*
-	        Method to append Tween/Timeline array or mix of such.
-	        @private
-	        @param {Array} Array of Tweens/Timelines.
-	      */
-	      value: function AppendTimelineArray(timelineArray) {
-	        var i = timelineArray.length,
-	            time = this._props.repeatTime - this._props.delay,
-	            len = this._timelines.length;
-
-	        while (i--) {
-	          this._appendTimeline(timelineArray[i], len, time);
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _appendTimeline: {
-	      /*
-	        Method to append a single timeline to the Timeline.
-	        @private
-	        @param {Object} Tween/Timline to append.
-	        @param {Number} Index of the append.
-	        @param {Number} Shift time.
-	      */
-	      value: function AppendTimeline(timeline, index, time) {
-	        // if timeline is a module with timeline property then extract it
-	        if (timeline.timeline instanceof Timeline) {
-	          timeline = timeline.timeline;
-	        }
-
-	        var shift = time != null ? time : this._props.duration;
-	        shift += timeline._props.shiftTime || 0;
-	        timeline.index = index;this._pushTimeline(timeline, shift);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _pushTimelineArray: {
-	      /*
-	        PrivateMethod to push Tween/Timeline array.
-	        @private
-	        @param {Array} Array of Tweens/Timelines.
-	      */
-	      value: function PushTimelineArray(array) {
-	        for (var i = 0; i < array.length; i++) {
-	          var tm = array[i];
-	          // recursive push to handle arrays of arrays
-	          if (h.isArray(tm)) {
-	            this._pushTimelineArray(tm);
-	          } else {
-	            this._pushTimeline(tm);
-	          }
-	        };
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _pushTimeline: {
-	      /*
-	        Method to push a single Tween/Timeline.
-	        @private
-	        @param {Object} Tween or Timeline to push.
-	        @param {Number} Number of milliseconds to shift the start time
-	                        of the Tween/Timeline.
-	      */
-	      value: function PushTimeline(timeline, shift) {
-	        // if timeline is a module with timeline property then extract it
-	        if (timeline.timeline instanceof Timeline) {
-	          timeline = timeline.timeline;
-	        }
-	        // add self delay to the timeline
-	        shift != null && timeline._setProp({ shiftTime: shift });
-	        // console.log('here', this._timelines);
-	        this._timelines.push(timeline);
-	        this._recalcDuration(timeline);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setProgress: {
-	      /*
-	        Method set progress on self and child Tweens/Timelines.
-	        @private
-	        @param {Number} Progress to set.
-	        @param {Number} Current update time.
-	      */
-	      value: function SetProgress(progress, time, isYoyo) {
-	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_setProgress", this).call(this, progress, time);
-	        var timeToTimelines = this._props.startTime + progress * this._props.duration,
-	            i = this._timelines.length;
-	        // we need to pass self previous time to children
-	        // to prevent initial _wasUnknownUpdate nested waterfall
-	        // if not yoyo option set, pass the previous time
-	        // otherwise, pass previous or next time regarding yoyo period.
-	        var coef = time > this._prevTime ? -1 : 1;
-	        if (this._props.yoyo && isYoyo) {
-	          coef *= -1;
-	        }
-	        var prevTimeToTimelines = timeToTimelines + coef;
-	        while (i--) {
-	          this._timelines[i]._update(timeToTimelines, prevTimeToTimelines, this._prevYoyo, this._onEdge);
-	        }
-	        this._prevYoyo = isYoyo;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _recalcDuration: {
-	      /*
-	        Method calculate self duration based on timeline's duration.
-	        @private
-	        @param {Object} Tween or Timeline to calculate.
-	      */
-	      value: function RecalcDuration(timeline) {
-	        !timeline._props && console.log(timeline);
-	        var p = timeline._props,
-	            speedCoef = p.speed ? 1 / p.speed : 1,
-	            timelineTime = speedCoef * p.repeatTime + (p.shiftTime || 0);
-	        this._props.duration = Math.max(timelineTime, this._props.duration);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _recalcTotalDuration: {
-	      /*
-	        Method calculate self duration from skretch.
-	        @private
-	      */
-	      value: function RecalcTotalDuration() {
-	        var i = this._timelines.length;
-	        this._props.duration = 0;
-	        while (i--) {
-	          this._recalcDuration(this._timelines[i]);
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _setStartTime: {
-
-	      /*
-	        Method set start and end times.
-	        @private
-	        @param {Number, Null} Time to start with.
-	      */
-	      value: function SetStartTime(time) {
-	        var isReset = arguments[1] === undefined ? true : arguments[1];
-	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_setStartTime", this).call(this, time);
-	        this._startTimelines(this._props.startTime, isReset);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _startTimelines: {
-	      /*
-	        Method calculate self duration based on timeline's duration.
-	        @private
-	        @param {Number, Null} Time to start with.
-	      */
-	      value: function StartTimelines(time) {
-	        var isReset = arguments[1] === undefined ? true : arguments[1];
-	        var i = this._timelines.length,
-	            p = this._props,
-	            timeline;
-	        time == null && (time = this._props.startTime);
-	        while (i--) {
-	          timeline = this._timelines[i];
-	          timeline._setStartTime(time, isReset);
-	          // if from _subPlay and _prevTime is set
-	          if (!isReset && timeline._prevTime != null) {
-	            timeline._prevTime = timeline._normPrevTimeForward();
-	          }
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _declareDefaults: {
-	      /*
-	        Method do declare defaults by this._defaults object
-	        @private
-	      */
-	      value: function DeclareDefaults() {
-	        // if duration was passed on initialization stage, warn user and reset it.
-	        if (this.o.duration != null) {
-	          h.error("Duration can not be declared on Timeline, but \"" + this.o.duration + "\" is. You probably want to use Tween instead.");
-	          this.o.duration = 0;
-	        }
-	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_declareDefaults", this).call(this);
-	        // remove default
-	        this._defaults.duration = 0;
-	        this._defaults.nameBase = "Timeline";
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _vars: {
-	      /*
-	        Method to declare some vars.
-	        @private
-	      */
-	      value: function Vars() {
-	        // console.log('timeline _vars')
-	        this._timelines = [];
-	        _get(_core.Object.getPrototypeOf(Timeline.prototype), "_vars", this).call(this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return Timeline;
-	})(Tween);
-
-	module.exports = Timeline;
 
 /***/ },
-/* 13 */
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(45), __esModule: true };
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(46), __esModule: true };
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(44), __esModule: true };
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _prototypeProperties = function (child, staticProps, instanceProps) {
-	  if (staticProps) Object.defineProperties(child, staticProps);
-	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-	};
+	exports.__esModule = true;
 
-	var _interopRequire = function (obj) {
-	  return obj && (obj["default"] || obj);
-	};
+	var _typeof2 = __webpack_require__(8);
 
-	var _core = _interopRequire(__webpack_require__(28));
+	var _typeof3 = _interopRequireDefault(_typeof2);
 
-	__webpack_require__(26);
-	__webpack_require__(27);
-	var h = _interopRequire(__webpack_require__(2));
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Tweener = (function () {
-	  function Tweener() {
-	    this._vars();return this;
+	exports.default = function (self, call) {
+	  if (!self) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
 	  }
 
-	  _prototypeProperties(Tweener, null, {
-	    _vars: {
-	      value: function Vars() {
-	        this.tweens = [];this._loop = h.bind(this._loop, this);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _loop: {
-	      /*
-	        Main animation loop. Should have only one concurrent loop.
-	        @private
-	        @returns this
-	      */
-	      value: function Loop() {
-	        if (!this._isRunning) {
-	          return false;
-	        }
-	        var time = performance.now();this._update(time);
-	        if (!this.tweens.length) {
-	          return this._isRunning = false;
-	        }
-	        requestAnimationFrame(this._loop);
-	        return this;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _startLoop: {
-	      /*
-	        Method to start animation loop.
-	        @private
-	      */
-	      value: function StartLoop() {
-	        if (this._isRunning) {
-	          return;
-	        };this._isRunning = true;
-	        requestAnimationFrame(this._loop);
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _stopLoop: {
-	      /*
-	        Method to stop animation loop.
-	        @private
-	      */
-	      value: function StopLoop() {
-	        this._isRunning = false;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    _update: {
-	      /*
-	        Method to update every tween/timeline on animation frame.
-	        @private
-	      */
-	      value: function Update(time) {
-	        var i = this.tweens.length;
-	        while (i--) {
-	          // cache the current tween
-	          var tween = this.tweens[i];
-	          if (tween && tween._update(time) === true) {
-	            this.remove(i);
-	            tween._onTweenerFinish();
-	            tween._prevTime = null;
-	          }
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    add: {
-	      /*
-	        Method to add a Tween/Timeline to loop pool.
-	        @param {Object} Tween/Timeline to add.
-	      */
-	      value: function add(tween) {
-	        // return if tween is already running
-	        if (tween._isRunning) {
-	          return;
-	        }
-	        tween._isRunning = true;
-	        this.tweens.push(tween);
-	        this._startLoop();
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    removeAll: {
-	      /*
-	        Method stop updating all the child tweens/timelines.
-	        @private
-	      */
-	      value: function removeAll() {
-	        this.tweens.length = 0;
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    },
-	    remove: {
-	      /*
-	        Method to remove specific tween/timeline form updating.
-	        @private
-	      */
-	      value: function remove(tween) {
-	        var index = typeof tween === "number" ? tween : this.tweens.indexOf(tween);
-
-	        if (index !== -1) {
-	          tween = this.tweens[index];
-	          if (tween) {
-	            tween._isRunning = false;
-	            this.tweens.splice(index, 1);
-	            tween._onTweenerRemove();
-	          }
-	        }
-	      },
-	      writable: true,
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return Tweener;
-	})();
-
-	var t = new Tweener();
-	module.exports = t;
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;window.mojs = {
-	  revision: '0.169.2',
-	  isDebug: true,
-	  helpers: __webpack_require__(2),
-	  shapesMap: __webpack_require__(3),
-	  Burst: __webpack_require__(4),
-	  Transit: __webpack_require__(5),
-	  Swirl: __webpack_require__(6),
-	  Stagger: __webpack_require__(9),
-	  Spriter: __webpack_require__(10),
-	  MotionPath: __webpack_require__(7),
-	  Tween: __webpack_require__(11),
-	  Timeline: __webpack_require__(12),
-	  tweener: __webpack_require__(13),
-	  easing: __webpack_require__(8)
+	  return call && ((typeof call === "undefined" ? "undefined" : (0, _typeof3.default)(call)) === "object" || typeof call === "function") ? call : self;
 	};
 
-	mojs.h = mojs.helpers;
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
 
-	mojs.delta = mojs.h.delta;
+	"use strict";
 
+	exports.__esModule = true;
 
+	var _getPrototypeOf = __webpack_require__(20);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _getOwnPropertyDescriptor = __webpack_require__(43);
+
+	var _getOwnPropertyDescriptor2 = _interopRequireDefault(_getOwnPropertyDescriptor);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function get(object, property, receiver) {
+	  if (object === null) object = Function.prototype;
+	  var desc = (0, _getOwnPropertyDescriptor2.default)(object, property);
+
+	  if (desc === undefined) {
+	    var parent = (0, _getPrototypeOf2.default)(object);
+
+	    if (parent === null) {
+	      return undefined;
+	    } else {
+	      return get(parent, property, receiver);
+	    }
+	  } else if ("value" in desc) {
+	    return desc.value;
+	  } else {
+	    var getter = desc.get;
+
+	    if (getter === undefined) {
+	      return undefined;
+	    }
+
+	    return getter.call(receiver);
+	  }
+	};
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 	/* istanbul ignore next */
-
-	if (true) {
-	  !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
-	    return mojs;
-	  }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}
-
-
-	/* istanbul ignore next */
-
-	if ((typeof module === "object") && (typeof module.exports === "object")) {
-	  module.exports = mojs;
-	}
+	(function() {
+	  'use strict';
+	  var cancel, i, isOldBrowser, lastTime, vendors, vp, w;
+	  vendors = ['webkit', 'moz'];
+	  i = 0;
+	  w = window;
+	  while (i < vendors.length && !w.requestAnimationFrame) {
+	    vp = vendors[i];
+	    w.requestAnimationFrame = w[vp + 'RequestAnimationFrame'];
+	    cancel = w[vp + 'CancelAnimationFrame'];
+	    w.cancelAnimationFrame = cancel || w[vp + 'CancelRequestAnimationFrame'];
+	    ++i;
+	  }
+	  isOldBrowser = !w.requestAnimationFrame || !w.cancelAnimationFrame;
+	  if (/iP(ad|hone|od).*OS 6/.test(w.navigator.userAgent) || isOldBrowser) {
+	    lastTime = 0;
+	    w.requestAnimationFrame = function(callback) {
+	      var nextTime, now;
+	      now = Date.now();
+	      nextTime = Math.max(lastTime + 16, now);
+	      return setTimeout((function() {
+	        callback(lastTime = nextTime);
+	      }), nextTime - now);
+	    };
+	    w.cancelAnimationFrame = clearTimeout;
+	  }
+	})();
 
 
 /***/ },
-/* 15 */
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* istanbul ignore next */
+	(function(root) {
+	  var offset, ref, ref1;
+	  if (root.performance == null) {
+	    root.performance = {};
+	  }
+	  Date.now = Date.now || function() {
+	    return (new Date).getTime();
+	  };
+	  if (root.performance.now == null) {
+	    offset = ((ref = root.performance) != null ? (ref1 = ref.timing) != null ? ref1.navigationStart : void 0 : void 0) ? performance.timing.navigationStart : Date.now();
+	    return root.performance.now = function() {
+	      return Date.now() - offset;
+	    };
+	  }
+	})(window);
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(47), __esModule: true };
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(48), __esModule: true };
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Bit, h;
+
+	h = __webpack_require__(9);
+
+	Bit = (function() {
+	  Bit.prototype.ns = 'http://www.w3.org/2000/svg';
+
+	  Bit.prototype.shape = 'line';
+
+	  Bit.prototype.ratio = 1;
+
+	  Bit.prototype.defaults = {
+	    radius: 50,
+	    radiusX: void 0,
+	    radiusY: void 0,
+	    points: 3,
+	    x: 0,
+	    y: 0,
+	    angle: 0,
+	    stroke: 'hotpink',
+	    'stroke-width': 2,
+	    'stroke-opacity': 1,
+	    fill: 'transparent',
+	    'fill-opacity': 1,
+	    'stroke-dasharray': '',
+	    'stroke-dashoffset': '',
+	    'stroke-linecap': ''
+	  };
+
+	  function Bit(o) {
+	    this.o = o != null ? o : {};
+	    this.init();
+	    this;
+	  }
+
+	  Bit.prototype.init = function() {
+	    this.vars();
+	    this.render();
+	    return this;
+	  };
+
+	  Bit.prototype.vars = function() {
+	    if (this.o.ctx && this.o.ctx.tagName === 'svg') {
+	      this.ctx = this.o.ctx;
+	    } else if (!this.o.el) {
+	      h.error('You should pass a real context(ctx) to the bit');
+	    }
+	    this.state = {};
+	    this.drawMapLength = this.drawMap.length;
+	    this.extendDefaults();
+	    return this.calcTransform();
+	  };
+
+	  Bit.prototype.calcTransform = function() {
+	    var rotate;
+	    rotate = "rotate(" + this.props.angle + ", " + this.props.x + ", " + this.props.y + ")";
+	    return this.props.transform = "" + rotate;
+	  };
+
+	  Bit.prototype.extendDefaults = function() {
+	    var key, ref, results, value;
+	    if (this.props == null) {
+	      this.props = {};
+	    }
+	    ref = this.defaults;
+	    results = [];
+	    for (key in ref) {
+	      value = ref[key];
+	      results.push(this.props[key] = this.o[key] != null ? this.o[key] : value);
+	    }
+	    return results;
+	  };
+
+	  Bit.prototype.setAttr = function(attr, value) {
+	    var el, key, keys, len, results, val;
+	    if (typeof attr === 'object') {
+	      keys = Object.keys(attr);
+	      len = keys.length;
+	      el = value || this.el;
+	      results = [];
+	      while (len--) {
+	        key = keys[len];
+	        val = attr[key];
+	        results.push(el.setAttribute(key, val));
+	      }
+	      return results;
+	    } else {
+	      return this.el.setAttribute(attr, value);
+	    }
+	  };
+
+	  Bit.prototype.setProp = function(attr, value) {
+	    var key, results, val;
+	    if (typeof attr === 'object') {
+	      results = [];
+	      for (key in attr) {
+	        val = attr[key];
+	        results.push(this.props[key] = val);
+	      }
+	      return results;
+	    } else {
+	      return this.props[attr] = value;
+	    }
+	  };
+
+	  Bit.prototype.render = function() {
+	    this.isRendered = true;
+	    if (this.o.el != null) {
+	      this.el = this.o.el;
+	      return this.isForeign = true;
+	    } else {
+	      this.el = document.createElementNS(this.ns, this.shape || 'line');
+	      !this.o.isDrawLess && this.draw();
+	      return this.ctx.appendChild(this.el);
+	    }
+	  };
+
+	  Bit.prototype.drawMap = ['stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'fill', 'stroke-dashoffset', 'stroke-linecap', 'fill-opacity', 'transform'];
+
+	  Bit.prototype.draw = function() {
+	    var len, name;
+	    this.props.length = this.getLength();
+	    len = this.drawMapLength;
+	    while (len--) {
+	      name = this.drawMap[len];
+	      switch (name) {
+	        case 'stroke-dasharray':
+	        case 'stroke-dashoffset':
+	          this.castStrokeDash(name);
+	      }
+	      this.setAttrsIfChanged(name, this.props[name]);
+	    }
+	    return this.state.radius = this.props.radius;
+	  };
+
+	  Bit.prototype.castStrokeDash = function(name) {
+	    var cast, dash, i, j, len1, ref, stroke;
+	    if (h.isArray(this.props[name])) {
+	      stroke = '';
+	      ref = this.props[name];
+	      for (i = j = 0, len1 = ref.length; j < len1; i = ++j) {
+	        dash = ref[i];
+	        cast = dash.unit === '%' ? this.castPercent(dash.value) : dash.value;
+	        stroke += cast + " ";
+	      }
+	      this.props[name] = stroke === '0 ' ? stroke = '' : stroke;
+	      return this.props[name] = stroke;
+	    }
+	    if (typeof this.props[name] === 'object') {
+	      stroke = this.props[name].unit === '%' ? this.castPercent(this.props[name].value) : this.props[name].value;
+	      return this.props[name] = stroke === 0 ? stroke = '' : stroke;
+	    }
+	  };
+
+	  Bit.prototype.castPercent = function(percent) {
+	    return percent * (this.props.length / 100);
+	  };
+
+	  Bit.prototype.setAttrsIfChanged = function(name, value) {
+	    var key, keys, len, results;
+	    if (typeof name === 'object') {
+	      keys = Object.keys(name);
+	      len = keys.length;
+	      results = [];
+	      while (len--) {
+	        key = keys[len];
+	        value = name[key];
+	        results.push(this.setAttrIfChanged(key, value));
+	      }
+	      return results;
+	    } else {
+	      if (value == null) {
+	        value = this.props[name];
+	      }
+	      return this.setAttrIfChanged(name, value);
+	    }
+	  };
+
+	  Bit.prototype.setAttrIfChanged = function(name, value) {
+	    if (this.isChanged(name, value)) {
+	      this.el.setAttribute(name, value);
+	      return this.state[name] = value;
+	    }
+	  };
+
+	  Bit.prototype.isChanged = function(name, value) {
+	    if (value == null) {
+	      value = this.props[name];
+	    }
+	    return this.state[name] !== value;
+	  };
+
+	  Bit.prototype.getLength = function() {
+	    var ref;
+	    if ((((ref = this.el) != null ? ref.getTotalLength : void 0) != null) && this.el.getAttribute('d')) {
+	      return this.el.getTotalLength();
+	    } else {
+	      return 2 * (this.props.radiusX != null ? this.props.radiusX : this.props.radius);
+	    }
+	  };
+
+	  return Bit;
+
+	})();
+
+	module.exports = Bit;
+
+
+/***/ },
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -4942,7 +5138,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
 	Circle = (function(superClass) {
 	  extend(Circle, superClass);
@@ -4981,7 +5177,7 @@
 
 
 /***/ },
-/* 16 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -4990,7 +5186,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
 	Line = (function(superClass) {
 	  extend(Line, superClass);
@@ -5019,7 +5215,7 @@
 
 
 /***/ },
-/* 17 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5028,7 +5224,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
 	Zigzag = (function(superClass) {
 	  extend(Zigzag, superClass);
@@ -5076,7 +5272,7 @@
 
 
 /***/ },
-/* 18 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5085,7 +5281,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
 	Rect = (function(superClass) {
 	  extend(Rect, superClass);
@@ -5126,7 +5322,7 @@
 
 
 /***/ },
-/* 19 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5135,9 +5331,9 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
 	Polygon = (function(superClass) {
 	  extend(Polygon, superClass);
@@ -5193,7 +5389,7 @@
 
 
 /***/ },
-/* 20 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5202,7 +5398,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
 	Cross = (function(superClass) {
 	  extend(Cross, superClass);
@@ -5245,7 +5441,7 @@
 
 
 /***/ },
-/* 21 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5254,7 +5450,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Bit = __webpack_require__(1);
+	Bit = __webpack_require__(28);
 
 	Equal = (function(superClass) {
 	  extend(Equal, superClass);
@@ -5301,7 +5497,7 @@
 
 
 /***/ },
-/* 22 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
@@ -5522,13 +5718,13 @@
 
 
 /***/ },
-/* 23 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var BezierEasing, bezierEasing, h,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
 
 	/**
@@ -5699,12 +5895,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 24 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var PathEasing, h;
 
-	h = __webpack_require__(2);
+	h = __webpack_require__(9);
 
 	PathEasing = (function() {
 	  PathEasing.prototype._vars = function() {
@@ -5935,7 +6131,7 @@
 
 
 /***/ },
-/* 25 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var create, easing, getNearest, mix, parseIfEasing, sort,
@@ -6008,2259 +6204,1135 @@
 
 
 /***/ },
-/* 26 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	/* istanbul ignore next */
-	(function() {
-	  'use strict';
-	  var cancel, i, isOldBrowser, lastTime, vendors, vp, w;
-	  vendors = ['webkit', 'moz'];
-	  i = 0;
-	  w = window;
-	  while (i < vendors.length && !w.requestAnimationFrame) {
-	    vp = vendors[i];
-	    w.requestAnimationFrame = w[vp + 'RequestAnimationFrame'];
-	    cancel = w[vp + 'CancelAnimationFrame'];
-	    w.cancelAnimationFrame = cancel || w[vp + 'CancelRequestAnimationFrame'];
-	    ++i;
-	  }
-	  isOldBrowser = !w.requestAnimationFrame || !w.cancelAnimationFrame;
-	  if (/iP(ad|hone|od).*OS 6/.test(w.navigator.userAgent) || isOldBrowser) {
-	    lastTime = 0;
-	    w.requestAnimationFrame = function(callback) {
-	      var nextTime, now;
-	      now = Date.now();
-	      nextTime = Math.max(lastTime + 16, now);
-	      return setTimeout((function() {
-	        callback(lastTime = nextTime);
-	      }), nextTime - now);
-	    };
-	    w.cancelAnimationFrame = clearTimeout;
-	  }
-	})();
-
+	module.exports = { "default": __webpack_require__(49), __esModule: true };
 
 /***/ },
-/* 27 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	/* istanbul ignore next */
-	(function(root) {
-	  var offset, ref, ref1;
-	  if (root.performance == null) {
-	    root.performance = {};
-	  }
-	  Date.now = Date.now || function() {
-	    return (new Date).getTime();
-	  };
-	  if (root.performance.now == null) {
-	    offset = ((ref = root.performance) != null ? (ref1 = ref.timing) != null ? ref1.navigationStart : void 0 : void 0) ? performance.timing.navigationStart : Date.now();
-	    return root.performance.now = function() {
-	      return Date.now() - offset;
-	    };
-	  }
-	})(window);
-
+	module.exports = { "default": __webpack_require__(50), __esModule: true };
 
 /***/ },
-/* 28 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Core.js 0.4.10
-	 * https://github.com/zloirock/core-js
-	 * License: http://rock.mit-license.org
-	 * © 2015 Denis Pushkarev
-	 */
-	!function(global, framework, undefined){
+	module.exports = { "default": __webpack_require__(1), __esModule: true };
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(52), __esModule: true };
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(53);
+	__webpack_require__(54);
+	module.exports = __webpack_require__(55);
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(56);
+	module.exports = __webpack_require__(57).Object.keys;
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(58);
+	module.exports = __webpack_require__(57).Object.getPrototypeOf;
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(54);
+	__webpack_require__(53);
+	module.exports = __webpack_require__(59)('iterator');
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(60);
+	__webpack_require__(61);
+	module.exports = __webpack_require__(57).Symbol;
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(62);
+	module.exports = function defineProperty(it, key, desc){
+	  return $.setDesc(it, key, desc);
+	};
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(63);
+	module.exports = __webpack_require__(57).Object.setPrototypeOf;
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {'use strict';
+
+	var _typeof2 = __webpack_require__(8);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	var _h = __webpack_require__(9);
+
+	var _h2 = _interopRequireDefault(_h);
+
+	var _shapesMap = __webpack_require__(10);
+
+	var _shapesMap2 = _interopRequireDefault(_shapesMap);
+
+	var _burst = __webpack_require__(11);
+
+	var _burst2 = _interopRequireDefault(_burst);
+
+	var _transit = __webpack_require__(12);
+
+	var _transit2 = _interopRequireDefault(_transit);
+
+	var _swirl = __webpack_require__(13);
+
+	var _swirl2 = _interopRequireDefault(_swirl);
+
+	var _stagger = __webpack_require__(3);
+
+	var _stagger2 = _interopRequireDefault(_stagger);
+
+	var _spriter = __webpack_require__(2);
+
+	var _spriter2 = _interopRequireDefault(_spriter);
+
+	var _motionPath = __webpack_require__(14);
+
+	var _motionPath2 = _interopRequireDefault(_motionPath);
+
+	var _tween = __webpack_require__(4);
+
+	var _tween2 = _interopRequireDefault(_tween);
+
+	var _timeline = __webpack_require__(5);
+
+	var _timeline2 = _interopRequireDefault(_timeline);
+
+	var _tweener = __webpack_require__(6);
+
+	var _tweener2 = _interopRequireDefault(_tweener);
+
+	var _easing = __webpack_require__(15);
+
+	var _easing2 = _interopRequireDefault(_easing);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	window.mojs = {
+	  revision: '0.169.2', isDebug: true,
+	  helpers: _h2.default,
+	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, Stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
+	  Tween: _tween2.default, Timeline: _timeline2.default, tweener: _tweener2.default,
+	  easing: _easing2.default, shapesMap: _shapesMap2.default
+	};
+
+	mojs.h = mojs.helpers;
+	mojs.delta = mojs.h.delta;
+
+	// ### istanbul ignore next ###
+	if (true) {
+	  !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	    return mojs;
+	  }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}
+	// ### istanbul ignore next ###
+	if ((false ? 'undefined' : (0, _typeof3.default)(module)) === "object" && (0, _typeof3.default)(module.exports) === "object") {
+	  module.exports = mojs;
+	}
+	// # ### istanbul ignore next ###
+	// # window?.mojs = mojs
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module)))
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(62);
+	__webpack_require__(64);
+	module.exports = function getOwnPropertyDescriptor(it, key){
+	  return $.getDesc(it, key);
+	};
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(65);
+	var Iterators = __webpack_require__(66);
+	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
+	var $at  = __webpack_require__(67)(true);
 
-	/******************************************************************************
-	 * Module : common                                                            *
-	 ******************************************************************************/
+	// 21.1.3.27 String.prototype[@@iterator]()
+	__webpack_require__(68)(String, 'String', function(iterated){
+	  this._t = String(iterated); // target
+	  this._i = 0;                // next index
+	// 21.1.5.2.1 %StringIteratorPrototype%.next()
+	}, function(){
+	  var O     = this._t
+	    , index = this._i
+	    , point;
+	  if(index >= O.length)return {value: undefined, done: true};
+	  point = $at(O, index);
+	  this._i += point.length;
+	  return {value: point, done: false};
+	});
 
-	  // Shortcuts for [[Class]] & property names
-	var OBJECT          = 'Object'
-	  , FUNCTION        = 'Function'
-	  , ARRAY           = 'Array'
-	  , STRING          = 'String'
-	  , NUMBER          = 'Number'
-	  , REGEXP          = 'RegExp'
-	  , DATE            = 'Date'
-	  , MAP             = 'Map'
-	  , SET             = 'Set'
-	  , WEAKMAP         = 'WeakMap'
-	  , WEAKSET         = 'WeakSet'
-	  , SYMBOL          = 'Symbol'
-	  , PROMISE         = 'Promise'
-	  , MATH            = 'Math'
-	  , ARGUMENTS       = 'Arguments'
-	  , PROTOTYPE       = 'prototype'
-	  , CONSTRUCTOR     = 'constructor'
-	  , TO_STRING       = 'toString'
-	  , TO_STRING_TAG   = TO_STRING + 'Tag'
-	  , TO_LOCALE       = 'toLocaleString'
-	  , HAS_OWN         = 'hasOwnProperty'
-	  , FOR_EACH        = 'forEach'
-	  , ITERATOR        = 'iterator'
-	  , FF_ITERATOR     = '@@' + ITERATOR
-	  , PROCESS         = 'process'
-	  , CREATE_ELEMENT  = 'createElement'
-	  // Aliases global objects and prototypes
-	  , Function        = global[FUNCTION]
-	  , Object          = global[OBJECT]
-	  , Array           = global[ARRAY]
-	  , String          = global[STRING]
-	  , Number          = global[NUMBER]
-	  , RegExp          = global[REGEXP]
-	  , Date            = global[DATE]
-	  , Map             = global[MAP]
-	  , Set             = global[SET]
-	  , WeakMap         = global[WEAKMAP]
-	  , WeakSet         = global[WEAKSET]
-	  , Symbol          = global[SYMBOL]
-	  , Math            = global[MATH]
-	  , TypeError       = global.TypeError
-	  , setTimeout      = global.setTimeout
-	  , setImmediate    = global.setImmediate
-	  , clearImmediate  = global.clearImmediate
-	  , process         = global[PROCESS]
-	  , nextTick        = process && process.nextTick
-	  , document        = global.document
-	  , html            = document && document.documentElement
-	  , navigator       = global.navigator
-	  , define          = global.define
-	  , ArrayProto      = Array[PROTOTYPE]
-	  , ObjectProto     = Object[PROTOTYPE]
-	  , FunctionProto   = Function[PROTOTYPE]
-	  , Infinity        = 1 / 0
-	  , DOT             = '.';
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
 
-	// http://jsperf.com/core-js-isobject
-	function isObject(it){
-	  return it != null && (typeof it == 'object' || typeof it == 'function');
-	}
-	function isFunction(it){
-	  return typeof it == 'function';
-	}
-	// Native function?
-	var isNative = ctx(/./.test, /\[native code\]\s*\}\s*$/, 1);
+	var anObject = __webpack_require__(69)
+	  , get      = __webpack_require__(70);
+	module.exports = __webpack_require__(57).getIterator = function(it){
+	  var iterFn = get(it);
+	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
+	  return anObject(iterFn.call(it));
+	};
 
-	// Object internal [[Class]] or toStringTag
-	// http://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring
-	var buildIn = {
-	  Undefined: 1, Null: 1, Array: 1, String: 1, Arguments: 1,
-	  Function: 1, Error: 1, Boolean: 1, Number: 1, Date: 1, RegExp:1 
-	} , toString = ObjectProto[TO_STRING];
-	function setToStringTag(it, tag, stat){
-	  if(it && !has(it = stat ? it : it[PROTOTYPE], SYMBOL_TAG))hidden(it, SYMBOL_TAG, tag);
-	}
-	function cof(it){
-	  return it == undefined ? it === undefined
-	    ? 'Undefined' : 'Null' : toString.call(it).slice(8, -1);
-	}
-	function classof(it){
-	  var klass = cof(it), tag;
-	  return klass == OBJECT && (tag = it[SYMBOL_TAG]) ? has(buildIn, tag) ? '~' + tag : tag : klass;
-	}
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
 
-	// Function
-	var call  = FunctionProto.call
-	  , apply = FunctionProto.apply
-	  , REFERENCE_GET;
-	// Partial apply
-	function part(/* ...args */){
-	  var fn     = assertFunction(this)
-	    , length = arguments.length
-	    , args   = Array(length)
-	    , i      = 0
-	    , _      = path._
-	    , holder = false;
-	  while(length > i)if((args[i] = arguments[i++]) === _)holder = true;
-	  return function(/* ...args */){
-	    var that    = this
-	      , _length = arguments.length
-	      , i = 0, j = 0, _args;
-	    if(!holder && !_length)return invoke(fn, args, that);
-	    _args = args.slice();
-	    if(holder)for(;length > i; i++)if(_args[i] === _)_args[i] = arguments[j++];
-	    while(_length > j)_args.push(arguments[j++]);
-	    return invoke(fn, _args, that);
-	  }
-	}
-	// Optional / simple context binding
-	function ctx(fn, that, length){
-	  assertFunction(fn);
-	  if(~length && that === undefined)return fn;
-	  switch(length){
-	    case 1: return function(a){
-	      return fn.call(that, a);
+	// 19.1.2.14 Object.keys(O)
+	var toObject = __webpack_require__(71);
+
+	__webpack_require__(72)('keys', function($keys){
+	  return function keys(it){
+	    return $keys(toObject(it));
+	  };
+	});
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var core = module.exports = {version: '1.2.6'};
+	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.9 Object.getPrototypeOf(O)
+	var toObject = __webpack_require__(71);
+
+	__webpack_require__(72)('getPrototypeOf', function($getPrototypeOf){
+	  return function getPrototypeOf(it){
+	    return $getPrototypeOf(toObject(it));
+	  };
+	});
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var store  = __webpack_require__(73)('wks')
+	  , uid    = __webpack_require__(74)
+	  , Symbol = __webpack_require__(75).Symbol;
+	module.exports = function(name){
+	  return store[name] || (store[name] =
+	    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
+	};
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	// ECMAScript 6 symbols shim
+	var $              = __webpack_require__(62)
+	  , global         = __webpack_require__(75)
+	  , has            = __webpack_require__(76)
+	  , DESCRIPTORS    = __webpack_require__(77)
+	  , $export        = __webpack_require__(78)
+	  , redefine       = __webpack_require__(79)
+	  , $fails         = __webpack_require__(80)
+	  , shared         = __webpack_require__(73)
+	  , setToStringTag = __webpack_require__(81)
+	  , uid            = __webpack_require__(74)
+	  , wks            = __webpack_require__(59)
+	  , keyOf          = __webpack_require__(82)
+	  , $names         = __webpack_require__(83)
+	  , enumKeys       = __webpack_require__(84)
+	  , isArray        = __webpack_require__(85)
+	  , anObject       = __webpack_require__(69)
+	  , toIObject      = __webpack_require__(86)
+	  , createDesc     = __webpack_require__(87)
+	  , getDesc        = $.getDesc
+	  , setDesc        = $.setDesc
+	  , _create        = $.create
+	  , getNames       = $names.get
+	  , $Symbol        = global.Symbol
+	  , $JSON          = global.JSON
+	  , _stringify     = $JSON && $JSON.stringify
+	  , setter         = false
+	  , HIDDEN         = wks('_hidden')
+	  , isEnum         = $.isEnum
+	  , SymbolRegistry = shared('symbol-registry')
+	  , AllSymbols     = shared('symbols')
+	  , useNative      = typeof $Symbol == 'function'
+	  , ObjectProto    = Object.prototype;
+
+	// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+	var setSymbolDesc = DESCRIPTORS && $fails(function(){
+	  return _create(setDesc({}, 'a', {
+	    get: function(){ return setDesc(this, 'a', {value: 7}).a; }
+	  })).a != 7;
+	}) ? function(it, key, D){
+	  var protoDesc = getDesc(ObjectProto, key);
+	  if(protoDesc)delete ObjectProto[key];
+	  setDesc(it, key, D);
+	  if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
+	} : setDesc;
+
+	var wrap = function(tag){
+	  var sym = AllSymbols[tag] = _create($Symbol.prototype);
+	  sym._k = tag;
+	  DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
+	    configurable: true,
+	    set: function(value){
+	      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
+	      setSymbolDesc(this, tag, createDesc(1, value));
 	    }
-	    case 2: return function(a, b){
-	      return fn.call(that, a, b);
-	    }
-	    case 3: return function(a, b, c){
-	      return fn.call(that, a, b, c);
-	    }
-	  } return function(/* ...args */){
-	      return fn.apply(that, arguments);
-	  }
-	}
-	// Fast apply
-	// http://jsperf.lnkit.com/fast-apply/5
-	function invoke(fn, args, that){
-	  var un = that === undefined;
-	  switch(args.length | 0){
-	    case 0: return un ? fn()
-	                      : fn.call(that);
-	    case 1: return un ? fn(args[0])
-	                      : fn.call(that, args[0]);
-	    case 2: return un ? fn(args[0], args[1])
-	                      : fn.call(that, args[0], args[1]);
-	    case 3: return un ? fn(args[0], args[1], args[2])
-	                      : fn.call(that, args[0], args[1], args[2]);
-	    case 4: return un ? fn(args[0], args[1], args[2], args[3])
-	                      : fn.call(that, args[0], args[1], args[2], args[3]);
-	    case 5: return un ? fn(args[0], args[1], args[2], args[3], args[4])
-	                      : fn.call(that, args[0], args[1], args[2], args[3], args[4]);
-	  } return              fn.apply(that, args);
-	}
-	function construct(target, argumentsList /*, newTarget*/){
-	  var proto    = assertFunction(arguments.length < 3 ? target : arguments[2])[PROTOTYPE]
-	    , instance = create(isObject(proto) ? proto : ObjectProto)
-	    , result   = apply.call(target, instance, argumentsList);
-	  return isObject(result) ? result : instance;
-	}
+	  });
+	  return sym;
+	};
 
-	// Object:
-	var create           = Object.create
-	  , getPrototypeOf   = Object.getPrototypeOf
-	  , setPrototypeOf   = Object.setPrototypeOf
-	  , defineProperty   = Object.defineProperty
-	  , defineProperties = Object.defineProperties
-	  , getOwnDescriptor = Object.getOwnPropertyDescriptor
-	  , getKeys          = Object.keys
-	  , getNames         = Object.getOwnPropertyNames
-	  , getSymbols       = Object.getOwnPropertySymbols
-	  , isFrozen         = Object.isFrozen
-	  , has              = ctx(call, ObjectProto[HAS_OWN], 2)
-	  // Dummy, fix for not array-like ES3 string in es5 module
-	  , ES5Object        = Object
-	  , Dict;
-	function toObject(it){
-	  return ES5Object(assertDefined(it));
-	}
-	function returnIt(it){
+	var isSymbol = function(it){
+	  return typeof it == 'symbol';
+	};
+
+	var $defineProperty = function defineProperty(it, key, D){
+	  if(D && has(AllSymbols, key)){
+	    if(!D.enumerable){
+	      if(!has(it, HIDDEN))setDesc(it, HIDDEN, createDesc(1, {}));
+	      it[HIDDEN][key] = true;
+	    } else {
+	      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
+	      D = _create(D, {enumerable: createDesc(0, false)});
+	    } return setSymbolDesc(it, key, D);
+	  } return setDesc(it, key, D);
+	};
+	var $defineProperties = function defineProperties(it, P){
+	  anObject(it);
+	  var keys = enumKeys(P = toIObject(P))
+	    , i    = 0
+	    , l = keys.length
+	    , key;
+	  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
 	  return it;
-	}
-	function returnThis(){
-	  return this;
-	}
-	function get(object, key){
-	  if(has(object, key))return object[key];
-	}
-	function ownKeys(it){
-	  assertObject(it);
-	  return getSymbols ? getNames(it).concat(getSymbols(it)) : getNames(it);
-	}
-	// 19.1.2.1 Object.assign(target, source, ...)
-	var assign = Object.assign || function(target, source){
-	  var T = Object(assertDefined(target))
-	    , l = arguments.length
-	    , i = 1;
-	  while(l > i){
-	    var S      = ES5Object(arguments[i++])
-	      , keys   = getKeys(S)
-	      , length = keys.length
-	      , j      = 0
-	      , key;
-	    while(length > j)T[key = keys[j++]] = S[key];
+	};
+	var $create = function create(it, P){
+	  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
+	};
+	var $propertyIsEnumerable = function propertyIsEnumerable(key){
+	  var E = isEnum.call(this, key);
+	  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key]
+	    ? E : true;
+	};
+	var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
+	  var D = getDesc(it = toIObject(it), key);
+	  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
+	  return D;
+	};
+	var $getOwnPropertyNames = function getOwnPropertyNames(it){
+	  var names  = getNames(toIObject(it))
+	    , result = []
+	    , i      = 0
+	    , key;
+	  while(names.length > i)if(!has(AllSymbols, key = names[i++]) && key != HIDDEN)result.push(key);
+	  return result;
+	};
+	var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
+	  var names  = getNames(toIObject(it))
+	    , result = []
+	    , i      = 0
+	    , key;
+	  while(names.length > i)if(has(AllSymbols, key = names[i++]))result.push(AllSymbols[key]);
+	  return result;
+	};
+	var $stringify = function stringify(it){
+	  if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
+	  var args = [it]
+	    , i    = 1
+	    , $$   = arguments
+	    , replacer, $replacer;
+	  while($$.length > i)args.push($$[i++]);
+	  replacer = args[1];
+	  if(typeof replacer == 'function')$replacer = replacer;
+	  if($replacer || !isArray(replacer))replacer = function(key, value){
+	    if($replacer)value = $replacer.call(this, key, value);
+	    if(!isSymbol(value))return value;
+	  };
+	  args[1] = replacer;
+	  return _stringify.apply($JSON, args);
+	};
+	var buggyJSON = $fails(function(){
+	  var S = $Symbol();
+	  // MS Edge converts symbol values to JSON as {}
+	  // WebKit converts symbol values to JSON as null
+	  // V8 throws on boxed symbols
+	  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
+	});
+
+	// 19.4.1.1 Symbol([description])
+	if(!useNative){
+	  $Symbol = function Symbol(){
+	    if(isSymbol(this))throw TypeError('Symbol is not a constructor');
+	    return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
+	  };
+	  redefine($Symbol.prototype, 'toString', function toString(){
+	    return this._k;
+	  });
+
+	  isSymbol = function(it){
+	    return it instanceof $Symbol;
+	  };
+
+	  $.create     = $create;
+	  $.isEnum     = $propertyIsEnumerable;
+	  $.getDesc    = $getOwnPropertyDescriptor;
+	  $.setDesc    = $defineProperty;
+	  $.setDescs   = $defineProperties;
+	  $.getNames   = $names.get = $getOwnPropertyNames;
+	  $.getSymbols = $getOwnPropertySymbols;
+
+	  if(DESCRIPTORS && !__webpack_require__(88)){
+	    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
 	  }
-	  return T;
 	}
-	function keyOf(object, el){
-	  var O      = toObject(object)
-	    , keys   = getKeys(O)
+
+	var symbolStatics = {
+	  // 19.4.2.1 Symbol.for(key)
+	  'for': function(key){
+	    return has(SymbolRegistry, key += '')
+	      ? SymbolRegistry[key]
+	      : SymbolRegistry[key] = $Symbol(key);
+	  },
+	  // 19.4.2.5 Symbol.keyFor(sym)
+	  keyFor: function keyFor(key){
+	    return keyOf(SymbolRegistry, key);
+	  },
+	  useSetter: function(){ setter = true; },
+	  useSimple: function(){ setter = false; }
+	};
+	// 19.4.2.2 Symbol.hasInstance
+	// 19.4.2.3 Symbol.isConcatSpreadable
+	// 19.4.2.4 Symbol.iterator
+	// 19.4.2.6 Symbol.match
+	// 19.4.2.8 Symbol.replace
+	// 19.4.2.9 Symbol.search
+	// 19.4.2.10 Symbol.species
+	// 19.4.2.11 Symbol.split
+	// 19.4.2.12 Symbol.toPrimitive
+	// 19.4.2.13 Symbol.toStringTag
+	// 19.4.2.14 Symbol.unscopables
+	$.each.call((
+	  'hasInstance,isConcatSpreadable,iterator,match,replace,search,' +
+	  'species,split,toPrimitive,toStringTag,unscopables'
+	).split(','), function(it){
+	  var sym = wks(it);
+	  symbolStatics[it] = useNative ? sym : wrap(sym);
+	});
+
+	setter = true;
+
+	$export($export.G + $export.W, {Symbol: $Symbol});
+
+	$export($export.S, 'Symbol', symbolStatics);
+
+	$export($export.S + $export.F * !useNative, 'Object', {
+	  // 19.1.2.2 Object.create(O [, Properties])
+	  create: $create,
+	  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
+	  defineProperty: $defineProperty,
+	  // 19.1.2.3 Object.defineProperties(O, Properties)
+	  defineProperties: $defineProperties,
+	  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+	  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
+	  // 19.1.2.7 Object.getOwnPropertyNames(O)
+	  getOwnPropertyNames: $getOwnPropertyNames,
+	  // 19.1.2.8 Object.getOwnPropertySymbols(O)
+	  getOwnPropertySymbols: $getOwnPropertySymbols
+	});
+
+	// 24.3.2 JSON.stringify(value [, replacer [, space]])
+	$JSON && $export($export.S + $export.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
+
+	// 19.4.3.5 Symbol.prototype[@@toStringTag]
+	setToStringTag($Symbol, 'Symbol');
+	// 20.2.1.9 Math[@@toStringTag]
+	setToStringTag(Math, 'Math', true);
+	// 24.3.3 JSON[@@toStringTag]
+	setToStringTag(global.JSON, 'JSON', true);
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+
+/***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $Object = Object;
+	module.exports = {
+	  create:     $Object.create,
+	  getProto:   $Object.getPrototypeOf,
+	  isEnum:     {}.propertyIsEnumerable,
+	  getDesc:    $Object.getOwnPropertyDescriptor,
+	  setDesc:    $Object.defineProperty,
+	  setDescs:   $Object.defineProperties,
+	  getKeys:    $Object.keys,
+	  getNames:   $Object.getOwnPropertyNames,
+	  getSymbols: $Object.getOwnPropertySymbols,
+	  each:       [].forEach
+	};
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.19 Object.setPrototypeOf(O, proto)
+	var $export = __webpack_require__(78);
+	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(89).set});
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+	var toIObject = __webpack_require__(86);
+
+	__webpack_require__(72)('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor){
+	  return function getOwnPropertyDescriptor(it, key){
+	    return $getOwnPropertyDescriptor(toIObject(it), key);
+	  };
+	});
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var addToUnscopables = __webpack_require__(90)
+	  , step             = __webpack_require__(91)
+	  , Iterators        = __webpack_require__(66)
+	  , toIObject        = __webpack_require__(86);
+
+	// 22.1.3.4 Array.prototype.entries()
+	// 22.1.3.13 Array.prototype.keys()
+	// 22.1.3.29 Array.prototype.values()
+	// 22.1.3.30 Array.prototype[@@iterator]()
+	module.exports = __webpack_require__(68)(Array, 'Array', function(iterated, kind){
+	  this._t = toIObject(iterated); // target
+	  this._i = 0;                   // next index
+	  this._k = kind;                // kind
+	// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+	}, function(){
+	  var O     = this._t
+	    , kind  = this._k
+	    , index = this._i++;
+	  if(!O || index >= O.length){
+	    this._t = undefined;
+	    return step(1);
+	  }
+	  if(kind == 'keys'  )return step(0, index);
+	  if(kind == 'values')return step(0, O[index]);
+	  return step(0, [index, O[index]]);
+	}, 'values');
+
+	// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+	Iterators.Arguments = Iterators.Array;
+
+	addToUnscopables('keys');
+	addToUnscopables('values');
+	addToUnscopables('entries');
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = {};
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var toInteger = __webpack_require__(92)
+	  , defined   = __webpack_require__(93);
+	// true  -> String#at
+	// false -> String#codePointAt
+	module.exports = function(TO_STRING){
+	  return function(that, pos){
+	    var s = String(defined(that))
+	      , i = toInteger(pos)
+	      , l = s.length
+	      , a, b;
+	    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
+	    a = s.charCodeAt(i);
+	    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+	      ? TO_STRING ? s.charAt(i) : a
+	      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+	  };
+	};
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var LIBRARY        = __webpack_require__(88)
+	  , $export        = __webpack_require__(78)
+	  , redefine       = __webpack_require__(79)
+	  , hide           = __webpack_require__(96)
+	  , has            = __webpack_require__(76)
+	  , Iterators      = __webpack_require__(66)
+	  , $iterCreate    = __webpack_require__(97)
+	  , setToStringTag = __webpack_require__(81)
+	  , getProto       = __webpack_require__(62).getProto
+	  , ITERATOR       = __webpack_require__(59)('iterator')
+	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
+	  , FF_ITERATOR    = '@@iterator'
+	  , KEYS           = 'keys'
+	  , VALUES         = 'values';
+
+	var returnThis = function(){ return this; };
+
+	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED){
+	  $iterCreate(Constructor, NAME, next);
+	  var getMethod = function(kind){
+	    if(!BUGGY && kind in proto)return proto[kind];
+	    switch(kind){
+	      case KEYS: return function keys(){ return new Constructor(this, kind); };
+	      case VALUES: return function values(){ return new Constructor(this, kind); };
+	    } return function entries(){ return new Constructor(this, kind); };
+	  };
+	  var TAG        = NAME + ' Iterator'
+	    , DEF_VALUES = DEFAULT == VALUES
+	    , VALUES_BUG = false
+	    , proto      = Base.prototype
+	    , $native    = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
+	    , $default   = $native || getMethod(DEFAULT)
+	    , methods, key;
+	  // Fix native
+	  if($native){
+	    var IteratorPrototype = getProto($default.call(new Base));
+	    // Set @@toStringTag to native iterators
+	    setToStringTag(IteratorPrototype, TAG, true);
+	    // FF fix
+	    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, ITERATOR, returnThis);
+	    // fix Array#{values, @@iterator}.name in V8 / FF
+	    if(DEF_VALUES && $native.name !== VALUES){
+	      VALUES_BUG = true;
+	      $default = function values(){ return $native.call(this); };
+	    }
+	  }
+	  // Define iterator
+	  if((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])){
+	    hide(proto, ITERATOR, $default);
+	  }
+	  // Plug for library
+	  Iterators[NAME] = $default;
+	  Iterators[TAG]  = returnThis;
+	  if(DEFAULT){
+	    methods = {
+	      values:  DEF_VALUES  ? $default : getMethod(VALUES),
+	      keys:    IS_SET      ? $default : getMethod(KEYS),
+	      entries: !DEF_VALUES ? $default : getMethod('entries')
+	    };
+	    if(FORCED)for(key in methods){
+	      if(!(key in proto))redefine(proto, key, methods[key]);
+	    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+	  }
+	  return methods;
+	};
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isObject = __webpack_require__(94);
+	module.exports = function(it){
+	  if(!isObject(it))throw TypeError(it + ' is not an object!');
+	  return it;
+	};
+
+/***/ },
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var classof   = __webpack_require__(95)
+	  , ITERATOR  = __webpack_require__(59)('iterator')
+	  , Iterators = __webpack_require__(66);
+	module.exports = __webpack_require__(57).getIteratorMethod = function(it){
+	  if(it != undefined)return it[ITERATOR]
+	    || it['@@iterator']
+	    || Iterators[classof(it)];
+	};
+
+/***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(93);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// most Object methods by ES6 should accept primitives
+	var $export = __webpack_require__(78)
+	  , core    = __webpack_require__(57)
+	  , fails   = __webpack_require__(80);
+	module.exports = function(KEY, exec){
+	  var fn  = (core.Object || {})[KEY] || Object[KEY]
+	    , exp = {};
+	  exp[KEY] = exec(fn);
+	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
+	};
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var global = __webpack_require__(75)
+	  , SHARED = '__core-js_shared__'
+	  , store  = global[SHARED] || (global[SHARED] = {});
+	module.exports = function(key){
+	  return store[key] || (store[key] = {});
+	};
+
+/***/ },
+/* 74 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var id = 0
+	  , px = Math.random();
+	module.exports = function(key){
+	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+	};
+
+/***/ },
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+	var global = module.exports = typeof window != 'undefined' && window.Math == Math
+	  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+
+/***/ },
+/* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var hasOwnProperty = {}.hasOwnProperty;
+	module.exports = function(it, key){
+	  return hasOwnProperty.call(it, key);
+	};
+
+/***/ },
+/* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Thank's IE8 for his funny defineProperty
+	module.exports = !__webpack_require__(80)(function(){
+	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
+	});
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var global    = __webpack_require__(75)
+	  , core      = __webpack_require__(57)
+	  , ctx       = __webpack_require__(98)
+	  , PROTOTYPE = 'prototype';
+
+	var $export = function(type, name, source){
+	  var IS_FORCED = type & $export.F
+	    , IS_GLOBAL = type & $export.G
+	    , IS_STATIC = type & $export.S
+	    , IS_PROTO  = type & $export.P
+	    , IS_BIND   = type & $export.B
+	    , IS_WRAP   = type & $export.W
+	    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
+	    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
+	    , key, own, out;
+	  if(IS_GLOBAL)source = name;
+	  for(key in source){
+	    // contains in native
+	    own = !IS_FORCED && target && key in target;
+	    if(own && key in exports)continue;
+	    // export native or passed
+	    out = own ? target[key] : source[key];
+	    // prevent global pollution for namespaces
+	    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+	    // bind timers to global for call from export context
+	    : IS_BIND && own ? ctx(out, global)
+	    // wrap global constructors for prevent change them in library
+	    : IS_WRAP && target[key] == out ? (function(C){
+	      var F = function(param){
+	        return this instanceof C ? new C(param) : C(param);
+	      };
+	      F[PROTOTYPE] = C[PROTOTYPE];
+	      return F;
+	    // make static versions for prototype methods
+	    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+	    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+	  }
+	};
+	// type bitmap
+	$export.F = 1;  // forced
+	$export.G = 2;  // global
+	$export.S = 4;  // static
+	$export.P = 8;  // proto
+	$export.B = 16; // bind
+	$export.W = 32; // wrap
+	module.exports = $export;
+
+/***/ },
+/* 79 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(96);
+
+/***/ },
+/* 80 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(exec){
+	  try {
+	    return !!exec();
+	  } catch(e){
+	    return true;
+	  }
+	};
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var def = __webpack_require__(62).setDesc
+	  , has = __webpack_require__(76)
+	  , TAG = __webpack_require__(59)('toStringTag');
+
+	module.exports = function(it, tag, stat){
+	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
+	};
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $         = __webpack_require__(62)
+	  , toIObject = __webpack_require__(86);
+	module.exports = function(object, el){
+	  var O      = toIObject(object)
+	    , keys   = $.getKeys(O)
 	    , length = keys.length
 	    , index  = 0
 	    , key;
 	  while(length > index)if(O[key = keys[index++]] === el)return key;
-	}
+	};
 
-	// Array
-	// array('str1,str2,str3') => ['str1', 'str2', 'str3']
-	function array(it){
-	  return String(it).split(',');
-	}
-	var push    = ArrayProto.push
-	  , unshift = ArrayProto.unshift
-	  , slice   = ArrayProto.slice
-	  , splice  = ArrayProto.splice
-	  , indexOf = ArrayProto.indexOf
-	  , forEach = ArrayProto[FOR_EACH];
-	/*
-	 * 0 -> forEach
-	 * 1 -> map
-	 * 2 -> filter
-	 * 3 -> some
-	 * 4 -> every
-	 * 5 -> find
-	 * 6 -> findIndex
-	 */
-	function createArrayMethod(type){
-	  var isMap       = type == 1
-	    , isFilter    = type == 2
-	    , isSome      = type == 3
-	    , isEvery     = type == 4
-	    , isFindIndex = type == 6
-	    , noholes     = type == 5 || isFindIndex;
-	  return function(callbackfn/*, that = undefined */){
-	    var O      = Object(assertDefined(this))
-	      , that   = arguments[1]
-	      , self   = ES5Object(O)
-	      , f      = ctx(callbackfn, that, 3)
-	      , length = toLength(self.length)
-	      , index  = 0
-	      , result = isMap ? Array(length) : isFilter ? [] : undefined
-	      , val, res;
-	    for(;length > index; index++)if(noholes || index in self){
-	      val = self[index];
-	      res = f(val, index, O);
-	      if(type){
-	        if(isMap)result[index] = res;             // map
-	        else if(res)switch(type){
-	          case 3: return true;                    // some
-	          case 5: return val;                     // find
-	          case 6: return index;                   // findIndex
-	          case 2: result.push(val);               // filter
-	        } else if(isEvery)return false;           // every
-	      }
-	    }
-	    return isFindIndex ? -1 : isSome || isEvery ? isEvery : result;
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+	var toIObject = __webpack_require__(86)
+	  , getNames  = __webpack_require__(62).getNames
+	  , toString  = {}.toString;
+
+	var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
+	  ? Object.getOwnPropertyNames(window) : [];
+
+	var getWindowNames = function(it){
+	  try {
+	    return getNames(it);
+	  } catch(e){
+	    return windowNames.slice();
 	  }
-	}
-	function createArrayContains(isContains){
-	  return function(el /*, fromIndex = 0 */){
-	    var O      = toObject(this)
-	      , length = toLength(O.length)
-	      , index  = toIndex(arguments[1], length);
-	    if(isContains && el != el){
-	      for(;length > index; index++)if(sameNaN(O[index]))return isContains || index;
-	    } else for(;length > index; index++)if(isContains || index in O){
-	      if(O[index] === el)return isContains || index;
-	    } return !isContains && -1;
+	};
+
+	module.exports.get = function getOwnPropertyNames(it){
+	  if(windowNames && toString.call(it) == '[object Window]')return getWindowNames(it);
+	  return getNames(toIObject(it));
+	};
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// all enumerable object keys, includes symbols
+	var $ = __webpack_require__(62);
+	module.exports = function(it){
+	  var keys       = $.getKeys(it)
+	    , getSymbols = $.getSymbols;
+	  if(getSymbols){
+	    var symbols = getSymbols(it)
+	      , isEnum  = $.isEnum
+	      , i       = 0
+	      , key;
+	    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))keys.push(key);
 	  }
-	}
-	function generic(A, B){
-	  // strange IE quirks mode bug -> use typeof vs isFunction
-	  return typeof A == 'function' ? A : B;
-	}
+	  return keys;
+	};
 
-	// Math
-	var MAX_SAFE_INTEGER = 0x1fffffffffffff // pow(2, 53) - 1 == 9007199254740991
-	  , ceil   = Math.ceil
-	  , floor  = Math.floor
-	  , max    = Math.max
-	  , min    = Math.min
-	  , random = Math.random
-	  , trunc  = Math.trunc || function(it){
-	      return (it > 0 ? floor : ceil)(it);
-	    }
-	// 20.1.2.4 Number.isNaN(number)
-	function sameNaN(number){
-	  return number != number;
-	}
-	// 7.1.4 ToInteger
-	function toInteger(it){
-	  return isNaN(it) ? 0 : trunc(it);
-	}
-	// 7.1.15 ToLength
-	function toLength(it){
-	  return it > 0 ? min(toInteger(it), MAX_SAFE_INTEGER) : 0;
-	}
-	function toIndex(index, length){
-	  var index = toInteger(index);
-	  return index < 0 ? max(index + length, 0) : min(index, length);
-	}
+/***/ },
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
 
-	function createReplacer(regExp, replace, isStatic){
-	  var replacer = isObject(replace) ? function(part){
-	    return replace[part];
-	  } : replace;
-	  return function(it){
-	    return String(isStatic ? it : this).replace(regExp, replacer);
-	  }
-	}
-	function createPointAt(toString){
-	  return function(pos){
-	    var s = String(assertDefined(this))
-	      , i = toInteger(pos)
-	      , l = s.length
-	      , a, b;
-	    if(i < 0 || i >= l)return toString ? '' : undefined;
-	    a = s.charCodeAt(i);
-	    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
-	      ? toString ? s.charAt(i) : a
-	      : toString ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
-	  }
-	}
+	// 7.2.2 IsArray(argument)
+	var cof = __webpack_require__(99);
+	module.exports = Array.isArray || function(arg){
+	  return cof(arg) == 'Array';
+	};
 
-	// Assertion & errors
-	var REDUCE_ERROR = 'Reduce of empty object with no initial value';
-	function assert(condition, msg1, msg2){
-	  if(!condition)throw TypeError(msg2 ? msg1 + msg2 : msg1);
-	}
-	function assertDefined(it){
-	  if(it == undefined)throw TypeError('Function called on null or undefined');
-	  return it;
-	}
-	function assertFunction(it){
-	  assert(isFunction(it), it, ' is not a function!');
-	  return it;
-	}
-	function assertObject(it){
-	  assert(isObject(it), it, ' is not an object!');
-	  return it;
-	}
-	function assertInstance(it, Constructor, name){
-	  assert(it instanceof Constructor, name, ": use the 'new' operator!");
-	}
+/***/ },
+/* 86 */
+/***/ function(module, exports, __webpack_require__) {
 
-	// Property descriptors & Symbol
-	function descriptor(bitmap, value){
+	// to indexed object, toObject with fallback for non-array-like ES3 strings
+	var IObject = __webpack_require__(100)
+	  , defined = __webpack_require__(93);
+	module.exports = function(it){
+	  return IObject(defined(it));
+	};
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(bitmap, value){
 	  return {
 	    enumerable  : !(bitmap & 1),
 	    configurable: !(bitmap & 2),
 	    writable    : !(bitmap & 4),
 	    value       : value
-	  }
-	}
-	function simpleSet(object, key, value){
+	  };
+	};
+
+/***/ },
+/* 88 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = true;
+
+/***/ },
+/* 89 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Works with __proto__ only. Old v8 can't work with null proto objects.
+	/* eslint-disable no-proto */
+	var getDesc  = __webpack_require__(62).getDesc
+	  , isObject = __webpack_require__(94)
+	  , anObject = __webpack_require__(69);
+	var check = function(O, proto){
+	  anObject(O);
+	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
+	};
+	module.exports = {
+	  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
+	    function(test, buggy, set){
+	      try {
+	        set = __webpack_require__(98)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
+	        set(test, []);
+	        buggy = !(test instanceof Array);
+	      } catch(e){ buggy = true; }
+	      return function setPrototypeOf(O, proto){
+	        check(O, proto);
+	        if(buggy)O.__proto__ = proto;
+	        else set(O, proto);
+	        return O;
+	      };
+	    }({}, false) : undefined),
+	  check: check
+	};
+
+/***/ },
+/* 90 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(){ /* empty */ };
+
+/***/ },
+/* 91 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(done, value){
+	  return {value: value, done: !!done};
+	};
+
+/***/ },
+/* 92 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.4 ToInteger
+	var ceil  = Math.ceil
+	  , floor = Math.floor;
+	module.exports = function(it){
+	  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+	};
+
+/***/ },
+/* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.2.1 RequireObjectCoercible(argument)
+	module.exports = function(it){
+	  if(it == undefined)throw TypeError("Can't call method on  " + it);
+	  return it;
+	};
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(it){
+	  return typeof it === 'object' ? it !== null : typeof it === 'function';
+	};
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// getting tag from 19.1.3.6 Object.prototype.toString()
+	var cof = __webpack_require__(99)
+	  , TAG = __webpack_require__(59)('toStringTag')
+	  // ES3 wrong here
+	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
+
+	module.exports = function(it){
+	  var O, T, B;
+	  return it === undefined ? 'Undefined' : it === null ? 'Null'
+	    // @@toStringTag case
+	    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
+	    // builtinTag case
+	    : ARG ? cof(O)
+	    // ES3 arguments fallback
+	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+	};
+
+/***/ },
+/* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $          = __webpack_require__(62)
+	  , createDesc = __webpack_require__(87);
+	module.exports = __webpack_require__(77) ? function(object, key, value){
+	  return $.setDesc(object, key, createDesc(1, value));
+	} : function(object, key, value){
 	  object[key] = value;
 	  return object;
-	}
-	function createDefiner(bitmap){
-	  return DESC ? function(object, key, value){
-	    return defineProperty(object, key, descriptor(bitmap, value));
-	  } : simpleSet;
-	}
-	function uid(key){
-	  return SYMBOL + '(' + key + ')_' + (++sid + random())[TO_STRING](36);
-	}
-	function getWellKnownSymbol(name, setter){
-	  return (Symbol && Symbol[name]) || (setter ? Symbol : safeSymbol)(SYMBOL + DOT + name);
-	}
-	// The engine works fine with descriptors? Thank's IE8 for his funny defineProperty.
-	var DESC   = !!function(){try{return defineProperty({}, DOT, ObjectProto)}catch(e){}}()
-	  , sid    = 0
-	  , hidden = createDefiner(1)
-	  , set    = Symbol ? simpleSet : hidden
-	  , safeSymbol = Symbol || uid;
-	function assignHidden(target, src){
-	  for(var key in src)hidden(target, key, src[key]);
-	  return target;
-	}
+	};
 
-	var SYMBOL_UNSCOPABLES = getWellKnownSymbol('unscopables')
-	  , ArrayUnscopables   = ArrayProto[SYMBOL_UNSCOPABLES] || {}
-	  , SYMBOL_SPECIES     = getWellKnownSymbol('species');
-	function setSpecies(C){
-	  if(framework || !isNative(C))defineProperty(C, SYMBOL_SPECIES, {
-	    configurable: true,
-	    get: returnThis
-	  });
-	}
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
 
-	// Iterators
-	var SYMBOL_ITERATOR = getWellKnownSymbol(ITERATOR)
-	  , SYMBOL_TAG      = getWellKnownSymbol(TO_STRING_TAG)
-	  , SUPPORT_FF_ITER = FF_ITERATOR in ArrayProto
-	  , ITER  = safeSymbol('iter')
-	  , KEY   = 1
-	  , VALUE = 2
-	  , Iterators = {}
-	  , IteratorPrototype = {}
-	  , NATIVE_ITERATORS = SYMBOL_ITERATOR in ArrayProto
-	    // Safari define byggy iterators w/o `next`
-	  , BUGGY_ITERATORS = 'keys' in ArrayProto && !('next' in [].keys());
+	'use strict';
+	var $              = __webpack_require__(62)
+	  , descriptor     = __webpack_require__(87)
+	  , setToStringTag = __webpack_require__(81)
+	  , IteratorPrototype = {};
+
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	setIterator(IteratorPrototype, returnThis);
-	function setIterator(O, value){
-	  hidden(O, SYMBOL_ITERATOR, value);
-	  // Add iterator for FF iterator protocol
-	  SUPPORT_FF_ITER && hidden(O, FF_ITERATOR, value);
-	}
-	function createIterator(Constructor, NAME, next, proto){
-	  Constructor[PROTOTYPE] = create(proto || IteratorPrototype, {next: descriptor(1, next)});
+	__webpack_require__(96)(IteratorPrototype, __webpack_require__(59)('iterator'), function(){ return this; });
+
+	module.exports = function(Constructor, NAME, next){
+	  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
 	  setToStringTag(Constructor, NAME + ' Iterator');
-	}
-	function defineIterator(Constructor, NAME, value, DEFAULT){
-	  var proto = Constructor[PROTOTYPE]
-	    , iter  = get(proto, SYMBOL_ITERATOR) || get(proto, FF_ITERATOR) || (DEFAULT && get(proto, DEFAULT)) || value;
-	  if(framework){
-	    // Define iterator
-	    setIterator(proto, iter);
-	    if(iter !== value){
-	      var iterProto = getPrototypeOf(iter.call(new Constructor));
-	      // Set @@toStringTag to native iterators
-	      setToStringTag(iterProto, NAME + ' Iterator', true);
-	      // FF fix
-	      has(proto, FF_ITERATOR) && setIterator(iterProto, returnThis);
-	    }
-	  }
-	  // Plug for library
-	  Iterators[NAME] = iter;
-	  // FF & v8 fix
-	  Iterators[NAME + ' Iterator'] = returnThis;
-	  return iter;
-	}
-	function defineStdIterators(Base, NAME, Constructor, next, DEFAULT, IS_SET){
-	  function createIter(kind){
-	    return function(){
-	      return new Constructor(this, kind);
-	    }
-	  }
-	  createIterator(Constructor, NAME, next);
-	  var entries = createIter(KEY+VALUE)
-	    , values  = createIter(VALUE);
-	  if(DEFAULT == VALUE)values = defineIterator(Base, NAME, values, 'values');
-	  else entries = defineIterator(Base, NAME, entries, 'entries');
-	  if(DEFAULT){
-	    $define(PROTO + FORCED * BUGGY_ITERATORS, NAME, {
-	      entries: entries,
-	      keys: IS_SET ? values : createIter(KEY),
-	      values: values
-	    });
-	  }
-	}
-	function iterResult(done, value){
-	  return {value: value, done: !!done};
-	}
-	function isIterable(it){
-	  var O      = Object(it)
-	    , Symbol = global[SYMBOL]
-	    , hasExt = (Symbol && Symbol[ITERATOR] || FF_ITERATOR) in O;
-	  return hasExt || SYMBOL_ITERATOR in O || has(Iterators, classof(O));
-	}
-	function getIterator(it){
-	  var Symbol  = global[SYMBOL]
-	    , ext     = it[Symbol && Symbol[ITERATOR] || FF_ITERATOR]
-	    , getIter = ext || it[SYMBOL_ITERATOR] || Iterators[classof(it)];
-	  return assertObject(getIter.call(it));
-	}
-	function stepCall(fn, value, entries){
-	  return entries ? invoke(fn, value) : fn(value);
-	}
-	function forOf(iterable, entries, fn, that){
-	  var iterator = getIterator(iterable)
-	    , f        = ctx(fn, that, entries ? 2 : 1)
-	    , step;
-	  while(!(step = iterator.next()).done)if(stepCall(f, step.value, entries) === false)return;
-	}
+	};
 
-	// core
-	var NODE = cof(process) == PROCESS
-	  , core = {}
-	  , path = framework ? global : core
-	  , old  = global.core
-	  , exportGlobal
-	  // type bitmap
-	  , FORCED = 1
-	  , GLOBAL = 2
-	  , STATIC = 4
-	  , PROTO  = 8
-	  , BIND   = 16
-	  , WRAP   = 32;
-	function $define(type, name, source){
-	  var key, own, out, exp
-	    , isGlobal = type & GLOBAL
-	    , target   = isGlobal ? global : (type & STATIC)
-	        ? global[name] : (global[name] || ObjectProto)[PROTOTYPE]
-	    , exports  = isGlobal ? core : core[name] || (core[name] = {});
-	  if(isGlobal)source = name;
-	  for(key in source){
-	    // there is a similar native
-	    own = !(type & FORCED) && target && key in target
-	      && (!isFunction(target[key]) || isNative(target[key]));
-	    // export native or passed
-	    out = (own ? target : source)[key];
-	    // bind timers to global for call from export context
-	    if(type & BIND && own)exp = ctx(out, global);
-	    // wrap global constructors for prevent change them in library
-	    else if(type & WRAP && !framework && target[key] == out){
-	      exp = function(param){
-	        return this instanceof out ? new out(param) : out(param);
-	      }
-	      exp[PROTOTYPE] = out[PROTOTYPE];
-	    } else exp = type & PROTO && isFunction(out) ? ctx(call, out) : out;
-	    // export
-	    if(exports[key] != out)hidden(exports, key, exp);
-	    // extend global
-	    if(framework && target && !own){
-	      if(isGlobal)target[key] = out;
-	      else delete target[key] && hidden(target, key, out);
-	    }
+/***/ },
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// optional / simple context binding
+	var aFunction = __webpack_require__(101);
+	module.exports = function(fn, that, length){
+	  aFunction(fn);
+	  if(that === undefined)return fn;
+	  switch(length){
+	    case 1: return function(a){
+	      return fn.call(that, a);
+	    };
+	    case 2: return function(a, b){
+	      return fn.call(that, a, b);
+	    };
+	    case 3: return function(a, b, c){
+	      return fn.call(that, a, b, c);
+	    };
 	  }
-	}
-	// CommonJS export
-	if(typeof module != 'undefined' && module.exports)module.exports = core;
-	// RequireJS export
-	else if(isFunction(define) && define.amd)define(function(){return core});
-	// Export to global object
-	else exportGlobal = true;
-	if(exportGlobal || framework){
-	  core.noConflict = function(){
-	    global.core = old;
-	    return core;
-	  }
-	  global.core = core;
-	}
-
-	/******************************************************************************
-	 * Module : global                                                            *
-	 ******************************************************************************/
-
-	$define(GLOBAL + FORCED, {global: global});
-
-	/******************************************************************************
-	 * Module : es6_symbol                                                        *
-	 ******************************************************************************/
-
-	// ECMAScript 6 symbols shim
-	!function(TAG, SymbolRegistry, AllSymbols, setter){
-	  // 19.4.1.1 Symbol([description])
-	  if(!isNative(Symbol)){
-	    Symbol = function(description){
-	      assert(!(this instanceof Symbol), SYMBOL + ' is not a ' + CONSTRUCTOR);
-	      var tag = uid(description)
-	        , sym = set(create(Symbol[PROTOTYPE]), TAG, tag);
-	      AllSymbols[tag] = sym;
-	      DESC && setter && defineProperty(ObjectProto, tag, {
-	        configurable: true,
-	        set: function(value){
-	          hidden(this, tag, value);
-	        }
-	      });
-	      return sym;
-	    }
-	    hidden(Symbol[PROTOTYPE], TO_STRING, function(){
-	      return this[TAG];
-	    });
-	  }
-	  $define(GLOBAL + WRAP, {Symbol: Symbol});
-	  
-	  var symbolStatics = {
-	    // 19.4.2.1 Symbol.for(key)
-	    'for': function(key){
-	      return has(SymbolRegistry, key += '')
-	        ? SymbolRegistry[key]
-	        : SymbolRegistry[key] = Symbol(key);
-	    },
-	    // 19.4.2.4 Symbol.iterator
-	    iterator: SYMBOL_ITERATOR,
-	    // 19.4.2.5 Symbol.keyFor(sym)
-	    keyFor: part.call(keyOf, SymbolRegistry),
-	    // 19.4.2.10 Symbol.species
-	    species: SYMBOL_SPECIES,
-	    // 19.4.2.13 Symbol.toStringTag
-	    toStringTag: SYMBOL_TAG = getWellKnownSymbol(TO_STRING_TAG, true),
-	    // 19.4.2.14 Symbol.unscopables
-	    unscopables: SYMBOL_UNSCOPABLES,
-	    pure: safeSymbol,
-	    set: set,
-	    useSetter: function(){setter = true},
-	    useSimple: function(){setter = false}
+	  return function(/* ...args */){
+	    return fn.apply(that, arguments);
 	  };
-	  // 19.4.2.2 Symbol.hasInstance
-	  // 19.4.2.3 Symbol.isConcatSpreadable
-	  // 19.4.2.6 Symbol.match
-	  // 19.4.2.8 Symbol.replace
-	  // 19.4.2.9 Symbol.search
-	  // 19.4.2.11 Symbol.split
-	  // 19.4.2.12 Symbol.toPrimitive
-	  forEach.call(array('hasInstance,isConcatSpreadable,match,replace,search,split,toPrimitive'),
-	    function(it){
-	      symbolStatics[it] = getWellKnownSymbol(it);
-	    }
-	  );
-	  $define(STATIC, SYMBOL, symbolStatics);
-	  
-	  setToStringTag(Symbol, SYMBOL);
-	  
-	  $define(STATIC + FORCED * !isNative(Symbol), OBJECT, {
-	    // 19.1.2.7 Object.getOwnPropertyNames(O)
-	    getOwnPropertyNames: function(it){
-	      var names = getNames(toObject(it)), result = [], key, i = 0;
-	      while(names.length > i)has(AllSymbols, key = names[i++]) || result.push(key);
-	      return result;
-	    },
-	    // 19.1.2.8 Object.getOwnPropertySymbols(O)
-	    getOwnPropertySymbols: function(it){
-	      var names = getNames(toObject(it)), result = [], key, i = 0;
-	      while(names.length > i)has(AllSymbols, key = names[i++]) && result.push(AllSymbols[key]);
-	      return result;
-	    }
-	  });
-	}(safeSymbol('tag'), {}, {}, true);
+	};
 
-	/******************************************************************************
-	 * Module : es6                                                               *
-	 ******************************************************************************/
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
 
-	// ECMAScript 6 shim
-	!function(RegExpProto, isFinite, tmp, NAME){
-	  var RangeError = global.RangeError
-	      // 20.1.2.3 Number.isInteger(number)
-	    , isInteger = Number.isInteger || function(it){
-	        return !isObject(it) && isFinite(it) && floor(it) === it;
-	      }
-	      // 20.2.2.28 Math.sign(x)
-	    , sign = Math.sign || function sign(x){
-	        return (x = +x) == 0 || x != x ? x : x < 0 ? -1 : 1;
-	      }
-	    , E    = Math.E
-	    , pow  = Math.pow
-	    , abs  = Math.abs
-	    , exp  = Math.exp
-	    , log  = Math.log
-	    , sqrt = Math.sqrt
-	    , fcc  = String.fromCharCode
-	    , at   = createPointAt(true);
-	  
-	  var objectStatic = {
-	    // 19.1.3.1 Object.assign(target, source)
-	    assign: assign,
-	    // 19.1.3.10 Object.is(value1, value2)
-	    is: function(x, y){
-	      return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
-	    }
-	  };
-	  // 19.1.3.19 Object.setPrototypeOf(O, proto)
-	  // Works with __proto__ only. Old v8 can't works with null proto objects.
-	  '__proto__' in ObjectProto && function(buggy, set){
-	    try {
-	      set = ctx(call, getOwnDescriptor(ObjectProto, '__proto__').set, 2);
-	      set({}, ArrayProto);
-	    } catch(e){ buggy = true }
-	    objectStatic.setPrototypeOf = setPrototypeOf = setPrototypeOf || function(O, proto){
-	      assertObject(O);
-	      assert(proto === null || isObject(proto), proto, ": can't set as prototype!");
-	      if(buggy)O.__proto__ = proto;
-	      else set(O, proto);
-	      return O;
-	    }
-	  }();
-	  $define(STATIC, OBJECT, objectStatic);
-	  
-	  // 20.2.2.5 Math.asinh(x)
-	  function asinh(x){
-	    return !isFinite(x = +x) || x == 0 ? x : x < 0 ? -asinh(-x) : log(x + sqrt(x * x + 1));
-	  }
-	  // 20.2.2.14 Math.expm1(x)
-	  function expm1(x){
-	    return (x = +x) == 0 ? x : x > -1e-6 && x < 1e-6 ? x + x * x / 2 : exp(x) - 1;
-	  }
-	  
-	  $define(STATIC, NUMBER, {
-	    // 20.1.2.1 Number.EPSILON
-	    EPSILON: pow(2, -52),
-	    // 20.1.2.2 Number.isFinite(number)
-	    isFinite: function(it){
-	      return typeof it == 'number' && isFinite(it);
-	    },
-	    // 20.1.2.3 Number.isInteger(number)
-	    isInteger: isInteger,
-	    // 20.1.2.4 Number.isNaN(number)
-	    isNaN: sameNaN,
-	    // 20.1.2.5 Number.isSafeInteger(number)
-	    isSafeInteger: function(number){
-	      return isInteger(number) && abs(number) <= MAX_SAFE_INTEGER;
-	    },
-	    // 20.1.2.6 Number.MAX_SAFE_INTEGER
-	    MAX_SAFE_INTEGER: MAX_SAFE_INTEGER,
-	    // 20.1.2.10 Number.MIN_SAFE_INTEGER
-	    MIN_SAFE_INTEGER: -MAX_SAFE_INTEGER,
-	    // 20.1.2.12 Number.parseFloat(string)
-	    parseFloat: parseFloat,
-	    // 20.1.2.13 Number.parseInt(string, radix)
-	    parseInt: parseInt
-	  });
-	  
-	  $define(STATIC, MATH, {
-	    // 20.2.2.3 Math.acosh(x)
-	    acosh: function(x){
-	      return (x = +x) < 1 ? NaN : isFinite(x) ? log(x / E + sqrt(x + 1) * sqrt(x - 1) / E) + 1 : x;
-	    },
-	    // 20.2.2.5 Math.asinh(x)
-	    asinh: asinh,
-	    // 20.2.2.7 Math.atanh(x)
-	    atanh: function(x){
-	      return (x = +x) == 0 ? x : log((1 + x) / (1 - x)) / 2;
-	    },
-	    // 20.2.2.9 Math.cbrt(x)
-	    cbrt: function(x){
-	      return sign(x = +x) * pow(abs(x), 1 / 3);
-	    },
-	    // 20.2.2.11 Math.clz32(x)
-	    clz32: function(x){
-	      return (x >>>= 0) ? 32 - x[TO_STRING](2).length : 32;
-	    },
-	    // 20.2.2.12 Math.cosh(x)
-	    cosh: function(x){
-	      return (exp(x = +x) + exp(-x)) / 2;
-	    },
-	    // 20.2.2.14 Math.expm1(x)
-	    expm1: expm1,
-	    // 20.2.2.16 Math.fround(x)
-	    // TODO: fallback for IE9-
-	    fround: function(x){
-	      return new Float32Array([x])[0];
-	    },
-	    // 20.2.2.17 Math.hypot([value1[, value2[, … ]]])
-	    hypot: function(value1, value2){
-	      var sum  = 0
-	        , len1 = arguments.length
-	        , len2 = len1
-	        , args = Array(len1)
-	        , larg = -Infinity
-	        , arg;
-	      while(len1--){
-	        arg = args[len1] = +arguments[len1];
-	        if(arg == Infinity || arg == -Infinity)return Infinity;
-	        if(arg > larg)larg = arg;
-	      }
-	      larg = arg || 1;
-	      while(len2--)sum += pow(args[len2] / larg, 2);
-	      return larg * sqrt(sum);
-	    },
-	    // 20.2.2.18 Math.imul(x, y)
-	    imul: function(x, y){
-	      var UInt16 = 0xffff
-	        , xn = +x
-	        , yn = +y
-	        , xl = UInt16 & xn
-	        , yl = UInt16 & yn;
-	      return 0 | xl * yl + ((UInt16 & xn >>> 16) * yl + xl * (UInt16 & yn >>> 16) << 16 >>> 0);
-	    },
-	    // 20.2.2.20 Math.log1p(x)
-	    log1p: function(x){
-	      return (x = +x) > -1e-8 && x < 1e-8 ? x - x * x / 2 : log(1 + x);
-	    },
-	    // 20.2.2.21 Math.log10(x)
-	    log10: function(x){
-	      return log(x) / Math.LN10;
-	    },
-	    // 20.2.2.22 Math.log2(x)
-	    log2: function(x){
-	      return log(x) / Math.LN2;
-	    },
-	    // 20.2.2.28 Math.sign(x)
-	    sign: sign,
-	    // 20.2.2.30 Math.sinh(x)
-	    sinh: function(x){
-	      return (abs(x = +x) < 1) ? (expm1(x) - expm1(-x)) / 2 : (exp(x - 1) - exp(-x - 1)) * (E / 2);
-	    },
-	    // 20.2.2.33 Math.tanh(x)
-	    tanh: function(x){
-	      var a = expm1(x = +x)
-	        , b = expm1(-x);
-	      return a == Infinity ? 1 : b == Infinity ? -1 : (a - b) / (exp(x) + exp(-x));
-	    },
-	    // 20.2.2.34 Math.trunc(x)
-	    trunc: trunc
-	  });
-	  // 20.2.1.9 Math[@@toStringTag]
-	  setToStringTag(Math, MATH, true);
-	  
-	  function assertNotRegExp(it){
-	    if(cof(it) == REGEXP)throw TypeError();
-	  }
-	  $define(STATIC, STRING, {
-	    // 21.1.2.2 String.fromCodePoint(...codePoints)
-	    fromCodePoint: function(x){
-	      var res = []
-	        , len = arguments.length
-	        , i   = 0
-	        , code
-	      while(len > i){
-	        code = +arguments[i++];
-	        if(toIndex(code, 0x10ffff) !== code)throw RangeError(code + ' is not a valid code point');
-	        res.push(code < 0x10000
-	          ? fcc(code)
-	          : fcc(((code -= 0x10000) >> 10) + 0xd800, code % 0x400 + 0xdc00)
-	        );
-	      } return res.join('');
-	    },
-	    // 21.1.2.4 String.raw(callSite, ...substitutions)
-	    raw: function(callSite){
-	      var raw = toObject(callSite.raw)
-	        , len = toLength(raw.length)
-	        , sln = arguments.length
-	        , res = []
-	        , i   = 0;
-	      while(len > i){
-	        res.push(String(raw[i++]));
-	        if(i < sln)res.push(String(arguments[i]));
-	      } return res.join('');
-	    }
-	  });
-	  $define(PROTO, STRING, {
-	    // 21.1.3.3 String.prototype.codePointAt(pos)
-	    codePointAt: createPointAt(false),
-	    // 21.1.3.6 String.prototype.endsWith(searchString [, endPosition])
-	    endsWith: function(searchString /*, endPosition = @length */){
-	      assertNotRegExp(searchString);
-	      var that = String(assertDefined(this))
-	        , endPosition = arguments[1]
-	        , len = toLength(that.length)
-	        , end = endPosition === undefined ? len : min(toLength(endPosition), len);
-	      searchString += '';
-	      return that.slice(end - searchString.length, end) === searchString;
-	    },
-	    // 21.1.3.7 String.prototype.includes(searchString, position = 0)
-	    includes: function(searchString /*, position = 0 */){
-	      assertNotRegExp(searchString);
-	      return !!~String(assertDefined(this)).indexOf(searchString, arguments[1]);
-	    },
-	    // 21.1.3.13 String.prototype.repeat(count)
-	    repeat: function(count){
-	      var str = String(assertDefined(this))
-	        , res = ''
-	        , n   = toInteger(count);
-	      if(0 > n || n == Infinity)throw RangeError("Count can't be negative");
-	      for(;n > 0; (n >>>= 1) && (str += str))if(n & 1)res += str;
-	      return res;
-	    },
-	    // 21.1.3.18 String.prototype.startsWith(searchString [, position ])
-	    startsWith: function(searchString /*, position = 0 */){
-	      assertNotRegExp(searchString);
-	      var that  = String(assertDefined(this))
-	        , index = toLength(min(arguments[1], that.length));
-	      searchString += '';
-	      return that.slice(index, index + searchString.length) === searchString;
-	    }
-	  });
-	  // 21.1.3.27 String.prototype[@@iterator]()
-	  defineStdIterators(String, STRING, function(iterated){
-	    set(this, ITER, {o: String(iterated), i: 0});
-	  // 21.1.5.2.1 %StringIteratorPrototype%.next()
-	  }, function(){
-	    var iter  = this[ITER]
-	      , O     = iter.o
-	      , index = iter.i
-	      , point;
-	    if(index >= O.length)return iterResult(1);
-	    point = at.call(O, index);
-	    iter.i += point.length;
-	    return iterResult(0, point);
-	  });
-	  
-	  $define(STATIC, ARRAY, {
-	    // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
-	    from: function(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
-	      var O       = Object(assertDefined(arrayLike))
-	        , result  = new (generic(this, Array))
-	        , mapfn   = arguments[1]
-	        , that    = arguments[2]
-	        , mapping = mapfn !== undefined
-	        , f       = mapping ? ctx(mapfn, that, 2) : undefined
-	        , index   = 0
-	        , length;
-	      if(isIterable(O))for(var iter = getIterator(O), step; !(step = iter.next()).done; index++){
-	        result[index] = mapping ? f(step.value, index) : step.value;
-	      } else for(length = toLength(O.length); length > index; index++){
-	        result[index] = mapping ? f(O[index], index) : O[index];
-	      }
-	      result.length = index;
-	      return result;
-	    },
-	    // 22.1.2.3 Array.of( ...items)
-	    of: function(/* ...args */){
-	      var index  = 0
-	        , length = arguments.length
-	        , result = new (generic(this, Array))(length);
-	      while(length > index)result[index] = arguments[index++];
-	      result.length = length;
-	      return result;
-	    }
-	  });
-	  $define(PROTO, ARRAY, {
-	    // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
-	    copyWithin: function(target /* = 0 */, start /* = 0, end = @length */){
-	      var O     = Object(assertDefined(this))
-	        , len   = toLength(O.length)
-	        , to    = toIndex(target, len)
-	        , from  = toIndex(start, len)
-	        , end   = arguments[2]
-	        , fin   = end === undefined ? len : toIndex(end, len)
-	        , count = min(fin - from, len - to)
-	        , inc   = 1;
-	      if(from < to && to < from + count){
-	        inc  = -1;
-	        from = from + count - 1;
-	        to   = to + count - 1;
-	      }
-	      while(count-- > 0){
-	        if(from in O)O[to] = O[from];
-	        else delete O[to];
-	        to += inc;
-	        from += inc;
-	      } return O;
-	    },
-	    // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
-	    fill: function(value /*, start = 0, end = @length */){
-	      var O      = Object(assertDefined(this))
-	        , length = toLength(O.length)
-	        , index  = toIndex(arguments[1], length)
-	        , end    = arguments[2]
-	        , endPos = end === undefined ? length : toIndex(end, length);
-	      while(endPos > index)O[index++] = value;
-	      return O;
-	    },
-	    // 22.1.3.8 Array.prototype.find(predicate, thisArg = undefined)
-	    find: createArrayMethod(5),
-	    // 22.1.3.9 Array.prototype.findIndex(predicate, thisArg = undefined)
-	    findIndex: createArrayMethod(6)
-	  });
-	  // 22.1.3.4 Array.prototype.entries()
-	  // 22.1.3.13 Array.prototype.keys()
-	  // 22.1.3.29 Array.prototype.values()
-	  // 22.1.3.30 Array.prototype[@@iterator]()
-	  defineStdIterators(Array, ARRAY, function(iterated, kind){
-	    set(this, ITER, {o: toObject(iterated), i: 0, k: kind});
-	  // 22.1.5.2.1 %ArrayIteratorPrototype%.next()
-	  }, function(){
-	    var iter  = this[ITER]
-	      , O     = iter.o
-	      , kind  = iter.k
-	      , index = iter.i++;
-	    if(!O || index >= O.length)return iter.o = undefined, iterResult(1);
-	    if(kind == KEY)  return iterResult(0, index);
-	    if(kind == VALUE)return iterResult(0, O[index]);
-	                     return iterResult(0, [index, O[index]]);
-	  }, VALUE);
-	  
-	  // argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
-	  Iterators[ARGUMENTS] = Iterators[ARRAY];
-	  
-	  // 24.3.3 JSON[@@toStringTag]
-	  setToStringTag(global.JSON, 'JSON', true);
-	  
-	  // Object static methods accept primitives
-	  function wrapObjectMethod(key, MODE){
-	    var fn  = Object[key]
-	      , exp = core[OBJECT][key]
-	      , f   = 0
-	      , o   = {};
-	    if(!exp || isNative(exp)){
-	      o[key] =
-	        MODE == 1 ? function(it){ return isObject(it) ? fn(it) : it } :
-	        MODE == 2 ? function(it){ return isObject(it) ? fn(it) : true } :
-	        MODE == 3 ? function(it){ return isObject(it) ? fn(it) : false } :
-	        MODE == 4 ? function(it, key){ return fn(toObject(it), key) } :
-	                    function(it){ return fn(toObject(it)) }
-	      try { fn(DOT) }
-	      catch(e){ f = 1}
-	      $define(STATIC + FORCED * f, OBJECT, o);
-	    }
-	  }
-	  wrapObjectMethod('freeze', 1);
-	  wrapObjectMethod('seal', 1);
-	  wrapObjectMethod('preventExtensions', 1);
-	  wrapObjectMethod('isFrozen', 2);
-	  wrapObjectMethod('isSealed', 2);
-	  wrapObjectMethod('isExtensible', 3);
-	  wrapObjectMethod('getOwnPropertyDescriptor', 4);
-	  wrapObjectMethod('getPrototypeOf');
-	  wrapObjectMethod('keys');
-	  wrapObjectMethod('getOwnPropertyNames');
-	  
-	  if(framework){
-	    // 19.1.3.6 Object.prototype.toString()
-	    tmp[SYMBOL_TAG] = DOT;
-	    if(cof(tmp) != DOT)hidden(ObjectProto, TO_STRING, function(){
-	      return '[object ' + classof(this) + ']';
-	    });
-	    
-	    // 19.2.4.2 name
-	    NAME in FunctionProto || defineProperty(FunctionProto, NAME, {
-	      configurable: true,
-	      get: function(){
-	        var match = String(this).match(/^\s*function ([^ (]*)/)
-	          , name  = match ? match[1] : '';
-	        has(this, NAME) || defineProperty(this, NAME, descriptor(5, name));
-	        return name;
-	      },
-	      set: function(value){
-	        has(this, NAME) || defineProperty(this, NAME, descriptor(0, value));
-	      }
-	    });
-	    
-	    // RegExp allows a regex with flags as the pattern
-	    if(DESC && !function(){try{return RegExp(/a/g, 'i') == '/a/i'}catch(e){}}()){
-	      var _RegExp = RegExp;
-	      RegExp = function RegExp(pattern, flags){
-	        return new _RegExp(cof(pattern) == REGEXP && flags !== undefined
-	          ? pattern.source : pattern, flags);
-	      }
-	      forEach.call(getNames(_RegExp), function(key){
-	        key in RegExp || defineProperty(RegExp, key, {
-	          configurable: true,
-	          get: function(){ return _RegExp[key] },
-	          set: function(it){ _RegExp[key] = it }
-	        });
-	      });
-	      RegExpProto[CONSTRUCTOR] = RegExp;
-	      RegExp[PROTOTYPE] = RegExpProto;
-	      hidden(global, REGEXP, RegExp);
-	    }
-	    
-	    // 21.2.5.3 get RegExp.prototype.flags()
-	    if(/./g.flags != 'g')defineProperty(RegExpProto, 'flags', {
-	      configurable: true,
-	      get: createReplacer(/^.*\/(\w*)$/, '$1')
-	    });
-	    
-	    // 22.1.3.31 Array.prototype[@@unscopables]
-	    forEach.call(array('find,findIndex,fill,copyWithin,entries,keys,values'), function(it){
-	      ArrayUnscopables[it] = true;
-	    });
-	    SYMBOL_UNSCOPABLES in ArrayProto || hidden(ArrayProto, SYMBOL_UNSCOPABLES, ArrayUnscopables);
-	  }
-	  
-	  setSpecies(RegExp);
-	  setSpecies(Array);
-	}(RegExp[PROTOTYPE], isFinite, {}, 'name');
+	var toString = {}.toString;
 
-	/******************************************************************************
-	 * Module : immediate                                                         *
-	 ******************************************************************************/
+	module.exports = function(it){
+	  return toString.call(it).slice(8, -1);
+	};
 
-	// setImmediate shim
-	// Node.js 0.9+ & IE10+ has setImmediate, else:
-	isFunction(setImmediate) && isFunction(clearImmediate) || function(ONREADYSTATECHANGE){
-	  var postMessage      = global.postMessage
-	    , addEventListener = global.addEventListener
-	    , MessageChannel   = global.MessageChannel
-	    , counter          = 0
-	    , queue            = {}
-	    , defer, channel, port;
-	  setImmediate = function(fn){
-	    var args = [], i = 1;
-	    while(arguments.length > i)args.push(arguments[i++]);
-	    queue[++counter] = function(){
-	      invoke(isFunction(fn) ? fn : Function(fn), args);
-	    }
-	    defer(counter);
-	    return counter;
-	  }
-	  clearImmediate = function(id){
-	    delete queue[id];
-	  }
-	  function run(id){
-	    if(has(queue, id)){
-	      var fn = queue[id];
-	      delete queue[id];
-	      fn();
-	    }
-	  }
-	  function listner(event){
-	    run(event.data);
-	  }
-	  // Node.js 0.8-
-	  if(NODE){
-	    defer = function(id){
-	      nextTick(part.call(run, id));
-	    }
-	  // Modern browsers, skip implementation for WebWorkers
-	  // IE8 has postMessage, but it's sync & typeof its postMessage is object
-	  } else if(addEventListener && isFunction(postMessage) && !global.importScripts){
-	    defer = function(id){
-	      postMessage(id, '*');
-	    }
-	    addEventListener('message', listner, false);
-	  // WebWorkers
-	  } else if(isFunction(MessageChannel)){
-	    channel = new MessageChannel;
-	    port    = channel.port2;
-	    channel.port1.onmessage = listner;
-	    defer = ctx(port.postMessage, port, 1);
-	  // IE8-
-	  } else if(document && ONREADYSTATECHANGE in document[CREATE_ELEMENT]('script')){
-	    defer = function(id){
-	      html.appendChild(document[CREATE_ELEMENT]('script'))[ONREADYSTATECHANGE] = function(){
-	        html.removeChild(this);
-	        run(id);
-	      }
-	    }
-	  // Rest old browsers
-	  } else {
-	    defer = function(id){
-	      setTimeout(part.call(run, id), 0);
-	    }
-	  }
-	}('onreadystatechange');
-	$define(GLOBAL + BIND, {
-	  setImmediate:   setImmediate,
-	  clearImmediate: clearImmediate
-	});
+/***/ },
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
 
-	/******************************************************************************
-	 * Module : es6_promise                                                       *
-	 ******************************************************************************/
+	// fallback for non-array-like ES3 and non-enumerable old V8 strings
+	var cof = __webpack_require__(99);
+	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+	  return cof(it) == 'String' ? it.split('') : Object(it);
+	};
 
-	// ES6 promises shim
-	// Based on https://github.com/getify/native-promise-only/
-	!function(Promise, test){
-	  isFunction(Promise) && isFunction(Promise.resolve)
-	  && Promise.resolve(test = new Promise(function(){})) == test
-	  || function(asap, DEF){
-	    function isThenable(o){
-	      var then;
-	      if(isObject(o))then = o.then;
-	      return isFunction(then) ? then : false;
-	    }
-	    function notify(def){
-	      var chain = def.chain;
-	      chain.length && asap(function(){
-	        var msg = def.msg
-	          , ok  = def.state == 1
-	          , i   = 0;
-	        while(chain.length > i)!function(react){
-	          var cb = ok ? react.ok : react.fail
-	            , ret, then;
-	          try {
-	            if(cb){
-	              ret = cb === true ? msg : cb(msg);
-	              if(ret === react.P){
-	                react.rej(TypeError(PROMISE + '-chain cycle'));
-	              } else if(then = isThenable(ret)){
-	                then.call(ret, react.res, react.rej);
-	              } else react.res(ret);
-	            } else react.rej(msg);
-	          } catch(err){
-	            react.rej(err);
-	          }
-	        }(chain[i++]);
-	        chain.length = 0;
-	      });
-	    }
-	    function resolve(msg){
-	      var def = this
-	        , then, wrapper;
-	      if(def.done)return;
-	      def.done = true;
-	      def = def.def || def; // unwrap
-	      try {
-	        if(then = isThenable(msg)){
-	          wrapper = {def: def, done: false}; // wrap
-	          then.call(msg, ctx(resolve, wrapper, 1), ctx(reject, wrapper, 1));
-	        } else {
-	          def.msg = msg;
-	          def.state = 1;
-	          notify(def);
-	        }
-	      } catch(err){
-	        reject.call(wrapper || {def: def, done: false}, err); // wrap
-	      }
-	    }
-	    function reject(msg){
-	      var def = this;
-	      if(def.done)return;
-	      def.done = true;
-	      def = def.def || def; // unwrap
-	      def.msg = msg;
-	      def.state = 2;
-	      notify(def);
-	    }
-	    function getConstructor(C){
-	      var S = assertObject(C)[SYMBOL_SPECIES];
-	      return S != undefined ? S : C;
-	    }
-	    // 25.4.3.1 Promise(executor)
-	    Promise = function(executor){
-	      assertFunction(executor);
-	      assertInstance(this, Promise, PROMISE);
-	      var def = {chain: [], state: 0, done: false, msg: undefined};
-	      hidden(this, DEF, def);
-	      try {
-	        executor(ctx(resolve, def, 1), ctx(reject, def, 1));
-	      } catch(err){
-	        reject.call(def, err);
-	      }
-	    }
-	    assignHidden(Promise[PROTOTYPE], {
-	      // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
-	      then: function(onFulfilled, onRejected){
-	        var S = assertObject(assertObject(this)[CONSTRUCTOR])[SYMBOL_SPECIES];
-	        var react = {
-	          ok:   isFunction(onFulfilled) ? onFulfilled : true,
-	          fail: isFunction(onRejected)  ? onRejected  : false
-	        } , P = react.P = new (S != undefined ? S : Promise)(function(resolve, reject){
-	          react.res = assertFunction(resolve);
-	          react.rej = assertFunction(reject);
-	        }), def = this[DEF];
-	        def.chain.push(react);
-	        def.state && notify(def);
-	        return P;
-	      },
-	      // 25.4.5.1 Promise.prototype.catch(onRejected)
-	      'catch': function(onRejected){
-	        return this.then(undefined, onRejected);
-	      }
-	    });
-	    assignHidden(Promise, {
-	      // 25.4.4.1 Promise.all(iterable)
-	      all: function(iterable){
-	        var Promise = getConstructor(this)
-	          , values  = [];
-	        return new Promise(function(resolve, reject){
-	          forOf(iterable, false, push, values);
-	          var remaining = values.length
-	            , results   = Array(remaining);
-	          if(remaining)forEach.call(values, function(promise, index){
-	            Promise.resolve(promise).then(function(value){
-	              results[index] = value;
-	              --remaining || resolve(results);
-	            }, reject);
-	          });
-	          else resolve(results);
-	        });
-	      },
-	      // 25.4.4.4 Promise.race(iterable)
-	      race: function(iterable){
-	        var Promise = getConstructor(this);
-	        return new Promise(function(resolve, reject){
-	          forOf(iterable, false, function(promise){
-	            Promise.resolve(promise).then(resolve, reject);
-	          });
-	        });
-	      },
-	      // 25.4.4.5 Promise.reject(r)
-	      reject: function(r){
-	        return new (getConstructor(this))(function(resolve, reject){
-	          reject(r);
-	        });
-	      },
-	      // 25.4.4.6 Promise.resolve(x)
-	      resolve: function(x){
-	        return isObject(x) && DEF in x && getPrototypeOf(x) === this[PROTOTYPE]
-	          ? x : new (getConstructor(this))(function(resolve, reject){
-	            resolve(x);
-	          });
-	      }
-	    });
-	  }(nextTick || setImmediate, safeSymbol('def'));
-	  setToStringTag(Promise, PROMISE);
-	  setSpecies(Promise);
-	  $define(GLOBAL + FORCED * !isNative(Promise), {Promise: Promise});
-	}(global[PROMISE]);
+/***/ },
+/* 101 */
+/***/ function(module, exports, __webpack_require__) {
 
-	/******************************************************************************
-	 * Module : es6_collections                                                   *
-	 ******************************************************************************/
-
-	// ECMAScript 6 collections shim
-	!function(){
-	  var UID   = safeSymbol('uid')
-	    , O1    = safeSymbol('O1')
-	    , WEAK  = safeSymbol('weak')
-	    , LEAK  = safeSymbol('leak')
-	    , LAST  = safeSymbol('last')
-	    , FIRST = safeSymbol('first')
-	    , SIZE  = DESC ? safeSymbol('size') : 'size'
-	    , uid   = 0
-	    , tmp   = {};
-	  
-	  function getCollection(C, NAME, methods, commonMethods, isMap, isWeak){
-	    var ADDER = isMap ? 'set' : 'add'
-	      , proto = C && C[PROTOTYPE]
-	      , O     = {};
-	    function initFromIterable(that, iterable){
-	      if(iterable != undefined)forOf(iterable, isMap, that[ADDER], that);
-	      return that;
-	    }
-	    function fixSVZ(key, chain){
-	      var method = proto[key];
-	      if(framework)proto[key] = function(a, b){
-	        var result = method.call(this, a === 0 ? 0 : a, b);
-	        return chain ? this : result;
-	      };
-	    }
-	    if(!isNative(C) || !(isWeak || (!BUGGY_ITERATORS && has(proto, FOR_EACH) && has(proto, 'entries')))){
-	      // create collection constructor
-	      C = isWeak
-	        ? function(iterable){
-	            assertInstance(this, C, NAME);
-	            set(this, UID, uid++);
-	            initFromIterable(this, iterable);
-	          }
-	        : function(iterable){
-	            var that = this;
-	            assertInstance(that, C, NAME);
-	            set(that, O1, create(null));
-	            set(that, SIZE, 0);
-	            set(that, LAST, undefined);
-	            set(that, FIRST, undefined);
-	            initFromIterable(that, iterable);
-	          };
-	      assignHidden(assignHidden(C[PROTOTYPE], methods), commonMethods);
-	      isWeak || defineProperty(C[PROTOTYPE], 'size', {get: function(){
-	        return assertDefined(this[SIZE]);
-	      }});
-	    } else {
-	      var Native = C
-	        , inst   = new C
-	        , chain  = inst[ADDER](isWeak ? {} : -0, 1)
-	        , buggyZero;
-	      // wrap to init collections from iterable
-	      if(!NATIVE_ITERATORS || !C.length){
-	        C = function(iterable){
-	          assertInstance(this, C, NAME);
-	          return initFromIterable(new Native, iterable);
-	        }
-	        C[PROTOTYPE] = proto;
-	        if(framework)proto[CONSTRUCTOR] = C;
-	      }
-	      isWeak || inst[FOR_EACH](function(val, key){
-	        buggyZero = 1 / key === -Infinity;
-	      });
-	      // fix converting -0 key to +0
-	      if(buggyZero){
-	        fixSVZ('delete');
-	        fixSVZ('has');
-	        isMap && fixSVZ('get');
-	      }
-	      // + fix .add & .set for chaining
-	      if(buggyZero || chain !== inst)fixSVZ(ADDER, true);
-	    }
-	    setToStringTag(C, NAME);
-	    setSpecies(C);
-	    
-	    O[NAME] = C;
-	    $define(GLOBAL + WRAP + FORCED * !isNative(C), O);
-	    
-	    // add .keys, .values, .entries, [@@iterator]
-	    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
-	    isWeak || defineStdIterators(C, NAME, function(iterated, kind){
-	      set(this, ITER, {o: iterated, k: kind});
-	    }, function(){
-	      var iter  = this[ITER]
-	        , kind  = iter.k
-	        , entry = iter.l;
-	      // revert to the last existing entry
-	      while(entry && entry.r)entry = entry.p;
-	      // get next entry
-	      if(!iter.o || !(iter.l = entry = entry ? entry.n : iter.o[FIRST])){
-	        // or finish the iteration
-	        return iter.o = undefined, iterResult(1);
-	      }
-	      // return step by kind
-	      if(kind == KEY)  return iterResult(0, entry.k);
-	      if(kind == VALUE)return iterResult(0, entry.v);
-	                       return iterResult(0, [entry.k, entry.v]);   
-	    }, isMap ? KEY+VALUE : VALUE, !isMap);
-	    
-	    return C;
-	  }
-	  
-	  function fastKey(it, create){
-	    // return primitive with prefix
-	    if(!isObject(it))return (typeof it == 'string' ? 'S' : 'P') + it;
-	    // can't set id to frozen object
-	    if(isFrozen(it))return 'F';
-	    if(!has(it, UID)){
-	      // not necessary to add id
-	      if(!create)return 'E';
-	      // add missing object id
-	      hidden(it, UID, ++uid);
-	    // return object id with prefix
-	    } return 'O' + it[UID];
-	  }
-	  function getEntry(that, key){
-	    // fast case
-	    var index = fastKey(key), entry;
-	    if(index != 'F')return that[O1][index];
-	    // frozen object case
-	    for(entry = that[FIRST]; entry; entry = entry.n){
-	      if(entry.k == key)return entry;
-	    }
-	  }
-	  function def(that, key, value){
-	    var entry = getEntry(that, key)
-	      , prev, index;
-	    // change existing entry
-	    if(entry)entry.v = value;
-	    // create new entry
-	    else {
-	      that[LAST] = entry = {
-	        i: index = fastKey(key, true), // <- index
-	        k: key,                        // <- key
-	        v: value,                      // <- value
-	        p: prev = that[LAST],          // <- previous entry
-	        n: undefined,                  // <- next entry
-	        r: false                       // <- removed
-	      };
-	      if(!that[FIRST])that[FIRST] = entry;
-	      if(prev)prev.n = entry;
-	      that[SIZE]++;
-	      // add to index
-	      if(index != 'F')that[O1][index] = entry;
-	    } return that;
-	  }
-
-	  var collectionMethods = {
-	    // 23.1.3.1 Map.prototype.clear()
-	    // 23.2.3.2 Set.prototype.clear()
-	    clear: function(){
-	      for(var that = this, data = that[O1], entry = that[FIRST]; entry; entry = entry.n){
-	        entry.r = true;
-	        entry.p = entry.n = undefined;
-	        delete data[entry.i];
-	      }
-	      that[FIRST] = that[LAST] = undefined;
-	      that[SIZE] = 0;
-	    },
-	    // 23.1.3.3 Map.prototype.delete(key)
-	    // 23.2.3.4 Set.prototype.delete(value)
-	    'delete': function(key){
-	      var that  = this
-	        , entry = getEntry(that, key);
-	      if(entry){
-	        var next = entry.n
-	          , prev = entry.p;
-	        delete that[O1][entry.i];
-	        entry.r = true;
-	        if(prev)prev.n = next;
-	        if(next)next.p = prev;
-	        if(that[FIRST] == entry)that[FIRST] = next;
-	        if(that[LAST] == entry)that[LAST] = prev;
-	        that[SIZE]--;
-	      } return !!entry;
-	    },
-	    // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
-	    // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
-	    forEach: function(callbackfn /*, that = undefined */){
-	      var f = ctx(callbackfn, arguments[1], 3)
-	        , entry;
-	      while(entry = entry ? entry.n : this[FIRST]){
-	        f(entry.v, entry.k, this);
-	        // revert to the last existing entry
-	        while(entry && entry.r)entry = entry.p;
-	      }
-	    },
-	    // 23.1.3.7 Map.prototype.has(key)
-	    // 23.2.3.7 Set.prototype.has(value)
-	    has: function(key){
-	      return !!getEntry(this, key);
-	    }
-	  }
-	  
-	  // 23.1 Map Objects
-	  Map = getCollection(Map, MAP, {
-	    // 23.1.3.6 Map.prototype.get(key)
-	    get: function(key){
-	      var entry = getEntry(this, key);
-	      return entry && entry.v;
-	    },
-	    // 23.1.3.9 Map.prototype.set(key, value)
-	    set: function(key, value){
-	      return def(this, key === 0 ? 0 : key, value);
-	    }
-	  }, collectionMethods, true);
-	  
-	  // 23.2 Set Objects
-	  Set = getCollection(Set, SET, {
-	    // 23.2.3.1 Set.prototype.add(value)
-	    add: function(value){
-	      return def(this, value = value === 0 ? 0 : value, value);
-	    }
-	  }, collectionMethods);
-	  
-	  function defWeak(that, key, value){
-	    if(isFrozen(assertObject(key)))leakStore(that).set(key, value);
-	    else {
-	      has(key, WEAK) || hidden(key, WEAK, {});
-	      key[WEAK][that[UID]] = value;
-	    } return that;
-	  }
-	  function leakStore(that){
-	    return that[LEAK] || hidden(that, LEAK, new Map)[LEAK];
-	  }
-	  
-	  var weakMethods = {
-	    // 23.3.3.2 WeakMap.prototype.delete(key)
-	    // 23.4.3.3 WeakSet.prototype.delete(value)
-	    'delete': function(key){
-	      if(!isObject(key))return false;
-	      if(isFrozen(key))return leakStore(this)['delete'](key);
-	      return has(key, WEAK) && has(key[WEAK], this[UID]) && delete key[WEAK][this[UID]];
-	    },
-	    // 23.3.3.4 WeakMap.prototype.has(key)
-	    // 23.4.3.4 WeakSet.prototype.has(value)
-	    has: function(key){
-	      if(!isObject(key))return false;
-	      if(isFrozen(key))return leakStore(this).has(key);
-	      return has(key, WEAK) && has(key[WEAK], this[UID]);
-	    }
-	  };
-	  
-	  // 23.3 WeakMap Objects
-	  WeakMap = getCollection(WeakMap, WEAKMAP, {
-	    // 23.3.3.3 WeakMap.prototype.get(key)
-	    get: function(key){
-	      if(isObject(key)){
-	        if(isFrozen(key))return leakStore(this).get(key);
-	        if(has(key, WEAK))return key[WEAK][this[UID]];
-	      }
-	    },
-	    // 23.3.3.5 WeakMap.prototype.set(key, value)
-	    set: function(key, value){
-	      return defWeak(this, key, value);
-	    }
-	  }, weakMethods, true, true);
-	  
-	  // IE11 WeakMap frozen keys fix
-	  if(framework && DESC && new WeakMap([[Object.freeze(tmp), 7]]).get(tmp) != 7){
-	    forEach.call(array('delete,has,get,set'), function(key){
-	      var method = WeakMap[PROTOTYPE][key];
-	      WeakMap[PROTOTYPE][key] = function(a, b){
-	        // store frozen objects on leaky map
-	        if(isObject(a) && isFrozen(a)){
-	          var result = leakStore(this)[key](a, b);
-	          return key == 'set' ? this : result;
-	        // store all the rest on native weakmap
-	        } return method.call(this, a, b);
-	      };
-	    });
-	  }
-	  
-	  // 23.4 WeakSet Objects
-	  WeakSet = getCollection(WeakSet, WEAKSET, {
-	    // 23.4.3.1 WeakSet.prototype.add(value)
-	    add: function(value){
-	      return defWeak(this, value, true);
-	    }
-	  }, weakMethods, false, true);
-	}();
-
-	/******************************************************************************
-	 * Module : es6_reflect                                                       *
-	 ******************************************************************************/
-
-	!function(){
-	  function Enumerate(iterated){
-	    var keys = [], key;
-	    for(key in iterated)keys.push(key);
-	    set(this, ITER, {o: iterated, a: keys, i: 0});
-	  }
-	  createIterator(Enumerate, OBJECT, function(){
-	    var iter = this[ITER]
-	      , keys = iter.a
-	      , key;
-	    do {
-	      if(iter.i >= keys.length)return iterResult(1);
-	    } while(!((key = keys[iter.i++]) in iter.o));
-	    return iterResult(0, key);
-	  });
-	  
-	  function wrap(fn){
-	    return function(it){
-	      assertObject(it);
-	      try {
-	        return fn.apply(undefined, arguments), true;
-	      } catch(e){
-	        return false;
-	      }
-	    }
-	  }
-	  
-	  function reflectGet(target, propertyKey/*, receiver*/){
-	    var receiver = arguments.length < 3 ? target : arguments[2]
-	      , desc = getOwnDescriptor(assertObject(target), propertyKey), proto;
-	    if(desc)return desc.get ? desc.get.call(receiver) : desc.value;
-	    return isObject(proto = getPrototypeOf(target)) ? reflectGet(proto, propertyKey, receiver) : undefined;
-	  }
-	  function reflectSet(target, propertyKey, V/*, receiver*/){
-	    var receiver = arguments.length < 4 ? target : arguments[3]
-	      , desc = getOwnDescriptor(assertObject(target), propertyKey), proto;
-	    if(desc){
-	      if(desc.writable === false)return false;
-	      if(desc.set)return desc.set.call(receiver, V), true;
-	    }
-	    if(isObject(proto = getPrototypeOf(target)))return reflectSet(proto, propertyKey, V, receiver);
-	    desc = getOwnDescriptor(receiver, propertyKey) || descriptor(0);
-	    desc.value = V;
-	    return defineProperty(receiver, propertyKey, desc), true;
-	  }
-	  var isExtensible = Object.isExtensible || returnIt;
-	  
-	  var reflect = {
-	    // 26.1.1 Reflect.apply(target, thisArgument, argumentsList)
-	    apply: ctx(call, apply, 3),
-	    // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
-	    construct: construct,
-	    // 26.1.3 Reflect.defineProperty(target, propertyKey, attributes)
-	    defineProperty: wrap(defineProperty),
-	    // 26.1.4 Reflect.deleteProperty(target, propertyKey)
-	    deleteProperty: function(target, propertyKey){
-	      var desc = getOwnDescriptor(assertObject(target), propertyKey);
-	      return desc && !desc.configurable ? false : delete target[propertyKey];
-	    },
-	    // 26.1.5 Reflect.enumerate(target)
-	    enumerate: function(target){
-	      return new Enumerate(assertObject(target));
-	    },
-	    // 26.1.6 Reflect.get(target, propertyKey [, receiver])
-	    get: reflectGet,
-	    // 26.1.7 Reflect.getOwnPropertyDescriptor(target, propertyKey)
-	    getOwnPropertyDescriptor: function(target, propertyKey){
-	      return getOwnDescriptor(assertObject(target), propertyKey);
-	    },
-	    // 26.1.8 Reflect.getPrototypeOf(target)
-	    getPrototypeOf: function(target){
-	      return getPrototypeOf(assertObject(target));
-	    },
-	    // 26.1.9 Reflect.has(target, propertyKey)
-	    has: function(target, propertyKey){
-	      return propertyKey in target;
-	    },
-	    // 26.1.10 Reflect.isExtensible(target)
-	    isExtensible: function(target){
-	      return !!isExtensible(assertObject(target));
-	    },
-	    // 26.1.11 Reflect.ownKeys(target)
-	    ownKeys: ownKeys,
-	    // 26.1.12 Reflect.preventExtensions(target)
-	    preventExtensions: wrap(Object.preventExtensions || returnIt),
-	    // 26.1.13 Reflect.set(target, propertyKey, V [, receiver])
-	    set: reflectSet
-	  }
-	  // 26.1.14 Reflect.setPrototypeOf(target, proto)
-	  if(setPrototypeOf)reflect.setPrototypeOf = function(target, proto){
-	    return setPrototypeOf(assertObject(target), proto), true;
-	  };
-	  
-	  $define(GLOBAL, {Reflect: {}});
-	  $define(STATIC, 'Reflect', reflect);
-	}();
-
-	/******************************************************************************
-	 * Module : es7                                                               *
-	 ******************************************************************************/
-
-	!function(){
-	  $define(PROTO, ARRAY, {
-	    // https://github.com/domenic/Array.prototype.includes
-	    includes: createArrayContains(true)
-	  });
-	  $define(PROTO, STRING, {
-	    // https://github.com/mathiasbynens/String.prototype.at
-	    at: createPointAt(true)
-	  });
-	  
-	  function createObjectToArray(isEntries){
-	    return function(object){
-	      var O      = toObject(object)
-	        , keys   = getKeys(object)
-	        , length = keys.length
-	        , i      = 0
-	        , result = Array(length)
-	        , key;
-	      if(isEntries)while(length > i)result[i] = [key = keys[i++], O[key]];
-	      else while(length > i)result[i] = O[keys[i++]];
-	      return result;
-	    }
-	  }
-	  $define(STATIC, OBJECT, {
-	    // https://github.com/rwaldron/tc39-notes/blob/master/es6/2014-04/apr-9.md#51-objectentries-objectvalues
-	    values: createObjectToArray(false),
-	    entries: createObjectToArray(true)
-	  });
-	  $define(STATIC, REGEXP, {
-	    // https://gist.github.com/kangax/9698100
-	    escape: createReplacer(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1', true)
-	  });
-	}();
-
-	/******************************************************************************
-	 * Module : es7_refs                                                          *
-	 ******************************************************************************/
-
-	// https://github.com/zenparsing/es-abstract-refs
-	!function(REFERENCE){
-	  REFERENCE_GET = getWellKnownSymbol(REFERENCE+'Get', true);
-	  var REFERENCE_SET = getWellKnownSymbol(REFERENCE+SET, true)
-	    , REFERENCE_DELETE = getWellKnownSymbol(REFERENCE+'Delete', true);
-	  
-	  $define(STATIC, SYMBOL, {
-	    referenceGet: REFERENCE_GET,
-	    referenceSet: REFERENCE_SET,
-	    referenceDelete: REFERENCE_DELETE
-	  });
-	  
-	  hidden(FunctionProto, REFERENCE_GET, returnThis);
-	  
-	  function setMapMethods(Constructor){
-	    if(Constructor){
-	      var MapProto = Constructor[PROTOTYPE];
-	      hidden(MapProto, REFERENCE_GET, MapProto.get);
-	      hidden(MapProto, REFERENCE_SET, MapProto.set);
-	      hidden(MapProto, REFERENCE_DELETE, MapProto['delete']);
-	    }
-	  }
-	  setMapMethods(Map);
-	  setMapMethods(WeakMap);
-	}('reference');
-
-	/******************************************************************************
-	 * Module : dom_itarable                                                      *
-	 ******************************************************************************/
-
-	!function(NodeList){
-	  if(framework && NodeList && !(SYMBOL_ITERATOR in NodeList[PROTOTYPE])){
-	    hidden(NodeList[PROTOTYPE], SYMBOL_ITERATOR, Iterators[ARRAY]);
-	  }
-	  Iterators.NodeList = Iterators[ARRAY];
-	}(global.NodeList);
-
-	/******************************************************************************
-	 * Module : dict                                                              *
-	 ******************************************************************************/
-
-	!function(DICT){
-	  Dict = function(iterable){
-	    var dict = create(null);
-	    if(iterable != undefined){
-	      if(isIterable(iterable)){
-	        for(var iter = getIterator(iterable), step, value; !(step = iter.next()).done;){
-	          value = step.value;
-	          dict[value[0]] = value[1];
-	        }
-	      } else assign(dict, iterable);
-	    }
-	    return dict;
-	  }
-	  Dict[PROTOTYPE] = null;
-	  
-	  function DictIterator(iterated, kind){
-	    set(this, ITER, {o: toObject(iterated), a: getKeys(iterated), i: 0, k: kind});
-	  }
-	  createIterator(DictIterator, DICT, function(){
-	    var iter  = this[ITER]
-	      , O     = iter.o
-	      , keys  = iter.a
-	      , kind  = iter.k
-	      , key;
-	    do {
-	      if(iter.i >= keys.length)return iterResult(1);
-	    } while(!has(O, key = keys[iter.i++]));
-	    if(kind == KEY)  return iterResult(0, key);
-	    if(kind == VALUE)return iterResult(0, O[key]);
-	                     return iterResult(0, [key, O[key]]);
-	  });
-	  function createDictIter(kind){
-	    return function(it){
-	      return new DictIterator(it, kind);
-	    }
-	  }
-	  
-	  /*
-	   * 0 -> forEach
-	   * 1 -> map
-	   * 2 -> filter
-	   * 3 -> some
-	   * 4 -> every
-	   * 5 -> find
-	   * 6 -> findKey
-	   * 7 -> mapPairs
-	   */
-	  function createDictMethod(type){
-	    var isMap    = type == 1
-	      , isEvery  = type == 4;
-	    return function(object, callbackfn, that /* = undefined */){
-	      var f      = ctx(callbackfn, that, 3)
-	        , O      = toObject(object)
-	        , result = isMap || type == 7 || type == 2 ? new (generic(this, Dict)) : undefined
-	        , key, val, res;
-	      for(key in O)if(has(O, key)){
-	        val = O[key];
-	        res = f(val, key, object);
-	        if(type){
-	          if(isMap)result[key] = res;             // map
-	          else if(res)switch(type){
-	            case 2: result[key] = val; break      // filter
-	            case 3: return true;                  // some
-	            case 5: return val;                   // find
-	            case 6: return key;                   // findKey
-	            case 7: result[res[0]] = res[1];      // mapPairs
-	          } else if(isEvery)return false;         // every
-	        }
-	      }
-	      return type == 3 || isEvery ? isEvery : result;
-	    }
-	  }
-	  function createDictReduce(isTurn){
-	    return function(object, mapfn, init){
-	      assertFunction(mapfn);
-	      var O      = toObject(object)
-	        , keys   = getKeys(O)
-	        , length = keys.length
-	        , i      = 0
-	        , memo, key, result;
-	      if(isTurn)memo = init == undefined ? new (generic(this, Dict)) : Object(init);
-	      else if(arguments.length < 3){
-	        assert(length, REDUCE_ERROR);
-	        memo = O[keys[i++]];
-	      } else memo = Object(init);
-	      while(length > i)if(has(O, key = keys[i++])){
-	        result = mapfn(memo, O[key], key, object);
-	        if(isTurn){
-	          if(result === false)break;
-	        } else memo = result;
-	      }
-	      return memo;
-	    }
-	  }
-	  var findKey = createDictMethod(6);
-	  function includes(object, el){
-	    return (el == el ? keyOf(object, el) : findKey(object, sameNaN)) !== undefined;
-	  }
-	  
-	  var dictMethods = {
-	    keys:    createDictIter(KEY),
-	    values:  createDictIter(VALUE),
-	    entries: createDictIter(KEY+VALUE),
-	    forEach: createDictMethod(0),
-	    map:     createDictMethod(1),
-	    filter:  createDictMethod(2),
-	    some:    createDictMethod(3),
-	    every:   createDictMethod(4),
-	    find:    createDictMethod(5),
-	    findKey: findKey,
-	    mapPairs:createDictMethod(7),
-	    reduce:  createDictReduce(false),
-	    turn:    createDictReduce(true),
-	    keyOf:   keyOf,
-	    includes:includes,
-	    // Has / get / set own property
-	    has: has,
-	    get: get,
-	    set: createDefiner(0),
-	    isDict: function(it){
-	      return isObject(it) && getPrototypeOf(it) === Dict[PROTOTYPE];
-	    }
-	  };
-	  
-	  if(REFERENCE_GET)for(var key in dictMethods)!function(fn){
-	    function method(){
-	      for(var args = [this], i = 0; i < arguments.length;)args.push(arguments[i++]);
-	      return invoke(fn, args);
-	    }
-	    fn[REFERENCE_GET] = function(){
-	      return method;
-	    }
-	  }(dictMethods[key]);
-	  
-	  $define(GLOBAL + FORCED, {Dict: assignHidden(Dict, dictMethods)});
-	}('Dict');
-
-	/******************************************************************************
-	 * Module : $for                                                              *
-	 ******************************************************************************/
-
-	!function(ENTRIES, FN){  
-	  function $for(iterable, entries){
-	    if(!(this instanceof $for))return new $for(iterable, entries);
-	    this[ITER]    = getIterator(iterable);
-	    this[ENTRIES] = !!entries;
-	  }
-	  
-	  createIterator($for, 'Wrapper', function(){
-	    return this[ITER].next();
-	  });
-	  var $forProto = $for[PROTOTYPE];
-	  setIterator($forProto, function(){
-	    return this[ITER]; // unwrap
-	  });
-	  
-	  function createChainIterator(next){
-	    function Iter(I, fn, that){
-	      this[ITER]    = getIterator(I);
-	      this[ENTRIES] = I[ENTRIES];
-	      this[FN]      = ctx(fn, that, I[ENTRIES] ? 2 : 1);
-	    }
-	    createIterator(Iter, 'Chain', next, $forProto);
-	    setIterator(Iter[PROTOTYPE], returnThis); // override $forProto iterator
-	    return Iter;
-	  }
-	  
-	  var MapIter = createChainIterator(function(){
-	    var step = this[ITER].next();
-	    return step.done ? step : iterResult(0, stepCall(this[FN], step.value, this[ENTRIES]));
-	  });
-	  
-	  var FilterIter = createChainIterator(function(){
-	    for(;;){
-	      var step = this[ITER].next();
-	      if(step.done || stepCall(this[FN], step.value, this[ENTRIES]))return step;
-	    }
-	  });
-	  
-	  assignHidden($forProto, {
-	    of: function(fn, that){
-	      forOf(this, this[ENTRIES], fn, that);
-	    },
-	    array: function(fn, that){
-	      var result = [];
-	      forOf(fn != undefined ? this.map(fn, that) : this, false, push, result);
-	      return result;
-	    },
-	    filter: function(fn, that){
-	      return new FilterIter(this, fn, that);
-	    },
-	    map: function(fn, that){
-	      return new MapIter(this, fn, that);
-	    }
-	  });
-	  
-	  $for.isIterable  = isIterable;
-	  $for.getIterator = getIterator;
-	  
-	  $define(GLOBAL + FORCED, {$for: $for});
-	}('entries', safeSymbol('fn'));
-
-	/******************************************************************************
-	 * Module : binding                                                           *
-	 ******************************************************************************/
-
-	!function(_, toLocaleString){
-	  // Placeholder
-	  core._ = path._ = path._ || {};
-
-	  $define(PROTO + FORCED, FUNCTION, {
-	    part: part,
-	    only: function(numberArguments, that /* = @ */){
-	      var fn     = assertFunction(this)
-	        , n      = toLength(numberArguments)
-	        , isThat = arguments.length > 1;
-	      return function(/* ...args */){
-	        var length = min(n, arguments.length)
-	          , args   = Array(length)
-	          , i      = 0;
-	        while(length > i)args[i] = arguments[i++];
-	        return invoke(fn, args, isThat ? that : this);
-	      }
-	    }
-	  });
-	  
-	  function tie(key){
-	    var that  = this
-	      , bound = {};
-	    return hidden(that, _, function(key){
-	      if(key === undefined || !(key in that))return toLocaleString.call(that);
-	      return has(bound, key) ? bound[key] : (bound[key] = ctx(that[key], that, -1));
-	    })[_](key);
-	  }
-	  
-	  hidden(path._, TO_STRING, function(){
-	    return _;
-	  });
-	  
-	  hidden(ObjectProto, _, tie);
-	  DESC || hidden(ArrayProto, _, tie);
-	  // IE8- dirty hack - redefined toLocaleString is not enumerable
-	}(DESC ? uid('tie') : TO_LOCALE, ObjectProto[TO_LOCALE]);
-
-	/******************************************************************************
-	 * Module : object                                                            *
-	 ******************************************************************************/
-
-	!function(){
-	  function define(target, mixin){
-	    var keys   = ownKeys(toObject(mixin))
-	      , length = keys.length
-	      , i = 0, key;
-	    while(length > i)defineProperty(target, key = keys[i++], getOwnDescriptor(mixin, key));
-	    return target;
-	  };
-	  $define(STATIC + FORCED, OBJECT, {
-	    isObject: isObject,
-	    classof: classof,
-	    define: define,
-	    make: function(proto, mixin){
-	      return define(create(proto), mixin);
-	    }
-	  });
-	}();
-
-	/******************************************************************************
-	 * Module : array                                                             *
-	 ******************************************************************************/
-
-	$define(PROTO + FORCED, ARRAY, {
-	  turn: function(fn, target /* = [] */){
-	    assertFunction(fn);
-	    var memo   = target == undefined ? [] : Object(target)
-	      , O      = ES5Object(this)
-	      , length = toLength(O.length)
-	      , index  = 0;
-	    while(length > index)if(fn(memo, O[index], index++, this) === false)break;
-	    return memo;
-	  }
-	});
-	if(framework)ArrayUnscopables.turn = true;
-
-	/******************************************************************************
-	 * Module : array_statics                                                     *
-	 ******************************************************************************/
-
-	// JavaScript 1.6 / Strawman array statics shim
-	!function(arrayStatics){
-	  function setArrayStatics(keys, length){
-	    forEach.call(array(keys), function(key){
-	      if(key in ArrayProto)arrayStatics[key] = ctx(call, ArrayProto[key], length);
-	    });
-	  }
-	  setArrayStatics('pop,reverse,shift,keys,values,entries', 1);
-	  setArrayStatics('indexOf,every,some,forEach,map,filter,find,findIndex,includes', 3);
-	  setArrayStatics('join,slice,concat,push,splice,unshift,sort,lastIndexOf,' +
-	                  'reduce,reduceRight,copyWithin,fill,turn');
-	  $define(STATIC, ARRAY, arrayStatics);
-	}({});
-
-	/******************************************************************************
-	 * Module : number                                                            *
-	 ******************************************************************************/
-
-	!function(numberMethods){  
-	  function NumberIterator(iterated){
-	    set(this, ITER, {l: toLength(iterated), i: 0});
-	  }
-	  createIterator(NumberIterator, NUMBER, function(){
-	    var iter = this[ITER]
-	      , i    = iter.i++;
-	    return i < iter.l ? iterResult(0, i) : iterResult(1);
-	  });
-	  defineIterator(Number, NUMBER, function(){
-	    return new NumberIterator(this);
-	  });
-	  
-	  numberMethods.random = function(lim /* = 0 */){
-	    var a = +this
-	      , b = lim == undefined ? 0 : +lim
-	      , m = min(a, b);
-	    return random() * (max(a, b) - m) + m;
-	  };
-
-	  forEach.call(array(
-	      // ES3:
-	      'round,floor,ceil,abs,sin,asin,cos,acos,tan,atan,exp,sqrt,max,min,pow,atan2,' +
-	      // ES6:
-	      'acosh,asinh,atanh,cbrt,clz32,cosh,expm1,hypot,imul,log1p,log10,log2,sign,sinh,tanh,trunc'
-	    ), function(key){
-	      var fn = Math[key];
-	      if(fn)numberMethods[key] = function(/* ...args */){
-	        // ie9- dont support strict mode & convert `this` to object -> convert it to number
-	        var args = [+this]
-	          , i    = 0;
-	        while(arguments.length > i)args.push(arguments[i++]);
-	        return invoke(fn, args);
-	      }
-	    }
-	  );
-	  
-	  $define(PROTO + FORCED, NUMBER, numberMethods);
-	}({});
-
-	/******************************************************************************
-	 * Module : string                                                            *
-	 ******************************************************************************/
-
-	!function(){
-	  var escapeHTMLDict = {
-	    '&': '&amp;',
-	    '<': '&lt;',
-	    '>': '&gt;',
-	    '"': '&quot;',
-	    "'": '&apos;'
-	  }, unescapeHTMLDict = {}, key;
-	  for(key in escapeHTMLDict)unescapeHTMLDict[escapeHTMLDict[key]] = key;
-	  $define(PROTO + FORCED, STRING, {
-	    escapeHTML:   createReplacer(/[&<>"']/g, escapeHTMLDict),
-	    unescapeHTML: createReplacer(/&(?:amp|lt|gt|quot|apos);/g, unescapeHTMLDict)
-	  });
-	}();
-
-	/******************************************************************************
-	 * Module : date                                                              *
-	 ******************************************************************************/
-
-	!function(formatRegExp, flexioRegExp, locales, current, SECONDS, MINUTES, HOURS, MONTH, YEAR){
-	  function createFormat(prefix){
-	    return function(template, locale /* = current */){
-	      var that = this
-	        , dict = locales[has(locales, locale) ? locale : current];
-	      function get(unit){
-	        return that[prefix + unit]();
-	      }
-	      return String(template).replace(formatRegExp, function(part){
-	        switch(part){
-	          case 's'  : return get(SECONDS);                  // Seconds : 0-59
-	          case 'ss' : return lz(get(SECONDS));              // Seconds : 00-59
-	          case 'm'  : return get(MINUTES);                  // Minutes : 0-59
-	          case 'mm' : return lz(get(MINUTES));              // Minutes : 00-59
-	          case 'h'  : return get(HOURS);                    // Hours   : 0-23
-	          case 'hh' : return lz(get(HOURS));                // Hours   : 00-23
-	          case 'D'  : return get(DATE);                     // Date    : 1-31
-	          case 'DD' : return lz(get(DATE));                 // Date    : 01-31
-	          case 'W'  : return dict[0][get('Day')];           // Day     : Понедельник
-	          case 'N'  : return get(MONTH) + 1;                // Month   : 1-12
-	          case 'NN' : return lz(get(MONTH) + 1);            // Month   : 01-12
-	          case 'M'  : return dict[2][get(MONTH)];           // Month   : Январь
-	          case 'MM' : return dict[1][get(MONTH)];           // Month   : Января
-	          case 'Y'  : return get(YEAR);                     // Year    : 2014
-	          case 'YY' : return lz(get(YEAR) % 100);           // Year    : 14
-	        } return part;
-	      });
-	    }
-	  }
-	  function lz(num){
-	    return num > 9 ? num : '0' + num;
-	  }
-	  function addLocale(lang, locale){
-	    function split(index){
-	      var result = [];
-	      forEach.call(array(locale.months), function(it){
-	        result.push(it.replace(flexioRegExp, '$' + index));
-	      });
-	      return result;
-	    }
-	    locales[lang] = [array(locale.weekdays), split(1), split(2)];
-	    return core;
-	  }
-	  $define(PROTO + FORCED, DATE, {
-	    format:    createFormat('get'),
-	    formatUTC: createFormat('getUTC')
-	  });
-	  addLocale(current, {
-	    weekdays: 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
-	    months: 'January,February,March,April,May,June,July,August,September,October,November,December'
-	  });
-	  addLocale('ru', {
-	    weekdays: 'Воскресенье,Понедельник,Вторник,Среда,Четверг,Пятница,Суббота',
-	    months: 'Январ:я|ь,Феврал:я|ь,Март:а|,Апрел:я|ь,Ма:я|й,Июн:я|ь,' +
-	            'Июл:я|ь,Август:а|,Сентябр:я|ь,Октябр:я|ь,Ноябр:я|ь,Декабр:я|ь'
-	  });
-	  core.locale = function(locale){
-	    return has(locales, locale) ? current = locale : current;
-	  };
-	  core.addLocale = addLocale;
-	}(/\b\w\w?\b/g, /:(.*)\|(.*)$/, {}, 'en', 'Seconds', 'Minutes', 'Hours', 'Month', 'FullYear');
-	}(typeof self != 'undefined' && self.Math === Math ? self : Function('return this')(), false);
+	module.exports = function(it){
+	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+	  return it;
+	};
 
 /***/ }
 /******/ ]);

@@ -87,18 +87,18 @@ module.exports = function(config) {
     ],
     // list of files to exclude
     exclude: [
-      // // 'js/mo.js',
-      // // 'build/mo.js',
-      // // 'build/mojs.js',
+      // 'js/mo.js',
+      // 'build/mo.js',
+      // 'build/mojs.js',
       
       // 'build/h.js',
       // 'spec/h.js',
-      // // 'build/transit.js',
-      // // 'spec/transit.js',
-      // // 'build/swirl.js',
-      // // 'spec/swirl.js',
-      // // 'build/burst.js',
-      // // 'spec/burst.js',
+      // 'build/transit.js',
+      // 'spec/transit.js',
+      // 'build/swirl.js',
+      // 'spec/swirl.js',
+      // 'build/burst.js',
+      // 'spec/burst.js',
       
       // 'build/spriter.js',
       // 'spec/spriter.js',

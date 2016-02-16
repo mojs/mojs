@@ -5,11 +5,11 @@ module.exports = {
   watch: true,
   context: __dirname + "/",
   entry: [
-    __dirname + '/js/mojs.coffee'
+    __dirname + '/js/mojs.babel.js'
   ],
   module: {
     loaders: [
-      { test: /\.(jsx|es6.js|babel.js)$/, exclude: /node_modules/, loaders: ['6to5-loader?optional=coreAliasing'] },
+      { test: /\.(jsx|es6.js|babel.js)$/, exclude: /node_modules/, loaders: ['babel-loader?presets[]=es2015,plugins[]=transform-runtime'] },
       { test: /\.coffee$/, exclude: /node_modules/, loaders: ['coffee-loader?bare=true'] },
       { test: /\.cjsx$/, loaders: ['coffee', 'cjsx']},
       { test: /\.jade$/, loaders: ['jade'] },

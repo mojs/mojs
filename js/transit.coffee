@@ -3,13 +3,14 @@
 h         = require './h'
 Bit       = require './shapes/bit'
 shapesMap = require './shapes/shapesMap'
-Tween     = require './tween/tween'
-Timeline  = require './tween/timeline'
+Tween     = require('./tween/tween').default
+Timeline  = require('./tween/timeline').default
 
 # TODO
 #  - don't run by default
 #  - tween properties
 #  - properties signatures
+#  - Stagger -> stagger
 
 class Transit extends Bit
   progress: 0
@@ -344,8 +345,7 @@ class Transit extends Bit
       opts.onUpdate      = (p)=> @setProgress p
       opts.onStart       = => @props.onStart?.apply(@)
       opts.onComplete    = => @props.onComplete?.apply @
-      opts.onFirstUpdate = ->
-        it.tuneOptions it.history[@index]
+      opts.onFirstUpdate = -> it.tuneOptions it.history[@index]
       opts.isChained = !o.delay
       @timeline.append new Tween(opts)
     @

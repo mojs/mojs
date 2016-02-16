@@ -41,20 +41,19 @@ class Stagger {
   */
   _getChildQuantity (name, store) {
   	// if number was set
-  	if (typeof name === 'number')
-  	  return name;
+  	if (typeof name === 'number') { return name; }
 
   	var quantifier = store[name];
-  	if (h.isArray(quantifier))
-  	  return quantifier.length;
-  	else if (quantifier + '' === '[object NodeList]')
-  	  return quantifier.length;
-  	else if (quantifier + '' === '[object HTMLCollection]')
+  	if (h.isArray(quantifier)) { return quantifier.length; }
+  	else if (quantifier + '' === '[object NodeList]') {
+      return quantifier.length;
+    } else if (quantifier + '' === '[object HTMLCollection]') {
   	  return Array.prototype.slice.call(quantifier, 0).length;
-  	else if (quantifier instanceof HTMLElement)
+    } else if (quantifier instanceof HTMLElement) {
   	  return 1;
-  	else if (typeof quantifier == 'string')
+    } else if (typeof quantifier == 'string') {
   	  return 1;
+    }
   }
 
   /*

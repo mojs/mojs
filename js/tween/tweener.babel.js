@@ -1,5 +1,5 @@
-require('../polyfills/raf');
-require('../polyfills/performance');
+import '../polyfills/raf';
+import '../polyfills/performance';
 import h from '../h';
 
 class Tweener {
