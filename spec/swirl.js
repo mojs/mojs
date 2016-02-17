@@ -291,7 +291,7 @@
           isSwirlLess: true
         });
         spyOn(swirl, 'generateSwirl');
-        swirl.init();
+        swirl.vars();
         return expect(swirl.generateSwirl).not.toHaveBeenCalled();
       });
     });

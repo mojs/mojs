@@ -83,7 +83,6 @@ class Timeline extends Tween {
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
     // add self delay to the timeline
     (shift != null) && timeline._setProp({ 'shiftTime': shift });
-    // console.log('here', this._timelines);
     this._timelines.push(timeline);
     this._recalcDuration(timeline);
   }
@@ -120,7 +119,6 @@ class Timeline extends Tween {
     @param {Object} Tween or Timeline to calculate.
   */
   _recalcDuration (timeline) {
-    !timeline._props && console.log(timeline)
     var p             = timeline._props,
         speedCoef     = ( p.speed ) ? (1/p.speed) : 1,
         timelineTime  = speedCoef*p.repeatTime + (p.shiftTime || 0);
@@ -186,7 +184,6 @@ class Timeline extends Tween {
     @private
   */
   _vars () {
-    // console.log('timeline _vars')
     this._timelines = [];
     super._vars();
   }

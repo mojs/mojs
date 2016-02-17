@@ -7,8 +7,8 @@ Tween     = require('./tween/tween').default
 Timeline  = require('./tween/timeline').default
 
 # TODO
-#  - don't run by default
 #  - tween properties
+#  - dont extend bit
 #  - properties signatures
 #  - Stagger -> stagger
 
@@ -47,6 +47,9 @@ class Transit extends Bit
     repeat:             0
     yoyo:               false
     easing:             'Linear.None'
+    #
+    isShowEnd:          false
+    isShowInit:         false
     #
     size:               null
     sizeGap:            0

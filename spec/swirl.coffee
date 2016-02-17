@@ -108,7 +108,7 @@ describe 'Swirl ->', ->
     it 'should not generate simple swirl is isSwirlLess was passed', ->
       swirl = new Swirl isSwirlLess: true
       spyOn swirl, 'generateSwirl'
-      swirl.init()
+      swirl.vars()
       expect(swirl.generateSwirl).not.toHaveBeenCalled()
   describe 'getSwirl method ->', ->
     it 'should calc swirl based on swirlFrequency and swirlSize props', ->

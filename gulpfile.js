@@ -116,7 +116,7 @@ gulp.task('update-bower-version', function(e){
   });
 
 gulp.task('update-main-file-version', function(e){
-  return gulp.src('js/mojs.coffee')
+  return gulp.src('js/mojs.babel.js')
           .pipe(plumber())
           .pipe(insert.transform(function(contents) {
             var newString =  'revision:   \''+currentVersion+'\'';
