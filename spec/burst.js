@@ -783,18 +783,9 @@
         burst = new Burst;
         return expect(burst.timeline._timelines.length).toBe(6);
       });
-      it('should call startTween method', function() {
-        var burst;
-        burst = new Burst;
-        spyOn(burst, 'startTween');
-        burst.createTween();
-        return expect(burst.startTween).toHaveBeenCalled();
-      });
       return it('should not call startTween method if isRunLess', function() {
         var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
+        burst = new Burst;
         spyOn(burst, 'startTween');
         burst.createTween();
         return expect(burst.startTween).not.toHaveBeenCalled();
@@ -804,7 +795,6 @@
       it('should run onStart callback', function(dfr) {
         var burst;
         burst = new Burst({
-          isRunLess: true,
           onStart: function() {}
         });
         spyOn(burst.props, 'onStart');
@@ -822,6 +812,7 @@
             return isRightScope = this instanceof Burst;
           }
         });
+        burst.run();
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
@@ -832,13 +823,14 @@
       it('should run onComplete callback', function(dfr) {
         var burst;
         t.removeAll();
-        return burst = new Burst({
+        burst = new Burst({
           duration: 200,
           onComplete: function() {
             expect(true).toBe(true);
             return dfr();
           }
         });
+        return burst.run();
       });
       return it('should have the scope of burst', function(dfr) {
         var burst, isRightScope;
@@ -850,6 +842,7 @@
             return isRightScope = this instanceof Burst;
           }
         });
+        burst.run();
         return setTimeout(function() {
           expect(isRightScope).toBe(true);
           return dfr();
@@ -861,7 +854,6 @@
       it('should run onUpdate callback', function(dfr) {
         var burst;
         burst = new Burst({
-          isRunLess: true,
           duration: 200,
           onUpdate: function() {}
         });
@@ -1044,9 +1036,7 @@
       });
       it('should keep angles on run', function() {
         var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
+        burst = new Burst;
         burst.run({
           count: 10
         });
@@ -1054,9 +1044,7 @@
       });
       it('should recieve new angle options', function() {
         var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
+        burst = new Burst;
         burst.run({
           childOptions: {
             angle: 90
@@ -1067,9 +1055,7 @@
       });
       it('should recieve new angle delta options', function() {
         var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
+        burst = new Burst;
         burst.run({
           childOptions: {
             angle: {
@@ -1082,9 +1068,7 @@
       });
       return it('should skip circular shape angle on isResetAngles', function() {
         var burst;
-        burst = new Burst({
-          isRunLess: true
-        });
+        burst = new Burst;
         burst.run({
           isResetAngles: true,
           childOptions: {

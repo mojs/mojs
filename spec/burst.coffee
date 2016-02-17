@@ -490,20 +490,21 @@ describe 'Burst ->', ->
     it 'should add tweens to timeline', ->
       burst = new Burst
       expect(burst.timeline._timelines.length).toBe 6
-    it 'should call startTween method', ->
-      burst = new Burst
-      spyOn burst, 'startTween'
-      burst.createTween()
-      expect(burst.startTween).toHaveBeenCalled()
+    # redundant
+    # it 'should call startTween method', ->
+    #   burst = new Burst
+    #   spyOn burst, 'startTween'
+    #   burst.createTween()
+    #   expect(burst.startTween).toHaveBeenCalled()
     it 'should not call startTween method if isRunLess', ->
-      burst = new Burst isRunLess: true
+      burst = new Burst
       spyOn burst, 'startTween'
       burst.createTween()
       expect(burst.startTween).not.toHaveBeenCalled()
 
   describe 'onStart callback ->', ->
     it 'should run onStart callback', (dfr)->
-      burst = new Burst isRunLess: true, onStart:->
+      burst = new Burst onStart:->
       spyOn burst.props, 'onStart'
       burst.run()
       setTimeout ->
@@ -512,6 +513,7 @@ describe 'Burst ->', ->
     it 'should have the scope of burst', (dfr)->
       isRightScope = null
       burst = new Burst onStart:-> isRightScope = @ instanceof Burst
+      burst.run()
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
       , 500
@@ -521,12 +523,13 @@ describe 'Burst ->', ->
       t.removeAll()
       burst = new Burst
         duration: 200, onComplete:-> expect(true).toBe(true); dfr()
-
+      burst.run()
     it 'should have the scope of burst', (dfr)->
       t.removeAll()
       isRightScope = null
       burst = new Burst
         duration: 200, onComplete:-> isRightScope = @ instanceof Burst
+      burst.run()
       setTimeout ->
         expect(isRightScope).toBe(true); dfr()
       , 500
@@ -535,7 +538,7 @@ describe 'Burst ->', ->
     t.removeAll()
     it 'should run onUpdate callback', (dfr)->
       burst = new Burst
-        isRunLess: true
+       
         duration: 200
         onUpdate:->
       spyOn burst, 'onUpdate'
@@ -641,21 +644,21 @@ describe 'Burst ->', ->
       burst.run count: 10
       expect(burst.h.warn).toHaveBeenCalled()
     it 'should keep angles on run', ->
-      burst = new Burst isRunLess: true
+      burst = new Burst
       burst.run count: 10
       expect(burst.transits[3].o.angle).toBe 306
     it 'should recieve new angle options', ->
-      burst = new Burst isRunLess: true
+      burst = new Burst
       burst.run childOptions: angle: 90
       expect(burst.transits[3].o.angle).toBe 396
       expect(burst.transits[4].o.angle).toBe 468
     it 'should recieve new angle delta options', ->
-      burst = new Burst isRunLess: true
+      burst = new Burst
       burst.run childOptions: angle: 90: 0
       expect(burst.transits[3].o.angle[396]).toBe 306
       expect(burst.transits[4].o.angle[468]).toBe 378
     it 'should skip circular shape angle on isResetAngles', ->
-      burst = new Burst isRunLess: true
+      burst = new Burst
       burst.run isResetAngles: true, childOptions: angle: 90: 0
       expect(burst.transits[3].o.angle[90]).toBe 0
       expect(burst.transits[4].o.angle[90]).toBe 0

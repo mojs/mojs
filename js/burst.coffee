@@ -109,7 +109,8 @@ class Burst extends Transit
     @transits = []
     for i in [0...@props.count]
       option = @getOption(i); option.ctx = @ctx; option.index = i
-      option.isDrawLess = option.isRunLess = option.isTweenLess = true
+      # option.isDrawLess = option.isRunLess = option.isTweenLess = true
+      option.isDrawLess = true
       @props.randomAngle  and (option.angleShift  = @generateRandomAngle())
       @props.randomRadius and (option.radiusScale = @generateRandomRadius())
       @transits.push new Swirl option
