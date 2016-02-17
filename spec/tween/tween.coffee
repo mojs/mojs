@@ -12,6 +12,7 @@ describe 'Tween ->', ->
       t = new Tween name: name
       expect(t._props.name).toBe name
     it 'should make generic name if no one was specified', ->
+      tweener['_Tweens'] = undefined;
       t = new Tween
       expect(t._props.name).toBe 'Tween 1'
       t = new Tween

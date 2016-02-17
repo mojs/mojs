@@ -52,7 +52,6 @@ class Transit extends Bit
     sizeGap:            0
   vars:->
     @h ?= h; @lastSet ?= {}; @index = @o.index or 0
-    @runCount ?= 0
     @extendDefaults()
     o = @h.cloneObj(@o); @h.extend(o, @defaults)
     # inherit the radiusX/Y from radius if werent defined
@@ -72,8 +71,7 @@ class Transit extends Bit
         @el = document.createElement 'div'
         @el.appendChild @ctx
         (@o.parent or document.body).appendChild @el
-      else
-        @ctx = @o.ctx; @createBit(); @calcSize()
+      else @ctx = @o.ctx; @createBit(); @calcSize()
       @isRendered = true
     @setElStyles()
     @setProgress 0, true
@@ -374,10 +372,9 @@ class Transit extends Bit
     @timeline = new Timeline
       onComplete:=> !@o.isShowEnd and @hide(); @props.onComplete?.apply @
     @timeline.add @tween
-    !@o.isRunLess and @startTween()
+    # !@o.isRunLess and @startTween()
 
   run:(o)->
-    @runCount++
     if o and Object.keys(o).length
       # if then chain is present and the user tries to
       # change the start timing - warn him and delete the
@@ -396,7 +393,7 @@ class Transit extends Bit
       @tuneNewOption(o)
       o = @h.cloneObj(@o); @h.extend(o, @defaults); @history[0] = o
       !@o.isDrawLess and @setProgress(0, true)
-    else @tuneNewOption @history[0]
+    else if o then @tuneNewOption @history[0]
     @startTween()
 
   # adds new options to history chain

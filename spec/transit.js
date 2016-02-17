@@ -26,11 +26,6 @@
         return byte.vars();
       }).not.toThrow();
     });
-    it('should have runCount', function() {
-      var byte;
-      byte = new Byte;
-      return expect(byte.runCount).toBe(0);
-    });
     describe('extension ->', function() {
       return it('should extend Bit class', function() {
         var byte;
@@ -153,7 +148,6 @@
         var byte, fillBefore;
         byte = new Byte({
           radius: 'rand(0, 10)',
-          isRunLess: true,
           fill: 'deeppink'
         });
         fillBefore = byte.props.fill;
@@ -251,12 +245,10 @@
         return expect(byte.history[0].radius[0]).toBe(50);
       });
     });
-    describe('transformHistory method->', function() {
+    describe('transformHistory method ->', function() {
       it('should add new options to the history', function() {
         var byte;
-        byte = new Byte({
-          isRunLess: true
-        });
+        byte = new Byte;
         byte.then({
           radius: 0
         });
@@ -268,7 +260,6 @@
       it('should rewrite options in the history', function() {
         var byte;
         byte = new Byte({
-          isRunLess: true,
           x: 200
         });
         byte.then({
@@ -282,7 +273,6 @@
       it('should stop rewriting if further option is defined', function() {
         var byte;
         byte = new Byte({
-          isRunLess: true,
           x: 200
         }).then({
           radius: 0
@@ -300,7 +290,6 @@
       it('should stop rewriting if further option is defined', function() {
         var byte;
         byte = new Byte({
-          isRunLess: true,
           x: 200
         }).then({
           radius: 0
@@ -319,7 +308,6 @@
       return it('should rewrite until defined if object was passed', function() {
         var byte;
         byte = new Byte({
-          isRunLess: true,
           x: 200
         }).then({
           radius: 0
@@ -492,8 +480,7 @@
           duration: 1000,
           delay: 200,
           onUpdate: onUpdate,
-          onStart: onStart,
-          isRunLess: true
+          onStart: onStart
         });
         byte.then({
           radius: 5,
@@ -846,8 +833,7 @@
           radius: 25,
           strokeWidth: 2,
           x: 10,
-          y: 20,
-          isRunLess: true
+          y: 20
         });
         expect(byte.el.style.position).toBe('absolute');
         expect(byte.el.style.width).toBe('54px');
@@ -866,7 +852,6 @@
           strokeWidth: 2,
           x: 10,
           y: 20,
-          isRunLess: true,
           ctx: svg
         });
         expect(byte.el.style.display).toBe('none');
@@ -941,8 +926,7 @@
         div.isDiv = true;
         byte = new Byte({
           radius: 25,
-          parent: div,
-          isRunLess: true
+          parent: div
         });
         return expect(byte.el.parentNode.isDiv).toBe(true);
       });
@@ -957,16 +941,17 @@
       });
       return it('should animate opacity', function(dfr) {
         var byte;
-        return byte = new Byte({
+        byte = new Byte({
           opacity: {
             1: 0
           },
-          duration: 60,
+          duration: 100,
           onComplete: function() {
             expect(byte.el.style.opacity).toBe('0');
             return dfr();
           }
         });
+        return byte.run();
       });
     });
     describe('position set ->', function() {
@@ -983,7 +968,7 @@
         });
         it('should animate position', function(dfr) {
           var byte;
-          return byte = new Byte({
+          byte = new Byte({
             left: {
               100: '200px'
             },
@@ -993,6 +978,7 @@
               return dfr();
             }
           });
+          return byte.run();
         });
         it('should warn when x/y animated position and not foreign context', function() {
           var byte;
@@ -1002,6 +988,7 @@
               100: '200px'
             }
           });
+          byte.run();
           return expect(console.warn).toHaveBeenCalled();
         });
         it('should notwarn when x/y animated position and foreign context', function() {
@@ -1013,6 +1000,7 @@
             },
             ctx: svg
           });
+          byte.run();
           return expect(console.warn).not.toHaveBeenCalled();
         });
         it('should animate position with respect to units', function(dfr) {
@@ -1023,6 +1011,7 @@
             },
             duration: 100
           });
+          byte.run();
           return setTimeout(function() {
             expect(byte.el.style.left).toBe('50%');
             return dfr();
@@ -1036,12 +1025,13 @@
             },
             duration: 200
           });
+          byte.run();
           expect(byte.deltas.left.start.unit).toBe('%');
           return expect(byte.deltas.left.end.unit).toBe('%');
         });
         it('should fallback to end units if units are differnt', function(dfr) {
           var byte;
-          return byte = new Byte({
+          byte = new Byte({
             left: {
               '20%': '50px'
             },
@@ -1051,6 +1041,7 @@
               return dfr();
             }
           });
+          return byte.run();
         });
         return describe('x/y coordinates ->', function() {
           it('should set a position with respect to units', function() {
@@ -1065,7 +1056,7 @@
           });
           it('should animate position', function(dfr) {
             var byte;
-            return byte = new Byte({
+            byte = new Byte({
               x: {
                 100: '200px'
               },
@@ -1078,10 +1069,11 @@
                 return dfr();
               }
             });
+            return byte.run();
           });
           it('should animate position with respect to units', function(dfr) {
             var byte;
-            return byte = new Byte({
+            byte = new Byte({
               x: {
                 '20%': '50%'
               },
@@ -1094,10 +1086,11 @@
                 return dfr();
               }
             });
+            return byte.run();
           });
           return it('should fallback to end units if units are differnt', function(dfr) {
             var byte;
-            return byte = new Byte({
+            byte = new Byte({
               x: {
                 '20%': '50px'
               },
@@ -1113,6 +1106,7 @@
                 return dfr();
               }
             });
+            return byte.run();
           });
         });
       });
@@ -1132,8 +1126,7 @@
         var byte;
         byte = new Byte({
           x: 100,
-          y: 100,
-          isRunLess: true
+          y: 100
         });
         byte.setProp({
           x: 101
@@ -1196,9 +1189,7 @@
       });
       it('should merge 2 objects if the first was an object', function() {
         var byte, end, mergedOpton, start;
-        byte = new Byte({
-          isRunLess: true
-        });
+        byte = new Byte;
         start = {
           radius: {
             10: 0
@@ -1415,8 +1406,7 @@
         var byte, s, tr;
         byte = new Byte({
           radius: 25,
-          top: 10,
-          isRunLess: true
+          top: 10
         });
         expect(byte.el.style.left).toBe('0px');
         expect(byte.el.style.top).toBe('10px');
@@ -1632,8 +1622,7 @@
           byte = new Byte({
             duration: {
               2000: 1000
-            },
-            isRunLess: true
+            }
           });
           return expect(byte.deltas.duration).not.toBeDefined();
         });
@@ -1815,8 +1804,7 @@
           strokeDasharray: {
             '0% 200': '100%'
           },
-          radius: 100,
-          isRunLess: true
+          radius: 100
         });
         byte.setProgress(.5);
         expect(byte.props.strokeDasharray[0].value).toBe(50);
@@ -1829,8 +1817,7 @@
         byte = new Byte({
           type: 'circle',
           strokeDasharray: '100%',
-          radius: 100,
-          isRunLess: true
+          radius: 100
         });
         expect(byte.props.strokeDasharray[0].value).toBe(100);
         return expect(byte.props.strokeDasharray[0].unit).toBe('%');
@@ -1838,8 +1825,7 @@
       it('should parse multiple strokeDash.. values', function() {
         var byte;
         byte = new Byte({
-          strokeDasharray: '7 100 7',
-          isRunLess: true
+          strokeDasharray: '7 100 7'
         });
         expect(h.isArray(byte.props.strokeDasharray)).toBe(true);
         expect(byte.props.strokeDasharray.length).toBe(3);
@@ -1850,8 +1836,7 @@
       return it('should parse num values', function() {
         var byte;
         byte = new Byte({
-          strokeDasharray: 7,
-          isRunLess: true
+          strokeDasharray: 7
         });
         expect(h.isArray(byte.props.strokeDasharray)).toBe(true);
         return expect(byte.props.strokeDasharray.length).toBe(1);
@@ -1870,6 +1855,7 @@
               return isOnStart = true;
             }
           });
+          byte.run();
           return setTimeout(function() {
             expect(isOnStart).toBe(true);
             return dfr();
@@ -1886,6 +1872,7 @@
               return isRightScope = this instanceof Byte;
             }
           });
+          byte.run();
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
@@ -1949,8 +1936,9 @@
             onUpdate: function(p) {
               return progress = p;
             },
-            duration: 64
+            duration: 100
           });
+          byte.run();
           return setTimeout(function() {
             expect(progress).toBeGreaterThan(0);
             expect(progress).not.toBeGreaterThan(1);
@@ -1971,6 +1959,7 @@
             },
             duration: 200
           });
+          byte.run();
           return setTimeout(function() {
             expect(isOnComplete).toBe(true);
             return dfr();
@@ -1988,6 +1977,7 @@
               return isRightScope = this instanceof Byte;
             }
           });
+          byte.run();
           return setTimeout(function() {
             expect(isRightScope).toBe(true);
             return dfr();
@@ -2054,25 +2044,9 @@
             return isStarted = true;
           }
         });
+        byte.run();
         return setTimeout(function() {
           expect(isStarted).toBe(true);
-          return dfr();
-        }, 100);
-      });
-      it('should not start tween after init is isRunLess was passed', function(dfr) {
-        var byte, isStarted;
-        isStarted = null;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          },
-          isRunLess: true,
-          onStart: function() {
-            return isStarted = true;
-          }
-        });
-        return setTimeout(function() {
-          expect(isStarted).toBeFalsy();
           return dfr();
         }, 100);
       });
@@ -2108,8 +2082,7 @@
         byte = new Byte({
           strokeWidth: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         spyOn(byte, 'extendDefaults');
         o = {
@@ -2123,8 +2096,7 @@
         byte = new Byte({
           strokeWidth: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         spyOn(byte, 'transformHistory');
         byte.run();
@@ -2135,8 +2107,7 @@
         byte = new Byte({
           strokeWidth: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         byte.run({
           stroke: 'green'
@@ -2148,8 +2119,7 @@
         byte = new Byte({
           radius: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         spyOn(byte, 'calcSize');
         byte.run({
@@ -2162,8 +2132,7 @@
         byte = new Byte({
           radius: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         spyOn(byte, 'setElStyles');
         byte.run({
@@ -2176,8 +2145,7 @@
         byte = new Byte({
           radius: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         byte.run({
           radius: 50
@@ -2189,8 +2157,7 @@
         byte = new Byte({
           radius: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         byte.run({
           radius: 50,
@@ -2205,8 +2172,7 @@
         byte = new Byte({
           radius: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         byte.run({
           radius: 50,
@@ -2219,8 +2185,7 @@
         byte = new Byte({
           radius: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         byte.run({
           radius: 450,
@@ -2236,8 +2201,7 @@
         byte = new Byte({
           strokeWidth: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         spyOn(byte, 'startTween');
         byte.run();
@@ -2248,8 +2212,7 @@
         byte = new Byte({
           strokeWidth: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         byte.run({
           strokeWidth: 25
@@ -2263,8 +2226,7 @@
           strokeWidth: {
             10: 5
           },
-          radius: 33,
-          isRunLess: true
+          radius: 33
         });
         byte.run({
           strokeWidth: 25
@@ -2276,8 +2238,7 @@
         byte = new Byte({
           radius: {
             10: 5
-          },
-          isRunLess: true
+          }
         });
         spyOn(byte, 'setProgress');
         byte.run({
@@ -2288,8 +2249,7 @@
       it('should warn if shape was passed', function() {
         var byte;
         byte = new Byte({
-          shape: 'polygon',
-          isRunLess: true
+          shape: 'polygon'
         });
         spyOn(byte.h, 'warn');
         byte.run({
@@ -2301,7 +2261,6 @@
       it('should set new options on timeline', function() {
         var byte, onComplete, onStart;
         byte = new Byte({
-          isRunLess: true,
           duration: 500,
           delay: 200,
           repeat: 1,
@@ -2359,7 +2318,6 @@
       it('shoud warn if tweenValues changed on run', function() {
         var byte;
         byte = new Byte({
-          isRunLess: true,
           duration: 2000
         }).then({
           radius: 40
@@ -2382,7 +2340,6 @@
       it('shoud not warn if history is 1 record long', function() {
         var byte;
         byte = new Byte({
-          isRunLess: true,
           duration: 2000
         });
         spyOn(h, 'warn');
@@ -2400,10 +2357,9 @@
         expect(byte.history[0].duration).toBe(100);
         return expect(byte.props.duration).toBe(100);
       });
-      it('shoud work with no arguments passed', function() {
+      return it('shoud work with no arguments passed', function() {
         var byte;
         byte = new Byte({
-          isRunLess: true,
           duration: 2000
         }).then({
           radius: 500
@@ -2411,30 +2367,6 @@
         return expect(function() {
           return byte.run();
         }).not.toThrow();
-      });
-      it('should save run count', function() {
-        var byte;
-        byte = new Byte({
-          isRunLess: true,
-          duration: 2000
-        }).then({
-          radius: 500
-        });
-        byte.run();
-        return expect(byte.runCount).toBe(1);
-      });
-      return it('should tuneNewOption on run if runCount > 1', function() {
-        var byte;
-        byte = new Byte({
-          isRunLess: true,
-          duration: 2000
-        }).then({
-          radius: 500
-        });
-        byte.run();
-        spyOn(byte, 'tuneNewOption');
-        byte.run();
-        return expect(byte.tuneNewOption).toHaveBeenCalledWith(byte.history[0]);
       });
     });
     describe('isForeign flag ->', function() {
@@ -2491,8 +2423,7 @@
         var byte;
         byte = new Byte({
           ctx: svg,
-          isShowEnd: true,
-          isRunLess: true
+          isShowEnd: true
         }).then({
           radius: 10
         }).then({

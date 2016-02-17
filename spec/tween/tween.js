@@ -24,6 +24,7 @@
       });
       return it('should make generic name if no one was specified', function() {
         var t;
+        tweener['_Tweens'] = void 0;
         t = new Tween;
         expect(t._props.name).toBe('Tween 1');
         t = new Tween;

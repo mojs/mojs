@@ -3126,9 +3126,6 @@
 	      this.lastSet = {};
 	    }
 	    this.index = this.o.index || 0;
-	    if (this.runCount == null) {
-	      this.runCount = 0;
-	    }
 	    this.extendDefaults();
 	    o = this.h.cloneObj(this.o);
 	    this.h.extend(o, this.defaults);
@@ -3614,13 +3611,11 @@
 	        };
 	      })(this)
 	    });
-	    this.timeline.add(this.tween);
-	    return !this.o.isRunLess && this.startTween();
+	    return this.timeline.add(this.tween);
 	  };
 
 	  Transit.prototype.run = function(o) {
 	    var key, keys, len;
-	    this.runCount++;
 	    if (o && Object.keys(o).length) {
 	      if (this.history.length > 1) {
 	        keys = Object.keys(o);
@@ -3639,7 +3634,7 @@
 	      this.h.extend(o, this.defaults);
 	      this.history[0] = o;
 	      !this.o.isDrawLess && this.setProgress(0, true);
-	    } else {
+	    } else if (o) {
 	      this.tuneNewOption(this.history[0]);
 	    }
 	    return this.startTween();
@@ -3875,6 +3870,9 @@
 	    easing: null,
 	    repeat: 0,
 	    yoyo: false,
+	    onStart: null,
+	    onComplete: null,
+	    onUpdate: null,
 	    offsetX: 0,
 	    offsetY: 0,
 	    angleOffset: null,
@@ -3885,10 +3883,7 @@
 	    isAngle: false,
 	    isReverse: false,
 	    isRunLess: false,
-	    isPresetPosition: true,
-	    onStart: null,
-	    onComplete: null,
-	    onUpdate: null
+	    isPresetPosition: true
 	  };
 
 	  function MotionPath(o1) {
@@ -6342,15 +6337,42 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.169.2', isDebug: true,
-	  helpers: _h2.default,
+	  revision: '0.169.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, Stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
-	  Tween: _tween2.default, Timeline: _timeline2.default, tweener: _tweener2.default,
-	  easing: _easing2.default, shapesMap: _shapesMap2.default
+	  Tween: _tween2.default, Timeline: _timeline2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	// new mojs.Transit({
+	//   shape:        'polygon',
+	//   points:       5,
+	//   strokeWidth:  { 2: 10 },
+	//   tween:        {
+	//     duration:     2000,
+	//     delay:        200,
+	//     yoyo:         true,
+	//     repeat:       20,
+	//     onUpdate: function (pe, p) {
+	//       mojs.h.style( someEl, 'transform', `translateX(${20*p}px)` );
+	//     }
+	//   }
+	// });
+
+	// new mojs.Transit({
+	//   shape:        'polygon',
+	//   points:       5,
+	//   strokeWidth:  { 2: 10 },
+
+	//   duration:     2000,
+	//   delay:        200,
+	//   yoyo:         true,
+	//   repeat:       20,
+	//   onUpdate: function (pe, p) {
+	//     mojs.h.style( someEl, 'transform', `translateX(${20*p}px)` );
+	//   }
+	// });
 
 	// ### istanbul ignore next ###
 	if (true) {
@@ -6362,8 +6384,6 @@
 	if ((false ? 'undefined' : (0, _typeof3.default)(module)) === "object" && (0, _typeof3.default)(module.exports) === "object") {
 	  module.exports = mojs;
 	}
-	// # ### istanbul ignore next ###
-	// # window?.mojs = mojs
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module)))
 
 /***/ },

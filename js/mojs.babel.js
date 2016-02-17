@@ -13,15 +13,42 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.169.2', isDebug: true,
-  helpers:    h,
+  revision:   '0.169.2', isDebug: true, helpers: h,
   Transit, Swirl, Burst, Stagger, Spriter, MotionPath,
-  Tween, Timeline, tweener,
-  easing, shapesMap
+  Tween, Timeline, tweener, easing, shapesMap
 }
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
+
+// new mojs.Transit({
+//   shape:        'polygon',
+//   points:       5,
+//   strokeWidth:  { 2: 10 },
+//   tween:        {
+//     duration:     2000,
+//     delay:        200,
+//     yoyo:         true,
+//     repeat:       20,
+//     onUpdate: function (pe, p) {
+//       mojs.h.style( someEl, 'transform', `translateX(${20*p}px)` );
+//     }
+//   }
+// });
+
+// new mojs.Transit({
+//   shape:        'polygon',
+//   points:       5,
+//   strokeWidth:  { 2: 10 },
+
+//   duration:     2000,
+//   delay:        200,
+//   yoyo:         true,
+//   repeat:       20,
+//   onUpdate: function (pe, p) {
+//     mojs.h.style( someEl, 'transform', `translateX(${20*p}px)` );
+//   }
+// });
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {
@@ -31,5 +58,3 @@ if ( (typeof define === "function") && define.amd ) {
 if ( (typeof module === "object") && (typeof module.exports === "object") ) {
   module.exports = mojs;
 }
-// # ### istanbul ignore next ###
-// # window?.mojs = mojs

@@ -73,7 +73,7 @@ gulp.task('lib', function(e){
 gulp.task('babel-lib', function(e){
   return gulp.src(paths.src.babel)
     .pipe(plumber())
-    .pipe(babel({ presets: ['es2015'] }))
+    .pipe(babel())
     .pipe(rename(function (path) {
         return path.basename = path.basename.replace('.babel', '');
       })

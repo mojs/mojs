@@ -101,6 +101,35 @@ class MotionPath
     yoyo:             false
     # ---
 
+    # Callback **onStart** fires once if animation was started.
+    # 
+    # @property   onStart
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
+    onStart:          null
+    # ---
+
+    # Callback **onComplete** fires once if animation was completed.
+    # 
+    # @property   onComplete
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
+    onComplete:       null
+    # ---
+
+    # Callback **onUpdate** fires every raf frame on motion
+    # path update. Recieves **progress** of type **Number**
+    # in range *[0,1]* as argument.
+    # 
+    # @property   onUpdate
+    # @type       {Function}
+    # 
+    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
+    onUpdate:         null
+    # ---
+
     # Defines additional horizontal offset from center of path, *px*
     # @property   offsetX
     # @type       {Number}
@@ -230,35 +259,6 @@ class MotionPath
     # 
     # @codepen http://codepen.io/sol0mka/pen/EaqMOJ/
     isPresetPosition: true
-    # ---
-
-    # Callback **onStart** fires once if animation was started.
-    # 
-    # @property   onStart
-    # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/VYoRRe/
-    onStart:          null
-    # ---
-
-    # Callback **onComplete** fires once if animation was completed.
-    # 
-    # @property   onComplete
-    # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/ZYgPPm/
-    onComplete:       null
-    # ---
-
-    # Callback **onUpdate** fires every raf frame on motion
-    # path update. Recieves **progress** of type **Number**
-    # in range *[0,1]* as argument.
-    # 
-    # @property   onUpdate
-    # @type       {Function}
-    # 
-    # @codepen http://codepen.io/sol0mka/pen/YPmgMq/
-    onUpdate:         null
   # ---
   # ### Class body docs
   # ---
