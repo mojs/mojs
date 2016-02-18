@@ -3,7 +3,7 @@ import shapesMap  from './shapes/shapesMap';
 import Burst      from './burst';
 import Transit    from './transit';
 import Swirl      from './swirl';
-import Stagger    from './stagger';
+import stagger    from './stagger';
 import Spriter    from './spriter';
 import MotionPath from './motion-path';
 import Tween      from './tween/tween';
@@ -14,8 +14,8 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.172.0', isDebug: true, helpers: h,
-  Transit, Swirl, Burst, Stagger, Spriter, MotionPath,
+  revision:   '0.173.0', isDebug: true, helpers: h,
+  Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, tweener, easing, shapesMap
 }
 

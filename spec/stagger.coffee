@@ -1,6 +1,6 @@
-Stagger = mojs.Stagger mojs.MotionPath
+Stagger = mojs.stagger mojs.MotionPath
 
-describe 'Stagger ->', ->
+describe 'stagger ->', ->
   describe '_getOptionByMod method ->', ->
     it 'should get an option by modulo of i', ->
       options = bit: ['foo', 'bar', 'baz'], path: 'M0,0 L100,100'

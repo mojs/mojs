@@ -27,8 +27,8 @@
     it('should have Swirl', function() {
       return expect(mojs.Swirl).toBeDefined();
     });
-    it('should have Stagger', function() {
-      return expect(mojs.Stagger).toBeDefined();
+    it('should have stagger', function() {
+      return expect(mojs.stagger).toBeDefined();
     });
     it('should have Spriter', function() {
       return expect(mojs.Spriter).toBeDefined();

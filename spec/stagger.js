@@ -1,9 +1,9 @@
 (function() {
   var Stagger;
 
-  Stagger = mojs.Stagger(mojs.MotionPath);
+  Stagger = mojs.stagger(mojs.MotionPath);
 
-  describe('Stagger ->', function() {
+  describe('stagger ->', function() {
     describe('_getOptionByMod method ->', function() {
       it('should get an option by modulo of i', function() {
         var options, s;

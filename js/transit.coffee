@@ -61,7 +61,6 @@ class Transit extends Bit
     # o.radiusX ?= o.radius; o.radiusY ?= o.radius
     @history = [o]
     @isForeign = !!@o.ctx; @isForeignBit = !!@o.bit
-    @timelines = []
 
   render:->
     if !@isRendered# or isForce
@@ -140,8 +139,7 @@ class Transit extends Bit
         @h.setPrefixedStyle @el, 'transform', @fillTransform()
 
   fillTransform:-> "translate(#{@props.x}, #{@props.y})"
-  isNeedsTransform:->
-    isX = @isPropChanged('x'); isY = @isPropChanged('y'); isX or isY
+  isNeedsTransform:-> @isPropChanged('x') or @isPropChanged('y')
   isPropChanged:(name)->
     @lastSet[name] ?= {}
     if @lastSet[name].value isnt @props[name]
@@ -310,7 +308,6 @@ class Transit extends Bit
     keys = Object.keys(end); i = keys.length
     while(i--)
       key = keys[i]; endValue = end[key]
-      
       # if new value is a tween value or new value is an object/ function
       # then just save it
       isFunction = typeof endValue is 'function'

@@ -2052,7 +2052,6 @@
 
 	  @class Tweenable
 	*/
-	// import h from './h';
 
 	var Tweenable = function () {
 	  (0, _createClass3.default)(Tweenable, [{
@@ -3274,8 +3273,7 @@
 	    this.h.extend(o, this.defaults);
 	    this.history = [o];
 	    this.isForeign = !!this.o.ctx;
-	    this.isForeignBit = !!this.o.bit;
-	    return this.timelines = [];
+	    return this.isForeignBit = !!this.o.bit;
 	  };
 
 	  Transit.prototype.render = function() {
@@ -3385,10 +3383,7 @@
 	  };
 
 	  Transit.prototype.isNeedsTransform = function() {
-	    var isX, isY;
-	    isX = this.isPropChanged('x');
-	    isY = this.isPropChanged('y');
-	    return isX || isY;
+	    return this.isPropChanged('x') || this.isPropChanged('y');
 	  };
 
 	  Transit.prototype.isPropChanged = function(name) {
@@ -6471,8 +6466,8 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.172.0', isDebug: true, helpers: _h2.default,
-	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, Stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
+	  revision: '0.173.0', isDebug: true, helpers: _h2.default,
+	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 

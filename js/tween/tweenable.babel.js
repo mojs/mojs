@@ -1,4 +1,3 @@
-// import h from './h';
 import Tween from './tween';
 import Timeline from './timeline';
 /*
@@ -25,16 +24,12 @@ class Tweenable {
     pause method for the timeline.
     @public
   */
-  pause () {
-    this._timeline.pause.apply( this._timeline, arguments );
-  }
+  pause () { this._timeline.pause.apply( this._timeline, arguments ); }
   /*
     stop method for the timeline.
     @public
   */
-  stop () {
-    this._timeline.stop.apply( this._timeline, arguments );
-  }
+  stop () { this._timeline.stop.apply( this._timeline, arguments ); }
   /*
     setProgress method for the timeline.
     @public
