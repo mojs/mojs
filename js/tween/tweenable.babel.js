@@ -12,35 +12,33 @@ class Tweenable {
     play method for the timeline.
     @public
   */
-  play () { this._timeline.play.apply( this._timeline, arguments ); }
+  play () { this.timeline.play.apply( this.timeline, arguments ); }
   /*
     playBackward method for the timeline.
     @public
   */
   playBackward () {
-    this._timeline.playBackward.apply( this._timeline, arguments );
+    this.timeline.playBackward.apply( this.timeline, arguments );
   }
   /*
     pause method for the timeline.
     @public
   */
-  pause () { this._timeline.pause.apply( this._timeline, arguments ); }
+  pause () { this.timeline.pause.apply( this.timeline, arguments ); }
   /*
     stop method for the timeline.
     @public
   */
-  stop () { this._timeline.stop.apply( this._timeline, arguments ); }
+  stop () { this.timeline.stop.apply( this.timeline, arguments ); }
   /*
     setProgress method for the timeline.
     @public
   */
   setProgress () {
-    this._timeline.setProgress.apply( this._timeline, arguments );
+    this.timeline.setProgress.apply( this.timeline, arguments );
   }
-
   // ^ API methods.
   // v Private methods.
-
   constructor ( o = {} ) {
     this._o = o;
     this._transformTweenOptions();
@@ -57,7 +55,7 @@ class Tweenable {
     Method to create tween.
     @private
   */
-  _makeTween () { this._tween = new Tween( this._o ); }
+  _makeTween () { this.tween = new Tween( this._o ); }
   /*
     Method to create timeline.
     @private
@@ -66,10 +64,10 @@ class Tweenable {
                     timeline options.
   */
   _makeTimeline () {
-    this._timeline = new Timeline( this._o.timeline );
+    this.timeline = new Timeline( this._o.timeline );
     // if tween exist - add it to the timeline there
     // is some modules like stagger that have no tween
-    this._tween && this._timeline.add( this._tween );
+    this.tween && this.timeline.add( this.tween );
   }
 }
  

@@ -152,7 +152,7 @@
         t.add(tr);
         expect(t._timelines.length).toBe(1);
         expect(t._timelines[0] instanceof Timeline).toBe(true);
-        return expect(t._timelines[0] === tr.timeline).toBe(true);
+        return expect(t._timelines[0]).toBe(tr.timeline);
       });
       it('should work with arrays of tweens', function() {
         var t, t1, t2, tm;

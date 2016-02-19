@@ -105,7 +105,7 @@ describe 'Timeline ->', ->
       t.add tr
       expect(t._timelines.length).toBe 1
       expect(t._timelines[0] instanceof Timeline).toBe true
-      expect(t._timelines[0] is tr.timeline).toBe true
+      expect(t._timelines[0]).toBe tr.timeline
     it 'should work with arrays of tweens',->
       t = new Timeline
       t1 = new Tween duration: 1000

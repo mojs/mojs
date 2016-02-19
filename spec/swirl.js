@@ -29,7 +29,6 @@
           y: {
             0: 10
           },
-          isRunLess: true,
           isSwirlLess: true,
           angleShift: 90
         });
@@ -116,13 +115,12 @@
           x: {
             0: 10
           },
-          y: 0,
-          isRunLess: true
+          y: 0
         });
         expect(swirl.props.x).toBe('0.0000px');
         return expect(swirl.props.y).toBe('0.0000px');
       });
-      return it('should call super extendDefaults method', function() {
+      return it('should call super _extendDefaults method', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -131,13 +129,13 @@
             }, 20
           ]
         });
-        spyOn(Swirl.__super__, 'extendDefaults');
-        swirl.extendDefaults();
-        return expect(Swirl.__super__.extendDefaults).toHaveBeenCalled();
+        spyOn(Swirl.__super__, '_extendDefaults');
+        swirl._extendDefaults();
+        return expect(Swirl.__super__._extendDefaults).toHaveBeenCalled();
       });
     });
-    describe('setProgress ->', function() {
-      it('should call super setProgress method', function() {
+    describe('_setProgress ->', function() {
+      it('should call super _setProgress method', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -146,9 +144,9 @@
             }, 20
           ]
         });
-        spyOn(Swirl.__super__, 'setProgress');
-        swirl.setProgress(.5);
-        return expect(Swirl.__super__.setProgress).toHaveBeenCalledWith(.5);
+        spyOn(Swirl.__super__, '_setProgress');
+        swirl._setProgress(.5);
+        return expect(Swirl.__super__._setProgress).toHaveBeenCalledWith(.5);
       });
       it('should set x/y progress', function() {
         var swirl;
@@ -159,10 +157,9 @@
           y: {
             0: 10
           },
-          isRunLess: true,
           isSwirlLess: true
         });
-        swirl.setProgress(.5);
+        swirl._setProgress(.5);
         expect(swirl.props.x).toBe('5.0000px');
         return expect(swirl.props.y).toBe('5.0000px');
       });
@@ -175,10 +172,9 @@
           y: {
             0: 10
           },
-          isRunLess: true,
           isSwirlLess: true
         });
-        swirl.setProgress(1);
+        swirl._setProgress(1);
         expect(swirl.props.x).toBe('10.0000px');
         return expect(swirl.props.y).toBe('10.0000px');
       });
@@ -191,10 +187,9 @@
           y: {
             0: '-10'
           },
-          isRunLess: true,
           isSwirlLess: true
         });
-        swirl.setProgress(1);
+        swirl._setProgress(1);
         expect(swirl.props.x).toBe('-10.0000px');
         return expect(swirl.props.y).toBe('-10.0000px');
       });
@@ -208,10 +203,9 @@
             0: 10
           },
           ctx: tr.ctx,
-          isRunLess: true,
           isSwirlLess: true
         });
-        swirl.setProgress(1);
+        swirl._setProgress(1);
         expect(swirl.props.x + '').toBe('10.0000');
         return expect(swirl.props.y + '').toBe('10.0000');
       });
@@ -224,11 +218,10 @@
           y: {
             0: 10
           },
-          isRunLess: true,
           isSwirlLess: true,
           radiusScale: .5
         });
-        swirl.setProgress(1);
+        swirl._setProgress(1);
         expect(swirl.props.x).toBe('5.0000px');
         return expect(swirl.props.y).toBe('5.0000px');
       });
@@ -240,10 +233,9 @@
           },
           y: {
             0: 10
-          },
-          isRunLess: true
+          }
         });
-        swirl.setProgress(.5);
+        swirl._setProgress(.5);
         expect(swirl.props.x).toBe('5.0000px');
         return expect(swirl.props.y).toBe('5.0000px');
       });
@@ -256,10 +248,9 @@
           y: {
             0: 10
           },
-          isRunLess: true,
           isSwirl: true
         });
-        swirl.setProgress(.5);
+        swirl._setProgress(.5);
         expect(swirl.props.x).not.toBe('5.0000px');
         return expect(swirl.props.y).not.toBe('5.0000px');
       });
@@ -291,7 +282,7 @@
           isSwirlLess: true
         });
         spyOn(swirl, 'generateSwirl');
-        swirl.vars();
+        swirl._vars();
         return expect(swirl.generateSwirl).not.toHaveBeenCalled();
       });
     });

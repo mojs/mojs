@@ -43,12 +43,12 @@
       it('should create tween ->', function() {
         var tw;
         tw = new Tweenable;
-        return expect(tw._tween instanceof Tween).toBe(true);
+        return expect(tw.tween instanceof Tween).toBe(true);
       });
       return it('should construct tween with this._o ->', function() {
         var tw;
         tw = new Tweenable;
-        return expect(tw._tween.o).toBe(tw._o);
+        return expect(tw.tween.o).toBe(tw._o);
       });
     });
     describe('_makeTimeline ->', function() {
@@ -61,7 +61,7 @@
       it('should create timeline ->', function() {
         var tw;
         tw = new Tweenable;
-        return expect(tw._timeline instanceof Timeline).toBe(true);
+        return expect(tw.timeline instanceof Timeline).toBe(true);
       });
       it('should timeline with this._o.timeline ->', function() {
         var timelineOptions, tw;
@@ -72,12 +72,12 @@
         tw = new Tweenable({
           timeline: timelineOptions
         });
-        return expect(tw._timeline.o).toBe(tw._o.timeline);
+        return expect(tw.timeline.o).toBe(tw._o.timeline);
       });
       it('should add add tween to the timeline ->', function() {
         var tw;
         tw = new Tweenable;
-        return expect(tw._timeline._timelines[0]).toBe(tw._tween);
+        return expect(tw.timeline._timelines[0]).toBe(tw.tween);
       });
       return it('should not add tween if there is no one ->', function() {
         var TweenableExtention, tw;
@@ -94,57 +94,57 @@
 
         })(Tweenable);
         tw = new TweenableExtention;
-        return expect(tw._timeline._timelines[0]).not.toBeDefined();
+        return expect(tw.timeline._timelines[0]).not.toBeDefined();
       });
     });
     describe('play method ->', function() {
       return it('should call timeline\'s play method', function() {
         var progress, tw;
         tw = new Tweenable;
-        spyOn(tw._timeline, 'play');
+        spyOn(tw.timeline, 'play');
         progress = .5;
         tw.play(progress);
-        return expect(tw._timeline.play).toHaveBeenCalledWith(progress);
+        return expect(tw.timeline.play).toHaveBeenCalledWith(progress);
       });
     });
     describe('playBackward ->', function() {
       return it('should call timeline\'s playBackward method', function() {
         var progress, tw;
         tw = new Tweenable;
-        spyOn(tw._timeline, 'playBackward');
+        spyOn(tw.timeline, 'playBackward');
         progress = .5;
         tw.playBackward(progress);
-        return expect(tw._timeline.playBackward).toHaveBeenCalledWith(progress);
+        return expect(tw.timeline.playBackward).toHaveBeenCalledWith(progress);
       });
     });
     describe('pause ->', function() {
       return it('should call timeline\'s pause method', function() {
         var progress, tw;
         tw = new Tweenable;
-        spyOn(tw._timeline, 'pause');
+        spyOn(tw.timeline, 'pause');
         progress = .5;
         tw.pause(progress);
-        return expect(tw._timeline.pause).toHaveBeenCalledWith(progress);
+        return expect(tw.timeline.pause).toHaveBeenCalledWith(progress);
       });
     });
     describe('stop ->', function() {
       return it('should call timeline\'s stop method', function() {
         var progress, tw;
         tw = new Tweenable;
-        spyOn(tw._timeline, 'stop');
+        spyOn(tw.timeline, 'stop');
         progress = .5;
         tw.stop(progress);
-        return expect(tw._timeline.stop).toHaveBeenCalledWith(progress);
+        return expect(tw.timeline.stop).toHaveBeenCalledWith(progress);
       });
     });
     return describe('setProgress ->', function() {
       return it('should call timeline\'s setProgress method', function() {
         var progress, tw;
         tw = new Tweenable;
-        spyOn(tw._timeline, 'setProgress');
+        spyOn(tw.timeline, 'setProgress');
         progress = .5;
         tw.setProgress(progress);
-        return expect(tw._timeline.setProgress).toHaveBeenCalledWith(progress);
+        return expect(tw.timeline.setProgress).toHaveBeenCalledWith(progress);
       });
     });
   });

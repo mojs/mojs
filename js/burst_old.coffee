@@ -1,7 +1,7 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Transit   = require './transit'
+Transit   = require('./transit').default
 Swirl     = require './swirl'
 h         = require './h'
 
@@ -105,7 +105,7 @@ class Burst extends Transit
         @props.randomRadius and tr.setProp radiusScale: @generateRandomRadius()
     @startTween()
     
-  createBit:->
+  _createBit:->
     @transits = []
     for i in [0...@props.count]
       option = @getOption(i); option.ctx = @ctx; option.index = i
@@ -177,21 +177,21 @@ class Burst extends Transit
     delta = {}
     if pointStart[key] is pointEnd[key] then delta = pointStart[key]
     else delta[pointStart[key]] = pointEnd[key]; delta
-  draw:(progress)-> @drawEl()
+  _draw:(progress)-> @_drawEl()
 
   isNeedsTransform:->
     @isPropChanged('x')or@isPropChanged('y')or@isPropChanged('angle')
-  fillTransform:->
+  _fillTransform:->
     "rotate(#{@props.angle}deg) translate(#{@props.x}, #{@props.y})"
   createTween:->
     super; i = @transits.length; @timeline.add(@transits[i].tween) while(i--)
     
-  calcSize:->
+  _calcSize:->
     largestSize = -1
     for transit, i in @transits
       transit.calcSize()
       largestSize = transit.props.size if largestSize < transit.props.size
-    radius = @calcMaxRadius()
+    radius = @_calcMaxShapeRadius()
     @props.size   = largestSize + 2*radius
     @props.size   += 2*@props.sizeGap
     @props.center = @props.size/2

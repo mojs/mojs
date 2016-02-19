@@ -23,10 +23,10 @@ describe 'tweenable ->', ->
       expect(Tweenable.prototype._makeTween).toHaveBeenCalled()
     it 'should create tween ->',->
       tw = new Tweenable
-      expect(tw._tween instanceof Tween).toBe true
+      expect(tw.tween instanceof Tween).toBe true
     it 'should construct tween with this._o ->',->
       tw = new Tweenable
-      expect(tw._tween.o).toBe tw._o
+      expect(tw.tween.o).toBe tw._o
   describe '_makeTimeline ->', ->
     it 'should call _makeTimeline on the construction stage ->', ->
       spyOn Tweenable.prototype, '_makeTimeline'
@@ -34,54 +34,54 @@ describe 'tweenable ->', ->
       expect(Tweenable.prototype._makeTimeline).toHaveBeenCalled()
     it 'should create timeline ->',->
       tw = new Tweenable
-      expect(tw._timeline instanceof Timeline).toBe true
+      expect(tw.timeline instanceof Timeline).toBe true
     it 'should timeline with this._o.timeline ->',->
       timelineOptions = { delay: 200, repeat: 2 }
       tw = new Tweenable timeline: timelineOptions
-      expect(tw._timeline.o).toBe tw._o.timeline
+      expect(tw.timeline.o).toBe tw._o.timeline
     it 'should add add tween to the timeline ->',->
       tw = new Tweenable
-      expect(tw._timeline._timelines[0]).toBe tw._tween
+      expect(tw.timeline._timelines[0]).toBe tw.tween
     it 'should not add tween if there is no one ->',->
       class TweenableExtention extends Tweenable
         _makeTween:->
       tw = new TweenableExtention
-      expect(tw._timeline._timelines[0]).not.toBeDefined()
+      expect(tw.timeline._timelines[0]).not.toBeDefined()
   describe 'play method ->', ->
     it 'should call timeline\'s play method', ->
       tw = new Tweenable
-      spyOn tw._timeline, 'play'
+      spyOn tw.timeline, 'play'
       progress = .5
       tw.play( progress )
-      expect(tw._timeline.play).toHaveBeenCalledWith progress
+      expect(tw.timeline.play).toHaveBeenCalledWith progress
   describe 'playBackward ->', ->
     it 'should call timeline\'s playBackward method', ->
       tw = new Tweenable
-      spyOn tw._timeline, 'playBackward'
+      spyOn tw.timeline, 'playBackward'
       progress = .5
       tw.playBackward( progress )
-      expect(tw._timeline.playBackward).toHaveBeenCalledWith progress
+      expect(tw.timeline.playBackward).toHaveBeenCalledWith progress
   describe 'pause ->', ->
     it 'should call timeline\'s pause method', ->
       tw = new Tweenable
-      spyOn tw._timeline, 'pause'
+      spyOn tw.timeline, 'pause'
       progress = .5
       tw.pause( progress )
-      expect(tw._timeline.pause).toHaveBeenCalledWith progress
+      expect(tw.timeline.pause).toHaveBeenCalledWith progress
   describe 'stop ->', ->
     it 'should call timeline\'s stop method', ->
       tw = new Tweenable
-      spyOn tw._timeline, 'stop'
+      spyOn tw.timeline, 'stop'
       progress = .5
       tw.stop( progress )
-      expect(tw._timeline.stop).toHaveBeenCalledWith progress
+      expect(tw.timeline.stop).toHaveBeenCalledWith progress
   describe 'setProgress ->', ->
     it 'should call timeline\'s setProgress method', ->
       tw = new Tweenable
-      spyOn tw._timeline, 'setProgress'
+      spyOn tw.timeline, 'setProgress'
       progress = .5
       tw.setProgress( progress )
-      expect(tw._timeline.setProgress).toHaveBeenCalledWith progress
+      expect(tw.timeline.setProgress).toHaveBeenCalledWith progress
 
 
 

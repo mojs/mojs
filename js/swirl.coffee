@@ -1,16 +1,15 @@
 # ignore coffescript sudo code
 ### istanbul ignore next ###
 
-Transit   = require './transit'
+Transit   = require('./transit').default
 class Swirl extends Transit
   skipPropsDelta: x: 1, y: 1
-  vars:-> super; !@o.isSwirlLess and @generateSwirl()
-  extendDefaults:->
+  _vars:-> super; !@o.isSwirlLess and @generateSwirl()
+  _extendDefaults:->
     super
     x = @getPosValue('x'); y = @getPosValue('y')
     angle = 90 + Math.atan((y.delta/x.delta) or 0)*(180/Math.PI)
     if x.delta < 0 then angle += 180
-    # angle += 65
     @positionDelta =
       radius: Math.sqrt(x.delta*x.delta + y.delta*y.delta)
       angle:  angle
@@ -31,7 +30,7 @@ class Swirl extends Transit
     else
       val = parseFloat(optVal or @defaults[name])
       { start: val, end: val, delta: 0, units: 'px' }
-  setProgress:(progress)->
+  _setProgress:( progress )->
     angle = @positionDelta.angle# + @props.angleShift
     if @o.isSwirl then angle += @getSwirl(progress)
     point = @h.getRadialPoint

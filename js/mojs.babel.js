@@ -14,13 +14,16 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.173.0', isDebug: true, helpers: h,
+  revision:   '0.173.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, tweener, easing, shapesMap
 }
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
+
+// var tr = (new mojs.Transit).run()
+// // tr.run()
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {
