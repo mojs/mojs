@@ -541,7 +541,7 @@
 	      if (this.props.randomAngle || this.props.randomRadius) {
 	        var len = this.transits.length;
 	        while (len--) {
-	          tr = this.transits[len];
+	          var tr = this.transits[len];
 	          this.props.randomAngle && tr._setProp({ angleShift: this._generateRandomAngle() });
 	          this.props.randomRadius && tr._setProp({ radiusScale: this._generateRandomRadius() });
 	        }
