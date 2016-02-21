@@ -92,29 +92,28 @@ class Timeline extends Tween {
     @param {Number} Progress to set.
     @param {Number} Current update time.
   */
-  _setProgress (progress, time, isYoyo) {
-    super._setProgress(progress, time);
-    var timeToTimelines = this._props.startTime + progress*(this._props.duration);
+  _setProgress (p, time, isYoyo) {
+    super._setProgress(p, time);
     // we need to pass self previous time to children
     // to prevent initial _wasUnknownUpdate nested waterfall
     // if not yoyo option set, pass the previous time
     // otherwise, pass previous or next time regarding yoyo period.
     var coef = ( time > this._prevTime ) ? -1 : 1;
     if ( this._props.yoyo && isYoyo ) { coef *= -1; }
-    var prevTimeToTimelines = timeToTimelines+coef;
-    var len = this._timelines.length-1;
-    var i = -1;
-    while(i++ < len) {
-      var timeline = this._timelines[i];
-      // if ( timeToTimelines >= timeline._props.startTime ) {
-        timeline._update(
-          timeToTimelines,
-          // ( timeline instanceof Tween ) ? null : prevTimeToTimelines,
-          prevTimeToTimelines,
-          this._prevYoyo,
-          this._onEdge
-        );
-      // }
+    var timeToTimelines     = this._props.startTime + p*(this._props.duration),
+        prevTimeToTimelines = timeToTimelines + coef,
+        len = this._timelines.length;
+    for (var i = 0; i < len; i++) {
+      // specify the children's array update loop direction
+      // if time > prevTime go from 0->length else from length->0
+      // var j = ( time > this._prevTime ) ? i : (len-1) - i ;
+      var j = ( timeToTimelines > prevTimeToTimelines ) ? i : (len-1) - i ;
+      this._timelines[j]._update(
+        timeToTimelines,
+        prevTimeToTimelines,
+        this._prevYoyo,
+        this._onEdge
+      );
     }
     this._prevYoyo = isYoyo;
   }

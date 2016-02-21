@@ -649,7 +649,7 @@
         return expect(t._props.duration).toBe(1000);
       });
     });
-    return describe('setProgress method ->', function() {
+    describe('setProgress method ->', function() {
       it('should call _setStartTime if there is no this._props.startTime', function() {
         var t;
         t = new Timeline;
@@ -706,6 +706,83 @@
         spyOn(t, '_update');
         t.setProgress(1.5);
         return expect(t._update).toHaveBeenCalledWith((t._props.startTime - delay) + t._props.repeatTime);
+      });
+    });
+    return describe('children update direction ->', function() {
+      it('should update children in forward direction ->', function() {
+        var firstUpdated, isReact, tm, tw1, tw2;
+        tm = new Timeline;
+        isReact = null;
+        firstUpdated = null;
+        tw1 = new Tween({
+          onUpdate: function(p) {
+            return isReact && (firstUpdated != null ? firstUpdated : firstUpdated = 'tween 1');
+          }
+        });
+        tw2 = new Tween({
+          onUpdate: function(p) {
+            return isReact && (firstUpdated != null ? firstUpdated : firstUpdated = 'tween 2');
+          }
+        });
+        tm.add(tw1).append(tw2);
+        tm.setProgress(0);
+        tm.setProgress(.25);
+        tm.setProgress(.45);
+        isReact = true;
+        tm.setProgress(.5);
+        return expect(firstUpdated).toBe('tween 1');
+      });
+      it('should update children in backward direction ->', function() {
+        var firstUpdated, isReact, tm, tw1, tw2;
+        tm = new Timeline;
+        isReact = null;
+        firstUpdated = null;
+        tw1 = new Tween({
+          onUpdate: function(p) {
+            return isReact && (firstUpdated != null ? firstUpdated : firstUpdated = 'tween 1');
+          }
+        });
+        tw2 = new Tween({
+          onUpdate: function(p) {
+            return isReact && (firstUpdated != null ? firstUpdated : firstUpdated = 'tween 2');
+          }
+        });
+        tm.add(tw1).append(tw2);
+        tm.setProgress(1);
+        tm.setProgress(.75);
+        tm.setProgress(.55);
+        isReact = true;
+        tm.setProgress(.5);
+        return expect(firstUpdated).toBe('tween 2');
+      });
+      return it('should update children in forward direction || yoyo ->', function() {
+        var firstUpdated, isReact, tm, tw1, tw2;
+        tm = new Timeline({
+          yoyo: true,
+          repeat: 1
+        });
+        isReact = null;
+        firstUpdated = null;
+        tw1 = new Tween({
+          onUpdate: function(p) {
+            return isReact && (firstUpdated != null ? firstUpdated : firstUpdated = 'tween 1');
+          }
+        });
+        tw2 = new Tween({
+          onUpdate: function(p) {
+            return isReact && (firstUpdated != null ? firstUpdated : firstUpdated = 'tween 2');
+          }
+        });
+        tm.add(tw1).append(tw2);
+        tm.setProgress(0);
+        tm.setProgress(.1);
+        tm.setProgress(.25);
+        tm.setProgress(.5);
+        tm.setProgress(.7);
+        isReact = true;
+        tm.setProgress(.8);
+        expect(firstUpdated).toBe('tween 2');
+        return tm.setProgress(0).play();
       });
     });
   });

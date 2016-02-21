@@ -87,7 +87,6 @@ module.exports = function(config) {
     ],
     // list of files to exclude
     exclude: [
-      // 'js/mo.js',
       // 'build/mo.js',
       // 'build/mojs.js',
       

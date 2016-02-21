@@ -442,3 +442,49 @@ describe 'Timeline ->', ->
       spyOn t, '_update'
       t.setProgress 1.5
       expect(t._update).toHaveBeenCalledWith (t._props.startTime - delay) + t._props.repeatTime
+
+  describe 'children update direction ->', ->
+    it 'should update children in forward direction ->', ->
+      tm = new Timeline
+      isReact = null; firstUpdated = null
+      tw1 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 1')
+      tw2 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 2')
+      tm.add(tw1).append(tw2)
+
+      tm.setProgress 0
+      tm.setProgress .25
+      tm.setProgress .45
+      isReact = true      
+      tm.setProgress .5
+      expect(firstUpdated).toBe 'tween 1'
+    it 'should update children in backward direction ->', ->
+      tm = new Timeline
+      isReact = null; firstUpdated = null
+      tw1 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 1')
+      tw2 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 2')
+      tm.add(tw1).append(tw2)
+
+      tm.setProgress 1
+      tm.setProgress .75
+      tm.setProgress .55
+      isReact = true      
+      tm.setProgress .5
+      expect(firstUpdated).toBe 'tween 2'
+
+    it 'should update children in forward direction || yoyo ->', ->
+      tm = new Timeline yoyo: true, repeat: 1
+      isReact = null; firstUpdated = null
+      tw1 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 1')
+      tw2 = new Tween onUpdate:(p)-> isReact and (firstUpdated ?= 'tween 2')
+      tm.add(tw1).append(tw2)
+
+      tm.setProgress 0
+      tm.setProgress .1
+      tm.setProgress .25
+      tm.setProgress .5
+      tm.setProgress .7
+      isReact = true
+      tm.setProgress .8
+      expect(firstUpdated).toBe 'tween 2'
+      tm.setProgress(0).play()
+
