@@ -328,8 +328,13 @@ class Burst extends Transit {
     var i = this.transits.length;
     while(i--) { this.timeline.add(this.transits[i].tween); }
   }
-
-  run (o) {
+  /*
+    Method to run tween with new options.
+    @public
+    @param {Object} New options object.
+    @returns {Object} this.
+  */
+  run ( o ) {
     if ( o != null && Object.keys(o).length) {
       if ( o.count || ( o.childOptions && o.childOptions.count )) {
         this.h.warn('Sorry, count can not be changed on run');
@@ -373,6 +378,7 @@ class Burst extends Transit {
       }
     }
     this.play();
+    return this;
   }
   /*
     Method to create then chain record.
@@ -387,8 +393,8 @@ class Burst extends Transit {
     // 3. pass the object to transit then
     // 4. transform self chain on run
     // i = this.transits.length
-    // while(i--)
-    //   this.transits[i].then(o)
+    // while(i--) { this.transits[i].then(o); }
+    //   
     return this;
   }
 }

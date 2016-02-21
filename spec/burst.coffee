@@ -12,7 +12,6 @@ describe 'Burst ->', ->
       expect(burst instanceof Transit).toBe true
     it 'should have its own defaults', ->
       burst = new Burst
-      console.log(burst.defaults)
       # skip childOptions from _extendDefaults
       expect(burst.skipProps.childOptions).toBe 1
       # presentation props
@@ -542,6 +541,10 @@ describe 'Burst ->', ->
       o = { radius: 10}
       burst.run o
       expect(burst._extendDefaults).toHaveBeenCalledWith o
+    it 'should return this', ->
+      burst = new Burst radius: { 20: 50 }
+      returnValue = burst.run()
+      expect(returnValue).toBe burst
     it 'should not call _extendDefaults if no obj passed', ->
       burst = new Burst radius: { 20: 50 }
       spyOn burst, '_extendDefaults'

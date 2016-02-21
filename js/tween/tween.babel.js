@@ -415,7 +415,6 @@ var Tween = class Tween {
   _updateInInactiveArea ( time ) {
     if ( !this._isInActiveArea ) { return; }
     var p = this._props;
-
     // complete if time is larger then end time
     if ( time > p.endTime && !this._isCompleted) {
       this._progress( 1, time );

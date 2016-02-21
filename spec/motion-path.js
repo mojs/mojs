@@ -1514,9 +1514,7 @@
       });
       it('should return the module when module was passed', function() {
         var tr;
-        tr = new Transit({
-          isRunLess: true
-        });
+        tr = new Transit;
         mp = new MotionPath({
           path: coords,
           el: tr,
@@ -1740,10 +1738,10 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        spyOn(module, 'setProp');
+        spyOn(module, '_setProp');
         mp.angle = 0;
         mp.setModulePosition(100, 200);
-        return expect(module.setProp).toHaveBeenCalledWith({
+        return expect(module._setProp).toHaveBeenCalledWith({
           shiftX: '100px',
           shiftY: '200px',
           angle: 0
@@ -1760,9 +1758,9 @@
           isRunLess: true,
           isPresetPosition: false
         });
-        spyOn(mp.el, 'draw');
+        spyOn(mp.el, '_draw');
         mp.setProgress(0, true);
-        return expect(mp.el.draw).toHaveBeenCalled();
+        return expect(mp.el._draw).toHaveBeenCalled();
       });
       it('should be called if isModule', function() {
         var module;

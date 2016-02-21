@@ -6,12 +6,6 @@ shapesMap = require './shapes/shapesMap'
 Tween     = require('./tween/tween').default
 Timeline  = require('./tween/timeline').default
 
-# TODO
-#  - tween properties
-#  - dont extend bit
-#  - properties signatures
-#  - Stagger -> stagger
-
 class Transit extends Bit
   progress: 0
   defaults:

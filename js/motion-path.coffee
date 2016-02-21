@@ -383,7 +383,8 @@ class MotionPath
   parseEl:(el)->
     return document.querySelector el if typeof el is 'string'
     return el if el instanceof HTMLElement
-    if el.setProp? then @isModule = true; return el
+    if el._setProp? then @isModule = true; return el
+
   getPath:->
     path = h.parsePath(@props.path); return path if path
     
@@ -472,8 +473,8 @@ class MotionPath
     transform = "translate(#{x}px,#{y}px) #{rotate} #{composite}"
     h.setPrefixedStyle @el, 'transform', transform
   setModulePosition:(x, y)->
-    @el.setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
-    @el.draw()
+    @el._setProp shiftX: "#{x}px", shiftY: "#{y}px", angle: @angle
+    @el._draw()
   _getCurrentAngle:(point, len, p)->
     isTransformFunOrigin = typeof @props.transformOrigin is 'function'
     if @props.isAngle or @props.angleOffset? or isTransformFunOrigin

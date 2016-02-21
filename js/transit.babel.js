@@ -6,6 +6,10 @@ import Tweenable  from './tween/tweenable';
 import Tween      from './tween/tween';
 import Timeline   from './tween/timeline';
 
+// TODO
+//  - tween properties
+//  - properties signatures
+
 class Transit extends Tweenable {
   /*
     Method to declare module's defaults.
@@ -275,7 +279,9 @@ class Transit extends Tweenable {
     if ((ref = this.el) != null) {
       ref.style.opacity = this.props.opacity;
     }
-    if (this.o.isShowInit) { this._show(); } else { this._hide(); }
+    if (this.o.isShowInit) { this._show(); } else {
+      this._hide();
+    }
   }
   /*
     Method to show the main div el.

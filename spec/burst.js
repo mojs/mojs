@@ -22,7 +22,6 @@
       it('should have its own defaults', function() {
         var burst;
         burst = new Burst;
-        console.log(burst.defaults);
         expect(burst.skipProps.childOptions).toBe(1);
         expect(burst.defaults.degree).toBe(360);
         expect(burst.defaults.count).toBe(5);
@@ -898,6 +897,16 @@
         };
         burst.run(o);
         return expect(burst._extendDefaults).toHaveBeenCalledWith(o);
+      });
+      it('should return this', function() {
+        var burst, returnValue;
+        burst = new Burst({
+          radius: {
+            20: 50
+          }
+        });
+        returnValue = burst.run();
+        return expect(returnValue).toBe(burst);
       });
       it('should not call _extendDefaults if no obj passed', function() {
         var burst;
