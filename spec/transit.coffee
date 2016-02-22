@@ -23,6 +23,11 @@ describe 'Transit ->', ->
     it 'should have defaults object', ->
       byte = new Byte
       expect(byte.defaults).toBeDefined()
+  describe 'origin object ->', ->
+    it 'should have origin object', ->
+      byte = new Byte
+      expect(byte.origin).toBeDefined()
+      expect(typeof byte.origin).toBe 'object'
   describe 'options object ->', ->
     it 'should receive empty options object by default', ->
       byte = new Byte
@@ -149,12 +154,12 @@ describe 'Transit ->', ->
       byte._transformHistory x: 100
       expect(byte.history[3].x[20]).toBe 10
     it 'should rewrite until defined if object was passed', ->
-      byte = new Byte x: 200
-        .then radius: 0
-        .then radius: 0, x: 20
+      byte = new Byte x: 200          # x: 200
+        .then radius: 0               # x: 200
+        .then radius: 0, x: 20        # x: { 200: 20 }
       byte._transformHistory x: {100: 50}
-      expect(byte.history[1].x[100]).toBe 50
-      expect(byte.history[2].x[50]).toBe 20
+      expect(byte.history[1].x[100]).toBe 50 # x: { 100: 50 }
+      expect(byte.history[2].x[50]).toBe 20  # x: { 50: 20 }
   describe 'then method ->', ->
     it 'should add new timeline with options', ->
       byte = new Byte radius: 20, duration: 1000
@@ -824,6 +829,18 @@ describe 'Transit ->', ->
           duration:  { 2000: 1000 }
          
         expect(byte.deltas.duration).not.toBeDefined()
+  describe '_calcOrigin method ->', ->
+    it "should set x and y to center by
+        default (if no drawing context passed)", ->
+      byte = new Byte radius:  {'25.50': -75.50}
+      byte._calcOrigin .5
+      expect(byte.origin.x).toBe byte.props.center
+      expect(byte.origin.y).toBe byte.props.center
+    it "should set x and y to x and y if drawing context passed", ->
+      byte = new Byte radius:  {'25.50': -75.50}, ctx: svg
+      byte._calcOrigin .5
+      expect(byte.origin.x).toBe parseFloat byte.props.x
+      expect(byte.origin.y).toBe parseFloat byte.props.y
   describe '_setProgress method ->', ->
     it 'should set transition progress', ->
       byte = new Byte radius:  {'25.50': -75.50}
@@ -881,15 +898,17 @@ describe 'Transit ->', ->
       colorDelta = byte.deltas.stroke
       byte._setProgress .5
       expect(byte.props.stroke).toBe 'rgba(0,127,127,1)'
-    it 'should set 0 if progress is less then 0', ->
-      byte = new Byte radius:  {'25': 75}
-      byte._setProgress -1
-      expect(byte.progress).toBe 0
-    it 'should set 1 if progress is greater then 1', ->
-      byte = new Byte radius:  {'25': 75}
-      byte._setProgress 2
-      expect(byte.progress).toBe 1
-  describe 'strokeDash.. values', ->
+  # redundant
+  #   it 'should set 0 if progress is less then 0', ->
+  #     byte = new Byte radius:  {'25': 75}
+  #     byte._setProgress -1
+  #     expect(byte.progress).toBe 0
+  # redundant
+  #   it 'should set 1 if progress is greater then 1', ->
+  #     byte = new Byte radius:  {'25': 75}
+  #     byte._setProgress 2
+  #     expect(byte.progress).toBe 1
+  # describe 'strokeDash.. values', ->
     it 'should set strokeDasharray/strokeDashoffset value progress', ->
       byte = new Byte strokeDasharray:  {'200 100': '400'}
       byte._setProgress .5

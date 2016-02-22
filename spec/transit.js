@@ -42,6 +42,14 @@
         return expect(byte.defaults).toBeDefined();
       });
     });
+    describe('origin object ->', function() {
+      return it('should have origin object', function() {
+        var byte;
+        byte = new Byte;
+        expect(byte.origin).toBeDefined();
+        return expect(typeof byte.origin).toBe('object');
+      });
+    });
     describe('options object ->', function() {
       it('should receive empty options object by default', function() {
         var byte;
@@ -1607,6 +1615,31 @@
         });
       });
     });
+    describe('_calcOrigin method ->', function() {
+      it("should set x and y to center by default (if no drawing context passed)", function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25.50': -75.50
+          }
+        });
+        byte._calcOrigin(.5);
+        expect(byte.origin.x).toBe(byte.props.center);
+        return expect(byte.origin.y).toBe(byte.props.center);
+      });
+      return it("should set x and y to x and y if drawing context passed", function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            '25.50': -75.50
+          },
+          ctx: svg
+        });
+        byte._calcOrigin(.5);
+        expect(byte.origin.x).toBe(parseFloat(byte.props.x));
+        return expect(byte.origin.y).toBe(parseFloat(byte.props.y));
+      });
+    });
     describe('_setProgress method ->', function() {
       it('should set transition progress', function() {
         var byte;
@@ -1741,28 +1774,6 @@
         byte._setProgress(.5);
         return expect(byte.props.stroke).toBe('rgba(0,127,127,1)');
       });
-      it('should set 0 if progress is less then 0', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        });
-        byte._setProgress(-1);
-        return expect(byte.progress).toBe(0);
-      });
-      return it('should set 1 if progress is greater then 1', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            '25': 75
-          }
-        });
-        byte._setProgress(2);
-        return expect(byte.progress).toBe(1);
-      });
-    });
-    describe('strokeDash.. values', function() {
       it('should set strokeDasharray/strokeDashoffset value progress', function() {
         var byte;
         byte = new Byte({

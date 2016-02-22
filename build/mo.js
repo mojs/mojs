@@ -643,8 +643,12 @@
 
 
 	// TODO
+	//  - check the run tuneOption
 	//  - tween properties
+	//  - scale property
 	//  - properties signatures
+	//  --
+	//  - tween for every prop
 
 	var Transit = function (_Tweenable) {
 	  (0, _inherits3.default)(Transit, _Tweenable);
@@ -814,6 +818,7 @@
 	      this.h = h;
 	      this.props = {};
 	      this.lastSet = {};
+	      this.origin = {};
 	      this.index = this.o.index || 0;
 	      this._extendDefaults();
 	      o = this.h.cloneObj(this.o);
@@ -821,6 +826,7 @@
 	      this.history = [o];
 	      // should draw on foreign svg canvas
 	      this.isForeign = !!this.o.ctx;
+	      // should take an svg element as self bit
 	      return this.isForeignBit = !!this.o.bit;
 	    }
 	    /*
@@ -831,9 +837,6 @@
 	    key: '_extendDefaults',
 	    value: function _extendDefaults(o) {
 	      var array, defaultsValue, fromObject, i, k, key, keys, len, len1, optionsValue, property, ref, unit, value;
-
-	      // moved to _vars
-	      // if (this.props == null) { this.props = {}; }
 
 	      fromObject = o || this.defaults;
 	      // reset deltas if no options was passed
@@ -1156,13 +1159,9 @@
 	    key: '_createBit',
 	    value: function _createBit() {
 	      var bitClass = shapesMap.getShape(this.o.shape || 'circle');
-	      this.bit = new bitClass({
-	        ctx: this.ctx,
-	        el: this.o.bit,
-	        isDrawLess: true
-	      });
-	      // if draw on foreign context or we are animating
-	      // an svg element outside the module
+	      this.bit = new bitClass({ ctx: this.ctx, el: this.o.bit, isDrawLess: true });
+	      // if draw on foreign context
+	      // or we are animating an svg element outside the module
 	      if (this.isForeign || this.isForeignBit) {
 	        return this.el = this.bit.el;
 	      }
@@ -1184,7 +1183,10 @@
 	          this.onUpdate(progress);
 	        }
 	      }
-	      this.progress = progress < 0 || !progress ? 0 : progress > 1 ? 1 : progress;
+	      this.progress = progress;
+	      // this.progress = ( progress < 0 || !progress )
+	      //   ? 0
+	      //   : ( progress > 1 ) ? 1 : progress;
 	      this._calcCurrentProps(progress);
 	      this._calcOrigin();
 	      this._draw(progress);
@@ -1243,16 +1245,12 @@
 	  }, {
 	    key: '_calcOrigin',
 	    value: function _calcOrigin() {
+	      var p = this.props;
 	      // if drawing context was passed
 	      // set origin to x and y of the module
-	      this.origin = this.o.ctx ? {
-	        x: parseFloat(this.props.x),
-	        y: parseFloat(this.props.y)
-	        // otherwise set the origin to the center
-	      } : {
-	        x: this.props.center,
-	        y: this.props.center
-	      };
+	      // otherwise set the origin to the center
+	      this.origin.x = this.o.ctx ? parseFloat(p.x) : p.center;
+	      this.origin.y = this.o.ctx ? parseFloat(p.y) : p.center;
 	    }
 	    /*
 	      Method to check if the property is delta property.
@@ -1280,18 +1278,23 @@
 	  }, {
 	    key: '_getDelta',
 	    value: function _getDelta(key, optionsValue) {
-	      var delta, ref;
+	      var delta;
 	      if ((key === 'left' || key === 'top') && !this.o.ctx) {
-	        this.h.warn('Consider to animate x/y properties instead of left/top, as it would be much more performant', optionsValue);
+	        this.h.warn('Consider to animate x/y properties instead of left/top,\n        as it would be much more performant', optionsValue);
 	      }
-	      if ((ref = this.skipPropsDelta) != null ? ref[key] : void 0) {
+	      // skip delta calculation for a property if it is listed
+	      // in skipPropsDelta object
+	      if (this.skipPropsDelta && this.skipPropsDelta[key]) {
 	        return;
 	      }
+	      // get delta
 	      delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
+	      // if successfully parsed - save it
 	      if (delta.type != null) {
 	        this.deltas[key] = delta;
 	      }
-	      this.props[key] = delta.start;
+	      // set props to start value of the delta
+	      // this.props[key] = delta.start;
 	    }
 	    /*
 	      Method to merge two options into one. Used in .then chains.
@@ -1350,9 +1353,7 @@
 	  }, {
 	    key: '_tuneOptions',
 	    value: function _tuneOptions(o) {
-	      this._extendDefaults(o);
-	      this._calcSize();
-	      this._setElStyles();
+	      this._extendDefaults(o);this._calcSize();this._setElStyles();
 	    }
 	  }, {
 	    key: 'createTimeline',
@@ -1406,42 +1407,58 @@
 	      this.timeline.add(this.tween);
 	    }
 	    /*
-	      Method to transform history
+	      Method to transform history rewrite new options object chain on run.
+	      @param {Object} New options to tune for.
 	    */
 
 	  }, {
 	    key: '_transformHistory',
 	    value: function _transformHistory(o) {
-	      var historyLen, i, j, key, keys, len, optionRecord, value, value2, valueKeys, valueKeys2;
-	      keys = (0, _keys2.default)(o);
-	      i = -1;
-	      len = keys.length;
-	      historyLen = this.history.length;
+	      var keys = (0, _keys2.default)(o),
+	          i = -1,
+	          len = keys.length,
+	          historyLen = this.history.length;
+	      // go thru history records - one record if transit's option object
 	      while (++i < len) {
-	        key = keys[i];
-	        j = 0;
+	        // get all keys of the options record
+	        var key = keys[i],
+	            j = 0;
 	        (function () {
-	          var results1;
-	          results1 = [];
+	          // take one key and loop thru all of the records again
 	          while (++j < historyLen) {
-	            optionRecord = this.history[j][key];
+	            // get option's record property by key
+	            var optionRecord = this.history[j][key];
+	            // if delta property
 	            if ((typeof optionRecord === 'undefined' ? 'undefined' : (0, _typeof3.default)(optionRecord)) === 'object') {
-	              valueKeys = (0, _keys2.default)(optionRecord);
-	              value = optionRecord[valueKeys[0]];
-	              delete this.history[j][key][valueKeys[0]];
+	              // get start and end of the delta
+	              var start = (0, _keys2.default)(optionRecord)[0],
+
+	              // save the end of the delta
+	              end = optionRecord[start];
+	              // delete the property
+	              delete optionRecord[start];
+	              // if new property is delta
 	              if ((0, _typeof3.default)(o[key]) === 'object') {
-	                valueKeys2 = (0, _keys2.default)(o[key]);
-	                value2 = o[key][valueKeys2[0]];
-	                this.history[j][key][value2] = value;
+	                var property = o[key];
+	                // merge the start and end
+	                // get the start and end of the new option
+	                var startNew = (0, _keys2.default)(property)[0],
+	                    endNew = property[startNew];
+	                // set the o's end value as start
+	                // and o's end to delta's end
+	                optionRecord[endNew] = end;
 	              } else {
-	                this.history[j][key][o[key]] = value;
+	                // if new property is not delta
+	                // rewrite the start value to the new value
+	                optionRecord[o[key]] = end;
 	              }
 	              break;
 	            } else {
-	              results1.push(this.history[j][key] = o[key]);
+	              // if is not delta property
+	              // set it to the new options value
+	              this.history[j][key] = o[key];
 	            }
 	          }
-	          return results1;
 	        }).call(this);
 	      }
 	    }
@@ -1484,7 +1501,7 @@
 	      }
 	      timelineOptions.onStart = this.props.onStart;
 	      timelineOptions.onComplete = this.props.onComplete;
-
+	      // TODO: if should set timeline's props instead of tweens one
 	      this.tween._setProp(timelineOptions);
 	    }
 
