@@ -643,9 +643,9 @@
 
 
 	// TODO
+	//  - tweenable public methods should return this
 	//  - check the run tuneOption
 	//  - tween properties
-	//  - scale property
 	//  - properties signatures
 	//  --
 	//  - tween for every prop
@@ -674,8 +674,9 @@
 	        top: 0,
 	        x: 0,
 	        y: 0,
-	        opacity: 1,
 	        angle: 0,
+	        scale: 1,
+	        opacity: 1,
 	        points: 3,
 	        radius: {
 	          0: 50
@@ -1038,12 +1039,13 @@
 	      if (this.el == null) {
 	        return true;
 	      }
+	      this.o.isIt && console.log('here', this.isForeign);
 	      var p = this.props;
 	      this._isPropChanged('opacity') && (this.el.style.opacity = p.opacity);
 	      if (!this.isForeign) {
 	        this._isPropChanged('left') && (this.el.style.left = p.left);
 	        this._isPropChanged('top') && (this.el.style.top = p.top);
-	        if (this._isPropChanged('x') || this._isPropChanged('y')) {
+	        if (this._isPropChanged('x') || this._isPropChanged('y') || this._isPropChanged('scale')) {
 	          this.h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
 	        }
 	      }
@@ -1546,7 +1548,8 @@
 	  }, {
 	    key: '_fillTransform',
 	    value: function _fillTransform() {
-	      return 'translate(' + this.props.x + ', ' + this.props.y + ')';
+	      var p = this.props;
+	      return 'translate(' + p.x + ', ' + p.y + ') scale(' + p.scale + ')';
 	    }
 	  }]);
 	  return Transit;
@@ -6950,7 +6953,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.173.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.174.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};

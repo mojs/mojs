@@ -957,6 +957,7 @@
           },
           duration: 100,
           onComplete: function() {
+            expect(byte.el.style.opacity).toBe('0');
             return dfr();
           }
         });
@@ -969,8 +970,7 @@
           var byte;
           byte = new Byte({
             left: 100,
-            top: 50,
-            isIt: 1
+            top: 50
           });
           expect(byte.el.style.left).toBe('100px');
           return expect(byte.el.style.top).toBe('50px');
@@ -1061,7 +1061,7 @@
             });
             s = byte.el.style;
             tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-            return expect(tr).toBe('translate(100px, 50px)');
+            return expect(tr).toBe('translate(100px, 50px) scale(1)');
           });
           it('should animate position', function(dfr) {
             var byte;
@@ -1074,7 +1074,7 @@
                 var s, tr;
                 s = byte.el.style;
                 tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-                expect(tr).toBe('translate(200px, 0px)');
+                expect(tr).toBe('translate(200px, 0px) scale(1)');
                 return dfr();
               }
             });
@@ -1091,7 +1091,7 @@
                 var s, tr;
                 s = byte.el.style;
                 tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-                expect(tr).toBe('translate(50%, 0px)');
+                expect(tr).toBe('translate(50%, 0px) scale(1)');
                 return dfr();
               }
             });
@@ -1111,7 +1111,7 @@
                 var s, tr;
                 s = byte.el.style;
                 tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-                expect(tr).toBe('translate(50px, 50%)');
+                expect(tr).toBe('translate(50px, 50%) scale(1)');
                 return dfr();
               }
             });
@@ -1412,7 +1412,7 @@
         expect(byte.el.style.opacity).toBe('1');
         s = byte.el.style;
         tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
-        return expect(tr).toBe('translate(0px, 0px)');
+        return expect(tr).toBe('translate(0px, 0px) scale(1)');
       });
       it('should set only opacity if foreign context', function() {
         var byte, s, tr;
@@ -1452,13 +1452,67 @@
         expect(byte.el.style.left).toBe('0px');
         return expect(byte.lastSet.x.value).toBe('0px');
       });
-      return it('should return true if there is no el', function() {
+      it('should return true if there is no el', function() {
         var byte;
         byte = new Byte({
           radius: 25
         });
         byte.el = null;
         return expect(byte._drawEl()).toBe(true);
+      });
+      it('should set transform if on of the x, y or scale changed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          top: 10,
+          ctx: svg
+        });
+        byte._draw();
+        spyOn(h, 'setPrefixedStyle');
+        byte._draw();
+        return expect(h.setPrefixedStyle).not.toHaveBeenCalled();
+      });
+      it('should set transform if x changed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          top: 10,
+          x: {
+            0: 10
+          }
+        });
+        byte.props.x = '4px';
+        spyOn(byte.h, 'setPrefixedStyle');
+        byte._draw();
+        return expect(byte.h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(4px, 0px) scale(1)');
+      });
+      it('should set transform if x changed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          top: 10,
+          y: {
+            0: 10
+          }
+        });
+        byte.props.y = '4px';
+        spyOn(byte.h, 'setPrefixedStyle');
+        byte._draw();
+        return expect(byte.h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(0px, 4px) scale(1)');
+      });
+      return it('should set transform if x changed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          top: 10,
+          scale: {
+            0: 10
+          }
+        });
+        byte.props.scale = 3;
+        spyOn(byte.h, 'setPrefixedStyle');
+        byte._draw();
+        return expect(byte.h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(0px, 0px) scale(3)');
       });
     });
     describe('_isPropChanged method ->', function() {
@@ -2423,8 +2477,7 @@
       it('should hide the el on reverse end', function() {
         var byte;
         byte = new Byte({
-          ctx: svg,
-          isIt: 1
+          ctx: svg
         });
         byte.timeline.setProgress(1);
         byte.timeline.setProgress(5);

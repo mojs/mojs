@@ -479,14 +479,14 @@ describe 'Transit ->', ->
         opacity:    { 1: 0}
         duration:   100
         onComplete:->
-          # expect(byte.el.style.opacity).toBe('0');
+          expect(byte.el.style.opacity).toBe('0');
           dfr()
       byte.run()
 
   describe 'position set ->', ->
     describe 'x/y coordinates ->', ->
       it 'should set a position with respect to units', ->
-        byte = new Byte left: 100, top: 50, isIt: 1
+        byte = new Byte left: 100, top: 50
         expect(byte.el.style.left).toBe '100px'
         expect(byte.el.style.top) .toBe '50px'
       it 'should animate position', (dfr)->
@@ -534,7 +534,7 @@ describe 'Transit ->', ->
             y: 50
           s = byte.el.style
           tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-          expect(tr).toBe 'translate(100px, 50px)'
+          expect(tr).toBe 'translate(100px, 50px) scale(1)'
         it 'should animate position', (dfr)->
           byte = new Byte
             x: {100: '200px'}
@@ -542,7 +542,7 @@ describe 'Transit ->', ->
             onComplete:->
               s = byte.el.style
               tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-              expect(tr) .toBe 'translate(200px, 0px)'
+              expect(tr) .toBe 'translate(200px, 0px) scale(1)'
               dfr()
           byte.run()
         it 'should animate position with respect to units', (dfr)->
@@ -552,7 +552,7 @@ describe 'Transit ->', ->
             onComplete:->
               s = byte.el.style
               tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-              expect(tr).toBe 'translate(50%, 0px)'
+              expect(tr).toBe 'translate(50%, 0px) scale(1)'
               dfr()
           byte.run()
         it 'should fallback to end units if units are differnt', (dfr)->
@@ -563,7 +563,7 @@ describe 'Transit ->', ->
             onComplete:->
               s = byte.el.style
               tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-              expect(tr).toBe 'translate(50px, 50%)'
+              expect(tr).toBe 'translate(50px, 50%) scale(1)'
               dfr()
           byte.run()
   describe '_isNeedsTransform method ->', ->
@@ -720,7 +720,7 @@ describe 'Transit ->', ->
       expect(byte.el.style.opacity)   .toBe     '1'
       s = byte.el.style
       tr = s.transform or s["#{mojs.h.prefix.css}transform"]
-      expect(tr) .toBe     'translate(0px, 0px)'
+      expect(tr) .toBe     'translate(0px, 0px) scale(1)'
     it 'should set only opacity if foreign context', ->
       byte = new Byte radius: 25, top: 10, ctx: svg
       byte._draw()
@@ -755,6 +755,46 @@ describe 'Transit ->', ->
       byte = new Byte radius: 25
       byte.el = null
       expect(byte._drawEl()).toBe true
+    it 'should set transform if on of the x, y or scale changed', ->
+      byte = new Byte radius: 25, top: 10, ctx: svg
+      byte._draw()
+      spyOn h, 'setPrefixedStyle'
+      byte._draw()
+      expect(h.setPrefixedStyle).not.toHaveBeenCalled()
+    it 'should set transform if x changed', ->
+      byte = new Byte radius: 25, top: 10, x: { 0: 10 }
+      byte.props.x = '4px'
+      spyOn byte.h, 'setPrefixedStyle'
+      byte._draw()
+      expect(byte.h.setPrefixedStyle)
+        .toHaveBeenCalledWith(
+          byte.el,
+          'transform',
+          'translate(4px, 0px) scale(1)'
+        )
+    it 'should set transform if x changed', ->
+      byte = new Byte radius: 25, top: 10, y: { 0: 10 }
+      byte.props.y = '4px'
+      spyOn byte.h, 'setPrefixedStyle'
+      byte._draw()
+      expect(byte.h.setPrefixedStyle)
+        .toHaveBeenCalledWith(
+          byte.el,
+          'transform',
+          'translate(0px, 4px) scale(1)'
+        )
+    it 'should set transform if x changed', ->
+      byte = new Byte radius: 25, top: 10, scale: { 0: 10 }
+      byte.props.scale = 3
+      spyOn byte.h, 'setPrefixedStyle'
+      byte._draw()
+      expect(byte.h.setPrefixedStyle)
+        .toHaveBeenCalledWith(
+          byte.el,
+          'transform',
+          'translate(0px, 0px) scale(3)'
+        )
+      
   describe '_isPropChanged method ->', ->
     it 'should return bool showing if prop was changed after the last set', ->
       byte = new Byte radius: 25, y: 10
@@ -1232,7 +1272,7 @@ describe 'Transit ->', ->
       byte.timeline.setProgress 1
       expect(byte.el.style.display).toBe 'block'
     it 'should hide the el on reverse end', ->
-      byte = new Byte ctx: svg, isIt: 1
+      byte = new Byte ctx: svg
       byte.timeline.setProgress 1
       byte.timeline.setProgress 5
       # byte.timeline.setProgress .25
