@@ -98,7 +98,7 @@
       });
     });
     describe('play method ->', function() {
-      return it('should call timeline\'s play method', function() {
+      it('should call timeline\'s play method', function() {
         var progress, tw;
         tw = new Tweenable;
         spyOn(tw.timeline, 'play');
@@ -106,9 +106,15 @@
         tw.play(progress);
         return expect(tw.timeline.play).toHaveBeenCalledWith(progress);
       });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.play();
+        return expect(result).toBe(tw);
+      });
     });
     describe('playBackward ->', function() {
-      return it('should call timeline\'s playBackward method', function() {
+      it('should call timeline\'s playBackward method', function() {
         var progress, tw;
         tw = new Tweenable;
         spyOn(tw.timeline, 'playBackward');
@@ -116,9 +122,15 @@
         tw.playBackward(progress);
         return expect(tw.timeline.playBackward).toHaveBeenCalledWith(progress);
       });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.playBackward();
+        return expect(result).toBe(tw);
+      });
     });
     describe('pause ->', function() {
-      return it('should call timeline\'s pause method', function() {
+      it('should call timeline\'s pause method', function() {
         var progress, tw;
         tw = new Tweenable;
         spyOn(tw.timeline, 'pause');
@@ -126,9 +138,15 @@
         tw.pause(progress);
         return expect(tw.timeline.pause).toHaveBeenCalledWith(progress);
       });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.pause();
+        return expect(result).toBe(tw);
+      });
     });
     describe('stop ->', function() {
-      return it('should call timeline\'s stop method', function() {
+      it('should call timeline\'s stop method', function() {
         var progress, tw;
         tw = new Tweenable;
         spyOn(tw.timeline, 'stop');
@@ -136,15 +154,27 @@
         tw.stop(progress);
         return expect(tw.timeline.stop).toHaveBeenCalledWith(progress);
       });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.stop();
+        return expect(result).toBe(tw);
+      });
     });
     return describe('setProgress ->', function() {
-      return it('should call timeline\'s setProgress method', function() {
+      it('should call timeline\'s setProgress method', function() {
         var progress, tw;
         tw = new Tweenable;
         spyOn(tw.timeline, 'setProgress');
         progress = .5;
         tw.setProgress(progress);
         return expect(tw.timeline.setProgress).toHaveBeenCalledWith(progress);
+      });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.setProgress(.5);
+        return expect(result).toBe(tw);
       });
     });
   });

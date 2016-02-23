@@ -54,6 +54,10 @@ describe 'tweenable ->', ->
       progress = .5
       tw.play( progress )
       expect(tw.timeline.play).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.play()
+      expect(result).toBe tw
   describe 'playBackward ->', ->
     it 'should call timeline\'s playBackward method', ->
       tw = new Tweenable
@@ -61,6 +65,10 @@ describe 'tweenable ->', ->
       progress = .5
       tw.playBackward( progress )
       expect(tw.timeline.playBackward).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.playBackward()
+      expect(result).toBe tw
   describe 'pause ->', ->
     it 'should call timeline\'s pause method', ->
       tw = new Tweenable
@@ -68,6 +76,10 @@ describe 'tweenable ->', ->
       progress = .5
       tw.pause( progress )
       expect(tw.timeline.pause).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.pause()
+      expect(result).toBe tw
   describe 'stop ->', ->
     it 'should call timeline\'s stop method', ->
       tw = new Tweenable
@@ -75,6 +87,10 @@ describe 'tweenable ->', ->
       progress = .5
       tw.stop( progress )
       expect(tw.timeline.stop).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.stop()
+      expect(result).toBe tw
   describe 'setProgress ->', ->
     it 'should call timeline\'s setProgress method', ->
       tw = new Tweenable
@@ -82,6 +98,10 @@ describe 'tweenable ->', ->
       progress = .5
       tw.setProgress( progress )
       expect(tw.timeline.setProgress).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.setProgress( .5 )
+      expect(result).toBe tw
 
 
 

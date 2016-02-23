@@ -11,31 +11,47 @@ class Tweenable {
   /*
     play method for the timeline.
     @public
+    @returns this.
   */
-  play () { this.timeline.play.apply( this.timeline, arguments ); }
+  play () {
+    this.timeline.play.apply( this.timeline, arguments );
+    return this;
+  }
   /*
     playBackward method for the timeline.
     @public
+    @returns this.
   */
   playBackward () {
     this.timeline.playBackward.apply( this.timeline, arguments );
+    return this;
   }
   /*
     pause method for the timeline.
     @public
+    @returns this.
   */
-  pause () { this.timeline.pause.apply( this.timeline, arguments ); }
+  pause () {
+    this.timeline.pause.apply( this.timeline, arguments );
+    return this;
+  }
   /*
     stop method for the timeline.
     @public
+    @returns this.
   */
-  stop () { this.timeline.stop.apply( this.timeline, arguments ); }
+  stop () {
+    this.timeline.stop.apply( this.timeline, arguments );
+    return this;
+  }
   /*
     setProgress method for the timeline.
     @public
+    @returns this.
   */
   setProgress () {
     this.timeline.setProgress.apply( this.timeline, arguments );
+    return this;
   }
   // ^ API methods.
   // v Private methods.
