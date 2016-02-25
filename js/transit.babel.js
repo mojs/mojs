@@ -7,8 +7,6 @@ import Tween      from './tween/tween';
 import Timeline   from './tween/timeline';
 
 // TODO
-//  - tweenable public methods should return this
-//  - check the run tuneOption
 //  - tween properties
 //  - properties signatures
 //  --
@@ -22,119 +20,126 @@ class Transit extends Tweenable {
   _declareDefaults () {
     // DEFAULTS / APIs
     this.defaults = {
-      stroke: 'transparent',
-      strokeOpacity: 1,
-      strokeLinecap: '',
-      strokeWidth: 2,
-      strokeDasharray: 0,
+      stroke:           'transparent',
+      strokeOpacity:    1,
+      strokeLinecap:    '',
+      strokeWidth:      2,
+      strokeDasharray:  0,
       strokeDashoffset: 0,
-      fill: 'deeppink',
-      fillOpacity: 'transparent',
-      left: 0,
-      top: 0,
-      x: 0,
-      y: 0,
-      angle: 0,
-      scale: 1,
-      opacity: 1,
-      points: 3,
-      radius: {
-        0: 50
-      },
-      radiusX: void 0,
-      radiusY: void 0,
-      onStart: null,
-      onComplete: null,
-      onUpdate: null,
-      duration: 500,
-      delay: 0,
-      repeat: 0,
-      yoyo: false,
-      easing: 'Linear.None',
+      fill:             'deeppink',
+      fillOpacity:      'transparent',
+      left:             0,
+      top:              0,
+      x:                0,
+      y:                0,
+      angle:            0,
+      scale:            1,
+      opacity:          1,
+      points:           3,
+      radius:           { 0: 50 },
+      radiusX:          null,
+      radiusY:          null,
+      onStart:          null,
+      onComplete:       null,
+      onUpdate:         null,
+      duration:         500,
+      delay:            0,
+      repeat:           0,
+      yoyo:             false,
+      easing:           'Linear.None',
       isShowEnd: false,
       isShowInit: false,
       size: null,
       sizeGap: 0
     }
   }
-  /*
-    Method to create a then record for the module.
-    @public
-    @param    {Object} Options for the next animation.
-    @returns  {Object} this.
-  */
-  then ( o ) {
-    var i, it, keys, len, merged, opts;
-    if ((o == null) || !Object.keys(o)) { return; }
-    merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
-    this.history.push(merged);
-    keys = Object.keys(this.h.tweenOptionMap);
-    i = keys.length;
-    opts = {};
-    while (i--) { opts[keys[i]] = merged[keys[i]]; }
-    it = this;
-    len = it.history.length;
-    (function(_this) {
-      return (function(len) {
-        opts.onUpdate = function(p) {
-          return _this._setProgress(p);
-        };
-        opts.onStart = function() {
-          var ref;
-          return (ref = _this.props.onStart) != null ? ref.apply(_this) : void 0;
-        };
-        opts.onComplete = function() {
-          var ref;
-          return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
-        };
-        opts.onFirstUpdate = function() {
-          return it._tuneOptions(it.history[this.index]);
-        };
-        opts.isChained = !o.delay;
-        return _this.timeline.append(new Tween(opts));
-      });
-    })(this)(len);
-    return this;
-  }
-
-  /*
-    Method to start the animation with optional new options.
-    @public
-    @param {Object} New options to set on the run.
-    @returns {Object} this.
-  */
-  run (o) {
-    var key, keys, len;
-    if (o && Object.keys(o).length) {
-      if (this.history.length > 1) {
-        keys = Object.keys(o);
-        len = keys.length;
-        while (len--) {
-          key = keys[len];
-          if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-            h.warn("the property \"" + key + "\" property can not be overridden on run with \"then\" chain yet");
-            delete o[key];
-          }
-        }
-      }
-      this._transformHistory(o);
-      this._tuneNewOption(o);
-      o = this.h.cloneObj(this.o);
-      this.h.extend(o, this.defaults);
-      this.history[0] = o;
-      !this.o.isDrawLess && this._setProgress(0, true);
-    } else if (o) { this._tuneNewOption(this.history[0]); }
-    this.play();
-    return this;
-  }
-
-  play () { setTimeout(()=> { super.play() }, 1) }
+  // /*
+  //   Method to create a then record for the module.
+  //   @public
+  //   @param    {Object} Options for the next animation.
+  //   @returns  {Object} this.
+  // */
+  // then ( o ) {
+  //   var it, len, opts;
+  //   // return if nothing was passed
+  //   if ((o == null) || !Object.keys(o)) { return; }
+  //   // merge then options with the current ones
+  //   var merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
+  //   // and save to the history
+  //   this.history.push(merged);
+  //   // get tween options
+  //   var tweenKeys = Object.keys(this.h.tweenOptionMap),
+  //       i         = tweenKeys.length,
+  //       tweenOptions = {};
+    
+  //   // copy tween options
+  //   while (i--) { tweenOptions[tweenKeys[i]] = merged[tweenKeys[i]]; }
+  //   var it = this,
+  //       len = it.history.length;
+  //   (function(_this) {
+  //     // set options control callbacks
+  //     return (function(len) {
+  //       tweenOptions.onUpdate = function(p) {
+  //         return _this._setProgress(p);
+  //       };
+  //       tweenOptions.onStart = function() {
+  //         var ref;
+  //         return (ref = _this._props.onStart) != null ? ref.apply(_this) : void 0;
+  //       };
+  //       tweenOptions.onComplete = function() {
+  //         var ref;
+  //         return (ref = _this._props.onComplete) != null ? ref.apply(_this) : void 0;
+  //       };
+  //       tweenOptions.onFirstUpdate = function() {
+  //         return it._tuneOptions(it.history[this.index]);
+  //       };
+  //       tweenOptions.isChained = !o.delay;
+  //       // append the tween with the options
+  //       return _this.timeline.append(new Tween(tweenOptions));
+  //     });
+  //   })(this)(len);
+  //   return this;
+  // }
+  // /*
+  //   Method to start the animation with optional new options.
+  //   @public
+  //   @param {Object} New options to set on the run.
+  //   @returns {Object} this.
+  // */
+  // run (o) {
+  //   // if options object was passed
+  //   if (o && Object.keys(o).length) {
+  //     // if history has more than one record
+  //     if (this.history.length > 1) {
+  //       var keys = Object.keys(o),
+  //           len  = keys.length;
+  //       while (len--) {
+  //         var key = keys[len];
+  //         // callbacks and options can not be overriden by the run call
+  //         if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+  //           h.warn(`the "${key}" property can not be overridden
+  //                   on run with \"then\" chain yet`);
+  //           delete o[key];
+  //         }
+  //       }
+  //     }
+  //     this._transformHistory(o);
+  //     this._tuneNewOption(o);
+  //     // save to history
+  //     o = this.h.cloneObj(this.history[0]);
+  //     this.h.extend(o, this.defaults);
+  //     this.history[0] = o;
+  //     // !this._o.isDrawLess && this._setProgress(0, true);
+  //   } // else if (o) { this._tuneNewOption(this.history[0]); }
+  //   this.play();
+  //   return this;
+  // }
 
   // ^ Public methods / APIs
   // v private methods.
   constructor ( o = {} ) {
-    super(o);
-    this.o = o;
+    super( o );
+    this._o = o;
     this._declareDefaults();
     this._vars();
     this._render();
@@ -143,93 +148,97 @@ class Transit extends Tweenable {
     Method to declare variables.
   */
   _vars () {
-    var o;
     this.progress = 0;
     this.h        = h;
-    this.props    = {};
+    this._props    = {};
     this.lastSet  = {};
     this.origin   = {};
-    this.index    = this.o.index || 0;
+    this.index    = this._o.index || 0;
     this._extendDefaults();
-    o = this.h.cloneObj(this.o);
+    var o = this.h.cloneObj(this._o);
     this.h.extend(o, this.defaults);
     this.history = [o];
     // should draw on foreign svg canvas
-    this.isForeign = !!this.o.ctx;
+    this.isForeign = !!this._o.ctx;
     // should take an svg element as self bit
-    return this.isForeignBit = !!this.o.bit;
+    return this.isForeignBit = !!this._o.bit;
   }
   /*
     Nethod to extend module defaults with passed options.
   */
   _extendDefaults (o) {
-    var array, defaultsValue, fromObject, i, k, key, keys, len, len1, optionsValue, property, ref, unit, value;
+    var array, fromObject, i, k, len1, optionsValue, ref, unit;
     
     fromObject = o || this.defaults;
     // reset deltas if no options was passed
-    // PROPABLY NEED TO MOVE TO _vars
     (o == null) && (this.deltas = {});
-    keys = Object.keys(fromObject);
-    len = keys.length;
+    var keys = Object.keys(fromObject),
+        len  = keys.length;
     while (len--) {
-      key = keys[len];
-      defaultsValue = fromObject[key];
-      if ((ref = this.skipProps) != null ? ref[key] : void 0) {
-        continue;
-      }
+      var key = keys[len],
+          defaultsValue = fromObject[key];
+      // skip property if it is listed in skipProps
+      if (this.skipProps && this.skipProps[key]) { continue; }
       
       if (o) {
-        this.o[key] = defaultsValue;
+        this._o[key] = defaultsValue;
         optionsValue = defaultsValue;
         delete this.deltas[key];
       } else {
-        optionsValue = this.o[key] != null ? this.o[key] : defaultsValue;
+        optionsValue = ( this._o[key] != null ) ? this._o[key] : defaultsValue;
       }
-
+      // if not delta property
       if (!this._isDelta(optionsValue)) {
+        // parse stagger
         if (typeof optionsValue === 'string') {
           if (optionsValue.match(/stagger/)) {
             optionsValue = this.h.parseStagger(optionsValue, this.index);
           }
         }
+        // parse rand()
         if (typeof optionsValue === 'string') {
           if (optionsValue.match(/rand/)) {
             optionsValue = this.h.parseRand(optionsValue);
           }
         }
-        this.props[key] = optionsValue;
+        // save to props
+        this._props[key] = optionsValue;
+        // if property is "radius" and "radiusX/radiusY" not set
+        // - set them to "radius" value
         if (key === 'radius') {
-          if (this.o.radiusX == null) {
-            this.props.radiusX = optionsValue;
-          }
-          if (this.o.radiusY == null) {
-            this.props.radiusY = optionsValue;
-          }
+          if (this._o.radiusX == null) { this._props.radiusX = optionsValue; }
+          if (this._o.radiusY == null) { this._props.radiusY = optionsValue; }
         }
+        // parse units for position properties
         if (this.h.posPropsMap[key]) {
-          this.props[key] = this.h.parseUnit(this.props[key]).string;
+          this._props[key] = this.h.parseUnit(this._props[key]).string;
         }
+        // parse numeric/percent values for strokeDash.. properties
         if (this.h.strokeDashPropsMap[key]) {
-          property = this.props[key];
-          value = [];
+          var property = this._props[key],
+              value = [];
           switch (typeof property) {
             case 'number':
               value.push(this.h.parseUnit(property));
               break;
             case 'string':
-              array = this.props[key].split(' ');
+              array = this._props[key].split(' ');
               for (i = k = 0, len1 = array.length; k < len1; i = ++k) {
                 unit = array[i];
                 value.push(this.h.parseUnit(unit));
               }
           }
-          this.props[key] = value;
+          // save parsed array to props
+          this._props[key] = value;
         }
         continue;
       }
-      this.isSkipDelta || this._getDelta(key, optionsValue);
+      // this.isSkipDelta || this._getDelta(key, optionsValue);
+      // get delta for the property
+      this._getDelta(key, optionsValue);
     }
-    return this.onUpdate = this.props.onUpdate;
+    // save onUpdate to this.onUpdate for performance reasons
+    // return this.onUpdate = this._props.onUpdate;
   }
   /*
     Method to initialize modules presentation.
@@ -246,17 +255,13 @@ class Transit extends Tweenable {
         this._calcSize();
         this.el = document.createElement('div');
         this.el.appendChild(this.ctx);
-        (this.o.parent || document.body).appendChild(this.el);
-      } else {
-        this.ctx = this.o.ctx;
-        this._createBit();
-        this._calcSize();
-      }
+        (this._o.parent || document.body).appendChild(this.el);
+      } else { this.ctx = this._o.ctx; this._createBit(); this._calcSize(); }
       this.isRendered = true;
     }
     this._setElStyles();
     this._setProgress(0, true);
-    this.createTween();
+    // this.createTween();
     return this;
   }
   /*
@@ -266,24 +271,20 @@ class Transit extends Tweenable {
   _setElStyles () {
     var marginSize, ref, size;
     if (!this.isForeign) {
-      size = this.props.size + "px";
+      size = this._props.size + "px";
       this.el.style.position = 'absolute';
-      this.el.style.top      = this.props.top;
-      this.el.style.left     = this.props.left;
+      this.el.style.top      = this._props.top;
+      this.el.style.left     = this._props.left;
       this.el.style.width    = size;
       this.el.style.height   = size;
-      marginSize = (-this.props.size / 2) + "px";
+      marginSize = (-this._props.size / 2) + "px";
       this.el.style['margin-left'] = marginSize;
       this.el.style['margin-top']  = marginSize;
       this.el.style['marginLeft']  = marginSize;
       this.el.style['marginTop']   = marginSize;
     }
-    if ((ref = this.el) != null) {
-      ref.style.opacity = this.props.opacity;
-    }
-    if (this.o.isShowInit) { this._show(); } else {
-      this._hide();
-    }
+    if ((ref = this.el) != null) { ref.style.opacity = this._props.opacity; }
+    if (this._o.isShowInit) { this._show(); } else { this._hide(); }
   }
   /*
     Method to show the main div el.
@@ -303,9 +304,6 @@ class Transit extends Tweenable {
     this.el.style.display = 'none';
     return this.isShown = false;
   }
-  
-  _makeTween () {}
-  _makeTimeline () {}
   /*
     Method to draw shape.
     @private
@@ -314,20 +312,21 @@ class Transit extends Tweenable {
     this.bit.setProp({
       x:                    this.origin.x,
       y:                    this.origin.y,
-      stroke:               this.props.stroke,
-      'stroke-width':       this.props.strokeWidth,
-      'stroke-opacity':     this.props.strokeOpacity,
-      'stroke-dasharray':   this.props.strokeDasharray,
-      'stroke-dashoffset':  this.props.strokeDashoffset,
-      'stroke-linecap':     this.props.strokeLinecap,
-      fill:                 this.props.fill,
-      'fill-opacity':       this.props.fillOpacity,
-      radius:               this.props.radius,
-      radiusX:              this.props.radiusX,
-      radiusY:              this.props.radiusY,
-      points:               this.props.points,
+      stroke:               this._props.stroke,
+      'stroke-width':       this._props.strokeWidth,
+      'stroke-opacity':     this._props.strokeOpacity,
+      'stroke-dasharray':   this._props.strokeDasharray,
+      'stroke-dashoffset':  this._props.strokeDashoffset,
+      'stroke-linecap':     this._props.strokeLinecap,
+      fill:                 this._props.fill,
+      'fill-opacity':       this._props.fillOpacity,
+      radius:               this._props.radius,
+      radiusX:              this._props.radiusX,
+      radiusY:              this._props.radiusY,
+      points:               this._props.points,
       transform:            this._calcShapeTransform()
     });
+    // console.log(this._props.radius, this._props.radiusX, this._props.radiusY);
     this.bit.draw(); this._drawEl();
   }
   /*
@@ -336,13 +335,13 @@ class Transit extends Tweenable {
   */
   _drawEl () {
     if (this.el == null) { return true; }
-    this.o.isIt && console.log('here', this.isForeign)
-    var p = this.props;
+    var p = this._props;
     this._isPropChanged('opacity') && (this.el.style.opacity = p.opacity);
     if (!this.isForeign) {
       this._isPropChanged('left')  && (this.el.style.left = p.left);
       this._isPropChanged('top')   && (this.el.style.top = p.top);
-      if ( this._isPropChanged('x') || this._isPropChanged('y') || this._isPropChanged('scale') ) {
+      var isPosChanged = this._isPropChanged('x') || this._isPropChanged('y');
+      if ( isPosChanged || this._isPropChanged('scale') ) {
         this.h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
       }
     }
@@ -356,8 +355,8 @@ class Transit extends Tweenable {
   _isPropChanged ( name ) {
     // if there is no recod for the property - create it
     if (this.lastSet[name] == null) { this.lastSet[name] = {}; }
-    if (this.lastSet[name].value !== this.props[name]) {
-      this.lastSet[name].value = this.props[name];
+    if (this.lastSet[name].value !== this._props[name]) {
+      this.lastSet[name].value = this._props[name];
       return true;
     } else { return false; }
   }
@@ -367,8 +366,8 @@ class Transit extends Tweenable {
     @returns {String} Transform string for the shape.
   */
   _calcShapeTransform () {
-    return `rotate(${this.props.angle}, ${this.origin.x}, ${this.origin.y})`;
-    // this.props.transform = "rotate(" + this.props.angle + "," + this.origin.x + "," + this.origin.y + ")";
+    return `rotate(${this._props.angle}, ${this.origin.x}, ${this.origin.y})`;
+    // this._props.transform = "rotate(" + this._props.angle + "," + this.origin.x + "," + this.origin.y + ")";
   }
   /*
     Method to calculate maximum shape's radius.
@@ -388,23 +387,23 @@ class Transit extends Tweenable {
   */
   _calcSize () {
     var base, dStroke, radius, stroke;
-    if (this.o.size) { return; }
+    if (this._o.size) { return; }
     radius = this._calcMaxShapeRadius();
     dStroke = this.deltas['strokeWidth'];
-    stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this.props.strokeWidth;
-    this.props.size = 2 * radius + 2 * stroke;
-    switch (typeof (base = this.props.easing).toLowerCase === "function" ? base.toLowerCase() : void 0) {
+    stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this._props.strokeWidth;
+    this._props.size = 2 * radius + 2 * stroke;
+    switch (typeof (base = this._props.easing).toLowerCase === "function" ? base.toLowerCase() : void 0) {
       case 'elastic.out':
       case 'elastic.inout':
-        this.props.size *= 1.25;
+        this._props.size *= 1.25;
         break;
       case 'back.out':
       case 'back.inout':
-        this.props.size *= 1.1;
+        this._props.size *= 1.1;
     }
-    this.props.size *= this.bit.ratio;
-    this.props.size += 2 * this.props.sizeGap;
-    return this.props.center = this.props.size / 2;
+    this._props.size *= this.bit.ratio;
+    this._props.size += 2 * this._props.sizeGap;
+    return this._props.center = this._props.size / 2;
   }
 
   /*
@@ -421,9 +420,9 @@ class Transit extends Tweenable {
     if (delta != null) {
       // get maximum number between start and end values of the delta
       return Math.max(Math.abs(delta.end), Math.abs(delta.start));
-    } else if (this.props[o.key] != null) {
+    } else if (this._props[o.key] != null) {
       // else get the value from props object
-      return parseFloat(this.props[o.key]);
+      return parseFloat(this._props[o.key]);
     } else { return o.fallback || 0; }
   }
   /*
@@ -431,8 +430,8 @@ class Transit extends Tweenable {
     @private
   */
   _createBit () {
-    var bitClass = shapesMap.getShape(this.o.shape || 'circle');
-    this.bit = new bitClass({ ctx: this.ctx, el: this.o.bit, isDrawLess: true });
+    var bitClass = shapesMap.getShape(this._o.shape || 'circle');
+    this.bit = new bitClass({ ctx: this.ctx, el: this._o.bit, isDrawLess: true });
     // if draw on foreign context
     // or we are animating an svg element outside the module
     if (this.isForeign || this.isForeignBit) { return this.el = this.bit.el; }
@@ -447,7 +446,7 @@ class Transit extends Tweenable {
   _setProgress ( progress, isShow ) {
     if (!isShow) {
       this._show();
-      if (typeof this.onUpdate === "function") { this.onUpdate(progress); }
+      // if (typeof this.onUpdate === "function") { this.onUpdate(progress); }
     }
     this.progress = progress;
     // this.progress = ( progress < 0 || !progress )
@@ -470,7 +469,7 @@ class Transit extends Tweenable {
     while (len--) {
       key = keys[len];
       value = this.deltas[key];
-      this.props[key] = (function() {
+      this._props[key] = (function() {
         var k, len1, ref;
         switch (value.type) {
           case 'array':
@@ -506,12 +505,12 @@ class Transit extends Tweenable {
 
   */
   _calcOrigin () {
-    var p = this.props;
+    var p = this._props;
     // if drawing context was passed
     // set origin to x and y of the module
     // otherwise set the origin to the center
-    this.origin.x = this.o.ctx ? parseFloat(p.x) : p.center;
-    this.origin.y = this.o.ctx ? parseFloat(p.y) : p.center;
+    this.origin.x = this._o.ctx ? parseFloat(p.x) : p.center;
+    this.origin.y = this._o.ctx ? parseFloat(p.y) : p.center;
   }
   /*
     Method to check if the property is delta property.
@@ -534,7 +533,7 @@ class Transit extends Tweenable {
   */
   _getDelta ( key, optionsValue ) {
     var delta;
-    if ((key === 'left' || key === 'top') && !this.o.ctx) {
+    if ((key === 'left' || key === 'top') && !this._o.ctx) {
       this.h.warn(`Consider to animate x/y properties instead of left/top,
         as it would be much more performant`, optionsValue);
     }
@@ -546,195 +545,236 @@ class Transit extends Tweenable {
     // if successfully parsed - save it
     if (delta.type != null) { this.deltas[key] = delta; }
     // set props to start value of the delta
-    // this.props[key] = delta.start;
+    // this._props[key] = delta.start;
+  }
+  // /*
+  //   Method to merge two options into one. Used in .then chains.
+  //   @private
+  //   @param {Object} Start options for the merge.
+  //   @param {Object} End options for the merge.
+  //   @returns {Object} Merged options.
+  // */
+  // _mergeThenOptions ( start, end ) {
+  //   var endValue, i, isFunction, key, keys, o, startKey, startKeys, value;
+  //   o = {};
+  //   for (key in start) {
+  //     value = start[key];
+  //     if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
+  //       o[key] = value;
+  //     } else { o[key] = key === 'easing' ? '' : void 0; }
+  //   }
+  //   keys = Object.keys(end);
+  //   i = keys.length;
+  //   while (i--) {
+  //     key = keys[i];
+  //     endValue = end[key];
+  //     isFunction = typeof endValue === 'function';
+  //     if (this.h.tweenOptionMap[key] || typeof endValue === 'object' || isFunction) {
+  //       o[key] = endValue != null ? endValue : start[key];
+  //       continue;
+  //     }
+  //     startKey = start[key];
+  //     if (startKey == null) {
+  //       startKey = this.defaults[key];
+  //     }
+  //     if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
+  //       startKey = start.radius;
+  //     }
+  //     if (typeof startKey === 'object' && (startKey != null)) {
+  //       startKeys = Object.keys(startKey);
+  //       startKey = startKey[startKeys[0]];
+  //     }
+  //     if (endValue != null) {
+  //       o[key] = {};
+  //       o[key][startKey] = endValue;
+  //     }
+  //   }
+  //   return o;
+  // }
+  // /*
+  //   Method to tune new options on then reinitialization.
+  //   @private
+  // */
+  // _tuneOptions ( o ) {
+  //   this._extendDefaults(o); this._calcSize(); this._setElStyles();
+  // }
+  /*
+    Method to setup tween and timeline options before creating them.
+    @private  
+  */
+  _transformTweenOptions () {
+    this._makeTweenControls();
   }
   /*
-    Method to merge two options into one. Used in .then chains.
-    @private
-    @param {Object} Start options for the merge.
-    @param {Object} End options for the merge.
-    @returns {Object} Merged options.
+    Method to make tween's control options.
+    @provate
   */
-  _mergeThenOptions ( start, end ) {
-    var endValue, i, isFunction, key, keys, o, startKey, startKeys, value;
-    o = {};
-    for (key in start) {
-      value = start[key];
-      if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
-        o[key] = value;
-      } else { o[key] = key === 'easing' ? '' : void 0; }
-    }
-    keys = Object.keys(end);
-    i = keys.length;
-    while (i--) {
-      key = keys[i];
-      endValue = end[key];
-      isFunction = typeof endValue === 'function';
-      if (this.h.tweenOptionMap[key] || typeof endValue === 'object' || isFunction) {
-        o[key] = endValue != null ? endValue : start[key];
-        continue;
-      }
-      startKey = start[key];
-      if (startKey == null) {
-        startKey = this.defaults[key];
-      }
-      if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
-        startKey = start.radius;
-      }
-      if (typeof startKey === 'object' && (startKey != null)) {
-        startKeys = Object.keys(startKey);
-        startKey = startKey[startKeys[0]];
-      }
-      if (endValue != null) {
-        o[key] = {};
-        o[key][startKey] = endValue;
-      }
-    }
-    return o;
+  _makeTweenControls () {
+    // redefine onUpdate for Transit's purposes
+    var cachedOnUpdate = this._o.onUpdate,
+        isFuntion = (cachedOnUpdate && typeof cachedOnUpdate === 'function'),
+        it = this; // save lexical this, uh oh
+    this._o.onUpdate = function ( pe ) {
+      isFuntion && cachedOnUpdate.apply( it.tween, arguments );
+      it._setProgress(pe);
+    };
   }
-  /*
-    Method to tune new options on then reinitialization.
-    @private
-  */
-  _tuneOptions ( o ) {
-    this._extendDefaults(o); this._calcSize(); this._setElStyles();
-  }
+  // createTimeline () {
+  //   return this.tween = new Tween({
+  //     duration: this._props.duration,
+  //     delay: this._props.delay,
+  //     repeat: this._props.repeat,
+  //     yoyo: this._props.yoyo,
+  //     easing: this._props.easing,
+  //     onUpdate: (function(_this) {
+  //       return function(p) {
+  //         return _this._setProgress(p);
+  //       };
+  //     })(this),
+  //     onStart: (function(_this) {
+  //       return function(isForward, isYoyo) {
+  //         var ref;
+  //         if (isForward) {
+  //           _this._show();
+  //         } else {
+  //           !_this._o.isShowInit && _this._hide();
+  //         }
+  //         return (ref = _this._props.onStart) != null ? ref.apply(_this, arguments) : void 0;
+  //       };
+  //     })(this),
+  //     onFirstUpdate: (function(_this) {
+  //       return function(isForward, isYoyo) {
+  //         if (!isForward) {
+  //           return _this.history.length > 1 && _this._tuneOptions(_this.history[0]);
+  //         }
+  //       };
+  //     })(this)
+  //   });
+  // }
 
-  createTimeline () {
-    return this.tween = new Tween({
-      duration: this.props.duration,
-      delay: this.props.delay,
-      repeat: this.props.repeat,
-      yoyo: this.props.yoyo,
-      easing: this.props.easing,
-      onUpdate: (function(_this) {
-        return function(p) {
-          return _this._setProgress(p);
-        };
-      })(this),
-      onStart: (function(_this) {
-        return function(isForward, isYoyo) {
-          var ref;
-          if (isForward) {
-            _this._show();
-          } else {
-            !_this.o.isShowInit && _this._hide();
-          }
-          return (ref = _this.props.onStart) != null ? ref.apply(_this, arguments) : void 0;
-        };
-      })(this),
-      onFirstUpdate: (function(_this) {
-        return function(isForward, isYoyo) {
-          if (!isForward) {
-            return _this.history.length > 1 && _this._tuneOptions(_this.history[0]);
-          }
-        };
-      })(this)
-    });
-  }
-
-  createTween () {
-    var it;
-    it = this;
-    this.createTimeline();
-    this.timeline = new Timeline({
-      onComplete: (function(_this) {
-        return function() {
-          var ref;
-          !_this.o.isShowEnd && _this._hide();
-          return (ref = _this.props.onComplete) != null ? ref.apply(_this) : void 0;
-        };
-      })(this)
-    });
-    this.timeline.add(this.tween);
-  }
-  /*
-    Method to transform history rewrite new options object chain on run.
-    @param {Object} New options to tune for.
-  */
-  _transformHistory ( o ) {
-    var keys = Object.keys(o),
-        i = -1, len = keys.length,
-        historyLen = this.history.length;
-    // go thru history records - one record if transit's option object
-    while (++i < len) {
-      // get all keys of the options record
-      var key = keys[i], j = 0;
-      (function() {
-        // take one key and loop thru all of the records again
-        while (++j < historyLen) {
-          // get option's record property by key
-          var optionRecord = this.history[j][key];
-          // if delta property
-          if (typeof optionRecord === 'object') {
-            // get start and end of the delta
-            var start = Object.keys(optionRecord)[0],
-                // save the end of the delta
-                end   = optionRecord[start];
-            // delete the property
-            delete optionRecord[start];
-            // if new property is delta
-            if (typeof o[key] === 'object') {
-              var property = o[key];
-              // merge the start and end
-              // get the start and end of the new option
-              var startNew = Object.keys(property)[0],
-                  endNew   = property[startNew];
-              // set the o's end value as start
-              // and o's end to delta's end
-              optionRecord[endNew] = end;
-            } else {
-              // if new property is not delta
-              // rewrite the start value to the new value
-              optionRecord[o[key]] = end;
-            }
-            break;
-          } else {
-            // if is not delta property
-            // set it to the new options value
-            this.history[j][key] = o[key];
-          }
-        }
-      }).call(this);
-    }
-  }
-  /*
-    Method to tune new option on then edge.
-    @private
-    @param {Object}  Option to tune on run.
-    @param {Boolean} If foreign svg canvas.
-  */
-  _tuneNewOption (o, isForeign) {
-    if ((o != null) && (o.shape != null) && o.shape !== (this.o.shape || 'circle')) {
-      this.h.warn('Sorry, shape can not be changed on run');
-      delete o.shape;
-    }
-    if ((o != null) && Object.keys(o).length) {
-      this._extendDefaults(o);
-      this._resetTween();
-      !isForeign && this.timeline._recalcTotalDuration();
-      this._calcSize();
-      return !isForeign && this._setElStyles();
-    }
-  }
-  /*
-    Method to set new options on run.
-    @private
-  */
-  _resetTween () {
-    var i, k, key, len1, ref, timelineOptions;
-    timelineOptions = {};
-    ref = Object.keys(this.h.tweenOptionMap);
-    for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
-      key = ref[i];
-      timelineOptions[key] = this.props[key];
-    }
-    timelineOptions.onStart = this.props.onStart;
-    timelineOptions.onComplete = this.props.onComplete;
-    // TODO: if should set timeline's props instead of tweens one
-    this.tween._setProp(timelineOptions);
-  }
-
+  // createTween () {
+  //   var it;
+  //   it = this;
+  //   this.createTimeline();
+  //   this.timeline = new Timeline({
+  //     onComplete: (function(_this) {
+  //       return function() {
+  //         var ref;
+  //         !_this._o.isShowEnd && _this._hide();
+  //         return (ref = _this._props.onComplete) != null ? ref.apply(_this) : void 0;
+  //       };
+  //     })(this)
+  //   });
+  //   this.timeline.add(this.tween);
+  // }
+  // /*
+  //   Method to transform history rewrite new options object chain on run.
+  //   @param {Object} New options to tune for.
+  // */
+  // _transformHistory ( o ) {
+  //   var keys = Object.keys(o),
+  //       i = -1, len = keys.length,
+  //       historyLen = this.history.length;
+  //   // go thru history records - one record if transit's option object
+  //   while (++i < len) {
+  //     // get all keys of the options record
+  //     var key = keys[i],
+  //         j = -1;
+  //     (function() {
+  //       // take one key and loop thru all of the records again
+  //       while (++j < historyLen) {
+  //         // get option's record property by key
+  //         var optionRecord = this.history[j][key];
+  //         // if delta property
+  //         if ( typeof optionRecord === 'object' && optionRecord !== null ) {
+  //           // get start and end of the delta
+  //           var start = Object.keys(optionRecord)[0],
+  //               // save the end of the delta
+  //               end   = optionRecord[start];
+  //           // delete the property
+  //           delete optionRecord[start];
+  //           var newValue = o[key];
+  //           // if new property is delta
+  //           if (typeof newValue === 'object' && newValue !== null) {
+  //             var property = o[key],
+  //                 // merge the start and end
+  //                 // get the start and end of the new option
+  //                 startNew = Object.keys(property)[0],
+  //                 endNew   = property[startNew];
+  //             // set the o's end value as start
+  //             // and o's end to delta's end
+  //             optionRecord[endNew] = end;
+  //           } else {
+  //             // if new property is not delta
+  //             // rewrite the start value to the new value
+  //             // this._o.isIt && console.log('o[key]', newValue, end, j);
+  //             if ( j === 0 ) {
+  //               if ( this.history[j] !== null && typeof this.history[j] === 'object' ) {
+  //                 this.history[j][key] = newValue;
+  //                 if (this.history[j+1]) {
+  //                   var nextRecord       = this.history[j+1][key],
+  //                       nextRecordKey    = Object.keys(nextRecord),
+  //                       nextRecordValue  = nextRecord[nextRecordKey];
+  //                   this.history[j+1][key] = {};
+  //                   this.history[j+1][key][newValue] = nextRecordValue;
+  //                 }
+  //               }
+  //             } else {
+  //               optionRecord[newValue] = end;
+  //             }
+  //           }
+  //           break;
+  //         } else {
+  //           // if is not delta property
+  //           // set it to the new options value
+  //           this.history[j][key] = o[key];
+  //         }
+  //       }
+  //     }).call(this);
+  //   }
+  //   // if (this._o.isIt) {
+  //   //   console.log('-=-=-=-=-=-=');
+  //   //   for (var record of this.history) {
+  //   //     console.log(record.radius);
+  //   //   }
+  //   // }
+  // }
+  // /*
+  //   Method to tune new option on then edge.
+  //   @private
+  //   @param {Object}  Option to tune on run.
+  //   @param {Boolean} If foreign svg canvas.
+  // */
+  // _tuneNewOption (o, isForeign) {
+  //   if ((o != null) && (o.shape != null) && o.shape !== (this._o.shape || 'circle')) {
+  //     this.h.warn('Sorry, shape can not be changed on run');
+  //     delete o.shape;
+  //   }
+  //   if ((o != null) && Object.keys(o).length) {
+  //     this._extendDefaults(o);
+  //     // this._resetTween();
+  //     // !isForeign && this.timeline._recalcTotalDuration();
+  //     this._calcSize();
+  //     return !isForeign && this._setElStyles();
+  //   }
+  // }
+  // /*
+  //   Method to set new options on run.
+  //   @private
+  // */
+  // _resetTween () {
+  //   var i, k, key, len1, ref, timelineOptions;
+  //   timelineOptions = {};
+  //   ref = Object.keys(this.h.tweenOptionMap);
+  //   for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
+  //     key = ref[i];
+  //     timelineOptions[key] = this._props[key];
+  //   }
+  //   timelineOptions.onStart = this._props.onStart;
+  //   timelineOptions.onComplete = this._props.onComplete;
+  //   // TODO: if should set timeline's props instead of tweens one
+  //   this.tween._setProp(timelineOptions);
+  // }
   /*
     Method to set property on the module.
     @private
@@ -748,23 +788,23 @@ class Transit extends Tweenable {
       var keys = Object.keys(attr);
       for (var i = 0; i < keys.length; i++) {
         var key = keys[i], val = keys[key];
-        this.props[key] = val;
+        this._props[key] = val;
       }
-    } else { this.props[attr] = value; }
+    } else { this._props[attr] = value; }
   }
-  /*
-    Method to get if the x/y values changed.
-  */
-  _isNeedsTransform () {
-    return this._isPropChanged('x') || this._isPropChanged('y');
-  }
+  // /*
+  //   Method to get if the x/y values changed.
+  // */
+  // _isNeedsTransform () {
+  //   return this._isPropChanged('x') || this._isPropChanged('y');
+  // }
   /*
     Method to create transform string;
     @private
     @returns {String} Transform string.
   */
   _fillTransform () {
-    var p = this.props;
+    var p = this._props;
     return `translate(${p.x}, ${p.y}) scale(${p.scale})`;
   }
 }

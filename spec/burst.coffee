@@ -486,14 +486,17 @@ describe 'Burst ->', ->
         duration: 200, onComplete:-> expect(true).toBe(true); dfr()
       burst.run()
     it 'should have the scope of burst', (dfr)->
-      t.removeAll()
-      isRightScope = null
-      burst = new Burst
-        duration: 200, onComplete:-> isRightScope = @ instanceof Burst
-      burst.run()
+      # timeout to fix jasmine's issue
       setTimeout ->
-        expect(isRightScope).toBe(true); dfr()
-      , 500
+        t.removeAll()
+        isRightScope = null
+        burst = new Burst
+          duration: 200, onComplete:-> isRightScope = @ instanceof Burst
+        burst.run()
+        setTimeout ->
+          expect(isRightScope).toBe(true); dfr()
+        , 500
+      , 1
 
   describe 'onUpdate callback ->', ->
     t.removeAll()

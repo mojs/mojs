@@ -14,13 +14,23 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.174.1', isDebug: true, helpers: h,
+  revision:   '0.174.2', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, tweener, easing, shapesMap
 }
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
+
+// var tr = new mojs.Transit({ radius: { 10: 20 }, isIt: 1 })
+//   .then({ radius: 0 })
+//   .then({ x: 20 })
+//   .then({ radius: 100 })
+//   .run();
+
+// setTimeout(function () {
+//   tr.run({ fill: 'yellow', radius: 3000 });
+// }, 2000);
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {

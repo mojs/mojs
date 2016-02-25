@@ -53,8 +53,10 @@ class Tweenable {
     this.timeline.setProgress.apply( this.timeline, arguments );
     return this;
   }
+  
   // ^ API methods.
   // v Private methods.
+  
   constructor ( o = {} ) {
     this._o = o;
     this._transformTweenOptions();

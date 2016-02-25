@@ -826,20 +826,22 @@
         return burst.run();
       });
       return it('should have the scope of burst', function(dfr) {
-        var burst, isRightScope;
-        t.removeAll();
-        isRightScope = null;
-        burst = new Burst({
-          duration: 200,
-          onComplete: function() {
-            return isRightScope = this instanceof Burst;
-          }
-        });
-        burst.run();
         return setTimeout(function() {
-          expect(isRightScope).toBe(true);
-          return dfr();
-        }, 500);
+          var burst, isRightScope;
+          t.removeAll();
+          isRightScope = null;
+          burst = new Burst({
+            duration: 200,
+            onComplete: function() {
+              return isRightScope = this instanceof Burst;
+            }
+          });
+          burst.run();
+          return setTimeout(function() {
+            expect(isRightScope).toBe(true);
+            return dfr();
+          }, 500);
+        }, 1);
       });
     });
     describe('onUpdate callback ->', function() {
