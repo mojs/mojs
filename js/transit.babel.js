@@ -7,7 +7,6 @@ import Tween      from './tween/tween';
 import Timeline   from './tween/timeline';
 
 // TODO
-//  - tween properties
 //  - properties signatures
 //  --
 //  - tween for every prop 
@@ -39,14 +38,14 @@ class Transit extends Tweenable {
       radius:           { 0: 50 },
       radiusX:          null,
       radiusY:          null,
-      onStart:          null,
-      onComplete:       null,
-      onUpdate:         null,
-      duration:         500,
-      delay:            0,
-      repeat:           0,
-      yoyo:             false,
-      easing:           'Linear.None',
+      // onStart:          null,
+      // onComplete:       null,
+      // onUpdate:         null,
+      // duration:         500,
+      // delay:            0,
+      // repeat:           0,
+      // yoyo:             false,
+      // easing:           'Linear.None',
       isShowEnd: false,
       isShowInit: false,
       size: null,
@@ -260,7 +259,8 @@ class Transit extends Tweenable {
       this.isRendered = true;
     }
     this._setElStyles();
-    this._setProgress(0, true);
+    // this._setProgress(0, true);
+    this._setProgress( 0 );
     // this.createTween();
     return this;
   }
@@ -291,6 +291,7 @@ class Transit extends Tweenable {
     @private
   */
   _show () {
+    this._o.isIt && console.log('show');
     if (this.isShown || (this.el == null)) { return; }
     this.el.style.display = 'block';
     this.isShown = true;
@@ -386,24 +387,42 @@ class Transit extends Tweenable {
     @private
   */
   _calcSize () {
-    var base, dStroke, radius, stroke;
     if (this._o.size) { return; }
-    radius = this._calcMaxShapeRadius();
-    dStroke = this.deltas['strokeWidth'];
-    stroke = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this._props.strokeWidth;
-    this._props.size = 2 * radius + 2 * stroke;
-    switch (typeof (base = this._props.easing).toLowerCase === "function" ? base.toLowerCase() : void 0) {
+    var p = this._props,
+        radius  = this._calcMaxShapeRadius(),
+        dStroke = this.deltas['strokeWidth'],
+        stroke  = dStroke != null ? Math.max(Math.abs(dStroke.start), Math.abs(dStroke.end)) : this._props.strokeWidth;
+    p.size = 2 * radius + 2 * stroke;
+    this._increaseSizeWithEasing();
+    this._increaseSizeWithBitRatio();
+    return p.center = p.size / 2;
+  }
+  /*
+    Method to increase calculated size based on easing.
+    @private
+  */
+  _increaseSizeWithEasing () {
+    var p              = this._props,
+        easing         = this._o.easing,
+        isStringEasing = easing && typeof easing === 'string';
+    switch ( isStringEasing && easing.toLowerCase() ) {
       case 'elastic.out':
       case 'elastic.inout':
-        this._props.size *= 1.25;
+        p.size *= 1.25;
         break;
       case 'back.out':
       case 'back.inout':
-        this._props.size *= 1.1;
+        p.size *= 1.1;
     }
-    this._props.size *= this.bit.ratio;
-    this._props.size += 2 * this._props.sizeGap;
-    return this._props.center = this._props.size / 2;
+  }
+  /*
+    Method to increase calculated size based on bit ratio.
+    @private
+  */
+  _increaseSizeWithBitRatio () {
+    var p   = this._props;
+    p.size *= this.bit.ratio;
+    p.size += 2 * p.sizeGap;
   }
 
   /*
@@ -444,14 +463,10 @@ class Transit extends Tweenable {
     @returns {Object} this.
   */
   _setProgress ( progress, isShow ) {
-    if (!isShow) {
-      this._show();
-      // if (typeof this.onUpdate === "function") { this.onUpdate(progress); }
-    }
+    // if (!isShow) {
+      // this._show();
+    // }
     this.progress = progress;
-    // this.progress = ( progress < 0 || !progress )
-    //   ? 0
-    //   : ( progress > 1 ) ? 1 : progress;
     this._calcCurrentProps(progress);
     this._calcOrigin();
     this._draw(progress);
@@ -604,69 +619,63 @@ class Transit extends Tweenable {
   */
   _transformTweenOptions () {
     this._makeTweenControls();
+    this._makeTimelineControls();
   }
   /*
-    Method to make tween's control options.
-    @provate
+    Method to make tween's control callbacks.
+    Tween's onUpdate one is used to tackle the _setProgress method,
+    onStart one is used to show/hide module.
+    @private
   */
   _makeTweenControls () {
-    // redefine onUpdate for Transit's purposes
-    var cachedOnUpdate = this._o.onUpdate,
-        isFuntion = (cachedOnUpdate && typeof cachedOnUpdate === 'function'),
-        it = this; // save lexical this, uh oh
+    var it         = this, // save lexical this, uh oh
+        onUpdate   = this._o.onUpdate,
+        isOnUpdate = (onUpdate && typeof onUpdate === 'function');
+    // redefine onUpdate for Transit's draw calculation in _setProgress
     this._o.onUpdate = function ( pe ) {
-      isFuntion && cachedOnUpdate.apply( it.tween, arguments );
+      // call onUpdate function from options
+      isOnUpdate && onUpdate.apply( it.tween, arguments );
+      // calcalate and draw Transit's progress
       it._setProgress(pe);
     };
-  }
-  // createTimeline () {
-  //   return this.tween = new Tween({
-  //     duration: this._props.duration,
-  //     delay: this._props.delay,
-  //     repeat: this._props.repeat,
-  //     yoyo: this._props.yoyo,
-  //     easing: this._props.easing,
-  //     onUpdate: (function(_this) {
-  //       return function(p) {
-  //         return _this._setProgress(p);
-  //       };
-  //     })(this),
-  //     onStart: (function(_this) {
-  //       return function(isForward, isYoyo) {
-  //         var ref;
-  //         if (isForward) {
-  //           _this._show();
-  //         } else {
-  //           !_this._o.isShowInit && _this._hide();
-  //         }
-  //         return (ref = _this._props.onStart) != null ? ref.apply(_this, arguments) : void 0;
-  //       };
-  //     })(this),
-  //     onFirstUpdate: (function(_this) {
-  //       return function(isForward, isYoyo) {
-  //         if (!isForward) {
-  //           return _this.history.length > 1 && _this._tuneOptions(_this.history[0]);
-  //         }
-  //       };
-  //     })(this)
-  //   });
-  // }
 
-  // createTween () {
-  //   var it;
-  //   it = this;
-  //   this.createTimeline();
-  //   this.timeline = new Timeline({
-  //     onComplete: (function(_this) {
-  //       return function() {
-  //         var ref;
-  //         !_this._o.isShowEnd && _this._hide();
-  //         return (ref = _this._props.onComplete) != null ? ref.apply(_this) : void 0;
-  //       };
-  //     })(this)
-  //   });
-  //   this.timeline.add(this.tween);
-  // }
+    var onStart   = this._o.onStart,
+        isOnStart = (onStart && typeof onStart === 'function');
+    // redefine onStart to show/hide Transit
+    this._o.onStart = function ( isForward ) {
+      // call onStart function from options
+      isOnStart && onStart.apply( it.tween, arguments );
+      // show the Transit on start
+      // hide the Transit on reverse complete if isShowInit is not set
+      ( isForward ) ? it._show() : (!it._props.isShowInit && it._hide());
+    };
+    //     onFirstUpdate: (function(_this) {
+    //       return function(isForward, isYoyo) {
+    //         if (!isForward) {
+    //           return _this.history.length > 1 && _this._tuneOptions(_this.history[0]);
+    //         }
+    //       };
+    //     })(this)
+  }
+  /*
+    Method to make timelines' control callbacks.
+    onComplete is used to hide module at the end of animation.
+    @private
+  */
+  _makeTimelineControls () {
+    // make timeline options object if is not defined
+    this._o.timeline = this._o.timeline || {};
+    // redefine onStart for Transit's purposes
+    var it           = this,
+        onComplete   = this._o.timeline.onComplete,
+        isOnComplete = (onComplete && typeof onComplete === 'function');
+    this._o.timeline.onComplete = function ( isForward ) {
+      // call timeline's onComplete function from options
+      isOnComplete && onComplete.apply( it.timeline, arguments );
+      // hide the Transit at the end / show transit at reverse start
+      ( isForward ) ? (!it._props.isShowEnd && it._hide()) : it._show();
+    };
+  }
   // /*
   //   Method to transform history rewrite new options object chain on run.
   //   @param {Object} New options to tune for.

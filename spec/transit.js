@@ -566,13 +566,13 @@
         });
       });
     });
-    return describe('_makeTweenControls method ->', function() {
+    describe('_makeTweenControls method ->', function() {
       it('should override this._o.onUpdate', function() {
         var tr;
         tr = new Transit;
         return expect(typeof tr._o.onUpdate).toBe('function');
       });
-      return it('should not override onUpdate function if exists', function() {
+      it('should not override onUpdate function if exists', function() {
         var args, isRightScope, options, tr;
         isRightScope = null;
         args = null;
@@ -591,6 +591,185 @@
         expect(args[1]).toBe(.1);
         expect(args[2]).toBe(true);
         return expect(args[3]).toBe(false);
+      });
+      it('should call _setProgress method', function() {
+        var options, progress, tr;
+        options = {
+          onUpdate: function() {}
+        };
+        tr = new Transit(options);
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_setProgress');
+        progress = .1;
+        tr.timeline.setProgress(progress);
+        return expect(tr._setProgress).toHaveBeenCalledWith(progress);
+      });
+      it('should override this._o.onStart', function() {
+        var tr;
+        tr = new Transit;
+        return expect(typeof tr._o.onStart).toBe('function');
+      });
+      it('should not override onStart function if exists', function() {
+        var args, isRightScope, options, tr;
+        isRightScope = null;
+        args = null;
+        options = {
+          onStart: function() {
+            isRightScope = this === tr.tween;
+            return args = arguments;
+          }
+        };
+        tr = new Transit(options);
+        expect(typeof tr._o.onStart).toBe('function');
+        tr.timeline.setProgress(0);
+        tr.timeline.setProgress(.1);
+        expect(isRightScope).toBe(true);
+        expect(args[0]).toBe(true);
+        return expect(args[1]).toBe(false);
+      });
+      it('should show module ', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_show').and.callThrough();
+        tr.timeline.setProgress(.1);
+        return expect(tr._show).toHaveBeenCalled();
+      });
+      it('should hide module ', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(.1);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(0);
+        return expect(tr._hide).toHaveBeenCalled();
+      });
+      return it('should not hide module is isShowInit was set', function() {
+        var tr;
+        tr = new Transit({
+          isShowInit: true
+        });
+        tr.timeline.setProgress(.2);
+        tr.timeline.setProgress(.1);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(0);
+        return expect(tr._hide).not.toHaveBeenCalled();
+      });
+    });
+    describe('_makeTimelineControls method ->', function() {
+      it('should override this._o.onComplete', function() {
+        var tr;
+        tr = new Transit;
+        return expect(typeof tr._o.timeline.onComplete).toBe('function');
+      });
+      it('should not override onUpdate function if exists', function() {
+        var args, isRightScope, options, tr;
+        isRightScope = null;
+        args = null;
+        options = {
+          timeline: {
+            onComplete: function() {
+              isRightScope = this === tr.timeline;
+              return args = arguments;
+            }
+          }
+        };
+        tr = new Transit(options);
+        expect(typeof tr._o.timeline.onComplete).toBe('function');
+        tr.timeline.setProgress(0);
+        tr.timeline.setProgress(.1);
+        tr.timeline.setProgress(.8);
+        tr.timeline.setProgress(1);
+        expect(isRightScope).toBe(true);
+        expect(args[0]).toBe(true);
+        return expect(args[1]).toBe(false);
+      });
+      it('should call _show method', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(1);
+        spyOn(tr, '_show').and.callThrough();
+        tr.timeline.setProgress(.9);
+        return expect(tr._show).toHaveBeenCalled();
+      });
+      it('should call _hide method', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(.1);
+        tr.timeline.setProgress(1);
+        return expect(tr._hide).toHaveBeenCalled();
+      });
+      return it('should not call _hide method if isShowEnd is set', function() {
+        var tr;
+        tr = new Transit({
+          isShowEnd: true
+        });
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(.1);
+        tr.timeline.setProgress(1);
+        return expect(tr._hide).not.toHaveBeenCalled();
+      });
+    });
+    describe('_increaseSizeWithEasing method ->', function() {
+      it('should increase size based on easing - elastic.out', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'elastic.out'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.25);
+      });
+      it('should increase size based on easing - elastic.inout', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'elastic.inout'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.25);
+      });
+      it('should increase size based on easing - back.out', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'back.out'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.1);
+      });
+      return it('should increase size based on easing - back.inout', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'back.inout'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.1);
+      });
+    });
+    return describe('_increaseSizeWithBitRatio method ->', function() {
+      it('should increase size based on bit ratio', function() {
+        var tr;
+        tr = new Transit({
+          shape: 'equal'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithBitRatio();
+        return expect(tr._props.size).toBe(tr.bit.ratio);
+      });
+      return it('should increase size based 2 gap sizes', function() {
+        var gap, tr;
+        gap = 20;
+        tr = new Transit({
+          shape: 'equal',
+          sizeGap: gap
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithBitRatio();
+        return expect(tr._props.size).toBe(tr.bit.ratio + 2 * gap);
       });
     });
   });

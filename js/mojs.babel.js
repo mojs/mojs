@@ -22,11 +22,17 @@ window.mojs = {
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
-// var tr = new mojs.Transit({ radius: { 10: 20 }, isIt: 1 })
-//   .then({ radius: 0 })
-//   .then({ x: 20 })
-//   .then({ radius: 100 })
-//   .run();
+// var tr = new mojs.Transit({
+//   radius: { 0: 200 },
+//   isIt: 1,
+//   repeat: 2,
+//   yoyo: true,
+//   onComplete: (isForward, isYoyo) => { console.log( isForward, isYoyo ); }
+// })
+//   // .then({ radius: 0 })
+//   // .then({ x: 20 })
+//   // .then({ radius: 100 })
+//   .play();
 
 // setTimeout(function () {
 //   tr.run({ fill: 'yellow', radius: 3000 });

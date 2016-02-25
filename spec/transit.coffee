@@ -1380,5 +1380,157 @@ describe 'Transit ->', ->
       expect(args[2]).toBe true
       expect(args[3]).toBe false
 
+    it 'should call _setProgress method', ->
+      options = { onUpdate:-> }
+      tr = new Transit options
+
+      tr.timeline.setProgress 0
+      spyOn tr, '_setProgress'
+      progress = .1
+      tr.timeline.setProgress progress
+      expect(tr._setProgress).toHaveBeenCalledWith progress
+
+    it 'should override this._o.onStart', ->
+      tr = new Transit
+      expect(typeof tr._o.onStart).toBe 'function'
+
+    it 'should not override onStart function if exists', ->
+      isRightScope = null; args = null
+      options = {
+        onStart:->
+          isRightScope = @ is tr.tween
+          args = arguments
+        }
+      tr = new Transit options
+      expect(typeof tr._o.onStart).toBe 'function'
+
+      tr.timeline.setProgress 0
+      tr.timeline.setProgress .1
+      expect(isRightScope).toBe true
+
+      expect(args[0]).toBe true
+      expect(args[1]).toBe false
+
+    it 'should show module ', ->
+      tr = new Transit
+
+      tr.timeline.setProgress 0
+      spyOn(tr, '_show').and.callThrough()
+      tr.timeline.setProgress .1
+      expect(tr._show).toHaveBeenCalled()
+
+    it 'should hide module ', ->
+      tr = new Transit
+
+      tr.timeline.setProgress .1
+      spyOn(tr, '_hide').and.callThrough()
+      tr.timeline.setProgress 0
+      expect(tr._hide).toHaveBeenCalled()
+
+    it 'should not hide module is isShowInit was set', ->
+      tr = new Transit isShowInit: true
+
+      tr.timeline.setProgress .2
+      tr.timeline.setProgress .1
+      spyOn(tr, '_hide').and.callThrough()
+      tr.timeline.setProgress 0
+      expect(tr._hide).not.toHaveBeenCalled()
+
+  describe '_makeTimelineControls method ->', ->
+    it 'should override this._o.onComplete', ->
+      tr = new Transit
+      expect(typeof tr._o.timeline.onComplete).toBe 'function'
+
+    it 'should not override onUpdate function if exists', ->
+      isRightScope = null; args = null
+      options = {
+        timeline: {
+          onComplete:->
+            isRightScope = @ is tr.timeline
+            args = arguments
+          }
+        }
+      tr = new Transit options
+      expect(typeof tr._o.timeline.onComplete).toBe 'function'
+
+      tr.timeline.setProgress 0
+      tr.timeline.setProgress .1
+      tr.timeline.setProgress .8
+      tr.timeline.setProgress 1
+      expect(isRightScope).toBe true
+      expect(args[0]).toBe true
+      expect(args[1]).toBe false
+
+    it 'should call _show method', ->
+      tr = new Transit
+
+      tr.timeline.setProgress 1
+      spyOn(tr, '_show').and.callThrough()
+      tr.timeline.setProgress .9
+      expect(tr._show).toHaveBeenCalled()
+
+    it 'should call _hide method', ->
+      tr = new Transit
+
+      tr.timeline.setProgress 0
+      spyOn(tr, '_hide').and.callThrough()
+      tr.timeline.setProgress .1
+      tr.timeline.setProgress 1
+      expect(tr._hide).toHaveBeenCalled()
+
+    it 'should not call _hide method if isShowEnd is set', ->
+      tr = new Transit isShowEnd: true
+
+      tr.timeline.setProgress 0
+      spyOn(tr, '_hide').and.callThrough()
+      tr.timeline.setProgress .1
+      tr.timeline.setProgress 1
+      expect(tr._hide).not.toHaveBeenCalled()
+
+  describe '_increaseSizeWithEasing method ->', ->
+    it 'should increase size based on easing - elastic.out', ->
+      tr = new Transit easing: 'elastic.out'
+
+      tr._props.size = 1
+      tr._increaseSizeWithEasing()
+      expect(tr._props.size).toBe 1.25
+
+    it 'should increase size based on easing - elastic.inout', ->
+      tr = new Transit easing: 'elastic.inout'
+
+      tr._props.size = 1
+      tr._increaseSizeWithEasing()
+      expect(tr._props.size).toBe 1.25
+
+    it 'should increase size based on easing - back.out', ->
+      tr = new Transit easing: 'back.out'
+
+      tr._props.size = 1
+      tr._increaseSizeWithEasing()
+      expect(tr._props.size).toBe 1.1
+
+    it 'should increase size based on easing - back.inout', ->
+      tr = new Transit easing: 'back.inout'
+
+      tr._props.size = 1
+      tr._increaseSizeWithEasing()
+      expect(tr._props.size).toBe 1.1
+
+  describe '_increaseSizeWithBitRatio method ->', ->
+    it 'should increase size based on bit ratio', ->
+      tr = new Transit shape: 'equal'
+
+      tr._props.size = 1
+      tr._increaseSizeWithBitRatio()
+      expect(tr._props.size).toBe tr.bit.ratio
+
+    it 'should increase size based 2 gap sizes', ->
+      gap = 20
+      tr = new Transit shape: 'equal', sizeGap: gap
+
+      tr._props.size = 1
+      tr._increaseSizeWithBitRatio()
+      expect(tr._props.size).toBe tr.bit.ratio + 2*gap
+
 
 
