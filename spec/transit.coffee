@@ -247,7 +247,6 @@ describe 'Transit ->', ->
       onUpdate = ->
       onStart  = ->
       byte = new Byte
-        isIt: 1
         radius: 20, duration: 1000, delay: 200
         onUpdate:  onUpdate, onStart: onStart
       byte.then radius: 5, yoyo: true, delay: 100
@@ -301,6 +300,41 @@ describe 'Transit ->', ->
         tr.timeline.setProgress .8
         expect(tr._setProgress).toHaveBeenCalledWith .6
 
+    describe 'onFirstUpdate binding', ->
+      it 'should override onFirstUpdate', ->
+        tr = new Transit().then({ fill: 'red' })
+        expect(typeof tr.timeline._timelines[1]._props.onFirstUpdate)
+          .toBe 'function'
+
+      it 'should not override onFirstUpdate function if exists', ->
+        isRightScope = null; args = null
+        options = {
+          onFirstUpdate:->
+            isRightScope = @ is tr.timeline._timelines[1]
+            args = arguments
+          }
+        tr = new Transit().then(options)
+        expect(typeof tr.timeline._timelines[1]._props.onFirstUpdate).toBe 'function'
+
+        tr.timeline.setProgress 0
+        tr.timeline.setProgress .1
+        tr.timeline.setProgress .4
+        tr.timeline.setProgress .5
+        tr.timeline.setProgress .8
+        expect(isRightScope).toBe true
+
+        expect(args[0]).toBe true
+        expect(args[1]).toBe false
+
+      it 'should call _tuneOptions method', ->
+        options = { onUpdate:-> }
+        tr = new Transit().then(options);
+
+        tr.timeline.setProgress 0
+        spyOn tr, '_tuneOptions'
+        tr.timeline.setProgress .8
+        expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[1]
+
     it 'should bind onFirstUpdate function #1', ->
       byte = new Byte radius: 20, duration: 1000, delay: 10
       byte.then radius: 5, yoyo: true, delay: 100
@@ -317,20 +351,20 @@ describe 'Transit ->', ->
       type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
       expect(type1).toBe 'function'
       expect(type2).toBe 'function'
-  # describe '_tuneOptions method ->', ->
-  #   it 'should call _extendDefaults with options', ->
-  #     byte = new Byte
-  #     o = radius: 50
-  #     spyOn byte, '_tuneOptions'
-  #     byte._tuneOptions o
-  #     expect(byte._tuneOptions).toHaveBeenCalled()
-  #   it 'should call _calcSize and _setElStyles methods', ->
-  #     byte = new Byte
-  #     spyOn byte, '_calcSize'
-  #     spyOn byte, '_setElStyles'
-  #     byte._tuneOptions radius: 50
-  #     expect(byte._calcSize).toHaveBeenCalled()
-  #     expect(byte._setElStyles).toHaveBeenCalled()
+  describe '_tuneOptions method ->', ->
+    it 'should call _extendDefaults with options', ->
+      byte = new Byte
+      o = radius: 50
+      spyOn byte, '_tuneOptions'
+      byte._tuneOptions o
+      expect(byte._tuneOptions).toHaveBeenCalled()
+    it 'should call _calcSize and _setElStyles methods', ->
+      byte = new Byte
+      spyOn byte, '_calcSize'
+      spyOn byte, '_setElStyles'
+      byte._tuneOptions radius: 50
+      expect(byte._calcSize).toHaveBeenCalled()
+      expect(byte._setElStyles).toHaveBeenCalled()
   describe 'size calculations ->', ->
     it 'should calculate size el size depending on largest value', ->
       byte = new Byte
@@ -630,22 +664,22 @@ describe 'Transit ->', ->
   # #     byte._isNeedsTransform()
   # #     expect(byte._isPropChanged).toHaveBeenCalledWith 'x'
   # #     expect(byte._isPropChanged).toHaveBeenCalledWith 'y'
-  # describe '_show method ->', ->
-  #   it 'should set display: block to el', ->
-  #     byte = new Byte
-  #     byte._show()
-  #     expect(byte.el.style.display).toBe 'block'
-  #   it 'should return if isShow is already true', ->
-  #     byte = new Byte
-  #     byte._show()
-  #     byte.el.style.display = 'inline'
-  #     byte._show()
-  #     expect(byte.el.style.display).toBe 'inline'
-  # describe '_hide method ->', ->
-  #   it 'should set display: block to el', ->
-  #     byte = new Byte
-  #     byte._hide()
-  #     expect(byte.el.style.display).toBe 'none'
+  describe '_show method ->', ->
+    it 'should set display: block to el', ->
+      byte = new Byte
+      byte._show()
+      expect(byte.el.style.display).toBe 'block'
+    it 'should return if isShow is already true', ->
+      byte = new Byte
+      byte._show()
+      byte.el.style.display = 'inline'
+      byte._show()
+      expect(byte.el.style.display).toBe 'inline'
+  describe '_hide method ->', ->
+    it 'should set display: block to el', ->
+      byte = new Byte
+      byte._hide()
+      expect(byte.el.style.display).toBe 'none'
   describe '_mergeThenOptions method ->', ->
     it 'should merge 2 objects', ->
       byte = new Byte
@@ -689,6 +723,14 @@ describe 'Transit ->', ->
       expect(mergedOpton.duration).toBe 1000
       expect(mergedOpton.fill)    .toBe 'orange'
       expect(mergedOpton.points)  .toBe 5
+    it 'should push merged options to the history', ->
+      byte = new Byte
+      start = radius: 10, duration: 1000, fill: 'orange', points: 5
+      end   =
+        radius: 20, duration: null, points: undefined
+        fill: null, stroke: '#ff00ff'
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(byte.history[1]).toBe mergedOpton
   # describe 'render method ->', ->
   #   it 'should call draw method', ->
   #     byte = new Byte radius: 25
@@ -1383,6 +1425,95 @@ describe 'Transit ->', ->
   # #     byte._props.bitLength = null
   # #     byte.getBitLength()
   # #     expect(byte._props.bitLength).not.toBe null
+
+  describe '_overrideUpdateCallbacks method ->', ->
+    describe 'onUpdate binding ->', ->
+      it 'should override this._o.onUpdate', ->
+        tr = new Transit
+        o = {}
+        tr._overrideUpdateCallbacks( o )
+        expect(typeof o.onUpdate).toBe 'function'
+
+      it 'should not override onUpdate function if exists', ->
+        isRightScope = null; args = null
+        options = {
+          onUpdate:->
+            # should call callback with default this
+            isRightScope = @ is options
+            args = arguments
+          }
+        tr = new Transit
+        tr._overrideUpdateCallbacks( options )
+        expect(typeof options.onUpdate).toBe 'function'
+
+        options.onUpdate( .1, .1, true, false )
+
+        expect(isRightScope).toBe true
+        expect(args[0]).toBe .1
+        expect(args[1]).toBe .1
+        expect(args[2]).toBe true
+        expect(args[3]).toBe false
+
+      it 'should call _setProgress method', ->
+        options = { onUpdate:-> }
+        tr = new Transit
+        tr._overrideUpdateCallbacks( options )
+        spyOn tr, '_setProgress'
+        progress = .1
+        options.onUpdate( progress, progress, true, false )
+        expect(tr._setProgress).toHaveBeenCalledWith progress
+    describe 'onFirstUpdate binding ->', ->
+      it 'should override onFirstUpdate', ->
+        tr = new Transit().then({ fill: 'red' })
+        options = {}
+        tr._overrideUpdateCallbacks( options )
+        expect(typeof options.onFirstUpdate).toBe 'function'
+
+      it 'should not override onFirstUpdate function if exists', ->
+        isRightScope = null; args = null
+        options = {
+          onFirstUpdate:->
+            # default this binding
+            isRightScope = @ is options
+            args = arguments
+          }
+        tr = new Transit()
+        tr._overrideUpdateCallbacks( options )
+        expect(typeof options.onFirstUpdate).toBe 'function'
+
+        options.onFirstUpdate( true, false )
+        expect(isRightScope).toBe true
+        expect(args[0]).toBe true
+        expect(args[1]).toBe false
+
+      it 'should call _tuneOptions method', ->
+        options = { index: 1, onUpdate:-> }
+        tr = new Transit().then({ fill: 'red' })
+        tr._overrideUpdateCallbacks( options )
+
+        spyOn tr, '_tuneOptions'
+        options.onFirstUpdate( true, false )
+        # should be called with index of the tween
+        expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[options.index]
+
+      it 'should call _tuneOptions method with history[0] if no index', ->
+        options = { onUpdate:-> }
+        tr = new Transit().then({ fill: 'red' })
+        tr._overrideUpdateCallbacks( options )
+
+        spyOn tr, '_tuneOptions'
+        options.onFirstUpdate( true, false )
+        # should be called with index of the tween
+        expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[0]
+
+      it 'should call _tuneOptions if history > 1', ->
+        options = { onUpdate:-> }
+        tr = new Transit()
+        tr._overrideUpdateCallbacks( options )
+
+        spyOn tr, '_tuneOptions'
+        options.onFirstUpdate( true, false )
+        expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
 
   describe '_makeTweenControls method ->', ->
     it 'should override this._o.onUpdate', ->

@@ -689,16 +689,13 @@
 	  }, {
 	    key: 'then',
 	    value: function then(o) {
-	      var it, len, opts;
 	      // return if nothing was passed
 	      if (o == null || !(0, _keys2.default)(o)) {
 	        return;
 	      }
 	      // merge then options with the current ones
 	      var merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
-	      // and save to the history
-	      this.history.push(merged);
-	      // set options control callbacks
+
 	      var it = this,
 	          // save lexical this, uh oh
 	      onUpdate = merged.onUpdate,
@@ -711,7 +708,13 @@
 	        it._setProgress(pe);
 	      };
 
-	      merged.onFirstUpdate = function () {
+	      var onFirstUpdate = merged.onFirstUpdate,
+	          isOnFirstUpdate = onFirstUpdate && typeof onFirstUpdate === 'function';
+	      // redefine onFirstUpdate for Transit's _tuneOptions
+	      merged.onFirstUpdate = function (pe) {
+	        // call onFirstUpdate function from options
+	        isOnFirstUpdate && onFirstUpdate.apply(this, arguments);
+	        // calcalate and draw Transit's progress
 	        it._tuneOptions(it.history[this.index]);
 	      };
 
@@ -719,6 +722,37 @@
 	      // append the tween with the options
 	      it.timeline.append(new _tween2.default(merged));
 	      return this;
+	    }
+	    /*
+	      Method to override(or define) update callbacks in passed object.
+	      @param {Object} Object to override callbacks in.
+	    */
+
+	  }, {
+	    key: '_overrideUpdateCallbacks',
+	    value: function _overrideUpdateCallbacks(object) {
+	      var it = this,
+	          // save lexical this, uh oh
+	      onUpdate = object.onUpdate,
+	          isOnUpdate = onUpdate && typeof onUpdate === 'function';
+	      // redefine onUpdate for Transit's draw calculation in _setProgress
+	      object.onUpdate = function (pe) {
+	        // call onUpdate function from options
+	        isOnUpdate && onUpdate.apply(this, arguments);
+	        // calcalate and draw Transit's progress
+	        it._setProgress(pe);
+	      };
+
+	      var onFirstUpdate = object.onFirstUpdate,
+	          isOnFirstUpdate = onFirstUpdate && typeof onFirstUpdate === 'function';
+	      // redefine onFirstUpdate for Transit's _tuneOptions
+	      object.onFirstUpdate = function (pe) {
+	        // call onFirstUpdate function from options
+	        isOnFirstUpdate && onFirstUpdate.apply(this, arguments);
+	        // calcalate and draw Transit's progress
+	        // call tune options with index of the tween only if history > 1
+	        it.history.length > 1 && it._tuneOptions(it.history[this.index || 0]);
+	      };
 	    }
 	    // /*
 	    //   Method to start the animation with optional new options.
@@ -1331,6 +1365,8 @@
 	          o[key] = {};o[key][startKey] = endValue;
 	        }
 	      }
+	      // and save to the history
+	      this.history.push(o);
 	      return o;
 	    }
 	    /*
@@ -1372,7 +1408,7 @@
 	      // redefine onUpdate for Transit's draw calculation in _setProgress
 	      this._o.onUpdate = function (pe) {
 	        // call onUpdate function from options
-	        isOnUpdate && onUpdate.apply(it.tween, arguments);
+	        isOnUpdate && onUpdate.apply(this, arguments);
 	        // calcalate and draw Transit's progress
 	        it._setProgress(pe);
 	      };
@@ -1382,7 +1418,7 @@
 	      // redefine onStart to show/hide Transit
 	      this._o.onStart = function (isForward) {
 	        // call onStart function from options
-	        isOnStart && onStart.apply(it.tween, arguments);
+	        isOnStart && onStart.apply(this, arguments);
 	        // show the Transit on start
 	        // hide the Transit on reverse complete if isShowInit is not set
 	        isForward ? it._show() : !it._props.isShowInit && it._hide();
@@ -6983,7 +7019,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.174.4', isDebug: true, helpers: _h2.default,
+	  revision: '0.175.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};

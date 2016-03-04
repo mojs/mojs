@@ -366,7 +366,6 @@
         onUpdate = function() {};
         onStart = function() {};
         byte = new Byte({
-          isIt: 1,
           radius: 20,
           duration: 1000,
           delay: 200,
@@ -435,6 +434,47 @@
           return expect(tr._setProgress).toHaveBeenCalledWith(.6);
         });
       });
+      describe('onFirstUpdate binding', function() {
+        it('should override onFirstUpdate', function() {
+          var tr;
+          tr = new Transit().then({
+            fill: 'red'
+          });
+          return expect(typeof tr.timeline._timelines[1]._props.onFirstUpdate).toBe('function');
+        });
+        it('should not override onFirstUpdate function if exists', function() {
+          var args, isRightScope, options, tr;
+          isRightScope = null;
+          args = null;
+          options = {
+            onFirstUpdate: function() {
+              isRightScope = this === tr.timeline._timelines[1];
+              return args = arguments;
+            }
+          };
+          tr = new Transit().then(options);
+          expect(typeof tr.timeline._timelines[1]._props.onFirstUpdate).toBe('function');
+          tr.timeline.setProgress(0);
+          tr.timeline.setProgress(.1);
+          tr.timeline.setProgress(.4);
+          tr.timeline.setProgress(.5);
+          tr.timeline.setProgress(.8);
+          expect(isRightScope).toBe(true);
+          expect(args[0]).toBe(true);
+          return expect(args[1]).toBe(false);
+        });
+        return it('should call _tuneOptions method', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit().then(options);
+          tr.timeline.setProgress(0);
+          spyOn(tr, '_tuneOptions');
+          tr.timeline.setProgress(.8);
+          return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[1]);
+        });
+      });
       it('should bind onFirstUpdate function #1', function() {
         var byte, type1, type2;
         byte = new Byte({
@@ -482,6 +522,29 @@
         type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate;
         expect(type1).toBe('function');
         return expect(type2).toBe('function');
+      });
+    });
+    describe('_tuneOptions method ->', function() {
+      it('should call _extendDefaults with options', function() {
+        var byte, o;
+        byte = new Byte;
+        o = {
+          radius: 50
+        };
+        spyOn(byte, '_tuneOptions');
+        byte._tuneOptions(o);
+        return expect(byte._tuneOptions).toHaveBeenCalled();
+      });
+      return it('should call _calcSize and _setElStyles methods', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, '_calcSize');
+        spyOn(byte, '_setElStyles');
+        byte._tuneOptions({
+          radius: 50
+        });
+        expect(byte._calcSize).toHaveBeenCalled();
+        return expect(byte._setElStyles).toHaveBeenCalled();
       });
     });
     describe('size calculations ->', function() {
@@ -836,6 +899,30 @@
         });
       });
     });
+    describe('_show method ->', function() {
+      it('should set display: block to el', function() {
+        var byte;
+        byte = new Byte;
+        byte._show();
+        return expect(byte.el.style.display).toBe('block');
+      });
+      return it('should return if isShow is already true', function() {
+        var byte;
+        byte = new Byte;
+        byte._show();
+        byte.el.style.display = 'inline';
+        byte._show();
+        return expect(byte.el.style.display).toBe('inline');
+      });
+    });
+    describe('_hide method ->', function() {
+      return it('should set display: block to el', function() {
+        var byte;
+        byte = new Byte;
+        byte._hide();
+        return expect(byte.el.style.display).toBe('none');
+      });
+    });
     describe('_mergeThenOptions method ->', function() {
       it('should merge 2 objects', function() {
         var byte, end, mergedOpton, start;
@@ -911,7 +998,7 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.stroke['transparent']).toBe('#ff00ff');
       });
-      return it('should use start value if end value is null or undefined', function() {
+      it('should use start value if end value is null or undefined', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
         start = {
@@ -931,6 +1018,135 @@
         expect(mergedOpton.duration).toBe(1000);
         expect(mergedOpton.fill).toBe('orange');
         return expect(mergedOpton.points).toBe(5);
+      });
+      return it('should push merged options to the history', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10,
+          duration: 1000,
+          fill: 'orange',
+          points: 5
+        };
+        end = {
+          radius: 20,
+          duration: null,
+          points: void 0,
+          fill: null,
+          stroke: '#ff00ff'
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(byte.history[1]).toBe(mergedOpton);
+      });
+    });
+    describe('_overrideUpdateCallbacks method ->', function() {
+      describe('onUpdate binding ->', function() {
+        it('should override this._o.onUpdate', function() {
+          var o, tr;
+          tr = new Transit;
+          o = {};
+          tr._overrideUpdateCallbacks(o);
+          return expect(typeof o.onUpdate).toBe('function');
+        });
+        it('should not override onUpdate function if exists', function() {
+          var args, isRightScope, options, tr;
+          isRightScope = null;
+          args = null;
+          options = {
+            onUpdate: function() {
+              isRightScope = this === options;
+              return args = arguments;
+            }
+          };
+          tr = new Transit;
+          tr._overrideUpdateCallbacks(options);
+          expect(typeof options.onUpdate).toBe('function');
+          options.onUpdate(.1, .1, true, false);
+          expect(isRightScope).toBe(true);
+          expect(args[0]).toBe(.1);
+          expect(args[1]).toBe(.1);
+          expect(args[2]).toBe(true);
+          return expect(args[3]).toBe(false);
+        });
+        return it('should call _setProgress method', function() {
+          var options, progress, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit;
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_setProgress');
+          progress = .1;
+          options.onUpdate(progress, progress, true, false);
+          return expect(tr._setProgress).toHaveBeenCalledWith(progress);
+        });
+      });
+      return describe('onFirstUpdate binding ->', function() {
+        it('should override onFirstUpdate', function() {
+          var options, tr;
+          tr = new Transit().then({
+            fill: 'red'
+          });
+          options = {};
+          tr._overrideUpdateCallbacks(options);
+          return expect(typeof options.onFirstUpdate).toBe('function');
+        });
+        it('should not override onFirstUpdate function if exists', function() {
+          var args, isRightScope, options, tr;
+          isRightScope = null;
+          args = null;
+          options = {
+            onFirstUpdate: function() {
+              isRightScope = this === options;
+              return args = arguments;
+            }
+          };
+          tr = new Transit();
+          tr._overrideUpdateCallbacks(options);
+          expect(typeof options.onFirstUpdate).toBe('function');
+          options.onFirstUpdate(true, false);
+          expect(isRightScope).toBe(true);
+          expect(args[0]).toBe(true);
+          return expect(args[1]).toBe(false);
+        });
+        it('should call _tuneOptions method', function() {
+          var options, tr;
+          options = {
+            index: 1,
+            onUpdate: function() {}
+          };
+          tr = new Transit().then({
+            fill: 'red'
+          });
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          options.onFirstUpdate(true, false);
+          return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[options.index]);
+        });
+        it('should call _tuneOptions method with history[0] if no index', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit().then({
+            fill: 'red'
+          });
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          options.onFirstUpdate(true, false);
+          return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[0]);
+        });
+        return it('should call _tuneOptions if history > 1', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit();
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          options.onFirstUpdate(true, false);
+          return expect(tr._tuneOptions).not.toHaveBeenCalledWith(tr.history[0]);
+        });
       });
     });
     describe('_makeTweenControls method ->', function() {
