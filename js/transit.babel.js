@@ -19,11 +19,12 @@ class Transit extends Tweenable {
   _declareDefaults () {
     // DEFAULTS / APIs
     this.defaults = {
+      // ∆ :: Possible values: [color name, rgb, rgba, hex]
       stroke:           'transparent',
-      strokeOpacity:    1,
-      strokeLinecap:    '',
-      strokeWidth:      2,
-      strokeDasharray:  0,
+      strokeOpacity:    1,             // deltable: true
+      strokeLinecap:    '',            // stroke line cap. deltable: false
+      strokeWidth:      2,             // stroke width.    deltable: true
+      strokeDasharray:  0,             // stroke dasharray. 
       strokeDashoffset: 0,
       fill:             'deeppink',
       fillOpacity:      'transparent',
@@ -38,67 +39,56 @@ class Transit extends Tweenable {
       radius:           { 0: 50 },
       radiusX:          null,
       radiusY:          null,
-      // onStart:          null,
-      // onComplete:       null,
-      // onUpdate:         null,
-      // duration:         500,
-      // delay:            0,
-      // repeat:           0,
-      // yoyo:             false,
-      // easing:           'Linear.None',
-      isShowEnd: false,
-      isShowInit: false,
-      size: null,
-      sizeGap: 0
+      isShowEnd:        false,
+      isShowInit:       false,
+      size:             null,
+      sizeGap:          0
     }
   }
-  // /*
-  //   Method to create a then record for the module.
-  //   @public
-  //   @param    {Object} Options for the next animation.
-  //   @returns  {Object} this.
-  // */
-  // then ( o ) {
-  //   var it, len, opts;
-  //   // return if nothing was passed
-  //   if ((o == null) || !Object.keys(o)) { return; }
-  //   // merge then options with the current ones
-  //   var merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
-  //   // and save to the history
-  //   this.history.push(merged);
-  //   // get tween options
-  //   var tweenKeys = Object.keys(this.h.tweenOptionMap),
-  //       i         = tweenKeys.length,
-  //       tweenOptions = {};
-    
-  //   // copy tween options
-  //   while (i--) { tweenOptions[tweenKeys[i]] = merged[tweenKeys[i]]; }
-  //   var it = this,
-  //       len = it.history.length;
-  //   (function(_this) {
-  //     // set options control callbacks
-  //     return (function(len) {
-  //       tweenOptions.onUpdate = function(p) {
-  //         return _this._setProgress(p);
-  //       };
-  //       tweenOptions.onStart = function() {
-  //         var ref;
-  //         return (ref = _this._props.onStart) != null ? ref.apply(_this) : void 0;
-  //       };
-  //       tweenOptions.onComplete = function() {
-  //         var ref;
-  //         return (ref = _this._props.onComplete) != null ? ref.apply(_this) : void 0;
-  //       };
-  //       tweenOptions.onFirstUpdate = function() {
-  //         return it._tuneOptions(it.history[this.index]);
-  //       };
-  //       tweenOptions.isChained = !o.delay;
-  //       // append the tween with the options
-  //       return _this.timeline.append(new Tween(tweenOptions));
-  //     });
-  //   })(this)(len);
-  //   return this;
-  // }
+  /*
+    Method to create a then record for the module.
+    @public
+    @param    {Object} Options for the next animation.
+    @returns  {Object} this.
+  */
+  then ( o ) {
+    var it, len, opts;
+    // return if nothing was passed
+    if ((o == null) || !Object.keys(o)) { return; }
+    // merge then options with the current ones
+    var merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
+    // and save to the history
+    this.history.push(merged);
+    // get tween options
+    // var tweenKeys = Object.keys(this.h.tweenOptionMap),
+        // i         = tweenKeys.length,
+    // var tweenOptions = {};
+    // copy tween options
+    // while (i--) { var key = tweenKeys[i]; tweenOptions[key] = merged[key]; }
+    // copy duration
+    // tweenOptions.duration = merged.duration;
+    // set options control callbacks
+    var it         = this, // save lexical this, uh oh
+        onUpdate   = merged.onUpdate,
+        isOnUpdate = (onUpdate && typeof onUpdate === 'function');
+    // redefine onUpdate for Transit's draw calculation in _setProgress
+    merged.onUpdate = function ( pe ) {
+      // call onUpdate function from options
+      isOnUpdate && onUpdate.apply( this, arguments );
+      // calcalate and draw Transit's progress
+      it._setProgress(pe);
+    };
+
+    // tweenOptions.onUpdate = function(p) { it._setProgress(p); };
+    merged.onFirstUpdate = function() {
+      it._tuneOptions(it.history[this.index]);
+    };
+
+    merged.isChained = !o.delay;
+    // append the tween with the options
+    it.timeline.append(new Tween(merged));
+    return this;
+  }
   // /*
   //   Method to start the animation with optional new options.
   //   @public
@@ -291,7 +281,6 @@ class Transit extends Tweenable {
     @private
   */
   _show () {
-    this._o.isIt && console.log('show');
     if (this.isShown || (this.el == null)) { return; }
     this.el.style.display = 'block';
     this.isShown = true;
@@ -538,7 +527,6 @@ class Transit extends Tweenable {
     isObject = isObject && !optionsValue.unit;
     return !(!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue));
   }
-
   /*
     Method to get delta from property and set
     the property's start value to the props object.
@@ -562,57 +550,53 @@ class Transit extends Tweenable {
     // set props to start value of the delta
     // this._props[key] = delta.start;
   }
-  // /*
-  //   Method to merge two options into one. Used in .then chains.
-  //   @private
-  //   @param {Object} Start options for the merge.
-  //   @param {Object} End options for the merge.
-  //   @returns {Object} Merged options.
-  // */
-  // _mergeThenOptions ( start, end ) {
-  //   var endValue, i, isFunction, key, keys, o, startKey, startKeys, value;
-  //   o = {};
-  //   for (key in start) {
-  //     value = start[key];
-  //     if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
-  //       o[key] = value;
-  //     } else { o[key] = key === 'easing' ? '' : void 0; }
-  //   }
-  //   keys = Object.keys(end);
-  //   i = keys.length;
-  //   while (i--) {
-  //     key = keys[i];
-  //     endValue = end[key];
-  //     isFunction = typeof endValue === 'function';
-  //     if (this.h.tweenOptionMap[key] || typeof endValue === 'object' || isFunction) {
-  //       o[key] = endValue != null ? endValue : start[key];
-  //       continue;
-  //     }
-  //     startKey = start[key];
-  //     if (startKey == null) {
-  //       startKey = this.defaults[key];
-  //     }
-  //     if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
-  //       startKey = start.radius;
-  //     }
-  //     if (typeof startKey === 'object' && (startKey != null)) {
-  //       startKeys = Object.keys(startKey);
-  //       startKey = startKey[startKeys[0]];
-  //     }
-  //     if (endValue != null) {
-  //       o[key] = {};
-  //       o[key][startKey] = endValue;
-  //     }
-  //   }
-  //   return o;
-  // }
-  // /*
-  //   Method to tune new options on then reinitialization.
-  //   @private
-  // */
-  // _tuneOptions ( o ) {
-  //   this._extendDefaults(o); this._calcSize(); this._setElStyles();
-  // }
+  /*
+    Method to merge two options into one. Used in .then chains.
+    @private
+    @param {Object} Start options for the merge.
+    @param {Object} End options for the merge.
+    @returns {Object} Merged options.
+  */
+  _mergeThenOptions ( start, end ) {
+    var endValue, i, isFunction, key, keys, o, startKey, startKeys, value;
+    o = {};
+    for (key in start) {
+      value = start[key];
+      if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
+        o[key] = value;
+      } else { o[key] = (key === 'easing') ? '' : void 0; }
+    }
+    keys = Object.keys(end);
+    i = keys.length;
+    while (i--) {
+      key = keys[i];
+      endValue = end[key];
+      isFunction = typeof endValue === 'function';
+      if (this.h.tweenOptionMap[key] || typeof endValue === 'object' || isFunction) {
+        o[key] = endValue != null ? endValue : start[key];
+        continue;
+      }
+      startKey = start[key];
+      if (startKey == null) { startKey = this.defaults[key]; }
+      if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
+        startKey = start.radius;
+      }
+      if (typeof startKey === 'object' && (startKey != null)) {
+        startKeys = Object.keys(startKey);
+        startKey = startKey[startKeys[0]];
+      }
+      if (endValue != null) { o[key] = {}; o[key][startKey] = endValue; }
+    }
+    return o;
+  }
+  /*
+    Method to tune new options on history traversal.
+    @param {Object} Options values to tune to.
+    @private
+  */
+  _tuneOptions ( o ) {
+    this._extendDefaults(o); this._calcSize(); this._setElStyles();
+  }
   /*
     Method to setup tween and timeline options before creating them.
     @private  

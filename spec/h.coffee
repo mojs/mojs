@@ -63,8 +63,9 @@ describe 'Helpers ->', ->
       expect(h.callbacksMap.onStart)            .toBe 1
       expect(h.callbacksMap.onUpdate)           .toBe 1
       expect(h.callbacksMap.onComplete)         .toBe 1
-      expect(h.callbacksMap.onCompleteChain)    .toBe 1
-      expect(Object.keys(h.callbacksMap).length).toBe 4
+      expect(h.callbacksMap.onProgress)         .toBe 1
+      expect(h.callbacksMap.onFirstUpdate)      .toBe 1
+      expect(Object.keys(h.callbacksMap).length).toBe 5
   describe 'methods ->', ->
     describe 'clamp method', ->
       it 'should clamp value to max and min', ->

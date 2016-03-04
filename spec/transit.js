@@ -214,6 +214,274 @@
         return expect(byte.history[0].radius[0]).toBe(50);
       });
     });
+    describe('then method ->', function() {
+      it('should add new timeline with options', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radius: 5
+        });
+        return expect(byte.timeline._timelines.length).toBe(2);
+      });
+      it('should return if no options passed or options are empty', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        spyOn(byte, '_mergeThenOptions');
+        byte.then();
+        return expect(byte._mergeThenOptions).not.toHaveBeenCalled();
+      });
+      it('should inherit radius for radiusX/Y options', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        return expect(byte.history[1].radiusX[20]).toBe(5);
+      });
+      it('should pass isChained to timeline', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        return expect(byte.timeline._timelines[1]._props.isChained).toBe(true);
+      });
+      it('should not pass isChained to timeline if delay', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5,
+          delay: 100
+        });
+        return expect(byte.timeline._timelines[1]._props.isChained).toBe(false);
+      });
+      it('should inherit radius for radiusX/Y options in further chain', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        byte.then({
+          radiusY: 40
+        });
+        expect(byte.history[2].radiusX[20]).toBe(5);
+        return expect(byte.history[2].radiusY[20]).toBe(40);
+      });
+      it('should inherit radius for radiusX/Y options in further chain #2', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000
+        });
+        byte.then({
+          radiusX: 5
+        });
+        byte.then({
+          radiusY: 40,
+          radiusX: 50
+        });
+        expect(byte.history[2].radiusX[5]).toBe(50);
+        return expect(byte.history[2].radiusY[20]).toBe(40);
+      });
+      it('should add new timeline with options #2', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10,
+          yoyo: true
+        });
+        byte.then({
+          radius: 5
+        });
+        expect(byte.timeline._timelines[1]._props.duration).toBe(1000);
+        expect(byte.timeline._timelines[1]._props.yoyo).toBe(false);
+        return expect(byte.timeline._timelines[1]._props.shiftTime).toBe(1010);
+      });
+      it('should merge then options and add them to the history', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        expect(byte.history.length).toBe(2);
+        expect(byte.history[1].radius[20]).toBe(5);
+        expect(byte.history[1].duration).toBe(1000);
+        expect(byte.history[1].delay).toBe(100);
+        return expect(byte.history[1].yoyo).toBe(true);
+      });
+      it('should always merge then options with the last history item', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        byte.then({
+          radius: {
+            100: 10
+          },
+          delay: 0,
+          stroke: 'green'
+        });
+        expect(byte.history.length).toBe(3);
+        expect(byte.history[2].radius[100]).toBe(10);
+        expect(byte.history[2].duration).toBe(1000);
+        expect(byte.history[2].delay).toBe(0);
+        expect(byte.history[2].yoyo).toBe(void 0);
+        return expect(byte.history[2].stroke['transparent']).toBe('green');
+      });
+      it('should not copy callbacks', function() {
+        var byte, onStart, onUpdate;
+        onUpdate = function() {};
+        onStart = function() {};
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 200,
+          onUpdate: onUpdate,
+          onStart: onStart
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        expect(byte.history.length).toBe(2);
+        expect(byte.history[1].radius[20]).toBe(5);
+        expect(byte.history[1].duration).toBe(1000);
+        expect(byte.history[1].delay).toBe(100);
+        expect(byte.history[1].yoyo).toBe(true);
+        expect(byte.history[1].onUpdate).toBe(void 0);
+        console.log(byte.history[1]);
+        byte.timeline.setProgress(.73);
+        byte.timeline.setProgress(.74);
+        byte.timeline.setProgress(.75);
+        expect(byte._props.onUpdate).not.toBeDefined();
+        return expect(byte._props.onStart).not.toBeDefined();
+      });
+      describe('onUpdate binding', function() {
+        it('should override onUpdate', function() {
+          var tr;
+          tr = new Transit().then({
+            fill: 'red'
+          });
+          return expect(typeof tr.timeline._timelines[1].onUpdate).toBe('function');
+        });
+        it('should not override onUpdate function if exists', function() {
+          var args, isRightScope, options, tr;
+          isRightScope = null;
+          args = null;
+          options = {
+            onUpdate: function() {
+              isRightScope = this === tr.timeline._timelines[1];
+              return args = arguments;
+            }
+          };
+          tr = new Transit().then(options);
+          expect(typeof tr.timeline._timelines[1].onUpdate).toBe('function');
+          tr.timeline.setProgress(0);
+          tr.timeline.setProgress(.1);
+          tr.timeline.setProgress(.4);
+          tr.timeline.setProgress(.5);
+          tr.timeline.setProgress(.8);
+          expect(isRightScope).toBe(true);
+          expect(args[0]).toBe(.6);
+          expect(args[1]).toBe(.6);
+          expect(args[2]).toBe(true);
+          return expect(args[3]).toBe(false);
+        });
+        return it('should call _setProgress method', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit().then(options);
+          tr.timeline.setProgress(0);
+          spyOn(tr, '_setProgress');
+          tr.timeline.setProgress(.8);
+          return expect(tr._setProgress).toHaveBeenCalledWith(.6);
+        });
+      });
+      it('should bind onFirstUpdate function #1', function() {
+        var byte, type1, type2;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        byte.then({
+          radius: {
+            100: 10
+          },
+          delay: 200,
+          stroke: 'green'
+        });
+        type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate;
+        type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate;
+        expect(type1).toBe('function');
+        return expect(type2).toBe('function');
+      });
+      return it('should bind onFirstUpdate function #2', function() {
+        var byte, type1, type2;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        byte.then({
+          radius: 5,
+          yoyo: true,
+          delay: 100
+        });
+        byte.then({
+          radius: {
+            100: 10
+          },
+          delay: 200,
+          stroke: 'green'
+        });
+        type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate;
+        type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate;
+        expect(type1).toBe('function');
+        return expect(type2).toBe('function');
+      });
+    });
     describe('size calculations ->', function() {
       it('should calculate size el size depending on largest value', function() {
         var byte;
@@ -564,6 +832,103 @@
           });
           return byte.play();
         });
+      });
+    });
+    describe('_mergeThenOptions method ->', function() {
+      it('should merge 2 objects', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10,
+          duration: 1000,
+          stroke: '#ff00ff'
+        };
+        end = {
+          radius: 20,
+          duration: 500
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.radius[10]).toBe(20);
+        expect(mergedOpton.duration).toBe(500);
+        return expect(mergedOpton.stroke).toBe('#ff00ff');
+      });
+      it('should merge 2 objects if the first was an object', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: {
+            10: 0
+          }
+        };
+        end = {
+          radius: 20
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.radius[0]).toBe(20);
+      });
+      it('should use the second value if it is an object', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10
+        };
+        end = {
+          radius: {
+            20: 0
+          }
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.radius[20]).toBe(0);
+      });
+      it('should save the old tween values', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          duration: 10
+        };
+        end = {
+          radius: {
+            20: 0
+          }
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.duration).toBe(10);
+      });
+      it('should fallback to default value is start is undefined', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10,
+          duration: 1000
+        };
+        end = {
+          radius: 20,
+          duration: 500,
+          stroke: '#ff00ff'
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.stroke['transparent']).toBe('#ff00ff');
+      });
+      return it('should use start value if end value is null or undefined', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10,
+          duration: 1000,
+          fill: 'orange',
+          points: 5
+        };
+        end = {
+          radius: 20,
+          duration: null,
+          points: void 0,
+          fill: null,
+          stroke: '#ff00ff'
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.duration).toBe(1000);
+        expect(mergedOpton.fill).toBe('orange');
+        return expect(mergedOpton.points).toBe(5);
       });
     });
     describe('_makeTweenControls method ->', function() {

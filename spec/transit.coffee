@@ -184,111 +184,137 @@ describe 'Transit ->', ->
   #     byte._transformHistory x: {100: 50}
   #     expect(byte.history[1].x[100]).toBe 50 # x: { 100: 50 }
   #     expect(byte.history[2].x[50]).toBe 20  # x: { 50: 20 }
-  # describe 'then method ->', ->
-  #   it 'should add new timeline with options', ->
-  #     byte = new Byte radius: 20, duration: 1000
-  #     byte.then radius: 5
-  #     expect(byte.timeline._timelines.length).toBe 2
-  #   it 'should return if no options passed or options are empty', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     spyOn byte, '_mergeThenOptions'
-  #     byte.then()
-  #     expect(byte._mergeThenOptions).not.toHaveBeenCalled()
-  #   it 'should inherit radius for radiusX/Y options', ->
-  #     byte = new Byte radius: 20, duration: 1000
-  #     byte.then radiusX: 5
-  #     expect(byte.history[1].radiusX[20]).toBe 5
-  #   it 'should pass isChained to timeline', ->
-  #     byte = new Byte radius: 20, duration: 1000
-  #     byte.then radiusX: 5
-  #     expect(byte.timeline._timelines[1]._props.isChained).toBe true
-  #   it 'should not pass isChained to timeline if delay', ->
-  #     byte = new Byte radius: 20, duration: 1000
-  #     byte.then radiusX: 5, delay: 100
-  #     expect(byte.timeline._timelines[1]._props.isChained).toBe false
-  #   it 'should inherit radius for radiusX/Y options in further chain', ->
-  #     byte = new Byte radius: 20, duration: 1000
-  #     byte.then radiusX: 5
-  #     byte.then radiusY: 40
-  #     expect(byte.history[2].radiusX[20]).toBe  5
-  #     expect(byte.history[2].radiusY[20]).toBe 40
-  #   it 'should inherit radius for radiusX/Y options in further chain #2', ->
-  #     byte = new Byte radius: 20, duration: 1000
-  #     byte.then radiusX: 5
-  #     byte.then radiusY: 40, radiusX: 50
-  #     expect(byte.history[2].radiusX[5]) .toBe 50
-  #     expect(byte.history[2].radiusY[20]).toBe 40
-  #   it 'should add new timeline with options #2', ->
-  #     byte = new Byte
-  #       radius: 20, duration: 1000, delay: 10, yoyo: true
-  #     byte.then radius: 5
-  #     expect(byte.timeline._timelines[1]._props.duration).toBe 1000
-  #     expect(byte.timeline._timelines[1]._props.yoyo)    .toBe false
-  #     expect(byte.timeline._timelines[1]._props.shiftTime).toBe 1010
-  #   it 'should merge then options and add them to the history', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     byte.then radius: 5, yoyo: true, delay: 100
-  #     expect(byte.history.length)       .toBe 2
-  #     expect(byte.history[1].radius[20]).toBe 5
-  #     expect(byte.history[1].duration).toBe 1000
-  #     expect(byte.history[1].delay)   .toBe 100
-  #     expect(byte.history[1].yoyo)    .toBe true
-  #   it 'should always merge then options with the last history item', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     byte.then radius: 5, yoyo: true, delay: 100
-  #     byte.then radius: {100:10}, delay: 0, stroke: 'green'
-  #     expect(byte.history.length)       .toBe 3
-  #     expect(byte.history[2].radius[100]).toBe 10
-  #     expect(byte.history[2].duration).toBe 1000
-  #     expect(byte.history[2].delay)   .toBe 0
-  #     expect(byte.history[2].yoyo)    .toBe undefined
-  #     expect(byte.history[2].stroke['transparent']).toBe 'green'
-  #   it 'should not copy callbacks', ->
-  #     onUpdate = ->
-  #     onStart  = ->
-  #     byte = new Byte
-  #       radius: 20, duration: 1000, delay: 200
-  #       onUpdate:  onUpdate, onStart: onStart
-  #     byte.then radius: 5, yoyo: true, delay: 100
-  #     expect(byte.history.length)       .toBe 2
-  #     expect(byte.history[1].radius[20]).toBe 5
-  #     expect(byte.history[1].duration)  .toBe 1000
-  #     expect(byte.history[1].delay)     .toBe 100
-  #     expect(byte.history[1].yoyo)      .toBe true
-  #     expect(byte.history[1].onUpdate)  .toBe undefined
-  #     byte.timeline.setProgress .73
-  #     byte.timeline.setProgress .74
-  #     byte.timeline.setProgress .75
-  #     expect(byte._props.onUpdate).not.toBeDefined()
-  #     expect(byte._props.onStart) .not.toBeDefined()
-  #   it 'should bind onUpdate function', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     byte.then radius: 5, yoyo: true, delay: 100
-  #     byte.then radius: {100:10}, delay: 200, stroke: 'green'
-  #     expect(typeof byte.timeline._timelines[1]._props.onUpdate).toBe 'function'
-  #     expect(typeof byte.timeline._timelines[2]._props.onUpdate).toBe 'function'
-  #   it 'should bind onStart function', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     byte.then radius: 5, yoyo: true, delay: 100
-  #     byte.then radius: {100:10}, delay: 200, stroke: 'green'
-  #     expect(typeof byte.timeline._timelines[1]._props.onStart).toBe 'function'
-  #     expect(typeof byte.timeline._timelines[2]._props.onStart).toBe 'function'
-  #   it 'should bind onFirstUpdate function #1', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     byte.then radius: 5, yoyo: true, delay: 100
-  #     byte.then radius: {100:10}, delay: 200, stroke: 'green'
-  #     type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
-  #     type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
-  #     expect(type1).toBe 'function'
-  #     expect(type2).toBe 'function'
-  #   it 'should bind onFirstUpdate function #2', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     byte.then radius: 5, yoyo: true, delay: 100
-  #     byte.then radius: {100:10}, delay: 200, stroke: 'green'
-  #     type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
-  #     type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
-  #     expect(type1).toBe 'function'
-  #     expect(type2).toBe 'function'
+  describe 'then method ->', ->
+    it 'should add new timeline with options', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radius: 5
+      expect(byte.timeline._timelines.length).toBe 2
+    it 'should return if no options passed or options are empty', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      spyOn byte, '_mergeThenOptions'
+      byte.then()
+      expect(byte._mergeThenOptions).not.toHaveBeenCalled()
+    it 'should inherit radius for radiusX/Y options', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      expect(byte.history[1].radiusX[20]).toBe 5
+    it 'should pass isChained to timeline', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      expect(byte.timeline._timelines[1]._props.isChained).toBe true
+    it 'should not pass isChained to timeline if delay', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5, delay: 100
+      expect(byte.timeline._timelines[1]._props.isChained).toBe false
+    it 'should inherit radius for radiusX/Y options in further chain', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      byte.then radiusY: 40
+      expect(byte.history[2].radiusX[20]).toBe  5
+      expect(byte.history[2].radiusY[20]).toBe 40
+    it 'should inherit radius for radiusX/Y options in further chain #2', ->
+      byte = new Byte radius: 20, duration: 1000
+      byte.then radiusX: 5
+      byte.then radiusY: 40, radiusX: 50
+      expect(byte.history[2].radiusX[5]) .toBe 50
+      expect(byte.history[2].radiusY[20]).toBe 40
+    it 'should add new timeline with options #2', ->
+      byte = new Byte
+        radius: 20, duration: 1000, delay: 10, yoyo: true
+      byte.then radius: 5
+      expect(byte.timeline._timelines[1]._props.duration).toBe 1000
+      expect(byte.timeline._timelines[1]._props.yoyo)    .toBe false
+      expect(byte.timeline._timelines[1]._props.shiftTime).toBe 1010
+    it 'should merge then options and add them to the history', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      expect(byte.history.length)       .toBe 2
+      expect(byte.history[1].radius[20]).toBe 5
+      expect(byte.history[1].duration).toBe 1000
+      expect(byte.history[1].delay)   .toBe 100
+      expect(byte.history[1].yoyo)    .toBe true
+    it 'should always merge then options with the last history item', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      byte.then radius: {100:10}, delay: 0, stroke: 'green'
+      expect(byte.history.length)       .toBe 3
+      expect(byte.history[2].radius[100]).toBe 10
+      expect(byte.history[2].duration).toBe 1000
+      expect(byte.history[2].delay)   .toBe 0
+      expect(byte.history[2].yoyo)    .toBe undefined
+      expect(byte.history[2].stroke['transparent']).toBe 'green'
+    it 'should not copy callbacks', ->
+      onUpdate = ->
+      onStart  = ->
+      byte = new Byte
+        radius: 20, duration: 1000, delay: 200
+        onUpdate:  onUpdate, onStart: onStart
+      byte.then radius: 5, yoyo: true, delay: 100
+      expect(byte.history.length)       .toBe 2
+      expect(byte.history[1].radius[20]).toBe 5
+      expect(byte.history[1].duration)  .toBe 1000
+      expect(byte.history[1].delay)     .toBe 100
+      expect(byte.history[1].yoyo)      .toBe true
+      expect(byte.history[1].onUpdate)  .toBe undefined
+      console.log(byte.history[1]);
+      byte.timeline.setProgress .73
+      byte.timeline.setProgress .74
+      byte.timeline.setProgress .75
+      expect(byte._props.onUpdate).not.toBeDefined()
+      expect(byte._props.onStart) .not.toBeDefined()
+    describe 'onUpdate binding', ->
+      it 'should override onUpdate', ->
+        tr = new Transit()
+          .then({ fill: 'red' })
+        expect(typeof tr.timeline._timelines[1].onUpdate).toBe 'function'
+
+      it 'should not override onUpdate function if exists', ->
+        isRightScope = null; args = null
+        options = {
+          onUpdate:->
+            isRightScope = @ is tr.timeline._timelines[1]
+            args = arguments
+          }
+        tr = new Transit().then(options)
+        expect(typeof tr.timeline._timelines[1].onUpdate).toBe 'function'
+
+        tr.timeline.setProgress 0
+        tr.timeline.setProgress .1
+        tr.timeline.setProgress .4
+        tr.timeline.setProgress .5
+        tr.timeline.setProgress .8
+        expect(isRightScope).toBe true
+
+        expect(args[0]).toBe .6
+        expect(args[1]).toBe .6
+        expect(args[2]).toBe true
+        expect(args[3]).toBe false
+
+      it 'should call _setProgress method', ->
+        options = { onUpdate:-> }
+        tr = new Transit().then(options);
+
+        tr.timeline.setProgress 0
+        spyOn tr, '_setProgress'
+        tr.timeline.setProgress .8
+        expect(tr._setProgress).toHaveBeenCalledWith .6
+
+    it 'should bind onFirstUpdate function #1', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
+      type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
+      expect(type1).toBe 'function'
+      expect(type2).toBe 'function'
+    it 'should bind onFirstUpdate function #2', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      byte.then radius: 5, yoyo: true, delay: 100
+      byte.then radius: {100:10}, delay: 200, stroke: 'green'
+      type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
+      type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
+      expect(type1).toBe 'function'
+      expect(type2).toBe 'function'
   # describe '_tuneOptions method ->', ->
   #   it 'should call _extendDefaults with options', ->
   #     byte = new Byte
@@ -618,49 +644,49 @@ describe 'Transit ->', ->
   #     byte = new Byte
   #     byte._hide()
   #     expect(byte.el.style.display).toBe 'none'
-  # # describe '_mergeThenOptions method ->', ->
-  # #   it 'should merge 2 objects', ->
-  # #     byte = new Byte
-  # #     start = radius: 10, duration: 1000, stroke: '#ff00ff'
-  # #     end   = radius: 20, duration: 500
-  # #     mergedOpton = byte._mergeThenOptions start, end
-  # #     expect(mergedOpton.radius[10]).toBe 20
-  # #     expect(mergedOpton.duration).toBe 500
-  # #     expect(mergedOpton.stroke).toBe '#ff00ff'
-  # #   it 'should merge 2 objects if the first was an object', ->
-  # #     byte = new Byte
-  # #     start = radius: {10: 0}
-  # #     end   = radius: 20
-  # #     mergedOpton = byte._mergeThenOptions start, end
-  # #     expect(mergedOpton.radius[0]).toBe 20
-  # #   it 'should use the second value if it is an object', ->
-  # #     byte = new Byte
-  # #     start = radius: 10
-  # #     end   = radius: {20: 0}
-  # #     mergedOpton = byte._mergeThenOptions start, end
-  # #     expect(mergedOpton.radius[20]).toBe 0
-  # #   it 'should save the old tween values', ->
-  # #     byte = new Byte
-  # #     start = duration: 10
-  # #     end   = radius: {20: 0}
-  # #     mergedOpton = byte._mergeThenOptions start, end
-  # #     expect(mergedOpton.duration).toBe 10
-  # #   it 'should fallback to default value is start is undefined', ->
-  # #     byte = new Byte
-  # #     start = radius: 10, duration: 1000
-  # #     end   = radius: 20, duration: 500, stroke: '#ff00ff'
-  # #     mergedOpton = byte._mergeThenOptions start, end
-  # #     expect(mergedOpton.stroke['transparent']).toBe '#ff00ff'
-  # #   it 'should use start value if end value is null or undefined', ->
-  # #     byte = new Byte
-  # #     start = radius: 10, duration: 1000, fill: 'orange', points: 5
-  # #     end   =
-  # #       radius: 20, duration: null, points: undefined
-  # #       fill: null, stroke: '#ff00ff'
-  # #     mergedOpton = byte._mergeThenOptions start, end
-  # #     expect(mergedOpton.duration).toBe 1000
-  # #     expect(mergedOpton.fill)    .toBe 'orange'
-  # #     expect(mergedOpton.points)  .toBe 5
+  describe '_mergeThenOptions method ->', ->
+    it 'should merge 2 objects', ->
+      byte = new Byte
+      start = radius: 10, duration: 1000, stroke: '#ff00ff'
+      end   = radius: 20, duration: 500
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radius[10]).toBe 20
+      expect(mergedOpton.duration).toBe 500
+      expect(mergedOpton.stroke).toBe '#ff00ff'
+    it 'should merge 2 objects if the first was an object', ->
+      byte = new Byte
+      start = radius: {10: 0}
+      end   = radius: 20
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radius[0]).toBe 20
+    it 'should use the second value if it is an object', ->
+      byte = new Byte
+      start = radius: 10
+      end   = radius: {20: 0}
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radius[20]).toBe 0
+    it 'should save the old tween values', ->
+      byte = new Byte
+      start = duration: 10
+      end   = radius: {20: 0}
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.duration).toBe 10
+    it 'should fallback to default value is start is undefined', ->
+      byte = new Byte
+      start = radius: 10, duration: 1000
+      end   = radius: 20, duration: 500, stroke: '#ff00ff'
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.stroke['transparent']).toBe '#ff00ff'
+    it 'should use start value if end value is null or undefined', ->
+      byte = new Byte
+      start = radius: 10, duration: 1000, fill: 'orange', points: 5
+      end   =
+        radius: 20, duration: null, points: undefined
+        fill: null, stroke: '#ff00ff'
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.duration).toBe 1000
+      expect(mergedOpton.fill)    .toBe 'orange'
+      expect(mergedOpton.points)  .toBe 5
   # describe 'render method ->', ->
   #   it 'should call draw method', ->
   #     byte = new Byte radius: 25

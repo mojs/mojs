@@ -83,8 +83,9 @@
         expect(h.callbacksMap.onStart).toBe(1);
         expect(h.callbacksMap.onUpdate).toBe(1);
         expect(h.callbacksMap.onComplete).toBe(1);
-        expect(h.callbacksMap.onCompleteChain).toBe(1);
-        return expect(Object.keys(h.callbacksMap).length).toBe(4);
+        expect(h.callbacksMap.onProgress).toBe(1);
+        expect(h.callbacksMap.onFirstUpdate).toBe(1);
+        return expect(Object.keys(h.callbacksMap).length).toBe(5);
       });
     });
     describe('methods ->', function() {
