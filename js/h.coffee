@@ -55,7 +55,6 @@ class Helpers
     yoyo:             1
     onStart:          1
     onComplete:       1
-    onCompleteChain:  1
     onUpdate:         1
     points:           1
   callbacksMap:

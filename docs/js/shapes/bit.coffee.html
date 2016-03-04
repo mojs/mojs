@@ -35,27 +35,26 @@
         <div class="code"><div class="wrapper">h       = <span class="hljs-built_in">require</span> <span class="hljs-string">'../h'</span>
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Bit</span></span>
-  <span class="hljs-attribute">ns</span>:                   <span class="hljs-string">'http://www.w3.org/2000/svg'</span>
-  <span class="hljs-attribute">type</span>:                 <span class="hljs-string">'line'</span>
-  <span class="hljs-attribute">ratio</span>:                <span class="hljs-number">1</span>
+  <span class="hljs-attribute">ns</span>:                     <span class="hljs-string">'http://www.w3.org/2000/svg'</span>
+  <span class="hljs-attribute">shape</span>:                  <span class="hljs-string">'line'</span>
+  <span class="hljs-attribute">ratio</span>:                  <span class="hljs-number">1</span>
   <span class="hljs-attribute">defaults</span>:
-    <span class="hljs-attribute">radius</span>:             <span class="hljs-number">50</span>
-    <span class="hljs-attribute">radiusX</span>:            <span class="hljs-literal">undefined</span>
-    <span class="hljs-attribute">radiusY</span>:            <span class="hljs-literal">undefined</span>
-    <span class="hljs-attribute">points</span>:             <span class="hljs-number">3</span>
-    <span class="hljs-attribute">x</span>:                  <span class="hljs-number">0</span>
-    <span class="hljs-attribute">y</span>:                  <span class="hljs-number">0</span>
-    <span class="hljs-attribute">angle</span>:              <span class="hljs-number">0</span>
-    <span class="hljs-string">'stroke'</span>:           <span class="hljs-string">'hotpink'</span>
-    <span class="hljs-string">'stroke-width'</span>:     <span class="hljs-number">2</span>
-    <span class="hljs-string">'stroke-opacity'</span>:   <span class="hljs-number">1</span>
-    <span class="hljs-string">'fill'</span>:             <span class="hljs-string">'transparent'</span>
-    <span class="hljs-string">'fill-opacity'</span>:     <span class="hljs-number">1</span>
-    <span class="hljs-string">'stroke-dasharray'</span>: <span class="hljs-string">''</span>
-    <span class="hljs-string">'stroke-dashoffset'</span>:<span class="hljs-string">''</span>
-    <span class="hljs-string">'stroke-linecap'</span>:   <span class="hljs-string">''</span>
-  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-property">@init</span>(); @
-  <span class="hljs-attribute">init</span>:<span class="hljs-function">-&gt;</span> <span class="hljs-property">@vars</span>(); <span class="hljs-property">@render</span>(); @
+    <span class="hljs-attribute">radius</span>:               <span class="hljs-number">50</span>
+    <span class="hljs-attribute">radiusX</span>:              <span class="hljs-literal">undefined</span>
+    <span class="hljs-attribute">radiusY</span>:              <span class="hljs-literal">undefined</span>
+    <span class="hljs-attribute">points</span>:               <span class="hljs-number">3</span>
+    <span class="hljs-attribute">x</span>:                    <span class="hljs-number">0</span>
+    <span class="hljs-attribute">y</span>:                    <span class="hljs-number">0</span>
+    <span class="hljs-attribute">angle</span>:                <span class="hljs-number">0</span>
+    <span class="hljs-attribute">stroke</span>:               <span class="hljs-string">'hotpink'</span>
+    <span class="hljs-string">'stroke-width'</span>:       <span class="hljs-number">2</span>
+    <span class="hljs-string">'stroke-opacity'</span>:     <span class="hljs-number">1</span>
+    <span class="hljs-attribute">fill</span>:                 <span class="hljs-string">'transparent'</span>
+    <span class="hljs-string">'fill-opacity'</span>:       <span class="hljs-number">1</span>
+    <span class="hljs-string">'stroke-dasharray'</span>:   <span class="hljs-string">''</span>
+    <span class="hljs-string">'stroke-dashoffset'</span>:  <span class="hljs-string">''</span>
+    <span class="hljs-string">'stroke-linecap'</span>:     <span class="hljs-string">''</span>
+  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@o</span>={})</span>-&gt;</span> <span class="hljs-property">@vars</span>(); <span class="hljs-property">@render</span>(); @
   <span class="hljs-attribute">vars</span>:<span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@o</span>.ctx <span class="hljs-keyword">and</span> <span class="hljs-property">@o</span>.ctx.tagName <span class="hljs-keyword">is</span> <span class="hljs-string">'svg'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@ctx</span> = <span class="hljs-property">@o</span>.ctx
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> !<span class="hljs-property">@o</span>.el
@@ -98,7 +97,7 @@ return true</p>
     <span class="hljs-property">@isRendered</span> = <span class="hljs-literal">true</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@o</span>.el? <span class="hljs-keyword">then</span> <span class="hljs-property">@el</span> = <span class="hljs-property">@o</span>.el; <span class="hljs-property">@isForeign</span> = <span class="hljs-literal">true</span>
     <span class="hljs-keyword">else</span>
-      <span class="hljs-property">@el</span> = <span class="hljs-built_in">document</span>.createElementNS <span class="hljs-property">@ns</span>, <span class="hljs-property">@type</span> <span class="hljs-keyword">or</span> <span class="hljs-string">'line'</span>
+      <span class="hljs-property">@el</span> = <span class="hljs-built_in">document</span>.createElementNS <span class="hljs-property">@ns</span>, <span class="hljs-property">@shape</span> <span class="hljs-keyword">or</span> <span class="hljs-string">'line'</span>
       !<span class="hljs-property">@o</span>.isDrawLess <span class="hljs-keyword">and</span> <span class="hljs-property">@draw</span>(); <span class="hljs-property">@ctx</span>.appendChild <span class="hljs-property">@el</span>
 
   <span class="hljs-attribute">drawMap</span>: [

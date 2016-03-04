@@ -1,9 +1,9 @@
 window.files = [
 {
-  "path": "js/burst.coffee.html",
-  "originalName": "burst.coffee",
-  "originalPath": "js/burst.coffee",
-  "name": "burst.coffee.html",
+  "path": "js/burst_old.coffee.html",
+  "originalName": "burst_old.coffee",
+  "originalPath": "js/burst_old.coffee",
+  "name": "burst_old.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
@@ -14,20 +14,6 @@ window.files = [
   "name": "h.coffee.html",
   "lang": "coffeescript",
   "toc": []
-},
-{
-  "path": "js/mojs.coffee.html",
-  "originalName": "mojs.coffee",
-  "originalPath": "js/mojs.coffee",
-  "name": "mojs.coffee.html",
-  "lang": "coffeescript",
-  "toc": [
-    {
-      "level": 3,
-      "slug": "istanbul-ignore-next",
-      "title": "istanbul ignore next"
-    }
-  ]
 },
 {
   "path": "js/motion-path.coffee.html",
@@ -54,33 +40,6 @@ window.files = [
   ]
 },
 {
-  "path": "js/spriter.coffee.html",
-  "originalName": "spriter.coffee",
-  "originalPath": "js/spriter.coffee",
-  "name": "spriter.coffee.html",
-  "lang": "coffeescript",
-  "toc": [
-    {
-      "level": 2,
-      "slug": "spriter",
-      "title": "Spriter"
-    },
-    {
-      "level": 3,
-      "slug": "defaults-apis",
-      "title": "Defaults/APIs"
-    }
-  ]
-},
-{
-  "path": "js/stagger.coffee.html",
-  "originalName": "stagger.coffee",
-  "originalPath": "js/stagger.coffee",
-  "name": "stagger.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/swirl.coffee.html",
   "originalName": "swirl.coffee",
   "originalPath": "js/swirl.coffee",
@@ -89,10 +48,10 @@ window.files = [
   "toc": []
 },
 {
-  "path": "js/transit.coffee.html",
-  "originalName": "transit.coffee",
-  "originalPath": "js/transit.coffee",
-  "name": "transit.coffee.html",
+  "path": "js/transit_old.coffee.html",
+  "originalName": "transit_old.coffee",
+  "originalPath": "js/transit_old.coffee",
+  "name": "transit_old.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
@@ -159,14 +118,6 @@ window.files = [
   "toc": []
 },
 {
-  "path": "js/shapes/bitsMap.coffee.html",
-  "originalName": "bitsMap.coffee",
-  "originalPath": "js/shapes/bitsMap.coffee",
-  "name": "bitsMap.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/shapes/circle.coffee.html",
   "originalName": "circle.coffee",
   "originalPath": "js/shapes/circle.coffee",
@@ -215,34 +166,18 @@ window.files = [
   "toc": []
 },
 {
+  "path": "js/shapes/shapesMap.coffee.html",
+  "originalName": "shapesMap.coffee",
+  "originalPath": "js/shapes/shapesMap.coffee",
+  "name": "shapesMap.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/shapes/zigzag.coffee.html",
   "originalName": "zigzag.coffee",
   "originalPath": "js/shapes/zigzag.coffee",
   "name": "zigzag.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/tween/timeline.coffee.html",
-  "originalName": "timeline.coffee",
-  "originalPath": "js/tween/timeline.coffee",
-  "name": "timeline.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/tween/tween.coffee.html",
-  "originalName": "tween.coffee",
-  "originalPath": "js/tween/tween.coffee",
-  "name": "tween.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/tween/tweener.coffee.html",
-  "originalName": "tweener.coffee",
-  "originalPath": "js/tween/tweener.coffee",
-  "name": "tweener.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },

@@ -59,14 +59,6 @@ class Transit extends Tweenable {
     var merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
     // and save to the history
     this.history.push(merged);
-    // get tween options
-    // var tweenKeys = Object.keys(this.h.tweenOptionMap),
-        // i         = tweenKeys.length,
-    // var tweenOptions = {};
-    // copy tween options
-    // while (i--) { var key = tweenKeys[i]; tweenOptions[key] = merged[key]; }
-    // copy duration
-    // tweenOptions.duration = merged.duration;
     // set options control callbacks
     var it         = this, // save lexical this, uh oh
         onUpdate   = merged.onUpdate,
@@ -79,7 +71,6 @@ class Transit extends Tweenable {
       it._setProgress(pe);
     };
 
-    // tweenOptions.onUpdate = function(p) { it._setProgress(p); };
     merged.onFirstUpdate = function() {
       it._tuneOptions(it.history[this.index]);
     };

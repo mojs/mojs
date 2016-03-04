@@ -247,6 +247,7 @@ describe 'Transit ->', ->
       onUpdate = ->
       onStart  = ->
       byte = new Byte
+        isIt: 1
         radius: 20, duration: 1000, delay: 200
         onUpdate:  onUpdate, onStart: onStart
       byte.then radius: 5, yoyo: true, delay: 100
@@ -255,12 +256,13 @@ describe 'Transit ->', ->
       expect(byte.history[1].duration)  .toBe 1000
       expect(byte.history[1].delay)     .toBe 100
       expect(byte.history[1].yoyo)      .toBe true
-      expect(byte.history[1].onUpdate)  .toBe undefined
-      console.log(byte.history[1]);
+      expect(byte.history[1].onComplete).toBe undefined
+      expect(byte.history[1].onUpdate).toBeDefined()
+      expect(byte.history[1].onUpdate).not.toBe onUpdate
       byte.timeline.setProgress .73
       byte.timeline.setProgress .74
       byte.timeline.setProgress .75
-      expect(byte._props.onUpdate).not.toBeDefined()
+      expect(byte._props.onComplete).not.toBeDefined()
       expect(byte._props.onStart) .not.toBeDefined()
     describe 'onUpdate binding', ->
       it 'should override onUpdate', ->
