@@ -97,6 +97,22 @@ window.files = [
   "toc": []
 },
 {
+  "path": "js/polyfills/performance.coffee.html",
+  "originalName": "performance.coffee",
+  "originalPath": "js/polyfills/performance.coffee",
+  "name": "performance.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/polyfills/raf.coffee.html",
+  "originalName": "raf.coffee",
+  "originalPath": "js/polyfills/raf.coffee",
+  "name": "raf.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
   "path": "js/easing/bezier-easing.coffee.html",
   "originalName": "bezier-easing.coffee",
   "originalPath": "js/easing/bezier-easing.coffee",
@@ -133,22 +149,6 @@ window.files = [
       "title": "PathEasing"
     }
   ]
-},
-{
-  "path": "js/polyfills/performance.coffee.html",
-  "originalName": "performance.coffee",
-  "originalPath": "js/polyfills/performance.coffee",
-  "name": "performance.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
-  "path": "js/polyfills/raf.coffee.html",
-  "originalName": "raf.coffee",
-  "originalPath": "js/polyfills/raf.coffee",
-  "name": "raf.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
 },
 {
   "path": "js/shapes/bit.coffee.html",
@@ -223,14 +223,6 @@ window.files = [
   "toc": []
 },
 {
-  "path": "js/vendor/resize.coffee.html",
-  "originalName": "resize.coffee",
-  "originalPath": "js/vendor/resize.coffee",
-  "name": "resize.coffee.html",
-  "lang": "coffeescript",
-  "toc": []
-},
-{
   "path": "js/tween/timeline.coffee.html",
   "originalName": "timeline.coffee",
   "originalPath": "js/tween/timeline.coffee",
@@ -251,6 +243,14 @@ window.files = [
   "originalName": "tweener.coffee",
   "originalPath": "js/tween/tweener.coffee",
   "name": "tweener.coffee.html",
+  "lang": "coffeescript",
+  "toc": []
+},
+{
+  "path": "js/vendor/resize.coffee.html",
+  "originalName": "resize.coffee",
+  "originalPath": "js/vendor/resize.coffee",
+  "name": "resize.coffee.html",
   "lang": "coffeescript",
   "toc": []
 },
