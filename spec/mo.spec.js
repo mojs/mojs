@@ -1703,7 +1703,7 @@ module.exports = h;
 
 },{}],7:[function(require,module,exports){
 window.mojs = {
-  revision: '0.147.4',
+  revision: '0.147.5',
   isDebug: true,
   helpers: require('./h'),
   Bit: require('./shapes/bit'),
