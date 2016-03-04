@@ -1135,15 +1135,28 @@
           });
           tr._overrideUpdateCallbacks(options);
           spyOn(tr, '_tuneOptions');
-          options.onFirstUpdate(true, false);
+          options.onFirstUpdate(false, false);
           return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[0]);
         });
-        return it('should call _tuneOptions if history > 1', function() {
+        it('should only call _tuneOptions if history > 1', function() {
           var options, tr;
           options = {
             onUpdate: function() {}
           };
           tr = new Transit();
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          options.onFirstUpdate(true, false);
+          return expect(tr._tuneOptions).not.toHaveBeenCalledWith(tr.history[0]);
+        });
+        return it('should not call tune options if no index and forward direction', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit().then({
+            fill: 'cyan'
+          });
           tr._overrideUpdateCallbacks(options);
           spyOn(tr, '_tuneOptions');
           options.onFirstUpdate(true, false);
@@ -1228,7 +1241,7 @@
         tr.timeline.setProgress(0);
         return expect(tr._hide).toHaveBeenCalled();
       });
-      return it('should not hide module is isShowInit was set', function() {
+      it('should not hide module is isShowInit was set', function() {
         var tr;
         tr = new Transit({
           isShowInit: true
@@ -1238,6 +1251,17 @@
         spyOn(tr, '_hide').and.callThrough();
         tr.timeline.setProgress(0);
         return expect(tr._hide).not.toHaveBeenCalled();
+      });
+      return it('should call _overrideUpdateCallbacks method with merged object', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        spyOn(byte, '_overrideUpdateCallbacks');
+        byte._makeTweenControls();
+        return expect(byte._overrideUpdateCallbacks).toHaveBeenCalledWith(byte._o);
       });
     });
     describe('_makeTimelineControls method ->', function() {

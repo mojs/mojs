@@ -731,7 +731,16 @@
 	        isOnFirstUpdate && onFirstUpdate.apply(this, arguments);
 	        // calcalate and draw Transit's progress
 	        // call tune options with index of the tween only if history > 1
-	        it.history.length > 1 && it._tuneOptions(it.history[this.index || 0]);
+	        if (it.history.length > 1) {
+	          // fallback to 0 index
+	          var index = this.index || 0;
+	          // if very first tween - _tuneOptions only on backward direction
+	          if (index === 0) {
+	            !arguments[0] && it._tuneOptions(it.history[index]);
+	          } else {
+	            it._tuneOptions(it.history[index]);
+	          }
+	        }
 	      };
 	    }
 	    // /*
@@ -1381,18 +1390,10 @@
 	  }, {
 	    key: '_makeTweenControls',
 	    value: function _makeTweenControls() {
-	      var it = this,
-	          // save lexical this, uh oh
-	      onUpdate = this._o.onUpdate,
-	          isOnUpdate = onUpdate && typeof onUpdate === 'function';
-	      // redefine onUpdate for Transit's draw calculation in _setProgress
-	      this._o.onUpdate = function (pe) {
-	        // call onUpdate function from options
-	        isOnUpdate && onUpdate.apply(this, arguments);
-	        // calcalate and draw Transit's progress
-	        it._setProgress(pe);
-	      };
-
+	      var it = this; // save lexical this, uh oh
+	      // override(or define) tween control callbacks
+	      this._overrideUpdateCallbacks(this._o);
+	      // if (!isForward)
 	      var onStart = this._o.onStart,
 	          isOnStart = onStart && typeof onStart === 'function';
 	      // redefine onStart to show/hide Transit
@@ -1403,13 +1404,6 @@
 	        // hide the Transit on reverse complete if isShowInit is not set
 	        isForward ? it._show() : !it._props.isShowInit && it._hide();
 	      };
-	      //     onFirstUpdate: (function(_this) {
-	      //       return function(isForward, isYoyo) {
-	      //         if (!isForward) {
-	      //           return _this.history.length > 1 && _this._tuneOptions(_this.history[0]);
-	      //         }
-	      //       };
-	      //     })(this)
 	    }
 	    /*
 	      Method to make timelines' control callbacks.
@@ -6999,7 +6993,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.175.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.175.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};

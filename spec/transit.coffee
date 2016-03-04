@@ -1509,13 +1509,22 @@ describe 'Transit ->', ->
         tr._overrideUpdateCallbacks( options )
 
         spyOn tr, '_tuneOptions'
-        options.onFirstUpdate( true, false )
+        options.onFirstUpdate( false, false )
         # should be called with index of the tween
         expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[0]
 
-      it 'should call _tuneOptions if history > 1', ->
+      it 'should only call _tuneOptions if history > 1', ->
         options = { onUpdate:-> }
         tr = new Transit()
+        tr._overrideUpdateCallbacks( options )
+
+        spyOn tr, '_tuneOptions'
+        options.onFirstUpdate( true, false )
+        expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
+
+      it 'should not call tune options if no index and forward direction', ->
+        options = { onUpdate:-> }
+        tr = new Transit().then({ fill: 'cyan' })
         tr._overrideUpdateCallbacks( options )
 
         spyOn tr, '_tuneOptions'
@@ -1601,6 +1610,12 @@ describe 'Transit ->', ->
       spyOn(tr, '_hide').and.callThrough()
       tr.timeline.setProgress 0
       expect(tr._hide).not.toHaveBeenCalled()
+
+    it 'should call _overrideUpdateCallbacks method with merged object', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      spyOn byte, '_overrideUpdateCallbacks'
+      byte._makeTweenControls()
+      expect(byte._overrideUpdateCallbacks).toHaveBeenCalledWith( byte._o )
 
   describe '_makeTimelineControls method ->', ->
     it 'should override this._o.onComplete', ->

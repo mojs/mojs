@@ -88,7 +88,14 @@ class Transit extends Tweenable {
       isOnFirstUpdate && onFirstUpdate.apply( this, arguments );
       // calcalate and draw Transit's progress
       // call tune options with index of the tween only if history > 1
-      it.history.length > 1 && it._tuneOptions(it.history[this.index || 0]);
+      if ( it.history.length > 1 ) {
+        // fallback to 0 index
+        var index = this.index || 0;
+        // if very first tween - _tuneOptions only on backward direction
+        if ( index === 0 ) {
+          !arguments[0] && it._tuneOptions(it.history[index]);
+        } else { it._tuneOptions(it.history[index]); }
+      }
     };
 
   }
@@ -617,17 +624,10 @@ class Transit extends Tweenable {
     @private
   */
   _makeTweenControls () {
-    var it         = this, // save lexical this, uh oh
-        onUpdate   = this._o.onUpdate,
-        isOnUpdate = (onUpdate && typeof onUpdate === 'function');
-    // redefine onUpdate for Transit's draw calculation in _setProgress
-    this._o.onUpdate = function ( pe ) {
-      // call onUpdate function from options
-      isOnUpdate && onUpdate.apply( this, arguments );
-      // calcalate and draw Transit's progress
-      it._setProgress(pe);
-    };
-
+    var it         = this; // save lexical this, uh oh
+    // override(or define) tween control callbacks
+    this._overrideUpdateCallbacks( this._o );
+    // if (!isForward)
     var onStart   = this._o.onStart,
         isOnStart = (onStart && typeof onStart === 'function');
     // redefine onStart to show/hide Transit
@@ -638,13 +638,6 @@ class Transit extends Tweenable {
       // hide the Transit on reverse complete if isShowInit is not set
       ( isForward ) ? it._show() : (!it._props.isShowInit && it._hide());
     };
-    //     onFirstUpdate: (function(_this) {
-    //       return function(isForward, isYoyo) {
-    //         if (!isForward) {
-    //           return _this.history.length > 1 && _this._tuneOptions(_this.history[0]);
-    //         }
-    //       };
-    //     })(this)
   }
   /*
     Method to make timelines' control callbacks.
