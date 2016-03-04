@@ -198,10 +198,11 @@ describe 'Transit ->', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5
       expect(byte.history[1].radiusX[20]).toBe 5
-    it 'should pass isChained to timeline', ->
-      byte = new Byte radius: 20, duration: 1000
-      byte.then radiusX: 5
-      expect(byte.timeline._timelines[1]._props.isChained).toBe true
+    # probably redundant
+    # it 'should pass isChained to timeline', ->
+    #   byte = new Byte radius: 20, duration: 1000
+    #   byte.then radiusX: 5
+    #   expect(byte.timeline._timelines[1]._props.isChained).toBe true
     it 'should not pass isChained to timeline if delay', ->
       byte = new Byte radius: 20, duration: 1000
       byte.then radiusX: 5, delay: 100
@@ -351,6 +352,12 @@ describe 'Transit ->', ->
       type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
       expect(type1).toBe 'function'
       expect(type2).toBe 'function'
+    it 'should call _overrideUpdateCallbacks method with merged object', ->
+      byte = new Byte radius: 20, duration: 1000, delay: 10
+      spyOn byte, '_overrideUpdateCallbacks'
+      byte.then({ fill: 'red' })
+      expect(byte._overrideUpdateCallbacks).toHaveBeenCalled()
+
   describe '_tuneOptions method ->', ->
     it 'should call _extendDefaults with options', ->
       byte = new Byte

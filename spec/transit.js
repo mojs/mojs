@@ -248,17 +248,6 @@
         });
         return expect(byte.history[1].radiusX[20]).toBe(5);
       });
-      it('should pass isChained to timeline', function() {
-        var byte;
-        byte = new Byte({
-          radius: 20,
-          duration: 1000
-        });
-        byte.then({
-          radiusX: 5
-        });
-        return expect(byte.timeline._timelines[1]._props.isChained).toBe(true);
-      });
       it('should not pass isChained to timeline if delay', function() {
         var byte;
         byte = new Byte({
@@ -499,7 +488,7 @@
         expect(type1).toBe('function');
         return expect(type2).toBe('function');
       });
-      return it('should bind onFirstUpdate function #2', function() {
+      it('should bind onFirstUpdate function #2', function() {
         var byte, type1, type2;
         byte = new Byte({
           radius: 20,
@@ -522,6 +511,19 @@
         type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate;
         expect(type1).toBe('function');
         return expect(type2).toBe('function');
+      });
+      return it('should call _overrideUpdateCallbacks method with merged object', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        spyOn(byte, '_overrideUpdateCallbacks');
+        byte.then({
+          fill: 'red'
+        });
+        return expect(byte._overrideUpdateCallbacks).toHaveBeenCalled();
       });
     });
     describe('_tuneOptions method ->', function() {

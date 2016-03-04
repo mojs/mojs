@@ -695,32 +695,12 @@
 	      }
 	      // merge then options with the current ones
 	      var merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
-
-	      var it = this,
-	          // save lexical this, uh oh
-	      onUpdate = merged.onUpdate,
-	          isOnUpdate = onUpdate && typeof onUpdate === 'function';
-	      // redefine onUpdate for Transit's draw calculation in _setProgress
-	      merged.onUpdate = function (pe) {
-	        // call onUpdate function from options
-	        isOnUpdate && onUpdate.apply(this, arguments);
-	        // calcalate and draw Transit's progress
-	        it._setProgress(pe);
-	      };
-
-	      var onFirstUpdate = merged.onFirstUpdate,
-	          isOnFirstUpdate = onFirstUpdate && typeof onFirstUpdate === 'function';
-	      // redefine onFirstUpdate for Transit's _tuneOptions
-	      merged.onFirstUpdate = function (pe) {
-	        // call onFirstUpdate function from options
-	        isOnFirstUpdate && onFirstUpdate.apply(this, arguments);
-	        // calcalate and draw Transit's progress
-	        it._tuneOptions(it.history[this.index]);
-	      };
-
-	      merged.isChained = !o.delay;
+	      // define onUpdate and onFirstUpdate control callbacks on the object
+	      this._overrideUpdateCallbacks(merged);
+	      // set isChaned flag on the tween
+	      // merged.isChained = !o.delay;
 	      // append the tween with the options
-	      it.timeline.append(new _tween2.default(merged));
+	      this.timeline.append(new _tween2.default(merged));
 	      return this;
 	    }
 	    /*
@@ -7019,7 +6999,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.175.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.175.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
