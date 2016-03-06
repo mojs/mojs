@@ -876,6 +876,32 @@
         t._setProgress(.5);
         return expect(easedProgress).toBe(mojs.easing.cubic.out(progress));
       });
+      it('should run with right context', function() {
+        var isRightContext, t;
+        isRightContext = null;
+        t = new Tween({
+          onUpdate: function() {
+            return isRightContext = this === t;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
+      it('should run with custom context', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          callbacksContext: contextObj,
+          onUpdate: function() {
+            return isRightContext = this === contextObj;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
 
       /*
         TWEEN IN NORMAL DIRECTION
@@ -4568,7 +4594,7 @@
         t._update(t._props.startTime + t._props.duration / 2);
         return expect(startCnt).toBe(3);
       });
-      return it('should run before onComplete if tween ended', function() {
+      it('should run before onComplete if tween ended', function() {
         var callback, startCnt, t;
         startCnt = 0;
         callback = null;
@@ -4592,32 +4618,138 @@
         expect(startCnt).toBe(1);
         return expect(callback).toBe('start');
       });
+      it('should run with right context', function() {
+        var isRightContext, t;
+        isRightContext = null;
+        t = new Tween({
+          onStart: function() {
+            return isRightContext = this === t;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
+      return it('should run with custom context', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          callbacksContext: contextObj,
+          onStart: function() {
+            return isRightContext = this === contextObj;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
     });
     describe('onFirstUpdate callback ->', function() {
-      return it('should be defined', function() {
+      it('should be defined', function() {
         var t;
         t = new Tween({
           onFirstUpdate: function() {}
         });
         return expect(t._props.onFirstUpdate).toBeDefined();
       });
+      it('should run with right context', function() {
+        var isRightContext, t;
+        isRightContext = null;
+        t = new Tween({
+          onFirstUpdate: function() {
+            return isRightContext = this === t;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
+      return it('should run with custom context', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          callbacksContext: contextObj,
+          onFirstUpdate: function() {
+            return isRightContext = this === contextObj;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
     });
     describe('onRepeatStart callback ->', function() {
-      return it('should be defined', function() {
+      it('should be defined', function() {
         var t;
         t = new Tween({
           onRepeatStart: function() {}
         });
         return expect(t._props.onRepeatStart).toBeDefined();
       });
+      it('should run with right context', function() {
+        var isRightContext, t;
+        isRightContext = null;
+        t = new Tween({
+          onRepeatStart: function() {
+            return isRightContext = this === t;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
+      return it('should run with custom context', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          callbacksContext: contextObj,
+          onRepeatStart: function() {
+            return isRightContext = this === contextObj;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
     });
     describe('onRepeatComplete callback ->', function() {
-      return it('should be defined', function() {
+      it('should be defined', function() {
         var t;
         t = new Tween({
           onRepeatComplete: function() {}
         });
         return expect(t._props.onRepeatComplete).toBeDefined();
+      });
+      it('should run with right context', function() {
+        var isRightContext, t;
+        isRightContext = null;
+        t = new Tween({
+          onRepeatComplete: function() {
+            return isRightContext = this === t;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        t.setProgress(1);
+        return expect(isRightContext).toBe(true);
+      });
+      return it('should run with custom context', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          callbacksContext: contextObj,
+          onRepeatComplete: function() {
+            return isRightContext = this === contextObj;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        t.setProgress(1);
+        return expect(isRightContext).toBe(true);
       });
     });
     describe('yoyo option ->', function() {
@@ -6010,7 +6142,7 @@
       });
     });
     describe('onComplete callback ->', function() {
-      return it('should be called just once when finished and inside Timeline ->', function() {
+      it('should be called just once when finished and inside Timeline ->', function() {
         var completeCnt, completeDirection, debug, duration, firstUpdateCnt, firstUpdateDirection, oneCnt, repeatCnt, repeatCompleteDirection, repeatStartCnt, repeatStartDirection, startCnt, startDirection, tm, tw, updateDirection, updateValue, zeroCnt;
         zeroCnt = 0;
         oneCnt = 0;
@@ -6072,6 +6204,34 @@
         tm.setProgress(.9);
         tm.setProgress(.8);
         return expect(completeCnt).toBe(2);
+      });
+      it('should run with right context', function() {
+        var isRightContext, t;
+        isRightContext = null;
+        t = new Tween({
+          onComplete: function() {
+            return isRightContext = this === t;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        t.setProgress(1);
+        return expect(isRightContext).toBe(true);
+      });
+      return it('should run with custom context', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          callbacksContext: contextObj,
+          onComplete: function() {
+            return isRightContext = this === contextObj;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        t.setProgress(1);
+        return expect(isRightContext).toBe(true);
       });
     });
     describe('_progress method ->', function() {
@@ -6205,7 +6365,7 @@
         expect(tw._props.onProgress).toHaveBeenCalledWith(0, false);
         return expect(tw._props.onProgress.calls.count()).toBe(1);
       });
-      return it('should be called only once after active bounds "+"', function() {
+      it('should be called only once after active bounds "+"', function() {
         var duration, time, tw;
         duration = 1000;
         tw = new Tween({
@@ -6224,6 +6384,32 @@
         expect(tw._progress.calls.count()).toBe(1);
         expect(tw._props.onProgress).toHaveBeenCalledWith(1, true);
         return expect(tw._props.onProgress.calls.count()).toBe(1);
+      });
+      it('should run with right context', function() {
+        var isRightContext, t;
+        isRightContext = null;
+        t = new Tween({
+          onProgress: function() {
+            return isRightContext = this === t;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
+      });
+      return it('should run with custom context', function() {
+        var contextObj, isRightContext, t;
+        isRightContext = null;
+        contextObj = {};
+        t = new Tween({
+          callbacksContext: contextObj,
+          onProgress: function() {
+            return isRightContext = this === contextObj;
+          }
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(isRightContext).toBe(true);
       });
     });
     describe('_normPrevTimeForward method', function() {
@@ -6253,7 +6439,7 @@
         }, 2 * duration);
       });
     });
-    return describe('_onTweenerFinish method', function() {
+    describe('_onTweenerFinish method', function() {
       return it('should set _state to stop', function(dfr) {
         var duration, tw;
         duration = 50;
@@ -6266,6 +6452,16 @@
           expect(tw._prevState).toBe('play');
           return dfr();
         }, 2 * duration);
+      });
+    });
+    return describe('callbacksContext option', function() {
+      return it('should receive callbacks context object', function() {
+        var obj, tw;
+        obj = {};
+        tw = new Tween({
+          callbacksContext: obj
+        });
+        return expect(tw._props.callbacksContext).toBe(obj);
       });
     });
   });

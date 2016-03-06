@@ -8,8 +8,11 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - properties signatures
+//  - tween should receive context object for callbacks
+//  - then should not copy previous deltas
+//  - rx, ry for transit
 //  --
-//  - tween for every prop 
+//  - tween for every prop
 
 class Transit extends Tweenable {
   /*
@@ -259,9 +262,11 @@ class Transit extends Tweenable {
       this.isRendered = true;
     }
     this._setElStyles();
-    // this._setProgress(0, true);
+    
+    if (this.el != null) { this.el.style.opacity = this._props.opacity; }
+    if (this._o.isShowInit) { this._show(); } else { this._hide(); }
+
     this._setProgress( 0 );
-    // this.createTween();
     return this;
   }
   /*
@@ -283,8 +288,6 @@ class Transit extends Tweenable {
       this.el.style['marginLeft']  = marginSize;
       this.el.style['marginTop']   = marginSize;
     }
-    if ((ref = this.el) != null) { ref.style.opacity = this._props.opacity; }
-    if (this._o.isShowInit) { this._show(); } else { this._hide(); }
   }
   /*
     Method to show the main div el.
@@ -627,7 +630,8 @@ class Transit extends Tweenable {
     var it         = this; // save lexical this, uh oh
     // override(or define) tween control callbacks
     this._overrideUpdateCallbacks( this._o );
-    // if (!isForward)
+    var onComplete = this._o.onComplete;
+
     var onStart   = this._o.onStart,
         isOnStart = (onStart && typeof onStart === 'function');
     // redefine onStart to show/hide Transit
@@ -651,6 +655,7 @@ class Transit extends Tweenable {
     var it           = this,
         onComplete   = this._o.timeline.onComplete,
         isOnComplete = (onComplete && typeof onComplete === 'function');
+
     this._o.timeline.onComplete = function ( isForward ) {
       // call timeline's onComplete function from options
       isOnComplete && onComplete.apply( it.timeline, arguments );

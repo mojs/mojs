@@ -618,6 +618,24 @@ describe 'Tween ->', ->
       t._setProgress .5
       expect(easedProgress).toBe mojs.easing.cubic.out progress
 
+    it 'should run with right context', ->
+      isRightContext = null
+      t = new Tween onUpdate: -> isRightContext = @ is t
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
+    it 'should run with custom context', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween
+        callbacksContext: contextObj,
+        onUpdate: -> isRightContext = @ is contextObj
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
     ###
       TWEEN IN NORMAL DIRECTION
     ###
@@ -5068,20 +5086,94 @@ describe 'Tween ->', ->
 
       expect(callback).toBe 'start'
 
+    it 'should run with right context', ->
+      isRightContext = null
+      t = new Tween onStart: -> isRightContext = @ is t
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
+    it 'should run with custom context', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween
+        callbacksContext: contextObj,
+        onStart: -> isRightContext = @ is contextObj
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
   describe 'onFirstUpdate callback ->', ->
     it 'should be defined', ->
       t = new Tween onFirstUpdate: ->
       expect(t._props.onFirstUpdate).toBeDefined()
+
+    it 'should run with right context', ->
+      isRightContext = null
+      t = new Tween onFirstUpdate: -> isRightContext = @ is t
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
+    it 'should run with custom context', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween
+        callbacksContext: contextObj,
+        onFirstUpdate: -> isRightContext = @ is contextObj
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
 
   describe 'onRepeatStart callback ->', ->
     it 'should be defined', ->
       t = new Tween onRepeatStart: ->
       expect(t._props.onRepeatStart).toBeDefined()
 
+    it 'should run with right context', ->
+      isRightContext = null
+      t = new Tween onRepeatStart: -> isRightContext = @ is t
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
+    it 'should run with custom context', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween
+        callbacksContext: contextObj,
+        onRepeatStart: -> isRightContext = @ is contextObj
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
   describe 'onRepeatComplete callback ->', ->
     it 'should be defined', ->
       t = new Tween onRepeatComplete: ->
       expect(t._props.onRepeatComplete).toBeDefined()
+
+    it 'should run with right context', ->
+      isRightContext = null
+      t = new Tween onRepeatComplete: -> isRightContext = @ is t
+
+      t.setProgress 0
+      t.setProgress .1
+      t.setProgress 1
+      expect(isRightContext).toBe true
+
+    it 'should run with custom context', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween
+        callbacksContext: contextObj,
+        onRepeatComplete: -> isRightContext = @ is contextObj
+
+      t.setProgress 0
+      t.setProgress .1
+      t.setProgress 1
+      expect(isRightContext).toBe true
 
   describe 'yoyo option ->', ->
     it 'should receive yoyo option', ->
@@ -6084,6 +6176,26 @@ describe 'Tween ->', ->
 
       expect(completeCnt).toBe 2
 
+    it 'should run with right context', ->
+      isRightContext = null
+      t = new Tween onComplete: -> isRightContext = @ is t
+
+      t.setProgress 0
+      t.setProgress .1
+      t.setProgress 1
+      expect(isRightContext).toBe true
+
+    it 'should run with custom context', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween
+        callbacksContext: contextObj,
+        onComplete: -> isRightContext = @ is contextObj
+
+      t.setProgress 0
+      t.setProgress .1
+      t.setProgress 1
+      expect(isRightContext).toBe true
+
   describe '_progress method ->', ->
     it 'should call onProgress callback', ->
       duration = 1000
@@ -6208,6 +6320,24 @@ describe 'Tween ->', ->
       expect(tw._props.onProgress).toHaveBeenCalledWith 1, true
       expect(tw._props.onProgress.calls.count()).toBe 1
 
+    it 'should run with right context', ->
+      isRightContext = null
+      t = new Tween onProgress: -> isRightContext = @ is t
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
+    it 'should run with custom context', ->
+      isRightContext = null; contextObj = {}
+      t = new Tween
+        callbacksContext: contextObj,
+        onProgress: -> isRightContext = @ is contextObj
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(isRightContext).toBe true
+
   describe '_normPrevTimeForward method', ->
     it 'should return normalized _prevTimee', ->
       duration = 1000
@@ -6238,6 +6368,13 @@ describe 'Tween ->', ->
         expect(tw._prevState).toBe 'play'
         dfr()
       , 2*duration
+
+  describe 'callbacksContext option', ->
+    it 'should receive callbacks context object', ->
+      obj = {}
+      tw = new Tween callbacksContext: obj
+      expect(tw._props.callbacksContext).toBe obj
+
 
 
 

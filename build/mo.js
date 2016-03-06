@@ -638,6 +638,9 @@
 
 	// TODO
 	//  - properties signatures
+	//  - tween should receive context object for callbacks
+	//  - then should not copy previous deltas
+	//  - rx, ry for transit
 	//  --
 	//  - tween for every prop
 
@@ -929,9 +932,17 @@
 	        this.isRendered = true;
 	      }
 	      this._setElStyles();
-	      // this._setProgress(0, true);
+
+	      if (this.el != null) {
+	        this.el.style.opacity = this._props.opacity;
+	      }
+	      if (this._o.isShowInit) {
+	        this._show();
+	      } else {
+	        this._hide();
+	      }
+
 	      this._setProgress(0);
-	      // this.createTween();
 	      return this;
 	    }
 	    /*
@@ -955,14 +966,6 @@
 	        this.el.style['margin-top'] = marginSize;
 	        this.el.style['marginLeft'] = marginSize;
 	        this.el.style['marginTop'] = marginSize;
-	      }
-	      if ((ref = this.el) != null) {
-	        ref.style.opacity = this._props.opacity;
-	      }
-	      if (this._o.isShowInit) {
-	        this._show();
-	      } else {
-	        this._hide();
 	      }
 	    }
 	    /*
@@ -1393,7 +1396,8 @@
 	      var it = this; // save lexical this, uh oh
 	      // override(or define) tween control callbacks
 	      this._overrideUpdateCallbacks(this._o);
-	      // if (!isForward)
+	      var onComplete = this._o.onComplete;
+
 	      var onStart = this._o.onStart,
 	          isOnStart = onStart && typeof onStart === 'function';
 	      // redefine onStart to show/hide Transit
@@ -1420,6 +1424,7 @@
 	      var it = this,
 	          onComplete = this._o.timeline.onComplete,
 	          isOnComplete = onComplete && typeof onComplete === 'function';
+
 	      this._o.timeline.onComplete = function (isForward) {
 	        // call timeline's onComplete function from options
 	        isOnComplete && onComplete.apply(it.timeline, arguments);
@@ -2111,7 +2116,9 @@
 	        onRepeatComplete: null,
 	        onFirstUpdate: null,
 	        onUpdate: null,
-	        isChained: false
+	        isChained: false,
+	        // context which all callbacks will be called with
+	        callbacksContext: null
 	      };
 	    }
 	    /*
@@ -2868,18 +2875,18 @@
 
 	  }, {
 	    key: '_setProgress',
-	    value: function _setProgress(p, time, isYoyo) {
-	      var props = this._props,
-	          isYoyoChanged = props.wasYoyo !== isYoyo;
-	      this.progress = p;
-	      this.easedProgress = this._props.easing(this.progress);
-	      if (props.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
+	    value: function _setProgress(proc, time, isYoyo) {
+	      var p = this._props,
+	          isYoyoChanged = p.wasYoyo !== isYoyo;
+	      this.progress = proc;
+	      this.easedProgress = p.easing(this.progress);
+	      if (p.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
 	        if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-	          this.onUpdate(this.easedProgress, this.progress, time > this._prevTime, isYoyo);
+	          this.onUpdate.call(p.callbacksContext || this, this.easedProgress, this.progress, time > this._prevTime, isYoyo);
 	        }
 	      }
-	      this._props.prevEasedProgress = this.easedProgress;
-	      this._props.wasYoyo = isYoyo;
+	      p.prevEasedProgress = this.easedProgress;
+	      p.wasYoyo = isYoyo;
 	      return this;
 	    }
 
@@ -2897,8 +2904,9 @@
 	      if (this._isStarted) {
 	        return;
 	      }
-	      if (this._props.onStart != null && typeof this._props.onStart === 'function') {
-	        this._props.onStart.call(this, time > this._prevTime, isYoyo);
+	      var p = this._props;
+	      if (p.onStart != null && typeof p.onStart === 'function') {
+	        p.onStart.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
 	      }
 	      this._isCompleted = false;this._isStarted = true;
 	      this._isFirstUpdate = false;
@@ -2918,8 +2926,9 @@
 	      if (this._isCompleted) {
 	        return;
 	      }
-	      if (this._props.onComplete != null && typeof this._props.onComplete === 'function') {
-	        this._props.onComplete.call(this, time > this._prevTime, isYoyo);
+	      var p = this._props;
+	      if (p.onComplete != null && typeof p.onComplete === 'function') {
+	        p.onComplete.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
 	      }
 	      this._isCompleted = true;this._isStarted = false;
 	      this._isFirstUpdate = false;
@@ -2939,8 +2948,9 @@
 	      if (this._isFirstUpdate) {
 	        return;
 	      }
-	      if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
-	        this._props.onFirstUpdate.call(this, time > this._prevTime, isYoyo);
+	      var p = this._props;
+	      if (p.onFirstUpdate != null && typeof p.onFirstUpdate === 'function') {
+	        p.onFirstUpdate.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
 	      }
 	      this._isFirstUpdate = true;
 	    }
@@ -2958,8 +2968,9 @@
 	      if (this._isRepeatCompleted) {
 	        return;
 	      }
-	      if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
-	        this._props.onRepeatComplete.call(this, time > this._prevTime, isYoyo);
+	      var p = this._props;
+	      if (p.onRepeatComplete != null && typeof p.onRepeatComplete === 'function') {
+	        p.onRepeatComplete.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
 	      }
 	      this._isRepeatCompleted = true;
 	    }
@@ -2977,8 +2988,9 @@
 	      if (this._isRepeatStart) {
 	        return;
 	      }
-	      if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
-	        this._props.onRepeatStart.call(this, time > this._prevTime, isYoyo);
+	      var p = this._props;
+	      if (p.onRepeatStart != null && typeof p.onRepeatStart === 'function') {
+	        p.onRepeatStart.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
 	      }
 	      this._isRepeatStart = true;
 	    }
@@ -2992,8 +3004,9 @@
 	  }, {
 	    key: '_progress',
 	    value: function _progress(progress, time) {
-	      if (this._props.onProgress != null && typeof this._props.onProgress === 'function') {
-	        this._props.onProgress.call(this, progress, time > this._prevTime);
+	      var p = this._props;
+	      if (p.onProgress != null && typeof p.onProgress === 'function') {
+	        p.onProgress.call(p.callbacksContext || this, progress, time > this._prevTime);
 	      }
 	    }
 	    /*
@@ -6993,7 +7006,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.175.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.176.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
@@ -7001,17 +7014,16 @@
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
 
-	// var tr = new mojs.Transit({
-	//   radius: { 0: 200 },
-	//   isIt: 1,
-	//   repeat: 2,
-	//   yoyo: true,
-	//   onComplete: (isForward, isYoyo) => { console.log( isForward, isYoyo ); }
-	// })
-	//   // .then({ radius: 0 })
-	//   // .then({ x: 20 })
-	//   // .then({ radius: 100 })
-	//   .play();
+	var tr = new mojs.Transit({
+	  radius: { 0: 200 },
+	  duration: 2000,
+	  // repeat: 2,
+	  // yoyo: true,
+	  onComplete: function onComplete(isForward, isYoyo) {
+	    console.log(isForward, isYoyo, this);
+	  }
+	}).then({ radius: 50 }).then({ x: 200 }).then({ radius: 100 }).play();
+	console.log(tr.timeline._timelines[0]._props.onComplete);
 
 	// setTimeout(function () {
 	//   tr.run({ fill: 'yellow', radius: 3000 });

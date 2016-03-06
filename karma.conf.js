@@ -104,12 +104,12 @@ module.exports = function(config) {
       'build/stagger.js',
       'spec/stagger.js',
 
-      'build/timeline.js',
-      'spec/timeline.js',
-      'build/tween.js',
-      'spec/tween.js',
-      'build/tweener.js',
-      'spec/tweener.js',
+      // 'build/timeline.js',
+      // 'spec/timeline.js',
+      // 'build/tween.js',
+      // 'spec/tween.js',
+      // 'build/tweener.js',
+      // 'spec/tweener.js',
 
       'build/motion-path.js',
       'spec/motion-path.js',

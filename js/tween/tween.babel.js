@@ -54,7 +54,9 @@ var Tween = class Tween {
       onRepeatComplete:       null,
       onFirstUpdate:          null,
       onUpdate:               null,
-      isChained:              false
+      isChained:              false,
+      // context which all callbacks will be called with
+      callbacksContext:       null
     }
   }
   /*
@@ -705,18 +707,22 @@ var Tween = class Tween {
     @param {Boolean} Is yoyo perido. Used in Timeline to pass to Tween.
     @returns {Object} Self.
   */
-  _setProgress ( p, time, isYoyo ) {
-    var props = this._props,
-        isYoyoChanged = props.wasYoyo !== isYoyo;
-    this.progress = p;
-    this.easedProgress = this._props.easing(this.progress);
-    if ( props.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
+  _setProgress ( proc, time, isYoyo ) {
+    var p = this._props,
+        isYoyoChanged = p.wasYoyo !== isYoyo;
+    this.progress = proc;
+    this.easedProgress = p.easing(this.progress);
+    if ( p.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
       if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-        this.onUpdate( this.easedProgress, this.progress, time > this._prevTime, isYoyo );
+        this.onUpdate.call(
+          p.callbacksContext || this,
+          this.easedProgress, this.progress,
+          time > this._prevTime, isYoyo
+        );
       }
     }
-    this._props.prevEasedProgress = this.easedProgress;
-    this._props.wasYoyo = isYoyo;
+    p.prevEasedProgress = this.easedProgress;
+    p.wasYoyo = isYoyo;
     return this;
   }
 
@@ -729,8 +735,9 @@ var Tween = class Tween {
   */
   _start ( time, isYoyo ) {
     if ( this._isStarted ) { return; }
-    if (this._props.onStart != null && typeof this._props.onStart === 'function') {
-      this._props.onStart.call(this, time > this._prevTime, isYoyo );
+    var p = this._props;
+    if (p.onStart != null && typeof p.onStart === 'function') {
+      p.onStart.call(p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
     this._isCompleted = false; this._isStarted = true;
     this._isFirstUpdate = false;
@@ -745,8 +752,9 @@ var Tween = class Tween {
   */
   _complete ( time, isYoyo ) {
     if ( this._isCompleted ) { return; }
-    if (this._props.onComplete != null && typeof this._props.onComplete === 'function') {
-      this._props.onComplete.call(this, time > this._prevTime, isYoyo );
+    var p = this._props;
+    if (p.onComplete != null && typeof p.onComplete === 'function') {
+      p.onComplete.call( p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
     this._isCompleted = true; this._isStarted = false;
     this._isFirstUpdate = false;
@@ -761,8 +769,9 @@ var Tween = class Tween {
   */
   _firstUpdate ( time, isYoyo ) {
     if ( this._isFirstUpdate ) { return; }
-    if (this._props.onFirstUpdate != null && typeof this._props.onFirstUpdate === 'function') {
-      this._props.onFirstUpdate.call( this, time > this._prevTime, isYoyo );
+    var p = this._props;
+    if (p.onFirstUpdate != null && typeof p.onFirstUpdate === 'function') {
+      p.onFirstUpdate.call( p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
     this._isFirstUpdate = true;
   }
@@ -775,8 +784,9 @@ var Tween = class Tween {
   */
   _repeatComplete ( time, isYoyo ) {
     if (this._isRepeatCompleted) { return; }
-    if (this._props.onRepeatComplete != null && typeof this._props.onRepeatComplete === 'function') {
-      this._props.onRepeatComplete.call( this, time > this._prevTime, isYoyo );
+    var p = this._props;
+    if (p.onRepeatComplete != null && typeof p.onRepeatComplete === 'function') {
+      p.onRepeatComplete.call( p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
     this._isRepeatCompleted = true;
   }
@@ -789,8 +799,9 @@ var Tween = class Tween {
   */
   _repeatStart ( time, isYoyo ) {
     if (this._isRepeatStart) { return; }
-    if (this._props.onRepeatStart != null && typeof this._props.onRepeatStart === 'function') {
-      this._props.onRepeatStart.call( this, time > this._prevTime, isYoyo );
+    var p = this._props;
+    if (p.onRepeatStart != null && typeof p.onRepeatStart === 'function') {
+      p.onRepeatStart.call( p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
     this._isRepeatStart = true;
   }
@@ -801,8 +812,9 @@ var Tween = class Tween {
     @param {Number} Progress to set.
   */
   _progress ( progress, time ) {
-    if (this._props.onProgress != null && typeof this._props.onProgress === 'function') {
-      this._props.onProgress.call(this, progress, time > this._prevTime );
+    var p = this._props;
+    if (p.onProgress != null && typeof p.onProgress === 'function') {
+      p.onProgress.call( p.callbacksContext || this, progress, time > this._prevTime );
     }
   }
   /*
