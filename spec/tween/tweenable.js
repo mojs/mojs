@@ -33,6 +33,18 @@
         return expect(Tweenable.prototype._transformTweenOptions).toHaveBeenCalled();
       });
     });
+    describe('initialization ->', function() {
+      it('should pass this as callbacksContext object to timeline', function() {
+        var tw;
+        tw = new Tweenable;
+        return expect(tw.timeline._props.callbacksContext).toBe(tw);
+      });
+      return it('should pass this as callbacksContext object to tween', function() {
+        var tw;
+        tw = new Tweenable;
+        return expect(tw.timeline._timelines[0]._props.callbacksContext).toBe(tw);
+      });
+    });
     describe('_makeTween ->', function() {
       it('should call _makeTween on the construction stage ->', function() {
         var tw;

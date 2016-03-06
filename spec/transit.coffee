@@ -274,7 +274,7 @@ describe 'Transit ->', ->
         isRightScope = null; args = null
         options = {
           onUpdate:->
-            isRightScope = @ is tr.timeline._timelines[1]
+            isRightScope = @ is tr
             args = arguments
           }
         tr = new Transit().then(options)
@@ -311,7 +311,7 @@ describe 'Transit ->', ->
         isRightScope = null; args = null
         options = {
           onFirstUpdate:->
-            isRightScope = @ is tr.timeline._timelines[1]
+            isRightScope = @ is tr
             args = arguments
           }
         tr = new Transit().then(options)
@@ -328,10 +328,10 @@ describe 'Transit ->', ->
         expect(args[1]).toBe false
 
       it 'should call _tuneOptions method', ->
-        options = { onUpdate:-> }
-        tr = new Transit().then(options);
+        tr = new Transit(isIt: 1).then({ onUpdate:-> });
 
         tr.timeline.setProgress 0
+        tr.timeline.setProgress .2
         spyOn tr, '_tuneOptions'
         tr.timeline.setProgress .8
         expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[1]
@@ -1163,21 +1163,21 @@ describe 'Transit ->', ->
         setTimeout ->
           expect(isRightScope).toBe(true); dfr()
         , 500
-    # describe 'onFirstUpdate callback ->', ->
-    #   it 'should call _tuneOptions method when the tween goes backward', ->
-    #     byte = new Byte radius:  {'25': 75}
-    #       .then { radius: 20 }
-    #     spyOn byte, '_tuneOptions'
-    #     byte.timeline.setProgress .99
-    #     byte.timeline.setProgress .98
-    #     byte.timeline.setProgress 0
-    #     expect(byte._tuneOptions).toHaveBeenCalled()
-    #   it 'should call not _tuneOptions if history length is one record', ->
-    #     byte = new Byte radius:  {'25': 75}
-    #     spyOn byte, '_tuneOptions'
-    #     byte.timeline.setProgress .99
-    #     byte.timeline.setProgress 0
-    #     expect(byte._tuneOptions).not.toHaveBeenCalled()
+    describe 'onFirstUpdate callback ->', ->
+      it 'should call _tuneOptions method when the tween goes backward', ->
+        byte = new Byte radius:  {'25': 75}
+          .then { radius: 20 }
+        spyOn byte, '_tuneOptions'
+        byte.timeline.setProgress .99
+        byte.timeline.setProgress .98
+        byte.timeline.setProgress 0
+        expect(byte._tuneOptions).toHaveBeenCalled()
+      it 'should call not _tuneOptions if history length is one record', ->
+        byte = new Byte radius:  {'25': 75}
+        spyOn byte, '_tuneOptions'
+        byte.timeline.setProgress .99
+        byte.timeline.setProgress 0
+        expect(byte._tuneOptions).not.toHaveBeenCalled()
   describe 'createTween method ->', ->
     it 'should create tween object', ->
       byte = new Byte radius:  {'25': 75}
@@ -1436,285 +1436,285 @@ describe 'Transit ->', ->
   #     byte.getBitLength()
   #     expect(byte._props.bitLength).not.toBe null
 
-  describe '_overrideUpdateCallbacks method ->', ->
-    describe 'onUpdate binding ->', ->
-      it 'should override this._o.onUpdate', ->
-        tr = new Transit
-        o = {}
-        tr._overrideUpdateCallbacks( o )
-        expect(typeof o.onUpdate).toBe 'function'
+  # describe '_overrideUpdateCallbacks method ->', ->
+  #   describe 'onUpdate binding ->', ->
+  #     it 'should override this._o.onUpdate', ->
+  #       tr = new Transit
+  #       o = {}
+  #       tr._overrideUpdateCallbacks( o )
+  #       expect(typeof o.onUpdate).toBe 'function'
 
-      it 'should not override onUpdate function if exists', ->
-        isRightScope = null; args = null
-        options = {
-          onUpdate:->
-            # should call callback with default this
-            isRightScope = @ is options
-            args = arguments
-          }
-        tr = new Transit
-        tr._overrideUpdateCallbacks( options )
-        expect(typeof options.onUpdate).toBe 'function'
+  #     it 'should not override onUpdate function if exists', ->
+  #       isRightScope = null; args = null
+  #       options = {
+  #         onUpdate:->
+  #           # should call callback with default this
+  #           isRightScope = @ is tr
+  #           args = arguments
+  #         }
+  #       tr = new Transit
+  #       tr._overrideUpdateCallbacks( options )
+  #       expect(typeof options.onUpdate).toBe 'function'
 
-        options.onUpdate( .1, .1, true, false )
+  #       options.onUpdate( .1, .1, true, false )
 
-        expect(isRightScope).toBe true
-        expect(args[0]).toBe .1
-        expect(args[1]).toBe .1
-        expect(args[2]).toBe true
-        expect(args[3]).toBe false
+  #       expect(isRightScope).toBe true
+  #       expect(args[0]).toBe .1
+  #       expect(args[1]).toBe .1
+  #       expect(args[2]).toBe true
+  #       expect(args[3]).toBe false
 
-      it 'should call _setProgress method', ->
-        options = { onUpdate:-> }
-        tr = new Transit
-        tr._overrideUpdateCallbacks( options )
-        spyOn tr, '_setProgress'
-        progress = .1
-        options.onUpdate( progress, progress, true, false )
-        expect(tr._setProgress).toHaveBeenCalledWith progress
-    describe 'onFirstUpdate binding ->', ->
-      it 'should override onFirstUpdate', ->
-        tr = new Transit().then({ fill: 'red' })
-        options = {}
-        tr._overrideUpdateCallbacks( options )
-        expect(typeof options.onFirstUpdate).toBe 'function'
+  #     it 'should call _setProgress method', ->
+  #       options = { onUpdate:-> }
+  #       tr = new Transit
+  #       tr._overrideUpdateCallbacks( options )
+  #       spyOn tr, '_setProgress'
+  #       progress = .1
+  #       options.onUpdate( progress, progress, true, false )
+  #       expect(tr._setProgress).toHaveBeenCalledWith progress
+  #   describe 'onFirstUpdate binding ->', ->
+  #     it 'should override onFirstUpdate', ->
+  #       tr = new Transit().then({ fill: 'red' })
+  #       options = {}
+  #       tr._overrideUpdateCallbacks( options )
+  #       expect(typeof options.onFirstUpdate).toBe 'function'
 
-      it 'should not override onFirstUpdate function if exists', ->
-        isRightScope = null; args = null
-        options = {
-          onFirstUpdate:->
-            # default this binding
-            isRightScope = @ is options
-            args = arguments
-          }
-        tr = new Transit()
-        tr._overrideUpdateCallbacks( options )
-        expect(typeof options.onFirstUpdate).toBe 'function'
+  #     it 'should not override onFirstUpdate function if exists', ->
+  #       isRightScope = null; args = null
+  #       options = {
+  #         onFirstUpdate:->
+  #           # default this binding
+  #           isRightScope = @ is options
+  #           args = arguments
+  #         }
+  #       tr = new Transit()
+  #       tr._overrideUpdateCallbacks( options )
+  #       expect(typeof options.onFirstUpdate).toBe 'function'
 
-        options.onFirstUpdate( true, false )
-        expect(isRightScope).toBe true
-        expect(args[0]).toBe true
-        expect(args[1]).toBe false
+  #       options.onFirstUpdate( true, false )
+  #       expect(isRightScope).toBe true
+  #       expect(args[0]).toBe true
+  #       expect(args[1]).toBe false
 
-      it 'should call _tuneOptions method', ->
-        options = { index: 1, onUpdate:-> }
-        tr = new Transit().then({ fill: 'red' })
-        tr._overrideUpdateCallbacks( options )
+  #     it 'should call _tuneOptions method', ->
+  #       options = { index: 1, onUpdate:-> }
+  #       tr = new Transit().then({ fill: 'red' })
+  #       tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
-        options.onFirstUpdate( true, false )
-        # should be called with index of the tween
-        expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[options.index]
+  #       spyOn tr, '_tuneOptions'
+  #       options.onFirstUpdate( true, false )
+  #       # should be called with index of the tween
+  #       expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[options.index]
 
-      it 'should call _tuneOptions method with history[0] if no index', ->
-        options = { onUpdate:-> }
-        tr = new Transit().then({ fill: 'red' })
-        tr._overrideUpdateCallbacks( options )
+  #     it 'should call _tuneOptions method with history[0] if no index', ->
+  #       options = { onUpdate:-> }
+  #       tr = new Transit().then({ fill: 'red' })
+  #       tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
-        options.onFirstUpdate( false, false )
-        # should be called with index of the tween
-        expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[0]
+  #       spyOn tr, '_tuneOptions'
+  #       options.onFirstUpdate( false, false )
+  #       # should be called with index of the tween
+  #       expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[0]
 
-      it 'should only call _tuneOptions if history > 1', ->
-        options = { onUpdate:-> }
-        tr = new Transit()
-        tr._overrideUpdateCallbacks( options )
+  #     it 'should only call _tuneOptions if history > 1', ->
+  #       options = { onUpdate:-> }
+  #       tr = new Transit()
+  #       tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
-        options.onFirstUpdate( true, false )
-        expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
+  #       spyOn tr, '_tuneOptions'
+  #       options.onFirstUpdate( true, false )
+  #       expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
 
-      it 'should not call tune options if no index and forward direction', ->
-        options = { onUpdate:-> }
-        tr = new Transit().then({ fill: 'cyan' })
-        tr._overrideUpdateCallbacks( options )
+  #     it 'should not call tune options if no index and forward direction', ->
+  #       options = { onUpdate:-> }
+  #       tr = new Transit().then({ fill: 'cyan' })
+  #       tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
-        options.onFirstUpdate( true, false )
-        expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
+  #       spyOn tr, '_tuneOptions'
+  #       options.onFirstUpdate( true, false )
+  #       expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
 
-  describe '_makeTweenControls method ->', ->
-    it 'should override this._o.onUpdate', ->
-      tr = new Transit
-      expect(typeof tr._o.onUpdate).toBe 'function'
+  # describe '_makeTweenControls method ->', ->
+  #   it 'should override this._o.onUpdate', ->
+  #     tr = new Transit
+  #     expect(typeof tr._o.onUpdate).toBe 'function'
 
-    it 'should not override onUpdate function if exists', ->
-      isRightScope = null; args = null
-      options = {
-        onUpdate:->
-          isRightScope = @ is tr.tween
-          args = arguments
-        }
-      tr = new Transit options
-      expect(typeof tr._o.onUpdate).toBe 'function'
+  #   it 'should not override onUpdate function if exists', ->
+  #     isRightScope = null; args = null
+  #     options = {
+  #       onUpdate:->
+  #         isRightScope = @ is tr.tween
+  #         args = arguments
+  #       }
+  #     tr = new Transit options
+  #     expect(typeof tr._o.onUpdate).toBe 'function'
 
-      tr.timeline.setProgress 0
-      tr.timeline.setProgress .1
-      expect(isRightScope).toBe true
+  #     tr.timeline.setProgress 0
+  #     tr.timeline.setProgress .1
+  #     expect(isRightScope).toBe true
 
-      expect(args[0]).toBe .1
-      expect(args[1]).toBe .1
-      expect(args[2]).toBe true
-      expect(args[3]).toBe false
+  #     expect(args[0]).toBe .1
+  #     expect(args[1]).toBe .1
+  #     expect(args[2]).toBe true
+  #     expect(args[3]).toBe false
 
-    it 'should call _setProgress method', ->
-      options = { onUpdate:-> }
-      tr = new Transit options
+  #   it 'should call _setProgress method', ->
+  #     options = { onUpdate:-> }
+  #     tr = new Transit options
 
-      tr.timeline.setProgress 0
-      spyOn tr, '_setProgress'
-      progress = .1
-      tr.timeline.setProgress progress
-      expect(tr._setProgress).toHaveBeenCalledWith progress
+  #     tr.timeline.setProgress 0
+  #     spyOn tr, '_setProgress'
+  #     progress = .1
+  #     tr.timeline.setProgress progress
+  #     expect(tr._setProgress).toHaveBeenCalledWith progress
 
-    it 'should override this._o.onStart', ->
-      tr = new Transit
-      expect(typeof tr._o.onStart).toBe 'function'
+  #   it 'should override this._o.onStart', ->
+  #     tr = new Transit
+  #     expect(typeof tr._o.onStart).toBe 'function'
 
-    it 'should not override onStart function if exists', ->
-      isRightScope = null; args = null
-      options = {
-        onStart:->
-          isRightScope = @ is tr.tween
-          args = arguments
-        }
-      tr = new Transit options
-      expect(typeof tr._o.onStart).toBe 'function'
+  #   it 'should not override onStart function if exists', ->
+  #     isRightScope = null; args = null
+  #     options = {
+  #       onStart:->
+  #         isRightScope = @ is tr.tween
+  #         args = arguments
+  #       }
+  #     tr = new Transit options
+  #     expect(typeof tr._o.onStart).toBe 'function'
 
-      tr.timeline.setProgress 0
-      tr.timeline.setProgress .1
-      expect(isRightScope).toBe true
+  #     tr.timeline.setProgress 0
+  #     tr.timeline.setProgress .1
+  #     expect(isRightScope).toBe true
 
-      expect(args[0]).toBe true
-      expect(args[1]).toBe false
+  #     expect(args[0]).toBe true
+  #     expect(args[1]).toBe false
 
-    it 'should show module ', ->
-      tr = new Transit
+  #   it 'should show module ', ->
+  #     tr = new Transit
 
-      tr.timeline.setProgress 0
-      spyOn(tr, '_show').and.callThrough()
-      tr.timeline.setProgress .1
-      expect(tr._show).toHaveBeenCalled()
+  #     tr.timeline.setProgress 0
+  #     spyOn(tr, '_show').and.callThrough()
+  #     tr.timeline.setProgress .1
+  #     expect(tr._show).toHaveBeenCalled()
 
-    it 'should hide module ', ->
-      tr = new Transit
+  #   it 'should hide module ', ->
+  #     tr = new Transit
 
-      tr.timeline.setProgress .1
-      spyOn(tr, '_hide').and.callThrough()
-      tr.timeline.setProgress 0
-      expect(tr._hide).toHaveBeenCalled()
+  #     tr.timeline.setProgress .1
+  #     spyOn(tr, '_hide').and.callThrough()
+  #     tr.timeline.setProgress 0
+  #     expect(tr._hide).toHaveBeenCalled()
 
-    it 'should not hide module is isShowInit was set', ->
-      tr = new Transit isShowInit: true
+  #   it 'should not hide module is isShowInit was set', ->
+  #     tr = new Transit isShowInit: true
 
-      tr.timeline.setProgress .2
-      tr.timeline.setProgress .1
-      spyOn(tr, '_hide').and.callThrough()
-      tr.timeline.setProgress 0
-      expect(tr._hide).not.toHaveBeenCalled()
+  #     tr.timeline.setProgress .2
+  #     tr.timeline.setProgress .1
+  #     spyOn(tr, '_hide').and.callThrough()
+  #     tr.timeline.setProgress 0
+  #     expect(tr._hide).not.toHaveBeenCalled()
 
-    it 'should call _overrideUpdateCallbacks method with merged object', ->
-      byte = new Byte radius: 20, duration: 1000, delay: 10
-      spyOn byte, '_overrideUpdateCallbacks'
-      byte._makeTweenControls()
-      expect(byte._overrideUpdateCallbacks).toHaveBeenCalledWith( byte._o )
+  #   it 'should call _overrideUpdateCallbacks method with merged object', ->
+  #     byte = new Byte radius: 20, duration: 1000, delay: 10
+  #     spyOn byte, '_overrideUpdateCallbacks'
+  #     byte._makeTweenControls()
+  #     expect(byte._overrideUpdateCallbacks).toHaveBeenCalledWith( byte._o )
 
-  describe '_makeTimelineControls method ->', ->
-    it 'should override this._o.onComplete', ->
-      tr = new Transit
-      expect(typeof tr._o.timeline.onComplete).toBe 'function'
+  # describe '_makeTimelineControls method ->', ->
+  #   it 'should override this._o.onComplete', ->
+  #     tr = new Transit
+  #     expect(typeof tr._o.timeline.onComplete).toBe 'function'
 
-    it 'should not override onUpdate function if exists', ->
-      isRightScope = null; args = null
-      options = {
-        timeline: {
-          onComplete:->
-            isRightScope = @ is tr.timeline
-            args = arguments
-          }
-        }
-      tr = new Transit options
-      expect(typeof tr._o.timeline.onComplete).toBe 'function'
+  #   it 'should not override onUpdate function if exists', ->
+  #     isRightScope = null; args = null
+  #     options = {
+  #       timeline: {
+  #         onComplete:->
+  #           isRightScope = @ is tr.timeline
+  #           args = arguments
+  #         }
+  #       }
+  #     tr = new Transit options
+  #     expect(typeof tr._o.timeline.onComplete).toBe 'function'
 
-      tr.timeline.setProgress 0
-      tr.timeline.setProgress .1
-      tr.timeline.setProgress .8
-      tr.timeline.setProgress 1
-      expect(isRightScope).toBe true
-      expect(args[0]).toBe true
-      expect(args[1]).toBe false
+  #     tr.timeline.setProgress 0
+  #     tr.timeline.setProgress .1
+  #     tr.timeline.setProgress .8
+  #     tr.timeline.setProgress 1
+  #     expect(isRightScope).toBe true
+  #     expect(args[0]).toBe true
+  #     expect(args[1]).toBe false
 
-    it 'should call _show method', ->
-      tr = new Transit
+  #   it 'should call _show method', ->
+  #     tr = new Transit
 
-      tr.timeline.setProgress 1
-      spyOn(tr, '_show').and.callThrough()
-      tr.timeline.setProgress .9
-      expect(tr._show).toHaveBeenCalled()
+  #     tr.timeline.setProgress 1
+  #     spyOn(tr, '_show').and.callThrough()
+  #     tr.timeline.setProgress .9
+  #     expect(tr._show).toHaveBeenCalled()
 
-    it 'should call _hide method', ->
-      tr = new Transit
+  #   it 'should call _hide method', ->
+  #     tr = new Transit
 
-      tr.timeline.setProgress 0
-      spyOn(tr, '_hide').and.callThrough()
-      tr.timeline.setProgress .1
-      tr.timeline.setProgress 1
-      expect(tr._hide).toHaveBeenCalled()
+  #     tr.timeline.setProgress 0
+  #     spyOn(tr, '_hide').and.callThrough()
+  #     tr.timeline.setProgress .1
+  #     tr.timeline.setProgress 1
+  #     expect(tr._hide).toHaveBeenCalled()
 
-    it 'should not call _hide method if isShowEnd is set', ->
-      tr = new Transit isShowEnd: true
+  #   it 'should not call _hide method if isShowEnd is set', ->
+  #     tr = new Transit isShowEnd: true
 
-      tr.timeline.setProgress 0
-      spyOn(tr, '_hide').and.callThrough()
-      tr.timeline.setProgress .1
-      tr.timeline.setProgress 1
-      expect(tr._hide).not.toHaveBeenCalled()
+  #     tr.timeline.setProgress 0
+  #     spyOn(tr, '_hide').and.callThrough()
+  #     tr.timeline.setProgress .1
+  #     tr.timeline.setProgress 1
+  #     expect(tr._hide).not.toHaveBeenCalled()
 
-  describe '_increaseSizeWithEasing method ->', ->
-    it 'should increase size based on easing - elastic.out', ->
-      tr = new Transit easing: 'elastic.out'
+  # describe '_increaseSizeWithEasing method ->', ->
+  #   it 'should increase size based on easing - elastic.out', ->
+  #     tr = new Transit easing: 'elastic.out'
 
-      tr._props.size = 1
-      tr._increaseSizeWithEasing()
-      expect(tr._props.size).toBe 1.25
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithEasing()
+  #     expect(tr._props.size).toBe 1.25
 
-    it 'should increase size based on easing - elastic.inout', ->
-      tr = new Transit easing: 'elastic.inout'
+  #   it 'should increase size based on easing - elastic.inout', ->
+  #     tr = new Transit easing: 'elastic.inout'
 
-      tr._props.size = 1
-      tr._increaseSizeWithEasing()
-      expect(tr._props.size).toBe 1.25
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithEasing()
+  #     expect(tr._props.size).toBe 1.25
 
-    it 'should increase size based on easing - back.out', ->
-      tr = new Transit easing: 'back.out'
+  #   it 'should increase size based on easing - back.out', ->
+  #     tr = new Transit easing: 'back.out'
 
-      tr._props.size = 1
-      tr._increaseSizeWithEasing()
-      expect(tr._props.size).toBe 1.1
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithEasing()
+  #     expect(tr._props.size).toBe 1.1
 
-    it 'should increase size based on easing - back.inout', ->
-      tr = new Transit easing: 'back.inout'
+  #   it 'should increase size based on easing - back.inout', ->
+  #     tr = new Transit easing: 'back.inout'
 
-      tr._props.size = 1
-      tr._increaseSizeWithEasing()
-      expect(tr._props.size).toBe 1.1
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithEasing()
+  #     expect(tr._props.size).toBe 1.1
 
-  describe '_increaseSizeWithBitRatio method ->', ->
-    it 'should increase size based on bit ratio', ->
-      tr = new Transit shape: 'equal'
+  # describe '_increaseSizeWithBitRatio method ->', ->
+  #   it 'should increase size based on bit ratio', ->
+  #     tr = new Transit shape: 'equal'
 
-      tr._props.size = 1
-      tr._increaseSizeWithBitRatio()
-      expect(tr._props.size).toBe tr.bit.ratio
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithBitRatio()
+  #     expect(tr._props.size).toBe tr.bit.ratio
 
-    it 'should increase size based 2 gap sizes', ->
-      gap = 20
-      tr = new Transit shape: 'equal', sizeGap: gap
+  #   it 'should increase size based 2 gap sizes', ->
+  #     gap = 20
+  #     tr = new Transit shape: 'equal', sizeGap: gap
 
-      tr._props.size = 1
-      tr._increaseSizeWithBitRatio()
-      expect(tr._props.size).toBe tr.bit.ratio + 2*gap
+  #     tr._props.size = 1
+  #     tr._increaseSizeWithBitRatio()
+  #     expect(tr._props.size).toBe tr.bit.ratio + 2*gap
 
 
 

@@ -771,6 +771,8 @@ var Tween = class Tween {
     if ( this._isFirstUpdate ) { return; }
     var p = this._props;
     if (p.onFirstUpdate != null && typeof p.onFirstUpdate === 'function') {
+      // onFirstUpdate should have tween pointer
+      p.onFirstUpdate.tween = this;
       p.onFirstUpdate.call( p.callbacksContext || this, time > this._prevTime, isYoyo );
     }
     this._isFirstUpdate = true;

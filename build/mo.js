@@ -701,7 +701,7 @@
 	      // define onUpdate and onFirstUpdate control callbacks on the object
 	      this._overrideUpdateCallbacks(merged);
 	      // set isChaned flag on the tween
-	      // merged.isChained = !o.delay;
+	      merged.callbacksContext = this;
 	      // append the tween with the options
 	      this.timeline.append(new _tween2.default(merged));
 	      return this;
@@ -729,17 +729,16 @@
 	      var onFirstUpdate = object.onFirstUpdate,
 	          isOnFirstUpdate = onFirstUpdate && typeof onFirstUpdate === 'function';
 	      // redefine onFirstUpdate for Transit's _tuneOptions
-	      object.onFirstUpdate = function (pe) {
+	      object.onFirstUpdate = function onFirstUpdateFunction(isForward) {
 	        // call onFirstUpdate function from options
 	        isOnFirstUpdate && onFirstUpdate.apply(this, arguments);
 	        // calcalate and draw Transit's progress
 	        // call tune options with index of the tween only if history > 1
 	        if (it.history.length > 1) {
-	          // fallback to 0 index
-	          var index = this.index || 0;
+	          var index = onFirstUpdateFunction.tween.index || 0;
 	          // if very first tween - _tuneOptions only on backward direction
 	          if (index === 0) {
-	            !arguments[0] && it._tuneOptions(it.history[index]);
+	            !isForward && it._tuneOptions(it.history[index]);
 	          } else {
 	            it._tuneOptions(it.history[index]);
 	          }
@@ -1021,7 +1020,6 @@
 	        points: this._props.points,
 	        transform: this._calcShapeTransform()
 	      });
-	      // console.log(this._props.radius, this._props.radiusX, this._props.radiusY);
 	      this.bit.draw();this._drawEl();
 	    }
 	    /*
@@ -2950,6 +2948,8 @@
 	      }
 	      var p = this._props;
 	      if (p.onFirstUpdate != null && typeof p.onFirstUpdate === 'function') {
+	        // onFirstUpdate should have tween pointer
+	        p.onFirstUpdate.tween = this;
 	        p.onFirstUpdate.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
 	      }
 	      this._isFirstUpdate = true;
@@ -3689,6 +3689,8 @@
 	  }, {
 	    key: '_makeTween',
 	    value: function _makeTween() {
+	      // pass callbacks context
+	      this._o.callbacksContext = this;
 	      this.tween = new _tween2.default(this._o);
 	    }
 	    /*
@@ -3702,6 +3704,9 @@
 	  }, {
 	    key: '_makeTimeline',
 	    value: function _makeTimeline() {
+	      // pass callbacks context
+	      this._o.timeline = this._o.timeline || {};
+	      this._o.timeline.callbacksContext = this;
 	      this.timeline = new _timeline2.default(this._o.timeline);
 	      // if tween exist - add it to the timeline there
 	      // is some modules like stagger that have no tween
@@ -7006,7 +7011,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.176.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.177.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
@@ -7014,16 +7019,18 @@
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
 
-	var tr = new mojs.Transit({
-	  radius: { 0: 200 },
-	  duration: 2000,
-	  // repeat: 2,
-	  // yoyo: true,
-	  onComplete: function onComplete(isForward, isYoyo) {
-	    console.log(isForward, isYoyo, this);
-	  }
-	}).then({ radius: 50 }).then({ x: 200 }).then({ radius: 100 }).play();
-	console.log(tr.timeline._timelines[0]._props.onComplete);
+	// var tr = new mojs.Transit({
+	//   radius: { 0: 200 },
+	//   duration: 2000,
+	//   // repeat: 2,
+	//   // yoyo: true,
+	//   onComplete: function (isForward, isYoyo) { console.log( isForward, isYoyo, this ); }
+	// })
+	//   .then({ radius: 50 })
+	//   .then({ x: 200 })
+	//   .then({ radius: 100 })
+	//   .play();
+	//   console.log(tr.timeline._timelines[0]._props.onComplete)
 
 	// setTimeout(function () {
 	//   tr.run({ fill: 'yellow', radius: 3000 });

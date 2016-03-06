@@ -16,6 +16,13 @@ describe 'tweenable ->', ->
       spyOn Tweenable.prototype, '_transformTweenOptions'
       tw = new Tweenable
       expect(Tweenable.prototype._transformTweenOptions).toHaveBeenCalled()
+  describe 'initialization ->', ->
+    it 'should pass this as callbacksContext object to timeline', ->
+      tw = new Tweenable
+      expect(tw.timeline._props.callbacksContext).toBe tw
+    it 'should pass this as callbacksContext object to tween', ->
+      tw = new Tweenable
+      expect(tw.timeline._timelines[0]._props.callbacksContext).toBe tw
   describe '_makeTween ->', ->
     it 'should call _makeTween on the construction stage ->', ->
       spyOn(Tweenable.prototype, '_makeTween').and.callThrough()

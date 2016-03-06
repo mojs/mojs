@@ -4665,7 +4665,7 @@
         t.setProgress(.1);
         return expect(isRightContext).toBe(true);
       });
-      return it('should run with custom context', function() {
+      it('should run with custom context', function() {
         var contextObj, isRightContext, t;
         isRightContext = null;
         contextObj = {};
@@ -4678,6 +4678,19 @@
         t.setProgress(0);
         t.setProgress(.1);
         return expect(isRightContext).toBe(true);
+      });
+      return it('should have tween object on the onFirstUpdate function', function() {
+        var onFirstUpdate, t, tweenObject;
+        tweenObject = null;
+        onFirstUpdate = function() {
+          return tweenObject = onFirstUpdate.tween;
+        };
+        t = new Tween({
+          onFirstUpdate: onFirstUpdate
+        });
+        t.setProgress(0);
+        t.setProgress(.1);
+        return expect(tweenObject).toBe(t);
       });
     });
     describe('onRepeatStart callback ->', function() {

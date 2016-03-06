@@ -5127,6 +5127,15 @@ describe 'Tween ->', ->
       t.setProgress .1
       expect(isRightContext).toBe true
 
+    it 'should have tween object on the onFirstUpdate function', ->
+      tweenObject = null
+      onFirstUpdate = -> tweenObject = onFirstUpdate.tween
+      t = new Tween onFirstUpdate: onFirstUpdate
+
+      t.setProgress 0
+      t.setProgress .1
+      expect(tweenObject).toBe t
+
   describe 'onRepeatStart callback ->', ->
     it 'should be defined', ->
       t = new Tween onRepeatStart: ->

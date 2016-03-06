@@ -62,7 +62,7 @@ class Transit extends Tweenable {
     // define onUpdate and onFirstUpdate control callbacks on the object
     this._overrideUpdateCallbacks(merged);
     // set isChaned flag on the tween
-    // merged.isChained = !o.delay;
+    merged.callbacksContext = this;
     // append the tween with the options
     this.timeline.append(new Tween(merged));
     return this;
@@ -86,17 +86,16 @@ class Transit extends Tweenable {
     var onFirstUpdate   = object.onFirstUpdate,
         isOnFirstUpdate = (onFirstUpdate && typeof onFirstUpdate === 'function');
     // redefine onFirstUpdate for Transit's _tuneOptions
-    object.onFirstUpdate = function ( pe ) {
+    object.onFirstUpdate = function onFirstUpdateFunction (isForward) {
       // call onFirstUpdate function from options
       isOnFirstUpdate && onFirstUpdate.apply( this, arguments );
       // calcalate and draw Transit's progress
       // call tune options with index of the tween only if history > 1
       if ( it.history.length > 1 ) {
-        // fallback to 0 index
-        var index = this.index || 0;
+        var index = onFirstUpdateFunction.tween.index || 0;
         // if very first tween - _tuneOptions only on backward direction
         if ( index === 0 ) {
-          !arguments[0] && it._tuneOptions(it.history[index]);
+          !isForward && it._tuneOptions(it.history[index]);
         } else { it._tuneOptions(it.history[index]); }
       }
     };
@@ -329,7 +328,6 @@ class Transit extends Tweenable {
       points:               this._props.points,
       transform:            this._calcShapeTransform()
     });
-    // console.log(this._props.radius, this._props.radiusX, this._props.radiusY);
     this.bit.draw(); this._drawEl();
   }
   /*

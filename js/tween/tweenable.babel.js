@@ -73,7 +73,11 @@ class Tweenable {
     Method to create tween.
     @private
   */
-  _makeTween () { this.tween = new Tween( this._o ); }
+  _makeTween () {
+    // pass callbacks context
+    this._o.callbacksContext = this;
+    this.tween = new Tween( this._o );
+  }
   /*
     Method to create timeline.
     @private
@@ -82,6 +86,9 @@ class Tweenable {
                     timeline options.
   */
   _makeTimeline () {
+    // pass callbacks context
+    this._o.timeline = this._o.timeline || {};
+    this._o.timeline.callbacksContext = this;
     this.timeline = new Timeline( this._o.timeline );
     // if tween exist - add it to the timeline there
     // is some modules like stagger that have no tween
