@@ -14,7 +14,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.178.1', isDebug: true, helpers: h,
+  revision:   '0.178.2', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, tweener, easing, shapesMap
 }
@@ -34,7 +34,7 @@ mojs.delta = mojs.h.delta;
 //   .then({ radiusX: 200 })
 //   .then({ radius: 800, radiusX: 500 })
 //   .play();
-//   // console.log(tr.history[3])
+//   console.log(tr.history[3].radiusX)
 
 // // setTimeout(function () {
 // //   tr.run({ fill: 'yellow', radius: 3000 });

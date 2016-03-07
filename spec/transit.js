@@ -194,6 +194,22 @@
         expect(mergedOpton.radiusX[10]).toBe(200);
         return expect(mergedOpton.radiusY[20]).toBe(100);
       });
+      it("should always take sub radius values", function() {
+        var end, mergedOpton, start, tr;
+        tr = new Transit;
+        start = {
+          radiusX: {
+            50: 200
+          },
+          radius: 50
+        };
+        end = {
+          radiusX: 500,
+          radius: 800
+        };
+        mergedOpton = tr._mergeThenOptions(start, end);
+        return expect(mergedOpton.radiusX[200]).toBe(500);
+      });
       return it('should push merged options to the history', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;

@@ -617,16 +617,12 @@ class Transit extends Tweenable {
       if ( endValue == null ) { continue };
       // make ∆ of start -> end
 
-      this._o.isIt && console.log( '-=-=-=-=-=-=-=-=-=-=-=-=-' );
-      this._o.isIt && console.log(endP, startValue, start.radius );
-      if ( endP === 'radiusX' || endP === 'radiusY' && ( startValue == null ) ) {
+      // if key name is radiusX/radiusY and
+      // the startValue is not set fallback to radius value
+      var  isSubRadius = (endP === 'radiusX' || endP === 'radiusY');
+      if ( isSubRadius && startValue == null ) {
         startValue = start.radius;
       }
-      // startKey = start[key]; startKey ?= @defaults[key]
-      // # inherit radius value for radiusX/Y
-      // if (key is 'radiusX' or key is 'radiusY') and !startKey?
-      //   startKey = start.radius
-
       // if isnt tween property
       if ( !h.isTweenProp(endP) ) {
         // if end value is delta - just save it
@@ -640,9 +636,8 @@ class Transit extends Tweenable {
           // if start value is not delta - make delta
           } else { o[endP] = { [ startValue ] : endValue }; }
         }
-      }
-      // else if ( endP === 'duration' ) { o[endP] = endValue; }
-      else { o[endP] = endValue; }
+      // copy the tween values unattended
+      } else { o[endP] = endValue; }
     }
   }
   /*

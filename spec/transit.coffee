@@ -774,6 +774,18 @@ describe 'Transit ->', ->
       expect(mergedOpton.radiusX[10]).toBe 200
       expect(mergedOpton.radiusY[20]).toBe 100
 
+    it "should always take sub radius values", ->
+      tr = new Transit
+      # .then({ radius: 50 })
+      # .then({ radiusX: 200 })
+      # .then({ radius: 800, radiusX: 500 })
+
+      start = radiusX: { 50: 200 }, radius: 50
+      end   = radiusX: 500, radius: 800
+      mergedOpton = tr._mergeThenOptions start, end
+      expect(mergedOpton.radiusX[200]).toBe 500
+
+
     it 'should push merged options to the history', ->
       byte = new Byte
       start = radius: 10, duration: 1000, fill: 'orange', points: 5
