@@ -642,8 +642,9 @@
 
 	// TODO
 	//  - properties signatures
-	//  - then should not copy previous deltas
+	//  - radiusX/radiusY
 	//  - rx, ry for transit
+	//  - refactor _extendDefaults method
 	//  --
 	//  - tween for every prop
 
@@ -1376,6 +1377,17 @@
 	          continue;
 	        };
 	        // make ∆ of start -> end
+
+	        this._o.isIt && console.log('-=-=-=-=-=-=-=-=-=-=-=-=-');
+	        this._o.isIt && console.log(endP, startValue, start.radius);
+	        if (endP === 'radiusX' || endP === 'radiusY' && startValue == null) {
+	          startValue = start.radius;
+	        }
+	        // startKey = start[key]; startKey ?= @defaults[key]
+	        // # inherit radius value for radiusX/Y
+	        // if (key is 'radiusX' or key is 'radiusY') and !startKey?
+	        //   startKey = start.radius
+
 	        // if isnt tween property
 	        if (!h.isTweenProp(endP)) {
 	          // if end value is delta - just save it
@@ -7082,7 +7094,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.178.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.178.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
@@ -7095,13 +7107,14 @@
 	//   duration: 2000,
 	//   // repeat: 2,
 	//   // yoyo: true,
+	//   isIt: 1,
 	//   isShowEnd: true
 	// })
-	//   .then({ radius: 50, easing: 'elastic.out' })
-	//   .then({ x: 200, easing: 'elastic.in' })
-	//   .then({ radius: 1800, duration: 200, easing: 'ease.out' })
+	//   .then({ radius: 50 })
+	//   .then({ radiusX: 200 })
+	//   .then({ radius: 800, radiusX: 500 })
 	//   .play();
-	//   // console.log(tr.timeline._timelines[0]._props.onComplete)
+	//   // console.log(tr.history[3])
 
 	// // setTimeout(function () {
 	// //   tr.run({ fill: 'yellow', radius: 3000 });

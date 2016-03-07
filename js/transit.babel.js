@@ -8,8 +8,9 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - properties signatures
-//  - then should not copy previous deltas
+//  - radiusX/radiusY
 //  - rx, ry for transit
+//  - refactor _extendDefaults method
 //  --
 //  - tween for every prop
 
@@ -615,6 +616,17 @@ class Transit extends Tweenable {
             : this.defaults[endP];
       if ( endValue == null ) { continue };
       // make ∆ of start -> end
+
+      this._o.isIt && console.log( '-=-=-=-=-=-=-=-=-=-=-=-=-' );
+      this._o.isIt && console.log(endP, startValue, start.radius );
+      if ( endP === 'radiusX' || endP === 'radiusY' && ( startValue == null ) ) {
+        startValue = start.radius;
+      }
+      // startKey = start[key]; startKey ?= @defaults[key]
+      // # inherit radius value for radiusX/Y
+      // if (key is 'radiusX' or key is 'radiusY') and !startKey?
+      //   startKey = start.radius
+
       // if isnt tween property
       if ( !h.isTweenProp(endP) ) {
         // if end value is delta - just save it

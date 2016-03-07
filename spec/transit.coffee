@@ -757,6 +757,23 @@ describe 'Transit ->', ->
       expect(mergedOpton.delay)   .toBe 200
       expect(mergedOpton.repeat)  .toBe 2
       expect(mergedOpton.easing)  .toBe 'elastic.in'
+    it 'should fallback to radius for radiusX/radiusY props', ->
+      byte = new Byte
+      start = radius: 10
+      end   = radiusX: 200, radiusY: 100
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radiusX[10]).toBe 200
+      expect(mergedOpton.radiusY[10]).toBe 100
+
+    it "should fallback to radius for radiusX/radiusY props
+        and not ovveride previous values", ->
+      byte = new Byte
+      start = radius: 10, radiusY: 20
+      end   = radiusX: 200, radiusY: 100
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radiusX[10]).toBe 200
+      expect(mergedOpton.radiusY[20]).toBe 100
+
     it 'should push merged options to the history', ->
       byte = new Byte
       start = radius: 10, duration: 1000, fill: 'orange', points: 5
