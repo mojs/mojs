@@ -8,7 +8,6 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - properties signatures
-//  - tween should receive context object for callbacks
 //  - then should not copy previous deltas
 //  - rx, ry for transit
 //  --
@@ -204,12 +203,13 @@ class Transit extends Tweenable {
         }
         // save to props
         this._props[key] = optionsValue;
+        // PROBABLY REDUNDANT
         // if property is "radius" and "radiusX/radiusY" not set
         // - set them to "radius" value
-        if (key === 'radius') {
-          if (this._o.radiusX == null) { this._props.radiusX = optionsValue; }
-          if (this._o.radiusY == null) { this._props.radiusY = optionsValue; }
-        }
+        // if (key === 'radius') {
+        //   if (this._o.radiusX == null) { this._props.radiusX = optionsValue; }
+        //   if (this._o.radiusY == null) { this._props.radiusY = optionsValue; }
+        // }
         // parse units for position properties
         if (this.h.posPropsMap[key]) {
           this._props[key] = this.h.parseUnit(this._props[key]).string;
@@ -311,6 +311,7 @@ class Transit extends Tweenable {
     @private
   */
   _draw () {
+    // console.log(this._props.radius, this._props.radiusX, this._props.radiusY);
     this.bit.setProp({
       x:                    this.origin.x,
       y:                    this.origin.y,
@@ -569,38 +570,68 @@ class Transit extends Tweenable {
     @returns {Object} Merged options.
   */
   _mergeThenOptions ( start, end ) {
-    var endValue, i, isFunction, key, keys, o, startKey, startKeys, value;
-    o = {};
-    for (key in start) {
-      value = start[key];
-      if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
-        o[key] = value;
-      } else { o[key] = (key === 'easing') ? '' : void 0; }
-    }
-    keys = Object.keys(end);
-    i = keys.length;
-    while (i--) {
-      key = keys[i];
-      endValue = end[key];
-      isFunction = typeof endValue === 'function';
-      if (this.h.tweenOptionMap[key] || typeof endValue === 'object' || isFunction) {
-        o[key] = endValue != null ? endValue : start[key];
-        continue;
-      }
-      startKey = start[key];
-      if (startKey == null) { startKey = this.defaults[key]; }
-      if ((key === 'radiusX' || key === 'radiusY') && (startKey == null)) {
-        startKey = start.radius;
-      }
-      if (typeof startKey === 'object' && (startKey != null)) {
-        startKeys = Object.keys(startKey);
-        startKey = startKey[startKeys[0]];
-      }
-      if (endValue != null) { o[key] = {}; o[key][startKey] = endValue; }
-    }
-    // and save to the history
+    var o = {};
+    this._mergeStartLoop( o, start );
+    this._mergeEndLoop( o, start, end );
     this.history.push(o);
     return o;
+  }
+  /*
+    Originally part of the _mergeThenOptions.
+    Loops thru start object and copies all the props from it.
+    @param {Object} An object to copy in.
+    @parma {Object} Start options object.
+  */
+  _mergeStartLoop ( o, start ) {
+    // loop thru start options object
+    for (var key in start) {
+      var value = start[key];
+      if ( start[key] == null ) { continue };
+      // copy all values from start if not tween prop or duration
+      if ( !h.isTweenProp(key) || key === 'duration' ) {
+        // if delta - copy only the end value
+        if ( h.isObject(value) ) { o[key] = h.getDeltaEnd(value); }
+        else { o[key] = value; }
+      }
+    }
+
+  }
+  /*
+    Originally part of the _mergeThenOptions.
+    Loops thru start object and copies all the props from it.
+    @param {Object} An object to copy in.
+    @parma {Object} Start options object.
+    @parma {Object} End options object.
+  */
+  _mergeEndLoop ( o, start, end ) {
+    var endKeys = Object.keys(end);
+
+    for (var endP in end) {
+      // get key/value of the end object
+      // endKey - name of the property, endValue - value of the property
+      var endValue   = end[endP],
+          startValue = ( start[endP] != null )
+            ? start[endP]
+            : this.defaults[endP];
+      if ( endValue == null ) { continue };
+      // make ∆ of start -> end
+      // if isnt tween property
+      if ( !h.isTweenProp(endP) ) {
+        // if end value is delta - just save it
+        if ( h.isObject(endValue) ) { o[endP] = endValue; }
+        else {
+          // if end value is not delta - merge with start value
+          if ( h.isObject(startValue) ) {
+            // if start value is delta - take the end value
+            // as start value of the new delta
+            o[endP] = { [ h.getDeltaEnd(startValue) ] : endValue };
+          // if start value is not delta - make delta
+          } else { o[endP] = { [ startValue ] : endValue }; }
+        }
+      }
+      else if ( endP === 'duration' ) { o[endP] = endValue; }
+      else if ( endP === 'easing' ) { o[endP] = endValue; }
+    }
   }
   /*
     Method to tune new options on history traversal.

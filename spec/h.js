@@ -53,19 +53,8 @@
     });
     describe('tween related map ->', function() {
       return it('should be a map of tween related options ->', function() {
-        var mapLen;
-        expect(h.chainOptionMap.duration).toBe(1);
-        expect(h.chainOptionMap.delay).toBe(1);
-        expect(h.chainOptionMap.repeat).toBe(1);
-        expect(h.chainOptionMap.easing).toBe(1);
-        expect(h.chainOptionMap.yoyo).toBe(1);
-        expect(h.chainOptionMap.onStart).toBe(1);
-        expect(h.chainOptionMap.onComplete).toBe(1);
-        expect(h.chainOptionMap.onCompleteChain).toBe(1);
-        expect(h.chainOptionMap.onUpdate).toBe(1);
         expect(h.chainOptionMap.points).toBe(1);
-        mapLen = Object.keys(h.chainOptionMap).length;
-        return expect(mapLen).toBe(10);
+        return expect(Object.keys(h.chainOptionMap).length).toBe(1);
       });
     });
     describe('pure tween props ->', function() {
@@ -85,7 +74,9 @@
         expect(h.callbacksMap.onComplete).toBe(1);
         expect(h.callbacksMap.onProgress).toBe(1);
         expect(h.callbacksMap.onFirstUpdate).toBe(1);
-        return expect(Object.keys(h.callbacksMap).length).toBe(5);
+        expect(h.callbacksMap.onRepeatStart).toBe(1);
+        expect(h.callbacksMap.onRepeatComplete).toBe(1);
+        return expect(Object.keys(h.callbacksMap).length).toBe(7);
       });
     });
     describe('methods ->', function() {
@@ -1238,9 +1229,42 @@
         return expect(tr !== '').toBe(h.checkIf3d());
       });
     });
-    return describe('is3d property ->', function() {
+    describe('is3d property ->', function() {
       return it('should be fulfilled', function() {
         return expect(h.is3d).toBe(h.checkIf3d());
+      });
+    });
+    describe('isObject method ->', function() {
+      return it('should return true if object', function() {
+        expect(h.isObject({})).toBe(true);
+        expect(h.isObject(null)).toBe(false);
+        expect(h.isObject('a')).toBe(false);
+        expect(h.isObject(2)).toBe(false);
+        return expect(h.isObject(true)).toBe(false);
+      });
+    });
+    describe('getDeltaEnd method ->', function() {
+      return it('should return value of the 0 key of passed object', function() {
+        return expect(h.getDeltaEnd({
+          2: 1
+        })).toBe(1);
+      });
+    });
+    return describe('isTweenProp method ->', function() {
+      return it('should check in callbacksMap and tweenOptionMap maps', function() {
+        var key, value, _ref, _ref1, _results;
+        _ref = h.callbacksMap;
+        for (key in _ref) {
+          value = _ref[key];
+          expect(h.isTweenProp(key)).toBe(1);
+        }
+        _ref1 = h.tweenOptionMap;
+        _results = [];
+        for (key in _ref1) {
+          value = _ref1[key];
+          _results.push(expect(h.isTweenProp(key)).toBe(1));
+        }
+        return _results;
       });
     });
   });

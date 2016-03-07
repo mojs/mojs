@@ -38,18 +38,8 @@ describe 'Helpers ->', ->
       expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
-      expect(h.chainOptionMap.duration)         .toBe 1
-      expect(h.chainOptionMap.delay)            .toBe 1
-      expect(h.chainOptionMap.repeat)           .toBe 1
-      expect(h.chainOptionMap.easing)           .toBe 1
-      expect(h.chainOptionMap.yoyo)             .toBe 1
-      expect(h.chainOptionMap.onStart)          .toBe 1
-      expect(h.chainOptionMap.onComplete)       .toBe 1
-      expect(h.chainOptionMap.onCompleteChain)  .toBe 1
-      expect(h.chainOptionMap.onUpdate)         .toBe 1
-      expect(h.chainOptionMap.points)           .toBe 1
-      mapLen = Object.keys(h.chainOptionMap).length
-      expect(mapLen)                            .toBe 10
+      expect(h.chainOptionMap.points).toBe 1
+      expect(Object.keys(h.chainOptionMap).length).toBe 1
   describe 'pure tween props ->', ->
     it 'should be a map of tween related options ->', ->
       expect(h.tweenOptionMap.duration)           .toBe 1
@@ -65,7 +55,9 @@ describe 'Helpers ->', ->
       expect(h.callbacksMap.onComplete)         .toBe 1
       expect(h.callbacksMap.onProgress)         .toBe 1
       expect(h.callbacksMap.onFirstUpdate)      .toBe 1
-      expect(Object.keys(h.callbacksMap).length).toBe 5
+      expect(h.callbacksMap.onRepeatStart)      .toBe 1
+      expect(h.callbacksMap.onRepeatComplete)   .toBe 1
+      expect(Object.keys(h.callbacksMap).length).toBe 7
   describe 'methods ->', ->
     describe 'clamp method', ->
       it 'should clamp value to max and min', ->
@@ -887,6 +879,25 @@ describe 'Helpers ->', ->
   describe 'is3d property ->',->
     it 'should be fulfilled', ->
       expect(h.is3d).toBe h.checkIf3d()
+
+  describe 'isObject method ->', ->
+    it 'should return true if object', ->
+      expect(h.isObject({})).toBe true
+      expect(h.isObject(null)).toBe false
+      expect(h.isObject('a')).toBe false
+      expect(h.isObject(2)).toBe false
+      expect(h.isObject(true)).toBe false
+
+  describe 'getDeltaEnd method ->', ->
+    it 'should return value of the 0 key of passed object', ->
+      expect(h.getDeltaEnd({ 2: 1 })).toBe 1
+
+  describe 'isTweenProp method ->', ->
+    it 'should check in callbacksMap and tweenOptionMap maps', ->
+      for key, value of h.callbacksMap
+        expect(h.isTweenProp(key)).toBe 1
+      for key, value of h.tweenOptionMap
+        expect(h.isTweenProp(key)).toBe 1
 
 
 

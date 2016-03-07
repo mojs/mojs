@@ -589,6 +589,10 @@
 	  value: true
 	});
 
+	var _defineProperty2 = __webpack_require__(103);
+
+	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
 	var _typeof2 = __webpack_require__(11);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
@@ -638,7 +642,6 @@
 
 	// TODO
 	//  - properties signatures
-	//  - tween should receive context object for callbacks
 	//  - then should not copy previous deltas
 	//  - rx, ry for transit
 	//  --
@@ -865,16 +868,13 @@
 	          }
 	          // save to props
 	          this._props[key] = optionsValue;
+	          // PROBABLY REDUNDANT
 	          // if property is "radius" and "radiusX/radiusY" not set
 	          // - set them to "radius" value
-	          if (key === 'radius') {
-	            if (this._o.radiusX == null) {
-	              this._props.radiusX = optionsValue;
-	            }
-	            if (this._o.radiusY == null) {
-	              this._props.radiusY = optionsValue;
-	            }
-	          }
+	          // if (key === 'radius') {
+	          //   if (this._o.radiusX == null) { this._props.radiusX = optionsValue; }
+	          //   if (this._o.radiusY == null) { this._props.radiusY = optionsValue; }
+	          // }
 	          // parse units for position properties
 	          if (this.h.posPropsMap[key]) {
 	            this._props[key] = this.h.parseUnit(this._props[key]).string;
@@ -1003,6 +1003,7 @@
 	  }, {
 	    key: '_draw',
 	    value: function _draw() {
+	      // console.log(this._props.radius, this._props.radiusX, this._props.radiusY);
 	      this.bit.setProp({
 	        x: this.origin.x,
 	        y: this.origin.y,
@@ -1320,44 +1321,83 @@
 	  }, {
 	    key: '_mergeThenOptions',
 	    value: function _mergeThenOptions(start, end) {
-	      var endValue, i, isFunction, key, keys, o, startKey, startKeys, value;
-	      o = {};
-	      for (key in start) {
-	        value = start[key];
-	        if (!this.h.tweenOptionMap[key] && !this.h.callbacksMap[key] || key === 'duration') {
-	          o[key] = value;
-	        } else {
-	          o[key] = key === 'easing' ? '' : void 0;
-	        }
-	      }
-	      keys = (0, _keys2.default)(end);
-	      i = keys.length;
-	      while (i--) {
-	        key = keys[i];
-	        endValue = end[key];
-	        isFunction = typeof endValue === 'function';
-	        if (this.h.tweenOptionMap[key] || (typeof endValue === 'undefined' ? 'undefined' : (0, _typeof3.default)(endValue)) === 'object' || isFunction) {
-	          o[key] = endValue != null ? endValue : start[key];
-	          continue;
-	        }
-	        startKey = start[key];
-	        if (startKey == null) {
-	          startKey = this.defaults[key];
-	        }
-	        if ((key === 'radiusX' || key === 'radiusY') && startKey == null) {
-	          startKey = start.radius;
-	        }
-	        if ((typeof startKey === 'undefined' ? 'undefined' : (0, _typeof3.default)(startKey)) === 'object' && startKey != null) {
-	          startKeys = (0, _keys2.default)(startKey);
-	          startKey = startKey[startKeys[0]];
-	        }
-	        if (endValue != null) {
-	          o[key] = {};o[key][startKey] = endValue;
-	        }
-	      }
-	      // and save to the history
+	      var o = {};
+	      this._mergeStartLoop(o, start);
+	      this._mergeEndLoop(o, start, end);
 	      this.history.push(o);
 	      return o;
+	    }
+	    /*
+	      Originally part of the _mergeThenOptions.
+	      Loops thru start object and copies all the props from it.
+	      @param {Object} An object to copy in.
+	      @parma {Object} Start options object.
+	    */
+
+	  }, {
+	    key: '_mergeStartLoop',
+	    value: function _mergeStartLoop(o, start) {
+	      // loop thru start options object
+	      for (var key in start) {
+	        var value = start[key];
+	        if (start[key] == null) {
+	          continue;
+	        };
+	        // copy all values from start if not tween prop or duration
+	        if (!h.isTweenProp(key) || key === 'duration') {
+	          // if delta - copy only the end value
+	          if (h.isObject(value)) {
+	            o[key] = h.getDeltaEnd(value);
+	          } else {
+	            o[key] = value;
+	          }
+	        }
+	      }
+	    }
+	    /*
+	      Originally part of the _mergeThenOptions.
+	      Loops thru start object and copies all the props from it.
+	      @param {Object} An object to copy in.
+	      @parma {Object} Start options object.
+	      @parma {Object} End options object.
+	    */
+
+	  }, {
+	    key: '_mergeEndLoop',
+	    value: function _mergeEndLoop(o, start, end) {
+	      var endKeys = (0, _keys2.default)(end);
+
+	      for (var endP in end) {
+	        // get key/value of the end object
+	        // endKey - name of the property, endValue - value of the property
+	        var endValue = end[endP],
+	            startValue = start[endP] != null ? start[endP] : this.defaults[endP];
+	        if (endValue == null) {
+	          continue;
+	        };
+	        // make ∆ of start -> end
+	        // if isnt tween property
+	        if (!h.isTweenProp(endP)) {
+	          // if end value is delta - just save it
+	          if (h.isObject(endValue)) {
+	            o[endP] = endValue;
+	          } else {
+	            // if end value is not delta - merge with start value
+	            if (h.isObject(startValue)) {
+	              // if start value is delta - take the end value
+	              // as start value of the new delta
+	              o[endP] = (0, _defineProperty3.default)({}, h.getDeltaEnd(startValue), endValue);
+	              // if start value is not delta - make delta
+	            } else {
+	                o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
+	              }
+	          }
+	        } else if (endP === 'duration') {
+	          o[endP] = endValue;
+	        } else if (endP === 'easing') {
+	          o[endP] = endValue;
+	        }
+	      }
 	    }
 	    /*
 	      Method to tune new options on history traversal.
@@ -3794,23 +3834,17 @@
 	  };
 
 	  Helpers.prototype.chainOptionMap = {
-	    duration: 1,
-	    delay: 1,
-	    repeat: 1,
-	    easing: 1,
-	    yoyo: 1,
-	    onStart: 1,
-	    onComplete: 1,
-	    onUpdate: 1,
 	    points: 1
 	  };
 
 	  Helpers.prototype.callbacksMap = {
 	    onStart: 1,
 	    onComplete: 1,
+	    onFirstUpdate: 1,
 	    onUpdate: 1,
 	    onProgress: 1,
-	    onFirstUpdate: 1
+	    onRepeatStart: 1,
+	    onRepeatComplete: 1
 	  };
 
 	  Helpers.prototype.tweenOptionMap = {
@@ -4184,7 +4218,7 @@
 	  };
 
 	  Helpers.prototype.parseDelta = function(key, value) {
-	    var delta, end, endArr, endColorObj, i, j, len1, start, startArr, startColorObj;
+	    var delta, end, endArr, endColorObj, i, isntTweenProp, j, len1, start, startArr, startColorObj;
 	    start = Object.keys(value)[0];
 	    end = value[start];
 	    delta = {
@@ -4224,7 +4258,8 @@
 	        type: 'array'
 	      };
 	    } else {
-	      if (!this.chainOptionMap[key]) {
+	      isntTweenProp = !this.callbacksMap[key] && !this.tweenOptionMap[key];
+	      if (!this.chainOptionMap[key] && isntTweenProp) {
 	        if (this.posPropsMap[key]) {
 	          end = this.parseUnit(this.parseIfRand(end));
 	          start = this.parseUnit(this.parseIfRand(start));
@@ -4339,6 +4374,42 @@
 	    prefixed = this.prefix.css + "transform";
 	    tr = style[prefixed] != null ? style[prefixed] : style.transform;
 	    return tr !== '';
+	  };
+
+
+	  /*
+	    Method to check if variable holds pointer to an object.
+	    @param {Any} Variable to test
+	    @returns {Boolean} If variable is object.
+	   */
+
+	  Helpers.prototype.isObject = function(variable) {
+	    return variable !== null && typeof variable === 'object';
+	  };
+
+
+	  /*
+	    Method to get first value of the object.
+	    Used to get end value on ∆'s.
+	    @param {Object} Object to get the value of.
+	    @returns {Any} The value of the first object' property.
+	   */
+
+	  Helpers.prototype.getDeltaEnd = function(obj) {
+	    var key;
+	    key = Object.keys(obj)[0];
+	    return obj[key];
+	  };
+
+
+	  /*
+	    Method to check if propery exists in callbacksMap or tweenOptionMap.
+	    @param {String} Property name to check for
+	    @returns {Boolean} If property is tween property.
+	   */
+
+	  Helpers.prototype.isTweenProp = function(keyName) {
+	    return this.tweenOptionMap[keyName] || this.callbacksMap[keyName];
 	  };
 
 	  return Helpers;
@@ -7011,7 +7082,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.177.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.177.3', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
@@ -7019,18 +7090,14 @@
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
 
-	// var tr = new mojs.Transit({
-	//   radius: { 0: 200 },
-	//   duration: 2000,
-	//   // repeat: 2,
-	//   // yoyo: true,
-	//   onComplete: function (isForward, isYoyo) { console.log( isForward, isYoyo, this ); }
-	// })
-	//   .then({ radius: 50 })
-	//   .then({ x: 200 })
-	//   .then({ radius: 100 })
-	//   .play();
-	//   console.log(tr.timeline._timelines[0]._props.onComplete)
+	var tr = new mojs.Transit({
+	  radius: { 0: 200 },
+	  duration: 2000,
+	  // repeat: 2,
+	  // yoyo: true,
+	  isShowEnd: true
+	}).then({ radius: 50, easing: 'elastic.out' }).then({ x: 200, easing: 'elastic.in' }).then({ radius: 500, x: 0 }).play();
+	// console.log(tr.timeline._timelines[0]._props.onComplete)
 
 	// setTimeout(function () {
 	//   tr.run({ fill: 'yellow', radius: 3000 });
@@ -8021,6 +8088,35 @@
 	module.exports = function(it){
 	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
 	  return it;
+	};
+
+/***/ },
+/* 103 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _defineProperty = __webpack_require__(42);
+
+	var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (obj, key, value) {
+	  if (key in obj) {
+	    (0, _defineProperty2.default)(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+
+	  return obj;
 	};
 
 /***/ }

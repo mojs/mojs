@@ -48,21 +48,15 @@ class Helpers
   # ---
   # none-tweenable props
   chainOptionMap:
-    duration:         1
-    delay:            1
-    repeat:           1
-    easing:           1
-    yoyo:             1
-    onStart:          1
-    onComplete:       1
-    onUpdate:         1
     points:           1
   callbacksMap:
     onStart:          1
     onComplete:       1
+    onFirstUpdate:    1
     onUpdate:         1
     onProgress:       1
-    onFirstUpdate:    1
+    onRepeatStart:    1
+    onRepeatComplete: 1
   tweenOptionMap:
     duration:         1
     delay:            1
@@ -404,7 +398,8 @@ class Helpers
       # defined in helpers.chainOptionMap
       # because tween-related props shouldn't
       ## have deltas
-      if !@chainOptionMap[key]
+      isntTweenProp = !@callbacksMap[key] and !@tweenOptionMap[key]
+      if !@chainOptionMap[key] and isntTweenProp
         # position values defined in posPropsMap
         if @posPropsMap[key]
           end   = @parseUnit @parseIfRand end
@@ -500,6 +495,26 @@ class Helpers
     style = div.style; prefixed = "#{@prefix.css}transform"
     tr = if style[prefixed]? then style[prefixed] else style.transform
     tr isnt ''
+  ###
+    Method to check if variable holds pointer to an object.
+    @param {Any} Variable to test
+    @returns {Boolean} If variable is object.
+  ###
+  isObject:(variable)-> variable != null and typeof variable is 'object'
+  ###
+    Method to get first value of the object.
+    Used to get end value on ∆'s.
+    @param {Object} Object to get the value of.
+    @returns {Any} The value of the first object' property.
+  ###
+  getDeltaEnd: (obj)-> key = Object.keys(obj)[0]; return obj[key]
+  ###
+    Method to check if propery exists in callbacksMap or tweenOptionMap.
+    @param {String} Property name to check for
+    @returns {Boolean} If property is tween property.
+  ###
+  isTweenProp:(keyName)-> @tweenOptionMap[keyName] or @callbacksMap[keyName]
+
 
 h = new Helpers
 module.exports = h
