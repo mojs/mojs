@@ -1392,11 +1392,11 @@
 	                o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
 	              }
 	          }
-	        } else if (endP === 'duration') {
-	          o[endP] = endValue;
-	        } else if (endP === 'easing') {
-	          o[endP] = endValue;
 	        }
+	        // else if ( endP === 'duration' ) { o[endP] = endValue; }
+	        else {
+	            o[endP] = endValue;
+	          }
 	      }
 	    }
 	    /*
@@ -7082,7 +7082,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.177.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.178.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
@@ -7090,18 +7090,22 @@
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
 
-	var tr = new mojs.Transit({
-	  radius: { 0: 200 },
-	  duration: 2000,
-	  // repeat: 2,
-	  // yoyo: true,
-	  isShowEnd: true
-	}).then({ radius: 50, easing: 'elastic.out' }).then({ x: 200, easing: 'elastic.in' }).then({ radius: 500, x: 0 }).play();
-	// console.log(tr.timeline._timelines[0]._props.onComplete)
+	// var tr = new mojs.Transit({
+	//   radius: { 0: 200 },
+	//   duration: 2000,
+	//   // repeat: 2,
+	//   // yoyo: true,
+	//   isShowEnd: true
+	// })
+	//   .then({ radius: 50, easing: 'elastic.out' })
+	//   .then({ x: 200, easing: 'elastic.in' })
+	//   .then({ radius: 1800, duration: 200, easing: 'ease.out' })
+	//   .play();
+	//   // console.log(tr.timeline._timelines[0]._props.onComplete)
 
-	// setTimeout(function () {
-	//   tr.run({ fill: 'yellow', radius: 3000 });
-	// }, 2000);
+	// // setTimeout(function () {
+	// //   tr.run({ fill: 'yellow', radius: 3000 });
+	// // }, 2000);
 
 	// ### istanbul ignore next ###
 	if (true) {

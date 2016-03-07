@@ -741,13 +741,22 @@ describe 'Transit ->', ->
       expect(mergedOpton.fill)    .toBe 'orange'
       expect(mergedOpton.points)  .toBe 5
     it 'should use end of the start value if end value is null or undefined', ->
-      byte = new Byte isIt: 1
+      byte = new Byte
       start = radius: 10, duration: 1000, fill: {'orange' : 'cyan'}, points: 5
       end   =
         radius: 20, duration: null, points: undefined
         fill: null, stroke: '#ff00ff'
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.fill)    .toBe 'cyan'
+    it 'should work with new tween values', ->
+      byte = new Byte
+      start = radius: 10
+      end   = duration: 1000, delay: 200, repeat: 2, easing: 'elastic.in'
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.duration).toBe 1000
+      expect(mergedOpton.delay)   .toBe 200
+      expect(mergedOpton.repeat)  .toBe 2
+      expect(mergedOpton.easing)  .toBe 'elastic.in'
     it 'should push merged options to the history', ->
       byte = new Byte
       start = radius: 10, duration: 1000, fill: 'orange', points: 5
@@ -1053,7 +1062,7 @@ describe 'Transit ->', ->
       colorDelta = byte.deltas.stroke
       byte._setProgress .5
       expect(byte._props.stroke).toBe 'rgba(0,127,127,1)'
-  
+
   describe 'strokeDash.. values', ->
     it 'should set strokeDasharray/strokeDashoffset value progress', ->
       byte = new Byte strokeDasharray:  {'200 100': '400'}

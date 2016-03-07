@@ -128,9 +128,7 @@
       });
       it('should use end of the start value if end value is null or undefined', function() {
         var byte, end, mergedOpton, start;
-        byte = new Byte({
-          isIt: 1
-        });
+        byte = new Byte;
         start = {
           radius: 10,
           duration: 1000,
@@ -148,6 +146,24 @@
         };
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.fill).toBe('cyan');
+      });
+      it('should work with new tween values', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10
+        };
+        end = {
+          duration: 1000,
+          delay: 200,
+          repeat: 2,
+          easing: 'elastic.in'
+        };
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.duration).toBe(1000);
+        expect(mergedOpton.delay).toBe(200);
+        expect(mergedOpton.repeat).toBe(2);
+        return expect(mergedOpton.easing).toBe('elastic.in');
       });
       return it('should push merged options to the history', function() {
         var byte, end, mergedOpton, start;

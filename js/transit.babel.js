@@ -629,8 +629,8 @@ class Transit extends Tweenable {
           } else { o[endP] = { [ startValue ] : endValue }; }
         }
       }
-      else if ( endP === 'duration' ) { o[endP] = endValue; }
-      else if ( endP === 'easing' ) { o[endP] = endValue; }
+      // else if ( endP === 'duration' ) { o[endP] = endValue; }
+      else { o[endP] = endValue; }
     }
   }
   /*

@@ -14,7 +14,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.177.3', isDebug: true, helpers: h,
+  revision:   '0.178.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, tweener, easing, shapesMap
 }
@@ -22,22 +22,22 @@ window.mojs = {
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
-var tr = new mojs.Transit({
-  radius: { 0: 200 },
-  duration: 2000,
-  // repeat: 2,
-  // yoyo: true,
-  isShowEnd: true
-})
-  .then({ radius: 50, easing: 'elastic.out' })
-  .then({ x: 200, easing: 'elastic.in' })
-  .then({ radius: 500, x: 0 })
-  .play();
-  // console.log(tr.timeline._timelines[0]._props.onComplete)
+// var tr = new mojs.Transit({
+//   radius: { 0: 200 },
+//   duration: 2000,
+//   // repeat: 2,
+//   // yoyo: true,
+//   isShowEnd: true
+// })
+//   .then({ radius: 50, easing: 'elastic.out' })
+//   .then({ x: 200, easing: 'elastic.in' })
+//   .then({ radius: 1800, duration: 200, easing: 'ease.out' })
+//   .play();
+//   // console.log(tr.timeline._timelines[0]._props.onComplete)
 
-// setTimeout(function () {
-//   tr.run({ fill: 'yellow', radius: 3000 });
-// }, 2000);
+// // setTimeout(function () {
+// //   tr.run({ fill: 'yellow', radius: 3000 });
+// // }, 2000);
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {
