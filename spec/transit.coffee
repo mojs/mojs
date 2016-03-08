@@ -43,74 +43,76 @@ describe 'Transit ->', ->
 #     it 'should fallback to 0', ->
 #       byte = new Byte
 #       expect(byte.index).toBe 0
-#   describe '_isDelta method ->', ->
-#     it 'should detect if value is not a delta value', ->
-#       byte = new Byte radius: 45, stroke: 'deeppink': 'pink'
-#       expect(byte._isDelta(45))    .toBe false
-#       expect(byte._isDelta('45'))  .toBe false
-#       expect(byte._isDelta(['45'])).toBe false
-#       expect(byte._isDelta({ unit: 'px', value: 20 })).toBe false
-#       expect(byte._isDelta({ 20: 30 })).toBe true
-#   describe '_extendDefaults method ->', ->
-#     it 'should extend defaults object to properties', ->
-#       byte = new Byte radius: 45, radiusX: 50
-#       expect(byte._props.radius) .toBe(45)
-#       expect(byte._props.radiusX).toBe(50)
-#       expect(byte._props.radiusY).toBe(45)
-#     it 'should extend defaults object to properties if 0', ->
-#       byte = new Byte radius: 0
-#       expect(byte._props.radius).toBe(0)
-#     it 'should extend defaults object to properties if object was passed', ->
-#       byte = new Byte radius: {45: 55}
-#       expect(byte._props.radius).toBe(45)
-#     it 'should ignore properties defined in skipProps object', ->
-#       byte = new Byte radius: 45
-#       byte.skipProps = radius: 1
-#       byte._o.radius = 50
-#       byte._extendDefaults()
-#       expect(byte._props.radius).toBe(45)
-#     # for burst
-#     it 'should extend defaults object to properties if array was passed', ->
-#       byte = new Byte radius: [50, 100]
-#       expect(byte._props.radius.join ', ').toBe '50, 100'
-#     it 'should extend defaults object to properties if rand was passed', ->
-#       byte = new Byte radius: 'rand(0, 10)'
-#       expect(byte._props.radius).toBeDefined()
-#       expect(byte._props.radius).toBeGreaterThan -1
-#       expect(byte._props.radius).not.toBeGreaterThan 10
-#     it 'should receive object to iterate from', ->
-#       byte = new Byte
-#         radius: 'rand(0, 10)'
-#         fill: 'deeppink'
-#       fillBefore = byte._props.fill
-#       byte._extendDefaults {radius: 10}
-#       expect(byte._props.radius).toBe 10
-#       expect(byte._props.fill).toBe fillBefore
-#     it 'should allways inherit radiusX/Y from radius', ->
-#       byte = new Byte radius: 10
-#       byte._extendDefaults {radius: 100}
-#       expect(byte._props.radius) .toBe 100
-#       expect(byte._props.radiusX).toBe 100
-#       expect(byte._props.radiusY).toBe 100
-#     it 'should work with new values', ->
-#       onStart = ->
-#       byte = new Byte radius: 10
-#       .then onStart: onStart
-#       expect(byte.history[1].onStart).toBe onStart
-#   describe 'stagger values', ->
-#     it 'should extend defaults object to properties if stagger was passed', ->
-#       byte = new Byte radius: 'stagger(200)'
-#       byte.index = 2
-#       byte._extendDefaults()
-#       expect(byte._props.radius).toBe 400
-#   # probably redundant
-#   # describe 'skipDelta flag', ->
-#   #   it 'should skip delta calcultaions on module', ->
-#   #     byte = new Byte ctx: svg, radius: {20:30}
-#   #     byte.isSkipDelta = true
-#   #     spyOn byte, '_getDelta'
-#   #     byte._extendDefaults byte.o
-#   #     expect(byte._getDelta).not.toHaveBeenCalled()
+  describe '_isDelta method ->', ->
+    it 'should detect if value is not a delta value', ->
+      byte = new Byte radius: 45, stroke: 'deeppink': 'pink'
+      expect(byte._isDelta(45))    .toBe false
+      expect(byte._isDelta('45'))  .toBe false
+      expect(byte._isDelta(['45'])).toBe false
+      expect(byte._isDelta({ unit: 'px', value: 20 })).toBe false
+      expect(byte._isDelta({ 20: 30 })).toBe true
+  describe '_extendDefaults method ->', ->
+    it 'should extend defaults object to properties', ->
+      byte = new Byte radius: 45, radiusX: 50
+      expect(byte._props.radius) .toBe(45)
+      expect(byte._props.radiusX).toBe(50)
+      # probably redundant
+      # expect(byte._props.radiusY).toBe(45)
+    it 'should extend defaults object to properties if 0', ->
+      byte = new Byte radius: 0
+      expect(byte._props.radius).toBe(0)
+    it 'should extend defaults object to properties if object was passed', ->
+      byte = new Byte radius: {45: 55}
+      expect(byte._props.radius).toBe(45)
+    it 'should ignore properties defined in skipProps object', ->
+      byte = new Byte radius: 45
+      byte.skipProps = radius: 1
+      byte._o.radius = 50
+      byte._extendDefaults()
+      expect(byte._props.radius).toBe(45)
+    # for burst
+    it 'should extend defaults object to properties if array was passed', ->
+      byte = new Byte radius: [50, 100]
+      expect(byte._props.radius.join ', ').toBe '50, 100'
+    it 'should extend defaults object to properties if rand was passed', ->
+      byte = new Byte radius: 'rand(0, 10)'
+      expect(byte._props.radius).toBeDefined()
+      expect(byte._props.radius).toBeGreaterThan -1
+      expect(byte._props.radius).not.toBeGreaterThan 10
+    it 'should receive object to iterate from', ->
+      byte = new Byte
+        radius: 'rand(0, 10)'
+        fill: 'deeppink'
+      fillBefore = byte._props.fill
+      byte._extendDefaults {radius: 10}
+      expect(byte._props.radius).toBe 10
+      expect(byte._props.fill).toBe fillBefore
+    # probably redundant
+    # it 'should always inherit radiusX/Y from radius', ->
+    #   byte = new Byte radius: 10
+    #   byte._extendDefaults {radius: 100}
+    #   expect(byte._props.radius) .toBe 100
+    #   expect(byte._props.radiusX).toBe 100
+    #   expect(byte._props.radiusY).toBe 100
+    it 'should work with new values', ->
+      onStart = ->
+      byte = new Byte radius: 10
+      .then onStart: onStart
+      expect(byte.history[1].onStart).toBe onStart
+  describe 'stagger values', ->
+    it 'should extend defaults object to properties if stagger was passed', ->
+      byte = new Byte radius: 'stagger(200)'
+      byte.index = 2
+      byte._extendDefaults()
+      expect(byte._props.radius).toBe 400
+  # probably redundant
+  # describe 'skipDelta flag', ->
+  #   it 'should skip delta calcultaions on module', ->
+  #     byte = new Byte ctx: svg, radius: {20:30}
+  #     byte.isSkipDelta = true
+  #     spyOn byte, '_getDelta'
+  #     byte._extendDefaults byte.o
+  #     expect(byte._getDelta).not.toHaveBeenCalled()
 #   describe 'options history ->', ->
 #     it 'should have history array', ->
 #       byte = new Byte
@@ -776,15 +778,10 @@ describe 'Transit ->', ->
 
     it "should always take sub radius values", ->
       tr = new Transit
-      # .then({ radius: 50 })
-      # .then({ radiusX: 200 })
-      # .then({ radius: 800, radiusX: 500 })
-
       start = radiusX: { 50: 200 }, radius: 50
       end   = radiusX: 500, radius: 800
       mergedOpton = tr._mergeThenOptions start, end
       expect(mergedOpton.radiusX[200]).toBe 500
-
 
     it 'should push merged options to the history', ->
       byte = new Byte
@@ -1756,6 +1753,24 @@ describe 'Transit ->', ->
   # #     tr._props.size = 1
   # #     tr._increaseSizeWithBitRatio()
   # #     expect(tr._props.size).toBe tr.bit.ratio + 2*gap
+  describe '_parseOptionString method ->', ->
+    tr = new Transit
+    it 'should parse stagger values', ->
+      string = 'stagger(200)'
+      spyOn(h, 'parseStagger').and.callThrough()
+      result = tr._parseOptionString string
+      expect(h.parseStagger).toHaveBeenCalledWith string, 0
+      expect(result).toBe h.parseStagger(string, 0)
+
+    it 'should parse rand values', ->
+      string = 'rand(0,1)'
+      spyOn(h, 'parseRand').and.callThrough()
+      result = tr._parseOptionString string
+      expect(h.parseRand).toHaveBeenCalledWith string
+      expect(h.parseRand).toHaveBeenCalledWith string
+      # console.log h.parseRand.calls.first().return
+      # expect(result).toBe h.parseRand(string)
+
 
 
 

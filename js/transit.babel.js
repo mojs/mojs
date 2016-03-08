@@ -8,7 +8,6 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - properties signatures
-//  - radiusX/radiusY
 //  - rx, ry for transit
 //  - refactor _extendDefaults method
 //  --
@@ -165,15 +164,34 @@ class Transit extends Tweenable {
     return this.isForeignBit = !!this._o.bit;
   }
   /*
-    Nethod to extend module defaults with passed options.
+    Method to parse option string.
+    Searches for stagger and rand values and parses them.
+    Leaves the value unattended otherwise.
+    @param {Any} Option value to parse.
+    @returns {Number} Parased options value.
+  */
+  _parseOptionString (optionsValue) {
+    if (typeof optionsValue === 'string') {
+      if (optionsValue.match(/stagger/)) {
+        optionsValue = this.h.parseStagger(optionsValue, this.index);
+      }
+    }
+    if (typeof optionsValue === 'string') {
+      if (optionsValue.match(/rand/)) {
+        optionsValue = this.h.parseRand(optionsValue);
+      }
+    }
+    return optionsValue;
+  }
+  /*
+    Method to extend module defaults with passed options.
   */
   _extendDefaults (o) {
-    var array, fromObject, i, k, len1, optionsValue, ref, unit;
-    
-    fromObject = o || this.defaults;
+    var i, k, len1, optionsValue, ref, unit;
     // reset deltas if no options was passed
     (o == null) && (this.deltas = {});
-    var keys = Object.keys(fromObject),
+    var fromObject = o || this.defaults,
+        keys = Object.keys(fromObject),
         len  = keys.length;
     while (len--) {
       var key = keys[len],
@@ -182,29 +200,18 @@ class Transit extends Tweenable {
       if (this.skipProps && this.skipProps[key]) { continue; }
       
       if (o) {
-        this._o[key] = defaultsValue;
-        optionsValue = defaultsValue;
+        optionsValue = this._o[key] = defaultsValue;
+        // optionsValue = defaultsValue;
         delete this.deltas[key];
       } else {
         optionsValue = ( this._o[key] != null ) ? this._o[key] : defaultsValue;
       }
       // if not delta property
-      if (!this._isDelta(optionsValue)) {
-        // parse stagger
-        if (typeof optionsValue === 'string') {
-          if (optionsValue.match(/stagger/)) {
-            optionsValue = this.h.parseStagger(optionsValue, this.index);
-          }
-        }
-        // parse rand()
-        if (typeof optionsValue === 'string') {
-          if (optionsValue.match(/rand/)) {
-            optionsValue = this.h.parseRand(optionsValue);
-          }
-        }
+      if ( !this._isDelta(optionsValue) ) {
         // save to props
-        this._props[key] = optionsValue;
-        // PROBABLY REDUNDANT
+        // parse stagger and rand values
+        this._props[key] = this._parseOptionString(optionsValue);
+        // probably redundant
         // if property is "radius" and "radiusX/radiusY" not set
         // - set them to "radius" value
         // if (key === 'radius') {
@@ -224,11 +231,12 @@ class Transit extends Tweenable {
               value.push(this.h.parseUnit(property));
               break;
             case 'string':
-              array = this._props[key].split(' ');
+              var array = this._props[key].split(' ');
               for (i = k = 0, len1 = array.length; k < len1; i = ++k) {
                 unit = array[i];
                 value.push(this.h.parseUnit(unit));
               }
+              break;
           }
           // save parsed array to props
           this._props[key] = value;
@@ -536,7 +544,7 @@ class Transit extends Tweenable {
     @returns {Boolean}
   */
   _isDelta ( optionsValue ) {
-    var isObject = (optionsValue != null) && (typeof optionsValue === 'object');
+    var isObject = h.isObject( optionsValue );
     isObject = isObject && !optionsValue.unit;
     return !(!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue));
   }
@@ -591,7 +599,7 @@ class Transit extends Tweenable {
       // copy all values from start if not tween prop or duration
       if ( !h.isTweenProp(key) || key === 'duration' ) {
         // if delta - copy only the end value
-        if ( h.isObject(value) ) { o[key] = h.getDeltaEnd(value); }
+        if ( this._isDelta(value) ) { o[key] = h.getDeltaEnd(value); }
         else { o[key] = value; }
       }
     }
@@ -626,10 +634,10 @@ class Transit extends Tweenable {
       // if isnt tween property
       if ( !h.isTweenProp(endP) ) {
         // if end value is delta - just save it
-        if ( h.isObject(endValue) ) { o[endP] = endValue; }
+        if ( this._isDelta(endValue) ) { o[endP] = endValue; }
         else {
           // if end value is not delta - merge with start value
-          if ( h.isObject(startValue) ) {
+          if ( this._isDelta(startValue) ) {
             // if start value is delta - take the end value
             // as start value of the new delta
             o[endP] = { [ h.getDeltaEnd(startValue) ] : endValue };

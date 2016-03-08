@@ -22,6 +22,116 @@
   console.error = function() {};
 
   describe('Transit ->', function() {
+    describe('_isDelta method ->', function() {
+      return it('should detect if value is not a delta value', function() {
+        var byte;
+        byte = new Byte({
+          radius: 45,
+          stroke: {
+            'deeppink': 'pink'
+          }
+        });
+        expect(byte._isDelta(45)).toBe(false);
+        expect(byte._isDelta('45')).toBe(false);
+        expect(byte._isDelta(['45'])).toBe(false);
+        expect(byte._isDelta({
+          unit: 'px',
+          value: 20
+        })).toBe(false);
+        return expect(byte._isDelta({
+          20: 30
+        })).toBe(true);
+      });
+    });
+    describe('_extendDefaults method ->', function() {
+      it('should extend defaults object to properties', function() {
+        var byte;
+        byte = new Byte({
+          radius: 45,
+          radiusX: 50
+        });
+        expect(byte._props.radius).toBe(45);
+        return expect(byte._props.radiusX).toBe(50);
+      });
+      it('should extend defaults object to properties if 0', function() {
+        var byte;
+        byte = new Byte({
+          radius: 0
+        });
+        return expect(byte._props.radius).toBe(0);
+      });
+      it('should extend defaults object to properties if object was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            45: 55
+          }
+        });
+        return expect(byte._props.radius).toBe(45);
+      });
+      it('should ignore properties defined in skipProps object', function() {
+        var byte;
+        byte = new Byte({
+          radius: 45
+        });
+        byte.skipProps = {
+          radius: 1
+        };
+        byte._o.radius = 50;
+        byte._extendDefaults();
+        return expect(byte._props.radius).toBe(45);
+      });
+      it('should extend defaults object to properties if array was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: [50, 100]
+        });
+        return expect(byte._props.radius.join(', ')).toBe('50, 100');
+      });
+      it('should extend defaults object to properties if rand was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 'rand(0, 10)'
+        });
+        expect(byte._props.radius).toBeDefined();
+        expect(byte._props.radius).toBeGreaterThan(-1);
+        return expect(byte._props.radius).not.toBeGreaterThan(10);
+      });
+      it('should receive object to iterate from', function() {
+        var byte, fillBefore;
+        byte = new Byte({
+          radius: 'rand(0, 10)',
+          fill: 'deeppink'
+        });
+        fillBefore = byte._props.fill;
+        byte._extendDefaults({
+          radius: 10
+        });
+        expect(byte._props.radius).toBe(10);
+        return expect(byte._props.fill).toBe(fillBefore);
+      });
+      return it('should work with new values', function() {
+        var byte, onStart;
+        onStart = function() {};
+        byte = new Byte({
+          radius: 10
+        }).then({
+          onStart: onStart
+        });
+        return expect(byte.history[1].onStart).toBe(onStart);
+      });
+    });
+    describe('stagger values', function() {
+      return it('should extend defaults object to properties if stagger was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 'stagger(200)'
+        });
+        byte.index = 2;
+        byte._extendDefaults();
+        return expect(byte._props.radius).toBe(400);
+      });
+    });
     describe('_mergeThenOptions method ->', function() {
       it('should merge 2 objects', function() {
         var byte, end, mergedOpton, start;
@@ -997,7 +1107,7 @@
         });
       });
     });
-    return describe('createTween method ->', function() {
+    describe('createTween method ->', function() {
       it('should create tween object', function() {
         var byte;
         byte = new Byte({
@@ -1015,6 +1125,26 @@
           }
         });
         return expect(typeof byte.tween.o.onFirstUpdate).toBe('function');
+      });
+    });
+    return describe('_parseOptionString method ->', function() {
+      var tr;
+      tr = new Transit;
+      it('should parse stagger values', function() {
+        var result, string;
+        string = 'stagger(200)';
+        spyOn(h, 'parseStagger').and.callThrough();
+        result = tr._parseOptionString(string);
+        expect(h.parseStagger).toHaveBeenCalledWith(string, 0);
+        return expect(result).toBe(h.parseStagger(string, 0));
+      });
+      return it('should parse rand values', function() {
+        var result, string;
+        string = 'rand(0,1)';
+        spyOn(h, 'parseRand').and.callThrough();
+        result = tr._parseOptionString(string);
+        expect(h.parseRand).toHaveBeenCalledWith(string);
+        return expect(h.parseRand).toHaveBeenCalledWith(string);
       });
     });
   });
