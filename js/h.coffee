@@ -63,7 +63,7 @@ class Helpers
     repeat:           1
     easing:           1
     yoyo:             1
-  posPropsMap:
+  unitOptionMap:
     left:             1
     top:              1
     x:                1
@@ -398,8 +398,8 @@ class Helpers
       ## have deltas
       isntTweenProp = !@callbacksMap[key] and !@tweenOptionMap[key]
       if !@chainOptionMap[key] and isntTweenProp
-        # position values defined in posPropsMap
-        if @posPropsMap[key]
+        # position values defined in unitOptionMap
+        if @unitOptionMap[key]
           end   = @parseUnit @parseIfRand end
           start = @parseUnit @parseIfRand start
           @mergeUnits start, end, key

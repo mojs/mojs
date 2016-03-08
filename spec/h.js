@@ -18,13 +18,13 @@
     it('should have remBase', function() {
       return expect(typeof h.remBase).toBe('number');
     });
-    it('should have posPropsMap map', function() {
-      expect(h.posPropsMap.left).toBe(1);
-      expect(h.posPropsMap.top).toBe(1);
-      expect(h.posPropsMap.x).toBe(1);
-      expect(h.posPropsMap.y).toBe(1);
-      expect(h.posPropsMap.rx).toBe(1);
-      return expect(h.posPropsMap.ry).toBe(1);
+    it('should have unitOptionMap map', function() {
+      expect(h.unitOptionMap.left).toBe(1);
+      expect(h.unitOptionMap.top).toBe(1);
+      expect(h.unitOptionMap.x).toBe(1);
+      expect(h.unitOptionMap.y).toBe(1);
+      expect(h.unitOptionMap.rx).toBe(1);
+      return expect(h.unitOptionMap.ry).toBe(1);
     });
     it('should have strokeDashPropsMap map', function() {
       expect(h.strokeDashPropsMap.strokeDasharray).toBe(1);

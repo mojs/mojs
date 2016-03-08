@@ -192,7 +192,7 @@ class Transit extends Tweenable {
   */
   _parsePositionOption (key) {
     var value = this._props[key];
-    if (this.h.posPropsMap[key]) {
+    if (this.h.unitOptionMap[key]) {
       value = this.h.parseUnit(value).string;
     }
     return value;

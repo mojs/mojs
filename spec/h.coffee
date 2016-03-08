@@ -10,13 +10,13 @@ describe 'Helpers ->', ->
     expect(h.NS).toBe 'http://www.w3.org/2000/svg'
   it 'should have remBase', ->
     expect(typeof h.remBase).toBe 'number'
-  it 'should have posPropsMap map', ->
-    expect(h.posPropsMap.left).toBe 1
-    expect(h.posPropsMap.top).toBe  1
-    expect(h.posPropsMap.x).toBe    1
-    expect(h.posPropsMap.y).toBe    1
-    expect(h.posPropsMap.rx).toBe   1
-    expect(h.posPropsMap.ry).toBe   1
+  it 'should have unitOptionMap map', ->
+    expect(h.unitOptionMap.left).toBe 1
+    expect(h.unitOptionMap.top).toBe  1
+    expect(h.unitOptionMap.x).toBe    1
+    expect(h.unitOptionMap.y).toBe    1
+    expect(h.unitOptionMap.rx).toBe   1
+    expect(h.unitOptionMap.ry).toBe   1
   it 'should have strokeDashPropsMap map', ->
     expect(h.strokeDashPropsMap.strokeDasharray) .toBe     1
     expect(h.strokeDashPropsMap.strokeDashoffset).toBe     1

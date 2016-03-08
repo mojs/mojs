@@ -858,7 +858,7 @@
 	    key: '_parsePositionOption',
 	    value: function _parsePositionOption(key) {
 	      var value = this._props[key];
-	      if (this.h.posPropsMap[key]) {
+	      if (this.h.unitOptionMap[key]) {
 	        value = this.h.parseUnit(value).string;
 	      }
 	      return value;
@@ -3890,7 +3890,7 @@
 	    yoyo: 1
 	  };
 
-	  Helpers.prototype.posPropsMap = {
+	  Helpers.prototype.unitOptionMap = {
 	    left: 1,
 	    top: 1,
 	    x: 1,
@@ -4293,7 +4293,7 @@
 	    } else {
 	      isntTweenProp = !this.callbacksMap[key] && !this.tweenOptionMap[key];
 	      if (!this.chainOptionMap[key] && isntTweenProp) {
-	        if (this.posPropsMap[key]) {
+	        if (this.unitOptionMap[key]) {
 	          end = this.parseUnit(this.parseIfRand(end));
 	          start = this.parseUnit(this.parseIfRand(start));
 	          this.mergeUnits(start, end, key);
@@ -7146,7 +7146,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.179.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.179.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
