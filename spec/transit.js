@@ -1127,7 +1127,7 @@
         return expect(typeof byte.tween.o.onFirstUpdate).toBe('function');
       });
     });
-    return describe('_parseOptionString method ->', function() {
+    describe('_parseOptionString method ->', function() {
       var tr;
       tr = new Transit;
       it('should parse stagger values', function() {
@@ -1143,8 +1143,29 @@
         string = 'rand(0,1)';
         spyOn(h, 'parseRand').and.callThrough();
         result = tr._parseOptionString(string);
-        expect(h.parseRand).toHaveBeenCalledWith(string);
         return expect(h.parseRand).toHaveBeenCalledWith(string);
+      });
+    });
+    return describe('_parsePositionOption method ->', function() {
+      var tr;
+      tr = new Transit;
+      it('should parse position option', function() {
+        var key, result;
+        tr._props.x = '100%';
+        key = 'x';
+        spyOn(h, 'parseUnit').and.callThrough();
+        result = tr._parsePositionOption(key);
+        expect(h.parseUnit).toHaveBeenCalledWith(tr._props[key]);
+        return expect(result).toBe(h.parseUnit(tr._props[key]).string);
+      });
+      return it('should leave the value unattended if not pos property', function() {
+        var key, result;
+        tr._props.x = '100%';
+        key = 'fill';
+        spyOn(h, 'parseUnit').and.callThrough();
+        result = tr._parsePositionOption(key);
+        expect(h.parseUnit).not.toHaveBeenCalledWith();
+        return expect(result).toBe(tr._props[key]);
       });
     });
   });

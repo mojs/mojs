@@ -1767,10 +1767,25 @@ describe 'Transit ->', ->
       spyOn(h, 'parseRand').and.callThrough()
       result = tr._parseOptionString string
       expect(h.parseRand).toHaveBeenCalledWith string
-      expect(h.parseRand).toHaveBeenCalledWith string
       # console.log h.parseRand.calls.first().return
       # expect(result).toBe h.parseRand(string)
 
+  describe '_parsePositionOption method ->', ->
+    tr = new Transit
+    it 'should parse position option', ->
+      tr._props.x = '100%'
+      key = 'x'
+      spyOn(h, 'parseUnit').and.callThrough()
+      result = tr._parsePositionOption key
+      expect(h.parseUnit).toHaveBeenCalledWith tr._props[key]
+      expect(result).toBe h.parseUnit(tr._props[key]).string
+    it 'should leave the value unattended if not pos property', ->
+      tr._props.x = '100%'
+      key = 'fill'
+      spyOn(h, 'parseUnit').and.callThrough()
+      result = tr._parsePositionOption key
+      expect(h.parseUnit).not.toHaveBeenCalledWith()
+      expect(result).toBe tr._props[key]
 
 
 

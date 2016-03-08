@@ -828,7 +828,7 @@
 	      Searches for stagger and rand values and parses them.
 	      Leaves the value unattended otherwise.
 	      @param {Any} Option value to parse.
-	      @returns {Number} Parased options value.
+	      @returns {Number} Parsed options value.
 	    */
 
 	  }, {
@@ -845,6 +845,21 @@
 	        }
 	      }
 	      return optionsValue;
+	    }
+	    /*
+	      Method to postion option
+	      @param {String} Property name.
+	      @returns {String} Parsed options value.
+	    */
+
+	  }, {
+	    key: '_parsePositionOption',
+	    value: function _parsePositionOption(key) {
+	      var value = this._props[key];
+	      if (this.h.posPropsMap[key]) {
+	        value = this.h.parseUnit(value).string;
+	      }
+	      return value;
 	    }
 	    /*
 	      Method to extend module defaults with passed options.
@@ -887,9 +902,7 @@
 	          //   if (this._o.radiusY == null) { this._props.radiusY = optionsValue; }
 	          // }
 	          // parse units for position properties
-	          if (this.h.posPropsMap[key]) {
-	            this._props[key] = this.h.parseUnit(this._props[key]).string;
-	          }
+	          this._props[key] = this._parsePositionOption(key);
 	          // parse numeric/percent values for strokeDash.. properties
 	          if (this.h.strokeDashPropsMap[key]) {
 	            var property = this._props[key],
