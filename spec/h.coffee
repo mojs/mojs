@@ -15,6 +15,8 @@ describe 'Helpers ->', ->
     expect(h.posPropsMap.top).toBe  1
     expect(h.posPropsMap.x).toBe    1
     expect(h.posPropsMap.y).toBe    1
+    expect(h.posPropsMap.rx).toBe   1
+    expect(h.posPropsMap.ry).toBe   1
   it 'should have strokeDashPropsMap map', ->
     expect(h.strokeDashPropsMap.strokeDasharray) .toBe     1
     expect(h.strokeDashPropsMap.strokeDashoffset).toBe     1

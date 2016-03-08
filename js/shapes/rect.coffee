@@ -5,7 +5,7 @@ Bit = require './bit'
 
 class Rect extends Bit
   shape:   'rect'
-  ratio:  1.43
+  ratio:   1.43
   draw:->
     super
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius
@@ -15,6 +15,8 @@ class Rect extends Bit
       height: 2*radiusY
       x:      @props.x - radiusX
       y:      @props.y - radiusY
+      rx:     @props.rx
+      ry:     @props.ry
 
   getLength:->
     radiusX = if @props.radiusX? then @props.radiusX else @props.radius

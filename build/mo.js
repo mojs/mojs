@@ -412,9 +412,9 @@
 	    value: function _getBitAngle(angle, i) {
 	      var points = this.props.count,
 	          degCnt = this.props.degree % 360 === 0 ? points : points - 1 || 1;
-	      var step = this.props.degree / degCnt;
-	      var angleAddition = i * step + 90;
-	      var angleShift = this.transits[i].props.angleShift || 0;
+	      var step = this.props.degree / degCnt,
+	          angleAddition = i * step + 90,
+	          angleShift = this.transits[i].props.angleShift || 0;
 	      // if not delta option
 	      if ((typeof angle === 'undefined' ? 'undefined' : (0, _typeof3.default)(angle)) !== 'object') {
 	        angle += angleAddition + angleShift;
@@ -642,8 +642,8 @@
 
 	// TODO
 	//  - properties signatures
+	//  - add run method
 	//  - rx, ry for transit
-	//  - refactor _extendDefaults method
 	//  --
 	//  - tween for every prop
 
@@ -667,11 +667,13 @@
 	        strokeDasharray: 0, // stroke dasharray.
 	        strokeDashoffset: 0,
 	        fill: 'deeppink',
-	        fillOpacity: 'transparent',
+	        fillOpacity: 1,
 	        left: 0,
 	        top: 0,
 	        x: 0,
 	        y: 0,
+	        rx: 0,
+	        ry: 0,
 	        angle: 0,
 	        scale: 1,
 	        opacity: 1,
@@ -679,8 +681,8 @@
 	        radius: { 0: 50 },
 	        radiusX: null,
 	        radiusY: null,
+	        isShowStart: false,
 	        isShowEnd: false,
-	        isShowInit: false,
 	        size: null,
 	        sizeGap: 0
 	      };
@@ -960,7 +962,7 @@
 	      if (this.el != null) {
 	        this.el.style.opacity = this._props.opacity;
 	      }
-	      if (this._o.isShowInit) {
+	      if (this._o.isShowStart) {
 	        this._show();
 	      } else {
 	        this._hide();
@@ -1032,6 +1034,8 @@
 	      this.bit.setProp({
 	        x: this.origin.x,
 	        y: this.origin.y,
+	        rx: this._props.rx,
+	        ry: this._props.ry,
 	        stroke: this._props.stroke,
 	        'stroke-width': this._props.strokeWidth,
 	        'stroke-opacity': this._props.strokeOpacity,
@@ -1474,8 +1478,8 @@
 	        // call onStart function from options
 	        isOnStart && onStart.apply(this, arguments);
 	        // show the Transit on start
-	        // hide the Transit on reverse complete if isShowInit is not set
-	        isForward ? it._show() : !it._props.isShowInit && it._hide();
+	        // hide the Transit on reverse complete if isShowStart is not set
+	        isForward ? it._show() : !it._props.isShowStart && it._hide();
 	      };
 	    }
 	    /*
@@ -3891,10 +3895,8 @@
 	    top: 1,
 	    x: 1,
 	    y: 1,
-	    burstX: 1,
-	    burstY: 1,
-	    burstShiftX: 1,
-	    burstShiftY: 1
+	    rx: 1,
+	    ry: 1
 	  };
 
 	  Helpers.prototype.strokeDashPropsMap = {
@@ -5613,6 +5615,8 @@
 	    points: 3,
 	    x: 0,
 	    y: 0,
+	    rx: 0,
+	    ry: 0,
 	    angle: 0,
 	    stroke: 'hotpink',
 	    'stroke-width': 2,
@@ -6104,7 +6108,9 @@
 	      width: 2 * radiusX,
 	      height: 2 * radiusY,
 	      x: this.props.x - radiusX,
-	      y: this.props.y - radiusY
+	      y: this.props.y - radiusY,
+	      rx: this.props.rx,
+	      ry: this.props.ry
 	    });
 	  };
 
@@ -7140,31 +7146,13 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.178.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.179.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
-
-	// var tr = new mojs.Transit({
-	//   radius: { 0: 200 },
-	//   duration: 2000,
-	//   // repeat: 2,
-	//   // yoyo: true,
-	//   isIt: 1,
-	//   isShowEnd: true
-	// })
-	//   .then({ radius: 50 })
-	//   .then({ radiusX: 200 })
-	//   .then({ radius: 800, radiusX: 500 })
-	//   .play();
-	//   console.log(tr.history[3].radiusX)
-
-	// // setTimeout(function () {
-	// //   tr.run({ fill: 'yellow', radius: 3000 });
-	// // }, 2000);
 
 	// ### istanbul ignore next ###
 	if (true) {

@@ -15,15 +15,19 @@ describe 'Rect ->', ->
   describe 'draw ->', ->
     it 'should add properties to el', ->
       svg     = document.createElementNS?(ns, "svg")
-      rect    = new Rect ctx: svg, radius: 20, x: 50, y: 100
+      rect    = new Rect ctx: svg, radius: 20, x: 50, y: 100, rx: 10, ry: 20
       width   = rect.el.getAttribute 'width'
       height  = rect.el.getAttribute 'height'
       x       = rect.el.getAttribute 'x'
       y       = rect.el.getAttribute 'y'
+      rx      = rect.el.getAttribute 'rx'
+      ry      = rect.el.getAttribute 'ry'
       expect(width) .toBe   '40'
       expect(height).toBe   '40'
       expect(x).toBe        '30'
       expect(y).toBe        '80'
+      expect(rx).toBe       '10'
+      expect(ry).toBe       '20'
     it 'should work with radiusX/radiusY props', ->
       svg     = document.createElementNS?(ns, "svg")
       rect    = new Rect ctx: svg, radiusY: 50, radiusX: 40, x: 100, y: 200

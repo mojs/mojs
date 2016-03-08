@@ -263,9 +263,9 @@ class Burst extends Transit {
         degCnt = ( this.props.degree % 360 === 0 )
           ? points
           : points-1 || 1;
-    var step = this.props.degree/degCnt;
-    var angleAddition = i*step + 90;
-    var angleShift = this.transits[i].props.angleShift || 0;
+    var step = this.props.degree/degCnt,
+        angleAddition = i*step + 90,
+        angleShift = this.transits[i].props.angleShift || 0;
     // if not delta option
     if ( typeof angle !== 'object' ) {
       angle += angleAddition + angleShift;

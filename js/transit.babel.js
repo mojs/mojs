@@ -8,8 +8,8 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - properties signatures
+//  - add run method
 //  - rx, ry for transit
-//  - refactor _extendDefaults method
 //  --
 //  - tween for every prop
 
@@ -29,11 +29,13 @@ class Transit extends Tweenable {
       strokeDasharray:  0,             // stroke dasharray. 
       strokeDashoffset: 0,
       fill:             'deeppink',
-      fillOpacity:      'transparent',
+      fillOpacity:      1,
       left:             0,
       top:              0,
       x:                0,
       y:                0,
+      rx:               0,
+      ry:               0,
       angle:            0,
       scale:            1,
       opacity:          1,
@@ -41,8 +43,8 @@ class Transit extends Tweenable {
       radius:           { 0: 50 },
       radiusX:          null,
       radiusY:          null,
+      isShowStart:      false,
       isShowEnd:        false,
-      isShowInit:       false,
       size:             null,
       sizeGap:          0
     }
@@ -278,7 +280,7 @@ class Transit extends Tweenable {
     this._setElStyles();
     
     if (this.el != null) { this.el.style.opacity = this._props.opacity; }
-    if (this._o.isShowInit) { this._show(); } else { this._hide(); }
+    if (this._o.isShowStart) { this._show(); } else { this._hide(); }
 
     this._setProgress( 0 );
     return this;
@@ -330,6 +332,8 @@ class Transit extends Tweenable {
     this.bit.setProp({
       x:                    this.origin.x,
       y:                    this.origin.y,
+      rx:                   this._props.rx,
+      ry:                   this._props.ry,
       stroke:               this._props.stroke,
       'stroke-width':       this._props.strokeWidth,
       'stroke-opacity':     this._props.strokeOpacity,
@@ -689,8 +693,8 @@ class Transit extends Tweenable {
       // call onStart function from options
       isOnStart && onStart.apply( this, arguments );
       // show the Transit on start
-      // hide the Transit on reverse complete if isShowInit is not set
-      ( isForward ) ? it._show() : (!it._props.isShowInit && it._hide());
+      // hide the Transit on reverse complete if isShowStart is not set
+      ( isForward ) ? it._show() : (!it._props.isShowStart && it._hide());
     };
   }
   /*

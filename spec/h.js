@@ -22,7 +22,9 @@
       expect(h.posPropsMap.left).toBe(1);
       expect(h.posPropsMap.top).toBe(1);
       expect(h.posPropsMap.x).toBe(1);
-      return expect(h.posPropsMap.y).toBe(1);
+      expect(h.posPropsMap.y).toBe(1);
+      expect(h.posPropsMap.rx).toBe(1);
+      return expect(h.posPropsMap.ry).toBe(1);
     });
     it('should have strokeDashPropsMap map', function() {
       expect(h.strokeDashPropsMap.strokeDasharray).toBe(1);

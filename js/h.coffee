@@ -68,10 +68,8 @@ class Helpers
     top:              1
     x:                1
     y:                1
-    burstX:           1
-    burstY:           1
-    burstShiftX:      1
-    burstShiftY:      1
+    rx:               1
+    ry:               1
   strokeDashPropsMap:
     strokeDasharray:  1
     strokeDashoffset: 1

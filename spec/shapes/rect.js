@@ -27,22 +27,28 @@
     });
     describe('draw ->', function() {
       it('should add properties to el', function() {
-        var height, width, x, y;
+        var height, rx, ry, width, x, y;
         svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, "svg") : void 0;
         rect = new Rect({
           ctx: svg,
           radius: 20,
           x: 50,
-          y: 100
+          y: 100,
+          rx: 10,
+          ry: 20
         });
         width = rect.el.getAttribute('width');
         height = rect.el.getAttribute('height');
         x = rect.el.getAttribute('x');
         y = rect.el.getAttribute('y');
+        rx = rect.el.getAttribute('rx');
+        ry = rect.el.getAttribute('ry');
         expect(width).toBe('40');
         expect(height).toBe('40');
         expect(x).toBe('30');
-        return expect(y).toBe('80');
+        expect(y).toBe('80');
+        expect(rx).toBe('10');
+        return expect(ry).toBe('20');
       });
       it('should work with radiusX/radiusY props', function() {
         var height, width, x, y;
