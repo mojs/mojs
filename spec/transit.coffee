@@ -1787,5 +1787,40 @@ describe 'Transit ->', ->
       expect(h.parseUnit).not.toHaveBeenCalledWith()
       expect(result).toBe tr._props[key]
 
-
+  describe '_parseStrokeDashOption method ->', ->
+    tr = new Transit
+    it 'should parse strokeDash option', ->
+      tr._props.strokeDasharray = 200
+      key = 'strokeDasharray'
+      spyOn(h, 'parseUnit').and.callThrough()
+      result = tr._parseStrokeDashOption key
+      expect(h.parseUnit).toHaveBeenCalledWith tr._props[key]
+      expect(result[0].unit).toBe h.parseUnit(tr._props[key]).unit
+      expect(result[0].isStrict).toBe h.parseUnit(tr._props[key]).isStrict
+      expect(result[0].value).toBe h.parseUnit(tr._props[key]).value
+      expect(result[0].string).toBe h.parseUnit(tr._props[key]).string
+      expect(result[1]).not.toBeDefined()
+    it 'should parse strokeDash option string', ->
+      tr._props.strokeDasharray = '200 100'
+      key = 'strokeDasharray'
+      spyOn(h, 'parseUnit').and.callThrough()
+      result = tr._parseStrokeDashOption key
+      expect(h.parseUnit).toHaveBeenCalledWith '200'
+      expect(h.parseUnit).toHaveBeenCalledWith '100'
+      expect(result[0].unit).toBe h.parseUnit(200).unit
+      expect(result[0].isStrict).toBe h.parseUnit(200).isStrict
+      expect(result[0].value).toBe h.parseUnit(200).value
+      expect(result[0].string).toBe h.parseUnit(200).string
+      expect(result[1].unit).toBe h.parseUnit(100).unit
+      expect(result[1].isStrict).toBe h.parseUnit(100).isStrict
+      expect(result[1].value).toBe h.parseUnit(100).value
+      expect(result[1].string).toBe h.parseUnit(100).string
+      expect(result[2]).not.toBeDefined()
+    it 'should leave the value unattended if not strokeDash.. property', ->
+      tr._props.x = '100%'
+      key = 'fill'
+      spyOn(h, 'parseUnit').and.callThrough()
+      result = tr._parseStrokeDashOption key
+      expect(h.parseUnit).not.toHaveBeenCalledWith()
+      expect(result).toBe tr._props[key]
 

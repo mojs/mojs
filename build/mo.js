@@ -847,7 +847,7 @@
 	      return optionsValue;
 	    }
 	    /*
-	      Method to postion option
+	      Method to parse postion option.
 	      @param {String} Property name.
 	      @returns {String} Parsed options value.
 	    */
@@ -862,74 +862,74 @@
 	      return value;
 	    }
 	    /*
+	      Method to parse strokeDash.. option.
+	      @param {String} Property name.
+	      @returns {String} Parsed options value.
+	    */
+
+	  }, {
+	    key: '_parseStrokeDashOption',
+	    value: function _parseStrokeDashOption(key) {
+	      var value = this._props[key],
+	          result = value;
+	      // parse numeric/percent values for strokeDash.. properties
+	      if (this.h.strokeDashPropsMap[key]) {
+	        var result = [];
+	        switch (typeof value === 'undefined' ? 'undefined' : (0, _typeof3.default)(value)) {
+	          case 'number':
+	            result.push(this.h.parseUnit(value));
+	            break;
+	          case 'string':
+	            var array = this._props[key].split(' ');
+	            for (var i = 0; i < array.length; i++) {
+	              var unit = array[i];
+	              result.push(this.h.parseUnit(unit));
+	            }
+	            break;
+	        }
+	      }
+	      return result;
+	    }
+	    /*
 	      Method to extend module defaults with passed options.
+	      @param {Object} Optional object to extend defaults with.
 	    */
 
 	  }, {
 	    key: '_extendDefaults',
 	    value: function _extendDefaults(o) {
-	      var i, k, len1, optionsValue, ref, unit;
 	      // reset deltas if no options was passed
 	      o == null && (this.deltas = {});
 	      var fromObject = o || this.defaults,
 	          keys = (0, _keys2.default)(fromObject),
 	          len = keys.length;
 	      while (len--) {
-	        var key = keys[len],
-	            defaultsValue = fromObject[key];
+	        var key = keys[len];
 	        // skip property if it is listed in skipProps
 	        if (this.skipProps && this.skipProps[key]) {
 	          continue;
 	        }
 
-	        if (o) {
-	          optionsValue = this._o[key] = defaultsValue;
-	          // optionsValue = defaultsValue;
-	          delete this.deltas[key];
+	        var optionsValue = o ?
+	        // if fromObject was pass - get the value from passed o
+	        this._o[key] = fromObject[key]
+	        // if from object wasn't passed - get options value from _o
+	        // with fallback to defaults
+	        : this._o[key] != null ? this._o[key] : fromObject[key];
+	        // and delete the key from deltas
+	        o && delete this.deltas[key];
+	        // if delta property
+	        if (this._isDelta(optionsValue)) {
+	          this._getDelta(key, optionsValue);
 	        } else {
-	          optionsValue = this._o[key] != null ? this._o[key] : defaultsValue;
-	        }
-	        // if not delta property
-	        if (!this._isDelta(optionsValue)) {
-	          // save to props
 	          // parse stagger and rand values
 	          this._props[key] = this._parseOptionString(optionsValue);
-	          // probably redundant
-	          // if property is "radius" and "radiusX/radiusY" not set
-	          // - set them to "radius" value
-	          // if (key === 'radius') {
-	          //   if (this._o.radiusX == null) { this._props.radiusX = optionsValue; }
-	          //   if (this._o.radiusY == null) { this._props.radiusY = optionsValue; }
-	          // }
 	          // parse units for position properties
 	          this._props[key] = this._parsePositionOption(key);
 	          // parse numeric/percent values for strokeDash.. properties
-	          if (this.h.strokeDashPropsMap[key]) {
-	            var property = this._props[key],
-	                value = [];
-	            switch (typeof property === 'undefined' ? 'undefined' : (0, _typeof3.default)(property)) {
-	              case 'number':
-	                value.push(this.h.parseUnit(property));
-	                break;
-	              case 'string':
-	                var array = this._props[key].split(' ');
-	                for (i = k = 0, len1 = array.length; k < len1; i = ++k) {
-	                  unit = array[i];
-	                  value.push(this.h.parseUnit(unit));
-	                }
-	                break;
-	            }
-	            // save parsed array to props
-	            this._props[key] = value;
-	          }
-	          continue;
+	          this._props[key] = this._parseStrokeDashOption(key);
 	        }
-	        // this.isSkipDelta || this._getDelta(key, optionsValue);
-	        // get delta for the property
-	        this._getDelta(key, optionsValue);
 	      }
-	      // save onUpdate to this.onUpdate for performance reasons
-	      // return this.onUpdate = this._props.onUpdate;
 	    }
 	    /*
 	      Method to initialize modules presentation.
