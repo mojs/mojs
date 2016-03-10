@@ -1513,75 +1513,64 @@
 	  }, {
 	    key: '_transformHistory',
 	    value: function _transformHistory(o) {
-	      var keys = (0, _keys2.default)(o),
-	          i = -1,
-	          len = keys.length,
-	          historyLen = this.history.length;
-	      // go thru history records - one record if transit's option object
-	      while (++i < len) {
-	        // get all keys of the options record
-	        var key = keys[i],
-	            j = -1;
-	        (function () {
-	          // take one key and loop thru all of the records again
-	          while (++j < historyLen) {
-	            // get option's record property by key
-	            var optionRecord = this.history[j][key];
-	            // if delta property
-	            if ((typeof optionRecord === 'undefined' ? 'undefined' : (0, _typeof3.default)(optionRecord)) === 'object' && optionRecord !== null) {
-	              // get start and end of the delta
-	              var start = (0, _keys2.default)(optionRecord)[0],
+	      var optionsKeys = (0, _keys2.default)(o);
 
-	              // save the end of the delta
-	              end = optionRecord[start];
-	              // delete the property
-	              delete optionRecord[start];
-	              var newValue = o[key];
-	              // if new property is delta
-	              if ((typeof newValue === 'undefined' ? 'undefined' : (0, _typeof3.default)(newValue)) === 'object' && newValue !== null) {
-	                var property = o[key],
+	      for (var i = 0; i < optionsKeys.length; i++) {
+	        var optionsKey = optionsKeys[i],
+	            optionsValue = o[optionsKey];
 
-	                // merge the start and end
-	                // get the start and end of the new option
-	                startNew = (0, _keys2.default)(property)[0],
-	                    endNew = property[startNew];
-	                // set the o's end value as start
-	                // and o's end to delta's end
-	                optionRecord[endNew] = end;
-	              } else {
-	                // if new property is not delta
-	                // rewrite the start value to the new value
-	                // this._o.isIt && console.log('o[key]', newValue, end, j);
-	                if (j === 0) {
-	                  if (this.history[j] !== null && (0, _typeof3.default)(this.history[j]) === 'object') {
-	                    this.history[j][key] = newValue;
-	                    if (this.history[j + 1]) {
-	                      var nextRecord = this.history[j + 1][key],
-	                          nextRecordKey = (0, _keys2.default)(nextRecord),
-	                          nextRecordValue = nextRecord[nextRecordKey];
-	                      this.history[j + 1][key] = {};
-	                      this.history[j + 1][key][newValue] = nextRecordValue;
-	                    }
-	                  }
-	                } else {
-	                  optionRecord[newValue] = end;
-	                }
-	              }
-	              break;
-	            } else {
-	              // if is not delta property
-	              // set it to the new options value
-	              this.history[j][key] = o[key];
-	            }
-	          }
-	        }).call(this);
+	        this._transformHistoryFor(optionsKey, optionsValue);
 	      }
-	      // if (this._o.isIt) {
-	      //   console.log('-=-=-=-=-=-=');
-	      //   for (var record of this.history) {
-	      //     console.log(record.radius);
-	      //   }
-	      // }
+	    }
+	    /*
+	      Method to transform history chain for specific key/value.
+	      @param {String} Name of the property to transform history for.
+	      @param {Any} The new property's value.
+	    */
+
+	  }, {
+	    key: '_transformHistoryFor',
+	    value: function _transformHistoryFor(key, value) {
+	      for (var i = 0; i < this.history.length; i++) {
+	        if (this._transformHistoryRecord(i, key, value)) {
+	          break; // break if no further history modifications needed
+	        }
+	      }
+	    }
+	    /*
+	      Method to transform history recod with key/value.
+	      @param {Number} Index of the history record to transform.
+	      @param {String} Property name to transform.
+	      @param {Any} Property value to transform to.
+	      @returns {Boolean} Returns true if no further
+	                         history modifications is needed.
+	    */
+
+	  }, {
+	    key: '_transformHistoryRecord',
+	    value: function _transformHistoryRecord(index, key, value) {
+	      var currRecord = this.history[index],
+	          prevRecord = this.history[index - 1],
+	          propertyValue = currRecord[key];
+
+	      if (this._isDelta(value)) {
+	        // if previous history record have been already overriden
+	        // with the delta, copy only the end property to the start
+	        if (prevRecord && prevRecord[key] === value) {
+	          var prevEnd = h.getDeltaEnd(prevRecord[key]);
+	          currRecord[key] = (0, _defineProperty3.default)({}, prevEnd, h.getDeltaEnd(propertyValue));
+	          return true;
+	        } // else go to very end of this function
+	        // if new value is delta
+	      } else {
+	          // if property value is delta - rewrite it's start
+	          // and notify parent to stop hitory modifications
+	          if (this._isDelta(propertyValue)) {
+	            currRecord[key] = (0, _defineProperty3.default)({}, value, h.getDeltaEnd(propertyValue));
+	            return true;
+	          } // else go to very end of this function
+	        }
+	      currRecord[key] = value;
 	    }
 	    /*
 	      Method to tune new option on run.
@@ -1628,15 +1617,17 @@
 	    }
 	    /*
 	      Method to reset tween with new options.
-	     */
+	      @param {Object} Tween to reset.
+	      @param {Object} Tween's to reset tween with.
+	      @param {Number} Optional number to shift tween start time.
+	    */
 
 	  }, {
 	    key: '_resetTween',
 	    value: function _resetTween(tween, o) {
 	      var shift = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
 
-	      o.shiftTime = shift;
-	      tween._setProps(o);
+	      o.shiftTime = shift;tween._setProps(o);
 	    }
 	    /*
 	      Method to set property on the module.
@@ -7179,7 +7170,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.179.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.180.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};

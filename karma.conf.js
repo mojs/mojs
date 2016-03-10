@@ -90,8 +90,8 @@ module.exports = function(config) {
       // 'build/mo.js',
       // 'build/mojs.js',
       
-      // 'build/h.js',
-      // 'spec/h.js',
+      'build/h.js',
+      'spec/h.js',
       // 'build/transit.js',
       // 'spec/transit.js',
       // 'build/swirl.js',
@@ -104,10 +104,10 @@ module.exports = function(config) {
       'build/stagger.js',
       'spec/stagger.js',
 
-      // 'build/timeline.js',
-      // 'spec/timeline.js',
-      // 'build/tween.js',
-      // 'spec/tween.js',
+      'build/timeline.js',
+      'spec/timeline.js',
+      'build/tween.js',
+      'spec/tween.js',
       'build/tweener.js',
       'spec/tweener.js',
 

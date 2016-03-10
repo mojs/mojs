@@ -717,72 +717,58 @@ class Transit extends Tweenable {
     @param {Object} New options to tune for.
   */
   _transformHistory ( o ) {
-    var keys = Object.keys(o),
-        i = -1, len = keys.length,
-        historyLen = this.history.length;
-    // go thru history records - one record if transit's option object
-    while (++i < len) {
-      // get all keys of the options record
-      var key = keys[i],
-          j = -1;
-      (function() {
-        // take one key and loop thru all of the records again
-        while (++j < historyLen) {
-          // get option's record property by key
-          var optionRecord = this.history[j][key];
-          // if delta property
-          if ( typeof optionRecord === 'object' && optionRecord !== null ) {
-            // get start and end of the delta
-            var start = Object.keys(optionRecord)[0],
-                // save the end of the delta
-                end   = optionRecord[start];
-            // delete the property
-            delete optionRecord[start];
-            var newValue = o[key];
-            // if new property is delta
-            if (typeof newValue === 'object' && newValue !== null) {
-              var property = o[key],
-                  // merge the start and end
-                  // get the start and end of the new option
-                  startNew = Object.keys(property)[0],
-                  endNew   = property[startNew];
-              // set the o's end value as start
-              // and o's end to delta's end
-              optionRecord[endNew] = end;
-            } else {
-              // if new property is not delta
-              // rewrite the start value to the new value
-              // this._o.isIt && console.log('o[key]', newValue, end, j);
-              if ( j === 0 ) {
-                if ( this.history[j] !== null && typeof this.history[j] === 'object' ) {
-                  this.history[j][key] = newValue;
-                  if (this.history[j+1]) {
-                    var nextRecord       = this.history[j+1][key],
-                        nextRecordKey    = Object.keys(nextRecord),
-                        nextRecordValue  = nextRecord[nextRecordKey];
-                    this.history[j+1][key] = {};
-                    this.history[j+1][key][newValue] = nextRecordValue;
-                  }
-                }
-              } else {
-                optionRecord[newValue] = end;
-              }
-            }
-            break;
-          } else {
-            // if is not delta property
-            // set it to the new options value
-            this.history[j][key] = o[key];
-          }
-        }
-      }).call(this);
+    var optionsKeys = Object.keys(o);
+
+    for (var i = 0; i < optionsKeys.length; i++ ) {
+      var optionsKey   = optionsKeys[i],
+          optionsValue = o[optionsKey];
+
+      this._transformHistoryFor( optionsKey, optionsValue );
     }
-    // if (this._o.isIt) {
-    //   console.log('-=-=-=-=-=-=');
-    //   for (var record of this.history) {
-    //     console.log(record.radius);
-    //   }
-    // }
+  }
+  /*
+    Method to transform history chain for specific key/value.
+    @param {String} Name of the property to transform history for.
+    @param {Any} The new property's value.
+  */
+  _transformHistoryFor ( key, value ) {
+    for (var i = 0; i < this.history.length; i++ ) {
+      if ( this._transformHistoryRecord( i, key, value ) ) {
+        break; // break if no further history modifications needed
+      }
+    }
+  }
+  /*
+    Method to transform history recod with key/value.
+    @param {Number} Index of the history record to transform.
+    @param {String} Property name to transform.
+    @param {Any} Property value to transform to.
+    @returns {Boolean} Returns true if no further
+                       history modifications is needed.
+  */
+  _transformHistoryRecord ( index, key, value ) {
+    var currRecord    = this.history[index],
+        prevRecord    = this.history[index-1],
+        propertyValue = currRecord[key];
+    
+    if ( this._isDelta(value) ) {
+      // if previous history record have been already overriden
+      // with the delta, copy only the end property to the start
+      if (prevRecord && prevRecord[key] === value) {
+        var prevEnd     = h.getDeltaEnd(prevRecord[key]);
+        currRecord[key] = { [prevEnd]: h.getDeltaEnd(propertyValue) }
+        return true;
+      } // else go to very end of this function
+    // if new value is delta
+    } else {
+      // if property value is delta - rewrite it's start
+      // and notify parent to stop hitory modifications
+      if ( this._isDelta(propertyValue) ) {
+        currRecord[key] = { [value] : h.getDeltaEnd(propertyValue) };
+        return true;
+      } // else go to very end of this function
+    }
+    currRecord[key] = value;
   }
   /*
     Method to tune new option on run.
@@ -823,11 +809,12 @@ class Transit extends Tweenable {
   }
   /*
     Method to reset tween with new options.
-
+    @param {Object} Tween to reset.
+    @param {Object} Tween's to reset tween with.
+    @param {Number} Optional number to shift tween start time.
   */
   _resetTween ( tween, o, shift = 0 ) {
-    o.shiftTime = shift;
-    tween._setProps( o );
+    o.shiftTime = shift; tween._setProps( o );
   }
   /*
     Method to set property on the module.

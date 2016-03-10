@@ -143,10 +143,10 @@ describe 'Transit ->', ->
     it 'should save options to history array', ->
       byte = new Byte radius: 20
       expect(byte.history.length).toBe 1
-    it 'should rewrite the first history item on run', ->
-      byte = new Byte radius: 20
-      byte.run radius: 10
-      expect(byte.history[0].radius).toBe 10
+    # it 'should rewrite the first history item on run', ->
+    #   byte = new Byte radius: 20
+    #   byte.run radius: 10
+    #   expect(byte.history[0].radius).toBe 10
     # it 'should extend options by defaults on the first add', ->
     #   byte = new Byte opacity: .5
     #   expect(byte.history[0].radius[0]).toBe 50
@@ -155,60 +155,154 @@ describe 'Transit ->', ->
       byte.run()
       expect(byte.history[0].radius[0]).toBe 50
   describe '_transformHistory method ->', ->
-    it 'should add new options to the history', ->
-      byte = new Byte
-      byte.then radius: 0
-      byte._transformHistory x: 20
-      expect(byte.history[1].x).toBe 20
-    it 'should rewrite options in the history', ->
-      byte = new Byte x: 200
-      byte.then radius: 0
-      byte._transformHistory x: 100
-      expect(byte.history[1].x).toBe 100
-    it 'should stop rewriting if further option is defined #1', ->
-      byte = new Byte x: 200
+    it 'should call _transformHistoryFor for every new property ->', ->
+      tr = new Transit({}).then({ radius: 0 }).then({ radius: 50 })
+      spyOn tr, '_transformHistoryFor'
+      tr._transformHistory x: 20
+      expect(tr._transformHistoryFor)
+        .toHaveBeenCalledWith 'x', 20
+      expect(tr._transformHistoryFor.calls.count()).toBe 1
+
+  describe '_transformHistoryFor method ->', ->
+    it 'should call _transformHistoryRecord for every history record', ->
+      tr = new Transit()
         .then radius: 0
-        .then radius: 0, x: 20
-      byte._transformHistory x: 100
-      expect(byte.history[0].x)     .toBe 100
-      expect(byte.history[1].x)     .toBe 100
-      expect(byte.history[2].x[100]).toBe 20
-      expect(byte.history[2].x[200]).not.toBeDefined()
-    it 'should stop rewriting if further option is defined #2', ->
-      byte = new Byte( x: 200 )
+        .then radius: 50
+
+      spyOn tr, '_transformHistoryRecord'
+      tr._transformHistoryFor( 'x', 20 )
+      expect(tr._transformHistoryRecord)
+        .toHaveBeenCalledWith 0, 'x', 20
+      expect(tr._transformHistoryRecord)
+        .toHaveBeenCalledWith 1, 'x', 20
+      expect(tr._transformHistoryRecord)
+        .toHaveBeenCalledWith 2, 'x', 20
+
+    it 'should stop looping if _transformHistoryRecord returns true', ->
+      tr = new Transit()
         .then radius: 0
-        .then radius: 0, x: 20
-        .then radius: 0, x: 10
-      byte._transformHistory x: 100
-      expect(byte.history[3].x[20]).toBe 10
-    it 'should stop rewriting if further option is defined #3', ->
-      byte = new Byte( x: 200 )
-        .then radius: 0, x: 10
-        .then radius: 0, x: 20
-        .then radius: 0, x: 10
-      byte._transformHistory x: 100
-      expect(byte.history[0].x)     .toBe 100
-      expect(byte.history[1].x[100]).toBe 10
-      expect(byte.history[2].x[10]) .toBe 20
-      expect(byte.history[2].x[200]).not.toBeDefined()
-    it 'should stop rewriting if further option is defined #4', ->
-      byte = new Byte( x: { 30 : 40 })
-        .then radius: 0, x: 10
-        .then radius: 0, x: 20
-        .then radius: 0, x: 60
-      byte._transformHistory x: 100
-      expect(byte.history[0].x)     .toBe 100
-      expect(byte.history[1].x[100]).toBe 10
-      expect(byte.history[2].x[10]) .toBe 20
-      expect(byte.history[3].x[20]) .toBe 60
-      expect(byte.history[4]).not.toBeDefined()
-    it 'should rewrite until defined if object was passed', ->
-      byte = new Byte x: 200          # x: 200
-        .then radius: 0               # x: 200
-        .then radius: 0, x: 20        # x: { 200: 20 }
-      byte._transformHistory x: {100: 50}
-      expect(byte.history[1].x[100]).toBe 50 # x: { 100: 50 }
-      expect(byte.history[2].x[50]).toBe 20  # x: { 50: 20 }
+        .then radius: 50
+
+      r = 0
+      tr._transformHistoryRecord =  -> r++ is 1
+      spyOn(tr, '_transformHistoryRecord').and.callThrough()
+
+      tr._transformHistoryFor( 'x', 20 )
+      expect(tr._transformHistoryRecord)
+        .toHaveBeenCalledWith 0, 'x', 20
+      expect(tr._transformHistoryRecord)
+        .toHaveBeenCalledWith 1, 'x', 20
+      expect(tr._transformHistoryRecord)
+        .not.toHaveBeenCalledWith 2, 'x', 20
+  
+  describe '_transformHistoryRecord method ->', ->
+    it 'should add property to the record', ->
+      tr = new Transit()
+        .then radius: 0
+        .then radius: 50
+
+      result = tr._transformHistoryRecord 0, 'x', 20
+
+      expect(tr.history[0].x).toBe 20
+      expect(!!result).toBe false
+
+    # it 'should return true if new value is delta', ->
+    #   tr = new Transit()
+    #     .then radius: 0
+    #     .then radius: 50
+
+    #   result = tr._transformHistoryRecord tr.history[0], 'x', { 10: 20 }
+
+    #   expect(tr.history[0].x[10]).toBe 20
+    #   expect(!!result).toBe true
+
+    it 'should return true if old value is delta', ->
+      tr = new Transit({ radius: { 0: 50 } })
+        .then radius: 0
+        .then radius: 50
+
+      result = tr._transformHistoryRecord 0, 'radius', 20
+      expect(tr.history[0].radius[20]).toBe 50
+      expect(!!result).toBe true
+
+    it 'should rewrite everything until first delta', ->
+      tr = new Transit({ radius: 75 })
+        .then radius: 0
+        .then radius: 50
+
+      result = tr._transformHistoryRecord 0, 'radius', 20
+      expect(tr.history[0].radius).toBe 20
+      expect(!!result).toBe false
+
+      result = tr._transformHistoryRecord 1, 'radius', 20
+      expect(tr.history[1].radius[20]).toBe 0
+      expect(!!result).toBe true
+
+    it 'should save new delta value and modify the next', ->
+      tr = new Transit({ radius: 75, isIt: 1 })
+        .then radius: 0
+        .then radius: 50
+
+      delta = { 20 : 100 }
+      result = tr._transformHistoryRecord 0, 'radius', delta
+      expect(tr.history[0].radius[20]).toBe 100
+      expect(!!result).toBe false
+
+      result = tr._transformHistoryRecord 1, 'radius', delta
+      expect(tr.history[1].radius[100]).toBe 0
+      expect(!!result).toBe true
+
+    ### old tests ###
+    # it 'should rewrite options in the history', ->
+    #   byte = new Byte x: 200
+    #   byte.then radius: 0
+    #   byte._transformHistory x: 100
+    #   expect(byte.history[1].x).toBe 100
+    # it 'should stop rewriting if further option is defined #1', ->
+    #   byte = new Byte x: 200
+    #     .then radius: 0
+    #     .then radius: 0, x: 20
+    #   byte._transformHistory x: 100
+    #   expect(byte.history[0].x)     .toBe 100
+    #   expect(byte.history[1].x)     .toBe 100
+    #   expect(byte.history[2].x[100]).toBe 20
+    #   expect(byte.history[2].x[200]).not.toBeDefined()
+    # it 'should stop rewriting if further option is defined #2', ->
+    #   byte = new Byte( x: 200 )
+    #     .then radius: 0
+    #     .then radius: 0, x: 20
+    #     .then radius: 0, x: 10
+    #   byte._transformHistory x: 100
+    #   expect(byte.history[3].x[20]).toBe 10
+    # it 'should stop rewriting if further option is defined #3', ->
+    #   byte = new Byte( x: 200 )
+    #     .then radius: 0, x: 10
+    #     .then radius: 0, x: 20
+    #     .then radius: 0, x: 10
+    #   byte._transformHistory x: 100
+    #   expect(byte.history[0].x)     .toBe 100
+    #   expect(byte.history[1].x[100]).toBe 10
+    #   expect(byte.history[2].x[10]) .toBe 20
+    #   expect(byte.history[2].x[200]).not.toBeDefined()
+    # it 'should stop rewriting if further option is defined #4', ->
+    #   byte = new Byte( x: { 30 : 40 })
+    #     .then radius: 0, x: 10
+    #     .then radius: 0, x: 20
+    #     .then radius: 0, x: 60
+    #   byte._transformHistory x: 100
+    #   expect(byte.history[0].x)     .toBe 100
+    #   expect(byte.history[1].x[100]).toBe 10
+    #   expect(byte.history[2].x[10]) .toBe 20
+    #   expect(byte.history[3].x[20]) .toBe 60
+    #   expect(byte.history[4]).not.toBeDefined()
+    # it 'should rewrite until defined if object was passed', ->
+    #   byte = new Byte x: 200          # x: 200
+    #     .then radius: 0               # x: 200
+    #     .then radius: 0, x: 20        # x: { 200: 20 }
+    #   byte._transformHistory x: {100: 50}
+    #   expect(byte.history[1].x[100]).toBe 50 # x: { 100: 50 }
+    #   expect(byte.history[2].x[50]).toBe 20  # x: { 50: 20 }
+    ### old tests ###
   describe 'then method ->', ->
     it 'should add new tween with options', ->
       byte = new Byte radius: 20, duration: 1000
@@ -1334,7 +1428,6 @@ describe 'Transit ->', ->
     #     duration: 500, delay: 200, repeat: 1,
     #     easing: 'cubic.in'
     #     yoyo: true
-    #     isIt: 1
     #     onStart:    ->
     #     onComplete: ->
     #   onStart = (->); onComplete = (->)
@@ -1540,7 +1633,7 @@ describe 'Transit ->', ->
 
       it 'should call _tuneOptions method', ->
         options = { index: 1, onUpdate:-> }
-        tr = new Transit(isIt: 1).then({ fill: 'red' })
+        tr = new Transit().then({ fill: 'red' })
         tr._overrideUpdateCallbacks( options )
 
         spyOn tr, '_tuneOptions'

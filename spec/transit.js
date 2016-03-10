@@ -228,16 +228,6 @@
         });
         return expect(byte.history.length).toBe(1);
       });
-      it('should rewrite the first history item on run', function() {
-        var byte;
-        byte = new Byte({
-          radius: 20
-        });
-        byte.run({
-          radius: 10
-        });
-        return expect(byte.history[0].radius).toBe(10);
-      });
       return it('should extend options by defaults on run first add', function() {
         var byte;
         byte = new Byte({
@@ -248,131 +238,120 @@
       });
     });
     describe('_transformHistory method ->', function() {
-      it('should add new options to the history', function() {
-        var byte;
-        byte = new Byte;
-        byte.then({
-          radius: 0
-        });
-        byte._transformHistory({
-          x: 20
-        });
-        return expect(byte.history[1].x).toBe(20);
-      });
-      it('should rewrite options in the history', function() {
-        var byte;
-        byte = new Byte({
-          x: 200
-        });
-        byte.then({
-          radius: 0
-        });
-        byte._transformHistory({
-          x: 100
-        });
-        return expect(byte.history[1].x).toBe(100);
-      });
-      it('should stop rewriting if further option is defined #1', function() {
-        var byte;
-        byte = new Byte({
-          x: 200
-        }).then({
+      return it('should call _transformHistoryFor for every new property ->', function() {
+        var tr;
+        tr = new Transit({}).then({
           radius: 0
         }).then({
-          radius: 0,
+          radius: 50
+        });
+        spyOn(tr, '_transformHistoryFor');
+        tr._transformHistory({
           x: 20
         });
-        byte._transformHistory({
-          x: 100
-        });
-        expect(byte.history[0].x).toBe(100);
-        expect(byte.history[1].x).toBe(100);
-        expect(byte.history[2].x[100]).toBe(20);
-        return expect(byte.history[2].x[200]).not.toBeDefined();
+        expect(tr._transformHistoryFor).toHaveBeenCalledWith('x', 20);
+        return expect(tr._transformHistoryFor.calls.count()).toBe(1);
       });
-      it('should stop rewriting if further option is defined #2', function() {
-        var byte;
-        byte = new Byte({
-          x: 200
-        }).then({
+    });
+    describe('_transformHistoryFor method ->', function() {
+      it('should call _transformHistoryRecord for every history record', function() {
+        var tr;
+        tr = new Transit().then({
           radius: 0
         }).then({
-          radius: 0,
-          x: 20
-        }).then({
-          radius: 0,
-          x: 10
+          radius: 50
         });
-        byte._transformHistory({
-          x: 100
-        });
-        return expect(byte.history[3].x[20]).toBe(10);
+        spyOn(tr, '_transformHistoryRecord');
+        tr._transformHistoryFor('x', 20);
+        expect(tr._transformHistoryRecord).toHaveBeenCalledWith(0, 'x', 20);
+        expect(tr._transformHistoryRecord).toHaveBeenCalledWith(1, 'x', 20);
+        return expect(tr._transformHistoryRecord).toHaveBeenCalledWith(2, 'x', 20);
       });
-      it('should stop rewriting if further option is defined #3', function() {
-        var byte;
-        byte = new Byte({
-          x: 200
+      return it('should stop looping if _transformHistoryRecord returns true', function() {
+        var r, tr;
+        tr = new Transit().then({
+          radius: 0
         }).then({
-          radius: 0,
-          x: 10
-        }).then({
-          radius: 0,
-          x: 20
-        }).then({
-          radius: 0,
-          x: 10
+          radius: 50
         });
-        byte._transformHistory({
-          x: 100
-        });
-        expect(byte.history[0].x).toBe(100);
-        expect(byte.history[1].x[100]).toBe(10);
-        expect(byte.history[2].x[10]).toBe(20);
-        return expect(byte.history[2].x[200]).not.toBeDefined();
+        r = 0;
+        tr._transformHistoryRecord = function() {
+          return r++ === 1;
+        };
+        spyOn(tr, '_transformHistoryRecord').and.callThrough();
+        tr._transformHistoryFor('x', 20);
+        expect(tr._transformHistoryRecord).toHaveBeenCalledWith(0, 'x', 20);
+        expect(tr._transformHistoryRecord).toHaveBeenCalledWith(1, 'x', 20);
+        return expect(tr._transformHistoryRecord).not.toHaveBeenCalledWith(2, 'x', 20);
       });
-      it('should stop rewriting if further option is defined #4', function() {
-        var byte;
-        byte = new Byte({
-          x: {
-            30: 40
+    });
+    describe('_transformHistoryRecord method ->', function() {
+      it('should add property to the record', function() {
+        var result, tr;
+        tr = new Transit().then({
+          radius: 0
+        }).then({
+          radius: 50
+        });
+        result = tr._transformHistoryRecord(0, 'x', 20);
+        expect(tr.history[0].x).toBe(20);
+        return expect(!!result).toBe(false);
+      });
+      it('should return true if old value is delta', function() {
+        var result, tr;
+        tr = new Transit({
+          radius: {
+            0: 50
           }
         }).then({
-          radius: 0,
-          x: 10
+          radius: 0
         }).then({
-          radius: 0,
-          x: 20
-        }).then({
-          radius: 0,
-          x: 60
+          radius: 50
         });
-        byte._transformHistory({
-          x: 100
-        });
-        expect(byte.history[0].x).toBe(100);
-        expect(byte.history[1].x[100]).toBe(10);
-        expect(byte.history[2].x[10]).toBe(20);
-        expect(byte.history[3].x[20]).toBe(60);
-        return expect(byte.history[4]).not.toBeDefined();
+        result = tr._transformHistoryRecord(0, 'radius', 20);
+        expect(tr.history[0].radius[20]).toBe(50);
+        return expect(!!result).toBe(true);
       });
-      return it('should rewrite until defined if object was passed', function() {
-        var byte;
-        byte = new Byte({
-          x: 200
+      it('should rewrite everything until first delta', function() {
+        var result, tr;
+        tr = new Transit({
+          radius: 75
         }).then({
           radius: 0
         }).then({
-          radius: 0,
-          x: 20
+          radius: 50
         });
-        byte._transformHistory({
-          x: {
-            100: 50
-          }
-        });
-        expect(byte.history[1].x[100]).toBe(50);
-        return expect(byte.history[2].x[50]).toBe(20);
+        result = tr._transformHistoryRecord(0, 'radius', 20);
+        expect(tr.history[0].radius).toBe(20);
+        expect(!!result).toBe(false);
+        result = tr._transformHistoryRecord(1, 'radius', 20);
+        expect(tr.history[1].radius[20]).toBe(0);
+        return expect(!!result).toBe(true);
       });
+      return it('should save new delta value and modify the next', function() {
+        var delta, result, tr;
+        tr = new Transit({
+          radius: 75,
+          isIt: 1
+        }).then({
+          radius: 0
+        }).then({
+          radius: 50
+        });
+        delta = {
+          20: 100
+        };
+        result = tr._transformHistoryRecord(0, 'radius', delta);
+        expect(tr.history[0].radius[20]).toBe(100);
+        expect(!!result).toBe(false);
+        result = tr._transformHistoryRecord(1, 'radius', delta);
+        expect(tr.history[1].radius[100]).toBe(0);
+        return expect(!!result).toBe(true);
+      });
+
+      /* old tests */
+
+      /* old tests */
     });
     describe('then method ->', function() {
       it('should add new tween with options', function() {
@@ -2705,9 +2684,7 @@
             index: 1,
             onUpdate: function() {}
           };
-          tr = new Transit({
-            isIt: 1
-          }).then({
+          tr = new Transit().then({
             fill: 'red'
           });
           tr._overrideUpdateCallbacks(options);
