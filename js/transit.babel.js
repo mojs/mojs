@@ -8,6 +8,9 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - properties signatures
+//  - move to submodules (Thenable)
+//  - move to Deltable
+//  - move to Historable
 //  --
 //  - tween for every prop
 

@@ -47,8 +47,7 @@ class Helpers
     orange:      'rgb(255,128,0)'
   # ---
   # none-tweenable props
-  chainOptionMap:
-    points:           1
+  chainOptionMap: {}
   callbacksMap:
     onStart:          1
     onComplete:       1

@@ -40,8 +40,8 @@ describe 'Helpers ->', ->
       expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
-      expect(h.chainOptionMap.points).toBe 1
-      expect(Object.keys(h.chainOptionMap).length).toBe 1
+      # expect(h.chainOptionMap.points).toBe 0
+      expect(Object.keys(h.chainOptionMap).length).toBe 0
   describe 'pure tween props ->', ->
     it 'should be a map of tween related options ->', ->
       expect(h.tweenOptionMap.duration)           .toBe 1

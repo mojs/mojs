@@ -55,8 +55,7 @@
     });
     describe('tween related map ->', function() {
       return it('should be a map of tween related options ->', function() {
-        expect(h.chainOptionMap.points).toBe(1);
-        return expect(Object.keys(h.chainOptionMap).length).toBe(1);
+        return expect(Object.keys(h.chainOptionMap).length).toBe(0);
       });
     });
     describe('pure tween props ->', function() {

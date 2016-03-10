@@ -2374,8 +2374,10 @@
             10: 5
           }
         });
+        spyOn(byte, 'stop');
         spyOn(byte, 'play');
         byte.run();
+        expect(byte.stop).toHaveBeenCalled();
         return expect(byte.play).toHaveBeenCalled();
       });
       it('should accept new options', function() {

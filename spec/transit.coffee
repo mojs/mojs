@@ -1422,8 +1422,10 @@ describe 'Transit ->', ->
       expect(byte.el.style.width).toBe '404px'
     it 'should start tween', ->
       byte = new Byte(strokeWidth: {10: 5})
+      spyOn byte, 'stop'
       spyOn byte, 'play'
       byte.run()
+      expect(byte.stop).toHaveBeenCalled()
       expect(byte.play).toHaveBeenCalled()
     it 'should accept new options', ->
       byte = new Byte(strokeWidth: {10: 5})

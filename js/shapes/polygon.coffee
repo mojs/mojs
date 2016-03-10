@@ -11,6 +11,8 @@ class Polygon extends Bit
     @drawShape()
     super
   drawShape:->
+    # console.log @props.points
+    # @props.points = parseInt(@props.points)
     step = 360/(@props.points); @radialPoints = []
     for i in [0...@props.points]
       @radialPoints.push h.getRadialPoint
