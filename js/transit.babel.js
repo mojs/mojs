@@ -9,7 +9,6 @@ import Timeline   from './tween/timeline';
 // TODO
 //  - properties signatures
 //  - add run method
-//  - rx, ry for transit
 //  --
 //  - tween for every prop
 
@@ -69,6 +68,69 @@ class Transit extends Tweenable {
     return this;
   }
   /*
+    Method to start the animation with optional new options.
+    @public
+    @param {Object} New options to set on the run.
+    @returns {Object} this.
+  */
+  run (o) {
+    // if options object was passed
+    if (o && Object.keys(o).length) {
+      // if history has more than one record
+      // if (this.history.length > 1) {
+      //   var keys = Object.keys(o),
+      //       len  = keys.length;
+      //   while (len--) {
+      //     var key = keys[len];
+      //     // callbacks and options can not be overriden by the run call
+      //     if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+      //       h.warn(`the "${key}" property can not be overridden
+      //               on run with \"then\" chain yet`);
+      //       delete o[key];
+      //     }
+      //   }
+      // }
+      this._transformHistory(o);
+      this._tuneNewOption(o);
+      // save to history
+      o = h.cloneObj(this.history[0]);
+      h.extend(o, this.defaults);
+      this.history[0] = o;
+      // !this._o.isDrawLess && this._setProgress(0, true);
+    } // else if (o) { this._tuneNewOption(this.history[0]); }
+    // console.log('play')
+    this.stop();
+    this.play();
+    return this;
+  }
+  // ^ Public methods / APIs
+  // v private methods.
+  constructor ( o = {} ) {
+    super( o );
+    this._o = o;
+    this._declareDefaults();
+    this._vars();
+    this._render();
+  }
+  /*
+    Method to declare variables.
+  */
+  _vars () {
+    this.progress = 0;
+    this._props   = {};
+    this.lastSet  = {};
+    this.origin   = {};
+    this.index    = this._o.index || 0;
+    this._extendDefaults();
+    var o = h.cloneObj(this._o);
+    h.extend(o, this.defaults);
+    this.history = [o];
+    // should draw on foreign svg canvas
+    this.isForeign = !!this._o.ctx;
+    // should take an svg element as self bit
+    return this.isForeignBit = !!this._o.bit;
+  }
+  /*
     Method to override(or define) update callbacks in passed object.
     @param {Object} Object to override callbacks in.
   */
@@ -100,70 +162,6 @@ class Transit extends Tweenable {
         } else { it._tuneOptions(it.history[index]); }
       }
     };
-
-  }
-  // /*
-  //   Method to start the animation with optional new options.
-  //   @public
-  //   @param {Object} New options to set on the run.
-  //   @returns {Object} this.
-  // */
-  // run (o) {
-  //   // if options object was passed
-  //   if (o && Object.keys(o).length) {
-  //     // if history has more than one record
-  //     if (this.history.length > 1) {
-  //       var keys = Object.keys(o),
-  //           len  = keys.length;
-  //       while (len--) {
-  //         var key = keys[len];
-  //         // callbacks and options can not be overriden by the run call
-  //         if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-  //           h.warn(`the "${key}" property can not be overridden
-  //                   on run with \"then\" chain yet`);
-  //           delete o[key];
-  //         }
-  //       }
-  //     }
-  //     this._transformHistory(o);
-  //     this._tuneNewOption(o);
-  //     // save to history
-  //     o = this.h.cloneObj(this.history[0]);
-  //     this.h.extend(o, this.defaults);
-  //     this.history[0] = o;
-  //     // !this._o.isDrawLess && this._setProgress(0, true);
-  //   } // else if (o) { this._tuneNewOption(this.history[0]); }
-  //   this.play();
-  //   return this;
-  // }
-
-  // ^ Public methods / APIs
-  // v private methods.
-  constructor ( o = {} ) {
-    super( o );
-    this._o = o;
-    this._declareDefaults();
-    this._vars();
-    this._render();
-  }
-  /*
-    Method to declare variables.
-  */
-  _vars () {
-    this.progress = 0;
-    this.h        = h;
-    this._props    = {};
-    this.lastSet  = {};
-    this.origin   = {};
-    this.index    = this._o.index || 0;
-    this._extendDefaults();
-    var o = this.h.cloneObj(this._o);
-    this.h.extend(o, this.defaults);
-    this.history = [o];
-    // should draw on foreign svg canvas
-    this.isForeign = !!this._o.ctx;
-    // should take an svg element as self bit
-    return this.isForeignBit = !!this._o.bit;
   }
   /*
     Method to parse option string.
@@ -175,12 +173,12 @@ class Transit extends Tweenable {
   _parseOptionString (optionsValue) {
     if (typeof optionsValue === 'string') {
       if (optionsValue.match(/stagger/)) {
-        optionsValue = this.h.parseStagger(optionsValue, this.index);
+        optionsValue = h.parseStagger(optionsValue, this.index);
       }
     }
     if (typeof optionsValue === 'string') {
       if (optionsValue.match(/rand/)) {
-        optionsValue = this.h.parseRand(optionsValue);
+        optionsValue = h.parseRand(optionsValue);
       }
     }
     return optionsValue;
@@ -192,8 +190,8 @@ class Transit extends Tweenable {
   */
   _parsePositionOption (key) {
     var value = this._props[key];
-    if (this.h.unitOptionMap[key]) {
-      value = this.h.parseUnit(value).string;
+    if (h.unitOptionMap[key]) {
+      value = h.parseUnit(value).string;
     }
     return value;
   }
@@ -206,17 +204,17 @@ class Transit extends Tweenable {
     var value  = this._props[key],
         result = value;
     // parse numeric/percent values for strokeDash.. properties
-    if (this.h.strokeDashPropsMap[key]) {
+    if (h.strokeDashPropsMap[key]) {
       var result = [];
       switch (typeof value) {
         case 'number':
-          result.push(this.h.parseUnit(value));
+          result.push(h.parseUnit(value));
           break;
         case 'string':
           var array = this._props[key].split(' ');
           for (var i = 0; i < array.length; i++ ) {
             var unit = array[i];
-            result.push(this.h.parseUnit(unit));
+            result.push(h.parseUnit(unit));
           }
           break;
       }
@@ -328,7 +326,6 @@ class Transit extends Tweenable {
     @private
   */
   _draw () {
-    // console.log(this._props.radius, this._props.radiusX, this._props.radiusY);
     this.bit.setProp({
       x:                    this.origin.x,
       y:                    this.origin.y,
@@ -363,7 +360,7 @@ class Transit extends Tweenable {
       this._isPropChanged('top')   && (this.el.style.top = p.top);
       var isPosChanged = this._isPropChanged('x') || this._isPropChanged('y');
       if ( isPosChanged || this._isPropChanged('scale') ) {
-        this.h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+        h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
       }
     }
   }
@@ -556,7 +553,7 @@ class Transit extends Tweenable {
   _isDelta ( optionsValue ) {
     var isObject = h.isObject( optionsValue );
     isObject = isObject && !optionsValue.unit;
-    return !(!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue));
+    return !(!isObject || h.isArray(optionsValue) || h.isDOM(optionsValue));
   }
   /*
     Method to get delta from property and set
@@ -568,14 +565,14 @@ class Transit extends Tweenable {
   _getDelta ( key, optionsValue ) {
     var delta;
     if ((key === 'left' || key === 'top') && !this._o.ctx) {
-      this.h.warn(`Consider to animate x/y properties instead of left/top,
+      h.warn(`Consider to animate x/y properties instead of left/top,
         as it would be much more performant`, optionsValue);
     }
     // skip delta calculation for a property if it is listed
     // in skipPropsDelta object
     if ( this.skipPropsDelta && this.skipPropsDelta[key] ) { return; }
     // get delta
-    delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
+    delta = h.parseDelta(key, optionsValue, this.defaults[key]);
     // if successfully parsed - save it
     if (delta.type != null) { this.deltas[key] = delta; }
     // set props to start value of the delta
@@ -630,11 +627,9 @@ class Transit extends Tweenable {
       // endKey - name of the property, endValue - value of the property
       var endValue   = end[endP],
           startValue = ( start[endP] != null )
-            ? start[endP]
-            : this.defaults[endP];
+            ? start[endP] : this.defaults[endP];
       if ( endValue == null ) { continue };
       // make ∆ of start -> end
-
       // if key name is radiusX/radiusY and
       // the startValue is not set fallback to radius value
       var  isSubRadius = (endP === 'radiusX' || endP === 'radiusY');
@@ -717,114 +712,123 @@ class Transit extends Tweenable {
       ( isForward ) ? (!it._props.isShowEnd && it._hide()) : it._show();
     };
   }
-  // /*
-  //   Method to transform history rewrite new options object chain on run.
-  //   @param {Object} New options to tune for.
-  // */
-  // _transformHistory ( o ) {
-  //   var keys = Object.keys(o),
-  //       i = -1, len = keys.length,
-  //       historyLen = this.history.length;
-  //   // go thru history records - one record if transit's option object
-  //   while (++i < len) {
-  //     // get all keys of the options record
-  //     var key = keys[i],
-  //         j = -1;
-  //     (function() {
-  //       // take one key and loop thru all of the records again
-  //       while (++j < historyLen) {
-  //         // get option's record property by key
-  //         var optionRecord = this.history[j][key];
-  //         // if delta property
-  //         if ( typeof optionRecord === 'object' && optionRecord !== null ) {
-  //           // get start and end of the delta
-  //           var start = Object.keys(optionRecord)[0],
-  //               // save the end of the delta
-  //               end   = optionRecord[start];
-  //           // delete the property
-  //           delete optionRecord[start];
-  //           var newValue = o[key];
-  //           // if new property is delta
-  //           if (typeof newValue === 'object' && newValue !== null) {
-  //             var property = o[key],
-  //                 // merge the start and end
-  //                 // get the start and end of the new option
-  //                 startNew = Object.keys(property)[0],
-  //                 endNew   = property[startNew];
-  //             // set the o's end value as start
-  //             // and o's end to delta's end
-  //             optionRecord[endNew] = end;
-  //           } else {
-  //             // if new property is not delta
-  //             // rewrite the start value to the new value
-  //             // this._o.isIt && console.log('o[key]', newValue, end, j);
-  //             if ( j === 0 ) {
-  //               if ( this.history[j] !== null && typeof this.history[j] === 'object' ) {
-  //                 this.history[j][key] = newValue;
-  //                 if (this.history[j+1]) {
-  //                   var nextRecord       = this.history[j+1][key],
-  //                       nextRecordKey    = Object.keys(nextRecord),
-  //                       nextRecordValue  = nextRecord[nextRecordKey];
-  //                   this.history[j+1][key] = {};
-  //                   this.history[j+1][key][newValue] = nextRecordValue;
-  //                 }
-  //               }
-  //             } else {
-  //               optionRecord[newValue] = end;
-  //             }
-  //           }
-  //           break;
-  //         } else {
-  //           // if is not delta property
-  //           // set it to the new options value
-  //           this.history[j][key] = o[key];
-  //         }
-  //       }
-  //     }).call(this);
-  //   }
-  //   // if (this._o.isIt) {
-  //   //   console.log('-=-=-=-=-=-=');
-  //   //   for (var record of this.history) {
-  //   //     console.log(record.radius);
-  //   //   }
-  //   // }
-  // }
-  // /*
-  //   Method to tune new option on then edge.
-  //   @private
-  //   @param {Object}  Option to tune on run.
-  //   @param {Boolean} If foreign svg canvas.
-  // */
-  // _tuneNewOption (o, isForeign) {
-  //   if ((o != null) && (o.shape != null) && o.shape !== (this._o.shape || 'circle')) {
-  //     this.h.warn('Sorry, shape can not be changed on run');
-  //     delete o.shape;
-  //   }
-  //   if ((o != null) && Object.keys(o).length) {
-  //     this._extendDefaults(o);
-  //     // this._resetTween();
-  //     // !isForeign && this.timeline._recalcTotalDuration();
-  //     this._calcSize();
-  //     return !isForeign && this._setElStyles();
-  //   }
-  // }
-  // /*
-  //   Method to set new options on run.
-  //   @private
-  // */
-  // _resetTween () {
-  //   var i, k, key, len1, ref, timelineOptions;
-  //   timelineOptions = {};
-  //   ref = Object.keys(this.h.tweenOptionMap);
-  //   for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
-  //     key = ref[i];
-  //     timelineOptions[key] = this._props[key];
-  //   }
-  //   timelineOptions.onStart = this._props.onStart;
-  //   timelineOptions.onComplete = this._props.onComplete;
-  //   // TODO: if should set timeline's props instead of tweens one
-  //   this.tween._setProp(timelineOptions);
-  // }
+  /*
+    Method to transform history rewrite new options object chain on run.
+    @param {Object} New options to tune for.
+  */
+  _transformHistory ( o ) {
+    var keys = Object.keys(o),
+        i = -1, len = keys.length,
+        historyLen = this.history.length;
+    // go thru history records - one record if transit's option object
+    while (++i < len) {
+      // get all keys of the options record
+      var key = keys[i],
+          j = -1;
+      (function() {
+        // take one key and loop thru all of the records again
+        while (++j < historyLen) {
+          // get option's record property by key
+          var optionRecord = this.history[j][key];
+          // if delta property
+          if ( typeof optionRecord === 'object' && optionRecord !== null ) {
+            // get start and end of the delta
+            var start = Object.keys(optionRecord)[0],
+                // save the end of the delta
+                end   = optionRecord[start];
+            // delete the property
+            delete optionRecord[start];
+            var newValue = o[key];
+            // if new property is delta
+            if (typeof newValue === 'object' && newValue !== null) {
+              var property = o[key],
+                  // merge the start and end
+                  // get the start and end of the new option
+                  startNew = Object.keys(property)[0],
+                  endNew   = property[startNew];
+              // set the o's end value as start
+              // and o's end to delta's end
+              optionRecord[endNew] = end;
+            } else {
+              // if new property is not delta
+              // rewrite the start value to the new value
+              // this._o.isIt && console.log('o[key]', newValue, end, j);
+              if ( j === 0 ) {
+                if ( this.history[j] !== null && typeof this.history[j] === 'object' ) {
+                  this.history[j][key] = newValue;
+                  if (this.history[j+1]) {
+                    var nextRecord       = this.history[j+1][key],
+                        nextRecordKey    = Object.keys(nextRecord),
+                        nextRecordValue  = nextRecord[nextRecordKey];
+                    this.history[j+1][key] = {};
+                    this.history[j+1][key][newValue] = nextRecordValue;
+                  }
+                }
+              } else {
+                optionRecord[newValue] = end;
+              }
+            }
+            break;
+          } else {
+            // if is not delta property
+            // set it to the new options value
+            this.history[j][key] = o[key];
+          }
+        }
+      }).call(this);
+    }
+    // if (this._o.isIt) {
+    //   console.log('-=-=-=-=-=-=');
+    //   for (var record of this.history) {
+    //     console.log(record.radius);
+    //   }
+    // }
+  }
+  /*
+    Method to tune new option on run.
+    @private
+    @param {Object}  Option to tune on run.
+    @param {Boolean} If foreign svg canvas.
+  */
+  _tuneNewOption (o, isForeign) {
+    if ((o != null) && (o.shape != null) && o.shape !== (this._o.shape || 'circle')) {
+      h.warn('Sorry, shape can not be changed on run');
+      delete o.shape;
+    }
+    if ((o != null) && Object.keys(o).length) {
+      this._extendDefaults(o);
+      this._resetTweens(isForeign);
+      this._calcSize();
+      return !isForeign && this._setElStyles();
+    }
+  }
+  /*
+    Method to set new options on run.
+    @param {Boolean} If foreign context.
+    @private
+  */
+  _resetTweens (isForeign) {
+    var i      = 0,
+        shift  = 0,
+        tweens = this.timeline._timelines;
+
+    for (var i = 0; i < tweens.length; i++ ) {
+      var tween     = tweens[i],
+          prevTween = tweens[i-1];
+
+      shift += (prevTween) ? prevTween._props.repeatTime : 0;
+      this._resetTween( tween, this.history[i], shift );
+    }
+    !isForeign && this.timeline._recalcTotalDuration();
+  }
+  /*
+    Method to reset tween with new options.
+
+  */
+  _resetTween ( tween, o, shift = 0 ) {
+    o.shiftTime = shift;
+    tween._setProps( o );
+  }
   /*
     Method to set property on the module.
     @private

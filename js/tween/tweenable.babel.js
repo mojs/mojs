@@ -50,6 +50,7 @@ class Tweenable {
     @returns this.
   */
   setProgress () {
+    
     this.timeline.setProgress.apply( this.timeline, arguments );
     return this;
   }

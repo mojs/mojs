@@ -1,4 +1,5 @@
 // import h from '../h';
+import h from '../h';
 import t from './tweener';
 import easing from '../easing/easing';
 
@@ -638,28 +639,25 @@ var Tween = class Tween {
   /*
     Method to set property[s] on Tween
     @private
-    @param {Object, String} Hash object of key/value pairs, or property name
-    @param {_} Property's value to set
+    @param {Object, String} Hash object of key/value pairs, or property name.
+    @param {_} Property's value to set.
   */
-  _setProp( obj, value ) {
-    // handle hash object case
-    if (typeof obj === 'object') {
-      for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          this._props[key] = obj[key];
-          if (key === 'easing') {
-            this._props.easing = easing.parseEasing(this._props.easing);
-          }
-        }
-      }
-    // handle key, value case
-    } else if (typeof obj === 'string') {
-      // if key is easing - parse it immediately
-      if ( obj === 'easing' ) { this._props.easing = easing.parseEasing(value); }
-      // else just save it to props
-      else { this._props[obj] = value; }
-    }
+  _setProps( obj, value ) {
+    // handle hash object case or key/value cases (else if)
+    if ( h.isObject(obj) ) {
+      for (var key in obj) { this._setProp(key, obj[key]); }
+    } else if (typeof obj === 'string') { this._setProp(obj, value); }
     this._calcDimentions();
+  }
+  /*
+    Method to set one property on the tween.
+    @param {String} Key name to set.
+    @param {Any} Value to set.
+  */
+  _setProp ( key, value ) {
+    if ( key === 'easing' ) { this._props.easing = easing.parseEasing(value); }
+    // else just save it to props
+    else if ( h.isTweenProp(key) ) { this._props[key] = value; }
   }
   /*
     Method to remove the Tween from the tweener.

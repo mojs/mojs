@@ -241,7 +241,7 @@ describe 'Timeline ->', ->
       t   = new Timeline
       t.add new Tween duration: 500
       time = 0; shift = 500
-      t._setProp 'shiftTime': shift
+      t._setProps 'shiftTime': shift
       t._setStartTime time
       expect(t._timelines[0]._props.startTime).toBe time + shift
 
@@ -408,6 +408,19 @@ describe 'Timeline ->', ->
       t._timelines.push timeline2
       t._recalcTotalDuration()
       expect(t._props.duration).toBe 1000
+
+    it 'should call _calcDimentions method', ->
+      delay = 200; maxDur = 1000
+      t = new Timeline delay: delay
+      timeline = new Tween  duration: 100
+      timeline2 = new Tween duration: maxDur
+      t.add timeline
+      t._timelines.push timeline2
+      spyOn(t, '_calcDimentions').and.callThrough()
+      t._recalcTotalDuration()
+      expect(t._calcDimentions).toHaveBeenCalled
+      expect(t._props.duration).toBe maxDur
+      expect(t._props.repeatTime).toBe maxDur + delay
   
   describe 'setProgress method ->', ->
     it 'should call _setStartTime if there is no this._props.startTime', ->

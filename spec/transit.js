@@ -215,8 +215,167 @@
         return expect(byte._props.radius).toBe(400);
       });
     });
+    describe('options history ->', function() {
+      it('should have history array', function() {
+        var byte;
+        byte = new Byte;
+        return expect(h.isArray(byte.history)).toBe(true);
+      });
+      it('should save options to history array', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20
+        });
+        return expect(byte.history.length).toBe(1);
+      });
+      it('should rewrite the first history item on run', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20
+        });
+        byte.run({
+          radius: 10
+        });
+        return expect(byte.history[0].radius).toBe(10);
+      });
+      return it('should extend options by defaults on run first add', function() {
+        var byte;
+        byte = new Byte({
+          opacity: .5
+        });
+        byte.run();
+        return expect(byte.history[0].radius[0]).toBe(50);
+      });
+    });
+    describe('_transformHistory method ->', function() {
+      it('should add new options to the history', function() {
+        var byte;
+        byte = new Byte;
+        byte.then({
+          radius: 0
+        });
+        byte._transformHistory({
+          x: 20
+        });
+        return expect(byte.history[1].x).toBe(20);
+      });
+      it('should rewrite options in the history', function() {
+        var byte;
+        byte = new Byte({
+          x: 200
+        });
+        byte.then({
+          radius: 0
+        });
+        byte._transformHistory({
+          x: 100
+        });
+        return expect(byte.history[1].x).toBe(100);
+      });
+      it('should stop rewriting if further option is defined #1', function() {
+        var byte;
+        byte = new Byte({
+          x: 200
+        }).then({
+          radius: 0
+        }).then({
+          radius: 0,
+          x: 20
+        });
+        byte._transformHistory({
+          x: 100
+        });
+        expect(byte.history[0].x).toBe(100);
+        expect(byte.history[1].x).toBe(100);
+        expect(byte.history[2].x[100]).toBe(20);
+        return expect(byte.history[2].x[200]).not.toBeDefined();
+      });
+      it('should stop rewriting if further option is defined #2', function() {
+        var byte;
+        byte = new Byte({
+          x: 200
+        }).then({
+          radius: 0
+        }).then({
+          radius: 0,
+          x: 20
+        }).then({
+          radius: 0,
+          x: 10
+        });
+        byte._transformHistory({
+          x: 100
+        });
+        return expect(byte.history[3].x[20]).toBe(10);
+      });
+      it('should stop rewriting if further option is defined #3', function() {
+        var byte;
+        byte = new Byte({
+          x: 200
+        }).then({
+          radius: 0,
+          x: 10
+        }).then({
+          radius: 0,
+          x: 20
+        }).then({
+          radius: 0,
+          x: 10
+        });
+        byte._transformHistory({
+          x: 100
+        });
+        expect(byte.history[0].x).toBe(100);
+        expect(byte.history[1].x[100]).toBe(10);
+        expect(byte.history[2].x[10]).toBe(20);
+        return expect(byte.history[2].x[200]).not.toBeDefined();
+      });
+      it('should stop rewriting if further option is defined #4', function() {
+        var byte;
+        byte = new Byte({
+          x: {
+            30: 40
+          }
+        }).then({
+          radius: 0,
+          x: 10
+        }).then({
+          radius: 0,
+          x: 20
+        }).then({
+          radius: 0,
+          x: 60
+        });
+        byte._transformHistory({
+          x: 100
+        });
+        expect(byte.history[0].x).toBe(100);
+        expect(byte.history[1].x[100]).toBe(10);
+        expect(byte.history[2].x[10]).toBe(20);
+        expect(byte.history[3].x[20]).toBe(60);
+        return expect(byte.history[4]).not.toBeDefined();
+      });
+      return it('should rewrite until defined if object was passed', function() {
+        var byte;
+        byte = new Byte({
+          x: 200
+        }).then({
+          radius: 0
+        }).then({
+          radius: 0,
+          x: 20
+        });
+        byte._transformHistory({
+          x: {
+            100: 50
+          }
+        });
+        expect(byte.history[1].x[100]).toBe(50);
+        return expect(byte.history[2].x[50]).toBe(20);
+      });
+    });
     describe('then method ->', function() {
-      it('should add new timeline with options', function() {
+      it('should add new tween with options', function() {
         var byte;
         byte = new Byte({
           radius: 20,
@@ -390,8 +549,6 @@
           expect(typeof tr.timeline._timelines[1].onUpdate).toBe('function');
           tr.timeline.setProgress(0);
           tr.timeline.setProgress(.1);
-          tr.timeline.setProgress(.4);
-          tr.timeline.setProgress(.5);
           tr.timeline.setProgress(.8);
           expect(isRightScope).toBe(true);
           expect(args[0]).toBe(.6);
@@ -442,9 +599,7 @@
         });
         return it('should call _tuneOptions method', function() {
           var tr;
-          tr = new Transit({
-            isIt: 1
-          }).then({
+          tr = new Transit().then({
             onUpdate: function() {}
           });
           tr.timeline.setProgress(0);
@@ -514,6 +669,548 @@
           fill: 'red'
         });
         return expect(byte._overrideUpdateCallbacks).toHaveBeenCalled();
+      });
+    });
+    describe('_tuneOptions method ->', function() {
+      it('should call _extendDefaults with options', function() {
+        var byte, o;
+        byte = new Byte;
+        o = {
+          radius: 50
+        };
+        spyOn(byte, '_tuneOptions');
+        byte._tuneOptions(o);
+        return expect(byte._tuneOptions).toHaveBeenCalled();
+      });
+      return it('should call _calcSize and _setElStyles methods', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, '_calcSize');
+        spyOn(byte, '_setElStyles');
+        byte._tuneOptions({
+          radius: 50
+        });
+        expect(byte._calcSize).toHaveBeenCalled();
+        return expect(byte._setElStyles).toHaveBeenCalled();
+      });
+    });
+    describe('size calculations ->', function() {
+      it('should calculate size el size depending on largest value', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte._props.size).toBe(212);
+      });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          radiusX: 200,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte._props.size).toBe(412);
+      });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          radiusX: 200,
+          radiusY: 300,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte._props.size).toBe(612);
+      });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          radiusY: 30,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte._props.size).toBe(212);
+      });
+      it('should calculate size el size based on radiusX/Y', function() {
+        var byte;
+        byte = new Byte({
+          radius: 50,
+          radiusY: 30,
+          strokeWidth: {
+            6: 4
+          }
+        });
+        return expect(byte._props.size).toBe(112);
+      });
+      it('should have sizeGap option', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            6: 4
+          },
+          sizeGap: 40
+        });
+        return expect(byte._props.size).toBe(292);
+      });
+      it('should calculate size el size depending on shape\'s ratio', function() {
+        var byte, rect;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            6: 4
+          },
+          shape: 'rect'
+        });
+        svg = document.createElementNS(ns, 'svg');
+        rect = new Rect({
+          ctx: svg
+        });
+        return expect(byte._props.size).toBe(212 * rect.ratio);
+      });
+      it('should not calculate size el size if size was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 100,
+          strokeWidth: 5,
+          size: 400
+        });
+        return expect(byte._props.size).toBe(400);
+      });
+      it('should not calculate size el size if external context was passed', function() {
+        var byte;
+        byte = new Byte({
+          radius: 100,
+          strokeWidth: 5,
+          size: 400,
+          ctx: svg
+        });
+        return expect(byte._props.size).toBe(400);
+      });
+      it('should calculate center based on el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          }
+        });
+        expect(byte._props.size).toBe(212);
+        return expect(byte._props.center).toBe(106);
+      });
+      it('should increase size if elastic.out/inout easing', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'Elastic.Out'
+        });
+        expect(byte._props.size).toBe(212 * 1.25);
+        expect(byte._props.center).toBe(byte._props.size / 2);
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'Elastic.InOut'
+        });
+        expect(byte._props.size).toBe(212 * 1.25);
+        return expect(byte._props.center).toBe(byte._props.size / 2);
+      });
+      return it('should increase size if back.out/inout easing', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'back.Out'
+        });
+        expect(byte._props.size).toBe(212 * 1.1);
+        expect(byte._props.center).toBe(byte._props.size / 2);
+        byte = new Byte({
+          radius: {
+            25: -100
+          },
+          strokeWidth: {
+            4: 6
+          },
+          easing: 'Back.InOut'
+        });
+        expect(byte._props.size).toBe(212 * 1.1);
+        return expect(byte._props.center).toBe(byte._props.size / 2);
+      });
+    });
+    describe('el creation ->', function() {
+      it('should create el', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        return expect(byte.el.tagName.toLowerCase()).toBe('div');
+      });
+      it('should create context', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        return expect(byte.el.firstChild.tagName.toLowerCase()).toBe('svg');
+      });
+      it('should set context styles', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        svg = byte.el.firstChild;
+        expect(svg.style.position).toBe('absolute');
+        expect(svg.style.width).toBe('100%');
+        return expect(svg.style.height).toBe('100%');
+      });
+      it('should not create context and el if context was passed', function() {
+        var byte;
+        svg.isSvg = true;
+        byte = new Byte({
+          ctx: svg
+        });
+        expect(byte.el).toBe(byte.bit.el);
+        expect(byte.ctx).toBeDefined();
+        return expect(byte.ctx.isSvg).toBe(true);
+      });
+      it('should set el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          strokeWidth: 2,
+          x: 10,
+          y: 20
+        });
+        expect(byte.el.style.position).toBe('absolute');
+        expect(byte.el.style.width).toBe('54px');
+        expect(byte.el.style.height).toBe('54px');
+        expect(byte.el.style.display).toBe('none');
+        expect(byte.el.style['margin-left']).toBe('-27px');
+        expect(byte.el.style['margin-top']).toBe('-27px');
+        expect(byte.el.style['marginLeft']).toBe('-27px');
+        expect(byte.el.style['marginTop']).toBe('-27px');
+        return expect(byte.isShown).toBe(false);
+      });
+      it('should skip props if foreign context', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          strokeWidth: 2,
+          x: 10,
+          y: 20,
+          ctx: svg
+        });
+        expect(byte.el.style.display).toBe('none');
+        expect(byte.el.style.opacity).toBe('1');
+        expect(byte.el.style.position).not.toBe('absolute');
+        expect(byte.el.style.width).not.toBe('54px');
+        expect(byte.el.style.height).not.toBe('54px');
+        expect(byte.el.style['margin-left']).not.toBe('-27px');
+        expect(byte.el.style['margin-top']).not.toBe('-27px');
+        expect(byte.el.style['marginLeft']).not.toBe('-27px');
+        expect(byte.el.style['marginTop']).not.toBe('-27px');
+        return expect(byte.isShown).toBe(false);
+      });
+      it('should set display: block if isShowStart was passed', function() {
+        var byte;
+        byte = new Byte({
+          isShowStart: true
+        });
+        expect(byte.el.style.display).toBe('block');
+        return expect(byte.isShown).toBe(true);
+      });
+      it('should set el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25,
+          strokeWidth: 2,
+          x: 10,
+          y: 20
+        });
+        byte.isRendered = false;
+        h.remBase = 8;
+        byte._render();
+        h.remBase = 16;
+        expect(byte.el.style.position).toBe('absolute');
+        expect(byte.el.style.width).toBe('54px');
+        expect(byte.el.style.height).toBe('54px');
+        expect(byte.el.style['margin-left']).toBe('-27px');
+        expect(byte.el.style['margin-top']).toBe('-27px');
+        expect(byte.el.style['marginLeft']).toBe('-27px');
+        return expect(byte.el.style['marginTop']).toBe('-27px');
+      });
+      it('should create bit', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        expect(byte.bit).toBeDefined();
+        return expect(byte.bit.o.isDrawLess).toBe(true);
+      });
+      it('should create bit based on shape option or fallback to circle', function() {
+        var byte, byte2;
+        byte = new Byte({
+          radius: 25,
+          shape: 'rect'
+        });
+        byte2 = new Byte({
+          radius: 25
+        });
+        expect(byte.bit.shape).toBe('rect');
+        return expect(byte2.bit.shape).toBe('ellipse');
+      });
+      it('should add itself to body', function() {
+        var byte;
+        byte = new Byte({
+          radius: 25
+        });
+        return expect(byte.el.parentNode.tagName.toLowerCase()).toBe('body');
+      });
+      return it('should add itself to parent if the option was passed', function() {
+        var byte, div;
+        div = typeof document.createElement === "function" ? document.createElement('div') : void 0;
+        div.isDiv = true;
+        byte = new Byte({
+          radius: 25,
+          parent: div
+        });
+        return expect(byte.el.parentNode.isDiv).toBe(true);
+      });
+    });
+    describe('opacity set ->', function() {
+      it('should set a position with respect to units', function() {
+        var byte;
+        byte = new Byte({
+          opacity: .5
+        });
+        return expect(byte.el.style.opacity).toBe('0.5');
+      });
+      return it('should animate opacity', function(dfr) {
+        var byte;
+        byte = new Byte({
+          opacity: {
+            1: 0
+          },
+          duration: 100,
+          onComplete: function() {
+            expect(byte.el.style.opacity).toBe('0');
+            return dfr();
+          }
+        });
+        return byte.run();
+      });
+    });
+    describe('position set ->', function() {
+      return describe('x/y coordinates ->', function() {
+        it('should set a position with respect to units', function() {
+          var byte;
+          byte = new Byte({
+            left: 100,
+            top: 50
+          });
+          expect(byte.el.style.left).toBe('100px');
+          return expect(byte.el.style.top).toBe('50px');
+        });
+        it('should animate position', function(dfr) {
+          var byte;
+          byte = new Byte({
+            left: {
+              100: '200px'
+            },
+            duration: 100,
+            onComplete: function() {
+              expect(byte.el.style.left).toBe('200px');
+              return dfr();
+            }
+          });
+          return byte.play();
+        });
+        it('should warn when x/y animated position and not foreign context', function() {
+          var byte;
+          spyOn(console, 'warn');
+          byte = new Byte({
+            left: {
+              100: '200px'
+            }
+          });
+          byte.run();
+          return expect(console.warn).toHaveBeenCalled();
+        });
+        it('should notwarn when x/y animated position and foreign context', function() {
+          var byte;
+          spyOn(console, 'warn');
+          byte = new Byte({
+            left: {
+              100: '200px'
+            },
+            ctx: svg
+          });
+          byte.run();
+          return expect(console.warn).not.toHaveBeenCalled();
+        });
+        it('should animate position with respect to units', function(dfr) {
+          var byte;
+          byte = new Byte({
+            left: {
+              '20%': '50%'
+            },
+            duration: 100
+          });
+          byte.play();
+          return setTimeout(function() {
+            expect(byte.el.style.left).toBe('50%');
+            return dfr();
+          }, 500);
+        });
+        it('end unit that were not specified should fallback to start unit', function() {
+          var byte;
+          byte = new Byte({
+            left: {
+              '20%': 50
+            },
+            duration: 200
+          });
+          byte.play();
+          expect(byte.deltas.left.start.unit).toBe('%');
+          return expect(byte.deltas.left.end.unit).toBe('%');
+        });
+        it('should fallback to end units if units are different', function(dfr) {
+          var byte;
+          byte = new Byte({
+            left: {
+              '20%': '50px'
+            },
+            duration: 200,
+            onComplete: function() {
+              expect(byte.el.style.left).toBe('50px');
+              return dfr();
+            }
+          });
+          return byte.play();
+        });
+        return describe('x/y coordinates ->', function() {
+          it('should set a position with respect to units', function() {
+            var byte, s, tr;
+            byte = new Byte({
+              x: 100,
+              y: 50
+            });
+            s = byte.el.style;
+            tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+            return expect(tr).toBe('translate(100px, 50px) scale(1)');
+          });
+          it('should animate position', function(dfr) {
+            var byte;
+            byte = new Byte({
+              x: {
+                100: '200px'
+              },
+              duration: 200,
+              onComplete: function() {
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(200px, 0px) scale(1)');
+                return dfr();
+              }
+            });
+            return byte.play();
+          });
+          it('should animate position with respect to units', function(dfr) {
+            var byte;
+            byte = new Byte({
+              x: {
+                '20%': '50%'
+              },
+              duration: 200,
+              onComplete: function() {
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(50%, 0px) scale(1)');
+                return dfr();
+              }
+            });
+            return byte.play();
+          });
+          return it('should fallback to end units if units are differnt', function(dfr) {
+            var byte;
+            byte = new Byte({
+              x: {
+                '20%': '50px'
+              },
+              y: {
+                0: '50%'
+              },
+              duration: 200,
+              onComplete: function() {
+                var s, tr;
+                s = byte.el.style;
+                tr = s.transform || s["" + mojs.h.prefix.css + "transform"];
+                expect(tr).toBe('translate(50px, 50%) scale(1)');
+                return dfr();
+              }
+            });
+            return byte.play();
+          });
+        });
+      });
+    });
+    describe('_show method ->', function() {
+      it('should set display: block to el', function() {
+        var byte;
+        byte = new Byte;
+        byte._show();
+        return expect(byte.el.style.display).toBe('block');
+      });
+      return it('should return if isShow is already true', function() {
+        var byte;
+        byte = new Byte;
+        byte._show();
+        byte.el.style.display = 'inline';
+        byte._show();
+        return expect(byte.el.style.display).toBe('inline');
+      });
+    });
+    describe('_hide method ->', function() {
+      return it('should set display: block to el', function() {
+        var byte;
+        byte = new Byte;
+        byte._hide();
+        return expect(byte.el.style.display).toBe('none');
       });
     });
     describe('_mergeThenOptions method ->', function() {
@@ -983,9 +1680,9 @@
           }
         });
         byte._props.x = '4px';
-        spyOn(byte.h, 'setPrefixedStyle');
+        spyOn(h, 'setPrefixedStyle');
         byte._draw();
-        return expect(byte.h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(4px, 0px) scale(1)');
+        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(4px, 0px) scale(1)');
       });
       it('should set transform if x changed', function() {
         var byte;
@@ -997,9 +1694,9 @@
           }
         });
         byte._props.y = '4px';
-        spyOn(byte.h, 'setPrefixedStyle');
+        spyOn(h, 'setPrefixedStyle');
         byte._draw();
-        return expect(byte.h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(0px, 4px) scale(1)');
+        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(0px, 4px) scale(1)');
       });
       return it('should set transform if x changed', function() {
         var byte;
@@ -1011,9 +1708,9 @@
           }
         });
         byte._props.scale = 3;
-        spyOn(byte.h, 'setPrefixedStyle');
+        spyOn(h, 'setPrefixedStyle');
         byte._draw();
-        return expect(byte.h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(0px, 0px) scale(3)');
+        return expect(h.setPrefixedStyle).toHaveBeenCalledWith(byte.el, 'transform', 'translate(0px, 0px) scale(3)');
       });
     });
     describe('_isPropChanged method ->', function() {
@@ -1553,6 +2250,727 @@
         return expect(typeof byte.tween.o.onFirstUpdate).toBe('function');
       });
     });
+    describe('run method ->', function() {
+      it('should extend defaults with passed object', function() {
+        var byte, o;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          }
+        });
+        spyOn(byte, '_extendDefaults');
+        o = {
+          strokeWidth: 20
+        };
+        byte.run(o);
+        return expect(byte._extendDefaults).toHaveBeenCalledWith(o);
+      });
+      it('should not transform history if object was not passed', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          }
+        });
+        spyOn(byte, '_transformHistory');
+        byte.run();
+        return expect(byte._transformHistory).not.toHaveBeenCalled();
+      });
+      it('should not override deltas', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          }
+        });
+        byte.run({
+          stroke: 'green'
+        });
+        return expect(byte.deltas.strokeWidth).toBeDefined();
+      });
+      it('should calculate el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          }
+        });
+        spyOn(byte, '_calcSize');
+        byte.run({
+          radius: 50
+        });
+        return expect(byte._calcSize).toHaveBeenCalled();
+      });
+      it('should set new el size', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          }
+        });
+        spyOn(byte, '_setElStyles');
+        byte.run({
+          radius: 50
+        });
+        return expect(byte._setElStyles).toHaveBeenCalled();
+      });
+      it('should set new el size #2', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 50
+        });
+        return expect(byte.el.style.width).toBe('104px');
+      });
+      it('should set new el size with respect to radiusX/radiusY', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 50,
+          radiusX: {
+            100: 0
+          }
+        });
+        return expect(byte.el.style.width).toBe('204px');
+      });
+      it('should set new el size with respect to radiusX/radiusY', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 50,
+          radiusY: 110
+        });
+        return expect(byte.el.style.width).toBe('224px');
+      });
+      it('should set new el size with respect to radiusX/radiusY', function() {
+        var byte;
+        byte = new Byte({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 450,
+          radiusY: 110,
+          radiusX: {
+            200: 0
+          }
+        });
+        return expect(byte.el.style.width).toBe('404px');
+      });
+      it('should start tween', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          }
+        });
+        spyOn(byte, 'play');
+        byte.run();
+        return expect(byte.play).toHaveBeenCalled();
+      });
+      it('should accept new options', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          }
+        });
+        byte.run({
+          strokeWidth: 25
+        });
+        expect(byte._props.strokeWidth).toBe(25);
+        return expect(byte.deltas.strokeWidth).not.toBeDefined();
+      });
+      it('should not modify old options', function() {
+        var byte;
+        byte = new Byte({
+          strokeWidth: {
+            10: 5
+          },
+          radius: 33
+        });
+        byte.run({
+          strokeWidth: 25
+        });
+        return expect(byte._props.radius).toBe(33);
+      });
+      it('should warn if shape was passed', function() {
+        var byte;
+        byte = new Byte({
+          shape: 'polygon'
+        });
+        spyOn(h, 'warn');
+        byte.run({
+          shape: 'circle'
+        });
+        expect(h.warn).toHaveBeenCalled();
+        return expect(byte._o.shape).toBe('polygon');
+      });
+      it('should call _recalcTotalDuration on timeline', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte.timeline, '_recalcTotalDuration');
+        byte.run({
+          duration: 2000
+        });
+        return expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled();
+      });
+      it('should call _transformHistory', function() {
+        var byte, o;
+        byte = new Byte;
+        spyOn(byte, '_transformHistory');
+        o = {
+          duration: 2000
+        };
+        byte.run(o);
+        return expect(byte._transformHistory).toHaveBeenCalledWith(o);
+      });
+      it('should not call _transformHistory if optionless', function() {
+        var byte;
+        byte = new Byte;
+        spyOn(byte, '_transformHistory');
+        byte.run();
+        return expect(byte._transformHistory).not.toHaveBeenCalled();
+      });
+      it('shoud not warn if history is 1 record long', function() {
+        var byte;
+        byte = new Byte({
+          duration: 2000
+        });
+        spyOn(h, 'warn');
+        byte.run({
+          duration: 100,
+          delay: 100,
+          repeat: 1,
+          yoyo: false,
+          easing: 'Linear.None',
+          onStart: function() {},
+          onUpdate: function() {},
+          onComplete: function() {}
+        });
+        expect(h.warn).not.toHaveBeenCalled();
+        expect(byte.history[0].duration).toBe(100);
+        return expect(byte._props.duration).toBe(100);
+      });
+      return it('shoud work with no arguments passed', function() {
+        var byte;
+        byte = new Byte({
+          duration: 2000
+        }).then({
+          radius: 500
+        });
+        return expect(function() {
+          return byte.run();
+        }).not.toThrow();
+      });
+    });
+    describe('isForeign flag ->', function() {
+      it('should not be set by default', function() {
+        var byte;
+        byte = new Byte;
+        return expect(byte.isForeign).toBe(false);
+      });
+      it('should be set if context was passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        return expect(byte.isForeign).toBe(true);
+      });
+      return it('if context passed el should be bit\'s el', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        return expect(byte.el).toBe(byte.bit.el);
+      });
+    });
+    describe('show/hide on start/end ->', function() {
+      it('should show the el on start', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.timeline.setProgress(.45);
+        byte.timeline.setProgress(.5);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should hide the el on end', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.timeline.setProgress(.99);
+        byte.timeline.setProgress(1);
+        return expect(byte.el.style.display).toBe('none');
+      });
+      it('should not hide the el on end if isShowEnd was passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowEnd: true
+        });
+        byte.timeline.setProgress(.98);
+        byte.timeline.setProgress(.99);
+        byte.timeline.setProgress(1);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should not hide the el on end if isShowEnd was passed #2 - chain', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowEnd: true
+        }).then({
+          radius: 10
+        }).then({
+          radius: 20
+        });
+        byte.timeline.setProgress(0);
+        byte.timeline.setProgress(.2);
+        byte.timeline.setProgress(1);
+        return expect(byte.el.style.display).toBe('block');
+      });
+      it('should hide the el on reverse end', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg
+        });
+        byte.timeline.setProgress(1);
+        byte.timeline.setProgress(.25);
+        byte.timeline.setProgress(0);
+        return expect(byte.el.style.display).toBe('none');
+      });
+      return it('should not hide the el on reverse end if isShowStart passed', function() {
+        var byte;
+        byte = new Byte({
+          ctx: svg,
+          isShowStart: true
+        });
+        byte.timeline.setProgress(.5);
+        byte.timeline.setProgress(0);
+        return expect(byte.el.style.display).toBe('block');
+      });
+    });
+    describe('_getRadiusSize method ->', function() {
+      it('should return max from delatas if key is defined', function() {
+        var byte, size;
+        byte = new Byte({
+          radiusX: {
+            20: 30
+          }
+        });
+        size = byte._getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(30);
+      });
+      it('should return props\' value if delats\' one is not defined ', function() {
+        var byte, size;
+        byte = new Byte({
+          radiusX: 20
+        });
+        size = byte._getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(20);
+      });
+      it('should fallback to passed fallback option', function() {
+        var byte, size;
+        byte = new Byte;
+        size = byte._getRadiusSize({
+          key: 'radiusX',
+          fallback: 0
+        });
+        return expect(size).toBe(0);
+      });
+      return it('should fallback to 0 by default', function() {
+        var byte, size;
+        byte = new Byte;
+        size = byte._getRadiusSize({
+          key: 'radiusX'
+        });
+        return expect(size).toBe(0);
+      });
+    });
+    describe('foreign bit option ->', function() {
+      it('should receive a foreign bit to work with', function() {
+        var bit, byte;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
+        svg.appendChild(bit);
+        byte = new Byte({
+          bit: bit
+        });
+        return expect(byte.bit.el).toBe(bit);
+      });
+      return it('should set isForeignBit flag', function() {
+        var bit, byte;
+        svg = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'svg') : void 0;
+        bit = typeof document.createElementNS === "function" ? document.createElementNS(ns, 'rect') : void 0;
+        svg.appendChild(bit);
+        byte = new Byte({
+          bit: bit
+        });
+        return expect(byte.isForeignBit).toBe(true);
+      });
+    });
+    describe('_overrideUpdateCallbacks method ->', function() {
+      describe('onUpdate binding ->', function() {
+        it('should override this._o.onUpdate', function() {
+          var o, tr;
+          tr = new Transit;
+          o = {};
+          tr._overrideUpdateCallbacks(o);
+          return expect(typeof o.onUpdate).toBe('function');
+        });
+        it('should not override onUpdate function if exists', function() {
+          var args, isRightScope, options, tr;
+          isRightScope = null;
+          args = null;
+          options = {
+            onUpdate: function() {
+              isRightScope = this === tr;
+              return args = arguments;
+            }
+          };
+          tr = new Transit;
+          tr._overrideUpdateCallbacks(options);
+          expect(typeof options.onUpdate).toBe('function');
+          options.onUpdate.call(tr, .1, .1, true, false);
+          expect(isRightScope).toBe(true);
+          expect(args[0]).toBe(.1);
+          expect(args[1]).toBe(.1);
+          expect(args[2]).toBe(true);
+          return expect(args[3]).toBe(false);
+        });
+        return it('should call _setProgress method', function() {
+          var options, progress, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit;
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_setProgress');
+          progress = .1;
+          options.onUpdate(progress, progress, true, false);
+          return expect(tr._setProgress).toHaveBeenCalledWith(progress);
+        });
+      });
+      return describe('onFirstUpdate binding ->', function() {
+        it('should override onFirstUpdate', function() {
+          var options, tr;
+          tr = new Transit().then({
+            fill: 'red'
+          });
+          options = {};
+          tr._overrideUpdateCallbacks(options);
+          return expect(typeof options.onFirstUpdate).toBe('function');
+        });
+        it('should not override onFirstUpdate function if exists', function() {
+          var args, isRightScope, options, tr;
+          isRightScope = null;
+          args = null;
+          options = {
+            onFirstUpdate: function() {
+              isRightScope = this === options;
+              return args = arguments;
+            }
+          };
+          tr = new Transit();
+          tr._overrideUpdateCallbacks(options);
+          expect(typeof options.onFirstUpdate).toBe('function');
+          options.onFirstUpdate(true, false);
+          expect(isRightScope).toBe(true);
+          expect(args[0]).toBe(true);
+          return expect(args[1]).toBe(false);
+        });
+        it('should call _tuneOptions method', function() {
+          var options, tr;
+          options = {
+            index: 1,
+            onUpdate: function() {}
+          };
+          tr = new Transit({
+            isIt: 1
+          }).then({
+            fill: 'red'
+          });
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          tr.timeline._timelines[1]._firstUpdate(-1, false);
+          return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[options.index]);
+        });
+        it('should call _tuneOptions method with history[0] if no index', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit().then({
+            fill: 'red'
+          });
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          tr.timeline._timelines[0]._firstUpdate(-1, false);
+          return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[0]);
+        });
+        it('should only call _tuneOptions if history > 1', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit();
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          tr.timeline._timelines[0]._firstUpdate(-1, false);
+          return expect(tr._tuneOptions).not.toHaveBeenCalledWith(tr.history[0]);
+        });
+        return it('should not call tune options if no index and forward direction', function() {
+          var options, tr;
+          options = {
+            onUpdate: function() {}
+          };
+          tr = new Transit().then({
+            fill: 'cyan'
+          });
+          tr._overrideUpdateCallbacks(options);
+          spyOn(tr, '_tuneOptions');
+          tr.timeline._timelines[0]._firstUpdate(1, false);
+          return expect(tr._tuneOptions).not.toHaveBeenCalledWith(tr.history[0]);
+        });
+      });
+    });
+    describe('_makeTweenControls method ->', function() {
+      it('should override this._o.onUpdate', function() {
+        var tr;
+        tr = new Transit;
+        return expect(typeof tr._o.onUpdate).toBe('function');
+      });
+      it('should not override onUpdate function if exists', function() {
+        var args, isRightScope, options, tr;
+        isRightScope = null;
+        args = null;
+        options = {
+          onUpdate: function() {
+            isRightScope = this === tr;
+            return args = arguments;
+          }
+        };
+        tr = new Transit(options);
+        expect(typeof tr._o.onUpdate).toBe('function');
+        tr.timeline.setProgress(0);
+        tr.timeline.setProgress(.1);
+        expect(isRightScope).toBe(true);
+        expect(args[0]).toBe(.1);
+        expect(args[1]).toBe(.1);
+        expect(args[2]).toBe(true);
+        return expect(args[3]).toBe(false);
+      });
+      it('should call _setProgress method', function() {
+        var options, progress, tr;
+        options = {
+          onUpdate: function() {}
+        };
+        tr = new Transit(options);
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_setProgress');
+        progress = .1;
+        tr.timeline.setProgress(progress);
+        return expect(tr._setProgress).toHaveBeenCalledWith(progress);
+      });
+      it('should override this._o.onStart', function() {
+        var tr;
+        tr = new Transit;
+        return expect(typeof tr._o.onStart).toBe('function');
+      });
+      it('should not override onStart function if exists', function() {
+        var args, isRightScope, options, tr;
+        isRightScope = null;
+        args = null;
+        options = {
+          onStart: function() {
+            isRightScope = this === tr;
+            return args = arguments;
+          }
+        };
+        tr = new Transit(options);
+        expect(typeof tr._o.onStart).toBe('function');
+        tr.timeline.setProgress(0);
+        tr.timeline.setProgress(.1);
+        expect(isRightScope).toBe(true);
+        expect(args[0]).toBe(true);
+        return expect(args[1]).toBe(false);
+      });
+      it('should show module ', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_show').and.callThrough();
+        tr.timeline.setProgress(.1);
+        return expect(tr._show).toHaveBeenCalled();
+      });
+      it('should hide module ', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(.1);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(0);
+        return expect(tr._hide).toHaveBeenCalled();
+      });
+      it('should not hide module is isShowStart was set', function() {
+        var tr;
+        tr = new Transit({
+          isShowStart: true
+        });
+        tr.timeline.setProgress(.2);
+        tr.timeline.setProgress(.1);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(0);
+        return expect(tr._hide).not.toHaveBeenCalled();
+      });
+      return it('should call _overrideUpdateCallbacks method with merged object', function() {
+        var byte;
+        byte = new Byte({
+          radius: 20,
+          duration: 1000,
+          delay: 10
+        });
+        spyOn(byte, '_overrideUpdateCallbacks');
+        byte._makeTweenControls();
+        return expect(byte._overrideUpdateCallbacks).toHaveBeenCalledWith(byte._o);
+      });
+    });
+    describe('_makeTimelineControls method ->', function() {
+      it('should override this._o.onComplete', function() {
+        var tr;
+        tr = new Transit;
+        return expect(typeof tr._o.timeline.onComplete).toBe('function');
+      });
+      it('should not override onUpdate function if exists', function() {
+        var args, isRightScope, options, tr;
+        isRightScope = null;
+        args = null;
+        options = {
+          timeline: {
+            onComplete: function() {
+              isRightScope = this === tr.timeline;
+              return args = arguments;
+            }
+          }
+        };
+        tr = new Transit(options);
+        expect(typeof tr._o.timeline.onComplete).toBe('function');
+        tr.timeline.setProgress(0);
+        tr.timeline.setProgress(.1);
+        tr.timeline.setProgress(.8);
+        tr.timeline.setProgress(1);
+        expect(isRightScope).toBe(true);
+        expect(args[0]).toBe(true);
+        return expect(args[1]).toBe(false);
+      });
+      it('should call _show method', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(1);
+        spyOn(tr, '_show').and.callThrough();
+        tr.timeline.setProgress(.9);
+        return expect(tr._show).toHaveBeenCalled();
+      });
+      it('should call _hide method', function() {
+        var tr;
+        tr = new Transit;
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(.1);
+        tr.timeline.setProgress(1);
+        return expect(tr._hide).toHaveBeenCalled();
+      });
+      return it('should not call _hide method if isShowEnd is set', function() {
+        var tr;
+        tr = new Transit({
+          isShowEnd: true
+        });
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(.1);
+        tr.timeline.setProgress(1);
+        return expect(tr._hide).not.toHaveBeenCalled();
+      });
+    });
+    describe('_increaseSizeWithEasing method ->', function() {
+      it('should increase size based on easing - elastic.out', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'elastic.out'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.25);
+      });
+      it('should increase size based on easing - elastic.inout', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'elastic.inout'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.25);
+      });
+      it('should increase size based on easing - back.out', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'back.out'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.1);
+      });
+      return it('should increase size based on easing - back.inout', function() {
+        var tr;
+        tr = new Transit({
+          easing: 'back.inout'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithEasing();
+        return expect(tr._props.size).toBe(1.1);
+      });
+    });
+    describe('_increaseSizeWithBitRatio method ->', function() {
+      it('should increase size based on bit ratio', function() {
+        var tr;
+        tr = new Transit({
+          shape: 'equal'
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithBitRatio();
+        return expect(tr._props.size).toBe(tr.bit.ratio);
+      });
+      return it('should increase size based 2 gap sizes', function() {
+        var gap, tr;
+        gap = 20;
+        tr = new Transit({
+          shape: 'equal',
+          sizeGap: gap
+        });
+        tr._props.size = 1;
+        tr._increaseSizeWithBitRatio();
+        return expect(tr._props.size).toBe(tr.bit.ratio + 2 * gap);
+      });
+    });
     describe('_parseOptionString method ->', function() {
       var tr;
       tr = new Transit;
@@ -1594,7 +3012,7 @@
         return expect(result).toBe(tr._props[key]);
       });
     });
-    return describe('_parseStrokeDashOption method ->', function() {
+    describe('_parseStrokeDashOption method ->', function() {
       var tr;
       tr = new Transit;
       it('should parse strokeDash option', function() {
@@ -1636,6 +3054,80 @@
         result = tr._parseStrokeDashOption(key);
         expect(h.parseUnit).not.toHaveBeenCalledWith();
         return expect(result).toBe(tr._props[key]);
+      });
+    });
+    describe('_resetTween method ->', function() {
+      it('should set props to the tween', function() {
+        var props, tr;
+        tr = new Transit;
+        props = {
+          fill: 'hotpink',
+          duration: 2000
+        };
+        tr._props = props;
+        spyOn(tr.tween, '_setProps').and.callThrough();
+        tr._resetTween(tr.tween, props);
+        expect(props.shiftTime).toBe(0);
+        return expect(tr.tween._setProps).toHaveBeenCalledWith(props);
+      });
+      return it('should pass shift time', function() {
+        var props, shiftTime, tr;
+        tr = new Transit;
+        props = {
+          fill: 'hotpink',
+          duration: 2000
+        };
+        tr._props = props;
+        spyOn(tr.tween, '_setProps').and.callThrough();
+        shiftTime = 500;
+        tr._resetTween(tr.tween, props, shiftTime);
+        expect(props.shiftTime).toBe(shiftTime);
+        return expect(tr.tween._setProps).toHaveBeenCalledWith(props);
+      });
+    });
+    return describe('_resetTweens method ->', function() {
+      it('should reset options on all tweens', function() {
+        var tr;
+        tr = new Transit().then({
+          fill: 'cyan'
+        }).then({
+          fill: 'yellow'
+        });
+        spyOn(tr.timeline._timelines[0], '_setProps');
+        spyOn(tr.timeline._timelines[1], '_setProps');
+        spyOn(tr.timeline._timelines[2], '_setProps');
+        tr._resetTweens();
+        expect(tr.timeline._timelines[0]._setProps).toHaveBeenCalledWith(tr.history[0]);
+        expect(tr.timeline._timelines[1]._setProps).toHaveBeenCalledWith(tr.history[1]);
+        return expect(tr.timeline._timelines[2]._setProps).toHaveBeenCalledWith(tr.history[2]);
+      });
+      it('should loop thru all tweens', function() {
+        var shift, tr, tweens;
+        tr = new Transit().then({
+          fill: 'cyan'
+        }).then({
+          fill: 'yellow'
+        });
+        spyOn(tr, '_resetTween');
+        tr._resetTweens();
+        tweens = tr.timeline._timelines;
+        shift = 0;
+        expect(tr._resetTween).toHaveBeenCalledWith(tweens[0], tr.history[0], shift);
+        shift += tweens[0]._props.repeatTime;
+        expect(tr._resetTween).toHaveBeenCalledWith(tweens[1], tr.history[1], shift);
+        shift += tweens[1]._props.repeatTime;
+        return expect(tr._resetTween).toHaveBeenCalledWith(tweens[2], tr.history[2], shift);
+      });
+      return it('should call _recalcTotalDuration on the timeline', function() {
+        var tr;
+        tr = new Transit().then({
+          fill: 'cyan'
+        }).then({
+          fill: 'yellow'
+        });
+        spyOn(tr.timeline, '_recalcTotalDuration');
+        tr._resetTweens();
+        return expect(tr.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
     });
   });

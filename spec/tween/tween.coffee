@@ -102,7 +102,7 @@ describe 'Tween ->', ->
     it 'should calculate startTime and endTime if shifted', ->
       duration = 1000; delay = 500
       t = new Tween(duration: duration, delay: delay, repeat: 2)
-      t._setProp 'shiftTime', 500
+      t._setProps 'shiftTime', 500
       t._setStartTime()
 
       expectedTime = performance.now() + 500 + delay
@@ -207,7 +207,7 @@ describe 'Tween ->', ->
       expect(t._isRepeatCompleted).toBe true
       expect(returnValue).toBe true
     it 'should return true on the start', ->
-      t = new Tween(duration: 1000, delay: 200, onUpdate:(p)-> console.log(p) )
+      t = new Tween(duration: 1000, delay: 200, onUpdate:(p)-> )
       t._setStartTime()
       t._update t._props.startTime + t._props.duration/2
       returnValue = t._update t._props.startTime - 1000
@@ -286,7 +286,7 @@ describe 'Tween ->', ->
       delay = 500; duration = 1000
       t = new Tween(duration: duration, delay: delay, repeat: 2)
       t._setStartTime()
-      t._setProp 'isReversed', true
+      t._setProps 'isReversed', true
       shift = 200
       time = t._props.startTime + shift
       t._update time - 1
@@ -296,7 +296,7 @@ describe 'Tween ->', ->
       duration = 1000
       t = new Tween(duration: duration)
       t._setStartTime()
-      t._setProp 'isReversed', true
+      t._setProps 'isReversed', true
       shift = 200
       time = t._props.startTime + shift
       t._update time
@@ -5229,29 +5229,53 @@ describe 'Tween ->', ->
       obj = t._setProgress .75, 1, true
       expect(t._props.wasYoyo).toBe true
 
-  describe '_setProp method ->', ->
-    it 'should set new timeline options', ->
+  describe '_setProps method ->', ->
+    it 'should set new tween options', ->
       t = new Tween duration: 100, delay: 0
-      t._setProp duration: 1000, delay: 200
+      t._setProps duration: 1000, delay: 200
       expect(t._props.duration).toBe 1000
       expect(t._props.delay).toBe    200
+    it 'should set only tween releated options', ->
+      t = new Tween duration: 100, delay: 0
+      t._setProps duration: 1000, delay: 200, fill: 'red'
+      expect(t._props.duration).toBe 1000
+      expect(t._props.delay).toBe    200
+      expect(t._props.fill).not.toBeDefined()
     it 'should work with arguments', ->
       t = new Tween duration: 100
-      t._setProp 'duration', 1000
+      t._setProps 'duration', 1000
       expect(t._props.duration).toBe 1000
+    it 'should work with only tween option arguments', ->
+      t = new Tween duration: 100
+      t._setProps 'fill', 1000
+      expect(t._props.fill).not.toBeDefined()
     it 'should call _calcDimentions method', ->
       t = new Tween duration: 100
       spyOn t, '_calcDimentions'
-      t._setProp 'duration', 1000
+      t._setProps 'duration', 1000
       expect(t._calcDimentions).toHaveBeenCalled()
     it 'should update the time', ->
       t = new Tween duration: 100, delay: 100
-      t._setProp 'duration', 1000
+      t._setProps 'duration', 1000
       expect(t._props.time).toBe 1100
     it 'should parse easing', ->
       t = new Tween duration: 100
-      t._setProp 'easing', 'elastic.in'
+      t._setProps 'easing', 'elastic.in'
       expect(t._props.easing).toBe mojs.easing.elastic.in
+
+    describe '_setProp method ->', ->
+      it 'should work with arguments', ->
+        t = new Tween duration: 100
+        t._setProp 'duration', 1000
+        expect(t._props.duration).toBe 1000
+      it 'should work with only tween option arguments', ->
+        t = new Tween duration: 100
+        t._setProp 'fill', 1000
+        expect(t._props.fill).not.toBeDefined()
+      it 'should parse easing', ->
+        t = new Tween duration: 100
+        t._setProp 'easing', 'ease.out'
+        expect(t._props.easing).toBe easing.ease.out
 
   describe '_subPlay method ->', ->
     describe '_prevTime recalculation ->', ->

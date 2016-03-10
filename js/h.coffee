@@ -63,6 +63,8 @@ class Helpers
     repeat:           1
     easing:           1
     yoyo:             1
+    shiftTime:        1
+    isReversed:       1
   unitOptionMap:
     left:             1
     top:              1

@@ -643,7 +643,6 @@
 	// TODO
 	//  - properties signatures
 	//  - add run method
-	//  - rx, ry for transit
 	//  --
 	//  - tween for every prop
 
@@ -712,6 +711,84 @@
 	      return this;
 	    }
 	    /*
+	      Method to start the animation with optional new options.
+	      @public
+	      @param {Object} New options to set on the run.
+	      @returns {Object} this.
+	    */
+
+	  }, {
+	    key: 'run',
+	    value: function run(o) {
+	      // if options object was passed
+	      if (o && (0, _keys2.default)(o).length) {
+	        // if history has more than one record
+	        // if (this.history.length > 1) {
+	        //   var keys = Object.keys(o),
+	        //       len  = keys.length;
+	        //   while (len--) {
+	        //     var key = keys[len];
+	        //     // callbacks and options can not be overriden by the run call
+	        //     if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
+	        //       h.warn(`the "${key}" property can not be overridden
+	        //               on run with \"then\" chain yet`);
+	        //       delete o[key];
+	        //     }
+	        //   }
+	        // }
+	        this._transformHistory(o);
+	        this._tuneNewOption(o);
+	        // save to history
+	        o = h.cloneObj(this.history[0]);
+	        h.extend(o, this.defaults);
+	        this.history[0] = o;
+	        // !this._o.isDrawLess && this._setProgress(0, true);
+	      } // else if (o) { this._tuneNewOption(this.history[0]); }
+	      // console.log('play')
+	      this.stop();
+	      this.play();
+	      return this;
+	    }
+	    // ^ Public methods / APIs
+	    // v private methods.
+
+	  }]);
+
+	  function Transit() {
+	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    (0, _classCallCheck3.default)(this, Transit);
+
+	    var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Transit).call(this, o));
+
+	    _this._o = o;
+	    _this._declareDefaults();
+	    _this._vars();
+	    _this._render();
+	    return _this;
+	  }
+	  /*
+	    Method to declare variables.
+	  */
+
+
+	  (0, _createClass3.default)(Transit, [{
+	    key: '_vars',
+	    value: function _vars() {
+	      this.progress = 0;
+	      this._props = {};
+	      this.lastSet = {};
+	      this.origin = {};
+	      this.index = this._o.index || 0;
+	      this._extendDefaults();
+	      var o = h.cloneObj(this._o);
+	      h.extend(o, this.defaults);
+	      this.history = [o];
+	      // should draw on foreign svg canvas
+	      this.isForeign = !!this._o.ctx;
+	      // should take an svg element as self bit
+	      return this.isForeignBit = !!this._o.bit;
+	    }
+	    /*
 	      Method to override(or define) update callbacks in passed object.
 	      @param {Object} Object to override callbacks in.
 	    */
@@ -750,81 +827,6 @@
 	        }
 	      };
 	    }
-	    // /*
-	    //   Method to start the animation with optional new options.
-	    //   @public
-	    //   @param {Object} New options to set on the run.
-	    //   @returns {Object} this.
-	    // */
-	    // run (o) {
-	    //   // if options object was passed
-	    //   if (o && Object.keys(o).length) {
-	    //     // if history has more than one record
-	    //     if (this.history.length > 1) {
-	    //       var keys = Object.keys(o),
-	    //           len  = keys.length;
-	    //       while (len--) {
-	    //         var key = keys[len];
-	    //         // callbacks and options can not be overriden by the run call
-	    //         if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-	    //           h.warn(`the "${key}" property can not be overridden
-	    //                   on run with \"then\" chain yet`);
-	    //           delete o[key];
-	    //         }
-	    //       }
-	    //     }
-	    //     this._transformHistory(o);
-	    //     this._tuneNewOption(o);
-	    //     // save to history
-	    //     o = this.h.cloneObj(this.history[0]);
-	    //     this.h.extend(o, this.defaults);
-	    //     this.history[0] = o;
-	    //     // !this._o.isDrawLess && this._setProgress(0, true);
-	    //   } // else if (o) { this._tuneNewOption(this.history[0]); }
-	    //   this.play();
-	    //   return this;
-	    // }
-
-	    // ^ Public methods / APIs
-	    // v private methods.
-
-	  }]);
-
-	  function Transit() {
-	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	    (0, _classCallCheck3.default)(this, Transit);
-
-	    var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Transit).call(this, o));
-
-	    _this._o = o;
-	    _this._declareDefaults();
-	    _this._vars();
-	    _this._render();
-	    return _this;
-	  }
-	  /*
-	    Method to declare variables.
-	  */
-
-
-	  (0, _createClass3.default)(Transit, [{
-	    key: '_vars',
-	    value: function _vars() {
-	      this.progress = 0;
-	      this.h = h;
-	      this._props = {};
-	      this.lastSet = {};
-	      this.origin = {};
-	      this.index = this._o.index || 0;
-	      this._extendDefaults();
-	      var o = this.h.cloneObj(this._o);
-	      this.h.extend(o, this.defaults);
-	      this.history = [o];
-	      // should draw on foreign svg canvas
-	      this.isForeign = !!this._o.ctx;
-	      // should take an svg element as self bit
-	      return this.isForeignBit = !!this._o.bit;
-	    }
 	    /*
 	      Method to parse option string.
 	      Searches for stagger and rand values and parses them.
@@ -838,12 +840,12 @@
 	    value: function _parseOptionString(optionsValue) {
 	      if (typeof optionsValue === 'string') {
 	        if (optionsValue.match(/stagger/)) {
-	          optionsValue = this.h.parseStagger(optionsValue, this.index);
+	          optionsValue = h.parseStagger(optionsValue, this.index);
 	        }
 	      }
 	      if (typeof optionsValue === 'string') {
 	        if (optionsValue.match(/rand/)) {
-	          optionsValue = this.h.parseRand(optionsValue);
+	          optionsValue = h.parseRand(optionsValue);
 	        }
 	      }
 	      return optionsValue;
@@ -858,8 +860,8 @@
 	    key: '_parsePositionOption',
 	    value: function _parsePositionOption(key) {
 	      var value = this._props[key];
-	      if (this.h.unitOptionMap[key]) {
-	        value = this.h.parseUnit(value).string;
+	      if (h.unitOptionMap[key]) {
+	        value = h.parseUnit(value).string;
 	      }
 	      return value;
 	    }
@@ -875,17 +877,17 @@
 	      var value = this._props[key],
 	          result = value;
 	      // parse numeric/percent values for strokeDash.. properties
-	      if (this.h.strokeDashPropsMap[key]) {
+	      if (h.strokeDashPropsMap[key]) {
 	        var result = [];
 	        switch (typeof value === 'undefined' ? 'undefined' : (0, _typeof3.default)(value)) {
 	          case 'number':
-	            result.push(this.h.parseUnit(value));
+	            result.push(h.parseUnit(value));
 	            break;
 	          case 'string':
 	            var array = this._props[key].split(' ');
 	            for (var i = 0; i < array.length; i++) {
 	              var unit = array[i];
-	              result.push(this.h.parseUnit(unit));
+	              result.push(h.parseUnit(unit));
 	            }
 	            break;
 	        }
@@ -1030,7 +1032,6 @@
 	  }, {
 	    key: '_draw',
 	    value: function _draw() {
-	      // console.log(this._props.radius, this._props.radiusX, this._props.radiusY);
 	      this.bit.setProp({
 	        x: this.origin.x,
 	        y: this.origin.y,
@@ -1070,7 +1071,7 @@
 	        this._isPropChanged('top') && (this.el.style.top = p.top);
 	        var isPosChanged = this._isPropChanged('x') || this._isPropChanged('y');
 	        if (isPosChanged || this._isPropChanged('scale')) {
-	          this.h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
+	          h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
 	        }
 	      }
 	    }
@@ -1308,7 +1309,7 @@
 	    value: function _isDelta(optionsValue) {
 	      var isObject = h.isObject(optionsValue);
 	      isObject = isObject && !optionsValue.unit;
-	      return !(!isObject || this.h.isArray(optionsValue) || h.isDOM(optionsValue));
+	      return !(!isObject || h.isArray(optionsValue) || h.isDOM(optionsValue));
 	    }
 	    /*
 	      Method to get delta from property and set
@@ -1323,7 +1324,7 @@
 	    value: function _getDelta(key, optionsValue) {
 	      var delta;
 	      if ((key === 'left' || key === 'top') && !this._o.ctx) {
-	        this.h.warn('Consider to animate x/y properties instead of left/top,\n        as it would be much more performant', optionsValue);
+	        h.warn('Consider to animate x/y properties instead of left/top,\n        as it would be much more performant', optionsValue);
 	      }
 	      // skip delta calculation for a property if it is listed
 	      // in skipPropsDelta object
@@ -1331,7 +1332,7 @@
 	        return;
 	      }
 	      // get delta
-	      delta = this.h.parseDelta(key, optionsValue, this.defaults[key]);
+	      delta = h.parseDelta(key, optionsValue, this.defaults[key]);
 	      // if successfully parsed - save it
 	      if (delta.type != null) {
 	        this.deltas[key] = delta;
@@ -1405,7 +1406,6 @@
 	          continue;
 	        };
 	        // make ∆ of start -> end
-
 	        // if key name is radiusX/radiusY and
 	        // the startValue is not set fallback to radius value
 	        var isSubRadius = endP === 'radiusX' || endP === 'radiusY';
@@ -1505,114 +1505,139 @@
 	        isForward ? !it._props.isShowEnd && it._hide() : it._show();
 	      };
 	    }
-	    // /*
-	    //   Method to transform history rewrite new options object chain on run.
-	    //   @param {Object} New options to tune for.
-	    // */
-	    // _transformHistory ( o ) {
-	    //   var keys = Object.keys(o),
-	    //       i = -1, len = keys.length,
-	    //       historyLen = this.history.length;
-	    //   // go thru history records - one record if transit's option object
-	    //   while (++i < len) {
-	    //     // get all keys of the options record
-	    //     var key = keys[i],
-	    //         j = -1;
-	    //     (function() {
-	    //       // take one key and loop thru all of the records again
-	    //       while (++j < historyLen) {
-	    //         // get option's record property by key
-	    //         var optionRecord = this.history[j][key];
-	    //         // if delta property
-	    //         if ( typeof optionRecord === 'object' && optionRecord !== null ) {
-	    //           // get start and end of the delta
-	    //           var start = Object.keys(optionRecord)[0],
-	    //               // save the end of the delta
-	    //               end   = optionRecord[start];
-	    //           // delete the property
-	    //           delete optionRecord[start];
-	    //           var newValue = o[key];
-	    //           // if new property is delta
-	    //           if (typeof newValue === 'object' && newValue !== null) {
-	    //             var property = o[key],
-	    //                 // merge the start and end
-	    //                 // get the start and end of the new option
-	    //                 startNew = Object.keys(property)[0],
-	    //                 endNew   = property[startNew];
-	    //             // set the o's end value as start
-	    //             // and o's end to delta's end
-	    //             optionRecord[endNew] = end;
-	    //           } else {
-	    //             // if new property is not delta
-	    //             // rewrite the start value to the new value
-	    //             // this._o.isIt && console.log('o[key]', newValue, end, j);
-	    //             if ( j === 0 ) {
-	    //               if ( this.history[j] !== null && typeof this.history[j] === 'object' ) {
-	    //                 this.history[j][key] = newValue;
-	    //                 if (this.history[j+1]) {
-	    //                   var nextRecord       = this.history[j+1][key],
-	    //                       nextRecordKey    = Object.keys(nextRecord),
-	    //                       nextRecordValue  = nextRecord[nextRecordKey];
-	    //                   this.history[j+1][key] = {};
-	    //                   this.history[j+1][key][newValue] = nextRecordValue;
-	    //                 }
-	    //               }
-	    //             } else {
-	    //               optionRecord[newValue] = end;
-	    //             }
-	    //           }
-	    //           break;
-	    //         } else {
-	    //           // if is not delta property
-	    //           // set it to the new options value
-	    //           this.history[j][key] = o[key];
-	    //         }
-	    //       }
-	    //     }).call(this);
-	    //   }
-	    //   // if (this._o.isIt) {
-	    //   //   console.log('-=-=-=-=-=-=');
-	    //   //   for (var record of this.history) {
-	    //   //     console.log(record.radius);
-	    //   //   }
-	    //   // }
-	    // }
-	    // /*
-	    //   Method to tune new option on then edge.
-	    //   @private
-	    //   @param {Object}  Option to tune on run.
-	    //   @param {Boolean} If foreign svg canvas.
-	    // */
-	    // _tuneNewOption (o, isForeign) {
-	    //   if ((o != null) && (o.shape != null) && o.shape !== (this._o.shape || 'circle')) {
-	    //     this.h.warn('Sorry, shape can not be changed on run');
-	    //     delete o.shape;
-	    //   }
-	    //   if ((o != null) && Object.keys(o).length) {
-	    //     this._extendDefaults(o);
-	    //     // this._resetTween();
-	    //     // !isForeign && this.timeline._recalcTotalDuration();
-	    //     this._calcSize();
-	    //     return !isForeign && this._setElStyles();
-	    //   }
-	    // }
-	    // /*
-	    //   Method to set new options on run.
-	    //   @private
-	    // */
-	    // _resetTween () {
-	    //   var i, k, key, len1, ref, timelineOptions;
-	    //   timelineOptions = {};
-	    //   ref = Object.keys(this.h.tweenOptionMap);
-	    //   for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
-	    //     key = ref[i];
-	    //     timelineOptions[key] = this._props[key];
-	    //   }
-	    //   timelineOptions.onStart = this._props.onStart;
-	    //   timelineOptions.onComplete = this._props.onComplete;
-	    //   // TODO: if should set timeline's props instead of tweens one
-	    //   this.tween._setProp(timelineOptions);
-	    // }
+	    /*
+	      Method to transform history rewrite new options object chain on run.
+	      @param {Object} New options to tune for.
+	    */
+
+	  }, {
+	    key: '_transformHistory',
+	    value: function _transformHistory(o) {
+	      var keys = (0, _keys2.default)(o),
+	          i = -1,
+	          len = keys.length,
+	          historyLen = this.history.length;
+	      // go thru history records - one record if transit's option object
+	      while (++i < len) {
+	        // get all keys of the options record
+	        var key = keys[i],
+	            j = -1;
+	        (function () {
+	          // take one key and loop thru all of the records again
+	          while (++j < historyLen) {
+	            // get option's record property by key
+	            var optionRecord = this.history[j][key];
+	            // if delta property
+	            if ((typeof optionRecord === 'undefined' ? 'undefined' : (0, _typeof3.default)(optionRecord)) === 'object' && optionRecord !== null) {
+	              // get start and end of the delta
+	              var start = (0, _keys2.default)(optionRecord)[0],
+
+	              // save the end of the delta
+	              end = optionRecord[start];
+	              // delete the property
+	              delete optionRecord[start];
+	              var newValue = o[key];
+	              // if new property is delta
+	              if ((typeof newValue === 'undefined' ? 'undefined' : (0, _typeof3.default)(newValue)) === 'object' && newValue !== null) {
+	                var property = o[key],
+
+	                // merge the start and end
+	                // get the start and end of the new option
+	                startNew = (0, _keys2.default)(property)[0],
+	                    endNew = property[startNew];
+	                // set the o's end value as start
+	                // and o's end to delta's end
+	                optionRecord[endNew] = end;
+	              } else {
+	                // if new property is not delta
+	                // rewrite the start value to the new value
+	                // this._o.isIt && console.log('o[key]', newValue, end, j);
+	                if (j === 0) {
+	                  if (this.history[j] !== null && (0, _typeof3.default)(this.history[j]) === 'object') {
+	                    this.history[j][key] = newValue;
+	                    if (this.history[j + 1]) {
+	                      var nextRecord = this.history[j + 1][key],
+	                          nextRecordKey = (0, _keys2.default)(nextRecord),
+	                          nextRecordValue = nextRecord[nextRecordKey];
+	                      this.history[j + 1][key] = {};
+	                      this.history[j + 1][key][newValue] = nextRecordValue;
+	                    }
+	                  }
+	                } else {
+	                  optionRecord[newValue] = end;
+	                }
+	              }
+	              break;
+	            } else {
+	              // if is not delta property
+	              // set it to the new options value
+	              this.history[j][key] = o[key];
+	            }
+	          }
+	        }).call(this);
+	      }
+	      // if (this._o.isIt) {
+	      //   console.log('-=-=-=-=-=-=');
+	      //   for (var record of this.history) {
+	      //     console.log(record.radius);
+	      //   }
+	      // }
+	    }
+	    /*
+	      Method to tune new option on run.
+	      @private
+	      @param {Object}  Option to tune on run.
+	      @param {Boolean} If foreign svg canvas.
+	    */
+
+	  }, {
+	    key: '_tuneNewOption',
+	    value: function _tuneNewOption(o, isForeign) {
+	      if (o != null && o.shape != null && o.shape !== (this._o.shape || 'circle')) {
+	        h.warn('Sorry, shape can not be changed on run');
+	        delete o.shape;
+	      }
+	      if (o != null && (0, _keys2.default)(o).length) {
+	        this._extendDefaults(o);
+	        this._resetTweens(isForeign);
+	        this._calcSize();
+	        return !isForeign && this._setElStyles();
+	      }
+	    }
+	    /*
+	      Method to set new options on run.
+	      @param {Boolean} If foreign context.
+	      @private
+	    */
+
+	  }, {
+	    key: '_resetTweens',
+	    value: function _resetTweens(isForeign) {
+	      var i = 0,
+	          shift = 0,
+	          tweens = this.timeline._timelines;
+
+	      for (var i = 0; i < tweens.length; i++) {
+	        var tween = tweens[i],
+	            prevTween = tweens[i - 1];
+
+	        shift += prevTween ? prevTween._props.repeatTime : 0;
+	        this._resetTween(tween, this.history[i], shift);
+	      }
+	      !isForeign && this.timeline._recalcTotalDuration();
+	    }
+	    /*
+	      Method to reset tween with new options.
+	     */
+
+	  }, {
+	    key: '_resetTween',
+	    value: function _resetTween(tween, o) {
+	      var shift = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+
+	      o.shiftTime = shift;
+	      tween._setProps(o);
+	    }
 	    /*
 	      Method to set property on the module.
 	      @private
@@ -2109,10 +2134,6 @@
 	  value: true
 	});
 
-	var _typeof2 = __webpack_require__(11);
-
-	var _typeof3 = _interopRequireDefault(_typeof2);
-
 	var _classCallCheck2 = __webpack_require__(19);
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -2120,6 +2141,10 @@
 	var _createClass2 = __webpack_require__(21);
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _h = __webpack_require__(12);
+
+	var _h2 = _interopRequireDefault(_h);
 
 	var _tweener = __webpack_require__(8);
 
@@ -2130,9 +2155,6 @@
 	var _easing2 = _interopRequireDefault(_easing);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import h from '../h';
-
 
 	var Tween = function () {
 	  (0, _createClass3.default)(Tween, [{
@@ -2860,35 +2882,39 @@
 	    /*
 	      Method to set property[s] on Tween
 	      @private
-	      @param {Object, String} Hash object of key/value pairs, or property name
-	      @param {_} Property's value to set
+	      @param {Object, String} Hash object of key/value pairs, or property name.
+	      @param {_} Property's value to set.
+	    */
+
+	  }, {
+	    key: '_setProps',
+	    value: function _setProps(obj, value) {
+	      // handle hash object case or key/value cases (else if)
+	      if (_h2.default.isObject(obj)) {
+	        for (var key in obj) {
+	          this._setProp(key, obj[key]);
+	        }
+	      } else if (typeof obj === 'string') {
+	        this._setProp(obj, value);
+	      }
+	      this._calcDimentions();
+	    }
+	    /*
+	      Method to set one property on the tween.
+	      @param {String} Key name to set.
+	      @param {Any} Value to set.
 	    */
 
 	  }, {
 	    key: '_setProp',
-	    value: function _setProp(obj, value) {
-	      // handle hash object case
-	      if ((typeof obj === 'undefined' ? 'undefined' : (0, _typeof3.default)(obj)) === 'object') {
-	        for (var key in obj) {
-	          if (Object.prototype.hasOwnProperty.call(obj, key)) {
-	            this._props[key] = obj[key];
-	            if (key === 'easing') {
-	              this._props.easing = _easing2.default.parseEasing(this._props.easing);
-	            }
-	          }
+	    value: function _setProp(key, value) {
+	      if (key === 'easing') {
+	        this._props.easing = _easing2.default.parseEasing(value);
+	      }
+	      // else just save it to props
+	      else if (_h2.default.isTweenProp(key)) {
+	          this._props[key] = value;
 	        }
-	        // handle key, value case
-	      } else if (typeof obj === 'string') {
-	          // if key is easing - parse it immediately
-	          if (obj === 'easing') {
-	            this._props.easing = _easing2.default.parseEasing(value);
-	          }
-	          // else just save it to props
-	          else {
-	              this._props[obj] = value;
-	            }
-	        }
-	      this._calcDimentions();
 	    }
 	    /*
 	      Method to remove the Tween from the tweener.
@@ -3141,7 +3167,8 @@
 
 	  }]);
 	  return Tween;
-	}();
+	}(); // import h from '../h';
+
 
 	exports.default = Tween;
 
@@ -3337,7 +3364,7 @@
 	        timeline = timeline.timeline;
 	      }
 	      // add self delay to the timeline
-	      shift != null && timeline._setProp({ 'shiftTime': shift });
+	      shift != null && timeline._setProps({ 'shiftTime': shift });
 	      this._timelines.push(timeline);
 	      this._recalcDuration(timeline);
 	    }
@@ -3399,6 +3426,7 @@
 	      while (i--) {
 	        this._recalcDuration(this._timelines[i]);
 	      }
+	      this._calcDimentions();
 	    }
 
 	    /*
@@ -3728,6 +3756,7 @@
 	  }, {
 	    key: 'setProgress',
 	    value: function setProgress() {
+
 	      this.timeline.setProgress.apply(this.timeline, arguments);
 	      return this;
 	    }
@@ -3887,7 +3916,9 @@
 	    delay: 1,
 	    repeat: 1,
 	    easing: 1,
-	    yoyo: 1
+	    yoyo: 1,
+	    shiftTime: 1,
+	    isReversed: 1
 	  };
 
 	  Helpers.prototype.unitOptionMap = {
@@ -4514,11 +4545,13 @@
 
 	
 	/* istanbul ignore next */
-	var Swirl, Transit,
+	var Swirl, Transit, h,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
 	Transit = __webpack_require__(3)["default"];
+
+	h = __webpack_require__(12);
 
 	Swirl = (function(superClass) {
 	  extend(Swirl, superClass);
@@ -4555,15 +4588,15 @@
 	    if ((base = this._o).radiusScale == null) {
 	      base.radiusScale = 1;
 	    }
-	    this._props.angleShift = this.h.parseIfRand(this._o.angleShift || 0);
-	    return this._props.radiusScale = this.h.parseIfRand(this._o.radiusScale);
+	    this._props.angleShift = h.parseIfRand(this._o.angleShift || 0);
+	    return this._props.radiusScale = h.parseIfRand(this._o.radiusScale);
 	  };
 
 	  Swirl.prototype.getPosValue = function(name) {
 	    var optVal, val;
 	    optVal = this._o[name];
 	    if (optVal && typeof optVal === 'object') {
-	      val = this.h.parseDelta(name, optVal);
+	      val = h.parseDelta(name, optVal);
 	      return {
 	        start: val.start.value,
 	        end: val.end.value,
@@ -4587,7 +4620,7 @@
 	    if (this._o.isSwirl) {
 	      angle += this.getSwirl(progress);
 	    }
-	    point = this.h.getRadialPoint({
+	    point = h.getRadialPoint({
 	      angle: angle,
 	      radius: this.positionDelta.radius * progress * this._props.radiusScale,
 	      center: {
@@ -4604,15 +4637,15 @@
 
 	  Swirl.prototype.generateSwirl = function() {
 	    var base, base1;
-	    this._props.signRand = Math.round(this.h.rand(0, 1)) ? -1 : 1;
+	    this._props.signRand = Math.round(h.rand(0, 1)) ? -1 : 1;
 	    if ((base = this._o).swirlSize == null) {
 	      base.swirlSize = 10;
 	    }
 	    if ((base1 = this._o).swirlFrequency == null) {
 	      base1.swirlFrequency = 3;
 	    }
-	    this._props.swirlSize = this.h.parseIfRand(this._o.swirlSize);
-	    return this._props.swirlFrequency = this.h.parseIfRand(this._o.swirlFrequency);
+	    this._props.swirlSize = h.parseIfRand(this._o.swirlSize);
+	    return this._props.swirlFrequency = h.parseIfRand(this._o.swirlFrequency);
 	  };
 
 	  Swirl.prototype.getSwirl = function(progress) {
@@ -7146,13 +7179,51 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.179.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.179.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	// var tr = new mojs.Transit({
+	//   radius: { 20 : 200 },
+	//   isShowStart: true,
+	//   isShowEnd: true
+	// }).then({
+	//   radius: { 200: 0 }
+	// }).then({
+	//   radius: { 0: 400 },
+	//   duration: 2000
+	// })
+
+	//   console.log(tr.history[2].duration);
+
+	// document.body.addEventListener('click', function (e) {
+	//   // tr.run({ left: e.pageX, top: e.pageY });
+	//   tr.run({ duration: 5000 });
+	//   console.log(tr.history[2].duration);
+	//   // console.log(tr.timeline._props.duration);
+	//   // console.log(tr.timeline._props.endTime - tr.timeline._props.startTime);
+	// });
+
+	//   .then({ radius: 50 })
+	//   .then({ radius: 0 })
+	//   .then({ radius: 10 })
+	//   // .play()
+
+	// setTimeout(function () {
+	//   tr.setProgress(0);
+	//   tr.setProgress(.1);
+	//   tr.setProgress(.2);
+	//   tr.setProgress(.3);
+	//   tr.setProgress(.4);
+	//   tr.setProgress(.5);
+	//   tr.setProgress(.8);
+	//   tr.setProgress(.9);
+	//   tr.setProgress(1);
+	// }, 100)
 
 	// ### istanbul ignore next ###
 	if (true) {

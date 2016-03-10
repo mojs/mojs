@@ -66,7 +66,9 @@
         expect(h.tweenOptionMap.repeat).toBe(1);
         expect(h.tweenOptionMap.easing).toBe(1);
         expect(h.tweenOptionMap.yoyo).toBe(1);
-        return expect(Object.keys(h.tweenOptionMap).length).toBe(5);
+        expect(h.tweenOptionMap.shiftTime).toBe(1);
+        expect(h.tweenOptionMap.isReversed).toBe(1);
+        return expect(Object.keys(h.tweenOptionMap).length).toBe(7);
       });
     });
     describe('pure callbacks props ->', function() {

@@ -180,7 +180,7 @@
           delay: delay,
           repeat: 2
         });
-        t._setProp('shiftTime', 500);
+        t._setProps('shiftTime', 500);
         t._setStartTime();
         expectedTime = performance.now() + 500 + delay;
         expect(t._props.startTime).toBeGreaterThan(expectedTime - 50);
@@ -338,9 +338,7 @@
         t = new Tween({
           duration: 1000,
           delay: 200,
-          onUpdate: function(p) {
-            return console.log(p);
-          }
+          onUpdate: function(p) {}
         });
         t._setStartTime();
         t._update(t._props.startTime + t._props.duration / 2);
@@ -470,7 +468,7 @@
           repeat: 2
         });
         t._setStartTime();
-        t._setProp('isReversed', true);
+        t._setProps('isReversed', true);
         shift = 200;
         time = t._props.startTime + shift;
         t._update(time - 1);
@@ -484,7 +482,7 @@
           duration: duration
         });
         t._setStartTime();
-        t._setProp('isReversed', true);
+        t._setProps('isReversed', true);
         shift = 200;
         time = t._props.startTime + shift;
         t._update(time);
@@ -4855,27 +4853,50 @@
         return expect(t._props.wasYoyo).toBe(true);
       });
     });
-    describe('_setProp method ->', function() {
-      it('should set new timeline options', function() {
+    describe('_setProps method ->', function() {
+      it('should set new tween options', function() {
         var t;
         t = new Tween({
           duration: 100,
           delay: 0
         });
-        t._setProp({
+        t._setProps({
           duration: 1000,
           delay: 200
         });
         expect(t._props.duration).toBe(1000);
         return expect(t._props.delay).toBe(200);
       });
+      it('should set only tween releated options', function() {
+        var t;
+        t = new Tween({
+          duration: 100,
+          delay: 0
+        });
+        t._setProps({
+          duration: 1000,
+          delay: 200,
+          fill: 'red'
+        });
+        expect(t._props.duration).toBe(1000);
+        expect(t._props.delay).toBe(200);
+        return expect(t._props.fill).not.toBeDefined();
+      });
       it('should work with arguments', function() {
         var t;
         t = new Tween({
           duration: 100
         });
-        t._setProp('duration', 1000);
+        t._setProps('duration', 1000);
         return expect(t._props.duration).toBe(1000);
+      });
+      it('should work with only tween option arguments', function() {
+        var t;
+        t = new Tween({
+          duration: 100
+        });
+        t._setProps('fill', 1000);
+        return expect(t._props.fill).not.toBeDefined();
       });
       it('should call _calcDimentions method', function() {
         var t;
@@ -4883,7 +4904,7 @@
           duration: 100
         });
         spyOn(t, '_calcDimentions');
-        t._setProp('duration', 1000);
+        t._setProps('duration', 1000);
         return expect(t._calcDimentions).toHaveBeenCalled();
       });
       it('should update the time', function() {
@@ -4892,16 +4913,42 @@
           duration: 100,
           delay: 100
         });
-        t._setProp('duration', 1000);
+        t._setProps('duration', 1000);
         return expect(t._props.time).toBe(1100);
       });
-      return it('should parse easing', function() {
+      it('should parse easing', function() {
         var t;
         t = new Tween({
           duration: 100
         });
-        t._setProp('easing', 'elastic.in');
+        t._setProps('easing', 'elastic.in');
         return expect(t._props.easing).toBe(mojs.easing.elastic["in"]);
+      });
+      return describe('_setProp method ->', function() {
+        it('should work with arguments', function() {
+          var t;
+          t = new Tween({
+            duration: 100
+          });
+          t._setProp('duration', 1000);
+          return expect(t._props.duration).toBe(1000);
+        });
+        it('should work with only tween option arguments', function() {
+          var t;
+          t = new Tween({
+            duration: 100
+          });
+          t._setProp('fill', 1000);
+          return expect(t._props.fill).not.toBeDefined();
+        });
+        return it('should parse easing', function() {
+          var t;
+          t = new Tween({
+            duration: 100
+          });
+          t._setProp('easing', 'ease.out');
+          return expect(t._props.easing).toBe(easing.ease.out);
+        });
       });
     });
     describe('_subPlay method ->', function() {

@@ -362,7 +362,7 @@
         }));
         time = 0;
         shift = 500;
-        t._setProp({
+        t._setProps({
           'shiftTime': shift
         });
         t._setStartTime(time);
@@ -634,7 +634,7 @@
       });
     });
     describe('_recalcTotalDuration method ->', function() {
-      return it('should recalculate duration', function() {
+      it('should recalculate duration', function() {
         var t, timeline, timeline2;
         t = new Timeline;
         timeline = new Tween({
@@ -647,6 +647,27 @@
         t._timelines.push(timeline2);
         t._recalcTotalDuration();
         return expect(t._props.duration).toBe(1000);
+      });
+      return it('should call _calcDimentions method', function() {
+        var delay, maxDur, t, timeline, timeline2;
+        delay = 200;
+        maxDur = 1000;
+        t = new Timeline({
+          delay: delay
+        });
+        timeline = new Tween({
+          duration: 100
+        });
+        timeline2 = new Tween({
+          duration: maxDur
+        });
+        t.add(timeline);
+        t._timelines.push(timeline2);
+        spyOn(t, '_calcDimentions').and.callThrough();
+        t._recalcTotalDuration();
+        expect(t._calcDimentions).toHaveBeenCalled;
+        expect(t._props.duration).toBe(maxDur);
+        return expect(t._props.repeatTime).toBe(maxDur + delay);
       });
     });
     describe('setProgress method ->', function() {
