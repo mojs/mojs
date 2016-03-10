@@ -8,7 +8,6 @@ import Timeline   from './tween/timeline';
 
 // TODO
 //  - properties signatures
-//  - add run method
 //  --
 //  - tween for every prop
 
@@ -749,6 +748,7 @@ class Transit extends Tweenable {
   _transformHistoryRecord ( index, key, value ) {
     var currRecord    = this.history[index],
         prevRecord    = this.history[index-1],
+        nextRecord    = this.history[index+1],
         propertyValue = currRecord[key];
     
     if ( this._isDelta(value) ) {
@@ -766,7 +766,16 @@ class Transit extends Tweenable {
       if ( this._isDelta(propertyValue) ) {
         currRecord[key] = { [value] : h.getDeltaEnd(propertyValue) };
         return true;
-      } // else go to very end of this function
+      // both are not deltas and further in the chain
+      } else {
+        currRecord[key] = value;
+        // if next record isn't delta - we should always override it
+        // so do not notify parent
+        if (nextRecord && !this._isDelta(nextRecord[key])) {
+          // notify that no modifications needed in the next record
+          return ( nextRecord[key] !== propertyValue );
+        }
+      }// else go to very end of this function
     }
     currRecord[key] = value;
   }

@@ -238,8 +238,26 @@ describe 'Transit ->', ->
       expect(tr.history[1].radius[20]).toBe 0
       expect(!!result).toBe true
 
+    it 'should rewrite everything until first defined item', ->
+      tr = new Transit({ duration: 2000 })
+        .then radius: 0
+        .then radius: 50, duration: 5000
+        .then radius: 50
+
+      result = tr._transformHistoryRecord 0, 'duration', 1000
+      expect(tr.history[0].duration).toBe 1000
+      expect(!!result).toBe false
+
+      result = tr._transformHistoryRecord 1, 'duration', 1000
+      expect(tr.history[1].duration).toBe 1000
+      expect(!!result).toBe true
+
+      # result = tr._transformHistoryRecord 2, 'duration', 1000
+      # expect(tr.history[2].duration).toBe 5000
+      # expect(!!result).toBe true
+
     it 'should save new delta value and modify the next', ->
-      tr = new Transit({ radius: 75, isIt: 1 })
+      tr = new Transit({ radius: 75 })
         .then radius: 0
         .then radius: 50
 

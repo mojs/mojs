@@ -642,7 +642,6 @@
 
 	// TODO
 	//  - properties signatures
-	//  - add run method
 	//  --
 	//  - tween for every prop
 
@@ -1551,6 +1550,7 @@
 	    value: function _transformHistoryRecord(index, key, value) {
 	      var currRecord = this.history[index],
 	          prevRecord = this.history[index - 1],
+	          nextRecord = this.history[index + 1],
 	          propertyValue = currRecord[key];
 
 	      if (this._isDelta(value)) {
@@ -1568,7 +1568,16 @@
 	          if (this._isDelta(propertyValue)) {
 	            currRecord[key] = (0, _defineProperty3.default)({}, value, h.getDeltaEnd(propertyValue));
 	            return true;
-	          } // else go to very end of this function
+	            // both are not deltas and further in the chain
+	          } else {
+	              currRecord[key] = value;
+	              // if next record isn't delta - we should always override it
+	              // so do not notify parent
+	              if (nextRecord && !this._isDelta(nextRecord[key])) {
+	                // notify that no modifications needed in the next record
+	                return nextRecord[key] !== propertyValue;
+	              }
+	            } // else go to very end of this function
 	        }
 	      currRecord[key] = value;
 	    }
@@ -7170,51 +7179,13 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.180.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.181.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
-
-	// var tr = new mojs.Transit({
-	//   radius: { 20 : 200 },
-	//   isShowStart: true,
-	//   isShowEnd: true
-	// }).then({
-	//   radius: { 200: 0 }
-	// }).then({
-	//   radius: { 0: 400 },
-	//   duration: 2000
-	// })
-
-	//   console.log(tr.history[2].duration);
-
-	// document.body.addEventListener('click', function (e) {
-	//   // tr.run({ left: e.pageX, top: e.pageY });
-	//   tr.run({ duration: 5000 });
-	//   console.log(tr.history[2].duration);
-	//   // console.log(tr.timeline._props.duration);
-	//   // console.log(tr.timeline._props.endTime - tr.timeline._props.startTime);
-	// });
-
-	//   .then({ radius: 50 })
-	//   .then({ radius: 0 })
-	//   .then({ radius: 10 })
-	//   // .play()
-
-	// setTimeout(function () {
-	//   tr.setProgress(0);
-	//   tr.setProgress(.1);
-	//   tr.setProgress(.2);
-	//   tr.setProgress(.3);
-	//   tr.setProgress(.4);
-	//   tr.setProgress(.5);
-	//   tr.setProgress(.8);
-	//   tr.setProgress(.9);
-	//   tr.setProgress(1);
-	// }, 100)
 
 	// ### istanbul ignore next ###
 	if (true) {
