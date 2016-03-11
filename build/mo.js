@@ -2499,6 +2499,7 @@
 
 	      var p = this._props,
 	          shiftTime = p.shiftTime || 0;
+
 	      // reset flags
 	      if (isResetFlags) {
 	        this._isCompleted = false;this._isRepeatCompleted = false;
@@ -2512,8 +2513,9 @@
 	      p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
 	      p.endTime = p.startTime + p.repeatTime - p.delay;
 	      // set play time to the startTime
-	      // if playback controls are used - use _resumeTime as play time, else use startTime
-	      this._playTime = this._resumeTime != null ? this._resumeTime : startTime;
+	      // if playback controls are used - use _resumeTime as play time,
+	      // else use shifted startTime -- shift is needed for timelines append chains
+	      this._playTime = this._resumeTime != null ? this._resumeTime : startTime + shiftTime;
 	      this._resumeTime = null;
 
 	      return this;
@@ -2616,8 +2618,6 @@
 	        this._wasUknownUpdate = true;
 	        return false;
 	      }
-
-	      // this._visualizeProgress(time);
 
 	      // ====== AFTER SKIPPED FRAME ======
 
@@ -3413,8 +3413,7 @@
 	    key: '_recalcDuration',
 	    value: function _recalcDuration(timeline) {
 	      var p = timeline._props,
-	          speedCoef = p.speed ? 1 / p.speed : 1,
-	          timelineTime = speedCoef * p.repeatTime + (p.shiftTime || 0);
+	          timelineTime = p.repeatTime / p.speed + (p.shiftTime || 0);
 	      this._props.duration = Math.max(timelineTime, this._props.duration);
 	    }
 	    /*
@@ -3458,11 +3457,11 @@
 	    value: function _startTimelines(time) {
 	      var isReset = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
-	      var i = this._timelines.length,
-	          p = this._props,
+	      // var i = this._timelines.length,
+	      var p = this._props,
 	          timeline;
 	      time == null && (time = this._props.startTime);
-	      while (i--) {
+	      for (var i = 0; i < this._timelines.length; i++) {
 	        timeline = this._timelines[i];
 	        timeline._setStartTime(time, isReset);
 	        // if from _subPlay and _prevTime is set
@@ -3470,6 +3469,8 @@
 	          timeline._prevTime = timeline._normPrevTimeForward();
 	        }
 	      }
+	      // while(i--) {
+	      // }
 	    }
 	    /*
 	      Method do declare defaults by this._defaults object
@@ -7184,13 +7185,71 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.182.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.182.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	// var tr = new mojs.Transit({
+	//   left: '50%', top: '50%',
+	//   shape:    'polygon',
+	//   strokeWidth: 20,
+	//   angle:    { 0 : 200},
+	//   radius:   10,
+	//   fill:     'none',
+	//   stroke:   { 'white': 'cyan' },
+	//   points:   { 3 : 20 }, // make triangle
+	//   duration: 4000,
+	//   delay:    8000,
+	//   isShowEnd: 1,
+	//   scale: { 0 : 6 },
+	//   speed: 2,
+	//   // timeline: { speed: 2 },
+	//   onStart: function () { console.timeEnd('tw 1 delay'); console.log('start 1'); console.time('tw 1'); },
+	//   onComplete: function () { console.log('end 1'); console.timeEnd('tw 1'); },
+	//   // easing: 'expo.in'
+	// })
+	// .then({
+	//   onStart: function () { console.log('start 2'); console.time('tw 2'); },
+	//   onComplete: function () { console.log('end 2'); console.timeEnd('tw 2'); },
+	//   points:   3, // make triangle
+	//   angle:    -180,
+	//   duration: 3000,
+	//   stroke: 'yellow',
+	//   // easing: 'expo.in',
+	//   scale: .5,
+	//   speed: 2
+	// })
+	// // .then({
+	// //   strokeWidth: 0,
+	// //   stroke: 'hotpink',
+	// //   duration: 400,
+	// //   easing: 'cubic.out',
+	// //   // scale: { 1: 1 },
+	// //   radius: 40,
+	// //   scale: 1,
+	// //   angle: 90,
+	// //   // speed: 1
+
+	// //   // opacity: 0
+	// // })
+	//   // .play();
+
+	//   console.log(tr.history[1].delay)
+
+	//   setTimeout(function () {
+	//     console.log('-=-=-=-=- PLAY -=-=-=-=-=-')
+	//     console.time('tw 1 delay');
+	//     tr.play();
+	//   }, 5000);
+
+	// document.body.addEventListener('click', function () {
+
+	//   tr.run();
+	// });
 
 	// ### istanbul ignore next ###
 	if (true) {

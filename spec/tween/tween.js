@@ -222,7 +222,17 @@
         t._setStartTime();
         now = performance.now();
         expect(t._playTime).toBeDefined();
-        return expect(Math.abs(t._playTime - now)).not.toBeGreaterThan(10);
+        return expect(Math.abs(t._playTime - now)).not.toBeGreaterThan(5);
+      });
+      it('should the start time should be shifted', function() {
+        var now, shift, t;
+        t = new Tween;
+        shift = 2000;
+        t._props.shiftTime = shift;
+        t._setStartTime();
+        now = performance.now();
+        expect(t._playTime).toBeDefined();
+        return expect(Math.abs(t._playTime - (now + shift))).not.toBeGreaterThan(5);
       });
       it('should set _playTime to passed time', function() {
         var now, t;

@@ -175,8 +175,7 @@ var Tween = class Tween {
     // it for the current resume time
     if ( this._prevTime != null ) {
       this._prevTime = ( state === 'play' )
-        ? this._normPrevTimeForward()
-        : p.endTime   - this._progressTime;
+        ? this._normPrevTimeForward() : p.endTime - this._progressTime;
     }
     // add self to tweener = play
     t.add(this);
@@ -278,6 +277,7 @@ var Tween = class Tween {
   _setStartTime ( time, isResetFlags = true ) {
     var p = this._props,
         shiftTime = (p.shiftTime || 0);
+
     // reset flags
     if ( isResetFlags ) {
       this._isCompleted = false; this._isRepeatCompleted = false;
@@ -291,9 +291,11 @@ var Tween = class Tween {
     p.startTime = startTime + p.delay + this._negativeShift + shiftTime;
     p.endTime   = p.startTime + p.repeatTime - p.delay;
     // set play time to the startTime
-    // if playback controls are used - use _resumeTime as play time, else use startTime
-    this._playTime = ( this._resumeTime != null ) ? this._resumeTime : startTime;
-    this._resumeTime = null
+    // if playback controls are used - use _resumeTime as play time,
+    // else use shifted startTime -- shift is needed for timelines append chains
+    this._playTime = ( this._resumeTime != null )
+      ? this._resumeTime : startTime + shiftTime;
+    this._resumeTime = null;
 
     return this;
   }
@@ -328,7 +330,6 @@ var Tween = class Tween {
       // play point + ( speed * delta )
       time = this._playTime + ( p.speed * ( time - this._playTime ) );
     }
-
 
     // // if end time(with precision issue fix)
     // // and already completed then return immediately
@@ -390,8 +391,6 @@ var Tween = class Tween {
       this._wasUknownUpdate = true;
       return false;
     }
-
-    // this._visualizeProgress(time);
 
     // ====== AFTER SKIPPED FRAME ======
 

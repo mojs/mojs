@@ -124,8 +124,7 @@ class Timeline extends Tween {
   */
   _recalcDuration (timeline) {
     var p             = timeline._props,
-        speedCoef     = ( p.speed ) ? (1/p.speed) : 1,
-        timelineTime  = speedCoef*p.repeatTime + (p.shiftTime || 0);
+        timelineTime  = p.repeatTime/p.speed + (p.shiftTime || 0);
     this._props.duration = Math.max(timelineTime, this._props.duration);
   }
   /*
@@ -154,11 +153,11 @@ class Timeline extends Tween {
     @param {Number, Null} Time to start with.
   */
   _startTimelines (time, isReset = true) {
-    var i = this._timelines.length,
-        p = this._props,
+    // var i = this._timelines.length,
+    var p = this._props,
         timeline;
     ( time == null) && (time = this._props.startTime);
-    while(i--) {
+    for (var i = 0; i < this._timelines.length; i++) {
       timeline = this._timelines[i];
       timeline._setStartTime(time, isReset);
       // if from _subPlay and _prevTime is set
@@ -166,6 +165,8 @@ class Timeline extends Tween {
         timeline._prevTime = timeline._normPrevTimeForward();
       }
     }
+    // while(i--) {
+    // }
   }
   /*
     Method do declare defaults by this._defaults object
