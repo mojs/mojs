@@ -59,6 +59,7 @@ class Helpers
   tweenOptionMap:
     duration:         1
     delay:            1
+    speed:            1
     repeat:           1
     easing:           1
     yoyo:             1

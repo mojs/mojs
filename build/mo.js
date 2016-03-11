@@ -3916,6 +3916,7 @@
 	  Helpers.prototype.tweenOptionMap = {
 	    duration: 1,
 	    delay: 1,
+	    speed: 1,
 	    repeat: 1,
 	    easing: 1,
 	    yoyo: 1,
@@ -7183,24 +7184,13 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.182.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.182.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
-
-	// var tr = new mojs.Transit({
-	//   left: '50%', top: '50%',
-	//   shape:    'polygon',
-	//   angle:    { 0 : 180},
-	//   fill:     'cyan',
-	//   points:   { 3 : 12 }, // make triangle
-	//   duration: 5000,
-	//   delay:    2000,
-	//   isShowEnd: 1
-	// }).play();
 
 	// ### istanbul ignore next ###
 	if (true) {

@@ -67,7 +67,8 @@
         expect(h.tweenOptionMap.yoyo).toBe(1);
         expect(h.tweenOptionMap.shiftTime).toBe(1);
         expect(h.tweenOptionMap.isReversed).toBe(1);
-        return expect(Object.keys(h.tweenOptionMap).length).toBe(7);
+        expect(h.tweenOptionMap.speed).toBe(1);
+        return expect(Object.keys(h.tweenOptionMap).length).toBe(8);
       });
     });
     describe('pure callbacks props ->', function() {

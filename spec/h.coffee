@@ -40,7 +40,7 @@ describe 'Helpers ->', ->
       expect(h.isOldOpera).toBeDefined()
   describe 'tween related map ->', ->
     it 'should be a map of tween related options ->', ->
-      # expect(h.chainOptionMap.points).toBe 0
+      # expect(h.chainOptionMap.points).toBe 1
       expect(Object.keys(h.chainOptionMap).length).toBe 0
   describe 'pure tween props ->', ->
     it 'should be a map of tween related options ->', ->
@@ -51,7 +51,8 @@ describe 'Helpers ->', ->
       expect(h.tweenOptionMap.yoyo)               .toBe 1
       expect(h.tweenOptionMap.shiftTime)          .toBe 1
       expect(h.tweenOptionMap.isReversed)         .toBe 1
-      expect(Object.keys(h.tweenOptionMap).length).toBe 7
+      expect(h.tweenOptionMap.speed)              .toBe 1
+      expect(Object.keys(h.tweenOptionMap).length).toBe 8
   describe 'pure callbacks props ->', ->
     it 'should be a map of callback related options ->', ->
       expect(h.callbacksMap.onStart)            .toBe 1

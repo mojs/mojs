@@ -14,7 +14,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.182.0', isDebug: true, helpers: h,
+  revision:   '0.182.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, tweener, easing, shapesMap
 }
@@ -22,16 +22,6 @@ window.mojs = {
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;
 
-// var tr = new mojs.Transit({
-//   left: '50%', top: '50%',
-//   shape:    'polygon',
-//   angle:    { 0 : 180},
-//   fill:     'cyan',
-//   points:   { 3 : 12 }, // make triangle
-//   duration: 5000,
-//   delay:    2000,
-//   isShowEnd: 1
-// }).play();
 
 // ### istanbul ignore next ###
 if ( (typeof define === "function") && define.amd ) {
