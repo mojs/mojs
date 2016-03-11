@@ -123,6 +123,7 @@ class Transit extends Tweenable {
     this.lastSet  = {};
     this.origin   = {};
     this.index    = this._o.index || 0;
+    this._currentHistoryIndex = 0;
     this._extendDefaults();
     var o = h.cloneObj(this._o);
     h.extend(o, this.defaults);
@@ -150,19 +151,12 @@ class Transit extends Tweenable {
 
     var onFirstUpdate   = object.onFirstUpdate,
         isOnFirstUpdate = (onFirstUpdate && typeof onFirstUpdate === 'function');
-    // redefine onFirstUpdate for Transit's _tuneOptions
+    // redefine onFirstUpdate for Transit's _tuneHistoryRecord
     object.onFirstUpdate = function onFirstUpdateFunction (isForward) {
       // call onFirstUpdate function from options
       isOnFirstUpdate && onFirstUpdate.apply( this, arguments );
-      // calcalate and draw Transit's progress
-      // call tune options with index of the tween only if history > 1
-      if ( it.history.length > 1 ) {
-        var index = onFirstUpdateFunction.tween.index || 0;
-        // if very first tween - _tuneOptions only on backward direction
-        if ( index === 0 ) {
-          !isForward && it._tuneOptions(it.history[index]);
-        } else { it._tuneOptions(it.history[index]); }
-      }
+      // call tune options with index of the tween
+      it._tuneHistoryRecord( onFirstUpdateFunction.tween.index || 0 );
     };
   }
   /*
@@ -328,6 +322,7 @@ class Transit extends Tweenable {
     @private
   */
   _draw () {
+    // console.log(this._props.radius);
     this.bit.setProp({
       x:                    this.origin.x,
       y:                    this.origin.y,
@@ -654,6 +649,16 @@ class Transit extends Tweenable {
       // copy the tween values unattended
       } else { o[endP] = endValue; }
     }
+  }
+  /*
+    Method to retrieve history record by index
+    and pass it to the _tuneOptions method.
+    @param {Number} Index of the history record.
+  */
+  _tuneHistoryRecord ( index ) {
+    if ( this._currentHistoryIndex === index ) { return 1; }
+    this._tuneOptions( this.history[index] );
+    this._currentHistoryIndex = index;
   }
   /*
     Method to tune new options on history traversal.

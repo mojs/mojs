@@ -69,6 +69,13 @@
         return expect(byte.defaults.sizeGap).toBe(0);
       });
     });
+    describe('_currentHistoryIndex ->', function() {
+      return it('should have _currentHistoryIndex of 1', function() {
+        var tr;
+        tr = new Transit;
+        return expect(tr._currentHistoryIndex).toBe(0);
+      });
+    });
     describe('origin object ->', function() {
       return it('should have origin object', function() {
         var byte;
@@ -668,17 +675,34 @@
         return expect(byte._overrideUpdateCallbacks).toHaveBeenCalled();
       });
     });
-    describe('_tuneOptions method ->', function() {
-      it('should call _extendDefaults with options', function() {
-        var byte, o;
-        byte = new Byte;
-        o = {
-          radius: 50
-        };
-        spyOn(byte, '_tuneOptions');
-        byte._tuneOptions(o);
-        return expect(byte._tuneOptions).toHaveBeenCalled();
+    describe('_tuneHistoryRecord method ->', function() {
+      it('should call _tuneOptions with history record', function() {
+        var index, tr;
+        tr = new Transit().then({
+          radius: 5
+        });
+        spyOn(tr, '_tuneOptions');
+        index = 1;
+        tr._tuneHistoryRecord(index);
+        return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[index]);
       });
+      it('should should save index to _currentHistoryIndex', function() {
+        var index, tr;
+        tr = new Transit;
+        index = 5;
+        tr._tuneHistoryRecord(index);
+        return expect(tr._currentHistoryIndex).toBe(index);
+      });
+      return it('should not call _tuneOptions with history record if the same index', function() {
+        var index, tr;
+        tr = new Transit;
+        spyOn(tr, '_tuneOptions');
+        index = 0;
+        tr._tuneHistoryRecord(index);
+        return expect(tr._tuneOptions).not.toHaveBeenCalledWith(tr.history[index]);
+      });
+    });
+    describe('_tuneOptions method ->', function() {
       return it('should call _calcSize and _setElStyles methods', function() {
         var byte;
         byte = new Byte;
@@ -2693,6 +2717,9 @@
           tr = new Transit();
           tr._overrideUpdateCallbacks(options);
           expect(typeof options.onFirstUpdate).toBe('function');
+          options.onFirstUpdate.tween = {
+            index: 1
+          };
           options.onFirstUpdate(true, false);
           expect(isRightScope).toBe(true);
           expect(args[0]).toBe(true);
@@ -2708,11 +2735,11 @@
             fill: 'red'
           });
           tr._overrideUpdateCallbacks(options);
-          spyOn(tr, '_tuneOptions');
+          spyOn(tr, '_tuneHistoryRecord');
           tr.timeline._timelines[1]._firstUpdate(-1, false);
-          return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[options.index]);
+          return expect(tr._tuneHistoryRecord).toHaveBeenCalledWith(options.index);
         });
-        it('should call _tuneOptions method with history[0] if no index', function() {
+        return it('should call _tuneHistoryRecord method with history[0] if no index', function() {
           var options, tr;
           options = {
             onUpdate: function() {}
@@ -2721,33 +2748,9 @@
             fill: 'red'
           });
           tr._overrideUpdateCallbacks(options);
-          spyOn(tr, '_tuneOptions');
+          spyOn(tr, '_tuneHistoryRecord');
           tr.timeline._timelines[0]._firstUpdate(-1, false);
-          return expect(tr._tuneOptions).toHaveBeenCalledWith(tr.history[0]);
-        });
-        it('should only call _tuneOptions if history > 1', function() {
-          var options, tr;
-          options = {
-            onUpdate: function() {}
-          };
-          tr = new Transit();
-          tr._overrideUpdateCallbacks(options);
-          spyOn(tr, '_tuneOptions');
-          tr.timeline._timelines[0]._firstUpdate(-1, false);
-          return expect(tr._tuneOptions).not.toHaveBeenCalledWith(tr.history[0]);
-        });
-        return it('should not call tune options if no index and forward direction', function() {
-          var options, tr;
-          options = {
-            onUpdate: function() {}
-          };
-          tr = new Transit().then({
-            fill: 'cyan'
-          });
-          tr._overrideUpdateCallbacks(options);
-          spyOn(tr, '_tuneOptions');
-          tr.timeline._timelines[0]._firstUpdate(1, false);
-          return expect(tr._tuneOptions).not.toHaveBeenCalledWith(tr.history[0]);
+          return expect(tr._tuneHistoryRecord).toHaveBeenCalledWith(0);
         });
       });
     });

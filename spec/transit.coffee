@@ -49,6 +49,11 @@ describe 'Transit ->', ->
       expect(byte.defaults.isShowStart).toBe      false
       expect(byte.defaults.size).toBe             null
       expect(byte.defaults.sizeGap).toBe          0
+  describe '_currentHistoryIndex ->', ->
+    it 'should have _currentHistoryIndex of 1', ->
+      tr = new Transit
+      expect(tr._currentHistoryIndex).toBe 0
+
   describe 'origin object ->', ->
     it 'should have origin object', ->
       byte = new Byte
@@ -495,13 +500,36 @@ describe 'Transit ->', ->
       byte.then({ fill: 'red' })
       expect(byte._overrideUpdateCallbacks).toHaveBeenCalled()
 
+  describe '_tuneHistoryRecord method ->', ->
+    it 'should call _tuneOptions with history record', ->
+      tr = new Transit().then({ radius: 5 })
+      spyOn tr, '_tuneOptions'
+      index = 1
+      tr._tuneHistoryRecord index
+      expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[index]
+
+    it 'should should save index to _currentHistoryIndex', ->
+      tr = new Transit
+      index = 5
+      tr._tuneHistoryRecord index
+      expect(tr._currentHistoryIndex).toBe index
+
+    it 'should not call _tuneOptions with history record if the same index', ->
+      tr = new Transit
+      spyOn tr, '_tuneOptions'
+      index = 0
+      tr._tuneHistoryRecord index
+      expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[index]
+
+
   describe '_tuneOptions method ->', ->
-    it 'should call _extendDefaults with options', ->
-      byte = new Byte
-      o = radius: 50
-      spyOn byte, '_tuneOptions'
-      byte._tuneOptions o
-      expect(byte._tuneOptions).toHaveBeenCalled()
+    # useless test case
+    # it 'should call _extendDefaults with history ', ->
+    #   byte = new Byte
+    #   o = radius: 50
+    #   spyOn byte, '_tuneOptions'
+    #   byte._tuneOptions o
+    #   expect(byte._tuneOptions).toHaveBeenCalled()
     it 'should call _calcSize and _setElStyles methods', ->
       byte = new Byte
       spyOn byte, '_calcSize'
@@ -1645,7 +1673,7 @@ describe 'Transit ->', ->
         tr = new Transit()
         tr._overrideUpdateCallbacks( options )
         expect(typeof options.onFirstUpdate).toBe 'function'
-
+        options.onFirstUpdate.tween = { index: 1 }
         options.onFirstUpdate( true, false )
         expect(isRightScope).toBe true
         expect(args[0]).toBe true
@@ -1656,40 +1684,40 @@ describe 'Transit ->', ->
         tr = new Transit().then({ fill: 'red' })
         tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
+        spyOn tr, '_tuneHistoryRecord'
         tr.timeline._timelines[1]._firstUpdate( -1, false )
         # should be called with index of the tween
-        expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[options.index]
+        expect(tr._tuneHistoryRecord).toHaveBeenCalledWith options.index
 
-      it 'should call _tuneOptions method with history[0] if no index', ->
+      it 'should call _tuneHistoryRecord method with history[0] if no index', ->
         options = { onUpdate:-> }
         tr = new Transit().then({ fill: 'red' })
         tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
+        spyOn tr, '_tuneHistoryRecord'
         tr.timeline._timelines[0]._firstUpdate( -1, false )
         # should be called with index of the tween
-        expect(tr._tuneOptions).toHaveBeenCalledWith tr.history[0]
+        expect(tr._tuneHistoryRecord).toHaveBeenCalledWith 0
 
-      it 'should only call _tuneOptions if history > 1', ->
-        options = { onUpdate:-> }
-        tr = new Transit()
-        tr._overrideUpdateCallbacks( options )
+      # it 'should only call _tuneHistoryRecord if history > 1', ->
+      #   options = { onUpdate:-> }
+      #   tr = new Transit()
+      #   tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
-        # options.onFirstUpdate( true, false )
-        tr.timeline._timelines[0]._firstUpdate( -1, false )
-        expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
+      #   spyOn tr, '_tuneHistoryRecord'
+      #   # options.onFirstUpdate( true, false )
+      #   tr.timeline._timelines[0]._firstUpdate( -1, false )
+      #   expect(tr._tuneHistoryRecord).not.toHaveBeenCalledWith 0
 
-      it 'should not call tune options if no index and forward direction', ->
-        options = { onUpdate:-> }
-        tr = new Transit().then({ fill: 'cyan' })
-        tr._overrideUpdateCallbacks( options )
+      # it 'should not call tune options if no index and forward direction', ->
+      #   options = { onUpdate:-> }
+      #   tr = new Transit().then({ fill: 'cyan' })
+      #   tr._overrideUpdateCallbacks( options )
 
-        spyOn tr, '_tuneOptions'
-        # options.onFirstUpdate( true, false )
-        tr.timeline._timelines[0]._firstUpdate( 1, false )
-        expect(tr._tuneOptions).not.toHaveBeenCalledWith tr.history[0]
+      #   spyOn tr, '_tuneHistoryRecord'
+      #   # options.onFirstUpdate( true, false )
+      #   tr.timeline._timelines[0]._firstUpdate( 1, false )
+      #   expect(tr._tuneHistoryRecord).not.toHaveBeenCalledWith 0
 
   describe '_makeTweenControls method ->', ->
     it 'should override this._o.onUpdate', ->
