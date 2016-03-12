@@ -9,8 +9,6 @@ describe 'mojs ->', ->
     expect(mojs.h).toBe mojs.helpers
   it 'should expose h.delta mojs', ->
     expect(mojs.delta).toBe mojs.helpers.delta
-  it 'should have shapesMap', ->
-    expect(mojs.shapesMap).toBeDefined()
   it 'should have Burst', ->
     expect(mojs.Burst).toBeDefined()
   it 'should have Transit', ->
@@ -27,7 +25,13 @@ describe 'mojs ->', ->
     expect(mojs.Timeline).toBeDefined()
   it 'should have Tween', ->
     expect(mojs.Tween).toBeDefined()
+  it 'should have Tweenable', ->
+    expect(mojs.Tweenable).toBeDefined()
+  it 'should have Thenable', ->
+    expect(mojs.Thenable).toBeDefined()
   it 'should have tweener', ->
     expect(mojs.tweener).toBeDefined()
   it 'should have easing', ->
     expect(mojs.easing).toBeDefined()
+  it 'should have shapesMap', ->
+    expect(mojs.shapesMap).toBeDefined()

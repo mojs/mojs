@@ -484,9 +484,6 @@ class Transit extends Tweenable {
     @returns {Object} this.
   */
   _setProgress ( progress, isShow ) {
-    // if (!isShow) {
-      // this._show();
-    // }
     this.progress = progress;
     this._calcCurrentProps(progress);
     this._calcOrigin();
@@ -538,7 +535,6 @@ class Transit extends Tweenable {
   /*
     Method to calculate transform origin for the element.
     @private
-
   */
   _calcOrigin () {
     var p = this._props;
@@ -693,7 +689,7 @@ class Transit extends Tweenable {
     var it         = this; // save lexical this, uh oh
     // override(or define) tween control callbacks
     this._overrideUpdateCallbacks( this._o );
-    
+
     var onStart   = this._o.onStart,
         isOnStart = (onStart && typeof onStart === 'function');
     // redefine onStart to show/hide Transit

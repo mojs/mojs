@@ -15,9 +15,6 @@
     it('should expose h.delta mojs', function() {
       return expect(mojs.delta).toBe(mojs.helpers.delta);
     });
-    it('should have shapesMap', function() {
-      return expect(mojs.shapesMap).toBeDefined();
-    });
     it('should have Burst', function() {
       return expect(mojs.Burst).toBeDefined();
     });
@@ -42,11 +39,20 @@
     it('should have Tween', function() {
       return expect(mojs.Tween).toBeDefined();
     });
+    it('should have Tweenable', function() {
+      return expect(mojs.Tweenable).toBeDefined();
+    });
+    it('should have Thenable', function() {
+      return expect(mojs.Thenable).toBeDefined();
+    });
     it('should have tweener', function() {
       return expect(mojs.tweener).toBeDefined();
     });
-    return it('should have easing', function() {
+    it('should have easing', function() {
       return expect(mojs.easing).toBeDefined();
+    });
+    return it('should have shapesMap', function() {
+      return expect(mojs.shapesMap).toBeDefined();
     });
   });
 
