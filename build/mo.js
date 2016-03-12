@@ -644,7 +644,7 @@
 	//  - properties signatures
 	//  - move to submodules (Thenable)
 	//  - move to Deltable
-	//  - move to Historable
+	//  - move to Runable
 	//  --
 	//  - tween for every prop
 
@@ -662,29 +662,53 @@
 	      this.defaults = {
 	        // ∆ :: Possible values: [color name, rgb, rgba, hex]
 	        stroke: 'transparent',
-	        strokeOpacity: 1, // deltable: true
-	        strokeLinecap: '', // stroke line cap. deltable: false
-	        strokeWidth: 2, // stroke width.    deltable: true
-	        strokeDasharray: 0, // stroke dasharray.
+	        // ∆ :: Possible values: [ 0..1 ]
+	        strokeOpacity: 1,
+	        // Possible values: ['butt' | 'round' | 'square']
+	        strokeLinecap: '',
+	        // ∆ :: Possible values: [ number ]
+	        strokeWidth: 2,
+	        // ∆ :: Units :: Possible values: [ number, string ]
+	        strokeDasharray: 0,
+	        // ∆ :: Units :: Possible values: [ number, string ]
 	        strokeDashoffset: 0,
+	        // ∆ :: Possible values: [color name, rgb, rgba, hex]
 	        fill: 'deeppink',
+	        // ∆ :: Possible values: [ 0..1 ]
 	        fillOpacity: 1,
+	        // ∆ :: Units :: Possible values: [ number, string ]
 	        left: 0,
+	        // ∆ :: Units :: Possible values: [ number, string ]
 	        top: 0,
+	        // ∆ :: Units :: Possible values: [ number, string ]
 	        x: 0,
+	        // ∆ :: Units :: Possible values: [ number, string ]
 	        y: 0,
+	        // ∆ :: Units :: Possible values: [ number, string ]
 	        rx: 0,
+	        // ∆ :: Units :: Possible values: [ number, string ]
 	        ry: 0,
+	        // ∆ :: Possible values: [ number ]
 	        angle: 0,
+	        // ∆ :: Possible values: [ number ]
 	        scale: 1,
+	        // ∆ :: Possible values: [ 0..1 ]
 	        opacity: 1,
+	        // ∆ :: Possible values: [ number ]
 	        points: 3,
+	        // ∆ :: Possible values: [ number ]
 	        radius: { 0: 50 },
+	        // ∆ :: Possible values: [ number ]
 	        radiusX: null,
+	        // ∆ :: Possible values: [ number ]
 	        radiusY: null,
+	        // Possible values: [ boolean ]
 	        isShowStart: false,
+	        // Possible values: [ boolean ]
 	        isShowEnd: false,
+	        // Possible values: [ number ]
 	        size: null,
+	        // Possible values: [ number ]
 	        sizeGap: 0
 	      };
 	    }
@@ -724,31 +748,14 @@
 	    value: function run(o) {
 	      // if options object was passed
 	      if (o && (0, _keys2.default)(o).length) {
-	        // if history has more than one record
-	        // if (this.history.length > 1) {
-	        //   var keys = Object.keys(o),
-	        //       len  = keys.length;
-	        //   while (len--) {
-	        //     var key = keys[len];
-	        //     // callbacks and options can not be overriden by the run call
-	        //     if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-	        //       h.warn(`the "${key}" property can not be overridden
-	        //               on run with \"then\" chain yet`);
-	        //       delete o[key];
-	        //     }
-	        //   }
-	        // }
 	        this._transformHistory(o);
 	        this._tuneNewOption(o);
 	        // save to history
 	        o = h.cloneObj(this.history[0]);
 	        h.extend(o, this.defaults);
 	        this.history[0] = o;
-	        // !this._o.isDrawLess && this._setProgress(0, true);
-	      } // else if (o) { this._tuneNewOption(this.history[0]); }
-	      // console.log('play')
-	      this.stop();
-	      this.play();
+	      }
+	      this.stop().play();
 	      return this;
 	    }
 	    // ^ Public methods / APIs
@@ -7201,6 +7208,77 @@
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
+
+	var ns = 'http://www.w3.org/2000/svg';
+	var svg = document.createElementNS(ns, 'svg');
+
+	var tr = new mojs.Transit({
+	  left: '50%', top: '50%',
+	  shape: 'polygon',
+	  strokeWidth: 20,
+	  angle: { 0: 200 },
+	  radius: 10,
+	  fill: 'none',
+	  stroke: { 'white': 'cyan' },
+	  points: { 3: 20 }, // make triangle
+	  duration: 2000,
+	  // delay:    4000,
+	  isShowEnd: 1,
+	  scale: { 0: 6 },
+	  // timeline: { repeat: 2, yoyo: true },
+	  onStart: function onStart() {
+	    console.log('start 1');
+	  },
+	  onComplete: function onComplete() {
+	    console.log('comple 1');
+	  },
+	  onFirstUpdate: function onFirstUpdate() {
+	    console.log('first update 1');
+	  }
+	}). // easing: 'expo.in'
+	then({
+	  onStart: function onStart() {
+	    console.log('start 2');
+	  },
+	  onComplete: function onComplete() {
+	    console.log('comple 2');
+	  },
+	  onFirstUpdate: function onFirstUpdate() {
+	    console.log('first update 2');
+	  },
+	  points: 3, // make triangle
+	  angle: -180,
+	  duration: 300,
+	  stroke: 'yellow',
+	  easing: 'expo.in',
+	  scale: .5
+	}).then({
+	  onStart: function onStart() {
+	    console.log('start 3');
+	  },
+	  onComplete: function onComplete() {
+	    console.log('comple 3');
+	  },
+	  onFirstUpdate: function onFirstUpdate() {
+	    console.log('first update 3');
+	  },
+	  strokeWidth: 0,
+	  stroke: 'hotpink',
+	  duration: 400,
+	  easing: 'cubic.out',
+	  // scale: { 1: 1 },
+	  radius: 40,
+	  scale: 1,
+	  angle: 90
+	});
+	// .play();
+
+	// speed: 1
+	// opacity: 0
+	var sliderEl = document.querySelector('#js-range-slider');
+	sliderEl && sliderEl.addEventListener('input', function () {
+	  tr.setProgress(sliderEl.value / 1000);
+	});
 
 	// ### istanbul ignore next ###
 	if (true) {

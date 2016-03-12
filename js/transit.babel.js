@@ -10,7 +10,7 @@ import Timeline   from './tween/timeline';
 //  - properties signatures
 //  - move to submodules (Thenable)
 //  - move to Deltable
-//  - move to Historable
+//  - move to Runable
 //  --
 //  - tween for every prop
 
@@ -24,29 +24,53 @@ class Transit extends Tweenable {
     this.defaults = {
       // ∆ :: Possible values: [color name, rgb, rgba, hex]
       stroke:           'transparent',
-      strokeOpacity:    1,             // deltable: true
-      strokeLinecap:    '',            // stroke line cap. deltable: false
-      strokeWidth:      2,             // stroke width.    deltable: true
-      strokeDasharray:  0,             // stroke dasharray. 
+      // ∆ :: Possible values: [ 0..1 ]
+      strokeOpacity:    1,
+      // Possible values: ['butt' | 'round' | 'square']
+      strokeLinecap:    '',
+      // ∆ :: Possible values: [ number ]
+      strokeWidth:      2,
+      // ∆ :: Units :: Possible values: [ number, string ]
+      strokeDasharray:  0,
+      // ∆ :: Units :: Possible values: [ number, string ]
       strokeDashoffset: 0,
+      // ∆ :: Possible values: [color name, rgb, rgba, hex]
       fill:             'deeppink',
+      // ∆ :: Possible values: [ 0..1 ]
       fillOpacity:      1,
+      // ∆ :: Units :: Possible values: [ number, string ]
       left:             0,
+      // ∆ :: Units :: Possible values: [ number, string ]
       top:              0,
+      // ∆ :: Units :: Possible values: [ number, string ]
       x:                0,
+      // ∆ :: Units :: Possible values: [ number, string ]
       y:                0,
+      // ∆ :: Units :: Possible values: [ number, string ]
       rx:               0,
+      // ∆ :: Units :: Possible values: [ number, string ]
       ry:               0,
+      // ∆ :: Possible values: [ number ]
       angle:            0,
+      // ∆ :: Possible values: [ number ]
       scale:            1,
+      // ∆ :: Possible values: [ 0..1 ]
       opacity:          1,
+      // ∆ :: Possible values: [ number ]
       points:           3,
+      // ∆ :: Possible values: [ number ]
       radius:           { 0: 50 },
+      // ∆ :: Possible values: [ number ]
       radiusX:          null,
+      // ∆ :: Possible values: [ number ]
       radiusY:          null,
+      // Possible values: [ boolean ]
       isShowStart:      false,
+      // Possible values: [ boolean ]
       isShowEnd:        false,
+      // Possible values: [ number ]
       size:             null,
+      // Possible values: [ number ]
       sizeGap:          0
     }
   }
@@ -78,31 +102,14 @@ class Transit extends Tweenable {
   run (o) {
     // if options object was passed
     if (o && Object.keys(o).length) {
-      // if history has more than one record
-      // if (this.history.length > 1) {
-      //   var keys = Object.keys(o),
-      //       len  = keys.length;
-      //   while (len--) {
-      //     var key = keys[len];
-      //     // callbacks and options can not be overriden by the run call
-      //     if (h.callbacksMap[key] || h.tweenOptionMap[key]) {
-      //       h.warn(`the "${key}" property can not be overridden
-      //               on run with \"then\" chain yet`);
-      //       delete o[key];
-      //     }
-      //   }
-      // }
       this._transformHistory(o);
       this._tuneNewOption(o);
       // save to history
       o = h.cloneObj(this.history[0]);
       h.extend(o, this.defaults);
       this.history[0] = o;
-      // !this._o.isDrawLess && this._setProgress(0, true);
-    } // else if (o) { this._tuneNewOption(this.history[0]); }
-    // console.log('play')
-    this.stop();
-    this.play();
+    }
+    this.stop().play();
     return this;
   }
   // ^ Public methods / APIs
