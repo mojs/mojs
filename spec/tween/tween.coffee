@@ -399,7 +399,7 @@ describe 'Tween ->', ->
       expect(t._props.onStart).toHaveBeenCalledWith false, false
       expect(t._props.onRepeatStart).toHaveBeenCalledWith false, false
 
-    it 'should call callbacks if on edge "+1" + wasn\'t yoyo', ->
+    it 'should call callbacks if on edge "+1" + wasnt yoyo', ->
       tm = new mojs.Timeline repeat: 2#, yoyo: true
       duration = 1000
       t = new Tween
@@ -459,7 +459,7 @@ describe 'Tween ->', ->
       expect(t._props.onRepeatComplete).toHaveBeenCalledWith true, false
       expect(t._props.onComplete).toHaveBeenCalledWith true, false
 
-    it 'should call callbacks if on edge "-1" + wasn\'t yoyo', ->
+    it 'should call callbacks if on edge "-1" + wasnt yoyo', ->
       tm = new mojs.Timeline repeat: 1#, yoyo: true
       duration = 1000
       t = new Tween
@@ -5644,6 +5644,11 @@ describe 'Tween ->', ->
       tw = new Tween
       tw._complete()
       expect(tw._isFirstUpdate).toBe false
+    it 'should set _prevYoyo to undefined', ->
+      tw = new Tween
+      tw._prevYoyo = true;
+      tw._complete()
+      expect(tw._prevYoyo).toBe undefined
 
   describe '_start method ->', ->
     it 'should call onStart callback', ->

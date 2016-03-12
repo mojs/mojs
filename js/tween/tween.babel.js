@@ -335,11 +335,13 @@ var Tween = class Tween {
     // // and already completed then return immediately
     // var isEnded = Math.abs(time - this._props.endTime) < .000000000001;
     // if ( isEnded && ( time < this._prevTime ) && ( this._isCompleted || this._isStarted ) ) { return; }
+    
+    // console.log(onEdge, wasYoyo)
 
     // if parent is onEdge but not very start nor very end
     if ( onEdge && wasYoyo != null ) {
       var T        = this._getPeriod(time),
-          isYoyo   = !!(p.yoyo && this._props.repeat && (T % 2 === 1));
+          isYoyo   = !!(p.yoyo && this._props.repeat && (T % 2 === 1));      
       // forward edge direction
       if ( onEdge === 1 ) {
         // jumped from yoyo period?
@@ -755,6 +757,8 @@ var Tween = class Tween {
     }
     this._isCompleted = true; this._isStarted = false;
     this._isFirstUpdate = false;
+    // reset _prevYoyo for timeline usage
+    this._prevYoyo = undefined;
   }
 
   /*

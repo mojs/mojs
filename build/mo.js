@@ -2567,6 +2567,8 @@
 	      // var isEnded = Math.abs(time - this._props.endTime) < .000000000001;
 	      // if ( isEnded && ( time < this._prevTime ) && ( this._isCompleted || this._isStarted ) ) { return; }
 
+	      // console.log(onEdge, wasYoyo)
+
 	      // if parent is onEdge but not very start nor very end
 	      if (onEdge && wasYoyo != null) {
 	        var T = this._getPeriod(time),
@@ -3042,6 +3044,8 @@
 	      }
 	      this._isCompleted = true;this._isStarted = false;
 	      this._isFirstUpdate = false;
+	      // reset _prevYoyo for timeline usage
+	      this._prevYoyo = undefined;
 	    }
 
 	    /*
@@ -7190,7 +7194,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.182.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.182.4', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};

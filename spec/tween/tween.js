@@ -628,7 +628,7 @@
         expect(t._props.onStart).toHaveBeenCalledWith(false, false);
         return expect(t._props.onRepeatStart).toHaveBeenCalledWith(false, false);
       });
-      it('should call callbacks if on edge "+1" + wasn\'t yoyo', function() {
+      it('should call callbacks if on edge "+1" + wasnt yoyo', function() {
         var duration, t, tm;
         tm = new mojs.Timeline({
           repeat: 2
@@ -685,7 +685,7 @@
         expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true, false);
         return expect(t._props.onComplete).toHaveBeenCalledWith(true, false);
       });
-      return it('should call callbacks if on edge "-1" + wasn\'t yoyo', function() {
+      return it('should call callbacks if on edge "-1" + wasnt yoyo', function() {
         var duration, t, tm;
         tm = new mojs.Timeline({
           repeat: 1
@@ -5463,11 +5463,18 @@
         tw._complete();
         return expect(tw._isStarted).toBe(false);
       });
-      return it('should set isFirstUpdate flag to false', function() {
+      it('should set isFirstUpdate flag to false', function() {
         var tw;
         tw = new Tween;
         tw._complete();
         return expect(tw._isFirstUpdate).toBe(false);
+      });
+      return it('should set _prevYoyo to undefined', function() {
+        var tw;
+        tw = new Tween;
+        tw._prevYoyo = true;
+        tw._complete();
+        return expect(tw._prevYoyo).toBe(void 0);
       });
     });
     describe('_start method ->', function() {
