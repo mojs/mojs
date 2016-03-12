@@ -50,7 +50,6 @@ class Tweenable {
     @returns this.
   */
   setProgress () {
-    
     this.timeline.setProgress.apply( this.timeline, arguments );
     return this;
   }
@@ -62,7 +61,8 @@ class Tweenable {
     this._o = o;
     this._transformTweenOptions();
     this._makeTween();
-    this._makeTimeline();
+    // make timeline only if isTimelineLess option is not set
+    !this._o.isTimelineLess && this._makeTimeline();
   }
   /*
     Placeholder method that should be overrided
@@ -78,6 +78,8 @@ class Tweenable {
     // pass callbacks context
     this._o.callbacksContext = this;
     this.tween = new Tween( this._o );
+    // make timeline property point to tween one is "no timeline" mode
+    ( this._o.isTimelineLess ) && ( this.timeline = this.tween );
   }
   /*
     Method to create timeline.

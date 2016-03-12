@@ -110,5 +110,14 @@ describe 'tweenable ->', ->
       result = tw.setProgress( .5 )
       expect(result).toBe tw
 
+  describe 'isTimelineLess options', ->
+    it 'should not create timeline', ->
+      tw = new Tweenable isTimelineLess: true
+      expect(tw._o.timeline).not.toBeDefined()
+    it 'should save tween as timeline property', ->
+      tw = new Tweenable isTimelineLess: true
+      expect(tw.timeline instanceof Timeline).toBe false
+      expect(tw.timeline instanceof Tween).toBe true
+
 
 

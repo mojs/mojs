@@ -109,7 +109,7 @@ class Transit extends Tweenable {
       h.extend(o, this.defaults);
       this.history[0] = o;
     }
-    this.stop().play();
+    this.stop(); this.play();
     return this;
   }
   // ^ Public methods / APIs
@@ -693,8 +693,7 @@ class Transit extends Tweenable {
     var it         = this; // save lexical this, uh oh
     // override(or define) tween control callbacks
     this._overrideUpdateCallbacks( this._o );
-    var onComplete = this._o.onComplete;
-
+    
     var onStart   = this._o.onStart,
         isOnStart = (onStart && typeof onStart === 'function');
     // redefine onStart to show/hide Transit

@@ -173,7 +173,7 @@
         return expect(result).toBe(tw);
       });
     });
-    return describe('setProgress ->', function() {
+    describe('setProgress ->', function() {
       it('should call timeline\'s setProgress method', function() {
         var progress, tw;
         tw = new Tweenable;
@@ -187,6 +187,23 @@
         tw = new Tweenable;
         result = tw.setProgress(.5);
         return expect(result).toBe(tw);
+      });
+    });
+    return describe('isTimelineLess options', function() {
+      it('should not create timeline', function() {
+        var tw;
+        tw = new Tweenable({
+          isTimelineLess: true
+        });
+        return expect(tw._o.timeline).not.toBeDefined();
+      });
+      return it('should save tween as timeline property', function() {
+        var tw;
+        tw = new Tweenable({
+          isTimelineLess: true
+        });
+        expect(tw.timeline instanceof Timeline).toBe(false);
+        return expect(tw.timeline instanceof Tween).toBe(true);
       });
     });
   });

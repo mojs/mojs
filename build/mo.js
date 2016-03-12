@@ -755,7 +755,7 @@
 	        h.extend(o, this.defaults);
 	        this.history[0] = o;
 	      }
-	      this.stop().play();
+	      this.stop();this.play();
 	      return this;
 	    }
 	    // ^ Public methods / APIs
@@ -1486,7 +1486,6 @@
 	      var it = this; // save lexical this, uh oh
 	      // override(or define) tween control callbacks
 	      this._overrideUpdateCallbacks(this._o);
-	      var onComplete = this._o.onComplete;
 
 	      var onStart = this._o.onStart,
 	          isOnStart = onStart && typeof onStart === 'function';
@@ -3779,7 +3778,6 @@
 	  }, {
 	    key: 'setProgress',
 	    value: function setProgress() {
-
 	      this.timeline.setProgress.apply(this.timeline, arguments);
 	      return this;
 	    }
@@ -3796,7 +3794,8 @@
 	    this._o = o;
 	    this._transformTweenOptions();
 	    this._makeTween();
-	    this._makeTimeline();
+	    // make timeline only if isTimelineLess option is not set
+	    !this._o.isTimelineLess && this._makeTimeline();
 	  }
 	  /*
 	    Placeholder method that should be overrided
@@ -3819,6 +3818,8 @@
 	      // pass callbacks context
 	      this._o.callbacksContext = this;
 	      this.tween = new _tween2.default(this._o);
+	      // make timeline property point to tween one is "no timeline" mode
+	      this._o.isTimelineLess && (this.timeline = this.tween);
 	    }
 	    /*
 	      Method to create timeline.
@@ -7201,7 +7202,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.182.4', isDebug: true, helpers: _h2.default,
+	  revision: '0.183.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
