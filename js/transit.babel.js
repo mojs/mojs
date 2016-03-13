@@ -71,7 +71,9 @@ class Transit extends Tweenable {
       // Possible values: [ number ]
       size:             null,
       // Possible values: [ number ]
-      sizeGap:          0
+      sizeGap:          0,
+      // context for all the callbacks
+      callbacksContext: null
     }
   }
   /*

@@ -48,6 +48,7 @@ describe 'Transit ->', ->
       expect(byte.defaults.isShowEnd).toBe        false
       expect(byte.defaults.isShowStart).toBe      false
       expect(byte.defaults.size).toBe             null
+      expect(byte.defaults.callbacksContext).toBe          null
       expect(byte.defaults.sizeGap).toBe          0
   describe '_currentHistoryIndex ->', ->
     it 'should have _currentHistoryIndex of 1', ->
@@ -325,7 +326,7 @@ describe 'Transit ->', ->
     #   byte._transformHistory x: {100: 50}
     #   expect(byte.history[1].x[100]).toBe 50 # x: { 100: 50 }
     #   expect(byte.history[2].x[50]).toBe 20  # x: { 50: 20 }
-    ### old tests ###
+    ### ^^^ old tests ^^^ ###
   describe 'then method ->', ->
     it 'should add new tween with options', ->
       byte = new Byte radius: 20, duration: 1000

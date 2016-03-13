@@ -66,6 +66,7 @@
         expect(byte.defaults.isShowEnd).toBe(false);
         expect(byte.defaults.isShowStart).toBe(false);
         expect(byte.defaults.size).toBe(null);
+        expect(byte.defaults.callbacksContext).toBe(null);
         return expect(byte.defaults.sizeGap).toBe(0);
       });
     });
@@ -376,7 +377,7 @@
 
       /* old tests */
 
-      /* old tests */
+      /* ^^^ old tests ^^^ */
     });
     describe('then method ->', function() {
       it('should add new tween with options', function() {
