@@ -76,7 +76,7 @@ class Tweenable {
   */
   _makeTween () {
     // pass callbacks context
-    this._o.callbacksContext = this;
+    this._o.callbacksContext = this._o.callbacksContext || this;
     this.tween = new Tween( this._o );
     // make timeline property point to tween one is "no timeline" mode
     ( this._o.isTimelineLess ) && ( this.timeline = this.tween );
@@ -91,7 +91,7 @@ class Tweenable {
   _makeTimeline () {
     // pass callbacks context
     this._o.timeline = this._o.timeline || {};
-    this._o.timeline.callbacksContext = this;
+    this._o.timeline.callbacksContext = this._o.callbacksContext || this;
     this.timeline = new Timeline( this._o.timeline );
     // if tween exist - add it to the timeline there
     // is some modules like stagger that have no tween

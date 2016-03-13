@@ -7,10 +7,10 @@ describe 'Swirl ->', ->
     it 'should extend Transit class', ->
       swirl = new Swirl
       expect(swirl instanceof Transit).toBe true
-    it 'should have skipPropsDelta', ->
+    it 'should have _skipPropsDelta', ->
       swirl = new Swirl
-      expect(swirl.skipPropsDelta.x).toBe 1
-      expect(swirl.skipPropsDelta.y).toBe 1
+      expect(swirl._skipPropsDelta.x).toBe 1
+      expect(swirl._skipPropsDelta.y).toBe 1
     it 'should have angleShift value', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}

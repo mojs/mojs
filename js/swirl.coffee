@@ -4,7 +4,7 @@
 Transit = require('./transit').default
 h       = require('./h')
 class Swirl extends Transit
-  skipPropsDelta: x: 1, y: 1
+  _skipPropsDelta: x: 1, y: 1
   _vars:-> super; !@_o.isSwirlLess and @generateSwirl()
   _extendDefaults:->
     super
@@ -29,7 +29,7 @@ class Swirl extends Transit
       delta:  val.delta,
       units:  val.end.unit
     else
-      val = parseFloat(optVal or @defaults[name])
+      val = parseFloat(optVal or @_defaults[name])
       { start: val, end: val, delta: 0, units: 'px' }
   _setProgress:( progress )->
     angle = @positionDelta.angle# + @_props.angleShift

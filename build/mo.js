@@ -589,9 +589,9 @@
 	  value: true
 	});
 
-	var _defineProperty2 = __webpack_require__(19);
+	var _keys = __webpack_require__(26);
 
-	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+	var _keys2 = _interopRequireDefault(_keys);
 
 	var _typeof2 = __webpack_require__(17);
 
@@ -601,10 +601,6 @@
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
 
-	var _keys = __webpack_require__(26);
-
-	var _keys2 = _interopRequireDefault(_keys);
-
 	var _classCallCheck2 = __webpack_require__(20);
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -612,6 +608,10 @@
 	var _possibleConstructorReturn2 = __webpack_require__(21);
 
 	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _get2 = __webpack_require__(24);
+
+	var _get3 = _interopRequireDefault(_get2);
 
 	var _createClass2 = __webpack_require__(22);
 
@@ -621,9 +621,9 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _tweenable = __webpack_require__(9);
+	var _thenable = __webpack_require__(10);
 
-	var _tweenable2 = _interopRequireDefault(_tweenable);
+	var _thenable2 = _interopRequireDefault(_thenable);
 
 	var _tween = __webpack_require__(6);
 
@@ -638,6 +638,7 @@
 	var h = __webpack_require__(13);
 	var Bit = __webpack_require__(23);
 	var shapesMap = __webpack_require__(14);
+	// import Tweenable  from './tween/tweenable';
 
 
 	// TODO
@@ -648,8 +649,8 @@
 	//  --
 	//  - tween for every prop
 
-	var Transit = function (_Tweenable) {
-	  (0, _inherits3.default)(Transit, _Tweenable);
+	var Transit = function (_Thenable) {
+	  (0, _inherits3.default)(Transit, _Thenable);
 	  (0, _createClass3.default)(Transit, [{
 	    key: '_declareDefaults',
 
@@ -659,7 +660,7 @@
 	    */
 	    value: function _declareDefaults() {
 	      // DEFAULTS / APIs
-	      this.defaults = {
+	      this._defaults = {
 	        // ∆ :: Possible values: [color name, rgb, rgba, hex]
 	        stroke: 'transparent',
 	        // ∆ :: Possible values: [ 0..1 ]
@@ -713,30 +714,10 @@
 	        // context for all the callbacks
 	        callbacksContext: null
 	      };
-	    }
-	    /*
-	      Method to create a then record for the module.
-	      @public
-	      @param    {Object} Options for the next animation.
-	      @returns  {Object} this.
-	    */
 
-	  }, {
-	    key: 'then',
-	    value: function then(o) {
-	      // return if nothing was passed
-	      if (o == null || !(0, _keys2.default)(o)) {
-	        return;
-	      }
-	      // merge then options with the current ones
-	      var merged = this._mergeThenOptions(this.history[this.history.length - 1], o);
-	      // define onUpdate and onFirstUpdate control callbacks on the object
-	      this._overrideUpdateCallbacks(merged);
-	      // set isChaned flag on the tween
-	      merged.callbacksContext = this;
-	      // append the tween with the options
-	      this.timeline.append(new _tween2.default(merged));
-	      return this;
+	      this._skipPropsDelta = this._skipPropsDelta || {
+	        callbacksContext: 1
+	      };
 	    }
 	    /*
 	      Method to start the animation with optional new options.
@@ -744,22 +725,19 @@
 	      @param {Object} New options to set on the run.
 	      @returns {Object} this.
 	    */
-
-	  }, {
-	    key: 'run',
-	    value: function run(o) {
-	      // if options object was passed
-	      if (o && (0, _keys2.default)(o).length) {
-	        this._transformHistory(o);
-	        this._tuneNewOption(o);
-	        // save to history
-	        o = h.cloneObj(this.history[0]);
-	        h.extend(o, this.defaults);
-	        this.history[0] = o;
-	      }
-	      this.stop();this.play();
-	      return this;
-	    }
+	    // run (o) {
+	    //   // if options object was passed
+	    //   if (o && Object.keys(o).length) {
+	    //     this._transformHistory(o);
+	    //     this._tuneNewOption(o);
+	    //     // save to history
+	    //     o = h.cloneObj(this.history[0]);
+	    //     h.extend(o, this._defaults);
+	    //     this.history[0] = o;
+	    //   }
+	    //   this.stop(); this.play();
+	    //   return this;
+	    // }
 	    // ^ Public methods / APIs
 	    // v private methods.
 
@@ -792,44 +770,39 @@
 	      this.index = this._o.index || 0;
 	      this._currentHistoryIndex = 0;
 	      this._extendDefaults();
-	      var o = h.cloneObj(this._o);
-	      h.extend(o, this.defaults);
-	      this.history = [o];
+	      // call _vars method on Thenable
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Transit.prototype), '_vars', this).call(this);
 	      // should draw on foreign svg canvas
 	      this.isForeign = !!this._o.ctx;
 	      // should take an svg element as self bit
 	      return this.isForeignBit = !!this._o.bit;
 	    }
-	    /*
-	      Method to override(or define) update callbacks in passed object.
-	      @param {Object} Object to override callbacks in.
-	    */
+	    // /*
+	    //   Method to override(or define) update callbacks in passed object.
+	    //   @param {Object} Object to override callbacks in.
+	    // */
+	    // _overrideUpdateCallbacks (object) {
+	    //   var it         = this, // save lexical this, uh oh
+	    //       onUpdate   = object.onUpdate,
+	    //       isOnUpdate = (onUpdate && typeof onUpdate === 'function');
+	    //   // redefine onUpdate for Transit's draw calculation in _setProgress
+	    //   object.onUpdate = function ( pe ) {
+	    //     // call onUpdate function from options
+	    //     isOnUpdate && onUpdate.apply( this, arguments );
+	    //     // calcalate and draw Transit's progress
+	    //     it._setProgress(pe);
+	    //   };
 
-	  }, {
-	    key: '_overrideUpdateCallbacks',
-	    value: function _overrideUpdateCallbacks(object) {
-	      var it = this,
-	          // save lexical this, uh oh
-	      onUpdate = object.onUpdate,
-	          isOnUpdate = onUpdate && typeof onUpdate === 'function';
-	      // redefine onUpdate for Transit's draw calculation in _setProgress
-	      object.onUpdate = function (pe) {
-	        // call onUpdate function from options
-	        isOnUpdate && onUpdate.apply(this, arguments);
-	        // calcalate and draw Transit's progress
-	        it._setProgress(pe);
-	      };
-
-	      var onFirstUpdate = object.onFirstUpdate,
-	          isOnFirstUpdate = onFirstUpdate && typeof onFirstUpdate === 'function';
-	      // redefine onFirstUpdate for Transit's _tuneHistoryRecord
-	      object.onFirstUpdate = function onFirstUpdateFunction(isForward) {
-	        // call onFirstUpdate function from options
-	        isOnFirstUpdate && onFirstUpdate.apply(this, arguments);
-	        // call tune options with index of the tween
-	        it._tuneHistoryRecord(onFirstUpdateFunction.tween.index || 0);
-	      };
-	    }
+	    //   var onFirstUpdate   = object.onFirstUpdate,
+	    //       isOnFirstUpdate = (onFirstUpdate && typeof onFirstUpdate === 'function');
+	    //   // redefine onFirstUpdate for Transit's _tuneHistoryRecord
+	    //   object.onFirstUpdate = function onFirstUpdateFunction (isForward) {
+	    //     // call onFirstUpdate function from options
+	    //     isOnFirstUpdate && onFirstUpdate.apply( this, arguments );
+	    //     // call tune options with index of the tween
+	    //     it._tuneHistoryRecord( onFirstUpdateFunction.tween.index || 0 );
+	    //   };
+	    // }
 	    /*
 	      Method to parse option string.
 	      Searches for stagger and rand values and parses them.
@@ -907,7 +880,7 @@
 	    value: function _extendDefaults(o) {
 	      // reset deltas if no options was passed
 	      o == null && (this.deltas = {});
-	      var fromObject = o || this.defaults,
+	      var fromObject = o || this._defaults,
 	          keys = (0, _keys2.default)(fromObject),
 	          len = keys.length;
 	      while (len--) {
@@ -1035,7 +1008,6 @@
 	  }, {
 	    key: '_draw',
 	    value: function _draw() {
-	      // console.log(this._props.radius);
 	      this.bit.setProp({
 	        x: this.origin.x,
 	        y: this.origin.y,
@@ -1329,11 +1301,11 @@
 	      }
 	      // skip delta calculation for a property if it is listed
 	      // in skipPropsDelta object
-	      if (this.skipPropsDelta && this.skipPropsDelta[key]) {
+	      if (this._skipPropsDelta && this._skipPropsDelta[key]) {
 	        return;
 	      }
 	      // get delta
-	      delta = h.parseDelta(key, optionsValue, this.defaults[key]);
+	      delta = h.parseDelta(key, optionsValue, this._defaults[key]);
 	      // if successfully parsed - save it
 	      if (delta.type != null) {
 	        this.deltas[key] = delta;
@@ -1341,128 +1313,27 @@
 	      // set props to start value of the delta
 	      // this._props[key] = delta.start;
 	    }
-	    /*
-	      Method to merge two options into one. Used in .then chains.
-	      @private
-	      @param {Object} Start options for the merge.
-	      @param {Object} End options for the merge.
-	      @returns {Object} Merged options.
-	    */
-
-	  }, {
-	    key: '_mergeThenOptions',
-	    value: function _mergeThenOptions(start, end) {
-	      var o = {};
-	      this._mergeStartLoop(o, start);
-	      this._mergeEndLoop(o, start, end);
-	      this.history.push(o);
-	      return o;
-	    }
-	    /*
-	      Originally part of the _mergeThenOptions.
-	      Loops thru start object and copies all the props from it.
-	      @param {Object} An object to copy in.
-	      @parma {Object} Start options object.
-	    */
-
-	  }, {
-	    key: '_mergeStartLoop',
-	    value: function _mergeStartLoop(o, start) {
-	      // loop thru start options object
-	      for (var key in start) {
-	        var value = start[key];
-	        if (start[key] == null) {
-	          continue;
-	        };
-	        // copy all values from start if not tween prop or duration
-	        if (!h.isTweenProp(key) || key === 'duration') {
-	          // if delta - copy only the end value
-	          if (this._isDelta(value)) {
-	            o[key] = h.getDeltaEnd(value);
-	          } else {
-	            o[key] = value;
-	          }
-	        }
-	      }
-	    }
-	    /*
-	      Originally part of the _mergeThenOptions.
-	      Loops thru start object and copies all the props from it.
-	      @param {Object} An object to copy in.
-	      @parma {Object} Start options object.
-	      @parma {Object} End options object.
-	    */
-
-	  }, {
-	    key: '_mergeEndLoop',
-	    value: function _mergeEndLoop(o, start, end) {
-	      var endKeys = (0, _keys2.default)(end);
-
-	      for (var endP in end) {
-	        // get key/value of the end object
-	        // endKey - name of the property, endValue - value of the property
-	        var endValue = end[endP],
-	            startValue = start[endP] != null ? start[endP] : this.defaults[endP];
-	        if (endValue == null) {
-	          continue;
-	        };
-	        // make ∆ of start -> end
-	        // if key name is radiusX/radiusY and
-	        // the startValue is not set fallback to radius value
-	        var isSubRadius = endP === 'radiusX' || endP === 'radiusY';
-	        if (isSubRadius && startValue == null) {
-	          startValue = start.radius;
-	        }
-	        // if isnt tween property
-	        if (!h.isTweenProp(endP)) {
-	          // if end value is delta - just save it
-	          if (this._isDelta(endValue)) {
-	            o[endP] = endValue;
-	          } else {
-	            // if end value is not delta - merge with start value
-	            if (this._isDelta(startValue)) {
-	              // if start value is delta - take the end value
-	              // as start value of the new delta
-	              o[endP] = (0, _defineProperty3.default)({}, h.getDeltaEnd(startValue), endValue);
-	              // if start value is not delta - make delta
-	            } else {
-	                o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
-	              }
-	          }
-	          // copy the tween values unattended
-	        } else {
-	            o[endP] = endValue;
-	          }
-	      }
-	    }
-	    /*
-	      Method to retrieve history record by index
-	      and pass it to the _tuneOptions method.
-	      @param {Number} Index of the history record.
-	    */
-
-	  }, {
-	    key: '_tuneHistoryRecord',
-	    value: function _tuneHistoryRecord(index) {
-	      if (this._currentHistoryIndex === index) {
-	        return 1;
-	      }
-	      this._tuneOptions(this.history[index]);
-	      this._currentHistoryIndex = index;
-	    }
+	    // /*
+	    //   Method to retrieve history record by index
+	    //   and pass it to the _tuneOptions method.
+	    //   @param {Number} Index of the history record.
+	    // */
+	    // _tuneHistoryRecord ( index ) {
+	    //   if ( this._currentHistoryIndex === index ) { return 1; }
+	    //   this._tuneOptions( this.history[index] );
+	    //   this._currentHistoryIndex = index;
+	    // }
 	    /*
 	      Method to tune new options on history traversal.
 	      @param {Object} Options values to tune to.
 	      @private
 	    */
-
-	  }, {
-	    key: '_tuneOptions',
-	    value: function _tuneOptions(o) {
-	      this._extendDefaults(o);this._calcSize();this._setElStyles();
-	    }
+	    // _tuneOptions ( o ) {
+	    //   this._extendDefaults(o); this._calcSize(); this._setElStyles();
+	    // }
 	    /*
 	      Method to setup tween and timeline options before creating them.
+	      @override @ Tweenable
 	      @private  
 	    */
 
@@ -1470,7 +1341,7 @@
 	    key: '_transformTweenOptions',
 	    value: function _transformTweenOptions() {
 	      this._makeTweenControls();
-	      this._makeTimelineControls();
+	      // this._makeTimelineControls();
 	    }
 	    /*
 	      Method to make tween's control callbacks.
@@ -1482,9 +1353,18 @@
 	  }, {
 	    key: '_makeTweenControls',
 	    value: function _makeTweenControls() {
-	      var it = this; // save lexical this, uh oh
 	      // override(or define) tween control callbacks
-	      this._overrideUpdateCallbacks(this._o);
+	      var it = this,
+	          // save lexical this, uh oh
+	      onUpdate = this._o.onUpdate,
+	          isOnUpdate = onUpdate && typeof onUpdate === 'function';
+	      // redefine onUpdate for Transit's draw calculation in _setProgress
+	      this._o.onUpdate = function (pe) {
+	        // call onUpdate function from options
+	        isOnUpdate && onUpdate.apply(this, arguments);
+	        // calcalate and draw Transit's progress
+	        it._setProgress(pe);
+	      };
 
 	      var onStart = this._o.onStart,
 	          isOnStart = onStart && typeof onStart === 'function';
@@ -1496,62 +1376,63 @@
 	        // hide the Transit on reverse complete if isShowStart is not set
 	        isForward ? it._show() : !it._props.isShowStart && it._hide();
 	      };
-	    }
-	    /*
-	      Method to make timelines' control callbacks.
-	      onComplete is used to hide module at the end of animation.
-	      @private
-	    */
 
-	  }, {
-	    key: '_makeTimelineControls',
-	    value: function _makeTimelineControls() {
-	      // make timeline options object if is not defined
-	      this._o.timeline = this._o.timeline || {};
-	      // redefine onStart for Transit's purposes
-	      var it = this,
-	          onComplete = this._o.timeline.onComplete,
+	      var onComplete = this._o.onComplete,
 	          isOnComplete = onComplete && typeof onComplete === 'function';
 
-	      this._o.timeline.onComplete = function (isForward) {
+	      this._o.onComplete = function (isForward) {
 	        // call timeline's onComplete function from options
-	        isOnComplete && onComplete.apply(it.timeline, arguments);
+	        isOnComplete && onComplete.apply(this, arguments);
 	        // hide the Transit at the end / show transit at reverse start
 	        isForward ? !it._props.isShowEnd && it._hide() : it._show();
 	      };
 	    }
+	    // /*
+	    //   Method to make timelines' control callbacks.
+	    //   onComplete is used to hide module at the end of animation.
+	    //   @private
+	    // */
+	    // _makeTimelineControls () {
+	    //   // make timeline options object if is not defined
+	    //   this._o.timeline = this._o.timeline || {};
+	    //   // redefine onStart for Transit's purposes
+	    //   var it           = this,
+	    //       onComplete   = this._o.timeline.onComplete,
+	    //       isOnComplete = (onComplete && typeof onComplete === 'function');
+
+	    //   this._o.timeline.onComplete = function ( isForward ) {
+	    //     // call timeline's onComplete function from options
+	    //     isOnComplete && onComplete.apply( it.timeline, arguments );
+	    //     // hide the Transit at the end / show transit at reverse start
+	    //     ( isForward ) ? (!it._props.isShowEnd && it._hide()) : it._show();
+	    //   };
+	    // }
 	    /*
 	      Method to transform history rewrite new options object chain on run.
 	      @param {Object} New options to tune for.
 	    */
+	    // _transformHistory ( o ) {
+	    //   var optionsKeys = Object.keys(o);
 
-	  }, {
-	    key: '_transformHistory',
-	    value: function _transformHistory(o) {
-	      var optionsKeys = (0, _keys2.default)(o);
+	    //   for (var i = 0; i < optionsKeys.length; i++ ) {
+	    //     var optionsKey   = optionsKeys[i],
+	    //         optionsValue = o[optionsKey];
 
-	      for (var i = 0; i < optionsKeys.length; i++) {
-	        var optionsKey = optionsKeys[i],
-	            optionsValue = o[optionsKey];
-
-	        this._transformHistoryFor(optionsKey, optionsValue);
-	      }
-	    }
+	    //     this._transformHistoryFor( optionsKey, optionsValue );
+	    //   }
+	    // }
 	    /*
 	      Method to transform history chain for specific key/value.
 	      @param {String} Name of the property to transform history for.
 	      @param {Any} The new property's value.
 	    */
-
-	  }, {
-	    key: '_transformHistoryFor',
-	    value: function _transformHistoryFor(key, value) {
-	      for (var i = 0; i < this.history.length; i++) {
-	        if (this._transformHistoryRecord(i, key, value)) {
-	          break; // break if no further history modifications needed
-	        }
-	      }
-	    }
+	    // _transformHistoryFor ( key, value ) {
+	    //   for (var i = 0; i < this.history.length; i++ ) {
+	    //     if ( this._transformHistoryRecord( i, key, value ) ) {
+	    //       break; // break if no further history modifications needed
+	    //     }
+	    //   }
+	    // }
 	    /*
 	      Method to transform history recod with key/value.
 	      @param {Number} Index of the history record to transform.
@@ -1560,100 +1441,86 @@
 	      @returns {Boolean} Returns true if no further
 	                         history modifications is needed.
 	    */
+	    // _transformHistoryRecord ( index, key, value ) {
+	    //   var currRecord    = this.history[index],
+	    //       prevRecord    = this.history[index-1],
+	    //       nextRecord    = this.history[index+1],
+	    //       propertyValue = currRecord[key];
 
-	  }, {
-	    key: '_transformHistoryRecord',
-	    value: function _transformHistoryRecord(index, key, value) {
-	      var currRecord = this.history[index],
-	          prevRecord = this.history[index - 1],
-	          nextRecord = this.history[index + 1],
-	          propertyValue = currRecord[key];
-
-	      if (this._isDelta(value)) {
-	        // if previous history record have been already overriden
-	        // with the delta, copy only the end property to the start
-	        if (prevRecord && prevRecord[key] === value) {
-	          var prevEnd = h.getDeltaEnd(prevRecord[key]);
-	          currRecord[key] = (0, _defineProperty3.default)({}, prevEnd, h.getDeltaEnd(propertyValue));
-	          return true;
-	        } // else go to very end of this function
-	        // if new value is delta
-	      } else {
-	          // if property value is delta - rewrite it's start
-	          // and notify parent to stop hitory modifications
-	          if (this._isDelta(propertyValue)) {
-	            currRecord[key] = (0, _defineProperty3.default)({}, value, h.getDeltaEnd(propertyValue));
-	            return true;
-	            // both are not deltas and further in the chain
-	          } else {
-	              currRecord[key] = value;
-	              // if next record isn't delta - we should always override it
-	              // so do not notify parent
-	              if (nextRecord && !this._isDelta(nextRecord[key])) {
-	                // notify that no modifications needed in the next record
-	                return nextRecord[key] !== propertyValue;
-	              }
-	            } // else go to very end of this function
-	        }
-	      currRecord[key] = value;
-	    }
+	    //   if ( this._isDelta(value) ) {
+	    //     // if previous history record have been already overriden
+	    //     // with the delta, copy only the end property to the start
+	    //     if (prevRecord && prevRecord[key] === value) {
+	    //       var prevEnd     = h.getDeltaEnd(prevRecord[key]);
+	    //       currRecord[key] = { [prevEnd]: h.getDeltaEnd(propertyValue) }
+	    //       return true;
+	    //     } // else go to very end of this function
+	    //   // if new value is delta
+	    //   } else {
+	    //     // if property value is delta - rewrite it's start
+	    //     // and notify parent to stop hitory modifications
+	    //     if ( this._isDelta(propertyValue) ) {
+	    //       currRecord[key] = { [value] : h.getDeltaEnd(propertyValue) };
+	    //       return true;
+	    //     // both are not deltas and further in the chain
+	    //     } else {
+	    //       currRecord[key] = value;
+	    //       // if next record isn't delta - we should always override it
+	    //       // so do not notify parent
+	    //       if (nextRecord && !this._isDelta(nextRecord[key])) {
+	    //         // notify that no modifications needed in the next record
+	    //         return ( nextRecord[key] !== propertyValue );
+	    //       }
+	    //     }// else go to very end of this function
+	    //   }
+	    //   currRecord[key] = value;
+	    // }
 	    /*
 	      Method to tune new option on run.
 	      @private
 	      @param {Object}  Option to tune on run.
 	      @param {Boolean} If foreign svg canvas.
 	    */
-
-	  }, {
-	    key: '_tuneNewOption',
-	    value: function _tuneNewOption(o, isForeign) {
-	      if (o != null && o.shape != null && o.shape !== (this._o.shape || 'circle')) {
-	        h.warn('Sorry, shape can not be changed on run');
-	        delete o.shape;
-	      }
-	      if (o != null && (0, _keys2.default)(o).length) {
-	        this._extendDefaults(o);
-	        this._resetTweens(isForeign);
-	        this._calcSize();
-	        return !isForeign && this._setElStyles();
-	      }
-	    }
+	    // _tuneNewOption (o, isForeign) {
+	    //   if ((o != null) && (o.shape != null) && o.shape !== (this._o.shape || 'circle')) {
+	    //     h.warn('Sorry, shape can not be changed on run');
+	    //     delete o.shape;
+	    //   }
+	    //   if ((o != null) && Object.keys(o).length) {
+	    //     this._extendDefaults(o);
+	    //     this._resetTweens(isForeign);
+	    //     this._calcSize();
+	    //     return !isForeign && this._setElStyles();
+	    //   }
+	    // }
 	    /*
 	      Method to set new options on run.
 	      @param {Boolean} If foreign context.
 	      @private
 	    */
+	    // _resetTweens (isForeign) {
+	    //   var i      = 0,
+	    //       shift  = 0,
+	    //       tweens = this.timeline._timelines;
 
-	  }, {
-	    key: '_resetTweens',
-	    value: function _resetTweens(isForeign) {
-	      var i = 0,
-	          shift = 0,
-	          tweens = this.timeline._timelines;
+	    //   for (var i = 0; i < tweens.length; i++ ) {
+	    //     var tween     = tweens[i],
+	    //         prevTween = tweens[i-1];
 
-	      for (var i = 0; i < tweens.length; i++) {
-	        var tween = tweens[i],
-	            prevTween = tweens[i - 1];
-
-	        shift += prevTween ? prevTween._props.repeatTime : 0;
-	        this._resetTween(tween, this.history[i], shift);
-	      }
-	      !isForeign && this.timeline._recalcTotalDuration();
-	    }
+	    //     shift += (prevTween) ? prevTween._props.repeatTime : 0;
+	    //     this._resetTween( tween, this.history[i], shift );
+	    //   }
+	    //   !isForeign && this.timeline._recalcTotalDuration();
+	    // }
 	    /*
 	      Method to reset tween with new options.
 	      @param {Object} Tween to reset.
 	      @param {Object} Tween's to reset tween with.
 	      @param {Number} Optional number to shift tween start time.
 	    */
-
-	  }, {
-	    key: '_resetTween',
-	    value: function _resetTween(tween, o) {
-	      var shift = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-
-	      o.shiftTime = shift;tween._setProps(o);
-	    }
+	    // _resetTween ( tween, o, shift = 0 ) {
+	    //   o.shiftTime = shift; tween._setProps( o );
+	    // }
 	    /*
 	      Method to set property on the module.
 	      @private
@@ -1697,7 +1564,7 @@
 	    }
 	  }]);
 	  return Transit;
-	}(_tweenable2.default);
+	}(_thenable2.default);
 
 	exports.default = Transit;
 
@@ -3815,7 +3682,7 @@
 	    key: '_makeTween',
 	    value: function _makeTween() {
 	      // pass callbacks context
-	      this._o.callbacksContext = this;
+	      this._o.callbacksContext = this._o.callbacksContext || this;
 	      this.tween = new _tween2.default(this._o);
 	      // make timeline property point to tween one is "no timeline" mode
 	      this._o.isTimelineLess && (this.timeline = this.tween);
@@ -3833,7 +3700,7 @@
 	    value: function _makeTimeline() {
 	      // pass callbacks context
 	      this._o.timeline = this._o.timeline || {};
-	      this._o.timeline.callbacksContext = this;
+	      this._o.timeline.callbacksContext = this._o.callbacksContext || this;
 	      this.timeline = new _timeline2.default(this._o.timeline);
 	      // if tween exist - add it to the timeline there
 	      // is some modules like stagger that have no tween
@@ -3920,6 +3787,8 @@
 	          merged = this._mergeThenOptions(prevRecord, o);
 	      // set the submodule to be without timeline for perf reasons
 	      merged.isTimelineLess = true;
+	      // set the submodule callbacks context
+	      merged.callbacksContext = this;
 	      // create a submodule of the same type as the master module
 	      var module = new this.constructor(merged);
 	      // save the modules to the _modules array
@@ -4015,23 +3884,23 @@
 	          startValue = start.radius;
 	        }
 	        // if isnt tween property
-	        if (!_h2.default.isTweenProp(endP)) {
-	          // if end value is delta - just save it
-	          if (this._isDelta(endValue)) {
-	            o[endP] = endValue;
-	          } else {
-	            // if end value is not delta - merge with start value
-	            if (this._isDelta(startValue)) {
-	              // if start value is delta - take the end value
-	              // as start value of the new delta
-	              o[endP] = (0, _defineProperty3.default)({}, _h2.default.getDeltaEnd(startValue), endValue);
-	              // if start value is not delta - make delta
+	        if (!_h2.default.isTweenProp(endP) /* && endP !== 'shape' */) {
+	            // if end value is delta - just save it
+	            if (this._isDelta(endValue)) {
+	              o[endP] = endValue;
 	            } else {
-	                o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
-	              }
-	          }
-	          // copy the tween values unattended
-	        } else {
+	              // if end value is not delta - merge with start value
+	              if (this._isDelta(startValue)) {
+	                // if start value is delta - take the end value
+	                // as start value of the new delta
+	                o[endP] = (0, _defineProperty3.default)({}, _h2.default.getDeltaEnd(startValue), endValue);
+	                // if start value is not delta - make delta
+	              } else {
+	                  o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
+	                }
+	            }
+	            // copy the tween values unattended
+	          } else {
 	            o[endP] = endValue;
 	          }
 	      }
@@ -5302,7 +5171,7 @@
 	    return Swirl.__super__.constructor.apply(this, arguments);
 	  }
 
-	  Swirl.prototype.skipPropsDelta = {
+	  Swirl.prototype._skipPropsDelta = {
 	    x: 1,
 	    y: 1
 	  };
@@ -5346,7 +5215,7 @@
 	        units: val.end.unit
 	      };
 	    } else {
-	      val = parseFloat(optVal || this.defaults[name]);
+	      val = parseFloat(optVal || this._defaults[name]);
 	      return {
 	        start: val,
 	        end: val,
@@ -7407,13 +7276,68 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.185.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.185.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, tweener: _tweener2.default, easing: _easing2.default,
 	  shapesMap: _shapesMap2.default
 	};
 
-	var tr = new mojs.Transit().then({ radius: 5 });
+	// var tr = new mojs.Transit({
+	//   left: '50%', top: '50%',
+	//   shape:    'polygon',
+	//   strokeWidth: 20,
+	//   angle:    { 0 : 200},
+	//   radius:   10,
+	//   fill:     'none',
+	//   stroke:   { 'white': 'cyan' },
+	//   points:   { 3 : 20 }, // make triangle
+	//   duration: 2000,
+	//   // timeline: { repeat: 2 },
+	//   // delay:    4000,
+	//   // isShowEnd: 1,
+	//   scale: { 0 : 6 },
+	//   // timeline: { repeat: 2, yoyo: true },
+	//   onStart: ()=> { console.log('start 1'); },
+	//   onComplete: ()=> { console.log('comple 1'); },
+	//   onFirstUpdate: ()=> { console.log('first update 1')},
+	//   // easing: 'expo.in'
+	// })
+	// .then({
+	//   onStart: ()=> { console.log('start 2')},
+	//   onComplete: ()=> { console.log('comple 2'); },
+	//   onFirstUpdate: ()=> { console.log('first update 2')},
+	//   points:   3, // make triangle
+	//   angle:    -180,
+	//   duration: 300,
+	//   stroke: 'yellow',
+	//   easing: 'expo.in',
+	//   scale: .5,
+	// })
+	// .then({
+	//   onStart: ()=> { console.log('start 3')},
+	//   onComplete: ()=> { console.log('comple 3'); },
+	//   onFirstUpdate: ()=> { console.log('first update 3')},
+	//   strokeWidth: 0,
+	//   stroke: 'hotpink',
+	//   duration: 400,
+	//   easing: 'cubic.out',
+	//   // scale: { 1: 1 },
+	//   radius: 40,
+	//   scale: 1,
+	//   angle: 90,
+	//   // speed: 1
+	//   // opacity: 0
+	// })
+
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// playEl.addEventListener('click', function () {
+	//   tr.playBackward();
+	// });
+
+	// rangeSliderEl.addEventListener('input', function () {
+	//   tr.setProgress( rangeSliderEl.value/1000 );
+	// });
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;

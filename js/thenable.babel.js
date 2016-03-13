@@ -16,6 +16,8 @@ class Thenable extends Tweenable {
         merged     = this._mergeThenOptions( prevRecord, o );
     // set the submodule to be without timeline for perf reasons
     merged.isTimelineLess = true;
+    // set the submodule callbacks context
+    merged.callbacksContext = this;
     // create a submodule of the same type as the master module
     var module = new this.constructor( merged );
     // save the modules to the _modules array
@@ -94,7 +96,7 @@ class Thenable extends Tweenable {
         startValue = start.radius;
       }
       // if isnt tween property
-      if ( !h.isTweenProp(endP) ) {
+      if ( !h.isTweenProp(endP) /* && endP !== 'shape' */ ) {
         // if end value is delta - just save it
         if ( this._isDelta(endValue) ) { o[endP] = endValue; }
         else {

@@ -14,11 +14,11 @@
         swirl = new Swirl;
         return expect(swirl instanceof Transit).toBe(true);
       });
-      it('should have skipPropsDelta', function() {
+      it('should have _skipPropsDelta', function() {
         var swirl;
         swirl = new Swirl;
-        expect(swirl.skipPropsDelta.x).toBe(1);
-        return expect(swirl.skipPropsDelta.y).toBe(1);
+        expect(swirl._skipPropsDelta.x).toBe(1);
+        return expect(swirl._skipPropsDelta.y).toBe(1);
       });
       return it('should have angleShift value', function() {
         var swirl;

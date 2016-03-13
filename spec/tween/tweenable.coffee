@@ -119,5 +119,11 @@ describe 'tweenable ->', ->
       expect(tw.timeline instanceof Timeline).toBe false
       expect(tw.timeline instanceof Tween).toBe true
 
+  describe 'callbacksContext option ->', ->
+    it 'should pass the options to the tween', ->
+      obj = {}; isRightContext = null
+      tr = new Tweenable callbacksContext: obj
 
+      expect(tr.tween._props.callbacksContext).toBe obj
+      expect(tr.timeline._props.callbacksContext).toBe obj
 

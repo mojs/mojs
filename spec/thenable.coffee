@@ -241,6 +241,12 @@ describe 'thenable ->', ->
         th._vars()
         th.then({ stroke: 'cyan' })
         expect(th._modules[1]._o.isTimelineLess).toBe true
+      it 'should pass this as callbacksContext to the submodule', ->
+        th = new Thenable radius: 20, duration: 1000, delay: 10
+        th._defaults = {}
+        th._vars()
+        th.then({ stroke: 'cyan' })
+        expect(th.timeline._timelines[1]._props.callbacksContext).toBe th
       it 'should add the submodule to the _modules array', ->
         th = new Thenable radius: 20, duration: 1000, delay: 10
         th._defaults = {}
@@ -252,7 +258,7 @@ describe 'thenable ->', ->
         th = new Thenable isIt: 1, radius: 20, duration: 1000, delay: 10
         th._defaults = {}
         th._vars()
-        # spyOn()
         th.then({ stroke: 'cyan' })
         expect(th.timeline._timelines.length).toBe 2
-        # expect(th.timeline._timelines[1]).toBe th._modules[1].tween
+        expect(th.timeline._timelines[1]).toBe th._modules[1].tween
+
