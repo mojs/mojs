@@ -15,11 +15,30 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.185.2', isDebug: true, helpers: h,
+  revision:   '0.185.3', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, tweener, easing,
   shapesMap
 }
+
+var tr = new mojs.Timeline({ repeat: 1 });
+
+var tw1 = new mojs.Tween({
+  onStart: function () { console.log('on start 1'); },
+  onComplete: function () { console.log('on complete 1'); }
+});
+
+var tw2 = new mojs.Tween({
+  onStart: function () { console.log('on start 2'); },
+  onComplete: function () { console.log('on complete 2'); }
+});
+
+var tw3 = new mojs.Tween({
+  onStart: function () { console.log('on start 3'); },
+  onComplete: function () { console.log('on complete 3'); }
+});
+
+tr.append(tw1, tw2, tw3);
 
 // var tr = new mojs.Transit({
 //   left: '50%', top: '50%',
@@ -33,19 +52,17 @@ window.mojs = {
 //   duration: 2000,
 //   isShowStart: true,
 //   isShowEnd: true,
-//   // timeline: { repeat: 2 },
+//   timeline: { repeat: 1, onRepeatComplete: function () { console.log('rep complete'); } },
 //   // delay:    4000,
 //   scale: { 0 : 6 },
 //   // timeline: { repeat: 2, yoyo: true },
 //   onStart: ()=> { console.log('start 1'); },
 //   onComplete: ()=> { console.log('comple 1'); },
-//   onFirstUpdate: ()=> { console.log('first update 1')},
 //   // easing: 'expo.in'
 // })
 // .then({
 //   onStart: ()=> { console.log('start 2')},
 //   onComplete: ()=> { console.log('comple 2'); },
-//   onFirstUpdate: ()=> { console.log('first update 2')},
 //   points:   3, // make triangle
 //   angle:    -180,
 //   duration: 300,
@@ -56,7 +73,6 @@ window.mojs = {
 // .then({
 //   onStart: ()=> { console.log('start 3')},
 //   onComplete: ()=> { console.log('comple 3'); },
-//   onFirstUpdate: ()=> { console.log('first update 3')},
 //   strokeWidth: 0,
 //   stroke: 'hotpink',
 //   duration: 400,
@@ -71,13 +87,13 @@ window.mojs = {
 
 // var playEl = document.querySelector('#js-play'),
 //     rangeSliderEl = document.querySelector('#js-range-slider');
-// playEl.addEventListener('click', function () {
-//   tr.play();
-// });
-
-// // rangeSliderEl.addEventListener('input', function () {
-// //   tr.setProgress( rangeSliderEl.value/1000 );
+// // playEl.addEventListener('click', function () {
+// //   tr.play();
 // // });
+
+// rangeSliderEl.addEventListener('input', function () {
+//   tr.setProgress( rangeSliderEl.value/1000 );
+// });
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;

@@ -484,6 +484,56 @@ describe 'Tween ->', ->
 
       expect(t._props.onRepeatStart).toHaveBeenCalledWith false, false
       expect(t._props.onStart).toHaveBeenCalledWith false, false
+
+    it "should call callbacks if on edge '-1' + wasnt yoyo
+        but only if prevTime was active", ->
+      tm = new mojs.Timeline repeat: 1#, yoyo: true
+      t1 = new Tween
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
+      t2 = new Tween
+        onStart:->
+        onRepeatStart:->
+        onUpdate:->
+        onProgress:->
+        onRepeatComplete:->
+        onComplete:->
+        onFirstUpdate:->
+
+      tm.append t1, t2
+
+      tm.setProgress 0
+      tm.setProgress .1
+      tm.setProgress .2
+      tm.setProgress .3
+      tm.setProgress .4
+      tm.setProgress .6
+      tm.setProgress .65
+      tm.setProgress .55
+      
+      spyOn(t1._props, 'onComplete').and.callThrough()
+      spyOn(t1._props, 'onRepeatStart').and.callThrough()
+      spyOn(t1._props, 'onStart').and.callThrough()
+      spyOn(t2._props, 'onRepeatStart').and.callThrough()
+      spyOn(t2._props, 'onStart').and.callThrough()
+
+      tm.setProgress .45
+      tm.setProgress .3
+      
+      expect(t1._props.onStart).toHaveBeenCalledWith false, false
+      expect(t1._props.onRepeatStart).toHaveBeenCalledWith false, false
+      
+      expect(t2._props.onStart).not.toHaveBeenCalledWith false, false
+      expect(t2._props.onRepeatStart).not.toHaveBeenCalledWith false, false
+
+      expect(t1._props.onComplete).not.toHaveBeenCalledWith false, false
+      expect(t1._isCompleted).toBe true
+
   
   it 'should call callbacks if on edge "-1" + was yoyo', ->
       tm = new mojs.Timeline repeat: 1, yoyo: true

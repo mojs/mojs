@@ -8,8 +8,9 @@ import Tween      from './tween/tween';
 import Timeline   from './tween/timeline';
 
 // TODO
-//  - properties signatures
 //  - move to submodules (Thenable)
+//    - refactor transit and thenable
+//    - add ability the to switch shapes
 //  - move to Deltable
 //  - move to Runable
 //  --

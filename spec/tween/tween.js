@@ -685,7 +685,7 @@
         expect(t._props.onRepeatComplete).toHaveBeenCalledWith(true, false);
         return expect(t._props.onComplete).toHaveBeenCalledWith(true, false);
       });
-      return it('should call callbacks if on edge "-1" + wasnt yoyo', function() {
+      it('should call callbacks if on edge "-1" + wasnt yoyo', function() {
         var duration, t, tm;
         tm = new mojs.Timeline({
           repeat: 1
@@ -709,6 +709,52 @@
         tm.setProgress(.45);
         expect(t._props.onRepeatStart).toHaveBeenCalledWith(false, false);
         return expect(t._props.onStart).toHaveBeenCalledWith(false, false);
+      });
+      return it("should call callbacks if on edge '-1' + wasnt yoyo but only if prevTime was active", function() {
+        var t1, t2, tm;
+        tm = new mojs.Timeline({
+          repeat: 1
+        });
+        t1 = new Tween({
+          onStart: function() {},
+          onRepeatStart: function() {},
+          onUpdate: function() {},
+          onProgress: function() {},
+          onRepeatComplete: function() {},
+          onComplete: function() {},
+          onFirstUpdate: function() {}
+        });
+        t2 = new Tween({
+          onStart: function() {},
+          onRepeatStart: function() {},
+          onUpdate: function() {},
+          onProgress: function() {},
+          onRepeatComplete: function() {},
+          onComplete: function() {},
+          onFirstUpdate: function() {}
+        });
+        tm.append(t1, t2);
+        tm.setProgress(0);
+        tm.setProgress(.1);
+        tm.setProgress(.2);
+        tm.setProgress(.3);
+        tm.setProgress(.4);
+        tm.setProgress(.6);
+        tm.setProgress(.65);
+        tm.setProgress(.55);
+        spyOn(t1._props, 'onComplete').and.callThrough();
+        spyOn(t1._props, 'onRepeatStart').and.callThrough();
+        spyOn(t1._props, 'onStart').and.callThrough();
+        spyOn(t2._props, 'onRepeatStart').and.callThrough();
+        spyOn(t2._props, 'onStart').and.callThrough();
+        tm.setProgress(.45);
+        tm.setProgress(.3);
+        expect(t1._props.onStart).toHaveBeenCalledWith(false, false);
+        expect(t1._props.onRepeatStart).toHaveBeenCalledWith(false, false);
+        expect(t2._props.onStart).not.toHaveBeenCalledWith(false, false);
+        expect(t2._props.onRepeatStart).not.toHaveBeenCalledWith(false, false);
+        expect(t1._props.onComplete).not.toHaveBeenCalledWith(false, false);
+        return expect(t1._isCompleted).toBe(true);
       });
     });
     it('should call callbacks if on edge "-1" + was yoyo', function() {

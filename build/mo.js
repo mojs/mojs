@@ -644,8 +644,9 @@
 
 
 	// TODO
-	//  - properties signatures
 	//  - move to submodules (Thenable)
+	//    - refactor transit and thenable
+	//    - add ability the to switch shapes
 	//  - move to Deltable
 	//  - move to Runable
 	//  --
@@ -2422,17 +2423,11 @@
 	        time = this._playTime + p.speed * (time - this._playTime);
 	      }
 
-	      // // if end time(with precision issue fix)
-	      // // and already completed then return immediately
-	      // var isEnded = Math.abs(time - this._props.endTime) < .000000000001;
-	      // if ( isEnded && ( time < this._prevTime ) && ( this._isCompleted || this._isStarted ) ) { return; }
-
-	      // console.log(onEdge, wasYoyo)
-
 	      // if parent is onEdge but not very start nor very end
 	      if (onEdge && wasYoyo != null) {
 	        var T = this._getPeriod(time),
 	            isYoyo = !!(p.yoyo && this._props.repeat && T % 2 === 1);
+
 	        // forward edge direction
 	        if (onEdge === 1) {
 	          // jumped from yoyo period?
@@ -2453,9 +2448,15 @@
 	              this._repeatComplete(time, isYoyo);
 	              this._complete(time, isYoyo);
 	            } else {
-	              this._prevTime = time + 1;
-	              this._repeatStart(time, isYoyo);
-	              this._start(time, isYoyo);
+	              // call _start callbacks only if prev time was in active area
+	              // not always true for append chains
+	              if (this._prevTime >= p.startTime && this._prevTime <= p.endTime) {
+	                this._prevTime = time + 1;
+	                this._repeatStart(time, isYoyo);
+	                this._start(time, isYoyo);
+	                // reset isCOmpleted immediately to prevent onComplete cb
+	                this._isCompleted = true;
+	              }
 	            }
 	          }
 	        // reset the _prevTime === drop one frame to undestand
@@ -2949,6 +2950,7 @@
 	        p.onRepeatComplete.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
 	      }
 	      this._isRepeatCompleted = true;
+	      // this._prevYoyo = null;
 	    }
 
 	    /*
@@ -7269,11 +7271,42 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.185.2', isDebug: true, helpers: _h2.default,
+	  revision: '0.185.3', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, tweener: _tweener2.default, easing: _easing2.default,
 	  shapesMap: _shapesMap2.default
 	};
+
+	var tr = new mojs.Timeline({ repeat: 1 });
+
+	var tw1 = new mojs.Tween({
+	  onStart: function onStart() {
+	    console.log('on start 1');
+	  },
+	  onComplete: function onComplete() {
+	    console.log('on complete 1');
+	  }
+	});
+
+	var tw2 = new mojs.Tween({
+	  onStart: function onStart() {
+	    console.log('on start 2');
+	  },
+	  onComplete: function onComplete() {
+	    console.log('on complete 2');
+	  }
+	});
+
+	var tw3 = new mojs.Tween({
+	  onStart: function onStart() {
+	    console.log('on start 3');
+	  },
+	  onComplete: function onComplete() {
+	    console.log('on complete 3');
+	  }
+	});
+
+	tr.append(tw1, tw2, tw3);
 
 	// var tr = new mojs.Transit({
 	//   left: '50%', top: '50%',
@@ -7287,19 +7320,17 @@
 	//   duration: 2000,
 	//   isShowStart: true,
 	//   isShowEnd: true,
-	//   // timeline: { repeat: 2 },
+	//   timeline: { repeat: 1, onRepeatComplete: function () { console.log('rep complete'); } },
 	//   // delay:    4000,
 	//   scale: { 0 : 6 },
 	//   // timeline: { repeat: 2, yoyo: true },
 	//   onStart: ()=> { console.log('start 1'); },
 	//   onComplete: ()=> { console.log('comple 1'); },
-	//   onFirstUpdate: ()=> { console.log('first update 1')},
 	//   // easing: 'expo.in'
 	// })
 	// .then({
 	//   onStart: ()=> { console.log('start 2')},
 	//   onComplete: ()=> { console.log('comple 2'); },
-	//   onFirstUpdate: ()=> { console.log('first update 2')},
 	//   points:   3, // make triangle
 	//   angle:    -180,
 	//   duration: 300,
@@ -7310,7 +7341,6 @@
 	// .then({
 	//   onStart: ()=> { console.log('start 3')},
 	//   onComplete: ()=> { console.log('comple 3'); },
-	//   onFirstUpdate: ()=> { console.log('first update 3')},
 	//   strokeWidth: 0,
 	//   stroke: 'hotpink',
 	//   duration: 400,
@@ -7325,13 +7355,13 @@
 
 	// var playEl = document.querySelector('#js-play'),
 	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// playEl.addEventListener('click', function () {
-	//   tr.play();
-	// });
-
-	// // rangeSliderEl.addEventListener('input', function () {
-	// //   tr.setProgress( rangeSliderEl.value/1000 );
+	// // playEl.addEventListener('click', function () {
+	// //   tr.play();
 	// // });
+
+	// rangeSliderEl.addEventListener('input', function () {
+	//   tr.setProgress( rangeSliderEl.value/1000 );
+	// });
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
