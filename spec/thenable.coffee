@@ -247,6 +247,33 @@ describe 'thenable ->', ->
         th._vars()
         th.then({ stroke: 'cyan' })
         expect(th.timeline._timelines[1]._props.callbacksContext).toBe th
+      it 'should reset isShowStart flag on submodule', ->
+        th = new Thenable
+          radius: 20, duration: 1000, delay: 10
+          isShowStart: true
+
+        th._defaults = {}
+        th._vars()
+        
+        th.then({ stroke: 'cyan' })
+        expect(th._modules[1]._o.isShowStart).toBe false
+
+      it 'should reset isShowEnd flag on previous submodule', ->
+        th = new Thenable
+          radius: 20, duration: 1000, delay: 10
+          isShowEnd: true
+
+        # expect that _props and _setProps are defiened
+        th._props   = {}
+        th._setProp = ( key, value )-> this._props[key] = value
+
+        th._defaults = {}
+        th._vars()
+        
+        th.then({ stroke: 'cyan' })
+
+        expect(th._modules[0]._props.isShowEnd).toBe false
+
       it 'should add the submodule to the _modules array', ->
         th = new Thenable radius: 20, duration: 1000, delay: 10
         th._defaults = {}
@@ -255,7 +282,7 @@ describe 'thenable ->', ->
         expect(th._modules.length).toBe 2
         expect(th._modules[1] instanceof Thenable).toBe true
       it "should add the submodule's tween to timeline", ->
-        th = new Thenable isIt: 1, radius: 20, duration: 1000, delay: 10
+        th = new Thenable radius: 20, duration: 1000, delay: 10
         th._defaults = {}
         th._vars()
         th.then({ stroke: 'cyan' })

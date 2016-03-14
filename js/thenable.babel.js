@@ -16,8 +16,14 @@ class Thenable extends Tweenable {
         merged     = this._mergeThenOptions( prevRecord, o );
     // set the submodule to be without timeline for perf reasons
     merged.isTimelineLess = true;
+    // reset isShowStart flag for the submodules
+    merged.isShowStart    = false;
     // set the submodule callbacks context
     merged.callbacksContext = this;
+
+    var prevModule = this._modules[ this._modules.length - 1 ];
+    prevModule._setProp && prevModule._setProp('isShowEnd', false);
+
     // create a submodule of the same type as the master module
     var module = new this.constructor( merged );
     // save the modules to the _modules array

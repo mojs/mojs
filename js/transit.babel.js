@@ -119,7 +119,6 @@ class Transit extends Thenable {
     this.lastSet  = {};
     this.origin   = {};
     this.index    = this._o.index || 0;
-    this._currentHistoryIndex = 0;
     this._extendDefaults();
     // call _vars method on Thenable
     super._vars();
@@ -589,16 +588,6 @@ class Transit extends Thenable {
     @private  
   */
   _transformTweenOptions () {
-    this._makeTweenControls();
-    // this._makeTimelineControls();
-  }
-  /*
-    Method to make tween's control callbacks.
-    Tween's onUpdate one is used to tackle the _setProgress method,
-    onStart one is used to show/hide module.
-    @private
-  */
-  _makeTweenControls () {
     // override(or define) tween control callbacks
     var it         = this, // save lexical this, uh oh
         onUpdate   = this._o.onUpdate,

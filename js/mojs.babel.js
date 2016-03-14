@@ -15,7 +15,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.185.1', isDebug: true, helpers: h,
+  revision:   '0.185.2', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, tweener, easing,
   shapesMap
@@ -31,9 +31,10 @@ window.mojs = {
 //   stroke:   { 'white': 'cyan' },
 //   points:   { 3 : 20 }, // make triangle
 //   duration: 2000,
+//   isShowStart: true,
+//   isShowEnd: true,
 //   // timeline: { repeat: 2 },
 //   // delay:    4000,
-//   // isShowEnd: 1,
 //   scale: { 0 : 6 },
 //   // timeline: { repeat: 2, yoyo: true },
 //   onStart: ()=> { console.log('start 1'); },
@@ -71,12 +72,12 @@ window.mojs = {
 // var playEl = document.querySelector('#js-play'),
 //     rangeSliderEl = document.querySelector('#js-range-slider');
 // playEl.addEventListener('click', function () {
-//   tr.playBackward();
+//   tr.play();
 // });
 
-// rangeSliderEl.addEventListener('input', function () {
-//   tr.setProgress( rangeSliderEl.value/1000 );
-// });
+// // rangeSliderEl.addEventListener('input', function () {
+// //   tr.setProgress( rangeSliderEl.value/1000 );
+// // });
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;

@@ -451,6 +451,40 @@
           });
           return expect(th.timeline._timelines[1]._props.callbacksContext).toBe(th);
         });
+        it('should reset isShowStart flag on submodule', function() {
+          var th;
+          th = new Thenable({
+            radius: 20,
+            duration: 1000,
+            delay: 10,
+            isShowStart: true
+          });
+          th._defaults = {};
+          th._vars();
+          th.then({
+            stroke: 'cyan'
+          });
+          return expect(th._modules[1]._o.isShowStart).toBe(false);
+        });
+        it('should reset isShowEnd flag on previous submodule', function() {
+          var th;
+          th = new Thenable({
+            radius: 20,
+            duration: 1000,
+            delay: 10,
+            isShowEnd: true
+          });
+          th._props = {};
+          th._setProp = function(key, value) {
+            return this._props[key] = value;
+          };
+          th._defaults = {};
+          th._vars();
+          th.then({
+            stroke: 'cyan'
+          });
+          return expect(th._modules[0]._props.isShowEnd).toBe(false);
+        });
         it('should add the submodule to the _modules array', function() {
           var th;
           th = new Thenable({
@@ -469,7 +503,6 @@
         return it("should add the submodule's tween to timeline", function() {
           var th;
           th = new Thenable({
-            isIt: 1,
             radius: 20,
             duration: 1000,
             delay: 10
