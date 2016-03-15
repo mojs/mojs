@@ -42,6 +42,8 @@ class Thenable extends Tweenable {
     this._history = [ h.cloneObj(this._o) ];
     // the array holds all modules in the then chain
     this._modules = [ this ];
+    // the props that to exclude from then merge
+    this._nonMergeProps = { shape: 1 };
   }
   /*
     Method to merge two options into one. Used in .then chains.
@@ -102,7 +104,7 @@ class Thenable extends Tweenable {
         startValue = start.radius;
       }
       // if isnt tween property
-      if ( !h.isTweenProp(endP) /* && endP !== 'shape' */ ) {
+      if ( !h.isTweenProp(endP) && !this._nonMergeProps[endP] ) {
         // if end value is delta - just save it
         if ( this._isDelta(endValue) ) { o[endP] = endValue; }
         else {

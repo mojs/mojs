@@ -3806,6 +3806,8 @@
 	      this._history = [_h2.default.cloneObj(this._o)];
 	      // the array holds all modules in the then chain
 	      this._modules = [this];
+	      // the props that to exclude from then merge
+	      this._nonMergeProps = { shape: 1 };
 	    }
 	    /*
 	      Method to merge two options into one. Used in .then chains.
@@ -3880,23 +3882,23 @@
 	          startValue = start.radius;
 	        }
 	        // if isnt tween property
-	        if (!_h2.default.isTweenProp(endP) /* && endP !== 'shape' */) {
-	            // if end value is delta - just save it
-	            if (this._isDelta(endValue)) {
-	              o[endP] = endValue;
-	            } else {
-	              // if end value is not delta - merge with start value
-	              if (this._isDelta(startValue)) {
-	                // if start value is delta - take the end value
-	                // as start value of the new delta
-	                o[endP] = (0, _defineProperty3.default)({}, _h2.default.getDeltaEnd(startValue), endValue);
-	                // if start value is not delta - make delta
-	              } else {
-	                  o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
-	                }
-	            }
-	            // copy the tween values unattended
+	        if (!_h2.default.isTweenProp(endP) && !this._nonMergeProps[endP]) {
+	          // if end value is delta - just save it
+	          if (this._isDelta(endValue)) {
+	            o[endP] = endValue;
 	          } else {
+	            // if end value is not delta - merge with start value
+	            if (this._isDelta(startValue)) {
+	              // if start value is delta - take the end value
+	              // as start value of the new delta
+	              o[endP] = (0, _defineProperty3.default)({}, _h2.default.getDeltaEnd(startValue), endValue);
+	              // if start value is not delta - make delta
+	            } else {
+	                o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
+	              }
+	          }
+	          // copy the tween values unattended
+	        } else {
 	            o[endP] = endValue;
 	          }
 	      }
@@ -7271,42 +7273,11 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.185.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.186.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, tweener: _tweener2.default, easing: _easing2.default,
 	  shapesMap: _shapesMap2.default
 	};
-
-	var tr = new mojs.Timeline({ repeat: 1 });
-
-	var tw1 = new mojs.Tween({
-	  onStart: function onStart() {
-	    console.log('on start 1');
-	  },
-	  onComplete: function onComplete() {
-	    console.log('on complete 1');
-	  }
-	});
-
-	var tw2 = new mojs.Tween({
-	  onStart: function onStart() {
-	    console.log('on start 2');
-	  },
-	  onComplete: function onComplete() {
-	    console.log('on complete 2');
-	  }
-	});
-
-	var tw3 = new mojs.Tween({
-	  onStart: function onStart() {
-	    console.log('on start 3');
-	  },
-	  onComplete: function onComplete() {
-	    console.log('on complete 3');
-	  }
-	});
-
-	tr.append(tw1, tw2, tw3);
 
 	// var tr = new mojs.Transit({
 	//   left: '50%', top: '50%',
@@ -7320,7 +7291,7 @@
 	//   duration: 2000,
 	//   isShowStart: true,
 	//   isShowEnd: true,
-	//   timeline: { repeat: 1, onRepeatComplete: function () { console.log('rep complete'); } },
+	//   timeline: { repeat: 1, yoyo: true, onRepeatComplete: function () { console.log('rep complete'); } },
 	//   // delay:    4000,
 	//   scale: { 0 : 6 },
 	//   // timeline: { repeat: 2, yoyo: true },

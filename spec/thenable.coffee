@@ -26,6 +26,12 @@ describe 'thenable ->', ->
       expect(h.isArray(th._modules)).toBe true
       expect(th._modules.length).toBe 1
       expect(th._modules[0]).toBe th
+    it 'should declare _nonMergeProps map', ->
+      th = new Thenable
+      th._vars()
+      expect(h.isObject(th._nonMergeProps)).toBe true
+      expect(Object.keys(th._nonMergeProps).length).toBe 1
+      expect(th._nonMergeProps['shape']).toBe 1
 
   Byte = Thenable
   describe '_mergeThenOptions method ->', ->
@@ -103,6 +109,18 @@ describe 'thenable ->', ->
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
       expect(mergedOpton.fill)    .toBe 'cyan'
+
+    it 'should not merge properties from _nonMergeProps ', ->
+      byte = new Byte
+      start = radius: 10, duration: 1000, fill: {'orange' : 'cyan'}, points: 5
+      end   =
+        radius: 20, duration: null, points: undefined
+        fill: null, shape: 'rect'
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.shape)    .toBe 'rect'
+
     it 'should work with new tween values', ->
       byte = new Byte
       start = radius: 10

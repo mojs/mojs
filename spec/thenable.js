@@ -36,13 +36,21 @@
         expect(th._history[0].a).toBe(options.a);
         return expect(th._history[0].b).toBe(options.b);
       });
-      return it('should create _modules object', function() {
+      it('should create _modules object', function() {
         var th;
         th = new Thenable;
         th._vars();
         expect(h.isArray(th._modules)).toBe(true);
         expect(th._modules.length).toBe(1);
         return expect(th._modules[0]).toBe(th);
+      });
+      return it('should declare _nonMergeProps map', function() {
+        var th;
+        th = new Thenable;
+        th._vars();
+        expect(h.isObject(th._nonMergeProps)).toBe(true);
+        expect(Object.keys(th._nonMergeProps).length).toBe(1);
+        return expect(th._nonMergeProps['shape']).toBe(1);
       });
     });
     Byte = Thenable;
@@ -186,6 +194,29 @@
         byte._vars();
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.fill).toBe('cyan');
+      });
+      it('should not merge properties from _nonMergeProps ', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10,
+          duration: 1000,
+          fill: {
+            'orange': 'cyan'
+          },
+          points: 5
+        };
+        end = {
+          radius: 20,
+          duration: null,
+          points: void 0,
+          fill: null,
+          shape: 'rect'
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        return expect(mergedOpton.shape).toBe('rect');
       });
       it('should work with new tween values', function() {
         var byte, end, mergedOpton, start;
