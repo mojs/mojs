@@ -3719,6 +3719,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	  The Thenable class adds .then public method and
+	  the ability to chain API calls.
+	*/
+
 	var Thenable = function (_Tweenable) {
 	  (0, _inherits3.default)(Thenable, _Tweenable);
 
@@ -3743,15 +3748,11 @@
 	      }
 	      // merge then options with the current ones
 	      var prevRecord = this._history[this._history.length - 1],
+	          prevModule = this._modules[this._modules.length - 1],
 	          merged = this._mergeThenOptions(prevRecord, o);
-	      // set the submodule to be without timeline for perf reasons
-	      merged.isTimelineLess = true;
-	      // reset isShowStart flag for the submodules
-	      merged.isShowStart = false;
-	      // set the submodule callbacks context
-	      merged.callbacksContext = this;
 
-	      var prevModule = this._modules[this._modules.length - 1];
+	      this._resetMergedFlags(merged);
+	      // reset isShowEnd flag on prev module
 	      prevModule._setProp && prevModule._setProp('isShowEnd', false);
 
 	      // create a submodule of the same type as the master module
@@ -3761,6 +3762,23 @@
 	      // add module's tween to master timeline
 	      this.timeline.append(module.tween);
 	      return this;
+	    }
+	    /*
+	      Method to reset some flags on merged options object.
+	      @param   {Object} Options object.
+	      @returns {Object} Options object.
+	    */
+
+	  }, {
+	    key: '_resetMergedFlags',
+	    value: function _resetMergedFlags(obj) {
+	      // set the submodule to be without timeline for perf reasons
+	      obj.isTimelineLess = true;
+	      // reset isShowStart flag for the submodules
+	      obj.isShowStart = false;
+	      // set the submodule callbacks context
+	      obj.callbacksContext = this;
+	      return obj;
 	    }
 	    /*
 	      Method to initialize properties.
@@ -7244,7 +7262,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.186.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.186.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, tweener: _tweener2.default, easing: _easing2.default,
 	  shapesMap: _shapesMap2.default

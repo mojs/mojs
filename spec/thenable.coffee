@@ -307,3 +307,18 @@ describe 'thenable ->', ->
         expect(th.timeline._timelines.length).toBe 2
         expect(th.timeline._timelines[1]).toBe th._modules[1].tween
 
+  describe '_resetMergedFlags method', ->
+    it 'should return the same object', ->
+      obj = {}
+      th = new Thenable
+      expect(th._resetMergedFlags(obj)).toBe obj
+
+    it 'should reset flags on the piped object', ->
+      obj = {}
+      th = new Thenable
+      th._resetMergedFlags(obj)
+      expect(obj.isTimelineLess)  .toBe true
+      expect(obj.isShowStart)     .toBe false
+      expect(obj.callbacksContext).toBe th
+
+

@@ -332,7 +332,7 @@
         })).toBe(true);
       });
     });
-    return describe('then method ->', function() {
+    describe('then method ->', function() {
       it("instance of the module should have .constructor property pointing to the module class", function() {
         var th;
         th = new Thenable;
@@ -546,6 +546,23 @@
           expect(th.timeline._timelines.length).toBe(2);
           return expect(th.timeline._timelines[1]).toBe(th._modules[1].tween);
         });
+      });
+    });
+    return describe('_resetMergedFlags method', function() {
+      it('should return the same object', function() {
+        var obj, th;
+        obj = {};
+        th = new Thenable;
+        return expect(th._resetMergedFlags(obj)).toBe(obj);
+      });
+      return it('should reset flags on the piped object', function() {
+        var obj, th;
+        obj = {};
+        th = new Thenable;
+        th._resetMergedFlags(obj);
+        expect(obj.isTimelineLess).toBe(true);
+        expect(obj.isShowStart).toBe(false);
+        return expect(obj.callbacksContext).toBe(th);
       });
     });
   });
