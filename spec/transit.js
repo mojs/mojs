@@ -1950,7 +1950,7 @@
         return expect(result).toBe(tr._props[key]);
       });
     });
-    return describe('callbacksContext option ->', function() {
+    describe('callbacksContext option ->', function() {
       it('should pass the options to the tween', function() {
         var isRightContext, obj, tr;
         obj = {};
@@ -1980,6 +1980,17 @@
         tr.setProgress(0);
         tr.setProgress(.1);
         return expect(isRightContext).toBe(true);
+      });
+    });
+    return describe('_overrideCallback method ->', function() {
+      return it('should override a callback in _o', function() {
+        var fun, tr;
+        fun = function() {};
+        tr = new Transit;
+        tr._o.onStart = fun;
+        tr._overrideCallback('onStart', function() {});
+        expect(tr._o.onStart).not.toBe(fun);
+        return expect(typeof tr._o.onStart).toBe('function');
       });
     });
   });

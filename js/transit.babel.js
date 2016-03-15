@@ -10,7 +10,6 @@ import Timeline   from './tween/timeline';
 // TODO
 //  - move to submodules (Thenable)
 //    - refactor transit and thenable
-//    - add ability the to switch shapes
 //  - move to Deltable
 //  - move to Runable
 //  --
@@ -565,24 +564,6 @@ class Transit extends Thenable {
     // set props to start value of the delta
     // this._props[key] = delta.start;
   }
-  // /*
-  //   Method to retrieve history record by index
-  //   and pass it to the _tuneOptions method.
-  //   @param {Number} Index of the history record.
-  // */
-  // _tuneHistoryRecord ( index ) {
-  //   if ( this._currentHistoryIndex === index ) { return 1; }
-  //   this._tuneOptions( this.history[index] );
-  //   this._currentHistoryIndex = index;
-  // }
-  /*
-    Method to tune new options on history traversal.
-    @param {Object} Options values to tune to.
-    @private
-  */
-  // _tuneOptions ( o ) {
-  //   this._extendDefaults(o); this._calcSize(); this._setElStyles();
-  // }
   /*
     Method to setup tween and timeline options before creating them.
     @override @ Tweenable
@@ -590,6 +571,7 @@ class Transit extends Thenable {
   */
   _transformTweenOptions () {
     // override(or define) tween control callbacks
+    // leave onUpdate callback without optimization due to perf reasons
     var it         = this, // save lexical this, uh oh
         onUpdate   = this._o.onUpdate,
         isOnUpdate = (onUpdate && typeof onUpdate === 'function');
@@ -601,47 +583,30 @@ class Transit extends Thenable {
       it._setProgress(pe);
     };
 
-    var onStart   = this._o.onStart,
-        isOnStart = (onStart && typeof onStart === 'function');
-    // redefine onStart to show/hide Transit
-    this._o.onStart = function ( isForward ) {
-      // call onStart function from options
-      isOnStart && onStart.apply( this, arguments );
-      // show the Transit on start
-      // hide the Transit on reverse complete if isShowStart is not set
-      ( isForward ) ? it._show() : (!it._props.isShowStart && it._hide());
-    };
-
-     var  onComplete   = this._o.onComplete,
-          isOnComplete = (onComplete && typeof onComplete === 'function');
-
-    this._o.onComplete = function ( isForward ) {
-      // call timeline's onComplete function from options
-      isOnComplete && onComplete.apply( this, arguments );
-      // hide the Transit at the end / show transit at reverse start
-      ( isForward ) ? (!it._props.isShowEnd && it._hide()) : it._show();
-    };
+    this._overrideCallback( 'onStart', function (isForward) {
+      isForward ? it._show() : (!it._props.isShowStart && it._hide());
+    });
+    this._overrideCallback( 'onComplete', function (isForward) {
+      isForward ? (!it._props.isShowEnd && it._hide()) : it._show();
+    });
   }
-  // /*
-  //   Method to make timelines' control callbacks.
-  //   onComplete is used to hide module at the end of animation.
-  //   @private
-  // */
-  // _makeTimelineControls () {
-  //   // make timeline options object if is not defined
-  //   this._o.timeline = this._o.timeline || {};
-  //   // redefine onStart for Transit's purposes
-  //   var it           = this,
-  //       onComplete   = this._o.timeline.onComplete,
-  //       isOnComplete = (onComplete && typeof onComplete === 'function');
+  /*
+    Method to override callback for controll pupropes.
+    @private
+    @param {String}    Callback name.
+    @parma {Function}  Method to call  
+  */
+  _overrideCallback (name, fun) {
+    var callback   = this._o[name],
+        isCallback = (callback && typeof callback === 'function');
 
-  //   this._o.timeline.onComplete = function ( isForward ) {
-  //     // call timeline's onComplete function from options
-  //     isOnComplete && onComplete.apply( it.timeline, arguments );
-  //     // hide the Transit at the end / show transit at reverse start
-  //     ( isForward ) ? (!it._props.isShowEnd && it._hide()) : it._show();
-  //   };
-  // }
+    this._o[name] = function () {
+      // call overriden callback if it exists
+      isCallback && callback.apply( this, arguments );
+      // call the passed cleanup function
+      fun.apply( this, arguments );
+    }
+  }
   /*
     Method to transform history rewrite new options object chain on run.
     @param {Object} New options to tune for.

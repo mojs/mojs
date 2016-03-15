@@ -1905,4 +1905,47 @@ describe 'Transit ->', ->
 
       expect(isRightContext).toBe true
 
+  describe '_overrideCallback method ->', ->
+    it 'should override a callback in _o', ->
+
+      fun = ->
+      tr = new Transit
+
+      tr._o.onStart = fun
+      tr._overrideCallback 'onStart', ->
+
+      expect(tr._o.onStart).not.toBe fun
+      expect(typeof tr._o.onStart).toBe 'function'
+
+    # it 'should call overriden callback', ->
+    #   args = null; isRightScope = null
+    #   fun = ->
+    #     args = arguments
+    #     isRightScope = @ is tr
+    #   tr = new Transit
+
+    #   tr._o.onStart = fun
+    #   tr._overrideCallback 'onStart', ->
+
+    #   tr._o.onStart.call( tr, 'a' )
+    #   expect(args[0]).toBe 'a'
+    #   expect(args.length).toBe 1
+    #   expect(isRightScope).toBe true
+
+    # it 'should call passed method callback', ->
+    #   args = null; isRightScope = null
+    #   tr = new Transit
+
+    #   tr._o.onStart = ->
+    #   cleanUpFun = ->
+    #     args = arguments
+    #     isRightScope = @ is tr
+
+    #   tr._overrideCallback 'onStart', cleanUpFun
+
+    #   tr._o.onStart.call( tr, 'a' )
+    #   expect(args[0]).toBe 'a'
+    #   expect(args.length).toBe 1
+    #   expect(isRightScope).toBe true
+
 
