@@ -1,5 +1,5 @@
 (function() {
-  var Timeline, Tween, Tweenable,
+  var Module, Timeline, Tween, Tweenable,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -9,7 +9,16 @@
 
   Tweenable = mojs.Tweenable;
 
+  Module = mojs.Module;
+
   describe('tweenable ->', function() {
+    describe('extention ->', function() {
+      return it('should extend Module', function() {
+        var tw;
+        tw = new Tweenable;
+        return expect(tw instanceof Module).toBe(true);
+      });
+    });
     describe('options ->', function() {
       it('should save options to this._o ->', function() {
         var option, tw;

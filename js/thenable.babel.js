@@ -51,6 +51,7 @@ class Thenable extends Tweenable {
     @private
   */
   _vars () {
+    super._vars();
     // we are expect that the _o object
     // have been already extended by defaults
     this._history = [ h.cloneObj(this._o) ];

@@ -45,6 +45,9 @@
     it('should have Thenable', function() {
       return expect(mojs.Thenable).toBeDefined();
     });
+    it('should have Module', function() {
+      return expect(mojs.Module).toBeDefined();
+    });
     it('should have tweener', function() {
       return expect(mojs.tweener).toBeDefined();
     });

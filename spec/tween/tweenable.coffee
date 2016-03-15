@@ -1,8 +1,13 @@
 Tween     = mojs.Tween
 Timeline  = mojs.Timeline
 Tweenable = mojs.Tweenable
+Module    = mojs.Module
 
 describe 'tweenable ->', ->
+  describe 'extention ->', ->
+    it 'should extend Module', ->
+      tw = new Tweenable
+      expect(tw instanceof Module).toBe true
   describe 'options ->', ->
     it 'should save options to this._o ->', ->
       option = 'some string'

@@ -198,7 +198,9 @@ var Tween = class Tween {
   */
   constructor ( o = {} ) {
     this.o = o;
-    this._declareDefaults(); this._extendDefaults(); this._vars();
+    this._declareDefaults();
+    this._extendDefaults();
+    this._vars();
     ( this._props.name == null ) && this._setSelfName();
     return this;
   }

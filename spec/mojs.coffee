@@ -29,6 +29,8 @@ describe 'mojs ->', ->
     expect(mojs.Tweenable).toBeDefined()
   it 'should have Thenable', ->
     expect(mojs.Thenable).toBeDefined()
+  it 'should have Module', ->
+    expect(mojs.Module).toBeDefined()
   it 'should have tweener', ->
     expect(mojs.tweener).toBeDefined()
   it 'should have easing', ->

@@ -435,10 +435,10 @@ describe 'Burst ->', ->
       burst2 = new Burst
         radius: {120: 0}, count: 2, randomAngle: 1
         childOptions: angle: {25: 50}
-      start2 = burst2.transits[1].deltas.angle.start
-      end2   = burst2.transits[1].deltas.angle.start
-      start1 = burst1.transits[1].deltas.angle.start
-      end1   = burst1.transits[1].deltas.angle.start
+      start2 = burst2.transits[1]._deltas.angle.start
+      end2   = burst2.transits[1]._deltas.angle.start
+      start1 = burst1.transits[1]._deltas.angle.start
+      end1   = burst1.transits[1]._deltas.angle.start
       expect(start2)
         .toBe start1+burst2.transits[1].props.angleShift
       expect(end2)
@@ -557,7 +557,7 @@ describe 'Burst ->', ->
       burst = new Burst radius: { 20: 50 }
       burst.run radius: 10
       expect(burst.props.radius).toBe  10
-      expect(burst.deltas.radius).not.toBeDefined()
+      expect(burst._deltas.radius).not.toBeDefined()
     it 'should recieve new child options', ->
       burst = new Burst radius: { 20: 50 }, duration: 400
       burst.run duration: 500, childOptions: duration: [null, 1000, null]

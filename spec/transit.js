@@ -1,5 +1,5 @@
 (function() {
-  var Bit, Byte, Rect, Thenable, Transit, h, ns, svg;
+  var Bit, Byte, Rect, Thenable, Transit, Tweenable, h, ns, svg;
 
   Byte = mojs.Transit;
 
@@ -8,6 +8,8 @@
   Bit = mojs.shapesMap.getShape('bit');
 
   Thenable = mojs.Thenable;
+
+  Tweenable = mojs.Tweenable;
 
   Rect = mojs.shapesMap.getShape('rect');
 
@@ -38,6 +40,11 @@
       });
     });
     describe('extension ->', function() {
+      it('should extend Tweenable class', function() {
+        var byte;
+        byte = new Byte;
+        return expect(byte instanceof Tweenable).toBe(true);
+      });
       return it('should extend Thenable class', function() {
         var byte;
         byte = new Byte;
@@ -247,125 +254,15 @@
     describe('index option ->', function() {
       it('should receive index option', function() {
         var byte;
-        byte = new Byte({
+        byte = new Transit({
           index: 5
         });
-        return expect(byte.index).toBe(5);
+        return expect(byte._index).toBe(5);
       });
       return it('should fallback to 0', function() {
         var byte;
-        byte = new Byte;
-        return expect(byte.index).toBe(0);
-      });
-    });
-    describe('_isDelta method ->', function() {
-      return it('should detect if value is not a delta value', function() {
-        var byte;
-        byte = new Byte({
-          radius: 45,
-          stroke: {
-            'deeppink': 'pink'
-          }
-        });
-        expect(byte._isDelta(45)).toBe(false);
-        expect(byte._isDelta('45')).toBe(false);
-        expect(byte._isDelta(['45'])).toBe(false);
-        expect(byte._isDelta({
-          unit: 'px',
-          value: 20
-        })).toBe(false);
-        return expect(byte._isDelta({
-          20: 30
-        })).toBe(true);
-      });
-    });
-    describe('_extendDefaults method ->', function() {
-      it('should extend defaults object to properties', function() {
-        var byte;
-        byte = new Byte({
-          radius: 45,
-          radiusX: 50
-        });
-        expect(byte._props.radius).toBe(45);
-        return expect(byte._props.radiusX).toBe(50);
-      });
-      it('should extend defaults object to properties if 0', function() {
-        var byte;
-        byte = new Byte({
-          radius: 0
-        });
-        return expect(byte._props.radius).toBe(0);
-      });
-      it('should extend defaults object to properties if object was passed', function() {
-        var byte;
-        byte = new Byte({
-          radius: {
-            45: 55
-          }
-        });
-        return expect(byte._props.radius).toBe(45);
-      });
-      it('should ignore properties defined in skipProps object', function() {
-        var byte;
-        byte = new Byte({
-          radius: 45
-        });
-        byte.skipProps = {
-          radius: 1
-        };
-        byte._o.radius = 50;
-        byte._extendDefaults();
-        return expect(byte._props.radius).toBe(45);
-      });
-      it('should extend defaults object to properties if array was passed', function() {
-        var byte;
-        byte = new Byte({
-          radius: [50, 100]
-        });
-        return expect(byte._props.radius.join(', ')).toBe('50, 100');
-      });
-      it('should extend defaults object to properties if rand was passed', function() {
-        var byte;
-        byte = new Byte({
-          radius: 'rand(0, 10)'
-        });
-        expect(byte._props.radius).toBeDefined();
-        expect(byte._props.radius).toBeGreaterThan(-1);
-        return expect(byte._props.radius).not.toBeGreaterThan(10);
-      });
-      it('should receive object to iterate from', function() {
-        var byte, fillBefore;
-        byte = new Byte({
-          radius: 'rand(0, 10)',
-          fill: 'deeppink'
-        });
-        fillBefore = byte._props.fill;
-        byte._extendDefaults({
-          radius: 10
-        });
-        expect(byte._props.radius).toBe(10);
-        return expect(byte._props.fill).toBe(fillBefore);
-      });
-      return it('should work with new values', function() {
-        var byte, onProgress;
-        onProgress = function() {};
-        byte = new Byte({
-          radius: 10
-        }).then({
-          onProgress: onProgress
-        });
-        return expect(byte._history[1].onProgress).toBe(onProgress);
-      });
-    });
-    describe('stagger values', function() {
-      return it('should extend defaults object to properties if stagger was passed', function() {
-        var byte;
-        byte = new Byte({
-          radius: 'stagger(200)'
-        });
-        byte.index = 2;
-        byte._extendDefaults();
-        return expect(byte._props.radius).toBe(400);
+        byte = new Transit;
+        return expect(byte._index).toBe(0);
       });
     });
     describe('options history ->', function() {
@@ -610,7 +507,7 @@
         expect(byte.el.style['margin-top']).toBe('-27px');
         expect(byte.el.style['marginLeft']).toBe('-27px');
         expect(byte.el.style['marginTop']).toBe('-27px');
-        return expect(byte.isShown).toBe(false);
+        return expect(byte._isShown).toBe(false);
       });
       it('should skip props if foreign context', function() {
         var byte;
@@ -630,7 +527,7 @@
         expect(byte.el.style['margin-top']).not.toBe('-27px');
         expect(byte.el.style['marginLeft']).not.toBe('-27px');
         expect(byte.el.style['marginTop']).not.toBe('-27px');
-        return expect(byte.isShown).toBe(false);
+        return expect(byte._isShown).toBe(false);
       });
       it('should set display: block if isShowStart was passed', function() {
         var byte;
@@ -638,7 +535,7 @@
           isShowStart: true
         });
         expect(byte.el.style.display).toBe('block');
-        return expect(byte.isShown).toBe(true);
+        return expect(byte._isShown).toBe(true);
       });
       it('should set el size', function() {
         var byte;
@@ -755,8 +652,8 @@
             duration: 200
           });
           byte.play();
-          expect(byte.deltas.left.start.unit).toBe('%');
-          return expect(byte.deltas.left.end.unit).toBe('%');
+          expect(byte._deltas.left.start.unit).toBe('%');
+          return expect(byte._deltas.left.end.unit).toBe('%');
         });
         it('should fallback to end units if units are different', function(dfr) {
           var byte;
@@ -840,34 +737,6 @@
         });
       });
     });
-    describe('_show method ->', function() {
-      it('should set display: block to el', function() {
-        var byte;
-        byte = new Byte;
-        byte._show();
-        return expect(byte.el.style.display).toBe('block');
-      });
-      return it('should return if isShow is already true', function() {
-        var byte;
-        byte = new Byte;
-        byte._show();
-        byte.el.style.display = 'inline';
-        byte._show();
-        return expect(byte.el.style.display).toBe('inline');
-      });
-    });
-    describe('_hide method ->', function() {
-      return it('should set display: block to el', function() {
-        var byte;
-        byte = new Byte;
-        byte._hide();
-        return expect(byte.el.style.display).toBe('none');
-      });
-    });
-
-    /* oled tests */
-
-    /* ^^^ oled tests ^^^ */
     describe('_render method ->', function() {
       it('should call draw method', function() {
         var byte;
@@ -1194,7 +1063,7 @@
           radius: 1
         };
         byte._extendDefaults();
-        return expect(byte.deltas.radius).not.toBeDefined();
+        return expect(byte._deltas.radius).not.toBeDefined();
       });
       describe('numeric values ->', function() {
         it('should calculate delta', function() {
@@ -1204,7 +1073,7 @@
               25: 75
             }
           });
-          radiusDelta = byte.deltas.radius;
+          radiusDelta = byte._deltas.radius;
           expect(radiusDelta.start).toBe(25);
           expect(radiusDelta.delta).toBe(50);
           return expect(radiusDelta.type).toBe('number');
@@ -1216,7 +1085,7 @@
               '25': '75'
             }
           });
-          radiusDelta = byte.deltas.radius;
+          radiusDelta = byte._deltas.radius;
           expect(radiusDelta.start).toBe(25);
           return expect(radiusDelta.delta).toBe(50);
         });
@@ -1227,7 +1096,7 @@
               '25.50': 75.50
             }
           });
-          radiusDelta = byte.deltas.radius;
+          radiusDelta = byte._deltas.radius;
           expect(radiusDelta.start).toBe(25.5);
           return expect(radiusDelta.delta).toBe(50);
         });
@@ -1238,7 +1107,7 @@
               '-25.50': 75.50
             }
           });
-          radiusDelta = byte.deltas.radius;
+          radiusDelta = byte._deltas.radius;
           expect(radiusDelta.start).toBe(-25.5);
           return expect(radiusDelta.delta).toBe(101);
         });
@@ -1249,7 +1118,7 @@
               '25.50': -75.50
             }
           });
-          radiusDelta = byte.deltas.radius;
+          radiusDelta = byte._deltas.radius;
           expect(radiusDelta.start).toBe(25.5);
           expect(radiusDelta.end).toBe(-75.5);
           return expect(radiusDelta.delta).toBe(-101);
@@ -1263,7 +1132,7 @@
               '#000': 'rgb(255,255,255)'
             }
           });
-          colorDelta = byte.deltas.stroke;
+          colorDelta = byte._deltas.stroke;
           expect(colorDelta.start.r).toBe(0);
           expect(colorDelta.end.r).toBe(255);
           expect(colorDelta.delta.r).toBe(255);
@@ -1284,7 +1153,7 @@
             return fun();
           }).not.toThrow();
           expect(console.warn).toHaveBeenCalled();
-          return expect(byte.deltas.strokeLinecap).not.toBeDefined();
+          return expect(byte._deltas.strokeLinecap).not.toBeDefined();
         });
       });
       describe('unit values ->', function() {
@@ -1295,7 +1164,7 @@
               '0%': '100%'
             }
           });
-          xDelta = byte.deltas.x;
+          xDelta = byte._deltas.x;
           expect(xDelta.start.string).toBe('0%');
           expect(xDelta.end.string).toBe('100%');
           expect(xDelta.delta).toBe(100);
@@ -1310,7 +1179,7 @@
               2000: 1000
             }
           });
-          return expect(byte.deltas.duration).not.toBeDefined();
+          return expect(byte._deltas.duration).not.toBeDefined();
         });
       });
     });
@@ -1348,7 +1217,7 @@
           }
         });
         byte._setProgress(.5);
-        return expect(byte.progress).toBe(.5);
+        return expect(byte._progress).toBe(.5);
       });
       it('should set value progress', function() {
         var byte;
@@ -1447,7 +1316,7 @@
             '#000': 'rgb(255,255,255)'
           }
         });
-        colorDelta = byte.deltas.stroke;
+        colorDelta = byte._deltas.stroke;
         byte._setProgress(.5);
         return expect(byte._props.stroke).toBe('rgba(127,127,127,1)');
       });
@@ -1458,7 +1327,7 @@
             '#000': 'rgb(0,255,255)'
           }
         });
-        colorDelta = byte.deltas.stroke;
+        colorDelta = byte._deltas.stroke;
         byte._setProgress(.5);
         return expect(byte._props.stroke).toBe('rgba(0,127,127,1)');
       });
@@ -1703,8 +1572,7 @@
         var byte;
         byte = new Byte({
           ctx: svg,
-          isShowEnd: true,
-          isIt: 1
+          isShowEnd: true
         }).then({
           radius: 10
         });
@@ -1805,6 +1673,54 @@
         return expect(byte.isForeignBit).toBe(true);
       });
     });
+    describe('_makeTweenControls method ->', function() {});
+    it('should override this._o.onStart', function() {
+      var tr;
+      tr = new Transit;
+      expect(typeof tr._o.onStart).toBe('function');
+      it('should not override onStart function if exists', function() {
+        var args, isRightScope, options;
+        isRightScope = null;
+        args = null;
+        options = {
+          onStart: function() {
+            isRightScope = this === tr;
+            return args = arguments;
+          }
+        };
+        tr = new Transit(options);
+        expect(typeof tr._o.onStart).toBe('function');
+        tr.timeline.setProgress(0);
+        tr.timeline.setProgress(.1);
+        expect(isRightScope).toBe(true);
+        expect(args[0]).toBe(true);
+        return expect(args[1]).toBe(false);
+      });
+      it('should show module ', function() {
+        tr = new Transit;
+        tr.timeline.setProgress(0);
+        spyOn(tr, '_show').and.callThrough();
+        tr.timeline.setProgress(.1);
+        return expect(tr._show).toHaveBeenCalled();
+      });
+      it('should hide module ', function() {
+        tr = new Transit;
+        tr.timeline.setProgress(.1);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(0);
+        return expect(tr._hide).toHaveBeenCalled();
+      });
+      return it('should not hide module is isShowStart was set', function() {
+        tr = new Transit({
+          isShowStart: true
+        });
+        tr.timeline.setProgress(.2);
+        tr.timeline.setProgress(.1);
+        spyOn(tr, '_hide').and.callThrough();
+        tr.timeline.setProgress(0);
+        return expect(tr._hide).not.toHaveBeenCalled();
+      });
+    });
     describe('_increaseSizeWithEasing method ->', function() {
       it('should increase size based on easing - elastic.out', function() {
         var tr;
@@ -1865,91 +1781,6 @@
         return expect(tr._props.size).toBe(tr.bit.ratio + 2 * gap);
       });
     });
-    describe('_parseOptionString method ->', function() {
-      var tr;
-      tr = new Transit;
-      it('should parse stagger values', function() {
-        var result, string;
-        string = 'stagger(200)';
-        spyOn(h, 'parseStagger').and.callThrough();
-        result = tr._parseOptionString(string);
-        expect(h.parseStagger).toHaveBeenCalledWith(string, 0);
-        return expect(result).toBe(h.parseStagger(string, 0));
-      });
-      return it('should parse rand values', function() {
-        var result, string;
-        string = 'rand(0,1)';
-        spyOn(h, 'parseRand').and.callThrough();
-        result = tr._parseOptionString(string);
-        return expect(h.parseRand).toHaveBeenCalledWith(string);
-      });
-    });
-    describe('_parsePositionOption method ->', function() {
-      var tr;
-      tr = new Transit;
-      it('should parse position option', function() {
-        var key, result;
-        tr._props.x = '100%';
-        key = 'x';
-        spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parsePositionOption(key);
-        expect(h.parseUnit).toHaveBeenCalledWith(tr._props[key]);
-        return expect(result).toBe(h.parseUnit(tr._props[key]).string);
-      });
-      return it('should leave the value unattended if not pos property', function() {
-        var key, result;
-        tr._props.x = '100%';
-        key = 'fill';
-        spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parsePositionOption(key);
-        expect(h.parseUnit).not.toHaveBeenCalledWith();
-        return expect(result).toBe(tr._props[key]);
-      });
-    });
-    describe('_parseStrokeDashOption method ->', function() {
-      var tr;
-      tr = new Transit;
-      it('should parse strokeDash option', function() {
-        var key, result;
-        tr._props.strokeDasharray = 200;
-        key = 'strokeDasharray';
-        spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parseStrokeDashOption(key);
-        expect(h.parseUnit).toHaveBeenCalledWith(tr._props[key]);
-        expect(result[0].unit).toBe(h.parseUnit(tr._props[key]).unit);
-        expect(result[0].isStrict).toBe(h.parseUnit(tr._props[key]).isStrict);
-        expect(result[0].value).toBe(h.parseUnit(tr._props[key]).value);
-        expect(result[0].string).toBe(h.parseUnit(tr._props[key]).string);
-        return expect(result[1]).not.toBeDefined();
-      });
-      it('should parse strokeDash option string', function() {
-        var key, result;
-        tr._props.strokeDasharray = '200 100';
-        key = 'strokeDasharray';
-        spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parseStrokeDashOption(key);
-        expect(h.parseUnit).toHaveBeenCalledWith('200');
-        expect(h.parseUnit).toHaveBeenCalledWith('100');
-        expect(result[0].unit).toBe(h.parseUnit(200).unit);
-        expect(result[0].isStrict).toBe(h.parseUnit(200).isStrict);
-        expect(result[0].value).toBe(h.parseUnit(200).value);
-        expect(result[0].string).toBe(h.parseUnit(200).string);
-        expect(result[1].unit).toBe(h.parseUnit(100).unit);
-        expect(result[1].isStrict).toBe(h.parseUnit(100).isStrict);
-        expect(result[1].value).toBe(h.parseUnit(100).value);
-        expect(result[1].string).toBe(h.parseUnit(100).string);
-        return expect(result[2]).not.toBeDefined();
-      });
-      return it('should leave the value unattended if not strokeDash.. property', function() {
-        var key, result;
-        tr._props.x = '100%';
-        key = 'fill';
-        spyOn(h, 'parseUnit').and.callThrough();
-        result = tr._parseStrokeDashOption(key);
-        expect(h.parseUnit).not.toHaveBeenCalledWith();
-        return expect(result).toBe(tr._props[key]);
-      });
-    });
     describe('callbacksContext option ->', function() {
       it('should pass the options to the tween', function() {
         var isRightContext, obj, tr;
@@ -1983,7 +1814,7 @@
       });
     });
     return describe('_overrideCallback method ->', function() {
-      return it('should override a callback in _o', function() {
+      it('should override a callback in _o', function() {
         var fun, tr;
         fun = function() {};
         tr = new Transit;
@@ -1991,6 +1822,38 @@
         tr._overrideCallback('onStart', function() {});
         expect(tr._o.onStart).not.toBe(fun);
         return expect(typeof tr._o.onStart).toBe('function');
+      });
+      it('should call overriden callback', function() {
+        var args, fun, isRightScope, tr;
+        args = null;
+        isRightScope = null;
+        fun = function() {
+          args = arguments;
+          return isRightScope = this === tr;
+        };
+        tr = new Transit;
+        tr._o.onStart = fun;
+        tr._overrideCallback('onStart', function() {});
+        tr._o.onStart.call(tr, 'a');
+        expect(args[0]).toBe('a');
+        expect(args.length).toBe(1);
+        return expect(isRightScope).toBe(true);
+      });
+      return it('should call passed method callback', function() {
+        var args, cleanUpFun, isRightScope, tr;
+        args = null;
+        isRightScope = null;
+        tr = new Transit;
+        tr._o.onStart = function() {};
+        cleanUpFun = function() {
+          args = arguments;
+          return isRightScope = this === tr;
+        };
+        tr._overrideCallback('onStart', cleanUpFun);
+        tr._o.onStart.call(tr, 'a');
+        expect(args[0]).toBe('a');
+        expect(args.length).toBe(1);
+        return expect(isRightScope).toBe(true);
       });
     });
   });

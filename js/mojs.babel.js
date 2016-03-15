@@ -11,14 +11,15 @@ import Timeline   from './tween/timeline';
 import Tweener    from './tween/tweener';
 import Tweenable  from './tween/tweenable';
 import Thenable   from './thenable';
+import Module     from './module';
 import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.186.2', isDebug: true, helpers: h,
+  revision:   '0.187.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
-  Tween, Timeline, Tweenable, Thenable, tweener, easing,
-  shapesMap
+  Tween, Timeline, Tweenable, Thenable, Module,
+  tweener, easing, shapesMap
 }
 
 // var tr = new mojs.Transit({
@@ -68,9 +69,9 @@ window.mojs = {
 
 // var playEl = document.querySelector('#js-play'),
 //     rangeSliderEl = document.querySelector('#js-range-slider');
-// // playEl.addEventListener('click', function () {
-// //   tr.play();
-// // });
+// playEl.addEventListener('click', function () {
+//   tr.play();
+// });
 
 // rangeSliderEl.addEventListener('input', function () {
 //   tr.setProgress( rangeSliderEl.value/1000 );

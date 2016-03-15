@@ -739,10 +739,10 @@
             }
           }
         });
-        start2 = burst2.transits[1].deltas.angle.start;
-        end2 = burst2.transits[1].deltas.angle.start;
-        start1 = burst1.transits[1].deltas.angle.start;
-        end1 = burst1.transits[1].deltas.angle.start;
+        start2 = burst2.transits[1]._deltas.angle.start;
+        end2 = burst2.transits[1]._deltas.angle.start;
+        start1 = burst1.transits[1]._deltas.angle.start;
+        end1 = burst1.transits[1]._deltas.angle.start;
         expect(start2).toBe(start1 + burst2.transits[1].props.angleShift);
         return expect(end2).toBe(end1 + burst2.transits[1].props.angleShift);
       });
@@ -932,7 +932,7 @@
           radius: 10
         });
         expect(burst.props.radius).toBe(10);
-        return expect(burst.deltas.radius).not.toBeDefined();
+        return expect(burst._deltas.radius).not.toBeDefined();
       });
       it('should recieve new child options', function() {
         var burst;

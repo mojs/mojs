@@ -1,8 +1,8 @@
 Byte      = mojs.Transit
 Transit   = mojs.Transit
 Bit       = mojs.shapesMap.getShape('bit')
-# Tweenable = mojs.Tweenable
 Thenable  = mojs.Thenable
+Tweenable = mojs.Tweenable
 Rect = mojs.shapesMap.getShape('rect')
 h    = mojs.helpers
 ns   = 'http://www.w3.org/2000/svg'
@@ -23,9 +23,9 @@ describe 'Transit ->', ->
       expect(byte._history.length).toBe 1
 
   describe 'extension ->', ->
-    # it 'should extend Tweenable class', ->
-    #   byte = new Byte
-    #   expect(byte instanceof Tweenable).toBe(true)
+    it 'should extend Tweenable class', ->
+      byte = new Byte
+      expect(byte instanceof Tweenable).toBe(true)
     it 'should extend Thenable class', ->
       byte = new Byte
       expect(byte instanceof Thenable).toBe(true)
@@ -203,72 +203,12 @@ describe 'Transit ->', ->
       expect(byte._o.option).toBe 1
   describe 'index option ->', ->
     it 'should receive index option', ->
-      byte = new Byte index: 5
-      expect(byte.index).toBe 5
+      byte = new Transit index: 5
+      expect(byte._index).toBe 5
     it 'should fallback to 0', ->
-      byte = new Byte
-      expect(byte.index).toBe 0
-  describe '_isDelta method ->', ->
-    it 'should detect if value is not a delta value', ->
-      byte = new Byte radius: 45, stroke: 'deeppink': 'pink'
-      expect(byte._isDelta(45))    .toBe false
-      expect(byte._isDelta('45'))  .toBe false
-      expect(byte._isDelta(['45'])).toBe false
-      expect(byte._isDelta({ unit: 'px', value: 20 })).toBe false
-      expect(byte._isDelta({ 20: 30 })).toBe true
-  describe '_extendDefaults method ->', ->
-    it 'should extend defaults object to properties', ->
-      byte = new Byte radius: 45, radiusX: 50
-      expect(byte._props.radius) .toBe(45)
-      expect(byte._props.radiusX).toBe(50)
-    it 'should extend defaults object to properties if 0', ->
-      byte = new Byte radius: 0
-      expect(byte._props.radius).toBe(0)
-    it 'should extend defaults object to properties if object was passed', ->
-      byte = new Byte radius: {45: 55}
-      expect(byte._props.radius).toBe(45)
-    it 'should ignore properties defined in skipProps object', ->
-      byte = new Byte radius: 45
-      byte.skipProps = radius: 1
-      byte._o.radius = 50
-      byte._extendDefaults()
-      expect(byte._props.radius).toBe(45)
-    # for burst
-    it 'should extend defaults object to properties if array was passed', ->
-      byte = new Byte radius: [50, 100]
-      expect(byte._props.radius.join ', ').toBe '50, 100'
-    it 'should extend defaults object to properties if rand was passed', ->
-      byte = new Byte radius: 'rand(0, 10)'
-      expect(byte._props.radius).toBeDefined()
-      expect(byte._props.radius).toBeGreaterThan -1
-      expect(byte._props.radius).not.toBeGreaterThan 10
-    it 'should receive object to iterate from', ->
-      byte = new Byte
-        radius: 'rand(0, 10)'
-        fill: 'deeppink'
-      fillBefore = byte._props.fill
-      byte._extendDefaults {radius: 10}
-      expect(byte._props.radius).toBe 10
-      expect(byte._props.fill).toBe fillBefore
-    it 'should work with new values', ->
-      onProgress = ->
-      byte = new Byte radius: 10
-      .then onProgress: onProgress
-      expect(byte._history[1].onProgress).toBe onProgress
-  describe 'stagger values', ->
-    it 'should extend defaults object to properties if stagger was passed', ->
-      byte = new Byte radius: 'stagger(200)'
-      byte.index = 2
-      byte._extendDefaults()
-      expect(byte._props.radius).toBe 400
-  # probably redundant
-  # describe 'skipDelta flag', ->
-  #   it 'should skip delta calcultaions on module', ->
-  #     byte = new Byte ctx: svg, radius: {20:30}
-  #     byte.isSkipDelta = true
-  #     spyOn byte, '_getDelta'
-  #     byte._extendDefaults byte.o
-  #     expect(byte._getDelta).not.toHaveBeenCalled()
+      byte = new Transit
+      expect(byte._index).toBe 0
+
   describe 'options history ->', ->
     it 'should have history array', ->
       byte = new Byte
@@ -287,252 +227,7 @@ describe 'Transit ->', ->
     #   byte = new Byte opacity: .5
     #   byte.run()
     #   expect(byte._history[0].radius[0]).toBe 50
-  # describe '_transformHistory method ->', ->
-  #   it 'should call _transformHistoryFor for every new property ->', ->
-  #     tr = new Transit({}).then({ radius: 0 }).then({ radius: 50 })
-  #     spyOn tr, '_transformHistoryFor'
-  #     tr._transformHistory x: 20
-  #     expect(tr._transformHistoryFor)
-  #       .toHaveBeenCalledWith 'x', 20
-  #     expect(tr._transformHistoryFor.calls.count()).toBe 1
-
-  # describe '_transformHistoryFor method ->', ->
-  #   it 'should call _transformHistoryRecord for every history record', ->
-  #     tr = new Transit()
-  #       .then radius: 0
-  #       .then radius: 50
-
-  #     spyOn tr, '_transformHistoryRecord'
-  #     tr._transformHistoryFor( 'x', 20 )
-  #     expect(tr._transformHistoryRecord)
-  #       .toHaveBeenCalledWith 0, 'x', 20
-  #     expect(tr._transformHistoryRecord)
-  #       .toHaveBeenCalledWith 1, 'x', 20
-  #     expect(tr._transformHistoryRecord)
-  #       .toHaveBeenCalledWith 2, 'x', 20
-
-  #   it 'should stop looping if _transformHistoryRecord returns true', ->
-  #     tr = new Transit()
-  #       .then radius: 0
-  #       .then radius: 50
-
-  #     r = 0
-  #     tr._transformHistoryRecord =  -> r++ is 1
-  #     spyOn(tr, '_transformHistoryRecord').and.callThrough()
-
-  #     tr._transformHistoryFor( 'x', 20 )
-  #     expect(tr._transformHistoryRecord)
-  #       .toHaveBeenCalledWith 0, 'x', 20
-  #     expect(tr._transformHistoryRecord)
-  #       .toHaveBeenCalledWith 1, 'x', 20
-  #     expect(tr._transformHistoryRecord)
-  #       .not.toHaveBeenCalledWith 2, 'x', 20
-  
-  # describe '_transformHistoryRecord method ->', ->
-  #   it 'should add property to the record', ->
-  #     tr = new Transit()
-  #       .then radius: 0
-  #       .then radius: 50
-
-  #     result = tr._transformHistoryRecord 0, 'x', 20
-
-  #     expect(tr._history[0].x).toBe 20
-  #     expect(!!result).toBe false
-
-  #   # it 'should return true if new value is delta', ->
-  #   #   tr = new Transit()
-  #   #     .then radius: 0
-  #   #     .then radius: 50
-
-  #   #   result = tr._transformHistoryRecord tr._history[0], 'x', { 10: 20 }
-
-  #   #   expect(tr._history[0].x[10]).toBe 20
-  #   #   expect(!!result).toBe true
-
-  #   it 'should return true if old value is delta', ->
-  #     tr = new Transit({ radius: { 0: 50 } })
-  #       .then radius: 0
-  #       .then radius: 50
-
-  #     result = tr._transformHistoryRecord 0, 'radius', 20
-  #     expect(tr._history[0].radius[20]).toBe 50
-  #     expect(!!result).toBe true
-
-  #   it 'should rewrite everything until first delta', ->
-  #     tr = new Transit({ radius: 75 })
-  #       .then radius: 0
-  #       .then radius: 50
-
-  #     result = tr._transformHistoryRecord 0, 'radius', 20
-  #     expect(tr._history[0].radius).toBe 20
-  #     expect(!!result).toBe false
-
-  #     result = tr._transformHistoryRecord 1, 'radius', 20
-  #     expect(tr._history[1].radius[20]).toBe 0
-  #     expect(!!result).toBe true
-
-  #   it 'should rewrite everything until first defined item', ->
-  #     tr = new Transit({ duration: 2000 })
-  #       .then radius: 0
-  #       .then radius: 50, duration: 5000
-  #       .then radius: 50
-
-  #     result = tr._transformHistoryRecord 0, 'duration', 1000
-  #     expect(tr._history[0].duration).toBe 1000
-  #     expect(!!result).toBe false
-
-  #     result = tr._transformHistoryRecord 1, 'duration', 1000
-  #     expect(tr._history[1].duration).toBe 1000
-  #     expect(!!result).toBe true
-
-  #     # result = tr._transformHistoryRecord 2, 'duration', 1000
-  #     # expect(tr._history[2].duration).toBe 5000
-  #     # expect(!!result).toBe true
-
-  #   it 'should save new delta value and modify the next', ->
-  #     tr = new Transit({ radius: 75 })
-  #       .then radius: 0
-  #       .then radius: 50
-
-  #     delta = { 20 : 100 }
-  #     result = tr._transformHistoryRecord 0, 'radius', delta
-  #     expect(tr._history[0].radius[20]).toBe 100
-  #     expect(!!result).toBe false
-
-  #     result = tr._transformHistoryRecord 1, 'radius', delta
-  #     expect(tr._history[1].radius[100]).toBe 0
-  #     expect(!!result).toBe true
-
-    # describe 'onUpdate binding', ->
-    #   it 'should override onUpdate', ->
-    #     tr = new Transit()
-    #       .then({ fill: 'red' })
-    #     expect(typeof tr.timeline._timelines[1].onUpdate).toBe 'function'
-
-    #   it 'should not override onUpdate function if exists', ->
-    #     isRightScope = null; args = null
-    #     options = {
-    #       onUpdate:->
-    #         isRightScope = @ is tr
-    #         args = arguments
-    #       }
-    #     tr = new Transit().then(options)
-    #     expect(typeof tr.timeline._timelines[1].onUpdate).toBe 'function'
-
-    #     tr.timeline.setProgress 0
-    #     tr.timeline.setProgress .1
-    #     # tr.timeline.setProgress .4
-    #     # tr.timeline.setProgress .5
-    #     tr.timeline.setProgress .8
-    #     expect(isRightScope).toBe true
-
-    #     expect(args[0]).toBe .6
-    #     expect(args[1]).toBe .6
-    #     expect(args[2]).toBe true
-    #     expect(args[3]).toBe false
-
-    #   it 'should call _setProgress method', ->
-    #     options = { onUpdate:-> }
-    #     tr = new Transit().then(options);
-
-    #     tr.timeline.setProgress 0
-    #     spyOn tr, '_setProgress'
-    #     tr.timeline.setProgress .8
-    #     expect(tr._setProgress).toHaveBeenCalledWith .6
-
-    # describe 'onFirstUpdate binding', ->
-    #   it 'should override onFirstUpdate', ->
-    #     tr = new Transit().then({ fill: 'red' })
-    #     expect(typeof tr.timeline._timelines[1]._props.onFirstUpdate)
-    #       .toBe 'function'
-
-    #   it 'should not override onFirstUpdate function if exists', ->
-    #     isRightScope = null; args = null
-    #     options = {
-    #       onFirstUpdate:->
-    #         isRightScope = @ is tr
-    #         args = arguments
-    #       }
-    #     tr = new Transit().then(options)
-    #     expect(typeof tr.timeline._timelines[1]._props.onFirstUpdate).toBe 'function'
-
-    #     tr.timeline.setProgress 0
-    #     tr.timeline.setProgress .1
-    #     tr.timeline.setProgress .4
-    #     tr.timeline.setProgress .5
-    #     tr.timeline.setProgress .8
-    #     expect(isRightScope).toBe true
-
-    #     expect(args[0]).toBe true
-    #     expect(args[1]).toBe false
-
-    #   it 'should call _tuneOptions method', ->
-    #     tr = new Transit().then({ onUpdate:-> });
-
-    #     tr.timeline.setProgress 0
-    #     tr.timeline.setProgress .2
-    #     spyOn tr, '_tuneOptions'
-    #     tr.timeline.setProgress .8
-    #     expect(tr._tuneOptions).toHaveBeenCalledWith tr._history[1]
-
-    # it 'should bind onFirstUpdate function #1', ->
-    #   byte = new Byte radius: 20, duration: 1000, delay: 10
-    #   byte.then radius: 5, yoyo: true, delay: 100
-    #   byte.then radius: {100:10}, delay: 200, stroke: 'green'
-    #   type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
-    #   type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
-    #   expect(type1).toBe 'function'
-    #   expect(type2).toBe 'function'
-    # it 'should bind onFirstUpdate function #2', ->
-    #   byte = new Byte radius: 20, duration: 1000, delay: 10
-    #   byte.then radius: 5, yoyo: true, delay: 100
-    #   byte.then radius: {100:10}, delay: 200, stroke: 'green'
-    #   type1 = typeof byte.timeline._timelines[1]._props.onFirstUpdate
-    #   type2 = typeof byte.timeline._timelines[2]._props.onFirstUpdate
-    #   expect(type1).toBe 'function'
-    #   expect(type2).toBe 'function'
-    # it 'should call _overrideUpdateCallbacks method with merged object', ->
-    #   byte = new Byte radius: 20, duration: 1000, delay: 10
-    #   spyOn byte, '_overrideUpdateCallbacks'
-    #   byte.then({ fill: 'red' })
-    #   expect(byte._overrideUpdateCallbacks).toHaveBeenCalled()
-
-  # describe '_tuneHistoryRecord method ->', ->
-  #   it 'should call _tuneOptions with history record', ->
-  #     tr = new Transit().then({ radius: 5 })
-  #     spyOn tr, '_tuneOptions'
-  #     index = 1
-  #     tr._tuneHistoryRecord index
-  #     expect(tr._tuneOptions).toHaveBeenCalledWith tr._history[index]
-
-  #   it 'should should save index to _currentHistoryIndex', ->
-  #     tr = new Transit
-  #     index = 5
-  #     tr._tuneHistoryRecord index
-  #     expect(tr._currentHistoryIndex).toBe index
-
-  #   it 'should not call _tuneOptions with history record if the same index', ->
-  #     tr = new Transit
-  #     spyOn tr, '_tuneOptions'
-  #     index = 0
-  #     tr._tuneHistoryRecord index
-  #     expect(tr._tuneOptions).not.toHaveBeenCalledWith tr._history[index]
-
-  # describe '_tuneOptions method ->', ->
-  #   # useless test case
-  #   # it 'should call _extendDefaults with history ', ->
-  #   #   byte = new Byte
-  #   #   o = radius: 50
-  #   #   spyOn byte, '_tuneOptions'
-  #   #   byte._tuneOptions o
-  #   #   expect(byte._tuneOptions).toHaveBeenCalled()
-  #   it 'should call _calcSize and _setElStyles methods', ->
-  #     byte = new Byte
-  #     spyOn byte, '_calcSize'
-  #     spyOn byte, '_setElStyles'
-  #     byte._tuneOptions radius: 50
-  #     expect(byte._calcSize).toHaveBeenCalled()
-  #     expect(byte._setElStyles).toHaveBeenCalled()
+ 
   describe 'size calculations ->', ->
     it 'should calculate size el size depending on largest value', ->
       byte = new Byte
@@ -658,7 +353,7 @@ describe 'Transit ->', ->
       expect(byte.el.style['marginTop'])          .toBe '-27px'
       #expect(byte.el.style['backface-visibility']).toBe 'hidden'
       #expect(byte.el.style["#{h.prefix.css}backface-visibility"]).toBe 'hidden'
-      expect(byte.isShown).toBe false
+      expect(byte._isShown).toBe false
     it 'should skip props if foreign context', ->
       byte = new Byte
         radius:       25
@@ -678,11 +373,11 @@ describe 'Transit ->', ->
       # expect(byte.el.style['backface-visibility']).not.toBe 'hidden'
       # prefixedProp = "#{h.prefix.css}backface-visibility"
       # expect(byte.el.style[prefixedProp]).not.toBe 'hidden'
-      expect(byte.isShown).toBe false
+      expect(byte._isShown).toBe false
     it 'should set display: block if isShowStart was passed', ->
       byte = new Byte isShowStart: true
       expect(byte.el.style.display).toBe 'block'
-      expect(byte.isShown).toBe true
+      expect(byte._isShown).toBe true
     it 'should set el size', ->
     # it 'should set el size based on remBase', ->
       byte = new Byte
@@ -773,8 +468,8 @@ describe 'Transit ->', ->
           left: {'20%': 50}
           duration: 200
         byte.play()
-        expect(byte.deltas.left.start.unit).toBe '%'
-        expect(byte.deltas.left.end.unit)  .toBe '%'
+        expect(byte._deltas.left.start.unit).toBe '%'
+        expect(byte._deltas.left.end.unit)  .toBe '%'
       it 'should fallback to end units if units are different', (dfr)->
         byte = new Byte
           left: {'20%': '50px'}
@@ -820,140 +515,7 @@ describe 'Transit ->', ->
               expect(tr).toBe 'translate(50px, 50%) scale(1)'
               dfr()
           byte.play()
-  # probably redundant
-  # describe '_isNeedsTransform method ->', ->
-  #   it 'should return boolean if transform needed', ->
-  #     byte = new Byte x: 100, y: 100
-  #     byte._setProp x: 101
-  #     expect(byte._isNeedsTransform()).toBe true
-  #   it 'should execute for both x and y ', ->
-  #     byte = new Byte x: 100, y: 100
-  #     spyOn byte, '_isPropChanged'
-  #     byte._isNeedsTransform()
-  #     expect(byte._isPropChanged).toHaveBeenCalledWith 'x'
-  #     expect(byte._isPropChanged).toHaveBeenCalledWith 'y'
-  describe '_show method ->', ->
-    it 'should set display: block to el', ->
-      byte = new Byte
-      byte._show()
-      expect(byte.el.style.display).toBe 'block'
-    it 'should return if isShow is already true', ->
-      byte = new Byte
-      byte._show()
-      byte.el.style.display = 'inline'
-      byte._show()
-      expect(byte.el.style.display).toBe 'inline'
-  describe '_hide method ->', ->
-    it 'should set display: block to el', ->
-      byte = new Byte
-      byte._hide()
-      expect(byte.el.style.display).toBe 'none'
   
-  ### oled tests ###
-  # describe '_mergeThenOptions method ->', ->
-  #   it 'should merge 2 objects', ->
-  #     byte = new Byte
-  #     start =
-  #       radius: 10,
-  #       duration: 10,
-  #       fill: '#ff00ff',
-  #       strokeWidth: { 10: 20 }
-  #     end =
-  #       radius: 20,
-  #       duration: 500,
-  #       opacity: { 2: 1 }
-
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.radius[10]).toBe 20
-  #     expect(mergedOpton.duration).toBe 500
-  #     expect(mergedOpton.fill).toBe '#ff00ff'
-  #     expect(mergedOpton.strokeWidth).toBe 20
-  #     expect(mergedOpton.opacity[2]).toBe 1
-  #   it 'should merge 2 objects if the first was an object', ->
-  #     byte = new Byte
-  #     start = radius: {10: 0}
-  #     end   = radius: 20
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.radius[0]).toBe 20
-  #   it 'should use the second value if it is an object', ->
-  #     byte = new Byte
-  #     start = radius: 10
-  #     end   = radius: {20: 0}
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.radius[20]).toBe 0
-  #   it 'should save the old tween values', ->
-  #     byte = new Byte
-  #     start = duration: 10
-  #     end   = radius: {20: 0}
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.duration).toBe 10
-  #   it 'should fallback to default value is start is undefined', ->
-  #     byte = new Byte
-  #     start = radius: 10, duration: 1000
-  #     end   = radius: 20, duration: 500, stroke: '#ff00ff'
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.stroke['transparent']).toBe '#ff00ff'
-  #   it 'should use start value if end value is null or undefined', ->
-  #     byte = new Byte
-  #     start = radius: 10, duration: 1000, fill: 'orange', points: 5
-  #     end   =
-  #       radius: 20, duration: null, points: undefined
-  #       fill: null, stroke: '#ff00ff'
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.duration).toBe 1000
-  #     expect(mergedOpton.fill)    .toBe 'orange'
-  #     expect(mergedOpton.points)  .toBe 5
-  #   it 'should use end of the start value if end value is null or undefined', ->
-  #     byte = new Byte
-  #     start = radius: 10, duration: 1000, fill: {'orange' : 'cyan'}, points: 5
-  #     end   =
-  #       radius: 20, duration: null, points: undefined
-  #       fill: null, stroke: '#ff00ff'
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.fill)    .toBe 'cyan'
-  #   it 'should work with new tween values', ->
-  #     byte = new Byte
-  #     start = radius: 10
-  #     end   = duration: 1000, delay: 200, repeat: 2, easing: 'elastic.in'
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.duration).toBe 1000
-  #     expect(mergedOpton.delay)   .toBe 200
-  #     expect(mergedOpton.repeat)  .toBe 2
-  #     expect(mergedOpton.easing)  .toBe 'elastic.in'
-  #   it 'should fallback to radius for radiusX/radiusY props', ->
-  #     byte = new Byte
-  #     start = radius: 10
-  #     end   = radiusX: 200, radiusY: 100
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.radiusX[10]).toBe 200
-  #     expect(mergedOpton.radiusY[10]).toBe 100
-
-  #   it "should fallback to radius for radiusX/radiusY props
-  #       and not ovveride previous values", ->
-  #     byte = new Byte
-  #     start = radius: 10, radiusY: 20
-  #     end   = radiusX: 200, radiusY: 100
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(mergedOpton.radiusX[10]).toBe 200
-  #     expect(mergedOpton.radiusY[20]).toBe 100
-
-  #   it "should always take sub radius values", ->
-  #     tr = new Transit
-  #     start = radiusX: { 50: 200 }, radius: 50
-  #     end   = radiusX: 500, radius: 800
-  #     mergedOpton = tr._mergeThenOptions start, end
-  #     expect(mergedOpton.radiusX[200]).toBe 500
-
-  #   it 'should push merged options to the history', ->
-  #     byte = new Byte
-  #     start = radius: 10, duration: 1000, fill: 'orange', points: 5
-  #     end   =
-  #       radius: 20, duration: null, points: undefined
-  #       fill: null, stroke: '#ff00ff'
-  #     mergedOpton = byte._mergeThenOptions start, end
-  #     expect(byte._history[1]).toBe mergedOpton
-  ### ^^^ oled tests ^^^ ###
-
   describe '_render method ->', ->
     it 'should call draw method', ->
       byte = new Byte radius: 25
@@ -1159,39 +721,39 @@ describe 'Transit ->', ->
       byte = new Byte radius: {45: 55}
       byte._skipPropsDelta = radius: 1
       byte._extendDefaults()
-      expect(byte.deltas.radius).not.toBeDefined()
+      expect(byte._deltas.radius).not.toBeDefined()
     describe 'numeric values ->', ->
       it 'should calculate delta', ->
         byte = new Byte radius:  {25: 75}
-        radiusDelta = byte.deltas.radius
+        radiusDelta = byte._deltas.radius
         expect(radiusDelta.start)   .toBe   25
         expect(radiusDelta.delta)   .toBe   50
         expect(radiusDelta.type)    .toBe   'number'
       it 'should calculate delta with string arguments', ->
         byte = new Byte radius:  {'25': '75'}
-        radiusDelta = byte.deltas.radius
+        radiusDelta = byte._deltas.radius
         expect(radiusDelta.start)   .toBe   25
         expect(radiusDelta.delta)   .toBe   50
       it 'should calculate delta with float arguments', ->
         byte = new Byte radius:  {'25.50': 75.50}
-        radiusDelta = byte.deltas.radius
+        radiusDelta = byte._deltas.radius
         expect(radiusDelta.start)   .toBe   25.5
         expect(radiusDelta.delta)   .toBe   50
       it 'should calculate delta with negative start arguments', ->
         byte = new Byte radius:  {'-25.50': 75.50}
-        radiusDelta = byte.deltas.radius
+        radiusDelta = byte._deltas.radius
         expect(radiusDelta.start)   .toBe   -25.5
         expect(radiusDelta.delta)   .toBe   101
       it 'should calculate delta with negative end arguments', ->
         byte = new Byte radius:  {'25.50': -75.50}
-        radiusDelta = byte.deltas.radius
+        radiusDelta = byte._deltas.radius
         expect(radiusDelta.start)   .toBe   25.5
         expect(radiusDelta.end)     .toBe   -75.5
         expect(radiusDelta.delta)   .toBe   -101
     describe 'color values ->', ->
       it 'should calculate color delta', ->
         byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
-        colorDelta = byte.deltas.stroke
+        colorDelta = byte._deltas.stroke
         expect(colorDelta.start.r)    .toBe   0
         expect(colorDelta.end.r)      .toBe   255
         expect(colorDelta.delta.r)    .toBe   255
@@ -1202,11 +764,11 @@ describe 'Transit ->', ->
         fun = -> byte = new Byte strokeLinecap:  {'round': 'butt'}
         expect(-> fun()).not.toThrow()
         expect(console.warn).toHaveBeenCalled()
-        expect(byte.deltas.strokeLinecap).not.toBeDefined()
+        expect(byte._deltas.strokeLinecap).not.toBeDefined()
     describe 'unit values ->', ->
       it 'should calculate unit delta', ->
         byte = new Byte x:  {'0%': '100%'}
-        xDelta = byte.deltas.x
+        xDelta = byte._deltas.x
         expect(xDelta.start.string)    .toBe   '0%'
         expect(xDelta.end.string)      .toBe   '100%'
         expect(xDelta.delta)          .toBe   100
@@ -1216,7 +778,7 @@ describe 'Transit ->', ->
         byte = new Byte
           duration:  { 2000: 1000 }
          
-        expect(byte.deltas.duration).not.toBeDefined()
+        expect(byte._deltas.duration).not.toBeDefined()
   describe '_calcOrigin method ->', ->
     it "should set x and y to center by
         default (if no drawing context passed)", ->
@@ -1233,7 +795,7 @@ describe 'Transit ->', ->
     it 'should set transition progress', ->
       byte = new Byte radius:  {'25.50': -75.50}
       byte._setProgress .5
-      expect(byte.progress).toBe .5
+      expect(byte._progress).toBe .5
     it 'should set value progress', ->
       byte = new Byte radius:  {'25': 75}
       byte._setProgress .5
@@ -1273,12 +835,12 @@ describe 'Transit ->', ->
       expect(-> byte._show()).not.toThrow()
     it 'should set color value progress and only int', ->
       byte = new Byte stroke:  {'#000': 'rgb(255,255,255)'}
-      colorDelta = byte.deltas.stroke
+      colorDelta = byte._deltas.stroke
       byte._setProgress .5
       expect(byte._props.stroke).toBe 'rgba(127,127,127,1)'
     it 'should set color value progress for delta starting with 0', ->
       byte = new Byte stroke:  {'#000': 'rgb(0,255,255)'}
-      colorDelta = byte.deltas.stroke
+      colorDelta = byte._deltas.stroke
       byte._setProgress .5
       expect(byte._props.stroke).toBe 'rgba(0,127,127,1)'
 
@@ -1399,7 +961,7 @@ describe 'Transit ->', ->
   #   it 'should not override deltas', ->
   #     byte = new Byte(strokeWidth: {10: 5})
   #     byte.run stroke: 'green'
-  #     expect(byte.deltas.strokeWidth).toBeDefined()
+  #     expect(byte._deltas.strokeWidth).toBeDefined()
   #   it 'should calculate el size', ->
   #     byte = new Byte(radius: {10: 5})
   #     spyOn byte, '_calcSize'
@@ -1437,7 +999,7 @@ describe 'Transit ->', ->
   #     byte = new Byte(strokeWidth: {10: 5})
   #     byte.run strokeWidth: 25
   #     expect(byte._props.strokeWidth).toBe 25
-  #     expect(byte.deltas.strokeWidth).not.toBeDefined()
+  #     expect(byte._deltas.strokeWidth).not.toBeDefined()
   #   it 'should not modify old options', ->
   #     byte = new Byte(strokeWidth: {10: 5}, radius: 33)
   #     byte.run strokeWidth: 25
@@ -1548,7 +1110,7 @@ describe 'Transit ->', ->
       byte.timeline.setProgress 1
       expect(byte.el.style.display).toBe 'block'
     it 'should not hide the el on end if isShowEnd was passed #2 - chain', ->
-      byte = new Byte(ctx: svg, isShowEnd: true, isIt: 1 )
+      byte = new Byte(ctx: svg, isShowEnd: true)
         .then radius: 10
         # .then radius: 20
       byte.timeline.setProgress 0 
@@ -1605,108 +1167,51 @@ describe 'Transit ->', ->
       byte = new Byte bit: bit
       expect(byte.isForeignBit).toBe true
 
-  # describe '_makeTweenControls method ->', ->
-  # it 'should override this._o.onStart', ->
-  #   tr = new Transit
-  #   expect(typeof tr._o.onStart).toBe 'function'
-  #   it 'should not override onStart function if exists', ->
-  #     isRightScope = null; args = null
-  #     options = {
-  #       onStart:->
-  #         isRightScope = @ is tr
-  #         args = arguments
-  #       }
-  #     tr = new Transit options
-  #     expect(typeof tr._o.onStart).toBe 'function'
+  describe '_makeTweenControls method ->', ->
+  it 'should override this._o.onStart', ->
+    tr = new Transit
+    expect(typeof tr._o.onStart).toBe 'function'
+    it 'should not override onStart function if exists', ->
+      isRightScope = null; args = null
+      options = {
+        onStart:->
+          isRightScope = @ is tr
+          args = arguments
+        }
+      tr = new Transit options
+      expect(typeof tr._o.onStart).toBe 'function'
 
-  #     tr.timeline.setProgress 0
-  #     tr.timeline.setProgress .1
-  #     expect(isRightScope).toBe true
+      tr.timeline.setProgress 0
+      tr.timeline.setProgress .1
+      expect(isRightScope).toBe true
 
-  #     expect(args[0]).toBe true
-  #     expect(args[1]).toBe false
+      expect(args[0]).toBe true
+      expect(args[1]).toBe false
 
-  #   it 'should show module ', ->
-  #     tr = new Transit
+    it 'should show module ', ->
+      tr = new Transit
 
-  #     tr.timeline.setProgress 0
-  #     spyOn(tr, '_show').and.callThrough()
-  #     tr.timeline.setProgress .1
-  #     expect(tr._show).toHaveBeenCalled()
+      tr.timeline.setProgress 0
+      spyOn(tr, '_show').and.callThrough()
+      tr.timeline.setProgress .1
+      expect(tr._show).toHaveBeenCalled()
 
-  #   it 'should hide module ', ->
-  #     tr = new Transit
+    it 'should hide module ', ->
+      tr = new Transit
 
-  #     tr.timeline.setProgress .1
-  #     spyOn(tr, '_hide').and.callThrough()
-  #     tr.timeline.setProgress 0
-  #     expect(tr._hide).toHaveBeenCalled()
+      tr.timeline.setProgress .1
+      spyOn(tr, '_hide').and.callThrough()
+      tr.timeline.setProgress 0
+      expect(tr._hide).toHaveBeenCalled()
 
-  #   it 'should not hide module is isShowStart was set', ->
-  #     tr = new Transit isShowStart: true
+    it 'should not hide module is isShowStart was set', ->
+      tr = new Transit isShowStart: true
 
-  #     tr.timeline.setProgress .2
-  #     tr.timeline.setProgress .1
-  #     spyOn(tr, '_hide').and.callThrough()
-  #     tr.timeline.setProgress 0
-  #     expect(tr._hide).not.toHaveBeenCalled()
-
-  #   it 'should call _overrideUpdateCallbacks method with merged object', ->
-  #     byte = new Byte radius: 20, duration: 1000, delay: 10
-  #     spyOn byte, '_overrideUpdateCallbacks'
-  #     byte._makeTweenControls()
-  #     expect(byte._overrideUpdateCallbacks).toHaveBeenCalledWith( byte._o )
-
-  # describe '_makeTimelineControls method ->', ->
-  #   it 'should override this._o.onComplete', ->
-  #     tr = new Transit
-  #     expect(typeof tr._o.timeline.onComplete).toBe 'function'
-
-  #   it 'should not override onUpdate function if exists', ->
-  #     isRightScope = null; args = null
-  #     options = {
-  #       timeline: {
-  #         onComplete:->
-  #           isRightScope = @ is tr.timeline
-  #           args = arguments
-  #         }
-  #       }
-  #     tr = new Transit options
-  #     expect(typeof tr._o.timeline.onComplete).toBe 'function'
-
-  #     tr.timeline.setProgress 0
-  #     tr.timeline.setProgress .1
-  #     tr.timeline.setProgress .8
-  #     tr.timeline.setProgress 1
-  #     expect(isRightScope).toBe true
-  #     expect(args[0]).toBe true
-  #     expect(args[1]).toBe false
-
-  #   it 'should call _show method', ->
-  #     tr = new Transit
-
-  #     tr.timeline.setProgress 1
-  #     spyOn(tr, '_show').and.callThrough()
-  #     tr.timeline.setProgress .9
-  #     expect(tr._show).toHaveBeenCalled()
-
-  #   it 'should call _hide method', ->
-  #     tr = new Transit
-
-  #     tr.timeline.setProgress 0
-  #     spyOn(tr, '_hide').and.callThrough()
-  #     tr.timeline.setProgress .1
-  #     tr.timeline.setProgress 1
-  #     expect(tr._hide).toHaveBeenCalled()
-
-  #   it 'should not call _hide method if isShowEnd is set', ->
-  #     tr = new Transit isShowEnd: true
-
-  #     tr.timeline.setProgress 0
-  #     spyOn(tr, '_hide').and.callThrough()
-  #     tr.timeline.setProgress .1
-  #     tr.timeline.setProgress 1
-  #     expect(tr._hide).not.toHaveBeenCalled()
+      tr.timeline.setProgress .2
+      tr.timeline.setProgress .1
+      spyOn(tr, '_hide').and.callThrough()
+      tr.timeline.setProgress 0
+      expect(tr._hide).not.toHaveBeenCalled()
 
   describe '_increaseSizeWithEasing method ->', ->
     it 'should increase size based on easing - elastic.out', ->
@@ -1752,75 +1257,6 @@ describe 'Transit ->', ->
       tr._props.size = 1
       tr._increaseSizeWithBitRatio()
       expect(tr._props.size).toBe tr.bit.ratio + 2*gap
-
-  describe '_parseOptionString method ->', ->
-    tr = new Transit
-    it 'should parse stagger values', ->
-      string = 'stagger(200)'
-      spyOn(h, 'parseStagger').and.callThrough()
-      result = tr._parseOptionString string
-      expect(h.parseStagger).toHaveBeenCalledWith string, 0
-      expect(result).toBe h.parseStagger(string, 0)
-
-    it 'should parse rand values', ->
-      string = 'rand(0,1)'
-      spyOn(h, 'parseRand').and.callThrough()
-      result = tr._parseOptionString string
-      expect(h.parseRand).toHaveBeenCalledWith string
-
-  describe '_parsePositionOption method ->', ->
-    tr = new Transit
-    it 'should parse position option', ->
-      tr._props.x = '100%'
-      key = 'x'
-      spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parsePositionOption key
-      expect(h.parseUnit).toHaveBeenCalledWith tr._props[key]
-      expect(result).toBe h.parseUnit(tr._props[key]).string
-    it 'should leave the value unattended if not pos property', ->
-      tr._props.x = '100%'
-      key = 'fill'
-      spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parsePositionOption key
-      expect(h.parseUnit).not.toHaveBeenCalledWith()
-      expect(result).toBe tr._props[key]
-
-  describe '_parseStrokeDashOption method ->', ->
-    tr = new Transit
-    it 'should parse strokeDash option', ->
-      tr._props.strokeDasharray = 200
-      key = 'strokeDasharray'
-      spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parseStrokeDashOption key
-      expect(h.parseUnit).toHaveBeenCalledWith tr._props[key]
-      expect(result[0].unit).toBe h.parseUnit(tr._props[key]).unit
-      expect(result[0].isStrict).toBe h.parseUnit(tr._props[key]).isStrict
-      expect(result[0].value).toBe h.parseUnit(tr._props[key]).value
-      expect(result[0].string).toBe h.parseUnit(tr._props[key]).string
-      expect(result[1]).not.toBeDefined()
-    it 'should parse strokeDash option string', ->
-      tr._props.strokeDasharray = '200 100'
-      key = 'strokeDasharray'
-      spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parseStrokeDashOption key
-      expect(h.parseUnit).toHaveBeenCalledWith '200'
-      expect(h.parseUnit).toHaveBeenCalledWith '100'
-      expect(result[0].unit).toBe h.parseUnit(200).unit
-      expect(result[0].isStrict).toBe h.parseUnit(200).isStrict
-      expect(result[0].value).toBe h.parseUnit(200).value
-      expect(result[0].string).toBe h.parseUnit(200).string
-      expect(result[1].unit).toBe h.parseUnit(100).unit
-      expect(result[1].isStrict).toBe h.parseUnit(100).isStrict
-      expect(result[1].value).toBe h.parseUnit(100).value
-      expect(result[1].string).toBe h.parseUnit(100).string
-      expect(result[2]).not.toBeDefined()
-    it 'should leave the value unattended if not strokeDash.. property', ->
-      tr._props.x = '100%'
-      key = 'fill'
-      spyOn(h, 'parseUnit').and.callThrough()
-      result = tr._parseStrokeDashOption key
-      expect(h.parseUnit).not.toHaveBeenCalledWith()
-      expect(result).toBe tr._props[key]
 
   # describe '_resetTween method ->', ->
   #   it 'should set props to the tween', ->
@@ -1917,35 +1353,35 @@ describe 'Transit ->', ->
       expect(tr._o.onStart).not.toBe fun
       expect(typeof tr._o.onStart).toBe 'function'
 
-    # it 'should call overriden callback', ->
-    #   args = null; isRightScope = null
-    #   fun = ->
-    #     args = arguments
-    #     isRightScope = @ is tr
-    #   tr = new Transit
+    it 'should call overriden callback', ->
+      args = null; isRightScope = null
+      fun = ->
+        args = arguments
+        isRightScope = @ is tr
+      tr = new Transit
 
-    #   tr._o.onStart = fun
-    #   tr._overrideCallback 'onStart', ->
+      tr._o.onStart = fun
+      tr._overrideCallback 'onStart', ->
 
-    #   tr._o.onStart.call( tr, 'a' )
-    #   expect(args[0]).toBe 'a'
-    #   expect(args.length).toBe 1
-    #   expect(isRightScope).toBe true
+      tr._o.onStart.call( tr, 'a' )
+      expect(args[0]).toBe 'a'
+      expect(args.length).toBe 1
+      expect(isRightScope).toBe true
 
-    # it 'should call passed method callback', ->
-    #   args = null; isRightScope = null
-    #   tr = new Transit
+    it 'should call passed method callback', ->
+      args = null; isRightScope = null
+      tr = new Transit
 
-    #   tr._o.onStart = ->
-    #   cleanUpFun = ->
-    #     args = arguments
-    #     isRightScope = @ is tr
+      tr._o.onStart = ->
+      cleanUpFun = ->
+        args = arguments
+        isRightScope = @ is tr
 
-    #   tr._overrideCallback 'onStart', cleanUpFun
+      tr._overrideCallback 'onStart', cleanUpFun
 
-    #   tr._o.onStart.call( tr, 'a' )
-    #   expect(args[0]).toBe 'a'
-    #   expect(args.length).toBe 1
-    #   expect(isRightScope).toBe true
+      tr._o.onStart.call( tr, 'a' )
+      expect(args[0]).toBe 'a'
+      expect(args.length).toBe 1
+      expect(isRightScope).toBe true
 
 

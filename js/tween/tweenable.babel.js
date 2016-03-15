@@ -1,5 +1,7 @@
-import Tween from './tween';
+import Tween    from './tween';
 import Timeline from './timeline';
+import Module   from '../module';
+
 /*
   Class to define a module ancestor
   with timeline and tween options and functionality.
@@ -7,7 +9,7 @@ import Timeline from './timeline';
 
   @class Tweenable
 */
-class Tweenable {
+class Tweenable extends Module {
   /*
     play method for the timeline.
     @public
@@ -58,7 +60,9 @@ class Tweenable {
   // v Private methods.
   
   constructor ( o = {} ) {
-    this._o = o;
+    // super of Module
+    super( o );
+    
     this._transformTweenOptions();
     this._makeTween();
     // make timeline only if isTimelineLess option is not set

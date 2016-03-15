@@ -232,7 +232,7 @@ class Burst extends Transit {
     @param {String} Side name - [start, end].
   */
   _getRadiusByKey (key, side) {
-    if ( this.deltas[key] != null ) { return this.deltas[key][side]; }
+    if ( this._deltas[key] != null ) { return this._deltas[key][side]; }
     else if ( this.props[key] != null ) { return this.props[key]; }
   }
   /*
