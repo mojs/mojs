@@ -641,6 +641,7 @@
 	// TODO
 	//  - refactor
 	//    - add set if changed to Module
+	//    - check if strokeDashoffset could be of array type
 	//  - move to Runable
 	//  --
 	//  - tween for every prop
@@ -716,7 +717,7 @@
 	        // context for all the callbacks
 	        callbacksContext: null
 	      };
-
+	      // properties that will be excluded from delta parsing
 	      this._skipPropsDelta = this._skipPropsDelta || {
 	        callbacksContext: 1
 	      };
@@ -735,8 +736,8 @@
 	    value: function _vars() {
 	      // call _vars method on Thenable
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Transit.prototype), '_vars', this).call(this);
-	      this.lastSet = {};
-	      this.origin = {};
+	      this._lastSet = {};
+	      this._origin = {};
 	      // should draw on foreign svg canvas
 	      this.isForeign = !!this._o.ctx;
 	      // should take an svg element as self bit
@@ -813,8 +814,8 @@
 	    key: '_draw',
 	    value: function _draw() {
 	      this.bit.setProp({
-	        x: this.origin.x,
-	        y: this.origin.y,
+	        x: this._origin.x,
+	        y: this._origin.y,
 	        rx: this._props.rx,
 	        ry: this._props.ry,
 	        stroke: this._props.stroke,
@@ -856,7 +857,7 @@
 	      }
 	    }
 	    /*
-	      Method to check if property changed after the latest set.
+	      Method to check if property changed after the latest check.
 	      @private
 	      @param {String} Name of the property to check.
 	      @returns {Boolean}
@@ -866,11 +867,11 @@
 	    key: '_isPropChanged',
 	    value: function _isPropChanged(name) {
 	      // if there is no recod for the property - create it
-	      if (this.lastSet[name] == null) {
-	        this.lastSet[name] = {};
+	      if (this._lastSet[name] == null) {
+	        this._lastSet[name] = {};
 	      }
-	      if (this.lastSet[name].value !== this._props[name]) {
-	        this.lastSet[name].value = this._props[name];
+	      if (this._lastSet[name].value !== this._props[name]) {
+	        this._lastSet[name].value = this._props[name];
 	        return true;
 	      } else {
 	        return false;
@@ -885,7 +886,7 @@
 	  }, {
 	    key: '_calcShapeTransform',
 	    value: function _calcShapeTransform() {
-	      return 'rotate(' + this._props.angle + ', ' + this.origin.x + ', ' + this.origin.y + ')';
+	      return 'rotate(' + this._props.angle + ', ' + this._origin.x + ', ' + this._origin.y + ')';
 	    }
 	    /*
 	      Method to calculate maximum shape's radius.
@@ -1022,8 +1023,8 @@
 	      // if drawing context was passed
 	      // set origin to x and y of the module
 	      // otherwise set the origin to the center
-	      this.origin.x = this._o.ctx ? parseFloat(p.x) : p.center;
-	      this.origin.y = this._o.ctx ? parseFloat(p.y) : p.center;
+	      this._origin.x = this._o.ctx ? parseFloat(p.x) : p.center;
+	      this._origin.y = this._o.ctx ? parseFloat(p.y) : p.center;
 	    }
 	    /*
 	      Method to setup tween and timeline options before creating them.
@@ -1054,26 +1055,6 @@
 	      this._overrideCallback('onComplete', function (isForward) {
 	        isForward ? !it._props.isShowEnd && it._hide() : it._show();
 	      });
-	    }
-	    /*
-	      Method to override callback for controll pupropes.
-	      @private
-	      @param {String}    Callback name.
-	      @parma {Function}  Method to call  
-	    */
-
-	  }, {
-	    key: '_overrideCallback',
-	    value: function _overrideCallback(name, fun) {
-	      var callback = this._o[name],
-	          isCallback = callback && typeof callback === 'function';
-
-	      this._o[name] = function () {
-	        // call overriden callback if it exists
-	        isCallback && callback.apply(this, arguments);
-	        // call the passed cleanup function
-	        fun.apply(this, arguments);
-	      };
 	    }
 	    /*
 	      Method to create transform string;
@@ -3573,6 +3554,7 @@
 	    value: function _vars() {
 	      this._index = this._o.index || 0;
 	      this._progress = 0;
+	      this._strokeDasharrayBuffer = [];
 	    }
 	    /*
 	      Method to render on initialization.
@@ -3701,8 +3683,7 @@
 	          case 'string':
 	            var array = this._props[key].split(' ');
 	            for (var i = 0; i < array.length; i++) {
-	              var unit = array[i];
-	              result.push(_h2.default.parseUnit(unit));
+	              result.push(_h2.default.parseUnit(array[i]));
 	            }
 	            break;
 	        }
@@ -3802,41 +3783,28 @@
 
 	  }, {
 	    key: '_calcCurrentProps',
-	    value: function _calcCurrentProps(progress) {
-	      var a, b, dash, g, i, item, key, keys, len, r, stroke, units, value;
-	      keys = (0, _keys2.default)(this._deltas);
-	      len = keys.length;
-	      while (len--) {
-	        key = keys[len];
-	        value = this._deltas[key];
-	        this._props[key] = function () {
-	          var k, len1, ref;
-	          switch (value.type) {
-	            case 'array':
-	              stroke = [];
-	              ref = value.delta;
-	              for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
-	                item = ref[i];
-	                dash = value.start[i].value + item.value * this._progress;
-	                stroke.push({
-	                  value: dash,
-	                  unit: item.unit
-	                });
-	              }
-	              return stroke;
-	            case 'number':
-	              return value.start + value.delta * progress;
-	            case 'unit':
-	              units = value.end.unit;
-	              return "" + (value.start.value + value.delta * progress) + units;
-	            case 'color':
-	              r = parseInt(value.start.r + value.delta.r * progress, 10);
-	              g = parseInt(value.start.g + value.delta.g * progress, 10);
-	              b = parseInt(value.start.b + value.delta.b * progress, 10);
-	              a = parseInt(value.start.a + value.delta.a * progress, 10);
-	              return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+	    value: function _calcCurrentProps(p) {
+	      for (var key in this._deltas) {
+	        var value = this._deltas[key];
+	        if (value.type === 'array') {
+	          this._strokeDasharrayBuffer.length = 0;
+	          for (var i = 0; i < value.delta.length; i++) {
+	            var item = value.delta[i],
+	                dash = value.start[i].value + p * item.value;
+	            this._strokeDasharrayBuffer.push({ value: dash, unit: item.unit });
 	          }
-	        }.call(this);
+	          this._props[key] = this._strokeDasharrayBuffer;
+	        } else if (value.type === 'number') {
+	          this._props[key] = value.start + value.delta * p;
+	        } else if (value.type === 'unit') {
+	          this._props[key] = '' + (value.start.value + p * value.delta) + value.end.unit;
+	        } else if (value.type === 'color') {
+	          var r = parseInt(value.start.r + p * value.delta.r, 10),
+	              g = parseInt(value.start.g + p * value.delta.g, 10),
+	              b = parseInt(value.start.b + p * value.delta.b, 10),
+	              a = parseInt(value.start.a + p * value.delta.a, 10);
+	          this._props[key] = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+	        }
 	      }
 	    }
 	    /*
@@ -3850,6 +3818,26 @@
 	    value: function _setProgress(progress) {
 	      this._progress = progress;
 	      this._calcCurrentProps(progress);
+	    }
+	    /*
+	      Method to override callback for controll pupropes.
+	      @private
+	      @param {String}    Callback name.
+	      @parma {Function}  Method to call  
+	    */
+
+	  }, {
+	    key: '_overrideCallback',
+	    value: function _overrideCallback(name, fun) {
+	      var callback = this._o[name],
+	          isCallback = callback && typeof callback === 'function';
+
+	      this._o[name] = function () {
+	        // call overriden callback if it exists
+	        isCallback && callback.apply(this, arguments);
+	        // call the passed cleanup function
+	        fun.apply(this, arguments);
+	      };
 	    }
 	  }]);
 	  return Module;
@@ -3965,8 +3953,7 @@
 	  };
 
 	  Helpers.prototype.strokeDashPropsMap = {
-	    strokeDasharray: 1,
-	    strokeDashoffset: 1
+	    strokeDasharray: 1
 	  };
 
 	  Helpers.prototype.RAD_TO_DEG = 180 / Math.PI;
@@ -7218,72 +7205,72 @@
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
-	var tr = new mojs.Transit({
-	  left: '50%', top: '50%',
-	  shape: 'polygon',
-	  strokeWidth: 20,
-	  angle: { 0: 200 },
-	  radius: 10,
-	  fill: 'none',
-	  stroke: { 'white': 'cyan' },
-	  points: { 3: 20 }, // make triangle
-	  duration: 2000,
-	  isShowStart: true,
-	  isShowEnd: true,
-	  timeline: { repeat: 1, yoyo: true, onRepeatComplete: function onRepeatComplete() {
-	      console.log('rep complete');
-	    } },
-	  // delay:    4000,
-	  scale: { 0: 6 },
-	  // timeline: { repeat: 2, yoyo: true },
-	  onStart: function onStart() {
-	    console.log('start 1');
-	  },
-	  onComplete: function onComplete() {
-	    console.log('comple 1');
-	  }
-	}). // easing: 'expo.in'
-	then({
-	  onStart: function onStart() {
-	    console.log('start 2');
-	  },
-	  onComplete: function onComplete() {
-	    console.log('comple 2');
-	  },
-	  points: 3, // make triangle
-	  angle: -180,
-	  duration: 300,
-	  stroke: 'yellow',
-	  easing: 'expo.in',
-	  scale: .5
-	}).then({
-	  onStart: function onStart() {
-	    console.log('start 3');
-	  },
-	  onComplete: function onComplete() {
-	    console.log('comple 3');
-	  },
-	  strokeWidth: 0,
-	  stroke: 'hotpink',
-	  duration: 400,
-	  easing: 'cubic.out',
-	  // scale: { 1: 1 },
-	  radius: 40,
-	  scale: 1,
-	  angle: 90
-	});
+	// var tr = new mojs.Transit({
+	//   radius: 100,
+	//   left: '50%', top: '50%',
+	//   strokeDasharray:  '100% 100%',
+	//   strokeDashoffset: {'-100%' : '100%'},
+	//   stroke: 'cyan',
+	//   strokeWidth: 2,
+	//   fill: 'none',
+	//   isShowEnd: 1,
+	//   duration: 5000
+	// });
 
-	// speed: 1
-	// opacity: 0
-	var playEl = document.querySelector('#js-play'),
-	    rangeSliderEl = document.querySelector('#js-range-slider');
-	playEl.addEventListener('click', function () {
-	  tr.play();
-	});
+	// var tr = new mojs.Transit({
+	//   left: '50%', top: '50%',
+	//   shape:    'polygon',
+	//   strokeWidth: 20,
+	//   angle:    { 0 : 200},
+	//   radius:   10,
+	//   fill:     'none',
+	//   stroke:   { 'white': 'cyan' },
+	//   points:   { 3 : 20 }, // make triangle
+	//   duration: 2000,
+	//   isShowStart: true,
+	//   isShowEnd: true,
+	//   timeline: { repeat: 1, yoyo: true, onRepeatComplete: function () { console.log('rep complete'); } },
+	//   // delay:    4000,
+	//   scale: { 0 : 6 },
+	//   // timeline: { repeat: 2, yoyo: true },
+	//   onStart: ()=> { console.log('start 1'); },
+	//   onComplete: ()=> { console.log('comple 1'); },
+	//   // easing: 'expo.in'
+	// })
+	// .then({
+	//   onStart: ()=> { console.log('start 2')},
+	//   onComplete: ()=> { console.log('comple 2'); },
+	//   points:   3, // make triangle
+	//   angle:    -180,
+	//   duration: 300,
+	//   stroke: 'yellow',
+	//   easing: 'expo.in',
+	//   scale: .5,
+	// })
+	// .then({
+	//   onStart: ()=> { console.log('start 3')},
+	//   onComplete: ()=> { console.log('comple 3'); },
+	//   strokeWidth: 0,
+	//   stroke: 'hotpink',
+	//   duration: 400,
+	//   easing: 'cubic.out',
+	//   // scale: { 1: 1 },
+	//   radius: 40,
+	//   scale: 1,
+	//   angle: 90,
+	//   // speed: 1
+	//   // opacity: 0
+	// })
 
-	rangeSliderEl.addEventListener('input', function () {
-	  tr.setProgress(rangeSliderEl.value / 1000);
-	});
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// playEl.addEventListener('click', function () {
+	//   tr.play();
+	// });
+
+	// rangeSliderEl.addEventListener('input', function () {
+	//   tr.setProgress( rangeSliderEl.value/1000 );
+	// });
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;

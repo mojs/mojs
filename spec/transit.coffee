@@ -192,8 +192,8 @@ describe 'Transit ->', ->
   describe 'origin object ->', ->
     it 'should have origin object', ->
       byte = new Byte
-      expect(byte.origin).toBeDefined()
-      expect(typeof byte.origin).toBe 'object'
+      expect(byte._origin).toBeDefined()
+      expect(typeof byte._origin).toBe 'object'
   describe 'options object ->', ->
     it 'should receive empty options object by default', ->
       byte = new Byte
@@ -574,8 +574,8 @@ describe 'Transit ->', ->
         points:           4
 
       byte._draw()
-      expect(byte.bit.props.x).toBe byte.origin.x
-      expect(byte.bit.props.y).toBe byte.origin.y
+      expect(byte.bit.props.x).toBe byte._origin.x
+      expect(byte.bit.props.y).toBe byte._origin.y
       expect(byte.bit.props.rx).toBe byte._props.rx
       expect(byte.bit.props.ry).toBe byte._props.ry
       expect(byte.bit.props.stroke).toBe byte._props.stroke
@@ -583,7 +583,7 @@ describe 'Transit ->', ->
       expect(byte.bit.props['stroke-opacity']).toBe byte._props.strokeOpacity
       expect(byte.bit.props['stroke-linecap']).toBe byte._props.strokeLinecap
       expect(byte.bit.props['stroke-dasharray']).toBe byte._props.strokeDasharray[0].value + ' '
-      expect(byte.bit.props['stroke-dashoffset']).toBe byte._props.strokeDashoffset[0].value + ' '
+      expect(byte.bit.props['stroke-dashoffset']).toBe byte._props.strokeDashoffset
       expect(byte.bit.props['fill']).toBe byte._props.fill
       expect(byte.bit.props['fill-opacity']).toBe byte._props.fillOpacity
       expect(byte.bit.props['radius']).toBe byte._props.radius
@@ -654,13 +654,13 @@ describe 'Transit ->', ->
       byte._props.left = '1px'
       byte._draw()
       expect(byte.el.style.left)      .toBe     '1px'
-      expect(byte.lastSet.left.value) .toBe     '1px'
+      expect(byte._lastSet.left.value) .toBe     '1px'
     it 'should not set old values', ->
       byte = new Byte radius: 25, y: 10
       byte._draw()
       byte._draw()
       expect(byte.el.style.left)      .toBe     '0px'
-      expect(byte.lastSet.x.value)    .toBe     '0px'
+      expect(byte._lastSet.x.value)    .toBe     '0px'
     it 'should return true if there is no el', ->
       byte = new Byte radius: 25
       byte.el = null
@@ -715,7 +715,7 @@ describe 'Transit ->', ->
     it 'should add prop object to lastSet if undefined', ->
       byte = new Byte radius: 25, y: 10
       byte._isPropChanged('x')
-      expect(byte.lastSet.x).toBeDefined()
+      expect(byte._lastSet.x).toBeDefined()
   describe 'delta calculations ->', ->
     it 'should skip delta for excludePropsDelta object', ->
       byte = new Byte radius: {45: 55}
@@ -784,13 +784,13 @@ describe 'Transit ->', ->
         default (if no drawing context passed)", ->
       byte = new Byte radius:  {'25.50': -75.50}
       byte._calcOrigin .5
-      expect(byte.origin.x).toBe byte._props.center
-      expect(byte.origin.y).toBe byte._props.center
+      expect(byte._origin.x).toBe byte._props.center
+      expect(byte._origin.y).toBe byte._props.center
     it "should set x and y to x and y if drawing context passed", ->
       byte = new Byte radius:  {'25.50': -75.50}, ctx: svg
       byte._calcOrigin .5
-      expect(byte.origin.x).toBe parseFloat byte._props.x
-      expect(byte.origin.y).toBe parseFloat byte._props.y
+      expect(byte._origin.x).toBe parseFloat byte._props.x
+      expect(byte._origin.y).toBe parseFloat byte._props.y
   describe '_setProgress method ->', ->
     it 'should set transition progress', ->
       byte = new Byte radius:  {'25.50': -75.50}
@@ -808,23 +808,23 @@ describe 'Transit ->', ->
     it 'should have origin object', ->
       byte = new Byte radius:  {'25': 75}
       byte._setProgress .5
-      expect(byte.origin.x).toBeDefined()
-      expect(byte.origin.y).toBeDefined()
+      expect(byte._origin.x).toBeDefined()
+      expect(byte._origin.y).toBeDefined()
     it 'should have origin should be the center of the transit', ->
       byte = new Byte radius:  {'25': 75}
       byte._setProgress .5
-      expect(byte.origin.x).toBe byte._props.center
-      expect(byte.origin.y).toBe byte._props.center
+      expect(byte._origin.x).toBe byte._props.center
+      expect(byte._origin.y).toBe byte._props.center
     it 'should have origin should be x/y if foreign context', ->
       byte = new Byte radius:{'25': 75}, ctx: svg
       byte._setProgress .5
-      expect(byte.origin.x).toBe parseFloat byte._props.x
-      expect(byte.origin.y).toBe parseFloat byte._props.x
+      expect(byte._origin.x).toBe parseFloat byte._props.x
+      expect(byte._origin.y).toBe parseFloat byte._props.x
     it 'should have origin should be number if foreign context', ->
       byte = new Byte radius:{'25': 75}, ctx: svg
       byte._setProgress .5
-      expect(typeof byte.origin.x).toBe 'number'
-      expect(typeof byte.origin.y).toBe 'number'
+      expect(typeof byte._origin.x).toBe 'number'
+      expect(typeof byte._origin.y).toBe 'number'
     it 'should call _calcCurrentProps', ->
       byte = new Byte radius:  {'25': 75}
       spyOn byte, '_calcCurrentProps'
@@ -1340,48 +1340,5 @@ describe 'Transit ->', ->
       tr.setProgress .1
 
       expect(isRightContext).toBe true
-
-  describe '_overrideCallback method ->', ->
-    it 'should override a callback in _o', ->
-
-      fun = ->
-      tr = new Transit
-
-      tr._o.onStart = fun
-      tr._overrideCallback 'onStart', ->
-
-      expect(tr._o.onStart).not.toBe fun
-      expect(typeof tr._o.onStart).toBe 'function'
-
-    it 'should call overriden callback', ->
-      args = null; isRightScope = null
-      fun = ->
-        args = arguments
-        isRightScope = @ is tr
-      tr = new Transit
-
-      tr._o.onStart = fun
-      tr._overrideCallback 'onStart', ->
-
-      tr._o.onStart.call( tr, 'a' )
-      expect(args[0]).toBe 'a'
-      expect(args.length).toBe 1
-      expect(isRightScope).toBe true
-
-    it 'should call passed method callback', ->
-      args = null; isRightScope = null
-      tr = new Transit
-
-      tr._o.onStart = ->
-      cleanUpFun = ->
-        args = arguments
-        isRightScope = @ is tr
-
-      tr._overrideCallback 'onStart', cleanUpFun
-
-      tr._o.onStart.call( tr, 'a' )
-      expect(args[0]).toBe 'a'
-      expect(args.length).toBe 1
-      expect(isRightScope).toBe true
 
 

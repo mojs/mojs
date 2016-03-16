@@ -74,7 +74,7 @@ class Helpers
     ry:               1
   strokeDashPropsMap:
     strokeDasharray:  1
-    strokeDashoffset: 1
+    # strokeDashoffset: 1
   RAD_TO_DEG: 180/Math.PI
   constructor:-> @vars()
   vars:->

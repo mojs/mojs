@@ -107,10 +107,16 @@
         md = new Module;
         return expect(md._index).toBe(0);
       });
-      return it('should set _progress proprty to 0', function() {
+      it('should set _progress proprty to 0', function() {
         var md;
         md = new Module;
         return expect(md._progress).toBe(0);
+      });
+      return it('should create _strokeDasharrayBuffer array', function() {
+        var md;
+        md = new Module;
+        expect(md._strokeDasharrayBuffer.length).toBe(0);
+        return expect(h.isArray(md._strokeDasharrayBuffer)).toBe(true);
       });
     });
     describe('_assignProp method ->', function() {
@@ -451,6 +457,49 @@
         colorDelta = byte._deltas.stroke;
         byte._setProgress(.5);
         return expect(byte._props.stroke).toBe('rgba(0,127,127,1)');
+      });
+    });
+    describe('_overrideCallback method ->', function() {
+      it('should override a callback in _o', function() {
+        var fun, tr;
+        fun = function() {};
+        tr = new Module;
+        tr._o.onStart = fun;
+        tr._overrideCallback('onStart', function() {});
+        expect(tr._o.onStart).not.toBe(fun);
+        return expect(typeof tr._o.onStart).toBe('function');
+      });
+      it('should call overriden callback', function() {
+        var args, fun, isRightScope, tr;
+        args = null;
+        isRightScope = null;
+        fun = function() {
+          args = arguments;
+          return isRightScope = this === tr;
+        };
+        tr = new Module;
+        tr._o.onStart = fun;
+        tr._overrideCallback('onStart', function() {});
+        tr._o.onStart.call(tr, 'a');
+        expect(args[0]).toBe('a');
+        expect(args.length).toBe(1);
+        return expect(isRightScope).toBe(true);
+      });
+      return it('should call passed method callback', function() {
+        var args, cleanUpFun, isRightScope, tr;
+        args = null;
+        isRightScope = null;
+        tr = new Module;
+        tr._o.onStart = function() {};
+        cleanUpFun = function() {
+          args = arguments;
+          return isRightScope = this === tr;
+        };
+        tr._overrideCallback('onStart', cleanUpFun);
+        tr._o.onStart.call(tr, 'a');
+        expect(args[0]).toBe('a');
+        expect(args.length).toBe(1);
+        return expect(isRightScope).toBe(true);
       });
     });
     return it('clean the _defaults  up', function() {

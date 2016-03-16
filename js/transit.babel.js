@@ -10,6 +10,7 @@ import Timeline   from './tween/timeline';
 // TODO
 //  - refactor
 //    - add set if changed to Module
+//    - check if strokeDashoffset could be of array type
 //  - move to Runable
 //  --
 //  - tween for every prop
@@ -75,7 +76,7 @@ class Transit extends Thenable {
       // context for all the callbacks
       callbacksContext: null
     }
-    
+    // properties that will be excluded from delta parsing
     this._skipPropsDelta = this._skipPropsDelta || {
       callbacksContext:   1
     }
@@ -92,8 +93,8 @@ class Transit extends Thenable {
   _vars () {
     // call _vars method on Thenable
     super._vars();
-    this.lastSet  = {};
-    this.origin   = {};
+    this._lastSet = {};
+    this._origin   = {};
     // should draw on foreign svg canvas
     this.isForeign = !!this._o.ctx;
     // should take an svg element as self bit
@@ -153,8 +154,8 @@ class Transit extends Thenable {
   */
   _draw () {
     this.bit.setProp({
-      x:                    this.origin.x,
-      y:                    this.origin.y,
+      x:                    this._origin.x,
+      y:                    this._origin.y,
       rx:                   this._props.rx,
       ry:                   this._props.ry,
       stroke:               this._props.stroke,
@@ -191,16 +192,16 @@ class Transit extends Thenable {
     }
   }
   /*
-    Method to check if property changed after the latest set.
+    Method to check if property changed after the latest check.
     @private
     @param {String} Name of the property to check.
     @returns {Boolean}
   */
   _isPropChanged ( name ) {
     // if there is no recod for the property - create it
-    if (this.lastSet[name] == null) { this.lastSet[name] = {}; }
-    if (this.lastSet[name].value !== this._props[name]) {
-      this.lastSet[name].value = this._props[name];
+    if (this._lastSet[name] == null) { this._lastSet[name] = {}; }
+    if (this._lastSet[name].value !== this._props[name]) {
+      this._lastSet[name].value = this._props[name];
       return true;
     } else { return false; }
   }
@@ -210,7 +211,7 @@ class Transit extends Thenable {
     @returns {String} Transform string for the shape.
   */
   _calcShapeTransform () {
-    return `rotate(${this._props.angle}, ${this.origin.x}, ${this.origin.y})`;
+    return `rotate(${this._props.angle}, ${this._origin.x}, ${this._origin.y})`;
   }
   /*
     Method to calculate maximum shape's radius.
@@ -317,8 +318,8 @@ class Transit extends Thenable {
     // if drawing context was passed
     // set origin to x and y of the module
     // otherwise set the origin to the center
-    this.origin.x = this._o.ctx ? parseFloat(p.x) : p.center;
-    this.origin.y = this._o.ctx ? parseFloat(p.y) : p.center;
+    this._origin.x = this._o.ctx ? parseFloat(p.x) : p.center;
+    this._origin.y = this._o.ctx ? parseFloat(p.y) : p.center;
   }
   /*
     Method to setup tween and timeline options before creating them.
@@ -345,23 +346,6 @@ class Transit extends Thenable {
     this._overrideCallback( 'onComplete', function (isForward) {
       isForward ? (!it._props.isShowEnd && it._hide()) : it._show();
     });
-  }
-  /*
-    Method to override callback for controll pupropes.
-    @private
-    @param {String}    Callback name.
-    @parma {Function}  Method to call  
-  */
-  _overrideCallback (name, fun) {
-    var callback   = this._o[name],
-        isCallback = (callback && typeof callback === 'function');
-
-    this._o[name] = function () {
-      // call overriden callback if it exists
-      isCallback && callback.apply( this, arguments );
-      // call the passed cleanup function
-      fun.apply( this, arguments );
-    }
   }
   /*
     Method to create transform string;

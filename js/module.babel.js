@@ -25,6 +25,7 @@ class Module {
   _vars () {
     this._index    = this._o.index || 0;
     this._progress = 0;
+    this._strokeDasharrayBuffer = [];
   }
   /*
     Method to render on initialization.
@@ -119,8 +120,7 @@ class Module {
         case 'string':
           var array = this._props[key].split(' ');
           for (var i = 0; i < array.length; i++ ) {
-            var unit = array[i];
-            result.push(h.parseUnit(unit));
+            result.push(h.parseUnit(array[i]));
           }
           break;
       }
@@ -202,41 +202,29 @@ class Module {
     @private
     @param {Number} Progress to calculate - [0..1].
   */
-  _calcCurrentProps ( progress ) {
-    var a, b, dash, g, i, item, key, keys, len, r, stroke, units, value;
-    keys = Object.keys(this._deltas);
-    len = keys.length;
-    while (len--) {
-      key = keys[len];
-      value = this._deltas[key];
-      this._props[key] = (function() {
-        var k, len1, ref;
-        switch (value.type) {
-          case 'array':
-            stroke = [];
-            ref = value.delta;
-            for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
-              item = ref[i];
-              dash = value.start[i].value + item.value * this._progress;
-              stroke.push({
-                value: dash,
-                unit: item.unit
-              });
-            }
-            return stroke;
-          case 'number':
-            return value.start + value.delta * progress;
-          case 'unit':
-            units = value.end.unit;
-            return "" + (value.start.value + value.delta * progress) + units;
-          case 'color':
-            r = parseInt(value.start.r + value.delta.r * progress, 10);
-            g = parseInt(value.start.g + value.delta.g * progress, 10);
-            b = parseInt(value.start.b + value.delta.b * progress, 10);
-            a = parseInt(value.start.a + value.delta.a * progress, 10);
-            return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+  _calcCurrentProps ( p ) {
+    for (var key in this._deltas) {
+      var value = this._deltas[key];
+      if ( value.type === 'array' ) {
+        this._strokeDasharrayBuffer.length = 0;
+        for ( var i = 0; i < value.delta.length; i++ ) {
+          var item = value.delta[i],
+              dash = value.start[i].value + p * item.value;
+          this._strokeDasharrayBuffer.push({ value: dash, unit: item.unit });
         }
-      }).call(this);
+        this._props[key] = this._strokeDasharrayBuffer;
+      } else if ( value.type === 'number' ) {
+        this._props[key] = value.start + value.delta * p;
+      } else if ( value.type === 'unit' ) {
+        this._props[key] =
+          `${value.start.value + p*value.delta}${value.end.unit}`;
+      } else if ( value.type === 'color' ) {
+        var r = parseInt(value.start.r + p * value.delta.r, 10),
+            g = parseInt(value.start.g + p * value.delta.g, 10),
+            b = parseInt(value.start.b + p * value.delta.b, 10),
+            a = parseInt(value.start.a + p * value.delta.a, 10);
+        this._props[key] = `rgba(${r},${g},${b},${a})`;
+      }
     }
   }
   /*
@@ -247,6 +235,23 @@ class Module {
   _setProgress ( progress ) {
     this._progress = progress;
     this._calcCurrentProps(progress);
+  }
+  /*
+    Method to override callback for controll pupropes.
+    @private
+    @param {String}    Callback name.
+    @parma {Function}  Method to call  
+  */
+  _overrideCallback (name, fun) {
+    var callback   = this._o[name],
+        isCallback = (callback && typeof callback === 'function');
+
+    this._o[name] = function () {
+      // call overriden callback if it exists
+      isCallback && callback.apply( this, arguments );
+      // call the passed cleanup function
+      fun.apply( this, arguments );
+    }
   }
 }
 

@@ -84,6 +84,10 @@ describe 'module class ->', ->
     it 'should set _progress proprty to 0', ->
       md = new Module
       expect(md._progress).toBe 0
+    it 'should create _strokeDasharrayBuffer array', ->
+      md = new Module
+      expect(md._strokeDasharrayBuffer.length).toBe 0
+      expect(h.isArray(md._strokeDasharrayBuffer)).toBe true
   describe '_assignProp method ->', ->
     it 'should set property on _props object', ->
       value = 2
@@ -284,5 +288,49 @@ describe 'module class ->', ->
       byte._setProgress .5
       expect(byte._props.stroke).toBe 'rgba(0,127,127,1)'
 
+  describe '_overrideCallback method ->', ->
+    it 'should override a callback in _o', ->
+
+      fun = ->
+      tr = new Module
+
+      tr._o.onStart = fun
+      tr._overrideCallback 'onStart', ->
+
+      expect(tr._o.onStart).not.toBe fun
+      expect(typeof tr._o.onStart).toBe 'function'
+
+    it 'should call overriden callback', ->
+      args = null; isRightScope = null
+      fun = ->
+        args = arguments
+        isRightScope = @ is tr
+      tr = new Module
+
+      tr._o.onStart = fun
+      tr._overrideCallback 'onStart', ->
+
+      tr._o.onStart.call( tr, 'a' )
+      expect(args[0]).toBe 'a'
+      expect(args.length).toBe 1
+      expect(isRightScope).toBe true
+
+    it 'should call passed method callback', ->
+      args = null; isRightScope = null
+      tr = new Module
+
+      tr._o.onStart = ->
+      cleanUpFun = ->
+        args = arguments
+        isRightScope = @ is tr
+
+      tr._overrideCallback 'onStart', cleanUpFun
+
+      tr._o.onStart.call( tr, 'a' )
+      expect(args[0]).toBe 'a'
+      expect(args.length).toBe 1
+      expect(isRightScope).toBe true
+
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun
+
