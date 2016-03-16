@@ -1781,7 +1781,7 @@
         return expect(tr._props.size).toBe(tr.bit.ratio + 2 * gap);
       });
     });
-    return describe('callbacksContext option ->', function() {
+    describe('callbacksContext option ->', function() {
       it('should pass the options to the tween', function() {
         var isRightContext, obj, tr;
         obj = {};
@@ -1811,6 +1811,90 @@
         tr.setProgress(0);
         tr.setProgress(.1);
         return expect(isRightContext).toBe(true);
+      });
+    });
+    return describe('run method ->', function() {
+      it('should calculate el size', function() {
+        var byte;
+        byte = new Transit({
+          radius: {
+            10: 5
+          }
+        });
+        spyOn(byte, '_calcSize');
+        byte.run({
+          radius: 50
+        });
+        return expect(byte._calcSize).toHaveBeenCalled();
+      });
+      it('should set new el size', function() {
+        var byte;
+        byte = new Transit({
+          radius: {
+            10: 5
+          }
+        });
+        spyOn(byte, '_setElStyles');
+        byte.run({
+          radius: 50
+        });
+        return expect(byte._setElStyles).toHaveBeenCalled();
+      });
+      it('should set new el size #2', function() {
+        var byte;
+        byte = new Transit({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 50
+        });
+        return expect(byte.el.style.width).toBe('104px');
+      });
+      it('should set new el size with respect to radiusX/radiusY', function() {
+        var byte;
+        byte = new Transit({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 50,
+          radiusX: {
+            100: 0
+          }
+        });
+        return expect(byte.el.style.width).toBe('204px');
+      });
+      it('should set new el size with respect to radiusX/radiusY', function() {
+        var byte;
+        byte = new Transit({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 50,
+          radiusY: 110
+        });
+        return expect(byte.el.style.width).toBe('224px');
+      });
+      return it('should set new el size with respect to radiusX/radiusY', function() {
+        var byte;
+        byte = new Transit({
+          radius: {
+            10: 5
+          }
+        });
+        byte.run({
+          radius: 450,
+          radiusY: 110,
+          radiusX: {
+            200: 0
+          }
+        });
+        return expect(byte.el.style.width).toBe('404px');
       });
     });
   });

@@ -4,6 +4,7 @@ const Bit       = require('./shapes/bit');
 const shapesMap = require('./shapes/shapesMap');
 import Tweenable  from './tween/tweenable';
 import Thenable   from './thenable';
+import Runable    from './runable';
 import Tween      from './tween/tween';
 import Timeline   from './tween/timeline';
 
@@ -15,7 +16,7 @@ import Timeline   from './tween/timeline';
 //  --
 //  - tween for every prop
 
-class Transit extends Thenable {
+class Transit extends Runable {
   /*
     Method to declare module's defaults.
     @private
@@ -212,6 +213,22 @@ class Transit extends Thenable {
   */
   _calcShapeTransform () {
     return `rotate(${this._props.angle}, ${this._origin.x}, ${this._origin.y})`;
+  }
+  /*
+    Method to tune new option on run.
+    @private
+    @override @ Runable
+    @param {Object}  Option to tune on run.
+    @param {Boolean} If foreign svg canvas.
+  */
+  _tuneNewOption (o, isForeign) {
+    // call super on Runable
+    super._tuneNewOption(o, isForeign);
+    // return if empty object
+    if ( !((o != null) && Object.keys(o).length) ) { return 1; }
+    
+    this._calcSize();
+    !isForeign && this._setElStyles();
   }
   /*
     Method to calculate maximum shape's radius.

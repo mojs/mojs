@@ -1,7 +1,7 @@
 {
   "name": "mo-js",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.187.0",
+  "version": "0.188.0",
   "license": "MIT",
   "private": false,
   "scripts": {

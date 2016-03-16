@@ -1341,4 +1341,32 @@ describe 'Transit ->', ->
 
       expect(isRightContext).toBe true
 
+  describe 'run method ->', ->
+    it 'should calculate el size', ->
+      byte = new Transit(radius: {10: 5})
+      spyOn byte, '_calcSize'
+      byte.run radius: 50
+      expect(byte._calcSize).toHaveBeenCalled()
+    it 'should set new el size', ->
+      byte = new Transit(radius: {10: 5})
+      spyOn byte, '_setElStyles'
+      byte.run radius: 50
+      expect(byte._setElStyles).toHaveBeenCalled()
+    it 'should set new el size #2', ->
+      byte = new Transit(radius: {10: 5})
+      byte.run radius: 50
+      expect(byte.el.style.width).toBe '104px'
+    it 'should set new el size with respect to radiusX/radiusY', ->
+      byte = new Transit(radius: {10: 5})
+      byte.run radius: 50, radiusX: {100: 0}
+      expect(byte.el.style.width).toBe '204px'
+    it 'should set new el size with respect to radiusX/radiusY', ->
+      byte = new Transit(radius: {10: 5})
+      byte.run radius: 50, radiusY: 110
+      expect(byte.el.style.width).toBe '224px'
+    it 'should set new el size with respect to radiusX/radiusY', ->
+      byte = new Transit(radius: {10: 5})
+      byte.run radius: 450, radiusY: 110, radiusX: {200:0}
+      expect(byte.el.style.width).toBe '404px'
+
 
