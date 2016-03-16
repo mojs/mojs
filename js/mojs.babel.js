@@ -11,6 +11,7 @@ import Timeline   from './tween/timeline';
 import Tweener    from './tween/tweener';
 import Tweenable  from './tween/tweenable';
 import Thenable   from './thenable';
+import Runable    from './runable';
 import Module     from './module';
 import tweener    from './tween/tweener';
 import easing     from './easing/easing';
@@ -18,7 +19,7 @@ import easing     from './easing/easing';
 window.mojs = {
   revision:   '0.187.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
-  Tween, Timeline, Tweenable, Thenable, Module,
+  Tween, Timeline, Tweenable, Thenable, Runable, Module,
   tweener, easing, shapesMap
 }
 

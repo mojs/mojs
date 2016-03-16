@@ -410,6 +410,7 @@ var Tween = class Tween {
     if ((time >= p.startTime) && (time <= p.endTime)) {
       this._updateInActiveArea( time );
     } else { (this._isInActiveArea) && this._updateInInactiveArea( time ); }
+    
     this._prevTime = time;
     return (time >= p.endTime) || (time <= startPoint);
   }

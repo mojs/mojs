@@ -532,7 +532,7 @@
 	          // it will fallback to default 0 value
 	          var option = this._getOption(len),
 	              ref;
-	          // !o.childOptions?.angle? && ( o.angleShift == null )
+
 	          if (((ref = o.childOptions) != null ? ref.angle : void 0) == null && o.angleShift == null) {
 	            option.angle = this.transits[len].o.angle;
 	          }
@@ -2024,6 +2024,7 @@
 	      } else {
 	        this._isInActiveArea && this._updateInInactiveArea(time);
 	      }
+
 	      this._prevTime = time;
 	      return time >= p.endTime || time <= startPoint;
 	    }
@@ -7188,6 +7189,10 @@
 
 	var _thenable2 = _interopRequireDefault(_thenable);
 
+	var _runable = __webpack_require__(106);
+
+	var _runable2 = _interopRequireDefault(_runable);
+
 	var _module = __webpack_require__(11);
 
 	var _module2 = _interopRequireDefault(_module);
@@ -7201,7 +7206,7 @@
 	window.mojs = {
 	  revision: '0.187.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
-	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Module: _module2.default,
+	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
@@ -8270,6 +8275,105 @@
 	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
 	  return it;
 	};
+
+/***/ },
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _defineProperty2 = __webpack_require__(25);
+
+	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+	var _getPrototypeOf = __webpack_require__(27);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(19);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(20);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(21);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(23);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _thenable = __webpack_require__(10);
+
+	var _thenable2 = _interopRequireDefault(_thenable);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Runable = function (_Thenable) {
+	  (0, _inherits3.default)(Runable, _Thenable);
+
+	  function Runable() {
+	    (0, _classCallCheck3.default)(this, Runable);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Runable).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Runable, [{
+	    key: '_transformHistoryRecord',
+
+	    /*
+	      Method to transform history recod with key/value.
+	      @param {Number} Index of the history record to transform.
+	      @param {String} Property name to transform.
+	      @param {Any} Property value to transform to.
+	      @returns {Boolean} Returns true if no further
+	                         history modifications is needed.
+	    */
+	    value: function _transformHistoryRecord(index, key, value) {
+	      var currRecord = this._history[index],
+	          prevRecord = this._history[index - 1],
+	          nextRecord = this._history[index + 1],
+	          propertyValue = currRecord[key];
+
+	      if (this._isDelta(value)) {
+	        // if previous history record have been already overriden
+	        // with the delta, copy only the end property to the start
+	        if (prevRecord && prevRecord[key] === value) {
+	          var prevEnd = h.getDeltaEnd(prevRecord[key]);
+	          currRecord[key] = (0, _defineProperty3.default)({}, prevEnd, h.getDeltaEnd(propertyValue));
+	          return true;
+	        } // else go to very end of this function
+	        // if new value is delta
+	      } else {
+	          // if property value is delta - rewrite it's start
+	          // and notify parent to stop hitory modifications
+	          if (this._isDelta(propertyValue)) {
+	            currRecord[key] = (0, _defineProperty3.default)({}, value, h.getDeltaEnd(propertyValue));
+	            return true;
+	            // both are not deltas and further in the chain
+	          } else {
+	              currRecord[key] = value;
+	              // if next record isn't delta - we should always override it
+	              // so do not notify parent
+	              if (nextRecord && !this._isDelta(nextRecord[key])) {
+	                // notify that no modifications needed in the next record
+	                return nextRecord[key] !== propertyValue;
+	              }
+	            } // else go to very end of this function
+	        }
+	      currRecord[key] = value;
+	    }
+	  }]);
+	  return Runable;
+	}(_thenable2.default);
+
+	exports.default = Runable;
 
 /***/ }
 /******/ ]);

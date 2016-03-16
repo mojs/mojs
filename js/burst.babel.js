@@ -191,9 +191,7 @@ class Burst extends Transit {
   _getPropByMod ( o ) {
     var source = (o.from || this.o.childOptions);
     if ( source ) { var prop = source[o.key]; }
-    return ( this.h.isArray(prop) )
-      ? prop[o.i % prop.length]
-      : prop;
+    return ( this.h.isArray(prop) ) ? prop[o.i % prop.length] : prop;
   }
   /*
     Method to get radial point.
@@ -273,10 +271,10 @@ class Burst extends Transit {
       var keys  = Object.keys(angle),
           start = keys[0],
           end   = angle[start],
-          curAngleShift = angleAddition+angleShift,
-          newStart      = parseFloat(start) + curAngleShift,
-          newEnd        = parseFloat(end)   + curAngleShift,
-          delta = {};
+          curAngleShift   = angleAddition+angleShift,
+          newStart        = parseFloat(start) + curAngleShift,
+          newEnd          = parseFloat(end)   + curAngleShift,
+          delta           = {};
           delta[newStart] = newEnd;
       angle = delta;
     }
@@ -356,7 +354,7 @@ class Burst extends Transit {
         // it will fallback to default 0 value
         var option = this._getOption(len),
             ref;
-        // !o.childOptions?.angle? && ( o.angleShift == null )
+
         if ( (((ref = o.childOptions) != null ? ref.angle : void 0) == null) && ( o.angleShift == null ) ) {
           option.angle = this.transits[len].o.angle;
         }
