@@ -23,7 +23,6 @@ class Thenable extends Tweenable {
     this._resetMergedFlags( merged );
     // reset isShowEnd flag on prev module
     prevModule._setProp && prevModule._setProp('isShowEnd', false);
-
     // create a submodule of the same type as the master module
     var module  = new this.constructor( merged );
     // save the modules to the _modules array
@@ -146,7 +145,6 @@ class Thenable extends Tweenable {
     isObject = isObject && !optionsValue.unit;
     return !(!isObject || h.isArray(optionsValue) || h.isDOM(optionsValue));
   }
-
 }
 
 export default Thenable;

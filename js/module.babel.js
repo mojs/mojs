@@ -163,6 +163,7 @@ class Module {
   }
   /*
     Method to extend module defaults with passed options.
+    Saves the result to _props.
     @param {Object} Optional object to extend defaults with.
   */
   _extendDefaults (o) {
@@ -186,8 +187,9 @@ class Module {
       // and delete the key from deltas
       o && (delete this._deltas[key]);
       // if delta property
-      if ( this._isDelta(optionsValue) ) { this._getDelta(key, optionsValue); }
-      else {
+      if ( this._isDelta(optionsValue) ) {
+        this._getDelta(key, optionsValue);
+      } else {
         // parse stagger and rand values
         this._props[key] = this._parseOptionString(optionsValue);
         // parse units for position properties

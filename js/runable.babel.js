@@ -13,9 +13,11 @@ class Runable extends Thenable {
     // if options object was passed
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
+      this._extendDefaults(o);
+      this._resetTweens();
       this._tuneNewOption(o);
       // save to history
-      o = h.cloneObj(this._history[0]);
+      o = h.cloneObj(this._props);
       h.extend(o, this._defaults);
       this._history[0] = o;
     }
@@ -98,8 +100,6 @@ class Runable extends Thenable {
   */
   _tuneNewOption (o, isForeign) {
     if ((o != null) && Object.keys(o).length) {
-      this._extendDefaults(o);
-      this._resetTweens(isForeign);
     }
   }
   /*
