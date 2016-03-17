@@ -1955,23 +1955,22 @@
 	    /*
 	      Method to tune new option on run.
 	      @private
-	      @override @ Runable
+	      @override @ Module
 	      @param {Object}  Option to tune on run.
-	      @param {Boolean} If foreign svg canvas.
 	    */
 
 	  }, {
-	    key: '_tuneNewOption',
-	    value: function _tuneNewOption(o, isForeign) {
-	      // call super on Runable
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Transit.prototype), '_tuneNewOption', this).call(this, o, isForeign);
+	    key: '_tuneNewOptions',
+	    value: function _tuneNewOptions(o) {
+	      // call super on Module
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Transit.prototype), '_tuneNewOptions', this).call(this, o);
 	      // return if empty object
 	      if (!(o != null && (0, _keys2.default)(o).length)) {
 	        return 1;
 	      }
 
 	      this._calcSize();
-	      !isForeign && this._setElStyles();
+	      this._setElStyles();
 	    }
 	    /*
 	      Method to calculate maximum shape's radius.
@@ -3584,13 +3583,10 @@
 	      // if options object was passed
 	      if (o && (0, _keys2.default)(o).length) {
 	        this._transformHistory(o);
-	        this._extendDefaults(o);
+	        this._tuneNewOptions(o);
 	        this._resetTweens();
-	        this._tuneNewOption(o);
-	        // save to history
-	        o = _h2.default.cloneObj(this._props);
-	        _h2.default.extend(o, this._defaults);
-	        this._history[0] = o;
+	        // h.extend(o, this._defaults);
+	        this._history[0] = _h2.default.cloneObj(this._props);
 	      }
 	      this.stop();this.play();
 	      return this;
@@ -3668,18 +3664,6 @@
 	      }
 	    }
 	    /*
-	      Method to tune new option on run.
-	      @private
-	      @param {Object}  Option to tune on run.
-	      @param {Boolean} If foreign svg canvas.
-	    */
-
-	  }, {
-	    key: '_tuneNewOption',
-	    value: function _tuneNewOption(o, isForeign) {
-	      if (o != null && (0, _keys2.default)(o).length) {}
-	    }
-	    /*
 	      Method to set new options on run.
 	      @param {Boolean} If foreign context.
 	      @private
@@ -3730,10 +3714,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _keys = __webpack_require__(26);
-
-	var _keys2 = _interopRequireDefault(_keys);
 
 	var _typeof2 = __webpack_require__(19);
 
@@ -3980,22 +3960,26 @@
 	      this._props = this._props || {};
 	      // reset deltas if no options was passed
 	      o == null && (this._deltas = {});
-	      var fromObject = o || this._defaults,
-	          keys = (0, _keys2.default)(fromObject),
-	          len = keys.length;
-	      while (len--) {
-	        var key = keys[len];
+
+	      var fromObject = o || this._defaults;
+
+	      for (var key in fromObject) {
 	        // skip property if it is listed in _skipProps
 	        if (this._skipProps && this._skipProps[key]) {
 	          continue;
 	        }
 
+	        // copy the properties to the _o object
 	        var optionsValue = o ?
 	        // if fromObject was pass - get the value from passed o
 	        this._o[key] = o[key]
 	        // if from object wasn't passed - get options value from _o
 	        // with fallback to defaults
 	        : this._o[key] != null ? this._o[key] : this._defaults[key];
+	        /*
+	          `optionsValue` by this point represents options value with
+	          fallback to *default* one. Or. Options key on run if `o` is present.
+	        */
 	        // and delete the key from deltas
 	        o && delete this._deltas[key];
 	        // if delta property
@@ -4010,6 +3994,20 @@
 	          this._props[key] = this._parseStrokeDashOption(key);
 	        }
 	      }
+	    }
+	    /*
+	      Method to partially tune new options object to _props and _o.
+	      Just delegates the call to the _extendDefaults method, for
+	      the ability to call the `super` in children after new option
+	      have been tuned.
+	      @private
+	      @param {Object} Options object to tune to.
+	    */
+
+	  }, {
+	    key: '_tuneNewOptions',
+	    value: function _tuneNewOptions(o) {
+	      this._extendDefaults(o);
 	    }
 	    /*
 	      Method to calculate current progress of the deltas.
@@ -7431,7 +7429,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.189.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.190.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7479,12 +7477,6 @@
 	  scale: 1,
 	  angle: 90
 	});
-
-	// console.log(tr._history[0].stroke);
-	// console.log(tr._history[1].stroke);
-	// tr.run({ stroke: 'red' });
-	// console.log(tr._history[0].stroke);
-	// console.log(tr._history[1].stroke);
 
 	// var playEl = document.querySelector('#js-play'),
 	//     rangeSliderEl = document.querySelector('#js-range-slider');

@@ -170,26 +170,29 @@ class Module {
     this._props = this._props || {};
     // reset deltas if no options was passed
     (o == null) && (this._deltas = {});
-    var fromObject = o || this._defaults,
-        keys       = Object.keys(fromObject),
-        len        = keys.length;
-    while (len--) {
-      var key = keys[len];
+    
+    var fromObject = o || this._defaults;
+
+    for (var key in fromObject) {
       // skip property if it is listed in _skipProps
       if (this._skipProps && this._skipProps[key]) { continue; }
-      
+        
+      // copy the properties to the _o object
       var optionsValue = (o)
         // if fromObject was pass - get the value from passed o
         ? this._o[key] = o[key]
         // if from object wasn't passed - get options value from _o
         // with fallback to defaults
         : ( this._o[key] != null ) ? this._o[key] : this._defaults[key];
+      /*
+        `optionsValue` by this point represents options value with
+        fallback to *default* one. Or. Options key on run if `o` is present.
+      */
       // and delete the key from deltas
       o && (delete this._deltas[key]);
       // if delta property
-      if ( this._isDelta(optionsValue) ) {
-        this._getDelta(key, optionsValue);
-      } else {
+      if ( this._isDelta(optionsValue) ) { this._getDelta(key, optionsValue); }
+      else {
         // parse stagger and rand values
         this._props[key] = this._parseOptionString(optionsValue);
         // parse units for position properties
@@ -198,6 +201,17 @@ class Module {
         this._props[key] = this._parseStrokeDashOption(key);
       }
     }
+  }
+  /*
+    Method to partially tune new options object to _props and _o.
+    Just delegates the call to the _extendDefaults method, for
+    the ability to call the `super` in children after new option
+    have been tuned.
+    @private
+    @param {Object} Options object to tune to.
+  */
+  _tuneNewOptions (o) {
+    this._extendDefaults(o);
   }
   /*
     Method to calculate current progress of the deltas.

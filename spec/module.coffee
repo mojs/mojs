@@ -331,6 +331,15 @@ describe 'module class ->', ->
       expect(args.length).toBe 1
       expect(isRightScope).toBe true
 
+  describe '_tuneNewOptions method', ->
+    it 'should call _extendDefaults with the options object', ->
+      md = new Module
+      spyOn md, '_extendDefaults'
+      obj = {}
+      md._tuneNewOptions obj
+      expect(md._extendDefaults).toHaveBeenCalledWith obj
+
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun
+
 

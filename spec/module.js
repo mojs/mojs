@@ -501,6 +501,16 @@
         return expect(isRightScope).toBe(true);
       });
     });
+    describe('_tuneNewOptions method', function() {
+      return it('should call _extendDefaults with the options object', function() {
+        var md, obj;
+        md = new Module;
+        spyOn(md, '_extendDefaults');
+        obj = {};
+        md._tuneNewOptions(obj);
+        return expect(md._extendDefaults).toHaveBeenCalledWith(obj);
+      });
+    });
     return it('clean the _defaults  up', function() {
       return Module.prototype._declareDefaults = oldFun;
     });

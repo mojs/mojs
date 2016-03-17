@@ -13,13 +13,10 @@ class Runable extends Thenable {
     // if options object was passed
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
-      this._extendDefaults(o);
+      this._tuneNewOptions(o);
       this._resetTweens();
-      this._tuneNewOption(o);
-      // save to history
-      o = h.cloneObj(this._props);
-      h.extend(o, this._defaults);
-      this._history[0] = o;
+      // h.extend(o, this._defaults);
+      this._history[0] = h.cloneObj(this._props);
     }
     this.stop(); this.play();
     return this;
@@ -86,16 +83,6 @@ class Runable extends Thenable {
       }
     }
 
-  }
-  /*
-    Method to tune new option on run.
-    @private
-    @param {Object}  Option to tune on run.
-    @param {Boolean} If foreign svg canvas.
-  */
-  _tuneNewOption (o, isForeign) {
-    if ((o != null) && Object.keys(o).length) {
-    }
   }
   /*
     Method to set new options on run.

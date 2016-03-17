@@ -217,18 +217,17 @@ class Transit extends Runable {
   /*
     Method to tune new option on run.
     @private
-    @override @ Runable
+    @override @ Module
     @param {Object}  Option to tune on run.
-    @param {Boolean} If foreign svg canvas.
   */
-  _tuneNewOption (o, isForeign) {
-    // call super on Runable
-    super._tuneNewOption(o, isForeign);
+  _tuneNewOptions (o) {
+    // call super on Module
+    super._tuneNewOptions(o);
     // return if empty object
     if ( !((o != null) && Object.keys(o).length) ) { return 1; }
     
     this._calcSize();
-    !isForeign && this._setElStyles();
+    this._setElStyles();
   }
   /*
     Method to calculate maximum shape's radius.
