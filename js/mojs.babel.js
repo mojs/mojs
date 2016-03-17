@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.188.0', isDebug: true, helpers: h,
+  revision:   '0.189.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Runable, Module,
   tweener, easing, shapesMap
@@ -68,20 +68,23 @@ var tr = new mojs.Transit({
   // opacity: 0
 });
 
-console.log(tr._history[0].stroke);
-console.log(tr._history[1].stroke);
+// console.log(tr._history[0].stroke);
+// console.log(tr._history[1].stroke);
+// tr.run({ stroke: 'red' });
+// console.log(tr._history[0].stroke);
+// console.log(tr._history[1].stroke);
 
-var playEl = document.querySelector('#js-play'),
-    rangeSliderEl = document.querySelector('#js-range-slider');
-playEl.addEventListener('click', function () {
-  tr.run({ stroke: 'red' });
-  console.log(tr._history[0].stroke);
-  console.log(tr._history[1].stroke);
-});
+// var playEl = document.querySelector('#js-play'),
+//     rangeSliderEl = document.querySelector('#js-range-slider');
+// playEl.addEventListener('click', function () {
+//   tr.run({ stroke: 'red' });
+//   console.log(tr._history[0].stroke);
+//   console.log(tr._history[1].stroke);
+// });
 
-rangeSliderEl.addEventListener('input', function () {
-  tr.setProgress( rangeSliderEl.value/1000 );
-});
+// rangeSliderEl.addEventListener('input', function () {
+//   tr.setProgress( rangeSliderEl.value/1000 );
+// });
 
 mojs.h     = mojs.helpers;
 mojs.delta = mojs.h.delta;

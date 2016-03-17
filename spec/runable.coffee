@@ -10,6 +10,8 @@ describe 'Runable ->', ->
   describe '_vars method ->', ->
 
   describe '_transformHistoryRecord method ->', ->
+    # x : { 0 }  -> { 0 }  -> { 0 }
+    # x : { 20 } -> { 20 } -> { 20 }
     it 'should add property to the record', ->
       tr = new Runable()
         .then radius: 0
@@ -18,16 +20,28 @@ describe 'Runable ->', ->
       result = tr._transformHistoryRecord 0, 'x', 20
 
       expect(tr._history[0].x).toBe 20
-      expect(!!result).toBe false
+      expect(result).toBe 20
 
-    it 'should return true if old value is delta', ->
-      tr = new Runable({ radius: { 0: 50 } })
+    it 'should return newValue if old value is delta and index is 0', ->
+      # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
+      # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
+      tr = new Runable({ radius: { 0: 50 }, isIt: 1 })
         .then radius: 0
         .then radius: 50
 
       result = tr._transformHistoryRecord 0, 'radius', 20
-      expect(tr._history[0].radius[20]).toBe 50
-      expect(!!result).toBe true
+      expect(tr._history[0].radius).toBe 20
+      expect(result).toBe 20
+    it 'should return null if old value is delta but index isnt 0', ->
+      # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
+      # radius: { 20 } -> ^{ 20 : 0 } x-> { 0: 50 }
+      tr = new Runable({ radius: { 0: 50 } })
+        .then radius: 0
+        .then radius: 50
+
+      result = tr._transformHistoryRecord 1, 'radius', 20
+      expect(tr._history[1].radius[20]).toBe 0
+      expect(result).toBe null
 
     it 'should rewrite everything until first delta', ->
       tr = new Runable({ radius: 75 })
@@ -36,11 +50,11 @@ describe 'Runable ->', ->
 
       result = tr._transformHistoryRecord 0, 'radius', 20
       expect(tr._history[0].radius).toBe 20
-      expect(!!result).toBe false
+      expect(result).toBe 20
 
       result = tr._transformHistoryRecord 1, 'radius', 20
       expect(tr._history[1].radius[20]).toBe 0
-      expect(!!result).toBe true
+      expect(result).toBe null
 
     it 'should rewrite everything until first defined item', ->
       tr = new Runable({ duration: 2000 })
@@ -50,25 +64,25 @@ describe 'Runable ->', ->
 
       result = tr._transformHistoryRecord 0, 'duration', 1000
       expect(tr._history[0].duration).toBe 1000
-      expect(!!result).toBe false
+      expect(result).toBe 1000
 
       result = tr._transformHistoryRecord 1, 'duration', 1000
       expect(tr._history[1].duration).toBe 1000
-      expect(!!result).toBe true
+      expect(result).toBe null
 
     it 'should save new delta value and modify the next', ->
-      tr = new Runable({ radius: 75 })
+      tr = new Runable({ radius: 75, isIt: 1 })
         .then radius: 0
         .then radius: 50
 
       delta = { 20 : 100 }
       result = tr._transformHistoryRecord 0, 'radius', delta
       expect(tr._history[0].radius[20]).toBe 100
-      expect(!!result).toBe false
+      expect(result).toBe 100
 
-      result = tr._transformHistoryRecord 1, 'radius', delta
+      result = tr._transformHistoryRecord 1, 'radius', 100
       expect(tr._history[1].radius[100]).toBe 0
-      expect(!!result).toBe true
+      expect(result).toBe null
   describe '_transformHistory method ->', ->
     it 'should call _transformHistoryFor for every new property ->', ->
       tr = new Runable({}).then({ radius: 0 }).then({ radius: 50 })
@@ -84,7 +98,7 @@ describe 'Runable ->', ->
         .then radius: 0
         .then radius: 50
 
-      spyOn tr, '_transformHistoryRecord'
+      spyOn(tr, '_transformHistoryRecord').and.callThrough()
       tr._transformHistoryFor( 'x', 20 )
       expect(tr._transformHistoryRecord)
         .toHaveBeenCalledWith 0, 'x', 20
@@ -93,13 +107,13 @@ describe 'Runable ->', ->
       expect(tr._transformHistoryRecord)
         .toHaveBeenCalledWith 2, 'x', 20
 
-    it 'should stop looping if _transformHistoryRecord returns true', ->
+    it 'should stop looping if _transformHistoryRecord returns null', ->
       tr = new Runable()
         .then radius: 0
         .then radius: 50
 
       r = 0
-      tr._transformHistoryRecord =  -> r++ is 1
+      tr._transformHistoryRecord =  -> if r++ is 1 then null else 20
       spyOn(tr, '_transformHistoryRecord').and.callThrough()
 
       tr._transformHistoryFor( 'x', 20 )

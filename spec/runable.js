@@ -26,9 +26,25 @@
         });
         result = tr._transformHistoryRecord(0, 'x', 20);
         expect(tr._history[0].x).toBe(20);
-        return expect(!!result).toBe(false);
+        return expect(result).toBe(20);
       });
-      it('should return true if old value is delta', function() {
+      it('should return newValue if old value is delta and index is 0', function() {
+        var result, tr;
+        tr = new Runable({
+          radius: {
+            0: 50
+          },
+          isIt: 1
+        }).then({
+          radius: 0
+        }).then({
+          radius: 50
+        });
+        result = tr._transformHistoryRecord(0, 'radius', 20);
+        expect(tr._history[0].radius).toBe(20);
+        return expect(result).toBe(20);
+      });
+      it('should return null if old value is delta but index isnt 0', function() {
         var result, tr;
         tr = new Runable({
           radius: {
@@ -39,9 +55,9 @@
         }).then({
           radius: 50
         });
-        result = tr._transformHistoryRecord(0, 'radius', 20);
-        expect(tr._history[0].radius[20]).toBe(50);
-        return expect(!!result).toBe(true);
+        result = tr._transformHistoryRecord(1, 'radius', 20);
+        expect(tr._history[1].radius[20]).toBe(0);
+        return expect(result).toBe(null);
       });
       it('should rewrite everything until first delta', function() {
         var result, tr;
@@ -54,10 +70,10 @@
         });
         result = tr._transformHistoryRecord(0, 'radius', 20);
         expect(tr._history[0].radius).toBe(20);
-        expect(!!result).toBe(false);
+        expect(result).toBe(20);
         result = tr._transformHistoryRecord(1, 'radius', 20);
         expect(tr._history[1].radius[20]).toBe(0);
-        return expect(!!result).toBe(true);
+        return expect(result).toBe(null);
       });
       it('should rewrite everything until first defined item', function() {
         var result, tr;
@@ -73,15 +89,16 @@
         });
         result = tr._transformHistoryRecord(0, 'duration', 1000);
         expect(tr._history[0].duration).toBe(1000);
-        expect(!!result).toBe(false);
+        expect(result).toBe(1000);
         result = tr._transformHistoryRecord(1, 'duration', 1000);
         expect(tr._history[1].duration).toBe(1000);
-        return expect(!!result).toBe(true);
+        return expect(result).toBe(null);
       });
       return it('should save new delta value and modify the next', function() {
         var delta, result, tr;
         tr = new Runable({
-          radius: 75
+          radius: 75,
+          isIt: 1
         }).then({
           radius: 0
         }).then({
@@ -92,10 +109,10 @@
         };
         result = tr._transformHistoryRecord(0, 'radius', delta);
         expect(tr._history[0].radius[20]).toBe(100);
-        expect(!!result).toBe(false);
-        result = tr._transformHistoryRecord(1, 'radius', delta);
+        expect(result).toBe(100);
+        result = tr._transformHistoryRecord(1, 'radius', 100);
         expect(tr._history[1].radius[100]).toBe(0);
-        return expect(!!result).toBe(true);
+        return expect(result).toBe(null);
       });
     });
     describe('_transformHistory method ->', function() {
@@ -122,13 +139,13 @@
         }).then({
           radius: 50
         });
-        spyOn(tr, '_transformHistoryRecord');
+        spyOn(tr, '_transformHistoryRecord').and.callThrough();
         tr._transformHistoryFor('x', 20);
         expect(tr._transformHistoryRecord).toHaveBeenCalledWith(0, 'x', 20);
         expect(tr._transformHistoryRecord).toHaveBeenCalledWith(1, 'x', 20);
         return expect(tr._transformHistoryRecord).toHaveBeenCalledWith(2, 'x', 20);
       });
-      return it('should stop looping if _transformHistoryRecord returns true', function() {
+      return it('should stop looping if _transformHistoryRecord returns null', function() {
         var r, tr;
         tr = new Runable().then({
           radius: 0
@@ -137,7 +154,11 @@
         });
         r = 0;
         tr._transformHistoryRecord = function() {
-          return r++ === 1;
+          if (r++ === 1) {
+            return null;
+          } else {
+            return 20;
+          }
         };
         spyOn(tr, '_transformHistoryRecord').and.callThrough();
         tr._transformHistoryFor('x', 20);

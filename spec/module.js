@@ -346,8 +346,7 @@
         md = new Module({
           radius: {
             45: 55
-          },
-          isIt: 1
+          }
         });
         return expect(md._props.radius).toBe(45);
       });

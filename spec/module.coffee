@@ -233,7 +233,7 @@ describe 'module class ->', ->
       md = new Module radius: 0
       expect(md._props.radius).toBe(0)
     it 'should extend defaults object to properties if object was passed', ->
-      md = new Module radius: {45: 55}, isIt: 1
+      md = new Module radius: {45: 55}
       expect(md._props.radius).toBe(45)
     it 'should ignore properties defined in skipProps object', ->
       md = new Module radius: 45

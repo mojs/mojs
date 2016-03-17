@@ -3622,8 +3622,11 @@
 	    key: '_transformHistoryFor',
 	    value: function _transformHistoryFor(key, value) {
 	      for (var i = 0; i < this._history.length; i++) {
-	        if (this._transformHistoryRecord(i, key, value)) {
-	          break; // break if no further history modifications needed
+	        if (value = this._transformHistoryRecord(i, key, value)) {
+	          // break if no further history modifications needed
+	          if (value == null) {
+	            break;
+	          }
 	        }
 	      }
 	    }
@@ -3638,39 +3641,31 @@
 
 	  }, {
 	    key: '_transformHistoryRecord',
-	    value: function _transformHistoryRecord(index, key, value) {
+	    value: function _transformHistoryRecord(index, key, newValue) {
 	      var currRecord = this._history[index],
 	          prevRecord = this._history[index - 1],
 	          nextRecord = this._history[index + 1],
-	          propertyValue = currRecord[key];
+	          oldValue = currRecord[key];
 
-	      if (this._isDelta(value)) {
-	        // if previous history record have been already overriden
-	        // with the delta, copy only the end property to the start
-	        if (prevRecord && prevRecord[key] === value) {
-	          var prevEnd = _h2.default.getDeltaEnd(prevRecord[key]);
-	          currRecord[key] = (0, _defineProperty3.default)({}, prevEnd, _h2.default.getDeltaEnd(propertyValue));
-	          return true;
-	        } // else go to very end of this function
-	        // if new value is delta
+	      // if index is 0 - always save the newValue
+	      // and return non-delta for subsequent modifications
+	      if (index === 0) {
+	        currRecord[key] = newValue;
+	        return this._isDelta(newValue) ? _h2.default.getDeltaEnd(newValue) : newValue;
 	      } else {
-	          // if property value is delta - rewrite it's start
-	          // and notify parent to stop hitory modifications
-	          if (this._isDelta(propertyValue)) {
-	            currRecord[key] = (0, _defineProperty3.default)({}, value, _h2.default.getDeltaEnd(propertyValue));
-	            return true;
-	            // both are not deltas and further in the chain
-	          } else {
-	              currRecord[key] = value;
-	              // if next record isn't delta - we should always override it
-	              // so do not notify parent
-	              if (nextRecord && !this._isDelta(nextRecord[key])) {
-	                // notify that no modifications needed in the next record
-	                return nextRecord[key] !== propertyValue;
-	              }
-	            } // else go to very end of this function
+	        // if was delta and came none-deltta - rewrite
+	        // the start of the delta and stop
+	        if (this._isDelta(oldValue)) {
+	          currRecord[key] = (0, _defineProperty3.default)({}, newValue, _h2.default.getDeltaEnd(oldValue));
+	          return null;
+	        } else {
+	          // if the old value is not delta and the new one is
+	          currRecord[key] = newValue;
+	          // if the next item has the same value - return the
+	          // item for subsequent modifications or stop
+	          return nextRecord && nextRecord[key] === oldValue ? newValue : null;
 	        }
-	      currRecord[key] = value;
+	      }
 	    }
 	    /*
 	      Method to tune new option on run.
@@ -7436,7 +7431,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.188.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.189.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7485,23 +7480,26 @@
 	  angle: 90
 	});
 
+	// console.log(tr._history[0].stroke);
+	// console.log(tr._history[1].stroke);
+	// tr.run({ stroke: 'red' });
+	// console.log(tr._history[0].stroke);
+	// console.log(tr._history[1].stroke);
+
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// playEl.addEventListener('click', function () {
+	//   tr.run({ stroke: 'red' });
+	//   console.log(tr._history[0].stroke);
+	//   console.log(tr._history[1].stroke);
+	// });
+
+	// rangeSliderEl.addEventListener('input', function () {
+	//   tr.setProgress( rangeSliderEl.value/1000 );
+	// });
+
 	// speed: 1
 	// opacity: 0
-	console.log(tr._history[0].stroke);
-	console.log(tr._history[1].stroke);
-
-	var playEl = document.querySelector('#js-play'),
-	    rangeSliderEl = document.querySelector('#js-range-slider');
-	playEl.addEventListener('click', function () {
-	  tr.run({ stroke: 'red' });
-	  console.log(tr._history[0].stroke);
-	  console.log(tr._history[1].stroke);
-	});
-
-	rangeSliderEl.addEventListener('input', function () {
-	  tr.setProgress(rangeSliderEl.value / 1000);
-	});
-
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
 

@@ -45,8 +45,9 @@ class Runable extends Thenable {
   */
   _transformHistoryFor ( key, value ) {
     for (var i = 0; i < this._history.length; i++ ) {
-      if ( this._transformHistoryRecord( i, key, value ) ) {
-        break; // break if no further history modifications needed
+      if ( value = this._transformHistoryRecord( i, key, value ) ) {
+        // break if no further history modifications needed
+        if ( value == null ) { break; }
       }
     }
   }
@@ -58,39 +59,33 @@ class Runable extends Thenable {
     @returns {Boolean} Returns true if no further
                        history modifications is needed.
   */
-  _transformHistoryRecord ( index, key, value ) {
+  _transformHistoryRecord ( index, key, newValue ) {
     var currRecord    = this._history[index],
         prevRecord    = this._history[index-1],
         nextRecord    = this._history[index+1],
-        propertyValue = currRecord[key];
-    
-    if ( this._isDelta(value) ) {
-      // if previous history record have been already overriden
-      // with the delta, copy only the end property to the start
-      if (prevRecord && prevRecord[key] === value) {
-        var prevEnd     = h.getDeltaEnd(prevRecord[key]);
-        currRecord[key] = { [prevEnd]: h.getDeltaEnd(propertyValue) }
-        return true;
-      } // else go to very end of this function
-    // if new value is delta
+        oldValue      = currRecord[key];
+
+    // if index is 0 - always save the newValue
+    // and return non-delta for subsequent modifications
+    if ( index === 0 ) {
+      currRecord[key] = newValue;
+      return ( this._isDelta(newValue) ) ? h.getDeltaEnd(newValue) : newValue;
     } else {
-      // if property value is delta - rewrite it's start
-      // and notify parent to stop hitory modifications
-      if ( this._isDelta(propertyValue) ) {
-        currRecord[key] = { [value] : h.getDeltaEnd(propertyValue) };
-        return true;
-      // both are not deltas and further in the chain
+      // if was delta and came none-deltta - rewrite
+      // the start of the delta and stop
+      if ( this._isDelta( oldValue ) ) {
+        currRecord[key] = { [newValue] : h.getDeltaEnd(oldValue) };
+        return null;
       } else {
-        currRecord[key] = value;
-        // if next record isn't delta - we should always override it
-        // so do not notify parent
-        if (nextRecord && !this._isDelta(nextRecord[key])) {
-          // notify that no modifications needed in the next record
-          return ( nextRecord[key] !== propertyValue );
-        }
-      }// else go to very end of this function
+        // if the old value is not delta and the new one is
+        currRecord[key] = newValue;
+        // if the next item has the same value - return the
+        // item for subsequent modifications or stop
+        return ( nextRecord && nextRecord[key] === oldValue )
+          ? newValue : null;
+      }
     }
-    currRecord[key] = value;
+
   }
   /*
     Method to tune new option on run.
