@@ -68,12 +68,18 @@ window.mojs = {
 //   // opacity: 0
 // });
 
+//   console.log(tr._history[0].stroke);
+//   console.log(tr._history[1].stroke);
+//   console.log(tr._history[2].stroke);
+
 // var playEl = document.querySelector('#js-play'),
 //     rangeSliderEl = document.querySelector('#js-range-slider');
 // playEl.addEventListener('click', function () {
+//   // tr.run({ stroke: 'red' });
 //   tr.run({ duration: 5000 });
-//   console.log(tr._modules[0]._o.stroke);
-//   console.log(tr._modules[1]._o.stroke);
+//   console.log(tr._history[0].stroke);
+//   console.log(tr._history[1].stroke);
+//   console.log(tr._history[2].stroke);
 // });
 
 // // rangeSliderEl.addEventListener('input', function () {

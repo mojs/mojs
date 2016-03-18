@@ -1263,35 +1263,35 @@ describe 'Transit ->', ->
   #     tr = new Transit
   #     props = { fill: 'hotpink', duration: 2000 }
   #     tr._props = props
-  #     spyOn(tr.tween, '_setProps').and.callThrough()
+  #     spyOn(tr.tween, '_setProp').and.callThrough()
   #     tr._resetTween( tr.tween, props )
   #     expect(props.shiftTime).toBe 0
-  #     expect(tr.tween._setProps).toHaveBeenCalledWith props
+  #     expect(tr.tween._setProp).toHaveBeenCalledWith props
 
   #   it 'should pass shift time', ->
   #     tr = new Transit
   #     props = { fill: 'hotpink', duration: 2000 }
   #     tr._props = props
-  #     spyOn(tr.tween, '_setProps').and.callThrough()
+  #     spyOn(tr.tween, '_setProp').and.callThrough()
   #     shiftTime = 500
   #     tr._resetTween( tr.tween, props, shiftTime )
   #     expect(props.shiftTime).toBe shiftTime
-  #     expect(tr.tween._setProps).toHaveBeenCalledWith props
+  #     expect(tr.tween._setProp).toHaveBeenCalledWith props
 
   # describe '_resetTweens method ->', ->
   #   it 'should reset options on all tweens', ->
   #     tr = new Transit()
   #       .then({ fill: 'cyan' })
   #       .then({ fill: 'yellow' })
-  #     spyOn tr.timeline._timelines[0], '_setProps'
-  #     spyOn tr.timeline._timelines[1], '_setProps'
-  #     spyOn tr.timeline._timelines[2], '_setProps'
+  #     spyOn tr.timeline._timelines[0], '_setProp'
+  #     spyOn tr.timeline._timelines[1], '_setProp'
+  #     spyOn tr.timeline._timelines[2], '_setProp'
   #     tr._resetTweens()
-  #     expect(tr.timeline._timelines[0]._setProps)
+  #     expect(tr.timeline._timelines[0]._setProp)
   #       .toHaveBeenCalledWith tr._history[0]
-  #     expect(tr.timeline._timelines[1]._setProps)
+  #     expect(tr.timeline._timelines[1]._setProp)
   #       .toHaveBeenCalledWith tr._history[1]
-  #     expect(tr.timeline._timelines[2]._setProps)
+  #     expect(tr.timeline._timelines[2]._setProp)
   #       .toHaveBeenCalledWith tr._history[2]
   #   it 'should loop thru all tweens', ->
   #     tr = new Transit()

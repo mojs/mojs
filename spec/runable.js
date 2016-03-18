@@ -33,8 +33,7 @@
         tr = new Runable({
           radius: {
             0: 50
-          },
-          isIt: 1
+          }
         }).then({
           radius: 0
         }).then({
@@ -94,11 +93,10 @@
         expect(tr._history[1].duration).toBe(1000);
         return expect(result).toBe(null);
       });
-      return it('should save new delta value and modify the next', function() {
+      it('should save new delta value and modify the next', function() {
         var delta, result, tr;
         tr = new Runable({
-          radius: 75,
-          isIt: 1
+          radius: 75
         }).then({
           radius: 0
         }).then({
@@ -112,6 +110,20 @@
         expect(result).toBe(100);
         result = tr._transformHistoryRecord(1, 'radius', 100);
         expect(tr._history[1].radius[100]).toBe(0);
+        return expect(result).toBe(null);
+      });
+      return it('should return newValue if old value is delta and index is 0', function() {
+        var result, tr;
+        tr = new Runable({
+          duration: 2000,
+          isIt: 1
+        }).then({
+          duration: 300
+        }).then({
+          duration: 500
+        });
+        result = tr._transformHistoryRecord(0, 'duration', 500);
+        expect(tr._history[0].duration).toBe(500);
         return expect(result).toBe(null);
       });
     });
@@ -176,10 +188,10 @@
           duration: 2000
         };
         tr._props = props;
-        spyOn(tr.tween, '_setProps').and.callThrough();
+        spyOn(tr.tween, '_setProp').and.callThrough();
         tr._resetTween(tr.tween, props);
         expect(props.shiftTime).toBe(0);
-        return expect(tr.tween._setProps).toHaveBeenCalledWith(props);
+        return expect(tr.tween._setProp).toHaveBeenCalledWith(props);
       });
       return it('should pass shift time', function() {
         var props, shiftTime, tr;
@@ -189,11 +201,11 @@
           duration: 2000
         };
         tr._props = props;
-        spyOn(tr.tween, '_setProps').and.callThrough();
+        spyOn(tr.tween, '_setProp').and.callThrough();
         shiftTime = 500;
         tr._resetTween(tr.tween, props, shiftTime);
         expect(props.shiftTime).toBe(shiftTime);
-        return expect(tr.tween._setProps).toHaveBeenCalledWith(props);
+        return expect(tr.tween._setProp).toHaveBeenCalledWith(props);
       });
     });
     describe('_resetTweens method ->', function() {
@@ -204,13 +216,13 @@
         }).then({
           fill: 'yellow'
         });
-        spyOn(tr.timeline._timelines[0], '_setProps');
-        spyOn(tr.timeline._timelines[1], '_setProps');
-        spyOn(tr.timeline._timelines[2], '_setProps');
+        spyOn(tr.timeline._timelines[0], '_setProp');
+        spyOn(tr.timeline._timelines[1], '_setProp');
+        spyOn(tr.timeline._timelines[2], '_setProp');
         tr._resetTweens();
-        expect(tr.timeline._timelines[0]._setProps).toHaveBeenCalledWith(tr._history[0]);
-        expect(tr.timeline._timelines[1]._setProps).toHaveBeenCalledWith(tr._history[1]);
-        return expect(tr.timeline._timelines[2]._setProps).toHaveBeenCalledWith(tr._history[2]);
+        expect(tr.timeline._timelines[0]._setProp).toHaveBeenCalledWith(tr._history[0]);
+        expect(tr.timeline._timelines[1]._setProp).toHaveBeenCalledWith(tr._history[1]);
+        return expect(tr.timeline._timelines[2]._setProp).toHaveBeenCalledWith(tr._history[2]);
       });
       it('should loop thru all tweens', function() {
         var shift, tr, tweens;
@@ -242,6 +254,20 @@
       });
     });
     describe('run method ->', function() {
+      it('should extend defaults with passed object', function() {
+        var byte, o;
+        byte = new Runable({
+          strokeWidth: {
+            10: 5
+          }
+        });
+        spyOn(byte, '_tuneNewOptions');
+        o = {
+          strokeWidth: 20
+        };
+        byte.run(o);
+        return expect(byte._tuneNewOptions).toHaveBeenCalledWith(o);
+      });
       it('should not transform history if object was not passed', function() {
         var byte;
         byte = new Runable({
@@ -303,6 +329,15 @@
           strokeWidth: 25
         });
         return expect(byte._props.radius).toBe(33);
+      });
+      it('should call _recalcTotalDuration on timeline', function() {
+        var byte;
+        byte = new Runable;
+        spyOn(byte.timeline, '_recalcTotalDuration');
+        byte.run({
+          duration: 2000
+        });
+        return expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
       it('should call _transformHistory', function() {
         var byte, o;

@@ -189,7 +189,7 @@
           delay: delay,
           repeat: 2
         });
-        t._setProps('shiftTime', 500);
+        t._setProp('shiftTime', 500);
         t._setStartTime();
         expectedTime = performance.now() + 500 + delay;
         expect(t._props.startTime).toBeGreaterThan(expectedTime - 50);
@@ -372,9 +372,9 @@
           onUpdate: function() {}
         });
         t._setStartTime();
-        spyOn(t, 'onUpdate');
+        spyOn(t._props, 'onUpdate');
         t._update(t._props.startTime - 500);
-        return expect(t.onUpdate).not.toHaveBeenCalled();
+        return expect(t._props.onUpdate).not.toHaveBeenCalled();
       });
       it('should not call update method if timeline isnt active but was "-"', function() {
         var t;
@@ -383,16 +383,16 @@
           onUpdate: function() {}
         });
         t._setStartTime();
-        spyOn(t, 'onUpdate');
+        spyOn(t._props, 'onUpdate');
         t._update(t._props.startTime + 500);
         t._update(t._props.startTime + 200);
         expect(t._isInActiveArea).toBe(true);
         t._update(t._props.startTime - 500);
         expect(t._isInActiveArea).toBe(false);
-        expect(t.onUpdate).toHaveBeenCalledWith(0, 0, false, false);
+        expect(t._props.onUpdate).toHaveBeenCalledWith(0, 0, false, false);
         t._update(t._props.startTime - 500);
         expect(t._isInActiveArea).toBe(false);
-        return expect(t.onUpdate.calls.count()).toBe(2);
+        return expect(t._props.onUpdate.calls.count()).toBe(2);
       });
       it('should not call update method if timeline isnt active "+"', function() {
         var t;
@@ -400,10 +400,10 @@
           duration: 1000,
           onUpdate: function() {}
         });
-        spyOn(t, 'onUpdate');
+        spyOn(t._props, 'onUpdate');
         t._setStartTime();
         t._update(performance.now() + 1500);
-        return expect(t.onUpdate).not.toHaveBeenCalled();
+        return expect(t._props.onUpdate).not.toHaveBeenCalled();
       });
       it('should not call update method if timeline isnt active but was "+"', function() {
         var t;
@@ -411,14 +411,14 @@
           duration: 1000,
           onUpdate: function() {}
         });
-        spyOn(t, 'onUpdate');
+        spyOn(t._props, 'onUpdate');
         t._setStartTime();
         t._update(t._props.startTime + 200);
         t._update(t._props.startTime + 500);
         expect(t._isInActiveArea).toBe(true);
         t._update(t._props.startTime + 1500);
         expect(t._isInActiveArea).toBe(false);
-        return expect(t.onUpdate).toHaveBeenCalledWith(1, 1, true, false);
+        return expect(t._props.onUpdate).toHaveBeenCalledWith(1, 1, true, false);
       });
       it('should set Tween to the end if Tween ended', function() {
         var t;
@@ -487,7 +487,7 @@
           repeat: 2
         });
         t._setStartTime();
-        t._setProps('isReversed', true);
+        t._setProp('isReversed', true);
         shift = 200;
         time = t._props.startTime + shift;
         t._update(time - 1);
@@ -501,7 +501,7 @@
           duration: duration
         });
         t._setStartTime();
-        t._setProps('isReversed', true);
+        t._setProp('isReversed', true);
         shift = 200;
         time = t._props.startTime + shift;
         t._update(time);
@@ -876,11 +876,11 @@
           easing: 'bounce.out',
           onUpdate: function() {}
         });
-        spyOn(t, 'onUpdate');
+        spyOn(t._props, 'onUpdate');
         t._setStartTime();
         t._update(t._props.startTime + 499);
         t._update(t._props.startTime + 500);
-        return expect(t.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress, true, false);
+        return expect(t._props.onUpdate).toHaveBeenCalledWith(t.easedProgress, t.progress, true, false);
       });
       it('should have the right scope', function() {
         var isRightScope, t;
@@ -902,12 +902,12 @@
           repeat: 2,
           onUpdate: function() {}
         });
-        spyOn(t, 'onUpdate').and.callThrough();
+        spyOn(t._props, 'onUpdate').and.callThrough();
         t._setStartTime();
         t._update(t._props.startTime + t._props.duration + 50);
         t._update(t._props.startTime + t._props.duration + 100);
         t._update(t._props.startTime + t._props.duration + 150);
-        return expect(t.onUpdate.calls.count()).toBe(0);
+        return expect(t._props.onUpdate.calls.count()).toBe(0);
       });
       it('should be called just once on delay', function() {
         var t;
@@ -919,11 +919,11 @@
         t._setStartTime();
         t._update(t._props.startTime + 50);
         t._update(t._props.startTime + t._props.duration / 2);
-        spyOn(t, 'onUpdate').and.callThrough();
+        spyOn(t._props, 'onUpdate').and.callThrough();
         t._update(t._props.startTime + t._props.duration + 50);
         t._update(t._props.startTime + t._props.duration + 100);
         t._update(t._props.startTime + t._props.duration + 150);
-        return expect(t.onUpdate.calls.count()).toBe(1);
+        return expect(t._props.onUpdate.calls.count()).toBe(1);
       });
       it('should pass eased progress and raw progress', function() {
         var easedProgress, progress, t;
@@ -956,6 +956,7 @@
         isRightContext = null;
         contextObj = {};
         t = new Tween({
+          isIt: 1,
           callbacksContext: contextObj,
           onUpdate: function() {
             return isRightContext = this === contextObj;
@@ -4925,43 +4926,20 @@
           duration: 100,
           delay: 0
         });
-        t._setProps({
+        t._setProp({
           duration: 1000,
           delay: 200
         });
         expect(t._props.duration).toBe(1000);
         return expect(t._props.delay).toBe(200);
       });
-      it('should set only tween releated options', function() {
-        var t;
-        t = new Tween({
-          duration: 100,
-          delay: 0
-        });
-        t._setProps({
-          duration: 1000,
-          delay: 200,
-          fill: 'red'
-        });
-        expect(t._props.duration).toBe(1000);
-        expect(t._props.delay).toBe(200);
-        return expect(t._props.fill).not.toBeDefined();
-      });
       it('should work with arguments', function() {
         var t;
         t = new Tween({
           duration: 100
         });
-        t._setProps('duration', 1000);
+        t._setProp('duration', 1000);
         return expect(t._props.duration).toBe(1000);
-      });
-      it('should work with only tween option arguments', function() {
-        var t;
-        t = new Tween({
-          duration: 100
-        });
-        t._setProps('fill', 1000);
-        return expect(t._props.fill).not.toBeDefined();
       });
       it('should call _calcDimentions method', function() {
         var t;
@@ -4969,7 +4947,7 @@
           duration: 100
         });
         spyOn(t, '_calcDimentions');
-        t._setProps('duration', 1000);
+        t._setProp('duration', 1000);
         return expect(t._calcDimentions).toHaveBeenCalled();
       });
       it('should update the time', function() {
@@ -4978,42 +4956,16 @@
           duration: 100,
           delay: 100
         });
-        t._setProps('duration', 1000);
+        t._setProp('duration', 1000);
         return expect(t._props.time).toBe(1100);
       });
-      it('should parse easing', function() {
+      return it('should parse easing', function() {
         var t;
         t = new Tween({
           duration: 100
         });
-        t._setProps('easing', 'elastic.in');
+        t._setProp('easing', 'elastic.in');
         return expect(t._props.easing).toBe(mojs.easing.elastic["in"]);
-      });
-      return describe('_setProp method ->', function() {
-        it('should work with arguments', function() {
-          var t;
-          t = new Tween({
-            duration: 100
-          });
-          t._setProp('duration', 1000);
-          return expect(t._props.duration).toBe(1000);
-        });
-        it('should work with only tween option arguments', function() {
-          var t;
-          t = new Tween({
-            duration: 100
-          });
-          t._setProp('fill', 1000);
-          return expect(t._props.fill).not.toBeDefined();
-        });
-        return it('should parse easing', function() {
-          var t;
-          t = new Tween({
-            duration: 100
-          });
-          t._setProp('easing', 'ease.out');
-          return expect(t._props.easing).toBe(easing.ease.out);
-        });
       });
     });
     describe('_subPlay method ->', function() {
@@ -6586,7 +6538,7 @@
         }, 2 * duration);
       });
     });
-    return describe('callbacksContext option', function() {
+    describe('callbacksContext option', function() {
       return it('should receive callbacks context object', function() {
         var obj, tw;
         obj = {};
@@ -6594,6 +6546,22 @@
           callbacksContext: obj
         });
         return expect(tw._props.callbacksContext).toBe(obj);
+      });
+    });
+    return describe('_extendDefaults method', function() {
+      it('should call super', function() {
+        var tw;
+        spyOn(Module.prototype, '_extendDefaults').and.callThrough();
+        tw = new Tween;
+        tw._extendDefaults();
+        return expect(Module.prototype._extendDefaults).toHaveBeenCalled();
+      });
+      return it('should parse easing', function() {
+        var tw;
+        tw = new Tween;
+        tw._props.easing = 'ease.in';
+        tw._extendDefaults();
+        return expect(typeof tw._props.easing).toBe('function');
       });
     });
   });

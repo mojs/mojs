@@ -365,14 +365,6 @@
         expect(typeof md._props).toBe('object');
         return expect(md._props).toBe(md._props);
       });
-      it('should not create _props object if already defined', function() {
-        var md, obj;
-        obj = {};
-        md = new Module;
-        md._props = obj;
-        md._extendDefaults();
-        return expect(md._props).toBe(obj);
-      });
       it('should extend defaults object to properties', function() {
         var md;
         md = new Module({
@@ -408,7 +400,7 @@
         };
         md._o.radius = 50;
         md._extendDefaults();
-        return expect(md._props.radius).toBe(45);
+        return expect(md._props.radius).not.toBe(50);
       });
       it('should extend defaults object to properties if array was passed', function() {
         var md;
@@ -425,19 +417,6 @@
         expect(md._props.radius).toBeDefined();
         expect(md._props.radius).toBeGreaterThan(-1);
         return expect(md._props.radius).not.toBeGreaterThan(10);
-      });
-      it('should receive object to iterate from', function() {
-        var fillBefore, md;
-        md = new Module({
-          radius: 'rand(0, 10)',
-          fill: 'deeppink'
-        });
-        fillBefore = md._props.fill;
-        md._extendDefaults({
-          radius: 10
-        });
-        expect(md._props.radius).toBe(10);
-        return expect(md._props.fill).toBe(fillBefore);
       });
       return describe('stagger values', function() {
         return it('should extend defaults object to properties if stagger was passed', function() {

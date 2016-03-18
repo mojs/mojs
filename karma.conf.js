@@ -92,12 +92,19 @@ module.exports = function(config) {
       
       'build/h.js',
       'spec/h.js',
-      // 'build/transit.js',
-      // 'spec/transit.js',
-      // 'build/swirl.js',
-      // 'spec/swirl.js',
+      'build/transit.js',
+      'spec/transit.js',
+      'build/swirl.js',
+      'spec/swirl.js',
       'build/burst.js',
       'spec/burst.js',
+
+      // 'build/tween/tweenable.js',
+      // 'spec/tween/tweenable.js',
+      // 'build/thenable.js',
+      // 'spec/thenable.js',
+      // 'build/runable.js',
+      // 'spec/runable.js',
       
       'build/spriter.js',
       'spec/spriter.js',

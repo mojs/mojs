@@ -362,7 +362,7 @@
         }));
         time = 0;
         shift = 500;
-        t._setProps({
+        t._setProp({
           'shiftTime': shift
         });
         t._setStartTime(time);

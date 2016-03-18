@@ -241,7 +241,7 @@ describe 'Timeline ->', ->
       t   = new Timeline
       t.add new Tween duration: 500
       time = 0; shift = 500
-      t._setProps 'shiftTime': shift
+      t._setProp 'shiftTime': shift
       t._setStartTime time
       expect(t._timelines[0]._props.startTime).toBe time + shift
 

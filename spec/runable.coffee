@@ -25,7 +25,7 @@ describe 'Runable ->', ->
     it 'should return newValue if old value is delta and index is 0', ->
       # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
       # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
-      tr = new Runable({ radius: { 0: 50 }, isIt: 1 })
+      tr = new Runable({ radius: { 0: 50 } })
         .then radius: 0
         .then radius: 50
 
@@ -71,7 +71,7 @@ describe 'Runable ->', ->
       expect(result).toBe null
 
     it 'should save new delta value and modify the next', ->
-      tr = new Runable({ radius: 75, isIt: 1 })
+      tr = new Runable({ radius: 75 })
         .then radius: 0
         .then radius: 50
 
@@ -83,6 +83,18 @@ describe 'Runable ->', ->
       result = tr._transformHistoryRecord 1, 'radius', 100
       expect(tr._history[1].radius[100]).toBe 0
       expect(result).toBe null
+
+    it 'should return newValue if old value is delta and index is 0', ->
+      # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
+      # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
+      tr = new Runable({ duration: 2000, isIt: 1 })
+        .then duration: 300
+        .then duration: 500
+
+      result = tr._transformHistoryRecord 0, 'duration', 500
+      expect(tr._history[0].duration).toBe 500
+      expect(result).toBe null
+
   describe '_transformHistory method ->', ->
     it 'should call _transformHistoryFor for every new property ->', ->
       tr = new Runable({}).then({ radius: 0 }).then({ radius: 50 })
@@ -129,35 +141,35 @@ describe 'Runable ->', ->
       tr = new Runable
       props = { fill: 'hotpink', duration: 2000 }
       tr._props = props
-      spyOn(tr.tween, '_setProps').and.callThrough()
+      spyOn(tr.tween, '_setProp').and.callThrough()
       tr._resetTween( tr.tween, props )
       expect(props.shiftTime).toBe 0
-      expect(tr.tween._setProps).toHaveBeenCalledWith props
+      expect(tr.tween._setProp).toHaveBeenCalledWith props
 
     it 'should pass shift time', ->
       tr = new Runable
       props = { fill: 'hotpink', duration: 2000 }
       tr._props = props
-      spyOn(tr.tween, '_setProps').and.callThrough()
+      spyOn(tr.tween, '_setProp').and.callThrough()
       shiftTime = 500
       tr._resetTween( tr.tween, props, shiftTime )
       expect(props.shiftTime).toBe shiftTime
-      expect(tr.tween._setProps).toHaveBeenCalledWith props
+      expect(tr.tween._setProp).toHaveBeenCalledWith props
 
   describe '_resetTweens method ->', ->
     it 'should reset options on all tweens', ->
       tr = new Runable()
         .then({ fill: 'cyan' })
         .then({ fill: 'yellow' })
-      spyOn tr.timeline._timelines[0], '_setProps'
-      spyOn tr.timeline._timelines[1], '_setProps'
-      spyOn tr.timeline._timelines[2], '_setProps'
+      spyOn tr.timeline._timelines[0], '_setProp'
+      spyOn tr.timeline._timelines[1], '_setProp'
+      spyOn tr.timeline._timelines[2], '_setProp'
       tr._resetTweens()
-      expect(tr.timeline._timelines[0]._setProps)
+      expect(tr.timeline._timelines[0]._setProp)
         .toHaveBeenCalledWith tr._history[0]
-      expect(tr.timeline._timelines[1]._setProps)
+      expect(tr.timeline._timelines[1]._setProp)
         .toHaveBeenCalledWith tr._history[1]
-      expect(tr.timeline._timelines[2]._setProps)
+      expect(tr.timeline._timelines[2]._setProp)
         .toHaveBeenCalledWith tr._history[2]
     it 'should loop thru all tweens', ->
       tr = new Runable()
@@ -185,12 +197,12 @@ describe 'Runable ->', ->
         .toHaveBeenCalled()
 
   describe 'run method ->', ->
-    # it 'should extend defaults with passed object', ->
-    #   byte = new Runable(strokeWidth: {10: 5})
-    #   spyOn byte, '_extendDefaults'
-    #   o = { strokeWidth: 20 }
-    #   byte.run(o)
-    #   expect(byte._extendDefaults).toHaveBeenCalledWith o
+    it 'should extend defaults with passed object', ->
+      byte = new Runable(strokeWidth: {10: 5})
+      spyOn byte, '_tuneNewOptions'
+      o = { strokeWidth: 20 }
+      byte.run(o)
+      expect(byte._tuneNewOptions).toHaveBeenCalledWith o
     it 'should not transform history if object was not passed', ->
       byte = new Runable(strokeWidth: {10: 5})
       spyOn byte, '_transformHistory'
@@ -219,11 +231,11 @@ describe 'Runable ->', ->
       byte.run strokeWidth: 25
       expect(byte._props.radius).toBe 33
     # TODO: check the tween props
-    # it 'should call _recalcTotalDuration on timeline', ->
-    #   byte = new Runable
-    #   spyOn byte.timeline, '_recalcTotalDuration'
-    #   byte.run duration: 2000
-    #   expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled()
+    it 'should call _recalcTotalDuration on timeline', ->
+      byte = new Runable
+      spyOn byte.timeline, '_recalcTotalDuration'
+      byte.run duration: 2000
+      expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled()
     it 'should call _transformHistory', ->
       byte = new Runable
       spyOn byte, '_transformHistory'

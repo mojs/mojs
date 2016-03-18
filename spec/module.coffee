@@ -250,15 +250,7 @@ describe 'module class ->', ->
       md = new Module
       expect(Module.prototype._extendDefaults).toHaveBeenCalled()
       expect(typeof md._props).toBe 'object'
-      # not null
       expect(md._props).toBe md._props
-    it 'should not create _props object if already defined', ->
-      obj = {}
-      md = new Module
-      md._props = obj
-      md._extendDefaults()
-      expect(md._props).toBe obj
-
     it 'should extend defaults object to properties', ->
       md = new Module radius: 45, radiusX: 50
       expect(md._props.radius) .toBe(45)
@@ -274,7 +266,7 @@ describe 'module class ->', ->
       md._skipProps = radius: 1
       md._o.radius = 50
       md._extendDefaults()
-      expect(md._props.radius).toBe(45)
+      expect(md._props.radius).not.toBe(50)
     it 'should extend defaults object to properties if array was passed', ->
       md = new Module radius: [50, 100]
       expect(md._props.radius.join ', ').toBe '50, 100'
@@ -283,14 +275,6 @@ describe 'module class ->', ->
       expect(md._props.radius).toBeDefined()
       expect(md._props.radius).toBeGreaterThan -1
       expect(md._props.radius).not.toBeGreaterThan 10
-    it 'should receive object to iterate from', ->
-      md = new Module
-        radius: 'rand(0, 10)'
-        fill: 'deeppink'
-      fillBefore = md._props.fill
-      md._extendDefaults {radius: 10}
-      expect(md._props.radius).toBe 10
-      expect(md._props.fill).toBe fillBefore
     describe 'stagger values', ->
       it 'should extend defaults object to properties if stagger was passed', ->
         md = new Module radius: 'stagger(200)'

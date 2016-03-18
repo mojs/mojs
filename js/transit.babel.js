@@ -226,8 +226,7 @@ class Transit extends Runable {
     // return if empty object
     if ( !((o != null) && Object.keys(o).length) ) { return 1; }
 
-    // console.log(o)
-    // this.tween._setProps(o);
+    // this.tween._setProp(o);
     // this.timeline && this.timeline._recalcTotalDuration && this.timeline._recalcTotalDuration();
     
     this._calcSize();

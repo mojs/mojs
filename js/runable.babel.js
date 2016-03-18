@@ -16,6 +16,7 @@ class Runable extends Thenable {
       this._tuneNewOptions(o);
       this._history[0] = h.cloneObj(this._props);
       this._tuneSubModules();
+      this._resetTweens();
     }
     this.stop(); this.play();
     return this;
@@ -56,16 +57,23 @@ class Runable extends Thenable {
                        history modifications is needed.
   */
   _transformHistoryRecord ( index, key, newValue ) {
-    var currRecord    = this._history[index],
-        prevRecord    = this._history[index-1],
-        nextRecord    = this._history[index+1],
-        oldValue      = currRecord[key];
+    if (newValue == null ) { return null; }
+    
+    var currRecord = this._history[index],
+        prevRecord = this._history[index-1],
+        nextRecord = this._history[index+1],
+        oldValue   = currRecord[key];
 
     // if index is 0 - always save the newValue
     // and return non-delta for subsequent modifications
     if ( index === 0 ) {
       currRecord[key] = newValue;
-      return ( this._isDelta(newValue) ) ? h.getDeltaEnd(newValue) : newValue;
+      if ( this._isDelta(newValue) ) { return h.getDeltaEnd(newValue); }
+      else {
+        var isNextRecord = ( nextRecord && nextRecord[key] === oldValue ),
+            isNextDelta  = ( nextRecord && this._isDelta(nextRecord[key]) );
+        return ( isNextRecord || isNextDelta ) ? newValue : null;
+      }
     } else {
       // if was delta and came none-deltta - rewrite
       // the start of the delta and stop
@@ -98,7 +106,7 @@ class Runable extends Thenable {
     @param {Boolean} If foreign context.
     @private
   */
-  _resetTweens (isForeign) {
+  _resetTweens () {
     var i      = 0,
         shift  = 0,
         tweens = this.timeline._timelines;
@@ -110,7 +118,7 @@ class Runable extends Thenable {
       shift += (prevTween) ? prevTween._props.repeatTime : 0;
       this._resetTween( tween, this._history[i], shift );
     }
-    !isForeign && this.timeline._recalcTotalDuration();
+    this.timeline._recalcTotalDuration();
   }
   /*
     Method to reset tween with new options.
@@ -119,7 +127,7 @@ class Runable extends Thenable {
     @param {Number} Optional number to shift tween start time.
   */
   _resetTween ( tween, o, shift = 0 ) {
-    o.shiftTime = shift; tween._setProps( o );
+    o.shiftTime = shift; tween._setProp( o );
   }
 }
 

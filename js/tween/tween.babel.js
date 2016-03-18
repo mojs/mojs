@@ -197,7 +197,7 @@ class Tween extends Module {
     Constructor of the class.
     @private
   */
-  constructor ( o = {} ) {
+  constructor ( o = {} ) {    
     super(o);
     ( this._props.name == null ) && this._setSelfName();
     return this;
@@ -228,6 +228,8 @@ class Tween extends Module {
     @private
   */
   _vars () {
+    // call _vars @ Module
+    // super._vars();
     this.progress  = 0;
     this._prevTime = null;
     this._progressTime = 0;
@@ -256,16 +258,9 @@ class Tween extends Module {
     @private
   */
   _extendDefaults() {
-    this._props = {};
-    for (var key in this._defaults) {
-      // borrow hasOwnProperty function
-      if (Object.hasOwnProperty.call(this._defaults, key)) {
-        var value = this._defaults[key];
-        this._props[key] = (this._o[key] != null) ? this._o[key] : value;
-      }
-    }
-    this._props.easing = easing.parseEasing(this._o.easing || this._defaults.easing);
-    this.onUpdate      = this._props.onUpdate;
+    // call the _extendDefaults @ Module
+    super._extendDefaults();
+    this._props.easing = easing.parseEasing(this._props.easing);
   }
   /*
     Method for setting start and end time to props.
@@ -277,7 +272,6 @@ class Tween extends Module {
   _setStartTime ( time, isResetFlags = true ) {
     var p = this._props,
         shiftTime = (p.shiftTime || 0);
-
     // reset flags
     if ( isResetFlags ) {
       this._isCompleted = false; this._isRepeatCompleted = false;
@@ -639,27 +633,27 @@ class Tween extends Module {
     this._wasUknownUpdate = false;
   }
   /*
-    Method to set property[s] on Tween
+    Method to set property[s] on Tween.
     @private
+    @override @ Module
     @param {Object, String} Hash object of key/value pairs, or property name.
     @param {_} Property's value to set.
   */
-  _setProps( obj, value ) {
-    // handle hash object case or key/value cases (else if)
-    if ( h.isObject(obj) ) {
-      for (var key in obj) { this._setProp(key, obj[key]); }
-    } else if (typeof obj === 'string') { this._setProp(obj, value); }
+  _setProp( obj, value ) {
+    super._setProp(obj, value);
     this._calcDimentions();
   }
   /*
-    Method to set one property on the tween.
-    @param {String} Key name to set.
-    @param {Any} Value to set.
+    Method to set single property.
+    @private
+    @override @ Module
+    @param {String} Name of the property.
+    @param {Any} Value for the property.
   */
-  _setProp ( key, value ) {
-    if ( key === 'easing' ) { this._props.easing = easing.parseEasing(value); }
-    // else just save it to props
-    else if ( h.isTweenProp(key) ) { this._props[key] = value; }
+  _assignProp (key, value) {
+    ( key === 'easing' ) && ( value = easing.parseEasing(value) );
+    // call super on Module
+    super._assignProp(key, value);
   }
   /*
     Method to remove the Tween from the tweener.
@@ -702,6 +696,7 @@ class Tween extends Module {
   /*
     Method to set Tween's progress and call onUpdate callback.
     @private
+    @override @ Module
     @param {Number} Progress to set.
     @param {Number} Current update time.
     @param {Boolean} Is yoyo perido. Used in Timeline to pass to Tween.
@@ -713,8 +708,8 @@ class Tween extends Module {
     this.progress = proc;
     this.easedProgress = p.easing(this.progress);
     if ( p.prevEasedProgress !== this.easedProgress || isYoyoChanged ) {
-      if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-        this.onUpdate.call(
+      if (p.onUpdate != null && typeof p.onUpdate === 'function') {
+        p.onUpdate.call(
           p.callbacksContext || this,
           this.easedProgress, this.progress,
           time > this._prevTime, isYoyo

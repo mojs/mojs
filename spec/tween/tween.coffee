@@ -108,7 +108,7 @@ describe 'Tween ->', ->
     it 'should calculate startTime and endTime if shifted', ->
       duration = 1000; delay = 500
       t = new Tween(duration: duration, delay: delay, repeat: 2)
-      t._setProps 'shiftTime', 500
+      t._setProp 'shiftTime', 500
       t._setStartTime()
 
       expectedTime = performance.now() + 500 + delay
@@ -230,39 +230,39 @@ describe 'Tween ->', ->
     it 'should not call update method if timeline isnt active "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)
       t._setStartTime()
-      spyOn t, 'onUpdate'
+      spyOn t._props, 'onUpdate'
       t._update(t._props.startTime - 500)
-      expect(t.onUpdate).not.toHaveBeenCalled()
+      expect(t._props.onUpdate).not.toHaveBeenCalled()
     it 'should not call update method if timeline isnt active but was "-"', ->
       t = new Tween(duration: 1000, onUpdate:->)
       t._setStartTime()
-      spyOn t, 'onUpdate'
+      spyOn t._props, 'onUpdate'
       t._update(t._props.startTime + 500)
       t._update(t._props.startTime + 200)
       expect(t._isInActiveArea).toBe(true)
 
       t._update(t._props.startTime - 500)
       expect(t._isInActiveArea).toBe(false)
-      expect(t.onUpdate).toHaveBeenCalledWith(0, 0, false, false)
+      expect(t._props.onUpdate).toHaveBeenCalledWith(0, 0, false, false)
       
       t._update(t._props.startTime - 500)
       expect(t._isInActiveArea).toBe(false)
-      expect(t.onUpdate.calls.count()).toBe 2
+      expect(t._props.onUpdate.calls.count()).toBe 2
     it 'should not call update method if timeline isnt active "+"', ->
       t = new Tween(duration: 1000, onUpdate:-> )
-      spyOn t, 'onUpdate'
+      spyOn t._props, 'onUpdate'
       t._setStartTime(); t._update(performance.now() + 1500)
-      expect(t.onUpdate).not.toHaveBeenCalled()
+      expect(t._props.onUpdate).not.toHaveBeenCalled()
     it 'should not call update method if timeline isnt active but was "+"', ->
       t = new Tween(duration: 1000, onUpdate:-> )
-      spyOn t, 'onUpdate'
+      spyOn t._props, 'onUpdate'
       t._setStartTime();
       t._update(t._props.startTime + 200)
       t._update(t._props.startTime + 500)
       expect(t._isInActiveArea).toBe(true)
       t._update(t._props.startTime + 1500)
       expect(t._isInActiveArea).toBe(false)
-      expect(t.onUpdate).toHaveBeenCalledWith(1, 1, true, false)
+      expect(t._props.onUpdate).toHaveBeenCalledWith(1, 1, true, false)
     it 'should set Tween to the end if Tween ended', ->
       t = new Tween(duration: 1000, delay: 500)
       t._setStartTime()
@@ -300,7 +300,7 @@ describe 'Tween ->', ->
       delay = 500; duration = 1000
       t = new Tween(duration: duration, delay: delay, repeat: 2)
       t._setStartTime()
-      t._setProps 'isReversed', true
+      t._setProp 'isReversed', true
       shift = 200
       time = t._props.startTime + shift
       t._update time - 1
@@ -310,7 +310,7 @@ describe 'Tween ->', ->
       duration = 1000
       t = new Tween(duration: duration)
       t._setStartTime()
-      t._setProps 'isReversed', true
+      t._setProp 'isReversed', true
       shift = 200
       time = t._props.startTime + shift
       t._update time
@@ -640,11 +640,11 @@ describe 'Tween ->', ->
       expect(t._props.onUpdate).toBeDefined()
     it 'should call onUpdate callback with the current progress', ->
       t = new Tween duration: 1000, easing: 'bounce.out', onUpdate: ->
-      spyOn t, 'onUpdate'
+      spyOn t._props, 'onUpdate'
       t._setStartTime()
       t._update t._props.startTime + 499
       t._update t._props.startTime + 500
-      expect(t.onUpdate).toHaveBeenCalledWith t.easedProgress, t.progress, true, false
+      expect(t._props.onUpdate).toHaveBeenCalledWith t.easedProgress, t.progress, true, false
     it 'should have the right scope', ->
       isRightScope = false
       t = new Tween onUpdate:-> isRightScope = @ instanceof Tween
@@ -654,22 +654,22 @@ describe 'Tween ->', ->
       expect(isRightScope).toBe true
     it 'should not be called on delay', ->
       t = new Tween delay: 200, repeat: 2, onUpdate:->
-      spyOn(t, 'onUpdate').and.callThrough()
+      spyOn(t._props, 'onUpdate').and.callThrough()
       t._setStartTime()
       t._update t._props.startTime + t._props.duration + 50
       t._update t._props.startTime + t._props.duration + 100
       t._update t._props.startTime + t._props.duration + 150
-      expect(t.onUpdate.calls.count()).toBe 0
+      expect(t._props.onUpdate.calls.count()).toBe 0
     it 'should be called just once on delay', ->
       t = new Tween delay: 200, repeat: 2, onUpdate:->
       t._setStartTime()
       t._update t._props.startTime + 50
       t._update t._props.startTime + t._props.duration/2
-      spyOn(t, 'onUpdate').and.callThrough()
+      spyOn(t._props, 'onUpdate').and.callThrough()
       t._update t._props.startTime + t._props.duration + 50
       t._update t._props.startTime + t._props.duration + 100
       t._update t._props.startTime + t._props.duration + 150
-      expect(t.onUpdate.calls.count()).toBe 1
+      expect(t._props.onUpdate.calls.count()).toBe 1
     it 'should pass eased progress and raw progress', ->
       easedProgress = null
       progress      = null
@@ -693,6 +693,7 @@ describe 'Tween ->', ->
     it 'should run with custom context', ->
       isRightContext = null; contextObj = {}
       t = new Tween
+        isIt: 1
         callbacksContext: contextObj,
         onUpdate: -> isRightContext = @ is contextObj
 
@@ -5296,50 +5297,50 @@ describe 'Tween ->', ->
   describe '_setProps method ->', ->
     it 'should set new tween options', ->
       t = new Tween duration: 100, delay: 0
-      t._setProps duration: 1000, delay: 200
+      t._setProp duration: 1000, delay: 200
       expect(t._props.duration).toBe 1000
       expect(t._props.delay).toBe    200
-    it 'should set only tween releated options', ->
-      t = new Tween duration: 100, delay: 0
-      t._setProps duration: 1000, delay: 200, fill: 'red'
-      expect(t._props.duration).toBe 1000
-      expect(t._props.delay).toBe    200
-      expect(t._props.fill).not.toBeDefined()
+    # it 'should set only tween releated options', ->
+    #   t = new Tween duration: 100, delay: 0
+    #   t._setProp duration: 1000, delay: 200, fill: 'red'
+    #   expect(t._props.duration).toBe 1000
+    #   expect(t._props.delay).toBe    200
+    #   expect(t._props.fill).not.toBeDefined()
     it 'should work with arguments', ->
       t = new Tween duration: 100
-      t._setProps 'duration', 1000
+      t._setProp 'duration', 1000
       expect(t._props.duration).toBe 1000
-    it 'should work with only tween option arguments', ->
-      t = new Tween duration: 100
-      t._setProps 'fill', 1000
-      expect(t._props.fill).not.toBeDefined()
+    # it 'should work with only tween option arguments', ->
+    #   t = new Tween duration: 100
+    #   t._setProp 'fill', 1000
+    #   expect(t._props.fill).not.toBeDefined()
     it 'should call _calcDimentions method', ->
       t = new Tween duration: 100
       spyOn t, '_calcDimentions'
-      t._setProps 'duration', 1000
+      t._setProp 'duration', 1000
       expect(t._calcDimentions).toHaveBeenCalled()
     it 'should update the time', ->
       t = new Tween duration: 100, delay: 100
-      t._setProps 'duration', 1000
+      t._setProp 'duration', 1000
       expect(t._props.time).toBe 1100
     it 'should parse easing', ->
       t = new Tween duration: 100
-      t._setProps 'easing', 'elastic.in'
+      t._setProp 'easing', 'elastic.in'
       expect(t._props.easing).toBe mojs.easing.elastic.in
 
-    describe '_setProp method ->', ->
-      it 'should work with arguments', ->
-        t = new Tween duration: 100
-        t._setProp 'duration', 1000
-        expect(t._props.duration).toBe 1000
-      it 'should work with only tween option arguments', ->
-        t = new Tween duration: 100
-        t._setProp 'fill', 1000
-        expect(t._props.fill).not.toBeDefined()
-      it 'should parse easing', ->
-        t = new Tween duration: 100
-        t._setProp 'easing', 'ease.out'
-        expect(t._props.easing).toBe easing.ease.out
+    # describe '_setProp method ->', ->
+    #   it 'should work with arguments', ->
+    #     t = new Tween duration: 100
+    #     t._setProp 'duration', 1000
+    #     expect(t._props.duration).toBe 1000
+    #   it 'should work with only tween option arguments', ->
+    #     t = new Tween duration: 100
+    #     t._setProp 'fill', 1000
+    #     expect(t._props.fill).not.toBeDefined()
+    #   it 'should parse easing', ->
+    #     t = new Tween duration: 100
+    #     t._setProp 'easing', 'ease.out'
+    #     expect(t._props.easing).toBe easing.ease.out
 
   describe '_subPlay method ->', ->
     describe '_prevTime recalculation ->', ->
@@ -6477,6 +6478,18 @@ describe 'Tween ->', ->
       tw = new Tween callbacksContext: obj
       expect(tw._props.callbacksContext).toBe obj
 
+  describe '_extendDefaults method', ->
+    it 'should call super', ->
+      spyOn(Module.prototype, '_extendDefaults')
+        .and.callThrough()
+      tw = new Tween
+      tw._extendDefaults()
+      expect(Module.prototype._extendDefaults).toHaveBeenCalled()
+    it 'should parse easing', ->
+      tw = new Tween
+      tw._props.easing = 'ease.in'
+      tw._extendDefaults()
+      expect(typeof tw._props.easing).toBe 'function'
 
 
 

@@ -78,6 +78,10 @@
 
 	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
+	var _get2 = __webpack_require__(23);
+
+	var _get3 = _interopRequireDefault(_get2);
+
 	var _createClass2 = __webpack_require__(21);
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
@@ -388,6 +392,8 @@
 	  }, {
 	    key: '_vars',
 	    value: function _vars() {
+	      // call _vars @ Module
+	      // super._vars();
 	      this.progress = 0;
 	      this._prevTime = null;
 	      this._progressTime = 0;
@@ -422,16 +428,9 @@
 	  }, {
 	    key: '_extendDefaults',
 	    value: function _extendDefaults() {
-	      this._props = {};
-	      for (var key in this._defaults) {
-	        // borrow hasOwnProperty function
-	        if (Object.hasOwnProperty.call(this._defaults, key)) {
-	          var value = this._defaults[key];
-	          this._props[key] = this._o[key] != null ? this._o[key] : value;
-	        }
-	      }
-	      this._props.easing = _easing2.default.parseEasing(this._o.easing || this._defaults.easing);
-	      this.onUpdate = this._props.onUpdate;
+	      // call the _extendDefaults @ Module
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Tween.prototype), '_extendDefaults', this).call(this);
+	      this._props.easing = _easing2.default.parseEasing(this._props.easing);
 	    }
 	    /*
 	      Method for setting start and end time to props.
@@ -448,7 +447,6 @@
 
 	      var p = this._props,
 	          shiftTime = p.shiftTime || 0;
-
 	      // reset flags
 	      if (isResetFlags) {
 	        this._isCompleted = false;this._isRepeatCompleted = false;
@@ -836,41 +834,33 @@
 	      this._wasUknownUpdate = false;
 	    }
 	    /*
-	      Method to set property[s] on Tween
+	      Method to set property[s] on Tween.
 	      @private
+	      @override @ Module
 	      @param {Object, String} Hash object of key/value pairs, or property name.
 	      @param {_} Property's value to set.
 	    */
 
 	  }, {
-	    key: '_setProps',
-	    value: function _setProps(obj, value) {
-	      // handle hash object case or key/value cases (else if)
-	      if (_h2.default.isObject(obj)) {
-	        for (var key in obj) {
-	          this._setProp(key, obj[key]);
-	        }
-	      } else if (typeof obj === 'string') {
-	        this._setProp(obj, value);
-	      }
+	    key: '_setProp',
+	    value: function _setProp(obj, value) {
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Tween.prototype), '_setProp', this).call(this, obj, value);
 	      this._calcDimentions();
 	    }
 	    /*
-	      Method to set one property on the tween.
-	      @param {String} Key name to set.
-	      @param {Any} Value to set.
+	      Method to set single property.
+	      @private
+	      @override @ Module
+	      @param {String} Name of the property.
+	      @param {Any} Value for the property.
 	    */
 
 	  }, {
-	    key: '_setProp',
-	    value: function _setProp(key, value) {
-	      if (key === 'easing') {
-	        this._props.easing = _easing2.default.parseEasing(value);
-	      }
-	      // else just save it to props
-	      else if (_h2.default.isTweenProp(key)) {
-	          this._props[key] = value;
-	        }
+	    key: '_assignProp',
+	    value: function _assignProp(key, value) {
+	      key === 'easing' && (value = _easing2.default.parseEasing(value));
+	      // call super on Module
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Tween.prototype), '_assignProp', this).call(this, key, value);
 	    }
 	    /*
 	      Method to remove the Tween from the tweener.
@@ -922,6 +912,7 @@
 	    /*
 	      Method to set Tween's progress and call onUpdate callback.
 	      @private
+	      @override @ Module
 	      @param {Number} Progress to set.
 	      @param {Number} Current update time.
 	      @param {Boolean} Is yoyo perido. Used in Timeline to pass to Tween.
@@ -936,8 +927,8 @@
 	      this.progress = proc;
 	      this.easedProgress = p.easing(this.progress);
 	      if (p.prevEasedProgress !== this.easedProgress || isYoyoChanged) {
-	        if (this.onUpdate != null && typeof this.onUpdate === 'function') {
-	          this.onUpdate.call(p.callbacksContext || this, this.easedProgress, this.progress, time > this._prevTime, isYoyo);
+	        if (p.onUpdate != null && typeof p.onUpdate === 'function') {
+	          p.onUpdate.call(p.callbacksContext || this, this.easedProgress, this.progress, time > this._prevTime, isYoyo);
 	        }
 	      }
 	      p.prevEasedProgress = this.easedProgress;
@@ -1987,8 +1978,7 @@
 	        return 1;
 	      }
 
-	      // console.log(o)
-	      // this.tween._setProps(o);
+	      // this.tween._setProp(o);
 	      // this.timeline && this.timeline._recalcTotalDuration && this.timeline._recalcTotalDuration();
 
 	      this._calcSize();
@@ -2811,7 +2801,7 @@
 	        timeline = timeline.timeline;
 	      }
 	      // add self delay to the timeline
-	      shift != null && timeline._setProps({ 'shiftTime': shift });
+	      shift != null && timeline._setProp({ 'shiftTime': shift });
 	      this._timelines.push(timeline);
 	      this._recalcDuration(timeline);
 	    }
@@ -3608,6 +3598,7 @@
 	        this._tuneNewOptions(o);
 	        this._history[0] = _h2.default.cloneObj(this._props);
 	        this._tuneSubModules();
+	        this._resetTweens();
 	      }
 	      this.stop();this.play();
 	      return this;
@@ -3659,6 +3650,10 @@
 	  }, {
 	    key: '_transformHistoryRecord',
 	    value: function _transformHistoryRecord(index, key, newValue) {
+	      if (newValue == null) {
+	        return null;
+	      }
+
 	      var currRecord = this._history[index],
 	          prevRecord = this._history[index - 1],
 	          nextRecord = this._history[index + 1],
@@ -3668,7 +3663,13 @@
 	      // and return non-delta for subsequent modifications
 	      if (index === 0) {
 	        currRecord[key] = newValue;
-	        return this._isDelta(newValue) ? _h2.default.getDeltaEnd(newValue) : newValue;
+	        if (this._isDelta(newValue)) {
+	          return _h2.default.getDeltaEnd(newValue);
+	        } else {
+	          var isNextRecord = nextRecord && nextRecord[key] === oldValue,
+	              isNextDelta = nextRecord && this._isDelta(nextRecord[key]);
+	          return isNextRecord || isNextDelta ? newValue : null;
+	        }
 	      } else {
 	        // if was delta and came none-deltta - rewrite
 	        // the start of the delta and stop
@@ -3705,7 +3706,7 @@
 
 	  }, {
 	    key: '_resetTweens',
-	    value: function _resetTweens(isForeign) {
+	    value: function _resetTweens() {
 	      var i = 0,
 	          shift = 0,
 	          tweens = this.timeline._timelines;
@@ -3717,7 +3718,7 @@
 	        shift += prevTween ? prevTween._props.repeatTime : 0;
 	        this._resetTween(tween, this._history[i], shift);
 	      }
-	      !isForeign && this.timeline._recalcTotalDuration();
+	      this.timeline._recalcTotalDuration();
 	    }
 	    /*
 	      Method to reset tween with new options.
@@ -3731,7 +3732,7 @@
 	    value: function _resetTween(tween, o) {
 	      var shift = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
 
-	      o.shiftTime = shift;tween._setProps(o);
+	      o.shiftTime = shift;tween._setProp(o);
 	    }
 	  }]);
 	  return Runable;
@@ -3923,7 +3924,7 @@
 	      var value = this._props[key],
 	          result = value;
 	      // parse numeric/percent values for strokeDash.. properties
-	      if (_h2.default.strokeDashPropsMap[key]) {
+	      if (key === 'strokeDasharray') {
 	        var result = [];
 	        switch (typeof value === 'undefined' ? 'undefined' : (0, _typeof3.default)(value)) {
 	          case 'number':
@@ -3983,47 +3984,28 @@
 	      this._props[key] = delta.start;
 	    }
 	    /*
-	      Method to extend module defaults with passed options.
-	      Saves the result to _props.
-	      @param {Object} Optional object to extend defaults with.
+	      Method to copy `_o` options to `_props` object
+	      with fallback to `_defaults`.
 	    */
 
 	  }, {
 	    key: '_extendDefaults',
-	    value: function _extendDefaults(o) {
-	      this._props = this._props || {};
-	      // reset deltas if no options was passed
-	      o == null && (this._deltas = {});
-
-	      var fromObject = o || this._defaults;
-
-	      for (var key in fromObject) {
+	    value: function _extendDefaults() {
+	      this._props = {};
+	      this._deltas = {};
+	      for (var key in this._defaults) {
 	        // skip property if it is listed in _skipProps
 	        if (this._skipProps && this._skipProps[key]) {
 	          continue;
 	        }
-
 	        // copy the properties to the _o object
-	        var optionsValue = o ?
-	        // if fromObject was pass - get the value from passed o
-	        this._o[key] = o[key]
-	        // if from object wasn't passed - get options value from _o
-	        // with fallback to defaults
-	        : this._o[key] != null ? this._o[key] : this._defaults[key];
-	        /*
-	          `optionsValue` by this point represents options value with
-	          fallback to *default* one. Or. Options key on run if `o` is present.
-	        */
-	        // and delete the key from deltas
-	        o && delete this._deltas[key];
-	        this._parseOption(key, optionsValue);
+	        var value = this._o[key] != null ? this._o[key] : this._defaults[key];
+	        // parse option
+	        this._parseOption(key, value);
 	      }
 	    }
 	    /*
-	      Method to partially tune new options object to _props and _o.
-	      Just delegates the call to the _extendDefaults method, for
-	      the ability to call the `super` in children after new option
-	      have been tuned.
+	      Method to tune new oprions to _o and _props object.
 	      @private
 	      @param {Object} Options object to tune to.
 	    */
@@ -4055,7 +4037,8 @@
 	    key: '_parseOption',
 	    value: function _parseOption(name, value) {
 	      // if delta property
-	      if (this._isDelta(value)) {
+	      if (this._isDelta(value) && name !== 'callbacksContext') {
+	        this._o.isIt && console.log(name);
 	        this._getDelta(name, value);return;
 	      }
 	      // parse stagger and rand values
@@ -4214,10 +4197,6 @@
 	    y: 1,
 	    rx: 1,
 	    ry: 1
-	  };
-
-	  Helpers.prototype.strokeDashPropsMap = {
-	    strokeDasharray: 1
 	  };
 
 	  Helpers.prototype.RAD_TO_DEG = 180 / Math.PI;
@@ -7536,12 +7515,18 @@
 	//   // opacity: 0
 	// });
 
+	//   console.log(tr._history[0].stroke);
+	//   console.log(tr._history[1].stroke);
+	//   console.log(tr._history[2].stroke);
+
 	// var playEl = document.querySelector('#js-play'),
 	//     rangeSliderEl = document.querySelector('#js-range-slider');
 	// playEl.addEventListener('click', function () {
+	//   // tr.run({ stroke: 'red' });
 	//   tr.run({ duration: 5000 });
-	//   console.log(tr._modules[0]._o.stroke);
-	//   console.log(tr._modules[1]._o.stroke);
+	//   console.log(tr._history[0].stroke);
+	//   console.log(tr._history[1].stroke);
+	//   console.log(tr._history[2].stroke);
 	// });
 
 	// // rangeSliderEl.addEventListener('input', function () {

@@ -111,7 +111,7 @@ class Module {
     var value  = this._props[key],
         result = value;
     // parse numeric/percent values for strokeDash.. properties
-    if (h.strokeDashPropsMap[key]) {
+    if ( key === 'strokeDasharray' ) {
       var result = [];
       switch (typeof value) {
         case 'number':
@@ -162,42 +162,23 @@ class Module {
     this._props[key] = delta.start;
   }
   /*
-    Method to extend module defaults with passed options.
-    Saves the result to _props.
-    @param {Object} Optional object to extend defaults with.
+    Method to copy `_o` options to `_props` object
+    with fallback to `_defaults`.
   */
-  _extendDefaults (o) {
-    this._props = this._props || {};
-    // reset deltas if no options was passed
-    (o == null) && (this._deltas = {});
-    
-    var fromObject = o || this._defaults;
-
-    for (var key in fromObject) {
+  _extendDefaults ( ) {
+    this._props  = {};
+    this._deltas = {};
+    for (var key in this._defaults) {
       // skip property if it is listed in _skipProps
       if (this._skipProps && this._skipProps[key]) { continue; }
-        
       // copy the properties to the _o object
-      var optionsValue = (o)
-        // if fromObject was pass - get the value from passed o
-        ? this._o[key] = o[key]
-        // if from object wasn't passed - get options value from _o
-        // with fallback to defaults
-        : ( this._o[key] != null ) ? this._o[key] : this._defaults[key];
-      /*
-        `optionsValue` by this point represents options value with
-        fallback to *default* one. Or. Options key on run if `o` is present.
-      */
-      // and delete the key from deltas
-      o && (delete this._deltas[key]);
-      this._parseOption( key, optionsValue );
+      var value = ( this._o[key] != null ) ? this._o[key] : this._defaults[key];
+      // parse option
+      this._parseOption( key, value );
     }
   }
   /*
-    Method to partially tune new options object to _props and _o.
-    Just delegates the call to the _extendDefaults method, for
-    the ability to call the `super` in children after new option
-    have been tuned.
+    Method to tune new oprions to _o and _props object.
     @private
     @param {Object} Options object to tune to.
   */
@@ -221,7 +202,10 @@ class Module {
   */
   _parseOption ( name, value ) {
     // if delta property
-    if ( this._isDelta( value ) ) { this._getDelta( name, value ); return; }
+    if ( this._isDelta( value ) && name !== 'callbacksContext' ) {
+      this._o.isIt && console.log(name);
+      this._getDelta( name, value ); return;
+    }
     // parse stagger and rand values
     this._props[name] = this._parseOptionString(value);
     // parse units for position properties
