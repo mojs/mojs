@@ -9,16 +9,15 @@ class Runable extends Thenable {
     @param {Object} New options to set on the run.
     @returns {Object} this.
   */
-  run (o) {
+  change (o) {
     // if options object was passed
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
       this._tuneNewOptions(o);
-      this._history[0] = h.cloneObj(this._props);
+      this._history[0] = h.extend( h.cloneObj(this._o), this._defaults )
       this._tuneSubModules();
       this._resetTweens();
     }
-    this.stop(); this.play();
     return this;
   }
   /*
@@ -58,7 +57,7 @@ class Runable extends Thenable {
   */
   _transformHistoryRecord ( index, key, newValue ) {
     if (newValue == null ) { return null; }
-    
+
     var currRecord = this._history[index],
         prevRecord = this._history[index-1],
         nextRecord = this._history[index+1],

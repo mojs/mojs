@@ -3583,7 +3583,7 @@
 	  }
 
 	  (0, _createClass3.default)(Runable, [{
-	    key: 'run',
+	    key: 'change',
 
 	    /*
 	      Method to start the animation with optional new options.
@@ -3591,16 +3591,15 @@
 	      @param {Object} New options to set on the run.
 	      @returns {Object} this.
 	    */
-	    value: function run(o) {
+	    value: function change(o) {
 	      // if options object was passed
 	      if (o && (0, _keys2.default)(o).length) {
 	        this._transformHistory(o);
 	        this._tuneNewOptions(o);
-	        this._history[0] = _h2.default.cloneObj(this._props);
+	        this._history[0] = _h2.default.extend(_h2.default.cloneObj(this._o), this._defaults);
 	        this._tuneSubModules();
 	        this._resetTweens();
 	      }
-	      this.stop();this.play();
 	      return this;
 	    }
 	    /*
@@ -7464,11 +7463,18 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.193.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.193.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
+
+	// TODO:
+	/*
+	  rename `runnable` to `changable`
+	  add `restart` method for `tween` and `tweenable`
+	  add callbacks transforms for the `tween`
+	*/
 
 	// var tr = new mojs.Transit({
 	//   left: '50%', top: '50%',
@@ -7515,23 +7521,36 @@
 	//   // opacity: 0
 	// });
 
-	//   console.log(tr._history[0].stroke);
-	//   console.log(tr._history[1].stroke);
-	//   console.log(tr._history[2].stroke);
+	//   console.log(tr._history[0].x);
+	//   console.log(tr._history[1].x);
+	//   console.log(tr._history[2].x);
 
 	// var playEl = document.querySelector('#js-play'),
 	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// playEl.addEventListener('click', function () {
+	// document.body.addEventListener('click', function (e) {
 	//   // tr.run({ stroke: 'red' });
-	//   tr.run({ duration: 5000 });
-	//   console.log(tr._history[0].stroke);
-	//   console.log(tr._history[1].stroke);
-	//   console.log(tr._history[2].stroke);
+	//   console.time('run');
+	//   tr
+	//     .change({
+	//       duration: 1500, stroke: {'red': 'purple'},
+	//       left: 0, top: 0,
+	//       x: parseInt(e.pageX), y:parseInt(e.pageY),
+	//       onUpdate: function (p) {
+	//         console.log(p);
+	//       }
+	//     })
+	//     .stop().play();
+
+	//   console.timeEnd('run');
+
+	//   console.log(tr._history[0].x);
+	//   console.log(tr._history[1].x);
+	//   console.log(tr._history[2].x);
 	// });
 
-	// // rangeSliderEl.addEventListener('input', function () {
-	// //   tr.setProgress( rangeSliderEl.value/1000 );
-	// // });
+	// rangeSliderEl.addEventListener('input', function () {
+	//   tr.setProgress( rangeSliderEl.value/1000 );
+	// });
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;

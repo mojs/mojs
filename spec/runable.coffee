@@ -196,61 +196,62 @@ describe 'Runable ->', ->
       expect(tr.timeline._recalcTotalDuration)
         .toHaveBeenCalled()
 
-  describe 'run method ->', ->
+  describe 'change method ->', ->
     it 'should extend defaults with passed object', ->
       byte = new Runable(strokeWidth: {10: 5})
       spyOn byte, '_tuneNewOptions'
       o = { strokeWidth: 20 }
-      byte.run(o)
+      byte.change(o)
       expect(byte._tuneNewOptions).toHaveBeenCalledWith o
     it 'should not transform history if object was not passed', ->
       byte = new Runable(strokeWidth: {10: 5})
       spyOn byte, '_transformHistory'
-      byte.run()
+      byte.change()
       expect(byte._transformHistory).not.toHaveBeenCalled()
     it 'should not override deltas', ->
       byte = new Runable()
       byte._deltas['strokeWidth'] = {10: 5}
-      byte.run stroke: 'green'
+      byte.change stroke: 'green'
       expect(byte._deltas.strokeWidth).toBeDefined()
-    it 'should start tween', ->
-      byte = new Runable(strokeWidth: {10: 5})
-      spyOn byte, 'stop'
-      spyOn byte, 'play'
-      byte.run()
-      expect(byte.stop).toHaveBeenCalled()
-      expect(byte.play).toHaveBeenCalled()
+    it 'should rewrite history', ->
+      byte = new Runable()
+      byte._o = { fill: 'cyan', strokeWidth: 5 }
+      byte._defaults = { opacity: 1 }
+      byte.change fill: 'yellow'
+      expect(byte._history[0].fill).toBe 'yellow'
+      expect(byte._history[0].strokeWidth).toBe 5
+      expect(byte._history[0].opacity).toBe 1
     it 'should accept new options', ->
       byte = new Runable(strokeWidth: {10: 5})
-      byte.run strokeWidth: 25
+      byte.change strokeWidth: 25
       expect(byte._props.strokeWidth).toBe 25
       expect(byte._deltas.strokeWidth).not.toBeDefined()
     it 'should not modify old options', ->
       byte = new Runable(strokeWidth: {10: 5}, radius: 33)
       byte._props.radius = 33
-      byte.run strokeWidth: 25
+      byte.change strokeWidth: 25
       expect(byte._props.radius).toBe 33
     # TODO: check the tween props
     it 'should call _recalcTotalDuration on timeline', ->
       byte = new Runable
       spyOn byte.timeline, '_recalcTotalDuration'
-      byte.run duration: 2000
+      byte.change duration: 2000
       expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled()
     it 'should call _transformHistory', ->
       byte = new Runable
       spyOn byte, '_transformHistory'
       o = duration: 2000
-      byte.run o
+      byte.change o
       expect(byte._transformHistory).toHaveBeenCalledWith o
     it 'should not call _transformHistory if optionless', ->
       byte = new Runable
       spyOn byte, '_transformHistory'
-      byte.run()
+      byte.change()
       expect(byte._transformHistory).not.toHaveBeenCalled()
     it 'shoud not warn if history is 1 record long', ->
       byte = new Runable(duration:  2000)
       spyOn h, 'warn'
-      byte.run
+      byte.change
         duration: 100
         delay:    100
         repeat:   1
@@ -265,7 +266,7 @@ describe 'Runable ->', ->
     it 'shoud work with no arguments passed', ->
       byte = new Runable(duration:  2000)
         .then radius: 500
-      expect(-> byte.run()).not.toThrow()
+      expect(-> byte.change()).not.toThrow()
 
   describe '_tuneSubModules method ->', ->
     it 'should call _tuneNewOptions on every sub module', ->

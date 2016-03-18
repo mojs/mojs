@@ -253,7 +253,7 @@
         return expect(tr.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
     });
-    describe('run method ->', function() {
+    describe('change method ->', function() {
       it('should extend defaults with passed object', function() {
         var byte, o;
         byte = new Runable({
@@ -265,7 +265,7 @@
         o = {
           strokeWidth: 20
         };
-        byte.run(o);
+        byte.change(o);
         return expect(byte._tuneNewOptions).toHaveBeenCalledWith(o);
       });
       it('should not transform history if object was not passed', function() {
@@ -276,7 +276,7 @@
           }
         });
         spyOn(byte, '_transformHistory');
-        byte.run();
+        byte.change();
         return expect(byte._transformHistory).not.toHaveBeenCalled();
       });
       it('should not override deltas', function() {
@@ -285,23 +285,27 @@
         byte._deltas['strokeWidth'] = {
           10: 5
         };
-        byte.run({
+        byte.change({
           stroke: 'green'
         });
         return expect(byte._deltas.strokeWidth).toBeDefined();
       });
-      it('should start tween', function() {
+      it('should rewrite history', function() {
         var byte;
-        byte = new Runable({
-          strokeWidth: {
-            10: 5
-          }
+        byte = new Runable();
+        byte._o = {
+          fill: 'cyan',
+          strokeWidth: 5
+        };
+        byte._defaults = {
+          opacity: 1
+        };
+        byte.change({
+          fill: 'yellow'
         });
-        spyOn(byte, 'stop');
-        spyOn(byte, 'play');
-        byte.run();
-        expect(byte.stop).toHaveBeenCalled();
-        return expect(byte.play).toHaveBeenCalled();
+        expect(byte._history[0].fill).toBe('yellow');
+        expect(byte._history[0].strokeWidth).toBe(5);
+        return expect(byte._history[0].opacity).toBe(1);
       });
       it('should accept new options', function() {
         var byte;
@@ -310,7 +314,7 @@
             10: 5
           }
         });
-        byte.run({
+        byte.change({
           strokeWidth: 25
         });
         expect(byte._props.strokeWidth).toBe(25);
@@ -325,7 +329,7 @@
           radius: 33
         });
         byte._props.radius = 33;
-        byte.run({
+        byte.change({
           strokeWidth: 25
         });
         return expect(byte._props.radius).toBe(33);
@@ -334,7 +338,7 @@
         var byte;
         byte = new Runable;
         spyOn(byte.timeline, '_recalcTotalDuration');
-        byte.run({
+        byte.change({
           duration: 2000
         });
         return expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled();
@@ -346,14 +350,14 @@
         o = {
           duration: 2000
         };
-        byte.run(o);
+        byte.change(o);
         return expect(byte._transformHistory).toHaveBeenCalledWith(o);
       });
       it('should not call _transformHistory if optionless', function() {
         var byte;
         byte = new Runable;
         spyOn(byte, '_transformHistory');
-        byte.run();
+        byte.change();
         return expect(byte._transformHistory).not.toHaveBeenCalled();
       });
       it('shoud not warn if history is 1 record long', function() {
@@ -362,7 +366,7 @@
           duration: 2000
         });
         spyOn(h, 'warn');
-        byte.run({
+        byte.change({
           duration: 100,
           delay: 100,
           repeat: 1,
@@ -384,7 +388,7 @@
           radius: 500
         });
         return expect(function() {
-          return byte.run();
+          return byte.change();
         }).not.toThrow();
       });
     });
