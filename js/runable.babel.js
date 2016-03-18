@@ -14,9 +14,8 @@ class Runable extends Thenable {
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
       this._tuneNewOptions(o);
-      this._tuneSubModules();
-      // h.extend(o, this._defaults);
       this._history[0] = h.cloneObj(this._props);
+      this._tuneSubModules();
     }
     this.stop(); this.play();
     return this;
@@ -89,12 +88,10 @@ class Runable extends Thenable {
     @private
   */
   _tuneSubModules () {
-
-    for ( var i = 0; i < this._modules.length; i++ ) {
+    for ( var i = 1; i < this._modules.length; i++ ) {
       var module = this._modules[i];
       module._tuneNewOptions( this._history[i] );
     }
-
   }
   /*
     Method to set new options on run.

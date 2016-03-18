@@ -254,3 +254,19 @@ describe 'Runable ->', ->
       byte = new Runable(duration:  2000)
         .then radius: 500
       expect(-> byte.run()).not.toThrow()
+
+  describe '_tuneSubModules method ->', ->
+    it 'should call _tuneNewOptions on every sub module', ->
+      rn = new Runable({ radius: 20 })
+        .then({ radius: 40 })
+        .then({ radius: 70 })
+      spyOn rn._modules[0], '_tuneNewOptions'
+      spyOn rn._modules[1], '_tuneNewOptions'
+      spyOn rn._modules[2], '_tuneNewOptions'
+
+      rn._tuneSubModules()
+
+      expect(rn._modules[0]._tuneNewOptions).not.toHaveBeenCalled()
+      expect(rn._modules[1]._tuneNewOptions).toHaveBeenCalled()
+      expect(rn._modules[2]._tuneNewOptions).toHaveBeenCalled()
+

@@ -1969,6 +1969,10 @@
 	        return 1;
 	      }
 
+	      // console.log(o)
+	      // this.tween._setProps(o);
+	      // this.timeline && this.timeline._recalcTotalDuration && this.timeline._recalcTotalDuration();
+
 	      this._calcSize();
 	      this._setElStyles();
 	    }
@@ -3584,9 +3588,8 @@
 	      if (o && (0, _keys2.default)(o).length) {
 	        this._transformHistory(o);
 	        this._tuneNewOptions(o);
-	        this._tuneSubModules();
-	        // h.extend(o, this._defaults);
 	        this._history[0] = _h2.default.cloneObj(this._props);
+	        this._tuneSubModules();
 	      }
 	      this.stop();this.play();
 	      return this;
@@ -3671,8 +3674,7 @@
 	  }, {
 	    key: '_tuneSubModules',
 	    value: function _tuneSubModules() {
-
-	      for (var i = 0; i < this._modules.length; i++) {
+	      for (var i = 1; i < this._modules.length; i++) {
 	        var module = this._modules[i];
 	        module._tuneNewOptions(this._history[i]);
 	      }
@@ -7465,64 +7467,64 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.191.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.192.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
-	// var tr = new mojs.Transit({
-	//   left: '50%', top: '50%',
-	//   shape:    'polygon',
-	//   strokeWidth: 20,
-	//   angle:    { 0 : 200},
-	//   radius:   10,
-	//   fill:     'none',
-	//   stroke:   { 'white': 'cyan' },
-	//   points:   { 3 : 20 }, // make triangle
-	//   duration: 2000,
-	//   // isShowStart: true,
-	//   // isShowEnd: true,
-	//   timeline: { repeat: 1, yoyo: true, onRepeatComplete: function () { console.log('rep complete'); } },
-	//   // delay:    4000,
-	//   scale: { 0 : 6 },
-	//   // timeline: { repeat: 2, yoyo: true },
-	//   // onStart: ()=> { console.log('start 1'); },
-	//   // onComplete: ()=> { console.log('comple 1'); },
-	//   // easing: 'expo.in'
-	// })
-	// .then({
-	//   // onStart: ()=> { console.log('start 2')},
-	//   // onComplete: ()=> { console.log('comple 2'); },
-	//   points:   3, // make triangle
-	//   angle:    -180,
-	//   duration: 300,
-	//   stroke: 'yellow',
-	//   easing: 'expo.in',
-	//   scale: .5,
-	// })
-	// .then({
-	//   // onStart: ()=> { console.log('start 3')},
-	//   // onComplete: ()=> { console.log('comple 3'); },
-	//   strokeWidth: 0,
-	//   stroke: 'hotpink',
-	//   duration: 400,
-	//   easing: 'cubic.out',
-	//   // scale: { 1: 1 },
-	//   radius: 40,
-	//   scale: 1,
-	//   angle: 90,
-	//   // speed: 1
-	//   // opacity: 0
-	// });
+	var tr = new mojs.Transit({
+	  left: '50%', top: '50%',
+	  shape: 'polygon',
+	  strokeWidth: 20,
+	  angle: { 0: 200 },
+	  radius: 10,
+	  fill: 'none',
+	  stroke: { 'white': 'cyan' },
+	  points: { 3: 20 }, // make triangle
+	  duration: 2000,
+	  // isShowStart: true,
+	  // isShowEnd: true,
+	  timeline: { repeat: 1, yoyo: true, onRepeatComplete: function onRepeatComplete() {
+	      console.log('rep complete');
+	    } },
+	  // delay:    4000,
+	  scale: { 0: 6 }
+	}). // timeline: { repeat: 2, yoyo: true },
+	// onStart: ()=> { console.log('start 1'); },
+	// onComplete: ()=> { console.log('comple 1'); },
+	// easing: 'expo.in'
+	then({
+	  // onStart: ()=> { console.log('start 2')},
+	  // onComplete: ()=> { console.log('comple 2'); },
+	  points: 3, // make triangle
+	  angle: -180,
+	  duration: 300,
+	  stroke: 'yellow',
+	  easing: 'expo.in',
+	  scale: .5
+	}).then({
+	  // onStart: ()=> { console.log('start 3')},
+	  // onComplete: ()=> { console.log('comple 3'); },
+	  strokeWidth: 0,
+	  stroke: 'hotpink',
+	  duration: 400,
+	  easing: 'cubic.out',
+	  // scale: { 1: 1 },
+	  radius: 40,
+	  scale: 1,
+	  angle: 90
+	});
 
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// playEl.addEventListener('click', function () {
-	//   tr.run({ stroke: 'red' });
-	//   console.log(tr._modules[0]._o.stroke);
-	//   console.log(tr._modules[1]._o.stroke);
-	// });
+	// speed: 1
+	// opacity: 0
+	var playEl = document.querySelector('#js-play'),
+	    rangeSliderEl = document.querySelector('#js-range-slider');
+	playEl.addEventListener('click', function () {
+	  tr.run({ duration: 5000 });
+	  console.log(tr._modules[0]._o.stroke);
+	  console.log(tr._modules[1]._o.stroke);
+	});
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );

@@ -241,7 +241,7 @@
         return expect(tr.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
     });
-    return describe('run method ->', function() {
+    describe('run method ->', function() {
       it('should not transform history if object was not passed', function() {
         var byte;
         byte = new Runable({
@@ -351,6 +351,25 @@
         return expect(function() {
           return byte.run();
         }).not.toThrow();
+      });
+    });
+    return describe('_tuneSubModules method ->', function() {
+      return it('should call _tuneNewOptions on every sub module', function() {
+        var rn;
+        rn = new Runable({
+          radius: 20
+        }).then({
+          radius: 40
+        }).then({
+          radius: 70
+        });
+        spyOn(rn._modules[0], '_tuneNewOptions');
+        spyOn(rn._modules[1], '_tuneNewOptions');
+        spyOn(rn._modules[2], '_tuneNewOptions');
+        rn._tuneSubModules();
+        expect(rn._modules[0]._tuneNewOptions).not.toHaveBeenCalled();
+        expect(rn._modules[1]._tuneNewOptions).toHaveBeenCalled();
+        return expect(rn._modules[2]._tuneNewOptions).toHaveBeenCalled();
       });
     });
   });

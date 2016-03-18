@@ -225,6 +225,10 @@ class Transit extends Runable {
     super._tuneNewOptions(o);
     // return if empty object
     if ( !((o != null) && Object.keys(o).length) ) { return 1; }
+
+    // console.log(o)
+    // this.tween._setProps(o);
+    // this.timeline && this.timeline._recalcTotalDuration && this.timeline._recalcTotalDuration();
     
     this._calcSize();
     this._setElStyles();
