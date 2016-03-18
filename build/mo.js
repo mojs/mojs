@@ -66,13 +66,25 @@
 	  value: true
 	});
 
+	var _getPrototypeOf = __webpack_require__(27);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
 	var _classCallCheck2 = __webpack_require__(20);
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
+	var _possibleConstructorReturn2 = __webpack_require__(22);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
 	var _createClass2 = __webpack_require__(21);
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _inherits2 = __webpack_require__(24);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
 
 	var _h = __webpack_require__(14);
 
@@ -86,9 +98,16 @@
 
 	var _easing2 = _interopRequireDefault(_easing);
 
+	var _module = __webpack_require__(12);
+
+	var _module2 = _interopRequireDefault(_module);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Tween = function () {
+	// import h from '../h';
+
+	var Tween = function (_Module) {
+	  (0, _inherits3.default)(Tween, _Module);
 	  (0, _createClass3.default)(Tween, [{
 	    key: '_declareDefaults',
 
@@ -323,15 +342,15 @@
 	  }]);
 
 	  function Tween() {
+	    var _ret;
+
 	    var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    (0, _classCallCheck3.default)(this, Tween);
 
-	    this.o = o;
-	    this._declareDefaults();
-	    this._extendDefaults();
-	    this._vars();
-	    this._props.name == null && this._setSelfName();
-	    return this;
+	    var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Tween).call(this, o));
+
+	    _this._props.name == null && _this._setSelfName();
+	    return _ret = _this, (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 	  /*
 	    Method to set self name to generic one.
@@ -408,10 +427,10 @@
 	        // borrow hasOwnProperty function
 	        if (Object.hasOwnProperty.call(this._defaults, key)) {
 	          var value = this._defaults[key];
-	          this._props[key] = this.o[key] != null ? this.o[key] : value;
+	          this._props[key] = this._o[key] != null ? this._o[key] : value;
 	        }
 	      }
-	      this._props.easing = _easing2.default.parseEasing(this.o.easing || this._defaults.easing);
+	      this._props.easing = _easing2.default.parseEasing(this._o.easing || this._defaults.easing);
 	      this.onUpdate = this._props.onUpdate;
 	    }
 	    /*
@@ -1107,8 +1126,7 @@
 
 	  }]);
 	  return Tween;
-	}(); // import h from '../h';
-
+	}(_module2.default);
 
 	exports.default = Tween;
 
@@ -2906,9 +2924,9 @@
 	    key: '_declareDefaults',
 	    value: function _declareDefaults() {
 	      // if duration was passed on initialization stage, warn user and reset it.
-	      if (this.o.duration != null) {
-	        _h2.default.error('Duration can not be declared on Timeline, but "' + this.o.duration + '" is. You probably want to use Tween instead.');
-	        this.o.duration = 0;
+	      if (this._o.duration != null) {
+	        _h2.default.error('Duration can not be declared on Timeline, but "' + this._o.duration + '" is. You probably want to use Tween instead.');
+	        this._o.duration = 0;
 	      }
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Timeline.prototype), '_declareDefaults', this).call(this);
 	      // remove default
@@ -7467,68 +7485,68 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.192.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.193.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
-	var tr = new mojs.Transit({
-	  left: '50%', top: '50%',
-	  shape: 'polygon',
-	  strokeWidth: 20,
-	  angle: { 0: 200 },
-	  radius: 10,
-	  fill: 'none',
-	  stroke: { 'white': 'cyan' },
-	  points: { 3: 20 }, // make triangle
-	  duration: 2000,
-	  // isShowStart: true,
-	  // isShowEnd: true,
-	  timeline: { repeat: 1, yoyo: true, onRepeatComplete: function onRepeatComplete() {
-	      console.log('rep complete');
-	    } },
-	  // delay:    4000,
-	  scale: { 0: 6 }
-	}). // timeline: { repeat: 2, yoyo: true },
-	// onStart: ()=> { console.log('start 1'); },
-	// onComplete: ()=> { console.log('comple 1'); },
-	// easing: 'expo.in'
-	then({
-	  // onStart: ()=> { console.log('start 2')},
-	  // onComplete: ()=> { console.log('comple 2'); },
-	  points: 3, // make triangle
-	  angle: -180,
-	  duration: 300,
-	  stroke: 'yellow',
-	  easing: 'expo.in',
-	  scale: .5
-	}).then({
-	  // onStart: ()=> { console.log('start 3')},
-	  // onComplete: ()=> { console.log('comple 3'); },
-	  strokeWidth: 0,
-	  stroke: 'hotpink',
-	  duration: 400,
-	  easing: 'cubic.out',
-	  // scale: { 1: 1 },
-	  radius: 40,
-	  scale: 1,
-	  angle: 90
-	});
-
-	// speed: 1
-	// opacity: 0
-	var playEl = document.querySelector('#js-play'),
-	    rangeSliderEl = document.querySelector('#js-range-slider');
-	playEl.addEventListener('click', function () {
-	  tr.run({ duration: 5000 });
-	  console.log(tr._modules[0]._o.stroke);
-	  console.log(tr._modules[1]._o.stroke);
-	});
-
-	// rangeSliderEl.addEventListener('input', function () {
-	//   tr.setProgress( rangeSliderEl.value/1000 );
+	// var tr = new mojs.Transit({
+	//   left: '50%', top: '50%',
+	//   shape:    'polygon',
+	//   strokeWidth: 20,
+	//   angle:    { 0 : 200},
+	//   radius:   10,
+	//   fill:     'none',
+	//   stroke:   { 'white': 'cyan' },
+	//   points:   { 3 : 20 }, // make triangle
+	//   duration: 2000,
+	//   // isShowStart: true,
+	//   // isShowEnd: true,
+	//   timeline: { repeat: 1, yoyo: true, onRepeatComplete: function () { console.log('rep complete'); } },
+	//   // delay:    4000,
+	//   scale: { 0 : 6 },
+	//   // timeline: { repeat: 2, yoyo: true },
+	//   // onStart: ()=> { console.log('start 1'); },
+	//   // onComplete: ()=> { console.log('comple 1'); },
+	//   // easing: 'expo.in'
+	// })
+	// .then({
+	//   // onStart: ()=> { console.log('start 2')},
+	//   // onComplete: ()=> { console.log('comple 2'); },
+	//   points:   3, // make triangle
+	//   angle:    -180,
+	//   duration: 300,
+	//   stroke: 'yellow',
+	//   easing: 'expo.in',
+	//   scale: .5,
+	// })
+	// .then({
+	//   // onStart: ()=> { console.log('start 3')},
+	//   // onComplete: ()=> { console.log('comple 3'); },
+	//   strokeWidth: 0,
+	//   stroke: 'hotpink',
+	//   duration: 400,
+	//   easing: 'cubic.out',
+	//   // scale: { 1: 1 },
+	//   radius: 40,
+	//   scale: 1,
+	//   angle: 90,
+	//   // speed: 1
+	//   // opacity: 0
 	// });
+
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// playEl.addEventListener('click', function () {
+	//   tr.run({ duration: 5000 });
+	//   console.log(tr._modules[0]._o.stroke);
+	//   console.log(tr._modules[1]._o.stroke);
+	// });
+
+	// // rangeSliderEl.addEventListener('input', function () {
+	// //   tr.setProgress( rangeSliderEl.value/1000 );
+	// // });
 
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;

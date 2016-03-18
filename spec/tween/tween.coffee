@@ -1,10 +1,16 @@
 Tween    = window.mojs.Tween
 Timeline = window.mojs.Timeline
+Module   = window.mojs.Module
 easing   = window.mojs.easing
 h        = window.mojs.h
 tweener  = window.mojs.tweener
 
 describe 'Tween ->', ->
+  describe 'extention ->', ->
+    it 'should extend Module class', ->
+      tw = new Tween
+      expect( tw instanceof Module ).toBe true
+
   describe 'name ->', ->
     it 'should set self custom name', ->
       tweener['_Tweens'] = undefined;

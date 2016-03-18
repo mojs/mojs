@@ -38,7 +38,7 @@ describe 'tweenable ->', ->
       expect(tw.tween instanceof Tween).toBe true
     it 'should construct tween with this._o ->',->
       tw = new Tweenable
-      expect(tw.tween.o).toBe tw._o
+      expect(tw.tween._o).toBe tw._o
   describe '_makeTimeline ->', ->
     it 'should call _makeTimeline on the construction stage ->', ->
       spyOn Tweenable.prototype, '_makeTimeline'
@@ -50,7 +50,7 @@ describe 'tweenable ->', ->
     it 'should timeline with this._o.timeline ->',->
       timelineOptions = { delay: 200, repeat: 2 }
       tw = new Tweenable timeline: timelineOptions
-      expect(tw.timeline.o).toBe tw._o.timeline
+      expect(tw.timeline._o).toBe tw._o.timeline
     it 'should add add tween to the timeline ->',->
       tw = new Tweenable
       expect(tw.timeline._timelines[0]).toBe tw.tween

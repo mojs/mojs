@@ -174,9 +174,9 @@ class Timeline extends Tween {
   */
   _declareDefaults () {
     // if duration was passed on initialization stage, warn user and reset it.
-    if ( this.o.duration != null ) {
-      h.error(`Duration can not be declared on Timeline, but "${this.o.duration}" is. You probably want to use Tween instead.`);
-      this.o.duration = 0;
+    if ( this._o.duration != null ) {
+      h.error(`Duration can not be declared on Timeline, but "${this._o.duration}" is. You probably want to use Tween instead.`);
+      this._o.duration = 0;
     }
     super._declareDefaults();
     // remove default 

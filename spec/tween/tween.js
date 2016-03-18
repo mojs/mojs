@@ -1,9 +1,11 @@
 (function() {
-  var Timeline, Tween, easing, h, tweener;
+  var Module, Timeline, Tween, easing, h, tweener;
 
   Tween = window.mojs.Tween;
 
   Timeline = window.mojs.Timeline;
+
+  Module = window.mojs.Module;
 
   easing = window.mojs.easing;
 
@@ -12,6 +14,13 @@
   tweener = window.mojs.tweener;
 
   describe('Tween ->', function() {
+    describe('extention ->', function() {
+      return it('should extend Module class', function() {
+        var tw;
+        tw = new Tween;
+        return expect(tw instanceof Module).toBe(true);
+      });
+    });
     describe('name ->', function() {
       it('should set self custom name', function() {
         var name, t;

@@ -2,8 +2,9 @@
 import h from '../h';
 import t from './tweener';
 import easing from '../easing/easing';
+import Module from '../module';
 
-var Tween = class Tween {
+class Tween extends Module {
   /*
     Method do declare defaults with this._defaults object.
     @private
@@ -197,10 +198,7 @@ var Tween = class Tween {
     @private
   */
   constructor ( o = {} ) {
-    this.o = o;
-    this._declareDefaults();
-    this._extendDefaults();
-    this._vars();
+    super(o);
     ( this._props.name == null ) && this._setSelfName();
     return this;
   }
@@ -263,10 +261,10 @@ var Tween = class Tween {
       // borrow hasOwnProperty function
       if (Object.hasOwnProperty.call(this._defaults, key)) {
         var value = this._defaults[key];
-        this._props[key] = (this.o[key] != null) ? this.o[key] : value;
+        this._props[key] = (this._o[key] != null) ? this._o[key] : value;
       }
     }
-    this._props.easing = easing.parseEasing(this.o.easing || this._defaults.easing);
+    this._props.easing = easing.parseEasing(this._o.easing || this._defaults.easing);
     this.onUpdate      = this._props.onUpdate;
   }
   /*

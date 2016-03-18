@@ -69,7 +69,7 @@
       return it('should construct tween with this._o ->', function() {
         var tw;
         tw = new Tweenable;
-        return expect(tw.tween.o).toBe(tw._o);
+        return expect(tw.tween._o).toBe(tw._o);
       });
     });
     describe('_makeTimeline ->', function() {
@@ -93,7 +93,7 @@
         tw = new Tweenable({
           timeline: timelineOptions
         });
-        return expect(tw.timeline.o).toBe(tw._o.timeline);
+        return expect(tw.timeline._o).toBe(tw._o.timeline);
       });
       it('should add add tween to the timeline ->', function() {
         var tw;
