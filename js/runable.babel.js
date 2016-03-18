@@ -14,7 +14,7 @@ class Runable extends Thenable {
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
       this._tuneNewOptions(o);
-      this._resetTweens();
+      this._tuneSubModules();
       // h.extend(o, this._defaults);
       this._history[0] = h.cloneObj(this._props);
     }
@@ -81,6 +81,18 @@ class Runable extends Thenable {
         return ( nextRecord && nextRecord[key] === oldValue )
           ? newValue : null;
       }
+    }
+
+  }
+  /*
+    Method to tune new history options to all the submodules.
+    @private
+  */
+  _tuneSubModules () {
+
+    for ( var i = 0; i < this._modules.length; i++ ) {
+      var module = this._modules[i];
+      module._tuneNewOptions( this._history[i] );
     }
 
   }

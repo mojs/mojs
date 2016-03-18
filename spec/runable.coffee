@@ -185,12 +185,12 @@ describe 'Runable ->', ->
         .toHaveBeenCalled()
 
   describe 'run method ->', ->
-    it 'should extend defaults with passed object', ->
-      byte = new Runable(strokeWidth: {10: 5})
-      spyOn byte, '_extendDefaults'
-      o = { strokeWidth: 20 }
-      byte.run(o)
-      expect(byte._extendDefaults).toHaveBeenCalledWith o
+    # it 'should extend defaults with passed object', ->
+    #   byte = new Runable(strokeWidth: {10: 5})
+    #   spyOn byte, '_extendDefaults'
+    #   o = { strokeWidth: 20 }
+    #   byte.run(o)
+    #   expect(byte._extendDefaults).toHaveBeenCalledWith o
     it 'should not transform history if object was not passed', ->
       byte = new Runable(strokeWidth: {10: 5})
       spyOn byte, '_transformHistory'
@@ -219,11 +219,11 @@ describe 'Runable ->', ->
       byte.run strokeWidth: 25
       expect(byte._props.radius).toBe 33
     # TODO: check the tween props
-    it 'should call _recalcTotalDuration on timeline', ->
-      byte = new Runable
-      spyOn byte.timeline, '_recalcTotalDuration'
-      byte.run duration: 2000
-      expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled()
+    # it 'should call _recalcTotalDuration on timeline', ->
+    #   byte = new Runable
+    #   spyOn byte.timeline, '_recalcTotalDuration'
+    #   byte.run duration: 2000
+    #   expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled()
     it 'should call _transformHistory', ->
       byte = new Runable
       spyOn byte, '_transformHistory'

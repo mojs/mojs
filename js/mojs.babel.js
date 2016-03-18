@@ -17,63 +17,63 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.190.0', isDebug: true, helpers: h,
+  revision:   '0.191.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Runable, Module,
   tweener, easing, shapesMap
 }
 
-var tr = new mojs.Transit({
-  left: '50%', top: '50%',
-  shape:    'polygon',
-  strokeWidth: 20,
-  angle:    { 0 : 200},
-  radius:   10,
-  fill:     'none',
-  stroke:   { 'white': 'cyan' },
-  points:   { 3 : 20 }, // make triangle
-  duration: 2000,
-  isShowStart: true,
-  isShowEnd: true,
-  timeline: { repeat: 1, yoyo: true, onRepeatComplete: function () { console.log('rep complete'); } },
-  // delay:    4000,
-  scale: { 0 : 6 },
-  // timeline: { repeat: 2, yoyo: true },
-  // onStart: ()=> { console.log('start 1'); },
-  // onComplete: ()=> { console.log('comple 1'); },
-  // easing: 'expo.in'
-})
-.then({
-  // onStart: ()=> { console.log('start 2')},
-  // onComplete: ()=> { console.log('comple 2'); },
-  points:   3, // make triangle
-  angle:    -180,
-  duration: 300,
-  stroke: 'yellow',
-  easing: 'expo.in',
-  scale: .5,
-})
-.then({
-  // onStart: ()=> { console.log('start 3')},
-  // onComplete: ()=> { console.log('comple 3'); },
-  strokeWidth: 0,
-  stroke: 'hotpink',
-  duration: 400,
-  easing: 'cubic.out',
-  // scale: { 1: 1 },
-  radius: 40,
-  scale: 1,
-  angle: 90,
-  // speed: 1
-  // opacity: 0
-});
+// var tr = new mojs.Transit({
+//   left: '50%', top: '50%',
+//   shape:    'polygon',
+//   strokeWidth: 20,
+//   angle:    { 0 : 200},
+//   radius:   10,
+//   fill:     'none',
+//   stroke:   { 'white': 'cyan' },
+//   points:   { 3 : 20 }, // make triangle
+//   duration: 2000,
+//   // isShowStart: true,
+//   // isShowEnd: true,
+//   timeline: { repeat: 1, yoyo: true, onRepeatComplete: function () { console.log('rep complete'); } },
+//   // delay:    4000,
+//   scale: { 0 : 6 },
+//   // timeline: { repeat: 2, yoyo: true },
+//   // onStart: ()=> { console.log('start 1'); },
+//   // onComplete: ()=> { console.log('comple 1'); },
+//   // easing: 'expo.in'
+// })
+// .then({
+//   // onStart: ()=> { console.log('start 2')},
+//   // onComplete: ()=> { console.log('comple 2'); },
+//   points:   3, // make triangle
+//   angle:    -180,
+//   duration: 300,
+//   stroke: 'yellow',
+//   easing: 'expo.in',
+//   scale: .5,
+// })
+// .then({
+//   // onStart: ()=> { console.log('start 3')},
+//   // onComplete: ()=> { console.log('comple 3'); },
+//   strokeWidth: 0,
+//   stroke: 'hotpink',
+//   duration: 400,
+//   easing: 'cubic.out',
+//   // scale: { 1: 1 },
+//   radius: 40,
+//   scale: 1,
+//   angle: 90,
+//   // speed: 1
+//   // opacity: 0
+// });
 
 // var playEl = document.querySelector('#js-play'),
 //     rangeSliderEl = document.querySelector('#js-range-slider');
 // playEl.addEventListener('click', function () {
 //   tr.run({ stroke: 'red' });
-//   console.log(tr._history[0].stroke);
-//   console.log(tr._history[1].stroke);
+//   console.log(tr._modules[0]._o.stroke);
+//   console.log(tr._modules[1]._o.stroke);
 // });
 
 // rangeSliderEl.addEventListener('input', function () {

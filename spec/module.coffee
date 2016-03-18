@@ -210,6 +210,40 @@ describe 'module class ->', ->
       expect(byte._isDelta({ unit: 'px', value: 20 })).toBe false
       expect(byte._isDelta({ 20: 30 })).toBe true
 
+  describe '_parseOption method ->', ->
+    it 'should parse delta value', ->
+      md = new Module
+      spyOn md, '_getDelta'
+      name = 'radius'; delta = { 20: 30 }
+      md._parseOption name, delta
+      expect(md._getDelta).toHaveBeenCalledWith name, delta
+    it 'should parse option string', ->
+      md = new Module
+      spyOn md, '_getDelta'
+      spyOn(md, '_parseOptionString').and.callThrough()
+      name = 'delay'; value = 'stagger(400, 200)'
+      md._parseOption name, value
+      expect(md._getDelta).not.toHaveBeenCalledWith name, value
+      expect(md._parseOptionString).toHaveBeenCalledWith value
+      expect(md._props[name]).toBe 400
+    it 'should parse position option', ->
+      md = new Module
+      spyOn(md, '_parsePositionOption').and.callThrough()
+      name = 'x'; value = '20%'
+      md._parseOption name, value
+      expect(md._parsePositionOption).toHaveBeenCalledWith name
+      expect(md._props[name]).toBe value
+    it 'should parse strokeDasharray option', ->
+      md = new Module
+      spyOn(md, '_parseStrokeDashOption').and.callThrough()
+      name = 'strokeDasharray'; value = '200 100% 200'
+      md._props[name] = value
+      parsed = md._parseStrokeDashOption(name)
+      md._props[name] = value
+      md._parseOption name, value
+      expect(md._parseStrokeDashOption).toHaveBeenCalledWith name
+      expect(md._props[name]).toEqual parsed
+
   describe '_extendDefaults method ->', ->
     it 'should create _props object', ->
       spyOn(Module.prototype, '_extendDefaults').and.callThrough()
@@ -332,12 +366,35 @@ describe 'module class ->', ->
       expect(isRightScope).toBe true
 
   describe '_tuneNewOptions method', ->
-    it 'should call _extendDefaults with the options object', ->
-      md = new Module
-      spyOn md, '_extendDefaults'
-      obj = {}
-      md._tuneNewOptions obj
-      expect(md._extendDefaults).toHaveBeenCalledWith obj
+    it 'should rewrite options from passed object to _o and _props', ->
+      md = new Module radius: 45, radiusX: 50
+      md._tuneNewOptions radius: 20
+      expect(md._o.radius)     .toBe(20)
+      expect(md._props.radius) .toBe(20)
+    it 'should extend defaults object to properties if 0', ->
+      md = new Module radius: 40
+      md._tuneNewOptions radius: 0
+      expect(md._props.radius).toBe(0)
+    it 'should ignore properties defined in skipProps object', ->
+      md = new Module radius: 45
+      md._skipProps = radius: 1
+      md._tuneNewOptions radius: 20
+      expect(md._props.radius).toBe(45)
+    it 'should extend defaults object to properties if array was passed', ->
+      md = new Module radius: 50
+      md._tuneNewOptions 'radius': [50, 100]
+      expect(md._props.radius.join ', ').toBe '50, 100'
+    it 'should extend defaults object to properties if rand was passed', ->
+      md = new Module radius: 20, isIt: 1
+      md._tuneNewOptions 'radius': 'rand(0, 10)'
+      expect(md._props.radius).toBeDefined()
+      expect(md._props.radius).toBeGreaterThan -1
+      expect(md._props.radius).not.toBeGreaterThan 10
+    it 'should extend defaults object to properties if stagger was passed', ->
+      md = new Module radius: 20
+      md._index = 2
+      md._tuneNewOptions radius: 'stagger(200)'
+      expect(md._props.radius).toBe 400
 
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun

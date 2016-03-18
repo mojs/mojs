@@ -308,6 +308,54 @@
         })).toBe(true);
       });
     });
+    describe('_parseOption method ->', function() {
+      it('should parse delta value', function() {
+        var delta, md, name;
+        md = new Module;
+        spyOn(md, '_getDelta');
+        name = 'radius';
+        delta = {
+          20: 30
+        };
+        md._parseOption(name, delta);
+        return expect(md._getDelta).toHaveBeenCalledWith(name, delta);
+      });
+      it('should parse option string', function() {
+        var md, name, value;
+        md = new Module;
+        spyOn(md, '_getDelta');
+        spyOn(md, '_parseOptionString').and.callThrough();
+        name = 'delay';
+        value = 'stagger(400, 200)';
+        md._parseOption(name, value);
+        expect(md._getDelta).not.toHaveBeenCalledWith(name, value);
+        expect(md._parseOptionString).toHaveBeenCalledWith(value);
+        return expect(md._props[name]).toBe(400);
+      });
+      it('should parse position option', function() {
+        var md, name, value;
+        md = new Module;
+        spyOn(md, '_parsePositionOption').and.callThrough();
+        name = 'x';
+        value = '20%';
+        md._parseOption(name, value);
+        expect(md._parsePositionOption).toHaveBeenCalledWith(name);
+        return expect(md._props[name]).toBe(value);
+      });
+      return it('should parse strokeDasharray option', function() {
+        var md, name, parsed, value;
+        md = new Module;
+        spyOn(md, '_parseStrokeDashOption').and.callThrough();
+        name = 'strokeDasharray';
+        value = '200 100% 200';
+        md._props[name] = value;
+        parsed = md._parseStrokeDashOption(name);
+        md._props[name] = value;
+        md._parseOption(name, value);
+        expect(md._parseStrokeDashOption).toHaveBeenCalledWith(name);
+        return expect(md._props[name]).toEqual(parsed);
+      });
+    });
     describe('_extendDefaults method ->', function() {
       it('should create _props object', function() {
         var md;
@@ -502,13 +550,74 @@
       });
     });
     describe('_tuneNewOptions method', function() {
-      return it('should call _extendDefaults with the options object', function() {
-        var md, obj;
-        md = new Module;
-        spyOn(md, '_extendDefaults');
-        obj = {};
-        md._tuneNewOptions(obj);
-        return expect(md._extendDefaults).toHaveBeenCalledWith(obj);
+      it('should rewrite options from passed object to _o and _props', function() {
+        var md;
+        md = new Module({
+          radius: 45,
+          radiusX: 50
+        });
+        md._tuneNewOptions({
+          radius: 20
+        });
+        expect(md._o.radius).toBe(20);
+        return expect(md._props.radius).toBe(20);
+      });
+      it('should extend defaults object to properties if 0', function() {
+        var md;
+        md = new Module({
+          radius: 40
+        });
+        md._tuneNewOptions({
+          radius: 0
+        });
+        return expect(md._props.radius).toBe(0);
+      });
+      it('should ignore properties defined in skipProps object', function() {
+        var md;
+        md = new Module({
+          radius: 45
+        });
+        md._skipProps = {
+          radius: 1
+        };
+        md._tuneNewOptions({
+          radius: 20
+        });
+        return expect(md._props.radius).toBe(45);
+      });
+      it('should extend defaults object to properties if array was passed', function() {
+        var md;
+        md = new Module({
+          radius: 50
+        });
+        md._tuneNewOptions({
+          'radius': [50, 100]
+        });
+        return expect(md._props.radius.join(', ')).toBe('50, 100');
+      });
+      it('should extend defaults object to properties if rand was passed', function() {
+        var md;
+        md = new Module({
+          radius: 20,
+          isIt: 1
+        });
+        md._tuneNewOptions({
+          'radius': 'rand(0, 10)'
+        });
+        expect(md._props.radius).toBeDefined();
+        expect(md._props.radius).toBeGreaterThan(-1);
+        return expect(md._props.radius).not.toBeGreaterThan(10);
+      });
+      return it('should extend defaults object to properties if stagger was passed', function() {
+        var md;
+        md = new Module({
+          radius: 20
+        });
+        md._index = 2;
+        md._tuneNewOptions({
+          radius: 'stagger(200)'
+        });
+        return expect(md._props.radius).toBe(400);
       });
     });
     return it('clean the _defaults  up', function() {

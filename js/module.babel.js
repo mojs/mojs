@@ -79,18 +79,18 @@ class Module {
     @param {Any} Option value to parse.
     @returns {Number} Parsed options value.
   */
-  _parseOptionString (optionsValue) {
-    if (typeof optionsValue === 'string') {
-      if (optionsValue.match(/stagger/)) {
-        optionsValue = h.parseStagger(optionsValue, this._index);
+  _parseOptionString (value) {
+    if (typeof value === 'string') {
+      if (value.match(/stagger/)) {
+        value = h.parseStagger(value, this._index);
       }
     }
-    if (typeof optionsValue === 'string') {
-      if (optionsValue.match(/rand/)) {
-        optionsValue = h.parseRand(optionsValue);
+    if (typeof value === 'string') {
+      if (value.match(/rand/)) {
+        value = h.parseRand(value);
       }
     }
-    return optionsValue;
+    return value;
   }
   /*
     Method to parse postion option.
@@ -190,16 +190,7 @@ class Module {
       */
       // and delete the key from deltas
       o && (delete this._deltas[key]);
-      // if delta property
-      if ( this._isDelta(optionsValue) ) { this._getDelta(key, optionsValue); }
-      else {
-        // parse stagger and rand values
-        this._props[key] = this._parseOptionString(optionsValue);
-        // parse units for position properties
-        this._props[key] = this._parsePositionOption(key);
-        // parse numeric/percent values for strokeDash.. properties
-        this._props[key] = this._parseStrokeDashOption(key);
-      }
+      this._parseOption( key, optionsValue );
     }
   }
   /*
@@ -211,7 +202,32 @@ class Module {
     @param {Object} Options object to tune to.
   */
   _tuneNewOptions (o) {
-    this._extendDefaults(o);
+    for (var key in o) {
+      // skip property if it is listed in _skipProps
+      if (this._skipProps && this._skipProps[key]) { continue; }
+      // copy the properties to the _o object
+      // delete the key from deltas
+      o && (delete this._deltas[key]);
+      // rewrite _o record
+      this._o[key] = o[key];
+      // save the options to _props
+      this._parseOption( key, o[key] );
+    }
+  }
+  /*
+    Method to parse option value.
+    @param {String} Option name.
+    @param {Any} Option value.
+  */
+  _parseOption ( name, value ) {
+    // if delta property
+    if ( this._isDelta( value ) ) { this._getDelta( name, value ); return; }
+    // parse stagger and rand values
+    this._props[name] = this._parseOptionString(value);
+    // parse units for position properties
+    this._props[name] = this._parsePositionOption(name);
+    // parse numeric/percent values for strokeDash.. properties
+    this._props[name] = this._parseStrokeDashOption(name);
   }
   /*
     Method to calculate current progress of the deltas.

@@ -242,20 +242,6 @@
       });
     });
     return describe('run method ->', function() {
-      it('should extend defaults with passed object', function() {
-        var byte, o;
-        byte = new Runable({
-          strokeWidth: {
-            10: 5
-          }
-        });
-        spyOn(byte, '_extendDefaults');
-        o = {
-          strokeWidth: 20
-        };
-        byte.run(o);
-        return expect(byte._extendDefaults).toHaveBeenCalledWith(o);
-      });
       it('should not transform history if object was not passed', function() {
         var byte;
         byte = new Runable({
@@ -317,15 +303,6 @@
           strokeWidth: 25
         });
         return expect(byte._props.radius).toBe(33);
-      });
-      it('should call _recalcTotalDuration on timeline', function() {
-        var byte;
-        byte = new Runable;
-        spyOn(byte.timeline, '_recalcTotalDuration');
-        byte.run({
-          duration: 2000
-        });
-        return expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
       it('should call _transformHistory', function() {
         var byte, o;

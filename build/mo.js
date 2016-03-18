@@ -3584,7 +3584,7 @@
 	      if (o && (0, _keys2.default)(o).length) {
 	        this._transformHistory(o);
 	        this._tuneNewOptions(o);
-	        this._resetTweens();
+	        this._tuneSubModules();
 	        // h.extend(o, this._defaults);
 	        this._history[0] = _h2.default.cloneObj(this._props);
 	      }
@@ -3661,6 +3661,20 @@
 	          // item for subsequent modifications or stop
 	          return nextRecord && nextRecord[key] === oldValue ? newValue : null;
 	        }
+	      }
+	    }
+	    /*
+	      Method to tune new history options to all the submodules.
+	      @private
+	    */
+
+	  }, {
+	    key: '_tuneSubModules',
+	    value: function _tuneSubModules() {
+
+	      for (var i = 0; i < this._modules.length; i++) {
+	        var module = this._modules[i];
+	        module._tuneNewOptions(this._history[i]);
 	      }
 	    }
 	    /*
@@ -3849,18 +3863,18 @@
 
 	  }, {
 	    key: '_parseOptionString',
-	    value: function _parseOptionString(optionsValue) {
-	      if (typeof optionsValue === 'string') {
-	        if (optionsValue.match(/stagger/)) {
-	          optionsValue = _h2.default.parseStagger(optionsValue, this._index);
+	    value: function _parseOptionString(value) {
+	      if (typeof value === 'string') {
+	        if (value.match(/stagger/)) {
+	          value = _h2.default.parseStagger(value, this._index);
 	        }
 	      }
-	      if (typeof optionsValue === 'string') {
-	        if (optionsValue.match(/rand/)) {
-	          optionsValue = _h2.default.parseRand(optionsValue);
+	      if (typeof value === 'string') {
+	        if (value.match(/rand/)) {
+	          value = _h2.default.parseRand(value);
 	        }
 	      }
-	      return optionsValue;
+	      return value;
 	    }
 	    /*
 	      Method to parse postion option.
@@ -3982,17 +3996,7 @@
 	        */
 	        // and delete the key from deltas
 	        o && delete this._deltas[key];
-	        // if delta property
-	        if (this._isDelta(optionsValue)) {
-	          this._getDelta(key, optionsValue);
-	        } else {
-	          // parse stagger and rand values
-	          this._props[key] = this._parseOptionString(optionsValue);
-	          // parse units for position properties
-	          this._props[key] = this._parsePositionOption(key);
-	          // parse numeric/percent values for strokeDash.. properties
-	          this._props[key] = this._parseStrokeDashOption(key);
-	        }
+	        this._parseOption(key, optionsValue);
 	      }
 	    }
 	    /*
@@ -4007,7 +4011,39 @@
 	  }, {
 	    key: '_tuneNewOptions',
 	    value: function _tuneNewOptions(o) {
-	      this._extendDefaults(o);
+	      for (var key in o) {
+	        // skip property if it is listed in _skipProps
+	        if (this._skipProps && this._skipProps[key]) {
+	          continue;
+	        }
+	        // copy the properties to the _o object
+	        // delete the key from deltas
+	        o && delete this._deltas[key];
+	        // rewrite _o record
+	        this._o[key] = o[key];
+	        // save the options to _props
+	        this._parseOption(key, o[key]);
+	      }
+	    }
+	    /*
+	      Method to parse option value.
+	      @param {String} Option name.
+	      @param {Any} Option value.
+	    */
+
+	  }, {
+	    key: '_parseOption',
+	    value: function _parseOption(name, value) {
+	      // if delta property
+	      if (this._isDelta(value)) {
+	        this._getDelta(name, value);return;
+	      }
+	      // parse stagger and rand values
+	      this._props[name] = this._parseOptionString(value);
+	      // parse units for position properties
+	      this._props[name] = this._parsePositionOption(name);
+	      // parse numeric/percent values for strokeDash.. properties
+	      this._props[name] = this._parseStrokeDashOption(name);
 	    }
 	    /*
 	      Method to calculate current progress of the deltas.
@@ -7429,69 +7465,69 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.190.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.191.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
-	var tr = new mojs.Transit({
-	  left: '50%', top: '50%',
-	  shape: 'polygon',
-	  strokeWidth: 20,
-	  angle: { 0: 200 },
-	  radius: 10,
-	  fill: 'none',
-	  stroke: { 'white': 'cyan' },
-	  points: { 3: 20 }, // make triangle
-	  duration: 2000,
-	  isShowStart: true,
-	  isShowEnd: true,
-	  timeline: { repeat: 1, yoyo: true, onRepeatComplete: function onRepeatComplete() {
-	      console.log('rep complete');
-	    } },
-	  // delay:    4000,
-	  scale: { 0: 6 }
-	}). // timeline: { repeat: 2, yoyo: true },
-	// onStart: ()=> { console.log('start 1'); },
-	// onComplete: ()=> { console.log('comple 1'); },
-	// easing: 'expo.in'
-	then({
-	  // onStart: ()=> { console.log('start 2')},
-	  // onComplete: ()=> { console.log('comple 2'); },
-	  points: 3, // make triangle
-	  angle: -180,
-	  duration: 300,
-	  stroke: 'yellow',
-	  easing: 'expo.in',
-	  scale: .5
-	}).then({
-	  // onStart: ()=> { console.log('start 3')},
-	  // onComplete: ()=> { console.log('comple 3'); },
-	  strokeWidth: 0,
-	  stroke: 'hotpink',
-	  duration: 400,
-	  easing: 'cubic.out',
-	  // scale: { 1: 1 },
-	  radius: 40,
-	  scale: 1,
-	  angle: 90
-	});
+	// var tr = new mojs.Transit({
+	//   left: '50%', top: '50%',
+	//   shape:    'polygon',
+	//   strokeWidth: 20,
+	//   angle:    { 0 : 200},
+	//   radius:   10,
+	//   fill:     'none',
+	//   stroke:   { 'white': 'cyan' },
+	//   points:   { 3 : 20 }, // make triangle
+	//   duration: 2000,
+	//   // isShowStart: true,
+	//   // isShowEnd: true,
+	//   timeline: { repeat: 1, yoyo: true, onRepeatComplete: function () { console.log('rep complete'); } },
+	//   // delay:    4000,
+	//   scale: { 0 : 6 },
+	//   // timeline: { repeat: 2, yoyo: true },
+	//   // onStart: ()=> { console.log('start 1'); },
+	//   // onComplete: ()=> { console.log('comple 1'); },
+	//   // easing: 'expo.in'
+	// })
+	// .then({
+	//   // onStart: ()=> { console.log('start 2')},
+	//   // onComplete: ()=> { console.log('comple 2'); },
+	//   points:   3, // make triangle
+	//   angle:    -180,
+	//   duration: 300,
+	//   stroke: 'yellow',
+	//   easing: 'expo.in',
+	//   scale: .5,
+	// })
+	// .then({
+	//   // onStart: ()=> { console.log('start 3')},
+	//   // onComplete: ()=> { console.log('comple 3'); },
+	//   strokeWidth: 0,
+	//   stroke: 'hotpink',
+	//   duration: 400,
+	//   easing: 'cubic.out',
+	//   // scale: { 1: 1 },
+	//   radius: 40,
+	//   scale: 1,
+	//   angle: 90,
+	//   // speed: 1
+	//   // opacity: 0
+	// });
 
 	// var playEl = document.querySelector('#js-play'),
 	//     rangeSliderEl = document.querySelector('#js-range-slider');
 	// playEl.addEventListener('click', function () {
 	//   tr.run({ stroke: 'red' });
-	//   console.log(tr._history[0].stroke);
-	//   console.log(tr._history[1].stroke);
+	//   console.log(tr._modules[0]._o.stroke);
+	//   console.log(tr._modules[1]._o.stroke);
 	// });
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );
 	// });
 
-	// speed: 1
-	// opacity: 0
 	mojs.h = mojs.helpers;
 	mojs.delta = mojs.h.delta;
 
