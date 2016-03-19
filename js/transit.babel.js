@@ -12,7 +12,6 @@ import Timeline   from './tween/timeline';
 //  - refactor
 //    - add set if changed to Module
 //    - check if strokeDashoffset could be of array type
-//  - move to Runable
 //  --
 //  - tween for every prop
 
@@ -346,15 +345,16 @@ class Transit extends Runable {
     @private  
   */
   _transformTweenOptions () {
-    var it = this;
+    var it = this,
+        p  = this._props;
     // specify control functions for the tween
     this._o.callbackOverrides = {
       onUpdate: function (pe) { return it._setProgress(pe); },
-      onStart: function (isForward) {
-        return isForward ? it._show() : (!it._props.isShowStart && it._hide());
+      onStart: function (isFwd) {
+        return isFwd ? it._show() : (!p.isShowStart && it._hide());
       },
-      onComplete: function (isForward) {
-        return isForward ? (!it._props.isShowEnd && it._hide()) : it._show();
+      onComplete: function (isFwd) {
+        return isFwd ? (!p.isShowEnd && it._hide()) : it._show();
       }
     }
   }

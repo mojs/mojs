@@ -141,8 +141,7 @@
       return it('should immediately return null if new value is null ', function() {
         var result, tr;
         tr = new Runable({
-          duration: 2000,
-          isIt: 1
+          duration: 2000
         }).then({
           radius: 20
         }).then({

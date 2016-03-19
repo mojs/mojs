@@ -693,7 +693,6 @@ describe 'Tween ->', ->
     it 'should run with custom context', ->
       isRightContext = null; contextObj = {}
       t = new Tween
-        isIt: 1
         callbacksContext: contextObj,
         onUpdate: -> isRightContext = @ is contextObj
 

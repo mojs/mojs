@@ -1772,7 +1772,6 @@
 	//  - refactor
 	//    - add set if changed to Module
 	//    - check if strokeDashoffset could be of array type
-	//  - move to Runable
 	//  --
 	//  - tween for every prop
 
@@ -2188,17 +2187,18 @@
 	  }, {
 	    key: '_transformTweenOptions',
 	    value: function _transformTweenOptions() {
-	      var it = this;
+	      var it = this,
+	          p = this._props;
 	      // specify control functions for the tween
 	      this._o.callbackOverrides = {
 	        onUpdate: function onUpdate(pe) {
 	          return it._setProgress(pe);
 	        },
-	        onStart: function onStart(isForward) {
-	          return isForward ? it._show() : !it._props.isShowStart && it._hide();
+	        onStart: function onStart(isFwd) {
+	          return isFwd ? it._show() : !p.isShowStart && it._hide();
 	        },
-	        onComplete: function onComplete(isForward) {
-	          return isForward ? !it._props.isShowEnd && it._hide() : it._show();
+	        onComplete: function onComplete(isFwd) {
+	          return isFwd ? !p.isShowEnd && it._hide() : it._show();
 	        }
 	      };
 	    }
@@ -4000,7 +4000,7 @@
 	      var value = this._props[key],
 	          result = value;
 	      // parse numeric/percent values for strokeDash.. properties
-	      if (key === 'strokeDasharray') {
+	      if (key === 'strokeDasharray' || key === 'strokeDashoffset') {
 	        var result = [];
 	        switch (typeof value === 'undefined' ? 'undefined' : (0, _typeof3.default)(value)) {
 	          case 'number':
@@ -4008,6 +4008,7 @@
 	            break;
 	          case 'string':
 	            var array = this._props[key].split(' ');
+	            this._o.isIt && console.log(array);
 	            for (var i = 0; i < array.length; i++) {
 	              result.push(_h2.default.parseUnit(array[i]));
 	            }
@@ -7519,7 +7520,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.197.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.197.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

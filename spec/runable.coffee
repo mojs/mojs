@@ -105,7 +105,7 @@ describe 'Runable ->', ->
       expect(result).toBe null
 
     it 'should immediately return null if new value is null ', ->
-      tr = new Runable({ duration: 2000, isIt: 1 })
+      tr = new Runable({ duration: 2000 })
         .then radius: 20
         .then radius: 30
 

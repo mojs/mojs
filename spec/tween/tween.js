@@ -956,7 +956,6 @@
         isRightContext = null;
         contextObj = {};
         t = new Tween({
-          isIt: 1,
           callbacksContext: contextObj,
           onUpdate: function() {
             return isRightContext = this === contextObj;

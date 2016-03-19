@@ -111,7 +111,7 @@ class Module {
     var value  = this._props[key],
         result = value;
     // parse numeric/percent values for strokeDash.. properties
-    if ( key === 'strokeDasharray' ) {
+    if ( (key === 'strokeDasharray') || (key === 'strokeDashoffset') ) {
       var result = [];
       switch (typeof value) {
         case 'number':
@@ -119,6 +119,7 @@ class Module {
           break;
         case 'string':
           var array = this._props[key].split(' ');
+          this._o.isIt && console.log(array);
           for (var i = 0; i < array.length; i++ ) {
             result.push(h.parseUnit(array[i]));
           }

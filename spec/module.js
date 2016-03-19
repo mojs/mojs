@@ -277,6 +277,19 @@
         expect(result[1].string).toBe(h.parseUnit(100).string);
         return expect(result[2]).not.toBeDefined();
       });
+      it('should parse strokeDashoffset option', function() {
+        var key, result;
+        tr._props.strokeDashoffset = '100%';
+        key = 'strokeDashoffset';
+        spyOn(h, 'parseUnit').and.callThrough();
+        result = tr._parseStrokeDashOption(key);
+        expect(h.parseUnit).toHaveBeenCalledWith(tr._props[key]);
+        expect(result[0].unit).toBe(h.parseUnit(tr._props[key]).unit);
+        expect(result[0].isStrict).toBe(h.parseUnit(tr._props[key]).isStrict);
+        expect(result[0].value).toBe(h.parseUnit(tr._props[key]).value);
+        expect(result[0].string).toBe(h.parseUnit(tr._props[key]).string);
+        return expect(result[1]).not.toBeDefined();
+      });
       return it('should leave the value unattended if not strokeDash.. property', function() {
         var key, result;
         tr._props.x = '100%';
