@@ -4,7 +4,7 @@ const Bit       = require('./shapes/bit');
 const shapesMap = require('./shapes/shapesMap');
 import Tweenable  from './tween/tweenable';
 import Thenable   from './thenable';
-import Runable    from './runable';
+import Tunable    from './tunable';
 import Tween      from './tween/tween';
 import Timeline   from './tween/timeline';
 
@@ -15,7 +15,7 @@ import Timeline   from './tween/timeline';
 //  --
 //  - tween for every prop
 
-class Transit extends Runable {
+class Transit extends Tunable {
   /*
     Method to declare module's defaults.
     @private

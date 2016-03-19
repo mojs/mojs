@@ -1749,9 +1749,9 @@
 
 	var _thenable2 = _interopRequireDefault(_thenable);
 
-	var _runable = __webpack_require__(11);
+	var _tunable = __webpack_require__(107);
 
-	var _runable2 = _interopRequireDefault(_runable);
+	var _tunable2 = _interopRequireDefault(_tunable);
 
 	var _tween = __webpack_require__(2);
 
@@ -1775,8 +1775,8 @@
 	//  --
 	//  - tween for every prop
 
-	var Transit = function (_Runable) {
-	  (0, _inherits3.default)(Transit, _Runable);
+	var Transit = function (_Tunable) {
+	  (0, _inherits3.default)(Transit, _Tunable);
 
 	  function Transit() {
 	    (0, _classCallCheck3.default)(this, Transit);
@@ -2216,7 +2216,7 @@
 	    }
 	  }]);
 	  return Transit;
-	}(_runable2.default);
+	}(_tunable2.default);
 
 	exports.default = Transit;
 
@@ -3598,225 +3598,7 @@
 	exports.default = Thenable;
 
 /***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _defineProperty2 = __webpack_require__(29);
-
-	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-	var _keys = __webpack_require__(27);
-
-	var _keys2 = _interopRequireDefault(_keys);
-
-	var _getPrototypeOf = __webpack_require__(26);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(21);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(24);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(22);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(20);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _h = __webpack_require__(15);
-
-	var _h2 = _interopRequireDefault(_h);
-
-	var _thenable = __webpack_require__(10);
-
-	var _thenable2 = _interopRequireDefault(_thenable);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Runable = function (_Thenable) {
-	  (0, _inherits3.default)(Runable, _Thenable);
-
-	  function Runable() {
-	    (0, _classCallCheck3.default)(this, Runable);
-	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Runable).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Runable, [{
-	    key: 'change',
-
-	    /*
-	      Method to start the animation with optional new options.
-	      @public
-	      @param {Object} New options to set on the run.
-	      @returns {Object} this.
-	    */
-	    value: function change(o) {
-	      // if options object was passed
-	      if (o && (0, _keys2.default)(o).length) {
-	        this._transformHistory(o);
-	        this._tuneNewOptions(o);
-	        this._history[0] = _h2.default.extend(_h2.default.cloneObj(this._o), this._defaults);
-	        this._tuneSubModules();
-	        this._resetTweens();
-	      }
-	      return this;
-	    }
-	    /*
-	      Method to transform history rewrite new options object chain on run.
-	      @param {Object} New options to tune for.
-	    */
-
-	  }, {
-	    key: '_transformHistory',
-	    value: function _transformHistory(o) {
-	      var optionsKeys = (0, _keys2.default)(o);
-
-	      for (var i = 0; i < optionsKeys.length; i++) {
-	        var optionsKey = optionsKeys[i],
-	            optionsValue = o[optionsKey];
-
-	        this._transformHistoryFor(optionsKey, optionsValue);
-	      }
-	    }
-	    /*
-	      Method to transform history chain for specific key/value.
-	      @param {String} Name of the property to transform history for.
-	      @param {Any} The new property's value.
-	    */
-
-	  }, {
-	    key: '_transformHistoryFor',
-	    value: function _transformHistoryFor(key, value) {
-	      for (var i = 0; i < this._history.length; i++) {
-	        if (value = this._transformHistoryRecord(i, key, value)) {
-	          // break if no further history modifications needed
-	          if (value == null) {
-	            break;
-	          }
-	        }
-	      }
-	    }
-	    /*
-	      Method to transform history recod with key/value.
-	      @param {Number} Index of the history record to transform.
-	      @param {String} Property name to transform.
-	      @param {Any} Property value to transform to.
-	      @returns {Boolean} Returns true if no further
-	                         history modifications is needed.
-	    */
-
-	  }, {
-	    key: '_transformHistoryRecord',
-	    value: function _transformHistoryRecord(index, key, newValue) {
-	      if (newValue == null) {
-	        return null;
-	      }
-
-	      var currRecord = this._history[index],
-	          prevRecord = this._history[index - 1],
-	          nextRecord = this._history[index + 1],
-	          oldValue = currRecord[key];
-
-	      // if index is 0 - always save the newValue
-	      // and return non-delta for subsequent modifications
-	      if (index === 0) {
-	        currRecord[key] = newValue;
-	        // always return on tween properties
-	        if (_h2.default.isTweenProp(key) && key !== 'duration') {
-	          return null;
-	        }
-	        // nontween properties
-	        if (this._isDelta(newValue)) {
-	          return _h2.default.getDeltaEnd(newValue);
-	        } else {
-	          var isNextRecord = nextRecord && nextRecord[key] === oldValue,
-	              isNextDelta = nextRecord && this._isDelta(nextRecord[key]);
-
-	          return isNextRecord || isNextDelta ? newValue : null;
-	        }
-	      } else {
-	        // if was delta and came none-deltta - rewrite
-	        // the start of the delta and stop
-	        if (this._isDelta(oldValue)) {
-	          currRecord[key] = (0, _defineProperty3.default)({}, newValue, _h2.default.getDeltaEnd(oldValue));
-	          return null;
-	        } else {
-	          // if the old value is not delta and the new one is
-	          currRecord[key] = newValue;
-	          // if the next item has the same value - return the
-	          // item for subsequent modifications or stop
-	          return nextRecord && nextRecord[key] === oldValue ? newValue : null;
-	        }
-	      }
-	    }
-	    /*
-	      Method to tune new history options to all the submodules.
-	      @private
-	    */
-
-	  }, {
-	    key: '_tuneSubModules',
-	    value: function _tuneSubModules() {
-	      for (var i = 1; i < this._modules.length; i++) {
-	        var module = this._modules[i];
-	        module._tuneNewOptions(this._history[i]);
-	      }
-	    }
-	    /*
-	      Method to set new options on run.
-	      @param {Boolean} If foreign context.
-	      @private
-	    */
-
-	  }, {
-	    key: '_resetTweens',
-	    value: function _resetTweens() {
-	      var i = 0,
-	          shift = 0,
-	          tweens = this.timeline._timelines;
-
-	      for (var i = 0; i < tweens.length; i++) {
-	        var tween = tweens[i],
-	            prevTween = tweens[i - 1];
-
-	        shift += prevTween ? prevTween._props.repeatTime : 0;
-	        this._resetTween(tween, this._history[i], shift);
-	      }
-	      this.timeline._recalcTotalDuration();
-	    }
-	    /*
-	      Method to reset tween with new options.
-	      @param {Object} Tween to reset.
-	      @param {Object} Tween's to reset tween with.
-	      @param {Number} Optional number to shift tween start time.
-	    */
-
-	  }, {
-	    key: '_resetTween',
-	    value: function _resetTween(tween, o) {
-	      var shift = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-
-	      o.shiftTime = shift;tween._setProp(o);
-	    }
-	  }]);
-	  return Runable;
-	}(_thenable2.default);
-
-	exports.default = Runable;
-
-/***/ },
+/* 11 */,
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -7505,9 +7287,9 @@
 
 	var _thenable2 = _interopRequireDefault(_thenable);
 
-	var _runable = __webpack_require__(11);
+	var _tunable = __webpack_require__(107);
 
-	var _runable2 = _interopRequireDefault(_runable);
+	var _tunable2 = _interopRequireDefault(_tunable);
 
 	var _module = __webpack_require__(12);
 
@@ -7520,9 +7302,9 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.197.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.198.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
-	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
+	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
 	};
 
@@ -8620,6 +8402,225 @@
 	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
 	  return it;
 	};
+
+/***/ },
+/* 107 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _defineProperty2 = __webpack_require__(29);
+
+	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+	var _keys = __webpack_require__(27);
+
+	var _keys2 = _interopRequireDefault(_keys);
+
+	var _getPrototypeOf = __webpack_require__(26);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(21);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(24);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(22);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(20);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _h = __webpack_require__(15);
+
+	var _h2 = _interopRequireDefault(_h);
+
+	var _thenable = __webpack_require__(10);
+
+	var _thenable2 = _interopRequireDefault(_thenable);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Tuneable = function (_Thenable) {
+	  (0, _inherits3.default)(Tuneable, _Thenable);
+
+	  function Tuneable() {
+	    (0, _classCallCheck3.default)(this, Tuneable);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Tuneable).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Tuneable, [{
+	    key: 'tune',
+
+	    /*
+	      Method to start the animation with optional new options.
+	      @public
+	      @param {Object} New options to set on the run.
+	      @returns {Object} this.
+	    */
+	    value: function tune(o) {
+	      // if options object was passed
+	      if (o && (0, _keys2.default)(o).length) {
+	        this._transformHistory(o);
+	        this._tuneNewOptions(o);
+	        this._history[0] = _h2.default.extend(_h2.default.cloneObj(this._o), this._defaults);
+	        this._tuneSubModules();
+	        this._resetTweens();
+	      }
+	      return this;
+	    }
+	    /*
+	      Method to transform history rewrite new options object chain on run.
+	      @param {Object} New options to tune for.
+	    */
+
+	  }, {
+	    key: '_transformHistory',
+	    value: function _transformHistory(o) {
+	      var optionsKeys = (0, _keys2.default)(o);
+
+	      for (var i = 0; i < optionsKeys.length; i++) {
+	        var optionsKey = optionsKeys[i],
+	            optionsValue = o[optionsKey];
+
+	        this._transformHistoryFor(optionsKey, optionsValue);
+	      }
+	    }
+	    /*
+	      Method to transform history chain for specific key/value.
+	      @param {String} Name of the property to transform history for.
+	      @param {Any} The new property's value.
+	    */
+
+	  }, {
+	    key: '_transformHistoryFor',
+	    value: function _transformHistoryFor(key, value) {
+	      for (var i = 0; i < this._history.length; i++) {
+	        if (value = this._transformHistoryRecord(i, key, value)) {
+	          // break if no further history modifications needed
+	          if (value == null) {
+	            break;
+	          }
+	        }
+	      }
+	    }
+	    /*
+	      Method to transform history recod with key/value.
+	      @param {Number} Index of the history record to transform.
+	      @param {String} Property name to transform.
+	      @param {Any} Property value to transform to.
+	      @returns {Boolean} Returns true if no further
+	                         history modifications is needed.
+	    */
+
+	  }, {
+	    key: '_transformHistoryRecord',
+	    value: function _transformHistoryRecord(index, key, newValue) {
+	      if (newValue == null) {
+	        return null;
+	      }
+
+	      var currRecord = this._history[index],
+	          prevRecord = this._history[index - 1],
+	          nextRecord = this._history[index + 1],
+	          oldValue = currRecord[key];
+
+	      // if index is 0 - always save the newValue
+	      // and return non-delta for subsequent modifications
+	      if (index === 0) {
+	        currRecord[key] = newValue;
+	        // always return on tween properties
+	        if (_h2.default.isTweenProp(key) && key !== 'duration') {
+	          return null;
+	        }
+	        // nontween properties
+	        if (this._isDelta(newValue)) {
+	          return _h2.default.getDeltaEnd(newValue);
+	        } else {
+	          var isNextRecord = nextRecord && nextRecord[key] === oldValue,
+	              isNextDelta = nextRecord && this._isDelta(nextRecord[key]);
+
+	          return isNextRecord || isNextDelta ? newValue : null;
+	        }
+	      } else {
+	        // if was delta and came none-deltta - rewrite
+	        // the start of the delta and stop
+	        if (this._isDelta(oldValue)) {
+	          currRecord[key] = (0, _defineProperty3.default)({}, newValue, _h2.default.getDeltaEnd(oldValue));
+	          return null;
+	        } else {
+	          // if the old value is not delta and the new one is
+	          currRecord[key] = newValue;
+	          // if the next item has the same value - return the
+	          // item for subsequent modifications or stop
+	          return nextRecord && nextRecord[key] === oldValue ? newValue : null;
+	        }
+	      }
+	    }
+	    /*
+	      Method to tune new history options to all the submodules.
+	      @private
+	    */
+
+	  }, {
+	    key: '_tuneSubModules',
+	    value: function _tuneSubModules() {
+	      for (var i = 1; i < this._modules.length; i++) {
+	        var module = this._modules[i];
+	        module._tuneNewOptions(this._history[i]);
+	      }
+	    }
+	    /*
+	      Method to set new options on run.
+	      @param {Boolean} If foreign context.
+	      @private
+	    */
+
+	  }, {
+	    key: '_resetTweens',
+	    value: function _resetTweens() {
+	      var i = 0,
+	          shift = 0,
+	          tweens = this.timeline._timelines;
+
+	      for (var i = 0; i < tweens.length; i++) {
+	        var tween = tweens[i],
+	            prevTween = tweens[i - 1];
+
+	        shift += prevTween ? prevTween._props.repeatTime : 0;
+	        this._resetTween(tween, this._history[i], shift);
+	      }
+	      this.timeline._recalcTotalDuration();
+	    }
+	    /*
+	      Method to reset tween with new options.
+	      @param {Object} Tween to reset.
+	      @param {Object} Tween's to reset tween with.
+	      @param {Number} Optional number to shift tween start time.
+	    */
+
+	  }, {
+	    key: '_resetTween',
+	    value: function _resetTween(tween, o) {
+	      var shift = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+
+	      o.shiftTime = shift;tween._setProp(o);
+	    }
+	  }]);
+	  return Tuneable;
+	}(_thenable2.default);
+
+	exports.default = Tuneable;
 
 /***/ }
 /******/ ]);

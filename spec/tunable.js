@@ -1,17 +1,17 @@
 (function() {
-  var Runable, Thenable, h;
+  var Thenable, Tunable, h;
 
   h = mojs.h;
 
-  Runable = mojs.Runable;
+  Tunable = mojs.Tunable;
 
   Thenable = mojs.Thenable;
 
-  describe('Runable ->', function() {
+  describe('Tunable ->', function() {
     describe('extention ->', function() {
       return it('should extend Thenable', function() {
         var rn;
-        rn = new Runable;
+        rn = new Tunable;
         return expect(rn instanceof Thenable).toBe(true);
       });
     });
@@ -19,7 +19,7 @@
     describe('_transformHistoryRecord method ->', function() {
       it('should add property to the record', function() {
         var result, tr;
-        tr = new Runable().then({
+        tr = new Tunable().then({
           radius: 0
         }).then({
           radius: 50
@@ -30,7 +30,7 @@
       });
       it('should return newValue if old value is delta and index is 0', function() {
         var result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           radius: {
             0: 50
           }
@@ -45,7 +45,7 @@
       });
       it('should return null if old value is delta but index isnt 0', function() {
         var result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           radius: {
             0: 50
           }
@@ -60,7 +60,7 @@
       });
       it('should rewrite everything until first delta', function() {
         var result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           radius: 75
         }).then({
           radius: 0
@@ -76,7 +76,7 @@
       });
       it('should rewrite everything until first defined item', function() {
         var result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           duration: 2000
         }).then({
           radius: 0
@@ -95,7 +95,7 @@
       });
       it('should save new delta value and modify the next', function() {
         var delta, result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           radius: 75
         }).then({
           radius: 0
@@ -114,7 +114,7 @@
       });
       it('should return newValue if old value is delta and index is 0', function() {
         var result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           duration: 2000
         }).then({
           duration: 300
@@ -127,7 +127,7 @@
       });
       it('should always stop at 0 index if tween prop', function() {
         var result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           duration: 2000
         }).then({
           radius: 20
@@ -140,7 +140,7 @@
       });
       return it('should immediately return null if new value is null ', function() {
         var result, tr;
-        tr = new Runable({
+        tr = new Tunable({
           duration: 2000
         }).then({
           radius: 20
@@ -155,7 +155,7 @@
     describe('_transformHistory method ->', function() {
       return it('should call _transformHistoryFor for every new property ->', function() {
         var tr;
-        tr = new Runable({}).then({
+        tr = new Tunable({}).then({
           radius: 0
         }).then({
           radius: 50
@@ -171,7 +171,7 @@
     describe('_transformHistoryFor method ->', function() {
       it('should call _transformHistoryRecord for every history record', function() {
         var tr;
-        tr = new Runable().then({
+        tr = new Tunable().then({
           radius: 0
         }).then({
           radius: 50
@@ -184,7 +184,7 @@
       });
       return it('should stop looping if _transformHistoryRecord returns null', function() {
         var r, tr;
-        tr = new Runable().then({
+        tr = new Tunable().then({
           radius: 0
         }).then({
           radius: 50
@@ -207,7 +207,7 @@
     describe('_resetTween method ->', function() {
       it('should set props to the tween', function() {
         var props, tr;
-        tr = new Runable;
+        tr = new Tunable;
         props = {
           fill: 'hotpink',
           duration: 2000
@@ -220,7 +220,7 @@
       });
       return it('should pass shift time', function() {
         var props, shiftTime, tr;
-        tr = new Runable;
+        tr = new Tunable;
         props = {
           fill: 'hotpink',
           duration: 2000
@@ -236,7 +236,7 @@
     describe('_resetTweens method ->', function() {
       it('should reset options on all tweens', function() {
         var tr;
-        tr = new Runable().then({
+        tr = new Tunable().then({
           fill: 'cyan'
         }).then({
           fill: 'yellow'
@@ -251,7 +251,7 @@
       });
       it('should loop thru all tweens', function() {
         var shift, tr, tweens;
-        tr = new Runable().then({
+        tr = new Tunable().then({
           fill: 'cyan'
         }).then({
           fill: 'yellow'
@@ -268,7 +268,7 @@
       });
       return it('should call _recalcTotalDuration on the timeline', function() {
         var tr;
-        tr = new Runable().then({
+        tr = new Tunable().then({
           fill: 'cyan'
         }).then({
           fill: 'yellow'
@@ -281,7 +281,7 @@
     describe('change method ->', function() {
       it('should extend defaults with passed object', function() {
         var byte, o;
-        byte = new Runable({
+        byte = new Tunable({
           strokeWidth: {
             10: 5
           }
@@ -290,34 +290,34 @@
         o = {
           strokeWidth: 20
         };
-        byte.change(o);
+        byte.tune(o);
         return expect(byte._tuneNewOptions).toHaveBeenCalledWith(o);
       });
       it('should not transform history if object was not passed', function() {
         var byte;
-        byte = new Runable({
+        byte = new Tunable({
           strokeWidth: {
             10: 5
           }
         });
         spyOn(byte, '_transformHistory');
-        byte.change();
+        byte.tune();
         return expect(byte._transformHistory).not.toHaveBeenCalled();
       });
       it('should not override deltas', function() {
         var byte;
-        byte = new Runable();
+        byte = new Tunable();
         byte._deltas['strokeWidth'] = {
           10: 5
         };
-        byte.change({
+        byte.tune({
           stroke: 'green'
         });
         return expect(byte._deltas.strokeWidth).toBeDefined();
       });
       it('should rewrite history', function() {
         var byte;
-        byte = new Runable();
+        byte = new Tunable();
         byte._o = {
           fill: 'cyan',
           strokeWidth: 5
@@ -325,7 +325,7 @@
         byte._defaults = {
           opacity: 1
         };
-        byte.change({
+        byte.tune({
           fill: 'yellow'
         });
         expect(byte._history[0].fill).toBe('yellow');
@@ -334,12 +334,12 @@
       });
       it('should accept new options', function() {
         var byte;
-        byte = new Runable({
+        byte = new Tunable({
           strokeWidth: {
             10: 5
           }
         });
-        byte.change({
+        byte.tune({
           strokeWidth: 25
         });
         expect(byte._props.strokeWidth).toBe(25);
@@ -347,51 +347,51 @@
       });
       it('should not modify old options', function() {
         var byte;
-        byte = new Runable({
+        byte = new Tunable({
           strokeWidth: {
             10: 5
           },
           radius: 33
         });
         byte._props.radius = 33;
-        byte.change({
+        byte.tune({
           strokeWidth: 25
         });
         return expect(byte._props.radius).toBe(33);
       });
       it('should call _recalcTotalDuration on timeline', function() {
         var byte;
-        byte = new Runable;
+        byte = new Tunable;
         spyOn(byte.timeline, '_recalcTotalDuration');
-        byte.change({
+        byte.tune({
           duration: 2000
         });
         return expect(byte.timeline._recalcTotalDuration).toHaveBeenCalled();
       });
       it('should call _transformHistory', function() {
         var byte, o;
-        byte = new Runable;
+        byte = new Tunable;
         spyOn(byte, '_transformHistory');
         o = {
           duration: 2000
         };
-        byte.change(o);
+        byte.tune(o);
         return expect(byte._transformHistory).toHaveBeenCalledWith(o);
       });
       it('should not call _transformHistory if optionless', function() {
         var byte;
-        byte = new Runable;
+        byte = new Tunable;
         spyOn(byte, '_transformHistory');
-        byte.change();
+        byte.tune();
         return expect(byte._transformHistory).not.toHaveBeenCalled();
       });
       it('shoud not warn if history is 1 record long', function() {
         var byte;
-        byte = new Runable({
+        byte = new Tunable({
           duration: 2000
         });
         spyOn(h, 'warn');
-        byte.change({
+        byte.tune({
           duration: 100,
           delay: 100,
           repeat: 1,
@@ -407,20 +407,20 @@
       });
       return it('shoud work with no arguments passed', function() {
         var byte;
-        byte = new Runable({
+        byte = new Tunable({
           duration: 2000
         }).then({
           radius: 500
         });
         return expect(function() {
-          return byte.change();
+          return byte.tune();
         }).not.toThrow();
       });
     });
     return describe('_tuneSubModules method ->', function() {
       return it('should call _tuneNewOptions on every sub module', function() {
         var rn;
-        rn = new Runable({
+        rn = new Tunable({
           radius: 20
         }).then({
           radius: 40

@@ -2,14 +2,14 @@
 import h        from './h';
 import Thenable from './thenable';
 
-class Runable extends Thenable {
+class Tuneable extends Thenable {
   /*
     Method to start the animation with optional new options.
     @public
     @param {Object} New options to set on the run.
     @returns {Object} this.
   */
-  change (o) {
+  tune (o) {
     // if options object was passed
     if (o && Object.keys(o).length) {
       this._transformHistory(o);
@@ -135,4 +135,4 @@ class Runable extends Thenable {
 }
 
 
-export default Runable;
+export default Tuneable;
