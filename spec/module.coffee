@@ -268,19 +268,28 @@ describe 'module class ->', ->
       md._extendDefaults()
       expect(md._props.radius).not.toBe(50)
     it 'should extend defaults object to properties if array was passed', ->
-      md = new Module radius: [50, 100]
+      array = [50, 100]
+      md = new Module radius: array
+      spyOn(md, '_assignProp').and.callThrough()
+      md._extendDefaults()
       expect(md._props.radius.join ', ').toBe '50, 100'
+      expect(md._assignProp).toHaveBeenCalledWith 'radius', array
     it 'should extend defaults object to properties if rand was passed', ->
       md = new Module radius: 'rand(0, 10)'
+      spyOn(md, '_assignProp').and.callThrough()
+      md._extendDefaults()
       expect(md._props.radius).toBeDefined()
       expect(md._props.radius).toBeGreaterThan -1
       expect(md._props.radius).not.toBeGreaterThan 10
+      expect(md._assignProp).toHaveBeenCalled()
     describe 'stagger values', ->
       it 'should extend defaults object to properties if stagger was passed', ->
         md = new Module radius: 'stagger(200)'
+        spyOn(md, '_assignProp').and.callThrough()
         md._index = 2
         md._extendDefaults()
         expect(md._props.radius).toBe 400
+        expect(md._assignProp).toHaveBeenCalledWith 'radius', 400
   describe '_setProgress method ->', ->
     it 'should set transition progress', ->
       byte = new Module radius:  {'25.50': -75.50}
@@ -305,49 +314,6 @@ describe 'module class ->', ->
       colorDelta = byte._deltas.stroke
       byte._setProgress .5
       expect(byte._props.stroke).toBe 'rgba(0,127,127,1)'
-
-  describe '_overrideCallback method ->', ->
-    it 'should override a callback in _o', ->
-
-      fun = ->
-      tr = new Module
-
-      tr._o.onStart = fun
-      tr._overrideCallback 'onStart', ->
-
-      expect(tr._o.onStart).not.toBe fun
-      expect(typeof tr._o.onStart).toBe 'function'
-
-    it 'should call overriden callback', ->
-      args = null; isRightScope = null
-      fun = ->
-        args = arguments
-        isRightScope = @ is tr
-      tr = new Module
-
-      tr._o.onStart = fun
-      tr._overrideCallback 'onStart', ->
-
-      tr._o.onStart.call( tr, 'a' )
-      expect(args[0]).toBe 'a'
-      expect(args.length).toBe 1
-      expect(isRightScope).toBe true
-
-    it 'should call passed method callback', ->
-      args = null; isRightScope = null
-      tr = new Module
-
-      tr._o.onStart = ->
-      cleanUpFun = ->
-        args = arguments
-        isRightScope = @ is tr
-
-      tr._overrideCallback 'onStart', cleanUpFun
-
-      tr._o.onStart.call( tr, 'a' )
-      expect(args[0]).toBe 'a'
-      expect(args.length).toBe 1
-      expect(isRightScope).toBe true
 
   describe '_tuneNewOptions method', ->
     it 'should rewrite options from passed object to _o and _props', ->

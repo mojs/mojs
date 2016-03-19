@@ -112,11 +112,10 @@
         expect(tr._history[1].radius[100]).toBe(0);
         return expect(result).toBe(null);
       });
-      return it('should return newValue if old value is delta and index is 0', function() {
+      it('should return newValue if old value is delta and index is 0', function() {
         var result, tr;
         tr = new Runable({
-          duration: 2000,
-          isIt: 1
+          duration: 2000
         }).then({
           duration: 300
         }).then({
@@ -124,6 +123,20 @@
         });
         result = tr._transformHistoryRecord(0, 'duration', 500);
         expect(tr._history[0].duration).toBe(500);
+        return expect(result).toBe(null);
+      });
+      return it('should always stop at 0 index if tween prop', function() {
+        var result, tr;
+        tr = new Runable({
+          delay: 2000,
+          isIt: 1
+        }).then({
+          radius: 20
+        }).then({
+          radius: 30
+        });
+        result = tr._transformHistoryRecord(0, 'delay', 500);
+        expect(tr._history[0].delay).toBe(500);
         return expect(result).toBe(null);
       });
     });

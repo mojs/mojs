@@ -69,8 +69,12 @@ class Runable extends Thenable {
       currRecord[key] = newValue;
       if ( this._isDelta(newValue) ) { return h.getDeltaEnd(newValue); }
       else {
-        var isNextRecord = ( nextRecord && nextRecord[key] === oldValue ),
-            isNextDelta  = ( nextRecord && this._isDelta(nextRecord[key]) );
+
+        // !h.isTweenProp(key)
+
+        var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
+            isNextDelta  = ( nextRecord && (this._isDelta(nextRecord[key])) );
+
         return ( isNextRecord || isNextDelta ) ? newValue : null;
       }
     } else {

@@ -92,8 +92,8 @@ module.exports = function(config) {
       
       'build/h.js',
       'spec/h.js',
-      'build/transit.js',
-      'spec/transit.js',
+      // 'build/transit.js',
+      // 'spec/transit.js',
       'build/swirl.js',
       'spec/swirl.js',
       'build/burst.js',
@@ -115,8 +115,8 @@ module.exports = function(config) {
       // 'spec/timeline.js',
       // 'build/tween.js',
       // 'spec/tween.js',
-      'build/tweener.js',
-      'spec/tweener.js',
+      // 'build/tweener.js',
+      // 'spec/tweener.js',
 
       'build/motion-path.js',
       'spec/motion-path.js',

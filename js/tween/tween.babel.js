@@ -258,6 +258,9 @@ class Tween extends Module {
     @private
   */
   _extendDefaults() {
+    // save callback overrides object with fallback to empty one
+    this._callbackOverrides = this._o.callbackOverrides || {};
+    delete this._o.callbackOverrides;
     // call the _extendDefaults @ Module
     super._extendDefaults();
     this._props.easing = easing.parseEasing(this._props.easing);
@@ -633,29 +636,6 @@ class Tween extends Module {
     this._wasUknownUpdate = false;
   }
   /*
-    Method to set property[s] on Tween.
-    @private
-    @override @ Module
-    @param {Object, String} Hash object of key/value pairs, or property name.
-    @param {_} Property's value to set.
-  */
-  _setProp( obj, value ) {
-    super._setProp(obj, value);
-    this._calcDimentions();
-  }
-  /*
-    Method to set single property.
-    @private
-    @override @ Module
-    @param {String} Name of the property.
-    @param {Any} Value for the property.
-  */
-  _assignProp (key, value) {
-    ( key === 'easing' ) && ( value = easing.parseEasing(value) );
-    // call super on Module
-    super._assignProp(key, value);
-  }
-  /*
     Method to remove the Tween from the tweener.
     @private
     @returns {Object} Self.
@@ -828,6 +808,48 @@ class Tween extends Module {
     @private
   */
   _onTweenerFinish () { this._setPlaybackState('stop'); }
+  /*
+    Method to set property[s] on Tween.
+    @private
+    @override @ Module
+    @param {Object, String} Hash object of key/value pairs, or property name.
+    @param {_} Property's value to set.
+  */
+  _setProp( obj, value ) {
+    super._setProp(obj, value);
+    this._calcDimentions();
+  }
+  /*
+    Method to set single property.
+    @private
+    @override @ Module
+    @param {String} Name of the property.
+    @param {Any} Value for the property.
+  */
+  _assignProp (key, value) {
+    // parse easing
+    ( key === 'easing' ) && ( value = easing.parseEasing(value) );
+    // handle control callbacks overrides
+    var control = this._callbackOverrides[key];
+    if ( control ) { value = this._overrideCallback(value, control); }
+    // call super on Module
+    super._assignProp(key, value);
+  }
+  /*
+    Method to override callback for controll pupropes.
+    @private
+    @param {String}    Callback name.
+    @parma {Function}  Method to call  
+  */
+  _overrideCallback (callback, fun) {
+    var isCallback = (callback && typeof callback === 'function');
+    return function () {
+      // call overriden callback if it exists
+      isCallback && callback.apply( this, arguments );
+      // call the passed cleanup function
+      fun.apply( this, arguments );
+    } 
+  }
 
   // _visualizeProgress(time) {
   //   var str = '|',

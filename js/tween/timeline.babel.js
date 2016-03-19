@@ -137,7 +137,6 @@ class Timeline extends Tween {
     while(i--) { this._recalcDuration(this._timelines[i]); }
     this._calcDimentions();
   }
-  
   /*
     Method set start and end times.
     @private
@@ -165,8 +164,6 @@ class Timeline extends Tween {
         timeline._prevTime = timeline._normPrevTimeForward();
       }
     }
-    // while(i--) {
-    // }
   }
   /*
     Method do declare defaults by this._defaults object

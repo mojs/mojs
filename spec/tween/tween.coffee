@@ -6491,6 +6491,93 @@ describe 'Tween ->', ->
       tw._extendDefaults()
       expect(typeof tw._props.easing).toBe 'function'
 
+  describe '_callbackOverrides object ->', ->
+    it 'should receive _callbackOverrides object', ->
+      callbackOverrides = {}
+      o = { duration: 200, callbackOverrides: callbackOverrides }
+      tw = new Tween o
+      expect(tw._callbackOverrides).toBe callbackOverrides
+    it 'should fallback to empty object', ->
+      callbackOverrides = null
+      o = { duration: 200, callbackOverrides: callbackOverrides }
+      tw = new Tween o
+      expect(tw._callbackOverrides).toEqual {}
+    it 'should delete _callbackOverrides object from options', ->
+      callbackOverrides = {}
+      o = { duration: 200, callbackOverrides: callbackOverrides }
+      tw = new Tween o
+      expect(tw._o.callbackOverrides).not.toBeDefined()
 
+  describe '_overrideCallback method ->', ->
+    it 'should override a callback', ->
+
+      fun = ->
+      tr = new Tween
+
+      result = tr._overrideCallback fun, ->
+
+      expect(result).not.toBe fun
+      expect(typeof result).toBe 'function'
+
+    it 'should call overriden callback', ->
+      args = null; isRightScope = null
+      fun = ->
+        args = arguments
+        isRightScope = @ is tr
+      tr = new Tween
+
+      result = tr._overrideCallback fun, ->
+
+      result.call( tr, 'a' )
+      expect(args[0]).toBe 'a'
+      expect(args.length).toBe 1
+      expect(isRightScope).toBe true
+
+    it 'should call passed method callback', ->
+      args = null; isRightScope = null
+      tr = new Tween
+
+      fun = ->
+      cleanUpFun = ->
+        args = arguments
+        isRightScope = @ is tr
+
+      result = tr._overrideCallback fun, cleanUpFun
+
+      result.call( tr, 'a' )
+      expect(args[0]).toBe 'a'
+      expect(args.length).toBe 1
+      expect(isRightScope).toBe true
+
+  describe '_assignProp method ->', ->
+    it 'should parse easign', ->
+      tr = new Tween
+      tr._assignProp 'easing', 'ease.in'
+      expect(typeof tr._props.easing).toBe 'function'
+
+    it 'should override callbacks if key in _callbackOverrides object', ->
+      tr = new Tween
+      funBefore = ->
+      controlCallback = ->
+      tr._callbackOverrides = {
+        onStart: controlCallback
+      }
+      spyOn(tr, '_overrideCallback').and.callThrough()
+      tr._assignProp 'onStart', funBefore
+      expect(tr._props.onStart).not.toBe funBefore
+      expect(tr._overrideCallback)
+        .toHaveBeenCalledWith funBefore, controlCallback
+
+    it 'should override undefined values', ->
+      tr = new Tween
+      controlCallback = ->
+      tr._callbackOverrides = {
+        onStart: controlCallback
+      }
+      spyOn(tr, '_overrideCallback').and.callThrough()
+      tr._assignProp 'onStart', undefined
+      expect(typeof tr._props.onStart).toBe 'function'
+      expect(tr._overrideCallback)
+        .toHaveBeenCalledWith undefined, controlCallback
 
 

@@ -203,15 +203,14 @@ class Module {
   _parseOption ( name, value ) {
     // if delta property
     if ( this._isDelta( value ) && name !== 'callbacksContext' ) {
-      this._o.isIt && console.log(name);
       this._getDelta( name, value ); return;
     }
     // parse stagger and rand values
-    this._props[name] = this._parseOptionString(value);
+    this._assignProp( name, this._parseOptionString(value) );
     // parse units for position properties
-    this._props[name] = this._parsePositionOption(name);
+    this._assignProp( name, this._parsePositionOption(name) );
     // parse numeric/percent values for strokeDash.. properties
-    this._props[name] = this._parseStrokeDashOption(name);
+    this._assignProp( name, this._parseStrokeDashOption(name) );
   }
   /*
     Method to calculate current progress of the deltas.
@@ -251,23 +250,6 @@ class Module {
   _setProgress ( progress ) {
     this._progress = progress;
     this._calcCurrentProps(progress);
-  }
-  /*
-    Method to override callback for controll pupropes.
-    @private
-    @param {String}    Callback name.
-    @parma {Function}  Method to call  
-  */
-  _overrideCallback (name, fun) {
-    var callback   = this._o[name],
-        isCallback = (callback && typeof callback === 'function');
-
-    this._o[name] = function () {
-      // call overriden callback if it exists
-      isCallback && callback.apply( this, arguments );
-      // call the passed cleanup function
-      fun.apply( this, arguments );
-    }
   }
 }
 

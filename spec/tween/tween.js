@@ -6548,7 +6548,7 @@
         return expect(tw._props.callbacksContext).toBe(obj);
       });
     });
-    return describe('_extendDefaults method', function() {
+    describe('_extendDefaults method', function() {
       it('should call super', function() {
         var tw;
         spyOn(Module.prototype, '_extendDefaults').and.callThrough();
@@ -6562,6 +6562,112 @@
         tw._props.easing = 'ease.in';
         tw._extendDefaults();
         return expect(typeof tw._props.easing).toBe('function');
+      });
+    });
+    describe('_callbackOverrides object ->', function() {
+      it('should receive _callbackOverrides object', function() {
+        var callbackOverrides, o, tw;
+        callbackOverrides = {};
+        o = {
+          duration: 200,
+          callbackOverrides: callbackOverrides
+        };
+        tw = new Tween(o);
+        return expect(tw._callbackOverrides).toBe(callbackOverrides);
+      });
+      it('should fallback to empty object', function() {
+        var callbackOverrides, o, tw;
+        callbackOverrides = null;
+        o = {
+          duration: 200,
+          callbackOverrides: callbackOverrides
+        };
+        tw = new Tween(o);
+        return expect(tw._callbackOverrides).toEqual({});
+      });
+      return it('should delete _callbackOverrides object from options', function() {
+        var callbackOverrides, o, tw;
+        callbackOverrides = {};
+        o = {
+          duration: 200,
+          callbackOverrides: callbackOverrides
+        };
+        tw = new Tween(o);
+        return expect(tw._o.callbackOverrides).not.toBeDefined();
+      });
+    });
+    describe('_overrideCallback method ->', function() {
+      it('should override a callback', function() {
+        var fun, result, tr;
+        fun = function() {};
+        tr = new Tween;
+        result = tr._overrideCallback(fun, function() {});
+        expect(result).not.toBe(fun);
+        return expect(typeof result).toBe('function');
+      });
+      it('should call overriden callback', function() {
+        var args, fun, isRightScope, result, tr;
+        args = null;
+        isRightScope = null;
+        fun = function() {
+          args = arguments;
+          return isRightScope = this === tr;
+        };
+        tr = new Tween;
+        result = tr._overrideCallback(fun, function() {});
+        result.call(tr, 'a');
+        expect(args[0]).toBe('a');
+        expect(args.length).toBe(1);
+        return expect(isRightScope).toBe(true);
+      });
+      return it('should call passed method callback', function() {
+        var args, cleanUpFun, fun, isRightScope, result, tr;
+        args = null;
+        isRightScope = null;
+        tr = new Tween;
+        fun = function() {};
+        cleanUpFun = function() {
+          args = arguments;
+          return isRightScope = this === tr;
+        };
+        result = tr._overrideCallback(fun, cleanUpFun);
+        result.call(tr, 'a');
+        expect(args[0]).toBe('a');
+        expect(args.length).toBe(1);
+        return expect(isRightScope).toBe(true);
+      });
+    });
+    return describe('_assignProp method ->', function() {
+      it('should parse easign', function() {
+        var tr;
+        tr = new Tween;
+        tr._assignProp('easing', 'ease.in');
+        return expect(typeof tr._props.easing).toBe('function');
+      });
+      it('should override callbacks if key in _callbackOverrides object', function() {
+        var controlCallback, funBefore, tr;
+        tr = new Tween;
+        funBefore = function() {};
+        controlCallback = function() {};
+        tr._callbackOverrides = {
+          onStart: controlCallback
+        };
+        spyOn(tr, '_overrideCallback').and.callThrough();
+        tr._assignProp('onStart', funBefore);
+        expect(tr._props.onStart).not.toBe(funBefore);
+        return expect(tr._overrideCallback).toHaveBeenCalledWith(funBefore, controlCallback);
+      });
+      return it('should override undefined values', function() {
+        var controlCallback, tr;
+        tr = new Tween;
+        controlCallback = function() {};
+        tr._callbackOverrides = {
+          onStart: controlCallback
+        };
+        spyOn(tr, '_overrideCallback').and.callThrough();
+        tr._assignProp('onStart', void 0);
+        expect(typeof tr._props.onStart).toBe('function');
+        return expect(tr._overrideCallback).toHaveBeenCalledWith(void 0, controlCallback);
       });
     });
   });

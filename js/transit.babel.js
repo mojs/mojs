@@ -346,25 +346,17 @@ class Transit extends Runable {
     @private  
   */
   _transformTweenOptions () {
-    // override(or define) tween control callbacks
-    // leave onUpdate callback without optimization due to perf reasons
-    var it         = this, // save lexical this, uh oh
-        onUpdate   = this._o.onUpdate,
-        isOnUpdate = (onUpdate && typeof onUpdate === 'function');
-    // redefine onUpdate for Transit's draw calculation in _setProgress
-    this._o.onUpdate = function ( pe ) {
-      // call onUpdate function from options
-      isOnUpdate && onUpdate.apply( this, arguments );
-      // calcalate and draw Transit's progress
-      it._setProgress(pe);
-    };
-
-    this._overrideCallback( 'onStart', function (isForward) {
-      isForward ? it._show() : (!it._props.isShowStart && it._hide());
-    });
-    this._overrideCallback( 'onComplete', function (isForward) {
-      isForward ? (!it._props.isShowEnd && it._hide()) : it._show();
-    });
+    var it = this;
+    // specify control functions for the tween
+    this._o.callbackOverrides = {
+      onUpdate: function (pe) { return it._setProgress(pe); },
+      onStart: function (isForward) {
+        return isForward ? it._show() : (!it._props.isShowStart && it._hide());
+      },
+      onComplete: function (isForward) {
+        return isForward ? (!it._props.isShowEnd && it._hide()) : it._show();
+      }
+    }
   }
   /*
     Method to create transform string;

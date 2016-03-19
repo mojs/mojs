@@ -403,20 +403,27 @@
         return expect(md._props.radius).not.toBe(50);
       });
       it('should extend defaults object to properties if array was passed', function() {
-        var md;
+        var array, md;
+        array = [50, 100];
         md = new Module({
-          radius: [50, 100]
+          radius: array
         });
-        return expect(md._props.radius.join(', ')).toBe('50, 100');
+        spyOn(md, '_assignProp').and.callThrough();
+        md._extendDefaults();
+        expect(md._props.radius.join(', ')).toBe('50, 100');
+        return expect(md._assignProp).toHaveBeenCalledWith('radius', array);
       });
       it('should extend defaults object to properties if rand was passed', function() {
         var md;
         md = new Module({
           radius: 'rand(0, 10)'
         });
+        spyOn(md, '_assignProp').and.callThrough();
+        md._extendDefaults();
         expect(md._props.radius).toBeDefined();
         expect(md._props.radius).toBeGreaterThan(-1);
-        return expect(md._props.radius).not.toBeGreaterThan(10);
+        expect(md._props.radius).not.toBeGreaterThan(10);
+        return expect(md._assignProp).toHaveBeenCalled();
       });
       return describe('stagger values', function() {
         return it('should extend defaults object to properties if stagger was passed', function() {
@@ -424,9 +431,11 @@
           md = new Module({
             radius: 'stagger(200)'
           });
+          spyOn(md, '_assignProp').and.callThrough();
           md._index = 2;
           md._extendDefaults();
-          return expect(md._props.radius).toBe(400);
+          expect(md._props.radius).toBe(400);
+          return expect(md._assignProp).toHaveBeenCalledWith('radius', 400);
         });
       });
     });
@@ -483,49 +492,6 @@
         colorDelta = byte._deltas.stroke;
         byte._setProgress(.5);
         return expect(byte._props.stroke).toBe('rgba(0,127,127,1)');
-      });
-    });
-    describe('_overrideCallback method ->', function() {
-      it('should override a callback in _o', function() {
-        var fun, tr;
-        fun = function() {};
-        tr = new Module;
-        tr._o.onStart = fun;
-        tr._overrideCallback('onStart', function() {});
-        expect(tr._o.onStart).not.toBe(fun);
-        return expect(typeof tr._o.onStart).toBe('function');
-      });
-      it('should call overriden callback', function() {
-        var args, fun, isRightScope, tr;
-        args = null;
-        isRightScope = null;
-        fun = function() {
-          args = arguments;
-          return isRightScope = this === tr;
-        };
-        tr = new Module;
-        tr._o.onStart = fun;
-        tr._overrideCallback('onStart', function() {});
-        tr._o.onStart.call(tr, 'a');
-        expect(args[0]).toBe('a');
-        expect(args.length).toBe(1);
-        return expect(isRightScope).toBe(true);
-      });
-      return it('should call passed method callback', function() {
-        var args, cleanUpFun, isRightScope, tr;
-        args = null;
-        isRightScope = null;
-        tr = new Module;
-        tr._o.onStart = function() {};
-        cleanUpFun = function() {
-          args = arguments;
-          return isRightScope = this === tr;
-        };
-        tr._overrideCallback('onStart', cleanUpFun);
-        tr._o.onStart.call(tr, 'a');
-        expect(args[0]).toBe('a');
-        expect(args.length).toBe(1);
-        return expect(isRightScope).toBe(true);
       });
     });
     describe('_tuneNewOptions method', function() {

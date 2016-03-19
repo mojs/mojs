@@ -87,12 +87,23 @@ describe 'Runable ->', ->
     it 'should return newValue if old value is delta and index is 0', ->
       # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
       # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
-      tr = new Runable({ duration: 2000, isIt: 1 })
+      tr = new Runable({ duration: 2000 })
         .then duration: 300
         .then duration: 500
 
       result = tr._transformHistoryRecord 0, 'duration', 500
       expect(tr._history[0].duration).toBe 500
+      expect(result).toBe null
+
+    it 'should always stop at 0 index if tween prop', ->
+      # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
+      # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
+      tr = new Runable({ delay: 2000, isIt: 1 })
+        .then radius: 20
+        .then radius: 30
+
+      result = tr._transformHistoryRecord 0, 'delay', 500
+      expect(tr._history[0].delay).toBe 500
       expect(result).toBe null
 
   describe '_transformHistory method ->', ->
