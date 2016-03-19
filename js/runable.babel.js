@@ -67,11 +67,11 @@ class Runable extends Thenable {
     // and return non-delta for subsequent modifications
     if ( index === 0 ) {
       currRecord[key] = newValue;
+      // always return on tween properties
+      if ( h.isTweenProp(key) && key !== 'duration' ) { return null; }
+      // nontween properties
       if ( this._isDelta(newValue) ) { return h.getDeltaEnd(newValue); }
       else {
-
-        // !h.isTweenProp(key)
-
         var isNextRecord = ( nextRecord && (nextRecord[key] === oldValue) ),
             isNextDelta  = ( nextRecord && (this._isDelta(nextRecord[key])) );
 

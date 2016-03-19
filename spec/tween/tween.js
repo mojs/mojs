@@ -5322,6 +5322,24 @@
         return expect(t._subPlay).toHaveBeenCalledWith(0, 'reverse');
       });
     });
+    describe('pause method ->', function() {
+      it('should call t.remove method with self', function() {
+        var timeline;
+        tweener.removeAll();
+        timeline = new Tween({
+          duration: 2000
+        });
+        timeline.play();
+        spyOn(timeline, '_removeFromTweener');
+        timeline.pause();
+        return expect(timeline._removeFromTweener).toHaveBeenCalled();
+      });
+      return it('should set _state to "pause"', function() {
+        var t;
+        t = new Tween;
+        return t.pause();
+      });
+    });
     describe('stop method', function() {
       it('should call removeFromTweener method with self', function() {
         var timeline;
@@ -5399,22 +5417,52 @@
         return expect(t._props.isReversed).toBe(true);
       });
     });
-    describe('pause method ->', function() {
-      it('should call t.remove method with self', function() {
-        var timeline;
-        tweener.removeAll();
-        timeline = new Tween({
-          duration: 2000
-        });
-        timeline.play();
-        spyOn(timeline, '_removeFromTweener');
-        timeline.pause();
-        return expect(timeline._removeFromTweener).toHaveBeenCalled();
-      });
-      return it('should set _state to "pause"', function() {
+    describe('replay method ->', function() {
+      it('should call stop and play methods', function() {
         var t;
         t = new Tween;
-        return t.pause();
+        spyOn(t, 'stop').and.callThrough();
+        spyOn(t, 'play').and.callThrough();
+        t.replay(200);
+        expect(t.stop).toHaveBeenCalled();
+        return expect(t.play).toHaveBeenCalledWith(200);
+      });
+      it('should return this', function() {
+        var result, t;
+        t = new Tween;
+        result = t.replay(200);
+        return expect(result).toBe(t);
+      });
+      return it('should fallback to 0 shift', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, 'play').and.callThrough();
+        t.replay();
+        return expect(t.play).toHaveBeenCalledWith(0);
+      });
+    });
+    describe('replayBackward method ->', function() {
+      it('should call stop and playBackward methods', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, 'stop').and.callThrough();
+        spyOn(t, 'playBackward').and.callThrough();
+        t.replayBackward(200);
+        expect(t.stop).toHaveBeenCalled();
+        return expect(t.playBackward).toHaveBeenCalledWith(200);
+      });
+      it('should return this', function() {
+        var result, t;
+        t = new Tween;
+        result = t.replayBackward(200);
+        return expect(result).toBe(t);
+      });
+      return it('should fallback to 0 shift', function() {
+        var t;
+        t = new Tween;
+        spyOn(t, 'playBackward').and.callThrough();
+        t.replayBackward();
+        return expect(t.playBackward).toHaveBeenCalledWith(0);
       });
     });
     describe('_setPlaybackState method ->', function() {

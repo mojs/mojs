@@ -5598,6 +5598,18 @@ describe 'Tween ->', ->
       t.playBackward()
       expect(t._subPlay).toHaveBeenCalledWith(0, 'reverse')
 
+  describe 'pause method ->', ->
+    it 'should call t.remove method with self',->
+      tweener.removeAll()
+      timeline = new Tween duration: 2000
+      timeline.play()
+      spyOn timeline, '_removeFromTweener'
+      timeline.pause()
+      expect(timeline._removeFromTweener).toHaveBeenCalled()
+    it 'should set _state to "pause"',->
+      t = new Tween
+      t.pause()
+
   describe 'stop method', ->
     it 'should call removeFromTweener method with self',->
       tweener.removeAll()
@@ -5649,17 +5661,41 @@ describe 'Tween ->', ->
       t.stop()
       expect(t._props.isReversed).toBe true
 
-  describe 'pause method ->', ->
-    it 'should call t.remove method with self',->
-      tweener.removeAll()
-      timeline = new Tween duration: 2000
-      timeline.play()
-      spyOn timeline, '_removeFromTweener'
-      timeline.pause()
-      expect(timeline._removeFromTweener).toHaveBeenCalled()
-    it 'should set _state to "pause"',->
+  describe 'replay method ->', ->
+    it 'should call stop and play methods', ->
       t = new Tween
-      t.pause()
+      spyOn(t, 'stop').and.callThrough()
+      spyOn(t, 'play').and.callThrough()
+      t.replay( 200 )
+      expect(t.stop).toHaveBeenCalled()
+      expect(t.play).toHaveBeenCalledWith 200
+    it 'should return this', ->
+      t = new Tween
+      result = t.replay( 200 )
+      expect(result).toBe t
+    it 'should fallback to 0 shift', ->
+      t = new Tween
+      spyOn(t, 'play').and.callThrough()
+      t.replay()
+      expect(t.play).toHaveBeenCalledWith 0
+
+  describe 'replayBackward method ->', ->
+    it 'should call stop and playBackward methods', ->
+      t = new Tween
+      spyOn(t, 'stop').and.callThrough()
+      spyOn(t, 'playBackward').and.callThrough()
+      t.replayBackward( 200 )
+      expect(t.stop).toHaveBeenCalled()
+      expect(t.playBackward).toHaveBeenCalledWith 200
+    it 'should return this', ->
+      t = new Tween
+      result = t.replayBackward( 200 )
+      expect(result).toBe t
+    it 'should fallback to 0 shift', ->
+      t = new Tween
+      spyOn(t, 'playBackward').and.callThrough()
+      t.replayBackward()
+      expect(t.playBackward).toHaveBeenCalledWith 0
     
   describe '_setPlaybackState method ->', ->
     it 'should set playback state', ->

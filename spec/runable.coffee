@@ -96,14 +96,21 @@ describe 'Runable ->', ->
       expect(result).toBe null
 
     it 'should always stop at 0 index if tween prop', ->
-      # radius: { 0: 50 } -> { 50: 0 } -> { 0: 50 }
-      # radius: ^{ 20 } -> { 20 : 0 } x-> { 0: 50 }
-      tr = new Runable({ delay: 2000, isIt: 1 })
+      tr = new Runable({ duration: 2000 })
         .then radius: 20
         .then radius: 30
 
       result = tr._transformHistoryRecord 0, 'delay', 500
       expect(tr._history[0].delay).toBe 500
+      expect(result).toBe null
+
+    it 'should immediately return null if new value is null ', ->
+      tr = new Runable({ duration: 2000, isIt: 1 })
+        .then radius: 20
+        .then radius: 30
+
+      result = tr._transformHistoryRecord 0, 'delay', null
+      expect(tr._history[0].delay).toBe undefined
       expect(result).toBe null
 
   describe '_transformHistory method ->', ->

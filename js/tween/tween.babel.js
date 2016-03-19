@@ -89,6 +89,16 @@ class Tween extends Module {
     return this;
   }
   /*
+    API method to pause Tween.
+    @public
+    @returns {Object} Self.
+  */
+  pause () {
+    this._removeFromTweener();
+    this._setPlaybackState('pause');
+    return this;
+  }
+  /*
     API method to stop the Tween.
     @public
     @param   {Number} Progress [0..1] to set when stopped.
@@ -109,13 +119,25 @@ class Tween extends Module {
     return this;
   }
   /*
-    API method to pause Tween.
+    API method to replay(restart) the Tween.
     @public
+    @param   {Number} Shift time in milliseconds.
     @returns {Object} Self.
   */
-  pause () {
-    this._removeFromTweener();
-    this._setPlaybackState('pause');
+  replay( shift = 0 ) {
+    this.stop();
+    this.play( shift );
+    return this;
+  }
+  /*
+    API method to replay(restart) backward the Tween.
+    @public
+    @param   {Number} Shift time in milliseconds.
+    @returns {Object} Self.
+  */
+  replayBackward( shift = 0 ) {
+    this.stop();
+    this.playBackward( shift );
     return this;
   }
   /*

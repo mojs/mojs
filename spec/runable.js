@@ -125,11 +125,10 @@
         expect(tr._history[0].duration).toBe(500);
         return expect(result).toBe(null);
       });
-      return it('should always stop at 0 index if tween prop', function() {
+      it('should always stop at 0 index if tween prop', function() {
         var result, tr;
         tr = new Runable({
-          delay: 2000,
-          isIt: 1
+          duration: 2000
         }).then({
           radius: 20
         }).then({
@@ -137,6 +136,20 @@
         });
         result = tr._transformHistoryRecord(0, 'delay', 500);
         expect(tr._history[0].delay).toBe(500);
+        return expect(result).toBe(null);
+      });
+      return it('should immediately return null if new value is null ', function() {
+        var result, tr;
+        tr = new Runable({
+          duration: 2000,
+          isIt: 1
+        }).then({
+          radius: 20
+        }).then({
+          radius: 30
+        });
+        result = tr._transformHistoryRecord(0, 'delay', null);
+        expect(tr._history[0].delay).toBe(void 0);
         return expect(result).toBe(null);
       });
     });

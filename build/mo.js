@@ -211,6 +211,19 @@
 	      return this;
 	    }
 	    /*
+	      API method to pause Tween.
+	      @public
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: 'pause',
+	    value: function pause() {
+	      this._removeFromTweener();
+	      this._setPlaybackState('pause');
+	      return this;
+	    }
+	    /*
 	      API method to stop the Tween.
 	      @public
 	      @param   {Number} Progress [0..1] to set when stopped.
@@ -236,16 +249,35 @@
 	      return this;
 	    }
 	    /*
-	      API method to pause Tween.
+	      API method to replay(restart) the Tween.
 	      @public
+	      @param   {Number} Shift time in milliseconds.
 	      @returns {Object} Self.
 	    */
 
 	  }, {
-	    key: 'pause',
-	    value: function pause() {
-	      this._removeFromTweener();
-	      this._setPlaybackState('pause');
+	    key: 'replay',
+	    value: function replay() {
+	      var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+	      this.stop();
+	      this.play(shift);
+	      return this;
+	    }
+	    /*
+	      API method to replay(restart) backward the Tween.
+	      @public
+	      @param   {Number} Shift time in milliseconds.
+	      @returns {Object} Self.
+	    */
+
+	  }, {
+	    key: 'replayBackward',
+	    value: function replayBackward() {
+	      var shift = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+	      this.stop();
+	      this.playBackward(shift);
 	      return this;
 	    }
 	    /*
@@ -3677,12 +3709,14 @@
 	      // and return non-delta for subsequent modifications
 	      if (index === 0) {
 	        currRecord[key] = newValue;
+	        // always return on tween properties
+	        if (_h2.default.isTweenProp(key) && key !== 'duration') {
+	          return null;
+	        }
+	        // nontween properties
 	        if (this._isDelta(newValue)) {
 	          return _h2.default.getDeltaEnd(newValue);
 	        } else {
-
-	          // !h.isTweenProp(key)
-
 	          var isNextRecord = nextRecord && nextRecord[key] === oldValue,
 	              isNextDelta = nextRecord && this._isDelta(nextRecord[key]);
 
@@ -7461,7 +7495,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.195.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.196.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7471,81 +7505,84 @@
 	/*
 	  rename `runnable` to `changable`
 	  add `restart` method for `tween` and `tweenable`
-	  add callbacks transforms for the `tween`
 	*/
 
-	var tr = new mojs.Transit({
-	  left: '50%', top: '50%',
-	  shape: 'polygon',
-	  strokeWidth: 20,
-	  angle: { 0: 200 },
-	  radius: 10,
-	  fill: 'none',
-	  stroke: { 'white': 'cyan' },
-	  points: { 3: 20 }, // make triangle
-	  duration: 2000,
-	  // isShowStart: true,
-	  // isShowEnd: true,
-	  timeline: { repeat: 1, yoyo: true },
-	  // delay:    4000,
-	  scale: { 0: 6 }
-	}). // timeline: { repeat: 2, yoyo: true },
-	// onStart: ()=> { console.log('start 1'); },
-	// onComplete: ()=> { console.log('comple 1'); },
-	// easing: 'expo.in'
-	then({
-	  // onStart: ()=> { console.log('start 2')},
-	  // onComplete: ()=> { console.log('comple 2'); },
-	  points: 3, // make triangle
-	  angle: -180,
-	  duration: 300,
-	  stroke: 'yellow',
-	  easing: 'expo.in',
-	  scale: .5
-	}).then({
-	  // onStart: ()=> { console.log('start 3')},
-	  // onComplete: ()=> { console.log('comple 3'); },
-	  strokeWidth: 0,
-	  stroke: 'hotpink',
-	  duration: 400,
-	  easing: 'cubic.out',
-	  // scale: { 1: 1 },
-	  radius: 40,
-	  scale: 1,
-	  angle: 90
-	});
+	// var tr = new mojs.Transit({
+	//   left: '50%', top: '50%',
+	//   shape:    'polygon',
+	//   strokeWidth: 20,
+	//   angle:    { 0 : 200},
+	//   radius:   10,
+	//   fill:     'none',
+	//   stroke:   { 'white': 'cyan' },
+	//   points:   { 3 : 20 }, // make triangle
+	//   duration: 2000,
+	//   // isShowStart: true,
+	//   // isShowEnd: true,
+	//   timeline: { repeat: 1 },
+	//   // delay:    4000,
+	//   scale: { 0 : 6 },
+	//   // timeline: { repeat: 2, yoyo: true },
+	//   // onStart: ()=> { console.log('start 1'); },
+	//   // onComplete: ()=> { console.log('comple 1'); },
+	//   // easing: 'expo.in'
+	// })
+	// .then({
+	//   // onStart: ()=> { console.log('start 2')},
+	//   // onComplete: ()=> { console.log('comple 2'); },
+	//   points:   3, // make triangle
+	//   angle:    -180,
+	//   duration: 300,
+	//   stroke: 'yellow',
+	//   easing: 'expo.in',
+	//   scale: .5,
+	// })
+	// .then({
+	//   // onStart: ()=> { console.log('start 3')},
+	//   // onComplete: ()=> { console.log('comple 3'); },
+	//   strokeWidth: 0,
+	//   stroke: 'hotpink',
+	//   duration: 400,
+	//   easing: 'cubic.out',
+	//   // scale: { 1: 1 },
+	//   radius: 40,
+	//   scale: 1,
+	//   angle: 90,
+	//   // speed: 1
+	//   // opacity: 0
+	// });
 
-	// console.log(tr._history[0].onStart);
-	// console.log(tr._history[1].onStart);
-	// console.log(tr._history[2].onStart);
+	// // console.log(tr._history[0].onStart);
+	// // console.log(tr._history[1].onStart);
+	// // console.log(tr._history[2].onStart);
 
-	// speed: 1
-	// opacity: 0
-	var playEl = document.querySelector('#js-play'),
-	    rangeSliderEl = document.querySelector('#js-range-slider');
-	document.body.addEventListener('click', function (e) {
-	  // tr.run({ stroke: 'red' });
-	  // console.time('run');
-	  tr.change({
-	    duration: 1500, stroke: { 'red': 'purple' },
-	    left: 0, top: 0,
-	    x: parseInt(e.pageX), y: parseInt(e.pageY),
-	    delay: 2000,
-	    onStart: function onStart(isForward, isYoyo) {
-	      console.log('START', isForward, isYoyo);
-	    },
-	    onUpdate: function onUpdate(p) {
-	      // console.log(p);
-	    }
-	  }).stop().play();
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// document.body.addEventListener('click', function (e) {
+	//   // tr.run({ stroke: 'red' });
+	//   // console.time('run');
+	//   tr
+	//     .change({
+	//       duration: 1500, stroke: {'red': 'purple'},
+	//       left: 0, top: 0,
+	//       x: parseInt(e.pageX), y:parseInt(e.pageY),
+	//       delay: 2000,
+	//       onStart: function (isForward, isYoyo) {
+	//         console.log('START', isForward, isYoyo );
+	//       },
+	//       onUpdate: function (p) {
+	//         // console.log(p);
+	//       }
+	//     })
+	//     .stop().play();
 
-	  // console.timeEnd('run');
+	//   // console.timeEnd('run');
 
-	  // console.log(tr._history[0].onStart);
-	  // console.log(tr._history[1].onStart);
-	  // console.log(tr._history[2].onStart);
-	  // console.log(tr._history);
-	});
+	//   // console.log(tr._history[0].onStart);
+	//   // console.log(tr._history[1].onStart);
+	//   // console.log(tr._history[2].onStart);
+	//   // console.log(tr._history);
+	// });
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );
