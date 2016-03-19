@@ -47,6 +47,24 @@ class Tweenable extends Module {
     return this;
   }
   /*
+    replay method for the timeline.
+    @public
+    @returns this.
+  */
+  replay () {
+    this.timeline.replay.apply( this.timeline, arguments );
+    return this;
+  }
+  /*
+    replay method for the timeline.
+    @public
+    @returns this.
+  */
+  replayBackward () {
+    this.timeline.replayBackward.apply( this.timeline, arguments );
+    return this;
+  }
+  /*
     setProgress method for the timeline.
     @public
     @returns this.

@@ -3250,6 +3250,30 @@
 	      return this;
 	    }
 	    /*
+	      replay method for the timeline.
+	      @public
+	      @returns this.
+	    */
+
+	  }, {
+	    key: 'replay',
+	    value: function replay() {
+	      this.timeline.replay.apply(this.timeline, arguments);
+	      return this;
+	    }
+	    /*
+	      replay method for the timeline.
+	      @public
+	      @returns this.
+	    */
+
+	  }, {
+	    key: 'replayBackward',
+	    value: function replayBackward() {
+	      this.timeline.replayBackward.apply(this.timeline, arguments);
+	      return this;
+	    }
+	    /*
 	      setProgress method for the timeline.
 	      @public
 	      @returns this.
@@ -7495,7 +7519,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.196.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.197.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Runable: _runable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7504,7 +7528,6 @@
 	// TODO:
 	/*
 	  rename `runnable` to `changable`
-	  add `restart` method for `tween` and `tweenable`
 	*/
 
 	// var tr = new mojs.Transit({

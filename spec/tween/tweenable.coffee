@@ -103,6 +103,28 @@ describe 'tweenable ->', ->
       tw = new Tweenable
       result = tw.stop()
       expect(result).toBe tw
+  describe 'replay method ->', ->
+    it 'should call timeline\'s replay method', ->
+      tw = new Tweenable
+      spyOn tw.timeline, 'replay'
+      progress = .5
+      tw.replay( progress )
+      expect(tw.timeline.replay).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.replay()
+      expect(result).toBe tw
+  describe 'replayBackward method ->', ->
+    it 'should call timeline\'s replayBackward method', ->
+      tw = new Tweenable
+      spyOn tw.timeline, 'replayBackward'
+      progress = .5
+      tw.replayBackward( progress )
+      expect(tw.timeline.replayBackward).toHaveBeenCalledWith progress
+    it 'should return this', ->
+      tw = new Tweenable
+      result = tw.replayBackward()
+      expect(result).toBe tw
   describe 'setProgress ->', ->
     it 'should call timeline\'s setProgress method', ->
       tw = new Tweenable

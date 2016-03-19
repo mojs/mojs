@@ -182,6 +182,38 @@
         return expect(result).toBe(tw);
       });
     });
+    describe('replay method ->', function() {
+      it('should call timeline\'s replay method', function() {
+        var progress, tw;
+        tw = new Tweenable;
+        spyOn(tw.timeline, 'replay');
+        progress = .5;
+        tw.replay(progress);
+        return expect(tw.timeline.replay).toHaveBeenCalledWith(progress);
+      });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.replay();
+        return expect(result).toBe(tw);
+      });
+    });
+    describe('replayBackward method ->', function() {
+      it('should call timeline\'s replayBackward method', function() {
+        var progress, tw;
+        tw = new Tweenable;
+        spyOn(tw.timeline, 'replayBackward');
+        progress = .5;
+        tw.replayBackward(progress);
+        return expect(tw.timeline.replayBackward).toHaveBeenCalledWith(progress);
+      });
+      return it('should return this', function() {
+        var result, tw;
+        tw = new Tweenable;
+        result = tw.replayBackward();
+        return expect(result).toBe(tw);
+      });
+    });
     describe('setProgress ->', function() {
       it('should call timeline\'s setProgress method', function() {
         var progress, tw;
