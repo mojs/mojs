@@ -417,7 +417,7 @@
         }).not.toThrow();
       });
     });
-    return describe('_tuneSubModules method ->', function() {
+    describe('_tuneSubModules method ->', function() {
       return it('should call _tuneNewOptions on every sub module', function() {
         var rn;
         rn = new Tunable({
@@ -434,6 +434,24 @@
         expect(rn._modules[0]._tuneNewOptions).not.toHaveBeenCalled();
         expect(rn._modules[1]._tuneNewOptions).toHaveBeenCalled();
         return expect(rn._modules[2]._tuneNewOptions).toHaveBeenCalled();
+      });
+    });
+    return describe('generate method ->', function() {
+      it('should call tune with _o', function() {
+        var rn;
+        rn = new Tunable({
+          radius: 20
+        });
+        spyOn(rn, 'tune').and.callThrough();
+        rn.generate();
+        return expect(rn.tune).toHaveBeenCalledWith(rn._o);
+      });
+      return it('should return this', function() {
+        var rn;
+        rn = new Tunable({
+          radius: 20
+        });
+        return expect(rn.generate()).toBe(rn);
       });
     });
   });

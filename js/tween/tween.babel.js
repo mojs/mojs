@@ -160,10 +160,8 @@ class Tween extends Module {
     return this;
   }
 
-  /*
-    API ^
-    PRIVATE METHODS v
-  */
+  // ^ PUBLIC  METHOD(S) ^
+  // v PRIVATE METHOD(S) v
 
   /*
     Method to launch play. Used as launch

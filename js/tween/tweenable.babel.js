@@ -74,8 +74,8 @@ class Tweenable extends Module {
     return this;
   }
   
-  // ^ API methods.
-  // v Private methods.
+  // ^ PUBLIC  METHOD(S) ^
+  // v PRIVATE METHOD(S) v
   
   constructor ( o = {} ) {
     // super of Module

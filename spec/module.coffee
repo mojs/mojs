@@ -336,6 +336,11 @@ describe 'module class ->', ->
       md = new Module radius: 40
       md._tuneNewOptions radius: 0
       expect(md._props.radius).toBe(0)
+    it 'should call _hide method', ->
+      md = new Module radius: 45
+      spyOn(md, '_hide').and.callThrough()
+      md._tuneNewOptions radius: 20
+      expect(md._hide).toHaveBeenCalled()
     it 'should ignore properties defined in skipProps object', ->
       md = new Module radius: 45
       md._skipProps = radius: 1

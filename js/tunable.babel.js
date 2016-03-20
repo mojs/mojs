@@ -21,6 +21,18 @@ class Tuneable extends Thenable {
     return this;
   }
   /*
+    Method to regenerate all the random properties form initial object.
+    @public
+    @returns this.
+  */
+  generate () {
+    return this.tune( this._o );
+  }
+
+  // ^ PUBLIC  METHOD(S) ^
+  // v PRIVATE METHOD(S) v
+
+  /*
     Method to transform history rewrite new options object chain on run.
     @param {Object} New options to tune for.
   */

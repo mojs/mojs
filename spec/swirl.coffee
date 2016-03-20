@@ -46,12 +46,50 @@ describe 'Swirl ->', ->
       swirl._extendDefaults()
       expect(Swirl.prototype._extendDefaults).toHaveBeenCalled()
 
-  describe '_setProgress ->', ->
-    it 'should call super _setProgress method', ->
+  describe '_declareDefaults method ->', ->
+    it 'should call super _declareDefaults', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
-      spyOn(Swirl.prototype, '_setProgress').and.callThrough()
+      spyOn(Swirl.prototype, '_declareDefaults').and.callThrough()
+      swirl._declareDefaults()
+      expect(Swirl.prototype._declareDefaults).toHaveBeenCalled()
+    it 'should add swirlSize default', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      expect(swirl._defaults.swirlSize).toBe 10
+    it 'should add swirlFrequency default', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      expect(swirl._defaults.swirlFrequency).toBe 3
+    it 'should add isSwirl default', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      expect(swirl._defaults.isSwirl).toBe true
+    it 'should add radiusScale default', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      expect(swirl._defaults.radiusScale).toBe 1
+    it 'should add angleShift default', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      expect(swirl._defaults.angleShift).toBe 0
+
+  describe '_setProgress ->', ->
+    it 'should svae progress', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      swirl._progress = -1
       swirl._setProgress .5
-      expect(Swirl.prototype._setProgress).toHaveBeenCalledWith .5
+      expect(swirl._progress).toBe .5
+    it 'should call _calcCurrentProps method', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      spyOn(swirl, '_calcCurrentProps').and.callThrough()
+      swirl._setProgress .5
+      expect(swirl._calcCurrentProps).toHaveBeenCalledWith .5
+    it 'should call _calcOrigin method', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      spyOn(swirl, '_calcOrigin').and.callThrough()
+      swirl._setProgress .5
+      expect(swirl._calcOrigin).toHaveBeenCalled()
+    it 'should call _draw method', ->
+      swirl = new Swirl radius: [{ 20: 50 }, 20]
+      spyOn(swirl, '_draw').and.callThrough()
+      swirl._setProgress .5
+      expect(swirl._draw).toHaveBeenCalledWith .5
+
     it 'should set x/y progress', ->
       swirl = new Swirl x: {0:10}, y: {0:10}, isSwirl: false
       swirl._setProgress .4
@@ -70,8 +108,7 @@ describe 'Swirl ->', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}, isSwirl: false,
         angleShift: { 0: 180 }
-      # swirl._setProgress .4
-      swirl._setProgress .5
+      # swirl._setProgress .5
       swirl._setProgress .5
       expect(parseInt(swirl._props.x, 10)).toBe -5
       expect(parseInt(swirl._props.y, 10)).toBe 5
@@ -97,7 +134,6 @@ describe 'Swirl ->', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10},
         isSwirl: false, radiusScale: .5
-      swirl._setProgress .5
       swirl._setProgress 1
       expect(parseInt(swirl._props.x, 10) ).toBe 5
       expect(parseInt(swirl._props.y, 10) ).toBe 5

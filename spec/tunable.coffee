@@ -301,3 +301,14 @@ describe 'Tunable ->', ->
       expect(rn._modules[1]._tuneNewOptions).toHaveBeenCalled()
       expect(rn._modules[2]._tuneNewOptions).toHaveBeenCalled()
 
+  describe 'generate method ->', ->
+    it 'should call tune with _o', ->
+      rn = new Tunable({ radius: 20 })
+      spyOn(rn, 'tune').and.callThrough()
+      rn.generate()
+      expect(rn.tune).toHaveBeenCalledWith rn._o
+    it 'should return this', ->
+      rn = new Tunable({ radius: 20 })
+      expect(rn.generate()).toBe rn
+
+

@@ -530,6 +530,17 @@
         });
         return expect(md._props.radius).toBe(0);
       });
+      it('should call _hide method', function() {
+        var md;
+        md = new Module({
+          radius: 45
+        });
+        spyOn(md, '_hide').and.callThrough();
+        md._tuneNewOptions({
+          radius: 20
+        });
+        return expect(md._hide).toHaveBeenCalled();
+      });
       it('should ignore properties defined in skipProps object', function() {
         var md;
         md = new Module({

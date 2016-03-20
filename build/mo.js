@@ -303,10 +303,8 @@
 	      return this;
 	    }
 
-	    /*
-	      API ^
-	      PRIVATE METHODS v
-	    */
+	    // ^ PUBLIC  METHOD(S) ^
+	    // v PRIVATE METHOD(S) v
 
 	    /*
 	      Method to launch play. Used as launch
@@ -1771,7 +1769,6 @@
 	// TODO
 	//  - refactor
 	//    - add set if changed to Module
-	//    - check if strokeDashoffset could be of array type
 	//  --
 	//  - tween for every prop
 
@@ -1852,8 +1849,8 @@
 	      };
 	    }
 
-	    // ^ Public methods / APIs
-	    // v private methods.
+	    // ^ PUBLIC  METHOD(S) ^
+	    // v PRIVATE METHOD(S) v
 
 	    /*
 	      Method to declare variables.
@@ -2282,7 +2279,6 @@
 	    */
 	    value: function _declareDefaults() {
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), '_declareDefaults', this).call(this);
-
 	      // ∆ :: [number > 0]
 	      this._defaults.swirlSize = 10;
 	      // ∆ :: [number > 0]
@@ -2294,6 +2290,10 @@
 	      // ∆ :: [number]
 	      this._defaults.angleShift = 0;
 	    }
+
+	    // ^ PUBLIC  METHOD(S) ^
+	    // v PRIVATE METHOD(S) v
+
 	    /*
 	      Method to copy _o options to _props with
 	      fallback to _defaults.
@@ -2354,6 +2354,10 @@
 	  }, {
 	    key: '_setProgress',
 	    value: function _setProgress(proc) {
+
+	      this._progress = proc;
+	      this._calcCurrentProps(proc);
+
 	      var p = this._props,
 	          angle = this._posData.angle + p.angleShift,
 	          point = _h2.default.getRadialPoint({
@@ -2371,7 +2375,8 @@
 	      p.x = this._o.ctx ? x : x + this._posData.x.units;
 	      p.y = this._o.ctx ? y : y + this._posData.y.units;
 
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), '_setProgress', this).call(this, proc);
+	      this._calcOrigin();
+	      this._draw(proc);
 	    }
 	    /*
 	      Method to get progress of the swirl.
@@ -2951,6 +2956,10 @@
 
 	      return this;
 	    }
+
+	    // ^ PUBLIC  METHOD(S) ^
+	    // v PRIVATE METHOD(S) v
+
 	    /*
 	      Method to append Tween/Timeline array or mix of such.
 	      @private
@@ -3458,8 +3467,8 @@
 	      return this;
 	    }
 
-	    // ^ API methods.
-	    // v Private methods.
+	    // ^ PUBLIC  METHOD(S) ^
+	    // v PRIVATE METHOD(S) v
 
 	  }]);
 
@@ -3621,6 +3630,10 @@
 	      this.timeline.append(module.tween);
 	      return this;
 	    }
+
+	    // ^ PUBLIC  METHOD(S) ^
+	    // v PRIVATE METHOD(S) v
+
 	    /*
 	      Method to reset some flags on merged options object.
 	      @param   {Object} Options object.
@@ -3845,6 +3858,21 @@
 	      }
 	      return this;
 	    }
+	    /*
+	      Method to regenerate all the random properties form initial object.
+	      @public
+	      @returns this.
+	    */
+
+	  }, {
+	    key: 'generate',
+	    value: function generate() {
+	      return this.tune(this._o);
+	    }
+
+	    // ^ PUBLIC  METHOD(S) ^
+	    // v PRIVATE METHOD(S) v
+
 	    /*
 	      Method to transform history rewrite new options object chain on run.
 	      @param {Object} New options to tune for.
@@ -4262,6 +4290,9 @@
 	  }, {
 	    key: '_tuneNewOptions',
 	    value: function _tuneNewOptions(o) {
+	      // hide the module before tuning it's options
+	      // cuz the user could see the change
+	      this._hide();
 	      for (var key in o) {
 	        // skip property if it is listed in _skipProps
 	        if (this._skipProps && this._skipProps[key]) {
@@ -7572,7 +7603,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.199.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.200.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7586,27 +7617,28 @@
 
 	*/
 
-	// var tm = new mojs.Timeline();
+	var sw = new mojs.Transit({
+	  left: '50%', top: '50%',
+	  isShowEnd: true,
+	  stroke: 'cyan',
+	  duration: 2000,
+	  delay: 2000,
+	  radius: { 'rand(0, 200)': 0 }
+	}).then({
+	  radius: 'rand(0, 200)'
+	});
 
 	// var sw = new mojs.Swirl({
 	//   radius: {'rand(10,20)': 0},
 	//   left: '50%', top: '50%',
-	//   swirlFrequency: {3: 0},
-	//   swirlSize: {10: 0},
+	//   swirlFrequency: {10: 0},
+	//   swirlSize: 100,
 	//   y: { 0: -200 },
 	//   // x: { 0: 200 },
 	//   duration: 2000,
 	//   easing: 'ease.out',
-	//   radiusScale: {2: 0},
-	//   angleShift: { 'rand(120, 300)': 0}
-	// });
-	// .then({
-	//   radius: 0,
-	//   swirlFrequency: 6,
-	//   swirlSize: 10,
-	//   y: -100,
-	//   easing: 'ease.in',
-	//   angleShift: 50
+	//   // radiusScale: {2: 0},
+	//   // angleShift: { 'rand(120, 300)': 0}
 	// });
 
 	var playEl = document.querySelector('#js-play'),
@@ -7615,8 +7647,7 @@
 	  sw
 	  // .tune(sw._o)
 	  // .tune({ swirlFrequency: 'rand(2, 20)' })
-	  // .generate()
-	  .play();
+	  .generate().replay();
 	});
 
 	// rangeSliderEl.addEventListener('input', function () {

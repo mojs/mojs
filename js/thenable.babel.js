@@ -31,6 +31,10 @@ class Thenable extends Tweenable {
     this.timeline.append( module.tween );
     return this;
   }
+
+  // ^ PUBLIC  METHOD(S) ^
+  // v PRIVATE METHOD(S) v
+
   /*
     Method to reset some flags on merged options object.
     @param   {Object} Options object.

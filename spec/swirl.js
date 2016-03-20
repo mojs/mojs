@@ -129,8 +129,8 @@
         return expect(Swirl.prototype._extendDefaults).toHaveBeenCalled();
       });
     });
-    describe('_setProgress ->', function() {
-      it('should call super _setProgress method', function() {
+    describe('_declareDefaults method ->', function() {
+      it('should call super _declareDefaults', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -139,9 +139,118 @@
             }, 20
           ]
         });
-        spyOn(Swirl.prototype, '_setProgress').and.callThrough();
+        spyOn(Swirl.prototype, '_declareDefaults').and.callThrough();
+        swirl._declareDefaults();
+        return expect(Swirl.prototype._declareDefaults).toHaveBeenCalled();
+      });
+      it('should add swirlSize default', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        return expect(swirl._defaults.swirlSize).toBe(10);
+      });
+      it('should add swirlFrequency default', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        return expect(swirl._defaults.swirlFrequency).toBe(3);
+      });
+      it('should add isSwirl default', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        return expect(swirl._defaults.isSwirl).toBe(true);
+      });
+      it('should add radiusScale default', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        return expect(swirl._defaults.radiusScale).toBe(1);
+      });
+      return it('should add angleShift default', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        return expect(swirl._defaults.angleShift).toBe(0);
+      });
+    });
+    describe('_setProgress ->', function() {
+      it('should svae progress', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        swirl._progress = -1;
         swirl._setProgress(.5);
-        return expect(Swirl.prototype._setProgress).toHaveBeenCalledWith(.5);
+        return expect(swirl._progress).toBe(.5);
+      });
+      it('should call _calcCurrentProps method', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(swirl, '_calcCurrentProps').and.callThrough();
+        swirl._setProgress(.5);
+        return expect(swirl._calcCurrentProps).toHaveBeenCalledWith(.5);
+      });
+      it('should call _calcOrigin method', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(swirl, '_calcOrigin').and.callThrough();
+        swirl._setProgress(.5);
+        return expect(swirl._calcOrigin).toHaveBeenCalled();
+      });
+      it('should call _draw method', function() {
+        var swirl;
+        swirl = new Swirl({
+          radius: [
+            {
+              20: 50
+            }, 20
+          ]
+        });
+        spyOn(swirl, '_draw').and.callThrough();
+        swirl._setProgress(.5);
+        return expect(swirl._draw).toHaveBeenCalledWith(.5);
       });
       it('should set x/y progress', function() {
         var swirl;
@@ -189,7 +298,6 @@
             0: 180
           }
         });
-        swirl._setProgress(.5);
         swirl._setProgress(.5);
         expect(parseInt(swirl._props.x, 10)).toBe(-5);
         return expect(parseInt(swirl._props.y, 10)).toBe(5);
@@ -253,7 +361,6 @@
           isSwirl: false,
           radiusScale: .5
         });
-        swirl._setProgress(.5);
         swirl._setProgress(1);
         expect(parseInt(swirl._props.x, 10)).toBe(5);
         return expect(parseInt(swirl._props.y, 10)).toBe(5);

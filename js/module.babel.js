@@ -184,6 +184,9 @@ class Module {
     @param {Object} Options object to tune to.
   */
   _tuneNewOptions (o) {
+    // hide the module before tuning it's options
+    // cuz the user could see the change
+    this._hide();
     for (var key in o) {
       // skip property if it is listed in _skipProps
       if (this._skipProps && this._skipProps[key]) { continue; }

@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.199.0', isDebug: true, helpers: h,
+  revision:   '0.200.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -31,28 +31,30 @@ window.mojs = {
 
 */
 
-// var tm = new mojs.Timeline();
+var sw = new mojs.Transit({
+  left: '50%', top: '50%',
+  isShowEnd: true,
+  stroke: 'cyan',
+  duration: 2000,
+  delay: 2000,
+  radius: { 'rand(0, 200)': 0 }
+}).then({
+  radius: 'rand(0, 200)'
+});
 
 // var sw = new mojs.Swirl({
 //   radius: {'rand(10,20)': 0},
 //   left: '50%', top: '50%',
-//   swirlFrequency: {3: 0},
-//   swirlSize: {10: 0},
+//   swirlFrequency: {10: 0},
+//   swirlSize: 100,
 //   y: { 0: -200 },
 //   // x: { 0: 200 },
 //   duration: 2000,
 //   easing: 'ease.out',
-//   radiusScale: {2: 0},
-//   angleShift: { 'rand(120, 300)': 0}
+//   // radiusScale: {2: 0},
+//   // angleShift: { 'rand(120, 300)': 0}
 // });
-// .then({
-//   radius: 0,
-//   swirlFrequency: 6,
-//   swirlSize: 10,
-//   y: -100,
-//   easing: 'ease.in',
-//   angleShift: 50
-// });
+
 
 var playEl = document.querySelector('#js-play'),
     rangeSliderEl = document.querySelector('#js-range-slider');
@@ -60,8 +62,8 @@ document.body.addEventListener('click', function (e) {
   sw
     // .tune(sw._o)
     // .tune({ swirlFrequency: 'rand(2, 20)' })
-    // .generate()
-    .play();
+    .generate()
+    .replay();
 });
 
 // rangeSliderEl.addEventListener('input', function () {

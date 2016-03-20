@@ -30,6 +30,10 @@ class Timeline extends Tween {
     }
     return this;
   }
+
+  // ^ PUBLIC  METHOD(S) ^
+  // v PRIVATE METHOD(S) v
+  
   /*
     Method to append Tween/Timeline array or mix of such.
     @private

@@ -11,7 +11,6 @@ import Timeline   from './tween/timeline';
 // TODO
 //  - refactor
 //    - add set if changed to Module
-//    - check if strokeDashoffset could be of array type
 //  --
 //  - tween for every prop
 
@@ -83,8 +82,8 @@ class Transit extends Tunable {
 
   }
 
-  // ^ Public methods / APIs
-  // v private methods.
+  // ^ PUBLIC  METHOD(S) ^
+  // v PRIVATE METHOD(S) v
 
   /*
     Method to declare variables.

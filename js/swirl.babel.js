@@ -10,7 +10,6 @@ class Swirl extends Transit {
   */
   _declareDefaults () {
     super._declareDefaults();
-    
     // ∆ :: [number > 0]
     this._defaults.swirlSize      = 10;
     // ∆ :: [number > 0]
@@ -22,6 +21,10 @@ class Swirl extends Transit {
     // ∆ :: [number]
     this._defaults.angleShift     = 0;
   }
+
+  // ^ PUBLIC  METHOD(S) ^
+  // v PRIVATE METHOD(S) v
+  
   /*
     Method to copy _o options to _props with
     fallback to _defaults.
@@ -73,6 +76,10 @@ class Swirl extends Transit {
     @param {Numer} Progress of the Swirl in range of [0..1]
   */
   _setProgress ( proc ) {
+
+    this._progress = proc;
+    this._calcCurrentProps(proc);
+
     var p     = this._props,
         angle = this._posData.angle + p.angleShift,
         point = h.getRadialPoint({
@@ -89,7 +96,8 @@ class Swirl extends Transit {
     p.x = ( this._o.ctx ) ? x : x+this._posData.x.units;
     p.y = ( this._o.ctx ) ? y : y+this._posData.y.units;
 
-    super._setProgress(proc);
+    this._calcOrigin();
+    this._draw(proc);
   }
   /*
     Method to get progress of the swirl.
