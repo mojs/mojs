@@ -11,31 +11,31 @@ describe 'Swirl ->', ->
     #   swirl = new Swirl
     #   expect(swirl._skipPropsDelta.x).toBe 1
     #   expect(swirl._skipPropsDelta.y).toBe 1
-    # it 'should have angleShift value', ->
-    #   swirl = new Swirl
-    #     x: {0:10}, y: {0:10}
-    #     isSwirlLess: true, angleShift: 90
-    #   expect(swirl._props.angleShift).toBe 90
+    it 'should have angleShift value', ->
+      swirl = new Swirl
+        x: {0:10}, y: {0:10}
+        isSwirl: false, angleShift: 90
+      expect(swirl._props.angleShift).toBe 90
   describe 'position calc ->', ->
     it 'should calc position radius', ->
       swirl = new Swirl x: {0:10}, y: {0:20}
-      expect(swirl._positionDelta.radius).toBe Math.sqrt (10*10 + 20*20)
+      expect(swirl._posData.radius).toBe Math.sqrt (10*10 + 20*20)
     it 'should calc position angle', ->
       swirl = new Swirl x: {0:10}, y: {0:10}
-      expect(swirl._positionDelta.angle).toBe 135
+      expect(swirl._posData.angle).toBe 135
     it 'should calc position angle', ->
       swirl = new Swirl x: {0:-10}, y: {0:-10}
-      expect(swirl._positionDelta.angle).toBe - 45
+      expect(swirl._posData.angle).toBe - 45
     it 'should calc position angle', ->
       swirl = new Swirl x: {0:0}, y: {0:-10}
-      expect(swirl._positionDelta.angle).toBe 0
+      expect(swirl._posData.angle).toBe 0
     it 'should calc position angle', ->
       swirl = new Swirl x: {0:-10}, y: {0:0}
-      expect(swirl._positionDelta.angle).toBe 270
+      expect(swirl._posData.angle).toBe 270
     it 'should save startX and StartY values', ->
       swirl = new Swirl x: {0:10}, y: {10:10}
-      expect(swirl._positionDelta.x.start).toBe 0
-      expect(swirl._positionDelta.y.start).toBe 10
+      expect(swirl._posData.x.start).toBe 0
+      expect(swirl._posData.y.start).toBe 10
     it 'should set start position anyways', ->
       swirl = new Swirl x: {0:10}, y: 0, isIt: 1
       expect(swirl._props.x).toBe '0px'
@@ -54,8 +54,26 @@ describe 'Swirl ->', ->
       expect(Swirl.prototype._setProgress).toHaveBeenCalledWith .5
     it 'should set x/y progress', ->
       swirl = new Swirl x: {0:10}, y: {0:10}, isSwirl: false
+      swirl._setProgress .4
       swirl._setProgress .5
       expect(parseInt(swirl._props.x, 10)).toBe 5
+      expect(parseInt(swirl._props.y, 10)).toBe 5
+    it 'should set x/y progress regarding angleShift', ->
+      swirl = new Swirl
+        x: {0:10}, y: {0:10}, isSwirl: false,
+        angleShift: 90
+      # swirl._setProgress .4
+      swirl._setProgress .5
+      expect(parseInt(swirl._props.x, 10)).toBe -5
+      expect(parseInt(swirl._props.y, 10)).toBe 5
+    it 'should set x/y progress regarding delta angleShift', ->
+      swirl = new Swirl
+        x: {0:10}, y: {0:10}, isSwirl: false,
+        angleShift: { 0: 180 }
+      # swirl._setProgress .4
+      swirl._setProgress .5
+      swirl._setProgress .5
+      expect(parseInt(swirl._props.x, 10)).toBe -5
       expect(parseInt(swirl._props.y, 10)).toBe 5
     it 'should set x/y progress', ->
       swirl = new Swirl x: {0:10}, y: {0:10}, isSwirl: false

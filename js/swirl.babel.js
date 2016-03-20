@@ -11,10 +11,16 @@ class Swirl extends Transit {
   _declareDefaults () {
     super._declareDefaults();
     
+    // ∆ :: [number > 0]
     this._defaults.swirlSize      = 10;
+    // ∆ :: [number > 0]
     this._defaults.swirlFrequency = 3;
+    // [boolean]
     this._defaults.isSwirl        = true;
+    // ∆ :: [number > 0]
     this._defaults.radiusScale    = 1;
+    // ∆ :: [number]
+    this._defaults.angleShift     = 0;
   }
   /*
     Method to copy _o options to _props with
@@ -28,18 +34,20 @@ class Swirl extends Transit {
     var p     = this._props,
         x     = this._getPosValue('x'),
         y     = this._getPosValue('y'),
-        angle = 90 + Math.atan((y.delta/x.delta) || 0)*(180/Math.PI);
+        angle = (90 + Math.atan((y.delta/x.delta) || 0)*h.RAD_TO_DEG);
 
-    this._positionDelta = {
+    this._posData = {
       radius: Math.sqrt(x.delta*x.delta + y.delta*y.delta),
       angle: (x.delta < 0) ? angle + 180 : angle,
       x, y
     }
 
-    this._props.signRand = Math.round(h.rand(0, 1)) ? -1 : 1;
+    p.signRand = Math.round(h.rand(0, 1)) ? -1 : 1;
   }
   /*
-
+    Gets `x` or `y` position value.
+    @private
+    @param {String} Name of the property.
   */
   _getPosValue (name) {
     if ( this._deltas[name] ) {
@@ -66,21 +74,20 @@ class Swirl extends Transit {
   */
   _setProgress ( proc ) {
     var p     = this._props,
-        o     = this._o,
-        angle = this._positionDelta.angle, // + this._props.angleShift
+        angle = this._posData.angle + p.angleShift,
         point = h.getRadialPoint({
           angle:  (p.isSwirl) ? angle + this._getSwirl(proc) : angle,
-          radius: proc*this._positionDelta.radius*p.radiusScale,
+          radius: proc*this._posData.radius*p.radiusScale,
           center: {
-            x: this._positionDelta.x.start,
-            y: this._positionDelta.y.start
+            x: this._posData.x.start,
+            y: this._posData.y.start
           }
         });
 
     // if foreign svg canvas - set position without units
     var x = point.x, y = point.y;
-    p.x = ( o.ctx ) ? x : x+this._positionDelta.x.units;
-    p.y = ( o.ctx ) ? y : y+this._positionDelta.y.units;
+    p.x = ( this._o.ctx ) ? x : x+this._posData.x.units;
+    p.y = ( this._o.ctx ) ? y : y+this._posData.y.units;
 
     super._setProgress(proc);
   }

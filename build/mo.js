@@ -2283,10 +2283,16 @@
 	    value: function _declareDefaults() {
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), '_declareDefaults', this).call(this);
 
+	      // ∆ :: [number > 0]
 	      this._defaults.swirlSize = 10;
+	      // ∆ :: [number > 0]
 	      this._defaults.swirlFrequency = 3;
+	      // [boolean]
 	      this._defaults.isSwirl = true;
+	      // ∆ :: [number > 0]
 	      this._defaults.radiusScale = 1;
+	      // ∆ :: [number]
+	      this._defaults.angleShift = 0;
 	    }
 	    /*
 	      Method to copy _o options to _props with
@@ -2303,18 +2309,21 @@
 	      var p = this._props,
 	          x = this._getPosValue('x'),
 	          y = this._getPosValue('y'),
-	          angle = 90 + Math.atan(y.delta / x.delta || 0) * (180 / Math.PI);
+	          angle = 90 + Math.atan(y.delta / x.delta || 0) * _h2.default.RAD_TO_DEG;
 
-	      this._positionDelta = {
+	      this._posData = {
 	        radius: Math.sqrt(x.delta * x.delta + y.delta * y.delta),
 	        angle: x.delta < 0 ? angle + 180 : angle,
 	        x: x, y: y
 	      };
 
-	      this._props.signRand = Math.round(_h2.default.rand(0, 1)) ? -1 : 1;
+	      p.signRand = Math.round(_h2.default.rand(0, 1)) ? -1 : 1;
 	    }
 	    /*
-	     */
+	      Gets `x` or `y` position value.
+	      @private
+	      @param {String} Name of the property.
+	    */
 
 	  }, {
 	    key: '_getPosValue',
@@ -2346,23 +2355,21 @@
 	    key: '_setProgress',
 	    value: function _setProgress(proc) {
 	      var p = this._props,
-	          o = this._o,
-	          angle = this._positionDelta.angle,
-	          // + this._props.angleShift
-	      point = _h2.default.getRadialPoint({
+	          angle = this._posData.angle + p.angleShift,
+	          point = _h2.default.getRadialPoint({
 	        angle: p.isSwirl ? angle + this._getSwirl(proc) : angle,
-	        radius: proc * this._positionDelta.radius * p.radiusScale,
+	        radius: proc * this._posData.radius * p.radiusScale,
 	        center: {
-	          x: this._positionDelta.x.start,
-	          y: this._positionDelta.y.start
+	          x: this._posData.x.start,
+	          y: this._posData.y.start
 	        }
 	      });
 
 	      // if foreign svg canvas - set position without units
 	      var x = point.x,
 	          y = point.y;
-	      p.x = o.ctx ? x : x + this._positionDelta.x.units;
-	      p.y = o.ctx ? y : y + this._positionDelta.y.units;
+	      p.x = this._o.ctx ? x : x + this._posData.x.units;
+	      p.y = this._o.ctx ? y : y + this._posData.y.units;
 
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), '_setProgress', this).call(this, proc);
 	    }
@@ -7565,7 +7572,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.198.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.199.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7579,14 +7586,38 @@
 
 	*/
 
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   tr
-	//     // .tune({ x: e.pageX, y: e.pageY })
-	//     .run()
-	//     // .play()
+	// var tm = new mojs.Timeline();
+
+	// var sw = new mojs.Swirl({
+	//   radius: {'rand(10,20)': 0},
+	//   left: '50%', top: '50%',
+	//   swirlFrequency: {3: 0},
+	//   swirlSize: {10: 0},
+	//   y: { 0: -200 },
+	//   // x: { 0: 200 },
+	//   duration: 2000,
+	//   easing: 'ease.out',
+	//   radiusScale: {2: 0},
+	//   angleShift: { 'rand(120, 300)': 0}
 	// });
+	// .then({
+	//   radius: 0,
+	//   swirlFrequency: 6,
+	//   swirlSize: 10,
+	//   y: -100,
+	//   easing: 'ease.in',
+	//   angleShift: 50
+	// });
+
+	var playEl = document.querySelector('#js-play'),
+	    rangeSliderEl = document.querySelector('#js-range-slider');
+	document.body.addEventListener('click', function (e) {
+	  sw
+	  // .tune(sw._o)
+	  // .tune({ swirlFrequency: 'rand(2, 20)' })
+	  // .generate()
+	  .play();
+	});
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );

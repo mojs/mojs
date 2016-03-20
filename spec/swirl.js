@@ -9,10 +9,24 @@
 
   describe('Swirl ->', function() {
     describe('extension ->', function() {
-      return it('should extend Transit class', function() {
+      it('should extend Transit class', function() {
         var swirl;
         swirl = new Swirl;
         return expect(swirl instanceof Transit).toBe(true);
+      });
+      return it('should have angleShift value', function() {
+        var swirl;
+        swirl = new Swirl({
+          x: {
+            0: 10
+          },
+          y: {
+            0: 10
+          },
+          isSwirl: false,
+          angleShift: 90
+        });
+        return expect(swirl._props.angleShift).toBe(90);
       });
     });
     describe('position calc ->', function() {
@@ -26,7 +40,7 @@
             0: 20
           }
         });
-        return expect(swirl._positionDelta.radius).toBe(Math.sqrt(10 * 10 + 20 * 20));
+        return expect(swirl._posData.radius).toBe(Math.sqrt(10 * 10 + 20 * 20));
       });
       it('should calc position angle', function() {
         var swirl;
@@ -38,7 +52,7 @@
             0: 10
           }
         });
-        return expect(swirl._positionDelta.angle).toBe(135);
+        return expect(swirl._posData.angle).toBe(135);
       });
       it('should calc position angle', function() {
         var swirl;
@@ -50,7 +64,7 @@
             0: -10
           }
         });
-        return expect(swirl._positionDelta.angle).toBe - 45;
+        return expect(swirl._posData.angle).toBe - 45;
       });
       it('should calc position angle', function() {
         var swirl;
@@ -62,7 +76,7 @@
             0: -10
           }
         });
-        return expect(swirl._positionDelta.angle).toBe(0);
+        return expect(swirl._posData.angle).toBe(0);
       });
       it('should calc position angle', function() {
         var swirl;
@@ -74,7 +88,7 @@
             0: 0
           }
         });
-        return expect(swirl._positionDelta.angle).toBe(270);
+        return expect(swirl._posData.angle).toBe(270);
       });
       it('should save startX and StartY values', function() {
         var swirl;
@@ -86,8 +100,8 @@
             10: 10
           }
         });
-        expect(swirl._positionDelta.x.start).toBe(0);
-        return expect(swirl._positionDelta.y.start).toBe(10);
+        expect(swirl._posData.x.start).toBe(0);
+        return expect(swirl._posData.y.start).toBe(10);
       });
       it('should set start position anyways', function() {
         var swirl;
@@ -140,8 +154,44 @@
           },
           isSwirl: false
         });
+        swirl._setProgress(.4);
         swirl._setProgress(.5);
         expect(parseInt(swirl._props.x, 10)).toBe(5);
+        return expect(parseInt(swirl._props.y, 10)).toBe(5);
+      });
+      it('should set x/y progress regarding angleShift', function() {
+        var swirl;
+        swirl = new Swirl({
+          x: {
+            0: 10
+          },
+          y: {
+            0: 10
+          },
+          isSwirl: false,
+          angleShift: 90
+        });
+        swirl._setProgress(.5);
+        expect(parseInt(swirl._props.x, 10)).toBe(-5);
+        return expect(parseInt(swirl._props.y, 10)).toBe(5);
+      });
+      it('should set x/y progress regarding delta angleShift', function() {
+        var swirl;
+        swirl = new Swirl({
+          x: {
+            0: 10
+          },
+          y: {
+            0: 10
+          },
+          isSwirl: false,
+          angleShift: {
+            0: 180
+          }
+        });
+        swirl._setProgress(.5);
+        swirl._setProgress(.5);
+        expect(parseInt(swirl._props.x, 10)).toBe(-5);
         return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
       it('should set x/y progress', function() {
