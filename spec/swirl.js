@@ -9,30 +9,10 @@
 
   describe('Swirl ->', function() {
     describe('extension ->', function() {
-      it('should extend Transit class', function() {
+      return it('should extend Transit class', function() {
         var swirl;
         swirl = new Swirl;
         return expect(swirl instanceof Transit).toBe(true);
-      });
-      it('should have _skipPropsDelta', function() {
-        var swirl;
-        swirl = new Swirl;
-        expect(swirl._skipPropsDelta.x).toBe(1);
-        return expect(swirl._skipPropsDelta.y).toBe(1);
-      });
-      return it('should have angleShift value', function() {
-        var swirl;
-        swirl = new Swirl({
-          x: {
-            0: 10
-          },
-          y: {
-            0: 10
-          },
-          isSwirlLess: true,
-          angleShift: 90
-        });
-        return expect(swirl._props.angleShift).toBe(90);
       });
     });
     describe('position calc ->', function() {
@@ -46,7 +26,7 @@
             0: 20
           }
         });
-        return expect(swirl.positionDelta.radius).toBe(Math.sqrt(10 * 10 + 20 * 20));
+        return expect(swirl._positionDelta.radius).toBe(Math.sqrt(10 * 10 + 20 * 20));
       });
       it('should calc position angle', function() {
         var swirl;
@@ -58,7 +38,7 @@
             0: 10
           }
         });
-        return expect(swirl.positionDelta.angle).toBe(135);
+        return expect(swirl._positionDelta.angle).toBe(135);
       });
       it('should calc position angle', function() {
         var swirl;
@@ -70,7 +50,7 @@
             0: -10
           }
         });
-        return expect(swirl.positionDelta.angle).toBe - 45;
+        return expect(swirl._positionDelta.angle).toBe - 45;
       });
       it('should calc position angle', function() {
         var swirl;
@@ -82,7 +62,7 @@
             0: -10
           }
         });
-        return expect(swirl.positionDelta.angle).toBe(0);
+        return expect(swirl._positionDelta.angle).toBe(0);
       });
       it('should calc position angle', function() {
         var swirl;
@@ -94,7 +74,7 @@
             0: 0
           }
         });
-        return expect(swirl.positionDelta.angle).toBe(270);
+        return expect(swirl._positionDelta.angle).toBe(270);
       });
       it('should save startX and StartY values', function() {
         var swirl;
@@ -106,8 +86,8 @@
             10: 10
           }
         });
-        expect(swirl.positionDelta.x.start).toBe(0);
-        return expect(swirl.positionDelta.y.start).toBe(10);
+        expect(swirl._positionDelta.x.start).toBe(0);
+        return expect(swirl._positionDelta.y.start).toBe(10);
       });
       it('should set start position anyways', function() {
         var swirl;
@@ -115,10 +95,11 @@
           x: {
             0: 10
           },
-          y: 0
+          y: 0,
+          isIt: 1
         });
-        expect(swirl._props.x).toBe('0.0000px');
-        return expect(swirl._props.y).toBe('0.0000px');
+        expect(swirl._props.x).toBe('0px');
+        return expect(swirl._props.y).toBe('0px');
       });
       return it('should call super _extendDefaults method', function() {
         var swirl;
@@ -129,9 +110,9 @@
             }, 20
           ]
         });
-        spyOn(Swirl.__super__, '_extendDefaults');
+        spyOn(Swirl.prototype, '_extendDefaults').and.callThrough();
         swirl._extendDefaults();
-        return expect(Swirl.__super__._extendDefaults).toHaveBeenCalled();
+        return expect(Swirl.prototype._extendDefaults).toHaveBeenCalled();
       });
     });
     describe('_setProgress ->', function() {
@@ -144,9 +125,9 @@
             }, 20
           ]
         });
-        spyOn(Swirl.__super__, '_setProgress');
+        spyOn(Swirl.prototype, '_setProgress').and.callThrough();
         swirl._setProgress(.5);
-        return expect(Swirl.__super__._setProgress).toHaveBeenCalledWith(.5);
+        return expect(Swirl.prototype._setProgress).toHaveBeenCalledWith(.5);
       });
       it('should set x/y progress', function() {
         var swirl;
@@ -157,11 +138,11 @@
           y: {
             0: 10
           },
-          isSwirlLess: true
+          isSwirl: false
         });
         swirl._setProgress(.5);
-        expect(swirl._props.x).toBe('5.0000px');
-        return expect(swirl._props.y).toBe('5.0000px');
+        expect(parseInt(swirl._props.x, 10)).toBe(5);
+        return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
       it('should set x/y progress', function() {
         var swirl;
@@ -172,11 +153,11 @@
           y: {
             0: 10
           },
-          isSwirlLess: true
+          isSwirl: false
         });
         swirl._setProgress(1);
-        expect(swirl._props.x).toBe('10.0000px');
-        return expect(swirl._props.y).toBe('10.0000px');
+        expect(parseInt(swirl._props.x, 10)).toBe(10);
+        return expect(parseInt(swirl._props.y, 10)).toBe(10);
       });
       it('should set negative x/y progress', function() {
         var swirl;
@@ -187,11 +168,11 @@
           y: {
             0: '-10'
           },
-          isSwirlLess: true
+          isSwirl: false
         });
         swirl._setProgress(1);
-        expect(swirl._props.x).toBe('-10.0000px');
-        return expect(swirl._props.y).toBe('-10.0000px');
+        expect(parseInt(swirl._props.x, 10)).toBe(-10);
+        return expect(parseInt(swirl._props.y, 10)).toBe(-10);
       });
       it('should set plain x/y progress if foreign context', function() {
         var swirl;
@@ -203,11 +184,12 @@
             0: 10
           },
           ctx: tr.ctx,
-          isSwirlLess: true
+          isSwirl: false
         });
+        swirl._setProgress(.5);
         swirl._setProgress(1);
-        expect(swirl._props.x + '').toBe('10.0000');
-        return expect(swirl._props.y + '').toBe('10.0000');
+        expect(swirl._props.x.toFixed(2)).toBe('10.00');
+        return expect(swirl._props.y.toFixed(2)).toBe('10.00');
       });
       it('should respect radiusScale value', function() {
         var swirl;
@@ -218,12 +200,13 @@
           y: {
             0: 10
           },
-          isSwirlLess: true,
+          isSwirl: false,
           radiusScale: .5
         });
+        swirl._setProgress(.5);
         swirl._setProgress(1);
-        expect(swirl._props.x).toBe('5.0000px');
-        return expect(swirl._props.y).toBe('5.0000px');
+        expect(parseInt(swirl._props.x, 10)).toBe(5);
+        return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
       it('should not add swirl', function() {
         var swirl;
@@ -233,11 +216,12 @@
           },
           y: {
             0: 10
-          }
+          },
+          isSwirl: false
         });
         swirl._setProgress(.5);
-        expect(swirl._props.x).toBe('5.0000px');
-        return expect(swirl._props.y).toBe('5.0000px');
+        expect(parseInt(swirl._props.x, 10)).toBe(5);
+        return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
       return it('should add swirl if isSwirl', function() {
         var swirl;
@@ -255,42 +239,11 @@
         return expect(swirl._props.y).not.toBe('5.0000px');
       });
     });
-    describe('generateSwirl method ->', function() {
-      it('should generate simple swirl', function() {
-        var swirl;
-        swirl = new Swirl({
-          swirlSize: 3,
-          swirlFrequency: 2
-        });
-        swirl.generateSwirl();
-        expect(swirl._props.swirlSize).toBe(3);
-        return expect(swirl._props.swirlFrequency).toBe(2);
-      });
-      it('should generate rand swirl', function() {
-        var swirl;
-        swirl = new Swirl({
-          swirlSize: 'rand(10,20)',
-          swirlFrequency: 'rand(3,7)'
-        });
-        swirl.generateSwirl();
-        expect(swirl._props.swirlSize).toBeGreaterThan(9);
-        return expect(swirl._props.swirlSize).not.toBeGreaterThan(20);
-      });
-      return it('should not generate simple swirl is isSwirlLess was passed', function() {
-        var swirl;
-        swirl = new Swirl({
-          isSwirlLess: true
-        });
-        spyOn(swirl, 'generateSwirl');
-        swirl._vars();
-        return expect(swirl.generateSwirl).not.toHaveBeenCalled();
-      });
-    });
-    return describe('getSwirl method ->', function() {
+    return describe('_getSwirl method ->', function() {
       return it('should calc swirl based on swirlFrequency and swirlSize props', function() {
         var freq, sign, swirl, swirl1;
         swirl = new Swirl;
-        swirl1 = swirl.getSwirl(.5);
+        swirl1 = swirl._getSwirl(.5);
         freq = Math.sin(swirl._props.swirlFrequency * .5);
         sign = swirl._props.signRand;
         return expect(swirl1).toBe(sign * swirl._props.swirlSize * freq);

@@ -3,6 +3,7 @@
 
 Transit = require('./transit').default
 h       = require('./h')
+
 class Swirl extends Transit
   _skipPropsDelta: x: 1, y: 1
   _vars:-> super; !@_o.isSwirlLess and @generateSwirl()

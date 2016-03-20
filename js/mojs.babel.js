@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.198.0', isDebug: true, helpers: h,
+  revision:   '0.198.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,84 +25,19 @@ window.mojs = {
 
 // TODO:
 /*
-  rename `runnable` to `changable`
+  Merge `swirl` and `transit`.
+  Tweak burst for the new reality.
+  percentage for radius
+
 */
-
-// var tr = new mojs.Transit({
-//   left: '50%', top: '50%',
-//   shape:    'polygon',
-//   strokeWidth: 20,
-//   angle:    { 0 : 200},
-//   radius:   10,
-//   fill:     'none',
-//   stroke:   { 'white': 'cyan' },
-//   points:   { 3 : 20 }, // make triangle
-//   duration: 2000,
-//   // isShowStart: true,
-//   // isShowEnd: true,
-//   timeline: { repeat: 1 },
-//   // delay:    4000,
-//   scale: { 0 : 6 },
-//   // timeline: { repeat: 2, yoyo: true },
-//   // onStart: ()=> { console.log('start 1'); },
-//   // onComplete: ()=> { console.log('comple 1'); },
-//   // easing: 'expo.in'
-// })
-// .then({
-//   // onStart: ()=> { console.log('start 2')},
-//   // onComplete: ()=> { console.log('comple 2'); },
-//   points:   3, // make triangle
-//   angle:    -180,
-//   duration: 300,
-//   stroke: 'yellow',
-//   easing: 'expo.in',
-//   scale: .5,
-// })
-// .then({
-//   // onStart: ()=> { console.log('start 3')},
-//   // onComplete: ()=> { console.log('comple 3'); },
-//   strokeWidth: 0,
-//   stroke: 'hotpink',
-//   duration: 400,
-//   easing: 'cubic.out',
-//   // scale: { 1: 1 },
-//   radius: 40,
-//   scale: 1,
-//   angle: 90,
-//   // speed: 1
-//   // opacity: 0
-// });
-
-// // console.log(tr._history[0].onStart);
-// // console.log(tr._history[1].onStart);
-// // console.log(tr._history[2].onStart);
 
 // var playEl = document.querySelector('#js-play'),
 //     rangeSliderEl = document.querySelector('#js-range-slider');
 // document.body.addEventListener('click', function (e) {
-//   // tr.run({ stroke: 'red' });
-//   // console.time('run');
 //   tr
-//     .change({
-//       duration: 1500, stroke: {'red': 'purple'},
-//       left: 0, top: 0,
-//       x: parseInt(e.pageX), y:parseInt(e.pageY),
-//       delay: 2000,
-//       onStart: function (isForward, isYoyo) {
-//         console.log('START', isForward, isYoyo );
-//       },
-//       onUpdate: function (p) {
-//         // console.log(p);
-//       }
-//     })
-//     .stop().play();
-
-//   // console.timeEnd('run');
-
-//   // console.log(tr._history[0].onStart);
-//   // console.log(tr._history[1].onStart);
-//   // console.log(tr._history[2].onStart);
-//   // console.log(tr._history);
+//     // .tune({ x: e.pageX, y: e.pageY })
+//     .run()
+//     // .play()
 // });
 
 // rangeSliderEl.addEventListener('input', function () {
