@@ -137,7 +137,7 @@ describe 'tweenable ->', ->
       result = tw.setProgress( .5 )
       expect(result).toBe tw
 
-  describe 'isTimelineLess options', ->
+  describe 'isTimelineLess option ->', ->
     it 'should not create timeline', ->
       tw = new Tweenable isTimelineLess: true
       expect(tw._o.timeline).not.toBeDefined()
@@ -145,6 +145,15 @@ describe 'tweenable ->', ->
       tw = new Tweenable isTimelineLess: true
       expect(tw.timeline instanceof Timeline).toBe false
       expect(tw.timeline instanceof Tween).toBe true
+
+  describe 'isTweenLess option ->', ->
+    # it 'should not create tween', ->
+    #   tw = new Tweenable isTweenLess: true
+    #   expect(tw.tween).not.toBeDefined()
+    it 'should save tween as tween property', ->
+      tw = new Tweenable isTweenLess: true
+      expect(tw.tween instanceof Tween).toBe false
+      expect(tw.timeline instanceof Timeline).toBe true
 
   describe 'callbacksContext option ->', ->
     it 'should pass the options to the tween', ->

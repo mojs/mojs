@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.200.0', isDebug: true, helpers: h,
+  revision:   '0.200.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,46 +25,24 @@ window.mojs = {
 
 // TODO:
 /*
-  Merge `swirl` and `transit`.
+  randoms in then chains for transit and swirl.
   Tweak burst for the new reality.
   percentage for radius
-
 */
 
-var sw = new mojs.Transit({
-  left: '50%', top: '50%',
-  isShowEnd: true,
-  stroke: 'cyan',
-  duration: 2000,
-  delay: 2000,
-  radius: { 'rand(0, 200)': 0 }
-}).then({
-  radius: 'rand(0, 200)'
-});
 
-// var sw = new mojs.Swirl({
-//   radius: {'rand(10,20)': 0},
-//   left: '50%', top: '50%',
-//   swirlFrequency: {10: 0},
-//   swirlSize: 100,
-//   y: { 0: -200 },
-//   // x: { 0: 200 },
-//   duration: 2000,
-//   easing: 'ease.out',
-//   // radiusScale: {2: 0},
-//   // angleShift: { 'rand(120, 300)': 0}
+// var sw = new mojs.Burst({
+//   left: '50%', top: '50%'
 // });
 
-
-var playEl = document.querySelector('#js-play'),
-    rangeSliderEl = document.querySelector('#js-range-slider');
-document.body.addEventListener('click', function (e) {
-  sw
-    // .tune(sw._o)
-    // .tune({ swirlFrequency: 'rand(2, 20)' })
-    .generate()
-    .replay();
-});
+// var playEl = document.querySelector('#js-play'),
+//     rangeSliderEl = document.querySelector('#js-range-slider');
+// document.body.addEventListener('click', function (e) {
+//   sw
+//     // .tune(sw._o)
+//     // .tune({ swirlFrequency: 'rand(2, 20)' })
+//     .replay();
+// });
 
 // rangeSliderEl.addEventListener('input', function () {
 //   tr.setProgress( rangeSliderEl.value/1000 );

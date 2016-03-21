@@ -96,8 +96,8 @@ module.exports = function(config) {
       // 'spec/transit.js',
       // 'build/swirl.js',
       // 'spec/swirl.js',
-      'build/burst.js',
-      'spec/burst.js',
+      // 'build/burst.js',
+      // 'spec/burst.js',
 
       // 'build/tween/tweenable.js',
       // 'spec/tween/tweenable.js',

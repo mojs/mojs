@@ -230,7 +230,7 @@
         return expect(result).toBe(tw);
       });
     });
-    describe('isTimelineLess options', function() {
+    describe('isTimelineLess option ->', function() {
       it('should not create timeline', function() {
         var tw;
         tw = new Tweenable({
@@ -245,6 +245,16 @@
         });
         expect(tw.timeline instanceof Timeline).toBe(false);
         return expect(tw.timeline instanceof Tween).toBe(true);
+      });
+    });
+    describe('isTweenLess option ->', function() {
+      return it('should save tween as tween property', function() {
+        var tw;
+        tw = new Tweenable({
+          isTweenLess: true
+        });
+        expect(tw.tween instanceof Tween).toBe(false);
+        return expect(tw.timeline instanceof Timeline).toBe(true);
       });
     });
     return describe('callbacksContext option ->', function() {

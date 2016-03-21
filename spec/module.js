@@ -567,8 +567,7 @@
       it('should extend defaults object to properties if rand was passed', function() {
         var md;
         md = new Module({
-          radius: 20,
-          isIt: 1
+          radius: 20
         });
         md._tuneNewOptions({
           'radius': 'rand(0, 10)'

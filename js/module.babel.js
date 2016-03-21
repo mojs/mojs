@@ -119,7 +119,6 @@ class Module {
           break;
         case 'string':
           var array = this._props[key].split(' ');
-          this._o.isIt && console.log(array);
           for (var i = 0; i < array.length; i++ ) {
             result.push(h.parseUnit(array[i]));
           }
@@ -169,6 +168,7 @@ class Module {
   _extendDefaults ( ) {
     this._props  = {};
     this._deltas = {};
+    this._o.isIt && console.log('extnd')
     for (var key in this._defaults) {
       // skip property if it is listed in _skipProps
       if (this._skipProps && this._skipProps[key]) { continue; }

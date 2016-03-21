@@ -80,9 +80,11 @@ class Tweenable extends Module {
   constructor ( o = {} ) {
     // super of Module
     super( o );
-    
+    // pipe function for _o object
+    // before creating tween/timeline
     this._transformTweenOptions();
-    this._makeTween();
+    // make tween only if isTweenLess option is not set
+    !this._o.isTweenLess && this._makeTween();
     // make timeline only if isTimelineLess option is not set
     !this._o.isTimelineLess && this._makeTimeline();
   }
@@ -115,8 +117,8 @@ class Tweenable extends Module {
     this._o.timeline = this._o.timeline || {};
     this._o.timeline.callbacksContext = this._o.callbacksContext || this;
     this.timeline = new Timeline( this._o.timeline );
-    // if tween exist - add it to the timeline there
-    // is some modules like stagger that have no tween
+    // if tween exist - add it to the timeline there is some
+    // modules like burst and stagger that have no tween
     this.tween && this.timeline.add( this.tween );
   }
 }

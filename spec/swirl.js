@@ -109,8 +109,7 @@
           x: {
             0: 10
           },
-          y: 0,
-          isIt: 1
+          y: 0
         });
         expect(swirl._props.x).toBe('0px');
         return expect(swirl._props.y).toBe('0px');

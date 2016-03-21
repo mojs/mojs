@@ -37,7 +37,7 @@ describe 'Swirl ->', ->
       expect(swirl._posData.x.start).toBe 0
       expect(swirl._posData.y.start).toBe 10
     it 'should set start position anyways', ->
-      swirl = new Swirl x: {0:10}, y: 0, isIt: 1
+      swirl = new Swirl x: {0:10}, y: 0
       expect(swirl._props.x).toBe '0px'
       expect(swirl._props.y).toBe '0px'
     it 'should call super _extendDefaults method', ->

@@ -2,6 +2,12 @@
 import Transit from './transit';
 import h from './h';
 
+/*
+  *TODO:*
+  ---
+  - tweak then chains
+*/
+
 class Swirl extends Transit {
   /*
     Method to declare _defaults and other default objects.

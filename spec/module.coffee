@@ -351,7 +351,7 @@ describe 'module class ->', ->
       md._tuneNewOptions 'radius': [50, 100]
       expect(md._props.radius.join ', ').toBe '50, 100'
     it 'should extend defaults object to properties if rand was passed', ->
-      md = new Module radius: 20, isIt: 1
+      md = new Module radius: 20
       md._tuneNewOptions 'radius': 'rand(0, 10)'
       expect(md._props.radius).toBeDefined()
       expect(md._props.radius).toBeGreaterThan -1
