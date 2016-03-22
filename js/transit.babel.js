@@ -187,8 +187,9 @@ class Transit extends Tunable {
     if (!this.isForeign) {
       this._isPropChanged('left')  && (this.el.style.left = p.left);
       this._isPropChanged('top')   && (this.el.style.top = p.top);
-      var isPosChanged = this._isPropChanged('x') || this._isPropChanged('y');
-      if ( isPosChanged || this._isPropChanged('scale') ) {
+      var isTranslate = this._isPropChanged('x') || this._isPropChanged('y'),
+          isScaleRotate = this._isPropChanged('scale') || this._isPropChanged('angle');
+      if ( isTranslate || isScaleRotate ) {
         h.setPrefixedStyle(this.el, 'transform', this._fillTransform());
       }
     }

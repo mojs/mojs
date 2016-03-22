@@ -1013,7 +1013,29 @@
         byte.el = null;
         return expect(byte._drawEl()).toBe(true);
       });
-      it('should set transform if on of the x, y or scale changed', function() {
+      it('should set transform if angle changed', function() {
+        var byte;
+        byte = new Byte({
+          angle: 25,
+          isIt: 1
+        });
+        byte._draw();
+        byte._props.angle = 26;
+        spyOn(h, 'setPrefixedStyle');
+        byte._draw();
+        return expect(h.setPrefixedStyle).toHaveBeenCalled();
+      });
+      it('should not set transform if angle changed', function() {
+        var byte;
+        byte = new Byte({
+          angle: 25
+        });
+        byte._draw();
+        spyOn(h, 'setPrefixedStyle');
+        byte._draw();
+        return expect(h.setPrefixedStyle).not.toHaveBeenCalled();
+      });
+      it('should set transform if one of the x, y or scale changed', function() {
         var byte;
         byte = new Byte({
           radius: 25,
