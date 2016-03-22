@@ -56,6 +56,7 @@
         var byte;
         byte = new Byte;
         expect(byte._defaults).toBeDefined();
+        expect(byte._defaults.shape).toBe('circle');
         expect(byte._defaults.stroke).toBe('transparent');
         expect(byte._defaults.strokeOpacity).toBe(1);
         expect(byte._defaults.strokeLinecap).toBe('');

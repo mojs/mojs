@@ -187,25 +187,25 @@ describe 'Burst ->', ->
       # expect(option0.onUpdate)  .toBe null
       # expect(option0.onStart)   .toBe null
       # expect(option0.onComplete).toBe null
+    # old
+    # it 'should add x/y deltas to the _swirls ->', ->
+    #   burst = new Burst
+    #     radius: { 0: 100 }
+    #     count:  2
 
-    it 'should add x/y deltas to the _swirls ->', ->
-      burst = new Burst
-        radius: { 0: 100 }
-        count:  2
+    #   expect(burst._swirls[0]._o.x[0]).toBeCloseTo 0, 5
+    #   expect(burst._swirls[0]._o.y[0]).toBe -100
 
-      expect(burst._swirls[0]._o.x[0]).toBeCloseTo 0, 5
-      expect(burst._swirls[0]._o.y[0]).toBe -100
+    #   expect(burst._swirls[1]._o.x[0]).toBeCloseTo 0, 5
+    #   expect(burst._swirls[1]._o.y[0]).toBe 100
+    # old
+    # it 'should parent option to swirls ->', ->
+    #   burst = new Burst
+    #     radius: { 0: 100 }
+    #     count:  2
 
-      expect(burst._swirls[1]._o.x[0]).toBeCloseTo 0, 5
-      expect(burst._swirls[1]._o.y[0]).toBe 100
-
-    it 'should parent option to swirls ->', ->
-      burst = new Burst
-        radius: { 0: 100 }
-        count:  2
-
-      expect(burst._swirls[0]._o.parent).toBe burst.el
-      expect(burst._swirls[1]._o.parent).toBe burst.el
+    #   expect(burst._swirls[0]._o.parent).toBe burst.el
+    #   expect(burst._swirls[1]._o.parent).toBe burst.el
 
   describe '_calcSize method ->', ->
     it 'should calc set size to 2', ->
@@ -289,6 +289,59 @@ describe 'Burst ->', ->
       expect(delta).toBe 10
 
 
+  describe '_addOptionalProperties method ->', ->
+    it 'should return the passed object', ->
+      burst = new Burst
+      obj = {}
+      result = burst._addOptionalProperties obj, 0
+      expect(result).toBe obj
+    it 'should add parent, index and isTimelineLess', ->
+      burst = new Burst
+      obj = {}
+      result = burst._addOptionalProperties obj, 0
+      expect(result.index).toBe 0
+      expect(result.parent).toBe burst.el
+      expect(result.isTimelineLess).toBe true
+
+    it 'should hard rewrite `left` and `top` properties to 50%', ->
+      burst = new Burst
+      obj = {}
+      result = burst._addOptionalProperties obj, 0
+      expect(result.left).toBe '50%'
+      expect(result.top).toBe '50%'
+
+    it 'should add x/y ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2,
+        size: 0,
+
+      obj0 = {}
+      obj1 = {}
+      burst._o.isIt = 0
+      result0 = burst._addOptionalProperties obj0, 0
+      result1 = burst._addOptionalProperties obj1, 1
+
+      expect(obj0.x[0]).toBeCloseTo 0, 5
+      expect(obj0.y[0]).toBeCloseTo -100, 5
+
+      expect(obj1.x[0]).toBeCloseTo 0, 5
+      expect(obj1.y[0]).toBeCloseTo 100, 5
+
+
+  describe '_extendDefaults method ->', ->
+    it 'should call super', ->
+      b = new Burst
+      spyOn Swirl.prototype, '_extendDefaults'
+      b._extendDefaults()
+      expect(Swirl.prototype._extendDefaults)
+        .toHaveBeenCalled()
+
+    it 'should call _calcSize', ->
+      b = new Burst
+      spyOn b, '_calcSize'
+      b._extendDefaults()
+      expect(b._calcSize).toHaveBeenCalled()
 
 
 

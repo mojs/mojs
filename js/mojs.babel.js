@@ -34,16 +34,20 @@ var sw = new mojs.Burst({
   left: '50%', top: '50%',
   isShowEnd: 1,
   radius: { 0: 50},
-  scale: { 0: 5 },
-  angle: {0: 170},
-  duration: 10000,
-  // isSwirl: false,
-  // degree: 180,
-  shape: 'polygon',
-  childOptions: {
-    shape: 'polygon',
-    duration: 2000
-  }
+  // scale: { 0: 5 },
+  // angle: {0: -200},
+  // y: { 0: 100 },
+  // duration: ,
+  isSwirl: 0,
+  isRunLess: 1,
+  // degree: 40,
+  type: 'polygon',
+  stroke: 'cyan'
+  // childOptions: {
+  //   shape:    'polygon',
+  //   duration: 2000,
+  //   angle:    [{ 0: 90 }, { 0: -90 }, { 0: 90 }, { 0: -90 }]
+  // }
   // swirlFrequency: 3,
   // x: {0: 400},
   // isSwirl: 0
@@ -60,7 +64,7 @@ document.body.addEventListener('click', function (e) {
   sw
     // .tune(sw._o)
     // .tune({ swirlFrequency: 'rand(2, 20)' })
-    .replay();
+    .play();
 });
 
 // rangeSliderEl.addEventListener('input', function () {

@@ -34,6 +34,17 @@ class Burst extends Swirl {
     }
   }
   /*
+    Method to copy _o options to _props with fallback to _defaults.
+    @private
+    @override @ Swirl
+  */
+  _extendDefaults () {
+    // call super extendDefaults on Swirl
+    super._extendDefaults();
+    // calc size immedietely, the Swirls' options rely on size
+    this._calcSize();
+  }
+  /*
     Method to create child transits.
     @private
     @override Transit
@@ -42,9 +53,6 @@ class Burst extends Swirl {
     this._swirls = [];
     for (var index = 0; index < this._props.count; index++) {
       var option = this._getOption( index );
-      option.isTimelineLess = true; option.index = index;
-      option.parent = this.el;
-      // option.callbacksContext = this;
       // this._props.randomAngle  && (option.angleShift  = this._generateRandomAngle())
       // this._props.randomRadius && (option.radiusScale = this._generateRandomRadius())
       this._swirls.push( new Swirl(option) );
@@ -72,22 +80,33 @@ class Burst extends Swirl {
       option[key] = prop;
     }
 
-    // console.log(this._deltas.angle)
-
-    // option.angleShift = { 0: 180 };
-    // console.log(option.shape)
+    return this._addOptionalProperties( option, i );
+  }
+  /*
+    Method to add optional Swirls' properties to passed object.
+    @private
+    @param {Object} Object to add the properties to.
+    @param {Number} Index of the property.
+  */
+  _addOptionalProperties (options, index) {
+    options.index          = index;
+    options.left           = '50%';
+    options.top            = '50%';
+    options.parent         = this.el;
+    options.isTimelineLess = true;
+    // option.callbacksContext = this;  ?
 
     var p          = this._props,
         points     = p.count,
         degreeCnt  = (p.degree % 360 === 0) ? points : points-1 || 1,
         step       = p.degree/degreeCnt,
-        pointStart = this._getSidePoint('start', i*step ),
-        pointEnd   = this._getSidePoint('end',   i*step );
+        pointStart = this._getSidePoint('start', index*step ),
+        pointEnd   = this._getSidePoint('end',   index*step );
 
-    option.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
-    option.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
+    options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
+    options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
 
-    return option;
+    return options;
   }
   /*
     Method to get radial point on `start` or `end`.
@@ -105,7 +124,7 @@ class Burst extends Swirl {
       radiusX: sideRadius.radiusX,
       radiusY: sideRadius.radiusY,
       angle:   angle,
-      center:  { x: p.size/2, y: p.size/2 }
+      center:  { x: p.center, y: p.center }
     });
   }
   /*
@@ -182,16 +201,6 @@ class Burst extends Swirl {
   _transformTweenOptions () {
     this._o.timeline = this._o.timeline || {};
     this._applyCallbackOverrides( this._o.timeline );
-  }
-  /*
-    Method to get transform string.
-    @private
-    @override @ Transit
-    @returns {String} Transform string.
-  */
-  _fillTransform () {
-    var p = this._props;
-    return `scale(${p.scale}) translate(${p.x}, ${p.y}) rotate(${p.angle}deg)`;
   }
   /*
     Method to create timeline.

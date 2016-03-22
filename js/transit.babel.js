@@ -22,7 +22,8 @@ class Transit extends Tunable {
   _declareDefaults () {
     // DEFAULTS / APIs
     this._defaults = {
-      // shape:            'circle',
+      // Possible values: [circle, line, zigzag, rect, polygon, cross, equal ]
+      shape:            'circle',
       // ∆ :: Possible values: [color name, rgb, rgba, hex]
       stroke:           'transparent',
       // ∆ :: Possible values: [ 0..1 ]
@@ -114,9 +115,9 @@ class Transit extends Tunable {
         this.ctx.style.height   = '100%';
         this.el = document.createElement('div');
         this.el.appendChild(this.ctx);
-        (this._o.parent || document.body).appendChild(this.el);
         this._createBit();
         this._calcSize();
+        (this._o.parent || document.body).appendChild(this.el);
       } else { this.ctx = this._o.ctx; this._createBit(); this._calcSize(); }
       this.isRendered = true;
     }

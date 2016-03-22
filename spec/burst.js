@@ -271,7 +271,7 @@
         expect(option7.radius[5]).toBe(0);
         return expect(option8.radius[5]).toBe(0);
       });
-      it('should have parent only options ->', function() {
+      return it('should have parent only options ->', function() {
         var burst, option0;
         burst = new Burst({
           radius: {
@@ -284,30 +284,6 @@
         option0 = burst._getOption(0);
         expect(option0.radius[5]).toBe(0);
         return expect(option0.angle).toBe(0);
-      });
-      it('should add x/y deltas to the _swirls ->', function() {
-        var burst;
-        burst = new Burst({
-          radius: {
-            0: 100
-          },
-          count: 2
-        });
-        expect(burst._swirls[0]._o.x[0]).toBeCloseTo(0, 5);
-        expect(burst._swirls[0]._o.y[0]).toBe(-100);
-        expect(burst._swirls[1]._o.x[0]).toBeCloseTo(0, 5);
-        return expect(burst._swirls[1]._o.y[0]).toBe(100);
-      });
-      return it('should parent option to swirls ->', function() {
-        var burst;
-        burst = new Burst({
-          radius: {
-            0: 100
-          },
-          count: 2
-        });
-        expect(burst._swirls[0]._o.parent).toBe(burst.el);
-        return expect(burst._swirls[1]._o.parent).toBe(burst.el);
       });
     });
     describe('_calcSize method ->', function() {
@@ -439,7 +415,7 @@
         return expect(radiusY).toBe(20);
       });
     });
-    return describe('_getDeltaFromPoints method ->', function() {
+    describe('_getDeltaFromPoints method ->', function() {
       it('should return the delta', function() {
         var burst, delta;
         burst = new Burst;
@@ -463,6 +439,67 @@
           y: 40
         });
         return expect(delta).toBe(10);
+      });
+    });
+    describe('_addOptionalProperties method ->', function() {
+      it('should return the passed object', function() {
+        var burst, obj, result;
+        burst = new Burst;
+        obj = {};
+        result = burst._addOptionalProperties(obj, 0);
+        return expect(result).toBe(obj);
+      });
+      it('should add parent, index and isTimelineLess', function() {
+        var burst, obj, result;
+        burst = new Burst;
+        obj = {};
+        result = burst._addOptionalProperties(obj, 0);
+        expect(result.index).toBe(0);
+        expect(result.parent).toBe(burst.el);
+        return expect(result.isTimelineLess).toBe(true);
+      });
+      it('should hard rewrite `left` and `top` properties to 50%', function() {
+        var burst, obj, result;
+        burst = new Burst;
+        obj = {};
+        result = burst._addOptionalProperties(obj, 0);
+        expect(result.left).toBe('50%');
+        return expect(result.top).toBe('50%');
+      });
+      return it('should add x/y ->', function() {
+        var burst, obj0, obj1, result0, result1;
+        burst = new Burst({
+          radius: {
+            0: 100
+          },
+          count: 2,
+          size: 0
+        });
+        obj0 = {};
+        obj1 = {};
+        burst._o.isIt = 0;
+        result0 = burst._addOptionalProperties(obj0, 0);
+        result1 = burst._addOptionalProperties(obj1, 1);
+        expect(obj0.x[0]).toBeCloseTo(0, 5);
+        expect(obj0.y[0]).toBeCloseTo(-100, 5);
+        expect(obj1.x[0]).toBeCloseTo(0, 5);
+        return expect(obj1.y[0]).toBeCloseTo(100, 5);
+      });
+    });
+    return describe('_extendDefaults method ->', function() {
+      it('should call super', function() {
+        var b;
+        b = new Burst;
+        spyOn(Swirl.prototype, '_extendDefaults');
+        b._extendDefaults();
+        return expect(Swirl.prototype._extendDefaults).toHaveBeenCalled();
+      });
+      return it('should call _calcSize', function() {
+        var b;
+        b = new Burst;
+        spyOn(b, '_calcSize');
+        b._extendDefaults();
+        return expect(b._calcSize).toHaveBeenCalled();
       });
     });
   });
