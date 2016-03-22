@@ -408,7 +408,7 @@
         expect(t._timelines[0]).toBe(tw);
         return expect(t._props.duration).toBe(40000);
       });
-      return it('should call _recalcDuration method', function() {
+      it('should call _recalcDuration method', function() {
         var t, tw;
         t = new Timeline;
         tw = new Tween({
@@ -417,6 +417,26 @@
         spyOn(t, '_recalcDuration');
         t._pushTimeline(tw);
         return expect(t._recalcDuration).toHaveBeenCalledWith(tw);
+      });
+      it('should extract timline from object with timeline', function() {
+        var obj, t;
+        t = new Timeline;
+        obj = {
+          timeline: new Timeline
+        };
+        t._pushTimeline(obj);
+        expect(t._timelines.length).toBe(1);
+        return expect(t._timelines[0]).toBe(obj.timeline);
+      });
+      return it('should extract tween from object with timeline', function() {
+        var obj, t;
+        t = new Timeline;
+        obj = {
+          tween: new Tween
+        };
+        t._pushTimeline(obj);
+        expect(t._timelines.length).toBe(1);
+        return expect(t._timelines[0]).toBe(obj.tween);
       });
     });
     describe('append method ->', function() {
@@ -618,7 +638,7 @@
         expect(tm1.index).toBe(1);
         return expect(tm2.index).toBe(1);
       });
-      return it('should add element index', function() {
+      it('should add element index', function() {
         var t;
         t = new Timeline;
         t.append(new Tween({
@@ -631,6 +651,26 @@
         }));
         expect(t._timelines[0].index).toBe(0);
         return expect(t._timelines[1].index).toBe(1);
+      });
+      it('should extract timline from object with timeline', function() {
+        var obj, t;
+        t = new Timeline;
+        obj = {
+          timeline: new Timeline
+        };
+        t.append(obj);
+        expect(t._timelines.length).toBe(1);
+        return expect(t._timelines[0]).toBe(obj.timeline);
+      });
+      return it('should extract tween from object with timeline', function() {
+        var obj, t;
+        t = new Timeline;
+        obj = {
+          tween: new Tween
+        };
+        t.append(obj);
+        expect(t._timelines.length).toBe(1);
+        return expect(t._timelines[0]).toBe(obj.tween);
       });
     });
     describe('_recalcTotalDuration method ->', function() {

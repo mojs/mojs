@@ -280,6 +280,22 @@ describe 'Timeline ->', ->
       spyOn t, '_recalcDuration'
       t._pushTimeline tw
       expect(t._recalcDuration).toHaveBeenCalledWith(tw)
+    it 'should extract timline from object with timeline',->
+      t = new Timeline
+      obj = {
+        timeline: new Timeline
+      }
+      t._pushTimeline obj
+      expect(t._timelines.length).toBe 1
+      expect(t._timelines[0]).toBe obj.timeline
+    it 'should extract tween from object with timeline',->
+      t = new Timeline
+      obj = {
+        tween: new Tween
+      }
+      t._pushTimeline obj
+      expect(t._timelines.length).toBe 1
+      expect(t._timelines[0]).toBe obj.tween
 
   describe 'append method ->', ->
     it 'should add timeline',->
@@ -382,6 +398,22 @@ describe 'Timeline ->', ->
       t.append new Tween duration: 1000, delay: 200
       expect(t._timelines[0].index).toBe 0
       expect(t._timelines[1].index).toBe 1
+    it 'should extract timline from object with timeline',->
+      t = new Timeline
+      obj = {
+        timeline: new Timeline
+      }
+      t.append obj
+      expect(t._timelines.length).toBe 1
+      expect(t._timelines[0]).toBe obj.timeline
+    it 'should extract tween from object with timeline',->
+      t = new Timeline
+      obj = {
+        tween: new Tween
+      }
+      t.append obj
+      expect(t._timelines.length).toBe 1
+      expect(t._timelines[0]).toBe obj.tween
 
   # describe 'remove method ->', ->
   #   it 'should remove timeline',->

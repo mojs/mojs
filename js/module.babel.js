@@ -168,7 +168,6 @@ class Module {
   _extendDefaults ( ) {
     this._props  = {};
     this._deltas = {};
-    this._o.isIt && console.log('extnd')
     for (var key in this._defaults) {
       // skip property if it is listed in _skipProps
       if (this._skipProps && this._skipProps[key]) { continue; }

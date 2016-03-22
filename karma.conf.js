@@ -99,12 +99,12 @@ module.exports = function(config) {
       // 'build/burst.js',
       // 'spec/burst.js',
 
-      // 'build/tween/tweenable.js',
-      // 'spec/tween/tweenable.js',
-      // 'build/thenable.js',
-      // 'spec/thenable.js',
-      // 'build/runable.js',
-      // 'spec/runable.js',
+      'build/tween/tweenable.js',
+      'spec/tween/tweenable.js',
+      'build/thenable.js',
+      'spec/thenable.js',
+      'build/runable.js',
+      'spec/runable.js',
       
       'build/spriter.js',
       'spec/spriter.js',

@@ -18,19 +18,26 @@ describe 'Burst ->', ->
       delete b._defaults.count
       delete b._defaults.randomAngle
       delete b._defaults.randomRadius
+      delete b._defaults.degree
       expect(b._defaults).toEqual s._defaults
     it 'should have childOptions', ->
       b = new Burst
       expect(b._defaults.childOptions).toBe null
     it 'should add Burts properties' , ->
       b = new Burst
+      expect(b._defaults.degree).toBe 360
       expect(b._defaults.count).toBe 5
       expect(b._defaults.randomAngle).toBe 0
       expect(b._defaults.randomRadius).toBe 0
     it 'should have _childDefaults', ->
       b = new Burst
       s = new Swirl
+      b._childDefaults.radius = s._defaults.radius
       expect(b._childDefaults).toEqual s._defaults
+    it 'should modify radius on _childDefaults', ->
+      b = new Burst
+      s = new Swirl
+      expect(b._childDefaults.radius[5]).toBe 0
     it 'should have _optionsIntersection', ->
       b = new Burst
       s = new Swirl
@@ -41,10 +48,257 @@ describe 'Burst ->', ->
       expect(b._optionsIntersection['opacity']).toBe 1
       expect(b._optionsIntersection['scale']).toBe 1
 
-  # describe '_createBit method ->', ->
-  #   it 'should create _swirls array', ->
-  #     b = new Burst
-  #     expect(b._swirls).length
+  describe '_createBit method ->', ->
+    it 'should create _swirls array', ->
+      b = new Burst
+      b._createBit()
+      expect(b._swirls.length).toBe b._props.count
+    it 'should pass index to the swirls', ->
+      b = new Burst
+      b._createBit()
+      expect(b._swirls[0]._o.index).toBe 0
+      expect(b._swirls[1]._o.index).toBe 1
+      expect(b._swirls[2]._o.index).toBe 2
+      expect(b._swirls[3]._o.index).toBe 3
+      expect(b._swirls[4]._o.index).toBe 4
+    it 'should pass isTimelineLess option to the swirls', ->
+      b = new Burst
+      b._createBit()
+      expect(b._swirls[0]._o.isTimelineLess).toBe true
+      expect(b._swirls[1]._o.isTimelineLess).toBe true
+      expect(b._swirls[2]._o.isTimelineLess).toBe true
+      expect(b._swirls[3]._o.isTimelineLess).toBe true
+      expect(b._swirls[4]._o.isTimelineLess).toBe true
+    it 'should pass options to swirls', ->
+      b = new Burst
+      b._createBit()
+      options0 = b._getOption 0
+      delete options0.callbacksContext
+      for key of options0
+        expect(b._swirls[0]._o[key]).toEqual options0[key]
+      options1 = b._getOption 1
+      delete options1.callbacksContext
+      for key of options1
+        expect(b._swirls[1]._o[key]).toEqual options1[key]
+      options2 = b._getOption 2
+      delete options2.callbacksContext
+      for key of options2
+        expect(b._swirls[2]._o[key]).toEqual options2[key]
+
+  describe '_getPropByMod method ->', ->
+    it 'should fallback to empty object', ->
+      burst = new Burst
+        childOptions: radius: [ { 20: 50}, 20, '500' ]
+      opt0 = burst._getPropByMod 'radius', 0
+      expect(opt0).toBe undefined
+    it 'should return the prop from passed object based on index ->', ->
+      burst = new Burst
+        childOptions: radius: [ { 20: 50}, 20, '500' ]
+      opt0 = burst._getPropByMod 'radius', 0, burst._o.childOptions
+      opt1 = burst._getPropByMod 'radius', 1, burst._o.childOptions
+      opt2 = burst._getPropByMod 'radius', 2, burst._o.childOptions
+      opt8 = burst._getPropByMod 'radius', 8, burst._o.childOptions
+      expect(opt0[20]).toBe 50
+      expect(opt1)    .toBe 20
+      expect(opt2)    .toBe '500'
+      expect(opt8)    .toBe '500'
+    it 'should the same prop if not an array ->', ->
+      burst = new Burst childOptions: radius: 20
+      opt0 = burst._getPropByMod 'radius', 0, burst._o.childOptions
+      opt1 = burst._getPropByMod 'radius', 1, burst._o.childOptions
+      opt8 = burst._getPropByMod 'radius', 8, burst._o.childOptions
+      expect(opt0).toBe 20
+      expect(opt1).toBe 20
+      expect(opt8).toBe 20
+    it 'should work with another options object ->', ->
+      burst = new Burst
+        radius: 40
+        childOptions: radius: 20
+      from = burst._o
+      opt0 = burst._getPropByMod 'radius', 0, from
+      opt1 = burst._getPropByMod 'radius', 1, from
+      opt8 = burst._getPropByMod 'radius', 8, from
+      expect(opt0).toBe 40
+      expect(opt1).toBe 40
+      expect(opt8).toBe 40
+  describe '_getOption method ->', ->
+    it 'should return an option obj based on i ->', ->
+      burst = new Burst
+        childOptions: radius: [ { 20: 50}, 20, '500' ]
+      option0 = burst._getOption 0
+      option1 = burst._getOption 1
+      option7 = burst._getOption 7
+      expect(option0.radius[20]).toBe 50
+      expect(option1.radius)    .toBe 20
+      expect(option7.radius)    .toBe 20
+    it 'should try to fallback to childDefaiults first ->', ->
+      burst = new Burst
+        duration: 2000
+        childOptions: radius: [ 200, null, '500' ]
+      option0 = burst._getOption 0
+      option1 = burst._getOption 1
+      option7 = burst._getOption 7
+      option8 = burst._getOption 8
+      expect(option0.radius)   .toBe 200
+      expect(option1.radius[5]).toBe 0
+      expect(option7.radius[5]).toBe 0
+      expect(option8.radius)   .toBe '500'
+    it 'should fallback to parent prop if defined  ->', ->
+      burst = new Burst
+        fill: 2000
+        childOptions: fill: [ 200, null, '500' ]
+      option0 = burst._getOption 0
+      option1 = burst._getOption 1
+      option7 = burst._getOption 7
+      option8 = burst._getOption 8
+      expect(option0.fill).toBe 200
+      expect(option1.fill).toBe 2000
+      expect(option7.fill).toBe 2000
+      expect(option8.fill).toBe '500'
+    it 'should fallback to parent default ->', ->
+      burst = new Burst
+        childOptions: fill: [ 200, null, '500' ]
+      option0 = burst._getOption 0
+      option1 = burst._getOption 1
+      option7 = burst._getOption 7
+      option8 = burst._getOption 8
+      expect(option0.fill).toBe 200
+      expect(option1.fill).toBe 'deeppink'
+      expect(option7.fill).toBe 'deeppink'
+      expect(option8.fill).toBe '500'
+    it 'should have all the props filled ->', ->
+      burst = new Burst
+        childOptions: duration: [ 200, null, '500' ]
+      option0 = burst._getOption 0
+      option1 = burst._getOption 1
+      option7 = burst._getOption 7
+      option8 = burst._getOption 8
+      expect(option0.radius[5]).toBe 0
+      expect(option1.radius[5]).toBe 0
+      expect(option7.radius[5]).toBe 0
+      expect(option8.radius[5]).toBe 0
+    it 'should have parent only options ->', ->
+      burst = new Burst
+        radius: { 'rand(10,20)': 100 }
+        angle: {50: 0}
+      option0 = burst._getOption 0
+      expect(option0.radius[5]) .toBe 0
+      expect(option0.angle)     .toBe 0
+      # expect(option0.onUpdate)  .toBe null
+      # expect(option0.onStart)   .toBe null
+      # expect(option0.onComplete).toBe null
+
+    it 'should add x/y deltas to the _swirls ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2
+
+      expect(burst._swirls[0]._o.x[0]).toBeCloseTo 0, 5
+      expect(burst._swirls[0]._o.y[0]).toBe -100
+
+      expect(burst._swirls[1]._o.x[0]).toBeCloseTo 0, 5
+      expect(burst._swirls[1]._o.y[0]).toBe 100
+
+    it 'should parent option to swirls ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2
+
+      expect(burst._swirls[0]._o.parent).toBe burst.el
+      expect(burst._swirls[1]._o.parent).toBe burst.el
+
+  describe '_calcSize method ->', ->
+    it 'should calc set size to 2', ->
+      bs = new Burst
+      expect(bs._props.size).toBe 2
+      expect(bs._props.center).toBe 1
+    it 'should recieve size', ->
+      bs = new Burst size: 40
+      expect(bs._props.size).toBe 40
+      expect(bs._props.center).toBe 20
+  describe '_draw method ->', ->
+    it 'should call _drawEl method ->', ->
+      bs = new Burst
+      spyOn bs, '_drawEl'
+      bs._draw()
+      expect(bs._drawEl).toHaveBeenCalled()
+
+  describe '_transformTweenOptions method', ->
+    it 'should call _applyCallbackOverrides with _o.timeline', ->
+      tr = new Burst timeline: { delay: 200 }
+      spyOn(tr, '_applyCallbackOverrides').and.callThrough()
+      tr._transformTweenOptions()
+      expect(tr._applyCallbackOverrides).toHaveBeenCalledWith tr._o.timeline
+    it 'should fallback to an empty `timeline options` object on _o', ->
+      tr = new Transit
+      expect(tr._o.timeline).toBeDefined()
+
+  describe '_makeTimeline method ->', ->
+    it 'should call super _makeTimeline', ->
+      bs = new Burst
+      spyOn Burst.prototype, '_makeTimeline'
+      bs._makeTimeline()
+      expect(Burst.prototype._makeTimeline).toHaveBeenCalled()
+
+    it 'should add swirls to the timeline', ->
+      bs = new Burst
+      bs.timeline._timelines.length = 0
+      bs._makeTimeline()
+      expect(bs.timeline._timelines.length).toBe bs._defaults.count
+
+  describe '_makeTween method ->', ->
+    it 'should override parent', ->
+      bs = new Burst
+      spyOn mojs.Tweenable.prototype, '_makeTween'
+      bs._makeTween()
+      expect(mojs.Tweenable.prototype._makeTween).not.toHaveBeenCalled()
+
+  describe '_getSidePoint method ->', ->
+    it 'should return the side\'s point', ->
+      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
+      point = burst._getSidePoint('start', 0)
+      expect(point.x).toBeDefined()
+      expect(point.y).toBeDefined()
+
+  describe '_getSideRadius method ->', ->
+    it 'should return the side\'s radius, radiusX and radiusY', ->
+      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
+      sides = burst._getSideRadius('start')
+      expect(sides.radius) .toBe 5
+      expect(sides.radiusX).toBe 10
+      expect(sides.radiusY).toBe 30
+
+  describe '_getRadiusByKey method ->', ->
+    it 'should return the key\'s radius', ->
+      burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:20}
+      radius  = burst._getRadiusByKey('radius',  'start')
+      radiusX = burst._getRadiusByKey('radiusX', 'start')
+      radiusY = burst._getRadiusByKey('radiusX', 'end')
+      expect(radius).toBe   5
+      expect(radiusX).toBe 10
+      expect(radiusY).toBe 20
+
+  describe '_getDeltaFromPoints method ->', ->
+    it 'should return the delta', ->
+      burst = new Burst
+      delta  = burst._getDeltaFromPoints('x', {x: 10, y: 20}, {x: 20, y: 40})
+      expect(delta[10]).toBe 20
+    it 'should return one value if start and end positions are equal', ->
+      burst = new Burst
+      delta  = burst._getDeltaFromPoints('x', {x: 10, y: 20}, {x: 10, y: 40})
+      expect(delta).toBe 10
+
+
+
+
+
+
+
+
+
+
+
+
 
   #   it 'should have its own defaults', ->
   #     burst = new Burst
@@ -227,84 +481,10 @@ describe 'Burst ->', ->
   #     expect(burst._transits[0]._o.y[center - 50]).toBe center - 75
   #     expect(burst._transits[1]._o.x).toBe center
   #     expect(burst._transits[1]._o.y[center + 50]).toBe center + 75
-  # describe '_fillTransform method ->', ->
-  #   it 'return tranform string of the el', ->
-  #     burst = new Burst x: 100, y: 100, angle: 50
-  #     expect(burst._fillTransform())
-  #       .toBe 'rotate(50deg) translate(100px, 100px)'
   # # describe '_isNeedsTransform method ->', ->
   # #   it 'return boolean if _fillTransform needed', ->
   # #     burst = new Burst x: 100, y: 100, angle: 50
   # #     expect(burst._isNeedsTransform()).toBe true
-  # describe '_getOption method ->', ->
-  #   it 'should return an option obj based on i ->', ->
-  #     burst = new Burst
-  #       childOptions: radius: [ { 20: 50}, 20, '500' ]
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     option7 = burst._getOption 7
-  #     expect(option0.radius[20]).toBe 50
-  #     expect(option1.radius)    .toBe 20
-  #     expect(option7.radius)    .toBe 20
-  #   it 'should try to fallback to childDefaiults first ->', ->
-  #     burst = new Burst
-  #       duration: 2000
-  #       childOptions: radius: [ 200, null, '500' ]
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     option7 = burst._getOption 7
-  #     option8 = burst._getOption 8
-  #     expect(option0.radius)   .toBe 200
-  #     expect(option1.radius[7]).toBe 0
-  #     expect(option7.radius[7]).toBe 0
-  #     expect(option8.radius)   .toBe '500'
-  #   it 'should fallback to parent prop if defined  ->', ->
-  #     burst = new Burst
-  #       duration: 2000
-  #       childOptions: duration: [ 200, null, '500' ]
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     option7 = burst._getOption 7
-  #     option8 = burst._getOption 8
-  #     expect(option0.duration).toBe 200
-  #     expect(option1.duration).toBe 2000
-  #     expect(option7.duration).toBe 2000
-  #     expect(option8.duration).toBe '500'
-  #   it 'should fallback to parent default ->', ->
-  #     burst = new Burst
-  #       childOptions: duration: [ 200, null, '500' ]
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     option7 = burst._getOption 7
-  #     option8 = burst._getOption 8
-  #     expect(option0.duration).toBe 200
-  #     expect(option1.duration).toBe 500
-  #     expect(option7.duration).toBe 500
-  #     expect(option8.duration).toBe '500'
-  #   it 'should have all the props filled ->', ->
-  #     burst = new Burst
-  #       childOptions: duration: [ 200, null, '500' ]
-  #     option0 = burst._getOption 0
-  #     option1 = burst._getOption 1
-  #     option7 = burst._getOption 7
-  #     option8 = burst._getOption 8
-  #     expect(option0.radius[7]).toBe 0
-  #     expect(option1.radius[7]).toBe 0
-  #     expect(option7.radius[7]).toBe 0
-  #     expect(option8.radius[7]).toBe 0
-  #   it 'should have parent only options ->', ->
-  #     burst = new Burst
-  #       radius: { 'rand(10,20)': 100 }
-  #       angle: {50: 0}
-  #       onUpdate:->
-  #       onStart:->
-  #       onComplete:->
-  #     option0 = burst._getOption 0
-  #     expect(option0.radius[7]) .toBe 0
-  #     expect(option0.angle)     .toBe 0
-  #     expect(option0.onUpdate)  .toBe null
-  #     expect(option0.onStart)   .toBe null
-  #     expect(option0.onComplete).toBe null
   # describe '_getBitAngle method ->', ->
   #   it 'should get angle by i', ->
   #     burst = new Burst radius: { 'rand(10,20)': 100 }
@@ -321,37 +501,6 @@ describe 'Burst ->', ->
   #     expect(burst._getBitAngle({180:0}, 0)[270]).toBe 90
   #     expect(burst._getBitAngle({50:20}, 3)[356]).toBe 326
   #     expect(burst._getBitAngle({50:20}, 4)[428]).toBe 398
-  # describe '_getPropByMod method ->', ->
-  #   it 'should return the prop from @o based on i ->', ->
-  #     burst = new Burst
-  #       childOptions: radius: [ { 20: 50}, 20, '500' ]
-  #     opt0 = burst._getPropByMod key: 'radius', i: 0
-  #     opt1 = burst._getPropByMod key: 'radius', i: 1
-  #     opt2 = burst._getPropByMod key: 'radius', i: 2
-  #     opt8 = burst._getPropByMod key: 'radius', i: 8
-  #     expect(opt0[20]).toBe 50
-  #     expect(opt1)    .toBe 20
-  #     expect(opt2)    .toBe '500'
-  #     expect(opt8)    .toBe '500'
-  #   it 'should the same prop if not an array ->', ->
-  #     burst = new Burst childOptions: radius: 20
-  #     opt0 = burst._getPropByMod key: 'radius', i: 0
-  #     opt1 = burst._getPropByMod key: 'radius', i: 1
-  #     opt8 = burst._getPropByMod key: 'radius', i: 8
-  #     expect(opt0).toBe 20
-  #     expect(opt1).toBe 20
-  #     expect(opt8).toBe 20
-  #   it 'should work with another options object ->', ->
-  #     burst = new Burst
-  #       radius: 40
-  #       childOptions: radius: 20
-  #     from = burst._o
-  #     opt0 = burst._getPropByMod key: 'radius', i: 0, from: from
-  #     opt1 = burst._getPropByMod key: 'radius', i: 1, from: from
-  #     opt8 = burst._getPropByMod key: 'radius', i: 8, from: from
-  #     expect(opt0).toBe 40
-  #     expect(opt1).toBe 40
-  #     expect(opt8).toBe 40
   # describe 'randomness ->', ->
   #   describe 'random angle ->', ->
   #     it 'should have randomAngle option ->', ->
@@ -694,41 +843,6 @@ describe 'Burst ->', ->
   #     spyOn burst, '_fillTransform'
   #     burst._draw()
   #     expect(burst._fillTransform).toHaveBeenCalled()
-
-  # describe '_getSideRadius method ->', ->
-  #   it 'should return the side\'s radius, radiusX and radiusY', ->
-  #     burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
-  #     sides = burst._getSideRadius('start')
-  #     expect(sides.radius) .toBe 5
-  #     expect(sides.radiusX).toBe 10
-  #     expect(sides.radiusY).toBe 30
-
-  # describe '_getSidePoint method ->', ->
-  #   it 'should return the side\'s point', ->
-  #     burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:10}
-  #     point = burst._getSidePoint('start', 0)
-  #     expect(point.x).toBeDefined()
-  #     expect(point.y).toBeDefined()
-
-  # describe '_getRadiusByKey method ->', ->
-  #   it 'should return the key\'s radius', ->
-  #     burst = new Burst radius: {5:25}, radiusX: {10:20}, radiusY: {30:20}
-  #     radius  = burst._getRadiusByKey('radius',  'start')
-  #     radiusX = burst._getRadiusByKey('radiusX', 'start')
-  #     radiusY = burst._getRadiusByKey('radiusX', 'end')
-  #     expect(radius).toBe   5
-  #     expect(radiusX).toBe 10
-  #     expect(radiusY).toBe 20
-
-  # describe '_getDeltaFromPoints method ->', ->
-  #   it 'should return the delta', ->
-  #     burst = new Burst
-  #     delta  = burst._getDeltaFromPoints('x', {x: 10, y: 20}, {x: 20, y: 40})
-  #     expect(delta[10]).toBe 20
-  #   it 'should return one value if start and end positions are equal', ->
-  #     burst = new Burst
-  #     delta  = burst._getDeltaFromPoints('x', {x: 10, y: 20}, {x: 10, y: 40})
-  #     expect(delta).toBe 10
 
 
 

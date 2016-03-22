@@ -22,6 +22,7 @@ class Transit extends Tunable {
   _declareDefaults () {
     // DEFAULTS / APIs
     this._defaults = {
+      // shape:            'circle',
       // ∆ :: Possible values: [color name, rgb, rgba, hex]
       stroke:           'transparent',
       // ∆ :: Possible values: [ 0..1 ]
@@ -111,17 +112,17 @@ class Transit extends Tunable {
         this.ctx.style.position = 'absolute';
         this.ctx.style.width    = '100%';
         this.ctx.style.height   = '100%';
-        this._createBit();
-        this._calcSize();
         this.el = document.createElement('div');
         this.el.appendChild(this.ctx);
         (this._o.parent || document.body).appendChild(this.el);
+        this._createBit();
+        this._calcSize();
       } else { this.ctx = this._o.ctx; this._createBit(); this._calcSize(); }
       this.isRendered = true;
     }
     this._setElStyles();
     
-    if (this.el != null) { this.el.style.opacity = this._props.opacity; }
+    // if (this.el != null) { this.el.style.opacity = this._props.opacity; }
     if (this._o.isShowStart) { this._show(); } else { this._hide(); }
 
     this._setProgress( 0 );
@@ -132,14 +133,16 @@ class Transit extends Tunable {
     @private
   */
   _setElStyles () {
-    var marginSize, ref, size;
+    var marginSize, ref, size,
+        p = this._props;
     if (!this.isForeign) {
       size = this._props.size + "px";
       this.el.style.position = 'absolute';
-      this.el.style.top      = this._props.top;
-      this.el.style.left     = this._props.left;
+      this.el.style.top      = p.top;
+      this.el.style.left     = p.left;
       this.el.style.width    = size;
       this.el.style.height   = size;
+      this.el.style.opacity  = p.opacity;
       marginSize = (-this._props.size / 2) + "px";
       this.el.style['margin-left'] = marginSize;
       this.el.style['margin-top']  = marginSize;
@@ -339,15 +342,16 @@ class Transit extends Tunable {
     this._origin.y = this._o.ctx ? parseFloat(p.y) : p.center;
   }
   /*
-    Method to setup tween and timeline options before creating them.
-    @override @ Tweenable
-    @private  
+    Method to add callback overrides to passed object.
+    @private
+    @param {Object} Object to add the overrides to.
   */
-  _transformTweenOptions () {
+  _applyCallbackOverrides (obj) {
     var it = this,
         p  = this._props;
-    // specify control functions for the tween
-    this._o.callbackOverrides = {
+
+    // specify control functions for the module
+    obj.callbackOverrides = {
       onUpdate: function (pe) { return it._setProgress(pe); },
       onStart: function (isFwd) {
         return isFwd ? it._show() : (!p.isShowStart && it._hide());
@@ -356,7 +360,14 @@ class Transit extends Tunable {
         return isFwd ? (!p.isShowEnd && it._hide()) : it._show();
       }
     }
+
   }
+  /*
+    Method to setup tween and timeline options before creating them.
+    @override @ Tweenable
+    @private  
+  */
+  _transformTweenOptions () { this._applyCallbackOverrides( this._o ); }
   /*
     Method to create transform string;
     @private
@@ -364,7 +375,7 @@ class Transit extends Tunable {
   */
   _fillTransform () {
     var p = this._props;
-    return `translate(${p.x}, ${p.y}) scale(${p.scale})`;
+    return `scale(${p.scale}) translate(${p.x}, ${p.y}) rotate(${p.angle}deg)`;
   }
 }
 

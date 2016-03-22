@@ -56,6 +56,7 @@ class Timeline extends Tween {
   _appendTimeline (timeline, index, time) {
     // if timeline is a module with timeline property then extract it
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
+    if (timeline.tween instanceof Tween) { timeline = timeline.tween; }
 
     var shift = (time != null) ? time : this._props.duration;
     shift    += timeline._props.shiftTime || 0;
@@ -85,6 +86,7 @@ class Timeline extends Tween {
   _pushTimeline (timeline, shift) {
     // if timeline is a module with timeline property then extract it
     if (timeline.timeline instanceof Timeline) { timeline = timeline.timeline; }
+    if (timeline.tween instanceof Tween) { timeline = timeline.tween; }
     // add self delay to the timeline
     (shift != null) && timeline._setProp({ 'shiftTime': shift });
     this._timelines.push(timeline);
