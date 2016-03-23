@@ -94,6 +94,7 @@ class Burst extends Swirl {
     options.top            = '50%';
     options.parent         = this.el;
     options.isTimelineLess = true;
+    options.ctx            = this.ctx;
     // option.callbacksContext = this;  ?
 
     var p          = this._props,

@@ -156,6 +156,7 @@ class Transit extends Tunable {
     @private
   */
   _draw () {
+    // console.time('draw')
     this.bit.setProp({
       x:                    this._origin.x,
       y:                    this._origin.y,
@@ -176,6 +177,7 @@ class Transit extends Tunable {
       transform:            this._calcShapeTransform()
     });
     this.bit.draw(); this._drawEl();
+    // console.timeEnd('draw')
   }
   /*
     Method to set current modules props to main div el.

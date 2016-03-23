@@ -6584,6 +6584,18 @@ describe 'Tween ->', ->
       expect(args.length).toBe 1
       expect(isRightScope).toBe true
 
+    it 'should add isMojsCallbackOverride flag', ->
+      args = null; isRightScope = null
+      tr = new Tween
+
+      fun = ->
+      cleanUpFun = ->
+        args = arguments
+        isRightScope = @ is tr
+
+      result = tr._overrideCallback fun, cleanUpFun
+      expect(result.isMojsCallbackOverride).toBe true
+
   describe '_assignProp method ->', ->
     it 'should parse easign', ->
       tr = new Tween
@@ -6602,6 +6614,19 @@ describe 'Tween ->', ->
       expect(tr._props.onStart).not.toBe funBefore
       expect(tr._overrideCallback)
         .toHaveBeenCalledWith funBefore, controlCallback
+
+    it 'should not override callbacks if already overriden', ->
+      tr = new Tween
+      funBefore = ->
+      controlCallback = ->
+      tr._callbackOverrides = {
+        onStart: controlCallback
+      }
+      spyOn(tr, '_overrideCallback').and.callThrough()
+      funBefore.isMojsCallbackOverride = true
+      tr._assignProp 'onStart', funBefore
+      expect(tr._overrideCallback)
+        .not.toHaveBeenCalledWith funBefore, controlCallback
 
     it 'should override undefined values', ->
       tr = new Tween

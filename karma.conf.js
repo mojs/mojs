@@ -78,6 +78,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     // list of files / patterns to load in the browser
     files: [
+      './node_modules/phantomjs-polyfill/bind-polyfill.js',
       // 'dist/**/*.js',
       'build/mo.js',
       'spec/**/*.js'

@@ -1,7 +1,7 @@
 {
   "name": "mo-js",
   "description": "motion graphics toolbelt for the web",
-  "version": "0.200.3",
+  "version": "0.200.4",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -83,6 +83,7 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-sauce-launcher": "^0.2.10",
     "nodemon": "*",
+    "phantomjs-polyfill": "0.0.2",
     "pygments": "^0.2.0",
     "run-sequence": "^1.0.2"
   }

@@ -1110,11 +1110,14 @@
 	    value: function _assignProp(key, value) {
 	      // parse easing
 	      key === 'easing' && (value = _easing2.default.parseEasing(value));
+
 	      // handle control callbacks overrides
-	      var control = this._callbackOverrides[key];
-	      if (control) {
+	      var control = this._callbackOverrides[key],
+	          isntOverriden = !value || !value.isMojsCallbackOverride;
+	      if (control && isntOverriden) {
 	        value = this._overrideCallback(value, control);
 	      }
+
 	      // call super on Module
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Tween.prototype), '_assignProp', this).call(this, key, value);
 	    }
@@ -1128,13 +1131,16 @@
 	  }, {
 	    key: '_overrideCallback',
 	    value: function _overrideCallback(callback, fun) {
-	      var isCallback = callback && typeof callback === 'function';
-	      return function () {
+	      var isCallback = callback && typeof callback === 'function',
+	          override = function callbackOverride() {
 	        // call overriden callback if it exists
 	        isCallback && callback.apply(this, arguments);
 	        // call the passed cleanup function
 	        fun.apply(this, arguments);
 	      };
+	      // add overridden flag
+	      override.isMojsCallbackOverride = true;
+	      return override;
 	    }
 
 	    // _visualizeProgress(time) {
@@ -1342,6 +1348,7 @@
 	      options.top = '50%';
 	      options.parent = this.el;
 	      options.isTimelineLess = true;
+	      options.ctx = this.ctx;
 	      // option.callbacksContext = this;  ?
 
 	      var p = this._props,
@@ -1950,6 +1957,7 @@
 	  }, {
 	    key: '_draw',
 	    value: function _draw() {
+	      // console.time('draw')
 	      this.bit.setProp({
 	        x: this._origin.x,
 	        y: this._origin.y,
@@ -1970,6 +1978,7 @@
 	        transform: this._calcShapeTransform()
 	      });
 	      this.bit.draw();this._drawEl();
+	      // console.timeEnd('draw')
 	    }
 	    /*
 	      Method to set current modules props to main div el.
@@ -3249,7 +3258,7 @@
 	  (0, _createClass3.default)(Tweener, [{
 	    key: '_vars',
 	    value: function _vars() {
-	      this.tweens = [];this._loop = _h2.default.bind(this._loop, this);
+	      this.tweens = [];this._loop = this._loop.bind(this);
 	    }
 	    /*
 	      Main animation loop. Should have only one concurrent loop.
@@ -7691,7 +7700,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.200.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.200.4', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7704,33 +7713,41 @@
 	  percentage for radius
 	*/
 
-	var sw = new mojs.Burst({
-	  left: '50%', top: '50%',
-	  isShowEnd: 1,
-	  radius: { 0: 50 },
-	  // scale: { 0: 5 },
-	  // angle: {0: -200},
-	  // y: { 0: 100 },
-	  // duration: ,
-	  isSwirl: 0,
-	  isRunLess: 1,
-	  // degree: 40,
-	  type: 'polygon',
-	  stroke: 'cyan'
-	  // childOptions: {
-	  //   shape:    'polygon',
-	  //   duration: 2000,
-	  //   angle:    [{ 0: 90 }, { 0: -90 }, { 0: 90 }, { 0: -90 }]
-	  // }
-	  // swirlFrequency: 3,
-	  // x: {0: 400},
-	  // isSwirl: 0
-	  // timeline: {
-	  //   onUpdate: function () {
-	  //     console.log(this);
-	  //   },
-	  // },
+	var sw = new mojs.Transit({
+	  shape: 'polygon',
+	  fill: 'red',
+	  stroke: 'cyan',
+	  isTimelineLess: 1,
+	  isRunLess: 1
 	});
+
+	// var sw = new mojs.Burst({
+	//   left: '50%', top: '50%',
+	//   isShowEnd: 1,
+	//   radius: { 0: 50},
+	//   // scale: { 0: 5 },
+	//   // angle: {0: -200},
+	//   // y: { 0: 100 },
+	//   // duration: ,
+	//   isSwirl: 0,
+	//   isRunLess: 1,
+	//   // degree: 40,
+	//   shape: 'polygon',
+	//   stroke: 'cyan'
+	//   // childOptions: {
+	//   //   shape:    'polygon',
+	//   //   duration: 2000,
+	//   //   angle:    [{ 0: 90 }, { 0: -90 }, { 0: 90 }, { 0: -90 }]
+	//   // }
+	//   // swirlFrequency: 3,
+	//   // x: {0: 400},
+	//   // isSwirl: 0
+	//   // timeline: {
+	//   //   onUpdate: function () {
+	//   //     console.log(this);
+	//   //   },
+	//   // },
+	// });
 
 	var playEl = document.querySelector('#js-play'),
 	    rangeSliderEl = document.querySelector('#js-range-slider');
@@ -7739,6 +7756,7 @@
 	  // .tune(sw._o)
 	  // .tune({ swirlFrequency: 'rand(2, 20)' })
 	  .play();
+	  // .run();
 	});
 
 	// rangeSliderEl.addEventListener('input', function () {

@@ -849,9 +849,14 @@ class Tween extends Module {
   _assignProp (key, value) {
     // parse easing
     ( key === 'easing' ) && ( value = easing.parseEasing(value) );
+    
     // handle control callbacks overrides
-    var control = this._callbackOverrides[key];
-    if ( control ) { value = this._overrideCallback(value, control); }
+    var control       = this._callbackOverrides[key],
+        isntOverriden = (!value || (!value.isMojsCallbackOverride));
+    if ( control && isntOverriden ) {
+      value = this._overrideCallback(value, control);
+    }
+    
     // call super on Module
     super._assignProp(key, value);
   }
@@ -862,13 +867,16 @@ class Tween extends Module {
     @parma {Function}  Method to call  
   */
   _overrideCallback (callback, fun) {
-    var isCallback = (callback && typeof callback === 'function');
-    return function () {
+    var isCallback = (callback && typeof callback === 'function'),
+        override   = function callbackOverride () {
       // call overriden callback if it exists
       isCallback && callback.apply( this, arguments );
       // call the passed cleanup function
       fun.apply( this, arguments );
-    } 
+    };
+    // add overridden flag
+    override.isMojsCallbackOverride = true;
+    return override;
   }
 
   // _visualizeProgress(time) {

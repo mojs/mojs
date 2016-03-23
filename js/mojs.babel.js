@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.200.3', isDebug: true, helpers: h,
+  revision:   '0.200.4', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -30,33 +30,41 @@ window.mojs = {
   percentage for radius
 */
 
-var sw = new mojs.Burst({
-  left: '50%', top: '50%',
-  isShowEnd: 1,
-  radius: { 0: 50},
-  // scale: { 0: 5 },
-  // angle: {0: -200},
-  // y: { 0: 100 },
-  // duration: ,
-  isSwirl: 0,
-  isRunLess: 1,
-  // degree: 40,
-  type: 'polygon',
-  stroke: 'cyan'
-  // childOptions: {
-  //   shape:    'polygon',
-  //   duration: 2000,
-  //   angle:    [{ 0: 90 }, { 0: -90 }, { 0: 90 }, { 0: -90 }]
-  // }
-  // swirlFrequency: 3,
-  // x: {0: 400},
-  // isSwirl: 0
-  // timeline: {
-  //   onUpdate: function () {
-  //     console.log(this);
-  //   },
-  // },
-});
+var sw = new mojs.Transit({
+  shape:  'polygon',
+  fill:   'red',
+  stroke: 'cyan',
+  isTimelineLess: 1,
+  isRunLess: 1
+})
+
+// var sw = new mojs.Burst({
+//   left: '50%', top: '50%',
+//   isShowEnd: 1,
+//   radius: { 0: 50},
+//   // scale: { 0: 5 },
+//   // angle: {0: -200},
+//   // y: { 0: 100 },
+//   // duration: ,
+//   isSwirl: 0,
+//   isRunLess: 1,
+//   // degree: 40,
+//   shape: 'polygon',
+//   stroke: 'cyan'
+//   // childOptions: {
+//   //   shape:    'polygon',
+//   //   duration: 2000,
+//   //   angle:    [{ 0: 90 }, { 0: -90 }, { 0: 90 }, { 0: -90 }]
+//   // }
+//   // swirlFrequency: 3,
+//   // x: {0: 400},
+//   // isSwirl: 0
+//   // timeline: {
+//   //   onUpdate: function () {
+//   //     console.log(this);
+//   //   },
+//   // },
+// });
 
 var playEl = document.querySelector('#js-play'),
     rangeSliderEl = document.querySelector('#js-range-slider');
@@ -65,6 +73,7 @@ document.body.addEventListener('click', function (e) {
     // .tune(sw._o)
     // .tune({ swirlFrequency: 'rand(2, 20)' })
     .play();
+    // .run();
 });
 
 // rangeSliderEl.addEventListener('input', function () {

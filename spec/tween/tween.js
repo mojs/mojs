@@ -6667,7 +6667,7 @@
         expect(args.length).toBe(1);
         return expect(isRightScope).toBe(true);
       });
-      return it('should call passed method callback', function() {
+      it('should call passed method callback', function() {
         var args, cleanUpFun, fun, isRightScope, result, tr;
         args = null;
         isRightScope = null;
@@ -6682,6 +6682,19 @@
         expect(args[0]).toBe('a');
         expect(args.length).toBe(1);
         return expect(isRightScope).toBe(true);
+      });
+      return it('should add isMojsCallbackOverride flag', function() {
+        var args, cleanUpFun, fun, isRightScope, result, tr;
+        args = null;
+        isRightScope = null;
+        tr = new Tween;
+        fun = function() {};
+        cleanUpFun = function() {
+          args = arguments;
+          return isRightScope = this === tr;
+        };
+        result = tr._overrideCallback(fun, cleanUpFun);
+        return expect(result.isMojsCallbackOverride).toBe(true);
       });
     });
     return describe('_assignProp method ->', function() {
@@ -6703,6 +6716,19 @@
         tr._assignProp('onStart', funBefore);
         expect(tr._props.onStart).not.toBe(funBefore);
         return expect(tr._overrideCallback).toHaveBeenCalledWith(funBefore, controlCallback);
+      });
+      it('should not override callbacks if already overriden', function() {
+        var controlCallback, funBefore, tr;
+        tr = new Tween;
+        funBefore = function() {};
+        controlCallback = function() {};
+        tr._callbackOverrides = {
+          onStart: controlCallback
+        };
+        spyOn(tr, '_overrideCallback').and.callThrough();
+        funBefore.isMojsCallbackOverride = true;
+        tr._assignProp('onStart', funBefore);
+        return expect(tr._overrideCallback).not.toHaveBeenCalledWith(funBefore, controlCallback);
       });
       return it('should override undefined values', function() {
         var controlCallback, tr;
