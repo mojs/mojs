@@ -26,11 +26,6 @@
       expect(h.unitOptionMap.rx).toBe(1);
       return expect(h.unitOptionMap.ry).toBe(1);
     });
-    it('should have strokeDashPropsMap map', function() {
-      expect(h.strokeDashPropsMap.strokeDasharray).toBe(1);
-      expect(h.strokeDashPropsMap.strokeDashoffset).toBe(1);
-      return expect(Object.keys(h.strokeDashPropsMap).length).toBe(2);
-    });
     it('should have initial uniqIDs props', function() {
       return expect(h.uniqIDs).toBe(-1);
     });

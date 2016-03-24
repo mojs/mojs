@@ -10,14 +10,19 @@ class Burst extends Swirl {
   _declareDefaults () {
     // call super @ Swirl
     super._declareDefaults();
+
+    /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
     // copy the defaults to the childDefaults property
     this._childDefaults = h.cloneObj( this._defaults );
     // modify default radius ∆ of the children
     this._childDefaults.radius   = { 5: 0 };
-    // this._childDefaults.duration = 300;
+    // copy tween options and callbacks
+    for (var key in h.tweenOptionMap) { this._childDefaults[key] = null; }
+    for (var key in h.callbacksMap)   { this._childDefaults[key] = null; }
 
+    /* DEFAULTS - EXTEND SWIRL's BY THE NEXT ONES: */
     // add childOptions property to have it in _extendDefaults loop
-    this._defaults.childOptions = null;
+    // this._defaults.childOptions = null;
     // Amount of Burst's point: [number > 0]
     this._defaults.count        = 5;
     // Degree for the Burst's points : [0..360]
@@ -26,6 +31,7 @@ class Burst extends Swirl {
     this._defaults.randomAngle  = 0;
     // Randomness for the Burst's points fly radius [0...1]
     this._defaults.randomRadius = 0;
+
     // add options intersection hash - map that holds the property
     // names that could be on both parent module and child ones
     this._optionsIntersection = {
@@ -77,6 +83,9 @@ class Burst extends Swirl {
       prop = ( prop == null )
         ? this._getPropByMod( key, i, this._childDefaults ) : prop;
 
+      prop = h.parseIfStagger(prop, i);
+      prop = h.parseIfRand(prop, i);
+
       option[key] = prop;
     }
 
@@ -94,7 +103,6 @@ class Burst extends Swirl {
     options.top            = '50%';
     options.parent         = this.el;
     options.isTimelineLess = true;
-    options.ctx            = this.ctx;
     // option.callbacksContext = this;  ?
 
     var p          = this._props,
@@ -107,7 +115,38 @@ class Burst extends Swirl {
     options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
     options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
 
+    options.angle = this._getBitAngle( options.angle, index );
+
     return options;
+  }
+  /* 
+    Method to get transits angle in burst so
+    it will follow circular shape.
+     
+     @param    {Number, Object} Base angle.
+     @param    {Number}         Transit's index in burst.
+     @returns  {Number}         Angle in burst.
+  */ 
+  _getBitAngle (angle, i) {
+    var p = this._props,
+        points = p.count,
+        degCnt = ( p.degree % 360 === 0 ) ? points : points-1 || 1,
+        step = p.degree/degCnt,
+        angleAddition = i*step + 90;
+    // if not delta option
+    if ( !this._isDelta(angle) ) { angle += angleAddition; }
+    else {
+      var keys  = Object.keys(angle),
+          start = keys[0],
+          end   = angle[start],
+          curAngleShift   = angleAddition,
+          newStart        = parseFloat(start) + curAngleShift,
+          newEnd          = parseFloat(end)   + curAngleShift,
+          delta           = {};
+          delta[newStart] = newEnd;
+      angle = delta;
+    }
+    return angle;
   }
   /*
     Method to get radial point on `start` or `end`.
@@ -274,38 +313,6 @@ class Burst extends Swirl {
   //   @override Transit.
   // */
   // _draw () { this._drawEl(); }
-  // /* 
-  //   Method to get transits angle in burst so
-  //   it will follow circular shape.
-     
-  //    @param    {Number, Object} Base angle.
-  //    @param    {Number}   Transit's index in burst.
-  //    @returns  {Number}   Radial angle in burst.
-  // */ 
-  // _getBitAngle (angle, i) {
-  //   var points = this._props.count,
-  //       degCnt = ( this._props.degree % 360 === 0 )
-  //         ? points
-  //         : points-1 || 1;
-  //   var step = this._props.degree/degCnt,
-  //       angleAddition = i*step + 90,
-  //       angleShift = this._swirls[i]._props.angleShift || 0;
-  //   // if not delta option
-  //   if ( typeof angle !== 'object' ) {
-  //     angle += angleAddition + angleShift;
-  //   } else {
-  //     var keys  = Object.keys(angle),
-  //         start = keys[0],
-  //         end   = angle[start],
-  //         curAngleShift   = angleAddition+angleShift,
-  //         newStart        = parseFloat(start) + curAngleShift,
-  //         newEnd          = parseFloat(end)   + curAngleShift,
-  //         delta           = {};
-  //         delta[newStart] = newEnd;
-  //     angle = delta;
-  //   }
-  //   return angle;
-  // }
   // /*
   //   Method to get if need to update new transform.
   //   @private

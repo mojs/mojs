@@ -2,6 +2,7 @@ Transit = mojs.Transit
 Swirl   = mojs.Swirl
 Burst   = mojs.Burst
 t       = mojs.tweener
+h       = mojs.h
 
 describe 'Burst ->', ->
   beforeEach -> t.removeAll()
@@ -14,15 +15,15 @@ describe 'Burst ->', ->
     it 'should have _defaults', ->
       b = new Burst
       s = new Swirl
-      delete b._defaults.childOptions
+      # delete b._defaults.childOptions
       delete b._defaults.count
       delete b._defaults.randomAngle
       delete b._defaults.randomRadius
       delete b._defaults.degree
       expect(b._defaults).toEqual s._defaults
-    it 'should have childOptions', ->
-      b = new Burst
-      expect(b._defaults.childOptions).toBe null
+    # it 'should have childOptions', ->
+    #   b = new Burst
+    #   expect(b._defaults.childOptions).toBe null
     it 'should add Burts properties' , ->
       b = new Burst
       expect(b._defaults.degree).toBe 360
@@ -33,11 +34,23 @@ describe 'Burst ->', ->
       b = new Burst
       s = new Swirl
       b._childDefaults.radius = s._defaults.radius
+      for key, value of h.tweenOptionMap
+        delete b._childDefaults[key]
+      for key, value of h.callbacksMap
+        delete b._childDefaults[key]
       expect(b._childDefaults).toEqual s._defaults
     it 'should modify radius on _childDefaults', ->
       b = new Burst
       s = new Swirl
       expect(b._childDefaults.radius[5]).toBe 0
+    it 'should add tween options to _childDefaults', ->
+      b = new Burst
+
+      for key, value of h.tweenOptionMap
+        expect(b._childDefaults[key]).toBe null
+      for key, value of h.callbacksMap
+        expect(b._childDefaults[key]).toBe null
+
     it 'should have _optionsIntersection', ->
       b = new Burst
       s = new Swirl
@@ -183,10 +196,34 @@ describe 'Burst ->', ->
         angle: {50: 0}
       option0 = burst._getOption 0
       expect(option0.radius[5]) .toBe 0
-      expect(option0.angle)     .toBe 0
-      # expect(option0.onUpdate)  .toBe null
-      # expect(option0.onStart)   .toBe null
-      # expect(option0.onComplete).toBe null
+      expect(option0.angle)     .toBe 90
+
+    it 'should parse stagger ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2,
+        childOptions: {
+          angle: 'stagger(20, 40)'
+        }
+
+      option0 = burst._getOption 0
+      option1 = burst._getOption 1
+      expect(option0.angle).toBe 90 + (20)
+      expect(option1.angle).toBe 270 + (20 + 40)
+
+    it 'should parse rand ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2,
+        childOptions: {
+          angle: 'rand(20, 40)'
+        }
+
+      option0 = burst._getOption 0
+      option1 = burst._getOption 1
+      expect(option0.angle).toBeGreaterThan 90 + (20)
+      expect(option1.angle).not.toBeGreaterThan 270 + (20 + 40)
+
     # old
     # it 'should add x/y deltas to the _swirls ->', ->
     #   burst = new Burst
@@ -318,7 +355,6 @@ describe 'Burst ->', ->
 
       obj0 = {}
       obj1 = {}
-      burst._o.isIt = 0
       result0 = burst._addOptionalProperties obj0, 0
       result1 = burst._addOptionalProperties obj1, 1
 
@@ -328,6 +364,52 @@ describe 'Burst ->', ->
       expect(obj1.x[0]).toBeCloseTo 0, 5
       expect(obj1.y[0]).toBeCloseTo 100, 5
 
+    it 'should add x/y ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2,
+        size: 0,
+
+      obj0 = {}
+      obj1 = {}
+      result0 = burst._addOptionalProperties obj0, 0
+      result1 = burst._addOptionalProperties obj1, 1
+
+      expect(obj0.x[0]).toBeCloseTo 0, 5
+      expect(obj0.y[0]).toBeCloseTo -100, 5
+
+      expect(obj1.x[0]).toBeCloseTo 0, 5
+      expect(obj1.y[0]).toBeCloseTo 100, 5
+
+    it 'should add angles ->', ->
+      burst = new Burst
+        radius: { 0: 100 }
+        count:  2
+
+      obj0 = { angle: 0 }
+      obj1 = { angle: 0 }
+      result0 = burst._addOptionalProperties obj0, 0
+      result1 = burst._addOptionalProperties obj1, 1
+
+      expect(obj0.angle).toBe 90
+      expect(obj1.angle).toBe 270
+
+  describe '_getBitAngle method ->', ->
+    it 'should get angle by i', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle(0, 0)).toBe 90
+      expect(burst._getBitAngle(0, 1)).toBe 162
+      expect(burst._getBitAngle(0, 2)).toBe 234
+      expect(burst._getBitAngle(90, 2)).toBe 234 + 90
+      expect(burst._getBitAngle(0, 3)).toBe 306
+      expect(burst._getBitAngle(90, 3)).toBe 306 + 90
+      expect(burst._getBitAngle(0, 4)).toBe 378
+      expect(burst._getBitAngle(50, 4)).toBe 378 + 50
+    it 'should get delta angle by i', ->
+      burst = new Burst radius: { 'rand(10,20)': 100 }
+      expect(burst._getBitAngle({180:0}, 0)[270]).toBe 90
+      expect(burst._getBitAngle({50:20}, 3)[356]).toBe 326
+      expect(burst._getBitAngle({50:20}, 4)[428]).toBe 398
 
   describe '_extendDefaults method ->', ->
     it 'should call super', ->
@@ -538,22 +620,6 @@ describe 'Burst ->', ->
   # #   it 'return boolean if _fillTransform needed', ->
   # #     burst = new Burst x: 100, y: 100, angle: 50
   # #     expect(burst._isNeedsTransform()).toBe true
-  # describe '_getBitAngle method ->', ->
-  #   it 'should get angle by i', ->
-  #     burst = new Burst radius: { 'rand(10,20)': 100 }
-  #     expect(burst._getBitAngle(0, 0)).toBe 90
-  #     expect(burst._getBitAngle(0, 1)).toBe 162
-  #     expect(burst._getBitAngle(0, 2)).toBe 234
-  #     expect(burst._getBitAngle(90, 2)).toBe 234 + 90
-  #     expect(burst._getBitAngle(0, 3)).toBe 306
-  #     expect(burst._getBitAngle(90, 3)).toBe 306 + 90
-  #     expect(burst._getBitAngle(0, 4)).toBe 378
-  #     expect(burst._getBitAngle(50, 4)).toBe 378 + 50
-  #   it 'should get delta angle by i', ->
-  #     burst = new Burst radius: { 'rand(10,20)': 100 }
-  #     expect(burst._getBitAngle({180:0}, 0)[270]).toBe 90
-  #     expect(burst._getBitAngle({50:20}, 3)[356]).toBe 326
-  #     expect(burst._getBitAngle({50:20}, 4)[428]).toBe 398
   # describe 'randomness ->', ->
   #   describe 'random angle ->', ->
   #     it 'should have randomAngle option ->', ->

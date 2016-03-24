@@ -566,7 +566,8 @@ describe 'Transit ->', ->
       expect(byte.bit.props['radiusX']).toBe byte._props.radiusX
       expect(byte.bit.props['radiusY']).toBe byte._props.radiusY
       expect(byte.bit.props['points']).toBe byte._props.points
-      expect(byte.bit.props['transform']).toBe byte._calcShapeTransform()
+      # old
+      # expect(byte.bit.props['transform']).toBe byte._calcShapeTransform()
 
     it 'should set x/y to center', ->
       byte = new Byte radius: 25
@@ -588,23 +589,25 @@ describe 'Transit ->', ->
       spyOn byte, '_drawEl'
       byte._draw()
       expect(byte._drawEl).toHaveBeenCalled()
-    it 'should call _calcShapeTransform method', ->
-      byte = new Byte radius: 25
-      spyOn byte, '_calcShapeTransform'
-      byte._draw()
-      expect(byte._calcShapeTransform).toHaveBeenCalled()
+    # old
+    # it 'should call _calcShapeTransform method', ->
+    #   byte = new Byte radius: 25
+    #   spyOn byte, '_calcShapeTransform'
+    #   byte._draw()
+    #   expect(byte._calcShapeTransform).toHaveBeenCalled()
     it 'should receive the current progress', ->
       byte = new Byte radius: 25
       spyOn byte, '_draw'
       byte._setProgress .5
       expect(byte._draw).toHaveBeenCalledWith .5
-    it 'should calculate transform object', ->
-      byte = new Byte
-        angle:        90
-        radius:       25
-        strokeWidth:  4
-      expect(byte.bit.props.transform).toBe('rotate(90, 29, 29)')
-      expect(byte._calcShapeTransform).toBeDefined()
+    # old
+    # it 'should calculate transform object', ->
+    #   byte = new Byte
+    #     angle:        90
+    #     radius:       25
+    #     strokeWidth:  4
+    #   expect(byte.bit.props.transform).toBe('rotate(90, 29, 29)')
+    #   expect(byte._calcShapeTransform).toBeDefined()
   describe '_drawEl method ->', ->
     it 'should set el positions and transforms', ->
       byte = new Byte radius: 25, top: 10

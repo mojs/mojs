@@ -76,6 +76,7 @@ class Helpers
   #   strokeDasharray:  1
   #   # strokeDashoffset: 1
   RAD_TO_DEG: 180/Math.PI
+  # DEG_TO_RAD: Math.PI/180
   constructor:-> @vars()
   vars:->
     @prefix = @getPrefix()
@@ -514,7 +515,22 @@ class Helpers
     @returns {Boolean} If property is tween property.
   ###
   isTweenProp:(keyName)-> @tweenOptionMap[keyName] or @callbacksMap[keyName]
-
+  ###
+    Method to parse string property value
+    which can include both `rand` and `stagger `
+    value in various positions.
+    @param {String} Property name to check for.
+    @param {Number} Optional index for stagger.
+    @returns {Number} Parsed option value.
+  ###
+  # parseStringOption: ( value, index = 0 ) ->
+  #   if typeof value is 'string'
+  #     console.log value
+  #     value = @parseIfStagger( value, index )
+  #     console.log value
+  #     value = @parseIfRand( value )
+  #     console.log value
+  #   value
 
 h = new Helpers
 module.exports = h

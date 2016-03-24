@@ -174,7 +174,7 @@ class Transit extends Tunable {
       radiusX:              this._props.radiusX,
       radiusY:              this._props.radiusY,
       points:               this._props.points,
-      transform:            this._calcShapeTransform()
+      // transform:            this._calcShapeTransform()
     });
     this.bit.draw(); this._drawEl();
     // console.timeEnd('draw')

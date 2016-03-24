@@ -13,7 +13,7 @@ class Tweener {
   */
   _loop() {
     if (!this._isRunning) { return false; }
-    var time = performance.now(); this._update(time);
+    this._update(window.performance.now());
     if (!this.tweens.length) { return this._isRunning = false; }
     requestAnimationFrame(this._loop);
     return this;

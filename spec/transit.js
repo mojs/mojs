@@ -885,8 +885,7 @@
         expect(byte.bit.props['radius']).toBe(byte._props.radius);
         expect(byte.bit.props['radiusX']).toBe(byte._props.radiusX);
         expect(byte.bit.props['radiusY']).toBe(byte._props.radiusY);
-        expect(byte.bit.props['points']).toBe(byte._props.points);
-        return expect(byte.bit.props['transform']).toBe(byte._calcShapeTransform());
+        return expect(byte.bit.props['points']).toBe(byte._props.points);
       });
       it('should set x/y to center', function() {
         var byte;
@@ -925,16 +924,7 @@
         byte._draw();
         return expect(byte._drawEl).toHaveBeenCalled();
       });
-      it('should call _calcShapeTransform method', function() {
-        var byte;
-        byte = new Byte({
-          radius: 25
-        });
-        spyOn(byte, '_calcShapeTransform');
-        byte._draw();
-        return expect(byte._calcShapeTransform).toHaveBeenCalled();
-      });
-      it('should receive the current progress', function() {
+      return it('should receive the current progress', function() {
         var byte;
         byte = new Byte({
           radius: 25
@@ -942,16 +932,6 @@
         spyOn(byte, '_draw');
         byte._setProgress(.5);
         return expect(byte._draw).toHaveBeenCalledWith(.5);
-      });
-      return it('should calculate transform object', function() {
-        var byte;
-        byte = new Byte({
-          angle: 90,
-          radius: 25,
-          strokeWidth: 4
-        });
-        expect(byte.bit.props.transform).toBe('rotate(90, 29, 29)');
-        return expect(byte._calcShapeTransform).toBeDefined();
       });
     });
     describe('_drawEl method ->', function() {

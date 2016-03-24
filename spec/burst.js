@@ -1,5 +1,5 @@
 (function() {
-  var Burst, Swirl, Transit, t;
+  var Burst, Swirl, Transit, h, t;
 
   Transit = mojs.Transit;
 
@@ -8,6 +8,8 @@
   Burst = mojs.Burst;
 
   t = mojs.tweener;
+
+  h = mojs.h;
 
   describe('Burst ->', function() {
     beforeEach(function() {
@@ -25,17 +27,11 @@
         var b, s;
         b = new Burst;
         s = new Swirl;
-        delete b._defaults.childOptions;
         delete b._defaults.count;
         delete b._defaults.randomAngle;
         delete b._defaults.randomRadius;
         delete b._defaults.degree;
         return expect(b._defaults).toEqual(s._defaults);
-      });
-      it('should have childOptions', function() {
-        var b;
-        b = new Burst;
-        return expect(b._defaults.childOptions).toBe(null);
       });
       it('should add Burts properties', function() {
         var b;
@@ -46,10 +42,20 @@
         return expect(b._defaults.randomRadius).toBe(0);
       });
       it('should have _childDefaults', function() {
-        var b, s;
+        var b, key, s, value, _ref, _ref1;
         b = new Burst;
         s = new Swirl;
         b._childDefaults.radius = s._defaults.radius;
+        _ref = h.tweenOptionMap;
+        for (key in _ref) {
+          value = _ref[key];
+          delete b._childDefaults[key];
+        }
+        _ref1 = h.callbacksMap;
+        for (key in _ref1) {
+          value = _ref1[key];
+          delete b._childDefaults[key];
+        }
         return expect(b._childDefaults).toEqual(s._defaults);
       });
       it('should modify radius on _childDefaults', function() {
@@ -57,6 +63,22 @@
         b = new Burst;
         s = new Swirl;
         return expect(b._childDefaults.radius[5]).toBe(0);
+      });
+      it('should add tween options to _childDefaults', function() {
+        var b, key, value, _ref, _ref1, _results;
+        b = new Burst;
+        _ref = h.tweenOptionMap;
+        for (key in _ref) {
+          value = _ref[key];
+          expect(b._childDefaults[key]).toBe(null);
+        }
+        _ref1 = h.callbacksMap;
+        _results = [];
+        for (key in _ref1) {
+          value = _ref1[key];
+          _results.push(expect(b._childDefaults[key]).toBe(null));
+        }
+        return _results;
       });
       return it('should have _optionsIntersection', function() {
         var b, s;
@@ -271,7 +293,7 @@
         expect(option7.radius[5]).toBe(0);
         return expect(option8.radius[5]).toBe(0);
       });
-      return it('should have parent only options ->', function() {
+      it('should have parent only options ->', function() {
         var burst, option0;
         burst = new Burst({
           radius: {
@@ -283,7 +305,39 @@
         });
         option0 = burst._getOption(0);
         expect(option0.radius[5]).toBe(0);
-        return expect(option0.angle).toBe(0);
+        return expect(option0.angle).toBe(90);
+      });
+      it('should parse stagger ->', function() {
+        var burst, option0, option1;
+        burst = new Burst({
+          radius: {
+            0: 100
+          },
+          count: 2,
+          childOptions: {
+            angle: 'stagger(20, 40)'
+          }
+        });
+        option0 = burst._getOption(0);
+        option1 = burst._getOption(1);
+        expect(option0.angle).toBe(90 + 20.);
+        return expect(option1.angle).toBe(270 + (20 + 40));
+      });
+      return it('should parse rand ->', function() {
+        var burst, option0, option1;
+        burst = new Burst({
+          radius: {
+            0: 100
+          },
+          count: 2,
+          childOptions: {
+            angle: 'rand(20, 40)'
+          }
+        });
+        option0 = burst._getOption(0);
+        option1 = burst._getOption(1);
+        expect(option0.angle).toBeGreaterThan(90 + 20.);
+        return expect(option1.angle).not.toBeGreaterThan(270 + (20 + 40));
       });
     });
     describe('_calcSize method ->', function() {
@@ -466,7 +520,7 @@
         expect(result.left).toBe('50%');
         return expect(result.top).toBe('50%');
       });
-      return it('should add x/y ->', function() {
+      it('should add x/y ->', function() {
         var burst, obj0, obj1, result0, result1;
         burst = new Burst({
           radius: {
@@ -477,13 +531,84 @@
         });
         obj0 = {};
         obj1 = {};
-        burst._o.isIt = 0;
         result0 = burst._addOptionalProperties(obj0, 0);
         result1 = burst._addOptionalProperties(obj1, 1);
         expect(obj0.x[0]).toBeCloseTo(0, 5);
         expect(obj0.y[0]).toBeCloseTo(-100, 5);
         expect(obj1.x[0]).toBeCloseTo(0, 5);
         return expect(obj1.y[0]).toBeCloseTo(100, 5);
+      });
+      it('should add x/y ->', function() {
+        var burst, obj0, obj1, result0, result1;
+        burst = new Burst({
+          radius: {
+            0: 100
+          },
+          count: 2,
+          size: 0
+        });
+        obj0 = {};
+        obj1 = {};
+        result0 = burst._addOptionalProperties(obj0, 0);
+        result1 = burst._addOptionalProperties(obj1, 1);
+        expect(obj0.x[0]).toBeCloseTo(0, 5);
+        expect(obj0.y[0]).toBeCloseTo(-100, 5);
+        expect(obj1.x[0]).toBeCloseTo(0, 5);
+        return expect(obj1.y[0]).toBeCloseTo(100, 5);
+      });
+      return it('should add angles ->', function() {
+        var burst, obj0, obj1, result0, result1;
+        burst = new Burst({
+          radius: {
+            0: 100
+          },
+          count: 2
+        });
+        obj0 = {
+          angle: 0
+        };
+        obj1 = {
+          angle: 0
+        };
+        result0 = burst._addOptionalProperties(obj0, 0);
+        result1 = burst._addOptionalProperties(obj1, 1);
+        expect(obj0.angle).toBe(90);
+        return expect(obj1.angle).toBe(270);
+      });
+    });
+    describe('_getBitAngle method ->', function() {
+      it('should get angle by i', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst._getBitAngle(0, 0)).toBe(90);
+        expect(burst._getBitAngle(0, 1)).toBe(162);
+        expect(burst._getBitAngle(0, 2)).toBe(234);
+        expect(burst._getBitAngle(90, 2)).toBe(234 + 90);
+        expect(burst._getBitAngle(0, 3)).toBe(306);
+        expect(burst._getBitAngle(90, 3)).toBe(306 + 90);
+        expect(burst._getBitAngle(0, 4)).toBe(378);
+        return expect(burst._getBitAngle(50, 4)).toBe(378 + 50);
+      });
+      return it('should get delta angle by i', function() {
+        var burst;
+        burst = new Burst({
+          radius: {
+            'rand(10,20)': 100
+          }
+        });
+        expect(burst._getBitAngle({
+          180: 0
+        }, 0)[270]).toBe(90);
+        expect(burst._getBitAngle({
+          50: 20
+        }, 3)[356]).toBe(326);
+        return expect(burst._getBitAngle({
+          50: 20
+        }, 4)[428]).toBe(398);
       });
     });
     return describe('_extendDefaults method ->', function() {
