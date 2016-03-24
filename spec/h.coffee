@@ -904,29 +904,29 @@ describe 'Helpers ->', ->
       for key, value of h.tweenOptionMap
         expect(h.isTweenProp(key)).toBe 1
 
-  # describe 'parseStringOption method', ->
-  #   it 'should return passed value if not a string', ->
-  #     obj = {}
-  #     result = h.parseStringOption obj
-  #     expect(result).toBe obj
+  describe 'parseStringOption method', ->
+    it 'should return passed value if not a string', ->
+      obj = {}
+      result = h.parseStringOption obj
+      expect(result).toBe obj
 
-  #   it 'should parse stagger values', ->
-  #     result = h.parseStringOption 'stagger(20, 40)'
-  #     expect(result).toBe 20
+    it 'should parse stagger values', ->
+      result = h.parseStringOption 'stagger(20, 40)'
+      expect(result).toBe 20
 
-  #   it 'should parse stagger values with index', ->
-  #     result = h.parseStringOption 'stagger(20, 40)', 2
-  #     expect(result).toBe 20 + (2*40)
+    it 'should parse stagger values with index', ->
+      result = h.parseStringOption 'stagger(20, 40)', 2
+      expect(result).toBe 20 + (2*40)
 
-  #   it 'should parse rand values', ->
-  #     result = h.parseStringOption 'rand(10, 20)'
-  #     expect(result).toBeGreaterThan     10
-  #     expect(result).not.toBeGreaterThan 20
+    it 'should parse rand values', ->
+      result = h.parseStringOption 'rand(10, 20)'
+      expect(result).toBeGreaterThan     10
+      expect(result).not.toBeGreaterThan 20
 
-  #   it 'should parse rand values inside stagger', ->
-  #     result = h.parseStringOption 'stagger(rand(10, 20), rand(20, 30))', 1
-  #     expect(result).toBeGreaterThan     30
-  #     expect(result).not.toBeGreaterThan 50
+    it 'should parse rand values inside stagger', ->
+      result = h.parseStringOption 'stagger(rand(10, 20), rand(20, 30))', 1
+      expect(result).toBeGreaterThan     30
+      expect(result).not.toBeGreaterThan 50
 
 
 

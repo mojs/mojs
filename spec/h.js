@@ -1249,7 +1249,7 @@
         })).toBe(1);
       });
     });
-    return describe('isTweenProp method ->', function() {
+    describe('isTweenProp method ->', function() {
       return it('should check in callbacksMap and tweenOptionMap maps', function() {
         var key, value, _ref, _ref1, _results;
         _ref = h.callbacksMap;
@@ -1264,6 +1264,36 @@
           _results.push(expect(h.isTweenProp(key)).toBe(1));
         }
         return _results;
+      });
+    });
+    return describe('parseStringOption method', function() {
+      it('should return passed value if not a string', function() {
+        var obj, result;
+        obj = {};
+        result = h.parseStringOption(obj);
+        return expect(result).toBe(obj);
+      });
+      it('should parse stagger values', function() {
+        var result;
+        result = h.parseStringOption('stagger(20, 40)');
+        return expect(result).toBe(20);
+      });
+      it('should parse stagger values with index', function() {
+        var result;
+        result = h.parseStringOption('stagger(20, 40)', 2);
+        return expect(result).toBe(20 + (2 * 40));
+      });
+      it('should parse rand values', function() {
+        var result;
+        result = h.parseStringOption('rand(10, 20)');
+        expect(result).toBeGreaterThan(10);
+        return expect(result).not.toBeGreaterThan(20);
+      });
+      return it('should parse rand values inside stagger', function() {
+        var result;
+        result = h.parseStringOption('stagger(rand(10, 20), rand(20, 30))', 1);
+        expect(result).toBeGreaterThan(30);
+        return expect(result).not.toBeGreaterThan(50);
       });
     });
   });

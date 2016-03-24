@@ -523,14 +523,11 @@ class Helpers
     @param {Number} Optional index for stagger.
     @returns {Number} Parsed option value.
   ###
-  # parseStringOption: ( value, index = 0 ) ->
-  #   if typeof value is 'string'
-  #     console.log value
-  #     value = @parseIfStagger( value, index )
-  #     console.log value
-  #     value = @parseIfRand( value )
-  #     console.log value
-  #   value
+  parseStringOption: ( value, index = 0 ) ->
+    if typeof value is 'string'
+      value = @parseIfStagger( value, index )
+      value = @parseIfRand( value )
+    value
 
 h = new Helpers
 module.exports = h

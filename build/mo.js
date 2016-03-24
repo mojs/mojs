@@ -1257,30 +1257,28 @@
 	    value: function _declareDefaults() {
 	      // call super @ Swirl
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_declareDefaults', this).call(this);
+	      // child defaults declaration
+	      this._declareChildDefaults();
 
-	      /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
-	      // copy the defaults to the childDefaults property
-	      this._childDefaults = _h2.default.cloneObj(this._defaults);
-	      // modify default radius ∆ of the children
-	      this._childDefaults.radius = { 5: 0 };
-	      // copy tween options and callbacks
-	      for (var key in _h2.default.tweenOptionMap) {
-	        this._childDefaults[key] = null;
-	      }
-	      for (var key in _h2.default.callbacksMap) {
-	        this._childDefaults[key] = null;
-	      }
+	      /* _DEFAULTS ARE - SWIRL DEFAULTS + THESE: */
 
-	      /* DEFAULTS - EXTEND SWIRL's BY THE NEXT ONES: */
-	      // Amount of Burst's point: [number > 0]
+	      /* :: [number > 0] :: Amount of Burst's points. */
 	      this._defaults.count = 5;
-	      // Degree for the Burst's points : [0..360]
+	      /* :: [0 < number < 360] :: Degree of the Burst. */
 	      this._defaults.degree = 360;
+	      /* ∆ :: [number > 0] :: Degree for the Burst's points */
+	      this._defaults.radius = { 5: 50 };
+
+	      /* childOptions PROPERTIES ARE -
+	        `Swirl` DEFAULTS + `Tween` DEFAULTS.
+	        ONLY `isSwirl` option is `false` by default. */
+
 	      // add options intersection hash - map that holds the property
-	      // names that could be on both parent module and child ones
+	      // names that could be on both parent module and child ones,
+	      // so setting one of those on parent, affect parent only
 	      this._optionsIntersection = {
-	        // CHILD SWIRL OPTIONS
-	        radius: 1, radiusX: 1, radiusY: 1, angle: 1, scale: 1, opacity: 1
+	        radius: 1, radiusX: 1, radiusY: 1,
+	        angle: 1, scale: 1, opacity: 1
 	      };
 	    }
 	    /*
@@ -1296,6 +1294,27 @@
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_extendDefaults', this).call(this);
 	      // calc size immedietely, the Swirls' options rely on size
 	      this._calcSize();
+	    }
+	    /*
+	      Method to declare `childDefaults` for `childOptions` object.
+	      @private
+	    */
+
+	  }, {
+	    key: '_declareChildDefaults',
+	    value: function _declareChildDefaults() {
+	      /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
+	      // copy the defaults to the childDefaults property
+	      this._childDefaults = _h2.default.cloneObj(this._defaults);
+	      // [boolean] :: If shape should follow sinusoidal path.
+	      this._childDefaults.isSwirl = false;
+	      // copy tween options and callbacks
+	      for (var key in _h2.default.tweenOptionMap) {
+	        this._childDefaults[key] = null;
+	      }
+	      for (var key in _h2.default.callbacksMap) {
+	        this._childDefaults[key] = null;
+	      }
 	    }
 	    /*
 	      Method to create child transits.
@@ -1330,11 +1349,8 @@
 	        prop = prop == null && !this._optionsIntersection[key] ? this._getPropByMod(key, i, this._o) : prop;
 	        // lastly fallback to defaults
 	        prop = prop == null ? this._getPropByMod(key, i, this._childDefaults) : prop;
-
-	        prop = _h2.default.parseIfStagger(prop, i);
-	        prop = _h2.default.parseIfRand(prop, i);
-
-	        option[key] = prop;
+	        // parse `stagger` and `rand` values if needed
+	        option[key] = _h2.default.parseStringOption(prop, i);
 	      }
 
 	      return this._addOptionalProperties(option, i);
@@ -1380,27 +1396,28 @@
 
 	  }, {
 	    key: '_getBitAngle',
-	    value: function _getBitAngle(angle, i) {
+	    value: function _getBitAngle(angleProperty, i) {
 	      var p = this._props,
-	          points = p.count,
-	          degCnt = p.degree % 360 === 0 ? points : points - 1 || 1,
+	          degCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1,
 	          step = p.degree / degCnt,
-	          angleAddition = i * step + 90;
+	          angle = i * step + 90;
 	      // if not delta option
-	      if (!this._isDelta(angle)) {
-	        angle += angleAddition;
+	      if (!this._isDelta(angleProperty)) {
+	        angleProperty += angle;
 	      } else {
-	        var keys = (0, _keys2.default)(angle),
+	        var delta = {},
+	            keys = (0, _keys2.default)(angleProperty),
 	            start = keys[0],
-	            end = angle[start],
-	            curAngleShift = angleAddition,
-	            newStart = parseFloat(start) + curAngleShift,
-	            newEnd = parseFloat(end) + curAngleShift,
-	            delta = {};
-	        delta[newStart] = newEnd;
-	        angle = delta;
+	            end = angleProperty[start];
+
+	        start = _h2.default.parseStringOption(start, i);
+	        end = _h2.default.parseStringOption(end, i);
+	        // new start = newEnd
+	        delta[parseFloat(start) + angle] = parseFloat(end) + angle;
+
+	        angleProperty = delta;
 	      }
-	      return angle;
+	      return angleProperty;
 	    }
 	    /*
 	      Method to get radial point on `start` or `end`.
@@ -1557,58 +1574,6 @@
 	    value: function _makeTween() {} /* don't create any tween */
 
 	    // /*
-	    //   Method to populate each transit with dedicated option.
-	    //   @private
-	    // */
-	    // _addBitOptions () {
-	    //   var points = this._props.count;
-	    //   this.degreeCnt = (this._props.degree % 360 === 0)
-	    //     ? points
-	    //     : points-1 || 1;
-
-	    //   var step = this._props.degree/this.degreeCnt;
-	    //   for (var i = 0; i < this._swirls.length; i++) {
-	    //     var transit    = this._swirls[i],
-	    //         aShift     = transit._props.angleShift || 0,
-	    //         pointStart = this._getSidePoint('start', i*step + aShift),
-	    //         pointEnd   = this._getSidePoint('end',   i*step + aShift);
-
-	    //     transit._o.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
-	    //     transit._o.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
-
-	    //     if ( !this._props.isResetAngles ) {
-	    //       transit._o.angle = this._getBitAngle(transit._o.angle, i)
-	    //     }
-	    //     transit._extendDefaults()
-	    //   }
-	    // }
-	    // /*
-	    //   Method to calculate module's size.
-	    //   @private
-	    //   @override Transit.
-	    // */
-	    // _calcSize () {
-	    //   var largestSize = -1;
-	    //   for (var i = 0; i < this._swirls.length; i++) {
-	    //     var transit = this._swirls[i];
-	    //     transit._calcSize();
-	    //     if (largestSize < transit._props.size) {
-	    //       largestSize = transit._props.size;
-	    //     }
-	    //   }
-	    //   var radius = this._calcMaxShapeRadius();
-	    //   this._props.size   = largestSize + 2*radius;
-	    //   this._props.size   += 2*this._props.sizeGap;
-	    //   this._props.center = this._props.size/2;
-	    //   this._addBitOptions()
-	    // }
-	    // /*
-	    //   Method to draw the burst.
-	    //   @private
-	    //   @override Transit.
-	    // */
-	    // _draw () { this._drawEl(); }
-	    // /*
 	    //   Method to get if need to update new transform.
 	    //   @private
 	    //   @returns {Boolean} If transform update needed.
@@ -1618,29 +1583,6 @@
 	    // //           this._isPropChanged('y') ||
 	    // //           this._isPropChanged('angle');
 	    // // }
-	    // /*
-	    //   Method to generate random angle.
-	    //   @private
-	    //   @returns {Number} Rundom angle.
-	    // */
-	    // _generateRandomAngle ( ) {
-	    //   var randomness = parseFloat(this._props.randomAngle);
-	    //   if ( randomness > 1 ) { randdomness = 1 }
-	    //   else if ( randomness < 0 ) { randdomness = 0 }
-	    //   return h.rand(0, ( randomness ) ? randomness*360 : 180);
-	    // }
-	    // /*
-	    //   Method to get random radius.
-	    //   @private
-	    //   @returns {Number} Random radius.
-	    // */
-	    // _generateRandomRadius () {
-	    //   var randomness = parseFloat(this._props.randomRadius);
-	    //   if ( randomness > 1 ) { randdomness = 1; }
-	    //   else if ( randomness < 0 ) { randdomness = 0; }
-	    //   var start = ( randomness ) ? (1-randomness) : .5;
-	    //   return h.rand(start, 1);
-	    // }
 	    /*
 	      Method to run tween with new options.
 	      @public
@@ -2320,18 +2262,21 @@
 	    */
 	    value: function _declareDefaults() {
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), '_declareDefaults', this).call(this);
-	      // ∆ :: [number > 0]
-	      this._defaults.swirlSize = 10;
-	      // ∆ :: [number > 0]
-	      this._defaults.swirlFrequency = 3;
-	      // ∆ :: [number > 0]
-	      this._defaults.pathScale = 1;
-	      // ∆ :: [number]
-	      this._defaults.degreeShift = 0;
-	      // ∆ :: [number]
-	      this._defaults.radius = { 5: 0 };
-	      // [boolean]
+
+	      /* _DEFAULTS ARE - TRANSIT DEFAULTS + THESE: */
+
+	      /* [boolean] :: If shape should follow sinusoidal path. */
 	      this._defaults.isSwirl = true;
+	      /* ∆ :: [number > 0] :: Degree size of the sinusoidal path. */
+	      this._defaults.swirlSize = 10;
+	      /* ∆ :: [number > 0] :: Frequency of the sinusoidal path. */
+	      this._defaults.swirlFrequency = 3;
+	      /* ∆ :: [number > 0] :: Sinusoidal path length scale. */
+	      this._defaults.pathScale = 1;
+	      /* ∆ :: [number] :: Degree shift for the sinusoidal path. */
+	      this._defaults.degreeShift = 0;
+	      /* ∆ :: [number] :: Radius of the shape. */
+	      this._defaults.radius = { 5: 0 };
 	    }
 
 	    // ^ PUBLIC  METHOD(S) ^
@@ -5061,6 +5006,17 @@
 	    @returns {Number} Parsed option value.
 	   */
 
+	  Helpers.prototype.parseStringOption = function(value, index) {
+	    if (index == null) {
+	      index = 0;
+	    }
+	    if (typeof value === 'string') {
+	      value = this.parseIfStagger(value, index);
+	      value = this.parseIfRand(value);
+	    }
+	    return value;
+	  };
+
 	  return Helpers;
 
 	})();
@@ -7716,7 +7672,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.204.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.205.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7724,47 +7680,32 @@
 
 	// TODO:
 	/*
+	  add then, generate to burst.
 	  randoms in then chains for transit and swirl.
-	  Tweak burst for the new reality.
-	  stagger in delay
 	  parse rand(stagger(20, 10), 20) values
 	  perf optimizations.
 	  percentage for radius
 	*/
 
 	var sw = new mojs.Burst({
-	  // delay: 'stagger(50)',
-	  duration: 1000,
 	  left: '50%', top: '50%',
-	  strokeDasharray: '100% 100%',
-	  strokeDashoffset: { '100%': '-100%' },
-	  // x: {0: 400}, y: 0,
-	  // angle: 'stagger(15)',
-	  // duration: 1000,
-	  isShowEnd: 1,
-	  degree: 10,
-	  // angle:  {0: 300},
-	  // randomRadius: .85,
-	  radius: { 0: 200 },
-	  radiusScale: 'rand(.25, 1)',
-	  angleShift: 'rand(-10, 10)',
-	  // swirlFrequency:   'rand(3, 6)',
-	  // onComplete: function () { console.log('complete', this) },
-	  // timeline: { onComplete: function () { console.log('complete', this) }, },
-	  count: 7,
-	  isSwirl: 0,
-	  fill: 'white',
-
-	  // shape: 'line',
-	  // stroke: 'cyan',
+	  // delay:    'stagger(rand(20, 40))',
+	  // degree:   170,
+	  shape: ['cross', 'polygon', 'zigzag'],
+	  stroke: 'cyan',
+	  fill: 'none',
+	  radius: { 0: 150 },
+	  angle: 190,
+	  degreeShift: 'rand(-50,50)',
+	  pathScale: 'rand(.5, 1)',
+	  strokeWidth: { 2: 0 },
 	  childOptions: {
-	    // isSwirl: 0,
-	    radius: { 'rand(2, 4)': 0 },
-	    isShowEnd: false
+	    radius: 5,
+	    isSwirl: 1,
+	    swirlSize: 'rand(3, 6)',
+	    swirlFrequency: 'rand(3, 10)',
+	    angle: { 0: 200 }
 	  }
-	  //   // radius: {5: 0},
-	  //   // angle: 'stagger(20, rand(10, 20))',
-
 	});
 
 	var playEl = document.querySelector('#js-play'),

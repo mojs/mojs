@@ -17,9 +17,8 @@ describe 'Burst ->', ->
       s = new Swirl
       # delete b._defaults.childOptions
       delete b._defaults.count
-      delete b._defaults.randomAngle
-      delete b._defaults.randomRadius
       delete b._defaults.degree
+      b._defaults.radius = s._defaults.radius
       expect(b._defaults).toEqual s._defaults
     # it 'should have childOptions', ->
     #   b = new Burst
@@ -31,16 +30,20 @@ describe 'Burst ->', ->
     it 'should have _childDefaults', ->
       b = new Burst
       s = new Swirl
-      b._childDefaults.radius = s._defaults.radius
+
       for key, value of h.tweenOptionMap
         delete b._childDefaults[key]
       for key, value of h.callbacksMap
         delete b._childDefaults[key]
+
+      b._childDefaults.isSwirl = true
       expect(b._childDefaults).toEqual s._defaults
-    it 'should modify radius on _childDefaults', ->
+
+    it 'should modify isSwirl', ->
       b = new Burst
       s = new Swirl
-      expect(b._childDefaults.radius[5]).toBe 0
+      expect(b._childDefaults.isSwirl).toBe false
+
     it 'should add tween options to _childDefaults', ->
       b = new Burst
 
@@ -408,6 +411,38 @@ describe 'Burst ->', ->
       expect(burst._getBitAngle({180:0}, 0)[270]).toBe 90
       expect(burst._getBitAngle({50:20}, 3)[356]).toBe 326
       expect(burst._getBitAngle({50:20}, 4)[428]).toBe 398
+
+    it 'should work with `stagger` values', ->
+      burst = new Burst count: 2
+      
+      expect(burst._getBitAngle({'stagger(20, 10)':0}, 0)[110]).toBe 90
+      expect(burst._getBitAngle({'stagger(20, 10)':0}, 1)[300]).toBe 270
+
+      expect(burst._getBitAngle({0:'stagger(20, 10)'}, 1)[270]).toBe 300
+
+    it 'should work with `random` values', ->
+      burst = new Burst count: 2
+      
+      angle = burst._getBitAngle({'rand(10, 20)':0}, 0)
+      for key, value in angle
+        baseAngle = 90
+        expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
+        expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
+        expect(parseInt(value)).toBe baseAngle
+
+      angle = burst._getBitAngle({'rand(10, 20)':0}, 1)
+      for key, value in angle
+        baseAngle = 270
+        expect(parseInt(key)).toBeGreaterThan  baseAngle + 10
+        expect(parseInt(key)).not.toBeGreaterThan baseAngle + 20
+        expect(parseInt(value)).toBe baseAngle
+
+      angle = burst._getBitAngle({0:'rand(10, 20)'}, 1)
+      for key, value in angle
+        baseAngle = 270
+        expect(parseInt(key)).toBe baseAngle
+        expect(parseInt(value)).toBeGreaterThan  baseAngle + 10
+        expect(parseInt(value)).not.toBeGreaterThan baseAngle + 20
 
   describe '_extendDefaults method ->', ->
     it 'should call super', ->

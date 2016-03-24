@@ -28,9 +28,8 @@
         b = new Burst;
         s = new Swirl;
         delete b._defaults.count;
-        delete b._defaults.randomAngle;
-        delete b._defaults.randomRadius;
         delete b._defaults.degree;
+        b._defaults.radius = s._defaults.radius;
         return expect(b._defaults).toEqual(s._defaults);
       });
       it('should add Burts properties', function() {
@@ -43,7 +42,6 @@
         var b, key, s, value, _ref, _ref1;
         b = new Burst;
         s = new Swirl;
-        b._childDefaults.radius = s._defaults.radius;
         _ref = h.tweenOptionMap;
         for (key in _ref) {
           value = _ref[key];
@@ -54,13 +52,14 @@
           value = _ref1[key];
           delete b._childDefaults[key];
         }
+        b._childDefaults.isSwirl = true;
         return expect(b._childDefaults).toEqual(s._defaults);
       });
-      it('should modify radius on _childDefaults', function() {
+      it('should modify isSwirl', function() {
         var b, s;
         b = new Burst;
         s = new Swirl;
-        return expect(b._childDefaults.radius[5]).toBe(0);
+        return expect(b._childDefaults.isSwirl).toBe(false);
       });
       it('should add tween options to _childDefaults', function() {
         var b, key, value, _ref, _ref1, _results;
@@ -591,7 +590,7 @@
         expect(burst._getBitAngle(0, 4)).toBe(378);
         return expect(burst._getBitAngle(50, 4)).toBe(378 + 50);
       });
-      return it('should get delta angle by i', function() {
+      it('should get delta angle by i', function() {
         var burst;
         burst = new Burst({
           radius: {
@@ -607,6 +606,59 @@
         return expect(burst._getBitAngle({
           50: 20
         }, 4)[428]).toBe(398);
+      });
+      it('should work with `stagger` values', function() {
+        var burst;
+        burst = new Burst({
+          count: 2
+        });
+        expect(burst._getBitAngle({
+          'stagger(20, 10)': 0
+        }, 0)[110]).toBe(90);
+        expect(burst._getBitAngle({
+          'stagger(20, 10)': 0
+        }, 1)[300]).toBe(270);
+        return expect(burst._getBitAngle({
+          0: 'stagger(20, 10)'
+        }, 1)[270]).toBe(300);
+      });
+      return it('should work with `random` values', function() {
+        var angle, baseAngle, burst, key, value, _i, _j, _k, _len, _len1, _len2, _results;
+        burst = new Burst({
+          count: 2
+        });
+        angle = burst._getBitAngle({
+          'rand(10, 20)': 0
+        }, 0);
+        for (value = _i = 0, _len = angle.length; _i < _len; value = ++_i) {
+          key = angle[value];
+          baseAngle = 90;
+          expect(parseInt(key)).toBeGreaterThan(baseAngle + 10);
+          expect(parseInt(key)).not.toBeGreaterThan(baseAngle + 20);
+          expect(parseInt(value)).toBe(baseAngle);
+        }
+        angle = burst._getBitAngle({
+          'rand(10, 20)': 0
+        }, 1);
+        for (value = _j = 0, _len1 = angle.length; _j < _len1; value = ++_j) {
+          key = angle[value];
+          baseAngle = 270;
+          expect(parseInt(key)).toBeGreaterThan(baseAngle + 10);
+          expect(parseInt(key)).not.toBeGreaterThan(baseAngle + 20);
+          expect(parseInt(value)).toBe(baseAngle);
+        }
+        angle = burst._getBitAngle({
+          0: 'rand(10, 20)'
+        }, 1);
+        _results = [];
+        for (value = _k = 0, _len2 = angle.length; _k < _len2; value = ++_k) {
+          key = angle[value];
+          baseAngle = 270;
+          expect(parseInt(key)).toBe(baseAngle);
+          expect(parseInt(value)).toBeGreaterThan(baseAngle + 10);
+          _results.push(expect(parseInt(value)).not.toBeGreaterThan(baseAngle + 20));
+        }
+        return _results;
       });
     });
     return describe('_extendDefaults method ->', function() {

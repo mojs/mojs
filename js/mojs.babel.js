@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.204.0', isDebug: true, helpers: h,
+  revision:   '0.205.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -25,47 +25,32 @@ window.mojs = {
 
 // TODO:
 /*
+  add then, generate to burst.
   randoms in then chains for transit and swirl.
-  Tweak burst for the new reality.
-  stagger in delay
   parse rand(stagger(20, 10), 20) values
   perf optimizations.
   percentage for radius
 */
 
 var sw = new mojs.Burst({
-  // delay: 'stagger(50)',
-  duration: 1000,
   left: '50%', top: '50%',
-  strokeDasharray: '100% 100%',
-  strokeDashoffset: { '100%': '-100%' },
-  // x: {0: 400}, y: 0,
-  // angle: 'stagger(15)',
-  // duration: 1000,
-  isShowEnd: 1,
-  degree: 10,
-  // angle:  {0: 300},
-  // randomRadius: .85,
-  radius: {0: 200},
-  radiusScale:      'rand(.25, 1)',
-  angleShift:       'rand(-10, 10)',
-  // swirlFrequency:   'rand(3, 6)',
-  // onComplete: function () { console.log('complete', this) },
-  // timeline: { onComplete: function () { console.log('complete', this) }, },
-  count: 7,
-  isSwirl: 0,
-  fill: 'white',
-
-  // shape: 'line',
-  // stroke: 'cyan',
+  // delay:    'stagger(rand(20, 40))',
+  // degree:   170,
+  shape:    ['cross', 'polygon', 'zigzag'],
+  stroke:   'cyan',
+  fill:     'none',
+  radius:   {0: 150},
+  angle:    190,
+  degreeShift: 'rand(-50,50)',
+  pathScale:   'rand(.5, 1)',
+  strokeWidth: { 2: 0 },
   childOptions: {
-    // isSwirl: 0,
-    radius: { 'rand(2, 4)': 0 },
-    isShowEnd: false
+    radius: 5,
+    isSwirl: 1,
+    swirlSize: 'rand(3, 6)',
+    swirlFrequency: 'rand(3, 10)',
+    angle: { 0: 200 }
   }
-  //   // radius: {5: 0},
-  //   // angle: 'stagger(20, rand(10, 20))',
-
 });
 
 var playEl = document.querySelector('#js-play'),

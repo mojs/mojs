@@ -10,26 +10,28 @@ class Burst extends Swirl {
   _declareDefaults () {
     // call super @ Swirl
     super._declareDefaults();
+    // child defaults declaration
+    this._declareChildDefaults();
 
-    /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
-    // copy the defaults to the childDefaults property
-    this._childDefaults = h.cloneObj( this._defaults );
-    // modify default radius ∆ of the children
-    this._childDefaults.radius   = { 5: 0 };
-    // copy tween options and callbacks
-    for (var key in h.tweenOptionMap) { this._childDefaults[key] = null; }
-    for (var key in h.callbacksMap)   { this._childDefaults[key] = null; }
+    /* _DEFAULTS ARE - SWIRL DEFAULTS + THESE: */
 
-    /* DEFAULTS - EXTEND SWIRL's BY THE NEXT ONES: */
-    // Amount of Burst's point: [number > 0]
+    /* :: [number > 0] :: Amount of Burst's points. */
     this._defaults.count        = 5;
-    // Degree for the Burst's points : [0..360]
+    /* :: [0 < number < 360] :: Degree of the Burst. */
     this._defaults.degree       = 360;
+    /* ∆ :: [number > 0] :: Degree for the Burst's points */
+    this._defaults.radius       = { 5: 50 };
+
+    /* childOptions PROPERTIES ARE -
+      `Swirl` DEFAULTS + `Tween` DEFAULTS.
+      ONLY `isSwirl` option is `false` by default. */
+
     // add options intersection hash - map that holds the property
-    // names that could be on both parent module and child ones
+    // names that could be on both parent module and child ones,
+    // so setting one of those on parent, affect parent only
     this._optionsIntersection = {
-      // CHILD SWIRL OPTIONS
-      radius: 1, radiusX: 1, radiusY: 1, angle:  1, scale: 1, opacity: 1
+      radius: 1, radiusX: 1, radiusY: 1,
+      angle:  1, scale:   1, opacity: 1,
     }
   }
   /*
@@ -42,6 +44,20 @@ class Burst extends Swirl {
     super._extendDefaults();
     // calc size immedietely, the Swirls' options rely on size
     this._calcSize();
+  }
+  /*
+    Method to declare `childDefaults` for `childOptions` object.
+    @private
+  */
+  _declareChildDefaults () {
+    /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
+    // copy the defaults to the childDefaults property
+    this._childDefaults = h.cloneObj( this._defaults );
+    // [boolean] :: If shape should follow sinusoidal path.
+    this._childDefaults.isSwirl = false;
+    // copy tween options and callbacks
+    for (var key in h.tweenOptionMap) { this._childDefaults[key] = null; }
+    for (var key in h.callbacksMap)   { this._childDefaults[key] = null; }
   }
   /*
     Method to create child transits.
@@ -72,11 +88,8 @@ class Burst extends Swirl {
       // lastly fallback to defaults
       prop = ( prop == null )
         ? this._getPropByMod( key, i, this._childDefaults ) : prop;
-
-      prop = h.parseIfStagger(prop, i);
-      prop = h.parseIfRand(prop, i);
-
-      option[key] = prop;
+      // parse `stagger` and `rand` values if needed
+      option[key] = h.parseStringOption(prop, i);
     }
 
     return this._addOptionalProperties( option, i );
@@ -116,26 +129,27 @@ class Burst extends Swirl {
      @param    {Number}         Transit's index in burst.
      @returns  {Number}         Angle in burst.
   */ 
-  _getBitAngle (angle, i) {
-    var p = this._props,
-        points = p.count,
-        degCnt = ( p.degree % 360 === 0 ) ? points : points-1 || 1,
-        step = p.degree/degCnt,
-        angleAddition = i*step + 90;
+  _getBitAngle (angleProperty, i) {
+    var p      = this._props,
+        degCnt = ( p.degree % 360 === 0 ) ? p.count : p.count-1 || 1,
+        step   = p.degree/degCnt,
+        angle  = i*step + 90;
     // if not delta option
-    if ( !this._isDelta(angle) ) { angle += angleAddition; }
+    if ( !this._isDelta(angleProperty) ) { angleProperty += angle; }
     else {
-      var keys  = Object.keys(angle),
+      var delta = {},
+          keys  = Object.keys(angleProperty),
           start = keys[0],
-          end   = angle[start],
-          curAngleShift   = angleAddition,
-          newStart        = parseFloat(start) + curAngleShift,
-          newEnd          = parseFloat(end)   + curAngleShift,
-          delta           = {};
-          delta[newStart] = newEnd;
-      angle = delta;
+          end   = angleProperty[start];
+      
+      start = h.parseStringOption(start, i);
+      end   = h.parseStringOption(end, i);
+      // new start = newEnd
+      delta[ parseFloat(start) + angle ] = parseFloat(end) + angle;
+
+      angleProperty = delta;
     }
-    return angle;
+    return angleProperty;
   }
   /*
     Method to get radial point on `start` or `end`.
@@ -251,58 +265,6 @@ class Burst extends Swirl {
   _makeTween () { /* don't create any tween */ }
 
   // /*
-  //   Method to populate each transit with dedicated option.
-  //   @private
-  // */
-  // _addBitOptions () {
-  //   var points = this._props.count;
-  //   this.degreeCnt = (this._props.degree % 360 === 0)
-  //     ? points
-  //     : points-1 || 1;
-    
-  //   var step = this._props.degree/this.degreeCnt;
-  //   for (var i = 0; i < this._swirls.length; i++) {
-  //     var transit    = this._swirls[i],
-  //         aShift     = transit._props.angleShift || 0,
-  //         pointStart = this._getSidePoint('start', i*step + aShift),
-  //         pointEnd   = this._getSidePoint('end',   i*step + aShift);
-
-  //     transit._o.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
-  //     transit._o.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
-
-  //     if ( !this._props.isResetAngles ) {
-  //       transit._o.angle = this._getBitAngle(transit._o.angle, i)
-  //     }
-  //     transit._extendDefaults()
-  //   }
-  // }
-  // /*
-  //   Method to calculate module's size.
-  //   @private
-  //   @override Transit.
-  // */
-  // _calcSize () {
-  //   var largestSize = -1;
-  //   for (var i = 0; i < this._swirls.length; i++) {
-  //     var transit = this._swirls[i];
-  //     transit._calcSize();
-  //     if (largestSize < transit._props.size) {
-  //       largestSize = transit._props.size;
-  //     }
-  //   }
-  //   var radius = this._calcMaxShapeRadius();
-  //   this._props.size   = largestSize + 2*radius;
-  //   this._props.size   += 2*this._props.sizeGap;
-  //   this._props.center = this._props.size/2;
-  //   this._addBitOptions()
-  // }
-  // /*
-  //   Method to draw the burst.
-  //   @private
-  //   @override Transit.
-  // */
-  // _draw () { this._drawEl(); }
-  // /*
   //   Method to get if need to update new transform.
   //   @private
   //   @returns {Boolean} If transform update needed.
@@ -312,29 +274,6 @@ class Burst extends Swirl {
   // //           this._isPropChanged('y') ||
   // //           this._isPropChanged('angle');
   // // }
-  // /*
-  //   Method to generate random angle.
-  //   @private
-  //   @returns {Number} Rundom angle.
-  // */
-  // _generateRandomAngle ( ) {
-  //   var randomness = parseFloat(this._props.randomAngle);
-  //   if ( randomness > 1 ) { randdomness = 1 }
-  //   else if ( randomness < 0 ) { randdomness = 0 }
-  //   return h.rand(0, ( randomness ) ? randomness*360 : 180);
-  // }
-  // /*
-  //   Method to get random radius.
-  //   @private
-  //   @returns {Number} Random radius.
-  // */
-  // _generateRandomRadius () {
-  //   var randomness = parseFloat(this._props.randomRadius);
-  //   if ( randomness > 1 ) { randdomness = 1; }
-  //   else if ( randomness < 0 ) { randdomness = 0; }
-  //   var start = ( randomness ) ? (1-randomness) : .5;
-  //   return h.rand(start, 1);
-  // }
   /*
     Method to run tween with new options.
     @public

@@ -16,18 +16,21 @@ class Swirl extends Transit {
   */
   _declareDefaults () {
     super._declareDefaults();
-    // ∆ :: [number > 0]
-    this._defaults.swirlSize      = 10;
-    // ∆ :: [number > 0]
-    this._defaults.swirlFrequency = 3;
-    // ∆ :: [number > 0]
-    this._defaults.pathScale      = 1;
-    // ∆ :: [number]
-    this._defaults.degreeShift    = 0;
-    // ∆ :: [number]
-    this._defaults.radius         = { 5 : 0};
-    // [boolean]
+
+    /* _DEFAULTS ARE - TRANSIT DEFAULTS + THESE: */
+    
+    /* [boolean] :: If shape should follow sinusoidal path. */
     this._defaults.isSwirl        = true;
+    /* ∆ :: [number > 0] :: Degree size of the sinusoidal path. */
+    this._defaults.swirlSize      = 10;
+    /* ∆ :: [number > 0] :: Frequency of the sinusoidal path. */
+    this._defaults.swirlFrequency = 3;
+    /* ∆ :: [number > 0] :: Sinusoidal path length scale. */
+    this._defaults.pathScale      = 1;
+    /* ∆ :: [number] :: Degree shift for the sinusoidal path. */
+    this._defaults.degreeShift    = 0;
+    /* ∆ :: [number] :: Radius of the shape. */
+    this._defaults.radius         = { 5 : 0};
   }
 
   // ^ PUBLIC  METHOD(S) ^
