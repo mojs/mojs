@@ -51,9 +51,7 @@ class Burst extends Swirl {
   _createBit () {
     this._swirls = [];
     for (var index = 0; index < this._props.count; index++) {
-      
       this._swirls.push( new Swirl( this._getOption( index ) ) );
-
     }
   }
   /*

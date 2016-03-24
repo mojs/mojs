@@ -186,7 +186,7 @@
         });
         return expect(swirl._defaults.pathScale).toBe(1);
       });
-      return it('should add degreeShift default', function() {
+      it('should add degreeShift default', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -196,6 +196,13 @@
           ]
         });
         return expect(swirl._defaults.degreeShift).toBe(0);
+      });
+      return it('should modify radius default', function() {
+        var swirl;
+        swirl = new Swirl({
+          fill: 'cyan'
+        });
+        return expect(swirl._defaults.radius[5]).toBe(0);
       });
     });
     describe('_setProgress ->', function() {

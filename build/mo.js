@@ -1308,7 +1308,6 @@
 	    value: function _createBit() {
 	      this._swirls = [];
 	      for (var index = 0; index < this._props.count; index++) {
-
 	        this._swirls.push(new _swirl2.default(this._getOption(index)));
 	      }
 	    }
@@ -2325,12 +2324,14 @@
 	      this._defaults.swirlSize = 10;
 	      // ∆ :: [number > 0]
 	      this._defaults.swirlFrequency = 3;
-	      // [boolean]
-	      this._defaults.isSwirl = true;
 	      // ∆ :: [number > 0]
 	      this._defaults.pathScale = 1;
 	      // ∆ :: [number]
 	      this._defaults.degreeShift = 0;
+	      // ∆ :: [number]
+	      this._defaults.radius = { 5: 0 };
+	      // [boolean]
+	      this._defaults.isSwirl = true;
 	    }
 
 	    // ^ PUBLIC  METHOD(S) ^
@@ -7715,7 +7716,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.202.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.204.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default

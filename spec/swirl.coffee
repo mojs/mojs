@@ -67,6 +67,9 @@ describe 'Swirl ->', ->
     it 'should add degreeShift default', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
       expect(swirl._defaults.degreeShift).toBe 0
+    it 'should modify radius default', ->
+      swirl = new Swirl fill: 'cyan'
+      expect(swirl._defaults.radius[5]).toBe 0
 
   describe '_setProgress ->', ->
     it 'should svae progress', ->

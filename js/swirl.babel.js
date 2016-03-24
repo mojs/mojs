@@ -20,12 +20,14 @@ class Swirl extends Transit {
     this._defaults.swirlSize      = 10;
     // ∆ :: [number > 0]
     this._defaults.swirlFrequency = 3;
-    // [boolean]
-    this._defaults.isSwirl        = true;
     // ∆ :: [number > 0]
-    this._defaults.pathScale    = 1;
+    this._defaults.pathScale      = 1;
     // ∆ :: [number]
     this._defaults.degreeShift    = 0;
+    // ∆ :: [number]
+    this._defaults.radius         = { 5 : 0};
+    // [boolean]
+    this._defaults.isSwirl        = true;
   }
 
   // ^ PUBLIC  METHOD(S) ^
