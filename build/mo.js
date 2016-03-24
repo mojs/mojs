@@ -1272,21 +1272,14 @@
 	      }
 
 	      /* DEFAULTS - EXTEND SWIRL's BY THE NEXT ONES: */
-	      // add childOptions property to have it in _extendDefaults loop
-	      // this._defaults.childOptions = null;
 	      // Amount of Burst's point: [number > 0]
 	      this._defaults.count = 5;
 	      // Degree for the Burst's points : [0..360]
 	      this._defaults.degree = 360;
-	      // Randomness for the Burst's points fly degree [0...1]
-	      this._defaults.randomAngle = 0;
-	      // Randomness for the Burst's points fly radius [0...1]
-	      this._defaults.randomRadius = 0;
-
 	      // add options intersection hash - map that holds the property
 	      // names that could be on both parent module and child ones
 	      this._optionsIntersection = {
-	        // SWIRL OPTIONS
+	        // CHILD SWIRL OPTIONS
 	        radius: 1, radiusX: 1, radiusY: 1, angle: 1, scale: 1, opacity: 1
 	      };
 	    }
@@ -1315,10 +1308,8 @@
 	    value: function _createBit() {
 	      this._swirls = [];
 	      for (var index = 0; index < this._props.count; index++) {
-	        var option = this._getOption(index);
-	        // this._props.randomAngle  && (option.angleShift  = this._generateRandomAngle())
-	        // this._props.randomRadius && (option.radiusScale = this._generateRandomRadius())
-	        this._swirls.push(new _swirl2.default(option));
+
+	        this._swirls.push(new _swirl2.default(this._getOption(index)));
 	      }
 	    }
 	    /*
@@ -1375,7 +1366,6 @@
 
 	      options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
 	      options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
-
 	      options.angle = this._getBitAngle(options.angle, index);
 
 	      return options;
@@ -1649,13 +1639,8 @@
 	    //   var randomness = parseFloat(this._props.randomRadius);
 	    //   if ( randomness > 1 ) { randdomness = 1; }
 	    //   else if ( randomness < 0 ) { randdomness = 0; }
-	    //   var start = ( randomness ) ? (1-randomness)*100 : (1-.5)*100;
-	    //   return h.rand(start, 100)/100;
-	    // }
-	    // createTween () {
-	    //   super.createTween();
-	    //   var i = this._swirls.length;
-	    //   while(i--) { this.timeline.add(this._swirls[i].tween); }
+	    //   var start = ( randomness ) ? (1-randomness) : .5;
+	    //   return h.rand(start, 1);
 	    // }
 	    /*
 	      Method to run tween with new options.
@@ -2345,7 +2330,7 @@
 	      // ∆ :: [number > 0]
 	      this._defaults.radiusScale = 1;
 	      // ∆ :: [number]
-	      this._defaults.angleShift = 0;
+	      this._defaults.degreeShift = 0;
 	    }
 
 	    // ^ PUBLIC  METHOD(S) ^
@@ -2416,7 +2401,7 @@
 	      this._calcCurrentProps(proc);
 
 	      var p = this._props,
-	          angle = this._posData.angle + p.angleShift,
+	          angle = this._posData.angle + p.degreeShift,
 	          point = _h2.default.getRadialPoint({
 	        angle: p.isSwirl ? angle + this._getSwirl(proc) : angle,
 	        radius: proc * this._posData.radius * p.radiusScale,
@@ -7730,7 +7715,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.201.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.202.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7746,38 +7731,51 @@
 	  percentage for radius
 	*/
 
-	// var sw = new mojs.Burst({
-	//   delay: 'stagger(50)',
-	//   // duration: 'stagger(75, 50)',
-	//   left: '50%', top: '50%',
-	//   // x: {0: 400}, y: 0,
-	//   // angle: 'stagger(15)',
-	//   // duration: 1000,
-	//   isShowEnd: 1,
-	//   // radius: 0,
-	//   count: 5,
-	//   isSwirl: 1,
-	//   shape: 'line',
-	//   stroke: 'cyan',
-	//   childOptions: {
-	//     isSwirl: 0,
-	//     radius: 10,
-	//     isShowEnd: false
-	//   }
-	//   //   // radius: {5: 0},
-	//   //   // angle: 'stagger(20, rand(10, 20))',
+	var sw = new mojs.Burst({
+	  // delay: 'stagger(50)',
+	  duration: 1000,
+	  left: '50%', top: '50%',
+	  strokeDasharray: '100% 100%',
+	  strokeDashoffset: { '100%': '-100%' },
+	  // x: {0: 400}, y: 0,
+	  // angle: 'stagger(15)',
+	  // duration: 1000,
+	  isShowEnd: 1,
+	  degree: 10,
+	  // angle:  {0: 300},
+	  // randomRadius: .85,
+	  radius: { 0: 200 },
+	  radiusScale: 'rand(.25, 1)',
+	  angleShift: 'rand(-10, 10)',
+	  // swirlFrequency:   'rand(3, 6)',
+	  // onComplete: function () { console.log('complete', this) },
+	  // timeline: { onComplete: function () { console.log('complete', this) }, },
+	  count: 7,
+	  isSwirl: 0,
+	  fill: 'white',
 
-	// });
+	  // shape: 'line',
+	  // stroke: 'cyan',
+	  childOptions: {
+	    // isSwirl: 0,
+	    radius: { 'rand(2, 4)': 0 },
+	    isShowEnd: false
+	  }
+	  //   // radius: {5: 0},
+	  //   // angle: 'stagger(20, rand(10, 20))',
 
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   sw
-	//     // .tune(sw._o)
-	//     // .tune({ swirlFrequency: 'rand(2, 20)' })
-	//     .play();
-	//     // .run();
-	// });
+	});
+
+	var playEl = document.querySelector('#js-play'),
+	    rangeSliderEl = document.querySelector('#js-range-slider');
+	document.body.addEventListener('click', function (e) {
+	  sw
+	  // .tune(sw._o)
+	  // .generate()
+	  // .tune({ swirlFrequency: 'rand(2, 20)' })
+	  .play();
+	  // .run();
+	});
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );

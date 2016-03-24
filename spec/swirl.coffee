@@ -11,11 +11,11 @@ describe 'Swirl ->', ->
     #   swirl = new Swirl
     #   expect(swirl._skipPropsDelta.x).toBe 1
     #   expect(swirl._skipPropsDelta.y).toBe 1
-    it 'should have angleShift value', ->
+    it 'should have degreeShift value', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}
-        isSwirl: false, angleShift: 90
-      expect(swirl._props.angleShift).toBe 90
+        isSwirl: false, degreeShift: 90
+      expect(swirl._props.degreeShift).toBe 90
   describe 'position calc ->', ->
     it 'should calc position radius', ->
       swirl = new Swirl x: {0:10}, y: {0:20}
@@ -64,9 +64,9 @@ describe 'Swirl ->', ->
     it 'should add radiusScale default', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
       expect(swirl._defaults.radiusScale).toBe 1
-    it 'should add angleShift default', ->
+    it 'should add degreeShift default', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
-      expect(swirl._defaults.angleShift).toBe 0
+      expect(swirl._defaults.degreeShift).toBe 0
 
   describe '_setProgress ->', ->
     it 'should svae progress', ->
@@ -96,18 +96,18 @@ describe 'Swirl ->', ->
       swirl._setProgress .5
       expect(parseInt(swirl._props.x, 10)).toBe 5
       expect(parseInt(swirl._props.y, 10)).toBe 5
-    it 'should set x/y progress regarding angleShift', ->
+    it 'should set x/y progress regarding degreeShift', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}, isSwirl: false,
-        angleShift: 90
+        degreeShift: 90
       # swirl._setProgress .4
       swirl._setProgress .5
       expect(parseInt(swirl._props.x, 10)).toBe -5
       expect(parseInt(swirl._props.y, 10)).toBe 5
-    it 'should set x/y progress regarding delta angleShift', ->
+    it 'should set x/y progress regarding delta degreeShift', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10}, isSwirl: false,
-        angleShift: { 0: 180 }
+        degreeShift: { 0: 180 }
       # swirl._setProgress .5
       swirl._setProgress .5
       expect(parseInt(swirl._props.x, 10)).toBe -5

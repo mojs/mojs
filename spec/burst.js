@@ -37,9 +37,7 @@
         var b;
         b = new Burst;
         expect(b._defaults.degree).toBe(360);
-        expect(b._defaults.count).toBe(5);
-        expect(b._defaults.randomAngle).toBe(0);
-        return expect(b._defaults.randomRadius).toBe(0);
+        return expect(b._defaults.count).toBe(5);
       });
       it('should have _childDefaults', function() {
         var b, key, s, value, _ref, _ref1;

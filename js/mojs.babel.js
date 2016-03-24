@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.201.0', isDebug: true, helpers: h,
+  revision:   '0.202.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -33,38 +33,51 @@ window.mojs = {
   percentage for radius
 */
 
-// var sw = new mojs.Burst({
-//   delay: 'stagger(50)',
-//   // duration: 'stagger(75, 50)',
-//   left: '50%', top: '50%',
-//   // x: {0: 400}, y: 0,
-//   // angle: 'stagger(15)',
-//   // duration: 1000,
-//   isShowEnd: 1,
-//   // radius: 0,
-//   count: 5,
-//   isSwirl: 1,
-//   shape: 'line',
-//   stroke: 'cyan',
-//   childOptions: {
-//     isSwirl: 0,
-//     radius: 10,
-//     isShowEnd: false
-//   }
-//   //   // radius: {5: 0},
-//   //   // angle: 'stagger(20, rand(10, 20))',
+var sw = new mojs.Burst({
+  // delay: 'stagger(50)',
+  duration: 1000,
+  left: '50%', top: '50%',
+  strokeDasharray: '100% 100%',
+  strokeDashoffset: { '100%': '-100%' },
+  // x: {0: 400}, y: 0,
+  // angle: 'stagger(15)',
+  // duration: 1000,
+  isShowEnd: 1,
+  degree: 10,
+  // angle:  {0: 300},
+  // randomRadius: .85,
+  radius: {0: 200},
+  radiusScale:      'rand(.25, 1)',
+  angleShift:       'rand(-10, 10)',
+  // swirlFrequency:   'rand(3, 6)',
+  // onComplete: function () { console.log('complete', this) },
+  // timeline: { onComplete: function () { console.log('complete', this) }, },
+  count: 7,
+  isSwirl: 0,
+  fill: 'white',
 
-// });
+  // shape: 'line',
+  // stroke: 'cyan',
+  childOptions: {
+    // isSwirl: 0,
+    radius: { 'rand(2, 4)': 0 },
+    isShowEnd: false
+  }
+  //   // radius: {5: 0},
+  //   // angle: 'stagger(20, rand(10, 20))',
 
-// var playEl = document.querySelector('#js-play'),
-//     rangeSliderEl = document.querySelector('#js-range-slider');
-// document.body.addEventListener('click', function (e) {
-//   sw
-//     // .tune(sw._o)
-//     // .tune({ swirlFrequency: 'rand(2, 20)' })
-//     .play();
-//     // .run();
-// });
+});
+
+var playEl = document.querySelector('#js-play'),
+    rangeSliderEl = document.querySelector('#js-range-slider');
+document.body.addEventListener('click', function (e) {
+  sw
+    // .tune(sw._o)
+    // .generate()
+    // .tune({ swirlFrequency: 'rand(2, 20)' })
+    .play();
+    // .run();
+});
 
 // rangeSliderEl.addEventListener('input', function () {
 //   tr.setProgress( rangeSliderEl.value/1000 );

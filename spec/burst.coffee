@@ -28,8 +28,6 @@ describe 'Burst ->', ->
       b = new Burst
       expect(b._defaults.degree).toBe 360
       expect(b._defaults.count).toBe 5
-      expect(b._defaults.randomAngle).toBe 0
-      expect(b._defaults.randomRadius).toBe 0
     it 'should have _childDefaults', ->
       b = new Burst
       s = new Swirl
@@ -424,16 +422,6 @@ describe 'Burst ->', ->
       spyOn b, '_calcSize'
       b._extendDefaults()
       expect(b._calcSize).toHaveBeenCalled()
-
-
-
-
-
-
-
-
-
-
 
   #   it 'should have its own defaults', ->
   #     burst = new Burst

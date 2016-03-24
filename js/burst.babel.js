@@ -21,21 +21,14 @@ class Burst extends Swirl {
     for (var key in h.callbacksMap)   { this._childDefaults[key] = null; }
 
     /* DEFAULTS - EXTEND SWIRL's BY THE NEXT ONES: */
-    // add childOptions property to have it in _extendDefaults loop
-    // this._defaults.childOptions = null;
     // Amount of Burst's point: [number > 0]
     this._defaults.count        = 5;
     // Degree for the Burst's points : [0..360]
     this._defaults.degree       = 360;
-    // Randomness for the Burst's points fly degree [0...1]
-    this._defaults.randomAngle  = 0;
-    // Randomness for the Burst's points fly radius [0...1]
-    this._defaults.randomRadius = 0;
-
     // add options intersection hash - map that holds the property
     // names that could be on both parent module and child ones
     this._optionsIntersection = {
-      // SWIRL OPTIONS
+      // CHILD SWIRL OPTIONS
       radius: 1, radiusX: 1, radiusY: 1, angle:  1, scale: 1, opacity: 1
     }
   }
@@ -58,10 +51,9 @@ class Burst extends Swirl {
   _createBit () {
     this._swirls = [];
     for (var index = 0; index < this._props.count; index++) {
-      var option = this._getOption( index );
-      // this._props.randomAngle  && (option.angleShift  = this._generateRandomAngle())
-      // this._props.randomRadius && (option.radiusScale = this._generateRandomRadius())
-      this._swirls.push( new Swirl(option) );
+      
+      this._swirls.push( new Swirl( this._getOption( index ) ) );
+
     }
   }
   /*
@@ -112,9 +104,8 @@ class Burst extends Swirl {
         pointStart = this._getSidePoint('start', index*step ),
         pointEnd   = this._getSidePoint('end',   index*step );
 
-    options.x = this._getDeltaFromPoints('x', pointStart, pointEnd);
-    options.y = this._getDeltaFromPoints('y', pointStart, pointEnd);
-
+    options.x     = this._getDeltaFromPoints('x', pointStart, pointEnd);
+    options.y     = this._getDeltaFromPoints('y', pointStart, pointEnd);
     options.angle = this._getBitAngle( options.angle, index );
 
     return options;
@@ -343,13 +334,8 @@ class Burst extends Swirl {
   //   var randomness = parseFloat(this._props.randomRadius);
   //   if ( randomness > 1 ) { randdomness = 1; }
   //   else if ( randomness < 0 ) { randdomness = 0; }
-  //   var start = ( randomness ) ? (1-randomness)*100 : (1-.5)*100;
-  //   return h.rand(start, 100)/100;
-  // }
-  // createTween () {
-  //   super.createTween();
-  //   var i = this._swirls.length;
-  //   while(i--) { this.timeline.add(this._swirls[i].tween); }
+  //   var start = ( randomness ) ? (1-randomness) : .5;
+  //   return h.rand(start, 1);
   // }
   /*
     Method to run tween with new options.

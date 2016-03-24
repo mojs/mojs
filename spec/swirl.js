@@ -14,7 +14,7 @@
         swirl = new Swirl;
         return expect(swirl instanceof Transit).toBe(true);
       });
-      return it('should have angleShift value', function() {
+      return it('should have degreeShift value', function() {
         var swirl;
         swirl = new Swirl({
           x: {
@@ -24,9 +24,9 @@
             0: 10
           },
           isSwirl: false,
-          angleShift: 90
+          degreeShift: 90
         });
-        return expect(swirl._props.angleShift).toBe(90);
+        return expect(swirl._props.degreeShift).toBe(90);
       });
     });
     describe('position calc ->', function() {
@@ -186,7 +186,7 @@
         });
         return expect(swirl._defaults.radiusScale).toBe(1);
       });
-      return it('should add angleShift default', function() {
+      return it('should add degreeShift default', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -195,7 +195,7 @@
             }, 20
           ]
         });
-        return expect(swirl._defaults.angleShift).toBe(0);
+        return expect(swirl._defaults.degreeShift).toBe(0);
       });
     });
     describe('_setProgress ->', function() {
@@ -267,7 +267,7 @@
         expect(parseInt(swirl._props.x, 10)).toBe(5);
         return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
-      it('should set x/y progress regarding angleShift', function() {
+      it('should set x/y progress regarding degreeShift', function() {
         var swirl;
         swirl = new Swirl({
           x: {
@@ -277,13 +277,13 @@
             0: 10
           },
           isSwirl: false,
-          angleShift: 90
+          degreeShift: 90
         });
         swirl._setProgress(.5);
         expect(parseInt(swirl._props.x, 10)).toBe(-5);
         return expect(parseInt(swirl._props.y, 10)).toBe(5);
       });
-      it('should set x/y progress regarding delta angleShift', function() {
+      it('should set x/y progress regarding delta degreeShift', function() {
         var swirl;
         swirl = new Swirl({
           x: {
@@ -293,7 +293,7 @@
             0: 10
           },
           isSwirl: false,
-          angleShift: {
+          degreeShift: {
             0: 180
           }
         });
