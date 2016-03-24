@@ -175,7 +175,7 @@
         });
         return expect(swirl._defaults.isSwirl).toBe(true);
       });
-      it('should add radiusScale default', function() {
+      it('should add pathScale default', function() {
         var swirl;
         swirl = new Swirl({
           radius: [
@@ -184,7 +184,7 @@
             }, 20
           ]
         });
-        return expect(swirl._defaults.radiusScale).toBe(1);
+        return expect(swirl._defaults.pathScale).toBe(1);
       });
       return it('should add degreeShift default', function() {
         var swirl;
@@ -348,7 +348,7 @@
         expect(swirl._props.x.toFixed(2)).toBe('10.00');
         return expect(swirl._props.y.toFixed(2)).toBe('10.00');
       });
-      it('should respect radiusScale value', function() {
+      it('should respect pathScale value', function() {
         var swirl;
         swirl = new Swirl({
           x: {
@@ -358,7 +358,7 @@
             0: 10
           },
           isSwirl: false,
-          radiusScale: .5
+          pathScale: .5
         });
         swirl._setProgress(1);
         expect(parseInt(swirl._props.x, 10)).toBe(5);

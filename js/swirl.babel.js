@@ -23,7 +23,7 @@ class Swirl extends Transit {
     // [boolean]
     this._defaults.isSwirl        = true;
     // ∆ :: [number > 0]
-    this._defaults.radiusScale    = 1;
+    this._defaults.pathScale    = 1;
     // ∆ :: [number]
     this._defaults.degreeShift    = 0;
   }
@@ -90,7 +90,7 @@ class Swirl extends Transit {
         angle = this._posData.angle + p.degreeShift,
         point = h.getRadialPoint({
           angle:  (p.isSwirl) ? angle + this._getSwirl(proc) : angle,
-          radius: proc*this._posData.radius*p.radiusScale,
+          radius: proc*this._posData.radius*p.pathScale,
           center: {
             x: this._posData.x.start,
             y: this._posData.y.start

@@ -61,9 +61,9 @@ describe 'Swirl ->', ->
     it 'should add isSwirl default', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
       expect(swirl._defaults.isSwirl).toBe true
-    it 'should add radiusScale default', ->
+    it 'should add pathScale default', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
-      expect(swirl._defaults.radiusScale).toBe 1
+      expect(swirl._defaults.pathScale).toBe 1
     it 'should add degreeShift default', ->
       swirl = new Swirl radius: [{ 20: 50 }, 20]
       expect(swirl._defaults.degreeShift).toBe 0
@@ -130,10 +130,10 @@ describe 'Swirl ->', ->
       swirl._setProgress 1
       expect(swirl._props.x.toFixed(2)).toBe '10.00'
       expect(swirl._props.y.toFixed(2)).toBe '10.00'
-    it 'should respect radiusScale value', ->
+    it 'should respect pathScale value', ->
       swirl = new Swirl
         x: {0:10}, y: {0:10},
-        isSwirl: false, radiusScale: .5
+        isSwirl: false, pathScale: .5
       swirl._setProgress 1
       expect(parseInt(swirl._props.x, 10) ).toBe 5
       expect(parseInt(swirl._props.y, 10) ).toBe 5
