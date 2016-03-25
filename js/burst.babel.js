@@ -256,6 +256,7 @@ class Burst extends Swirl {
   _makeTimeline () {
     super._makeTimeline();
     this.timeline.add( ...this._swirls );
+    this._o.timeline = null;
   }
   /*
     Method to make Tween for the module.
@@ -263,6 +264,39 @@ class Burst extends Swirl {
     @override @ Tweenable
   */
   _makeTween () { /* don't create any tween */ }
+  /*
+    Method to tune new history options to all the submodules.
+    @private
+    @override @ Tunable
+  */
+  _tuneSubModules () {
+    // call _tuneSubModules on Tunable
+    super._tuneSubModules();
+    // tune swirls including their tweens
+    for (var index = 0; index < this._swirls.length; index++) {
+      var swirl   = this._swirls[index],
+          options = this._getOption( index );
+
+      swirl._tuneNewOptions( options );
+      this._resetTween( swirl.tween, options );
+    }
+    
+    this._o.timeline && this.timeline._setProp(this._o.timeline);
+    this.timeline._recalcTotalDuration();
+  }
+
+  
+
+  _resetTweens () {}
+}
+
+export default Burst;
+
+
+
+
+
+
 
   // /*
   //   Method to get if need to update new transform.
@@ -343,6 +377,3 @@ class Burst extends Swirl {
   //   //   
   //   return this;
   // }
-}
-
-export default Burst;

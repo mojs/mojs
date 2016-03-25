@@ -997,8 +997,7 @@
       it('should set transform if angle changed', function() {
         var byte;
         byte = new Byte({
-          angle: 25,
-          isIt: 1
+          angle: 25
         });
         byte._draw();
         byte._props.angle = 26;

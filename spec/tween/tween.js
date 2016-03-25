@@ -6704,6 +6704,12 @@
         tr._assignProp('easing', 'ease.in');
         return expect(typeof tr._props.easing).toBe('function');
       });
+      it('should fallback to defaults for null values', function() {
+        var tr;
+        tr = new Tween;
+        tr._assignProp('speed', null);
+        return expect(tr._props.speed).toBe(tr._defaults.speed);
+      });
       it('should override callbacks if key in _callbackOverrides object', function() {
         var controlCallback, funBefore, tr;
         tr = new Tween;
@@ -6738,9 +6744,9 @@
           onStart: controlCallback
         };
         spyOn(tr, '_overrideCallback').and.callThrough();
-        tr._assignProp('onStart', void 0);
+        tr._assignProp('onStart', null);
         expect(typeof tr._props.onStart).toBe('function');
-        return expect(tr._overrideCallback).toHaveBeenCalledWith(void 0, controlCallback);
+        return expect(tr._overrideCallback).toHaveBeenCalledWith(null, controlCallback);
       });
     });
   });

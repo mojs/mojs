@@ -144,6 +144,9 @@ class Easing
   #
   # @return {Function}
   parseEasing:(easing)->
+
+    if !easing? then easing = 'linear.none'
+    
     type = typeof easing
     if type is 'string'
       return if easing.charAt(0).toLowerCase() is 'm'
@@ -156,8 +159,7 @@ class Easing
                     fallback to \"linear.none\" instead"
           return @['linear']['none']
         easingParent[easing[1]]
-    if h.isArray(easing)
-      return @bezier.apply(@, easing)
+    if h.isArray(easing) then return @bezier.apply(@, easing)
     if 'function' then return easing
   # ---
 

@@ -1107,16 +1107,18 @@
 	  }, {
 	    key: '_assignProp',
 	    value: function _assignProp(key, value) {
+	      // fallback to defaults
+	      if (value == null) {
+	        value = this._defaults[key];
+	      }
 	      // parse easing
 	      key === 'easing' && (value = _easing2.default.parseEasing(value));
-
 	      // handle control callbacks overrides
 	      var control = this._callbackOverrides[key],
 	          isntOverriden = !value || !value.isMojsCallbackOverride;
 	      if (control && isntOverriden) {
 	        value = this._overrideCallback(value, control);
 	      }
-
 	      // call super on Module
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Tween.prototype), '_assignProp', this).call(this, key, value);
 	    }
@@ -1562,6 +1564,7 @@
 
 	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_makeTimeline', this).call(this);
 	      (_timeline = this.timeline).add.apply(_timeline, (0, _toConsumableArray3.default)(this._swirls));
+	      this._o.timeline = null;
 	    }
 	    /*
 	      Method to make Tween for the module.
@@ -1572,92 +1575,117 @@
 	  }, {
 	    key: '_makeTween',
 	    value: function _makeTween() {} /* don't create any tween */
-
-	    // /*
-	    //   Method to get if need to update new transform.
-	    //   @private
-	    //   @returns {Boolean} If transform update needed.
-	    // */
-	    // // _isNeedsTransform () {
-	    // //   return  this._isPropChanged('x') ||
-	    // //           this._isPropChanged('y') ||
-	    // //           this._isPropChanged('angle');
-	    // // }
 	    /*
-	      Method to run tween with new options.
-	      @public
-	      @param {Object} New options object.
-	      @returns {Object} this.
-	    */
-	    // run ( o ) {
-	    //   if ( o != null && Object.keys(o).length) {
-	    //     if ( o.count || ( o.childOptions && o.childOptions.count )) {
-	    //       h.warn('Sorry, count can not be changed on run');
-	    //     }
-	    //     this._extendDefaults(o);
-	    //     // copy child options to options
-	    //     var keys = Object.keys(o.childOptions || {});
-
-	    //     if ( this._o.childOptions == null ) { this._o.childOptions = {}; }
-
-	    //     for (var i = 0; i < keys.length; i++) {
-	    //       var key = keys[i];
-	    //       this._o.childOptions[key] = o.childOptions[key];
-	    //     }
-	    //     // tune transits
-	    //     var len = this._swirls.length;
-	    //     while(len--) {
-	    //       // we should keep transit's angle otherwise
-	    //       // it will fallback to default 0 value
-	    //       var option = this._getOption(len),
-	    //           ref;
-
-	    //       if ( (((ref = o.childOptions) != null ? ref.angle : void 0) == null) && ( o.angleShift == null ) ) {
-	    //         option.angle = this._swirls[len]._o.angle;
-	    //       }
-	    //       // calculate bit angle if new angle related option passed
-	    //       // and not isResetAngles
-	    //       else if ( !o.isResetAngles ) {
-	    //         option.angle = this._getBitAngle(option.angle, len);
-	    //       }
-	    //       this._swirls[len]._tuneNewOption(option, true);
-	    //     }
-	    //     this.timeline._recalcTotalDuration()
-	    //   }
-	    //   if ( this._props.randomAngle || this._props.randomRadius ) {
-	    //     var len = this._swirls.length;
-	    //     while(len--) {
-	    //       var tr = this._swirls[len];
-	    //       this._props.randomAngle  && tr._setProp({angleShift:  this._generateRandomAngle()});
-	    //       this._props.randomRadius && tr._setProp({radiusScale: this._generateRandomRadius()})
-	    //     }
-	    //   }
-	    //   this.play();
-	    //   return this;
-	    // }
-	    /*
-	      Method to create then chain record.
+	      Method to tune new history options to all the submodules.
 	      @private
-	      returns {Object} this.
+	      @override @ Tunable
 	    */
-	    // then (o) {
-	    //   h.error(`Burst's \"then\" method is under consideration,
-	    //     you can vote for it in github repo issues`);
-	    //   // 1. merge @o and o
-	    //   // 2. get i option from merged object
-	    //   // 3. pass the object to transit then
-	    //   // 4. transform self chain on run
-	    //   // i = this._swirls.length
-	    //   // while(i--) { this._swirls[i].then(o); }
-	    //   //  
-	    //   return this;
-	    // }
 
+	  }, {
+	    key: '_tuneSubModules',
+	    value: function _tuneSubModules() {
+	      // call _tuneSubModules on Tunable
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_tuneSubModules', this).call(this);
+	      // tune swirls including their tweens
+	      for (var index = 0; index < this._swirls.length; index++) {
+	        var swirl = this._swirls[index],
+	            options = this._getOption(index);
+
+	        swirl._tuneNewOptions(options);
+	        this._resetTween(swirl.tween, options);
+	      }
+
+	      this._o.timeline && this.timeline._setProp(this._o.timeline);
+	      this.timeline._recalcTotalDuration();
+	    }
+	  }, {
+	    key: '_resetTweens',
+	    value: function _resetTweens() {}
 	  }]);
 	  return Burst;
 	}(_swirl2.default);
 
 	exports.default = Burst;
+
+	// /*
+	//   Method to get if need to update new transform.
+	//   @private
+	//   @returns {Boolean} If transform update needed.
+	// */
+	// // _isNeedsTransform () {
+	// //   return  this._isPropChanged('x') ||
+	// //           this._isPropChanged('y') ||
+	// //           this._isPropChanged('angle');
+	// // }
+	/*
+	  Method to run tween with new options.
+	  @public
+	  @param {Object} New options object.
+	  @returns {Object} this.
+	*/
+	// run ( o ) {
+	//   if ( o != null && Object.keys(o).length) {
+	//     if ( o.count || ( o.childOptions && o.childOptions.count )) {
+	//       h.warn('Sorry, count can not be changed on run');
+	//     }
+	//     this._extendDefaults(o);
+	//     // copy child options to options
+	//     var keys = Object.keys(o.childOptions || {});
+
+	//     if ( this._o.childOptions == null ) { this._o.childOptions = {}; }
+
+	//     for (var i = 0; i < keys.length; i++) {
+	//       var key = keys[i];
+	//       this._o.childOptions[key] = o.childOptions[key];
+	//     }
+	//     // tune transits
+	//     var len = this._swirls.length;
+	//     while(len--) {
+	//       // we should keep transit's angle otherwise
+	//       // it will fallback to default 0 value
+	//       var option = this._getOption(len),
+	//           ref;
+
+	//       if ( (((ref = o.childOptions) != null ? ref.angle : void 0) == null) && ( o.angleShift == null ) ) {
+	//         option.angle = this._swirls[len]._o.angle;
+	//       }
+	//       // calculate bit angle if new angle related option passed
+	//       // and not isResetAngles
+	//       else if ( !o.isResetAngles ) {
+	//         option.angle = this._getBitAngle(option.angle, len);
+	//       }
+	//       this._swirls[len]._tuneNewOption(option, true);
+	//     }
+	//     this.timeline._recalcTotalDuration()
+	//   }
+	//   if ( this._props.randomAngle || this._props.randomRadius ) {
+	//     var len = this._swirls.length;
+	//     while(len--) {
+	//       var tr = this._swirls[len];
+	//       this._props.randomAngle  && tr._setProp({angleShift:  this._generateRandomAngle()});
+	//       this._props.randomRadius && tr._setProp({radiusScale: this._generateRandomRadius()})
+	//     }
+	//   }
+	//   this.play();
+	//   return this;
+	// }
+	/*
+	  Method to create then chain record.
+	  @private
+	  returns {Object} this.
+	*/
+	// then (o) {
+	//   h.error(`Burst's \"then\" method is under consideration,
+	//     you can vote for it in github repo issues`);
+	//   // 1. merge @o and o
+	//   // 2. get i option from merged object
+	//   // 3. pass the object to transit then
+	//   // 4. transform self chain on run
+	//   // i = this._swirls.length
+	//   // while(i--) { this._swirls[i].then(o); }
+	//   //  
+	//   return this;
+	// }
 
 /***/ },
 /* 4 */
@@ -3072,6 +3100,7 @@
 	    value: function _recalcDuration(timeline) {
 	      var p = timeline._props,
 	          timelineTime = p.repeatTime / p.speed + (p.shiftTime || 0);
+
 	      this._props.duration = Math.max(timelineTime, this._props.duration);
 	    }
 	    /*
@@ -5864,6 +5893,9 @@
 
 	  Easing.prototype.parseEasing = function(easing) {
 	    var easingParent, type;
+	    if (easing == null) {
+	      easing = 'linear.none';
+	    }
 	    type = typeof easing;
 	    if (type === 'string') {
 	      if (easing.charAt(0).toLowerCase() === 'm') {
@@ -7672,7 +7704,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.205.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.206.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7682,6 +7714,7 @@
 	/*
 	  add then, generate to burst.
 	  randoms in then chains for transit and swirl.
+	  module names
 	  parse rand(stagger(20, 10), 20) values
 	  perf optimizations.
 	  percentage for radius
@@ -7689,33 +7722,39 @@
 
 	var sw = new mojs.Burst({
 	  left: '50%', top: '50%',
-	  // delay:    'stagger(rand(20, 40))',
-	  // degree:   170,
-	  shape: ['cross', 'polygon', 'zigzag'],
+	  duration: 2000,
+	  easing: 'ease.out',
+	  // shape:        ['cross', 'polygon', 'zigzag'],
+	  points: 'rand(3, 5)',
 	  stroke: 'cyan',
 	  fill: 'none',
-	  radius: { 0: 150 },
+	  radius: { 0: 50 },
 	  angle: 190,
 	  degreeShift: 'rand(-50,50)',
-	  pathScale: 'rand(.5, 1)',
-	  strokeWidth: { 2: 0 },
-	  childOptions: {
-	    radius: 5,
-	    isSwirl: 1,
-	    swirlSize: 'rand(3, 6)',
-	    swirlFrequency: 'rand(3, 10)',
-	    angle: { 0: 200 }
-	  }
+	  pathScale: 'rand(.5, 1)'
 	});
 
+	// strokeWidth:  { 2 : 0 }
 	var playEl = document.querySelector('#js-play'),
 	    rangeSliderEl = document.querySelector('#js-range-slider');
 	document.body.addEventListener('click', function (e) {
-	  sw
-	  // .tune(sw._o)
+	  sw.tune({
+	    left: e.pageX, top: e.pageY,
+	    duration: 250,
+	    easing: 'ease.out',
+	    isSwirl: 1,
+	    timeline: {
+	      onComplete: function onComplete() {
+	        console.log('comple');
+	      }
+	    }
+	    // childOptions: {
+	    //   radius: 'rand(10, 50)'
+	    // }
+	  })
 	  // .generate()
 	  // .tune({ swirlFrequency: 'rand(2, 20)' })
-	  .play();
+	  .replay();
 	  // .run();
 	});
 

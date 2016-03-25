@@ -1,6 +1,7 @@
 Transit = mojs.Transit
 Swirl   = mojs.Swirl
 Burst   = mojs.Burst
+Tunable = mojs.Tunable
 t       = mojs.tweener
 h       = mojs.h
 
@@ -284,6 +285,12 @@ describe 'Burst ->', ->
       bs._makeTimeline()
       expect(bs.timeline._timelines.length).toBe bs._defaults.count
 
+    it 'should reset _o.timeline object', ->
+      bs = new Burst timeline: { delay: 400 }
+      bs.timeline._timelines.length = 0
+      bs._makeTimeline()
+      expect(bs._o.timeline).toBe null
+
   describe '_makeTween method ->', ->
     it 'should override parent', ->
       bs = new Burst
@@ -457,6 +464,68 @@ describe 'Burst ->', ->
       spyOn b, '_calcSize'
       b._extendDefaults()
       expect(b._calcSize).toHaveBeenCalled()
+
+  describe '_tuneSubModules method ->', ->
+    it 'should call super', ->
+      b = new Burst
+      spyOn Tunable.prototype, '_tuneSubModules'
+      b._tuneSubModules()
+      expect(Tunable.prototype._tuneSubModules)
+        .toHaveBeenCalled()
+    it 'should call _tuneNewOptions on each swirl', ->
+      b = new Burst count: 2
+      spyOn b._swirls[0], '_tuneNewOptions'
+      spyOn b._swirls[1], '_tuneNewOptions'
+      spyOn b, '_resetTween'
+      b._tuneSubModules()
+      expect(b._swirls[0]._tuneNewOptions.calls.first().args[0])
+        .toEqual b._getOption(0)
+      expect(b._swirls[1]._tuneNewOptions.calls.first().args[0])
+        .toEqual b._getOption(1)
+
+      expect(b._resetTween.calls.argsFor(0)[0]).toBe b.timeline._timelines[0]
+      expect(b._resetTween.calls.argsFor(0)[1]).toEqual b._getOption(0)
+
+      expect(b._resetTween.calls.argsFor(1)[0]).toBe b.timeline._timelines[1]
+      expect(b._resetTween.calls.argsFor(1)[1]).toEqual b._getOption(1)
+
+      expect(b._resetTween.calls.count()).toBe 2
+
+    it 'should set prop on timeline', ->
+      isCalled = null
+      b = new Burst count: 2
+      timelineOpts = { onComplete: null }
+      b._o.timeline = timelineOpts
+      spyOn b.timeline, '_setProp'
+      b._tuneSubModules()
+      expect(b.timeline._setProp).toHaveBeenCalledWith timelineOpts
+
+    it 'should not set prop on timeline if no object', ->
+      isCalled = null
+      b = new Burst count: 2, isIt: 1
+      timelineOpts = { onComplete: null }
+      spyOn b.timeline, '_setProp'
+      b._tuneSubModules()
+      expect(b.timeline._setProp).not.toHaveBeenCalled()
+
+    it 'should call _recalcTotalDuration on timeline', ->
+      b = new Burst count: 2, isIt: 1
+      spyOn b.timeline, '_recalcTotalDuration'
+      b._tuneSubModules()
+      expect(b.timeline._recalcTotalDuration.calls.count()).toBe 1
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   #   it 'should have its own defaults', ->
   #     burst = new Burst

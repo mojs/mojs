@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.205.0', isDebug: true, helpers: h,
+  revision:   '0.206.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -27,6 +27,7 @@ window.mojs = {
 /*
   add then, generate to burst.
   randoms in then chains for transit and swirl.
+  module names
   parse rand(stagger(20, 10), 20) values
   perf optimizations.
   percentage for radius
@@ -34,33 +35,38 @@ window.mojs = {
 
 var sw = new mojs.Burst({
   left: '50%', top: '50%',
-  // delay:    'stagger(rand(20, 40))',
-  // degree:   170,
-  shape:    ['cross', 'polygon', 'zigzag'],
-  stroke:   'cyan',
-  fill:     'none',
-  radius:   {0: 150},
-  angle:    190,
-  degreeShift: 'rand(-50,50)',
-  pathScale:   'rand(.5, 1)',
-  strokeWidth: { 2: 0 },
-  childOptions: {
-    radius: 5,
-    isSwirl: 1,
-    swirlSize: 'rand(3, 6)',
-    swirlFrequency: 'rand(3, 10)',
-    angle: { 0: 200 }
-  }
+  duration:     2000,
+  easing:       'ease.out',
+  // shape:        ['cross', 'polygon', 'zigzag'],
+  points:       'rand(3, 5)',
+  stroke:       'cyan',
+  fill:         'none',
+  radius:       {0: 50},
+  angle:        190,
+  degreeShift:  'rand(-50,50)',
+  pathScale:    'rand(.5, 1)',
+  // strokeWidth:  { 2 : 0 }
 });
 
 var playEl = document.querySelector('#js-play'),
     rangeSliderEl = document.querySelector('#js-range-slider');
 document.body.addEventListener('click', function (e) {
   sw
-    // .tune(sw._o)
+    .tune({
+      left: e.pageX, top: e.pageY,
+      duration: 250,
+      easing: 'ease.out',
+      isSwirl: 1,
+      timeline: {
+        onComplete: function () { console.log('comple'); }
+      }
+      // childOptions: {
+      //   radius: 'rand(10, 50)'
+      // }
+    })
     // .generate()
     // .tune({ swirlFrequency: 'rand(2, 20)' })
-    .play();
+    .replay();
     // .run();
 });
 

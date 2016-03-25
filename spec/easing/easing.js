@@ -197,6 +197,11 @@
         expect(easing.parseEasing(fun)).toBe(fun);
         return expect(typeof easing.parseEasing(fun)).toBe('function');
       });
+      it('should parse null/undefined to liner.none', function() {
+        var fun;
+        fun = easing.parseEasing(null);
+        return expect(fun).toBe(mojs.easing.linear.none);
+      });
       return describe('easing name option ->', function() {
         it('should parse string easing', function() {
           return expect(typeof easing.parseEasing('cubic.in')).toBe('function');

@@ -645,7 +645,7 @@ describe 'Transit ->', ->
       byte.el = null
       expect(byte._drawEl()).toBe true
     it 'should set transform if angle changed', ->
-      byte = new Byte angle: 25, isIt: 1
+      byte = new Byte angle: 25
       byte._draw()
       byte._props.angle = 26
       spyOn h, 'setPrefixedStyle'

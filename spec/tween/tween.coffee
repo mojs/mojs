@@ -6602,6 +6602,11 @@ describe 'Tween ->', ->
       tr._assignProp 'easing', 'ease.in'
       expect(typeof tr._props.easing).toBe 'function'
 
+    it 'should fallback to defaults for null values', ->
+      tr = new Tween
+      tr._assignProp 'speed', null
+      expect(tr._props.speed).toBe tr._defaults.speed
+
     it 'should override callbacks if key in _callbackOverrides object', ->
       tr = new Tween
       funBefore = ->
@@ -6635,9 +6640,9 @@ describe 'Tween ->', ->
         onStart: controlCallback
       }
       spyOn(tr, '_overrideCallback').and.callThrough()
-      tr._assignProp 'onStart', undefined
+      tr._assignProp 'onStart', null
       expect(typeof tr._props.onStart).toBe 'function'
       expect(tr._overrideCallback)
-        .toHaveBeenCalledWith undefined, controlCallback
+        .toHaveBeenCalledWith null, controlCallback
 
 

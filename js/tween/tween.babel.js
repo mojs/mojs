@@ -847,16 +847,16 @@ class Tween extends Module {
     @param {Any} Value for the property.
   */
   _assignProp (key, value) {
+    // fallback to defaults
+    if ( value == null ) { value = this._defaults[key]; }
     // parse easing
     ( key === 'easing' ) && ( value = easing.parseEasing(value) );
-    
     // handle control callbacks overrides
     var control       = this._callbackOverrides[key],
         isntOverriden = (!value || (!value.isMojsCallbackOverride));
     if ( control && isntOverriden ) {
       value = this._overrideCallback(value, control);
     }
-    
     // call super on Module
     super._assignProp(key, value);
   }

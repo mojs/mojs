@@ -131,6 +131,7 @@ class Timeline extends Tween {
   _recalcDuration (timeline) {
     var p             = timeline._props,
         timelineTime  = p.repeatTime/p.speed + (p.shiftTime || 0);
+
     this._props.duration = Math.max(timelineTime, this._props.duration);
   }
   /*

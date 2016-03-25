@@ -112,6 +112,9 @@ module.exports = function(config) {
       'build/stagger.js',
       'spec/stagger.js',
 
+      // 'build/easing/easing.js',
+      // 'spec/easing/easing.js',
+
       // 'build/timeline.js',
       // 'spec/timeline.js',
       // 'build/tween.js',
