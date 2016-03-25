@@ -1,5 +1,5 @@
 (function() {
-  var Burst, Swirl, Transit, Tunable, h, t;
+  var Burst, Swirl, Thenable, Transit, Tunable, h, t;
 
   Transit = mojs.Transit;
 
@@ -8,6 +8,8 @@
   Burst = mojs.Burst;
 
   Tunable = mojs.Tunable;
+
+  Thenable = mojs.Thenable;
 
   t = mojs.tweener;
 
@@ -79,7 +81,7 @@
         }
         return _results;
       });
-      return it('should have _optionsIntersection', function() {
+      it('should have _optionsIntersection', function() {
         var b, s;
         b = new Burst;
         s = new Swirl;
@@ -89,6 +91,11 @@
         expect(b._optionsIntersection['angle']).toBe(1);
         expect(b._optionsIntersection['opacity']).toBe(1);
         return expect(b._optionsIntersection['scale']).toBe(1);
+      });
+      return it('should add unitTimeline to the _skipPropsDelta', function() {
+        var b;
+        b = new Burst;
+        return expect(b._skipPropsDelta.unitTimeline).toBeDefined();
       });
     });
     describe('_createBit method ->', function() {
@@ -364,7 +371,7 @@
         return expect(bs._drawEl).toHaveBeenCalled();
       });
     });
-    describe('_transformTweenOptions method', function() {
+    describe('_transformTweenOptions method ->', function() {
       it('should call _applyCallbackOverrides with _o.timeline', function() {
         var tr;
         tr = new Burst({
@@ -374,28 +381,58 @@
         });
         spyOn(tr, '_applyCallbackOverrides').and.callThrough();
         tr._transformTweenOptions();
-        return expect(tr._applyCallbackOverrides).toHaveBeenCalledWith(tr._o.timeline);
+        return expect(tr._applyCallbackOverrides).toHaveBeenCalledWith(tr._o.unitTimeline);
       });
-      return it('should fallback to an empty `timeline options` object on _o', function() {
+      it('should fallback to an empty `timeline options` object on _o', function() {
         var tr;
-        tr = new Transit;
-        return expect(tr._o.timeline).toBeDefined();
+        tr = new Burst;
+        return expect(tr._o.unitTimeline).toBeDefined();
+      });
+      return it('should add `this` as callbacksContext to the unitTimeline', function() {
+        var b;
+        b = new Burst;
+        return expect(b.unitTimeline._o.callbacksContext).toBe(b);
       });
     });
     describe('_makeTimeline method ->', function() {
-      it('should call super _makeTimeline', function() {
-        var bs;
+      it('should create unitTimeline', function() {
+        var bs, opts;
         bs = new Burst;
-        spyOn(Burst.prototype, '_makeTimeline');
+        opts = bs._o.unitTimeline;
         bs._makeTimeline();
-        return expect(Burst.prototype._makeTimeline).toHaveBeenCalled();
+        expect(bs.unitTimeline instanceof mojs.Timeline).toBe(true);
+        return expect(bs.unitTimeline._o).toBe(opts);
       });
-      it('should add swirls to the timeline', function() {
+      it('should add swirls to the unitTimeline', function() {
         var bs;
         bs = new Burst;
-        bs.timeline._timelines.length = 0;
+        bs.unitTimeline._timelines.length = 0;
         bs._makeTimeline();
-        return expect(bs.timeline._timelines.length).toBe(bs._defaults.count);
+        return expect(bs.unitTimeline._timelines.length).toBe(bs._defaults.count);
+      });
+      describe('if !wasTimelineLess ->', function() {
+        it('should call super _makeTimeline', function() {
+          var bs;
+          bs = new Burst;
+          spyOn(Burst.prototype, '_makeTimeline');
+          bs._makeTimeline();
+          return expect(Burst.prototype._makeTimeline).toHaveBeenCalled();
+        });
+        return it('should add unitTimeline', function() {
+          var bs;
+          bs = new Burst;
+          bs._makeTimeline();
+          return expect(bs.timeline._timelines[0]).toBe(bs.unitTimeline);
+        });
+      });
+      describe('if wasTimelineLess ->', function() {
+        return it('should set unitTimeline as timeline', function() {
+          var bs;
+          bs = new Burst;
+          bs._o.wasTimelineLess = true;
+          bs._makeTimeline();
+          return expect(bs.timeline).toBe(bs.unitTimeline);
+        });
       });
       return it('should reset _o.timeline object', function() {
         var bs;
@@ -690,7 +727,7 @@
         return expect(b._calcSize).toHaveBeenCalled();
       });
     });
-    return describe('_tuneSubModules method ->', function() {
+    describe('_tuneSubModules method ->', function() {
       it('should call super', function() {
         var b;
         b = new Burst;
@@ -709,9 +746,9 @@
         b._tuneSubModules();
         expect(b._swirls[0]._tuneNewOptions.calls.first().args[0]).toEqual(b._getOption(0));
         expect(b._swirls[1]._tuneNewOptions.calls.first().args[0]).toEqual(b._getOption(1));
-        expect(b._resetTween.calls.argsFor(0)[0]).toBe(b.timeline._timelines[0]);
+        expect(b._resetTween.calls.argsFor(0)[0]).toBe(b._swirls[0].tween);
         expect(b._resetTween.calls.argsFor(0)[1]).toEqual(b._getOption(0));
-        expect(b._resetTween.calls.argsFor(1)[0]).toBe(b.timeline._timelines[1]);
+        expect(b._resetTween.calls.argsFor(1)[0]).toBe(b._swirls[1].tween);
         expect(b._resetTween.calls.argsFor(1)[1]).toEqual(b._getOption(1));
         return expect(b._resetTween.calls.count()).toBe(2);
       });
@@ -733,8 +770,7 @@
         var b, isCalled, timelineOpts;
         isCalled = null;
         b = new Burst({
-          count: 2,
-          isIt: 1
+          count: 2
         });
         timelineOpts = {
           onComplete: null
@@ -746,12 +782,48 @@
       return it('should call _recalcTotalDuration on timeline', function() {
         var b;
         b = new Burst({
-          count: 2,
-          isIt: 1
+          count: 2
         });
         spyOn(b.timeline, '_recalcTotalDuration');
         b._tuneSubModules();
         return expect(b.timeline._recalcTotalDuration.calls.count()).toBe(1);
+      });
+    });
+    return describe('_resetMergedFlags method', function() {
+      it('should call the super method', function() {
+        var b, obj;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(Thenable.prototype, '_resetMergedFlags');
+        obj = {};
+        b._resetMergedFlags(obj);
+        return expect(Thenable.prototype._resetMergedFlags).toHaveBeenCalledWith(obj);
+      });
+      it('should return the same object back', function() {
+        var b, obj;
+        b = new Burst({
+          count: 2
+        });
+        obj = {};
+        return expect(b._resetMergedFlags(obj)).toBe(obj);
+      });
+      it('should set isTimelineLess option to false', function() {
+        var b, obj;
+        b = new Burst({
+          count: 2
+        });
+        obj = {};
+        return expect(b._resetMergedFlags(obj).isTimelineLess).toBe(false);
+      });
+      return it('should save the isTimelineLess flag option to false', function() {
+        var b, obj;
+        b = new Burst({
+          count: 2
+        });
+        obj = {};
+        expect(b._resetMergedFlags(obj).wasTimelineLess).toBe(true);
+        return expect(b._resetMergedFlags(obj).isTimelineLess).toBe(false);
       });
     });
   });

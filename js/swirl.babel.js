@@ -87,7 +87,6 @@ class Swirl extends Transit {
     @param {Numer} Progress of the Swirl in range of [0..1]
   */
   _setProgress ( proc ) {
-
     this._progress = proc;
     this._calcCurrentProps(proc);
 

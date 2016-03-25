@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.206.0', isDebug: true, helpers: h,
+  revision:   '0.207.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -28,47 +28,50 @@ window.mojs = {
   add then, generate to burst.
   randoms in then chains for transit and swirl.
   module names
-  parse rand(stagger(20, 10), 20) values
   perf optimizations.
+  --
+  parse rand(stagger(20, 10), 20) values
   percentage for radius
 */
 
-var sw = new mojs.Burst({
-  left: '50%', top: '50%',
-  duration:     2000,
-  easing:       'ease.out',
-  // shape:        ['cross', 'polygon', 'zigzag'],
-  points:       'rand(3, 5)',
-  stroke:       'cyan',
-  fill:         'none',
-  radius:       {0: 50},
-  angle:        190,
-  degreeShift:  'rand(-50,50)',
-  pathScale:    'rand(.5, 1)',
-  // strokeWidth:  { 2 : 0 }
-});
+// var sw = new mojs.Burst({
+//   left: '50%',  top: '50%',
+//   duration:     500,
+//   easing:       'ease.out',
+//   stroke:       'cyan',
+//   fill:         'none',
+//   radius:       {0: 50},
+//   angle:        {0: 90},
+//   isSwirl:      true,
+//   unitTimeline: {
+//     onComplete: function() { console.log(this); }
+//   },
+//   // swirlFrequency: 20,
+//   childOptions: {
+//     radius: 5
+//   }
+// }).then({ radius: 0, angle: 0 });
 
-var playEl = document.querySelector('#js-play'),
-    rangeSliderEl = document.querySelector('#js-range-slider');
-document.body.addEventListener('click', function (e) {
-  sw
-    .tune({
-      left: e.pageX, top: e.pageY,
-      duration: 250,
-      easing: 'ease.out',
-      isSwirl: 1,
-      timeline: {
-        onComplete: function () { console.log('comple'); }
-      }
-      // childOptions: {
-      //   radius: 'rand(10, 50)'
-      // }
-    })
-    // .generate()
-    // .tune({ swirlFrequency: 'rand(2, 20)' })
-    .replay();
-    // .run();
-});
+
+// var sw0 = new mojs.Timeline({
+//   onComplete: function () {
+//     console.log('y')
+//   }
+// })
+
+
+// var sw = new mojs.Timeline({})
+
+// sw0.add( new mojs.Tween, new mojs.Tween, new mojs.Tween );
+// sw.add( sw0 );
+
+// var playEl = document.querySelector('#js-play'),
+//     rangeSliderEl = document.querySelector('#js-range-slider');
+// document.body.addEventListener('click', function (e) {
+//   sw
+//     // .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
+//     .replay();
+// });
 
 // rangeSliderEl.addEventListener('input', function () {
 //   tr.setProgress( rangeSliderEl.value/1000 );

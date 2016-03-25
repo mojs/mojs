@@ -52,7 +52,7 @@
       });
     });
     describe('defaults object ->', function() {
-      return it('should have defaults object', function() {
+      it('should have defaults object', function() {
         var byte;
         byte = new Byte;
         expect(byte._defaults).toBeDefined();
@@ -83,6 +83,12 @@
         expect(byte._defaults.size).toBe(null);
         expect(byte._defaults.callbacksContext).toBe(null);
         return expect(byte._defaults.sizeGap).toBe(0);
+      });
+      return it('should add callbacksContext to the _skipPropsDelta', function() {
+        var byte;
+        byte = new Byte;
+        expect(byte._skipPropsDelta.callbacksContext).toBeDefined();
+        return expect(byte._skipPropsDelta.timeline).toBeDefined();
       });
     });
     describe('_applyCallbackOverrides ->', function() {

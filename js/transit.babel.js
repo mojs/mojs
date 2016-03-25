@@ -79,7 +79,8 @@ class Transit extends Tunable {
     }
     // properties that will be excluded from delta parsing
     this._skipPropsDelta = this._skipPropsDelta || {
-      callbacksContext:   1
+      callbacksContext:   1,
+      timeline:           1
     }
 
   }

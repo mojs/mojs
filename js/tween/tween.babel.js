@@ -113,6 +113,7 @@ class Tween extends Module {
       /* if no progress passsed - set 1 if tween
          is playingBackward, otherwise set to 0 */
       : ( this._state === 'reverse' ) ? 1 : 0
+
     this.setProgress( stopProc );
     this._setPlaybackState('stop');
     this._prevTime = null;

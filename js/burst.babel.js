@@ -1,4 +1,5 @@
 import Transit from './transit';
+import Timeline from './tween/timeline';
 import Swirl from './swirl';
 import h     from './h';
 
@@ -33,6 +34,8 @@ class Burst extends Swirl {
       radius: 1, radiusX: 1, radiusY: 1,
       angle:  1, scale:   1, opacity: 1,
     }
+    // exclude unitTimeline object from deltas parsing
+    this._skipPropsDelta.unitTimeline = 1;
   }
   /*
     Method to copy _o options to _props with fallback to _defaults.
@@ -242,8 +245,9 @@ class Burst extends Swirl {
     @private
   */
   _transformTweenOptions () {
-    this._o.timeline = this._o.timeline || {};
-    this._applyCallbackOverrides( this._o.timeline );
+    this._o.unitTimeline = this._o.unitTimeline || {};
+    this._o.unitTimeline.callbacksContext = this;
+    this._applyCallbackOverrides( this._o.unitTimeline );
   }
   /*
     Method to create timeline.
@@ -254,9 +258,22 @@ class Burst extends Swirl {
                     timeline options.
   */
   _makeTimeline () {
-    super._makeTimeline();
-    this.timeline.add( ...this._swirls );
-    this._o.timeline = null;
+    // create unit Timeline to controll all Swirls
+    this.unitTimeline = new Timeline( this._o.unitTimeline );
+    this.unitTimeline.add(...this._swirls);
+    // if isTimelineLess wasn't passed to the module - we need
+    // to create Master Timeline in case we will have `then` chain,-
+    // the master will control all the unitTimelines of the chain.
+    if ( !this._o.wasTimelineLess ) {
+      super._makeTimeline();
+      this.timeline.add( this.unitTimeline );
+    // otherwise set the timeline property to the unitTimeline,
+    // this will allow to `.append( )` this module to master timeline
+    // automatically in the `Thenable.then` method.
+    } else { this.timeline = this.unitTimeline; }
+    // reset the timeline and unitTimeline options objects.
+    this._o.timeline     = null;
+    // this._o.unitTimeline = undefined;
   }
   /*
     Method to make Tween for the module.
@@ -284,10 +301,29 @@ class Burst extends Swirl {
     this._o.timeline && this.timeline._setProp(this._o.timeline);
     this.timeline._recalcTotalDuration();
   }
+  /*
+    Method to reset some flags on merged options object.
+    @private
+    @overrides @ Thenable
+    @param   {Object} Options object.
+    @returns {Object} Options object.
+  */
+  _resetTweens () { /* don't reset tweens for now */ }
+  /*
+    Method to reset some flags on merged options object.
+    @private
+    @override @ Thenable
+    @param   {Object} Options object.
+    @returns {Object} Options object.
+  */
+  _resetMergedFlags (obj) {
+    // call super @ Thenable
+    super._resetMergedFlags(obj);
+    obj.wasTimelineLess = obj.isTimelineLess;
+    obj.isTimelineLess  = false;
+    return obj;
+  }
 
-  
-
-  _resetTweens () {}
 }
 
 export default Burst;

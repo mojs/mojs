@@ -27,8 +27,9 @@ class Thenable extends Tweenable {
     var module  = new this.constructor( merged );
     // save the modules to the _modules array
     this._modules.push( module );
-    // add module's tween to master timeline
-    this.timeline.append( module.tween );
+    // console.log( module, module.timeline );
+    // add module's tween into master timeline
+    this.timeline.append( module );
     return this;
   }
 
@@ -37,6 +38,7 @@ class Thenable extends Tweenable {
 
   /*
     Method to reset some flags on merged options object.
+    @private
     @param   {Object} Options object.
     @returns {Object} Options object.
   */

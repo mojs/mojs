@@ -357,6 +357,7 @@ class Helpers
     else str
   # if delta object was passed: like { 20: 75 }
   parseDelta:(key, value)->
+    # console.log key, value
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start

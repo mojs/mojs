@@ -61,6 +61,11 @@ describe 'Transit ->', ->
       expect(byte._defaults.callbacksContext).toBe          null
       expect(byte._defaults.sizeGap).toBe          0
 
+    it 'should add callbacksContext to the _skipPropsDelta', ->
+      byte = new Byte
+      expect(byte._skipPropsDelta.callbacksContext).toBeDefined()
+      expect(byte._skipPropsDelta.timeline).toBeDefined()
+
   describe '_applyCallbackOverrides ->', ->
     it 'should create callbackOverrides object on passed object', ->
       tr = new Transit
@@ -589,25 +594,11 @@ describe 'Transit ->', ->
       spyOn byte, '_drawEl'
       byte._draw()
       expect(byte._drawEl).toHaveBeenCalled()
-    # old
-    # it 'should call _calcShapeTransform method', ->
-    #   byte = new Byte radius: 25
-    #   spyOn byte, '_calcShapeTransform'
-    #   byte._draw()
-    #   expect(byte._calcShapeTransform).toHaveBeenCalled()
     it 'should receive the current progress', ->
       byte = new Byte radius: 25
       spyOn byte, '_draw'
       byte._setProgress .5
       expect(byte._draw).toHaveBeenCalledWith .5
-    # old
-    # it 'should calculate transform object', ->
-    #   byte = new Byte
-    #     angle:        90
-    #     radius:       25
-    #     strokeWidth:  4
-    #   expect(byte.bit.props.transform).toBe('rotate(90, 29, 29)')
-    #   expect(byte._calcShapeTransform).toBeDefined()
   describe '_drawEl method ->', ->
     it 'should set el positions and transforms', ->
       byte = new Byte radius: 25, top: 10
