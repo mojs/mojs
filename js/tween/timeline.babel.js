@@ -159,16 +159,19 @@ class Timeline extends Tween {
     @param {Number, Null} Time to start with.
   */
   _startTimelines (time, isReset = true) {
-    // var i = this._timelines.length,
     var p = this._props,
-        timeline;
+        isStop = this._state === 'stop';
+
     ( time == null) && (time = this._props.startTime);
+
     for (var i = 0; i < this._timelines.length; i++) {
-      timeline = this._timelines[i];
-      timeline._setStartTime(time, isReset);
-      // if from _subPlay and _prevTime is set
-      if ( !isReset && timeline._prevTime != null ) {
-        timeline._prevTime = timeline._normPrevTimeForward();
+      var tm = this._timelines[i];
+      tm._setStartTime(time, isReset);
+      // if from `_subPlay` and `_prevTime` is set and state is `stop`
+      // prevTime normalizing is for play/pause functionality, so no
+      // need to normalize if the timeline is in `stop` state.
+      if ( !isReset && tm._prevTime != null && !isStop ) {
+        tm._prevTime = tm._normPrevTimeForward();
       }
     }
   }

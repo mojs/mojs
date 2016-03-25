@@ -368,7 +368,7 @@
         t._setStartTime(time);
         return expect(t._timelines[0]._props.startTime).toBe(time + shift);
       });
-      return it('should set _prevTime on each child if from subplay', function(dfr) {
+      it('should set _prevTime on each child if from subplay', function(dfr) {
         var t;
         t = new Timeline;
         t.add(new Tween({
@@ -378,6 +378,19 @@
         return setTimeout(function() {
           t.pause().playBackward().pause();
           expect(t._timelines[0]._prevTime).toBe(t._timelines[0]._normPrevTimeForward());
+          return dfr();
+        }, 50);
+      });
+      return it('should not normalize _prevTime if stopped', function(dfr) {
+        var t;
+        t = new Timeline;
+        t.add(new Tween({
+          duration: 500
+        }));
+        t.play();
+        return setTimeout(function() {
+          t.stop().playBackward().pause();
+          expect(t._timelines[0]._prevTime).not.toBe(t._timelines[0]._normPrevTimeForward());
           return dfr();
         }, 50);
       });

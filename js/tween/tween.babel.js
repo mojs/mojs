@@ -115,6 +115,7 @@ class Tween extends Module {
       : ( this._state === 'reverse' ) ? 1 : 0
 
     this.setProgress( stopProc );
+    this._prevTime = null;
     this._setPlaybackState('stop');
     this._prevTime = null;
     return this;
@@ -330,12 +331,15 @@ class Tween extends Module {
                     1 = edge jump in positive direction.
   */
   _update ( time, timelinePrevTime, wasYoyo, onEdge ) {
+    this._o.isIt && console.log(`time: ${time}, timelinePrevTime: ${timelinePrevTime}, wasYoyo: ${wasYoyo}, onEdge: ${onEdge} `);
     var p       = this._props;
     // if we don't the _prevTime thus the direction we are heading to,
     // but prevTime was passed thus we are child of a Timeline
     // set _prevTime to passed one and pretent that there was unknown
     // update to not to block start/complete callbacks
+    this._o.isIt && console.log(`prevTime: ${this._prevTime}, timelinePrevTime: ${timelinePrevTime}`);
     if ( this._prevTime == null && timelinePrevTime != null ) {
+      this._o.isIt && console.log('setting the _prevTime to prevTime and _wasUknownUpdate');
       this._prevTime = timelinePrevTime;
       this._wasUknownUpdate = true;
     }
@@ -385,7 +389,7 @@ class Tween extends Module {
           }
         }
       }
-      // reset the _prevTime === drop one frame to undestand
+      // reset the _prevTime - drop one frame to undestand
       // where we are heading
       this._prevTime = null;
     }
@@ -447,6 +451,7 @@ class Tween extends Module {
 
       this._setProgress( (isYoyo) ? 0 : 1, time, isYoyo );
       this._repeatComplete( time, isYoyo );
+      this._o.isIt && console.log('h3');
       this._complete( time, isYoyo );
     }
     // if was active and went to - inactive area "-"
@@ -491,6 +496,7 @@ class Tween extends Module {
       this._setProgress( (isYoyo ? 0 : 1), time, isYoyo );
       if ( time > this._prevTime ) { this._isRepeatCompleted = false; }
       this._repeatComplete( time, isYoyo );
+      this._o.isIt && console.log('h4');
       return this._complete( time, isYoyo );
     }    
 
@@ -576,6 +582,7 @@ class Tween extends Module {
         // we have handled the case in this._wasUknownUpdate
         // block so filter that
         if ( prevT === TCount && !this._wasUknownUpdate ) {
+          this._o.isIt && console.log('h6');
           this._complete( time, isYoyo );
           this._repeatComplete( time, isYoyo );              
           this._firstUpdate( time, isYoyo );
@@ -748,6 +755,7 @@ class Tween extends Module {
   */
   _complete ( time, isYoyo ) {
     if ( this._isCompleted ) { return; }
+    this._o.isIt && console.log('_complete!');
     var p = this._props;
     if (p.onComplete != null && typeof p.onComplete === 'function') {
       p.onComplete.call( p.callbacksContext || this, time > this._prevTime, isYoyo );

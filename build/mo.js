@@ -247,6 +247,7 @@
 	      : this._state === 'reverse' ? 1 : 0;
 
 	      this.setProgress(stopProc);
+	      this._prevTime = null;
 	      this._setPlaybackState('stop');
 	      this._prevTime = null;
 	      return this;
@@ -517,12 +518,15 @@
 	  }, {
 	    key: '_update',
 	    value: function _update(time, timelinePrevTime, wasYoyo, onEdge) {
+	      this._o.isIt && console.log('time: ' + time + ', timelinePrevTime: ' + timelinePrevTime + ', wasYoyo: ' + wasYoyo + ', onEdge: ' + onEdge + ' ');
 	      var p = this._props;
 	      // if we don't the _prevTime thus the direction we are heading to,
 	      // but prevTime was passed thus we are child of a Timeline
 	      // set _prevTime to passed one and pretent that there was unknown
 	      // update to not to block start/complete callbacks
+	      this._o.isIt && console.log('prevTime: ' + this._prevTime + ', timelinePrevTime: ' + timelinePrevTime);
 	      if (this._prevTime == null && timelinePrevTime != null) {
+	        this._o.isIt && console.log('setting the _prevTime to prevTime and _wasUknownUpdate');
 	        this._prevTime = timelinePrevTime;
 	        this._wasUknownUpdate = true;
 	      }
@@ -572,7 +576,7 @@
 	              }
 	            }
 	          }
-	        // reset the _prevTime === drop one frame to undestand
+	        // reset the _prevTime - drop one frame to undestand
 	        // where we are heading
 	        this._prevTime = null;
 	      }
@@ -644,6 +648,7 @@
 
 	        this._setProgress(isYoyo ? 0 : 1, time, isYoyo);
 	        this._repeatComplete(time, isYoyo);
+	        this._o.isIt && console.log('h3');
 	        this._complete(time, isYoyo);
 	      }
 	      // if was active and went to - inactive area "-"
@@ -693,6 +698,7 @@
 	          this._isRepeatCompleted = false;
 	        }
 	        this._repeatComplete(time, isYoyo);
+	        this._o.isIt && console.log('h4');
 	        return this._complete(time, isYoyo);
 	      }
 
@@ -780,6 +786,7 @@
 	          // we have handled the case in this._wasUknownUpdate
 	          // block so filter that
 	          if (prevT === TCount && !this._wasUknownUpdate) {
+	            this._o.isIt && console.log('h6');
 	            this._complete(time, isYoyo);
 	            this._repeatComplete(time, isYoyo);
 	            this._firstUpdate(time, isYoyo);
@@ -977,6 +984,7 @@
 	      if (this._isCompleted) {
 	        return;
 	      }
+	      this._o.isIt && console.log('_complete!');
 	      var p = this._props;
 	      if (p.onComplete != null && typeof p.onComplete === 'function') {
 	        p.onComplete.call(p.callbacksContext || this, time > this._prevTime, isYoyo);
@@ -3192,16 +3200,19 @@
 	    value: function _startTimelines(time) {
 	      var isReset = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
-	      // var i = this._timelines.length,
 	      var p = this._props,
-	          timeline;
+	          isStop = this._state === 'stop';
+
 	      time == null && (time = this._props.startTime);
+
 	      for (var i = 0; i < this._timelines.length; i++) {
-	        timeline = this._timelines[i];
-	        timeline._setStartTime(time, isReset);
-	        // if from _subPlay and _prevTime is set
-	        if (!isReset && timeline._prevTime != null) {
-	          timeline._prevTime = timeline._normPrevTimeForward();
+	        var tm = this._timelines[i];
+	        tm._setStartTime(time, isReset);
+	        // if from `_subPlay` and `_prevTime` is set and state is `stop`
+	        // prevTime normalizing is for play/pause functionality, so no
+	        // need to normalize if the timeline is in `stop` state.
+	        if (!isReset && tm._prevTime != null && !isStop) {
+	          tm._prevTime = tm._normPrevTimeForward();
 	        }
 	      }
 	    }
@@ -7755,7 +7766,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.207.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.207.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7763,7 +7774,7 @@
 
 	// TODO:
 	/*
-	  add then, generate to burst.
+	  burst fix the tune for `then` chains
 	  randoms in then chains for transit and swirl.
 	  module names
 	  perf optimizations.
@@ -7790,24 +7801,28 @@
 	//   }
 	// }).then({ radius: 0, angle: 0 });
 
-	// var sw0 = new mojs.Timeline({
-	//   onComplete: function () {
-	//     console.log('y')
-	//   }
-	// })
+	var sw0 = new mojs.Timeline({
+	  isIt: 1,
+	  onComplete: function onComplete() {
+	    console.log('sw 0: complete!');
+	  }
+	});
 
-	// var sw = new mojs.Timeline({})
+	var sw = new mojs.Timeline({});
 
-	// sw0.add( new mojs.Tween, new mojs.Tween, new mojs.Tween );
-	// sw.add( sw0 );
+	sw0.append(new mojs.Tween({ duration: 2000 }));
+	sw0.append(new mojs.Tween({ duration: 2000 }));
+	sw0.append(new mojs.Tween({ duration: 2000 }));
+	sw.add(sw0);
 
-	// var playEl = document.querySelector('#js-play'),
-	//     rangeSliderEl = document.querySelector('#js-range-slider');
-	// document.body.addEventListener('click', function (e) {
-	//   sw
-	//     // .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
-	//     .replay();
-	// });
+	var playEl = document.querySelector('#js-play'),
+	    rangeSliderEl = document.querySelector('#js-range-slider');
+	document.body.addEventListener('click', function (e) {
+	  console.log('REPLAy');
+	  sw
+	  // .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
+	  .replay();
+	});
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );

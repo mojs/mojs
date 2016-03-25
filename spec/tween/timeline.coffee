@@ -257,6 +257,18 @@ describe 'Timeline ->', ->
         dfr()
       , 50
 
+    it 'should not normalize _prevTime if stopped', (dfr)->
+      t   = new Timeline
+      t.add new Tween duration: 500
+      t.play()
+
+      setTimeout ->
+        t.stop().playBackward().pause()
+        expect(t._timelines[0]._prevTime)
+          .not.toBe t._timelines[0]._normPrevTimeForward()
+        dfr()
+      , 50
+
   describe '_pushTimeline method ->', ->
     it 'should push timeline to timelines and calc repeatTime',->
       t = new Timeline
