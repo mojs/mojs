@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.207.1', isDebug: true, helpers: h,
+  revision:   '0.207.2', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -34,39 +34,25 @@ window.mojs = {
   percentage for radius
 */
 
-// var sw = new mojs.Burst({
-//   left: '50%',  top: '50%',
-//   duration:     500,
-//   easing:       'ease.out',
-//   stroke:       'cyan',
-//   fill:         'none',
-//   radius:       {0: 50},
-//   angle:        {0: 90},
-//   isSwirl:      true,
-//   unitTimeline: {
-//     onComplete: function() { console.log(this); }
-//   },
-//   // swirlFrequency: 20,
-//   childOptions: {
-//     radius: 5
-//   }
-// }).then({ radius: 0, angle: 0 });
-
-
-var sw0 = new mojs.Timeline({
-  isIt: 1,
-  onComplete: function () {
-    console.log('sw 0: complete!')
+var sw = new mojs.Burst({
+  left: '50%',  top: '50%',
+  duration:     650,
+  delay: 'stagger(400, 75)',
+  easing:       'ease.out',
+  // stroke:       'cyan',
+  // fill:         'none',
+  radius:       0,
+  isShowEnd:    1,
+  // angle:        {0: 90},
+  isSwirl:      true,
+  isShowStart: 1,
+  fill: ['#555','#666', '#999', '#c1c1c1', '#f5f5f5' ],
+  childOptions: {
+    // radius: [{125: 150}, {100: 125}, {75: 100}, {50: 75}, { 25: 50 }],
+    radius: {'stagger(125, -25)':'stagger(100, 25)'}
   }
-})
+}); //.then({ radius: 0, angle: 0 });
 
-
-var sw = new mojs.Timeline({})
-
-sw0.append( new mojs.Tween({duration: 2000}) );
-sw0.append( new mojs.Tween({duration: 2000}) );
-sw0.append( new mojs.Tween({duration: 2000}) );
-sw.add( sw0 );
 
 var playEl = document.querySelector('#js-play'),
     rangeSliderEl = document.querySelector('#js-range-slider');
@@ -74,7 +60,7 @@ document.body.addEventListener('click', function (e) {
   console.log('REPLAy')
   sw
     // .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
-    .replay();
+    .play();
 });
 
 // rangeSliderEl.addEventListener('input', function () {

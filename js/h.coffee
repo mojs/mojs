@@ -356,13 +356,12 @@ class Helpers
     if typeof str is 'string' and str.match(/rand\(/) then @parseRand(str)
     else str
   # if delta object was passed: like { 20: 75 }
-  parseDelta:(key, value)->
-    # console.log key, value
+  parseDelta:(key, value, index)->
     start = Object.keys(value)[0]
     end   = value[start]
     delta = start: start
     # color values
-    if isNaN(parseFloat(start)) and !start.match(/rand\(/)
+    if isNaN(parseFloat(start)) and !start.match(/rand\(/) and !start.match(/stagger\(/)
       if key is 'strokeLinecap'
         @warn "Sorry, stroke-linecap property is not animatable
            yet, using the start(#{start}) value instead", value
@@ -396,16 +395,16 @@ class Helpers
         type:   'array'
     ## plain numeric value ##
     else
+      # console.log start, end
       ## filter tween-related properties
       # defined in helpers.chainOptionMap
       # because tween-related props shouldn't
       ## have deltas
-      isntTweenProp = !@callbacksMap[key] and !@tweenOptionMap[key]
-      if !@chainOptionMap[key] and isntTweenProp
+      if !@callbacksMap[key] and !@tweenOptionMap[key]
         # position values defined in unitOptionMap
         if @unitOptionMap[key]
-          end   = @parseUnit @parseIfRand end
-          start = @parseUnit @parseIfRand start
+          end   = @parseUnit @parseStringOption end,   index
+          start = @parseUnit @parseStringOption start, index
           @mergeUnits start, end, key
           delta =
             start:  start
@@ -413,9 +412,9 @@ class Helpers
             delta:  end.value - start.value
             type:   'unit'
         else
-          # none position but numeric values
-          end   = parseFloat @parseIfRand    end
-          start = parseFloat @parseIfRand  start
+          # not position but numeric values
+          end   = parseFloat @parseStringOption  end,   index
+          start = parseFloat @parseStringOption  start, index
           delta =
             start:  start
             end:    end

@@ -1345,6 +1345,7 @@
 	    value: function _createBit() {
 	      this._swirls = [];
 	      for (var index = 0; index < this._props.count; index++) {
+	        // console.log(this._getOption( index ).radius)
 	        this._swirls.push(new _swirl2.default(this._getOption(index)));
 	      }
 	    }
@@ -1663,86 +1664,6 @@
 	}(_swirl2.default);
 
 	exports.default = Burst;
-
-	// /*
-	//   Method to get if need to update new transform.
-	//   @private
-	//   @returns {Boolean} If transform update needed.
-	// */
-	// // _isNeedsTransform () {
-	// //   return  this._isPropChanged('x') ||
-	// //           this._isPropChanged('y') ||
-	// //           this._isPropChanged('angle');
-	// // }
-	/*
-	  Method to run tween with new options.
-	  @public
-	  @param {Object} New options object.
-	  @returns {Object} this.
-	*/
-	// run ( o ) {
-	//   if ( o != null && Object.keys(o).length) {
-	//     if ( o.count || ( o.childOptions && o.childOptions.count )) {
-	//       h.warn('Sorry, count can not be changed on run');
-	//     }
-	//     this._extendDefaults(o);
-	//     // copy child options to options
-	//     var keys = Object.keys(o.childOptions || {});
-
-	//     if ( this._o.childOptions == null ) { this._o.childOptions = {}; }
-
-	//     for (var i = 0; i < keys.length; i++) {
-	//       var key = keys[i];
-	//       this._o.childOptions[key] = o.childOptions[key];
-	//     }
-	//     // tune transits
-	//     var len = this._swirls.length;
-	//     while(len--) {
-	//       // we should keep transit's angle otherwise
-	//       // it will fallback to default 0 value
-	//       var option = this._getOption(len),
-	//           ref;
-
-	//       if ( (((ref = o.childOptions) != null ? ref.angle : void 0) == null) && ( o.angleShift == null ) ) {
-	//         option.angle = this._swirls[len]._o.angle;
-	//       }
-	//       // calculate bit angle if new angle related option passed
-	//       // and not isResetAngles
-	//       else if ( !o.isResetAngles ) {
-	//         option.angle = this._getBitAngle(option.angle, len);
-	//       }
-	//       this._swirls[len]._tuneNewOption(option, true);
-	//     }
-	//     this.timeline._recalcTotalDuration()
-	//   }
-	//   if ( this._props.randomAngle || this._props.randomRadius ) {
-	//     var len = this._swirls.length;
-	//     while(len--) {
-	//       var tr = this._swirls[len];
-	//       this._props.randomAngle  && tr._setProp({angleShift:  this._generateRandomAngle()});
-	//       this._props.randomRadius && tr._setProp({radiusScale: this._generateRandomRadius()})
-	//     }
-	//   }
-	//   this.play();
-	//   return this;
-	// }
-	/*
-	  Method to create then chain record.
-	  @private
-	  returns {Object} this.
-	*/
-	// then (o) {
-	//   h.error(`Burst's \"then\" method is under consideration,
-	//     you can vote for it in github repo issues`);
-	//   // 1. merge @o and o
-	//   // 2. get i option from merged object
-	//   // 3. pass the object to transit then
-	//   // 4. transform self chain on run
-	//   // i = this._swirls.length
-	//   // while(i--) { this._swirls[i].then(o); }
-	//   //  
-	//   return this;
-	// }
 
 /***/ },
 /* 4 */
@@ -4143,6 +4064,7 @@
 	    (0, _classCallCheck3.default)(this, Module);
 
 	    this._o = o;
+	    this._index = this._o.index || 0;
 	    this._declareDefaults();
 	    this._extendDefaults();
 	    this._vars();
@@ -4167,7 +4089,6 @@
 	  }, {
 	    key: '_vars',
 	    value: function _vars() {
-	      this._index = this._o.index || 0;
 	      this._progress = 0;
 	      this._strokeDasharrayBuffer = [];
 	    }
@@ -4340,7 +4261,7 @@
 	        return;
 	      }
 	      // get delta
-	      delta = _h2.default.parseDelta(key, optionsValue, this._defaults[key]);
+	      delta = _h2.default.parseDelta(key, optionsValue, this._index);
 	      // if successfully parsed - save it
 	      if (delta.type != null) {
 	        this._deltas[key] = delta;
@@ -4961,14 +4882,14 @@
 	    }
 	  };
 
-	  Helpers.prototype.parseDelta = function(key, value) {
-	    var delta, end, endArr, endColorObj, i, isntTweenProp, j, len1, start, startArr, startColorObj;
+	  Helpers.prototype.parseDelta = function(key, value, index) {
+	    var delta, end, endArr, endColorObj, i, j, len1, start, startArr, startColorObj;
 	    start = Object.keys(value)[0];
 	    end = value[start];
 	    delta = {
 	      start: start
 	    };
-	    if (isNaN(parseFloat(start)) && !start.match(/rand\(/)) {
+	    if (isNaN(parseFloat(start)) && !start.match(/rand\(/) && !start.match(/stagger\(/)) {
 	      if (key === 'strokeLinecap') {
 	        this.warn("Sorry, stroke-linecap property is not animatable yet, using the start(" + start + ") value instead", value);
 	        return delta;
@@ -5002,11 +4923,10 @@
 	        type: 'array'
 	      };
 	    } else {
-	      isntTweenProp = !this.callbacksMap[key] && !this.tweenOptionMap[key];
-	      if (!this.chainOptionMap[key] && isntTweenProp) {
+	      if (!this.callbacksMap[key] && !this.tweenOptionMap[key]) {
 	        if (this.unitOptionMap[key]) {
-	          end = this.parseUnit(this.parseIfRand(end));
-	          start = this.parseUnit(this.parseIfRand(start));
+	          end = this.parseUnit(this.parseStringOption(end, index));
+	          start = this.parseUnit(this.parseStringOption(start, index));
 	          this.mergeUnits(start, end, key);
 	          delta = {
 	            start: start,
@@ -5015,8 +4935,8 @@
 	            type: 'unit'
 	          };
 	        } else {
-	          end = parseFloat(this.parseIfRand(end));
-	          start = parseFloat(this.parseIfRand(start));
+	          end = parseFloat(this.parseStringOption(end, index));
+	          start = parseFloat(this.parseStringOption(start, index));
 	          delta = {
 	            start: start,
 	            end: end,
@@ -7766,7 +7686,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.207.1', isDebug: true, helpers: _h2.default,
+	  revision: '0.207.2', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7783,37 +7703,24 @@
 	  percentage for radius
 	*/
 
-	// var sw = new mojs.Burst({
-	//   left: '50%',  top: '50%',
-	//   duration:     500,
-	//   easing:       'ease.out',
-	//   stroke:       'cyan',
-	//   fill:         'none',
-	//   radius:       {0: 50},
-	//   angle:        {0: 90},
-	//   isSwirl:      true,
-	//   unitTimeline: {
-	//     onComplete: function() { console.log(this); }
-	//   },
-	//   // swirlFrequency: 20,
-	//   childOptions: {
-	//     radius: 5
-	//   }
-	// }).then({ radius: 0, angle: 0 });
-
-	var sw0 = new mojs.Timeline({
-	  isIt: 1,
-	  onComplete: function onComplete() {
-	    console.log('sw 0: complete!');
+	var sw = new mojs.Burst({
+	  left: '50%', top: '50%',
+	  duration: 650,
+	  delay: 'stagger(400, 75)',
+	  easing: 'ease.out',
+	  // stroke:       'cyan',
+	  // fill:         'none',
+	  radius: 0,
+	  isShowEnd: 1,
+	  // angle:        {0: 90},
+	  isSwirl: true,
+	  isShowStart: 1,
+	  fill: ['#555', '#666', '#999', '#c1c1c1', '#f5f5f5'],
+	  childOptions: {
+	    // radius: [{125: 150}, {100: 125}, {75: 100}, {50: 75}, { 25: 50 }],
+	    radius: { 'stagger(125, -25)': 'stagger(100, 25)' }
 	  }
-	});
-
-	var sw = new mojs.Timeline({});
-
-	sw0.append(new mojs.Tween({ duration: 2000 }));
-	sw0.append(new mojs.Tween({ duration: 2000 }));
-	sw0.append(new mojs.Tween({ duration: 2000 }));
-	sw.add(sw0);
+	}); //.then({ radius: 0, angle: 0 });
 
 	var playEl = document.querySelector('#js-play'),
 	    rangeSliderEl = document.querySelector('#js-range-slider');
@@ -7821,7 +7728,7 @@
 	  console.log('REPLAy');
 	  sw
 	  // .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
-	  .replay();
+	  .play();
 	});
 
 	// rangeSliderEl.addEventListener('input', function () {

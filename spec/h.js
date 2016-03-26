@@ -224,7 +224,7 @@
           return expect(h.rand(.2, .9)).not.toBeGreaterThan(.9);
         });
       });
-      describe('getDelta method ->', function() {
+      describe('parseDelta method ->', function() {
         describe('numeric values ->', function() {
           it('should calculate delta', function() {
             var delta;
@@ -415,7 +415,7 @@
             return expect(delta.type).not.toBeDefined();
           });
         });
-        return describe('rand values ->', function() {
+        describe('rand values ->', function() {
           return it('should calculate unit delta', function() {
             var delta;
             delta = h.parseDelta('x', {
@@ -425,6 +425,32 @@
             expect(delta.start.value).not.toBeGreaterThan(20);
             expect(delta.end.value).toBeGreaterThan(-1);
             return expect(delta.end.value).not.toBeGreaterThan(5);
+          });
+        });
+        return describe('stagger values ->', function() {
+          it('should calculate stagger values for pos props', function() {
+            var delta;
+            delta = h.parseDelta('x', {
+              'stagger(20, 20)': 'stagger(20, -10)'
+            }, 2);
+            expect(delta.start.value).toBe(60);
+            return expect(delta.end.value).toBe(0);
+          });
+          it('should calculate stagger values', function() {
+            var delta;
+            delta = h.parseDelta('radius', {
+              'stagger(20, 20)': 'stagger(20, -10)'
+            }, 2);
+            expect(delta.start).toBe(60);
+            return expect(delta.end).toBe(0);
+          });
+          return it('should use 0 index as a fallback', function() {
+            var delta;
+            delta = h.parseDelta('radius', {
+              'stagger(20, 20)': 'stagger(20, -10)'
+            });
+            expect(delta.start).toBe(20);
+            return expect(delta.end).toBe(20);
           });
         });
       });

@@ -64,6 +64,14 @@ describe 'module class ->', ->
       md = new Module
       expect(Module.prototype._render).toHaveBeenCalled()
 
+    it 'should create _index property', ->
+      index = 5
+      md = new Module index: index
+      expect(md._index).toBe index
+    it 'should fallback to 0 for _index property', ->
+      md = new Module
+      expect(md._index).toBe 0
+
   describe '_declareDefaults method ->', ->
     it 'should create _defaults object', ->
       spyOn(Module.prototype, '_declareDefaults').and.callThrough()
@@ -74,13 +82,6 @@ describe 'module class ->', ->
       expect(md._defaults).toBe md._defaults
 
   describe '_vars method ->', ->
-    it 'should create _index property', ->
-      index = 5
-      md = new Module index: index
-      expect(md._index).toBe index
-    it 'should fallback to 0 for _index property', ->
-      md = new Module
-      expect(md._index).toBe 0
     it 'should set _progress proprty to 0', ->
       md = new Module
       expect(md._progress).toBe 0
@@ -361,6 +362,21 @@ describe 'module class ->', ->
       md._index = 2
       md._tuneNewOptions radius: 'stagger(200)'
       expect(md._props.radius).toBe 400
+
+  describe '_getDelta method ->', ->
+    it 'should warn if delta is top or left', ->
+      md = new Module
+      spyOn h, 'warn'
+      md._getDelta 'left', { '50%': 0 }
+      expect(h.warn).toHaveBeenCalled()
+
+    it 'should call h.parseDelta', ->
+      md = new Module
+      md._index = 3
+      spyOn(h, 'parseDelta').and.callThrough()
+      key = 'left'; delta = { '50%': 0 }
+      md._getDelta key, delta
+      expect(h.parseDelta).toHaveBeenCalledWith key, delta, md._index
 
   it 'clean the _defaults  up', ->
     Module::_declareDefaults = oldFun

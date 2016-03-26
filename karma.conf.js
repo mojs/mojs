@@ -91,8 +91,8 @@ module.exports = function(config) {
       // 'build/mo.js',
       // 'build/mojs.js',
       
-      'build/h.js',
-      'spec/h.js',
+      // 'build/h.js',
+      // 'spec/h.js',
       // 'build/transit.js',
       // 'spec/transit.js',
       // 'build/swirl.js',

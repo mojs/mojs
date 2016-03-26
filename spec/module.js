@@ -76,11 +76,24 @@
         md = new Module;
         return expect(Module.prototype._vars).toHaveBeenCalled();
       });
-      return it('should call _render method', function() {
+      it('should call _render method', function() {
         var md;
         spyOn(Module.prototype, '_render').and.callThrough();
         md = new Module;
         return expect(Module.prototype._render).toHaveBeenCalled();
+      });
+      it('should create _index property', function() {
+        var index, md;
+        index = 5;
+        md = new Module({
+          index: index
+        });
+        return expect(md._index).toBe(index);
+      });
+      return it('should fallback to 0 for _index property', function() {
+        var md;
+        md = new Module;
+        return expect(md._index).toBe(0);
       });
     });
     describe('_declareDefaults method ->', function() {
@@ -94,19 +107,6 @@
       });
     });
     describe('_vars method ->', function() {
-      it('should create _index property', function() {
-        var index, md;
-        index = 5;
-        md = new Module({
-          index: index
-        });
-        return expect(md._index).toBe(index);
-      });
-      it('should fallback to 0 for _index property', function() {
-        var md;
-        md = new Module;
-        return expect(md._index).toBe(0);
-      });
       it('should set _progress proprty to 0', function() {
         var md;
         md = new Module;
@@ -586,6 +586,29 @@
           radius: 'stagger(200)'
         });
         return expect(md._props.radius).toBe(400);
+      });
+    });
+    describe('_getDelta method ->', function() {
+      it('should warn if delta is top or left', function() {
+        var md;
+        md = new Module;
+        spyOn(h, 'warn');
+        md._getDelta('left', {
+          '50%': 0
+        });
+        return expect(h.warn).toHaveBeenCalled();
+      });
+      return it('should call h.parseDelta', function() {
+        var delta, key, md;
+        md = new Module;
+        md._index = 3;
+        spyOn(h, 'parseDelta').and.callThrough();
+        key = 'left';
+        delta = {
+          '50%': 0
+        };
+        md._getDelta(key, delta);
+        return expect(h.parseDelta).toHaveBeenCalledWith(key, delta, md._index);
       });
     });
     return it('clean the _defaults  up', function() {

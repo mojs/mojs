@@ -5,7 +5,8 @@ import h from './h'
 */
 class Module {
   constructor ( o = {} ) {
-    this._o = o;
+    this._o     = o;
+    this._index = this._o.index || 0;
     this._declareDefaults();
     this._extendDefaults();
     this._vars();
@@ -23,7 +24,6 @@ class Module {
     @private
   */
   _vars () {
-    this._index    = this._o.index || 0;
     this._progress = 0;
     this._strokeDasharrayBuffer = [];
   }
@@ -155,7 +155,7 @@ class Module {
     // in skipPropsDelta object
     if ( this._skipPropsDelta && this._skipPropsDelta[key] ) { return; }
     // get delta
-    delta = h.parseDelta(key, optionsValue, this._defaults[key]);
+    delta = h.parseDelta(key, optionsValue, this._index);
     // if successfully parsed - save it
     if (delta.type != null) { this._deltas[key] = delta; }
     // set props to start value of the delta

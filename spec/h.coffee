@@ -167,7 +167,7 @@ describe 'Helpers ->', ->
       it 'should work with float numbers', ->
         expect(h.rand(.2, .9)).toBeGreaterThan      .1
         expect(h.rand(.2, .9)).not.toBeGreaterThan  .9
-    describe 'getDelta method ->', ->
+    describe 'parseDelta method ->', ->
       describe 'numeric values ->', ->
         it 'should calculate delta', ->
           delta = h.parseDelta 'radius', {25: 75}
@@ -309,6 +309,20 @@ describe 'Helpers ->', ->
           expect(delta.start.value).not.toBeGreaterThan 20
           expect(delta.end.value).toBeGreaterThan     -1
           expect(delta.end.value).not.toBeGreaterThan 5
+
+      describe 'stagger values ->', ->
+        it 'should calculate stagger values for pos props', ->
+          delta = h.parseDelta 'x', { 'stagger(20, 20)': 'stagger(20, -10)' }, 2
+          expect(delta.start.value).toBe 60
+          expect(delta.end.value).toBe 0
+        it 'should calculate stagger values', ->
+          delta = h.parseDelta 'radius', { 'stagger(20, 20)': 'stagger(20, -10)' }, 2
+          expect(delta.start).toBe 60
+          expect(delta.end).toBe 0
+        it 'should use 0 index as a fallback', ->
+          delta = h.parseDelta 'radius', { 'stagger(20, 20)': 'stagger(20, -10)' }
+          expect(delta.start).toBe 20
+          expect(delta.end).toBe 20
 
     describe 'computedStyle method', ->
       it 'should return computed styles',->
