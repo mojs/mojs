@@ -141,7 +141,13 @@ class Timeline extends Tween {
   _recalcTotalDuration () {
     var i = this._timelines.length;
     this._props.duration = 0;
-    while(i--) { this._recalcDuration(this._timelines[i]); }
+    while(i--) {
+      var tm = this._timelines[i];
+      // recalc total duration on child timelines
+      tm._recalcTotalDuration && tm._recalcTotalDuration();
+      // add the timeline's duration to selft duration
+      this._recalcDuration(tm);
+    }
     this._calcDimentions();
   }
   /*

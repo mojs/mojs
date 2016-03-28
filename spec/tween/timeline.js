@@ -701,7 +701,7 @@
         t._recalcTotalDuration();
         return expect(t._props.duration).toBe(1000);
       });
-      return it('should call _calcDimentions method', function() {
+      it('should call _calcDimentions method', function() {
         var delay, maxDur, t, timeline, timeline2;
         delay = 200;
         maxDur = 1000;
@@ -721,6 +721,15 @@
         expect(t._calcDimentions).toHaveBeenCalled;
         expect(t._props.duration).toBe(maxDur);
         return expect(t._props.repeatTime).toBe(maxDur + delay);
+      });
+      return it('should call _recalcTotalDuration on the child timelines', function() {
+        var t, t0;
+        t = new Timeline;
+        t0 = new Timeline().add(new Tween);
+        t.add(t0);
+        spyOn(t0, '_recalcTotalDuration');
+        t._recalcTotalDuration();
+        return expect(t0._recalcTotalDuration).toHaveBeenCalled();
       });
     });
     describe('setProgress method ->', function() {

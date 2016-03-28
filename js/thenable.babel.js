@@ -27,7 +27,6 @@ class Thenable extends Tweenable {
     var module  = new this.constructor( merged );
     // save the modules to the _modules array
     this._modules.push( module );
-    // console.log( module, module.timeline );
     // add module's tween into master timeline
     this.timeline.append( module );
     return this;

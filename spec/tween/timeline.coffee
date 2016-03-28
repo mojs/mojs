@@ -465,6 +465,15 @@ describe 'Timeline ->', ->
       expect(t._calcDimentions).toHaveBeenCalled
       expect(t._props.duration).toBe maxDur
       expect(t._props.repeatTime).toBe maxDur + delay
+
+    it 'should call _recalcTotalDuration on the child timelines', ->
+      t = new Timeline
+      t0 = new Timeline().add new Tween
+
+      t.add t0
+      spyOn t0, '_recalcTotalDuration'
+      t._recalcTotalDuration()
+      expect(t0._recalcTotalDuration).toHaveBeenCalled()
   
   describe 'setProgress method ->', ->
     it 'should call _setStartTime if there is no this._props.startTime', ->

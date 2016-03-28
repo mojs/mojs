@@ -70,7 +70,6 @@ class Burst extends Swirl {
   _createBit () {
     this._swirls = [];
     for (var index = 0; index < this._props.count; index++) {
-      // console.log(this._getOption( index ).radius)
       this._swirls.push( new Swirl( this._getOption( index ) ) );
     }
   }
@@ -324,6 +323,35 @@ class Burst extends Swirl {
     obj.isTimelineLess  = false;
     return obj;
   }
+
+  // then (obj = {}) {
+  //   var option  = {};
+  //   obj.childOptions = obj.childOptions || {};
+  //   for (var i = 0; i < this._swirls.length; i++ ) {
+      
+  //     for (var key in this._childDefaults) {
+  //       // this is priorty for the property lookup
+  //       // firstly try to find the prop in this._o.childOptions
+  //       var prop = this._getPropByMod( key, i, obj.childOptions );
+  //       // if non-intersected option - need to check in _o
+  //       prop = ( prop == null && !this._optionsIntersection[key] )
+  //         ? this._getPropByMod( key, i, obj ) : prop;
+  //       // lastly fallback to defaults
+  //       prop = ( prop == null )
+  //         ? this._getPropByMod( key, i, this._childDefaults ) : prop;
+  //       // parse `stagger` and `rand` values if needed
+  //       option[key] = h.parseStringOption(prop, i);
+  //       // console.log(key, prop)
+  //     }
+
+  //     // this._addOptionalProperties( option, i );
+  //     console.log(option);
+  //     this._swirls[i].then( option );
+  //   }
+  //   this.timeline._recalcTotalDuration()
+  //   console.log(this.timeline._props.repeatTime)
+  //   return this;
+  // }
 
 }
 
