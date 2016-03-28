@@ -250,55 +250,6 @@
         expect(option7.radius[5]).toBe(0);
         return expect(option8.radius).toBe('500');
       });
-      it('should fallback to parent prop if defined  ->', function() {
-        var burst, option0, option1, option7, option8;
-        burst = new Burst({
-          fill: 2000,
-          childOptions: {
-            fill: [200, null, '500']
-          }
-        });
-        option0 = burst._getOption(0);
-        option1 = burst._getOption(1);
-        option7 = burst._getOption(7);
-        option8 = burst._getOption(8);
-        expect(option0.fill).toBe(200);
-        expect(option1.fill).toBe(2000);
-        expect(option7.fill).toBe(2000);
-        return expect(option8.fill).toBe('500');
-      });
-      it('should fallback to parent default ->', function() {
-        var burst, option0, option1, option7, option8;
-        burst = new Burst({
-          childOptions: {
-            fill: [200, null, '500']
-          }
-        });
-        option0 = burst._getOption(0);
-        option1 = burst._getOption(1);
-        option7 = burst._getOption(7);
-        option8 = burst._getOption(8);
-        expect(option0.fill).toBe(200);
-        expect(option1.fill).toBe('deeppink');
-        expect(option7.fill).toBe('deeppink');
-        return expect(option8.fill).toBe('500');
-      });
-      it('should have all the props filled ->', function() {
-        var burst, option0, option1, option7, option8;
-        burst = new Burst({
-          childOptions: {
-            duration: [200, null, '500']
-          }
-        });
-        option0 = burst._getOption(0);
-        option1 = burst._getOption(1);
-        option7 = burst._getOption(7);
-        option8 = burst._getOption(8);
-        expect(option0.radius[5]).toBe(0);
-        expect(option1.radius[5]).toBe(0);
-        expect(option7.radius[5]).toBe(0);
-        return expect(option8.radius[5]).toBe(0);
-      });
       it('should have parent only options ->', function() {
         var burst, option0;
         burst = new Burst({
@@ -789,7 +740,7 @@
         return expect(b.timeline._recalcTotalDuration.calls.count()).toBe(1);
       });
     });
-    return describe('_resetMergedFlags method', function() {
+    describe('_resetMergedFlags method', function() {
       it('should call the super method', function() {
         var b, obj;
         b = new Burst({
@@ -824,6 +775,96 @@
         obj = {};
         expect(b._resetMergedFlags(obj).wasTimelineLess).toBe(true);
         return expect(b._resetMergedFlags(obj).isTimelineLess).toBe(false);
+      });
+    });
+    return describe('_mergeThenOptions method ->', function() {
+      it('should call super', function() {
+        var b, endObj, startObj;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(Thenable.prototype, '_mergeThenOptions').and.callThrough();
+        startObj = {
+          fill: 'cyan',
+          childOptions: {
+            fill: 'yellow'
+          }
+        };
+        endObj = {
+          fill: 'purple',
+          childOptions: {
+            fill: 'black'
+          }
+        };
+        b._mergeThenOptions(startObj, endObj);
+        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startObj, endObj);
+      });
+      it('should call super with childOptions', function() {
+        var b, endChildObj, endObj, startChildObj, startObj;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(Thenable.prototype, '_mergeThenOptions').and.callThrough();
+        startChildObj = {
+          fill: 'yellow'
+        };
+        endChildObj = {
+          fill: 'black'
+        };
+        startObj = {
+          fill: 'cyan',
+          childOptions: startChildObj
+        };
+        endObj = {
+          fill: 'purple',
+          childOptions: endChildObj
+        };
+        b._mergeThenOptions(startObj, endObj);
+        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startChildObj, endChildObj);
+      });
+      it('should fallback to {} for childOptions', function() {
+        var b, endChildObj, endObj, startChildObj, startObj;
+        b = new Burst({
+          count: 2
+        });
+        spyOn(Thenable.prototype, '_mergeThenOptions').and.callThrough();
+        startChildObj = null;
+        endChildObj = null;
+        startObj = {
+          fill: 'cyan',
+          childOptions: startChildObj
+        };
+        endObj = {
+          fill: 'purple',
+          childOptions: endChildObj
+        };
+        b._mergeThenOptions(startObj, endObj);
+        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith({}, {});
+      });
+      return it('should set merged children to parent', function() {
+        var b, childResult, endChildObj, endObj, parentResult, result, startChildObj, startObj;
+        b = new Burst({
+          count: 2
+        });
+        startChildObj = {
+          fill: 'yellow'
+        };
+        endChildObj = {
+          fill: 'black'
+        };
+        startObj = {
+          fill: 'cyan',
+          childOptions: startChildObj
+        };
+        endObj = {
+          fill: 'purple',
+          childOptions: endChildObj
+        };
+        childResult = Thenable.prototype._mergeThenOptions.call(b, startChildObj, endChildObj);
+        parentResult = Thenable.prototype._mergeThenOptions.call(b, startObj, endObj);
+        result = b._mergeThenOptions(startObj, endObj);
+        parentResult.childOptions = childResult;
+        return expect(result).toEqual(parentResult);
       });
     });
   });

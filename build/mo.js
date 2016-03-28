@@ -1362,8 +1362,9 @@
 	        // this is priorty for the property lookup
 	        // firstly try to find the prop in this._o.childOptions
 	        var prop = this._getPropByMod(key, i, this._o.childOptions);
-	        // if non-intersected option - need to check in _o
-	        prop = prop == null && !this._optionsIntersection[key] ? this._getPropByMod(key, i, this._o) : prop;
+	        // // if non-intersected option - need to check in _o
+	        // prop = ( prop == null && !this._optionsIntersection[key] )
+	        //   ? this._getPropByMod( key, i, this._o ) : prop;
 	        // lastly fallback to defaults
 	        prop = prop == null ? this._getPropByMod(key, i, this._childDefaults) : prop;
 	        // parse `stagger` and `rand` values if needed
@@ -1658,35 +1659,27 @@
 	      return obj;
 	    }
 
-	    // then (obj = {}) {
-	    //   var option  = {};
-	    //   obj.childOptions = obj.childOptions || {};
-	    //   for (var i = 0; i < this._swirls.length; i++ ) {
+	    /*
+	      Method to merge two options into one. Used in .then chains.
+	      @private
+	      @param {Object} Start options for the merge.
+	      @param {Object} End options for the merge.
+	      @returns {Object} Merged options.
+	    */
 
-	    //     for (var key in this._childDefaults) {
-	    //       // this is priorty for the property lookup
-	    //       // firstly try to find the prop in this._o.childOptions
-	    //       var prop = this._getPropByMod( key, i, obj.childOptions );
-	    //       // if non-intersected option - need to check in _o
-	    //       prop = ( prop == null && !this._optionsIntersection[key] )
-	    //         ? this._getPropByMod( key, i, obj ) : prop;
-	    //       // lastly fallback to defaults
-	    //       prop = ( prop == null )
-	    //         ? this._getPropByMod( key, i, this._childDefaults ) : prop;
-	    //       // parse `stagger` and `rand` values if needed
-	    //       option[key] = h.parseStringOption(prop, i);
-	    //       // console.log(key, prop)
-	    //     }
+	  }, {
+	    key: '_mergeThenOptions',
+	    value: function _mergeThenOptions(start, end) {
+	      var startChild = start.childOptions || {},
+	          endChild = end.childOptions || {};
 
-	    //     // this._addOptionalProperties( option, i );
-	    //     console.log(option);
-	    //     this._swirls[i].then( option );
-	    //   }
-	    //   this.timeline._recalcTotalDuration()
-	    //   console.log(this.timeline._props.repeatTime)
-	    //   return this;
-	    // }
+	      var mergedChild = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, startChild, endChild),
+	          merged = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, start, end);
 
+	      merged.childOptions = mergedChild;
+
+	      return merged;
+	    }
 	  }]);
 	  return Burst;
 	}(_swirl2.default);
@@ -3755,7 +3748,7 @@
 	    }
 	    /*
 	      Originally part of the _mergeThenOptions.
-	      Loops thru start object and copies all the props from it.
+	      Loops thru start object and merges all the props from it.
 	      @param {Object} An object to copy in.
 	      @parma {Object} Start options object.
 	      @parma {Object} End options object.
@@ -3766,42 +3759,100 @@
 	    value: function _mergeEndLoop(o, start, end) {
 	      var endKeys = (0, _keys2.default)(end);
 
-	      for (var endP in end) {
+	      for (var key in end) {
 	        // get key/value of the end object
 	        // endKey - name of the property, endValue - value of the property
-	        var endValue = end[endP],
-	            startValue = start[endP] != null ? start[endP] : this._defaults[endP];
+	        var endValue = end[key],
+	            startValue = start[key] != null ? start[key] : this._defaults[key];
 	        if (endValue == null) {
 	          continue;
 	        };
 	        // make ∆ of start -> end
 	        // if key name is radiusX/radiusY and
 	        // the startValue is not set fallback to radius value
-	        var isSubRadius = endP === 'radiusX' || endP === 'radiusY';
+	        var isSubRadius = key === 'radiusX' || key === 'radiusY';
 	        if (isSubRadius && startValue == null) {
 	          startValue = start.radius;
 	        }
-	        // if isnt tween property
-	        if (!_h2.default.isTweenProp(endP) && !this._nonMergeProps[endP]) {
-	          // if end value is delta - just save it
-	          if (this._isDelta(endValue)) {
-	            o[endP] = endValue;
-	          } else {
-	            // if end value is not delta - merge with start value
-	            if (this._isDelta(startValue)) {
-	              // if start value is delta - take the end value
-	              // as start value of the new delta
-	              o[endP] = (0, _defineProperty3.default)({}, _h2.default.getDeltaEnd(startValue), endValue);
-	              // if start value is not delta - make delta
-	            } else {
-	                o[endP] = (0, _defineProperty3.default)({}, startValue, endValue);
-	              }
-	          }
-	          // copy the tween values unattended
+	        // if one of the properties is array - merge
+	        // with array, - else merge two plain properties
+	        if (_h2.default.isArray(startValue) || _h2.default.isArray(endValue)) {
+	          o[key] = this._mergeThenArrays(key, startValue, endValue);
 	        } else {
-	            o[endP] = endValue;
-	          }
+	          o[key] = this._mergeThenProperty(key, startValue, endValue);
+	        }
 	      }
+	    }
+	    /*
+	      Method to merge two arrays for then chain.
+	      @private
+	      @param {String} Property name.
+	      @param {Array} Start array.
+	      @param {Array} End array.
+	      @returns the merged array.
+	    */
+
+	  }, {
+	    key: '_mergeThenArrays',
+	    value: function _mergeThenArrays(key, arr1, arr2) {
+	      var arr = [],
+
+	      // get maximum length for 2 arrays
+	      max = Math.max(this._getArrayLength(arr1), this._getArrayLength(arr2));
+	      // loop thru the max length of the 2 arrays
+	      for (var i = 0; i < max; i++) {
+	        // if property is array - get the current property
+	        // in it ( by mod ) else take the property itself
+	        var startVal = _h2.default.isArray(arr1) ? arr1[i % arr1.length] : arr1,
+	            endVal = _h2.default.isArray(arr2) ? arr2[i % arr2.length] : arr2;
+	        arr.push(this._mergeThenProperty(key, startVal, endVal));
+	      }
+	      return arr;
+	    }
+	    /*
+	      Method to merge `start` and `end` for a property in then record.
+	      @private
+	      @param {String} Property name.
+	      @param {Any}    Start value of the property.
+	      @param {Any}    End value of the property.
+	    */
+
+	  }, {
+	    key: '_mergeThenProperty',
+	    value: function _mergeThenProperty(key, startValue, endValue) {
+	      // if isnt tween property
+	      if (!_h2.default.isTweenProp(key) && !this._nonMergeProps[key]) {
+	        // if end value is delta - just save it
+	        if (this._isDelta(endValue)) {
+	          return endValue;
+	        } else {
+	          // if end value is not delta - merge with start value
+	          if (this._isDelta(startValue)) {
+	            // if start value is delta - take the end value
+	            // as start value of the new delta
+	            return (0, _defineProperty3.default)({}, _h2.default.getDeltaEnd(startValue), endValue);
+	            // if start value is not delta - make delta
+	          } else {
+	              return (0, _defineProperty3.default)({}, startValue, endValue);
+	            }
+	        }
+	        // copy the tween values unattended
+	      } else {
+	          return endValue;
+	        }
+	    }
+	    /*
+	      Method to retreive array's length and return -1 for
+	      all other types.
+	      @private
+	      @param {Array, Any} Array to get the width for.
+	      @returns {Number} Array length or -1 if not array.
+	    */
+
+	  }, {
+	    key: '_getArrayLength',
+	    value: function _getArrayLength(arr) {
+	      return _h2.default.isArray(arr) ? arr.length : -1;
 	    }
 	    /*
 	      Method to check if the property is delta property.
@@ -7714,7 +7765,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.207.3', isDebug: true, helpers: _h2.default,
+	  revision: '0.208.0', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7731,33 +7782,41 @@
 	  percentage for radius
 	*/
 
-	var sw = new mojs.Burst({
-	  left: '50%', top: '50%',
-	  duration: 500,
-	  // delay: 'stagger(400, 75)',
-	  easing: 'ease.out',
-	  // stroke:       'cyan',
-	  // fill:         'none',
-	  // radius:       0,
-	  isShowEnd: 1,
-	  count: 2,
-	  // angle:        {0: 90},
-	  isSwirl: true,
-	  isShowStart: 1,
-	  fill: 'red'
+	// var sw = new mojs.Burst({
+	//   isShowStart:  1,
+	//   isShowEnd:    1,
+	//   left:         '50%',  top: '50%',
+	//   childOptions: {
+	//     duration:     500,
+	//     easing:       'ease.out',
+	//     isSwirl:      1,
+	//     fill:         ['cyan', 'yellow'],
+	//     radius:       { 5 : .5 },
+	//     // stroke: 'cyan',
+	//     strokeWidth: 2
+	//   }
+	// })
+	//   .then({ radius: 10, childOptions: {
+	//     easing: 'cubic.in',
+	//     duration: 400, radius: 15 , isSwirl: false
+	//   }}).then({
+	//     radius: 100, angle: 0,
+	//     childOptions: {
+	//       easing: 'cubic.out',
+	//       duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
+	//   });
 
-	}).then({ fill: ['cyan', 'orange'], childOptions: { radius: 10 } });
+	// // console.log(sw._swirls[0]._history);
 
-	// console.log(sw._swirls[0]._history);
-
-	var playEl = document.querySelector('#js-play'),
-	    rangeSliderEl = document.querySelector('#js-range-slider');
-	document.body.addEventListener('click', function (e) {
-	  // console.log('REPLAy')
-	  sw
-	  // .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
-	  .play();
-	});
+	// var playEl = document.querySelector('#js-play'),
+	//     rangeSliderEl = document.querySelector('#js-range-slider');
+	// document.body.addEventListener('click', function (e) {
+	//   // console.log('REPLAy')
+	//   sw
+	//     // .generate()
+	//     .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
+	//     .replay();
+	// });
 
 	// rangeSliderEl.addEventListener('input', function () {
 	//   tr.setProgress( rangeSliderEl.value/1000 );

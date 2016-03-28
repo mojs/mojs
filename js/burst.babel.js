@@ -85,9 +85,9 @@ class Burst extends Swirl {
       // this is priorty for the property lookup
       // firstly try to find the prop in this._o.childOptions
       var prop = this._getPropByMod( key, i, this._o.childOptions );
-      // if non-intersected option - need to check in _o
-      prop = ( prop == null && !this._optionsIntersection[key] )
-        ? this._getPropByMod( key, i, this._o ) : prop;
+      // // if non-intersected option - need to check in _o
+      // prop = ( prop == null && !this._optionsIntersection[key] )
+      //   ? this._getPropByMod( key, i, this._o ) : prop;
       // lastly fallback to defaults
       prop = ( prop == null )
         ? this._getPropByMod( key, i, this._childDefaults ) : prop;
@@ -324,34 +324,25 @@ class Burst extends Swirl {
     return obj;
   }
 
-  // then (obj = {}) {
-  //   var option  = {};
-  //   obj.childOptions = obj.childOptions || {};
-  //   for (var i = 0; i < this._swirls.length; i++ ) {
-      
-  //     for (var key in this._childDefaults) {
-  //       // this is priorty for the property lookup
-  //       // firstly try to find the prop in this._o.childOptions
-  //       var prop = this._getPropByMod( key, i, obj.childOptions );
-  //       // if non-intersected option - need to check in _o
-  //       prop = ( prop == null && !this._optionsIntersection[key] )
-  //         ? this._getPropByMod( key, i, obj ) : prop;
-  //       // lastly fallback to defaults
-  //       prop = ( prop == null )
-  //         ? this._getPropByMod( key, i, this._childDefaults ) : prop;
-  //       // parse `stagger` and `rand` values if needed
-  //       option[key] = h.parseStringOption(prop, i);
-  //       // console.log(key, prop)
-  //     }
+  /*
+    Method to merge two options into one. Used in .then chains.
+    @private
+    @param {Object} Start options for the merge.
+    @param {Object} End options for the merge.
+    @returns {Object} Merged options.
+  */
+  _mergeThenOptions ( start, end ) {
+    var startChild = start.childOptions || {},
+        endChild   = end.childOptions   || {};
 
-  //     // this._addOptionalProperties( option, i );
-  //     console.log(option);
-  //     this._swirls[i].then( option );
-  //   }
-  //   this.timeline._recalcTotalDuration()
-  //   console.log(this.timeline._props.repeatTime)
-  //   return this;
-  // }
+    var mergedChild = super._mergeThenOptions( startChild, endChild ),
+        merged      = super._mergeThenOptions( start, end );
+
+    merged.childOptions = mergedChild;
+
+    return merged;
+  }
+
 
 }
 

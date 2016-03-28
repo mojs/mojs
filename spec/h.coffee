@@ -945,5 +945,3 @@ describe 'Helpers ->', ->
 
 
 
-
-

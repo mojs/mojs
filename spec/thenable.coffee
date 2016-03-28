@@ -172,6 +172,49 @@ describe 'thenable ->', ->
       byte._vars()
       mergedOpton = byte._mergeThenOptions start, end
       expect(byte._history[1]).toBe mergedOpton
+
+    it 'should merge if first is array', ->
+      byte = new Byte
+      start = radius: [10, 30]
+      end   = radius: 20
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radius[0]).toEqual { 10: 20 }
+      expect(mergedOpton.radius[1]).toEqual { 30: 20 }
+
+    it 'should merge if last is array', ->
+      byte = new Byte
+      start = radius: 10
+      end   = radius: [20, 40]
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radius[0]).toEqual { 10: 20 }
+      expect(mergedOpton.radius[1]).toEqual { 10: 40 }
+
+    it 'should merge if both are arrays and first is larger', ->
+      byte = new Byte
+      start = radius: [10, 50, 100]
+      end   = radius: [20, 40]
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radius[0]).toEqual { 10:  20 }
+      expect(mergedOpton.radius[1]).toEqual { 50:  40 }
+      expect(mergedOpton.radius[2]).toEqual { 100: 20 }
+
+    it 'should merge if both are arrays and last is larger', ->
+      byte = new Byte
+      start = radius: [ 10, 50 ]
+      end   = radius: [ 20, 40, 70 ]
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end
+      expect(mergedOpton.radius[0]).toEqual { 10:  20 }
+      expect(mergedOpton.radius[1]).toEqual { 50:  40 }
+      expect(mergedOpton.radius[2]).toEqual { 10:  70 }
+
   describe '_isDelta method ->', ->
     it 'should detect if value is not a delta value', ->
       byte = new Byte radius: 45, stroke: 'deeppink': 'pink'
@@ -320,5 +363,15 @@ describe 'thenable ->', ->
       expect(obj.isTimelineLess)  .toBe true
       expect(obj.isShowStart)     .toBe false
       expect(obj.callbacksContext).toBe th
+
+  describe '_getArrayLength method ->', ->
+    it 'should get length if array', ->
+      th = new Thenable
+      expect(th._getArrayLength( [ 1, 2, 3, 4 ] )).toBe 4
+    it 'should return -1 if not array', ->
+      th = new Thenable
+      expect(th._getArrayLength( {} )).toBe -1
+      expect(th._getArrayLength( 'some string' )).toBe -1
+      expect(th._getArrayLength( true )).toBe -1
 
 

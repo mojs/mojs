@@ -141,6 +141,7 @@ describe 'Burst ->', ->
       expect(opt0).toBe 40
       expect(opt1).toBe 40
       expect(opt8).toBe 40
+
   describe '_getOption method ->', ->
     it 'should return an option obj based on i ->', ->
       burst = new Burst
@@ -163,40 +164,43 @@ describe 'Burst ->', ->
       expect(option1.radius[5]).toBe 0
       expect(option7.radius[5]).toBe 0
       expect(option8.radius)   .toBe '500'
-    it 'should fallback to parent prop if defined  ->', ->
-      burst = new Burst
-        fill: 2000
-        childOptions: fill: [ 200, null, '500' ]
-      option0 = burst._getOption 0
-      option1 = burst._getOption 1
-      option7 = burst._getOption 7
-      option8 = burst._getOption 8
-      expect(option0.fill).toBe 200
-      expect(option1.fill).toBe 2000
-      expect(option7.fill).toBe 2000
-      expect(option8.fill).toBe '500'
-    it 'should fallback to parent default ->', ->
-      burst = new Burst
-        childOptions: fill: [ 200, null, '500' ]
-      option0 = burst._getOption 0
-      option1 = burst._getOption 1
-      option7 = burst._getOption 7
-      option8 = burst._getOption 8
-      expect(option0.fill).toBe 200
-      expect(option1.fill).toBe 'deeppink'
-      expect(option7.fill).toBe 'deeppink'
-      expect(option8.fill).toBe '500'
-    it 'should have all the props filled ->', ->
-      burst = new Burst
-        childOptions: duration: [ 200, null, '500' ]
-      option0 = burst._getOption 0
-      option1 = burst._getOption 1
-      option7 = burst._getOption 7
-      option8 = burst._getOption 8
-      expect(option0.radius[5]).toBe 0
-      expect(option1.radius[5]).toBe 0
-      expect(option7.radius[5]).toBe 0
-      expect(option8.radius[5]).toBe 0
+    # old
+    # it 'should fallback to parent prop if defined  ->', ->
+    #   burst = new Burst
+    #     fill: 2000
+    #     childOptions: fill: [ 200, null, '500' ]
+    #   option0 = burst._getOption 0
+    #   option1 = burst._getOption 1
+    #   option7 = burst._getOption 7
+    #   option8 = burst._getOption 8
+    #   expect(option0.fill).toBe 200
+    #   expect(option1.fill).toBe 2000
+    #   expect(option7.fill).toBe 2000
+    #   expect(option8.fill).toBe '500'
+    # old
+    # it 'should fallback to parent default ->', ->
+    #   burst = new Burst
+    #     childOptions: fill: [ 200, null, '500' ]
+    #   option0 = burst._getOption 0
+    #   option1 = burst._getOption 1
+    #   option7 = burst._getOption 7
+    #   option8 = burst._getOption 8
+    #   expect(option0.fill).toBe 200
+    #   expect(option1.fill).toBe 'deeppink'
+    #   expect(option7.fill).toBe 'deeppink'
+    #   expect(option8.fill).toBe '500'
+    # old
+    # it 'should have all the props filled ->', ->
+    #   burst = new Burst
+    #     childOptions: duration: [ 200, null, '500' ]
+    #   option0 = burst._getOption 0
+    #   option1 = burst._getOption 1
+    #   option7 = burst._getOption 7
+    #   option8 = burst._getOption 8
+    #   expect(option0.radius[5]).toBe 0
+    #   expect(option1.radius[5]).toBe 0
+    #   expect(option7.radius[5]).toBe 0
+    #   expect(option8.radius[5]).toBe 0
     it 'should have parent only options ->', ->
       burst = new Burst
         radius: { 'rand(10,20)': 100 }
@@ -555,4 +559,63 @@ describe 'Burst ->', ->
       obj = {}
       expect(b._resetMergedFlags(obj).wasTimelineLess).toBe true
       expect(b._resetMergedFlags(obj).isTimelineLess).toBe false
+
+  describe '_mergeThenOptions method ->', ->
+    it 'should call super', ->
+      b = new Burst count: 2
+
+      spyOn(Thenable.prototype, '_mergeThenOptions')
+        .and.callThrough()
+      startObj = { fill: 'cyan', childOptions: { fill: 'yellow' } }
+      endObj   = { fill: 'purple', childOptions: { fill: 'black' } }
+      b._mergeThenOptions( startObj, endObj )
+      expect(Thenable.prototype._mergeThenOptions)
+        .toHaveBeenCalledWith startObj, endObj
+
+    it 'should call super with childOptions', ->
+      b = new Burst count: 2
+
+      spyOn(Thenable.prototype, '_mergeThenOptions')
+        .and.callThrough()
+      startChildObj = { fill: 'yellow' }
+      endChildObj   = { fill: 'black' }
+      startObj = { fill: 'cyan', childOptions: startChildObj }
+      endObj   = { fill: 'purple', childOptions: endChildObj }
+      b._mergeThenOptions( startObj, endObj )
+      expect(Thenable.prototype._mergeThenOptions)
+        .toHaveBeenCalledWith startChildObj, endChildObj
+
+    it 'should fallback to {} for childOptions', ->
+      b = new Burst count: 2
+
+      spyOn(Thenable.prototype, '_mergeThenOptions')
+        .and.callThrough()
+      startChildObj = null
+      endChildObj   = null
+      startObj = { fill: 'cyan', childOptions: startChildObj }
+      endObj   = { fill: 'purple', childOptions: endChildObj }
+      b._mergeThenOptions( startObj, endObj )
+      expect(Thenable.prototype._mergeThenOptions)
+        .toHaveBeenCalledWith {}, {}
+
+    it 'should set merged children to parent', ->
+      b = new Burst count: 2
+
+      startChildObj = { fill: 'yellow' }
+      endChildObj   = { fill: 'black' }
+      startObj = { fill: 'cyan', childOptions: startChildObj }
+      endObj   = { fill: 'purple', childOptions: endChildObj }
+      
+      childResult  = Thenable.prototype
+        ._mergeThenOptions.call(b, startChildObj, endChildObj )
+      parentResult = Thenable.prototype
+        ._mergeThenOptions.call(b, startObj, endObj )
+
+      result = b._mergeThenOptions( startObj, endObj )
+
+      parentResult.childOptions = childResult
+
+      expect(result).toEqual parentResult
+
+
 

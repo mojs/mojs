@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.207.3', isDebug: true, helpers: h,
+  revision:   '0.208.0', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -34,33 +34,41 @@ window.mojs = {
   percentage for radius
 */
 
-var sw = new mojs.Burst({
-  left: '50%',  top: '50%',
-  duration:     500,
-  // delay: 'stagger(400, 75)',
-  easing:       'ease.out',
-  // stroke:       'cyan',
-  // fill:         'none',
-  // radius:       0,
-  isShowEnd:    1,
-  count:        2,
-  // angle:        {0: 90},
-  isSwirl:      true,
-  isShowStart:  1,
-  fill: 'red'
+// var sw = new mojs.Burst({
+//   isShowStart:  1,
+//   isShowEnd:    1,
+//   left:         '50%',  top: '50%',
+//   childOptions: {
+//     duration:     500,
+//     easing:       'ease.out',
+//     isSwirl:      1,
+//     fill:         ['cyan', 'yellow'],
+//     radius:       { 5 : .5 },
+//     // stroke: 'cyan',
+//     strokeWidth: 2
+//   }
+// })
+//   .then({ radius: 10, childOptions: {
+//     easing: 'cubic.in',
+//     duration: 400, radius: 15 , isSwirl: false
+//   }}).then({
+//     radius: 100, angle: 0,
+//     childOptions: {
+//       easing: 'cubic.out',
+//       duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
+//   });
 
-}).then({ fill: ['cyan', 'orange'], childOptions: { radius: 10 } });
+// // console.log(sw._swirls[0]._history);
 
-// console.log(sw._swirls[0]._history);
-
-var playEl = document.querySelector('#js-play'),
-    rangeSliderEl = document.querySelector('#js-range-slider');
-document.body.addEventListener('click', function (e) {
-  // console.log('REPLAy')
-  sw
-    // .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
-    .play();
-});
+// var playEl = document.querySelector('#js-play'),
+//     rangeSliderEl = document.querySelector('#js-range-slider');
+// document.body.addEventListener('click', function (e) {
+//   // console.log('REPLAy')
+//   sw
+//     // .generate()
+//     .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
+//     .replay();
+// });
 
 // rangeSliderEl.addEventListener('input', function () {
 //   tr.setProgress( rangeSliderEl.value/1000 );

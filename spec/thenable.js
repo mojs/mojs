@@ -289,7 +289,7 @@
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(mergedOpton.radiusX[200]).toBe(500);
       });
-      return it('should push merged options to the history', function() {
+      it('should push merged options to the history', function() {
         var byte, end, mergedOpton, start;
         byte = new Byte;
         start = {
@@ -309,6 +309,88 @@
         byte._vars();
         mergedOpton = byte._mergeThenOptions(start, end);
         return expect(byte._history[1]).toBe(mergedOpton);
+      });
+      it('should merge if first is array', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: [10, 30]
+        };
+        end = {
+          radius: 20
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.radius[0]).toEqual({
+          10: 20
+        });
+        return expect(mergedOpton.radius[1]).toEqual({
+          30: 20
+        });
+      });
+      it('should merge if last is array', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: 10
+        };
+        end = {
+          radius: [20, 40]
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.radius[0]).toEqual({
+          10: 20
+        });
+        return expect(mergedOpton.radius[1]).toEqual({
+          10: 40
+        });
+      });
+      it('should merge if both are arrays and first is larger', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: [10, 50, 100]
+        };
+        end = {
+          radius: [20, 40]
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.radius[0]).toEqual({
+          10: 20
+        });
+        expect(mergedOpton.radius[1]).toEqual({
+          50: 40
+        });
+        return expect(mergedOpton.radius[2]).toEqual({
+          100: 20
+        });
+      });
+      return it('should merge if both are arrays and last is larger', function() {
+        var byte, end, mergedOpton, start;
+        byte = new Byte;
+        start = {
+          radius: [10, 50]
+        };
+        end = {
+          radius: [20, 40, 70]
+        };
+        byte._defaults = {};
+        byte._vars();
+        mergedOpton = byte._mergeThenOptions(start, end);
+        expect(mergedOpton.radius[0]).toEqual({
+          10: 20
+        });
+        expect(mergedOpton.radius[1]).toEqual({
+          50: 40
+        });
+        return expect(mergedOpton.radius[2]).toEqual({
+          10: 70
+        });
       });
     });
     describe('_isDelta method ->', function() {
@@ -548,7 +630,7 @@
         });
       });
     });
-    return describe('_resetMergedFlags method', function() {
+    describe('_resetMergedFlags method', function() {
       it('should return the same object', function() {
         var obj, th;
         obj = {};
@@ -563,6 +645,20 @@
         expect(obj.isTimelineLess).toBe(true);
         expect(obj.isShowStart).toBe(false);
         return expect(obj.callbacksContext).toBe(th);
+      });
+    });
+    return describe('_getArrayLength method ->', function() {
+      it('should get length if array', function() {
+        var th;
+        th = new Thenable;
+        return expect(th._getArrayLength([1, 2, 3, 4])).toBe(4);
+      });
+      return it('should return -1 if not array', function() {
+        var th;
+        th = new Thenable;
+        expect(th._getArrayLength({})).toBe(-1);
+        expect(th._getArrayLength('some string')).toBe(-1);
+        return expect(th._getArrayLength(true)).toBe(-1);
       });
     });
   });
