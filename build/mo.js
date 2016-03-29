@@ -1291,10 +1291,10 @@
 	      // add options intersection hash - map that holds the property
 	      // names that could be on both parent module and child ones,
 	      // so setting one of those on parent, affect parent only
-	      this._optionsIntersection = {
-	        radius: 1, radiusX: 1, radiusY: 1,
-	        angle: 1, scale: 1, opacity: 1
-	      };
+	      // this._optionsIntersection = {
+	      //   radius: 1, radiusX: 1, radiusY: 1,
+	      //   angle:  1, scale:   1, opacity: 1,
+	      // }
 	      // exclude unitTimeline object from deltas parsing
 	      this._skipPropsDelta.unitTimeline = 1;
 	    }
@@ -1362,9 +1362,6 @@
 	        // this is priorty for the property lookup
 	        // firstly try to find the prop in this._o.childOptions
 	        var prop = this._getPropByMod(key, i, this._o.childOptions);
-	        // // if non-intersected option - need to check in _o
-	        // prop = ( prop == null && !this._optionsIntersection[key] )
-	        //   ? this._getPropByMod( key, i, this._o ) : prop;
 	        // lastly fallback to defaults
 	        prop = prop == null ? this._getPropByMod(key, i, this._childDefaults) : prop;
 	        // parse `stagger` and `rand` values if needed
@@ -1671,12 +1668,12 @@
 	    key: '_mergeThenOptions',
 	    value: function _mergeThenOptions(start, end) {
 	      var startChild = start.childOptions || {},
-	          endChild = end.childOptions || {};
-
-	      var mergedChild = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, startChild, endChild),
-	          merged = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, start, end);
+	          endChild = end.childOptions || {},
+	          mergedChild = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, startChild, endChild, false),
+	          merged = (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_mergeThenOptions', this).call(this, start, end, false);
 
 	      merged.childOptions = mergedChild;
+	      this._history.push(merged);
 
 	      return merged;
 	    }
@@ -3707,16 +3704,19 @@
 	      @private
 	      @param {Object} Start options for the merge.
 	      @param {Object} End options for the merge.
+	      @param {Boolean} If should push to _history.
 	      @returns {Object} Merged options.
 	    */
 
 	  }, {
 	    key: '_mergeThenOptions',
 	    value: function _mergeThenOptions(start, end) {
+	      var isPush = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
 	      var o = {};
 	      this._mergeStartLoop(o, start);
 	      this._mergeEndLoop(o, start, end);
-	      this._history.push(o);
+	      isPush && this._history.push(o);
 	      return o;
 	    }
 	    /*
@@ -7765,7 +7765,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.mojs = {
-	  revision: '0.208.0', isDebug: true, helpers: _h2.default,
+	  revision: '0.208.1', isDebug: true, helpers: _h2.default,
 	  Transit: _transit2.default, Swirl: _swirl2.default, Burst: _burst2.default, stagger: _stagger2.default, Spriter: _spriter2.default, MotionPath: _motionPath2.default,
 	  Tween: _tween2.default, Timeline: _timeline2.default, Tweenable: _tweenable2.default, Thenable: _thenable2.default, Tunable: _tunable2.default, Module: _module2.default,
 	  tweener: _tweener2.default, easing: _easing2.default, shapesMap: _shapesMap2.default
@@ -7787,8 +7787,8 @@
 	//   isShowEnd:    1,
 	//   left:         '50%',  top: '50%',
 	//   childOptions: {
-	//     duration:     500,
-	//     easing:       'ease.out',
+	//     duration:     3500,
+	//     // easing:       'ease.out',
 	//     isSwirl:      1,
 	//     fill:         ['cyan', 'yellow'],
 	//     radius:       { 5 : .5 },
@@ -7797,16 +7797,18 @@
 	//   }
 	// })
 	//   .then({ radius: 10, childOptions: {
-	//     easing: 'cubic.in',
-	//     duration: 400, radius: 15 , isSwirl: false
-	//   }}).then({
-	//     radius: 100, angle: 0,
-	//     childOptions: {
-	//       easing: 'cubic.out',
-	//       duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
-	//   });
+	//     // easing: 'cubic.in',
+	//     // duration: 400,
+	//     radius: 15 , isSwirl: 0
+	//   }})
+	//   // .then({
+	//   //   radius: 100, angle: 0,
+	//   //   childOptions: {
+	//   //     easing: 'cubic.out',
+	//   //     duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
+	//   // });
 
-	// // console.log(sw._swirls[0]._history);
+	// console.log(sw._history);
 
 	// var playEl = document.querySelector('#js-play'),
 	//     rangeSliderEl = document.querySelector('#js-range-slider');
@@ -7814,7 +7816,12 @@
 	//   // console.log('REPLAy')
 	//   sw
 	//     // .generate()
-	//     .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
+	//     .tune({
+	//       left:   e.pageX,
+	//       top:    e.pageY,
+	//       angle:  { 0: -20 },
+	//       childOptions: { fill: 'orange' }
+	//     })
 	//     .replay();
 	// });
 

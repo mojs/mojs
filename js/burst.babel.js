@@ -30,10 +30,10 @@ class Burst extends Swirl {
     // add options intersection hash - map that holds the property
     // names that could be on both parent module and child ones,
     // so setting one of those on parent, affect parent only
-    this._optionsIntersection = {
-      radius: 1, radiusX: 1, radiusY: 1,
-      angle:  1, scale:   1, opacity: 1,
-    }
+    // this._optionsIntersection = {
+    //   radius: 1, radiusX: 1, radiusY: 1,
+    //   angle:  1, scale:   1, opacity: 1,
+    // }
     // exclude unitTimeline object from deltas parsing
     this._skipPropsDelta.unitTimeline = 1;
   }
@@ -85,9 +85,6 @@ class Burst extends Swirl {
       // this is priorty for the property lookup
       // firstly try to find the prop in this._o.childOptions
       var prop = this._getPropByMod( key, i, this._o.childOptions );
-      // // if non-intersected option - need to check in _o
-      // prop = ( prop == null && !this._optionsIntersection[key] )
-      //   ? this._getPropByMod( key, i, this._o ) : prop;
       // lastly fallback to defaults
       prop = ( prop == null )
         ? this._getPropByMod( key, i, this._childDefaults ) : prop;
@@ -332,13 +329,13 @@ class Burst extends Swirl {
     @returns {Object} Merged options.
   */
   _mergeThenOptions ( start, end ) {
-    var startChild = start.childOptions || {},
-        endChild   = end.childOptions   || {};
-
-    var mergedChild = super._mergeThenOptions( startChild, endChild ),
-        merged      = super._mergeThenOptions( start, end );
+    var startChild  = start.childOptions || {},
+        endChild    = end.childOptions   || {},
+        mergedChild = super._mergeThenOptions( startChild, endChild, false ),
+        merged      = super._mergeThenOptions( start, end, false );
 
     merged.childOptions = mergedChild;
+    this._history.push( merged );
 
     return merged;
   }

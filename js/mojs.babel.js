@@ -17,7 +17,7 @@ import tweener    from './tween/tweener';
 import easing     from './easing/easing';
 
 window.mojs = {
-  revision:   '0.208.0', isDebug: true, helpers: h,
+  revision:   '0.208.1', isDebug: true, helpers: h,
   Transit, Swirl, Burst, stagger, Spriter, MotionPath,
   Tween, Timeline, Tweenable, Thenable, Tunable, Module,
   tweener, easing, shapesMap
@@ -39,8 +39,8 @@ window.mojs = {
 //   isShowEnd:    1,
 //   left:         '50%',  top: '50%',
 //   childOptions: {
-//     duration:     500,
-//     easing:       'ease.out',
+//     duration:     3500,
+//     // easing:       'ease.out',
 //     isSwirl:      1,
 //     fill:         ['cyan', 'yellow'],
 //     radius:       { 5 : .5 },
@@ -49,16 +49,18 @@ window.mojs = {
 //   }
 // })
 //   .then({ radius: 10, childOptions: {
-//     easing: 'cubic.in',
-//     duration: 400, radius: 15 , isSwirl: false
-//   }}).then({
-//     radius: 100, angle: 0,
-//     childOptions: {
-//       easing: 'cubic.out',
-//       duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
-//   });
+//     // easing: 'cubic.in',
+//     // duration: 400,
+//     radius: 15 , isSwirl: 0
+//   }})
+//   // .then({
+//   //   radius: 100, angle: 0,
+//   //   childOptions: {
+//   //     easing: 'cubic.out',
+//   //     duration: 350, radius: 0, shape: 'cross', stroke: {'cyan': 'cyan'}, strokeWidth: 2 }
+//   // });
 
-// // console.log(sw._swirls[0]._history);
+// console.log(sw._history);
 
 // var playEl = document.querySelector('#js-play'),
 //     rangeSliderEl = document.querySelector('#js-range-slider');
@@ -66,7 +68,12 @@ window.mojs = {
 //   // console.log('REPLAy')
 //   sw
 //     // .generate()
-//     .tune({ left: e.pageX, top: e.pageY, angle: { 0: -90 }, stroke: 'orange' })
+//     .tune({
+//       left:   e.pageX,
+//       top:    e.pageY,
+//       angle:  { 0: -20 },
+//       childOptions: { fill: 'orange' }
+//     })
 //     .replay();
 // });
 

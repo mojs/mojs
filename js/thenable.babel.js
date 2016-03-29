@@ -69,13 +69,14 @@ class Thenable extends Tweenable {
     @private
     @param {Object} Start options for the merge.
     @param {Object} End options for the merge.
+    @param {Boolean} If should push to _history.
     @returns {Object} Merged options.
   */
-  _mergeThenOptions ( start, end ) {
+  _mergeThenOptions ( start, end, isPush = true ) {
     var o = {};
     this._mergeStartLoop( o, start );
     this._mergeEndLoop( o, start, end );
-    this._history.push(o);
+    isPush && this._history.push(o);
     return o;
   }
   /*

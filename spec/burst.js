@@ -81,17 +81,6 @@
         }
         return _results;
       });
-      it('should have _optionsIntersection', function() {
-        var b, s;
-        b = new Burst;
-        s = new Swirl;
-        expect(b._optionsIntersection['radius']).toBe(1);
-        expect(b._optionsIntersection['radiusX']).toBe(1);
-        expect(b._optionsIntersection['radiusY']).toBe(1);
-        expect(b._optionsIntersection['angle']).toBe(1);
-        expect(b._optionsIntersection['opacity']).toBe(1);
-        return expect(b._optionsIntersection['scale']).toBe(1);
-      });
       return it('should add unitTimeline to the _skipPropsDelta', function() {
         var b;
         b = new Burst;
@@ -797,7 +786,7 @@
           }
         };
         b._mergeThenOptions(startObj, endObj);
-        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startObj, endObj);
+        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startObj, endObj, false);
       });
       it('should call super with childOptions', function() {
         var b, endChildObj, endObj, startChildObj, startObj;
@@ -820,7 +809,7 @@
           childOptions: endChildObj
         };
         b._mergeThenOptions(startObj, endObj);
-        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startChildObj, endChildObj);
+        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith(startChildObj, endChildObj, false);
       });
       it('should fallback to {} for childOptions', function() {
         var b, endChildObj, endObj, startChildObj, startObj;
@@ -839,9 +828,9 @@
           childOptions: endChildObj
         };
         b._mergeThenOptions(startObj, endObj);
-        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith({}, {});
+        return expect(Thenable.prototype._mergeThenOptions).toHaveBeenCalledWith({}, {}, false);
       });
-      return it('should set merged children to parent', function() {
+      it('should set merged children to parent', function() {
         var b, childResult, endChildObj, endObj, parentResult, result, startChildObj, startObj;
         b = new Burst({
           count: 2
@@ -865,6 +854,28 @@
         result = b._mergeThenOptions(startObj, endObj);
         parentResult.childOptions = childResult;
         return expect(result).toEqual(parentResult);
+      });
+      return it('should push merged object to history', function() {
+        var b, endChildObj, endObj, result, startChildObj, startObj;
+        b = new Burst({
+          count: 2
+        });
+        startChildObj = {
+          fill: 'yellow'
+        };
+        endChildObj = {
+          fill: 'black'
+        };
+        startObj = {
+          fill: 'cyan',
+          childOptions: startChildObj
+        };
+        endObj = {
+          fill: 'purple',
+          childOptions: endChildObj
+        };
+        result = b._mergeThenOptions(startObj, endObj);
+        return expect(b._history[1]).toBe(result);
       });
     });
   });

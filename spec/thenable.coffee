@@ -173,6 +173,17 @@ describe 'thenable ->', ->
       mergedOpton = byte._mergeThenOptions start, end
       expect(byte._history[1]).toBe mergedOpton
 
+    it 'should not push merged options to the history if !isPush', ->
+      byte = new Byte
+      start = radius: 10, duration: 1000, fill: 'orange', points: 5
+      end   =
+        radius: 20, duration: null, points: undefined
+        fill: null, stroke: '#ff00ff'
+      byte._defaults = {}
+      byte._vars()
+      mergedOpton = byte._mergeThenOptions start, end, false
+      expect(byte._history[1]).not.toBe mergedOpton
+
     it 'should merge if first is array', ->
       byte = new Byte
       start = radius: [10, 30]

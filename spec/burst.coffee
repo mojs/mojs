@@ -54,15 +54,16 @@ describe 'Burst ->', ->
       for key, value of h.callbacksMap
         expect(b._childDefaults[key]).toBe null
 
-    it 'should have _optionsIntersection', ->
-      b = new Burst
-      s = new Swirl
-      expect(b._optionsIntersection['radius']) .toBe 1
-      expect(b._optionsIntersection['radiusX']).toBe 1
-      expect(b._optionsIntersection['radiusY']).toBe 1
-      expect(b._optionsIntersection['angle'])  .toBe 1
-      expect(b._optionsIntersection['opacity']).toBe 1
-      expect(b._optionsIntersection['scale']).toBe 1
+    # old
+    # it 'should have _optionsIntersection', ->
+    #   b = new Burst
+    #   s = new Swirl
+    #   expect(b._optionsIntersection['radius']) .toBe 1
+    #   expect(b._optionsIntersection['radiusX']).toBe 1
+    #   expect(b._optionsIntersection['radiusY']).toBe 1
+    #   expect(b._optionsIntersection['angle'])  .toBe 1
+    #   expect(b._optionsIntersection['opacity']).toBe 1
+    #   expect(b._optionsIntersection['scale']).toBe 1
 
     it 'should add unitTimeline to the _skipPropsDelta', ->
       b = new Burst
@@ -570,7 +571,7 @@ describe 'Burst ->', ->
       endObj   = { fill: 'purple', childOptions: { fill: 'black' } }
       b._mergeThenOptions( startObj, endObj )
       expect(Thenable.prototype._mergeThenOptions)
-        .toHaveBeenCalledWith startObj, endObj
+        .toHaveBeenCalledWith startObj, endObj, false
 
     it 'should call super with childOptions', ->
       b = new Burst count: 2
@@ -583,7 +584,7 @@ describe 'Burst ->', ->
       endObj   = { fill: 'purple', childOptions: endChildObj }
       b._mergeThenOptions( startObj, endObj )
       expect(Thenable.prototype._mergeThenOptions)
-        .toHaveBeenCalledWith startChildObj, endChildObj
+        .toHaveBeenCalledWith startChildObj, endChildObj, false
 
     it 'should fallback to {} for childOptions', ->
       b = new Burst count: 2
@@ -596,7 +597,7 @@ describe 'Burst ->', ->
       endObj   = { fill: 'purple', childOptions: endChildObj }
       b._mergeThenOptions( startObj, endObj )
       expect(Thenable.prototype._mergeThenOptions)
-        .toHaveBeenCalledWith {}, {}
+        .toHaveBeenCalledWith {}, {}, false
 
     it 'should set merged children to parent', ->
       b = new Burst count: 2
@@ -616,6 +617,18 @@ describe 'Burst ->', ->
       parentResult.childOptions = childResult
 
       expect(result).toEqual parentResult
+
+    it 'should push merged object to history', ->
+      b = new Burst count: 2
+
+      startChildObj = { fill: 'yellow' }
+      endChildObj   = { fill: 'black' }
+      startObj = { fill: 'cyan', childOptions: startChildObj }
+      endObj   = { fill: 'purple', childOptions: endChildObj }
+      
+      result = b._mergeThenOptions( startObj, endObj )
+
+      expect(b._history[1]).toBe result
 
 
 
