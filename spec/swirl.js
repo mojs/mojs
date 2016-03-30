@@ -197,12 +197,19 @@
         });
         return expect(swirl._defaults.degreeShift).toBe(0);
       });
-      return it('should modify radius default', function() {
+      it('should modify radius default', function() {
         var swirl;
         swirl = new Swirl({
           fill: 'cyan'
         });
         return expect(swirl._defaults.radius[5]).toBe(0);
+      });
+      return it('should have isWithShape', function() {
+        var swirl;
+        swirl = new Swirl({
+          fill: 'cyan'
+        });
+        return expect(swirl._defaults.isWithShape).toBe(true);
       });
     });
     describe('_setProgress ->', function() {
@@ -402,7 +409,7 @@
         return expect(swirl._props.y).not.toBe('5.0000px');
       });
     });
-    return describe('_getSwirl method ->', function() {
+    describe('_getSwirl method ->', function() {
       return it('should calc swirl based on swirlFrequency and swirlSize props', function() {
         var freq, sign, swirl, swirl1;
         swirl = new Swirl;
@@ -410,6 +417,26 @@
         freq = Math.sin(swirl._props.swirlFrequency * .5);
         sign = swirl._props.signRand;
         return expect(swirl1).toBe(sign * swirl._props.swirlSize * freq);
+      });
+    });
+    return describe('_draw method ->', function() {
+      it('should call super', function() {
+        var swirl;
+        swirl = new Swirl;
+        spyOn(Transit.prototype, '_draw');
+        swirl._draw();
+        return expect(Transit.prototype._draw).toHaveBeenCalled();
+      });
+      return it('should not call super if !isWithShape', function() {
+        var swirl;
+        swirl = new Swirl({
+          isWithShape: false
+        });
+        spyOn(Transit.prototype, '_draw');
+        spyOn(Transit.prototype, '_drawEl');
+        swirl._draw();
+        expect(Transit.prototype._draw).not.toHaveBeenCalled();
+        return expect(Transit.prototype._drawEl).toHaveBeenCalled();
       });
     });
   });

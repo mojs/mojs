@@ -70,6 +70,9 @@ describe 'Swirl ->', ->
     it 'should modify radius default', ->
       swirl = new Swirl fill: 'cyan'
       expect(swirl._defaults.radius[5]).toBe 0
+    it 'should have isWithShape', ->
+      swirl = new Swirl fill: 'cyan'
+      expect(swirl._defaults.isWithShape).toBe true
 
   describe '_setProgress ->', ->
     it 'should svae progress', ->
@@ -157,3 +160,22 @@ describe 'Swirl ->', ->
       freq = Math.sin(swirl._props.swirlFrequency*.5)
       sign = swirl._props.signRand
       expect(swirl1).toBe sign*swirl._props.swirlSize*freq
+
+  describe '_draw method ->', ->
+    it 'should call super', ->
+      swirl = new Swirl
+      spyOn Transit::, '_draw'
+      swirl._draw()
+      expect(Transit::_draw).toHaveBeenCalled()
+
+    it 'should not call super if !isWithShape', ->
+      swirl = new Swirl isWithShape: false
+      spyOn Transit::, '_draw'
+      spyOn Transit::, '_drawEl'
+      swirl._draw()
+      expect(Transit::_draw).not.toHaveBeenCalled()
+      expect(Transit::_drawEl).toHaveBeenCalled()
+
+
+
+

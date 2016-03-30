@@ -31,6 +31,8 @@ class Swirl extends Transit {
     this._defaults.degreeShift    = 0;
     /* ∆ :: [number] :: Radius of the shape. */
     this._defaults.radius         = { 5 : 0};
+    /* [boolean] :: If should have child shape. */
+    this._defaults.isWithShape    = true;
   }
 
   // ^ PUBLIC  METHOD(S) ^
@@ -118,6 +120,15 @@ class Swirl extends Transit {
   _getSwirl (proc) {
     var p = this._props;
     return p.signRand * p.swirlSize * Math.sin(p.swirlFrequency*proc);
+  }
+  /*
+    Method to draw shape.
+    If !isWithShape - draw self el only, but not shape.
+    @private
+    @overrides @ Transit.
+  */
+  _draw () {
+    super[ ( this._props.isWithShape ) ? '_draw' : '_drawEl' ]();
   }
 }
 

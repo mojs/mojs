@@ -51,9 +51,10 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(71);
-	__webpack_require__(72);
-	module.exports = __webpack_require__(65).Symbol;
+	var $ = __webpack_require__(69);
+	module.exports = function defineProperty(it, key, desc){
+	  return $.setDesc(it, key, desc);
+	};
 
 /***/ },
 /* 2 */
@@ -1204,10 +1205,6 @@
 	  value: true
 	});
 
-	var _toConsumableArray2 = __webpack_require__(25);
-
-	var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
-
 	var _keys = __webpack_require__(28);
 
 	var _keys2 = _interopRequireDefault(_keys);
@@ -1248,14 +1245,18 @@
 
 	var _swirl2 = _interopRequireDefault(_swirl);
 
+	var _tunable = __webpack_require__(12);
+
+	var _tunable2 = _interopRequireDefault(_tunable);
+
 	var _h = __webpack_require__(16);
 
 	var _h2 = _interopRequireDefault(_h);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Burst = function (_Swirl) {
-	  (0, _inherits3.default)(Burst, _Swirl);
+	var Burst = function (_Tunable) {
+	  (0, _inherits3.default)(Burst, _Tunable);
 
 	  function Burst() {
 	    (0, _classCallCheck3.default)(this, Burst);
@@ -1270,70 +1271,57 @@
 	      @override @ Swirl.
 	    */
 	    value: function _declareDefaults() {
-	      // call super @ Swirl
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_declareDefaults', this).call(this);
-	      // child defaults declaration
-	      this._declareChildDefaults();
-
-	      /* _DEFAULTS ARE - SWIRL DEFAULTS + THESE: */
-
-	      /* :: [number > 0] :: Amount of Burst's points. */
-	      this._defaults.count = 5;
-	      /* :: [0 < number < 360] :: Degree of the Burst. */
-	      this._defaults.degree = 360;
-	      /* ∆ :: [number > 0] :: Degree for the Burst's points */
-	      this._defaults.radius = { 5: 50 };
-
-	      /* childOptions PROPERTIES ARE -
-	        `Swirl` DEFAULTS + `Tween` DEFAULTS.
-	        ONLY `isSwirl` option is `false` by default. */
-	      // exclude unitTimeline object from deltas parsing
-	      this._skipPropsDelta.unitTimeline = 1;
+	      this._defaults = {
+	        /* [number > 0] :: Quantity of Burst particles. */
+	        count: 5,
+	        /* [0 < number < 360] :: Degree of the Burst. */
+	        degree: 360,
+	        /* ∆ :: [number > 0] :: Radius of the Burst. */
+	        radius: { 0: 50 },
+	        /* ∆ :: [number > 0] :: X radius of the Burst. */
+	        radiusX: null,
+	        /* ∆ :: [number > 0] :: Y radius of the Burst. */
+	        radiusY: null,
+	        /* [boolean] :: If Burst itself should follow sinusoidal path. */
+	        isSwirl: false
+	      };
 	    }
 	    /*
-	      Method to create a then record for the module.
-	      @public
-	      overrides @ Thenable
-	      @param    {Object} Options for the next animation.
-	      @returns  {Object} this.
+	      Method for initial render of the module.
 	    */
 
 	  }, {
-	    key: 'then',
-	    value: function then(o) {
-	      // next burst module
-	      // merge then options with the current ones
-	      var prevRecord = this._history[this._history.length - 1],
-	          merged = this._mergeThenOptions(prevRecord, o);
+	    key: '_render',
+	    value: function _render() {
+	      this._o.isWithShape = false;
+	      this._o.radius = 0;
 
-	      merged.count = 0;
+	      this.masterSwirl = new _swirl2.default(this._o);
+	      this._masterSwirls = { 0: this.masterSwirl };
 
-	      var masterBurst = new Burst(merged);
-	      this._modules.push(masterBurst);
-
-	      var swirls = [],
-	          maxDuration = 0;
-	      for (var i = 0; i < this._swirls.length; i++) {
-	        var option = this._getThenOption(o, i);
-	        // set parent of new swirls to master burst
-	        option.parent = masterBurst.el;
-	        this._swirls[i].then(option);
-	        var mods = this._swirls[i]._modules,
-	            newSwirl = mods[mods.length - 1];
-
-	        swirls.push(newSwirl);
-	        maxDuration = newSwirl.timeline._props.repeatTime;
-	      }
-
-	      masterBurst.timeline._setProp('duration', maxDuration);
-	      // this.timeline.add( masterBurst );
-
-	      this.timeline._recalcTotalDuration();
-
-	      return this;
+	      this._renderSwirls();
 	    }
 	    /*
-	      Method to get childOption for then call.
+	      Method for initial render of swirls.
+	      @private
+	    */
+
+	  }, {
+	    key: '_renderSwirls',
+	    value: function _renderSwirls() {
+	      var p = this._props,
+	          pack = [];
+
+	      for (var i = 0; i < p.count; i++) {
+	        var option = this._getChildOption(this._o, i);
+	        this._addOptionalProperties(option, i);
+	        pack.push(new _swirl2.default(option));
+	      }
+	      this._swirls = { 0: pack };
+	    }
+
+	    /*
+	      Method to get childOption form object call by modulus.
 	      @private
 	      @param   {Object} Object to look in.
 	      @param   {Number} Index of the current Swirl.
@@ -1341,87 +1329,30 @@
 	    */
 
 	  }, {
-	    key: '_getThenOption',
-	    value: function _getThenOption(obj, i) {
+	    key: '_getChildOption',
+	    value: function _getChildOption(obj, i) {
 	      var options = {};
-
 	      for (var key in obj.childOptions) {
 	        options[key] = this._getPropByMod(key, i, obj.childOptions);
 	      }
-
 	      return options;
 	    }
 	    /*
-	      Method to copy _o options to _props with fallback to _defaults.
+	      Method to get property by modulus.
 	      @private
-	      @override @ Swirl
+	      @param {String} Name of the property.
+	      @param {Number} Index for the modulus.
+	      @param {Object} Source object to check in.
+	      @returns {Any} Property.
 	    */
 
 	  }, {
-	    key: '_extendDefaults',
-	    value: function _extendDefaults() {
-	      // call super extendDefaults on Swirl
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_extendDefaults', this).call(this);
-	      // calc size immedietely, the Swirls' options rely on size
-	      this._calcSize();
-	    }
-	    /*
-	      Method to declare `childDefaults` for `childOptions` object.
-	      @private
-	    */
+	    key: '_getPropByMod',
+	    value: function _getPropByMod(name, index) {
+	      var sourceObj = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
-	  }, {
-	    key: '_declareChildDefaults',
-	    value: function _declareChildDefaults() {
-	      /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
-	      // copy the defaults to the childDefaults property
-	      this._childDefaults = _h2.default.cloneObj(this._defaults);
-	      // [boolean] :: If shape should follow sinusoidal path.
-	      this._childDefaults.isSwirl = false;
-	      // copy tween options and callbacks
-	      for (var key in _h2.default.tweenOptionMap) {
-	        this._childDefaults[key] = null;
-	      }
-	      for (var key in _h2.default.callbacksMap) {
-	        this._childDefaults[key] = null;
-	      }
-	    }
-	    /*
-	      Method to create child transits.
-	      @private
-	      @override Transit
-	    */
-
-	  }, {
-	    key: '_createBit',
-	    value: function _createBit() {
-	      this._swirls = [];
-	      for (var index = 0; index < this._props.count; index++) {
-	        this._swirls.push(new _swirl2.default(this._getOption(index)));
-	      }
-	    }
-	    /*
-	      Method to calculate option for specific transit.
-	      @private
-	      @param {Number} Index of the swirl.
-	    */
-
-	  }, {
-	    key: '_getOption',
-	    value: function _getOption(i) {
-	      var option = {};
-
-	      for (var key in this._childDefaults) {
-	        // this is priorty for the property lookup
-	        // firstly try to find the prop in this._o.childOptions
-	        var prop = this._getPropByMod(key, i, this._o.childOptions);
-	        // lastly fallback to defaults
-	        prop = prop == null ? this._getPropByMod(key, i, this._childDefaults) : prop;
-	        // parse `stagger` and `rand` values if needed
-	        option[key] = _h2.default.parseStringOption(prop, i);
-	      }
-
-	      return this._addOptionalProperties(option, i);
+	      var prop = sourceObj[name];
+	      return _h2.default.isArray(prop) ? prop[index % prop.length] : prop;
 	    }
 	    /*
 	      Method to add optional Swirls' properties to passed object.
@@ -1436,10 +1367,11 @@
 	      options.index = index;
 	      options.left = '50%';
 	      options.top = '50%';
-	      options.parent = this.el;
+	      options.parent = this.masterSwirl.el;
+	      options.isSwirl = options.isSwirl == null ? false : options.isSwirl;
+
 	      // options.isTimelineLess = true;
 	      // option.callbacksContext = this;  ?
-
 	      var p = this._props,
 	          points = p.count,
 	          degreeCnt = p.degree % 360 === 0 ? points : points - 1 || 1,
@@ -1464,7 +1396,10 @@
 
 	  }, {
 	    key: '_getBitAngle',
-	    value: function _getBitAngle(angleProperty, i) {
+	    value: function _getBitAngle() {
+	      var angleProperty = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+	      var i = arguments[1];
+
 	      var p = this._props,
 	          degCnt = p.degree % 360 === 0 ? p.count : p.count - 1 || 1,
 	          step = p.degree / degCnt,
@@ -1506,7 +1441,8 @@
 	        radiusX: sideRadius.radiusX,
 	        radiusY: sideRadius.radiusY,
 	        angle: angle,
-	        center: { x: p.center, y: p.center }
+	        // center:  { x: p.center, y: p.center }
+	        center: { x: 0, y: 0 }
 	      });
 	    }
 	    /*
@@ -1562,91 +1498,17 @@
 	      return delta;
 	    }
 	    /*
-	      Method to get property by modulus.
-	      @private
-	      @param {String} Name of the property.
-	      @param {Number} Index for the modulus.
-	      @param {Object} Source object to check in.
-	      @returns {Any} Property.
-	    */
-
-	  }, {
-	    key: '_getPropByMod',
-	    value: function _getPropByMod(name, index) {
-	      var sourceObj = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-	      var prop = sourceObj[name];
-	      return _h2.default.isArray(prop) ? prop[index % prop.length] : prop;
-	    }
-	    /*
-	      Method to draw self DIV element.
-	      @private
-	      @override @ Transit
-	    */
-
-	  }, {
-	    key: '_draw',
-	    value: function _draw() {
-	      this._drawEl();
-	    }
-	    /*
-	      Method to calculate maximum size of element.
-	      @private
-	      @override @ Transit
-	    */
-
-	  }, {
-	    key: '_calcSize',
-	    value: function _calcSize() {
-	      var p = this._props;
-	      p.size = p.size == null ? 2 : p.size;
-	      p.center = p.size / 2;
-	    }
-	    /*
-	      Method to setup  timeline options before creating the Timeline instance.
-	      @override @ Transit
-	      @private
-	    */
-
-	  }, {
-	    key: '_transformTweenOptions',
-	    value: function _transformTweenOptions() {
-	      this._o.unitTimeline = this._o.unitTimeline || {};
-	      this._o.unitTimeline.callbacksContext = this;
-	      this._applyCallbackOverrides(this._o.unitTimeline);
-	    }
-	    /*
 	      Method to create timeline.
 	      @private
 	      @override @ Tweenable
-	      @param {Object} Timeline's options.
-	                      An object which contains "timeline" property with
-	                      timeline options.
 	    */
 
 	  }, {
 	    key: '_makeTimeline',
 	    value: function _makeTimeline() {
-	      var _unitTimeline;
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_makeTimeline', this).call(this);
 
-	      // create unit Timeline to controll all Swirls
-	      this.unitTimeline = new _timeline2.default(this._o.unitTimeline);
-	      (_unitTimeline = this.unitTimeline).add.apply(_unitTimeline, (0, _toConsumableArray3.default)(this._swirls));
-	      // if isTimelineLess wasn't passed to the module - we need
-	      // to create Master Timeline in case we will have `then` chain,-
-	      // the master will control all the unitTimelines of the chain.
-	      if (!this._o.wasTimelineLess) {
-	        (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_makeTimeline', this).call(this);
-	        this.timeline.add(this.unitTimeline);
-	        // otherwise set the timeline property to the unitTimeline,
-	        // this will allow to `.append( )` this module to master timeline
-	        // automatically in the `Thenable.then` method.
-	      } else {
-	          this.timeline = this.unitTimeline;
-	        }
-	      // reset the timeline and unitTimeline options objects.
-	      this._o.timeline = null;
-	      // this._o.unitTimeline = undefined;
+	      this.timeline.add(this.masterSwirl, this._swirls[0]);
 	    }
 	    /*
 	      Method to make Tween for the module.
@@ -1657,55 +1519,214 @@
 	  }, {
 	    key: '_makeTween',
 	    value: function _makeTween() {} /* don't create any tween */
-	    /*
-	      Method to tune new history options to all the submodules.
-	      @private
-	      @override @ Tunable
-	    */
-	    // _tuneSubModules () {
-	    //   // call _tuneSubModules on Tunable
-	    //   super._tuneSubModules();
-	    //   // tune swirls including their tweens
-	    //   for (var index = 0; index < this._swirls.length; index++) {
-	    //     var swirl   = this._swirls[index],
-	    //         options = this._getOption( index );
 
-	    //     swirl._tuneNewOptions( options );
-	    //     this._resetTween( swirl.tween, options );
+	    // /*
+	    //   Method to create a then record for the module.
+	    //   @public
+	    //   overrides @ Thenable
+	    //   @param    {Object} Options for the next animation.
+	    //   @returns  {Object} this.
+	    // */
+	    // then ( o ) {
+	    //   // next burst module
+	    //   // merge then options with the current ones
+	    //   var prevRecord = this._history[ this._history.length - 1 ],
+	    //       merged     = this._mergeThenOptions( prevRecord, o );
+
+	    //   merged.count = 0;
+
+	    //   var masterBurst = new Burst( merged );
+	    //   this._modules.push( masterBurst );
+
+	    //   var swirls = [],
+	    //       maxDuration = 0;
+	    //   for (var i = 0; i < this._swirls.length; i++) {
+	    //     var option = this._getThenOption( o, i );
+	    //     // set parent of new swirls to master burst
+	    //     option.parent = masterBurst.el;
+	    //     this._swirls[i].then( option );
+	    //     var mods     = this._swirls[i]._modules,
+	    //         newSwirl = mods[mods.length-1];
+
+	    //     swirls.push( newSwirl );
+	    //     maxDuration = newSwirl.timeline._props.repeatTime;
 	    //   }
 
-	    //   this._o.timeline && this.timeline._setProp(this._o.timeline);
+	    //   masterBurst.timeline._setProp('duration', maxDuration);
+	    //   // this.timeline.add( masterBurst );
+
 	    //   this.timeline._recalcTotalDuration();
+
+	    //   return this;
 	    // }
+	    // /*
+	    //   Method to get childOption for then call.
+	    //   @private
+	    //   @param   {Object} Object to look in.
+	    //   @param   {Number} Index of the current Swirl.
+	    //   @returns {Object} Options for the current swirl.
+	    // */
+	    // _getThenOption (obj, i) {
+	    //   var options = {};
 
-	    /*
-	      Method to reset some flags on merged options object.
-	      @private
-	      @overrides @ Thenable
-	      @param   {Object} Options object.
-	      @returns {Object} Options object.
-	    */
+	    //   for ( var key in obj.childOptions ) {
+	    //     options[key] = this._getPropByMod( key, i, obj.childOptions);
+	    //   }
 
-	  }, {
-	    key: '_resetTweens',
-	    value: function _resetTweens() {} /* don't reset tweens for now */
-	    /*
-	      Method to reset some flags on merged options object.
-	      @private
-	      @override @ Thenable
-	      @param   {Object} Options object.
-	      @returns {Object} Options object.
-	    */
+	    //   return options;
+	    // }
+	    // /*
+	    //   Method to copy _o options to _props with fallback to _defaults.
+	    //   @private
+	    //   @override @ Swirl
+	    // */
+	    // _extendDefaults () {
+	    //   // call super extendDefaults on Swirl
+	    //   super._extendDefaults();
+	    //   // calc size immedietely, the Swirls' options rely on size
+	    //   this._calcSize();
+	    // }
+	    // /*
+	    //   Method to declare `childDefaults` for `childOptions` object.
+	    //   @private
+	    // */
+	    // _declareChildDefaults () {
+	    //   /* CHILD DEFAULTS - SWIRL's DEFAULTS WITH ADDITIONS*/
+	    //   // copy the defaults to the childDefaults property
+	    //   this._childDefaults = h.cloneObj( this._defaults );
+	    //   // [boolean] :: If shape should follow sinusoidal path.
+	    //   this._childDefaults.isSwirl = false;
+	    //   // copy tween options and callbacks
+	    //   for (var key in h.tweenOptionMap) { this._childDefaults[key] = null; }
+	    //   for (var key in h.callbacksMap)   { this._childDefaults[key] = null; }
+	    // }
+	    // /*
+	    //   Method to create child transits.
+	    //   @private
+	    //   @override Transit
+	    // */
+	    // _createBit () {
+	    //   this._swirls = [];
+	    //   for (var index = 0; index < this._props.count; index++) {
+	    //     this._swirls.push( new Swirl( this._getOption( index ) ) );
+	    //   }
+	    // }
+	    // /*
+	    //   Method to calculate option for specific transit.
+	    //   @private
+	    //   @param {Number} Index of the swirl.
+	    // */
+	    // _getOption (i) {
+	    //   var option  = {};
 
-	  }, {
-	    key: '_resetMergedFlags',
-	    value: function _resetMergedFlags(obj) {
-	      // call super @ Thenable
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(Burst.prototype), '_resetMergedFlags', this).call(this, obj);
-	      obj.wasTimelineLess = obj.isTimelineLess;
-	      obj.isTimelineLess = false;
-	      return obj;
-	    }
+	    //   for (var key in this._childDefaults) {
+	    //     // this is priorty for the property lookup
+	    //     // firstly try to find the prop in this._o.childOptions
+	    //     var prop = this._getPropByMod( key, i, this._o.childOptions );
+	    //     // lastly fallback to defaults
+	    //     prop = ( prop == null )
+	    //       ? this._getPropByMod( key, i, this._childDefaults ) : prop;
+	    //     // parse `stagger` and `rand` values if needed
+	    //     option[key] = h.parseStringOption(prop, i);
+	    //   }
+
+	    //   return this._addOptionalProperties( option, i );
+	    // }
+	    // /*
+	    //   Method to draw self DIV element.
+	    //   @private
+	    //   @override @ Transit
+	    // */
+	    // _draw () { this._drawEl(); }
+	    // /*
+	    //   Method to calculate maximum size of element.
+	    //   @private
+	    //   @override @ Transit
+	    // */
+	    // _calcSize () {
+	    //   var p = this._props;
+	    //   p.size   = ( p.size == null ) ? 2 : p.size;
+	    //   p.center = p.size / 2;
+	    // }
+	    // /*
+	    //   Method to setup  timeline options before creating the Timeline instance.
+	    //   @override @ Transit
+	    //   @private
+	    // */
+	    // _transformTweenOptions () {
+	    //   this._o.unitTimeline = this._o.unitTimeline || {};
+	    //   this._o.unitTimeline.callbacksContext = this;
+	    //   this._applyCallbackOverrides( this._o.unitTimeline );
+	    // }
+	    // /*
+	    //   Method to create timeline.
+	    //   @private
+	    //   @override @ Tweenable
+	    //   @param {Object} Timeline's options.
+	    //                   An object which contains "timeline" property with
+	    //                   timeline options.
+	    // */
+	    // _makeTimeline () {
+	    //   // create unit Timeline to controll all Swirls
+	    //   this.unitTimeline = new Timeline( this._o.unitTimeline );
+	    //   this.unitTimeline.add(...this._swirls);
+	    //   // if isTimelineLess wasn't passed to the module - we need
+	    //   // to create Master Timeline in case we will have `then` chain,-
+	    //   // the master will control all the unitTimelines of the chain.
+	    //   if ( !this._o.wasTimelineLess ) {
+	    //     super._makeTimeline();
+	    //     this.timeline.add( this.unitTimeline );
+	    //   // otherwise set the timeline property to the unitTimeline,
+	    //   // this will allow to `.append( )` this module to master timeline
+	    //   // automatically in the `Thenable.then` method.
+	    //   } else { this.timeline = this.unitTimeline; }
+	    //   // reset the timeline and unitTimeline options objects.
+	    //   this._o.timeline     = null;
+	    //   // this._o.unitTimeline = undefined;
+	    // }
+	    // /*
+	    //   Method to tune new history options to all the submodules.
+	    //   @private
+	    //   @override @ Tunable
+	    // */
+	    // // _tuneSubModules () {
+	    // //   // call _tuneSubModules on Tunable
+	    // //   super._tuneSubModules();
+	    // //   // tune swirls including their tweens
+	    // //   for (var index = 0; index < this._swirls.length; index++) {
+	    // //     var swirl   = this._swirls[index],
+	    // //         options = this._getOption( index );
+
+	    // //     swirl._tuneNewOptions( options );
+	    // //     this._resetTween( swirl.tween, options );
+	    // //   }
+
+	    // //   this._o.timeline && this.timeline._setProp(this._o.timeline);
+	    // //   this.timeline._recalcTotalDuration();
+	    // // }
+
+	    // /*
+	    //   Method to reset some flags on merged options object.
+	    //   @private
+	    //   @overrides @ Thenable
+	    //   @param   {Object} Options object.
+	    //   @returns {Object} Options object.
+	    // */
+	    // _resetTweens () { /* don't reset tweens for now */ }
+	    // /*
+	    //   Method to reset some flags on merged options object.
+	    //   @private
+	    //   @override @ Thenable
+	    //   @param   {Object} Options object.
+	    //   @returns {Object} Options object.
+	    // */
+	    // _resetMergedFlags (obj) {
+	    //   // call super @ Thenable
+	    //   super._resetMergedFlags(obj);
+	    //   obj.wasTimelineLess = obj.isTimelineLess;
+	    //   obj.isTimelineLess  = false;
+	    //   return obj;
+	    // }
 
 	    /*
 	      Method to merge two options into one. Used in .then chains.
@@ -1729,7 +1750,7 @@
 
 	  }]);
 	  return Burst;
-	}(_swirl2.default);
+	}(_tunable2.default);
 
 	exports.default = Burst;
 
@@ -2352,6 +2373,8 @@
 	      this._defaults.degreeShift = 0;
 	      /* ∆ :: [number] :: Radius of the shape. */
 	      this._defaults.radius = { 5: 0 };
+	      /* [boolean] :: If should have child shape. */
+	      this._defaults.isWithShape = true;
 	    }
 
 	    // ^ PUBLIC  METHOD(S) ^
@@ -2452,6 +2475,18 @@
 	    value: function _getSwirl(proc) {
 	      var p = this._props;
 	      return p.signRand * p.swirlSize * Math.sin(p.swirlFrequency * proc);
+	    }
+	    /*
+	      Method to draw shape.
+	      If !isWithShape - draw self el only, but not shape.
+	      @private
+	      @overrides @ Transit.
+	    */
+
+	  }, {
+	    key: '_draw',
+	    value: function _draw() {
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(Swirl.prototype), this._props.isWithShape ? '_draw' : '_drawEl', this).call(this);
 	    }
 	  }]);
 	  return Swirl;
@@ -5269,7 +5304,7 @@
 
 	h = __webpack_require__(16);
 
-	resize = __webpack_require__(45);
+	resize = __webpack_require__(42);
 
 	Tween = __webpack_require__(2)["default"];
 
@@ -5801,11 +5836,11 @@
 
 	var Easing, PathEasing, bezier, easing, h, mix;
 
-	bezier = __webpack_require__(42);
+	bezier = __webpack_require__(43);
 
-	PathEasing = __webpack_require__(43);
+	PathEasing = __webpack_require__(44);
 
-	mix = __webpack_require__(44);
+	mix = __webpack_require__(45);
 
 	h = __webpack_require__(16);
 
@@ -6245,32 +6280,7 @@
 	}();
 
 /***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports.__esModule = true;
-
-	var _from = __webpack_require__(50);
-
-	var _from2 = _interopRequireDefault(_from);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-	      arr2[i] = arr[i];
-	    }
-
-	    return arr2;
-	  } else {
-	    return (0, _from2.default)(arr);
-	  }
-	};
-
-/***/ },
+/* 25 */,
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -6594,7 +6604,7 @@
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(1), __esModule: true };
+	module.exports = { "default": __webpack_require__(59), __esModule: true };
 
 /***/ },
 /* 35 */
@@ -6970,6 +6980,227 @@
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+	/*!
+	  LegoMushroom @legomushroom http://legomushroom.com
+	  MIT License 2014
+	 */
+
+	/* istanbul ignore next */
+	(function() {
+	  var Main;
+	  Main = (function() {
+	    function Main(o) {
+	      this.o = o != null ? o : {};
+	      if (window.isAnyResizeEventInited) {
+	        return;
+	      }
+	      this.vars();
+	      this.redefineProto();
+	    }
+
+	    Main.prototype.vars = function() {
+	      window.isAnyResizeEventInited = true;
+	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
+	      return this.timerElements = {
+	        img: 1,
+	        textarea: 1,
+	        input: 1,
+	        embed: 1,
+	        object: 1,
+	        svg: 1,
+	        canvas: 1,
+	        tr: 1,
+	        tbody: 1,
+	        thead: 1,
+	        tfoot: 1,
+	        a: 1,
+	        select: 1,
+	        option: 1,
+	        optgroup: 1,
+	        dl: 1,
+	        dt: 1,
+	        br: 1,
+	        basefont: 1,
+	        font: 1,
+	        col: 1,
+	        iframe: 1
+	      };
+	    };
+
+	    Main.prototype.redefineProto = function() {
+	      var i, it, proto, t;
+	      it = this;
+	      return t = (function() {
+	        var j, len, ref, results;
+	        ref = this.allowedProtos;
+	        results = [];
+	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	          proto = ref[i];
+	          if (proto.prototype == null) {
+	            continue;
+	          }
+	          results.push((function(proto) {
+	            var listener, remover;
+	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	            (function(listener) {
+	              var wrappedListener;
+	              wrappedListener = function() {
+	                var option;
+	                if (this !== window || this !== document) {
+	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
+	                  option && it.handleResize({
+	                    args: arguments,
+	                    that: this
+	                  });
+	                }
+	                return listener.apply(this, arguments);
+	              };
+	              if (proto.prototype.addEventListener) {
+	                return proto.prototype.addEventListener = wrappedListener;
+	              } else if (proto.prototype.attachEvent) {
+	                return proto.prototype.attachEvent = wrappedListener;
+	              }
+	            })(listener);
+	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
+	            return (function(remover) {
+	              var wrappedRemover;
+	              wrappedRemover = function() {
+	                this.isAnyResizeEventInited = false;
+	                this.iframe && this.removeChild(this.iframe);
+	                return remover.apply(this, arguments);
+	              };
+	              if (proto.prototype.removeEventListener) {
+	                return proto.prototype.removeEventListener = wrappedRemover;
+	              } else if (proto.prototype.detachEvent) {
+	                return proto.prototype.detachEvent = wrappedListener;
+	              }
+	            })(remover);
+	          })(proto));
+	        }
+	        return results;
+	      }).call(this);
+	    };
+
+	    Main.prototype.handleResize = function(args) {
+	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
+	      el = args.that;
+	      if (!this.timerElements[el.tagName.toLowerCase()]) {
+	        iframe = document.createElement('iframe');
+	        el.appendChild(iframe);
+	        iframe.style.width = '100%';
+	        iframe.style.height = '100%';
+	        iframe.style.position = 'absolute';
+	        iframe.style.zIndex = -999;
+	        iframe.style.opacity = 0;
+	        iframe.style.top = 0;
+	        iframe.style.left = 0;
+	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
+	        isNoPos = el.style.position === '';
+	        isStatic = computedStyle.position === 'static' && isNoPos;
+	        isEmpty = computedStyle.position === '' && el.style.position === '';
+	        if (isStatic || isEmpty) {
+	          el.style.position = 'relative';
+	        }
+	        if ((ref = iframe.contentWindow) != null) {
+	          ref.onresize = (function(_this) {
+	            return function(e) {
+	              return _this.dispatchEvent(el);
+	            };
+	          })(this);
+	        }
+	        el.iframe = iframe;
+	      } else {
+	        this.initTimer(el);
+	      }
+	      return el.isAnyResizeEventInited = true;
+	    };
+
+	    Main.prototype.initTimer = function(el) {
+	      var height, width;
+	      width = 0;
+	      height = 0;
+	      return this.interval = setInterval((function(_this) {
+	        return function() {
+	          var newHeight, newWidth;
+	          newWidth = el.offsetWidth;
+	          newHeight = el.offsetHeight;
+	          if (newWidth !== width || newHeight !== height) {
+	            _this.dispatchEvent(el);
+	            width = newWidth;
+	            return height = newHeight;
+	          }
+	        };
+	      })(this), this.o.interval || 62.5);
+	    };
+
+	    Main.prototype.dispatchEvent = function(el) {
+	      var e;
+	      if (document.createEvent) {
+	        e = document.createEvent('HTMLEvents');
+	        e.initEvent('onresize', false, false);
+	        return el.dispatchEvent(e);
+	      } else if (document.createEventObject) {
+	        e = document.createEventObject();
+	        return el.fireEvent('onresize', e);
+	      } else {
+	        return false;
+	      }
+	    };
+
+	    Main.prototype.destroy = function() {
+	      var i, it, j, len, proto, ref, results;
+	      clearInterval(this.interval);
+	      this.interval = null;
+	      window.isAnyResizeEventInited = false;
+	      it = this;
+	      ref = this.allowedProtos;
+	      results = [];
+	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+	        proto = ref[i];
+	        if (proto.prototype == null) {
+	          continue;
+	        }
+	        results.push((function(proto) {
+	          var listener;
+	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
+	          if (proto.prototype.addEventListener) {
+	            proto.prototype.addEventListener = Element.prototype.addEventListener;
+	          } else if (proto.prototype.attachEvent) {
+	            proto.prototype.attachEvent = Element.prototype.attachEvent;
+	          }
+	          if (proto.prototype.removeEventListener) {
+	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
+	          } else if (proto.prototype.detachEvent) {
+	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
+	          }
+	        })(proto));
+	      }
+	      return results;
+	    };
+
+	    return Main;
+
+	  })();
+	  if (true) {
+	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	      return new Main;
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
+	    return module.exports = new Main;
+	  } else {
+	    if (typeof window !== "undefined" && window !== null) {
+	      window.AnyResizeEvent = Main;
+	    }
+	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
+	  }
+	})();
+
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global) {var BezierEasing, bezierEasing, h,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -7144,7 +7375,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var PathEasing, h;
@@ -7380,7 +7611,7 @@
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var create, easing, getNearest, mix, parseIfEasing, sort,
@@ -7453,237 +7684,16 @@
 
 
 /***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-	/*!
-	  LegoMushroom @legomushroom http://legomushroom.com
-	  MIT License 2014
-	 */
-
-	/* istanbul ignore next */
-	(function() {
-	  var Main;
-	  Main = (function() {
-	    function Main(o) {
-	      this.o = o != null ? o : {};
-	      if (window.isAnyResizeEventInited) {
-	        return;
-	      }
-	      this.vars();
-	      this.redefineProto();
-	    }
-
-	    Main.prototype.vars = function() {
-	      window.isAnyResizeEventInited = true;
-	      this.allowedProtos = [HTMLDivElement, HTMLFormElement, HTMLLinkElement, HTMLBodyElement, HTMLParagraphElement, HTMLFieldSetElement, HTMLLegendElement, HTMLLabelElement, HTMLButtonElement, HTMLUListElement, HTMLOListElement, HTMLLIElement, HTMLHeadingElement, HTMLQuoteElement, HTMLPreElement, HTMLBRElement, HTMLFontElement, HTMLHRElement, HTMLModElement, HTMLParamElement, HTMLMapElement, HTMLTableElement, HTMLTableCaptionElement, HTMLImageElement, HTMLTableCellElement, HTMLSelectElement, HTMLInputElement, HTMLTextAreaElement, HTMLAnchorElement, HTMLObjectElement, HTMLTableColElement, HTMLTableSectionElement, HTMLTableRowElement];
-	      return this.timerElements = {
-	        img: 1,
-	        textarea: 1,
-	        input: 1,
-	        embed: 1,
-	        object: 1,
-	        svg: 1,
-	        canvas: 1,
-	        tr: 1,
-	        tbody: 1,
-	        thead: 1,
-	        tfoot: 1,
-	        a: 1,
-	        select: 1,
-	        option: 1,
-	        optgroup: 1,
-	        dl: 1,
-	        dt: 1,
-	        br: 1,
-	        basefont: 1,
-	        font: 1,
-	        col: 1,
-	        iframe: 1
-	      };
-	    };
-
-	    Main.prototype.redefineProto = function() {
-	      var i, it, proto, t;
-	      it = this;
-	      return t = (function() {
-	        var j, len, ref, results;
-	        ref = this.allowedProtos;
-	        results = [];
-	        for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	          proto = ref[i];
-	          if (proto.prototype == null) {
-	            continue;
-	          }
-	          results.push((function(proto) {
-	            var listener, remover;
-	            listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	            (function(listener) {
-	              var wrappedListener;
-	              wrappedListener = function() {
-	                var option;
-	                if (this !== window || this !== document) {
-	                  option = arguments[0] === 'onresize' && !this.isAnyResizeEventInited;
-	                  option && it.handleResize({
-	                    args: arguments,
-	                    that: this
-	                  });
-	                }
-	                return listener.apply(this, arguments);
-	              };
-	              if (proto.prototype.addEventListener) {
-	                return proto.prototype.addEventListener = wrappedListener;
-	              } else if (proto.prototype.attachEvent) {
-	                return proto.prototype.attachEvent = wrappedListener;
-	              }
-	            })(listener);
-	            remover = proto.prototype.removeEventListener || proto.prototype.detachEvent;
-	            return (function(remover) {
-	              var wrappedRemover;
-	              wrappedRemover = function() {
-	                this.isAnyResizeEventInited = false;
-	                this.iframe && this.removeChild(this.iframe);
-	                return remover.apply(this, arguments);
-	              };
-	              if (proto.prototype.removeEventListener) {
-	                return proto.prototype.removeEventListener = wrappedRemover;
-	              } else if (proto.prototype.detachEvent) {
-	                return proto.prototype.detachEvent = wrappedListener;
-	              }
-	            })(remover);
-	          })(proto));
-	        }
-	        return results;
-	      }).call(this);
-	    };
-
-	    Main.prototype.handleResize = function(args) {
-	      var computedStyle, el, iframe, isEmpty, isNoPos, isStatic, ref;
-	      el = args.that;
-	      if (!this.timerElements[el.tagName.toLowerCase()]) {
-	        iframe = document.createElement('iframe');
-	        el.appendChild(iframe);
-	        iframe.style.width = '100%';
-	        iframe.style.height = '100%';
-	        iframe.style.position = 'absolute';
-	        iframe.style.zIndex = -999;
-	        iframe.style.opacity = 0;
-	        iframe.style.top = 0;
-	        iframe.style.left = 0;
-	        computedStyle = window.getComputedStyle ? getComputedStyle(el) : el.currentStyle;
-	        isNoPos = el.style.position === '';
-	        isStatic = computedStyle.position === 'static' && isNoPos;
-	        isEmpty = computedStyle.position === '' && el.style.position === '';
-	        if (isStatic || isEmpty) {
-	          el.style.position = 'relative';
-	        }
-	        if ((ref = iframe.contentWindow) != null) {
-	          ref.onresize = (function(_this) {
-	            return function(e) {
-	              return _this.dispatchEvent(el);
-	            };
-	          })(this);
-	        }
-	        el.iframe = iframe;
-	      } else {
-	        this.initTimer(el);
-	      }
-	      return el.isAnyResizeEventInited = true;
-	    };
-
-	    Main.prototype.initTimer = function(el) {
-	      var height, width;
-	      width = 0;
-	      height = 0;
-	      return this.interval = setInterval((function(_this) {
-	        return function() {
-	          var newHeight, newWidth;
-	          newWidth = el.offsetWidth;
-	          newHeight = el.offsetHeight;
-	          if (newWidth !== width || newHeight !== height) {
-	            _this.dispatchEvent(el);
-	            width = newWidth;
-	            return height = newHeight;
-	          }
-	        };
-	      })(this), this.o.interval || 62.5);
-	    };
-
-	    Main.prototype.dispatchEvent = function(el) {
-	      var e;
-	      if (document.createEvent) {
-	        e = document.createEvent('HTMLEvents');
-	        e.initEvent('onresize', false, false);
-	        return el.dispatchEvent(e);
-	      } else if (document.createEventObject) {
-	        e = document.createEventObject();
-	        return el.fireEvent('onresize', e);
-	      } else {
-	        return false;
-	      }
-	    };
-
-	    Main.prototype.destroy = function() {
-	      var i, it, j, len, proto, ref, results;
-	      clearInterval(this.interval);
-	      this.interval = null;
-	      window.isAnyResizeEventInited = false;
-	      it = this;
-	      ref = this.allowedProtos;
-	      results = [];
-	      for (i = j = 0, len = ref.length; j < len; i = ++j) {
-	        proto = ref[i];
-	        if (proto.prototype == null) {
-	          continue;
-	        }
-	        results.push((function(proto) {
-	          var listener;
-	          listener = proto.prototype.addEventListener || proto.prototype.attachEvent;
-	          if (proto.prototype.addEventListener) {
-	            proto.prototype.addEventListener = Element.prototype.addEventListener;
-	          } else if (proto.prototype.attachEvent) {
-	            proto.prototype.attachEvent = Element.prototype.attachEvent;
-	          }
-	          if (proto.prototype.removeEventListener) {
-	            return proto.prototype.removeEventListener = Element.prototype.removeEventListener;
-	          } else if (proto.prototype.detachEvent) {
-	            return proto.prototype.detachEvent = Element.prototype.detachEvent;
-	          }
-	        })(proto));
-	      }
-	      return results;
-	    };
-
-	    return Main;
-
-	  })();
-	  if (true) {
-	    return !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
-	      return new Main;
-	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if ((typeof module === "object") && (typeof module.exports === "object")) {
-	    return module.exports = new Main;
-	  } else {
-	    if (typeof window !== "undefined" && window !== null) {
-	      window.AnyResizeEvent = Main;
-	    }
-	    return typeof window !== "undefined" && window !== null ? window.anyResizeEvent = new Main : void 0;
-	  }
-	})();
-
-
-/***/ },
 /* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(56), __esModule: true };
+	module.exports = { "default": __webpack_require__(55), __esModule: true };
 
 /***/ },
 /* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(55), __esModule: true };
+	module.exports = { "default": __webpack_require__(56), __esModule: true };
 
 /***/ },
 /* 48 */
@@ -7695,15 +7705,10 @@
 /* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(59), __esModule: true };
+	module.exports = { "default": __webpack_require__(1), __esModule: true };
 
 /***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(60), __esModule: true };
-
-/***/ },
+/* 50 */,
 /* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -7715,14 +7720,14 @@
 /* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(67);
+	__webpack_require__(64);
 	module.exports = __webpack_require__(65).Object.getPrototypeOf;
 
 /***/ },
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(64);
+	__webpack_require__(66);
 	module.exports = __webpack_require__(65).Object.keys;
 
 /***/ },
@@ -7731,23 +7736,23 @@
 
 	__webpack_require__(62);
 	__webpack_require__(61);
-	module.exports = __webpack_require__(66)('iterator');
+	module.exports = __webpack_require__(67)('iterator');
 
 /***/ },
 /* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(68);
-	module.exports = function create(P, D){
-	  return $.create(P, D);
-	};
+	__webpack_require__(68);
+	module.exports = __webpack_require__(65).Object.setPrototypeOf;
 
 /***/ },
 /* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(69);
-	module.exports = __webpack_require__(65).Object.setPrototypeOf;
+	var $ = __webpack_require__(69);
+	module.exports = function create(P, D){
+	  return $.create(P, D);
+	};
 
 /***/ },
 /* 57 */
@@ -7845,16 +7850,19 @@
 	*/
 
 	var sw = new mojs.Burst({
-	  count: 5,
+	  count: 2,
 	  left: '50%', top: '50%',
 	  isShowEnd: 1,
 	  childOptions: {
-	    fill: 'cyan',
-	    duration: 2000
+	    shape: 'line',
+	    stroke: 'cyan',
+	    // duration: 2000,
+	    angle: { 0: 180 }
 	  }
-	}).then({
-	  childOptions: { radius: 10 }
 	});
+	// .then({
+	//   childOptions: { radius: 10 }
+	// });
 
 	var playEl = document.querySelector('#js-play'),
 	    rangeSliderEl = document.querySelector('#js-range-slider');
@@ -7889,7 +7897,7 @@
 /* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(68);
+	var $ = __webpack_require__(69);
 	__webpack_require__(70);
 	module.exports = function getOwnPropertyDescriptor(it, key){
 	  return $.getDesc(it, key);
@@ -7899,20 +7907,12 @@
 /* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(68);
-	module.exports = function defineProperty(it, key, desc){
-	  return $.setDesc(it, key, desc);
-	};
+	__webpack_require__(71);
+	__webpack_require__(72);
+	module.exports = __webpack_require__(65).Symbol;
 
 /***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(62);
-	__webpack_require__(73);
-	module.exports = __webpack_require__(65).Array.from;
-
-/***/ },
+/* 60 */,
 /* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -7946,8 +7946,8 @@
 /* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var anObject = __webpack_require__(80)
-	  , get      = __webpack_require__(81);
+	var anObject = __webpack_require__(78)
+	  , get      = __webpack_require__(79);
 	module.exports = __webpack_require__(65).getIterator = function(it){
 	  var iterFn = get(it);
 	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
@@ -7958,12 +7958,12 @@
 /* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.2.14 Object.keys(O)
-	var toObject = __webpack_require__(78);
+	// 19.1.2.9 Object.getPrototypeOf(O)
+	var toObject = __webpack_require__(80);
 
-	__webpack_require__(79)('keys', function($keys){
-	  return function keys(it){
-	    return $keys(toObject(it));
+	__webpack_require__(81)('getPrototypeOf', function($getPrototypeOf){
+	  return function getPrototypeOf(it){
+	    return $getPrototypeOf(toObject(it));
 	  };
 	});
 
@@ -7978,6 +7978,19 @@
 /* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// 19.1.2.14 Object.keys(O)
+	var toObject = __webpack_require__(80);
+
+	__webpack_require__(81)('keys', function($keys){
+	  return function keys(it){
+	    return $keys(toObject(it));
+	  };
+	});
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var store  = __webpack_require__(82)('wks')
 	  , uid    = __webpack_require__(83)
 	  , Symbol = __webpack_require__(84).Symbol;
@@ -7987,20 +8000,15 @@
 	};
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.2.9 Object.getPrototypeOf(O)
-	var toObject = __webpack_require__(78);
-
-	__webpack_require__(79)('getPrototypeOf', function($getPrototypeOf){
-	  return function getPrototypeOf(it){
-	    return $getPrototypeOf(toObject(it));
-	  };
-	});
+	// 19.1.3.19 Object.setPrototypeOf(O, proto)
+	var $export = __webpack_require__(85);
+	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(86).set});
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $Object = Object;
@@ -8018,21 +8026,13 @@
 	};
 
 /***/ },
-/* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.3.19 Object.setPrototypeOf(O, proto)
-	var $export = __webpack_require__(86);
-	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(87).set});
-
-/***/ },
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-	var toIObject = __webpack_require__(85);
+	var toIObject = __webpack_require__(87);
 
-	__webpack_require__(79)('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor){
+	__webpack_require__(81)('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor){
 	  return function getOwnPropertyDescriptor(it, key){
 	    return $getOwnPropertyDescriptor(toIObject(it), key);
 	  };
@@ -8044,23 +8044,23 @@
 
 	'use strict';
 	// ECMAScript 6 symbols shim
-	var $              = __webpack_require__(68)
+	var $              = __webpack_require__(69)
 	  , global         = __webpack_require__(84)
 	  , has            = __webpack_require__(88)
 	  , DESCRIPTORS    = __webpack_require__(89)
-	  , $export        = __webpack_require__(86)
+	  , $export        = __webpack_require__(85)
 	  , redefine       = __webpack_require__(90)
 	  , $fails         = __webpack_require__(91)
 	  , shared         = __webpack_require__(82)
 	  , setToStringTag = __webpack_require__(92)
 	  , uid            = __webpack_require__(83)
-	  , wks            = __webpack_require__(66)
+	  , wks            = __webpack_require__(67)
 	  , keyOf          = __webpack_require__(93)
 	  , $names         = __webpack_require__(94)
 	  , enumKeys       = __webpack_require__(95)
 	  , isArray        = __webpack_require__(96)
-	  , anObject       = __webpack_require__(80)
-	  , toIObject      = __webpack_require__(85)
+	  , anObject       = __webpack_require__(78)
+	  , toIObject      = __webpack_require__(87)
 	  , createDesc     = __webpack_require__(97)
 	  , getDesc        = $.getDesc
 	  , setDesc        = $.setDesc
@@ -8277,56 +8277,15 @@
 	
 
 /***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var ctx         = __webpack_require__(100)
-	  , $export     = __webpack_require__(86)
-	  , toObject    = __webpack_require__(78)
-	  , call        = __webpack_require__(101)
-	  , isArrayIter = __webpack_require__(99)
-	  , toLength    = __webpack_require__(102)
-	  , getIterFn   = __webpack_require__(81);
-	$export($export.S + $export.F * !__webpack_require__(103)(function(iter){ Array.from(iter); }), 'Array', {
-	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
-	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
-	    var O       = toObject(arrayLike)
-	      , C       = typeof this == 'function' ? this : Array
-	      , $$      = arguments
-	      , $$len   = $$.length
-	      , mapfn   = $$len > 1 ? $$[1] : undefined
-	      , mapping = mapfn !== undefined
-	      , index   = 0
-	      , iterFn  = getIterFn(O)
-	      , length, result, step, iterator;
-	    if(mapping)mapfn = ctx(mapfn, $$len > 2 ? $$[2] : undefined, 2);
-	    // if object isn't iterable or it's array with default iterator - use simple case
-	    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
-	      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
-	        result[index] = mapping ? call(iterator, mapfn, [step.value, index], true) : step.value;
-	      }
-	    } else {
-	      length = toLength(O.length);
-	      for(result = new C(length); length > index; index++){
-	        result[index] = mapping ? mapfn(O[index], index) : O[index];
-	      }
-	    }
-	    result.length = index;
-	    return result;
-	  }
-	});
-
-
-/***/ },
+/* 73 */,
 /* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var addToUnscopables = __webpack_require__(106)
-	  , step             = __webpack_require__(107)
+	var addToUnscopables = __webpack_require__(104)
+	  , step             = __webpack_require__(105)
 	  , Iterators        = __webpack_require__(75)
-	  , toIObject        = __webpack_require__(85);
+	  , toIObject        = __webpack_require__(87);
 
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
@@ -8367,8 +8326,8 @@
 /* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toInteger = __webpack_require__(104)
-	  , defined   = __webpack_require__(105);
+	var toInteger = __webpack_require__(106)
+	  , defined   = __webpack_require__(107);
 	// true  -> String#at
 	// false -> String#codePointAt
 	module.exports = function(TO_STRING){
@@ -8391,15 +8350,15 @@
 
 	'use strict';
 	var LIBRARY        = __webpack_require__(98)
-	  , $export        = __webpack_require__(86)
+	  , $export        = __webpack_require__(85)
 	  , redefine       = __webpack_require__(90)
-	  , hide           = __webpack_require__(108)
+	  , hide           = __webpack_require__(109)
 	  , has            = __webpack_require__(88)
 	  , Iterators      = __webpack_require__(75)
-	  , $iterCreate    = __webpack_require__(109)
+	  , $iterCreate    = __webpack_require__(110)
 	  , setToStringTag = __webpack_require__(92)
-	  , getProto       = __webpack_require__(68).getProto
-	  , ITERATOR       = __webpack_require__(66)('iterator')
+	  , getProto       = __webpack_require__(69).getProto
+	  , ITERATOR       = __webpack_require__(67)('iterator')
 	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR    = '@@iterator'
 	  , KEYS           = 'keys'
@@ -8460,18 +8419,41 @@
 /* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 7.1.13 ToObject(argument)
-	var defined = __webpack_require__(105);
+	var isObject = __webpack_require__(108);
 	module.exports = function(it){
-	  return Object(defined(it));
+	  if(!isObject(it))throw TypeError(it + ' is not an object!');
+	  return it;
 	};
 
 /***/ },
 /* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var classof   = __webpack_require__(111)
+	  , ITERATOR  = __webpack_require__(67)('iterator')
+	  , Iterators = __webpack_require__(75);
+	module.exports = __webpack_require__(65).getIteratorMethod = function(it){
+	  if(it != undefined)return it[ITERATOR]
+	    || it['@@iterator']
+	    || Iterators[classof(it)];
+	};
+
+/***/ },
+/* 80 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(107);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// most Object methods by ES6 should accept primitives
-	var $export = __webpack_require__(86)
+	var $export = __webpack_require__(85)
 	  , core    = __webpack_require__(65)
 	  , fails   = __webpack_require__(91);
 	module.exports = function(KEY, exec){
@@ -8479,29 +8461,6 @@
 	    , exp = {};
 	  exp[KEY] = exec(fn);
 	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
-	};
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isObject = __webpack_require__(110);
-	module.exports = function(it){
-	  if(!isObject(it))throw TypeError(it + ' is not an object!');
-	  return it;
-	};
-
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var classof   = __webpack_require__(111)
-	  , ITERATOR  = __webpack_require__(66)('iterator')
-	  , Iterators = __webpack_require__(75);
-	module.exports = __webpack_require__(65).getIteratorMethod = function(it){
-	  if(it != undefined)return it[ITERATOR]
-	    || it['@@iterator']
-	    || Iterators[classof(it)];
 	};
 
 /***/ },
@@ -8536,17 +8495,6 @@
 
 /***/ },
 /* 85 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(112)
-	  , defined = __webpack_require__(105);
-	module.exports = function(it){
-	  return IObject(defined(it));
-	};
-
-/***/ },
-/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var global    = __webpack_require__(84)
@@ -8597,14 +8545,14 @@
 	module.exports = $export;
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
 	/* eslint-disable no-proto */
-	var getDesc  = __webpack_require__(68).getDesc
-	  , isObject = __webpack_require__(110)
-	  , anObject = __webpack_require__(80);
+	var getDesc  = __webpack_require__(69).getDesc
+	  , isObject = __webpack_require__(108)
+	  , anObject = __webpack_require__(78);
 	var check = function(O, proto){
 	  anObject(O);
 	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
@@ -8625,6 +8573,17 @@
 	      };
 	    }({}, false) : undefined),
 	  check: check
+	};
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// to indexed object, toObject with fallback for non-array-like ES3 strings
+	var IObject = __webpack_require__(112)
+	  , defined = __webpack_require__(107);
+	module.exports = function(it){
+	  return IObject(defined(it));
 	};
 
 /***/ },
@@ -8649,7 +8608,7 @@
 /* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(108);
+	module.exports = __webpack_require__(109);
 
 /***/ },
 /* 91 */
@@ -8667,9 +8626,9 @@
 /* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var def = __webpack_require__(68).setDesc
+	var def = __webpack_require__(69).setDesc
 	  , has = __webpack_require__(88)
-	  , TAG = __webpack_require__(66)('toStringTag');
+	  , TAG = __webpack_require__(67)('toStringTag');
 
 	module.exports = function(it, tag, stat){
 	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
@@ -8679,8 +8638,8 @@
 /* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $         = __webpack_require__(68)
-	  , toIObject = __webpack_require__(85);
+	var $         = __webpack_require__(69)
+	  , toIObject = __webpack_require__(87);
 	module.exports = function(object, el){
 	  var O      = toIObject(object)
 	    , keys   = $.getKeys(O)
@@ -8695,8 +8654,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-	var toIObject = __webpack_require__(85)
-	  , getNames  = __webpack_require__(68).getNames
+	var toIObject = __webpack_require__(87)
+	  , getNames  = __webpack_require__(69).getNames
 	  , toString  = {}.toString;
 
 	var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
@@ -8720,7 +8679,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// all enumerable object keys, includes symbols
-	var $ = __webpack_require__(68);
+	var $ = __webpack_require__(69);
 	module.exports = function(it){
 	  var keys       = $.getKeys(it)
 	    , getSymbols = $.getSymbols;
@@ -8764,19 +8723,7 @@
 	module.exports = true;
 
 /***/ },
-/* 99 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// check on default Array iterator
-	var Iterators  = __webpack_require__(75)
-	  , ITERATOR   = __webpack_require__(66)('iterator')
-	  , ArrayProto = Array.prototype;
-
-	module.exports = function(it){
-	  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
-	};
-
-/***/ },
+/* 99 */,
 /* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8802,61 +8749,24 @@
 	};
 
 /***/ },
-/* 101 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// call something on iterator step with safe closing on error
-	var anObject = __webpack_require__(80);
-	module.exports = function(iterator, fn, value, entries){
-	  try {
-	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
-	  // 7.4.6 IteratorClose(iterator, completion)
-	  } catch(e){
-	    var ret = iterator['return'];
-	    if(ret !== undefined)anObject(ret.call(iterator));
-	    throw e;
-	  }
-	};
-
-/***/ },
-/* 102 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.15 ToLength
-	var toInteger = __webpack_require__(104)
-	  , min       = Math.min;
-	module.exports = function(it){
-	  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-	};
-
-/***/ },
-/* 103 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ITERATOR     = __webpack_require__(66)('iterator')
-	  , SAFE_CLOSING = false;
-
-	try {
-	  var riter = [7][ITERATOR]();
-	  riter['return'] = function(){ SAFE_CLOSING = true; };
-	  Array.from(riter, function(){ throw 2; });
-	} catch(e){ /* empty */ }
-
-	module.exports = function(exec, skipClosing){
-	  if(!skipClosing && !SAFE_CLOSING)return false;
-	  var safe = false;
-	  try {
-	    var arr  = [7]
-	      , iter = arr[ITERATOR]();
-	    iter.next = function(){ safe = true; };
-	    arr[ITERATOR] = function(){ return iter; };
-	    exec(arr);
-	  } catch(e){ /* empty */ }
-	  return safe;
-	};
-
-/***/ },
+/* 101 */,
+/* 102 */,
+/* 103 */,
 /* 104 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(){ /* empty */ };
+
+/***/ },
+/* 105 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(done, value){
+	  return {value: value, done: !!done};
+	};
+
+/***/ },
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.1.4 ToInteger
@@ -8867,7 +8777,7 @@
 	};
 
 /***/ },
-/* 105 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.2.1 RequireObjectCoercible(argument)
@@ -8877,24 +8787,18 @@
 	};
 
 /***/ },
-/* 106 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(){ /* empty */ };
-
-/***/ },
-/* 107 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(done, value){
-	  return {value: value, done: !!done};
-	};
-
-/***/ },
 /* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $          = __webpack_require__(68)
+	module.exports = function(it){
+	  return typeof it === 'object' ? it !== null : typeof it === 'function';
+	};
+
+/***/ },
+/* 109 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $          = __webpack_require__(69)
 	  , createDesc = __webpack_require__(97);
 	module.exports = __webpack_require__(89) ? function(object, key, value){
 	  return $.setDesc(object, key, createDesc(1, value));
@@ -8904,29 +8808,21 @@
 	};
 
 /***/ },
-/* 109 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $              = __webpack_require__(68)
+	var $              = __webpack_require__(69)
 	  , descriptor     = __webpack_require__(97)
 	  , setToStringTag = __webpack_require__(92)
 	  , IteratorPrototype = {};
 
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(108)(IteratorPrototype, __webpack_require__(66)('iterator'), function(){ return this; });
+	__webpack_require__(109)(IteratorPrototype, __webpack_require__(67)('iterator'), function(){ return this; });
 
 	module.exports = function(Constructor, NAME, next){
 	  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
 	  setToStringTag(Constructor, NAME + ' Iterator');
-	};
-
-/***/ },
-/* 110 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(it){
-	  return typeof it === 'object' ? it !== null : typeof it === 'function';
 	};
 
 /***/ },
@@ -8935,7 +8831,7 @@
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
 	var cof = __webpack_require__(113)
-	  , TAG = __webpack_require__(66)('toStringTag')
+	  , TAG = __webpack_require__(67)('toStringTag')
 	  // ES3 wrong here
 	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
